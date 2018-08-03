@@ -2077,19 +2077,6 @@ struct monk_action_t : public Base
   sef_ability_e sef_ability;
   bool ww_mastery;
 
-  bool mistweaver_hasted_gcd;
-  bool mistweaver_damage_increase;
-  bool mistweaver_damage_increase_dot;
-
-  bool windwalker_damage_increase;
-  bool windwalker_damage_increase_two;
-  bool windwalker_damage_increase_three;
-  bool windwalker_damage_increase_dot;
-  bool windwalker_damage_increase_dot_two;
-  bool windwalker_damage_increase_dot_three;
-  bool windwalker_damage_increase_dot_four;
-  bool windwalker_healing_increase;
-
   // Affect flags for various dynamic effects
   struct
   {
@@ -2101,9 +2088,31 @@ struct monk_action_t : public Base
       bool spell_ta1;
       bool spell_ta2;
       bool spell_ta3;
-      bool hasted_cooldown;
     } brewmaster;
 
+    struct
+    {
+      bool spell_da1;
+      bool spell_ta1;
+    } mistweaver;
+
+    struct
+    {
+      bool spell_da1;
+      bool spell_da2;
+      bool spell_da3;
+      bool spell_da4;
+      bool spell_da5;
+      bool spell_da6;
+      bool spell_da7;
+      bool spell_ta1;
+      bool spell_ta2;
+      bool spell_ta3;
+      bool spell_ta4;
+    } windwalker;
+
+    bool hasted_cooldown;
+    bool hasted_gcd;
     bool serenity;
     bool sunrise_technique;
   } affected_by;
@@ -2119,26 +2128,14 @@ public:
       sef_ability( SEF_NONE ),
       ww_mastery( false ),
 
-      mistweaver_hasted_gcd( ab::data().affected_by( player->spec.mistweaver_monk->effectN( 6 ) ) ),
-      mistweaver_damage_increase( ab::data().affected_by( player->spec.mistweaver_monk->effectN( 1 ) ) ),
-      mistweaver_damage_increase_dot( ab::data().affected_by( player->spec.mistweaver_monk->effectN( 2 ) ) ),
-
-      windwalker_damage_increase( ab::data().affected_by( player->spec.windwalker_monk->effectN( 1 ) ) ),
-      windwalker_damage_increase_two( ab::data().affected_by( player->spec.windwalker_monk->effectN( 5 ) ) ),
-      windwalker_damage_increase_three( ab::data().affected_by( player->spec.windwalker_monk->effectN( 9 ) ) ),
-
-      windwalker_damage_increase_dot( ab::data().affected_by( player->spec.windwalker_monk->effectN( 2 ) ) ),
-      windwalker_damage_increase_dot_two( ab::data().affected_by( player->spec.windwalker_monk->effectN( 6 ) ) ),
-      windwalker_damage_increase_dot_three( ab::data().affected_by( player->spec.windwalker_monk->effectN( 7 ) ) ),
-      windwalker_damage_increase_dot_four( ab::data().affected_by( player->spec.windwalker_monk->effectN( 8 ) ) ),
-
-      windwalker_healing_increase( ab::data().affected_by( player->spec.windwalker_monk->effectN( 11 ) ) ),
       affected_by()
   {
     init_affected_by();
     ab::may_crit = true;
     range::fill( _resource_by_stance, RESOURCE_MAX );
     ab::trigger_gcd = timespan_t::from_seconds( 1.5 );
+
+
     switch ( player->specialization() )
     {
       case MONK_BREWMASTER:
@@ -2160,31 +2157,25 @@ public:
         // Reduce GCD from 1.5 sec to 1 sec
         if ( ab::data().affected_by( player->spec.brewmaster_monk->effectN( 14 ) ) )
           ab::trigger_gcd += player->spec.brewmaster_monk->effectN( 14 ).time_value();  // Saved as -500 milliseconds
-        // Technically minimum GCD is 750ms but all but the level 15 spells have a minimum GCD of 1 sec
-        ab::min_gcd = timespan_t::from_seconds( 1.0 );
+
         // Brewmasters no longer use Chi so need to zero out chi cost
         if ( ab::data().affected_by( player->spec.brewmaster_monk->effectN( 16 ) ) )
           ab::base_costs[ RESOURCE_CHI ] *=
               1 + player->spec.brewmaster_monk->effectN( 16 ).percent();  // -100% for Brewmasters
-        // Hasted Cooldown
-        ab::cooldown->hasted = ( ab::data().affected_by( player->spec.brewmaster_monk->effectN( 5 ) ) );
         break;
       }
       case MONK_MISTWEAVER:
       {
-        if ( mistweaver_damage_increase )
+        if ( affected_by.mistweaver.spell_da1 )
           ab::base_dd_multiplier *= 1.0 + player->spec.mistweaver_monk->effectN( 1 ).percent();
-        if ( mistweaver_damage_increase_dot )
+        if ( affected_by.mistweaver.spell_ta1 )
           ab::base_td_multiplier *= 1.0 + player->spec.mistweaver_monk->effectN( 2 ).percent();
 
-        // Hasted Cooldown
-        ab::cooldown->hasted = ( ab::data().affected_by( player->spec.mistweaver_monk->effectN( 6 ) ) ||
-                                 ab::data().affected_by( player->passives.aura_monk->effectN( 1 ) ) );
         break;
       }
       case MONK_WINDWALKER:
       {
-        if ( windwalker_damage_increase )
+        if ( affected_by.windwalker.spell_da1 )
         {
           // cancel out Fists of Fury damage and use the tick version as a direct damage
           if ( ab::data().id() == 117418 )
@@ -2192,12 +2183,22 @@ public:
           else
             ab::base_dd_multiplier *= 1.0 + player->spec.windwalker_monk->effectN( 1 ).percent();
         }
-        if ( windwalker_damage_increase_two )
+        if ( affected_by.windwalker.spell_da2 )
           ab::base_dd_multiplier *= 1.0 + player->spec.windwalker_monk->effectN( 5 ).percent();
-        if ( windwalker_damage_increase_three )
+        if ( affected_by.windwalker.spell_da3 )
+        {
+          ab::base_dd_multiplier *= 1.0 + player->spec.windwalker_monk->effectN( 6 ).percent();
+        }
+        if ( affected_by.windwalker.spell_da4 )
+        {
+          ab::base_dd_multiplier *= 1.0 + player->spec.windwalker_monk->effectN( 8 ).percent();
+        }
+        if ( affected_by.windwalker.spell_da5 )
           ab::base_dd_multiplier *= 1.0 + player->spec.windwalker_monk->effectN( 9 ).percent();
+        if ( affected_by.windwalker.spell_da6 )
+          ab::base_dd_multiplier *= 1.0 + player->spec.windwalker_monk->effectN( 11 ).percent();
 
-        if ( windwalker_damage_increase_dot )
+        if ( affected_by.windwalker.spell_ta1 )
         {
           // treat Fists of Fury damage as a direct damage instead of a tick damage
           if ( ab::data().id() == 117418 )
@@ -2205,27 +2206,14 @@ public:
           else
             ab::base_td_multiplier *= 1.0 + player->spec.windwalker_monk->effectN( 2 ).percent();
         }
-        if ( windwalker_damage_increase_dot_two )
-        {
-          ab::base_td_multiplier *= 1.0 + player->spec.windwalker_monk->effectN( 6 ).percent();
-          // Adjust for Chi Wave Damage
-          if ( ab::data().id() == 132467 )
-            ab::base_dd_multiplier *= 1.0 + player->spec.windwalker_monk->effectN( 6 ).percent();
-        }
-        if ( windwalker_damage_increase_dot_three )
+        if ( affected_by.windwalker.spell_ta2 )
           ab::base_dd_multiplier *= 1.0 + player->spec.windwalker_monk->effectN( 7 ).percent();
-        if ( windwalker_damage_increase_dot_four )
-          ab::base_td_multiplier *= 1.0 + player->spec.windwalker_monk->effectN( 8 ).percent();
-
-        if ( windwalker_healing_increase )
-          ab::base_dd_multiplier *= 1.0 + player->spec.windwalker_monk->effectN( 11 ).percent();
 
         if ( ab::data().affected_by( player->spec.windwalker_monk->effectN( 14 ) ) )
           ab::trigger_gcd += player->spec.windwalker_monk->effectN( 14 ).time_value();  // Saved as -500 milliseconds
         // Technically minimum GCD is 750ms but all but the level 15 spells have a minimum GCD of 1 sec
         ab::min_gcd = timespan_t::from_seconds( 1.0 );
-        // Hasted Cooldown
-        ab::cooldown->hasted = ab::data().affected_by( player->passives.aura_monk->effectN( 1 ) );
+
         // Cooldown reduction
         if ( ab::data().affected_by( player->spec.windwalker_monk->effectN( 10 ) ) )
           ab::cooldown->duration *= 1 + player->spec.windwalker_monk->effectN( 10 ).percent();  // saved as -100
@@ -2253,14 +2241,28 @@ public:
         {p()->spec.brewmaster_monk->effectN( 2 ), affected_by.brewmaster.spell_ta1},
         {p()->spec.brewmaster_monk->effectN( 6 ), affected_by.brewmaster.spell_ta2},
         {p()->spec.brewmaster_monk->effectN( 8 ), affected_by.brewmaster.spell_ta3},
-        {p()->spec.brewmaster_monk->effectN( 4 ), affected_by.brewmaster.hasted_cooldown},
+        {p()->spec.brewmaster_monk->effectN( 4 ), affected_by.hasted_cooldown}, // not yet working, see Keg Smash
+        {p()->spec.brewmaster_monk->effectN( 5 ), affected_by.hasted_cooldown}, // not yet working, see Ironskin-/Purifying Brew
+        {p()->passives.aura_monk->effectN( 1 ), affected_by.hasted_cooldown},
+        {p()->spec.mistweaver_monk->effectN( 6 ), affected_by.hasted_gcd},
+        {p()->spec.mistweaver_monk->effectN( 1 ), affected_by.mistweaver.spell_da1},
+        {p()->spec.mistweaver_monk->effectN( 2 ), affected_by.mistweaver.spell_ta1},
+        {p()->spec.windwalker_monk->effectN( 1 ), affected_by.windwalker.spell_da1},
+        {p()->spec.windwalker_monk->effectN( 5 ), affected_by.windwalker.spell_da2},
+        {p()->spec.windwalker_monk->effectN( 6 ), affected_by.windwalker.spell_da3},
+        {p()->spec.windwalker_monk->effectN( 8 ), affected_by.windwalker.spell_da4},
+        {p()->spec.windwalker_monk->effectN( 9 ), affected_by.windwalker.spell_da5},
+        {p()->spec.windwalker_monk->effectN( 11 ), affected_by.windwalker.spell_da6},
+        {p()->spec.windwalker_monk->effectN( 2 ), affected_by.windwalker.spell_ta1},
+        {p()->spec.windwalker_monk->effectN( 7 ), affected_by.windwalker.spell_ta2},
     };
 
     for ( const auto& a : affects )
     {
-      a.affects = base_t::data().affected_by( a.effect );
-      if ( a.affects )
+      bool affects = base_t::data().affected_by( a.effect );
+      if ( affects )
       {
+        a.affects = true;
         ab::sim->print_debug( "Action {} ({}) affected by {} (idx={}).", ab::name(), ab::data().id(),
                               a.effect.spell()->name_cstr(), a.effect.spell_effect_num() + 1 );
       }
@@ -2296,7 +2298,7 @@ public:
   {
     ab::init();
 
-    if ( affected_by.brewmaster.hasted_cooldown )
+    if ( affected_by.hasted_cooldown )
     {
       ab::cooldown->hasted = true;
     }
@@ -2656,8 +2658,9 @@ public:
     if ( t == timespan_t::zero() )
       return t;
 
-    if ( mistweaver_hasted_gcd && ab::player->specialization() == MONK_MISTWEAVER )
+    if ( affected_by.hasted_gcd )
       t *= ab::player->cache.attack_haste();
+
     if ( t < ab::min_gcd )
       t = ab::min_gcd;
 
@@ -3705,24 +3708,6 @@ struct rjw_tick_action_t : public monk_melee_attack_t
     dot_duration       = timespan_t::zero();
     cooldown->duration = timespan_t::zero();
   }
-
-  virtual double action_multiplier() const override
-  {
-    double am = monk_melee_attack_t::action_multiplier();
-
-    switch ( p()->specialization() )
-    {
-      case MONK_WINDWALKER:
-        am *= 1 + p()->spec.windwalker_monk->effectN( 6 ).percent();
-        break;
-      case MONK_BREWMASTER:
-        am *= 1 + p()->spec.brewmaster_monk->effectN( 6 ).percent();
-        break;
-      default:
-        break;
-    }
-    return am;
-  }
 };
 
 struct rushing_jade_wind_t : public monk_melee_attack_t
@@ -3736,6 +3721,10 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     // Forcing the minimum GCD to 750 milliseconds
     min_gcd   = timespan_t::from_millis( 750 );
     gcd_haste = HASTE_ATTACK;
+
+    // Set dot data to 0, since we handle everything through the buff.
+    base_tick_time= timespan_t::zero();
+    dot_duration = timespan_t::zero();
 
     if ( !p->active_actions.rushing_jade_wind )
     {
@@ -4272,7 +4261,7 @@ struct keg_smash_t : public monk_melee_attack_t
     cooldown->duration = p.spec.keg_smash->cooldown();
     cooldown->duration = p.spec.keg_smash->charge_cooldown();
 
-    affected_by.brewmaster.hasted_cooldown = true; // TODO: remove if we get affected_by for categories.
+    affected_by.hasted_cooldown = true; // necessary since category based affected_by parsing is not a thing
 
     // Keg Smash does not appear to be picking up the baseline Trigger GCD reduction
     // Forcing the trigger GCD to 1 second.
@@ -5525,7 +5514,7 @@ struct purifying_brew_t : public monk_spell_t
     p.cooldown.brewmaster_active_mitigation->charges += (int)p.talent.light_brewing->effectN( 2 ).base_value();
     p.cooldown.brewmaster_active_mitigation->hasted = true;
 
-    cooldown->duration = p.spec.purifying_brew->charge_cooldown();
+    cooldown = p.cooldown.brewmaster_active_mitigation;
 
     if ( p.talent.special_delivery->ok() )
       delivery = new special_delivery_t( p );
@@ -9112,12 +9101,12 @@ void monk_t::apl_combat_brewmaster()
   def->add_action( this, "Keg Smash", "if=spell_targets>=3" );
   def->add_action( this, "Tiger Palm", "if=buff.blackout_combo.up" );
   def->add_action( this, "Keg Smash" );
+  def->add_talent( this, "Rushing Jade Wind", "if=buff.rushing_jade_wind.down" );
   def->add_action( this, "Blackout Strike" );
 
   def->add_action(
       this, "Breath of Fire",
       "if=buff.blackout_combo.down&(buff.bloodlust.down|(buff.bloodlust.up&&dot.breath_of_fire_dot.refreshable))" );
-  def->add_talent( this, "Rushing Jade Wind", "if=buff.rushing_jade_wind.down" );
   def->add_talent( this, "Chi Burst" );
   def->add_talent( this, "Chi Wave" );
   def->add_action( this, "Tiger Palm",
