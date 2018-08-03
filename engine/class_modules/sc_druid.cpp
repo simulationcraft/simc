@@ -4846,7 +4846,7 @@ struct brambles_t : public druid_spell_t
     druid_spell_t( "brambles_reflect", p, p -> find_spell( 203958 ) )
   {
     // Ensure reflect scales with damage multipliers
-    snapshot_flags |= STATE_VERSATILITY | STATE_TGT_MUL_DA;
+    snapshot_flags |= STATE_VERSATILITY | STATE_TGT_MUL_DA | STATE_MUL_DA;
     background = may_crit = proc = may_miss = true;
   }
 };
@@ -6390,9 +6390,20 @@ double brambles_handler( const action_state_t* s )
 
   /* Calculate the maximum amount absorbed. This is not affected by
      versatility (and likely other player modifiers). */
-  // TODO: is this coefficient in spelldata somewhere?
-  double absorb_cap = 0.06 * p -> cache.attack_power() *
-    p -> composite_attack_power_multiplier();
+  double weapon_ap = 0.0;
+
+  if ( p -> buff.cat_form -> check() ) {
+    weapon_ap = p -> cat_weapon.dps * WEAPON_POWER_COEFFICIENT;
+  } else if ( p -> buff.bear_form -> check() ) {
+    weapon_ap = p -> bear_weapon.dps * WEAPON_POWER_COEFFICIENT;
+  } else {
+    weapon_ap = p -> main_hand_weapon.dps * WEAPON_POWER_COEFFICIENT;
+  }
+
+	double attack_power = ( p -> cache.attack_power() + weapon_ap ) * p -> composite_attack_power_multiplier();
+
+  // Brambles coefficient is not in spelldata :(
+  double absorb_cap = attack_power * 0.06;
 
   // Calculate actual amount absorbed.
   double amount_absorbed = std::min( s -> result_mitigated, absorb_cap );
