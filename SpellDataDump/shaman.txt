@@ -678,7 +678,7 @@ Stacks           : 2 initial, 2 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken
-Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Gathering Storms (198300 effect#1), Stormbringer (201846 effect#4), Landslide (202004 effect#1), Item - Shaman T19 Enhancement 2P Bonus (211987 effect#1), Crackling Surge (224127 effect#1), Lightning Crash (242284 effect#1), Storm Totem (262397 effect#1), Roiling Storm (279515 effect#1)
+Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Gathering Storms (198300 effect#1), Stormbringer (201846 effect#4), Landslide (202004 effect#1), Item - Shaman T19 Enhancement 2P Bonus (211987 effect#1), Crackling Surge (224127 effect#1), Lightning Crash (242284 effect#1), Storm Totem (262397 effect#1)
 Triggered by     : Stormstrike (17364)
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
@@ -700,7 +700,7 @@ Class            : Shaman
 School           : Physical
 Spell Level      : 40
 Range            : 5 yards
-Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Gathering Storms (198300 effect#1), Stormbringer (201846 effect#4), Landslide (202004 effect#1), Item - Shaman T19 Enhancement 2P Bonus (211987 effect#1), Crackling Surge (224127 effect#1), Lightning Crash (242284 effect#1), Storm Totem (262397 effect#1), Roiling Storm (279515 effect#1)
+Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Gathering Storms (198300 effect#1), Stormbringer (201846 effect#4), Landslide (202004 effect#1), Item - Shaman T19 Enhancement 2P Bonus (211987 effect#1), Crackling Surge (224127 effect#1), Lightning Crash (242284 effect#1), Storm Totem (262397 effect#1)
 Triggered by     : Stormstrike (17364)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ x.....x. 
@@ -2136,6 +2136,7 @@ Effects          :
 Description      : Summons a totem at your feet for $d, which pulses every $t2 sec, healing all party or raid members within $114942A1 yards for $114942m1.
 
 Name             : Ancestral Guidance (id=108281) 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Nature
 GCD              : 1.5 seconds
@@ -2144,7 +2145,7 @@ Cooldown         : 120 seconds
 Proc Chance      : 100%
 Proc Flags       : ..x.x.x. x.x.x.x. x.x..x.. ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell, Periodic, Trap Triggered
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2407,7 +2408,7 @@ Spell Level      : 40
 Range            : 100 yards
 Velocity         : 30 yards/sec
 Proc Chance      : 101%
-Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Gathering Storms (198300 effect#1), Stormbringer (201846 effect#4), Landslide (202004 effect#1), Item - Shaman T19 Enhancement 2P Bonus (211987 effect#1), Crackling Surge (224127 effect#1), Lightning Crash (242284 effect#1), Storm Totem (262397 effect#1), Roiling Storm (279515 effect#1)
+Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Gathering Storms (198300 effect#1), Stormbringer (201846 effect#4), Landslide (202004 effect#1), Item - Shaman T19 Enhancement 2P Bonus (211987 effect#1), Crackling Surge (224127 effect#1), Lightning Crash (242284 effect#1), Storm Totem (262397 effect#1)
 Triggered by     : Windstrike (115356)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ........ ......x. 
@@ -2430,7 +2431,7 @@ School           : Physical
 Spell Level      : 40
 Range            : 100 yards
 Velocity         : 30 yards/sec
-Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Gathering Storms (198300 effect#1), Stormbringer (201846 effect#4), Landslide (202004 effect#1), Item - Shaman T19 Enhancement 2P Bonus (211987 effect#1), Crackling Surge (224127 effect#1), Lightning Crash (242284 effect#1), Storm Totem (262397 effect#1), Roiling Storm (279515 effect#1)
+Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Gathering Storms (198300 effect#1), Stormbringer (201846 effect#4), Landslide (202004 effect#1), Item - Shaman T19 Enhancement 2P Bonus (211987 effect#1), Crackling Surge (224127 effect#1), Lightning Crash (242284 effect#1), Storm Totem (262397 effect#1)
 Triggered by     : Windstrike (115356)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ x.....x. 
@@ -3935,6 +3936,7 @@ Effects          :
                    Affected Spells: Healing Surge (8004), Healing Surge (188070)
 
 Name             : Stormkeeper (id=191634) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Nature
 Cast Time        : 1.5 seconds
@@ -3945,7 +3947,7 @@ Stacks           : 2 initial, 2 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4168,6 +4170,7 @@ Effects          :
 Description      : $@spelldesc192106
 
 Name             : Liquid Magma Totem (id=192222) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Fire
 Spell Level      : 1
@@ -4175,7 +4178,7 @@ Range            : 40 yards
 GCD              : 1 seconds
 Duration         : 15 seconds
 Cooldown         : 60 seconds
-Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7826,11 +7829,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=716160)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 94.96198 (avg=0.305344) | Trigger Spell: 270579 | Target: Self (1)
-                   Hotfixed: Sub Type (4 -> 189), Average (0.420473 -> 0.305344)
+                   Base Value: 0 | Scaled Value: 121.0763 (avg=0.389313) | Trigger Spell: 270579 | Target: Self (1)
+                   Hotfixed: Sub Type (4 -> 189), Average (0.420473 -> 0.389313)
 #2 (id=716161)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 475.2839 (avg=1.528244) | Target: Self (1)
-                   Hotfixed: Average (1.86384 -> 1.52824)
+                   Base Value: 0 | Scaled Value: 121.0763 (avg=0.389313) | Target: Self (1)
+                   Hotfixed: Average (1.86384 -> 0.389313)
 #3 (id=720325)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
 Description      : When dealt damage greater than $s3% of your maximum health, gain $s1 Avoidance and $s2 Armor for $270576d.
@@ -8032,7 +8035,8 @@ Effects          :
                    Hotfixed: Average (0.3 -> 9.81595)
 Description      : Your Chain Heal heals its primary target for an additional $s1 healing.
 
-Name             : Primal Primer (id=272992) [Scaling Spell (-1), Spell Family (11), Passive] 
+Name             : Primal Primer (id=272992) [Scaling Spell (-8), Spell Family (11), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Shaman
 School           : Physical
 Azerite Power Id : 137
@@ -8047,7 +8051,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724260)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 62.2 (avg=0.2) | Misc Value: 18 | Trigger Spell: 273005 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 333.8957 (avg=4.294478) | Misc Value: 18 | Trigger Spell: 273005 | Target: Self (1)
+                   Hotfixed: Average (0.2 -> 4.29448)
 Description      : Melee attacks with Flametongue active increase the damage the target takes from your next Lava Lash by ${$s1/2}, stacking up to $273006u times.
 
 Name             : Ruinous Bolt (id=273150) [Scaling Spell (-1), Passive] 
@@ -8135,7 +8140,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.10000 | Target: Enemy (6)
 Description      : $@spelldesc192106
 
-Name             : Lava Shock (id=273448) [Scaling Spell (-1), Spell Family (11), Passive] 
+Name             : Lava Shock (id=273448) [Scaling Spell (-8), Spell Family (11), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Shaman
 School           : Physical
 Azerite Power Id : 178
@@ -8150,10 +8156,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=725090)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 126.4227 (avg=0.406504) | Trigger Spell: 273449 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 190.7976 (avg=2.453988) | Trigger Spell: 273449 | Target: Self (1)
+                   Hotfixed: Average (0.406504 -> 2.45399)
 Description      : Flame Shock damage increases the damage of your next Earth Shock by $s1, stacking up to $273453u times.
 
-Name             : Strength of Earth (id=273461) [Scaling Spell (-1), Spell Family (11), Passive] 
+Name             : Strength of Earth (id=273461) [Scaling Spell (-8), Spell Family (11), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Shaman
 School           : Physical
 Azerite Power Id : 179
@@ -8168,7 +8176,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=725109)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 416.74 (avg=1.34) | Trigger Spell: 273463 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 753.6503 (avg=9.693252) | Trigger Spell: 273463 | Target: Self (1)
+                   Hotfixed: Average (1.34 -> 9.69325)
 Description      : Rockbiter causes your next melee ability, other than Rockbiter, to deal an additional $s1 Nature damage.
 
 Name             : Strength of Earth (id=273463) [Scaling Spell (-1), Spell Family (11), Hidden] 
@@ -8376,7 +8385,8 @@ Effects          :
                    Hotfixed: Average (5.62 -> 53.1004)
 Description      : When you cast Astral Shift and when Astral Shift ends, heal for $s1.
 
-Name             : Echo of the Elementals (id=275381) [Scaling Spell (-1), Spell Family (11), Passive] 
+Name             : Echo of the Elementals (id=275381) [Scaling Spell (-8), Spell Family (11), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Shaman
 School           : Physical
 Azerite Power Id : 222
@@ -8390,7 +8400,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=728385)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 126.4227 (avg=0.406504) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1907.975 (avg=24.53987) | Target: Self (1)
+                   Hotfixed: Average (0.406504 -> 24.5399)
 Description      : When your $?s192249[Storm Elemental][Fire Elemental] expires, it leaves behind a $?s192249[Spark Elemental][Ember Elemental] to continue attacking your enemies for $275385d.
 
 Name             : Ember Blast (id=275382) [Spell Family (11)] 
@@ -8432,7 +8443,7 @@ Name             : Ember Elemental (id=275385) [Scaling Spell (-1), Spell Family
 Class            : Shaman
 School           : Fire
 Range            : 30 yards
-Duration         : 20 seconds
+Duration         : 30 seconds
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ .x...... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8450,7 +8461,7 @@ Name             : Spark Elemental (id=275386) [Scaling Spell (-1), Spell Family
 Class            : Shaman
 School           : Nature
 Range            : 30 yards
-Duration         : 20 seconds
+Duration         : 30 seconds
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ .x...... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8464,7 +8475,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 140789 | Misc Value 2: 0x10f4 | Radius: 5 yards | Target: Unknown(50)
 Description      : $@spelldesc275381
 
-Name             : Lightning Conduit (id=275388) [Scaling Spell (-1), Spell Family (11), Passive] 
+Name             : Lightning Conduit (id=275388) [Scaling Spell (-8), Spell Family (11), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Shaman
 School           : Physical
 Azerite Power Id : 223
@@ -8479,7 +8491,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=728400)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 56.913 (avg=0.183) | Trigger Spell: 275389 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 343.4356 (avg=4.417178) | Trigger Spell: 275389 | Target: Self (1)
+                   Hotfixed: Average (0.183 -> 4.41718)
 Description      : Stormstrike marks the target as a Lightning Conduit for $275391d. Stormstrike deals $s1 Nature damage to all enemies you've marked as Conduits.
 
 Name             : Lightning Conduit (id=275389) [Scaling Spell (-1), Spell Family (11), Hidden] 
@@ -8510,7 +8523,7 @@ Name             : Lightning Conduit (id=275391) [Scaling Spell (-1), Spell Fami
 Class            : Shaman
 School           : Physical
 Range            : 100 yards
-Duration         : 30 seconds
+Duration         : 60 seconds
 Triggered by     : Lightning Conduit (275389)
 Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8606,7 +8619,8 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 6 | Trigger Spell: 278095 | Target: Self (1)
 Description      : Your Healing Rain is $s2% larger, and casting Healing Rain instantly restores $s1 health to allies within its area.
 
-Name             : Ancestral Resonance (id=277666) [Scaling Spell (-1), Passive] 
+Name             : Ancestral Resonance (id=277666) [Scaling Spell (-7), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -7)
 Class            : Shaman
 School           : Physical
 Azerite Power Id : 447
@@ -8621,7 +8635,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732968)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 49.76 (avg=0.16) | Trigger Spell: 277926 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.233999) | Trigger Spell: 277926 | Target: Self (1)
+                   Hotfixed: Average (0.16 -> 0.233999)
 Description      : When you cast $?<s2825>[Bloodlust][Heroism], your Mastery increases by $s1 every second, stacking up to $277943u times.
 
 Name             : Synapse Shock (id=277671) [Scaling Spell (-1), Passive] 
@@ -8643,6 +8658,7 @@ Effects          :
 Description      : Lightning Bolt and Chain Lightning increase your $?c2[Agility][Intellect] by $s1 per target hit for $277960d, stacking up to $277960u times.
 
 Name             : Hex (id=277778) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Nature
 Spell Level      : 42
@@ -8661,7 +8677,7 @@ Affecting spells : Spiritwalker's Grace (79206 effect#1), Item - Shaman WoD PvP 
 Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..... .x...... 
                  : ......x. ........ ........ ........   x....... ........ ........ ..x..... 
                  : ........ ........ ........ .....x..   .....x.. ........ ........ ........ 
-                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ........ .......x ........   ........ x....... ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ..x..... ........ ........ 
@@ -8675,6 +8691,7 @@ Description      : Transforms the enemy into a Zandalari Tendonripper for $d. Wh
 Tooltip          : Incapacitated.
 
 Name             : Hex (id=277784) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Nature
 Spell Level      : 42
@@ -8693,7 +8710,7 @@ Affecting spells : Spiritwalker's Grace (79206 effect#1), Item - Shaman WoD PvP 
 Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..... .x...... 
                  : ......x. ........ ........ ........   x....... ........ ........ ..x..... 
                  : ........ ........ ........ .....x..   .....x.. ........ ........ ........ 
-                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ........ .......x ........   ........ .x...... ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ..x..... ........ ........ 
@@ -8706,7 +8723,8 @@ Effects          :
 Description      : Transforms the enemy into a wicker mongrel for $d. While hexed, the victim is incapacitated, and cannot attack or cast spells. Damage may cancel the effect. Limit 1. Only works on Humanoids and Beasts.
 Tooltip          : Incapacitated.
 
-Name             : Natural Harmony (id=278697) [Scaling Spell (-1), Spell Family (11), Passive] 
+Name             : Natural Harmony (id=278697) [Scaling Spell (-7), Spell Family (11), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -7)
 Class            : Shaman
 School           : Physical
 Azerite Power Id : 416
@@ -8721,16 +8739,20 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734562)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 41.985 (avg=0.135) | Trigger Spell: 279027 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.245142) | Trigger Spell: 279027 | Target: Self (1)
+                   Hotfixed: Average (0.135 -> 0.245142)
 #2 (id=734563)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 41.985 (avg=0.135)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.245142)
+                   Hotfixed: Average (0.135 -> 0.245142)
 #3 (id=734564)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 41.985 (avg=0.135)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.245142)
+                   Hotfixed: Average (0.135 -> 0.245142)
 Description      : Dealing Fire damage grants $s1 critical strike for $279028d. 
 Dealing Frost damage grants $s2 mastery for $279029d.
 Dealing Nature damage grants $s3 haste for $279033d.
 
-Name             : Rumbling Tremors (id=278709) [Scaling Spell (-1), Spell Family (11), Passive] 
+Name             : Rumbling Tremors (id=278709) [Scaling Spell (-8), Spell Family (11), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Shaman
 School           : Physical
 Azerite Power Id : 417
@@ -8745,11 +8767,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734578)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 311 (avg=1) | Trigger Spell: 279522 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 219.4172 (avg=2.822086) | Trigger Spell: 279522 | Target: Self (1)
+                   Hotfixed: Average (1 -> 2.82209)
 #2 (id=734579)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 #3 (id=734580)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 311 (avg=1)
+                   Base Value: 0 | Scaled Value: 312.431 (avg=4.018405)
+                   Hotfixed: Average (1 -> 4.0184)
 #4 (id=739329)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8
 Description      : Your Earth Elemental spawns Tremors that deal $s1 Physical damage to enemies within $s4 yds every $s2 seconds. Earth Elemental's auto attack damage is increased by $s3.
@@ -8798,7 +8822,8 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1
 Description      : Spirit Link Totem restores $s1 health to all nearby allies $m2 $Lsecond:seconds; after it is dropped.
 
-Name             : Roiling Storm (id=278719) [Scaling Spell (-1), Spell Family (11), Passive] 
+Name             : Roiling Storm (id=278719) [Scaling Spell (-8), Spell Family (11), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Shaman
 School           : Physical
 Azerite Power Id : 420
@@ -8813,7 +8838,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734600)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 31.1 (avg=0.1) | Trigger Spell: 279513 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 314.8159 (avg=4.049079) | Trigger Spell: 279513 | Target: Self (1)
+                   Hotfixed: Average (0.1 -> 4.04908)
 #2 (id=734601)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 #3 (id=734602)   : Dummy (3)
@@ -8854,9 +8880,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Scales with item level (354)
 Effects          :
-#1 (id=735831)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
+#1 (id=735831)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-                   Affected Spells: Stormstrike (32175), Stormstrike Off-Hand (32176), Windstrike (115357), Windstrike Off-Hand (115360)
+                   Hotfixed: Sub Type (107 -> 4), Affects Spells
 #2 (id=735832)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 278719
 #3 (id=735833)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
@@ -8929,7 +8955,8 @@ Effects          :
 Description      : $@spelldesc278709
 Tooltip          : Deals $w1 Physical damage.
 
-Name             : Igneous Potential (id=279829) [Scaling Spell (-1), Spell Family (11), Passive] 
+Name             : Igneous Potential (id=279829) [Scaling Spell (-8), Spell Family (11), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Shaman
 School           : Physical
 Azerite Power Id : 457
@@ -8945,10 +8972,12 @@ Effects          :
 #1 (id=736419)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 279830 | Target: Self (1)
 #2 (id=736420)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 311 (avg=1) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 238.497 (avg=3.067485) | Target: Self (1)
                    Affected Spells: Lava Burst (51505), Lava Burst Overload (77451)
+                   Hotfixed: Average (1 -> 3.06749)
 #3 (id=736422)   : Dummy (3)
-                   Base Value: 20 | Scaled Value: 20
+                   Base Value: 18 | Scaled Value: 18
+                   Hotfixed: Base Value (20 -> 18)
 Description      : Your Lava Burst deals $s2 additional damage, and your Lava Surge chance is increased to $s3%.
 
 Name             : Unstable Flames (id=279899) [Scaling Spell (-7), Passive] 

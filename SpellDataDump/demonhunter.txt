@@ -4673,11 +4673,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=716160)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 94.96198 (avg=0.305344) | Trigger Spell: 270579 | Target: Self (1)
-                   Hotfixed: Sub Type (4 -> 189), Average (0.420473 -> 0.305344)
+                   Base Value: 0 | Scaled Value: 121.0763 (avg=0.389313) | Trigger Spell: 270579 | Target: Self (1)
+                   Hotfixed: Sub Type (4 -> 189), Average (0.420473 -> 0.389313)
 #2 (id=716161)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 475.2839 (avg=1.528244) | Target: Self (1)
-                   Hotfixed: Average (1.86384 -> 1.52824)
+                   Base Value: 0 | Scaled Value: 121.0763 (avg=0.389313) | Target: Self (1)
+                   Hotfixed: Average (1.86384 -> 0.389313)
 #3 (id=720325)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
 Description      : When dealt damage greater than $s3% of your maximum health, gain $s1 Avoidance and $s2 Armor for $270576d.
@@ -4855,7 +4855,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724687)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (avg=0.524296) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (avg=1.699277) | Target: Self (1)
+                   Hotfixed: Average (0.524296 -> 1.69928)
 Description      : When Eye Beam finishes fully channeling, your Haste is increased by $s1 for $273232d.
 
 Name             : Infernal Armor (id=273236) [Scaling Spell (-1), Spell Family (107), Passive] 
@@ -4873,9 +4874,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724697)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 94.81706 (avg=0.304878) | Trigger Spell: 273237 | Target: Self (1)
-#2 (id=724698)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 326.2524 (avg=1.049043) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 189.9237 (avg=0.610687) | Trigger Spell: 273237 | Target: Self (1)
+                   Hotfixed: Average (0.304878 -> 0.610687)
+#2 (id=724698)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 237.4046 (avg=0.763359) | Target: Self (1)
+                   Hotfixed: Sub Type (189 -> 4), Average (1.04904 -> 0.763359)
 Description      : Immolation Aura increases your Armor by $s2, and causes melee attackers to take $s1 Fire damage.
 
 Name             : Meticulous Scheming (id=273682) [Scaling Spell (-1), Passive] 
@@ -4998,11 +5001,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=726617)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 5342.332 (avg=68.71167) | Trigger Spell: 274345 | Target: Self (1)
-                   Hotfixed: Average (2.25 -> 68.7117)
+                   Base Value: 0 | Scaled Value: 1495.853 (avg=19.23927) | Trigger Spell: 274345 | Target: Self (1)
+                   Hotfixed: Average (2.25 -> 19.2393)
 Description      : Consuming a Soul Fragment shields you, granting $s1 Absorb for $274346d
 
-Name             : Unbound Chaos (id=275144) [Scaling Spell (-1), Spell Family (107), Passive] 
+Name             : Unbound Chaos (id=275144) [Scaling Spell (-8), Spell Family (107), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Demon Hunter
 School           : Physical
 Azerite Power Id : 220
@@ -5016,10 +5020,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=727995)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 505.6002 (avg=1.625724) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2051.073 (avg=26.38037) | Target: Self (1)
+                   Hotfixed: Average (1.62572 -> 26.3804)
 Description      : Your inner demon slams into nearby enemies at the end of your Fel Rush, dealing $s1 Chaos damage.
 
-Name             : Rigid Carapace (id=275350) [Scaling Spell (-7), Spell Family (107), Passive] 
+Name             : Rigid Carapace (id=275350) [Scaling Spell (-1), Spell Family (107), Passive] 
+Hotfixed         : Scaling Spell (-7 -> -1)
 Class            : Demon Hunter
 School           : Physical
 Azerite Power Id : 221
@@ -5033,7 +5039,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=728344)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (avg=0.304878) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 35.61074 (avg=0.114504) | Target: Self (1)
+                   Hotfixed: Average (0.304878 -> 0.114504)
 Description      : Demon Spikes increases your Armor by $s1 every $275351t2 sec, for $275351d.
 
 Name             : Seething Power (id=275934) [Scaling Spell (-1), Spell Family (107), Passive] 
@@ -5051,10 +5058,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=729292)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 31.1 (avg=0.1) | Trigger Spell: 275935 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 41.78316 (avg=0.134351) | Trigger Spell: 275935 | Target: Self (1)
+                   Hotfixed: Average (0.1 -> 0.134351)
 Description      : Chaos Strike increases your Agility by $s1 for $275936d. Stacking this effect does not extend its duration.
 
-Name             : Gaping Maw (id=275968) [Scaling Spell (-1), Spell Family (107), Passive] 
+Name             : Gaping Maw (id=275968) [Scaling Spell (-8), Spell Family (107), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Demon Hunter
 School           : Physical
 Azerite Power Id : 246
@@ -5069,7 +5078,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=729328)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 1453.135 (avg=4.672461) | Trigger Spell: 275969 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2575.767 (avg=33.12883) | Trigger Spell: 275969 | Target: Self (1)
+                   Hotfixed: Average (4.67246 -> 33.1288)
 #2 (id=729330)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
 Description      : Soul Cleave grants you a shield that absorbs $s1 damage, increased by up to $s2% based on your missing health.
@@ -5128,7 +5138,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734217)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 20.3705 (avg=0.262) | Trigger Spell: 278729 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 42.92943 (avg=0.552147) | Trigger Spell: 278729 | Target: Self (1)
+                   Hotfixed: Average (0.262 -> 0.552147)
 #2 (id=734218)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
 Description      : Every $278729t1 sec, increase the damage of Chaos Strike by $s1 and reduce its cost by $s2 Fury. This effect stacks.
@@ -5147,13 +5158,15 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734233)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 1000 | Scaled Value: 1000 | Trigger Spell: 279442 | Target: Self (1)
+                   Base Value: 700 | Scaled Value: 700 | Trigger Spell: 279442 | Target: Self (1)
+                   Hotfixed: Base Value (1000 -> 700)
 #2 (id=734234)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 50.00009 (avg=0.160772) | Target: Self (1)
                    Affected Spells: Eye Beam (198030)
 Description      : Eye Beam deals an additional $?s203550[${$s2*15}][${$s2*10}] damage. Consuming a Soul Fragment reduces the cooldown of Eye Beam by ${$s1/1000}.1 sec.
 
-Name             : Essence Sever (id=278501) [Scaling Spell (-1), Spell Family (107), Passive] 
+Name             : Essence Sever (id=278501) [Scaling Spell (-8), Spell Family (107), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Demon Hunter
 School           : Physical
 Azerite Power Id : 355
@@ -5168,7 +5181,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734236)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 400.1171 (avg=1.28655) | Trigger Spell: 279449 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 810.8896 (avg=10.42945) | Trigger Spell: 279449 | Target: Self (1)
+                   Hotfixed: Average (1.28655 -> 10.4294)
 #2 (id=734237)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4
 Description      : $?s263642[Fracture][Shear] has a chance to rip Lesser Soul Fragments from up to $s2 nearby enemies, dealing $s1 Fire damage to each.
@@ -5193,7 +5207,8 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2
 Description      : Afflicting an enemy with a Sigil grants you $s1 Agility for $278769d and reduces the cooldown of your Sigils by $s2 sec. 
 
-Name             : Revolving Blades (id=279581) [Scaling Spell (-1), Spell Family (107), Passive] 
+Name             : Revolving Blades (id=279581) [Scaling Spell (-8), Spell Family (107), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Demon Hunter
 School           : Physical
 Azerite Power Id : 126
@@ -5209,8 +5224,9 @@ Effects          :
 #1 (id=735979)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 279582 | Target: Self (1)
 #2 (id=735980)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 59.99999 (avg=0.192926) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 209.8773 (avg=2.699386) | Target: Self (1)
                    Affected Spells: Blade Dance (188499), Blade Dance (199552), Blade Dance (200685), Death Sweep (210152), Death Sweep (210153), Death Sweep (210155)
+                   Hotfixed: Average (0.192926 -> 2.69939)
 Description      : Blade Dance deals ${$s2*4} additional damage, and the cost of your next Blade Dance is reduced by $279584s1 Fury for each enemy struck by the final slash.
 
 Name             : Unstable Flames (id=279899) [Scaling Spell (-7), Passive] 

@@ -6549,11 +6549,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=716160)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 94.96198 (avg=0.305344) | Trigger Spell: 270579 | Target: Self (1)
-                   Hotfixed: Sub Type (4 -> 189), Average (0.420473 -> 0.305344)
+                   Base Value: 0 | Scaled Value: 121.0763 (avg=0.389313) | Trigger Spell: 270579 | Target: Self (1)
+                   Hotfixed: Sub Type (4 -> 189), Average (0.420473 -> 0.389313)
 #2 (id=716161)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 475.2839 (avg=1.528244) | Target: Self (1)
-                   Hotfixed: Average (1.86384 -> 1.52824)
+                   Base Value: 0 | Scaled Value: 121.0763 (avg=0.389313) | Target: Self (1)
+                   Hotfixed: Average (1.86384 -> 0.389313)
 #3 (id=720325)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
 Description      : When dealt damage greater than $s3% of your maximum health, gain $s1 Avoidance and $s2 Armor for $270576d.
@@ -6681,7 +6681,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 447.84 (avg=1.44) | Target: Self (1)
 Description      : Taking damage has a chance to create an upwelling of Azerite beneath your feet, increasing your Health by $s1 and your Armor by $s2 while you stand within it. Lasts $271560d.
 
-Name             : Deep Cuts (id=272684) [Scaling Spell (-1), Spell Family (15), Passive] 
+Name             : Deep Cuts (id=272684) [Scaling Spell (-8), Spell Family (15), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Death Knight
 School           : Physical
 Azerite Power Id : 106
@@ -6696,7 +6697,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=723724)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 99.99987 (avg=0.321543) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 119.2484 (avg=1.533742) | Target: Self (1)
+                   Hotfixed: Average (0.321543 -> 1.53374)
 Description      : Heart Strike amplifies your Blood Plague on your primary target for $272685d, causing it to drain an additional $s1 health each time it drains.
 
 Name             : Icy Citadel (id=272718) [Scaling Spell (-1), Spell Family (15), Passive] 
@@ -6738,7 +6740,8 @@ Effects          :
 Description      : Death Coil causes your next Festering Strike to deal an additional $s1 damage.
 Tooltip          : Death Coil causes your next Festering Strike to deal an additional $s1 damage.
 
-Name             : Bone Spike Graveyard (id=273088) [Scaling Spell (-1), Spell Family (15), Passive] 
+Name             : Bone Spike Graveyard (id=273088) [Scaling Spell (-8), Spell Family (15), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Death Knight
 School           : Physical
 Azerite Power Id : 140
@@ -6752,9 +6755,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724416)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 189.6341 (avg=0.609756) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 286.1963 (avg=3.680981) | Target: Self (1)
+                   Hotfixed: Average (0.609756 -> 3.68098)
 #2 (id=724417)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 505.691 (avg=1.626016) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 715.4909 (avg=9.202455) | Target: Self (1)
+                   Hotfixed: Average (1.62602 -> 9.20246)
 Description      : Casting $?s152280[Defile][Death and Decay] impales enemies with bone spikes, inflicting $s1 Physical damage and healing you for $s2 per enemy.
 
 Name             : Latent Chill (id=273093) [Scaling Spell (-1), Spell Family (15), Passive] 
@@ -7227,7 +7232,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=729279)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (avg=1.08885) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (avg=1.089209) | Target: Self (1)
+                   Hotfixed: Average (1.08885 -> 1.08921)
 Description      : When Vampiric Blood expires, your Leech is increased by $s1 for $275926d.
 
 Name             : Harrowing Decay (id=275929) [Scaling Spell (-1), Spell Family (15), Passive] 
@@ -7383,7 +7389,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734194)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 155.5 (avg=0.5) | Trigger Spell: 278534 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 388.75 (avg=1.25) | Trigger Spell: 278534 | Target: Self (1)
+                   Hotfixed: Average (0.5 -> 1.25)
 #2 (id=734195)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #3 (id=734342)   : Dummy (3)
@@ -7444,7 +7451,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734204)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 155.5 (avg=0.5) | Trigger Spell: 279502 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 130.62 (avg=0.42) | Trigger Spell: 279502 | Target: Self (1)
+                   Hotfixed: Average (0.5 -> 0.42)
 #2 (id=734205)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : Marrowrend has a chance to grant an extra charge of Bone Shield. Bone Shield increases your Armor by $s1. 

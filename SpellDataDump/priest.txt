@@ -3304,9 +3304,11 @@ Effects          :
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Void Eruption (228260), Void Eruption (228360), Dark Ascension (280800)
 #4 (id=361455)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: -40 | Scaled Value: -40 | Misc Value: 12 | Target: Self (1)
+                   Base Value: -30 | Scaled Value: -30 | Misc Value: 12 | Target: Self (1)
+                   Hotfixed: Base Value (-40 -> -30)
 #5 (id=371747)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: -40 | Scaled Value: -40 | Misc Value: 23 | Target: Self (1)
+                   Base Value: -30 | Scaled Value: -30 | Misc Value: 23 | Target: Self (1)
+                   Hotfixed: Base Value (-40 -> -30)
 #6 (id=371748)   : Dummy (3)
                    Base Value: 60 | Scaled Value: 60
 Description      : Void Eruption's cast time is reduced by $s3% and may be cast anytime your Insanity level is $s6 or higher.
@@ -5783,11 +5785,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=716160)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 94.96198 (avg=0.305344) | Trigger Spell: 270579 | Target: Self (1)
-                   Hotfixed: Sub Type (4 -> 189), Average (0.420473 -> 0.305344)
+                   Base Value: 0 | Scaled Value: 121.0763 (avg=0.389313) | Trigger Spell: 270579 | Target: Self (1)
+                   Hotfixed: Sub Type (4 -> 189), Average (0.420473 -> 0.389313)
 #2 (id=716161)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 475.2839 (avg=1.528244) | Target: Self (1)
-                   Hotfixed: Average (1.86384 -> 1.52824)
+                   Base Value: 0 | Scaled Value: 121.0763 (avg=0.389313) | Target: Self (1)
+                   Hotfixed: Average (1.86384 -> 0.389313)
 #3 (id=720325)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
 Description      : When dealt damage greater than $s3% of your maximum health, gain $s1 Avoidance and $s2 Armor for $270576d.

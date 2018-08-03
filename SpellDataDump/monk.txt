@@ -1682,7 +1682,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=133162)   : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 | Radius: 0 - 8 yards | Target: At Caster (22) -> Unknown(24)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Caster (22) -> Unknown(24)
+                   Hotfixed: Base Value (1 -> 0)
 #2 (id=155264)   : Trigger Spell (64): Fists of Fury Visual Target
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 123154 | Radius: 0 - 8 yards | Target: At Caster (22) -> Unknown(24)
 Description      : $@spelldesc113656
@@ -6302,11 +6303,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=716160)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 94.96198 (avg=0.305344) | Trigger Spell: 270579 | Target: Self (1)
-                   Hotfixed: Sub Type (4 -> 189), Average (0.420473 -> 0.305344)
+                   Base Value: 0 | Scaled Value: 121.0763 (avg=0.389313) | Trigger Spell: 270579 | Target: Self (1)
+                   Hotfixed: Sub Type (4 -> 189), Average (0.420473 -> 0.389313)
 #2 (id=716161)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 475.2839 (avg=1.528244) | Target: Self (1)
-                   Hotfixed: Average (1.86384 -> 1.52824)
+                   Base Value: 0 | Scaled Value: 121.0763 (avg=0.389313) | Target: Self (1)
+                   Hotfixed: Average (1.86384 -> 0.389313)
 #3 (id=720325)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
 Description      : When dealt damage greater than $s3% of your maximum health, gain $s1 Avoidance and $s2 Armor for $270576d.
@@ -6497,7 +6498,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 447.84 (avg=1.44) | Target: Self (1)
 Description      : Taking damage has a chance to create an upwelling of Azerite beneath your feet, increasing your Health by $s1 and your Armor by $s2 while you stand within it. Lasts $271560d.
 
-Name             : Boiling Brew (id=272792) [Scaling Spell (-1), Spell Family (53), Passive] 
+Name             : Boiling Brew (id=272792) [Scaling Spell (-8), Spell Family (53), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Monk
 School           : Physical
 Azerite Power Id : 116
@@ -6513,8 +6515,9 @@ Effects          :
 #1 (id=723910)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 272797 | Target: Self (1)
 #2 (id=723911)   : Apply Aura (6) | Add Flat Modifier (107): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 39.99989 (avg=0.128617) | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 81.08897 (avg=1.042945) | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Breath of Fire (123725)
+                   Hotfixed: Average (0.128617 -> 1.04295)
 Description      : Breath of Fire deals ${$s2*($123725d/$123725t1)} additional damage over its duration, and has a chance to summon a Healing Sphere each time it deals damage.
 
 Name             : Iron Fists (id=272804) [Scaling Spell (-7), Spell Family (53), Passive] 
@@ -6593,7 +6596,8 @@ Effects          :
                    Hotfixed: Average (0.6 -> 4.90798)
 Description      : Your Enveloping Mists heal the target for $s1 each time they take damage.
 
-Name             : Staggering Strikes (id=273464) [Scaling Spell (-1), Spell Family (53), Passive] 
+Name             : Staggering Strikes (id=273464) [Scaling Spell (-8), Spell Family (53), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Monk
 School           : Physical
 Azerite Power Id : 186
@@ -6608,7 +6612,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=725112)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 248.8 (avg=0.8) | Trigger Spell: 273468 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1430.982 (avg=18.40491) | Trigger Spell: 273468 | Target: Self (1)
+                   Hotfixed: Average (0.8 -> 18.4049)
 Description      : When you Blackout Strike, your Stagger is reduced by $s1.
 
 Name             : Meticulous Scheming (id=273682) [Scaling Spell (-1), Passive] 
@@ -6835,7 +6840,8 @@ Description      : For every $s1 sec Essence Font spends off cooldown, your next
 
 The duration of Essence Font's heal over time is increased by ${$s2/1000} sec.
 
-Name             : Fit to Burst (id=275892) [Scaling Spell (-1), Spell Family (53), Passive] 
+Name             : Fit to Burst (id=275892) [Scaling Spell (-8), Spell Family (53), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Monk
 School           : Physical
 Azerite Power Id : 238
@@ -6850,7 +6856,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=729236)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 1453.413 (avg=4.673353) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1460.078 (avg=18.77914) | Target: Self (1)
+                   Hotfixed: Average (4.67335 -> 18.7791)
 Description      : Drinking Purifying Brew while at Heavy Stagger causes your next $275893u melee abilities to heal you for $s1.
 
 Name             : Misty Peaks (id=275975) [Scaling Spell (-7), Spell Family (53), Passive] 
@@ -6873,7 +6880,8 @@ Effects          :
                    Hotfixed: Average (1.66 -> 1.89428)
 Description      : When your Renewing Mists heals an ally, you have a chance to gain $s1 Haste for $276025d.
 
-Name             : Niuzao's Blessing (id=277665) [Scaling Spell (-1), Spell Family (53), Passive] 
+Name             : Niuzao's Blessing (id=277665) [Scaling Spell (-8), Spell Family (53), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Monk
 School           : Physical
 Azerite Power Id : 382
@@ -6888,7 +6896,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732966)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 79.71428 (avg=0.256316) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 233.25 (avg=3) | Target: Self (1)
+                   Hotfixed: Average (0.256316 -> 3)
 Description      : Expel Harm restores ${$s1*($278535d/$278535t1)} health over $278535d for each Healing Sphere consumed.
 
 Name             : Burst of Life (id=277667) [Scaling Spell (-8), Spell Family (53), Passive] 
@@ -6928,7 +6937,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 300.3389 (avg=0.96572) | Trigger Spell: 278707 | Target: Self (1)
 Description      : Blackout Kick increases the damage of your next Rising Sun Kick by $s1, stacking up to $278710u times.
 
-Name             : Training of Niuzao (id=278569) [Scaling Spell (-1), Spell Family (53), Passive] 
+Name             : Training of Niuzao (id=278569) [Scaling Spell (-7), Spell Family (53), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -7)
 Class            : Monk
 School           : Physical
 Azerite Power Id : 383
@@ -6942,14 +6952,16 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734364)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 68.95772 (avg=0.221729) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.334284) | Target: Self (1)
+                   Hotfixed: Average (0.221729 -> 0.334284)
 #2 (id=734365)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 #3 (id=734366)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3
 Description      : Gain up to ${$s1*$s3} Mastery based on your current level of Stagger.
 
-Name             : Elusive Footwork (id=278571) [Scaling Spell (-1), Spell Family (53), Passive] 
+Name             : Elusive Footwork (id=278571) [Scaling Spell (-8), Spell Family (53), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Monk
 School           : Physical
 Azerite Power Id : 384
@@ -6967,8 +6979,9 @@ Effects          :
 #2 (id=734371)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
 #3 (id=736014)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 684.2 (avg=2.2) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 333.8957 (avg=4.294478) | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Blackout Strike (205523), Blackout Kick (228649)
+                   Hotfixed: Average (2.2 -> 4.29448)
 Description      : Blackout Strike deals an additional $s3 damage. Blackout Strike critical hits grant an additional $m2 $Lstack:stacks; of Elusive Brawler.
 
 Name             : Uplifted Spirits (id=278576) [Scaling Spell (-8), Spell Family (53), Passive] 

@@ -3390,7 +3390,7 @@ Resource         : 30 Focus (2) (id=10353)
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Eagle (186289 effect#1), Aspect of the Wild (193530 effect#1), Raptor's Cry (203638 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Tip of the Spear (260286 effect#1), Raptor Strike (262839 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), Wilderness Survival (278532 effect#2), Up Close And Personal (279593 effect#1), 
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Eagle (186289 effect#1), Aspect of the Wild (193530 effect#1), Raptor's Cry (203638 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Tip of the Spear (260286 effect#1), Raptor Strike (262839 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), Wilderness Survival (278532 effect#3), Up Close And Personal (279593 effect#1), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6581,7 +6581,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=707449)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (avg=0.25) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (avg=1.67142) | Target: Self (1)
+                   Hotfixed: Average (0.25 -> 1.67142)
 Description      : When Rapid Fire finishes fully channeling, your Haste is increased by $s1 for $272733d.
 
 Name             : Whirling Rebound (id=264199) [Scaling Spell (-1), Spell Family (9), Passive] 
@@ -6868,7 +6869,7 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Eagle (186289 effect#1), Aspect of the Wild (193530 effect#1), Raptor's Cry (203638 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Tip of the Spear (260286 effect#1), Raptor Strike (262839 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), Wilderness Survival (278532 effect#2), Up Close And Personal (279593 effect#1), 
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Eagle (186289 effect#1), Aspect of the Wild (193530 effect#1), Raptor's Cry (203638 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Tip of the Spear (260286 effect#1), Raptor Strike (262839 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), Wilderness Survival (278532 effect#3), Up Close And Personal (279593 effect#1), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7285,11 +7286,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=716160)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 94.96198 (avg=0.305344) | Trigger Spell: 270579 | Target: Self (1)
-                   Hotfixed: Sub Type (4 -> 189), Average (0.420473 -> 0.305344)
+                   Base Value: 0 | Scaled Value: 121.0763 (avg=0.389313) | Trigger Spell: 270579 | Target: Self (1)
+                   Hotfixed: Sub Type (4 -> 189), Average (0.420473 -> 0.389313)
 #2 (id=716161)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 475.2839 (avg=1.528244) | Target: Self (1)
-                   Hotfixed: Average (1.86384 -> 1.52824)
+                   Base Value: 0 | Scaled Value: 121.0763 (avg=0.389313) | Target: Self (1)
+                   Hotfixed: Average (1.86384 -> 0.389313)
 #3 (id=720325)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
 Description      : When dealt damage greater than $s3% of your maximum health, gain $s1 Avoidance and $s2 Armor for $270576d.
@@ -7931,7 +7932,8 @@ Ferocity: $@spellname264667
 Tenacity: $@spellname264735
 Cunning: $@spellname53271
 
-Name             : Serrated Jaws (id=272717) [Scaling Spell (-1), Spell Family (9), Passive] 
+Name             : Serrated Jaws (id=272717) [Scaling Spell (-8), Spell Family (9), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Hunter
 School           : Physical
 Azerite Power Id : 107
@@ -7945,14 +7947,17 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=723789)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 373.2 (avg=1.2) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1097.086 (avg=14.11043) | Target: Self (1)
+                   Hotfixed: Average (1.2 -> 14.1104)
 #2 (id=723790)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+                   Hotfixed: Base Value (15 -> 5)
 #3 (id=723805)   : Dummy (3)
                    Base Value: 40 | Scaled Value: 40
 Description      : Kill Command has a $s3% chance to deal an additional $s1 damage and grant your Pet $s2 Focus.
 
-Name             : Wildfire Cluster (id=272742) [Scaling Spell (-1), Spell Family (9), Passive] 
+Name             : Wildfire Cluster (id=272742) [Scaling Spell (-8), Spell Family (9), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Hunter
 School           : Physical
 Azerite Power Id : 110
@@ -7967,7 +7972,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=723832)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 126.4227 (avg=0.406504) | Trigger Spell: 272743 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 314.8159 (avg=4.049079) | Trigger Spell: 272743 | Target: Self (1)
+                   Hotfixed: Average (0.406504 -> 4.04908)
 Description      : Wildfire Bomb drops a small cluster of bombs around the target, each exploding for $s1 damage.
 
 Name             : Wildfire Cluster (id=272743) [Scaling Spell (-1), Spell Family (9), Hidden] 
@@ -8086,10 +8092,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724751)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 316.0569 (avg=1.01626) | Trigger Spell: 273263 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 413.0839 (avg=1.328244) | Trigger Spell: 273263 | Target: Self (1)
+                   Hotfixed: Average (1.01626 -> 1.32824)
 Description      : Bestial Wrath increases your Agility by $s1 for $273264d.
 
-Name             : Arcane Flurry (id=273265) [Scaling Spell (-1), Spell Family (9), Passive] 
+Name             : Arcane Flurry (id=273265) [Scaling Spell (-8), Spell Family (9), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Hunter
 School           : Physical
 Azerite Power Id : 162
@@ -8104,7 +8112,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724756)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 248.8 (avg=0.8) | Trigger Spell: 273266 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 250.4218 (avg=3.220859) | Trigger Spell: 273266 | Target: Self (1)
+                   Hotfixed: Average (0.8 -> 3.22086)
 Description      : Arcane Shot increases the damage of Arcane Shot by $s1 for $273267d, stacking up to $273267u times.
 
 Name             : Summon Animal Companion (id=273277) [Hidden] 
@@ -8124,7 +8133,8 @@ Effects          :
 #1 (id=724776)   : Unknown(260)
                    Base Value: 0 | Scaled Value: 0
 
-Name             : Latent Poison (id=273283) [Scaling Spell (-1), Spell Family (9), Passive] 
+Name             : Latent Poison (id=273283) [Scaling Spell (-8), Spell Family (9), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Hunter
 School           : Physical
 Azerite Power Id : 163
@@ -8138,7 +8148,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724785)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 144.6361 (avg=0.465068) | Trigger Spell: 273284 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 500.8436 (avg=6.441718) | Trigger Spell: 273284 | Target: Self (1)
+                   Hotfixed: Average (0.465068 -> 6.44172)
 Description      : Serpent Sting damage applies Latent Poison, stacking up to $273286u times. Your $?s259387[Mongoose Bite][Raptor Strike] consumes all applications of Latent Poison to deal $s1 Nature damage per stack.
 
 Name             : Latent Poison (id=273284) [Scaling Spell (-1), Spell Family (9), Hidden] 
@@ -8359,10 +8370,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=726776)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 345.521 (avg=1.111) | Trigger Spell: 274442 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 273.0154 (avg=0.877863) | Trigger Spell: 274442 | Target: Self (1)
+                   Hotfixed: Average (1.111 -> 0.877863)
 Description      : Barbed Shot has a chance equal to your critical strike chance to grant you $s1 Agility for $274443d.
 
-Name             : Unerring Vision (id=274444) [Scaling Spell (-1), Spell Family (9), Passive] 
+Name             : Unerring Vision (id=274444) [Scaling Spell (-7), Spell Family (9), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -7)
 Class            : Hunter
 School           : Physical
 Azerite Power Id : 212
@@ -8377,10 +8390,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=726781)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 34.5521 (avg=0.1111) | Trigger Spell: 274445 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.445712) | Trigger Spell: 274445 | Target: Self (1)
+                   Hotfixed: Average (0.1111 -> 0.445712)
 Description      : While Trueshot is active you gain $s1 Critical Strike rating every sec, stacking up to 10 times.
 
-Name             : Venomous Fangs (id=274590) [Scaling Spell (-1), Spell Family (9), Passive] 
+Name             : Venomous Fangs (id=274590) [Scaling Spell (-8), Spell Family (9), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Hunter
 School           : Physical
 Azerite Power Id : 213
@@ -8394,10 +8409,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=726998)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 77.75 (avg=0.25) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 562.8528 (avg=7.239264) | Target: Self (1)
+                   Hotfixed: Average (0.25 -> 7.23926)
 Description      : Your pet's Basic Attack deals $s1 additional damage to enemies suffering from your Serpent Sting.
 
-Name             : Steady Aim (id=277651) [Scaling Spell (-1), Spell Family (9), Passive] 
+Name             : Steady Aim (id=277651) [Scaling Spell (-8), Spell Family (9), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Hunter
 School           : Physical
 Azerite Power Id : 368
@@ -8412,7 +8429,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732950)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 227.1068 (avg=0.730247) | Trigger Spell: 277957 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 572.3926 (avg=7.361963) | Trigger Spell: 277957 | Target: Self (1)
+                   Hotfixed: Average (0.730247 -> 7.36196)
 Description      : Steady Shot increases the damage of your next Aimed Shot against the target by $s1, stacking up to $277959u times.
 
 Name             : Blur of Talons (id=277653) [Scaling Spell (-1), Spell Family (9), Passive] 
@@ -8429,12 +8447,15 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732952)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 46.65 (avg=0.15) | Trigger Spell: 277966 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 56.97707 (avg=0.183206) | Trigger Spell: 277966 | Target: Self (1)
+                   Hotfixed: Average (0.15 -> 0.183206)
 #2 (id=733430)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 12.44 (avg=0.04) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 51.98116 (avg=0.167142) | Target: Self (1)
+                   Hotfixed: Average (0.04 -> 0.167142)
 Description      : During Coordinated Assault, $?s259387[Mongoose Bite][Raptor Strike] increases your Agility by $s1 and your Speed by $s2 for $277969d. Stacks up to $277969u times.
 
-Name             : Pack Alpha (id=278528) [Scaling Spell (-1), Spell Family (9), Passive] 
+Name             : Pack Alpha (id=278528) [Scaling Spell (-8), Spell Family (9), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Hunter
 School           : Physical
 Azerite Power Id : 365
@@ -8448,7 +8469,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734282)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 307.89 (avg=0.99) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 202.7224 (avg=2.607362) | Target: Self (1)
+                   Hotfixed: Average (0.99 -> 2.60736)
 Description      : Your primary pet's Basic Attack deals $s1 more damage for each other pet you have active.
 
 Name             : Feeding Frenzy (id=278529) [Scaling Spell (-1), Spell Family (9), Passive] 
@@ -8471,7 +8493,8 @@ Effects          :
                    Affected Spells: Barbed Shot (217200), Frenzy (272790)
 Description      : Barbed Shot deals ${$s2*($217200d/$217200t1)} additional damage over its duration, and Frenzy's duration is increased to ${$s1/1000}.1 sec.
 
-Name             : Rapid Reload (id=278530) [Scaling Spell (-1), Spell Family (9), Passive] 
+Name             : Rapid Reload (id=278530) [Scaling Spell (-8), Spell Family (9), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Hunter
 School           : Physical
 Azerite Power Id : 369
@@ -8486,14 +8509,16 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734285)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 237.915 (avg=0.765) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 238.497 (avg=3.067485) | Target: Self (1)
+                   Hotfixed: Average (0.765 -> 3.06749)
 #2 (id=734286)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3
 #3 (id=734287)   : None (0)
                    Base Value: 1 | Scaled Value: 1
 Description      : Multi-Shots that damage more than $s2 targets fire an additional wave of bullets, dealing $s1 damage and reducing the cooldown of your Aspects by $s3 sec.
 
-Name             : Focused Fire (id=278531) [Scaling Spell (-1), Spell Family (9), Passive] 
+Name             : Focused Fire (id=278531) [Scaling Spell (-8), Spell Family (9), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Hunter
 School           : Physical
 Azerite Power Id : 370
@@ -8509,11 +8534,13 @@ Effects          :
 #1 (id=734288)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Trigger Spell: 279636 | Target: Self (1)
 #2 (id=734289)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 90.24225 (avg=0.290168) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 147.8681 (avg=1.90184) | Target: Self (1)
                    Affected Spells: Rapid Fire (257045)
+                   Hotfixed: Average (0.290168 -> 1.90184)
 Description      : Rapid Fire deals an additional ${$s2*($257044d/$257044t2)} damage over its duration, and each shot has a $279636h% chance to generate $s1 additional Focus.
 
-Name             : Wilderness Survival (id=278532) [Scaling Spell (-1), Spell Family (9), Passive] 
+Name             : Wilderness Survival (id=278532) [Scaling Spell (-8), Spell Family (9), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Hunter
 School           : Physical
 Azerite Power Id : 372
@@ -8529,11 +8556,17 @@ Effects          :
 #1 (id=734291)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1000 | Scaled Value: 1000 | Trigger Spell: 279589 | Target: Self (1)
 #2 (id=734292)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 108.85 (avg=0.35) | Target: Self (1)
-                   Affected Spells: Raptor Strike (186270), Mongoose Bite (259387), Raptor Strike (265189), Mongoose Bite (265888)
+                   Base Value: 0 | Scaled Value: 296.6902 (avg=3.815951) | Target: Self (1)
+                   Affected Spells: Mongoose Bite (259387), Mongoose Bite (265888)
+                   Hotfixed: Average (0.35 -> 3.81595), Affects Spells
+#3 (id=743265)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
+                   Base Value: 0 | Scaled Value: 212.2622 (avg=2.730061) | Target: Self (1)
+                   Affected Spells: Raptor Strike (186270), Raptor Strike (265189)
+                   Hotfixed: NEW EFFECT
 Description      : $?s259387[Mongoose Bite][Raptor Strike] deals an additional $s2 damage and reduces the remaining cooldown of Wildfire Bomb by ${$s1/1000}.1 sec.
 
-Name             : Up Close And Personal (id=278533) [Scaling Spell (-1), Spell Family (9), Passive] 
+Name             : Up Close And Personal (id=278533) [Scaling Spell (-8), Spell Family (9), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Hunter
 School           : Physical
 Azerite Power Id : 373
@@ -8547,7 +8580,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734294)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 1000 (avg=3.215434) | Trigger Spell: 279591 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1326.043 (avg=17.05522) | Trigger Spell: 279591 | Target: Self (1)
+                   Hotfixed: Average (3.21543 -> 17.0552)
 #2 (id=734295)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
 Description      : Harpoon increases the damage of your next $?s259387[Mongoose Bite][Raptor Strike] by $s1, and reduces its cost by $s2 Focus.
@@ -8618,7 +8652,8 @@ Effects          :
                    Base Value: 8921 | Scaled Value: 8921 | Radius: 0 - 15 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc279620
 
-Name             : Primal Instincts (id=279806) [Scaling Spell (-1), Spell Family (9), Passive] 
+Name             : Primal Instincts (id=279806) [Scaling Spell (-7), Spell Family (9), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -7)
 Class            : Hunter
 School           : Physical
 Azerite Power Id : 366
@@ -8633,7 +8668,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=736377)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 124.4 (avg=0.4) | Trigger Spell: 279807 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (avg=2.729986) | Trigger Spell: 279807 | Target: Self (1)
+                   Hotfixed: Average (0.4 -> 2.72999)
 Description      : Aspect of the Wild increases your Mastery by $s1, and grants you a charge of Barbed Shot.
 
 Name             : Unstable Flames (id=279899) [Scaling Spell (-7), Passive] 

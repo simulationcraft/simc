@@ -5722,11 +5722,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=716160)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 94.96198 (avg=0.305344) | Trigger Spell: 270579 | Target: Self (1)
-                   Hotfixed: Sub Type (4 -> 189), Average (0.420473 -> 0.305344)
+                   Base Value: 0 | Scaled Value: 121.0763 (avg=0.389313) | Trigger Spell: 270579 | Target: Self (1)
+                   Hotfixed: Sub Type (4 -> 189), Average (0.420473 -> 0.389313)
 #2 (id=716161)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 475.2839 (avg=1.528244) | Target: Self (1)
-                   Hotfixed: Average (1.86384 -> 1.52824)
+                   Base Value: 0 | Scaled Value: 121.0763 (avg=0.389313) | Target: Self (1)
+                   Hotfixed: Average (1.86384 -> 0.389313)
 #3 (id=720325)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
 Description      : When dealt damage greater than $s3% of your maximum health, gain $s1 Avoidance and $s2 Armor for $270576d.
@@ -5961,7 +5961,8 @@ Effects          :
 Description      : $@spelldesc271580
 Tooltip          : Your next Judgment deals $w1% increased damage.
 
-Name             : Avenger's Might (id=272898) [Scaling Spell (-1), Passive] 
+Name             : Avenger's Might (id=272898) [Scaling Spell (-7), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -7)
 Class            : Paladin
 School           : Holy
 Azerite Power Id : 125
@@ -5976,7 +5977,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724096)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 186.6 (avg=0.6) | Trigger Spell: 272904 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (avg=1.782848) | Trigger Spell: 272904 | Target: Self (1)
+                   Hotfixed: Average (0.6 -> 1.78285)
 Description      : While Avenging Wrath is active, your Mastery is increased by $s1.
 
 Name             : Holy Shock (rank=Rank 2) (id=272906) [Spell Family (10), Passive] 
@@ -5997,7 +5999,8 @@ Effects          :
                    Affected Spells: Holy Shock (20473), Holy Shock (25912), Holy Shock (25914)
 Description      : Holy Shock has an additional $s1% chance to crit.
 
-Name             : Bulwark of Light (id=272976) [Scaling Spell (-1), Spell Family (10), Passive] 
+Name             : Bulwark of Light (id=272976) [Scaling Spell (-8), Spell Family (10), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Paladin
 School           : Physical
 Azerite Power Id : 133
@@ -6012,7 +6015,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724241)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 1264.605 (avg=4.066253) | Trigger Spell: 272977 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 4665 (avg=60) | Trigger Spell: 272977 | Target: Self (1)
+                   Hotfixed: Average (4.06625 -> 60)
 Description      : Avenger's Shield grants you a shield, absorbing $s1 damage for $272979d.
 
 Name             : Martyr's Breath (id=273027) [Scaling Spell (-8), Spell Family (10), Passive] 
@@ -6191,7 +6195,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=725126)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 415.8237 (avg=5.348215) | Trigger Spell: 273476 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 4507.592 (avg=57.97546) | Trigger Spell: 273476 | Target: Self (1)
+                   Hotfixed: Average (5.34821 -> 57.9755)
 Description      : Your Blade of Justice critical hits cause the target to burn for an additional $s1 Holy damage every $273481t1 sec over $273481d.
 
 Name             : Moment of Compassion (id=273513) [Scaling Spell (-8), Passive] 
@@ -6227,7 +6232,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=725290)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 777.5 (avg=2.5) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2332.5 (avg=7.5) | Target: Self (1)
+                   Hotfixed: Average (2.5 -> 7.5)
 Description      : When Guardian of Ancient Kings expires, your Block is increased by $s1 for $273555d 
 
 Name             : Meticulous Scheming (id=273682) [Scaling Spell (-1), Passive] 
@@ -6388,9 +6394,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=728530)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 777.5 (avg=2.5) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 933 (avg=3) | Target: Self (1)
+                   Hotfixed: Average (2.5 -> 3)
 #2 (id=728531)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 622 (avg=2)
+                   Base Value: 0 | Scaled Value: 434.2792 (avg=1.396396)
+                   Hotfixed: Average (2 -> 1.3964)
 Description      : When Shield of the Righteous expires, gain $s1 Block and deal $s2 Holy damage to all attackers for $275481d.
 
 Name             : Inner Light (id=275481) [Scaling Spell (-1)] 
@@ -6438,7 +6446,8 @@ Effects          :
 Description      : $@spelldesc275477
 Tooltip          : Deals $w1 Holy damage.
 
-Name             : Indomitable Justice (id=275496) [Scaling Spell (-1), Passive] 
+Name             : Indomitable Justice (id=275496) [Scaling Spell (-8), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Paladin
 School           : Holy
 Azerite Power Id : 235
@@ -6452,7 +6461,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=728560)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 485.16 (avg=1.56) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2012.437 (avg=25.88344) | Target: Self (1)
+                   Hotfixed: Average (1.56 -> 25.8834)
 Description      : Judgment deals additional damage when your health percentage exceeds the target's, up to $s1 damage.
 
 Name             : Judgment (id=275773) [Spell Family (10)] 
@@ -6526,7 +6536,8 @@ Effects          :
                    Hotfixed: Average (0.7 -> 5.05521)
 Description      : Your Holy Shock criticals deal an additional $s1 damage, or an additional $s2 healing, over $278147d.
 
-Name             : Judicious Defense (id=277675) [Scaling Spell (-1), Passive] 
+Name             : Judicious Defense (id=277675) [Scaling Spell (-8), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Paladin
 School           : Holy
 Azerite Power Id : 454
@@ -6541,7 +6552,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732985)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 777.5 (avg=2.5) | Trigger Spell: 278573 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 953.9877 (avg=12.26994) | Trigger Spell: 278573 | Target: Self (1)
+                   Hotfixed: Average (2.5 -> 12.2699)
 Description      : Your Judgment critical strikes reduce the damage of the target's melee attacks against you by $s1 for $278574d.
 
 Name             : Divine Right (id=277678) [Scaling Spell (-1), Passive] 
@@ -6559,7 +6571,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732989)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 139.95 (avg=0.45) | Trigger Spell: 278519 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 329.0427 (avg=1.058015) | Trigger Spell: 278519 | Target: Self (1)
+                   Hotfixed: Average (0.45 -> 1.05801)
 #2 (id=734266)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
 Description      : When Divine Storm damages an enemy who is below $s2% health, your Strength is increased by $s1 for $278523d.
@@ -6611,7 +6624,8 @@ Effects          :
                    Hotfixed: Average (1 -> 2.69939)
 Description      : Increases the healing done by Light of Dawn by $s1 and its range to $s2 yards.
 
-Name             : Soaring Shield (id=278605) [Scaling Spell (-1), Passive] 
+Name             : Soaring Shield (id=278605) [Scaling Spell (-7), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -7)
 Class            : Paladin
 School           : Holy
 Azerite Power Id : 150
@@ -6626,7 +6640,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734432)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 62.2 (avg=0.2) | Trigger Spell: 278951 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.27857) | Trigger Spell: 278951 | Target: Self (1)
+                   Hotfixed: Average (0.2 -> 0.27857)
 #2 (id=734433)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4
 Description      : Avenger's Shield now strikes $s2 $Lenemy:enemies; and grants $s1 Mastery per enemy struck for $278954d.
@@ -6646,12 +6661,14 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734437)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 248.8 (avg=0.8) | Trigger Spell: 279387 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 199.04 (avg=0.64) | Trigger Spell: 279387 | Target: Self (1)
+                   Hotfixed: Average (0.8 -> 0.64)
 #2 (id=734438)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
 Description      : Grand Crusader's chance is increased to $s2% and it grants you $s1 Strength for $279397d.
 
-Name             : Zealotry (id=278615) [Scaling Spell (-1), Passive] 
+Name             : Zealotry (id=278615) [Scaling Spell (-8), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Paladin
 School           : Holy
 Azerite Power Id : 396
@@ -6666,10 +6683,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734444)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 80.86 (avg=0.26) | Trigger Spell: 278982 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 93.0138 (avg=1.196319) | Trigger Spell: 278982 | Target: Self (1)
+                   Hotfixed: Average (0.26 -> 1.19632)
 Description      : Casting Crusader Strike increases the damage of your Crusader Strike by $s1 for $278989d, stacking up to $278989u times.
 
-Name             : Relentless Inquisitor (id=278617) [Scaling Spell (-1), Passive] 
+Name             : Relentless Inquisitor (id=278617) [Scaling Spell (-7), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -7)
 Class            : Paladin
 School           : Holy
 Azerite Power Id : 154
@@ -6684,7 +6703,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734447)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 5.7535 (avg=0.0185) | Trigger Spell: 279201 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.039) | Trigger Spell: 279201 | Target: Self (1)
+                   Hotfixed: Average (0.0185 -> 0.039)
 #2 (id=734448)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
 Description      : Spending Holy Power grants you $s1 haste for $279204d per Holy Power spent, stacking up to $279204u times. 

@@ -6366,11 +6366,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=716160)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 94.96198 (avg=0.305344) | Trigger Spell: 270579 | Target: Self (1)
-                   Hotfixed: Sub Type (4 -> 189), Average (0.420473 -> 0.305344)
+                   Base Value: 0 | Scaled Value: 121.0763 (avg=0.389313) | Trigger Spell: 270579 | Target: Self (1)
+                   Hotfixed: Sub Type (4 -> 189), Average (0.420473 -> 0.389313)
 #2 (id=716161)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 475.2839 (avg=1.528244) | Target: Self (1)
-                   Hotfixed: Average (1.86384 -> 1.52824)
+                   Base Value: 0 | Scaled Value: 121.0763 (avg=0.389313) | Target: Self (1)
+                   Hotfixed: Average (1.86384 -> 0.389313)
 #3 (id=720325)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
 Description      : When dealt damage greater than $s3% of your maximum health, gain $s1 Avoidance and $s2 Armor for $270576d.
@@ -6688,7 +6688,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724083)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 202.15 (avg=0.65) | Trigger Spell: 272892 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 345.1864 (avg=1.109924) | Trigger Spell: 272892 | Target: Self (1)
+                   Hotfixed: Average (0.65 -> 1.10992)
 Description      : Every other Soul Shard your Agony generates also increases your Intellect by $s1 for $272893d.
 
 Name             : Shadow's Bite (id=272944) [Scaling Spell (-1), Spell Family (5), Passive] 
@@ -6745,7 +6746,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 799.9999 (avg=2.572347) | Trigger Spell: 273825 | Target: Self (1)
 Description      : Your spells and abilities have a chance to draw a Wandering Soul from Thros to serve you for $280204d. The Soul blasts a nearby enemy every $280204t2 sec, dealing $s1 Shadow damage.
 
-Name             : Inevitable Demise (id=273521) [Scaling Spell (-1), Spell Family (5), Passive] 
+Name             : Inevitable Demise (id=273521) [Scaling Spell (-8), Spell Family (5), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warlock
 School           : Physical
 Azerite Power Id : 183
@@ -6760,7 +6762,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=725219)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 15.55 (avg=0.05) | Trigger Spell: 273522 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 39.11346 (avg=0.503067) | Trigger Spell: 273522 | Target: Self (1)
+                   Hotfixed: Average (0.05 -> 0.503067)
 Description      : Damaging an enemy with Corruption increases the damage of your next Drain Life by $s1. This effect stacks up to $273525u times.
 
 Name             : Umbral Blaze (id=273523) [Scaling Spell (-1), Passive] 
@@ -6922,7 +6925,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=728372)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (avg=0.25) | Trigger Spell: 275376 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.891424) | Trigger Spell: 275376 | Target: Self (1)
+                   Hotfixed: Average (0.25 -> 0.891424)
 Description      : Casting Unstable Affliction on a target affected by your Unstable Affliction increases your Haste by $s1 for $275378d
 
 Name             : Explosive Potential (id=275395) [Scaling Spell (-7), Passive] 
@@ -6975,7 +6979,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=729338)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 277.6786 (avg=3.571429) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 286.1964 (avg=3.680982) | Target: Self (1)
+                   Hotfixed: Average (3.57143 -> 3.68098)
 Description      : If your Seed of Corruption detonates early, it deals $s1 additional damage.
 
 Name             : Excoriate (id=276007) [Scaling Spell (-1), Passive] 
@@ -7042,7 +7047,8 @@ Description      : Unleashes a vile explosion at the target location, dealing $o
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 Movement slowed by $s2%.
 
-Name             : Sudden Onset (id=278721) [Scaling Spell (-1), Spell Family (5), Passive] 
+Name             : Sudden Onset (id=278721) [Scaling Spell (-8), Spell Family (5), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warlock
 School           : Physical
 Azerite Power Id : 425
@@ -7056,14 +7062,16 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734606)   : Apply Aura (6) | Add Flat Modifier (107): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 2.2081 (avg=0.0071) | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2.785627 (avg=0.035828) | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Agony (980)
+                   Hotfixed: Average (0.0071 -> 0.035828)
 #2 (id=734607)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 Description      : Agony deals up to an additional $<dmg> damage and starts with $s2 stacks.
 Variables        : $dmg=${$s1*$980u*$980d/$980t1}
 
-Name             : Dreadful Calling (id=278727) [Scaling Spell (-1), Spell Family (5), Passive] 
+Name             : Dreadful Calling (id=278727) [Scaling Spell (-8), Spell Family (5), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warlock
 School           : Physical
 Azerite Power Id : 426
@@ -7079,8 +7087,9 @@ Effects          :
 #1 (id=734619)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1000 | Scaled Value: 1000 | Trigger Spell: 279650 | Target: Self (1)
 #2 (id=734620)   : Apply Aura (6) | Add Flat Modifier (107): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 69.975 (avg=0.225) | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 48.65338 (avg=0.625767) | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Unstable Affliction (30108), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499)
+                   Hotfixed: Average (0.225 -> 0.625767)
 Description      : Unstable Affliction deals ${$s2*($233490d/$233490t1)} additional damage, and casting Unstable Affliction reduce the cooldown of Summon Darkglare by ${$s1/1000} sec.
 
 Name             : Demonic Meteor (id=278737) [Scaling Spell (-1), Spell Family (5), Passive] 
@@ -7249,9 +7258,9 @@ Effects          :
 Description      : Azerite energy courses through you, reaching ${$s1*6} $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] and then diminishing down to $s1 $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat], cycling every 6 sec.
 
 Name             : Desperate Power (id=280022) [Scaling Spell (-8), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8)
+Hotfixed         : School (1 -> 32), Scaling Spell (-1 -> -8)
 Class            : Warlock
-School           : Physical
+School           : Shadow
 Azerite Power Id : 475
 Triggered by     : Desperate Power (280208)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 

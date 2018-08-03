@@ -6312,11 +6312,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=716160)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 94.96198 (avg=0.305344) | Trigger Spell: 270579 | Target: Self (1)
-                   Hotfixed: Sub Type (4 -> 189), Average (0.420473 -> 0.305344)
+                   Base Value: 0 | Scaled Value: 121.0763 (avg=0.389313) | Trigger Spell: 270579 | Target: Self (1)
+                   Hotfixed: Sub Type (4 -> 189), Average (0.420473 -> 0.389313)
 #2 (id=716161)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 475.2839 (avg=1.528244) | Target: Self (1)
-                   Hotfixed: Average (1.86384 -> 1.52824)
+                   Base Value: 0 | Scaled Value: 121.0763 (avg=0.389313) | Target: Self (1)
+                   Hotfixed: Average (1.86384 -> 0.389313)
 #3 (id=720325)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
 Description      : When dealt damage greater than $s3% of your maximum health, gain $s1 Avoidance and $s2 Armor for $270576d.
@@ -6485,7 +6485,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=720338)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 56.03598 (avg=0.18018) | Trigger Spell: 270671 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 97.33585 (avg=0.312977) | Trigger Spell: 270671 | Target: Self (1)
+                   Hotfixed: Average (0.18018 -> 0.312977)
 Description      : Each wave of Arcane Missiles deals $s1 more damage than the previous one.
 
 Name             : Flames of Alacrity (id=272932) [Scaling Spell (-7), Spell Family (3), Passive] 
@@ -6503,10 +6504,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724148)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (avg=0.2) | Trigger Spell: 272933 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.824567) | Trigger Spell: 272933 | Target: Self (1)
+                   Hotfixed: Average (0.2 -> 0.824567)
 Description      : Enhanced Pyrotechnics grants an additional $s1 Haste. 
 
-Name             : Packed Ice (id=272968) [Scaling Spell (-1), Spell Family (3), Passive] 
+Name             : Packed Ice (id=272968) [Scaling Spell (-8), Spell Family (3), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Mage
 School           : Physical
 Azerite Power Id : 132
@@ -6520,7 +6523,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724230)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 52.87 (avg=0.17) | Trigger Spell: 272969 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1317.934 (avg=16.95092) | Trigger Spell: 272969 | Target: Self (1)
+                   Hotfixed: Average (0.17 -> 16.9509)
 Description      : Ice Lance deals an additional $s1 damage to enemies recently damaged by your Frozen Orb.
 
 Name             : Ruinous Bolt (id=273150) [Scaling Spell (-1), Passive] 
@@ -6556,10 +6560,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724859)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 180.38 (avg=0.58) | Trigger Spell: 273327 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 88.78926 (avg=0.285496) | Trigger Spell: 273327 | Target: Self (1)
+                   Hotfixed: Average (0.58 -> 0.285496)
 Description      : While channeling Evocation, your Intellect is increased by $s1 every $273329t1 sec. Lasts $273330d.
 
-Name             : Preheat (id=273331) [Scaling Spell (-1), Spell Family (3), Passive] 
+Name             : Preheat (id=273331) [Scaling Spell (-8), Spell Family (3), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Mage
 School           : Physical
 Azerite Power Id : 168
@@ -6573,7 +6579,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724865)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 455.1221 (avg=1.463415) | Trigger Spell: 273332 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 591.4724 (avg=7.607362) | Trigger Spell: 273332 | Target: Self (1)
+                   Hotfixed: Average (1.46341 -> 7.60736)
 Description      : Scorch increases the damage the target takes from your Fire Blast by $s1 for $273333d.
 
 Name             : Winter's Reach (id=273346) [Scaling Spell (-1), Spell Family (3), Passive] 
@@ -6720,7 +6727,8 @@ Effects          :
                    Hotfixed: Average (1.89 -> 57.7178)
 Description      : Your Ice Barrier, Blazing Barrier, and Prismatic Barrier absorb $s1 additional damage.
 
-Name             : Arcane Pressure (id=274594) [Scaling Spell (-1), Spell Family (3), Passive] 
+Name             : Arcane Pressure (id=274594) [Scaling Spell (-8), Spell Family (3), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Mage
 School           : Physical
 Azerite Power Id : 214
@@ -6734,9 +6742,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=727008)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 223.92 (avg=0.72) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1149.555 (avg=14.78528) | Target: Self (1)
+                   Hotfixed: Average (0.72 -> 14.7853)
 #2 (id=727009)   : Dummy (3)
-                   Base Value: 20 | Scaled Value: 20
+                   Base Value: 35 | Scaled Value: 35
+                   Hotfixed: Base Value (20 -> 35)
 Description      : Arcane Barrage deals an additional $s1 damage per Arcane Charge against targets below $s2% health.
 
 Name             : Blaster Master (id=274596) [Scaling Spell (-7), Spell Family (3), Passive] 
@@ -6754,10 +6764,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=727013)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (avg=0.35) | Trigger Spell: 274597 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (avg=1.337136) | Trigger Spell: 274597 | Target: Self (1)
+                   Hotfixed: Average (0.35 -> 1.33714)
 Description      : Fire Blast increases your Mastery by $s1 for 3 sec.
 
-Name             : Trailing Embers (id=277656) [Scaling Spell (-1), Spell Family (3), Passive] 
+Name             : Trailing Embers (id=277656) [Scaling Spell (-8), Spell Family (3), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Mage
 School           : Physical
 Azerite Power Id : 376
@@ -6772,10 +6784,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732956)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 126.4227 (avg=0.406504) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 126.8804 (avg=1.631902) | Target: Self (1)
+                   Hotfixed: Average (0.406504 -> 1.6319)
 Description      : Pyroblast burns enemies between you and the target for ${$s1*(1+$277703d/$277703t1)} Fire damage over $277703d.
 
-Name             : Tunnel of Ice (id=277663) [Scaling Spell (-1), Spell Family (3), Passive] 
+Name             : Tunnel of Ice (id=277663) [Scaling Spell (-8), Spell Family (3), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Mage
 School           : Physical
 Azerite Power Id : 379
@@ -6790,7 +6804,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732964)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 51.315 (avg=0.165) | Trigger Spell: 277902 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 180.7806 (avg=2.325153) | Trigger Spell: 277902 | Target: Self (1)
+                   Hotfixed: Average (0.165 -> 2.32515)
 Description      : Frostbolt increases the damage of Frostbolt by $s1, stacking up to $277904u times. This effect is reset if you cast Frostbolt at a different enemy.
 
 Name             : Clearcasting (id=277726) [Spell Family (3), Hidden] 
@@ -6821,6 +6836,7 @@ Description      : $@spelldesc236628
 Tooltip          : Arcane Missiles fires $236628s1 additional $lmissile:missiles;.
 
 Name             : Polymorph (rank=Direhorn) (id=277787) [Spell Family (3)] 
+Hotfixed         : Attributes
 Class            : Mage
 School           : Arcane
 Resource         : 4% Base Mana (0) (id=191845)
@@ -6837,7 +6853,7 @@ Affecting spells : Icy Veins (12472 effect#2), Ice Floes (108839 effect#1), Norg
 Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..... .x...... 
                  : ......x. ........ ........ ........   x....... ........ ........ ..x..... 
                  : ........ ...x.... ........ .....x..   .....x.. ........ ........ ........ 
-                 : ........ ........ .......x ........   ........ ........ ........ ......x. 
+                 : ........ ........ .......x ........   ........ x....... ........ ......x. 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ..x..... ........ ........ 
@@ -6851,6 +6867,7 @@ Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affecte
 Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased health regeneration.
 
 Name             : Polymorph (rank=Bumblebee) (id=277792) [Spell Family (3)] 
+Hotfixed         : Attributes
 Class            : Mage
 School           : Arcane
 Resource         : 4% Base Mana (0) (id=191847)
@@ -6867,7 +6884,7 @@ Affecting spells : Icy Veins (12472 effect#2), Ice Floes (108839 effect#1), Norg
 Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..... .x...... 
                  : ......x. ........ ........ ........   x....... ........ ........ ..x..... 
                  : ........ ...x.... ........ .....x..   .....x.. ........ ........ ........ 
-                 : ........ ........ .......x ........   ........ ........ ........ ......x. 
+                 : ........ ........ .......x ........   ........ .x...... ........ ......x. 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ..x..... ........ ........ 
@@ -6916,7 +6933,8 @@ Effects          :
 Description      : $@spelldesc278309
 Tooltip          : Ice Lance damage increased by $s1%.
 
-Name             : Galvanizing Spark (id=278536) [Scaling Spell (-1), Spell Family (3), Passive] 
+Name             : Galvanizing Spark (id=278536) [Scaling Spell (-8), Spell Family (3), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Mage
 School           : Physical
 Azerite Power Id : 374
@@ -6930,13 +6948,16 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734300)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Trigger Spell: 279080 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | Trigger Spell: 279080 | Target: Self (1)
+                   Hotfixed: Base Value (10 -> 8)
 #2 (id=734301)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 50 | Scaled Value: 136.84 (avg=0.44) | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 207.0154 (avg=2.662577) | Target: Self (1)
                    Affected Spells: Arcane Blast (30451)
+                   Hotfixed: Average (0.44 -> 2.66258)
 Description      : Arcane Blast deals an additional $s2 damage and has a $s1% chance to generate a second Arcane Charge.
 
-Name             : Explosive Echo (id=278537) [Scaling Spell (-1), Spell Family (3), Passive] 
+Name             : Explosive Echo (id=278537) [Scaling Spell (-8), Spell Family (3), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Mage
 School           : Physical
 Azerite Power Id : 375
@@ -6952,15 +6973,18 @@ Effects          :
 #1 (id=734302)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #2 (id=734303)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 3 | Scaled Value: 20.215 (avg=0.065) | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 286.1963 (avg=3.680981) | Target: Self (1)
                    Affected Spells: Arcane Explosion (1449), Time and Space (240689)
+                   Hotfixed: Average (0.065 -> 3.68098)
 #3 (id=734304)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
 #4 (id=734305)   : Dummy (3)
-                   Base Value: 50 | Scaled Value: 202.15 (avg=0.65)
+                   Base Value: 50 | Scaled Value: 1946.135 (avg=25.03068)
+                   Hotfixed: Average (0.65 -> 25.0307)
 Description      : Arcane Explosion deals an additional $s2 damage. When it damages at least $s1 targets, it has a $s3% chance to deal an additional $s4 Arcane damage to them.
 
-Name             : Duplicative Incineration (id=278538) [Scaling Spell (-1), Spell Family (3), Passive] 
+Name             : Duplicative Incineration (id=278538) [Scaling Spell (-8), Spell Family (3), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Mage
 School           : Physical
 Azerite Power Id : 377
@@ -6976,8 +7000,9 @@ Effects          :
 #1 (id=734306)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Trigger Spell: 279084 | Target: Self (1)
 #2 (id=734307)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 136.84 (avg=0.44) | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 609.1212 (avg=7.834356) | Target: Self (1)
                    Affected Spells: Fireball (133)
+                   Hotfixed: Average (0.44 -> 7.83436)
 Description      : Fireball deals an additional $s2 damage, and has a $s1% chance to launch a second Fireball.
 
 Name             : Firemind (id=278539) [Scaling Spell (-1), Spell Family (3), Passive] 
@@ -6995,12 +7020,14 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734308)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 32.966 (avg=0.106) | Trigger Spell: 273327 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 36.08564 (avg=0.116031) | Target: Self (1)
+                   Hotfixed: Average (0.106 -> 0.116031), Trigger Spell (273327 -> 0)
 #2 (id=734309)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3
 Description      : Consuming Hot Streak grants you $s1 Intellect for $279715d. This effect stacks up to $s2 times.
 
-Name             : Whiteout (id=278541) [Scaling Spell (-1), Spell Family (3), Passive] 
+Name             : Whiteout (id=278541) [Scaling Spell (-8), Spell Family (3), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Mage
 School           : Physical
 Azerite Power Id : 380
@@ -7018,8 +7045,9 @@ Effects          :
 #2 (id=734312)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 #3 (id=735803)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 74.64 (avg=0.24) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 345.3436 (avg=4.441718) | Target: Self (1)
                    Affected Spells: Ice Lance (30455), Ice Lance (228598)
+                   Hotfixed: Average (0.24 -> 4.44172)
 Description      : Ice Lance deals an additional $s3 damage and reduces the cooldown of Frozen Orb by ${$s2/10}.1 sec.
 
 Name             : Frigid Grasp (id=278542) [Scaling Spell (-1), Spell Family (3), Passive] 
@@ -7037,10 +7065,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734313)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 139.95 (avg=0.45) | Trigger Spell: 279685 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 249.2749 (avg=0.801527) | Trigger Spell: 279685 | Target: Self (1)
+                   Hotfixed: Average (0.45 -> 0.801527)
 Description      : Icy Veins grants you a charge of Fingers of Frost and increases your Intellect by $s1 for $279684d.
 
-Name             : Glacial Assault (id=279854) [Scaling Spell (-1), Spell Family (3), Passive] 
+Name             : Glacial Assault (id=279854) [Scaling Spell (-8), Spell Family (3), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Mage
 School           : Physical
 Azerite Power Id : 225
@@ -7055,7 +7085,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=736464)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 594.632 (avg=1.912) | Trigger Spell: 279855 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2129.301 (avg=27.3865) | Trigger Spell: 279855 | Target: Self (1)
+                   Hotfixed: Average (1.912 -> 27.3865)
 Description      : Flurry has a $279855h% chance each strike to call down an icy comet, crashing into your target and nearby enemies for $s1 Frost damage.
 
 Name             : Glacial Assault (id=279855) [Scaling Spell (-1), Spell Family (3), Hidden] 
@@ -7099,7 +7130,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 279854
 Description      : $@spelldesc279854
 
-Name             : Anomalous Impact (id=279867) [Scaling Spell (-1), Spell Family (3), Passive] 
+Name             : Anomalous Impact (id=279867) [Scaling Spell (-8), Spell Family (3), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Mage
 School           : Physical
 Azerite Power Id : 127
@@ -7113,7 +7145,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=736478)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 100.0642 (avg=0.32175) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 41.49844 (avg=0.533742) | Target: Self (1)
+                   Hotfixed: Average (0.32175 -> 0.533742)
 Description      : Arcane Missiles deals $s1 additional damage for each Arcane Charge you have.
 
 Name             : Unstable Flames (id=279899) [Scaling Spell (-7), Passive] 

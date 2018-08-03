@@ -5791,11 +5791,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=716160)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 94.96198 (avg=0.305344) | Trigger Spell: 270579 | Target: Self (1)
-                   Hotfixed: Sub Type (4 -> 189), Average (0.420473 -> 0.305344)
+                   Base Value: 0 | Scaled Value: 121.0763 (avg=0.389313) | Trigger Spell: 270579 | Target: Self (1)
+                   Hotfixed: Sub Type (4 -> 189), Average (0.420473 -> 0.389313)
 #2 (id=716161)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 475.2839 (avg=1.528244) | Target: Self (1)
-                   Hotfixed: Average (1.86384 -> 1.52824)
+                   Base Value: 0 | Scaled Value: 121.0763 (avg=0.389313) | Target: Self (1)
+                   Hotfixed: Average (1.86384 -> 0.389313)
 #3 (id=720325)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
 Description      : When dealt damage greater than $s3% of your maximum health, gain $s1 Avoidance and $s2 Armor for $270576d.
@@ -5923,7 +5923,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 447.84 (avg=1.44) | Target: Self (1)
 Description      : Taking damage has a chance to create an upwelling of Azerite beneath your feet, increasing your Health by $s1 and your Armor by $s2 while you stand within it. Lasts $271560d.
 
-Name             : Deafening Crash (id=272824) [Scaling Spell (-1), Spell Family (4), Passive] 
+Name             : Deafening Crash (id=272824) [Scaling Spell (-8), Spell Family (4), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior
 School           : Physical
 Azerite Power Id : 118
@@ -5939,8 +5940,9 @@ Effects          :
 #1 (id=723960)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1000 | Scaled Value: 1000 | Trigger Spell: 279006 | Target: Self (1)
 #2 (id=723961)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 199.9525 (avg=0.642934) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 238.497 (avg=3.067485) | Target: Self (1)
                    Affected Spells: Thunder Clap (6343)
+                   Hotfixed: Average (0.642934 -> 3.06749)
 Description      : Thunder Clap deals an additional $s2 damage and extends the duration of your Demoralizing Shout on affected enemies by ${$s1/1000} sec.
 
 Name             : Trample the Weak (id=272836) [Scaling Spell (-1), Spell Family (4), Passive] 
@@ -5958,10 +5960,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=723998)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 77.75 (avg=0.25) | Trigger Spell: 272837 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 103.9832 (avg=0.334351) | Trigger Spell: 272837 | Target: Self (1)
+                   Hotfixed: Average (0.25 -> 0.334351)
 Description      : Rampaging an enemy whose health percentage is lower than yours increases your Strength and Stamina by $s1 for $272838d.
 
-Name             : Executioner's Precision (id=272866) [Scaling Spell (-1), Spell Family (4), Passive] 
+Name             : Executioner's Precision (id=272866) [Scaling Spell (-8), Spell Family (4), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior
 School           : Physical
 Azerite Power Id : 121
@@ -5976,7 +5980,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724045)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 426.07 (avg=1.37) | Trigger Spell: 272867 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1288.36 (avg=16.57055) | Trigger Spell: 272867 | Target: Self (1)
+                   Hotfixed: Average (1.37 -> 16.5706)
 Description      : Execute increases the damage of your next Mortal Strike against the target by $s1, stacking up to $272870u times.
 
 Name             : Ruinous Bolt (id=273150) [Scaling Spell (-1), Passive] 
@@ -6011,7 +6016,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=725007)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 99.52 (avg=0.32) | Trigger Spell: 273412 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 373.6749 (avg=1.201527) | Trigger Spell: 273412 | Target: Self (1)
+                   Hotfixed: Average (0.32 -> 1.20153)
 #2 (id=725008)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 62.2 (avg=0.2) | Target: Self (1)
 Description      : While $?s152277[Ravager is active][Bladestorming], every $273414t1 sec you gain $s2 Speed and $?s152277[Ravager's][Bladestorm's] damage increases by $s1. Lasts $273415d.
@@ -6031,7 +6037,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=725030)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (avg=0.572644) | Trigger Spell: 273423 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.601711) | Trigger Spell: 273423 | Target: Self (1)
+                   Hotfixed: Average (0.572644 -> 0.601711)
 Description      : Bloodthirst gains $s1 critical strike rating every $273423t1 sec, up to ${$s1*$273428u} rating. This effect resets when Bloodthirst critically strikes.
 
 Name             : Meticulous Scheming (id=273682) [Scaling Spell (-1), Passive] 
@@ -6271,12 +6278,14 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=728612)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 9.4855 (avg=0.0305) | Trigger Spell: 275531 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 34.66095 (avg=0.11145) | Trigger Spell: 275531 | Target: Self (1)
+                   Hotfixed: Average (0.0305 -> 0.11145)
 #2 (id=728613)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
 Description      : When $?s262161[Warbreaker][Colossus Smash] expires, your Strength is increased by $s1 for every $s2 Rage you spent during $?s262161[Warbreaker][Colossus Smash]. Lasts $275540d.
 
-Name             : Pulverizing Blows (id=275632) [Scaling Spell (-1), Spell Family (4), Passive] 
+Name             : Pulverizing Blows (id=275632) [Scaling Spell (-8), Spell Family (4), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior
 School           : Physical
 Azerite Power Id : 229
@@ -6291,7 +6300,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=728800)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 25.12756 (avg=0.080796) | Trigger Spell: 275670 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 161.224 (avg=2.07362) | Trigger Spell: 275670 | Target: Self (1)
+                   Hotfixed: Average (0.080796 -> 2.07362)
 Description      : Raging Blow causes every strike of your next Rampage to deal an additional $s1 damage. Stacks up to $275672u times.
 
 Name             : Reinforced Plating (id=275860) [Scaling Spell (-1), Spell Family (4), Passive] 
@@ -6326,9 +6336,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732928)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 124.4 (avg=0.4) | Trigger Spell: 278122 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 166.1832 (avg=0.534351) | Trigger Spell: 278122 | Target: Self (1)
+                   Hotfixed: Average (0.4 -> 0.534351)
 #2 (id=735136)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 102.63 (avg=0.33)
+                   Base Value: 0 | Scaled Value: 205.26 (avg=0.66)
+                   Hotfixed: Average (0.33 -> 0.66)
 Description      : Using Shield Slam increases your Block by $s1 and the damage of your Shield Slam by $s2 for $278124d. Multiple applications of this effect may overlap.
 
 Name             : Infinite Fury (id=277638) [Scaling Spell (-7), Passive] 
@@ -6346,7 +6358,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732930)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (avg=0.409091) | Trigger Spell: 278130 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.782782) | Trigger Spell: 278130 | Target: Self (1)
+                   Hotfixed: Average (0.409091 -> 0.782782)
 Description      : When Recklessness expires, your Critical Strike is increased by $s1 for $278134d. Your auto attacks will refresh the duration of this effect.
 
 Name             : Seismic Wave (id=277639) [Scaling Spell (-8), Passive] 
@@ -6363,12 +6376,14 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732931)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 174.9375 (avg=2.25) | Trigger Spell: 278495 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1502.531 (avg=19.32515) | Trigger Spell: 278495 | Target: Self (1)
+                   Hotfixed: Average (2.25 -> 19.3252)
 #2 (id=732932)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10
 Description      : Overpower causes a seismic wave that deals $s1 Physical damage to enemies in a $s2 yd line.
 
-Name             : Crushing Assault (id=278751) [Scaling Spell (-1), Passive] 
+Name             : Crushing Assault (id=278751) [Scaling Spell (-8), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior
 School           : Physical
 Azerite Power Id : 434
@@ -6382,12 +6397,14 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734678)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 1000.073 (avg=3.215669) | Trigger Spell: 278824 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2890.583 (avg=37.17792) | Trigger Spell: 278824 | Target: Self (1)
+                   Hotfixed: Average (3.21567 -> 37.1779)
 #2 (id=734679)   : Apply Aura (6) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200
 Description      : Your melee abilities have a chance to increase the damage of your next Slam by $s1 and reduce its Rage cost by ${$s2/10}.
 
-Name             : Lord of War (id=278752) [Scaling Spell (-1), Spell Family (4), Passive] 
+Name             : Lord of War (id=278752) [Scaling Spell (-8), Spell Family (4), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior
 School           : Physical
 Azerite Power Id : 435
@@ -6404,8 +6421,9 @@ Effects          :
 #1 (id=734680)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Trigger Spell: 279202 | Target: Self (1)
 #2 (id=734681)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 250.044 (avg=0.804) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 3856.495 (avg=49.60123) | Target: Self (1)
                    Affected Spells: Colossus Smash (167105), Colossus Smash (208086), Warbreaker (262161)
+                   Hotfixed: Average (0.804 -> 49.6012)
 Description      : $?s262161[Warbreaker][Colossus Smash] deals an additional $s2 damage and generates ${$s1/10} Rage.
 
 Name             : Simmering Rage (id=278757) [Scaling Spell (-1), Spell Family (4), Passive] 
@@ -6425,8 +6443,9 @@ Effects          :
 #1 (id=734698)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Trigger Spell: 278840 | Target: Self (1)
 #2 (id=734699)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 62.2 (avg=0.2) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 99.23512 (avg=0.319084) | Target: Self (1)
                    Affected Spells: Rampage (184367), Rampage (184707), Rampage (184709), Rampage (201363), Rampage (201364)
+                   Hotfixed: Average (0.2 -> 0.319084)
 Description      : Rampage deals an additional ${$184367s1*$s2} damage and generates ${$s1/10} Rage per strike.
 
 Name             : Reckless Flurry (id=278758) [Scaling Spell (-1), Passive] 
@@ -6445,10 +6464,12 @@ Effects          :
 #1 (id=734700)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Trigger Spell: 279632 | Target: Self (1)
 #2 (id=734701)   : Apply Aura (6) | Unknown(141)
-                   Base Value: 0 | Scaled Value: 18.66 (avg=0.06) | Misc Value: 1 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 574.3007 (avg=1.846626) | Misc Value: 1 | Target: Self (1)
+                   Hotfixed: Average (0.06 -> 1.84663)
 Description      : Auto attacks deal $s2 additional damage and reduce the cooldown of Recklessness by ${$s1/1000}.1 sec.
 
-Name             : Callous Reprisal (id=278760) [Scaling Spell (-1), Spell Family (4), Passive] 
+Name             : Callous Reprisal (id=278760) [Scaling Spell (-8), Spell Family (4), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior
 School           : Physical
 Azerite Power Id : 440
@@ -6465,8 +6486,9 @@ Effects          :
 #1 (id=734706)   : Apply Aura (6) | Dummy (4)
                    Base Value: -50 | Scaled Value: -50 | Trigger Spell: 278991 | Target: Self (1)
 #2 (id=734707)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 140.0001 (avg=0.450161) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 200.3374 (avg=2.576687) | Target: Self (1)
                    Affected Spells: Revenge (6572)
+                   Hotfixed: Average (0.450161 -> 2.57669)
 Description      : Revenge deals $s2 additional damage and reduces the damage enemies deal to you by ${-$s1/100}.1% for $278999d, stacking up to $278999u times.
 
 Name             : Iron Fortress (id=278765) [Scaling Spell (-1), Passive] 
@@ -6483,12 +6505,15 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734717)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 299.8071 (avg=0.96401) | Trigger Spell: 279141 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 248.8 (avg=0.8) | Trigger Spell: 279141 | Target: Self (1)
+                   Hotfixed: Average (0.96401 -> 0.8)
 #2 (id=734718)   : Apply Aura (6) | Unknown(274)
-                   Base Value: 0 | Scaled Value: 250.3171 (avg=0.804878) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 199.04 (avg=0.64) | Target: Self (1)
+                   Hotfixed: Average (0.804878 -> 0.64)
 Description      : Increases Block by $s2, and blocking an attack deals $s1 Physical damage to the attacker. Critical blocks deal double damage.
 
-Name             : Bloodsport (id=279172) [Scaling Spell (-1), Spell Family (4), Passive] 
+Name             : Bloodsport (id=279172) [Scaling Spell (-8), Spell Family (4), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior
 School           : Physical
 Azerite Power Id : 177
@@ -6505,10 +6530,11 @@ Effects          :
 #1 (id=735376)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 279193 | Target: Self (1)
 #2 (id=735377)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 126.7428 (avg=0.407533) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 31.68569 (avg=0.407533) | Target: Self (1)
 #3 (id=735378)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
-                   Base Value: 0 | Scaled Value: 350 (avg=1.125402) | Misc Value: 3 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2384.969 (avg=30.67485) | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Ignore Pain (190456)
+                   Hotfixed: Average (1.1254 -> 30.6748)
 Description      : Ignore Pain prevents $s3 additional damage, and grants you $s2 Leech for $279194d.
 
 Name             : Seasoned Soldier (id=279423) [Spell Family (4), Passive] 
