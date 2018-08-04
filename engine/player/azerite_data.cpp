@@ -48,9 +48,28 @@ double azerite_power_t::value( size_t index ) const
 
   double sum = 0.0;
   auto budgets = budget();
-  range::for_each( budgets, [ & ]( unsigned budget ) {
-    sum += m_spell -> effectN( index ).m_average() * budget;
-  } );
+  for ( size_t budget_index = 0, end = budgets.size(); budget_index < end; ++budget_index )
+  {
+    auto budget = budgets[ budget_index ];
+    auto value = floor( m_spell -> effectN( index ).m_average() * budget + 0.5 );
+
+    unsigned actual_level = m_ilevels[ budget_index ];
+    if ( m_spell->max_scaling_level() > 0 && m_spell->max_scaling_level() < actual_level )
+    {
+      actual_level = m_spell -> max_scaling_level();
+    }
+
+    // Apply combat rating penalties consistently
+    if ( m_spell -> scaling_class() == PLAYER_SPECIAL_SCALE7 ||
+         check_combat_rating_penalty( index ) )
+    {
+      value = item_database::apply_combat_rating_multiplier( m_player,
+          CR_MULTIPLIER_ARMOR, actual_level, value );
+    }
+
+    // TODO: Is this floored, or allowed to accumulate with fractions (and floored at the end?)
+    sum += floor( value );
+  }
 
   if ( m_value.size() < index )
   {
@@ -101,12 +120,7 @@ std::vector<double> azerite_power_t::budget() const
     }
 
     auto budget = item_database::item_budget( m_player, min_ilevel );
-    if ( m_spell -> scaling_class() == PLAYER_SPECIAL_SCALE7 )
-    {
-      budget = item_database::apply_combat_rating_multiplier( m_player,
-          CR_MULTIPLIER_ARMOR, min_ilevel, budget );
-    }
-    else if ( m_spell->scaling_class() == PLAYER_SPECIAL_SCALE8 )
+    if ( m_spell->scaling_class() == PLAYER_SPECIAL_SCALE8 )
     {
       const auto& props = m_player->dbc.random_property( min_ilevel );
       budget = props.item_effect;
@@ -122,6 +136,26 @@ const std::vector<unsigned> azerite_power_t::ilevels() const
 
 unsigned azerite_power_t::n_items() const
 { return as<unsigned>( m_ilevels.size() ); }
+
+// Currently understood rules for the detection, since we don't know how to see it from spell data
+// 1) Spell must use scaling type -1
+// 2) Effect must be of type "apply combat rating"
+// 3) Effect must be a dynamically scaling one (average coefficient > 0)
+bool azerite_power_t::check_combat_rating_penalty( size_t index ) const
+{
+  if ( index == 0 || index > m_spell->effect_count() )
+  {
+    return false;
+  }
+
+  if ( m_spell->scaling_class() != PLAYER_SPECIAL_SCALE )
+  {
+    return false;
+  }
+
+  return m_spell->effectN( index ).subtype() == A_MOD_RATING &&
+         m_spell->effectN( index ).m_average() != 0;
+}
 
 namespace azerite
 {
@@ -900,7 +934,7 @@ void retaliatory_fury( special_effect_t& effect )
   // Replace the driver spell, the azerite power does not hold the RPPM value
   effect.spell_id = driver -> id();
 
-  new retaliatory_fury_proc_cb_t( effect, { mastery, absorb } );
+  new retaliatory_fury_proc_cb_t( effect, { { mastery, absorb } } );
 }
 
 void blood_rite( special_effect_t& effect )

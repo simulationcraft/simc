@@ -50,6 +50,8 @@ class azerite_power_t
   /// Cached scaled (total) value
   mutable std::vector<double> m_value;
 
+  /// Helper to check if the combat rating penalty needs to be applied to the azerite spell effect
+  bool check_combat_rating_penalty( size_t index = 1 ) const;
 public:
   using azerite_value_fn_t = std::function<double(const azerite_power_t&)>;
 
