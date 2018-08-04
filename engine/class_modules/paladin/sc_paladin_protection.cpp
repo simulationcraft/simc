@@ -71,7 +71,7 @@ struct avengers_shield_t : public paladin_spell_t
     aoe = data().effectN( 1 ).chain_target();
     if ( p -> azerite.soaring_shield.enabled() )
     {
-      aoe = p -> azerite.soaring_shield.value( 2 );
+      aoe = as<int>( p -> azerite.soaring_shield.value( 2 ) );
     }
 
     // Redoubt offensive benefit
@@ -614,7 +614,7 @@ struct seraphim_t : public paladin_spell_t
 struct shield_of_the_righteous_buff_t : public buff_t
 {
   shield_of_the_righteous_buff_t( paladin_t* p ) :
-    buff_t( buff_creator_t( p, "shield_of_the_rightous", p -> spells.shield_of_the_righteous )
+    buff_t( buff_creator_t( p, "shield_of_the_righteous", p -> spells.shield_of_the_righteous )
       .add_invalidate( CACHE_BONUS_ARMOR ) )
   { }
 
@@ -1077,11 +1077,11 @@ void paladin_t::generate_action_prio_list_prot()
   def->add_action("call_action_list,name=prot");
 
   //defensive
-  //prot->add_talent(this, "Seraphim", "if=talent.seraphim.enabled&action.shield_of_the_righteous.charges>=2");
-  prot->add_action(this, "Shield of the Righteous", "if=!talent.seraphim.enabled&(action.shield_of_the_righteous.charges>2)&!(buff.aegis_of_light.up&buff.ardent_defender.up&buff.guardian_of_ancient_kings.up&buff.divine_shield.up&buff.potion.up)");
+  //prot->add_talent(this, "Seraphim", "if=talent.seraphim.enabled&cooldown.shield_of_the_righteous.charges>=2");
+  prot->add_action(this, "Shield of the Righteous", "if=!talent.seraphim.enabled&(cooldown.shield_of_the_righteous.charges>2)&!(buff.aegis_of_light.up&buff.ardent_defender.up&buff.guardian_of_ancient_kings.up&buff.divine_shield.up&buff.potion.up)");
   //prot->add_action(this, "Shield of the Righteous", "if=(talent.bastion_of_light.enabled&talent.seraphim.enabled&buff.seraphim.up&cooldown.bastion_of_light.up)&!(buff.aegis_of_light.up&buff.ardent_defender.up&buff.guardian_of_ancient_kings.up&buff.divine_shield.up&buff.potion.up)");
   //prot->add_action(this, "Shield of the Righteous", "if=(talent.bastion_of_light.enabled&!talent.seraphim.enabled&cooldown.bastion_of_light.up)&!(buff.aegis_of_light.up&buff.ardent_defender.up&buff.guardian_of_ancient_kings.up&buff.divine_shield.up&buff.potion.up)");
-  prot->add_talent(this, "Bastion of Light", "if=!talent.seraphim.enabled&talent.bastion_of_light.enabled&action.shield_of_the_righteous.charges<1");
+  prot->add_talent(this, "Bastion of Light", "if=!talent.seraphim.enabled&talent.bastion_of_light.enabled&cooldown.shield_of_the_righteous.charges<1");
   prot->add_action(this, "Light of the Protector", "if=(health.pct<40)");
   prot->add_talent(this, "Hand of the Protector",  "if=(health.pct<40)");
   prot->add_action(this, "Light of the Protector", "if=("+threshold_lotp_rp+")&health.pct<55&talent.righteous_protector.enabled");
@@ -1125,9 +1125,9 @@ void paladin_t::generate_action_prio_list_prot()
 
   //max dps build
 
-  prot->add_talent(this,"Seraphim","if=talent.seraphim.enabled&action.shield_of_the_righteous.charges>=2");
+  prot->add_talent(this,"Seraphim","if=talent.seraphim.enabled&cooldown.shield_of_the_righteous.charges>=2");
   prot->add_action(this, "Avenging Wrath", "if=talent.seraphim.enabled&(buff.seraphim.up|cooldown.seraphim.remains<4)");
-  prot->add_action(this, "Shield of the Righteous", "if=talent.seraphim.enabled&(cooldown.consecration.remains>=0.1&(action.shield_of_the_righteous.charges>2.5&cooldown.seraphim.remains>3)|(buff.seraphim.up))");
+  prot->add_action(this, "Shield of the Righteous", "if=talent.seraphim.enabled&(cooldown.consecration.remains>=0.1&(cooldown.shield_of_the_righteous.charges>2.5&cooldown.seraphim.remains>3)|(buff.seraphim.up))");
   prot->add_action(this, "Avenger's Shield", "if=talent.seraphim.enabled");
   prot->add_action(this, "Judgment", "if=talent.seraphim.enabled&(active_enemies<2|set_bonus.tier20_2pc)");
   prot->add_action(this, "Consecration", "if=talent.seraphim.enabled&(buff.seraphim.remains>6|buff.seraphim.down)");
