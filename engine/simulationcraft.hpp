@@ -3590,7 +3590,12 @@ struct player_t : public actor_t
   // Damage
   double iteration_dmg, priority_iteration_dmg, iteration_dmg_taken; // temporary accumulators
   double dpr;
-  std::vector<std::pair<timespan_t, double> > incoming_damage; // for tank active mitigation conditionals
+  struct incoming_damage_entry_t {
+    timespan_t time;
+    double amount;
+    school_e school;
+  };
+  std::vector<incoming_damage_entry_t> incoming_damage; // for tank active mitigation conditionals
 
   // Heal
   double iteration_heal, iteration_heal_taken, iteration_absorb, iteration_absorb_taken; // temporary accumulators
@@ -3921,7 +3926,8 @@ public:
   double get_player_distance( const player_t& ) const;
   double get_ground_aoe_distance( const action_state_t& ) const;
   double get_position_distance( double m = 0, double v = 0 ) const;
-  double compute_incoming_damage( timespan_t = timespan_t::from_seconds( 5 ) ) const;
+  double compute_incoming_damage( timespan_t interval) const;
+  double compute_incoming_magic_damage( timespan_t interval ) const;
   double calculate_time_to_bloodlust() const;
   slot_e parent_item_slot( const item_t& item ) const;
   slot_e child_item_slot( const item_t& item ) const;
