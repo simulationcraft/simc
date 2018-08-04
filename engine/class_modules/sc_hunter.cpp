@@ -1828,11 +1828,15 @@ struct basic_attack_t : public hunter_main_pet_attack_t
     if ( o() -> azerite.pack_alpha.ok() )
     {
       const pet_t* pets[] = { o() -> pets.animal_companion, o() -> pets.dire_beast, o() -> pets.spitting_cobra };
+      // TODO: it also counts Stampede as a single pet
       auto pet_count = range::count_if( pets, []( const pet_t* p ) { return p && !p -> is_sleeping(); } );
-      // 28-06-2018: Pack Alpha seems to count the main pet if there are other ones up from the looks of it
-      if ( pet_count > 0 && o() -> bugs )
-        pet_count++;
-      b += pack_alpha_bonus_da * pet_count;
+      double bonus = pack_alpha_bonus_da * pet_count;
+      // 04-08-2018: it looks like Pack Alpha bonus damage is not affected by the
+      // blanket pet damage aura of Animal Companion; not sure how they do this in-game
+      // but we simply premultiply it to cancel-out the effect
+      if ( o() -> talents.animal_companion -> ok() )
+        bonus *= 1.0 / ( 1.0 + o() -> talents.animal_companion -> effectN( 2 ).percent() );
+      b += bonus;
     }
 
     return b;
@@ -2398,7 +2402,10 @@ struct barbed_shot_t: public hunter_ranged_attack_t
   void init_finished() override
   {
     for ( auto pet : p() -> pet_list )
-      add_pet_stats( pet, { "stomp" } );
+    {
+      if ( pet != p() -> pets.dire_beast )
+        add_pet_stats( pet, { "stomp" } );
+    }
 
     hunter_ranged_attack_t::init_finished();
   }
@@ -3242,8 +3249,6 @@ struct melee_focus_spender_t: hunter_melee_attack_t
     internal_bleeding( p ),
     wilderness_survival_reduction( p -> azerite.wilderness_survival.spell() -> effectN( 1 ).time_value() )
   {
-    base_dd_adder += p -> azerite.wilderness_survival.value( 2 );
-
     if ( p -> azerite.latent_poison.ok() )
       latent_poison = p -> get_background_action<latent_poison_t>( "latent_poison" );
   }
@@ -3311,6 +3316,8 @@ struct mongoose_bite_base_t: melee_focus_spender_t
   mongoose_bite_base_t( const std::string& n, hunter_t* p, spell_data_ptr_t s ):
     melee_focus_spender_t( n, p, s )
   {
+    base_dd_adder += p -> azerite.wilderness_survival.value( 3 );
+
     for ( size_t i = 0; i < stats_.at_fury.size(); i++ )
       stats_.at_fury[ i ] = p -> get_proc( "bite_at_" + std::to_string( i ) + "_fury" );
 
@@ -3491,6 +3498,7 @@ struct raptor_strike_base_t: public melee_focus_spender_t
   raptor_strike_base_t( const std::string& n, hunter_t* p, spell_data_ptr_t s ):
     melee_focus_spender_t( n, p, s )
   {
+    base_dd_adder += p -> azerite.wilderness_survival.value( 2 );
     base_multiplier *= 1.0 + p -> find_spell( 262839 ) -> effectN( 1 ).percent(); // Raptor Strike (Rank 2)
     base_multiplier *= 1.0 + p -> sets -> set( HUNTER_SURVIVAL, T21, B4 ) -> effectN( 1 ).percent();
 

@@ -1323,6 +1323,7 @@ void wandering_soul( special_effect_t& effect )
     ruinous_bolt_t( const special_effect_t& e, const azerite_power_t& power ):
       proc_spell_t( "ruinous_bolt", e.player, e.player -> find_spell( 280206 ) )
     {
+      aoe = 0;
       base_dd_min = base_dd_max = power.value( 1 );
     }
   };
