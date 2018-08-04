@@ -3634,7 +3634,7 @@ struct stormstrike_base_t : public shaman_attack_t
   {
     shaman_attack_t::execute();
 
-    if ( result_is_hit( execute_state->result ))
+    if ( result_is_hit( execute_state->result ) )
     {
       mh->execute();
       if ( oh )
