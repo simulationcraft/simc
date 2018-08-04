@@ -475,7 +475,7 @@ struct shadow_crash_t final : public priest_spell_t
     aoe                         = -1;
     radius                      = data().effectN( 1 ).radius();
 
-    impact_action = new shadow_crash_damage_t(p);
+    impact_action = new shadow_crash_damage_t( p );
     add_child(impact_action);
 
     energize_type = ENERGIZE_NONE;  // disable resource generation from spell data
@@ -490,8 +490,8 @@ struct shadow_crash_t final : public priest_spell_t
 
   timespan_t travel_time() const override
   {
-    // Hardcoded based on in-game testing, independent of distance -- Anshlun 2018-06-25
-    return timespan_t::from_seconds( 1.5 );
+    // Always has the same time to land regardless of distance, probably represented there. Anshlun 2018-08-04
+    return timespan_t::from_seconds( data().missile_speed() );
   }
 };
 
