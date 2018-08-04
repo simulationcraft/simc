@@ -277,6 +277,8 @@ struct blade_of_justice_t : public holy_power_generator_t
     expurgation_t( paladin_t* p ) : paladin_spell_t( "expurgation", p, p -> find_spell( 273481 ) )
     {
       base_td = p -> azerite.expurgation.value();
+      hasted_ticks = false;
+      may_crit = true;
     }
   };
 
