@@ -920,15 +920,6 @@ struct vampiric_touch_t final : public priest_spell_t
     double actual_amount =
         priest().resource_gain( RESOURCE_HEALTH, amount_to_heal, priest().gains.vampiric_touch_health );
     double overheal = amount_to_heal - actual_amount;
-    if ( priest().active_spells.mental_fortitude && overheal > 0.0 )
-    {
-      priest().active_spells.mental_fortitude->pre_execute_state =
-          priest().active_spells.mental_fortitude->get_state( s );
-      priest().active_spells.mental_fortitude->base_dd_min = priest().active_spells.mental_fortitude->base_dd_max =
-          overheal;
-      priest().active_spells.mental_fortitude->target = &priest();
-      priest().active_spells.mental_fortitude->execute();
-    }
   }
 
   void impact( action_state_t* s ) override
