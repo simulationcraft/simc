@@ -130,6 +130,8 @@ public:
     buff_t* weighted_blade;  // Arms T21 4PC
     // Azerite Traits
     buff_t* pulverizing_blows;
+    buff_t* test_of_might_tracker; // Used to track rage gain from test of might.
+    buff_t* test_of_might;
   } buff;
 
   // Cooldowns
@@ -5125,7 +5127,7 @@ struct debuff_demo_shout_t : public warrior_buff_t<buff_t>
   }
 };
 
-// Protection T20 2P buff that generates rage over time
+// Protection T20 2P buff that generates rage over time ==================================
 
 struct protection_rage_t : public warrior_buff_t<buff_t>
 {
@@ -5141,6 +5143,23 @@ struct protection_rage_t : public warrior_buff_t<buff_t>
     tick_zero = false;
   }
 };
+
+// Test of Might =========================================================================
+
+struct test_of_might_t : public warrior_buff_t<buff_t>
+{
+  test_of_might_t( warrior_t& p, const std::string& n, const spell_data_t* s )
+    : base_t( p, buff_creator_t( &p, n, s ).duration( p.spell.colossus_smash_debuff ->duration() ) )
+  {
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    warrior.buff.test_of_might ->trigger( static_cast<int>( current_value ) );
+    base_t::expire_override( expiration_stacks, remaining_duration );
+  }
+};
+
 
 // That legendary crap ring ===========================================================
 
@@ -5353,6 +5372,10 @@ void warrior_t::create_buffs()
           .chance( sets->has_set_bonus( WARRIOR_ARMS, T21, B4 ) );
 
   buff.protection_rage = new protection_rage_t( *this, "protection_rage", find_spell( 242303 ) );
+
+  buff.test_of_might_tracker = new test_of_might_t( *this, "test_of_might_tracker", spell.colossus_smash_debuff );
+
+  buff.test_of_might = buff_creator_t( this, "test_of_might", azerite.test_of_might.spell() );
 
   buff.whirlwind = buff_creator_t( this, "whirlwind", find_spell( 85739 ) );
 
