@@ -7816,17 +7816,18 @@ void death_knight_t::default_apl_blood()
   def -> add_action( "call_action_list,name=standard" );
 
   // Single Target Rotation
+  standard -> add_action( this, "Death Strike", "if=runic_power.deficit<=10" );
   standard -> add_talent( this, "Blooddrinker", "if=!buff.dancing_rune_weapon.up" );
-  standard -> add_action( this, "Marrowrend", "if=buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*2)" );
-  standard -> add_action( this, "Death Strike", "if=runic_power.deficit>=10" );
+  standard -> add_action( this, "Marrowrend", "if=(buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*2)|buff.bone_shield.stack<3)&runic_power.deficit>=20" );
   standard -> add_action( this, "Blood Boil", "if=charges_fractional>=1.8&(buff.hemostasis.stack<=(5-spell_targets.blood_boil)|spell_targets.blood_boil>2)" );
-  standard -> add_action( this, "Marrowrend", "if=buff.bone_shield.stack<5&talent.ossuary.enabled" );
+  standard -> add_action( this, "Marrowrend", "if=buff.bone_shield.stack<5&talent.ossuary.enabled&runic_power.deficit>=15" );
   standard -> add_talent( this, "Bonestorm", "if=runic_power>=100&!buff.dancing_rune_weapon.up" );
-  standard -> add_action( this, "Death Strike", "if=runic_power.deficit<(15+buff.dancing_rune_weapon.up*5+spell_targets.heart_strike*talent.heartbreaker.enabled*2)" );
+  standard -> add_action( this, "Death Strike", "if=runic_power.deficit<=(15+buff.dancing_rune_weapon.up*5+spell_targets.heart_strike*talent.heartbreaker.enabled*2)|target.time_to_die<10" );
+  standard -> add_action( this, "Death and Decay", "if=spell_targets.death_and_decay>=3" );
   standard -> add_talent( this, "Rune Strike", "if=(charges_fractional>=1.8|buff.dancing_rune_weapon.up)&rune.time_to_3>=gcd" );
   standard -> add_action( this, "Heart Strike", "if=buff.dancing_rune_weapon.up|rune.time_to_4<gcd" );
   standard -> add_action( this, "Blood Boil", "if=buff.dancing_rune_weapon.up" );
-  standard -> add_action( this, "Death and Decay", "if=buff.crimson_scourge.up|talent.rapid_decomposition.enabled" );
+  standard -> add_action( this, "Death and Decay", "if=buff.crimson_scourge.up|talent.rapid_decomposition.enabled|spell_targets.death_and_decay>=2" );
   standard -> add_talent( this, "Consumption" );
   standard -> add_action( this, "Blood Boil" );
   standard -> add_action( this, "Heart Strike", "if=rune.time_to_3<gcd|buff.bone_shield.stack>6" );
