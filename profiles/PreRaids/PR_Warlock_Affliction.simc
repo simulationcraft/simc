@@ -89,7 +89,7 @@ finger1=footbomb_championship_ring,id=159462,bonus_id=4779/1512/4786,enchant=pac
 finger2=loop_of_pulsing_veins,id=159463,bonus_id=4779/1512/4786,enchant=pact_of_haste
 trinket1=conch_of_dark_whispers,id=159620,bonus_id=4779/1512/4786
 trinket2=lady_waycrests_music_box,id=159631,bonus_id=4779/1512/4786
-main_hand=staff_of_the_lightning_serpent,id=159636,bonus_id=4779/1512/4786,enchant=torrent_of_elements
+main_hand=staff_of_the_lightning_serpent,id=159636,bonus_id=4779/1512/4786,enchant=quick_navigation
 
 # Gear Summary
 # gear_ilvl=341.47
