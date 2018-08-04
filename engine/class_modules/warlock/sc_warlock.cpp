@@ -984,12 +984,7 @@ expr_t* warlock_t::create_expression( const std::string& name_str )
       dot_t* agony = td->dots_agony;
       action_state_t* agony_state = agony->current_action->get_state(agony->state);
       timespan_t dot_tick_time = agony->current_action->tick_time(agony_state);
-
-      double average = 1 / 0.184 * std::pow( active_agonies, -2.0 / 3.0 ) * dot_tick_time.total_seconds() / active_agonies;
-
-      if ( talents.creeping_death->ok() )
-        average /= 1.0 + talents.creeping_death->effectN( 1 ).percent();
-
+      double average = 1 / (0.16 / std::sqrt(active_agonies) * (active_agonies == 1 ? 1.15 : 1.0) * active_agonies / dot_tick_time.total_seconds());
       if (sim->debug)
         sim->out_debug.printf("time to shard return: %f", average);
       action_state_t::release(agony_state);
