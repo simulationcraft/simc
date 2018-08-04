@@ -225,14 +225,14 @@ namespace warlock {
         return m;
       }
 
-      void consume_resource() override {
+      void consume_resource() override
+      {
         demonology_spell_t::consume_resource();
 
         shards_used = as<int>( last_resource_cost );
 
-        if ( rng().roll( p()->azerite.demonic_meteor.spell_ref().effectN( 2 ).percent()*shards_used ) ) {
+        if ( rng().roll( p()->azerite.demonic_meteor.spell_ref().effectN( 2 ).percent() * shards_used ) )
           p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.demonic_meteor );
-        }
 
         if ( last_resource_cost == 1.0 )
           p()->procs.one_shard_hog->occur();
@@ -1201,8 +1201,7 @@ namespace warlock {
     imp->add_action( "doom,cycle_targets=1,max_cycle_targets=7,if=refreshable" );
     imp->add_action( "call_action_list,name=build_a_shard" );
 
-
-
+    bas->add_action( "demonbolt,if=azerite.forbidden_knowledge.rank>=2&buff.forbidden_knowledge.react&!buff.demonic_core.react&cooldown.summon_demonic_tyrant.remains>20" );
     bas->add_action("soul_strike");
     bas->add_action("shadow_bolt");
   }

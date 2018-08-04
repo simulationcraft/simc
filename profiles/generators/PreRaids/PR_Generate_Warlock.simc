@@ -5,11 +5,11 @@ spec=affliction
 role=spell
 position=ranged_back
 talents=3302023
-default_pet=felhunter
+default_pet=imp
 
-head=secret_spinners_miter,id=158315,bonus_id=4779/1512/4786/4775,azerite_powers=481/30/0/13
-neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
-shoulder=mantle_of_ceremonial_ascension,id=158344,bonus_id=4779/1512/4786/4775,azerite_powers=481/21/0/13
+head=grasping_crown_of_the_deep,id=159252,bonus_id=4779/1512/4786/4775,azerite_powers=123/18/0/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=
+shoulders=amice_of_the_returned,id=159273,bonus_id=4779/1512/4786/4775,azerite_powers=230/459/0/13
 back=drape_of_the_loyal_vassal,id=158375,bonus_id=4779/1512/4786
 chest=loa_betrayers_vestments,id=159233,bonus_id=4779/1512/4786/4775,azerite_powers=123/461/0/13
 wrists=ironkelp_wristwraps,id=159256,bonus_id=4779/1512/4786

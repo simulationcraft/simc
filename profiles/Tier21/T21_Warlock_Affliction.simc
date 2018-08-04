@@ -40,7 +40,7 @@ actions+=/fireblood,if=!cooldown.summon_darkglare.up
 actions+=/blood_fury,if=!cooldown.summon_darkglare.up
 actions+=/drain_soul,interrupt_global=1,chain=1,cycle_targets=1,if=target.time_to_die<=gcd&soul_shard<5
 actions+=/haunt
-actions+=/summon_darkglare,if=dot.agony.ticking&dot.corruption.ticking&(buff.active_uas.stack=5|soul_shard=0)
+actions+=/summon_darkglare,if=dot.agony.ticking&dot.corruption.ticking&(buff.active_uas.stack=5|soul_shard=0)&(!talent.phantom_singularity.enabled|cooldown.phantom_singularity.remains)
 actions+=/agony,cycle_targets=1,if=remains<=gcd
 actions+=/phantom_singularity,if=time>40
 actions+=/vile_taint,if=time>20
@@ -53,14 +53,14 @@ actions+=/siphon_life,cycle_targets=1,max_cycle_targets=3,if=refreshable&target.
 actions+=/siphon_life,cycle_targets=1,max_cycle_targets=4,if=refreshable&target.time_to_die>10&!(cooldown.summon_darkglare.remains<=soul_shard*cast_time)&active_enemies=5
 actions+=/corruption,cycle_targets=1,if=active_enemies<3&refreshable&target.time_to_die>10
 actions+=/dark_soul
-actions+=/phantom_singularity
 actions+=/vile_taint
 actions+=/berserking
 actions+=/unstable_affliction,if=soul_shard>=5
 actions+=/unstable_affliction,if=cooldown.summon_darkglare.remains<=soul_shard*cast_time
+actions+=/phantom_singularity
 actions+=/call_action_list,name=fillers,if=(cooldown.summon_darkglare.remains<time_to_shard*(5-soul_shard)|cooldown.summon_darkglare.up)&time_to_die>cooldown.summon_darkglare.remains
 actions+=/seed_of_corruption,if=variable.spammable_seed
-actions+=/unstable_affliction,if=!prev_gcd.1.summon_darkglare&!variable.spammable_seed&(talent.deathbolt.enabled&cooldown.deathbolt.remains<=execute_time|soul_shard>=2&target.time_to_die>4+cast_time&active_enemies=1|target.time_to_die<=8+cast_time*soul_shard)
+actions+=/unstable_affliction,if=!prev_gcd.1.summon_darkglare&!variable.spammable_seed&(talent.deathbolt.enabled&cooldown.deathbolt.remains<=execute_time&!azerite.cascading_calamity.enabled|soul_shard>=2&target.time_to_die>4+cast_time&active_enemies=1|target.time_to_die<=8+cast_time*soul_shard)
 actions+=/unstable_affliction,if=!variable.spammable_seed&contagion<=cast_time+variable.padding
 actions+=/unstable_affliction,cycle_targets=1,if=!variable.spammable_seed&(!talent.deathbolt.enabled|cooldown.deathbolt.remains>time_to_shard|soul_shard>1)&contagion<=cast_time+variable.padding
 actions+=/call_action_list,name=fillers

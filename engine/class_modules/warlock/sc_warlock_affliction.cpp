@@ -1178,7 +1178,7 @@ namespace warlock
     def->add_action( "blood_fury,if=!cooldown.summon_darkglare.up" );
     def->add_action( "drain_soul,interrupt_global=1,chain=1,cycle_targets=1,if=target.time_to_die<=gcd&soul_shard<5" );
     def->add_action( "haunt" );
-    def->add_action( "summon_darkglare,if=dot.agony.ticking&dot.corruption.ticking&(buff.active_uas.stack=5|soul_shard=0)" );
+    def->add_action( "summon_darkglare,if=dot.agony.ticking&dot.corruption.ticking&(buff.active_uas.stack=5|soul_shard=0)&(!talent.phantom_singularity.enabled|cooldown.phantom_singularity.remains)" );
     def->add_action( "agony,cycle_targets=1,if=remains<=gcd" );
     def->add_action( "phantom_singularity,if=time>40" );
     def->add_action( "vile_taint,if=time>20" );
@@ -1191,14 +1191,14 @@ namespace warlock
     def->add_action( "siphon_life,cycle_targets=1,max_cycle_targets=4,if=refreshable&target.time_to_die>10&!(cooldown.summon_darkglare.remains<=soul_shard*cast_time)&active_enemies=5" );
     def->add_action( "corruption,cycle_targets=1,if=active_enemies<3&refreshable&target.time_to_die>10" );
     def->add_action( "dark_soul" );
-    def->add_action( "phantom_singularity" );
     def->add_action( "vile_taint" );
     def->add_action( "berserking" );
     def->add_action( "unstable_affliction,if=soul_shard>=5" );
     def->add_action( "unstable_affliction,if=cooldown.summon_darkglare.remains<=soul_shard*cast_time" );
+    def->add_action( "phantom_singularity" );
     def->add_action( "call_action_list,name=fillers,if=(cooldown.summon_darkglare.remains<time_to_shard*(5-soul_shard)|cooldown.summon_darkglare.up)&time_to_die>cooldown.summon_darkglare.remains" );
     def->add_action( "seed_of_corruption,if=variable.spammable_seed" );
-    def->add_action( "unstable_affliction,if=!prev_gcd.1.summon_darkglare&!variable.spammable_seed&(talent.deathbolt.enabled&cooldown.deathbolt.remains<=execute_time|soul_shard>=2&target.time_to_die>4+cast_time&active_enemies=1|target.time_to_die<=8+cast_time*soul_shard)" );
+    def->add_action( "unstable_affliction,if=!prev_gcd.1.summon_darkglare&!variable.spammable_seed&(talent.deathbolt.enabled&cooldown.deathbolt.remains<=execute_time&!azerite.cascading_calamity.enabled|soul_shard>=2&target.time_to_die>4+cast_time&active_enemies=1|target.time_to_die<=8+cast_time*soul_shard)" );
     def->add_action( "unstable_affliction,if=!variable.spammable_seed&contagion<=cast_time+variable.padding" );
     def->add_action( "unstable_affliction,cycle_targets=1,if=!variable.spammable_seed&(!talent.deathbolt.enabled|cooldown.deathbolt.remains>time_to_shard|soul_shard>1)&contagion<=cast_time+variable.padding" );
     def->add_action( "call_action_list,name=fillers" );
