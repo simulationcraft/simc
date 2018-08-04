@@ -2754,7 +2754,7 @@ struct rampage_attack_t : public warrior_attack_t
       valarjar_berserking( false ),
       simmering_rage( false ),
       rage_from_valarjar_berserking( p->find_spell( 248179 )->effectN( 1 ).base_value() / 10.0 ),
-      rage_from_simmering_rage( p->azerite.simmering_rage.value( 1 ) / 10.0 )
+      rage_from_simmering_rage( p->find_spell( 278757 )->effectN( 1 ).base_value() / 10.0 )
   {
     dual = true;
     if ( p->sets->has_set_bonus( WARRIOR_FURY, T21, B4 ) )
