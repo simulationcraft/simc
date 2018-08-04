@@ -1054,7 +1054,8 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t(
                              .trigger_spell( p->find_spell( 273006 ) )
                              .duration( p->find_spell( 273006 )->duration() )
                              .max_stack( p->find_spell( 273006 )->max_stacks() )
-                             .default_value( p->azerite.primal_primer.value() );
+                             // Primal Primer has a hardcoded /2 in its tooltip
+                             .default_value( 0.5 * p->azerite.primal_primer.value() );
 }
 
 // ==========================================================================
@@ -3027,9 +3028,10 @@ struct stormstrike_attack_t : public shaman_attack_t
   {
     double b = shaman_attack_t::bonus_da( s );
 
-    if ( p()->buff.roiling_storm->check() )
+    if ( p()->buff.roiling_storm->check() && p()->buff.stormbringer->check() == 0 )
     {
-      double rs_bonus = p()->buff.roiling_storm->stack_value();
+      // Roiling Storm divides its bonus between each hand of the Stormstrike/Windstrike attacks
+      double rs_bonus = 0.5 * p()->buff.roiling_storm->stack_value();
       b += rs_bonus;
     }
 
@@ -3482,7 +3484,7 @@ struct lava_lash_t : public shaman_attack_t
   {
     double b = shaman_attack_t::bonus_da( s );
     if ( s->target )
-      b += td( target )->debuff.primal_primer->stack_value();
+      b += td( s->target )->debuff.primal_primer->stack_value();
 
     return b;
   }
@@ -3610,7 +3612,7 @@ struct stormstrike_base_t : public shaman_attack_t
       c *= 1.0 + p()->buff.stormbringer->data().effectN( 3 ).percent();
     }
 
-    if ( p()->buff.roiling_storm->check() )
+    if ( p()->buff.roiling_storm->check() && p()->buff.stormbringer->check() == 0 )
     {
       double cost_reduction =
           ( p()->buff.roiling_storm->stack() * p()->buff.roiling_storm->data().effectN( 3 ).base_value() );
@@ -3632,7 +3634,7 @@ struct stormstrike_base_t : public shaman_attack_t
   {
     shaman_attack_t::execute();
 
-    if ( result_is_hit( execute_state->result ) )
+    if ( result_is_hit( execute_state->result ))
     {
       mh->execute();
       if ( oh )
@@ -3647,9 +3649,14 @@ struct stormstrike_base_t : public shaman_attack_t
       }
     }
 
-    p()->buff.stormbringer->decrement();
     p()->buff.gathering_storms->decrement();
-    p()->buff.roiling_storm->expire();
+
+    if ( p()->buff.stormbringer->check() == 0 )
+    {
+      p()->buff.roiling_storm->expire();
+    }
+
+    p()->buff.stormbringer->decrement();
   }
 
   void reset() override
