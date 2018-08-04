@@ -759,7 +759,7 @@ struct shadow_word_pain_t final : public priest_spell_t
   shadow_word_pain_t( priest_t& p, const std::string& options_str, bool _casted = true )
     : priest_spell_t( "shadow_word_pain", p, p.find_class_spell( "Shadow Word: Pain" ) ),
       insanity_gain( data().effectN( 3 ).resource( RESOURCE_INSANITY ) ),
-      increased_time( timespan_t::from_millis( priest().azerite.torment_of_torments.value( 1 ) ) )
+      increased_time( timespan_t::from_millis( priest().azerite.torment_of_torments.spell()->effectN( 1 ).base_value() ) )
   {
     parse_options( options_str );
     casted           = _casted;
