@@ -130,7 +130,7 @@ public:
     buff_t* weighted_blade;  // Arms T21 4PC
     // Azerite Traits
     buff_t* pulverizing_blows;
-    buff_t* test_of_might_tracker; // Used to track rage gain from test of might.
+    buff_t* test_of_might_tracker;  // Used to track rage gain from test of might.
     buff_t* test_of_might;
   } buff;
 
@@ -5149,17 +5149,16 @@ struct protection_rage_t : public warrior_buff_t<buff_t>
 struct test_of_might_t : public warrior_buff_t<buff_t>
 {
   test_of_might_t( warrior_t& p, const std::string& n, const spell_data_t* s )
-    : base_t( p, buff_creator_t( &p, n, s ).duration( p.spell.colossus_smash_debuff ->duration() ) )
+    : base_t( p, buff_creator_t( &p, n, s ).duration( p.spell.colossus_smash_debuff->duration() ) )
   {
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    warrior.buff.test_of_might ->trigger( static_cast<int>( current_value ) );
+    warrior.buff.test_of_might->trigger( static_cast<int>( current_value ) );
     base_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
-
 
 // That legendary crap ring ===========================================================
 
@@ -6039,13 +6038,17 @@ double warrior_t::composite_leech() const
 
 // warrior_t::resource_gain =================================================
 
-double warrior_t::resource_gain( resource_e r, double a, gain_t* gain, action_t* action )
+double warrior_t::resource_gain( resource_e r, double a, gain_t* g, action_t* action )
 {
-  if ( buff.recklessness->check() )
+  if ( buff.recklessness->check() && r == RESOURCE_RAGE )
   {
-    a *= 1.0 + spec.recklessness->effectN( 4 ).percent();
+    bool do_not_double_rage = false;
+    do_not_double_rage      = ( g == gain.ceannar_rage || g == gain.valarjar_berserking );
+
+    if ( !do_not_double_rage )  // FIXME: remove this horror after BFA launches
+      a *= 1.0 + spec.recklessness->effectN( 4 ).percent();
   }
-  return player_t::resource_gain( r, a, gain, action );
+  return player_t::resource_gain( r, a, g, action );
 }
 
 // warrior_t::temporary_movement_modifier ==================================
