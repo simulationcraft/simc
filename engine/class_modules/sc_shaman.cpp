@@ -2571,7 +2571,6 @@ struct storm_elemental_t : public primal_elemental_t
     {
       channeled   = true;
       tick_action = breeze = new eye_of_the_storm_aoe_t( player, options );
-      hasted_ticks         = false;
     }
 
     void tick( dot_t* d ) override
