@@ -255,6 +255,8 @@ namespace warlock
         parse_options( options_str );
         may_crit = false;
         wb = new wracking_brilliance_t();
+
+        dot_max_stack = data().max_stacks() + p->spec.agony_2->effectN(1).base_value();
       }
 
       void last_tick( dot_t* d ) override
@@ -269,9 +271,9 @@ namespace warlock
 
       void init() override
       {
-        affliction_spell_t::init();
+        dot_max_stack += p()->talents.writhe_in_agony->ok() ? p()->talents.writhe_in_agony->effectN(1).base_value() : 0;
 
-        dot_max_stack += p()->spec.agony_2->effectN(1).base_value() + ( p()->talents.writhe_in_agony->effectN(1).base_value() );
+        affliction_spell_t::init();
 
         if ( p()->legendary.hood_of_eternal_disdain )
         {
