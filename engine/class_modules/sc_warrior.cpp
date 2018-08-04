@@ -11,7 +11,7 @@ namespace
 // Warrior
 // To Do: Make Simmering Rage and Lord of War generate more rage with multiple ranks, Gathering Storm shouldn't buff first tick but should stack last tick
 // Fury - Implement Infinite Fury and Reckless Flurry
-// Arms - Implement Seismic Wave, fix Test of Might and Crushing Assault proc
+// Arms - Implement Seismic Wave, fix Test of Might
 // ==========================================================================
 
 struct warrior_t;
@@ -605,6 +605,8 @@ struct warrior_action_t : public Base
     bool fury_mastery_direct, fury_mastery_dot;
     // talents
     bool avatar, frothing_direct, frothing_dot, demo_shout, sweeping_strikes, deadly_calm;
+    // azerite
+    bool crushing_assault;
 
     affected_by_t()
       : fury_mastery_direct( false ),
@@ -614,7 +616,8 @@ struct warrior_action_t : public Base
         frothing_dot( false ),
         demo_shout( false ),
         sweeping_strikes( false ),
-        deadly_calm( false )
+        deadly_calm( false ),
+        crushing_assault ( false )
     {
     }
   } affected_by;
@@ -1007,6 +1010,8 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
   virtual void execute()
   {
     base_t::execute();
+    if(!special) // Procs below only trigger on special attacks, not autos
+      return;
 
     if ( p()->talents.sudden_death->ok() && p()->buff.sudden_death->trigger() )
     {
@@ -1017,6 +1022,12 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
     {
       p()->cooldown.execute->reset( true );
     }
+
+    if ( affected_by.crushing_assault )
+    {
+      p()->buff.crushing_assault->expire();
+    }
+    p()->buff.crushing_assault->trigger();
   }
 
   player_t* select_random_target() const
@@ -1607,7 +1618,7 @@ struct bloodthirst_t : public warrior_attack_t
   double composite_crit_chance() const override
   {
     double c = warrior_attack_t::composite_crit_chance();
-    if ( p() -> buff.bloodcraze -> up() )
+    if ( p() -> buff.bloodcraze -> check() )
       c += p() -> buff.bloodcraze -> check_stack_value() / p() -> current.rating.attack_crit;
     return c;
   }
@@ -3291,18 +3302,16 @@ struct slam_t : public warrior_attack_t
   {
     parse_options( options_str );
     weapon = &( p->main_hand_weapon );
-  }
-
-  void execute() override
-  {
-    warrior_attack_t::execute();
-    p()->buff.weighted_blade->expire();
+    affected_by.crushing_assault = true;
   }
 
   double bonus_da( const action_state_t* s ) const override
   {
     double b = warrior_attack_t::bonus_da( s );
-    b += p()->buff.crushing_assault->value();
+    if ( p()->buff.crushing_assault->check() && !from_Fervor )
+    {
+      b += p()->buff.crushing_assault->value();
+    }
     return b;
   }
 
@@ -3328,9 +3337,8 @@ struct slam_t : public warrior_attack_t
   {
     if ( from_Fervor )
       return 0;
-    return warrior_attack_t::cost();
 
-    if ( p() -> buff.crushing_assault -> check() )
+    if ( p() -> buff.crushing_assault -> check() && !from_Fervor )
       return 0;
     return warrior_attack_t::cost();
   }
@@ -3340,6 +3348,12 @@ struct slam_t : public warrior_attack_t
     if ( from_Fervor )
       return 0;
     return warrior_attack_t::cost();
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+    p()->buff.weighted_blade->expire();
   }
 
   bool ready() override
@@ -3716,6 +3730,7 @@ struct arms_whirlwind_parent_t : public warrior_attack_t
     {
       fervor_slam              = new slam_t( p, options_str );
       fervor_slam->from_Fervor = true;
+           fervor_slam->affected_by.crushing_assault = false;
     }
 
     if ( p->main_hand_weapon.type != WEAPON_NONE )
@@ -5476,9 +5491,11 @@ void warrior_t::create_buffs()
           ->set_trigger_spell( bloodcraze_trigger )
           ->set_default_value( azerite.bloodcraze.value( 1 ) );
 
-  buff.crushing_assault = make_buff( this, "crushing_assault", find_spell( 278826 ) )
-          ->set_trigger_spell( azerite.crushing_assault.spell_ref().effectN( 1 ).trigger() )
-          ->set_default_value( azerite.crushing_assault.value() );
+  const spell_data_t* crushing_assault_trigger = azerite.crushing_assault.spell()->effectN( 1 ).trigger();
+  const spell_data_t* crushing_assault_buff    = crushing_assault_trigger->effectN( 1 ).trigger();
+  buff.crushing_assault = make_buff<buff_t>( this, "crushing_assault", crushing_assault_buff )
+          ->set_default_value( azerite.crushing_assault.value( 1 ) )
+          ->set_trigger_spell( crushing_assault_trigger );
 
   buff.executioners_precision = make_buff( this, "executioners_precision", find_spell( 272870 ) )
           ->set_trigger_spell( azerite.executioners_precision.spell_ref().effectN( 1 ).trigger() )
