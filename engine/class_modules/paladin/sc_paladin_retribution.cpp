@@ -984,9 +984,33 @@ void paladin_t::generate_action_prio_list_ret()
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
       std::string item_str;
-      if ( items[i].slot != SLOT_WAIST )
+      if ( items[i].name_str == "razdunks_big_red_button" )
+      {
+        item_str = "use_item,name=" + items[i].name_str;
+      }
+      else if ( items[i].name_str == "jes_howler" )
+      {
+        item_str = "use_item,name=" + items[i].name_str + ",if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10";
+      }
+      else if ( items[i].name_str == "vial_of_animated_blood" )
+      {
+        item_str = "use_item,name=" + items[i].name_str + ",if=(buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<18)|(cooldown.avenging_wrath.remains>30|cooldown.crusade.remains>30)";
+      }
+      else if ( items[i].name_str == "dooms_fury" )
+      {
+        item_str = "use_item,name=" + items[i].name_str + ",if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<18";
+      }
+      else if ( items[i].name_str == "galecallers_beak" )
+      {
+        item_str = "use_item,name=" + items[i].name_str + ",if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<15";
+      }
+      else if ( items[i].slot != SLOT_WAIST )
       {
         item_str = "use_item,name=" + items[i].name_str + ",if=(buff.avenging_wrath.up|buff.crusade.up)";
+      }
+
+      if ( items[i].slot != SLOT_WAIST )
+      {
         cds -> add_action( item_str );
       }
     }
@@ -1026,7 +1050,7 @@ void paladin_t::generate_action_prio_list_ret()
   opener -> add_action( "sequence,if=talent.wake_of_ashes.enabled&talent.crusade.enabled&!talent.execution_sentence.enabled&talent.hammer_of_wrath.enabled,name=wake_opener_HoW:shield_of_vengeance:blade_of_justice:judgment:crusade:templars_verdict:wake_of_ashes:templars_verdict:hammer_of_wrath:templars_verdict" );
   opener -> add_action( "sequence,if=talent.wake_of_ashes.enabled&talent.inquisition.enabled,name=wake_opener_Inq:shield_of_vengeance:blade_of_justice:judgment:inquisition:avenging_wrath:wake_of_ashes" );
 
-  finishers -> add_action( "variable,name=ds_castable,value=spell_targets.divine_storm>=3|talent.divine_judgment.enabled&spell_targets.divine_storm>=2|azerite.divine_right.enabled&target.health.pct<=20&buff.divine_right.down" );
+  finishers -> add_action( "variable,name=ds_castable,value=spell_targets.divine_storm>=3|!talent.righteous_verdict.enabled&talent.divine_judgment.enabled&spell_targets.divine_storm>=2|azerite.divine_right.enabled&target.health.pct<=20&buff.divine_right.down" );
   finishers -> add_talent( this, "Inquisition", "if=buff.inquisition.down|buff.inquisition.remains<5&holy_power>=3|talent.execution_sentence.enabled&cooldown.execution_sentence.remains<10&buff.inquisition.remains<15|cooldown.avenging_wrath.remains<15&buff.inquisition.remains<20&holy_power>=3" );
   finishers -> add_talent( this, "Execution Sentence", "if=spell_targets.divine_storm<=3&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*2)" );
   finishers -> add_action( this, "Divine Storm", "if=variable.ds_castable&buff.divine_purpose.react" );

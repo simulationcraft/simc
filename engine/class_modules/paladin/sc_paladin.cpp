@@ -1180,7 +1180,7 @@ std::string paladin_t::default_potion() const
 
 std::string paladin_t::default_food() const
 {
-  std::string retribution_food = (true_level > 110) ? "bountiful_captains_feast" :
+  std::string retribution_food = (true_level > 110) ? "galley_banquet" :
                                  (true_level > 100) ? "azshari_salad" :
                                  (true_level >= 90) ? "sleeper_sushi" :
                                  (true_level >= 85) ? "black_pepper_ribs_and_shrimp" :
@@ -1222,7 +1222,7 @@ std::string paladin_t::default_food() const
 
 std::string paladin_t::default_flask() const
 {
-  std::string retribution_flask = (true_level > 110) ? "undertow" :
+  std::string retribution_flask = (true_level > 110) ? "flask_of_the_undertow" :
                                   (true_level > 100) ? "flask_of_the_countless_armies" :
                                   (true_level >= 90) ? "greater_draenic_strength_flask" :
                                   (true_level >= 85) ? "winters_bite" :
@@ -1230,7 +1230,7 @@ std::string paladin_t::default_flask() const
                                   "disabled";
 
   bool dps = (primary_role() == ROLE_ATTACK) || (talents.seraphim -> ok());
-  std::string protection_flask = (true_level > 110) ? "undertow" :
+  std::string protection_flask = (true_level > 110) ? "flask_of_the_undertow" :
                                  (true_level > 100) ? (dps ? "flask_of_the_countless_armies" : "flask_of_ten_thousand_scars") :
                                  (true_level >= 90) ? (dps ? "greater_draenic_strength_flask" : "greater_draenic_stamina_flask") :
                                  (true_level >= 85) ? "earth" :
