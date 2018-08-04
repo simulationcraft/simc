@@ -1153,8 +1153,6 @@ double action_t::calculate_direct_amount( action_state_t* state ) const
   double base_direct_amount = amount;
   double weapon_amount      = 0;
 
-  amount += bonus_da( state );
-
   if ( weapon_multiplier > 0 )
   {
     // x% weapon damage + Y
@@ -1175,6 +1173,10 @@ double action_t::calculate_direct_amount( action_state_t* state ) const
     amount *= weapon_slot_modifier;
     weapon_amount *= weapon_slot_modifier;
   }
+
+  // Apply bonus direct damage after the off-hand penalty as this seems to be the common case in
+  // game
+  amount += bonus_da( state );
 
   // damage variation in WoD is based on the delta field in the spell data, applied to entire amount
   double delta_mod = amount_delta_modifier( state );
