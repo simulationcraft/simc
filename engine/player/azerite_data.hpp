@@ -81,6 +81,8 @@ public:
   std::vector<double> budget() const;
   /// List of items associated with this azerite power
   const std::vector<unsigned> ilevels() const;
+  /// Number of items worn with this azerite power
+  unsigned n_items() const;
 };
 
 namespace azerite

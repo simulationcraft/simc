@@ -117,9 +117,11 @@ std::vector<double> azerite_power_t::budget() const
   return b;
 }
 
-/// List of items associated with this azerite power
 const std::vector<unsigned> azerite_power_t::ilevels() const
 { return m_ilevels; }
+
+unsigned azerite_power_t::n_items() const
+{ return as<unsigned>( m_ilevels.size() ); }
 
 namespace azerite
 {
