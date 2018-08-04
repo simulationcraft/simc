@@ -9,7 +9,7 @@ namespace
 {  // UNNAMED NAMESPACE
 // ==========================================================================
 // Warrior
-// To Do: Make Simmering Rage and Lord of War generate more rage with multiple ranks, Gathering Storm shouldn't buff first tick but should stack last tick
+// To Do: Gathering Storm should stack after each tick, not before (tornados eye is the opposite because reasons)
 // Fury - Implement Infinite Fury and Reckless Flurry
 // Arms - Implement Seismic Wave, fix Test of Might
 // ==========================================================================
@@ -1848,7 +1848,7 @@ struct colossus_smash_t : public warrior_attack_t
   colossus_smash_t( warrior_t* p, const std::string& options_str )
     : warrior_attack_t( "colossus_smash", p, p->spec.colossus_smash ),
       lord_of_war( false ),
-      rage_from_lord_of_war( ( p -> azerite.lord_of_war.spell() -> effectN( 1 ).base_value() )/ 10.0 )
+      rage_from_lord_of_war( ( p -> azerite.lord_of_war.spell() -> effectN( 1 ).base_value() * p->azerite.lord_of_war.n_items() )/ 10.0 )
   {
     if ( p->talents.warbreaker->ok() )
     {
@@ -2831,7 +2831,7 @@ struct rampage_attack_t : public warrior_attack_t
       valarjar_berserking( false ),
       simmering_rage( false ),
       rage_from_valarjar_berserking( p->find_spell( 248179 )->effectN( 1 ).base_value() / 10.0 ),
-      rage_from_simmering_rage( p->find_spell( 278757 )->effectN( 1 ).base_value() / 10.0 )
+      rage_from_simmering_rage( ( p -> azerite.simmering_rage.spell() -> effectN( 1 ).base_value() * p->azerite.simmering_rage.n_items() )/ 10.0 )
   {
     dual = true;
     if ( p->sets->has_set_bonus( WARRIOR_FURY, T21, B4 ) )
