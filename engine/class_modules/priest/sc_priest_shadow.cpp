@@ -382,11 +382,8 @@ struct mind_flay_t final : public priest_spell_t
 
 struct shadow_word_death_t final : public priest_spell_t
 {
-  double insanity_gain;
-
   shadow_word_death_t( priest_t& p, const std::string& options_str )
-    : priest_spell_t( "shadow_word_death", p, p.talents.shadow_word_death ),
-      insanity_gain( p.find_spell( 32379 )->effectN( 1 ).resource( RESOURCE_INSANITY ) )
+    : priest_spell_t( "shadow_word_death", p, p.talents.shadow_word_death )      
   {
     parse_options( options_str );
   }
@@ -419,15 +416,15 @@ struct shadow_word_death_t final : public priest_spell_t
 
     if ( result_is_hit( s->result ) )
     {
-      // http://us.battle.net/wow/en/forum/topic/20743676204#3 - 2016-05-12
-      // SWD always grants at least 10 Insanity.
-      // TODO: Add in a custom buff that checks after 1 second to see if the target SWD was cast on is now dead.
-      // TODO: Check in beta if the target is dead vs. SWD is the killing blow.
-      total_insanity_gain = data().effectN( 3 ).base_value();
+      // TODO: Add in a custom buff that checks after 1 second to see if the target SWD was cast on is now dead.      
 
       if ( ( ( save_health_percentage > 0.0 ) && ( s->target->health_percentage() <= 0.0 ) ) )
       {
-        total_insanity_gain = insanity_gain;
+        total_insanity_gain = data().effectN( 4 ).base_value();
+      }
+      else
+      {
+        total_insanity_gain = data().effectN( 3 ).base_value();  
       }
 
       priest().generate_insanity( total_insanity_gain, priest().gains.insanity_shadow_word_death, s->action );
@@ -458,7 +455,7 @@ struct shadow_word_death_t final : public priest_spell_t
 struct shadow_crash_damage_t final : public priest_spell_t
 {
   shadow_crash_damage_t( priest_t& p )
-    : priest_spell_t( "shadow_crash_damage", p, p.talents.shadow_crash->effectN(1).trigger() )
+    : priest_spell_t( "shadow_crash_damage", p, p.talents.shadow_crash->effectN( 1 ).trigger() )
   {
     energize_type = ENERGIZE_NONE;  // disable resource generation from spell data
     background = true;
