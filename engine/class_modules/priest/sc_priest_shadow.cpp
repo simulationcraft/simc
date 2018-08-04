@@ -389,12 +389,6 @@ struct shadow_word_death_t final : public priest_spell_t
       insanity_gain( p.find_spell( 32379 )->effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
     parse_options( options_str );
-
-    const spell_data_t* shadow_word_death_2 = p.find_specialization_spell( 231689 );
-    if ( shadow_word_death_2 )
-    {
-      cooldown->charges += (int)(float)shadow_word_death_2->effectN( 1 ).base_value();
-    }
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
