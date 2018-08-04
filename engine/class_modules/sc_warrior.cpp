@@ -9,6 +9,9 @@ namespace
 {  // UNNAMED NAMESPACE
 // ==========================================================================
 // Warrior
+// To Do:
+// Fury - Make Simmering Rage affected by Recklessness and multiple traits; add other azerite effects
+// Arms - Add azerite effects
 // ==========================================================================
 
 struct warrior_t;
@@ -125,6 +128,8 @@ public:
     buff_t* in_for_the_kill;
     buff_t* war_veteran;     // Arms T21 2PC
     buff_t* weighted_blade;  // Arms T21 4PC
+    // Azerite Traits
+    buff_t* pulverizing_blows;
   } buff;
 
   // Cooldowns
@@ -181,11 +186,12 @@ public:
     gain_t* endless_rage;
     gain_t* collateral_damage;
 
-    // Legendarys
+    // Legendarys and Azerite
     gain_t* ceannar_rage;
     gain_t* rage_from_damage_taken;
     gain_t* valarjar_berserking;
     gain_t* ravager;
+    gain_t* simmering_rage;
     gain_t* execute_refund;
   } gain;
 
@@ -2571,6 +2577,11 @@ struct raging_blow_t : public warrior_attack_t
     }
     p()->buff.t20_fury_4p->trigger( 1 );
     p()->buff.meat_cleaver->decrement();
+
+    if ( p()->azerite.pulverizing_blows.ok() )
+    {
+      p() -> buff.pulverizing_blows -> trigger();
+    }
   }
 
   double recharge_multiplier() const override
@@ -2753,15 +2764,18 @@ struct neltharions_fury_t : public warrior_attack_t
 struct rampage_attack_t : public warrior_attack_t
 {
   int aoe_targets;
-  bool first_attack, first_attack_missed, valarjar_berserking;
+  bool first_attack, first_attack_missed, valarjar_berserking, simmering_rage;
   double rage_from_valarjar_berserking;
+  double rage_from_simmering_rage;
   rampage_attack_t( warrior_t* p, const spell_data_t* rampage, const std::string& name )
     : warrior_attack_t( name, p, rampage ),
       aoe_targets( p->spell.whirlwind_buff->effectN( 1 ).base_value() ),
       first_attack( false ),
       first_attack_missed( false ),
       valarjar_berserking( false ),
-      rage_from_valarjar_berserking( p->find_spell( 248179 )->effectN( 1 ).base_value() / 10.0 )
+      simmering_rage( false ),
+      rage_from_valarjar_berserking( p->find_spell( 248179 )->effectN( 1 ).base_value() / 10.0 ),
+      rage_from_simmering_rage( p->find_spell( 278757 )->effectN( 1 ).base_value() / 10.0 )
   {
     dual = true;
     if ( p->sets->has_set_bonus( WARRIOR_FURY, T21, B4 ) )
@@ -2795,6 +2809,10 @@ struct rampage_attack_t : public warrior_attack_t
       {
         p()->resource_gain( RESOURCE_RAGE, rage_from_valarjar_berserking, p()->gain.valarjar_berserking );
       }
+      if ( p()->azerite.simmering_rage.ok() && target == s->target )
+      {
+        p()->resource_gain( RESOURCE_RAGE, rage_from_simmering_rage, p()->gain.simmering_rage );
+      }
 
       if ( result_is_hit( s->result ) && p()->sets->has_set_bonus( WARRIOR_FURY, T21, B2 ) )
       {
@@ -2803,6 +2821,15 @@ struct rampage_attack_t : public warrior_attack_t
         residual_action::trigger( p()->active.slaughter, s->target, amount );
       }
     }
+  }
+
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = warrior_attack_t::bonus_da( s );
+    b += p() -> buff.pulverizing_blows -> stack_value();
+    if ( p() -> azerite.simmering_rage.ok() )
+      b += p() -> azerite.simmering_rage.value( 2 );
+    return b;
   }
 
   int n_targets() const override
@@ -2866,6 +2893,7 @@ struct rampage_event_t : public event_t
     {
       warrior->rampage_driver = nullptr;
       warrior->buff.meat_cleaver->decrement();
+      warrior->buff.pulverizing_blows->expire();
     }
   }
 };
@@ -5359,6 +5387,11 @@ void warrior_t::create_buffs()
   buff.protection_rage = new protection_rage_t( *this, "protection_rage", find_spell( 242303 ) );
 
   buff.whirlwind = buff_creator_t( this, "whirlwind", find_spell( 85739 ) );
+
+  // Azerite
+  buff.pulverizing_blows = make_buff( this, "pulverizing_blows", find_spell( 275672 ) )
+                           -> set_trigger_spell( azerite.pulverizing_blows.spell_ref().effectN( 1 ).trigger() )
+                           -> set_default_value( azerite.pulverizing_blows.value() );
 }
 
 // warrior_t::init_scaling ==================================================
@@ -5407,6 +5440,7 @@ void warrior_t::init_gains()
   gain.valarjar_berserking    = get_gain( "valarjar_berserking" );
   gain.ravager                = get_gain( "ravager" );
   gain.rage_from_damage_taken = get_gain( "rage_from_damage_taken" );
+  gain.simmering_rage         = get_gain( "simmering_rage" );
   gain.execute_refund         = get_gain( "execute_refund" );
 }
 
