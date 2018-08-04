@@ -246,15 +246,11 @@ namespace warlock
         }
       };
 
-      int agony_action_id;
-      int agony_max_stacks;
       double chance;
       wracking_brilliance_t* wb;
 
       agony_t( warlock_t* p, const std::string& options_str ) :
-        affliction_spell_t( p, "Agony"),
-        agony_action_id( 0 ),
-        agony_max_stacks( 0 )
+        affliction_spell_t( p, "Agony")
       {
         parse_options( options_str );
         may_crit = false;
@@ -273,11 +269,9 @@ namespace warlock
 
       void init() override
       {
-        agony_max_stacks = ( p()->talents.writhe_in_agony->ok() ? p()->talents.writhe_in_agony->effectN( 2 ).base_value() : 10 );
-
         affliction_spell_t::init();
 
-        this->dot_max_stack = agony_max_stacks;
+        dot_max_stack += p()->spec.agony_2->effectN(1).base_value() + ( p()->talents.writhe_in_agony->effectN(1).base_value() );
 
         if ( p()->legendary.hood_of_eternal_disdain )
         {
@@ -1124,6 +1118,7 @@ namespace warlock
     // Specialization Spells
     spec.unstable_affliction            = find_specialization_spell( "Unstable Affliction" );
     spec.agony                          = find_specialization_spell( "Agony" );
+    spec.agony_2                        = find_spell( 231792 );
     spec.summon_darkglare               = find_specialization_spell( "Summon Darkglare" );
     // Talents
     talents.nightfall                   = find_talent_spell( "Nightfall" );
