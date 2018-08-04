@@ -6,7 +6,7 @@ role=spell
 position=ranged_back
 talents=1111122
 
-head=stormlurkers_cowl,id=159244,bonus_id=4779/1512/4786/4775,azerite_powers=166/30/83/13
+head=grasping_crown_of_the_deep,id=159252,bonus_id=4779/1512/4786/4775,azerite_powers=404/18/15/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
 shoulder=amice_of_the_returned,id=159273,bonus_id=4779/1512/4786/4775,azerite_powers=404/459/84/13
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
