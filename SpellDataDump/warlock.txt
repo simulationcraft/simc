@@ -5165,10 +5165,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=707066)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (avg=1) | Trigger Spell: 270667 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.668568) | Trigger Spell: 270667 | Target: Self (1)
+                   Hotfixed: Average (1 -> 0.668568)
 Description      : Your damaging abilities have a chance to grant you Elemental Whirl, increasing your Critical Strike, Haste, Mastery, or Versatility by $s1 for $268956d.
 
-Name             : Heed My Call (id=263987) [Scaling Spell (-1), Passive] 
+Name             : Heed My Call (id=263987) [Scaling Spell (-8), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 22
@@ -5183,9 +5185,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=707069)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 622 (avg=2) | Misc Value: 1792 | Trigger Spell: 271681 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2203.712 (avg=28.34356) | Misc Value: 1792 | Trigger Spell: 271681 | Target: Self (1)
+                   Hotfixed: Average (2 -> 28.3436)
 #2 (id=713642)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 62.2 (avg=0.2)
+                   Base Value: 0 | Scaled Value: 944.4478 (avg=12.14724)
+                   Hotfixed: Average (0.2 -> 12.1472)
 Description      : Your damaging abilities have a chance to deal $s1 Nature damage to your target, and $s2 Nature damage to enemies within 3 yards of that target.
 Tooltip          : Your damaging abilities have a chance to deal $s1 Nature damage to your target, and $s2 Nature damage to enemies within 3 yards of that target.
 
@@ -5291,9 +5295,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=707293)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 112.4097 (avg=0.361446) | Misc Value: 33554432 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 69.30822 (avg=0.222856) | Misc Value: 33554432 | Target: Self (1)
+                   Hotfixed: Average (0.361446 -> 0.222856)
 #2 (id=709390)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 56.5454 (avg=0.181818) | Misc Value: 65536 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 34.65411 (avg=0.111428) | Misc Value: 65536 | Target: Self (1)
+                   Hotfixed: Average (0.181818 -> 0.111428)
 Description      : Increases your Mastery by $s1 and your Leech by $s2.
 Tooltip          : Increases Mastery by $s1 and Leech by $s2.
 
@@ -5707,11 +5713,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=711012)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (avg=0.05) | Misc Value: 1792 | Trigger Spell: 271705 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.069642) | Misc Value: 1792 | Trigger Spell: 271705 | Target: Self (1)
+                   Hotfixed: Average (0.05 -> 0.069642)
 Description      : Your damaging abilities have a chance to grant you 25 applications of Overwhelming Power. Each stack of Overwhelming Power grants $s1 Haste. An application of Overwhelming Power is removed every 1 sec or whenever you take damage.
 Tooltip          : Your damaging abilities have a chance to grant you 25 applications of Overwhelming Power. Each stack of Overwhelming Power grants $s1 Haste. An application of Overwhelming Power is removed every 3 sec or whenever you take damage.
 
-Name             : Azerite Globules (id=266936) [Scaling Spell (-1), Passive] 
+Name             : Azerite Globules (id=266936) [Scaling Spell (-8), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 462
@@ -5726,13 +5734,15 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=713207)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 933 (avg=3) | Misc Value: 1792 | Trigger Spell: 279955 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1049.387 (avg=13.49693) | Misc Value: 1792 | Trigger Spell: 279955 | Target: Self (1)
+                   Hotfixed: Average (3 -> 13.4969)
 #2 (id=739251)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3
 Description      : Your damaging abilities have a chance to implant an Azerite Globule on your enemies. When an enemy collects $s2 Azerite Globules, they explode, dealing $s1 Fire damage to nearby enemies.
 Tooltip          : Your damaging abilities have a chance to implant an Azerite Globule on your enemies. When an enemy collects $s2 Azerite Globules, they explode, dealing $s1 Fire damage to nearby enemies.
 
-Name             : Gutripper (id=266937) [Scaling Spell (-1), Passive] 
+Name             : Gutripper (id=266937) [Scaling Spell (-8), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 31
@@ -5747,7 +5757,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=713208)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 1400.901 (avg=4.504504) | Trigger Spell: 270668 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1010.75 (avg=13) | Trigger Spell: 270668 | Target: Self (1)
+                   Hotfixed: Average (4.5045 -> 13)
 #2 (id=720336)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
 Description      : Your damaging abilities have a chance to deal $s1 Physical damage to the target. Gutripper occurs much more often against targets below $s2% health. 
@@ -6692,7 +6703,8 @@ Effects          :
                    Hotfixed: Average (0.65 -> 1.10992)
 Description      : Every other Soul Shard your Agony generates also increases your Intellect by $s1 for $272893d.
 
-Name             : Shadow's Bite (id=272944) [Scaling Spell (-1), Spell Family (5), Passive] 
+Name             : Shadow's Bite (id=272944) [Scaling Spell (-8), Spell Family (5), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warlock
 School           : Physical
 Azerite Power Id : 130
@@ -6707,10 +6719,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724173)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 189.6341 (avg=0.609756) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 455.0521 (avg=5.85276) | Target: Self (1)
+                   Hotfixed: Average (0.609756 -> 5.85276)
 Description      : When your summoned Dreadstalkers fade away, they increase the damage of your Demonbolt by $s1 for $272945d.
 
-Name             : Accelerant (id=272955) [Scaling Spell (-1), Spell Family (5), Passive] 
+Name             : Accelerant (id=272955) [Scaling Spell (-7), Spell Family (5), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -7)
 Class            : Warlock
 School           : Physical
 Azerite Power Id : 131
@@ -6725,7 +6739,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724206)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 108.85 (avg=0.35) | Trigger Spell: 272956 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.95) | Trigger Spell: 272956 | Target: Self (1)
+                   Hotfixed: Average (0.35 -> 0.95)
 Description      : When your Rain of Fire damages 3 or more targets, gain $s1 Haste for $272957d.
 
 Name             : Ruinous Bolt (id=273150) [Scaling Spell (-1), Passive] 
@@ -6766,7 +6781,8 @@ Effects          :
                    Hotfixed: Average (0.05 -> 0.503067)
 Description      : Damaging an enemy with Corruption increases the damage of your next Drain Life by $s1. This effect stacks up to $273525u times.
 
-Name             : Umbral Blaze (id=273523) [Scaling Spell (-1), Passive] 
+Name             : Umbral Blaze (id=273523) [Scaling Spell (-8), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warlock
 School           : Physical
 Azerite Power Id : 190
@@ -6781,7 +6797,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=725221)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 777.5 (avg=2.5) | Trigger Spell: 273524 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1011.704 (avg=13.01227) | Trigger Spell: 273524 | Target: Self (1)
+                   Hotfixed: Average (2.5 -> 13.0123)
 #2 (id=725222)   : Dummy (3)
                    Base Value: 15 | Scaled Value: 15
 Description      : Your Hand of Guldan has a $s2% chance to burn its target for $s1 additional Shadowflame damage every $273526t1 sec for $273526d.
@@ -6944,10 +6961,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=728411)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (avg=1.6) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (avg=1.011209) | Target: Self (1)
+                   Hotfixed: Average (1.6 -> 1.01121)
 Description      : When your Implosion consumes 3 or more Imps, gain $s1 Haste for $275398d.
 
-Name             : Flashpoint (id=275425) [Scaling Spell (-1), Passive] 
+Name             : Flashpoint (id=275425) [Scaling Spell (-7), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -7)
 Class            : Warlock
 School           : Physical
 Azerite Power Id : 232
@@ -6962,7 +6981,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=728450)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 248.8 (avg=0.8) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (avg=1.337136) | Target: Self (1)
+                   Hotfixed: Average (0.8 -> 1.33714)
 Description      : When your Immolate deals periodic damage to a target above 80% health, gain $s1 Haste for $275429d.
 
 Name             : Deathbloom (id=275974) [Scaling Spell (-8), Passive] 
@@ -6983,7 +7003,8 @@ Effects          :
                    Hotfixed: Average (3.57143 -> 3.68098)
 Description      : If your Seed of Corruption detonates early, it deals $s1 additional damage.
 
-Name             : Excoriate (id=276007) [Scaling Spell (-1), Passive] 
+Name             : Excoriate (id=276007) [Scaling Spell (-8), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warlock
 School           : Physical
 Azerite Power Id : 443
@@ -6997,10 +7018,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=729381)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 313.7583 (avg=1.008869) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 626.293 (avg=8.055215) | Target: Self (1)
+                   Hotfixed: Average (1.00887 -> 8.05522)
 Description      : When you gain Demonic Core, the damage of your next Demonbolt is increased by $s1.
 
-Name             : Crashing Chaos (id=277644) [Scaling Spell (-1), Passive] 
+Name             : Crashing Chaos (id=277644) [Scaling Spell (-8), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warlock
 School           : Physical
 Azerite Power Id : 444
@@ -7015,7 +7038,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732939)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 229.6296 (avg=0.738359) | Trigger Spell: 277705 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1691.063 (avg=21.75) | Trigger Spell: 277705 | Target: Self (1)
+                   Hotfixed: Average (0.738359 -> 21.75)
 #2 (id=732940)   : Apply Aura (6) | Dummy (4)
                    Base Value: 8 | Scaled Value: 8
 Description      : Summoning your Infernal increases the damage of your next $s2 Chaos Bolts by $s1.
@@ -7112,7 +7136,8 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5
 Description      : Hand of Gul'dan deals $s1 additional damage and has a $s2% chance per Soul Shard spent of refunding a Soul Shard.
 
-Name             : Forbidden Knowledge (id=278738) [Scaling Spell (-1), Spell Family (5), Passive] 
+Name             : Forbidden Knowledge (id=278738) [Scaling Spell (-8), Spell Family (5), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warlock
 School           : Physical
 Azerite Power Id : 429
@@ -7127,7 +7152,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734638)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 3000.378 (avg=9.647519) | Trigger Spell: 279665 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 6033.972 (avg=77.60736) | Trigger Spell: 279665 | Target: Self (1)
+                   Hotfixed: Average (9.64752 -> 77.6074)
 Description      : Call Dreadstalkers has a $279665h% chance to make your next non-instant Demonbolt deal $s1 additional damage.
 
 Name             : Rolling Havoc (id=278747) [Scaling Spell (-1), Spell Family (5), Passive] 
@@ -7145,10 +7171,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734664)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 39.808 (avg=0.128) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 61.25052 (avg=0.196947) | Target: Self (1)
+                   Hotfixed: Average (0.128 -> 0.196947)
 Description      : Each time your spells duplicate to a Havoc target, gain $s1 Intellect for $278931d. This effect stacks.
 
-Name             : Chaotic Inferno (id=278748) [Scaling Spell (-1), Spell Family (5), Passive] 
+Name             : Chaotic Inferno (id=278748) [Scaling Spell (-8), Spell Family (5), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warlock
 School           : Physical
 Azerite Power Id : 432
@@ -7164,8 +7192,9 @@ Effects          :
 #1 (id=734667)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 279672 | Target: Self (1)
 #2 (id=734668)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 424.826 (avg=1.366) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 414.4075 (avg=5.33) | Target: Self (1)
                    Affected Spells: Chaos Bolt (116858)
+                   Hotfixed: Average (1.366 -> 5.33)
 Description      : Chaos Bolt deals $s2 additional damage, and has a $279672h% chance to make your next Incinerate instant.
 
 Name             : Supreme Commander (id=279878) [Scaling Spell (-1), Passive] 
@@ -7183,7 +7212,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=736491)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 373.2 (avg=1.2) | Trigger Spell: 279879 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 397.89 (avg=1.279389) | Trigger Spell: 279879 | Target: Self (1)
+                   Hotfixed: Average (1.2 -> 1.27939)
 Description      : When your Demonic Tyrant expires, consume its life essence, granting you a stack of Demonic Core and increasing your Intellect by $s1 for $279885d.
 
 Name             : Unstable Flames (id=279899) [Scaling Spell (-7), Passive] 
@@ -7201,10 +7231,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=736523)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (avg=0.447912) | Misc Value: 1792 | Trigger Spell: 279900 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.194999) | Misc Value: 1792 | Trigger Spell: 279900 | Target: Self (1)
+                   Hotfixed: Average (0.447912 -> 0.194999)
 Description      : Your damaging abilities have a chance to grant $s1 critical strike rating for $279902d. This effect stacks up to $279902u times.
 
-Name             : Bursting Flare (id=279909) [Scaling Spell (-1), Passive] 
+Name             : Bursting Flare (id=279909) [Scaling Spell (-7), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -7)
 Class            : Warlock
 School           : Physical
 Azerite Power Id : 460
@@ -7219,7 +7251,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=736535)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 27.2125 (avg=0.0875) | Trigger Spell: 279911 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.1351) | Trigger Spell: 279911 | Target: Self (1)
+                   Hotfixed: Average (0.0875 -> 0.1351)
 Description      : Casting Conflagrate on a target affected by your Immolate increases your Mastery by $s1 for $279913d, stacking up to $279913u times.
 
 Name             : Wild Imp (id=279910) [Spell Family (5)] 
@@ -7254,7 +7287,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=736562)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 31.03096 (avg=0.099778) | Trigger Spell: 279927 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 9.496074 (avg=0.030534) | Trigger Spell: 279927 | Target: Self (1)
+                   Hotfixed: Average (0.099778 -> 0.030534)
 Description      : Azerite energy courses through you, reaching ${$s1*6} $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] and then diminishing down to $s1 $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat], cycling every 6 sec.
 
 Name             : Desperate Power (id=280022) [Scaling Spell (-8), Passive] 
@@ -7425,8 +7459,8 @@ Description      : Your spells and abilities have a chance to grow or shrink the
 
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
-Name             : Personal Absorb-o-Tron (id=280181) [Passive] 
-Hotfixed         : Rank
+Name             : Personal Absorb-o-Tron (id=280181) [Scaling Spell (-1), Passive] 
+Hotfixed         : Scaling Spell, Max Scaling Level, Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Internal Cooldown: 60 seconds
@@ -7445,7 +7479,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737557)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 36162.77 (avg=116.279) | Target: Self (1)
+                   Hotfixed: Average (0 -> 116.279)
 #2 (id=738962)   : Apply Aura (6) | Skill (30)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 2499 | Target: Self (1)
 Description      : Taking damage has a chance to call your Personal Absorb-o-Tron, absorbing the next $280660s1 damage you take over $280660d.

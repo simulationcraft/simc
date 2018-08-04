@@ -4250,9 +4250,9 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Felreaper Vestments"                        ,     "tier21",     14,  1329,   21,   4,  12,  577, 251769, { 152118, 152119, 152120, 152121, 152122, 152123,  0 } },
   { "Felreaper Vestments"                        ,     "tier21",     14,  1329,   21,   4,  12,  581, 251774, { 152118, 152119, 152120, 152121, 152122, 152123,  0 } },
 };
-#define RPPMMOD_SIZE (937)
+#define RPPMMOD_SIZE (935)
 
-// 937 RPPM Modifiers, wow build level 27219
+// 935 RPPM Modifiers, wow build level 27219
 static struct rppm_modifier_t __rppmmodifier_data[] = {
   {  17495,    4,  1,  1.0000 },
   {  27656,    4,  1,  1.0000 },
@@ -5128,7 +5128,6 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 269886,    4,  1,  1.0000 },
   { 269891,    4,  1,  1.0000 },
   { 270668,    4,  1,  1.0000 },
-  { 270679,    4,  1,  1.0000 },
   { 270809,    4,  1,  1.0000 },
   { 270921,    4,  1,  1.0000 },
   { 271190,    4,  1,  1.0000 },
@@ -5178,7 +5177,6 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 279426,    4,  1,  1.0000 },
   { 279449,    4,  1,  1.0000 },
   { 279786,    4,  1,  1.0000 },
-  { 279900,    4,  1,  1.0000 },
   { 279955,    4,  1,  1.0000 },
   { 280163,    4,  1,  1.0000 },
   { 280383,    4,  1,  1.0000 },
