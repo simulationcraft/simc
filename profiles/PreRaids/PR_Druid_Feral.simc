@@ -6,6 +6,8 @@ timeofday=day
 role=attack
 position=back
 talents=3000212
+#ST profile iH8Shred, #Please also consider unban Robo from Dreamgrove.
+#iterations=10000
 
 # Default consumables
 potion=battle_potion_of_agility
@@ -13,11 +15,11 @@ flask=flask_of_the_currents
 food=bountiful_captains_feast
 augmentation=battle_scarred
 
-# This default action priority list is automatically created based on your character.
-# It is a attempt to provide you with a action list that is both simple and practicable,
-# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
-# Feel free to edit, adapt and improve it to your own needs.
-# SimulationCraft is always looking for updates and improvements to the default action lists.
+# This default action priority list is automatically created based on your character.	
+# It is a attempt to provide you with a action list that is both simple and practicable,	
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.	
+# Feel free to edit, adapt and improve it to your own needs.	
+# SimulationCraft is always looking for updates and improvements to the default action lists.	
 
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=flask
@@ -25,23 +27,22 @@ actions.precombat+=/food
 actions.precombat+=/augmentation
 actions.precombat+=/regrowth,if=talent.bloodtalons.enabled
 actions.precombat+=/variable,name=use_thrash,value=0
-actions.precombat+=/variable,name=use_thrash,value=1,if=equipped.luffa_wrappings
 actions.precombat+=/cat_form
 actions.precombat+=/prowl
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
+actions.precombat+=/berserk
 actions.precombat+=/potion
 
 # Executed every time the actor is available.
 actions=run_action_list,name=single_target,if=dot.rip.ticking|time>15
 actions+=/rake,if=!ticking|buff.prowl.up
-actions+=/dash,if=!buff.cat_form.up
+actions+=/tigers_fury,if=!buff.cat_form.up
 actions+=/auto_attack
 actions+=/moonfire_cat,if=talent.lunar_inspiration.enabled&!ticking
 actions+=/savage_roar,if=!buff.savage_roar.up
 actions+=/berserk
 actions+=/incarnation
-actions+=/tigers_fury
 actions+=/regrowth,if=(talent.sabertooth.enabled|buff.predatory_swiftness.up)&talent.bloodtalons.enabled&buff.bloodtalons.down&combo_points=5
 actions+=/rip,if=combo_points=5
 actions+=/thrash_cat,if=!ticking&variable.use_thrash>0
@@ -54,7 +55,8 @@ actions.cooldowns+=/tigers_fury,if=energy.deficit>=60
 actions.cooldowns+=/berserking
 actions.cooldowns+=/feral_frenzy,if=combo_points=0
 actions.cooldowns+=/incarnation,if=energy>=30&(cooldown.tigers_fury.remains>15|buff.tigers_fury.up)
-actions.cooldowns+=/potion,name=prolonged_power,if=target.time_to_die<65|(time_to_die<180&(buff.berserk.up|buff.incarnation.up))
+actions.cooldowns+=/potion,name=battle_potion_of_agility,if=target.time_to_die<65|(time_to_die<180&(buff.berserk.up|buff.incarnation.up))
+actions.cooldowns+=/potion,name=battle_potion_of_agility,if=talent.sabertooth.enabled&(buff.berserk.up|buff.incarnation.up)
 actions.cooldowns+=/shadowmeld,if=combo_points<5&energy>=action.rake.cost&dot.rake.pmultiplier<2.1&buff.tigers_fury.up&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>18)&!buff.incarnation.up
 actions.cooldowns+=/use_items
 
@@ -64,8 +66,6 @@ actions.single_target+=/auto_attack
 actions.single_target+=/call_action_list,name=cooldowns
 actions.single_target+=/ferocious_bite,target_if=dot.rip.ticking&dot.rip.remains<3&target.time_to_die>10&(target.health.pct<25|talent.sabertooth.enabled)
 actions.single_target+=/regrowth,if=combo_points=5&buff.predatory_swiftness.up&talent.bloodtalons.enabled&buff.bloodtalons.down&(!buff.incarnation.up|dot.rip.remains<8)
-actions.single_target+=/regrowth,if=combo_points>3&talent.bloodtalons.enabled&buff.predatory_swiftness.up&buff.apex_predator.up&buff.incarnation.down
-actions.single_target+=/ferocious_bite,if=buff.apex_predator.up&((combo_points>4&(buff.incarnation.up|talent.moment_of_clarity.enabled))|(talent.bloodtalons.enabled&buff.bloodtalons.up&combo_points>3))
 actions.single_target+=/run_action_list,name=st_finishers,if=combo_points>4
 actions.single_target+=/run_action_list,name=st_generators
 
@@ -74,41 +74,41 @@ actions.st_finishers+=/savage_roar,if=buff.savage_roar.down
 actions.st_finishers+=/pool_resource,for_next=1
 actions.st_finishers+=/rip,target_if=!ticking|(remains<=duration*0.3)&(target.health.pct>25&!talent.sabertooth.enabled)|(remains<=duration*0.8&persistent_multiplier>dot.rip.pmultiplier)&target.time_to_die>8
 actions.st_finishers+=/pool_resource,for_next=1
-actions.st_finishers+=/savage_roar,if=buff.savage_roar.remains<12
+actions.st_finishers+=/savage_roar,if=buff.savage_roar.remains<10.8
 actions.st_finishers+=/ferocious_bite,max_energy=1
 
-actions.st_generators=regrowth,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&buff.bloodtalons.down&combo_points=4&dot.rake.remains<4
-actions.st_generators+=/regrowth,if=equipped.ailuro_pouncers&talent.bloodtalons.enabled&(buff.predatory_swiftness.stack>2|(buff.predatory_swiftness.stack>1&dot.rake.remains<3))&buff.bloodtalons.down
-actions.st_generators+=/brutal_slash,if=spell_targets.brutal_slash>desired_targets
+actions.st_generators=regrowth,if=(talent.bloodtalons.enabled&buff.predatory_swiftness.up&buff.bloodtalons.down&combo_points=4&dot.rake.remains<10)&(!buff.clearcasting.react)
+actions.st_generators+=/brutal_slash,if=spell_targets.brutal_slash>desired_targets	
 actions.st_generators+=/pool_resource,for_next=1
 actions.st_generators+=/thrash_cat,if=refreshable&(spell_targets.thrash_cat>2)
 actions.st_generators+=/pool_resource,for_next=1
-actions.st_generators+=/thrash_cat,if=spell_targets.thrash_cat>3&equipped.luffa_wrappings&talent.brutal_slash.enabled
-actions.st_generators+=/pool_resource,for_next=1
-actions.st_generators+=/rake,target_if=!ticking|(!talent.bloodtalons.enabled&remains<duration*0.3)&target.time_to_die>4
+actions.st_generators+=/rake,target_if=!ticking&target.time_to_die>=4|(!talent.bloodtalons.enabled&remains<duration*0.3)&target.time_to_die>4
 actions.st_generators+=/pool_resource,for_next=1
 actions.st_generators+=/rake,target_if=talent.bloodtalons.enabled&buff.bloodtalons.up&((remains<=7)&persistent_multiplier>dot.rake.pmultiplier*0.85)&target.time_to_die>4
-actions.st_generators+=/brutal_slash,if=(buff.tigers_fury.up&(raid_event.adds.in>(1+max_charges-charges_fractional)*recharge_time))
-actions.st_generators+=/moonfire_cat,target_if=refreshable
+actions.st_generators+=/brutal_slash,if=(buff.tigers_fury.up&(raid_event.adds.in>(1+max_charges-charges_fractional)*recharge_time))	
+actions.st_generators+=/moonfire_cat,target_if=refreshable&target.time_to_die>4
 actions.st_generators+=/pool_resource,for_next=1
 actions.st_generators+=/thrash_cat,if=refreshable&(variable.use_thrash=2|spell_targets.thrash_cat>1)
 actions.st_generators+=/thrash_cat,if=refreshable&variable.use_thrash=1&buff.clearcasting.react
 actions.st_generators+=/pool_resource,for_next=1
+#Rake/MF Spams
+actions.st_generators+=/rake,target_if=talent.bloodtalons.enabled&buff.bloodtalons.up&(persistent_multiplier>=dot.rake.pmultiplier)&target.time_to_die>4
+actions.st_generators+=/moonfire_cat,if=(!buff.clearcasting.react)&talent.bloodtalons.enabled&buff.berserk.down&buff.bloodtalons.down&buff.tigers_fury.up&target.time_to_die>12&dot.rake.remains>(action.shred.cost+action.rake.cost-energy)%energy.regen
 actions.st_generators+=/swipe_cat,if=spell_targets.swipe_cat>1
-actions.st_generators+=/shred,if=dot.rake.remains>(action.shred.cost+action.rake.cost-energy)%energy.regen|buff.clearcasting.react
+actions.st_generators+=/shred,if=dot.rake.remains>(action.shred.cost+action.rake.cost-energy)%energy.regen|(buff.clearcasting.react)
 
 head=irontide_captains_hat,id=155888,bonus_id=4779/1512/4786/4775,azerite_powers=111/30/0/13
-neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=
 shoulders=mantle_of_fastidious_machinations,id=158304,bonus_id=4779/1512/4786/4775,azerite_powers=358/461/0/13
-back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
 chest=spymasters_wrap,id=155860,bonus_id=4779/1512/4786/4775,azerite_powers=481/20/0/13
+neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524
+back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
 wrists=servoarm_bindings,id=158353,bonus_id=4779/1512/4786
 hands=underrot_grotto_tenders,id=159344,bonus_id=4779/1512/4786
 waist=port_pillagers_belt,id=159309,bonus_id=4779/1512/4786
-legs=seawalkers_pantaloons,id=159322,bonus_id=4779/1512/4786
+legs=singeblotched_britches,id=159306,bonus_id=4779/1512/4786
 feet=sandshined_snakeskin_sandals,id=159327,bonus_id=4779/1512/4786
 finger1=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
-finger2=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
+finger2=ritual_binders_ring,id=159459,bonus_id=4779/1512/4786,enchant=pact_of_haste
 trinket1=galecallers_boon,id=159614,bonus_id=4779/1512/4786
 trinket2=deadeye_spyglass,id=159623,bonus_id=4779/1512/4786
 main_hand=twinstrike_polearm,id=158370,bonus_id=4779/1512/4786,enchant=galeforce_striking
