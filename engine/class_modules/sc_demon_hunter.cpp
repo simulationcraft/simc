@@ -374,6 +374,7 @@ public:
 
     // Azerite
     gain_t* thirsting_blades;
+    gain_t* revolving_blades;
   } gain;
 
   // Benefits
@@ -2967,7 +2968,7 @@ struct blade_dance_base_t : public demon_hunter_attack_t
   {
     double c = demon_hunter_attack_t::cost();
 
-    c += p()->buff.revolving_blades->check_stack_value();
+    c = std::max( 0.0, c + p()->buff.revolving_blades->check_stack_value() );
 
     return c;
   }
@@ -3003,7 +3004,9 @@ struct blade_dance_base_t : public demon_hunter_attack_t
     // Benefit Tracking and Consume Buff
     if ( p()->buff.revolving_blades->up() )
     {
+      const double adjusted_cost = cost();
       p()->buff.revolving_blades->expire();
+      p()->gain.revolving_blades->add( RESOURCE_FURY, cost() - adjusted_cost );
     }
 
     // Create Strike Events
@@ -3172,7 +3175,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
   {
     double c = demon_hunter_attack_t::cost();
 
-    c -= p()->buff.thirsting_blades->check();
+    c = std::max( 0.0, c - p()->buff.thirsting_blades->check() );
 
     return c;
   }
@@ -5341,6 +5344,7 @@ void demon_hunter_t::create_gains()
 
   // Azerite
   gain.thirsting_blades         = get_gain( "thirsting_blades" );
+  gain.revolving_blades         = get_gain( "revolving_blades" );
 }
 
 // demon_hunter_t::create_benefits ==========================================
