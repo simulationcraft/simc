@@ -1184,7 +1184,10 @@ struct void_eruption_t final : public priest_spell_t
     impact_action = new void_eruption_damage_t(p);
     add_child(impact_action);
 
-    sim->print_debug( "Void Eruption requires {} insanity", insanity_required );
+    if ( sim->debug )
+    {
+      sim->print_debug( "Void Eruption requires {} insanity", insanity_required );
+    }
 
     // We don't want to lose insanity when casting it!
     base_costs[ RESOURCE_INSANITY ] = 0;
