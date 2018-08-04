@@ -98,6 +98,8 @@ public:
     priest_spell_t::schedule_execute( s );
 
     priest().buffs.shadowy_insight->expire();
+
+    priest().buffs.harvested_thoughts->expire();
   }
 
   virtual double composite_crit_chance() const override
@@ -383,7 +385,7 @@ struct mind_flay_t final : public priest_spell_t
 struct shadow_word_death_t final : public priest_spell_t
 {
   shadow_word_death_t( priest_t& p, const std::string& options_str )
-    : priest_spell_t( "shadow_word_death", p, p.talents.shadow_word_death )      
+    : priest_spell_t( "shadow_word_death", p, p.talents.shadow_word_death )
   {
     parse_options( options_str );
   }
@@ -416,7 +418,7 @@ struct shadow_word_death_t final : public priest_spell_t
 
     if ( result_is_hit( s->result ) )
     {
-      // TODO: Add in a custom buff that checks after 1 second to see if the target SWD was cast on is now dead.      
+      // TODO: Add in a custom buff that checks after 1 second to see if the target SWD was cast on is now dead.
 
       if ( ( ( save_health_percentage > 0.0 ) && ( s->target->health_percentage() <= 0.0 ) ) )
       {
@@ -424,7 +426,7 @@ struct shadow_word_death_t final : public priest_spell_t
       }
       else
       {
-        total_insanity_gain = data().effectN( 3 ).base_value();  
+        total_insanity_gain = data().effectN( 3 ).base_value();
       }
 
       priest().generate_insanity( total_insanity_gain, priest().gains.insanity_shadow_word_death, s->action );
@@ -1975,10 +1977,10 @@ void priest_t::create_buffs_shadow()
                                  ->set_tick_behavior( buff_tick_behavior::REFRESH )
                                  ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED );
 
-  buffs.harvested_thoughts     = 
+  buffs.harvested_thoughts     =
     make_buff( this, "harvested_thoughts", azerite.thought_harvester.spell()->effectN( 1 ).trigger() );
 
-  buffs.whispers_of_the_damned = 
+  buffs.whispers_of_the_damned =
     make_buff( this, "whispers_of_the_damned", azerite.whispers_of_the_damned.spell()->effectN( 1 ).trigger() );
 }
 
