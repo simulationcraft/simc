@@ -1983,14 +1983,18 @@ void priest_t::create_buffs_shadow()
   buffs.zeks_exterminatus = make_buff( this, "zeks_exterminatus", find_spell( 236545 ) )->set_rppm( RPPM_HASTE );
 
   // Azerite Powers
-  buffs.chorus_of_insanity = make_buff<stat_buff_t>( this, "chorus_of_insanity", find_spell( 279572 ) )
+  buffs.chorus_of_insanity =
+      make_buff<stat_buff_t>( this, "chorus_of_insanity", azerite.chorus_of_insanity.spell()->effectN( 1 ).trigger() )
                                  ->add_stat( STAT_CRIT_RATING, azerite.chorus_of_insanity.value( 1 ) )
                                  ->set_reverse( true )
                                  ->set_tick_behavior( buff_tick_behavior::REFRESH )
                                  ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED );
 
-  buffs.harvested_thoughts     = make_buff( this, "harvested_thoughts", find_spell( 273321 ) );
-  buffs.whispers_of_the_damned = make_buff( this, "whispers_of_the_damned", find_spell( 275726 ) );
+  buffs.harvested_thoughts     = 
+    make_buff( this, "harvested_thoughts", azerite.thought_harvester.spell()->effectN( 1 ).trigger() );
+
+  buffs.whispers_of_the_damned = 
+    make_buff( this, "whispers_of_the_damned", azerite.whispers_of_the_damned.spell()->effectN( 1 ).trigger() );
 }
 
 void priest_t::init_rng_shadow()
