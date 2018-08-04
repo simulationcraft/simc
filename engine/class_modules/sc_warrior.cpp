@@ -9,9 +9,9 @@ namespace
 {  // UNNAMED NAMESPACE
 // ==========================================================================
 // Warrior
-// To Do:
-// Fury - Make Simmering Rage affected by Recklessness and multiple traits; add other azerite effects
-// Arms - Add azerite effects
+// To Do: Make Simmering Rage and Lord of War generate more rage with multiple ranks, Gathering Storm shouldn't buff first tick but should stack last tick
+// Fury - Implement Infinite Fury and Reckless Flurry
+// Arms - Implement Seismic Wave, fix Test of Might and Crushing Assault proc
 // ==========================================================================
 
 struct warrior_t;
@@ -116,7 +116,7 @@ public:
 
     buff_t* raging_thirst;
     buff_t* t20_fury_4p;
-    buff_t* executioners_precision;
+
     buff_t* neltharions_thunder;
     // Legendary Items
     buff_t* bindings_of_kakushan;
@@ -129,9 +129,15 @@ public:
     buff_t* war_veteran;     // Arms T21 2PC
     buff_t* weighted_blade;  // Arms T21 4PC
     // Azerite Traits
+    buff_t* bloodcraze;
+    buff_t* bloodcraze_driver;
+    buff_t* crushing_assault;
+    buff_t* executioners_precision;
+    buff_t* gathering_storm;
     buff_t* pulverizing_blows;
     buff_t* test_of_might_tracker;  // Used to track rage gain from test of might.
     buff_t* test_of_might;
+    buff_t* trample_the_weak;
   } buff;
 
   // Cooldowns
@@ -188,13 +194,14 @@ public:
     gain_t* endless_rage;
     gain_t* collateral_damage;
 
-    // Legendarys and Azerite
-    gain_t* ceannar_rage;
-    gain_t* rage_from_damage_taken;
-    gain_t* valarjar_berserking;
-    gain_t* ravager;
-    gain_t* simmering_rage;
+    // Legendarys, Azerite, and Special Effects
     gain_t* execute_refund;
+    gain_t* rage_from_damage_taken;
+    gain_t* ravager;
+    gain_t* ceannar_rage;
+    gain_t* valarjar_berserking;
+    gain_t* lord_of_war;
+    gain_t* simmering_rage;
   } gain;
 
   // Spells
@@ -376,8 +383,6 @@ public:
   // Artifacts
   struct artifact_spell_data_t
   {
-    artifact_power_t executioners_precision;
-
     artifact_power_t neltharions_fury;
     artifact_power_t strength_of_the_earth_aspect;
     artifact_power_t shatter_the_bones;
@@ -1319,7 +1324,6 @@ struct mortal_strike_t20_t : public warrior_attack_t
     double am = warrior_attack_t::action_multiplier();
 
     am *= 1.0 + p()->buff.overpower->check_stack_value();
-    am *= 1.0 + p()->buff.executioners_precision->check_stack_value();
 
     return am;
   }
@@ -1367,7 +1371,6 @@ struct mortal_strike_t : public warrior_attack_t
     double am = warrior_attack_t::action_multiplier();
 
     am *= 1.0 + p()->buff.overpower->check_stack_value();
-    am *= 1.0 + p()->buff.executioners_precision->check_stack_value();
 
     return am;
   }
@@ -1379,6 +1382,13 @@ struct mortal_strike_t : public warrior_attack_t
     c += p()->legendary.archavons_heavy_hand->effectN( 1 ).resource( RESOURCE_RAGE );
 
     return c;
+  }
+
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = warrior_attack_t::bonus_da( s );
+    b += p()->buff.executioners_precision->stack_value();
+    return b;
   }
 
   void execute() override
@@ -1423,6 +1433,12 @@ struct bladestorm_tick_t : public warrior_attack_t
       base_multiplier *= 1.0 + p->spec.arms_warrior->effectN( 4 ).percent();
       impact_action = p->active.deep_wounds_ARMS;
     }
+  }
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = warrior_attack_t::bonus_da( s );
+    b += p()->buff.gathering_storm->stack_value();
+    return b;
   }
 };
 
@@ -1480,11 +1496,13 @@ struct bladestorm_t : public warrior_attack_t
     if ( d->ticks_left() )
     {
       p()->buff.tornados_eye->trigger();
+      p()->buff.gathering_storm->trigger();
     }
     else
     {
       // only duration is refreshed on last tick
       p()->buff.tornados_eye->trigger( 0 );
+      p()->buff.gathering_storm->trigger( 0 );
     }
 
     warrior_attack_t::tick( d );
@@ -1586,6 +1604,14 @@ struct bloodthirst_t : public warrior_attack_t
     return warrior_attack_t::n_targets();
   }
 
+  double composite_crit_chance() const override
+  {
+    double c = warrior_attack_t::composite_crit_chance();
+    if ( p() -> buff.bloodcraze -> up() )
+      c += p() -> buff.bloodcraze -> check_stack_value() / p() -> current.rating.attack_crit;
+    return c;
+  }
+
   void execute() override
   {
     warrior_attack_t::execute();
@@ -1606,6 +1632,10 @@ struct bloodthirst_t : public warrior_attack_t
       {
         p()->enrage();
       }
+    }
+    if ( execute_state -> result == RESULT_CRIT )
+    {
+      p() -> buff.bloodcraze -> expire();
     }
   }
 };
@@ -1802,8 +1832,12 @@ struct cleave_t : public warrior_attack_t
 
 struct colossus_smash_t : public warrior_attack_t
 {
+  bool lord_of_war;
+  double rage_from_lord_of_war;
   colossus_smash_t( warrior_t* p, const std::string& options_str )
-    : warrior_attack_t( "colossus_smash", p, p->spec.colossus_smash )
+    : warrior_attack_t( "colossus_smash", p, p->spec.colossus_smash ),
+      lord_of_war( false ),
+      rage_from_lord_of_war( ( p -> azerite.lord_of_war.spell() -> effectN( 1 ).base_value() )/ 10.0 )
   {
     if ( p->talents.warbreaker->ok() )
     {
@@ -1816,9 +1850,21 @@ struct colossus_smash_t : public warrior_attack_t
     }
   }
 
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = warrior_attack_t::bonus_da( s );
+    b += p()->azerite.lord_of_war.value( 2 );
+    return b;
+  }
+
   void execute() override
   {
     warrior_attack_t::execute();
+
+    if ( p()->azerite.lord_of_war.ok() )
+    {
+      p()->resource_gain( RESOURCE_RAGE, rage_from_lord_of_war, p()->gain.lord_of_war );
+    }
 
     if ( result_is_hit( execute_state->result ) )
     {
@@ -2015,7 +2061,11 @@ struct execute_arms_t : public warrior_attack_t
 
     p()->buff.ayalas_stone_heart->expire();
     p()->buff.sudden_death->expire();
-    p()->buff.executioners_precision->trigger();
+
+    if ( p()->azerite.executioners_precision.ok() )
+    {
+      p()->buff.executioners_precision->trigger();
+    }
   }
 
   bool ready() override
@@ -2676,17 +2726,33 @@ struct overpower_t : public warrior_attack_t
 
 struct warbreaker_t : public warrior_attack_t
 {
+  bool lord_of_war;
+  double rage_from_lord_of_war;
   warbreaker_t( warrior_t* p, const std::string& options_str )
-    : warrior_attack_t( "warbreaker", p, p->talents.warbreaker )
+    : warrior_attack_t( "warbreaker", p, p -> talents.warbreaker ),
+      lord_of_war( false ),
+      rage_from_lord_of_war( ( p -> azerite.lord_of_war.spell() -> effectN( 1 ).base_value() )/ 10.0 )
   {
     parse_options( options_str );
     weapon = &( p->main_hand_weapon );
     aoe    = -1;
   }
 
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = warrior_attack_t::bonus_da( s );
+    b += p()->azerite.lord_of_war.value( 2 );
+    return b;
+  }
+
   void execute() override
   {
     warrior_attack_t::execute();
+
+    if ( p()->azerite.lord_of_war.ok() )
+    {
+      p()->resource_gain( RESOURCE_RAGE, rage_from_lord_of_war, p()->gain.lord_of_war );
+    }
 
     if ( hit_any_target )
     {
@@ -2806,8 +2872,7 @@ struct rampage_attack_t : public warrior_attack_t
   {
     double b = warrior_attack_t::bonus_da( s );
     b += p()->buff.pulverizing_blows->stack_value();
-    if ( p()->azerite.simmering_rage.ok() )
-      b += p()->azerite.simmering_rage.value( 2 );
+    b += p()->azerite.simmering_rage.value( 2 );
     return b;
   }
 
@@ -2898,6 +2963,10 @@ struct rampage_parent_t : public warrior_attack_t
     {
       p()->buff.frothing_berserker->trigger();
     }
+    if ( p()->azerite.trample_the_weak.ok() )
+    {
+      p()->buff.trample_the_weak->trigger();
+    }
     p()->enrage();
     p()->rampage_driver = make_event<rampage_event_t>( *sim, p(), 0 );
   }
@@ -2925,6 +2994,13 @@ struct ravager_tick_t : public warrior_attack_t
     dual = ground_aoe = true;
     attack_power_mod.direct *= 1.0 + p->spec.prot_warrior->effectN( 8 ).percent();  // 89% damage decrease for prot.
     rage_from_ravager = p->find_spell( 248439 )->effectN( 1 ).resource( RESOURCE_RAGE );
+  }
+
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = warrior_attack_t::bonus_da( s );
+    b += p()->buff.gathering_storm->stack_value();
+    return b;
   }
 
   void execute() override
@@ -2984,10 +3060,12 @@ struct ravager_t : public warrior_attack_t
     if ( d->current_tick <= 6 )
     {
       p()->buff.tornados_eye->trigger();
+      p()->buff.gathering_storm->trigger();
     }
     if ( d->current_tick == 7 )
     {
       p()->buff.tornados_eye->trigger( 0 );
+      p()->buff.gathering_storm->trigger( 0 );
     }
     warrior_attack_t::tick( d );
     ravager->execute();
@@ -3221,6 +3299,13 @@ struct slam_t : public warrior_attack_t
     p()->buff.weighted_blade->expire();
   }
 
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = warrior_attack_t::bonus_da( s );
+    b += p()->buff.crushing_assault->value();
+    return b;
+  }
+
   double action_multiplier() const override
   {
     double am = warrior_attack_t::action_multiplier();
@@ -3242,6 +3327,10 @@ struct slam_t : public warrior_attack_t
   double cost() const override
   {
     if ( from_Fervor )
+      return 0;
+    return warrior_attack_t::cost();
+
+    if ( p() -> buff.crushing_assault -> check() )
       return 0;
     return warrior_attack_t::cost();
   }
@@ -5348,10 +5437,6 @@ void warrior_t::create_buffs()
                                                    : find_spell( 242952 )->effectN( 1 ).percent() )
           .chance( sets->has_set_bonus( WARRIOR_FURY, T20, B4 ) );
 
-  buff.executioners_precision =
-      buff_creator_t( this, "executioners_precision", artifact.executioners_precision.data().effectN( 1 ).trigger() )
-          .default_value( artifact.executioners_precision.data().effectN( 1 ).trigger()->effectN( 1 ).percent() );
-
   buff.neltharions_thunder =
       buff_creator_t( this, "neltharions_thunder", artifact.neltharions_thunder.data().effectN( 1 ).trigger() )
           .default_value( artifact.neltharions_thunder.data().effectN( 1 ).trigger()->effectN( 1 ).percent() );
@@ -5379,9 +5464,40 @@ void warrior_t::create_buffs()
   buff.whirlwind = buff_creator_t( this, "whirlwind", find_spell( 85739 ) );
 
   // Azerite
+  const spell_data_t* bloodcraze_trigger = azerite.bloodcraze.spell()->effectN( 1 ).trigger();
+  const spell_data_t* bloodcraze_buff    = bloodcraze_trigger->effectN( 1 ).trigger();
+  buff.bloodcraze_driver = make_buff<buff_t>( this, "bloodcraze_driver", bloodcraze_trigger )
+          ->set_trigger_spell( azerite.bloodcraze )
+          ->set_quiet( true )
+          ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
+          ->set_tick_callback( [ this ]( buff_t*, int, const timespan_t& ) { buff.bloodcraze->trigger(); } );
+
+  buff.bloodcraze = make_buff<buff_t>( this, "bloodcraze", bloodcraze_buff )
+          ->set_trigger_spell( bloodcraze_trigger )
+          ->set_default_value( azerite.bloodcraze.value( 1 ) );
+
+  buff.crushing_assault = make_buff( this, "crushing_assault", find_spell( 278826 ) )
+          ->set_trigger_spell( azerite.crushing_assault.spell_ref().effectN( 1 ).trigger() )
+          ->set_default_value( azerite.crushing_assault.value() );
+
+  buff.executioners_precision = make_buff( this, "executioners_precision", find_spell( 272870 ) )
+          ->set_trigger_spell( azerite.executioners_precision.spell_ref().effectN( 1 ).trigger() )
+          ->set_default_value( azerite.executioners_precision.value() );
+
+  buff.gathering_storm = make_buff( this, "gathering_storm", find_spell( 273415 ) )
+          ->set_trigger_spell( azerite.gathering_storm.spell_ref().effectN( 1 ).trigger() )
+          ->set_default_value( azerite.gathering_storm.value() );
+  
   buff.pulverizing_blows = make_buff( this, "pulverizing_blows", find_spell( 275672 ) )
-                               ->set_trigger_spell( azerite.pulverizing_blows.spell_ref().effectN( 1 ).trigger() )
-                               ->set_default_value( azerite.pulverizing_blows.value() );
+          ->set_trigger_spell( azerite.pulverizing_blows.spell_ref().effectN( 1 ).trigger() )
+          ->set_default_value( azerite.pulverizing_blows.value() );
+
+  const spell_data_t* trample_the_weak_trigger = azerite.trample_the_weak.spell()->effectN( 1 ).trigger();
+  const spell_data_t* trample_the_weak_buff    = trample_the_weak_trigger->effectN( 1 ).trigger();
+  buff.trample_the_weak = make_buff<stat_buff_t>( this, "trample_the_weak", trample_the_weak_buff )
+          ->add_stat( STAT_STRENGTH, azerite.trample_the_weak.value( 1 ) )
+          ->add_stat( STAT_STAMINA, azerite.trample_the_weak.value( 1 ) )
+          ->set_trigger_spell( trample_the_weak_trigger );
 }
 
 // warrior_t::init_scaling ==================================================
@@ -5426,6 +5542,7 @@ void warrior_t::init_gains()
 
   gain.ceannar_rage           = get_gain( "ceannar_rage" );
   gain.endless_rage           = get_gain( "endless_rage" );
+  gain.lord_of_war            = get_gain( "lord_of_war" );
   gain.meat_cleaver           = get_gain( "meat_cleaver" );
   gain.valarjar_berserking    = get_gain( "valarjar_berserking" );
   gain.ravager                = get_gain( "ravager" );
@@ -5652,6 +5769,8 @@ void warrior_t::combat_begin()
   }
   player_t::combat_begin();
   buff.into_the_fray->trigger( into_the_fray_friends + 1 );
+  buff.bloodcraze->trigger( buff.bloodcraze -> data().max_stacks() );
+  buff.bloodcraze_driver -> trigger();
 }
 
 // Into the fray
