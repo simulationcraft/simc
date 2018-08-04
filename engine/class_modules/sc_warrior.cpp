@@ -515,7 +515,7 @@ public:
   // double composite_spell_crit_chance() const override;
   double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   // double composite_leech() const override;
-  // double resource_gain( resource_e, double, gain_t* = nullptr, action_t* = nullptr ) override;
+  double resource_gain( resource_e, double, gain_t* = nullptr, action_t* = nullptr ) override;
   void teleport( double yards, timespan_t duration ) override;
   void trigger_movement( double distance, movement_direction_e direction ) override;
   void interrupt() override;
@@ -581,10 +581,6 @@ public:
     if ( talents.endless_rage->ok() )
     {
       double gain_amount = talents.endless_rage->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RAGE );
-      if ( buff.recklessness->check() )
-      {
-        gain_amount *= 1.0 + spec.recklessness->effectN( 4 ).percent();
-      }
       resource_gain( RESOURCE_RAGE, gain_amount, gain.endless_rage );
     }
   }
@@ -729,21 +725,6 @@ public:
     }
 
     return ab::n_targets();
-  }
-
-  double composite_energize_amount( const action_state_t* state ) const override
-  {
-    double ea = ab::composite_energize_amount( state );
-
-    if ( this->energize_resource_() == RESOURCE_RAGE )
-    {
-      if ( p()->buff.recklessness->check() )
-      {
-        ea *= 1.0 + p()->spec.recklessness->effectN( 4 ).percent();
-      }
-    }
-
-    return ea;
   }
 
   double cost() const override
@@ -1241,10 +1222,6 @@ struct melee_t : public warrior_attack_t
         rage_gain *= 0.5;
       }
       rage_gain *= 1.0 + p()->talents.war_machine->effectN( 2 ).percent();
-      if ( p()->buff.recklessness->check() )
-      {
-        rage_gain *= 1.0 + p()->spec.recklessness->effectN( 4 ).percent();
-      }
     }
 
     rage_gain = util::round( rage_gain, 1 );
@@ -2580,7 +2557,7 @@ struct raging_blow_t : public warrior_attack_t
 
     if ( p()->azerite.pulverizing_blows.ok() )
     {
-      p() -> buff.pulverizing_blows -> trigger();
+      p()->buff.pulverizing_blows->trigger();
     }
   }
 
@@ -2775,7 +2752,7 @@ struct rampage_attack_t : public warrior_attack_t
       valarjar_berserking( false ),
       simmering_rage( false ),
       rage_from_valarjar_berserking( p->find_spell( 248179 )->effectN( 1 ).base_value() / 10.0 ),
-      rage_from_simmering_rage( p->find_spell( 278757 )->effectN( 1 ).base_value() / 10.0 )
+      rage_from_simmering_rage( p->azerite.simmering_rage.value( 1 ) / 10.0 )
   {
     dual = true;
     if ( p->sets->has_set_bonus( WARRIOR_FURY, T21, B4 ) )
@@ -2826,9 +2803,9 @@ struct rampage_attack_t : public warrior_attack_t
   double bonus_da( const action_state_t* s ) const override
   {
     double b = warrior_attack_t::bonus_da( s );
-    b += p() -> buff.pulverizing_blows -> stack_value();
-    if ( p() -> azerite.simmering_rage.ok() )
-      b += p() -> azerite.simmering_rage.value( 2 );
+    b += p()->buff.pulverizing_blows->stack_value();
+    if ( p()->azerite.simmering_rage.ok() )
+      b += p()->azerite.simmering_rage.value( 2 );
     return b;
   }
 
@@ -3533,23 +3510,14 @@ struct fury_whirlwind_parent_t : public warrior_attack_t
     warrior_attack_t::execute();
     const int num_available_targets = target_list().size();
 
-    double recklessness_bonus = 1.0;
-    if ( p()->buff.recklessness->check() )
-    {
-      recklessness_bonus += p()->spec.recklessness->effectN( 4 ).percent();
-    }
-
-    p()->resource_gain(
-        RESOURCE_RAGE,
-        ( base_rage_gain + additional_rage_gain_per_target * num_available_targets ) * recklessness_bonus,
-        p()->gain.whirlwind );
+    p()->resource_gain( RESOURCE_RAGE, ( base_rage_gain + additional_rage_gain_per_target * num_available_targets ),
+                        p()->gain.whirlwind );
 
     if ( p()->talents.meat_cleaver->ok() )
     {
       p()->resource_gain( RESOURCE_RAGE,
                           std::min( p()->talents.meat_cleaver->effectN( 2 ).base_value(),
-                                    p()->talents.meat_cleaver->effectN( 1 ).base_value() * num_available_targets ) *
-                              recklessness_bonus,
+                                    p()->talents.meat_cleaver->effectN( 1 ).base_value() * num_available_targets ),
                           p()->gain.meat_cleaver );
     }
     if ( p()->talents.meat_cleaver->ok() )
@@ -4559,14 +4527,14 @@ void warrior_t::init_spells()
   azerite.bloodcraze        = find_azerite_spell( "Bloodcraze" );
 
   // Generic spells
-  spell.battle_shout           = find_class_spell( "Battle Shout" );
-  spell.charge                 = find_class_spell( "Charge" );
-  spell.colossus_smash_debuff  = find_spell( 208086 );
-  spell.intervene              = find_spell( 147833 );
-  spell.headlong_rush          = find_spell( 137047 );  // Also may be used for other crap in the future.
-  spell.heroic_leap            = find_class_spell( "Heroic Leap" );
-  spell.siegebreaker_debuff    = find_spell( 280773 );
-  spell.whirlwind_buff         = find_spell( 85739, WARRIOR_FURY );  // Used to be called Meat Cleaver
+  spell.battle_shout          = find_class_spell( "Battle Shout" );
+  spell.charge                = find_class_spell( "Charge" );
+  spell.colossus_smash_debuff = find_spell( 208086 );
+  spell.intervene             = find_spell( 147833 );
+  spell.headlong_rush         = find_spell( 137047 );  // Also may be used for other crap in the future.
+  spell.heroic_leap           = find_class_spell( "Heroic Leap" );
+  spell.siegebreaker_debuff   = find_spell( 280773 );
+  spell.whirlwind_buff        = find_spell( 85739, WARRIOR_FURY );  // Used to be called Meat Cleaver
 
   // Active spells
   active.deep_wounds_ARMS = nullptr;
@@ -5390,8 +5358,8 @@ void warrior_t::create_buffs()
 
   // Azerite
   buff.pulverizing_blows = make_buff( this, "pulverizing_blows", find_spell( 275672 ) )
-                           -> set_trigger_spell( azerite.pulverizing_blows.spell_ref().effectN( 1 ).trigger() )
-                           -> set_default_value( azerite.pulverizing_blows.value() );
+                               ->set_trigger_spell( azerite.pulverizing_blows.spell_ref().effectN( 1 ).trigger() )
+                               ->set_default_value( azerite.pulverizing_blows.value() );
 }
 
 // warrior_t::init_scaling ==================================================
@@ -5477,18 +5445,22 @@ void warrior_t::init_resources( bool force )
 std::string warrior_t::default_potion() const
 {
   std::string fury_pot =
-    ( true_level > 110 ) ? "battle_potion_of_strength"
-      : ( true_level > 100 ) ? "old_war"
-          : ( true_level >= 90 ) ? "draenic_strength"
-                : ( true_level >= 85 ) ? "mogu_power" 
-                      : ( true_level >= 80 ) ? "golemblood_potion" : "disabled";
+      ( true_level > 110 )
+          ? "battle_potion_of_strength"
+          : ( true_level > 100 )
+                ? "old_war"
+                : ( true_level >= 90 )
+                      ? "draenic_strength"
+                      : ( true_level >= 85 ) ? "mogu_power" : ( true_level >= 80 ) ? "golemblood_potion" : "disabled";
 
   std::string arms_pot =
-    ( true_level > 110 ) ? "battle_potion_of_strength"
-      : ( true_level > 100 ) ? "old_war"
-          : ( true_level >= 90 ) ? "draenic_strength"
-                : ( true_level >= 85 ) ? "mogu_power" 
-                      : ( true_level >= 80 ) ? "golemblood_potion" : "disabled";
+      ( true_level > 110 )
+          ? "battle_potion_of_strength"
+          : ( true_level > 100 )
+                ? "old_war"
+                : ( true_level >= 90 )
+                      ? "draenic_strength"
+                      : ( true_level >= 85 ) ? "mogu_power" : ( true_level >= 80 ) ? "golemblood_potion" : "disabled";
 
   std::string protection_pot =
       ( true_level > 100 )
@@ -5514,33 +5486,43 @@ std::string warrior_t::default_potion() const
 
 std::string warrior_t::default_flask() const
 {
-  return ( true_level > 110 ) ? "undertow"
-          : ( true_level > 100 ) ? "flask_of_the_countless_armies"
-             : ( true_level >= 90 ) ? "greater_draenic_strength_flask"
-                   : ( true_level >= 85 ) ? "winters_bite" 
-                        : ( true_level >= 80 ) ? "titanic_strength" : "disabled";
+  return ( true_level > 110 )
+             ? "undertow"
+             : ( true_level > 100 )
+                   ? "flask_of_the_countless_armies"
+                   : ( true_level >= 90 )
+                         ? "greater_draenic_strength_flask"
+                         : ( true_level >= 85 ) ? "winters_bite"
+                                                : ( true_level >= 80 ) ? "titanic_strength" : "disabled";
 }
 
 // warrior_t::default_food ==================================================
 
 std::string warrior_t::default_food() const
 {
-  std::string fury_food =
-    ( true_level > 110 ) ? "bountiful_captains_feast"
-                 : ( true_level > 100 ) ? "the_hungry_magister"
-                                : ( true_level > 90 ) ? "buttered_sturgeon"
-                                               : ( true_level >= 85 ) ? "sea_mist_rice_noodles"
-                                                              : ( true_level >= 80 ) ? "seafood_magnifique_feast" : "disabled";
+  std::string fury_food = ( true_level > 110 )
+                              ? "bountiful_captains_feast"
+                              : ( true_level > 100 )
+                                    ? "the_hungry_magister"
+                                    : ( true_level > 90 )
+                                          ? "buttered_sturgeon"
+                                          : ( true_level >= 85 )
+                                                ? "sea_mist_rice_noodles"
+                                                : ( true_level >= 80 ) ? "seafood_magnifique_feast" : "disabled";
 
-  std::string arms_food =
-    ( true_level > 110 ) ? "bountiful_captains_feast"
-                 : ( true_level > 100 ) ? "the_hungry_magister"
-                                : ( true_level > 90 ) ? "buttered_sturgeon"
-                                               : ( true_level >= 85 ) ? "sea_mist_rice_noodles"
-                                                              : ( true_level >= 80 ) ? "seafood_magnifique_feast" : "disabled";
+  std::string arms_food = ( true_level > 110 )
+                              ? "bountiful_captains_feast"
+                              : ( true_level > 100 )
+                                    ? "the_hungry_magister"
+                                    : ( true_level > 90 )
+                                          ? "buttered_sturgeon"
+                                          : ( true_level >= 85 )
+                                                ? "sea_mist_rice_noodles"
+                                                : ( true_level >= 80 ) ? "seafood_magnifique_feast" : "disabled";
 
   std::string protection_food =
-      ( true_level > 100 ) ? "lavish_suramar_feast"
+      ( true_level > 100 )
+          ? "lavish_suramar_feast"
           : ( true_level > 90 ) ? "buttered_sturgeon"
                                 : ( true_level >= 85 ) ? "sea_mist_rice_noodles"
                                                        : ( true_level >= 80 ) ? "seafood_magnifique_feast" : "disabled";
@@ -5562,9 +5544,8 @@ std::string warrior_t::default_food() const
 
 std::string warrior_t::default_rune() const
 {
-  return ( true_level >= 120 ) ? "battle_scarred" :
-         ( true_level >= 110 ) ? "defiled" : 
-         ( true_level >= 100 ) ? "hyper" : "disabled";
+  return ( true_level >= 120 ) ? "battle_scarred"
+                               : ( true_level >= 110 ) ? "defiled" : ( true_level >= 100 ) ? "hyper" : "disabled";
 }
 
 // warrior_t::init_actions ==================================================
@@ -6034,14 +6015,16 @@ double warrior_t::composite_leech() const
 */
 
 // warrior_t::resource_gain =================================================
-/*
+
 double warrior_t::resource_gain( resource_e r, double a, gain_t* gain, action_t* action )
 {
-  double aa = player_t::resource_gain( r, a, gain, action );
-
-  return aa;
+  if ( buff.recklessness->check() )
+  {
+    a *= 1.0 + spec.recklessness->effectN( 4 ).percent();
+  }
+  return player_t::resource_gain( r, a, gain, action );
 }
-*/
+
 // warrior_t::temporary_movement_modifier ==================================
 
 double warrior_t::temporary_movement_modifier() const
