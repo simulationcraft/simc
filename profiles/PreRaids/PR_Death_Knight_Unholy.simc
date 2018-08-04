@@ -4,7 +4,7 @@ level=120
 race=troll
 role=attack
 position=back
-talents=2203023
+talents=2203022
 
 # Default consumables
 potion=battle_potion_of_strength
@@ -90,28 +90,28 @@ actions.generic+=/death_coil,if=runic_power.deficit<20&!variable.pooling_for_gar
 actions.generic+=/festering_strike,if=((((debuff.festering_wound.stack<4&!buff.unholy_frenzy.up)|debuff.festering_wound.stack<3)&cooldown.apocalypse.remains<3)|debuff.festering_wound.stack<1)&cooldown.army_of_the_dead.remains>5
 actions.generic+=/death_coil,if=!variable.pooling_for_gargoyle
 
-head=soulspun_casque,id=155866,bonus_id=4779/1512/4786/4775,azerite_powers=142/30/0/13
-neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=
-shoulders=lockjaw_shoulderplate,id=159407,bonus_id=4779/1512/4786/4775,azerite_powers=505/21/0/13
-back=sporecallers_shroud,id=159292,bonus_id=4779/1512/4786
-chest=chestguard_of_the_deep_denizen,id=159408,bonus_id=4779/1512/4786/4775,azerite_powers=195/21/0/13
+head=greathelm_of_the_putrid_path,id=159446,bonus_id=4779/1512/4786/4775,azerite_powers=194/462/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=
+shoulders=skyscorcher_pauldrons,id=159415,bonus_id=4779/1512/4786/4775,azerite_powers=504/459/13
+back=raals_bib,id=159294,bonus_id=4779/1512/4786
+chest=breastplate_of_the_vengeful,id=159448,bonus_id=4779/1512/4786/4775,azerite_powers=350/461/13
 wrists=shadowshroud_vambraces,id=160212,bonus_id=4779/1512/4786
-hands=risen_lords_oversized_gauntlets,id=159457,bonus_id=4779/1512/4786
-waist=cannoneers_toolbelt,id=159434,bonus_id=4779/1512/4786
-legs=legplates_of_charged_duality,id=159435,bonus_id=4779/1512/4786
-feet=sabatons_of_rampaging_elements,id=159679,bonus_id=4779/1512/4786
-finger1=overseers_lost_seal,id=159460,bonus_id=4779/1512/4786,enchant=pact_of_versatility
-finger2=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_versatility
-trinket1=gorecrusted_butchers_block,id=159616,bonus_id=4779/1512/4786
-trinket2=jes_howler,id=159627,bonus_id=4779/1512/4786
-main_hand=dismembered_submersible_claw,id=159650,bonus_id=4779/1512/4786,enchant=rune_of_the_fallen_crusader
+hands=sharktoothknuckled_grips,id=155890,bonus_id=4779/1512/4786
+waist=sharkbait_harness_girdle,id=158360,bonus_id=4779/1512/4786
+legs=petrified_wickerplate_greaves,id=159456,bonus_id=4779/1512/4786
+feet=fluorescent_flora_stompers,id=159436,bonus_id=4779/1512/4786
+finger1=ritual_binders_ring,id=159459,bonus_id=4779/1512/4786,enchant=pact_of_haste
+finger2=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
+trinket1=jes_howler,id=159627,bonus_id=4779/1512/4786
+trinket2=briny_barnacle,id=159619,bonus_id=4779/1512/4786
+main_hand=getiikku_cut_of_death,id=159644,bonus_id=4779/1512/4786,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
 # gear_ilvl=341.47
 # gear_strength=2883
 # gear_stamina=4465
-# gear_crit_rating=842
-# gear_haste_rating=499
-# gear_mastery_rating=325
-# gear_versatility_rating=811
+# gear_crit_rating=574
+# gear_haste_rating=1136
+# gear_mastery_rating=209
+# gear_versatility_rating=361
 # gear_armor=3050

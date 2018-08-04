@@ -37,17 +37,18 @@ actions+=/dancing_rune_weapon,if=!talent.blooddrinker.enabled|!cooldown.blooddri
 actions+=/tombstone,if=buff.bone_shield.stack>=7
 actions+=/call_action_list,name=standard
 
-actions.standard=blooddrinker,if=!buff.dancing_rune_weapon.up
-actions.standard+=/marrowrend,if=buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*2)
-actions.standard+=/death_strike,if=runic_power.deficit>=10
+actions.standard=death_strike,if=runic_power.deficit<=10
+actions.standard+=/blooddrinker,if=!buff.dancing_rune_weapon.up
+actions.standard+=/marrowrend,if=(buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*2)|buff.bone_shield.stack<3)&runic_power.deficit>=20
 actions.standard+=/blood_boil,if=charges_fractional>=1.8&(buff.hemostasis.stack<=(5-spell_targets.blood_boil)|spell_targets.blood_boil>2)
-actions.standard+=/marrowrend,if=buff.bone_shield.stack<5&talent.ossuary.enabled
+actions.standard+=/marrowrend,if=buff.bone_shield.stack<5&talent.ossuary.enabled&runic_power.deficit>=15
 actions.standard+=/bonestorm,if=runic_power>=100&!buff.dancing_rune_weapon.up
-actions.standard+=/death_strike,if=runic_power.deficit<(15+buff.dancing_rune_weapon.up*5+spell_targets.heart_strike*talent.heartbreaker.enabled*2)
+actions.standard+=/death_strike,if=runic_power.deficit<=(15+buff.dancing_rune_weapon.up*5+spell_targets.heart_strike*talent.heartbreaker.enabled*2)|target.time_to_die<10
+actions.standard+=/death_and_decay,if=spell_targets.death_and_decay>=3
 actions.standard+=/rune_strike,if=(charges_fractional>=1.8|buff.dancing_rune_weapon.up)&rune.time_to_3>=gcd
 actions.standard+=/heart_strike,if=buff.dancing_rune_weapon.up|rune.time_to_4<gcd
 actions.standard+=/blood_boil,if=buff.dancing_rune_weapon.up
-actions.standard+=/death_and_decay,if=buff.crimson_scourge.up|talent.rapid_decomposition.enabled
+actions.standard+=/death_and_decay,if=buff.crimson_scourge.up|talent.rapid_decomposition.enabled|spell_targets.death_and_decay>=2
 actions.standard+=/consumption
 actions.standard+=/blood_boil
 actions.standard+=/heart_strike,if=rune.time_to_3<gcd|buff.bone_shield.stack>6
