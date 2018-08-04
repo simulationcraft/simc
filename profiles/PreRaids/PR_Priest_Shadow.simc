@@ -4,7 +4,7 @@ level=120
 race=troll
 role=spell
 position=ranged_back
-talents=3111322
+talents=1111122
 
 # Default consumables
 potion=battle_potion_of_intellect
@@ -82,9 +82,9 @@ actions.single+=/vampiric_touch,if=refreshable&target.time_to_die>6|(talent.mise
 actions.single+=/mind_flay,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(cooldown.void_bolt.up|cooldown.mind_blast.up)
 actions.single+=/shadow_word_pain
 
-head=headdress_of_the_first_empire,id=159236,bonus_id=4779/1512/4786/4775,azerite_powers=166/461/83/13
+head=stormlurkers_cowl,id=159244,bonus_id=4779/1512/4786/4775,azerite_powers=166/30/83/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=
-shoulders=amice_of_the_returned,id=159273,bonus_id=4779/1512/4786/4775,azerite_powers=156/459/83/13
+shoulders=amice_of_the_returned,id=159273,bonus_id=4779/1512/4786/4775,azerite_powers=404/459/84/13
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
 chest=blooddrenched_robes,id=159241,bonus_id=4779/1512/4786/4775,azerite_powers=194/31/44/13
 wrists=wraps_of_everliving_fealty,id=158348,bonus_id=4779/1512/4786
@@ -96,7 +96,7 @@ finger1=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant
 finger2=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
 trinket1=lady_waycrests_music_box,id=159631,bonus_id=4779/1512/4786
 trinket2=conch_of_dark_whispers,id=159620,bonus_id=4779/1512/4786
-main_hand=leaxas_thoughtpiercer,id=159652,bonus_id=4779/1512/4786,enchant=torrent_of_elements
+main_hand=leaxas_thoughtpiercer,id=159652,bonus_id=4779/1512/4786,enchant=deadly_navigation
 off_hand=rattling_jar_of_eyes,id=159668,bonus_id=4779/1512/4786
 
 # Gear Summary
