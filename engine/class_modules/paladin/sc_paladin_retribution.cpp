@@ -278,7 +278,7 @@ struct blade_of_justice_t : public holy_power_generator_t
     {
       base_td = p -> azerite.expurgation.value();
       hasted_ticks = false;
-      may_crit = true;
+      tick_may_crit = true;
     }
   };
 
