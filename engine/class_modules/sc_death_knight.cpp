@@ -396,7 +396,7 @@ public:
   // Active
   double runic_power_decay_rate;
   double fallen_crusader, fallen_crusader_rppm;
-  double antimagic_shell_absorbed;
+  double antimagic_shell_remaining_absorb;
   std::vector<ground_aoe_event_t*> dnds;
   bool deprecated_dnd_expression;
 
@@ -595,32 +595,29 @@ public:
     // Frost
 
     // Tier 1
+    const spell_data_t* inexorable_assault;
     const spell_data_t* icy_talons;
-    const spell_data_t* runic_attenuation;
     const spell_data_t* cold_heart;
 
     // Tier 2
+    const spell_data_t* runic_attenuation;
     const spell_data_t* murderous_efficiency;
     const spell_data_t* horn_of_winter;
-
-    // Tier 3
-    const spell_data_t* icecap;
-    const spell_data_t* glacial_advance;
-    const spell_data_t* avalanche;
-    
+  
     // Tier 4 
-    const spell_data_t* inexorable_assault;
-    const spell_data_t* volatile_shielding;
+    const spell_data_t* avalanche;
+    const spell_data_t* frozen_pulse;
+    const spell_data_t* frostscythe;
 
     // Tier 6
-    const spell_data_t* frostscythe;
-    const spell_data_t* frozen_pulse;
     const spell_data_t* gathering_storm;
+    const spell_data_t* glacial_advance;
+    const spell_data_t* frostwyrms_fury;
     
     // Tier 7
+    const spell_data_t* icecap;
     const spell_data_t* obliteration;
     const spell_data_t* breath_of_sindragosa;
-    const spell_data_t* frostwyrms_fury;
 
     // Unholy
 
@@ -630,15 +627,17 @@ public:
     const spell_data_t* clawing_shadows;
 
     // Tier 2
-    const spell_data_t* pestilent_pustules;
-    const spell_data_t* harbinger_of_doom;
-    const spell_data_t* soul_reaper;
-
-    // Tier 3
     const spell_data_t* bursting_sores;
     const spell_data_t* ebon_fever;
     const spell_data_t* unholy_blight;
 
+    // Tier 4
+    const spell_data_t* pestilent_pustules;
+    const spell_data_t* harbinger_of_doom;
+    const spell_data_t* soul_reaper;
+
+    // Tier 5
+    const spell_data_t* spell_eater;
 
     // Tier 6
     const spell_data_t* pestilence;
@@ -663,19 +662,14 @@ public:
     const spell_data_t* consumption;
     
     // Tier 3
-    const spell_data_t* will_of_the_necropolis; // NYI
-    const spell_data_t* antimagic_barrier;
-    const spell_data_t* rune_tap;
-
-    // Tier 4 Utility tier, NYI
-    const spell_data_t* tightening_grasp;
-    const spell_data_t* grip_of_the_dead;
-    const spell_data_t* march_of_the_damned;
-
-    // Tier 5
     const spell_data_t* foul_bulwark;
     const spell_data_t* ossuary;
     const spell_data_t* tombstone;
+
+    // Tier 4
+    const spell_data_t* will_of_the_necropolis; // NYI
+    const spell_data_t* antimagic_barrier;
+    const spell_data_t* rune_tap;
 
     // Tier 6
     const spell_data_t* voracious;
@@ -685,7 +679,7 @@ public:
     // Tier 7
     const spell_data_t* purgatory; // NYI
     const spell_data_t* red_thirst; 
-    const spell_data_t* bonestorm; 
+    const spell_data_t* bonestorm;
   } talent;
 
   // Spells
@@ -827,7 +821,7 @@ public:
     runic_power_decay_rate(),
     fallen_crusader( 0 ),
     fallen_crusader_rppm( find_spell( 166441 ) -> real_ppm() ),
-    antimagic_shell_absorbed( 0.0 ),
+    antimagic_shell_remaining_absorb( 0.0 ),
     deprecated_dnd_expression( false ),
     t20_2pc_frost( 0 ),
     t20_4pc_frost( 0 ),
@@ -6320,10 +6314,15 @@ struct antimagic_shell_buff_t : public buff_t
   void execute( int stacks, double value, timespan_t duration ) override
   {
     death_knight_t* p = debug_cast< death_knight_t* >( player );
-    p -> antimagic_shell_absorbed = 0.0;
+    p -> antimagic_shell_remaining_absorb = p -> resources.max[RESOURCE_HEALTH] * p -> spell.antimagic_shell -> effectN( 2 ).percent();
     
+    p -> antimagic_shell_remaining_absorb *= 1.0 + p -> talent.antimagic_barrier -> effectN( 2 ).percent();
+    p -> antimagic_shell_remaining_absorb *= 1.0 + p -> talent.spell_eater -> effectN( 1 ).percent();
+
+
     if ( p -> azerite.runic_barrier.enabled() )
     {
+      p -> antimagic_shell_remaining_absorb += p -> azerite.runic_barrier.value( 3 );
       duration = timespan_t::from_seconds( p -> azerite.runic_barrier.value( 2 ) );
     }
 
@@ -6354,6 +6353,13 @@ struct antimagic_shell_t : public death_knight_spell_t
     add_option( opt_float( "damage", damage ) );
     parse_options( options_str );
 
+    // Don't allow lower than 45s intervals
+    if ( interval < 45.0 )
+    {
+      sim -> errorf( "%s minimum interval for Anti-Magic Shell is 45 seconds.", player -> name() );
+      interval = 45.0;
+    }
+
     // Less than a second standard deviation is translated to a percent of
     // interval
     if ( interval_stddev_opt < 1 )
@@ -6381,8 +6387,8 @@ struct antimagic_shell_t : public death_knight_spell_t
     if ( damage > 0 )
     {
       timespan_t new_cd = timespan_t::from_seconds( rng().gauss( interval, interval_stddev ) );
-      if ( new_cd < timespan_t::from_seconds( 15.0 ) )
-        new_cd = timespan_t::from_seconds( 15.0 );
+      if ( new_cd < timespan_t::from_seconds( 45.0 ) )
+        new_cd = timespan_t::from_seconds( 45.0 );
 
       cooldown -> duration = new_cd;
     }
@@ -6392,18 +6398,21 @@ struct antimagic_shell_t : public death_knight_spell_t
     // If using the fake soaking, immediately grant the RP in one go
     if ( damage > 0 )
     {
-      double absorbed = std::min( damage * data().effectN( 1 ).percent(),
-                                  p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 2 ).percent() +
-                                  p() -> azerite.runic_barrier.value( 3 ) );
+      double max_absorb =  p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 2 ).percent();
+      max_absorb *= 1.0 + p() -> talent.antimagic_barrier -> effectN( 2 ).percent();
+      max_absorb *= 1.0 + p() -> talent.spell_eater -> effectN( 1 ).percent();
 
-      double generated = absorbed / p() -> resources.max[ RESOURCE_HEALTH ];
+      if ( p() -> azerite.runic_barrier.enabled() )
+      {
+        max_absorb += p() -> azerite.runic_barrier.value( 3 );
+      }
+
+      double absorbed = std::min( damage, max_absorb );
+
+      // AMS generates 1 runic power per percentage max health absorbed.
+      double rp_generated = absorbed / p() -> resources.max[ RESOURCE_HEALTH ] * 100;
       
-      // Volatile shielding increases AMS' RP generation
-      if ( p() -> talent.volatile_shielding -> ok() )
-        generated *= 1.0 + p() -> talent.volatile_shielding -> effectN( 2 ).percent();
-
-      // AMS generates 2 runic power per percentage max health absorbed.
-      p() -> resource_gain( RESOURCE_RUNIC_POWER, util::round( generated * 100.0 * 2.0 ), p() -> gains.antimagic_shell, this );
+      p() -> resource_gain( RESOURCE_RUNIC_POWER, util::round( rp_generated ), p() -> gains.antimagic_shell, this );
     }
     else
       p() -> buffs.antimagic_shell -> trigger();
@@ -7524,32 +7533,29 @@ void death_knight_t::init_spells()
 
   // Frost Talents
   // Tier 1
+  talent.inexorable_assault    = find_talent_spell( "Inexorable Assault" );
   talent.icy_talons            = find_talent_spell( "Icy Talons" );
-  talent.runic_attenuation     = find_talent_spell( "Runic Attenuation" );
   talent.cold_heart            = find_talent_spell( "Cold Heart" );
   // Tier 2
+  talent.runic_attenuation     = find_talent_spell( "Runic Attenuation" );
   talent.murderous_efficiency  = find_talent_spell( "Murderous Efficiency" );
   talent.horn_of_winter        = find_talent_spell( "Horn of Winter" );
-  // Tier 3
-  talent.icecap                = find_talent_spell( "Icecap" );
-  talent.glacial_advance       = find_talent_spell( "Glacial Advance" ); 
-  talent.avalanche             = find_talent_spell( "Avalanche" );
   
   // Tier 4  
-  talent.inexorable_assault    = find_talent_spell( "Inexorable Assault" );
-  talent.volatile_shielding    = find_talent_spell( "Volatile Shielding" );
-    
-  // Tier 6
-  talent.frostscythe           = find_talent_spell( "Frostscythe" );
+  talent.avalanche             = find_talent_spell( "Avalanche" );
   talent.frozen_pulse          = find_talent_spell( "Frozen Pulse" );
+  talent.frostscythe           = find_talent_spell( "Frostscythe" );
+
+  // Tier 6
   talent.gathering_storm       = find_talent_spell( "Gathering Storm" );
-  
+  talent.glacial_advance       = find_talent_spell( "Glacial Advance" ); 
+  talent.frostwyrms_fury       = find_talent_spell( "Frostwyrm's Fury" );
+
   // Tier 7
+  talent.icecap                = find_talent_spell( "Icecap" );
   talent.obliteration          = find_talent_spell( "Obliteration" );
   talent.breath_of_sindragosa  = find_talent_spell( "Breath of Sindragosa" );
-  talent.frostwyrms_fury       = find_talent_spell( "Frostwyrm's Fury" );
-	
-
+  
   // Unholy Talents
   // Tier 1
   talent.infected_claws        = find_talent_spell( "Infected Claws" );
@@ -7557,14 +7563,17 @@ void death_knight_t::init_spells()
   talent.clawing_shadows       = find_talent_spell( "Clawing Shadows" );
 
   // Tier 2
+  talent.bursting_sores        = find_talent_spell( "Bursting Sores" );
+  talent.ebon_fever            = find_talent_spell( "Ebon Fever" );
+  talent.unholy_blight         = find_talent_spell( "Unholy Blight" );
+
+  // Tier 4
   talent.pestilent_pustules    = find_talent_spell( "Pestilent Pustules" );
   talent.harbinger_of_doom     = find_talent_spell( "Harbinger of Doom" );
   talent.soul_reaper           = find_talent_spell( "Soul Reaper" );
 
-  // Tier 3
-  talent.bursting_sores        = find_talent_spell( "Bursting Sores" );
-  talent.ebon_fever            = find_talent_spell( "Ebon Fever" );
-  talent.unholy_blight         = find_talent_spell( "Unholy Blight" );
+  // Tier 5
+  talent.spell_eater           = find_talent_spell( "Spell Eater" );
 
   // Tier 6
   talent.pestilence            = find_talent_spell( "Pestilence" );
@@ -7579,7 +7588,6 @@ void death_knight_t::init_spells()
 
   // Blood Talents
   // Tier 1
-
   talent.heartbreaker           = find_talent_spell( "Heartbreaker" );
   talent.blooddrinker           = find_talent_spell( "Blooddrinker" );
   talent.rune_strike            = find_talent_spell( "Rune Strike"  );
@@ -7590,20 +7598,15 @@ void death_knight_t::init_spells()
   talent.consumption            = find_talent_spell( "Consumption"         ); 
 
   // Tier 3
-  talent.will_of_the_necropolis = find_talent_spell( "Will of the Necropolis" ); // NYI
-  talent.antimagic_barrier      = find_talent_spell( "Anti-Magic Barrier"     ); 
-  talent.rune_tap               = find_talent_spell( "Rune Tap"               );
-
-  // Tier 4 Utility - NYI
-  talent.tightening_grasp       = find_talent_spell( "Tightening Gasp"     );
-  talent.grip_of_the_dead       = find_talent_spell( "Grip of the Dead"    );
-  talent.march_of_the_damned    = find_talent_spell( "March of the Damned" );
-
-  // Tier 5
   talent.foul_bulwark          = find_talent_spell( "Foul Bulwark" );
   talent.ossuary               = find_talent_spell( "Ossuary"      ); 
   talent.tombstone             = find_talent_spell( "Tombstone"    );
 
+  // Tier 4
+  talent.will_of_the_necropolis = find_talent_spell( "Will of the Necropolis" ); // NYI
+  talent.antimagic_barrier      = find_talent_spell( "Anti-Magic Barrier"     ); 
+  talent.rune_tap               = find_talent_spell( "Rune Tap"               );
+  
   // Tier 6
   talent.voracious             = find_talent_spell( "Voracious"     ); 
   talent.bloodworms            = find_talent_spell( "Bloodworms"    ); 
@@ -8326,7 +8329,7 @@ void death_knight_t::reset()
   player_t::reset();
 
   runic_power_decay_rate = 1; // 1 RP per second decay
-  antimagic_shell_absorbed = 0.0;
+  antimagic_shell_remaining_absorb = 0.0;
   _runes.reset();
   dnds.clear();
   t20_2pc_frost = 0;
@@ -8380,34 +8383,26 @@ void death_knight_t::assess_damage_imminent( school_e school, dmg_e, action_stat
   {
     if ( buffs.antimagic_shell -> up() )
     {
-      double absorbed = s -> result_amount * spell.antimagic_shell -> effectN( 1 ).percent();
-      antimagic_shell_absorbed += absorbed;
+      double damage_absorbed = s -> result_amount;
 
-      double max_hp_absorb = resources.max[RESOURCE_HEALTH] * 0.4;
-
-      max_hp_absorb *= 1.0 + talent.volatile_shielding -> effectN( 1 ).percent();
-      max_hp_absorb *= 1.0 + talent.antimagic_barrier -> effectN( 3 ).percent();
-
-      if ( antimagic_shell_absorbed > max_hp_absorb )
+      if ( damage_absorbed > antimagic_shell_remaining_absorb )
       {
-        absorbed = antimagic_shell_absorbed - max_hp_absorb;
-        antimagic_shell_absorbed = -1.0; // Set to -1.0 so expire_override knows that we don't need to reduce cooldown from regenerative magic.
+        damage_absorbed = antimagic_shell_remaining_absorb;
         buffs.antimagic_shell -> expire();
       }
 
-      double generated = absorbed / resources.max[RESOURCE_HEALTH];
+      // Generates 1 RP for every 1% max hp absorbed
+      double rp_generated = damage_absorbed / resources.max[RESOURCE_HEALTH] * 100;
 
-      s -> result_amount -= absorbed;
-      s -> result_absorbed -= absorbed;
-      s -> self_absorb_amount += absorbed;
-      iteration_absorb_taken += absorbed;
-
-      //gains.antimagic_shell -> add( RESOURCE_HEALTH, absorbed );
+      s -> result_amount -= damage_absorbed;
+      s -> result_absorbed -= damage_absorbed;
+      s -> self_absorb_amount += damage_absorbed;
+      iteration_absorb_taken += damage_absorbed;
 
       if ( antimagic_shell )
-        antimagic_shell -> add_result( absorbed, absorbed, ABSORB, RESULT_HIT, BLOCK_RESULT_UNBLOCKED, this );
+        antimagic_shell -> add_result( damage_absorbed, damage_absorbed, ABSORB, RESULT_HIT, BLOCK_RESULT_UNBLOCKED, this );
 
-      resource_gain( RESOURCE_RUNIC_POWER, util::round( generated * 100.0 ), gains.antimagic_shell, s -> action );
+      resource_gain( RESOURCE_RUNIC_POWER, util::round( rp_generated ), gains.antimagic_shell, s -> action );
     }
   }
 }
