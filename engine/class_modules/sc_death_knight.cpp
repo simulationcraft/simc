@@ -4281,10 +4281,17 @@ struct t21_death_coil_t : public death_knight_spell_t
       p() -> trigger_runic_corruption( base_costs[ RESOURCE_RUNIC_POWER ] );
     }
 
-    // Reduces the cooldown Dark Transformation by 1s, +3s if Dark Infusion is talented
-
+    // Reduces the cooldown Dark Transformation by 1s
     p() -> cooldown.dark_transformation -> adjust( - timespan_t::from_seconds(
         p() -> spec.death_coil -> effectN( 2 ).base_value() ) );
+
+    // Reduce the cooldown on Apocalypse and Army of the Dead if Army of the Damned is talented
+
+    p() -> cooldown.apocalypse -> adjust( -timespan_t::from_seconds( 
+      p() -> talent.army_of_the_damned -> effectN( 1 ).base_value() / 10 ) );
+
+    p() -> cooldown.army_of_the_dead -> adjust( -timespan_t::from_seconds( 
+      p() -> talent.army_of_the_damned -> effectN( 2 ).base_value() / 10 ) );
 
     p() -> trigger_death_march( execute_state );
   }
@@ -6346,13 +6353,6 @@ struct antimagic_shell_t : public death_knight_spell_t
     add_option( opt_float( "interval_stddev", interval_stddev_opt ) );
     add_option( opt_float( "damage", damage ) );
     parse_options( options_str );
-
-    // Allow as low as 30 second intervals
-    if ( interval < 30.0 )
-    {
-      sim -> errorf( "%s minimum interval for Anti-Magic Shell is 30 seconds.", player -> name() );
-      interval = 30.0;
-    }
 
     // Less than a second standard deviation is translated to a percent of
     // interval
