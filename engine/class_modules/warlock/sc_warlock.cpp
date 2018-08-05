@@ -985,7 +985,10 @@ expr_t* warlock_t::create_expression( const std::string& name_str )
       action_state_t* agony_state = agony->current_action->get_state(agony->state);
       timespan_t dot_tick_time = agony->current_action->tick_time(agony_state);
 
-      double average = 1 / 0.184 * std::pow( active_agonies, -2.0 / 3.0 ) * dot_tick_time.total_seconds() / active_agonies;
+      // Seeks to return the average expected time for the player to generate a single soul shard.
+      // TOCHECK regularly.
+
+      double average = 1.0 / ( 0.184 * std::pow( active_agonies, -2.0 / 3.0 ) ) * dot_tick_time.total_seconds() / active_agonies;
 
       if ( talents.creeping_death->ok() )
         average /= 1.0 + talents.creeping_death->effectN( 1 ).percent();
