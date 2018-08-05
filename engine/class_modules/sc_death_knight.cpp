@@ -6313,17 +6313,19 @@ struct antimagic_shell_buff_t : public buff_t
   void execute( int stacks, double value, timespan_t duration ) override
   {
     death_knight_t* p = debug_cast< death_knight_t* >( player );
-    p -> antimagic_shell_remaining_absorb = p -> resources.max[RESOURCE_HEALTH] * p -> spell.antimagic_shell -> effectN( 2 ).percent();
+    double max_absorb = p -> resources.max[RESOURCE_HEALTH] * p -> spell.antimagic_shell -> effectN( 2 ).percent();
     
-    p -> antimagic_shell_remaining_absorb *= 1.0 + p -> talent.antimagic_barrier -> effectN( 2 ).percent();
-    p -> antimagic_shell_remaining_absorb *= 1.0 + p -> talent.spell_eater -> effectN( 1 ).percent();
-
+    max_absorb *= 1.0 + p -> talent.antimagic_barrier -> effectN( 2 ).percent();
+    max_absorb *= 1.0 + p -> talent.spell_eater -> effectN( 1 ).percent();
 
     if ( p -> azerite.runic_barrier.enabled() )
     {
-      p -> antimagic_shell_remaining_absorb += p -> azerite.runic_barrier.value( 3 );
+      max_absorb += p -> azerite.runic_barrier.value( 3 );
       duration = timespan_t::from_seconds( p -> azerite.runic_barrier.value( 2 ) );
     }
+
+    max_absorb *= 1.0 + p -> cache.heal_versatility();
+    p -> antimagic_shell_remaining_absorb = max_absorb;
 
     duration *= 1.0 + p -> talent.antimagic_barrier -> effectN( 2 ).percent();
     buff_t::execute( stacks, value, duration );
@@ -6332,6 +6334,7 @@ struct antimagic_shell_buff_t : public buff_t
 
 struct antimagic_shell_t : public death_knight_spell_t
 {
+  double min_interval;
   double interval;
   double interval_stddev;
   double interval_stddev_opt;
@@ -6339,7 +6342,7 @@ struct antimagic_shell_t : public death_knight_spell_t
 
   antimagic_shell_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "antimagic_shell", p, p -> spell.antimagic_shell ),
-    interval( 60 ), interval_stddev( 0.05 ), interval_stddev_opt( 0 ), damage( 0 )
+    interval( 60 ), interval_stddev( 0.05 ), interval_stddev_opt( 0 ), damage( 0 ), min_interval( 60 )
   {
     cooldown = p -> cooldown.antimagic_shell;
     cooldown -> duration += timespan_t::from_millis( p -> talent.antimagic_barrier -> effectN( 1 ).base_value() );
@@ -6352,11 +6355,13 @@ struct antimagic_shell_t : public death_knight_spell_t
     add_option( opt_float( "damage", damage ) );
     parse_options( options_str );
 
-    // Don't allow lower than 45s intervals
-    if ( interval < 45.0 )
+    min_interval += p -> talent.antimagic_barrier -> effectN( 1 ).base_value();
+
+    // Don't allow lower than AMS cd intervals
+    if ( interval < min_interval )
     {
-      sim -> errorf( "%s minimum interval for Anti-Magic Shell is 45 seconds.", player -> name() );
-      interval = 45.0;
+      sim -> errorf( "%s minimum interval for Anti-Magic Shell is %f seconds.", player -> name(), min_interval );
+      interval = min_interval;
     }
 
     // Less than a second standard deviation is translated to a percent of
@@ -6386,8 +6391,8 @@ struct antimagic_shell_t : public death_knight_spell_t
     if ( damage > 0 )
     {
       timespan_t new_cd = timespan_t::from_seconds( rng().gauss( interval, interval_stddev ) );
-      if ( new_cd < timespan_t::from_seconds( 45.0 ) )
-        new_cd = timespan_t::from_seconds( 45.0 );
+      if ( new_cd < timespan_t::from_seconds( min_interval ) )
+        new_cd = timespan_t::from_seconds( min_interval );
 
       cooldown -> duration = new_cd;
     }
@@ -6405,6 +6410,8 @@ struct antimagic_shell_t : public death_knight_spell_t
       {
         max_absorb += p() -> azerite.runic_barrier.value( 3 );
       }
+
+      max_absorb *= 1.0 + p() -> cache.heal_versatility();
 
       double absorbed = std::min( damage, max_absorb );
 
