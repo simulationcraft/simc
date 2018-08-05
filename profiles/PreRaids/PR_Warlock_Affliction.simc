@@ -4,7 +4,7 @@ level=120
 race=troll
 role=spell
 position=ranged_back
-talents=3302023
+talents=3102023
 
 # Default consumables
 potion=battle_potion_of_intellect
