@@ -10,8 +10,8 @@ namespace
 // ==========================================================================
 // Warrior
 // To Do: Gathering Storm should stack after each tick, not before (tornados eye is the opposite because reasons)
-// Fury - Implement Infinite Fury and Reckless Flurry
-// Arms - Implement Seismic Wave, fix Test of Might
+// Fury - Implement Infinite Fury
+// Arms - Fix Test of Might
 // ==========================================================================
 
 struct warrior_t;
@@ -1177,6 +1177,13 @@ struct melee_t : public warrior_attack_t
     }
   }
 
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = warrior_attack_t::bonus_da( s );
+    b += p()->azerite.reckless_flurry.value( 2 );
+    return b;
+  }
+
   void execute() override
   {
     if ( p()->current.distance_to_move > 5 )
@@ -1214,6 +1221,10 @@ struct melee_t : public warrior_attack_t
         else
         {
           trigger_rage_gain( execute_state );
+          if (p()->azerite.reckless_flurry.ok()) // does this need a spec = fury check?
+          {
+            p()->cooldown.recklessness->adjust((-1 * p()->azerite.reckless_flurry.spell_ref().effectN(1).time_value()));
+          }
         }
       }
     }
@@ -2701,9 +2712,21 @@ struct sweeping_strikes_t : public warrior_spell_t
 
 // Overpower ============================================================
 
+struct seismic_wave_t : warrior_attack_t
+{
+  seismic_wave_t( warrior_t* p ) : warrior_attack_t( "seismic_wave", p, p->find_spell( 277639 ) ) // change to 278497 after regenerate
+  {
+    aoe = -1;
+    background = true;
+    base_dd_min = base_dd_max = p -> azerite.seismic_wave.value( 1 );
+  }
+};
 struct overpower_t : public warrior_attack_t
 {
-  overpower_t( warrior_t* p, const std::string& options_str ) : warrior_attack_t( "overpower", p, p->spec.overpower )
+
+  warrior_attack_t* seismic_wave;
+  overpower_t( warrior_t* p, const std::string& options_str ) : warrior_attack_t( "overpower", p, p->spec.overpower ),
+  seismic_wave( nullptr )
   {
     parse_options( options_str );
     may_block = may_parry = may_dodge = false;
@@ -2715,6 +2738,23 @@ struct overpower_t : public warrior_attack_t
     }
     p->cooldown.charge = cooldown;
     p->active.charge   = this;
+
+    if ( p -> azerite.seismic_wave.ok() )
+    {
+      seismic_wave = new seismic_wave_t( p );
+      add_child( seismic_wave );
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warrior_attack_t::impact( s );
+
+    if ( seismic_wave && result_is_hit( s->result ) )
+    {
+      seismic_wave -> set_target( s->target);
+      seismic_wave -> execute();
+    }
   }
 
   void execute() override
