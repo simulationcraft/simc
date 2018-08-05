@@ -1184,8 +1184,10 @@ struct melee_t : public warrior_attack_t
 
   double bonus_da( const action_state_t* s ) const override
   {
-    double b = warrior_attack_t::bonus_da( s );
-    b += p()->azerite.reckless_flurry.value( 2 );
+    double b = warrior_attack_t::bonus_da( s ); // Reckless Fury gives 2/3 bonus to MH and 1/3 bonus to OH
+    if ( weapon->slot == SLOT_OFF_HAND )
+      b += p()->azerite.reckless_flurry.value( 2 )* 1.0 / 3.0;
+    else b += p()->azerite.reckless_flurry.value( 2 ) * 2.0 / 3.0;
     return b;
   }
 
