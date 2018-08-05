@@ -617,7 +617,7 @@ struct warrior_action_t : public Base
         demo_shout( false ),
         sweeping_strikes( false ),
         deadly_calm( false ),
-        crushing_assault ( false )
+        crushing_assault( false )
     {
     }
   } affected_by;
@@ -927,6 +927,10 @@ public:
 
     double rage = ab::last_resource_cost;
 
+    if ( p()->buff.test_of_might_tracker->check() )
+      p()->buff.test_of_might_tracker->current_value +=
+          ab::cost();  // Uses rage cost before deadly calm makes it cheaper.
+
     if ( p()->talents.anger_management->ok() )
     {
       anger_management( rage );
@@ -1010,7 +1014,7 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
   virtual void execute()
   {
     base_t::execute();
-    if(!special) // Procs below only trigger on special attacks, not autos
+    if ( !special )  // Procs below only trigger on special attacks, not autos
       return;
 
     if ( p()->talents.sudden_death->ok() && p()->buff.sudden_death->trigger() )
@@ -1221,9 +1225,10 @@ struct melee_t : public warrior_attack_t
         else
         {
           trigger_rage_gain( execute_state );
-          if (p()->azerite.reckless_flurry.ok()) // does this need a spec = fury check?
+          if ( p()->azerite.reckless_flurry.ok() )  // does this need a spec = fury check?
           {
-            p()->cooldown.recklessness->adjust((-1 * p()->azerite.reckless_flurry.spell_ref().effectN(1).time_value()));
+            p()->cooldown.recklessness->adjust(
+                ( -1 * p()->azerite.reckless_flurry.spell_ref().effectN( 1 ).time_value() ) );
           }
         }
       }
@@ -1629,8 +1634,8 @@ struct bloodthirst_t : public warrior_attack_t
   double composite_crit_chance() const override
   {
     double c = warrior_attack_t::composite_crit_chance();
-    if ( p() -> buff.bloodcraze -> check() )
-      c += p() -> buff.bloodcraze -> check_stack_value() / p() -> current.rating.attack_crit;
+    if ( p()->buff.bloodcraze->check() )
+      c += p()->buff.bloodcraze->check_stack_value() / p()->current.rating.attack_crit;
     return c;
   }
 
@@ -1655,9 +1660,9 @@ struct bloodthirst_t : public warrior_attack_t
         p()->enrage();
       }
     }
-    if ( execute_state -> result == RESULT_CRIT )
+    if ( execute_state->result == RESULT_CRIT )
     {
-      p() -> buff.bloodcraze -> expire();
+      p()->buff.bloodcraze->expire();
     }
   }
 };
@@ -1859,7 +1864,8 @@ struct colossus_smash_t : public warrior_attack_t
   colossus_smash_t( warrior_t* p, const std::string& options_str )
     : warrior_attack_t( "colossus_smash", p, p->spec.colossus_smash ),
       lord_of_war( false ),
-      rage_from_lord_of_war( ( p -> azerite.lord_of_war.spell() -> effectN( 1 ).base_value() * p->azerite.lord_of_war.n_items() )/ 10.0 )
+      rage_from_lord_of_war(
+          ( p->azerite.lord_of_war.spell()->effectN( 1 ).base_value() * p->azerite.lord_of_war.n_items() ) / 10.0 )
   {
     if ( p->talents.warbreaker->ok() )
     {
@@ -1891,6 +1897,7 @@ struct colossus_smash_t : public warrior_attack_t
     if ( result_is_hit( execute_state->result ) )
     {
       td( execute_state->target )->debuffs_colossus_smash->trigger();
+      p()->buff.test_of_might_tracker->trigger();
 
       p()->buff.in_for_the_kill->trigger();
       p()->buff.war_veteran->trigger();
@@ -2714,19 +2721,19 @@ struct sweeping_strikes_t : public warrior_spell_t
 
 struct seismic_wave_t : warrior_attack_t
 {
-  seismic_wave_t( warrior_t* p ) : warrior_attack_t( "seismic_wave", p, p->find_spell( 277639 ) ) // change to 278497 after regenerate
+  seismic_wave_t( warrior_t* p )
+    : warrior_attack_t( "seismic_wave", p, p->find_spell( 277639 ) )  // change to 278497 after regenerate
   {
-    aoe = -1;
-    background = true;
-    base_dd_min = base_dd_max = p -> azerite.seismic_wave.value( 1 );
+    aoe         = -1;
+    background  = true;
+    base_dd_min = base_dd_max = p->azerite.seismic_wave.value( 1 );
   }
 };
 struct overpower_t : public warrior_attack_t
 {
-
   warrior_attack_t* seismic_wave;
-  overpower_t( warrior_t* p, const std::string& options_str ) : warrior_attack_t( "overpower", p, p->spec.overpower ),
-  seismic_wave( nullptr )
+  overpower_t( warrior_t* p, const std::string& options_str )
+    : warrior_attack_t( "overpower", p, p->spec.overpower ), seismic_wave( nullptr )
   {
     parse_options( options_str );
     may_block = may_parry = may_dodge = false;
@@ -2739,7 +2746,7 @@ struct overpower_t : public warrior_attack_t
     p->cooldown.charge = cooldown;
     p->active.charge   = this;
 
-    if ( p -> azerite.seismic_wave.ok() )
+    if ( p->azerite.seismic_wave.ok() )
     {
       seismic_wave = new seismic_wave_t( p );
       add_child( seismic_wave );
@@ -2752,8 +2759,8 @@ struct overpower_t : public warrior_attack_t
 
     if ( seismic_wave && result_is_hit( s->result ) )
     {
-      seismic_wave -> set_target( s->target);
-      seismic_wave -> execute();
+      seismic_wave->set_target( s->target );
+      seismic_wave->execute();
     }
   }
 
@@ -2780,9 +2787,9 @@ struct warbreaker_t : public warrior_attack_t
   bool lord_of_war;
   double rage_from_lord_of_war;
   warbreaker_t( warrior_t* p, const std::string& options_str )
-    : warrior_attack_t( "warbreaker", p, p -> talents.warbreaker ),
+    : warrior_attack_t( "warbreaker", p, p->talents.warbreaker ),
       lord_of_war( false ),
-      rage_from_lord_of_war( ( p -> azerite.lord_of_war.spell() -> effectN( 1 ).base_value() )/ 10.0 )
+      rage_from_lord_of_war( ( p->azerite.lord_of_war.spell()->effectN( 1 ).base_value() ) / 10.0 )
   {
     parse_options( options_str );
     weapon = &( p->main_hand_weapon );
@@ -2809,6 +2816,7 @@ struct warbreaker_t : public warrior_attack_t
     {
       p()->buff.in_for_the_kill->trigger();
       p()->buff.war_veteran->trigger();
+      p()->buff.test_of_might_tracker->trigger();
     }
   }
 
@@ -2871,7 +2879,9 @@ struct rampage_attack_t : public warrior_attack_t
       valarjar_berserking( false ),
       simmering_rage( false ),
       rage_from_valarjar_berserking( p->find_spell( 248179 )->effectN( 1 ).base_value() / 10.0 ),
-      rage_from_simmering_rage( ( p -> azerite.simmering_rage.spell() -> effectN( 1 ).base_value() * p->azerite.simmering_rage.n_items() )/ 10.0 )
+      rage_from_simmering_rage(
+          ( p->azerite.simmering_rage.spell()->effectN( 1 ).base_value() * p->azerite.simmering_rage.n_items() ) /
+          10.0 )
   {
     dual = true;
     if ( p->sets->has_set_bonus( WARRIOR_FURY, T21, B4 ) )
@@ -3341,7 +3351,7 @@ struct slam_t : public warrior_attack_t
     : warrior_attack_t( "slam", p, p->spec.slam ), from_Fervor( false )
   {
     parse_options( options_str );
-    weapon = &( p->main_hand_weapon );
+    weapon                       = &( p->main_hand_weapon );
     affected_by.crushing_assault = true;
   }
 
@@ -3378,7 +3388,7 @@ struct slam_t : public warrior_attack_t
     if ( from_Fervor )
       return 0;
 
-    if ( p() -> buff.crushing_assault -> check() && !from_Fervor )
+    if ( p()->buff.crushing_assault->check() && !from_Fervor )
       return 0;
     return warrior_attack_t::cost();
   }
@@ -3768,9 +3778,9 @@ struct arms_whirlwind_parent_t : public warrior_attack_t
 
     if ( p->talents.fervor_of_battle->ok() )
     {
-      fervor_slam              = new slam_t( p, options_str );
-      fervor_slam->from_Fervor = true;
-           fervor_slam->affected_by.crushing_assault = false;
+      fervor_slam                               = new slam_t( p, options_str );
+      fervor_slam->from_Fervor                  = true;
+      fervor_slam->affected_by.crushing_assault = false;
     }
 
     if ( p->main_hand_weapon.type != WEAPON_NONE )
@@ -5299,7 +5309,8 @@ struct test_of_might_t : public warrior_buff_t<buff_t>
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    warrior.buff.test_of_might->trigger( static_cast<int>( current_value ) );
+    warrior.buff.test_of_might->trigger( static_cast<int>( current_value / 10 ) );
+    current_value = 0;
     base_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
@@ -5514,47 +5525,54 @@ void warrior_t::create_buffs()
 
   buff.test_of_might_tracker = new test_of_might_t( *this, "test_of_might_tracker", spell.colossus_smash_debuff );
 
-  buff.test_of_might = buff_creator_t( this, "test_of_might", azerite.test_of_might.spell() );
+  buff.test_of_might =
+      make_buff<stat_buff_t>( this, "test_of_might",
+                              azerite.test_of_might.spell()->effectN( 1 ).trigger()->effectN( 1 ).trigger() )
+          ->add_stat( STAT_STRENGTH, azerite.test_of_might.value( 1 ) )
+          ->set_trigger_spell( azerite.test_of_might.spell()->effectN( 1 ).trigger() )
+          ->set_max_stack( 99 );
 
   buff.whirlwind = buff_creator_t( this, "whirlwind", find_spell( 85739 ) );
 
   // Azerite
   const spell_data_t* bloodcraze_trigger = azerite.bloodcraze.spell()->effectN( 1 ).trigger();
   const spell_data_t* bloodcraze_buff    = bloodcraze_trigger->effectN( 1 ).trigger();
-  buff.bloodcraze_driver = make_buff<buff_t>( this, "bloodcraze_driver", bloodcraze_trigger )
+  buff.bloodcraze_driver =
+      make_buff<buff_t>( this, "bloodcraze_driver", bloodcraze_trigger )
           ->set_trigger_spell( azerite.bloodcraze )
           ->set_quiet( true )
           ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
-          ->set_tick_callback( [ this ]( buff_t*, int, const timespan_t& ) { buff.bloodcraze->trigger(); } );
+          ->set_tick_callback( [this]( buff_t*, int, const timespan_t& ) { buff.bloodcraze->trigger(); } );
 
   buff.bloodcraze = make_buff<buff_t>( this, "bloodcraze", bloodcraze_buff )
-          ->set_trigger_spell( bloodcraze_trigger )
-          ->set_default_value( azerite.bloodcraze.value( 1 ) );
+                        ->set_trigger_spell( bloodcraze_trigger )
+                        ->set_default_value( azerite.bloodcraze.value( 1 ) );
 
   const spell_data_t* crushing_assault_trigger = azerite.crushing_assault.spell()->effectN( 1 ).trigger();
   const spell_data_t* crushing_assault_buff    = crushing_assault_trigger->effectN( 1 ).trigger();
-  buff.crushing_assault = make_buff<buff_t>( this, "crushing_assault", crushing_assault_buff )
-          ->set_default_value( azerite.crushing_assault.value( 1 ) )
-          ->set_trigger_spell( crushing_assault_trigger );
+  buff.crushing_assault                        = make_buff<buff_t>( this, "crushing_assault", crushing_assault_buff )
+                              ->set_default_value( azerite.crushing_assault.value( 1 ) )
+                              ->set_trigger_spell( crushing_assault_trigger );
 
-  buff.executioners_precision = make_buff( this, "executioners_precision", find_spell( 272870 ) )
+  buff.executioners_precision =
+      make_buff( this, "executioners_precision", find_spell( 272870 ) )
           ->set_trigger_spell( azerite.executioners_precision.spell_ref().effectN( 1 ).trigger() )
           ->set_default_value( azerite.executioners_precision.value() );
 
   buff.gathering_storm = make_buff( this, "gathering_storm", find_spell( 273415 ) )
-          ->set_trigger_spell( azerite.gathering_storm.spell_ref().effectN( 1 ).trigger() )
-          ->set_default_value( azerite.gathering_storm.value() );
-  
+                             ->set_trigger_spell( azerite.gathering_storm.spell_ref().effectN( 1 ).trigger() )
+                             ->set_default_value( azerite.gathering_storm.value() );
+
   buff.pulverizing_blows = make_buff( this, "pulverizing_blows", find_spell( 275672 ) )
-          ->set_trigger_spell( azerite.pulverizing_blows.spell_ref().effectN( 1 ).trigger() )
-          ->set_default_value( azerite.pulverizing_blows.value() );
+                               ->set_trigger_spell( azerite.pulverizing_blows.spell_ref().effectN( 1 ).trigger() )
+                               ->set_default_value( azerite.pulverizing_blows.value() );
 
   const spell_data_t* trample_the_weak_trigger = azerite.trample_the_weak.spell()->effectN( 1 ).trigger();
   const spell_data_t* trample_the_weak_buff    = trample_the_weak_trigger->effectN( 1 ).trigger();
   buff.trample_the_weak = make_buff<stat_buff_t>( this, "trample_the_weak", trample_the_weak_buff )
-          ->add_stat( STAT_STRENGTH, azerite.trample_the_weak.value( 1 ) )
-          ->add_stat( STAT_STAMINA, azerite.trample_the_weak.value( 1 ) )
-          ->set_trigger_spell( trample_the_weak_trigger );
+                              ->add_stat( STAT_STRENGTH, azerite.trample_the_weak.value( 1 ) )
+                              ->add_stat( STAT_STAMINA, azerite.trample_the_weak.value( 1 ) )
+                              ->set_trigger_spell( trample_the_weak_trigger );
 }
 
 // warrior_t::init_scaling ==================================================
@@ -5826,8 +5844,8 @@ void warrior_t::combat_begin()
   }
   player_t::combat_begin();
   buff.into_the_fray->trigger( into_the_fray_friends + 1 );
-  buff.bloodcraze->trigger( buff.bloodcraze -> data().max_stacks() );
-  buff.bloodcraze_driver -> trigger();
+  buff.bloodcraze->trigger( buff.bloodcraze->data().max_stacks() );
+  buff.bloodcraze_driver->trigger();
 }
 
 // Into the fray
