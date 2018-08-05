@@ -503,6 +503,7 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     buff_t* maddening_whispers;
     buff_t* shadow_blades;
     buff_t* azerite_globules;
+    buff_t* dead_ahead;
   } debuff;
 
   struct atd_dot_t
@@ -7033,6 +7034,7 @@ void register_special_effect( unsigned spell_id, const T& cb, bool fallback = fa
 
 void register_target_data_initializers( sim_t* );
 void register_target_data_initializers_legion( sim_t* ); // Legion targetdata initializers
+void register_target_data_initializers_bfa( sim_t* ); // Battle for Azeroth targetdata initializers
 
 void init( player_t* );
 
