@@ -9637,6 +9637,16 @@ double monk_t::stagger_pct( int target_level )
   case 25: k_value = 274; break;
   case 26: k_value = 284; break;
   case 27: k_value = 292; break;
+  case 28: k_value = 302; break;
+  case 29: k_value = 312; break;
+  case 30: k_value = 322; break;
+  case 31: k_value = 330; break;
+  case 32: k_value = 340; break;
+  case 33: k_value = 350; break;
+  case 34: k_value = 360; break;
+  case 35: k_value = 368; break;
+  case 36: k_value = 377; break;
+  case 37: k_value = 387; break;
   case 110:
   case 111:
   case 112:
