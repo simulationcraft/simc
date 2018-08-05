@@ -303,7 +303,7 @@ namespace warlock
       {
         td(d->state->target)->dots_agony->increment(1);
 
-        // Blizzard has no publicly released the formula for Agony's chance to generate a Soul Shard.
+        // Blizzard has not publicly released the formula for Agony's chance to generate a Soul Shard.
         // This set of code is based on results from 500+ Soul Shard sample sizes, and matches in-game
         // results to within 0.1% of accuracy in all tests conducted on all targets numbers up to 8.
         // Accurate as of 08-24-2018. TOCHECK regularly. If any changes are made to this section of
