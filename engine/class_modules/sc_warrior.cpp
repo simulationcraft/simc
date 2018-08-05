@@ -10,7 +10,7 @@ namespace
 // ==========================================================================
 // Warrior
 // To Do: Gathering Storm should stack after each tick, not before (tornados eye is the opposite because reasons)
-// Fury - Implement Infinite Fury
+// Fury - 
 // Arms - Fix Test of Might
 // ==========================================================================
 
@@ -134,6 +134,7 @@ public:
     buff_t* crushing_assault;
     buff_t* executioners_precision;
     buff_t* gathering_storm;
+    buff_t* infinite_fury;
     buff_t* pulverizing_blows;
     buff_t* test_of_might_tracker;  // Used to track rage gain from test of might.
     buff_t* test_of_might;
@@ -519,7 +520,7 @@ public:
   double composite_crit_avoidance() const override;
   // double composite_melee_speed() const override;
   double composite_melee_crit_chance() const override;
-  // double composite_spell_crit_chance() const override;
+  double composite_melee_crit_rating() const override;
   double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   // double composite_leech() const override;
   double resource_gain( resource_e, double, gain_t* = nullptr, action_t* = nullptr ) override;
@@ -1229,6 +1230,10 @@ struct melee_t : public warrior_attack_t
           {
             p()->cooldown.recklessness->adjust(
                 ( -1 * p()->azerite.reckless_flurry.spell_ref().effectN( 1 ).time_value() ) );
+          }
+          if ( p()->buff.infinite_fury->check() )  // does this need a spec = fury check?
+          {
+            ( p()->buff.infinite_fury->trigger() ); // auto attacks refresh the buff but do not trigger it initially
           }
         }
       }
@@ -5466,11 +5471,11 @@ void warrior_t::create_buffs()
                               .default_value( artifact.neltharions_fury.data().effectN( 1 ).percent() )
                               .add_invalidate( CACHE_CRIT_BLOCK );
 
-  buff.recklessness =
-      buff_creator_t( this, "recklessness", spec.recklessness )
-          .duration( spec.recklessness->duration() + talents.reckless_abandon->effectN( 1 ).time_value() )
-          .add_invalidate( CACHE_CRIT_CHANCE )
-          .cd( timespan_t::zero() );
+  buff.recklessness = make_buff( this, "recklessness", spec.recklessness )
+    ->set_duration( spec.recklessness->duration() + talents.reckless_abandon->effectN( 1 ).time_value() )
+    ->add_invalidate( CACHE_CRIT_CHANCE )
+    ->set_cooldown( timespan_t::zero() )
+    ->set_stack_change_callback( [ this ]( buff_t*, int, int after ) { if ( after == 0 ) buff.infinite_fury->trigger(); });
 
   buff.sudden_death = buff_creator_t( this, "sudden_death", talents.sudden_death );
 
@@ -5562,6 +5567,13 @@ void warrior_t::create_buffs()
   buff.gathering_storm = make_buff( this, "gathering_storm", find_spell( 273415 ) )
                              ->set_trigger_spell( azerite.gathering_storm.spell_ref().effectN( 1 ).trigger() )
                              ->set_default_value( azerite.gathering_storm.value() );
+
+  const spell_data_t* infinite_fury_trigger = azerite.infinite_fury.spell()->effectN( 1 ).trigger();
+  const spell_data_t* infinite_fury_buff    = infinite_fury_trigger ->effectN( 1 ).trigger();
+  buff.infinite_fury = make_buff( this, "infinite_fury", infinite_fury_buff    )
+                               ->set_trigger_spell( infinite_fury_trigger  )
+                               ->set_default_value( azerite.infinite_fury.value() )
+                               ->add_invalidate( CACHE_CRIT_CHANCE );
 
   buff.pulverizing_blows = make_buff( this, "pulverizing_blows", find_spell( 275672 ) )
                                ->set_trigger_spell( azerite.pulverizing_blows.spell_ref().effectN( 1 ).trigger() )
@@ -6196,6 +6208,17 @@ double warrior_t::composite_melee_crit_chance() const
   double c = player_t::composite_melee_crit_chance();
 
   c += buff.recklessness->check_value();
+
+  return c;
+}
+
+// warrior_t::composite_melee_crit_rating =========================================
+
+double warrior_t::composite_melee_crit_rating() const
+{
+  double c = player_t::composite_melee_crit_rating();
+
+  c += buff.infinite_fury->check_value();
 
   return c;
 }
