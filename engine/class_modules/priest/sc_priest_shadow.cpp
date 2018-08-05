@@ -2173,6 +2173,9 @@ void priest_t::generate_apl_shadow()
   default_list->add_action(
       "potion,if=buff.bloodlust.react|target.time_to_die<=80|"
       "target.health.pct<35" );
+  default_list->add_action(
+      "variable,name=dots_up,op=set,value="
+      "dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking" );
 
   // Racials
   // as of 7/3/2018 Arcane Torrent being on the GCD results in a DPS loss
@@ -2207,30 +2210,15 @@ void priest_t::generate_apl_shadow()
   single->add_action( this, "Void Bolt" );
   single->add_talent( this, "Shadow Word: Death",
                       "if=target.time_to_die<3|"
-                      "cooldown.shadow_word_death.charges=2" );
+                      "cooldown.shadow_word_death.charges=2|"
+                      "(cooldown.shadow_word_death.charges=1&"
+                      "cooldown.shadow_word_death.remains<gcd.max)" );
   single->add_talent( this, "Surrender to Madness",
                       "if=buff.voidform.stack>=(15+buff.bloodlust.up)&"
                       "target.time_to_die>200|target.time_to_die<75" );
   single->add_talent( this, "Dark Void",
                       "if=raid_event.adds.in>10" );
   single->add_talent( this, "Mindbender" );
-  single->add_action( this, "Vampiric Touch",
-                      "if=((dot.shadow_word_pain.ticking&"
-                      "dot.vampiric_touch.ticking)|"
-                      "(talent.shadow_word_void.enabled&"
-                      "cooldown.shadow_word_void.charges=2))&"
-                      "azerite.thought_harvester.rank>1&"
-                      "cooldown.mind_blast.up&buff.harvested_thoughts.down" );
-  single->add_action( this, "Mind Blast",
-                      "if=((dot.shadow_word_pain.ticking&"
-                      "dot.vampiric_touch.ticking)|"
-                      "(talent.shadow_word_void.enabled&"
-                      "cooldown.shadow_word_void.charges=2))&"
-                      "azerite.thought_harvester.rank<2" );
-  single->add_action( this, "Mind Blast",
-                      "if=(prev_gcd.1.vampiric_touch|"
-                      "buff.harvested_thoughts.up)&"
-                      "azerite.thought_harvester.rank>1" );
   single->add_talent( this, "Shadow Word: Death",
                       "if=!buff.voidform.up|"
                       "(cooldown.shadow_word_death.charges=2&"
@@ -2238,8 +2226,7 @@ void priest_t::generate_apl_shadow()
   single->add_talent( this, "Shadow Crash",
                       "if=raid_event.adds.in>5&raid_event.adds.duration<20" );
   single->add_action( this, "Mind Blast",
-                      "if=dot.shadow_word_pain.ticking&"
-                      "dot.vampiric_touch.ticking" );
+                      "if=variable.dots_up" );
   single->add_talent( this, "Void Torrent",
                       "if=dot.shadow_word_pain.remains>4&"
                       "dot.vampiric_touch.remains>4" );
