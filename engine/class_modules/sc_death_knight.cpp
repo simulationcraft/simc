@@ -4061,7 +4061,6 @@ struct death_and_decay_base_t : public death_knight_spell_t
 
     // Blood has a lower cd on DnD
     cooldown -> duration += cooldown -> duration * p -> spec.blood_death_knight -> effectN( 5 ).percent();
-    add_child( bsg );
   }
 
   double cost() const override
