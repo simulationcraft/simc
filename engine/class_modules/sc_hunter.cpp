@@ -422,9 +422,6 @@ public:
     cooldown_t* wildfire_bomb;
   } cooldowns;
 
-  // Custom Parameters
-  std::string summon_pet_str;
-
   // Gains
   struct gains_t
   {
@@ -569,13 +566,17 @@ public:
     double cost_multiplier = 0;
   } t19_mm_4pc;
 
+  struct options_t {
+    std::string summon_pet_str = "cat";
+    timespan_t pet_attack_speed = timespan_t::from_seconds( 2.0 );
+  } options;
+
   hunter_t( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) :
     player_t( sim, HUNTER, name, r ),
     pets(),
     legendary(),
     buffs(),
     cooldowns(),
-    summon_pet_str( "cat" ),
     gains(),
     procs(),
     talents(),
@@ -1093,6 +1094,15 @@ public:
     ab::base_execute_time = ab::weapon -> swing_time;
     ab::school = SCHOOL_PHYSICAL;
   }
+
+  timespan_t execute_time() const override
+  {
+    // there is a cap of ~.25s for pet auto attacks
+    timespan_t t = ab::execute_time();
+    if ( t < timespan_t::from_seconds( .25 ) )
+      t = timespan_t::from_seconds( .25 );
+    return t;
+  }
 };
 
 // ==========================================================================
@@ -1126,6 +1136,8 @@ struct hunter_main_pet_base_t : public hunter_pet_t
     owner_coeff.ap_from_ap = 0.6;
 
     initial.armor_multiplier *= 1.05;
+
+    main_hand_weapon.swing_time = owner -> options.pet_attack_speed;
   }
 
   void create_buffs() override
@@ -3870,7 +3882,7 @@ struct summon_pet_t: public hunter_spell_t
     ignore_false_positive = true;
 
     if ( pet_name.empty() )
-      pet_name = p() -> summon_pet_str;
+      pet_name = p() -> options.summon_pet_str;
     opt_disabled = util::str_compare_ci( pet_name, "disabled" );
   }
 
@@ -4815,8 +4827,8 @@ pet_t* hunter_t::create_pet( const std::string& pet_name,
 
 void hunter_t::create_pets()
 {
-  if ( !util::str_compare_ci( summon_pet_str, "disabled" ) )
-    create_pet( summon_pet_str, summon_pet_str );
+  if ( !util::str_compare_ci( options.summon_pet_str, "disabled" ) )
+    create_pet( options.summon_pet_str, options.summon_pet_str );
 
   if ( talents.animal_companion -> ok() )
     pets.animal_companion = new pets::animal_companion_t( this );
@@ -5876,7 +5888,9 @@ void hunter_t::create_options()
 {
   player_t::create_options();
 
-  add_option( opt_string( "summon_pet", summon_pet_str ) );
+  add_option( opt_string( "summon_pet", options.summon_pet_str ) );
+  add_option( opt_timespan( "hunter.pet_attack_speed", options.pet_attack_speed,
+                            timespan_t::from_seconds( .5 ), timespan_t::from_seconds( 4 ) ) );
   add_option( opt_obsoleted( "hunter_fixed_time" ) );
 }
 
@@ -5886,7 +5900,12 @@ std::string hunter_t::create_profile( save_e stype )
 {
   std::string profile_str = player_t::create_profile( stype );
 
-  profile_str += "summon_pet=" + summon_pet_str + "\n";
+  const options_t defaults;
+
+  if ( options.summon_pet_str != defaults.summon_pet_str )
+    profile_str += "summon_pet=" + options.summon_pet_str + "\n";
+  if ( options.pet_attack_speed != defaults.pet_attack_speed )
+    profile_str += "hunter.pet_attack_speed=" + util::to_string( options.pet_attack_speed.total_seconds() ) + "\n";
 
   return profile_str;
 }
@@ -5896,10 +5915,7 @@ std::string hunter_t::create_profile( save_e stype )
 void hunter_t::copy_from( player_t* source )
 {
   player_t::copy_from( source );
-
-  hunter_t* p = debug_cast<hunter_t*>( source );
-
-  summon_pet_str = p -> summon_pet_str;
+  options = debug_cast<hunter_t*>( source ) -> options;
 }
 
 // hunter_::convert_hybrid_stat ==============================================
