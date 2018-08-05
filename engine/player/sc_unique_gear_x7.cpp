@@ -405,6 +405,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 268771, trinkets::deadeye_spyglass );
   register_special_effect( 267177, trinkets::tiny_electromental_in_a_jar );
   register_special_effect( 265954, trinkets::mydas_talisman );
+  register_special_effect( 268314, "268311Trigger" ); // Galecaller's Boon, assumes the player always stands in the area
   register_special_effect( 278140, trinkets::frenetic_corpuscle );
 }
 
