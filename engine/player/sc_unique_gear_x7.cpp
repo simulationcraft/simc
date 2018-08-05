@@ -30,6 +30,7 @@ namespace trinkets
 {
   // 8.0.1 - Dungeon Trinkets
   void deadeye_spyglass( special_effect_t& );
+  void tiny_electromental_in_a_jar( special_effect_t& );
   // 8.0.1 - Uldir Trinkets
   void frenetic_corpuscle( special_effect_t& );
 }
@@ -231,9 +232,9 @@ void trinkets::deadeye_spyglass( special_effect_t& effect )
       dbc_proc_callback_t( effect.item, effect )
     {}
 
-    void execute( action_t* a, action_state_t* s ) override
+    void execute( action_t*, action_state_t* s ) override
     {
-      auto td = a -> player -> get_target_data( s -> target );
+      auto td = listener -> get_target_data( s -> target );
       assert( td );
       assert( td -> debuff.dead_ahead );
       td -> debuff.dead_ahead -> trigger();
@@ -245,6 +246,29 @@ void trinkets::deadeye_spyglass( special_effect_t& effect )
 
   if ( effect.spell_id == 268758 )
     effect.create_buff(); // precreate the buff
+}
+
+// Tiny Electromental in a Jar ==============================================
+
+void trinkets::tiny_electromental_in_a_jar( special_effect_t& effect )
+{
+  struct unleash_lightning_t : public proc_spell_t
+  {
+    unleash_lightning_t( const special_effect_t& effect ):
+      proc_spell_t( "unleash_lightning", effect.player, effect.player -> find_spell( 267205 ), effect.item )
+    {
+      aoe = data().effectN( 1 ).chain_target();
+      chain_multiplier = data().effectN( 1 ).chain_multiplier();
+    }
+  };
+
+  effect.custom_buff = buff_t::find( effect.player, "phenomenal_power" );
+  if ( ! effect.custom_buff )
+    effect.custom_buff = make_buff( effect.player, "phenomenal_power", effect.player -> find_spell( 267179 ) );
+
+  effect.execute_action = create_proc_action<unleash_lightning_t>( "unleash_lightning", effect );
+
+  new dbc_proc_callback_t( effect.item, effect );
 }
 
 // Frenetic Corpuscle =======================================================
@@ -319,6 +343,7 @@ void unique_gear::register_special_effects_bfa()
   // Trinkets
   register_special_effect( 268758, trinkets::deadeye_spyglass );
   register_special_effect( 268771, trinkets::deadeye_spyglass );
+  register_special_effect( 267177, trinkets::tiny_electromental_in_a_jar );
   register_special_effect( 278140, trinkets::frenetic_corpuscle );
 }
 
