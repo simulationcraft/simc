@@ -4020,7 +4020,7 @@ struct defile_damage_t : public death_and_decay_damage_base_t
 struct bone_spike_graveyard_heal_t : public death_knight_heal_t
 {
   bone_spike_graveyard_heal_t( death_knight_t* p ) :
-    death_knight_heal_t( "bone_spike_graveyard", p, p -> find_spell( 273088 ) )
+    death_knight_heal_t( "bone_spike_graveyard_heal", p, p -> find_spell( 273088 ) )
   {
     background = true;
     base_dd_min = base_dd_max = p -> azerite.bone_spike_graveyard.value( 2 );
@@ -4067,6 +4067,7 @@ struct death_and_decay_base_t : public death_knight_spell_t
 
     // Blood has a lower cd on DnD
     cooldown -> duration += cooldown -> duration * p -> spec.blood_death_knight -> effectN( 5 ).percent();
+    add_child( bsg );
   }
 
   double cost() const override
@@ -4899,7 +4900,7 @@ struct frostscythe_t : public death_knight_melee_attack_t
 
   frostscythe_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_melee_attack_t( "frostscythe", p, p -> talent.frostscythe ),
-    rime_proc_chance( ( p -> spec.rime -> proc_chance() +
+    rime_proc_chance( ( p -> spec.rime -> effectN( 2 ).percent() +
                         p -> sets -> set( DEATH_KNIGHT_FROST, T19, B2 ) -> effectN( 1 ).percent() ) / 2.0 )
   {
     parse_options( options_str );
@@ -8612,7 +8613,7 @@ double death_knight_t::composite_player_pet_damage_multiplier( const action_stat
 double death_knight_t::composite_player_target_multiplier( player_t* target, school_e school ) const
 {
   double m = player_t::composite_player_target_multiplier( target, school );
-
+  
   death_knight_td_t* td = get_target_data( target );
 
   if ( dbc::is_school( school, SCHOOL_FROST ) )
