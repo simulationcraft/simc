@@ -113,8 +113,6 @@ namespace warlock
           if (td->dots_seed_of_corruption->is_ticking() && id != p()->spells.seed_of_corruption_aoe->id)
           {
             accumulate_seed_of_corruption(td, s->result_amount);
-            if (sim->log)
-              sim->out_log.printf("remaining damage to explode seed %f", td->soc_threshold);
           }
         }
       }
@@ -168,7 +166,7 @@ namespace warlock
       }
     };
 
-    const std::array<int, MAX_UAS> ua_spells = { { 233490, 233496, 233497, 233498, 233499 } };
+    const std::array<int, MAX_UAS> ua_spells = { 233490, 233496, 233497, 233498, 233499 };
 
     struct shadow_bolt_t : public affliction_spell_t
     {
@@ -246,17 +244,19 @@ namespace warlock
         }
       };
 
+      int agony_action_id;
+      int agony_max_stacks;
       double chance;
       wracking_brilliance_t* wb;
 
       agony_t( warlock_t* p, const std::string& options_str ) :
-        affliction_spell_t( p, "Agony")
+        affliction_spell_t( p, "Agony"),
+        agony_action_id( 0 ),
+        agony_max_stacks( 0 )
       {
         parse_options( options_str );
         may_crit = false;
         wb = new wracking_brilliance_t();
-
-        dot_max_stack = data().max_stacks() + p->spec.agony_2->effectN(1).base_value();
       }
 
       void last_tick( dot_t* d ) override
@@ -271,9 +271,11 @@ namespace warlock
 
       void init() override
       {
-        dot_max_stack += p()->talents.writhe_in_agony->ok() ? p()->talents.writhe_in_agony->effectN(1).base_value() : 0;
+        agony_max_stacks = ( p()->talents.writhe_in_agony->ok() ? p()->talents.writhe_in_agony->effectN( 2 ).base_value() : 10 );
 
         affliction_spell_t::init();
+
+        this->dot_max_stack = agony_max_stacks;
 
         if ( p()->legendary.hood_of_eternal_disdain )
         {
@@ -303,11 +305,6 @@ namespace warlock
       {
         td(d->state->target)->dots_agony->increment(1);
 
-        // Blizzard has not publicly released the formula for Agony's chance to generate a Soul Shard.
-        // This set of code is based on results from 500+ Soul Shard sample sizes, and matches in-game
-        // results to within 0.1% of accuracy in all tests conducted on all targets numbers up to 8.
-        // Accurate as of 08-24-2018. TOCHECK regularly. If any changes are made to this section of
-        // code, please also update the Time_to_Shard expression in sc_warlock.cpp.
         double increment_max = 0.368;
         
         double active_agonies = p()->get_active_dots( internal_id );
@@ -355,11 +352,10 @@ namespace warlock
     struct corruption_t : public affliction_spell_t
     {
       corruption_t( warlock_t* p, const std::string& options_str) :
-        affliction_spell_t( "Corruption", p, p -> find_spell(172) )  //triggers 146739
+        affliction_spell_t( "Corruption", p, p -> find_spell( 172 ) )
       {
         parse_options(options_str);
         may_crit = false;
-        tick_zero = false;
         dot_duration = data().effectN( 1 ).trigger()->duration();
         spell_power_mod.tick = data().effectN( 1 ).trigger()->effectN( 1 ).sp_coeff();
         base_tick_time = data().effectN( 1 ).trigger()->effectN( 1 ).period();
@@ -398,21 +394,21 @@ namespace warlock
 
       void tick( dot_t* d ) override
       {
-        if (result_is_hit(d->state->result) && p()->talents.nightfall->ok())
+        if ( result_is_hit( d->state->result ) && p()->talents.nightfall->ok() )
         {
           auto success = p()->buffs.nightfall->trigger();
-          if (success)
+          if ( success )
           {
             p()->procs.nightfall->occur();
           }
         }
 
-        if (result_is_hit(d->state->result) && p()->sets->has_set_bonus(WARLOCK_AFFLICTION, T20, B2))
+        if ( result_is_hit( d->state->result ) && p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T20, B2 ) )
         {
           bool procced = p()->affliction_t20_2pc_rppm->trigger(); //check for RPPM
 
-          if (procced)
-            p()->resource_gain(RESOURCE_SOUL_SHARD, 1.0, p()->gains.affliction_t20_2pc); //trigger the buff
+          if ( procced )
+            p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.affliction_t20_2pc ); //trigger the buff
         }
 
         if (result_is_hit(d->state->result) && p()->azerite.inevitable_demise.ok())
@@ -524,7 +520,7 @@ namespace warlock
             }
           }
 
-          real_ua->set_target( s->target );
+          real_ua->target = s->target;
           real_ua->schedule_execute();
         }
       }
@@ -637,22 +633,15 @@ namespace warlock
     {
       struct seed_of_corruption_aoe_t : public affliction_spell_t
       {
-        corruption_t* corruption;
         bool deathbloom; //azerite_trait
-
         seed_of_corruption_aoe_t( warlock_t* p ) :
-          affliction_spell_t( "seed_of_corruption_aoe", p, p -> find_spell( 27285 ) ),
-          corruption( new corruption_t(p,"") )
+          affliction_spell_t( "seed_of_corruption_aoe", p, p -> find_spell( 27285 ) )
         {
           aoe = -1;
+          dual = true;
           background = true;
           deathbloom = false;
           p->spells.seed_of_corruption_aoe = this;
-          base_costs[RESOURCE_MANA] = 0;
-
-          corruption->background = true;
-          corruption->dual = true;
-          corruption->base_costs[RESOURCE_MANA] = 0;
         }
 
         double bonus_da(const action_state_t* s) const override
@@ -675,9 +664,6 @@ namespace warlock
               tdata->soc_threshold = 0;
               tdata->dots_seed_of_corruption->cancel();
             }
-
-            corruption->set_target(s->target);
-            corruption->execute();
           }
         }
       };
@@ -694,7 +680,6 @@ namespace warlock
       {
         parse_options( options_str );
         may_crit = false;
-        tick_zero = false;
         base_tick_time = dot_duration;
         hasted_ticks = false;
         add_child( explosion );
@@ -713,18 +698,6 @@ namespace warlock
         if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T21, B4 ) )
           p()->active.tormented_agony->schedule_execute();
 
-        if (td(target)->dots_seed_of_corruption->is_ticking() || has_travel_events_for(target))
-        {
-          for (auto& possible : target_list())
-          {
-            if (!(td(possible)->dots_seed_of_corruption->is_ticking() || has_travel_events_for(possible)))
-            {
-              set_target(possible);
-              break;
-            }
-          }
-        }
-
         affliction_spell_t::execute();
       }
 
@@ -734,6 +707,10 @@ namespace warlock
         {
           td( s->target )->soc_threshold = s->composite_spell_power();
         }
+
+        assert(p()->active.corruption);
+        p()->active.corruption->target = s->target;
+        p()->active.corruption->schedule_execute();
 
         affliction_spell_t::impact( s );
       }
@@ -745,8 +722,8 @@ namespace warlock
         if (!d->end_event) {
           explosion->deathbloom = true;
         }
-        explosion->set_target( d->target );
-        explosion->schedule_execute();
+        explosion->target = d->target;
+        explosion->execute();
       }
     };
 
@@ -1125,7 +1102,6 @@ namespace warlock
     // Specialization Spells
     spec.unstable_affliction            = find_specialization_spell( "Unstable Affliction" );
     spec.agony                          = find_specialization_spell( "Agony" );
-    spec.agony_2                        = find_spell( 231792 );
     spec.summon_darkglare               = find_specialization_spell( "Summon Darkglare" );
     // Talents
     talents.nightfall                   = find_talent_spell( "Nightfall" );
@@ -1150,6 +1126,14 @@ namespace warlock
     azerite.sudden_onset                = find_azerite_spell("Sudden Onset");
     azerite.wracking_brilliance         = find_azerite_spell("Wracking Brilliance");
     azerite.deathbloom                  = find_azerite_spell("Deathbloom");
+
+    // seed applies corruption
+    if (specialization() == WARLOCK_AFFLICTION)
+    {
+      active.corruption = new corruption_t(this, "");
+      active.corruption->background = true;
+      active.corruption->aoe = -1;
+    }
   }
 
   void warlock_t::init_gains_affliction()
@@ -1174,94 +1158,53 @@ namespace warlock
   void warlock_t::create_apl_affliction()
   {
     action_priority_list_t* def = get_action_priority_list( "default" );
+    action_priority_list_t* aoe = get_action_priority_list( "aoe" );
+    action_priority_list_t* st = get_action_priority_list( "single" );
+    action_priority_list_t* dgs = get_action_priority_list( "dg_soon" );
+    action_priority_list_t* reg = get_action_priority_list( "regular" );
     action_priority_list_t* fil = get_action_priority_list( "fillers" );
 
-    def->add_action( "variable,name=spammable_seed,value=talent.sow_the_seeds.enabled&spell_targets.seed_of_corruption_aoe>=3|talent.siphon_life.enabled&spell_targets.seed_of_corruption>=5|spell_targets.seed_of_corruption>=8" );
-    def->add_action( "variable,name=padding,op=set,value=action.shadow_bolt.execute_time*azerite.cascading_calamity.enabled" );
-    def->add_action( "variable,name=padding,op=reset,value=gcd,if=azerite.cascading_calamity.enabled&(talent.drain_soul.enabled|talent.deathbolt.enabled&cooldown.deathbolt.remains<=gcd)" );
-    def->add_action( "potion,if=(talent.dark_soul_misery.enabled&cooldown.summon_darkglare.up&cooldown.dark_soul.up)|cooldown.summon_darkglare.up|target.time_to_die<30" );
-    def->add_action( "use_items,if=!cooldown.summon_darkglare.up" );
-    def->add_action( "fireblood,if=!cooldown.summon_darkglare.up" );
-    def->add_action( "blood_fury,if=!cooldown.summon_darkglare.up" );
-    def->add_action( "drain_soul,interrupt_global=1,chain=1,cycle_targets=1,if=target.time_to_die<=gcd&soul_shard<5" );
     def->add_action( "haunt" );
-    def->add_action( "summon_darkglare,if=dot.agony.ticking&dot.corruption.ticking&(buff.active_uas.stack=5|soul_shard=0)&(!talent.phantom_singularity.enabled|cooldown.phantom_singularity.remains)" );
-    def->add_action( "agony,cycle_targets=1,if=remains<=gcd" );
-    def->add_action( "shadow_bolt,target_if=min:debuff.shadow_embrace.remains,if=talent.shadow_embrace.enabled&talent.absolute_corruption.enabled&active_enemies=2&debuff.shadow_embrace.remains&debuff.shadow_embrace.remains<=execute_time*2+travel_time&!action.shadow_bolt.in_flight" );
-    def->add_action( "phantom_singularity,if=time>40" );
-    def->add_action( "vile_taint,if=time>20" );
-    def->add_action( "seed_of_corruption,if=dot.corruption.remains<=action.seed_of_corruption.cast_time+time_to_shard+4.2*(1-talent.creeping_death.enabled*0.15)&spell_targets.seed_of_corruption_aoe>=3+talent.writhe_in_agony.enabled&!dot.seed_of_corruption.remains&!action.seed_of_corruption.in_flight" );
-    def->add_action( "agony,cycle_targets=1,max_cycle_targets=6,if=talent.creeping_death.enabled&target.time_to_die>10&refreshable" );
-    def->add_action( "agony,cycle_targets=1,max_cycle_targets=8,if=(!talent.creeping_death.enabled)&target.time_to_die>10&refreshable" );
-    def->add_action( "siphon_life,cycle_targets=1,max_cycle_targets=1,if=refreshable&target.time_to_die>10&((!(cooldown.summon_darkglare.remains<=soul_shard*action.unstable_affliction.execute_time)&active_enemies>=8)|active_enemies=1)" );
-    def->add_action( "siphon_life,cycle_targets=1,max_cycle_targets=2,if=refreshable&target.time_to_die>10&((!(cooldown.summon_darkglare.remains<=soul_shard*action.unstable_affliction.execute_time)&active_enemies=7)|active_enemies=2)" );
-    def->add_action( "siphon_life,cycle_targets=1,max_cycle_targets=3,if=refreshable&target.time_to_die>10&((!(cooldown.summon_darkglare.remains<=soul_shard*action.unstable_affliction.execute_time)&active_enemies=6)|active_enemies=3)" );
-    def->add_action( "siphon_life,cycle_targets=1,max_cycle_targets=4,if=refreshable&target.time_to_die>10&((!(cooldown.summon_darkglare.remains<=soul_shard*action.unstable_affliction.execute_time)&active_enemies=5)|active_enemies=4)" );
-    def->add_action( "corruption,cycle_targets=1,if=active_enemies<3+talent.writhe_in_agony.enabled&refreshable&target.time_to_die>10" );
+    def->add_action( "summon_darkglare,if=dot.agony.ticking&dot.corruption.ticking&dot.unstable_affliction_1.ticking&dot.unstable_affliction_2.ticking&dot.unstable_affliction_3.ticking&((dot.unstable_affliction_4.ticking&dot.unstable_affliction_5.ticking)|soul_shard=0)" );
+    def->add_action( "agony,cycle_targets=1,max_cycle_targets=5,if=remains<=gcd&active_enemies<=7" );
+    def->add_action( "agony,cycle_targets=1,max_cycle_targets=5,if=refreshable&target.time_to_die>10&(!(cooldown.summon_darkglare.remains<=soul_shard*cast_time)|active_enemies<2)&active_enemies<=7" );
+    def->add_action( "agony,cycle_targets=1,max_cycle_targets=4,if=remains<=gcd&active_enemies>7" );
+    def->add_action( "agony,cycle_targets=1,max_cycle_targets=4,if=refreshable&target.time_to_die>10&(!(cooldown.summon_darkglare.remains<=soul_shard*cast_time)|active_enemies<2)&active_enemies>7" );
     def->add_action( "dark_soul" );
+    def->add_action( "siphon_life,cycle_targets=1,max_cycle_targets=1,if=refreshable&target.time_to_die>10&((!(cooldown.summon_darkglare.remains<=soul_shard*cast_time)&active_enemies>4)|active_enemies<2)" );
+    def->add_action( "siphon_life,cycle_targets=1,max_cycle_targets=2,if=refreshable&target.time_to_die>10&!(cooldown.summon_darkglare.remains<=soul_shard*cast_time)&active_enemies=2" );
+    def->add_action( "siphon_life,cycle_targets=1,max_cycle_targets=3,if=refreshable&target.time_to_die>10&!(cooldown.summon_darkglare.remains<=soul_shard*cast_time)&active_enemies=3" );
+    def->add_action( "corruption,cycle_targets=1,if=active_enemies<3&refreshable&target.time_to_die>10" );
+    def->add_action( "seed_of_corruption,line_cd=10,if=dot.corruption.ticks_remain<=2&spell_targets.seed_of_corruption_aoe>=3" );
+    def->add_action( "phantom_singularity" );
     def->add_action( "vile_taint" );
     def->add_action( "berserking" );
-    def->add_action( "unstable_affliction,if=soul_shard>=5" );
-    def->add_action( "unstable_affliction,if=cooldown.summon_darkglare.remains<=soul_shard*execute_time" );
-    def->add_action( "phantom_singularity" );
-    def->add_action( "call_action_list,name=fillers,if=(cooldown.summon_darkglare.remains<time_to_shard*(5-soul_shard)|cooldown.summon_darkglare.up)&time_to_die>cooldown.summon_darkglare.remains" );
-    def->add_action( "seed_of_corruption,if=variable.spammable_seed" );
-    def->add_action( "unstable_affliction,if=!prev_gcd.1.summon_darkglare&!variable.spammable_seed&(talent.deathbolt.enabled&cooldown.deathbolt.remains<=execute_time&!azerite.cascading_calamity.enabled|soul_shard>=2&target.time_to_die>4+execute_time&active_enemies=1|target.time_to_die<=8+execute_time*soul_shard)" );
-    def->add_action( "unstable_affliction,if=!variable.spammable_seed&contagion<=cast_time+variable.padding" );
-    def->add_action( "unstable_affliction,cycle_targets=1,if=!variable.spammable_seed&(!talent.deathbolt.enabled|cooldown.deathbolt.remains>time_to_shard|soul_shard>1)&contagion<=cast_time+variable.padding" );
-    def->add_action( "call_action_list,name=fillers" );
+    def->add_action( "call_action_list,name=aoe,if=talent.sow_the_seeds.enabled&spell_targets.seed_of_corruption_aoe>=3" );
+    def->add_action( "call_action_list,name=single" );
 
+    aoe->add_action( "call_action_list,name=dg_soon,if=(cooldown.summon_darkglare.remains<time_to_shard*(5-soul_shard)|cooldown.summon_darkglare.up)&time_to_die>cooldown.summon_darkglare.remains" );
+    aoe->add_action( "seed_of_corruption" );
+    aoe->add_action( "call_action_list,name=fillers" );
+
+    st->add_action( "unstable_affliction,if=soul_shard=5" );
+    st->add_action( "call_action_list,name=dg_soon,if=(cooldown.summon_darkglare.remains<time_to_shard*(5-soul_shard)|cooldown.summon_darkglare.up)&time_to_die>cooldown.summon_darkglare.remains" );
+    st->add_action( "call_action_list,name=regular,if=!((cooldown.summon_darkglare.remains<time_to_shard*(5-soul_shard)|time_to_die>cooldown.summon_darkglare.remains)&cooldown.summon_darkglare.up)" );
+
+    dgs->add_action( "unstable_affliction,if=(cooldown.summon_darkglare.remains<=soul_shard*cast_time)" );
+    dgs->add_action( "agony,line_cd=30,if=talent.deathbolt.enabled&(!talent.siphon_life.enabled)&dot.agony.ticks_remain<=10&cooldown.deathbolt.remains<=gcd" );
+    dgs->add_action( "summon_darkglare" );
+    dgs->add_action( "call_action_list,name=fillers" );
+
+    reg->add_action( "unstable_affliction,cycle_targets=1,if=((dot.unstable_affliction_1.remains+dot.unstable_affliction_2.remains+dot.unstable_affliction_3.remains+dot.unstable_affliction_4.remains+dot.unstable_affliction_5.remains)<=cast_time|soul_shard>=2)&target.time_to_die>4+cast_time" );
+    reg->add_action( "agony,line_cd=30,if=talent.deathbolt.enabled&(!talent.siphon_life.enabled)&dot.agony.ticks_remain<=10&cooldown.deathbolt.remains<=gcd" );
+    reg->add_action( "call_action_list,name=fillers" );
+
+    fil->add_action( "fireblood" );
+    fil->add_action( "blood_fury" );
+    fil->add_action( "use_items" );
     fil->add_action( "deathbolt" );
-    fil->add_action( "shadow_bolt,if=buff.movement.up&buff.nightfall.remains" );
-    fil->add_action( "agony,if=buff.movement.up&!(talent.siphon_life.enabled&(prev_gcd.1.agony&prev_gcd.2.agony&prev_gcd.3.agony)|prev_gcd.1.agony)" );
-    fil->add_action( "siphon_life,if=buff.movement.up&!(prev_gcd.1.siphon_life&prev_gcd.2.siphon_life&prev_gcd.3.siphon_life)" );
-    fil->add_action( "corruption,if=buff.movement.up&!prev_gcd.1.corruption&!talent.absolute_corruption.enabled" );
-    fil->add_action( "drain_life,if=(buff.inevitable_demise.stack=100|buff.inevitable_demise.stack>60&target.time_to_die<=10)&(target.health.pct>=20|!talent.drain_soul.enabled)" );
     fil->add_action( "drain_soul,interrupt_global=1,chain=1,cycle_targets=1,if=target.time_to_die<=gcd" );
     fil->add_action( "drain_soul,interrupt_global=1,chain=1" );
-    fil->add_action( "shadow_bolt,cycle_targets=1,if=talent.shadow_embrace.enabled&talent.absolute_corruption.enabled&active_enemies=2&!debuff.shadow_embrace.remains&!action.shadow_bolt.in_flight" );
-    fil->add_action( "shadow_bolt,target_if=min:debuff.shadow_embrace.remains,if=talent.shadow_embrace.enabled&talent.absolute_corruption.enabled&active_enemies=2" );
     fil->add_action( "shadow_bolt" );
-  }
-
-  expr_t* warlock_t::create_aff_expression(const std::string& name_str)
-  {
-    if (name_str == "deathbolt_setup")
-    {
-      return make_fn_expr("deathbolt_setup", [this]() {
-        bool ready = false;
-
-        timespan_t setup;
-        double gcds_required = 0.0;
-        timespan_t gcd = base_gcd * gcd_current_haste_value;
-
-        auto td = get_target_data(target);
-
-        gcds_required += td->dots_agony->remains() <= td->dots_agony->duration() ? 1 : 0;
-        gcds_required += talents.absolute_corruption->ok() ? 0 : (td->dots_corruption->remains() <= td->dots_corruption->duration() ? 1 : 0);
-        gcds_required += talents.siphon_life->ok() ? (td->dots_siphon_life->remains() <= td->dots_siphon_life->duration() ? 1 : 0) : 0;
-        gcds_required += resources.current[RESOURCE_SOUL_SHARD];
-        setup = gcd * gcds_required;
-        if (talents.phantom_singularity->ok() && cooldowns.phantom_singularity->remains() <= setup)
-        {
-          gcds_required += 1;
-          setup += gcd;
-        }
-        if (cooldowns.darkglare->remains() <= setup)
-        {
-          gcds_required += 1;
-          setup += gcd;
-        }
-        if (sim->log)
-          sim->out_log.printf("setup required %s", setup);
-
-        if (cooldowns.deathbolt->remains() <= setup)
-          ready = true;
-
-        return ready;
-      });
-    }
-
-    return player_t::create_expression(name_str);
   }
 }

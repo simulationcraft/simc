@@ -48,28 +48,9 @@ double azerite_power_t::value( size_t index ) const
 
   double sum = 0.0;
   auto budgets = budget();
-  for ( size_t budget_index = 0, end = budgets.size(); budget_index < end; ++budget_index )
-  {
-    auto budget = budgets[ budget_index ];
-    auto value = floor( m_spell -> effectN( index ).m_average() * budget + 0.5 );
-
-    unsigned actual_level = m_ilevels[ budget_index ];
-    if ( m_spell->max_scaling_level() > 0 && m_spell->max_scaling_level() < actual_level )
-    {
-      actual_level = m_spell -> max_scaling_level();
-    }
-
-    // Apply combat rating penalties consistently
-    if ( m_spell -> scaling_class() == PLAYER_SPECIAL_SCALE7 ||
-         check_combat_rating_penalty( index ) )
-    {
-      value = item_database::apply_combat_rating_multiplier( m_player,
-          CR_MULTIPLIER_ARMOR, actual_level, value );
-    }
-
-    // TODO: Is this floored, or allowed to accumulate with fractions (and floored at the end?)
-    sum += floor( value );
-  }
+  range::for_each( budgets, [ & ]( unsigned budget ) {
+    sum += m_spell -> effectN( index ).m_average() * budget;
+  } );
 
   if ( m_value.size() < index )
   {
@@ -120,7 +101,12 @@ std::vector<double> azerite_power_t::budget() const
     }
 
     auto budget = item_database::item_budget( m_player, min_ilevel );
-    if ( m_spell->scaling_class() == PLAYER_SPECIAL_SCALE8 )
+    if ( m_spell -> scaling_class() == PLAYER_SPECIAL_SCALE7 )
+    {
+      budget = item_database::apply_combat_rating_multiplier( m_player,
+          CR_MULTIPLIER_ARMOR, min_ilevel, budget );
+    }
+    else if ( m_spell->scaling_class() == PLAYER_SPECIAL_SCALE8 )
     {
       const auto& props = m_player->dbc.random_property( min_ilevel );
       budget = props.item_effect;
@@ -131,31 +117,9 @@ std::vector<double> azerite_power_t::budget() const
   return b;
 }
 
+/// List of items associated with this azerite power
 const std::vector<unsigned> azerite_power_t::ilevels() const
 { return m_ilevels; }
-
-unsigned azerite_power_t::n_items() const
-{ return as<unsigned>( m_ilevels.size() ); }
-
-// Currently understood rules for the detection, since we don't know how to see it from spell data
-// 1) Spell must use scaling type -1
-// 2) Effect must be of type "apply combat rating"
-// 3) Effect must be a dynamically scaling one (average coefficient > 0)
-bool azerite_power_t::check_combat_rating_penalty( size_t index ) const
-{
-  if ( index == 0 || index > m_spell->effect_count() )
-  {
-    return false;
-  }
-
-  if ( m_spell->scaling_class() != PLAYER_SPECIAL_SCALE )
-  {
-    return false;
-  }
-
-  return m_spell->effectN( index ).subtype() == A_MOD_RATING &&
-         m_spell->effectN( index ).m_average() != 0;
-}
 
 namespace azerite
 {
@@ -200,9 +164,21 @@ void azerite_state_t::initialize()
 {
   range::for_each( m_player -> items, [ this ]( const item_t& item ) {
     range::for_each( item.parsed.azerite_ids, [ & ]( unsigned id ) {
+      m_state[ id ] = false;
       m_items[ id ].push_back( &( item ) );
     } );
   });
+}
+
+bool azerite_state_t::is_initialized( unsigned id ) const
+{
+  auto it = m_state.find( id );
+  if ( it != m_state.end() )
+  {
+    return it -> second;
+  }
+
+  return false;
 }
 
 azerite_power_t azerite_state_t::get_power( unsigned id )
@@ -212,6 +188,23 @@ azerite_power_t azerite_state_t::get_power( unsigned id )
   {
     return {};
   }
+
+  auto it = m_state.find( id );
+  if ( it == m_state.end() )
+  {
+    return {};
+  }
+
+  // Already initialized (successful invocation of get_power for this actor with the same id), so
+  // don't give out the spell data again
+  if ( it -> second )
+  {
+    m_player -> sim -> errorf( "%s attempting to re-initialize azerite power %u",
+        m_player -> name(), id );
+    return {};
+  }
+
+  it -> second = true;
 
   const auto& power = m_player -> dbc.azerite_power( id );
 
@@ -256,30 +249,30 @@ azerite_power_t azerite_state_t::get_power( unsigned id )
   }
   else
   {
-    // Item-related azerite effects are only enabled when "all" is defined
-    if ( m_items[ id ].size() > 0 && m_player -> sim -> azerite_status == AZERITE_ENABLED )
+    if ( m_player -> sim -> debug )
     {
-      if ( m_player -> sim -> debug )
+      std::stringstream s;
+      const auto& items = m_items[ power.id ];
+
+      for ( size_t i = 0; i < items.size(); ++i )
       {
-        std::stringstream s;
-        const auto& items = m_items[ power.id ];
+        s << items[ i ] -> full_name()
+          << " (id=" << items[ i ] -> parsed.data.id
+          << ", ilevel=" << items[ i ] -> item_level() << ")";
 
-        for ( size_t i = 0; i < items.size(); ++i )
+        if ( i < items.size() - 1 )
         {
-          s << items[ i ] -> full_name()
-            << " (id=" << items[ i ] -> parsed.data.id
-            << ", ilevel=" << items[ i ] -> item_level() << ")";
-
-          if ( i < items.size() - 1 )
-          {
-            s << ", ";
-          }
+          s << ", ";
         }
-
-        m_player -> sim -> out_debug.printf( "%s initializing azerite power %s: %s",
-            m_player -> name(), power.name, s.str().c_str() );
       }
 
+      m_player -> sim -> out_debug.printf( "%s initializing azerite power %s: %s",
+          m_player -> name(), power.name, s.str().c_str() );
+    }
+
+    // Item-related azerite effects are only enabled when "all" is defined
+    if ( m_player -> sim -> azerite_status == AZERITE_ENABLED )
+    {
       return { m_player, m_player -> find_spell( power.spell_id ), m_items[ id ] };
     }
     else
@@ -419,6 +412,8 @@ bool azerite_state_t::parse_override( sim_t* sim, const std::string&, const std:
       }
 
       m_overrides[ power->id ].push_back( ilevel );
+      // Note, overridden powers should also have init state tracked
+      m_state[ power->id ] = false;
     }
   }
 
@@ -519,23 +514,7 @@ std::vector<unsigned> azerite_state_t::enabled_spells() const
 {
   std::vector<unsigned> spells;
 
-  for ( const auto& entry : m_items )
-  {
-    if ( ! is_enabled( entry.first ) )
-    {
-      continue;
-    }
-
-    const auto& power = m_player -> dbc.azerite_power( entry.first );
-    if ( power.id == 0 )
-    {
-      continue;
-    }
-
-    spells.push_back( power.spell_id );
-  }
-
-  for ( const auto& entry : m_overrides )
+  for ( const auto& entry : m_state )
   {
     if ( ! is_enabled( entry.first ) )
     {
@@ -934,7 +913,7 @@ void retaliatory_fury( special_effect_t& effect )
   // Replace the driver spell, the azerite power does not hold the RPPM value
   effect.spell_id = driver -> id();
 
-  new retaliatory_fury_proc_cb_t( effect, { { mastery, absorb } } );
+  new retaliatory_fury_proc_cb_t( effect, { mastery, absorb } );
 }
 
 void blood_rite( special_effect_t& effect )
@@ -1359,7 +1338,6 @@ void wandering_soul( special_effect_t& effect )
     ruinous_bolt_t( const special_effect_t& e, const azerite_power_t& power ):
       proc_spell_t( "ruinous_bolt", e.player, e.player -> find_spell( 280206 ) )
     {
-      aoe = 0;
       base_dd_min = base_dd_max = power.value( 1 );
     }
   };

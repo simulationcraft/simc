@@ -6209,8 +6209,7 @@ double rogue_t::composite_player_target_multiplier( player_t* target, school_e s
 
 std::string rogue_t::default_flask() const
 {
-  return ( true_level >  110 ) ? "currents" :
-         ( true_level >  100 ) ? "seventh_demon" :
+  return ( true_level >  100 ) ? "seventh_demon" :
          ( true_level >= 90  ) ? "greater_draenic_agility_flask" :
          ( true_level >= 85  ) ? "spring_blossoms" :
          ( true_level >= 80  ) ? "winds" :
@@ -6221,8 +6220,7 @@ std::string rogue_t::default_flask() const
 
 std::string rogue_t::default_potion() const
 {
-  return ( true_level > 110 ) ? "battle_potion_of_agility" :
-         ( true_level > 100 ) ? "prolonged_power" :
+  return ( true_level > 100 ) ? "prolonged_power" :
          ( true_level >= 90 ) ? "draenic_agility" :
          ( true_level >= 85 ) ? "virmens_bite" :
          ( true_level >= 80 ) ? "tolvir" :
@@ -6233,8 +6231,7 @@ std::string rogue_t::default_potion() const
 
 std::string rogue_t::default_food() const
 {
-  return ( true_level >  110 ) ? "bountiful_captains_feast" :
-         ( true_level >  100 ) ? "lavish_suramar_feast" :
+  return ( true_level >  100 ) ? "lavish_suramar_feast" :
          ( true_level >  90  ) ? "jumbo_sea_dog" :
          ( true_level >= 90  ) ? "sea_mist_rice_noodles" :
          ( true_level >= 80  ) ? "seafood_magnifique_feast" :
@@ -6243,8 +6240,7 @@ std::string rogue_t::default_food() const
 
 std::string rogue_t::default_rune() const
 {
-  return ( true_level >= 120 ) ? "battle_scarred" :
-         ( true_level >= 110 ) ? "defiled" :
+  return ( true_level >= 110 ) ? "defiled" :
          ( true_level >= 100 ) ? "hyper" :
          "disabled";
 }

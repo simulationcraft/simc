@@ -422,6 +422,9 @@ public:
     cooldown_t* wildfire_bomb;
   } cooldowns;
 
+  // Custom Parameters
+  std::string summon_pet_str;
+
   // Gains
   struct gains_t
   {
@@ -566,17 +569,13 @@ public:
     double cost_multiplier = 0;
   } t19_mm_4pc;
 
-  struct options_t {
-    std::string summon_pet_str = "cat";
-    timespan_t pet_attack_speed = timespan_t::from_seconds( 2.0 );
-  } options;
-
   hunter_t( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) :
     player_t( sim, HUNTER, name, r ),
     pets(),
     legendary(),
     buffs(),
     cooldowns(),
+    summon_pet_str( "cat" ),
     gains(),
     procs(),
     talents(),
@@ -1094,15 +1093,6 @@ public:
     ab::base_execute_time = ab::weapon -> swing_time;
     ab::school = SCHOOL_PHYSICAL;
   }
-
-  timespan_t execute_time() const override
-  {
-    // there is a cap of ~.25s for pet auto attacks
-    timespan_t t = ab::execute_time();
-    if ( t < timespan_t::from_seconds( .25 ) )
-      t = timespan_t::from_seconds( .25 );
-    return t;
-  }
 };
 
 // ==========================================================================
@@ -1136,8 +1126,6 @@ struct hunter_main_pet_base_t : public hunter_pet_t
     owner_coeff.ap_from_ap = 0.6;
 
     initial.armor_multiplier *= 1.05;
-
-    main_hand_weapon.swing_time = owner -> options.pet_attack_speed;
   }
 
   void create_buffs() override
@@ -1315,7 +1303,7 @@ struct hunter_main_pet_t : public hunter_main_pet_base_t
   resource_e primary_resource() const override
   { return RESOURCE_FOCUS; }
 
-  timespan_t available() const override
+  timespan_t available() const
   {
     // XXX: this will have to be changed if we ever add other foreground attacks to pets besides Basic Attacks
     if ( ! active.basic_attack )
@@ -1840,15 +1828,11 @@ struct basic_attack_t : public hunter_main_pet_attack_t
     if ( o() -> azerite.pack_alpha.ok() )
     {
       const pet_t* pets[] = { o() -> pets.animal_companion, o() -> pets.dire_beast, o() -> pets.spitting_cobra };
-      // TODO: it also counts Stampede as a single pet
       auto pet_count = range::count_if( pets, []( const pet_t* p ) { return p && !p -> is_sleeping(); } );
-      double bonus = pack_alpha_bonus_da * pet_count;
-      // 04-08-2018: it looks like Pack Alpha bonus damage is not affected by the
-      // blanket pet damage aura of Animal Companion; not sure how they do this in-game
-      // but we simply premultiply it to cancel-out the effect
-      if ( o() -> talents.animal_companion -> ok() )
-        bonus *= 1.0 / ( 1.0 + o() -> talents.animal_companion -> effectN( 2 ).percent() );
-      b += bonus;
+      // 28-06-2018: Pack Alpha seems to count the main pet if there are other ones up from the looks of it
+      if ( pet_count > 0 && o() -> bugs )
+        pet_count++;
+      b += pack_alpha_bonus_da * pet_count;
     }
 
     return b;
@@ -2414,10 +2398,7 @@ struct barbed_shot_t: public hunter_ranged_attack_t
   void init_finished() override
   {
     for ( auto pet : p() -> pet_list )
-    {
-      if ( pet != p() -> pets.dire_beast )
-        add_pet_stats( pet, { "stomp" } );
-    }
+      add_pet_stats( pet, { "stomp" } );
 
     hunter_ranged_attack_t::init_finished();
   }
@@ -2954,7 +2935,7 @@ struct rapid_fire_t: public hunter_spell_t
     procs.lethal_shots = p -> get_proc( "lethal_shots_rapid_fire" );
   }
 
-  void init() override
+  void init()
   {
     hunter_spell_t::init();
 
@@ -3215,6 +3196,7 @@ struct internal_bleeding_t
 
   void trigger( const action_state_t* s )
   {
+    auto p = static_cast<const hunter_t*>( s -> action -> player );
     if ( action )
     {
       auto td = action->td( s -> target );
@@ -3261,6 +3243,8 @@ struct melee_focus_spender_t: hunter_melee_attack_t
     internal_bleeding( p ),
     wilderness_survival_reduction( p -> azerite.wilderness_survival.spell() -> effectN( 1 ).time_value() )
   {
+    base_dd_adder += p -> azerite.wilderness_survival.value( 2 );
+
     if ( p -> azerite.latent_poison.ok() )
       latent_poison = p -> get_background_action<latent_poison_t>( "latent_poison" );
   }
@@ -3328,8 +3312,6 @@ struct mongoose_bite_base_t: melee_focus_spender_t
   mongoose_bite_base_t( const std::string& n, hunter_t* p, spell_data_ptr_t s ):
     melee_focus_spender_t( n, p, s )
   {
-    base_dd_adder += p -> azerite.wilderness_survival.value( 3 );
-
     for ( size_t i = 0; i < stats_.at_fury.size(); i++ )
       stats_.at_fury[ i ] = p -> get_proc( "bite_at_" + std::to_string( i ) + "_fury" );
 
@@ -3439,7 +3421,7 @@ struct carve_base_t: public hunter_melee_attack_t
     aoe = -1;
   }
 
-  void init() override
+  void init()
   {
     hunter_melee_attack_t::init();
 
@@ -3510,7 +3492,6 @@ struct raptor_strike_base_t: public melee_focus_spender_t
   raptor_strike_base_t( const std::string& n, hunter_t* p, spell_data_ptr_t s ):
     melee_focus_spender_t( n, p, s )
   {
-    base_dd_adder += p -> azerite.wilderness_survival.value( 2 );
     base_multiplier *= 1.0 + p -> find_spell( 262839 ) -> effectN( 1 ).percent(); // Raptor Strike (Rank 2)
     base_multiplier *= 1.0 + p -> sets -> set( HUNTER_SURVIVAL, T21, B4 ) -> effectN( 1 ).percent();
 
@@ -3882,7 +3863,7 @@ struct summon_pet_t: public hunter_spell_t
     ignore_false_positive = true;
 
     if ( pet_name.empty() )
-      pet_name = p() -> options.summon_pet_str;
+      pet_name = p() -> summon_pet_str;
     opt_disabled = util::str_compare_ci( pet_name, "disabled" );
   }
 
@@ -4827,8 +4808,8 @@ pet_t* hunter_t::create_pet( const std::string& pet_name,
 
 void hunter_t::create_pets()
 {
-  if ( !util::str_compare_ci( options.summon_pet_str, "disabled" ) )
-    create_pet( options.summon_pet_str, options.summon_pet_str );
+  if ( !util::str_compare_ci( summon_pet_str, "disabled" ) )
+    create_pet( summon_pet_str, summon_pet_str );
 
   if ( talents.animal_companion -> ok() )
     pets.animal_companion = new pets::animal_companion_t( this );
@@ -5496,7 +5477,7 @@ void hunter_t::apl_bm()
   default_list -> add_action( this, "Kill Command" );
   default_list -> add_talent( this, "Dire Beast" );
   default_list -> add_action( this, "Barbed Shot", "if=pet.cat.buff.frenzy.down&charges_fractional>1.4|full_recharge_time<gcd.max|target.time_to_die<9" );
-  default_list -> add_talent( this, "Barrage,if=active_enemies>1" );
+  default_list -> add_talent( this, "Barrage" );
   default_list -> add_action( this, "Multi-Shot", "if=spell_targets>1&(pet.cat.buff.beast_cleave.remains<gcd.max|pet.cat.buff.beast_cleave.down)" );
   default_list -> add_action( this, "Cobra Shot", "if=(active_enemies<2|cooldown.kill_command.remains>focus.time_to_max)&(buff.bestial_wrath.up&active_enemies>1|cooldown.kill_command.remains>1+gcd&cooldown.bestial_wrath.remains>focus.time_to_max|focus-cost+focus.regen*(cooldown.kill_command.remains-1)>action.kill_command.cost)" );
 }
@@ -5540,7 +5521,7 @@ void hunter_t::apl_mm()
   default_list -> add_action( this, "Aimed Shot", "if=buff.precise_shots.down&buff.double_tap.down&(active_enemies>2&buff.trick_shots.up|active_enemies<3&full_recharge_time<cast_time+gcd)" );
   default_list -> add_action( this, "Rapid Fire", "if=active_enemies<3|buff.trick_shots.up" );
   default_list -> add_talent( this, "Explosive Shot" );
-  default_list -> add_talent( this, "Barrage,if=active_enemies>1" );
+  default_list -> add_talent( this, "Barrage" );
   default_list -> add_talent( this, "Piercing Shot" );
   default_list -> add_talent( this, "A Murder of Crows" );
   default_list -> add_action( this, "Multi-Shot", "if=active_enemies>2&buff.trick_shots.down" );
@@ -5572,7 +5553,6 @@ void hunter_t::apl_surv()
   for ( std::string racial : { "berserking", "blood_fury", "ancestral_call", "fireblood" } )
     default_list -> add_action( racial + ",if=cooldown.coordinated_assault.remains>30" );
   default_list -> add_action( "lights_judgment" );
-  default_list->add_action( "arcane_torrent,if=cooldown.kill_command.remains>gcd.max&focus<=30" );
 
   // In-combat potion
   default_list -> add_action( "potion,if=buff.coordinated_assault.up&(buff.berserking.up|buff.blood_fury.up|!race.troll&!race.orc)" );
@@ -5596,7 +5576,7 @@ void hunter_t::apl_surv()
   default_list -> add_action( this, "Aspect of the Eagle", "if=target.distance>=6" );
   default_list -> add_action( "mongoose_bite_eagle,target_if=min:dot.internal_bleeding.stack,if=buff.mongoose_fury.up|focus>60" );
   default_list -> add_talent( this, "Mongoose Bite", "target_if=min:dot.internal_bleeding.stack,if=buff.mongoose_fury.up|focus>60" );
-  default_list -> add_talent( this, "Butchery,if=active_enemies>1" );
+  default_list -> add_talent( this, "Butchery" );
   default_list -> add_action( "raptor_strike_eagle,target_if=min:dot.internal_bleeding.stack" );
   default_list -> add_action( this, "Raptor Strike", "target_if=min:dot.internal_bleeding.stack" );
 }
@@ -5888,9 +5868,7 @@ void hunter_t::create_options()
 {
   player_t::create_options();
 
-  add_option( opt_string( "summon_pet", options.summon_pet_str ) );
-  add_option( opt_timespan( "hunter.pet_attack_speed", options.pet_attack_speed,
-                            timespan_t::from_seconds( .5 ), timespan_t::from_seconds( 4 ) ) );
+  add_option( opt_string( "summon_pet", summon_pet_str ) );
   add_option( opt_obsoleted( "hunter_fixed_time" ) );
 }
 
@@ -5900,12 +5878,7 @@ std::string hunter_t::create_profile( save_e stype )
 {
   std::string profile_str = player_t::create_profile( stype );
 
-  const options_t defaults;
-
-  if ( options.summon_pet_str != defaults.summon_pet_str )
-    profile_str += "summon_pet=" + options.summon_pet_str + "\n";
-  if ( options.pet_attack_speed != defaults.pet_attack_speed )
-    profile_str += "hunter.pet_attack_speed=" + util::to_string( options.pet_attack_speed.total_seconds() ) + "\n";
+  profile_str += "summon_pet=" + summon_pet_str + "\n";
 
   return profile_str;
 }
@@ -5915,7 +5888,10 @@ std::string hunter_t::create_profile( save_e stype )
 void hunter_t::copy_from( player_t* source )
 {
   player_t::copy_from( source );
-  options = debug_cast<hunter_t*>( source ) -> options;
+
+  hunter_t* p = debug_cast<hunter_t*>( source );
+
+  summon_pet_str = p -> summon_pet_str;
 }
 
 // hunter_::convert_hybrid_stat ==============================================

@@ -311,13 +311,12 @@ enum item_subclass_armor
     ITEM_SUBCLASS_ARMOR_LEATHER               = 2,
     ITEM_SUBCLASS_ARMOR_MAIL                  = 3,
     ITEM_SUBCLASS_ARMOR_PLATE                 = 4,
-    ITEM_SUBCLASS_ARMOR_COSMETIC              = 5,
+    ITEM_SUBCLASS_ARMOR_BUCKLER               = 5,
     ITEM_SUBCLASS_ARMOR_SHIELD                = 6,
     ITEM_SUBCLASS_ARMOR_LIBRAM                = 7,
     ITEM_SUBCLASS_ARMOR_IDOL                  = 8,
     ITEM_SUBCLASS_ARMOR_TOTEM                 = 9,
-    ITEM_SUBCLASS_ARMOR_SIGIL                 = 10,
-    ITEM_SUBCLASS_ARMOR_RELIC                 = 11
+    ITEM_SUBCLASS_ARMOR_SIGIL                 = 11
 };
 
 enum item_subclass_consumable
@@ -1257,11 +1256,8 @@ enum spell_attribute : unsigned
   SX_REQ_MAIN_HAND        = 106u,
   SX_DISABLE_PLAYER_PROCS = 112u,
   SX_DISABLE_TARGET_PROCS = 113u,
-  SX_ALWAYS_HIT           = 114u,
   SX_REQ_OFF_HAND         = 120u,
-  SX_TREAT_AS_PERIODIC    = 121u,
   SX_DISABLE_WEAPON_PROCS = 151u,
-  SX_TICK_ON_APPLICATION  = 169u,
   SX_DOT_HASTED           = 173u,
   SX_REQ_LINE_OF_SIGHT    = 186u,
   SX_DISABLE_PLAYER_MULT  = 221u,

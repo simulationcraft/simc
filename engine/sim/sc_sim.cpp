@@ -3449,6 +3449,7 @@ void sim_t::create_options()
     }
     return true;
   } ) );
+  add_option( opt_bool( "bfa.feast_as_dps", bfa_opts.bountiful_feast_as_dps ) );
 }
 
 // sim_t::parse_option ======================================================

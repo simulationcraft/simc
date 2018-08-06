@@ -3,7 +3,7 @@ spec=fire
 level=110
 race=troll
 role=spell
-position=ranged_back
+position=back
 talents=1011022
 
 # Default consumables

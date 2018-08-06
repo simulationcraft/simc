@@ -225,14 +225,14 @@ namespace warlock {
         return m;
       }
 
-      void consume_resource() override
-      {
+      void consume_resource() override {
         demonology_spell_t::consume_resource();
 
         shards_used = as<int>( last_resource_cost );
 
-        if ( rng().roll( p()->azerite.demonic_meteor.spell_ref().effectN( 2 ).percent() * shards_used ) )
+        if ( rng().roll( p()->azerite.demonic_meteor.spell_ref().effectN( 2 ).percent()*shards_used ) ) {
           p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.demonic_meteor );
+        }
 
         if ( last_resource_cost == 1.0 )
           p()->procs.one_shard_hog->occur();
@@ -300,7 +300,7 @@ namespace warlock {
         {
           da += p()->azerite.forbidden_knowledge.value();
           if (sim->log)
-            sim->out_log.printf("forbidden knowledge added %f", p()->azerite.forbidden_knowledge.value());
+            sim->out_debug.printf("forbidden knowledge added %f", p()->azerite.forbidden_knowledge.value());
         }
         da += p()->buffs.shadows_bite->check_value();
         return da;
@@ -1146,20 +1146,20 @@ namespace warlock {
     action_priority_list_t* bas = get_action_priority_list("build_a_shard");
     action_priority_list_t* imp = get_action_priority_list( "implosion" );
 
-    def->add_action( "potion,if=pet.demonic_tyrant.active|target.time_to_die<30" );
-    def->add_action( "use_items,if=pet.demonic_tyrant.active|target.time_to_die<=15" );
-    def->add_action( "berserking,if=pet.demonic_tyrant.active|target.time_to_die<=15" );
-    def->add_action( "blood_fury,if=pet.demonic_tyrant.active|target.time_to_die<=15" );
-    def->add_action( "fireblood,if=pet.demonic_tyrant.active|target.time_to_die<=15" );
+    def->add_action( "use_items,if=prev_gcd.1.summon_demonic_tyrant" );
+    def->add_action( "berserking,if=prev_gcd.1.summon_demonic_tyrant" );
+    def->add_action( "blood_fury,if=prev_gcd.1.summon_demonic_tyrant" );
+    def->add_action( "fireblood,if=prev_gcd.1.summon_demonic_tyrant" );
     def->add_action( "doom,if=!ticking&time_to_die>30&spell_targets.implosion<2" );
-    def->add_action( "demonic_strength,if=(buff.wild_imps.stack<6|buff.demonic_power.up)|spell_targets.implosion<2");
-    def->add_action( "call_action_list,name=nether_portal,if=talent.nether_portal.enabled&spell_targets.implosion<=2");
+    def->add_action("demonic_strength");
+    def->add_action("call_action_list,name=nether_portal,if=talent.nether_portal.enabled&spell_targets.implosion<=2");
     def->add_action( "call_action_list,name=implosion,if=spell_targets.implosion>1" );
     def->add_action( "grimoire_felguard,if=cooldown.summon_demonic_tyrant.remains<13|!equipped.132369" );
     def->add_action( "summon_vilefiend,if=equipped.132369|cooldown.summon_demonic_tyrant.remains>40|cooldown.summon_demonic_tyrant.remains<12" );
     def->add_action( "call_dreadstalkers,if=equipped.132369|(cooldown.summon_demonic_tyrant.remains<9&buff.demonic_calling.remains)|(cooldown.summon_demonic_tyrant.remains<11&!buff.demonic_calling.remains)|cooldown.summon_demonic_tyrant.remains>14" );
-    def->add_action( "summon_demonic_tyrant,if=equipped.132369|(buff.dreadstalkers.remains>cast_time&(buff.wild_imps.stack>=3|prev_gcd.1.hand_of_guldan)&(soul_shard<3|buff.dreadstalkers.remains<gcd*2.7|buff.grimoire_felguard.remains<gcd*2.7))" );
     def->add_action( "power_siphon,if=buff.wild_imps.stack>=2&buff.demonic_core.stack<=2&buff.demonic_power.down&spell_targets.implosion<2" );
+    def->add_action( "summon_demonic_tyrant,if=equipped.132369|buff.dreadstalkers.remains>cast_time&(buff.wild_imps.stack>=3|prev_gcd.1.hand_of_guldan)&(soul_shard<3|buff.dreadstalkers.remains<gcd*2.7|buff.grimoire_felguard.remains<gcd*2.7)" );
+    def->add_action( "potion,if=pet.demonic_tyrant.active" );
     def->add_action( "doom,if=talent.doom.enabled&refreshable&time_to_die>(dot.doom.remains+30)" );
     def->add_action( "hand_of_guldan,if=soul_shard>=5|(soul_shard>=3&cooldown.call_dreadstalkers.remains>4&(!talent.summon_vilefiend.enabled|cooldown.summon_vilefiend.remains>3))" );
     def->add_action( "soul_strike,if=soul_shard<5&buff.demonic_core.stack<=2" );
@@ -1187,21 +1187,20 @@ namespace warlock {
     npb->add_action("hand_of_guldan,if=soul_shard>=5");
     npb->add_action("call_action_list,name=build_a_shard");
 
-    imp->add_action( "implosion,if=(buff.wild_imps.stack>=6&(soul_shard<3|prev_gcd.1.call_dreadstalkers|buff.wild_imps.stack>=9|prev_gcd.1.bilescourge_bombers|(!prev_gcd.1.hand_of_guldan&!prev_gcd.2.hand_of_guldan))&!prev_gcd.1.hand_of_guldan&!prev_gcd.2.hand_of_guldan&buff.demonic_power.down)|(time_to_die<3&buff.wild_imps.stack>0)|(prev_gcd.2.call_dreadstalkers&buff.wild_imps.stack>2&!talent.demonic_calling.enabled)" );
+    imp->add_action( "implosion,if=buff.wild_imps.stack>=6&(soul_shard<3|prev_gcd.1.call_dreadstalkers|buff.wild_imps.stack>=9|prev_gcd.1.bilescourge_bombers)&!prev_gcd.1.hand_of_guldan&buff.demonic_power.down&cooldown.summon_demonic_tyrant.remains>4" );
     imp->add_action( "grimoire_felguard,if=cooldown.summon_demonic_tyrant.remains<13|!equipped.132369" );
     imp->add_action( "call_dreadstalkers,if=(cooldown.summon_demonic_tyrant.remains<9&buff.demonic_calling.remains)|(cooldown.summon_demonic_tyrant.remains<11&!buff.demonic_calling.remains)|cooldown.summon_demonic_tyrant.remains>14" );
-    imp->add_action( "summon_demonic_tyrant" );
-    imp->add_action( "hand_of_guldan,if=soul_shard>=5" );
-    imp->add_action( "hand_of_guldan,if=soul_shard>=3&(((prev_gcd.2.hand_of_guldan|buff.wild_imps.stack>=3)&buff.wild_imps.stack<9)|cooldown.summon_demonic_tyrant.remains<=gcd*2|buff.demonic_power.remains>gcd*2)" );
-    imp->add_action( "demonbolt,if=prev_gcd.1.hand_of_guldan&soul_shard>=1&(buff.wild_imps.stack<=3|prev_gcd.3.hand_of_guldan)&soul_shard<4&buff.demonic_core.up" );
+    imp->add_action( "summon_demonic_tyrant,if=soul_shard<3|buff.grimoire_felguard.remains<gcd*2.7|buff.dreadstalkers.remains<gcd*2.7" );
+    imp->add_action( "hand_of_guldan,if=soul_shard>=5|(soul_shard>=3&buff.wild_imps.stack>=3&buff.wild_imps.stack<9&cooldown.call_dreadstalkers.remains>=gcd*2)" );
+    imp->add_action( "demonbolt,if=prev_gcd.1.hand_of_guldan&soul_shard>=1&buff.wild_imps.stack<=3&soul_shard<4&buff.demonic_core.up" );
     imp->add_action( "summon_vilefiend,if=(cooldown.summon_demonic_tyrant.remains>40&spell_targets.implosion<=2)|cooldown.summon_demonic_tyrant.remains<12" );
     imp->add_action( "bilescourge_bombers,if=cooldown.summon_demonic_tyrant.remains>9" );
     imp->add_action( "soul_strike,if=soul_shard<5&buff.demonic_core.stack<=2" );
-    imp->add_action( "demonbolt,if=soul_shard<=3&buff.demonic_core.up&(buff.demonic_core.stack>=3|buff.demonic_core.remains<=gcd*5.7)" );
-    imp->add_action( "doom,cycle_targets=1,max_cycle_targets=7,if=refreshable" );
+    imp->add_action( "demonbolt,if=soul_shard<=3&buff.demonic_core.up&(buff.demonic_core.stack>=3|buff.demonic_core.remains<5)" );
     imp->add_action( "call_action_list,name=build_a_shard" );
 
-    bas->add_action( "demonbolt,if=azerite.forbidden_knowledge.rank>=2&buff.forbidden_knowledge.react&!buff.demonic_core.react&cooldown.summon_demonic_tyrant.remains>20" );
+
+
     bas->add_action("soul_strike");
     bas->add_action("shadow_bolt");
   }

@@ -414,7 +414,7 @@ public:
     // Frost
     buff_t* brain_freeze;
     buff_t* fingers_of_frost;
-    buff_t* icicles;
+    buff_t* icicles;                           // Buff to track icicles - doesn't always line up with icicle count though!
     buff_t* icy_veins;
 
     buff_t* bone_chilling;
@@ -768,7 +768,7 @@ public:
 
   // Public mage functions:
   action_t* get_icicle();
-  void      trigger_icicle( player_t* icicle_target, bool chain = false );
+  void      trigger_icicle( const action_state_t* trigger_state, bool chain = false, player_t* chain_target = nullptr );
   void      trigger_evocation( timespan_t duration_override = timespan_t::min(), bool hasted = true );
   void      trigger_arcane_charge( int stacks = 1 );
   bool      apply_crowd_control( const action_state_t* state, spell_mechanic type );
@@ -1899,23 +1899,21 @@ struct frost_mage_spell_t : public mage_spell_t
     return p() -> cache.mastery() * p() -> spec.icicles -> effectN( 3 ).sp_coeff();
   }
 
-  void trigger_icicle_gain( player_t* icicle_target, action_t* icicle_action )
+  void trigger_icicle_gain( action_state_t* state, action_t* icicle_action )
   {
     if ( ! p() -> spec.icicles -> ok() )
       return;
 
-    unsigned max_icicles = as<unsigned>( p() -> spec.icicles -> effectN( 2 ).base_value() );
+    p() -> buffs.icicles -> trigger();
 
     // Shoot one if capped
-    if ( p() -> icicles.size() == max_icicles )
+    if ( as<int>( p() -> icicles.size() ) == p() -> spec.icicles -> effectN( 2 ).base_value() )
     {
-      p() -> trigger_icicle( icicle_target );
+      p() -> trigger_icicle( state );
     }
 
-    p() -> buffs.icicles -> trigger();
-    p() -> icicles.push_back( { p() -> sim -> current_time(), icicle_action } );
-
-    assert( p() -> icicles.size() <= max_icicles );
+    icicle_tuple_t tuple{ p() -> sim -> current_time(), icicle_action };
+    p() -> icicles.push_back( tuple );
   }
 
   virtual void impact_state( action_state_t* s, dmg_e rt )
@@ -3522,7 +3520,7 @@ struct flurry_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
 
-    trigger_icicle_gain( target, p() -> icicle.flurry );
+    trigger_icicle_gain( execute_state, p() -> icicle.flurry );
 
     bool brain_freeze = p() -> buffs.brain_freeze -> up();
     p() -> state.brain_freeze_active = brain_freeze;
@@ -3590,7 +3588,7 @@ struct frostbolt_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
 
-    trigger_icicle_gain( target, p() -> icicle.frostbolt );
+    trigger_icicle_gain( execute_state, p() -> icicle.frostbolt );
 
     double fof_proc_chance = p() -> spec.fingers_of_frost -> effectN( 1 ).percent();
     fof_proc_chance *= 1.0 + p() -> talents.frozen_touch -> effectN( 1 ).percent();
@@ -4001,7 +3999,7 @@ struct ice_lance_t : public frost_mage_spell_t
     // fired. If target dies, Icicles stop.
     if ( ! p() -> talents.glacial_spike -> ok() )
     {
-      p() -> trigger_icicle( target, true );
+      p() -> trigger_icicle( execute_state, true, target );
     }
     if ( p() -> azerite.whiteout.enabled() )
     {
@@ -5320,8 +5318,7 @@ struct freeze_t : public action_t
     may_miss = may_crit = callbacks = false;
     dual = true;
     trigger_gcd = timespan_t::zero();
-
-    use_off_gcd = ignore_false_positive = true;
+    ignore_false_positive = true;
     action_skill = 1;
 
     if ( p -> talents.lonely_winter -> ok() )
@@ -5394,7 +5391,6 @@ struct icicle_event_t : public event_t
 
     schedule( timespan_t::from_seconds( cast_time ) );
   }
-
   virtual const char* name() const override
   { return "icicle_event"; }
 
@@ -5406,7 +5402,8 @@ struct icicle_event_t : public event_t
     if ( target -> is_sleeping() )
     {
       if ( mage -> sim -> debug )
-        mage -> sim -> out_debug.printf( "%s icicle use on %s (sleeping target), stopping", mage -> name(), target -> name() );
+        mage -> sim -> out_debug.printf( "%s icicle use on %s (sleeping target), stopping",
+            mage -> name(), target -> name() );
       return;
     }
 
@@ -5420,7 +5417,8 @@ struct icicle_event_t : public event_t
     {
       mage -> icicle_event = make_event<icicle_event_t>( sim(), *mage, new_action, target );
       if ( mage -> sim -> debug )
-        mage -> sim -> out_debug.printf( "%s icicle use on %s (chained), total=%u", mage -> name(), target -> name(), mage -> icicles.size() );
+        mage -> sim -> out_debug.printf( "%s icicle use on %s (chained), total=%u",
+                               mage -> name(), target -> name(), as<unsigned>( mage -> icicles.size() ) );
     }
   }
 };
@@ -6331,6 +6329,31 @@ void mage_t::create_buffs()
   // Frost
   buffs.brain_freeze           = make_buff<buffs::brain_freeze_buff_t>( this );
   buffs.fingers_of_frost       = make_buff( this, "fingers_of_frost", find_spell( 44544 ) );
+  // Buff to track icicles. This does not, however, track the true amount of icicles present.
+  // Instead, as it does in game, it tracks icicle buff stack count based on the number of *casts*
+  // of icicle generating spells. icicles are generated on impact, so they are slightly de-synced.
+  //
+  // A note about in-game implementation. At first, it might seem that each stack has an independent
+  // expiration timer, but the timing is a bit off and it just doesn't happen in the cases where
+  // Icicle buff is incremented but the actual Icicle never created.
+  //
+  // Instead, the buff is incremented when:
+  //   * Frostbolt executes
+  //   * Ice Nine creates another Icicle
+  //   * One of the Icicles overflows
+  //
+  // It is unclear if the buff is incremented twice or three times when Ice Nine procs and two Icicles
+  // overflow (combat log doesn't track refreshes for Icicles buff).
+  //
+  // The buff is decremented when:
+  //   * One of the Icicles is removed
+  //     - Launched after Ice Lance
+  //     - Launched on overflow
+  //     - Removed as a part of Glacial Spike execute
+  //     - Expired after 60 sec
+  //
+  // This explains why some Icicle stacks remain if Glacial Spike executes with 5 Icicle stacks but less
+  // than 5 actual Icicles.
   buffs.icicles                = make_buff( this, "icicles", find_spell( 205473 ) );
   buffs.icy_veins              = make_buff<buffs::icy_veins_buff_t>( this );
 
@@ -6668,13 +6691,8 @@ void mage_t::apl_precombat()
   // Water Elemental
   if ( specialization() == MAGE_FROST )
     precombat -> add_action( "water_elemental" );
-  // Pet & variables
   if ( specialization() == MAGE_ARCANE )
-  {
     precombat -> add_action( "summon_arcane_familiar" ) ;
-    precombat -> add_action( "variable,name=conserve_mana,op=set,value=35,if=talent.overpowered.enabled" , "conserve_mana is the mana percentage we want to go down to during conserve. It needs to leave enough room to worst case scenario spam AB only during AP.") ;
-    precombat -> add_action( "variable,name=conserve_mana,op=set,value=45,if=!talent.overpowered.enabled" ) ;
-  }
   // Snapshot Stats
   precombat -> add_action( "snapshot_stats" );
 
@@ -6703,25 +6721,22 @@ std::string mage_t::default_potion() const
 {
   std::string lvl110_potion =
     ( specialization() == MAGE_ARCANE ) ? "deadly_grace" :
-    ( specialization() == MAGE_FIRE   ) ? "prolonged_power" :
+    ( specialization() == MAGE_FIRE )   ? "prolonged_power" :
                                           "prolonged_power";
 
-  // TODO: Check Rising Death once it's implemented
-  return ( true_level >= 120 ) ? "battle_potion_of_intellect" :
-         ( true_level >= 110 ) ? lvl110_potion :
-         ( true_level >= 100 ) ? "draenic_intellect" :
-         ( true_level >=  90 ) ? "jade_serpent" :
-         ( true_level >=  85 ) ? "volcanic" :
+  return ( true_level >= 100 ) ? lvl110_potion :
+         ( true_level >=  90 ) ? "draenic_intellect" :
+         ( true_level >=  85 ) ? "jade_serpent" :
+         ( true_level >=  80 ) ? "volcanic" :
                                  "disabled";
 }
 
 std::string mage_t::default_flask() const
 {
-  return ( true_level >= 120 ) ? "endless_fathoms" :
-         ( true_level >= 110 ) ? "whispered_pact" :
-         ( true_level >= 100 ) ? "greater_draenic_intellect_flask" :
-         ( true_level >=  90 ) ? "warm_sun" :
-         ( true_level >=  85 ) ? "draconic_mind" :
+  return ( true_level >= 100 ) ? "whispered_pact" :
+         ( true_level >=  90 ) ? "greater_draenic_intellect_flask" :
+         ( true_level >=  85 ) ? "warm_sun" :
+         ( true_level >=  80 ) ? "draconic_mind" :
                                  "disabled";
 }
 
@@ -6729,21 +6744,19 @@ std::string mage_t::default_food() const
 {
   std::string lvl100_food =
     ( specialization() == MAGE_ARCANE ) ? "sleeper_sushi" :
-    ( specialization() == MAGE_FIRE   ) ? "pickled_eel" :
+    ( specialization() == MAGE_FIRE )   ? "pickled_eel" :
                                           "salty_squid_roll";
 
-  return ( true_level >= 120 ) ? "bountiful_captains_feast" :
-         ( true_level >= 110 ) ? "lemon_herb_filet" :
-         ( true_level >= 100 ) ? lvl100_food :
-         ( true_level >=  90 ) ? "mogu_fish_stew" :
-         ( true_level >=  85 ) ? "severed_sagefish_head" :
-                                 "disabled";
+  return ( true_level > 100 ) ? "lemon_herb_filet" :
+         ( true_level >  90 ) ? lvl100_food :
+         ( true_level >= 90 ) ? "mogu_fish_stew" :
+         ( true_level >= 80 ) ? "severed_sagefish_head" :
+                                "disabled";
 }
 
 std::string mage_t::default_rune() const
 {
-  return ( true_level >= 120 ) ? "battle_scarred" :
-         ( true_level >= 110 ) ? "defiled" :
+  return ( true_level >= 110 ) ? "defiled" :
          ( true_level >= 100 ) ? "focus" :
                                  "disabled";
 }
@@ -6806,9 +6819,9 @@ void mage_t::apl_arcane()
   conserve -> add_talent( this, "Rune of Power", "if=buff.arcane_charge.stack=buff.arcane_charge.max_stack&(full_recharge_time<=execute_time|recharge_time<=cooldown.arcane_power.remains|target.time_to_die<=cooldown.arcane_power.remains)" );
   conserve -> add_action( this, "Arcane Missiles", "if=mana.pct<=95&buff.clearcasting.react,chain=1" );
   conserve -> add_action( this, "Arcane Blast", "if=equipped.mystic_kilt_of_the_rune_master&buff.arcane_charge.stack=0" );
-  conserve -> add_action( this, "Arcane Barrage", "if=((buff.arcane_charge.stack=buff.arcane_charge.max_stack)&(mana.pct<=variable.conserve_mana)|(talent.arcane_orb.enabled&cooldown.arcane_orb.remains<=gcd))|mana.pct<=(variable.conserve_mana-10)", "During conserve, we still just want to continue not dropping charges as long as possible.So keep 'burning' as long as possible (aka conserve_mana threshhold) and then swap to a 4x AB->Abarr conserve rotation. This is mana neutral for RoT, mana negative with arcane familiar. If we do not have 4 AC, we can dip slightly lower to get a 4th AC." );
+  conserve -> add_action( this, "Arcane Barrage", "if=(buff.arcane_charge.stack=buff.arcane_charge.max_stack)&(mana.pct<=35|(talent.arcane_orb.enabled&cooldown.arcane_orb.remains<=gcd))", "During conserve, we still just want to continue not dropping charges as long as possible.So keep 'burning' as long as possible and then swap to a 4x AB->Abarr conserve rotation. This is mana neutral for RoT, mana negative with arcane familiar. Only use arcane barrage with less than 4 Arcane charges if we risk going too low on mana for our next burn" );
   conserve -> add_talent( this, "Supernova", "if=mana.pct<=95", "Supernova is barely worth casting, which is why it is so far down, only just above AB. " );
-  conserve -> add_action( this, "Arcane Explosion", "if=active_enemies>=3&(mana.pct>=variable.conserve_mana|buff.arcane_charge.stack=3)", "Keep 'burning' in aoe situations until conserve_mana pct. After that only cast AE with 3 Arcane charges, since it's almost equal mana cost to a 3 stack AB anyway. At that point AoE rotation will be AB x3 -> AE -> Abarr" );
+  conserve -> add_action( this, "Arcane Explosion", "if=active_enemies>=3&(mana.pct>=40|buff.arcane_charge.stack=3)", "Keep 'burning' in aoe situations until 40%. After that only cast AE with 3 Arcane charges, since it's almost equal mana cost to a 3 stack AB anyway. At that point AoE rotation will be AB x3 -> AE -> Abarr" );
   conserve -> add_action( "arcane_torrent");
   conserve -> add_action( this, "Arcane Blast" );
   conserve -> add_action( this, "Arcane Barrage" );
@@ -6931,7 +6944,7 @@ void mage_t::apl_frost()
   action_priority_list_t* movement     = get_action_priority_list( "movement"  );
 
   default_list -> add_action( this, "Counterspell" );
-  default_list -> add_action( this, "Ice Lance", "if=prev_gcd.1.flurry&brain_freeze_active&!buff.fingers_of_frost.react",
+  default_list -> add_action( this, "Ice Lance", "if=prev_gcd.1.flurry&!buff.fingers_of_frost.react",
     "If the mage has FoF after casting instant Flurry, we can delay the Ice Lance and use other high priority action, if available." );
   default_list -> add_action( this, "Time Warp", "if=buff.bloodlust.down&(buff.exhaustion.down|equipped.shard_of_the_exodar)&(prev_gcd.1.icy_veins|target.time_to_die<50)" );
   default_list -> add_action( "call_action_list,name=cooldowns" );
@@ -6957,22 +6970,21 @@ void mage_t::apl_frost()
     "sure not to waste Brain Freeze charges) with or without Freezing Rain." );
   single -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react",
     "Trying to pool charges of FoF for anything isn't worth it. Use them as they come." );
+  single -> add_talent( this, "Ray of Frost", "if=!action.frozen_orb.in_flight&ground_aoe.frozen_orb.remains=0",
+    "Ray of Frost is used after all Fingers of Frost charges have been used and there isn't active Frozen Orb that could generate more. "
+    "This is only a small gain, as Ray of Frost isn't too impactful." );
   single -> add_talent( this, "Comet Storm" );
   single -> add_talent( this, "Ebonbolt", "if=!talent.glacial_spike.enabled|buff.icicles.stack=5&!buff.brain_freeze.react",
     "Without GS, Ebonbolt is used on cooldown. With GS, Ebonbolt is only used to fill in the blank spots when fishing for a Brain Freeze proc, i.e. "
     "the mage reaches 5 Icicles but still doesn't have a Brain Freeze proc." );
-  single -> add_talent( this, "Ray of Frost", "if=!action.frozen_orb.in_flight&ground_aoe.frozen_orb.remains=0",
-    "Ray of Frost is used after all Fingers of Frost charges have been used and there isn't active Frozen Orb that could generate more. "
-    "This is only a small gain against multiple targets, as Ray of Frost isn't too impactful." );
-  single -> add_action( this, "Blizzard", "if=cast_time=0|active_enemies>1|buff.zannesu_journey.stack=5&buff.zannesu_journey.remains>cast_time",
-    "Blizzard is used as low priority filler against 2 targets. When using Freezing Rain, it's a medium gain to use the instant Blizzard even "
-    "against a single target, especially with low mastery.");
   single -> add_talent( this, "Glacial Spike", "if=buff.brain_freeze.react|prev_gcd.1.ebonbolt|active_enemies>1&talent.splitting_ice.enabled",
     "Glacial Spike is used when there's a Brain Freeze proc active (i.e. only when it can be shattered). This is a small to medium gain "
     "in most situations. Low mastery leans towards using it when available. When using Splitting Ice and having another target nearby, "
     "it's slightly better to use GS when available, as the second target doesn't benefit from shattering the main target." );
+  single -> add_action( this, "Blizzard", "if=cast_time=0|active_enemies>1|buff.zannesu_journey.stack=5&buff.zannesu_journey.remains>cast_time",
+    "Blizzard is used as low priority filler against 2 targets. When using Freezing Rain, it's a medium gain to use the instant Blizzard even "
+    "against a single target, especially with low mastery.");
   single -> add_talent( this, "Ice Nova" );
-  single -> add_action( this, "Flurry", "if=!buff.brain_freeze.react&buff.winters_reach.react&azerite.winters_reach.rank>=2" );
   single -> add_action( this, "Frostbolt" );
   single -> add_action( "call_action_list,name=movement" );
   single -> add_action( this, "Ice Lance" );
@@ -7003,7 +7015,9 @@ void mage_t::apl_frost()
   cooldowns -> add_talent( this, "Rune of Power", "if=time_to_die>10+cast_time&time_to_die<25" );
   cooldowns -> add_talent( this, "Rune of Power",
     "if=active_enemies=1&talent.glacial_spike.enabled&buff.icicles.stack=5&("
-    "buff.brain_freeze.react|talent.ebonbolt.enabled&cooldown.ebonbolt.remains<cast_time)",
+    "!talent.ebonbolt.enabled&buff.brain_freeze.react"
+    "|talent.ebonbolt.enabled&(full_recharge_time<=cooldown.ebonbolt.remains&buff.brain_freeze.react"
+    "|cooldown.ebonbolt.remains<cast_time&!buff.brain_freeze.react))",
     "With Glacial Spike, Rune of Power should be used right before the Glacial Spike combo (i.e. with 5 Icicles and a Brain Freeze). "
     "When Ebonbolt is off cooldown, Rune of Power can also be used just with 5 Icicles." );
   cooldowns -> add_talent( this, "Rune of Power",
@@ -7251,8 +7265,6 @@ void mage_t::reset()
   event_t::cancel( ignite_spread_event );
   event_t::cancel( time_anomaly_tick_event );
 
-  state = state_t();
-
   if ( spec.savant -> ok() )
   {
     recalculate_resource_max( RESOURCE_MANA );
@@ -7467,11 +7479,12 @@ expr_t* mage_t::create_expression( const std::string& name_str )
   // Evaluates to:  0.0 if IF talent not chosen or IF stack unchanged
   //                1.0 if next IF stack increases
   //               -1.0 if IF stack decreases
-  if ( util::str_compare_ci( name_str, "incanters_flow_dir" ) )
+  if ( name_str == "incanters_flow_dir" )
   {
     struct incanters_flow_dir_expr_t : public mage_expr_t
     {
-      incanters_flow_dir_expr_t( mage_t& m ) : mage_expr_t( "incanters_flow_dir", m )
+      incanters_flow_dir_expr_t( mage_t& m ) :
+        mage_expr_t( "incanters_flow_dir", m )
       { }
 
       virtual double evaluate() override
@@ -7490,34 +7503,43 @@ expr_t* mage_t::create_expression( const std::string& name_str )
     return new incanters_flow_dir_expr_t( *this );
   }
 
-  if ( util::str_compare_ci( name_str, "burn_phase" ) )
+  // Arcane Burn Flag Expression ==============================================
+  if ( name_str == "burn_phase" )
   {
     struct burn_phase_expr_t : public mage_expr_t
     {
-      burn_phase_expr_t( mage_t& m ) : mage_expr_t( "burn_phase", m )
+      burn_phase_expr_t( mage_t& m ) :
+        mage_expr_t( "burn_phase", m )
       { }
 
       virtual double evaluate() override
-      { return mage.burn_phase.on(); }
+      {
+        return mage.burn_phase.on();
+      }
     };
 
     return new burn_phase_expr_t( *this );
   }
 
-  if ( util::str_compare_ci( name_str, "burn_phase_duration" ) )
+  if ( name_str == "burn_phase_duration" )
   {
     struct burn_phase_duration_expr_t : public mage_expr_t
     {
-      burn_phase_duration_expr_t( mage_t& m ) : mage_expr_t( "burn_phase_duration", m )
+      burn_phase_duration_expr_t( mage_t& m ) :
+        mage_expr_t( "burn_phase_duration", m )
       { }
 
       virtual double evaluate() override
-      { return mage.burn_phase.duration( mage.sim -> current_time() ).total_seconds(); }
+      {
+        return mage.burn_phase.duration( mage.sim -> current_time() )
+                              .total_seconds();
+      }
     };
 
     return new burn_phase_duration_expr_t( *this );
   }
 
+  // Icicle Expressions =======================================================
   if ( util::str_compare_ci( name_str, "shooting_icicles" ) )
   {
     struct sicicles_expr_t : public mage_expr_t
@@ -7532,22 +7554,9 @@ expr_t* mage_t::create_expression( const std::string& name_str )
     return new sicicles_expr_t( *this );
   }
 
-  if ( util::str_compare_ci( name_str, "brain_freeze_active" ) )
-  {
-    struct brain_freeze_expr_t : public mage_expr_t
-    {
-      brain_freeze_expr_t( mage_t& m ) : mage_expr_t( "brain_freeze_active", m )
-      { }
-
-      virtual double evaluate() override
-      { return mage.state.brain_freeze_active; }
-    };
-
-    return new brain_freeze_expr_t( *this );
-  }
-
   std::vector<std::string> splits = util::string_split( name_str, "." );
 
+  // Ground AoE expressions ===================================================
   if ( splits.size() == 3 && util::str_compare_ci( splits[ 0 ], "ground_aoe" ) )
   {
     struct ground_aoe_expr_t : public mage_expr_t
@@ -7636,15 +7645,23 @@ action_t* mage_t::get_icicle()
   return nullptr;
 }
 
-void mage_t::trigger_icicle( player_t* icicle_target, bool chain )
+void mage_t::trigger_icicle( const action_state_t* trigger_state, bool chain, player_t* chain_target )
 {
-  assert( icicle_target );
-
   if ( ! spec.icicles -> ok() )
     return;
 
   if ( icicles.empty() )
     return;
+
+  player_t* icicle_target;
+  if ( chain_target )
+  {
+    icicle_target = chain_target;
+  }
+  else
+  {
+    icicle_target = trigger_state -> target;
+  }
 
   if ( chain && ! icicle_event )
   {
@@ -7652,11 +7669,15 @@ void mage_t::trigger_icicle( player_t* icicle_target, bool chain )
     if ( ! icicle_action )
       return;
 
+    assert( icicle_target );
     icicle_event = make_event<events::icicle_event_t>( *sim, *this, icicle_action, icicle_target, true );
 
     if ( sim -> debug )
     {
-      sim -> out_debug.printf( "%s icicle use on %s (chained), total=%u", name(), icicle_target -> name(), icicles.size() );
+      sim -> out_debug.printf( "%s icicle use on %s%s, total=%u",
+                               name(), icicle_target -> name(),
+                               chain ? " (chained)" : "",
+                               as<unsigned>( icicles.size() ) );
     }
   }
   else if ( ! chain )
@@ -7670,7 +7691,10 @@ void mage_t::trigger_icicle( player_t* icicle_target, bool chain )
 
     if ( sim -> debug )
     {
-      sim -> out_debug.printf( "%s icicle use on %s, total=%u", name(), icicle_target -> name(), icicles.size() );
+      sim -> out_debug.printf( "%s icicle use on %s%s, total=%u",
+                               name(), icicle_target -> name(),
+                               chain ? " (chained)" : "",
+                               as<unsigned>( icicles.size() ) );
     }
   }
 }

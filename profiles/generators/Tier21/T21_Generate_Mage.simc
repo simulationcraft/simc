@@ -1,10 +1,10 @@
 mage="T21_Mage_Arcane"
 level=110
 race=troll
-spec=arcane
 role=spell
-position=ranged_back
+position=back
 talents=3032021
+spec=arcane
 
 head=runebound_collar,id=152138,bonus_id=3612/1502
 neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
@@ -28,10 +28,10 @@ save=T21_Mage_Arcane.simc
 mage="T21_Mage_Fire"
 level=110
 race=troll
-spec=fire
 role=spell
-position=ranged_back
+position=back
 talents=1011022
+spec=fire
 
 firestarter_time=20
 
@@ -58,10 +58,10 @@ save=T21_Mage_Fire.simc
 mage="T21_Mage_Frost"
 level=110
 race=dwarf
-spec=frost
 role=spell
-position=ranged_back
+position=back
 talents=2011031
+spec=frost
 
 head=runebound_collar,id=152138,bonus_id=3612/1502
 neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr

@@ -1,10 +1,10 @@
 shaman="T22_Shaman_Enhancement"
 level=120
 race=troll
-spec=enhancement
 role=attack
 position=back
 talents=3101033
+spec=enhancement
 
 head=crest_of_the_undying_visionary,id=160630,bonus_id=4824/1507/4775,azerite_powers=416/30/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33

@@ -3,7 +3,7 @@ spec=vengeance
 level=110
 race=blood_elf
 role=tank
-position=front
+position=back
 talents=1213121
 
 # Default consumables
