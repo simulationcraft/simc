@@ -189,6 +189,12 @@ public:
   // Blurred time cooldown shenanigans
   std::vector<cooldown_t*> serenity_cooldowns;
 
+  struct stagger_tick_entry_t
+  {
+    double value;
+  };
+  std::vector<stagger_tick_entry_t> stagger_tick_damage;  // record stagger tick damage for expression
+
   double gift_of_the_ox_proc_chance;
   // Containers for when to start the trigger for the 19 4-piece Windwalker Combo Master buff
   combo_strikes_e t19_melee_4_piece_container_1;
@@ -830,6 +836,7 @@ public:
   double clear_stagger();
   double partial_clear_stagger( double );
   bool has_stagger();
+  double calculate_last_stagger_tick_damage( int n ) const;
 
   // Storm Earth and Fire targeting logic
   std::vector<player_t*> create_storm_earth_and_fire_target_list() const;
@@ -2135,7 +2142,6 @@ public:
     range::fill( _resource_by_stance, RESOURCE_MAX );
     ab::trigger_gcd = timespan_t::from_seconds( 1.5 );
 
-
     switch ( player->specialization() )
     {
       case MONK_BREWMASTER:
@@ -2177,7 +2183,7 @@ public:
       {
         if ( affected_by.windwalker.spell_da1 )
         {
-            ab::base_dd_multiplier *= 1.0 + player->spec.windwalker_monk->effectN( 1 ).percent();
+          ab::base_dd_multiplier *= 1.0 + player->spec.windwalker_monk->effectN( 1 ).percent();
         }
         if ( affected_by.windwalker.spell_da2 )
           ab::base_dd_multiplier *= 1.0 + player->spec.windwalker_monk->effectN( 5 ).percent();
@@ -2196,7 +2202,7 @@ public:
 
         if ( affected_by.windwalker.spell_ta1 )
         {
-            ab::base_td_multiplier *= 1.0 + player->spec.windwalker_monk->effectN( 2 ).percent();
+          ab::base_td_multiplier *= 1.0 + player->spec.windwalker_monk->effectN( 2 ).percent();
         }
         if ( affected_by.windwalker.spell_ta2 )
           ab::base_dd_multiplier *= 1.0 + player->spec.windwalker_monk->effectN( 7 ).percent();
@@ -2233,8 +2239,9 @@ public:
         {p()->spec.brewmaster_monk->effectN( 2 ), affected_by.brewmaster.spell_ta1},
         {p()->spec.brewmaster_monk->effectN( 6 ), affected_by.brewmaster.spell_ta2},
         {p()->spec.brewmaster_monk->effectN( 8 ), affected_by.brewmaster.spell_ta3},
-        {p()->spec.brewmaster_monk->effectN( 4 ), affected_by.hasted_cooldown}, // not yet working, see Keg Smash
-        {p()->spec.brewmaster_monk->effectN( 5 ), affected_by.hasted_cooldown}, // not yet working, see Ironskin-/Purifying Brew
+        {p()->spec.brewmaster_monk->effectN( 4 ), affected_by.hasted_cooldown},  // not yet working, see Keg Smash
+        {p()->spec.brewmaster_monk->effectN( 5 ),
+         affected_by.hasted_cooldown},  // not yet working, see Ironskin-/Purifying Brew
         {p()->passives.aura_monk->effectN( 1 ), affected_by.hasted_cooldown},
         {p()->spec.mistweaver_monk->effectN( 6 ), affected_by.hasted_gcd},
         {p()->spec.mistweaver_monk->effectN( 1 ), affected_by.mistweaver.spell_da1},
@@ -3715,8 +3722,8 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     gcd_haste = HASTE_ATTACK;
 
     // Set dot data to 0, since we handle everything through the buff.
-    base_tick_time= timespan_t::zero();
-    dot_duration = timespan_t::zero();
+    base_tick_time = timespan_t::zero();
+    dot_duration   = timespan_t::zero();
 
     if ( !p->active_actions.rushing_jade_wind )
     {
@@ -4253,7 +4260,7 @@ struct keg_smash_t : public monk_melee_attack_t
     cooldown->duration = p.spec.keg_smash->cooldown();
     cooldown->duration = p.spec.keg_smash->charge_cooldown();
 
-    affected_by.hasted_cooldown = true; // necessary since category based affected_by parsing is not a thing
+    affected_by.hasted_cooldown = true;  // necessary since category based affected_by parsing is not a thing
 
     // Keg Smash does not appear to be picking up the baseline Trigger GCD reduction
     // Forcing the trigger GCD to 1 second.
@@ -5297,6 +5304,13 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
     base_t::impact( s );
     p()->buff.ironskin_brew->up();  // benefit tracking
     p()->stagger_damage_changed();
+  }
+
+  void assess_damage( dmg_e type, action_state_t* s ) override
+  {
+    base_t::assess_damage( type, s );
+
+    p()->stagger_tick_damage.push_back( {s->result_amount} );
   }
 
   void last_tick( dot_t* d ) override
@@ -7910,6 +7924,8 @@ void monk_t::reset()
   t19_melee_4_piece_container_2 = CS_NONE;
   t19_melee_4_piece_container_3 = CS_NONE;
   spiritual_focus_count         = 0;
+
+  stagger_tick_damage.clear();
 }
 
 // monk_t::regen (brews/teas)================================================
@@ -9624,53 +9640,113 @@ double monk_t::stagger_pct( int target_level )
   double k_value = 0;
   switch ( target_level )
   {
-  case 15: k_value = 197; break;
-  case 16: k_value = 203; break;
-  case 17: k_value = 209; break;
-  case 18: k_value = 215; break;
-  case 19: k_value = 220; break;
-  case 20: k_value = 227; break;
-  case 21: k_value = 235; break;
-  case 22: k_value = 246; break;
-  case 23: k_value = 255; break;
-  case 24: k_value = 265; break;
-  case 25: k_value = 274; break;
-  case 26: k_value = 284; break;
-  case 27: k_value = 292; break;
-  case 28: k_value = 302; break;
-  case 29: k_value = 312; break;
-  case 30: k_value = 322; break;
-  case 31: k_value = 330; break;
-  case 32: k_value = 340; break;
-  case 33: k_value = 350; break;
-  case 34: k_value = 360; break;
-  case 35: k_value = 368; break;
-  case 36: k_value = 377; break;
-  case 37: k_value = 387; break;
-  case 38: k_value = 397; break;
-  case 39: k_value = 407; break;
-  case 40: k_value = 417; break;
-  case 41: k_value = 426; break;
-  case 42: k_value = 436; break;
-  case 43: k_value = 446; break;
-  case 44: k_value = 455; break;
-  case 110:
-  case 111:
-  case 112:
-    k_value = 1423;
-    break;
-  case 113:
-    k_value = level() == 110 ? 1423 : 2107;
-    break;
-  case 120:
-  case 121:
-  case 122:
-  case 123:
-    k_value = 6300;
-    break;
-  default:
-    k_value = dbc.armor_mitigation_constant(target->level()) * 0.6905;
-    break;
+    case 15:
+      k_value = 197;
+      break;
+    case 16:
+      k_value = 203;
+      break;
+    case 17:
+      k_value = 209;
+      break;
+    case 18:
+      k_value = 215;
+      break;
+    case 19:
+      k_value = 220;
+      break;
+    case 20:
+      k_value = 227;
+      break;
+    case 21:
+      k_value = 235;
+      break;
+    case 22:
+      k_value = 246;
+      break;
+    case 23:
+      k_value = 255;
+      break;
+    case 24:
+      k_value = 265;
+      break;
+    case 25:
+      k_value = 274;
+      break;
+    case 26:
+      k_value = 284;
+      break;
+    case 27:
+      k_value = 292;
+      break;
+    case 28:
+      k_value = 302;
+      break;
+    case 29:
+      k_value = 312;
+      break;
+    case 30:
+      k_value = 322;
+      break;
+    case 31:
+      k_value = 330;
+      break;
+    case 32:
+      k_value = 340;
+      break;
+    case 33:
+      k_value = 350;
+      break;
+    case 34:
+      k_value = 360;
+      break;
+    case 35:
+      k_value = 368;
+      break;
+    case 36:
+      k_value = 377;
+      break;
+    case 37:
+      k_value = 387;
+      break;
+    case 38:
+      k_value = 397;
+      break;
+    case 39:
+      k_value = 407;
+      break;
+    case 40:
+      k_value = 417;
+      break;
+    case 41:
+      k_value = 426;
+      break;
+    case 42:
+      k_value = 436;
+      break;
+    case 43:
+      k_value = 446;
+      break;
+    case 44:
+      k_value = 455;
+      break;
+    case 110:
+    case 111:
+    case 112:
+      k_value = 1423;
+      break;
+    case 113:
+      k_value = level() == 110 ? 1423 : 2107;
+      break;
+    case 120:
+    case 121:
+    case 122:
+    case 123:
+      k_value = 6300;
+      break;
+    default:
+      k_value = dbc.armor_mitigation_constant( target->level() ) * 0.6905;
+      break;
   }
 
   double stagger = stagger_base / ( stagger_base + k_value );
@@ -9764,6 +9840,23 @@ timespan_t monk_t::current_stagger_dot_remains()
   return timespan_t::zero();
 }
 
+/**
+ * Accumulated stagger tick damage of the last n ticks.
+ */
+double monk_t::calculate_last_stagger_tick_damage( int n ) const
+{
+  double amount = 0.0;
+
+  assert( n > 0 );
+
+  for ( size_t i = stagger_tick_damage.size(), j = n; i-- && j--; )
+  {
+    amount += stagger_tick_damage[ i ].value;
+  }
+
+  return amount;
+}
+
 // monk_t::create_expression ==================================================
 
 expr_t* monk_t::create_expression( const std::string& name_str )
@@ -9833,6 +9926,22 @@ expr_t* monk_t::create_expression( const std::string& name_str )
     else if ( splits[ 1 ] == "ticking" )
     {
       return make_fn_expr( name_str, [this]() { return has_stagger(); } );
+    }
+
+    if ( util::str_in_str_ci( splits[ 1 ], "last_tick_damage_" ) )
+    {
+      std::vector<std::string> parts = util::string_split( splits[ 1 ], "_" );
+      int n                          = std::stoi( parts.back() );
+
+      // skip construction if the duration is nonsensical
+      if ( n > 0 )
+      {
+        return make_fn_expr( name_str, [this, n] { return calculate_last_stagger_tick_damage( n ); } );
+      }
+      else
+      {
+        throw std::invalid_argument( fmt::format( "Non-positive number of last stagger ticks '{}'.", n ) );
+      }
     }
   }
 
