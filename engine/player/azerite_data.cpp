@@ -123,7 +123,7 @@ std::vector<double> azerite_power_t::budget() const
     if ( m_spell->scaling_class() == PLAYER_SPECIAL_SCALE8 )
     {
       const auto& props = m_player->dbc.random_property( min_ilevel );
-      budget = props.item_effect;
+      budget = props.damage_replace_stat;
     }
     b.push_back( budget );
   } );
@@ -154,7 +154,7 @@ bool azerite_power_t::check_combat_rating_penalty( size_t index ) const
   }
 
   return m_spell->effectN( index ).subtype() == A_MOD_RATING &&
-         m_spell->effectN( index ).m_average() != 0;
+         m_spell->effectN( index ).m_coefficient() != 0;
 }
 
 namespace azerite
