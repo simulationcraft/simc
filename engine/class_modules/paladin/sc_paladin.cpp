@@ -1181,7 +1181,7 @@ std::string paladin_t::default_potion() const
 std::string paladin_t::default_food() const
 {
   std::string retribution_food = (true_level > 110) ? "bountiful_captains_feast" :
-                                 (true_level >= 100) ? "azshari_salad" :
+                                 (true_level > 100) ? "azshari_salad" :
                                  (true_level >= 90) ? "sleeper_sushi" :
                                  (true_level >= 85) ? "black_pepper_ribs_and_shrimp" :
                                  (true_level >= 80) ? "beerbasted_crocolisk" :
@@ -1189,7 +1189,7 @@ std::string paladin_t::default_food() const
 
   bool dps = (primary_role() == ROLE_ATTACK) || (talents.seraphim -> ok());
   std::string protection_food = (true_level > 110) ? "swamp_fish_n_chips" :
-                                (true_level >= 100) ? ( dps ? "lavish_suramar_feast" : "seedbattered_fish_plate" ) :
+                                (true_level > 100) ? ( dps ? "lavish_suramar_feast" : "seedbattered_fish_plate" ) :
                                 (true_level >= 90) ? ( dps ? "pickled_eel" : "whiptail_fillet" ) :
                                 (true_level >= 85) ? "chun_tian_spring_rolls" :
                                 (true_level >= 80) ? "seafood_magnifique_feast" :
