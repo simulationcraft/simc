@@ -31,6 +31,7 @@ actions.precombat+=/shadow_word_void
 
 # Executed every time the actor is available.
 actions=potion,if=buff.bloodlust.react|target.time_to_die<=80|target.health.pct<35
+actions+=/variable,name=dots_up,op=set,value=dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking
 actions+=/run_action_list,name=aoe,if=spell_targets.mind_sear>(5+1*talent.misery.enabled)
 actions+=/run_action_list,name=cleave,if=active_enemies>1
 actions+=/run_action_list,name=single,if=active_enemies=1
@@ -65,16 +66,13 @@ actions.cleave+=/shadow_word_pain
 actions.single=void_eruption
 actions.single+=/dark_ascension,if=buff.voidform.down
 actions.single+=/void_bolt
-actions.single+=/shadow_word_death,if=target.time_to_die<3|cooldown.shadow_word_death.charges=2
+actions.single+=/shadow_word_death,if=target.time_to_die<3|cooldown.shadow_word_death.charges=2|(cooldown.shadow_word_death.charges=1&cooldown.shadow_word_death.remains<gcd.max)
 actions.single+=/surrender_to_madness,if=buff.voidform.stack>=(15+buff.bloodlust.up)&target.time_to_die>200|target.time_to_die<75
 actions.single+=/dark_void,if=raid_event.adds.in>10
 actions.single+=/mindbender
-actions.single+=/vampiric_touch,if=((dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking)|(talent.shadow_word_void.enabled&cooldown.shadow_word_void.charges=2))&azerite.thought_harvester.rank>1&cooldown.mind_blast.up&buff.harvested_thoughts.down
-actions.single+=/mind_blast,if=((dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking)|(talent.shadow_word_void.enabled&cooldown.shadow_word_void.charges=2))&azerite.thought_harvester.rank<2
-actions.single+=/mind_blast,if=(prev_gcd.1.vampiric_touch|buff.harvested_thoughts.up)&azerite.thought_harvester.rank>1
 actions.single+=/shadow_word_death,if=!buff.voidform.up|(cooldown.shadow_word_death.charges=2&buff.voidform.stack<15)
 actions.single+=/shadow_crash,if=raid_event.adds.in>5&raid_event.adds.duration<20
-actions.single+=/mind_blast,if=dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking
+actions.single+=/mind_blast,if=variable.dots_up
 actions.single+=/void_torrent,if=dot.shadow_word_pain.remains>4&dot.vampiric_touch.remains>4
 actions.single+=/shadow_word_pain,if=refreshable&target.time_to_die>4&!talent.misery.enabled&!talent.dark_void.enabled
 actions.single+=/vampiric_touch,if=refreshable&target.time_to_die>6|(talent.misery.enabled&dot.shadow_word_pain.refreshable)

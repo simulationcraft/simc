@@ -31,6 +31,8 @@ actions.precombat+=/potion
 actions=auto_attack
 actions+=/consume_magic
 # ,if=!raid_event.adds.exists|active_enemies>1
+actions+=/use_item,slot=trinket1
+# ,if=!raid_event.adds.exists|active_enemies>1
 actions+=/use_item,slot=trinket2
 actions+=/call_action_list,name=brand,if=talent.charred_flesh.enabled
 actions+=/call_action_list,name=defensives
