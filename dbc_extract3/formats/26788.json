@@ -103,7 +103,7 @@
     { "data_type": "B", "field": "curve_index",     "formats": { "cpp": "%2u"    } }
   ],
   "ExpectedStat": [
-    { "data_type": "I", "field": "id_expansion" },
+    { "data_type": "i", "field": "id_expansion" },
     { "data_type": "f", "field": "creature_health" },
     { "data_type": "f", "field": "player_health" },
     { "data_type": "f", "field": "creature_auto_attack_dps" },
