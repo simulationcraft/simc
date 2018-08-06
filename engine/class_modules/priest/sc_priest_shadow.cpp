@@ -1975,7 +1975,10 @@ void priest_t::create_buffs_shadow()
                                  ->add_stat( STAT_CRIT_RATING, azerite.chorus_of_insanity.value( 1 ) )
                                  ->set_reverse( true )
                                  ->set_tick_behavior( buff_tick_behavior::REFRESH )
-                                 ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED );
+                                 ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
+                                 ->set_period( timespan_t::from_seconds( 1 ) )
+                                 ->add_invalidate( CACHE_CRIT_CHANCE )
+                                 ->set_max_stack( 100 );
 
   buffs.harvested_thoughts     =
     make_buff( this, "harvested_thoughts", azerite.thought_harvester.spell()->effectN( 1 ).trigger() );
