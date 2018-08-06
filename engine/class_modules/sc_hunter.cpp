@@ -5900,7 +5900,7 @@ std::string hunter_t::create_profile( save_e stype )
 {
   std::string profile_str = player_t::create_profile( stype );
 
-  const options_t defaults;
+  const options_t defaults{};
 
   if ( options.summon_pet_str != defaults.summon_pet_str )
     profile_str += "summon_pet=" + options.summon_pet_str + "\n";
