@@ -1730,6 +1730,22 @@ class SpellDataGenerator(DataGenerator):
         110,    # SPELL_EFFECT_DESTROY_ALL_TOTEMS
         118,    # SPELL_EFFECT_SKILL
         126,    # SPELL_STEAL_BENEFICIAL_BUFF
+        131,    # Play sound
+        162,    # Select specialization
+        166,    # Grant currency
+        198,    # Play a scene
+        205,    # Quest choice stuff
+        219,    # Conversiation stuff
+        223,    # Various item bonus grants
+        225,    # Battle pet level grant
+        231,    # Follower experience grant
+        238,    # Increase skill
+        240,    # Artifact experience grant
+        242,    # Artifact experience grant
+        245,    # Upgrade heirloom
+        247,    # Add garrison mission
+        248,    # Rush orders for garrisons
+        249,    # Force equip an item
         252,    # Some kind of teleport
         255,    # Some kind of transmog thing
     ]
@@ -1760,13 +1776,19 @@ class SpellDataGenerator(DataGenerator):
         151,    # SPELL_AURA_TRACK_STEALTHED
         154,    # SPELL_AURA_MOD_STEALTH_LEVEL
         156,    # SPELL_AURA_MOD_REPUTATION_GAIN
+        200,    # Exp gain from kills
         206,    # SPELL_AURA_MOD_FLIGHT_SPEED_xx begin
         207,
         208,
         209,
         210,
         211,
-        212     # SPELL_AURA_MOD_FLIGHT_SPEED_xx ends
+        212,    # SPELL_AURA_MOD_FLIGHT_SPEED_xx ends
+        244,    # Language stuff
+        260,    # Screen effects
+        261,    # Phasing
+        291,    # Exp gain from quests
+        430,    # Play scene
     ]
 
     _mechanic_blacklist = [
@@ -1804,6 +1826,11 @@ class SpellDataGenerator(DataGenerator):
         "^Armor Skills",
         "^Tamed Pet Passive",
         "^Empowering$",
+        "^Rush Order:",
+        "^Upgrade Weapon",
+        "^Upgrade Armor",
+        "^Wartorn Essence",
+        "^Battleborn Essence",
     ]
 
     _spell_families = {

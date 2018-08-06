@@ -283,9 +283,10 @@ const struct proc_map_t _proc_flag_map[] =
   { PF_ANY_DAMAGE_TAKEN,     "Any Damage Taken"        },
   { PF_TRAP_TRIGGERED,       "Trap Triggered"          },
   { PF_JUMP,                 "Proc on jump"            },
+  { PF_MAINHAND,             "Melee Main-Hand"         },
   { PF_OFFHAND,              "Melee Off-Hand"          },
   { PF_DEATH,                "Death"                   },
-  { 0,                       nullptr                         }
+  { 0,                       nullptr                   }
 };
 
 const struct { const char* name; player_e pt; } _class_map[] =
@@ -695,10 +696,12 @@ static const std::unordered_map<unsigned, const std::string> _effect_subtype_str
   { 345, "Ignore Armor%"                                },
   { 354, "Modify Healing% Based on Target Health%"      },
   { 360, "Duplicate Ability"                            },
+  { 361, "Override Auto-Attack with Spell"              },
   { 366, "Override Spell Power per Attack Power%"       },
   { 374, "Reduce Fall Damage%"                          },
   { 377, "Cast while Moving"                            },
   { 379, "Modify Mana Regen%"                           },
+  { 383, "Ignore Spell Cooldown"                        },
   { 404, "Override Attack Power per Spell Power%"       },
   { 405, "Modify Combat Rating Multiplier"              },
   { 409, "Slow Fall"                                    },
@@ -706,7 +709,7 @@ static const std::unordered_map<unsigned, const std::string> _effect_subtype_str
   { 416, "Hasted Cooldown Duration"                     },
   { 417, "Hasted Global Cooldown"                       },
   { 418, "Modify Max Resource"                          },
-  { 419, "Modify Mana Pool%"                             },
+  { 419, "Modify Mana Pool%"                            },
   { 421, "Modify Absorb% Done"                          },
   { 422, "Modify Absorb% Done"                          },
   { 429, "Modify Pet Damage Done%"                      },
