@@ -4345,3 +4345,36 @@ class AzeriteDataGenerator(DataGenerator):
 
         self._out.write('} };\n')
 
+class NpcArmorMitigationValues(DataGenerator):
+    def __init__(self, options, data_store = None):
+        super().__init__(options, data_store)
+
+        self._dbc = ['ExpectedStat']
+
+    def generate(self, ids = None):
+        data_str = "%snpc_armor_constants%s" % (
+            self._options.prefix and ('%s_' % self._options.prefix) or '',
+            self._options.suffix and ('_%s' % self._options.suffix) or '',
+        )
+
+        filtered_entries = [
+            v for _, v in self._expectedstat_db.items()
+                if v.id_expansion == -2 and v.id_parent <= self._options.level
+        ]
+        entries = sorted(filtered_entries, key = lambda v: v.id_parent)
+
+        self._out.write('// Npc armor mitigation constants (K-values), wow build %d\n' %
+                self._options.build)
+
+        self._out.write('static constexpr std::array<double, %d> __%s_data { {\n' % (
+            len(entries), data_str))
+
+        for index in range(0, len(entries), 5):
+            self._out.write('  {: >7.2f}, {: >7.2f}, {: >7.2f}, {: >7.2f}, {: >7.2f},\n'.format(
+                entries[index].armor_constant, entries[index + 1].armor_constant,
+                entries[index + 2].armor_constant,
+                entries[index + 3].armor_constant,
+                entries[index + 4].armor_constant))
+
+        self._out.write('} };\n')
+

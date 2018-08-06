@@ -1753,6 +1753,19 @@ double dbc_t::armor_mitigation_constant( unsigned level ) const
 #endif
 }
 
+double dbc_t::npc_armor_mitigation_constant( unsigned level ) const
+{
+  if ( level == 0 || level > MAX_LEVEL )
+  {
+    return 0;
+  }
+#if SC_USE_PTR
+  return ptr ? _ptr__npc_armor_constants_data[ level - 1 ] : __npc_armor_constants_data[ level - 1 ];
+#else
+  return __npc_armor_constants_data[ level - 1 ];
+#endif
+}
+
 double spelleffect_data_t::scaled_delta( double budget ) const
 {
   if ( _m_delta != 0 && budget > 0 )

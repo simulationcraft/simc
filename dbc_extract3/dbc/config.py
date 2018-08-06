@@ -28,10 +28,12 @@ class Config:
                 self.base_output_path = config.get('general', 'output_base')
             else:
                 if section not in self.config:
-                    self.config[section] = { 'generators': [], 'objects': [] }
+                    self.config[section] = { 'generators': [], 'objects': [], 'append': False }
 
                 for i in config.get(section, 'generators').split():
                     self.config[section]['generators'].append(i)
+
+                self.config[section]['append'] = config.get(section, 'append', fallback = False)
 
         if not self.base_module_path:
             logging.error('No "module_base" defined in general section')
@@ -75,7 +77,8 @@ class Config:
             output_file = self.output_file(section)
 
             for generator in config['objects']:
-                if not generator.set_output(output_file, generator != config['objects'][0]):
+                is_append = generator != config['objects'][0] or config.get('append', False)
+                if not generator.set_output(output_file, is_append):
                     return False
 
                 ids = generator.filter()
