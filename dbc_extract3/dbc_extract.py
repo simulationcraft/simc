@@ -178,7 +178,7 @@ elif options.type == 'view':
         # If cache has entries for the dbc_file, grab cache values into a database
         for record in dbc_file:
             if not options.raw and record.id in entries:
-                print('{}'.format(str(entries[record.id])))
+                print('{} [hotfix]'.format(str(entries[record.id])))
                 replaced_ids.append(record.id)
             else:
                 print('{}'.format(str(record)))
