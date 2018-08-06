@@ -82,10 +82,48 @@
     { "data_type": "i", "field": "unk_3",      "formats": { } },
     { "data_type": "I", "field": "id_mastery", "elements": 2, "formats": { "cpp": "%-2u" } }
   ],
+  "ContentTuningDescription": [
+    { "data_type": "S", "field": "desc" }
+  ],
+  "ContentTuning": [
+    { "data_type": "i", "field": "id" },
+    { "data_type": "i", "field": "min_level" },
+    { "data_type": "i", "field": "max_level" },
+    { "data_type": "i", "field": "flags" },
+    { "data_type": "i", "field": "id_expected_stat_mod" },
+    { "data_type": "i", "field": "unk_5" }
+  ],
+  "Curve": [
+    { "data_type": "B", "field": "type", "formats": { "cpp": "%4u"    } },
+    { "data_type": "B", "field": "flags",     "formats": { "cpp": "%2u"    } }
+  ],
   "CurvePoint": [
     { "data_type": "f", "field": "val", "elements": 2, "formats": { "cpp": "%10.5f" } },
     { "data_type": "H", "field": "id_distribution", "formats": { "cpp": "%4u"    } },
     { "data_type": "B", "field": "curve_index",     "formats": { "cpp": "%2u"    } }
+  ],
+  "ExpectedStat": [
+    { "data_type": "I", "field": "id_expansion" },
+    { "data_type": "f", "field": "creature_health" },
+    { "data_type": "f", "field": "player_health" },
+    { "data_type": "f", "field": "creature_auto_attack_dps" },
+    { "data_type": "f", "field": "creature_armor" },
+    { "data_type": "f", "field": "player_mana" },
+    { "data_type": "f", "field": "player_primary_stat" },
+    { "data_type": "f", "field": "player_secondary_stat" },
+    { "data_type": "f", "field": "armor_constant" },
+    { "data_type": "f", "field": "creature_spell_damage" }
+  ],
+  "ExpectedStatMod": [
+    { "data_type": "f", "field": "mod_creature_health" },
+    { "data_type": "f", "field": "mod_player_health" },
+    { "data_type": "f", "field": "mod_creature_auto_attack_dps" },
+    { "data_type": "f", "field": "mod_creature_armor" },
+    { "data_type": "f", "field": "mod_player_mana" },
+    { "data_type": "f", "field": "mod_player_primary_stat" },
+    { "data_type": "f", "field": "mod_player_secondary_stat" },
+    { "data_type": "f", "field": "mod_armor_constant" },
+    { "data_type": "f", "field": "mod_creature_spell_damage" }
   ],
   "GemProperties": [
     { "data_type": "H", "field": "id_enchant", "formats": { "cpp": "%5u"   } },

@@ -111,6 +111,7 @@ DBFilesClient\CommentatorTrackedCooldown.db2
 DBFilesClient\ComponentModelFileData.db2
 DBFilesClient\ComponentTextureFileData.db2
 DBFilesClient\ContentTuning.db2
+DBFilesClient\ContentTuningDescription.db2
 DBFilesClient\Contribution.db2
 DBFilesClient\ConversationLine.db2
 DBFilesClient\Creature.db2
@@ -160,6 +161,7 @@ DBFilesClient\EmotesTextSound.db2
 DBFilesClient\EnvironmentalDamage.db2
 DBFilesClient\Exhaustion.db2
 DBFilesClient\ExpectedStat.db2
+DBFilesClient\ExpectedStatMod.db2
 DBFilesClient\Faction.db2
 DBFilesClient\FactionGroup.db2
 DBFilesClient\FactionTemplate.db2
