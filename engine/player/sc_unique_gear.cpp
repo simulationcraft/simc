@@ -4683,7 +4683,6 @@ void unique_gear::register_target_data_initializers( sim_t* sim )
   sim -> register_target_data_initializer( prophecy_of_fear_constructor_t( 124230, trinkets ) );
 
   register_target_data_initializers_legion( sim );
-  register_target_data_initializers_bfa( sim );
   azerite::register_azerite_target_data_initializers( sim );
 }
 

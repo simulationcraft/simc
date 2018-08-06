@@ -3,7 +3,7 @@ spec=elemental
 level=110
 race=tauren
 role=spell
-position=ranged_back
+position=back
 talents=1301021
 
 # Default consumables

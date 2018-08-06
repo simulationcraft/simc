@@ -1023,7 +1023,6 @@ const char* util::armor_type_string( item_subclass_armor type )
     case ITEM_SUBCLASS_ARMOR_PLATE: return "plate";
     case ITEM_SUBCLASS_ARMOR_SHIELD: return "shield";
     case ITEM_SUBCLASS_ARMOR_MISC: return "misc";
-    case ITEM_SUBCLASS_ARMOR_COSMETIC: return "cosmetic";
     default: return "";
   }
 }

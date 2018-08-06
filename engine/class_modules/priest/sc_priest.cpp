@@ -442,8 +442,7 @@ void mangazas_madness( special_effect_t& effect )
 
   if ( priest->active_items.mangazas_madness )
   {
-    priest->cooldowns.mind_blast->charges += 
-      (int)(float) priest->active_items.mangazas_madness->driver()->effectN( 1 ).base_value();
+    priest->cooldowns.mind_blast->charges += priest->active_items.mangazas_madness->driver()->effectN( 1 ).base_value();
   }
 }
 
@@ -460,7 +459,7 @@ void the_twins_painful_touch( special_effect_t& effect )
   assert( priest );
   do_trinket_init( priest, PRIEST_SHADOW, priest->active_items.the_twins_painful_touch, effect );
 
-  if ( priest->active_items.the_twins_painful_touch )
+  if ( priest->buffs.the_twins_painful_touch )
   {
     // Activate buff proc chance
     priest->buffs.the_twins_painful_touch->set_chance(

@@ -50,8 +50,6 @@ class azerite_power_t
   /// Cached scaled (total) value
   mutable std::vector<double> m_value;
 
-  /// Helper to check if the combat rating penalty needs to be applied to the azerite spell effect
-  bool check_combat_rating_penalty( size_t index = 1 ) const;
 public:
   using azerite_value_fn_t = std::function<double(const azerite_power_t&)>;
 
@@ -83,20 +81,25 @@ public:
   std::vector<double> budget() const;
   /// List of items associated with this azerite power
   const std::vector<unsigned> ilevels() const;
-  /// Number of items worn with this azerite power
-  unsigned n_items() const;
 };
 
 namespace azerite
 {
 /**
  * A state class that holds the composite of all azerite-related state an actor has. For now,
- * includes associations between azerite powers and items, and azerite overrides.
+ * includes associations between azerite powers and items, as well as the initialization status of
+ * each azerite power
+ *
+ * Initialization status must be tracked across a simulator object, as multiple azerite powers
+ * combine into a single additive effect in game, instead of creating separate azerite effects.
+ * Initialization state changes on successful invocations of get_power().
  */
 class azerite_state_t
 {
   /// Player associated with the azerite power
   player_t*                          m_player;
+  /// Map of the actor's azerite power ids and their initialization state
+  std::unordered_map<unsigned, bool> m_state;
   /// Map of the actor's azerite power ids, and their associated items (items that select the power)
   std::unordered_map<unsigned, std::vector<const item_t*>> m_items;
   /// Azerite power overrides, (power, list of override ilevels)
@@ -114,6 +117,8 @@ public:
   azerite_power_t get_power( unsigned id );
   /// Get an azerite_power_t object for a given power name, potentially tokenized
   azerite_power_t get_power( const std::string& name, bool tokenized = false );
+  /// Check initialization status of an azerite power
+  bool is_initialized( unsigned id ) const;
 
   /// Check the enable status of an azerite power
   bool is_enabled( unsigned id ) const;

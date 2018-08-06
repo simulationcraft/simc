@@ -5831,7 +5831,7 @@ void collect_dmg_taken_data( player_t& p, const action_state_t* s, double result
                                                              s->result_amount / p.resources.max[ RESOURCE_HEALTH ] );
 
     // store value in incoming damage array for conditionals
-    p.incoming_damage.push_back( {p.sim->current_time(), s->result_amount, s->action->get_school()} );
+    p.incoming_damage.push_back( std::pair<timespan_t, double>( p.sim->current_time(), s->result_amount ) );
   }
   if ( p.collected_data.health_changes_tmi.collect )
   {
@@ -7168,29 +7168,30 @@ struct arcane_pulse_t : public racial_spell_t
   {
     may_crit = true;
     aoe      = -1;
-    // these are sadly hardcoded in the tooltip
-    attack_power_mod.direct = 0.5;
-    spell_power_mod.direct = 0.25;
   }
 
-  double attack_direct_power_coefficient( const action_state_t* s ) const override
+  void init() override
+  {
+    spell_t::init();
+    snapshot_flags |= STATE_AP | STATE_SP | STATE_CRIT;
+  }
+
+  double attack_direct_power_coefficient( const action_state_t* ) const override
   {
     auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
     auto sp = composite_spell_power() * player->composite_spell_power_multiplier();
 
-    if ( ap <= sp )
-      return 0;
-    return racial_spell_t::attack_direct_power_coefficient( s );
+    // Hardcoded into the tooltip
+    return ap >= sp ? 2.0 : 0.0;
   }
 
-  double spell_direct_power_coefficient( const action_state_t* s ) const override
+  double spell_direct_power_coefficient( const action_state_t* ) const override
   {
     auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
     auto sp = composite_spell_power() * player->composite_spell_power_multiplier();
 
-    if ( ap > sp )
-      return 0;
-    return racial_spell_t::spell_direct_power_coefficient( s );
+    // Hardcoded into the tooltip
+    return sp > ap ? 0.75 : 0.0;
   }
 };
 
@@ -9258,28 +9259,20 @@ expr_t* player_t::create_expression( const std::string& expression_str )
   }
 
   // incoming_damage_X expressions
-  if ( util::str_in_str_ci( expression_str, "incoming_damage_" ) || util::str_in_str_ci( expression_str, "incoming_magic_damage_" ))
+  if ( util::str_in_str_ci( expression_str, "incoming_damage_" ) )
   {
-    bool magic_damage = util::str_in_str_ci( expression_str, "incoming_magic_damage_" );
     std::vector<std::string> parts = util::string_split( expression_str, "_" );
     timespan_t window_duration;
 
-    if ( util::str_in_str_ci( parts.back(), "ms" ) )
-      window_duration = timespan_t::from_millis( std::stoi( parts.back() ) );
+    if ( util::str_in_str_ci( parts[ 2 ], "ms" ) )
+      window_duration = timespan_t::from_millis( std::stoi( parts[ 2 ] ) );
     else
-      window_duration = timespan_t::from_seconds( std::stod( parts.back() ) );
+      window_duration = timespan_t::from_seconds( std::stod( parts[ 2 ] ) );
 
     // skip construction if the duration is nonsensical
     if ( window_duration > timespan_t::zero() )
     {
-      if (magic_damage)
-      {
-        return make_fn_expr(expression_str, [this, window_duration] {return compute_incoming_magic_damage( window_duration );});
-      }
-      else
-      {
-        return make_fn_expr(expression_str, [this, window_duration] {return compute_incoming_damage( window_duration );});
-      }
+      return make_fn_expr(expression_str, [this, window_duration] {return compute_incoming_damage( window_duration );});
     }
     else
     {
@@ -9769,31 +9762,10 @@ double player_t::compute_incoming_damage( timespan_t interval ) const
   {
     for ( auto i = incoming_damage.rbegin(), end = incoming_damage.rend(); i != end; ++i )
     {
-      if ( sim->current_time() - ( *i ).time > interval )
+      if ( sim->current_time() - ( *i ).first > interval )
         break;
 
-      amount += ( *i ).amount;
-    }
-  }
-
-  return amount;
-}
-
-double player_t::compute_incoming_magic_damage( timespan_t interval ) const
-{
-  double amount = 0;
-
-  if ( incoming_damage.size() > 0 )
-  {
-    for ( auto i = incoming_damage.rbegin(), end = incoming_damage.rend(); i != end; ++i )
-    {
-      if ( sim->current_time() - ( *i ).time > interval )
-        break;
-
-      if ( (*i).school == SCHOOL_PHYSICAL )
-        continue;
-
-      amount += ( *i ).amount;
+      amount += ( *i ).second;
     }
   }
 

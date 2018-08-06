@@ -1,10 +1,10 @@
 priest="T21_Priest_Shadow"
 level=110
+talents=1010122
 race=human
 spec=shadow
 role=spell
-position=ranged_back
-talents=1010122
+position=back
 
 head=gilded_seraphs_crown,id=152156,bonus_id=3612/1502
 neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr

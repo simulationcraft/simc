@@ -1209,17 +1209,16 @@ class SpellDataGenerator(DataGenerator):
             ( 118779, 0, False ),   # Victory Rush heal is not directly activatable
             ( 144442, 0 ),          # T16 Melee 4 pc buff
             ( 119938, 0 ),          # Overpower
-            ( 209700, 0 ),          # Void Cleave (arms artifact gold medal)
-            ( 218877, 0 ),          # Gaze of the Val'kyr
-            ( 218850, 0 ),          # Gaze of the Val'kyr
-            ( 218836, 0 ),          # Gaze of the Val'kyr
-            ( 218835, 0 ),          # Gaze of the Val'kyr (heal)
-            ( 218834, 0 ),          # Gaze of the Val'kyr
-            ( 218822, 0 ),          # Gaze of the Val'kyr 
-            ( 209493, 0 ),          # Precise Strikes
-            ( 242952, 0 ),		    # Bloody Rage
-            ( 242953, 0 ),          # Bloody Rage
-            ( 278497, 0 ),          # Seismic Wave (Azerite)
+            ( 209700, 0 ),           # Void Cleave (arms artifact gold medal)
+            ( 218877, 0 ),
+            ( 218850, 0 ),
+            ( 218836, 0 ),
+            ( 218835, 0 ),
+            ( 218834, 0 ),
+            ( 218822, 0 ),
+            ( 209493, 0 ),
+            ( 242952, 0 ),
+            ( 242953, 0 ),
         ),
 
         # Paladin:

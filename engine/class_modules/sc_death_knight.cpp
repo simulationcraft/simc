@@ -396,7 +396,7 @@ public:
   // Active
   double runic_power_decay_rate;
   double fallen_crusader, fallen_crusader_rppm;
-  double antimagic_shell_remaining_absorb;
+  double antimagic_shell_absorbed;
   std::vector<ground_aoe_event_t*> dnds;
   bool deprecated_dnd_expression;
 
@@ -595,29 +595,32 @@ public:
     // Frost
 
     // Tier 1
-    const spell_data_t* inexorable_assault;
     const spell_data_t* icy_talons;
+    const spell_data_t* runic_attenuation;
     const spell_data_t* cold_heart;
 
     // Tier 2
-    const spell_data_t* runic_attenuation;
     const spell_data_t* murderous_efficiency;
     const spell_data_t* horn_of_winter;
-  
-    // Tier 4 
+
+    // Tier 3
+    const spell_data_t* icecap;
+    const spell_data_t* glacial_advance;
     const spell_data_t* avalanche;
-    const spell_data_t* frozen_pulse;
-    const spell_data_t* frostscythe;
+    
+    // Tier 4 
+    const spell_data_t* inexorable_assault;
+    const spell_data_t* volatile_shielding;
 
     // Tier 6
+    const spell_data_t* frostscythe;
+    const spell_data_t* frozen_pulse;
     const spell_data_t* gathering_storm;
-    const spell_data_t* glacial_advance;
-    const spell_data_t* frostwyrms_fury;
     
     // Tier 7
-    const spell_data_t* icecap;
     const spell_data_t* obliteration;
     const spell_data_t* breath_of_sindragosa;
+    const spell_data_t* frostwyrms_fury;
 
     // Unholy
 
@@ -627,17 +630,15 @@ public:
     const spell_data_t* clawing_shadows;
 
     // Tier 2
-    const spell_data_t* bursting_sores;
-    const spell_data_t* ebon_fever;
-    const spell_data_t* unholy_blight;
-
-    // Tier 4
     const spell_data_t* pestilent_pustules;
     const spell_data_t* harbinger_of_doom;
     const spell_data_t* soul_reaper;
 
-    // Tier 5
-    const spell_data_t* spell_eater;
+    // Tier 3
+    const spell_data_t* bursting_sores;
+    const spell_data_t* ebon_fever;
+    const spell_data_t* unholy_blight;
+
 
     // Tier 6
     const spell_data_t* pestilence;
@@ -662,14 +663,19 @@ public:
     const spell_data_t* consumption;
     
     // Tier 3
-    const spell_data_t* foul_bulwark;
-    const spell_data_t* ossuary;
-    const spell_data_t* tombstone;
-
-    // Tier 4
     const spell_data_t* will_of_the_necropolis; // NYI
     const spell_data_t* antimagic_barrier;
     const spell_data_t* rune_tap;
+
+    // Tier 4 Utility tier, NYI
+    const spell_data_t* tightening_grasp;
+    const spell_data_t* grip_of_the_dead;
+    const spell_data_t* march_of_the_damned;
+
+    // Tier 5
+    const spell_data_t* foul_bulwark;
+    const spell_data_t* ossuary;
+    const spell_data_t* tombstone;
 
     // Tier 6
     const spell_data_t* voracious;
@@ -679,7 +685,7 @@ public:
     // Tier 7
     const spell_data_t* purgatory; // NYI
     const spell_data_t* red_thirst; 
-    const spell_data_t* bonestorm;
+    const spell_data_t* bonestorm; 
   } talent;
 
   // Spells
@@ -821,7 +827,7 @@ public:
     runic_power_decay_rate(),
     fallen_crusader( 0 ),
     fallen_crusader_rppm( find_spell( 166441 ) -> real_ppm() ),
-    antimagic_shell_remaining_absorb( 0.0 ),
+    antimagic_shell_absorbed( 0.0 ),
     deprecated_dnd_expression( false ),
     t20_2pc_frost( 0 ),
     t20_4pc_frost( 0 ),
@@ -2320,6 +2326,11 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       weapon = &( p -> main_hand_weapon );
       aoe = 2;
       base_multiplier *= 1.0 + p -> o() -> spec.blood_death_knight -> effectN( 1 ).percent();
+
+      // Damage is off ingame by about 13.5%
+      // https://github.com/SimCMinMax/WoW-BugTracker/issues/324
+      if ( p -> bugs )
+        base_multiplier *= 1.0 - 0.135;
     }
 
     int n_targets() const override
@@ -4014,7 +4025,7 @@ struct defile_damage_t : public death_and_decay_damage_base_t
 struct bone_spike_graveyard_heal_t : public death_knight_heal_t
 {
   bone_spike_graveyard_heal_t( death_knight_t* p ) :
-    death_knight_heal_t( "bone_spike_graveyard_heal", p, p -> find_spell( 273088 ) )
+    death_knight_heal_t( "bone_spike_graveyard", p, p -> find_spell( 273088 ) )
   {
     background = true;
     base_dd_min = base_dd_max = p -> azerite.bone_spike_graveyard.value( 2 );
@@ -4274,17 +4285,10 @@ struct t21_death_coil_t : public death_knight_spell_t
       p() -> trigger_runic_corruption( base_costs[ RESOURCE_RUNIC_POWER ] );
     }
 
-    // Reduces the cooldown Dark Transformation by 1s
+    // Reduces the cooldown Dark Transformation by 1s, +3s if Dark Infusion is talented
+
     p() -> cooldown.dark_transformation -> adjust( - timespan_t::from_seconds(
         p() -> spec.death_coil -> effectN( 2 ).base_value() ) );
-
-    // Reduce the cooldown on Apocalypse and Army of the Dead if Army of the Damned is talented
-
-    p() -> cooldown.apocalypse -> adjust( -timespan_t::from_seconds( 
-      p() -> talent.army_of_the_damned -> effectN( 1 ).base_value() / 10 ) );
-
-    p() -> cooldown.army_of_the_dead -> adjust( -timespan_t::from_seconds( 
-      p() -> talent.army_of_the_damned -> effectN( 2 ).base_value() / 10 ) );
 
     p() -> trigger_death_march( execute_state );
   }
@@ -4689,7 +4693,7 @@ struct empower_rune_weapon_buff_t : public buff_t
     buff_t( buff_creator_t( p, "empower_rune_weapon", p -> spec.empower_rune_weapon )
             .cd( timespan_t::zero() ) // Handled in the action
             .period( p -> spec.empower_rune_weapon -> effectN( 1 ).period() )
-            .tick_callback( [ p ]( buff_t* b, int, const timespan_t& ) {
+            .tick_callback( [ this, p ]( buff_t* b, int, const timespan_t& ) {
     p -> replenish_rune( as<unsigned int>( b -> data().effectN( 1 ).base_value() ),
                          p -> gains.empower_rune_weapon );
 
@@ -4900,7 +4904,7 @@ struct frostscythe_t : public death_knight_melee_attack_t
 
   frostscythe_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_melee_attack_t( "frostscythe", p, p -> talent.frostscythe ),
-    rime_proc_chance( ( p -> spec.rime -> effectN( 2 ).percent() +
+    rime_proc_chance( ( p -> spec.rime -> proc_chance() +
                         p -> sets -> set( DEATH_KNIGHT_FROST, T19, B2 ) -> effectN( 1 ).percent() ) / 2.0 )
   {
     parse_options( options_str );
@@ -5057,6 +5061,8 @@ struct frost_strike_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::execute();
 
+    death_knight_td_t* tdata = td( execute_state -> target );
+      
     if ( result_is_hit( execute_state -> result ) )
     {
       mh -> set_target( execute_state -> target );
@@ -6311,19 +6317,12 @@ struct antimagic_shell_buff_t : public buff_t
   void execute( int stacks, double value, timespan_t duration ) override
   {
     death_knight_t* p = debug_cast< death_knight_t* >( player );
-    double max_absorb = p -> resources.max[RESOURCE_HEALTH] * p -> spell.antimagic_shell -> effectN( 2 ).percent();
+    p -> antimagic_shell_absorbed = 0.0;
     
-    max_absorb *= 1.0 + p -> talent.antimagic_barrier -> effectN( 2 ).percent();
-    max_absorb *= 1.0 + p -> talent.spell_eater -> effectN( 1 ).percent();
-
     if ( p -> azerite.runic_barrier.enabled() )
     {
-      max_absorb += p -> azerite.runic_barrier.value( 3 );
       duration = timespan_t::from_seconds( p -> azerite.runic_barrier.value( 2 ) );
     }
-
-    max_absorb *= 1.0 + p -> cache.heal_versatility();
-    p -> antimagic_shell_remaining_absorb = max_absorb;
 
     duration *= 1.0 + p -> talent.antimagic_barrier -> effectN( 2 ).percent();
     buff_t::execute( stacks, value, duration );
@@ -6332,7 +6331,6 @@ struct antimagic_shell_buff_t : public buff_t
 
 struct antimagic_shell_t : public death_knight_spell_t
 {
-  double min_interval;
   double interval;
   double interval_stddev;
   double interval_stddev_opt;
@@ -6340,7 +6338,7 @@ struct antimagic_shell_t : public death_knight_spell_t
 
   antimagic_shell_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "antimagic_shell", p, p -> spell.antimagic_shell ),
-    min_interval( 60 ), interval( 60 ), interval_stddev( 0.05 ), interval_stddev_opt( 0 ), damage( 0 )
+    interval( 60 ), interval_stddev( 0.05 ), interval_stddev_opt( 0 ), damage( 0 )
   {
     cooldown = p -> cooldown.antimagic_shell;
     cooldown -> duration += timespan_t::from_millis( p -> talent.antimagic_barrier -> effectN( 1 ).base_value() );
@@ -6353,13 +6351,11 @@ struct antimagic_shell_t : public death_knight_spell_t
     add_option( opt_float( "damage", damage ) );
     parse_options( options_str );
 
-    min_interval += p -> talent.antimagic_barrier -> effectN( 1 ).base_value();
-
-    // Don't allow lower than AMS cd intervals
-    if ( interval < min_interval )
+    // Allow as low as 30 second intervals
+    if ( interval < 30.0 )
     {
-      sim -> errorf( "%s minimum interval for Anti-Magic Shell is %f seconds.", player -> name(), min_interval );
-      interval = min_interval;
+      sim -> errorf( "%s minimum interval for Anti-Magic Shell is 30 seconds.", player -> name() );
+      interval = 30.0;
     }
 
     // Less than a second standard deviation is translated to a percent of
@@ -6389,8 +6385,8 @@ struct antimagic_shell_t : public death_knight_spell_t
     if ( damage > 0 )
     {
       timespan_t new_cd = timespan_t::from_seconds( rng().gauss( interval, interval_stddev ) );
-      if ( new_cd < timespan_t::from_seconds( min_interval ) )
-        new_cd = timespan_t::from_seconds( min_interval );
+      if ( new_cd < timespan_t::from_seconds( 15.0 ) )
+        new_cd = timespan_t::from_seconds( 15.0 );
 
       cooldown -> duration = new_cd;
     }
@@ -6400,23 +6396,18 @@ struct antimagic_shell_t : public death_knight_spell_t
     // If using the fake soaking, immediately grant the RP in one go
     if ( damage > 0 )
     {
-      double max_absorb =  p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 2 ).percent();
-      max_absorb *= 1.0 + p() -> talent.antimagic_barrier -> effectN( 2 ).percent();
-      max_absorb *= 1.0 + p() -> talent.spell_eater -> effectN( 1 ).percent();
+      double absorbed = std::min( damage * data().effectN( 1 ).percent(),
+                                  p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 2 ).percent() +
+                                  p() -> azerite.runic_barrier.value( 3 ) );
 
-      if ( p() -> azerite.runic_barrier.enabled() )
-      {
-        max_absorb += p() -> azerite.runic_barrier.value( 3 );
-      }
-
-      max_absorb *= 1.0 + p() -> cache.heal_versatility();
-
-      double absorbed = std::min( damage, max_absorb );
-
-      // AMS generates 1 runic power per percentage max health absorbed.
-      double rp_generated = absorbed / p() -> resources.max[ RESOURCE_HEALTH ] * 100;
+      double generated = absorbed / p() -> resources.max[ RESOURCE_HEALTH ];
       
-      p() -> resource_gain( RESOURCE_RUNIC_POWER, util::round( rp_generated ), p() -> gains.antimagic_shell, this );
+      // Volatile shielding increases AMS' RP generation
+      if ( p() -> talent.volatile_shielding -> ok() )
+        generated *= 1.0 + p() -> talent.volatile_shielding -> effectN( 2 ).percent();
+
+      // AMS generates 2 runic power per percentage max health absorbed.
+      p() -> resource_gain( RESOURCE_RUNIC_POWER, util::round( generated * 100.0 * 2.0 ), p() -> gains.antimagic_shell, this );
     }
     else
       p() -> buffs.antimagic_shell -> trigger();
@@ -7537,29 +7528,32 @@ void death_knight_t::init_spells()
 
   // Frost Talents
   // Tier 1
-  talent.inexorable_assault    = find_talent_spell( "Inexorable Assault" );
   talent.icy_talons            = find_talent_spell( "Icy Talons" );
+  talent.runic_attenuation     = find_talent_spell( "Runic Attenuation" );
   talent.cold_heart            = find_talent_spell( "Cold Heart" );
   // Tier 2
-  talent.runic_attenuation     = find_talent_spell( "Runic Attenuation" );
   talent.murderous_efficiency  = find_talent_spell( "Murderous Efficiency" );
   talent.horn_of_winter        = find_talent_spell( "Horn of Winter" );
+  // Tier 3
+  talent.icecap                = find_talent_spell( "Icecap" );
+  talent.glacial_advance       = find_talent_spell( "Glacial Advance" ); 
+  talent.avalanche             = find_talent_spell( "Avalanche" );
   
   // Tier 4  
-  talent.avalanche             = find_talent_spell( "Avalanche" );
-  talent.frozen_pulse          = find_talent_spell( "Frozen Pulse" );
-  talent.frostscythe           = find_talent_spell( "Frostscythe" );
-
+  talent.inexorable_assault    = find_talent_spell( "Inexorable Assault" );
+  talent.volatile_shielding    = find_talent_spell( "Volatile Shielding" );
+    
   // Tier 6
+  talent.frostscythe           = find_talent_spell( "Frostscythe" );
+  talent.frozen_pulse          = find_talent_spell( "Frozen Pulse" );
   talent.gathering_storm       = find_talent_spell( "Gathering Storm" );
-  talent.glacial_advance       = find_talent_spell( "Glacial Advance" ); 
-  talent.frostwyrms_fury       = find_talent_spell( "Frostwyrm's Fury" );
-
+  
   // Tier 7
-  talent.icecap                = find_talent_spell( "Icecap" );
   talent.obliteration          = find_talent_spell( "Obliteration" );
   talent.breath_of_sindragosa  = find_talent_spell( "Breath of Sindragosa" );
-  
+  talent.frostwyrms_fury       = find_talent_spell( "Frostwyrm's Fury" );
+	
+
   // Unholy Talents
   // Tier 1
   talent.infected_claws        = find_talent_spell( "Infected Claws" );
@@ -7567,17 +7561,14 @@ void death_knight_t::init_spells()
   talent.clawing_shadows       = find_talent_spell( "Clawing Shadows" );
 
   // Tier 2
-  talent.bursting_sores        = find_talent_spell( "Bursting Sores" );
-  talent.ebon_fever            = find_talent_spell( "Ebon Fever" );
-  talent.unholy_blight         = find_talent_spell( "Unholy Blight" );
-
-  // Tier 4
   talent.pestilent_pustules    = find_talent_spell( "Pestilent Pustules" );
   talent.harbinger_of_doom     = find_talent_spell( "Harbinger of Doom" );
   talent.soul_reaper           = find_talent_spell( "Soul Reaper" );
 
-  // Tier 5
-  talent.spell_eater           = find_talent_spell( "Spell Eater" );
+  // Tier 3
+  talent.bursting_sores        = find_talent_spell( "Bursting Sores" );
+  talent.ebon_fever            = find_talent_spell( "Ebon Fever" );
+  talent.unholy_blight         = find_talent_spell( "Unholy Blight" );
 
   // Tier 6
   talent.pestilence            = find_talent_spell( "Pestilence" );
@@ -7592,6 +7583,7 @@ void death_knight_t::init_spells()
 
   // Blood Talents
   // Tier 1
+
   talent.heartbreaker           = find_talent_spell( "Heartbreaker" );
   talent.blooddrinker           = find_talent_spell( "Blooddrinker" );
   talent.rune_strike            = find_talent_spell( "Rune Strike"  );
@@ -7602,15 +7594,20 @@ void death_knight_t::init_spells()
   talent.consumption            = find_talent_spell( "Consumption"         ); 
 
   // Tier 3
+  talent.will_of_the_necropolis = find_talent_spell( "Will of the Necropolis" ); // NYI
+  talent.antimagic_barrier      = find_talent_spell( "Anti-Magic Barrier"     ); 
+  talent.rune_tap               = find_talent_spell( "Rune Tap"               );
+
+  // Tier 4 Utility - NYI
+  talent.tightening_grasp       = find_talent_spell( "Tightening Gasp"     );
+  talent.grip_of_the_dead       = find_talent_spell( "Grip of the Dead"    );
+  talent.march_of_the_damned    = find_talent_spell( "March of the Damned" );
+
+  // Tier 5
   talent.foul_bulwark          = find_talent_spell( "Foul Bulwark" );
   talent.ossuary               = find_talent_spell( "Ossuary"      ); 
   talent.tombstone             = find_talent_spell( "Tombstone"    );
 
-  // Tier 4
-  talent.will_of_the_necropolis = find_talent_spell( "Will of the Necropolis" ); // NYI
-  talent.antimagic_barrier      = find_talent_spell( "Anti-Magic Barrier"     ); 
-  talent.rune_tap               = find_talent_spell( "Rune Tap"               );
-  
   // Tier 6
   talent.voracious             = find_talent_spell( "Voracious"     ); 
   talent.bloodworms            = find_talent_spell( "Bloodworms"    ); 
@@ -7693,26 +7690,65 @@ void death_knight_t::default_apl_dps_precombat()
   precombat -> add_action( "potion" );
 }
 
+// death_knight_t::default_apl_blood ========================================
+
+void death_knight_t::default_apl_blood()
+{
+  action_priority_list_t* def        = get_action_priority_list( "default" );
+  action_priority_list_t* standard   = get_action_priority_list( "standard" );
+  // action_priority_list_t* cooldowns  = get_action_priority_list( "cooldowns" ); // Not used atm
+
+  // Setup precombat APL for DPS spec
+  default_apl_dps_precombat();
+
+  def -> add_action( "auto_attack" );
+  def -> add_action( this, "Mind Freeze" );
+
+  // Racials
+  def -> add_action( "arcane_torrent,if=runic_power.deficit>20" );
+  def -> add_action( "blood_fury" );
+  def -> add_action( "berserking,if=buff.dancing_rune_weapon.up" );
+
+  // On-use items
+  def -> add_action( "use_items" );
+
+  // Cooldowns
+  def -> add_action( "potion,if=buff.dancing_rune_weapon.up" );
+  def -> add_action( this, "Dancing Rune Weapon", "if=(!talent.blooddrinker.enabled|!cooldown.blooddrinker.ready)" );
+  def -> add_talent( this, "Tombstone", "if=buff.bone_shield.stack>=7" );
+  def -> add_action( "call_action_list,name=standard" );
+
+  // Single Target Rotation
+  standard -> add_action( this, "Death Strike", "if=runic_power.deficit<10" );
+  standard -> add_talent( this, "Blooddrinker", "if=!buff.dancing_rune_weapon.up" );
+  standard -> add_action( this, "Marrowrend", "if=buff.bone_shield.remains<=gcd*2" );
+  standard -> add_action( this, "Blood Boil", "if=charges_fractional>=1.8&buff.haemostasis.stack<5&(buff.haemostasis.stack<3|!buff.dancing_rune_weapon.up)" );
+  standard -> add_action( this, "Marrowrend", "if=(buff.bone_shield.stack<5&talent.ossuary.enabled)|buff.bone_shield.remains<gcd*3" );
+  standard -> add_talent( this, "Bonestorm", "if=runic_power>=100&spell_targets.bonestorm>=3" );
+  standard -> add_action( this, "Death Strike", "if=buff.blood_shield.up|(runic_power.deficit<15&(runic_power.deficit<25|!buff.dancing_rune_weapon.up))" );
+  standard -> add_action( this, "Heart Strike", "if=buff.dancing_rune_weapon.up" );
+  standard -> add_action( this, "Death and Decay", "if=buff.crimson_scourge.up" );
+  standard -> add_action( this, "Death and Decay" );
+  standard -> add_action( this, "Heart Strike", "if=rune.time_to_3<gcd|buff.bone_shield.stack>6" );
+}
+
 // death_knight_t::default_potion ===========================================
 
 std::string death_knight_t::default_potion() const
 {
-  std::string frost_potion = ( true_level > 110 ) ? "battle_potion_of_strength" :
-	                           ( true_level > 100 ) ? "prolonged_power" :
+  std::string frost_potion = ( true_level > 100 ) ? "prolonged_power" :
                              ( true_level >= 90 ) ? "draenic_strength" :
                              ( true_level >= 85 ) ? "mogu_power" :
                              ( true_level >= 80 ) ? "golemblood_potion" :
                              "disabled";
 
-  std::string unholy_potion = ( true_level > 110 ) ? "battle_potion_of_strength" :
-	                            ( true_level > 100 ) ? "prolonged_power" :
+  std::string unholy_potion = ( true_level > 100 ) ? "prolonged_power" :
                               ( true_level >= 90 ) ? "draenic_strength" :
                               ( true_level >= 85 ) ? "mogu_power" :
                               ( true_level >= 80 ) ? "golemblood_potion" :
                               "disabled";
 
-  std::string blood_potion =  ( true_level > 110 ) ? "battle_potion_of_strength" :
-                              ( true_level > 100 ) ? "old_war" :
+  std::string blood_potion = ( true_level > 100 ) ? "old_war" :
                               ( true_level >= 90 ) ? "draenic_strength" :
                               ( true_level >= 85 ) ? "mogu_power" :
                               ( true_level >= 80 ) ? "golemblood_potion" :
@@ -7730,22 +7766,19 @@ std::string death_knight_t::default_potion() const
 
 std::string death_knight_t::default_food() const
 {
-  std::string frost_food = ( true_level > 110 ) ? "bountiful_captains_feast" :
-                           ( true_level > 100 ) ? "lemon_herb_filet" :
-                           ( true_level >= 90 ) ? "pickled_eel" :
+  std::string frost_food = ( true_level > 100 ) ? "lemon_herb_filet" :
+                           ( true_level >  90 ) ? "pickled_eel" :
                            ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
                            ( true_level >= 80 ) ? "seafood_magnifique_feast" :
                            "disabled";
 
-  std::string unholy_food = ( true_level > 110 ) ? "bountiful_captains_feast" :
-                            ( true_level > 100 ) ? "nightborne_delicacy_platter" :
+  std::string unholy_food = ( true_level > 100 ) ? "nightborne_delicacy_platter" :
                             ( true_level >  90 ) ? "buttered_sturgeon" :
                             ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
                             ( true_level >= 80 ) ? "seafood_magnifique_feast" :
                             "disabled";
 
-  std::string blood_food =  ( true_level > 110 ) ? "swamp_fish_n_chips" :
-	                          ( true_level > 100 ) ? "lavish_suramar_feast" :
+  std::string blood_food =  ( true_level > 100 ) ? "lavish_suramar_feast" :
                             ( true_level >  90 ) ? "pickled_eel" :
                             ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
                             ( true_level >= 80 ) ? "seafood_magnifique_feast" :
@@ -7763,8 +7796,7 @@ std::string death_knight_t::default_food() const
 
 std::string death_knight_t::default_flask() const
 {
-  std::string flask_name = ( true_level >  110 ) ? "flask_of_the_undertow" : 
-                           ( true_level >= 100 ) ? "countless_armies" :
+  std::string flask_name = ( true_level >  100 ) ? "countless_armies" :
                            ( true_level >= 90  ) ? "greater_draenic_strength_flask" :
                            ( true_level >= 85  ) ? "winters_bite" :
                            ( true_level >= 80  ) ? "titanic_strength" :
@@ -7779,57 +7811,9 @@ std::string death_knight_t::default_flask() const
 
 std::string death_knight_t::default_rune() const
 {
-  return ( true_level >= 120 ) ? "battle_scarred" :
-         ( true_level >= 110 ) ? "defiled" :
+  return ( true_level >= 110 ) ? "defiled" :
          ( true_level >= 100 ) ? "stout" :
          "disabled";
-}
-
-// death_knight_t::default_apl_blood ========================================
-
-void death_knight_t::default_apl_blood()
-{
-  action_priority_list_t* def        = get_action_priority_list( "default" );
-  action_priority_list_t* standard   = get_action_priority_list( "standard" );
-  // action_priority_list_t* cooldowns  = get_action_priority_list( "cooldowns" ); // Not used atm
-
-  // Setup precombat APL for DPS spec
-  default_apl_dps_precombat();
-
-  def -> add_action( "auto_attack" );
-  def -> add_action( this, "Mind Freeze" );
-
-  // Racials
-  def -> add_action( "blood_fury,if=cooldown.dancing_rune_weapon.ready&(!cooldown.blooddrinker.ready|!talent.blooddrinker.enabled)" );
-  def -> add_action( "berserking" );
-
-  // On-use items
-  def -> add_action( "use_items" );
-
-  // Cooldowns
-  def -> add_action( "potion,if=buff.dancing_rune_weapon.up" );
-  def -> add_action( this, "Dancing Rune Weapon", "if=!talent.blooddrinker.enabled|!cooldown.blooddrinker.ready" );
-  def -> add_talent( this, "Tombstone", "if=buff.bone_shield.stack>=7" );
-  def -> add_action( "call_action_list,name=standard" );
-
-  // Single Target Rotation
-  standard -> add_action( this, "Death Strike", "if=runic_power.deficit<=10" );
-  standard -> add_talent( this, "Blooddrinker", "if=!buff.dancing_rune_weapon.up" );
-  standard -> add_action( this, "Marrowrend", "if=(buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*2)|buff.bone_shield.stack<3)&runic_power.deficit>=20" );
-  standard -> add_action( this, "Blood Boil", "if=charges_fractional>=1.8&(buff.hemostasis.stack<=(5-spell_targets.blood_boil)|spell_targets.blood_boil>2)" );
-  standard -> add_action( this, "Marrowrend", "if=buff.bone_shield.stack<5&talent.ossuary.enabled&runic_power.deficit>=15" );
-  standard -> add_talent( this, "Bonestorm", "if=runic_power>=100&!buff.dancing_rune_weapon.up" );
-  standard -> add_action( this, "Death Strike", "if=runic_power.deficit<=(15+buff.dancing_rune_weapon.up*5+spell_targets.heart_strike*talent.heartbreaker.enabled*2)|target.time_to_die<10" );
-  standard -> add_action( this, "Death and Decay", "if=spell_targets.death_and_decay>=3" );
-  standard -> add_talent( this, "Rune Strike", "if=(charges_fractional>=1.8|buff.dancing_rune_weapon.up)&rune.time_to_3>=gcd" );
-  standard -> add_action( this, "Heart Strike", "if=buff.dancing_rune_weapon.up|rune.time_to_4<gcd" );
-  standard -> add_action( this, "Blood Boil", "if=buff.dancing_rune_weapon.up" );
-  standard -> add_action( this, "Death and Decay", "if=buff.crimson_scourge.up|talent.rapid_decomposition.enabled|spell_targets.death_and_decay>=2" );
-  standard -> add_talent( this, "Consumption" );
-  standard -> add_action( this, "Blood Boil" );
-  standard -> add_action( this, "Heart Strike", "if=rune.time_to_3<gcd|buff.bone_shield.stack>6" );
-  standard -> add_talent( this, "Rune Strike" );
-  standard -> add_action( "arcane_torrent,if=runic_power.deficit>20" );
 }
 
 // death_knight_t::default_apl_frost ========================================
@@ -8333,7 +8317,7 @@ void death_knight_t::reset()
   player_t::reset();
 
   runic_power_decay_rate = 1; // 1 RP per second decay
-  antimagic_shell_remaining_absorb = 0.0;
+  antimagic_shell_absorbed = 0.0;
   _runes.reset();
   dnds.clear();
   t20_2pc_frost = 0;
@@ -8387,26 +8371,34 @@ void death_knight_t::assess_damage_imminent( school_e school, dmg_e, action_stat
   {
     if ( buffs.antimagic_shell -> up() )
     {
-      double damage_absorbed = s -> result_amount;
+      double absorbed = s -> result_amount * spell.antimagic_shell -> effectN( 1 ).percent();
+      antimagic_shell_absorbed += absorbed;
 
-      if ( damage_absorbed > antimagic_shell_remaining_absorb )
+      double max_hp_absorb = resources.max[RESOURCE_HEALTH] * 0.4;
+
+      max_hp_absorb *= 1.0 + talent.volatile_shielding -> effectN( 1 ).percent();
+      max_hp_absorb *= 1.0 + talent.antimagic_barrier -> effectN( 3 ).percent();
+
+      if ( antimagic_shell_absorbed > max_hp_absorb )
       {
-        damage_absorbed = antimagic_shell_remaining_absorb;
+        absorbed = antimagic_shell_absorbed - max_hp_absorb;
+        antimagic_shell_absorbed = -1.0; // Set to -1.0 so expire_override knows that we don't need to reduce cooldown from regenerative magic.
         buffs.antimagic_shell -> expire();
       }
 
-      // Generates 1 RP for every 1% max hp absorbed
-      double rp_generated = damage_absorbed / resources.max[RESOURCE_HEALTH] * 100;
+      double generated = absorbed / resources.max[RESOURCE_HEALTH];
 
-      s -> result_amount -= damage_absorbed;
-      s -> result_absorbed -= damage_absorbed;
-      s -> self_absorb_amount += damage_absorbed;
-      iteration_absorb_taken += damage_absorbed;
+      s -> result_amount -= absorbed;
+      s -> result_absorbed -= absorbed;
+      s -> self_absorb_amount += absorbed;
+      iteration_absorb_taken += absorbed;
+
+      //gains.antimagic_shell -> add( RESOURCE_HEALTH, absorbed );
 
       if ( antimagic_shell )
-        antimagic_shell -> add_result( damage_absorbed, damage_absorbed, ABSORB, RESULT_HIT, BLOCK_RESULT_UNBLOCKED, this );
+        antimagic_shell -> add_result( absorbed, absorbed, ABSORB, RESULT_HIT, BLOCK_RESULT_UNBLOCKED, this );
 
-      resource_gain( RESOURCE_RUNIC_POWER, util::round( rp_generated ), gains.antimagic_shell, s -> action );
+      resource_gain( RESOURCE_RUNIC_POWER, util::round( generated * 100.0 ), gains.antimagic_shell, s -> action );
     }
   }
 }
@@ -8527,10 +8519,7 @@ double death_knight_t::composite_leech() const
 {
   double m = player_t::composite_leech();
 
-  if ( buffs.voracious -> up() )
-  {
-    m += buffs.voracious -> data().effectN( 1 ).percent();
-  }
+  m += buffs.voracious -> data().effectN( 1 ).percent();
 
   return m;
 }
@@ -8612,7 +8601,7 @@ double death_knight_t::composite_player_pet_damage_multiplier( const action_stat
 double death_knight_t::composite_player_target_multiplier( player_t* target, school_e school ) const
 {
   double m = player_t::composite_player_target_multiplier( target, school );
-  
+
   death_knight_td_t* td = get_target_data( target );
 
   if ( dbc::is_school( school, SCHOOL_FROST ) )

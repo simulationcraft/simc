@@ -22,9 +22,9 @@ namespace { // UNNAMED NAMESPACE
   Still need AP Coeff for Treants
 
   Guardian ==================================================================
+  Azerite traits
   Investigate Mastery-AP as a modifier on ability damage
   Blacklist FR from trigger_natures_guardian()
-  Catweaving APL
 
   Resto =====================================================================
 
@@ -259,9 +259,7 @@ public:
   double predator_rppm_rate;
   double initial_astral_power;
   int    initial_moon_stage;
-  int    lively_spirit_stacks; //to set how many spells a healer will cast during Innervate
   bool ahhhhh_the_great_outdoors;
-  bool catweave_bear;
   bool t21_2pc;
   bool t21_4pc;
 
@@ -354,7 +352,6 @@ public:
     buff_t* stampeding_roar;
     buff_t* wild_charge_movement;
     buff_t* sephuzs_secret;
-    buff_t* innervate;
 
     // Balance
     buff_t* natures_balance;
@@ -418,7 +415,6 @@ public:
     // Azerite
     buff_t* dawning_sun;
     buff_t* sunblaze;
-    buff_t* lively_spirit;
     buff_t* shredding_fury;
     buff_t* iron_jaws;
     buff_t* raking_ferocity;
@@ -430,7 +426,6 @@ public:
   {
     cooldown_t* berserk;
     cooldown_t* celestial_alignment;
-    cooldown_t* innervate;
     cooldown_t* growl;
     cooldown_t* incarnation;
     cooldown_t* mangle;
@@ -536,7 +531,6 @@ public:
     const spell_data_t* critical_strikes;       // Feral & Guardian
     const spell_data_t* leather_specialization; // All Specializations
     const spell_data_t* omen_of_clarity;        // Feral & Restoration
-    const spell_data_t* innervate;              // Balance & Restoration
 
     // Feral
     const spell_data_t* feral;
@@ -707,9 +701,7 @@ public:
     predator_rppm_rate( 0.0 ),
     initial_astral_power( 8 ),
     initial_moon_stage( NEW_MOON ),
-    lively_spirit_stacks(9),  //set a usually fitting default value
     ahhhhh_the_great_outdoors( false ),
-    catweave_bear( false ),
     t21_2pc(false),
     t21_4pc(false),
     active( active_actions_t() ),
@@ -741,7 +733,6 @@ public:
     cooldown.tigers_fury         = get_cooldown( "tigers_fury"         );
     cooldown.warrior_of_elune    = get_cooldown( "warrior_of_elune"    );
     cooldown.barkskin            = get_cooldown( "barkskin"            );
-    cooldown.innervate           = get_cooldown( "innervate"           );
 
     cooldown.wod_pvp_4pc_melee -> duration = timespan_t::from_seconds( 30.0 );
 
@@ -1313,26 +1304,6 @@ struct celestial_alignment_buff_t : public druid_buff_t<buff_t>
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     add_invalidate(CACHE_HASTE);
     add_invalidate(CACHE_SPELL_HASTE);
-  }
-};
-
-//Innervate Buff ============================================================
-struct innervate_buff_t : public druid_buff_t<buff_t>
-{
-  innervate_buff_t(druid_t& p) :
-    base_t(p, "innervate", p.spec.innervate)
-  {}
-
-  void expire_override(int expiration_stacks, timespan_t remaining_duration) override
-  {
-    buff_t::expire_override(expiration_stacks, remaining_duration);
-
-    druid_t* p = debug_cast<druid_t*>(player);
-
-    if (p->azerite.lively_spirit.enabled())
-    {
-      p->buff.lively_spirit->trigger(p->lively_spirit_stacks);
-    }
   }
 };
 
@@ -3072,8 +3043,7 @@ struct feral_frenzy_driver_t : public cat_attack_t
   };
 
   double tick_ap_ratio;
-  feral_frenzy_driver_t(druid_t* p, const std::string& /*options_str*/) :
-    cat_attack_t("feral_frenzy", p, p->find_spell(274837) )
+  feral_frenzy_driver_t(druid_t* p, const std::string& options_str) : cat_attack_t("feral_frenzy", p, p->find_spell(274837) )
   {
     //ffdot = new feral_frenzy_dot_t(p);
     tick_action = new feral_frenzy_dot_t(p);
@@ -4876,7 +4846,7 @@ struct brambles_t : public druid_spell_t
     druid_spell_t( "brambles_reflect", p, p -> find_spell( 203958 ) )
   {
     // Ensure reflect scales with damage multipliers
-    snapshot_flags |= STATE_VERSATILITY | STATE_TGT_MUL_DA | STATE_MUL_DA;
+    snapshot_flags |= STATE_VERSATILITY | STATE_TGT_MUL_DA;
     background = may_crit = proc = may_miss = true;
   }
 };
@@ -5314,18 +5284,13 @@ struct incarnation_t : public druid_spell_t
 };
 
 // Innervate ================================================================
+
 struct innervate_t : public druid_spell_t
 {
   innervate_t( druid_t* p, const std::string& options_str ) :
     druid_spell_t( "innervate", p, p -> find_specialization_spell( "Innervate" ), options_str )
   {
     harmful = false;
-  }
-  virtual void execute() override
-  {
-    druid_spell_t::execute();
-
-    p()->buff.innervate->trigger();
   }
 };
 
@@ -6425,20 +6390,9 @@ double brambles_handler( const action_state_t* s )
 
   /* Calculate the maximum amount absorbed. This is not affected by
      versatility (and likely other player modifiers). */
-  double weapon_ap = 0.0;
-
-  if ( p -> buff.cat_form -> check() ) {
-    weapon_ap = p -> cat_weapon.dps * WEAPON_POWER_COEFFICIENT;
-  } else if ( p -> buff.bear_form -> check() ) {
-    weapon_ap = p -> bear_weapon.dps * WEAPON_POWER_COEFFICIENT;
-  } else {
-    weapon_ap = p -> main_hand_weapon.dps * WEAPON_POWER_COEFFICIENT;
-  }
-
-  double attack_power = ( p -> cache.attack_power() + weapon_ap ) * p -> composite_attack_power_multiplier();
-
-  // Brambles coefficient is not in spelldata :(
-  double absorb_cap = attack_power * 0.06;
+  // TODO: is this coefficient in spelldata somewhere?
+  double absorb_cap = 0.06 * p -> cache.attack_power() *
+    p -> composite_attack_power_multiplier();
 
   // Calculate actual amount absorbed.
   double amount_absorbed = std::min( s -> result_mitigated, absorb_cap );
@@ -6719,7 +6673,6 @@ void druid_t::init_spells()
   spec.astral_power               = find_specialization_spell( "Astral Power" );
   spec.balance                    = find_specialization_spell( "Balance Druid" );
   spec.celestial_alignment        = find_specialization_spell( "Celestial Alignment" );
-  spec.innervate                  = find_specialization_spell( "Innervate" );
   spec.moonkin_form               = find_specialization_spell( "Moonkin Form" );
   spec.eclipse                    = find_specialization_spell( "Eclipse");
   spec.starfall                   = find_specialization_spell( "Starfall" );
@@ -7026,8 +6979,6 @@ void druid_t::create_buffs()
 
   buff.prowl = buff_creator_t( this, "prowl", find_class_spell( "Prowl" ) );
 
-  buff.innervate = new innervate_buff_t(*this);
-
   // Azerite
   buff.shredding_fury =
       buff_creator_t( this, "shredding_fury", find_spell( 274426 ) ).default_value( azerite.shredding_fury.value() );
@@ -7039,9 +6990,6 @@ void druid_t::create_buffs()
   buff.dawning_sun = buff_creator_t(this, "dawning_sun", find_spell(276154));
 
   buff.sunblaze = buff_creator_t(this, "sunblaze", find_spell(274399));
-
-  buff.lively_spirit = make_buff<stat_buff_t>(this, "lively_spirit", find_spell(279648))
-    ->add_stat(STAT_INTELLECT, azerite.lively_spirit.value());
 
   // Talent buffs
 
@@ -7239,22 +7187,19 @@ void druid_t::create_buffs()
 // ALL Spec Pre-Combat Action Priority List =================================
 std::string druid_t::default_flask() const
 {
-   std::string balance_flask =   (true_level > 110) ? "endless_fathoms" :
-                                 (true_level > 100) ? "whispered_pact" :
+   std::string balance_flask =   (true_level > 100) ? "whispered_pact" :
                                  (true_level >= 90) ? "greater_draenic_intellect_flask" :
                                  (true_level >= 85) ? "warm_sun" :
                                  (true_level >= 80) ? "draconic_mind" :
                                  "disabled";
 
-   std::string feral_flask =     (true_level >  110) ? "flask_of_the_currents" :
-                                 (true_level >  100) ? "seventh_demon" :
+   std::string feral_flask =     (true_level >  100) ? "seventh_demon" :
                                  (true_level >= 90) ? "greater_draenic_agility_flask" :
                                  (true_level >= 85) ? "spring_blossoms" :
                                  (true_level >= 80) ? "winds" :
                                  "disabled";
 
-   std::string guardian_flask =  (true_level >  110) ? "flask_of_the_currents" :
-                                 (true_level >  100) ? "seventh_demon" :
+   std::string guardian_flask =  (true_level >  100) ? "seventh_demon" :
                                  (true_level >= 90) ? "greater_draenic_agility_flask" :
                                  (true_level >= 85) ? "spring_blossoms" :
                                  (true_level >= 80) ? "winds" :
@@ -7275,15 +7220,13 @@ std::string druid_t::default_flask() const
 }
 std::string druid_t::default_potion() const
 {
-   std::string balance_pot =  (true_level > 110) ? "battle_potion_of_intellect" :
-                              (true_level > 100) ? "deadly_grace" :
+   std::string balance_pot =  (true_level > 100) ? "deadly_grace" :
                               (true_level >= 90) ? "draenic_intellect" :
                               (true_level >= 85) ? "jade_serpent" :
                               (true_level >= 80) ? "volcanic" :
                               "disabled";
 
-      std::string feral_pot = (true_level > 110) ? "battle_potion_of_agility" :
-                              (true_level > 100) ? "potion_of_prolonged_power" :
+      std::string feral_pot = (true_level > 100) ? "potion_of_prolonged_power" :
                               (true_level >= 90) ? "draenic_agility" :
                               (true_level >= 85) ? "virmens_bite" :
                               (true_level >= 80) ? "tolvir" :
@@ -7311,8 +7254,7 @@ std::string druid_t::default_potion() const
 
 std::string druid_t::default_food() const
 {
-   return (true_level > 110) ? "bountiful_captains_feast" :
-          (true_level > 100 && specialization() == DRUID_FERAL) ? "lemon_herb_filet" :
+   return (true_level > 100 && specialization() == DRUID_FERAL) ? "lemon_herb_filet" :
           (true_level >  100) ? "lavish_suramar_feast" :
           (true_level >  90) ?  "pickled_eel" :
           (true_level >= 90) ?  "sea_mist_rice_noodles" :
@@ -7322,8 +7264,7 @@ std::string druid_t::default_food() const
 
 std::string druid_t::default_rune() const
 {
-   return (true_level >= 120) ? "battle_scarred" :
-          (true_level >= 110) ? "defiled" :
+   return (true_level >= 110) ? "defiled" :
           (true_level >= 100) ? "hyper" :
           "disabled";
 }
@@ -7361,10 +7302,14 @@ void druid_t::apl_precombat()
      precombat->add_action(   "variable,name=use_thrash,value=1,if=equipped.luffa_wrappings" );
   }
 
+  // Guardian: rotational control variables
+  if ( specialization() == DRUID_GUARDIAN )
+  {
+    precombat -> add_action( "variable,name=thrash_over_mangle,value=equipped.luffa_wrappings" );
+  }
+
   // Forms
-  if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) ||
-       ( specialization() == DRUID_GUARDIAN && catweave_bear && talent.feral_affinity -> ok() ) ||
-       primary_role() == ROLE_ATTACK )
+  if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
   {
     precombat -> add_action( this, "Cat Form" );
     precombat -> add_action( this, "Prowl" );
@@ -7709,9 +7654,8 @@ void druid_t::apl_balance()
   default_list->add_action("use_items");
   default_list -> add_talent( this, "Warrior of Elune");
   default_list -> add_action("run_action_list,name=ed,if=equipped.the_emerald_dreamcatcher&active_enemies<=1");
-  default_list -> add_action("innervate,if=azerite.lively_spirit.enabled&(cooldown.incarnation.up|cooldown.celestial_alignment.remains<12)");
   default_list -> add_action( "incarnation,if=astral_power>=40" );
-  default_list -> add_action( this, "Celestial Alignment", "if=astral_power>=40&(!azerite.lively_spirit.enabled|buff.lively_spirit.up)" );
+  default_list -> add_action( this, "Celestial Alignment", "if=astral_power>=40" );
   default_list -> add_action("run_action_list,name=aoe,if=spell_targets.starfall>=3");
   default_list -> add_action("run_action_list,name=st");
 
@@ -7772,65 +7716,54 @@ void druid_t::apl_guardian()
 {
   action_priority_list_t* default_list    = get_action_priority_list( "default" );
   action_priority_list_t* cooldowns       = get_action_priority_list( "cooldowns" );
+  action_priority_list_t* st              = get_action_priority_list( "st" );
+  action_priority_list_t* aoe             = get_action_priority_list( "aoe" );
 
   std::vector<std::string> item_actions   = get_item_actions();
-  std::vector<std::string> racial_actions = get_racial_actions();
+  /* std::vector<std::string> racial_actions = get_racial_actions(); */
+
+  default_list -> add_action( "auto_attack" );
+  default_list -> add_action( "call_action_list,name=cooldowns" );
+  default_list -> add_action( "call_action_list,name=st,if=active_enemies=1" );
+  default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>1" );
+
+  st -> add_action( this, "Maul", "if=rage.deficit<8" );
+  st -> add_action( this, "Moonfire", "if=buff.incarnation.up&dot.moonfire.refreshable|!dot.moonfire.ticking" );
+  st -> add_talent( this, "Pulverize", "if=cooldown.thrash_bear.remains<2*gcd&dot.thrash_bear.stack=dot.thrash_bear.max_stacks" );
+  st -> add_action( "thrash_bear,if=variable.thrash_over_mangle|talent.rend_and_tear.enabled&dot.thrash_bear.stack<dot.thrash_bear.max_stacks" );
+  st -> add_action( this, "Mangle" );
+  st -> add_action( "thrash_bear" );
+  st -> add_action( this, "Moonfire", "if=buff.galactic_guardian.up|(!talent.galactic_guardian.enabled&dot.moonfire.refreshable)" );
+  st -> add_action( this, "Maul" );
+  st -> add_action( this, "Moonfire", "if=dot.moonfire.refreshable&talent.galactic_guardian.enabled&!equipped.lady_and_the_child" );
+  st -> add_action( "swipe_bear" );
+
+  aoe -> add_action( this, "Moonfire", "target_if=buff.galactic_guardian.up&equipped.lady_and_the_child&cooldown.thrash_bear.remains<2*gcd&buff.galactic_guardian.remains<2*gcd&(active_enemies<4|equipped.fury_of_nature&active_enemies<5)" );
+  aoe -> add_talent( this, "Pulverize", "target_if=cooldown.thrash_bear.remains<2*gcd&dot.thrash_bear.stack=dot.thrash_bear.max_stacks" );
+  aoe -> add_action( this, "Mangle", "if=buff.incarnation.up&!variable.thrash_over_mangle&active_enemies<4" );
+  aoe -> add_action( "thrash_bear" );
+  aoe -> add_action( this, "Moonfire", "target_if=buff.galactic_guardian.up&equipped.lady_and_the_child&buff.galactic_guardian.remains<gcd&(active_enemies<4|equipped.fury_of_nature&active_enemies<5)" );
+  aoe -> add_action( this, "Maul", "if=rage.deficit<8&(!talent.incarnation_guardian_of_ursoc.enabled&active_enemies<4|talent.incarnation_guardian_of_ursoc.enabled&active_enemies<6)" );
+  aoe -> add_action( this, "Mangle", "if=!talent.galactic_guardian.enabled&active_enemies<5|talent.galactic_guardian.enabled&active_enemies<4" );
+  aoe -> add_action( this, "Moonfire", "target_if=!talent.galactic_guardian.enabled&dot.moonfire.refreshable&(!equipped.fury_of_nature&active_enemies<8|equipped.fury_of_nature&active_enemies<11)|buff.galactic_guardian.up&!equipped.lady_and_the_child&active_enemies<3" );
+  aoe -> add_action( this, "Maul", "if=!talent.incarnation_guardian_of_ursoc.enabled&active_enemies<5|talent.incarnation_guardian_of_ursoc.enabled&active_enemies<6" );
+  aoe -> add_action( this, "Moonfire", "target_if=!equipped.lady_and_the_child&dot.moonfire.refreshable&active_enemies<3" );
+  aoe -> add_action( "swipe_bear" );
+
 
   if ( sim -> allow_potions )
     cooldowns -> add_action( "potion" );
+
   // Racials don't currently work
+  /* for (size_t i = 0; i < racial_actions.size(); i++) */
+  /*   cooldowns -> add_action( racial_actions[i] ); */
 
-  for (size_t i = 0; i < racial_actions.size(); i++)
-    cooldowns -> add_action( racial_actions[i] );
-  cooldowns -> add_action( this, "Barkskin", "if=buff.bear_form.up" );
-  cooldowns -> add_talent( this, "Lunar Beam", "if=buff.bear_form.up" );
-  cooldowns -> add_talent( this, "Bristling Fur", "if=buff.bear_form.up" );
+  cooldowns -> add_talent( this, "Lunar Beam" );
+  cooldowns -> add_action( "incarnation" );
+  cooldowns -> add_action( this, "Barkskin", "if=talent.brambles.enabled|talent.survival_of_the_fittest.enabled" );
+  cooldowns -> add_action( this, "Bristling Fur" );
+  cooldowns -> add_action( "proc_sephuz,if=cooldown.thrash_bear.remains=0" );
   cooldowns -> add_action( "use_items" );
-
-  if ( catweave_bear && talent.feral_affinity -> ok() )
-  {
-    action_priority_list_t* bear = get_action_priority_list( "bear" );
-    action_priority_list_t* cat  = get_action_priority_list( "cat" );
-
-    default_list -> add_action( this, "Rake", "if=buff.prowl.up&buff.cat_form.up" );
-    default_list -> add_action( "auto_attack" );
-    default_list -> add_action( "call_action_list,name=cooldowns" );
-    default_list -> add_action( "call_action_list,name=cat,if=talent.feral_affinity.enabled&((cooldown.thrash_bear.remains>0&cooldown.mangle.remains>0&rage<45&buff.incarnation.down&buff.galactic_guardian.down)|(buff.cat_form.up&energy>20)|(dot.rip.ticking&dot.rip.remains<3&target.health.pct<25))" );
-    default_list -> add_action( "call_action_list,name=bear" );
-
-    bear -> add_action( this, "Bear Form" );
-    bear -> add_action( this, "Maul", "if=rage.deficit<10&active_enemies<4" );
-    bear -> add_talent( this, "Pulverize", "target_if=dot.thrash_bear.stack=dot.thrash_bear.max_stacks" );
-    bear -> add_action( this, "Moonfire", "target_if=dot.moonfire.refreshable&active_enemies<2" );
-    bear -> add_action( "incarnation" );
-    bear -> add_action( "thrash,if=(buff.incarnation.down&active_enemies>1)|(buff.incarnation.up&active_enemies>4)" );
-    bear -> add_action( "swipe,if=buff.incarnation.down&active_enemies>4" );
-    bear -> add_action( this, "Mangle", "if=dot.thrash_bear.ticking" );
-    bear -> add_action( this, "Moonfire", "target_if=buff.galactic_guardian.up&active_enemies<2" );
-    bear -> add_action( "thrash" );
-    bear -> add_action( this, "Maul" );
-    bear -> add_action( "swipe" );
-
-    cat -> add_action( this, "Cat Form" );
-    cat -> add_action( "rip,if=dot.rip.refreshable&combo_points=5" );
-    cat -> add_action( "ferocious_bite,if=combo_points=5" );
-    cat -> add_action( "rake,if=dot.rake.refreshable&combo_points<5" );
-    cat -> add_action( this, "Shred" );
-  } else {
-    default_list -> add_action( "auto_attack" );
-    default_list -> add_action( "call_action_list,name=cooldowns" );
-    default_list -> add_action( this, "Maul", "if=rage.deficit<10&active_enemies<4" );
-    default_list -> add_talent( this, "Pulverize", "target_if=dot.thrash_bear.stack=dot.thrash_bear.max_stacks" );
-    default_list -> add_action( this, "Moonfire", "target_if=dot.moonfire.refreshable&active_enemies<2" );
-    default_list -> add_action( "incarnation" );
-    default_list -> add_action( "thrash,if=(buff.incarnation.down&active_enemies>1)|(buff.incarnation.up&active_enemies>4)" );
-    default_list -> add_action( "swipe,if=buff.incarnation.down&active_enemies>4" );
-    default_list -> add_action( this, "Mangle", "if=dot.thrash_bear.ticking" );
-    default_list -> add_action( this, "Moonfire", "target_if=buff.galactic_guardian.up&active_enemies<2" );
-    default_list -> add_action( "thrash" );
-    default_list -> add_action( this, "Maul" );
-    default_list -> add_action( "swipe" );
-  }
 }
 
 // Restoration Combat Action Priority List ==================================
@@ -8741,9 +8674,7 @@ void druid_t::create_options()
   add_option( opt_bool  ( "feral_t21_4pc", t21_4pc) );
   add_option( opt_float ( "initial_astral_power", initial_astral_power ) );
   add_option( opt_int   ( "initial_moon_stage", initial_moon_stage ) );
-  add_option( opt_int   ( "lively_spirit_stacks", lively_spirit_stacks));
   add_option( opt_bool  ( "outside", ahhhhh_the_great_outdoors ) );
-  add_option( opt_bool  ( "catweave_bear", catweave_bear ) );
 }
 
 // druid_t::create_profile ==================================================
@@ -9220,7 +9151,6 @@ void druid_t::copy_from( player_t* source )
   predator_rppm_rate = p -> predator_rppm_rate;
   initial_astral_power = p -> initial_astral_power;
   initial_moon_stage = p -> initial_moon_stage;
-  lively_spirit_stacks = p->lively_spirit_stacks;
   t21_2pc = p -> t21_2pc;
   t21_4pc = p -> t21_4pc;
   ahhhhh_the_great_outdoors = p -> ahhhhh_the_great_outdoors;
@@ -9591,6 +9521,8 @@ struct luffa_wrappings_t : public scoped_action_callback_t<T>
 
   void manipulate( T* a, const special_effect_t& e ) override
   {
+    druid_t* p = debug_cast<druid_t*>( a -> player );
+
     // Feral Druid passive modifies the strength of the effect.
     a->radius *= 1.0 + e.driver()->effectN(1).percent();
       //+ p -> spec.feral -> effectN( 8 ).percent();
@@ -9700,7 +9632,7 @@ struct fiery_red_maimers_t : public scoped_actor_callback_t<druid_t>
   fiery_red_maimers_t() : super( DRUID )
   {}
 
-  void manipulate(druid_t* /*p*/, const special_effect_t& /*e*/) override
+  void manipulate(druid_t* p, const special_effect_t& e) override
   {
     //only relevant for a few weeks, unlikely to change until then - hardcoding it for now.
     //p->legendary.LegendaryDamageMod = 0.03;

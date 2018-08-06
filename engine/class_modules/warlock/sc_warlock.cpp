@@ -230,8 +230,6 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     cooldowns.soul_fire = get_cooldown("soul_fire");
     cooldowns.sindorei_spite_icd = get_cooldown( "sindorei_spite_icd" );
     cooldowns.call_dreadstalkers = get_cooldown("call_dreadstalkers");
-    cooldowns.deathbolt = get_cooldown("deathbolt");
-    cooldowns.phantom_singularity = get_cooldown("phantom_singularity");
     cooldowns.darkglare = get_cooldown("summon_darkglare");
     cooldowns.demonic_tyrant = get_cooldown( "summon_demonic_tyrant" );
 
@@ -739,8 +737,7 @@ std::string warlock_t::default_potion() const
 {
   std::string lvl110_potion = "prolonged_power";
 
-  return ( true_level >  110 ) ? "battle_potion_of_intellect" :
-         ( true_level >= 100 ) ? lvl110_potion :
+  return ( true_level >= 100 ) ? lvl110_potion :
          ( true_level >=  90 ) ? "draenic_intellect" :
          ( true_level >=  85 ) ? "jade_serpent" :
          ( true_level >=  80 ) ? "volcanic" :
@@ -749,8 +746,7 @@ std::string warlock_t::default_potion() const
 
 std::string warlock_t::default_flask() const
 {
-  return ( true_level >  110 ) ? "endless_fathoms" :
-         ( true_level >= 100 ) ? "whispered_pact" :
+  return ( true_level >= 100 ) ? "whispered_pact" :
          ( true_level >=  90 ) ? "greater_draenic_intellect_flask" :
          ( true_level >=  85 ) ? "warm_sun" :
          ( true_level >=  80 ) ? "draconic_mind" :
@@ -769,16 +765,14 @@ std::string warlock_t::default_food() const
     (specialization() == WARLOCK_AFFLICTION) ?    "nightborne_delicacy_platter" :
                                                   "azshari_salad";
 
-  return ( true_level > 110 ) ? "bountiful_captains_feast" :
-         ( true_level > 100 ) ? lvl110_food :
+  return ( true_level > 100 ) ? lvl110_food :
          ( true_level >  90 ) ? lvl100_food :
                                 "disabled";
 }
 
 std::string warlock_t::default_rune() const
 {
-  return ( true_level >= 120 ) ? "battle_scarred" :
-         ( true_level >= 110 ) ? "defiled" :
+  return ( true_level >= 110 ) ? "defiled" :
          ( true_level >= 100 ) ? "focus" :
                                  "disabled";
 }
@@ -984,15 +978,7 @@ expr_t* warlock_t::create_expression( const std::string& name_str )
       dot_t* agony = td->dots_agony;
       action_state_t* agony_state = agony->current_action->get_state(agony->state);
       timespan_t dot_tick_time = agony->current_action->tick_time(agony_state);
-
-      // Seeks to return the average expected time for the player to generate a single soul shard.
-      // TOCHECK regularly.
-
-      double average = 1.0 / ( 0.184 * std::pow( active_agonies, -2.0 / 3.0 ) ) * dot_tick_time.total_seconds() / active_agonies;
-
-      if ( talents.creeping_death->ok() )
-        average /= 1.0 + talents.creeping_death->effectN( 1 ).percent();
-
+      double average = 1 / (0.16 / std::sqrt(active_agonies) * (active_agonies == 1 ? 1.15 : 1.0) * active_agonies / dot_tick_time.total_seconds());
       if (sim->debug)
         sim->out_debug.printf("time to shard return: %f", average);
       action_state_t::release(agony_state);
@@ -1011,8 +997,24 @@ expr_t* warlock_t::create_expression( const std::string& name_str )
   {
     return create_pet_expression(name_str);
   }
-  else if (name_str == "deathbolt_setup") {
-    return create_aff_expression(name_str);
+  else if (name_str == "contagion")
+  {
+    return make_fn_expr(name_str, [this]()
+    {
+      timespan_t con = timespan_t::from_millis(0.0);
+
+      auto td = get_target_data(target);
+      for (int i = 0; i < MAX_UAS; i++)
+      {
+        timespan_t rem = td->dots_unstable_affliction[i]->remains();
+
+        if (rem > con)
+        {
+          con = rem;
+        }
+      }
+      return con;
+    });
   }
 
   return player_t::create_expression( name_str );

@@ -14,7 +14,7 @@
 # * Must use gem ids (ex: ",gem_id=151585") instead of hardcoded stats.
 
 # Death Knight
-T22_Generate_Death_Knight.simc
+#T22_Generate_Death_Knight.simc
 
 # Demon Hunter
 #T22_Generate_Demon_Hunter.simc
@@ -32,7 +32,7 @@ T22_Generate_Death_Knight.simc
 #T22_Generate_Monk.simc
 
 # Paladin
-# T22_Generate_Paladin.simc
+#T22_Generate_Paladin.simc
 
 # Priest
 T22_Generate_Priest.simc
@@ -41,7 +41,7 @@ T22_Generate_Priest.simc
 #T22_Generate_Rogue.simc
 
 # Shaman
-T22_Generate_Shaman.simc
+#T22_Generate_Shaman.simc
 
 # Warlock
 #T22_Generate_Warlock.simc

@@ -1153,6 +1153,8 @@ double action_t::calculate_direct_amount( action_state_t* state ) const
   double base_direct_amount = amount;
   double weapon_amount      = 0;
 
+  amount += bonus_da( state );
+
   if ( weapon_multiplier > 0 )
   {
     // x% weapon damage + Y
@@ -1163,6 +1165,7 @@ double action_t::calculate_direct_amount( action_state_t* state ) const
   }
   amount += spell_direct_power_coefficient( state ) * ( state->composite_spell_power() );
   amount += attack_direct_power_coefficient( state ) * ( state->composite_attack_power() );
+  amount *= state->composite_da_multiplier();
 
   // OH penalty, this applies to any OH attack even if is not based on weapon damage
   double weapon_slot_modifier = 1.0;
@@ -1172,12 +1175,6 @@ double action_t::calculate_direct_amount( action_state_t* state ) const
     amount *= weapon_slot_modifier;
     weapon_amount *= weapon_slot_modifier;
   }
-
-  // Apply bonus direct damage after the off-hand penalty as this seems to be the common case in
-  // game
-  amount += bonus_da( state );
-
-  amount *= state->composite_da_multiplier();
 
   // damage variation in WoD is based on the delta field in the spell data, applied to entire amount
   double delta_mod = amount_delta_modifier( state );

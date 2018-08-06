@@ -3,14 +3,14 @@ spec=frost
 level=120
 race=orc
 role=spell
-position=ranged_back
-talents=1013033
+position=back
+talents=3122111
 
 # Default consumables
-potion=battle_potion_of_intellect
-flask=endless_fathoms
-food=bountiful_captains_feast
-augmentation=battle_scarred
+potion=prolonged_power
+flask=whispered_pact
+food=lemon_herb_filet
+augmentation=defiled
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -32,7 +32,7 @@ actions.precombat+=/frostbolt
 # Executed every time the actor is available.
 actions=counterspell
 # If the mage has FoF after casting instant Flurry, we can delay the Ice Lance and use other high priority action, if available.
-actions+=/ice_lance,if=prev_gcd.1.flurry&brain_freeze_active&!buff.fingers_of_frost.react
+actions+=/ice_lance,if=prev_gcd.1.flurry&!buff.fingers_of_frost.react
 actions+=/time_warp,if=buff.bloodlust.down&(buff.exhaustion.down|equipped.shard_of_the_exodar)&(prev_gcd.1.icy_veins|target.time_to_die<50)
 actions+=/call_action_list,name=cooldowns
 # The target threshold isn't exact. Between 3-5 targets, the differences between the ST and AoE action lists are rather small. However, Freezing Rain prefers using AoE action list sooner as it benefits greatly from the high priority Blizzard action.
@@ -61,7 +61,7 @@ actions.cooldowns=icy_veins
 actions.cooldowns+=/mirror_image
 actions.cooldowns+=/rune_of_power,if=time_to_die>10+cast_time&time_to_die<25
 # With Glacial Spike, Rune of Power should be used right before the Glacial Spike combo (i.e. with 5 Icicles and a Brain Freeze). When Ebonbolt is off cooldown, Rune of Power can also be used just with 5 Icicles.
-actions.cooldowns+=/rune_of_power,if=active_enemies=1&talent.glacial_spike.enabled&buff.icicles.stack=5&(buff.brain_freeze.react|talent.ebonbolt.enabled&cooldown.ebonbolt.remains<cast_time)
+actions.cooldowns+=/rune_of_power,if=active_enemies=1&talent.glacial_spike.enabled&buff.icicles.stack=5&(!talent.ebonbolt.enabled&buff.brain_freeze.react|talent.ebonbolt.enabled&(full_recharge_time<=cooldown.ebonbolt.remains&buff.brain_freeze.react|cooldown.ebonbolt.remains<cast_time&!buff.brain_freeze.react))
 # Without Glacial Spike, Rune of Power should be used before any bigger cooldown (Frozen Orb, Ebonbolt, Comet Storm, Ray of Frost) or when Rune of Power is about to reach 2 charges.
 actions.cooldowns+=/rune_of_power,if=active_enemies=1&!talent.glacial_spike.enabled&(prev_gcd.1.frozen_orb|talent.ebonbolt.enabled&cooldown.ebonbolt.remains<cast_time|talent.comet_storm.enabled&cooldown.comet_storm.remains<cast_time|talent.ray_of_frost.enabled&cooldown.ray_of_frost.remains<cast_time|charges_fractional>1.9)
 # With 2 or more targets, use Rune of Power exclusively with Frozen Orb. This is the case even with Glacial Spike.
@@ -86,42 +86,44 @@ actions.single+=/frozen_orb
 actions.single+=/blizzard,if=active_enemies>2|active_enemies>1&cast_time=0&buff.fingers_of_frost.react<2
 # Trying to pool charges of FoF for anything isn't worth it. Use them as they come.
 actions.single+=/ice_lance,if=buff.fingers_of_frost.react
+# Ray of Frost is used after all Fingers of Frost charges have been used and there isn't active Frozen Orb that could generate more. This is only a small gain, as Ray of Frost isn't too impactful.
+actions.single+=/ray_of_frost,if=!action.frozen_orb.in_flight&ground_aoe.frozen_orb.remains=0
 actions.single+=/comet_storm
 # Without GS, Ebonbolt is used on cooldown. With GS, Ebonbolt is only used to fill in the blank spots when fishing for a Brain Freeze proc, i.e. the mage reaches 5 Icicles but still doesn't have a Brain Freeze proc.
 actions.single+=/ebonbolt,if=!talent.glacial_spike.enabled|buff.icicles.stack=5&!buff.brain_freeze.react
-# Ray of Frost is used after all Fingers of Frost charges have been used and there isn't active Frozen Orb that could generate more. This is only a small gain against multiple targets, as Ray of Frost isn't too impactful.
-actions.single+=/ray_of_frost,if=!action.frozen_orb.in_flight&ground_aoe.frozen_orb.remains=0
-# Blizzard is used as low priority filler against 2 targets. When using Freezing Rain, it's a medium gain to use the instant Blizzard even against a single target, especially with low mastery.
-actions.single+=/blizzard,if=cast_time=0|active_enemies>1|buff.zannesu_journey.stack=5&buff.zannesu_journey.remains>cast_time
 # Glacial Spike is used when there's a Brain Freeze proc active (i.e. only when it can be shattered). This is a small to medium gain in most situations. Low mastery leans towards using it when available. When using Splitting Ice and having another target nearby, it's slightly better to use GS when available, as the second target doesn't benefit from shattering the main target.
 actions.single+=/glacial_spike,if=buff.brain_freeze.react|prev_gcd.1.ebonbolt|active_enemies>1&talent.splitting_ice.enabled
+# Blizzard is used as low priority filler against 2 targets. When using Freezing Rain, it's a medium gain to use the instant Blizzard even against a single target, especially with low mastery.
+actions.single+=/blizzard,if=cast_time=0|active_enemies>1|buff.zannesu_journey.stack=5&buff.zannesu_journey.remains>cast_time
 actions.single+=/ice_nova
-actions.single+=/flurry,if=!buff.brain_freeze.react&buff.winters_reach.react&azerite.winters_reach.rank>=2
 actions.single+=/frostbolt
 actions.single+=/call_action_list,name=movement
 actions.single+=/ice_lance
 
-head=secret_spinners_miter,id=158315,bonus_id=4779/1512/4786/4775,azerite_powers=170/30/0/13
-neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=
-shoulders=mantle_of_ceremonial_ascension,id=158344,bonus_id=4779/1512/4786/4775,azerite_powers=381/21/0/13
-back=parrotfeather_cloak,id=155884,bonus_id=4779/1512/4786
-chest=loa_betrayers_vestments,id=159233,bonus_id=4779/1512/4786/4775,azerite_powers=381/461/0/13
-wrists=ironkelp_wristwraps,id=159256,bonus_id=4779/1512/4786
-hands=captains_dustfinders,id=159237,bonus_id=4779/1512/4786
-waist=aqusirrs_swirling_sash,id=159239,bonus_id=4779/1512/4786
-legs=chumcoated_leggings,id=158302,bonus_id=4779/1512/4786
-feet=devilsaur_worshipers_sandals,id=158303,bonus_id=4779/1512/4786
-finger1=seal_of_the_city_watch,id=162542,bonus_id=4779/1512/4786,enchant=pact_of_mastery
-finger2=murky_cerulean_signet,id=158318,bonus_id=4779/1512/4786,enchant=pact_of_mastery
-trinket1=conch_of_dark_whispers,id=159620,bonus_id=4779/1512/4786
-trinket2=balefire_branch,id=159630,bonus_id=4779/1512/4786
-main_hand=seabreeze,id=158371,bonus_id=4779/1512/4786,enchant=torrent_of_elements
+head=collar_of_enclosure,id=134424,bonus_id=1727
+neck=pendant_of_the_watchful_eye,id=137536,bonus_id=1727,enchant=mark_of_the_hidden_satyr
+shoulders=amice_of_the_unfurling_tempest,id=134432,bonus_id=1727
+back=cloak_of_enthralling_darkness,id=137531,bonus_id=1727,enchant=binding_of_intellect
+chest=fluxflow_robes,id=134413,bonus_id=1727
+wrists=armbands_of_slaughter,id=134436,bonus_id=1727
+hands=satin_throatclutchers,id=134422,bonus_id=1727
+waist=waistband_of_spiritual_doom,id=137507,bonus_id=1727
+legs=legwraps_of_reverberating_shadows,id=137404,bonus_id=1727
+feet=mistbound_helarjar_footwraps,id=133608,bonus_id=1727
+finger1=seal_of_malicious_deceit,id=134489,bonus_id=1727,enchant=binding_of_haste
+finger2=band_of_fused_coral,id=134532,bonus_id=1727,enchant=binding_of_haste
+trinket1=naraxas_spiked_tongue,id=137349,bonus_id=1727
+trinket2=oakhearts_gnarled_root,id=137306,bonus_id=1727
+main_hand=ebonchill,id=128862,gem_id=140831/139269/140831,relic_id=3412/3412/3412
 
 # Gear Summary
-# gear_ilvl=341.47
-# gear_stamina=4465
-# gear_intellect=3423
-# gear_crit_rating=977
-# gear_haste_rating=253
-# gear_mastery_rating=1194
-# gear_armor=870
+# gear_ilvl=161.33
+# gear_stamina=605
+# gear_intellect=468
+# gear_crit_rating=231
+# gear_haste_rating=411
+# gear_mastery_rating=63
+# gear_versatility_rating=38
+# gear_leech_rating=17
+# gear_armor=160
+# set_bonus=tier19p_cloth_2pc=1

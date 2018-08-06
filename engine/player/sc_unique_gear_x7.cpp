@@ -28,10 +28,6 @@ namespace enchants
 
 namespace trinkets
 {
-  // 8.0.1 - Dungeon Trinkets
-  void deadeye_spyglass( special_effect_t& );
-  void tiny_electromental_in_a_jar( special_effect_t& );
-  void mydas_talisman( special_effect_t& );
   // 8.0.1 - Uldir Trinkets
   void frenetic_corpuscle( special_effect_t& );
 }
@@ -61,18 +57,6 @@ std::string tokenized_name( const spell_data_t* spell )
 {
   return ::util::tokenize_fn( spell -> name_cstr() );
 }
-
-buff_stack_change_callback_t callback_buff_activator( dbc_proc_callback_t* callback )
-{
-  return [ callback ]( buff_t*, int old, int new_ )
-  {
-    if ( old == 0 )
-      callback -> activate();
-    else if ( new_ == 0 )
-      callback -> deactivate();
-  };
-}
-
 } // namespace util
 
 // Galley Banquet ===========================================================
@@ -211,143 +195,6 @@ custom_cb_t enchants::weapon_navigation( unsigned buff_id )
   };
 }
 
-// Dead-Eye Spyglass ========================================================
-
-struct deadeye_spyglass_constructor_t : public item_targetdata_initializer_t
-{
-  deadeye_spyglass_constructor_t( unsigned iid, const std::vector< slot_e >& s ) :
-    item_targetdata_initializer_t( iid, s )
-  {}
-
-  void operator()( actor_target_data_t* td ) const override
-  {
-    const special_effect_t* effect = find_effect( td -> source );
-    if ( !effect )
-    {
-      td -> debuff.dead_ahead = make_buff( *td, "dead_ahead" );
-      return;
-    }
-
-    assert( !td -> debuff.dead_ahead );
-
-    special_effect_t* effect2 = new special_effect_t( effect -> item );
-    effect2 -> type = SPECIAL_EFFECT_EQUIP;
-    effect2 -> source = SPECIAL_EFFECT_SOURCE_ITEM;
-    effect2 -> spell_id = 268758;
-    effect -> player -> special_effects.push_back( effect2 );
-
-    auto callback = new dbc_proc_callback_t( effect -> item, *effect2 );
-    callback -> initialize();
-    callback -> deactivate();
-
-    td -> debuff.dead_ahead =
-      make_buff( *td, "dead_ahead_debuff", effect -> trigger() )
-        -> set_activated( false )
-        -> set_stack_change_callback( util::callback_buff_activator( callback ) );
-    td -> debuff.dead_ahead -> reset();
-  }
-};
-
-void trinkets::deadeye_spyglass( special_effect_t& effect )
-{
-  struct deadeye_spyglass_cb_t : public dbc_proc_callback_t
-  {
-    deadeye_spyglass_cb_t( const special_effect_t& effect ):
-      dbc_proc_callback_t( effect.item, effect )
-    {}
-
-    void execute( action_t*, action_state_t* s ) override
-    {
-      auto td = listener -> get_target_data( s -> target );
-      assert( td );
-      assert( td -> debuff.dead_ahead );
-      td -> debuff.dead_ahead -> trigger();
-    }
-  };
-
-  if ( effect.spell_id == 268771 )
-    new deadeye_spyglass_cb_t( effect );
-
-  if ( effect.spell_id == 268758 )
-    effect.create_buff(); // precreate the buff
-}
-
-// Tiny Electromental in a Jar ==============================================
-
-void trinkets::tiny_electromental_in_a_jar( special_effect_t& effect )
-{
-  struct unleash_lightning_t : public proc_spell_t
-  {
-    unleash_lightning_t( const special_effect_t& effect ):
-      proc_spell_t( "unleash_lightning", effect.player, effect.player -> find_spell( 267205 ), effect.item )
-    {
-      aoe = data().effectN( 1 ).chain_target();
-      chain_multiplier = data().effectN( 1 ).chain_multiplier();
-    }
-  };
-
-  effect.custom_buff = buff_t::find( effect.player, "phenomenal_power" );
-  if ( ! effect.custom_buff )
-    effect.custom_buff = make_buff( effect.player, "phenomenal_power", effect.player -> find_spell( 267179 ) );
-
-  effect.execute_action = create_proc_action<unleash_lightning_t>( "unleash_lightning", effect );
-
-  new dbc_proc_callback_t( effect.item, effect );
-}
-
-// My'das Talisman ==========================================================
-
-void trinkets::mydas_talisman( special_effect_t& effect )
-{
-  struct touch_of_gold_cb_t : public dbc_proc_callback_t
-  {
-    buff_t* buff = nullptr;
-
-    touch_of_gold_cb_t( const special_effect_t& effect ) :
-      dbc_proc_callback_t( effect.item, effect )
-    {}
-
-    void execute( action_t*, action_state_t* s ) override
-    {
-      assert( proc_action );
-
-      proc_action -> set_target( s -> target );
-      proc_action -> execute();
-
-      // in-game the buff has 5 stacks initially and each damage proc consumes a stack
-      // as there is no generic way to do this in simc we simply "reverse" it
-      if ( buff -> check() == buff -> max_stack() )
-        buff -> expire();
-      else
-        buff -> bump( 1 );
-    }
-  };
-
-  auto effect2 = new special_effect_t( effect.item );
-  effect2 -> name_str = "touch_of_gold";
-  effect2 -> source = effect.source;
-  effect2 -> proc_flags_ = effect.proc_flags();
-  effect2 -> proc_chance_ = effect.proc_chance();
-  effect2 -> cooldown_ = timespan_t::zero();
-  effect2 -> trigger_spell_id = 265953;
-  effect.player -> special_effects.push_back( effect2 );
-
-  auto callback = new touch_of_gold_cb_t( *effect2 );
-  callback -> deactivate();
-
-  effect.custom_buff = buff_t::find( effect.player, "touch_of_gold" );
-  if ( ! effect.custom_buff )
-  {
-    effect.custom_buff = make_buff( effect.player, "touch_of_gold", effect.driver() )
-      -> set_stack_change_callback( util::callback_buff_activator( callback ) )
-      -> set_refresh_behavior( buff_refresh_behavior::DISABLED );
-  }
-  // reset triggered spell; we don't want to trigger a spell on use
-  effect.trigger_spell_id = 0;
-
-  callback -> buff = effect.custom_buff;
-}
-
 // Frenetic Corpuscle =======================================================
 
 void trinkets::frenetic_corpuscle( special_effect_t& effect )
@@ -418,18 +265,5 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 265094, "265096Trigger" ); // Frost-Laced Ammunition
 
   // Trinkets
-  register_special_effect( 268758, trinkets::deadeye_spyglass );
-  register_special_effect( 268771, trinkets::deadeye_spyglass );
-  register_special_effect( 267177, trinkets::tiny_electromental_in_a_jar );
-  register_special_effect( 265954, trinkets::mydas_talisman );
-  register_special_effect( 268314, "268311Trigger" ); // Galecaller's Boon, assumes the player always stands in the area
   register_special_effect( 278140, trinkets::frenetic_corpuscle );
-}
-
-void unique_gear::register_target_data_initializers_bfa( sim_t* sim )
-{
-  using namespace bfa;
-  const std::vector<slot_e> trinkets = { SLOT_TRINKET_1, SLOT_TRINKET_2 };
-
-  sim -> register_target_data_initializer( deadeye_spyglass_constructor_t( 159623, trinkets ) );
 }

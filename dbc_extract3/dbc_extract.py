@@ -227,7 +227,6 @@ elif options.type == 'json':
                 data_ = entries[record.id].obj()
                 data_['hotfixed'] = True
                 replaced_ids.append(record.id)
-                str_ += '\t{},\n'.format(json.dumps(data_))
             else:
                 str_ += '\t{},\n'.format(json.dumps(record.obj()))
 

@@ -1,11 +1,10 @@
 warlock="T21_Warlock_Affliction"
 level=110
 race=human
-spec=affliction
 role=spell
-position=ranged_back
+position=back
 talents=3302022
-
+spec=affliction
 default_pet=imp
 
 head=hood_of_eternal_disdain,id=132394,bonus_id=3630
@@ -30,11 +29,10 @@ save=T21_Warlock_Affliction.simc
 warlock="T21_Warlock_Demonology"
 level=110
 race=troll
-spec=demonology
 role=spell
-position=ranged_back
+position=back
 talents=2103021
-
+spec=demonology
 default_pet=felguard
 
 head=soulhunters_cowl,id=151944,bonus_id=3612/1502
@@ -60,11 +58,10 @@ save=T21_Warlock_Demonology.simc
 warlock="T21_Warlock_Destruction"
 level=110
 race=troll
-spec=destruction
 role=spell
-position=ranged_back
+position=back
 talents=2203023
-
+spec=destruction
 default_pet=imp
 
 head=grim_inquisitors_death_mask,id=152174,bonus_id=3612/1502

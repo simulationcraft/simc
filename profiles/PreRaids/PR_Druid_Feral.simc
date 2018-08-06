@@ -5,13 +5,13 @@ race=night_elf
 timeofday=day
 role=attack
 position=back
-talents=3000212
+talents=3323322
 
 # Default consumables
-potion=battle_potion_of_agility
-flask=flask_of_the_currents
-food=bountiful_captains_feast
-augmentation=battle_scarred
+potion=potion_of_prolonged_power
+flask=seventh_demon
+food=lemon_herb_filet
+augmentation=defiled
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -97,27 +97,30 @@ actions.st_generators+=/pool_resource,for_next=1
 actions.st_generators+=/swipe_cat,if=spell_targets.swipe_cat>1
 actions.st_generators+=/shred,if=dot.rake.remains>(action.shred.cost+action.rake.cost-energy)%energy.regen|buff.clearcasting.react
 
-head=irontide_captains_hat,id=155888,bonus_id=4779/1512/4786/4775,azerite_powers=111/30/0/13
-neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=
-shoulders=mantle_of_fastidious_machinations,id=158304,bonus_id=4779/1512/4786/4775,azerite_powers=358/461/0/13
-back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-chest=spymasters_wrap,id=155860,bonus_id=4779/1512/4786/4775,azerite_powers=481/20/0/13
-wrists=servoarm_bindings,id=158353,bonus_id=4779/1512/4786
-hands=underrot_grotto_tenders,id=159344,bonus_id=4779/1512/4786
-waist=port_pillagers_belt,id=159309,bonus_id=4779/1512/4786
-legs=seawalkers_pantaloons,id=159322,bonus_id=4779/1512/4786
-feet=sandshined_snakeskin_sandals,id=159327,bonus_id=4779/1512/4786
-finger1=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
-finger2=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
-trinket1=galecallers_boon,id=159614,bonus_id=4779/1512/4786
-trinket2=deadeye_spyglass,id=159623,bonus_id=4779/1512/4786
-main_hand=twinstrike_polearm,id=158370,bonus_id=4779/1512/4786,enchant=galeforce_striking
+head=hood_of_the_blind_executioner,id=137511,bonus_id=1727
+neck=brysngamen_torc_of_helheim,id=133636,bonus_id=1727,enchant=mark_of_the_distant_army
+shoulders=mantle_of_the_dark_sea,id=137332,bonus_id=1727
+back=mainsail_cloak,id=134406,bonus_id=1727,enchant=binding_of_agility
+chest=biornskin_vest,id=134197,bonus_id=1727
+wrists=shorn_batbrood_cuffs,id=136979,bonus_id=1727
+hands=guileful_intruder_handguards,id=137480,bonus_id=1727
+waist=sinister_ashfall_cord,id=134455,bonus_id=1727
+legs=wardens_martial_greaves,id=137515,bonus_id=1727
+feet=tunnel_trudger_footguards,id=137397,bonus_id=1727
+finger1=loop_of_eightfold_eyes,id=134527,bonus_id=1727,enchant=binding_of_mastery
+finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1727,enchant=binding_of_mastery
+trinket1=chaos_talisman,id=137459,bonus_id=1727
+trinket2=tirathons_betrayal,id=137537,bonus_id=1727
+main_hand=fangs_of_ashamane,id=128860,bonus_id=723,gem_id=137370/137350/137327,relic_id=1727/1727/1727
+off_hand=fangs_of_ashamane,id=128859
 
 # Gear Summary
-# gear_ilvl=341.47
-# gear_agility=2883
-# gear_stamina=4465
-# gear_crit_rating=964
-# gear_haste_rating=1305
-# gear_mastery_rating=209
-# gear_armor=1427
+# gear_ilvl=160.69
+# gear_agility=378
+# gear_stamina=604
+# gear_crit_rating=264
+# gear_haste_rating=102
+# gear_mastery_rating=247
+# gear_versatility_rating=94
+# gear_armor=261
+# set_bonus=tier19p_leather_2pc=1

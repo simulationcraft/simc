@@ -1145,16 +1145,14 @@ void paladin_t::create_buffs()
 
 std::string paladin_t::default_potion() const
 {
-  std::string retribution_pot = (true_level > 110) ? "battle_potion_of_strength" :
-                                (true_level > 100) ? "old_war" :
+  std::string retribution_pot = (true_level > 100) ? "old_war" :
                                 (true_level >= 90) ? "draenic_strength" :
                                 (true_level >= 85) ? "mogu_power" :
                                 (true_level >= 80) ? "golemblood" :
                                 "disabled";
 
   bool dps = (primary_role() == ROLE_ATTACK) || (talents.seraphim -> ok());
-  std::string protection_pot = (true_level > 110) ? "battle_potion_of_strength" :
-                               (true_level > 100) ? ( dps ? "prolonged_power" : "unbending_potion" ) :
+  std::string protection_pot = (true_level > 100) ? ( dps ? "prolonged_power" : "unbending_potion" ) :
                                (true_level >= 90) ? "draenic_strength" :
                                (true_level >= 85) ? "mogu_power" :
                                (true_level >= 80) ? "mogu_power" :
@@ -1180,8 +1178,7 @@ std::string paladin_t::default_potion() const
 
 std::string paladin_t::default_food() const
 {
-  std::string retribution_food = (true_level > 110) ? "bountiful_captains_feast" :
-                                 (true_level > 100) ? "azshari_salad" :
+  std::string retribution_food = (true_level > 100) ? "azshari_salad" :
                                  (true_level >= 90) ? "sleeper_sushi" :
                                  (true_level >= 85) ? "black_pepper_ribs_and_shrimp" :
                                  (true_level >= 80) ? "beer_basted_crocolisk" :
@@ -1222,16 +1219,14 @@ std::string paladin_t::default_food() const
 
 std::string paladin_t::default_flask() const
 {
-  std::string retribution_flask = (true_level > 110) ? "flask_of_the_undertow" :
-                                  (true_level > 100) ? "flask_of_the_countless_armies" :
+  std::string retribution_flask = (true_level > 100) ? "flask_of_the_countless_armies" :
                                   (true_level >= 90) ? "greater_draenic_strength_flask" :
                                   (true_level >= 85) ? "winters_bite" :
                                   (true_level >= 80) ? "titanic_strength" :
                                   "disabled";
 
   bool dps = (primary_role() == ROLE_ATTACK) || (talents.seraphim -> ok());
-  std::string protection_flask = (true_level > 110) ? "flask_of_the_undertow" :
-                                 (true_level > 100) ? (dps ? "flask_of_the_countless_armies" : "flask_of_ten_thousand_scars") :
+  std::string protection_flask = (true_level > 100) ? (dps ? "flask_of_the_countless_armies" : "flask_of_ten_thousand_scars") :
                                  (true_level >= 90) ? (dps ? "greater_draenic_strength_flask" : "greater_draenic_stamina_flask") :
                                  (true_level >= 85) ? "earth" :
                                  (true_level >= 80) ? "steelskin" :
@@ -1264,8 +1259,7 @@ std::string paladin_t::default_flask() const
 
 std::string paladin_t::default_rune() const
 {
-  return (true_level >= 120) ? "battle_scarred" :
-         (true_level >= 110) ? "defiled" :
+  return (true_level >= 110) ? "defiled" :
          (true_level >= 100) ? "hyper" :
          "disabled";
 }
@@ -1383,7 +1377,6 @@ void paladin_t::init_spells()
   if ( azerite.inner_light.enabled() )
     active_inner_light_damage = new inner_light_damage( this );
 
-  azerite.indomitable_justice   = find_azerite_spell( "Indomitable Justice" );
 }
 
 // paladin_t::primary_role ==================================================

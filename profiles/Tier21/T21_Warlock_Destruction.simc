@@ -3,7 +3,7 @@ spec=destruction
 level=110
 race=troll
 role=spell
-position=ranged_back
+position=back
 talents=2203023
 
 # Default consumables
