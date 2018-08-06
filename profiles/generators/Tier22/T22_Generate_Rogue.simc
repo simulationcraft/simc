@@ -4,7 +4,7 @@ race=troll
 spec=assassination
 role=attack
 position=back
-talents=1220021
+talents=2210021
 
 head=hood_of_pestilent_ichor,id=160623,bonus_id=4824/1507/4775,azerite_powers=4/483/459/15/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
@@ -32,7 +32,7 @@ race=human
 spec=assassination
 role=attack
 position=back
-talents=2120031
+talents=2210031
 
 head=hood_of_pestilent_ichor,id=160623,bonus_id=4824/1507/4775,azerite_powers=4/483/459/15/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
@@ -88,7 +88,7 @@ race=dwarf
 spec=outlaw
 role=attack
 position=back
-talents=1310033
+talents=2310032
 
 head=hood_of_pestilent_ichor,id=160623,bonus_id=4824/1507/4775,azerite_powers=4/483/459/15/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33

@@ -4,7 +4,7 @@ race=troll
 spec=assassination
 role=attack
 position=back
-talents=2120031
+talents=2210021
 
 head=irontide_captains_hat,id=155888,bonus_id=4779/1512/4786/4775,azerite_powers=181/30/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
@@ -31,7 +31,7 @@ race=human
 spec=assassination
 role=attack
 position=back
-talents=1220021
+talents=2210031
 
 head=irontide_captains_hat,id=155888,bonus_id=4779/1512/4786/4775,azerite_powers=181/30/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
@@ -58,7 +58,7 @@ race=dwarf
 spec=outlaw
 role=attack
 position=back
-talents=2310023
+talents=2310022
 
 head=irontide_captains_hat,id=155888,bonus_id=4779/1512/4786/4775,azerite_powers=479/30/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
@@ -85,7 +85,7 @@ race=dwarf
 spec=outlaw
 role=attack
 position=back
-talents=1310033
+talents=2310032
 
 head=irontide_captains_hat,id=155888,bonus_id=4779/1512/4786/4775,azerite_powers=479/30/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
