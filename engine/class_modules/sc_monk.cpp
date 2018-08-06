@@ -9634,120 +9634,15 @@ double monk_t::stagger_pct( int target_level )
 {
   double stagger_base = stagger_base_value();
 
-  // TODO: The K value is different from the normal armor K value and needs to be updated.
-  // In the meantime use the current K values in the meantime.
-  // 69.05% gives an average for prepatch and leveling. at 120, it's about 81.1%
   double k_value = 0;
-  switch ( target_level )
-  {
-    case 15:
-      k_value = 197;
-      break;
-    case 16:
-      k_value = 203;
-      break;
-    case 17:
-      k_value = 209;
-      break;
-    case 18:
-      k_value = 215;
-      break;
-    case 19:
-      k_value = 220;
-      break;
-    case 20:
-      k_value = 227;
-      break;
-    case 21:
-      k_value = 235;
-      break;
-    case 22:
-      k_value = 246;
-      break;
-    case 23:
-      k_value = 255;
-      break;
-    case 24:
-      k_value = 265;
-      break;
-    case 25:
-      k_value = 274;
-      break;
-    case 26:
-      k_value = 284;
-      break;
-    case 27:
-      k_value = 292;
-      break;
-    case 28:
-      k_value = 302;
-      break;
-    case 29:
-      k_value = 312;
-      break;
-    case 30:
-      k_value = 322;
-      break;
-    case 31:
-      k_value = 330;
-      break;
-    case 32:
-      k_value = 340;
-      break;
-    case 33:
-      k_value = 350;
-      break;
-    case 34:
-      k_value = 360;
-      break;
-    case 35:
-      k_value = 368;
-      break;
-    case 36:
-      k_value = 377;
-      break;
-    case 37:
-      k_value = 387;
-      break;
-    case 38:
-      k_value = 397;
-      break;
-    case 39:
-      k_value = 407;
-      break;
-    case 40:
-      k_value = 417;
-      break;
-    case 41:
-      k_value = 426;
-      break;
-    case 42:
-      k_value = 436;
-      break;
-    case 43:
-      k_value = 446;
-      break;
-    case 44:
-      k_value = 455;
-      break;
-    case 110:
-    case 111:
-    case 112:
-      k_value = 1423;
-      break;
-    case 113:
-      k_value = level() == 110 ? 1423 : 2107;
-      break;
-    case 120:
-    case 121:
-    case 122:
-    case 123:
-      k_value = 6300;
-      break;
-    default:
-      k_value = dbc.armor_mitigation_constant( target->level() ) * 0.6905;
-      break;
-  }
+  double lvl = level();
+  double level_check = target_level - lvl;
+
+  // End game raiding of each expansion uses the player's level for +1, +2, and +3 level targets
+  if ( ( lvl == 60 || lvl == 70 || lvl == 80 || lvl == 85 || lvl == 90 || lvl == 100 || lvl == 110 ) && 0 <= level_check && level_check <= 3  )
+    k_value = dbc.npc_armor_mitigation_constant( lvl );
+  else
+    k_value = dbc.npc_armor_mitigation_constant( target_level );
 
   double stagger = stagger_base / ( stagger_base + k_value );
   return std::min( stagger, 0.99 );
