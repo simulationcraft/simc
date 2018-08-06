@@ -1,16 +1,16 @@
 deathknight="PR_Death_Knight_Unholy"
 spec=unholy
 level=120
-race=draenei
+race=troll
 role=attack
 position=back
-talents=1210023
+talents=2203022
 
 # Default consumables
-potion=prolonged_power
-flask=countless_armies
-food=nightborne_delicacy_platter
-augmentation=defiled
+potion=battle_potion_of_strength
+flask=flask_of_the_undertow
+food=bountiful_captains_feast
+augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -90,28 +90,28 @@ actions.generic+=/death_coil,if=runic_power.deficit<20&!variable.pooling_for_gar
 actions.generic+=/festering_strike,if=((((debuff.festering_wound.stack<4&!buff.unholy_frenzy.up)|debuff.festering_wound.stack<3)&cooldown.apocalypse.remains<3)|debuff.festering_wound.stack<1)&cooldown.army_of_the_dead.remains>5
 actions.generic+=/death_coil,if=!variable.pooling_for_gargoyle
 
-head=crown_of_ash,id=137526,bonus_id=1492/1826
-neck=pendant_of_the_watchful_eye,id=137536,bonus_id=1492/1826,enchant=mark_of_the_hidden_satyr
-shoulders=frozen_pendulum_shoulderguards,id=134518,bonus_id=1492/1826
-back=goldscar_pelt,id=133639,bonus_id=1492/1826,enchant=binding_of_strength
-chest=inferno_breastplate,id=134503,bonus_id=1492/1826
-wrists=voidtouched_wristplates,id=133632,bonus_id=1492/1826
-hands=serrated_mandible_grips,id=137429,bonus_id=1492/1826
-waist=slack_tide_girdle,id=133770,bonus_id=1492/1826
-legs=keelhauler_legplates,id=134514,bonus_id=1492/1826
-feet=rook_footmans_warboots,id=139241,bonus_id=1492/1826
-finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1492/1826,enchant=binding_of_haste
-finger2=band_of_fused_coral,id=134532,bonus_id=1492/1826,enchant=binding_of_haste
-trinket1=faulty_countermeasure,id=137539,bonus_id=1492/1826
-trinket2=chaos_talisman,id=137459,bonus_id=1492/1826
-main_hand=apocalypse,id=128403,gem_id=137492/137549/136718,relic_id=1492:1727/1492:1727/1492:1727,enchant=rune_of_the_fallen_crusader
+head=greathelm_of_the_putrid_path,id=159446,bonus_id=4779/1512/4786/4775,azerite_powers=194/462/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=
+shoulders=skyscorcher_pauldrons,id=159415,bonus_id=4779/1512/4786/4775,azerite_powers=504/459/13
+back=raals_bib,id=159294,bonus_id=4779/1512/4786
+chest=breastplate_of_the_vengeful,id=159448,bonus_id=4779/1512/4786/4775,azerite_powers=350/461/13
+wrists=shadowshroud_vambraces,id=160212,bonus_id=4779/1512/4786
+hands=sharktoothknuckled_grips,id=155890,bonus_id=4779/1512/4786
+waist=sharkbait_harness_girdle,id=158360,bonus_id=4779/1512/4786
+legs=petrified_wickerplate_greaves,id=159456,bonus_id=4779/1512/4786
+feet=fluorescent_flora_stompers,id=159436,bonus_id=4779/1512/4786
+finger1=ritual_binders_ring,id=159459,bonus_id=4779/1512/4786,enchant=pact_of_haste
+finger2=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
+trinket1=jes_howler,id=159627,bonus_id=4779/1512/4786
+trinket2=briny_barnacle,id=159619,bonus_id=4779/1512/4786
+main_hand=getiikku_cut_of_death,id=159644,bonus_id=4779/1512/4786,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=180.00
-# gear_strength=397
-# gear_stamina=712
-# gear_crit_rating=320
-# gear_haste_rating=565
-# gear_mastery_rating=34
-# gear_armor=618
-# set_bonus=tier19p_plate_2pc=1
+# gear_ilvl=341.47
+# gear_strength=2883
+# gear_stamina=4465
+# gear_crit_rating=574
+# gear_haste_rating=1136
+# gear_mastery_rating=209
+# gear_versatility_rating=361
+# gear_armor=3050

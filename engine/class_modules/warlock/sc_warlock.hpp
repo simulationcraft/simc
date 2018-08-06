@@ -269,6 +269,8 @@ namespace warlock
         propagate_const<cooldown_t*> soul_fire;
         propagate_const<cooldown_t*> sindorei_spite_icd;
         propagate_const<cooldown_t*> call_dreadstalkers;
+        propagate_const<cooldown_t*> deathbolt;
+        propagate_const<cooldown_t*> phantom_singularity;
         propagate_const<cooldown_t*> darkglare;
         propagate_const<cooldown_t*> demonic_tyrant;
       } cooldowns;
@@ -519,6 +521,7 @@ namespace warlock
       void init_procs_affliction();
       void create_options_affliction();
       void create_apl_affliction();
+      expr_t*   create_aff_expression(const std::string& name_str);
 
       // sc_warlock_demonology
       action_t* create_action_demonology( const std::string& action_name, const std::string& options_str );
@@ -668,7 +671,7 @@ namespace warlock
             bool procced = p()->grimoire_of_sacrifice_rppm->trigger();
             if ( procced )
             {
-              p()->active.grimoire_of_sacrifice_proc->target = execute_state->target;
+              p()->active.grimoire_of_sacrifice_proc->set_target( execute_state->target );
               p()->active.grimoire_of_sacrifice_proc->execute();
             }
           }
@@ -740,6 +743,43 @@ namespace warlock
           {
             dot->extend_duration( extend_duration, dot->current_action->dot_duration * 1.5 );
           }
+        }
+
+        expr_t* create_expression(const std::string& name_str) override
+        {
+          if (name_str == "target_uas")
+          {
+            return make_fn_expr("target_uas", [this]() {
+              double uas = 0.0;
+
+              for (int i = 0; i < MAX_UAS; i++)
+              {
+                uas += td(target)->dots_unstable_affliction[i]->is_ticking();
+              }
+
+              return uas;
+            });
+          }
+          else if (name_str == "contagion")
+          {
+            return make_fn_expr(name_str, [this]()
+            {
+              timespan_t con = timespan_t::from_millis(0.0);
+
+              for (int i = 0; i < MAX_UAS; i++)
+              {
+                timespan_t rem = td(target)->dots_unstable_affliction[i]->remains();
+
+                if (rem > con)
+                {
+                  con = rem;
+                }
+              }
+              return con;
+            });
+          }
+
+          return spell_t::create_expression(name_str);
         }
       };
 

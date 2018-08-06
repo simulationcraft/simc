@@ -1,10 +1,10 @@
 priest="T22_Priest_Shadow"
 level=120
-talents=3111322
-race=pandaren
+race=troll
 spec=shadow
 role=spell
-position=back
+position=ranged_back
+talents=3111322
 
 head=horrific_amalgams_hood,id=160616,bonus_id=4824/1507,azerite_powers=404/22/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33

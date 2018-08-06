@@ -1,0 +1,82 @@
+deathknight="PR_Death_Knight_Blood"
+spec=blood
+level=120
+race=undead
+role=tank
+position=front
+talents=3222022
+
+# Default consumables
+potion=battle_potion_of_strength
+flask=flask_of_the_undertow
+food=swamp_fish_n_chips
+augmentation=battle_scarred
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/mind_freeze
+actions+=/blood_fury,if=cooldown.dancing_rune_weapon.ready&(!cooldown.blooddrinker.ready|!talent.blooddrinker.enabled)
+actions+=/berserking
+actions+=/use_items
+actions+=/potion,if=buff.dancing_rune_weapon.up
+actions+=/dancing_rune_weapon,if=!talent.blooddrinker.enabled|!cooldown.blooddrinker.ready
+actions+=/tombstone,if=buff.bone_shield.stack>=7
+actions+=/call_action_list,name=standard
+
+actions.standard=death_strike,if=runic_power.deficit<=10
+actions.standard+=/blooddrinker,if=!buff.dancing_rune_weapon.up
+actions.standard+=/marrowrend,if=(buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*2)|buff.bone_shield.stack<3)&runic_power.deficit>=20
+actions.standard+=/blood_boil,if=charges_fractional>=1.8&(buff.hemostasis.stack<=(5-spell_targets.blood_boil)|spell_targets.blood_boil>2)
+actions.standard+=/marrowrend,if=buff.bone_shield.stack<5&talent.ossuary.enabled&runic_power.deficit>=15
+actions.standard+=/bonestorm,if=runic_power>=100&!buff.dancing_rune_weapon.up
+actions.standard+=/death_strike,if=runic_power.deficit<=(15+buff.dancing_rune_weapon.up*5+spell_targets.heart_strike*talent.heartbreaker.enabled*2)|target.time_to_die<10
+actions.standard+=/death_and_decay,if=spell_targets.death_and_decay>=3
+actions.standard+=/rune_strike,if=(charges_fractional>=1.8|buff.dancing_rune_weapon.up)&rune.time_to_3>=gcd
+actions.standard+=/heart_strike,if=buff.dancing_rune_weapon.up|rune.time_to_4<gcd
+actions.standard+=/blood_boil,if=buff.dancing_rune_weapon.up
+actions.standard+=/death_and_decay,if=buff.crimson_scourge.up|talent.rapid_decomposition.enabled|spell_targets.death_and_decay>=2
+actions.standard+=/consumption
+actions.standard+=/blood_boil
+actions.standard+=/heart_strike,if=rune.time_to_3<gcd|buff.bone_shield.stack>6
+actions.standard+=/rune_strike
+actions.standard+=/arcane_torrent,if=runic_power.deficit>20
+
+head=soulspun_casque,id=155866,bonus_id=4779/1512/4786/4775,azerite_powers=13/140/30/85
+neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=
+shoulders=kraken_shell_pauldrons,id=159431,bonus_id=4779/1512/4786/4775,azerite_powers=13/192/461/465
+back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
+chest=ashvane_wardens_cuirass,id=159440,bonus_id=4779/1512/4786/4775,azerite_powers=13/192/30/14
+wrists=embalmers_steadying_bracers,id=159409,bonus_id=4779/1512/4786
+hands=sharktoothknuckled_grips,id=155890,bonus_id=4779/1512/4786
+waist=sharkbait_harness_girdle,id=158360,bonus_id=4779/1512/4786
+legs=legplates_of_beaten_gold,id=158313,bonus_id=4779/1512/4786
+feet=fluorescent_flora_stompers,id=159436,bonus_id=4779/1512/4786
+finger1=ritual_binders_ring,id=159459,bonus_id=4779/1512/4786,enchant=pact_of_haste
+finger2=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
+trinket1=rezans_gleaming_eye,id=158712,bonus_id=4779/1512/4786
+trinket2=jes_howler,id=159627,bonus_id=4779/1512/4786
+main_hand=jeweled_sharksplitter,id=159634,bonus_id=4779/43/1512/4786,enchant=rune_of_the_fallen_crusader
+
+# Gear Summary
+# gear_ilvl=341.47
+# gear_strength=2883
+# gear_stamina=4465
+# gear_crit_rating=433
+# gear_haste_rating=1324
+# gear_mastery_rating=209
+# gear_versatility_rating=513
+# gear_armor=3050

@@ -1,0 +1,86 @@
+hunter="PR_Hunter_Marksmanship"
+spec=marksmanship
+level=120
+race=lightforged_draenei
+role=attack
+position=ranged_back
+talents=2103012
+
+# Default consumables
+potion=battle_potion_of_agility
+flask=currents
+food=bountiful_captains_feast
+augmentation=battle_scarred
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/augmentation
+actions.precombat+=/food
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion
+actions.precombat+=/hunters_mark
+actions.precombat+=/double_tap,precast_time=5
+actions.precombat+=/aimed_shot,if=active_enemies<3
+actions.precombat+=/explosive_shot,if=active_enemies>2
+
+# Executed every time the actor is available.
+actions=auto_shot
+actions+=/counter_shot,if=equipped.sephuzs_secret&target.debuff.casting.react&cooldown.buff_sephuzs_secret.up&!buff.sephuzs_secret.up
+actions+=/use_items
+actions+=/hunters_mark,if=debuff.hunters_mark.down
+actions+=/double_tap,if=cooldown.rapid_fire.remains<gcd
+actions+=/berserking,if=cooldown.trueshot.remains>30
+actions+=/blood_fury,if=cooldown.trueshot.remains>30
+actions+=/ancestral_call,if=cooldown.trueshot.remains>30
+actions+=/fireblood,if=cooldown.trueshot.remains>30
+actions+=/lights_judgment
+actions+=/potion,if=(buff.trueshot.react&buff.bloodlust.react)|((consumable.prolonged_power&target.time_to_die<62)|target.time_to_die<31)
+actions+=/trueshot,if=cooldown.aimed_shot.charges<1
+actions+=/barrage,if=active_enemies>1
+actions+=/explosive_shot,if=active_enemies>1
+actions+=/multishot,if=active_enemies>2&buff.precise_shots.up&cooldown.aimed_shot.full_recharge_time<gcd*buff.precise_shots.stack+action.aimed_shot.cast_time
+actions+=/arcane_shot,if=active_enemies<3&buff.precise_shots.up&cooldown.aimed_shot.full_recharge_time<gcd*buff.precise_shots.stack+action.aimed_shot.cast_time
+actions+=/aimed_shot,if=buff.precise_shots.down&buff.double_tap.down&(active_enemies>2&buff.trick_shots.up|active_enemies<3&full_recharge_time<cast_time+gcd)
+actions+=/rapid_fire,if=active_enemies<3|buff.trick_shots.up
+actions+=/explosive_shot
+actions+=/piercing_shot
+actions+=/a_murder_of_crows
+actions+=/multishot,if=active_enemies>2&buff.trick_shots.down
+actions+=/aimed_shot,if=buff.precise_shots.down&(focus>70|buff.steady_focus.down)
+actions+=/multishot,if=active_enemies>2&(focus>90|buff.precise_shots.up&(focus>70|buff.steady_focus.down&focus>45))
+actions+=/arcane_shot,if=active_enemies<3&(focus>70|buff.steady_focus.down&(focus>60|buff.precise_shots.up))
+actions+=/serpent_sting,if=refreshable
+actions+=/steady_shot
+
+head=coif_of_the_court_spider,id=159358,bonus_id=4779/1512/4786/4775,azerite_powers=36/30/0/13
+neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=
+shoulders=gaping_maw_shoulderguard,id=159352,bonus_id=4779/1512/4786/4775,azerite_powers=192/461/0/13
+back=cloak_of_the_restless_tribes,id=159288,bonus_id=4779/1512/4786
+chest=loablessed_chestguard,id=158355,bonus_id=4779/1512/4786/4775,azerite_powers=162/461/0/13
+wrists=bindings_of_the_calling_depths,id=159364,bonus_id=4779/1512/4786
+hands=water_shapers,id=159366,bonus_id=4779/1512/4786
+waist=chainlinked_safety_cord,id=159353,bonus_id=4779/1512/4786
+legs=unstoppable_zealots_legplates,id=159367,bonus_id=4779/1512/4786
+feet=boots_of_the_headlong_conqueror,id=159371,bonus_id=4779/1512/4786
+finger1=jade_ophidian_band,id=162544,bonus_id=4779/1512/4786,enchant=pact_of_mastery
+finger2=overseers_lost_seal,id=159460,bonus_id=4779/1512/4786,enchant=pact_of_mastery
+trinket1=lustrous_golden_plumage,id=159617,bonus_id=4779/1512/4786
+trinket2=azerokks_resonating_heart,id=159612,bonus_id=4779/1512/4786
+main_hand=korgus_blackpowder_rifle,id=159657,bonus_id=4779/1512/4786,enchant=masterful_navigation
+
+# Gear Summary
+# gear_ilvl=341.47
+# gear_agility=2678
+# gear_stamina=4465
+# gear_crit_rating=268
+# gear_haste_rating=300
+# gear_mastery_rating=1173
+# gear_versatility_rating=880
+# gear_armor=2059

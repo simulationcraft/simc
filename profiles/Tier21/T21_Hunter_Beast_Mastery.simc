@@ -49,7 +49,6 @@ actions+=/chimaera_shot
 actions+=/kill_command
 actions+=/dire_beast
 actions+=/barbed_shot,if=pet.cat.buff.frenzy.down&charges_fractional>1.4|full_recharge_time<gcd.max|target.time_to_die<9
-actions+=/barrage
 actions+=/multishot,if=spell_targets>1&(pet.cat.buff.beast_cleave.remains<gcd.max|pet.cat.buff.beast_cleave.down)
 actions+=/cobra_shot,if=(active_enemies<2|cooldown.kill_command.remains>focus.time_to_max)&(buff.bestial_wrath.up&active_enemies>1|cooldown.kill_command.remains>1+gcd&cooldown.bestial_wrath.remains>focus.time_to_max|focus-cost+focus.regen*(cooldown.kill_command.remains-1)>action.kill_command.cost)
 
@@ -80,4 +79,3 @@ main_hand=titanstrike,id=128861,bonus_id=726/1505/1505/1505,gem_id=155853/155846
 # gear_armor=612
 # set_bonus=tier21_2pc=1
 # set_bonus=tier21_4pc=1
-summon_pet=cat

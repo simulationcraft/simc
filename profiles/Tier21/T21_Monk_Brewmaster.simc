@@ -48,9 +48,9 @@ actions+=/arcane_torrent,if=energy<31
 actions+=/keg_smash,if=spell_targets>=3
 actions+=/tiger_palm,if=buff.blackout_combo.up
 actions+=/keg_smash
+actions+=/rushing_jade_wind,if=buff.rushing_jade_wind.down
 actions+=/blackout_strike
 actions+=/breath_of_fire,if=buff.blackout_combo.down&(buff.bloodlust.down|(buff.bloodlust.up&&dot.breath_of_fire_dot.refreshable))
-actions+=/rushing_jade_wind,if=buff.rushing_jade_wind.down
 actions+=/chi_burst
 actions+=/chi_wave
 actions+=/tiger_palm,if=!talent.blackout_combo.enabled&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*(cooldown.keg_smash.remains+gcd)))>=55

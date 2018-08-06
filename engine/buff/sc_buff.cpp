@@ -708,8 +708,6 @@ buff_t* buff_t::set_cooldown( timespan_t duration )
   {
     if ( data().ok() )
     {
-      assert( !( data().cooldown() != timespan_t::zero() && data().internal_cooldown() != timespan_t::zero() ) );
-
       if ( data().cooldown() != timespan_t::zero() )
       {
         cooldown->duration = data().cooldown();
@@ -719,10 +717,6 @@ buff_t* buff_t::set_cooldown( timespan_t duration )
         cooldown->duration = data().internal_cooldown();
       }
     }
-    //    else
-    //    {
-    //      cooldown -> duration = timespan_t();
-    //    }
   }
   else
   {

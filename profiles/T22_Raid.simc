@@ -3,6 +3,7 @@ default_actions=1
 
 # T22_Death_Knight_Frost.simc
 # T22_Death_Knight_Unholy.simc
+T22_Death_Knight_Blood.simc
 
 # T22_Demon_Hunter_Havoc.simc
 
@@ -28,7 +29,7 @@ T22_Priest_Shadow.simc
 # T22_Rogue_Subtlety_DfA.simc
 
 # T22_Shaman_Elemental.simc
-# T22_Shaman_Enhancement.simc
+T22_Shaman_Enhancement.simc
 
 # T22_Warlock_Affliction.simc
 # T22_Warlock_Demonology.simc

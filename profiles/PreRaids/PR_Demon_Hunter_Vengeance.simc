@@ -5,13 +5,13 @@ race=night_elf
 timeofday=night
 role=tank
 position=front
-talents=3323313
+talents=1213121
 
 # Default consumables
-potion=unbending_potion
-flask=seventh_demon
-food=lavish_suramar_feast
-augmentation=defiled
+potion=steelskin_potion
+flask=currents
+food=bountiful_captains_feast
+augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -30,6 +30,8 @@ actions.precombat+=/potion
 # Executed every time the actor is available.
 actions=auto_attack
 actions+=/consume_magic
+# ,if=!raid_event.adds.exists|active_enemies>1
+actions+=/use_item,slot=trinket1
 # ,if=!raid_event.adds.exists|active_enemies>1
 actions+=/use_item,slot=trinket2
 actions+=/call_action_list,name=brand,if=talent.charred_flesh.enabled
@@ -64,29 +66,29 @@ actions.normal+=/sigil_of_flame
 actions.normal+=/shear
 actions.normal+=/throw_glaive
 
-head=hood_of_the_blind_executioner,id=137511
-neck=pendant_of_the_moon_temple,id=139605,enchant_id=5439
-shoulders=charskin_mantle,id=137510
-back=cloak_of_manaspun_silk,id=134410,enchant_id=5435
-chest=vest_of_rupturing_diamonds,id=137336
-wrists=shorn_batbrood_cuffs,id=136979
-hands=frostcarver_grips,id=134445
-waist=sinister_ashfall_cord,id=134455
-legs=snaggles_favorite_pants,id=140594
-feet=footpads_of_the_swift_balestra,id=137497
-finger1=band_of_the_wyrm_matron,id=134524,enchant_id=5427
-finger2=utgarde_royal_signet,id=133637,enchant_id=5427
-trinket1=chaos_talisman,id=137459
-trinket2=horn_of_valor,id=133642
-main_hand=aldrachi_warblades,id=128832,bonus_id=721,ilevel=870,relic_id=3412/3412/3412
-off_hand=aldrachi_warblades,id=128831,ilevel=870
+head=irontide_captains_hat,id=155888,bonus_id=4779/1512/4786/4775
+neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=
+shoulders=mantle_of_fastidious_machinations,id=158304,bonus_id=4779/1512/4786/4775
+back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
+chest=spymasters_wrap,id=155860,bonus_id=4779/1512/4786/4775
+wrists=sea_dogs_cuffs,id=158305,bonus_id=4779/1512/4786
+hands=gloves_of_corrupted_waters,id=159321,bonus_id=4779/1512/4786
+waist=belt_of_gleaming_determination,id=158306,bonus_id=4779/1512/4786
+legs=singeblotched_britches,id=159306,bonus_id=4779/1512/4786
+feet=mercenary_miners_boots,id=159336,bonus_id=4779/1512/4786
+finger1=ritual_binders_ring,id=159459,bonus_id=4779/1512/4786,enchant=pact_of_haste
+finger2=seal_of_the_regal_loa,id=159458,bonus_id=4779/1512/4786,enchant=pact_of_haste
+trinket1=galecallers_boon,id=159614,bonus_id=4779/1512/4786
+trinket2=lustrous_golden_plumage,id=159617,bonus_id=4779/1512/4786
+main_hand=warglaive_of_the_sand_queen,id=160110,bonus_id=4779/1512/4786,enchant=galeforce_striking
+off_hand=warglaive_of_the_sand_queen,id=160110,bonus_id=4779/1512/4786,enchant=quick_navigation
 
 # Gear Summary
-# gear_ilvl=250.50
-# gear_agility=30444
-# gear_stamina=60413
-# gear_crit_rating=1125
-# gear_haste_rating=38
-# gear_mastery_rating=752
-# gear_versatility_rating=211
-# gear_armor=261
+# gear_ilvl=341.38
+# gear_agility=2883
+# gear_stamina=4465
+# gear_crit_rating=255
+# gear_haste_rating=1194
+# gear_mastery_rating=209
+# gear_versatility_rating=822
+# gear_armor=1427

@@ -363,8 +363,7 @@ public:
   struct
   {
     propagate_const<actions::spells::mind_sear_tick_t*> mind_sear_tick;
-    propagate_const<actions::spells::shadowy_apparition_spell_t*> shadowy_apparitions;
-    propagate_const<action_t*> mental_fortitude;
+    propagate_const<actions::spells::shadowy_apparition_spell_t*> shadowy_apparitions;   
   } active_spells;
 
   struct

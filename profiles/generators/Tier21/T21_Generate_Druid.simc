@@ -3,7 +3,7 @@ level=110
 race=troll
 spec=balance
 role=spell
-position=back
+position=ranged_back
 talents=3000231
 
 head=bearmantle_headdress,id=152127,bonus_id=3612/1502
@@ -26,13 +26,13 @@ save=T21_Druid_Balance.simc
 
 
 druid="T21_Druid_Feral"
-spec=feral
 level=110
 race=night_elf
-timeofday=day
+spec=feral
 role=attack
 position=back
 talents=3311332
+timeofday=day
 
 potion=prolonged_power
 flask=seventh_demon
@@ -61,13 +61,13 @@ save=T21_Druid_Feral.simc
 
 
 # druid="T21_Druid_Guardian"
-# spec=guardian
 # level=110
 # race=night_elf
-# timeofday=day
+# spec=guardian
 # role=tank
 # position=front
 # talents=1112321
+# timeofday=day
 
 # head=kraken_hide_helm,id=133618,bonus_id=1612/1826
 # neck=vulcanarcore_pendant,id=151965,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr

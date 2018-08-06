@@ -503,6 +503,7 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     buff_t* maddening_whispers;
     buff_t* shadow_blades;
     buff_t* azerite_globules;
+    buff_t* dead_ahead;
   } debuff;
 
   struct atd_dot_t
@@ -3596,7 +3597,12 @@ struct player_t : public actor_t
   // Damage
   double iteration_dmg, priority_iteration_dmg, iteration_dmg_taken; // temporary accumulators
   double dpr;
-  std::vector<std::pair<timespan_t, double> > incoming_damage; // for tank active mitigation conditionals
+  struct incoming_damage_entry_t {
+    timespan_t time;
+    double amount;
+    school_e school;
+  };
+  std::vector<incoming_damage_entry_t> incoming_damage; // for tank active mitigation conditionals
 
   // Heal
   double iteration_heal, iteration_heal_taken, iteration_absorb, iteration_absorb_taken; // temporary accumulators
@@ -3927,7 +3933,8 @@ public:
   double get_player_distance( const player_t& ) const;
   double get_ground_aoe_distance( const action_state_t& ) const;
   double get_position_distance( double m = 0, double v = 0 ) const;
-  double compute_incoming_damage( timespan_t = timespan_t::from_seconds( 5 ) ) const;
+  double compute_incoming_damage( timespan_t interval) const;
+  double compute_incoming_magic_damage( timespan_t interval ) const;
   double calculate_time_to_bloodlust() const;
   slot_e parent_item_slot( const item_t& item ) const;
   slot_e child_item_slot( const item_t& item ) const;
@@ -7033,6 +7040,7 @@ void register_special_effect( unsigned spell_id, const T& cb, bool fallback = fa
 
 void register_target_data_initializers( sim_t* );
 void register_target_data_initializers_legion( sim_t* ); // Legion targetdata initializers
+void register_target_data_initializers_bfa( sim_t* ); // Battle for Azeroth targetdata initializers
 
 void init( player_t* );
 

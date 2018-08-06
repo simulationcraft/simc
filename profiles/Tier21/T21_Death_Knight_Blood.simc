@@ -29,26 +29,31 @@ actions.precombat+=/potion
 # Executed every time the actor is available.
 actions=auto_attack
 actions+=/mind_freeze
-actions+=/arcane_torrent,if=runic_power.deficit>20
-actions+=/blood_fury
-actions+=/berserking,if=buff.dancing_rune_weapon.up
+actions+=/blood_fury,if=cooldown.dancing_rune_weapon.ready&(!cooldown.blooddrinker.ready|!talent.blooddrinker.enabled)
+actions+=/berserking
 actions+=/use_items
 actions+=/potion,if=buff.dancing_rune_weapon.up
-actions+=/dancing_rune_weapon,if=(!talent.blooddrinker.enabled|!cooldown.blooddrinker.ready)
+actions+=/dancing_rune_weapon,if=!talent.blooddrinker.enabled|!cooldown.blooddrinker.ready
 actions+=/tombstone,if=buff.bone_shield.stack>=7
 actions+=/call_action_list,name=standard
 
-actions.standard=death_strike,if=runic_power.deficit<10
+actions.standard=death_strike,if=runic_power.deficit<=10
 actions.standard+=/blooddrinker,if=!buff.dancing_rune_weapon.up
-actions.standard+=/marrowrend,if=buff.bone_shield.remains<=gcd*2
-actions.standard+=/blood_boil,if=charges_fractional>=1.8&buff.haemostasis.stack<5&(buff.haemostasis.stack<3|!buff.dancing_rune_weapon.up)
-actions.standard+=/marrowrend,if=(buff.bone_shield.stack<5&talent.ossuary.enabled)|buff.bone_shield.remains<gcd*3
-actions.standard+=/bonestorm,if=runic_power>=100&spell_targets.bonestorm>=3
-actions.standard+=/death_strike,if=buff.blood_shield.up|(runic_power.deficit<15&(runic_power.deficit<25|!buff.dancing_rune_weapon.up))
-actions.standard+=/heart_strike,if=buff.dancing_rune_weapon.up
-actions.standard+=/death_and_decay,if=buff.crimson_scourge.up
-actions.standard+=/death_and_decay
+actions.standard+=/marrowrend,if=(buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*2)|buff.bone_shield.stack<3)&runic_power.deficit>=20
+actions.standard+=/blood_boil,if=charges_fractional>=1.8&(buff.hemostasis.stack<=(5-spell_targets.blood_boil)|spell_targets.blood_boil>2)
+actions.standard+=/marrowrend,if=buff.bone_shield.stack<5&talent.ossuary.enabled&runic_power.deficit>=15
+actions.standard+=/bonestorm,if=runic_power>=100&!buff.dancing_rune_weapon.up
+actions.standard+=/death_strike,if=runic_power.deficit<=(15+buff.dancing_rune_weapon.up*5+spell_targets.heart_strike*talent.heartbreaker.enabled*2)|target.time_to_die<10
+actions.standard+=/death_and_decay,if=spell_targets.death_and_decay>=3
+actions.standard+=/rune_strike,if=(charges_fractional>=1.8|buff.dancing_rune_weapon.up)&rune.time_to_3>=gcd
+actions.standard+=/heart_strike,if=buff.dancing_rune_weapon.up|rune.time_to_4<gcd
+actions.standard+=/blood_boil,if=buff.dancing_rune_weapon.up
+actions.standard+=/death_and_decay,if=buff.crimson_scourge.up|talent.rapid_decomposition.enabled|spell_targets.death_and_decay>=2
+actions.standard+=/consumption
+actions.standard+=/blood_boil
 actions.standard+=/heart_strike,if=rune.time_to_3<gcd|buff.bone_shield.stack>6
+actions.standard+=/rune_strike
+actions.standard+=/arcane_torrent,if=runic_power.deficit>20
 
 head=dreadwake_helm,id=152115,bonus_id=3612/1502
 neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr

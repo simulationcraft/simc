@@ -401,6 +401,8 @@ public:
   struct azerite_t
   {
     // shared
+    azerite_power_t indomitable_justice;
+
     // holy
     // protection
     azerite_power_t inspiring_vanguard; // TODO : check how it interacts with First Avenger
@@ -414,7 +416,6 @@ public:
     azerite_power_t divine_right;
     azerite_power_t expurgation;
     azerite_power_t grace_of_the_justicar; // healing
-    azerite_power_t indomitable_justice; // NYI
     azerite_power_t relentless_inquisitor;
     azerite_power_t zealotry;
   } azerite;

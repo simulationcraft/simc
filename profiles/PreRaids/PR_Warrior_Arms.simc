@@ -1,0 +1,106 @@
+warrior="PR_Warrior_Arms"
+spec=arms
+level=120
+race=lightforged_draenei
+role=attack
+position=back
+talents=3312211
+
+# Default consumables
+potion=battle_potion_of_strength
+flask=undertow
+food=bountiful_captains_feast
+augmentation=battle_scarred
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion
+
+# Executed every time the actor is available.
+actions=charge
+actions+=/auto_attack
+actions+=/potion
+actions+=/blood_fury,if=debuff.colossus_smash.up
+actions+=/berserking,if=debuff.colossus_smash.up
+actions+=/arcane_torrent,if=debuff.colossus_smash.down&cooldown.mortal_strike.remains>1.5&rage<50
+actions+=/lights_judgment,if=debuff.colossus_smash.down
+actions+=/avatar,if=cooldown.colossus_smash.remains<8|(talent.warbreaker.enabled&cooldown.warbreaker.remains<8)
+actions+=/sweeping_strikes,if=spell_targets.whirlwind>1
+actions+=/run_action_list,name=five_target,if=spell_targets.whirlwind>4
+actions+=/run_action_list,name=execute,if=(talent.massacre.enabled&target.health.pct<35)|target.health.pct<20
+actions+=/run_action_list,name=single_target
+
+actions.execute=rend,if=remains<=duration*0.3&debuff.colossus_smash.down
+actions.execute+=/skullsplitter,if=rage<70&((cooldown.deadly_calm.remains>3&!buff.deadly_calm.up)|!talent.deadly_calm.enabled)
+actions.execute+=/deadly_calm,if=cooldown.bladestorm.remains>6&((cooldown.colossus_smash.remains<2|(talent.warbreaker.enabled&cooldown.warbreaker.remains<2))|(equipped.weight_of_the_earth&cooldown.heroic_leap.remains<2))
+actions.execute+=/colossus_smash,if=debuff.colossus_smash.down
+actions.execute+=/warbreaker,if=debuff.colossus_smash.down
+actions.execute+=/heroic_leap,if=equipped.weight_of_the_earth&debuff.colossus_smash.down&((cooldown.colossus_smash.remains>8&!prev_gcd.1.colossus_smash)|(talent.warbreaker.enabled&cooldown.warbreaker.remains>8&!prev_gcd.1.warbreaker))
+actions.execute+=/bladestorm,if=debuff.colossus_smash.remains>4.5&rage<70&(!buff.deadly_calm.up|!talent.deadly_calm.enabled)
+actions.execute+=/ravager,if=debuff.colossus_smash.up&(cooldown.deadly_calm.remains>6|!talent.deadly_calm.enabled)
+actions.execute+=/mortal_strike,if=buff.overpower.stack=2&(talent.dreadnaught.enabled|equipped.archavons_heavy_hand)
+actions.execute+=/overpower
+actions.execute+=/execute,if=rage>=40|debuff.colossus_smash.up|buff.sudden_death.react|buff.stone_heart.react
+
+actions.five_target=skullsplitter,if=rage<70&(cooldown.deadly_calm.remains>3|!talent.deadly_calm.enabled)
+actions.five_target+=/deadly_calm,if=cooldown.bladestorm.remains>6&((cooldown.colossus_smash.remains<2|(talent.warbreaker.enabled&cooldown.warbreaker.remains<2))|(equipped.weight_of_the_earth&cooldown.heroic_leap.remains<2))
+actions.five_target+=/colossus_smash,if=debuff.colossus_smash.down
+actions.five_target+=/warbreaker,if=debuff.colossus_smash.down
+actions.five_target+=/heroic_leap,if=equipped.weight_of_the_earth&debuff.colossus_smash.down&((cooldown.colossus_smash.remains>8&!prev_gcd.1.colossus_smash)|(talent.warbreaker.enabled&cooldown.warbreaker.remains>8&!prev_gcd.1.warbreaker))
+actions.five_target+=/bladestorm,if=buff.sweeping_strikes.down&debuff.colossus_smash.remains>4.5&(prev_gcd.1.mortal_strike|spell_targets.whirlwind>1)&(!buff.deadly_calm.up|!talent.deadly_calm.enabled)
+actions.five_target+=/ravager,if=debuff.colossus_smash.up&(cooldown.deadly_calm.remains>6|!talent.deadly_calm.enabled)
+actions.five_target+=/execute,if=(!talent.cleave.enabled&dot.deep_wounds.remains<2)|(buff.sudden_death.react|buff.stone_heart.react)&(buff.sweeping_strikes.up|cooldown.sweeping_strikes.remains>8)
+actions.five_target+=/mortal_strike,if=(!talent.cleave.enabled&dot.deep_wounds.remains<2)|buff.sweeping_strikes.up&buff.overpower.stack=2&(talent.dreadnaught.enabled|equipped.archavons_heavy_hand)
+actions.five_target+=/whirlwind,if=debuff.colossus_smash.up
+actions.five_target+=/overpower
+actions.five_target+=/whirlwind
+
+actions.single_target=rend,if=remains<=duration*0.3&debuff.colossus_smash.down
+actions.single_target+=/skullsplitter,if=rage<70&(cooldown.deadly_calm.remains>3|!talent.deadly_calm.enabled)
+actions.single_target+=/deadly_calm,if=cooldown.bladestorm.remains>6&((cooldown.colossus_smash.remains<2|(talent.warbreaker.enabled&cooldown.warbreaker.remains<2))|(equipped.weight_of_the_earth&cooldown.heroic_leap.remains<2))
+actions.single_target+=/colossus_smash,if=debuff.colossus_smash.down
+actions.single_target+=/warbreaker,if=debuff.colossus_smash.down
+actions.single_target+=/heroic_leap,if=equipped.weight_of_the_earth&debuff.colossus_smash.down&((cooldown.colossus_smash.remains>8&!prev_gcd.1.colossus_smash)|(talent.warbreaker.enabled&cooldown.warbreaker.remains>8&!prev_gcd.1.warbreaker))
+actions.single_target+=/execute,if=buff.sudden_death.react|buff.stone_heart.react
+actions.single_target+=/bladestorm,if=buff.sweeping_strikes.down&debuff.colossus_smash.remains>4.5&(prev_gcd.1.mortal_strike|spell_targets.whirlwind>1)&(!buff.deadly_calm.up|!talent.deadly_calm.enabled)
+actions.single_target+=/ravager,if=debuff.colossus_smash.up&(cooldown.deadly_calm.remains>6|!talent.deadly_calm.enabled)
+actions.single_target+=/mortal_strike
+actions.single_target+=/overpower
+actions.single_target+=/whirlwind,if=talent.fervor_of_battle.enabled&(rage>=50|debuff.colossus_smash.up)
+actions.single_target+=/slam,if=!talent.fervor_of_battle.enabled&(rage>=40|debuff.colossus_smash.up)
+
+head=soulspun_casque,id=155866,bonus_id=4779/1512/4786/4775,azerite_powers=174/30/0/13
+neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=
+shoulders=lockjaw_shoulderplate,id=159407,bonus_id=4779/1512/4786/4775,azerite_powers=174/21/0/13
+back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
+chest=chestguard_of_the_deep_denizen,id=159408,bonus_id=4779/1512/4786/4775,azerite_powers=195/20/0/13
+wrists=embalmers_steadying_bracers,id=159409,bonus_id=4779/1512/4786
+hands=sharktoothknuckled_grips,id=155890,bonus_id=4779/1512/4786
+waist=belt_of_the_unrelenting_gale,id=159426,bonus_id=4779/1512/4786
+legs=legplates_of_profane_sacrifice,id=159443,bonus_id=4779/1512/4786
+feet=sabatons_of_rampaging_elements,id=159679,bonus_id=4779/1512/4786
+finger1=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
+finger2=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
+trinket1=gorecrusted_butchers_block,id=159616,bonus_id=4779/1512/4786
+trinket2=rezans_gleaming_eye,id=158712,bonus_id=4779/1512/4786
+main_hand=jeweled_sharksplitter,id=159634,bonus_id=4779/1512/4786,enchant=quick_navigation
+
+# Gear Summary
+# gear_ilvl=341.47
+# gear_strength=2883
+# gear_stamina=4465
+# gear_crit_rating=872
+# gear_haste_rating=1217
+# gear_mastery_rating=209
+# gear_versatility_rating=181
+# gear_armor=3050

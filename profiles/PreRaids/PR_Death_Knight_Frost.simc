@@ -1,16 +1,16 @@
 deathknight="PR_Death_Knight_Frost"
 spec=frost
 level=120
-race=blood_elf
+race=orc
 role=attack
 position=back
-talents=3120032
+talents=3302013
 
 # Default consumables
-potion=prolonged_power
-flask=countless_armies
-food=lemon_herb_filet
-augmentation=defiled
+potion=battle_potion_of_strength
+flask=flask_of_the_undertow
+food=bountiful_captains_feast
+augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -116,30 +116,29 @@ actions.standard+=/frost_strike
 actions.standard+=/horn_of_winter
 actions.standard+=/arcane_torrent
 
-head=crown_of_ash,id=137526,bonus_id=1492/1826
-neck=raven_filigree_pendant,id=134499,bonus_id=1492/1826,enchant=mark_of_the_claw
-shoulders=frozen_pendulum_shoulderguards,id=134518,bonus_id=1492/1826
-back=goldscar_pelt,id=133639,bonus_id=1492/1826,enchant=binding_of_strength
-chest=inferno_breastplate,id=134503,bonus_id=1492/1826
-wrists=deepfurrow_bracers,id=137337,bonus_id=1492/1826
-hands=battleborne_sentinel_gauntlets,id=133628,bonus_id=1492/1826
-waist=coralplate_girdle,id=134225,bonus_id=1502/3573
-legs=wracksoul_legplates,id=121280,bonus_id=1502/3573
-feet=saltladen_stompers,id=137334,bonus_id=1492/1826
-finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1492/1826,enchant=binding_of_critical_strike
-finger2=gnawed_thumb_ring,id=134526,bonus_id=1492/1826,enchant=binding_of_critical_strike
-trinket1=faulty_countermeasure,id=137539,bonus_id=1492/1826
-trinket2=chaos_talisman,id=137459,bonus_id=1492/1826
-main_hand=blades_of_the_fallen_prince,id=128292,gem_id=137308/137399/137340,relic_id=1492:1727/1492:1727/1492:1727,enchant=rune_of_razorice
-off_hand=blades_of_the_fallen_prince,id=128293,enchant=rune_of_the_fallen_crusader
+head=helm_of_the_raptor_king,id=159422,bonus_id=4779/1512/4786/4775,azerite_powers=347/461/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=
+shoulders=kraken_shell_pauldrons,id=159431,bonus_id=4779/1512/4786/4775,azerite_powers=347/461/13
+back=turncoats_cape,id=159293,bonus_id=4779/1512/4786
+chest=ashvane_wardens_cuirass,id=159440,bonus_id=4779/1512/4786/4775,azerite_powers=347/459/13
+wrists=stonefury_vambraces,id=158359,bonus_id=4779/1512/4786
+hands=ropescored_gauntlets,id=159429,bonus_id=4779/1512/4786
+waist=sewer_grate_girdle,id=160215,bonus_id=4779/1512/4786
+legs=legplates_of_the_maritime_guard,id=159411,bonus_id=4779/1512/4786
+feet=embellished_ritual_sabatons,id=155861,bonus_id=4779/1512/4786
+finger1=charged_sandstone_band,id=158366,bonus_id=4779/1512/4786,enchant=pact_of_mastery
+finger2=seal_of_the_city_watch,id=162542,bonus_id=4779/1512/4786,enchant=pact_of_mastery
+trinket1=gorecrusted_butchers_block,id=159616,bonus_id=4779/1512/4786
+trinket2=briny_barnacle,id=159619,bonus_id=4779/1512/4786
+main_hand=cudgel_of_correctional_oversight,id=159658,bonus_id=4779/1512/4786,enchant=rune_of_razorice
+off_hand=cudgel_of_correctional_oversight,id=159658,bonus_id=4779/1512/4786,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=179.38
-# gear_strength=406
-# gear_stamina=723
-# gear_crit_rating=385
-# gear_haste_rating=293
-# gear_mastery_rating=144
-# gear_versatility_rating=108
-# gear_armor=625
-# set_bonus=tier19p_plate_2pc=1
+# gear_ilvl=341.38
+# gear_strength=2883
+# gear_stamina=4465
+# gear_crit_rating=921
+# gear_haste_rating=275
+# gear_mastery_rating=1200
+# gear_versatility_rating=83
+# gear_armor=3050

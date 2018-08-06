@@ -20,7 +20,6 @@ namespace
   * Azerite Traits
   ** Implement Vengeance traits
   ** Test all Havoc traits when available
-  ** Check if Revolving Blades re-computes for successive impact for targets hit by the final impact
   ** Check if Momentum buffs Unbound Chaos 
 
 */
@@ -84,7 +83,7 @@ public:
 
 constexpr unsigned MAX_SOUL_FRAGMENTS = 5;
 constexpr timespan_t DEMONIC_EXTEND_DURATION = timespan_t::from_seconds(8);
-constexpr timespan_t MAX_FIERY_BRAND_DURATION = timespan_t::from_seconds(10);
+//constexpr timespan_t MAX_FIERY_BRAND_DURATION = timespan_t::from_seconds(10);
 constexpr double VENGEFUL_RETREAT_DISTANCE = 20.0;
 
 enum class soul_fragment
@@ -375,6 +374,7 @@ public:
 
     // Azerite
     gain_t* thirsting_blades;
+    gain_t* revolving_blades;
   } gain;
 
   // Benefits
@@ -1784,10 +1784,7 @@ struct eye_beam_t : public demon_hunter_spell_t
   {
     demon_hunter_spell_t::last_tick( d );
 
-    if ( p()->azerite.furious_gaze.ok() )
-    {
-      p()->buff.furious_gaze->trigger();
-    }
+    p()->buff.furious_gaze->trigger();
 
     if ( p()->buff.havoc_t21_4pc && p()->sets->set( DEMON_HUNTER_HAVOC, T21, B4 )->ok() )
     {
@@ -1854,7 +1851,7 @@ struct fel_barrage_t : public demon_hunter_spell_t
     tick_action = new fel_barrage_tick_t( p );
   }
 
-  virtual timespan_t composite_dot_duration( const action_state_t* /* s */ ) const
+  timespan_t composite_dot_duration( const action_state_t* /* s */ ) const override
   {
     // 6/20/2018 -- Channel duration is currently not affected by Haste, although tick rate is
     return dot_duration;
@@ -2894,14 +2891,12 @@ struct blade_dance_base_t : public demon_hunter_attack_t
     timespan_t delay;
     action_t* trail_of_ruin_dot;
     bool last_attack;
-    double revolving_blades_bonus_da;
 
     blade_dance_damage_t( demon_hunter_t* p, const spelleffect_data_t& eff, const std::string& name )
       : demon_hunter_attack_t( name, p, eff.trigger() ),
       delay( timespan_t::from_millis( eff.misc_value1() ) ),
       trail_of_ruin_dot( nullptr ),
-      last_attack( false ),
-      revolving_blades_bonus_da( 0.0 )
+      last_attack( false )
     {
       background = dual = true;
       aoe = -1;
@@ -2923,8 +2918,7 @@ struct blade_dance_base_t : public demon_hunter_attack_t
     {
       double b = demon_hunter_attack_t::bonus_da( s );
 
-      // TODO: Need to investigate if this re-computes for successive impact for targets hit by the final impact
-      b += revolving_blades_bonus_da;
+      b += p()->azerite.revolving_blades.value( 2 );
 
       return b;
     }
@@ -2941,10 +2935,7 @@ struct blade_dance_base_t : public demon_hunter_attack_t
           trail_of_ruin_dot->execute();
         }
 
-        if ( p()->azerite.revolving_blades.ok() )
-        {
-          p()->buff.revolving_blades->trigger();
-        }
+        p()->buff.revolving_blades->trigger();
       }
     }
   };
@@ -2977,7 +2968,7 @@ struct blade_dance_base_t : public demon_hunter_attack_t
   {
     double c = demon_hunter_attack_t::cost();
 
-    c += p()->buff.revolving_blades->check_stack_value();
+    c = std::max( 0.0, c + p()->buff.revolving_blades->check_stack_value() );
 
     return c;
   }
@@ -3011,17 +3002,16 @@ struct blade_dance_base_t : public demon_hunter_attack_t
     demon_hunter_attack_t::execute();
 
     // Benefit Tracking and Consume Buff
-    double revolving_blades_bonus_da = p()->azerite.revolving_blades.value( 2 );
     if ( p()->buff.revolving_blades->up() )
     {
+      const double adjusted_cost = cost();
       p()->buff.revolving_blades->expire();
+      p()->gain.revolving_blades->add( RESOURCE_FURY, cost() - adjusted_cost );
     }
 
     // Create Strike Events
     for ( auto& attack : attacks )
     {
-      // Snapshot Revolving Blades manually as we can't snapshot bonus damage with action states right now
-      attack->revolving_blades_bonus_da = revolving_blades_bonus_da;
       make_event<delayed_execute_event_t>( *sim, p(), attack, target, attack->delay );
     }
 
@@ -3185,7 +3175,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
   {
     double c = demon_hunter_attack_t::cost();
 
-    c -= p()->buff.thirsting_blades->check();
+    c = std::max( 0.0, c - p()->buff.thirsting_blades->check() );
 
     return c;
   }
@@ -3241,10 +3231,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     }
 
     // Seething Power
-    if ( p()->azerite.seething_power.ok() )
-    {
-      p()->buff.seething_power->trigger();
-    }
+    p()->buff.seething_power->trigger();
   }
 };
 
@@ -4463,27 +4450,35 @@ void demon_hunter_t::create_buffs()
 
   // Azerite ================================================================
   
-  buff.furious_gaze = make_buff<stat_buff_t>( this, "furious_gaze", find_spell( 273232 ) )
+  // Furious Gaze doesn't have a trigger reference in the Azerite trait for some reason...
+  const spell_data_t* furious_gaze_buff = azerite.furious_gaze.spell()->ok() ? find_spell( 273232 ) : spell_data_t::not_found();
+  buff.furious_gaze = make_buff<stat_buff_t>( this, "furious_gaze", furious_gaze_buff )
     ->add_stat( STAT_HASTE_RATING, azerite.furious_gaze.value( 1 ) )
     ->set_trigger_spell( azerite.furious_gaze );
 
-  buff.revolving_blades = make_buff<buff_t>( this, "revolving_blades", find_spell( 279584 ) )
-    ->set_trigger_spell( azerite.revolving_blades )
-    ->set_default_value( find_spell( 279584 )->effectN( 1 ).resource( RESOURCE_FURY ) );
+  const spell_data_t* revolving_blades_trigger = azerite.revolving_blades.spell()->effectN( 1 ).trigger();
+  const spell_data_t* revolving_blades_buff = revolving_blades_trigger->effectN( 1 ).trigger();
+  buff.revolving_blades = make_buff<buff_t>( this, "revolving_blades", revolving_blades_buff )
+    ->set_default_value( revolving_blades_buff->effectN( 1 ).resource( RESOURCE_FURY ) )
+    ->set_trigger_spell( revolving_blades_trigger );
 
-  buff.seething_power = make_buff<stat_buff_t>( this, "seething_power", find_spell( 275936 ) )
+  const spell_data_t* seething_power_trigger = azerite.seething_power.spell()->effectN( 1 ).trigger();
+  const spell_data_t* seething_power_buff = seething_power_trigger->effectN( 1 ).trigger();
+  buff.seething_power = make_buff<stat_buff_t>( this, "seething_power", seething_power_buff )
     ->add_stat( STAT_AGILITY, azerite.seething_power.value( 1 ) )
-    ->set_trigger_spell( azerite.seething_power )
-    ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
+    ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
+    ->set_trigger_spell( seething_power_trigger );
 
-  buff.thirsting_blades_driver = make_buff<buff_t>( this, "thirsting_blades_driver", find_spell( 278729 ) )
+  const spell_data_t* thirsting_blades_trigger = azerite.thirsting_blades.spell()->effectN( 1 ).trigger();
+  const spell_data_t* thirsting_blades_buff = thirsting_blades_trigger->effectN( 1 ).trigger();
+  buff.thirsting_blades_driver = make_buff<buff_t>( this, "thirsting_blades_driver", thirsting_blades_trigger )
     ->set_trigger_spell( azerite.thirsting_blades )
     ->set_quiet( true )
     ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
     ->set_tick_callback( [ this ]( buff_t*, int, const timespan_t& ) { buff.thirsting_blades->trigger(); } );
 
-  buff.thirsting_blades = make_buff<buff_t>( this, "thirsting_blades", find_spell( 278736 ) )
-    ->set_trigger_spell( azerite.thirsting_blades )
+  buff.thirsting_blades = make_buff<buff_t>( this, "thirsting_blades", thirsting_blades_buff )
+    ->set_trigger_spell( thirsting_blades_trigger )
     ->set_default_value( azerite.thirsting_blades.value( 1 ) );
 }
 
@@ -5090,42 +5085,42 @@ stat_e demon_hunter_t::primary_stat() const
 
 std::string demon_hunter_t::default_flask() const
 {
-  return (true_level >  100) ? "seventh_demon" :
-    (true_level >= 90) ? "greater_draenic_agility_flask" :
-    (true_level >= 85) ? "spring_blossoms" :
-    (true_level >= 80) ? "winds" :
-    "disabled";
+  return (true_level >  110) ? "currents" :
+         (true_level >  100) ? "seventh_demon" :
+         (true_level >= 90) ? "greater_draenic_agility_flask" :
+         (true_level >= 85) ? "spring_blossoms" :
+         (true_level >= 80) ? "winds" : "disabled";
 }
 
 // demon_hunter_t::default_potion ==================================================
 
 std::string demon_hunter_t::default_potion() const
 {
-  return (true_level > 100) ? (specialization() == DEMON_HUNTER_HAVOC ? "prolonged_power" : "unbending_potion") :
-    (true_level >= 90) ? (specialization() == DEMON_HUNTER_HAVOC ? "draenic_agility" : "draenic_versatility") :
-    (true_level >= 85) ? "virmens_bite" :
-    (true_level >= 80) ? "tolvir" :
-    "disabled";
+  return (true_level > 110) ? (specialization() == DEMON_HUNTER_HAVOC ? "battle_potion_of_agility" : "steelskin_potion") :
+         (true_level > 100) ? (specialization() == DEMON_HUNTER_HAVOC ? "prolonged_power" : "unbending_potion") :
+         (true_level >= 90) ? (specialization() == DEMON_HUNTER_HAVOC ? "draenic_agility" : "draenic_versatility") :
+         (true_level >= 85) ? "virmens_bite" :
+         (true_level >= 80) ? "tolvir" : "disabled";
 }
 
 // demon_hunter_t::default_food ====================================================
 
 std::string demon_hunter_t::default_food() const
 {
-  return (true_level >  100) ? (specialization() == DEMON_HUNTER_HAVOC ? "the_hungry_magister" : "lavish_suramar_feast") :
-    (true_level >  90) ? "pickled_eel" :
-    (true_level >= 90) ? "sea_mist_rice_noodles" :
-    (true_level >= 80) ? "seafood_magnifique_feast" :
-    "disabled";
+  return (true_level >  110) ? "bountiful_captains_feast" :
+         (true_level >  100) ? "lavish_suramar_feast" :
+         (true_level >  90) ? "pickled_eel" :
+         (true_level >= 90) ? "sea_mist_rice_noodles" :
+         (true_level >= 80) ? "seafood_magnifique_feast" : "disabled";
 }
 
 // demon_hunter_t::default_rune ====================================================
 
 std::string demon_hunter_t::default_rune() const
 {
-  return (true_level >= 110) ? "defiled" :
-    (true_level >= 100) ? "hyper" :
-    "disabled";
+  return (true_level >= 120) ? "battle_scarred" :
+         (true_level >= 110) ? "defiled" :
+         (true_level >= 100) ? "hyper" : "disabled";
 }
 
 // ==========================================================================
@@ -5349,6 +5344,7 @@ void demon_hunter_t::create_gains()
 
   // Azerite
   gain.thirsting_blades         = get_gain( "thirsting_blades" );
+  gain.revolving_blades         = get_gain( "revolving_blades" );
 }
 
 // demon_hunter_t::create_benefits ==========================================
@@ -5776,11 +5772,8 @@ void demon_hunter_t::combat_begin()
     spirit_bomb_driver = make_event<spirit_bomb_event_t>( *sim, this, true );
   }
 
-  if ( azerite.thirsting_blades.ok() )
-  {
-    buff.thirsting_blades->trigger( buff.thirsting_blades->data().max_stacks() );
-    buff.thirsting_blades_driver->trigger();
-  }
+  buff.thirsting_blades->trigger( buff.thirsting_blades->data().max_stacks() );
+  buff.thirsting_blades_driver->trigger();
 }
 
 // demon_hunter_t::interrupt ================================================

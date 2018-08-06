@@ -741,6 +741,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask,
           "<li><span class=\"label\">base_cost:</span>%.1f</li>\n"
           "<li><span class=\"label\">secondary_cost:</span>%.1f</li>\n"
           "<li><span class=\"label\">cooldown:</span>%.3f</li>\n"
+          "<li><span class=\"label\">cooldown hasted:</span>%s</li>\n"
           "<li><span class=\"label\">base_execute_time:</span>%.2f</li>\n"
           "<li><span class=\"label\">base_crit:</span>%.2f</li>\n"
           "<li><span class=\"label\">target:</span>%s</li>\n"
@@ -754,6 +755,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask,
           a->min_gcd.total_seconds(), a->base_costs[ a->current_resource() ],
           a->secondary_costs[ a->current_resource() ],
           a->cooldown->duration.total_seconds(),
+          a->cooldown->hasted ? "true" : "false",
           a->base_execute_time.total_seconds(), a->base_crit,
           a->target ? a->target->name() : "", a->harmful ? "true" : "false",
           util::encode_html( a->option.if_expr_str ).c_str() );

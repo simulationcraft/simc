@@ -1,0 +1,88 @@
+hunter="PR_Hunter_Survival"
+spec=survival
+level=120
+race=lightforged_draenei
+role=attack
+position=back
+talents=1101011
+
+# Default consumables
+potion=battle_potion_of_agility
+flask=currents
+food=bountiful_captains_feast
+augmentation=battle_scarred
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/augmentation
+actions.precombat+=/food
+actions.precombat+=/summon_pet
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion
+actions.precombat+=/steel_trap
+actions.precombat+=/harpoon
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/muzzle,if=equipped.sephuzs_secret&target.debuff.casting.react&cooldown.buff_sephuzs_secret.up&!buff.sephuzs_secret.up
+actions+=/use_items
+actions+=/berserking,if=cooldown.coordinated_assault.remains>30
+actions+=/blood_fury,if=cooldown.coordinated_assault.remains>30
+actions+=/ancestral_call,if=cooldown.coordinated_assault.remains>30
+actions+=/fireblood,if=cooldown.coordinated_assault.remains>30
+actions+=/lights_judgment
+actions+=/arcane_torrent,if=cooldown.kill_command.remains>gcd.max&focus<=30
+actions+=/potion,if=buff.coordinated_assault.up&(buff.berserking.up|buff.blood_fury.up|!race.troll&!race.orc)
+actions+=/variable,name=can_gcd,value=!talent.mongoose_bite.enabled|buff.mongoose_fury.down|(buff.mongoose_fury.remains-(((buff.mongoose_fury.remains*focus.regen+focus)%action.mongoose_bite.cost)*gcd.max)>gcd.max)
+actions+=/steel_trap
+actions+=/a_murder_of_crows
+actions+=/coordinated_assault
+actions+=/chakrams,if=active_enemies>1
+actions+=/kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&buff.tip_of_the_spear.stack<3&active_enemies<2
+actions+=/wildfire_bomb,if=(focus+cast_regen<focus.max|active_enemies>1)&(dot.wildfire_bomb.refreshable&buff.mongoose_fury.down|full_recharge_time<gcd)
+actions+=/kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&buff.tip_of_the_spear.stack<3
+actions+=/butchery,if=(!talent.wildfire_infusion.enabled|full_recharge_time<gcd)&active_enemies>3|(dot.shrapnel_bomb.ticking&dot.internal_bleeding.stack<3)
+actions+=/serpent_sting,if=(active_enemies<2&refreshable&(buff.mongoose_fury.down|(variable.can_gcd&!talent.vipers_venom.enabled)))|buff.vipers_venom.up
+actions+=/carve,if=active_enemies>2&(active_enemies<6&active_enemies+gcd<cooldown.wildfire_bomb.remains|5+gcd<cooldown.wildfire_bomb.remains)
+actions+=/harpoon,if=talent.terms_of_engagement.enabled
+actions+=/flanking_strike
+actions+=/chakrams
+actions+=/serpent_sting,target_if=min:remains,if=refreshable&buff.mongoose_fury.down|buff.vipers_venom.up
+actions+=/aspect_of_the_eagle,if=target.distance>=6
+actions+=/mongoose_bite_eagle,target_if=min:dot.internal_bleeding.stack,if=buff.mongoose_fury.up|focus>60
+actions+=/mongoose_bite,target_if=min:dot.internal_bleeding.stack,if=buff.mongoose_fury.up|focus>60
+actions+=/raptor_strike_eagle,target_if=min:dot.internal_bleeding.stack
+actions+=/raptor_strike,target_if=min:dot.internal_bleeding.stack
+
+head=coif_of_the_court_spider,id=159358,bonus_id=4779/1512/4786/4775,azerite_powers=163/30/0/13
+neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=
+shoulders=gaping_maw_shoulderguard,id=159352,bonus_id=4779/1512/4786/4775,azerite_powers=192/461/0/13
+back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
+chest=loablessed_chestguard,id=158355,bonus_id=4779/1512/4786/4775,azerite_powers=107/461/0/13
+wrists=dread_captains_irons,id=159372,bonus_id=4779/1512/4786
+hands=biteresistant_chain_gloves,id=155892,bonus_id=4779/1512/4786
+waist=belt_of_the_consecrated_tomb,id=159369,bonus_id=4779/1512/4786
+legs=legguards_of_the_awakening_brood,id=159375,bonus_id=4779/1512/4786
+feet=bramble_looped_boots,id=159404,bonus_id=4779/1512/4786
+finger1=ritual_binders_ring,id=159459,bonus_id=4779/1512/4786,enchant=pact_of_haste
+finger2=seal_of_the_regal_loa,id=159458,bonus_id=4779/1512/4786,enchant=pact_of_haste
+trinket1=galecallers_boon,id=159614,bonus_id=4779/1512/4786
+trinket2=lustrous_golden_plumage,id=159617,bonus_id=4779/1512/4786
+main_hand=twinstrike_polearm,id=158370,bonus_id=4779/1512/4786,enchant=quick_navigation
+
+# Gear Summary
+# gear_ilvl=341.47
+# gear_agility=2883
+# gear_stamina=4465
+# gear_crit_rating=335
+# gear_haste_rating=1175
+# gear_mastery_rating=209
+# gear_versatility_rating=762
+# gear_armor=2059
