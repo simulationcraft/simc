@@ -1265,6 +1265,7 @@ enum spell_attribute : unsigned
   SX_DOT_HASTED           = 173u,
   SX_REQ_LINE_OF_SIGHT    = 186u,
   SX_DISABLE_PLAYER_MULT  = 221u,
+  SX_TICK_MAY_CRIT        = 265u,
   SX_SCALE_ILEVEL         = 354u,
 };
 
