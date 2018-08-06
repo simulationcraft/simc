@@ -1352,7 +1352,9 @@ void dot_t::adjust_full_ticks( double coefficient )
   }
 
   sim_t* sim = current_action->sim;
-  int rounded_full_ticks_left = static_cast<int>( std::round( current_duration / time_to_tick ) ) - current_tick;
+
+  // Always at least 1 tick left (even if we would round down before the last partial)
+  int rounded_full_ticks_left = std::max( static_cast<int>( std::round( current_duration / current_action -> tick_time( state ) ) ) - current_tick, 1 );
 
   timespan_t new_dot_remains  = end_event->remains() * coefficient;
   timespan_t new_duration     = current_duration * coefficient;
@@ -1363,7 +1365,12 @@ void dot_t::adjust_full_ticks( double coefficient )
     current_tick++;
     tick();
     new_tick_remains += new_time_to_tick;
+    rounded_full_ticks_left--;
   }
+
+  // Also set last_tick_factor to 1 in case the partial was already scheduled.
+  if (rounded_full_ticks_left == 1)
+    last_tick_factor = 1.0;
 
   if ( sim->debug )
   {
@@ -1385,5 +1392,5 @@ void dot_t::adjust_full_ticks( double coefficient )
   time_to_tick     = new_time_to_tick;
   tick_event       = make_event<dot_tick_event_t>( *sim, this, new_tick_remains );
   end_event        = make_event<dot_end_event_t>( *sim, this, new_dot_remains );
-  recalculate_num_ticks();
+  num_ticks        = current_tick + rounded_full_ticks_left;
 }
