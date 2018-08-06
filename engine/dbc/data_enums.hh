@@ -88,6 +88,9 @@ enum proc_types
   PROC1_PERIODIC,
   PROC1_PERIODIC_TAKEN,
   PROC1_ANY_DAMAGE_TAKEN,
+  PROC1_TRAP_TRIGGERED,
+  PROC1_MAINHAND_ATTACK,
+  PROC1_OFFHAND_ATTACK,
   // Relevant blizzard flags end here
   
   // We need to separate heal ticks and damage ticks for our
@@ -165,6 +168,7 @@ enum proc_flag
 
   // Irrelevant ones for us
   PF_TRAP_TRIGGERED           = 0x00200000,
+  PF_MAINHAND                 = 0x00400000,
   PF_OFFHAND                  = 0x00800000,
   PF_DEATH                    = 0x01000000,
   PF_JUMP                     = 0x02000000,
@@ -1154,7 +1158,7 @@ enum effect_subtype_t : unsigned {
     A_358 = 358,
     A_359 = 359,
     A_360 = 360,
-    A_361 = 361,
+    A_OVERIDE_AUTO_ATTACK = 361,
     A_362 = 362,
     A_363 = 363,
     A_364 = 364,
@@ -1171,7 +1175,7 @@ enum effect_subtype_t : unsigned {
     A_380 = 380,
     A_381 = 381,
     A_382 = 382,
-    A_383 = 383,
+    A_IGNORE_SPELL_COOLDOWN = 383,
     A_385 = 385,
     A_389 = 389,
     A_392 = 392,
