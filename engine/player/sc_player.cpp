@@ -10490,7 +10490,13 @@ void player_t::analyze( sim_t& s )
     hpr = ( rl > 0 ) ? ( collected_data.heal.mean() / rl ) : -1.0;
 
     rps_loss = rl / collected_data.fight_length.mean();
-    rps_gain = rl / collected_data.fight_length.mean();
+  }
+
+  if ( static_cast<size_t>( primary_resource() ) < collected_data.resource_gained.size() )
+  {
+    double rg = collected_data.resource_gained[ primary_resource() ].mean();
+
+    rps_gain = rg / collected_data.fight_length.mean();
   }
 
   // When single_actor_batch=1 is used in conjunction with target_error, each actor has run varying
