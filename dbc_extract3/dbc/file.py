@@ -38,7 +38,9 @@ class HotfixIterator:
             # If the key block id is not duplicated in the record, it'll be at
             # the end of the hotfix entry
             if not self._key_field_name:
-                key_id = data[-1]
+                # Replace parent key id if it makes sense
+                if data[-1] > 0 and key_id != data[-1]:
+                    key_id = data[-1]
                 data = data[:-1]
             # Duplicated, just grab it from the record index
             else:
