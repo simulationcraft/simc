@@ -1037,6 +1037,7 @@ struct sim_t : private sc_thread_t
   unsigned int enable_2_set;// Enables all 2 set bonuses for the tier/integer that this is set as
   unsigned int enable_4_set; // Enables all 4 set bonuses for the tier/integer that this is set as
   bool pvp_crit; // Sets critical strike damage to 150% instead of 200%
+  bool feast_as_dps = true;
 
   // Actor tracking
   int active_enemies;
@@ -1093,7 +1094,6 @@ struct sim_t : private sc_thread_t
     int                 infernal_cinders_users = 1;
     int                 engine_of_eradication_orbs = 4;
     int                 void_stalkers_contract_targets = -1;
-    bool                lavish_feast_as_dps = true;
     double              specter_of_betrayal_overlap = 1.0;
     std::vector<double> cradle_of_anguish_resets;
     std::string         pantheon_trinket_users;
