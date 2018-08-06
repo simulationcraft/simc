@@ -3401,7 +3401,6 @@ void sim_t::create_options()
   add_option( opt_int( "legion.infernal_cinders_users", legion_opts.infernal_cinders_users, 1, 20 ) );
   add_option( opt_int( "legion.engine_of_eradication_orbs", legion_opts.engine_of_eradication_orbs, 0, 4 ) );
   add_option( opt_int( "legion.void_stalkers_contract_targets", legion_opts.void_stalkers_contract_targets ) );
-  add_option( opt_bool( "legion.feast_as_dps", legion_opts.lavish_feast_as_dps ) );
   add_option( opt_float( "legion.specter_of_betrayal_overlap", legion_opts.specter_of_betrayal_overlap, 0, 1 ) );
   add_option( opt_float( "legion.archimondes_hatred_reborn_damage", legion_opts.archimondes_hatred_reborn_damage, 0, 1 ) );
   add_option( opt_string( "legion.pantheon_trinket_users", legion_opts.pantheon_trinket_users ) );
@@ -3449,6 +3448,9 @@ void sim_t::create_options()
     }
     return true;
   } ) );
+
+  add_option( opt_bool( "feast_as_dps", feast_as_dps ) );
+  //applies to: "lavish_suramar_feast", "bountiful_captains_feast"
 }
 
 // sim_t::parse_option ======================================================

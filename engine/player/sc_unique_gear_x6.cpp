@@ -141,7 +141,7 @@ namespace item
   // TODO
   // Eye of f'harg / shatug interaction
   // Purely defensive stuff
-  
+
   // 7.2.0 Dungeon
   void dreadstone_of_endless_shadows( special_effect_t& );
 
@@ -168,7 +168,7 @@ namespace item
   Everything
 
   Antorus -----------------------------------
-  
+
   Every DPS trinket implemented.
   Healer trinkets / other rubbish -----------
 
@@ -1294,7 +1294,7 @@ void item::umbral_moonglaives( special_effect_t& effect )
 void item::engine_of_eradication( special_effect_t& effect )
 {
   auto primary_stat = effect.player -> convert_hybrid_stat( STAT_STR_AGI );
-  
+
   double amount = effect.trigger() -> effectN( 3 ).average( effect.item );
   stat_buff_t* buff = debug_cast<stat_buff_t*>( buff_t::find( effect.player, "demonic_vigor" ) );
   if ( buff == nullptr )
@@ -2731,7 +2731,7 @@ struct majordomos_dinner_bell_t : proc_spell_t
   void execute() override
   {
     // The way this works, despite the tooltip, is that the buff matches your current food buff on tank specs ONLY
-    
+
     int selected_buff = -1;
 
     if ( player -> consumables.food && player -> role == ROLE_TANK )
@@ -2755,7 +2755,7 @@ struct majordomos_dinner_bell_t : proc_spell_t
         }
       }
     }
-    
+
     // If you don't have a secondary stat food buff, or aren't on a tank specialization the buff will be random
     selected_buff = (int) ( player -> sim -> rng().real() * buffs.size() );
 
@@ -6060,7 +6060,7 @@ void consumables::lavish_suramar_feast( special_effect_t& effect )
   }
 
   // TODO: Is this actually spec specific?
-  if ( effect.player -> role == ROLE_TANK && !effect.player->sim->legion_opts.lavish_feast_as_dps )
+  if ( effect.player -> role == ROLE_TANK && !effect.player->sim->feast_as_dps )
   {
     effect.stat = STAT_STAMINA;
     effect.trigger_spell_id = 201641;
