@@ -1383,7 +1383,8 @@ bool item_t::is_valid_type() const
   if ( ! util::is_match_slot( slot ) )
     return true;
 
-  return util::matching_armor_type( player -> type ) >= parsed.data.item_subclass;
+  return parsed.data.item_subclass == ITEM_SUBCLASS_ARMOR_COSMETIC ||
+         util::matching_armor_type( player -> type ) >= parsed.data.item_subclass;
 }
 
 // item_t::decode_armor_type ================================================
