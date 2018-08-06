@@ -214,7 +214,7 @@ class PeStructParser:
             # First, find the table hash
             th_offset = self.handle.find(table_hash, search_offset, self.rdata_end)
             if th_offset == -1:
-                return True
+                return False
 
             # Then the layout hash should be at th_offset + 8 (one 4 byt efield inbetween)
             if self.handle[th_offset + 8:th_offset + 12] != layout_hash:
