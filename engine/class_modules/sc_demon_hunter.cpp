@@ -83,7 +83,7 @@ public:
 
 constexpr unsigned MAX_SOUL_FRAGMENTS = 5;
 constexpr timespan_t DEMONIC_EXTEND_DURATION = timespan_t::from_seconds(8);
-constexpr timespan_t MAX_FIERY_BRAND_DURATION = timespan_t::from_seconds(10);
+//constexpr timespan_t MAX_FIERY_BRAND_DURATION = timespan_t::from_seconds(10);
 constexpr double VENGEFUL_RETREAT_DISTANCE = 20.0;
 
 enum class soul_fragment
@@ -1851,7 +1851,7 @@ struct fel_barrage_t : public demon_hunter_spell_t
     tick_action = new fel_barrage_tick_t( p );
   }
 
-  virtual timespan_t composite_dot_duration( const action_state_t* /* s */ ) const
+  timespan_t composite_dot_duration( const action_state_t* /* s */ ) const override
   {
     // 6/20/2018 -- Channel duration is currently not affected by Haste, although tick rate is
     return dot_duration;

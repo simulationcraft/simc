@@ -646,7 +646,7 @@ public:
     tactician_per_rage += ( player->spec.tactician->effectN( 1 ).percent() / 100 );
   }
 
-  virtual void init()
+  void init() override
   {
     if ( initialized )
       return;
@@ -3453,7 +3453,8 @@ struct shockwave_t : public warrior_attack_t
   {
     cd_duration = cooldown->duration;
 
-    if ( p()->talents.rumbling_earth->ok() && execute_state->n_targets >= rumbling_earth_targets_required )
+    if ( p()->talents.rumbling_earth->ok() &&
+         as<int>( execute_state->n_targets ) >= rumbling_earth_targets_required )
     {
       if ( cd_duration > timespan_t::from_seconds( rumbling_earth_reduction ) )
         cd_duration += timespan_t::from_seconds( -1 * rumbling_earth_reduction );

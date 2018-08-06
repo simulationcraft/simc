@@ -4689,7 +4689,7 @@ struct empower_rune_weapon_buff_t : public buff_t
     buff_t( buff_creator_t( p, "empower_rune_weapon", p -> spec.empower_rune_weapon )
             .cd( timespan_t::zero() ) // Handled in the action
             .period( p -> spec.empower_rune_weapon -> effectN( 1 ).period() )
-            .tick_callback( [ this, p ]( buff_t* b, int, const timespan_t& ) {
+            .tick_callback( [ p ]( buff_t* b, int, const timespan_t& ) {
     p -> replenish_rune( as<unsigned int>( b -> data().effectN( 1 ).base_value() ),
                          p -> gains.empower_rune_weapon );
 
@@ -5057,8 +5057,6 @@ struct frost_strike_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::execute();
 
-    death_knight_td_t* tdata = td( execute_state -> target );
-      
     if ( result_is_hit( execute_state -> result ) )
     {
       mh -> set_target( execute_state -> target );
@@ -6342,7 +6340,7 @@ struct antimagic_shell_t : public death_knight_spell_t
 
   antimagic_shell_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "antimagic_shell", p, p -> spell.antimagic_shell ),
-    interval( 60 ), interval_stddev( 0.05 ), interval_stddev_opt( 0 ), damage( 0 ), min_interval( 60 )
+    min_interval( 60 ), interval( 60 ), interval_stddev( 0.05 ), interval_stddev_opt( 0 ), damage( 0 )
   {
     cooldown = p -> cooldown.antimagic_shell;
     cooldown -> duration += timespan_t::from_millis( p -> talent.antimagic_barrier -> effectN( 1 ).base_value() );

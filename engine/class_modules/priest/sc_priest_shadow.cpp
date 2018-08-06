@@ -919,9 +919,11 @@ struct vampiric_touch_t final : public priest_spell_t
     {
       amount_to_heal *= 1.0 + priest().active_items.zenkaram_iridis_anadem->driver()->effectN( 1 ).percent();
     }
+    /*
     double actual_amount =
         priest().resource_gain( RESOURCE_HEALTH, amount_to_heal, priest().gains.vampiric_touch_health );
     double overheal = amount_to_heal - actual_amount;
+    */
   }
 
   void impact( action_state_t* s ) override

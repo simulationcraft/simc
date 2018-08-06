@@ -168,7 +168,7 @@ namespace warlock
       }
     };
 
-    const std::array<int, MAX_UAS> ua_spells = { 233490, 233496, 233497, 233498, 233499 };
+    const std::array<int, MAX_UAS> ua_spells = { { 233490, 233496, 233497, 233498, 233499 } };
 
     struct shadow_bolt_t : public affliction_spell_t
     {

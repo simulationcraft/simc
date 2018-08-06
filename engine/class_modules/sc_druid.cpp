@@ -3072,7 +3072,8 @@ struct feral_frenzy_driver_t : public cat_attack_t
   };
 
   double tick_ap_ratio;
-  feral_frenzy_driver_t(druid_t* p, const std::string& options_str) : cat_attack_t("feral_frenzy", p, p->find_spell(274837) )
+  feral_frenzy_driver_t(druid_t* p, const std::string& /*options_str*/) :
+    cat_attack_t("feral_frenzy", p, p->find_spell(274837) )
   {
     //ffdot = new feral_frenzy_dot_t(p);
     tick_action = new feral_frenzy_dot_t(p);
@@ -9590,8 +9591,6 @@ struct luffa_wrappings_t : public scoped_action_callback_t<T>
 
   void manipulate( T* a, const special_effect_t& e ) override
   {
-    druid_t* p = debug_cast<druid_t*>( a -> player );
-
     // Feral Druid passive modifies the strength of the effect.
     a->radius *= 1.0 + e.driver()->effectN(1).percent();
       //+ p -> spec.feral -> effectN( 8 ).percent();
@@ -9701,7 +9700,7 @@ struct fiery_red_maimers_t : public scoped_actor_callback_t<druid_t>
   fiery_red_maimers_t() : super( DRUID )
   {}
 
-  void manipulate(druid_t* p, const special_effect_t& e) override
+  void manipulate(druid_t* /*p*/, const special_effect_t& /*e*/) override
   {
     //only relevant for a few weeks, unlikely to change until then - hardcoding it for now.
     //p->legendary.LegendaryDamageMod = 0.03;

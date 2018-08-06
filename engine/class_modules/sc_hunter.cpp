@@ -1315,7 +1315,7 @@ struct hunter_main_pet_t : public hunter_main_pet_base_t
   resource_e primary_resource() const override
   { return RESOURCE_FOCUS; }
 
-  timespan_t available() const
+  timespan_t available() const override
   {
     // XXX: this will have to be changed if we ever add other foreground attacks to pets besides Basic Attacks
     if ( ! active.basic_attack )
@@ -2954,7 +2954,7 @@ struct rapid_fire_t: public hunter_spell_t
     procs.lethal_shots = p -> get_proc( "lethal_shots_rapid_fire" );
   }
 
-  void init()
+  void init() override
   {
     hunter_spell_t::init();
 
@@ -3439,7 +3439,7 @@ struct carve_base_t: public hunter_melee_attack_t
     aoe = -1;
   }
 
-  void init()
+  void init() override
   {
     hunter_melee_attack_t::init();
 
