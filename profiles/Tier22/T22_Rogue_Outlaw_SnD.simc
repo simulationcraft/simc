@@ -4,7 +4,7 @@ level=120
 race=dwarf
 role=attack
 position=back
-talents=1310033
+talents=2310032
 
 # Default consumables
 potion=battle_potion_of_agility
