@@ -4540,9 +4540,6 @@ public:
   double composite_mitigation_versatility() const override
   { return owner -> cache.mitigation_versatility(); }
 
-  double composite_attack_power_multiplier() const override
-  { return owner->composite_attack_power_multiplier(); }
-
   double composite_melee_attack_power() const override;
 
   double composite_spell_power( school_e school ) const override;
