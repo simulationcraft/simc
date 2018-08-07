@@ -541,95 +541,29 @@ bool parse_guild( sim_t*             sim,
 // parse_fight_style ========================================================
 
 bool parse_fight_style( sim_t*             sim,
-                               const std::string& name,
-                               const std::string& value )
+                        const std::string& /*name*/,
+                        const std::string& value )
 {
-  if ( name != "fight_style" ) return false;
+  static std::vector<std::string> FIGHT_STYLES {
+    "Patchwerk", "Ultraxion", "CleaveAdd", "HelterSkelter", "LightMovement", "HeavyMovement",
+    "HecticAddCleave", "Beastlord", "CastingPatchwerk"
+  };
 
-  if ( util::str_compare_ci( value, "Patchwerk" ) )
-  {
-    sim -> fight_style = "Patchwerk";
-    sim -> raid_events_str.clear();
-  }
-  else if ( util::str_compare_ci( value, "Ultraxion" ) )
-  {
-    sim -> fight_style = "Ultraxion";
-    sim -> max_time    = timespan_t::from_seconds( 366.0 );
-    sim -> fixed_time  = true;
-    sim -> vary_combat_length = 0.0;
-    sim -> raid_events_str =  "flying,first=0,duration=500,cooldown=500";
-    sim -> raid_events_str +=  "/position_switch,first=0,duration=500,cooldown=500";
-    sim -> raid_events_str += "/stun,duration=1.0,first=45.0,period=45.0";
-    sim -> raid_events_str += "/stun,duration=1.0,first=57.0,period=57.0";
-    sim -> raid_events_str += "/damage,first=6.0,period=6.0,last=59.5,amount=44000,type=shadow";
-    sim -> raid_events_str += "/damage,first=60.0,period=5.0,last=119.5,amount=44855,type=shadow";
-    sim -> raid_events_str += "/damage,first=120.0,period=4.0,last=179.5,amount=44855,type=shadow";
-    sim -> raid_events_str += "/damage,first=180.0,period=3.0,last=239.5,amount=44855,type=shadow";
-    sim -> raid_events_str += "/damage,first=240.0,period=2.0,last=299.5,amount=44855,type=shadow";
-    sim -> raid_events_str += "/damage,first=300.0,period=1.0,amount=44855,type=shadow";
-  }
-  else if ( util::str_compare_ci( value, "CleaveAdd" ) || util::str_compare_ci(value, "Cleave_Add" ) )
-  {
-	  sim->fight_style = "CleaveAdd";
-	  sim->raid_events_str = "adds,cooldown=25,duration=13,first_pct=95,count=1";
-  }
-  else if ( util::str_compare_ci( value, "HelterSkelter" ) || util::str_compare_ci( value, "Helter_Skelter" ) )
-  {
-    sim -> fight_style = "HelterSkelter";
-    sim -> raid_events_str = "casting,cooldown=30,duration=3,first=15";
-    sim -> raid_events_str += "/movement,cooldown=30,distance=20";
-    sim -> raid_events_str += "/stun,cooldown=60,duration=2";
-    sim -> raid_events_str += "/invulnerable,cooldown=120,duration=3";
-  }
-  else if ( util::str_compare_ci( value, "LightMovement" ) )
-  {
-    sim -> fight_style = "LightMovement";
-    sim -> raid_events_str = "/movement,players_only=1,first=";
-    sim -> raid_events_str += util::to_string( int( sim -> max_time.total_seconds() * 0.1 ) );
-    sim -> raid_events_str += ",cooldown=85,distance=50,last=";
-    sim -> raid_events_str += util::to_string( int( sim -> max_time.total_seconds() * 0.8 ) );
-  }
-  else if ( util::str_compare_ci( value, "HeavyMovement" ) )
-  {
-	  sim->fight_style = "HeavyMovement";
-	  sim->raid_events_str = "/movement,players_only=1,first=10,cooldown=10,distance=25";
-  }
-  else if ( util::str_compare_ci( value, "HecticAddCleave" ) )
-  {
-    sim -> fight_style = "HecticAddCleave";
+  auto it = range::find_if( FIGHT_STYLES, [ &value ]( const std::string& n ) {
+    return util::str_compare_ci( value, n );
+  } );
 
-    sim -> raid_events_str += "/adds,count=5,first=" + util::to_string( int( sim -> max_time.total_seconds() * 0.05 ) ) + ",cooldown=" + util::to_string( int( sim -> max_time.total_seconds() * 0.075 ) ) + ",duration=" + util::to_string( int( sim -> max_time.total_seconds() * 0.05 ) ) + ",last=" + util::to_string( int( sim -> max_time.total_seconds() * 0.75 ) ); //P1
-
-    sim -> raid_events_str += "/movement,first=" + util::to_string( int( sim -> max_time.total_seconds() * 0.05 ) ) + ",cooldown=" + util::to_string( int( sim -> max_time.total_seconds() * 0.075 ) ) + ",distance=25,last=" + util::to_string( int( sim -> max_time.total_seconds() * 0.75 ) ); //move to new position of adds
-
-    sim -> raid_events_str += "/movement,players_only=1,first=" + util::to_string( int( sim -> max_time.total_seconds() * 0.03 ) ) + ",cooldown=" + util::to_string( int( sim -> max_time.total_seconds() * 0.04 ) ) + ",distance=8"; //move out of stuff
-
-  }
-  else if ( util::str_compare_ci( value, "Beastlord" ) )
+  if ( it == FIGHT_STYLES.end() )
   {
-    sim -> fight_style = "Beastlord";
-    sim -> raid_events_str += "/adds,name=Pack_Beast,count=6,first=15,duration=10,cooldown=30,angle_start=0,angle_end=360,distance=3";
-    sim -> raid_events_str += "/adds,name=Heavy_Spear,count=2,first=15,duration=15,cooldown=20,spawn_x=-15,spawn_y=0,distance=15";
-    sim -> raid_events_str += "/movement,first=13,distance=5,cooldown=20,players_only=1,player_chance=0.1";
+    throw std::invalid_argument( fmt::format( "Unknown fight style {}, available values: {}",
+      value, util::string_join( FIGHT_STYLES ) ) );
+  }
 
-    int beast_duration = static_cast<int>(sim -> max_time.total_seconds() * 0.15);
-    int beast_cooldown = static_cast<int>(sim -> max_time.total_seconds() * 0.25);
-    int beast_cooldown_stddev = std::max(static_cast<int>((beast_duration - beast_cooldown) / 6.0) - 1, 0); // Ensure min cooldown (cd - 6*stddev) is larger than duration
-    sim -> raid_events_str += fmt::format("/adds,name=Beast,count=1,first=10,duration={},cooldown={},last=" + util::to_string( int( sim -> max_time.total_seconds() * 0.65 ) ) + ",duration_stddev=5,cooldown_stddev={}",
-        beast_duration, beast_cooldown, beast_cooldown_stddev);
-  }
-  else if ( util::str_compare_ci( value, "CastingPatchwerk" ) )
-  {
-    sim->fight_style = "CastingPatchwerk";
-    sim->raid_events_str += "/casting,cooldown=500,duration=500";
-  }
-  else
-  {
-    throw std::invalid_argument("Unknown fight style.");
-  }
+  sim->fight_style = *it;
 
   return true;
 }
+
 // parse_override_spell_data ================================================
 
 bool parse_override_spell_data( sim_t*             sim,
@@ -2139,6 +2073,107 @@ void sim_t::check_actors()
 }
 
 /**
+ * @brief configure fight style
+ *
+ * Parses fight style information into specific simulator defines. Performed as a separate
+ * initialization step (early) in the simulator init process to avoid positional dependencies
+ * between options (first and foremost, the max_time option).
+ *
+ * Note that there are side-effects of this, namely that where fight styles define other options
+ * (e.g., Ultraxion), those can no longer be overwritten on the command line.
+ */
+void sim_t::init_fight_style()
+{
+  if ( util::str_compare_ci( fight_style, "Patchwerk" ) )
+  {
+    raid_events_str.clear();
+  }
+  else if ( util::str_compare_ci( fight_style, "Ultraxion" ) )
+  {
+    max_time    = timespan_t::from_seconds( 366.0 );
+    fixed_time  = true;
+    vary_combat_length = 0.0;
+    raid_events_str =  "flying,first=0,duration=500,cooldown=500";
+    raid_events_str +=  "/position_switch,first=0,duration=500,cooldown=500";
+    raid_events_str += "/stun,duration=1.0,first=45.0,period=45.0";
+    raid_events_str += "/stun,duration=1.0,first=57.0,period=57.0";
+    raid_events_str += "/damage,first=6.0,period=6.0,last=59.5,amount=44000,type=shadow";
+    raid_events_str += "/damage,first=60.0,period=5.0,last=119.5,amount=44855,type=shadow";
+    raid_events_str += "/damage,first=120.0,period=4.0,last=179.5,amount=44855,type=shadow";
+    raid_events_str += "/damage,first=180.0,period=3.0,last=239.5,amount=44855,type=shadow";
+    raid_events_str += "/damage,first=240.0,period=2.0,last=299.5,amount=44855,type=shadow";
+    raid_events_str += "/damage,first=300.0,period=1.0,amount=44855,type=shadow";
+  }
+  else if ( util::str_compare_ci( fight_style, "CleaveAdd" ) || util::str_compare_ci(fight_style, "Cleave_Add" ) )
+  {
+    raid_events_str = "adds,cooldown=25,duration=13,first_pct=95,count=1";
+  }
+  else if ( util::str_compare_ci( fight_style, "HelterSkelter" ) || util::str_compare_ci( fight_style, "Helter_Skelter" ) )
+  {
+    raid_events_str = "casting,cooldown=30,duration=3,first=15";
+    raid_events_str += "/movement,cooldown=30,distance=20";
+    raid_events_str += "/stun,cooldown=60,duration=2";
+    raid_events_str += "/invulnerable,cooldown=120,duration=3";
+  }
+  else if ( util::str_compare_ci( fight_style, "LightMovement" ) )
+  {
+    auto first_time = static_cast<unsigned>( max_time.total_seconds() * 0.1 );
+    auto last_time = static_cast<unsigned>( max_time.total_seconds() * 0.8 );
+
+    raid_events_str = fmt::format( "/movement,players_only=1,cooldown=85,distance=50,first={},last={}",
+                                   first_time, last_time );
+  }
+  else if ( util::str_compare_ci( fight_style, "HeavyMovement" ) )
+  {
+    raid_events_str = "/movement,players_only=1,first=10,cooldown=10,distance=25";
+  }
+  else if ( util::str_compare_ci( fight_style, "HecticAddCleave" ) )
+  {
+    // Phase 1 - Adds and move into position to fight adds
+    auto first_and_duration = static_cast<unsigned>( max_time.total_seconds() * 0.05 );
+    auto cooldown = static_cast<unsigned>( max_time.total_seconds() * 0.075 );
+    auto last = static_cast<unsigned>( max_time.total_seconds() * 0.75 );
+
+    raid_events_str += fmt::format( "/adds,count=5,first={},cooldown={},duration={},last={}",
+                                    first_and_duration, cooldown, first_and_duration, last );
+
+    raid_events_str += fmt::format( "/movement,distance=25,first={},cooldown={},last={}",
+                                    first_and_duration, cooldown, last );
+
+    // Phase2 - Move out of stuff
+    auto first2 = static_cast<unsigned>( max_time.total_seconds() * 0.03 );
+    auto cooldown2 = static_cast<unsigned>( max_time.total_seconds() * 0.04 );
+
+    raid_events_str += fmt::format( "/movement,players_only=1,distance=8,first={},cooldown={}",
+                                    first2, cooldown2 );
+  }
+  else if ( util::str_compare_ci( fight_style, "Beastlord" ) )
+  {
+    raid_events_str += "/adds,name=Pack_Beast,count=6,"
+                       "first=15,duration=10,cooldown=30,angle_start=0,angle_end=360,distance=3";
+    raid_events_str += "/adds,name=Heavy_Spear,count=2,"
+                       "first=15,duration=15,cooldown=20,spawn_x=-15,spawn_y=0,distance=15";
+    raid_events_str += "/movement,first=13,distance=5,cooldown=20,players_only=1,player_chance=0.1";
+
+    auto beast_duration = static_cast<unsigned>( max_time.total_seconds() * 0.15 );
+    auto beast_cooldown = static_cast<unsigned>( max_time.total_seconds() * 0.25 );
+    // Ensure min cooldown (cd - 6*stddev) is larger than duration
+    auto beast_cooldown_stddev = std::max(
+        static_cast<int>( ( beast_duration - beast_cooldown ) / 6.0 ) - 1, 0 );
+    auto beast_last = static_cast<unsigned>( max_time.total_seconds() * 0.65 );
+
+    raid_events_str += fmt::format( "/adds,name=Beast,count=1,first=10,duration_stddev=5,"
+                                    "duration={},cooldown={},cooldown_stddev={},last={}",
+                                    beast_duration, beast_cooldown, beast_cooldown_stddev,
+                                    beast_last );
+  }
+  else if ( util::str_compare_ci( fight_style, "CastingPatchwerk" ) )
+  {
+    raid_events_str += "/casting,cooldown=500,duration=500";
+  }
+}
+
+/**
  * @brief configure parties
  *
  * This function... builds parties? I guess it assigns each player in player_list to
@@ -2499,6 +2534,10 @@ void sim_t::init()
       while ( targets_create > 1 );
     }
   }
+
+  // Fight style initialization must be performed before raid event initialization, since fight
+  // styles may define raid events.
+  init_fight_style();
 
   raid_event_t::init( this );
 

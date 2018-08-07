@@ -1350,6 +1350,7 @@ struct sim_t : private sc_thread_t
   void      datacollection_end();
   void      reset();
   void      check_actors();
+  void      init_fight_style();
   void      init_parties();
   void      init_actors();
   void      init_actor( player_t* );
