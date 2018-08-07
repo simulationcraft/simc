@@ -2155,8 +2155,8 @@ void sim_t::init_fight_style()
                        "first=15,duration=15,cooldown=20,spawn_x=-15,spawn_y=0,distance=15";
     raid_events_str += "/movement,first=13,distance=5,cooldown=20,players_only=1,player_chance=0.1";
 
-    auto beast_duration = static_cast<unsigned>( max_time.total_seconds() * 0.15 );
-    auto beast_cooldown = static_cast<unsigned>( max_time.total_seconds() * 0.25 );
+    auto beast_duration = static_cast<int>( max_time.total_seconds() * 0.15 );
+    auto beast_cooldown = static_cast<int>( max_time.total_seconds() * 0.25 );
     // Ensure min cooldown (cd - 6*stddev) is larger than duration
     auto beast_cooldown_stddev = std::max(
         static_cast<int>( ( beast_duration - beast_cooldown ) / 6.0 ) - 1, 0 );
