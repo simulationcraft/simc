@@ -130,6 +130,8 @@ double crit_multiplier( meta_gem_e gem );
 
 std::vector<std::string> string_split( const std::string& str, const std::string& delim );
 std::vector<std::string> string_split_allow_quotes( std::string str, const char* delim );
+template <typename T>
+std::string string_join( const T& container, const std::string& delim = ", " );
 std::string string_strip_quotes( std::string str );
 void replace_all( std::string& s, const std::string&, const std::string& );
 void erase_all( std::string& s, const std::string& from );
@@ -222,3 +224,20 @@ template <typename T>
 std::string util::to_string( const T& t )
 { std::stringstream s; s << t; return s.str(); }
 
+template <typename T>
+std::string util::string_join( const T& container, const std::string& delim )
+{
+  std::stringstream s;
+
+  for ( auto i = container.cbegin(); i < container.cend(); ++i )
+  {
+    if ( i != container.cbegin() && ! delim.empty() )
+    {
+      s << delim;
+    }
+
+    s << util::to_string( *i );
+  }
+
+  return s.str();
+}
