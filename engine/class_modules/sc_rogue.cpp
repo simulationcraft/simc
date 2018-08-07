@@ -925,13 +925,10 @@ struct rogue_attack_t : public melee_attack_t
 
   void snapshot_state( action_state_t* state, dmg_e rt ) override
   {
-    melee_attack_t::snapshot_state( state, rt );
+    double max_cp = std::min( player -> resources.current[ RESOURCE_COMBO_POINT ], p() -> consume_cp_max() );
+    cast_state( state ) -> cp = static_cast<int>( max_cp );
 
-    if ( base_costs[ RESOURCE_COMBO_POINT ] > 0 )
-    {
-      double max_cp = std::min( player -> resources.current[ RESOURCE_COMBO_POINT ], p() -> consume_cp_max() );
-      cast_state( state ) -> cp = static_cast<int>( max_cp );
-    }
+    melee_attack_t::snapshot_state( state, rt );
   }
 
   void update_ready( timespan_t cd_duration = timespan_t::min() ) override
@@ -1018,6 +1015,13 @@ struct rogue_attack_t : public melee_attack_t
     return dot_duration > timespan_t::zero() && base_tick_time > timespan_t::zero();
   }
 
+  virtual double combo_point_da_multiplier(const action_state_t* s) const
+  {
+    if ( base_costs[ RESOURCE_COMBO_POINT ] )
+      return static_cast<double>( cast_state( s ) -> cp );
+    return 1.0;
+  }
+
   action_state_t* new_state() override
   { return new rogue_attack_state_t( this, target ); }
 
@@ -1043,58 +1047,11 @@ struct rogue_attack_t : public melee_attack_t
   void   schedule_travel( action_state_t* state ) override;
   void   tick( dot_t* d ) override;
 
-  double attack_direct_power_coefficient( const action_state_t* s ) const override
-  {
-    if ( base_costs[ RESOURCE_COMBO_POINT ] )
-      return attack_power_mod.direct * cast_state( s ) -> cp;
-    return melee_attack_t::attack_direct_power_coefficient( s );
-  }
-
-  double spell_direct_power_coefficient( const action_state_t* s ) const override
-  {
-    if ( base_costs[ RESOURCE_COMBO_POINT ] )
-      return spell_power_mod.direct * cast_state( s ) -> cp;
-    return melee_attack_t::spell_direct_power_coefficient( s );
-  }
-
-  double base_da_min( const action_state_t* s ) const override
-  {
-    if ( base_costs[ RESOURCE_COMBO_POINT ] )
-      return base_dd_min * cast_state( s ) -> cp;
-    return melee_attack_t::base_da_min( s );
-  }
-
-  double base_da_max( const action_state_t* s ) const override
-  {
-    if ( base_costs[ RESOURCE_COMBO_POINT ] )
-      return base_dd_max * cast_state( s ) -> cp;
-    return melee_attack_t::base_da_max( s );
-  }
-
-  double base_ta( const action_state_t* s ) const override
-  {
-    if ( base_costs[ RESOURCE_COMBO_POINT ] )
-      return base_td * cast_state( s ) -> cp;
-    return melee_attack_t::base_ta( s );
-  }
-
-  double bonus_da( const action_state_t* s ) const override
-  {
-    if ( base_costs[ RESOURCE_COMBO_POINT ] )
-      return base_dd_adder * cast_state( s ) -> cp;
-    return melee_attack_t::bonus_da( s );
-  }
-
-  double bonus_ta( const action_state_t* s ) const override
-  {
-    if ( base_costs[ RESOURCE_COMBO_POINT ] )
-      return base_ta_adder * cast_state( s ) -> cp;
-    return melee_attack_t::bonus_ta( s );
-  }
-
   double composite_da_multiplier( const action_state_t* state ) const override
   {
     double m = melee_attack_t::composite_da_multiplier( state );
+
+    m *= combo_point_da_multiplier( state );
 
     // Subtlety
     if ( p()->mastery.executioner->ok() && data().affected_by( p()->mastery.executioner->effectN( 1 ) ) )
@@ -1301,13 +1258,11 @@ struct secondary_ability_trigger_t : public event_t
     {
       attack -> pre_execute_state = state;
     }
-    // No state, construct one by snapshotting, but also grap combo points from the event instead of
-    // current CP amount.
+    // No state, construct one and grab combo points from the event instead of current CP amount.
     else
     {
       action_state_t* s = attack -> get_state();
       s -> target = target;
-      attack -> snapshot_state( s, attack -> amount_type( s ) );
       actions::rogue_attack_t::cast_state( s ) -> cp = cp;
 
       attack -> pre_execute_state = s;
@@ -2426,7 +2381,7 @@ struct between_the_eyes_t : public rogue_attack_t
     double b = rogue_attack_t::bonus_da( state );
 
     if ( p() -> azerite.ace_up_your_sleeve.ok() )
-      b += cast_state( state ) -> cp * p() -> azerite.ace_up_your_sleeve.value();
+      b += p() -> azerite.ace_up_your_sleeve.value(); // CP Mult is applied as a mod later.
 
     return b;
   }
@@ -2598,10 +2553,9 @@ struct crimson_tempest_t : public rogue_attack_t
     return duration;
   }
 
-  // Base damage of Crimson Tempest does scale with CP+1, calling melee_attack_t instead of rogue parent on purpose
-  double attack_direct_power_coefficient( const action_state_t* s ) const override
+  double combo_point_da_multiplier( const action_state_t* s ) const override
   { 
-    return melee_attack_t::attack_direct_power_coefficient( s ) * ( cast_state( s ) -> cp + 1 );
+    return static_cast<double>( cast_state( s ) -> cp + 1 );
   }
 };
 
@@ -2622,7 +2576,7 @@ struct dispatch_t: public rogue_attack_t
   double bonus_da( const action_state_t* s ) const override
   {
     double b = rogue_attack_t::bonus_da( s );
-    b += p() -> buffs.storm_of_steel -> stack_value() * cast_state( s ) -> cp;
+    b += p() -> buffs.storm_of_steel -> stack_value(); // CP Mult is applied as a mod later.
     return b;
   }
 
@@ -2677,7 +2631,7 @@ struct envenom_t : public rogue_attack_t
   {
     double b = rogue_attack_t::bonus_da( s );
     if ( p() -> azerite.twist_the_knife.ok() )
-      b += p() -> azerite.twist_the_knife.value() * cast_state( s ) -> cp;
+      b += p() -> azerite.twist_the_knife.value(); // CP Mult is applied as a mod later.
     return b;
   }
 
@@ -2734,7 +2688,7 @@ struct eviscerate_t : public rogue_attack_t
   double bonus_da( const action_state_t* s ) const override
   {
     double b = rogue_attack_t::bonus_da( s );
-    b += p() -> buffs.nights_vengeance -> stack_value() * cast_state( s ) -> cp;
+    b += p() -> buffs.nights_vengeance -> stack_value(); // CP Mult is applied as a mod later.
     return b;
   }
 
