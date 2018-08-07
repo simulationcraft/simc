@@ -53,6 +53,7 @@ actions.st+=/aimed_shot,if=buff.precise_shots.down&(buff.double_tap.down&full_re
 actions.st+=/rapid_fire,if=!talent.lethal_shots.enabled|buff.lethal_shots.up|azerite.in_the_rhythm.rank>1
 actions.st+=/explosive_shot
 actions.st+=/piercing_shot
+actions.st+=/a_murder_of_crows
 actions.st+=/serpent_sting,if=refreshable
 actions.st+=/aimed_shot,if=buff.precise_shots.down&(!talent.steady_focus.enabled&focus>70|!talent.lethal_shots.enabled|buff.lethal_shots.up)
 actions.st+=/arcane_shot,if=buff.precise_shots.up|focus>60&(!talent.lethal_shots.enabled|buff.lethal_shots.up)
@@ -66,6 +67,7 @@ actions.trickshots+=/aimed_shot,if=buff.trick_shots.up&buff.precise_shots.down&b
 actions.trickshots+=/rapid_fire,if=buff.trick_shots.up
 actions.trickshots+=/multishot,if=buff.trick_shots.down|(buff.precise_shots.up|buff.lethal_shots.up)&(!talent.barrage.enabled&buff.steady_focus.down&focus>45|focus>70)
 actions.trickshots+=/piercing_shot
+actions.trickshots+=/a_murder_of_crows
 actions.trickshots+=/serpent_sting,if=refreshable
 actions.trickshots+=/steady_shot,if=focus+cast_regen<focus.max|(talent.lethal_shots.enabled&buff.lethal_shots.down)
 

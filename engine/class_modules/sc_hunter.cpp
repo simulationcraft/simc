@@ -5534,7 +5534,7 @@ void hunter_t::apl_mm()
   st -> add_action( this, "Rapid Fire", "if=!talent.lethal_shots.enabled|buff.lethal_shots.up|azerite.in_the_rhythm.rank>1" );
   st -> add_talent( this, "Explosive Shot" );
   st -> add_talent( this, "Piercing Shot" );
-  st -> add_talent( this, "A Murder Of Crows" );
+  st -> add_talent( this, "A Murder of Crows" );
   st -> add_talent( this, "Serpent Sting", "if=refreshable" );
   st -> add_action( this, "Aimed Shot", "if=buff.precise_shots.down&(!talent.steady_focus.enabled&focus>70|!talent.lethal_shots.enabled|buff.lethal_shots.up)" );
   st -> add_action( this, "Arcane Shot", "if=buff.precise_shots.up|focus>60&(!talent.lethal_shots.enabled|buff.lethal_shots.up)" );
@@ -5548,7 +5548,7 @@ void hunter_t::apl_mm()
   trickshots -> add_action( this, "Rapid Fire", "if=buff.trick_shots.up" );
   trickshots -> add_action( this, "Multi-Shot", "if=buff.trick_shots.down|(buff.precise_shots.up|buff.lethal_shots.up)&(!talent.barrage.enabled&buff.steady_focus.down&focus>45|focus>70)" );
   trickshots -> add_talent( this, "Piercing Shot" );
-  trickshots -> add_talent( this, "A Murder Of Crows" );
+  trickshots -> add_talent( this, "A Murder of Crows" );
   trickshots -> add_talent( this, "Serpent Sting", "if=refreshable" );
   trickshots -> add_action( this, "Steady Shot", "if=focus+cast_regen<focus.max|(talent.lethal_shots.enabled&buff.lethal_shots.down)" );
   trickshots -> add_talent( this, "Multi-Shot" );
