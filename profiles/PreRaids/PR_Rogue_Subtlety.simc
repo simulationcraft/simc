@@ -51,6 +51,7 @@ actions+=/lights_judgment
 
 # Builders
 actions.build=shuriken_storm,if=spell_targets.shuriken_storm>=2|buff.the_dreadlords_deceit.stack>=29
+actions.build+=/shuriken_toss,if=azerite.sharpened_blades.rank>=3&buff.sharpened_blades.stack>=39
 actions.build+=/gloomblade
 actions.build+=/backstab
 
