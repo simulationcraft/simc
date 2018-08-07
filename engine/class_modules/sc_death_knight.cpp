@@ -8616,13 +8616,6 @@ double death_knight_t::composite_player_pet_damage_multiplier( const action_stat
 
   m *= 1.0 + spec.unholy_death_knight -> effectN( 3 ).percent();
 
-  // Pets are oversimming for unholy, doesn't seem to change with player gear (always around +27% damage)
-  // slapping a placeholder reduction until we find out where it actually comes from
-  if ( specialization() == DEATH_KNIGHT_UNHOLY )
-  {
-    m *= 1.0 / 1.27;
-  }
-
   return m;
 }
 
