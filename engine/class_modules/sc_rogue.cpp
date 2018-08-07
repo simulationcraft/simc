@@ -16,6 +16,7 @@ enum secondary_trigger_e
 {
   TRIGGER_NONE = 0U,
   TRIGGER_WEAPONMASTER,
+  TRIGGER_SECRET_TECHNIQUE,
   TRIGGER_SHURIKEN_TORNADO
 };
 
@@ -1264,6 +1265,8 @@ struct secondary_ability_trigger_t : public event_t
       action_state_t* s = attack -> get_state();
       s -> target = target;
       actions::rogue_attack_t::cast_state( s ) -> cp = cp;
+      // Calling snapshot_internal, snapshot_state would overwrite CP.
+      attack -> snapshot_internal( s, attack -> snapshot_flags, attack -> amount_type( s ) );
 
       attack -> pre_execute_state = s;
     }
@@ -3587,22 +3590,17 @@ struct secret_technique_t : public rogue_attack_t
 {
   struct secret_technique_attack_t : public rogue_attack_t
   {
-    secret_technique_t* parent_action;
-
     secret_technique_attack_t( const std::string& n, rogue_t* p, secret_technique_t* s ) :
-      rogue_attack_t( n, p, p -> find_spell( 280720 ) ),
-      parent_action( s )
+      rogue_attack_t( n, p, p -> find_spell( 280720 ) )
     {
       weapon = &(p -> main_hand_weapon);
       background = true;
       aoe = -1;
     }
 
-    double composite_da_multiplier( const action_state_t* state ) const override
+    double combo_point_da_multiplier( const action_state_t* state ) const override
     {
-      double m = rogue_attack_t::composite_da_multiplier( state );
-      m *= parent_action -> last_cast_cp;
-      return m;
+      return static_cast<double>( cast_state( state ) -> cp );
     }
 
     double composite_target_multiplier( player_t* target ) const override
@@ -3618,11 +3616,9 @@ struct secret_technique_t : public rogue_attack_t
 
   secret_technique_attack_t* player_attack;
   secret_technique_attack_t* clone_attack;
-  int last_cast_cp;
 
   secret_technique_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "secret_technique", p, p -> talent.secret_technique, options_str ),
-    last_cast_cp( 0 )
+    rogue_attack_t( "secret_technique", p, p -> talent.secret_technique, options_str )
   {
     requires_weapon = WEAPON_DAGGER;
     may_miss = false;
@@ -3640,11 +3636,10 @@ struct secret_technique_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    last_cast_cp = cast_state( execute_state ) -> cp;
+    int cp = cast_state( execute_state ) -> cp;
 
     // Hit of the main char happens right on cast.
-    player_attack -> set_target( execute_state -> target );
-    player_attack -> execute();
+    make_event<actions::secondary_ability_trigger_t>( *sim, execute_state -> target, player_attack, cp, TRIGGER_SECRET_TECHNIQUE );
 
     // The clones seem to hit 1s later (no time reference in spell data though)
     timespan_t delay = timespan_t::from_seconds( 1.0 );
@@ -3653,15 +3648,7 @@ struct secret_technique_t : public rogue_attack_t
     // Assuming effect #2 is the number of aditional clones
     for ( size_t i = 0; i < data().effectN( 2 ).base_value(); i++ )
     {
-      make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
-          .target( execute_state -> target )
-          .x( execute_state -> target -> x_position )
-          .y( execute_state -> target -> y_position )
-          .duration( delay )
-          .pulse_time( delay )
-          .start_time( sim -> current_time() )
-          .action( clone_attack )
-          .n_pulses( 1 ));
+      make_event<actions::secondary_ability_trigger_t>( *sim, execute_state -> target, clone_attack, cp, TRIGGER_SECRET_TECHNIQUE, delay );
     }
   }
 };
