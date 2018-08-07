@@ -1152,7 +1152,8 @@ struct hunter_main_pet_base_t : public hunter_pet_t
 
     buffs.beast_cleave =
       make_buff( this, "beast_cleave", find_spell( 118455 ) )
-        -> set_default_value( o() -> specs.beast_cleave -> effectN( 1 ).percent() );
+        -> set_default_value( o() -> specs.beast_cleave -> effectN( 1 ).percent() )
+        -> set_chance( o() -> specs.beast_cleave -> ok() );
 
     buffs.frenzy =
       make_buff( this, "frenzy", o() -> find_spell( 272790 ) )
