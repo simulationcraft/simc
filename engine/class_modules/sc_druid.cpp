@@ -7709,13 +7709,13 @@ void druid_t::apl_balance()
   default_list->add_action("use_items");
   default_list -> add_talent( this, "Warrior of Elune");
   default_list -> add_action("run_action_list,name=ed,if=equipped.the_emerald_dreamcatcher&active_enemies<=1");
-  default_list -> add_action("innervate,if=azerite.lively_spirit.enabled&(cooldown.incarnation.up|cooldown.celestial_alignment.remains<12)");
-  default_list -> add_action( "incarnation,if=astral_power>=40" );
+  default_list -> add_action("innervate,if=azerite.lively_spirit.enabled&(cooldown.incarnation.up|cooldown.celestial_alignment.remains<12)&(((raid_event.adds.duration%15)*(4)<(raid_event.adds.in%180))|(raid_event.adds.up))");
+  default_list -> add_action( "incarnation,if=astral_power>=40&(((raid_event.adds.duration%30)*(4)<(raid_event.adds.in%180))|(raid_event.adds.up))" );
   default_list -> add_action( this, "Celestial Alignment", "if=astral_power>=40&(!azerite.lively_spirit.enabled|buff.lively_spirit.up)" );
   default_list -> add_action("run_action_list,name=aoe,if=spell_targets.starfall>=3");
   default_list -> add_action("run_action_list,name=st");
 
-  ST -> add_talent( this, "Fury of Elune","if=(buff.celestial_alignment.up|buff.incarnation.up)|(cooldown.celestial_alignment.remains>30|cooldown.incarnation.remains>30)");
+  ST -> add_talent( this, "Fury of Elune","if=(((raid_event.adds.duration%8)*(4)<(raid_event.adds.in%60))|(raid_event.adds.up))&((buff.celestial_alignment.up|buff.incarnation.up)|(cooldown.celestial_alignment.remains>30|cooldown.incarnation.remains>30))");
   ST -> add_talent( this, "Force of Nature","if=(buff.celestial_alignment.up|buff.incarnation.up)|(cooldown.celestial_alignment.remains>30|cooldown.incarnation.remains>30)");
   ST -> add_action( this, "Moonfire", "target_if=refreshable,if=target.time_to_die>8");
   ST -> add_action( this, "Sunfire", "target_if=refreshable,if=target.time_to_die>8");
@@ -7731,7 +7731,7 @@ void druid_t::apl_balance()
   ST -> add_action( this, "Solar Wrath");
   ST -> add_action( this, "Moonfire");
 
-  AoE -> add_talent( this, "Fury of Elune", "if=(buff.celestial_alignment.up|buff.incarnation.up)|(cooldown.celestial_alignment.remains>30|cooldown.incarnation.remains>30)");
+  AoE -> add_talent( this, "Fury of Elune", "if=(((raid_event.adds.duration%8)*(4)<(raid_event.adds.in%60))|(raid_event.adds.up))&((buff.celestial_alignment.up|buff.incarnation.up)|(cooldown.celestial_alignment.remains>30|cooldown.incarnation.remains>30))");
   AoE -> add_talent( this, "Force of Nature","if=(buff.celestial_alignment.up|buff.incarnation.up)|(cooldown.celestial_alignment.remains>30|cooldown.incarnation.remains>30)");
   AoE -> add_action( this, "Sunfire", "target_if=refreshable,if=astral_power.deficit>7&target.time_to_die>4");
   AoE -> add_action( this, "Moonfire", "target_if=refreshable,if=astral_power.deficit>7&target.time_to_die>4");
