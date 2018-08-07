@@ -934,6 +934,10 @@ void retaliatory_fury( special_effect_t& effect )
   // Replace the driver spell, the azerite power does not hold the RPPM value
   effect.spell_id = driver -> id();
 
+  // 07-08-2018: this seems to have 2 rppm in pve
+  if ( ! effect.player -> sim -> pvp_crit )
+    effect.ppm_ = -2.0;
+
   new retaliatory_fury_proc_cb_t( effect, { { mastery, absorb } } );
 }
 
@@ -981,6 +985,10 @@ void glory_in_battle( special_effect_t& effect )
 
   // Replace the driver spell, the azerite power does not hold the RPPM value
   effect.spell_id = driver -> id();
+
+  // 07-08-2018: this seems to have 2 rppm in pve
+  if ( ! effect.player -> sim -> pvp_crit )
+    effect.ppm_ = -2.0;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
