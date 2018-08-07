@@ -9435,6 +9435,7 @@ void monk_t::apl_combat_windwalker()
   //                        );
   st->add_action(
       this, "Rising Sun Kick",
+
       "target_if=min:debuff.mark_of_the_crane.remains,if=cooldown.serenity.remains>=5|(!talent.serenity.enabled)",
       "Cast RSK if:\n# - You are using SEF OR you are using Serenity and 5 or more seconds remain on the cooldown of "
       "Serenity" );
@@ -9451,7 +9452,7 @@ void monk_t::apl_combat_windwalker()
   //                        "Cast spinning_crane_kick if:\n# - Previous cast was not spinning_crane_kick\n# - You have 3
   //                        or more active enemies (NOTE: Does not include stacks. May be redundant since actions.st
   //                        should not be called given the earlier check)" );
-  st->add_action( this, "Blackout Kick" );
+  st->add_action( this, "Blackout Kick", "if=!prev_gcd.1.blackout_kick" );
   st->add_talent( this, "Chi Wave" );
   st->add_talent(
       this, "Chi Burst", "if=energy.time_to_max>1&talent.serenity.enabled",
