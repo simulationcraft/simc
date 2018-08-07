@@ -5507,6 +5507,9 @@ void hunter_t::apl_mm()
 {
   action_priority_list_t* default_list = get_action_priority_list( "default" );
   action_priority_list_t* precombat    = get_action_priority_list( "precombat" );
+  action_priority_list_t* cds          = get_action_priority_list( "cds" );
+  action_priority_list_t* st           = get_action_priority_list( "st" );
+  action_priority_list_t* trickshots   = get_action_priority_list( "trickshots" );
 
   // Precombat actions
   precombat -> add_talent( this, "Hunter's Mark" );
@@ -5514,41 +5517,49 @@ void hunter_t::apl_mm()
   precombat -> add_action( this, "Aimed Shot", "if=active_enemies<3" );
   precombat -> add_talent( this, "Explosive Shot", "if=active_enemies>2" );
 
-  default_list -> add_action( "auto_shot" );
-  default_list -> add_action( this, "Counter Shot", "if=equipped.sephuzs_secret&target.debuff.casting.react&cooldown.buff_sephuzs_secret.up&!buff.sephuzs_secret.up" );
-
-  // Item Actions
-  default_list -> add_action( "use_items" );
-
-  default_list -> add_talent( this, "Hunter's Mark", "if=debuff.hunters_mark.down" );
-  default_list -> add_talent( this, "Double Tap", "if=cooldown.rapid_fire.remains<gcd" );
+  cds -> add_talent( this, "Hunter's Mark", "if=debuff.hunters_mark.down" );
+  cds -> add_talent( this, "Double Tap", "if=cooldown.rapid_fire.remains<gcd" );
 
   // Racials
   for ( std::string racial : { "berserking", "blood_fury", "ancestral_call", "fireblood" } )
-    default_list -> add_action( racial + ",if=cooldown.trueshot.remains>30" );
-  default_list -> add_action( "lights_judgment" );
+    cds -> add_action( racial + ",if=cooldown.trueshot.remains>30" );
+  cds -> add_action( "lights_judgment" );
 
   // In-combat potion
-  default_list -> add_action( "potion,if=(buff.trueshot.react&buff.bloodlust.react)|((consumable.prolonged_power&target.time_to_die<62)|target.time_to_die<31)" );
+  cds -> add_action( "potion,if=(buff.trueshot.react&buff.bloodlust.react)|((consumable.prolonged_power&target.time_to_die<62)|target.time_to_die<31)" );
+  cds -> add_action( this, "Trueshot", "if=cooldown.aimed_shot.charges<1" );
+  
+  st -> add_action( this, "Arcane Shot", "if=buff.precise_shots.up&(cooldown.aimed_shot.full_recharge_time<gcd*buff.precise_shots.stack+action.aimed_shot.cast_time|buff.lethal_shots.up)" );
+  st -> add_action( this, "Aimed Shot", "if=buff.precise_shots.down&(buff.double_tap.down&full_recharge_time<cast_time+gcd|buff.lethal_shots.up)" );
+  st -> add_action( this, "Rapid Fire", "if=!talent.lethal_shots.enabled|buff.lethal_shots.up|azerite.in_the_rhythm.rank>1" );
+  st -> add_talent( this, "Explosive Shot" );
+  st -> add_talent( this, "Piercing Shot" );
+  st -> add_talent( this, "A Murder Of Crows" );
+  st -> add_talent( this, "Serpent Sting", "if=refreshable" );
+  st -> add_action( this, "Aimed Shot", "if=buff.precise_shots.down&(!talent.steady_focus.enabled&focus>70|!talent.lethal_shots.enabled|buff.lethal_shots.up)" );
+  st -> add_action( this, "Arcane Shot", "if=buff.precise_shots.up|focus>60&(!talent.lethal_shots.enabled|buff.lethal_shots.up)" );
+  st -> add_action( this, "Steady Shot", "if=focus+cast_regen<focus.max|(talent.lethal_shots.enabled&buff.lethal_shots.down)" );
+  st -> add_action( this, "Arcane Shot" );
+
+  trickshots -> add_talent( this, "Barrage" );
+  trickshots -> add_talent( this, "Explosive Shot" );
+  trickshots -> add_action( this, "Rapid Fire", "if=buff.trick_shots.up&!talent.barrage.enabled" );
+  trickshots -> add_action( this, "Aimed Shot", "if=buff.trick_shots.up&buff.precise_shots.down&buff.double_tap.down&(!talent.lethal_shots.enabled|buff.lethal_shots.up|focus>60)" );
+  trickshots -> add_action( this, "Rapid Fire", "if=buff.trick_shots.up" );
+  trickshots -> add_action( this, "Multi-Shot", "if=buff.trick_shots.down|(buff.precise_shots.up|buff.lethal_shots.up)&(!talent.barrage.enabled&buff.steady_focus.down&focus>45|focus>70)" );
+  trickshots -> add_talent( this, "Piercing Shot" );
+  trickshots -> add_talent( this, "A Murder Of Crows" );
+  trickshots -> add_talent( this, "Serpent Sting", "if=refreshable" );
+  trickshots -> add_action( this, "Steady Shot", "if=focus+cast_regen<focus.max|(talent.lethal_shots.enabled&buff.lethal_shots.down)" );
+  trickshots -> add_talent( this, "Multi-Shot" );
 
   // Generic APL
-  default_list -> add_action( this, "Trueshot", "if=cooldown.aimed_shot.charges<1" );
-  default_list -> add_talent( this, "Barrage", "if=active_enemies>1" );
-  default_list -> add_talent( this, "Explosive Shot", "if=active_enemies>1" );
-  default_list -> add_action( this, "Multi-Shot", "if=active_enemies>2&buff.precise_shots.up&cooldown.aimed_shot.full_recharge_time<gcd*buff.precise_shots.stack+action.aimed_shot.cast_time" );
-  default_list -> add_action( this, "Arcane Shot", "if=active_enemies<3&buff.precise_shots.up&cooldown.aimed_shot.full_recharge_time<gcd*buff.precise_shots.stack+action.aimed_shot.cast_time" );
-  default_list -> add_action( this, "Aimed Shot", "if=buff.precise_shots.down&buff.double_tap.down&(active_enemies>2&buff.trick_shots.up|active_enemies<3&full_recharge_time<cast_time+gcd)" );
-  default_list -> add_action( this, "Rapid Fire", "if=active_enemies<3|buff.trick_shots.up" );
-  default_list -> add_talent( this, "Explosive Shot" );
-  default_list -> add_talent( this, "Barrage,if=active_enemies>1" );
-  default_list -> add_talent( this, "Piercing Shot" );
-  default_list -> add_talent( this, "A Murder of Crows" );
-  default_list -> add_action( this, "Multi-Shot", "if=active_enemies>2&buff.trick_shots.down" );
-  default_list -> add_action( this, "Aimed Shot", "if=buff.precise_shots.down&(focus>70|buff.steady_focus.down)" );
-  default_list -> add_action( this, "Multi-Shot", "if=active_enemies>2&(focus>90|buff.precise_shots.up&(focus>70|buff.steady_focus.down&focus>45))" );
-  default_list -> add_action( this, "Arcane Shot", "if=active_enemies<3&(focus>70|buff.steady_focus.down&(focus>60|buff.precise_shots.up))" );
-  default_list -> add_talent( this, "Serpent Sting", "if=refreshable" );
-  default_list -> add_action( this, "Steady Shot" );
+  default_list -> add_action( "auto_shot" );
+  default_list -> add_action( this, "Counter Shot", "if=equipped.sephuzs_secret&target.debuff.casting.react&cooldown.buff_sephuzs_secret.up&!buff.sephuzs_secret.up" );
+  default_list -> add_action( "use_items" );
+  default_list -> add_action( "call_action_list,name=cds" );
+  default_list -> add_action( "call_action_list,name=st,if=active_enemies<2" );
+  default_list -> add_action( "call_action_list,name=trickshots,if=active_enemies>2" );
 }
 
 // Survival Action List ===================================================================
