@@ -37,13 +37,13 @@ actions+=/lights_judgment,if=buff.celestial_alignment.up|buff.incarnation.up
 actions+=/use_items
 actions+=/warrior_of_elune
 actions+=/run_action_list,name=ed,if=equipped.the_emerald_dreamcatcher&active_enemies<=1
-actions+=/innervate,if=azerite.lively_spirit.enabled&(cooldown.incarnation.up|cooldown.celestial_alignment.remains<12)
-actions+=/incarnation,if=astral_power>=40
-actions+=/celestial_alignment,if=astral_power>=40&(!azerite.lively_spirit.enabled|buff.lively_spirit.up)
+actions+=/innervate,if=azerite.lively_spirit.enabled&(cooldown.incarnation.up|cooldown.celestial_alignment.remains<12)&(((raid_event.adds.duration%15)*(4)<(raid_event.adds.in%180))|(raid_event.adds.up))
+actions+=/incarnation,if=astral_power>=40&(((raid_event.adds.duration%30)*(4)<(raid_event.adds.in%180))|(raid_event.adds.up))
+actions+=/celestial_alignment,if=astral_power>=40&(!azerite.lively_spirit.enabled|buff.lively_spirit.up)&(((raid_event.adds.duration%15)*(4)<(raid_event.adds.in%180))|(raid_event.adds.up))
 actions+=/run_action_list,name=aoe,if=spell_targets.starfall>=3
 actions+=/run_action_list,name=st
 
-actions.aoe=fury_of_elune,if=(buff.celestial_alignment.up|buff.incarnation.up)|(cooldown.celestial_alignment.remains>30|cooldown.incarnation.remains>30)
+actions.aoe=fury_of_elune,if=(((raid_event.adds.duration%8)*(4)<(raid_event.adds.in%60))|(raid_event.adds.up))&((buff.celestial_alignment.up|buff.incarnation.up)|(cooldown.celestial_alignment.remains>30|cooldown.incarnation.remains>30))
 actions.aoe+=/force_of_nature,if=(buff.celestial_alignment.up|buff.incarnation.up)|(cooldown.celestial_alignment.remains>30|cooldown.incarnation.remains>30)
 actions.aoe+=/sunfire,target_if=refreshable,if=astral_power.deficit>7&target.time_to_die>4
 actions.aoe+=/moonfire,target_if=refreshable,if=astral_power.deficit>7&target.time_to_die>4
@@ -76,7 +76,7 @@ actions.ed+=/solar_wrath,if=buff.solar_empowerment.up&buff.the_emerald_dreamcatc
 actions.ed+=/starsurge,if=(buff.the_emerald_dreamcatcher.up&buff.the_emerald_dreamcatcher.remains<gcd.max)|astral_power>=50
 actions.ed+=/solar_wrath
 
-actions.st=fury_of_elune,if=(buff.celestial_alignment.up|buff.incarnation.up)|(cooldown.celestial_alignment.remains>30|cooldown.incarnation.remains>30)
+actions.st=fury_of_elune,if=(((raid_event.adds.duration%8)*(4)<(raid_event.adds.in%60))|(raid_event.adds.up))&((buff.celestial_alignment.up|buff.incarnation.up)|(cooldown.celestial_alignment.remains>30|cooldown.incarnation.remains>30))
 actions.st+=/force_of_nature,if=(buff.celestial_alignment.up|buff.incarnation.up)|(cooldown.celestial_alignment.remains>30|cooldown.incarnation.remains>30)
 actions.st+=/moonfire,target_if=refreshable,if=target.time_to_die>8
 actions.st+=/sunfire,target_if=refreshable,if=target.time_to_die>8
