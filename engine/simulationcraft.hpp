@@ -4473,91 +4473,95 @@ public:
   pet_t( sim_t* sim, player_t* owner, const std::string& name, bool guardian = false, bool dynamic = false );
   pet_t( sim_t* sim, player_t* owner, const std::string& name, pet_e pt, bool guardian = false, bool dynamic = false );
 
-  virtual void create_options() override;
-  virtual void create_buffs() override;
-  virtual void init() override;
-  virtual void init_base_stats() override;
-  virtual void init_target() override;
-  virtual void init_finished() override;
-  virtual void reset() override;
+  void create_options() override;
+  void create_buffs() override;
+  void init() override;
+  void init_base_stats() override;
+  void init_target() override;
+  void init_finished() override;
+  void reset() override;
+  void assess_damage( school_e, dmg_e, action_state_t* s ) override;
+
   virtual void summon( timespan_t duration = timespan_t::zero() );
   virtual void dismiss( bool expired = false );
-  virtual void assess_damage( school_e, dmg_e, action_state_t* s ) override;
 
-  virtual const char* name() const override { return full_name_str.c_str(); }
-  virtual const player_t* get_owner_or_self() const override
+  const char* name() const override { return full_name_str.c_str(); }
+  const player_t* get_owner_or_self() const override
   { return owner; }
 
   const spell_data_t* find_pet_spell( const std::string& name );
 
-  virtual double composite_attribute( attribute_e attr ) const override;
-  virtual double composite_player_multiplier( school_e ) const override;
+  double composite_attribute( attribute_e attr ) const override;
+  double composite_player_multiplier( school_e ) const override;
 
   // new pet scaling by Ghostcrawler, see http://us.battle.net/wow/en/forum/topic/5889309137?page=49#977
   // http://us.battle.net/wow/en/forum/topic/5889309137?page=58#1143
 
   double hit_exp() const;
 
-  virtual double composite_movement_speed() const override
+  double composite_movement_speed() const override
   { return owner -> composite_movement_speed(); }
 
-  virtual double composite_melee_expertise( const weapon_t* ) const override
+  double composite_melee_expertise( const weapon_t* ) const override
   { return hit_exp(); }
-  virtual double composite_melee_hit() const override
+  double composite_melee_hit() const override
   { return hit_exp(); }
-  virtual double composite_spell_hit() const override
+  double composite_spell_hit() const override
   { return hit_exp() * 2.0; }
 
   double pet_crit() const;
 
-  virtual double composite_melee_crit_chance() const override
+  double composite_melee_crit_chance() const override
   { return pet_crit(); }
-  virtual double composite_spell_crit_chance() const override
+  double composite_spell_crit_chance() const override
   { return pet_crit(); }
 
-  virtual double composite_melee_speed() const override
+  double composite_melee_speed() const override
   { return owner -> cache.attack_speed(); }
 
-  virtual double composite_melee_haste() const override
+  double composite_melee_haste() const override
   { return owner -> cache.attack_haste(); }
 
-  virtual double composite_spell_haste() const override
+  double composite_spell_haste() const override
   { return owner -> cache.spell_haste(); }
 
-  virtual double composite_spell_speed() const override
+  double composite_spell_speed() const override
   { return owner -> cache.spell_speed(); }
 
-  virtual double composite_bonus_armor() const override
+  double composite_bonus_armor() const override
   { return owner -> cache.bonus_armor(); }
 
-  virtual double composite_damage_versatility() const override
+  double composite_damage_versatility() const override
   { return owner -> cache.damage_versatility(); }
 
-  virtual double composite_heal_versatility() const override
+  double composite_heal_versatility() const override
   { return owner -> cache.heal_versatility(); }
 
-  virtual double composite_mitigation_versatility() const override
+  double composite_mitigation_versatility() const override
   { return owner -> cache.mitigation_versatility(); }
 
-  virtual double composite_melee_attack_power() const override;
+  double composite_attack_power_multiplier() const override
+  { return owner->composite_attack_power_multiplier(); }
 
-  virtual double composite_spell_power( school_e school ) const override;
+  double composite_melee_attack_power() const override;
 
-  virtual double composite_player_critical_damage_multiplier( const action_state_t* s ) const override;
+  double composite_spell_power( school_e school ) const override;
+
+  double composite_player_critical_damage_multiplier( const action_state_t* s ) const override;
 
   // Assuming diminishing returns are transfered to the pet as well
-  virtual double composite_dodge() const override
+  double composite_dodge() const override
   { return owner -> cache.dodge(); }
 
-  virtual double composite_parry() const override
+  double composite_parry() const override
   { return owner -> cache.parry(); }
 
   // Influenced by coefficients [ 0, 1 ]
-  virtual double composite_armor() const override
+  double composite_armor() const override
   { return owner -> cache.armor() * owner_coeff.armor; }
 
-  virtual void init_resources( bool force ) override;
-  virtual bool requires_data_collection() const override
+  void init_resources( bool force ) override;
+  bool requires_data_collection() const override
   { return active_during_iteration || ( dynamic && sim -> report_pets_separately == 1 ); }
 
   timespan_t composite_active_time() const override;
