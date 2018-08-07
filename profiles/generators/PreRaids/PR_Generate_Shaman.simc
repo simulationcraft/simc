@@ -34,7 +34,7 @@ role=attack
 position=back
 talents=3101033
 
-head=sethraliss_fanged_helm,id=159374,bonus_id=4779/1512/4786/4775,azerite_powers=420/30/0/13
+head=hood_of_the_dark_reaper,id=159391,bonus_id=4779/1512/4786/4775,azerite_powers=416/30/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
 shoulder=crashguard_spaulders,id=159360,bonus_id=4779/1512/4786/4775,azerite_powers=447/22/0/13
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
@@ -48,7 +48,7 @@ finger1=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant
 finger2=ritual_binders_ring,id=159459,bonus_id=4779/1512/4786,enchant=pact_of_haste
 trinket1=galecallers_boon,id=159614,bonus_id=4779/1512/4786
 trinket2=deadeye_spyglass,id=159623,bonus_id=4779/1512/4786
-main_hand=soulcharmers_bludgeon,id=159661,bonus_id=4779/1512/4786,enchant=galeforce_striking
-off_hand=soulcharmers_bludgeon,id=159661,bonus_id=4779/1512/4786,enchant=quick_navigation
+main_hand=bilestained_crawg_tusks,id=159653,bonus_id=4779/1512/4786,enchant=galeforce_striking
+off_hand=bilestained_crawg_tusks,id=159653,bonus_id=4779/1512/4786,enchant=quick_navigation
 
 save=PR_Shaman_Enhancement.simc
