@@ -660,7 +660,9 @@ bool option_db_t::parse_file( std::istream& input )
       continue;
     }
 
-    auto substring = buffer.substr(std::distance( it, buffer.begin() ));
+    auto len = std::distance( buffer.begin(), it );
+    assert(len >= 0 && as<size_t>(len) <= buffer.size());
+    auto substring = buffer.substr(len);
     parse_line( io::maybe_latin1_to_utf8( substring ) );
   }
   return true;
