@@ -1184,7 +1184,7 @@ std::string paladin_t::default_food() const
                                  (true_level > 100) ? "azshari_salad" :
                                  (true_level >= 90) ? "sleeper_sushi" :
                                  (true_level >= 85) ? "black_pepper_ribs_and_shrimp" :
-                                 (true_level >= 80) ? "beer_basted_crocolisk" :
+                                 (true_level >= 80) ? "beerbasted_crocolisk" :
                                  "disabled";
 
   bool dps = (primary_role() == ROLE_ATTACK) || (talents.seraphim -> ok());
