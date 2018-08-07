@@ -6707,22 +6707,22 @@ std::string mage_t::default_potion() const
                                           "prolonged_power";
 
   // TODO: Check Rising Death once it's implemented
-  return ( true_level >= 120 ) ? "battle_potion_of_intellect" :
-         ( true_level >= 110 ) ? lvl110_potion :
-         ( true_level >= 100 ) ? "draenic_intellect" :
-         ( true_level >=  90 ) ? "jade_serpent" :
-         ( true_level >=  85 ) ? "volcanic" :
-                                 "disabled";
+  return ( true_level > 110 ) ? "battle_potion_of_intellect" :
+         ( true_level > 100 ) ? lvl110_potion :
+         ( true_level >  90 ) ? "draenic_intellect" :
+         ( true_level >  85 ) ? "jade_serpent" :
+         ( true_level >  80 ) ? "volcanic" :
+                                "disabled";
 }
 
 std::string mage_t::default_flask() const
 {
-  return ( true_level >= 120 ) ? "endless_fathoms" :
-         ( true_level >= 110 ) ? "whispered_pact" :
-         ( true_level >= 100 ) ? "greater_draenic_intellect_flask" :
-         ( true_level >=  90 ) ? "warm_sun" :
-         ( true_level >=  85 ) ? "draconic_mind" :
-                                 "disabled";
+  return ( true_level > 110 ) ? "endless_fathoms" :
+         ( true_level > 100 ) ? "whispered_pact" :
+         ( true_level >  90 ) ? "greater_draenic_intellect_flask" :
+         ( true_level >  85 ) ? "warm_sun" :
+         ( true_level >  80 ) ? "draconic_mind" :
+                                "disabled";
 }
 
 std::string mage_t::default_food() const
@@ -6732,12 +6732,12 @@ std::string mage_t::default_food() const
     ( specialization() == MAGE_FIRE   ) ? "pickled_eel" :
                                           "salty_squid_roll";
 
-  return ( true_level >= 120 ) ? "bountiful_captains_feast" :
-         ( true_level >= 110 ) ? "lemon_herb_filet" :
-         ( true_level >= 100 ) ? lvl100_food :
-         ( true_level >=  90 ) ? "mogu_fish_stew" :
-         ( true_level >=  85 ) ? "severed_sagefish_head" :
-                                 "disabled";
+  return ( true_level > 110 ) ? "bountiful_captains_feast" :
+         ( true_level > 100 ) ? "lemon_herb_filet" :
+         ( true_level >  90 ) ? lvl100_food :
+         ( true_level >  89 ) ? "mogu_fish_stew" :
+         ( true_level >  80 ) ? "severed_sagefish_head" :
+                                "disabled";
 }
 
 std::string mage_t::default_rune() const
