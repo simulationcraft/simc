@@ -1882,17 +1882,6 @@ struct ghoul_pet_t : public dt_pet_t
       super( player, "claw", player -> find_spell( 91776 ), options_str, false )
     { triggers_infected_claws = true; }
 
-    double action_multiplier() const override
-    {
-      double am = super::action_multiplier();
-
-      if ( p() -> o() -> mastery.dreadblade -> ok() )
-      {
-        am *= 1.0 + p() -> o() -> cache.mastery_value();
-      }
-
-      return am;
-    }
   };
 
   struct sweeping_claws_t : public dt_melee_ability_t<ghoul_pet_t>
