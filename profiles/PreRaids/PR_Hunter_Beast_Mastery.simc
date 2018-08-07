@@ -52,27 +52,27 @@ actions+=/barbed_shot,if=pet.cat.buff.frenzy.down&charges_fractional>1.4|full_re
 actions+=/multishot,if=spell_targets>1&(pet.cat.buff.beast_cleave.remains<gcd.max|pet.cat.buff.beast_cleave.down)
 actions+=/cobra_shot,if=(active_enemies<2|cooldown.kill_command.remains>focus.time_to_max)&(buff.bestial_wrath.up&active_enemies>1|cooldown.kill_command.remains>1+gcd&cooldown.bestial_wrath.remains>focus.time_to_max|focus-cost+focus.regen*(cooldown.kill_command.remains-1)>action.kill_command.cost)
 
-head=coif_of_the_court_spider,id=159358,bonus_id=4779/1512/4786/4775,azerite_powers=161/30/0/13
+head=coif_of_the_court_spider,id=159358,bonus_id=4779/1512/4786/4775,azerite_powers=366/22/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=
-shoulders=gaping_maw_shoulderguard,id=159352,bonus_id=4779/1512/4786/4775,azerite_powers=161/461/0/13
-back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-chest=loablessed_chestguard,id=158355,bonus_id=4779/1512/4786/4775,azerite_powers=107/461/0/13
-wrists=arcglass_bindings,id=159380,bonus_id=4779/1512/4786
-hands=water_shapers,id=159366,bonus_id=4779/1512/4786
-waist=anchor_chain_girdle,id=159386,bonus_id=4779/1512/4786
-legs=corpuscular_greaves,id=159384,bonus_id=4779/1512/4786
-feet=souldrifting_sabatons,id=158308,bonus_id=4779/1512/4786
-finger1=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
+shoulders=gaping_maw_shoulderguard,id=159352,bonus_id=4779/1512/4786/4775,azerite_powers=161/22/0/13
+back=drape_of_the_loyal_vassal,id=158375,bonus_id=4779/1512/4786
+chest=corrupted_hexxers_vestments,id=159370,bonus_id=4779/1512/4786/4775,azerite_powers=161/30/0/13
+wrists=slaughterhousechain_bracers,id=159397,bonus_id=4779/1512/4786
+hands=sepulchral_constructs_gloves,id=160213,bonus_id=4779/1512/4786
+waist=shalebiter_interlinked_chain,id=159361,bonus_id=4779/1512/4786
+legs=sea_priests_greaves,id=159359,bonus_id=4779/1512/4786
+feet=surefoot_sabatons,id=159379,bonus_id=4779/1512/4786
+finger1=footbomb_championship_ring,id=159462,bonus_id=4779/1512/4786,enchant=pact_of_haste
 finger2=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
 trinket1=galecallers_boon,id=159614,bonus_id=4779/1512/4786
-trinket2=deadeye_spyglass,id=159623,bonus_id=4779/1512/4786
-main_hand=snakebite_recurve,id=159637,bonus_id=4779/1512/4786,enchant=quick_navigation
+trinket2=lustrous_golden_plumage,id=159617,bonus_id=4779/1512/4786
+main_hand=hallowed_ossein_longbow,id=158711,bonus_id=4779/1512/4786,enchant=galeforce_striking
 
 # Gear Summary
 # gear_ilvl=341.47
 # gear_agility=2883
 # gear_stamina=4465
-# gear_crit_rating=1028
-# gear_haste_rating=1242
-# gear_mastery_rating=209
+# gear_crit_rating=456
+# gear_haste_rating=985
+# gear_mastery_rating=1036
 # gear_armor=2059
