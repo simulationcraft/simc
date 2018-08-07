@@ -15,6 +15,7 @@ enum
 enum secondary_trigger_e
 {
   TRIGGER_NONE = 0U,
+  TRIGGER_SINISTER_STRIKE,
   TRIGGER_WEAPONMASTER,
   TRIGGER_SECRET_TECHNIQUE,
   TRIGGER_SHURIKEN_TORNADO
@@ -522,6 +523,7 @@ struct rogue_t : public player_t
     proc_t* seal_fate;
 
     // Outlaw
+    proc_t* sinister_strike_extra_attack;
     proc_t* roll_the_bones_1;
     proc_t* roll_the_bones_2;
     proc_t* roll_the_bones_3;
@@ -4007,41 +4009,11 @@ struct shuriken_toss_t : public rogue_attack_t
 
 struct sinister_strike_t : public rogue_attack_t
 {
-  struct sinister_strike_proc_event_t : public event_t
-  {
-    rogue_t* rogue;
-    sinister_strike_t* spell;
-    player_t* target;
-
-    sinister_strike_proc_event_t( rogue_t* p, sinister_strike_t* s, player_t* t ) :
-      event_t( *p, s -> delay ), rogue( p ), spell( s ), target( t )
-    {
-    }
-
-    const char* name() const override
-    { return "sinister_strike_proc_execute"; }
-
-    void execute() override
-    {
-      spell -> set_target( target );
-      spell -> execute();
-      spell -> sinister_strike_proc_event = nullptr;
-
-      if ( rogue -> sets -> has_set_bonus( ROGUE_OUTLAW, T21, B2 ) )
-      {
-        rogue -> buffs.t21_2pc_outlaw -> trigger();
-      }
-
-      rogue -> buffs.storm_of_steel -> trigger();
-    }
-  };
-
-  sinister_strike_proc_event_t* sinister_strike_proc_event;
-  timespan_t delay;
+  timespan_t extra_attack_delay;
 
   sinister_strike_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "sinister_strike", p, p -> find_specialization_spell( "Sinister Strike" ), options_str ),
-    sinister_strike_proc_event( nullptr ), delay( data().duration() )
+    extra_attack_delay( data().duration() )
   {
   }
 
@@ -4051,18 +4023,10 @@ struct sinister_strike_t : public rogue_attack_t
            p() -> sets -> set( ROGUE_OUTLAW, T19, B2 ) -> effectN( 1 ).percent();
   }
 
-  void reset() override
-  {
-    rogue_attack_t::reset();
-    sinister_strike_proc_event = nullptr;
-  }
-
   double cost() const override
   {
-    if ( p() -> buffs.t19_4pc_outlaw -> check() || sinister_strike_proc_event )
-    {
+    if ( p() -> buffs.t19_4pc_outlaw -> check() || secondary_trigger == TRIGGER_SINISTER_STRIKE )
       return 0;
-    }
 
     return rogue_attack_t::cost();
   }
@@ -4071,9 +4035,8 @@ struct sinister_strike_t : public rogue_attack_t
   {
     // Do not grant CP on extra proc event
     // This was changed back as of 2018-07-09, commenting it out in case the revert is reverted.
-    /*if ( sinister_strike_proc_event )
+    /*if ( secondary_trigger == TRIGGER_SINISTER_STRIKE )
       return 0;*/
-
     return rogue_attack_t::composite_energize_amount( state );
   }
 
@@ -4088,9 +4051,7 @@ struct sinister_strike_t : public rogue_attack_t
   double bonus_da( const action_state_t* s ) const override
   {
     double b = rogue_attack_t::bonus_da( s );
-
     b += p() -> buffs.snake_eyes -> value();
-
     return b;
   }
 
@@ -4105,15 +4066,26 @@ struct sinister_strike_t : public rogue_attack_t
 
     p() -> buffs.snake_eyes -> decrement();
 
-    if ( ! sinister_strike_proc_event &&
+    if ( secondary_trigger != TRIGGER_SINISTER_STRIKE &&
          ( p() -> buffs.opportunity -> trigger( 1, buff_t::DEFAULT_VALUE(), sinister_strike_proc_chance() ) ) )
     {
-      sinister_strike_proc_event = make_event<sinister_strike_proc_event_t>( *sim, p(), this, execute_state -> target );
+      make_event<actions::secondary_ability_trigger_t>( *sim, execute_state -> target, this, 0, TRIGGER_SINISTER_STRIKE, extra_attack_delay );
+      p() -> procs.sinister_strike_extra_attack -> occur();
+    }
+
+    if ( secondary_trigger == TRIGGER_SINISTER_STRIKE )
+    {
+      if ( p() -> sets -> has_set_bonus( ROGUE_OUTLAW, T21, B2 ) )
+      {
+        p() -> buffs.t21_2pc_outlaw -> trigger();
+      }
+
+      p() -> buffs.storm_of_steel -> trigger();
     }
 
     p() -> buffs.t19_4pc_outlaw -> decrement();
 
-    // ! sinister_strike_proc_event &&
+    // secondary_trigger != TRIGGER_SINISTER_STRIKE &&
     if ( p() -> buffs.broadside -> up() )
     {
       p() -> trigger_combo_point_gain( p() -> buffs.broadside -> data().effectN( 2 ).base_value(),
@@ -7108,18 +7080,19 @@ void rogue_t::init_procs()
 {
   player_t::init_procs();
 
-  procs.seal_fate                = get_proc( "Seal Fate"               );
-  procs.weaponmaster             = get_proc( "Weaponmaster"            );
+  procs.seal_fate                    = get_proc( "Seal Fate"                    );
+  procs.weaponmaster                 = get_proc( "Weaponmaster"                 );
 
-  procs.roll_the_bones_1         = get_proc( "Roll the Bones: 1 buff"  );
-  procs.roll_the_bones_2         = get_proc( "Roll the Bones: 2 buffs" );
-  procs.roll_the_bones_3         = get_proc( "Roll the Bones: 3 buffs" );
-  procs.roll_the_bones_4         = get_proc( "Roll the Bones: 4 buffs" );
-  procs.roll_the_bones_5         = get_proc( "Roll the Bones: 5 buffs" );
-  procs.roll_the_bones_6         = get_proc( "Roll the Bones: 6 buffs" );
-  procs.t21_4pc_outlaw           = get_proc( "Tier 21 4PC Set Bonus"   );
+  procs.sinister_strike_extra_attack = get_proc( "Sinister Strike Extra Attack" );
+  procs.roll_the_bones_1             = get_proc( "Roll the Bones: 1 buff"       );
+  procs.roll_the_bones_2             = get_proc( "Roll the Bones: 2 buffs"      );
+  procs.roll_the_bones_3             = get_proc( "Roll the Bones: 3 buffs"      );
+  procs.roll_the_bones_4             = get_proc( "Roll the Bones: 4 buffs"      );
+  procs.roll_the_bones_5             = get_proc( "Roll the Bones: 5 buffs"      );
+  procs.roll_the_bones_6             = get_proc( "Roll the Bones: 6 buffs"      );
+  procs.t21_4pc_outlaw               = get_proc( "Tier 21 4PC Set Bonus"        );
 
-  procs.deepening_shadows        = get_proc( "Deepening Shadows"       );
+  procs.deepening_shadows            = get_proc( "Deepening Shadows"            );
 }
 
 // rogue_t::init_scaling ====================================================
