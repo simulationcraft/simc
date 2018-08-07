@@ -2106,7 +2106,12 @@ void sim_t::init_fight_style()
   }
   else if ( util::str_compare_ci( fight_style, "CleaveAdd" ) || util::str_compare_ci(fight_style, "Cleave_Add" ) )
   {
-    raid_events_str = "adds,cooldown=25,duration=13,first_pct=95,count=1";
+    auto first_and_duration = static_cast<unsigned>( max_time.total_seconds() * 0.05 );
+    auto cooldown = static_cast<unsigned>( max_time.total_seconds() * 0.075 );
+    auto last = static_cast<unsigned>( max_time.total_seconds() * 0.90 );
+    
+    raid_events_str += fmt::format( "/adds,count=1,first={},cooldown={},duration={},last={}",
+                                     first_and_duration, cooldown, first_and_duration, last );
   }
   else if ( util::str_compare_ci( fight_style, "HelterSkelter" ) || util::str_compare_ci( fight_style, "Helter_Skelter" ) )
   {
