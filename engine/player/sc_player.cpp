@@ -2985,6 +2985,11 @@ double player_t::composite_attack_power_multiplier() const
 {
   double m = current.attack_power_multiplier;
 
+  if ( is_pet() || is_enemy() )
+  {
+    return 1.0;
+  }
+
   m *= 1.0 + sim->auras.battle_shout->check_value();
 
   return m;
