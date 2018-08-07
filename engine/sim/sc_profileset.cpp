@@ -522,6 +522,7 @@ bool profilesets_t::parse( sim_t* sim )
     if ( sim -> canceled )
     {
       set_state( DONE );
+      m_control.notify_one();
       return false;
     }
 
@@ -544,6 +545,7 @@ bool profilesets_t::parse( sim_t* sim )
     if ( control == nullptr )
     {
       set_state( DONE );
+      m_control.notify_one();
       return false;
     }
 
@@ -575,6 +577,7 @@ bool profilesets_t::parse( sim_t* sim )
       std::cerr <<  "ERROR! Profileset '" << profileset_name << "' Setup failure: "
                 << e.what() << std::endl;
       set_state( DONE );
+      m_control.notify_one();
       return false;
     }
 
