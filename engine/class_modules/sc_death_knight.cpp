@@ -1881,6 +1881,18 @@ struct ghoul_pet_t : public dt_pet_t
     claw_t( ghoul_pet_t* player, const std::string& options_str ) :
       super( player, "claw", player -> find_spell( 91776 ), options_str, false )
     { triggers_infected_claws = true; }
+
+    double action_multiplier() const override
+    {
+      double am = super::action_multiplier();
+
+      if ( p() -> o() -> mastery.dreadblade -> ok() )
+      {
+        am *= 1.0 + p() -> o() -> cache.mastery_value();
+      }
+
+      return am;
+    }
   };
 
   struct sweeping_claws_t : public dt_melee_ability_t<ghoul_pet_t>
@@ -8605,6 +8617,13 @@ double death_knight_t::composite_player_pet_damage_multiplier( const action_stat
   }
 
   m *= 1.0 + spec.unholy_death_knight -> effectN( 3 ).percent();
+
+  // Pets are oversimming for unholy, doesn't seem to change with player gear (always around +27% damage)
+  // slapping a placeholder reduction until we find out where it actually comes from
+  if ( specizalization() == DEATH_KNIGHT_UNHOLY )
+  {
+    m *= 1.0 / 1.27;
+  }
 
   return m;
 }
