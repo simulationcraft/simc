@@ -5204,8 +5204,6 @@ struct consumption_t : public death_knight_melee_attack_t
     {
       parse_options( options_str );
       aoe = -1;
-
-      base_multiplier *= 1.0 + p -> spec.blood_death_knight -> effectN( 3 ).percent();
     }
 };
 
