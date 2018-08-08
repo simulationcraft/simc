@@ -55,7 +55,7 @@ actions.standard+=/heart_strike,if=rune.time_to_3<gcd|buff.bone_shield.stack>6
 actions.standard+=/rune_strike
 actions.standard+=/arcane_torrent,if=runic_power.deficit>20
 
-head=gridrunner_galea,id=160634,bonus_id=4824/1507/4775,azerite_powers=13/481/21/15
+head=gridrunner_galea,id=160634,bonus_id=4824/1507/4775,azerite_powers=13/481/23/15
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=
 shoulders=chitinspine_pauldrons,id=160641,bonus_id=4824/1507/4775,azerite_powers=13/483/30/201
 back=fetid_horrors_tanglecloak,id=160643,bonus_id=4800/1507
@@ -68,15 +68,15 @@ feet=warboots_of_absolute_eradication,id=160640,bonus_id=4800/1507
 finger1=band_of_certain_annihilation,id=160646,bonus_id=4800/1507,enchant=pact_of_haste
 finger2=rotscour_ring,id=160645,bonus_id=4800/1507,enchant=pact_of_haste
 trinket1=syringe_of_bloodborne_infirmity,id=160655,bonus_id=4800/1507
-trinket2=vanquished_tendril_of_ghuun,id=160654,bonus_id=4800/1507
+trinket2=disc_of_systematic_regression,id=160650,bonus_id=4800/1507
 main_hand=khor_hammer_of_the_corrupted,id=160679,bonus_id=4800/1507,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
 # gear_ilvl=386.27
-# gear_strength=4075
+# gear_strength=4388
 # gear_stamina=7207
 # gear_crit_rating=870
 # gear_haste_rating=1213
 # gear_mastery_rating=697
-# gear_versatility_rating=399
+# gear_versatility_rating=223
 # gear_armor=4055
