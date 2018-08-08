@@ -34,6 +34,7 @@ namespace items
   void mydas_talisman( special_effect_t& );
   void harlans_loaded_dice( special_effect_t& );
   void kul_tiran_cannonball_runner( special_effect_t& );
+  void rotcrusted_voodoo_doll( special_effect_t& );
   // 8.0.1 - Uldir Trinkets
   void frenetic_corpuscle( special_effect_t& );
 }
@@ -415,6 +416,40 @@ void items::kul_tiran_cannonball_runner( special_effect_t& effect )
   new cannonball_cb_t( effect );
 }
 
+// Rotcrusted Voodoo Doll ===================================================
+
+void items::rotcrusted_voodoo_doll( special_effect_t& effect )
+{
+  struct rotcrusted_voodoo_doll_dot_t : public proc_spell_t
+  {
+    action_t* final_damage;
+
+    rotcrusted_voodoo_doll_dot_t( const special_effect_t& effect ) :
+      proc_spell_t( "rotcrusted_voodoo_doll", effect.player, effect.trigger(), effect.item ),
+      final_damage( new proc_spell_t( "rotcrusted_voodoo_doll_final", effect.player,
+            effect.player->find_spell( 271468 ), effect.item ) )
+    {
+      tick_zero = true;
+
+      add_child( final_damage );
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      proc_spell_t::last_tick( d );
+
+      if ( !d->target->is_sleeping() )
+      {
+        final_damage->set_target( d->target );
+        final_damage->execute();
+      }
+    }
+  };
+
+  effect.execute_action = create_proc_action<rotcrusted_voodoo_doll_dot_t>( "rotcrusted_voodoo_doll",
+      effect );
+}
+
 // Frenetic Corpuscle =======================================================
 
 void items::frenetic_corpuscle( special_effect_t& effect )
@@ -491,6 +526,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 265954, items::mydas_talisman );
   register_special_effect( 274835, items::harlans_loaded_dice );
   register_special_effect( 271190, items::kul_tiran_cannonball_runner );
+  register_special_effect( 271462, items::rotcrusted_voodoo_doll );
   register_special_effect( 268314, "268311Trigger" ); // Galecaller's Boon, assumes the player always stands in the area
   register_special_effect( 278140, items::frenetic_corpuscle );
 }
