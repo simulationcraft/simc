@@ -9,7 +9,7 @@ talents=2112132
 # Default consumables
 potion=battle_potion_of_strength
 flask=flask_of_the_undertow
-food=swamp_fish_n_chips
+food=bountiful_captains_feast
 augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
@@ -21,75 +21,34 @@ augmentation=battle_scarred
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=flask
 actions.precombat+=/food
+actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
 
 # Executed every time the actor is available.
 actions=auto_attack
-actions+=/use_item,name=galecallers_boon
-actions+=/blood_fury
-actions+=/berserking
-actions+=/arcane_torrent
-actions+=/lights_judgment
-actions+=/blood_fury
-actions+=/berserking
-actions+=/arcane_torrent
-actions+=/lights_judgment
-actions+=/call_action_list,name=prot
-
-# This is a high-DPS (but low-survivability) configuration.
-# Invoke by adding "actions+=/run_action_list,name=max_dps" to the beginning of the default APL.
-actions.max_dps=auto_attack
-actions.max_dps+=/use_item,name=galecallers_boon
-actions.max_dps+=/blood_fury
-actions.max_dps+=/berserking
-actions.max_dps+=/arcane_torrent
-actions.max_dps+=/lights_judgment
-
-# This is a high-survivability (but low-DPS) configuration.
-# Invoke by adding "actions+=/run_action_list,name=max_survival" to the beginning of the default APL.
-actions.max_survival=auto_attack
-actions.max_survival+=/use_item,name=galecallers_boon
-actions.max_survival+=/blood_fury
-actions.max_survival+=/berserking
-actions.max_survival+=/arcane_torrent
-actions.max_survival+=/lights_judgment
-
-actions.prot=shield_of_the_righteous,if=!talent.seraphim.enabled&(cooldown.shield_of_the_righteous.charges>2)&!(buff.aegis_of_light.up&buff.ardent_defender.up&buff.guardian_of_ancient_kings.up&buff.divine_shield.up&buff.potion.up)
-actions.prot+=/bastion_of_light,if=!talent.seraphim.enabled&talent.bastion_of_light.enabled&cooldown.shield_of_the_righteous.charges<1
-actions.prot+=/light_of_the_protector,if=(health.pct<40)
-actions.prot+=/hand_of_the_protector,if=(health.pct<40)
-actions.prot+=/light_of_the_protector,if=(incoming_damage_10000ms<health.max*1.25)&health.pct<55&talent.righteous_protector.enabled
-actions.prot+=/light_of_the_protector,if=(incoming_damage_13000ms<health.max*1.6)&health.pct<55
-actions.prot+=/hand_of_the_protector,if=(incoming_damage_6000ms<health.max*0.7)&health.pct<65&talent.righteous_protector.enabled
-actions.prot+=/hand_of_the_protector,if=(incoming_damage_9000ms<health.max*1.2)&health.pct<55
-actions.prot+=/aegis_of_light,if=!talent.seraphim.enabled&incoming_damage_2500ms>health.max*0.4&!(buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)
-actions.prot+=/guardian_of_ancient_kings,if=!talent.seraphim.enabled&incoming_damage_2500ms>health.max*0.4&!(buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)
-actions.prot+=/divine_shield,if=!talent.seraphim.enabled&talent.final_stand.enabled&incoming_damage_2500ms>health.max*0.4&!(buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)
-actions.prot+=/ardent_defender,if=!talent.seraphim.enabled&incoming_damage_2500ms>health.max*0.4&!(buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)
-actions.prot+=/lay_on_hands,if=!talent.seraphim.enabled&health.pct<15
-actions.prot+=/potion,name=old_war,if=buff.avenging_wrath.up&talent.seraphim.enabled&active_enemies<3
-actions.prot+=/potion,name=prolonged_power,if=buff.avenging_wrath.up&talent.seraphim.enabled&active_enemies>=3
-actions.prot+=/potion,name=unbending_potion,if=!talent.seraphim.enabled
-actions.prot+=/stoneform,if=!talent.seraphim.enabled&incoming_damage_2500ms>health.max*0.4&!(buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)
-actions.prot+=/avenging_wrath,if=!talent.seraphim.enabled
-actions.prot+=/judgment,if=!talent.seraphim.enabled
-actions.prot+=/avengers_shield,if=!talent.seraphim.enabled&talent.crusaders_judgment.enabled
-actions.prot+=/blessed_hammer,if=!talent.seraphim.enabled
-actions.prot+=/avengers_shield,if=!talent.seraphim.enabled
-actions.prot+=/consecration,if=!talent.seraphim.enabled
-actions.prot+=/hammer_of_the_righteous,if=!talent.seraphim.enabled
-actions.prot+=/seraphim,if=talent.seraphim.enabled&cooldown.shield_of_the_righteous.charges>=2
-actions.prot+=/avenging_wrath,if=talent.seraphim.enabled&(buff.seraphim.up|cooldown.seraphim.remains<4)
-actions.prot+=/shield_of_the_righteous,if=talent.seraphim.enabled&(cooldown.consecration.remains>=0.1&(cooldown.shield_of_the_righteous.charges>2.5&cooldown.seraphim.remains>3)|(buff.seraphim.up))
-actions.prot+=/avengers_shield,if=talent.seraphim.enabled
-actions.prot+=/judgment,if=talent.seraphim.enabled&(active_enemies<2|set_bonus.tier20_2pc)
-actions.prot+=/consecration,if=talent.seraphim.enabled&(buff.seraphim.remains>6|buff.seraphim.down)
-actions.prot+=/judgment,if=talent.seraphim.enabled
-actions.prot+=/consecration,if=talent.seraphim.enabled
-actions.prot+=/blessed_hammer,if=talent.seraphim.enabled
-actions.prot+=/hammer_of_the_righteous,if=talent.seraphim.enabled
+# Cooldowns
+actions+=/seraphim,if=cooldown.shield_of_the_righteous.charges_fractional>=2
+actions+=/avenging_wrath,if=buff.seraphim.up|cooldown.seraphim.remains<2|!talent.seraphim.enabled
+actions+=/potion,if=buff.avenging_wrath.up
+# Dumping SotR charges
+actions+=/shield_of_the_righteous,if=(buff.avengers_valor.up&cooldown.shield_of_the_righteous.charges_fractional>=2.5)&(cooldown.seraphim.remains>gcd|!talent.seraphim.enabled)
+actions+=/shield_of_the_righteous,if=(cooldown.shield_of_the_righteous.charges_fractional=3&cooldown.avenger_shield.remains>(2*gcd))
+actions+=/shield_of_the_righteous,if=(buff.avenging_wrath.up&!talent.seraphim.enabled)|buff.seraphim.up&buff.avengers_valor.up
+actions+=/shield_of_the_righteous,if=(buff.avenging_wrath.up&buff.avenging_wrath.remains<4&!talent.seraphim.enabled)|(buff.seraphim.remains<4&buff.seraphim.up)
+actions+=/use_items,if=buff.seraphim.up|!talent.seraphim.enabled
+actions+=/lights_judgment,if=buff.seraphim.up&buff.seraphim.remains<3
+actions+=/avengers_shield,if=(cooldown.shield_of_the_righteous.charges_fractional>2.5&!buff.avengers_valor.up)|active_enemies>=2
+actions+=/judgment,if=(cooldown.judgment.remains<gcd&cooldown.judgment.charges_fractional>1)|!talent.crusaders_judgment.enabled
+actions+=/avengers_shield
+actions+=/consecration,if=(cooldown.judgment.remains<=gcd&!talent.crusaders_judgment.enabled)|cooldown.avenger_shield.remains<=gcd&consecration.remains<gcd
+actions+=/consecration,if=!talent.crusaders_judgment.enabled&consecration.remains<(cooldown.judgment.remains+cooldown.avengers_shield.remains)&consecration.remains<3*gcd
+actions+=/judgment
+actions+=/lights_judgment,if=!talent.seraphim.enabled|buff.seraphim.up
+actions+=/blessed_hammer
+actions+=/hammer_of_the_righteous
+actions+=/consecration
 
 head=soulspun_casque,id=155866,bonus_id=4779/1512/4786/4775
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=
