@@ -3589,7 +3589,7 @@ struct secret_technique_t : public rogue_attack_t
 {
   struct secret_technique_attack_t : public rogue_attack_t
   {
-    secret_technique_attack_t( const std::string& n, rogue_t* p, secret_technique_t* s ) :
+    secret_technique_attack_t( const std::string& n, rogue_t* p ) :
       rogue_attack_t( n, p, p -> find_spell( 280720 ) )
     {
       weapon = &(p -> main_hand_weapon);
@@ -3623,9 +3623,9 @@ struct secret_technique_t : public rogue_attack_t
     may_miss = false;
     aoe = -1;
 
-    player_attack = new secret_technique_attack_t( "secret_technique_player", p, this );
+    player_attack = new secret_technique_attack_t( "secret_technique_player", p );
     add_child( player_attack );
-    clone_attack = new secret_technique_attack_t( "secret_technique_clones", p, this );
+    clone_attack = new secret_technique_attack_t( "secret_technique_clones", p );
     add_child( clone_attack );
 
     radius = player_attack -> radius;
@@ -6277,9 +6277,8 @@ void rogue_t::init_action_list()
     action_priority_list_t* direct = get_action_priority_list( "direct", "Direct damage abilities" );
     direct -> add_action( this, "Envenom", "if=combo_points>=4+talent.deeper_stratagem.enabled&(debuff.vendetta.up|debuff.toxic_blade.up|energy.deficit<=25+variable.energy_regen_combined|spell_targets.fan_of_knives>=2)&(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)", "Envenom at 4+ (5+ with DS) CP. Immediately on 2+ targets, with Vendetta, or with TB; otherwise wait for some energy. Also wait if Exsg combo is coming up." );
     direct -> add_action( "variable,name=use_filler,value=combo_points.deficit>1|energy.deficit<=25+variable.energy_regen_combined|spell_targets.fan_of_knives>=2" );
+    direct -> add_action( this, "Poisoned Knife", "if=variable.use_filler&buff.sharpened_blades.stack>=29&(azerite.sharpened_blades.rank>=2|spell_targets.fan_of_knives<=4)", "Poisoned Knife at 29+ stacks of Sharpened Blades. Up to 4 targets with Rank 1, more otherwise." );
     direct -> add_action( this, "Fan of Knives", "if=variable.use_filler&(buff.hidden_blades.stack>=19|spell_targets.fan_of_knives>=2+stealthed.rogue|buff.the_dreadlords_deceit.stack>=29)" );
-    // Loss LOL, even at 3 Ranks
-    // #actions.direct+=/poisoned_knife,if=variable.use_filler&buff.sharpened_blades.stack>=39
     direct -> add_talent( this, "Blindside", "if=variable.use_filler&(buff.blindside.up|!talent.venom_rush.enabled)" );
     direct -> add_action( this, "Mutilate", "if=variable.use_filler" );
   }
@@ -6416,8 +6415,8 @@ void rogue_t::init_action_list()
 
     // Builders
     action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
+    build -> add_action( this, "Shuriken Toss", "if=buff.sharpened_blades.stack>=29&spell_targets.shuriken_storm<=1+3*azerite.sharpened_blades.rank=2+4*azerite.sharpened_blades.rank=3", "Shuriken Toss at 29+ Sharpened Blades stacks. 1T at Rank 1, up to 4 at Rank 2, up to 5 at Rank 3" );
     build -> add_action( this, "Shuriken Storm", "if=spell_targets.shuriken_storm>=2|buff.the_dreadlords_deceit.stack>=29" );
-    build -> add_action( this, "Shuriken Toss", "if=azerite.sharpened_blades.rank>=3&buff.sharpened_blades.stack>=39" );
     build -> add_talent( this, "Gloomblade" );
     build -> add_action( this, "Backstab" );
   }
