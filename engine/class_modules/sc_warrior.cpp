@@ -137,7 +137,7 @@ public:
     buff_t* infinite_fury;
     buff_t* pulverizing_blows;
     buff_t* test_of_might_tracker;  // Used to track rage gain from test of might.
-    buff_t* test_of_might;
+    stat_buff_t* test_of_might;
     buff_t* trample_the_weak;
   } buff;
 
@@ -5208,22 +5208,30 @@ template <typename Base>
 struct warrior_buff_t : public Base
 {
 public:
-  typedef warrior_buff_t base_t;
-  warrior_buff_t( warrior_td_t& p, const buff_creator_basics_t& params ) : Base( params ), warrior( p.warrior )
+  using base_t = warrior_buff_t;
+
+
+  warrior_buff_t( warrior_td_t& td, const std::string& name, const spell_data_t* s = spell_data_t::nil(),
+                 const item_t* item = nullptr )
+    : Base( td, name, s, item )
   {
   }
 
-  warrior_buff_t( warrior_t& p, const buff_creator_basics_t& params ) : Base( params ), warrior( p )
+  warrior_buff_t( warrior_t& p, const std::string& name, const spell_data_t* s = spell_data_t::nil(),
+                 const item_t* item = nullptr )
+    : Base( &p, name, s, item )
   {
-  }
-
-  warrior_td_t& get_td( player_t* t ) const
-  {
-    return *( warrior.get_target_data( t ) );
   }
 
 protected:
-  warrior_t& warrior;
+  warrior_t& warrior()
+  {
+    return *debug_cast<warrior_t*>( Base::source );
+  }
+  const warrior_t& warrior() const
+  {
+    return *debug_cast<warrior_t*>( Base::source );
+  }
 };
 
 // Rallying Cry ==============================================================
@@ -5232,21 +5240,21 @@ struct rallying_cry_t : public warrior_buff_t<buff_t>
 {
   int health_gain;
   rallying_cry_t( warrior_t& p, const std::string& n, const spell_data_t* s )
-    : base_t( p, buff_creator_t( &p, n, s ) ), health_gain( 0 )
+    : base_t( p, n, s ), health_gain( 0 )
   {
   }
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
     health_gain = static_cast<int>(
-        util::floor( warrior.resources.max[ RESOURCE_HEALTH ] * warrior.spec.rallying_cry->effectN( 1 ).percent() ) );
-    warrior.stat_gain( STAT_MAX_HEALTH, health_gain, (gain_t*)nullptr, (action_t*)nullptr, true );
+        util::floor( warrior().resources.max[ RESOURCE_HEALTH ] * warrior().spec.rallying_cry->effectN( 1 ).percent() ) );
+    warrior().stat_gain( STAT_MAX_HEALTH, health_gain, (gain_t*)nullptr, (action_t*)nullptr, true );
     return base_t::trigger( stacks, value, chance, duration );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    warrior.stat_loss( STAT_MAX_HEALTH, health_gain, (gain_t*)nullptr, (action_t*)nullptr, true );
+    warrior().stat_loss( STAT_MAX_HEALTH, health_gain, (gain_t*)nullptr, (action_t*)nullptr, true );
     base_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
@@ -5257,22 +5265,23 @@ struct last_stand_t : public warrior_buff_t<buff_t>
 {
   int health_gain;
   last_stand_t( warrior_t& p, const std::string& n, const spell_data_t* s )
-    : base_t( p, buff_creator_t( &p, n, s ).cd( timespan_t::zero() ) ), health_gain( 0 )
+    : base_t( p, n, s ), health_gain( 0 )
   {
+    set_cooldown( timespan_t::zero() );
   }
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
     health_gain = static_cast<int>(
-        util::floor( warrior.resources.max[ RESOURCE_HEALTH ] * ( warrior.spec.last_stand->effectN( 1 ).percent() +
-                                                                  warrior.artifact.will_to_survive.percent() ) ) );
-    warrior.stat_gain( STAT_MAX_HEALTH, health_gain, (gain_t*)nullptr, (action_t*)nullptr, true );
+        util::floor( warrior().resources.max[ RESOURCE_HEALTH ] * ( warrior().spec.last_stand->effectN( 1 ).percent() +
+                                                                  warrior().artifact.will_to_survive.percent() ) ) );
+    warrior().stat_gain( STAT_MAX_HEALTH, health_gain, (gain_t*)nullptr, (action_t*)nullptr, true );
     return base_t::trigger( stacks, value, chance, duration );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    warrior.stat_loss( STAT_MAX_HEALTH, health_gain, (gain_t*)nullptr, (action_t*)nullptr, true );
+    warrior().stat_loss( STAT_MAX_HEALTH, health_gain, (gain_t*)nullptr, (action_t*)nullptr, true );
     base_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
@@ -5282,8 +5291,7 @@ struct last_stand_t : public warrior_buff_t<buff_t>
 struct debuff_demo_shout_t : public warrior_buff_t<buff_t>
 {
   debuff_demo_shout_t( warrior_td_t& p )
-    : base_t( p, buff_creator_t( static_cast<actor_pair_t>( p ), "demoralizing_shout_debuff",
-                                 p.source->find_specialization_spell( "Demoralizing Shout" ) ) )
+    : base_t( p, "demoralizing_shout_debuff", p.source->find_specialization_spell( "Demoralizing Shout" ) )
   {
     default_value = data().effectN( 1 ).percent();
   }
@@ -5294,13 +5302,14 @@ struct debuff_demo_shout_t : public warrior_buff_t<buff_t>
 struct protection_rage_t : public warrior_buff_t<buff_t>
 {
   protection_rage_t( warrior_t& p, const std::string& n, const spell_data_t* s )
-    : base_t( p, buff_creator_t( &p, n, s ).tick_callback( [&p]( buff_t*, int, const timespan_t& ) {
-        p.resource_gain(
-            RESOURCE_RAGE,
-            p.sets->set( WARRIOR_PROTECTION, T20, B2 )->effectN( 1 ).trigger()->effectN( 2 ).resource( RESOURCE_RAGE ),
-            p.gain.protection_t20_2p );
-      } ) )
+    : base_t( p, n, s )
   {
+    set_tick_callback( [&p]( buff_t*, int, const timespan_t& ) {
+            p.resource_gain(
+                RESOURCE_RAGE,
+                p.sets->set( WARRIOR_PROTECTION, T20, B2 )->effectN( 1 ).trigger()->effectN( 2 ).resource( RESOURCE_RAGE ),
+                p.gain.protection_t20_2p );
+          } );
     // The initial tick generates 20 rage and is done in Berserker's Rage execute
     tick_zero = false;
   }
@@ -5311,15 +5320,15 @@ struct protection_rage_t : public warrior_buff_t<buff_t>
 struct test_of_might_t : public warrior_buff_t<buff_t>
 {
   test_of_might_t( warrior_t& p, const std::string& n, const spell_data_t* s )
-    : base_t( p, buff_creator_t( &p, n, s ) )
+    : base_t( p, n, s )
   {
     quiet = true;
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    stat_buff_t* test_of_might = static_cast<stat_buff_t*>( warrior.buff.test_of_might );
-    const int strength = static_cast<int>( current_value / 10 ) * warrior.azerite.test_of_might.value( 1 );
+    stat_buff_t* test_of_might = warrior().buff.test_of_might;
+    const int strength = static_cast<int>( current_value / 10 ) * warrior().azerite.test_of_might.value( 1 );
     test_of_might->manual_stats_added = false;
     test_of_might->add_stat( STAT_STRENGTH, strength );
     test_of_might->trigger();
@@ -5580,8 +5589,8 @@ void warrior_t::create_buffs()
 
   const spell_data_t* test_of_might_tracker = azerite.test_of_might.spell()->effectN( 1 ).trigger()->effectN( 1 ).trigger();
   buff.test_of_might_tracker = new test_of_might_t( *this, "test_of_might_tracker", test_of_might_tracker );
-  buff.test_of_might = make_buff<stat_buff_t>( this, "test_of_might", find_spell( 275540 ) )
-    ->set_trigger_spell( test_of_might_tracker );
+  buff.test_of_might = make_buff<stat_buff_t>( this, "test_of_might", find_spell( 275540 ) );
+  buff.test_of_might->set_trigger_spell( test_of_might_tracker );
 
   const spell_data_t* trample_the_weak_trigger = azerite.trample_the_weak.spell()->effectN( 1 ).trigger();
   const spell_data_t* trample_the_weak_buff    = trample_the_weak_trigger->effectN( 1 ).trigger();
