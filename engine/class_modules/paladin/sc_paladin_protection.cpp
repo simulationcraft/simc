@@ -174,7 +174,7 @@ struct blessed_hammer_t : public paladin_spell_t
 
   blessed_hammer_t( paladin_t* p, const std::string& options_str ) :
     paladin_spell_t( "blessed_hammer", p, p -> find_talent_spell( "Blessed Hammer" ) ),
-    hammer( new blessed_hammer_tick_t( p ) ), num_strikes( 3 )
+    hammer( new blessed_hammer_tick_t( p ) ), num_strikes( 2 )
   {
     add_option( opt_int( "strikes", num_strikes ) );
     parse_options( options_str );
@@ -1018,122 +1018,45 @@ void paladin_t::generate_action_prio_list_prot()
 
   //Flask
   precombat -> add_action( "flask" );
-
-  // Food
   precombat -> add_action( "food" );
+  precombat -> add_action( "augmentation" );
 
   // Snapshot stats
   precombat -> add_action( "snapshot_stats",  "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-
-  // Pre-potting
+  
   precombat -> add_action( "potion" );
 
   ///////////////////////
   // Action Priority List
   ///////////////////////
 
-  action_priority_list_t* def = get_action_priority_list("default");
-  action_priority_list_t* prot = get_action_priority_list("prot");
-  //action_priority_list_t* prot_aoe = get_action_priority_list("prot_aoe");
-  action_priority_list_t* dps = get_action_priority_list("max_dps");
-  action_priority_list_t* surv = get_action_priority_list("max_survival");
+  action_priority_list_t* def = get_action_priority_list( "default" );
+  
+  def -> add_action( "auto_attack" );
 
-  dps->action_list_comment_str = "This is a high-DPS (but low-survivability) configuration.\n# Invoke by adding \"actions+=/run_action_list,name=max_dps\" to the beginning of the default APL.";
-  surv->action_list_comment_str = "This is a high-survivability (but low-DPS) configuration.\n# Invoke by adding \"actions+=/run_action_list,name=max_survival\" to the beginning of the default APL.";
+  def -> add_talent( this, "Seraphim", "if=cooldown.shield_of_the_righteous.charges_fractional>=2", "Cooldowns" );
+  def -> add_action( this, "Avenging Wrath", "if=buff.seraphim.up|cooldown.seraphim.remains<2|!talent.seraphim.enabled" );
+  def -> add_action( "potion,if=buff.avenging_wrath.up" );
+  
+  def -> add_action( this, "Shield of the Righteous", "if=(buff.avengers_valor.up&cooldown.shield_of_the_righteous.charges_fractional>=2.5)&(cooldown.seraphim.remains>gcd|!talent.seraphim.enabled)", "Dumping SotR charges" );
+  def -> add_action( this, "Shield of the Righteous", "if=(cooldown.shield_of_the_righteous.charges_fractional=3&cooldown.avenger_shield.remains>(2*gcd))" );
+  def -> add_action( this, "Shield of the Righteous", "if=(buff.avenging_wrath.up&!talent.seraphim.enabled)|buff.seraphim.up&buff.avengers_valor.up" );
+  def -> add_action( this, "Shield of the Righteous", "if=(buff.avenging_wrath.up&buff.avenging_wrath.remains<4&!talent.seraphim.enabled)|(buff.seraphim.remains<4&buff.seraphim.up)" );
+  def -> add_talent( this, "Bastion of light", "if=(cooldown.shield_of_the_righteous.charges_fractional<=0.2)&(!talent.seraphim.enabled|buff.seraphim.up)" );
 
-  def->add_action("auto_attack");
+  def -> add_action( "use_items,if=buff.seraphim.up|!talent.seraphim.enabled" );
+  def -> add_action( "lights_judgment,if=buff.seraphim.up&buff.seraphim.remains<3" );
 
-  // usable items
-  int num_items = (int)items.size();
-  for (int i = 0; i < num_items; i++)
-    if (items[i].has_special_effect(SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE))
-      def->add_action("use_item,name=" + items[i].name_str);
+  def -> add_action( this, "Avenger's Shield", "if=(cooldown.shield_of_the_righteous.charges_fractional>2.5&!buff.avengers_valor.up)|active_enemies>=2" );
+  def -> add_action( this, "Judgment", "if=(cooldown.judgment.remains<gcd&cooldown.judgment.charges_fractional>1)|!talent.crusaders_judgment.enabled" );
+  def -> add_action( this, "Avenger's Shield" );
+  def -> add_action( this, "Consecration", "if=(cooldown.judgment.remains<=gcd&!talent.crusaders_judgment.enabled)|cooldown.avenger_shield.remains<=gcd&consecration.remains<gcd" );
+  def -> add_action( this, "Consecration", "if=!talent.crusaders_judgment.enabled&consecration.remains<(cooldown.judgment.remains+cooldown.avengers_shield.remains)&consecration.remains<3*gcd" );
+  def -> add_action( this, "Judgment" );
+  def -> add_action( "lights_judgment,if=!talent.seraphim.enabled|buff.seraphim.up" );
+  def -> add_talent( this, "Blessed Hammer" );
+  def -> add_action( this, "Hammer of the Righteous" );
+  def -> add_action( this, "Consecration" );
 
-  // profession actions
-  std::vector<std::string> profession_actions = get_profession_actions();
-  for (size_t i = 0; i < profession_actions.size(); i++)
-    def->add_action(profession_actions[i]);
-
-  // racial actions
-  std::vector<std::string> racial_actions = get_racial_actions();
-  for (size_t i = 0; i < racial_actions.size(); i++)
-    def->add_action(racial_actions[i]);
-
-  // clone all of the above to the other two action lists
-  dps->action_list = def->action_list;
-  surv->action_list = def->action_list;
-
-  // TODO: Create this.
-
-  //threshold for defensive abilities
-  std::string threshold = "incoming_damage_2500ms>health.max*0.4";
-  std::string threshold_lotp = "incoming_damage_13000ms<health.max*1.6";
-  std::string threshold_lotp_rp = "incoming_damage_10000ms<health.max*1.25";
-  std::string threshold_hotp = "incoming_damage_9000ms<health.max*1.2";
-  std::string threshold_hotp_rp = "incoming_damage_6000ms<health.max*0.7";
-
-  for (size_t i = 0; i < racial_actions.size(); i++)
-    def->add_action(racial_actions[i]);
-  def->add_action("call_action_list,name=prot");
-
-  //defensive
-  //prot->add_talent(this, "Seraphim", "if=talent.seraphim.enabled&cooldown.shield_of_the_righteous.charges>=2");
-  prot->add_action(this, "Shield of the Righteous", "if=!talent.seraphim.enabled&(cooldown.shield_of_the_righteous.charges>2)&!(buff.aegis_of_light.up&buff.ardent_defender.up&buff.guardian_of_ancient_kings.up&buff.divine_shield.up&buff.potion.up)");
-  //prot->add_action(this, "Shield of the Righteous", "if=(talent.bastion_of_light.enabled&talent.seraphim.enabled&buff.seraphim.up&cooldown.bastion_of_light.up)&!(buff.aegis_of_light.up&buff.ardent_defender.up&buff.guardian_of_ancient_kings.up&buff.divine_shield.up&buff.potion.up)");
-  //prot->add_action(this, "Shield of the Righteous", "if=(talent.bastion_of_light.enabled&!talent.seraphim.enabled&cooldown.bastion_of_light.up)&!(buff.aegis_of_light.up&buff.ardent_defender.up&buff.guardian_of_ancient_kings.up&buff.divine_shield.up&buff.potion.up)");
-  prot->add_talent(this, "Bastion of Light", "if=!talent.seraphim.enabled&talent.bastion_of_light.enabled&cooldown.shield_of_the_righteous.charges<1");
-  prot->add_action(this, "Light of the Protector", "if=(health.pct<40)");
-  prot->add_talent(this, "Hand of the Protector",  "if=(health.pct<40)");
-  prot->add_action(this, "Light of the Protector", "if=("+threshold_lotp_rp+")&health.pct<55&talent.righteous_protector.enabled");
-  prot->add_action(this, "Light of the Protector", "if=("+threshold_lotp+")&health.pct<55");
-  prot->add_talent(this, "Hand of the Protector",  "if=("+threshold_hotp_rp+")&health.pct<65&talent.righteous_protector.enabled");
-  prot->add_talent(this, "Hand of the Protector",  "if=("+threshold_hotp+")&health.pct<55");
-  prot->add_talent(this, "Aegis of Light", "if=!talent.seraphim.enabled&" + threshold + "&!(buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
-  prot->add_action(this, "Guardian of Ancient Kings", "if=!talent.seraphim.enabled&" + threshold + "&!(buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
-  prot->add_action(this, "Divine Shield", "if=!talent.seraphim.enabled&talent.final_stand.enabled&" + threshold + "&!(buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
-  prot->add_action(this, "Ardent Defender", "if=!talent.seraphim.enabled&" + threshold + "&!(buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
-  prot->add_action(this, "Lay on Hands", "if=!talent.seraphim.enabled&health.pct<15");
-
-  //potion
-  if (sim->allow_potions)
-  {
-    if (level() > 100)
-    {
-      prot->add_action("potion,name=old_war,if=buff.avenging_wrath.up&talent.seraphim.enabled&active_enemies<3");
-      prot->add_action("potion,name=prolonged_power,if=buff.avenging_wrath.up&talent.seraphim.enabled&active_enemies>=3");
-      prot->add_action("potion,name=unbending_potion,if=!talent.seraphim.enabled");
-    }
-    else if (true_level >= 80)
-    {
-      prot->add_action("potion,if=" + threshold + "&!(buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)|target.time_to_die<=25");
-    }
-  }
-
-  //stoneform
-  prot->add_action("stoneform,if=!talent.seraphim.enabled&" + threshold + "&!(buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
-
-  //dps-single-target
-  prot->add_action(this, "Avenging Wrath", "if=!talent.seraphim.enabled");
-  //prot->add_action(this, "Avenging Wrath", "if=talent.seraphim.enabled&buff.seraphim.up");
-  //prot->add_action( "call_action_list,name=prot_aoe,if=spell_targets.avenger_shield>3" );
-  prot->add_action(this, "Judgment", "if=!talent.seraphim.enabled");
-  prot->add_action(this, "Avenger's Shield","if=!talent.seraphim.enabled&talent.crusaders_judgment.enabled");
-  prot->add_talent(this, "Blessed Hammer", "if=!talent.seraphim.enabled");
-  prot->add_action(this, "Avenger's Shield", "if=!talent.seraphim.enabled");
-  prot->add_action(this, "Consecration", "if=!talent.seraphim.enabled");
-  prot->add_action(this, "Hammer of the Righteous", "if=!talent.seraphim.enabled");
-
-  //max dps build
-
-  prot->add_talent(this,"Seraphim","if=talent.seraphim.enabled&cooldown.shield_of_the_righteous.charges>=2");
-  prot->add_action(this, "Avenging Wrath", "if=talent.seraphim.enabled&(buff.seraphim.up|cooldown.seraphim.remains<4)");
-  prot->add_action(this, "Shield of the Righteous", "if=talent.seraphim.enabled&(cooldown.consecration.remains>=0.1&(cooldown.shield_of_the_righteous.charges>2.5&cooldown.seraphim.remains>3)|(buff.seraphim.up))");
-  prot->add_action(this, "Avenger's Shield", "if=talent.seraphim.enabled");
-  prot->add_action(this, "Judgment", "if=talent.seraphim.enabled&(active_enemies<2|set_bonus.tier20_2pc)");
-  prot->add_action(this, "Consecration", "if=talent.seraphim.enabled&(buff.seraphim.remains>6|buff.seraphim.down)");
-  prot->add_action(this, "Judgment", "if=talent.seraphim.enabled");
-  prot->add_action(this, "Consecration", "if=talent.seraphim.enabled");
-  prot->add_talent(this, "Blessed Hammer", "if=talent.seraphim.enabled");
-  prot->add_action(this, "Hammer of the Righteous", "if=talent.seraphim.enabled");
 }
 }
