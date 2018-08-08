@@ -4798,7 +4798,6 @@ void warrior_t::init_base_stats()
     {
       double totalweight         = 0;
       double avg_weighted_ilevel = 0;
-      double average_itemlevel   = 0;
       size_t divisor             = 0;
       for ( size_t i = 0; i < items.size(); i++ )
       {
@@ -4832,15 +4831,21 @@ void warrior_t::init_base_stats()
         avg_weighted_ilevel += ( ratio * static_cast<double>( items[ i ].item_level() ) / totalweight * divisor );
       }
 
-      average_itemlevel = avg_weighted_ilevel / divisor;
 
-      const auto& data = dbc.random_property( static_cast<int>( average_itemlevel ) );
+      int average_itemlevel = static_cast<int>( divisor ? avg_weighted_ilevel / divisor : 0.0 );
 
-      expected_max_health = data.p_epic[ 0 ] * 8.484262;
-      expected_max_health += base.stats.attribute[ ATTR_STAMINA ];
-      expected_max_health *= 1.0 + matching_gear_multiplier( ATTR_STAMINA );
-      expected_max_health *= 1.0 + artifact.toughness.percent();
-      expected_max_health *= 60;
+      if (average_itemlevel > 0 )
+      {
+
+        const auto& data = dbc.random_property( static_cast<int>( average_itemlevel ) );
+
+        expected_max_health = data.p_epic[ 0 ] * 8.484262;
+        expected_max_health += base.stats.attribute[ ATTR_STAMINA ];
+        expected_max_health *= 1.0 + matching_gear_multiplier( ATTR_STAMINA );
+        expected_max_health *= 1.0 + artifact.toughness.percent();
+        expected_max_health *= 60;
+
+      }
     }
   }
 }
