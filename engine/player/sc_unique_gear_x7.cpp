@@ -28,6 +28,8 @@ namespace enchants
 
 namespace items
 {
+  // 8.0.1 - World Trinkets
+  void kajafied_banana( special_effect_t& );
   // 8.0.1 - Dungeon Trinkets
   void deadeye_spyglass( special_effect_t& );
   void tiny_electromental_in_a_jar( special_effect_t& );
@@ -198,6 +200,25 @@ custom_cb_t enchants::weapon_navigation( unsigned buff_id )
 
     new navigation_proc_callback_t( effect.player, effect, final_buff );
   };
+}
+
+// Kaja-fied Banana =========================================================
+
+void items::kajafied_banana( special_effect_t& effect )
+{
+  struct kajafied_banana_t : public proc_spell_t
+  {
+    kajafied_banana_t( const special_effect_t& effect ) :
+      proc_spell_t( "kajafied_banana", effect.player, effect.player->find_spell( 274575 ), effect.item )
+    {
+      aoe = -1;
+      split_aoe_damage = true;
+    }
+  };
+
+  effect.execute_action = create_proc_action<kajafied_banana_t>( "kajafied_banana", effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 // Dead-Eye Spyglass ========================================================
@@ -419,71 +440,49 @@ void items::kul_tiran_cannonball_runner( special_effect_t& effect )
   new cannonball_cb_t( effect );
 }
 
-//Vessel of Skittering Shadows ==============================================
+// Vessel of Skittering Shadows ==============================================
 
-struct webweavers_soul_gem_t : public proc_spell_t
+void items::vessel_of_skittering_shadows( special_effect_t& effect )
 {
-  webweavers_soul_gem_t(const special_effect_t& effect) :
-    proc_spell_t("webweavers_soul_gem", effect.player, effect.player -> find_spell(270827))
+  struct webweavers_soul_gem_t : public proc_spell_t
   {
-    aoe = -1;
-    split_aoe_damage = true;
-    //Travel speed is guessed, needs to be fixed from in game testing 8/8/2018
-    travel_speed = 25;
-  }
+    webweavers_soul_gem_t( const special_effect_t& effect ) :
+      proc_spell_t( "webweavers_soul_gem", effect.player, effect.player->find_spell( 270827 ),
+          effect.item )
+    {
+      aoe = -1;
+      split_aoe_damage = true;
+      //Travel speed is guessed, needs to be fixed from in game testing 8/8/2018
+      travel_speed = 25;
+    }
+  };
 
-};
+  effect.execute_action = create_proc_action<webweavers_soul_gem_t>( "webweavers_soul_gem", effect );
 
-void items::vessel_of_skittering_shadows(special_effect_t& effect)
-{
-  action_t* action = effect.player->find_action("webweavers_soul_gem");
-  if (!action)
-  {
-    action = effect.player->create_proc_action("webweavers_soul_gem", effect);
-  }
-
-  if (!action)
-  {
-    action = new webweavers_soul_gem_t(effect);
-  }
-
-  effect.execute_action = action;
-  effect.proc_flags2_ = PF2_ALL_HIT;
-
-  new dbc_proc_callback_t(effect.player, effect);
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
-//Vigilant's Bloodshaper ==============================================
+// Vigilant's Bloodshaper ==============================================
 
-struct volatile_blood_explosion_t : public proc_spell_t
+void items::vigilants_bloodshaper( special_effect_t& effect )
 {
-  volatile_blood_explosion_t(const special_effect_t& effect) :
-    proc_spell_t("volatile_blood_explosion", effect.player, effect.player -> find_spell(278057))
+  struct volatile_blood_explosion_t : public proc_spell_t
   {
-    aoe = -1;
-    split_aoe_damage = true;
-    //Travel speed is guessed, needs to be fixed from in game testing 8/8/2018
-    travel_speed = 25;
-  }
+    volatile_blood_explosion_t( const special_effect_t& effect ) :
+      proc_spell_t( "volatile_blood_explosion", effect.player, effect.player->find_spell( 278057 ),
+          effect.item )
+    {
+      aoe = -1;
+      split_aoe_damage = true;
+      //Travel speed is guessed, needs to be fixed from in game testing 8/8/2018
+      travel_speed = 25;
+    }
+  };
 
-};
+  effect.execute_action = create_proc_action<volatile_blood_explosion_t>( "volatile_blood_explosion",
+      effect );
 
-void items::vigilants_bloodshaper(special_effect_t& effect)
-{
-  action_t* action = effect.player->find_action("volatile_blood_explosion");
-  if (!action)
-  {
-    action = effect.player->create_proc_action("volatile_blood_explosion", effect);
-  }
-
-  if (!action)
-  {
-    action = new volatile_blood_explosion_t(effect);
-  }
-
-  effect.execute_action = action;
-
-  new dbc_proc_callback_t(effect.player, effect);
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 // Rotcrusted Voodoo Doll ===================================================
@@ -527,7 +526,7 @@ void items::hadals_nautilus( special_effect_t& effect )
   struct waterspout_t : public proc_spell_t
   {
     waterspout_t( const special_effect_t& effect ) :
-      proc_spell_t( "waterspout", effect.player, effect.player->find_spell( 270925 ) )
+      proc_spell_t( "waterspout", effect.player, effect.player->find_spell( 270925 ), effect.item )
     {
       aoe = -1;
       split_aoe_damage = true;
@@ -628,6 +627,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 265094, "265096Trigger" ); // Frost-Laced Ammunition
 
   // Trinkets
+  register_special_effect( 274484, items::kajafied_banana );
   register_special_effect( 268758, items::deadeye_spyglass );
   register_special_effect( 268771, items::deadeye_spyglass );
   register_special_effect( 267177, items::tiny_electromental_in_a_jar );
