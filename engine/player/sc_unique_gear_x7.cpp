@@ -36,9 +36,10 @@ namespace items
   void kul_tiran_cannonball_runner( special_effect_t& );
   void rotcrusted_voodoo_doll( special_effect_t& );
   void vessel_of_skittering_shadows( special_effect_t& );
-  void vigilants_bloodshaper(special_effect_t& );
+  void hadals_nautilus( special_effect_t& );
   // 8.0.1 - Uldir Trinkets
   void frenetic_corpuscle( special_effect_t& );
+  void vigilants_bloodshaper(special_effect_t& );
 }
 
 namespace util
@@ -519,6 +520,44 @@ void items::rotcrusted_voodoo_doll( special_effect_t& effect )
       effect );
 }
 
+// Hadal's Nautilus =========================================================
+
+void items::hadals_nautilus( special_effect_t& effect )
+{
+  struct waterspout_t : public proc_spell_t
+  {
+    waterspout_t( const special_effect_t& effect ) :
+      proc_spell_t( "waterspout", effect.player, effect.player->find_spell( 270925 ) )
+    {
+      aoe = -1;
+      split_aoe_damage = true;
+    }
+  };
+
+  struct nautilus_cb_t : public dbc_proc_callback_t
+  {
+    const spell_data_t* driver;
+
+    nautilus_cb_t( const special_effect_t& effect ) :
+      dbc_proc_callback_t( effect.item, effect ),
+      driver( effect.player->find_spell( 270910 ) )
+    { }
+
+    void execute( action_t*, action_state_t* state ) override
+    {
+      make_event<ground_aoe_event_t>( *listener->sim, listener, ground_aoe_params_t()
+        .target( state -> target )
+        .pulse_time( driver->duration() )
+        .n_pulses( 1 )
+        .action( proc_action ) );
+    }
+  };
+
+  effect.execute_action = create_proc_action<waterspout_t>( "waterspout", effect );
+
+  new nautilus_cb_t( effect );
+}
+
 // Frenetic Corpuscle =======================================================
 
 void items::frenetic_corpuscle( special_effect_t& effect )
@@ -598,6 +637,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 271462, items::rotcrusted_voodoo_doll );
   register_special_effect( 270809, items::vessel_of_skittering_shadows);
   register_special_effect( 278053, items::vigilants_bloodshaper);
+  register_special_effect( 270921, items::hadals_nautilus );
   register_special_effect( 268314, "268311Trigger" ); // Galecaller's Boon, assumes the player always stands in the area
   register_special_effect( 278140, items::frenetic_corpuscle );
 }

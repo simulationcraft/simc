@@ -1205,6 +1205,8 @@ class SpellDataGenerator(DataGenerator):
          267325, 267326, 267327, 267329, 267330, 267331,
          # 8.0.1 Kul Tiran Cannonball Runner damage
          271197,
+         # Hadal's Nautilus damage
+         270925,
         ),
 
         # Warrior:
