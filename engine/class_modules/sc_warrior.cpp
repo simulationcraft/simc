@@ -11,7 +11,7 @@ namespace
 // Warrior
 // To Do: Gathering Storm should stack after each tick, not before (tornados eye is the opposite because reasons)
 // Fury - 
-// Arms - Fix Test of Might
+// Arms - 
 // ==========================================================================
 
 struct warrior_t;
@@ -5306,18 +5306,23 @@ struct protection_rage_t : public warrior_buff_t<buff_t>
   }
 };
 
-// Test of Might =========================================================================
+// Test of Might Tracker ===================================================================
 
 struct test_of_might_t : public warrior_buff_t<buff_t>
 {
   test_of_might_t( warrior_t& p, const std::string& n, const spell_data_t* s )
-    : base_t( p, buff_creator_t( &p, n, s ).duration( p.spell.colossus_smash_debuff->duration() ) )
+    : base_t( p, buff_creator_t( &p, n, s ) )
   {
+    quiet = true;
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    warrior.buff.test_of_might->trigger( static_cast<int>( current_value / 10 ) );
+    stat_buff_t* test_of_might = static_cast<stat_buff_t*>( warrior.buff.test_of_might );
+    const int strength = static_cast<int>( current_value / 10 ) * warrior.azerite.test_of_might.value( 1 );
+    test_of_might->manual_stats_added = false;
+    test_of_might->add_stat( STAT_STRENGTH, strength );
+    test_of_might->trigger();
     current_value = 0;
     base_t::expire_override( expiration_stacks, remaining_duration );
   }
@@ -5531,15 +5536,6 @@ void warrior_t::create_buffs()
 
   buff.protection_rage = new protection_rage_t( *this, "protection_rage", find_spell( 242303 ) );
 
-  buff.test_of_might_tracker = new test_of_might_t( *this, "test_of_might_tracker", spell.colossus_smash_debuff );
-
-  buff.test_of_might =
-      make_buff<stat_buff_t>( this, "test_of_might",
-                              azerite.test_of_might.spell()->effectN( 1 ).trigger()->effectN( 1 ).trigger() )
-          ->add_stat( STAT_STRENGTH, azerite.test_of_might.value( 1 ) )
-          ->set_trigger_spell( azerite.test_of_might.spell()->effectN( 1 ).trigger() )
-          ->set_max_stack( 99 );
-
   buff.whirlwind = buff_creator_t( this, "whirlwind", find_spell( 85739 ) );
 
   // Azerite
@@ -5581,6 +5577,11 @@ void warrior_t::create_buffs()
   buff.pulverizing_blows = make_buff( this, "pulverizing_blows", find_spell( 275672 ) )
                                ->set_trigger_spell( azerite.pulverizing_blows.spell_ref().effectN( 1 ).trigger() )
                                ->set_default_value( azerite.pulverizing_blows.value() );
+
+  const spell_data_t* test_of_might_tracker = azerite.test_of_might.spell()->effectN( 1 ).trigger()->effectN( 1 ).trigger();
+  buff.test_of_might_tracker = new test_of_might_t( *this, "test_of_might_tracker", test_of_might_tracker );
+  buff.test_of_might = make_buff<stat_buff_t>( this, "test_of_might", find_spell( 275540 ) )
+    ->set_trigger_spell( test_of_might_tracker );
 
   const spell_data_t* trample_the_weak_trigger = azerite.trample_the_weak.spell()->effectN( 1 ).trigger();
   const spell_data_t* trample_the_weak_buff    = trample_the_weak_trigger->effectN( 1 ).trigger();
