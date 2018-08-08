@@ -7262,6 +7262,18 @@ action_t* create_proc_action( const std::string& name, const special_effect_t& e
 
   return a;
 }
+
+template <typename BUFF, typename ...ARGS>
+BUFF* create_buff( player_t* p, const std::string& name, ARGS&&... args )
+{
+  auto b = buff_t::find( p, name );
+  if ( b != nullptr )
+  {
+    return debug_cast<BUFF*>( b );
+  }
+
+  return make_buff<BUFF>( p, name, args... );
+}
 } // namespace unique_gear ends
 
 // Consumable ===============================================================
