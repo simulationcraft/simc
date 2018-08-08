@@ -5791,6 +5791,17 @@ std::string warrior_t::default_rune() const
 
 void warrior_t::init_action_list()
 {
+  if ( specialization() == WARRIOR_PROTECTION )
+  {
+    if ( !quiet )
+    {
+      sim->error( "Player {}'s role ({}) or spec({}) is currently not supported.", name(),
+                  util::role_type_string( primary_role() ), util::specialization_string( specialization() ) );
+    }
+    quiet = true;
+    return;
+  }
+
   if ( !action_list_str.empty() )
   {
     player_t::init_action_list();
