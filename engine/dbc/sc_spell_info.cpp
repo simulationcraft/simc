@@ -1119,6 +1119,34 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
     s << std::endl;
   }
 
+  if ( spell->class_family() > 0 )
+  {
+    std::stringstream flags_s;
+
+    for ( size_t i = 0; i < NUM_CLASS_FAMILY_FLAGS; ++i )
+    {
+      for ( size_t bit = 0; bit < 32; ++bit )
+      {
+        if ( ( 1 << bit ) & e->_class_flags[ i ] )
+        {
+          if ( flags_s.tellp() )
+          {
+            flags_s << ", ";
+          }
+
+          flags_s << ( i * 32 + bit );
+        }
+      }
+    }
+
+    if ( flags_s.tellp() )
+    {
+      s << "                   Family Flags: ";
+      s << flags_s.str();
+      s << std::endl;
+    }
+  }
+
   if ( e -> _hotfix != 0 )
   {
     s << "                   Hotfixed: ";
@@ -1584,6 +1612,34 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
       }
     }
     s << std::endl;
+  }
+
+  if ( spell->class_family() > 0 )
+  {
+    std::stringstream flags_s;
+
+    for ( size_t i = 0; i < NUM_CLASS_FAMILY_FLAGS; ++i )
+    {
+      for ( size_t bit = 0; bit < 32; ++bit )
+      {
+        if ( ( 1 << bit ) & spell->_class_flags[ i ] )
+        {
+          if ( flags_s.tellp() )
+          {
+            flags_s << ", ";
+          }
+
+          flags_s << ( i * 32 + bit );
+        }
+      }
+    }
+
+    if ( flags_s.tellp() )
+    {
+      s << "Family Flags     : ";
+      s << flags_s.str();
+      s << std::endl;
+    }
   }
 
   s << "Attributes       : ";

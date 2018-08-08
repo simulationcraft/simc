@@ -963,6 +963,37 @@ struct spell_race_expr_t : public spell_list_expr_t
   }
 };
 
+struct spell_flag_expr_t : public spell_list_expr_t
+{
+  spell_flag_expr_t( sim_t* sim, expr_data_e type ) : spell_list_expr_t( sim, "flag", type ) { }
+
+  virtual std::vector<uint32_t> operator==( const spell_data_expr_t& other ) override
+  {
+    std::vector<uint32_t> res;
+
+    // Only for spells
+    if ( data_type == DATA_EFFECT || data_type == DATA_TALENT )
+      return res;
+
+    // Numbered attributes only
+    if ( other.result_tok != expression::TOK_NUM )
+      return res;
+
+    for ( const auto& result_spell : result_spell_list )
+    {
+      const spell_data_t* spell = sim -> dbc.spell( result_spell );
+
+      if ( ! spell )
+        continue;
+
+      if ( spell -> class_flag( other.result_num ) )
+        res.push_back( result_spell );
+    }
+
+    return res;
+  }
+};
+
 struct spell_attribute_expr_t : public spell_list_expr_t
 {
   spell_attribute_expr_t( sim_t* sim, expr_data_e type ) : spell_list_expr_t( sim, "attribute", type ) { }
@@ -1135,6 +1166,8 @@ spell_data_expr_t* spell_data_expr_t::create_spell_expression( sim_t* sim, const
     return new spell_race_expr_t( sim, data_type );
   else if ( util::str_compare_ci( splits[ 1 ], "attribute" ) )
     return new spell_attribute_expr_t( sim, data_type );
+  else if ( data_type != DATA_TALENT && util::str_compare_ci( splits[ 1 ], "flag" ) )
+    return new spell_flag_expr_t( sim, data_type );
   else if ( data_type != DATA_TALENT && util::str_compare_ci( splits[ 1 ], "school" ) )
     return new spell_school_expr_t( sim, data_type );
 
