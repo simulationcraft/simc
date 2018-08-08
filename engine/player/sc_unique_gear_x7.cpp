@@ -35,6 +35,7 @@ namespace items
   void harlans_loaded_dice( special_effect_t& );
   void kul_tiran_cannonball_runner( special_effect_t& );
   void rotcrusted_voodoo_doll( special_effect_t& );
+  void vessel_of_skittering_shadows( special_effect_t& );
   // 8.0.1 - Uldir Trinkets
   void frenetic_corpuscle( special_effect_t& );
 }
@@ -416,6 +417,40 @@ void items::kul_tiran_cannonball_runner( special_effect_t& effect )
   new cannonball_cb_t( effect );
 }
 
+//Vessel of Skittering Shadows ==============================================
+
+struct webweavers_soul_gem_t : public proc_spell_t
+{
+  webweavers_soul_gem_t(const special_effect_t& effect) :
+    proc_spell_t("webweavers_soul_gem", effect.player, effect.player -> find_spell(270827))
+  {
+    aoe = -1;
+    split_aoe_damage = true;
+    //Travel speed is guessed, needs to be fixed from in game testing 8/8/2018
+    travel_speed = 25;
+  }
+
+};
+
+void items::vessel_of_skittering_shadows(special_effect_t& effect)
+{
+  action_t* action = effect.player->find_action("webweavers_soul_gem");
+  if (!action)
+  {
+    action = effect.player->create_proc_action("webweavers_soul_gem", effect);
+  }
+
+  if (!action)
+  {
+    action = new webweavers_soul_gem_t(effect);
+  }
+
+  effect.execute_action = action;
+  effect.proc_flags2_ = PF2_ALL_HIT;
+
+  new dbc_proc_callback_t(effect.player, effect);
+}
+
 // Rotcrusted Voodoo Doll ===================================================
 
 void items::rotcrusted_voodoo_doll( special_effect_t& effect )
@@ -527,6 +562,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 274835, items::harlans_loaded_dice );
   register_special_effect( 271190, items::kul_tiran_cannonball_runner );
   register_special_effect( 271462, items::rotcrusted_voodoo_doll );
+  register_special_effect( 270809, items::vessel_of_skittering_shadows);
   register_special_effect( 268314, "268311Trigger" ); // Galecaller's Boon, assumes the player always stands in the area
   register_special_effect( 278140, items::frenetic_corpuscle );
 }
