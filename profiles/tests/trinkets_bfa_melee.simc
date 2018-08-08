@@ -1,0 +1,75 @@
+# PROFILE FOR TESTING ONLY!
+# This file provides all available trinkets for MELEEs.
+# Use this file to verify whether all trinkets are functioning as expected after changes.
+# No appropriate drop itemlevel required.
+
+
+copy="Rezan's Gleaming Eye"
+trinket1=,id=158712,ilevel=355
+
+copy="Briny Barnacle"
+trinket1=,id=159619,ilevel=355
+
+copy="Merektha's Fang"
+trinket1=,id=158367,ilevel=355
+
+copy="Razdunk's Big Red Button"
+trinket1=,id=159611,ilevel=355
+
+copy="Lingering Sporepods"
+trinket1=,id=159626,ilevel=355
+
+copy="Vial of Animated Blood"
+trinket1=,id=159625,ilevel=355
+
+copy="Jes' Howler"
+trinket1=,id=159627,ilevel=355
+
+copy="Gorecrusted Butcher's Block"
+trinket1=,id=159616,ilevel=355
+
+copy="Zandalari Dinobone Charm"
+trinket1=,id=158155,ilevel=355
+
+copy="Zandalari Bijou"
+trinket1=,id=158154,ilevel=355
+
+copy="Zandalari Loa Figurine"
+trinket1=,id=158153,ilevel=355
+
+copy="Cursed Captain's Charm"
+trinket1=,id=161115,ilevel=355
+
+copy="Doom's Fury"
+trinket1=,id=161463,ilevel=355
+
+copy="Galecaller's Beak"
+trinket1=,id=161379,ilevel=355
+
+copy="Hurricane Heart"
+trinket1=,id=161416,ilevel=355
+
+copy="Knot of Spiritual Fury"
+trinket1=,id=161413,ilevel=355
+
+copy="Kraulok's Claw"
+trinket1=,id=161419,ilevel=355
+
+copy="Prism of Dark Intensity"
+trinket1=,id=161376,ilevel=355
+
+copy="Sublimating Iceshard"
+trinket1=,id=161382,ilevel=355
+
+copy="Darkmoon Deck: Fathoms"
+trinket1=,id=159125,ilevel=355
+
+copy="Surging Alchemist Stone"
+trinket1=,id=152632,ilevel=300
+
+copy="Plunderbeard's Flask"
+trinket1=,id=158164,ilevel=355
+
+copy="Vanquished Tendril of G'huun"
+trinket1=,id=160654,ilevel=355
+

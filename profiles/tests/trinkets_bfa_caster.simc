@@ -1,0 +1,75 @@
+# PROFILE FOR TESTING ONLY!
+# This file provides all available trinkets for CASTERs.
+# Use this file to verify whether all trinkets are functioning as expected after changes.
+# No appropriate drop itemlevel required.
+
+
+copy="Vessel of Skittering Shadows"
+trinket1=,id=159610,ilevel=355
+
+copy="Conch of Dark Whispers"
+trinket1=,id=159620,ilevel=355
+
+copy="Hadal's Nautilus"
+trinket1=,id=159622,ilevel=355
+
+copy="Rotcrusted Voodoo Doll"
+trinket1=,id=159624,ilevel=355
+
+copy="Ignition Mage's Fuse"
+trinket1=,id=159615,ilevel=355
+
+copy="Lady Waycrest's Music Box"
+trinket1=,id=159631,ilevel=355
+
+copy="Balefire Branch"
+trinket1=,id=159630,ilevel=355
+
+copy="Perl Diver's Compass"
+trinket1=,id=158162,ilevel=355
+
+copy="Zandalari Dinobone Charm"
+trinket1=,id=158155,ilevel=355
+
+copy="Zandalari Bijou"
+trinket1=,id=158154,ilevel=355
+
+copy="Zandalari Loa Figurine"
+trinket1=,id=158153,ilevel=355
+
+copy="Cursed Captain's Charm"
+trinket1=,id=161115,ilevel=355
+
+copy="Azurethos'Singed Plumage"
+trinket1=,id=161377,ilevel=355
+
+copy="Doom's Hatred"
+trinket1=,id=161461,ilevel=355
+
+copy="Drust-Runed Icicle"
+trinket1=,id=161380,ilevel=355
+
+copy="T'zane's Barkspines"
+trinket1=,id=161411,ilevel=355
+
+copy="Tear of the Void"
+trinket1=,id=161374,ilevel=355
+
+copy="Wing Bone of the Budding Tempest"
+trinket1=,id=161414,ilevel=355
+
+copy="Darkmoon Deck: Squalls"
+trinket1=,id=159126,ilevel=355
+
+copy="Surging Alchemist Stone"
+trinket1=,id=152632,ilevel=300
+
+copy="Plunderbeard's Flask"
+trinket1=,id=158164,ilevel=355
+
+copy="Vigilant's Bloodshaper"
+trinket1=,id=160651,ilevel=355
+
+copy="Vanquished Tendril of G'huun"
+trinket1=,id=160654,ilevel=355
+
