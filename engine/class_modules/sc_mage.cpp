@@ -6972,7 +6972,7 @@ void mage_t::apl_frost()
     "in most situations. Low mastery leans towards using it when available. When using Splitting Ice and having another target nearby, "
     "it's slightly better to use GS when available, as the second target doesn't benefit from shattering the main target." );
   single -> add_talent( this, "Ice Nova" );
-  single -> add_action( this, "Flurry", "if=!buff.brain_freeze.react&buff.winters_reach.react&azerite.winters_reach.rank>=2" );
+  single -> add_action( this, "Flurry", "if=azerite.winters_reach.enabled&!buff.brain_freeze.react&buff.winters_reach.react" );
   single -> add_action( this, "Frostbolt" );
   single -> add_action( "call_action_list,name=movement" );
   single -> add_action( this, "Ice Lance" );
