@@ -1203,6 +1203,8 @@ class SpellDataGenerator(DataGenerator):
          280705, 280707,
          # 8.0.1 Harlan's Loaded dice
          267325, 267326, 267327, 267329, 267330, 267331,
+         # 8.0.1 Kul Tiran Cannonball Runner damage
+         271197,
         ),
 
         # Warrior:

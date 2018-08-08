@@ -33,6 +33,7 @@ namespace items
   void tiny_electromental_in_a_jar( special_effect_t& );
   void mydas_talisman( special_effect_t& );
   void harlans_loaded_dice( special_effect_t& );
+  void kul_tiran_cannonball_runner( special_effect_t& );
   // 8.0.1 - Uldir Trinkets
   void frenetic_corpuscle( special_effect_t& );
 }
@@ -378,6 +379,42 @@ void items::harlans_loaded_dice( special_effect_t& effect )
   } );
 }
 
+// Kul Tiran Cannonball Runner ==============================================
+
+void items::kul_tiran_cannonball_runner( special_effect_t& effect )
+{
+  struct mortar_shot_t : public proc_spell_t
+  {
+    mortar_shot_t( const special_effect_t& effect ) :
+      proc_spell_t( "kul_tiran_cannonball_runner", effect.player,
+          effect.player->find_spell( 271197 ), effect.item )
+    {
+      aoe = -1;
+      split_aoe_damage = true;
+    }
+  };
+
+  struct cannonball_cb_t : public dbc_proc_callback_t
+  {
+    cannonball_cb_t( const special_effect_t& effect ) :
+      dbc_proc_callback_t( effect.item, effect )
+    { }
+
+    void execute( action_t*, action_state_t* state ) override
+    {
+      make_event<ground_aoe_event_t>( *listener->sim, listener, ground_aoe_params_t()
+        .target( state -> target )
+        .pulse_time( effect.trigger()->effectN( 1 ).trigger()->effectN( 2 ).period() )
+        .duration( effect.trigger()->effectN( 1 ).trigger()->duration() )
+        .action( proc_action ) );
+    }
+  };
+
+  effect.execute_action = create_proc_action<mortar_shot_t>( "mortar_shot", effect );
+
+  new cannonball_cb_t( effect );
+}
+
 // Frenetic Corpuscle =======================================================
 
 void items::frenetic_corpuscle( special_effect_t& effect )
@@ -453,6 +490,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 267177, items::tiny_electromental_in_a_jar );
   register_special_effect( 265954, items::mydas_talisman );
   register_special_effect( 274835, items::harlans_loaded_dice );
+  register_special_effect( 271190, items::kul_tiran_cannonball_runner );
   register_special_effect( 268314, "268311Trigger" ); // Galecaller's Boon, assumes the player always stands in the area
   register_special_effect( 278140, items::frenetic_corpuscle );
 }
