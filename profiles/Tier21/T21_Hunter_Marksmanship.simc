@@ -35,7 +35,7 @@ actions=auto_shot
 actions+=/counter_shot,if=equipped.sephuzs_secret&target.debuff.casting.react&cooldown.buff_sephuzs_secret.up&!buff.sephuzs_secret.up
 actions+=/use_items
 actions+=/call_action_list,name=cds
-actions+=/call_action_list,name=st,if=active_enemies<2
+actions+=/call_action_list,name=st,if=active_enemies<3
 actions+=/call_action_list,name=trickshots,if=active_enemies>2
 
 actions.cds=hunters_mark,if=debuff.hunters_mark.down
@@ -46,12 +46,14 @@ actions.cds+=/ancestral_call,if=cooldown.trueshot.remains>30
 actions.cds+=/fireblood,if=cooldown.trueshot.remains>30
 actions.cds+=/lights_judgment
 actions.cds+=/potion,if=(buff.trueshot.react&buff.bloodlust.react)|((consumable.prolonged_power&target.time_to_die<62)|target.time_to_die<31)
-actions.cds+=/trueshot,if=cooldown.aimed_shot.charges<1
+actions.cds+=/trueshot,if=cooldown.aimed_shot.charges<1|talent.barrage.enabled&cooldown.aimed_shot.charges_fractional<1.3
 
-actions.st=arcane_shot,if=buff.precise_shots.up&(cooldown.aimed_shot.full_recharge_time<gcd*buff.precise_shots.stack+action.aimed_shot.cast_time|buff.lethal_shots.up)
+actions.st=explosive_shot
+actions.st+=/barrage,if=active_enemies>1
+actions.st+=/arcane_shot,if=buff.precise_shots.up&(cooldown.aimed_shot.full_recharge_time<gcd*buff.precise_shots.stack+action.aimed_shot.cast_time|buff.lethal_shots.up)
+actions.st+=/rapid_fire,if=(!talent.lethal_shots.enabled|buff.lethal_shots.up)&azerite.focused_fire.enabled|azerite.in_the_rhythm.enabled
 actions.st+=/aimed_shot,if=buff.precise_shots.down&(buff.double_tap.down&full_recharge_time<cast_time+gcd|buff.lethal_shots.up)
-actions.st+=/rapid_fire,if=!talent.lethal_shots.enabled|buff.lethal_shots.up|azerite.in_the_rhythm.rank>1
-actions.st+=/explosive_shot
+actions.st+=/rapid_fire,if=!talent.lethal_shots.enabled|buff.lethal_shots.up
 actions.st+=/piercing_shot
 actions.st+=/a_murder_of_crows
 actions.st+=/serpent_sting,if=refreshable

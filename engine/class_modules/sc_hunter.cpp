@@ -5528,12 +5528,14 @@ void hunter_t::apl_mm()
 
   // In-combat potion
   cds -> add_action( "potion,if=(buff.trueshot.react&buff.bloodlust.react)|((consumable.prolonged_power&target.time_to_die<62)|target.time_to_die<31)" );
-  cds -> add_action( this, "Trueshot", "if=cooldown.aimed_shot.charges<1" );
-  
-  st -> add_action( this, "Arcane Shot", "if=buff.precise_shots.up&(cooldown.aimed_shot.full_recharge_time<gcd*buff.precise_shots.stack+action.aimed_shot.cast_time|buff.lethal_shots.up)" );
-  st -> add_action( this, "Aimed Shot", "if=buff.precise_shots.down&(buff.double_tap.down&full_recharge_time<cast_time+gcd|buff.lethal_shots.up)" );
-  st -> add_action( this, "Rapid Fire", "if=!talent.lethal_shots.enabled|buff.lethal_shots.up|azerite.in_the_rhythm.rank>1" );
+  cds -> add_action( this, "Trueshot", "if=cooldown.aimed_shot.charges<1|talent.barrage.enabled&cooldown.aimed_shot.charges_fractional<1.3" );
+
   st -> add_talent( this, "Explosive Shot" );
+  st -> add_talent( this, "Barrage", "if=active_enemies>1" );
+  st -> add_action( this, "Arcane Shot", "if=buff.precise_shots.up&(cooldown.aimed_shot.full_recharge_time<gcd*buff.precise_shots.stack+action.aimed_shot.cast_time|buff.lethal_shots.up)" );
+  st -> add_action( this, "Rapid Fire", "if=(!talent.lethal_shots.enabled|buff.lethal_shots.up)&azerite.focused_fire.enabled|azerite.in_the_rhythm.enabled" );
+  st -> add_action( this, "Aimed Shot", "if=buff.precise_shots.down&(buff.double_tap.down&full_recharge_time<cast_time+gcd|buff.lethal_shots.up)" );
+  st -> add_action( this, "Rapid Fire", "if=!talent.lethal_shots.enabled|buff.lethal_shots.up" );
   st -> add_talent( this, "Piercing Shot" );
   st -> add_talent( this, "A Murder of Crows" );
   st -> add_talent( this, "Serpent Sting", "if=refreshable" );
@@ -5559,7 +5561,7 @@ void hunter_t::apl_mm()
   default_list -> add_action( this, "Counter Shot", "if=equipped.sephuzs_secret&target.debuff.casting.react&cooldown.buff_sephuzs_secret.up&!buff.sephuzs_secret.up" );
   default_list -> add_action( "use_items" );
   default_list -> add_action( "call_action_list,name=cds" );
-  default_list -> add_action( "call_action_list,name=st,if=active_enemies<2" );
+  default_list -> add_action( "call_action_list,name=st,if=active_enemies<3" );
   default_list -> add_action( "call_action_list,name=trickshots,if=active_enemies>2" );
 }
 
