@@ -45,7 +45,7 @@ __class_map = {
         (0, -1),        # 15: All
                         # 30: None
         (2, -1),        # 45: All
-                        # 60: None
+        (3, 1),         # 60: Just Good Karma
                         # 75: None
         (5, -1),        # 90: All
         (6, -1),        # 100: All
