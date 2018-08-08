@@ -3102,14 +3102,11 @@ struct killing_spree_tick_t : public rogue_attack_t
   killing_spree_tick_t( rogue_t* p, const char* name, const spell_data_t* s ) :
     rogue_attack_t( name, p, s )
   {
-    school      = SCHOOL_PHYSICAL;
-    background  = true;
-    may_crit    = true;
+    may_dodge = may_parry = may_block = false;
+    may_crit = true;
+    background = true;
     direct_tick = true;
   }
-
-  bool procs_main_gauche() const override
-  { return true; }
 };
 
 struct killing_spree_t : public rogue_attack_t
