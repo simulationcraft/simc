@@ -137,7 +137,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Tick on application (169), Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=311)      : Apply Aura (6) | Periodic Heal (8): every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.17000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.18000 | Target: Friend (21)
+                   Hotfixed: SP Coefficient (0.17 -> 0.18)
 Description      : Heals the target for $o1 over $d.$?s33891[
 
 |C0033AA11Tree of Life: Healing increased by $5420s5% and Mana cost reduced by $5420s4%.|R][]
@@ -2014,6 +2015,7 @@ Effects          :
                    Base Value: 94447 | Scaled Value: 94447 | Target: Self (1)
 
 Name             : Efflorescence (id=81262) [Spell Family (7)] 
+Hotfixed         : Affecting Spells
 Class            : Druid
 School           : Nature
 Spell Level      : 1
@@ -3598,6 +3600,7 @@ Description      : $@spelldesc155672
 Tooltip          : Your next two melee abilities deal $s1% increased damage for their full duration.
 
 Name             : Efflorescence (id=145205) [Spell Family (7)] 
+Hotfixed         : Affecting Spells
 Class            : Restoration Druid
 School           : Nature
 Resource         : 21.6% Base Mana (0) (id=9240)
@@ -4206,6 +4209,7 @@ Description      : $@spelldesc8921
 Tooltip          : Suffering $w2 Arcane damage every $t2 seconds.
 
 Name             : Sunfire (rank=Solar) (id=164815) [Spell Family (7)] 
+Hotfixed         : Attributes
 Class            : Druid
 School           : Nature
 Spell Level      : 16
@@ -4214,13 +4218,13 @@ Duration         : 12 seconds
 Stance Mask      : 0x40000002
 Affecting spells : Moonkin Form (24858 effect#9), Mastery: Starlight (77492 effect#1), Incarnation: Chosen of Elune (102560 effect#1), Restoration Druid (137012 effect#8), Balance Druid (137013 effect#1), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Astral Power (197911 effect#3), Ekowraith, Creator of Worlds (210667 effect#1), Solar Solstice (252767 effect#1), High Noon (278505 effect#2), High Noon (279070 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ...x.... ........   ........ .x...... ..x..... ......x. 
+                 : ........ ........ ...x.... ........   ........ .x...... ........ ......x. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ .x..x... ........ ........   ........ ........ ......x. ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x......x ........ ....x... ........ 
-                 : Not a proc (105), Always hits (114), Periodic effect affected by haste (173), Periodic effect can crit (265)
+                 : Not a proc (105), Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=232416)   : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.20000 | Target: Enemy (6)
@@ -5104,7 +5108,8 @@ Attributes       : ........ ........ ..x..... x..x....   ........ ..x..... .....
                  : Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=295007)   : Apply Aura (6) | Periodic Heal (8): every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.12000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.10000 | Target: Friend (21)
+                   Hotfixed: SP Coefficient (0.12 -> 0.1)
 Description      : $@spelldesc200390
 Tooltip          : Heals $w1 damage every $t1 seconds.
 
@@ -8404,7 +8409,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=727546)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Hotfixed: Base Value (15 -> 20)
 #2 (id=727557)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : While your Lifebloom is on yourself, your periodic heals heal $s1% faster.

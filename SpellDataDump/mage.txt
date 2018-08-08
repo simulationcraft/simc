@@ -377,6 +377,7 @@ Effects          :
 Description      : Attack with an equipped wand.
 
 Name             : Arcane Missiles (id=5143) [Spell Family (3)] 
+Hotfixed         : Attributes
 Class            : Arcane Mage
 School           : Arcane
 Resource         : 15% Base Mana (0) (id=191467)
@@ -391,7 +392,7 @@ Attributes       : ........ ........ x....... .....x..   ..x....x ..x...x. .....
                  : ........ ..x..... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ....x... ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : Channeled (34), Periodic effect affected by haste (173)
 Effects          :
 #1 (id=1818)     : Apply Aura (6) | Periodic Dummy (226): every 0.625 seconds
@@ -5290,7 +5291,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=355860)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+                   Hotfixed: Base Value (20 -> 50)
 #2 (id=355861)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Prismatic Barrier (235450)
@@ -5927,6 +5929,7 @@ Effects          :
 Description      : $@spelldesc214634
 
 Name             : Phoenix Flames (id=257541) [Spell Family (3)] 
+Hotfixed         : Attributes
 Class            : Mage
 School           : Fire
 Range            : 40 yards
@@ -5938,7 +5941,7 @@ Proc Chance      : 101%
 Affecting spells : Arcane Power (12042 effect#1), Rune of Power (116014 effect#1), Incanter's Flow (116267 effect#1), Fire Mage (137019 effect#1), Frost Mage (137020 effect#1), Arcane Mage (137021 effect#1), Combustion (190319 effect#1), Bone Chilling (205766 effect#1), Norgannon's Foresight (236380 effect#1), Crackling Energy (246224 effect#1), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ..x..... ........   ........ .......x ........ ........ 
+                 : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6591,7 +6594,8 @@ Effects          :
                    Hotfixed: Coefficient (1.46341 -> 7.60736)
 Description      : Scorch increases the damage the target takes from your Fire Blast by $s1 for $273333d.
 
-Name             : Winter's Reach (id=273346) [Scaling Spell (-1), Spell Family (3), Passive] 
+Name             : Winter's Reach (id=273346) [Scaling Spell (-8), Spell Family (3), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Mage
 School           : Physical
 Azerite Power Id : 170
@@ -6606,7 +6610,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724886)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 855.25 (coefficient=2.75) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 3209.215 (coefficient=41.27607) | Target: Self (1)
+                   Hotfixed: Coefficient (2.75 -> 41.2761)
 #2 (id=724889)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
 Description      : Consuming Brain Freeze has a $s2% chance to make your next non-instant Flurry cast within $273347d deal an additional $s1 damage per hit.
@@ -6959,9 +6964,9 @@ Effects          :
                    Base Value: 8 | Scaled Value: 8 | Trigger Spell: 279080 | Target: Self (1)
                    Hotfixed: Base Value (10 -> 8)
 #2 (id=734301)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 50 | Scaled Value: 207.0154 (coefficient=2.662577) | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 157.408 (coefficient=2.02454) | Target: Self (1)
                    Affected Spells: Arcane Blast (30451)
-                   Hotfixed: Coefficient (0.44 -> 2.66258)
+                   Hotfixed: Coefficient (0.44 -> 2.02454)
 Description      : Arcane Blast deals an additional $s2 damage and has a $s1% chance to generate a second Arcane Charge.
 
 Name             : Explosive Echo (id=278537) [Scaling Spell (-8), Spell Family (3), Passive] 
@@ -7053,9 +7058,9 @@ Effects          :
 #2 (id=734312)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 #3 (id=735803)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 345.3436 (coefficient=4.441718) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 174.5798 (coefficient=2.245399) | Target: Self (1)
                    Affected Spells: Ice Lance (30455), Ice Lance (228598)
-                   Hotfixed: Coefficient (0.24 -> 4.44172)
+                   Hotfixed: Coefficient (0.24 -> 2.2454)
 Description      : Ice Lance deals an additional $s3 damage and reduces the cooldown of Frozen Orb by ${$s2/10}.1 sec.
 
 Name             : Frigid Grasp (id=278542) [Scaling Spell (-1), Spell Family (3), Passive] 

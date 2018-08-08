@@ -578,8 +578,7 @@ Attributes       : ........ ........ .....x.. ........   ...x.x.x ........ .x...
                  : Cannot dodge/parry/block (21), Does not break stealth (37), Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=853)      : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.06300 | Target: Enemy (6)
-                   Hotfixed: Coefficient (0.6 -> 0)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.6) | AP Coefficient: 0.06300 | Target: Enemy (6)
 Description      : $@spelldesc2823
 Tooltip          : Suffering $w1 Nature damage every $t1 seconds.
 
@@ -2627,11 +2626,13 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179719)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 33 | Scaled Value: 33 | Target: Self (1)
+                   Base Value: 28 | Scaled Value: 28 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Poisoned Wire (276083), Secret Technique (280719), Secret Technique (280720)
+                   Hotfixed: Base Value (33 -> 28)
 #2 (id=191060)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 33 | Scaled Value: 33 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 28 | Scaled Value: 28 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Poisoned Wire (276083), Secret Technique (280719), Secret Technique (280720)
+                   Hotfixed: Base Value (33 -> 28)
 #3 (id=191061)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: -38 | Scaled Value: -38 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Nightstalker (14062)
@@ -2676,11 +2677,13 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179720)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 23 | Scaled Value: 23 | Target: Self (1)
+                   Base Value: 19 | Scaled Value: 19 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Poisoned Wire (276083), Secret Technique (280719), Secret Technique (280720)
+                   Hotfixed: Base Value (23 -> 19)
 #2 (id=191056)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 23 | Scaled Value: 23 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 19 | Scaled Value: 19 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Poisoned Wire (276083), Secret Technique (280719), Secret Technique (280720)
+                   Hotfixed: Base Value (23 -> 19)
 #3 (id=191057)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=191058)   : Apply Aura (6) | Dummy (4)
@@ -2721,11 +2724,13 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179721)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 32 | Scaled Value: 32 | Target: Self (1)
+                   Base Value: 27 | Scaled Value: 27 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Poisoned Wire (276083), Secret Technique (280719), Secret Technique (280720)
+                   Hotfixed: Base Value (32 -> 27)
 #2 (id=191052)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 32 | Scaled Value: 32 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 27 | Scaled Value: 27 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Poisoned Wire (276083), Secret Technique (280719), Secret Technique (280720)
+                   Hotfixed: Base Value (32 -> 27)
 #3 (id=191053)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 3 | Target: Self (1)
 #4 (id=191054)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
@@ -4773,7 +4778,6 @@ $@spellicon212198 $@spellname212198
 $@spelldesc212198
 
 Name             : Symbols of Death (id=212283) [Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Subtlety Rogue
 School           : Physical
 Spell Level      : 36
@@ -4785,7 +4789,7 @@ Attributes       : ....x... ........ x.x..... ........   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x......x ........ ....x... ........ 
                  : Does not break stealth (37)
@@ -4841,8 +4845,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=330681)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 12 | Target: Self (1)
-                   Hotfixed: Base Value (15 -> 10)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 12 | Target: Self (1)
 Description      : Your Tricks of the Trade now increases your and the friendly target's damage by $m1% for $59628d.
 
 Name             : Nightblade (id=222018) [Hidden] 
@@ -5087,7 +5090,6 @@ Description      : $@spelldesc231718
 Tooltip          : Shadowstrike deals $s2% increased damage and has $s1 yds increased range.
 
 Name             : Shuriken Combo (id=245639) [Spell Family (8), Passive] 
-Hotfixed         : Attributes
 Class            : Subtlety Rogue
 School           : Physical
 Spell Level      : 70
@@ -5095,7 +5097,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : Passive (6)
@@ -6085,7 +6087,8 @@ Effects          :
                    Affected Spells: Blade Flurry (13877)
 Description      : Increases the duration of Blade Flurry by ${$s2/1000} sec and its damage by $s3%.
 
-Name             : Sharpened Blades (id=272911) [Scaling Spell (-1), Passive] 
+Name             : Sharpened Blades (id=272911) [Scaling Spell (-8), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Rogue
 School           : Physical
 Azerite Power Id : 124
@@ -6100,10 +6103,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724115)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 31.1 (coefficient=0.1) | Trigger Spell: 272913 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 144.0522 (coefficient=1.852761) | Trigger Spell: 272913 | Target: Self (1)
+                   Hotfixed: Coefficient (0.1 -> 1.85276)
 Description      : Your autoattacks increase the damage of your next Shuriken Toss or Poisoned Knife by $s, stacking up to $272916u times.
 
-Name             : Deadshot (id=272935) [Scaling Spell (-1), Spell Family (8), Passive] 
+Name             : Deadshot (id=272935) [Scaling Spell (-8), Spell Family (8), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Rogue
 School           : Physical
 Azerite Power Id : 129
@@ -6118,11 +6123,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724153)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 933 (coefficient=3) | Misc Value: 23 | Trigger Spell: 272936 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1803.991 (coefficient=23.20246) | Misc Value: 23 | Trigger Spell: 272936 | Target: Self (1)
+                   Hotfixed: Coefficient (3 -> 23.2025)
 Description      : Between the Eyes increases the damage of your next Pistol Shot by $s1.
 
 
-Name             : Double Dose (id=273007) [Scaling Spell (-1), Spell Family (8), Passive] 
+Name             : Double Dose (id=273007) [Scaling Spell (-8), Spell Family (8), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Rogue
 School           : Physical
 Azerite Power Id : 136
@@ -6137,7 +6144,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724288)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 379.5512 (coefficient=1.220422) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 568.5767 (coefficient=7.312883) | Target: Self (1)
+                   Hotfixed: Coefficient (1.22042 -> 7.31288)
 Description      : When Mutilate applies Lethal Poison with both daggers, it poisons the target for an additional $s1 damage.
 
 Name             : Double Dose (id=273009) [Spell Family (8)] 
@@ -6182,7 +6190,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 799.9999 (coefficient=2.572347) | Trigger Spell: 273825 | Target: Self (1)
 Description      : Your spells and abilities have a chance to draw a Wandering Soul from Thros to serve you for $280204d. The Soul blasts a nearby enemy every $280204t2 sec, dealing $s1 Shadow damage.
 
-Name             : Night's Vengeance (id=273418) [Scaling Spell (-1), Passive] 
+Name             : Night's Vengeance (id=273418) [Scaling Spell (-8), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Rogue
 School           : Physical
 Azerite Power Id : 175
@@ -6197,10 +6206,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=725028)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 102.63 (coefficient=0.33) | Trigger Spell: 273419 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 261.8696 (coefficient=3.368098) | Trigger Spell: 273419 | Target: Self (1)
+                   Hotfixed: Coefficient (0.33 -> 3.3681)
 Description      : Nightblade increases the damage of your next Eviscerate within 8 sec by $s1. 
 
-Name             : Storm of Steel (id=273452) [Scaling Spell (-1), Spell Family (8), Passive] 
+Name             : Storm of Steel (id=273452) [Scaling Spell (-8), Spell Family (8), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Rogue
 School           : Physical
 Azerite Power Id : 180
@@ -6215,11 +6226,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=725095)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 149.28 (coefficient=0.48) | Misc Value: 23 | Trigger Spell: 273454 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 282.8574 (coefficient=3.638037) | Misc Value: 23 | Trigger Spell: 273454 | Target: Self (1)
+                   Hotfixed: Coefficient (0.48 -> 3.63804)
 Description      : Extra strikes from Sinister Strike increase the damage of your next Dispatch by $s1.
 
 
-Name             : Twist the Knife (id=273488) [Scaling Spell (-1), Spell Family (8), Passive] 
+Name             : Twist the Knife (id=273488) [Scaling Spell (-8), Spell Family (8), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Rogue
 School           : Physical
 Azerite Power Id : 181
@@ -6233,8 +6246,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=725163)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 248.8 (coefficient=0.8) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 118.2944 (coefficient=1.521472) | Target: Self (1)
                    Affected Spells: Envenom (32645)
+                   Hotfixed: Coefficient (0.8 -> 1.52147)
 #2 (id=736546)   : Dummy (3)
                    Base Value: 1000 | Scaled Value: 1000
 Description      : Envenom deals $s1 additional damage per combo point, and Envenom lasts for ${$s2/1000}.1 sec longer when it critically strikes.
@@ -6365,7 +6379,8 @@ Effects          :
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
 Description      : Allies within $s2 yds while your Sprint is active gain $s1 Speed.
 
-Name             : Snake Eyes (id=275846) [Scaling Spell (-1), Passive] 
+Name             : Snake Eyes (id=275846) [Scaling Spell (-8), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Rogue
 School           : Physical
 Azerite Power Id : 239
@@ -6380,10 +6395,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=729163)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 27.679 (coefficient=0.089) | Trigger Spell: 275858 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 180.3036 (coefficient=2.319018) | Trigger Spell: 275858 | Target: Self (1)
+                   Hotfixed: Coefficient (0.089 -> 2.31902)
 Description      : For each combo point spent on $?s5171[Slice and Dice][Roll the Bones], it causes your next $275863n Sinister Strikes to deal $s1 additional damage.
 
-Name             : Blade In The Shadows (id=275896) [Scaling Spell (-1), Passive] 
+Name             : Blade In The Shadows (id=275896) [Scaling Spell (-8), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Rogue
 School           : Physical
 Azerite Power Id : 240
@@ -6398,7 +6415,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=729242)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 55.98 (coefficient=0.18) | Trigger Spell: 279752 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 76.31901 (coefficient=0.981595) | Trigger Spell: 279752 | Target: Self (1)
+                   Hotfixed: Coefficient (0.18 -> 0.981595)
 Description      : Shadowstrike increases the damage your Shadowstrike deals by $s1 for $279754d, stacking up to $279754u times.
 
 Name             : Poisoned Wire (id=276072) [Scaling Spell (-7), Spell Family (8), Passive] 
@@ -6416,10 +6434,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=729498)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=1.639525) | Trigger Spell: 276076 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=4.011407) | Trigger Spell: 276076 | Target: Self (1)
+                   Hotfixed: Coefficient (1.63952 -> 4.01141)
 Description      : Garrote increases the critical strike rating of your next Mutilate by $s1. 
 
-Name             : Perforate (id=277673) [Scaling Spell (-1), Passive] 
+Name             : Perforate (id=277673) [Scaling Spell (-8), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Rogue
 School           : Physical
 Azerite Power Id : 445
@@ -6434,12 +6454,14 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732982)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 102.63 (coefficient=0.33) | Trigger Spell: 277719 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 117.8175 (coefficient=1.515337) | Trigger Spell: 277719 | Target: Self (1)
+                   Hotfixed: Coefficient (0.33 -> 1.51534)
 #2 (id=732983)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3
 Description      : $?S200758[Using Gloomblade on][Backstabbing] an enemy from behind increases the damage of $?S200758[Gloomblade][Backstab] by $s1 for $277720d, stacking up to $s2 times.
 
-Name             : Brigand's Blitz (id=277676) [Scaling Spell (-1), Passive] 
+Name             : Brigand's Blitz (id=277676) [Scaling Spell (-7), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -7)
 Class            : Rogue
 School           : Physical
 Azerite Power Id : 446
@@ -6454,7 +6476,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732986)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 93.3 (coefficient=0.3) | Trigger Spell: 277723 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.247927) | Trigger Spell: 277723 | Target: Self (1)
+                   Hotfixed: Coefficient (0.3 -> 0.247927)
 Description      : Adrenaline Rush increases your Haste by $s1 every sec, stacking up to $277724U times. Lasts ${2*$277725d} seconds.
 
 Name             : Scent of Blood (id=277679) [Scaling Spell (-1), Passive] 
@@ -6472,7 +6495,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732991)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 34.832 (coefficient=0.112) | Trigger Spell: 277731 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 67.42293 (coefficient=0.216794) | Trigger Spell: 277731 | Target: Self (1)
+                   Hotfixed: Coefficient (0.112 -> 0.216794)
 Description      : Rupture increases your Agility by $s1. You may gain this benefit for each enemy suffering from your Rupture.
 
 Name             : Shuriken Tornado (id=277925) [Spell Family (8)] 
@@ -6528,7 +6552,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5 | Target: Self (1)
 Description      : Shuriken Storm reduces enemies' movement speed by $206760s1% for $206760d.
 
-Name             : Fan of Blades (id=278664) [Scaling Spell (-1), Spell Family (8), Passive] 
+Name             : Fan of Blades (id=278664) [Scaling Spell (-8), Spell Family (8), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Rogue
 School           : Physical
 Azerite Power Id : 407
@@ -6542,14 +6567,16 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734508)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 139.95 (coefficient=0.45) | Trigger Spell: 279030 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 120.2024 (coefficient=1.546012) | Trigger Spell: 279030 | Target: Self (1)
+                   Hotfixed: Coefficient (0.45 -> 1.54601)
 #2 (id=734509)   : Dummy (3)
                    Base Value: 15 | Scaled Value: 15
 #3 (id=734510)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3
 Description      : Fan of Knives' radius is increased to $s2 yds and damage is increased by $s1 if it hits at least $s3 targets.
 
-Name             : Shrouded Suffocation (id=278666) [Scaling Spell (-1), Spell Family (8), Passive] 
+Name             : Shrouded Suffocation (id=278666) [Scaling Spell (-8), Spell Family (8), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Rogue
 School           : Physical
 Azerite Power Id : 408
@@ -6563,7 +6590,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734512)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 72.40578 (coefficient=0.232816) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 437.8804 (coefficient=5.631902) | Target: Self (1)
+                   Hotfixed: Coefficient (0.232816 -> 5.6319)
 #2 (id=734513)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 Description      : Garrote cast from Stealth generates $s2 additional Combo Points and deals $s1 additional damage. 
@@ -6583,10 +6611,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734528)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 124.4 (coefficient=0.4) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 145.7663 (coefficient=0.468702) | Target: Self (1)
+                   Hotfixed: Coefficient (0.4 -> 0.468702)
 Description      : Take control of the dice of fate, granting yourself $s1 Agility if Roll the Bones only provides you with one combat enhancement.
 
-Name             : Ace Up Your Sleeve (id=278676) [Scaling Spell (-1), Spell Family (8), Passive] 
+Name             : Ace Up Your Sleeve (id=278676) [Scaling Spell (-8), Spell Family (8), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Rogue
 School           : Physical
 Azerite Power Id : 411
@@ -6600,7 +6630,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734530)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 172.5201 (coefficient=0.554727) | Trigger Spell: 279712 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 99.69175 (coefficient=1.282209) | Trigger Spell: 279712 | Target: Self (1)
+                   Hotfixed: Coefficient (0.554727 -> 1.28221)
 #2 (id=734531)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 #3 (id=736175)   : Dummy (3)
@@ -6625,7 +6656,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=8.960177) | Target: Self (1)
 Description      : Shadow Dance grants an additional $s1 critical strike rating to the first Eviscerate, Shadowstrike, or Shuriken Storm used during it.
 
-Name             : Inevitability (id=278683) [Scaling Spell (-1), Spell Family (8), Passive] 
+Name             : Inevitability (id=278683) [Scaling Spell (-8), Spell Family (8), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Rogue
 School           : Physical
 Azerite Power Id : 414
@@ -6643,8 +6675,9 @@ Effects          :
 #2 (id=734546)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 #3 (id=736187)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 248.8 (coefficient=0.8) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 186.5046 (coefficient=2.398773) | Target: Self (1)
                    Affected Spells: Backstab (53), Backstab (173458), Shadowstrike (185438), Gloomblade (200758)
+                   Hotfixed: Coefficient (0.8 -> 2.39877)
 Description      : $?S200758[Gloomblade][Backstab] and Shadowstrike deal an additional $s3 damage and extend the duration of your Symbols of Death by ${$s2/10}.1 sec.
 
 Name             : Paradise Lost (id=278962) [Spell Family (8)] 

@@ -121,7 +121,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=236)      : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.47000 | Target: Enemy (6)
+                   Hotfixed: SP Coefficient (0.5 -> 0.47)
 Description      : Smites an enemy for $s1 Holy damage$?s231682[ and absorbs the next $<shield> damage dealt by the enemy]?s231687[ and has a $231687s1% chance to reset the cooldown of Holy Fire][].
 Variables        : $shield=${($SPS*$231682s1/100)*(1+$@versadmg)}
 
@@ -627,7 +628,8 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=11689)    : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Misc Value 2: 0x32 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Misc Value 2: 0x3c | Target: Self (1)
+                   Hotfixed: Misc Value 2 (50 -> 60)
 Description      : Upon death, you become the Spirit of Redemption for $27827d. You cannot move, attack, be attacked, or be targeted by any spells or effects, and your healing spells cost no mana. When the effect ends, you die.
 
 Name             : Power Word: Fortitude (id=21562) [Spell Family (6)] 
@@ -800,7 +802,7 @@ Description      : A word of dark binding that inflicts $s1 Shadow damage to the
 Name             : Binding Heal (id=32546) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
-Resource         : 2% Base Mana (0) (id=1347)
+Resource         : 2.4% Base Mana (0) (id=1347) [Hotfixed: Percent Cost (2 -> 2.4)]
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -2172,7 +2174,8 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=122873)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.40000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | Target: Friend (21)
+                   Hotfixed: SP Coefficient (0.4 -> 0.5)
 Description      : $@spelldesc110744
 
 Name             : Levitate (id=111759) [Spell Family (6)] 
@@ -2730,14 +2733,19 @@ Effects          :
 #3 (id=191073)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 #4 (id=191074)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: -9 | Scaled Value: -9 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589)
+                   Hotfixed: Base Value (0 -> -9)
 #5 (id=733880)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
+                   Base Value: -9 | Scaled Value: -9 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589)
+                   Hotfixed: Base Value (0 -> -9)
 #6 (id=733881)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589)
+#7 (id=743448)   : Apply Aura (6) | Modify Pet Damage Done% (429)
+                   Base Value: -16 | Scaled Value: -16 | Target: Self (1)
+                   Hotfixed: NEW EFFECT
 Description      : Discipline Priest core passive
 
 Name             : Shadow Priest (id=137033) [Spell Family (6), Passive, Hidden] 
@@ -3305,11 +3313,9 @@ Effects          :
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Void Eruption (228260), Void Eruption (228360), Dark Ascension (280800)
 #4 (id=361455)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: -30 | Scaled Value: -30 | Misc Value: 12 | Target: Self (1)
-                   Hotfixed: Base Value (-40 -> -30)
+                   Base Value: -40 | Scaled Value: -40 | Misc Value: 12 | Target: Self (1)
 #5 (id=371747)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: -30 | Scaled Value: -30 | Misc Value: 23 | Target: Self (1)
-                   Hotfixed: Base Value (-40 -> -30)
+                   Base Value: -40 | Scaled Value: -40 | Misc Value: 23 | Target: Self (1)
 #6 (id=371748)   : Dummy (3)
                    Base Value: 60 | Scaled Value: 60
 Description      : Void Eruption's cast time is reduced by $s3% and may be cast anytime your Insanity level is $s6 or higher.
@@ -5412,7 +5418,7 @@ School           : Holy
 Resource         : 6% Base Mana (0) (id=191888)
 Spell Level      : 70
 Range            : 40 yards
-Cast Time        : 2 seconds
+Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Cooldown         : 720 seconds
 Stance Mask      : 0x80000000

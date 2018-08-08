@@ -1583,7 +1583,8 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=66866)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.87500 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.10000 | Target: Friend (21)
+                   Hotfixed: SP Coefficient (0.875 -> 1.1)
 #2 (id=66867)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 45 | Scaled Value: 45 | Target: Self (1)
                    Affected Spells: Chain Heal (1064), Healing Surge (8004), Healing Wave (77472), Healing Surge (188070)
@@ -3175,7 +3176,8 @@ Effects          :
 #1 (id=219618)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 40 yards | Target: Custom (18) -> AOE friendly (31)
 #2 (id=306466)   : Dummy (3)
-                   Base Value: 25 | Scaled Value: 25 | Radius: 0 - 40 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 30 | Scaled Value: 30 | Radius: 0 - 40 yards | Target: Custom (18) -> AOE friendly (31)
+                   Hotfixed: Base Value (25 -> 30)
 Description      : $@spelldesc157153
 
 Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden] 
