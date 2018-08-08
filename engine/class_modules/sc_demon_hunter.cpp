@@ -3050,12 +3050,10 @@ struct blade_dance_t : public blade_dance_base_t
 
   bool ready() override
   {
-    if ( p()->buff.metamorphosis->check() )
-    {
+    if ( !blade_dance_base_t::ready() )
       return false;
-    }
 
-    return blade_dance_base_t::ready();
+    return !p()->buff.metamorphosis->check();
   }
 };
 
@@ -3090,13 +3088,11 @@ struct death_sweep_t : public blade_dance_base_t
 
   bool ready() override
   {
-    // Death Sweep can be queued in the last 250ms, so need to ensure meta is still up after that.
-    if ( p()->buff.metamorphosis->remains() < cooldown->queue_delay() )
-    {
+    if ( !blade_dance_base_t::ready() )
       return false;
-    }
 
-    return blade_dance_base_t::ready();
+    // Death Sweep can be queued in the last 250ms, so need to ensure meta is still up after that.
+    return ( p()->buff.metamorphosis->remains() > cooldown->queue_delay() );
   }
 };
 
