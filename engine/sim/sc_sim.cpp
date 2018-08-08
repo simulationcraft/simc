@@ -3488,8 +3488,8 @@ void sim_t::create_options()
     return true;
   } ) );
 
+  // applies to: "lavish_suramar_feast", battle for azeroth feasts
   add_option( opt_bool( "feast_as_dps", feast_as_dps ) );
-  //applies to: "lavish_suramar_feast", "bountiful_captains_feast"
 }
 
 // sim_t::parse_option ======================================================

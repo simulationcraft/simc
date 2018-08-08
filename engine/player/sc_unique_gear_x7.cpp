@@ -43,7 +43,7 @@ void init_feast( special_effect_t& effect, arv::array_view<std::pair<stat_e, int
 {
   effect.stat = effect.player -> convert_hybrid_stat( STAT_STR_AGI_INT );
   // TODO: Is this actually spec specific?
-  if ( effect.player -> role == ROLE_TANK )
+  if ( effect.player -> role == ROLE_TANK && !effect.player -> sim -> feast_as_dps )
     effect.stat = STAT_STAMINA;
 
   for ( auto&& stat : stat_map )
@@ -90,26 +90,11 @@ void consumables::galley_banquet( special_effect_t& effect )
 
 void consumables::bountiful_captains_feast( special_effect_t& effect )
 {
-  effect.stat = effect.player -> convert_hybrid_stat( STAT_STR_AGI_INT );
-  switch ( effect.stat ) {
-    case STAT_STRENGTH:
-      effect.trigger_spell_id = 259456;
-      break;
-    case STAT_AGILITY:
-      effect.trigger_spell_id = 259454;
-      break;
-    case STAT_INTELLECT:
-      effect.trigger_spell_id = 259455;
-      break;
-    default:
-      break;
-  }
-  if ( effect.player -> role == ROLE_TANK && !effect.player->sim->feast_as_dps )
-  {
-    effect.stat = STAT_STAMINA;
-    effect.trigger_spell_id = 259457;
-  }
-  effect.stat_amount = effect.player -> find_spell( effect.trigger_spell_id ) -> effectN( 1 ).average( effect.player );
+  util::init_feast( effect,
+    { { STAT_STRENGTH,  259456 },
+      { STAT_AGILITY,   259454 },
+      { STAT_INTELLECT, 259455 },
+      { STAT_STAMINA,   259457 } } );
 }
 
 // Gale-Force Striking ======================================================
