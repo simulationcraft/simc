@@ -452,8 +452,8 @@ void items::vessel_of_skittering_shadows( special_effect_t& effect )
     {
       aoe = -1;
       split_aoe_damage = true;
-      //Travel speed is guessed, needs to be fixed from in game testing 8/8/2018
-      travel_speed = 25;
+      //travel speed is saved in trigger
+      travel_speed = effect.trigger()->missile_speed();
     }
   };
 
@@ -474,8 +474,8 @@ void items::vigilants_bloodshaper( special_effect_t& effect )
     {
       aoe = -1;
       split_aoe_damage = true;
-      //Travel speed is guessed, needs to be fixed from in game testing 8/8/2018
-      travel_speed = 25;
+      //travel speed is saved in trigger
+      travel_speed = effect.trigger()->missile_speed();
     }
   };
 
