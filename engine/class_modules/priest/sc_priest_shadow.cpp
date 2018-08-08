@@ -99,7 +99,6 @@ public:
 
     priest().buffs.shadowy_insight->expire();
 
-    priest().buffs.harvested_thoughts->expire();
   }
 
   virtual double composite_crit_chance() const override
@@ -162,6 +161,7 @@ public:
 
     priest().generate_insanity( temp_gain, priest().gains.insanity_mind_blast, s->action );
     priest().buffs.empty_mind->expire();
+    priest().buffs.harvested_thoughts->expire();
   }
 
   timespan_t execute_time() const override
