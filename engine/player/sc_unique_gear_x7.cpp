@@ -30,6 +30,7 @@ namespace items
 {
   // 8.0.1 - World Trinkets
   void kajafied_banana( special_effect_t& );
+  void incessantly_ticking_clock( special_effect_t& );
   // 8.0.1 - Dungeon Trinkets
   void deadeye_spyglass( special_effect_t& );
   void tiny_electromental_in_a_jar( special_effect_t& );
@@ -219,6 +220,40 @@ void items::kajafied_banana( special_effect_t& effect )
   effect.execute_action = create_proc_action<kajafied_banana_t>( "kajafied_banana", effect );
 
   new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Incessantly Ticking Clock ================================================
+
+void items::incessantly_ticking_clock( special_effect_t& effect )
+{
+  stat_buff_t* tick = create_buff<stat_buff_t>( effect.player, "tick",
+      effect.player->find_spell( 274430 ), effect.item );
+  stat_buff_t* tock = create_buff<stat_buff_t>( effect.player, "tock",
+      effect.player->find_spell( 274431 ), effect.item );
+
+  struct clock_cb_t : public dbc_proc_callback_t
+  {
+    std::vector<buff_t*> buffs;
+    size_t state;
+
+    clock_cb_t( const special_effect_t& effect, const std::vector<buff_t*>& b ) :
+      dbc_proc_callback_t( effect.player, effect ), buffs( b ), state( 0u )
+    { }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      buffs[ state ]->trigger();
+      state ^= 1u;
+    }
+
+    void reset() override
+    {
+      dbc_proc_callback_t::reset();
+      state = 0u;
+    }
+  };
+
+  new clock_cb_t( effect, { tick, tock } );
 }
 
 // Dead-Eye Spyglass ========================================================
@@ -628,6 +663,7 @@ void unique_gear::register_special_effects_bfa()
 
   // Trinkets
   register_special_effect( 274484, items::kajafied_banana );
+  register_special_effect( 274429, items::incessantly_ticking_clock );
   register_special_effect( 268758, items::deadeye_spyglass );
   register_special_effect( 268771, items::deadeye_spyglass );
   register_special_effect( 267177, items::tiny_electromental_in_a_jar );

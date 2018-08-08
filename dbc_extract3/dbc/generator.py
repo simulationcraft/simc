@@ -1207,6 +1207,8 @@ class SpellDataGenerator(DataGenerator):
          271197,
          # Hadal's Nautilus damage
          270925,
+         # Incessantly Ticking Clock mastery buff
+         274431,
         ),
 
         # Warrior:
