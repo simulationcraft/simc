@@ -26,12 +26,13 @@ namespace enchants
   custom_cb_t weapon_navigation( unsigned );
 }
 
-namespace trinkets
+namespace items
 {
   // 8.0.1 - Dungeon Trinkets
   void deadeye_spyglass( special_effect_t& );
   void tiny_electromental_in_a_jar( special_effect_t& );
   void mydas_talisman( special_effect_t& );
+  void harlans_loaded_dice( special_effect_t& );
   // 8.0.1 - Uldir Trinkets
   void frenetic_corpuscle( special_effect_t& );
 }
@@ -231,7 +232,7 @@ struct deadeye_spyglass_constructor_t : public item_targetdata_initializer_t
   }
 };
 
-void trinkets::deadeye_spyglass( special_effect_t& effect )
+void items::deadeye_spyglass( special_effect_t& effect )
 {
   struct deadeye_spyglass_cb_t : public dbc_proc_callback_t
   {
@@ -257,7 +258,7 @@ void trinkets::deadeye_spyglass( special_effect_t& effect )
 
 // Tiny Electromental in a Jar ==============================================
 
-void trinkets::tiny_electromental_in_a_jar( special_effect_t& effect )
+void items::tiny_electromental_in_a_jar( special_effect_t& effect )
 {
   struct unleash_lightning_t : public proc_spell_t
   {
@@ -280,7 +281,7 @@ void trinkets::tiny_electromental_in_a_jar( special_effect_t& effect )
 
 // My'das Talisman ==========================================================
 
-void trinkets::mydas_talisman( special_effect_t& effect )
+void items::mydas_talisman( special_effect_t& effect )
 {
   struct touch_of_gold_cb_t : public dbc_proc_callback_t
   {
@@ -331,9 +332,55 @@ void trinkets::mydas_talisman( special_effect_t& effect )
   callback -> buff = effect.custom_buff;
 }
 
+// Harlan's Loaded Dice =====================================================
+
+// Has 2 buffs per mastery, haste, crit, one low value, one high value. Brief-ish in game testing
+// shows close-ish to 50/50 chance on the high/low roll, will need a much longer test to determine
+// the real probability distribution.
+void items::harlans_loaded_dice( special_effect_t& effect )
+{
+  auto mastery_low = create_buff<stat_buff_t>( effect.player, "loaded_die_mastery_low",
+      effect.player->find_spell( 267325 ), effect.item );
+
+  auto mastery_high = create_buff<stat_buff_t>( effect.player, "loaded_die_mastery_high",
+      effect.player->find_spell( 267326 ), effect.item );
+  auto haste_low = create_buff<stat_buff_t>( effect.player, "loaded_die_haste_low",
+      effect.player->find_spell( 267327 ), effect.item );
+  auto haste_high = create_buff<stat_buff_t>( effect.player, "loaded_die_haste_high",
+      effect.player->find_spell( 267329 ), effect.item );
+  auto crit_low = create_buff<stat_buff_t>( effect.player, "loaded_die_critical_strike_low",
+      effect.player->find_spell( 267330 ), effect.item );
+  auto crit_high = create_buff<stat_buff_t>( effect.player, "loaded_die_critical_strike_high",
+      effect.player->find_spell( 267331 ), effect.item );
+
+  struct harlans_cb_t : public dbc_proc_callback_t
+  {
+    std::vector<std::vector<buff_t*>> buffs;
+
+    harlans_cb_t( const special_effect_t& effect, const std::vector<std::vector<buff_t*>>& b ) :
+      dbc_proc_callback_t( effect.item, effect ), buffs( b )
+    { }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      range::for_each( buffs, [ this ]( const std::vector<buff_t*>& buffs ) {
+        // Coinflip for now
+        unsigned idx = rng().roll( 0.5 ) ? 1 : 0;
+        buffs[ idx ]->trigger();
+      } );
+    }
+  };
+
+  new harlans_cb_t( effect, {
+    { mastery_low, mastery_high },
+    { haste_low,   haste_high },
+    { crit_low,    crit_high }
+  } );
+}
+
 // Frenetic Corpuscle =======================================================
 
-void trinkets::frenetic_corpuscle( special_effect_t& effect )
+void items::frenetic_corpuscle( special_effect_t& effect )
 {
   struct frenetic_corpuscle_cb_t : public dbc_proc_callback_t
   {
@@ -401,18 +448,19 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 265094, "265096Trigger" ); // Frost-Laced Ammunition
 
   // Trinkets
-  register_special_effect( 268758, trinkets::deadeye_spyglass );
-  register_special_effect( 268771, trinkets::deadeye_spyglass );
-  register_special_effect( 267177, trinkets::tiny_electromental_in_a_jar );
-  register_special_effect( 265954, trinkets::mydas_talisman );
+  register_special_effect( 268758, items::deadeye_spyglass );
+  register_special_effect( 268771, items::deadeye_spyglass );
+  register_special_effect( 267177, items::tiny_electromental_in_a_jar );
+  register_special_effect( 265954, items::mydas_talisman );
+  register_special_effect( 274835, items::harlans_loaded_dice );
   register_special_effect( 268314, "268311Trigger" ); // Galecaller's Boon, assumes the player always stands in the area
-  register_special_effect( 278140, trinkets::frenetic_corpuscle );
+  register_special_effect( 278140, items::frenetic_corpuscle );
 }
 
 void unique_gear::register_target_data_initializers_bfa( sim_t* sim )
 {
   using namespace bfa;
-  const std::vector<slot_e> trinkets = { SLOT_TRINKET_1, SLOT_TRINKET_2 };
+  const std::vector<slot_e> items = { SLOT_TRINKET_1, SLOT_TRINKET_2 };
 
-  sim -> register_target_data_initializer( deadeye_spyglass_constructor_t( 159623, trinkets ) );
+  sim -> register_target_data_initializer( deadeye_spyglass_constructor_t( 159623, items ) );
 }

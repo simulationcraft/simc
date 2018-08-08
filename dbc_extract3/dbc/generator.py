@@ -1201,6 +1201,8 @@ class SpellDataGenerator(DataGenerator):
          278144,
          # 8.0.1 Azerite power Laser Matrix
          280705, 280707,
+         # 8.0.1 Harlan's Loaded dice
+         267325, 267326, 267327, 267329, 267330, 267331,
         ),
 
         # Warrior:
