@@ -3091,7 +3091,7 @@ struct death_sweep_t : public blade_dance_base_t
   bool ready() override
   {
     // Death Sweep can be queued in the last 250ms, so need to ensure meta is still up after that.
-    if ( p()->buff.metamorphosis->remains() <= cooldown->queue_delay() )
+    if ( p()->buff.metamorphosis->remains() < cooldown->queue_delay() )
     {
       return false;
     }
@@ -5281,13 +5281,13 @@ void demon_hunter_t::apl_vengeance()
   action_priority_list_t* apl_normal = get_action_priority_list( "normal", "Normal Rotation" );
   apl_normal->add_action( this, "Infernal Strike" );
   apl_normal->add_talent( this, "Spirit Bomb", "if=soul_fragments>=4" );
-  apl_normal->add_action( this, "Immolation Aura", "if=pain<=90" );
-  apl_normal->add_talent( this, "Felblade", "if=pain<=70" );
-  apl_normal->add_action( this, "Soul Cleave", "if=talent.spirit_bomb.enabled&talent.fracture.enabled&soul_fragments=0&cooldown.fracture.charges_fractional<1.75" );
-  apl_normal->add_talent( this, "Fracture", "if=soul_fragments<=3" );
-  apl_normal->add_talent( this, "Fel Devastation" );
   apl_normal->add_action( this, "Soul Cleave", "if=!talent.spirit_bomb.enabled" );
   apl_normal->add_action( this, "Soul Cleave", "if=talent.spirit_bomb.enabled&soul_fragments=0" );
+  apl_normal->add_action( this, "Immolation Aura", "if=pain<=90" );
+  apl_normal->add_talent( this, "Felblade", "if=pain<=70" );
+  apl_normal->add_talent( this, "Fracture", "if=soul_fragments<=3" );
+  apl_normal->add_talent( this, "Fel Devastation" );
+  apl_normal->add_action( this, "Soul Cleave" );
   apl_normal->add_action( this, "Sigil of Flame" );
   apl_normal->add_action( this, "Shear" );
   apl_normal->add_action( this, "Throw Glaive" );

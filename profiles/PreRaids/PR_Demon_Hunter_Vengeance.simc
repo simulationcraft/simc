@@ -55,13 +55,13 @@ actions.defensives+=/fiery_brand
 # Normal Rotation
 actions.normal=infernal_strike
 actions.normal+=/spirit_bomb,if=soul_fragments>=4
-actions.normal+=/immolation_aura,if=pain<=90
-actions.normal+=/felblade,if=pain<=70
-actions.normal+=/soul_cleave,if=talent.spirit_bomb.enabled&talent.fracture.enabled&soul_fragments=0&cooldown.fracture.charges_fractional<1.75
-actions.normal+=/fracture,if=soul_fragments<=3
-actions.normal+=/fel_devastation
 actions.normal+=/soul_cleave,if=!talent.spirit_bomb.enabled
 actions.normal+=/soul_cleave,if=talent.spirit_bomb.enabled&soul_fragments=0
+actions.normal+=/immolation_aura,if=pain<=90
+actions.normal+=/felblade,if=pain<=70
+actions.normal+=/fracture,if=soul_fragments<=3
+actions.normal+=/fel_devastation
+actions.normal+=/soul_cleave
 actions.normal+=/sigil_of_flame
 actions.normal+=/shear
 actions.normal+=/throw_glaive
