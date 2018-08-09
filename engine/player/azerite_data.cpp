@@ -590,6 +590,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 280559, special_effects::laser_matrix          );
   unique_gear::register_special_effect( 273823, special_effects::blightborne_infusion  );
   unique_gear::register_special_effect( 280410, special_effects::incite_the_pack       );
+  unique_gear::register_special_effect( 280284, special_effects::dagger_in_the_back    );
 }
 
 
@@ -1515,6 +1516,38 @@ void swirling_sands( special_effect_t& effect )
 
   effect.custom_buff = buff;
   effect.spell_id = driver -> id();
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+void dagger_in_the_back( special_effect_t& effect )
+{
+  struct dagger_in_the_back_t : public unique_gear::proc_spell_t
+  {
+    dagger_in_the_back_t( const special_effect_t& e, const azerite_power_t& power ):
+      proc_spell_t( "dagger_in_the_back", e.player, e.player -> find_spell( 280286 ) )
+    {
+      base_td = power.value( 1 );
+      tick_may_crit = true;
+    }
+
+    // XXX: simply apply twice here for the "from the back" case
+    // in-game this happens with a slight delay of about ~250ms (beta realms from eu)
+    // and may be better done through custom proc::execute scheduling an action execute event
+    void trigger_dot( action_state_t* s ) override
+    {
+      proc_spell_t::trigger_dot( s );
+      if ( player -> position() == POSITION_BACK || player -> position() == POSITION_RANGED_BACK )
+        proc_spell_t::trigger_dot( s );
+    }
+  };
+
+  azerite_power_t power = effect.player -> find_azerite_spell( effect.driver() -> name_cstr() );
+  if ( !power.enabled() )
+    return;
+
+  effect.execute_action = unique_gear::create_proc_action<dagger_in_the_back_t>( "dagger_in_the_back", effect, power );
+  effect.spell_id = power.spell_ref().effectN( 1 ).trigger() -> id();
 
   new dbc_proc_callback_t( effect.player, effect );
 }
