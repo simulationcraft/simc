@@ -78,6 +78,7 @@ namespace items
   void vessel_of_skittering_shadows( special_effect_t& );
   void hadals_nautilus( special_effect_t& );
   void jes_howler( special_effect_t& );
+  void razdunks_big_red_button( special_effect_t& );
   // 8.0.1 - Uldir Trinkets
   void frenetic_corpuscle( special_effect_t& );
   void vigilants_bloodshaper(special_effect_t& );
@@ -318,6 +319,14 @@ void items::jes_howler( special_effect_t& effect )
       effect.item )
     ->add_stat( STAT_VERSATILITY_RATING, main_amount )
     ->add_stat( STAT_VERSATILITY_RATING, ally_amount );
+}
+
+// Razdunk's Big Red Button =================================================
+
+void items::razdunks_big_red_button( special_effect_t& effect )
+{
+  effect.execute_action = create_proc_action<aoe_proc_t>( "razdunks_big_red_button", effect,
+      "razdunks_big_red_button", effect.trigger() );
 }
 
 // Dead-Eye Spyglass ========================================================
@@ -678,6 +687,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 268517, items::snowpelt_mangler );
   register_special_effect( 268544, items::vial_of_storms );
   register_special_effect( 266047, items::jes_howler );
+  register_special_effect( 271374, items::razdunks_big_red_button );
   register_special_effect( 268758, items::deadeye_spyglass );
   register_special_effect( 268771, items::deadeye_spyglass );
   register_special_effect( 267177, items::tiny_electromental_in_a_jar );
