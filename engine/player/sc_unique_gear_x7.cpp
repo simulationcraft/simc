@@ -9,6 +9,41 @@ using namespace unique_gear;
 
 namespace {
 namespace bfa { // YaN - Yet another namespace - to resolve conflicts with global namespaces.
+
+template <typename BASE = proc_spell_t>
+struct base_bfa_proc_t : public BASE
+{
+  base_bfa_proc_t( const special_effect_t& effect, const std::string& name, unsigned spell_id ) :
+    BASE( name, effect.player, effect.player->find_spell( spell_id ),
+        effect.item )
+  { }
+
+  base_bfa_proc_t( const special_effect_t& effect, const std::string& name, const spell_data_t* s ) :
+    BASE( name, effect.player, s, effect.item )
+  { }
+};
+
+template <typename BASE = proc_spell_t>
+struct base_bfa_aoe_proc_t : public base_bfa_proc_t<BASE>
+{
+  base_bfa_aoe_proc_t( const special_effect_t& effect, const std::string& name, unsigned spell_id ) :
+    base_bfa_proc_t<BASE>( effect.player, name, spell_id )
+  {
+    this->aoe = -1;
+    this->split_aoe_damage = true;
+  }
+
+  base_bfa_aoe_proc_t( const special_effect_t& effect, const std::string& name, const spell_data_t* s ) :
+    base_bfa_proc_t<BASE>( effect.player, name, s )
+  {
+    this->aoe = -1;
+    this->split_aoe_damage = true;
+  }
+};
+
+using aoe_proc_t = base_bfa_aoe_proc_t<proc_spell_t>;
+using proc_t = base_bfa_proc_t<proc_spell_t>;
+
 /**
  * Forward declarations so we can reorganize the file a bit more sanely.
  */
@@ -32,6 +67,7 @@ namespace items
   void kajafied_banana( special_effect_t& );
   void incessantly_ticking_clock( special_effect_t& );
   void snowpelt_mangler( special_effect_t& );
+  void vial_of_storms( special_effect_t& );
   // 8.0.1 - Dungeon Trinkets
   void deadeye_spyglass( special_effect_t& );
   void tiny_electromental_in_a_jar( special_effect_t& );
@@ -208,17 +244,8 @@ custom_cb_t enchants::weapon_navigation( unsigned buff_id )
 
 void items::kajafied_banana( special_effect_t& effect )
 {
-  struct kajafied_banana_t : public proc_spell_t
-  {
-    kajafied_banana_t( const special_effect_t& effect ) :
-      proc_spell_t( "kajafied_banana", effect.player, effect.player->find_spell( 274575 ), effect.item )
-    {
-      aoe = -1;
-      split_aoe_damage = true;
-    }
-  };
-
-  effect.execute_action = create_proc_action<kajafied_banana_t>( "kajafied_banana", effect );
+  effect.execute_action = create_proc_action<aoe_proc_t>( "kajafied_banana", effect,
+      "kajafied_banana", 274575 );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -261,19 +288,18 @@ void items::incessantly_ticking_clock( special_effect_t& effect )
 
 void items::snowpelt_mangler( special_effect_t& effect )
 {
-  struct sharpened_claws_t : public proc_spell_t
-  {
-    sharpened_claws_t( const special_effect_t& effect ) :
-      proc_spell_t( "sharpened_claws", effect.player, effect.trigger(), effect.item )
-    {
-      aoe = -1;
-      split_aoe_damage = true;
-    }
-  };
-
-  effect.execute_action = create_proc_action<sharpened_claws_t>( "sharpened_claws", effect );
+  effect.execute_action = create_proc_action<aoe_proc_t>( "sharpened_claws", effect,
+      "sharpened_claws", effect.trigger() );
 
   new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Vial of Storms ===========================================================
+
+void items::vial_of_storms( special_effect_t& effect )
+{
+  effect.execute_action = create_proc_action<aoe_proc_t>( "bottled_lightning", effect,
+      "bottled_lightning", effect.trigger() );
 }
 
 // Dead-Eye Spyglass ========================================================
@@ -463,17 +489,6 @@ void items::harlans_loaded_dice( special_effect_t& effect )
 
 void items::kul_tiran_cannonball_runner( special_effect_t& effect )
 {
-  struct mortar_shot_t : public proc_spell_t
-  {
-    mortar_shot_t( const special_effect_t& effect ) :
-      proc_spell_t( "kul_tiran_cannonball_runner", effect.player,
-          effect.player->find_spell( 271197 ), effect.item )
-    {
-      aoe = -1;
-      split_aoe_damage = true;
-    }
-  };
-
   struct cannonball_cb_t : public dbc_proc_callback_t
   {
     cannonball_cb_t( const special_effect_t& effect ) :
@@ -490,7 +505,8 @@ void items::kul_tiran_cannonball_runner( special_effect_t& effect )
     }
   };
 
-  effect.execute_action = create_proc_action<mortar_shot_t>( "mortar_shot", effect );
+  effect.execute_action = create_proc_action<aoe_proc_t>( "kul_tiran_cannonball_runner", effect,
+      "kul_tiran_cannonball_runner", 271197 );
 
   new cannonball_cb_t( effect );
 }
@@ -499,20 +515,9 @@ void items::kul_tiran_cannonball_runner( special_effect_t& effect )
 
 void items::vessel_of_skittering_shadows( special_effect_t& effect )
 {
-  struct webweavers_soul_gem_t : public proc_spell_t
-  {
-    webweavers_soul_gem_t( const special_effect_t& effect ) :
-      proc_spell_t( "webweavers_soul_gem", effect.player, effect.player->find_spell( 270827 ),
-          effect.item )
-    {
-      aoe = -1;
-      split_aoe_damage = true;
-      //travel speed is saved in trigger
-      travel_speed = effect.trigger()->missile_speed();
-    }
-  };
-
-  effect.execute_action = create_proc_action<webweavers_soul_gem_t>( "webweavers_soul_gem", effect );
+  effect.execute_action = create_proc_action<aoe_proc_t>( "webweavers_soul_gem", effect,
+      "webweavers_soul_gem", 270827 );
+  effect.execute_action->travel_speed = effect.trigger()->missile_speed();
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -521,21 +526,9 @@ void items::vessel_of_skittering_shadows( special_effect_t& effect )
 
 void items::vigilants_bloodshaper( special_effect_t& effect )
 {
-  struct volatile_blood_explosion_t : public proc_spell_t
-  {
-    volatile_blood_explosion_t( const special_effect_t& effect ) :
-      proc_spell_t( "volatile_blood_explosion", effect.player, effect.player->find_spell( 278057 ),
-          effect.item )
-    {
-      aoe = -1;
-      split_aoe_damage = true;
-      //travel speed is saved in trigger
-      travel_speed = effect.trigger()->missile_speed();
-    }
-  };
-
-  effect.execute_action = create_proc_action<volatile_blood_explosion_t>( "volatile_blood_explosion",
-      effect );
+  effect.execute_action = create_proc_action<aoe_proc_t>( "volatile_blood_explosion", effect,
+      "volatile_blood_explosion", 278057 );
+  effect.execute_action->travel_speed = effect.trigger()->missile_speed();
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -570,31 +563,20 @@ void items::rotcrusted_voodoo_doll( special_effect_t& effect )
     }
   };
 
-  effect.execute_action = create_proc_action<rotcrusted_voodoo_doll_dot_t>( "rotcrusted_voodoo_doll",
-      effect );
+  effect.execute_action = create_proc_action<rotcrusted_voodoo_doll_dot_t>(
+      "rotcrusted_voodoo_doll", effect );
 }
 
 // Hadal's Nautilus =========================================================
 
 void items::hadals_nautilus( special_effect_t& effect )
 {
-  struct waterspout_t : public proc_spell_t
-  {
-    waterspout_t( const special_effect_t& effect ) :
-      proc_spell_t( "waterspout", effect.player, effect.player->find_spell( 270925 ), effect.item )
-    {
-      aoe = -1;
-      split_aoe_damage = true;
-    }
-  };
-
   struct nautilus_cb_t : public dbc_proc_callback_t
   {
     const spell_data_t* driver;
 
     nautilus_cb_t( const special_effect_t& effect ) :
-      dbc_proc_callback_t( effect.item, effect ),
-      driver( effect.player->find_spell( 270910 ) )
+      dbc_proc_callback_t( effect.item, effect ), driver( effect.player->find_spell( 270910 ) )
     { }
 
     void execute( action_t*, action_state_t* state ) override
@@ -607,7 +589,8 @@ void items::hadals_nautilus( special_effect_t& effect )
     }
   };
 
-  effect.execute_action = create_proc_action<waterspout_t>( "waterspout", effect );
+  effect.execute_action = create_proc_action<aoe_proc_t>( "waterspout", effect, "waterspout",
+      270925 );
 
   new nautilus_cb_t( effect );
 }
@@ -618,18 +601,11 @@ void items::frenetic_corpuscle( special_effect_t& effect )
 {
   struct frenetic_corpuscle_cb_t : public dbc_proc_callback_t
   {
-    struct frenetic_corpuscle_damage_t : public proc_spell_t
-    {
-      frenetic_corpuscle_damage_t( const special_effect_t& effect ) :
-        proc_spell_t( "frenetic_blow", effect.player, effect.player -> find_spell( 278148 ), effect.item )
-      {}
-    };
-
     action_t* damage;
 
     frenetic_corpuscle_cb_t( const special_effect_t& effect ) :
       dbc_proc_callback_t( effect.item, effect ),
-      damage( create_proc_action<frenetic_corpuscle_damage_t>( "frenetic_blow", effect ) )
+      damage( create_proc_action<proc_t>( "frenetic_blow", effect, "frentic_blow", 278148 ) )
     {}
 
     void execute( action_t* /* a */, action_state_t* state ) override
@@ -637,8 +613,9 @@ void items::frenetic_corpuscle( special_effect_t& effect )
       proc_buff->trigger();
       if ( proc_buff->check() == proc_buff->max_stack() )
       {
-        // TODO: Tooltip says "on next attack", which likely uses Frenetic Frenzy buff (278144) to proc trigger the damage
-        // Just immediately trigger the damage here, can revisit later and implement a new special_effect callback if needed
+        // TODO: Tooltip says "on next attack", which likely uses Frenetic Frenzy buff (278144) to
+        // proc trigger the damage Just immediately trigger the damage here, can revisit later and
+        // implement a new special_effect callback if needed
         damage->set_target( state->target );
         damage->execute();
         proc_buff->expire();
@@ -646,13 +623,9 @@ void items::frenetic_corpuscle( special_effect_t& effect )
     }
   };
 
-  buff_t* buff = buff_t::find( effect.player, "frothing_rage" );
-  if ( !buff )
-  {
-    buff = make_buff( effect.player, "frothing_rage", effect.player->find_spell( 278143 ), effect.item );
-  }
+  effect.custom_buff = create_buff<buff_t>( effect.player, "frothing_rage",
+      effect.player->find_spell( 278143 ), effect.item );
 
-  effect.custom_buff = buff;
   new frenetic_corpuscle_cb_t( effect );
 }
 
@@ -685,6 +658,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 274484, items::kajafied_banana );
   register_special_effect( 274429, items::incessantly_ticking_clock );
   register_special_effect( 268517, items::snowpelt_mangler );
+  register_special_effect( 268544, items::vial_of_storms );
   register_special_effect( 268758, items::deadeye_spyglass );
   register_special_effect( 268771, items::deadeye_spyglass );
   register_special_effect( 267177, items::tiny_electromental_in_a_jar );
