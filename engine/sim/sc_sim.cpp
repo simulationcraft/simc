@@ -2093,8 +2093,8 @@ void sim_t::init_fight_style()
     max_time    = timespan_t::from_seconds( 366.0 );
     fixed_time  = true;
     vary_combat_length = 0.0;
-    raid_events_str =  "flying,first=0,duration=500,cooldown=500";
-    raid_events_str +=  "/position_switch,first=0,duration=500,cooldown=500";
+    raid_events_str += "/flying,first=0,duration=500,cooldown=500";
+    raid_events_str += "/position_switch,first=0,duration=500,cooldown=500";
     raid_events_str += "/stun,duration=1.0,first=45.0,period=45.0";
     raid_events_str += "/stun,duration=1.0,first=57.0,period=57.0";
     raid_events_str += "/damage,first=6.0,period=6.0,last=59.5,amount=44000,type=shadow";
@@ -2115,7 +2115,7 @@ void sim_t::init_fight_style()
   }
   else if ( util::str_compare_ci( fight_style, "HelterSkelter" ) || util::str_compare_ci( fight_style, "Helter_Skelter" ) )
   {
-    raid_events_str = "casting,cooldown=30,duration=3,first=15";
+    raid_events_str += "/casting,cooldown=30,duration=3,first=15";
     raid_events_str += "/movement,cooldown=30,distance=20";
     raid_events_str += "/stun,cooldown=60,duration=2";
     raid_events_str += "/invulnerable,cooldown=120,duration=3";
@@ -2125,12 +2125,12 @@ void sim_t::init_fight_style()
     auto first_time = static_cast<unsigned>( max_time.total_seconds() * 0.1 );
     auto last_time = static_cast<unsigned>( max_time.total_seconds() * 0.8 );
 
-    raid_events_str = fmt::format( "/movement,players_only=1,cooldown=85,distance=50,first={},last={}",
+    raid_events_str += fmt::format( "/movement,players_only=1,cooldown=85,distance=50,first={},last={}",
                                    first_time, last_time );
   }
   else if ( util::str_compare_ci( fight_style, "HeavyMovement" ) )
   {
-    raid_events_str = "/movement,players_only=1,first=10,cooldown=10,distance=25";
+    raid_events_str += "/movement,players_only=1,first=10,cooldown=10,distance=25";
   }
   else if ( util::str_compare_ci( fight_style, "HecticAddCleave" ) )
   {
