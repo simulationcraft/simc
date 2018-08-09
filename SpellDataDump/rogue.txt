@@ -3,6 +3,7 @@ SimulationCraft 801-01 for World of Warcraft 8.0.1 bfa-BETA (wow build 26095)
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
 School           : Physical
+Spell Type       : Melee
 Resource         : 35 Energy (3) (id=13)
 Spell Level      : 10
 Range            : 5 yards
@@ -34,6 +35,7 @@ Variables        : $mult=${($max(0,$min($pl-10,10))*11+260)/370}
 Name             : Summon Skeleton (id=261) 
 Class            : Rogue
 School           : Frost
+Spell Type       : Magic
 Range            : 20 yards
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -49,6 +51,7 @@ Effects          :
 Name             : Kidney Shot (id=408) [Spell Family (8)] 
 Class            : Assassination Subtlety Rogue
 School           : Physical
+Spell Type       : Melee
 Resource         : 25 Energy (3) (id=46)
 Resource         : 1 - 5 Combo Points (4) (id=10591)
 Spell Level      : 34
@@ -85,6 +88,7 @@ Tooltip          : Stunned.
 Name             : Dual Wield (rank=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
+Spell Type       : Magic
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -101,6 +105,7 @@ Description      : Allows one-hand and off-hand weapons to be equipped in the of
 Name             : Garrote (id=703) [Spell Family (8)] 
 Class            : Assassination Rogue
 School           : Physical
+Spell Type       : Melee
 Resource         : 45 Energy (3) (id=86)
 Spell Level      : 12
 Range            : 5 yards
@@ -133,6 +138,7 @@ Tooltip          : Suffering $w1 damage every $t1 seconds.
 Name             : Pick Pocket (id=921) [Spell Family (8)] 
 Class            : Assassination Outlaw Subtlety Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 13
 Range            : 10 yards
 Cooldown         : 0.5 seconds
@@ -156,6 +162,7 @@ Name             : Mutilate (id=1329) [Spell Family (8)]
 Replaces         : Sinister Strike (id=1752)
 Class            : Assassination Rogue
 School           : Physical
+Spell Type       : Melee
 Resource         : 50 Energy (3) (id=122)
 Spell Level      : 40
 Range            : 5 yards
@@ -187,6 +194,7 @@ Variables        : $dmg=${$5374s2+$27576s2*0.5}
 Name             : Garrote - Silence (id=1330) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 42
 Range            : 50000 yards
 Duration         : 3 seconds
@@ -209,6 +217,7 @@ Tooltip          : Silenced.
 Name             : Distract (id=1725) [Spell Family (8)] 
 Class            : Assassination Outlaw Subtlety Rogue
 School           : Physical
+Spell Type       : Magic
 Resource         : 30 Energy (3) (id=139)
 Spell Level      : 38
 Range            : 30 yards
@@ -234,6 +243,7 @@ Description      : Throws a distraction, attracting the attention of all nearby 
 Name             : Sinister Strike (id=1752) [Spell Family (8)] 
 Class            : Assassination Rogue
 School           : Physical
+Spell Type       : Melee
 Resource         : 45 Energy (3) (id=140)
 Spell Level      : 1
 Range            : 5 yards
@@ -260,6 +270,7 @@ Description      : Viciously strike an enemy, causing $s1 Physical damage.
 Name             : Kick (id=1766) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 18
 Range            : 5 yards
 Duration         : 5 seconds
@@ -281,6 +292,7 @@ Description      : A quick kick that interrupts spellcasting and prevents any sp
 Name             : Gouge (id=1776) [Spell Family (8)] 
 Class            : Outlaw Rogue
 School           : Physical
+Spell Type       : Melee
 Resource         : 25 Energy (3) (id=142)
 Spell Level      : 34
 Range            : 5 yards
@@ -319,6 +331,7 @@ Tooltip          : Incapacitated.
 Name             : Stealth (id=1784) [Spell Family (8)] 
 Class            : Assassination Outlaw Subtlety Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 5
 Duration         : Aura (infinite)
 Cooldown         : 2 seconds
@@ -358,6 +371,7 @@ Damage increased by $w4%.][]
 Name             : Pick Lock (id=1804) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 24
 Range            : 5 yards
 Cast Time        : 1.5 seconds
@@ -377,6 +391,7 @@ Description      : Allows opening of locked chests and doors that require a skil
 Name             : Cheap Shot (id=1833) [Spell Family (8)] 
 Class            : Assassination Outlaw Subtlety Rogue
 School           : Physical
+Spell Type       : Melee
 Resource         : 40 Energy (3) (id=144)
 Spell Level      : 8
 Range            : 5 yards
@@ -408,6 +423,7 @@ Tooltip          : Stunned.
 Name             : Vanish (id=1856) [Spell Family (8)] 
 Class            : Assassination Outlaw Subtlety Rogue
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 48
 Cooldown         : 120 seconds
 Category         : 39
@@ -437,6 +453,7 @@ Tooltip          : Improved stealth.
 Name             : Safe Fall (rank=Passive) (id=1860) [Spell Family (8), Passive, Hidden] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 62
 Family Flags     : 47
 Attributes       : ....x.xx ........ ..x..... ........   ........ ........ ........ ........ 
@@ -455,6 +472,7 @@ Description      : Reduces damage from falling.
 Name             : Rupture (id=1943) [Spell Family (8)] 
 Class            : Assassination Rogue
 School           : Physical
+Spell Type       : Melee
 Resource         : 25 Energy (3) (id=145)
 Resource         : 1 - 5 Combo Points (4) (id=10589)
 Spell Level      : 20
@@ -496,6 +514,7 @@ Tooltip          : Bleeding for $w1 damage every $t1 sec.
 Name             : Feint (id=1966) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : Melee
 Resource         : 35 Energy (3) (id=148)
 Spell Level      : 44
 GCD              : 1 seconds
@@ -523,6 +542,7 @@ Tooltip          : Damage taken from area-of-effect attacks reduced by $s1%$?$w2
 Name             : Blind (id=2094) [Spell Family (8)] 
 Class            : Assassination Outlaw Subtlety Rogue
 School           : Physical
+Spell Type       : Ranged
 Spell Level      : 24
 Range            : 15 yards
 GCD              : 1 seconds
@@ -554,6 +574,7 @@ Tooltip          : Disoriented.
 Name             : Dispatch (id=2098) [Spell Family (8)] 
 Class            : Outlaw Rogue
 School           : Physical
+Spell Type       : Melee
 Resource         : 35 Energy (3) (id=158)
 Resource         : 1 - 5 Combo Points (4) (id=10581)
 Spell Level      : 10
@@ -583,6 +604,7 @@ Description      : Finishing move that dispatches the enemy, dealing damage per 
 Name             : Deadly Poison (id=2818) [Scaling Spell (9), Spell Family (8)] 
 Class            : Rogue
 School           : Nature
+Spell Type       : Melee
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 12 seconds
@@ -607,6 +629,7 @@ Tooltip          : Suffering $w1 Nature damage every $t1 seconds.
 Name             : Deadly Poison (id=2823) [Spell Family (8)] 
 Class            : Assassination Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 10
 Cast Time        : 1.5 seconds
 Duration         : 3600 seconds
@@ -632,6 +655,7 @@ Tooltip          : Each strike has a chance of causing the target to suffer Natu
 Name             : Detect Traps (rank=Passive) (id=2836) [Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 42
 Cooldown         : 1.5 seconds
 Attributes       : ......x. ........ x.x..... x..x....   .....x.. ........ .x...... ........ 
@@ -651,6 +675,7 @@ Tooltip          : Detecting traps.
 Name             : Sprint (id=2983) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 32
 Duration         : 8 seconds
 Cooldown         : 120 seconds
@@ -681,6 +706,7 @@ Allows you to run over water.][]
 Name             : Crippling Poison (id=3408) [Spell Family (8)] 
 Class            : Assassination Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 38
 Cast Time        : 1.5 seconds
 Duration         : 3600 seconds
@@ -706,6 +732,7 @@ Tooltip          : Each strike has a chance of poisoning the enemy, slowing move
 Name             : Crippling Poison (id=3409) [Spell Family (8)] 
 Class            : Rogue
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 12 seconds
@@ -730,6 +757,7 @@ Tooltip          : Movement slowed by $s1%.
 Name             : Slice and Dice (id=5171) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Resource         : 25 Energy (3) (id=226)
 Resource         : 1 - 5 Combo Points (4) (id=11434)
 Spell Level      : 14
@@ -768,6 +796,7 @@ Name             : Solar Wrath (rank=Solar) (id=5176) [Scaling Spell (3), Spell 
 Class            : Restoration Rogue, Druid
 Race             : Night Elf (0x8)
 School           : Nature
+Spell Type       : Magic
 Resource         : 3.5% Base Mana (0) (id=227)
 Spell Level      : 1
 Range            : 40 yards
@@ -792,6 +821,7 @@ Description      : Causes $s1 Nature damage to the target.
 Name             : Evasion (id=5277) [Spell Family (8)] 
 Class            : Assassination Subtlety Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 26
 Duration         : 10 seconds
 Cooldown         : 120 seconds
@@ -814,6 +844,7 @@ Tooltip          : Dodge chance increased by $s1%.
 Name             : Mutilate (id=5374) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 5 yards
 Affecting spells : Master of Subtlety (31665 effect#1), Envenom (32645 effect#4), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Cold Blood (170882 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1), Contaminant (269308 effect#2), Poisoned Wire (276083 effect#1)
@@ -841,6 +872,7 @@ Description      : Instantly attacks for $s2 Physical damage.
 Name             : Sap (id=6770) [Spell Family (8)] 
 Class            : Assassination Outlaw Subtlety Rogue
 School           : Physical
+Spell Type       : Melee
 Resource         : 35 Energy (3) (id=277)
 Spell Level      : 14
 Range            : 10 yards
@@ -872,6 +904,7 @@ Damage taken increased by $w2%.][]
 Name             : Ambush (id=8676) [Spell Family (8)] 
 Class            : Outlaw Rogue
 School           : Physical
+Spell Type       : Melee
 Resource         : 50 Energy (3) (id=359)
 Spell Level      : 22
 Range            : 5 yards
@@ -899,6 +932,7 @@ Description      : Ambush the target, causing $s1 Physical damage.
 Name             : Wound Poison (id=8679) [Spell Family (8)] 
 Class            : Assassination Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 54
 Cast Time        : 1.5 seconds
 Duration         : 3600 seconds
@@ -924,6 +958,7 @@ Tooltip          : Each weapon strike has a chance of inflicting additional Natu
 Name             : Wound Poison (id=8680) [Scaling Spell (9), Spell Family (8)] 
 Class            : Rogue
 School           : Nature
+Spell Type       : Melee
 Spell Level      : 54
 Range            : 100 yards
 Duration         : 12 seconds
@@ -950,6 +985,7 @@ Tooltip          : Healing effects reduced by $w2%.
 Name             : Vanish (id=11327) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 24
 Duration         : 3 seconds
 Proc Chance      : 100%
@@ -987,6 +1023,7 @@ Damage increased by $w4%.][]
 Name             : Adrenaline Rush (id=13750) [Spell Family (8)] 
 Class            : Outlaw Rogue
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 56
 GCD              : 0.8 seconds
 Duration         : 20 seconds
@@ -1016,6 +1053,7 @@ Attack speed increased by $s2%.
 Name             : Blade Flurry (id=13877) [Spell Family (8)] 
 Class            : Outlaw Rogue
 School           : Physical
+Spell Type       : None
 Resource         : 15 Energy (3) (id=12415)
 Spell Level      : 63
 GCD              : 1 seconds
@@ -1051,6 +1089,7 @@ Tooltip          : Attacks striking nearby enemies.
 Name             : Nightstalker (rank=Passive Talent) (id=14062) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Affecting spells : Subtlety Rogue (137035 effect#3)
 Family Flags     : 121
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -1075,6 +1114,7 @@ Description      : While Stealth$?c3[ or Shadow Dance][] is active, you move $s1
 Name             : Improved Poisons (id=14117) [Spell Family (8), Passive] 
 Class            : Assassination Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 10
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1094,6 +1134,7 @@ Description      : Increases the application chance of Deadly Poison and Wound P
 Name             : Ruthlessness (id=14161) [Spell Family (8), Passive] 
 Class            : Outlaw Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 28
 Proc Chance      : 100%
 Proc Flags       : ....x... x.x.x.x. x....... ........ 
@@ -1114,6 +1155,7 @@ Description      : Your finishing moves have a $b1% chance per combo point spent
 Name             : Seal Fate (id=14189) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Range            : 50000 yards
 Stacks           : 3 maximum
 Proc Chance      : 101%
@@ -1134,6 +1176,7 @@ Description      : $@spelldesc14190
 Name             : Seal Fate (id=14190) [Spell Family (8), Passive] 
 Class            : Assassination Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 28
 Proc Chance      : 100%
 Proc Flags       : ....x.x. x.x.x.x. x....... ........ 
@@ -1154,6 +1197,7 @@ Description      : When you critically strike with a melee attack that generates
 Name             : Vigor (id=14983) [Spell Family (8), Passive, Hidden] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1173,6 +1217,7 @@ Name             : Blood Fury (rank=Racial) (id=20572) [Scaling Spell (-1)]
 Class            : Warrior, Hunter, Rogue, Death Knight
 Race             : Orc (0x2)
 School           : Physical
+Spell Type       : Magic
 Spell Level      : 1
 Duration         : 15 seconds
 Cooldown         : 120 seconds
@@ -1196,6 +1241,7 @@ Name             : Elusiveness (rank=Racial Passive) (id=21009) [Passive]
 Class            : Rogue, Druid
 Race             : Night Elf (0x8)
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1213,6 +1259,7 @@ Name             : Command (rank=Racial Passive) (id=21563) [Spell Family (9), P
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Orc (0x2)
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1229,6 +1276,7 @@ Description      : Damage dealt by pets increased by $s1%.
 Name             : Blade Flurry (id=22482) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 100 yards
 Affecting spells : Acrobatic Strikes (196924 effect#1), 
@@ -1250,6 +1298,7 @@ Name             : Arcane Torrent (rank=Racial) (id=25046)
 Class            : Rogue
 Race             : Blood Elf (0x200)
 School           : Arcane
+Spell Type       : Magic
 GCD              : 1 seconds
 Cooldown         : 90 seconds
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
@@ -1269,6 +1318,7 @@ Description      : Remove $s1 beneficial effect from all enemies within $A1 yard
 Name             : Mutilate (id=27576) [Scaling Spell (9), Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 5 yards
 Affecting spells : Master of Subtlety (31665 effect#1), Envenom (32645 effect#4), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Cold Blood (170882 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1), Contaminant (269308 effect#2), Poisoned Wire (276083 effect#1)
@@ -1296,6 +1346,7 @@ Description      : Instantly attacks for $s2 Physical damage.
 Name             : Strength (id=27973) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Demon Hunter
 School           : Physical
+Spell Type       : None
 Duration         : Aura (infinite)
 Azerite Power Id : 6
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -1313,6 +1364,7 @@ Effects          :
 Name             : Fleet Footed (rank=Passive) (id=31209) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 58
 Family Flags     : 106
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
@@ -1331,6 +1383,7 @@ Description      : Your movement speed is increased by $s1% and you take reduced
 Name             : Master of Subtlety (id=31223) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1348,6 +1401,7 @@ Description      : Attacks made while stealthed and for $s1 seconds after breaki
 Name             : Cloak of Shadows (id=31224) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 80
 Duration         : 5 seconds
 Cooldown         : 120 seconds
@@ -1374,6 +1428,7 @@ Physical damage taken reduced by $w3%.][]
 Name             : Cheat Death (rank=Passive Talent) (id=31230) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Family Flags     : 42
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ...x.... ........ 
@@ -1391,6 +1446,7 @@ Description      : Fatal attacks instead reduce you to 7% of your maximum health
 Name             : Master of Subtlety (id=31665) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Duration         : Aura (infinite)
 Attributes       : ........ ........ ........ ...x....   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1417,6 +1473,7 @@ Name             : Envenom (id=32645) [Spell Family (8)]
 Replaces         : Eviscerate (id=196819)
 Class            : Assassination Rogue
 School           : Nature
+Spell Type       : Melee
 Resource         : 35 Energy (3) (id=1350)
 Resource         : 1 - 5 Combo Points (4) (id=10585)
 Spell Level      : 36
@@ -1465,6 +1522,7 @@ $mult=?s76803[${($76803m1/100+1)*$<mult2>}][${$<mult2>}]
 Name             : Combat Potency (id=35546) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Mechanic         : Snare
 Triggered by     : Combat Potency (35551)
 Family Flags     : 114
@@ -1483,6 +1541,7 @@ Description      : $@spelldesc35551
 Name             : Combat Potency (id=35551) [Spell Family (8), Passive, Hidden] 
 Class            : Outlaw Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 50
 Proc Chance      : 100%
 Proc Flags       : ..x.x... ........ ........ ........ 
@@ -1504,6 +1563,7 @@ Description      : Your off-hand attacks have a $s1% chance to generate $35546s1
 Name             : Shadowstep (id=36554) [Spell Family (8)] 
 Class            : Assassination Subtlety Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 22
 Range            : 25 yards
 Duration         : 2 seconds
@@ -1532,6 +1592,7 @@ Tooltip          : Movement speed increased by $s2%.
 Name             : Agility 20 (id=41695) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 7
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1549,6 +1610,7 @@ Description      : Increases Agility by $s1.
 Name             : Cheated Death (id=45181) 
 Class            : Rogue
 School           : Holy
+Spell Type       : None
 Range            : 50000 yards
 Duration         : 360 seconds
 Attributes       : ........ ........ .......x x.xx.x..   .....x.. ..x..... ........ ........ 
@@ -1569,6 +1631,7 @@ You will not likely be so lucky a second time...
 Name             : Cheating Death (id=45182) 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Duration         : 3 seconds
 Attributes       : ....x... ........ ........ x..x....   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1587,6 +1650,7 @@ Tooltip          : All damage taken reduced by $s1%.
 Name             : Cut to the Chase (id=51667) [Spell Family (8), Passive, Hidden] 
 Class            : Assassination Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 20
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
@@ -1607,6 +1671,7 @@ Description      : Your $?s32645[Envenom][Eviscerate] refreshes your Slice and D
 Name             : Killing Spree (id=51690) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Range            : 10 yards
 GCD              : 1 seconds
@@ -1639,6 +1704,7 @@ Variables        : $dmg=${$57841s2*6+$57842s1*6}
 Name             : Fan of Knives (id=51723) [Spell Family (8)] 
 Class            : Assassination Rogue
 School           : Physical
+Spell Type       : Melee
 Resource         : 35 Energy (3) (id=2351)
 Spell Level      : 63
 GCD              : 1 seconds
@@ -1664,6 +1730,7 @@ Description      : Sprays knives at all targets within $A1 yards, dealing $s1 Ph
 Name             : Increase Versatility 15 (id=55564) [Scaling Spell (-1), Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Max Scaling Level: 80
 Azerite Power Id : 1
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -1682,6 +1749,7 @@ Description      : Increases your Versatility by $s1.
 Name             : Detection (id=56814) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 GCD              : 1 seconds
 Duration         : 30 seconds
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
@@ -1701,6 +1769,7 @@ Tooltip          : Detecting certain creatures.
 Name             : Killing Spree (id=57841) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 5 yards
 Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
@@ -1723,6 +1792,7 @@ Description      : $@spelldesc51690
 Name             : Killing Spree (id=57842) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 5 yards
 Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
@@ -1744,6 +1814,7 @@ Description      : $@spelldesc51690
 Name             : Tricks of the Trade (id=57934) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 70
 Range            : 100 yards
 Duration         : 30 seconds
@@ -1774,6 +1845,7 @@ $?s221622[Damage increased by $221622m1%.][]
 Name             : Relentless Strikes (rank=Passive) (id=58423) [Spell Family (8), Passive] 
 Class            : Subtlety Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 50
 Proc Chance      : 100%
 Proc Flags       : ....x... x.x.x.x. x....... ........ 
@@ -1794,6 +1866,7 @@ Description      : Your finishing moves generate $98440s2 Energy per combo point
 Name             : Tricks of the Trade (id=59628) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 70
 Duration         : 6 seconds
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -1813,6 +1886,7 @@ $?s221622[Damage increased by $221622m1%.][]
 Name             : Combat Potency (id=61329) [Spell Family (8), Passive] 
 Class            : Outlaw Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 10
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1832,6 +1906,7 @@ Your off-hand attacks have a $35551s1% chance to generate $35546s1 Energy.][]
 Name             : Glyph of Disguise (id=63268) [Spell Family (8), Passive, Hidden] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1848,6 +1923,7 @@ Description      : When you Pick Pocket a humanoid enemy, you also copy their ap
 Name             : Disguise (id=63899) 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Cast Time        : 1.5 seconds
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1866,6 +1942,7 @@ Name             : Viciousness (rank=Racial Passive) (id=68975) [Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1884,6 +1961,7 @@ Name             : Aberration (rank=Racial Passive) (id=68976) [Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1903,6 +1981,7 @@ Name             : Darkflight (rank=Racial) (id=68992)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
+Spell Type       : None
 Duration         : 10 seconds
 Cooldown         : 120 seconds
 Attributes       : ........ ........ ........ ........   .....x.. ........ ........ ........ 
@@ -1924,6 +2003,7 @@ Tooltip          : True form activated, movement speed increased by an additiona
 Name             : Mastery: Potent Assassin (id=76803) [Spell Family (8), Passive] 
 Class            : Assassination Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 78
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1947,6 +2027,7 @@ Description      : Increases the damage done by your poisons and bleeds by ${$s1
 Name             : Mastery: Main Gauche (id=76806) [Spell Family (8), Passive] 
 Class            : Outlaw Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 78
 Proc Chance      : 30%
 Proc Flags       : ..x.x.x. x....... ........ ........ 
@@ -1971,6 +2052,7 @@ Description      : Your main-hand attacks have a $h% chance to trigger an attack
 Name             : Mastery: Executioner (id=76808) [Spell Family (8), Passive] 
 Class            : Subtlety Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 78
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1994,6 +2076,7 @@ Description      : Increases the damage done by your finishing moves by ${$76808
 Name             : Elusiveness (rank=Passive Talent) (id=79008) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2012,6 +2095,7 @@ Description      : Feint also reduces all damage you take from non-area-of-effec
 Name             : Restless Blades (id=79096) [Spell Family (8), Passive] 
 Class            : Outlaw Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 50
 Internal Cooldown: 0.1 seconds
 Proc Chance      : 100%
@@ -2037,6 +2121,7 @@ Variables        : $cdr=${$s1/10}
 Name             : Venomous Wounds (id=79134) [Spell Family (8), Passive] 
 Class            : Assassination Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 50
 Proc Chance      : 100%
 Proc Flags       : ........ ........ ..x..x.. ........ 
@@ -2062,6 +2147,7 @@ If an enemy dies while afflicted by your Rupture, you regain energy based on its
 Name             : Vendetta (id=79140) [Spell Family (8)] 
 Class            : Assassination Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 56
 Range            : 30 yards
 GCD              : 1 seconds
@@ -2095,6 +2181,7 @@ Tooltip          : Marked for death, increasing damage taken from the Rogue's at
 Name             : Energetic Recovery (id=79152) [Spell Family (8), Passive, Hidden] 
 Class            : Subtlety Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 10
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2114,6 +2201,7 @@ Description      : While your Slice and Dice ability is active, you regain $s1 E
 Name             : Parry (rank=Passive) (id=82245) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : Magic
 Spell Level      : 1
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2131,6 +2219,7 @@ Description      : Gives a chance to parry enemy melee attacks.
 Name             : Leather Specialization (rank=Passive) (id=86092) [Passive, Hidden] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 50
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2148,6 +2237,7 @@ Description      : Increases your Agility by $s1% while wearing only Leather arm
 Name             : Main Gauche (id=86392) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 100 yards
 Affecting spells : Master of Subtlety (31665 effect#1), Mastery: Main Gauche (76806 effect#2), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
@@ -2168,6 +2258,7 @@ Description      : $@spelldesc76806
 Name             : Find Weakness (id=91021) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 10 seconds
 Proc Chance      : 101%
@@ -2189,6 +2280,7 @@ Tooltip          : $w1% of armor is ignored by the attacking Rogue.
 Name             : Find Weakness (id=91023) [Spell Family (8), Passive, Hidden] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x... ........ ........ 
                  : Yellow Melee, AOE Hostile Spell
@@ -2208,6 +2300,7 @@ Description      : Your Shadowstrike and Cheap Shot reveal a flaw in your target
 Name             : Item - Proc Mastery (id=92322) [Spell Family (10), Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 100 seconds
 Proc Chance      : 10%
 Azerite Power Id : 8
@@ -2230,6 +2323,7 @@ Name             : Altered Form (rank=Racial Passive) (id=94293) [Passive, Hidde
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2246,6 +2340,7 @@ Description      : Enables Worgens to switch between human and Worgan forms
 Name             : Relentless Strikes (id=98440) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Attributes       : ........ ........ ........ ........   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2262,6 +2357,7 @@ Description      : $@spelldesc58423
 Name             : Subterfuge (id=108208) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2292,6 +2388,7 @@ Also causes Garrote to deal $115192s2% increased damage and have no cooldown whe
 Name             : Shadow Focus (id=108209) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2308,6 +2405,7 @@ Description      : $?c3[Abilities cost $112942m1% less Energy while Stealth or S
 Name             : Leeching Poison (id=108211) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Duration         : 3600 seconds
 Affecting spells : Envenom (32645 effect#2), Master Poisoner (196864 effect#3)
 Family Flags     : 64, 73
@@ -2328,6 +2426,7 @@ Tooltip          : Leech increased by $s1%.
 Name             : Dirty Tricks (rank=Passive Talent) (id=108216) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2346,6 +2445,7 @@ Description      : Cheap Shot, Gouge, $?s207777[Sap, and Dismantle][and Sap] no 
 Name             : Blindside (id=111240) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : Melee
 Resource         : 30 Energy (3) (id=5326)
 Range            : 5 yards
 GCD              : 1 seconds
@@ -2379,6 +2479,7 @@ Mutilate has a $s5% chance to make your next Blindside free and usable on any ta
 Name             : Shadow Focus (id=112942) [Spell Family (8), Hidden] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Duration         : Aura (infinite)
 Family Flags     : 123
 Attributes       : .......x ........ ........ ...x...x   .....x.. ........ ........ ........ 
@@ -2398,6 +2499,7 @@ Tooltip          : Energy cost of abilities reduced by $w1%.
 Name             : Deadly Poison (id=113780) [Spell Family (8)] 
 Class            : Rogue
 School           : Nature
+Spell Type       : Melee
 Spell Level      : 10
 Range            : 100 yards
 Affecting spells : Improved Poisons (14117 effect#1), Venomous Totem (23726 effect#2), Master of Subtlety (31665 effect#1), Mastery: Potent Assassin (76803 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Master Poisoner (196864 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Toxic Blade (245389 effect#1), Virulent Poisons (252277 effect#1), Master Assassin (256735 effect#1)
@@ -2418,6 +2520,7 @@ Description      : Poisoned weapons have a chance to deal $s1 Nature damage to a
 Name             : Shuriken Toss (id=114014) [Spell Family (8)] 
 Class            : Subtlety Rogue
 School           : Physical
+Spell Type       : Melee
 Resource         : 40 Energy (3) (id=5625)
 Spell Level      : 10
 Range            : 30 yards
@@ -2447,6 +2550,7 @@ Variables        : $CAP=${($AP+$OAP)*2/3}
 Name             : Shroud of Concealment (id=114018) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 68
 GCD              : 1 seconds
 Duration         : 15 seconds
@@ -2470,6 +2574,7 @@ Tooltip          : Concealing allies within $115834A1 yards in shadows.
 Name             : Subterfuge (id=115192) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Duration         : 3 seconds
 Attributes       : ........ ........ ........ .......x   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2494,6 +2599,7 @@ Tooltip          : Temporarily concealed in the shadows.
 Name             : Shroud of Concealment (id=115834) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 76
 Duration         : 2 seconds
 Triggered by     : Shroud of Concealment (114018)
@@ -2514,6 +2620,7 @@ Tooltip          : Concealed in shadows.
 Name             : Blindside (id=121153) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Duration         : 10 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
@@ -2541,6 +2648,7 @@ Tooltip          : Blindside is free and usable on any target, regardless of the
 Name             : Disguise (id=121308) 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Range            : 30 yards
 Duration         : 300 seconds
 Attributes       : ........ ........ ........ ...x.x..   .....x.. ..x..... ........ ........ 
@@ -2560,6 +2668,7 @@ Tooltip          : Copying another's appearance.
 Name             : Crimson Tempest (id=121411) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : Melee
 Resource         : 35 Energy (3) (id=6786)
 Resource         : 1 - 5 Combo Points (4) (id=12386)
 Spell Level      : 60
@@ -2593,6 +2702,7 @@ Tooltip          : Bleeding for $w1 damage every $t1 sec.
 Name             : Shadow Blades (id=121471) [Spell Family (8)] 
 Class            : Subtlety Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 56
 GCD              : 1 seconds
 Duration         : 20 seconds
@@ -2626,6 +2736,7 @@ Tooltip          : Combo point generating abilities generate $s2 additional comb
 Name             : Shadow Blade Off-hand (id=121474) [Spell Family (8)] 
 Class            : Rogue
 School           : Shadow
+Spell Type       : Melee
 Range            : 30 yards
 Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
 Family Flags     : 54, 80
@@ -2645,6 +2756,7 @@ Description      : Strike with dark energy, dealing Shadow damage equal to $s1% 
 Name             : Prey on the Weak (id=131511) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Affecting spells : Rogue Tier 6 Trinket (40460 effect#1), Shadow Blades (121471 effect#2)
 Family Flags     : 19
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -2663,6 +2775,7 @@ Description      : Enemies disabled by your Cheap Shot$?s207777[, Dismantle, ][]
 Name             : Rogue (id=137034) [Spell Family (8), Passive, Hidden] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2710,6 +2823,7 @@ Effects          :
 Name             : Subtlety Rogue (id=137035) [Spell Family (8), Passive, Hidden] 
 Class            : Subtlety Rogue
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2766,6 +2880,7 @@ Effects          :
 Name             : Outlaw Rogue (id=137036) [Spell Family (8), Passive, Hidden] 
 Class            : Outlaw Rogue
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2815,6 +2930,7 @@ Effects          :
 Name             : Assassination Rogue (id=137037) [Spell Family (8), Passive, Hidden] 
 Class            : Assassination Rogue
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2875,6 +2991,7 @@ Effects          :
 Name             : Marked for Death (id=137619) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Range            : 30 yards
 Duration         : 60 seconds
@@ -2902,6 +3019,7 @@ Tooltip          : Marked for Death will reset upon death.
 Name             : Marked for Death (id=140149) [Spell Family (8), Hidden] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Duration         : Aura (infinite)
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
@@ -2923,6 +3041,7 @@ Description      : Designer Note: The only purpose of this aura is to mark a pla
 Name             : Item - Rogue T16 4P Bonus (id=145210) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
@@ -2946,6 +3065,7 @@ Description      : Killing Spree deals $s1% more damage every time it strikes a 
 Name             : Sleight of Hand (id=145211) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Duration         : 10 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
@@ -2974,6 +3094,7 @@ Tooltip          : You have found a weakness in the target and your Backstab has
 Name             : Toxicologist (id=145249) [Scaling Spell (-1)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 80
 Duration         : 5 seconds
 Stacks           : 20 maximum
@@ -2995,6 +3116,7 @@ Tooltip          : Mastery increased by $s1.
 Name             : Venom Rush (id=152152) [Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3012,6 +3134,7 @@ Name             : Expansive Mind (rank=Racial Passive) (id=154744) [Passive]
 Class            : Rogue, Monk
 Race             : Gnome (0x40)
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3028,6 +3151,7 @@ Description      : Maximum energy increased by $s1%.
 Name             : Internal Bleeding (id=154904) [Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3044,6 +3168,7 @@ Description      : Kidney Shot also deals up to $?s193531[${6*$154953o1}][${5*$1
 Name             : Internal Bleeding (id=154953) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 6 seconds
@@ -3067,6 +3192,7 @@ Tooltip          : Suffering $w1 damage every $t1 sec.
 Name             : Critical Strikes (rank=Passive) (id=157442) [Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3084,6 +3210,7 @@ Description      : Increases your chance to critically strike by $s1%.
 Name             : Stealth (id=158188) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Duration         : Aura (infinite)
 Affecting spells : Soothing Darkness (200759 effect#1), 
@@ -3108,6 +3235,7 @@ Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden
 Class            : Beast Mastery Marksmanship Survival Assassination Outlaw Subtlety Enhancement Windwalker Feral Havoc Hunter, Rogue, Shaman, Monk, Druid, Demon Hunter
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3127,6 +3255,7 @@ Effects          :
 Name             : Backstab (id=173458) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : Melee
 Resource         : 35 Energy (3) (id=9758)
 Spell Level      : 40
 Range            : 5 yards
@@ -3153,6 +3282,7 @@ Description      : Stab the target, causing $s2 Physical damage. Awards $s3 comb
 Name             : Crimson Vial (id=185311) [Scaling Spell (8), Spell Family (8)] 
 Class            : Rogue
 School           : Nature
+Spell Type       : Magic
 Resource         : 30 Energy (3) (id=10135)
 Spell Level      : 16
 GCD              : 1 seconds
@@ -3177,6 +3307,7 @@ Tooltip          : Healing for $m1% of maximum health every $t1 sec.
 Name             : Shadow Dance (id=185313) [Spell Family (8)] 
 Class            : Subtlety Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 40
 Duration         : 5 seconds
 Cooldown         : 1 seconds
@@ -3216,6 +3347,7 @@ Description      : Allows use of all Stealth abilities and grants all the combat
 Name             : Deepening Shadows (id=185314) [Spell Family (8), Passive] 
 Class            : Subtlety Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 54
 Proc Chance      : 100%
 Proc Flags       : ....x... x.x.x.x. x....... ........ 
@@ -3238,6 +3370,7 @@ Description      : Your finishing moves reduce the remaining cooldown on Shadow 
 Name             : Shadowstrike (id=185438) [Spell Family (8)] 
 Class            : Subtlety Rogue
 School           : Physical
+Spell Type       : Melee
 Resource         : 40 Energy (3) (id=10144)
 Spell Level      : 12
 Range            : 5 yards
@@ -3267,6 +3400,7 @@ While Stealthed, you strike through the shadows and appear behind your target up
 Name             : Poisoned Knife (id=185565) [Scaling Spell (9), Spell Family (8)] 
 Class            : Assassination Rogue
 School           : Physical
+Spell Type       : Melee
 Resource         : 40 Energy (3) (id=10147)
 Spell Level      : 10
 Range            : 30 yards
@@ -3293,6 +3427,7 @@ Description      : Throws a poison-coated knife, dealing $s1 damage and applying
 Name             : Pistol Shot (id=185763) [Spell Family (8)] 
 Class            : Outlaw Rogue
 School           : Physical
+Spell Type       : Melee
 Resource         : 40 Energy (3) (id=10158)
 Spell Level      : 10
 Range            : 20 yards
@@ -3325,6 +3460,7 @@ Variables        : $CAP=${($AP+$OAP)*2/3}
 Name             : Poison Knives (id=192376) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3348,6 +3484,7 @@ Variables        : $agonizingratio = ${2}
 Name             : Poison Knives (id=192380) [Spell Family (8)] 
 Class            : Rogue
 School           : Nature
+Spell Type       : Magic
 Range            : 100 yards
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -3365,6 +3502,7 @@ Description      : $@spelldesc192376
 Name             : Kingsbane (rank=Artifact) (id=192759) [Spell Family (8)] 
 Class            : Rogue
 School           : Nature
+Spell Type       : Melee
 Resource         : 35 Energy (3) (id=11496)
 Range            : 5 yards
 GCD              : 1 seconds
@@ -3404,6 +3542,7 @@ Tooltip          : Suffering $w4 Nature damage every $t4 sec.
 Name             : Kingsbane (id=192760) [Spell Family (8)] 
 Class            : Rogue
 School           : Nature
+Spell Type       : Melee
 Range            : 100 yards
 Triggered by     : Kingsbane (192759)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3424,6 +3563,7 @@ Description      : $@spelldesc192759
 Name             : Kingsbane (id=192853) [Spell Family (8), Hidden] 
 Class            : Rogue
 School           : Shadowstorm
+Spell Type       : None
 Range            : 100 yards
 Duration         : 20 seconds
 Stacks           : 99 maximum
@@ -3447,6 +3587,7 @@ Tooltip          : Kingsbane Damage increased by $s1%.
 Name             : Sinister Strike (id=193315) [Spell Family (8)] 
 Class            : Outlaw Rogue
 School           : Physical
+Spell Type       : Melee
 Resource         : 45 Energy (3) (id=10438)
 Spell Level      : 10
 Range            : 5 yards
@@ -3480,6 +3621,7 @@ Variables        : $mult=${($max(0,$min($pl-10,10))*8+195)/275}
 Name             : Roll the Bones (id=193316) [Spell Family (8)] 
 Class            : Outlaw Rogue
 School           : Physical
+Spell Type       : None
 Resource         : 25 Energy (3) (id=10439)
 Resource         : 1 - 5 Combo Points (4) (id=11404)
 Spell Level      : 40
@@ -3513,6 +3655,7 @@ Tooltip          : Gained a random combat enhancement.
 Name             : Broadside (id=193356) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Duration         : Aura (infinite)
 Attributes       : ....x... ........ ..x..... .....x.x   .....x.. ..x..... ........ ........ 
@@ -3542,6 +3685,7 @@ Tooltip          : Your combo-point generating abilities generate $s1 additional
 Name             : Ruthless Precision (id=193357) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Duration         : Aura (infinite)
 Attributes       : ....x... ........ ..x..... .....x.x   .....x.. ..x..... ........ ........ 
@@ -3568,6 +3712,7 @@ Critical strike chance of all other abilities increased by $s1%.
 Name             : Grand Melee (id=193358) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Duration         : Aura (infinite)
 Attributes       : ....x... ........ ..x..... .....x.x   .....x.. ..x..... ........ ........ 
@@ -3590,6 +3735,7 @@ Leech increased by $s2%.
 Name             : True Bearing (id=193359) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Duration         : Aura (infinite)
 Attributes       : ....x... ........ ..x..... .....x.x   .....x.. ..x..... ........ ........ 
@@ -3612,6 +3758,7 @@ Variables        : $cdr=${$s1/10}
 Name             : Deeper Stratagem (id=193531) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3642,6 +3789,7 @@ Description      : You may have a maximum of $s3 combo points, your finishing mo
 Name             : Weaponmaster (id=193536) [Spell Family (8)] 
 Class            : Rogue
 School           : Shadow
+Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
 Affecting spells : Mastery: Executioner (76808 effect#1), Deeper Stratagem (193531 effect#1), 
@@ -3662,6 +3810,7 @@ Description      : Deals Shadow damage to an enemy.
 Name             : Weaponmaster (id=193537) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 15%
 Proc Flags       : ....x... x...x... x.x..... ........ 
@@ -3682,6 +3831,7 @@ Description      : Shadowstrike and Backstab have a $s1% chance to hit the targe
 Name             : Alacrity (id=193538) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Duration         : 20 seconds
 Stacks           : 5 maximum
@@ -3703,6 +3853,7 @@ Tooltip          : Haste increased by $w1%.
 Name             : Alacrity (id=193539) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ....x... x.x.x.x. x....... ........ 
                  : Yellow Melee, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell
@@ -3724,6 +3875,7 @@ Description      : Your finishing moves have a $s2% chance per combo point to gr
 Name             : Iron Stomach (id=193546) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3742,6 +3894,7 @@ Description      : Increases the healing you receive from Crimson Vial, healing 
 Name             : Elaborate Planning (id=193640) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ....x... x.x.x.x. ........ ........ 
                  : Yellow Melee, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal
@@ -3761,6 +3914,7 @@ Description      : Your finishing moves grant $193641s1% increased damage done f
 Name             : Elaborate Planning (id=193641) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Duration         : 4 seconds
 Stacks           : 1 maximum
@@ -3790,6 +3944,7 @@ Tooltip          : Damage done increased by $s1%.
 Name             : Nightblade (id=195452) [Spell Family (8)] 
 Class            : Subtlety Rogue
 School           : Shadow
+Spell Type       : Melee
 Resource         : 25 Energy (3) (id=10522)
 Resource         : 1 - 5 Combo Points (4) (id=10590)
 Spell Level      : 20
@@ -3841,6 +3996,7 @@ $damage=${$o1*$<CAP>/$AP}
 Name             : Grappling Hook (id=195457) [Spell Family (8)] 
 Class            : Outlaw Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 22
 Range            : 40 yards
 Velocity         : 80 yards/sec
@@ -3863,6 +4019,7 @@ Description      : Launch a grappling hook and pull yourself to the target locat
 Name             : Opportunity (id=195627) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Duration         : 10 seconds
 Stacks           : 1 initial, 1 maximum
@@ -3898,6 +4055,7 @@ Tooltip          : Your next Pistol Shot costs $s1% less Energy and deals $s3% i
 Name             : Eviscerate (id=196819) [Spell Family (8)] 
 Class            : Assassination Subtlety Rogue
 School           : Physical
+Spell Type       : Melee
 Resource         : 35 Energy (3) (id=10594)
 Resource         : 1 - 5 Combo Points (4) (id=10595)
 Spell Level      : 3
@@ -3927,6 +4085,7 @@ Description      : Finishing move that disembowels the target, causing damage pe
 Name             : Iron Wire (id=196861) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3949,6 +4108,7 @@ Enemies silenced by Garrote deal $256148s1% reduced damage for $256148d.
 Name             : Master Poisoner (id=196864) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3979,6 +4139,7 @@ Description      : Increases the damage done by your weapon poisons by $s1% and 
 Name             : Shadow Techniques (id=196911) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Range            : 50000 yards
 Family Flags     : 107
 Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
@@ -3998,6 +4159,7 @@ Description      : $@spelldesc196912
 Name             : Shadow Techniques (id=196912) [Spell Family (8), Passive] 
 Class            : Subtlety Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 28
 Proc Chance      : 100%
 Proc Flags       : ..x.x... ........ ........ ........ 
@@ -4019,6 +4181,7 @@ Description      : Your auto attacks have a chance to generate $196911s1 combo p
 Name             : Hit and Run (rank=Passive Talent) (id=196922) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4039,6 +4202,7 @@ Description      : Increases your movement speed at all times by $s1%.
 Name             : Acrobatic Strikes (rank=Passive Talent) (id=196924) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4071,6 +4235,7 @@ Description      : Increases the range on all your melee attacks by $s1 yards.
 Name             : Ghostly Strike (id=196937) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : Melee
 Resource         : 30 Energy (3) (id=10605)
 Spell Level      : 1
 Range            : 5 yards
@@ -4104,6 +4269,7 @@ Tooltip          : Taking $s3% increased damage from the Rogue's abilities.
 Name             : Quick Draw (rank=Passive Talent) (id=196938) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4126,6 +4292,7 @@ Description      : Half-cost uses of Pistol Shot granted by Sinister Strike now 
 Name             : Master of Shadows (rank=Passive) (id=196976) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4143,6 +4310,7 @@ Description      : Gain ${$196980s1*$196980d/$196980t1+$196980s2} Energy over $1
 Name             : Master of Shadows (id=196980) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Duration         : 3 seconds
 Family Flags     : 105
 Attributes       : ........ ........ ........ ........   .....x.. ........ ........ ........ 
@@ -4164,6 +4332,7 @@ Tooltip          : Regenerating ${$s1*$d/$t1+$s2} Energy over $d.
 Name             : Finality: Eviscerate (id=197393) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : Melee
 Resource         : 35 Energy (3) (id=10683)
 Resource         : 1 - 5 Combo Points (4) (id=10684)
 Spell Level      : 3
@@ -4192,6 +4361,7 @@ Variables        : $mult=${(1+$@versadmg)}
 Name             : Finality: Nightblade (id=197395) [Spell Family (8)] 
 Class            : Rogue
 School           : Shadow
+Spell Type       : Melee
 Resource         : 25 Energy (3) (id=10685)
 Resource         : 1 - 5 Combo Points (4) (id=10686)
 Spell Level      : 46
@@ -4229,6 +4399,7 @@ $bonus=${$<resolve>*(1+$@versadmg)*$<deeper>}/1.1
 Name             : Finality: Eviscerate (id=197496) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Duration         : 30 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4247,6 +4418,7 @@ Tooltip          : Your next Eviscerate deals $w1% increased damage.
 Name             : Finality: Nightblade (id=197498) 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Duration         : 30 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4263,6 +4435,7 @@ Tooltip          : Your next Nightblade deals $w1% increased damage.
 Name             : Shuriken Storm (id=197835) [Spell Family (8)] 
 Class            : Subtlety Rogue
 School           : Physical
+Spell Type       : Melee
 Resource         : 35 Energy (3) (id=10714)
 Spell Level      : 63
 GCD              : 1 seconds
@@ -4293,6 +4466,7 @@ Variables        : $CAP=${($AP+$OAP)*2/3}
 Name             : Buried Treasure (id=199600) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Duration         : Aura (infinite)
 Attributes       : ....x... ........ ..x..... .....x.x   .....x.. ..x..... ........ ........ 
@@ -4312,6 +4486,7 @@ Tooltip          : Increases Energy regeneration by ${$s1/5} per sec.
 Name             : Skull and Crossbones (id=199603) [Scaling Spell (-1), Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Duration         : Aura (infinite)
 Attributes       : ....x... ........ ..x..... .....x.x   .....x.. ..x..... ........ ........ 
@@ -4333,6 +4508,7 @@ Tooltip          : Sinister Strike has an additional $s1% chance of striking an 
 Name             : Rupture (id=199672) [Hidden] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Triggered by     : Rupture (1943)
 Attributes       : .......x x....... .......x x....x..   ........ ..x..... ........ ........ 
@@ -4350,6 +4526,7 @@ Effects          :
 Name             : Find Treasure (rank=Racial) (id=199736) 
 Class            : Outlaw Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Duration         : Aura (infinite)
 Cooldown         : 1.5 seconds
@@ -4372,6 +4549,7 @@ Tooltip          : Finding treasure.
 Name             : Riposte (id=199753) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 42
 Range            : 50000 yards
 GCD              : 1 seconds
@@ -4394,6 +4572,7 @@ Description      : An instant strike that causes $s3 Physical damage.
 Name             : Riposte (id=199754) [Spell Family (8)] 
 Class            : Outlaw Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 26
 Duration         : 10 seconds
 Cooldown         : 120 seconds
@@ -4422,6 +4601,7 @@ Tooltip          : Parry chance increased by $s1% and riposting attacks.
 Name             : Between the Eyes (id=199804) [Spell Family (8)] 
 Class            : Outlaw Rogue
 School           : Physical
+Spell Type       : Melee
 Resource         : 25 Energy (3) (id=10767)
 Resource         : 1 - 5 Combo Points (4) (id=10768)
 Spell Level      : 20
@@ -4456,6 +4636,7 @@ $damage=${$m1*$<CAP>/$AP}
 Name             : Weaponmaster (rank=Passive Talent) (id=200733) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4475,6 +4656,7 @@ Name             : Activating Specialization (id=200749) [Hidden]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
+Spell Type       : None
 Range            : 50000 yards
 Cast Time        : 5 seconds
 Attributes       : .......x ........ ........ ....x...   ..xxx..x ........ .x...... ........ 
@@ -4494,6 +4676,7 @@ Tooltip          : Switch to your Primary Talent Specialization.
 Name             : Gloomblade (id=200758) [Spell Family (8)] 
 Class            : Rogue
 School           : Shadow
+Spell Type       : Melee
 Resource         : 35 Energy (3) (id=10797)
 Spell Level      : 1
 Range            : 5 yards
@@ -4520,6 +4703,7 @@ Description      : Punctures your target with your shadow-infused blade for $s1 
 Name             : Soothing Darkness (id=200759) [Spell Family (8), Passive, Hidden] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4542,6 +4726,7 @@ Description      : You heal $s1% of your maximum health every $158188t2 sec whil
 Name             : Agonizing Poison (id=200802) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 10
 Cast Time        : 1.5 seconds
 Duration         : 3600 seconds
@@ -4569,6 +4754,7 @@ Tooltip          : Each strike has a chance of causing the target to take ${$200
 Name             : Agonizing Poison (id=200803) [Spell Family (8)] 
 Class            : Rogue
 School           : Nature
+Spell Type       : Melee
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 12 seconds
@@ -4594,6 +4780,7 @@ Tooltip          : Taking $w1% increased damage from the poisoning Rogue's abili
 Name             : Exsanguinate (id=200806) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : Melee
 Resource         : 25 Energy (3) (id=12036)
 Range            : 5 yards
 GCD              : 1 seconds
@@ -4613,6 +4800,7 @@ Description      : Twist your blades into the target's wounds, causing your Blee
 Name             : Curse of the Dreadblades (rank=Artifact) (id=202665) [Spell Family (8)] 
 Class            : Rogue
 School           : Shadow
+Spell Type       : None
 Duration         : 12 seconds
 Cooldown         : 90 seconds
 Proc Chance      : 101%
@@ -4638,6 +4826,7 @@ Tooltip          : Saber Slash, $?s196937[Ghostly Strike, ][]Ambush, and Pistol 
 Name             : Curse of the Dreadblades (id=202668) [Spell Family (8)] 
 Class            : Rogue
 School           : Shadow
+Spell Type       : None
 Triggered by     : Curse of the Dreadblades (202665)
 Attributes       : ........ ........ ........ ..x..x..   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4655,6 +4844,7 @@ Description      : $@spelldesc202665
 Name             : Curse of the Dreadblades (id=202669) [Spell Family (8)] 
 Class            : Rogue
 School           : Shadow
+Spell Type       : Magic
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4673,6 +4863,7 @@ Description      : $@spelldesc202665
 Name             : Blunderbuss (id=202848) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Duration         : 10 seconds
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x... ........ ........ 
@@ -4695,6 +4886,7 @@ Description      : $@spelldesc202897
 Name             : Blunderbuss (id=202895) [Scaling Spell (9), Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : Melee
 Resource         : 40 Energy (3) (id=10875)
 Spell Level      : 11
 Range            : 20 yards
@@ -4729,6 +4921,7 @@ Tooltip          : Movement speed reduced by $s3%.
 Name             : Blunderbuss (id=202897) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4750,6 +4943,7 @@ $@spelldesc202895
 Name             : Shadow's Grasp (id=206760) [Spell Family (8)] 
 Class            : Rogue
 School           : Shadow
+Spell Type       : None
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 8 seconds
@@ -4773,6 +4967,7 @@ Tooltip          : Movement speed slowed by $w1%.
 Name             : Dismantle (rank=PvP Talent) (id=207777) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : Melee
 Resource         : 25 Energy (3) (id=11024)
 Spell Level      : 52
 Range            : 5 yards
@@ -4804,6 +4999,7 @@ Tooltip          : Disarmed.
 Name             : Goremaw's Bite (rank=Artifact) (id=209782) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : Melee
 Range            : 8 yards
 GCD              : 1 seconds
 Cooldown         : 60 seconds
@@ -4830,6 +5026,7 @@ Description      : Lashes out at the target, inflicting ${$209783sw2+$209784sw2}
 Name             : Goremaw's Bite (id=209783) [Spell Family (8)] 
 Class            : Rogue
 School           : Shadow
+Spell Type       : Melee
 Range            : 8 yards
 Triggered by     : Goremaw's Bite (209782)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
@@ -4850,6 +5047,7 @@ Description      : $@spelldesc209782
 Name             : Goremaw's Bite (id=209784) [Spell Family (8)] 
 Class            : Rogue
 School           : Shadow
+Spell Type       : Melee
 Range            : 8 yards
 Triggered by     : Goremaw's Bite (209782)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
@@ -4870,6 +5068,7 @@ Description      : $@spelldesc209782
 Name             : Goremaw's Bite (id=209786) [Spell Family (7)] 
 Class            : Rogue
 School           : Shadow
+Spell Type       : None
 Spell Level      : 1
 Range            : 8 yards
 Duration         : 8 seconds
@@ -4893,6 +5092,7 @@ Tooltip          : Movement speed slowed by $s1%.
 Name             : Detection (id=210108) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4908,6 +5108,7 @@ Effects          :
 Name             : Crimson Vial (id=212198) [Scaling Spell (8), Spell Family (8)] 
 Class            : Rogue
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Duration         : 6 seconds
 Cooldown         : 60 seconds
@@ -4932,6 +5133,7 @@ Tooltip          : Healing for $m1% of maximum health every $t1 sec.
 Name             : Create: Crimson Vial (rank=PvP Talent) (id=212205) 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Charges          : 3 (60 seconds cooldown)
@@ -4957,6 +5159,7 @@ Name             : Symbols of Death (id=212283) [Spell Family (8)]
 Hotfixed         : Attributes
 Class            : Subtlety Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 36
 Duration         : 10 seconds
 Charges          : 1 (30 seconds cooldown)
@@ -4992,6 +5195,7 @@ Tooltip          : Damage done increased by $s1%.
 Name             : Goremaw's Bite (id=220901) [Spell Family (8)] 
 Class            : Rogue
 School           : Shadow
+Spell Type       : None
 Range            : 8 yards
 Duration         : 6 seconds
 Triggered by     : Goremaw's Bite (209782)
@@ -5014,6 +5218,7 @@ Tooltip          : Generating $s2 Energy every $t2 sec.
 Name             : Thick as Thieves (rank=PvP Talent) (id=221622) [Spell Family (8), Passive, Hidden] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5032,6 +5237,7 @@ Description      : Your Tricks of the Trade now increases your and the friendly 
 Name             : Nightblade (id=222018) [Hidden] 
 Class            : Rogue
 School           : Shadow
+Spell Type       : None
 Range            : 100 yards
 Triggered by     : Nightblade (195452)
 Attributes       : .......x x....... .......x x....x..   ........ ..x..... ........ ........ 
@@ -5049,6 +5255,7 @@ Effects          :
 Name             : Kingsbane (id=222062) [Spell Family (8)] 
 Class            : Rogue
 School           : Nature
+Spell Type       : Melee
 Range            : 100 yards
 Triggered by     : Kingsbane (192759)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5069,6 +5276,7 @@ Description      : $@spelldesc192759
 Name             : Sprint (rank=Rank 2) (id=231691) [Spell Family (8), Passive] 
 Class            : Assassination Outlaw Subtlety Rogue
 School           : Holy
+Spell Type       : None
 Spell Level      : 66
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5088,6 +5296,7 @@ Description      : Sprint's cooldown is reduced by ${$m1/-1000} sec.
 Name             : Eviscerate (rank=Rank 2) (id=231716) [Spell Family (8), Passive] 
 Class            : Subtlety Rogue
 School           : Holy
+Spell Type       : None
 Spell Level      : 52
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5107,6 +5316,7 @@ Description      : Eviscerate's damage is increased by $s1%.
 Name             : Shadowstrike (rank=Rank 2) (id=231718) [Spell Family (8), Passive] 
 Class            : Subtlety Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 42
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5124,6 +5334,7 @@ Description      : Shadowstrike deals $245623s2% increased damage and will now t
 Name             : Garrote (rank=Rank 2) (id=231719) [Spell Family (8), Passive] 
 Class            : Assassination Rogue
 School           : Holy
+Spell Type       : None
 Spell Level      : 42
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5142,6 +5353,7 @@ Description      : Garrote silences the target for $1330d when used from Stealth
 Name             : Between the Eyes (rank=Rank 2) (id=235484) [Spell Family (8), Passive] 
 Class            : Outlaw Rogue
 School           : Holy
+Spell Type       : None
 Spell Level      : 42
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5162,6 +5374,7 @@ Description      : Critical strikes with Between the Eyes deal four times normal
 Name             : Dreadblade's Vigor (id=238103) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5179,6 +5392,7 @@ Description      : Curse of the Dreadblades increases your damage by $s1% while 
 Name             : Enveloping Shadows (id=238104) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5203,6 +5417,7 @@ Shadow Dance gains $s2 additional charge.
 Name             : Toxic Blade (id=245388) [Spell Family (8)] 
 Class            : Rogue
 School           : Nature
+Spell Type       : Melee
 Resource         : 20 Energy (3) (id=12037)
 Range            : 5 yards
 GCD              : 1 seconds
@@ -5235,6 +5450,7 @@ Your Nature damage done against the target is increased by $245389s1% for $24538
 Name             : Toxic Blade (id=245389) [Spell Family (8)] 
 Class            : Rogue
 School           : Nature
+Spell Type       : None
 Range            : 100 yards
 Duration         : 9 seconds
 Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
@@ -5259,6 +5475,7 @@ Tooltip          : $s1% increased damage taken from poisons from the casting Rog
 Name             : Shadowstrike (rank=Rank 2) (id=245623) [Spell Family (8), Hidden] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Duration         : Aura (infinite)
 Attributes       : .......x ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ ........ ....x... ........ 
@@ -5284,6 +5501,7 @@ Name             : Shuriken Combo (id=245639) [Spell Family (8), Passive]
 Hotfixed         : Attributes
 Class            : Subtlety Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 70
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5301,6 +5519,7 @@ Description      : Shuriken Storm increases the damage of your next Eviscerate b
 Name             : Shuriken Combo (id=245640) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Duration         : 15 seconds
 Stacks           : 5 maximum
 Proc Chance      : 101%
@@ -5324,6 +5543,7 @@ Tooltip          : Your next Eviscerate deals $w1% increased damage.
 Name             : Dark Shadow (id=245687) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5350,6 +5570,7 @@ Description      : While Shadow Dance is active, all damage you deal is increase
 Name             : Sprint (rank=Rank 2) (id=245751) [Spell Family (8), Passive] 
 Class            : Subtlety Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 61
 Proc Chance      : 101%
 Proc Flags       : ........ ..x..... ........ ........ 
@@ -5370,6 +5591,7 @@ Description      : Sprint now allows you to run over water.
 Name             : Sprint (rank=Rank 2) (id=245752) [Spell Family (8), Hidden] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Duration         : Aura (infinite)
 Triggered by     : Sprint (245751)
 Attributes       : .......x ........ ........ x..x....   .....x.. ........ ........ ........ 
@@ -5388,6 +5610,7 @@ Description      : $@spelldesc245751
 Name             : Lesser Adrenaline Rush (id=246558) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 56
 Duration         : 8 seconds
 Cooldown         : 180 seconds
@@ -5415,6 +5638,7 @@ Name             : Vindicaar Matrix Crystal (id=251463)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
+Spell Type       : None
 GCD              : 1.5 seconds
 Triggered by     : Vindicaar Matrix Crystal (255529)
 Attributes       : ........ ........ ........ ........   ...x...x ..x..... ........ ........ 
@@ -5433,6 +5657,7 @@ Name             : Vindicaar Matrix Crystal (id=255529) [Hidden]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
+Spell Type       : None
 Triggered by     : Activating Specialization (200749)
 Attributes       : .......x x....... .......x x..x.x..   ...x.x.x ..x..... ........ ........ 
                  : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ....x... 
@@ -5452,6 +5677,7 @@ Description      : Unlock powers at the Vindicaar's Matrix Core to use while on 
 Name             : Poison Bomb (id=255544) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
@@ -5476,6 +5702,7 @@ Variables        : $chance=${$s1/10}%
 Name             : Poison Bomb (id=255545) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 2 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5493,6 +5720,7 @@ Description      : $@spelldesc255544
 Name             : Poison Bomb (id=255546) [Spell Family (8)] 
 Class            : Rogue
 School           : Nature
+Spell Type       : Magic
 Range            : 100 yards
 Affecting spells : Master of Subtlety (31665 effect#1), Mastery: Potent Assassin (76803 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Toxic Blade (245389 effect#1), Master Assassin (256735 effect#1)
 Family Flags     : 54, 86
@@ -5513,6 +5741,7 @@ Name             : Light's Judgment (rank=Racial) (id=255647) [Scaling Spell (-6
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
+Spell Type       : Magic
 Max Scaling Level: 120
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -5535,6 +5764,7 @@ Name             : Holy Resistance (rank=Racial Passive) (id=255651) [Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5552,6 +5782,7 @@ Name             : Light's Reckoning (rank=Racial Passive) (id=255652) [Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ .......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -5569,6 +5800,7 @@ Name             : Demonbane (rank=Racial Passive) (id=255653) [Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5585,6 +5817,7 @@ Description      : Experience gains from killing Demons increased by $s1%.
 Name             : Prey on the Weak (id=255909) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 6 seconds
 Affecting spells : Rogue Tier 6 Trinket (40460 effect#1), Shadow Blades (121471 effect#2)
@@ -5605,6 +5838,7 @@ Tooltip          : Damage taken increased by $s1%.
 Name             : Master Assassin (id=255989) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5621,6 +5855,7 @@ Description      : While Stealth is active and for $s1 sec after breaking Stealt
 Name             : Iron Wire (id=256148) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 8 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5640,6 +5875,7 @@ Tooltip          : Damage done reduced by $s1%.
 Name             : Blinding Powder (rank=Passive Talent) (id=256165) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5662,6 +5898,7 @@ Description      : Reduces the cooldown of Blind by ${$s1/-1000} sec and increas
 Name             : Loaded Dice (id=256170) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ........ ..x..... ........ ........ 
                  : AOE Heal
@@ -5681,6 +5918,7 @@ Description      : Activating Adrenaline Rush causes your next Roll the Bones to
 Name             : Loaded Dice (id=256171) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Duration         : 45 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
@@ -5703,6 +5941,7 @@ Tooltip          : Your next $?s5171[Slice and Dice will be $w1% more effective]
 Name             : Retractable Hook (rank=Passive Talent) (id=256188) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5721,6 +5960,7 @@ Description      : Reduce the cooldown of Grappling Hook by ${$s1/-1000} sec.
 Name             : Vendetta (id=256495) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Duration         : 3 seconds
 Triggered by     : Vendetta (79140)
 Attributes       : ........ ........ ........ .......x   .....x.. ........ ........ ....x... 
@@ -5740,6 +5980,7 @@ Tooltip          : Generating ${$s1*$d/5} Energy over $d.
 Name             : Master Assassin (id=256735) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Duration         : Aura (infinite)
 Family Flags     : 123
 Attributes       : ........ ........ ........ ...x...x   .....x.. ........ ........ ........ 
@@ -5764,6 +6005,7 @@ Name             : Light's Judgment (rank=Racial) (id=256893) [Scaling Spell (-6
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
+Spell Type       : Magic
 Max Scaling Level: 120
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -5786,6 +6028,7 @@ Name             : Light's Reckoning (rank=Racial Passive) (id=256896) [Scaling 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
+Spell Type       : Magic
 Max Scaling Level: 120
 Range            : 40 yards
 Triggered by     : Light's Reckoning (255652)
@@ -5809,6 +6052,7 @@ Heals $s2 to allies within $A1.
 Name             : Shot in the Dark (rank=Passive Talent) (id=257505) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5825,6 +6069,7 @@ Description      : After entering Stealth or Shadow Dance, your next Cheap Shot 
 Name             : Haste (id=261582) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 2
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5842,6 +6087,7 @@ Tooltip          : Increases haste by $s1.
 Name             : Resounding Protection (id=263962) [Scaling Spell (-8), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 15
 Triggered by     : Resounding Protection (269279)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5861,6 +6107,7 @@ Description      : Every $270568t1 sec, gain an absorb shield for $s1 for $26927
 Name             : Azerite Empowered (id=263978) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 13
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5878,6 +6125,7 @@ Description      : Increases the item level of this item by 5.
 Name             : Elemental Whirl (id=263984) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 21
 Triggered by     : Elemental Whirl (268953), Elemental Whirl (268956), Elemental Whirl (268955), Elemental Whirl (268954)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5898,6 +6146,7 @@ Name             : Heed My Call (id=263987) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 22
 Triggered by     : Heed My Call (271685), Heed My Call (271686)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5921,6 +6170,7 @@ Tooltip          : Your damaging abilities have a chance to deal $s1 Nature dama
 Name             : Blood Siphon (id=264108) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 18
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5943,6 +6193,7 @@ Tooltip          : Increases Mastery by $s1 and Leech by $s2.
 Name             : Overwhelming Power (id=266180) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 30
 Triggered by     : Overwhelming Power (271711)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5964,6 +6215,7 @@ Name             : Azerite Globules (id=266936) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 462
 Triggered by     : Azerite Globules (279958)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5987,6 +6239,7 @@ Name             : Gutripper (id=266937) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 31
 Triggered by     : Gutripper (270668), Gutripper (269031)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6009,6 +6262,7 @@ Name             : Azerite Fortification (id=268435) [Scaling Spell (-8), Passiv
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 86
 Triggered by     : Azerite Fortification (270659)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6030,6 +6284,7 @@ Name             : Impassive Visage (id=268437) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 6 seconds
 Proc Chance      : 100%
 Azerite Power Id : 83
@@ -6055,6 +6310,7 @@ Name             : Longstrider (id=268594) [Scaling Spell (-7), Passive]
 Hotfixed         : Scaling Spell (-1 -> -7)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 14
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6078,6 +6334,7 @@ Name             : Bulwark of the Masses (id=268595) [Scaling Spell (-8), Passiv
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 84
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6099,6 +6356,7 @@ Name             : Gemhide (id=268596) [Scaling Spell (-1), Passive]
 Hotfixed         : Scaling Spell (-7 -> -1)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 85
 Triggered by     : Gemhide (270576)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6124,6 +6382,7 @@ Tooltip          : When dealt damage greater than $s3% of your maximum health, g
 Name             : Vampiric Speed (id=268599) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 44
 Triggered by     : Vampiric Speed (269238), Vampiric Speed (269239)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6148,6 +6407,7 @@ Name             : Self Reliance (id=268600) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 87
 Triggered by     : Self Reliance (270661)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6170,6 +6430,7 @@ Tooltip          : While no enemies are within $s2 yds, you heal for $w1 every $
 Name             : Hidden Blades (id=270061) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6186,6 +6447,7 @@ Description      : Every $t1 sec, gain $270070s1% increased damage for your next
 Name             : Hidden Blades (id=270070) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Duration         : Aura (infinite)
 Stacks           : 20 maximum
 Proc Chance      : 101%
@@ -6209,6 +6471,7 @@ Tooltip          : Your next Fan of Knives deals $s1% increased damage.
 Name             : Blade Rush (id=271877) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : Melee
 Range            : 20 yards
 GCD              : 1 seconds
 Cooldown         : 45 seconds
@@ -6233,6 +6496,7 @@ While Blade Flurry is active, damage to non-primary targets is increased by $s1%
 Name             : Blade Rush (id=271881) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : Melee
 Range            : 20 yards
 Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Acrobatic Strikes (196924 effect#4), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
 Family Flags     : 13, 54
@@ -6254,6 +6518,7 @@ Description      : $@spelldesc271877
 Name             : Blade Rush (id=271896) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : Melee
 Duration         : 5 seconds
 Affecting spells : Acrobatic Strikes (196924 effect#4)
 Family Flags     : 13
@@ -6274,6 +6539,7 @@ Tooltip          : Generates $s1 Energy every sec.
 Name             : Dancing Steel (id=272026) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6303,6 +6569,7 @@ Name             : Sharpened Blades (id=272911) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 124
 Triggered by     : Sharpened Blades (272916)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6323,6 +6590,7 @@ Name             : Deadshot (id=272935) [Scaling Spell (-8), Spell Family (8), P
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 129
 Triggered by     : Deadshot (272940)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6344,6 +6612,7 @@ Name             : Double Dose (id=273007) [Scaling Spell (-8), Spell Family (8)
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 136
 Triggered by     : Double Dose (273009)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6363,6 +6632,7 @@ Description      : When Mutilate applies Lethal Poison with both daggers, it poi
 Name             : Double Dose (id=273009) [Spell Family (8)] 
 Class            : Rogue
 School           : Nature
+Spell Type       : Melee
 Range            : 100 yards
 Stacks           : 2 initial, 2 maximum
 Proc Chance      : 100%
@@ -6389,6 +6659,7 @@ Name             : Ruinous Bolt (id=273150) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 156
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6407,6 +6678,7 @@ Name             : Night's Vengeance (id=273418) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 175
 Triggered by     : Night's Vengeance (273424)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6427,6 +6699,7 @@ Name             : Storm of Steel (id=273452) [Scaling Spell (-8), Spell Family 
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 180
 Triggered by     : Storm of Steel (273455)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6448,6 +6721,7 @@ Name             : Twist the Knife (id=273488) [Scaling Spell (-8), Spell Family
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 181
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6471,6 +6745,7 @@ Name             : Meticulous Scheming (id=273682) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 192
 Triggered by     : Seize the Moment! (273714)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6496,6 +6771,7 @@ Name             : Rezan's Fury (id=273790) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 157
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6516,6 +6792,7 @@ Name             : Blightborne Infusion (id=273823) [Scaling Spell (-7), Passive
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 193
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6534,6 +6811,7 @@ Name             : Secrets of the Deep (id=273829) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 195
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6556,6 +6834,7 @@ Name             : Filthy Transfusion (id=273834) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 194
 Triggered by     : Filthy Transfusion (273836)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6575,6 +6854,7 @@ Name             : Footpad (id=274692) [Scaling Spell (-7), Passive]
 Hotfixed         : Scaling Spell (-1 -> -7)
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 217
 Triggered by     : Footpad (274695)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6597,6 +6877,7 @@ Name             : Snake Eyes (id=275846) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 239
 Triggered by     : Snake Eyes (275863)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6617,6 +6898,7 @@ Name             : Blade In The Shadows (id=275896) [Scaling Spell (-8), Passive
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 240
 Triggered by     : Blade In The Shadows (279754)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6636,6 +6918,7 @@ Description      : Shadowstrike increases the damage your Shadowstrike deals by 
 Name             : Poisoned Wire (id=276072) [Scaling Spell (-7), Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 249
 Triggered by     : Poisoned Wire (276083)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6656,6 +6939,7 @@ Name             : Perforate (id=277673) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 445
 Triggered by     : Perforate (277720)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6678,6 +6962,7 @@ Name             : Brigand's Blitz (id=277676) [Scaling Spell (-7), Passive]
 Hotfixed         : Scaling Spell (-1 -> -7)
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 446
 Triggered by     : Brigand's Blitz (277724), Brigand's Blitz (277725)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6697,6 +6982,7 @@ Description      : Adrenaline Rush increases your Haste by $s1 every sec, stacki
 Name             : Scent of Blood (id=277679) [Scaling Spell (-1), Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 406
 Triggered by     : Scent of Blood (277731)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6716,6 +7002,7 @@ Description      : Rupture increases your Agility by $s1. You may gain this bene
 Name             : Shuriken Tornado (id=277925) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Resource         : 60 Energy (3) (id=191851)
 GCD              : 1 seconds
 Duration         : 4 seconds
@@ -6736,6 +7023,7 @@ Tooltip          : Releasing a Shuriken Storm every sec.
 Name             : Shadow's Grasp (id=277950) [Spell Family (8), Passive] 
 Class            : Subtlety Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 40
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6753,6 +7041,7 @@ Description      : $?s277953[Backstab, Shadowstrike, and Shuriken Storm][Backsta
 Name             : Night Terrors (rank=Passive Talent) (id=277953) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6770,6 +7059,7 @@ Name             : Fan of Blades (id=278664) [Scaling Spell (-8), Spell Family (
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 407
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6793,6 +7083,7 @@ Name             : Shrouded Suffocation (id=278666) [Scaling Spell (-8), Spell F
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 408
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6813,6 +7104,7 @@ Description      : Garrote cast from Stealth generates $s2 additional Combo Poin
 Name             : Paradise Lost (id=278675) [Scaling Spell (-1), Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 410
 Triggered by     : Paradise Lost (278962)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6833,6 +7125,7 @@ Name             : Ace Up Your Sleeve (id=278676) [Scaling Spell (-8), Spell Fam
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 411
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6855,6 +7148,7 @@ Description      : Each combo point spent on Between the Eyes increases damage b
 Name             : The First Dance (id=278681) [Scaling Spell (-7), Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 413
 Triggered by     : The First Dance (278981)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6874,6 +7168,7 @@ Name             : Inevitability (id=278683) [Scaling Spell (-8), Spell Family (
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 414
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6898,6 +7193,7 @@ Description      : $?S200758[Gloomblade][Backstab] and Shadowstrike deal an addi
 Name             : Paradise Lost (id=278962) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : Aura (infinite)
 Stacks           : 1 maximum
@@ -6920,6 +7216,7 @@ Tooltip          : Agility increased by $w1.
 Name             : The First Dance (id=278981) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Duration         : Aura (infinite)
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ..x..... ........ 
@@ -6947,6 +7244,7 @@ Tooltip          : Critical strike rating of next Eviscerate, Shadowstrike, or S
 Name             : Shadow Blades (id=279043) [Spell Family (8)] 
 Class            : Rogue
 School           : Shadow
+Spell Type       : Melee
 Range            : 50000 yards
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ .....x..   ........ ........ ........ ......x. 
@@ -6964,6 +7262,7 @@ Description      : $@spelldesc121471
 Name             : Sinister Strike (rank=Rank 2) (id=279876) [Spell Family (8), Passive] 
 Class            : Outlaw Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 12
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6981,6 +7280,7 @@ Description      : Sinister Strike has a $193315s3% chance to hit an additional 
 Name             : Sinister Strike (rank=Rank 2) (id=279877) [Spell Family (8), Passive] 
 Class            : Assassination Rogue
 School           : Physical
+Spell Type       : None
 Spell Level      : 13
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7000,6 +7300,7 @@ Description      : Sinister Strike's energy cost is reduced by $s1.
 Name             : Unstable Flames (id=279899) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 459
 Triggered by     : Unstable Flames (279902)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7019,6 +7320,7 @@ Description      : Your damaging abilities have a chance to grant $s1 critical s
 Name             : Earthlink (id=279926) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 461
 Triggered by     : Earthlink (279928)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7039,6 +7341,7 @@ Name             : Shrouded Mantle (id=280020) [Scaling Spell (-8), Passive]
 Hotfixed         : School (1 -> 32), Scaling Spell (-1 -> -8)
 Class            : Rogue
 School           : Shadow
+Spell Type       : None
 Azerite Power Id : 473
 Triggered by     : Shrouded Mantle (280200)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7062,6 +7365,7 @@ Name             : Barrage Of Many Bombs (id=280163) [Scaling Spell (-8), Passiv
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 1.5 (Haste multiplier)
 Azerite Power Id : 498
@@ -7093,6 +7397,7 @@ Name             : Ricocheting Inflatable Pyrosaw (id=280168) [Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 1.5 (Haste multiplier)
 Azerite Power Id : 499
@@ -7123,6 +7428,7 @@ Name             : Auto-Self-Cauterizer (id=280172) [Scaling Spell (-8), Passive
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 1 seconds
 Proc Chance      : 101%
 Real PPM         : 1.5
@@ -7155,6 +7461,7 @@ Name             : Synaptic Spark Capacitor (id=280174) [Scaling Spell (-8), Spe
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 1.5
 Azerite Power Id : 500
@@ -7184,6 +7491,7 @@ Name             : Relational Normalization Gizmo (id=280178) [Scaling Spell (-1
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 10 seconds
 Proc Chance      : 101%
 Real PPM         : 1.5
@@ -7211,6 +7519,7 @@ Name             : Personal Absorb-o-Tron (id=280181) [Scaling Spell (-8), Passi
 Hotfixed         : Scaling Spell, Max Scaling Level, Internal Cooldown (60000 -> 20000), Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 20 seconds
 Proc Chance      : 101%
 Real PPM         : 1.5
@@ -7239,6 +7548,7 @@ Name             : Dagger in the Back (id=280284) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 479
 Triggered by     : Dagger in the Back (280286)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7260,6 +7570,7 @@ Name             : Thunderous Blast (id=280380) [Scaling Spell (-8), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 482
 Triggered by     : Thunderous Blast (280384)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7281,6 +7592,7 @@ Name             : Tidal Surge (id=280402) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Frost
+Spell Type       : None
 Azerite Power Id : 478
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7299,6 +7611,7 @@ Name             : Blood Rite (id=280407) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 480
 Triggered by     : Blood Rite (280409)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7318,6 +7631,7 @@ Name             : Incite the Pack (id=280410) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 481
 Triggered by     : Incite the Pack (280412), Incite the Pack (280413)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7341,6 +7655,7 @@ Name             : Swirling Sands (id=280429) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 196
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7363,6 +7678,7 @@ Name             : Archive of the Titans (id=280555) [Scaling Spell (-1), Passiv
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 483
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7383,6 +7699,7 @@ Name             : Laser Matrix (id=280559) [Scaling Spell (-8), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 485
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7405,6 +7722,7 @@ Name             : Glory in Battle (id=280577) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 486
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7426,6 +7744,7 @@ Name             : Retaliatory Fury (id=280579) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 487
 Triggered by     : Retaliatory Fury (280787), Retaliatory Fury (280788)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7448,6 +7767,7 @@ Name             : Combined Might (id=280580) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 490
 Triggered by     : Might of the Orcs (280841)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7469,6 +7789,7 @@ Name             : Collective Will (id=280581) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 491
 Triggered by     : Collective Will (280830)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7490,6 +7811,7 @@ Name             : Battlefield Focus (id=280582) [Scaling Spell (-8), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 488
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7512,6 +7834,7 @@ Name             : Sylvanas' Resolve (id=280598) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 489
 Triggered by     : Sylvanas' Resolve (280809)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7533,6 +7856,7 @@ Name             : Liberator's Might (id=280623) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 492
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7554,6 +7878,7 @@ Name             : Last Gift (id=280624) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 493
 Triggered by     : Last Gift (280861), Last Gift (280862)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7576,6 +7901,7 @@ Name             : Stronger Together (id=280625) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 496
 Triggered by     : Strength of the Humans (280866)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7597,6 +7923,7 @@ Name             : Stand As One (id=280626) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 497
 Triggered by     : Stand As One (280858)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7618,6 +7945,7 @@ Name             : Battlefield Precision (id=280627) [Scaling Spell (-8), Passiv
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 494
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7640,6 +7968,7 @@ Name             : Anduin's Dedication (id=280628) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 495
 Triggered by     : Anduin's Dedication (280876)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7660,6 +7989,7 @@ Description      : Your abilities have a chance to increase your $?a162700[Agili
 Name             : Champion of Azeroth (id=280710) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 82
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7677,6 +8007,7 @@ Description      : Your spells and abilities have a chance to increase all secon
 Name             : Leeching Poison (id=280716) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -7693,6 +8024,7 @@ Description      : Adds a Leeching Poison effect to your Deadly Poison and Wound
 Name             : Secret Technique (id=280719) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : Melee
 Resource         : 30 Energy (3) (id=191872)
 Resource         : 1 - 5 Combo Points (4) (id=191873)
 Range            : 5 yards
@@ -7733,6 +8065,7 @@ Variables        : $mult=${3}
 Name             : Secret Technique (id=280720) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Spell Type       : Melee
 Range            : 50000 yards
 Affecting spells : Master of Subtlety (31665 effect#1), Mastery: Executioner (76808 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Nightblade (195452 effect#6), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
 Family Flags     : 32, 54
@@ -7751,6 +8084,7 @@ Description      : $@spelldesc280719
 Name             : Unstable Catalyst (id=281514) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 504
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7769,6 +8103,7 @@ Name             : Tradewinds (id=281841) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 505
 Triggered by     : Tradewinds (281843), Tradewinds (281844)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 

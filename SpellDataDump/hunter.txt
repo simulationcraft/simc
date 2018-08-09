@@ -3,6 +3,7 @@ SimulationCraft 801-01 for World of Warcraft 8.0.1 bfa-BETA (wow build 26095)
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Ranged
 Spell Level      : 1
 Range            : 40 yards
 Velocity         : 60 yards/sec
@@ -25,6 +26,7 @@ Tooltip          : Firing at the target.
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 13
 Range            : 45 yards
 GCD              : 1.5 seconds
@@ -48,6 +50,7 @@ Variables        : $total=${$m1*5}
 Name             : Dual Wield (rank=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
+Spell Type       : Magic
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -64,6 +67,7 @@ Description      : Allows one-hand and off-hand weapons to be equipped in the of
 Name             : Disengage (id=781) [Spell Family (9)] 
 Class            : Beast Mastery Marksmanship Survival Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 8
 Range            : 50000 yards
 Cooldown         : 1 seconds
@@ -86,6 +90,7 @@ Description      : Leap backwards$?s109215[, clearing movement impairing effects
 Name             : Call Pet 1 (id=883) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
@@ -106,6 +111,7 @@ Description      : Summons your first pet to you.
 Name             : Revive Pet (id=982) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
+Spell Type       : Magic
 Resource         : 35 Focus (2) (id=106)
 Spell Level      : 1
 Cast Time        : 2 seconds
@@ -129,6 +135,7 @@ Description      : Revives your pet, returning it to life with $s1% of its base 
 Name             : Beast Lore (id=1462) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
+Spell Type       : None
 Spell Level      : 13
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -150,6 +157,7 @@ Tooltip          : Lore revealed.
 Name             : Track Beasts (id=1494) [Spell Family (9), Hidden] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 4
 Duration         : Aura (infinite)
 Category         : 1239
@@ -171,6 +179,7 @@ Tooltip          : Tracking Beasts.
 Name             : Tame Beast (id=1515) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
+Spell Type       : None
 Spell Level      : 13
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -199,6 +208,7 @@ Tooltip          : Taming a pet.
 Name             : Feed Pet (id=1539) 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Range            : 50000 yards
 Triggered by     : Feed Pet (6991)
 Attributes       : ........ ........ ........ ....x...   ........ ..x..... ........ ........ 
@@ -217,6 +227,7 @@ Description      : Feed your pet the selected item, instantly restoring $1539s1%
 Name             : Flare (id=1543) [Spell Family (9)] 
 Class            : Hunter
 School           : Arcane
+Spell Type       : None
 Spell Level      : 38
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -239,6 +250,7 @@ Description      : Exposes all hidden and invisible enemies within the targeted 
 Name             : Dismiss Pet (id=2641) 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 10
 Range            : 50000 yards
 Cast Time        : 3 seconds
@@ -260,6 +272,7 @@ Description      : Temporarily sends this pet away. You can call it back later.
 Name             : Multi-Shot (id=2643) [Spell Family (9)] 
 Class            : Beast Mastery Hunter
 School           : Physical
+Spell Type       : Ranged
 Resource         : 40 Focus (2) (id=11195)
 Spell Level      : 16
 Range            : 40 yards
@@ -287,6 +300,7 @@ Description      : Fires several missiles, hitting your current target and all e
 Name             : Freezing Trap (id=3355) [Spell Family (9)] 
 Class            : Hunter
 School           : Frost
+Spell Type       : Magic
 Spell Level      : 28
 Range            : 100 yards
 Duration         : 60 seconds
@@ -315,6 +329,7 @@ Tooltip          : Incapacitated.
 Name             : Concussive Shot (id=5116) [Spell Family (9)] 
 Class            : Beast Mastery Marksmanship Hunter
 School           : Physical
+Spell Type       : Ranged
 Spell Level      : 4
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -341,6 +356,7 @@ Tooltip          : Movement slowed by $s1%.
 Name             : Feign Death (id=5384) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 28
 Duration         : 360 seconds
 Cooldown         : 30 seconds
@@ -363,6 +379,7 @@ Tooltip          : Feigning death.
 Name             : Eagle Eye (id=6197) [Spell Family (9)] 
 Class            : Hunter
 School           : Arcane
+Spell Type       : Magic
 Spell Level      : 16
 Range            : 50000 yards
 GCD              : 1.5 seconds
@@ -386,6 +403,7 @@ Tooltip          : Vision is enhanced.
 Name             : Feed Pet (id=6991) 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 13
 Range            : 10 yards
 Cooldown         : 10 seconds
@@ -409,6 +427,7 @@ You may use the Beast Lore ability to identify what types of foods your pet will
 Name             : Tame Beast (id=13481) 
 Class            : Hunter
 School           : Nature
+Spell Type       : None
 Spell Level      : 10
 Range            : 30 yards
 Triggered by     : Tame Beast (1515)
@@ -428,6 +447,7 @@ Description      : Begins taming a beast to be your companion. If you lose the b
 Name             : Ice Trap (rank=Frost Trap) (id=13809) [Spell Family (9)] 
 Class            : Hunter
 School           : Frost
+Spell Type       : None
 Spell Level      : 46
 GCD              : 1.5 seconds
 Duration         : 60 seconds
@@ -449,6 +469,7 @@ Description      : Place a frost trap that creates an ice slick around itself fo
 Name             : Ice Trap (id=13810) [Spell Family (9)] 
 Class            : Hunter
 School           : Frost
+Spell Type       : None
 Spell Level      : 28
 Range            : 50000 yards
 Duration         : 30 seconds
@@ -467,6 +488,7 @@ Description      : Place a frost trap that creates an ice slick around itself fo
 Name             : Claw (rank=Basic Attack) (id=16827) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Melee
 Resource         : 25 Focus (2) (id=676)
 Spell Level      : 10
 Range            : 5 yards
@@ -494,6 +516,7 @@ $damage=${$<aotb>*$<ce>*$<spiked>*$<blink>*($RAP*0.333)*(1+$@versadmg)}
 Name             : Bite (rank=Basic Attack) (id=17253) [Spell Family (9)] 
 Class            : Hunter, Death Knight
 School           : Physical
+Spell Type       : Melee
 Resource         : 25 Focus (2) (id=706)
 Spell Level      : 10
 Range            : 5 yards
@@ -522,6 +545,7 @@ $damage=${$<aotb>*$<ce>*$<spiked>*$<blink>*($RAP*0.333)*(1+$@versadmg)}
 Name             : Aimed Shot (id=19434) [Spell Family (9)] 
 Class            : Marksmanship Hunter
 School           : Physical
+Spell Type       : Ranged
 Resource         : 30 Focus (2) (id=795)
 Spell Level      : 12
 Range            : 40 yards
@@ -555,6 +579,7 @@ Variables        : $mult=${($max(0,$min($pl-10,10))*8+130)/210}
 Name             : Bestial Wrath (id=19574) [Spell Family (9)] 
 Class            : Beast Mastery Hunter
 School           : Physical
+Spell Type       : Ranged
 Spell Level      : 20
 Range            : 100 yards
 GCD              : 1.5 seconds
@@ -590,6 +615,7 @@ Tooltip          : Damage dealt increased by $w1%.
 Name             : Intimidation (id=19577) [Spell Family (9)] 
 Class            : Beast Mastery Survival Hunter, Monk
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 26
 Range            : 100 yards
 GCD              : 1.5 seconds
@@ -619,6 +645,7 @@ Tooltip          : Stuns the target for $24394d.
 Name             : Track Demons (id=19878) [Spell Family (9), Hidden] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 4
 Duration         : Aura (infinite)
 Category         : 1239
@@ -640,6 +667,7 @@ Tooltip          : Tracking Demons.
 Name             : Track Dragonkin (id=19879) [Spell Family (9), Hidden] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 4
 Duration         : Aura (infinite)
 Category         : 1239
@@ -661,6 +689,7 @@ Tooltip          : Tracking Dragonkin.
 Name             : Track Elementals (id=19880) [Spell Family (9), Hidden] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 4
 Duration         : Aura (infinite)
 Category         : 1239
@@ -682,6 +711,7 @@ Tooltip          : Tracking Elementals.
 Name             : Track Giants (id=19882) [Spell Family (9), Hidden] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 4
 Duration         : Aura (infinite)
 Category         : 1239
@@ -703,6 +733,7 @@ Tooltip          : Tracking Giants.
 Name             : Track Humanoids (id=19883) [Spell Family (9), Hidden] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 4
 Duration         : Aura (infinite)
 Category         : 1239
@@ -724,6 +755,7 @@ Tooltip          : Tracking Humanoids.
 Name             : Track Undead (id=19884) [Spell Family (9), Hidden] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 4
 Duration         : Aura (infinite)
 Category         : 1239
@@ -746,6 +778,7 @@ Name             : Blood Fury (rank=Racial) (id=20572) [Scaling Spell (-1)]
 Class            : Warrior, Hunter, Rogue, Death Knight
 Race             : Orc (0x2)
 School           : Physical
+Spell Type       : Magic
 Spell Level      : 1
 Duration         : 15 seconds
 Cooldown         : 120 seconds
@@ -769,6 +802,7 @@ Name             : Command (rank=Racial Passive) (id=21563) [Spell Family (9), P
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Orc (0x2)
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -785,6 +819,7 @@ Description      : Damage dealt by pets increased by $s1%.
 Name             : Intimidation (id=24394) 
 Class            : Hunter, Monk
 School           : Physical
+Spell Type       : Magic
 Range            : 100 yards
 Duration         : 5 seconds
 Proc Chance      : 101%
@@ -805,6 +840,7 @@ Tooltip          : Stunned.
 Name             : Bloody Screech (rank=Special Ability) (id=24423) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 5 yards
 Cooldown         : 6 seconds
@@ -830,6 +866,7 @@ Grievously wounds the target, reducing the effectiveness of any healing received
 Name             : Prowl (rank=Bonus Ability) (id=24450) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 20
 Duration         : Aura (infinite)
 Cooldown         : 10 seconds
@@ -864,6 +901,7 @@ Movement speed slowed by $s2%.
 Name             : Strength (id=27973) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Demon Hunter
 School           : Physical
+Spell Type       : None
 Duration         : Aura (infinite)
 Azerite Power Id : 6
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -882,6 +920,7 @@ Name             : Gift of the Naaru (rank=Racial) (id=28880) [Spell Family (4)]
 Class            : Warrior, Paladin, Hunter, Priest, Death Knight, Shaman, Mage, Monk
 Race             : Draenei (0x400)
 School           : Holy
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 Duration         : 5 seconds
@@ -907,6 +946,7 @@ Tooltip          : Healing $/5;s2% every $t1 seconds.
 Name             : Kill Command (id=34026) [Scaling Spell (4), Spell Family (9)] 
 Class            : Beast Mastery Hunter
 School           : Physical
+Spell Type       : None
 Resource         : 30 Focus (2) (id=1470)
 Spell Level      : 10
 Range            : 50 yards
@@ -935,6 +975,7 @@ $damage=${$83381m1+($RAP*0.6)*$<bmMastery>*$<lowNerf>*(1+$@versadmg)}
 Name             : Misdirection (id=34477) [Spell Family (9)] 
 Class            : Beast Mastery Marksmanship Survival Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 42
 Range            : 100 yards
 Duration         : 8 seconds
@@ -957,6 +998,7 @@ Tooltip          : Threat redirected from Hunter.
 Name             : Warp Time (rank=Special Ability) (id=35346) [Spell Family (9)] 
 Class            : Hunter
 School           : Arcane
+Spell Type       : Magic
 Spell Level      : 20
 Range            : 5 yards
 Duration         : 6 seconds
@@ -979,6 +1021,7 @@ Tooltip          : Movement slowed by $s1%.
 Name             : Agility 20 (id=41695) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 7
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -996,6 +1039,7 @@ Description      : Increases Agility by $s1.
 Name             : Smack (rank=Basic Attack) (id=49966) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Melee
 Resource         : 25 Focus (2) (id=2269)
 Spell Level      : 10
 Range            : 5 yards
@@ -1023,6 +1067,7 @@ $damage=${$<aotb>*$<ce>*$<spiked>*$<blink>*($RAP*0.333)*(1+$@versadmg)}
 Name             : Pin (rank=Special Ability) (id=50245) [Scaling Spell (-1), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 20
 Range            : 5 yards
 Duration         : 6 seconds
@@ -1050,6 +1095,7 @@ Tooltip          : Pinned in place.
 Name             : Dust Cloud (rank=Special Ability) (id=50285) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 20
 Range            : 5 yards
 Duration         : 6 seconds
@@ -1072,6 +1118,7 @@ Tooltip          : Movement slowed by $s1%.
 Name             : Ankle Crack (rank=Special Ability) (id=50433) [Scaling Spell (-1), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 20
 Range            : 5 yards
 Duration         : 6 seconds
@@ -1095,6 +1142,7 @@ Tooltip          : Movement speed reduced by $s1%.
 Name             : Feed Pet - Visual (id=51284) 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 10
 Range            : 10 yards
 Velocity         : 10 yards/sec
@@ -1113,6 +1161,7 @@ Effects          :
 Name             : Spiked Collar (id=53184) [Spell Family (9), Passive] 
 Class            : Hunter, Death Knight
 School           : Physical
+Spell Type       : None
 Range            : 5 yards
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1134,6 +1183,7 @@ Description      : Increases the damage done by your pet's Basic Attacks by $s1%
 Name             : Chimaera Shot (id=53209) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
+Spell Type       : Ranged
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
@@ -1158,6 +1208,7 @@ Description      : A two-headed shot that hits your primary target and another n
 Name             : Exotic Beasts (id=53270) [Spell Family (9), Passive] 
 Class            : Beast Mastery Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 65
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1175,6 +1226,7 @@ Description      : You master the art of beast training, teaching you the abilit
 Name             : Master's Call (rank=Cunning Ability) (id=53271) [Spell Family (9)] 
 Class            : Cunning Hunter Pet
 School           : Physical
+Spell Type       : None
 Spell Level      : 74
 Range            : 40 yards
 Cooldown         : 45 seconds
@@ -1196,6 +1248,7 @@ Description      : Your pet removes all root and movement impairing effects from
 Name             : Master's Call (id=54216) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Range            : 40 yards
 Duration         : 4 seconds
@@ -1220,6 +1273,7 @@ Tooltip          : Immune to root and movement impairing effects.
 Name             : Frost Breath (rank=Special Ability) (id=54644) [Spell Family (9)] 
 Class            : Hunter
 School           : Froststorm
+Spell Type       : Magic
 Spell Level      : 20
 Range            : 30 yards
 Duration         : 6 seconds
@@ -1247,6 +1301,7 @@ Tooltip          : Movement speed reduced by $s1%.
 Name             : Monstrous Bite (rank=Special Ability) (id=54680) [Scaling Spell (-1), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 20
 Range            : 5 yards
 Cooldown         : 8 seconds
@@ -1271,6 +1326,7 @@ Tooltip          : Healing effects received reduced by $w1%.
 Name             : Froststorm Breath (id=54689) [Spell Family (9)] 
 Class            : Hunter
 School           : Frost
+Spell Type       : None
 Spell Level      : 1
 Range            : 30 yards
 Triggered by     : Frost Breath (54644)
@@ -1288,6 +1344,7 @@ Effects          :
 Name             : Increase Versatility 15 (id=55564) [Scaling Spell (-1), Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Max Scaling Level: 80
 Azerite Power Id : 1
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -1306,6 +1363,7 @@ Description      : Increases your Versatility by $s1.
 Name             : Kindred Spirits (id=56315) [Spell Family (9), Passive] 
 Class            : Beast Mastery Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 44
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1327,6 +1385,7 @@ Description      : Increases your maximum Focus and your pet's maximum Focus by 
 Name             : Steady Shot (id=56641) [Spell Family (9)] 
 Class            : Marksmanship Hunter
 School           : Physical
+Spell Type       : Ranged
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.75 seconds
@@ -1357,6 +1416,7 @@ Name             : Sated (id=57724)
 Class            : Hunter, Shaman, Mage
 Race             : Orc, Tauren, Troll, Goblin, Mag'har Orc, Highmountain Tauren (0xa0021a2)
 School           : Physical
+Spell Type       : None
 Range            : 50000 yards
 Duration         : 600 seconds
 Attributes       : ........ ........ ........ ..x..x..   ...x.x.x ........ .x...... ........ 
@@ -1376,6 +1436,7 @@ Tooltip          : Cannot benefit from Bloodlust or other similar effects.
 Name             : Glyph of Lesser Proportion (id=57870) [Spell Family (9), Passive, Hidden] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1392,6 +1453,7 @@ Description      : Slightly reduces the size of your pet.
 Name             : Lesser Proportion (id=58188) 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Cast Time        : 1.5 seconds
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1410,6 +1472,7 @@ Name             : Gift of the Naaru (rank=Racial) (id=59543) [Spell Family (9)]
 Class            : Hunter
 Race             : Draenei (0x400)
 School           : Holy
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 Duration         : 5 seconds
@@ -1435,6 +1498,7 @@ Tooltip          : Healing $/5;s2% every $t1 seconds.
 Name             : Aspect of the Chameleon (id=61648) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 40
 GCD              : 1.5 seconds
 Duration         : 60 seconds
@@ -1455,6 +1519,7 @@ Tooltip          : Untrackable.
 Name             : Basic Attack Focus Cost Modifier (id=62762) [Spell Family (17), Passive, Hidden] 
 Class            : Hunter, Death Knight
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1474,6 +1539,7 @@ Name             : Viciousness (rank=Racial Passive) (id=68975) [Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1492,6 +1558,7 @@ Name             : Aberration (rank=Racial Passive) (id=68976) [Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1511,6 +1578,7 @@ Name             : Darkflight (rank=Racial) (id=68992)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
+Spell Type       : None
 Duration         : 10 seconds
 Cooldown         : 120 seconds
 Attributes       : ........ ........ ........ ........   .....x.. ........ ........ ........ 
@@ -1532,6 +1600,7 @@ Tooltip          : True form activated, movement speed increased by an additiona
 Name             : Mastery: Master of Beasts (id=76657) [Spell Family (9), Passive] 
 Class            : Beast Mastery Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 78
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1556,6 +1625,7 @@ Name             : Arcane Torrent (rank=Racial) (id=80483)
 Class            : Hunter
 Race             : Blood Elf (0x200)
 School           : Arcane
+Spell Type       : Magic
 GCD              : 1.5 seconds
 Cooldown         : 90 seconds
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
@@ -1575,6 +1645,7 @@ Description      : Remove $s1 beneficial effect from all enemies within $A1 yard
 Name             : Call Pet 2 (id=83242) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 13
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
@@ -1595,6 +1666,7 @@ Description      : Summons your second pet to you.
 Name             : Call Pet 3 (id=83243) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 34
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
@@ -1615,6 +1687,7 @@ Description      : Summons your third pet to you.
 Name             : Call Pet 4 (id=83244) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 57
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
@@ -1635,6 +1708,7 @@ Description      : Summons your fourth pet to you.
 Name             : Call Pet 5 (id=83245) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 80
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
@@ -1655,6 +1729,7 @@ Description      : Summons your fifth pet to you.
 Name             : Kill Command (id=83381) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 100 yards
 Affecting spells : Roar of the Seven Lions (207318 effect#1), Bestial Rage (246116 effect#1), Item - Hunter T21 Beast Mastery 2P Bonus (251755 effect#1), Rotting Jaws (264195 effect#1)
@@ -1674,6 +1749,7 @@ Description      : $@spelldesc34026
 Name             : Mail Specialization (rank=Passive) (id=86538) [Passive, Hidden] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1690,6 +1766,7 @@ Description      : Increases your Agility by $s1% while wearing only Mail armor.
 Name             : Spirit Walk (rank=Bonus Ability) (id=90328) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 20
 Duration         : Aura (infinite)
 Cooldown         : 10 seconds
@@ -1724,6 +1801,7 @@ Movement speed slowed by $s2%.
 Name             : Play (rank=Bonus Ability) (id=90347) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 20
 GCD              : 1.5 seconds
 Duration         : 15 seconds
@@ -1746,6 +1824,7 @@ Tooltip          : "When you're the best of friends..."
 Name             : Spirit Mend (rank=Exotic Ability) (id=90361) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Nature
+Spell Type       : Magic
 Resource         : 5 Focus (2) (id=4344)
 Spell Level      : 20
 Range            : 25 yards
@@ -1772,6 +1851,7 @@ Tooltip          : Heals $w2 every $t2 sec for $d.
 Name             : Item - Proc Mastery (id=92322) [Spell Family (10), Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 100 seconds
 Proc Chance      : 10%
 Azerite Power Id : 8
@@ -1793,6 +1873,7 @@ Description      : Your harmful spells have a chance to grant $92320s1 mastery f
 Name             : Froststorm Breath (rank=Exotic Ability) (id=92380) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Froststorm
+Spell Type       : Melee
 Resource         : 10 Focus (2) and 5 Focus (2) per tick (id=4257)
 Spell Level      : 20
 Duration         : 8 seconds
@@ -1817,6 +1898,7 @@ $aps=${$RAP}
 Name             : Hunter Pet Exotic Marker (DND) (id=93273) [Passive, Hidden] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx x....... ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1832,6 +1914,7 @@ Effects          :
 Name             : Control Pet (rank=Passive) (id=93321) [Passive] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1849,6 +1932,7 @@ Description      : Allows you to give commands to control your pet.
 Name             : Control Pet (rank=Passive) (id=93322) [Hidden] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Attributes       : .......x x....... ........ ........   ........ ........ ........ .......x 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1866,6 +1950,7 @@ Description      : Allows you to give commands to control your pet.
 Name             : Burrow Attack (rank=Exotic Ability) (id=93433) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Nature
+Spell Type       : Magic
 Resource         : 10 Focus (2) and 5 Focus (2) per tick (id=4304)
 Spell Level      : 20
 Duration         : 8 seconds
@@ -1891,6 +1976,7 @@ $damage= ${($95714m1+(($RAP*0.60)*0.096))*8*(1+$@versadmg)*$<bmMastery>}
 Name             : Rest (rank=Bonus Ability) (id=94019) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 20
 GCD              : 1.5 seconds
 Duration         : 12 seconds
@@ -1915,6 +2001,7 @@ Tooltip          : Zzzzzz...
 Name             : Trick (rank=Bonus Ability) (id=94022) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 20
 GCD              : 1.5 seconds
 Affecting spells : Aspect of the Beast (191384 effect#1), 
@@ -1936,6 +2023,7 @@ Name             : Altered Form (rank=Racial Passive) (id=94293) [Passive, Hidde
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1952,6 +2040,7 @@ Description      : Enables Worgens to switch between human and Worgan forms
 Name             : Burrow Attack (rank=Exotic Ability) (id=95714) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 20
 Affecting spells : Aspect of the Beast (191384 effect#1), 
 Triggered by     : Burrow Attack (93433)
@@ -1973,6 +2062,7 @@ $damage= ${($95714m1+(($RAP*0.60)*0.096))*8*(1+$@versadmg)*$<bmMastery>}
 Name             : Froststorm Breath (rank=Exotic Ability) (id=95725) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Froststorm
+Spell Type       : Melee
 Spell Level      : 20
 Affecting spells : Aspect of the Beast (191384 effect#1), 
 Triggered by     : Froststorm Breath (92380)
@@ -1993,6 +2083,7 @@ Description      : $@spelldesc92380
 Name             : Posthaste (id=109215) [Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2009,6 +2100,7 @@ Description      : Disengage also frees you from all movement impairing effects 
 Name             : Binding Shot (id=109248) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
+Spell Type       : None
 Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
@@ -2033,6 +2125,7 @@ Description      : Fires a magical projectile, tethering the enemy and any other
 Name             : Narrow Escape (id=109298) [Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. ........ ........ ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2049,6 +2142,7 @@ Description      : Disengage also activates a web trap which immobilizes all tar
 Name             : Exhilaration (id=109304) [Spell Family (9)] 
 Class            : Beast Mastery Marksmanship Survival Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 24
 Range            : 45 yards
 GCD              : 1.5 seconds
@@ -2070,6 +2164,7 @@ Description      : Heals you for $s1%$?a231546&!a155228[ and your pet for $12859
 Name             : Mortal Wounds (id=115804) 
 Class            : Warrior, Hunter, Monk
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 10 seconds
 Proc Chance      : 101%
@@ -2091,6 +2186,7 @@ Tooltip          : Healing effects received reduced by $w1%.
 Name             : Narrow Escape (id=115928) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -2109,6 +2205,7 @@ Tooltip          : Webbed.
 Name             : Beast Cleave (id=115939) [Spell Family (9), Passive] 
 Class            : Beast Mastery Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 50
 Family Flags     : 111
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -2127,6 +2224,7 @@ Description      : After you Multi-Shot, your pet's melee attacks also strike al
 Name             : Binding Shot (id=117526) [Spell Family (9)] 
 Class            : Hunter
 School           : Arcane
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 5 seconds
@@ -2151,6 +2249,7 @@ Tooltip          : Stunned.
 Name             : Beast Cleave (id=118455) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 10
 Range            : 50000 yards
 Duration         : 4 seconds
@@ -2173,6 +2272,7 @@ Tooltip          : Melee attacks also strike all other nearby enemy targets.
 Name             : Beast Cleave (id=118459) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Melee
 Range            : 5 yards
 Family Flags     : 111
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
@@ -2191,6 +2291,7 @@ Description      : Melee attacks also strike all other nearby enemies.
 Name             : Posthaste (id=118922) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 4 seconds
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -2209,6 +2310,7 @@ Tooltip          : Increased movement speed by $s1%.
 Name             : Barrage (id=120360) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Resource         : 60 Focus (2) (id=6464)
 Spell Level      : 1
 Range            : 40 yards
@@ -2235,6 +2337,7 @@ Variables        : $damageSec=${$120361sw2*10}
 Name             : Barrage (id=120361) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Ranged
 Spell Level      : 1
 Range            : 50 yards
 Velocity         : 45 yards/sec
@@ -2259,6 +2362,7 @@ Description      : $@spelldesc120360
 Name             : Dire Beast (id=120679) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
+Spell Type       : None
 Resource         : 25 Focus (2) (id=191709)
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -2283,6 +2387,7 @@ Description      : Summons a powerful wild beast that attacks the target and roa
 Name             : Glaive Toss (id=120761) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Ranged
 Duration         : 3 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ......x.   ........ .x...... ........ ........ 
@@ -2303,6 +2408,7 @@ Tooltip          : Movement speed slowed by $s2%.
 Name             : Glaive Toss (id=121414) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Ranged
 Duration         : 3 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ......x.   ........ .x...... ........ ........ 
@@ -2323,6 +2429,7 @@ Tooltip          : Movement speed slowed by $s2%.
 Name             : Fetch (id=125050) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 40
 Range            : 50 yards
 Cast Time        : 0.1 seconds
@@ -2343,6 +2450,7 @@ Description      : Command your pet to retrieve the loot from a nearby corpse wi
 Name             : Fireworks (id=127933) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 40
 Range            : 40 yards
 Cast Time        : 2.5 seconds
@@ -2363,6 +2471,7 @@ Description      : Launch fireworks from your gun, bow or crossbow.
 Name             : Exhilaration (id=128594) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Range            : 50000 yards
 Cooldown         : 120 seconds
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -2381,6 +2490,7 @@ Description      : $@spelldesc109304
 Name             : Blink Strikes (id=130392) [Spell Family (9), Passive] 
 Class            : Hunter, Death Knight
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -2409,6 +2519,7 @@ Description      : Your pet's Basic Attack deals $s1% increased damage, can now 
 Name             : A Murder of Crows (id=131894) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Resource         : 30 Focus (2) (id=7818)
 Spell Level      : 1
 Range            : 40 yards
@@ -2434,6 +2545,7 @@ Tooltip          : Under attack by a flock of crows.
 Name             : A Murder of Crows (id=131900) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Ranged
 Spell Level      : 1
 Range            : 100 yards
 Velocity         : 1.5 yards/sec
@@ -2455,6 +2567,7 @@ Description      : Deals $s1 physical damage.
 Name             : Flare (id=132950) [Spell Family (9)] 
 Class            : Hunter
 School           : Arcane
+Spell Type       : None
 Spell Level      : 38
 Range            : 50000 yards
 Duration         : 20 seconds
@@ -2473,6 +2586,7 @@ Effects          :
 Name             : Tar Trap (id=135299) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 28
 Range            : 50000 yards
 Duration         : 39 seconds
@@ -2494,6 +2608,7 @@ Tooltip          : Movement speed slowed by $s1%.
 Name             : Narrow Escape (id=136634) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 8 seconds
@@ -2517,6 +2632,7 @@ Tooltip          : Webbed.
 Name             : Hunter (id=137014) [Spell Family (9), Passive, Hidden] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2586,6 +2702,7 @@ Effects          :
 Name             : Beast Mastery Hunter (id=137015) [Spell Family (9), Passive, Hidden] 
 Class            : Beast Mastery Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2629,6 +2746,7 @@ Effects          :
 Name             : Marksmanship Hunter (id=137016) [Spell Family (9), Passive, Hidden] 
 Class            : Marksmanship Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ..x.x.x. x...x... x.x..... ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, AOE Hostile Spell, Hostile Spell, Periodic
@@ -2696,6 +2814,7 @@ Effects          :
 Name             : Survival Hunter (id=137017) [Spell Family (9), Passive, Hidden] 
 Class            : Survival Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2743,6 +2862,7 @@ Effects          :
 Name             : Ancient Zandalari Knowledge (id=138430) [Hidden] 
 Class            : Hunter
 School           : Nature
+Spell Type       : None
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .......x .......x ........ ........   ........ ........ ........ ........ 
@@ -2759,6 +2879,7 @@ Description      : Learn the ancient Zandalari secrets of taming Direhorns.
 Name             : Counter Shot (id=147362) [Spell Family (9)] 
 Class            : Beast Mastery Marksmanship Hunter
 School           : Physical
+Spell Type       : Ranged
 Spell Level      : 32
 Range            : 40 yards
 Duration         : 3 seconds
@@ -2782,6 +2903,7 @@ Description      : Interrupts spellcasting, preventing any spell in that school 
 Name             : Adaptation (id=152244) [Passive] 
 Class            : Hunter, Death Knight, Shaman
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2807,6 +2929,7 @@ Name             : Lone Wolf (id=155228) [Spell Family (9), Passive]
 Hotfixed         : Attributes
 Class            : Marksmanship Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 10
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -2832,6 +2955,7 @@ Description      : Increases your damage by $s3% when you do not have an active 
 Name             : Combat Experience (id=156843) [Spell Family (9), Passive] 
 Class            : Hunter, Death Knight, Shaman
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ....x.x. x....... ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2852,6 +2976,7 @@ Description      : Increases all damage done by your pet by $s2%.
 Name             : Critical Strikes (rank=Passive) (id=157443) [Passive] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2869,6 +2994,7 @@ Description      : Increases your chance to critically strike by $s1%.
 Name             : Molten Hide (rank=Special Ability) (id=159786) 
 Class            : Hunter
 School           : Fire
+Spell Type       : Magic
 Spell Level      : 74
 Range            : 30 yards
 Duration         : 10 seconds
@@ -2892,6 +3018,7 @@ Tooltip          : Causes $160124s1 Fire damage to attackers.
 Name             : Molten Hide (rank=Exotic Ability) (id=159788) [Passive] 
 Class            : Hunter
 School           : Fire
+Spell Type       : None
 Spell Level      : 74
 Range            : 30 yards
 Internal Cooldown: 60 seconds
@@ -2916,6 +3043,7 @@ Description      : When the core hound takes melee attacks, it infuses its hide 
 Name             : Feast (rank=Exotic Ability) (id=159953) 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 60 seconds
@@ -2934,6 +3062,7 @@ Description      : The devilsaur feasts on a nearby Humanoid or Beast corpse wit
 Name             : Feast (id=159954) 
 Class            : Hunter
 School           : Physical
+Spell Type       : Melee
 Duration         : 6 seconds
 Attributes       : ........ ........ ........ ........   ......x. ........ ........ .....x.. 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
@@ -2956,6 +3085,7 @@ Tooltip          : Regenerate $s1% of total health and focus every $t1 seconds.
 Name             : Agile Reflexes (rank=Special Ability) (id=160011) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 8
 Duration         : 20 seconds
 Cooldown         : 90 seconds
@@ -2977,6 +3107,7 @@ Tooltip          : Dodge chance increased by $s1%.
 Name             : Thick Hide (rank=Special Ability) (id=160057) [Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 20
 Range            : 100 yards
 Internal Cooldown: 120 seconds
@@ -3007,6 +3138,7 @@ This effect can only occur once every $s3 sec.
 Name             : Thick Hide (rank=Special Ability) (id=160058) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 20
 Duration         : 15 seconds
 Affecting spells : Aspect of the Beast (191384 effect#1), 
@@ -3028,6 +3160,7 @@ Tooltip          : Damage taken reduced by $s1%.
 Name             : Deadly Sting (rank=Special Ability) (id=160060) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 5 yards
 Cooldown         : 6 seconds
@@ -3053,6 +3186,7 @@ Grievously wounds the target, reducing the effectiveness of any healing received
 Name             : Tendon Rip (rank=Special Ability) (id=160065) [Scaling Spell (-1), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 20
 Range            : 5 yards
 Duration         : 6 seconds
@@ -3076,6 +3210,7 @@ Tooltip          : Movement speed reduced by $s1%.
 Name             : Web Spray (rank=Special Ability) (id=160067) [Scaling Spell (-1), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 20
 Range            : 5 yards
 Duration         : 6 seconds
@@ -3099,6 +3234,7 @@ Tooltip          : Movement speed reduced by $s1%.
 Name             : Molten Hide (rank=Special Ability) (id=160124) [Spell Family (9)] 
 Class            : Hunter
 School           : Fire
+Spell Type       : Magic
 Spell Level      : 74
 Range            : 30 yards
 Affecting spells : Aspect of the Beast (191384 effect#1), 
@@ -3119,6 +3255,7 @@ Description      : $@spelldesc159788
 Name             : Steel Trap (id=162480) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Ranged
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 20 seconds
@@ -3142,6 +3279,7 @@ Tooltip          : Immobilized.
 Name             : Steel Trap (id=162487) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Ranged
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 20 seconds
@@ -3165,6 +3303,7 @@ Tooltip          : Bleeding for $w1 damage every $t1 seconds.
 Name             : Steel Trap (id=162488) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -3189,6 +3328,7 @@ Damage other than Steel Trap may break the immobilization effect. Trap will exis
 Name             : Steel Trap (id=162496) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 60 seconds
@@ -3210,6 +3350,7 @@ Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden
 Class            : Beast Mastery Marksmanship Survival Assassination Outlaw Subtlety Enhancement Windwalker Feral Havoc Hunter, Rogue, Shaman, Monk, Druid, Demon Hunter
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3229,6 +3370,7 @@ Effects          :
 Name             : Pet Active (id=166615) [Spell Family (9), Hidden] 
 Class            : Hunter
 School           : Nature
+Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
 Duration         : Aura (infinite)
@@ -3247,6 +3389,7 @@ Effects          :
 Name             : Chimaera Shot (id=171454) [Spell Family (9)] 
 Class            : Hunter
 School           : Frost
+Spell Type       : Ranged
 Spell Level      : 1
 Range            : 40 yards
 Velocity         : 40 yards/sec
@@ -3272,6 +3415,7 @@ Description      : $@spelldesc53209
 Name             : Chimaera Shot (id=171457) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
+Spell Type       : Ranged
 Spell Level      : 1
 Range            : 40 yards
 Velocity         : 40 yards/sec
@@ -3297,6 +3441,7 @@ Description      : $@spelldesc53209
 Name             : Stopping Power (id=175686) 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 GCD              : 1.5 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3314,6 +3459,7 @@ Description      : Placeholder for level 75 talented active ability.
 Name             : Arcane Shot (id=185358) [Scaling Spell (-1), Spell Family (9)] 
 Class            : Marksmanship Hunter
 School           : Arcane
+Spell Type       : Ranged
 Resource         : 15 Focus (2) (id=12545)
 Spell Level      : 10
 Range            : 40 yards
@@ -3339,6 +3485,7 @@ Variables        : $mult=${($max(0,$min($pl-10,10))*5+80)/130}
 Name             : Wild Call (id=185789) [Spell Family (9), Passive] 
 Class            : Beast Mastery Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 20
 Proc Chance      : 20%
 Proc Flags       : ......x. ........ ........ ........ 
@@ -3363,6 +3510,7 @@ Description      : Your auto shot critical strikes have a $H% chance to reset th
 Name             : Wild Call (id=185791) [Spell Family (9), Hidden] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 20
 Duration         : 4 seconds
 Affecting spells : One with the Pack (199528 effect#1)
@@ -3385,6 +3533,7 @@ Tooltip          : The cooldown of $?s217200[Barbed Shot][Dire Beast] is reset.
 Name             : Bestial Wrath (id=186254) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 20
 Range            : 100 yards
 Duration         : 15 seconds
@@ -3414,6 +3563,7 @@ Tooltip          : Damage dealt increased by $w1%.
 Name             : Aspect of the Cheetah (id=186257) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 22
 Duration         : 3 seconds
 Cooldown         : 180 seconds
@@ -3436,6 +3586,7 @@ Tooltip          : Movement speed increased by $w1%.
 Name             : Aspect of the Cheetah (id=186258) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 5
 Duration         : 9 seconds
 Affecting spells : Call of the Wild (206332 effect#1), Embrace of the Aspects (225092 effect#1), Born To Be Wild (266921 effect#1)
@@ -3457,6 +3608,7 @@ Tooltip          : Movement speed increased by $w1%.
 Name             : Aspect of the Turtle (id=186265) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 70
 Duration         : 8 seconds
 Cooldown         : 180 seconds
@@ -3493,6 +3645,7 @@ Damage taken reduced by $w4%.
 Name             : Raptor Strike (id=186270) [Spell Family (9)] 
 Class            : Survival Hunter
 School           : Physical
+Spell Type       : Melee
 Resource         : 30 Focus (2) (id=10353)
 Spell Level      : 1
 Range            : 5 yards
@@ -3517,6 +3670,7 @@ Description      : A vicious slash dealing $s1 Physical damage.
 Name             : Aspect of the Eagle (id=186289) [Spell Family (9)] 
 Class            : Survival Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 54
 Range            : 100 yards
 Duration         : 15 seconds
@@ -3544,6 +3698,7 @@ Tooltip          : The range of $?s259387[Mongoose Bite][Raptor Strike] is incre
 Name             : Bursting Shot (id=186387) [Spell Family (9)] 
 Class            : Marksmanship Hunter
 School           : Physical
+Spell Type       : Ranged
 Resource         : 10 Focus (2) (id=10176)
 Spell Level      : 26
 GCD              : 1.5 seconds
@@ -3574,6 +3729,7 @@ Tooltip          : Movement speed reduced by $s4%.
 Name             : Freezing Trap (id=187650) [Spell Family (9)] 
 Class            : Beast Mastery Marksmanship Survival Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 18
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -3597,6 +3753,7 @@ Description      : Hurls a frost trap to the target location that incapacitates 
 Name             : Freezing Trap (id=187651) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 28
 Range            : 100 yards
 Duration         : 60 seconds
@@ -3619,6 +3776,7 @@ Description      : $@spelldesc187650
 Name             : Tar Trap (id=187698) [Spell Family (9)] 
 Class            : Beast Mastery Marksmanship Survival Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 36
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -3641,6 +3799,7 @@ Description      : Hurls a tar trap to the target location that creates a $18769
 Name             : Tar Trap (rank=Frost) (id=187699) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 46
 Range            : 100 yards
 Duration         : 60 seconds
@@ -3665,6 +3824,7 @@ Description      : $@spelldesc187698
 Name             : Muzzle (id=187707) [Spell Family (9)] 
 Class            : Survival Hunter
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 32
 Range            : 5 yards
 Duration         : 3 seconds
@@ -3687,6 +3847,7 @@ Description      : Interrupts spellcasting, preventing any spell in that school 
 Name             : Carve (id=187708) [Spell Family (9)] 
 Class            : Survival Hunter
 School           : Physical
+Spell Type       : Melee
 Resource         : 35 Focus (2) (id=10219)
 Spell Level      : 28
 Range            : 8 yards
@@ -3717,6 +3878,7 @@ Variables        : $cdr=${$s2/1000}
 Name             : Harpoon (id=190925) [Spell Family (9)] 
 Class            : Survival Hunter
 School           : Physical
+Spell Type       : Ranged
 Spell Level      : 14
 Range            : 8 - 30 yards
 GCD              : 0.5 seconds
@@ -3743,6 +3905,7 @@ Description      : Hurls a harpoon at an enemy, rooting them in place for $19092
 Name             : Harpoon (id=190927) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Ranged
 Spell Level      : 5
 Range            : 5 - 50000 yards
 GCD              : 1.5 seconds
@@ -3767,6 +3930,7 @@ Tooltip          : Rooted.
 Name             : Aspect of the Beast (id=191384) [Spell Family (9), Passive] 
 Class            : Hunter, Death Knight
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Range            : 50000 yards
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -3801,6 +3965,7 @@ Increases the effectiveness of your pet's Predator's Thirst, Endurance Training,
 Name             : Cobra Shot (id=193455) [Spell Family (9)] 
 Class            : Beast Mastery Hunter
 School           : Physical
+Spell Type       : Ranged
 Resource         : 45 Focus (2) (id=10443)
 Spell Level      : 1
 Range            : 40 yards
@@ -3831,6 +3996,7 @@ Variables        : $mult=${($min($pl-1,19)*12+112)/340}
 Name             : Mastery: Sniper Training (rank=Mastery) (id=193468) [Spell Family (9), Passive] 
 Class            : Marksmanship Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 78
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3864,6 +4030,7 @@ Focus spending abilites deal $s2% increased damage.
 Name             : Trueshot (id=193526) [Spell Family (9)] 
 Class            : Marksmanship Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 40
 GCD              : 1.5 seconds
 Duration         : 15 seconds
@@ -3888,6 +4055,7 @@ Tooltip          : Haste increased by $s1% for $d.
 Name             : Aspect of the Wild (id=193530) [Spell Family (9)] 
 Class            : Beast Mastery Hunter
 School           : Physical
+Spell Type       : Ranged
 Spell Level      : 40
 Range            : 100 yards
 GCD              : 1.3 seconds
@@ -3925,6 +4093,7 @@ Critical Strike chance increased by $s1%.
 Name             : Scent of Blood (id=193532) [Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3945,6 +4114,7 @@ Description      : Barbed Shot generates $s2 additional Focus over its duration.
 Name             : Steady Focus (id=193533) [Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Proc Chance      : 100%
 Proc Flags       : ....x... x.x.x.x. x....... ........ 
@@ -3965,6 +4135,7 @@ Description      : Using Steady Shot reduces the cast time of Steady Shot by $19
 Name             : Steady Focus (id=193534) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Duration         : 12 seconds
 Stacks           : 2 maximum
 Proc Chance      : 101%
@@ -3990,6 +4161,7 @@ Tooltip          : Cast time of Steady Shot reduced by $s1%.
 Name             : Spitting Cobra (id=194407) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 GCD              : 1.5 seconds
 Duration         : 20 seconds
 Cooldown         : 90 seconds
@@ -4015,6 +4187,7 @@ Tooltip          : Generating $s2 additional Focus every sec.
 Name             : Lock and Load (id=194594) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Duration         : 15 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
@@ -4048,6 +4221,7 @@ Tooltip          : Aimed Shot costs no Focus and is instant.
 Name             : Lock and Load (id=194595) [Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Proc Chance      : 5%
 Proc Flags       : ......x. x....... ........ ........ 
@@ -4069,6 +4243,7 @@ Description      : Your ranged auto attacks have a $194595h% chance to trigger L
 Name             : Wing Clip (id=195645) [Spell Family (9)] 
 Class            : Survival Hunter
 School           : Physical
+Spell Type       : Melee
 Resource         : 30 Focus (2) (id=10531)
 Spell Level      : 4
 Range            : 5 yards
@@ -4092,6 +4267,7 @@ Tooltip          : Movement speed reduced by $s1%.
 Name             : Piercing Shot (id=198670) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Ranged
 Resource         : 35 Focus (2) (id=10749)
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -4118,6 +4294,7 @@ Description      : A powerful shot which deals $sw3 Physical damage to the targe
 Name             : Camouflage (id=199483) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 60 seconds
@@ -4152,6 +4329,7 @@ Tooltip          : Stealthed.
 Name             : One with the Pack (id=199528) [Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4170,6 +4348,7 @@ Description      : Wild Call has a $s1% increased chance to reset the cooldown o
 Name             : Stomp (id=199530) [Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 106
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -4189,6 +4368,7 @@ Variables        : $damage=${($201754m1)*(1+$@versadmg)}
 Name             : Killer Cobra (id=199532) [Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ......x. x....... ........ ........ 
                  : White Ranged, Yellow Ranged
@@ -4208,6 +4388,7 @@ Description      : While Bestial Wrath is active, Cobra Shot resets the cooldown
 Name             : Disengage End (id=199558) [Spell Family (9), Hidden] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Triggered by     : Disengage (781)
 Attributes       : ....x..x ........ ........ ........   ........ ........ ........ ........ 
@@ -4226,6 +4407,7 @@ Tooltip          : Increased movement speed by $s1%.
 Name             : Trailblazer (id=199921) [Spell Family (9), Passive, Hidden] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ....x.x. x...x... x....... ........ 
                  : Yellow Melee, White Ranged, Yellow Ranged, AOE Hostile Spell, Hostile Spell
@@ -4246,6 +4428,7 @@ Name             : Activating Specialization (id=200749) [Hidden]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
+Spell Type       : None
 Range            : 50000 yards
 Cast Time        : 5 seconds
 Attributes       : .......x ........ ........ ....x...   ..xxx..x ........ .x...... ........ 
@@ -4265,6 +4448,7 @@ Tooltip          : Switch to your Primary Talent Specialization.
 Name             : Stampede (id=201430) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Magic
 Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 12 seconds
@@ -4288,6 +4472,7 @@ Description      : Summon a herd of stampeding animals from the wilds around you
 Name             : Stampede (id=201594) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Ranged
 Range            : 150 yards
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Mastery: Master of Beasts (76657 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), The Mantle of Command (247993 effect#2), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 106, 113
@@ -4307,6 +4492,7 @@ Description      : $@spelldesc201430
 Name             : Stomp (id=201754) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Melee
 Family Flags     : 6
 Attributes       : ....x... ........ ..x..... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4323,6 +4509,7 @@ Description      : $@spelldesc199530
 Name             : Fury of the Eagle (id=203413) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Melee
 Range            : 8 yards
 Triggered by     : Fury of the Eagle (203415)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4341,6 +4528,7 @@ Description      : $@spelldesc203415
 Name             : Fury of the Eagle (rank=Artifact) (id=203415) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Range            : 8 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
@@ -4361,6 +4549,7 @@ Description      : Furiously strikes all enemies in front of you, dealing ${$203
 Name             : Windburst (rank=Artifact) (id=204147) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Ranged
 Resource         : 20 Focus (2) (id=11233)
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -4385,6 +4574,7 @@ Description      : Focuses the power of Wind through |cFFFFCC99Thas'dorah|r, dea
 Name             : Chimaera Shot (id=204304) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
+Spell Type       : Ranged
 Spell Level      : 1
 Range            : 50000 yards
 Triggered by     : Chimaera Shot (171454), Chimaera Shot (171457)
@@ -4403,6 +4593,7 @@ Description      : $@spelldesc53209
 Name             : Windburst (id=204475) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Ranged
 Range            : 100 yards
 Velocity         : 50 yards/sec
 Duration         : 5 seconds
@@ -4422,6 +4613,7 @@ Tooltip          : Movement speed increased by $s3%.
 Name             : Windburst (id=204477) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Ranged
 Range            : 100 yards
 Velocity         : 50 yards/sec
 Duration         : 5 seconds
@@ -4441,6 +4633,7 @@ Tooltip          : Movement speed increased by $s3%.
 Name             : Mecha-Bond Imprint Matrix (id=205154) [Hidden] 
 Class            : Hunter
 School           : Nature
+Spell Type       : None
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .......x .......x ........ ........   ........ ........ ........ ........ 
@@ -4457,6 +4650,7 @@ Description      : Allows you to tame pets in the Mechanical family.
 Name             : Cobra Spit (id=206685) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
+Spell Type       : Ranged
 Spell Level      : 1
 Range            : 25 yards
 Cast Time        : 2 seconds
@@ -4476,6 +4670,7 @@ Description      : Deals poison damage to the target.
 Name             : Titan's Thunder (rank=Artifact) (id=207068) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 8 seconds
 Cooldown         : 60 seconds
@@ -4500,6 +4695,7 @@ $damage=${$83381m1+($RAP*0.6)*$<bmMastery>*$<lowNerf>*(1+$@versadmg)}
 Name             : Titan's Thunder (id=207081) [Spell Family (9), Passive, Hidden] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Triggered by     : Titan's Thunder (207068)
 Attributes       : ......xx ........ ........ .......x   ........ ........ ........ ....x... 
@@ -4518,6 +4714,7 @@ Description      : $@spelldesc207068
 Name             : Titan's Thunder (id=207094) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Velocity         : 45 yards/sec
 Duration         : 8 seconds
@@ -4538,6 +4735,7 @@ Tooltip          : Dealing bonus Nature damage to the target every $t sec for $d
 Name             : Titan's Thunder (id=207097) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
+Spell Type       : Magic
 Range            : 10 yards
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -4555,6 +4753,7 @@ Description      : $@spelldesc207068
 Name             : Play Dead (id=209997) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 40
 Range            : 100 yards
 Duration         : 360 seconds
@@ -4581,6 +4780,7 @@ Tooltip          : Playing Dead.
 Name             : Wake Up (id=210000) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 32
 Range            : 1000 yards
 Cooldown         : 30 seconds
@@ -4600,6 +4800,7 @@ Description      : Tell your pet to wake up.
 Name             : Explosive Shot (id=212431) [Spell Family (9)] 
 Class            : Hunter
 School           : Fire
+Spell Type       : Ranged
 Resource         : 20 Focus (2) (id=11773)
 Spell Level      : 1
 Range            : 40 yards
@@ -4632,6 +4833,7 @@ If you do not detonate Explosive Shot, $269850s1 Focus and some of the cooldown 
 Name             : Butchery (id=212436) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Melee
 Resource         : 30 Focus (2) (id=191496)
 Spell Level      : 1
 Range            : 8 yards
@@ -4662,6 +4864,7 @@ Variables        : $cdr=${$s2/1000}
 Name             : Explosive Shot (id=212680) [Spell Family (9)] 
 Class            : Hunter
 School           : Fire
+Spell Type       : Ranged
 Spell Level      : 1
 Range            : 100 yards
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Mastery: Sniper Training (193468 effect#2), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
@@ -4681,6 +4884,7 @@ Description      : $@spelldesc212431
 Name             : Barbed Shot (id=217200) [Spell Family (9)] 
 Class            : Beast Mastery Hunter
 School           : Physical
+Spell Type       : Ranged
 Spell Level      : 12
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -4712,6 +4916,7 @@ Tooltip          : Suffering $sw1 damage every $t1 sec.
 Name             : Titan's Thunder (id=218635) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
+Spell Type       : Melee
 Range            : 10 yards
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -4729,6 +4934,7 @@ Description      : $@spelldesc207068
 Name             : Bursting Shot (id=224729) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 4 seconds
@@ -4758,6 +4964,7 @@ Name             : Expansive Mind (rank=Racial Passive) (id=227057) [Passive]
 Class            : Hunter
 Race             : Gnome (0x40)
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4774,6 +4981,7 @@ Description      : Maximum focus increased by $s1%.
 Name             : Trailblazer (id=231390) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Duration         : Aura (infinite)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4792,6 +5000,7 @@ Tooltip          : Movement speed increased by $w1%.
 Name             : Exhilaration (rank=Rank 2) (id=231546) [Spell Family (9), Passive] 
 Class            : Beast Mastery Marksmanship Survival Hunter
 School           : Nature
+Spell Type       : None
 Spell Level      : 48
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4809,6 +5018,7 @@ Description      : Exhilaration also heals your pet for $128594s1% of maximum he
 Name             : Bestial Wrath (rank=Rank 2) (id=231548) [Spell Family (9), Passive] 
 Class            : Beast Mastery Hunter
 School           : Nature
+Spell Type       : None
 Spell Level      : 54
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4826,6 +5036,7 @@ Description      : Bestial Wrath's remaining cooldown is reduced by $19574s3 sec
 Name             : Disengage (rank=Rank 2) (id=231549) [Spell Family (9), Passive] 
 Class            : Beast Mastery Marksmanship Survival Hunter
 School           : Nature
+Spell Type       : None
 Spell Level      : 85
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4843,6 +5054,7 @@ Description      : Disengage's cooldown is reduced by ${$m1/-1000} sec.
 Name             : Harpoon (rank=Rank 2) (id=231550) [Spell Family (9), Passive] 
 Class            : Survival Hunter
 School           : Nature
+Spell Type       : None
 Spell Level      : 65
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4860,6 +5072,7 @@ Description      : The cooldown of Harpoon is reduced by ${$m1/-1000} sec.
 Name             : Hybrid Kinship (id=242155) [Hidden] 
 Class            : Hunter
 School           : Nature
+Spell Type       : None
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .......x .......x ........ ........   ........ ........ ........ ........ 
@@ -4876,6 +5089,7 @@ Description      : Learn the secrets of taming Feathermanes.
 Name             : Barbed Shot (id=246152) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 8 seconds
 Affecting spells : Scent of Blood (193532 effect#1), Dire Longevity (215911 effect#1)
@@ -4896,6 +5110,7 @@ Tooltip          : Generating ${$w1*$d/$t1} Focus over $d.
 Name             : Netherlight Fortification (id=250879) [Passive] 
 Class            : Hunter, Shaman
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 9
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4915,6 +5130,7 @@ Name             : Vindicaar Matrix Crystal (id=251463)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
+Spell Type       : None
 GCD              : 1.5 seconds
 Triggered by     : Vindicaar Matrix Crystal (255529)
 Attributes       : ........ ........ ........ ........   ...x...x ..x..... ........ ........ 
@@ -4933,6 +5149,7 @@ Name             : Vindicaar Matrix Crystal (id=255529) [Hidden]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
+Spell Type       : None
 Triggered by     : Activating Specialization (200749)
 Attributes       : .......x x....... .......x x..x.x..   ...x.x.x ..x..... ........ ........ 
                  : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ....x... 
@@ -4953,6 +5170,7 @@ Name             : Light's Judgment (rank=Racial) (id=255647) [Scaling Spell (-6
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
+Spell Type       : Magic
 Max Scaling Level: 120
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -4975,6 +5193,7 @@ Name             : Holy Resistance (rank=Racial Passive) (id=255651) [Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4992,6 +5211,7 @@ Name             : Light's Reckoning (rank=Racial Passive) (id=255652) [Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ .......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -5009,6 +5229,7 @@ Name             : Demonbane (rank=Racial Passive) (id=255653) [Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5026,6 +5247,7 @@ Name             : Light's Judgment (rank=Racial) (id=256893) [Scaling Spell (-6
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
+Spell Type       : Magic
 Max Scaling Level: 120
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -5048,6 +5270,7 @@ Name             : Light's Reckoning (rank=Racial Passive) (id=256896) [Scaling 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
+Spell Type       : Magic
 Max Scaling Level: 120
 Range            : 40 yards
 Triggered by     : Light's Reckoning (255652)
@@ -5071,6 +5294,7 @@ Heals $s2 to allies within $A1.
 Name             : Rapid Fire (id=257044) [Spell Family (9)] 
 Class            : Marksmanship Hunter
 School           : Physical
+Spell Type       : Ranged
 Spell Level      : 20
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -5100,6 +5324,7 @@ Usable while moving.
 Name             : Rapid Fire (id=257045) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Ranged
 Spell Level      : 3
 Range            : 40 yards
 Velocity         : 40 yards/sec
@@ -5123,6 +5348,7 @@ Name             : Hunter's Mark (id=257284) [Spell Family (9)]
 Hotfixed         : School (1 -> 8), Attributes
 Class            : Hunter
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 25
 Range            : 60 yards
 GCD              : 1.5 seconds
@@ -5152,6 +5378,7 @@ Can always be seen and tracked by the Hunter.
 Name             : Multi-Shot (id=257620) [Spell Family (9)] 
 Class            : Marksmanship Hunter
 School           : Physical
+Spell Type       : Ranged
 Resource         : 15 Focus (2) (id=12491)
 Spell Level      : 14
 Range            : 40 yards
@@ -5176,6 +5403,7 @@ Description      : Fires several missiles, hitting your current target and all e
 Name             : Trick Shots (id=257621) [Spell Family (9), Passive] 
 Class            : Marksmanship Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 50
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5199,6 +5427,7 @@ Description      : When Multi-Shot hits $s2 or more targets, your next Aimed Sho
 Name             : Trick Shots (id=257622) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Duration         : 20 seconds
 Proc Chance      : 101%
 Proc Flags       : ........ x....... ........ ........ 
@@ -5220,6 +5449,7 @@ Tooltip          : Your next Aimed Shot will ricochet and hit $257621s1 addition
 Name             : Venomous Bite (id=257891) [Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ........ x....... ........ ........ 
                  : Yellow Ranged
@@ -5239,6 +5469,7 @@ Description      : Cobra Shot reduces the cooldown of Bestial Wrath by ${$s1/10}
 Name             : Thrill of the Hunt (id=257944) [Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ........ x....... ........ ........ 
                  : Yellow Ranged
@@ -5258,6 +5489,7 @@ Description      : Barbed Shot increases your critical strike chance by $257946s
 Name             : Thrill of the Hunt (id=257946) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Duration         : 8 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
@@ -5280,6 +5512,7 @@ Tooltip          : Critical strike chance increased by $s1%.
 Name             : Kill Command (id=259277) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 8 seconds
@@ -5302,6 +5535,7 @@ Tooltip          : Bleeding for $w2 damage every $t2 sec.
 Name             : Check if part 2 quests have been accepted (DNT) (id=259381) [Hidden] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : .......x x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
                  : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ....x... 
                  : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
@@ -5317,6 +5551,7 @@ Effects          :
 Name             : Mongoose Bite (id=259387) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Melee
 Resource         : 30 Focus (2) (id=12526)
 Spell Level      : 1
 Range            : 5 yards
@@ -5342,6 +5577,7 @@ Increases the damage of Mongoose Bite by $259388s1% for $259388d, stacking up to
 Name             : Mongoose Fury (id=259388) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Duration         : 14 seconds
 Stacks           : 5 maximum
 Proc Chance      : 101%
@@ -5363,6 +5599,7 @@ Tooltip          : Mongoose Bite damage increased by $s1%.
 Name             : Chakrams (id=259391) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Ranged
 Resource         : 30 Focus (2) (id=191535)
 Spell Level      : 1
 Range            : 40 yards
@@ -5391,6 +5628,7 @@ Variables        : $damage=${$259396s1}
 Name             : Chakrams (id=259396) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Ranged
 Range            : 100 yards
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 55, 106
@@ -5409,6 +5647,7 @@ Description      : $@spelldesc259391
 Name             : Chakrams (id=259398) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Ranged
 Spell Level      : 14
 Range            : 100 yards
 Velocity         : 30 yards/sec
@@ -5432,6 +5671,7 @@ Description      : $@spelldesc259381
 Name             : Kill Command (id=259489) [Scaling Spell (-1), Spell Family (9)] 
 Class            : Survival Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 10
 Range            : 50 yards
 GCD              : 1.5 seconds
@@ -5467,6 +5707,7 @@ Variables        : $damage=${$ap*($s1/100)*(1+$@versadmg)}
 Name             : Serpent Sting (id=259491) [Spell Family (9)] 
 Class            : Survival Hunter
 School           : Nature
+Spell Type       : Ranged
 Resource         : 20 Focus (2) (id=12530)
 Spell Level      : 12
 Range            : 40 yards
@@ -5494,6 +5735,7 @@ Tooltip          : Suffering $w2 Nature damage every $t2 sec.$?a265428[ The Hunt
 Name             : Wildfire Bomb (id=259495) [Spell Family (9)] 
 Class            : Survival Hunter
 School           : Physical
+Spell Type       : Ranged
 Spell Level      : 20
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -5517,6 +5759,7 @@ Description      : Hurl a bomb at the target, exploding for $265157s1 Fire damag
 Name             : Flanking Strike (id=259516) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 100 yards
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -5536,6 +5779,7 @@ Description      : $@spelldesc269751
 Name             : Hunter's Mark (id=259558) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 25
 Range            : 100 yards
 Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
@@ -5553,6 +5797,7 @@ Description      : $@spelldesc257284
 Name             : Careful Aim (id=260228) [Spell Family (9), Passive, Hidden] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5576,6 +5821,7 @@ Description      : Aimed Shot has a $s4% chance to deal $s3% bonus damage to tar
 Name             : Violent Reaction (id=260231) [Spell Family (9)] 
 Class            : Hunter
 School           : Fire
+Spell Type       : Ranged
 Spell Level      : 1
 Range            : 50000 yards
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
@@ -5596,6 +5842,7 @@ Description      : $@spelldesc271045
 Name             : Precise Shots (id=260240) [Spell Family (9), Passive] 
 Class            : Marksmanship Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 34
 Proc Chance      : 101%
 Proc Flags       : ........ x....... ........ ........ 
@@ -5616,6 +5863,7 @@ Description      : Aimed Shot causes your next 1-$260242u Arcane Shots or Multi-
 Name             : Hydra's Bite (id=260241) [Spell Family (9), Passive] 
 Class            : Hunter
 School           : Nature
+Spell Type       : None
 Spell Level      : 1
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 101%
@@ -5641,6 +5889,7 @@ Description      : Serpent Sting fires arrows at $s1 additional enemies near you
 Name             : Precise Shots (id=260242) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Duration         : 15 seconds
 Stacks           : 2 maximum
@@ -5670,6 +5919,7 @@ Tooltip          : Damage of Arcane Shot or Multi-Shot increased by $s1%.
 Name             : Volley (id=260243) [Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Proc Chance      : 10%
 Proc Flags       : ......x. ........ ........ ........ 
@@ -5690,6 +5940,7 @@ Description      : Your auto-shots have a $h% chance to cause a volley of arrows
 Name             : Volley (id=260247) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Ranged
 Range            : 100 yards
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Mastery: Sniper Training (193468 effect#2), Aspect of the Wild (193530 effect#1), Roar of the Seven Lions (207318 effect#1), Trueshot (211327 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Triggered by     : Volley (260243)
@@ -5710,6 +5961,7 @@ Description      : $@spelldesc260243
 Name             : Bloodseeker (id=260248) [Spell Family (9), Passive, Hidden] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Range            : 50000 yards
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -5731,6 +5983,7 @@ You and your pet gain $260249s1% attack speed for every bleeding enemy within $s
 Name             : Predator (id=260249) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Duration         : Aura (infinite)
 Stacks           : 10 maximum
 Proc Chance      : 101%
@@ -5750,6 +6003,7 @@ Tooltip          : Attack speed increased by $s1%.
 Name             : Tip of the Spear (id=260285) [Spell Family (9), Passive, Hidden] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ....x.xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5767,6 +6021,7 @@ Description      : Kill Command increases the damage of your next Raptor Strike 
 Name             : Tip of the Spear (id=260286) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Duration         : 10 seconds
 Stacks           : 3 maximum
 Proc Chance      : 100%
@@ -5792,6 +6047,7 @@ Tooltip          : Your next Raptor Strike deals $s1% increased damage.
 Name             : Master Marksman (id=260309) [Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Proc Chance      : 100%
 Proc Flags       : ........ x....... ........ ........ 
@@ -5812,6 +6068,7 @@ Description      : Aimed Shot has a $h% chance to reduce the focus cost of your 
 Name             : Birds of Prey (id=260331) [Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Proc Chance      : 100%
 Proc Flags       : ....x... x....... ........ ........ 
@@ -5833,6 +6090,7 @@ Variables        : $duration= ${$s1/1000}.1
 Name             : Streamline (id=260367) [Spell Family (9), Passive, Hidden] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Proc Chance      : 101%
 Proc Flags       : ........ x....... ........ ........ 
@@ -5861,6 +6119,7 @@ Description      : Rapid Fire now lasts $s3% longer.
 Name             : Lethal Shots (id=260393) [Spell Family (9), Passive, Hidden] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Proc Chance      : 25%
 Proc Flags       : ........ x....... ........ ........ 
@@ -5881,6 +6140,7 @@ Description      : Steady Shot has a $h% chance to cause your next Aimed Shot or
 Name             : Lethal Shots (id=260395) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Duration         : 15 seconds
 Stacks           : 1 initial, 1 maximum
@@ -5910,6 +6170,7 @@ Tooltip          : Your next Aimed Shot will have $s1% increased critical strike
 Name             : Double Tap (id=260402) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 15 seconds
@@ -5940,6 +6201,7 @@ Tooltip          : Your next Aimed Shot will fire a second time instantly at $s4
 Name             : Calling the Shots (id=260404) [Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Proc Chance      : 101%
 Proc Flags       : ........ x....... ........ ........ 
@@ -5960,6 +6222,7 @@ Description      : Casting Arcane Shot or Multi-Shot reduces the cooldown of Tru
 Name             : Haste (id=261582) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 2
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5977,6 +6240,7 @@ Tooltip          : Increases haste by $s1.
 Name             : Cobra Shot (rank=Rank 2) (id=262837) [Spell Family (9), Passive] 
 Class            : Beast Mastery Hunter
 School           : Nature
+Spell Type       : None
 Spell Level      : 3
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5996,6 +6260,7 @@ Description      : Cobra Shot's cost is reduced by $s1.
 Name             : Cobra Shot (rank=Rank 3) (id=262838) [Spell Family (9), Passive] 
 Class            : Beast Mastery Hunter
 School           : Nature
+Spell Type       : None
 Spell Level      : 52
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6015,6 +6280,7 @@ Description      : Cobra Shot deals $s1% increased damage.
 Name             : Raptor Strike (rank=Rank 2) (id=262839) [Spell Family (9), Passive] 
 Class            : Survival Hunter
 School           : Nature
+Spell Type       : None
 Spell Level      : 52
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6034,6 +6300,7 @@ Description      : Raptor Strike deals $s1% increased damage.
 Name             : Mastery: Spirit Bond (id=263135) [Spell Family (9), Passive] 
 Class            : Survival Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 78
 Range            : 100 yards
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -6070,6 +6337,7 @@ While your pet is active, you both regenerate ${$s4}.1% of maximum health every 
 Name             : Spirit Bond (id=263140) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
+Spell Type       : None
 Range            : 100 yards
 Affecting spells : Mastery: Spirit Bond (263135 effect#4), 
 Triggered by     : Mastery: Spirit Bond (263135)
@@ -6092,6 +6360,7 @@ Description      : $@spelldesc263135
 Name             : Kill Command (rank=Rank 2) (id=263186) [Spell Family (9), Passive] 
 Class            : Survival Hunter
 School           : Nature
+Spell Type       : None
 Spell Level      : 50
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6111,6 +6380,7 @@ Coordinated Assault increases this chance by another $266779s4%.
 Name             : Lock Jaw (rank=Special Ability) (id=263423) [Scaling Spell (-1), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 20
 Range            : 5 yards
 Duration         : 6 seconds
@@ -6134,6 +6404,7 @@ Tooltip          : Movement speed reduced by $s1%.
 Name             : Acid Spit (rank=Special Ability) (id=263446) [Scaling Spell (-1), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Ranged
 Spell Level      : 20
 Range            : 30 yards
 Duration         : 6 seconds
@@ -6157,6 +6428,7 @@ Tooltip          : Movement speed reduced by $s1%.
 Name             : Rapid Fire (id=263585) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Ranged
 Spell Level      : 3
 Range            : 40 yards
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
@@ -6176,6 +6448,7 @@ Description      : $@spelldesc257044
 Name             : Arrowstorm (id=263814) [Scaling Spell (-1), Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 27
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6198,6 +6471,7 @@ Tooltip          : Increases the damage of Aimed Shot by $w1 and has a $w2% chan
 Name             : Vigorous Wings (id=263818) [Scaling Spell (-1), Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 29
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6220,6 +6494,7 @@ Tooltip          : Increases the duration of Aspect of the Eagle by $w1 sec and 
 Name             : Ride the Lightning (id=263821) [Scaling Spell (-1), Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 28
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6242,6 +6517,7 @@ Tooltip          : Increases the critical strike chance of Aspect of the Wild by
 Name             : Aspect of the Cheetah (id=263829) [Scaling Spell (-1), Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 16
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6262,6 +6538,7 @@ Tooltip          : Adds an additional $s1% speed to the initial 3 seconds of Asp
 Name             : Furious Bite (rank=Special Ability) (id=263840) [Scaling Spell (-1), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 20
 Range            : 5 yards
 Duration         : 6 seconds
@@ -6285,6 +6562,7 @@ Tooltip          : Movement speed reduced by $s1%.
 Name             : Talon Rend (rank=Special Ability) (id=263852) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 20
 Range            : 5 yards
 Duration         : 6 seconds
@@ -6308,6 +6586,7 @@ Tooltip          : Movement speed reduced by $s1%.
 Name             : Infected Bite (rank=Special Ability) (id=263853) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 5 yards
 Cooldown         : 6 seconds
@@ -6333,6 +6612,7 @@ Grievously wounds the target, reducing the effectiveness of any healing received
 Name             : Savage Rend (rank=Special Ability) (id=263854) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 5 yards
 Cooldown         : 6 seconds
@@ -6358,6 +6638,7 @@ Grievously wounds the target, reducing the effectiveness of any healing received
 Name             : Ravage (rank=Special Ability) (id=263857) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 5 yards
 Cooldown         : 6 seconds
@@ -6383,6 +6664,7 @@ Grievously wounds the target, reducing the effectiveness of any healing received
 Name             : Toxic Sting (rank=Special Ability) (id=263858) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 5 yards
 Cooldown         : 6 seconds
@@ -6408,6 +6690,7 @@ Grievously wounds the target, reducing the effectiveness of any healing received
 Name             : Obsidian Skin (rank=Special Ability) (id=263867) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 20
 Duration         : 12 seconds
 Cooldown         : 60 seconds
@@ -6429,6 +6712,7 @@ Tooltip          : Damage reduced by $s1%.
 Name             : Bristle (rank=Special Ability) (id=263869) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 20
 Duration         : 12 seconds
 Cooldown         : 60 seconds
@@ -6450,6 +6734,7 @@ Tooltip          : Damage reduced by $s1%.
 Name             : Dragon's Guile (rank=Special Ability) (id=263887) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 8
 Duration         : 20 seconds
 Cooldown         : 90 seconds
@@ -6471,6 +6756,7 @@ Tooltip          : Dodge chance increased by $s1%.
 Name             : Catlike Reflexes (rank=Special Ability) (id=263892) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 8
 Duration         : 20 seconds
 Cooldown         : 90 seconds
@@ -6492,6 +6778,7 @@ Tooltip          : Dodge chance increased by $s1%.
 Name             : Serpent's Swiftness (rank=Special Ability) (id=263904) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 8
 Duration         : 20 seconds
 Cooldown         : 90 seconds
@@ -6513,6 +6800,7 @@ Tooltip          : Dodge chance increased by $s1%.
 Name             : Thick Fur (rank=Special Ability) (id=263926) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 20
 Duration         : 15 seconds
 Affecting spells : Aspect of the Beast (191384 effect#1), 
@@ -6534,6 +6822,7 @@ Tooltip          : Damage taken reduced by $s1%.
 Name             : Thick Fur (rank=Special Ability) (id=263934) [Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 20
 Range            : 100 yards
 Internal Cooldown: 120 seconds
@@ -6564,6 +6853,7 @@ This effect can only occur once every $s3 sec.
 Name             : Silverback (rank=Special Ability) (id=263938) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 20
 Duration         : 15 seconds
 Affecting spells : Aspect of the Beast (191384 effect#1), 
@@ -6585,6 +6875,7 @@ Tooltip          : Damage taken reduced by $s1%.
 Name             : Silverback (rank=Special Ability) (id=263939) [Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 20
 Range            : 100 yards
 Internal Cooldown: 120 seconds
@@ -6615,6 +6906,7 @@ This effect can only occur once every $s3 sec.
 Name             : Resounding Protection (id=263962) [Scaling Spell (-8), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 15
 Triggered by     : Resounding Protection (269279)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6634,6 +6926,7 @@ Description      : Every $270568t1 sec, gain an absorb shield for $s1 for $26927
 Name             : Azerite Empowered (id=263978) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 13
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6651,6 +6944,7 @@ Description      : Increases the item level of this item by 5.
 Name             : Elemental Whirl (id=263984) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 21
 Triggered by     : Elemental Whirl (268953), Elemental Whirl (268956), Elemental Whirl (268955), Elemental Whirl (268954)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6671,6 +6965,7 @@ Name             : Heed My Call (id=263987) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 22
 Triggered by     : Heed My Call (271685), Heed My Call (271686)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6694,6 +6989,7 @@ Tooltip          : Your damaging abilities have a chance to deal $s1 Nature dama
 Name             : Serenity Dust (rank=Special Ability) (id=264055) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
+Spell Type       : Melee
 Spell Level      : 35
 Range            : 5 yards
 GCD              : 1 seconds
@@ -6717,6 +7013,7 @@ Description      : The Moth vibrates its wings, scattering tranquil dust over th
 Name             : Spore Cloud (rank=Special Ability) (id=264056) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
+Spell Type       : Melee
 Spell Level      : 35
 Range            : 5 yards
 GCD              : 1 seconds
@@ -6740,6 +7037,7 @@ Description      : The Sporebat emits a could of imbued spores around the enemy 
 Name             : Blood Siphon (id=264108) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 18
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6762,6 +7060,7 @@ Tooltip          : Increases Mastery by $s1 and Leech by $s2.
 Name             : Rotting Jaws (id=264195) [Scaling Spell (-1), Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 35
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6782,6 +7081,7 @@ Tooltip          : Kill Command has a chance to deal $w1 to ${$w1*5} additional 
 Name             : In The Rhythm (id=264198) [Scaling Spell (-7), Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 36
 Triggered by     : In The Rhythm (272733)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6801,6 +7101,7 @@ Description      : When Rapid Fire finishes fully channeling, your Haste is incr
 Name             : Whirling Rebound (id=264199) [Scaling Spell (-1), Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 37
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6823,6 +7124,7 @@ Tooltip          : Increases the damage of Hatchet Toss  by $s1 and causes it to
 Name             : Sonic Blast (rank=Special Ability) (id=264263) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
+Spell Type       : Melee
 Spell Level      : 35
 Range            : 5 yards
 GCD              : 1 seconds
@@ -6846,6 +7148,7 @@ Description      : The Bat emits a sonic pulse towards the enemy target, removin
 Name             : Nether Shock (rank=Special Ability) (id=264264) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
+Spell Type       : Melee
 Spell Level      : 35
 Range            : 5 yards
 GCD              : 1 seconds
@@ -6869,6 +7172,7 @@ Description      : The Nether Ray focuses a blast of nether energy at the enemy 
 Name             : Spirit Shock (rank=Special Ability) (id=264265) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
+Spell Type       : Melee
 Spell Level      : 35
 Range            : 5 yards
 GCD              : 1 seconds
@@ -6892,6 +7196,7 @@ Description      : The Spirit Beast blasts the enemy target, removing $s1 Enrage
 Name             : Guerrilla Tactics (id=264332) [Spell Family (9), Passive, Hidden] 
 Class            : Hunter
 School           : Nature
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6913,6 +7218,7 @@ Description      : Wildfire Bomb now has ${$s1+1} charges, and the initial explo
 Name             : Winged Agility (rank=Special Ability) (id=264360) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 8
 Duration         : 20 seconds
 Cooldown         : 90 seconds
@@ -6934,6 +7240,7 @@ Tooltip          : Dodge chance increased by $s1%.
 Name             : Pathfinding (rank=Cunning Passive) (id=264656) [Spell Family (9), Passive] 
 Class            : Ferocity Tenacity Cunning Hunter Pet
 School           : Physical
+Spell Type       : None
 Range            : 50000 yards
 Affecting spells : Aspect of the Beast (191384 effect#3), 
 Family Flags     : 13
@@ -6956,6 +7263,7 @@ Tooltip          : Movement speed increased by $s1%.
 Name             : Endurance Training (rank=Tenacity Passive) (id=264662) [Spell Family (9), Passive] 
 Class            : Ferocity Tenacity Cunning Hunter Pet
 School           : Physical
+Spell Type       : None
 Range            : 50000 yards
 Affecting spells : Aspect of the Beast (191384 effect#3), 
 Family Flags     : 18
@@ -6978,6 +7286,7 @@ Tooltip          : Maximum health increased by $s1%.
 Name             : Predator's Thirst (rank=Ferocity Passive) (id=264663) [Spell Family (9), Passive] 
 Class            : Ferocity Tenacity Cunning Hunter Pet
 School           : Physical
+Spell Type       : None
 Range            : 50000 yards
 Affecting spells : Aspect of the Beast (191384 effect#3), 
 Family Flags     : 23
@@ -7000,6 +7309,7 @@ Tooltip          : Leech increased by $s1%.
 Name             : Primal Rage (rank=Ferocity Ability) (id=264667) [Spell Family (9)] 
 Class            : Ferocity Hunter Pet
 School           : Fire
+Spell Type       : None
 Spell Level      : 65
 Duration         : 40 seconds
 Cooldown         : 360 seconds
@@ -7025,6 +7335,7 @@ Tooltip          : Haste increased by $s1%.
 Name             : Survival of the Fittest (rank=Tenacity Ability) (id=264735) [Spell Family (9)] 
 Class            : Tenacity Hunter Pet
 School           : Physical
+Spell Type       : None
 Range            : 50000 yards
 Duration         : 6 seconds
 Cooldown         : 180 seconds
@@ -7048,6 +7359,7 @@ Tooltip          : All damage taken reduced by $s1%.
 Name             : Wildfire Bomb (id=265157) [Spell Family (9)] 
 Class            : Hunter
 School           : Fire
+Spell Type       : Ranged
 Spell Level      : 1
 Range            : 50000 yards
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Guerrilla Tactics (264332 effect#2), Coordinated Assault (266779 effect#1), 
@@ -7068,6 +7380,7 @@ Description      : $@spelldesc259495
 Name             : Wildfire Bomb (id=265163) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 0.5 seconds
 Triggered by     : Wildfire Bomb (259495)
@@ -7088,6 +7401,7 @@ Description      : $@spelldesc259495
 Name             : Raptor Strike (id=265189) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Ranged
 Resource         : 30 Focus (2) (id=191506)
 Spell Level      : 1
 Range            : 40 yards
@@ -7111,6 +7425,7 @@ Description      : A vicious slash dealing $s1 Physical damage.
 Name             : Mongoose Bite (id=265888) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Ranged
 Resource         : 30 Focus (2) (id=191514)
 Spell Level      : 1
 Range            : 40 yards
@@ -7137,6 +7452,7 @@ Increases the damage of Mongoose Bite by $259388s1% for $259388d, stacking up to
 Name             : Terms of Engagement (id=265895) [Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -7154,6 +7470,7 @@ Description      : Harpoon deals $271625s1 Physical damage and generates ${($265
 Name             : Terms of Engagement (id=265896) [Spell Family (9), Hidden] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Duration         : 2 seconds
 Triggered by     : Terms of Engagement (265895)
 Attributes       : ....x..x ........ ........ ........   ........ ........ ........ ........ 
@@ -7172,6 +7489,7 @@ Description      : $@spelldesc265895
 Name             : Terms of Engagement (id=265898) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Duration         : 10 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7189,6 +7507,7 @@ Tooltip          : Generating ${$m1/5} Focus every sec.
 Name             : Overwhelming Power (id=266180) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 30
 Triggered by     : Overwhelming Power (271711)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7209,6 +7528,7 @@ Tooltip          : Your damaging abilities have a chance to grant you 25 applica
 Name             : Coordinated Assault (id=266779) [Spell Family (9)] 
 Class            : Survival Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 40
 Range            : 100 yards
 GCD              : 1.5 seconds
@@ -7249,6 +7569,7 @@ Kill Command's chance to reset increased by $s4%.][]
 Name             : Born To Be Wild (id=266921) [Spell Family (9), Passive] 
 Class            : Hunter
 School           : Nature
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7269,6 +7590,7 @@ Name             : Azerite Globules (id=266936) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 462
 Triggered by     : Azerite Globules (279958)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7292,6 +7614,7 @@ Name             : Gutripper (id=266937) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 31
 Triggered by     : Gutripper (270668), Gutripper (269031)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7313,6 +7636,7 @@ Description      : Your damaging abilities have a chance to deal $s1 Physical da
 Name             : Animal Companion (id=267116) [Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -7331,6 +7655,7 @@ Description      : Your Call Pet additionally summons the first pet from your st
 Name             : Chakrams (id=267605) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Ranged
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -7356,6 +7681,7 @@ Your primary target takes $259398s2% increased damage.
 Name             : Chakrams (id=267666) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Ranged
 Spell Level      : 1
 Range            : 100 yards
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), 
@@ -7376,6 +7702,7 @@ Name             : Azerite Fortification (id=268435) [Scaling Spell (-8), Passiv
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 86
 Triggered by     : Azerite Fortification (270659)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7397,6 +7724,7 @@ Name             : Impassive Visage (id=268437) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 6 seconds
 Proc Chance      : 100%
 Azerite Power Id : 83
@@ -7421,6 +7749,7 @@ Tooltip          : When you take damage, heal for $s1. Cannot occur more than on
 Name             : Viper's Venom (id=268501) [Spell Family (9), Passive, Hidden] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 3 (Haste multiplier)
 Proc Flags       : ....x... x....... ........ ........ 
@@ -7441,6 +7770,7 @@ Description      : $?s259387[Mongoose Bite][Raptor Strike] has a chance to make 
 Name             : Viper's Venom (id=268552) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Duration         : 8 seconds
 Proc Chance      : 100%
 Proc Flags       : ........ x....... ........ ........ 
@@ -7469,6 +7799,7 @@ Name             : Longstrider (id=268594) [Scaling Spell (-7), Passive]
 Hotfixed         : Scaling Spell (-1 -> -7)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 14
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7492,6 +7823,7 @@ Name             : Bulwark of the Masses (id=268595) [Scaling Spell (-8), Passiv
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 84
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7513,6 +7845,7 @@ Name             : Gemhide (id=268596) [Scaling Spell (-1), Passive]
 Hotfixed         : Scaling Spell (-7 -> -1)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 85
 Triggered by     : Gemhide (270576)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7538,6 +7871,7 @@ Tooltip          : When dealt damage greater than $s3% of your maximum health, g
 Name             : Vampiric Speed (id=268599) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 44
 Triggered by     : Vampiric Speed (269238), Vampiric Speed (269239)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7562,6 +7896,7 @@ Name             : Self Reliance (id=268600) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 87
 Triggered by     : Self Reliance (270661)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7584,6 +7919,7 @@ Tooltip          : While no enemies are within $s2 yds, you heal for $w1 every $
 Name             : Master Marksman (id=269576) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Duration         : 12 seconds
 Stacks           : 1 initial, 1 maximum
@@ -7609,6 +7945,7 @@ Tooltip          : Focus cost of your next Arcane Shot or Multi-Shot reduced by 
 Name             : Alpha Predator (id=269737) [Spell Family (9), Passive, Hidden] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7629,6 +7966,7 @@ Description      : Kill Command now has ${$s1+1} charges, and deals $s2% increas
 Name             : Wildfire Bomb (id=269747) [Spell Family (9)] 
 Class            : Hunter
 School           : Fire
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 6 seconds
@@ -7651,6 +7989,7 @@ Tooltip          : Suffering $w1 Fire damage every $t1 sec.
 Name             : Flanking Strike (id=269751) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Range            : 15 yards
 GCD              : 1.5 seconds
 Cooldown         : 40 seconds
@@ -7677,6 +8016,7 @@ $damage=${$<petDamage>+$<hunterDamage>}
 Name             : Flanking Strike (id=269752) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Melee
 Range            : 100 yards
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 106
@@ -7698,6 +8038,7 @@ Description      : $@spelldesc269751
 Name             : Explosive Shot (id=269850) [Spell Family (9)] 
 Class            : Hunter
 School           : Fire
+Spell Type       : Ranged
 Spell Level      : 1
 Range            : 100 yards
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Mastery: Sniper Training (193468 effect#2), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
@@ -7717,6 +8058,7 @@ Description      : $@spelldesc212431
 Name             : Pheromone Bomb (id=270323) [Spell Family (9)] 
 Class            : Hunter
 School           : Fire
+Spell Type       : Ranged
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
@@ -7743,6 +8085,7 @@ Kill Command has a $s2% chance to reset against targets coated with Pheromone Bo
 Name             : Pheromone Bomb (id=270327) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 0.5 seconds
 Triggered by     : Pheromone Bomb (270323)
@@ -7763,6 +8106,7 @@ Description      : $@spelldesc270323
 Name             : Pheromone Bomb (id=270329) [Spell Family (9)] 
 Class            : Hunter
 School           : Fire
+Spell Type       : Ranged
 Range            : 50000 yards
 Mechanic         : Bleed
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Guerrilla Tactics (264332 effect#2), Coordinated Assault (266779 effect#1), 
@@ -7783,6 +8127,7 @@ Description      : $@spelldesc270323
 Name             : Pheromone Bomb (id=270332) [Spell Family (9)] 
 Class            : Hunter
 School           : Fire
+Spell Type       : Ranged
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 6 seconds
@@ -7805,6 +8150,7 @@ Tooltip          : Suffering $w1 Fire damage every $t1 sec.
 Name             : Shrapnel Bomb (id=270335) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Ranged
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
@@ -7829,6 +8175,7 @@ $?s259387[Mongoose Bite][Raptor Strike] and $?s212436[Butchery][Carve] apply Int
 Name             : Shrapnel Bomb (id=270336) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 0.5 seconds
 Triggered by     : Shrapnel Bomb (270335)
@@ -7849,6 +8196,7 @@ Description      : $@spelldesc270335
 Name             : Shrapnel Bomb (id=270338) [Spell Family (9)] 
 Class            : Hunter
 School           : Fire
+Spell Type       : Ranged
 Range            : 50000 yards
 Mechanic         : Bleed
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Guerrilla Tactics (264332 effect#2), Coordinated Assault (266779 effect#1), 
@@ -7869,6 +8217,7 @@ Description      : $@spelldesc270335
 Name             : Shrapnel Bomb (id=270339) [Spell Family (9)] 
 Class            : Hunter
 School           : Fire
+Spell Type       : Ranged
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 6 seconds
@@ -7897,6 +8246,7 @@ $?s259387[Mongoose Bite][Raptor Strike] and Butchery apply a stack of Internal B
 Name             : Internal Bleeding (id=270343) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Ranged
 Range            : 100 yards
 Duration         : 9 seconds
 Stacks           : 3 maximum
@@ -7919,6 +8269,7 @@ Tooltip          : Suffering $w1 Bleed damage every $t1 sec.
 Name             : Natural Mending (id=270581) [Spell Family (9), Passive, Hidden] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ....x... x.x.x.x. x....... ........ 
                  : Yellow Melee, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell
@@ -7942,6 +8293,7 @@ Description      : Every $?c1[$s1]?c2[$s2][$s3] Focus you spend reduces the rema
 Name             : Wildfire Infusion (id=271014) [Spell Family (9), Passive, Hidden] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7964,6 +8316,7 @@ Description      : Lace your Wildfire Bomb with extra reagents, randomly giving 
 Name             : Volatile Bomb (id=271045) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Ranged
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
@@ -7988,6 +8341,7 @@ Volatile Bomb causes an extra explosion for $260231s1 Fire damage against target
 Name             : Volatile Bomb (id=271047) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 0.5 seconds
 Triggered by     : Volatile Bomb (271045)
@@ -8008,6 +8362,7 @@ Description      : $@spelldesc271045
 Name             : Volatile Bomb (id=271048) [Spell Family (9)] 
 Class            : Hunter
 School           : Fire
+Spell Type       : Ranged
 Range            : 50000 yards
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Guerrilla Tactics (264332 effect#2), Coordinated Assault (266779 effect#1), 
 Family Flags     : 25, 106
@@ -8027,6 +8382,7 @@ Description      : $@spelldesc271045
 Name             : Volatile Bomb (id=271049) [Spell Family (9)] 
 Class            : Hunter
 School           : Fire
+Spell Type       : Magic
 Range            : 50000 yards
 Duration         : 6 seconds
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
@@ -8048,6 +8404,7 @@ Tooltip          : Suffering $w1 Fire damage every $t1 sec.
 Name             : Uncertainty (id=271260) [Passive] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 90
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8067,6 +8424,7 @@ My points should have changed
 Name             : Uncertainty (id=271263) [Passive] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 94
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8086,6 +8444,7 @@ My parent has been changed.
 Name             : Uncertainty (id=271266) [Passive] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 92
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8105,6 +8464,7 @@ I am a new power
 Name             : Uncertainty (id=271267) [Passive] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 93
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8124,6 +8484,7 @@ Different Powerset
 Name             : Harpoon (id=271625) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Ranged
 Range            : 100 yards
 Velocity         : 70 yards/sec
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
@@ -8144,6 +8505,7 @@ Description      : $@spelldesc190925
 Name             : Serpent Sting (id=271788) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
+Spell Type       : Ranged
 Resource         : 10 Focus (2) (id=191666)
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -8170,6 +8532,7 @@ Tooltip          : Suffering $s2 Nature damage every $t2 sec.
 Name             : Command Pet (id=272651) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 38
 Family Flags     : 4
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
@@ -8193,6 +8556,7 @@ Name             : Serrated Jaws (id=272717) [Scaling Spell (-8), Spell Family (
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 107
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8217,6 +8581,7 @@ Name             : Wildfire Cluster (id=272742) [Scaling Spell (-8), Spell Famil
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 110
 Triggered by     : Wildfire Cluster (272745)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8236,6 +8601,7 @@ Description      : Wildfire Bomb drops a small cluster of bombs around the targe
 Name             : Wildfire Cluster (id=272743) [Scaling Spell (-1), Spell Family (9), Hidden] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Duration         : Aura (infinite)
 Proc Chance      : 100%
 Proc Flags       : ........ x....... ........ ........ 
@@ -8257,6 +8623,7 @@ Description      : $@spelldesc272742
 Name             : Wildfire Cluster (id=272744) [Hidden] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Velocity         : 0.7 yards/sec
 Triggered by     : Wildfire Cluster (272743)
@@ -8278,6 +8645,7 @@ Description      : $@spelldesc272742
 Name             : Wildfire Cluster (id=272745) [Scaling Spell (-1), Spell Family (9)] 
 Class            : Hunter
 School           : Fire
+Spell Type       : Ranged
 Range            : 100 yards
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 106
@@ -8299,6 +8667,7 @@ Description      : $@spelldesc272742
 Name             : Frenzy (id=272790) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 8 seconds
 Stacks           : 3 maximum
@@ -8322,6 +8691,7 @@ Name             : Ruinous Bolt (id=273150) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 156
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8339,6 +8709,7 @@ Description      : Your spells and abilities have a chance to draw a Wandering S
 Name             : Haze of Rage (id=273262) [Scaling Spell (-1), Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 161
 Triggered by     : Haze of Rage (273264)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8359,6 +8730,7 @@ Name             : Arcane Flurry (id=273265) [Scaling Spell (-8), Spell Family (
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 162
 Triggered by     : Arcane Flurry (273267)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8378,6 +8750,7 @@ Description      : Arcane Shot increases the damage of Arcane Shot by $s1 for $2
 Name             : Summon Animal Companion (id=273277) [Hidden] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Triggered by     : Animal Companion (267116)
 Attributes       : ....x..x ........ x....... x..x....   .....x.. ........ .x...... ........ 
@@ -8396,6 +8769,7 @@ Name             : Latent Poison (id=273283) [Scaling Spell (-8), Spell Family (
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 163
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8414,6 +8788,7 @@ Description      : Serpent Sting damage applies Latent Poison, stacking up to $2
 Name             : Latent Poison (id=273284) [Scaling Spell (-1), Spell Family (9), Hidden] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Duration         : Aura (infinite)
 Proc Chance      : 100%
 Proc Flags       : ....x... x....... ..x..... ........ 
@@ -8435,6 +8810,7 @@ Description      : $@spelldesc273283
 Name             : Latent Poison (id=273286) [Scaling Spell (-1), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 20 seconds
 Stacks           : 10 maximum
@@ -8455,6 +8831,7 @@ Tooltip          : The Hunter's next Raptor Strike will consume all stacks of La
 Name             : Latent Poison (id=273289) [Scaling Spell (-1), Spell Family (9)] 
 Class            : Hunter
 School           : Nature
+Spell Type       : Magic
 Range            : 100 yards
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 106
@@ -8474,6 +8851,7 @@ Name             : Meticulous Scheming (id=273682) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 192
 Triggered by     : Seize the Moment! (273714)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8499,6 +8877,7 @@ Name             : Rezan's Fury (id=273790) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 157
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8519,6 +8898,7 @@ Name             : Blightborne Infusion (id=273823) [Scaling Spell (-7), Passive
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 193
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8537,6 +8917,7 @@ Name             : Secrets of the Deep (id=273829) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 195
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8559,6 +8940,7 @@ Name             : Filthy Transfusion (id=273834) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 194
 Triggered by     : Filthy Transfusion (273836)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8577,6 +8959,7 @@ Description      : Your damaging abilities have a chance to invoke a tainted swa
 Name             : Killer Instinct (id=273887) [Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ......x. x....... ........ ........ 
                  : White Ranged, Yellow Ranged
@@ -8599,6 +8982,7 @@ Name             : Shellshock (id=274355) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 203
 Triggered by     : Shellshock (274357)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8618,6 +9002,7 @@ Description      : Every $274357t1 sec Aspect of the Turtle is active, heal for 
 Name             : Dance of Death (id=274441) [Scaling Spell (-1), Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 211
 Triggered by     : Dance of Death (274443)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8638,6 +9023,7 @@ Name             : Unerring Vision (id=274444) [Scaling Spell (-7), Spell Family
 Hotfixed         : Scaling Spell (-1 -> -7)
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 212
 Triggered by     : Unerring Vision (274447)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8658,6 +9044,7 @@ Name             : Venomous Fangs (id=274590) [Scaling Spell (-8), Spell Family 
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 213
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8677,6 +9064,7 @@ Name             : Steady Aim (id=277651) [Scaling Spell (-8), Spell Family (9),
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 368
 Triggered by     : Steady Aim (277959)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8696,6 +9084,7 @@ Description      : Steady Shot increases the damage of your next Aimed Shot agai
 Name             : Blur of Talons (id=277653) [Scaling Spell (-1), Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 371
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8718,6 +9107,7 @@ Name             : Pack Alpha (id=278528) [Scaling Spell (-8), Spell Family (9),
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 365
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8736,6 +9126,7 @@ Description      : Your primary pet's Basic Attack deals $s1 more damage for eac
 Name             : Feeding Frenzy (id=278529) [Scaling Spell (-1), Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 367
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8758,6 +9149,7 @@ Name             : Rapid Reload (id=278530) [Scaling Spell (-8), Spell Family (9
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 369
 Triggered by     : Multi-Shot (278565)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8782,6 +9174,7 @@ Name             : Focused Fire (id=278531) [Scaling Spell (-8), Spell Family (9
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 370
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8805,6 +9198,7 @@ Name             : Wilderness Survival (id=278532) [Scaling Spell (-8), Spell Fa
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 372
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8833,6 +9227,7 @@ Name             : Up Close And Personal (id=278533) [Scaling Spell (-8), Spell 
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 373
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8853,6 +9248,7 @@ Description      : Harpoon increases the damage of your next $?s259387[Mongoose 
 Name             : Multi-Shot (id=278565) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
+Spell Type       : Ranged
 Spell Level      : 16
 Range            : 100 yards
 Velocity         : 50 yards/sec
@@ -8876,6 +9272,7 @@ Description      : $@spelldesc278530
 Name             : Twin Moons (id=279620) [Spell Family (7), Passive, Hidden] 
 Class            : Hunter, Druid
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
@@ -8904,6 +9301,7 @@ Description      : Moonfire deals $s2% increased damage and also hits another ne
 Name             : Twin Moons (id=279621) [Hidden] 
 Class            : Hunter, Druid
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Triggered by     : Twin Moons (279620)
 Attributes       : .......x ........ ........ ...x....   .....x.. ..x..... ........ ........ 
@@ -8923,6 +9321,7 @@ Name             : Primal Instincts (id=279806) [Scaling Spell (-7), Spell Famil
 Hotfixed         : Scaling Spell (-1 -> -7)
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 366
 Triggered by     : Primal Instincts (279810)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8942,6 +9341,7 @@ Description      : Aspect of the Wild increases your Mastery by $s1, and grants 
 Name             : Unstable Flames (id=279899) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 459
 Triggered by     : Unstable Flames (279902)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8961,6 +9361,7 @@ Description      : Your damaging abilities have a chance to grant $s1 critical s
 Name             : Earthlink (id=279926) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 461
 Triggered by     : Earthlink (279928)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8981,6 +9382,7 @@ Name             : Duck and Cover (id=280014) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 469
 Triggered by     : Duck and Cover (280170)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9002,6 +9404,7 @@ Description      : Using Feign Death allows you to absorb $s1 damage over $28017
 Name             : Blood of the Rhino (rank=Exotic Ability) (id=280069) [Passive] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9020,6 +9423,7 @@ Description      : The Clefthoof has $s2% additional armor and increases the eff
 Name             : Dune Strider (rank=Exotic Ability) (id=280151) [Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9037,6 +9441,7 @@ Name             : Barrage Of Many Bombs (id=280163) [Scaling Spell (-8), Passiv
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 1.5 (Haste multiplier)
 Azerite Power Id : 498
@@ -9068,6 +9473,7 @@ Name             : Ricocheting Inflatable Pyrosaw (id=280168) [Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 1.5 (Haste multiplier)
 Azerite Power Id : 499
@@ -9098,6 +9504,7 @@ Name             : Auto-Self-Cauterizer (id=280172) [Scaling Spell (-8), Passive
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 1 seconds
 Proc Chance      : 101%
 Real PPM         : 1.5
@@ -9130,6 +9537,7 @@ Name             : Synaptic Spark Capacitor (id=280174) [Scaling Spell (-8), Spe
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 1.5
 Azerite Power Id : 500
@@ -9159,6 +9567,7 @@ Name             : Relational Normalization Gizmo (id=280178) [Scaling Spell (-1
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 10 seconds
 Proc Chance      : 101%
 Real PPM         : 1.5
@@ -9186,6 +9595,7 @@ Name             : Personal Absorb-o-Tron (id=280181) [Scaling Spell (-8), Passi
 Hotfixed         : Scaling Spell, Max Scaling Level, Internal Cooldown (60000 -> 20000), Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 20 seconds
 Proc Chance      : 101%
 Real PPM         : 1.5
@@ -9214,6 +9624,7 @@ Name             : Dagger in the Back (id=280284) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 479
 Triggered by     : Dagger in the Back (280286)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9235,6 +9646,7 @@ Name             : Thunderous Blast (id=280380) [Scaling Spell (-8), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 482
 Triggered by     : Thunderous Blast (280384)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9256,6 +9668,7 @@ Name             : Tidal Surge (id=280402) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Frost
+Spell Type       : None
 Azerite Power Id : 478
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9274,6 +9687,7 @@ Name             : Blood Rite (id=280407) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 480
 Triggered by     : Blood Rite (280409)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9293,6 +9707,7 @@ Name             : Incite the Pack (id=280410) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 481
 Triggered by     : Incite the Pack (280412), Incite the Pack (280413)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9316,6 +9731,7 @@ Name             : Swirling Sands (id=280429) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 196
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9338,6 +9754,7 @@ Name             : Archive of the Titans (id=280555) [Scaling Spell (-1), Passiv
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 483
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9358,6 +9775,7 @@ Name             : Laser Matrix (id=280559) [Scaling Spell (-8), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 485
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9380,6 +9798,7 @@ Name             : Glory in Battle (id=280577) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 486
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9401,6 +9820,7 @@ Name             : Retaliatory Fury (id=280579) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 487
 Triggered by     : Retaliatory Fury (280787), Retaliatory Fury (280788)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9423,6 +9843,7 @@ Name             : Combined Might (id=280580) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 490
 Triggered by     : Might of the Orcs (280841)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9444,6 +9865,7 @@ Name             : Collective Will (id=280581) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 491
 Triggered by     : Collective Will (280830)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9465,6 +9887,7 @@ Name             : Battlefield Focus (id=280582) [Scaling Spell (-8), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 488
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9487,6 +9910,7 @@ Name             : Sylvanas' Resolve (id=280598) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 489
 Triggered by     : Sylvanas' Resolve (280809)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9508,6 +9932,7 @@ Name             : Liberator's Might (id=280623) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 492
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9529,6 +9954,7 @@ Name             : Last Gift (id=280624) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 493
 Triggered by     : Last Gift (280861), Last Gift (280862)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9551,6 +9977,7 @@ Name             : Stronger Together (id=280625) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 496
 Triggered by     : Strength of the Humans (280866)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9572,6 +9999,7 @@ Name             : Stand As One (id=280626) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 497
 Triggered by     : Stand As One (280858)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9593,6 +10021,7 @@ Name             : Battlefield Precision (id=280627) [Scaling Spell (-8), Passiv
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 494
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9615,6 +10044,7 @@ Name             : Anduin's Dedication (id=280628) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 495
 Triggered by     : Anduin's Dedication (280876)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9635,6 +10065,7 @@ Description      : Your abilities have a chance to increase your $?a162700[Agili
 Name             : Champion of Azeroth (id=280710) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 82
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9652,6 +10083,7 @@ Description      : Your spells and abilities have a chance to increase all secon
 Name             : Dire Beast (id=281036) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
+Spell Type       : None
 Range            : 40 yards
 Duration         : 8 seconds
 Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3), Dire Longevity (215911 effect#1)
@@ -9673,6 +10105,7 @@ Tooltip          : Haste increased by $s1%.
 Name             : Unstable Catalyst (id=281514) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 504
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9691,6 +10124,7 @@ Name             : Tradewinds (id=281841) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 505
 Triggered by     : Tradewinds (281843), Tradewinds (281844)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9711,6 +10145,7 @@ Description      : Your spells and abilities have a chance to grant you $s1 Mast
 Name             : Twin Moons (id=281847) [Hidden] 
 Class            : Hunter
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Triggered by     : Hydra's Bite (260241)
 Attributes       : .......x ........ ........ ...x....   .....x.. ........ ........ ........ 

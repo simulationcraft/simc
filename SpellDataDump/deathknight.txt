@@ -3,6 +3,7 @@ SimulationCraft 801-01 for World of Warcraft 8.0.1 bfa-BETA (wow build 26095)
 Name             : Dual Wield (rank=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
+Spell Type       : Magic
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -19,6 +20,7 @@ Description      : Allows one-hand and off-hand weapons to be equipped in the of
 Name             : Path of Frost (id=3714) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Resource         : 1 Rune (5) (id=5921)
 Spell Level      : 66
 GCD              : 1.5 seconds
@@ -43,6 +45,7 @@ Tooltip          : Grants the ability to walk across water.
 Name             : Bite (rank=Basic Attack) (id=17253) [Spell Family (9)] 
 Class            : Hunter, Death Knight
 School           : Physical
+Spell Type       : Melee
 Resource         : 25 Focus (2) (id=706)
 Spell Level      : 10
 Range            : 5 yards
@@ -72,6 +75,7 @@ Name             : Blood Fury (rank=Racial) (id=20572) [Scaling Spell (-1)]
 Class            : Warrior, Hunter, Rogue, Death Knight
 Race             : Orc (0x2)
 School           : Physical
+Spell Type       : Magic
 Spell Level      : 1
 Duration         : 15 seconds
 Cooldown         : 120 seconds
@@ -95,6 +99,7 @@ Name             : Command (rank=Racial Passive) (id=21563) [Spell Family (9), P
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Orc (0x2)
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -111,6 +116,7 @@ Description      : Damage dealt by pets increased by $s1%.
 Name             : Shell Shield (rank=Special Ability) (id=26064) [Spell Family (9)] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Spell Level      : 20
 Duration         : 12 seconds
 Cooldown         : 60 seconds
@@ -132,6 +138,7 @@ Tooltip          : Damage reduced by $s1%.
 Name             : Strength (id=27973) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Demon Hunter
 School           : Physical
+Spell Type       : None
 Duration         : Aura (infinite)
 Azerite Power Id : 6
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -150,6 +157,7 @@ Name             : Gift of the Naaru (rank=Racial) (id=28880) [Spell Family (4)]
 Class            : Warrior, Paladin, Hunter, Priest, Death Knight, Shaman, Mage, Monk
 Race             : Draenei (0x400)
 School           : Holy
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 Duration         : 5 seconds
@@ -175,6 +183,7 @@ Tooltip          : Healing $/5;s2% every $t1 seconds.
 Name             : Agility 20 (id=41695) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 7
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -192,6 +201,7 @@ Description      : Increases Agility by $s1.
 Name             : Army of the Dead (id=42650) [Spell Family (15)] 
 Class            : Unholy Death Knight
 School           : Shadow
+Spell Type       : None
 Resource         : 3 Rune (5) (id=5831)
 Resource         : -30 Runic Power (6) (id=10627)
 Spell Level      : 82
@@ -217,6 +227,7 @@ Tooltip          : Summoning ghouls.
 Name             : Army of the Dead (id=42651) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : None
 Duration         : 30 seconds
 Triggered by     : Army of the Dead (42650)
 Family Flags     : 96
@@ -237,6 +248,7 @@ Description      : $@spelldesc42650
 Name             : Death and Decay (id=43265) [Spell Family (15)] 
 Class            : Blood Unholy Death Knight
 School           : Shadow
+Spell Type       : Magic
 Resource         : 1 Rune (5) (id=5832)
 Resource         : -10 Runic Power (6) (id=10635)
 Spell Level      : 56
@@ -272,6 +284,7 @@ While you remain within the area, your $?c1[Heart Strike will hit up to $188290m
 Name             : Death Strike (id=45470) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Affecting spells : Icebound Fortitude (48792 effect#4), Haemostasis (235559 effect#1), Hemostasis (273947 effect#1)
 Family Flags     : 66
@@ -291,6 +304,7 @@ Description      : $@spelldesc49998
 Name             : Chains of Ice (id=45524) [Spell Family (15)] 
 Class            : Frost Unholy Death Knight
 School           : Frost
+Spell Type       : Magic
 Resource         : 1 Rune (5) (id=6265)
 Resource         : -10 Runic Power (6) (id=10637)
 Spell Level      : 56
@@ -319,6 +333,7 @@ Tooltip          : Movement slowed $s1% by frozen chains.
 Name             : Raise Dead (id=46584) [Spell Family (15)] 
 Class            : Unholy Death Knight
 School           : Physical
+Spell Type       : Magic
 Spell Level      : 55
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -341,6 +356,7 @@ Tooltip          : A Risen Ally is in your service.
 Name             : Claw (id=47468) 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Resource         : 40 Energy (3) (id=2187)
 Spell Level      : 50
 Range            : 5 yards
@@ -364,6 +380,7 @@ Variables        : $sweepingclaw= ${$91778s2*3.35}
 Name             : Gnaw (id=47481) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Spell Level      : 50
 Range            : 5 yards
 Cooldown         : 90 seconds
@@ -385,6 +402,7 @@ Description      : Bite and tear at a target's limbs, dealing light damage and s
 Name             : Leap (id=47482) 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Range            : 5 - 30 yards
 Cooldown         : 30 seconds
@@ -408,6 +426,7 @@ Description      : Leap behind an enemy target.$?s63560[
 Name             : Huddle (id=47484) 
 Class            : Death Knight
 School           : Physical
+Spell Type       : Melee
 Resource         : 10 Energy (3) (id=2191)
 Spell Level      : 50
 GCD              : 1 seconds
@@ -430,6 +449,7 @@ Description      : Go into a defensive crouch, reducing all damage taken by $918
 Name             : Mind Freeze (id=47528) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : Magic
 Resource         : 0 Runic Power (6) (id=5841)
 Spell Level      : 62
 Range            : 15 yards
@@ -454,6 +474,7 @@ Description      : Smash the target's mind with cold, interrupting spellcasting 
 Name             : Death Coil (id=47541) [Spell Family (15)] 
 Class            : Unholy Death Knight
 School           : Shadow
+Spell Type       : Magic
 Resource         : 40 Runic Power (6) (id=2194)
 Spell Level      : 55
 Range            : 30 yards
@@ -484,6 +505,7 @@ $healing=${(0.80*1.1*$AP)*5}
 Name             : Empower Rune Weapon (id=47568) [Spell Family (15)] 
 Class            : Frost Death Knight
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 57
 GCD              : 1.5 seconds
 Velocity         : 4 yards/sec
@@ -514,6 +536,7 @@ Ggenerating $s1 $LRune:Runes; and ${$m2/10} Runic Power and every $t1 sec.
 Name             : Death Coil (id=47632) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : Magic
 Spell Level      : 55
 Range            : 40 yards
 Velocity         : 35 yards/sec
@@ -536,6 +559,7 @@ Description      : Fire a blast of unholy energy, causing Shadow damage to an en
 Name             : Veteran of the Third War (id=48263) [Spell Family (15), Passive] 
 Class            : Blood Death Knight
 School           : Physical
+Spell Type       : None
 Spell Level      : 55
 GCD              : 1 seconds
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -570,6 +594,7 @@ Description      : Stamina increased by $s4% and Armor increased by $s2%.
 Name             : Death's Advance (id=48265) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : None
 Spell Level      : 55
 Duration         : 8 seconds
 Cooldown         : 45 seconds
@@ -599,6 +624,7 @@ Tooltip          : Your movement speed is increased by $s1%, you cannot be slowe
 Name             : Anti-Magic Shell (id=48707) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : Melee
 Spell Level      : 57
 Duration         : 5 seconds
 Cooldown         : 60 seconds
@@ -629,6 +655,7 @@ $shield=${$MHP*$m2/100*(1+$@versadmg)*$<amb>}
 Name             : Death Pact (id=48743) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : None
 Duration         : 15 seconds
 Cooldown         : 120 seconds
 Family Flags     : 19
@@ -653,6 +680,7 @@ Tooltip          : The next $w2 healing received will be absorbed.
 Name             : Icebound Fortitude (id=48792) [Spell Family (15)] 
 Class            : Blood Frost Unholy Death Knight
 School           : Physical
+Spell Type       : None
 Spell Level      : 57
 Duration         : 8 seconds
 Cooldown         : 180 seconds
@@ -685,6 +713,7 @@ Immune to Stun effects.
 Name             : Obliterate (id=49020) [Spell Family (15)] 
 Class            : Frost Death Knight
 School           : Physical
+Spell Type       : Melee
 Resource         : 2 Rune (5) (id=10580)
 Resource         : -20 Runic Power (6) (id=10640)
 Spell Level      : 55
@@ -712,6 +741,7 @@ Description      : A brutal attack with both weapons that deals a total of ${$22
 Name             : Dancing Rune Weapon (id=49028) [Spell Family (15)] 
 Class            : Blood Death Knight
 School           : Physical
+Spell Type       : Magic
 Spell Level      : 57
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -745,6 +775,7 @@ While active, you gain $81256s1% parry chance.
 Name             : Frost Strike (id=49143) [Scaling Spell (1), Spell Family (15)] 
 Class            : Frost Death Knight
 School           : Frost
+Spell Type       : Melee
 Resource         : 25 Runic Power (6) (id=2237)
 Spell Level      : 55
 Range            : 5 yards
@@ -771,6 +802,7 @@ Description      : Chill your weapons with icy power, and quickly strike the ene
 Name             : Howling Blast (id=49184) [Spell Family (15)] 
 Class            : Frost Death Knight
 School           : Frost
+Spell Type       : Magic
 Resource         : 1 Rune (5) (id=6273)
 Resource         : -10 Runic Power (6) (id=10641)
 Spell Level      : 55
@@ -797,6 +829,7 @@ Variables        : $CAP=${($AP+$OAP)*2/3}
 Name             : Summon Gargoyle (id=49206) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : None
 Spell Level      : 75
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -829,6 +862,7 @@ The Gargoyle gains $211947s1% increased damage for every $s4 Runic Power you spe
 Name             : Sudden Doom (id=49530) [Spell Family (15), Passive] 
 Class            : Unholy Death Knight
 School           : Physical
+Spell Type       : None
 Spell Level      : 60
 Proc Chance      : 100%
 Real PPM         : 2.875 (Haste multiplier)
@@ -851,6 +885,7 @@ Description      : Your auto attacks have a chance to make your next Death Coil 
 Name             : Death Grip (id=49576) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : Magic
 Spell Level      : 55
 Range            : 30 yards
 GCD              : 0.5 seconds
@@ -875,6 +910,7 @@ Description      : Harnesses the energy that surrounds and binds all matter, dra
 Name             : Death Strike (id=49998) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : Melee
 Resource         : 45 Runic Power (6) (id=6268)
 Spell Level      : 55
 Range            : 5 yards
@@ -903,6 +939,7 @@ Description      : Focuses dark power into a strike$?s137006[ with both weapons,
 Name             : Razorice (id=50401) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : Melee
 Range            : 10 yards
 Affecting spells : Mastery: Frozen Heart (77514 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Biting Cold (166057 effect#1), Master of Ghouls (246995 effect#1), 
 Family Flags     : 43, 104, 120
@@ -923,6 +960,7 @@ Name             : Arcane Torrent (rank=Racial) (id=50613)
 Class            : Death Knight
 Race             : Blood Elf (0x200)
 School           : Arcane
+Spell Type       : Magic
 GCD              : 1.5 seconds
 Cooldown         : 90 seconds
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
@@ -942,6 +980,7 @@ Description      : Remove $s1 beneficial effect from all enemies within $A1 yard
 Name             : Blood Boil (id=50842) [Spell Family (15)] 
 Class            : Blood Death Knight
 School           : Shadow
+Spell Type       : Magic
 Spell Level      : 56
 GCD              : 1.5 seconds
 Charges          : 2 (7.5 seconds cooldown)
@@ -966,6 +1005,7 @@ $@spelldesc55078]
 Name             : Death Gate (id=50977) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : Magic
 Resource         : 1 Rune (5) (id=6267)
 Resource         : -10 Runic Power (6) (id=10644)
 Spell Level      : 55
@@ -993,6 +1033,7 @@ Using a Death Gate while in Ebon Hold will return you back to near your departur
 Name             : Killing Machine (id=51124) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : None
 Duration         : 10 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
@@ -1016,6 +1057,7 @@ Tooltip          : Guaranteed critical strike on your next Obliterate$?s207230[ 
 Name             : Killing Machine (id=51128) [Spell Family (15), Passive] 
 Class            : Frost Death Knight
 School           : Physical
+Spell Type       : None
 Spell Level      : 56
 Proc Chance      : 101%
 Real PPM         : 4.5 (Haste multiplier, Crit multiplier)
@@ -1038,6 +1080,7 @@ Description      : Your auto attack critical strikes have a chance to make your 
 Name             : Pillar of Frost (id=51271) [Spell Family (15)] 
 Class            : Frost Death Knight
 School           : Physical
+Spell Type       : Magic
 Spell Level      : 57
 GCD              : 1.5 seconds
 Duration         : 15 seconds
@@ -1072,6 +1115,7 @@ Tooltip          : Strength increased by $w1%.
 Name             : Death Grip (id=51399) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Range            : 30 yards
 Duration         : 3 seconds
 Mechanic         : Taunt
@@ -1096,6 +1140,7 @@ Tooltip          : Taunted.
 Name             : Runic Corruption (id=51460) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : Melee
 Spell Level      : 55
 Duration         : 3 seconds
 Proc Chance      : 101%
@@ -1118,6 +1163,7 @@ Tooltip          : Rune regeneration rate increased by $w1%.
 Name             : Runic Corruption (id=51462) [Spell Family (15), Passive] 
 Class            : Unholy Death Knight
 School           : Shadow
+Spell Type       : None
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1135,6 +1181,7 @@ Variables        : $chance=${$m1/100}.1%
 Name             : Razorice (id=51714) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : Magic
 Range            : 50000 yards
 Duration         : 20 seconds
 Stacks           : 5 maximum
@@ -1158,6 +1205,7 @@ Tooltip          : Frost damage taken from the Death Knight's abilities increase
 Name             : Gargoyle Strike (id=51963) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadowstorm
+Spell Type       : Magic
 Spell Level      : 20
 Range            : 40 yards
 Cast Time        : 2 seconds
@@ -1178,6 +1226,7 @@ Description      : Inflicts Plague (Nature and Shadow) damage to an enemy.
 Name             : On a Pale Horse (id=51986) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Spell Level      : 61
 Attributes       : ....x.x. x....... ........ x.......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1197,6 +1246,7 @@ Description      : You are as hard to stop as death itself, increasing your moun
 Name             : Death and Decay (id=52212) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : Magic
 Range            : 100 yards
 Affecting spells : Mastery: Dreadblade (77515 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Morbid Strike (166021 effect#2), Master of Ghouls (246995 effect#1), 
 Family Flags     : 43, 67, 78
@@ -1218,6 +1268,7 @@ Description      : Corrupts the ground targeted by the Death Knight, causing Sha
 Name             : Spiked Collar (id=53184) [Spell Family (9), Passive] 
 Class            : Hunter, Death Knight
 School           : Physical
+Spell Type       : None
 Range            : 5 yards
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1239,6 +1290,7 @@ Description      : Increases the damage done by your pet's Basic Attacks by $s1%
 Name             : Rune of Razorice (id=53343) [Hidden] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Cast Time        : 5 seconds
 Attributes       : .....x.x x....x.. x....... ........   ........ ..x..... ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
@@ -1258,6 +1310,7 @@ Description      : Affixes your weapon with a rune that causes $50401s1% extra w
 Name             : Rune of the Fallen Crusader (id=53344) [Hidden] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Cast Time        : 5 seconds
 Attributes       : .....x.x x....... x....... ........   ........ ..x..... ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
@@ -1277,6 +1330,7 @@ Description      : Affixes your rune weapon with a rune that has a chance to hea
 Name             : Unholy Strength (id=53365) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Spell Level      : 55
 Range            : 40 yards
 Duration         : 15 seconds
@@ -1304,6 +1358,7 @@ Tooltip          : Strength increased by $s1%.
 Name             : Blood Plague (id=55078) [Scaling Spell (1), Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : Melee
 Spell Level      : 55
 Range            : 50000 yards
 Duration         : 24 seconds
@@ -1329,6 +1384,7 @@ Tooltip          : Draining $w1 health from the target every $t1 sec.
 Name             : Scourge Strike (id=55090) [Spell Family (15)] 
 Class            : Unholy Death Knight
 School           : Physical
+Spell Type       : Melee
 Resource         : 1 Rune (5) (id=6262)
 Resource         : -10 Runic Power (6) (id=10648)
 Spell Level      : 55
@@ -1356,6 +1412,7 @@ Description      : An unholy strike that deals $s2 Physical damage and $70890sw2
 Name             : Frost Fever (id=55095) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : Melee
 Spell Level      : 55
 Range            : 50000 yards
 Duration         : 24 seconds
@@ -1380,6 +1437,7 @@ Variables        : $CAP=${($AP+$OAP)*2/3}
 Name             : Vampiric Blood (id=55233) [Spell Family (15)] 
 Class            : Blood Death Knight
 School           : Physical
+Spell Type       : None
 Spell Level      : 60
 Duration         : 10 seconds
 Cooldown         : 90 seconds
@@ -1407,6 +1465,7 @@ Tooltip          : Maximum health increased by $s4%. Healing and absorbs receive
 Name             : Increase Versatility 15 (id=55564) [Scaling Spell (-1), Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Max Scaling Level: 80
 Azerite Power Id : 1
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -1425,6 +1484,7 @@ Description      : Increases your Versatility by $s1.
 Name             : Dark Command (id=56222) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Spell Level      : 58
 Range            : 30 yards
 Duration         : 3 seconds
@@ -1452,6 +1512,7 @@ Tooltip          : Taunted.
 Name             : Horn of Winter (id=57330) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 GCD              : 1.5 seconds
 Cooldown         : 45 seconds
@@ -1474,6 +1535,7 @@ Description      : Blow the Horn of Winter, gaining $s1 $LRune:Runes; and genera
 Name             : Glyph of the Geist (rank=Unholy) (id=58640) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1492,6 +1554,7 @@ $?s207313 [Disabled while talented into Sludge Belcher.][]
 Name             : Glyph of Foul Menagerie (id=58642) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1508,6 +1571,7 @@ Description      : Causes your Army of the Dead spell to summon an assortment of
 Name             : Geist (id=58707) 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Cast Time        : 1.5 seconds
 Cooldown         : 1.5 seconds
 Category         : 133
@@ -1528,6 +1592,7 @@ Description      : $@spelldesc58640
 Name             : Foul Menagerie (id=58723) 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Cast Time        : 1.5 seconds
 Cooldown         : 1.5 seconds
 Category         : 133
@@ -1548,6 +1613,7 @@ Description      : $@spelldesc58642
 Name             : Rime (id=59052) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : Magic
 Duration         : 15 seconds
 Stacks           : 1 maximum
 Proc Chance      : 100%
@@ -1582,6 +1648,7 @@ Tooltip          : Your next Howling Blast will consume no Runes, generate no Ru
 Name             : Rime (id=59057) [Spell Family (15), Passive] 
 Class            : Frost Death Knight
 School           : Physical
+Spell Type       : None
 Spell Level      : 59
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
@@ -1607,6 +1674,7 @@ Name             : Gift of the Naaru (rank=Racial) (id=59545) [Spell Family (15)
 Class            : Death Knight
 Race             : Draenei (0x400)
 School           : Holy
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 Duration         : 5 seconds
@@ -1632,6 +1700,7 @@ Tooltip          : Healing $/5;s2% every $t1 seconds.
 Name             : Summon Gargoyle (id=61777) [Spell Family (15), Hidden] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : None
 Resource         : 0 Runic Power (6) (id=5972)
 Spell Level      : 55
 Duration         : 30 seconds
@@ -1656,6 +1725,7 @@ Tooltip          : Runic Power is being fed to the Gargoyle.
 Name             : Raise Ally (id=61999) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : None
 Resource         : 30 Runic Power (6) (id=191679)
 Spell Level      : 72
 Range            : 40 yards
@@ -1681,6 +1751,7 @@ Description      : Pours dark energy into a dead target, reuniting spirit and bo
 Name             : Avoidance (rank=Passive) (id=62137) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ....x.x. ........ x.x..... ...x....   .....x.. ........ .x...... ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
@@ -1707,6 +1778,7 @@ Reduces the range at which enemies detect your pet.
 Name             : Stoneskin Gargoyle (id=62157) [Passive, Hidden] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx x....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1724,6 +1796,7 @@ Effects          :
 Name             : Rune of the Stoneskin Gargoyle (id=62158) [Hidden] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Cast Time        : 5 seconds
 Attributes       : .....x.x x....... x....... ........   ........ ..x..... ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
@@ -1743,6 +1816,7 @@ Description      : Affixes your two-handed rune weapon with a rune that increase
 Name             : Basic Attack Focus Cost Modifier (id=62762) [Spell Family (17), Passive, Hidden] 
 Class            : Hunter, Death Knight
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1761,6 +1835,7 @@ Description      : When your pet is at or above 50 Focus, your pet's Basic Attac
 Name             : Dark Transformation (id=63560) [Spell Family (15)] 
 Class            : Unholy Death Knight
 School           : Shadow
+Spell Type       : Magic
 Spell Level      : 74
 Range            : 100 yards
 GCD              : 1.5 seconds
@@ -1789,6 +1864,7 @@ Damage dealt increased by $w1%.
 Name             : Death Strike Off-Hand (id=66188) [Scaling Spell (-1), Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : Melee
 Range            : 100 yards
 Affecting spells : Dark Succor (101568 effect#2), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Deathbringer (144953 effect#1), Item - Death Knight T18 Blood 4P Bonus (187873 effect#1), Ossuary (219788 effect#1), Death March (235556 effect#2), Haemostasis (235559 effect#1), Gravewarden (242010 effect#2), Master of Ghouls (246995 effect#1), Hemostasis (273947 effect#1), Death Strike (278223 effect#1), 
 Family Flags     : 4, 43
@@ -1808,6 +1884,7 @@ Description      : $@spelldesc49998
 Name             : Frost Strike Off-Hand (id=66196) [Scaling Spell (-1), Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : Melee
 Range            : 100 yards
 Affecting spells : Mastery: Frozen Heart (77514 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Biting Cold (166057 effect#1), Master of Ghouls (246995 effect#1), 
 Triggered by     : Frost Strike (49143)
@@ -1828,6 +1905,7 @@ Description      : $@spelldesc49143
 Name             : Obliterate Off-Hand (id=66198) [Scaling Spell (-1), Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : Melee
 Range            : 100 yards
 Affecting spells : Killing Machine (51124 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Koltira's Newfound Will (208782 effect#2), Master of Ghouls (246995 effect#1), Item - Death Knight T21 Frost 2P Bonus (251873 effect#2)
 Triggered by     : Obliterate (49020)
@@ -1849,6 +1927,7 @@ Name             : Viciousness (rank=Racial Passive) (id=68975) [Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1867,6 +1946,7 @@ Name             : Aberration (rank=Racial Passive) (id=68976) [Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1886,6 +1966,7 @@ Name             : Darkflight (rank=Racial) (id=68992)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
+Spell Type       : None
 Duration         : 10 seconds
 Cooldown         : 120 seconds
 Attributes       : ........ ........ ........ ........   .....x.. ........ ........ ........ 
@@ -1907,6 +1988,7 @@ Tooltip          : True form activated, movement speed increased by an additiona
 Name             : Scourge Strike (id=70890) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : Melee
 Spell Level      : 80
 Range            : 100 yards
 Proc Chance      : 101%
@@ -1931,6 +2013,7 @@ Description      : $@spelldesc55090
 Name             : Mastery: Blood Shield (id=77513) [Spell Family (15), Passive] 
 Class            : Blood Death Knight
 School           : Physical
+Spell Type       : None
 Spell Level      : 78
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1952,6 +2035,7 @@ Also increases your attack power by ${$s2}.1%.
 Name             : Mastery: Frozen Heart (id=77514) [Spell Family (15), Passive] 
 Class            : Frost Death Knight
 School           : Physical
+Spell Type       : None
 Spell Level      : 78
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1975,6 +2059,7 @@ Description      : Increases the damage of your Frost abilities by ${$s1}.1%.
 Name             : Mastery: Dreadblade (id=77515) [Spell Family (15), Passive] 
 Class            : Unholy Death Knight
 School           : Physical
+Spell Type       : None
 Spell Level      : 78
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1998,6 +2083,7 @@ Description      : Increases the damage of your Shadow damage abiilites by ${$s1
 Name             : Blood Shield (id=77535) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : None
 Spell Level      : 1
 Duration         : 10 seconds
 Family Flags     : 70
@@ -2017,6 +2103,7 @@ Tooltip          : Absorbs $w1 Physical damage.
 Name             : Outbreak (id=77575) [Spell Family (15)] 
 Class            : Unholy Death Knight
 School           : Shadow
+Spell Type       : Magic
 Resource         : 1 Rune (5) (id=7458)
 Resource         : -10 Runic Power (6) (id=10654)
 Spell Level      : 55
@@ -2042,6 +2129,7 @@ $@spelldesc191587
 Name             : Crimson Scourge (id=81136) [Spell Family (15), Passive] 
 Class            : Blood Death Knight
 School           : Physical
+Spell Type       : None
 Spell Level      : 63
 Proc Chance      : 25%
 Proc Flags       : ..x..... ........ ........ ........ 
@@ -2063,6 +2151,7 @@ Description      : Your auto attacks on targets infected with your Blood Plague 
 Name             : Crimson Scourge (id=81141) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Duration         : 15 seconds
 Family Flags     : 116
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -2087,6 +2176,7 @@ Tooltip          : Your next Death and Decay costs no Runes and generates no Run
 Name             : Runic Empowerment (id=81229) [Spell Family (15), Passive] 
 Class            : Frost Death Knight
 School           : Physical
+Spell Type       : None
 Family Flags     : 53
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2104,6 +2194,7 @@ Description      : Each Runic Power you spend has a ${$m1/10}.1% chance to insta
 Name             : Dancing Rune Weapon (id=81256) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : Magic
 Spell Level      : 55
 Duration         : 8 seconds
 Family Flags     : 74
@@ -2124,6 +2215,7 @@ Tooltip          : Parry chance increased by $s1%.
 Name             : Blood Burst (id=81280) 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : None
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2139,6 +2231,7 @@ Description      : Bursts in a shower of blood.
 Name             : Sudden Doom (id=81340) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Duration         : 10 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
@@ -2165,6 +2258,7 @@ Tooltip          : Your next Death Coil consumes no Runic Power.
 Name             : Parry (rank=Passive) (id=82246) [Passive] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : Magic
 Spell Level      : 1
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2182,6 +2276,7 @@ Description      : Gives a chance to parry enemy melee attacks.
 Name             : Festering Strike (id=85948) [Scaling Spell (-1), Spell Family (15)] 
 Class            : Unholy Death Knight
 School           : Physical
+Spell Type       : Melee
 Resource         : 2 Rune (5) (id=6275)
 Resource         : -20 Runic Power (6) (id=10658)
 Spell Level      : 55
@@ -2210,6 +2305,7 @@ $@spelldesc194310
 Name             : Plate Specialization (rank=Passive) (id=86113) [Passive, Hidden] 
 Class            : Frost Death Knight
 School           : Physical
+Spell Type       : None
 Spell Level      : 55
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2227,6 +2323,7 @@ Description      : Increases your Strength by $s1% while wearing only Plate armo
 Name             : Plate Specialization (rank=Passive) (id=86536) [Passive, Hidden] 
 Class            : Unholy Death Knight
 School           : Physical
+Spell Type       : None
 Spell Level      : 55
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2244,6 +2341,7 @@ Description      : Increases your Strength by $s1% while wearing only Plate armo
 Name             : Plate Specialization (rank=Passive) (id=86537) [Passive, Hidden] 
 Class            : Blood Death Knight
 School           : Physical
+Spell Type       : None
 Spell Level      : 55
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2261,6 +2359,7 @@ Description      : Increases your Stamina by $s1% while wearing only Plate armor
 Name             : Claw (id=91776) 
 Class            : Death Knight
 School           : Physical
+Spell Type       : Melee
 Resource         : 40 Energy (3) (id=10560)
 Spell Level      : 50
 Range            : 5 yards
@@ -2280,6 +2379,7 @@ Description      : Claw the enemy, dealing $s1 Physical damage.
 Name             : Sweeping Claws (id=91778) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : Melee
 Resource         : 40 Energy (3) (id=10561)
 Spell Level      : 50
 Range            : 5 yards
@@ -2303,6 +2403,7 @@ Variables        : $sweepingclaw= ${$91778s2*3.35}
 Name             : Monstrous Blow (id=91797) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 50
 Range            : 5 yards
 Duration         : 2 seconds
@@ -2326,6 +2427,7 @@ Tooltip          : Stunned.
 Name             : Gnaw (id=91800) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 50
 Range            : 5 yards
 Duration         : 1 seconds
@@ -2349,6 +2451,7 @@ Tooltip          : Stunned.
 Name             : Shambling Rush (id=91802) 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Range            : 5 - 30 yards
 Velocity         : 30 yards/sec
@@ -2372,6 +2475,7 @@ Description      : Charge an enemy, interrupting spellcasting and immobilizing t
 Name             : Shambling Rush (id=91807) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Spell Level      : 20
 Range            : 5 - 30 yards
 Duration         : 2 seconds
@@ -2399,6 +2503,7 @@ Tooltip          : Immobilized.
 Name             : Leap (id=91809) 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Range            : 5 - 30 yards
 Velocity         : 30 yards/sec
@@ -2423,6 +2528,7 @@ Description      : Leap behind an enemy target.
 Name             : Putrid Bulwark (id=91837) 
 Class            : Death Knight
 School           : Physical
+Spell Type       : Melee
 Resource         : 10 Energy (3) (id=4237)
 Spell Level      : 50
 GCD              : 1 seconds
@@ -2447,6 +2553,7 @@ Tooltip          : Damage taken reduced by $s1%.
 Name             : Huddle (id=91838) 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Resource         : 10 Energy (3) (id=4238)
 Spell Level      : 50
 GCD              : 1 seconds
@@ -2470,6 +2577,7 @@ Tooltip          : Damage taken reduced by $s1%.
 Name             : Item - Proc Mastery (id=92322) [Spell Family (10), Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 100 seconds
 Proc Chance      : 10%
 Azerite Power Id : 8
@@ -2492,6 +2600,7 @@ Name             : Altered Form (rank=Racial Passive) (id=94293) [Passive, Hidde
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2508,6 +2617,7 @@ Description      : Enables Worgens to switch between human and Worgan forms
 Name             : Void-Touched (id=97821) 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 300 seconds
 Triggered by     : Raise Ally (61999)
@@ -2527,6 +2637,7 @@ Tooltip          : The touch of the spirit realm lingers....
 Name             : Dark Succor (id=101568) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Duration         : 20 seconds
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
@@ -2552,6 +2663,7 @@ Tooltip          : Your next Death Strike is free and heals for an additional $s
 Name             : Asphyxiate (id=108194) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : Magic
 Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
@@ -2574,6 +2686,7 @@ Tooltip          : Stunned.
 Name             : Gorefiend's Grasp (id=108199) [Spell Family (15)] 
 Class            : Blood Death Knight
 School           : Shadow
+Spell Type       : Magic
 Spell Level      : 64
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -2600,6 +2713,7 @@ Description      : Shadowy tendrils coil around all enemies within $A2 yards of 
 Name             : Control Undead (id=111673) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : Magic
 Resource         : 1 Rune (5) (id=6266)
 Resource         : -10 Runic Power (6) (id=10661)
 Spell Level      : 69
@@ -2626,6 +2740,7 @@ Tooltip          : Controlled.
 Name             : Purgatory (id=114556) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2644,6 +2759,7 @@ If any healing absorption remains when this effect expires, you will die. This e
 Name             : Unholy Blight (id=115989) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : Magic
 Resource         : 1 Rune (5) (id=191725)
 Resource         : -10 Runic Power (6) (id=191726)
 Spell Level      : 1
@@ -2669,6 +2785,7 @@ Tooltip          : Surrounded by a vile swarm of insects, infecting enemies with
 Name             : Unholy Blight (id=115994) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : Magic
 Spell Level      : 1
 Duration         : 14 seconds
 Affecting spells : Mastery: Dreadblade (77515 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
@@ -2691,6 +2808,7 @@ Tooltip          : Suffering $sw1 Shadow damage every $t1 sec.
 Name             : Death Siphon (id=116783) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : None
 Range            : 100 yards
 Velocity         : 30 yards/sec
 Affecting spells : Veteran of the Third War (48263 effect#6)
@@ -2711,6 +2829,7 @@ Description      : Tears at a target's soul, healing the Death Knight in proport
 Name             : Shroud of Purgatory (id=116888) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : None
 Duration         : 3 seconds
 Attributes       : ........ ........ ........ ..x..x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2729,6 +2848,7 @@ If any amount of heal absorption remains when this effect expires, you die.
 Name             : Perdition (id=123981) 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Range            : 50000 yards
 Duration         : 240 seconds
 Attributes       : ........ ........ ........ ..xx.x..   ........ ..x..... ........ ........ 
@@ -2747,6 +2867,7 @@ Tooltip          : You have recently benefited from Purgatory and cannot benefit
 Name             : Death's Advance (id=124285) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : None
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2764,6 +2885,7 @@ Effects          :
 Name             : Corpse Exploder (id=127344) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : None
 Spell Level      : 40
 Range            : 30 yards
 GCD              : 1 seconds
@@ -2784,6 +2906,7 @@ Description      : Cause a target corpse to explode in a shower of gore. Does no
 Name             : Blink Strikes (id=130392) [Spell Family (9), Passive] 
 Class            : Hunter, Death Knight
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -2812,6 +2935,7 @@ Description      : Your pet's Basic Attack deals $s1% increased damage, can now 
 Name             : Soul Reaper (id=130736) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -2843,6 +2967,7 @@ Variables        : $dmg=${$o1}
 Name             : Death Knight (id=137005) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Family Flags     : 70, 83
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2902,6 +3027,7 @@ Effects          :
 Name             : Frost Death Knight (id=137006) [Spell Family (15), Passive, Hidden] 
 Class            : Frost Death Knight
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2950,6 +3076,7 @@ Effects          :
 Name             : Unholy Death Knight (id=137007) [Spell Family (15), Passive, Hidden] 
 Class            : Unholy Death Knight
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3002,6 +3129,7 @@ Effects          :
 Name             : Blood Death Knight (id=137008) [Spell Family (15), Passive, Hidden] 
 Class            : Blood Death Knight
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3064,6 +3192,7 @@ Effects          :
 Name             : Item - Death Knight T16 DPS 4P Bonus (id=144907) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Proc Flags       : ........ ..x.x.x. x....... ........ 
                  : AOE Heal, AOE Hostile Spell, Heal, Hostile Spell
@@ -3085,6 +3214,7 @@ Description      : Death Coil increases the duration of Dark Transformation by $
 Name             : Item - Death Knight T16 DPS 4P Bonus (Hidden) (id=144909) [Spell Family (15), Hidden] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Duration         : 20 seconds
 Proc Chance      : 101%
 Proc Flags       : ....x... ....x... x....... ........ 
@@ -3105,6 +3235,7 @@ Description      : $@spelldesc144907
 Name             : Item - Death Knight T16 Blood 2P Bonus (id=144934) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Attributes       : ......x. ........ ..x..... x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ ........ ........ ..x..... 
@@ -3122,6 +3253,7 @@ Description      : Every $s1 Death Coils, Pestilences, or Soul Reapers will add 
 Name             : Bone Wall (id=144948) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Duration         : 120 seconds
 Stacks           : 1 initial, 6 maximum
 Proc Chance      : 101%
@@ -3146,6 +3278,7 @@ Tooltip          : Your next Bone Shield will have $w1 additional charge$?$w1>1[
 Name             : Item - Death Knight T16 Blood 4P Bonus (id=144950) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Proc Flags       : ........ ..x.x.x. x....... ........ 
                  : AOE Heal, AOE Hostile Spell, Heal, Hostile Spell
@@ -3165,6 +3298,7 @@ Description      : Dancing Rune Weapon will reactivate $s1 runes.
 Name             : Deathbringer (id=144953) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Duration         : 10 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
@@ -3189,6 +3323,7 @@ Tooltip          : Death Strike has no resource cost.
 Name             : Glyph of the Skeleton (rank=Unholy) (id=146652) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3207,6 +3342,7 @@ $?s207313 [Disabled while talented into Sludge Belcher.][]
 Name             : Frozen Power (id=147620) [Scaling Spell (-8), Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : Melee
 Max Scaling Level: 85
 Proc Chance      : 101%
 Triggered by     : Item - Death Knight T16 DPS 4P Bonus (Hidden) (144909)
@@ -3226,6 +3362,7 @@ Description      : $@spelldesc144907
 Name             : Skeleton (id=147963) 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Cast Time        : 1.5 seconds
 Cooldown         : 1.5 seconds
 Category         : 133
@@ -3246,6 +3383,7 @@ Description      : $@spelldesc146652
 Name             : Adaptation (id=152244) [Passive] 
 Class            : Hunter, Death Knight, Shaman
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3270,6 +3408,7 @@ Great Stamina|r
 Name             : Breath of Sindragosa (id=152279) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : None
 Resource         : 0 Runic Power (6) and 15 Runic Power (6) per tick (id=9067)
 Duration         : Aura (infinite)
 Cooldown         : 120 seconds
@@ -3300,6 +3439,7 @@ Variables        : $CAP=${($AP+$OAP)*2/3}
 Name             : Defile (id=152280) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : Magic
 Resource         : 1 Rune (5) (id=191728)
 Resource         : -10 Runic Power (6) (id=191729)
 Range            : 30 yards
@@ -3335,6 +3475,7 @@ Name             : Expansive Mind (rank=Racial Passive) (id=154747) [Passive]
 Class            : Death Knight
 Race             : Gnome (0x40)
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3351,6 +3492,7 @@ Description      : Maximum runic power increased by $s1%.
 Name             : Breath of Sindragosa (id=155166) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : Magic
 Spell Level      : 1
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x.x..... ........ 
@@ -3376,6 +3518,7 @@ Description      : $@spelldesc152279
 Name             : Defile (id=156000) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : Magic
 Range            : 100 yards
 Affecting spells : Mastery: Dreadblade (77515 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Morbid Strike (166021 effect#2), Master of Ghouls (246995 effect#1), 
 Family Flags     : 43, 67, 78, 114
@@ -3397,6 +3540,7 @@ Description      : $@spelldesc152280
 Name             : Combat Experience (id=156843) [Spell Family (9), Passive] 
 Class            : Hunter, Death Knight, Shaman
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ....x.x. x....... ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3417,6 +3561,7 @@ Description      : Increases all damage done by your pet by $s2%.
 Name             : Riposte (id=161797) [Spell Family (15), Passive] 
 Class            : Blood Death Knight
 School           : Physical
+Spell Type       : None
 Spell Level      : 76
 Family Flags     : 101
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -3436,6 +3581,7 @@ Name             : Stat Negation Aura - Strength DPS (id=162698) [Passive, Hidde
 Class            : Arms Fury Retribution Frost Unholy Warrior, Paladin, Death Knight
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3457,6 +3603,7 @@ Replaces         : Stat Negation Aura - Strength DPS (id=162698)
 Class            : Protection Protection Blood Warrior, Paladin, Death Knight
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3474,6 +3621,7 @@ Effects          :
 Name             : Item - Death Knight T17 Frost 4P Bonus (id=165568) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : AOE Heal, Heal
@@ -3493,6 +3641,7 @@ Description      : While Pillar of Frost is active, your special attacks trap a 
 Name             : Frozen Runeblade (id=165569) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : Melee
 Range            : 100 yards
 Velocity         : 24 yards/sec
 Triggered by     : Item - Death Knight T17 Frost 4P Driver (170205)
@@ -3514,6 +3663,7 @@ Description      : $@spelldesc165568
 Name             : Item - Death Knight T17 Frost 4P Driver (id=167655) [Spell Family (15), Hidden] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : None
 Range            : 100 yards
 Duration         : 20 seconds
 Proc Chance      : 101%
@@ -3537,6 +3687,7 @@ Tooltip          : Mastery increased by $s1.
 Name             : Frozen Runeblade (id=170202) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : None
 Range            : 100 yards
 Velocity         : 24 yards/sec
 Duration         : 20 seconds
@@ -3562,6 +3713,7 @@ Tooltip          : $s1 souls stolen.
 Name             : Item - Death Knight T17 Frost 4P Driver (id=170205) [Spell Family (15), Hidden] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : None
 Range            : 100 yards
 Duration         : 20 seconds
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -3582,6 +3734,7 @@ Description      : $@spelldesc165568
 Name             : Frozen Runeblade Visual (id=170575) [Spell Family (15), Hidden] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : None
 Range            : 100 yards
 Velocity         : 24 yards/sec
 Stacks           : 50 maximum
@@ -3604,6 +3757,7 @@ Tooltip          : Frost damage dealt increased by $s1%.
 Name             : Frozen Runeblade (id=178808) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : Melee
 Range            : 100 yards
 Velocity         : 24 yards/sec
 Triggered by     : Item - Death Knight T17 Frost 4P Driver (170205)
@@ -3625,6 +3779,7 @@ Description      : $@spelldesc165568
 Name             : Dark Succor (id=178819) [Spell Family (15), Passive] 
 Class            : Frost Unholy Death Knight
 School           : Physical
+Spell Type       : None
 Spell Level      : 58
 Proc Chance      : 100%
 Proc Flags       : .x...... ........ ........ ........ 
@@ -3645,6 +3800,7 @@ Description      : When you kill an enemy that yields experience or honor, your 
 Name             : Frozen Obliteration (id=184982) 
 Class            : Death Knight
 School           : Frost
+Spell Type       : Melee
 Range            : 100 yards
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
@@ -3662,6 +3818,7 @@ Description      : Obliterate deals additional damage as Frost damage.
 Name             : Item - Death Knight T18 Unholy 2P Bonus (id=187865) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -3678,6 +3835,7 @@ Description      : Increases the damage dealt by your pets by $s1%.
 Name             : Crazed Monstrosity (id=187970) 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Duration         : Aura (infinite)
 Attributes       : ........ x....... .......x x..x....   .....x.. ........ ........ ........ 
                  : x..x.... ......x. ...x.... ........   ........ ........ ....x... ........ 
@@ -3698,6 +3856,7 @@ Tooltip          : Damage increased by $m2%, and attack speed increased by $m3%.
 Name             : Crazed Monstrosity (id=187981) 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Duration         : 30 seconds
 Attributes       : ........ ........ .......x x..x....   .....x.. ........ ........ ........ 
                  : x..x.... ......x. ...x.... ........   ........ ........ ....x... ........ 
@@ -3721,6 +3880,7 @@ Tooltip          : Damage increased by $m2%, and attack speed increased by $m3%.
 Name             : Death and Decay (id=188290) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : None
 Range            : 50000 yards
 Duration         : 10 seconds
 Family Flags     : 118
@@ -3749,6 +3909,7 @@ Tooltip          : $?s206930[Heart Strike will hit up to ${$m3+2} targets.][Scou
 Name             : Crystalline Swords (id=189186) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Proc Chance      : 45%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
@@ -3768,6 +3929,7 @@ Description      : Your melee attacks have a chance to create icy copies of |cFF
 Name             : Sindragosa's Fury (rank=Artifact) (id=190778) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : None
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 300 seconds
@@ -3786,6 +3948,7 @@ Description      : Summons Sindragosa, who breathes frost on all enemies within 
 Name             : Frost Breath (id=190780) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : Magic
 Range            : 100 yards
 Duration         : 10 seconds
 Stacks           : 1 maximum
@@ -3809,6 +3972,7 @@ Tooltip          : Movement speed slowed by $s2%.
 Name             : Aspect of the Beast (id=191384) [Spell Family (9), Passive] 
 Class            : Hunter, Death Knight
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Range            : 50000 yards
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -3843,6 +4007,7 @@ Increases the effectiveness of your pet's Predator's Thirst, Endurance Training,
 Name             : Virulent Plague (id=191587) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : Melee
 Spell Level      : 55
 Range            : 50000 yards
 Duration         : 21 seconds
@@ -3870,6 +4035,7 @@ Always erupts if the infected dies.
 Name             : Virulent Eruption (id=191685) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : Magic
 Spell Level      : 18
 Range            : 100 yards
 Affecting spells : Mastery: Dreadblade (77515 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Ebon Fever (207269 effect#1), Master of Ghouls (246995 effect#1), 
@@ -3889,6 +4055,7 @@ Description      : $@spelldesc191587
 Name             : Famine (id=191727) 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 6 seconds
 Stacks           : 3 maximum
@@ -3909,6 +4076,7 @@ Tooltip          : Reduces damage dealt to the Death Knight by $m1%.
 Name             : War (id=191728) 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 6 seconds
 Stacks           : 3 maximum
@@ -3929,6 +4097,7 @@ Tooltip          : Reduces healing dealt by $m1%.
 Name             : Pestilence (id=191729) 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : Magic
 Range            : 100 yards
 Duration         : 6 seconds
 Stacks           : 3 maximum
@@ -3950,6 +4119,7 @@ Tooltip          : Suffering $o1 damage over $d.
 Name             : Death (id=191730) 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 6 seconds
 Stacks           : 3 maximum
@@ -3970,6 +4140,7 @@ Tooltip          : Increases damage taken from the Death Knight by $m1%.
 Name             : Festering Wound (id=194310) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : Melee
 Spell Level      : 57
 Range            : 50000 yards
 Duration         : 30 seconds
@@ -3996,6 +4167,7 @@ Tooltip          : Suffering from a wound that will deal ${$194311s1/$s1} Shadow
 Name             : Festering Wound (id=194311) [Scaling Spell (-1), Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : Melee
 Spell Level      : 57
 Range            : 50000 yards
 Proc Chance      : 101%
@@ -4019,6 +4191,7 @@ Description      : $@spelldesc194310
 Name             : Rapid Decomposition (id=194662) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4039,6 +4212,7 @@ Description      : Your Blood Plague and Death and Decay deal damage $s2% more o
 Name             : Rune Tap (id=194679) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : None
 Resource         : 1 Rune (5) (id=10602)
 Resource         : -10 Runic Power (6) (id=10667)
 Duration         : 4 seconds
@@ -4063,6 +4237,7 @@ Tooltip          : Damage taken reduced by $s1%.
 Name             : Bonestorm (id=194844) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : None
 Resource         : 10 - 100 Runic Power (6) (id=10533)
 GCD              : 1.5 seconds
 Duration         : 1 seconds
@@ -4089,6 +4264,7 @@ Tooltip          : Dealing $196528s1 Shadow damage and healing for $s2% of maxim
 Name             : Icy Talons (id=194878) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : None
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 101%
 Proc Flags       : ....x... ....x... x.x..x.. ........ 
@@ -4109,6 +4285,7 @@ Description      : Your Runic Power spending abilities increase your melee attac
 Name             : Icy Talons (id=194879) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : None
 Duration         : 6 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
@@ -4129,6 +4306,7 @@ Tooltip          : Attack speed increased $s1%.
 Name             : Frozen Pulse (id=194909) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
@@ -4150,6 +4328,7 @@ Description      : While you have fewer than $m2 full $LRune:Runes;, your auto a
 Name             : Gathering Storm (id=194912) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ....x... ..x.x.x. x.x..x.. ........ 
                  : Yellow Melee, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell, Periodic, Trap Triggered
@@ -4169,6 +4348,7 @@ Description      : Each Rune spent during Remorseless Winter increases its damag
 Name             : Glacial Advance (id=194913) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : Magic
 Resource         : 30 Runic Power (6) (id=10535)
 Range            : 100 yards
 GCD              : 1.5 seconds
@@ -4191,6 +4371,7 @@ Variables        : $CAP=${($AP+$OAP)*2/3}
 Name             : All Will Serve (id=194916) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ..x.x.x. x...x... x....... ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, AOE Hostile Spell, Hostile Spell
@@ -4210,6 +4391,7 @@ Description      : Your Raise Dead spell summons an additional skeletal minion.
 Name             : Pestilent Pustules (id=194917) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4226,6 +4408,7 @@ Description      : Bursting a Festering Wound has a $s1% chance to grant you Run
 Name             : Bone Shield (id=195181) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : Magic
 Spell Level      : 55
 Duration         : 30 seconds
 Internal Cooldown: 2.5 seconds
@@ -4260,6 +4443,7 @@ Haste increased by $w4%.
 Name             : Marrowrend (id=195182) [Spell Family (15)] 
 Class            : Blood Death Knight
 School           : Physical
+Spell Type       : Melee
 Resource         : 2 Rune (5) (id=10513)
 Resource         : -20 Runic Power (6) (id=10671)
 Spell Level      : 55
@@ -4291,6 +4475,7 @@ $@spelldesc195181
 Name             : Death's Caress (id=195292) [Spell Family (15)] 
 Class            : Blood Death Knight
 School           : Shadow
+Spell Type       : Magic
 Resource         : 1 Rune (5) (id=10518)
 Resource         : -10 Runic Power (6) (id=10672)
 Spell Level      : 58
@@ -4319,6 +4504,7 @@ $@spelldesc55078
 Name             : Frost Fever (id=195617) [Scaling Spell (1)] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : Melee
 Spell Level      : 55
 Range            : 50000 yards
 Proc Chance      : 101%
@@ -4341,6 +4527,7 @@ Description      : Grants the Death Knight $s2 runic power.
 Name             : Frost Fever (id=195621) [Scaling Spell (1), Spell Family (15), Passive, Hidden] 
 Class            : Frost Death Knight
 School           : Frost
+Spell Type       : Melee
 Spell Level      : 55
 Range            : 50000 yards
 Internal Cooldown: 1 seconds
@@ -4363,6 +4550,7 @@ Description      : $@spelldesc195617
 Name             : Bloodworms (id=195679) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 5
 Proc Flags       : ..x..... ........ ........ ........ 
@@ -4391,6 +4579,7 @@ If you drop below $s2% health, your Bloodworms will immediately burst and heal y
 Name             : Frozen Pulse (id=195750) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : Magic
 Affecting spells : Mastery: Frozen Heart (77514 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
 Triggered by     : Frozen Pulse (194909)
 Family Flags     : 43, 120
@@ -4409,6 +4598,7 @@ Description      : $@spelldesc194909
 Name             : Festering Wound (id=195757) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : None
 Triggered by     : Festering Wound (197147)
 Family Flags     : 85
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4428,6 +4618,7 @@ Description      : $@spelldesc194310
 Name             : Glacial Advance (id=195975) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : Magic
 Range            : 100 yards
 Affecting spells : Mastery: Frozen Heart (77514 effect#1), Death Knight (137005 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
 Family Flags     : 43, 50, 120
@@ -4447,6 +4638,7 @@ Description      : $@spelldesc194913
 Name             : Bloodworm (id=196361) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : None
 Duration         : 16 seconds
 Triggered by     : Bloodworms (195679)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -4464,6 +4656,7 @@ Description      : $@spelldesc195679
 Name             : Bonestorm (id=196528) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : Melee
 Affecting spells : Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
 Triggered by     : Bonestorm (194844)
 Family Flags     : 43
@@ -4483,6 +4676,7 @@ Name             : Bonestorm (id=196545) [Spell Family (15)]
 Hotfixed         : Attributes
 Class            : Death Knight
 School           : Shadow
+Spell Type       : None
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4500,6 +4694,7 @@ Name             : Remorseless Winter (id=196770) [Spell Family (15)]
 Hotfixed         : Affecting Spells
 Class            : Frost Death Knight
 School           : Frost
+Spell Type       : None
 Resource         : 1 Rune (5) (id=10582)
 Resource         : -10 Runic Power (6) (id=10673)
 Spell Level      : 57
@@ -4529,6 +4724,7 @@ Variables        : $CAP=${($AP+$OAP)*2/3}
 Name             : Remorseless Winter (id=196771) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : Magic
 Affecting spells : Mastery: Frozen Heart (77514 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Gathering Storm (211805 effect#1), Master of Ghouls (246995 effect#1), Frozen Tempest (278487 effect#2), 
 Triggered by     : Remorseless Winter (196770)
 Family Flags     : 43, 120, 121, 126
@@ -4548,6 +4744,7 @@ Description      : $@spelldesc196770
 Name             : Outbreak (id=196782) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : Magic
 Spell Level      : 81
 Range            : 100 yards
 Duration         : 6 seconds
@@ -4570,6 +4767,7 @@ Plague.
 Name             : Festering Wound (id=197147) [Spell Family (15), Passive] 
 Class            : Unholy Death Knight
 School           : Shadow
+Spell Type       : None
 Spell Level      : 1
 Proc Chance      : 101%
 Proc Flags       : ....x... ........ ........ ........ 
@@ -4592,6 +4790,7 @@ Stacks up to $194310u times on any target.
 Name             : Bloodworms (id=197531) [Spell Family (15), Hidden] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : None
 Range            : 100 yards
 Triggered by     : Bloodworms (195679)
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -4610,6 +4809,7 @@ Description      : $@spelldesc195679
 Name             : Bloodworms (id=198494) [Hidden] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : None
 Duration         : 15 seconds
 Triggered by     : Bloodworms (197531)
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -4627,6 +4827,7 @@ Effects          :
 Name             : Val'kyr Strike (id=198715) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : Magic
 Range            : 40 yards
 Cast Time        : 2 seconds
 Velocity         : 25 yards/sec
@@ -4646,6 +4847,7 @@ Description      : Inflicts Shadow damage to an enemy.
 Name             : Claw (id=199373) 
 Class            : Death Knight
 School           : Physical
+Spell Type       : Melee
 Resource         : 40 Energy (3) (id=10760)
 Spell Level      : 50
 Range            : 5 yards
@@ -4666,6 +4868,7 @@ Name             : Activating Specialization (id=200749) [Hidden]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
+Spell Type       : None
 Range            : 50000 yards
 Cast Time        : 5 seconds
 Attributes       : .......x ........ ........ ....x...   ..xxx..x ........ .x...... ........ 
@@ -4685,6 +4888,7 @@ Tooltip          : Switch to your Primary Talent Specialization.
 Name             : Blood for Blood (rank=PvP Talent) (id=202846) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4705,6 +4909,7 @@ Description      : Heart Strike damage increased by $m1%, but costs $m2% of your
 Name             : Northrend Winds (rank=PvP Talent) (id=204088) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4723,6 +4928,7 @@ Description      : The critical strike chance of your Howling Blast increased by
 Name             : Crystalline Swords (id=205164) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : Magic
 Spell Level      : 80
 Range            : 100 yards
 Velocity         : 0.3 yards/sec
@@ -4741,6 +4947,7 @@ Description      : $@spelldesc189186
 Name             : Crystalline Swords (id=205165) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : Magic
 Spell Level      : 80
 Range            : 100 yards
 Velocity         : 0.3 yards/sec
@@ -4759,6 +4966,7 @@ Description      : $@spelldesc189186
 Name             : Consumption (rank=Artifact) (id=205223) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 56
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -4789,6 +4997,7 @@ Description      : Strikes all enemies in front of you with a hungering attack t
 Name             : Consumption (id=205224) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ........ ........ ........ ...x....   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ....xx..   ........ ........ x....... ........ 
@@ -4806,6 +5015,7 @@ Description      : $@spelldesc205223
 Name             : Red Thirst (id=205723) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4824,6 +5034,7 @@ Description      : Reduces the cooldown on Vampiric Blood by $s1 sec per $s2 Run
 Name             : Anti-Magic Barrier (id=205727) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : None
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4848,6 +5059,7 @@ Description      : Reduces the cooldown of Anti-Magic Shell by ${$s1/-1000} sec 
 Name             : Heart Strike (id=206930) [Scaling Spell (1), Spell Family (15)] 
 Class            : Blood Death Knight
 School           : Physical
+Spell Type       : Melee
 Resource         : 1 Rune (5) (id=11004)
 Resource         : -15 Runic Power (6) (id=11005)
 Resource         : 0 - 10 Health (-2) (id=11006) w/ Blood for Blood (id=202846)
@@ -4885,6 +5097,7 @@ Tooltip          : Movement speed reduced by $s5%.
 Name             : Blooddrinker (id=206931) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : Magic
 Resource         : 1 Rune (5) (id=11007)
 Resource         : -10 Runic Power (6) (id=11008)
 Spell Level      : 1
@@ -4913,6 +5126,7 @@ Tooltip          : Draining $s1 health from the target every $t1 sec.
 Name             : Mark of Blood (id=206940) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : Magic
 Resource         : 30 Runic Power (6) (id=11368)
 Spell Level      : 1
 Range            : 15 yards
@@ -4938,6 +5152,7 @@ Tooltip          : Auto attacks will heal the victim for $206945s1% of their max
 Name             : Mark of Blood (id=206945) 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : None
 Range            : 100 yards
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ..x..... ........ ......x. .....x..   ........ ........ x....... ....x... 
@@ -4955,6 +5170,7 @@ Description      : $@spelldesc206940
 Name             : Will of the Necropolis (rank=Passive Talent) (id=206967) [Passive] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4975,6 +5191,7 @@ Description      : Damage taken below $s3% Health is reduced by $s2%.
 Name             : Tightening Grasp (id=206970) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : None
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4993,6 +5210,7 @@ Description      : Reduces the cooldown on Gorefiend's Grasp by ${$m1/-1000} sec
 Name             : Foul Bulwark (id=206974) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : None
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5012,6 +5230,7 @@ Variables        : $increase=${$s1}
 Name             : Blood Mirror (id=206977) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : None
 Spell Level      : 1
 Range            : 5 yards
 Duration         : 10 seconds
@@ -5036,6 +5255,7 @@ Tooltip          : Redirecting $s2% of damage taken by the Death Knight to the l
 Name             : Murderous Efficiency (id=207061) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Family Flags     : 37
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5054,6 +5274,7 @@ Description      : Consuming the Killing Machine effect has a $s1% chance to gra
 Name             : Murderous Efficiency (id=207062) [Scaling Spell (1)] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 50000 yards
 Proc Chance      : 101%
@@ -5073,6 +5294,7 @@ Description      : Grants the Death Knight $s1 rune.
 Name             : Runic Attenuation (id=207104) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Real PPM         : 18 (Haste multiplier)
 Proc Flags       : ..x..... ........ ........ ........ 
@@ -5093,6 +5315,7 @@ Description      : Auto attacks have a chance to generate $s1 Runic Power.
 Name             : Icecap (id=207126) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
@@ -5115,6 +5338,7 @@ Variables        : $cd=${$m1/10}
 Name             : Avalanche (id=207142) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Internal Cooldown: 0.1 seconds
 Proc Chance      : 100%
@@ -5136,6 +5360,7 @@ Description      : Casting Howling Blast with Rime active causes jagged icicles 
 Name             : Avalanche (id=207150) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Affecting spells : Mastery: Frozen Heart (77514 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
@@ -5156,6 +5381,7 @@ Description      : $@spelldesc207142
 Name             : Blinding Sleet (id=207167) [Scaling Spell (-1), Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : Magic
 Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 5 seconds
@@ -5183,6 +5409,7 @@ Tooltip          : Disoriented.
 Name             : Volatile Shielding (id=207188) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5204,6 +5431,7 @@ Description      : Your Anti-Magic Shell absorbs $s1% more damage, and generates
 Name             : Permafrost (id=207200) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Proc Chance      : 100%
 Proc Flags       : ..x..... ........ ........ ........ 
@@ -5224,6 +5452,7 @@ Description      : Your auto attack damage grants you an absorb shield equal to 
 Name             : Frostscythe (id=207230) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : Melee
 Resource         : 1 Rune (5) (id=11012)
 Spell Level      : 1
 Range            : 8 yards
@@ -5252,6 +5481,7 @@ Description      : A sweeping attack that strikes all enemies in front of you fo
 Name             : Obliteration (id=207256) [Spell Family (15), Hidden] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Duration         : Aura (infinite)
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
@@ -5277,6 +5507,7 @@ Tooltip          : $@spellaura281238
 Name             : Arrow Spray (id=207260) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : Ranged
 Spell Level      : 28
 Range            : 40 yards
 GCD              : 1 seconds
@@ -5299,6 +5530,7 @@ Description      : Fires a spray of arrows, hitting your current target and all 
 Name             : Bursting Sores (id=207264) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5317,6 +5549,7 @@ Description      : Festering Wounds deal $s1% more damage when burst, and all en
 Name             : Bursting Sores (id=207267) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 50000 yards
 Velocity         : 0.15 yards/sec
@@ -5341,6 +5574,7 @@ Description      : $@spelldesc207264
 Name             : Ebon Fever (id=207269) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5367,6 +5601,7 @@ Description      : Virulent Plague deals $s3% more damage over time in half the 
 Name             : Infected Claws (id=207272) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5383,6 +5618,7 @@ Description      : Your $?s207313[abomination's Cleaver][ghoul's Claw] attack ha
 Name             : Unholy Frenzy (id=207289) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : Magic
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 75 seconds
@@ -5407,6 +5643,7 @@ Auto attacks infect the target with a Festering Wound.
 Name             : Clawing Shadows (id=207311) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : Melee
 Resource         : 1 Rune (5) (id=11017)
 Resource         : -10 Runic Power (6) (id=11018)
 Spell Level      : 1
@@ -5434,6 +5671,7 @@ Description      : Deals $s2 Shadow damage and causes 1 Festering Wound to burst
 Name             : Sludge Belcher (id=207313) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5450,6 +5688,7 @@ Description      : Raise Dead now summons an abomination instead of a ghoul, wit
 Name             : Epidemic (id=207317) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : None
 Resource         : 30 Runic Power (6) (id=11019)
 GCD              : 1.5 seconds
 Family Flags     : 121
@@ -5468,6 +5707,7 @@ Description      : Causes each of your Virulent Plagues to flare up, dealing $21
 Name             : Spell Eater (id=207321) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5490,6 +5730,7 @@ Description      : Anti-Magic Shell absorbs $s1% more magic damage and lasts ${$
 Name             : Heartbreaker (id=210738) [Scaling Spell (1)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : Melee
 Spell Level      : 55
 Range            : 50000 yards
 Proc Chance      : 101%
@@ -5509,6 +5750,7 @@ Description      : $@spelldesc206930
 Name             : Rune Strike (id=210764) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : Melee
 Range            : 5 yards
 GCD              : 1.5 seconds
 Charges          : 2 (60 seconds cooldown)
@@ -5539,6 +5781,7 @@ Cooldown reduced by $s2 sec for every Rune you spend.
 Name             : Remorseless Winter (rank=Talent) (id=211793) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : Magic
 Duration         : 3 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
@@ -5561,6 +5804,7 @@ Tooltip          : Movement speed reduced by $s1%.
 Name             : Gathering Storm (id=211805) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : None
 Range            : 50000 yards
 Duration         : 8 seconds
 Stacks           : 10 maximum
@@ -5583,6 +5827,7 @@ Tooltip          : Remorseless Winter damage increased by $s1%.
 Name             : Dark Empowerment (id=211947) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : Melee
 Range            : 40 yards
 Duration         : Aura (infinite)
 Stacks           : 1 maximum
@@ -5604,6 +5849,7 @@ Tooltip          : Damage dealt increased by $w1%.
 Name             : Smash (id=212332) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 5 yards
 Duration         : 1 seconds
@@ -5627,6 +5873,7 @@ Tooltip          : Stunned.
 Name             : Cleaver (id=212333) 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Resource         : 40 Energy (3) (id=11147)
 Spell Level      : 1
 Range            : 5 yards
@@ -5649,6 +5896,7 @@ Description      : Hack at the enemy, dealing $212335s1% of normal melee damage.
 Name             : Cleaver (id=212335) 
 Class            : Death Knight
 School           : Physical
+Spell Type       : Melee
 Resource         : 40 Energy (3) (id=11148)
 Spell Level      : 1
 Range            : 5 yards
@@ -5668,6 +5916,7 @@ Description      : $@spelldesc212333
 Name             : Smash (id=212336) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Range            : 5 yards
 Cooldown         : 90 seconds
@@ -5689,6 +5938,7 @@ Description      : Smash the target with the blunt side of the cleaver, dealing 
 Name             : Powerful Smash (id=212337) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 5 yards
 Duration         : 2 seconds
@@ -5712,6 +5962,7 @@ Tooltip          : Stunned.
 Name             : Vile Gas (id=212338) 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : Melee
 Resource         : 40 Energy (3) (id=11149)
 Spell Level      : 1
 Range            : 5 yards
@@ -5733,6 +5984,7 @@ Name             : Skulker Shot (id=212423)
 Hotfixed         : Attributes
 Class            : Death Knight
 School           : Physical
+Spell Type       : Ranged
 Range            : 35 yards
 Cast Time        : 2 seconds
 GCD              : 1 seconds
@@ -5755,6 +6007,7 @@ Description      : A ranged shot that causes Physical damage.
 Name             : Wraith Walk (id=212552) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Spell Level      : 60
 GCD              : 1.5 seconds
 Duration         : 4 seconds
@@ -5794,6 +6047,7 @@ Cannot attack.
 Name             : Wraith Walk (id=212654) [Spell Family (15), Hidden] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Duration         : 0.001 seconds
 Triggered by     : Wraith Walk (212552)
 Attributes       : .......x ........ ........ ........   ........ .......x ........ ........ 
@@ -5813,6 +6067,7 @@ Tooltip          : $@spelldesc212552
 Name             : Epidemic (id=212739) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : Magic
 Range            : 100 yards
 Affecting spells : Mastery: Dreadblade (77515 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
 Family Flags     : 43, 78, 121
@@ -5831,6 +6086,7 @@ Description      : $@spelldesc207317
 Name             : Soul Reaper (id=215711) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : Magic
 Spell Level      : 87
 Range            : 100 yards
 Duration         : 8 seconds
@@ -5850,6 +6106,7 @@ Tooltip          : Haste increased by $s1%.
 Name             : Epidemic (id=215969) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : Magic
 Range            : 100 yards
 Affecting spells : Mastery: Dreadblade (77515 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
 Family Flags     : 43, 78, 121
@@ -5870,6 +6127,7 @@ Description      : $@spelldesc207317
 Name             : Ossuary (id=219786) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : None
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5890,6 +6148,7 @@ Additionally, your maximum Runic Power is increased by ${$m2/10}.
 Name             : Ossuary (id=219788) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : None
 Duration         : Aura (infinite)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5910,6 +6169,7 @@ Tooltip          : Death Strike cost reduced by ${$m1/-10} Runic Power.
 Name             : Tombstone (id=219809) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : None
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 60 seconds
@@ -5937,6 +6197,7 @@ Tooltip          : Absorbing $w1 damage.
 Name             : Apocalypse (rank=Artifact) (id=220143) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : Melee
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 90 seconds
@@ -5962,6 +6223,7 @@ Description      : Strikes the enemy, dealing $sw1 Physical damage and bursting 
 Name             : Army of the Dead (id=221180) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : None
 Duration         : 15 seconds
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5980,6 +6242,7 @@ Description      : $@spelldesc42650
 Name             : Runic Attenuation (id=221322) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Triggered by     : Runic Attenuation (207104)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5996,6 +6259,7 @@ Description      : $@spelldesc207104
 Name             : Heartbreaker (id=221536) [Scaling Spell (1), Passive] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : Melee
 Spell Level      : 55
 Proc Chance      : 101%
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6014,6 +6278,7 @@ Description      : Heart Strike generates ${$210738s1/10} additional Runic Power
 Name             : Asphyxiate (id=221562) [Spell Family (15)] 
 Class            : Blood Death Knight
 School           : Physical
+Spell Type       : Magic
 Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
@@ -6036,6 +6301,7 @@ Tooltip          : Stunned.
 Name             : Blood Mirror (id=221847) [Spell Family (7)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : Magic
 Range            : 100 yards
 Attributes       : ........ ........ ..x..... x..x....   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -6053,6 +6319,7 @@ Description      : $@spelldesc206977
 Name             : Obliterate (id=222024) [Scaling Spell (-1), Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : Melee
 Range            : 100 yards
 Affecting spells : Killing Machine (51124 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Koltira's Newfound Will (208782 effect#2), Master of Ghouls (246995 effect#1), Item - Death Knight T21 Frost 2P Bonus (251873 effect#2)
 Triggered by     : Obliterate (49020)
@@ -6074,6 +6341,7 @@ Description      : $@spelldesc49020
 Name             : Frost Strike (id=222026) [Scaling Spell (-1), Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : Melee
 Range            : 100 yards
 Affecting spells : Mastery: Frozen Heart (77514 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Biting Cold (166057 effect#1), Master of Ghouls (246995 effect#1), 
 Triggered by     : Frost Strike (49143)
@@ -6094,6 +6362,7 @@ Description      : $@spelldesc49143
 Name             : Consumption (id=224685) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Spell Level      : 56
 Range            : 30 yards
 Velocity         : 1.2 yards/sec
@@ -6112,6 +6381,7 @@ Effects          :
 Name             : Howling Blast (id=237680) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : Magic
 Spell Level      : 55
 Range            : 100 yards
 Affecting spells : Rime (59052 effect#1), Mastery: Frozen Heart (77514 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Biting Cold (166057 effect#1), Northrend Winds (204088 effect#1), Master of Ghouls (246995 effect#1), Item - Death Knight T21 Frost 2P Bonus (251873 effect#1)
@@ -6132,6 +6402,7 @@ Name             : Vindicaar Matrix Crystal (id=251463)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
+Spell Type       : None
 GCD              : 1.5 seconds
 Triggered by     : Vindicaar Matrix Crystal (255529)
 Attributes       : ........ ........ ........ ........   ...x...x ..x..... ........ ........ 
@@ -6149,6 +6420,7 @@ Description      : Unlock powers at the Vindicaar's Matrix Core to use while on 
 Name             : Item - Death Knight T21 Frost 4P Bonus (id=251875) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 1.69 (Haste multiplier)
 Proc Flags       : ....x... x...x... x....... ........ 
@@ -6169,6 +6441,7 @@ Description      : When you deal Frost damage, you have a chance to release a ba
 Name             : Freezing Death (id=253590) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : Melee
 Range            : 100 yards
 Velocity         : 5 yards/sec
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6186,6 +6459,7 @@ Description      : $@spelldesc251875
 Name             : Inexorable Assault (id=253593) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6205,6 +6479,7 @@ $?s207230[Obliterate and Frostscythe consume][Obliterate consumes] a stack to de
 Name             : Inexorable Assault (id=253595) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : None
 Spell Level      : 1
 Duration         : Aura (infinite)
 Internal Cooldown: 0.5 seconds
@@ -6229,6 +6504,7 @@ Tooltip          : $?s207230[Your next $m2 $LObliterate or Frostscythe:Obliterat
 Name             : Inexorable Assault (id=253597) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 20 yards
 Affecting spells : Mastery: Frozen Heart (77514 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
@@ -6249,6 +6525,7 @@ Name             : Vindicaar Matrix Crystal (id=255529) [Hidden]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
+Spell Type       : None
 Triggered by     : Activating Specialization (200749)
 Attributes       : .......x x....... .......x x..x.x..   ...x.x.x ..x..... ........ ........ 
                  : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ....x... 
@@ -6269,6 +6546,7 @@ Name             : Light's Judgment (rank=Racial) (id=255647) [Scaling Spell (-6
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
+Spell Type       : Magic
 Max Scaling Level: 120
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -6291,6 +6569,7 @@ Name             : Holy Resistance (rank=Racial Passive) (id=255651) [Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6308,6 +6587,7 @@ Name             : Light's Reckoning (rank=Racial Passive) (id=255652) [Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ .......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -6325,6 +6605,7 @@ Name             : Demonbane (rank=Racial Passive) (id=255653) [Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6342,6 +6623,7 @@ Name             : Light's Judgment (rank=Racial) (id=256893) [Scaling Spell (-6
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
+Spell Type       : Magic
 Max Scaling Level: 120
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -6364,6 +6646,7 @@ Name             : Light's Reckoning (rank=Racial Passive) (id=256896) [Scaling 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
+Spell Type       : Magic
 Max Scaling Level: 120
 Range            : 40 yards
 Triggered by     : Light's Reckoning (255652)
@@ -6387,6 +6670,7 @@ Heals $s2 to allies within $A1.
 Name             : Haste (id=261582) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 2
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6404,6 +6688,7 @@ Tooltip          : Increases haste by $s1.
 Name             : Resounding Protection (id=263962) [Scaling Spell (-8), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 15
 Triggered by     : Resounding Protection (269279)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6423,6 +6708,7 @@ Description      : Every $270568t1 sec, gain an absorb shield for $s1 for $26927
 Name             : Azerite Empowered (id=263978) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 13
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6440,6 +6726,7 @@ Description      : Increases the item level of this item by 5.
 Name             : Elemental Whirl (id=263984) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 21
 Triggered by     : Elemental Whirl (268953), Elemental Whirl (268956), Elemental Whirl (268955), Elemental Whirl (268954)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6460,6 +6747,7 @@ Name             : Heed My Call (id=263987) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 22
 Triggered by     : Heed My Call (271685), Heed My Call (271686)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6483,6 +6771,7 @@ Tooltip          : Your damaging abilities have a chance to deal $s1 Nature dama
 Name             : Blood Siphon (id=264108) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 18
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6505,6 +6794,7 @@ Tooltip          : Increases Mastery by $s1 and Leech by $s2.
 Name             : Overwhelming Power (id=266180) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 30
 Triggered by     : Overwhelming Power (271711)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6526,6 +6816,7 @@ Name             : Azerite Globules (id=266936) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 462
 Triggered by     : Azerite Globules (279958)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6549,6 +6840,7 @@ Name             : Gutripper (id=266937) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 31
 Triggered by     : Gutripper (270668), Gutripper (269031)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6570,6 +6862,7 @@ Description      : Your damaging abilities have a chance to deal $s1 Physical da
 Name             : Lifespeed (id=267665) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 20
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6592,6 +6885,7 @@ Tooltip          : Increases your Haste by $s1 and your Avoidance by $s2.
 Name             : Winds of War (id=267671) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Azerite Power Id : 43
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
@@ -6615,6 +6909,7 @@ Name             : Azerite Veins (id=267683) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 89
 Triggered by     : Azerite Veins (270674)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6635,6 +6930,7 @@ Name             : Azerite Fortification (id=268435) [Scaling Spell (-8), Passiv
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 86
 Triggered by     : Azerite Fortification (270659)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6656,6 +6952,7 @@ Name             : Impassive Visage (id=268437) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 6 seconds
 Proc Chance      : 100%
 Azerite Power Id : 83
@@ -6681,6 +6978,7 @@ Name             : Longstrider (id=268594) [Scaling Spell (-7), Passive]
 Hotfixed         : Scaling Spell (-1 -> -7)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 14
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6704,6 +7002,7 @@ Name             : Bulwark of the Masses (id=268595) [Scaling Spell (-8), Passiv
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 84
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6725,6 +7024,7 @@ Name             : Gemhide (id=268596) [Scaling Spell (-1), Passive]
 Hotfixed         : Scaling Spell (-7 -> -1)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 85
 Triggered by     : Gemhide (270576)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6750,6 +7050,7 @@ Tooltip          : When dealt damage greater than $s3% of your maximum health, g
 Name             : Vampiric Speed (id=268599) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 44
 Triggered by     : Vampiric Speed (269238), Vampiric Speed (269239)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6774,6 +7075,7 @@ Name             : Self Reliance (id=268600) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 87
 Triggered by     : Self Reliance (270661)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6796,6 +7098,7 @@ Tooltip          : While no enemies are within $s2 yds, you heal for $w1 every $
 Name             : Crystalline Carapace (id=271536) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 98
 Triggered by     : Crystalline Carapace (271539), Crystalline Carapace (271538)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6821,6 +7124,7 @@ Name             : Ablative Shielding (id=271540) [Scaling Spell (-1), Passive]
 Hotfixed         : Scaling Spell (-7 -> -1)
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 99
 Triggered by     : Ablative Shielding (271543)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6841,6 +7145,7 @@ Name             : Strength in Numbers (id=271546) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 100
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6859,6 +7164,7 @@ Description      : Taking damage has a chance to increase your maximum health by
 Name             : Shimmering Haven (id=271557) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 101
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6880,6 +7186,7 @@ Name             : Deep Cuts (id=272684) [Scaling Spell (-8), Spell Family (15),
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 106
 Triggered by     : Deep Cuts (272685)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6899,6 +7206,7 @@ Description      : Heart Strike amplifies your Blood Plague on your primary targ
 Name             : Icy Citadel (id=272718) [Scaling Spell (-1), Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 108
 Triggered by     : Icy Citadel (272723)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6919,6 +7227,7 @@ Description      : When Pillar of Frost expires, your Strength is increased by $
 Name             : Festering Doom (id=272738) [Scaling Spell (-1), Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 109
 Triggered by     : Festering Doom (272741)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6939,6 +7248,7 @@ Name             : Bone Spike Graveyard (id=273088) [Scaling Spell (-8), Spell F
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 140
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6960,6 +7270,7 @@ Description      : Casting $?s152280[Defile][Death and Decay] impales enemies wi
 Name             : Latent Chill (id=273093) [Scaling Spell (-1), Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 141
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6979,6 +7290,7 @@ Description      : Frost Strike deals an additional ${$s1+($s1/2)} damage if you
 Name             : Horrid Experimentation (id=273095) [Scaling Spell (-1), Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : None
 Azerite Power Id : 142
 Triggered by     : Horrid Experimentation (273096)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6997,6 +7309,7 @@ Description      : When Dark Transformation expires, the unholy energy in your g
 Name             : Horrid Experimentation (id=273096) [Scaling Spell (-1), Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : Magic
 Range            : 100 yards
 Affecting spells : Mastery: Dreadblade (77515 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
 Family Flags     : 43, 78
@@ -7019,6 +7332,7 @@ Name             : Ruinous Bolt (id=273150) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 156
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7037,6 +7351,7 @@ Name             : Meticulous Scheming (id=273682) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 192
 Triggered by     : Seize the Moment! (273714)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7062,6 +7377,7 @@ Name             : Rezan's Fury (id=273790) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 157
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7082,6 +7398,7 @@ Name             : Blightborne Infusion (id=273823) [Scaling Spell (-7), Passive
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 193
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7100,6 +7417,7 @@ Name             : Secrets of the Deep (id=273829) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 195
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7122,6 +7440,7 @@ Name             : Filthy Transfusion (id=273834) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 194
 Triggered by     : Filthy Transfusion (273836)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7140,6 +7459,7 @@ Description      : Your damaging abilities have a chance to invoke a tainted swa
 Name             : Hemostasis (id=273946) [Scaling Spell (1), Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : Melee
 Proc Chance      : 101%
 Proc Flags       : ....x... ........ x....... ........ 
                  : Yellow Melee, Hostile Spell
@@ -7159,6 +7479,7 @@ Description      : Each enemy hit by Blood Boil increases the damage and healing
 Name             : Hemostasis (id=273947) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Duration         : 15 seconds
 Stacks           : 5 maximum
 Proc Chance      : 101%
@@ -7183,6 +7504,7 @@ Tooltip          : Damage and healing done by your next Death Strike increased b
 Name             : Grip of the Dead (id=273952) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : None
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -7201,6 +7523,7 @@ Description      : $?s152280[Defile][Death and Decay] reduces the movement speed
 Name             : Voracious (id=273953) [Scaling Spell (1), Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : None
 Proc Chance      : 101%
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7218,6 +7541,7 @@ Description      : Death Strike grants you $274009s1% Leech for $274009d.
 Name             : Voracious (id=274009) [Scaling Spell (1), Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : None
 Duration         : 6 seconds
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 101%
@@ -7239,6 +7563,7 @@ Tooltip          : Leech increased by $s1%.
 Name             : Marrowblood (id=274057) [Scaling Spell (-1), Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 197
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7256,6 +7581,7 @@ Description      : Death Strike heals for an additional $s1 for each remaining c
 Name             : Glacial Contagion (id=274070) [Scaling Spell (-1), Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 198
 Triggered by     : Glacial Contagion (274074)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7276,6 +7602,7 @@ Description      : Your autoattacks have a chance to apply Glacial Contagion, de
 Name             : Festermight (id=274081) [Scaling Spell (-1), Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 199
 Triggered by     : Festermight (274373)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7294,6 +7621,7 @@ Description      : Bursting a Festering Wound grants you $s1 Strength for 20 sec
 Name             : Consumption (id=274156) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : Melee
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 45 seconds
@@ -7317,6 +7645,7 @@ Description      : Strikes all enemies in front of you with a hungering attack t
 Name             : Festermight (id=274373) [Scaling Spell (-1), Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Duration         : 20 seconds
 Stacks           : 30 maximum
 Proc Chance      : 101%
@@ -7339,6 +7668,7 @@ Tooltip          : Strength increased by $w1.
 Name             : Consumption (id=274893) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Range            : 30 yards
 Velocity         : 1.2 yards/sec
 Triggered by     : Consumption (274156)
@@ -7356,6 +7686,7 @@ Effects          :
 Name             : Apocalypse (id=275699) [Spell Family (15)] 
 Class            : Unholy Death Knight
 School           : Shadow
+Spell Type       : Melee
 Spell Level      : 75
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -7382,6 +7713,7 @@ Summons an Army of the Dead ghoul for $221180d for each burst Festering Wound.
 Name             : Echoing Howl (id=275917) [Scaling Spell (-1), Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 242
 Triggered by     : Echoing Howl (275918)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7400,6 +7732,7 @@ Description      : When empowered by Rime, Howling Blast causes a secondary burs
 Name             : Echoing Howl (id=275918) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : Magic
 Range            : 100 yards
 Affecting spells : Mastery: Frozen Heart (77514 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
 Family Flags     : 43, 120
@@ -7420,6 +7753,7 @@ Description      : $@spelldesc275917
 Name             : Embrace of the Darkfallen (id=275924) [Scaling Spell (-7), Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 243
 Triggered by     : Embrace of the Darkfallen (275926)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7439,6 +7773,7 @@ Description      : When Vampiric Blood expires, your Leech is increased by $s1 f
 Name             : Harrowing Decay (id=275929) [Scaling Spell (-1), Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 244
 Triggered by     : Harrowing Decay (275931)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7457,6 +7792,7 @@ Description      : Death Coil infects the target with Harrowing Decay, dealing $
 Name             : Harbinger of Doom (id=276023) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -7477,6 +7813,7 @@ Description      : Sudden Doom triggers $s2% more often and can accumulate up to
 Name             : Death's Reach (id=276079) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : None
 Proc Chance      : 101%
 Proc Flags       : .x...... ........ ........ ........ 
                  : Killing Blow
@@ -7500,6 +7837,7 @@ Killing an enemy that yields experience or honor resets the cooldown of Death Gr
 Name             : Army of the Damned (id=276837) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
@@ -7524,6 +7862,7 @@ $cd2=${$s2/10}
 Name             : Pestilence (id=277234) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -7540,6 +7879,7 @@ Description      : Death and Decay damage has a $s1% chance to apply a Festering
 Name             : Val'kyr (rank=Unholy) (id=278107) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Range            : 50000 yards
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7559,6 +7899,7 @@ Description      : Your Summon Gargoyle spell summons a Val'kyr instead of a Gar
 Name             : Death Strike (rank=Rank 2) (id=278223) [Spell Family (15), Passive] 
 Class            : Frost Unholy Death Knight
 School           : Fire
+Spell Type       : None
 Spell Level      : 68
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7582,6 +7923,7 @@ Description      : Death Strike's healing is increased by $s1%.
 Name             : Eternal Rune Weapon (id=278479) [Scaling Spell (-1), Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 348
 Triggered by     : Eternal Rune Weapon (278543)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7605,6 +7947,7 @@ Description      : Dancing Rune Weapon grants you $s1 Strength, and each rune sp
 Name             : Killer Frost (id=278480) [Scaling Spell (-1), Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 346
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7624,6 +7967,7 @@ Description      : Frost Strike deals $s1 additional damage with each hit and ha
 Name             : Cankerous Wounds (id=278482) [Scaling Spell (-1), Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 350
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7645,6 +7989,7 @@ Description      : Festering Strike deals $s1 additional damage and has a $s2% i
 Name             : Bones of the Damned (id=278484) [Scaling Spell (-1), Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 349
 Triggered by     : Bones of the Damned (279503)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7666,6 +8011,7 @@ Description      : Marrowrend has a chance to grant an extra charge of Bone Shie
 Name             : Frozen Tempest (id=278487) [Scaling Spell (-1), Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 347
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7691,6 +8037,7 @@ Description      : Remorseless Winter deals an additional $s2 damage. The first 
 Name             : Last Surprise (id=278489) [Scaling Spell (-8), Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 351
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7710,6 +8057,7 @@ Description      : When your ghouls expire, they explode in viscera dealing $s1 
 Name             : Frostwyrm's Fury (id=279302) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : None
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 180 seconds
@@ -7730,6 +8078,7 @@ Description      : Summons a frostwyrm who breathes on all enemies within $s1 yd
 Name             : Frost Breath (id=279303) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : Magic
 Range            : 100 yards
 Duration         : 10 seconds
 Stacks           : 1 maximum
@@ -7755,6 +8104,7 @@ Tooltip          : Movement speed slowed by $s2%.
 Name             : Last Surprise (id=279606) [Scaling Spell (-8), Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Spell Type       : Magic
 Affecting spells : Mastery: Dreadblade (77515 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
 Family Flags     : 43, 78
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7773,6 +8123,7 @@ Description      : When your ghouls expire, they explode in viscera dealing $s1 
 Name             : Unstable Flames (id=279899) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 459
 Triggered by     : Unstable Flames (279902)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7792,6 +8143,7 @@ Description      : Your damaging abilities have a chance to grant $s1 critical s
 Name             : Earthlink (id=279926) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 461
 Triggered by     : Earthlink (279928)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7812,6 +8164,7 @@ Name             : Runic Barrier (id=280010) [Scaling Spell (-8), Spell Family (
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 201
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7836,6 +8189,7 @@ Description      : Anti-Magic Shell absorbs $s3 additional damage and its durati
 Name             : March of the Damned (id=280011) [Scaling Spell (-7), Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 465
 Triggered by     : March of the Damned (280149)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7858,6 +8212,7 @@ Name             : Barrage Of Many Bombs (id=280163) [Scaling Spell (-8), Passiv
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 1.5 (Haste multiplier)
 Azerite Power Id : 498
@@ -7889,6 +8244,7 @@ Name             : Ricocheting Inflatable Pyrosaw (id=280168) [Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 1.5 (Haste multiplier)
 Azerite Power Id : 499
@@ -7919,6 +8275,7 @@ Name             : Auto-Self-Cauterizer (id=280172) [Scaling Spell (-8), Passive
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 1 seconds
 Proc Chance      : 101%
 Real PPM         : 1.5
@@ -7951,6 +8308,7 @@ Name             : Synaptic Spark Capacitor (id=280174) [Scaling Spell (-8), Spe
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 1.5
 Azerite Power Id : 500
@@ -7980,6 +8338,7 @@ Name             : Relational Normalization Gizmo (id=280178) [Scaling Spell (-1
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 10 seconds
 Proc Chance      : 101%
 Real PPM         : 1.5
@@ -8007,6 +8366,7 @@ Name             : Personal Absorb-o-Tron (id=280181) [Scaling Spell (-8), Passi
 Hotfixed         : Scaling Spell, Max Scaling Level, Internal Cooldown (60000 -> 20000), Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 20 seconds
 Proc Chance      : 101%
 Real PPM         : 1.5
@@ -8035,6 +8395,7 @@ Name             : Dagger in the Back (id=280284) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 479
 Triggered by     : Dagger in the Back (280286)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8056,6 +8417,7 @@ Name             : Thunderous Blast (id=280380) [Scaling Spell (-8), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 482
 Triggered by     : Thunderous Blast (280384)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8077,6 +8439,7 @@ Name             : Tidal Surge (id=280402) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Frost
+Spell Type       : None
 Azerite Power Id : 478
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8095,6 +8458,7 @@ Name             : Blood Rite (id=280407) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 480
 Triggered by     : Blood Rite (280409)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8114,6 +8478,7 @@ Name             : Incite the Pack (id=280410) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 481
 Triggered by     : Incite the Pack (280412), Incite the Pack (280413)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8137,6 +8502,7 @@ Name             : Swirling Sands (id=280429) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 196
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8159,6 +8525,7 @@ Name             : Archive of the Titans (id=280555) [Scaling Spell (-1), Passiv
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 483
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8179,6 +8546,7 @@ Name             : Laser Matrix (id=280559) [Scaling Spell (-8), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 485
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8201,6 +8569,7 @@ Name             : Glory in Battle (id=280577) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 486
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8222,6 +8591,7 @@ Name             : Retaliatory Fury (id=280579) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 487
 Triggered by     : Retaliatory Fury (280787), Retaliatory Fury (280788)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8244,6 +8614,7 @@ Name             : Combined Might (id=280580) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 490
 Triggered by     : Might of the Orcs (280841)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8265,6 +8636,7 @@ Name             : Collective Will (id=280581) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 491
 Triggered by     : Collective Will (280830)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8286,6 +8658,7 @@ Name             : Battlefield Focus (id=280582) [Scaling Spell (-8), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 488
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8308,6 +8681,7 @@ Name             : Sylvanas' Resolve (id=280598) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 489
 Triggered by     : Sylvanas' Resolve (280809)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8329,6 +8703,7 @@ Name             : Liberator's Might (id=280623) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 492
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8350,6 +8725,7 @@ Name             : Last Gift (id=280624) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 493
 Triggered by     : Last Gift (280861), Last Gift (280862)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8372,6 +8748,7 @@ Name             : Stronger Together (id=280625) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 496
 Triggered by     : Strength of the Humans (280866)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8393,6 +8770,7 @@ Name             : Stand As One (id=280626) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 497
 Triggered by     : Stand As One (280858)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8414,6 +8792,7 @@ Name             : Battlefield Precision (id=280627) [Scaling Spell (-8), Passiv
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 494
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8436,6 +8815,7 @@ Name             : Anduin's Dedication (id=280628) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 495
 Triggered by     : Anduin's Dedication (280876)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8456,6 +8836,7 @@ Description      : Your abilities have a chance to increase your $?a162700[Agili
 Name             : Champion of Azeroth (id=280710) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 82
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8473,6 +8854,7 @@ Description      : Your spells and abilities have a chance to increase all secon
 Name             : Cold Heart (id=281208) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8489,6 +8871,7 @@ Description      : Every $t1 sec, gain a stack of Cold Heart, causing your next 
 Name             : Cold Heart (id=281209) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : None
 Duration         : Aura (infinite)
 Stacks           : 20 maximum
 Proc Chance      : 101%
@@ -8513,6 +8896,7 @@ Tooltip          : Your next Chains of Ice will deal $281210s1 Fost damage.
 Name             : Cold Heart (id=281210) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
+Spell Type       : Magic
 Range            : 100 yards
 Affecting spells : Mastery: Frozen Heart (77514 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
 Family Flags     : 43, 120
@@ -8531,6 +8915,7 @@ Description      : $@spelldesc281208
 Name             : Obliteration (id=281238) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
+Spell Type       : Melee
 Proc Chance      : 101%
 Proc Flags       : ........ ..x..... ........ ........ 
                  : AOE Heal
@@ -8553,6 +8938,7 @@ Tooltip          : Frost Strike$?s194913[, Glacial Advance,][] and Howling Blast
 Name             : Unstable Catalyst (id=281514) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 504
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8571,6 +8957,7 @@ Name             : Tradewinds (id=281841) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 505
 Triggered by     : Tradewinds (281843), Tradewinds (281844)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 

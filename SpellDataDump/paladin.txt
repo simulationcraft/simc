@@ -3,6 +3,7 @@ SimulationCraft 801-01 for World of Warcraft 8.0.1 bfa-BETA (wow build 26095)
 Name             : Haste (id=65) [Scaling Spell (-1)] 
 Class            : Paladin
 School           : Nature
+Spell Type       : Magic
 Max Scaling Level: 12
 Duration         : 30 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -20,6 +21,7 @@ Description      : Increases your melee haste by $s1 for $d.
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Arcane Fire Frost Paladin, Mage
 School           : Arcane
+Spell Type       : Magic
 Resource         : 3% Base Mana (0) (id=16)
 Spell Level      : 42
 GCD              : 1.5 seconds
@@ -48,6 +50,7 @@ Tooltip          : Fading.
 Name             : Block (rank=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
+Spell Type       : Magic
 Spell Level      : 1
 Attributes       : ....x.x. ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -65,6 +68,7 @@ Description      : Gives a chance to block enemy melee and ranged attacks.
 Name             : Divine Protection (id=498) [Spell Family (10)] 
 Class            : Holy Protection Paladin
 School           : Holy
+Spell Type       : None
 Resource         : 3.5% Base Mana (0) (id=54)
 Spell Level      : 32
 Duration         : 8 seconds
@@ -87,6 +91,7 @@ Tooltip          : Damage taken reduced by $w1%.
 Name             : Lay on Hands (id=633) [Scaling Spell (7), Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : Magic
 Spell Level      : 55
 Range            : 40 yards
 Cooldown         : 600 seconds
@@ -112,6 +117,7 @@ Cannot be used on a target with Forbearance. Causes Forbearance for $25771d.
 Name             : Divine Shield (id=642) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : Magic
 Spell Level      : 18
 GCD              : 1.5 seconds
 Duration         : 8 seconds
@@ -140,6 +146,7 @@ Tooltip          : Immune to all attacks and harmful effects.
 Name             : Hammer of Justice (id=853) [Spell Family (10)] 
 Class            : Holy Protection Retribution Paladin
 School           : Holy
+Spell Type       : Magic
 Resource         : 3.5% Base Mana (0) (id=101)
 Spell Level      : 8
 Range            : 10 yards
@@ -172,6 +179,7 @@ Tooltip          : Stunned.
 Name             : Blessing of Protection (id=1022) [Spell Family (10)] 
 Class            : Holy Protection Retribution Paladin
 School           : Holy
+Spell Type       : Magic
 Resource         : 15% Base Mana (0) (id=107)
 Spell Level      : 48
 Range            : 40 yards
@@ -205,6 +213,7 @@ Tooltip          : Immune to Physical damage and harmful effects.
 Name             : Blessing of Freedom (id=1044) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : Magic
 Resource         : 15% Base Mana (0) (id=109)
 Spell Level      : 38
 Range            : 40 yards
@@ -235,6 +244,7 @@ Tooltip          : Immune to movement impairing effects. $?s199325[Movement spee
 Name             : Cleanse (id=4987) [Spell Family (10)] 
 Class            : Holy Paladin
 School           : Holy
+Spell Type       : Magic
 Resource         : 6.5% Base Mana (0) (id=221)
 Spell Level      : 22
 Range            : 40 yards
@@ -264,6 +274,7 @@ Description      : Cleanses a friendly target, removing all Poison, Disease, and
 Name             : Blessing of Sacrifice (id=6940) [Spell Family (10)] 
 Class            : Holy Protection Paladin
 School           : Holy
+Spell Type       : Magic
 Resource         : 7% Base Mana (0) (id=284)
 Spell Level      : 56
 Range            : 40 yards
@@ -296,6 +307,7 @@ Tooltip          : $?$w1>0[$w1% of damage taken is transferred to the Paladin.][
 Name             : Flash of Light (id=19750) [Spell Family (10)] 
 Class            : Holy Protection Retribution Paladin
 School           : Holy
+Spell Type       : Magic
 Resource         : 22% Base Mana (0) (id=809)
 Spell Level      : 5
 Range            : 40 yards
@@ -318,6 +330,7 @@ Description      : Expends a large amount of mana to quickly heal a friendly tar
 Name             : Repentance (id=20066) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : Magic
 Resource         : 10% Base Mana (0) (id=816)
 Spell Level      : 1
 Range            : 30 yards
@@ -350,6 +363,7 @@ Tooltip          : Incapacitated.
 Name             : Judgment (id=20271) [Spell Family (10)] 
 Class            : Retribution Paladin
 School           : Holy
+Spell Type       : Melee
 Resource         : 3% Base Mana (0) (id=11198) w/ Holy Paladin (id=137029)
 Spell Level      : 3
 Range            : 30 yards
@@ -377,6 +391,7 @@ Description      : Judges the target, dealing $s1 Holy damage$?s231663[, and cau
 Name             : Holy Shock (id=20473) [Spell Family (10)] 
 Class            : Holy Paladin
 School           : Holy
+Spell Type       : Magic
 Resource         : 10% Base Mana (0) (id=836)
 Spell Level      : 10
 Range            : 40 yards
@@ -403,6 +418,7 @@ Name             : Expansive Mind (rank=Racial Passive) (id=20591) [Passive]
 Class            : Paladin, Priest, Shaman, Mage, Warlock, Monk
 Race             : Gnome (0x40)
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -420,6 +436,7 @@ Name             : Command (rank=Racial Passive) (id=21563) [Spell Family (9), P
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Orc (0x2)
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -436,6 +453,7 @@ Description      : Damage dealt by pets increased by $s1%.
 Name             : Hammer of Wrath (id=24275) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : Melee
 Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
@@ -461,6 +479,7 @@ Description      : Hurls a divine hammer that strikes an enemy for $s1 Holy dama
 Name             : Forbearance (id=25771) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Range            : 50000 yards
 Duration         : 30 seconds
 Mechanic         : Invulneraility
@@ -481,6 +500,7 @@ Tooltip          : Cannot be affected by Divine Shield, Hand of Protection, or L
 Name             : Righteous Fury (id=25780) [Spell Family (10), Passive, Hidden] 
 Class            : Protection Paladin
 School           : Holy
+Spell Type       : Magic
 Spell Level      : 10
 Cooldown         : 1.5 seconds
 Proc Chance      : 101%
@@ -503,6 +523,7 @@ Tooltip          : Increases your threat generation while active.
 Name             : Holy Shock (id=25912) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : Magic
 Spell Level      : 40
 Range            : 100 yards
 Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#4), Retribution (183436 effect#1), Last Defender (203791 effect#5), Item - Paladin T19 Holy 2P Bonus (211436 effect#1), Rule of Law (214202 effect#1), Judgment (214222 effect#1), Avenging Crusader (216331 effect#5), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Holy Shock (272906 effect#1)
@@ -523,6 +544,7 @@ Description      : $@spelldesc20473
 Name             : Holy Shock (id=25914) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : Magic
 Spell Level      : 40
 Range            : 100 yards
 Affecting spells : Avenging Wrath (31884 effect#1), Beacon of Light (53563 effect#3), Holy Avenger (105809 effect#2), Holy Paladin (137029 effect#1), Beacon of Faith (156910 effect#3), Item - Paladin T19 Holy 2P Bonus (211436 effect#1), Rule of Law (214202 effect#1), Holy Shock (272906 effect#1)
@@ -543,6 +565,7 @@ Description      : $@spelldesc20473
 Name             : Consecration (id=26573) [Spell Family (10)] 
 Class            : Holy Protection Paladin
 School           : Holy
+Spell Type       : Magic
 Spell Level      : 14
 GCD              : 1.5 seconds
 Duration         : 12 seconds
@@ -572,6 +595,7 @@ Tooltip          : Damage every $t1 sec.
 Name             : Strength (id=27973) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Demon Hunter
 School           : Physical
+Spell Type       : None
 Duration         : Aura (infinite)
 Azerite Power Id : 6
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -590,6 +614,7 @@ Name             : Gift of the Naaru (rank=Racial) (id=28880) [Spell Family (4)]
 Class            : Warrior, Paladin, Hunter, Priest, Death Knight, Shaman, Mage, Monk
 Race             : Draenei (0x400)
 School           : Holy
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 Duration         : 5 seconds
@@ -615,6 +640,7 @@ Tooltip          : Healing $/5;s2% every $t1 seconds.
 Name             : Aura Mastery (id=31821) [Spell Family (10)] 
 Class            : Holy Paladin
 School           : Holy
+Spell Type       : None
 Spell Level      : 70
 GCD              : 1.5 seconds
 Duration         : 8 seconds
@@ -655,6 +681,7 @@ Name             : Ardent Defender (id=31850) [Spell Family (10)]
 Replaces         : Divine Protection (id=498)
 Class            : Protection Paladin
 School           : Physical
+Spell Type       : Magic
 Spell Level      : 50
 Duration         : 8 seconds
 Cooldown         : 120 seconds
@@ -683,6 +710,7 @@ The next attack that would otherwise kill you will instead bring you to $w2% of 
 Name             : Avenging Wrath (id=31884) [Spell Family (10)] 
 Class            : Holy Protection Retribution Paladin
 School           : Holy
+Spell Type       : None
 Spell Level      : 80
 GCD              : 1.5 seconds
 Duration         : 20 seconds
@@ -727,6 +755,7 @@ Tooltip          : Damage, healing, and critical strike chance increased by $w1%
 Name             : Avenger's Shield (id=31935) [Spell Family (10)] 
 Class            : Protection Paladin
 School           : Holy
+Spell Type       : Magic
 Spell Level      : 10
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -759,6 +788,7 @@ Tooltip          : Silenced.
 Name             : Heart of the Crusader (id=32223) [Spell Family (10), Passive] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Spell Level      : 44
 GCD              : 1.5 seconds
 Attributes       : ......x. x....... x.x..... x..x....   ........ ........ ........ ........ 
@@ -779,6 +809,7 @@ This does not stack with other movement speed increasing effects.
 Name             : Invisibility (id=32612) [Spell Family (3)] 
 Class            : Paladin, Mage
 School           : Arcane
+Spell Type       : None
 Spell Level      : 42
 Duration         : 20 seconds
 Affecting spells : Norgannon's Foresight (236380 effect#1)
@@ -804,6 +835,7 @@ Tooltip          : Invisible$?$w3=0[][ and moving $87833s1% faster].
 Name             : Crusader Strike (id=35395) [Spell Family (10)] 
 Class            : Paladin
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -831,6 +863,7 @@ Variables        : $mult=${($min($pl-1,19)*6+96)/210}
 Name             : Agility 20 (id=41695) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 7
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -848,6 +881,7 @@ Description      : Increases Agility by $s1.
 Name             : Sanctified Wrath (id=53376) [Spell Family (10), Passive] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Proc Chance      : 101%
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -869,6 +903,7 @@ Description      : Avenging Wrath lasts $s1% longer and also reduces Holy Shock'
 Name             : Divine Storm (id=53385) [Spell Family (10)] 
 Class            : Retribution Paladin
 School           : Holy
+Spell Type       : Melee
 Resource         : 3 Holy Power (9) (id=2444)
 Spell Level      : 40
 GCD              : 1.5 seconds
@@ -889,6 +924,7 @@ Description      : Unleashes a whirl of divine energy, dealing $224239sw1 Holy d
 Name             : Beacon of Light (id=53563) [Spell Family (10)] 
 Class            : Holy Paladin
 School           : Holy
+Spell Type       : None
 Resource         : 2.5% Base Mana (0) (id=9824)
 Spell Level      : 20
 Range            : 60 yards
@@ -924,6 +960,7 @@ Tooltip          : Healed whenever the Paladin heals a nearby ally.
 Name             : Infusion of Light (id=53576) [Spell Family (10), Passive] 
 Class            : Holy Paladin
 School           : Physical
+Spell Type       : None
 Spell Level      : 35
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. x....... ........ 
@@ -945,6 +982,7 @@ Name             : Hammer of the Righteous (id=53595) [Spell Family (10)]
 Replaces         : Crusader Strike (id=35395)
 Class            : Protection Paladin
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -973,6 +1011,7 @@ While you are standing in your Consecration, Hammer of the Righteous also causes
 Name             : Shield of the Righteous (id=53600) [Spell Family (10)] 
 Class            : Protection Paladin
 School           : Holy
+Spell Type       : Melee
 Spell Level      : 20
 Range            : 5 yards
 Cooldown         : 1 seconds
@@ -995,6 +1034,7 @@ Description      : Slams enemies in front of you with your shield, causing $s1 H
 Name             : Light's Beacon (id=53651) [Spell Family (10), Passive, Hidden] 
 Class            : Holy Paladin
 School           : Holy
+Spell Type       : None
 Spell Level      : 39
 Range            : 60 yards
 Proc Chance      : 100%
@@ -1020,6 +1060,7 @@ Tooltip          : The paladin's healing spells cast on you also heal the Beacon
 Name             : Beacon of Light (id=53652) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Spell Level      : 1
 Range            : 60 yards
 Affecting spells : Rule of Law (214202 effect#1)
@@ -1040,6 +1081,7 @@ Description      : $@spelldesc53563
 Name             : Infusion of Light (id=54149) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Duration         : 15 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
@@ -1070,6 +1112,7 @@ Tooltip          : Reduces the cast time of your next Holy Light by ${$54149m1/-
 Name             : Luminous Charger (id=55115) 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Cast Time        : 1.5 seconds
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1087,6 +1130,7 @@ Description      : $@spelldesc89401
 Name             : Increase Versatility 15 (id=55564) [Scaling Spell (-1), Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Max Scaling Level: 80
 Azerite Power Id : 1
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -1105,6 +1149,7 @@ Description      : Increases your Versatility by $s1.
 Name             : Glyph of Fire From the Heavens (id=57954) [Spell Family (10), Passive, Hidden] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ....x... x.x.x.x. x.x..x.. ........ 
                  : Yellow Melee, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell, Periodic, Trap Triggered
@@ -1124,6 +1169,7 @@ Description      : Your Judgment criticals call down fire from the sky.
 Name             : Glyph of Winged Vengeance (rank=Holy, Retribution) (id=57979) [Spell Family (10), Passive, Hidden] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1146,6 +1192,7 @@ Description      : Your Avenging Wrath depicts 4 wings.
 Name             : Winged Vengeance (id=58244) 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Cast Time        : 1.5 seconds
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1163,6 +1210,7 @@ Description      : $@spelldesc57979
 Name             : Fire From the Heavens (id=58247) 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Cast Time        : 1.5 seconds
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1181,6 +1229,7 @@ Name             : Gift of the Naaru (rank=Racial) (id=59542) [Spell Family (10)
 Class            : Paladin
 Race             : Draenei (0x400)
 School           : Holy
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 Duration         : 5 seconds
@@ -1206,6 +1255,7 @@ Tooltip          : Healing $/5;s2% every $t1 seconds.
 Name             : Hand of Reckoning (id=62124) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : Melee
 Resource         : 3% Base Mana (0) (id=2804)
 Spell Level      : 12
 Range            : 30 yards
@@ -1233,6 +1283,7 @@ Tooltip          : Taunted.
 Name             : Ardent Defender (id=66235) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Spell Level      : 40
 Affecting spells : Unbreakable Spirit (114154 effect#1), Item - Paladin WoD PvP Protection 4P Bonus (171427 effect#1), Pillars of Inmost Ligiht (281291 effect#1)
 Family Flags     : 87
@@ -1253,6 +1304,7 @@ Name             : Viciousness (rank=Racial Passive) (id=68975) [Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1271,6 +1323,7 @@ Name             : Aberration (rank=Racial Passive) (id=68976) [Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1290,6 +1343,7 @@ Name             : Darkflight (rank=Racial) (id=68992)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
+Spell Type       : None
 Duration         : 10 seconds
 Cooldown         : 120 seconds
 Attributes       : ........ ........ ........ ........   .....x.. ........ ........ ........ 
@@ -1311,6 +1365,7 @@ Tooltip          : True form activated, movement speed increased by an additiona
 Name             : Mastery: Divine Bulwark (id=76671) [Spell Family (10), Passive] 
 Class            : Protection Paladin
 School           : Physical
+Spell Type       : None
 Spell Level      : 78
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1335,6 +1390,7 @@ Also increases your attack power by ${$s3}.1%.
 Name             : Consecration (id=81297) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : Magic
 Spell Level      : 6
 Range            : 50000 yards
 Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#4), Retribution (183436 effect#1), Last Defender (203791 effect#5), Consecrated Ground (204054 effect#1), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Execution Sentence (267799 effect#1)
@@ -1355,6 +1411,7 @@ Description      : Deals $s1 Holy damage every $26573t1 sec to enemies within $A
 Name             : Parry (id=82242) [Passive] 
 Class            : Paladin
 School           : Physical
+Spell Type       : Magic
 Spell Level      : 1
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1372,6 +1429,7 @@ Description      : Gives a chance to parry enemy melee attacks.
 Name             : Holy Light (id=82326) [Spell Family (10)] 
 Class            : Holy Paladin
 School           : Holy
+Spell Type       : Magic
 Resource         : 13% Base Mana (0) (id=3855)
 Spell Level      : 25
 Range            : 40 yards
@@ -1394,6 +1452,7 @@ Description      : An efficient spell, healing a friendly target for $s1.
 Name             : Inquisition (id=84963) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Resource         : 1 - 3 Holy Power (9) (id=3985)
 GCD              : 1.5 seconds
 Duration         : 15 seconds
@@ -1428,6 +1487,7 @@ Haste increased by $w3%.
 Name             : Grand Crusader (id=85043) [Spell Family (10), Passive] 
 Class            : Protection Paladin
 School           : Physical
+Spell Type       : None
 Spell Level      : 25
 Internal Cooldown: 1 seconds
 Proc Chance      : 15%
@@ -1451,6 +1511,7 @@ Description      : When you avoid a melee attack or use Hammer of the Righteous,
 Name             : Light of Dawn (id=85222) [Spell Family (10)] 
 Class            : Holy Paladin
 School           : Holy
+Spell Type       : None
 Resource         : 14% Base Mana (0) (id=3994)
 Spell Level      : 40
 GCD              : 1.5 seconds
@@ -1476,6 +1537,7 @@ Description      : Unleashes a wave of holy energy, healing up to $s1 injured al
 Name             : Templar's Verdict (id=85256) [Spell Family (10)] 
 Class            : Retribution Paladin
 School           : Holy
+Spell Type       : Melee
 Resource         : 3 Holy Power (9) (id=3982)
 Spell Level      : 10
 Range            : 5 yards
@@ -1500,6 +1562,7 @@ Variables        : $mult=${($max(0,$min($pl-10,10))*11+290)/400}
 Name             : Selfless Healer (id=85804) [Spell Family (10), Passive] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
 Proc Flags       : ....x... ..x.x.x. x....x.. ........ 
@@ -1520,6 +1583,7 @@ Description      : Your Holy Power spending abilities reduce the cast time of yo
 Name             : Plate Specialization (rank=Protection, Passive) (id=86102) [Passive, Hidden] 
 Class            : Protection Paladin
 School           : Physical
+Spell Type       : None
 Spell Level      : 50
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1537,6 +1601,7 @@ Description      : Increases your Stamina by $s1% while wearing only Plate armor
 Name             : Plate Specialization (rank=Holy, Passive) (id=86103) [Passive, Hidden] 
 Class            : Holy Paladin
 School           : Physical
+Spell Type       : None
 Spell Level      : 50
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1554,6 +1619,7 @@ Description      : Increases your Intellect by $s1% while wearing only Plate arm
 Name             : Plate Specialization (rank=Retribution, Passive) (id=86539) [Passive, Hidden] 
 Class            : Retribution Paladin
 School           : Physical
+Spell Type       : None
 Spell Level      : 50
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1571,6 +1637,7 @@ Description      : Increases your Strength by $s1% while wearing only Plate armo
 Name             : Ancient Guardian (id=86657) [Spell Family (10), Hidden] 
 Class            : Paladin
 School           : Holy
+Spell Type       : Magic
 Resource         : 3% Base Mana (0) (id=4031)
 Range            : 50 yards
 Duration         : 40 seconds
@@ -1593,6 +1660,7 @@ Tooltip          : The Guardian of Ancient Kings is protecting you, reducing all
 Name             : Guardian of Ancient Kings (id=86659) [Spell Family (10)] 
 Class            : Protection Paladin
 School           : Holy
+Spell Type       : None
 Spell Level      : 70
 Range            : 30 yards
 Duration         : 8 seconds
@@ -1619,6 +1687,7 @@ Tooltip          : Damage taken reduced by $86657s2%.
 Name             : Light of the Ancient Kings (id=86678) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : Magic
 Range            : 100 yards
 Stacks           : 5 maximum
 Proc Chance      : 101%
@@ -1638,6 +1707,7 @@ Description      : Heals the target of your heals for 30% of the amount healed.
 Name             : Ancient Fury (id=86704) [Scaling Spell (7), Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Family Flags     : 112
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1655,6 +1725,7 @@ Description      : Unleash the fury of ancient kings, causing $s1 Holy damage pe
 Name             : Invisibility Speed (id=87833) [Spell Family (3), Hidden] 
 Class            : Paladin, Mage
 School           : Physical
+Spell Type       : None
 Duration         : Aura (infinite)
 Attributes       : .......x x....... ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -1671,6 +1742,7 @@ Effects          :
 Name             : Hammer of the Righteous (id=88263) [Scaling Spell (7), Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 50000 yards
 Family Flags     : 83
@@ -1692,6 +1764,7 @@ Description      : $@spelldesc53595
 Name             : Glyph of the Luminous Charger (id=89401) [Spell Family (10), Passive, Hidden] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1708,6 +1781,7 @@ Description      : Your Paladin class mounts glow with holy light.
 Name             : Item - Proc Mastery (id=92322) [Spell Family (10), Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 100 seconds
 Proc Chance      : 10%
 Azerite Power Id : 8
@@ -1729,6 +1803,7 @@ Description      : Your harmful spells have a chance to grant $92320s1 mastery f
 Name             : Protector of the Innocent (id=94289) [Scaling Spell (7), Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Range            : 100 yards
 Attributes       : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -1746,6 +1821,7 @@ Name             : Altered Form (rank=Racial Passive) (id=94293) [Passive, Hidde
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1762,6 +1838,7 @@ Description      : Enables Worgens to switch between human and Worgan forms
 Name             : Rebuke (id=96231) [Spell Family (10)] 
 Class            : Protection Retribution Paladin
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 35
 Range            : 5 yards
 Duration         : 4 seconds
@@ -1786,6 +1863,7 @@ Description      : Interrupts spellcasting and prevents any spell in that school
 Name             : Judgments of the Wise (id=105424) [Spell Family (10), Passive] 
 Class            : Protection Paladin
 School           : Physical
+Spell Type       : None
 Spell Level      : 28
 Proc Chance      : 101%
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ....x... 
@@ -1804,6 +1882,7 @@ Description      : Your Judgment hits grant one charge of Holy Power.
 Name             : Sanctuary (id=105805) [Spell Family (10), Passive, Hidden] 
 Class            : Protection Paladin
 School           : Physical
+Spell Type       : None
 Spell Level      : 10
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1831,6 +1910,7 @@ Description      : Decreases damage taken by $s1%, increases your chance to dodg
 Name             : Holy Avenger (id=105809) [Spell Family (10)] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 20 seconds
@@ -1855,6 +1935,7 @@ Tooltip          : Haste increased by $s1%, and Holy Shock healing increased by 
 Name             : Unbreakable Spirit (id=114154) [Spell Family (10), Passive] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1874,6 +1955,7 @@ Name             : Light's Hammer (id=114158) [Spell Family (10)]
 Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Holy
+Spell Type       : Magic
 Resource         : 28% Base Mana (0) (id=11150)
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -1897,6 +1979,7 @@ Name             : Holy Prism (id=114165) [Spell Family (10)]
 Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Holy
+Spell Type       : None
 Resource         : 17% Base Mana (0) (id=9441) w/ Holy Paladin (id=137029)
 Spell Level      : 1
 Range            : 40 yards
@@ -1923,6 +2006,7 @@ If the beam is aimed at a friendly target, it heals for $114871s1 and radiates $
 Name             : Selfless Healer (id=114250) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Duration         : 15 seconds
 Stacks           : 4 maximum
 Proc Chance      : 101%
@@ -1951,6 +2035,7 @@ Name             : Holy Prism (id=114852) [Spell Family (10)]
 Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Holy
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -1979,6 +2064,7 @@ Name             : Holy Prism (id=114871) [Scaling Spell (7), Spell Family (10)]
 Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Holy
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -2007,6 +2093,7 @@ Name             : Light's Hammer (id=114918) [Spell Family (10)]
 Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Duration         : 14 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2026,6 +2113,7 @@ Name             : Light's Hammer (id=114919) [Spell Family (10)]
 Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Holy
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Retribution (183436 effect#1), Last Defender (203791 effect#5), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4)
@@ -2046,6 +2134,7 @@ Description      : $@spelldesc114158
 Name             : Boundless Conviction (id=115675) [Spell Family (10), Passive] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2063,6 +2152,7 @@ Description      : You may store an additional $s1 Holy Power beyond the maximum
 Name             : Blinding Light (id=115750) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : Magic
 Resource         : 8% Base Mana (0) (id=5750)
 Spell Level      : 1
 GCD              : 1.5 seconds
@@ -2086,6 +2176,7 @@ Description      : Emits dazzling light in all directions, blinding enemies with
 Name             : Fire From the Heavens (id=115995) [Spell Family (10), Hidden] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 4 seconds
 Triggered by     : Glyph of Fire From the Heavens (57954)
@@ -2105,6 +2196,7 @@ Name             : Arcing Light (id=119952) [Scaling Spell (7), Spell Family (10
 Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Holy
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Affecting spells : Avenging Wrath (31884 effect#1), Sanctuary (105805 effect#5), Holy Paladin (137029 effect#1), Beacon of Faith (156910 effect#3)
@@ -2125,6 +2217,7 @@ Description      : $@spelldesc114158
 Name             : Contemplation (id=121183) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Spell Level      : 40
 GCD              : 1.5 seconds
 Duration         : 8 seconds
@@ -2146,6 +2239,7 @@ Name             : Light's Hammer (rank=Talent) (id=122773) [Spell Family (10)]
 Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
+Spell Type       : None
 Range            : 50000 yards
 Duration         : 15.5 seconds
 Triggered by     : Light's Hammer (114158)
@@ -2163,6 +2257,7 @@ Effects          :
 Name             : Block (id=123830) [Passive, Hidden] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ....x.xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2180,6 +2275,7 @@ Description      : Gives a chance to block enemy melee attacks.
 Name             : Shield of the Righteous (id=132403) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Spell Level      : 1
 Range            : 5 yards
 Duration         : 4.5 seconds
@@ -2201,6 +2297,7 @@ Tooltip          : Armor increased by ${$W1*$STR/100}.
 Name             : Paladin (id=137026) [Spell Family (10), Passive, Hidden] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2256,6 +2353,7 @@ Name             : Retribution Paladin (id=137027) [Spell Family (10), Passive, 
 Class            : Retribution Paladin
 Race             : Blood Elf (0x200)
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2322,6 +2420,7 @@ Effects          :
 Name             : Protection Paladin (id=137028) [Spell Family (10), Passive, Hidden] 
 Class            : Protection Paladin
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2379,6 +2478,7 @@ Name             : Holy Paladin (id=137029) [Spell Family (10), Passive, Hidden]
 Class            : Holy Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2452,6 +2552,7 @@ Description      : Holy Paladin core passive
 Name             : Item - Paladin T16 Protection 4P Bonus (id=144566) [Spell Family (10), Passive] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Heal
@@ -2471,6 +2572,7 @@ Description      : While at 3 or more stacks of Bastion of Glory, your next $?s1
 Name             : Bastion of Power (id=144569) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Duration         : 20 seconds
 Proc Chance      : 101%
 Attributes       : ........ ........ ..x..... x..x....   .....x.. ........ ........ ........ 
@@ -2492,6 +2594,7 @@ Tooltip          : Your next $?s114163[Eternal Flame][Word of Glory] consumes no
 Name             : Item - Paladin T16 Protection 2P Bonus (id=144580) [Spell Family (10), Passive] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Attributes       : ......x. ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2509,6 +2612,7 @@ Description      : While Divine Protection is active, $s1% of the damage taken i
 Name             : Blessing of the Guardians (id=144581) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Duration         : 10 seconds
 Proc Chance      : 101%
 Attributes       : ........ ........ ..x..... x..x....   .....x.. ........ ........ ........ 
@@ -2528,6 +2632,7 @@ Tooltip          : Healing for $w1 every $t sec for $d.
 Name             : Glyph of Pillar of Light (id=146959) [Spell Family (10), Passive, Hidden] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Heal
@@ -2547,6 +2652,7 @@ Description      : Holy Shock critical heals on other players display a small pi
 Name             : Pillar of Light (id=147974) 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Cast Time        : 1.5 seconds
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2564,6 +2670,7 @@ Description      : $@spelldesc146959
 Name             : Sacred Shield Overridde (Holy) (id=148040) [Spell Family (10), Passive, Hidden] 
 Class            : Holy Paladin
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2584,6 +2691,7 @@ Effects          :
 Name             : Holy Shield (id=152261) [Passive] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Hostile Spell Taken
@@ -2607,6 +2715,7 @@ Description      : Your block chance is increased by $s1%, you are able to block
 Name             : Seraphim (id=152262) [Scaling Spell (-1), Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 45 seconds
@@ -2633,6 +2742,7 @@ Name             : Arcane Torrent (rank=Racial) (id=155145)
 Class            : Paladin
 Race             : Blood Elf (0x200)
 School           : Arcane
+Spell Type       : Magic
 GCD              : 1.5 seconds
 Cooldown         : 90 seconds
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
@@ -2654,6 +2764,7 @@ Description      : Remove $s1 beneficial effect from all enemies within $A1 yard
 Name             : Beacon of Faith (id=156910) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Resource         : 3.125% Base Mana (0) (id=9823)
 Spell Level      : 1
 Range            : 60 yards
@@ -2689,6 +2800,7 @@ Tooltip          : Healed whenever the Paladin directly heals a nearby ally.
 Name             : Holy Shield (id=157122) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : Magic
 Range            : 100 yards
 Velocity         : 40 yards/sec
 Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Retribution (183436 effect#1), Last Defender (203791 effect#5), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4)
@@ -2709,6 +2821,7 @@ Description      : $@spelldesc152261
 Name             : Riposte (id=161800) [Spell Family (10), Passive] 
 Class            : Protection Paladin
 School           : Physical
+Spell Type       : None
 Spell Level      : 65
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2727,6 +2840,7 @@ Name             : Jailer's Judgment (id=162056) [Spell Family (6)]
 Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Holy
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 15 yards
 GCD              : 1.5 seconds
@@ -2753,6 +2867,7 @@ Name             : Stat Negation Aura - Strength DPS (id=162698) [Passive, Hidde
 Class            : Arms Fury Retribution Frost Unholy Warrior, Paladin, Death Knight
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2773,6 +2888,7 @@ Name             : Stat Negation Aura - Intellect Healer (id=162701) [Passive, H
 Class            : Holy Discipline Holy Restoration Mistweaver Restoration Paladin, Priest, Shaman, Monk, Druid
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2794,6 +2910,7 @@ Replaces         : Stat Negation Aura - Strength DPS (id=162698)
 Class            : Protection Protection Blood Warrior, Paladin, Death Knight
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2812,6 +2929,7 @@ Name             : Ashes to Ashes (id=179546) [Spell Family (10), Passive]
 Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -2831,6 +2949,7 @@ Description      : Wake of Ashes also generates $218001s1 Holy Power and causes 
 Name             : Ashen Strike (id=180290) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : Magic
 Range            : 100 yards
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -2847,6 +2966,7 @@ Description      : $@spelldesc179546
 Name             : Hand of Hindrance (id=183218) [Spell Family (10)] 
 Class            : Retribution Paladin
 School           : Holy
+Spell Type       : Magic
 Resource         : 10% Base Mana (0) (id=10023)
 Spell Level      : 24
 Range            : 30 yards
@@ -2871,6 +2991,7 @@ Tooltip          : Movement speed reduced by $w1%.
 Name             : Aura of Mercy (id=183415) [Spell Family (10), Passive] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Cooldown         : 180 seconds
 Proc Chance      : 100%
@@ -2899,6 +3020,7 @@ Tooltip          : Restores health to $210291s2 injured allies within $210291A1 
 Name             : Aura of Sacrifice (id=183416) [Spell Family (10), Passive] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Proc Chance      : 100%
 Proc Flags       : ........ ...x...x ........ .......x 
@@ -2934,6 +3056,7 @@ Tooltip          : $s1% of damage dealt to nearby allies is redirected to you an
 Name             : Devotion Aura (id=183425) [Spell Family (10), Passive] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Proc Chance      : 100%
 Proc Flags       : ........ ...x...x ........ .......x 
@@ -2963,6 +3086,7 @@ Tooltip          : Damage taken by allies within $s2 yards reduced by up to $s1%
 Name             : Retribution (id=183435) [Spell Family (10), Passive] 
 Class            : Retribution Paladin
 School           : Physical
+Spell Type       : None
 Spell Level      : 70
 Proc Chance      : 100%
 Proc Flags       : ........ ........ ........ x....... 
@@ -2983,6 +3107,7 @@ Description      : When any party or raid member within $a1 yds dies, you gain $
 Name             : Retribution (id=183436) [Spell Family (10)] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Duration         : 10 seconds
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3011,6 +3136,7 @@ Damage taken reduced by $s2%.
 Name             : Judgment of Light (id=183778) [Spell Family (10), Passive] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Spell Level      : 1
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
@@ -3033,6 +3159,7 @@ Description      : Judgment now causes the next $196941N successful attacks agai
 Name             : Judgment of Light (id=183811) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
 Affecting spells : Avenging Wrath (31884 effect#1), Holy Paladin (137029 effect#1), Beacon of Faith (156910 effect#3)
@@ -3053,6 +3180,7 @@ Description      : $@spelldesc183778
 Name             : Mastery: Lightbringer (id=183997) [Spell Family (10), Passive] 
 Class            : Holy Paladin
 School           : Holy
+Spell Type       : None
 Spell Level      : 78
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3070,6 +3198,7 @@ Description      : Increases healing done by up to ${$s1}.2%, based on the proxi
 Name             : Light of the Martyr (id=183998) [Spell Family (10)] 
 Class            : Holy Paladin
 School           : Holy
+Spell Type       : Magic
 Resource         : 7% Base Mana (0) (id=10087)
 Spell Level      : 50
 Range            : 40 yards
@@ -3093,6 +3222,7 @@ Does not cause your Beacon of Light to be healed. Cannot be cast on yourself.
 Name             : Light of the Protector (id=184092) [Spell Family (10)] 
 Class            : Protection Paladin
 School           : Holy
+Spell Type       : Magic
 Spell Level      : 40
 GCD              : 1.5 seconds
 Charges          : 1 (17 seconds cooldown)
@@ -3116,6 +3246,7 @@ Description      : Calls down the Light to heal you for $s1, increased by up to 
 Name             : Blade of Justice (id=184575) [Spell Family (10)] 
 Class            : Retribution Paladin
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 20
 Range            : 12 yards
 GCD              : 1.5 seconds
@@ -3145,6 +3276,7 @@ Variables        : $mult=${($max(0,$min($pl-16,4))*12+352)/400}
 Name             : Shield of Vengeance (id=184662) [Spell Family (10)] 
 Class            : Retribution Paladin
 School           : Holy
+Spell Type       : Magic
 Spell Level      : 32
 GCD              : 1.5 seconds
 Duration         : 15 seconds
@@ -3174,6 +3306,7 @@ Variables        : $shield=${($SP*$s2)*(1+$@versadmg)}
 Name             : Divine Steed (id=190784) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Spell Level      : 28
 GCD              : 1.5 seconds
 Charges          : 1 (45 seconds cooldown)
@@ -3194,6 +3327,7 @@ Description      : Leap atop your Charger for $221883d, increasing movement spee
 Name             : Blade of Light (id=193115) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 100 yards
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ....x... 
@@ -3213,6 +3347,7 @@ Description      : Strikes an enemy with a Blade of Light, dealing $sw2 Holy dam
 Name             : Crusader's Might (id=196926) [Spell Family (10), Passive] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -3232,6 +3367,7 @@ Description      : Crusader Strike reduces the cooldown of Holy Shock and Light 
 Name             : Judgment of Light (id=196941) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Spell Level      : 1
 Range            : 30 yards
 Duration         : 30 seconds
@@ -3256,6 +3392,7 @@ Tooltip          : Attackers are healed for $183811s1.
 Name             : Judgment (id=197277) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Range            : 100 yards
 Duration         : 15 seconds
 Stacks           : 1 initial, 1 maximum
@@ -3284,6 +3421,7 @@ Tooltip          : Taking $w1% increased damage from the Paladin's next Holy Pow
 Name             : Avenger's Valor (id=197561) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Range            : 50000 yards
 Duration         : 15 seconds
 Stacks           : 1 initial, 1 maximum
@@ -3313,6 +3451,7 @@ Tooltip          : The effects of your next Shield of the Righteous are increase
 Name             : Divine Purpose (id=197646) [Spell Family (10), Passive] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
@@ -3333,6 +3472,7 @@ Description      : Casting Light of Dawn or Holy Shock has a $s1% chance to not 
 Name             : Divine Hammer (id=198034) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : Magic
 GCD              : 1.5 seconds
 Duration         : 9 seconds
 Cooldown         : 25 seconds
@@ -3358,6 +3498,7 @@ Description      : Divine Hammers spin around you, damaging enemies within $1981
 Name             : Fist of Justice (id=198054) [Spell Family (10), Passive] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 1 seconds
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x.x. x....... ........ 
@@ -3380,6 +3521,7 @@ Description      : Judgment reduces the remaining cooldown on Hammer of Justice 
 Name             : Divine Hammer (id=198137) [Scaling Spell (7), Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 50000 yards
 Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Retribution (183436 effect#1), Last Defender (203791 effect#5), Crusade (231895 effect#1), Sacred Judgment (246973 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Execution Sentence (267799 effect#1)
@@ -3403,6 +3545,7 @@ Description      : $@spelldesc198034
 Name             : Unbound Freedom (rank=PvP Talent) (id=199325) [Spell Family (10), Passive, Hidden] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3421,6 +3564,7 @@ Description      : Blessing of Freedom also increases movement speed by $m1%.
 Name             : Beacon of Virtue (id=200025) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Resource         : 10% Base Mana (0) (id=11456)
 Spell Level      : 1
 Range            : 40 yards
@@ -3454,6 +3598,7 @@ Tooltip          : $@spellaura53563
 Name             : Blessing of Sacrifice (rank=Rank 2) (id=200327) [Spell Family (10), Passive] 
 Class            : Holy Paladin
 School           : Physical
+Spell Type       : None
 Spell Level      : 85
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3474,6 +3619,7 @@ Name             : Power of the Silver Hand (id=200474) [Spell Family (10), Pass
 Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Proc Chance      : 101%
 Real PPM         : 1
@@ -3496,6 +3642,7 @@ Name             : Tyr's Deliverance (rank=Artifact) (id=200652) [Spell Family (
 Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Holy
+Spell Type       : Magic
 Range            : 100 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
@@ -3521,6 +3668,7 @@ Name             : Tyr's Deliverance (id=200653) [Spell Family (10), Hidden]
 Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Triggered by     : Tyr's Deliverance (200652)
 Attributes       : .......x ........ ........ .......x   ........ ........ ........ ........ 
@@ -3540,6 +3688,7 @@ Name             : Tyr's Deliverance (id=200654) [Spell Family (10)]
 Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Holy
+Spell Type       : Magic
 Range            : 100 yards
 Duration         : 10 seconds
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
@@ -3564,6 +3713,7 @@ Name             : Power of the Silver Hand (id=200656) [Spell Family (10)]
 Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Holy
+Spell Type       : None
 Range            : 100 yards
 Duration         : 10 seconds
 Proc Chance      : 101%
@@ -3588,6 +3738,7 @@ Name             : Activating Specialization (id=200749) [Hidden]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
+Spell Type       : None
 Range            : 50000 yards
 Cast Time        : 5 seconds
 Attributes       : .......x ........ ........ ....x...   ..xxx..x ........ .x...... ........ 
@@ -3607,6 +3758,7 @@ Tooltip          : Switch to your Primary Talent Specialization.
 Name             : Fires of Justice (id=203316) [Spell Family (10), Passive] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Spell Level      : 1
 GCD              : 1.5 seconds
 Proc Chance      : 15%
@@ -3633,6 +3785,7 @@ Variables        : $reduction=${$m2/-1000}
 Name             : Greater Blessing of Kings (id=203538) [Spell Family (10)] 
 Class            : Retribution Paladin
 School           : Holy
+Spell Type       : Magic
 Spell Level      : 58
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -3664,6 +3817,7 @@ Variables        : $shield=${0.675*$SPH}
 Name             : Greater Blessing of Wisdom (id=203539) [Spell Family (10)] 
 Class            : Retribution Paladin
 School           : Holy
+Spell Type       : Magic
 Spell Level      : 65
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -3694,6 +3848,7 @@ Tooltip          : Gaining $s1% health and mana per $s3 sec.
 Name             : First Avenger (id=203776) [Spell Family (10), Passive] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3716,6 +3871,7 @@ Grand Crusader now has an additional $s2% chance to occur.
 Name             : Last Defender (id=203791) [Spell Family (10), Passive] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3748,6 +3904,7 @@ Description      : Each enemy within $s1 yards reduces the damage that you take 
 Name             : Retribution Aura (id=203797) [Spell Family (10), Passive] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
@@ -3771,6 +3928,7 @@ Tooltip          : Melee attackers take Holy damage from the protecting Paladin.
 Name             : Retribution Aura (id=204011) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2 seconds
@@ -3792,6 +3950,7 @@ Description      : $@spelldesc203797
 Name             : Blessing of Spellwarding (id=204018) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : Magic
 Resource         : 15% Base Mana (0) (id=10911)
 Spell Level      : 1
 Range            : 40 yards
@@ -3819,6 +3978,7 @@ Tooltip          : Immune to magical damage and harmful effects.
 Name             : Blessed Hammer (id=204019) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Charges          : 3 (4.5 seconds cooldown)
@@ -3839,6 +3999,7 @@ Description      : Throws a Blessed Hammer that spirals outward, dealing $204301
 Name             : Crusader's Judgment (id=204023) [Spell Family (10), Passive] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Affecting spells : First Avenger (203776 effect#2), Inspiring Vanguard (279387 effect#2)
 Family Flags     : 106
@@ -3858,6 +4019,7 @@ Description      : Judgment now has ${1+$s1} charges, and Grand Crusader now als
 Name             : Bastion of Light (id=204035) [Spell Family (10)] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Cooldown         : 120 seconds
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3875,6 +4037,7 @@ Description      : Immediately grants $s1 charges of Shield of the Righteous.
 Name             : Consecrated Ground (id=204054) [Spell Family (10), Passive] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3897,6 +4060,7 @@ Description      : Your Consecration is $s1% larger, and enemies within it have 
 Name             : Righteous Protector (id=204074) [Spell Family (10), Passive] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3914,6 +4078,7 @@ Description      : Shield of the Righteous reduces the remaining cooldown on Lig
 Name             : Final Stand (id=204077) [Spell Family (10), Passive] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3933,6 +4098,7 @@ Description      : When you use Divine Shield, you also taunt all targets within
 Name             : Final Stand (id=204079) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : Magic
 Spell Level      : 10
 Duration         : 8 seconds
 Proc Chance      : 101%
@@ -3954,6 +4120,7 @@ Tooltip          : Taunted.
 Name             : Aegis of Light (id=204150) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : Magic
 Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 6 seconds
@@ -3976,6 +4143,7 @@ Tooltip          : All allies standing behind your Aegis of Light take $s1% redu
 Name             : Blessed Hammer (id=204301) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : Melee
 Range            : 100 yards
 Duration         : 10 seconds
 Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Retribution (183436 effect#1), Last Defender (203791 effect#5), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4)
@@ -3998,6 +4166,7 @@ Tooltip          : Dealing $s2% reduced autoattack damage to the Paladin.
 Name             : Eye for an Eye (id=205191) [Spell Family (10)] 
 Class            : Paladin
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 10 seconds
@@ -4026,6 +4195,7 @@ Tooltip          : Counterattacking all melee attacks.
 Name             : Eye for an Eye (id=205202) [Spell Family (10)] 
 Class            : Paladin
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 5 yards
 Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#5), Retribution (183436 effect#1), Last Defender (203791 effect#5), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4)
@@ -4046,6 +4216,7 @@ Description      : $@spelldesc205191
 Name             : Consecration (id=205228) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : Magic
 Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 6 seconds
@@ -4079,6 +4250,7 @@ Name             : Wake of Ashes (rank=Artifact) (id=205273) [Spell Family (10)]
 Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Holyfire
+Spell Type       : Magic
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 30 seconds
@@ -4111,6 +4283,7 @@ Name             : Wake of Ashes (id=205290) [Spell Family (10)]
 Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Holy
+Spell Type       : Melee
 Range            : 100 yards
 Duration         : 6 seconds
 Mechanic         : Stun
@@ -4130,6 +4303,7 @@ Tooltip          : Stunned.
 Name             : Chain of Thrayn (id=206338) [Spell Family (10), Passive] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Req. Max Level   : 115
 Proc Chance      : 101%
 Proc Flags       : ........ ..x...x. ........ ........ 
@@ -4150,6 +4324,7 @@ Description      : $?s231895[Crusade][Avenging Wrath] increases healing done by 
 Name             : Eye of Tyr (rank=Artifact) (id=209202) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : Magic
 GCD              : 1.5 seconds
 Duration         : 9 seconds
 Cooldown         : 60 seconds
@@ -4173,6 +4348,7 @@ Tooltip          : Dealing $s1% less damage to the Paladin.
 Name             : Fires of Justice (id=209785) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Duration         : 15 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
@@ -4198,6 +4374,7 @@ Tooltip          : Your next Holy Power spender costs $s2 less Holy Power.
 Name             : Word of Glory (id=210191) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Resource         : 3 Holy Power (9) (id=11106)
 Spell Level      : 1
 Range            : 40 yards
@@ -4223,6 +4400,7 @@ Description      : Heals a friendly target and the $s1 most injured targets with
 Name             : Aura of Mercy (id=210291) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Affecting spells : Aura Mastery (31821 effect#1), Avenging Wrath (31884 effect#1), Holy Paladin (137029 effect#1), Beacon of Faith (156910 effect#3)
@@ -4246,6 +4424,7 @@ Description      : $@spelldesc183415
 Name             : Justice Gaze (id=211557) [Spell Family (10), Passive] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Req. Max Level   : 115
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x....... ........ 
@@ -4270,6 +4449,7 @@ Description      : Hammer of Justice deals $211561sw2 Holy damage, generates $s3
 Name             : Hammer of Justice (id=211561) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : Melee
 Spell Level      : 5
 Range            : 40 yards
 Attributes       : ........ ........ ..x..x.. ........   ........ ........ ........ ........ 
@@ -4290,6 +4470,7 @@ Description      : $@spelldesc211557
 Name             : Absolution (id=212056) [Spell Family (10)] 
 Class            : Holy Paladin
 School           : Holy
+Spell Type       : Magic
 Resource         : 4% Base Mana (0) (id=11140)
 Spell Level      : 66
 Range            : 100 yards
@@ -4312,6 +4493,7 @@ Description      : Returns all dead party members to life with $s1% of maximum h
 Name             : Cleanse Toxins (id=213644) [Spell Family (10)] 
 Class            : Protection Retribution Paladin
 School           : Holy
+Spell Type       : Magic
 Resource         : 6.5% Base Mana (0) (id=11319)
 Spell Level      : 22
 Range            : 40 yards
@@ -4339,6 +4521,7 @@ Description      : Cleanses a friendly target, removing all Poison and Disease e
 Name             : Hand of the Protector (id=213652) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -4363,6 +4546,7 @@ Description      : Calls down the Light to heal a friendly target for $s1, incre
 Name             : Rule of Law (id=214202) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Spell Level      : 1
 Duration         : 10 seconds
 Cooldown         : 1.5 seconds
@@ -4394,6 +4578,7 @@ Tooltip          : Range of heals and reach of Lightbringer increased by $s1%.
 Name             : Judgment (id=214222) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Range            : 100 yards
 Duration         : 15 seconds
 Stacks           : 1 initial, 1 maximum
@@ -4420,6 +4605,7 @@ Tooltip          : Taking $w1% increased damage from the Paladin's next Crusader
 Name             : Justicar's Vengeance (id=215661) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : Melee
 Resource         : 5 Holy Power (9) (id=11251)
 Spell Level      : 1
 Range            : 5 yards
@@ -4445,6 +4631,7 @@ Damage is increased by $s2% when used against a stunned target.
 Name             : Avenging Crusader (id=216331) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Resource         : 50% Base Mana (0) (id=191685)
 Spell Level      : 72
 GCD              : 1.5 seconds
@@ -4494,6 +4681,7 @@ Name             : Wake of Ashes (id=218001) [Spell Family (10)]
 Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Holy
+Spell Type       : Melee
 Range            : 100 yards
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4510,6 +4698,7 @@ Description      : $@spelldesc205273
 Name             : Light of the Martyr (id=219562) [Spell Family (10), Passive, Hidden] 
 Class            : Holy Paladin
 School           : Holy
+Spell Type       : Magic
 Spell Level      : 1
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
@@ -4530,6 +4719,7 @@ Effects          :
 Name             : Judgment (id=220637) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : Melee
 Spell Level      : 1
 Family Flags     : 98
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
@@ -4547,6 +4737,7 @@ Description      : $@spelldesc20271
 Name             : Divine Steed (id=221883) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 3 seconds
@@ -4571,6 +4762,7 @@ Tooltip          : Increases ground speed by $s4%$?$w1<0[, and reduces damage ta
 Name             : Bestow Faith (id=223306) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : Magic
 Resource         : 6% Base Mana (0) (id=11393)
 Spell Level      : 1
 Range            : 40 yards
@@ -4596,6 +4788,7 @@ Tooltip          : Will be healed for $w1 upon expiration.
 Name             : Divine Purpose (id=223817) [Spell Family (10), Passive] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Internal Cooldown: 0.1 seconds
 Proc Chance      : 100%
@@ -4617,6 +4810,7 @@ Description      : Your abilities that consume Holy Power have a $s1% chance to 
 Name             : Divine Purpose (id=223819) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 12 seconds
@@ -4646,6 +4840,7 @@ Tooltip          : Your next Holy Power spender is free and deals $s2% increased
 Name             : Divine Storm (id=224239) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : Melee
 Spell Level      : 32
 Range            : 100 yards
 Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Retribution (183436 effect#1), Judgment (197277 effect#1), Last Defender (203791 effect#5), Whisper of the Nathrezim (207635 effect#1), Item - Paladin T19 Retribution 2P Bonus (211444 effect#1), Divine Purpose (223819 effect#2), Crusade (231895 effect#1), Scarlet Inquisitor's Expurgation (248289 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Execution Sentence (267799 effect#1)
@@ -4665,6 +4860,7 @@ Description      : $@spelldesc53385
 Name             : Templar's Verdict (id=224266) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : Melee
 Spell Level      : 10
 Range            : 100 yards
 Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Retribution (183436 effect#1), Judgment (197277 effect#1), Last Defender (203791 effect#5), Whisper of the Nathrezim (207635 effect#1), Item - Paladin T19 Retribution 2P Bonus (211444 effect#1), Divine Purpose (223819 effect#2), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Righteous Verdict (267611 effect#1), Execution Sentence (267799 effect#1)
@@ -4688,6 +4884,7 @@ Description      : A powerful weapon strike that deals $s1 Holy damage.
 Name             : Light of Dawn (id=225311) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
 Affecting spells : Avenging Wrath (31884 effect#1), Beacon of Light (53563 effect#3), Protection Paladin (137028 effect#5), Holy Paladin (137029 effect#1), Beacon of Faith (156910 effect#3), Rule of Law (214202 effect#2), Item - Paladin T20 Holy 2P Bonus (242261 effect#1), Purity of Light (254332 effect#1), Breaking Dawn (278594 effect#3)
@@ -4707,6 +4904,7 @@ Description      : $@spelldesc85222
 Name             : Judgment (id=228288) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 100 yards
 Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#5), Retribution (183436 effect#1), Last Defender (203791 effect#5), Avenging Crusader (216331 effect#3), Crusade (231895 effect#1), Item - Paladin T21 Retribution 2P Bonus (251867 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Execution Sentence (267799 effect#1), Divine Judgment (271581 effect#1)
@@ -4727,6 +4925,7 @@ Description      : $@spelldesc20271
 Name             : Blessed Hammer (id=229976) [Spell Family (10), Passive, Hidden] 
 Class            : Protection Paladin
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4744,6 +4943,7 @@ Description      : $@spelldesc204019
 Name             : Cavalier (id=230332) [Passive] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4760,6 +4960,7 @@ Description      : Divine Steed now has ${1+$m1} charges.
 Name             : Beacon of Light (rank=Rank 2) (id=231642) [Spell Family (10), Passive] 
 Class            : Holy Paladin
 School           : Holy
+Spell Type       : None
 Spell Level      : 52
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4777,6 +4978,7 @@ Description      : Your Flash of Light and Holy Light on your Beacon of Light ta
 Name             : Judgment (rank=Rank 2) (id=231644) [Spell Family (10), Passive] 
 Class            : Holy Paladin
 School           : Holy
+Spell Type       : None
 Spell Level      : 42
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4794,6 +4996,7 @@ Description      : Judgment causes the target to take $214222s2% increased damag
 Name             : Judgment (rank=Rank 2) (id=231657) [Spell Family (10), Passive] 
 Class            : Protection Paladin
 School           : Holy
+Spell Type       : None
 Spell Level      : 42
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4811,6 +5014,7 @@ Description      : Judgment reduces the remaining cooldown of Shield of the Righ
 Name             : Judgment (rank=Rank 2) (id=231663) [Spell Family (10), Passive] 
 Class            : Retribution Paladin
 School           : Holy
+Spell Type       : None
 Spell Level      : 42
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4828,6 +5032,7 @@ Description      : Judgment causes the target to take $s1% increased damage from
 Name             : Avenger's Shield (rank=Rank 2) (id=231665) [Spell Family (10), Passive] 
 Class            : Protection Paladin
 School           : Holy
+Spell Type       : None
 Spell Level      : 42
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4845,6 +5050,7 @@ Description      : Avenger's Shield interrupts and silences the main target for 
 Name             : Crusader Strike (rank=Rank 2) (id=231667) [Spell Family (10), Passive] 
 Class            : Holy Retribution Paladin
 School           : Holy
+Spell Type       : None
 Spell Level      : 26
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4862,6 +5068,7 @@ Description      : Crusader Strike now has ${$s1+1} charges.
 Name             : Blade of Wrath (id=231832) [Spell Family (10), Passive] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4879,6 +5086,7 @@ Description      : Art of War resets the cooldown of Blade of Justice $s1% more 
 Name             : Crusade (id=231895) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Spell Level      : 72
 GCD              : 1.5 seconds
 Duration         : 25 seconds
@@ -4927,6 +5135,7 @@ $haste=${$s3/10}
 Name             : Fist of Justice (id=234299) [Spell Family (10), Passive] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 1 seconds
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x.x. x....... ........ 
@@ -4948,6 +5157,7 @@ Variables        : $reduction=${$m1/10}
 Name             : Righteous Verdict (id=238062) [Spell Family (10), Passive] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 0.1 seconds
 Proc Chance      : 100%
 Proc Flags       : ....x... ..x.x.x. x.x..... ........ 
@@ -4968,6 +5178,7 @@ Description      : Your Holy Power spending abilities increase the damage of you
 Name             : Blessing of the Ashbringer (id=238098) [Spell Family (10), Passive] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4984,6 +5195,7 @@ Description      : When both of your Greater Blessings are active, gain Blessing
 Name             : Righteous Verdict (id=238996) [Spell Family (10)] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Duration         : 15 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
@@ -5007,6 +5219,7 @@ Tooltip          : Your next $?s198034[Divine Hammer][Blade of Justice] deals $w
 Name             : Item - Paladin T20 Retribution 4P Bonus (id=242267) [Spell Family (10), Passive, Hidden] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
@@ -5026,6 +5239,7 @@ Description      : Judgment also increases the damage of $?s198034[Divine Hammer
 Name             : Blessing of the Ashbringer (id=242981) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : Magic
 Duration         : Aura (infinite)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5044,6 +5258,7 @@ Tooltip          : Strength increased by $s1%.
 Name             : Sacred Judgment (id=246973) [Spell Family (10)] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Duration         : 8 seconds
 Triggered by     : Item - Paladin T20 Retribution 4P Bonus (242267)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5068,6 +5283,7 @@ Tooltip          : Damage of $?s198034[Divine Hammer][Blade of Justice] increase
 Name             : Awakening (id=248033) [Spell Family (10), Passive] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Heal
@@ -5090,6 +5306,7 @@ Name             : Vindicaar Matrix Crystal (id=251463)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
+Spell Type       : None
 GCD              : 1.5 seconds
 Triggered by     : Vindicaar Matrix Crystal (255529)
 Attributes       : ........ ........ ........ ........   ...x...x ..x..... ........ ........ 
@@ -5108,6 +5325,7 @@ Name             : Vindicaar Matrix Crystal (id=255529) [Hidden]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
+Spell Type       : None
 Triggered by     : Activating Specialization (200749)
 Attributes       : .......x x....... .......x x..x.x..   ...x.x.x ..x..... ........ ........ 
                  : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ....x... 
@@ -5128,6 +5346,7 @@ Name             : Light's Judgment (rank=Racial) (id=255647) [Scaling Spell (-6
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
+Spell Type       : Magic
 Max Scaling Level: 120
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -5150,6 +5369,7 @@ Name             : Holy Resistance (rank=Racial Passive) (id=255651) [Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5167,6 +5387,7 @@ Name             : Light's Reckoning (rank=Racial Passive) (id=255652) [Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ .......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -5184,6 +5405,7 @@ Name             : Demonbane (rank=Racial Passive) (id=255653) [Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5200,6 +5422,7 @@ Description      : Experience gains from killing Demons increased by $s1%.
 Name             : Wake of Ashes (id=255937) [Spell Family (10)] 
 Class            : Paladin
 School           : Holyfire
+Spell Type       : Magic
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 45 seconds
@@ -5234,6 +5457,7 @@ Tooltip          : Movement speed reduced by $s2%.
 Name             : Wake of Ashes (id=255941) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : Melee
 Range            : 100 yards
 Duration         : 5 seconds
 Mechanic         : Stun
@@ -5254,6 +5478,7 @@ Name             : Light's Judgment (rank=Racial) (id=256893) [Scaling Spell (-6
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
+Spell Type       : Magic
 Max Scaling Level: 120
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -5276,6 +5501,7 @@ Name             : Light's Reckoning (rank=Racial Passive) (id=256896) [Scaling 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
+Spell Type       : Magic
 Max Scaling Level: 120
 Range            : 40 yards
 Triggered by     : Light's Reckoning (255652)
@@ -5299,6 +5525,7 @@ Heals $s2 to allies within $A1.
 Name             : Haste (id=261582) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 2
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5316,6 +5543,7 @@ Tooltip          : Increases haste by $s1.
 Name             : Resounding Protection (id=263962) [Scaling Spell (-8), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 15
 Triggered by     : Resounding Protection (269279)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5335,6 +5563,7 @@ Description      : Every $270568t1 sec, gain an absorb shield for $s1 for $26927
 Name             : Azerite Empowered (id=263978) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 13
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5352,6 +5581,7 @@ Description      : Increases the item level of this item by 5.
 Name             : Elemental Whirl (id=263984) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 21
 Triggered by     : Elemental Whirl (268953), Elemental Whirl (268956), Elemental Whirl (268955), Elemental Whirl (268954)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5372,6 +5602,7 @@ Name             : Heed My Call (id=263987) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 22
 Triggered by     : Heed My Call (271685), Heed My Call (271686)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5395,6 +5626,7 @@ Tooltip          : Your damaging abilities have a chance to deal $s1 Nature dama
 Name             : Blood Siphon (id=264108) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 18
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5417,6 +5649,7 @@ Tooltip          : Increases Mastery by $s1 and Leech by $s2.
 Name             : Overwhelming Power (id=266180) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 30
 Triggered by     : Overwhelming Power (271711)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5438,6 +5671,7 @@ Name             : Azerite Globules (id=266936) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 462
 Triggered by     : Azerite Globules (279958)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5461,6 +5695,7 @@ Name             : Gutripper (id=266937) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 31
 Triggered by     : Gutripper (270668), Gutripper (269031)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5482,6 +5717,7 @@ Description      : Your damaging abilities have a chance to deal $s1 Physical da
 Name             : Mastery: Hand of Light (id=267316) [Spell Family (10), Passive] 
 Class            : Retribution Paladin
 School           : Physical
+Spell Type       : None
 Spell Level      : 78
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5505,6 +5741,7 @@ Description      : Increases Holy damage done by ${$s1}.1%.
 Name             : Art of War (id=267344) [Spell Family (10), Passive] 
 Class            : Retribution Paladin
 School           : Holy
+Spell Type       : None
 Spell Level      : 28
 Internal Cooldown: 3 seconds
 Proc Chance      : 100%
@@ -5527,6 +5764,7 @@ Description      : Your auto attacks have a chance to reset the cooldown of Blad
 Name             : Righteous Verdict (id=267610) [Spell Family (10), Passive] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -5546,6 +5784,7 @@ Description      : Templar's Verdict increases the damage of your next Templar's
 Name             : Righteous Verdict (id=267611) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Duration         : 6 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ..x..... 
@@ -5565,6 +5804,7 @@ Tooltip          : Damage done by Templar's Verdict increased by $s1%.
 Name             : Lifespeed (id=267665) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 20
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5587,6 +5827,7 @@ Tooltip          : Increases your Haste by $s1 and your Avoidance by $s2.
 Name             : Winds of War (id=267671) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Azerite Power Id : 43
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
@@ -5610,6 +5851,7 @@ Name             : Azerite Veins (id=267683) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 89
 Triggered by     : Azerite Veins (270674)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5629,6 +5871,7 @@ Description      : Taking damage has a chance to grant you Azerite Veins, healin
 Name             : Execution Sentence (id=267798) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : Magic
 Resource         : 3 Holy Power (9) (id=191553)
 Range            : 20 yards
 GCD              : 1.5 seconds
@@ -5653,6 +5896,7 @@ Description      : Calls down the Light's punishment upon an enemy target, deali
 Name             : Execution Sentence (id=267799) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Range            : 100 yards
 Duration         : 12 seconds
 Affecting spells : Retribution Paladin (137027 effect#4), Protection Paladin (137028 effect#5), Holy Paladin (137029 effect#4), Judgment (197277 effect#1), Fires of Justice (209785 effect#1), Item - Paladin T19 Retribution 2P Bonus (211444 effect#2), Divine Purpose (223819 effect#1), Sacred Judgment (253806 effect#1)
@@ -5677,6 +5921,7 @@ Tooltip          : $s1% increased Holy damage taken from the casting Paladin.
 Name             : On My Way (id=267879) [Scaling Spell (-1), Passive] 
 Class            : Paladin, Priest, Shaman, Monk, Druid
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 38
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5699,6 +5944,7 @@ Tooltip          : Increases your Versatility by $s1 and your Speed by $s2.
 Name             : Woundbinder (id=267880) [Scaling Spell (-7), Passive] 
 Class            : Paladin, Priest, Shaman, Monk, Druid
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 19
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5718,6 +5964,7 @@ Name             : Concentrated Mending (id=267882) [Scaling Spell (-8), Passive
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Paladin, Priest, Shaman, Monk, Druid
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 103
 Triggered by     : Concentrated Mending (272260)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5737,6 +5984,7 @@ Description      : Your healing effects have a chance to grant the target ${$s1*
 Name             : Savior (id=267883) [Scaling Spell (-8), Passive] 
 Class            : Paladin, Priest, Shaman, Monk, Druid
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 42
 Triggered by     : Savior (270679)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5759,6 +6007,7 @@ Name             : Bracing Chill (id=267884) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Paladin, Priest, Shaman, Monk, Druid
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 104
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5777,6 +6026,7 @@ Description      : Your heals have a chance to apply Bracing Chill. Healing a ta
 Name             : Ephemeral Recovery (id=267886) [Scaling Spell (-7), Passive] 
 Class            : Paladin, Priest, Shaman, Monk, Druid
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 105
 Triggered by     : Ephemeral Recovery (272572)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5796,6 +6046,7 @@ Description      : Casting a healing spell restores ${$s1*($272572d/$272572t1)} 
 Name             : Blessed Portents (id=267889) [Scaling Spell (-1), Passive] 
 Class            : Paladin, Priest, Shaman, Monk, Druid
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 463
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5816,6 +6067,7 @@ Description      : Your healing spells have a chance to apply Blessed Portents f
 Name             : Synergistic Growth (id=267892) [Scaling Spell (-7), Passive] 
 Class            : Paladin, Priest, Shaman, Monk, Druid
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 102
 Triggered by     : Synergistic Growth (272090)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5836,6 +6088,7 @@ Name             : Azerite Fortification (id=268435) [Scaling Spell (-8), Passiv
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 86
 Triggered by     : Azerite Fortification (270659)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5857,6 +6110,7 @@ Name             : Impassive Visage (id=268437) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 6 seconds
 Proc Chance      : 100%
 Azerite Power Id : 83
@@ -5882,6 +6136,7 @@ Name             : Longstrider (id=268594) [Scaling Spell (-7), Passive]
 Hotfixed         : Scaling Spell (-1 -> -7)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 14
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5905,6 +6160,7 @@ Name             : Bulwark of the Masses (id=268595) [Scaling Spell (-8), Passiv
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 84
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5926,6 +6182,7 @@ Name             : Gemhide (id=268596) [Scaling Spell (-1), Passive]
 Hotfixed         : Scaling Spell (-7 -> -1)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 85
 Triggered by     : Gemhide (270576)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5951,6 +6208,7 @@ Tooltip          : When dealt damage greater than $s3% of your maximum health, g
 Name             : Vampiric Speed (id=268599) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 44
 Triggered by     : Vampiric Speed (269238), Vampiric Speed (269239)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5975,6 +6233,7 @@ Name             : Self Reliance (id=268600) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 87
 Triggered by     : Self Reliance (270661)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5997,6 +6256,7 @@ Tooltip          : While no enemies are within $s2 yds, you heal for $w1 every $
 Name             : Zeal (id=269569) [Spell Family (10), Passive] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -6018,6 +6278,7 @@ Description      : Judgment empowers you with holy zeal, causing your next $s1 a
 Name             : Zeal (id=269571) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Range            : 50000 yards
 Duration         : 20 seconds
 Stacks           : 1 initial, 9 maximum
@@ -6044,6 +6305,7 @@ Tooltip          : Auto attack speed increased and deals additional Holy damage.
 Name             : Zeal (id=269937) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : Melee
 Range            : 30 yards
 Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#5), Retribution (183436 effect#1), Last Defender (203791 effect#5), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Execution Sentence (267799 effect#1)
 Triggered by     : Zeal (269571)
@@ -6063,6 +6325,7 @@ Description      : $@spelldesc269569
 Name             : Crystalline Carapace (id=271536) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 98
 Triggered by     : Crystalline Carapace (271539), Crystalline Carapace (271538)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6088,6 +6351,7 @@ Name             : Ablative Shielding (id=271540) [Scaling Spell (-1), Passive]
 Hotfixed         : Scaling Spell (-7 -> -1)
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 99
 Triggered by     : Ablative Shielding (271543)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6108,6 +6372,7 @@ Name             : Strength in Numbers (id=271546) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 100
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6126,6 +6391,7 @@ Description      : Taking damage has a chance to increase your maximum health by
 Name             : Shimmering Haven (id=271557) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 101
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6146,6 +6412,7 @@ Description      : Taking damage has a chance to create an upwelling of Azerite 
 Name             : Divine Judgment (id=271580) [Spell Family (10), Passive] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Proc Chance      : 101%
 Proc Flags       : ....x... ....x... ........ ........ 
                  : Yellow Melee, AOE Hostile Spell
@@ -6165,6 +6432,7 @@ Description      : Each enemy hit by an ability that consumes Holy Power increas
 Name             : Divine Judgment (id=271581) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Duration         : 15 seconds
 Stacks           : 15 maximum
 Proc Chance      : 101%
@@ -6190,6 +6458,7 @@ Name             : Avenger's Might (id=272898) [Scaling Spell (-7), Passive]
 Hotfixed         : Scaling Spell (-1 -> -7)
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Azerite Power Id : 125
 Triggered by     : Avenger's Might (272903)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6209,6 +6478,7 @@ Description      : While Avenging Wrath is active, your Mastery is increased by 
 Name             : Holy Shock (rank=Rank 2) (id=272906) [Spell Family (10), Passive] 
 Class            : Holy Paladin
 School           : Holy
+Spell Type       : None
 Spell Level      : 34
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6229,6 +6499,7 @@ Name             : Bulwark of Light (id=272976) [Scaling Spell (-8), Spell Famil
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 133
 Triggered by     : Bulwark of Light (272979)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6249,6 +6520,7 @@ Name             : Martyr's Breath (id=273027) [Scaling Spell (-8), Spell Family
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 139
 Triggered by     : Martyr's Breath (273034)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6268,6 +6540,7 @@ Description      : Light of the Martyr has a chance to cause your Blessing of Sa
 Name             : Inspiring Beacon (id=273130) [Scaling Spell (-1), Spell Family (10), Passive] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 143
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6285,6 +6558,7 @@ Description      : Flash of Light on your Beacon of Light target is increased by
 Name             : Rejuvenating Grace (id=273131) [Scaling Spell (-1), Spell Family (10), Passive] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 144
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6302,6 +6576,7 @@ Description      : Your Holy Light critical strikes refund $s1 mana during Aveng
 Name             : Fortifying Auras (id=273134) [Scaling Spell (-1), Spell Family (10), Passive] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 145
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6319,6 +6594,7 @@ Description      : Aura Mastery also grants your allies $s1 Max Health for its d
 Name             : Critical Flash (id=273136) [Scaling Spell (-1), Spell Family (10), Passive] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 146
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6336,6 +6612,7 @@ Description      : Flash of Light grants you $s1 Critical Strike for 6 seconds i
 Name             : Righteous Flames (id=273140) [Scaling Spell (-1), Spell Family (10), Passive] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 148
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6355,6 +6632,7 @@ Description      : When Shield of the Righteous expires, gain $s1 block and deal
 Name             : Healing Hammer (id=273142) [Scaling Spell (-1), Spell Family (10), Passive] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 149
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6374,6 +6652,7 @@ Description      : Hammer of the Righteous heals you for X if your health is bel
 Name             : Deferred Sentence (id=273147) [Scaling Spell (-1), Passive] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 153
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6392,6 +6671,7 @@ Name             : Ruinous Bolt (id=273150) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 156
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6409,6 +6689,7 @@ Description      : Your spells and abilities have a chance to draw a Wandering S
 Name             : Expurgation (id=273473) [Scaling Spell (-8), Passive] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Azerite Power Id : 187
 Triggered by     : Expurgation (273481)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6429,6 +6710,7 @@ Name             : Moment of Compassion (id=273513) [Scaling Spell (-8), Passive
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Azerite Power Id : 188
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6447,6 +6729,7 @@ Description      : Your Flash of Light heals for an additional $s1 when cast on 
 Name             : Dauntless Divinity (id=273553) [Scaling Spell (-1), Passive] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Azerite Power Id : 189
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6466,6 +6749,7 @@ Name             : Meticulous Scheming (id=273682) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 192
 Triggered by     : Seize the Moment! (273714)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6491,6 +6775,7 @@ Name             : Rezan's Fury (id=273790) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 157
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6511,6 +6796,7 @@ Name             : Blightborne Infusion (id=273823) [Scaling Spell (-7), Passive
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 193
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6529,6 +6815,7 @@ Name             : Secrets of the Deep (id=273829) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 195
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6551,6 +6838,7 @@ Name             : Filthy Transfusion (id=273834) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 194
 Triggered by     : Filthy Transfusion (273836)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6570,6 +6858,7 @@ Name             : Stalwart Protector (id=274388) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Azerite Power Id : 206
 Triggered by     : Stalwart Protector (274395)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6589,6 +6878,7 @@ Description      : When you cast Divine Shield, grant $s1 absorb for $274395d to
 Name             : Divine Revelations (id=275463) [Scaling Spell (-7), Passive] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Azerite Power Id : 233
 Triggered by     : Divine Revelations (275469), Divine Revelations (275468)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6608,6 +6898,7 @@ Description      : Healing an ally with Holy Light while empowered by Infusion o
 Name             : Inner Light (id=275477) [Scaling Spell (-1), Passive] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Azerite Power Id : 234
 Triggered by     : Inner Light (275481), Inner Light (275483)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6630,6 +6921,7 @@ Description      : When Shield of the Righteous expires, gain $s1 Block and deal
 Name             : Inner Light (id=275481) [Scaling Spell (-1)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Range            : 100 yards
 Duration         : 4 seconds
 Proc Chance      : 101%
@@ -6654,6 +6946,7 @@ Tooltip          : Block increased by $w1. Attackers take Holy damage.
 Name             : Inner Light (id=275483) [Scaling Spell (-1), Spell Family (10)] 
 Class            : Paladin
 School           : Holy
+Spell Type       : Magic
 Range            : 100 yards
 Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Retribution (183436 effect#1), Last Defender (203791 effect#5), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4)
 Family Flags     : 65
@@ -6677,6 +6970,7 @@ Name             : Indomitable Justice (id=275496) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Azerite Power Id : 235
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6695,6 +6989,7 @@ Description      : Judgment deals additional damage when your health percentage 
 Name             : Judgment (id=275773) [Spell Family (10)] 
 Class            : Holy Paladin
 School           : Holy
+Spell Type       : Melee
 Resource         : 3% Base Mana (0) (id=191719) w/ Holy Paladin (id=137029)
 Spell Level      : 3
 Range            : 30 yards
@@ -6720,6 +7015,7 @@ Description      : Judges the target, dealing $s1 Holy damage$?s231644[, and cau
 Name             : Judgment (id=275779) [Spell Family (10)] 
 Class            : Protection Paladin
 School           : Holy
+Spell Type       : Melee
 Resource         : 3% Base Mana (0) (id=191720) w/ Holy Paladin (id=137029)
 Spell Level      : 3
 Range            : 30 yards
@@ -6746,6 +7042,7 @@ Name             : Radiant Incandescence (id=277674) [Scaling Spell (-8), Passiv
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Azerite Power Id : 452
 Triggered by     : Radiant Incandescence (278145), Radiant Incandescence (278147)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6769,6 +7066,7 @@ Name             : Judicious Defense (id=277675) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Azerite Power Id : 454
 Triggered by     : Judicious Defense (278574)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6788,6 +7086,7 @@ Description      : Your Judgment critical strikes reduce the damage of the targe
 Name             : Divine Right (id=277678) [Scaling Spell (-1), Passive] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Azerite Power Id : 453
 Triggered by     : Divine Right (278523)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6810,6 +7109,7 @@ Name             : Grace of the Justicar (id=278593) [Scaling Spell (-8), Passiv
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Azerite Power Id : 393
 Triggered by     : Grace of the Justicar (278785)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6832,6 +7132,7 @@ Name             : Breaking Dawn (id=278594) [Scaling Spell (-8), Spell Family (
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Azerite Power Id : 394
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6858,6 +7159,7 @@ Name             : Soaring Shield (id=278605) [Scaling Spell (-7), Passive]
 Hotfixed         : Scaling Spell (-1 -> -7)
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Azerite Power Id : 150
 Triggered by     : Soaring Shield (278954)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6879,6 +7181,7 @@ Description      : Avenger's Shield now strikes $s2 $Lenemy:enemies; and grants 
 Name             : Inspiring Vanguard (id=278609) [Scaling Spell (-1), Passive] 
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Azerite Power Id : 395
 Triggered by     : Inspiring Vanguard (279397)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6901,6 +7204,7 @@ Name             : Zealotry (id=278615) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Azerite Power Id : 396
 Triggered by     : Zealotry (278989)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6921,6 +7225,7 @@ Name             : Relentless Inquisitor (id=278617) [Scaling Spell (-7), Passiv
 Hotfixed         : Scaling Spell (-1 -> -7)
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Azerite Power Id : 154
 Triggered by     : Relentless Inquisitor (279204)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6942,6 +7247,7 @@ Description      : Spending Holy Power grants you $s1 haste for $279204d per Hol
 Name             : Unstable Flames (id=279899) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 459
 Triggered by     : Unstable Flames (279902)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6961,6 +7267,7 @@ Description      : Your damaging abilities have a chance to grant $s1 critical s
 Name             : Earthlink (id=279926) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 461
 Triggered by     : Earthlink (279928)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6981,6 +7288,7 @@ Name             : Gallant Steed (id=280017) [Scaling Spell (-7), Passive]
 Hotfixed         : Scaling Spell (-1 -> -7)
 Class            : Paladin
 School           : Holy
+Spell Type       : None
 Azerite Power Id : 471
 Triggered by     : Gallant Steed (280191)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7003,6 +7311,7 @@ Name             : Barrage Of Many Bombs (id=280163) [Scaling Spell (-8), Passiv
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 1.5 (Haste multiplier)
 Azerite Power Id : 498
@@ -7034,6 +7343,7 @@ Name             : Ricocheting Inflatable Pyrosaw (id=280168) [Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 1.5 (Haste multiplier)
 Azerite Power Id : 499
@@ -7064,6 +7374,7 @@ Name             : Auto-Self-Cauterizer (id=280172) [Scaling Spell (-8), Passive
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 1 seconds
 Proc Chance      : 101%
 Real PPM         : 1.5
@@ -7096,6 +7407,7 @@ Name             : Synaptic Spark Capacitor (id=280174) [Scaling Spell (-8), Spe
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 1.5
 Azerite Power Id : 500
@@ -7125,6 +7437,7 @@ Name             : Relational Normalization Gizmo (id=280178) [Scaling Spell (-1
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 10 seconds
 Proc Chance      : 101%
 Real PPM         : 1.5
@@ -7152,6 +7465,7 @@ Name             : Personal Absorb-o-Tron (id=280181) [Scaling Spell (-8), Passi
 Hotfixed         : Scaling Spell, Max Scaling Level, Internal Cooldown (60000 -> 20000), Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 20 seconds
 Proc Chance      : 101%
 Real PPM         : 1.5
@@ -7180,6 +7494,7 @@ Name             : Dagger in the Back (id=280284) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 479
 Triggered by     : Dagger in the Back (280286)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7200,6 +7515,7 @@ Description      : Your damaging spells and abilities have a chance to fling a d
 Name             : Redoubt (id=280373) [Spell Family (10), Passive] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
@@ -7223,6 +7539,7 @@ Description      : Avenger's Shield bounces to $s2 additional $ltarget:targets; 
 Name             : Redoubt (id=280375) [Spell Family (10)] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Duration         : 8 seconds
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
@@ -7245,6 +7562,7 @@ Name             : Thunderous Blast (id=280380) [Scaling Spell (-8), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 482
 Triggered by     : Thunderous Blast (280384)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7266,6 +7584,7 @@ Name             : Tidal Surge (id=280402) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Frost
+Spell Type       : None
 Azerite Power Id : 478
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7284,6 +7603,7 @@ Name             : Blood Rite (id=280407) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 480
 Triggered by     : Blood Rite (280409)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7303,6 +7623,7 @@ Name             : Incite the Pack (id=280410) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 481
 Triggered by     : Incite the Pack (280412), Incite the Pack (280413)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7326,6 +7647,7 @@ Name             : Swirling Sands (id=280429) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 196
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7348,6 +7670,7 @@ Name             : Archive of the Titans (id=280555) [Scaling Spell (-1), Passiv
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 483
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7368,6 +7691,7 @@ Name             : Laser Matrix (id=280559) [Scaling Spell (-8), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 485
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7390,6 +7714,7 @@ Name             : Glory in Battle (id=280577) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 486
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7411,6 +7736,7 @@ Name             : Retaliatory Fury (id=280579) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 487
 Triggered by     : Retaliatory Fury (280787), Retaliatory Fury (280788)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7433,6 +7759,7 @@ Name             : Combined Might (id=280580) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 490
 Triggered by     : Might of the Orcs (280841)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7454,6 +7781,7 @@ Name             : Collective Will (id=280581) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 491
 Triggered by     : Collective Will (280830)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7475,6 +7803,7 @@ Name             : Battlefield Focus (id=280582) [Scaling Spell (-8), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 488
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7497,6 +7826,7 @@ Name             : Sylvanas' Resolve (id=280598) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 489
 Triggered by     : Sylvanas' Resolve (280809)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7518,6 +7848,7 @@ Name             : Liberator's Might (id=280623) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 492
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7539,6 +7870,7 @@ Name             : Last Gift (id=280624) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 493
 Triggered by     : Last Gift (280861), Last Gift (280862)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7561,6 +7893,7 @@ Name             : Stronger Together (id=280625) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 496
 Triggered by     : Strength of the Humans (280866)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7582,6 +7915,7 @@ Name             : Stand As One (id=280626) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 497
 Triggered by     : Stand As One (280858)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7603,6 +7937,7 @@ Name             : Battlefield Precision (id=280627) [Scaling Spell (-8), Passiv
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 494
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7625,6 +7960,7 @@ Name             : Anduin's Dedication (id=280628) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 495
 Triggered by     : Anduin's Dedication (280876)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7645,6 +7981,7 @@ Description      : Your abilities have a chance to increase your $?a162700[Agili
 Name             : Champion of Azeroth (id=280710) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 82
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7662,6 +7999,7 @@ Description      : Your spells and abilities have a chance to increase all secon
 Name             : Blade of Wrath (id=281178) [Spell Family (10)] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Duration         : 10 seconds
 Stacks           : 1 initial, 1 maximum
@@ -7686,6 +8024,7 @@ Tooltip          : Your next Blade of Justice deals $s1% increased damage.
 Name             : Unstable Catalyst (id=281514) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 504
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7703,6 +8042,7 @@ Description      : Your spells and abilities have a chance to leak Azerite on th
 Name             : Chain of Thrayn (id=281573) [Spell Family (10), Hidden] 
 Class            : Paladin
 School           : Physical
+Spell Type       : None
 Req. Max Level   : 115
 Duration         : 25 seconds
 Proc Chance      : 101%
@@ -7730,6 +8070,7 @@ Name             : Tradewinds (id=281841) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 505
 Triggered by     : Tradewinds (281843), Tradewinds (281844)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 

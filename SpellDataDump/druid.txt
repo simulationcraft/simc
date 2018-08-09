@@ -3,6 +3,7 @@ SimulationCraft 801-01 for World of Warcraft 8.0.1 bfa-BETA (wow build 26095)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 28
 GCD              : 1.5 seconds
 Duration         : 3 seconds
@@ -29,6 +30,7 @@ Tooltip          : Incapacitated.
 Name             : Entangling Roots (id=339) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
+Spell Type       : Magic
 Resource         : 18% Base Mana (0) (id=42)
 Spell Level      : 24
 Range            : 35 yards
@@ -59,6 +61,7 @@ Tooltip          : Rooted.
 Name             : Tranquility (id=740) [Spell Family (7)] 
 Class            : Restoration Druid
 School           : Nature
+Spell Type       : Magic
 Resource         : 18.4% Base Mana (0) (id=90)
 Spell Level      : 80
 GCD              : 1.5 seconds
@@ -91,6 +94,7 @@ Tooltip          : Healing all allies within $a1 yards for $157982s1 every $t1 s
 Name             : Cat Form (rank=Shapeshift) (id=768) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : Magic
 Spell Level      : 8
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
@@ -126,6 +130,7 @@ Movement speed increased by $113636s1% and falling damage reduced.
 Name             : Rejuvenation (id=774) [Spell Family (7)] 
 Class            : Restoration Druid
 School           : Nature
+Spell Type       : Magic
 Resource         : 11% Base Mana (0) (id=95)
 Spell Level      : 10
 Range            : 40 yards
@@ -161,6 +166,7 @@ $bloom=${$<gift>*$<genesis3>*$<mstrshape>*$<gotem3>*$<tol>}
 Name             : Travel Form (rank=Shapeshift) (id=783) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : Magic
 Spell Level      : 18
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
@@ -187,6 +193,7 @@ Tooltip          : Immune to Polymorph effects.  Movement speed increased.
 Name             : Rip (id=1079) [Spell Family (7)] 
 Class            : Feral Druid
 School           : Physical
+Spell Type       : Melee
 Resource         : 30 Energy (3) (id=113)
 Resource         : 1 - 5 Combo Points (4) (id=10588)
 Spell Level      : 20
@@ -225,6 +232,7 @@ Variables        : $rip=${$s1}
 Name             : Bear Form Passive (id=1178) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Nature
+Spell Type       : None
 Spell Level      : 1
 Internal Cooldown: 0.75 seconds
 Proc Chance      : 100%
@@ -254,6 +262,7 @@ Effects          :
 Name             : Rake (id=1822) [Spell Family (7)] 
 Class            : Feral Druid
 School           : Physical
+Spell Type       : Melee
 Resource         : 35 Energy (3) (id=143)
 Spell Level      : 12
 Range            : 5 yards
@@ -288,6 +297,7 @@ While stealthed, Rake will also stun the target for $163505d, and deal $s4% incr
 Name             : Dash (id=1850) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : Magic
 Spell Level      : 8
 GCD              : 1.5 seconds
 Duration         : 10 seconds
@@ -313,6 +323,7 @@ Tooltip          : Increased movement speed by $s1% while in Cat Form.
 Name             : Hibernate (id=2637) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
+Spell Type       : Magic
 Resource         : 15% Base Mana (0) (id=173)
 Spell Level      : 66
 Range            : 30 yards
@@ -341,6 +352,7 @@ Tooltip          : Asleep.
 Name             : Remove Corruption (id=2782) [Spell Family (7)] 
 Class            : Balance Feral Guardian Druid
 School           : Arcane
+Spell Type       : Magic
 Resource         : 6.5% Base Mana (0) (id=11322)
 Spell Level      : 22
 Range            : 40 yards
@@ -365,6 +377,7 @@ Description      : Nullifies corrupting effects on the friendly target, removing
 Name             : Soothe (id=2908) [Spell Family (7)] 
 Class            : Balance Feral Guardian Restoration Druid
 School           : Nature
+Spell Type       : Magic
 Resource         : 5.6% Base Mana (0) (id=186)
 Spell Level      : 56
 Range            : 40 yards
@@ -387,6 +400,7 @@ Description      : Soothes the target, dispelling all enrage effects.
 Name             : Cat Form (id=3025) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
 School           : Nature
+Spell Type       : None
 Stance Mask      : 0x00000001
 Attributes       : ....x.xx ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -414,6 +428,7 @@ Name             : Solar Wrath (rank=Solar) (id=5176) [Scaling Spell (3), Spell 
 Class            : Restoration Rogue, Druid
 Race             : Night Elf (0x8)
 School           : Nature
+Spell Type       : Magic
 Resource         : 3.5% Base Mana (0) (id=227)
 Spell Level      : 1
 Range            : 40 yards
@@ -438,6 +453,7 @@ Description      : Causes $s1 Nature damage to the target.
 Name             : Mighty Bash (id=5211) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -465,6 +481,7 @@ Tooltip          : Stunned.
 Name             : Prowl (id=5215) [Spell Family (7)] 
 Class            : Balance Feral Guardian Restoration Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 16
 Duration         : Aura (infinite)
 Cooldown         : 6 seconds
@@ -497,6 +514,7 @@ Tooltip          : Stealthed.
 Name             : Tiger's Fury (id=5217) [Spell Family (7)] 
 Class            : Feral Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 13
 Duration         : 10 seconds
 Cooldown         : 30 seconds
@@ -529,6 +547,7 @@ Tooltip          : Attacks deal $s1% additional damage for their full duration.
 Name             : Shred (id=5221) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : Melee
 Resource         : 40 Energy (3) (id=231)
 Spell Level      : 8
 Range            : 5 yards
@@ -562,6 +581,7 @@ Variables        : $mult=${($min($pl-1,19)*18+353)/695}
 Name             : Travel Form (Passive) (rank=Passive) (id=5419) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Nature
+Spell Type       : None
 Spell Level      : 16 (max 200)
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -582,6 +602,7 @@ Effects          :
 Name             : Incarnation: Tree of Life (rank=Passive) (id=5420) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Stance Mask      : 0x00000002
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -618,6 +639,7 @@ Effects          :
 Name             : Aquatic Form Passive (id=5421) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Nature
+Spell Type       : None
 Spell Level      : 1
 Stance Mask      : 0x00000008
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -638,6 +660,7 @@ Description      : Increases swimming speed by $s1% and allow's the druid to bre
 Name             : Bear Form (rank=Shapeshift) (id=5487) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : Magic
 Spell Level      : 10
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
@@ -695,6 +718,7 @@ Immune to Polymorph effects.
 Name             : Growl (id=6795) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 13
 Range            : 30 yards
 Duration         : 3 seconds
@@ -724,6 +748,7 @@ Tooltip          : Taunted.
 Name             : Maul (id=6807) [Spell Family (7)] 
 Class            : Guardian Druid
 School           : Physical
+Spell Type       : Melee
 Resource         : 45 Rage (1) (id=280)
 Spell Level      : 10
 Range            : 5 yards
@@ -748,6 +773,7 @@ Description      : Maul the target for $s2 Physical damage.
 Name             : Moonfire (rank=Lunar) (id=8921) [Spell Family (7)] 
 Class            : Druid
 School           : Arcane
+Spell Type       : Magic
 Resource         : 6% Base Mana (0) (id=11196) w/ Restoration Druid (id=137012)
 Spell Level      : 3
 Range            : 40 yards
@@ -777,6 +803,7 @@ Description      : A quick beam of lunar light burns the enemy for $164812s1 Arc
 Name             : Regrowth (id=8936) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
+Spell Type       : Magic
 Resource         : 14% Base Mana (0) (id=367)
 Spell Level      : 5
 Range            : 40 yards
@@ -814,6 +841,7 @@ $bloom=${$<gift>*$<genesis3>*$<mstrshape>*$<gotem3>*$<tol>}
 Name             : Omen of Clarity (id=16864) [Spell Family (7), Passive] 
 Class            : Feral Druid
 School           : Physical
+Spell Type       : Magic
 Spell Level      : 48
 Internal Cooldown: 1.05 seconds
 Proc Chance      : 100%
@@ -837,6 +865,7 @@ Description      : Your auto attacks have a chance to cause a Clearcasting state
 Name             : Clearcasting (id=16870) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 15 seconds
@@ -868,6 +897,7 @@ Tooltip          : Your next Regrowth is free$?s155577[ and heals for an additon
 Name             : Thick Hide (id=16931) [Spell Family (7), Passive] 
 Class            : Guardian Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 34
 Family Flags     : 109
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -886,6 +916,7 @@ Description      : Reduces all damage taken by $s1%.
 Name             : Feral Instinct (id=16949) [Spell Family (7), Passive] 
 Class            : Feral Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 9
 Stance Mask      : 0x00000001
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -904,6 +935,7 @@ Description      : Reduces the chance enemies have to detect you while Prowl is 
 Name             : Primal Fury (id=16953) 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 35
 Range            : 100 yards
 Stacks           : 3 maximum
@@ -926,6 +958,7 @@ Description      : Every time you critically strike with a combo generating abil
 Name             : Predatory Swiftness (id=16974) [Spell Family (7), Passive] 
 Class            : Feral Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 80
 Stacks           : 1 maximum
 Proc Chance      : 101%
@@ -951,6 +984,7 @@ Description      : Your finishing moves have a $s3% chance per combo point to ma
 Name             : Bear Form (id=17057) 
 Class            : Druid
 School           : Physical
+Spell Type       : Magic
 Duration         : 6 seconds
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -969,6 +1003,7 @@ Description      : You gain ${$m1/10} Rage upon shapeshifting into Bear Form.
 Name             : Swiftmend (id=18562) [Spell Family (7)] 
 Class            : Restoration Druid
 School           : Nature
+Spell Type       : Magic
 Resource         : 14% Base Mana (0) (id=781)
 Spell Level      : 12
 Range            : 40 yards
@@ -993,6 +1028,7 @@ Description      : Instantly heals a friendly target for $s1.
 Name             : Rebirth (id=20484) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
+Spell Type       : Magic
 Resource         : 30 Rage (1) (id=10971) w/ Bear Form (id=5487)
 Spell Level      : 42
 Range            : 40 yards
@@ -1018,6 +1054,7 @@ Description      : Returns the spirit to the body, restoring a dead target to li
 Name             : Feline Grace (id=20719) [Passive, Hidden] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Stance Mask      : 0x00000001
 Attributes       : ....x.xx ........ ..x..... ........   ........ ........ ........ ........ 
@@ -1037,6 +1074,7 @@ Name             : Elusiveness (rank=Racial Passive) (id=21009) [Passive]
 Class            : Rogue, Druid
 Race             : Night Elf (0x8)
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1053,6 +1091,7 @@ Description      : Increases your speed while $?s5176[Prowl is active by $s1%.][
 Name             : Bear Form Passive 2 (id=21178) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
 School           : Nature
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1074,6 +1113,7 @@ Name             : Command (rank=Racial Passive) (id=21563) [Spell Family (9), P
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Orc (0x2)
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1090,6 +1130,7 @@ Description      : Damage dealt by pets increased by $s1%.
 Name             : Ferocious Bite (id=22568) [Spell Family (7)] 
 Class            : Feral Druid
 School           : Physical
+Spell Type       : Melee
 Resource         : 25 Energy (3) (id=939)
 Resource         : 1 - 5 Combo Points (4) (id=10587)
 Spell Level      : 10
@@ -1123,6 +1164,7 @@ $?s202031[]?s231056[When used on targets below 25% health, ][]$?s231056[Ferociou
 Name             : Maim (id=22570) [Scaling Spell (-1), Spell Family (7)] 
 Class            : Feral Druid
 School           : Physical
+Spell Type       : Melee
 Resource         : 35 Energy (3) (id=940)
 Resource         : 1 - 5 Combo Points (4) (id=9773)
 Spell Level      : 63
@@ -1158,6 +1200,7 @@ Variables        : $mult=$?p61252[${4}][${2}]
 Name             : Barkskin (id=22812) [Spell Family (7)] 
 Class            : Balance Guardian Restoration Druid
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 26
 Duration         : 12 seconds
 Cooldown         : 60 seconds
@@ -1190,6 +1233,7 @@ Tooltip          : All damage taken reduced by $s2%.
 Name             : Frenzied Regeneration (id=22842) [Spell Family (7)] 
 Class            : Guardian Druid
 School           : Physical
+Spell Type       : None
 Resource         : 10 Rage (1) (id=10734)
 Spell Level      : 40
 GCD              : 1.5 seconds
@@ -1217,6 +1261,7 @@ Tooltip          : Healing $w1% of maximum health every $t1 sec.
 Name             : Moonkin Form (id=24858) [Spell Family (7)] 
 Class            : Balance Druid
 School           : Physical
+Spell Type       : Magic
 Spell Level      : 20
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
@@ -1270,6 +1315,7 @@ Armor increased by $w3%.][]
 Name             : Innervate (id=29166) [Spell Family (7)] 
 Class            : Balance Restoration Druid
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 50
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -1294,6 +1340,7 @@ Tooltip          : Your spells cost no mana.
 Name             : Lifebloom (id=33763) [Spell Family (7)] 
 Class            : Restoration Druid
 School           : Nature
+Spell Type       : Magic
 Resource         : 12% Base Mana (0) (id=1447)
 Spell Level      : 20
 Range            : 40 yards
@@ -1324,6 +1371,7 @@ Blooms for additional healing when effect expires or is dispelled.
 Name             : Lifebloom (id=33778) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 64
 Range            : 40 yards
 Affecting spells : Incarnation: Tree of Life (5420 effect#1), Blessing of Lower City (37878 effect#1), Restoration Druid (137012 effect#1), Thrash (192090 effect#2), Astral Influence (197524 effect#1), The Dark Titan's Advice (207271 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
@@ -1344,6 +1392,7 @@ Description      : $@spelldesc33763
 Name             : Incarnation: Tree of Life (rank=Talent, Shapeshift) (id=33891) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : Magic
 Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
@@ -1377,6 +1426,7 @@ Some spells are enhanced.
 Name             : Mangle (id=33917) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -1407,6 +1457,7 @@ Description      : Mangle the target for $s2 Physical damage.$?a231064[ Deals $s
 Name             : Flight Form (Passive) (rank=Passive) (id=33948) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Nature
+Spell Type       : None
 Spell Level      : 58
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1423,6 +1474,7 @@ Effects          :
 Name             : Expert Riding (id=34090) [Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. ........ ........ x.......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1439,6 +1491,7 @@ Description      : You can now ride flying mounts.
 Name             : Artisan Riding (id=34091) [Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. ........ ........ x.......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1455,6 +1508,7 @@ Description      : You can now ride flying mounts at a faster speed.
 Name             : Force of Nature (id=37846) 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Attributes       : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1469,6 +1523,7 @@ Effects          :
 Name             : Agility 20 (id=41695) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 7
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1486,6 +1541,7 @@ Description      : Increases Agility by $s1.
 Name             : Wild Growth (id=48438) [Spell Family (7)] 
 Class            : Restoration Druid
 School           : Nature
+Spell Type       : Magic
 Resource         : 30% Base Mana (0) (id=2220)
 Spell Level      : 40
 Range            : 40 yards
@@ -1520,6 +1576,7 @@ Tooltip          : Heals $w1 damage every $t1 second.
 Name             : Infected Wounds (id=48484) [Spell Family (7), Passive] 
 Class            : Feral Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 54
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
@@ -1540,6 +1597,7 @@ Description      : Rake causes an Infected Wound in the target, reducing the tar
 Name             : Survival Instincts (id=50322) [Spell Family (7), Hidden] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Duration         : 6 seconds
 Affecting spells : Dual Determination (208228 effect#3)
 Family Flags     : 71
@@ -1562,6 +1620,7 @@ Tooltip          : Damage taken reduced by $w1%.
 Name             : Savage Roar (id=52610) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Resource         : 30 Energy (3) (id=2413)
 Resource         : 1 - 5 Combo Points (4) (id=11447)
 Spell Level      : 1
@@ -1597,6 +1656,7 @@ Tooltip          : Damage increased $w2% while in Cat Form.
 Name             : The Orca (id=54872) 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Cast Time        : 1.5 seconds
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1614,6 +1674,7 @@ Description      : $@spelldesc114333
 Name             : Increase Versatility 15 (id=55564) [Scaling Spell (-1), Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Max Scaling Level: 80
 Azerite Power Id : 1
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -1632,6 +1693,7 @@ Description      : Increases your Versatility by $s1.
 Name             : The Ursol Chameleon (id=58158) 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Cast Time        : 1.5 seconds
 Cooldown         : 1.5 seconds
 Category         : 133
@@ -1652,6 +1714,7 @@ Description      : $@spelldesc107059
 Name             : Infected Wounds (id=58180) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
+Spell Type       : None
 Spell Level      : 40
 Range            : 5 yards
 Duration         : 12 seconds
@@ -1675,6 +1738,7 @@ Tooltip          : Movement speed slowed by $s1%.
 Name             : Maim Damage (id=61252) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1693,6 +1757,7 @@ Description      : Increases the damage done by Maim by $s1%.
 Name             : Survival Instincts (id=61336) [Spell Family (7)] 
 Class            : Feral Guardian Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 36
 Duration         : 6 seconds
 Cooldown         : 6 seconds
@@ -1718,6 +1783,7 @@ Tooltip          : Damage taken reduced by $50322s1%.
 Name             : Typhoon (id=61391) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 15 yards
 Duration         : 6 seconds
@@ -1743,6 +1809,7 @@ Tooltip          : Dazed.
 Name             : Savage Roar (id=62071) [Spell Family (7), Hidden] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Duration         : Aura (infinite)
 Stance Mask      : 0x00000001
@@ -1773,6 +1840,7 @@ Name             : Viciousness (rank=Racial Passive) (id=68975) [Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1791,6 +1859,7 @@ Name             : Aberration (rank=Racial Passive) (id=68976) [Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1810,6 +1879,7 @@ Name             : Darkflight (rank=Racial) (id=68992)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
+Spell Type       : None
 Duration         : 10 seconds
 Cooldown         : 120 seconds
 Attributes       : ........ ........ ........ ........   .....x.. ........ ........ ........ 
@@ -1831,6 +1901,7 @@ Tooltip          : True form activated, movement speed increased by an additiona
 Name             : Predatory Swiftness (id=69369) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : Magic
 Duration         : 12 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
@@ -1863,6 +1934,7 @@ Tooltip          : Your next Regrowth or Entangling Roots is instant, free, and 
 Name             : Mastery: Starlight (id=77492) [Spell Family (7), Passive] 
 Class            : Balance Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 78
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1902,6 +1974,7 @@ Increases the damage effects of Lunar Empowerment by an additional ${$s4}.1% and
 Name             : Mastery: Razor Claws (id=77493) [Spell Family (7), Passive] 
 Class            : Feral Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 78
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1927,6 +2000,7 @@ Description      : Increases the damage done by your Cat Form bleed abilities by
 Name             : Mastery: Harmony (id=77495) [Spell Family (7), Passive] 
 Class            : Restoration Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 78
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1944,6 +2018,7 @@ Description      : Your healing is increased by ${$s1}.1% for each of your Resto
 Name             : Thrash (id=77758) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : Melee
 Resource         : 0 Rage (1) (id=10840)
 Spell Level      : 12
 Range            : 8 yards
@@ -1973,6 +2048,7 @@ Description      : Strikes all nearby enemies, dealing $s1 Bleed damage and an a
 Name             : Starsurge (id=78674) [Spell Family (7)] 
 Class            : Balance Druid
 School           : Astral
+Spell Type       : Magic
 Resource         : 40 Eclipse (8) (id=10676)
 Spell Level      : 10
 Range            : 40 yards
@@ -1998,6 +2074,7 @@ Also grants you Lunar and Solar Empowerment.
 Name             : Solar Beam (id=78675) [Spell Family (7)] 
 Class            : Balance Druid
 School           : Nature
+Spell Type       : None
 Resource         : 16.8% Base Mana (0) (id=3373)
 Spell Level      : 80
 Range            : 40 yards
@@ -2028,6 +2105,7 @@ Tooltip          : Silenced.
 Name             : Pulverize (id=80313) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -2053,6 +2131,7 @@ Description      : A devastating blow that consumes $s3 stacks of your Thrash on
 Name             : Sabertooth (id=80863) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
@@ -2070,6 +2149,7 @@ Description      : $@spelldesc202031
 Name             : Incarnation: Tree of Life (rank=Passive) (id=81097) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2087,6 +2167,7 @@ Effects          :
 Name             : Incarnation: Tree of Life (rank=Passive) (id=81098) [Spell Family (7), Hidden] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Duration         : Aura (infinite)
 Attributes       : .......x x....... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2104,6 +2185,7 @@ Name             : Efflorescence (id=81262) [Spell Family (7)]
 Hotfixed         : Affecting Spells
 Class            : Druid
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 30 seconds
@@ -2125,6 +2207,7 @@ Tooltip          : Restores health to three injured allies within $81269A1 yards
 Name             : Efflorescence (id=81269) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Affecting spells : Incarnation: Tree of Life (5420 effect#1), Ironbark (102342 effect#3), Restoration Druid (137012 effect#1), Thrash (192090 effect#2), Blossoming Efflorescence (242315 effect#1)
@@ -2145,6 +2228,7 @@ Description      : Restores $s1 health to three injured allies within $A1 yards 
 Name             : Leather Specialization (id=86093) [Spell Family (7), Passive] 
 Class            : Restoration Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 50
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2166,6 +2250,7 @@ Description      : Increases your Intellect by $s2% while wearing only Leather a
 Name             : Leather Specialization (id=86096) [Spell Family (7), Passive] 
 Class            : Guardian Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 50
 Stance Mask      : 0x00000010
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -2188,6 +2273,7 @@ Description      : Increases your Stamina in Bear Form by $s3% while wearing onl
 Name             : Leather Specialization (id=86097) [Spell Family (7), Passive] 
 Class            : Feral Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 50
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2209,6 +2295,7 @@ Description      : Increases your Agility by $s1% while wearing only Leather arm
 Name             : Leather Specialization (id=86104) [Spell Family (7), Passive] 
 Class            : Balance Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 50
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2230,6 +2317,7 @@ Description      : Increases your Intellect by $s2% while wearing only Leather a
 Name             : Nature's Cure (id=88423) [Spell Family (7)] 
 Class            : Restoration Druid
 School           : Nature
+Spell Type       : Magic
 Resource         : 6.5% Base Mana (0) (id=5074)
 Spell Level      : 22
 Range            : 40 yards
@@ -2257,6 +2345,7 @@ Description      : Cures harmful effects on the friendly target, removing all Ma
 Name             : Master Riding (id=90265) [Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. ........ ........ x.......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2273,6 +2362,7 @@ Description      : You can now ride at the highest possible speed on your flying
 Name             : Item - Proc Mastery (id=92322) [Spell Family (10), Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 100 seconds
 Proc Chance      : 10%
 Azerite Power Id : 8
@@ -2294,6 +2384,7 @@ Description      : Your harmful spells have a chance to grant $92320s1 mastery f
 Name             : Sunfire (rank=Solar) (id=93402) [Scaling Spell (3), Spell Family (7)] 
 Class            : Balance Restoration Druid
 School           : Nature
+Spell Type       : Magic
 Resource         : 12% Base Mana (0) (id=11197) w/ Restoration Druid (id=137012)
 Spell Level      : 16
 Range            : 40 yards
@@ -2324,6 +2415,7 @@ Tooltip          : Suffering $w2 Nature damage every $t2 sec.
 Name             : Gore (id=93622) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Duration         : 10 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
@@ -2348,6 +2440,7 @@ Tooltip          : Mangle's cooldown has been reset, and generates an additional
 Name             : Skull Bash (id=93985) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 64
 Range            : 100 yards
 Duration         : 4 seconds
@@ -2370,6 +2463,7 @@ Name             : Altered Form (rank=Racial Passive) (id=94293) [Passive, Hidde
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2386,6 +2480,7 @@ Description      : Enables Worgens to switch between human and Worgan forms
 Name             : Solar Beam (id=97547) [Scaling Spell (3), Spell Family (7)] 
 Class            : Druid
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 28
 Range            : 100 yards
 Duration         : 5 seconds
@@ -2410,6 +2505,7 @@ Tooltip          : Interrupted.
 Name             : Ironbark (id=102342) [Spell Family (7)] 
 Class            : Restoration Druid
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 54
 Range            : 40 yards
 Duration         : 12 seconds
@@ -2438,6 +2534,7 @@ Tooltip          : All damage taken is reduced by $w1%$?a197061[ and healing ove
 Name             : Cenarion Ward (id=102351) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
+Spell Type       : None
 Resource         : 9.2% Base Mana (0) (id=5065)
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -2465,6 +2562,7 @@ Tooltip          : Taking damage will grant $102352m1 healing every $102352t sec
 Name             : Cenarion Ward (id=102352) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 8 seconds
@@ -2488,6 +2586,7 @@ Tooltip          : Heals $w1 damage every $t1 seconds.
 Name             : Mass Entanglement (id=102359) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -2515,6 +2614,7 @@ Tooltip          : Rooted.
 Name             : Wild Charge (id=102401) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Range            : 5 - 25 yards
 GCD              : 0.5 seconds
 Duration         : 0.5 seconds
@@ -2543,6 +2643,7 @@ Tooltip          : Flying to an ally's position.
 Name             : Incarnation: King of the Jungle (rank=Talent, Shapeshift) (id=102543) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 GCD              : 1 seconds
 Duration         : 30 seconds
@@ -2577,6 +2678,7 @@ Tooltip          : Reduces the energy cost of all Cat Form abilities by $s1% and
 Name             : Prowl (id=102547) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Duration         : Aura (infinite)
 Cooldown         : 6 seconds
@@ -2615,6 +2717,7 @@ Tooltip          : Stealthed.
 Name             : Incarnation: Guardian of Ursoc (rank=Talent, Shapeshift) (id=102558) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 30 seconds
@@ -2658,6 +2761,7 @@ Tooltip          : Incarnation: Guardian of Ursoc activated.
 Name             : Incarnation: Chosen of Elune (rank=Talent, Shapeshift) (id=102560) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 30 seconds
@@ -2700,6 +2804,7 @@ Haste increased by $s3%.
 Name             : Ursol's Vortex (id=102793) [Spell Family (7)] 
 Class            : Restoration Druid
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 63
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -2726,6 +2831,7 @@ Tooltip          : Movement speed slowed by $s1% and winds impeding movement.
 Name             : Ursol's Vortex (id=102794) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
+Spell Type       : Magic
 Range            : 50000 yards
 Mechanic         : Grip
 Attributes       : ........ x....... .......x x..x....   ...x.x.x ..x..... ........ ........ 
@@ -2744,6 +2850,7 @@ Description      : Conjures a vortex of wind at the destination location that pu
 Name             : Feral Overrides Passive (rank=Passive) (id=106733) [Spell Family (7), Passive, Hidden] 
 Class            : Feral Druid
 School           : Nature
+Spell Type       : None
 Attributes       : ....x.xx ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2772,6 +2879,7 @@ Effects          :
 Name             : Guardian Overrides Passive (rank=Passive) (id=106734) [Spell Family (7), Passive, Hidden] 
 Class            : Guardian Druid
 School           : Nature
+Spell Type       : None
 Attributes       : ....x.xx ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2805,6 +2913,7 @@ Effects          :
 Name             : Swipe (id=106785) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : Melee
 Resource         : 40 Energy (3) (id=9341)
 Spell Level      : 32
 Range            : 8 yards
@@ -2833,6 +2942,7 @@ Description      : Swipe nearby enemies, inflicting $s3 Physical damage.$?a23128
 Name             : Thrash (id=106830) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : Melee
 Resource         : 45 Energy (3) (id=5069)
 Spell Level      : 12
 Range            : 8 yards
@@ -2863,6 +2973,7 @@ Tooltip          : Bleeding for $w2 damage every $t2 sec.
 Name             : Thrash (id=106832) [Spell Family (7)] 
 Class            : Feral Guardian Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 12
 Range            : 5 yards
 Stance Mask      : 0x00000011
@@ -2883,6 +2994,7 @@ Description      : Thrash all nearby enemies, dealing immediate physical damage 
 Name             : Skull Bash (id=106839) [Spell Family (7)] 
 Class            : Feral Guardian Druid
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 70
 Range            : 13 yards
 Cooldown         : 15 seconds
@@ -2907,6 +3019,7 @@ Description      : You charge and bash the target's skull, interrupting spellcas
 Name             : Stampeding Roar (id=106898) [Spell Family (7)] 
 Class            : Feral Guardian Druid
 School           : Physical
+Spell Type       : Magic
 Spell Level      : 50
 Range            : 10 yards
 GCD              : 1.5 seconds
@@ -2938,6 +3051,7 @@ Tooltip          : Movement speed increased by $s1%.
 Name             : Berserk (id=106951) [Spell Family (7)] 
 Class            : Feral Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 40
 GCD              : 1 seconds
 Duration         : 15 seconds
@@ -2970,6 +3084,7 @@ Tooltip          : Reduces the energy cost of all Cat Form abilities by $s1% and
 Name             : Glyph of the Ursol Chameleon (id=107059) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2986,6 +3101,7 @@ Description      : Each time you shapeshift into Bear Form, your shapeshifted fo
 Name             : Renewal (id=108238) [Scaling Spell (8), Spell Family (7)] 
 Class            : Druid
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Cooldown         : 90 seconds
 Affecting spells : Bear Form (5487 effect#9)
@@ -3006,6 +3122,7 @@ Description      : Instantly heals you for $s1% of maximum health. Usable in all
 Name             : Omen of Clarity (id=113043) [Spell Family (7), Passive] 
 Class            : Restoration Druid
 School           : Physical
+Spell Type       : Magic
 Spell Level      : 48
 Proc Chance      : 4%
 Proc Flags       : ........ ......x. ..x..x.. ........ 
@@ -3026,6 +3143,7 @@ Description      : Your healing over time from Lifebloom has a $h% chance to cau
 Name             : Cat Form (rank=Passive) (id=113636) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
 School           : Nature
+Spell Type       : None
 Stance Mask      : 0x00000001
 Attributes       : ....x.xx ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3042,6 +3160,7 @@ Effects          :
 Name             : Soul of the Forest (id=114107) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3066,6 +3185,7 @@ Reduces the Astral Power cost of Starfall by ${$m2/-10}.
 Name             : Soul of the Forest (id=114108) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
+Spell Type       : Magic
 Duration         : 15 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
@@ -3092,6 +3212,7 @@ Tooltip          : Increases the healing done by your next Regrowth or Rejuvenat
 Name             : Treant Form (rank=Shapeshift) (id=114282) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 40
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
@@ -3112,6 +3233,7 @@ Tooltip          : Shapeshifted into Treant Form.  All spells may be cast while 
 Name             : Glyph of Stars (rank=Balance) (id=114301) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3128,6 +3250,7 @@ Description      : Your Moonkin Form now appears as Astral Form, conferring all 
 Name             : Glyph of the Orca (id=114333) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3144,6 +3267,7 @@ Description      : Your Aquatic Form now appears as an Orca.
 Name             : Incarnation (rank=Passive) (id=117679) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Duration         : 30 seconds
 Attributes       : ........ ........ ........ x..x.x.x   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3164,6 +3288,7 @@ Tooltip          : Incarnation: Tree of Life activated.
 Name             : Chosen of Elune (id=122114) [Spell Family (7), Hidden] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Duration         : Aura (infinite)
 Attributes       : .......x x....... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3180,6 +3305,7 @@ Effects          :
 Name             : Nature's Vigil (id=124974) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
+Spell Type       : None
 Spell Level      : 1
 Duration         : 30 seconds
 Cooldown         : 90 seconds
@@ -3208,6 +3334,7 @@ Tooltip          : Single-target damage and healing done also heals a nearby tar
 Name             : Nature's Vigil (id=124988) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -3226,6 +3353,7 @@ Description      : Healed for $124974s3% of single-target damage done by a nearb
 Name             : Nature's Vigil (id=124991) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -3244,6 +3372,7 @@ Description      : Nature damage taken equal to $124974s3% of single-target heal
 Name             : Feline Grace (id=125972) [Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 6
 Attributes       : ....x.x. ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3261,6 +3390,7 @@ Description      : Reduces damage from falling$?s114295[][ while in Cat Form].
 Name             : Charm Woodland Creature (id=127757) 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 40
 Range            : 40 yards
 Velocity         : 20 yards/sec
@@ -3283,6 +3413,7 @@ Tooltip          : Charmed.
 Name             : Glyph of the Cheetah (id=131113) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3299,6 +3430,7 @@ Description      : Your Travel Form appears as a Cheetah.
 Name             : The Cheetah (id=131151) 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Cast Time        : 1.5 seconds
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3316,6 +3448,7 @@ Description      : $@spelldesc131113
 Name             : Feline Swiftness (id=131768) [Spell Family (7), Passive] 
 Class            : Feral Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 34
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3333,6 +3466,7 @@ Description      : Increases your movement speed by $s1%.
 Name             : Visual Effect: Tree of Life (id=132213) [Hidden] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Triggered by     : Incarnation: Tree of Life (33891)
 Attributes       : .......x x....... ........ .....x..   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
@@ -3349,6 +3483,7 @@ Effects          :
 Name             : Typhoon (id=132469) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 15 yards
 GCD              : 1.5 seconds
@@ -3374,6 +3509,7 @@ Description      : Blasts targets within $61391a1 yards in front of you with a v
 Name             : Clearcasting (id=135700) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 15 seconds
@@ -3413,6 +3549,7 @@ Tooltip          : Your next Shred, Thrash, or $?s202028[Brutal Slash][Swipe] co
 Name             : Druid (id=137009) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3448,6 +3585,7 @@ Effects          :
 Name             : Guardian Druid (id=137010) [Spell Family (7), Passive, Hidden] 
 Class            : Guardian Druid
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3501,6 +3639,7 @@ Effects          :
 Name             : Feral Druid (id=137011) [Spell Family (7), Passive, Hidden] 
 Class            : Feral Druid
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3553,6 +3692,7 @@ Effects          :
 Name             : Restoration Druid (id=137012) [Spell Family (7), Passive, Hidden] 
 Class            : Restoration Druid
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3597,6 +3737,7 @@ Description      : Restoration Druid core passive
 Name             : Balance Druid (id=137013) [Spell Family (7), Passive, Hidden] 
 Class            : Balance Druid
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3641,6 +3782,7 @@ Effects          :
 Name             : Charged Bolt (id=137542) 
 Class            : Druid
 School           : Nature
+Spell Type       : None
 Spell Level      : 20
 Range            : 10 yards
 Attributes       : ........ ........ ...x.... x..x....   .....x.. ..x..... ........ ........ 
@@ -3659,6 +3801,7 @@ Description      : Bolts of lightning deal $s1 damage to nearby enemies.
 Name             : Item - Druid T15 Restoration 2P Bonus (id=138284) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3675,6 +3818,7 @@ Description      : Swiftmend's ground effect can now heal up to $s1 targets each
 Name             : Item - Druid T16 Feral 4P Bonus (id=144841) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : AOE Heal, Heal
@@ -3694,6 +3838,7 @@ Description      : After using Tiger's Fury, your next finishing move will resto
 Name             : Ysera's Gift (id=145108) [Spell Family (7), Passive] 
 Class            : Restoration Druid
 School           : Nature
+Spell Type       : None
 Spell Level      : 34
 Range            : 100 yards
 Affecting spells : Bear Form (5487 effect#8), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Waking Dream (278958 effect#1), Berserk (279526 effect#1)
@@ -3714,6 +3859,7 @@ Description      : Heals you for $?a137010[${$s1/2}.1%][$s1%] of your maximum he
 Name             : Ysera's Gift (id=145109) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
+Spell Type       : None
 Spell Level      : 1
 Affecting spells : Bear Form (5487 effect#8), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Waking Dream (278958 effect#1), Berserk (279526 effect#1)
 Family Flags     : 82
@@ -3733,6 +3879,7 @@ Description      : $@spelldesc145108
 Name             : Ysera's Gift (id=145110) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
+Spell Type       : None
 Spell Level      : 1
 Range            : 30 yards
 Affecting spells : Bear Form (5487 effect#8), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Waking Dream (278958 effect#1), Berserk (279526 effect#1)
@@ -3753,6 +3900,7 @@ Description      : $@spelldesc145108
 Name             : Bloodtalons (id=145152) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Duration         : 30 seconds
 Internal Cooldown: 0.1 seconds
 Stacks           : 2 initial, 1 maximum
@@ -3778,6 +3926,7 @@ Name             : Efflorescence (id=145205) [Spell Family (7)]
 Hotfixed         : Affecting Spells
 Class            : Restoration Druid
 School           : Nature
+Spell Type       : Magic
 Resource         : 21.6% Base Mana (0) (id=9240)
 Spell Level      : 70
 Range            : 40 yards
@@ -3805,6 +3954,7 @@ Description      : Grows a healing blossom at the target location, restoring $81
 Name             : Feral Rage (id=146874) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Range            : 70 yards
 Duration         : 12 seconds
 Stacks           : 1 initial, 1 maximum
@@ -3828,6 +3978,7 @@ Tooltip          : Your next finishing move will generate $s1 combo points on yo
 Name             : Guardian of Elune (id=155578) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -3847,6 +3998,7 @@ Description      : Mangle increases the duration of your next Ironfur by ${$2136
 Name             : Lunar Inspiration (id=155580) [Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3863,6 +4015,7 @@ Description      : Moonfire is now usable while in Cat Form, generates 1 combo p
 Name             : Moonfire (id=155625) [Spell Family (7)] 
 Class            : Druid
 School           : Arcane
+Spell Type       : Magic
 Resource         : 30 Energy (3) (id=9195)
 Spell Level      : 1
 Range            : 40 yards
@@ -3894,6 +4047,7 @@ Tooltip          : Suffering $w1 Arcane damage every $t1 seconds.
 Name             : Lunar Inspiration (id=155627) [Spell Family (7), Hidden] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Duration         : Aura (infinite)
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3913,6 +4067,7 @@ Description      : Moonfire is now usable while in Cat Form, generates 1 combo p
 Name             : Bloodtalons (id=155672) [Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3929,6 +4084,7 @@ Description      : Casting Regrowth or Entangling Roots causes your next two mel
 Name             : Germination (id=155675) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Affecting spells : Incarnation: Tree of Life (5420 effect#1), Restoration Druid (137012 effect#1), Thrash (192090 effect#2)
 Family Flags     : 118
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -3949,6 +4105,7 @@ Description      : You can apply Rejuvenation twice to the same target.
 Name             : Rake (id=155722) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 6
 Range            : 100 yards
 Duration         : 15 seconds
@@ -3974,6 +4131,7 @@ Tooltip          : Bleeding for $w1 damage every $t1 seconds.
 Name             : Mastery: Nature's Guardian (id=155783) [Spell Family (7), Passive] 
 Class            : Guardian Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 78
 Proc Chance      : 100%
 Proc Flags       : ........ ...x...x ........ .......x 
@@ -3998,6 +4156,7 @@ Also increases your attack power by ${$159195s1}.1%.
 Name             : Bristling Fur (id=155835) 
 Class            : Druid
 School           : Nature
+Spell Type       : Melee
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 40 seconds
@@ -4020,6 +4179,7 @@ Tooltip          : Generating Rage from taking damage.
 Name             : Critical Strikes (rank=Passive) (id=157447) [Passive] 
 Class            : Feral Guardian Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4037,6 +4197,7 @@ Description      : Increases your chance to critically strike by $s1%.
 Name             : Tranquility (id=157982) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 Duration         : 8 seconds
@@ -4064,6 +4225,7 @@ Tooltip          : Heals $w2 damage every $t2 seconds.
 Name             : Soul of the Forest (id=158476) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4088,6 +4250,7 @@ Description      : Your finishing moves grant $s1 Energy per combo point spent a
 Name             : Soul of the Forest (id=158477) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4110,6 +4273,7 @@ Description      : Mangle generates ${$m1/10} more Rage and deals $s2% more dama
 Name             : Soul of the Forest (id=158478) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4126,6 +4290,7 @@ Description      : When you cast Swiftmend, you gain Soul of the Forest, increas
 Name             : Pulverize (id=158792) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Duration         : 20 seconds
 Affecting spells : Druid (137009 effect#4), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
@@ -4148,6 +4313,7 @@ Tooltip          : Damage taken reduced by $s4%.
 Name             : Mastery: Nature's Guardian (id=159195) [Spell Family (7), Passive, Hidden] 
 Class            : Guardian Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 78
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4165,6 +4331,7 @@ Description      : $@spelldesc155783
 Name             : Primal Fury (id=159286) [Spell Family (7), Passive] 
 Class            : Feral Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 28
 Internal Cooldown: 0.9 seconds
 Proc Chance      : 100%
@@ -4189,6 +4356,7 @@ Damage over time cannot trigger this effect.
 Name             : Travel Form (rank=Rank 2) (id=159456) [Spell Family (7), Passive] 
 Class            : Balance Feral Guardian Restoration Druid
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -4208,6 +4376,7 @@ Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden
 Class            : Beast Mastery Marksmanship Survival Assassination Outlaw Subtlety Enhancement Windwalker Feral Havoc Hunter, Rogue, Shaman, Monk, Druid, Demon Hunter
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4228,6 +4397,7 @@ Name             : Stat Negation Aura - Intellect DPS (id=162699) [Passive, Hidd
 Class            : Shadow Elemental Arcane Fire Frost Affliction Demonology Destruction Balance Priest, Shaman, Mage, Warlock, Druid
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4248,6 +4418,7 @@ Name             : Stat Negation Aura - Agility Tank (id=162700) [Passive, Hidde
 Class            : Brewmaster Guardian Vengeance Monk, Druid, Demon Hunter
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4266,6 +4437,7 @@ Name             : Stat Negation Aura - Intellect Healer (id=162701) [Passive, H
 Class            : Holy Discipline Holy Restoration Mistweaver Restoration Paladin, Priest, Shaman, Monk, Druid
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4285,6 +4457,7 @@ Effects          :
 Name             : Rake (id=163505) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 32
 Range            : 50000 yards
 Duration         : 4 seconds
@@ -4308,6 +4481,7 @@ Name             : Solar Empowerment (id=164545) [Spell Family (7)]
 Hotfixed         : Attributes
 Class            : Druid
 School           : Nature
+Spell Type       : Magic
 Duration         : 45 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
@@ -4343,6 +4517,7 @@ Name             : Lunar Empowerment (id=164547) [Spell Family (7)]
 Hotfixed         : Attributes
 Class            : Druid
 School           : Arcane
+Spell Type       : Magic
 Duration         : 45 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
@@ -4379,6 +4554,7 @@ Tooltip          : Your next Lunar Strike deals $w1% increased damage and has $w
 Name             : Moonfire (rank=Lunar) (id=164812) [Spell Family (7)] 
 Class            : Druid
 School           : Arcane
+Spell Type       : Magic
 Spell Level      : 3
 Range            : 100 yards
 Duration         : 16 seconds
@@ -4407,6 +4583,7 @@ Name             : Sunfire (rank=Solar) (id=164815) [Spell Family (7)]
 Hotfixed         : Attributes
 Class            : Druid
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 16
 Range            : 100 yards
 Duration         : 12 seconds
@@ -4432,6 +4609,7 @@ Tooltip          : Suffering $w2 Nature damage every $t2 seconds.
 Name             : Flap (id=164862) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 40
 GCD              : 0.5 seconds
 Duration         : 15 seconds
@@ -4455,6 +4633,7 @@ Tooltip          : Hovering.
 Name             : Flight Form (rank=Shapeshift) (id=165962) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Resource         : 7.4% Base Mana (0) (id=9590)
 Spell Level      : 58
 GCD              : 1.5 seconds
@@ -4482,6 +4661,7 @@ Movement speed increased and allows you to fly.
 Name             : Glyph of the Sun (rank=Balance) (id=171803) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4498,6 +4678,7 @@ Description      : Your Starfall takes on a more solar appearance.
 Name             : The Sun (id=171891) 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Cast Time        : 1.5 seconds
 Cooldown         : 1.5 seconds
 Category         : 133
@@ -4518,6 +4699,7 @@ Description      : $@spelldesc171803
 Name             : Nature's Control (id=175682) 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 GCD              : 1.5 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4535,6 +4717,7 @@ Description      : Placeholder for level 45 talented active ability.
 Name             : Stalwart Guardian (id=184878) [Scaling Spell (-1), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Req. Max Level   : 109
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4556,6 +4739,7 @@ Description      : All damage received is reduced by ${$AP*$m1/100} (increased b
 Name             : Stalwart Guardian (id=185321) 
 Class            : Druid
 School           : Nature
+Spell Type       : Melee
 Range            : 5 yards
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ .x...... ........ 
@@ -4573,6 +4757,7 @@ Description      : $@spelldesc184878
 Name             : Item - Druid T18 Balance 2P Bonus (id=187875) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Real PPM         : 4
 Proc Flags       : ........ ........ ..x..... ........ 
@@ -4593,6 +4778,7 @@ Description      : Your Moonfire and Sunfire have a chance to summon a Faerie Dr
 Name             : Fey Missile (id=188046) 
 Class            : Druid
 School           : Astral
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2 seconds
@@ -4613,6 +4799,7 @@ Description      : $@spelldesc187875
 Name             : Fey Moonwing (id=188083) 
 Class            : Druid
 School           : Nature
+Spell Type       : None
 Spell Level      : 100
 Velocity         : 40 yards/sec
 Duration         : 30 seconds
@@ -4631,6 +4818,7 @@ Description      : $@spelldesc187875
 Name             : Solar Wrath (rank=Solar) (id=190984) [Spell Family (7)] 
 Class            : Balance Druid
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -4659,6 +4847,7 @@ Description      : Hurl a ball of solar energy at the target, dealing $s1 Nature
 Name             : Starfall (id=191034) [Spell Family (7)] 
 Class            : Balance Druid
 School           : Astral
+Spell Type       : Magic
 Resource         : 50 Eclipse (8) (id=10344)
 Spell Level      : 40
 Range            : 40 yards
@@ -4688,6 +4877,7 @@ Tooltip          : Calling down falling stars at the targeted area.
 Name             : Starfall (id=191037) [Spell Family (7)] 
 Class            : Druid
 School           : Astral
+Spell Type       : Magic
 Spell Level      : 76
 Range            : 50000 yards
 Velocity         : 0.8 yards/sec
@@ -4709,6 +4899,7 @@ Description      : $@spelldesc191034
 Name             : Ironfur (id=192081) [Spell Family (7)] 
 Class            : Guardian Druid
 School           : Nature
+Spell Type       : Magic
 Resource         : 45 Rage (1) (id=10391)
 Spell Level      : 20
 Duration         : 7 seconds
@@ -4734,6 +4925,7 @@ Tooltip          : Armor increased by ${$w1*$AGI/100}.
 Name             : Thrash (id=192090) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 38
 Range            : 100 yards
 Duration         : 15 seconds
@@ -4764,6 +4956,7 @@ Tooltip          : Suffering $w1 damage every $t1 sec.
 Name             : Dreamwalk (id=193753) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
+Spell Type       : Magic
 Resource         : 0.1% Base Mana (0) (id=10461)
 Spell Level      : 14
 Cast Time        : 10 seconds
@@ -4789,6 +4982,7 @@ Description      : Teleports the caster to the Emerald Dreamway.
 Name             : Lunar Strike (rank=Lunar) (id=194153) [Spell Family (7)] 
 Class            : Balance Druid
 School           : Arcane
+Spell Type       : Magic
 Spell Level      : 12
 Range            : 40 yards
 Cast Time        : 2.25 seconds
@@ -4820,6 +5014,7 @@ Description      : Call down a strike of lunar energy, causing $s1 Arcane damage
 Name             : Celestial Alignment (id=194223) [Spell Family (7)] 
 Class            : Balance Druid
 School           : Astral
+Spell Type       : Magic
 Spell Level      : 48
 GCD              : 1.5 seconds
 Duration         : 20 seconds
@@ -4854,6 +5049,7 @@ Haste increased by $s3%.
 Name             : Stonebark (id=197061) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4876,6 +5072,7 @@ Description      : Reduces the cooldown of Ironbark by ${$m1/-1000} sec, and it 
 Name             : Inner Peace (id=197073) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4894,6 +5091,7 @@ Description      : Reduces the cooldown of Tranquility by ${$m1/-1000} sec.
 Name             : Balance Affinity (id=197488) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4922,6 +5120,7 @@ $@spellicon197630 $@spellname197630
 Name             : Feral Affinity (id=197490) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4977,6 +5176,7 @@ Your energy regeneration is increased by $s2%.
 Name             : Guardian Affinity (id=197491) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5003,6 +5203,7 @@ $@spellicon22842 $@spellname22842
 Name             : Restoration Affinity (id=197492) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5049,6 +5250,7 @@ $@spellicon48438 $@spellname48438
 Name             : Astral Influence (id=197524) [Spell Family (7), Passive] 
 Class            : Balance Druid
 School           : Astral
+Spell Type       : None
 Spell Level      : 34
 Affecting spells : Guardian Druid (137010 effect#10), Feral Druid (137011 effect#10)
 Family Flags     : 76
@@ -5078,6 +5280,7 @@ Description      : Increases the range of all of your abilities by $s1 yards.
 Name             : Moonkin Form (id=197625) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : Magic
 Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
@@ -5117,6 +5320,7 @@ Armor increased by $w3%.][]
 Name             : Starsurge (id=197626) [Spell Family (7)] 
 Class            : Druid
 School           : Astral
+Spell Type       : Magic
 Resource         : 3% Base Mana (0) (id=10706)
 Spell Level      : 1
 Range            : 40 yards
@@ -5147,6 +5351,7 @@ Also increase the damage of your next Lunar Strike, and your next Solar Wrath, b
 Name             : Lunar Strike (id=197628) [Spell Family (7)] 
 Class            : Druid
 School           : Arcane
+Spell Type       : Magic
 Resource         : 3% Base Mana (0) (id=10707)
 Spell Level      : 1
 Range            : 40 yards
@@ -5171,6 +5376,7 @@ Description      : Call down a strike of lunar energy, causing $s1 Arcane damage
 Name             : Solar Wrath (id=197629) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
+Spell Type       : Magic
 Resource         : 2% Base Mana (0) (id=10708)
 Spell Level      : 1
 Range            : 40 yards
@@ -5194,6 +5400,7 @@ Description      : Causes $s1 Nature damage to the target.
 Name             : Sunfire (rank=Solar) (id=197630) [Scaling Spell (3), Spell Family (7)] 
 Class            : Druid
 School           : Nature
+Spell Type       : Magic
 Resource         : 12% Base Mana (0) (id=10709)
 Spell Level      : 1
 Range            : 40 yards
@@ -5217,6 +5424,7 @@ Tooltip          : Suffering $w2 Nature damage every $t2 seconds.
 Name             : Balance Affinity (id=197632) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5243,6 +5451,7 @@ $@spellicon197628 $@spellname197628
 Name             : Feral Overrides Passive (rank=Passive) (id=197692) [Spell Family (7), Passive, Hidden] 
 Class            : Feral Druid
 School           : Nature
+Spell Type       : None
 Affecting spells : Moonkin Form (197625 effect#5)
 Family Flags     : 34
 Attributes       : ....x.xx ........ ........ ........   ........ ..x..... ........ ........ 
@@ -5266,6 +5475,7 @@ Effects          :
 Name             : Flourish (id=197721) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 8 seconds
@@ -5292,6 +5502,7 @@ Tooltip          : Heal over time spells are healing ${100*(1/(1+($m2/100))-1)}%
 Name             : Astral Power (rank=Passive) (id=197911) [Spell Family (7), Passive, Hidden] 
 Class            : Balance Druid
 School           : Nature
+Spell Type       : None
 Spell Level      : 10
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5316,6 +5527,7 @@ Effects          :
 Name             : Prosperity (rank=Passive Talent) (id=200383) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5334,6 +5546,7 @@ Description      : Swiftmend now has ${$m2+1} charges, and its cooldown is reduc
 Name             : Cultivation (id=200389) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
+Spell Type       : None
 Range            : 100 yards
 Duration         : 6 seconds
 Affecting spells : Incarnation: Tree of Life (5420 effect#1), Ironbark (102342 effect#3), Restoration Druid (137012 effect#1), Thrash (192090 effect#2)
@@ -5356,6 +5569,7 @@ Tooltip          : Heals $w1 damage every $t1 seconds.
 Name             : Cultivation (id=200390) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5374,6 +5588,7 @@ Name             : Activating Specialization (id=200749) [Hidden]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
+Spell Type       : None
 Range            : 50000 yards
 Cast Time        : 5 seconds
 Attributes       : .......x ........ ........ ....x...   ..xxx..x ........ .x...... ........ 
@@ -5393,6 +5608,7 @@ Tooltip          : Switch to your Primary Talent Specialization.
 Name             : Rage of the Sleeper (rank=Artifact) (id=200851) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Duration         : 10 seconds
 Cooldown         : 90 seconds
 Stance Mask      : 0x00000010
@@ -5422,6 +5638,7 @@ Tooltip          : Prevents $s4% of all damage you take and reflects $219432s1 N
 Name             : Predator (id=202021) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5440,6 +5657,7 @@ Description      : The cooldown on Tiger's Fury resets when a target dies with o
 Name             : Blood Scent (id=202022) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5456,6 +5674,7 @@ Description      : Your melee abilities in Cat Form have a $s1% increased critic
 Name             : Brutal Slash (id=202028) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : Melee
 Resource         : 30 Energy (3) (id=10829)
 Spell Level      : 1
 Range            : 8 yards
@@ -5484,6 +5703,7 @@ Description      : Strikes all nearby enemies with a massive slash, inflicting $
 Name             : Sabertooth (id=202031) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5502,6 +5722,7 @@ Description      : Ferocious Bite deals $s1% increased damage and always refresh
 Name             : Jagged Wounds (id=202032) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5524,6 +5745,7 @@ Description      : Your Rip, Rake, and Thrash abilities deal their full damage $
 Name             : Feral Affinity (id=202155) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5578,6 +5800,7 @@ Your energy regeneration is increased by $s2%.
 Name             : Feral Affinity (id=202157) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5632,6 +5855,7 @@ Your energy regeneration is increased by $s2%.
 Name             : Shooting Stars (id=202342) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5648,6 +5872,7 @@ Description      : Moonfire and Sunfire damage over time has a chance to call do
 Name             : Starlord (id=202345) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
@@ -5669,6 +5894,7 @@ Stacks up to $279709u times. Gaining a stack does not refresh the duration.
 Name             : Stellar Flare (id=202347) [Spell Family (7)] 
 Class            : Druid
 School           : Astral
+Spell Type       : Magic
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
@@ -5698,6 +5924,7 @@ Tooltip          : Suffering $w2 Astral damage every $t2 sec.
 Name             : Stellar Drift (id=202354) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5720,6 +5947,7 @@ Description      : Increases Starfall's radius by $s1%, its damage by $s2%, and 
 Name             : Warrior of Elune (id=202425) [Spell Family (7)] 
 Class            : Druid
 School           : Arcane
+Spell Type       : Magic
 Duration         : Aura (infinite)
 Cooldown         : 45 seconds
 Stacks           : 1 initial, 3 maximum
@@ -5748,6 +5976,7 @@ Tooltip          : Your Lunar Strikes are instant cast and generate $s2% additio
 Name             : Nature's Balance (id=202430) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5773,6 +6002,7 @@ Tooltip          : Grants $m3 Astral Power every $m4 sec while in combat or whil
 Name             : Shooting Stars (id=202497) [Spell Family (7)] 
 Class            : Druid
 School           : Astral
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
 Velocity         : 0.8 yards/sec
@@ -5796,6 +6026,7 @@ Description      : $@spelldesc202342
 Name             : New Moon (rank=Artifact) (id=202767) [Spell Family (7)] 
 Class            : Druid
 School           : Arcane
+Spell Type       : Magic
 Range            : 40 yards
 Cast Time        : 1 seconds
 GCD              : 1.5 seconds
@@ -5823,6 +6054,7 @@ Description      : Deals $m1 Arcane damage to the target and empowers New Moon t
 Name             : Half Moon (rank=Artifact) (id=202768) [Spell Family (7)] 
 Class            : Druid
 School           : Arcane
+Spell Type       : Magic
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
@@ -5850,6 +6082,7 @@ Description      : Deals $m1 Arcane damage to the target and empowers Half Moon 
 Name             : Fury of Elune (id=202770) [Spell Family (7)] 
 Class            : Druid
 School           : Astral
+Spell Type       : Magic
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
@@ -5880,6 +6113,7 @@ Variables        : $dmg=${$d*2*$211545s1}
 Name             : Full Moon (rank=Artifact) (id=202771) [Spell Family (7)] 
 Class            : Druid
 School           : Arcane
+Spell Type       : Magic
 Range            : 40 yards
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
@@ -5911,6 +6145,7 @@ Description      : Deals $m1 Arcane damage to the target and reduced damage to a
 Name             : Goldrinn's Fang (id=203001) [Spell Family (7)] 
 Class            : Druid
 School           : Arcane
+Spell Type       : Magic
 Range            : 60 yards
 Velocity         : 20 yards/sec
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5929,6 +6164,7 @@ Tooltip          : Deals $m1 Arcane damage.
 Name             : Brambles (id=203953) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5948,6 +6184,7 @@ Variables        : $shield=${$AP*0.06}
 Name             : Brambles (id=203958) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
+Spell Type       : Magic
 Range            : 100 yards
 Affecting spells : Guardian Druid (137010 effect#1), 
 Family Flags     : 77
@@ -5966,6 +6203,7 @@ Description      : $@spelldesc203953
 Name             : Blood Frenzy (id=203961) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
+Spell Type       : None
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5981,6 +6219,7 @@ Description      : $@spelldesc203962
 Name             : Blood Frenzy (id=203962) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5997,6 +6236,7 @@ Description      : Thrash also generates ${$203961s1/10} Rage each time it deals
 Name             : Galactic Guardian (id=203964) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 2 seconds
 Proc Chance      : 5%
 Proc Flags       : ..x.x... ....x... x.x..... ........ 
@@ -6019,6 +6259,7 @@ When this occurs, the next Moonfire you cast generates ${$213708m1/10} Rage, and
 Name             : Survival of the Fittest (id=203965) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6039,6 +6280,7 @@ Description      : Reduces the cooldowns of Barkskin and Survival Instincts by $
 Name             : Earthwarden (id=203974) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -6058,6 +6300,7 @@ Description      : When you deal direct damage with Thrash, you gain a charge of
 Name             : Earthwarden (id=203975) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Duration         : Aura (infinite)
 Stacks           : 3 maximum
 Proc Chance      : 101%
@@ -6077,6 +6320,7 @@ Tooltip          : Damage of the next autoattack you take will be reduced by $20
 Name             : Rend and Tear (id=204053) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6101,6 +6345,7 @@ Description      : While in Bear Form, Thrash also increases your damage dealt t
 Name             : Lunar Beam (id=204066) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -6122,6 +6367,7 @@ Name             : Lunar Beam (id=204069) [Spell Family (7)]
 Hotfixed         : Attributes
 Class            : Druid
 School           : Arcane
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Affecting spells : Guardian Druid (137010 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
@@ -6144,6 +6390,7 @@ Description      : $@spelldesc204066
 Name             : Force of Nature (rank=Talent) (id=205636) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
+Spell Type       : None
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -6177,6 +6424,7 @@ Tooltip          : Granting ${$s5/10*$d} Astral Power over $d.
 Name             : Abundance (id=207383) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6194,6 +6442,7 @@ Description      : For each Rejuvenation you have active, Regrowth's cost is red
 Name             : Spring Blossoms (id=207385) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6211,6 +6460,7 @@ Description      : Each target healed by Efflorescence is healed for an addition
 Name             : Spring Blossoms (id=207386) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
+Spell Type       : None
 Range            : 100 yards
 Duration         : 6 seconds
 Affecting spells : Incarnation: Tree of Life (5420 effect#1), Ironbark (102342 effect#3), Restoration Druid (137012 effect#1), Thrash (192090 effect#2)
@@ -6232,6 +6482,7 @@ Tooltip          : Heals $w1 damage every $t1 seconds.
 Name             : Abundance (id=207640) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
+Spell Type       : None
 Duration         : 30 seconds
 Stacks           : 100 maximum
 Proc Chance      : 101%
@@ -6258,6 +6509,7 @@ Tooltip          : Regrowth cost reduced by $s1% and critical effect chance incr
 Name             : Essence of G'Hanir (rank=Artifact) (id=208253) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
+Spell Type       : Magic
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 90 seconds
@@ -6281,6 +6533,7 @@ Tooltip          : Heal over time spells are healing ${100*(1/(1+($m1/100))-1)}%
 Name             : Oneth's Intuition (id=209405) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Nature
+Spell Type       : None
 Req. Max Level   : 115
 Proc Chance      : 20%
 Proc Flags       : ........ ........ x....... ........ 
@@ -6301,6 +6554,7 @@ Description      : Starsurge and Starfall each have a $s1% chance to make the ot
 Name             : Oneth's Intuition (id=209406) [Spell Family (7)] 
 Class            : Druid
 School           : Arcane
+Spell Type       : Magic
 Spell Level      : 5
 Duration         : Aura (infinite)
 Proc Chance      : 100%
@@ -6324,6 +6578,7 @@ Tooltip          : Your next Starsurge costs no Astral Power.
 Name             : Oneth's Overconfidence (id=209407) [Spell Family (7)] 
 Class            : Druid
 School           : Arcane
+Spell Type       : Magic
 Spell Level      : 5
 Duration         : Aura (infinite)
 Proc Chance      : 100%
@@ -6347,6 +6602,7 @@ Tooltip          : Your next Starfall costs no Astral Power.
 Name             : Stag Form (rank=Shapeshift) (id=210053) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 40
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
@@ -6381,6 +6637,7 @@ Tooltip          : Immune to Polymorph effects.  Movement speed increased by $54
 Name             : Feral Instinct (id=210631) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Proc Chance      : 101%
 Proc Flags       : ........ ..x...x. ........ ........ 
@@ -6401,6 +6658,7 @@ Description      : $?s102543[Incarnation: King of the Jungle][Berserk] increases
 Name             : Feral Instinct (id=210649) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 15 seconds
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
@@ -6421,6 +6679,7 @@ Tooltip          : Damage dealt increased by $w1%.
 Name             : Protection of Ashamane (id=210650) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -6438,6 +6697,7 @@ Description      : When you shapeshift out of Cat Form, you gain $210655s1% incr
 Name             : Protection of Ashamane (id=210655) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 5 seconds
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
@@ -6460,6 +6720,7 @@ Armor increased by $s2%.
 Name             : Ashamane's Bite (id=210702) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Proc Chance      : 10%
 Proc Flags       : ....x... ....x... x....... ........ 
@@ -6480,6 +6741,7 @@ Description      : Your combo point generators against targets bleeding from you
 Name             : Ashamane's Rip (id=210705) [Spell Family (7)] 
 Class            : Druid
 School           : Shadow
+Spell Type       : Melee
 Spell Level      : 22
 Range            : 100 yards
 Duration         : 24 seconds
@@ -6505,6 +6767,7 @@ Variables        : $rip=${$s1}
 Name             : Gore (id=210706) [Spell Family (7), Passive] 
 Class            : Guardian Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 48
 Proc Chance      : 15%
 Proc Flags       : ....x... ....x... x....... ........ 
@@ -6527,6 +6790,7 @@ Description      : Thrash, Swipe, Moonfire, and Maul have a $h% chance to reset 
 Name             : Ashamane's Frenzy (rank=Artifact) (id=210722) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : Melee
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 3 seconds
@@ -6555,6 +6819,7 @@ Description      : Unleash Ashamane's Frenzy, clawing your target $m2 times over
 Name             : Ashamane's Frenzy (id=210723) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : Melee
 Range            : 5 yards
 Duration         : 6 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6582,6 +6847,7 @@ Tooltip          : Bleeding for $w2 damage every $t2 sec.
 Name             : Item - Druid T19 Feral 2P Bonus (id=211140) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -6604,6 +6870,7 @@ Description      : Thrash deals $s1% increased damage.
 Name             : Thrash (id=211141) 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 12
 Range            : 100 yards
 Stacks           : 3 maximum
@@ -6625,6 +6892,7 @@ Description      : $@spelldesc106830
 Name             : Item - Druid T19 Feral 4P Bonus (id=211142) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -6641,6 +6909,7 @@ Description      : Shred and Swipe deal $s1% increased damage for each Bleed eff
 Name             : Fury of Elune (id=211545) [Spell Family (7)] 
 Class            : Druid
 School           : Astral
+Spell Type       : Magic
 Range            : 100 yards
 Affecting spells : Moonkin Form (24858 effect#9), Incarnation: Chosen of Elune (102560 effect#1), Balance Druid (137013 effect#1), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
 Family Flags     : 18, 23
@@ -6660,6 +6929,7 @@ Description      : $@spelldesc202770
 Name             : Fury of Elune (id=211547) [Spell Family (7)] 
 Class            : Druid
 School           : Astral
+Spell Type       : Magic
 Range            : 40 yards
 Cooldown         : 0.5 seconds
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -6677,6 +6947,7 @@ Description      : $@spelldesc202770
 Name             : Revitalize (id=212040) [Spell Family (7)] 
 Class            : Restoration Druid
 School           : Nature
+Spell Type       : Magic
 Resource         : 4% Base Mana (0) (id=11137)
 Spell Level      : 66
 Range            : 100 yards
@@ -6700,6 +6971,7 @@ Description      : Returns all dead party members to life with $s1% of maximum h
 Name             : Protection of Ashamane (id=213557) [Spell Family (7), Hidden] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 30 seconds
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -6718,6 +6990,7 @@ Description      : $@spelldesc210650
 Name             : Guardian of Elune (id=213680) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Duration         : 15 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
@@ -6744,6 +7017,7 @@ Tooltip          : Increases the duration of your next Ironfur by ${$m1/1000} se
 Name             : Galactic Guardian (id=213708) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 15 seconds
 Stacks           : 1 initial, 1 maximum
@@ -6772,6 +7046,7 @@ Tooltip          : Your next Moonfire generates ${$m1/10} Rage, and deals $s3% i
 Name             : Brambles (id=213709) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
+Spell Type       : Magic
 Range            : 100 yards
 Affecting spells : Guardian Druid (137010 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
 Family Flags     : 54, 77
@@ -6790,6 +7065,7 @@ Description      : $@spelldesc203953
 Name             : Swipe (id=213764) [Spell Family (7)] 
 Class            : Feral Guardian Druid
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 32
 Range            : 8 yards
 GCD              : 1 seconds
@@ -6813,6 +7089,7 @@ Description      : Swipe nearby enemies, inflicting Physical damage. Damage vari
 Name             : Swipe (id=213771) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 32
 Range            : 8 yards
 GCD              : 1.5 seconds
@@ -6838,6 +7115,7 @@ Description      : Swipe nearby enemies, inflicting $s3 Physical damage.
 Name             : Protection of Ashamane (id=214274) [Spell Family (7), Hidden] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 30 seconds
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -6858,6 +7136,7 @@ Armor increased by $s2%.
 Name             : Guardian Affinity (id=217615) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6883,6 +7162,7 @@ $@spellicon22842 $@spellname22842
 Name             : Essence of G'Hanir (id=218889) [Spell Family (7), Hidden] 
 Class            : Druid
 School           : Nature
+Spell Type       : Magic
 Triggered by     : Essence of G'Hanir (208253), Flourish (197721)
 Attributes       : .......x ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6899,6 +7179,7 @@ Effects          :
 Name             : Rage of the Sleeper (id=219432) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
+Spell Type       : Magic
 Range            : 100 yards
 Attributes       : ........ ........ ..x..... x..x....   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ .x...... ......x. 
@@ -6916,6 +7197,7 @@ Description      : Deals $s1 Nature damage.
 Name             : Nature's Guardian (id=227034) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
+Spell Type       : None
 Spell Level      : 78
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ .....x.. 
@@ -6933,6 +7215,7 @@ Description      : $@spelldesc155783
 Name             : Shapeshift Form (rank=Shapeshift) (id=228545) [Spell Family (7), Hidden] 
 Class            : Balance Feral Guardian Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : .......x ........ ........ ........   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6949,6 +7232,7 @@ Effects          :
 Name             : Starsurge (rank=Rank 2) (id=231021) [Spell Family (7), Passive] 
 Class            : Balance Druid
 School           : Nature
+Spell Type       : None
 Spell Level      : 70
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6968,6 +7252,7 @@ Description      : The Lunar and Solar Empowerments granted by Starsurge now sta
 Name             : Rejuvenation (rank=Rank 2) (id=231040) [Spell Family (7), Passive] 
 Class            : Restoration Druid
 School           : Nature
+Spell Type       : None
 Spell Level      : 52
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6987,6 +7272,7 @@ Description      : Rejuvenation's duration is increased by ${$m1/1000} sec.
 Name             : Moonkin Form (rank=Rank 2) (id=231042) [Spell Family (7), Passive] 
 Class            : Balance Druid
 School           : Nature
+Spell Type       : None
 Spell Level      : 54
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7007,6 +7293,7 @@ Description      : While in Moonkin Form, single-target attacks against you have
 Name             : Sunfire (rank=Rank 2) (id=231050) [Spell Family (7), Passive] 
 Class            : Balance Restoration Druid
 School           : Nature
+Spell Type       : None
 Spell Level      : 32
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7024,6 +7311,7 @@ Description      : Sunfire now applies its damage over time effect to all enemie
 Name             : Rake (rank=Rank 2) (id=231052) [Spell Family (7), Passive] 
 Class            : Feral Druid
 School           : Nature
+Spell Type       : None
 Spell Level      : 25
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7041,6 +7329,7 @@ Description      : While stealthed, Rake will also stun the target for $163505d,
 Name             : Tiger's Fury (rank=Rank 2) (id=231055) [Spell Family (7), Passive] 
 Class            : Feral Druid
 School           : Nature
+Spell Type       : None
 Spell Level      : 52
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7060,6 +7349,7 @@ Description      : Tiger's Fury generates an additional $s1 energy.
 Name             : Ferocious Bite (rank=Rank 2) (id=231056) [Spell Family (7), Passive] 
 Class            : Feral Druid
 School           : Nature
+Spell Type       : None
 Spell Level      : 66
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7077,6 +7367,7 @@ Description      : When used on a target below 25% health, Ferocious Bite will r
 Name             : Shred (rank=Rank 3) (id=231057) [Spell Family (7), Passive] 
 Class            : Feral Druid
 School           : Nature
+Spell Type       : None
 Spell Level      : 56
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7094,6 +7385,7 @@ Description      : While stealthed, Shred deals $5221m4% increased damage, and h
 Name             : Shred (rank=Rank 2) (id=231063) [Spell Family (7), Passive] 
 Class            : Feral Druid
 School           : Nature
+Spell Type       : None
 Spell Level      : 44
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7111,6 +7403,7 @@ Description      : Shred deals $5221s5% increased damage against bleeding target
 Name             : Mangle (rank=Rank 2) (id=231064) [Spell Family (7), Passive] 
 Class            : Guardian Druid
 School           : Nature
+Spell Type       : None
 Spell Level      : 44
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7128,6 +7421,7 @@ Description      : Mangle deals $33917s3% additional damage against bleeding tar
 Name             : Lightning Reflexes (id=231065) [Spell Family (7), Passive] 
 Class            : Guardian Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 65
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7145,6 +7439,7 @@ Description      : You gain Dodge equal to $s1% of your Critical Strike from gea
 Name             : Ironfur (rank=Rank 2) (id=231070) [Spell Family (7), Passive] 
 Class            : Guardian Druid
 School           : Nature
+Spell Type       : None
 Spell Level      : 55
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7165,6 +7460,7 @@ Description      : Multiple uses of Ironfur may overlap.
 Name             : Swipe (rank=Rank 2) (id=231283) [Spell Family (7), Passive] 
 Class            : Feral Druid
 School           : Nature
+Spell Type       : None
 Spell Level      : 44
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7182,6 +7478,7 @@ Description      : Swipe deals $106785s2% increased damage against bleeding targ
 Name             : Archdruid's Lunarwing Form (rank=Shapeshift) (id=231437) [Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -7198,6 +7495,7 @@ Description      : Allows your Travel Form to take on the form of a Lunarwing Ow
 Name             : Moment of Clarity (id=236068) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -7232,6 +7530,7 @@ Your maximum Energy is increased by $s3.
 Name             : Enraged Maul (rank=PvP Talent) (id=236716) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : Melee
 Resource         : 20 Rage (1) (id=11785)
 Spell Level      : 10
 Range            : 5 yards
@@ -7256,6 +7555,7 @@ Description      : Maul the target for $s2 Physical damage.
 Name             : Intimidating Roar (id=236748) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 28
 GCD              : 1.5 seconds
 Duration         : 3 seconds
@@ -7284,6 +7584,7 @@ Tooltip          : Incapacitated.
 Name             : Force of Nature (id=248280) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
+Spell Type       : None
 Spell Level      : 1
 Range            : 40 yards
 Duration         : 10 seconds
@@ -7307,6 +7608,7 @@ Name             : Vindicaar Matrix Crystal (id=251463)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
+Spell Type       : None
 GCD              : 1.5 seconds
 Triggered by     : Vindicaar Matrix Crystal (255529)
 Attributes       : ........ ........ ........ ........   ...x...x ..x..... ........ ........ 
@@ -7324,6 +7626,7 @@ Description      : Unlock powers at the Vindicaar's Matrix Core to use while on 
 Name             : Item - Druid  T21 Feral 2P Bonus (id=251789) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Proc Chance      : 10%
 Proc Flags       : ........ ........ ..x..... ........ 
                  : Periodic
@@ -7343,6 +7646,7 @@ Description      : When Rip deals damage, there is a $h% chance for it to deal d
 Name             : Jungle Stalker (rank=Talent, Shapeshift) (id=252071) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Duration         : 30 seconds
 Proc Chance      : 101%
@@ -7368,6 +7672,7 @@ Tooltip          : Allows the use of Prowl even while in combat.
 Name             : Tiger Dash (id=252216) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : Magic
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 45 seconds
@@ -7394,6 +7699,7 @@ Tooltip          : Increased movement speed by $s1% while in Cat Form, reducing 
 Name             : Bloody Gash (id=252750) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : Melee
 Range            : 100 yards
 Proc Chance      : 30%
 Proc Flags       : ........ ........ ..x..... ........ 
@@ -7415,6 +7721,7 @@ Name             : Vindicaar Matrix Crystal (id=255529) [Hidden]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
+Spell Type       : None
 Triggered by     : Activating Specialization (200749)
 Attributes       : .......x x....... .......x x..x.x..   ...x.x.x ..x..... ........ ........ 
                  : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ....x... 
@@ -7435,6 +7742,7 @@ Name             : Light's Judgment (rank=Racial) (id=255647) [Scaling Spell (-6
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
+Spell Type       : Magic
 Max Scaling Level: 120
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -7457,6 +7765,7 @@ Name             : Holy Resistance (rank=Racial Passive) (id=255651) [Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7474,6 +7783,7 @@ Name             : Light's Reckoning (rank=Racial Passive) (id=255652) [Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ .......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -7491,6 +7801,7 @@ Name             : Demonbane (rank=Racial Passive) (id=255653) [Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7508,6 +7819,7 @@ Name             : Light's Judgment (rank=Racial) (id=256893) [Scaling Spell (-6
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
+Spell Type       : Magic
 Max Scaling Level: 120
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -7530,6 +7842,7 @@ Name             : Light's Reckoning (rank=Racial Passive) (id=256896) [Scaling 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
+Spell Type       : Magic
 Max Scaling Level: 120
 Range            : 40 yards
 Triggered by     : Light's Reckoning (255652)
@@ -7553,6 +7866,7 @@ Heals $s2 to allies within $A1.
 Name             : Haste (id=261582) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 2
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7570,6 +7884,7 @@ Tooltip          : Increases haste by $s1.
 Name             : Resounding Protection (id=263962) [Scaling Spell (-8), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 15
 Triggered by     : Resounding Protection (269279)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7589,6 +7904,7 @@ Description      : Every $270568t1 sec, gain an absorb shield for $s1 for $26927
 Name             : Azerite Empowered (id=263978) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 13
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7606,6 +7922,7 @@ Description      : Increases the item level of this item by 5.
 Name             : Elemental Whirl (id=263984) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 21
 Triggered by     : Elemental Whirl (268953), Elemental Whirl (268956), Elemental Whirl (268955), Elemental Whirl (268954)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7626,6 +7943,7 @@ Name             : Heed My Call (id=263987) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 22
 Triggered by     : Heed My Call (271685), Heed My Call (271686)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7649,6 +7967,7 @@ Tooltip          : Your damaging abilities have a chance to deal $s1 Nature dama
 Name             : Blood Siphon (id=264108) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 18
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7671,6 +7990,7 @@ Tooltip          : Increases Mastery by $s1 and Leech by $s2.
 Name             : Overwhelming Power (id=266180) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 30
 Triggered by     : Overwhelming Power (271711)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7692,6 +8012,7 @@ Name             : Azerite Globules (id=266936) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 462
 Triggered by     : Azerite Globules (279958)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7715,6 +8036,7 @@ Name             : Gutripper (id=266937) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 31
 Triggered by     : Gutripper (270668), Gutripper (269031)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7736,6 +8058,7 @@ Description      : Your damaging abilities have a chance to deal $s1 Physical da
 Name             : Lifespeed (id=267665) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 20
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7758,6 +8081,7 @@ Tooltip          : Increases your Haste by $s1 and your Avoidance by $s2.
 Name             : Winds of War (id=267671) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Azerite Power Id : 43
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
@@ -7781,6 +8105,7 @@ Name             : Azerite Veins (id=267683) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 89
 Triggered by     : Azerite Veins (270674)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7800,6 +8125,7 @@ Description      : Taking damage has a chance to grant you Azerite Veins, healin
 Name             : On My Way (id=267879) [Scaling Spell (-1), Passive] 
 Class            : Paladin, Priest, Shaman, Monk, Druid
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 38
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7822,6 +8148,7 @@ Tooltip          : Increases your Versatility by $s1 and your Speed by $s2.
 Name             : Woundbinder (id=267880) [Scaling Spell (-7), Passive] 
 Class            : Paladin, Priest, Shaman, Monk, Druid
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 19
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7841,6 +8168,7 @@ Name             : Concentrated Mending (id=267882) [Scaling Spell (-8), Passive
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Paladin, Priest, Shaman, Monk, Druid
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 103
 Triggered by     : Concentrated Mending (272260)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7860,6 +8188,7 @@ Description      : Your healing effects have a chance to grant the target ${$s1*
 Name             : Savior (id=267883) [Scaling Spell (-8), Passive] 
 Class            : Paladin, Priest, Shaman, Monk, Druid
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 42
 Triggered by     : Savior (270679)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7882,6 +8211,7 @@ Name             : Bracing Chill (id=267884) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Paladin, Priest, Shaman, Monk, Druid
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 104
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7900,6 +8230,7 @@ Description      : Your heals have a chance to apply Bracing Chill. Healing a ta
 Name             : Ephemeral Recovery (id=267886) [Scaling Spell (-7), Passive] 
 Class            : Paladin, Priest, Shaman, Monk, Druid
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 105
 Triggered by     : Ephemeral Recovery (272572)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7919,6 +8250,7 @@ Description      : Casting a healing spell restores ${$s1*($272572d/$272572t1)} 
 Name             : Blessed Portents (id=267889) [Scaling Spell (-1), Passive] 
 Class            : Paladin, Priest, Shaman, Monk, Druid
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 463
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7939,6 +8271,7 @@ Description      : Your healing spells have a chance to apply Blessed Portents f
 Name             : Synergistic Growth (id=267892) [Scaling Spell (-7), Passive] 
 Class            : Paladin, Priest, Shaman, Monk, Druid
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 102
 Triggered by     : Synergistic Growth (272090)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7959,6 +8292,7 @@ Name             : Azerite Fortification (id=268435) [Scaling Spell (-8), Passiv
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 86
 Triggered by     : Azerite Fortification (270659)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7980,6 +8314,7 @@ Name             : Impassive Visage (id=268437) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 6 seconds
 Proc Chance      : 100%
 Azerite Power Id : 83
@@ -8005,6 +8340,7 @@ Name             : Longstrider (id=268594) [Scaling Spell (-7), Passive]
 Hotfixed         : Scaling Spell (-1 -> -7)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 14
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8028,6 +8364,7 @@ Name             : Bulwark of the Masses (id=268595) [Scaling Spell (-8), Passiv
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 84
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8049,6 +8386,7 @@ Name             : Gemhide (id=268596) [Scaling Spell (-1), Passive]
 Hotfixed         : Scaling Spell (-7 -> -1)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 85
 Triggered by     : Gemhide (270576)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8074,6 +8412,7 @@ Tooltip          : When dealt damage greater than $s3% of your maximum health, g
 Name             : Vampiric Speed (id=268599) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 44
 Triggered by     : Vampiric Speed (269238), Vampiric Speed (269239)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8098,6 +8437,7 @@ Name             : Self Reliance (id=268600) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 87
 Triggered by     : Self Reliance (270661)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8120,6 +8460,7 @@ Tooltip          : While no enemies are within $s2 yds, you heal for $w1 every $
 Name             : Long Night (id=269379) [Scaling Spell (-7), Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
 Azerite Power Id : 51
@@ -8146,6 +8487,7 @@ Description      : Increases the duration of Moonfire by $s2.1 sec, and Moonfire
 Name             : Bear Form (rank=Rank 2) (id=270100) [Spell Family (7), Passive] 
 Class            : Guardian Druid
 School           : Nature
+Spell Type       : None
 Spell Level      : 52
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8166,6 +8508,7 @@ Description      : Bear Form gives an additional $s1% Stamina.
 Name             : Crystalline Carapace (id=271536) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 98
 Triggered by     : Crystalline Carapace (271539), Crystalline Carapace (271538)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8191,6 +8534,7 @@ Name             : Ablative Shielding (id=271540) [Scaling Spell (-1), Passive]
 Hotfixed         : Scaling Spell (-7 -> -1)
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 99
 Triggered by     : Ablative Shielding (271543)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8211,6 +8555,7 @@ Name             : Strength in Numbers (id=271546) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 100
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8229,6 +8574,7 @@ Description      : Taking damage has a chance to increase your maximum health by
 Name             : Shimmering Haven (id=271557) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 101
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8250,6 +8596,7 @@ Name             : Fungal Essence (id=272802) [Scaling Spell (-8), Spell Family 
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Druid
 School           : Nature
+Spell Type       : None
 Azerite Power Id : 120
 Triggered by     : Fungal Essence (272807)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8271,6 +8618,7 @@ Name             : Streaking Stars (id=272871) [Scaling Spell (-8), Spell Family
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 122
 Triggered by     : Streaking Star (272873)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8291,6 +8639,7 @@ Tooltip          : While Celestial Alignment is active, your damaging spells cau
 Name             : Frenzied Regeneration (rank=Rank 2) (id=273048) [Spell Family (7), Passive] 
 Class            : Guardian Druid
 School           : Nature
+Spell Type       : None
 Spell Level      : 63
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8310,6 +8659,7 @@ Name             : Ruinous Bolt (id=273150) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 156
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8327,6 +8677,7 @@ Description      : Your spells and abilities have a chance to draw a Wandering S
 Name             : Raking Ferocity (id=273338) [Scaling Spell (-1), Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Azerite Power Id : 169
 Triggered by     : Raking Ferocity (273340), Gushing Lacerations (279471)
@@ -8347,6 +8698,7 @@ Name             : Masterful Instincts (id=273344) [Scaling Spell (-1), Spell Fa
 Hotfixed         : Scaling Spell (-7 -> -1)
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 171
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8369,6 +8721,7 @@ Name             : Power of the Moon (id=273367) [Scaling Spell (-8), Spell Fami
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 173
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8392,6 +8745,7 @@ Name             : Meticulous Scheming (id=273682) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 192
 Triggered by     : Seize the Moment! (273714)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8417,6 +8771,7 @@ Name             : Rezan's Fury (id=273790) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 157
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8437,6 +8792,7 @@ Name             : Blightborne Infusion (id=273823) [Scaling Spell (-7), Passive
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 193
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8455,6 +8811,7 @@ Name             : Secrets of the Deep (id=273829) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 195
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8477,6 +8834,7 @@ Name             : Filthy Transfusion (id=273834) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 194
 Triggered by     : Filthy Transfusion (273836)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8495,6 +8853,7 @@ Description      : Your damaging abilities have a chance to invoke a tainted swa
 Name             : New Moon (id=274281) [Spell Family (7)] 
 Class            : Druid
 School           : Arcane
+Spell Type       : Magic
 Range            : 40 yards
 Cast Time        : 1 seconds
 GCD              : 1 seconds
@@ -8524,6 +8883,7 @@ Description      : Deals $m1 Arcane damage to the target and empowers New Moon t
 Name             : Half Moon (id=274282) [Spell Family (7)] 
 Class            : Druid
 School           : Arcane
+Spell Type       : Magic
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
@@ -8553,6 +8913,7 @@ Description      : Deals $m1 Arcane damage to the target and empowers Half Moon 
 Name             : Full Moon (id=274283) [Spell Family (7)] 
 Class            : Druid
 School           : Arcane
+Spell Type       : Magic
 Range            : 40 yards
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
@@ -8587,6 +8948,7 @@ Name             : Sunblaze (id=274397) [Scaling Spell (-8), Spell Family (7), P
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 200
 Triggered by     : Sunblaze (274399)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8606,6 +8968,7 @@ Description      : Solar Wrath increases the damage of your next Starsurge by $s
 Name             : Shredding Fury (id=274424) [Scaling Spell (-1), Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 209
 Triggered by     : Shredding Fury (274426)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8625,6 +8988,7 @@ Name             : Autumn Leaves (id=274432) [Scaling Spell (-8), Spell Family (
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Druid
 School           : Nature
+Spell Type       : None
 Azerite Power Id : 210
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8644,6 +9008,7 @@ Name             : Reawakening (id=274813) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 219
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8662,6 +9027,7 @@ Description      : When you resurrect an ally with Rebirth, they absorb $s1 dama
 Name             : Feral Frenzy (id=274837) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : Melee
 Resource         : 25 Energy (3) (id=191704)
 Range            : 5 yards
 GCD              : 1 seconds
@@ -8689,6 +9055,7 @@ Description      : Unleash a furious frenzy, clawing your target $m2 times for $
 Name             : Feral Frenzy (id=274838) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+Spell Type       : Melee
 Range            : 5 yards
 Duration         : 6 seconds
 Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Berserk (279526 effect#1)
@@ -8716,6 +9083,7 @@ Tooltip          : Bleeding for $w2 damage every $t2 sec.
 Name             : Photosynthesis (id=274902) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -8737,6 +9105,7 @@ While your Lifebloom is on an ally, your periodic heals on them have a $s2% chan
 Name             : Twisted Claws (id=275906) [Scaling Spell (-1), Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 241
 Triggered by     : Twisted Claws (275909)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8755,6 +9124,7 @@ Description      : Thrash's direct damage has a $275908h% chance to grant you $s
 Name             : Aquatic Form (id=276012) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Nature
+Spell Type       : None
 Spell Level      : 18
 Affecting spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Druid (137009 effect#4)
 Family Flags     : 29
@@ -8774,6 +9144,7 @@ Description      : Your Travel Form increases your swimspeed by $5421s1% and all
 Name             : Iron Jaws (id=276021) [Scaling Spell (-1), Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Azerite Power Id : 247
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8794,6 +9165,7 @@ Description      : Ferocious Bite has a $s2% chance per combo point to increase 
 Name             : Flight Form (id=276029) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Nature
+Spell Type       : None
 Spell Level      : 58
 Affecting spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Crow Discount (40389 effect#1), Druid (137009 effect#4)
 Family Flags     : 47
@@ -8816,6 +9188,7 @@ Name             : Dawning Sun (id=276152) [Scaling Spell (-8), Spell Family (7)
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 250
 Triggered by     : Dawning Sun (276154)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8836,6 +9209,7 @@ Name             : Craggy Bark (id=276155) [Scaling Spell (-8), Spell Family (7)
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 251
 Triggered by     : Craggy Bark (276157)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8856,6 +9230,7 @@ Name             : High Noon (id=278505) [Scaling Spell (-8), Spell Family (7), 
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Azerite Power Id : 356
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8881,6 +9256,7 @@ Name             : Lunar Shrapnel (id=278507) [Scaling Spell (-8), Spell Family 
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Azerite Power Id : 357
 Triggered by     : Lunar Shrapnel (279641)
@@ -8901,6 +9277,7 @@ Description      : Starfall's stars deal an additional $s1 damage to nearby enem
 Name             : Gushing Lacerations (id=278509) [Scaling Spell (-1), Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Azerite Power Id : 358
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8924,6 +9301,7 @@ Name             : Gory Regeneration (id=278510) [Scaling Spell (-8), Spell Fami
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 360
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8944,6 +9322,7 @@ Description      : Mangle extends the duration of your active Frenzied Regenerat
 Name             : Guardian's Wrath (id=278511) [Scaling Spell (-1), Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 361
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8966,6 +9345,7 @@ Name             : Waking Dream (id=278513) [Scaling Spell (-8), Spell Family (7
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 363
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8987,6 +9367,7 @@ Name             : Rampant Growth (id=278515) [Scaling Spell (-8), Spell Family 
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 362
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9007,6 +9388,7 @@ Description      : Regrowth heals for ${$s1*($8936d/$8936t2)} more over its dura
 Name             : Blood Mist (id=279524) [Scaling Spell (-1), Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Azerite Power Id : 111
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9029,6 +9411,7 @@ Description      : Rake deals ${$s2*5} additional damage over its duration, and 
 Name             : Wild Fleshrending (id=279527) [Scaling Spell (-1), Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 359
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9048,6 +9431,7 @@ Description      : Shred deals $s1 additional damage, and $?s202028[Brutal Slash
 Name             : Layered Mane (id=279552) [Scaling Spell (-1), Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 112
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9070,6 +9454,7 @@ Description      : Ironfur increases your Agility by $s1, and has a $s2% chance 
 Name             : Eclipse (id=279619) [Spell Family (7), Passive] 
 Class            : Balance Druid
 School           : Nature
+Spell Type       : None
 Spell Level      : 60
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
@@ -9094,6 +9479,7 @@ Solar Wrath has a $s2% chance to grant you Lunar Empowerment.
 Name             : Twin Moons (id=279620) [Spell Family (7), Passive, Hidden] 
 Class            : Hunter, Druid
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
@@ -9122,6 +9508,7 @@ Description      : Moonfire deals $s2% increased damage and also hits another ne
 Name             : Twin Moons (id=279621) [Hidden] 
 Class            : Hunter, Druid
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Triggered by     : Twin Moons (279620)
 Attributes       : .......x ........ ........ ...x....   .....x.. ..x..... ........ ........ 
@@ -9140,6 +9527,7 @@ Description      : $@spelldesc279620
 Name             : Lunar Shrapnel (id=279641) [Scaling Spell (-1), Spell Family (7)] 
 Class            : Druid
 School           : Astral
+Spell Type       : Magic
 Range            : 100 yards
 Affecting spells : Moonkin Form (24858 effect#9), Incarnation: Chosen of Elune (102560 effect#1), Balance Druid (137013 effect#1), Celestial Alignment (194223 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
 Family Flags     : 18
@@ -9161,6 +9549,7 @@ Description      : $@spelldesc278507
 Name             : Lively Spirit (id=279642) [Scaling Spell (-1), Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 364
 Triggered by     : Lively Spirit (279648)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9179,6 +9568,7 @@ Description      : When Innervate expires, your Intellect is increased by $s1 fo
 Name             : Empowerments (id=279708) [Spell Family (7), Passive] 
 Class            : Balance Druid
 School           : Physical
+Spell Type       : None
 Spell Level      : 12
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x....... ........ 
@@ -9207,6 +9597,7 @@ You can accumulate up to $164547u of each Empowerment.][]
 Name             : Starlord (id=279709) [Spell Family (7)] 
 Class            : Druid
 School           : Firestorm
+Spell Type       : None
 Duration         : 20 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
@@ -9227,6 +9618,7 @@ Name             : Grove Tending (id=279778) [Scaling Spell (-8), Spell Family (
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 172
 Triggered by     : Grove Tending (279793)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9246,6 +9638,7 @@ Description      : Swiftmend heals the target for ${$s1*($279793d/$279793t1)} ov
 Name             : Unstable Flames (id=279899) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 459
 Triggered by     : Unstable Flames (279902)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9265,6 +9658,7 @@ Description      : Your damaging abilities have a chance to grant $s1 critical s
 Name             : Earthlink (id=279926) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 461
 Triggered by     : Earthlink (279928)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9284,6 +9678,7 @@ Description      : Azerite energy courses through you, reaching ${$s1*6} $?a1627
 Name             : Ursoc's Endurance (id=280013) [Scaling Spell (-8), Passive] 
 Class            : Druid
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 467
 Triggered by     : Ursoc's Endurance (280165)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9304,6 +9699,7 @@ Name             : Barrage Of Many Bombs (id=280163) [Scaling Spell (-8), Passiv
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 1.5 (Haste multiplier)
 Azerite Power Id : 498
@@ -9335,6 +9731,7 @@ Name             : Ricocheting Inflatable Pyrosaw (id=280168) [Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 1.5 (Haste multiplier)
 Azerite Power Id : 499
@@ -9365,6 +9762,7 @@ Name             : Auto-Self-Cauterizer (id=280172) [Scaling Spell (-8), Passive
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 1 seconds
 Proc Chance      : 101%
 Real PPM         : 1.5
@@ -9397,6 +9795,7 @@ Name             : Synaptic Spark Capacitor (id=280174) [Scaling Spell (-8), Spe
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 1.5
 Azerite Power Id : 500
@@ -9426,6 +9825,7 @@ Name             : Relational Normalization Gizmo (id=280178) [Scaling Spell (-1
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 10 seconds
 Proc Chance      : 101%
 Real PPM         : 1.5
@@ -9453,6 +9853,7 @@ Name             : Personal Absorb-o-Tron (id=280181) [Scaling Spell (-8), Passi
 Hotfixed         : Scaling Spell, Max Scaling Level, Internal Cooldown (60000 -> 20000), Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 20 seconds
 Proc Chance      : 101%
 Real PPM         : 1.5
@@ -9481,6 +9882,7 @@ Name             : Dagger in the Back (id=280284) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 479
 Triggered by     : Dagger in the Back (280286)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9502,6 +9904,7 @@ Name             : Thunderous Blast (id=280380) [Scaling Spell (-8), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 482
 Triggered by     : Thunderous Blast (280384)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9523,6 +9926,7 @@ Name             : Tidal Surge (id=280402) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Frost
+Spell Type       : None
 Azerite Power Id : 478
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9541,6 +9945,7 @@ Name             : Blood Rite (id=280407) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 480
 Triggered by     : Blood Rite (280409)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9560,6 +9965,7 @@ Name             : Incite the Pack (id=280410) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 481
 Triggered by     : Incite the Pack (280412), Incite the Pack (280413)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9583,6 +9989,7 @@ Name             : Swirling Sands (id=280429) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 196
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9605,6 +10012,7 @@ Name             : Archive of the Titans (id=280555) [Scaling Spell (-1), Passiv
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 483
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9625,6 +10033,7 @@ Name             : Laser Matrix (id=280559) [Scaling Spell (-8), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 485
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9647,6 +10056,7 @@ Name             : Glory in Battle (id=280577) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 486
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9668,6 +10078,7 @@ Name             : Retaliatory Fury (id=280579) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 487
 Triggered by     : Retaliatory Fury (280787), Retaliatory Fury (280788)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9690,6 +10101,7 @@ Name             : Combined Might (id=280580) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 490
 Triggered by     : Might of the Orcs (280841)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9711,6 +10123,7 @@ Name             : Collective Will (id=280581) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 491
 Triggered by     : Collective Will (280830)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9732,6 +10145,7 @@ Name             : Battlefield Focus (id=280582) [Scaling Spell (-8), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 488
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9754,6 +10168,7 @@ Name             : Sylvanas' Resolve (id=280598) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 489
 Triggered by     : Sylvanas' Resolve (280809)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9775,6 +10190,7 @@ Name             : Liberator's Might (id=280623) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 492
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9796,6 +10212,7 @@ Name             : Last Gift (id=280624) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 493
 Triggered by     : Last Gift (280861), Last Gift (280862)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9818,6 +10235,7 @@ Name             : Stronger Together (id=280625) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 496
 Triggered by     : Strength of the Humans (280866)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9839,6 +10257,7 @@ Name             : Stand As One (id=280626) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 497
 Triggered by     : Stand As One (280858)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9860,6 +10279,7 @@ Name             : Battlefield Precision (id=280627) [Scaling Spell (-8), Passiv
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 494
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9882,6 +10302,7 @@ Name             : Anduin's Dedication (id=280628) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 495
 Triggered by     : Anduin's Dedication (280876)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9902,6 +10323,7 @@ Description      : Your abilities have a chance to increase your $?a162700[Agili
 Name             : Champion of Azeroth (id=280710) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 82
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9919,6 +10341,7 @@ Description      : Your spells and abilities have a chance to increase all secon
 Name             : Unstable Catalyst (id=281514) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 504
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9937,6 +10360,7 @@ Name             : Tradewinds (id=281841) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 505
 Triggered by     : Tradewinds (281843), Tradewinds (281844)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 

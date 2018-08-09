@@ -3,6 +3,7 @@ SimulationCraft 801-01 for World of Warcraft 8.0.1 bfa-BETA (wow build 26095)
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Arcane Fire Frost Paladin, Mage
 School           : Arcane
+Spell Type       : Magic
 Resource         : 3% Base Mana (0) (id=16)
 Spell Level      : 42
 GCD              : 1.5 seconds
@@ -31,6 +32,7 @@ Tooltip          : Fading.
 Name             : Frostbolt (id=116) [Spell Family (3)] 
 Class            : Frost Mage
 School           : Frost
+Spell Type       : Magic
 Resource         : 2% Base Mana (0) (id=25)
 Spell Level      : 1
 Range            : 40 yards
@@ -54,6 +56,7 @@ Description      : Launches a bolt of frost at the enemy, causing $228597s1 Fros
 Name             : Polymorph (rank=Sheep) (id=118) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : Magic
 Resource         : 4% Base Mana (0) (id=26)
 Spell Level      : 8
 Range            : 30 yards
@@ -85,6 +88,7 @@ Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased healt
 Name             : Cone of Cold (id=120) [Scaling Spell (5), Spell Family (3)] 
 Class            : Frost Mage
 School           : Frost
+Spell Type       : Magic
 Resource         : 4% Base Mana (0) (id=27)
 Spell Level      : 34
 GCD              : 1.5 seconds
@@ -116,6 +120,7 @@ $mult=${$<arctic5>*$<piercing3>}
 Name             : Frost Nova (id=122) [Spell Family (3)] 
 Class            : Mage
 School           : Frost
+Spell Type       : Magic
 Resource         : 2% Base Mana (0) (id=28)
 Spell Level      : 5
 GCD              : 1.5 seconds
@@ -154,6 +159,7 @@ $mult=${$<arctic5>*$<piercing3>}
 Name             : Fireball (id=133) [Spell Family (3)] 
 Class            : Fire Mage
 School           : Fire
+Spell Type       : Magic
 Resource         : 2% Base Mana (0) (id=33)
 Spell Level      : 10
 Range            : 40 yards
@@ -178,6 +184,7 @@ Description      : Throws a fiery ball that causes $s1 Fire damage.
 Name             : Remove Curse (id=475) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : Magic
 Resource         : 1.3% Base Mana (0) (id=52)
 Spell Level      : 28
 Range            : 40 yards
@@ -200,6 +207,7 @@ Description      : Removes all Curses from a friendly target. $?s115700[If any C
 Name             : Arcane Explosion (id=1449) [Spell Family (3)] 
 Class            : Arcane Mage
 School           : Arcane
+Spell Type       : Magic
 Resource         : 10% Base Mana (0) (id=123)
 Spell Level      : 18
 GCD              : 1.5 seconds
@@ -226,6 +234,7 @@ Description      : Causes an explosion of magic around the caster, dealing $s2 A
 Name             : Arcane Intellect (id=1459) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : Magic
 Resource         : 4% Base Mana (0) (id=124)
 Spell Level      : 58
 Range            : 40 yards
@@ -249,6 +258,7 @@ Tooltip          : Intellect increased by $w1%.
 Name             : Incanter's Flow (id=1463) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Arcane
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ......x. ........ x....... ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -266,6 +276,7 @@ Description      : Magical energy flows through you while in combat, building up
 Name             : Blink (id=1953) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : Magic
 Resource         : 2% Base Mana (0) (id=147)
 Spell Level      : 16
 GCD              : 1.5 seconds
@@ -295,6 +306,7 @@ Tooltip          : Blinking.
 Name             : Flamestrike (id=2120) [Spell Family (3)] 
 Class            : Fire Mage
 School           : Fire
+Spell Type       : Magic
 Resource         : 2.5% Base Mana (0) (id=159)
 Spell Level      : 20
 Range            : 40 yards
@@ -322,6 +334,7 @@ Tooltip          : Movement speed slowed by $s2%.
 Name             : Counterspell (id=2139) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : Magic
 Resource         : 2% Base Mana (0) (id=161)
 Spell Level      : 22
 Range            : 40 yards
@@ -348,6 +361,7 @@ Description      : Counters the enemy's spellcast, preventing any spell from tha
 Name             : Scorch (id=2948) [Spell Family (3)] 
 Class            : Fire Mage
 School           : Fire
+Spell Type       : Magic
 Resource         : 1% Base Mana (0) (id=7418)
 Spell Level      : 14
 Range            : 40 yards
@@ -370,6 +384,7 @@ Description      : Scorches an enemy for $s1 Fire damage. Castable while moving.
 Name             : Shoot (id=5019) 
 Class            : Priest, Mage, Warlock
 School           : Physical
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 30 yards
 Cast Time        : 0.5 seconds
@@ -392,6 +407,7 @@ Name             : Arcane Missiles (id=5143) [Spell Family (3)]
 Hotfixed         : Attributes
 Class            : Arcane Mage
 School           : Arcane
+Spell Type       : None
 Resource         : 15% Base Mana (0) (id=191467)
 Spell Level      : 12
 Range            : 40 yards
@@ -423,6 +439,7 @@ Description      : Launches five waves of Arcane Missiles at the enemy over $514
 Name             : Arcane Missiles (id=7268) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : Magic
 Spell Level      : 14
 Range            : 60 yards
 Velocity         : 50 yards/sec
@@ -445,6 +462,7 @@ Description      : $@spelldesc5143
 Name             : Pyroblast (id=11366) [Spell Family (3)] 
 Class            : Fire Mage
 School           : Fire
+Spell Type       : Magic
 Resource         : 2% Base Mana (0) (id=405)
 Spell Level      : 12
 Range            : 40 yards
@@ -470,6 +488,7 @@ Description      : Hurls an immense fiery boulder that causes $s1 Fire damage.
 Name             : Ice Barrier (id=11426) [Spell Family (3)] 
 Class            : Frost Mage
 School           : Frost
+Spell Type       : Magic
 Resource         : 3% Base Mana (0) (id=414)
 Spell Level      : 26
 GCD              : 1.5 seconds
@@ -507,6 +526,7 @@ Variables        : $shield=${$s2/100*$MHP}
 Name             : Arcane Power (id=12042) [Spell Family (3)] 
 Class            : Arcane Mage
 School           : Arcane
+Spell Type       : Magic
 Spell Level      : 40
 GCD              : 1.5 seconds
 Duration         : 10 seconds
@@ -538,6 +558,7 @@ Mana costs of your damaging spells reduced by $w2%.
 Name             : Evocation (id=12051) [Spell Family (3)] 
 Class            : Arcane Mage
 School           : Arcane
+Spell Type       : None
 Spell Level      : 20
 GCD              : 1.5 seconds
 Duration         : 6 seconds
@@ -562,6 +583,7 @@ Tooltip          : Mana regeneration increased by $s1%.
 Name             : Icy Veins (id=12472) [Spell Family (3)] 
 Class            : Frost Mage
 School           : Frost
+Spell Type       : Magic
 Spell Level      : 40
 GCD              : 1.5 seconds
 Duration         : 20 seconds
@@ -588,6 +610,7 @@ Tooltip          : Haste increased by $w1% and immune to pushback.
 Name             : Ignite (id=12654) [Spell Family (3)] 
 Class            : Mage
 School           : Fire
+Spell Type       : Magic
 Spell Level      : 78
 Range            : 50000 yards
 Duration         : 9 seconds
@@ -615,6 +638,7 @@ Movement speed reduced by $w3%.][]
 Name             : Mastery: Ignite (id=12846) [Spell Family (3), Passive] 
 Class            : Fire Mage
 School           : Physical
+Spell Type       : None
 Spell Level      : 78
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
@@ -641,6 +665,7 @@ Every $t3 sec, your Ignites may spread to another nearby enemy.
 Name             : Shatter (id=12982) [Spell Family (3), Passive] 
 Class            : Frost Mage
 School           : Physical
+Spell Type       : None
 Spell Level      : 14
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -663,6 +688,7 @@ Name             : Expansive Mind (rank=Racial Passive) (id=20591) [Passive]
 Class            : Paladin, Priest, Shaman, Mage, Warlock, Monk
 Race             : Gnome (0x40)
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -680,6 +706,7 @@ Name             : Command (rank=Racial Passive) (id=21563) [Spell Family (9), P
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Orc (0x2)
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -696,6 +723,7 @@ Description      : Damage dealt by pets increased by $s1%.
 Name             : Strength (id=27973) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Demon Hunter
 School           : Physical
+Spell Type       : None
 Duration         : Aura (infinite)
 Azerite Power Id : 6
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -713,6 +741,7 @@ Effects          :
 Name             : Polymorph (rank=Turtle) (id=28271) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : Magic
 Resource         : 4% Base Mana (0) (id=1101)
 Spell Level      : 60
 Range            : 30 yards
@@ -744,6 +773,7 @@ Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased healt
 Name             : Polymorph (rank=Pig) (id=28272) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : Magic
 Resource         : 4% Base Mana (0) (id=1102)
 Spell Level      : 60
 Range            : 30 yards
@@ -776,6 +806,7 @@ Name             : Arcane Torrent (rank=Racial) (id=28730)
 Class            : Mage, Warlock
 Race             : Blood Elf (0x200)
 School           : Arcane
+Spell Type       : Magic
 GCD              : 1.5 seconds
 Cooldown         : 90 seconds
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
@@ -796,6 +827,7 @@ Name             : Gift of the Naaru (rank=Racial) (id=28880) [Spell Family (4)]
 Class            : Warrior, Paladin, Hunter, Priest, Death Knight, Shaman, Mage, Monk
 Race             : Draenei (0x400)
 School           : Holy
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 Duration         : 5 seconds
@@ -821,6 +853,7 @@ Tooltip          : Healing $/5;s2% every $t1 seconds.
 Name             : Arcane Blast (id=30451) [Spell Family (3)] 
 Class            : Arcane Mage
 School           : Arcane
+Spell Type       : Magic
 Resource         : 2.75% Base Mana (0) (id=1204)
 Spell Level      : 10
 Range            : 40 yards
@@ -850,6 +883,7 @@ Name             : Ice Lance (id=30455) [Scaling Spell (5), Spell Family (3)]
 Replaces         : Fire Blast (id=108853)
 Class            : Frost Mage
 School           : Frost
+Spell Type       : Magic
 Resource         : 1% Base Mana (0) (id=6406)
 Spell Level      : 10
 Range            : 40 yards
@@ -881,6 +915,7 @@ $fingersMult=${(2.00*$<masteryMult>)}
 Name             : Slow (id=31589) [Spell Family (3)] 
 Class            : Arcane Mage
 School           : Arcane
+Spell Type       : Magic
 Resource         : 1% Base Mana (0) (id=1254)
 Spell Level      : 32
 Range            : 35 yards
@@ -905,6 +940,7 @@ Tooltip          : Movement speed reduced by $w1%.
 Name             : Dragon's Breath (id=31661) [Scaling Spell (5), Spell Family (3)] 
 Class            : Fire Mage
 School           : Fire
+Spell Type       : Magic
 Resource         : 4% Base Mana (0) (id=1267)
 Spell Level      : 32
 GCD              : 1.5 seconds
@@ -937,6 +973,7 @@ Tooltip          : Disoriented.
 Name             : Summon Water Elemental (id=31687) [Spell Family (3)] 
 Class            : Frost Mage
 School           : Frost
+Spell Type       : Magic
 Resource         : 3% Base Mana (0) (id=1269)
 Spell Level      : 12
 Cast Time        : 1.5 seconds
@@ -960,6 +997,7 @@ Description      : Summons a Water Elemental to follow and fight for you.
 Name             : Waterbolt (id=31707) [Spell Family (3)] 
 Class            : Mage
 School           : Frost
+Spell Type       : Magic
 Spell Level      : 10
 Range            : 45 yards
 Cast Time        : 2.5 seconds
@@ -982,6 +1020,7 @@ Description      : Deals $sw1 Frost damage to the target.
 Name             : Invisibility (id=32612) [Spell Family (3)] 
 Class            : Paladin, Mage
 School           : Arcane
+Spell Type       : None
 Spell Level      : 42
 Duration         : 20 seconds
 Affecting spells : Norgannon's Foresight (236380 effect#1)
@@ -1007,6 +1046,7 @@ Tooltip          : Invisible$?$w3=0[][ and moving $87833s1% faster].
 Name             : Freeze (id=33395) [Scaling Spell (5), Spell Family (3)] 
 Class            : Mage
 School           : Frost
+Spell Type       : Magic
 Resource         : 12% Base Mana (0) (id=1408)
 Spell Level      : 32
 Range            : 45 yards
@@ -1036,6 +1076,7 @@ Name             : Blood Fury (rank=Racial) (id=33702) [Scaling Spell (-1)]
 Class            : Mage, Warlock
 Race             : Orc (0x2)
 School           : Physical
+Spell Type       : Magic
 Spell Level      : 1
 Duration         : 15 seconds
 Cooldown         : 120 seconds
@@ -1056,6 +1097,7 @@ Tooltip          : Intellect increased by $w1.
 Name             : Arcane Charge (id=36032) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : None
 Spell Level      : 10
 Duration         : Aura (infinite)
 Stacks           : 1 initial, 4 maximum
@@ -1104,6 +1146,7 @@ Increases the number of targets hit by Arcane Barrage for 50% damage by $36032w3
 Name             : Hypothermia (id=41425) [Spell Family (3)] 
 Class            : Mage
 School           : Frost
+Spell Type       : None
 Range            : 50000 yards
 Duration         : 30 seconds
 Attributes       : ........ ........ ........ ..x..x..   ...x...x ..x..... xx...... ........ 
@@ -1122,6 +1165,7 @@ Tooltip          : Cannot be made invulnerable by Ice Block.
 Name             : Agility 20 (id=41695) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 7
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1139,6 +1183,7 @@ Description      : Increases Agility by $s1.
 Name             : Arcane Barrage (id=44425) [Spell Family (3)] 
 Class            : Arcane Mage
 School           : Arcane
+Spell Type       : Magic
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -1169,6 +1214,7 @@ For each Arcane Charge, deals $36032s2% additional damage$?a231564[ and hits $36
 Name             : Pyroblast Clearcasting Driver (id=44448) [Spell Family (3), Passive, Hidden] 
 Class            : Fire Mage
 School           : Fire
+Spell Type       : None
 Spell Level      : 14
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
@@ -1188,6 +1234,7 @@ Effects          :
 Name             : Living Bomb (id=44457) [Spell Family (3)] 
 Class            : Mage
 School           : Fire
+Spell Type       : Magic
 Resource         : 1.5% Base Mana (0) (id=2083)
 Spell Level      : 1
 Range            : 40 yards
@@ -1214,6 +1261,7 @@ Tooltip          : Causes $w1 Fire damage every $t1 sec. After $d, the target ex
 Name             : Living Bomb (id=44461) [Spell Family (3)] 
 Class            : Mage
 School           : Fire
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
 Affecting spells : Arcane Power (12042 effect#1), Rune of Power (116014 effect#1), Incanter's Flow (116267 effect#1), Fire Mage (137019 effect#1), Frost Mage (137020 effect#1), Arcane Mage (137021 effect#1), Combustion (190319 effect#1), Bone Chilling (205766 effect#1), Norgannon's Foresight (236380 effect#1), Crackling Energy (246224 effect#1), 
@@ -1236,6 +1284,7 @@ Description      : $@spelldesc44457
 Name             : Fingers of Frost (id=44544) [Spell Family (3)] 
 Class            : Mage
 School           : Frost
+Spell Type       : None
 Range            : 100 yards
 Duration         : 15 seconds
 Stacks           : 2 maximum
@@ -1266,6 +1315,7 @@ Tooltip          : Your next Ice Lance deals damage as if the target were frozen
 Name             : Flurry (id=44614) [Scaling Spell (5), Spell Family (3)] 
 Class            : Frost Mage
 School           : Frost
+Spell Type       : Magic
 Resource         : 1% Base Mana (0) (id=2096)
 Spell Level      : 20
 Range            : 40 yards
@@ -1293,6 +1343,7 @@ While Brain Freeze is active, Flurry applies Winter's Chill, causing your target
 Name             : Ice Block (id=45438) [Spell Family (3)] 
 Class            : Mage
 School           : Frost
+Spell Type       : Magic
 Spell Level      : 50
 GCD              : 1.5 seconds
 Duration         : 10 seconds
@@ -1326,6 +1377,7 @@ Cannot attack, move, or use spells.
 Name             : Heating Up (id=48107) 
 Class            : Mage
 School           : Fire
+Spell Type       : None
 Range            : 50000 yards
 Duration         : 10 seconds
 Stacks           : 2 maximum
@@ -1346,6 +1398,7 @@ Tooltip          : Scored a spell critical. A second spell critical in a row wil
 Name             : Hot Streak! (id=48108) [Spell Family (3)] 
 Class            : Mage
 School           : Physical
+Spell Type       : Magic
 Spell Level      : 1
 Duration         : 15 seconds
 Stacks           : 1 maximum
@@ -1370,6 +1423,7 @@ Tooltip          : Your next Pyroblast or Flamestrike spell is instant cast, and
 Name             : Mirror Image (id=55342) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : None
 Resource         : 2% Base Mana (0) (id=2510)
 Spell Level      : 1
 GCD              : 1.5 seconds
@@ -1395,6 +1449,7 @@ Description      : Creates $s2 copies of you nearby for $55342d, which cast spel
 Name             : Increase Versatility 15 (id=55564) [Scaling Spell (-1), Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Max Scaling Level: 80
 Azerite Power Id : 1
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -1413,6 +1468,7 @@ Description      : Increases your Versatility by $s1.
 Name             : Splitting Ice (id=56377) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Frost
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1439,6 +1495,7 @@ Your Ebonbolt and Glacial Spike also hit a second nearby target for $s2% of its 
 Name             : Glyph of Crittermorph (id=56382) [Spell Family (3), Passive, Hidden] 
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1455,6 +1512,7 @@ Description      : When cast on critters, your Polymorph spells now last 1 day a
 Name             : Arcane Momentum (id=56384) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1471,6 +1529,7 @@ Description      : Your Blink spell teleports you in the direction you are movin
 Name             : Crittermorph (id=56599) 
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Cast Time        : 1.5 seconds
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1489,6 +1548,7 @@ Name             : Sated (id=57724)
 Class            : Hunter, Shaman, Mage
 Race             : Orc, Tauren, Troll, Goblin, Mag'har Orc, Highmountain Tauren (0xa0021a2)
 School           : Physical
+Spell Type       : None
 Range            : 50000 yards
 Duration         : 600 seconds
 Attributes       : ........ ........ ........ ..x..x..   ...x.x.x ........ .x...... ........ 
@@ -1509,6 +1569,7 @@ Name             : Gift of the Naaru (rank=Racial) (id=59548) [Spell Family (3)]
 Class            : Mage
 Race             : Draenei (0x400)
 School           : Holy
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 Duration         : 5 seconds
@@ -1535,6 +1596,7 @@ Tooltip          : Healing $/5;s2% every $t1 seconds.
 Name             : Frostbolt (id=59638) [Scaling Spell (5), Spell Family (3)] 
 Class            : Mage
 School           : Frost
+Spell Type       : Magic
 Resource         : 0.1% Base Mana (0) (id=2718)
 Spell Level      : 1
 Range            : 40 yards
@@ -1559,6 +1621,7 @@ Tooltip          : Reduced movement speed.
 Name             : Polymorph (rank=Serpent) (id=61025) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : Magic
 Resource         : 4% Base Mana (0) (id=2763)
 Spell Level      : 1
 Range            : 30 yards
@@ -1590,6 +1653,7 @@ Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased healt
 Name             : Polymorph (rank=Black Cat) (id=61305) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : Magic
 Resource         : 4% Base Mana (0) (id=2768)
 Spell Level      : 60
 Range            : 30 yards
@@ -1621,6 +1685,7 @@ Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased healt
 Name             : Polymorph (rank=Rabbit) (id=61721) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : Magic
 Resource         : 4% Base Mana (0) (id=2787)
 Spell Level      : 60
 Range            : 30 yards
@@ -1652,6 +1717,7 @@ Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased healt
 Name             : Polymorph (rank=Turkey) (id=61780) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : Magic
 Resource         : 4% Base Mana (0) (id=2790)
 Spell Level      : 1
 Range            : 30 yards
@@ -1683,6 +1749,7 @@ Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased healt
 Name             : Avoidance (rank=Passive) (id=65220) [Passive] 
 Class            : Shaman, Mage, Monk
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ....x.x. ........ x.x..... ...x....   .....x.. ........ .x...... ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
@@ -1708,6 +1775,7 @@ Name             : Viciousness (rank=Racial Passive) (id=68975) [Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1726,6 +1794,7 @@ Name             : Aberration (rank=Racial Passive) (id=68976) [Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1745,6 +1814,7 @@ Name             : Darkflight (rank=Racial) (id=68992)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
+Spell Type       : None
 Duration         : 10 seconds
 Cooldown         : 120 seconds
 Attributes       : ........ ........ ........ ........   .....x.. ........ ........ ........ 
@@ -1766,6 +1836,7 @@ Tooltip          : True form activated, movement speed increased by an additiona
 Name             : Mastery: Icicles (id=76613) [Spell Family (3), Passive] 
 Class            : Frost Mage
 School           : Frost
+Spell Type       : None
 Spell Level      : 78
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x....... ........ 
@@ -1800,6 +1871,7 @@ Increases the damage of Frozen Orb by ${$s4}%.
 Name             : Clearcasting (id=79684) [Spell Family (3), Passive] 
 Class            : Arcane Mage
 School           : Physical
+Spell Type       : None
 Resource         : 1% Base Mana (0) (id=191542)
 Spell Level      : 14
 Proc Chance      : 100%
@@ -1823,6 +1895,7 @@ Description      : For each ${$c*100/$s1} mana you spend, you have a 1% chance t
 Name             : Time Warp (id=80353) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : None
 Resource         : 4% Base Mana (0) (id=3379)
 Spell Level      : 80
 Duration         : 40 seconds
@@ -1849,6 +1922,7 @@ Tooltip          : Haste increased by $s1%.
 Name             : Temporal Displacement (id=80354) 
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Range            : 50000 yards
 Duration         : 600 seconds
 Attributes       : ........ ........ ........ ..x..x..   ...x.x.x ........ .x...... ........ 
@@ -1868,6 +1942,7 @@ Tooltip          : Cannot benefit from Time Warp or other similar effects.
 Name             : Ring of Frost (id=82691) [Spell Family (3)] 
 Class            : Mage
 School           : Frost
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 10 seconds
@@ -1894,6 +1969,7 @@ Tooltip          : Incapacitated.
 Name             : Frozen Orb (id=84714) [Spell Family (3)] 
 Class            : Frost Mage
 School           : Frost
+Spell Type       : Magic
 Resource         : 1% Base Mana (0) (id=5476)
 Spell Level      : 57
 Range            : 40 yards
@@ -1922,6 +1998,7 @@ Enemies damaged by the Frozen Orb are slowed by $205708s1% for $205708d.
 Name             : Frozen Orb (id=84721) [Spell Family (3)] 
 Class            : Mage
 School           : Frost
+Spell Type       : Magic
 Range            : 100 yards
 Affecting spells : Arcane Power (12042 effect#1), Shatter (12982 effect#1), Mastery: Icicles (76613 effect#4), Rune of Power (116014 effect#1), Incanter's Flow (116267 effect#1), Fire Mage (137019 effect#1), Frost Mage (137020 effect#1), Arcane Mage (137021 effect#1), Combustion (190319 effect#1), Bone Chilling (205766 effect#1), Norgannon's Foresight (236380 effect#1), Crackling Energy (246224 effect#1), 
 Family Flags     : 3, 71, 78
@@ -1942,6 +2019,7 @@ Tooltip          : Movement slowed by $s1%.
 Name             : Cauterize (id=86949) [Spell Family (3), Passive] 
 Class            : Fire Mage
 School           : Physical
+Spell Type       : None
 Spell Level      : 52
 Affecting spells : Norgannon's Foresight (236380 effect#1)
 Family Flags     : 42
@@ -1969,6 +2047,7 @@ This effect cannot occur more than once every $87024d.
 Name             : Cauterize (id=87023) 
 Class            : Mage
 School           : Fire
+Spell Type       : None
 Spell Level      : 1
 Duration         : 6 seconds
 Attributes       : ........ ........ ........ ..x.....   ........ ..x..... ........ ........ 
@@ -1992,6 +2071,7 @@ Tooltip          : Burning away $s1% of maximum health every $t1 sec.
 Name             : Cauterized (id=87024) 
 Class            : Mage
 School           : Fire
+Spell Type       : None
 Range            : 50000 yards
 Duration         : 300 seconds
 Attributes       : ........ ........ ........ ..xx.x..   ........ ..x..... ........ ........ 
@@ -2010,6 +2090,7 @@ Tooltip          : You have recently benefited from Cauterize and cannot benefit
 Name             : Invisibility Speed (id=87833) [Spell Family (3), Hidden] 
 Class            : Paladin, Mage
 School           : Physical
+Spell Type       : None
 Duration         : Aura (infinite)
 Attributes       : .......x x....... ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -2026,6 +2107,7 @@ Effects          :
 Name             : Fireball (id=88082) [Scaling Spell (5), Spell Family (3)] 
 Class            : Mage
 School           : Fire
+Spell Type       : Magic
 Resource         : 0.1% Base Mana (0) (id=4073)
 Spell Level      : 1
 Range            : 40 yards
@@ -2048,6 +2130,7 @@ Description      : Hurls a fiery ball that causes $s1 Fire damage.
 Name             : Arcane Blast (id=88084) [Scaling Spell (5), Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : Magic
 Resource         : 0.1% Base Mana (0) (id=4074)
 Spell Level      : 1
 Range            : 40 yards
@@ -2072,6 +2155,7 @@ Arcane Blast's damage is increased by $36032s1% per Arcane Charge, and its mana 
 Name             : Wizardry (rank=Passive) (id=89744) [Passive, Hidden] 
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2088,6 +2172,7 @@ Description      : Increases your Intellect by $s1%.
 Name             : Item - Proc Mastery (id=92322) [Spell Family (10), Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 100 seconds
 Proc Chance      : 10%
 Azerite Power Id : 8
@@ -2110,6 +2195,7 @@ Name             : Altered Form (rank=Racial Passive) (id=94293) [Passive, Hidde
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2126,6 +2212,7 @@ Description      : Enables Worgens to switch between human and Worgan forms
 Name             : Ice Floes (id=108839) [Spell Family (3)] 
 Class            : Mage
 School           : Frost
+Spell Type       : Magic
 Spell Level      : 1
 Duration         : 15 seconds
 Charges          : 3 (20 seconds cooldown)
@@ -2155,6 +2242,7 @@ Tooltip          : Able to move while casting spells.
 Name             : Blazing Speed (id=108843) [Spell Family (3)] 
 Class            : Mage
 School           : Fire
+Spell Type       : None
 Spell Level      : 1
 Duration         : 6 seconds
 Cooldown         : 25 seconds
@@ -2179,6 +2267,7 @@ Tooltip          : $s1% increased movement speed and unaffected by movement spee
 Name             : Fire Blast (id=108853) [Spell Family (3)] 
 Class            : Fire Frost Mage
 School           : Fire
+Spell Type       : Magic
 Resource         : 1% Base Mana (0) (id=5196)
 Spell Level      : 3
 Range            : 40 yards
@@ -2203,6 +2292,7 @@ Name             : Greater Invisibility (id=110959) [Spell Family (3)]
 Replaces         : Invisibility (id=66)
 Class            : Arcane Mage
 School           : Arcane
+Spell Type       : Magic
 Spell Level      : 65
 GCD              : 1.5 seconds
 Cooldown         : 120 seconds
@@ -2228,6 +2318,7 @@ You take $113862s1% reduced damage while invisible and for 3 sec after reappeari
 Name             : Greater Invisibility (id=110960) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : None
 Spell Level      : 56
 Duration         : 20 seconds
 Affecting spells : Norgannon's Foresight (236380 effect#1)
@@ -2254,6 +2345,7 @@ Tooltip          : Invisible$?$w3=0[][ and moving $87833s1% faster].
 Name             : Fingers of Frost (id=112965) [Spell Family (3), Passive] 
 Class            : Frost Mage
 School           : Physical
+Spell Type       : None
 Spell Level      : 24
 Affecting spells : Frozen Touch (205030 effect#1), Norgannon's Foresight (236380 effect#1)
 Family Flags     : 126
@@ -2283,6 +2375,7 @@ Maximum $44544s1 charges.
 Name             : Ring of Frost (id=113724) [Spell Family (3)] 
 Class            : Mage
 School           : Frost
+Spell Type       : Magic
 Resource         : 8% Base Mana (0) (id=5578)
 Spell Level      : 1
 Range            : 30 yards
@@ -2313,6 +2406,7 @@ Description      : Summons a Ring of Frost for $d at the target location. Enemie
 Name             : Greater Invisibility (id=113862) [Spell Family (3)] 
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Duration         : Aura (infinite)
 Affecting spells : Norgannon's Foresight (236380 effect#1)
@@ -2333,6 +2427,7 @@ Tooltip          : Damage taken is reduced by $s1%.
 Name             : Nether Tempest (id=114923) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : Magic
 Resource         : 1.5% Base Mana (0) (id=5675)
 Spell Level      : 1
 Range            : 40 yards
@@ -2361,6 +2456,7 @@ Tooltip          : Deals $w1 Arcane damage and an additional $w1 Arcane damage t
 Name             : Nether Tempest (id=114954) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
 Velocity         : 1.25 yards/sec
@@ -2382,6 +2478,7 @@ Description      : $@spelldesc114923
 Name             : Rune of Power (id=116011) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 30 yards
 Cast Time        : 1.5 seconds
@@ -2412,6 +2509,7 @@ Description      : Places a Rune of Power on the ground for $116011d which incre
 Name             : Rune of Power (id=116014) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : None
 Duration         : 10 seconds
 Affecting spells : Norgannon's Foresight (236380 effect#1)
 Family Flags     : 88
@@ -2443,6 +2541,7 @@ Health restored by $w2% per second.]
 Name             : Incanter's Flow (id=116267) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : None
 Range            : 50000 yards
 Duration         : 25 seconds
 Stacks           : 5 maximum
@@ -2472,6 +2571,7 @@ Tooltip          : Increases spell damage by $w1%.
 Name             : Critical Mass (id=117216) [Spell Family (3), Passive] 
 Class            : Fire Mage
 School           : Fire
+Spell Type       : None
 Spell Level      : 10
 Affecting spells : Critical Mass (231630 effect#1), Norgannon's Foresight (236380 effect#1)
 Family Flags     : 113
@@ -2495,6 +2595,7 @@ You gain $s2% more of the Critical Strike stat from all sources.][]
 Name             : Ancient Teleport: Dalaran (id=120145) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : Magic
 Resource         : 3% Base Mana (0) (id=6458)
 Spell Level      : 71
 Cast Time        : 10 seconds
@@ -2517,6 +2618,7 @@ Description      : Teleports you to Dalaran.
 Name             : Mana Attunement (rank=Passive) (id=121039) [Spell Family (3), Passive, Hidden] 
 Class            : Mage
 School           : Physical
+Spell Type       : Magic
 Spell Level      : 1
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ .......x 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2535,6 +2637,7 @@ Tooltip          : Increases your mana regeneration by $s1%.
 Name             : Polymorph (rank=Porcupine) (id=126819) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : Magic
 Resource         : 4% Base Mana (0) (id=7563)
 Spell Level      : 1
 Range            : 30 yards
@@ -2566,6 +2669,7 @@ Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased healt
 Name             : Illusion (id=131784) 
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Cooldown         : 600 seconds
 Attributes       : ........ ........ ........ .....x..   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ x....... ........ ........ 
@@ -2582,6 +2686,7 @@ Description      : Transforms the Mage to look like another player for $94632d.
 Name             : Ring of Frost (id=136511) [Spell Family (3)] 
 Class            : Mage
 School           : Frost
+Spell Type       : None
 Spell Level      : 1
 Duration         : 10 seconds
 Cooldown         : 45 seconds
@@ -2603,6 +2708,7 @@ Description      : Summons a Ring of Frost at the target location. Enemies enter
 Name             : Mage (id=137018) [Spell Family (3), Passive, Hidden] 
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2662,6 +2768,7 @@ Effects          :
 Name             : Fire Mage (id=137019) [Spell Family (3), Passive, Hidden] 
 Class            : Fire Mage
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2713,6 +2820,7 @@ Effects          :
 Name             : Frost Mage (id=137020) [Spell Family (3), Passive, Hidden] 
 Class            : Frost Mage
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2764,6 +2872,7 @@ Effects          :
 Name             : Arcane Mage (id=137021) [Spell Family (3), Passive, Hidden] 
 Class            : Arcane Mage
 School           : Physical
+Spell Type       : None
 Spell Level      : 10 (max 40)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2793,6 +2902,7 @@ Effects          :
 Name             : Item - Mage T16 4P Bonus (id=145257) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
@@ -2816,6 +2926,7 @@ Description      : Arcane Missiles has a $s1% chance to not consume Arcane Missi
 Name             : Frigid Blast (id=145264) [Scaling Spell (5), Spell Family (3)] 
 Class            : Mage
 School           : Frost
+Spell Type       : Magic
 Range            : 100 yards
 Velocity         : 0.8 yards/sec
 Proc Chance      : 101%
@@ -2835,6 +2946,7 @@ Description      : Consuming Brain Freeze has a $145257s2% chance to drop an icy
 Name             : Glyph of Evaporation (rank=Frost) (id=146662) [Spell Family (3), Passive, Hidden] 
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ...x.... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2851,6 +2963,7 @@ Description      : Reduces the size of your Water Elemental by $s1%.
 Name             : Glyph of the Unbound Elemental (rank=Frost) (id=146976) [Spell Family (3), Passive, Hidden] 
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2867,6 +2980,7 @@ Description      : Your Water Elemental is replaced by an Unbound Water Elementa
 Name             : Unbound Elemental (id=147970) 
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Cast Time        : 1.5 seconds
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2884,6 +2998,7 @@ Description      : $@spelldesc146976
 Name             : Evaporation (id=147971) 
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Cast Time        : 1.5 seconds
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2901,6 +3016,7 @@ Description      : $@spelldesc146662
 Name             : Icicle (id=148022) [Spell Family (3)] 
 Class            : Mage
 School           : Frost
+Spell Type       : Magic
 Spell Level      : 78
 Range            : 100 yards
 Velocity         : 25 yards/sec
@@ -2922,6 +3038,7 @@ Description      : $@spelldesc76613
 Name             : Meteor (id=153561) [Spell Family (3)] 
 Class            : Mage
 School           : Fire
+Spell Type       : Magic
 Resource         : 1% Base Mana (0) (id=9133)
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -2943,6 +3060,7 @@ Description      : Calls down a meteor which lands at the target location after 
 Name             : Meteor (id=153564) [Spell Family (3)] 
 Class            : Mage
 School           : Fire
+Spell Type       : Magic
 Range            : 100 yards
 Velocity         : 1 yards/sec
 Affecting spells : Arcane Power (12042 effect#1), Rune of Power (116014 effect#1), Incanter's Flow (116267 effect#1), Fire Mage (137019 effect#1), Frost Mage (137020 effect#1), Arcane Mage (137021 effect#1), Combustion (190319 effect#1), Bone Chilling (205766 effect#1), Norgannon's Foresight (236380 effect#1), Crackling Energy (246224 effect#1), 
@@ -2965,6 +3083,7 @@ Description      : $@spelldesc153561
 Name             : Comet Storm (id=153595) [Spell Family (3)] 
 Class            : Mage
 School           : Frost
+Spell Type       : None
 Resource         : 1% Base Mana (0) (id=9135)
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -2987,6 +3106,7 @@ Description      : Calls down a series of 7 icy comets on and around the target,
 Name             : Comet Storm (id=153596) [Scaling Spell (5), Spell Family (3)] 
 Class            : Mage
 School           : Frost
+Spell Type       : Magic
 Range            : 100 yards
 Affecting spells : Arcane Power (12042 effect#1), Shatter (12982 effect#1), Rune of Power (116014 effect#1), Incanter's Flow (116267 effect#1), Fire Mage (137019 effect#1), Frost Mage (137020 effect#1), Arcane Mage (137021 effect#1), Combustion (190319 effect#1), Bone Chilling (205766 effect#1), Norgannon's Foresight (236380 effect#1), Crackling Energy (246224 effect#1), 
 Family Flags     : 3, 120
@@ -3006,6 +3126,7 @@ Description      : $@spelldesc153595
 Name             : Arcane Orb (id=153626) 
 Class            : Mage
 School           : Arcane
+Spell Type       : None
 Resource         : 1% Base Mana (0) (id=9139)
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -3030,6 +3151,7 @@ Description      : Launches an Arcane Orb forward from your position, traveling 
 Name             : Arcane Orb (id=153640) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : Magic
 Range            : 100 yards
 Affecting spells : Arcane Power (12042 effect#1), Rune of Power (116014 effect#1), Incanter's Flow (116267 effect#1), Fire Mage (137019 effect#1), Frost Mage (137020 effect#1), Arcane Mage (137021 effect#1), Combustion (190319 effect#1), Bone Chilling (205766 effect#1), Norgannon's Foresight (236380 effect#1), Crackling Energy (246224 effect#1), 
 Family Flags     : 3, 83
@@ -3051,6 +3173,7 @@ Description      : $@spelldesc153626
 Name             : Overpowered (id=155147) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3077,6 +3200,7 @@ Description      : Arcane Power now increases damage by ${30+$s1}% and reduces m
 Name             : Kindling (id=155148) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
@@ -3096,6 +3220,7 @@ Description      : Your Fireball, Pyroblast, Fire Blast, and Phoenix Flames crit
 Name             : Thermal Void (id=155149) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3118,6 +3243,7 @@ Your Ice Lances against frozen targets extend your Icy Veins by an additional $s
 Name             : Meteor Burn (id=155158) [Spell Family (3)] 
 Class            : Mage
 School           : Fire
+Spell Type       : Magic
 Range            : 100 yards
 Duration         : 10 seconds
 Stacks           : 3 maximum
@@ -3141,6 +3267,7 @@ Tooltip          : Burning for $w1 Fire damage every $t1 sec.
 Name             : Enhanced Pyrotechnics (id=157642) [Spell Family (3), Passive] 
 Class            : Fire Mage
 School           : Physical
+Spell Type       : None
 Spell Level      : 35
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x....... ........ 
@@ -3163,6 +3290,7 @@ Description      : Each time your Fireball fails to critically strike a target, 
 Name             : Enhanced Pyrotechnics (id=157644) [Spell Family (3)] 
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Duration         : 15 seconds
 Stacks           : 10 maximum
 Proc Chance      : 101%
@@ -3187,6 +3315,7 @@ Tooltip          : Increases critical strike chance of Fireball by $s1%.
 Name             : Unstable Magic (id=157976) [Spell Family (3), Passive] 
 Class            : Mage
 School           : None
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3210,6 +3339,7 @@ Description      : $?s137021[Arcane Blast]?s137019[Fireball][Frostbolt] has a $?
 Name             : Unstable Magic (id=157977) [Spell Family (3)] 
 Class            : Mage
 School           : Fire
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3228,6 +3358,7 @@ Description      : $@spelldesc157976
 Name             : Unstable Magic (id=157978) [Spell Family (3)] 
 Class            : Mage
 School           : Frost
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3246,6 +3377,7 @@ Description      : $@spelldesc157976
 Name             : Unstable Magic (id=157979) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3264,6 +3396,7 @@ Description      : $@spelldesc157976
 Name             : Supernova (id=157980) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -3289,6 +3422,7 @@ Description      : Pulses arcane energy around the target enemy or ally, dealing
 Name             : Blast Wave (id=157981) [Spell Family (3)] 
 Class            : Mage
 School           : Fire
+Spell Type       : Magic
 Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 4 seconds
@@ -3313,6 +3447,7 @@ Tooltip          : Movement speed reduced by $s2%.
 Name             : Ice Nova (id=157997) [Spell Family (3)] 
 Class            : Mage
 School           : Frost
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -3343,6 +3478,7 @@ Tooltip          : Frozen.
 Name             : Polymorph (rank=Polar Bear Cub) (id=161353) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : Magic
 Resource         : 4% Base Mana (0) (id=9429)
 Spell Level      : 1
 Range            : 30 yards
@@ -3374,6 +3510,7 @@ Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased healt
 Name             : Polymorph (rank=Monkey) (id=161354) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : Magic
 Resource         : 4% Base Mana (0) (id=9430)
 Spell Level      : 1
 Range            : 30 yards
@@ -3405,6 +3542,7 @@ Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased healt
 Name             : Polymorph (rank=Penguin) (id=161355) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : Magic
 Resource         : 4% Base Mana (0) (id=9431)
 Spell Level      : 1
 Range            : 30 yards
@@ -3436,6 +3574,7 @@ Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased healt
 Name             : Polymorph (rank=Peacock) (id=161372) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : Magic
 Resource         : 4% Base Mana (0) (id=9433)
 Spell Level      : 60
 Range            : 30 yards
@@ -3468,6 +3607,7 @@ Name             : Stat Negation Aura - Intellect DPS (id=162699) [Passive, Hidd
 Class            : Shadow Elemental Arcane Fire Frost Affliction Demonology Destruction Balance Priest, Shaman, Mage, Warlock, Druid
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3487,6 +3627,7 @@ Effects          :
 Name             : Meteor Burn (id=175396) [Hidden] 
 Class            : Mage
 School           : Fire
+Spell Type       : Magic
 Range            : 100 yards
 Duration         : 8 seconds
 Triggered by     : Meteor (153564)
@@ -3507,6 +3648,7 @@ Tooltip          : Burning for $w1 Fire damage every $t1 sec.
 Name             : Meteor (id=177345) [Hidden] 
 Class            : Mage
 School           : Fire
+Spell Type       : Magic
 Range            : 100 yards
 Duration         : 3 seconds
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -3524,6 +3666,7 @@ Effects          :
 Name             : Rule of Threes (id=187292) [Spell Family (3), Hidden] 
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Duration         : 10 seconds
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3546,6 +3689,7 @@ Tooltip          : Arcane Missiles now fires $m2 additional Missiles.
 Name             : Aegwynn's Ascendance (id=187677) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : Magic
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3562,6 +3706,7 @@ Description      : An emanation of mana-fueled Arcane damage.
 Name             : Combustion (id=190319) [Spell Family (3)] 
 Class            : Fire Mage
 School           : Fire
+Spell Type       : Magic
 Resource         : 10% Base Mana (0) (id=10319)
 Spell Level      : 40
 Duration         : 10 seconds
@@ -3592,6 +3737,7 @@ Mastery increased by $w2.][]
 Name             : Conjure Refreshment (id=190336) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : Magic
 Resource         : 3% Base Mana (0) (id=10320)
 Spell Level      : 13
 Cast Time        : 3 seconds
@@ -3614,6 +3760,7 @@ Description      : Conjures mana food for you and your allies. Conjured items di
 Name             : Blizzard (id=190356) [Spell Family (3)] 
 Class            : Frost Mage
 School           : Frost
+Spell Type       : Magic
 Resource         : 2.5% Base Mana (0) (id=10321)
 Spell Level      : 18
 Range            : 35 yards
@@ -3645,6 +3792,7 @@ Name             : Blizzard (id=190357) [Spell Family (3)]
 Hotfixed         : Attributes
 Class            : Mage
 School           : Frost
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Affecting spells : Arcane Power (12042 effect#1), Icy Veins (12472 effect#2), Shatter (12982 effect#1), Rune of Power (116014 effect#1), Incanter's Flow (116267 effect#1), Fire Mage (137019 effect#1), Frost Mage (137020 effect#1), Arcane Mage (137021 effect#1), Combustion (190319 effect#1), Bone Chilling (205766 effect#1), Norgannon's Foresight (236380 effect#1), Crackling Energy (246224 effect#1), Freezing Rain (270232 effect#2)
@@ -3674,6 +3822,7 @@ $mult=${$<arctic5>*$<piercing3>}
 Name             : Arcane Charge (id=190427) [Spell Family (3), Passive] 
 Class            : Arcane Mage
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3697,6 +3846,7 @@ Effects          :
 Name             : Brain Freeze (id=190446) [Spell Family (3)] 
 Class            : Mage
 School           : Frost
+Spell Type       : Magic
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 15 seconds
@@ -3728,6 +3878,7 @@ Tooltip          : Your next Flurry is instant cast$?a231584[,][ and] deals $s2%
 Name             : Brain Freeze (id=190447) [Spell Family (3), Passive] 
 Class            : Frost Mage
 School           : Frost
+Spell Type       : None
 Spell Level      : 28
 Affecting spells : Frozen Touch (205030 effect#1), Item - Mage T19 Frost 2P Bonus (211411 effect#1), Norgannon's Foresight (236380 effect#1)
 Family Flags     : 79
@@ -3749,6 +3900,7 @@ Winter's Chill causes the target to take damage from your spells as if it were f
 Name             : Mastery: Savant (id=190740) [Spell Family (3), Passive] 
 Class            : Arcane Mage
 School           : Physical
+Spell Type       : None
 Spell Level      : 78
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3778,6 +3930,7 @@ Arcane Charges increase the damage of Arcane Blast by an additional ${$m2}.1% an
 Name             : Frostbolt (id=191764) 
 Class            : Mage
 School           : Frost
+Spell Type       : Magic
 Resource         : 90% Base Mana (0) (id=10372)
 Spell Level      : 20
 Range            : 40 yards
@@ -3802,6 +3955,7 @@ Tooltip          : Reduced movement speed.
 Name             : Shoot (id=191799) 
 Class            : Mage
 School           : Physical
+Spell Type       : Ranged
 Spell Level      : 20
 Range            : 60 yards
 Velocity         : 40 yards/sec
@@ -3821,6 +3975,7 @@ Description      : Shoots at an enemy, inflicting Physical damage.
 Name             : Molten Skin (id=194315) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3839,6 +3994,7 @@ Description      : Blazing Barrier reduces all Physical damage you take by $s1%.
 Name             : Aftershocks (id=194431) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ........ ....x... x.x..... ........ 
                  : AOE Hostile Spell, Hostile Spell, Periodic
@@ -3858,6 +4014,7 @@ Description      : Flamestrike calls down $m1 additional pillar of fire each tim
 Name             : Aftershocks (id=194432) [Scaling Spell (5), Spell Family (3)] 
 Class            : Mage
 School           : Fire
+Spell Type       : Magic
 Spell Level      : 44
 Range            : 40 yards
 Cast Time        : 2 seconds
@@ -3878,6 +4035,7 @@ Tooltip          : Movement speed slowed by $s2%.
 Name             : Phoenix's Flames (rank=Artifact) (id=194466) [Spell Family (3)] 
 Class            : Mage
 School           : Fire
+Spell Type       : Magic
 Spell Level      : 12
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -3902,6 +4060,7 @@ Description      : Hurls a Phoenix that causes $s1 Fire damage to the target and
 Name             : Hot Streak (id=195283) [Spell Family (3), Passive] 
 Class            : Fire Mage
 School           : Physical
+Spell Type       : Magic
 Spell Level      : 14
 Stacks           : 1 maximum
 Proc Chance      : 101%
@@ -3922,6 +4081,7 @@ Tooltip          : Your next Pyroblast or Flamestrike spell is instant cast, and
 Name             : Arcane Charge (id=195302) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : None
 Spell Level      : 10
 Stacks           : 4 maximum
 Proc Chance      : 101%
@@ -3944,6 +4104,7 @@ Increases the number of targets hit by Arcane Barrage for 50% damage by $36032w3
 Name             : Displacement (id=195676) [Spell Family (3)] 
 Class            : Arcane Mage
 School           : Arcane
+Spell Type       : Magic
 Spell Level      : 48
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -3965,6 +4126,7 @@ Description      : Teleports you back to where you last Blinked from and resets 
 Name             : Cinderstorm (id=198928) [Spell Family (3)] 
 Class            : Mage
 School           : Fire
+Spell Type       : Magic
 Range            : 100 yards
 Affecting spells : Arcane Power (12042 effect#1), Ice Floes (108839 effect#1), Rune of Power (116014 effect#1), Incanter's Flow (116267 effect#1), Mage (137018 effect#1), Fire Mage (137019 effect#1), Frost Mage (137020 effect#1), Arcane Mage (137021 effect#1), Combustion (190319 effect#1), Bone Chilling (205766 effect#1), Norgannon's Foresight (236380 effect#1), Crackling Energy (246224 effect#1), 
 Family Flags     : 3, 127
@@ -3984,6 +4146,7 @@ Description      : $@spelldesc198929
 Name             : Cinderstorm (id=198929) [Spell Family (3)] 
 Class            : Mage
 School           : Fire
+Spell Type       : Magic
 Resource         : 1% Base Mana (0) (id=10753)
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -4017,6 +4180,7 @@ Description      : Throws a spread of 6 cinders that travel in an arc, each deal
 Name             : Glacial Spike (id=199786) [Spell Family (3)] 
 Class            : Mage
 School           : Frost
+Spell Type       : Magic
 Resource         : 1% Base Mana (0) (id=191639)
 Range            : 40 yards
 Cast Time        : 3 seconds
@@ -4045,6 +4209,7 @@ Name             : Activating Specialization (id=200749) [Hidden]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
+Spell Type       : None
 Range            : 50000 yards
 Cast Time        : 5 seconds
 Attributes       : .......x ........ ........ ....x...   ..xxx..x ........ .x...... ........ 
@@ -4064,6 +4229,7 @@ Tooltip          : Switch to your Primary Talent Specialization.
 Name             : Pyromaniac (id=205020) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Fire
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4081,6 +4247,7 @@ Description      : Casting Pyroblast or Flamestrike while Hot Streak is active h
 Name             : Ray of Frost (id=205021) [Spell Family (3)] 
 Class            : Mage
 School           : Frost
+Spell Type       : Magic
 Resource         : 2% Base Mana (0) (id=191644)
 Spell Level      : 1
 Range            : 40 yards
@@ -4115,6 +4282,7 @@ Taking $w2 Frost damage every $t2 sec.
 Name             : Arcane Familiar (id=205022) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : None
 Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 3600 seconds
@@ -4136,6 +4304,7 @@ Description      : Summon a Familiar that attacks your enemies and increases you
 Name             : Conflagration (id=205023) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Fire
+Spell Type       : None
 Spell Level      : 1
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
@@ -4158,6 +4327,7 @@ Enemies affected by either Conflagration or Ignite have a $s1% chance to flare u
 Name             : Lonely Winter (id=205024) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Frost
+Spell Type       : None
 Spell Level      : 1
 Affecting spells : Norgannon's Foresight (236380 effect#1)
 Family Flags     : 106
@@ -4179,6 +4349,7 @@ Description      : You can no longer summon your Water Elemental, but Frostbolt,
 Name             : Presence of Mind (id=205025) [Spell Family (3)] 
 Class            : Arcane Mage
 School           : Arcane
+Spell Type       : None
 Spell Level      : 54
 Duration         : Aura (infinite)
 Cooldown         : 60 seconds
@@ -4206,6 +4377,7 @@ Tooltip          : Arcane Blast is instant cast.
 Name             : Firestarter (id=205026) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Fire
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4223,6 +4395,7 @@ Description      : Your Fireball and Pyroblast spells always deal a critical str
 Name             : Bone Chilling (id=205027) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Frost
+Spell Type       : None
 Spell Level      : 1
 Proc Chance      : 100%
 Proc Flags       : ........ ........ ........ .....x.. 
@@ -4243,6 +4416,7 @@ Description      : Whenever you attempt to chill a target, you gain Bone Chillin
 Name             : Resonance (id=205028) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Arcane
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4260,6 +4434,7 @@ Description      : Arcane Barrage deals $s1% increased damage per target it hits
 Name             : Flame On (id=205029) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Fire
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4281,6 +4456,7 @@ Description      : Reduces the cooldown of Fire Blast by $s3 seconds and increas
 Name             : Frozen Touch (id=205030) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Frost
+Spell Type       : None
 Spell Level      : 1
 Cooldown         : 30 seconds
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -4301,6 +4477,7 @@ Description      : Frostbolt grants you Fingers of Frost and Brain Freeze $s1% m
 Name             : Charged Up (id=205032) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : None
 Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 10 seconds
@@ -4322,6 +4499,7 @@ Description      : Immediately grants $s1 Arcane Charges.
 Name             : Ice Ward (id=205036) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Frost
+Spell Type       : None
 Spell Level      : 1
 Affecting spells : Norgannon's Foresight (236380 effect#1)
 Family Flags     : 81
@@ -4341,6 +4519,7 @@ Description      : Frost Nova now has ${1+$m1} charges.
 Name             : Flame Patch (id=205037) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Fire
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4358,6 +4537,7 @@ Description      : Flamestrike leaves behind a patch of flames which burns enemi
 Name             : Conflagration Flare Up (id=205345) [Spell Family (3)] 
 Class            : Mage
 School           : Fire
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Affecting spells : Arcane Power (12042 effect#1), Rune of Power (116014 effect#1), Incanter's Flow (116267 effect#1), Fire Mage (137019 effect#1), Frost Mage (137020 effect#1), Arcane Mage (137021 effect#1), Combustion (190319 effect#1), Bone Chilling (205766 effect#1), Norgannon's Foresight (236380 effect#1), Crackling Energy (246224 effect#1), 
@@ -4377,6 +4557,7 @@ Description      : $@spelldesc205023
 Name             : Flame Patch (id=205470) [Spell Family (3)] 
 Class            : Mage
 School           : Fire
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 8 seconds
@@ -4397,6 +4578,7 @@ Tooltip          : Burning
 Name             : Flame Patch (id=205472) [Spell Family (3)] 
 Class            : Mage
 School           : Fire
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Affecting spells : Arcane Power (12042 effect#1), Rune of Power (116014 effect#1), Incanter's Flow (116267 effect#1), Fire Mage (137019 effect#1), Frost Mage (137020 effect#1), Arcane Mage (137021 effect#1), Combustion (190319 effect#1), Bone Chilling (205766 effect#1), Norgannon's Foresight (236380 effect#1), Crackling Energy (246224 effect#1), 
@@ -4417,6 +4599,7 @@ Description      : Burning enemies for $s1 Fire damage.
 Name             : Icicles (id=205473) [Spell Family (3)] 
 Class            : Mage
 School           : Frost
+Spell Type       : None
 Spell Level      : 78
 Duration         : 60 seconds
 Stacks           : 5 maximum
@@ -4438,6 +4621,7 @@ Tooltip          : $w1 Icicles stored.
 Name             : Chilled (id=205708) [Spell Family (3)] 
 Class            : Mage
 School           : Frost
+Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 15 seconds
@@ -4459,6 +4643,7 @@ Tooltip          : Movement speed reduced by $s1%.
 Name             : Bone Chilling (id=205766) [Spell Family (3)] 
 Class            : Mage
 School           : Frost
+Spell Type       : None
 Spell Level      : 1
 Duration         : 8 seconds
 Stacks           : 10 maximum
@@ -4488,6 +4673,7 @@ Tooltip          : Spell damage done increased by ${$W1}.1%.
 Name             : Ray of Frost (id=208141) [Spell Family (3), Hidden] 
 Class            : Mage
 School           : Frost
+Spell Type       : None
 Spell Level      : 1
 Range            : 40 yards
 Duration         : 10 seconds
@@ -4517,6 +4703,7 @@ Ray of Frost's snare increased by $s2%.
 Name             : Arcane Linguist (id=210086) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Arcane
+Spell Type       : None
 Spell Level      : 58
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4535,6 +4722,7 @@ Tooltip          : You are able to comprehend your allies' racial languages.
 Name             : Arcane Familiar (id=210126) 
 Class            : Mage
 School           : Arcane
+Spell Type       : None
 Range            : 100 yards
 Duration         : 3600 seconds
 Proc Chance      : 100%
@@ -4557,6 +4745,7 @@ Tooltip          : Maximum mana increased by $s1%.
 Name             : Touch of the Magi (id=210725) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 8.5 seconds
 Proc Chance      : 10%
 Proc Flags       : ........ ........ x....... ........ 
@@ -4577,6 +4766,7 @@ Description      : Arcane Blast has a $h% chance to apply Touch of the Magi, acc
 Name             : Mark of Aluneth (rank=Artifact) (id=210726) 
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
@@ -4600,6 +4790,7 @@ Description      : Creates a runic prison at the target's location, slowing enem
 Name             : Time Anomaly (rank=PvP Talent) (id=210805) [Spell Family (3), Passive, Hidden] 
 Class            : Mage
 School           : Arcane
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4620,6 +4811,7 @@ Description      : At any moment, you have a chance to gain Arcane Power for $s1
 Name             : Touch of the Magi (id=210824) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : None
 Range            : 100 yards
 Duration         : 8 seconds
 Proc Chance      : 100%
@@ -4642,6 +4834,7 @@ Tooltip          : Will explode for $w1 Arcane damage upon expiration.
 Name             : Touch of the Magi (id=210833) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : Magic
 Range            : 100 yards
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
@@ -4659,6 +4852,7 @@ Description      : $@spelldesc210725
 Name             : Mark of Aluneth (id=211056) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : Magic
 Range            : 100 yards
 Duration         : 6 seconds
 Mechanic         : Snare
@@ -4678,6 +4872,7 @@ Tooltip          : Reduces movement speed by $s1%.
 Name             : Mark of Aluneth (id=211076) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : Magic
 Range            : 100 yards
 Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -4697,6 +4892,7 @@ Tooltip          : Deals $s1 Arcane damage to all targets within $A1 yds.
 Name             : Mark of Aluneth (id=211088) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : Magic
 Range            : 100 yards
 Stacks           : 10 maximum
 Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -4714,6 +4910,7 @@ Description      : Deals $s1 Arcane damage to enemies within $A1 yds.
 Name             : Shimmer (id=212653) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : Magic
 Resource         : 2% Base Mana (0) (id=11162)
 Spell Level      : 1
 Duration         : 0.65 seconds
@@ -4740,6 +4937,7 @@ Tooltip          : Shimmering.
 Name             : Cone of Cold (id=212792) [Spell Family (3)] 
 Class            : Mage
 School           : Frost
+Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 5 seconds
@@ -4761,6 +4959,7 @@ Tooltip          : Slowed by $s1% for $d.
 Name             : Displacement Beacon (id=212799) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : Magic
 Spell Level      : 1
 Duration         : 10 seconds
 Affecting spells : Norgannon's Foresight (236380 effect#1)
@@ -4783,6 +4982,7 @@ Tooltip          : Able to Displace back to where last Blinked from.
 Name             : Ebonbolt (rank=Artifact) (id=214634) [Spell Family (3)] 
 Class            : Mage
 School           : Shadowfrost
+Spell Type       : Magic
 Range            : 40 yards
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
@@ -4803,6 +5003,7 @@ Description      : Deals $228599s1 Shadowfrost damage and causes Brain Freeze.
 Name             : Living Bomb (id=217694) [Spell Family (3)] 
 Class            : Mage
 School           : Fire
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 Duration         : 4 seconds
@@ -4827,6 +5028,7 @@ Tooltip          : Causes $w1 Fire damage every $t1 sec. After $d, the target ex
 Name             : Fireball (id=222305) [Scaling Spell (-8)] 
 Class            : Mage
 School           : Fire
+Spell Type       : None
 Spell Level      : 1
 Range            : 30 yards
 Velocity         : 25 yards/sec
@@ -4850,6 +5052,7 @@ Tooltip          : Taking $sw2 Fire damage every $t2 sec.
 Name             : Frostbolt (id=222320) [Scaling Spell (-8)] 
 Class            : Mage
 School           : Frost
+Spell Type       : None
 Spell Level      : 1
 Range            : 30 yards
 Velocity         : 25 yards/sec
@@ -4873,6 +5076,7 @@ Tooltip          : Movement speed reduced by $s2% for $d.
 Name             : Arcane Blast (id=222321) [Scaling Spell (-8)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : None
 Spell Level      : 1
 Range            : 30 yards
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -4891,6 +5095,7 @@ Description      : Deal $s1 Arcane damage.
 Name             : Phoenix's Flames (rank=Artifact) (id=224637) [Spell Family (3)] 
 Class            : Mage
 School           : Fire
+Spell Type       : Magic
 Spell Level      : 12
 Range            : 40 yards
 Proc Chance      : 101%
@@ -4911,6 +5116,7 @@ Description      : $@spelldesc194466
 Name             : Mark of Aluneth (rank=Artifact) (id=224968) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : Magic
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
@@ -4934,6 +5140,7 @@ Tooltip          : Deals continuous Arcane damage, and then detonates for massiv
 Name             : Arcane Assault (id=225119) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : Magic
 Range            : 100 yards
 Velocity         : 24 yards/sec
 Affecting spells : Arcane Power (12042 effect#1), Rune of Power (116014 effect#1), Incanter's Flow (116267 effect#1), Fire Mage (137019 effect#1), Frost Mage (137020 effect#1), Arcane Mage (137021 effect#1), Combustion (190319 effect#1), Bone Chilling (205766 effect#1), Norgannon's Foresight (236380 effect#1), Crackling Energy (246224 effect#1), 
@@ -4953,6 +5160,7 @@ Description      : Launches bolts of arcane energy at the enemy target, causing 
 Name             : Conflagration (id=226757) [Spell Family (3)] 
 Class            : Mage
 School           : Fire
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 8 seconds
@@ -4976,6 +5184,7 @@ Tooltip          : Deals $w1 Fire damage every $t1 sec.
 Name             : Flurry (id=228354) [Spell Family (3)] 
 Class            : Mage
 School           : Frost
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 1 seconds
@@ -5001,6 +5210,7 @@ Tooltip          : Movement slowed by $s1%.
 Name             : Winter's Chill (id=228358) [Scaling Spell (5)] 
 Class            : Mage
 School           : Frost
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 1 seconds
@@ -5020,6 +5230,7 @@ Tooltip          : Taking damage from the Mage's spells as if frozen.
 Name             : Frostbolt (id=228597) [Spell Family (3)] 
 Class            : Mage
 School           : Frost
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Affecting spells : Arcane Power (12042 effect#1), Icy Veins (12472 effect#2), Shatter (12982 effect#1), Frosty Zap (24392 effect#1), Improved Counterspell (24429 effect#1), Ice Floes (108839 effect#1), Rune of Power (116014 effect#1), Incanter's Flow (116267 effect#1), Fire Mage (137019 effect#1), Frost Mage (137020 effect#1), Arcane Mage (137021 effect#1), Ice Shard (166869 effect#1), Combustion (190319 effect#1), Lonely Winter (205024 effect#1), Bone Chilling (205766 effect#1), Norgannon's Foresight (236380 effect#1), Crackling Energy (246224 effect#1), Tunnel of Ice (277904 effect#1)
@@ -5041,6 +5252,7 @@ Description      : $@spelldesc116
 Name             : Ice Lance (id=228598) [Scaling Spell (5), Spell Family (3)] 
 Class            : Mage
 School           : Frost
+Spell Type       : Magic
 Spell Level      : 5
 Range            : 100 yards
 GCD              : 1.5 seconds
@@ -5064,6 +5276,7 @@ Description      : $@spelldesc30455
 Name             : Ebonbolt (rank=Artifact) (id=228599) [Spell Family (3)] 
 Class            : Mage
 School           : Shadowfrost
+Spell Type       : Magic
 Range            : 100 yards
 Triggered by     : Ebonbolt (214634)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5082,6 +5295,7 @@ Description      : $@spelldesc214634
 Name             : Glacial Spike (id=228600) [Spell Family (3)] 
 Class            : Mage
 School           : Frost
+Spell Type       : Magic
 Range            : 100 yards
 Duration         : 4 seconds
 Proc Chance      : 100%
@@ -5108,6 +5322,7 @@ Tooltip          : Frozen in place.
 Name             : Comet Storm (id=228601) [Spell Family (3)] 
 Class            : Mage
 School           : Frost
+Spell Type       : Magic
 Range            : 100 yards
 Velocity         : 1 yards/sec
 Affecting spells : Shatter (12982 effect#1), Norgannon's Foresight (236380 effect#1)
@@ -5128,6 +5343,7 @@ Description      : $@spelldesc153595
 Name             : Arcane Barrage (rank=Rank 2) (id=231564) [Spell Family (3), Passive] 
 Class            : Arcane Mage
 School           : Nature
+Spell Type       : None
 Spell Level      : 34
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5147,6 +5363,7 @@ Description      : Arcane Barrage hits $s1 additional $Ltarget:targets; within $
 Name             : Evocation (rank=Rank 2) (id=231565) [Spell Family (3), Passive] 
 Class            : Arcane Mage
 School           : Arcane
+Spell Type       : None
 Spell Level      : 56
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5164,6 +5381,7 @@ Description      : Evocation's cooldown is reduced by $s1%.
 Name             : Fire Blast (rank=Rank 3) (id=231567) [Spell Family (3), Passive] 
 Class            : Fire Mage
 School           : Nature
+Spell Type       : None
 Spell Level      : 48
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5185,6 +5403,7 @@ Description      : Fire Blast now has ${$s1+1} charges.
 Name             : Fire Blast (rank=Rank 2) (id=231568) [Spell Family (3), Passive] 
 Class            : Fire Mage
 School           : Nature
+Spell Type       : None
 Spell Level      : 18
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5204,6 +5423,7 @@ Description      : Fire Blast always deals a critical strike.
 Name             : Shatter (rank=Rank 2) (id=231582) [Spell Family (3), Passive] 
 Class            : Frost Mage
 School           : Frost
+Spell Type       : None
 Spell Level      : 36
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5221,6 +5441,7 @@ Description      : Shatter increases your chance to deal a ritical strike by an 
 Name             : Brain Freeze (rank=Rank 2) (id=231584) [Spell Family (3), Passive] 
 Class            : Frost Mage
 School           : Frost
+Spell Type       : None
 Spell Level      : 48
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5240,6 +5461,7 @@ Winter's Chill causes the target to take damage from your spells as if it were f
 Name             : Freeze (rank=Pet) (id=231596) [Spell Family (3), Passive] 
 Class            : Frost Mage
 School           : Frost
+Spell Type       : None
 Spell Level      : 32
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5260,6 +5482,7 @@ $@spelldesc33395
 Name             : Critical Mass (rank=Rank 2) (id=231630) [Spell Family (3), Passive] 
 Class            : Fire Mage
 School           : Fire
+Spell Type       : None
 Spell Level      : 65
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5279,6 +5502,7 @@ Description      : Critical Mass increases your Critical Strike stat from all so
 Name             : Cold Snap (id=235219) [Spell Family (3)] 
 Class            : Frost Mage
 School           : Physical
+Spell Type       : Magic
 Spell Level      : 52
 Cooldown         : 300 seconds
 Affecting spells : Norgannon's Foresight (236380 effect#1)
@@ -5298,6 +5522,7 @@ Description      : Resets the cooldown of your Ice Barrier, Frost Nova, Cone of 
 Name             : Frigid Winds (id=235224) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Frost
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5321,6 +5546,7 @@ Description      : All of your chilling effects reduce the target's movement spe
 Name             : Glacial Insulation (id=235297) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Frost
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5340,6 +5566,7 @@ Description      : Ice Barrier increases your armor by $s1% while active, and Ic
 Name             : Blazing Barrier (id=235313) [Spell Family (3)] 
 Class            : Fire Mage
 School           : Fire
+Spell Type       : Magic
 Resource         : 3% Base Mana (0) (id=11752)
 Spell Level      : 26
 GCD              : 1.5 seconds
@@ -5374,6 +5601,7 @@ Variables        : $shield=${$s2/100*$MHP}
 Name             : Blazing Barrier (id=235314) [Spell Family (3)] 
 Class            : Mage
 School           : Fire
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Affecting spells : Arcane Power (12042 effect#1), Rune of Power (116014 effect#1), Incanter's Flow (116267 effect#1), Fire Mage (137019 effect#1), Frost Mage (137020 effect#1), Arcane Mage (137021 effect#1), Combustion (190319 effect#1), Bone Chilling (205766 effect#1), Norgannon's Foresight (236380 effect#1), Crackling Energy (246224 effect#1), 
@@ -5394,6 +5622,7 @@ Description      : $@spelldesc235313
 Name             : Blazing Soul (id=235365) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Fire
+Spell Type       : None
 Spell Level      : 1
 Proc Chance      : 100%
 Proc Flags       : ....x... x...x... x.x..... ........ 
@@ -5414,6 +5643,7 @@ Description      : Casting Blink ignites a Blazing Barrier around you.
 Name             : Prismatic Barrier (id=235450) [Spell Family (3)] 
 Class            : Arcane Mage
 School           : Arcane
+Spell Type       : Magic
 Resource         : 3% Base Mana (0) (id=11754)
 Spell Level      : 26
 GCD              : 1.5 seconds
@@ -5450,6 +5680,7 @@ Variables        : $shield=${$s5/100*$MHP}
 Name             : Mana Shield (id=235463) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Arcane
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5472,6 +5703,7 @@ Description      : Prismatic Barrier has no cooldown, but your mana is drained b
 Name             : Chrono Shift (id=235711) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Arcane
+Spell Type       : None
 Spell Level      : 1
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
@@ -5494,6 +5726,7 @@ Description      : Arcane Barrage slows enemies by $236298s% and increases your 
 Name             : Alexstrasza's Fury (id=235870) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Fire
+Spell Type       : None
 Spell Level      : 1
 Cooldown         : 45 seconds
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5514,6 +5747,7 @@ Description      : Dragon's Breath always critically strikes and contributes to 
 Name             : Frenetic Speed (id=236058) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Fire
+Spell Type       : None
 Spell Level      : 1
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
@@ -5534,6 +5768,7 @@ Description      : Casting Scorch increases your movement speed by $236060s1% fo
 Name             : Frenetic Speed (id=236060) [Spell Family (3)] 
 Class            : Mage
 School           : Fire
+Spell Type       : None
 Spell Level      : 1
 Duration         : 3 seconds
 Triggered by     : Frenetic Speed (236058)
@@ -5553,6 +5788,7 @@ Tooltip          : Movement speed increased by $s1%.
 Name             : Chrono Shift (id=236298) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : None
 Spell Level      : 1
 Duration         : 5 seconds
 Triggered by     : Chrono Shift (235711)
@@ -5572,6 +5808,7 @@ Tooltip          : Movement speed increased by $s1%.
 Name             : Chrono Shift (id=236299) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : None
 Spell Level      : 1
 Duration         : 5 seconds
 Triggered by     : Chrono Shift (235711)
@@ -5591,6 +5828,7 @@ Tooltip          : Movement speed slowed by $s1%.
 Name             : Slipstream (id=236457) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Arcane
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5612,6 +5850,7 @@ Evocation can be channeled while moving.
 Name             : Amplification (id=236628) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Arcane
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. x....... ........ 
                  : Heal, Hostile Spell
@@ -5637,6 +5876,7 @@ Name             : Blizzard (rank=Rank 2) (id=236662) [Spell Family (3), Passive
 Hotfixed         : Proc Flags (65536 -> 327680)
 Class            : Frost Mage
 School           : Frost
+Spell Type       : None
 Spell Level      : 63
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x.x..... ........ 
@@ -5657,6 +5897,7 @@ Description      : Each time Blizzard deals damage, the cooldown of Frozen Orb i
 Name             : Time and Space (id=238126) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
@@ -5676,6 +5917,7 @@ Description      : When you cast Arcane Explosion, Aluneth will echo the Arcane 
 Name             : Time and Space (id=240689) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Affecting spells : Arcane Power (12042 effect#1), Rune of Power (116014 effect#1), Incanter's Flow (116267 effect#1), Fire Mage (137019 effect#1), Frost Mage (137020 effect#1), Arcane Mage (137021 effect#1), Combustion (190319 effect#1), Bone Chilling (205766 effect#1), Norgannon's Foresight (236380 effect#1), Crackling Energy (246224 effect#1), Explosive Echo (278537 effect#2)
@@ -5695,6 +5937,7 @@ Description      : $@spelldesc238126
 Name             : Time and Space (id=240692) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
+Spell Type       : None
 Duration         : 6 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
@@ -5718,6 +5961,7 @@ Tooltip          : Aluneth will echo your next Arcane Explosion.
 Name             : Item - Mage T20 Frost 2P Bonus (id=242252) [Spell Family (3), Passive, Hidden] 
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Heal
@@ -5737,6 +5981,7 @@ Description      : Frozen Orb increases your critical strike damage by $242253s1
 Name             : Frozen Mass (id=242253) [Spell Family (3)] 
 Class            : Mage
 School           : Frost
+Spell Type       : None
 Duration         : 10 seconds
 Triggered by     : Item - Mage T20 Frost 2P Bonus (242252)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -5755,6 +6000,7 @@ Tooltip          : Critical strike damage increased by $s1%.
 Name             : Contained Infernal Core (id=248099) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Fire
+Spell Type       : None
 Req. Max Level   : 115
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x....... ........ 
@@ -5775,6 +6021,7 @@ Description      : Casting $248146u Fireballs or Pyroblasts calls down a Meteor 
 Name             : Shattered Fragments of Sindragosa (id=248100) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Req. Max Level   : 115
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x....... ........ 
@@ -5795,6 +6042,7 @@ Description      : Casting $248176u Frostbolts or Flurries calls down a Comet St
 Name             : Contained Infernal Core (id=248146) [Spell Family (3)] 
 Class            : Mage
 School           : Fire
+Spell Type       : None
 Duration         : 30 seconds
 Stacks           : 30 maximum
 Proc Chance      : 101%
@@ -5814,6 +6062,7 @@ Tooltip          : You have cast $s1 Fireballs or Pyroblasts.
 Name             : Erupting Infernal Core (id=248147) [Spell Family (3)] 
 Class            : Mage
 School           : Fire
+Spell Type       : None
 Duration         : 30 seconds
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x....... ........ 
@@ -5834,6 +6083,7 @@ Tooltip          : Your next Fireball or Pyroblast will also cast a Meteor on th
 Name             : Shattered Fragments of Sindragosa (id=248176) [Spell Family (3)] 
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Duration         : 30 seconds
 Stacks           : 15 maximum
 Proc Chance      : 101%
@@ -5853,6 +6103,7 @@ Tooltip          : You have cast $s1 Frostbolts or Flurries.
 Name             : Rage of the Frost Wyrm (id=248177) [Spell Family (3)] 
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Duration         : 30 seconds
 Proc Chance      : 101%
 Proc Flags       : ........ ....x... x....... ........ 
@@ -5874,6 +6125,7 @@ Name             : Vindicaar Matrix Crystal (id=251463)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
+Spell Type       : None
 GCD              : 1.5 seconds
 Triggered by     : Vindicaar Matrix Crystal (255529)
 Attributes       : ........ ........ ........ ........   ...x...x ..x..... ........ ........ 
@@ -5891,6 +6143,7 @@ Description      : Unlock powers at the Vindicaar's Matrix Core to use while on 
 Name             : Item - Mage T21 Frost 4P Bonus (id=251860) [Spell Family (3), Passive, Hidden] 
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -5907,6 +6160,7 @@ Description      : When you consume Brain Freeze, the damage of your next Ice La
 Name             : Arctic Blast (id=253257) [Spell Family (3)] 
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Duration         : 15 seconds
 Proc Chance      : 101%
 Proc Flags       : ........ ....x... x....... ........ 
@@ -5930,6 +6184,7 @@ Name             : Vindicaar Matrix Crystal (id=255529) [Hidden]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
+Spell Type       : None
 Triggered by     : Activating Specialization (200749)
 Attributes       : .......x x....... .......x x..x.x..   ...x.x.x ..x..... ........ ........ 
                  : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ....x... 
@@ -5950,6 +6205,7 @@ Name             : Light's Judgment (rank=Racial) (id=255647) [Scaling Spell (-6
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
+Spell Type       : Magic
 Max Scaling Level: 120
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -5972,6 +6228,7 @@ Name             : Holy Resistance (rank=Racial Passive) (id=255651) [Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5989,6 +6246,7 @@ Name             : Light's Reckoning (rank=Racial Passive) (id=255652) [Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ .......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -6006,6 +6264,7 @@ Name             : Demonbane (rank=Racial Passive) (id=255653) [Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6023,6 +6282,7 @@ Name             : Light's Judgment (rank=Racial) (id=256893) [Scaling Spell (-6
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
+Spell Type       : Magic
 Max Scaling Level: 120
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -6045,6 +6305,7 @@ Name             : Light's Reckoning (rank=Racial Passive) (id=256896) [Scaling 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
+Spell Type       : Magic
 Max Scaling Level: 120
 Range            : 40 yards
 Triggered by     : Light's Reckoning (255652)
@@ -6068,6 +6329,7 @@ Heals $s2 to allies within $A1.
 Name             : Ebonbolt (id=257537) [Spell Family (3)] 
 Class            : Mage
 School           : Frost
+Spell Type       : Magic
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
@@ -6090,6 +6352,7 @@ Description      : Launch a bolt of ice at the enemy, dealing $257538s1 Frost da
 Name             : Ebonbolt (id=257538) [Spell Family (3)] 
 Class            : Mage
 School           : Frost
+Spell Type       : Magic
 Range            : 100 yards
 Affecting spells : Arcane Power (12042 effect#1), Shatter (12982 effect#1), Rune of Power (116014 effect#1), Incanter's Flow (116267 effect#1), Fire Mage (137019 effect#1), Frost Mage (137020 effect#1), Arcane Mage (137021 effect#1), Combustion (190319 effect#1), Bone Chilling (205766 effect#1), Norgannon's Foresight (236380 effect#1), Crackling Energy (246224 effect#1), 
 Family Flags     : 3, 117
@@ -6110,6 +6373,7 @@ Name             : Phoenix Flames (id=257541) [Spell Family (3)]
 Hotfixed         : Attributes
 Class            : Mage
 School           : Fire
+Spell Type       : Magic
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
@@ -6135,6 +6399,7 @@ Description      : Hurls a Phoenix that deals $s1 Fire damage to the target and 
 Name             : Phoenix Flames (rank=Artifact) (id=257542) [Spell Family (3)] 
 Class            : Mage
 School           : Fire
+Spell Type       : Magic
 Range            : 100 yards
 Proc Chance      : 101%
 Affecting spells : Arcane Power (12042 effect#1), Rune of Power (116014 effect#1), Incanter's Flow (116267 effect#1), Fire Mage (137019 effect#1), Frost Mage (137020 effect#1), Arcane Mage (137021 effect#1), Combustion (190319 effect#1), Bone Chilling (205766 effect#1), Norgannon's Foresight (236380 effect#1), Crackling Energy (246224 effect#1), 
@@ -6156,6 +6421,7 @@ Description      : $@spelldesc257541
 Name             : Haste (id=261582) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 2
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6173,6 +6439,7 @@ Tooltip          : Increases haste by $s1.
 Name             : Clearcasting (id=263725) [Spell Family (3)] 
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Spell Level      : 12
 Duration         : 15 seconds
 Stacks           : 1 initial, 1 maximum
@@ -6197,6 +6464,7 @@ Tooltip          : Your next Arcane Missiles or Arcane Explosion costs no mana.
 Name             : Resounding Protection (id=263962) [Scaling Spell (-8), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 15
 Triggered by     : Resounding Protection (269279)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6216,6 +6484,7 @@ Description      : Every $270568t1 sec, gain an absorb shield for $s1 for $26927
 Name             : Azerite Empowered (id=263978) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 13
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6233,6 +6502,7 @@ Description      : Increases the item level of this item by 5.
 Name             : Elemental Whirl (id=263984) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 21
 Triggered by     : Elemental Whirl (268953), Elemental Whirl (268956), Elemental Whirl (268955), Elemental Whirl (268954)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6253,6 +6523,7 @@ Name             : Heed My Call (id=263987) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 22
 Triggered by     : Heed My Call (271685), Heed My Call (271686)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6276,6 +6547,7 @@ Tooltip          : Your damaging abilities have a chance to deal $s1 Nature dama
 Name             : Blood Siphon (id=264108) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 18
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6298,6 +6570,7 @@ Tooltip          : Increases Mastery by $s1 and Leech by $s2.
 Name             : Rule of Threes (id=264354) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6314,6 +6587,7 @@ Description      : When you gain your third Arcane Charge, the cost of your next
 Name             : Rule of Threes (id=264774) [Spell Family (3)] 
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Duration         : 15 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
@@ -6337,6 +6611,7 @@ Tooltip          : The cost of your next Arcane Blast or Arcane Missiles is redu
 Name             : Overwhelming Power (id=266180) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 30
 Triggered by     : Overwhelming Power (271711)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6358,6 +6633,7 @@ Name             : Azerite Globules (id=266936) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 462
 Triggered by     : Azerite Globules (279958)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6381,6 +6657,7 @@ Name             : Gutripper (id=266937) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 31
 Triggered by     : Gutripper (270668), Gutripper (269031)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6403,6 +6680,7 @@ Name             : Azerite Fortification (id=268435) [Scaling Spell (-8), Passiv
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 86
 Triggered by     : Azerite Fortification (270659)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6424,6 +6702,7 @@ Name             : Impassive Visage (id=268437) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 6 seconds
 Proc Chance      : 100%
 Azerite Power Id : 83
@@ -6449,6 +6728,7 @@ Name             : Longstrider (id=268594) [Scaling Spell (-7), Passive]
 Hotfixed         : Scaling Spell (-1 -> -7)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 14
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6472,6 +6752,7 @@ Name             : Bulwark of the Masses (id=268595) [Scaling Spell (-8), Passiv
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 84
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6493,6 +6774,7 @@ Name             : Gemhide (id=268596) [Scaling Spell (-1), Passive]
 Hotfixed         : Scaling Spell (-7 -> -1)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 85
 Triggered by     : Gemhide (270576)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6518,6 +6800,7 @@ Tooltip          : When dealt damage greater than $s3% of your maximum health, g
 Name             : Vampiric Speed (id=268599) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 44
 Triggered by     : Vampiric Speed (269238), Vampiric Speed (269239)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6542,6 +6825,7 @@ Name             : Self Reliance (id=268600) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 87
 Triggered by     : Self Reliance (270661)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6564,6 +6848,7 @@ Tooltip          : While no enemies are within $s2 yds, you heal for $w1 every $
 Name             : Searing Touch (id=269644) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Fire
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6583,6 +6868,7 @@ Description      : Scorch deals $s2% increased damage and is a guaranteed Critic
 Name             : Pyroclasm (id=269650) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Fire
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6602,6 +6888,7 @@ Maximum 2 charges.
 Name             : Pyroclasm (id=269651) [Spell Family (3)] 
 Class            : Mage
 School           : Fire
+Spell Type       : None
 Spell Level      : 1
 Duration         : 15 seconds
 Stacks           : 2 maximum
@@ -6622,6 +6909,7 @@ Tooltip          : Damage done by your next non-instant Pyroblast increased by $
 Name             : Freezing Rain (id=270232) [Spell Family (3)] 
 Class            : Mage
 School           : Frost
+Spell Type       : None
 Duration         : 12 seconds
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
@@ -6649,6 +6937,7 @@ Tooltip          : Blizzard is instant cast and deals $s2% increased damage.
 Name             : Freezing Rain (id=270233) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Frost
+Spell Type       : None
 Proc Chance      : 101%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Heal
@@ -6668,6 +6957,7 @@ Description      : Frozen Orb makes Blizzard instant cast and increases its dama
 Name             : Arcane Pummeling (id=270669) [Scaling Spell (-1), Spell Family (3), Passive] 
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 88
 Triggered by     : Arcane Pummeling (270670)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6687,6 +6977,7 @@ Description      : Each wave of Arcane Missiles deals $s1 more damage than the p
 Name             : Flames of Alacrity (id=272932) [Scaling Spell (-7), Spell Family (3), Passive] 
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 128
 Triggered by     : Flames of Alacrity (272934)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6707,6 +6998,7 @@ Name             : Packed Ice (id=272968) [Scaling Spell (-8), Spell Family (3),
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 132
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6726,6 +7018,7 @@ Name             : Ruinous Bolt (id=273150) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 156
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6743,6 +7036,7 @@ Description      : Your spells and abilities have a chance to draw a Wandering S
 Name             : Brain Storm (id=273326) [Scaling Spell (-1), Spell Family (3), Passive] 
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 167
 Triggered by     : Brain Storm (273330)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6763,6 +7057,7 @@ Name             : Preheat (id=273331) [Scaling Spell (-8), Spell Family (3), Pa
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 168
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6782,6 +7077,7 @@ Name             : Winter's Reach (id=273346) [Scaling Spell (-8), Spell Family 
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 170
 Triggered by     : Winter's Reach (273347)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6804,6 +7100,7 @@ Name             : Meticulous Scheming (id=273682) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 192
 Triggered by     : Seize the Moment! (273714)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6829,6 +7126,7 @@ Name             : Rezan's Fury (id=273790) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 157
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6849,6 +7147,7 @@ Name             : Blightborne Infusion (id=273823) [Scaling Spell (-7), Passive
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 193
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6867,6 +7166,7 @@ Name             : Secrets of the Deep (id=273829) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 195
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6889,6 +7189,7 @@ Name             : Filthy Transfusion (id=273834) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 194
 Triggered by     : Filthy Transfusion (273836)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6908,6 +7209,7 @@ Name             : Eldritch Warding (id=274379) [Scaling Spell (-8), Spell Famil
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 205
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6929,6 +7231,7 @@ Name             : Arcane Pressure (id=274594) [Scaling Spell (-8), Spell Family
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 214
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6950,6 +7253,7 @@ Description      : Arcane Barrage deals an additional $s1 damage per Arcane Char
 Name             : Blaster Master (id=274596) [Scaling Spell (-7), Spell Family (3), Passive] 
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 215
 Triggered by     : Blaster Master (274598)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6970,6 +7274,7 @@ Name             : Trailing Embers (id=277656) [Scaling Spell (-8), Spell Family
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 376
 Triggered by     : Trailing Embers (277703)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6990,6 +7295,7 @@ Name             : Tunnel of Ice (id=277663) [Scaling Spell (-8), Spell Family (
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 379
 Triggered by     : Tunnel of Ice (277904)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7009,6 +7315,7 @@ Description      : Frostbolt increases the damage of Frostbolt by $s1, stacking 
 Name             : Clearcasting (id=277726) [Spell Family (3), Hidden] 
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Spell Level      : 12
 Duration         : 15 seconds
 Affecting spells : Norgannon's Foresight (236380 effect#1), Amplification (236628 effect#1)
@@ -7041,6 +7348,7 @@ Name             : Polymorph (rank=Direhorn) (id=277787) [Spell Family (3)]
 Hotfixed         : Attributes
 Class            : Mage
 School           : Arcane
+Spell Type       : Magic
 Resource         : 4% Base Mana (0) (id=191845)
 Spell Level      : 60
 Range            : 30 yards
@@ -7073,6 +7381,7 @@ Name             : Polymorph (rank=Bumblebee) (id=277792) [Spell Family (3)]
 Hotfixed         : Attributes
 Class            : Mage
 School           : Arcane
+Spell Type       : Magic
 Resource         : 4% Base Mana (0) (id=191847)
 Spell Level      : 60
 Range            : 30 yards
@@ -7104,6 +7413,7 @@ Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased healt
 Name             : Chain Reaction (id=278309) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -7120,6 +7430,7 @@ Description      : Your Ice Lances against frozen targets increase the damage of
 Name             : Chain Reaction (id=278310) [Spell Family (3)] 
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Duration         : 10 seconds
 Stacks           : 5 maximum
 Proc Chance      : 101%
@@ -7142,6 +7453,7 @@ Name             : Galvanizing Spark (id=278536) [Scaling Spell (-8), Spell Fami
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 374
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7166,6 +7478,7 @@ Name             : Explosive Echo (id=278537) [Scaling Spell (-8), Spell Family 
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 375
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7194,6 +7507,7 @@ Name             : Duplicative Incineration (id=278538) [Scaling Spell (-8), Spe
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 377
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7216,6 +7530,7 @@ Description      : Fireball deals an additional $s2 damage, and has a $s1% chanc
 Name             : Firemind (id=278539) [Scaling Spell (-1), Spell Family (3), Passive] 
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 378
 Triggered by     : Firemind (279715)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7238,6 +7553,7 @@ Name             : Whiteout (id=278541) [Scaling Spell (-8), Spell Family (3), P
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 380
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7262,6 +7578,7 @@ Description      : Ice Lance deals an additional $s3 damage and reduces the cool
 Name             : Frigid Grasp (id=278542) [Scaling Spell (-1), Spell Family (3), Passive] 
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 381
 Triggered by     : Frigid Grasp (279684)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7282,6 +7599,7 @@ Name             : Glacial Assault (id=279854) [Scaling Spell (-8), Spell Family
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 225
 Triggered by     : Glacial Assault (279856)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7301,6 +7619,7 @@ Description      : Flurry has a $279855h% chance each strike to call down an icy
 Name             : Glacial Assault (id=279855) [Scaling Spell (-1), Spell Family (3), Hidden] 
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Duration         : Aura (infinite)
 Proc Chance      : 10%
 Proc Flags       : ........ ........ x....... ........ 
@@ -7322,6 +7641,7 @@ Description      : $@spelldesc279854
 Name             : Glacial Assault (id=279856) [Spell Family (3)] 
 Class            : Mage
 School           : Frost
+Spell Type       : Magic
 Range            : 100 yards
 Affecting spells : Arcane Power (12042 effect#1), Rune of Power (116014 effect#1), Incanter's Flow (116267 effect#1), Fire Mage (137019 effect#1), Frost Mage (137020 effect#1), Arcane Mage (137021 effect#1), Combustion (190319 effect#1), Bone Chilling (205766 effect#1), Norgannon's Foresight (236380 effect#1), Crackling Energy (246224 effect#1), 
 Family Flags     : 3
@@ -7344,6 +7664,7 @@ Name             : Anomalous Impact (id=279867) [Scaling Spell (-8), Spell Famil
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 127
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7362,6 +7683,7 @@ Description      : Arcane Missiles deals $s1 additional damage for each Arcane C
 Name             : Unstable Flames (id=279899) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 459
 Triggered by     : Unstable Flames (279902)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7381,6 +7703,7 @@ Description      : Your damaging abilities have a chance to grant $s1 critical s
 Name             : Earthlink (id=279926) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 461
 Triggered by     : Earthlink (279928)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7401,6 +7724,7 @@ Name             : Cauterizing Blink (id=280015) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Mage
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 468
 Triggered by     : Cauterizing Blink (280177)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7421,6 +7745,7 @@ Name             : Barrage Of Many Bombs (id=280163) [Scaling Spell (-8), Passiv
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 1.5 (Haste multiplier)
 Azerite Power Id : 498
@@ -7452,6 +7777,7 @@ Name             : Ricocheting Inflatable Pyrosaw (id=280168) [Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 1.5 (Haste multiplier)
 Azerite Power Id : 499
@@ -7482,6 +7808,7 @@ Name             : Auto-Self-Cauterizer (id=280172) [Scaling Spell (-8), Passive
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 1 seconds
 Proc Chance      : 101%
 Real PPM         : 1.5
@@ -7514,6 +7841,7 @@ Name             : Synaptic Spark Capacitor (id=280174) [Scaling Spell (-8), Spe
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 1.5
 Azerite Power Id : 500
@@ -7543,6 +7871,7 @@ Name             : Relational Normalization Gizmo (id=280178) [Scaling Spell (-1
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 10 seconds
 Proc Chance      : 101%
 Real PPM         : 1.5
@@ -7570,6 +7899,7 @@ Name             : Personal Absorb-o-Tron (id=280181) [Scaling Spell (-8), Passi
 Hotfixed         : Scaling Spell, Max Scaling Level, Internal Cooldown (60000 -> 20000), Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 20 seconds
 Proc Chance      : 101%
 Real PPM         : 1.5
@@ -7598,6 +7928,7 @@ Name             : Dagger in the Back (id=280284) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 479
 Triggered by     : Dagger in the Back (280286)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7619,6 +7950,7 @@ Name             : Thunderous Blast (id=280380) [Scaling Spell (-8), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 482
 Triggered by     : Thunderous Blast (280384)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7640,6 +7972,7 @@ Name             : Tidal Surge (id=280402) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Frost
+Spell Type       : None
 Azerite Power Id : 478
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7658,6 +7991,7 @@ Name             : Blood Rite (id=280407) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 480
 Triggered by     : Blood Rite (280409)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7677,6 +8011,7 @@ Name             : Incite the Pack (id=280410) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 481
 Triggered by     : Incite the Pack (280412), Incite the Pack (280413)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7700,6 +8035,7 @@ Name             : Swirling Sands (id=280429) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 196
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7722,6 +8058,7 @@ Name             : Archive of the Titans (id=280555) [Scaling Spell (-1), Passiv
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 483
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7742,6 +8079,7 @@ Name             : Laser Matrix (id=280559) [Scaling Spell (-8), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 485
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7764,6 +8102,7 @@ Name             : Glory in Battle (id=280577) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 486
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7785,6 +8124,7 @@ Name             : Retaliatory Fury (id=280579) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 487
 Triggered by     : Retaliatory Fury (280787), Retaliatory Fury (280788)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7807,6 +8147,7 @@ Name             : Combined Might (id=280580) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 490
 Triggered by     : Might of the Orcs (280841)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7828,6 +8169,7 @@ Name             : Collective Will (id=280581) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 491
 Triggered by     : Collective Will (280830)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7849,6 +8191,7 @@ Name             : Battlefield Focus (id=280582) [Scaling Spell (-8), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 488
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7871,6 +8214,7 @@ Name             : Sylvanas' Resolve (id=280598) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 489
 Triggered by     : Sylvanas' Resolve (280809)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7892,6 +8236,7 @@ Name             : Liberator's Might (id=280623) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 492
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7913,6 +8258,7 @@ Name             : Last Gift (id=280624) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 493
 Triggered by     : Last Gift (280861), Last Gift (280862)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7935,6 +8281,7 @@ Name             : Stronger Together (id=280625) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 496
 Triggered by     : Strength of the Humans (280866)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7956,6 +8303,7 @@ Name             : Stand As One (id=280626) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 497
 Triggered by     : Stand As One (280858)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7977,6 +8325,7 @@ Name             : Battlefield Precision (id=280627) [Scaling Spell (-8), Passiv
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 494
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7999,6 +8348,7 @@ Name             : Anduin's Dedication (id=280628) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 495
 Triggered by     : Anduin's Dedication (280876)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8019,6 +8369,7 @@ Description      : Your abilities have a chance to increase your $?a162700[Agili
 Name             : Champion of Azeroth (id=280710) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 82
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8036,6 +8387,7 @@ Description      : Your spells and abilities have a chance to increase all secon
 Name             : Reverberate (id=281482) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Arcane
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8055,6 +8407,7 @@ Description      : If Arcane Explosion hits at least $s2 targets, it has a $s1% 
 Name             : Unstable Catalyst (id=281514) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 504
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8073,6 +8426,7 @@ Name             : Tradewinds (id=281841) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 505
 Triggered by     : Tradewinds (281843), Tradewinds (281844)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 

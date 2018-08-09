@@ -3,6 +3,7 @@ SimulationCraft 801-01 for World of Warcraft 8.0.1 bfa-BETA (wow build 26095)
 Name             : Block (rank=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
+Spell Type       : Magic
 Spell Level      : 1
 Attributes       : ....x.x. ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -20,6 +21,7 @@ Description      : Gives a chance to block enemy melee and ranged attacks.
 Name             : Purge (id=370) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Resource         : 20% Base Mana (0) (id=10997)
 Spell Level      : 63
 Range            : 30 yards
@@ -42,6 +44,7 @@ Description      : Purges the enemy target, removing $m1 beneficial Magic $leffe
 Name             : Earth Shield (id=379) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : None
 Range            : 300 yards
 Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), Elemental Shaman (137040 effect#6), Enhancement Shaman (137041 effect#7)
 Family Flags     : 41, 70
@@ -61,6 +64,7 @@ Description      : $@spelldesc974
 Name             : Lightning Bolt (id=403) [Scaling Spell (-1), Spell Family (11)] 
 Class            : Restoration Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2 seconds
@@ -82,6 +86,7 @@ Description      : Hurls a bolt of lightning at the target, dealing $s1 Nature d
 Name             : Chain Lightning (id=421) [Spell Family (11)] 
 Class            : Restoration Shaman
 School           : Nature
+Spell Type       : Magic
 Resource         : 1% Base Mana (0) (id=47)
 Spell Level      : 28
 Range            : 40 yards
@@ -105,6 +110,7 @@ Description      : Hurls a lightning bolt at the enemy, dealing $s1 Nature damag
 Name             : Earth Shield (id=974) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Resource         : 10% Base Mana (0) (id=104)
 Spell Level      : 26
 Range            : 40 yards
@@ -137,6 +143,7 @@ Tooltip          : Heals for ${$379s1*(1+$w1/100)} upon taking damage.
 Name             : Chain Heal (id=1064) [Spell Family (11)] 
 Class            : Restoration Shaman
 School           : Nature
+Spell Type       : Magic
 Resource         : 25% Base Mana (0) (id=111)
 Spell Level      : 20
 Range            : 40 yards
@@ -161,6 +168,7 @@ Description      : Heals the friendly target for $s1, then jumps to heal the mos
 Name             : Earthbind Totem (id=2484) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 8
 Range            : 35 yards
 GCD              : 1 seconds
@@ -184,6 +192,7 @@ Description      : Summons an Earth Totem with ${$m2*$MHP/100} health at the tar
 Name             : Ghost Wolf (id=2645) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 16
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
@@ -216,6 +225,7 @@ Name             : Bloodlust (id=2825) [Spell Family (11)]
 Class            : Shaman
 Race             : Orc, Tauren, Troll, Goblin, Mag'har Orc, Highmountain Tauren (0xa0021a2)
 School           : Nature
+Spell Type       : None
 Resource         : 21.5% Base Mana (0) (id=12194)
 Spell Level      : 50
 Duration         : 40 seconds
@@ -241,6 +251,7 @@ Tooltip          : Haste increased by $s1%.
 Name             : Earthbind (id=3600) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 8
 Duration         : 5 seconds
 Mechanic         : Snare
@@ -261,6 +272,7 @@ Tooltip          : Movement speed reduced by $s1%.
 Name             : Healing Stream Totem (id=5394) [Spell Family (11)] 
 Class            : Restoration Shaman
 School           : Nature
+Spell Type       : Magic
 Resource         : 11% Base Mana (0) (id=237)
 Spell Level      : 14
 GCD              : 1 seconds
@@ -289,6 +301,7 @@ $bonus=${$<purification>*$<soothe>*$<rushing>*(1+$@versadmg)}
 Name             : Healing Stream (id=5672) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 20
 Duration         : 15 seconds
 Proc Chance      : 100%
@@ -315,6 +328,7 @@ Tooltip          : Healing $?s147074[two injured party or raid members][an injur
 Name             : Far Sight (id=6196) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 13
 Range            : 50000 yards
 Cast Time        : 2 seconds
@@ -340,6 +354,7 @@ Tooltip          : Cannot move while using Far Sight.
 Name             : Healing Surge (id=8004) [Spell Family (11)] 
 Class            : Elemental Restoration Shaman
 School           : Nature
+Spell Type       : Magic
 Resource         : 20% Base Mana (0) (id=317)
 Spell Level      : 5
 Range            : 40 yards
@@ -362,6 +377,7 @@ Description      : A quick surge of healing energy that restores $s1 of a friend
 Name             : Earth Shock (id=8042) [Spell Family (11)] 
 Class            : Elemental Shaman
 School           : Nature
+Spell Type       : Magic
 Resource         : 60 Maelstrom (11) (id=191554)
 Spell Level      : 10
 Range            : 40 yards
@@ -383,6 +399,7 @@ Description      : Instantly shocks the target with concussive force, causing $s
 Name             : Tremor Totem (rank=Earth Totem) (id=8143) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Resource         : 2.3% Base Mana (0) (id=331)
 Spell Level      : 58
 GCD              : 1 seconds
@@ -404,6 +421,7 @@ Description      : Summons an Earth Totem with $?s63298[${$m1+$63298m1*$MHP/100}
 Name             : Tremor Totem Effect (id=8146) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : None
 Spell Level      : 1
 Family Flags     : 26
 Attributes       : ........ x..x.... ........ ........   ........ ........ ........ ........ 
@@ -426,6 +444,7 @@ Effects          :
 Name             : Fire Nova (id=8349) [Scaling Spell (10), Spell Family (11)] 
 Class            : Shaman
 School           : Fire
+Spell Type       : Magic
 Spell Level      : 12
 Range            : 100 yards
 Affecting spells : Elemental Fury (60188 effect#1)
@@ -450,6 +469,7 @@ Description      : Causes the Shaman's Flame Shocked targets to emit a wave of f
 Name             : Flametongue Attack (id=10444) [Spell Family (11)] 
 Class            : Shaman
 School           : Fire
+Spell Type       : Magic
 Range            : 50000 yards
 Proc Chance      : 101%
 Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
@@ -469,6 +489,7 @@ Description      : $@spelldesc193796
 Name             : Master of the Elements (id=16166) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Cooldown         : 120 seconds
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x....... ........ 
@@ -489,6 +510,7 @@ Description      : Casting Lava Burst increases the damage of your next Nature o
 Name             : Resurgence (id=16196) [Spell Family (11), Passive] 
 Class            : Restoration Shaman
 School           : Physical
+Spell Type       : None
 Spell Level      : 48
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
@@ -509,6 +531,7 @@ Description      : Your direct heal criticals refund a percentage of your maximu
 Name             : Stormstrike (id=17364) [Spell Family (11)] 
 Class            : Enhancement Shaman
 School           : Physical
+Spell Type       : Melee
 Resource         : 30 Maelstrom (11) (id=715)
 Spell Level      : 20
 Range            : 5 yards
@@ -541,6 +564,7 @@ Name             : Expansive Mind (rank=Racial Passive) (id=20591) [Passive]
 Class            : Paladin, Priest, Shaman, Mage, Warlock, Monk
 Race             : Gnome (0x40)
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -557,6 +581,7 @@ Description      : Maximum mana increased by $s1%.
 Name             : Reincarnation (rank=Passive) (id=20608) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Nature
+Spell Type       : None
 Spell Level      : 26
 Cooldown         : 1800 seconds
 Category         : 1161
@@ -581,6 +606,7 @@ Name             : Command (rank=Racial Passive) (id=21563) [Spell Family (9), P
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Orc (0x2)
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -597,6 +623,7 @@ Description      : Damage dealt by pets increased by $s1%.
 Name             : Windfury Attack (id=25504) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
+Spell Type       : Melee
 Range            : 100 yards
 Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Furious Winds (184920 effect#1), Doom Winds (204945 effect#2), Crackling Surge (224127 effect#2), Lightning Crash (242284 effect#1), Forceful Winds (262652 effect#1)
 Family Flags     : 23, 39
@@ -616,6 +643,7 @@ Description      : $@spelldesc33757
 Name             : Strength (id=27973) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Demon Hunter
 School           : Physical
+Spell Type       : None
 Duration         : Aura (infinite)
 Azerite Power Id : 6
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -634,6 +662,7 @@ Name             : Gift of the Naaru (rank=Racial) (id=28880) [Spell Family (4)]
 Class            : Warrior, Paladin, Hunter, Priest, Death Knight, Shaman, Mage, Monk
 Race             : Draenei (0x400)
 School           : Holy
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 Duration         : 5 seconds
@@ -659,6 +688,7 @@ Tooltip          : Healing $/5;s2% every $t1 seconds.
 Name             : Nature's Guardian (id=30884) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 45 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
@@ -679,6 +709,7 @@ Description      : When your health is brought below $s1%, you instantly heal fo
 Name             : Nature's Guardian (id=31616) 
 Class            : Shaman
 School           : Nature
+Spell Type       : None
 Triggered by     : Nature's Guardian (30884)
 Attributes       : ........ ........ ..x..... x..x.x..   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ .....x.. 
@@ -696,6 +727,7 @@ Description      : $@spelldesc30884
 Name             : Stormstrike (id=32175) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 40
 Range            : 5 yards
 Stacks           : 2 initial, 2 maximum
@@ -723,6 +755,7 @@ Description      : $@spelldesc17364
 Name             : Stormstrike Off-Hand (id=32176) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 40
 Range            : 5 yards
 Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Gathering Storms (198300 effect#1), Stormbringer (201846 effect#4), Landslide (202004 effect#1), Item - Shaman T19 Enhancement 2P Bonus (211987 effect#1), Crackling Surge (224127 effect#1), Lightning Crash (242284 effect#1), Storm Totem (262397 effect#1)
@@ -747,6 +780,7 @@ Name             : Heroism (id=32182) [Spell Family (11)]
 Class            : Shaman
 Race             : Human, Dwarf, Night Elf, Gnome, Draenei, Dark Iron Dwarf, Worgen, Pandaren, Void Elf, Lightforged Draenei (0x55155555b1354c4d)
 School           : Nature
+Spell Type       : None
 Resource         : 21.5% Base Mana (0) (id=1324)
 Spell Level      : 50
 Duration         : 40 seconds
@@ -773,6 +807,7 @@ Name             : Blood Fury (rank=Racial) (id=33697) [Scaling Spell (-1)]
 Class            : Shaman, Monk
 Race             : Orc (0x2)
 School           : Physical
+Spell Type       : Magic
 Spell Level      : 1
 Duration         : 15 seconds
 Cooldown         : 120 seconds
@@ -795,6 +830,7 @@ Tooltip          : Attack power and Intellect increased by $w1.
 Name             : Windfury Attack (id=33750) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
+Spell Type       : Melee
 Range            : 100 yards
 Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Furious Winds (184920 effect#1), Doom Winds (204945 effect#2), Crackling Surge (224127 effect#2), Lightning Crash (242284 effect#1), Forceful Winds (262652 effect#1)
 Family Flags     : 23, 39
@@ -814,6 +850,7 @@ Description      : $@spelldesc8232
 Name             : Windfury (id=33757) [Spell Family (11), Passive] 
 Class            : Enhancement Shaman
 School           : Nature
+Spell Type       : None
 Spell Level      : 24
 Proc Chance      : 25%
 Proc Flags       : ..x.x... ........ ......xx ........ 
@@ -836,6 +873,7 @@ Description      : Each of your main hand attacks has a $33757h% chance to trigg
 Name             : Angered Earth (id=36213) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Melee
 Spell Level      : 66
 Cooldown         : 5 seconds
 Mechanic         : Heal
@@ -854,6 +892,7 @@ Description      : Taunts all enemies within $A1 yards.
 Name             : Agility 20 (id=41695) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 7
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -871,6 +910,7 @@ Description      : Increases Agility by $s1.
 Name             : Lightning Bolt Overload (id=45284) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Item - Shaman T19 Elemental 2P Bonus (211951 effect#1), Lightning Crash (242284 effect#1)
@@ -890,6 +930,7 @@ Description      : Casts a bolt of lightning at the target for $s1 Nature damage
 Name             : Chain Lightning Overload (id=45297) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 32 (max 37)
 Range            : 100 yards
 Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Al'Akir's Acrimony (208699 effect#1), Chain Lightning (231722 effect#1), Lightning Crash (242284 effect#1)
@@ -909,6 +950,7 @@ Description      : Hurls a lightning bolt at the enemy, dealing $s1 Nature damag
 Name             : Earthgrab Totem (id=51485) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : None
 Resource         : 10% Base Mana (0) (id=5228)
 Range            : 35 yards
 GCD              : 1 seconds
@@ -932,6 +974,7 @@ Description      : Summons a totem at the target location for $d. The totem puls
 Name             : Thunderstorm (id=51490) [Spell Family (11)] 
 Class            : Elemental Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 24
 GCD              : 1.5 seconds
 Duration         : 5 seconds
@@ -960,6 +1003,7 @@ Tooltip          : Movement speed reduced by $s3%.
 Name             : Lava Burst (id=51505) [Spell Family (11)] 
 Class            : Elemental Restoration Shaman
 School           : Fire
+Spell Type       : Magic
 Resource         : 6% Base Mana (0) (id=11268) w/ Restoration Shaman (id=137039)
 Spell Level      : 12
 Range            : 40 yards
@@ -989,6 +1033,7 @@ Description      : Hurls molten lava at the target, dealing $s1 Fire damage.$?a2
 Name             : Hex (id=51514) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 42
 Range            : 30 yards
 Cast Time        : 1.7 seconds
@@ -1020,6 +1065,7 @@ Tooltip          : Incapacitated.
 Name             : Feral Spirit (id=51533) [Spell Family (11)] 
 Class            : Enhancement Shaman
 School           : Nature
+Spell Type       : Melee
 Spell Level      : 34
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -1045,6 +1091,7 @@ Variables        : $percent=$?s63271[${$58877m1*1.4}][${$58877m1}]
 Name             : Tidal Waves (id=51564) [Spell Family (11), Passive] 
 Class            : Restoration Shaman
 School           : Physical
+Spell Type       : None
 Spell Level      : 34
 Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. ........ ........ 
@@ -1065,6 +1112,7 @@ Description      : Casting Chain Heal or Riptide reduces the cast time of your n
 Name             : Cleanse Spirit (id=51886) [Spell Family (11)] 
 Class            : Elemental Enhancement Shaman
 School           : Nature
+Spell Type       : Magic
 Resource         : 6.5% Base Mana (0) (id=11325)
 Spell Level      : 22
 Range            : 40 yards
@@ -1086,6 +1134,7 @@ Description      : Removes all Curse effects from a friendly target.
 Name             : Healing Stream Totem (id=52042) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), Rushing Streams (147074 effect#1), Praetorian's Tidecallers (210604 effect#1)
@@ -1107,6 +1156,7 @@ Description      : Heals an injured nearby raid or party member.
 Name             : Tidal Waves (id=53390) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
+Spell Type       : Magic
 Duration         : 15 seconds
 Stacks           : 1 initial, 2 maximum
 Proc Chance      : 100%
@@ -1137,6 +1187,7 @@ Critical effect chance of next Healing Surge increased by $w2%.
 Name             : Increase Versatility 15 (id=55564) [Scaling Spell (-1), Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Max Scaling Level: 80
 Azerite Power Id : 1
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -1156,6 +1207,7 @@ Name             : Exhaustion (id=57723)
 Class            : Shaman
 Race             : Human, Dwarf, Night Elf, Gnome, Draenei, Dark Iron Dwarf, Worgen, Pandaren, Void Elf, Lightforged Draenei (0x55155555b1354c4d)
 School           : Physical
+Spell Type       : None
 Range            : 50000 yards
 Duration         : 600 seconds
 Attributes       : ........ ........ ........ ..x..x..   ...x.x.x ........ .x...... ........ 
@@ -1176,6 +1228,7 @@ Name             : Sated (id=57724)
 Class            : Hunter, Shaman, Mage
 Race             : Orc, Tauren, Troll, Goblin, Mag'har Orc, Highmountain Tauren (0xa0021a2)
 School           : Physical
+Spell Type       : None
 Range            : 50000 yards
 Duration         : 600 seconds
 Attributes       : ........ ........ ........ ..x..x..   ...x.x.x ........ .x...... ........ 
@@ -1195,6 +1248,7 @@ Tooltip          : Cannot benefit from Bloodlust or other similar effects.
 Name             : Fire Blast (id=57984) [Spell Family (11)] 
 Class            : Shaman
 School           : Fire
+Spell Type       : Magic
 Resource         : 40% Base Mana (0) (id=2612)
 Spell Level      : 20
 Range            : 40 yards
@@ -1214,6 +1268,7 @@ Description      : Inflicts Fire damage to an enemy.
 Name             : Wind Shear (id=57994) [Spell Family (11)] 
 Class            : Elemental Enhancement Restoration Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 18
 Range            : 30 yards
 Duration         : 3 seconds
@@ -1236,6 +1291,7 @@ Description      : Disrupts the target's concentration with a burst of wind, int
 Name             : Glyph of the Spectral Wolf (id=58135) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1252,6 +1308,7 @@ Description      : Alters the appearance of your Ghost Wolf transformation, caus
 Name             : Spectral Wolf (id=58261) 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Cast Time        : 1.5 seconds
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1269,6 +1326,7 @@ Description      : $@spelldesc58135
 Name             : Spirit Walk (id=58875) [Spell Family (11)] 
 Class            : Enhancement Shaman
 School           : Physical
+Spell Type       : None
 Spell Level      : 80
 Duration         : 8 seconds
 Cooldown         : 60 seconds
@@ -1294,6 +1352,7 @@ Tooltip          : Increases movement speed by $s1%.
 Name             : Spirit Walk (id=58876) [Hidden] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Range            : 25 yards
 Duration         : 0.1 seconds
@@ -1317,6 +1376,7 @@ Effects          :
 Name             : Spirit Hunt (id=58877) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
 GCD              : 1.5 seconds
@@ -1344,6 +1404,7 @@ Name             : Gift of the Naaru (rank=Racial) (id=59547) [Spell Family (11)
 Class            : Shaman
 Race             : Draenei (0x400)
 School           : Holy
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 Duration         : 5 seconds
@@ -1370,6 +1431,7 @@ Tooltip          : Healing $/5;s2% every $t1 seconds.
 Name             : Lava Lash (id=60103) [Spell Family (11)] 
 Class            : Enhancement Shaman
 School           : Fire
+Spell Type       : Melee
 Resource         : 40 Maelstrom (11) (id=10718)
 Spell Level      : 10
 Range            : 5 yards
@@ -1394,6 +1456,7 @@ Description      : Charges your off-hand weapon with lava and burns your target,
 Name             : Elemental Fury (id=60188) [Spell Family (11), Passive] 
 Class            : Elemental Shaman
 School           : Physical
+Spell Type       : None
 Spell Level      : 34
 Family Flags     : 91
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -1415,6 +1478,7 @@ Description      : Your damaging critical strikes deal ${$m1+200}% damage instea
 Name             : Riptide (id=61295) [Spell Family (11)] 
 Class            : Restoration Shaman
 School           : Nature
+Spell Type       : Magic
 Resource         : 8% Base Mana (0) (id=2767)
 Spell Level      : 10
 Range            : 40 yards
@@ -1443,6 +1507,7 @@ Tooltip          : Heals $w2 every $t2 seconds.
 Name             : Earthquake (id=61882) [Spell Family (11)] 
 Class            : Elemental Shaman
 School           : Nature
+Spell Type       : Magic
 Resource         : 60 Maelstrom (11) (id=2792)
 Spell Level      : 48
 Range            : 35 yards
@@ -1471,6 +1536,7 @@ Variables        : $damage=${$SPN*0.25*6*(1+$@versadmg)*($137040s1+100)/100}
 Name             : Glyph of Deluge (rank=Restoration) (id=63279) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1489,6 +1555,7 @@ Description      : Your Chain Heal now has a watery appearance.
 Name             : Deluge (id=63925) 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Cast Time        : 1.5 seconds
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1506,6 +1573,7 @@ Description      : $@spelldesc63279
 Name             : Earthgrab (id=64695) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Duration         : 8 seconds
 Proc Chance      : 100%
 Mechanic         : Root
@@ -1529,6 +1597,7 @@ Tooltip          : Rooted.
 Name             : Avoidance (rank=Passive) (id=65220) [Passive] 
 Class            : Shaman, Mage, Monk
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ....x.x. ........ x.x..... ...x....   .....x.. ........ .x...... ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
@@ -1554,6 +1623,7 @@ Name             : Viciousness (rank=Racial Passive) (id=68975) [Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1572,6 +1642,7 @@ Name             : Aberration (rank=Racial Passive) (id=68976) [Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1591,6 +1662,7 @@ Name             : Darkflight (rank=Racial) (id=68992)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
+Spell Type       : None
 Duration         : 10 seconds
 Cooldown         : 120 seconds
 Attributes       : ........ ........ ........ ........   .....x.. ........ ........ ........ 
@@ -1612,6 +1684,7 @@ Tooltip          : True form activated, movement speed increased by an additiona
 Name             : Unleash Life (id=73685) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Resource         : 5% Base Mana (0) (id=9560)
 Spell Level      : 15
 Range            : 40 yards
@@ -1649,6 +1722,7 @@ Tooltip          : Your next direct heal will be $w2% more effective.
 Name             : Healing Rain (id=73920) [Spell Family (11)] 
 Class            : Restoration Shaman
 School           : Nature
+Spell Type       : None
 Resource         : 21.6% Base Mana (0) (id=3332)
 Spell Level      : 40
 Range            : 40 yards
@@ -1680,6 +1754,7 @@ $?$w1!=0[Magic damage taken reduced by $w1%.][]
 Name             : Healing Rain (id=73921) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), Overflowing Shores (277658 effect#2)
@@ -1700,6 +1775,7 @@ Description      : $@spelldesc73920
 Name             : Purify Spirit (id=77130) [Spell Family (11)] 
 Class            : Restoration Shaman
 School           : Nature
+Spell Type       : Magic
 Resource         : 6.5% Base Mana (0) (id=5411)
 Spell Level      : 22
 Range            : 40 yards
@@ -1724,6 +1800,7 @@ Description      : Removes all Curse and Magic effects from a friendly target.
 Name             : Mastery: Enhanced Elements (id=77223) [Spell Family (11), Passive] 
 Class            : Enhancement Shaman
 School           : Physical
+Spell Type       : None
 Spell Level      : 78
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1757,6 +1834,7 @@ Description      : Increases your chance to trigger Stormbringer and Windfury by
 Name             : Mastery: Deep Healing (id=77226) [Spell Family (11), Passive] 
 Class            : Restoration Shaman
 School           : Physical
+Spell Type       : None
 Spell Level      : 78
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1778,6 +1856,7 @@ Description      : Increases healing from your spells by up to ${$77226s1}.1%, b
 Name             : Lava Burst Overload (id=77451) [Spell Family (11)] 
 Class            : Shaman
 School           : Fire
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Cast Time        : 2 seconds
@@ -1801,6 +1880,7 @@ Description      : You hurl molten lava at the target, dealing $s1 Fire damage. 
 Name             : Healing Wave (id=77472) [Spell Family (11)] 
 Class            : Restoration Shaman
 School           : Nature
+Spell Type       : Magic
 Resource         : 9% Base Mana (0) (id=3361)
 Spell Level      : 24
 Range            : 40 yards
@@ -1823,6 +1903,7 @@ Description      : An efficient wave of healing energy that restores $s1 of a fr
 Name             : Earthquake (id=77478) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
+Spell Type       : Magic
 Spell Level      : 50
 Range            : 100 yards
 Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Echoes of the Great Sundering (208723 effect#1), Lightning Crash (242284 effect#1)
@@ -1845,6 +1926,7 @@ Description      : $@spelldesc61882
 Name             : Lava Surge (id=77756) [Spell Family (11), Passive] 
 Class            : Elemental Restoration Shaman
 School           : Physical
+Spell Type       : None
 Spell Level      : 40
 Proc Chance      : 15%
 Proc Flags       : ........ ........ ..x..... ........ 
@@ -1867,6 +1949,7 @@ Description      : Your Flame Shock damage over time has a $h% chance to reset t
 Name             : Lava Surge (id=77762) [Spell Family (11)] 
 Class            : Shaman
 School           : Fire
+Spell Type       : None
 Spell Level      : 40
 Duration         : 10 seconds
 Stacks           : 1 initial, 1 maximum
@@ -1897,6 +1980,7 @@ Tooltip          : Your next Lava Burst casts instantly.
 Name             : Spiritwalker's Grace (id=79206) [Spell Family (11)] 
 Class            : Restoration Shaman
 School           : Nature
+Spell Type       : Magic
 Resource         : 14.1% Base Mana (0) (id=3374)
 Spell Level      : 38
 Duration         : 15 seconds
@@ -1923,6 +2007,7 @@ Tooltip          : Able to move while casting all Shaman spells.
 Name             : Hand of Gul'dan (id=86040) [Spell Family (5)] 
 Class            : Shaman, Warlock
 School           : Shadowflame
+Spell Type       : Magic
 Range            : 50000 yards
 Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Dirty Hands (211105 effect#1), From the Shadows (270569 effect#1), Demonic Meteor (278737 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
 Family Flags     : 49, 86
@@ -1942,6 +2027,7 @@ Description      : $@spelldesc105174
 Name             : Mail Specialization (rank=Passive) (id=86099) [Passive, Hidden] 
 Class            : Enhancement Shaman
 School           : Physical
+Spell Type       : None
 Spell Level      : 50
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1959,6 +2045,7 @@ Description      : Increases your Agility by $s1% while wearing only Mail armor.
 Name             : Mail Specialization (rank=Passive) (id=86100) [Passive, Hidden] 
 Class            : Restoration Shaman
 School           : Physical
+Spell Type       : None
 Spell Level      : 50
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1976,6 +2063,7 @@ Description      : Increases your Intellect by $s1% while wearing only Mail armo
 Name             : Mail Specialization (rank=Passive) (id=86108) [Passive, Hidden] 
 Class            : Elemental Shaman
 School           : Physical
+Spell Type       : None
 Spell Level      : 50
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1993,6 +2081,7 @@ Description      : Increases your Intellect by $s1% while wearing only Mail armo
 Name             : Dual Wield (id=86629) [Spell Family (11), Passive, Hidden] 
 Class            : Enhancement Shaman
 School           : Physical
+Spell Type       : Magic
 Spell Level      : 10
 Attributes       : ....x.xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2010,6 +2099,7 @@ Description      : You may equip one-handed weapons in your off-hand, and you ha
 Name             : Item - Proc Mastery (id=92322) [Spell Family (10), Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 100 seconds
 Proc Chance      : 10%
 Azerite Power Id : 8
@@ -2032,6 +2122,7 @@ Name             : Altered Form (rank=Racial Passive) (id=94293) [Passive, Hidde
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2048,6 +2139,7 @@ Description      : Enables Worgens to switch between human and Worgan forms
 Name             : Spirit Link Totem (id=98007) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 30
 Family Flags     : 53
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -2068,6 +2160,7 @@ Health periodically normalized among other affected party and raid members.
 Name             : Spirit Link Totem (id=98008) [Spell Family (11)] 
 Class            : Restoration Shaman
 School           : Nature
+Spell Type       : None
 Resource         : 11% Base Mana (0) (id=4691)
 Spell Level      : 56
 Range            : 40 yards
@@ -2094,6 +2187,7 @@ Description      : Summons a totem at the target location for $d, which reduces 
 Name             : Spirit Link (id=98017) [Spell Family (11), Hidden] 
 Class            : Shaman
 School           : Nature
+Spell Type       : None
 Spell Level      : 30
 Duration         : 10 seconds
 Attributes       : .......x x....... ........ ........   ........ ..x..... ........ ........ 
@@ -2111,6 +2205,7 @@ Effects          :
 Name             : Spirit Link (id=98020) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
 School           : Nature
+Spell Type       : None
 Spell Level      : 30
 Triggered by     : Spirit Link (98017)
 Family Flags     : 26
@@ -2129,6 +2224,7 @@ Effects          :
 Name             : Wild Imp (id=104317) [Spell Family (5)] 
 Class            : Shaman, Warlock
 School           : Shadow
+Spell Type       : None
 Range            : 100 yards
 Duration         : 20 seconds
 Family Flags     : 14
@@ -2147,6 +2243,7 @@ Description      : $@spelldesc105174
 Name             : Hand of Gul'dan (id=105174) [Spell Family (5)] 
 Class            : Demonology Shaman, Warlock
 School           : Shadowflame
+Spell Type       : Magic
 Resource         : 1 - 3 Soul Shard (7) (id=4987)
 Spell Level      : 10
 Range            : 40 yards
@@ -2172,6 +2269,7 @@ Deals up to ${$m1*$86040m1} Shadowflame damage on impact to all enemies within $
 Name             : Astral Shift (id=108271) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Spell Level      : 52
 Duration         : 8 seconds
 Cooldown         : 90 seconds
@@ -2193,6 +2291,7 @@ Tooltip          : Damage taken reduced by $s1%.
 Name             : Healing Tide Totem (id=108280) [Spell Family (11)] 
 Class            : Restoration Shaman
 School           : Nature
+Spell Type       : None
 Resource         : 5.6% Base Mana (0) (id=5233)
 Spell Level      : 80
 GCD              : 1 seconds
@@ -2219,6 +2318,7 @@ Name             : Ancestral Guidance (id=108281)
 Hotfixed         : Attributes
 Class            : Shaman
 School           : Nature
+Spell Type       : None
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 120 seconds
@@ -2241,6 +2341,7 @@ Tooltip          : A percentage of damage or healing dealt is copied as healing 
 Name             : Echo of the Elements (id=108283) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Family Flags     : 52
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2262,6 +2363,7 @@ Description      : $?c1[Lava Burst now has ${$s2+1}][Riptide, Healing Stream Tot
 Name             : Ascendance (id=114050) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Spell Level      : 87
 GCD              : 1.5 seconds
 Duration         : 15 seconds
@@ -2290,6 +2392,7 @@ Tooltip          : Transformed into a powerful Fire ascendant. Chain Lightning i
 Name             : Ascendance (id=114051) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Spell Level      : 87
 GCD              : 1.5 seconds
 Duration         : 15 seconds
@@ -2325,6 +2428,7 @@ Tooltip          : Transformed into a powerful Air ascendant. Auto attacks have 
 Name             : Ascendance (id=114052) 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Spell Level      : 87
 GCD              : 1.5 seconds
 Duration         : 15 seconds
@@ -2351,6 +2455,7 @@ Tooltip          : Transformed into a powerful Water ascendant. Healing you deal
 Name             : Lava Beam (id=114074) [Spell Family (11)] 
 Class            : Shaman
 School           : Fire
+Spell Type       : Magic
 Spell Level      : 28
 Range            : 40 yards
 Cast Time        : 2 seconds
@@ -2379,6 +2484,7 @@ Description      : Unleashes a blast of superheated flame at the enemy, dealing 
 Name             : Windlash (id=114089) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
+Spell Type       : Melee
 Range            : 30 yards
 Triggered by     : Ascendance (114051)
 Family Flags     : 97
@@ -2398,6 +2504,7 @@ Description      : A massive gust of air that deals $s1 Physical damage.
 Name             : Windlash Off-Hand (id=114093) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
+Spell Type       : Melee
 Range            : 30 yards
 Family Flags     : 97
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2416,6 +2523,7 @@ Description      : A massive gust of air that deals $s1 Physical damage.
 Name             : Lava Beam Overload (id=114738) [Scaling Spell (10), Spell Family (11)] 
 Class            : Shaman
 School           : Fire
+Spell Type       : Magic
 Spell Level      : 28
 Range            : 40 yards
 Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Al'Akir's Acrimony (208699 effect#1), Chain Lightning (231722 effect#1), Lightning Crash (242284 effect#1)
@@ -2435,6 +2543,7 @@ Description      : Unleash a blast of superheated flame at the enemy, dealing $s
 Name             : Ancestral Guidance (id=114911) 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2451,6 +2560,7 @@ Description      : When the Shaman deals direct damage or healing, $108281s1% of
 Name             : Healing Tide (id=114942) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), 
 Family Flags     : 41, 110
 Attributes       : ........ ........ ........ ........   ........ ........ ...x.... ........ 
@@ -2468,6 +2578,7 @@ Description      : Heals injured allies.
 Name             : Windstrike (id=115356) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
+Spell Type       : Melee
 Resource         : 30 Maelstrom (11) (id=5730)
 Spell Level      : 26
 Range            : 30 yards
@@ -2496,6 +2607,7 @@ Description      : Hurl a staggering blast of wind at an enemy, dealing a total 
 Name             : Windstrike (id=115357) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 40
 Range            : 100 yards
 Velocity         : 30 yards/sec
@@ -2521,6 +2633,7 @@ Description      : $@spelldesc115356
 Name             : Windstrike Off-Hand (id=115360) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 40
 Range            : 100 yards
 Velocity         : 30 yards/sec
@@ -2545,6 +2658,7 @@ Description      : $@spelldesc115356
 Name             : Earthgrab (id=116943) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Nature
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2560,6 +2674,7 @@ Effects          :
 Name             : Earthbind (id=116947) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 5 seconds
@@ -2581,6 +2696,7 @@ Tooltip          : Movement speed reduced by $s1%.
 Name             : Primal Elementalist (id=117013) [Passive] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2597,6 +2713,7 @@ Description      : Your Earth, Fire, and Storm Elementals are drawn from primal 
 Name             : Elemental Blast (id=117014) [Spell Family (11)] 
 Class            : Shaman
 School           : Elemental
+Spell Type       : Magic
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
@@ -2619,6 +2736,7 @@ Description      : Harnesses the raw power of the elements, dealing $s1 Elementa
 Name             : Meteor (id=117588) [Spell Family (11)] 
 Class            : Shaman
 School           : Fire
+Spell Type       : Magic
 Spell Level      : 20
 Range            : 40 yards
 Velocity         : 1 yards/sec
@@ -2639,6 +2757,7 @@ Description      : Call down a molten meteor on your target, dealing $s1 damage 
 Name             : Immolate (id=118297) 
 Class            : Shaman
 School           : Fire
+Spell Type       : Magic
 Resource         : 95% Base Mana (0) (id=6152)
 Range            : 40 yards
 Cast Time        : 2 seconds
@@ -2663,6 +2782,7 @@ Tooltip          : Fire damage inflicted every $t1 sec.
 Name             : Harden Skin (id=118337) 
 Class            : Shaman
 School           : Nature
+Spell Type       : None
 Range            : 100 yards
 Duration         : 10 seconds
 Cooldown         : 60 seconds
@@ -2684,6 +2804,7 @@ Tooltip          : Damage taken reduced by $s1%.
 Name             : Pulverize (id=118345) 
 Class            : Shaman
 School           : Physical
+Spell Type       : Melee
 Range            : 5 yards
 Duration         : 4 seconds
 Cooldown         : 40 seconds
@@ -2703,6 +2824,7 @@ Tooltip          : Stunned.
 Name             : Elemental Blast: Critical Strike (id=118522) [Scaling Spell (-1), Spell Family (11)] 
 Class            : Shaman
 School           : Elemental
+Spell Type       : None
 Range            : 40 yards
 Duration         : 10 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2721,6 +2843,7 @@ Tooltip          : Critical Strike increased by $s1.
 Name             : Static Charge (id=118905) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Cast Time        : 2 seconds
 Duration         : 3 seconds
 Mechanic         : Stun
@@ -2740,6 +2863,7 @@ Tooltip          : Stunned.
 Name             : Elemental Blast Overload (id=120588) [Scaling Spell (10), Spell Family (11)] 
 Class            : Shaman
 School           : Elemental
+Spell Type       : Magic
 Range            : 40 yards
 Cast Time        : 2 seconds
 Velocity         : 40 yards/sec
@@ -2760,6 +2884,7 @@ Description      : $@spelldesc117014
 Name             : Block (id=123831) [Passive, Hidden] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ....x.xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2777,6 +2902,7 @@ Description      : Gives a chance to block enemy melee attacks.
 Name             : Shaman (id=137038) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2832,6 +2958,7 @@ Effects          :
 Name             : Restoration Shaman (id=137039) [Spell Family (11), Passive, Hidden] 
 Class            : Restoration Shaman
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2878,6 +3005,7 @@ Description      : Restoration Shaman core passive
 Name             : Elemental Shaman (id=137040) [Spell Family (11), Passive, Hidden] 
 Class            : Elemental Shaman
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2914,6 +3042,7 @@ Description      : Elemental Shaman baseline passive
 Name             : Enhancement Shaman (id=137041) [Spell Family (11), Passive, Hidden] 
 Class            : Enhancement Shaman
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2947,6 +3076,7 @@ Effects          :
 Name             : Lightning Blast (id=145002) 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -2967,6 +3097,7 @@ Description      : Blasts a target for $s1 Nature damage.
 Name             : Rushing Streams (id=147074) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2985,6 +3116,7 @@ Description      : Healing Stream Totem now heals two targets at once.
 Name             : Frostbrand (id=147732) [Scaling Spell (10), Spell Family (11)] 
 Class            : Shaman
 School           : Frost
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 3 seconds
@@ -3006,6 +3138,7 @@ Tooltip          : Movement slowed by $s1%.
 Name             : Glyph of Spirit Raptors (rank=Enhancement) (id=147783) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3022,6 +3155,7 @@ Description      : Your Spirit Wolves are replaced with Spirit Raptors.
 Name             : Glyph of Lingering Ancestors (id=147784) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3038,6 +3172,7 @@ Description      : Resurrecting someone with Ancestral Spirit causes a ghostly a
 Name             : Spirit Raptors (id=148079) 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Cast Time        : 1.5 seconds
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3055,6 +3190,7 @@ Description      : $@spelldesc147783
 Name             : Lingering Ancestors (id=148080) 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Cast Time        : 1.5 seconds
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3072,6 +3208,7 @@ Description      : $@spelldesc147784
 Name             : Adaptation (id=152244) [Passive] 
 Class            : Hunter, Death Knight, Shaman
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3096,6 +3233,7 @@ Great Stamina|r
 Name             : Combat Experience (id=156843) [Spell Family (9), Passive] 
 Class            : Hunter, Death Knight, Shaman
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ....x.x. x....... ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3116,6 +3254,7 @@ Description      : Increases all damage done by your pet by $s2%.
 Name             : Cloudburst Totem (id=157153) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : None
 Resource         : 8.6% Base Mana (0) (id=9766)
 GCD              : 1 seconds
 Duration         : 15 seconds
@@ -3140,6 +3279,7 @@ Casting this spell a second time recalls the totem and releases the healing.
 Name             : High Tide (id=157154) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3163,6 +3303,7 @@ Description      : Chain Heal bounces to $m2 additional $Ltarget:targets;, and i
 Name             : Storm Elemental (id=157299) [Spell Family (11)] 
 Class            : Shaman
 School           : Fire
+Spell Type       : None
 Spell Level      : 1
 Duration         : 30 seconds
 Proc Chance      : 101%
@@ -3188,6 +3329,7 @@ Description      : $@spelldesc192249
 Name             : Wind Gust (id=157331) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2 seconds
@@ -3208,6 +3350,7 @@ Description      : Conjures a gust of wind that deals $s1 Nature damage to an en
 Name             : Call Lightning (id=157348) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 3 seconds
@@ -3235,6 +3378,7 @@ Tooltip          : Damage done increased by $w2%.
 Name             : Eye of the Storm (id=157375) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 Duration         : 8 seconds
@@ -3263,6 +3407,7 @@ Variables        : $damage=${0.1*($SP*1.8)*(1+$@versadmg)*(1+0.01*$137040m3)}
 Name             : Critical Strikes (rank=Passive) (id=157444) [Passive, Hidden] 
 Class            : Enhancement Shaman
 School           : Physical
+Spell Type       : None
 Spell Level      : 10
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3280,6 +3425,7 @@ Description      : Increases your chance to critically strike by $s1%.
 Name             : Cloudburst (id=157503) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : None
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3300,6 +3446,7 @@ Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden
 Class            : Beast Mastery Marksmanship Survival Assassination Outlaw Subtlety Enhancement Windwalker Feral Havoc Hunter, Rogue, Shaman, Monk, Druid, Demon Hunter
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3320,6 +3467,7 @@ Name             : Stat Negation Aura - Intellect DPS (id=162699) [Passive, Hidd
 Class            : Shadow Elemental Arcane Fire Frost Affliction Demonology Destruction Balance Priest, Shaman, Mage, Warlock, Druid
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3340,6 +3488,7 @@ Name             : Stat Negation Aura - Intellect Healer (id=162701) [Passive, H
 Class            : Holy Discipline Holy Restoration Mistweaver Restoration Paladin, Priest, Shaman, Monk, Druid
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3359,6 +3508,7 @@ Effects          :
 Name             : Item - Shaman T17 Enhancement 4P Bonus (id=165610) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Proc Flags       : ....x... ..x...x. ........ ........ 
                  : Yellow Melee, AOE Heal, Heal
@@ -3378,6 +3528,7 @@ Description      : While Feral Spirits is active, you also turn into a Feral Spi
 Name             : Feral Spirit (id=167204) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : None
 Range            : 100 yards
 Duration         : 30 seconds
 Triggered by     : Item - Shaman T17 Enhancement 4P Bonus (165610)
@@ -3400,6 +3551,7 @@ Feral Spirits can now proc Windfury.
 Name             : Mastery: Elemental Overload (id=168534) [Spell Family (11), Passive] 
 Class            : Elemental Shaman
 School           : Physical
+Spell Type       : None
 Spell Level      : 29
 Family Flags     : 14
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
@@ -3422,6 +3574,7 @@ Description      : Your Lightning Bolt,$?(s117014&$PL>=78)[ Elemental Blast,][]$
 Name             : Earthen Rage (id=170374) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
@@ -3442,6 +3595,7 @@ Description      : Your damaging spells incite the earth around you to come to y
 Name             : Earthen Rage (id=170377) [Spell Family (11), Hidden] 
 Class            : Shaman
 School           : Physical
+Spell Type       : Magic
 Spell Level      : 1
 Duration         : 6 seconds
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -3460,6 +3614,7 @@ Description      : $@spelldesc170374
 Name             : Earthen Rage (id=170379) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 45 yards
 Velocity         : 90 yards/sec
@@ -3480,6 +3635,7 @@ Description      : $@spelldesc170374
 Name             : Windfury Attack (id=170512) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
+Spell Type       : Melee
 Range            : 100 yards
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -3496,6 +3652,7 @@ Description      : $@spelldesc165610
 Name             : Feral Spirit Windfury Driver (id=170523) [Spell Family (11), Hidden] 
 Class            : Shaman
 School           : Physical
+Spell Type       : Melee
 Range            : 100 yards
 Duration         : 30 seconds
 Proc Chance      : 20%
@@ -3517,6 +3674,7 @@ Description      : $@spelldesc165610
 Name             : Elemental Blast: Haste (id=173183) [Scaling Spell (-1), Spell Family (11)] 
 Class            : Shaman
 School           : Elemental
+Spell Type       : None
 Range            : 40 yards
 Duration         : 10 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3535,6 +3693,7 @@ Tooltip          : Haste increased by $s1.
 Name             : Elemental Blast: Mastery (id=173184) [Scaling Spell (-1), Spell Family (11)] 
 Class            : Shaman
 School           : Elemental
+Spell Type       : None
 Range            : 40 yards
 Duration         : 10 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3553,6 +3712,7 @@ Tooltip          : Mastery increased by $s1.
 Name             : Item - Shaman T18 Elemental 4P Bonus (id=185881) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
@@ -3572,6 +3732,7 @@ Description      : Every $m1 Lightning Bolt or Chain Lightning casts, your total
 Name             : Maelstrom (id=187828) [Spell Family (11), Passive, Hidden] 
 Class            : Elemental Shaman
 School           : Physical
+Spell Type       : None
 Spell Level      : 10
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3588,6 +3749,7 @@ Effects          :
 Name             : Lightning Bolt (id=187837) [Spell Family (11)] 
 Class            : Enhancement Shaman
 School           : Nature
+Spell Type       : Magic
 Resource         : 0 - 40 Maelstrom (11) (id=11199) w/ Overcharge (id=210727)
 Spell Level      : 1
 Range            : 40 yards
@@ -3609,6 +3771,7 @@ Description      : Fires a bolt of lightning at the target, dealing $?s210727[up
 Name             : Crash Lightning (id=187874) [Spell Family (11)] 
 Class            : Enhancement Shaman
 School           : Nature
+Spell Type       : Melee
 Resource         : 20 Maelstrom (11) (id=10541)
 Spell Level      : 28
 Range            : 5 yards
@@ -3638,6 +3801,7 @@ Variables        : $CAP=${($AP+$OAP)*2/3}
 Name             : Crash Lightning (id=187878) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : None
 Spell Level      : 1
 Duration         : 10 seconds
 Proc Chance      : 100%
@@ -3659,6 +3823,7 @@ Tooltip          : Stormstrike and Lava Lash deal an additional $195592s1 damage
 Name             : Maelstrom Weapon (id=187880) [Spell Family (11), Passive] 
 Class            : Enhancement Shaman
 School           : Physical
+Spell Type       : None
 Spell Level      : 40
 Proc Chance      : 100%
 Proc Flags       : ..x.x... ........ ........ ........ 
@@ -3680,6 +3845,7 @@ Description      : Your auto attacks and Windfury attacks generate $187890s1 Mae
 Name             : Maelstrom Weapon (id=187890) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
+Spell Type       : Magic
 Family Flags     : 100
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3696,6 +3862,7 @@ Description      : $@spelldesc187880
 Name             : Healing Surge (id=188070) [Spell Family (11)] 
 Class            : Enhancement Shaman
 School           : Nature
+Spell Type       : Magic
 Resource         : 25% Base Mana (0) (id=10232)
 Spell Level      : 5
 Range            : 40 yards
@@ -3722,6 +3889,7 @@ Description      : Heals a friendly target for $s1.$?a190899[ Consumes $s3 Maels
 Name             : Earthen Spike (id=188089) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
+Spell Type       : Magic
 Resource         : 20 Maelstrom (11) (id=12130)
 Spell Level      : 1
 Range            : 10 yards
@@ -3748,6 +3916,7 @@ Tooltip          : Suffering $s2% increased Nature and Physical damage from the 
 Name             : Lightning Bolt (id=188196) [Scaling Spell (10), Spell Family (11)] 
 Class            : Elemental Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2 seconds
@@ -3771,6 +3940,7 @@ Description      : Hurls a bolt of lightning at the target, dealing $s1 Nature d
 Name             : Flame Shock (id=188389) [Spell Family (11)] 
 Class            : Elemental Shaman
 School           : Fire
+Spell Type       : Magic
 Spell Level      : 3
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -3799,6 +3969,7 @@ Tooltip          : Suffering $w2 Fire damage every $t2 sec.
 Name             : Chain Lightning (id=188443) [Spell Family (11)] 
 Class            : Elemental Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 28
 Range            : 40 yards
 Cast Time        : 2 seconds
@@ -3825,6 +3996,7 @@ Description      : Hurls a lightning bolt at the enemy, dealing $s1 Nature damag
 Name             : Fire Elemental (id=188592) [Spell Family (11)] 
 Class            : Shaman
 School           : Fire
+Spell Type       : Magic
 Spell Level      : 56
 Range            : 30 yards
 GCD              : 1 seconds
@@ -3852,6 +4024,7 @@ Tooltip          : Maelstrom generation increased by $193774s1%
 Name             : Earth Elemental (id=188616) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 36
 Range            : 30 yards
 Duration         : 60 seconds
@@ -3872,6 +4045,7 @@ Description      : $@spelldesc198103
 Name             : Flame Shock (id=188838) [Spell Family (11)] 
 Class            : Restoration Shaman
 School           : Fire
+Spell Type       : Magic
 Resource         : 15% Base Mana (0) (id=10268)
 Spell Level      : 3
 Range            : 40 yards
@@ -3903,6 +4077,7 @@ Tooltip          : Suffering $w2 Fire damage every $t2 sec.
 Name             : Lightning Vortex (id=189063) [Spell Family (6)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : None
 Spell Level      : 10
 Duration         : 15 seconds
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -3923,6 +4098,7 @@ Tooltip          : Spell haste increased by $w1%.
 Name             : Gathering Vortex (id=189078) 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Duration         : Aura (infinite)
 Stacks           : 20 maximum
 Proc Chance      : 101%
@@ -3942,6 +4118,7 @@ Tooltip          : A vortex is building around you. When this effect reaches 10,
 Name             : Feral Spirit (id=190185) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Melee
 Spell Level      : 56
 Range            : 100 yards
 Family Flags     : 89
@@ -3961,6 +4138,7 @@ Description      : $@spelldesc51533
 Name             : Maelstrom Controller (id=190488) [Spell Family (11), Passive, Hidden] 
 Class            : Elemental Shaman
 School           : Physical
+Spell Type       : None
 Spell Level      : 3
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3979,6 +4157,7 @@ Effects          :
 Name             : Fulmination (id=190493) [Spell Family (11), Passive] 
 Class            : Elemental Shaman
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Family Flags     : 120
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -4019,6 +4198,7 @@ Description      : Damage from your Lightning Bolt generates $s1 Maelstrom, Lava
 Name             : Fulmination! (id=190494) [Spell Family (11), Hidden] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Duration         : Aura (infinite)
 Triggered by     : Maelstrom Controller (190488)
 Attributes       : .......x x....... ........ ........   ........ ..x..... ........ ....x... 
@@ -4036,6 +4216,7 @@ Effects          :
 Name             : Healing Surge (rank=Rank 2) (id=190899) [Spell Family (11), Passive] 
 Class            : Enhancement Shaman
 School           : Physical
+Spell Type       : None
 Spell Level      : 66
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4056,6 +4237,7 @@ Description      : Healing Surge consumes $188070s3 Maelstrom, if available, to 
 Name             : Healing Surge (id=190900) [Spell Family (11), Hidden] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Duration         : Aura (infinite)
 Stacks           : 5 maximum
@@ -4079,6 +4261,7 @@ Name             : Stormkeeper (id=191634) [Spell Family (11)]
 Hotfixed         : Attributes
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 15 seconds
@@ -4105,6 +4288,7 @@ Tooltip          : Your next Lightning Bolt or Chain Lightning is instant and ca
 Name             : Lightning Blast (id=191726) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Resource         : 40% Base Mana (0) (id=10367)
 Spell Level      : 20
 Range            : 40 yards
@@ -4125,6 +4309,7 @@ Description      : Inflicts Nature damage to an enemy.
 Name             : Chain Lightning (id=191732) 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Resource         : 30% Base Mana (0) (id=10368)
 Spell Level      : 20
 Range            : 40 yards
@@ -4144,6 +4329,7 @@ Description      : Inflicts Nature damage to up to $x enemies.
 Name             : Capacitor Totem (id=192058) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : None
 Resource         : 10% Base Mana (0) (id=10389)
 Spell Level      : 44
 Range            : 35 yards
@@ -4168,6 +4354,7 @@ Description      : Summons a totem at the target location that gathers electrica
 Name             : Wind Rush Totem (id=192077) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : None
 Range            : 40 yards
 GCD              : 1 seconds
 Duration         : 15 seconds
@@ -4188,6 +4375,7 @@ Description      : Summons a totem at the target location for $d, continually gr
 Name             : Wind Rush Totem (id=192078) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Family Flags     : 53
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -4206,6 +4394,7 @@ Description      : $@spelldesc192077
 Name             : Wind Rush (id=192082) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 5 seconds
@@ -4226,6 +4415,7 @@ Tooltip          : Movement speed increased by $s1%.
 Name             : Searing Assault (id=192087) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
@@ -4245,6 +4435,7 @@ Description      : Flametongue now causes the target to burn for $268429o1 Fire 
 Name             : Graceful Spirit (id=192088) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4267,6 +4458,7 @@ Description      : Reduces the cooldown of Spiritwalker's Grace by ${$m1/-1000} 
 Name             : Lightning Shield (id=192106) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 3600 seconds
@@ -4301,6 +4493,7 @@ Name             : Lightning Shield (id=192109) [Spell Family (11)]
 Hotfixed         : Attributes
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 10 yards
 Affecting spells : Energized Shield (24499 effect#1), Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
@@ -4323,6 +4516,7 @@ Name             : Liquid Magma Totem (id=192222) [Spell Family (11)]
 Hotfixed         : Attributes
 Class            : Shaman
 School           : Fire
+Spell Type       : None
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1 seconds
@@ -4346,6 +4540,7 @@ Description      : Summons a totem at the target location for $d that hurls liqu
 Name             : Liquid Magma Totem (id=192223) [Hidden] 
 Class            : Shaman
 School           : Fire
+Spell Type       : None
 Triggered by     : Liquid Magma Totem (192226)
 Attributes       : .......x ........ ........ .....x..   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4363,6 +4558,7 @@ Description      : $@spelldesc152255
 Name             : Liquid Magma Totem (id=192226) 
 Class            : Shaman
 School           : Fire
+Spell Type       : Magic
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 45 seconds
@@ -4383,6 +4579,7 @@ Tooltip          : Erupting liquid magma.
 Name             : Liquid Magma (id=192231) [Spell Family (11)] 
 Class            : Shaman
 School           : Fire
+Spell Type       : Magic
 Range            : 100 yards
 Velocity         : 8 yards/sec
 Affecting spells : Elemental Fury (60188 effect#1)
@@ -4402,6 +4599,7 @@ Description      : $@spelldesc192222
 Name             : Crashing Storm (id=192246) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4418,6 +4616,7 @@ Description      : Crash Lightning also electrifies the ground, leaving an elect
 Name             : Storm Elemental (id=192249) [Scaling Spell (-6), Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -4442,6 +4641,7 @@ While the Storm Elemental is active, each time you cast Lightning Bolt or Chain 
 Name             : Fulmination (id=193777) [Spell Family (11), Hidden] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Duration         : Aura (infinite)
 Proc Chance      : 101%
 Triggered by     : Maelstrom Controller (190488)
@@ -4460,6 +4660,7 @@ Effects          :
 Name             : Rockbiter (id=193786) [Spell Family (11)] 
 Class            : Enhancement Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 10
 Range            : 20 yards
 GCD              : 1.5 seconds
@@ -4486,6 +4687,7 @@ Description      : Assaults your target with earthen power, dealing $s1 Nature d
 Name             : Flametongue (id=193796) [Scaling Spell (10), Spell Family (11)] 
 Class            : Enhancement Shaman
 School           : Fire
+Spell Type       : Magic
 Spell Level      : 12
 Range            : 20 yards
 GCD              : 1.5 seconds
@@ -4512,6 +4714,7 @@ Variables        : $coeff=${0.044}
 Name             : Flametongue (id=194084) [Spell Family (11)] 
 Class            : Shaman
 School           : Fire
+Spell Type       : None
 Spell Level      : 10
 Duration         : 16 seconds
 Proc Chance      : 100%
@@ -4541,6 +4744,7 @@ Variables        : $coeff=${0.044}
 Name             : Stormlash (id=195222) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 16
 Range            : 100 yards
 Duration         : 8 seconds
@@ -4568,6 +4772,7 @@ Attacks and spellcasts have a chance to deal additional Nature damage.
 Name             : Stormlash (id=195256) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 16
 Range            : 100 yards
 Velocity         : 50 yards/sec
@@ -4589,6 +4794,7 @@ Description      : $@spelldesc195255
 Name             : Stormstrike (id=195573) [Spell Family (11), Hidden] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Duration         : 2 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
@@ -4608,6 +4814,7 @@ Effects          :
 Name             : Crash Lightning (id=195592) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 5 yards
 Affecting spells : Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1), Crashing Lightning (242286 effect#1), Storm's Eye (263795 effect#1)
@@ -4628,6 +4835,7 @@ Description      : $@spelldesc187874
 Name             : Maelstrom Power Decrease (id=195769) [Spell Family (11), Hidden] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Stacks           : 10 maximum
 Proc Chance      : 101%
@@ -4647,6 +4855,7 @@ Effects          :
 Name             : Hand of Doom (id=196283) [Spell Family (5), Passive] 
 Class            : Shaman, Warlock
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4663,6 +4872,7 @@ Description      : Hand of Gul'dan now also applies Doom to all enemies it hits.
 Name             : Frostbrand (id=196834) [Spell Family (11)] 
 Class            : Enhancement Shaman
 School           : Frost
+Spell Type       : Magic
 Resource         : 20 Maelstrom (11) (id=10596)
 Spell Level      : 38
 Range            : 20 yards
@@ -4695,6 +4905,7 @@ Tooltip          : Melee attacks reduce target's movement speed by $147732s1% fo
 Name             : Frost Shock (id=196840) [Spell Family (11)] 
 Class            : Elemental Shaman
 School           : Frost
+Spell Type       : Magic
 Spell Level      : 38
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -4721,6 +4932,7 @@ Tooltip          : Movement speed reduced by $s2%.
 Name             : Feral Lunge (id=196881) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 5 yards
 Proc Chance      : 101%
@@ -4740,6 +4952,7 @@ Description      : $@spelldesc196884
 Name             : Feral Lunge (id=196884) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 8 - 25 yards
 GCD              : 0.5 seconds
@@ -4764,6 +4977,7 @@ Description      : Lunge at your enemy as a ghostly wolf, biting them to deal $2
 Name             : Lightning Rod (id=197209) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Range            : 40 yards
 Duration         : 10 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4782,6 +4996,7 @@ Tooltip          : Casting Shaman's Lightning Bolt and Chain Lightning also deal
 Name             : Fury of Air (id=197211) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : None
 Resource         : 3 Maelstrom (11) and 3 Maelstrom (11) per tick (id=10680)
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
@@ -4802,6 +5017,7 @@ Variables        : $CAP=${($AP+$OAP)*2/3}
 Name             : Sundering (id=197214) [Spell Family (11)] 
 Class            : Shaman
 School           : Flamestrike
+Spell Type       : Melee
 Resource         : 20 Maelstrom (11) (id=10711)
 GCD              : 1.5 seconds
 Duration         : 2 seconds
@@ -4830,6 +5046,7 @@ Tooltip          : Incapacitated.
 Name             : Fury of Air (id=197385) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Duration         : 3 seconds
 Affecting spells : Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
 Triggered by     : Fury of Air (197211)
@@ -4852,6 +5069,7 @@ Tooltip          : Snared by $s2%.
 Name             : Lightning Rod (id=197568) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : None
 Range            : 100 yards
 Affecting spells : Elemental Fury (60188 effect#1)
 Family Flags     : 121
@@ -4871,6 +5089,7 @@ Description      : $@spelldesc210689
 Name             : Landslide (id=197992) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Proc Chance      : 20%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
@@ -4890,6 +5109,7 @@ Description      : $?s201897[Boulderfist][Rockbiter] has a $h% chance to increas
 Name             : Wellspring (id=197995) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : None
 Resource         : 20% Base Mana (0) (id=10729)
 Range            : 30 yards
 Cast Time        : 1.5 seconds
@@ -4912,6 +5132,7 @@ Description      : Creates a surge of water that flows forward, healing friendly
 Name             : Wellspring (id=197997) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : None
 Range            : 50000 yards
 Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), Flash Flood (280615 effect#1)
 Family Flags     : 41, 51
@@ -4931,6 +5152,7 @@ Description      : $@spelldesc197995
 Name             : Fire Elemental (id=198067) [Spell Family (11)] 
 Class            : Elemental Shaman
 School           : Fire
+Spell Type       : Magic
 Spell Level      : 56
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -4956,6 +5178,7 @@ While the Greater Fire Elemental is active, Flame Shock generates $263819s1 Mael
 Name             : Earth Elemental (id=198103) [Spell Family (11)] 
 Class            : Elemental Enhancement Restoration Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 36
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -4977,6 +5200,7 @@ Description      : Calls forth a Greater Earth Elemental to protect you and your
 Name             : Gathering Storms (id=198299) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -4994,6 +5218,7 @@ Description      : Each target hit by Crash Lightning increases damage dealt by 
 Name             : Gathering Storms (id=198300) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 12 seconds
 Proc Chance      : 101%
@@ -5018,6 +5243,7 @@ Tooltip          : Damage of Stormstrike increased by $w1%.
 Name             : Spirit Bomb (id=198455) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Range            : 100 yards
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -5035,6 +5261,7 @@ Description      : Deals $s1 damage to all targets within $A1.
 Name             : Fire Nova (id=198480) [Spell Family (11)] 
 Class            : Shaman
 School           : Fire
+Spell Type       : Magic
 Range            : 100 yards
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -5052,6 +5279,7 @@ Description      : Deals $s1 Fire damage to all targets within $A1 yards.
 Name             : Snowstorm (id=198483) [Spell Family (11)] 
 Class            : Shaman
 School           : Frost
+Spell Type       : Magic
 Range            : 100 yards
 Duration         : 3 seconds
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
@@ -5072,6 +5300,7 @@ Description      : Deals $s1 Frost damage to all targets within $A1 yards.
 Name             : Thunder Bite (id=198485) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Range            : 100 yards
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -5089,6 +5318,7 @@ Description      : Deals $s1 Nature damage, jumping to up to $x targets.
 Name             : Feral Spirit (id=198506) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Melee
 Spell Level      : 60
 Range            : 30 yards
 Duration         : 15 seconds
@@ -5109,6 +5339,7 @@ Variables        : $percent=$?s63271[${$58877m1*1.4}][${$58877m1}]
 Name             : Imbue the Elements (id=198735) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Proc Chance      : 101%
 Real PPM         : 1.25 (Haste multiplier)
@@ -5130,6 +5361,7 @@ Description      : Rockbiter Weapon has a chance to cause Doomhammer upheave roc
 Name             : Unleash Doom (id=198736) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Proc Chance      : 20%
 Proc Flags       : ....x... ....x... x....... ........ 
@@ -5150,6 +5382,7 @@ Description      : Stormstrike has a chance to unleash the power of |cFFFFCC99Do
 Name             : Earthen Wall Totem (id=198838) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : None
 Resource         : 11% Base Mana (0) (id=10752)
 Spell Level      : 1
 Range            : 40 yards
@@ -5176,6 +5409,7 @@ Description      : Summons a totem with ${$m2*$MHP/100} health for $d. ${$m3*$SP
 Name             : Earthen Wall (id=198839) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : None
 Spell Level      : 1
 Duration         : Aura (infinite)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5194,6 +5428,7 @@ Tooltip          : When a nearby ally takes damage, a portion is redirected to t
 Name             : Earthen Might (id=199019) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 10 seconds
 Triggered by     : Imbue the Elements (198735)
@@ -5214,6 +5449,7 @@ Tooltip          : Doomhammer is causing large rocks to lift out of the ground a
 Name             : Earthen Might (id=199022) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Range            : 100 yards
 Velocity         : 20 yards/sec
 Triggered by     : Earthen Might (199019)
@@ -5233,6 +5469,7 @@ Description      : $@spelldesc198735
 Name             : Unleash Lava (id=199053) [Spell Family (11)] 
 Class            : Shaman
 School           : Fire
+Spell Type       : Magic
 Range            : 100 yards
 Velocity         : 1.2 yards/sec
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
@@ -5251,6 +5488,7 @@ Description      : $@spelldesc198736
 Name             : Unleash Lightning (id=199054) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Range            : 100 yards
 Velocity         : 1.2 yards/sec
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
@@ -5269,6 +5507,7 @@ Description      : $@spelldesc198736
 Name             : Unleash Doom (id=199055) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 6 seconds
 Proc Chance      : 101%
@@ -5292,6 +5531,7 @@ Tooltip          : Your special attacks will trigger an arc of fiery or lightnin
 Name             : Undulation (id=200071) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5308,6 +5548,7 @@ Description      : Every third Healing Wave or Healing Surge you cast heals for 
 Name             : Torrent (id=200072) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5326,6 +5567,7 @@ Description      : Increases the initial heal from Riptide by $s1%.
 Name             : Deluge (id=200076) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5343,6 +5585,7 @@ Name             : Activating Specialization (id=200749) [Hidden]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
+Spell Type       : None
 Range            : 50000 yards
 Cast Time        : 5 seconds
 Attributes       : .......x ........ ........ ....x...   ..xxx..x ........ .x...... ........ 
@@ -5362,6 +5605,7 @@ Tooltip          : Switch to your Primary Talent Specialization.
 Name             : Stormbringer (id=201845) [Spell Family (11), Passive] 
 Class            : Enhancement Shaman
 School           : Nature
+Spell Type       : None
 Spell Level      : 48
 Proc Chance      : 5%
 Proc Flags       : ..x.x... ........ x....... ........ 
@@ -5384,6 +5628,7 @@ Description      : Your weapon attacks have a $h.1% chance to reset the remainin
 Name             : Stormbringer (id=201846) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
+Spell Type       : Melee
 Range            : 100 yards
 Duration         : 12 seconds
 Stacks           : 1 initial, 1 maximum
@@ -5425,6 +5670,7 @@ Tooltip          : Stormstrike has no cooldown, deals $s4% increased damage, and
 Name             : Hot Hand (id=201900) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
 School           : Fire
+Spell Type       : None
 Proc Chance      : 100%
 Real PPM         : 2.5 (Haste multiplier)
 Proc Flags       : ..x.x... ........ ........ ........ 
@@ -5445,6 +5691,7 @@ Description      : Melee attacks with Flametongue active have a chance to make y
 Name             : Landslide (id=202004) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Duration         : 10 seconds
 Proc Chance      : 101%
@@ -5469,6 +5716,7 @@ Tooltip          : Your next Stormstrike will deal $s1% increased damage.
 Name             : Stomp (id=202044) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -5493,6 +5741,7 @@ $damage=${$<ce>*($RAP*0.250)}
 Name             : Feral Swipe (id=202045) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -5518,6 +5767,7 @@ Tooltip          : Bleeding for $o2 damage.
 Name             : Resonance Totem (id=202188) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : None
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1 seconds
@@ -5541,6 +5791,7 @@ Description      : Summons a Resonance Totem near the caster for $d that generat
 Name             : Resonance Totem (id=202192) [Scaling Spell (10), Spell Family (11), Passive] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 30 yards
 Cast Time        : 1 seconds
@@ -5562,6 +5813,7 @@ Tooltip          : Generates $s1 Maelstrom every $t1 sec.
 Name             : Doom Winds (rank=Artifact) (id=204945) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 6 seconds
 Cooldown         : 60 seconds
@@ -5593,6 +5845,7 @@ Windfury damage increased by $s2%.
 Name             : Stormkeeper (rank=Artifact) (id=205495) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 15 seconds
@@ -5625,6 +5878,7 @@ Tooltip          : Your next Lightning Bolt or Chain Lightning will be instant a
 Name             : Ancestral Protection Totem (id=207399) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : None
 Resource         : 11% Base Mana (0) (id=11020)
 Spell Level      : 1
 Range            : 40 yards
@@ -5649,6 +5903,7 @@ Cannot reincarnate an ally who dies to massive damage.
 Name             : Ancestral Vigor (id=207400) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : None
 Range            : 100 yards
 Duration         : 10 seconds
 Triggered by     : Ancestral Vigor (207401)
@@ -5669,6 +5924,7 @@ Tooltip          : Maximum health increased by $s1%.
 Name             : Ancestral Vigor (id=207401) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Heal
@@ -5688,6 +5944,7 @@ Description      : Targets you heal with Healing Wave, Healing Surge, Chain Heal
 Name             : Ancestral Protection (id=207495) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : None
 Spell Level      : 1
 Duration         : Aura (infinite)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5706,6 +5963,7 @@ Tooltip          : Granting allies $207498s1% increased health and the possibili
 Name             : Ancestral Protection (id=207498) [Spell Family (11)] 
 Class            : Shaman
 School           : Holy
+Spell Type       : None
 Spell Level      : 1
 Range            : 40 yards
 Duration         : 30 seconds
@@ -5730,6 +5988,7 @@ If you die, the protection of the ancestors will allow you to return to life.
 Name             : Downpour (id=207778) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Resource         : 15% Base Mana (0) (id=191705)
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -5756,6 +6015,7 @@ Cooldown increased by $s2 sec for each target effectively healed.
 Name             : Stormlash (id=207835) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 16
 Range            : 100 yards
 GCD              : 1.5 seconds
@@ -5783,6 +6043,7 @@ Attacks and spellcasts have a chance to deal additional Nature damage.
 Name             : Eye of the Twisting Nether (id=207994) [Spell Family (4), Passive] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Req. Max Level   : 115
 Proc Chance      : 100%
 Proc Flags       : ....x... x...x... x.x..... ........ 
@@ -5803,6 +6064,7 @@ Description      : Damaging enemies with your Fire, Frost, or Nature abilities i
 Name             : Fire of the Twisting Nether (id=207995) 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Duration         : 8 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -5821,6 +6083,7 @@ Tooltip          : All damage done increased by ${$s1/10}.1%.
 Name             : Chill of the Twisting Nether (id=207998) 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Duration         : 8 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -5839,6 +6102,7 @@ Tooltip          : All damage done increased by ${$s1/10}.1%.
 Name             : Shock of the Twisting Nether (id=207999) 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Duration         : 8 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -5857,6 +6121,7 @@ Tooltip          : All damage done increased by ${$s1/10}.1%.
 Name             : Totem Mastery (id=210643) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : None
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1 seconds
@@ -5895,6 +6160,7 @@ Increases your Haste by $210659s1%.
 Name             : Storm Totem (id=210651) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : None
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1 seconds
@@ -5916,6 +6182,7 @@ Description      : Summons a Storm Totem near the caster for $d that increases t
 Name             : Storm Totem (id=210652) [Scaling Spell (10), Spell Family (11), Passive] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 30 yards
 Velocity         : 35 yards/sec
@@ -5936,6 +6203,7 @@ Tooltip          : Increases the chance for Lightning Bolt and Chain Lightning t
 Name             : Ember Totem (id=210657) [Spell Family (11)] 
 Class            : Shaman
 School           : Fire
+Spell Type       : None
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1 seconds
@@ -5959,6 +6227,7 @@ Description      : Summons an Ember Totem near the caster for $d that increases 
 Name             : Ember Totem (id=210658) [Scaling Spell (10), Spell Family (11), Passive] 
 Class            : Shaman
 School           : Fire
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 30 yards
 Velocity         : 35 yards/sec
@@ -5981,6 +6250,7 @@ Tooltip          : Increases Flame Shock damage over time by $s1%.
 Name             : Tailwind Totem (id=210659) [Scaling Spell (10), Spell Family (11), Passive] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 30 yards
 Velocity         : 35 yards/sec
@@ -6001,6 +6271,7 @@ Tooltip          : Increases haste by $s1%.
 Name             : Tailwind Totem (id=210660) [Spell Family (11)] 
 Class            : Shaman
 School           : Fire
+Spell Type       : None
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1 seconds
@@ -6024,6 +6295,7 @@ Description      : Summons a Tailwind Totem near the caster for $d that increase
 Name             : Lightning Rod (id=210689) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Nature
+Spell Type       : None
 GCD              : 1.5 seconds
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
@@ -6046,6 +6318,7 @@ Description      : Your Lightning Bolt and Chain Lightning have a $s1% chance to
 Name             : Icefury (id=210714) [Spell Family (11)] 
 Class            : Shaman
 School           : Frost
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2 seconds
@@ -6083,6 +6356,7 @@ Tooltip          : Frost Shock damage increased by $s3%.
 Name             : Overcharge (id=210727) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6105,6 +6379,7 @@ Description      : Lightning Bolt now consumes up to $s1 Maelstrom for up to $s2
 Name             : Crashing Storm (id=210797) [Spell Family (3)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 6 seconds
@@ -6124,6 +6399,7 @@ Description      : $@spelldesc192246
 Name             : Crashing Storm (id=210801) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Affecting spells : Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
@@ -6144,6 +6420,7 @@ Description      : $@spelldesc192246
 Name             : Hailstorm (id=210853) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6160,6 +6437,7 @@ Description      : Frostbrand now also enhances your weapon's damage, causing ea
 Name             : Hailstorm (id=210854) [Spell Family (11)] 
 Class            : Shaman
 School           : Frost
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 30 yards
 Affecting spells : Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
@@ -6180,6 +6458,7 @@ Description      : $@spelldesc210853
 Name             : Hex (id=210873) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 42
 Range            : 30 yards
 Cast Time        : 1.7 seconds
@@ -6211,6 +6490,7 @@ Tooltip          : Incapacitated.
 Name             : Hex (id=211004) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 42
 Range            : 30 yards
 Cast Time        : 1.7 seconds
@@ -6242,6 +6522,7 @@ Tooltip          : Incapacitated.
 Name             : Hex (id=211010) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 42
 Range            : 30 yards
 Cast Time        : 1.7 seconds
@@ -6273,6 +6554,7 @@ Tooltip          : Incapacitated.
 Name             : Hex (id=211015) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 42
 Range            : 30 yards
 Cast Time        : 1.7 seconds
@@ -6304,6 +6586,7 @@ Tooltip          : Incapacitated.
 Name             : Ancestral Vision (id=212048) [Spell Family (11)] 
 Class            : Restoration Shaman
 School           : Nature
+Spell Type       : Magic
 Resource         : 4% Base Mana (0) (id=11138)
 Spell Level      : 66
 Range            : 100 yards
@@ -6327,6 +6610,7 @@ Description      : Returns all dead party members to life with $s1% of maximum h
 Name             : Stormlash (id=213307) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 16
 Range            : 100 yards
 Affecting spells : Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
@@ -6347,6 +6631,7 @@ Description      : $@spelldesc195255
 Name             : Overcharge (id=213498) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ .....x.. ........ ........ 
@@ -6363,6 +6648,7 @@ Description      : $@spelldesc210727
 Name             : The Deceiver's Blood Pact (id=214131) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Nature
+Spell Type       : None
 Req. Max Level   : 115
 Proc Chance      : 20%
 Proc Flags       : ........ ........ x....... ........ 
@@ -6383,6 +6669,7 @@ Description      : Earth Shock has a $h% chance to refund all of the Maelstrom s
 Name             : The Deceiver's Blood Pact (id=214134) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : None
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6398,6 +6685,7 @@ Description      : $@spelldesc214131
 Name             : Lightning Bolt Overload (id=214816) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : None
 Spell Level      : 1
 Range            : 30 yards
 Cast Time        : 2 seconds
@@ -6418,6 +6706,7 @@ Description      : $@spelldesc45284
 Name             : Hot Hand (id=215785) [Spell Family (11)] 
 Class            : Shaman
 School           : Fire
+Spell Type       : None
 Duration         : 15 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
@@ -6446,6 +6735,7 @@ Tooltip          : Lava Lash damage increased by $s1% and cost reduced by $s2%.
 Name             : Feral Lunge (id=215802) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 100 yards
 Proc Chance      : 101%
@@ -6466,6 +6756,7 @@ Description      : $@spelldesc196884
 Name             : Chain Lightning Overload (id=218558) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Range            : 50000 yards
 Attributes       : ........ ........ ........ x..x.x.x   .....x.. ..x..... ........ ........ 
                  : ..x..... ......x. ...x.... ....x...   ........ .x...... xx...... ......x. 
@@ -6483,6 +6774,7 @@ Description      : Gaining Maelstrom.
 Name             : Lava Beam Overload (id=218559) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Range            : 50000 yards
 Attributes       : ........ ........ ........ x..x.x.x   .....x.. ..x..... ........ ........ 
                  : ..x..... ......x. ...x.... ....x...   ........ .x...... xx...... ......x. 
@@ -6500,6 +6792,7 @@ Description      : Gaining Maelstrom.
 Name             : Icefury Overload (id=219271) [Spell Family (11)] 
 Class            : Shaman
 School           : Frost
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 Velocity         : 40 yards/sec
@@ -6524,6 +6817,7 @@ Description      : Hurls frigid ice at the target, dealing $s1 Frost damage.
 Name             : Molten Weapon (id=224125) [Spell Family (11)] 
 Class            : Shaman
 School           : Fire
+Spell Type       : Magic
 Range            : 5 yards
 Duration         : 15 seconds
 Proc Chance      : 101%
@@ -6549,6 +6843,7 @@ Tooltip          : Increase all fire damage dealt by $s1%, and Lava Lash now cau
 Name             : Icy Edge (id=224126) [Spell Family (11)] 
 Class            : Shaman
 School           : Frost
+Spell Type       : None
 Range            : 5 yards
 Duration         : 15 seconds
 Proc Chance      : 101%
@@ -6573,6 +6868,7 @@ $damage=${($AP*0.35)*(1+($137041s1/100))*$<mastery>*(1+$@versadmg)}
 Name             : Crackling Surge (id=224127) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Range            : 5 yards
 Duration         : 15 seconds
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
@@ -6598,6 +6894,7 @@ Tooltip          : The damage of Stormstrike and Windfury is increased by $s1%.
 Name             : Totem Mastery (id=226772) [Spell Family (5)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Range            : 50000 yards
 Duration         : 120 seconds
 Affecting spells : Dirty Hands (211105 effect#1), From the Shadows (270569 effect#1), Demonic Meteor (278737 effect#1)
@@ -6619,6 +6916,7 @@ Description      : $@spelldesc105174
 Name             : Feral Spirit (id=228562) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Melee
 Spell Level      : 36
 Range            : 30 yards
 Duration         : 15 seconds
@@ -6641,6 +6939,7 @@ Variables        : $percent=$?s63271[${$58877m1*1.4}][${$58877m1}]
 Name             : Lava Burst (rank=Rank 2) (id=231721) [Spell Family (11), Passive] 
 Class            : Elemental Restoration Shaman
 School           : Fire
+Spell Type       : None
 Spell Level      : 20
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6658,6 +6957,7 @@ Description      : Lava Burst will always critically strike if the target is aff
 Name             : Chain Lightning (rank=Rank 2) (id=231722) [Spell Family (11), Passive] 
 Class            : Elemental Shaman
 School           : Fire
+Spell Type       : None
 Spell Level      : 70
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6677,6 +6977,7 @@ Description      : Chain Lightning jumps to $s1 additional targets.
 Name             : Feral Spirit (rank=Rank 2) (id=231723) [Spell Family (11), Passive] 
 Class            : Enhancement Shaman
 School           : Fire
+Spell Type       : None
 Spell Level      : 56
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6694,6 +6995,7 @@ Description      : Feral Spirits grant you $190185s1 Maelstrom each time they at
 Name             : Riptide (rank=Rank 2) (id=231725) [Spell Family (11), Passive] 
 Class            : Restoration Shaman
 School           : Fire
+Spell Type       : None
 Spell Level      : 38
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6713,6 +7015,7 @@ Description      : Riptide's duration is increased by ${$m1/1000} sec.
 Name             : Chain Heal (rank=Rank 2) (id=231780) [Spell Family (11), Passive] 
 Class            : Restoration Shaman
 School           : Fire
+Spell Type       : None
 Spell Level      : 54
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6732,6 +7035,7 @@ Description      : Chain Heal jumps to $s1 additional target.
 Name             : Tidal Waves (rank=Rank 2) (id=231785) [Spell Family (11), Passive] 
 Class            : Restoration Shaman
 School           : Fire
+Spell Type       : None
 Spell Level      : 70
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6755,6 +7059,7 @@ Description      : Both effects of Tidal Waves are increased by $s1%.
 Name             : Boulderfist (id=246035) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6775,6 +7080,7 @@ Description      : Rockbiter's recharge time is reduced by $s1% and it deals $s2
 Name             : Netherlight Fortification (id=250879) [Passive] 
 Class            : Hunter, Shaman
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 9
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6794,6 +7100,7 @@ Name             : Vindicaar Matrix Crystal (id=251463)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
+Spell Type       : None
 GCD              : 1.5 seconds
 Triggered by     : Vindicaar Matrix Crystal (255529)
 Attributes       : ........ ........ ........ ........   ...x...x ..x..... ........ ........ 
@@ -6811,6 +7118,7 @@ Description      : Unlock powers at the Vindicaar's Matrix Core to use while on 
 Name             : Item - Shaman T21 Elemental 4P Bonus (id=251758) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
@@ -6830,6 +7138,7 @@ Description      : Earth Shock and Frost Shock have a $s1% chance to cause an El
 Name             : Earth Shock Overload (id=252143) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Range            : 100 yards
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... x....... ........ .....x..   ........ ........ ........ ........ 
@@ -6848,6 +7157,7 @@ Name             : Vindicaar Matrix Crystal (id=255529) [Hidden]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
+Spell Type       : None
 Triggered by     : Activating Specialization (200749)
 Attributes       : .......x x....... .......x x..x.x..   ...x.x.x ..x..... ........ ........ 
                  : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ....x... 
@@ -6868,6 +7178,7 @@ Name             : Light's Judgment (rank=Racial) (id=255647) [Scaling Spell (-6
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
+Spell Type       : Magic
 Max Scaling Level: 120
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -6890,6 +7201,7 @@ Name             : Holy Resistance (rank=Racial Passive) (id=255651) [Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6907,6 +7219,7 @@ Name             : Light's Reckoning (rank=Racial Passive) (id=255652) [Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ .......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -6924,6 +7237,7 @@ Name             : Demonbane (rank=Racial Passive) (id=255653) [Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6941,6 +7255,7 @@ Name             : Light's Judgment (rank=Racial) (id=256893) [Scaling Spell (-6
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
+Spell Type       : Magic
 Max Scaling Level: 120
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -6963,6 +7278,7 @@ Name             : Light's Reckoning (rank=Racial Passive) (id=256896) [Scaling 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
+Spell Type       : Magic
 Max Scaling Level: 120
 Range            : 40 yards
 Triggered by     : Light's Reckoning (255652)
@@ -6986,6 +7302,7 @@ Heals $s2 to allies within $A1.
 Name             : Exposed Elements (id=260694) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Proc Chance      : 101%
 Proc Flags       : ........ ....x... x....... ........ 
@@ -7006,6 +7323,7 @@ Description      : Earth Shock now increases the damage of your next Lightning B
 Name             : Master of the Elements (id=260734) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Duration         : 15 seconds
 Triggered by     : Master of the Elements (16166)
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -7024,6 +7342,7 @@ Tooltip          : Your next Frost or Nature spell will deal $s1% increased dama
 Name             : Spirit Wolf (id=260878) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7041,6 +7360,7 @@ Description      : While transformed into a Ghost Wolf, you gain $260881s1% incr
 Name             : Spirit Wolf (id=260881) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Duration         : Aura (infinite)
 Stacks           : 4 maximum
@@ -7065,6 +7385,7 @@ Damage taken reduced by $s2%.
 Name             : Spirit Wolf (id=260882) [Spell Family (11), Hidden] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Duration         : Aura (infinite)
 Attributes       : .......x x....... ........ ........   ........ ........ ........ ........ 
@@ -7083,6 +7404,7 @@ Description      : $@spelldesc260878
 Name             : High Voltage (id=260890) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ...x.... ........ 
@@ -7100,6 +7422,7 @@ Description      : Lightning Bolt and Chain Lightning have a $s1% of normal chan
 Name             : Unlimited Power (id=260895) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x....... ........ 
@@ -7120,6 +7443,7 @@ Description      : When your spells cause an elemental overload, you gain $27273
 Name             : Haste (id=261582) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 2
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7137,6 +7461,7 @@ Tooltip          : Increases haste by $s1.
 Name             : Totem Mastery (id=262395) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : None
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1 seconds
@@ -7175,6 +7500,7 @@ Increases your chance to trigger Windfury by $262400s1%.
 Name             : Storm Totem (id=262396) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : None
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1 seconds
@@ -7196,6 +7522,7 @@ Description      : Summons a Storm Totem near the caster for $d that increases t
 Name             : Storm Totem (id=262397) [Scaling Spell (-1), Spell Family (11), Passive] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 30 yards
 Velocity         : 35 yards/sec
@@ -7218,6 +7545,7 @@ Tooltip          : Stormstrike damage increased by $s1%.
 Name             : Ember Totem (id=262398) [Spell Family (11)] 
 Class            : Shaman
 School           : Fire
+Spell Type       : None
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1 seconds
@@ -7241,6 +7569,7 @@ Description      : Summons an Ember Totem near the caster for $d that increases 
 Name             : Ember Totem (id=262399) [Scaling Spell (-1), Spell Family (11), Passive] 
 Class            : Shaman
 School           : Fire
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 30 yards
 Velocity         : 35 yards/sec
@@ -7263,6 +7592,7 @@ Tooltip          : Increases the damage of Lava Lash by $s1%.
 Name             : Tailwind Totem (id=262400) [Scaling Spell (-1), Spell Family (11), Passive] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 30 yards
 Velocity         : 35 yards/sec
@@ -7285,6 +7615,7 @@ Tooltip          : Increases the chance for Windfury Weapon to activate by $s1%.
 Name             : Tailwind Totem (id=262401) [Spell Family (11)] 
 Class            : Shaman
 School           : Fire
+Spell Type       : None
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1 seconds
@@ -7308,6 +7639,7 @@ Description      : Summons a Tailwind Totem near the caster for $d that increase
 Name             : Resonance Totem (id=262417) [Scaling Spell (-1), Spell Family (11), Passive] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 30 yards
 Cast Time        : 1 seconds
@@ -7329,6 +7661,7 @@ Tooltip          : Generates $s1 Maelstrom every $t1 sec.
 Name             : Resonance Totem (id=262419) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : None
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1 seconds
@@ -7352,6 +7685,7 @@ Description      : Summons a Resonance Totem near the caster for $d that generat
 Name             : Elemental Spirits (id=262624) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Attributes       : ......xx ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -7371,6 +7705,7 @@ Description      : Reduces the cooldown of Feral Spirit by ${$m1/-1000} sec and 
 Name             : Forceful Winds (id=262647) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 GCD              : 1.5 seconds
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -7389,6 +7724,7 @@ Description      : Windfury causes each successive Windfury attack within $26265
 Name             : Forceful Winds (id=262652) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 15 seconds
 Stacks           : 5 maximum
@@ -7414,6 +7750,7 @@ Windfury attack Maelstrom generation increased by $s2.
 Name             : Astral Shift (id=263786) [Scaling Spell (-1), Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 17
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7434,6 +7771,7 @@ Tooltip          : Increases the damage reduction of Astral Shift by an addition
 Name             : Ancestral Reach (id=263790) [Scaling Spell (-1), Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 25
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7456,6 +7794,7 @@ Tooltip          : Increases the healing of Chain Heal by $s1 and causes it to b
 Name             : Lightningburn (id=263792) [Scaling Spell (-1), Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 24
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7478,6 +7817,7 @@ Tooltip          : Increases the damage of Chain Lightning by $s1 and causes you
 Name             : Storm's Eye (id=263795) [Scaling Spell (-1), Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 23
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7502,6 +7842,7 @@ Tooltip          : Increases the critical strike chance of Crash Lightning by $s
 Name             : Wind Gust (id=263806) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 30 seconds
@@ -7530,6 +7871,7 @@ Tooltip          : Reduces the cast time of Lightning Bolt and Chain Lightning b
 Name             : Fire Elemental (id=263819) [Spell Family (11)] 
 Class            : Shaman
 School           : Fire
+Spell Type       : Magic
 Spell Level      : 56
 Range            : 30 yards
 GCD              : 1 seconds
@@ -7551,6 +7893,7 @@ Tooltip          : Maelstrom generation increased by $193774s1%
 Name             : Resounding Protection (id=263962) [Scaling Spell (-8), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 15
 Triggered by     : Resounding Protection (269279)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7570,6 +7913,7 @@ Description      : Every $270568t1 sec, gain an absorb shield for $s1 for $26927
 Name             : Azerite Empowered (id=263978) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 13
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7587,6 +7931,7 @@ Description      : Increases the item level of this item by 5.
 Name             : Elemental Whirl (id=263984) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 21
 Triggered by     : Elemental Whirl (268953), Elemental Whirl (268956), Elemental Whirl (268955), Elemental Whirl (268954)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7607,6 +7952,7 @@ Name             : Heed My Call (id=263987) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 22
 Triggered by     : Heed My Call (271685), Heed My Call (271686)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7630,6 +7976,7 @@ Tooltip          : Your damaging abilities have a chance to deal $s1 Nature dama
 Name             : Blood Siphon (id=264108) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 18
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7652,6 +7999,7 @@ Tooltip          : Increases Mastery by $s1 and Leech by $s2.
 Name             : Flames of the Forefathers (id=264113) [Scaling Spell (-1), Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 32
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7676,6 +8024,7 @@ Tooltip          : Increases the damage of Lava Burst by $s1 and causes it to gr
 Name             : Electropotence (id=264121) [Scaling Spell (-1), Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 33
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7700,6 +8049,7 @@ Tooltip          : Increases the critical chance of Stormstrike by $s1 and cause
 Name             : Static Charge (id=265046) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
 School           : Nature
+Spell Type       : None
 Spell Level      : 1
 GCD              : 1 seconds
 Cooldown         : 60 seconds
@@ -7721,6 +8071,7 @@ Description      : Reduces the cooldown of Capacitor Totem by $s1 sec for each e
 Name             : Overwhelming Power (id=266180) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 30
 Triggered by     : Overwhelming Power (271711)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7742,6 +8093,7 @@ Name             : Azerite Globules (id=266936) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 462
 Triggered by     : Azerite Globules (279958)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7765,6 +8117,7 @@ Name             : Gutripper (id=266937) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 31
 Triggered by     : Gutripper (270668), Gutripper (269031)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7786,6 +8139,7 @@ Description      : Your damaging abilities have a chance to deal $s1 Physical da
 Name             : On My Way (id=267879) [Scaling Spell (-1), Passive] 
 Class            : Paladin, Priest, Shaman, Monk, Druid
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 38
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7808,6 +8162,7 @@ Tooltip          : Increases your Versatility by $s1 and your Speed by $s2.
 Name             : Woundbinder (id=267880) [Scaling Spell (-7), Passive] 
 Class            : Paladin, Priest, Shaman, Monk, Druid
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 19
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7827,6 +8182,7 @@ Name             : Concentrated Mending (id=267882) [Scaling Spell (-8), Passive
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Paladin, Priest, Shaman, Monk, Druid
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 103
 Triggered by     : Concentrated Mending (272260)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7846,6 +8202,7 @@ Description      : Your healing effects have a chance to grant the target ${$s1*
 Name             : Savior (id=267883) [Scaling Spell (-8), Passive] 
 Class            : Paladin, Priest, Shaman, Monk, Druid
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 42
 Triggered by     : Savior (270679)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7868,6 +8225,7 @@ Name             : Bracing Chill (id=267884) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Paladin, Priest, Shaman, Monk, Druid
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 104
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7886,6 +8244,7 @@ Description      : Your heals have a chance to apply Bracing Chill. Healing a ta
 Name             : Ephemeral Recovery (id=267886) [Scaling Spell (-7), Passive] 
 Class            : Paladin, Priest, Shaman, Monk, Druid
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 105
 Triggered by     : Ephemeral Recovery (272572)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7905,6 +8264,7 @@ Description      : Casting a healing spell restores ${$s1*($272572d/$272572t1)} 
 Name             : Blessed Portents (id=267889) [Scaling Spell (-1), Passive] 
 Class            : Paladin, Priest, Shaman, Monk, Druid
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 463
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7925,6 +8285,7 @@ Description      : Your healing spells have a chance to apply Blessed Portents f
 Name             : Synergistic Growth (id=267892) [Scaling Spell (-7), Passive] 
 Class            : Paladin, Priest, Shaman, Monk, Druid
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 102
 Triggered by     : Synergistic Growth (272090)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7944,6 +8305,7 @@ Description      : Casting $?a137009[Wild Growth]?a137022[Essence Font]?a137030[
 Name             : Searing Assault (id=268429) [Spell Family (11)] 
 Class            : Shaman
 School           : Fire
+Spell Type       : Magic
 Range            : 100 yards
 Duration         : 6 seconds
 Affecting spells : Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
@@ -7967,6 +8329,7 @@ Name             : Azerite Fortification (id=268435) [Scaling Spell (-8), Passiv
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 86
 Triggered by     : Azerite Fortification (270659)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7988,6 +8351,7 @@ Name             : Impassive Visage (id=268437) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 6 seconds
 Proc Chance      : 100%
 Azerite Power Id : 83
@@ -8013,6 +8377,7 @@ Name             : Longstrider (id=268594) [Scaling Spell (-7), Passive]
 Hotfixed         : Scaling Spell (-1 -> -7)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 14
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8036,6 +8401,7 @@ Name             : Bulwark of the Masses (id=268595) [Scaling Spell (-8), Passiv
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 84
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8057,6 +8423,7 @@ Name             : Gemhide (id=268596) [Scaling Spell (-1), Passive]
 Hotfixed         : Scaling Spell (-7 -> -1)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 85
 Triggered by     : Gemhide (270576)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8082,6 +8449,7 @@ Tooltip          : When dealt damage greater than $s3% of your maximum health, g
 Name             : Vampiric Speed (id=268599) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 44
 Triggered by     : Vampiric Speed (269238), Vampiric Speed (269239)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8106,6 +8474,7 @@ Name             : Self Reliance (id=268600) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 87
 Triggered by     : Self Reliance (270661)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8128,6 +8497,7 @@ Tooltip          : While no enemies are within $s2 yds, you heal for $w1 every $
 Name             : Eye of the Storm (id=269005) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 Triggered by     : Eye of the Storm (157375)
@@ -8146,6 +8516,7 @@ Description      : $@spelldesc157375
 Name             : Hex (id=269352) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 42
 Range            : 30 yards
 Cast Time        : 1.7 seconds
@@ -8177,6 +8548,7 @@ Tooltip          : Incapacitated.
 Name             : Exposed Elements (id=269808) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 15 seconds
@@ -8197,6 +8569,7 @@ Tooltip          : Damage taken from the Shaman's next Lightning Bolt increased 
 Name             : Icy Edge (id=271920) [Spell Family (11)] 
 Class            : Shaman
 School           : Frost
+Spell Type       : Melee
 Range            : 5 yards
 Duration         : 3 seconds
 Affecting spells : Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
@@ -8220,6 +8593,7 @@ Tooltip          : Movement speed reduced by $s2%.
 Name             : Molten Weapon (id=271924) [Spell Family (11)] 
 Class            : Shaman
 School           : Fire
+Spell Type       : Magic
 Range            : 5 yards
 Duration         : 4 seconds
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
@@ -8239,6 +8613,7 @@ Tooltip          : Suffering $w1 Fire damage every $t1 sec.
 Name             : Unlimited Power (id=272737) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Duration         : 10 seconds
 Stacks           : 99 maximum
@@ -8260,6 +8635,7 @@ Name             : Soothing Waters (id=272989) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 138
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8279,6 +8655,7 @@ Name             : Primal Primer (id=272992) [Scaling Spell (-8), Spell Family (
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 137
 Triggered by     : Primal Primer (273006)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8299,6 +8676,7 @@ Name             : Ruinous Bolt (id=273150) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 156
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8316,6 +8694,7 @@ Description      : Your spells and abilities have a chance to draw a Wandering S
 Name             : Aftershock (id=273221) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
@@ -8335,6 +8714,7 @@ Description      : Your spells have a $s1% chance to refund the Maelstrom spent 
 Name             : Lightning Shield Overcharge (id=273323) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 60 yards
 Duration         : 10 seconds
@@ -8365,6 +8745,7 @@ Name             : Lightning Shield (id=273324) [Spell Family (11)]
 Hotfixed         : Attributes
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Affecting spells : Energized Shield (24499 effect#1), Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
@@ -8387,6 +8768,7 @@ Name             : Lava Shock (id=273448) [Scaling Spell (-8), Spell Family (11)
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 178
 Triggered by     : Lava Shock (273453)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8407,6 +8789,7 @@ Name             : Strength of Earth (id=273461) [Scaling Spell (-8), Spell Fami
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 179
 Triggered by     : Strength of Earth (273466)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8426,6 +8809,7 @@ Description      : Rockbiter causes your next melee ability, other than Rockbite
 Name             : Strength of Earth (id=273463) [Scaling Spell (-1), Spell Family (11), Hidden] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Duration         : Aura (infinite)
 Proc Chance      : 100%
 Proc Flags       : ....x... x...x... x....... ........ 
@@ -8447,6 +8831,7 @@ Description      : $@spelldesc273461
 Name             : Strength of Earth (id=273465) [Scaling Spell (-1), Spell Family (11)] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 10 seconds
 Triggered by     : Strength of Earth (273463)
@@ -8467,6 +8852,7 @@ Tooltip          : Your next melee ability, other than Rockbiter, will deal addi
 Name             : Strength of Earth (id=273466) [Scaling Spell (-1), Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Range            : 100 yards
 Affecting spells : Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
 Family Flags     : 39, 56
@@ -8488,6 +8874,7 @@ Name             : Ebb and Flow (id=273597) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 191
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8509,6 +8896,7 @@ Name             : Meticulous Scheming (id=273682) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 192
 Triggered by     : Seize the Moment! (273714)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8534,6 +8922,7 @@ Name             : Rezan's Fury (id=273790) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 157
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8554,6 +8943,7 @@ Name             : Blightborne Infusion (id=273823) [Scaling Spell (-7), Passive
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 193
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8572,6 +8962,7 @@ Name             : Secrets of the Deep (id=273829) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 195
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8594,6 +8985,7 @@ Name             : Filthy Transfusion (id=273834) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 194
 Triggered by     : Filthy Transfusion (273836)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8613,6 +9005,7 @@ Name             : Serene Spirit (id=274412) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 207
 Triggered by     : Serene Spirit (274416)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8633,6 +9026,7 @@ Name             : Echo of the Elementals (id=275381) [Scaling Spell (-8), Spell
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 222
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8651,6 +9045,7 @@ Description      : When your $?s192249[Storm Elemental][Fire Elemental] expires,
 Name             : Ember Blast (id=275382) [Spell Family (11)] 
 Class            : Shaman
 School           : Fire
+Spell Type       : Magic
 Range            : 40 yards
 Cast Time        : 3 seconds
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -8668,6 +9063,7 @@ Description      : Inflicts Fire damage to an enemy.
 Name             : Shocking Blast (id=275384) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Range            : 40 yards
 Cast Time        : 2 seconds
 Velocity         : 30 yards/sec
@@ -8686,6 +9082,7 @@ Description      : Inflicts Nature damage to an enemy.
 Name             : Ember Elemental (id=275385) [Scaling Spell (-1), Spell Family (11)] 
 Class            : Shaman
 School           : Fire
+Spell Type       : None
 Range            : 30 yards
 Duration         : 30 seconds
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -8704,6 +9101,7 @@ Description      : $@spelldesc275381
 Name             : Spark Elemental (id=275386) [Scaling Spell (-1), Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : None
 Range            : 30 yards
 Duration         : 30 seconds
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -8723,6 +9121,7 @@ Name             : Lightning Conduit (id=275388) [Scaling Spell (-8), Spell Fami
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 223
 Triggered by     : Lightning Conduit (275394)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8742,6 +9141,7 @@ Description      : Stormstrike marks the target as a Lightning Conduit for $2753
 Name             : Lightning Conduit (id=275389) [Scaling Spell (-1), Spell Family (11), Hidden] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Duration         : Aura (infinite)
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
@@ -8766,6 +9166,7 @@ Description      : $@spelldesc275388
 Name             : Lightning Conduit (id=275391) [Scaling Spell (-1), Spell Family (11)] 
 Class            : Shaman
 School           : Physical
+Spell Type       : Magic
 Range            : 100 yards
 Duration         : 60 seconds
 Triggered by     : Lightning Conduit (275389)
@@ -8786,6 +9187,7 @@ Tooltip          : You will take extra Nature damage when the Shaman uses Storms
 Name             : Lightning Conduit (id=275393) [Scaling Spell (-1), Spell Family (11), Hidden] 
 Class            : Shaman
 School           : Nature
+Spell Type       : None
 Range            : 100 yards
 Triggered by     : Lightning Conduit (275389)
 Attributes       : .......x ........ ........ ........   ........ ..x..... ........ ........ 
@@ -8804,6 +9206,7 @@ Description      : $@spelldesc275388
 Name             : Lightning Conduit (id=275394) [Scaling Spell (-1), Spell Family (11)] 
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Range            : 100 yards
 Affecting spells : Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
 Family Flags     : 39, 56
@@ -8825,6 +9228,7 @@ Name             : Swelling Stream (id=275488) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 224
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8843,6 +9247,7 @@ Description      : Every $275495t1 sec your Healing Stream Totem releases a less
 Name             : Overflowing Shores (id=277658) [Scaling Spell (-8), Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 449
 Triggered by     : Overflowing Shores (278095)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8869,6 +9274,7 @@ Name             : Ancestral Resonance (id=277666) [Scaling Spell (-7), Passive]
 Hotfixed         : Scaling Spell (-1 -> -7)
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 447
 Triggered by     : Ancestral Resonance (277942), Ancestral Resonance (277943)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8888,6 +9294,7 @@ Description      : When you cast $?<s2825>[Bloodlust][Heroism], your Mastery inc
 Name             : Synapse Shock (id=277671) [Scaling Spell (-1), Passive] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 448
 Triggered by     : Synapse Shock (277960)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8907,6 +9314,7 @@ Name             : Hex (id=277778) [Spell Family (11)]
 Hotfixed         : Attributes
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 42
 Range            : 30 yards
 Cast Time        : 1.7 seconds
@@ -8939,6 +9347,7 @@ Name             : Hex (id=277784) [Spell Family (11)]
 Hotfixed         : Attributes
 Class            : Shaman
 School           : Nature
+Spell Type       : Magic
 Spell Level      : 42
 Range            : 30 yards
 Cast Time        : 1.7 seconds
@@ -8971,6 +9380,7 @@ Name             : Natural Harmony (id=278697) [Scaling Spell (-7), Spell Family
 Hotfixed         : Scaling Spell (-1 -> -7)
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 416
 Triggered by     : Natural Harmony: Fire (279028), Natural Harmony: Frost (279029), Natural Harmony: Nature (279033)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8999,6 +9409,7 @@ Name             : Rumbling Tremors (id=278709) [Scaling Spell (-8), Spell Famil
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 417
 Triggered by     : Rumbling Tremors (279523), Rumbling Tremors (279556)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9025,6 +9436,7 @@ Description      : Your Earth Elemental spawns Tremors that deal $s1 Physical da
 Name             : Surging Tides (id=278713) [Scaling Spell (-8), Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 422
 Triggered by     : Surging Tides (279187)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9049,6 +9461,7 @@ Name             : Spouting Spirits (id=278715) [Scaling Spell (-8), Spell Famil
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 423
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9070,6 +9483,7 @@ Name             : Roiling Storm (id=278719) [Scaling Spell (-8), Spell Family (
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 420
 Triggered by     : Roiling Storm (279515)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9093,6 +9507,7 @@ Description      : Every $m2 $lsecond:seconds;, reduce the cost of your next Sto
 Name             : Roiling Storm (id=279513) [Scaling Spell (-1), Hidden] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Duration         : Aura (infinite)
 Triggered by     : Roiling Storm (278719)
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -9111,6 +9526,7 @@ Description      : $@spelldesc278719
 Name             : Roiling Storm (id=279515) [Scaling Spell (-1), Spell Family (11)] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 30 seconds
 Stacks           : 15 maximum
@@ -9139,6 +9555,7 @@ Tooltip          : Your next Stormstrike's damage is increased by $w1, and its c
 Name             : Rumbling Tremors (id=279522) [Scaling Spell (-1), Spell Family (11), Hidden] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Duration         : Aura (infinite)
 Proc Chance      : 101%
 Triggered by     : Rumbling Tremors (278709)
@@ -9158,6 +9575,7 @@ Description      : $@spelldesc278709
 Name             : Rumbling Tremors (id=279523) [Scaling Spell (-1)] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 60 seconds
 Triggered by     : Rumbling Tremors (279522)
@@ -9182,6 +9600,7 @@ Tooltip          : Auto attack damage increased by $w1.
 Name             : Rumbling Tremors (id=279556) [Scaling Spell (-1), Spell Family (11)] 
 Class            : Shaman
 School           : Physical
+Spell Type       : Magic
 Range            : 100 yards
 Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
 Family Flags     : 39
@@ -9205,6 +9624,7 @@ Name             : Igneous Potential (id=279829) [Scaling Spell (-8), Spell Fami
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 457
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9230,6 +9650,7 @@ Description      : Your Lava Burst deals $s2 additional damage, and your Lava Su
 Name             : Unstable Flames (id=279899) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 459
 Triggered by     : Unstable Flames (279902)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9249,6 +9670,7 @@ Description      : Your damaging abilities have a chance to grant $s1 critical s
 Name             : Earthlink (id=279926) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 461
 Triggered by     : Earthlink (279928)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9269,6 +9691,7 @@ Name             : Pack Spirit (id=280021) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 474
 Triggered by     : Pack Spirit (280205)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9289,6 +9712,7 @@ Name             : Barrage Of Many Bombs (id=280163) [Scaling Spell (-8), Passiv
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 1.5 (Haste multiplier)
 Azerite Power Id : 498
@@ -9320,6 +9744,7 @@ Name             : Ricocheting Inflatable Pyrosaw (id=280168) [Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 1.5 (Haste multiplier)
 Azerite Power Id : 499
@@ -9350,6 +9775,7 @@ Name             : Auto-Self-Cauterizer (id=280172) [Scaling Spell (-8), Passive
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 1 seconds
 Proc Chance      : 101%
 Real PPM         : 1.5
@@ -9382,6 +9808,7 @@ Name             : Synaptic Spark Capacitor (id=280174) [Scaling Spell (-8), Spe
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 1.5
 Azerite Power Id : 500
@@ -9411,6 +9838,7 @@ Name             : Relational Normalization Gizmo (id=280178) [Scaling Spell (-1
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 10 seconds
 Proc Chance      : 101%
 Real PPM         : 1.5
@@ -9438,6 +9866,7 @@ Name             : Personal Absorb-o-Tron (id=280181) [Scaling Spell (-8), Passi
 Hotfixed         : Scaling Spell, Max Scaling Level, Internal Cooldown (60000 -> 20000), Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 20 seconds
 Proc Chance      : 101%
 Real PPM         : 1.5
@@ -9466,6 +9895,7 @@ Name             : Dagger in the Back (id=280284) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 479
 Triggered by     : Dagger in the Back (280286)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9487,6 +9917,7 @@ Name             : Thunderous Blast (id=280380) [Scaling Spell (-8), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 482
 Triggered by     : Thunderous Blast (280384)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9508,6 +9939,7 @@ Name             : Tidal Surge (id=280402) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Frost
+Spell Type       : None
 Azerite Power Id : 478
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9526,6 +9958,7 @@ Name             : Blood Rite (id=280407) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 480
 Triggered by     : Blood Rite (280409)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9545,6 +9978,7 @@ Name             : Incite the Pack (id=280410) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 481
 Triggered by     : Incite the Pack (280412), Incite the Pack (280413)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9568,6 +10002,7 @@ Name             : Swirling Sands (id=280429) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 196
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9590,6 +10025,7 @@ Name             : Archive of the Titans (id=280555) [Scaling Spell (-1), Passiv
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 483
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9610,6 +10046,7 @@ Name             : Laser Matrix (id=280559) [Scaling Spell (-8), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 485
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9632,6 +10069,7 @@ Name             : Glory in Battle (id=280577) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 486
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9653,6 +10091,7 @@ Name             : Retaliatory Fury (id=280579) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 487
 Triggered by     : Retaliatory Fury (280787), Retaliatory Fury (280788)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9675,6 +10114,7 @@ Name             : Combined Might (id=280580) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 490
 Triggered by     : Might of the Orcs (280841)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9696,6 +10136,7 @@ Name             : Collective Will (id=280581) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 491
 Triggered by     : Collective Will (280830)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9717,6 +10158,7 @@ Name             : Battlefield Focus (id=280582) [Scaling Spell (-8), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 488
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9739,6 +10181,7 @@ Name             : Sylvanas' Resolve (id=280598) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 489
 Triggered by     : Sylvanas' Resolve (280809)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9759,6 +10202,7 @@ Description      : Your abilities have a chance to increase your $?a162700[Agili
 Name             : Mastery: Elemental Overload (rank=Rank 2) (id=280609) [Spell Family (11), Passive] 
 Class            : Elemental Shaman
 School           : Physical
+Spell Type       : None
 Spell Level      : 78
 Family Flags     : 14
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
@@ -9777,6 +10221,7 @@ Description      : Your Mastery can now also affect Elemental Blast, Lava Burst,
 Name             : Flash Flood (id=280614) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -9793,6 +10238,7 @@ Description      : When you consume Tidal Waves, the cast time of your next heal
 Name             : Flash Flood (id=280615) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
+Spell Type       : None
 Duration         : 15 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
@@ -9817,6 +10263,7 @@ Name             : Liberator's Might (id=280623) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 492
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9838,6 +10285,7 @@ Name             : Last Gift (id=280624) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 493
 Triggered by     : Last Gift (280861), Last Gift (280862)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9860,6 +10308,7 @@ Name             : Stronger Together (id=280625) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 496
 Triggered by     : Strength of the Humans (280866)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9881,6 +10330,7 @@ Name             : Stand As One (id=280626) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 497
 Triggered by     : Stand As One (280858)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9902,6 +10352,7 @@ Name             : Battlefield Precision (id=280627) [Scaling Spell (-8), Passiv
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 494
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9924,6 +10375,7 @@ Name             : Anduin's Dedication (id=280628) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 495
 Triggered by     : Anduin's Dedication (280876)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9944,6 +10396,7 @@ Description      : Your abilities have a chance to increase your $?a162700[Agili
 Name             : Champion of Azeroth (id=280710) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 82
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9961,6 +10414,7 @@ Description      : Your spells and abilities have a chance to increase all secon
 Name             : Unstable Catalyst (id=281514) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 504
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9979,6 +10433,7 @@ Name             : Tradewinds (id=281841) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 505
 Triggered by     : Tradewinds (281843), Tradewinds (281844)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 

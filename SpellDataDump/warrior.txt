@@ -3,6 +3,7 @@ SimulationCraft 801-01 for World of Warcraft 8.0.1 bfa-BETA (wow build 26095)
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
@@ -26,6 +27,7 @@ Description      : Hardened by battle, your Stamina is increased by $s2%, and yo
 Name             : Charge (id=100) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 3
 Range            : 8 - 25 yards
 GCD              : 0.5 seconds
@@ -54,6 +56,7 @@ Description      : Charge to an enemy, dealing $126664s2 Physical damage, rootin
 Name             : Block (rank=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
+Spell Type       : Magic
 Spell Level      : 1
 Attributes       : ....x.x. ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -71,6 +74,7 @@ Description      : Gives a chance to block enemy melee and ranged attacks.
 Name             : Taunt (id=355) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 13
 Range            : 30 yards
 Duration         : 3 seconds
@@ -101,6 +105,7 @@ Tooltip          : Taunted.
 Name             : Dual Wield (rank=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
+Spell Type       : Magic
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -117,6 +122,7 @@ Description      : Allows one-hand and off-hand weapons to be equipped in the of
 Name             : Rend (id=772) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Resource         : 30 Rage (1) (id=94)
 Spell Level      : 1
 Range            : 5 yards
@@ -144,6 +150,7 @@ Tooltip          : Bleeding for $w2 damage every $t2 sec.
 Name             : Cleave (id=845) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Resource         : 20 Rage (1) (id=99)
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -168,6 +175,7 @@ Description      : Strikes all enemies in front of you with a sweeping attack fo
 Name             : Shield Wall (id=871) [Spell Family (4)] 
 Class            : Protection Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 55
 Duration         : 8 seconds
 Cooldown         : 240 seconds
@@ -189,6 +197,7 @@ Tooltip          : All damage taken reduced by $w1%.
 Name             : Demoralizing Shout (id=1160) [Spell Family (4)] 
 Class            : Protection Warrior
 School           : Physical
+Spell Type       : Magic
 Spell Level      : 48
 GCD              : 1.5 seconds
 Duration         : 8 seconds
@@ -226,6 +235,7 @@ Tooltip          : $?s199023[Demoralized, dealing $s2% less damage.][Demoralized
 Name             : Slam (id=1464) [Spell Family (4)] 
 Class            : Arms Warrior
 School           : Physical
+Spell Type       : Melee
 Resource         : 20 Rage (1) (id=127)
 Spell Level      : 1
 Range            : 5 yards
@@ -249,6 +259,7 @@ Name             : Whirlwind (id=1680) [Spell Family (4)]
 Hotfixed         : Affecting Spells
 Class            : Arms Warrior
 School           : Physical
+Spell Type       : Melee
 Resource         : 30 Rage (1) (id=135)
 Spell Level      : 40 (max 80)
 GCD              : 1.5 seconds
@@ -276,6 +287,7 @@ $fervorDmg=${(3*$199658s1)*((100+$202316s1)/100)}
 Name             : Hamstring (id=1715) [Spell Family (4)] 
 Class            : Arms Warrior
 School           : Physical
+Spell Type       : Melee
 Resource         : 10 Rage (1) (id=9606)
 Spell Level      : 32
 Range            : 5 yards
@@ -301,6 +313,7 @@ Tooltip          : Movement slowed by $s1%.
 Name             : Recklessness (id=1719) [Spell Family (4)] 
 Class            : Fury Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 50
 GCD              : 1.5 seconds
 Duration         : 10 seconds
@@ -354,6 +367,7 @@ Critical strike chance of all abilities increased by $w1%.
 Name             : Shield Block (id=2565) [Spell Family (4)] 
 Class            : Protection Warrior
 School           : Physical
+Spell Type       : None
 Resource         : 30 Rage (1) (id=10739)
 Spell Level      : 20
 Cooldown         : 1 seconds
@@ -376,6 +390,7 @@ Description      : Raise your shield, blocking all melee attacks against you for
 Name             : Parry (id=3127) [Passive] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Magic
 Spell Level      : 1
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -393,6 +408,7 @@ Description      : Gives a chance to parry enemy melee attacks.
 Name             : Intimidating Shout (id=5246) [Spell Family (4)] 
 Class            : Arms Fury Protection Warrior
 School           : Physical
+Spell Type       : Magic
 Spell Level      : 70
 Range            : 8 yards
 GCD              : 1.5 seconds
@@ -430,6 +446,7 @@ Tooltip          : Disoriented.
 Name             : Revenge Trigger (id=5301) [Passive, Hidden] 
 Class            : Protection Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 22
 Internal Cooldown: 3 seconds
 Proc Chance      : 100%
@@ -450,6 +467,7 @@ Effects          :
 Name             : Revenge! (id=5302) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Duration         : 6 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
@@ -478,6 +496,7 @@ Tooltip          : Your next Revenge is free.
 Name             : Execute (id=5308) [Spell Family (4)] 
 Class            : Fury Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 8
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -506,6 +525,7 @@ Description      : Attempt to finish off a wounded foe, causing ${$280849sw1+$16
 Name             : Thunder Clap (id=6343) [Spell Family (4)] 
 Class            : Protection Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 14
 GCD              : 1.5 seconds
 Duration         : 10 seconds
@@ -538,6 +558,7 @@ Tooltip          : Movement speed reduced by $s2%.
 Name             : Heroic Leap (id=6544) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 26
 Range            : 8 - 40 yards
 Cooldown         : 0.8 seconds
@@ -565,6 +586,7 @@ $damage=$?a2457[${1+0.5*$AP*1.1}][${$<base>}]
 Name             : Pummel (id=6552) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 24
 Range            : 5 yards
 Duration         : 4 seconds
@@ -587,6 +609,7 @@ Description      : Pummels the target, interrupting spellcasting and preventing 
 Name             : Revenge (id=6572) [Spell Family (4)] 
 Class            : Protection Warrior
 School           : Physical
+Spell Type       : Melee
 Resource         : 30 Rage (1) (id=11771)
 Spell Level      : 22
 Range            : 5 yards
@@ -612,6 +635,7 @@ Your successful dodges and parries cause your next Revenge to become free.
 Name             : Battle Shout (id=6673) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Magic
 Spell Level      : 42
 GCD              : 1.5 seconds
 Duration         : 3600 seconds
@@ -636,6 +660,7 @@ Tooltip          : Attack power increased by $w1%.
 Name             : Overpower (id=7384) [Spell Family (4)] 
 Class            : Arms Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 20
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -671,6 +696,7 @@ Tooltip          : Your next Mortal Strike will deal $w2% increased damage.
 Name             : Warbringer (id=7922) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 50000 yards
 Proc Chance      : 101%
@@ -694,6 +720,7 @@ Tooltip          : Knocked down.
 Name             : Bloodbath (id=12292) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 120 seconds
@@ -721,6 +748,7 @@ For the next $274818d, your melee attacks and abilities cause targets to bleed f
 Name             : Mortal Strike (id=12294) [Spell Family (4)] 
 Class            : Arms Warrior
 School           : Physical
+Spell Type       : Melee
 Resource         : 30 Rage (1) (id=9599)
 Spell Level      : 10
 Range            : 5 yards
@@ -745,6 +773,7 @@ Variables        : $mult=${($max(0,$min($pl-5,15))*8+207)/327}
 Name             : Piercing Howl (id=12323) [Spell Family (4)] 
 Class            : Fury Warrior
 School           : Physical
+Spell Type       : Magic
 Resource         : 10 Rage (1) (id=456)
 Spell Level      : 32
 GCD              : 1.5 seconds
@@ -768,6 +797,7 @@ Tooltip          : Movement slowed by $s1%.
 Name             : Whirlwind (rank=Rank 2) (id=12950) [Spell Family (4), Passive] 
 Class            : Fury Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 55
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
@@ -790,6 +820,7 @@ Name             : Last Stand (id=12975) [Spell Family (4)]
 Hotfixed         : Attributes
 Class            : Protection Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 32
 Duration         : 15 seconds
 Cooldown         : 180 seconds
@@ -818,6 +849,7 @@ Tooltip          : Maximum health increased by $s1%.
 Name             : Berserker Rage (id=18499) [Spell Family (4)] 
 Class            : Arms Fury Protection Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 44
 Duration         : 6 seconds
 Cooldown         : 60 seconds
@@ -855,6 +887,7 @@ Tooltip          : Immune to Fear, Sap, and Incapacitate effects.
 Name             : Devastate (id=20243) [Spell Family (4)] 
 Class            : Protection Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -883,6 +916,7 @@ Name             : Blood Fury (rank=Racial) (id=20572) [Scaling Spell (-1)]
 Class            : Warrior, Hunter, Rogue, Death Knight
 Race             : Orc (0x2)
 School           : Physical
+Spell Type       : Magic
 Spell Level      : 1
 Duration         : 15 seconds
 Cooldown         : 120 seconds
@@ -906,6 +940,7 @@ Name             : Command (rank=Racial Passive) (id=21563) [Spell Family (9), P
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Orc (0x2)
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -922,6 +957,7 @@ Description      : Damage dealt by pets increased by $s1%.
 Name             : Bloodthirst (id=23881) [Spell Family (4)] 
 Class            : Fury Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -953,6 +989,7 @@ Variables        : $mult=${($max(0,$min($pl-10,10))*8+137)/217}
 Name             : Spell Reflection (id=23920) [Spell Family (4)] 
 Class            : Protection Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 70
 Duration         : 5 seconds
 Cooldown         : 1 seconds
@@ -983,6 +1020,7 @@ Magical damage taken reduced by $s2%.
 Name             : Shield Slam (id=23922) [Spell Family (4)] 
 Class            : Protection Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -1012,6 +1050,7 @@ Devastate, Thunder Clap, and Revenge have a $231834s1% chance to reset the coold
 Name             : Strength (id=27973) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Demon Hunter
 School           : Physical
+Spell Type       : None
 Duration         : Aura (infinite)
 Azerite Power Id : 6
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -1030,6 +1069,7 @@ Name             : Gift of the Naaru (rank=Racial) (id=28880) [Spell Family (4)]
 Class            : Warrior, Paladin, Hunter, Priest, Death Knight, Shaman, Mage, Monk
 Race             : Draenei (0x400)
 School           : Holy
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 Duration         : 5 seconds
@@ -1055,6 +1095,7 @@ Tooltip          : Healing $/5;s2% every $t1 seconds.
 Name             : Sudden Death (id=29725) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 3 seconds
 Proc Chance      : 100%
 Real PPM         : 1.69 (Haste multiplier)
@@ -1076,6 +1117,7 @@ Description      : Your attacks have a chance to make your next Execute cost no 
 Name             : Second Wind (id=29838) [Spell Family (4), Passive] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
@@ -1095,6 +1137,7 @@ Description      : Restores $202147s1% health every $202147t1 sec when you have 
 Name             : Victorious State (id=32215) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 5
 Proc Chance      : 100%
 Proc Flags       : .x...... ........ ........ ........ 
@@ -1114,6 +1157,7 @@ Effects          :
 Name             : Victorious (id=32216) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Duration         : 20 seconds
 Triggered by     : Victorious State (32215)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -1138,6 +1182,7 @@ Tooltip          : Victory Rush enabled.
 Name             : Victory Rush (id=34428) [Spell Family (4)] 
 Class            : Arms Fury Protection Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 5
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -1160,6 +1205,7 @@ Only usable within $32216d after you kill an enemy that yields experience or hon
 Name             : Agility 20 (id=41695) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 7
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1177,6 +1223,7 @@ Description      : Increases Agility by $s1.
 Name             : Whirlwind Off-Hand (id=44949) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1 (max 80)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Fervor of Battle (202316 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Weighted Blade (253383 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1)
 Triggered by     : Whirlwind (190411)
@@ -1199,6 +1246,7 @@ Description      : $@spelldesc190411
 Name             : Titan's Grip (id=46917) [Spell Family (4), Passive] 
 Class            : Fury Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 10
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1216,6 +1264,7 @@ Description      : Allows you to dual-wield a pair of two-handed weapons.
 Name             : Bladestorm (id=46924) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 75
 GCD              : 1.5 seconds
 Velocity         : 10 yards/sec
@@ -1254,6 +1303,7 @@ Variables        : $dmg=${(1+$d)*($50622sw1+$95738sw1)}
 Name             : Shockwave (id=46968) [Spell Family (4)] 
 Class            : Protection Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 50
 GCD              : 1.5 seconds
 Cooldown         : 40 seconds
@@ -1285,6 +1335,7 @@ Tooltip          : Stunned.
 Name             : Bladestorm (id=50622) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Gathering Storm (273415 effect#1), Siegebreaker (280773 effect#1)
 Triggered by     : Bladestorm (46924), Bladestorm (227847)
@@ -1307,6 +1358,7 @@ Description      : You become a whirling storm of destructive force, striking al
 Name             : Heroic Leap (id=52174) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 26
 Range            : 50000 yards
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Weight of the Earth (208177 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1)
@@ -1327,6 +1379,7 @@ Description      : $@spelldesc6544
 Name             : Increase Versatility 15 (id=55564) [Scaling Spell (-1), Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Max Scaling Level: 80
 Azerite Power Id : 1
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -1345,6 +1398,7 @@ Description      : Increases your Versatility by $s1.
 Name             : Heroic Throw (id=57755) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 17
 Range            : 8 - 30 yards
 GCD              : 1.5 seconds
@@ -1370,6 +1424,7 @@ Description      : Throws your weapon at the enemy, causing $s2 Physical damage.
 Name             : Glyph of Gushing Wound (rank=Protection) (id=58099) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1386,6 +1441,7 @@ Description      : Your Deep Wounds are even bloodier than normal.
 Name             : Glyph of Mighty Victory (id=58104) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1404,6 +1460,7 @@ Description      : When your Victory Rush heals you, you grow slightly larger.
 Name             : Gushing Wound (id=58279) 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Cast Time        : 1.5 seconds
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1421,6 +1478,7 @@ Description      : $@spelldesc58099
 Name             : Mighty Victory (id=58281) 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Cast Time        : 1.5 seconds
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1438,6 +1496,7 @@ Description      : $@spelldesc58104
 Name             : Overpower! (id=60503) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Duration         : 12 seconds
 Stacks           : 1 initial, 1 maximum
@@ -1461,6 +1520,7 @@ Tooltip          : Overpower activated!
 Name             : Thunder Strike (id=68163) 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Cast Time        : 1.5 seconds
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1478,6 +1538,7 @@ Description      : $@spelldesc68164
 Name             : Glyph of Thunder Strike (rank=Arms, Protection) (id=68164) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ....x... x...x... x....... ........ 
                  : Yellow Melee, Yellow Ranged, AOE Hostile Spell, Hostile Spell
@@ -1502,6 +1563,7 @@ Name             : Viciousness (rank=Racial Passive) (id=68975) [Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1520,6 +1582,7 @@ Name             : Aberration (rank=Racial Passive) (id=68976) [Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1539,6 +1602,7 @@ Name             : Darkflight (rank=Racial) (id=68992)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
+Spell Type       : None
 Duration         : 10 seconds
 Cooldown         : 120 seconds
 Attributes       : ........ ........ ........ ........   .....x.. ........ ........ ........ 
@@ -1561,6 +1625,7 @@ Name             : Arcane Torrent (rank=Racial) (id=69179)
 Class            : Warrior
 Race             : Blood Elf (0x200)
 School           : Arcane
+Spell Type       : Magic
 GCD              : 1.5 seconds
 Cooldown         : 90 seconds
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
@@ -1581,6 +1646,7 @@ Description      : Remove $s1 beneficial effect from all enemies within $A1 yard
 Name             : Mastery: Unshackled Fury (id=76856) [Spell Family (4), Passive] 
 Class            : Fury Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 78
 Family Flags     : 110
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -1607,6 +1673,7 @@ Description      : Increases damage done while Enraged by ${$s1}.1%.
 Name             : Mastery: Critical Block (id=76857) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 78
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1634,6 +1701,7 @@ Also increases your attack power by ${$s5}.1%.
 Name             : Raging Blow (id=85288) [Spell Family (4)] 
 Class            : Fury Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 20
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -1668,6 +1736,7 @@ Variables        : $mult=${($max(0,$min($pl-13,7))*4+118)/146}
 Name             : Raging Blow (id=85384) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 20
 Range            : 100 yards
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Inner Rage (215573 effect#2), Raging Thirst (242300 effect#1), Siegebreaker (280773 effect#1)
@@ -1690,6 +1759,7 @@ Variables        : $mult=${($max(0,$min($pl-13,7))*4+118)/146}
 Name             : Whirlwind (id=85739) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Duration         : 20 seconds
 Internal Cooldown: 0.5 seconds
 Stacks           : 2 maximum
@@ -1719,6 +1789,7 @@ Tooltip          : Your next single-target attack strikes up to $w1 additional t
 Name             : Plate Specialization (id=86101) [Passive, Hidden] 
 Class            : Arms Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 50
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1736,6 +1807,7 @@ Description      : Increases your Strength by $s1% while wearing only Plate armo
 Name             : Plate Specialization (id=86110) [Passive, Hidden] 
 Class            : Fury Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 50
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1753,6 +1825,7 @@ Description      : Increases your Strength by $s1% while wearing only Plate armo
 Name             : Plate Specialization (id=86535) [Passive, Hidden] 
 Class            : Protection Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 50
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1770,6 +1843,7 @@ Description      : Increases your Stamina by $s1% while wearing only Plate armor
 Name             : Attack (id=88163) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -1787,6 +1861,7 @@ Description      : Starts combat by attacking a target with a melee weapon.
 Name             : Item - Proc Mastery (id=92322) [Spell Family (10), Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 100 seconds
 Proc Chance      : 10%
 Azerite Power Id : 8
@@ -1809,6 +1884,7 @@ Name             : Altered Form (rank=Racial Passive) (id=94293) [Passive, Hidde
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1825,6 +1901,7 @@ Description      : Enables Worgens to switch between human and Worgan forms
 Name             : Bladestorm Off-Hand (id=95738) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Gathering Storm (273415 effect#1), Siegebreaker (280773 effect#1)
 Triggered by     : Bladestorm (50622)
@@ -1845,6 +1922,7 @@ Description      : You become a whirling storm of destructive force, striking al
 Name             : Raging Blow (id=96103) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 20
 Range            : 100 yards
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Inner Rage (215573 effect#2), Raging Thirst (242300 effect#1), Siegebreaker (280773 effect#1)
@@ -1867,6 +1945,7 @@ Variables        : $mult=${($max(0,$min($pl-13,7))*4+118)/146}
 Name             : Rallying Cry (id=97462) [Spell Family (4)] 
 Class            : Arms Fury Protection Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 80
 GCD              : 1.5 seconds
 Cooldown         : 180 seconds
@@ -1887,6 +1966,7 @@ Description      : Lets loose a rallying cry, granting all party or raid members
 Name             : Rallying Cry (id=97463) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 10 seconds
 Affecting spells : Bladestorm (46924 effect#3), Bladestorm (227847 effect#3), Moment of Glory (280209 effect#2)
@@ -1909,6 +1989,7 @@ Tooltip          : Health increased by $97462s1% of maximum.
 Name             : Furious Slash (id=100130) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -1938,6 +2019,7 @@ Variables        : $mult=${($max(0,$min($pl-10,10))*10+171)/271}
 Name             : Double Time (id=103827) [Spell Family (4), Passive] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1957,6 +2039,7 @@ Description      : Increases the maximum number of charges on $?s198304[Intercep
 Name             : Warbringer (id=103828) [Spell Family (4), Passive] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1974,6 +2057,7 @@ Description      : $?s198304[Intercept][Charge] now deals $7922s1 additional dam
 Name             : Charge (id=105771) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Magic
 Range            : 50000 yards
 Duration         : 1 seconds
 Mechanic         : Root
@@ -1994,6 +2078,7 @@ Tooltip          : Rooted.
 Name             : Storm Bolt (id=107570) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 20 yards
 GCD              : 1.5 seconds
@@ -2020,6 +2105,7 @@ Tooltip          : Stunned.
 Name             : Avatar (id=107574) [Spell Family (4)] 
 Class            : Protection Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 40
 GCD              : 1.5 seconds
 Duration         : 20 seconds
@@ -2062,6 +2148,7 @@ Tooltip          : Damage done increased by $s1%.
 Name             : Hawk Feast (id=112792) 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Cast Time        : 1.5 seconds
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2079,6 +2166,7 @@ Description      : $@spelldesc115943
 Name             : Burning Anger (id=112793) 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Cast Time        : 1.5 seconds
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2096,6 +2184,7 @@ Description      : $@spelldesc115946
 Name             : Bloodbath (id=113344) [Scaling Spell (-1), Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 6 seconds
@@ -2117,6 +2206,7 @@ Tooltip          : Bleeding for $w1 every $t1 sec.
 Name             : Deep Wounds (id=115767) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 15 seconds
@@ -2141,6 +2231,7 @@ Tooltip          : Bleeding for $w1 every $t1 sec.
 Name             : Deep Wounds (id=115768) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 36
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
@@ -2163,6 +2254,7 @@ Description      : Your $?s236279[Devastator][Devastate] and Revenge also cause 
 Name             : Mortal Wounds (id=115804) 
 Class            : Warrior, Hunter, Monk
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 10 seconds
 Proc Chance      : 101%
@@ -2184,6 +2276,7 @@ Tooltip          : Healing effects received reduced by $w1%.
 Name             : Glyph of Thunder Strike (id=115942) [Spell Family (4)] 
 Class            : Warrior
 School           : Holy
+Spell Type       : None
 Spell Level      : 1
 Triggered by     : Glyph of Thunder Strike (68164)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2200,6 +2293,7 @@ Effects          :
 Name             : Glyph of Hawk Feast (id=115943) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ....x... ...x.... ........ ........ 
                  : Yellow Melee, AOE Heal Taken
@@ -2219,6 +2313,7 @@ Description      : Your Execute critical strikes summon a flock of carrion birds
 Name             : Hawk Feast (id=115944) [Spell Family (4), Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Range            : 5 yards
 Triggered by     : Glyph of Hawk Feast (115943)
 Attributes       : .......x x....... ........ ........   ........ ........ ........ ........ 
@@ -2236,6 +2331,7 @@ Effects          :
 Name             : Glyph of Burning Anger (rank=Fury, Protection) (id=115946) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ........ ...x...x ........ ........ 
                  : AOE Heal Taken, Heal Taken
@@ -2255,6 +2351,7 @@ Description      : You get so angry when Enraged that you catch on fire.
 Name             : Burning Anger (id=115993) [Spell Family (4), Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 5 seconds
 Triggered by     : Glyph of Burning Anger (115946)
@@ -2273,6 +2370,7 @@ Effects          :
 Name             : Bloodthirst Heal (id=117313) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Affecting spells : Enraged Regeneration (184364 effect#2), Furious Charge (202225 effect#1), Fresh Meat (215568 effect#2)
 Family Flags     : 80
@@ -2292,6 +2390,7 @@ Description      : Bloodthirst heals the Warrior for $s1% of their health.
 Name             : Dragon Roar (id=118000) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 6 seconds
@@ -2320,6 +2419,7 @@ Tooltip          : Movement slowed by $s3%.
 Name             : Die by the Sword (id=118038) [Spell Family (4)] 
 Class            : Arms Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 36
 Duration         : 8 seconds
 Cooldown         : 180 seconds
@@ -2347,6 +2447,7 @@ Name             : Victory Rush (id=118779) [Spell Family (4)]
 Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
@@ -2372,6 +2473,7 @@ Description      : $@spelldesc34428
 Name             : Overpower (id=119938) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 5 (Haste multiplier)
 Proc Flags       : ....x... ........ ........ ........ 
@@ -2391,6 +2493,7 @@ Effects          :
 Name             : Glyph of the Blazing Trail (id=123779) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2407,6 +2510,7 @@ Description      : Your Charge leaves a trail of fire in its wake. If you're goi
 Name             : Blazing Trail (id=123780) 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Cast Time        : 1.5 seconds
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2424,6 +2528,7 @@ Description      : $@spelldesc123779
 Name             : Block (id=123829) [Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ....x.xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2441,6 +2546,7 @@ Description      : Gives a chance to block enemy melee attacks.
 Name             : Charge (id=126664) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 10
 Range            : 50000 yards
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1)
@@ -2463,6 +2569,7 @@ Description      : $@spelldesc100
 Name             : Shockwave (id=132168) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 50
 Range            : 50000 yards
 Duration         : 2 seconds
@@ -2484,6 +2591,7 @@ Tooltip          : Stunned.
 Name             : Storm Bolt (id=132169) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 30 yards
 Velocity         : 25 yards/sec
@@ -2506,6 +2614,7 @@ Tooltip          : Stunned.
 Name             : Shield Block (id=132404) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 20
 Duration         : 6 seconds
 Affecting spells : Shield Mastery (184927 effect#1), Heavy Repercussions (203177 effect#2)
@@ -2536,6 +2645,7 @@ Tooltip          : Block chance increased by $s1%.
 Name             : Warrior (id=137047) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 0.75 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
@@ -2596,6 +2706,7 @@ Effects          :
 Name             : Protection Warrior (id=137048) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2668,6 +2779,7 @@ Effects          :
 Name             : Arms Warrior (id=137049) [Spell Family (4), Passive, Hidden] 
 Class            : Arms Warrior
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
@@ -2718,6 +2830,7 @@ Effects          :
 Name             : Fury Warrior (id=137050) [Spell Family (4), Passive, Hidden] 
 Class            : Fury Warrior
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2746,6 +2859,7 @@ Effects          :
 Name             : Item - Warrior T16 DPS 4P Bonus (id=144441) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -2765,6 +2879,7 @@ Description      : Your Mortal Strike and Bloodthirst have a chance to activate 
 Name             : Death Sentence (id=144442) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Duration         : 12 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
@@ -2793,6 +2908,7 @@ Tooltip          : $?$w2>=0[Execute is available!][Your next Execute has no Rage
 Name             : Glyph of the Weaponmaster (id=146974) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2809,6 +2925,7 @@ Description      : Your Battle Cry ability causes the appearance of your weapon 
 Name             : Weaponmaster (id=147367) 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Duration         : 600 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2830,6 +2947,7 @@ Tooltip          : Different weapon visual equipped from your bag.
 Name             : Intervene (id=147833) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Range            : 25 yards
 Duration         : 10 seconds
@@ -2857,6 +2975,7 @@ Tooltip          : The next melee or ranged attack made against you will be made
 Name             : Weaponmaster (id=148114) 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Cast Time        : 1.5 seconds
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2874,6 +2993,7 @@ Description      : $@spelldesc146974
 Name             : Ravager (id=152277) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
@@ -2908,6 +3028,7 @@ Tooltip          : $?s23922[Chance to Parry increased by $s1%.][Ravager is curre
 Name             : Anger Management (id=152278) [Spell Family (4), Passive] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ....x... x.x.x.x. x....... ........ 
                  : Yellow Melee, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell
@@ -2932,6 +3053,7 @@ Name             : Expansive Mind (rank=Racial Passive) (id=154746) [Passive]
 Class            : Warrior
 Race             : Gnome (0x40)
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2948,6 +3070,7 @@ Description      : Maximum rage increased by $s1%.
 Name             : Ravager (id=156287) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Range            : 100 yards
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Gathering Storm (273415 effect#1), Siegebreaker (280773 effect#1)
 Family Flags     : 9, 107
@@ -2968,6 +3091,7 @@ Name             : Stat Negation Aura - Strength DPS (id=162698) [Passive, Hidde
 Class            : Arms Fury Retribution Frost Unholy Warrior, Paladin, Death Knight
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2989,6 +3113,7 @@ Replaces         : Stat Negation Aura - Strength DPS (id=162698)
 Class            : Protection Protection Blood Warrior, Paladin, Death Knight
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3006,6 +3131,7 @@ Effects          :
 Name             : Execute (id=163201) [Spell Family (4)] 
 Class            : Arms Warrior
 School           : Physical
+Spell Type       : Melee
 Resource         : 20 - 40 Rage (1) (id=9491)
 Spell Level      : 8
 Range            : 5 yards
@@ -3033,6 +3159,7 @@ Variables        : $damage=${2.0*$260798sw2}
 Name             : Execute Off-Hand (id=163558) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 7
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -3055,6 +3182,7 @@ Description      : $@spelldesc5308
 Name             : Colossus Smash (id=167105) [Spell Family (4)] 
 Class            : Arms Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 50
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -3077,6 +3205,7 @@ Description      : Smashes the enemy's armor, dealing $s1 Physical damage, and i
 Name             : Enrage (id=184361) [Spell Family (4), Passive] 
 Class            : Fury Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 14
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
@@ -3105,6 +3234,7 @@ $@spellicon184367 Rampage always Enrages you.
 Name             : Enrage (id=184362) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Duration         : 4 seconds
 Mechanic         : Enrage
@@ -3135,6 +3265,7 @@ Damage taken reduced by $208154m3%.][]
 Name             : Enraged Regeneration (id=184364) [Spell Family (4)] 
 Class            : Fury Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 36
 Duration         : 8 seconds
 Cooldown         : 120 seconds
@@ -3161,6 +3292,7 @@ Tooltip          : Damage taken reduced by $s1%. Bloodthirst restores an additio
 Name             : Rampage (id=184367) [Spell Family (4)] 
 Class            : Fury Warrior
 School           : Physical
+Spell Type       : Melee
 Resource         : 85 Rage (1) (id=10117)
 Spell Level      : 12
 Range            : 5 yards
@@ -3191,6 +3323,7 @@ Variables        : $damage=${$184707s1+$184709s1+$201364s1+$201363s1}
 Name             : Rampage (id=184707) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 8 yards
 Proc Chance      : 101%
@@ -3213,6 +3346,7 @@ Description      : $@spelldesc184367
 Name             : Rampage (id=184709) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 8 yards
 Proc Chance      : 101%
@@ -3235,6 +3369,7 @@ Description      : $@spelldesc184367
 Name             : Tactician (id=184783) [Spell Family (4), Passive] 
 Class            : Arms Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 34
 Proc Chance      : 100%
 Proc Flags       : ....x... x.x.x.x. x....... ........ 
@@ -3255,6 +3390,7 @@ Description      : You have a ${$s1/100}.2% chance per Rage spent on damaging ab
 Name             : Reflective Plating (id=188672) [Spell Family (4), Passive] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3271,6 +3407,7 @@ Description      : $?s213915[Mass Spell Reflection][Spell Reflection] now reflec
 Name             : Whirlwind (id=190411) [Spell Family (4)] 
 Class            : Fury Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 40 (max 80)
 GCD              : 1.5 seconds
 Category         : 891
@@ -3316,6 +3453,7 @@ Causes your next $s7 single-target $lattack:attacks; to strike up to $85739s1 ad
 Name             : Ignore Pain (id=190456) [Spell Family (4)] 
 Class            : Protection Warrior
 School           : Physical
+Spell Type       : None
 Resource         : 40 Rage (1) (id=10534)
 Spell Level      : 36
 GCD              : 1.5 seconds
@@ -3343,6 +3481,7 @@ Variables        : $absorb=${($s1+$AP*3.5)*(1+$@versadmg)}
 Name             : Defensive Stance (id=197690) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 40
 Duration         : Aura (infinite)
 Cooldown         : 6 seconds
@@ -3374,6 +3513,7 @@ Name             : Intercept (id=198304) [Spell Family (4)]
 Replaces         : Charge (id=100)
 Class            : Protection Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 28
 Range            : 8 - 25 yards
 GCD              : 0.5 seconds
@@ -3405,6 +3545,7 @@ When targeting an ally, intercepts the next melee or ranged attack against them 
 Name             : Intercept (rank=PvP Talent) (id=198758) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 72
 Range            : 25 yards
 Cooldown         : 1.5 seconds
@@ -3437,6 +3578,7 @@ This ability replaces Charge.
 Name             : Morale Killer (rank=PvP Talent) (id=199023) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3457,6 +3599,7 @@ Description      : Reduces the cooldown of Demoralizing Shout by ${($m2/1000)*-1
 Name             : Thunderstruck (rank=PvP Talent) (id=199042) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 1 seconds
@@ -3479,6 +3622,7 @@ Tooltip          : Rooted.
 Name             : Thunderstruck (rank=PvP Talent) (id=199045) [Spell Family (3), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3495,6 +3639,7 @@ Description      : Thunder Clap roots all targets for $199042d.
 Name             : Warrior Intervene Charge Clear (id=199114) [Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 10
 Triggered by     : Intervene (147833)
 Attributes       : .......x x....... x....... ........   ........ ........ ........ ........ 
@@ -3512,6 +3657,7 @@ Effects          :
 Name             : Whirlwind (id=199658) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1 (max 80)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Fervor of Battle (202316 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Weighted Blade (253383 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1)
 Triggered by     : Whirlwind (1680)
@@ -3532,6 +3678,7 @@ Description      : $@spelldesc1680
 Name             : Whirlwind (id=199667) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1 (max 80)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Fervor of Battle (202316 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Weighted Blade (253383 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1)
 Triggered by     : Whirlwind (190411)
@@ -3554,6 +3701,7 @@ Description      : $@spelldesc190411
 Name             : Whirlwind (id=199850) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1 (max 80)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Fervor of Battle (202316 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Weighted Blade (253383 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1)
 Triggered by     : Whirlwind (1680)
@@ -3575,6 +3723,7 @@ Name             : Activating Specialization (id=200749) [Hidden]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
+Spell Type       : None
 Range            : 50000 yards
 Cast Time        : 5 seconds
 Attributes       : .......x ........ ........ ....x...   ..xxx..x ........ .x...... ........ 
@@ -3594,6 +3743,7 @@ Tooltip          : Switch to your Primary Talent Specialization.
 Name             : Rampage (id=201363) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 8 yards
 Proc Chance      : 101%
@@ -3616,6 +3766,7 @@ Description      : $@spelldesc184367
 Name             : Rampage (id=201364) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 8 yards
 Proc Chance      : 101%
@@ -3638,6 +3789,7 @@ Description      : $@spelldesc184367
 Name             : Indomitable (id=202095) [Spell Family (4), Passive] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3654,6 +3806,7 @@ Description      : Increases your maximum health by $s1%.
 Name             : Second Wind (id=202147) [Spell Family (4), Passive] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ x....... ........ 
                  : ........ .......x .......x ........   ........ ........ ........ ........ 
@@ -3670,6 +3823,7 @@ Description      : $@spelldesc29838
 Name             : Second Wind (id=202149) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Duration         : 5 seconds
 Attributes       : ........ x....... ........ x..x....   .....x.. ..x..... ........ ....x... 
                  : ........ ......x. ...x.... ....x...   ........ ........ ........ ........ 
@@ -3687,6 +3841,7 @@ Description      : $@spelldesc29838
 Name             : Bounding Stride (id=202163) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3703,6 +3858,7 @@ Description      : Reduces the cooldown on Heroic Leap by ${$m1/-1000} sec, and 
 Name             : Bounding Stride (id=202164) 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Duration         : 3 seconds
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3721,6 +3877,7 @@ Name             : Impending Victory (id=202166) [Spell Family (4)]
 Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Affecting spells : Victorious (32216 effect#2)
 Family Flags     : 118
 Attributes       : ....x... ........ x.x..... ........   ........ .xx..... ........ ...xx... 
@@ -3739,6 +3896,7 @@ Description      : $@spelldesc202168
 Name             : Impending Victory (id=202168) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Resource         : 10 Rage (1) (id=10852)
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -3762,6 +3920,7 @@ Killing an enemy that yields experience or honor resets the cooldown of Impendin
 Name             : Furious Charge (id=202224) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3778,6 +3937,7 @@ Description      : Charge also increases the healing from your next Bloodthirst 
 Name             : Furious Charge (id=202225) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Duration         : 5 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
@@ -3801,6 +3961,7 @@ Tooltip          : Healing of your next Bloodthirst increased by $s1%.
 Name             : Endless Rage (id=202296) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Proc Flags       : ........ .......x ........ ........ 
                  : Heal Taken
@@ -3820,6 +3981,7 @@ Description      : Gain ${$280283s1/10} Rage whenever you Enrage.
 Name             : Fervor of Battle (id=202316) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3838,6 +4000,7 @@ Description      : Whirlwind deals $s1% increased damage, and Slams your primary
 Name             : Furious Slash (id=202539) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Duration         : 15 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
@@ -3858,6 +4021,7 @@ Tooltip          : Haste increased by $s2%.
 Name             : Best Served Cold (id=202560) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3876,6 +4040,7 @@ Description      : Revenge deals $s1% more damage per target hit, up to ${$s1*$s
 Name             : Never Surrender (id=202561) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ...x.... ........   ........ ........ ........ ........ 
@@ -3892,6 +4057,7 @@ Description      : Ignore Pain will prevent up to $s1% more damage, based on you
 Name             : Vengeance (id=202572) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ....x... ..x..... ........ ........ 
                  : Yellow Melee, AOE Heal
@@ -3911,6 +4077,7 @@ Description      : Ignore Pain reduces the Rage cost of your next Revenge by $20
 Name             : Vengeance: Revenge (id=202573) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Duration         : 15 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
@@ -3934,6 +4101,7 @@ Tooltip          : Rage cost of Revenge reduced by $s1%.
 Name             : Vengeance: Ignore Pain (id=202574) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Duration         : 15 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
@@ -3957,6 +4125,7 @@ Tooltip          : Rage cost of Ignore Pain reduced by $s1%.
 Name             : Into the Fray (id=202602) 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Duration         : Aura (infinite)
 Stacks           : 5 maximum
 Proc Chance      : 101%
@@ -3976,6 +4145,7 @@ Tooltip          : Haste increased by $s1%.
 Name             : Into the Fray (id=202603) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3992,6 +4162,7 @@ Description      : You gain $202602s1% Haste for each enemy or ally within $s1 y
 Name             : Booming Voice (id=202743) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4019,6 +4190,7 @@ Description      : Demoralizing Shout also generates ${$m1/10} Rage, and increas
 Name             : Reckless Abandon (id=202751) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4042,6 +4214,7 @@ Description      : Recklessness generates ${$m2/10} Rage and lasts ${$s1/1000} s
 Name             : Carnage (id=202922) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4072,6 +4245,7 @@ Description      : Rampage costs ${$s1/-10} less Rage and deals $s4% increased d
 Name             : Heavy Repercussions (id=203177) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4092,6 +4266,7 @@ Description      : Shield Slam extends the duration of Shield Block by ${$m1/100
 Name             : Opportunity Strikes (id=203178) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Range            : 100 yards
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1)
 Family Flags     : 9
@@ -4114,6 +4289,7 @@ Description      : $@spelldesc203179
 Name             : Opportunity Strikes (id=203179) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 60%
 Proc Flags       : ....x... ........ ........ ........ 
@@ -4134,6 +4310,7 @@ Description      : Your melee abilities have up to a $h% chance, based on the ta
 Name             : Crackling Thunder (id=203201) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4153,6 +4330,7 @@ Description      : Increases the radius of Thunder Clap by $s1%.
 Name             : Neltharion's Fury (rank=Artifact) (id=203524) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 45 seconds
@@ -4181,6 +4359,7 @@ Tooltip          : Critically blocking all incoming attacks, and dealing $203526
 Name             : Neltharion's Fury (id=203526) [Spell Family (4)] 
 Class            : Warrior
 School           : Shadowflame
+Spell Type       : Melee
 Range            : 100 yards
 Triggered by     : Neltharion's Fury (203524)
 Attributes       : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -4199,6 +4378,7 @@ Description      : $@spelldesc203524
 Name             : Odyn's Fury (rank=Artifact) (id=205545) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 28 (max 80)
 GCD              : 1.5 seconds
 Cooldown         : 45 seconds
@@ -4221,6 +4401,7 @@ Description      : Unleashes the fiery power Odyn bestowed the |cFFFFCC99Warswor
 Name             : Odyn's Fury (id=205546) [Spell Family (4)] 
 Class            : Warrior
 School           : Fire
+Spell Type       : Melee
 Spell Level      : 28 (max 80)
 Duration         : 4 seconds
 Triggered by     : Odyn's Fury (205545)
@@ -4245,6 +4426,7 @@ Tooltip          : Suffering $o3 Fire damage over $d.
 Name             : Odyn's Fury (id=205547) [Spell Family (4)] 
 Class            : Warrior
 School           : Fire
+Spell Type       : Melee
 Spell Level      : 28 (max 80)
 Triggered by     : Odyn's Fury (205545)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
@@ -4265,6 +4447,7 @@ Description      : $@spelldesc205545
 Name             : Massacre (id=206315) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4283,6 +4466,7 @@ Description      : Execute is now usable on targets below $s2% health.
 Name             : Outburst (id=206320) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4301,6 +4485,7 @@ Description      : Berserker Rage now causes Enrage, and its cooldown is reduced
 Name             : Colossus Smash (id=208086) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 10 seconds
@@ -4328,6 +4513,7 @@ Tooltip          : Taking $w1% additional damage from the Warrior.
 Name             : Warpaint (id=208154) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4346,6 +4532,7 @@ Description      : You take $s1% reduced damage while Enrage is active.
 Name             : Precise Strikes (id=209492) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Proc Chance      : 101%
 Proc Flags       : ....x... ........ ........ ........ 
@@ -4366,6 +4553,7 @@ Description      : Colossus Smash reduces the Rage cost of your next Mortal Stri
 Name             : Precise Strikes (id=209493) [Spell Family (4), Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 15 seconds
 Proc Chance      : 101%
@@ -4393,6 +4581,7 @@ Description      : $@spelldesc209492
 Name             : Void Cleave (id=209573) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Attributes       : ......xx ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -4410,6 +4599,7 @@ Description      : When Cleave strikes at least $s1 targets, |cFFFFCC99Strom'kar
 Name             : Warbreaker (rank=Artifact) (id=209577) [Spell Family (4)] 
 Class            : Warrior
 School           : Shadow
+Spell Type       : Melee
 Range            : 100 yards
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
@@ -4431,6 +4621,7 @@ Description      : Stomp the ground, causing a ring of corrupted spikes to erupt
 Name             : Rampage! (id=209694) [Spell Family (4), Passive, Hidden] 
 Class            : Fury Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 12
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
@@ -4456,6 +4647,7 @@ Effects          :
 Name             : Rampage! (id=209697) [Spell Family (4), Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Duration         : 6 seconds
 Triggered by     : Rampage! (209694), Rampage! (210972)
 Attributes       : .......x ........ ..x..... .......x   ........ ........ ........ ........ 
@@ -4473,6 +4665,7 @@ Effects          :
 Name             : Void Cleave (id=209700) [Spell Family (4)] 
 Class            : Warrior
 School           : Shadow
+Spell Type       : Melee
 Range            : 100 yards
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4490,6 +4683,7 @@ Description      : $@spelldesc209573
 Name             : Rampage! (id=210972) [Spell Family (4), Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Triggered by     : Rampage! (209694)
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4506,6 +4700,7 @@ Effects          :
 Name             : Mass Spell Reflection (rank=PvP Talent) (id=213915) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Duration         : 3 seconds
 Cooldown         : 30 seconds
 Proc Chance      : 100%
@@ -4532,6 +4727,7 @@ Magical damage taken reduced by $w2%.
 Name             : Trauma (id=215537) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 20 yards
 Duration         : 6 seconds
@@ -4553,6 +4749,7 @@ Tooltip          : Bleeding for $w1 every $t1 sec.
 Name             : Trauma (id=215538) [Spell Family (4), Passive] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -4572,6 +4769,7 @@ Description      : Slam, Whirlwind, and Execute now cause the target to bleed fo
 Name             : Fresh Meat (id=215568) [Spell Family (4), Passive] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4594,6 +4792,7 @@ Description      : Bloodthirst has a $s1% increased chance to trigger Enrage and
 Name             : Frothing Berserker (id=215571) [Spell Family (4), Passive] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -4625,6 +4824,7 @@ Description      : Rampage now costs ${$s1/10} Rage and increases your damage do
 Name             : Frothing Berserker (id=215572) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Duration         : 6 seconds
 Triggered by     : Frothing Berserker (215571)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4654,6 +4854,7 @@ Haste increased by $s2%.
 Name             : Inner Rage (id=215573) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4677,6 +4878,7 @@ Variables        : $reduction=${$m3/10}
 Name             : Gaze of the Val'kyr (id=218822) [Spell Family (4), Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 900 seconds
 Attributes       : .......x ........ ........ ..x....x   ........ ........ ........ ........ 
@@ -4695,6 +4897,7 @@ Tooltip          : Unable to be affected by Gaze of the Val'kyr again.
 Name             : Trial by Combat (id=218826) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 8 seconds
 Proc Chance      : 101%
@@ -4723,6 +4926,7 @@ Failure results in death.
 Name             : Gaze of the Val'kyr (id=218834) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -4740,6 +4944,7 @@ Description      : $@spelldesc218826
 Name             : Gaze of the Val'kyr (id=218835) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ......x. 
@@ -4757,6 +4962,7 @@ Description      : $@spelldesc218826
 Name             : Gaze of the Val'kyr (id=218836) [Spell Family (4), Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 8 seconds
 Attributes       : .......x ........ ........ .......x   ........ ........ ........ ........ 
@@ -4775,6 +4981,7 @@ Description      : $@spelldesc218826
 Name             : Gaze of the Val'kyr (id=218850) [Spell Family (4), Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 15 seconds
 Attributes       : .......x ........ ........ .......x   ........ ........ ........ ........ 
@@ -4793,6 +5000,7 @@ Description      : $@spelldesc218826
 Name             : Gaze of the Val'kyr (id=218877) [Spell Family (4), Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 8 seconds
 Attributes       : .......x ........ ........ .......x   ........ ........ ........ ........ 
@@ -4811,6 +5019,7 @@ Description      : $@spelldesc218826
 Name             : Safeguard (id=223657) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4827,6 +5036,7 @@ Description      : Intercepting a friendly target now also causes $223658s1% of 
 Name             : Safeguard (id=223658) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Range            : 40 yards
 Duration         : 6 seconds
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -4845,6 +5055,7 @@ Tooltip          : $s1% of damage taken is transferred to the Warrior.
 Name             : Ravager (id=227744) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Range            : 40 yards
 Velocity         : 30 yards/sec
 Duration         : 12 seconds
@@ -4867,6 +5078,7 @@ Tooltip          : $?s23922[Chance to Parry increased by $s1%.][Ravager is curre
 Name             : Bladestorm (id=227847) [Spell Family (4)] 
 Class            : Arms Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 65
 GCD              : 1.5 seconds
 Velocity         : 10 yards/sec
@@ -4900,6 +5112,7 @@ Immune to crowd control.
 Name             : Ravager (id=228920) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
@@ -4932,6 +5145,7 @@ Tooltip          : $?s23922[Chance to Parry increased by $s1%.][Ravager is curre
 Name             : Execute (rank=Rank 2) (id=231827) [Spell Family (4), Passive] 
 Class            : Fury Warrior
 School           : Fire
+Spell Type       : None
 Spell Level      : 28
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4951,6 +5165,7 @@ Description      : Execute's damage is increased by $s1%.
 Name             : Execute (rank=Rank 2) (id=231830) [Spell Family (4), Passive] 
 Class            : Arms Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 28
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4968,6 +5183,7 @@ Description      : If your foe survives your Execute, $163201s2% of the Rage spe
 Name             : Shield Slam (rank=Rank 2) (id=231834) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 34
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4986,6 +5202,7 @@ Description      : Devastate, Thunder Clap, and Revenge have a $s1% chance to re
 Name             : Dual Wield (id=231842) [Spell Family (4), Passive] 
 Class            : Fury Warrior
 School           : Physical
+Spell Type       : Magic
 Spell Level      : 1
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5003,6 +5220,7 @@ Description      : You may equip one-handed weapons in your off-hand.
 Name             : Shield Block (rank=Rank 2) (id=231847) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 38
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5020,6 +5238,7 @@ Description      : Shield Block has ${$s1+1} charges.
 Name             : Devastator (id=236279) [Passive] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
@@ -5042,6 +5261,7 @@ Variables        : $mult=${($max(0,$min($pl-12,8))*8.5+241)/309}
 Name             : Devastator (id=236282) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 10
 Range            : 5 yards
 Stacks           : 3 maximum
@@ -5068,6 +5288,7 @@ Description      : $@spelldesc236279
 Name             : Warbringer (id=237744) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 2.5 seconds
@@ -5091,6 +5312,7 @@ Tooltip          : Knocked down.
 Name             : Item - Warrior T20 Fury 4P Bonus (id=242301) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Proc Flags       : ....x... ....x... ........ ........ 
                  : Yellow Melee, AOE Hostile Spell
@@ -5110,6 +5332,7 @@ Description      : Raging Blow increases the damage and healing of your next Blo
 Name             : Bloody Rage (id=242952) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Duration         : 10 seconds
 Stacks           : 10 maximum
 Proc Chance      : 101%
@@ -5133,6 +5356,7 @@ Tooltip          : Damage and healing done by your next Bloodthirst increased by
 Name             : Bloody Rage (id=242953) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Duration         : 10 seconds
 Stacks           : 10 maximum
 Proc Chance      : 101%
@@ -5156,6 +5380,7 @@ Tooltip          : Damage and healing done by your next Bloodthirst increased by
 Name             : Ravager (id=248439) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
                  : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -5172,6 +5397,7 @@ Description      : $@spelldesc152277
 Name             : In For The Kill (id=248621) [Spell Family (4), Passive] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5193,6 +5419,7 @@ Description      : $?s262161[Warbreaker][Colossus Smash] increases your Haste by
 Name             : In For The Kill (id=248622) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Duration         : 10 seconds
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
@@ -5212,6 +5439,7 @@ Name             : Vindicaar Matrix Crystal (id=251463)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
+Spell Type       : None
 GCD              : 1.5 seconds
 Triggered by     : Vindicaar Matrix Crystal (255529)
 Attributes       : ........ ........ ........ ........   ...x...x ..x..... ........ ........ 
@@ -5230,6 +5458,7 @@ Name             : Vindicaar Matrix Crystal (id=255529) [Hidden]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
+Spell Type       : None
 Triggered by     : Activating Specialization (200749)
 Attributes       : .......x x....... .......x x..x.x..   ...x.x.x ..x..... ........ ........ 
                  : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ....x... 
@@ -5250,6 +5479,7 @@ Name             : Light's Judgment (rank=Racial) (id=255647) [Scaling Spell (-6
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
+Spell Type       : Magic
 Max Scaling Level: 120
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -5272,6 +5502,7 @@ Name             : Holy Resistance (rank=Racial Passive) (id=255651) [Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5289,6 +5520,7 @@ Name             : Light's Reckoning (rank=Racial Passive) (id=255652) [Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ .......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -5306,6 +5538,7 @@ Name             : Demonbane (rank=Racial Passive) (id=255653) [Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5323,6 +5556,7 @@ Name             : Light's Judgment (rank=Racial) (id=256893) [Scaling Spell (-6
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
+Spell Type       : Magic
 Max Scaling Level: 120
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -5345,6 +5579,7 @@ Name             : Light's Reckoning (rank=Racial Passive) (id=256896) [Scaling 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
+Spell Type       : Magic
 Max Scaling Level: 120
 Range            : 40 yards
 Triggered by     : Light's Reckoning (255652)
@@ -5368,6 +5603,7 @@ Heals $s2 to allies within $A1.
 Name             : Skullsplitter (id=260643) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -5394,6 +5630,7 @@ Description      : Bash an enemy's skull, dealing $s1 Physical damage.
 Name             : Sweeping Strikes (id=260708) [Spell Family (4)] 
 Class            : Arms Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 22
 GCD              : 1.5 seconds
 Duration         : 12 seconds
@@ -5420,6 +5657,7 @@ Tooltip          : Your single-target damaging abilities hit $s1 additional $Lta
 Name             : Execute (id=260798) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 5 yards
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Death Sentence (144442 effect#1), Colossus Smash (208086 effect#1), Precise Strikes (209493 effect#1), Frothing Berserker (215572 effect#1), Stone Heart (225947 effect#1), Execute (231827 effect#1), Sweeping Strikes (260708 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1)
@@ -5442,6 +5680,7 @@ Variables        : $damage=${2.0*$260798sw2}
 Name             : Haste (id=261582) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 2
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5460,6 +5699,7 @@ Name             : Mastery: Deep Wounds (id=262111) [Spell Family (4), Passive]
 Replaces         : Deep Wounds (id=262304)
 Class            : Arms Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 78
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -5481,6 +5721,7 @@ Striking an enemy with Mortal Strike$?s845[, Cleave][], Execute, or $?s152277[Ra
 Name             : Deep Wounds (id=262115) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 6 seconds
@@ -5505,6 +5746,7 @@ Tooltip          : Bleeding for $w1 every $t1 sec.
 Name             : Dreadnaught (id=262150) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5525,6 +5767,7 @@ Description      : Overpower has ${1+$s1} charges, and it increases the damage o
 Name             : Warbreaker (id=262161) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 GCD              : 1.5 seconds
 Cooldown         : 45 seconds
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Lord of War (278752 effect#2), Siegebreaker (280773 effect#1)
@@ -5545,6 +5788,7 @@ Description      : Smash the ground and shatter the armor of all enemies within 
 Name             : Deadly Calm (id=262228) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Duration         : 6 seconds
 Cooldown         : 60 seconds
@@ -5572,6 +5816,7 @@ Tooltip          : Your abilities cost $s1% less Rage.
 Name             : War Machine (id=262231) [Spell Family (4), Passive] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -5593,6 +5838,7 @@ Killing an enemy instantly generates ${$262232s1/10} Rage, and increases your mo
 Name             : War Machine (id=262232) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Duration         : 8 seconds
 Affecting spells : Recklessness (1719 effect#5)
 Triggered by     : War Machine (262231)
@@ -5616,6 +5862,7 @@ Tooltip          : Movement speed increased by $s2%.
 Name             : Deep Wounds (id=262304) [Spell Family (4), Passive] 
 Class            : Arms Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 55
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
@@ -5636,6 +5883,7 @@ Description      : Mortal Strike, Execute, and $?s152277[Ravager][Bladestorm] in
 Name             : Resounding Protection (id=263962) [Scaling Spell (-8), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 15
 Triggered by     : Resounding Protection (269279)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5655,6 +5903,7 @@ Description      : Every $270568t1 sec, gain an absorb shield for $s1 for $26927
 Name             : Azerite Empowered (id=263978) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 13
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5672,6 +5921,7 @@ Description      : Increases the item level of this item by 5.
 Name             : Elemental Whirl (id=263984) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 21
 Triggered by     : Elemental Whirl (268953), Elemental Whirl (268956), Elemental Whirl (268955), Elemental Whirl (268954)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5692,6 +5942,7 @@ Name             : Heed My Call (id=263987) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 22
 Triggered by     : Heed My Call (271685), Heed My Call (271686)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5715,6 +5966,7 @@ Tooltip          : Your damaging abilities have a chance to deal $s1 Nature dama
 Name             : Blood Siphon (id=264108) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 18
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5737,6 +5989,7 @@ Tooltip          : Increases Mastery by $s1 and Leech by $s2.
 Name             : Overwhelming Power (id=266180) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 30
 Triggered by     : Overwhelming Power (271711)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5758,6 +6011,7 @@ Name             : Azerite Globules (id=266936) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 462
 Triggered by     : Azerite Globules (279958)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5781,6 +6035,7 @@ Name             : Gutripper (id=266937) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 31
 Triggered by     : Gutripper (270668), Gutripper (269031)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5802,6 +6057,7 @@ Description      : Your damaging abilities have a chance to deal $s1 Physical da
 Name             : Lifespeed (id=267665) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 20
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5824,6 +6080,7 @@ Tooltip          : Increases your Haste by $s1 and your Avoidance by $s2.
 Name             : Winds of War (id=267671) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Azerite Power Id : 43
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
@@ -5847,6 +6104,7 @@ Name             : Azerite Veins (id=267683) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 89
 Triggered by     : Azerite Veins (270674)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5866,6 +6124,7 @@ Description      : Taking damage has a chance to grant you Azerite Veins, healin
 Name             : Collateral Damage (id=268243) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -5886,6 +6145,7 @@ Name             : Azerite Fortification (id=268435) [Scaling Spell (-8), Passiv
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 86
 Triggered by     : Azerite Fortification (270659)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5907,6 +6167,7 @@ Name             : Impassive Visage (id=268437) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 6 seconds
 Proc Chance      : 100%
 Azerite Power Id : 83
@@ -5932,6 +6193,7 @@ Name             : Longstrider (id=268594) [Scaling Spell (-7), Passive]
 Hotfixed         : Scaling Spell (-1 -> -7)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 14
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5955,6 +6217,7 @@ Name             : Bulwark of the Masses (id=268595) [Scaling Spell (-8), Passiv
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 84
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5976,6 +6239,7 @@ Name             : Gemhide (id=268596) [Scaling Spell (-1), Passive]
 Hotfixed         : Scaling Spell (-7 -> -1)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 85
 Triggered by     : Gemhide (270576)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6001,6 +6265,7 @@ Tooltip          : When dealt damage greater than $s3% of your maximum health, g
 Name             : Vampiric Speed (id=268599) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 44
 Triggered by     : Vampiric Speed (269238), Vampiric Speed (269239)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6025,6 +6290,7 @@ Name             : Self Reliance (id=268600) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 87
 Triggered by     : Self Reliance (270661)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6047,6 +6313,7 @@ Tooltip          : While no enemies are within $s2 yds, you heal for $w1 every $
 Name             : Crystalline Carapace (id=271536) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 98
 Triggered by     : Crystalline Carapace (271539), Crystalline Carapace (271538)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6072,6 +6339,7 @@ Name             : Ablative Shielding (id=271540) [Scaling Spell (-1), Passive]
 Hotfixed         : Scaling Spell (-7 -> -1)
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 99
 Triggered by     : Ablative Shielding (271543)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6092,6 +6360,7 @@ Name             : Strength in Numbers (id=271546) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 100
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6110,6 +6379,7 @@ Description      : Taking damage has a chance to increase your maximum health by
 Name             : Shimmering Haven (id=271557) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 101
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6131,6 +6401,7 @@ Name             : Deafening Crash (id=272824) [Scaling Spell (-8), Spell Family
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 118
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6154,6 +6425,7 @@ Description      : Thunder Clap deals an additional $s2 damage and extends the d
 Name             : Trample the Weak (id=272836) [Scaling Spell (-1), Spell Family (4), Passive] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 119
 Triggered by     : Trample the Weak (272838)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6174,6 +6446,7 @@ Name             : Executioner's Precision (id=272866) [Scaling Spell (-8), Spel
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 121
 Triggered by     : Executioner's Precision (272870)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6194,6 +6467,7 @@ Name             : Ruinous Bolt (id=273150) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 156
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6211,6 +6485,7 @@ Description      : Your spells and abilities have a chance to draw a Wandering S
 Name             : Gathering Storm (id=273409) [Scaling Spell (-1), Spell Family (4), Passive] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 174
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6231,6 +6506,7 @@ Description      : While $?s152277[Ravager is active][Bladestorming], every $273
 Name             : Bloodcraze (id=273420) [Scaling Spell (-7), Spell Family (4), Passive] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 176
 Triggered by     : Bloodcraze (273428)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6251,6 +6527,7 @@ Name             : Meticulous Scheming (id=273682) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 192
 Triggered by     : Seize the Moment! (273714)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6276,6 +6553,7 @@ Name             : Rezan's Fury (id=273790) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 157
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6296,6 +6574,7 @@ Name             : Blightborne Infusion (id=273823) [Scaling Spell (-7), Passive
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 193
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6314,6 +6593,7 @@ Name             : Secrets of the Deep (id=273829) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 195
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6336,6 +6616,7 @@ Name             : Filthy Transfusion (id=273834) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 194
 Triggered by     : Filthy Transfusion (273836)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6354,6 +6635,7 @@ Description      : Your damaging abilities have a chance to invoke a tainted swa
 Name             : Bloodbath (id=274818) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Duration         : 20 seconds
 Proc Chance      : 100%
@@ -6378,6 +6660,7 @@ Tooltip          : Melee attacks and abilities cause an additional $s1% bleed da
 Name             : Punish (id=275334) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -6401,6 +6684,7 @@ Description      : Shield Slam deals $s1% increased damage, and reduces enemies'
 Name             : Punish (id=275335) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 9 seconds
 Triggered by     : Punish (275334)
@@ -6420,6 +6704,7 @@ Tooltip          : Punished, dealing $s1% less damage to the Warrior.
 Name             : Unstoppable Force (id=275336) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6442,6 +6727,7 @@ Description      : Avatar increases the damage of Thunder Clap by $s1%, and redu
 Name             : Menace (id=275338) [Spell Family (4), Passive] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6460,6 +6746,7 @@ Description      : Intimidating Shout disorients enemies for an additional ${$s1
 Name             : Rumbling Earth (id=275339) [Spell Family (4), Passive] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6478,6 +6765,7 @@ Description      : When Shockwave strikes at least $s1 targets, its cooldown is 
 Name             : Test of Might (id=275529) [Scaling Spell (-1), Spell Family (4), Passive] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 226
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6499,6 +6787,7 @@ Name             : Pulverizing Blows (id=275632) [Scaling Spell (-8), Spell Fami
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 229
 Triggered by     : Pulverizing Blows (275672)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6518,6 +6807,7 @@ Description      : Raging Blow causes every strike of your next Rampage to deal 
 Name             : Reinforced Plating (id=275860) [Scaling Spell (-1), Spell Family (4), Passive] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 237
 Triggered by     : Reinforced Plating (275867)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6536,6 +6826,7 @@ Description      : Blocking an attack increases your Strength by $s1 for $275867
 Name             : Brace for Impact (id=277636) [Scaling Spell (-1), Passive] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 450
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6557,6 +6848,7 @@ Description      : Using Shield Slam increases your Block by $s1 and the damage 
 Name             : Infinite Fury (id=277638) [Scaling Spell (-7), Passive] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 451
 Triggered by     : Infinite Fury (278134)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6576,6 +6868,7 @@ Description      : When Recklessness expires, your Critical Strike is increased 
 Name             : Seismic Wave (id=277639) [Scaling Spell (-8), Passive] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 433
 Triggered by     : Seismic Wave (278497)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6597,6 +6890,7 @@ Description      : Overpower causes a seismic wave that deals $s1 Physical damag
 Name             : Seismic Wave (id=278495) [Scaling Spell (-1), Spell Family (4), Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Duration         : Aura (infinite)
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
@@ -6618,6 +6912,7 @@ Description      : $@spelldesc277639
 Name             : Seismic Wave (id=278497) [Scaling Spell (-1), Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Range            : 100 yards
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1)
 Family Flags     : 9
@@ -6640,6 +6935,7 @@ Name             : Crushing Assault (id=278751) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 434
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6661,6 +6957,7 @@ Name             : Lord of War (id=278752) [Scaling Spell (-8), Spell Family (4)
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 435
 Triggered by     : Lord of War (279203)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6684,6 +6981,7 @@ Description      : $?s262161[Warbreaker][Colossus Smash] deals an additional $s2
 Name             : Simmering Rage (id=278757) [Scaling Spell (-1), Spell Family (4), Passive] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 437
 Triggered by     : Simmering Rage (278841)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6707,6 +7005,7 @@ Description      : Rampage deals an additional ${$184367s1*$s2} damage and gener
 Name             : Reckless Flurry (id=278758) [Scaling Spell (-1), Passive] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 438
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6728,6 +7027,7 @@ Name             : Callous Reprisal (id=278760) [Scaling Spell (-8), Spell Famil
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 440
 Triggered by     : Callous Reprisal (278999)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6751,6 +7051,7 @@ Description      : Revenge deals $s2 additional damage and reduces the damage en
 Name             : Iron Fortress (id=278765) [Scaling Spell (-1), Passive] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 441
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6773,6 +7074,7 @@ Name             : Bloodsport (id=279172) [Scaling Spell (-8), Spell Family (4),
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 177
 Triggered by     : Bloodsport (279194)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6798,6 +7100,7 @@ Description      : Ignore Pain prevents $s3 additional damage, and grants you $s
 Name             : Seasoned Soldier (id=279423) [Spell Family (4), Passive] 
 Class            : Arms Warrior
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ....x.x. ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6815,6 +7118,7 @@ Description      : Your auto attack critical strikes generate $s1% more Rage.
 Name             : Unstable Flames (id=279899) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 459
 Triggered by     : Unstable Flames (279902)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6834,6 +7138,7 @@ Description      : Your damaging abilities have a chance to grant $s1 critical s
 Name             : Earthlink (id=279926) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 461
 Triggered by     : Earthlink (279928)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6853,6 +7158,7 @@ Description      : Azerite energy courses through you, reaching ${$s1*6} $?a1627
 Name             : Bolster (id=280001) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6876,6 +7182,7 @@ Name             : Moment of Glory (id=280023) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 476
 Triggered by     : Moment of Glory (280210)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6898,6 +7205,7 @@ Name             : Bury the Hatchet (id=280128) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 477
 Triggered by     : Bury the Hatchet (280212)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6920,6 +7228,7 @@ Name             : Barrage Of Many Bombs (id=280163) [Scaling Spell (-8), Passiv
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 1.5 (Haste multiplier)
 Azerite Power Id : 498
@@ -6951,6 +7260,7 @@ Name             : Ricocheting Inflatable Pyrosaw (id=280168) [Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 1.5 (Haste multiplier)
 Azerite Power Id : 499
@@ -6981,6 +7291,7 @@ Name             : Auto-Self-Cauterizer (id=280172) [Scaling Spell (-8), Passive
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 1 seconds
 Proc Chance      : 101%
 Real PPM         : 1.5
@@ -7013,6 +7324,7 @@ Name             : Synaptic Spark Capacitor (id=280174) [Scaling Spell (-8), Spe
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 1.5
 Azerite Power Id : 500
@@ -7042,6 +7354,7 @@ Name             : Relational Normalization Gizmo (id=280178) [Scaling Spell (-1
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 10 seconds
 Proc Chance      : 101%
 Real PPM         : 1.5
@@ -7069,6 +7382,7 @@ Name             : Personal Absorb-o-Tron (id=280181) [Scaling Spell (-8), Passi
 Hotfixed         : Scaling Spell, Max Scaling Level, Internal Cooldown (60000 -> 20000), Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 20 seconds
 Proc Chance      : 101%
 Real PPM         : 1.5
@@ -7096,6 +7410,7 @@ Increases your Kul Tiran or Zandalari Engineering by $s2.
 Name             : Endless Rage (id=280283) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Affecting spells : Recklessness (1719 effect#5)
 Triggered by     : Endless Rage (202296)
 Family Flags     : 37
@@ -7115,6 +7430,7 @@ Name             : Dagger in the Back (id=280284) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 479
 Triggered by     : Dagger in the Back (280286)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7136,6 +7452,7 @@ Name             : Thunderous Blast (id=280380) [Scaling Spell (-8), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 482
 Triggered by     : Thunderous Blast (280384)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7156,6 +7473,7 @@ Description      : Dealing damage has a chance to call down a Thunderous Blast, 
 Name             : Meat Cleaver (id=280392) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Affecting spells : Recklessness (1719 effect#5), 
 Family Flags     : 56
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -7179,6 +7497,7 @@ Name             : Tidal Surge (id=280402) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Frost
+Spell Type       : None
 Azerite Power Id : 478
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7197,6 +7516,7 @@ Name             : Blood Rite (id=280407) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 480
 Triggered by     : Blood Rite (280409)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7216,6 +7536,7 @@ Name             : Incite the Pack (id=280410) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 481
 Triggered by     : Incite the Pack (280412), Incite the Pack (280413)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7239,6 +7560,7 @@ Name             : Swirling Sands (id=280429) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 196
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7261,6 +7583,7 @@ Name             : Archive of the Titans (id=280555) [Scaling Spell (-1), Passiv
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 483
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7281,6 +7604,7 @@ Name             : Laser Matrix (id=280559) [Scaling Spell (-8), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 485
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7303,6 +7627,7 @@ Name             : Glory in Battle (id=280577) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 486
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7324,6 +7649,7 @@ Name             : Retaliatory Fury (id=280579) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 487
 Triggered by     : Retaliatory Fury (280787), Retaliatory Fury (280788)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7346,6 +7672,7 @@ Name             : Combined Might (id=280580) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 490
 Triggered by     : Might of the Orcs (280841)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7367,6 +7694,7 @@ Name             : Collective Will (id=280581) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 491
 Triggered by     : Collective Will (280830)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7388,6 +7716,7 @@ Name             : Battlefield Focus (id=280582) [Scaling Spell (-8), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 488
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7410,6 +7739,7 @@ Name             : Sylvanas' Resolve (id=280598) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 489
 Triggered by     : Sylvanas' Resolve (280809)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7431,6 +7761,7 @@ Name             : Liberator's Might (id=280623) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 492
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7452,6 +7783,7 @@ Name             : Last Gift (id=280624) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 493
 Triggered by     : Last Gift (280861), Last Gift (280862)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7474,6 +7806,7 @@ Name             : Stronger Together (id=280625) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 496
 Triggered by     : Strength of the Humans (280866)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7495,6 +7828,7 @@ Name             : Stand As One (id=280626) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 497
 Triggered by     : Stand As One (280858)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7516,6 +7850,7 @@ Name             : Battlefield Precision (id=280627) [Scaling Spell (-8), Passiv
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 494
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7538,6 +7873,7 @@ Name             : Anduin's Dedication (id=280628) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 495
 Triggered by     : Anduin's Dedication (280876)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7558,6 +7894,7 @@ Description      : Your abilities have a chance to increase your $?a162700[Agili
 Name             : Champion of Azeroth (id=280710) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 82
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7575,6 +7912,7 @@ Description      : Your spells and abilities have a chance to increase all secon
 Name             : Whirlwind (id=280714) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Triggered by     : Whirlwind (190411)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -7592,6 +7930,7 @@ Description      : $@spelldesc190411
 Name             : Sudden Death (id=280721) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 3 seconds
 Proc Chance      : 100%
 Real PPM         : 1.69 (Haste multiplier)
@@ -7613,6 +7952,7 @@ Description      : Your attacks have a chance to reset the cooldown of Execute a
 Name             : Bloodbath (id=280736) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Range            : 5 yards
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1)
 Family Flags     : 9, 50
@@ -7632,6 +7972,7 @@ Description      : $@spelldesc12292
 Name             : Siegebreaker (id=280772) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
@@ -7657,6 +7998,7 @@ Description      : Break the enemy's defenses, dealing $s1 Physical damage, and 
 Name             : Siegebreaker (id=280773) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Range            : 50000 yards
 Duration         : 10 seconds
 Proc Chance      : 101%
@@ -7681,6 +8023,7 @@ Tooltip          : Taking $w1% increased damage from the Warrior.
 Name             : Execute (id=280849) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 8
 Range            : 5 yards
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Death Sentence (144442 effect#1), Colossus Smash (208086 effect#1), Precise Strikes (209493 effect#1), Frothing Berserker (215572 effect#1), Stone Heart (225947 effect#1), Execute (231827 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1)
@@ -7704,6 +8047,7 @@ Description      : Attempt to finish off a wounded foe, causing ${$s1+$163558sw1
 Name             : Massacre (id=281001) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -7722,6 +8066,7 @@ Description      : Execute is now usable on targets below $s2% health.
 Name             : Unstable Catalyst (id=281514) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 504
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7740,6 +8085,7 @@ Name             : Tradewinds (id=281841) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 505
 Triggered by     : Tradewinds (281843), Tradewinds (281844)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 

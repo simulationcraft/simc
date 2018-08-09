@@ -3,6 +3,7 @@ SimulationCraft 801-01 for World of Warcraft 8.0.1 bfa-BETA (wow build 26095)
 Name             : Dual Wield (rank=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
+Spell Type       : Magic
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -19,6 +20,7 @@ Description      : Allows one-hand and off-hand weapons to be equipped in the of
 Name             : Chaos Brand (id=1490) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : None
+Spell Type       : Magic
 Range            : 100 yards
 Duration         : Aura (infinite)
 Attributes       : ........ ........ ........ ........   ........ ...x.... ........ ........ 
@@ -38,6 +40,7 @@ Name             : Command (rank=Racial Passive) (id=21563) [Spell Family (9), P
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Orc (0x2)
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -54,6 +57,7 @@ Description      : Damage dealt by pets increased by $s1%.
 Name             : Strength (id=27973) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Demon Hunter
 School           : Physical
+Spell Type       : None
 Duration         : Aura (infinite)
 Azerite Power Id : 6
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -71,6 +75,7 @@ Effects          :
 Name             : Agility 20 (id=41695) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 7
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -88,6 +93,7 @@ Description      : Increases Agility by $s1.
 Name             : Increase Versatility 15 (id=55564) [Scaling Spell (-1), Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Max Scaling Level: 80
 Azerite Power Id : 1
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -106,6 +112,7 @@ Description      : Increases your Versatility by $s1.
 Name             : Item - Proc Mastery (id=92322) [Spell Family (10), Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 100 seconds
 Proc Chance      : 10%
 Azerite Power Id : 8
@@ -127,6 +134,7 @@ Description      : Your harmful spells have a chance to grant $92320s1 mastery f
 Name             : Glide (id=131347) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Duration         : Aura (infinite)
 Cooldown         : 1.5 seconds
 Attributes       : ........ ........ .......x x.......   .....x.. ..x..... ........ ........ 
@@ -148,6 +156,7 @@ Tooltip          : Falling speed reduced.
 Name             : Demon's Bite (id=162243) [Spell Family (107)] 
 Class            : Havoc Demon Hunter
 School           : Physical
+Spell Type       : Melee
 Range            : 5 yards
 GCD              : 1.5 seconds
 Affecting spells : Demon Soul (163073 effect#1), Momentum (208628 effect#1), Item - Demon Hunter T19 Havoc 2P Bonus (211054 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#4), Chaos Blades (247938 effect#2), 
@@ -174,6 +183,7 @@ Description      : Quickly attack for $s2 Physical damage.
 Name             : Metamorphosis (id=162264) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chaos
+Spell Type       : None
 Duration         : 30 seconds
 Proc Flags       : ..x.x... x...x... x....... ........ 
                  : White Melee, Yellow Melee, Yellow Ranged, AOE Hostile Spell, Hostile Spell
@@ -216,6 +226,7 @@ Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden
 Class            : Beast Mastery Marksmanship Survival Assassination Outlaw Subtlety Enhancement Windwalker Feral Havoc Hunter, Rogue, Shaman, Monk, Druid, Demon Hunter
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -236,6 +247,7 @@ Name             : Stat Negation Aura - Agility Tank (id=162700) [Passive, Hidde
 Class            : Brewmaster Guardian Vengeance Monk, Druid, Demon Hunter
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -253,6 +265,7 @@ Effects          :
 Name             : Chaos Strike (id=162794) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chaos
+Spell Type       : Melee
 Resource         : 40 Fury (17) (id=10198)
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -278,6 +291,7 @@ Description      : Slice your target for ${$222031s1+$199547s1} Chaos damage. Ch
 Name             : Demon Soul (id=163073) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Shadow
+Spell Type       : Melee
 Duration         : 15 seconds
 Proc Chance      : 101%
 Family Flags     : 21
@@ -307,6 +321,7 @@ Name             : Immolation Aura (id=178740) [Spell Family (107)]
 Replaces         : Eye Beam (id=198013)
 Class            : Vengeance Demon Hunter
 School           : Fire
+Spell Type       : None
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 15 seconds
@@ -340,6 +355,7 @@ Movement speed increased by $w4%.][]
 Name             : Immolation Aura (id=178741) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Fire
+Spell Type       : Magic
 Affecting spells : Agonizing Flames (207548 effect#1), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Vengeance Demon Hunter (212613 effect#2), 
 Triggered by     : Immolation Aura (178740)
 Family Flags     : 11, 61, 70, 72
@@ -360,6 +376,7 @@ Description      : Deals Fire damage to all nearby enemies.
 Name             : Shattered Souls (id=178940) [Spell Family (107), Passive] 
 Class            : Havoc Demon Hunter
 School           : Physical
+Spell Type       : Magic
 Proc Chance      : 100%
 Proc Flags       : .x...... ........ ........ ........ 
                  : Killing Blow
@@ -381,6 +398,7 @@ If the Soul Fragment came from a Demon, you will deal $163073s1% increased damag
 Name             : Consume Soul (id=178963) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Shadow
+Spell Type       : Magic
 Range            : 100 yards
 Family Flags     : 20
 Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... ........ ........ 
@@ -401,6 +419,7 @@ Description      : $@spelldesc178940
 Name             : Leather Specialization (rank=Passive) (id=178976) [Passive, Hidden] 
 Class            : Havoc Demon Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -417,6 +436,7 @@ Description      : Increases your Agility by $s1% while wearing only leather arm
 Name             : Chaos Nova (id=179057) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chromatic
+Spell Type       : Magic
 Resource         : 30 Fury (17) (id=10418)
 GCD              : 1.5 seconds
 Duration         : 2 seconds
@@ -445,6 +465,7 @@ Tooltip          : Stunned.
 Name             : Disrupt (id=183752) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chromatic
+Spell Type       : Magic
 Range            : 10 yards
 Duration         : 3 seconds
 Cooldown         : 15 seconds
@@ -471,6 +492,7 @@ Generates ${$218903s2/10} Pain on a successful interrupt.]|r
 Name             : Disrupt (id=183782) [Spell Family (107), Passive, Hidden] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ........ ....x... x....... ........ 
                  : AOE Hostile Spell, Hostile Spell
@@ -489,6 +511,7 @@ Effects          :
 Name             : Throw Glaive (id=185123) [Scaling Spell (-1), Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : Melee
 Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
@@ -512,6 +535,7 @@ Description      : Throw a demonic glaive at the target, dealing $s1 Physical da
 Name             : Mastery: Demonic Presence (id=185164) [Spell Family (107), Passive] 
 Class            : Havoc Demon Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -537,6 +561,7 @@ Name             : Torment (id=185245) [Spell Family (107)]
 Replaces         : Blur (id=198589)
 Class            : Vengeance Demon Hunter
 School           : Shadow
+Spell Type       : Melee
 Range            : 30 yards
 Duration         : 3 seconds
 Cooldown         : 8 seconds
@@ -564,6 +589,7 @@ Tooltip          : Taunted.
 Name             : Energy Regen (id=186452) [Spell Family (107), Passive, Hidden] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -579,6 +605,7 @@ Effects          :
 Name             : Immolation Aura (id=187727) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Fire
+Spell Type       : Magic
 Affecting spells : Agonizing Flames (207548 effect#1), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Vengeance Demon Hunter (212613 effect#2), 
 Triggered by     : Immolation Aura (178740)
 Family Flags     : 11, 49, 70, 72
@@ -598,6 +625,7 @@ Name             : Metamorphosis (id=187827) [Spell Family (107)]
 Replaces         : Metamorphosis (id=191427)
 Class            : Vengeance Demon Hunter
 School           : Chaos
+Spell Type       : None
 Spell Level      : 1
 Duration         : 15 seconds
 Cooldown         : 180 seconds
@@ -637,6 +665,7 @@ Generating ${$s4/10} Pain every $t4 sec.
 Name             : Blade Dance (id=188499) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : Melee
 Resource         : 35 Fury (17) (id=10434)
 GCD              : 1.5 seconds
 Duration         : 1 seconds
@@ -678,6 +707,7 @@ $firstbloodDmg=${(3*$199552sw2+$200685sw2)*(100+$206416s1)/100}
 Name             : Spectral Sight (id=188501) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 30 seconds
@@ -709,6 +739,7 @@ Name             : Infernal Strike (id=189110) [Spell Family (107)]
 Replaces         : Fel Rush (id=195072)
 Class            : Vengeance Demon Hunter
 School           : Physical
+Spell Type       : Melee
 Range            : 30 yards
 Cooldown         : 0.8 seconds
 Charges          : 2 (20 seconds cooldown)
@@ -733,6 +764,7 @@ Description      : Leap through the air toward a targeted location, dealing $189
 Name             : Infernal Strike (id=189112) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Fire
+Spell Type       : Melee
 Range            : 50000 yards
 Affecting spells : Abyssal Strike (207550 effect#1), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Vengeance Demon Hunter (212613 effect#2), 
 Family Flags     : 1, 70, 72
@@ -752,6 +784,7 @@ Description      : $@spelldesc189110
 Name             : Increased Threat (id=189926) [Spell Family (107), Passive, Hidden] 
 Class            : Vengeance Demon Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -767,6 +800,7 @@ Effects          :
 Name             : Metamorphosis (id=191427) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : Melee
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 240 seconds
@@ -797,6 +831,7 @@ Upon landing, you are transformed into a hellish demon for $162264d, greatly emp
 Name             : Fel Rush (id=192611) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chaos
+Spell Type       : Melee
 Range            : 50000 yards
 Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Fel Mastery (192939 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), 
 Family Flags     : 16, 18, 43
@@ -816,6 +851,7 @@ Description      : $@spelldesc195072
 Name             : Fel Mastery (id=192939) [Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 1 seconds
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x... x....... ........ 
@@ -840,6 +876,7 @@ Description      : Increases Fel Rush damage by $s1%.
 Name             : Chaos Strike (id=193840) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -855,6 +892,7 @@ Description      : $@spelldesc162794
 Name             : Fel Rush (id=195072) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 GCD              : 0.25 seconds
 Cooldown         : 1 seconds
 Charges          : 2 (10 seconds cooldown)
@@ -877,6 +915,7 @@ Description      : Rush forward, incinerating anything in your path for $192611s
 Name             : Double Jump (id=196055) [Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -893,6 +932,7 @@ Description      : You are able to jump again while near the apex of your first 
 Name             : Netherwalk (id=196555) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 120 seconds
@@ -917,6 +957,7 @@ Movement speed increased by $s3%.
 Name             : Darkness (id=196718) [Spell Family (107)] 
 Class            : Havoc Demon Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 100
 GCD              : 1.5 seconds
 Duration         : 8 seconds
@@ -939,6 +980,7 @@ Description      : Summons darkness around you in an 8 yd radius, granting frien
 Name             : Chaos Strike (rank=Passive) (id=197125) [Spell Family (107), Passive, Hidden] 
 Class            : Havoc Demon Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 40%
@@ -960,6 +1002,7 @@ Description      : $@spelldesc162794
 Name             : Glide (id=197130) [Spell Family (107), Passive, Hidden] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -975,6 +1018,7 @@ Effects          :
 Name             : Eye Beam (id=198013) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chromatic
+Spell Type       : Magic
 Resource         : 30 Fury (17) (id=10720)
 Range            : 20 yards
 GCD              : 1.5 seconds
@@ -1007,6 +1051,7 @@ Variables        : $dmg=$?a203550[${$198030s1*15*2}][${$198030s1*10*2}]
 Name             : Eye Beam (id=198030) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chromatic
+Spell Type       : Magic
 Range            : 50000 yards
 Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Blind Fury (203550 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Soul Flame of Insight (226334 effect#1), Chaos Blades (247938 effect#2), Item - Demon Hunter T21 Havoc 2P Bonus (251767 effect#1), Eyes of Rage (278500 effect#2)
 Family Flags     : 8, 10, 16, 43
@@ -1026,6 +1071,7 @@ Description      : $@spelldesc198013
 Name             : Blur (id=198589) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Cooldown         : 60 seconds
 Category         : 1621
 Category Cooldown: 60 seconds
@@ -1046,6 +1092,7 @@ Description      : Increases your chance to dodge by $212800s2% and reduces all 
 Name             : Vengeful Retreat (id=198793) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 GCD              : 0.5 seconds
 Duration         : 1 seconds
 Cooldown         : 25 seconds
@@ -1076,6 +1123,7 @@ Description      : Remove all snares and vault away. Nearby enemies take $198813
 Name             : Vengeful Retreat (id=198813) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : Melee
 Duration         : 3 seconds
 Affecting spells : Demon Soul (163073 effect#1), Prepared (203551 effect#2), Momentum (206476 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), 
 Triggered by     : Vengeful Retreat (198793)
@@ -1098,6 +1146,7 @@ Tooltip          : Movement speed reduced by $s1%.
 Name             : Chaos Strike (id=199547) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chaos
+Spell Type       : Melee
 Range            : 15 yards
 Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), Dark Slash (258860 effect#3), Thirsting Blades (278736 effect#1)
 Triggered by     : Chaos Strike (162794)
@@ -1118,6 +1167,7 @@ Description      : $@spelldesc162794
 Name             : Blade Dance (id=199552) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : Melee
 Affecting spells : Metamorphosis (162264 effect#5), Demon Soul (163073 effect#1), First Blood (206416 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Item - Demon Hunter T20 Havoc 4P Bonus (242227 effect#1), Chaos Blades (247938 effect#2), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1)
 Triggered by     : Blade Dance (188499)
 Family Flags     : 16, 25, 42
@@ -1139,6 +1189,7 @@ Description      : $@spelldesc188499
 Name             : Metamorphosis (id=200166) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chromatic
+Spell Type       : Magic
 Duration         : 3 seconds
 Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), 
 Family Flags     : 16, 43, 56
@@ -1162,6 +1213,7 @@ Tooltip          : Stunned.
 Name             : Blade Dance (id=200685) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : Melee
 Affecting spells : Metamorphosis (162264 effect#5), Demon Soul (163073 effect#1), First Blood (206416 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Item - Demon Hunter T20 Havoc 4P Bonus (242227 effect#1), Chaos Blades (247938 effect#2), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1)
 Triggered by     : Blade Dance (188499)
 Family Flags     : 12, 16, 25, 42
@@ -1184,6 +1236,7 @@ Name             : Activating Specialization (id=200749) [Hidden]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
+Spell Type       : None
 Range            : 50000 yards
 Cast Time        : 5 seconds
 Attributes       : .......x ........ ........ ....x...   ..xxx..x ........ .x...... ........ 
@@ -1203,6 +1256,7 @@ Tooltip          : Switch to your Primary Talent Specialization.
 Name             : Annihilation (id=201427) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chaos
+Spell Type       : Melee
 Resource         : 40 Fury (17) (id=10809)
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -1228,6 +1282,7 @@ Description      : Slice your target for ${$227518s1+$201428s1} Chaos damage. An
 Name             : Annihilation (id=201428) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chaos
+Spell Type       : Melee
 Range            : 15 yards
 Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), Dark Slash (258860 effect#3), Thirsting Blades (278736 effect#1)
 Triggered by     : Annihilation (201427)
@@ -1248,6 +1303,7 @@ Description      : $@spelldesc201427
 Name             : Metamorphosis (id=201453) [Spell Family (107), Hidden] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Duration         : 1 seconds
 Triggered by     : Metamorphosis (191427)
 Attributes       : .......x x....... ........ .....x..   ........ ..x..... ........ ........ 
@@ -1267,6 +1323,7 @@ Effects          :
 Name             : Fury of the Illidari (rank=Artifact) (id=201467) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : Melee
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 3 yards/sec
@@ -1288,6 +1345,7 @@ Description      : Throws the |cFFFFCC99Twinblades of the Deceiver|r in a whirlw
 Name             : Rage of the Illidari (id=201472) [Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
@@ -1307,6 +1365,7 @@ Description      : When Fury of the Illidari ends, $s1% of the damage it dealt e
 Name             : Anguish of the Deceiver (id=201473) [Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Chaos
+Spell Type       : None
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
@@ -1326,6 +1385,7 @@ Description      : Each time Eye Beam deals damage to a target, it also applies 
 Name             : Fury of the Illidari (id=201628) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chaos
+Spell Type       : Melee
 Range            : 100 yards
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1345,6 +1405,7 @@ Description      : $@spelldesc201467
 Name             : Fury of the Illidari (id=201789) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chaos
+Spell Type       : Melee
 Range            : 100 yards
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ x....... 
@@ -1364,6 +1425,7 @@ Description      : $@spelldesc201467
 Name             : Sigil of Silence (id=202137) [Spell Family (107)] 
 Class            : Vengeance Demon Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 101
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -1392,6 +1454,7 @@ Silences all enemies affected by the sigil for $204490d.
 Name             : Sigil of Chains (id=202138) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 100
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -1420,6 +1483,7 @@ All enemies affected by the sigil are pulled to its center and are snared, reduc
 Name             : Anguish (id=202443) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chaos
+Spell Type       : Magic
 Range            : 100 yards
 Duration         : 2 seconds
 Stacks           : 30 maximum
@@ -1442,6 +1506,7 @@ Tooltip          : Suffering from Anguish of the Deceiver.
 Name             : Anguish (id=202446) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chaos
+Spell Type       : Magic
 Range            : 100 yards
 Stacks           : 30 maximum
 Proc Chance      : 101%
@@ -1461,6 +1526,7 @@ Description      : $@spelldesc201473
 Name             : Spectral Sight (id=202688) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Duration         : Aura (infinite)
 Triggered by     : Spectral Sight (188501)
 Attributes       : ........ x....... ........ ........   ........ ........ ........ ....x... 
@@ -1480,6 +1546,7 @@ Name             : Arcane Torrent (rank=Racial) (id=202719)
 Class            : Demon Hunter
 Race             : Blood Elf (0x200)
 School           : Arcane
+Spell Type       : Magic
 GCD              : 1.5 seconds
 Cooldown         : 90 seconds
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
@@ -1502,6 +1569,7 @@ Name             : Demonic Wards (id=203513) [Spell Family (107), Passive]
 Class            : Vengeance Demon Hunter
 Race             : Blood Elf (0x200)
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ....x.x. ........ ..x..... x..x.x.x   ........ ..x..... .x...... ....x... 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
@@ -1527,6 +1595,7 @@ Description      : Your tattoos reduce all damage taken by $s1%, and increase yo
 Name             : Blind Fury (id=203550) [Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1551,6 +1620,7 @@ Description      : Eye Beam generates ${$s3/5} Fury every sec. and its duration 
 Name             : Prepared (id=203551) [Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1571,6 +1641,7 @@ Description      : Reduces the cooldown of Vengeful Retreat by 10 sec, and gener
 Name             : Demon Blades (id=203555) [Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
@@ -1593,6 +1664,7 @@ Description      : Your auto attacks have a $s1% chance to deal additional Shado
 Name             : Master of the Glaive (id=203556) [Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
@@ -1614,6 +1686,7 @@ Description      : Throw Glaive has ${$s2+1} charges, and snares all enemies hit
 Name             : Felblade (id=203557) [Spell Family (107), Passive, Hidden] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 1.69 (Haste multiplier)
 Proc Flags       : ....x... ....x... ........ ........ 
@@ -1633,6 +1706,7 @@ Effects          :
 Name             : Prepared (id=203650) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Duration         : 10 seconds
 Affecting spells : Item - Demon Hunter T19 Havoc 2P Bonus (211054 effect#2)
 Triggered by     : Prepared (203551)
@@ -1654,6 +1728,7 @@ Name             : Demon Spikes (id=203720) [Spell Family (107)]
 Replaces         : Vengeful Retreat (id=198793)
 Class            : Vengeance Demon Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Cooldown         : 1.5 seconds
 Charges          : 2 (20 seconds cooldown)
@@ -1673,6 +1748,7 @@ Description      : Surge with fel power, increasing your Armor by ${$203819s2*$A
 Name             : Parry (id=203724) [Passive] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : Magic
 Spell Level      : 1
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1690,6 +1766,7 @@ Description      : Gives a chance to parry enemy melee attacks.
 Name             : Mastery: Fel Blood (id=203747) [Spell Family (107), Passive] 
 Class            : Vengeance Demon Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1715,6 +1792,7 @@ Also increases your attack power by ${$s2}.1%.
 Name             : Shear (id=203782) [Spell Family (107)] 
 Class            : Vengeance Demon Hunter
 School           : Physical
+Spell Type       : Melee
 Range            : 5 yards
 GCD              : 1.5 seconds
 Affecting spells : Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#2), 
@@ -1741,6 +1819,7 @@ Description      : Shears an enemy for $s2 Physical damage, and shatters a Lesse
 Name             : Shear (id=203783) [Spell Family (107), Passive, Hidden] 
 Class            : Vengeance Demon Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
@@ -1769,6 +1848,7 @@ Consuming a Lesser Soul Fragment heals you for $s2% of all damage taken in the l
 Name             : Consume Soul (id=203794) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Shadow
+Spell Type       : Magic
 Range            : 100 yards
 Velocity         : 25 yards/sec
 Family Flags     : 20
@@ -1788,6 +1868,7 @@ Description      : $@spelldesc203783
 Name             : Soul Fragment (id=203795) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 20 seconds
 Family Flags     : 81
@@ -1812,6 +1893,7 @@ Tooltip          : Consume to heal for $210042s1% of your maximum health.
 Name             : Demon Blades (id=203796) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Shadow
+Spell Type       : Melee
 Range            : 5 yards
 GCD              : 1.5 seconds
 Affecting spells : Demon Soul (163073 effect#1), Momentum (208628 effect#1), Item - Demon Hunter T19 Havoc 2P Bonus (211054 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#4), Chaos Blades (247938 effect#2), 
@@ -1834,6 +1916,7 @@ Description      : Inflicts $s1 Shadow damage and generates $m2 to $M2 Fury.
 Name             : Demon Spikes (id=203819) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 100
 Duration         : 6 seconds
 Affecting spells : Mastery: Fel Blood (203747 effect#3), Razor Spikes (209400 effect#1), Item - Demon Hunter T21 Vengeance 2P Bonus (251770 effect#1)
@@ -1861,6 +1944,7 @@ Name             : Fiery Brand (id=204021) [Spell Family (107)]
 Replaces         : Chaos Nova (id=179057)
 Class            : Vengeance Demon Hunter
 School           : Fire
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -1889,6 +1973,7 @@ Name             : Throw Glaive (id=204157) [Spell Family (107)]
 Replaces         : Throw Glaive (id=185123)
 Class            : Vengeance Demon Hunter
 School           : Physical
+Spell Type       : Melee
 Spell Level      : 1
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -1914,6 +1999,7 @@ Description      : Throw a demonic glaive at the target, dealing $s2 Physical da
 Name             : Shattered Souls (id=204254) [Spell Family (107), Passive] 
 Class            : Vengeance Demon Hunter
 School           : Physical
+Spell Type       : Magic
 Internal Cooldown: 1 seconds
 Proc Chance      : 100%
 Proc Flags       : .x...... ........ ........ ........ 
@@ -1940,6 +2026,7 @@ Consuming a Demon's soul will grant you $163073s1% increased damage for $163073d
 Name             : Soul Fragment (id=204255) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 20 seconds
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
@@ -1963,6 +2050,7 @@ Tooltip          : Consume to heal for $203794s2% of your maximum health.
 Name             : Sigil of Silence (id=204490) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : Magic
 Range            : 100 yards
 Duration         : 6 seconds
 Affecting spells : Concentrated Sigils (207666 effect#5), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2)
@@ -1984,6 +2072,7 @@ Tooltip          : Silenced.
 Name             : Felblade (id=204497) [Spell Family (107), Hidden] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Duration         : 3 seconds
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
@@ -2006,6 +2095,7 @@ Name             : Sigil of Flame (id=204596) [Spell Family (107)]
 Replaces         : Blade Dance (id=188499)
 Class            : Vengeance Demon Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -2035,6 +2125,7 @@ Tooltip          : Sigil of Flame is active.
 Name             : Sigil of Flame (id=204598) [Scaling Spell (-1), Spell Family (107)] 
 Class            : Demon Hunter
 School           : Fire
+Spell Type       : Magic
 Range            : 100 yards
 Duration         : 6 seconds
 Proc Chance      : 101%
@@ -2061,6 +2152,7 @@ Tooltip          : Suffering $w2 Fire damage every $t2 sec.
 Name             : Sigil of Chains (id=204843) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : Magic
 Range            : 100 yards
 Duration         : 6 seconds
 Affecting spells : Concentrated Sigils (207666 effect#5), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2)
@@ -2082,6 +2174,7 @@ Tooltip          : Movement slowed by $s1%.
 Name             : Soul Rending (id=204909) [Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2104,6 +2197,7 @@ Gain an additional $s2% Leech while Metamorphosis is active.
 Name             : Desperate Instincts (id=205411) [Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2128,6 +2222,7 @@ Additionally, you automatically trigger Blur when you fall below $s1% health. Th
 Name             : Desperate Instincts (id=205478) [Spell Family (107), Hidden] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Duration         : Aura (infinite)
 Triggered by     : Desperate Instincts (205411)
 Attributes       : .......x x....... ........ ........   ........ ........ ........ ........ 
@@ -2145,6 +2240,7 @@ Effects          :
 Name             : First Blood (id=206416) [Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2167,6 +2263,7 @@ $firstbloodDmg=${(3*$199552sw2+$200685sw2)*(100+$206416s1)/100}
 Name             : Momentum (id=206476) [Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x... x....... ........ 
@@ -2191,6 +2288,7 @@ Vengeful Retreat's cooldown is reduced by ${$s1/-1000} sec, and it generates ${(
 Name             : Unleashed Power (id=206477) [Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2213,6 +2311,7 @@ Description      : Removes the Fury cost of Chaos Nova and reduces its cooldown 
 Name             : Demonic Appetite (id=206478) [Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 6 (Haste multiplier)
 Proc Flags       : ....x... ........ ........ ........ 
@@ -2233,6 +2332,7 @@ Description      : Chaos Strike has a chance to spawn a Lesser Soul Fragment, an
 Name             : Nemesis (id=206491) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Range            : 50 yards
 GCD              : 1.5 seconds
 Duration         : 60 seconds
@@ -2258,6 +2358,7 @@ Tooltip          : Damage taken increased by $s1%.
 Name             : Riposte (id=207197) [Spell Family (107), Passive] 
 Class            : Vengeance Demon Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 76
 Family Flags     : 96
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -2276,6 +2377,7 @@ Description      : You gain Parry equal to $s1% of your Critical Strike from gea
 Name             : Soul Carver (rank=Artifact) (id=207407) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Fire
+Spell Type       : Melee
 Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
@@ -2303,6 +2405,7 @@ Tooltip          : Suffering $s1 Fire damage every $t sec.
 Name             : Agonizing Flames (id=207548) [Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2325,6 +2428,7 @@ Description      : Immolation Aura increases your movement speed by $s2%, and de
 Name             : Abyssal Strike (id=207550) [Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2345,6 +2449,7 @@ Description      : Infernal Strike's range is increased by $s1 yards, and its co
 Name             : Concentrated Sigils (id=207666) [Spell Family (107), Passive, Hidden] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2371,6 +2476,7 @@ Description      : All Sigils are now targeted at your location, and the duratio
 Name             : Sigil of Misery (id=207684) [Spell Family (107)] 
 Class            : Vengeance Demon Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 105
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -2399,6 +2505,7 @@ Causes all enemies affected by the sigil to cower in fear, disorienting them for
 Name             : Sigil of Misery (id=207685) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : Magic
 Range            : 100 yards
 Duration         : 20 seconds
 Proc Chance      : 100%
@@ -2426,6 +2533,7 @@ Tooltip          : Disoriented.
 Name             : Feast of Souls (id=207693) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Shadow
+Spell Type       : Magic
 Range            : 100 yards
 Duration         : 6 seconds
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
@@ -2445,6 +2553,7 @@ Tooltip          : Healing $w1 health every $t1 sec.
 Name             : Feast of Souls (id=207697) [Spell Family (107), Passive, Hidden] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2461,6 +2570,7 @@ Description      : Soul Cleave heals you for an additional $207693o1 over $20769
 Name             : Burning Alive (id=207739) [Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Fire
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2477,6 +2587,7 @@ Description      : Every $207771t3 sec, your Fiery Brand deals $207771s3 Fire da
 Name             : Fiery Brand (id=207744) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Fire
+Spell Type       : None
 Range            : 100 yards
 Duration         : 8 seconds
 Proc Chance      : 100%
@@ -2504,6 +2615,7 @@ Tooltip          : Branded, dealing $204021s1% less damage to the branding Demon
 Name             : Burning Alive (id=207760) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2519,6 +2631,7 @@ Effects          :
 Name             : Fiery Brand (id=207771) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Fire
+Spell Type       : Magic
 Range            : 100 yards
 Duration         : 8 seconds
 Proc Chance      : 100%
@@ -2549,6 +2662,7 @@ Tooltip          : Branded, taking $w3 Fire damage every $t3 sec, and dealing $2
 Name             : Nemesis (id=208605) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Duration         : 60 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2566,6 +2680,7 @@ Tooltip          : Damage against Humanoids increased by $s1%.
 Name             : Momentum (id=208628) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Duration         : 6 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2591,6 +2706,7 @@ Tooltip          : Damage done increased by $s1%.
 Name             : Fiery Brand (id=209245) 
 Class            : Demon Hunter
 School           : Fire
+Spell Type       : Magic
 Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 12 seconds
@@ -2616,6 +2732,7 @@ Tooltip          : Damage done reduced by $s2%.
 Name             : Fiery Brand (id=209247) [Hidden] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Range            : 40 yards
 Duration         : 30 seconds
 Triggered by     : Fiery Brand (209245)
@@ -2634,6 +2751,7 @@ Effects          :
 Name             : Last Resort (id=209258) [Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2654,6 +2772,7 @@ This effect may only occur every $209261d.
 Name             : Uncontained Fel (id=209261) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Range            : 50000 yards
 Duration         : 480 seconds
 Attributes       : ........ ........ ........ ..xx.x..   ........ ..x..... ........ ........ 
@@ -2672,6 +2791,7 @@ Tooltip          : You have recently benefited from Last Resort and cannot benef
 Name             : Quickened Sigils (id=209281) [Spell Family (107), Passive, Hidden] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2694,6 +2814,7 @@ Description      : All Sigils activate ${$s1/-1000} second faster, and their coo
 Name             : Razor Spikes (id=209400) [Spell Family (107), Passive, Hidden] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
@@ -2715,6 +2836,7 @@ Description      : While Demon Spikes is active, you deal $s1% increased Physica
 Name             : Darkness (id=209426) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 8 seconds
 Family Flags     : 51, 63
@@ -2737,6 +2859,7 @@ Tooltip          : Attacks against you have a $s2% chance to inflict no damage.
 Name             : Fracture (id=209795) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : Melee
 Resource         : 30 Pain (18) (id=11169)
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -2762,6 +2885,7 @@ Description      : Brutally slam your target for ${$225919sw1+$225921sw1} Physic
 Name             : Razor Spikes (id=210003) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : Melee
 Range            : 5 yards
 Duration         : 6 seconds
 Attributes       : ........ ........ x.x..... ........   ...x...x ........ ........ ........ 
@@ -2780,6 +2904,7 @@ Tooltip          : Movement slowed by $s1%.
 Name             : Demonic Appetite (id=210041) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Affecting spells : Item - Demon Hunter T19 Havoc 2P Bonus (211054 effect#2)
 Triggered by     : Consume Soul (178963)
 Family Flags     : 41
@@ -2798,6 +2923,7 @@ Description      : Increases your Fury by $s1.
 Name             : Consume Soul (id=210042) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Shadow
+Spell Type       : Magic
 Range            : 100 yards
 Velocity         : 25 yards/sec
 Family Flags     : 20
@@ -2817,6 +2943,7 @@ Description      : Consume a Soul Fragment, healing you for $s1 health.
 Name             : Death Sweep (id=210152) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : Melee
 Resource         : 35 Fury (17) (id=11104)
 GCD              : 1.5 seconds
 Duration         : 1 seconds
@@ -2854,6 +2981,7 @@ Tooltip          : Dodge chance increased by $s3%.
 Name             : Death Sweep (id=210153) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : Melee
 Affecting spells : Demon Soul (163073 effect#1), First Blood (206416 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Item - Demon Hunter T20 Havoc 4P Bonus (242227 effect#1), Chaos Blades (247938 effect#2), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1)
 Triggered by     : Death Sweep (210152)
 Family Flags     : 16, 37, 42
@@ -2875,6 +3003,7 @@ Description      : $@spelldesc210152
 Name             : Death Sweep (id=210155) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : Melee
 Affecting spells : Demon Soul (163073 effect#1), First Blood (206416 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Item - Demon Hunter T20 Havoc 4P Bonus (242227 effect#1), Chaos Blades (247938 effect#2), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1)
 Triggered by     : Death Sweep (210152)
 Family Flags     : 16, 37, 38, 42
@@ -2896,6 +3025,7 @@ Description      : $@spelldesc210152
 Name             : Soul Fragments (id=210788) [Spell Family (107), Hidden] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Duration         : 25 seconds
 Triggered by     : Soul Fragment (203795), Soul Fragment (204255)
 Attributes       : .......x ........ ........ x..x....   .....x.. ........ ........ ........ 
@@ -2913,6 +3043,7 @@ Effects          :
 Name             : Chaos Blades (id=211796) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chaos
+Spell Type       : Melee
 Range            : 30 yards
 Affecting spells : Mastery: Demonic Presence (185164 effect#1), 
 Family Flags     : 43
@@ -2932,6 +3063,7 @@ Description      : Attack with pure Fel power, dealing Chaos damage equal to $s1
 Name             : Chaos Blades (id=211797) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chaos
+Spell Type       : Melee
 Range            : 30 yards
 Affecting spells : Mastery: Demonic Presence (185164 effect#1), 
 Triggered by     : Chaos Blades (247938)
@@ -2952,6 +3084,7 @@ Description      : Attack with pure Fel power, dealing Chaos damage equal to $s1
 Name             : Fel Eruption (id=211881) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chromatic
+Spell Type       : Melee
 Resource         : 10 Fury (17) (id=11144) w/ Havoc Demon Hunter (id=212612)
 Resource         : 10 Pain (18) (id=11161) w/ Vengeance Demon Hunter (id=212613)
 Range            : 20 yards
@@ -2979,6 +3112,7 @@ Tooltip          : Stunned.
 Name             : Fel Devastation (id=212084) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Fire
+Spell Type       : None
 Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
@@ -3003,6 +3137,7 @@ Description      : Unleash the fel within you, damaging enemies directly in fron
 Name             : Fel Devastation (id=212105) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Fire
+Spell Type       : Magic
 Range            : 50000 yards
 Affecting spells : Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Vengeance Demon Hunter (212613 effect#2), 
 Triggered by     : Fel Devastation (212084)
@@ -3024,6 +3159,7 @@ Name             : Fel Devastation (id=212106) [Spell Family (107)]
 Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Fire
+Spell Type       : None
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3039,6 +3175,7 @@ Description      : $@spelldesc212084
 Name             : Demon Hunter (id=212611) [Spell Family (107), Passive, Hidden] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3085,6 +3222,7 @@ Effects          :
 Name             : Havoc Demon Hunter (id=212612) [Spell Family (107), Passive, Hidden] 
 Class            : Havoc Demon Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3142,6 +3280,7 @@ Effects          :
 Name             : Vengeance Demon Hunter (id=212613) [Spell Family (107), Passive, Hidden] 
 Class            : Vengeance Demon Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3207,6 +3346,7 @@ Effects          :
 Name             : Blur (id=212800) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Duration         : 10 seconds
 Cooldown         : 60 seconds
 Category         : 1621
@@ -3237,6 +3377,7 @@ Damage taken reduced by $s3%.
 Name             : Fiery Demise (id=212817) [Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
@@ -3256,6 +3397,7 @@ Description      : Fiery Brand also increases Fire damage you deal to the target
 Name             : Fiery Demise (id=212818) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Fire
+Spell Type       : Melee
 Range            : 100 yards
 Duration         : 8 seconds
 Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
@@ -3274,6 +3416,7 @@ Tooltip          : Fire damage taken increased by $w1%.
 Name             : Charred Warblades (id=213011) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Fire
+Spell Type       : None
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3290,6 +3433,7 @@ Description      : You heal for $s1% of all Fire damage dealt.
 Name             : Felblade (id=213243) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Fire
+Spell Type       : Melee
 Spell Level      : 98
 Range            : 15 yards
 Affecting spells : Demon Soul (163073 effect#1), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effect#1), Item - Demon Hunter T19 Havoc 2P Bonus (211054 effect#3), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#2), Chaos Blades (247938 effect#2), 
@@ -3316,6 +3460,7 @@ Description      : $@spelldesc232893
 Name             : Master of the Glaive (id=213405) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 6 seconds
 Mechanic         : Snare
@@ -3336,6 +3481,7 @@ Tooltip          : Movement speed reduced by $s1%.
 Name             : Demonic (id=213410) [Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3352,6 +3498,7 @@ Description      : Eye Beam causes you to enter demon form for 8 sec after it fi
 Name             : Soul Carver (id=214743) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Fire
+Spell Type       : Melee
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
@@ -3374,6 +3521,7 @@ Description      : $@spelldesc207407
 Name             : Spectral Sight (id=215725) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Duration         : 30 seconds
 Triggered by     : Spectral Sight (188501)
 Attributes       : ........ x....... ........ ........   ........ ........ ........ ....x... 
@@ -3390,6 +3538,7 @@ Effects          :
 Name             : Rage of the Illidari (id=217060) [Spell Family (107), Hidden] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Duration         : 30 seconds
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3407,6 +3556,7 @@ Description      : $@spelldesc201472
 Name             : Rage of the Illidari (id=217070) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chaos
+Spell Type       : Melee
 Range            : 100 yards
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
@@ -3424,6 +3574,7 @@ Description      : $@spelldesc201472
 Name             : Imprison (id=217832) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Shadow
+Spell Type       : Magic
 Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 60 seconds
@@ -3451,6 +3602,7 @@ Tooltip          : Incapacitated.
 Name             : Soul Rending (id=217996) [Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3473,6 +3625,7 @@ Gain an additional $s2% Leech while Metamorphosis is active.
 Name             : Feed the Demon (id=218612) [Spell Family (107), Passive, Hidden] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3489,6 +3642,7 @@ Description      : Consuming a Soul Fragment reduces the remaining cooldown of D
 Name             : Disrupt (id=218903) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chaos
+Spell Type       : None
 Triggered by     : Disrupt (183782)
 Family Flags     : 64
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -3508,6 +3662,7 @@ Description      : $@spelldesc183752
 Name             : Critical Strikes (rank=Passive) (id=221351) [Passive] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3525,6 +3680,7 @@ Description      : Increases your chance to critically strike by $s1%.
 Name             : Shattered Souls (id=221461) [Spell Family (107), Hidden] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Duration         : 15 seconds
 Triggered by     : Soul Fragment (204255), Soul Fragment (203795)
 Attributes       : .......x ........ ........ x..x....   .....x.. ........ ........ ........ 
@@ -3542,6 +3698,7 @@ Effects          :
 Name             : Chaos Strike (id=222031) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chaos
+Spell Type       : Melee
 Range            : 15 yards
 Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), Dark Slash (258860 effect#3), Thirsting Blades (278736 effect#1)
 Triggered by     : Chaos Strike (162794)
@@ -3562,6 +3719,7 @@ Description      : $@spelldesc162794
 Name             : Fel Barrage (rank=Passive) (id=222703) [Spell Family (107), Passive, Hidden] 
 Class            : Demon Hunter
 School           : Magic
+Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 4 (Haste multiplier)
 Proc Flags       : ....x... ....x... x.x..... ........ 
@@ -3582,6 +3740,7 @@ Description      : You shouldn't see this.
 Name             : Fracture (id=225919) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : Melee
 Range            : 20 yards
 Triggered by     : Fracture (209795), Fracture (263642)
 Family Flags     : 69
@@ -3603,6 +3762,7 @@ Description      : $@spelldesc209795
 Name             : Fracture (id=225921) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : Melee
 Range            : 20 yards
 Triggered by     : Fracture (209795), Fracture (263642)
 Family Flags     : 69
@@ -3624,6 +3784,7 @@ Description      : $@spelldesc209795
 Name             : Leather Specialization (rank=Passive) (id=226359) [Passive, Hidden] 
 Class            : Vengeance Demon Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3640,6 +3801,7 @@ Description      : Increases your Stamina by $s1% while wearing only leather arm
 Name             : Fallout (id=227174) [Spell Family (107), Passive, Hidden] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3656,6 +3818,7 @@ Description      : Immolation Aura's initial burst has a chance to shatter Lesse
 Name             : Spirit Bomb (id=227255) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Fire
+Spell Type       : Magic
 Range            : 100 yards
 Triggered by     : Frailty (247456)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3674,6 +3837,7 @@ Description      : $@spelldesc247454
 Name             : Flame Crash (id=227322) [Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3691,6 +3855,7 @@ Description      : Infernal Strike creates a Sigil of Flame when you land.
 Name             : Annihilation (id=227518) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chaos
+Spell Type       : Melee
 Range            : 15 yards
 Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), Dark Slash (258860 effect#3), Thirsting Blades (278736 effect#1)
 Triggered by     : Annihilation (201427)
@@ -3712,6 +3877,7 @@ Name             : Soul Cleave (id=228477) [Spell Family (107)]
 Replaces         : Chaos Strike (id=162794)
 Class            : Vengeance Demon Hunter
 School           : Physical
+Spell Type       : Melee
 Resource         : 30 Pain (18) (id=11545)
 Spell Level      : 1
 Range            : 5 yards
@@ -3744,6 +3910,7 @@ $cleaveHeal=${2.0*$AP*5.8*$s4/1000}
 Name             : Soul Cleave (id=228478) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : Melee
 Range            : 5 yards
 Affecting spells : Vengeance Demon Hunter (212613 effect#2), 
 Triggered by     : Soul Cleave (228477)
@@ -3764,6 +3931,7 @@ Description      : $@spelldesc228477
 Name             : Vengeful Retreat (id=232709) [Hidden] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Duration         : 0.1 seconds
 Triggered by     : Vengeful Retreat (198793)
@@ -3782,6 +3950,7 @@ Effects          :
 Name             : Felblade (id=232893) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : Melee
 Range            : 15 yards
 GCD              : 1.5 seconds
 Cooldown         : 15 seconds
@@ -3810,6 +3979,7 @@ $?s203513[Shear has a chance to reset the cooldown of Felblade.
 Name             : Felblade (id=236167) [Spell Family (107), Passive, Hidden] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 1.69 (Haste multiplier)
 Proc Flags       : ....x... ....x... ........ ........ 
@@ -3829,6 +3999,7 @@ Effects          :
 Name             : Metamorphosis (id=247121) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chromatic
+Spell Type       : Magic
 Range            : 40 yards
 Duration         : 3 seconds
 Affecting spells : Mastery: Demonic Presence (185164 effect#1), 
@@ -3849,6 +4020,7 @@ Tooltip          : Dazed.
 Name             : Spirit Bomb (id=247454) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Fire
+Spell Type       : None
 Resource         : 30 Pain (18) (id=191871)
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -3875,6 +4047,7 @@ You heal for $247456s1% of all damage you deal to enemies with Frailty.
 Name             : Spirit Bomb (id=247455) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Fire
+Spell Type       : Magic
 Range            : 100 yards
 Affecting spells : Metamorphosis (162264 effect#4), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2)
 Family Flags     : 68, 72
@@ -3894,6 +4067,7 @@ Description      : $@spelldesc247454
 Name             : Frailty (id=247456) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Fire
+Spell Type       : Magic
 Range            : 100 yards
 Duration         : 20 seconds
 Proc Chance      : 100%
@@ -3918,6 +4092,7 @@ Tooltip          : The casting Demon Hunter is healed for $s1% of all damage the
 Name             : Chaos Blades (id=247938) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Duration         : 18 seconds
 Cooldown         : 120 seconds
 Family Flags     : 62
@@ -3952,6 +4127,7 @@ Name             : Vindicaar Matrix Crystal (id=251463)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
+Spell Type       : None
 GCD              : 1.5 seconds
 Triggered by     : Vindicaar Matrix Crystal (255529)
 Attributes       : ........ ........ ........ ........   ...x...x ..x..... ........ ........ 
@@ -3969,6 +4145,7 @@ Description      : Unlock powers at the Vindicaar's Matrix Core to use while on 
 Name             : Chaos Brand (id=255260) [Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 100
 Proc Chance      : 100%
 Proc Flags       : ....x.x. x...x... x.x..... ........ 
@@ -3990,6 +4167,7 @@ Name             : Vindicaar Matrix Crystal (id=255529) [Hidden]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
+Spell Type       : None
 Triggered by     : Activating Specialization (200749)
 Attributes       : .......x x....... .......x x..x.x..   ...x.x.x ..x..... ........ ........ 
                  : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ....x... 
@@ -4010,6 +4188,7 @@ Name             : Light's Judgment (rank=Racial) (id=255647) [Scaling Spell (-6
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
+Spell Type       : Magic
 Max Scaling Level: 120
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -4032,6 +4211,7 @@ Name             : Holy Resistance (rank=Racial Passive) (id=255651) [Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4049,6 +4229,7 @@ Name             : Light's Reckoning (rank=Racial Passive) (id=255652) [Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ .......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -4066,6 +4247,7 @@ Name             : Demonbane (rank=Racial Passive) (id=255653) [Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4083,6 +4265,7 @@ Name             : Light's Judgment (rank=Racial) (id=256893) [Scaling Spell (-6
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
+Spell Type       : Magic
 Max Scaling Level: 120
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -4105,6 +4288,7 @@ Name             : Light's Reckoning (rank=Racial Passive) (id=256896) [Scaling 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
+Spell Type       : Magic
 Max Scaling Level: 120
 Range            : 40 yards
 Triggered by     : Light's Reckoning (255652)
@@ -4128,6 +4312,7 @@ Heals $s2 to allies within $A1.
 Name             : Dark Slash (id=258860) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : Melee
 Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
@@ -4157,6 +4342,7 @@ Tooltip          : The Demon Hunter's Chaos Strike deals $s3% additional damage.
 Name             : Insatiable Hunger (id=258876) [Spell Family (107), Passive, Hidden] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4173,6 +4359,7 @@ Description      : Demon's Bite generates up to $s1 additional Fury.
 Name             : Trail of Ruin (id=258881) [Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -4192,6 +4379,7 @@ Description      : The final slash of Blade Dance inflicts an additional $258883
 Name             : Trail of Ruin (id=258883) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chromatic
+Spell Type       : Magic
 Range            : 8 yards
 Duration         : 4 seconds
 Affecting spells : Mastery: Demonic Presence (185164 effect#1), 
@@ -4214,6 +4402,7 @@ Tooltip          : Suffering $w1 Chaos damage every $t1 sec.
 Name             : Cycle of Hatred (id=258887) [Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4230,6 +4419,7 @@ Description      : When Chaos Strike refunds Fury, it also reduces the cooldown 
 Name             : Immolation Aura (id=258920) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Fire
+Spell Type       : None
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 30 seconds
@@ -4257,6 +4447,7 @@ Tooltip          : Burning nearby enemies for $178741s1 Fire damage every $17874
 Name             : Immolation Aura (id=258921) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Fire
+Spell Type       : Magic
 Affecting spells : Demon Soul (163073 effect#1), Agonizing Flames (207548 effect#1), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), 
 Triggered by     : Immolation Aura (258920)
 Family Flags     : 11, 16, 49
@@ -4275,6 +4466,7 @@ Description      : $@spelldesc258920
 Name             : Immolation Aura (id=258922) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Fire
+Spell Type       : Magic
 Affecting spells : Demon Soul (163073 effect#1), Agonizing Flames (207548 effect#1), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), 
 Triggered by     : Immolation Aura (258920)
 Family Flags     : 11, 16, 61
@@ -4295,6 +4487,7 @@ Description      : $@spelldesc258920
 Name             : Fel Barrage (id=258925) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chromatic
+Spell Type       : None
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 60 seconds
@@ -4318,6 +4511,7 @@ Tooltip          : Unleashing Fel.
 Name             : Fel Barrage (id=258926) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chromatic
+Spell Type       : Magic
 Range            : 100 yards
 Velocity         : 20 yards/sec
 Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), 
@@ -4338,6 +4532,7 @@ Description      : $@spelldesc258925
 Name             : Haste (id=261582) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 2
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4355,6 +4550,7 @@ Tooltip          : Increases haste by $s1.
 Name             : Fracture (id=263642) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : Melee
 Range            : 5 yards
 GCD              : 1.5 seconds
 Charges          : 2 (4.5 seconds cooldown)
@@ -4385,6 +4581,7 @@ Description      : Rapidly slash your target for ${$225919sw1+$225921sw1} Physic
 Name             : Soul Barrier (id=263648) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Shadow
+Spell Type       : Magic
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 30 seconds
@@ -4410,6 +4607,7 @@ $fragmentAbsorb=${1*$AP*$pctH}
 Name             : Resounding Protection (id=263962) [Scaling Spell (-8), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 15
 Triggered by     : Resounding Protection (269279)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -4429,6 +4627,7 @@ Description      : Every $270568t1 sec, gain an absorb shield for $s1 for $26927
 Name             : Azerite Empowered (id=263978) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 13
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4446,6 +4645,7 @@ Description      : Increases the item level of this item by 5.
 Name             : Elemental Whirl (id=263984) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 21
 Triggered by     : Elemental Whirl (268953), Elemental Whirl (268956), Elemental Whirl (268955), Elemental Whirl (268954)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -4466,6 +4666,7 @@ Name             : Heed My Call (id=263987) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 22
 Triggered by     : Heed My Call (271685), Heed My Call (271686)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -4489,6 +4690,7 @@ Tooltip          : Your damaging abilities have a chance to deal $s1 Nature dama
 Name             : Charred Flesh (id=264002) [Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4507,6 +4709,7 @@ Description      : Fiery Brand increases the Fire damage your abilities deal to 
 Name             : Gluttony (id=264004) [Spell Family (107), Passive, Hidden] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : AOE Heal, Heal
@@ -4526,6 +4729,7 @@ Description      : Consuming a Soul Fragment has a chance to activate Metamorpho
 Name             : Blood Siphon (id=264108) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 18
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4548,6 +4752,7 @@ Tooltip          : Increases Mastery by $s1 and Leech by $s2.
 Name             : Overwhelming Power (id=266180) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 30
 Triggered by     : Overwhelming Power (271711)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -4569,6 +4774,7 @@ Name             : Azerite Globules (id=266936) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 462
 Triggered by     : Azerite Globules (279958)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -4592,6 +4798,7 @@ Name             : Gutripper (id=266937) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 31
 Triggered by     : Gutripper (270668), Gutripper (269031)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -4613,6 +4820,7 @@ Description      : Your damaging abilities have a chance to deal $s1 Physical da
 Name             : Lifespeed (id=267665) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 20
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4635,6 +4843,7 @@ Tooltip          : Increases your Haste by $s1 and your Avoidance by $s2.
 Name             : Winds of War (id=267671) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Azerite Power Id : 43
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
@@ -4658,6 +4867,7 @@ Name             : Azerite Veins (id=267683) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 89
 Triggered by     : Azerite Veins (270674)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -4677,6 +4887,7 @@ Description      : Taking damage has a chance to grant you Azerite Veins, healin
 Name             : Void Reaver (id=268175) [Spell Family (107), Passive, Hidden] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -4696,6 +4907,7 @@ Description      : Enemies struck by Soul Cleave deal $268178s1% less damage to 
 Name             : Void Reaver (id=268178) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Range            : 100 yards
 Duration         : 12 seconds
 Triggered by     : Void Reaver (268175)
@@ -4716,6 +4928,7 @@ Name             : Azerite Fortification (id=268435) [Scaling Spell (-8), Passiv
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 86
 Triggered by     : Azerite Fortification (270659)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -4737,6 +4950,7 @@ Name             : Impassive Visage (id=268437) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 6 seconds
 Proc Chance      : 100%
 Azerite Power Id : 83
@@ -4762,6 +4976,7 @@ Name             : Longstrider (id=268594) [Scaling Spell (-7), Passive]
 Hotfixed         : Scaling Spell (-1 -> -7)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 14
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4785,6 +5000,7 @@ Name             : Bulwark of the Masses (id=268595) [Scaling Spell (-8), Passiv
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 84
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4806,6 +5022,7 @@ Name             : Gemhide (id=268596) [Scaling Spell (-1), Passive]
 Hotfixed         : Scaling Spell (-7 -> -1)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 85
 Triggered by     : Gemhide (270576)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -4831,6 +5048,7 @@ Tooltip          : When dealt damage greater than $s3% of your maximum health, g
 Name             : Vampiric Speed (id=268599) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 44
 Triggered by     : Vampiric Speed (269238), Vampiric Speed (269239)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -4855,6 +5073,7 @@ Name             : Self Reliance (id=268600) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 87
 Triggered by     : Self Reliance (270661)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -4877,6 +5096,7 @@ Tooltip          : While no enemies are within $s2 yds, you heal for $w1 every $
 Name             : Crystalline Carapace (id=271536) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 98
 Triggered by     : Crystalline Carapace (271539), Crystalline Carapace (271538)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -4902,6 +5122,7 @@ Name             : Ablative Shielding (id=271540) [Scaling Spell (-1), Passive]
 Hotfixed         : Scaling Spell (-7 -> -1)
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 99
 Triggered by     : Ablative Shielding (271543)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -4922,6 +5143,7 @@ Name             : Strength in Numbers (id=271546) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 100
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4940,6 +5162,7 @@ Description      : Taking damage has a chance to increase your maximum health by
 Name             : Shimmering Haven (id=271557) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 101
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4960,6 +5183,7 @@ Description      : Taking damage has a chance to create an upwelling of Azerite 
 Name             : Revel in Pain (id=272983) [Scaling Spell (-1), Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 134
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4978,6 +5202,7 @@ Name             : Ruinous Bolt (id=273150) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 156
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4995,6 +5220,7 @@ Description      : Your spells and abilities have a chance to draw a Wandering S
 Name             : Furious Gaze (id=273231) [Scaling Spell (-7), Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 159
 Triggered by     : Furious Gaze (273232)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5014,6 +5240,7 @@ Description      : When Eye Beam finishes fully channeling, your Haste is increa
 Name             : Infernal Armor (id=273236) [Scaling Spell (-1), Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 160
 Triggered by     : Infernal Armor (273239)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5037,6 +5264,7 @@ Name             : Meticulous Scheming (id=273682) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 192
 Triggered by     : Seize the Moment! (273714)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5062,6 +5290,7 @@ Name             : Rezan's Fury (id=273790) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 157
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5082,6 +5311,7 @@ Name             : Blightborne Infusion (id=273823) [Scaling Spell (-7), Passive
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 193
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5100,6 +5330,7 @@ Name             : Secrets of the Deep (id=273829) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 195
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5122,6 +5353,7 @@ Name             : Filthy Transfusion (id=273834) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 194
 Triggered by     : Filthy Transfusion (273836)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5141,6 +5373,7 @@ Name             : Soulmonger (id=274344) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 202
 Triggered by     : Soulmonger (274346)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5161,6 +5394,7 @@ Name             : Unbound Chaos (id=275144) [Scaling Spell (-8), Spell Family (
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 220
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5180,6 +5414,7 @@ Name             : Rigid Carapace (id=275350) [Scaling Spell (-1), Spell Family 
 Hotfixed         : Scaling Spell (-7 -> -1)
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 221
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5198,6 +5433,7 @@ Description      : Demon Spikes increases your Armor by $s1 every $275351t2 sec,
 Name             : Seething Power (id=275934) [Scaling Spell (-1), Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 245
 Triggered by     : Seething Power (275936)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5218,6 +5454,7 @@ Name             : Gaping Maw (id=275968) [Scaling Spell (-8), Spell Family (107
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 246
 Triggered by     : Gaping Maw (275972)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5239,6 +5476,7 @@ Description      : Soul Cleave grants you a shield that absorbs $s1 damage, incr
 Name             : Consume Magic (id=278326) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chromatic
+Spell Type       : Magic
 Spell Level      : 103
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -5262,6 +5500,7 @@ Description      : Consume $m1 beneficial Magic effect from the target, removing
 Name             : Demonic Wards (id=278386) [Spell Family (107), Passive] 
 Class            : Havoc Demon Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 1
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5279,6 +5518,7 @@ Description      : Your tattoos reduce magic damage taken by $s1%.
 Name             : Thirsting Blades (id=278493) [Scaling Spell (-8), Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 352
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5299,6 +5539,7 @@ Description      : Every $278729t1 sec, increase the damage of Chaos Strike by $
 Name             : Eyes of Rage (id=278500) [Scaling Spell (-1), Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 353
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5322,6 +5563,7 @@ Name             : Essence Sever (id=278501) [Scaling Spell (-8), Spell Family (
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 355
 Triggered by     : Essence Sever (279450)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5343,6 +5585,7 @@ Description      : $?s263642[Fracture][Shear] has a chance to rip Lesser Soul Fr
 Name             : Cycle of Binding (id=278502) [Scaling Spell (-8), Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 354
 Triggered by     : Cycle of Binding (278769)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5364,6 +5607,7 @@ Name             : Revolving Blades (id=279581) [Scaling Spell (-8), Spell Famil
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 126
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5386,6 +5630,7 @@ Description      : Blade Dance deals ${$s2*4} additional damage, and the cost of
 Name             : Unstable Flames (id=279899) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 459
 Triggered by     : Unstable Flames (279902)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5405,6 +5650,7 @@ Description      : Your damaging abilities have a chance to grant $s1 critical s
 Name             : Earthlink (id=279926) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 461
 Triggered by     : Earthlink (279928)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5425,6 +5671,7 @@ Name             : Burning Soul (id=280012) [Scaling Spell (-8), Passive]
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 466
 Triggered by     : Burning Soul (274289)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5445,6 +5692,7 @@ Name             : Barrage Of Many Bombs (id=280163) [Scaling Spell (-8), Passiv
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 1.5 (Haste multiplier)
 Azerite Power Id : 498
@@ -5476,6 +5724,7 @@ Name             : Ricocheting Inflatable Pyrosaw (id=280168) [Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 1.5 (Haste multiplier)
 Azerite Power Id : 499
@@ -5506,6 +5755,7 @@ Name             : Auto-Self-Cauterizer (id=280172) [Scaling Spell (-8), Passive
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 1 seconds
 Proc Chance      : 101%
 Real PPM         : 1.5
@@ -5538,6 +5788,7 @@ Name             : Synaptic Spark Capacitor (id=280174) [Scaling Spell (-8), Spe
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 1.5
 Azerite Power Id : 500
@@ -5567,6 +5818,7 @@ Name             : Relational Normalization Gizmo (id=280178) [Scaling Spell (-1
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 10 seconds
 Proc Chance      : 101%
 Real PPM         : 1.5
@@ -5594,6 +5846,7 @@ Name             : Personal Absorb-o-Tron (id=280181) [Scaling Spell (-8), Passi
 Hotfixed         : Scaling Spell, Max Scaling Level, Internal Cooldown (60000 -> 20000), Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Internal Cooldown: 20 seconds
 Proc Chance      : 101%
 Real PPM         : 1.5
@@ -5622,6 +5875,7 @@ Name             : Dagger in the Back (id=280284) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 479
 Triggered by     : Dagger in the Back (280286)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5643,6 +5897,7 @@ Name             : Thunderous Blast (id=280380) [Scaling Spell (-8), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 482
 Triggered by     : Thunderous Blast (280384)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5664,6 +5919,7 @@ Name             : Tidal Surge (id=280402) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Frost
+Spell Type       : None
 Azerite Power Id : 478
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5682,6 +5938,7 @@ Name             : Blood Rite (id=280407) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 480
 Triggered by     : Blood Rite (280409)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5701,6 +5958,7 @@ Name             : Incite the Pack (id=280410) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 481
 Triggered by     : Incite the Pack (280412), Incite the Pack (280413)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5724,6 +5982,7 @@ Name             : Swirling Sands (id=280429) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 196
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5746,6 +6005,7 @@ Name             : Archive of the Titans (id=280555) [Scaling Spell (-1), Passiv
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 483
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5766,6 +6026,7 @@ Name             : Laser Matrix (id=280559) [Scaling Spell (-8), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 485
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5788,6 +6049,7 @@ Name             : Glory in Battle (id=280577) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 486
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5809,6 +6071,7 @@ Name             : Retaliatory Fury (id=280579) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 487
 Triggered by     : Retaliatory Fury (280787), Retaliatory Fury (280788)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5831,6 +6094,7 @@ Name             : Combined Might (id=280580) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 490
 Triggered by     : Might of the Orcs (280841)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5852,6 +6116,7 @@ Name             : Collective Will (id=280581) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 491
 Triggered by     : Collective Will (280830)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5873,6 +6138,7 @@ Name             : Battlefield Focus (id=280582) [Scaling Spell (-8), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 488
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5895,6 +6161,7 @@ Name             : Sylvanas' Resolve (id=280598) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 489
 Triggered by     : Sylvanas' Resolve (280809)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5916,6 +6183,7 @@ Name             : Liberator's Might (id=280623) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 492
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5937,6 +6205,7 @@ Name             : Last Gift (id=280624) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 493
 Triggered by     : Last Gift (280861), Last Gift (280862)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5959,6 +6228,7 @@ Name             : Stronger Together (id=280625) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 496
 Triggered by     : Strength of the Humans (280866)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5980,6 +6250,7 @@ Name             : Stand As One (id=280626) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 497
 Triggered by     : Stand As One (280858)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6001,6 +6272,7 @@ Name             : Battlefield Precision (id=280627) [Scaling Spell (-8), Passiv
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 494
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6023,6 +6295,7 @@ Name             : Anduin's Dedication (id=280628) [Scaling Spell (-1), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 495
 Triggered by     : Anduin's Dedication (280876)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6043,6 +6316,7 @@ Description      : Your abilities have a chance to increase your $?a162700[Agili
 Name             : Champion of Azeroth (id=280710) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 82
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6061,6 +6335,7 @@ Name             : Chaos Brand (id=281242) [Spell Family (107), Passive]
 Replaces         : Chaos Brand (id=255260)
 Class            : Vengeance Demon Hunter
 School           : Physical
+Spell Type       : None
 Spell Level      : 100
 Proc Chance      : 100%
 Proc Flags       : ....x.x. x...x... x.x..... ........ 
@@ -6081,6 +6356,7 @@ Description      : Your $?c1[Chaos][Fire] damage brands the target, increasing m
 Name             : Unstable Catalyst (id=281514) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 504
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6099,6 +6375,7 @@ Name             : Tradewinds (id=281841) [Scaling Spell (-7), Passive]
 Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
+Spell Type       : None
 Azerite Power Id : 505
 Triggered by     : Tradewinds (281843), Tradewinds (281844)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6119,6 +6396,7 @@ Description      : Your spells and abilities have a chance to grant you $s1 Mast
 Name             : Torment (id=281854) [Spell Family (107)] 
 Class            : Havoc Demon Hunter
 School           : Shadow
+Spell Type       : Melee
 Spell Level      : 110
 Range            : 30 yards
 Duration         : 3 seconds
