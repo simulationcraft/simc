@@ -41,12 +41,6 @@ namespace warlock
       {
         warlock_spell_t::init();
 
-        if (data().affected_by(p()->spec.affliction->effectN(1)))
-          base_dd_multiplier *= 1.0 + p()->spec.affliction->effectN(1).percent();
-
-        if (data().affected_by(p()->spec.affliction->effectN(2)))
-          base_td_multiplier *= 1.0 + p()->spec.affliction->effectN(2).percent();
-
         if (p()->talents.creeping_death->ok())
         {
           if (data().affected_by(p()->talents.creeping_death->effectN(1)))
@@ -363,6 +357,7 @@ namespace warlock
         dot_duration = data().effectN( 1 ).trigger()->duration();
         spell_power_mod.tick = data().effectN( 1 ).trigger()->effectN( 1 ).sp_coeff();
         base_tick_time = data().effectN( 1 ).trigger()->effectN( 1 ).period();
+        // TOCHECK see if we can redo corruption in a way that spec aura applies to corruption naturally in init.
         base_multiplier *= 1.0 + p->spec.affliction->effectN(2).percent();
 
         if ( p->talents.absolute_corruption->ok() )

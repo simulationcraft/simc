@@ -40,12 +40,6 @@ namespace warlock {
       void init() override
       {
         warlock_spell_t::init();
-
-        if (data().affected_by(p()->spec.demonology->effectN(1)))
-          base_dd_multiplier *= 1.0 + p()->spec.demonology->effectN(1).percent();
-
-        if (data().affected_by(p()->spec.demonology->effectN(2)))
-          base_td_multiplier *= 1.0 + p()->spec.demonology->effectN(2).percent();
       }
 
       void execute() override

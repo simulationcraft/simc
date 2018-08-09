@@ -654,6 +654,33 @@ namespace warlock
             if ( data().affected_by( p()->find_spell( 281496 )->effectN( 2 ) ) )
               base_td_multiplier *= 1.0 + p()->find_spell( 281496 )->effectN( 2 ).percent();
           }
+
+          if ( p()->specialization() == WARLOCK_AFFLICTION )
+          {
+            if ( data().affected_by( p()->spec.affliction->effectN( 1 ) ) )
+              base_dd_multiplier *= 1.0 + p()->spec.affliction->effectN( 1 ).percent();
+
+            if ( data().affected_by( p()->spec.affliction->effectN( 2 ) ) )
+              base_td_multiplier *= 1.0 + p()->spec.affliction->effectN( 2 ).percent();
+          }
+
+          if ( p()->specialization() == WARLOCK_DEMONOLOGY )
+          {
+            if ( data().affected_by( p()->spec.demonology->effectN( 1 ) ) )
+              base_dd_multiplier *= 1.0 + p()->spec.demonology->effectN( 1 ).percent();
+
+            if ( data().affected_by( p()->spec.demonology->effectN( 2 ) ) )
+              base_td_multiplier *= 1.0 + p()->spec.demonology->effectN( 2 ).percent();
+          }
+
+          if ( p()->specialization() == WARLOCK_DESTRUCTION )
+          {
+            if ( data().affected_by( p()->spec.destruction->effectN( 1 ) ) )
+              base_dd_multiplier *= 1.0 + p()->spec.destruction->effectN( 1 ).percent();
+
+            if ( data().affected_by( p()->spec.destruction->effectN( 2 ) ) )
+              base_td_multiplier *= 1.0 + p()->spec.destruction->effectN( 2 ).percent();
+          }
         }
 
         double cost() const override
