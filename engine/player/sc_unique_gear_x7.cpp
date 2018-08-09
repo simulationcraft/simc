@@ -31,6 +31,7 @@ namespace items
   // 8.0.1 - World Trinkets
   void kajafied_banana( special_effect_t& );
   void incessantly_ticking_clock( special_effect_t& );
+  void snowpelt_mangler( special_effect_t& );
   // 8.0.1 - Dungeon Trinkets
   void deadeye_spyglass( special_effect_t& );
   void tiny_electromental_in_a_jar( special_effect_t& );
@@ -254,6 +255,25 @@ void items::incessantly_ticking_clock( special_effect_t& effect )
   };
 
   new clock_cb_t( effect, { tick, tock } );
+}
+
+// Snowpelt Mangler =========================================================
+
+void items::snowpelt_mangler( special_effect_t& effect )
+{
+  struct sharpened_claws_t : public proc_spell_t
+  {
+    sharpened_claws_t( const special_effect_t& effect ) :
+      proc_spell_t( "sharpened_claws", effect.player, effect.trigger(), effect.item )
+    {
+      aoe = -1;
+      split_aoe_damage = true;
+    }
+  };
+
+  effect.execute_action = create_proc_action<sharpened_claws_t>( "sharpened_claws", effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 // Dead-Eye Spyglass ========================================================
@@ -664,6 +684,7 @@ void unique_gear::register_special_effects_bfa()
   // Trinkets
   register_special_effect( 274484, items::kajafied_banana );
   register_special_effect( 274429, items::incessantly_ticking_clock );
+  register_special_effect( 268517, items::snowpelt_mangler );
   register_special_effect( 268758, items::deadeye_spyglass );
   register_special_effect( 268771, items::deadeye_spyglass );
   register_special_effect( 267177, items::tiny_electromental_in_a_jar );
