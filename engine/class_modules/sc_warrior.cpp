@@ -11,7 +11,7 @@ namespace
 // Warrior
 // To Do: Gathering Storm should stack after each tick, not before (tornados eye is the opposite because reasons)
 // Fury - 
-// Arms - 
+// Arms - Clean up Crushing Assault (Whirlwind Fervor)
 // ==========================================================================
 
 struct warrior_t;
@@ -3365,7 +3365,7 @@ struct slam_t : public warrior_attack_t
   double bonus_da( const action_state_t* s ) const override
   {
     double b = warrior_attack_t::bonus_da( s );
-    if ( p()->buff.crushing_assault->check() && !from_Fervor )
+    if ( p()->buff.crushing_assault->check() )
     {
       b += p()->buff.crushing_assault->value();
     }
@@ -3788,7 +3788,7 @@ struct arms_whirlwind_parent_t : public warrior_attack_t
     {
       fervor_slam                               = new slam_t( p, options_str );
       fervor_slam->from_Fervor                  = true;
-      fervor_slam->affected_by.crushing_assault = false;
+      fervor_slam->affected_by.crushing_assault = true;
     }
 
     if ( p->main_hand_weapon.type != WEAPON_NONE )
@@ -3817,6 +3817,13 @@ struct arms_whirlwind_parent_t : public warrior_attack_t
     }
 
     return dot_duration;
+  }
+
+  double cost() const override
+  {
+    if ( p()->talents.fervor_of_battle->ok() && p()->buff.crushing_assault->check() )
+      return 10;
+    return warrior_attack_t::cost();
   }
 
   void tick( dot_t* d ) override
@@ -5076,7 +5083,7 @@ void warrior_t::apl_arms()
                            "spell_targets.whirlwind>1)&(!buff.deadly_calm.up|!talent.deadly_calm.enabled)" );
   five_target->add_talent( this, "Ravager",
                            "if=debuff.colossus_smash.up&(cooldown.deadly_calm.remains>6|!talent.deadly_calm.enabled)" );
-  five_target->add_action( this, "Cleave" );
+  five_target->add_talent( this, "Cleave" );
   five_target->add_action( this, "Execute",
                            "if=(!talent.cleave.enabled&dot.deep_wounds.remains<2)|(buff.sudden_death.react|buff.stone_"
                            "heart.react)&(buff.sweeping_strikes.up|cooldown.sweeping_strikes.remains>8)" );
@@ -5106,7 +5113,7 @@ void warrior_t::apl_arms()
       "if=debuff.colossus_smash.remains>4.5&rage<70&(!buff.deadly_calm.up|!talent.deadly_calm.enabled)" );
   execute->add_talent( this, "Ravager",
                        "if=debuff.colossus_smash.up&(cooldown.deadly_calm.remains>6|!talent.deadly_calm.enabled)" );
-  execute->add_action( this, "Cleave", "if=spell_targets.whirlwind>2" );
+  execute->add_talent( this, "Cleave", "if=spell_targets.whirlwind>2" );
   execute->add_action( this, "Mortal Strike",
                        "if=buff.overpower.stack=2&(talent.dreadnaught.enabled|equipped.archavons_heavy_hand)" );
   execute->add_action( this, "Overpower" );
@@ -5132,7 +5139,7 @@ void warrior_t::apl_arms()
                              "strike|spell_targets.whirlwind>1)&(!buff.deadly_calm.up|!talent.deadly_calm.enabled)" );
   single_target->add_talent(
       this, "Ravager", "if=debuff.colossus_smash.up&(cooldown.deadly_calm.remains>6|!talent.deadly_calm.enabled)" );
-  single_target->add_action( this, "Cleave", "if=spell_targets.whirlwind>2" );
+  single_target->add_talent( this, "Cleave", "if=spell_targets.whirlwind>2" );
   single_target->add_action( this, "Mortal Strike" );
   single_target->add_action( this, "Overpower" );
   single_target->add_action( this, "Whirlwind",
