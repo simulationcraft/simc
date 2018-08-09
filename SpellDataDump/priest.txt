@@ -3429,11 +3429,13 @@ Effects          :
                    Affected Spells: Void Eruption (228260), Void Eruption (228360), Dark Ascension (280800)
                    Family Flags: 36
 #4 (id=361455)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: -40 | Scaled Value: -40 | Misc Value: 12 | Target: Self (1)
+                   Base Value: -30 | Scaled Value: -30 | Misc Value: 12 | Target: Self (1)
                    Family Flags: 67
+                   Hotfixed: Base Value (-40 -> -30)
 #5 (id=371747)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: -40 | Scaled Value: -40 | Misc Value: 23 | Target: Self (1)
+                   Base Value: -30 | Scaled Value: -30 | Misc Value: 23 | Target: Self (1)
                    Family Flags: 67
+                   Hotfixed: Base Value (-40 -> -30)
 #6 (id=371748)   : Dummy (3)
                    Base Value: 60 | Scaled Value: 60
 Description      : Void Eruption's cast time is reduced by $s3% and may be cast anytime your Insanity level is $s6 or higher.
@@ -6717,7 +6719,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737505)   : Apply Aura (6) | Proc Trigger Spell (42): Barrage Of Many Bombs
-                   Base Value: 0 | Scaled Value: 908.2944 (coefficient=11.68224) | Trigger Spell: 280662 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 555.9125 (coefficient=7.15) | Trigger Spell: 280662 | Target: Self (1)
+                   Hotfixed: Coefficient (11.6822 -> 7.15)
 #2 (id=737506)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4
 #3 (id=737507)   : Dummy (3)
@@ -6733,7 +6736,7 @@ Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Proc Chance      : 101%
-Real PPM         : 1.5
+Real PPM         : 1.5 (Haste multiplier)
 Azerite Power Id : 499
 Proc Flags       : ....x... x.x.x.x. x.x..x.. ........ 
                  : Yellow Melee, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell, Periodic, Trap Triggered
@@ -6778,7 +6781,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737533)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 7266.355 (coefficient=93.45795) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 7628.85 (coefficient=98.12026) | Target: Self (1)
+                   Hotfixed: Coefficient (93.4579 -> 98.1203)
 #2 (id=737534)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
 #3 (id=738963)   : Apply Aura (6) | Skill (30)
@@ -6812,7 +6816,8 @@ Effects          :
 #2 (id=738958)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
 #3 (id=742699)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 581.3088 (coefficient=7.47664)
+                   Base Value: 0 | Scaled Value: 840.4632 (coefficient=10.80982)
+                   Hotfixed: Coefficient (7.47664 -> 10.8098)
 Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $s1 yards of the Spark Coil take $280847s2 damage every 2 seconds and deal $280847s1% reduced damage to you.
 
 Increases your Kul Tiran or Zandalari Engineering by $s2.
@@ -6844,11 +6849,11 @@ Description      : Your spells and abilities have a chance to grow or shrink the
 
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
-Name             : Personal Absorb-o-Tron (id=280181) [Scaling Spell (-1), Passive] 
-Hotfixed         : Scaling Spell, Max Scaling Level, Rank
+Name             : Personal Absorb-o-Tron (id=280181) [Scaling Spell (-8), Passive] 
+Hotfixed         : Scaling Spell, Max Scaling Level, Internal Cooldown (60000 -> 20000), Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
-Internal Cooldown: 60 seconds
+Internal Cooldown: 20 seconds
 Proc Chance      : 101%
 Real PPM         : 1.5
 Azerite Power Id : 502
@@ -6864,8 +6869,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737557)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 36162.77 (coefficient=116.279) | Target: Self (1)
-                   Hotfixed: Coefficient (0 -> 116.279)
+                   Base Value: 0 | Scaled Value: 12828.75 (coefficient=165) | Target: Self (1)
+                   Hotfixed: Coefficient (0 -> 165)
 #2 (id=738962)   : Apply Aura (6) | Skill (30)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 2499 | Target: Self (1)
 Description      : Taking damage has a chance to call your Personal Absorb-o-Tron, absorbing the next $280660s1 damage you take over $280660d.
