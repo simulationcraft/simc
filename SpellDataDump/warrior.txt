@@ -33,6 +33,7 @@ Cooldown         : 1.5 seconds
 Charges          : 1 (20 seconds cooldown)
 Category         : 1386
 Affecting spells : Recklessness (1719 effect#6), Warrior (137047 effect#2), Raging Fury (222266 effect#1)
+Family Flags     : 0, 8
 Attributes       : ....x... ........ x.x..... .....x..   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -78,6 +79,7 @@ Category         : 82
 Category Cooldown: 8 seconds
 Proc Chance      : 101%
 Affecting spells : Berserker Rage (18499 effect#1), Bladestorm (46924 effect#3), Neltharion's Fury (203524 effect#4), Bladestorm (222634 effect#3), Bladestorm (227847 effect#3)
+Family Flags     : 15
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ x.x..... ........ 
                  : ........ ...x.... .......x ........   ........ ........ ........ ........ 
@@ -122,6 +124,7 @@ GCD              : 1.5 seconds
 Duration         : 12 seconds
 Mechanic         : Bleed
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Sweeping Strikes (260708 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1)
+Family Flags     : 5, 8, 9, 52
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... .x...... ...x.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -146,6 +149,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 9 seconds
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1)
+Family Flags     : 8, 9, 18, 22
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -168,6 +172,7 @@ Spell Level      : 55
 Duration         : 8 seconds
 Cooldown         : 240 seconds
 Affecting spells : Bladestorm (46924 effect#3), Neltharion's Fury (203524 effect#4), Bladestorm (222634 effect#3), Bladestorm (227847 effect#3)
+Family Flags     : 13
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -190,6 +195,7 @@ Duration         : 8 seconds
 Cooldown         : 45 seconds
 Proc Chance      : 101%
 Affecting spells : Bladestorm (46924 effect#3), Warrior (137047 effect#2), Morale Killer (199023 effect#2), Booming Voice (202743 effect#1), Neltharion's Fury (203524 effect#4), Bladestorm (222634 effect#3), Bladestorm (227847 effect#3)
+Family Flags     : 8, 17
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -207,6 +213,7 @@ Effects          :
 #3 (id=292881)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849)
+                   Family Flags: 9
 #4 (id=298857)   : Apply Aura (6) | Modify Auto Attack Damage Taken% from Caster (343)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 #5 (id=298858)   : Energize Power (30)
@@ -224,6 +231,7 @@ Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Item - Warrior T18 Arms 4P Bonus (185804 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Weighted Blade (253383 effect#1), Sweeping Strikes (260708 effect#1), Deadly Calm (262228 effect#1), Crushing Assault (278826 effect#2), Siegebreaker (280773 effect#1)
+Family Flags     : 8, 9, 18, 20, 21, 52
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -245,6 +253,7 @@ Resource         : 30 Rage (1) (id=135)
 Spell Level      : 40 (max 80)
 GCD              : 1.5 seconds
 Affecting spells : Warrior (137047 effect#2), Fervor of Battle (202316 effect#1), Weighted Blade (253383 effect#1), Deadly Calm (262228 effect#1), Crushing Assault (278826 effect#3)
+Family Flags     : 8, 34, 54
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
@@ -273,6 +282,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Hamstring Rage Reduction (22778 effect#1), Improved Hamstring (24428 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Sweeping Strikes (260708 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1)
+Family Flags     : 1, 8, 9, 52
 Attributes       : ........ ........ x.x..... ........   ...x...x .x...... ........ ........ 
                  : ........ ....x... ........ ........   ...x.... ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -296,6 +306,7 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 90 seconds
 Affecting spells : Warrior (137047 effect#2), Reckless Abandon (202751 effect#1), 
+Family Flags     : 4, 8
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -307,6 +318,7 @@ Effects          :
 #1 (id=524)      : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849)
+                   Family Flags: 9
 #2 (id=292217)   : Server Side Script (77)
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE friendly (30)
 #3 (id=298936)   : Energize Power (30)
@@ -316,18 +328,23 @@ Effects          :
 #5 (id=737891)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: War Machine (262232), Endless Rage (280283), Meat Cleaver (280392)
+                   Family Flags: 37, 39, 56
 #6 (id=737893)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Charge (100), Bloodbath (12292), Bloodthirst (23881), Raging Blow (85288), Furious Slash (100130), Dragon Roar (118000), Meat Cleaver (280392), Siegebreaker (280772)
+                   Family Flags: 0, 31, 42, 49, 53, 56, 69, 106
 #7 (id=737894)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 3 (23)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280849)
+                   Family Flags: 29
 #8 (id=737895)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 4 (32)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (227847)
+                   Family Flags: 46
 #9 (id=738384)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 5 (33)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Avatar (107574)
+                   Family Flags: 32
 Description      : Go berserk, increasing all Rage generation by $s4% and granting your abilities $s1% increased critical strike chance for $d.$?a202751[
 
 |cFFFFFFFFGenerates ${$202751s2/10} Rage.|r][]
@@ -343,6 +360,7 @@ Cooldown         : 1 seconds
 Charges          : 1 (18 seconds cooldown)
 Category         : 1385: Warrior (137047 effect#4)
 Affecting spells : Bladestorm (46924 effect#3), Neltharion's Fury (203524 effect#4), Bladestorm (222634 effect#3), Bladestorm (227847 effect#3)
+Family Flags     : 12
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -385,6 +403,7 @@ Mechanic         : Flee
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Warrior (137047 effect#2), Menace (275338 effect#1)
+Family Flags     : 8, 27
 Attributes       : ....x... ........ x.x..... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -448,9 +467,11 @@ Effects          :
 #1 (id=1898)     : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Revenge (6572)
+                   Family Flags: 10
 #2 (id=363876)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Revenge (6572)
+                   Family Flags: 10
 Description      : $@spelldesc6572
 Tooltip          : Your next Revenge is free.
 
@@ -462,6 +483,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 6 seconds
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Death Sentence (144442 effect#1), Colossus Smash (208086 effect#1), Precise Strikes (209493 effect#1), Frothing Berserker (215572 effect#1), Stone Heart (225947 effect#1), Execute (231827 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1)
+Family Flags     : 8, 9, 29
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ .x...... ........ ........   ........ ........ ........ ........ 
@@ -490,6 +512,7 @@ Duration         : 10 seconds
 Cooldown         : 6 seconds
 Proc Chance      : 101%
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Crackling Thunder (203201 effect#1), Kakushan's Stormscale Gauntlets (207844 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Deafening Crash (272824 effect#2), Siegebreaker (280773 effect#1)
+Family Flags     : 7, 8, 9
 Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -522,6 +545,7 @@ Charges          : 1 (45 seconds cooldown)
 Category         : 1211
 Category Cooldown: 0.8 seconds
 Affecting spells : Weight of the Earth (208177 effect#1)
+Family Flags     : 61
 Attributes       : ....x... x....... x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -547,6 +571,7 @@ Duration         : 4 seconds
 Cooldown         : 15 seconds
 Category         : 88
 Category Cooldown: 15 seconds
+Family Flags     : 3
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ...x.... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -568,6 +593,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 3 seconds
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Revenge! (5302 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Vengeance: Revenge (202573 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Callous Reprisal (278760 effect#2), Siegebreaker (280773 effect#1)
+Family Flags     : 8, 9, 10
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -591,6 +617,7 @@ GCD              : 1.5 seconds
 Duration         : 3600 seconds
 Cooldown         : 15 seconds
 Affecting spells : Warrior (137047 effect#2)
+Family Flags     : 8, 16
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ x....... ........ ........ 
@@ -620,6 +647,7 @@ Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Sweeping Strikes (260708 effect#1), Dreadnaught (262150 effect#2), Siegebreaker (280773 effect#1)
+Family Flags     : 2, 8, 9, 20, 52
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -634,6 +662,7 @@ Effects          :
 #2 (id=126946)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Mortal Strike (12294)
+                   Family Flags: 25
 Description      : Overpower the enemy, dealing $s1 Physical damage. Cannot be blocked, dodged, or parried.
 
 Increases the damage of your next Mortal Strike by $s2%, stacking up to $u times.
@@ -647,6 +676,7 @@ Range            : 50000 yards
 Proc Chance      : 101%
 Mechanic         : Stun
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1)
+Family Flags     : 9, 24
 Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... ........ ........ 
                  : ..x..... ........ ........ ......x.   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -668,6 +698,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 120 seconds
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1)
+Family Flags     : 8, 9, 31
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -696,6 +727,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 6 seconds
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Overpower (7384 effect#2), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Item - Warrior T17 Arms 4P Bonus (165336 effect#1), Vicious Strike (165638 effect#1), Archavon's Heavy Hand (205144 effect#1), Colossus Smash (208086 effect#1), Precise Strikes (209493 effect#1), Frothing Berserker (215572 effect#1), Sweeping Strikes (260708 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1)
+Family Flags     : 8, 9, 18, 25, 52
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -719,6 +751,7 @@ GCD              : 1.5 seconds
 Duration         : 15 seconds
 Mechanic         : Snare
 Affecting spells : Warrior (137047 effect#2)
+Family Flags     : 8
 Attributes       : ....x... ........ x.x..... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -763,6 +796,7 @@ Cooldown         : 180 seconds
 Category         : 1251
 Category Cooldown: 20 seconds
 Affecting spells : Bladestorm (46924 effect#3), Item - Warrior T18 Protection 2P Bonus (185796 effect#1), Neltharion's Fury (203524 effect#4), Bladestorm (222634 effect#3), Bladestorm (227847 effect#3), Bolster (280001 effect#1), 
+Family Flags     : 51
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -788,6 +822,7 @@ Spell Level      : 44
 Duration         : 6 seconds
 Cooldown         : 60 seconds
 Affecting spells : Bladestorm (46924 effect#3), Outburst (206320 effect#1), Bladestorm (227847 effect#3)
+Family Flags     : 28
 Attributes       : ....x... ........ x.x..... ........   ........ ..x....x ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -799,9 +834,11 @@ Effects          :
 #1 (id=10031)    : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Taunt (355)
+                   Family Flags: 15
 #2 (id=10032)    : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Taunt (355)
+                   Family Flags: 15
 #3 (id=10033)    : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 5 | Target: Self (1)
 #4 (id=200921)   : Apply Aura (6) | Mechanic Immunity (77)
@@ -824,6 +861,7 @@ GCD              : 1.5 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Shield Block (132404 effect#4), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1)
+Family Flags     : 8, 9, 38
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -891,6 +929,7 @@ Cooldown         : 4.5 seconds
 Category         : 971: Warrior (137047 effect#6)
 Category Cooldown: 4.5 seconds
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Vicious Strike (165640 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Bloody Rage (242952 effect#1), Bloody Rage (242953 effect#1), Siegebreaker (280773 effect#1)
+Family Flags     : 8, 9, 42
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -924,6 +963,7 @@ Proc Chance      : 100%
 Proc Flags       : .....x.x .x...x.. .x...... ........ 
                  : Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken
 Affecting spells : Manual of Spell Reflection (168801 effect#1), Neltharion's Fury (203524 effect#4)
+Family Flags     : 33
 Attributes       : ....x... ........ x.x..... ...x....   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ..x..... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -948,6 +988,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 9 seconds
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Shield Block (132404 effect#2), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Vicious Strike (165642 effect#1), Kakushan's Stormscale Gauntlets (207844 effect#1), Colossus Smash (208086 effect#1), The Walls Fell (215057 effect#2), Frothing Berserker (215572 effect#1), Punish (275334 effect#1), Brace for Impact (278124 effect#2), Siegebreaker (280773 effect#1)
+Family Flags     : 8, 9, 41
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -994,6 +1035,7 @@ Range            : 40 yards
 Duration         : 5 seconds
 Cooldown         : 180 seconds
 Stance Mask      : 0x81000000
+Family Flags     : 95
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   .......x ........ ........ .....x.. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -1085,9 +1127,11 @@ Effects          :
 #1 (id=21959)    : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Impending Victory (202168)
+                   Family Flags: 72
 #2 (id=345053)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Impending Victory (202166)
+                   Family Flags: 118
 Description      : Victory Rush enabled.
 Tooltip          : Victory Rush enabled.
 
@@ -1098,6 +1142,7 @@ Spell Level      : 5
 Range            : 5 yards
 GCD              : 1.5 seconds
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Sweeping Strikes (260708 effect#1), Siegebreaker (280773 effect#1)
+Family Flags     : 8, 9, 40, 52
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ .x...... ........ ........   ........ ........ ........ ........ 
@@ -1135,6 +1180,7 @@ School           : Physical
 Spell Level      : 1 (max 80)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Fervor of Battle (202316 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Weighted Blade (253383 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1)
 Triggered by     : Whirlwind (190411)
+Family Flags     : 9, 34
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ x....... 
                  : x......x .......x ........ ........   ........ .......x ........ ........ 
@@ -1176,6 +1222,7 @@ Velocity         : 10 yards/sec
 Duration         : 4 seconds
 Cooldown         : 60 seconds
 Affecting spells : Recklessness (1719 effect#8), Warrior (137047 effect#2), Arms Warrior (137049 effect#4), Gathering Storm (273415 effect#1)
+Family Flags     : 8, 46
 Attributes       : ....x... ........ x.x..... .....x..   ....x... .xx....x ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
@@ -1192,6 +1239,7 @@ Effects          :
 #3 (id=39084)    : Apply Aura (6) | Disable Abilities (263)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Taunt (355), Shield Wall (871), Demoralizing Shout (1160), Shield Block (2565), Last Stand (12975), Berserker Rage (18499), Rallying Cry (97462), Rallying Cry (97463), Dragon Roar (118000), Die by the Sword (118038), Enraged Regeneration (184364), Defensive Stance (197690)
+                   Family Flags: 11, 12, 13, 15, 17, 28, 49, 51, 68, 73, 84, 97, 113
 #4 (id=738383)   : Apply Aura (6) | Periodic Energize Power (24): every 1 seconds
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 1 | Target: Self (1)
 Description      : Become an unstoppable storm of destructive force, striking all targets within $50622A1 yards with both weapons for $<dmg> Physical damage over $d.
@@ -1213,6 +1261,7 @@ Category         : 1201
 Category Cooldown: 40 seconds
 Proc Chance      : 101%
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1)
+Family Flags     : 8, 9, 47
 Attributes       : ....x... ........ x.x..x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1239,6 +1288,7 @@ School           : Physical
 Spell Level      : 1
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Gathering Storm (273415 effect#1), Siegebreaker (280773 effect#1)
 Triggered by     : Bladestorm (46924), Bladestorm (227847)
+Family Flags     : 9, 46
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : x......x .......x ........ ........   ........ .......x ........ ........ 
@@ -1260,6 +1310,7 @@ School           : Physical
 Spell Level      : 26
 Range            : 50000 yards
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Weight of the Earth (208177 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1)
+Family Flags     : 9, 61
 Attributes       : ....x... ........ x.x..x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ..x..... ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ..x...x. 
@@ -1300,6 +1351,7 @@ GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Cooldown         : 6 seconds
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1)
+Family Flags     : 8, 9, 14
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1346,6 +1398,7 @@ Effects          :
 #1 (id=51411)    : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Victory Rush (118779)
+                   Family Flags: 81
 Description      : When your Victory Rush heals you, you grow slightly larger.
 
 Name             : Gushing Wound (id=58279) 
@@ -1529,6 +1582,7 @@ Name             : Mastery: Unshackled Fury (id=76856) [Spell Family (4), Passiv
 Class            : Fury Warrior
 School           : Physical
 Spell Level      : 78
+Family Flags     : 110
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1541,9 +1595,11 @@ Effects          :
 #1 (id=68045)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.40000 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849)
+                   Family Flags: 9
 #2 (id=88047)    : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.40000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849)
+                   Family Flags: 9
 #3 (id=739444)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.40000 | Target: Self (1)
 Description      : Increases damage done while Enraged by ${$s1}.1%.
@@ -1584,6 +1640,7 @@ GCD              : 1.5 seconds
 Charges          : 2 (8 seconds cooldown)
 Category         : 1672: Fury Warrior (137050 effect#5)
 Affecting spells : Recklessness (1719 effect#6), Whirlwind (85739 effect#1), Warrior (137047 effect#1), Inner Rage (215573 effect#2), Raging Thirst (242300 effect#1)
+Family Flags     : 8, 45, 106
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ x....... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1615,6 +1672,7 @@ Spell Level      : 20
 Range            : 100 yards
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Inner Rage (215573 effect#2), Raging Thirst (242300 effect#1), Siegebreaker (280773 effect#1)
 Triggered by     : Raging Blow (85288)
+Family Flags     : 9, 45
 Attributes       : ....x... ........ x.x..... ........   ....x... ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ .x...... ........ x.....x. 
                  : x......x .......x ........ ........   ........ ....x... ........ ........ 
@@ -1638,6 +1696,7 @@ Stacks           : 2 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x... ........ ........ 
                  : Yellow Melee, AOE Hostile Spell
+Family Flags     : 44
 Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1649,6 +1708,7 @@ Effects          :
 #1 (id=87073)    : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Bloodthirst (23881), Victory Rush (34428), Raging Blow (85288), Raging Blow (85384), Raging Blow (96103), Furious Slash (100130), Execute Off-Hand (163558), Impending Victory (202168), Execute (260798), Siegebreaker (280772), Execute (280849)
+                   Family Flags: 40, 42, 45, 53, 69, 72, 115, 116
 #2 (id=333347)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 17 | Target: Self (1)
 #3 (id=349763)   : Apply Aura (6) | Dummy (4)
@@ -1768,6 +1828,7 @@ School           : Physical
 Spell Level      : 1
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Gathering Storm (273415 effect#1), Siegebreaker (280773 effect#1)
 Triggered by     : Bladestorm (50622)
+Family Flags     : 9, 46
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ x....... 
                  : .......x .......x ........ ........   ........ .......x ........ ........ 
@@ -1788,6 +1849,7 @@ Spell Level      : 20
 Range            : 100 yards
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Inner Rage (215573 effect#2), Raging Thirst (242300 effect#1), Siegebreaker (280773 effect#1)
 Triggered by     : Raging Blow (85288)
+Family Flags     : 9, 45
 Attributes       : ....x... ........ x.x..... ........   ....x... ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ .xx..... ........ ......x. 
                  : x......x .......x ........ ........   ........ ....x... ........ ........ 
@@ -1809,6 +1871,7 @@ Spell Level      : 80
 GCD              : 1.5 seconds
 Cooldown         : 180 seconds
 Affecting spells : Bladestorm (46924 effect#3), Warrior (137047 effect#2), Bladestorm (227847 effect#3), Moment of Glory (280209 effect#2)
+Family Flags     : 8, 68
 Attributes       : ....x... ........ x.x..... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1827,6 +1890,7 @@ School           : Physical
 Range            : 100 yards
 Duration         : 10 seconds
 Affecting spells : Bladestorm (46924 effect#3), Bladestorm (227847 effect#3), Moment of Glory (280209 effect#2)
+Family Flags     : 68
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1850,6 +1914,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Proc Chance      : 101%
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Item - Warrior T18 Fury 2P Bonus (185798 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1)
+Family Flags     : 8, 9, 69
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ........ ........ x....... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1935,6 +2000,7 @@ GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Cooldown         : 30 seconds
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1)
+Family Flags     : 8, 9
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1959,6 +2025,7 @@ GCD              : 1.5 seconds
 Duration         : 20 seconds
 Cooldown         : 90 seconds
 Affecting spells : Recklessness (1719 effect#9), Warrior (137047 effect#2), Unstoppable Force (275336 effect#1), 
+Family Flags     : 8, 32
 Attributes       : ....x... ........ ..x..... ...x....   ........ ..x....x x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1970,14 +2037,17 @@ Effects          :
 #1 (id=118390)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849)
+                   Family Flags: 9
 #2 (id=118391)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #3 (id=118664)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Thunder Clap (6343)
+                   Family Flags: 7
 #4 (id=722361)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Thunder Clap (6343)
+                   Family Flags: 7
 #5 (id=728318)   : Energize Power (30)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: rage | Target: Self (1)
 #6 (id=728319)   : Server Side Script (77)
@@ -2053,6 +2123,7 @@ Duration         : 15 seconds
 Mechanic         : Bleed
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1)
 Triggered by     : Deep Wounds (115768)
+Family Flags     : 9
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ........ 
                  : ..x....x ........ ........ ........   ........ ..x..... ..x..... ..x...x. 
                  : ........ .......x ....x... ........   ........ .....x.. ........ ........ 
@@ -2204,6 +2275,7 @@ Class            : Warrior
 School           : Physical
 Spell Level      : 1
 Affecting spells : Enraged Regeneration (184364 effect#2), Furious Charge (202225 effect#1), Fresh Meat (215568 effect#2)
+Family Flags     : 80
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2225,6 +2297,7 @@ GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 35 seconds
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Bladestorm (46924 effect#3), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Neltharion's Fury (203524 effect#4), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Bladestorm (222634 effect#3), Siegebreaker (280773 effect#1)
+Family Flags     : 8, 9, 49
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2251,6 +2324,7 @@ Spell Level      : 36
 Duration         : 8 seconds
 Cooldown         : 180 seconds
 Affecting spells : Bladestorm (46924 effect#3), Bladestorm (227847 effect#3)
+Family Flags     : 97
 Attributes       : ....x... ........ x.x..... ........   ....x... ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2279,6 +2353,7 @@ Duration         : 6 seconds
 Cooldown         : 30 seconds
 Proc Chance      : 101%
 Affecting spells : Glyph of Mighty Victory (58104 effect#1), Protection Warrior (137048 effect#12)
+Family Flags     : 81
 Attributes       : ....x... ........ x.x..... ........   ........ .xx..... ........ ...xx... 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2369,6 +2444,7 @@ School           : Physical
 Spell Level      : 10
 Range            : 50000 yards
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1)
+Family Flags     : 9
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ..x..... ........ 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -2433,6 +2509,7 @@ School           : Physical
 Spell Level      : 20
 Duration         : 6 seconds
 Affecting spells : Shield Mastery (184927 effect#1), Heavy Repercussions (203177 effect#2)
+Family Flags     : 83
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2446,11 +2523,13 @@ Effects          :
 #2 (id=171377)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
                    Affected Spells: Shield Slam (23922)
+                   Family Flags: 41
 #3 (id=268763)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e | Target: Self (1)
 #4 (id=738490)   : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Chance (7)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Devastate (20243), Shield Slam (23922), Devastator (236282)
+                   Family Flags: 38, 41
 Description      : $@spelldesc2565
 Tooltip          : Block chance increased by $s1%.
 
@@ -2473,9 +2552,11 @@ Effects          :
 #1 (id=179731)   : Apply Aura (6) | Hasted Cooldown Duration (416)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Cleave (845), Slam (1464), Execute (5308), Thunder Clap (6343), Revenge (6572), Mortal Strike (12294), Bloodthirst (23881), Shield Slam (23922), Raging Blow (85288), Raging Blow (85384), Raging Blow (96103), Furious Slash (100130), Execute (163201), Execute Off-Hand (163558), Skullsplitter (260643), Execute (260798), Execute (280849)
+                   Family Flags: 6, 7, 10, 18, 22, 29, 41, 42, 45, 69
 #2 (id=188987)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Charge (100), Rend (772), Cleave (845), Demoralizing Shout (1160), Slam (1464), Whirlwind (1680), Hamstring (1715), Recklessness (1719), Intimidating Shout (5246), Execute (5308), Thunder Clap (6343), Revenge (6572), Battle Shout (6673), Overpower (7384), Bloodbath (12292), Mortal Strike (12294), Piercing Howl (12323), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Bladestorm (46924), Shockwave (46968), Heroic Throw (57755), Raging Blow (85288), Rallying Cry (97462), Furious Slash (100130), Storm Bolt (107570), Avatar (107574), Dragon Roar (118000), Ravager (152277), Execute (163201), Colossus Smash (167105), Rampage (184367), Whirlwind (190411), Ignore Pain (190456), Impending Victory (202168), Bladestorm (227847), Ravager (228920), Skullsplitter (260643), Sweeping Strikes (260708), Warbreaker (262161), Deadly Calm (262228), Siegebreaker (280772), Execute (280849)
+                   Family Flags: 8
 #3 (id=191020)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #4 (id=191021)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
@@ -2527,9 +2608,11 @@ Effects          :
 #1 (id=179732)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849)
+                   Family Flags: 9
 #2 (id=186944)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849)
+                   Family Flags: 9
 #3 (id=191017)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1386 | Target: Self (1)
 #4 (id=191018)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
@@ -2537,6 +2620,7 @@ Effects          :
 #5 (id=191019)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Heroic Throw (57755)
+                   Family Flags: 14
 #6 (id=261027)   : Apply Aura (6) | Threat (10)
                    Base Value: 350 | Scaled Value: 350 | Misc Value: 127 | Target: Self (1)
 #7 (id=261028)   : Apply Aura (6) | Unknown(213)
@@ -2544,9 +2628,11 @@ Effects          :
 #8 (id=261029)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -89 | Scaled Value: -89 | Target: Self (1)
                    Affected Spells: Ravager (152277), Ravager (156287), Ravager (227744), Ravager (228920)
+                   Family Flags: 107
 #9 (id=261030)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -10 | Scaled Value: -10 | Target: Self (1)
                    Affected Spells: Victory Rush (34428), Shockwave (46968)
+                   Family Flags: 40, 47, 76
 #10 (id=261031)   : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
                    Base Value: -6 | Scaled Value: -6 | Target: Self (1)
 #11 (id=261032)   : Apply Aura (6) | Modify Expertise% (240)
@@ -2554,6 +2640,7 @@ Effects          :
 #12 (id=261033)   : Apply Aura (6) | Add Percent Modifier (108): Spell Generated Threat (2)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 2 | Target: Self (1)
                    Affected Spells: Victory Rush (118779)
+                   Family Flags: 81
 #13 (id=261034)   : Apply Aura (6) | Modify Block% (51)
                    Base Value: 8 | Scaled Value: 8 | Misc Value: 11 | Target: Self (1)
 #14 (id=261035)   : Apply Aura (6) | Unknown(463)
@@ -2598,14 +2685,17 @@ Effects          :
 #2 (id=186754)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 34 | Scaled Value: 34 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849)
+                   Family Flags: 9
                    Hotfixed: Base Value (30 -> 34)
 #3 (id=191014)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 34 | Scaled Value: 34 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849)
+                   Family Flags: 9
                    Hotfixed: Base Value (30 -> 34)
 #4 (id=191015)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 12 | Scaled Value: 12 | Target: Self (1)
                    Affected Spells: Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (227847)
+                   Family Flags: 46
 #5 (id=191016)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #6 (id=261047)   : Apply Aura (6) | Dummy (4)
@@ -2640,9 +2730,11 @@ Effects          :
 #1 (id=179734)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -12 | Scaled Value: -12 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849)
+                   Family Flags: 9
 #2 (id=191010)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -12 | Scaled Value: -12 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849)
+                   Family Flags: 9
 #3 (id=191011)   : Apply Aura (6) | Unknown(213)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=191012)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
@@ -2690,9 +2782,11 @@ Effects          :
 #1 (id=193991)   : Apply Aura (6) | Unknown(262)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280849)
+                   Family Flags: 29
 #2 (id=193992)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Misc Value 2: 0x2 | Target: Self (1)
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280849)
+                   Family Flags: 29
 Description      : $@spelldesc144441
 Tooltip          : $?$w2>=0[Execute is available!][Your next Execute has no Rage cost.]
 
@@ -2744,6 +2838,7 @@ Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...... ........ ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken
 Affecting spells : Raging Fury (222266 effect#1)
+Family Flags     : 48
 Attributes       : ....x... ........ ........ .....x..   ........ ..x..... ...x.... ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ...x.... ........ ........ 
@@ -2785,6 +2880,7 @@ Velocity         : 30 yards/sec
 Duration         : 7 seconds
 Cooldown         : 60 seconds
 Affecting spells : Warrior (137047 effect#2), Protection Warrior (137048 effect#8), Gathering Storm (273415 effect#1)
+Family Flags     : 8, 107
 Attributes       : ....x... ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -2854,6 +2950,7 @@ Class            : Warrior
 School           : Physical
 Range            : 100 yards
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Gathering Storm (273415 effect#1), Siegebreaker (280773 effect#1)
+Family Flags     : 9, 107
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -2914,6 +3011,7 @@ Spell Level      : 8
 Range            : 5 yards
 GCD              : 1.5 seconds
 Affecting spells : Recklessness (1719 effect#7), Warrior (137047 effect#1), Death Sentence (144442 effect#1), Precise Strikes (209493 effect#1), Stone Heart (225947 effect#1), Execute (231827 effect#1), Deadly Calm (262228 effect#1), 
+Family Flags     : 8, 29
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ .x...... ........ ........   ........ ....x... ........ ........ 
@@ -2940,6 +3038,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Death Sentence (144442 effect#1), Colossus Smash (208086 effect#1), Precise Strikes (209493 effect#1), Frothing Berserker (215572 effect#1), Stone Heart (225947 effect#1), Execute (231827 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1)
 Triggered by     : Execute (5308)
+Family Flags     : 9, 29, 115
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ........ ..x..... x....... 
                  : ........ .x...... ........ ........   ........ ....x... ........ ........ 
@@ -2961,6 +3060,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 45 seconds
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Colossal Might (76838 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Sweeping Strikes (260708 effect#1), Deadly Calm (262228 effect#1), Lord of War (278752 effect#2), Siegebreaker (280773 effect#1)
+Family Flags     : 8, 9, 52, 62
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2983,6 +3083,7 @@ Proc Chance      : 100%
 Proc Flags       : ....x... ..x.x... ........ ........ 
                  : Yellow Melee, AOE Heal, AOE Hostile Spell
 Affecting spells : Fresh Meat (215568 effect#1)
+Family Flags     : 36
 Attributes       : ....x.x. ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3009,6 +3110,7 @@ Duration         : 4 seconds
 Mechanic         : Enrage
 Affecting spells : Warpaint (208154 effect#1), Item - Warrior T19 Fury 4P Bonus (212158 effect#1)
 Triggered by     : Item - Warrior T17 Fury 2P Bonus (165337), Trial by Combat (218826)
+Family Flags     : 58
 Attributes       : ........ ........ ........ x......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .......x ........ ...x.... ........   ...x.... ........ ........ ........ 
@@ -3037,6 +3139,7 @@ Spell Level      : 36
 Duration         : 8 seconds
 Cooldown         : 120 seconds
 Affecting spells : Bladestorm (46924 effect#3), Bladestorm (227847 effect#3)
+Family Flags     : 11
 Attributes       : ....x... ........ x.x..... ........   ........ .......x x....... ........ 
                  : ........ ........ ........ .....x..   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ...x.... ........ ........ ........ 
@@ -3051,6 +3154,7 @@ Effects          :
 #2 (id=304657)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Bloodthirst Heal (117313)
+                   Family Flags: 80
 Description      : Reduces damage taken by $s1%, and Bloodthirst restores an additional $s2% health. Usable while stunned. Lasts $d.
 Tooltip          : Damage taken reduced by $s1%. Bloodthirst restores an additional $s2% health.
 
@@ -3062,6 +3166,7 @@ Spell Level      : 12
 Range            : 5 yards
 GCD              : 1.5 seconds
 Affecting spells : Warrior (137047 effect#2), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Frothing Berserker (215571 effect#2), Simmering Rage (278757 effect#2)
+Family Flags     : 8, 108, 123
 Attributes       : ........ ........ ..x..... ........   ........ .xx..... ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3091,6 +3196,7 @@ Range            : 8 yards
 Proc Chance      : 101%
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215571 effect#2), Frothing Berserker (215572 effect#1), Simmering Rage (278757 effect#2), Siegebreaker (280773 effect#1)
 Triggered by     : Rampage (184367)
+Family Flags     : 9, 108
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ x....... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3112,6 +3218,7 @@ Range            : 8 yards
 Proc Chance      : 101%
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215571 effect#2), Frothing Berserker (215572 effect#1), Simmering Rage (278757 effect#2), Siegebreaker (280773 effect#1)
 Triggered by     : Rampage (184367)
+Family Flags     : 9, 108
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ....x... ........ ........   ........ .xx..... ........ ........ 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
@@ -3168,6 +3275,7 @@ Spell Level      : 40 (max 80)
 GCD              : 1.5 seconds
 Category         : 891
 Affecting spells : Warrior (137047 effect#2), Crushing Assault (278826 effect#3)
+Family Flags     : 8, 54
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
@@ -3213,6 +3321,7 @@ Spell Level      : 36
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Affecting spells : Warrior (137047 effect#2), Shield Mastery (184927 effect#2), Vengeance: Ignore Pain (202574 effect#1), Neltharion's Fury (203524 effect#4), Bloodsport (279172 effect#3)
+Family Flags     : 8, 109
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3241,6 +3350,7 @@ Category         : 1618
 Category Cooldown: 6 seconds
 Proc Chance      : 101%
 Affecting spells : Bladestorm (46924 effect#3), Bladestorm (227847 effect#3)
+Family Flags     : 113
 Attributes       : ....x... ........ ..x..... x..x...x   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3271,6 +3381,7 @@ Cooldown         : 1.5 seconds
 Charges          : 1 (20 seconds cooldown)
 Category         : 1386
 Affecting spells : Raging Fury (222266 effect#1)
+Family Flags     : 48
 Attributes       : ....x... ........ ........ .....x..   ........ ..x..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3300,6 +3411,7 @@ Cooldown         : 1.5 seconds
 Charges          : 1 (20 seconds cooldown)
 Category         : 1386
 Affecting spells : Raging Fury (222266 effect#1)
+Family Flags     : 48
 Attributes       : ....x... ........ ........ .....x..   ........ ..x..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3339,6 +3451,7 @@ Effects          :
 #2 (id=344340)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: -30000 | Scaled Value: -30000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Demoralizing Shout (1160)
+                   Family Flags: 17
 Description      : Reduces the cooldown of Demoralizing Shout by ${($m2/1000)*-1} sec, and Demoralizing Shout now reduces the damage enemies deal to all targets, not just you.
 
 Name             : Thunderstruck (rank=PvP Talent) (id=199042) [Spell Family (4)] 
@@ -3402,6 +3515,7 @@ School           : Physical
 Spell Level      : 1 (max 80)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Fervor of Battle (202316 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Weighted Blade (253383 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1)
 Triggered by     : Whirlwind (1680)
+Family Flags     : 9, 34, 35
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3421,6 +3535,7 @@ School           : Physical
 Spell Level      : 1 (max 80)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Fervor of Battle (202316 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Weighted Blade (253383 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1)
 Triggered by     : Whirlwind (190411)
+Family Flags     : 9, 34
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
@@ -3442,6 +3557,7 @@ School           : Physical
 Spell Level      : 1 (max 80)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Fervor of Battle (202316 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Weighted Blade (253383 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1)
 Triggered by     : Whirlwind (1680)
+Family Flags     : 9, 34
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3483,6 +3599,7 @@ Range            : 8 yards
 Proc Chance      : 101%
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215571 effect#2), Frothing Berserker (215572 effect#1), Simmering Rage (278757 effect#2), Siegebreaker (280773 effect#1)
 Triggered by     : Rampage (184367)
+Family Flags     : 9, 108, 119
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ....x... ........ ........   ........ .xx..... ........ ........ 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
@@ -3504,6 +3621,7 @@ Range            : 8 yards
 Proc Chance      : 101%
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215571 effect#2), Frothing Berserker (215572 effect#1), Simmering Rage (278757 effect#2), Siegebreaker (280773 effect#1)
 Triggered by     : Rampage (184367)
+Family Flags     : 9, 108
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ x....... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3604,6 +3722,7 @@ Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Affecting spells : Victorious (32216 effect#2)
+Family Flags     : 118
 Attributes       : ....x... ........ x.x..... ........   ........ .xx..... ........ ...xx... 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3625,6 +3744,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Victorious (32216 effect#1), Mastery: Unshackled Fury (76856 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Sweeping Strikes (260708 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1)
+Family Flags     : 8, 9, 52, 72
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3674,6 +3794,7 @@ Effects          :
 #1 (id=298048)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effects (8)
                    Base Value: 250 | Scaled Value: 250 | Misc Value: 8 | Target: Self (1)
                    Affected Spells: Bloodthirst Heal (117313)
+                   Family Flags: 80
 Description      : $@spelldesc202224
 Tooltip          : Healing of your next Bloodthirst increased by $s1%.
 
@@ -3711,6 +3832,7 @@ Effects          :
 #1 (id=298254)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Whirlwind (1680), Whirlwind Off-Hand (44949), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850)
+                   Family Flags: 34
 Description      : Whirlwind deals $s1% increased damage, and Slams your primary target.
 
 Name             : Furious Slash (id=202539) [Spell Family (4)] 
@@ -3805,6 +3927,7 @@ Effects          :
 #1 (id=298648)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -33 | Scaled Value: -33 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Revenge (6572)
+                   Family Flags: 10
 Description      : $@spelldesc202572
 Tooltip          : Rage cost of Revenge reduced by $s1%.
 
@@ -3827,6 +3950,7 @@ Effects          :
 #1 (id=298649)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -33 | Scaled Value: -33 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Ignore Pain (190456)
+                   Family Flags: 109
 Description      : $@spelldesc202572
 Tooltip          : Rage cost of Ignore Pain reduced by $s1%.
 
@@ -3881,12 +4005,15 @@ Effects          :
 #1 (id=298923)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 5 (33)
                    Base Value: 400 | Scaled Value: 400 | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Demoralizing Shout (1160)
+                   Family Flags: 17
 #2 (id=298924)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Demoralizing Shout (1160)
+                   Family Flags: 17
 #3 (id=298925)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Demoralizing Shout (1160)
+                   Family Flags: 17
 Description      : Demoralizing Shout also generates ${$m1/10} Rage, and increases damage you deal to affected targets by $s2%.
 
 Name             : Reckless Abandon (id=202751) [Spell Family (4), Passive, Hidden] 
@@ -3905,9 +4032,11 @@ Effects          :
 #1 (id=298937)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 4000 | Scaled Value: 4000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Recklessness (1719)
+                   Family Flags: 4
 #2 (id=298938)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 1000 | Scaled Value: 1000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Recklessness (1719)
+                   Family Flags: 4
 Description      : Recklessness generates ${$m2/10} Rage and lasts ${$s1/1000} sec longer.
 
 Name             : Carnage (id=202922) [Spell Family (4), Passive, Hidden] 
@@ -3925,15 +4054,19 @@ Effects          :
 #1 (id=299230)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Rampage (184367), Rampage (184707), Rampage (184709), Rampage (201363), Rampage (201364)
+                   Family Flags: 108
 #2 (id=299233)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Rampage! (209694)
+                   Family Flags: 89
 #3 (id=310353)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Rampage! (209694)
+                   Family Flags: 89
 #4 (id=312509)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Rampage (184367), Rampage (184707), Rampage (184709), Rampage (201363), Rampage (201364)
+                   Family Flags: 108
 Description      : Rampage costs ${$s1/-10} less Rage and deals $s4% increased damage.
 
 Name             : Heavy Repercussions (id=203177) [Spell Family (4), Passive, Hidden] 
@@ -3953,6 +4086,7 @@ Effects          :
 #2 (id=299588)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Shield Block (132404)
+                   Family Flags: 83
 Description      : Shield Slam extends the duration of Shield Block by ${$m1/100}.1 sec, and Shield Block increases the damage of Shield Slam by an additional $s2%.
 
 Name             : Opportunity Strikes (id=203178) [Spell Family (4)] 
@@ -3960,6 +4094,7 @@ Class            : Warrior
 School           : Physical
 Range            : 100 yards
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1)
+Family Flags     : 9
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4012,6 +4147,7 @@ Effects          :
 #1 (id=299635)   : Apply Aura (6) | Add Percent Modifier (108): Spell Radius (6)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 6 | Target: Self (1)
                    Affected Spells: Thunder Clap (6343)
+                   Family Flags: 7
 Description      : Increases the radius of Thunder Clap by $s1%.
 
 Name             : Neltharion's Fury (rank=Artifact) (id=203524) [Spell Family (4)] 
@@ -4038,6 +4174,7 @@ Effects          :
 #4 (id=312629)   : Apply Aura (6) | Disable Abilities (263)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Taunt (355), Shield Wall (871), Demoralizing Shout (1160), Shield Block (2565), Last Stand (12975), Spell Reflection (23920), Dragon Roar (118000), Ignore Pain (190456)
+                   Family Flags: 12, 13, 15, 17, 33, 49, 51, 109
 Description      : Enter a defensive posture, critically blocking all attacks while a stream of shadowflame erupts from |cFFFFCC99Scale of the Earth-Warder|r, dealing ${6*$203526s1} Shadowflame over $d to all enemies in front of you. You can use defensive abilities while this is active.
 Tooltip          : Critically blocking all incoming attacks, and dealing $203526s1 Shadowflame damage to all enemies in a $203526A1 yard cone every $t2 sec.
 
@@ -4158,6 +4295,7 @@ Effects          :
 #1 (id=305090)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: -15000 | Scaled Value: -15000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Berserker Rage (18499)
+                   Family Flags: 28
 Description      : Berserker Rage now causes Enrage, and its cooldown is reduced by ${$s1/-1000} sec.
 
 Name             : Colossus Smash (id=208086) [Spell Family (4)] 
@@ -4168,6 +4306,7 @@ Range            : 50000 yards
 Duration         : 10 seconds
 Proc Chance      : 101%
 Affecting spells : Mastery: Colossal Might (76838 effect#1), Deadly Calm (262228 effect#1), Lord of War (278752 effect#2)
+Family Flags     : 62
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   .......x ..x..... x.x..... ......x. 
                  : x....... ........ ........ ........   ........ ........ ........ ...x.... 
@@ -4180,6 +4319,7 @@ Effects          :
 #1 (id=307841)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 30 | Scaled Value: 30 | Target: Enemy (6)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849)
+                   Family Flags: 9
 #2 (id=720649)   : Apply Aura (6) | Modify Auto Attack Damage Taken% from Caster (343)
                    Base Value: 30 | Scaled Value: 30 | Target: Enemy (6)
 Description      : $@spelldesc167105
@@ -4200,6 +4340,7 @@ Effects          :
 #1 (id=307953)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Enrage (184362)
+                   Family Flags: 58
 Description      : You take $s1% reduced damage while Enrage is active.
 
 Name             : Precise Strikes (id=209492) [Spell Family (4), Passive, Hidden] 
@@ -4242,9 +4383,11 @@ Effects          :
 #1 (id=310052)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Execute (5308), Mortal Strike (12294), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280849)
+                   Family Flags: 25, 29
 #2 (id=344395)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 3 (23)
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280849)
+                   Family Flags: 29
 Description      : $@spelldesc209492
 
 Name             : Void Cleave (id=209573) [Spell Family (4), Passive, Hidden] 
@@ -4293,6 +4436,7 @@ Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Affecting spells : Carnage (202922 effect#2), Frothing Berserker (215571 effect#3), 
+Family Flags     : 89
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4368,6 +4512,7 @@ Proc Chance      : 100%
 Proc Flags       : .....x.x .x...x.. .x...... ........ 
                  : Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken
 Affecting spells : Manual of Spell Reflection (168801 effect#1)
+Family Flags     : 79
 Attributes       : ....x... ........ x.x..... ...x....   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ..x..... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -4439,9 +4584,11 @@ Effects          :
 #1 (id=320532)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Enrage (184361)
+                   Family Flags: 36
 #2 (id=737787)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Bloodthirst Heal (117313)
+                   Family Flags: 80
 Description      : Bloodthirst has a $s1% increased chance to trigger Enrage and heals for $s2% more.
 
 Name             : Frothing Berserker (id=215571) [Spell Family (4), Passive] 
@@ -4464,12 +4611,15 @@ Effects          :
 #2 (id=737728)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Rampage (184367), Rampage (184707), Rampage (184709), Rampage (201363), Rampage (201364)
+                   Family Flags: 108
 #3 (id=737729)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Rampage! (209694)
+                   Family Flags: 89
 #4 (id=737730)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Rampage! (209694)
+                   Family Flags: 89
 Description      : Rampage now costs ${$s1/10} Rage and increases your damage done by $215572s1% and Haste by $215572s2% for $215572d.
 
 Name             : Frothing Berserker (id=215572) [Spell Family (4)] 
@@ -4488,11 +4638,13 @@ Effects          :
 #1 (id=320538)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849)
+                   Family Flags: 9
 #2 (id=320539)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #3 (id=739445)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849)
+                   Family Flags: 9
 #4 (id=739446)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 Description      : $@spelldesc215571
@@ -4516,6 +4668,7 @@ Effects          :
 #2 (id=738411)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Raging Blow (85288), Raging Blow (85384), Raging Blow (96103)
+                   Family Flags: 45
 #3 (id=738435)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 1627 | Target: Self (1)
 Description      : Raging Blow's cooldown is reduced by $<reduction> sec and damage is increased by $s2%.
@@ -4696,6 +4849,7 @@ Range            : 40 yards
 Velocity         : 30 yards/sec
 Duration         : 12 seconds
 Affecting spells : Protection Warrior (137048 effect#8), Gathering Storm (273415 effect#1)
+Family Flags     : 107
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4719,6 +4873,7 @@ Velocity         : 10 yards/sec
 Duration         : 6 seconds
 Cooldown         : 90 seconds
 Affecting spells : Recklessness (1719 effect#8), Warrior (137047 effect#2), Arms Warrior (137049 effect#4), Gathering Storm (273415 effect#1)
+Family Flags     : 8, 46
 Attributes       : ....x... ........ x.x..... .....x..   ....x... .xx....x ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
@@ -4735,6 +4890,7 @@ Effects          :
 #3 (id=342671)   : Apply Aura (6) | Disable Abilities (263)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Taunt (355), Shield Wall (871), Demoralizing Shout (1160), Shield Block (2565), Last Stand (12975), Berserker Rage (18499), Rallying Cry (97462), Rallying Cry (97463), Die by the Sword (118038), Enraged Regeneration (184364), Defensive Stance (197690)
+                   Family Flags: 11, 12, 13, 15, 17, 28, 51, 68, 97, 113
 Description      : Become an unstoppable storm of destructive force, striking all targets within $50622A1 yards $?s137050[with both weapons for ${7*($50622sw1+$95738sw1)} Physical damage][for ${7*$50622sw1} Physical damage] over $d.
 
 You are immune to movement impairing and loss of control effects, but can use defensive abilities and can avoid attacks.
@@ -4750,6 +4906,7 @@ Velocity         : 30 yards/sec
 Duration         : 7 seconds
 Cooldown         : 60 seconds
 Affecting spells : Warrior (137047 effect#2), Protection Warrior (137048 effect#8), Gathering Storm (273415 effect#1)
+Family Flags     : 8, 107
 Attributes       : ....x... ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -4788,6 +4945,7 @@ Effects          :
 #1 (id=349746)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280849)
+                   Family Flags: 29
 Description      : Execute's damage is increased by $s1%.
 
 Name             : Execute (rank=Rank 2) (id=231830) [Spell Family (4), Passive] 
@@ -4890,6 +5048,7 @@ Stacks           : 3 maximum
 Proc Chance      : 101%
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Shield Block (132404 effect#4), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1)
 Triggered by     : Devastator (236279)
+Family Flags     : 9, 38
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4914,6 +5073,7 @@ Range            : 50000 yards
 Duration         : 2.5 seconds
 Proc Chance      : 101%
 Mechanic         : Stun
+Family Flags     : 24
 Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... ........ ........ 
                  : ..x..... ........ ........ ......x.   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -4966,6 +5126,7 @@ Effects          :
 #1 (id=368917)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Bloodthirst (23881)
+                   Family Flags: 42
 Description      : $@spelldesc242301
 Tooltip          : Damage and healing done by your next Bloodthirst increased by $s1%.
 
@@ -4988,6 +5149,7 @@ Effects          :
 #1 (id=368919)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
                    Affected Spells: Bloodthirst (23881)
+                   Family Flags: 42
 Description      : $@spelldesc242301
 Tooltip          : Damage and healing done by your next Bloodthirst increased by $s1%.
 
@@ -5211,6 +5373,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 21 seconds
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Sweeping Strikes (260708 effect#1), Siegebreaker (280773 effect#1)
+Family Flags     : 8, 9, 18, 52
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5236,6 +5399,7 @@ GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 30 seconds
 Affecting spells : Warrior (137047 effect#2)
+Family Flags     : 8
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -5247,6 +5411,7 @@ Effects          :
 #1 (id=486061)   : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Rend (772), Slam (1464), Hamstring (1715), Overpower (7384), Mortal Strike (12294), Victory Rush (34428), Colossus Smash (167105), Impending Victory (202168), Skullsplitter (260643), Execute (260798)
+                   Family Flags: 52
 #2 (id=486062)   : Apply Aura (6) | Dummy (4)
                    Base Value: 75 | Scaled Value: 75 | Misc Value: 17 | Target: Self (1)
 Description      : For $d your single-target damaging abilities hit $s1 additional $Ltarget:targets; within 8 yds for $s2% damage.
@@ -5259,6 +5424,7 @@ Spell Level      : 1
 Range            : 5 yards
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Death Sentence (144442 effect#1), Colossus Smash (208086 effect#1), Precise Strikes (209493 effect#1), Frothing Berserker (215572 effect#1), Stone Heart (225947 effect#1), Execute (231827 effect#1), Sweeping Strikes (260708 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1)
 Triggered by     : Execute (163201)
+Family Flags     : 9, 20, 29, 52, 116
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ....x... ........ ......x.   ........ .xx..... ........ ........ 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
@@ -5307,6 +5473,7 @@ Effects          :
 #1 (id=623121)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 8 | Scaled Value: 8 | SP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Deep Wounds (262115)
+                   Family Flags: 19
 Description      : Deep Wounds damage is increased by ${$s1}.1%, dealing $262115o1 Bleed damage over $262115d.
 
 Striking an enemy with Mortal Strike$?s845[, Cleave][], Execute, or $?s152277[Ravager][Bladestorm] inflicts Deep Wounds.
@@ -5320,6 +5487,7 @@ Duration         : 6 seconds
 Mechanic         : Bleed
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Mastery: Deep Wounds (262111 effect#1), Siegebreaker (280773 effect#1)
 Triggered by     : Deep Wounds (262304)
+Family Flags     : 9, 19
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ........ 
                  : ..x....x ........ ........ ........   ........ ..x..... ..x..... ......x. 
                  : ........ .......x ....x... ........   ........ .....x.. ........ ........ 
@@ -5351,6 +5519,7 @@ Effects          :
 #2 (id=623182)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Overpower (7384)
+                   Family Flags: 2
 Description      : Overpower has ${1+$s1} charges, and it increases the damage of your next Mortal Strike by an additional $s2%.
 
 Name             : Warbreaker (id=262161) [Spell Family (4)] 
@@ -5359,6 +5528,7 @@ School           : Physical
 GCD              : 1.5 seconds
 Cooldown         : 45 seconds
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Lord of War (278752 effect#2), Siegebreaker (280773 effect#1)
+Family Flags     : 8, 9, 23
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -5379,6 +5549,7 @@ Spell Level      : 1
 Duration         : 6 seconds
 Cooldown         : 60 seconds
 Affecting spells : Warrior (137047 effect#2), Raging Fury (222266 effect#1)
+Family Flags     : 8, 30
 Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -5390,9 +5561,11 @@ Effects          :
 #1 (id=623308)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Whirlwind (1680), Hamstring (1715), Execute (5308), Mortal Strike (12294), Whirlwind Off-Hand (44949), Execute (163201), Execute Off-Hand (163558), Colossus Smash (167105), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Impending Victory (202168), Colossus Smash (208086), Execute (260798), Execute (280849)
+                   Family Flags: 1, 5, 21, 22, 25, 29, 34, 62, 72
 #2 (id=623342)   : Apply Aura (6) | Modify Max Cost (63)
                    Base Value: -200 | Scaled Value: -200 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280849)
+                   Family Flags: 29
 Description      : Reduces the Rage cost of your abilities by $s1% for $d.
 Tooltip          : Your abilities cost $s1% less Rage.
 
@@ -5423,6 +5596,7 @@ School           : Physical
 Duration         : 8 seconds
 Affecting spells : Recklessness (1719 effect#5)
 Triggered by     : War Machine (262231)
+Family Flags     : 39
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ xx...... ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -5973,6 +6147,7 @@ Effects          :
 #2 (id=723961)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 238.497 (coefficient=3.067485) | Target: Self (1)
                    Affected Spells: Thunder Clap (6343)
+                   Family Flags: 7
                    Hotfixed: Coefficient (0.642934 -> 3.06749)
 Description      : Thunder Clap deals an additional $s2 damage and extends the duration of your Demoralizing Shout on affected enemies by ${$s1/1000} sec.
 
@@ -6186,6 +6361,7 @@ Proc Flags       : ..x.x... x...x... x.x..... ........
                  : White Melee, Yellow Melee, Yellow Ranged, AOE Hostile Spell, Hostile Spell, Periodic
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1)
 Triggered by     : Bloodbath (12292)
+Family Flags     : 9
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ .x...... ........ ........   ........ ........ ........ ........ 
@@ -6217,6 +6393,7 @@ Effects          :
 #1 (id=728315)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Shield Slam (23922)
+                   Family Flags: 41
 #2 (id=728316)   : Apply Aura (6) | Proc Trigger Spell (42): Punish
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 275335 | Target: Self (1)
 Description      : Shield Slam deals $s1% increased damage, and reduces enemies' damage against you by $275335s1% for $275335d.
@@ -6255,9 +6432,11 @@ Effects          :
 #1 (id=728321)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Avatar (107574)
+                   Family Flags: 32
 #2 (id=728322)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Avatar (107574)
+                   Family Flags: 32
 Description      : Avatar increases the damage of Thunder Clap by $s1%, and reduces its cooldown by $s2%.
 
 Name             : Menace (id=275338) [Spell Family (4), Passive] 
@@ -6275,6 +6454,7 @@ Effects          :
 #1 (id=728325)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 4000 | Scaled Value: 4000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Intimidating Shout (5246)
+                   Family Flags: 27
 Description      : Intimidating Shout disorients enemies for an additional ${$s1/1000} sec, and it causes all enemies to cower in fear instead of fleeing.
 
 Name             : Rumbling Earth (id=275339) [Spell Family (4), Passive] 
@@ -6440,6 +6620,7 @@ Class            : Warrior
 School           : Physical
 Range            : 100 yards
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1)
+Family Flags     : 9
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6496,6 +6677,7 @@ Effects          :
 #2 (id=734681)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 3856.495 (coefficient=49.60123) | Target: Self (1)
                    Affected Spells: Colossus Smash (167105), Colossus Smash (208086), Warbreaker (262161)
+                   Family Flags: 23, 62
                    Hotfixed: Coefficient (0.804 -> 49.6012)
 Description      : $?s262161[Warbreaker][Colossus Smash] deals an additional $s2 damage and generates ${$s1/10} Rage.
 
@@ -6518,6 +6700,7 @@ Effects          :
 #2 (id=734699)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 99.23512 (coefficient=0.319084) | Target: Self (1)
                    Affected Spells: Rampage (184367), Rampage (184707), Rampage (184709), Rampage (201363), Rampage (201364)
+                   Family Flags: 108
                    Hotfixed: Coefficient (0.2 -> 0.319084)
 Description      : Rampage deals an additional ${$184367s1*$s2} damage and generates ${$s1/10} Rage per strike.
 
@@ -6561,6 +6744,7 @@ Effects          :
 #2 (id=734707)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 200.3374 (coefficient=2.576687) | Target: Self (1)
                    Affected Spells: Revenge (6572)
+                   Family Flags: 10
                    Hotfixed: Coefficient (0.450161 -> 2.57669)
 Description      : Revenge deals $s2 additional damage and reduces the damage enemies deal to you by ${-$s1/100}.1% for $278999d, stacking up to $278999u times.
 
@@ -6607,6 +6791,7 @@ Effects          :
 #3 (id=735378)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: 0 | Scaled Value: 2384.969 (coefficient=30.67485) | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Ignore Pain (190456)
+                   Family Flags: 109
                    Hotfixed: Coefficient (1.1254 -> 30.6748)
 Description      : Ignore Pain prevents $s3 additional damage, and grants you $s2 Leech for $279194d.
 
@@ -6680,9 +6865,11 @@ Effects          :
 #1 (id=737240)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: -60000 | Scaled Value: -60000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Last Stand (12975)
+                   Family Flags: 51
 #2 (id=737241)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Last Stand (12975)
+                   Family Flags: 51
 Description      : Last Stand's cooldown is reduced by ${$s1/-1000} sec, and it additionally causes you to block all melee attacks.
 
 Name             : Moment of Glory (id=280023) [Scaling Spell (-8), Passive] 
@@ -6908,6 +7095,7 @@ Class            : Warrior
 School           : Physical
 Affecting spells : Recklessness (1719 effect#5)
 Triggered by     : Endless Rage (202296)
+Family Flags     : 37
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6966,6 +7154,7 @@ Name             : Meat Cleaver (id=280392) [Spell Family (4), Passive, Hidden]
 Class            : Warrior
 School           : Physical
 Affecting spells : Recklessness (1719 effect#5), 
+Family Flags     : 56
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -7423,6 +7612,7 @@ Class            : Warrior
 School           : Physical
 Range            : 5 yards
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1)
+Family Flags     : 9, 50
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7443,6 +7633,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1)
+Family Flags     : 8, 9, 53
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7478,6 +7669,7 @@ Effects          :
 #1 (id=738534)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 15 | Scaled Value: 15 | Target: Enemy (6)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849)
+                   Family Flags: 9
 #2 (id=739447)   : Apply Aura (6) | Modify Auto Attack Damage Taken% from Caster (343)
                    Base Value: 15 | Scaled Value: 15 | Target: Enemy (6)
 Description      : $@spelldesc280772
@@ -7490,6 +7682,7 @@ Spell Level      : 8
 Range            : 5 yards
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Death Sentence (144442 effect#1), Colossus Smash (208086 effect#1), Precise Strikes (209493 effect#1), Frothing Berserker (215572 effect#1), Stone Heart (225947 effect#1), Execute (231827 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1)
 Triggered by     : Execute (5308)
+Family Flags     : 8, 9, 29, 116
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ....x... ........ ......x.   ........ .xx..... ........ ........ 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 

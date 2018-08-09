@@ -27,6 +27,7 @@ Category         : 82
 Category Cooldown: 8 seconds
 Mechanic         : Heal
 Affecting spells : Aspect of the Beast (191384 effect#1), 
+Family Flags     : 60
 Attributes       : ........ ........ x....... ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -96,6 +97,7 @@ Proc Chance      : 100%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
 Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
+Family Flags     : 1, 67
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ..x...x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -207,6 +209,7 @@ Range            : 40 yards
 Duration         : 5 seconds
 Cooldown         : 180 seconds
 Stance Mask      : 0x81000000
+Family Flags     : 95
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   .......x ........ ........ .....x.. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -303,6 +306,7 @@ Spell Level      : 10
 Duration         : 10 seconds
 Cooldown         : 20 seconds
 Affecting spells : Aspect of the Beast (191384 effect#1), 
+Family Flags     : 60
 Attributes       : ........ ........ ........ ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -345,6 +349,7 @@ Name             : Kindred Spirits (id=88680) [Spell Family (9), Passive, Hidden
 Class            : Monk
 School           : Physical
 Affecting spells : Kindred Spirits (56315 effect#2)
+Family Flags     : 87
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -387,6 +392,7 @@ Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
 Affecting spells : Power Strikes (129914 effect#2), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Heightened Senses (165692 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Item - Monk T19 Brewmaster 4P Bonus (211417 effect#1), Blackout Combo (228563 effect#1), The Wind Blows (281452 effect#1), 
+Family Flags     : 10, 103
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -434,6 +440,7 @@ Category         : 1561
 Category Cooldown: 3 seconds
 Proc Chance      : 101%
 Affecting spells : Blackout Kick! (116768 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Blackout Kick (261916 effect#1), Blackout Kick (261917 effect#1), Elusive Footwork (278571 effect#3), The Wind Blows (281452 effect#1), 
+Family Flags     : 4, 67, 103
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -460,6 +467,7 @@ Spell Level      : 48
 GCD              : 1 seconds
 Duration         : 1.5 seconds
 Cooldown         : 25 seconds
+Family Flags     : 6
 Attributes       : ....x... ........ ..x..... .....x..   ........ ........ .x...... ....x... 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -474,6 +482,7 @@ Effects          :
 #2 (id=128685)   : Apply Aura (6) | Unknown(332)
                    Base Value: 115057 | Scaled Value: 115057 | Target: Self (1)
                    Affected Spells: Flying Serpent Kick (101545)
+                   Family Flags: 6
 #3 (id=140829)   : Apply Aura (6) | Pacify Silence (60)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #5 (id=157598)   : Apply Aura (6) | Modify Min Speed% (305)
@@ -499,6 +508,7 @@ GCD              : 1.5 seconds
 Duration         : 1.5 seconds
 Affecting spells : Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#14), Serenity (152173 effect#1)
 Triggered by     : Cyclone Strikes (220358)
+Family Flags     : 63
 Attributes       : ....x... ........ x.x..... .......x   ..x...x. ........ ........ ....xx.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
@@ -530,6 +540,7 @@ GCD              : 1.5 seconds
 Duration         : 900 seconds
 Cooldown         : 10 seconds
 Affecting spells : Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#14)
+Family Flags     : 9
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ ........ ........ ........ 
@@ -549,6 +560,7 @@ Name             : Stance of the Fierce Tiger (rank=Stance) (id=103985) [Spell F
 Class            : Monk
 School           : Physical
 Spell Level      : 1
+Family Flags     : 13
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -567,6 +579,7 @@ Class            : Monk
 School           : Physical
 Affecting spells : Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#14), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Cyclone Strikes (220358 effect#1), The Wind Blows (281452 effect#1), 
 Triggered by     : Spinning Crane Kick (101546)
+Family Flags     : 8, 103
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : x....... .......x ........ ........   ........ .......x ........ ........ 
@@ -593,6 +606,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 10 seconds
 Affecting spells : Thunder Focus Tea (116680 effect#1), Monk (137022 effect#1), Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#5), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Item - Monk T19 Windwalker 2P Bonus (211427 effect#1), Pressure Point (247255 effect#1), Rising Sun Kick (262840 effect#1), Swift Roundhouse (278710 effect#1)
+Family Flags     : 39, 67
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -631,6 +645,7 @@ Spell Level      : 5
 Cooldown         : 0.8 seconds
 Charges          : 2 (20 seconds cooldown)
 Category         : 1365
+Family Flags     : 7, 50
 Attributes       : ....x... ........ x......x ........   .....x.. ..x..... .x...... ....x... 
                  : ........ ........ ........ ........   ..x..... .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -655,6 +670,7 @@ Duration         : 4 seconds
 Cooldown         : 24 seconds
 Affecting spells : Monk (137022 effect#1), Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Katsuo's Eclipse (208045 effect#1), The Wind Blows (281452 effect#1), 
 Triggered by     : Katsuo's Eclipse (208045)
+Family Flags     : 55, 67, 103
 Attributes       : ........ ........ ........ ........   ..x...x. .xx..... ........ .....x.. 
                  : ........ ........ ........ ........   ........ ..x..... ........ x....... 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ...x.... 
@@ -714,6 +730,7 @@ Spell Level      : 1
 Duration         : 1.1 seconds
 Charges          : 2 (20 seconds cooldown)
 Category         : 1365
+Family Flags     : 7, 33
 Attributes       : ....x... ........ x......x ........   .....x.. ..x..... .x...... ....x... 
                  : ........ ........ ........ ........   ..x..... .....x.. ........ ........ 
                  : ........ ........ .....x.. ........   ........ .x...... ........ ........ 
@@ -771,6 +788,7 @@ Spell Level      : 16
 GCD              : 1 seconds
 Category         : 47
 Affecting spells : Fortifying Brew (120954 effect#6), High Tolerance (196737 effect#5), Ironskin Brew (215479 effect#1)
+Family Flags     : 34
 Attributes       : ....x.x. ........ x.x..... x..x.x.x   ........ ..x..... .x...... ....x..x 
                  : x....... ........ ........ ........   ........ ........ ....x... ..x..... 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -799,6 +817,7 @@ Resource         : 15 Energy (3) (id=5686)
 Spell Level      : 50
 GCD              : 1 seconds
 Affecting spells : Brewmaster Monk (137023 effect#14), Windwalker Monk (137025 effect#14), Extend Life (185158 effect#2)
+Family Flags     : 17, 95
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -831,6 +850,7 @@ Mechanic         : Incapacitate
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#14)
+Family Flags     : 35, 87
 Attributes       : ....x... ........ ....xx.. ........   ...x...x ..x..... ..x..... .x.x.... 
                  : ........ ........ ........ ........   x..x.... ........ x....... ..x..... 
                  : ........ ........ .......x ........   .....x.. ........ ........ .......x 
@@ -856,6 +876,7 @@ GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 120 seconds
 Affecting spells : Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#14), Scroll of Touch of Death (168797 effect#1), Hidden Master's Forbidden Touch (213112 effect#2), Hidden Master's Forbidden Touch (213114 effect#1), Meridian Strikes (278580 effect#1)
+Family Flags     : 40, 67
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ .....x..   ........ ..x..... ........ ........ 
                  : ........ x....... ........ .....x..   ........ ........ .......x .....x.. 
@@ -883,6 +904,7 @@ GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Cooldown         : 15 seconds
 Affecting spells : Brewmaster Monk (137023 effect#14), Windwalker Monk (137025 effect#14)
+Family Flags     : 1
 Attributes       : ........ ........ ........ ...x....   .......x ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -906,6 +928,7 @@ Velocity         : 30 yards/sec
 Charges          : 1 (9 seconds cooldown)
 Category         : 1517
 Affecting spells : Thunder Focus Tea (116680 effect#3), Chi-ji's Guidance (167717 effect#1), Extend Life (185158 effect#2), Item - Monk T19 Mistweaver 2P Bonus (211418 effect#1), Shelter of Rin (281301 effect#1), 
+Family Flags     : 23, 97
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ..x...x. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -952,6 +975,7 @@ Range            : 40 yards
 GCD              : 1 seconds
 Duration         : 8 seconds
 Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2)
+Family Flags     : 24, 48
 Attributes       : ........ ........ ........ ........   ..x...x. ........ ........ .....x.. 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -979,6 +1003,7 @@ Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee Taken
 Affecting spells : Fundamental Observation (208878 effect#1), 
+Family Flags     : 45
 Attributes       : ........ ........ ........ ........   ..x...x. ........ .x...... .....x.. 
                  : ........ ........ ........ ......x.   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1005,6 +1030,7 @@ GCD              : 1 seconds
 Cooldown         : 15 seconds
 Proc Chance      : 101%
 Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Item - Monk WoD PvP Brewmaster 4P Bonus (171445 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Blackout Combo (228563 effect#2), The Wind Blows (281452 effect#1), 
+Family Flags     : 19, 67, 103
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1024,6 +1050,7 @@ Class            : Brewmaster Monk
 School           : Physical
 Spell Level      : 55
 Cooldown         : 420 seconds
+Family Flags     : 52, 53
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1046,6 +1073,7 @@ GCD              : 1 seconds
 Cooldown         : 60 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
+Family Flags     : 53, 56
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1069,6 +1097,7 @@ Duration         : 8 seconds
 Cooldown         : 30 seconds
 Charges          : 0 (30 seconds cooldown)
 Category         : 1474
+Family Flags     : 28
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1092,6 +1121,7 @@ Cooldown         : 1 seconds
 Charges          : 3 (15 seconds cooldown)
 Category         : 1562: Brewmaster Monk (137023 effect#5)
 Affecting spells : Eluding Movements (184906 effect#2), Item - Monk T19 Brewmaster 2P Bonus (211415 effect#1), 
+Family Flags     : 53, 111
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1114,6 +1144,7 @@ Spell Level      : 70
 GCD              : 1.5 seconds
 Cooldown         : 180 seconds
 Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2)
+Family Flags     : 48, 60
 Attributes       : ........ ........ ........ ........   ........ ..x....x ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1202,6 +1233,7 @@ Class            : Monk
 School           : Physical
 Spell Level      : 1
 Cooldown         : 120 seconds
+Family Flags     : 53, 92, 104
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -1224,6 +1256,7 @@ GCD              : 1.5 seconds
 Charges          : 1 (8 seconds cooldown)
 Category         : 1511
 Affecting spells : Brewmaster Monk (137023 effect#14), Windwalker Monk (137025 effect#14)
+Family Flags     : 22
 Attributes       : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1247,6 +1280,7 @@ School           : Physical
 Spell Level      : 13
 Range            : 30 yards
 Cooldown         : 8 seconds
+Family Flags     : 117
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ x.x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ .x...... 
@@ -1266,6 +1300,7 @@ Name             : Mastery: Combo Strikes (id=115636) [Spell Family (53), Passiv
 Class            : Windwalker Monk
 School           : Physical
 Spell Level      : 78
+Family Flags     : 123
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1308,6 +1343,7 @@ Internal Cooldown: 1 seconds
 Proc Chance      : 100%
 Proc Flags       : .x...... ........ ........ ........ 
                  : Killing Blow
+Family Flags     : 72
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1340,6 +1376,7 @@ Mechanic         : Snare
 Proc Flags       : ...x.x.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee Taken
 Affecting spells : Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#14)
+Family Flags     : 29
 Attributes       : ....x... ...x.... x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ...x.... ..x..... ........ ........ 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -1414,6 +1451,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Affecting spells : Thunder Focus Tea (116680 effect#2), Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#18), Mistweaver Monk (137024 effect#1), Windwalker Monk (137025 effect#11), Extend Life (185158 effect#2), Uplifting Trance (197206 effect#1), Lifecycles (Vivify) (197916 effect#1), Infusion of Life (199380 effect#1), Vivify (231602 effect#1), Invigorating Brew (269622 effect#1), Uplifted Spirits (278576 effect#3), Lunar Glide (281521 effect#1), 
+Family Flags     : 26, 48
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1439,6 +1477,7 @@ Proc Chance      : 100%
 Proc Flags       : ....x... ....x.x. ........ ........ 
                  : Yellow Melee, AOE Hostile Spell, Heal
 Affecting spells : Focused Thunder (197895 effect#1), Thunder Focus Tea (231876 effect#1), 
+Family Flags     : 31, 53
 Attributes       : ........ ........ ........ .x......   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1450,12 +1489,15 @@ Effects          :
 #1 (id=131804)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099)
+                   Family Flags: 39
 #2 (id=214145)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Vivify (116670)
+                   Family Flags: 26
 #3 (id=289634)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 10000 | Scaled Value: 10000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Renewing Mist (115151), Renewing Mist (119611)
+                   Family Flags: 23
 Description      : Receive a jolt of energy, empowering your next $?a197895[$u spells][spell] cast:
 
 Enveloping Mist: Immediately heals for $274062s1.
@@ -1476,6 +1518,7 @@ Spell Level      : 35
 Range            : 5 yards
 Duration         : 4 seconds
 Cooldown         : 15 seconds
+Family Flags     : 30
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ...x.... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1523,6 +1566,7 @@ Proc Flags       : ....x... ....x... ........ ........
                  : Yellow Melee, AOE Hostile Spell
 Affecting spells : Item - Monk T21 Windwalker 2P Bonus (251821 effect#1)
 Triggered by     : The Wind Blows (248101)
+Family Flags     : 21
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -1534,12 +1578,15 @@ Effects          :
 #1 (id=131945)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Blackout Strike (205523), Blackout Kick (228649)
+                   Family Flags: 4
 #2 (id=135586)   : Apply Aura (6) | Unknown(262)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Blackout Strike (205523), Blackout Kick (228649)
+                   Family Flags: 4
 #3 (id=196421)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Blackout Strike (205523), Blackout Kick (228649)
+                   Family Flags: 4
 Description      : $@spelldesc137384
 Tooltip          : Your next Blackout Kick costs no Chi.
 
@@ -1569,6 +1616,7 @@ GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 30 seconds
 Affecting spells : Brewmaster Monk (137023 effect#14), Windwalker Monk (137025 effect#14)
+Family Flags     : 47
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ...x.... ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1591,6 +1639,7 @@ GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 45 seconds
 Affecting spells : Brewmaster Monk (137023 effect#14), Windwalker Monk (137025 effect#14)
+Family Flags     : 99
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1615,6 +1664,7 @@ GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 6 seconds
 Affecting spells : Monk (137022 effect#1), Brewmaster Monk (137023 effect#6), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#6), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1)
+Family Flags     : 5, 76
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
@@ -1650,6 +1700,7 @@ Range            : 40 yards
 Duration         : 12 seconds
 Cooldown         : 120 seconds
 Affecting spells : Item - Monk WoD PvP Mistweaver 4P Bonus (165697 effect#1)
+Family Flags     : 78
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ...x.... x....... .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1673,6 +1724,7 @@ Spell Level      : 1
 Range            : 8 yards
 Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Open Palm Strikes (279918 effect#4), The Wind Blows (281452 effect#1), 
 Triggered by     : Fists of Fury (113656)
+Family Flags     : 20, 103
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ .x...... ........ ........ 
                  : ........ .......x ........ ........   ........ ..x..... ........ ........ 
@@ -1707,6 +1759,7 @@ Effects          :
 #1 (id=133999)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Elusive Brawler (195630)
+                   Family Flags: 109
 #2 (id=217538)   : Apply Aura (6) | Modify Melee Attack Power% (166)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=287196)   : Apply Aura (6) | Proc Trigger Spell (42): Elusive Brawler
@@ -1738,6 +1791,7 @@ Effects          :
 #3 (id=305755)   : Apply Aura (6) | Add Flat Modifier (107): Spell Power (24)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.03000 | Misc Value: 24 | Target: Self (1)
                    Affected Spells: Gust of Mists (191894)
+                   Family Flags: 110
 Description      : Renewing Mist, Enveloping Mist, and Vivify cause a gust of healing mists, instantly healing the primary target for $191894s1.
 
 Name             : Crackling Jade Lightning (id=117952) [Spell Family (53)] 
@@ -1751,6 +1805,7 @@ GCD              : 1.5 seconds
 Duration         : 4 seconds
 Proc Chance      : 100%
 Affecting spells : Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#15), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Emperor's Capacitor (235054 effect#1), The Wind Blows (281452 effect#1), 
+Family Flags     : 32, 70, 103
 Attributes       : ........ ........ ........ ........   ..x..... ......x. ........ ...x.x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 
@@ -1845,6 +1900,7 @@ Duration         : 3 seconds
 Cooldown         : 60 seconds
 Mechanic         : Stun
 Affecting spells : Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#14), Tiger Tail Sweep (264348 effect#1), 
+Family Flags     : 41
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1865,6 +1921,7 @@ Spell Level      : 28
 Cooldown         : 1 seconds
 Charges          : 3 (15 seconds cooldown)
 Category         : 1562: Brewmaster Monk (137023 effect#5)
+Family Flags     : 53, 66, 67
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1884,6 +1941,7 @@ Class            : Monk
 School           : Nature
 Spell Level      : 1 (max 1)
 Range            : 50000 yards
+Family Flags     : 61
 Attributes       : ........ ........ x....... ...x....   .....x.. ..x..... ........ ........ 
                  : ..x..... ........ ...x.... ........   ........ ........ ........ ..x...x. 
                  : ........ ........ ...xx... ........   ........ ........ ........ ........ 
@@ -1908,6 +1966,7 @@ Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Thunder Focus Tea (116680 effect#3), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Shelter of Rin (281301 effect#1), 
+Family Flags     : 23, 48
 Attributes       : ........ ........ ..x..... x..x....   ........ ........ ........ ........ 
                  : ..x..... x....... ........ ........   ........ .x...... ........ ..x...x. 
                  : ........ .......x ........ ........   ........ .....x.. ........ ........ 
@@ -1948,6 +2007,7 @@ GCD              : 1.5 seconds
 Duration         : 1 seconds
 Cooldown         : 45 seconds
 Affecting spells : Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#14)
+Family Flags     : 54
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ ........ ........ ........ 
@@ -1971,6 +2031,7 @@ Duration         : 4 seconds
 Mechanic         : Stun
 Affecting spells : Monk (137022 effect#1), Serenity (152173 effect#1), Katsuo's Eclipse (208045 effect#1)
 Triggered by     : Fists of Fury (113656)
+Family Flags     : 55
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2040,6 +2101,7 @@ Class            : Monk
 School           : Physical
 Spell Level      : 24
 Duration         : 15 seconds
+Family Flags     : 51
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2061,6 +2123,7 @@ Effects          :
 #6 (id=726762)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Stagger (115069)
+                   Family Flags: 34
 Description      : $@spelldesc115203
 Tooltip          : Health increased by $<health>%, damage taken reduced by $<damage>%, and effectiveness of Stagger increased by $115203s1%.
 Variables        : $health=$?s124997[${10}][${20}]
@@ -2105,6 +2168,7 @@ Charges          : 1 (8 seconds cooldown)
 Category         : 1490: Brewmaster Monk (137023 effect#4)
 Proc Chance      : 101%
 Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Stormstout's Last Gasp (248044 effect#2), The Wind Blows (281452 effect#1), 
+Family Flags     : 57, 103
 Attributes       : ........ ........ ........ ........   ...x...x .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2143,6 +2207,7 @@ Name             : Power Strikes (id=121283) [Spell Family (53)]
 Class            : Monk
 School           : Physical
 Range            : 50000 yards
+Family Flags     : 92
 Attributes       : ........ ........ .......x x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ........ ........   ........ ........ .x...... ........ 
                  : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -2205,6 +2270,7 @@ School           : Nature
 Charges          : 2 (30 seconds cooldown)
 Category         : 1646
 Affecting spells : Extend Life (185158 effect#2)
+Family Flags     : 77, 116
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2226,6 +2292,7 @@ Range            : 20 yards
 Duration         : 10 seconds
 Cooldown         : 90 seconds
 Affecting spells : Item - Monk WoD PvP Windwalker 2P Bonus (180743 effect#1), Good Karma (280195 effect#1)
+Family Flags     : 73
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ .....x..   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ .......x ...x.... 
@@ -2288,6 +2355,7 @@ School           : Physical
 Spell Level      : 1
 Duration         : 4 seconds
 Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), 
+Family Flags     : 69, 103
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2322,6 +2390,7 @@ GCD              : 1 seconds
 Duration         : 12 seconds
 Proc Chance      : 101%
 Affecting spells : Item - Monk WoD PvP Brewmaster 4P Bonus (171445 effect#1), Boiling Brew (272792 effect#2)
+Family Flags     : 125
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2371,6 +2440,7 @@ Velocity         : 30 yards/sec
 Duration         : 1 seconds
 Cooldown         : 30 seconds
 Affecting spells : Brewmaster Monk (137023 effect#7), Windwalker Monk (137025 effect#14), Storm, Earth, and Fire (137639 effect#1), Extend Life (185158 effect#2)
+Family Flags     : 38
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2403,6 +2473,7 @@ School           : Nature
 Spell Level      : 1
 Range            : 50000 yards
 Triggered by     : Crackling Tiger Lightning Driver (123999)
+Family Flags     : 68
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... .x...... ........ ......x. 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
@@ -2455,6 +2526,7 @@ Name             : Stagger (id=124255) [Spell Family (53)]
 Class            : Monk
 School           : Physical
 Duration         : Aura (infinite)
+Family Flags     : 65
 Attributes       : ........ ........ ........ x.xx...x   ........ ..x..... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ x....... .....x.. 
                  : .......x x....... ........ ........   ........ ........ ........ ........ 
@@ -2476,6 +2548,7 @@ Class            : Monk
 School           : Physical
 Duration         : 10 seconds
 Affecting spells : High Tolerance (196737 effect#4)
+Family Flags     : 93
 Attributes       : ........ ........ ........ x.xx...x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ x....... .....x.. 
                  : .......x x....... ........ ........   ........ ........ ........ ........ 
@@ -2501,6 +2574,7 @@ Class            : Monk
 School           : Physical
 Duration         : 10 seconds
 Affecting spells : Brewmaster Monk (137023 effect#14), High Tolerance (196737 effect#3)
+Family Flags     : 91
 Attributes       : ........ ........ ........ x.xx...x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ x....... .....x.. 
                  : .......x x....... ........ ........   ........ ........ ........ ........ 
@@ -2526,6 +2600,7 @@ Class            : Monk
 School           : Physical
 Duration         : 10 seconds
 Affecting spells : High Tolerance (196737 effect#2)
+Family Flags     : 86
 Attributes       : ........ ........ ........ x.xx...x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ x....... .....x.. 
                  : .......x x....... ........ ........   ........ ........ ........ ........ 
@@ -2553,6 +2628,7 @@ Spell Level      : 1
 Range            : 50000 yards
 Velocity         : 20 yards/sec
 Duration         : 6 seconds
+Family Flags     : 11
 Attributes       : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ x....... ......x. 
                  : ........ .......x .......x ........   ........ ........ ........ ........ 
@@ -2590,6 +2666,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 30 seconds
+Family Flags     : 81
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2608,6 +2685,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 30 seconds
+Family Flags     : 81
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2625,6 +2703,7 @@ Class            : Monk
 School           : Nature
 Range            : 50000 yards
 Affecting spells : Extend Life (185158 effect#2)
+Family Flags     : 77, 121
 Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... ........ ........ 
                  : ..x..... ......x. ........ ........   ........ ........ ........ ........ 
                  : .......x .......x ........ ........   ...x.... ........ .xx..... ........ 
@@ -2648,6 +2727,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Affecting spells : Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Mist Wrap (197900 effect#1), Lifecycles (Enveloping Mist) (197919 effect#1), Soothing Mist (209525 effect#2), Enveloping Mist (231605 effect#1), Surge of Mists (246328 effect#1)
+Family Flags     : 48, 67, 79
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ...x.... x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -2662,6 +2742,7 @@ Effects          :
 #2 (id=290817)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 0 | Scaled Value: 0 | Target: Friend (21)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Soothing Mist (198533), Crane Heal (198756), Surging Mist (227344), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912)
+                   Family Flags: 48, 102
 Description      : Wraps the target in healing mists, healing for $o1 over $d$?a231605[, and increasing healing received from your other spells by $m2%][].
 Tooltip          : Heals $w1 every $t1 sec.
 Healing received from the Monk increased by $m2%.
@@ -2886,6 +2967,7 @@ GCD              : 1 seconds
 Cooldown         : 60 seconds
 Category         : 1565
 Category Cooldown: 60 seconds
+Family Flags     : 127
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -3010,6 +3092,7 @@ Effects          :
 #2 (id=487652)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780)
+                   Family Flags: 10
 Description      : $@spelldesc121817
 Tooltip          : Your next Tiger Palm will generate $s1 additional Chi and deal $121817s2% additional damage.
 
@@ -3036,6 +3119,7 @@ School           : Nature
 Spell Level      : 1
 Range            : 100 yards
 Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#7), Mistweaver Monk (137024 effect#1), Windwalker Monk (137025 effect#14), Storm, Earth, and Fire (137639 effect#1), Extend Life (185158 effect#2)
+Family Flags     : 38, 48, 77, 89
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ .x...... ........ ......x. 
                  : .......x .......x ........ ........   ...x.... .......x .xx..... ........ 
@@ -3056,6 +3140,7 @@ School           : Nature
 Spell Level      : 1
 Range            : 50000 yards
 Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#20), Mistweaver Monk (137024 effect#1), Storm, Earth, and Fire (137639 effect#1), Extend Life (185158 effect#2)
+Family Flags     : 48, 58, 77
 Attributes       : ........ ........ ..x....x x..x....   .....x.x ........ ........ ........ 
                  : ..x..... ......x. ........ ......x.   ........ .x...... ..x..... ......x. 
                  : .......x .......x ...x.... ........   ...x.... ........ .xxx.... ........ 
@@ -3076,6 +3161,7 @@ School           : Nature
 Spell Level      : 1
 Range            : 50000 yards
 Affecting spells : Brewmaster Monk (137023 effect#7), Windwalker Monk (137025 effect#6), Storm, Earth, and Fire (137639 effect#1), 
+Family Flags     : 27
 Attributes       : ........ ...x.... x......x ...x....   .....x.x ..x..... ........ ....x... 
                  : ........ ........ ...x.... ........   ........ ........ ....x... ..x...x. 
                  : ........ ........ ...xx... ........   .....x.. ........ ...x.... ..x..... 
@@ -3099,6 +3185,7 @@ Range            : 50000 yards
 Velocity         : 20 yards/sec
 Duration         : 0.1 seconds
 Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), 
+Family Flags     : 27, 103
 Attributes       : ........ ........ ..x....x x..x....   .....x.x ........ ........ ....x... 
                  : ..x..... ......x. ...x.... ......x.   ........ .x...... ........ ......x. 
                  : .......x .......x ...x.... ........   ...x.... ........ .xxx.... ........ 
@@ -3151,6 +3238,7 @@ Effects          :
 #1 (id=179705)   : Apply Aura (6) | Hasted Cooldown Duration (416)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Rising Sun Kick (107428), Fists of Fury (113656), Rushing Jade Wind (116847), Fists of Fury (120086), Whirling Dragon Punch (152175), Whirling Dragon Punch (158221), Item - Monk T17 Windwalker2P Bonus (165403), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Rushing Jade Wind (261715)
+                   Family Flags: 39, 55, 76, 122
 #2 (id=191112)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 249 (Label) | Target: Self (1)
                    Affected Spells (Label): Orb of Destruction (229700), Void Tendril (250834)
@@ -3174,9 +3262,11 @@ Effects          :
 #1 (id=179707)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 9 | Scaled Value: 9 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Strike (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673)
+                   Family Flags: 103
 #2 (id=191108)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 9 | Scaled Value: 9 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Strike (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673)
+                   Family Flags: 103
 #3 (id=191109)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 9 | Scaled Value: 9 | Target: Self (1)
 #4 (id=191110)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
@@ -3188,15 +3278,19 @@ Effects          :
 #6 (id=260837)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -44 | Scaled Value: -44 | Target: Self (1)
                    Affected Spells: Rushing Jade Wind (116847), Rushing Jade Wind (148187), Rushing Jade Wind (261715)
+                   Family Flags: 5
 #7 (id=260838)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -10 | Scaled Value: -10 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Chi Burst (123986), Chi Burst (130654), Chi Wave (132466), Chi Wave (132467), Chi Burst (148135), Song of Chi-Ji (198898), Chi Burst (261682)
+                   Family Flags: 10, 27, 38
 #8 (id=260839)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Eye of the Tiger (196608)
+                   Family Flags: 44
 #9 (id=260840)   : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Rushing Jade Wind (116847), Refreshing Jade Wind (196725), Rushing Jade Wind (261715)
+                   Family Flags: 76
 #10 (id=260841)   : Apply Aura (6) | Unknown(312)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 116 | Target: Self (1)
 #11 (id=260842)   : Apply Aura (6) | Modify Total Stat% (137)
@@ -3208,22 +3302,27 @@ Effects          :
 #14 (id=260845)   : Apply Aura (6) | Add Flat Modifier (107): Spell Global Cooldown (21)
                    Base Value: -500 | Scaled Value: -500 | Misc Value: 21 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Expel Harm (115072), Paralysis (115078), Touch of Death (115080), Chi Wave (115098), Detox (115450), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Crackling Jade Lightning (117952), Leg Sweep (119381), Transcendence: Transfer (119996), Chi Burst (123986), Moderate Stagger (124274), Chi Burst (130654), Chi Burst (148135), Rushing Jade Wind (148187), Rising Sun Kick (185099), Song of Chi-Ji (198898), Blackout Strike (205523), Detox (218164), Blackout Kick (228649), Chi Burst (261682), Rushing Jade Wind (261715)
+                   Family Flags: 1, 2, 4, 5, 9, 10, 17, 18, 22, 29, 32, 35, 38, 39, 40, 41, 47, 54, 63, 91, 99, 100
 #15 (id=260846)   : Apply Aura (6) | Modify Expertise% (240)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #16 (id=362030)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Breath of Fire (115181), Rushing Jade Wind (116847), Rushing Jade Wind (148187), Blackout Strike (205523), Blackout Kick (228649), Rushing Jade Wind (261715)
+                   Family Flags: 4, 5, 19
 #17 (id=474893)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780)
+                   Family Flags: 10
 #18 (id=733911)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
                    Affected Spells: Vivify (116670)
+                   Family Flags: 26
 #19 (id=739778)   : Apply Aura (6) | Override Spell Power per Attack Power% (366)
                    Base Value: 96 | Scaled Value: 96 | Target: Self (1)
 #20 (id=743520)   : Apply Aura (6) | Add Percent Modifier (108): Spell Generated Threat (2)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 2 | Target: Self (1)
                    Affected Spells: Chi Burst (130654), Chi Wave (132463)
+                   Family Flags: 58, 89
                    Hotfixed: NEW EFFECT
 
 Name             : Mistweaver Monk (id=137024) [Spell Family (53), Passive, Hidden] 
@@ -3242,21 +3341,26 @@ Effects          :
 #1 (id=179708)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Soothing Mist (198533), Crane Heal (198756), Surging Mist (227344), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912)
+                   Family Flags: 48
 #2 (id=191104)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Soothing Mist (198533), Crane Heal (198756), Surging Mist (227344), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912)
+                   Family Flags: 48
 #3 (id=191105)   : Apply Aura (6) | Unknown(312)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 117 | Target: Self (1)
 #4 (id=191106)   : Apply Aura (6) | Override Attack Power per Spell Power% (404)
                    Base Value: 104 | Scaled Value: 104 | Target: Self (1)
 #5 (id=191107)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effects (8)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 8 | Target: Self (1)
+                   Family Flags: 83
 #6 (id=260827)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 917504 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Paralysis (115078), Touch of Death (115080), Disable (116095), Rushing Jade Wind (116847), Leg Sweep (119381), Transcendence: Transfer (119996), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Blackout Strike (205523), Blackout Kick (228649), Rushing Jade Wind (261715)
+                   Family Flags: 2, 4, 9, 10, 29, 35, 39, 40, 41, 54, 63, 76, 100
 #7 (id=260828)   : Apply Aura (6) | Hasted Cooldown Duration (416)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Blackout Strike (205523), Blackout Kick (228649)
+                   Family Flags: 2, 4, 10, 63
 #8 (id=260829)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: -20 | Scaled Value: -20 | Target: Self (1)
 #9 (id=260830)   : Apply Aura (6) | Unknown(179)
@@ -3264,21 +3368,27 @@ Effects          :
 #10 (id=260831)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: 2000 | Scaled Value: 2000 | Misc Value: 11
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099)
+                   Family Flags: 39
 #11 (id=260832)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099)
+                   Family Flags: 39
 #12 (id=260833)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0
                    Affected Spells: Blackout Kick (100784), Blackout Strike (205523), Blackout Kick (228649)
+                   Family Flags: 4
 #13 (id=260834)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0
                    Affected Spells: Tiger Palm (100780)
+                   Family Flags: 10
 #14 (id=260835)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 60 | Scaled Value: 60
                    Affected Spells: Spinning Crane Kick (107270)
+                   Family Flags: 8
 #15 (id=741702)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 400 | Scaled Value: 400 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Crackling Jade Lightning (117952)
+                   Family Flags: 32
 Description      : Mistweaver Monk core passive
 
 Name             : Windwalker Monk (id=137025) [Spell Family (53), Passive, Hidden] 
@@ -3297,36 +3407,46 @@ Effects          :
 #1 (id=179709)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -27 | Scaled Value: -27 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Strike (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673)
+                   Family Flags: 103
 #2 (id=191100)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -27 | Scaled Value: -27 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Strike (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673)
+                   Family Flags: 103
 #3 (id=191101)   : Apply Aura (6) | Dummy (4)
                    Base Value: -27 | Scaled Value: -27 | Target: Self (1)
 #4 (id=191102)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780)
+                   Family Flags: 10
 #5 (id=191103)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 26 | Scaled Value: 26 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Rising Sun Kick (107428), Rising Sun Kick (185099), Blackout Strike (205523), Blackout Kick (228649)
+                   Family Flags: 4, 10, 39
 #6 (id=260817)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 22 | Scaled Value: 22 | Target: Self (1)
                    Affected Spells: Rushing Jade Wind (116847), Chi Wave (132466), Chi Wave (132467), Rushing Jade Wind (148187), Rushing Jade Wind (261715)
+                   Family Flags: 5, 27
 #7 (id=260818)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 22 | Scaled Value: 22 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Eye of the Tiger (196608)
+                   Family Flags: 44
 #8 (id=260819)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 140 | Scaled Value: 140 | Target: Self (1)
                    Affected Spells: Spinning Crane Kick (107270)
+                   Family Flags: 8
 #9 (id=260820)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Blackout Strike (205523), Blackout Kick (228649)
+                   Family Flags: 4
                    Hotfixed: Base Value (50 -> 10)
 #10 (id=260821)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Blackout Strike (205523), Blackout Kick (228649)
+                   Family Flags: 4
 #11 (id=733910)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
                    Affected Spells: Vivify (116670)
+                   Family Flags: 26
 #12 (id=739335)   : Apply Aura (6) | Increase Energy (35)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Target: Self (1)
 #13 (id=739336)   : Apply Aura (6) | Unknown(312)
@@ -3334,6 +3454,7 @@ Effects          :
 #14 (id=739337)   : Apply Aura (6) | Add Flat Modifier (107): Spell Global Cooldown (21)
                    Base Value: -500 | Scaled Value: -500 | Misc Value: 21 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Expel Harm (115072), Paralysis (115078), Touch of Death (115080), Chi Wave (115098), Detox (115450), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Crackling Jade Lightning (117952), Leg Sweep (119381), Transcendence: Transfer (119996), Chi Burst (123986), Chi Burst (130654), Chi Burst (148135), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Song of Chi-Ji (198898), Blackout Strike (205523), Detox (218164), Blackout Kick (228649), Chi Burst (261682), Rushing Jade Wind (261715)
+                   Family Flags: 1, 2, 4, 9, 10, 17, 22, 29, 32, 35, 38, 39, 40, 41, 47, 54, 63, 76, 99, 100
 #15 (id=739777)   : Apply Aura (6) | Override Spell Power per Attack Power% (366)
                    Base Value: 96 | Scaled Value: 96 | Target: Self (1)
 
@@ -3368,6 +3489,7 @@ Stacks           : 2 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x.x. x.x.x.x. x.x..x.. .x...... 
                  : Yellow Melee, White Ranged, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell, Periodic, Trap Triggered, Proc on jump
+Family Flags     : 124
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ......x.   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3380,9 +3502,11 @@ Effects          :
 #1 (id=180816)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -55 | Scaled Value: -55 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Rising Sun Kick (107428), Rushing Jade Wind (116847), Fists of Fury (117418), Crackling Jade Lightning (117952), Chi Burst (123986), Chi Burst (130654), Chi Wave (132463), Chi Wave (132466), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (152175), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Song of Chi-Ji (198898), Blackout Strike (205523), Blackout Kick (228649), Chi Burst (261682), Rushing Jade Wind (261715), Fist of the White Tiger (261947), Fist of the White Tiger (261977)
+                   Family Flags: 4, 5, 8, 10, 20, 27, 32, 38, 39, 58, 118, 122
 #2 (id=181516)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -55 | Scaled Value: -55 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Rising Sun Kick (107428), Rushing Jade Wind (116847), Fists of Fury (117418), Crackling Jade Lightning (117952), Chi Burst (123986), Chi Burst (130654), Chi Wave (132463), Chi Wave (132466), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (152175), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Song of Chi-Ji (198898), Blackout Strike (205523), Blackout Kick (228649), Chi Burst (261682), Rushing Jade Wind (261715), Fist of the White Tiger (261947), Fist of the White Tiger (261977)
+                   Family Flags: 4, 5, 8, 10, 20, 27, 32, 38, 39, 58, 118, 122
 #3 (id=181626)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: -55 | Scaled Value: -55 | Target: Self (1)
 #4 (id=289040)   : Apply Aura (6) | Dummy (4)
@@ -3390,6 +3514,7 @@ Effects          :
 #5 (id=330909)   : Apply Aura (6) | Unknown(332)
                    Base Value: 221771 | Scaled Value: 221771 | Misc Value: 127 | Target: Self (1)
                    Affected Spells: Storm, Earth, and Fire (137639)
+                   Family Flags: 124
 Description      : Split into 3 elemental spirits for $d, each spirit dealing ${100+$m1}% of normal damage and healing.
 
 You directly control the Storm spirit, while Earth and Fire spirits mimic your attacks on nearby enemies.
@@ -3404,6 +3529,7 @@ School           : Nature
 Spell Level      : 1
 Range            : 100 yards
 Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), 
+Family Flags     : 38, 103
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ .x...... ........ ......x. 
                  : .......x .......x ........ ........   ...x.... .......x .xx..... ........ 
@@ -3422,6 +3548,7 @@ Class            : Monk
 School           : Physical
 Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), 
 Triggered by     : Rushing Jade Wind (116847), Rushing Jade Wind (261715)
+Family Flags     : 5, 103
 Attributes       : ....x... ........ ..x..... ...x....   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ .x...... ........ ........ 
                  : x......x .......x ........ ........   ...x.... .......x .xx..... ........ 
@@ -3441,6 +3568,7 @@ School           : Physical
 GCD              : 1 seconds
 Duration         : 12 seconds
 Cooldown         : 90 seconds
+Family Flags     : 126
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3452,9 +3580,11 @@ Effects          :
 #1 (id=210678)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Spinning Crane Kick (101546), Rising Sun Kick (107428), Fists of Fury (113656), Rushing Jade Wind (116847), Fists of Fury (120086), Rushing Jade Wind (148187), Item - Monk T17 Windwalker2P Bonus (165403), Rising Sun Kick (185099), Blackout Strike (205523), Blackout Kick (228649), Rushing Jade Wind (261715), Fist of the White Tiger (261947), Fist of the White Tiger (261977)
+                   Family Flags: 4, 5, 16, 39, 55, 63, 118
 #2 (id=303755)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Strike (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673)
+                   Family Flags: 103
 #3 (id=303756)   : Apply Aura (6) | Modify Healing% Done (136)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 127 | Target: Self (1)
 #4 (id=303757)   : Apply Aura (6) | Modify Cooldown Recharge Rate (143)
@@ -3464,6 +3594,7 @@ Effects          :
 #6 (id=479822)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Strike (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673)
+                   Family Flags: 103
 #7 (id=739494)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 Description      : Enter an elevated state of mental and physical serenity for $?s115069[$s1 sec][$d]. While in this state, you deal $s2% increased damage and healing, and all Chi consumers are free and cool down $s4% more quickly.
@@ -3477,6 +3608,7 @@ GCD              : 1 seconds
 Duration         : 1 seconds
 Cooldown         : 24 seconds
 Affecting spells : Monk (137022 effect#1), Storm, Earth, and Fire (137639 effect#1), 
+Family Flags     : 122
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -3577,6 +3709,7 @@ Name             : Whirling Dragon Punch (id=158221) [Spell Family (53)]
 Class            : Monk
 School           : Physical
 Affecting spells : Monk (137022 effect#1), Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), 
+Family Flags     : 103, 122
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -3596,6 +3729,7 @@ School           : Nature
 Spell Level      : 1
 Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2)
 Triggered by     : Refreshing Jade Wind (196725)
+Family Flags     : 48, 85
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : .......x .......x ........ ........   ........ ........ ........ ..x..... 
@@ -3691,6 +3825,7 @@ Spell Level      : 1
 Range            : 100 yards
 Duration         : Aura (infinite)
 Affecting spells : March of the Legion (212132 effect#1)
+Family Flags     : 120
 Attributes       : ....x... ........ ..x..... x..x.x.x   .....x.. ..x..... .x...... ........ 
                  : x....... x.....x. ...x.... ....x...   ........ ........ xx..x... ........ 
                  : x......x ........ ....xx.. ........   ...x.... ........ .xx..... ........ 
@@ -3726,6 +3861,7 @@ Class            : Monk
 School           : Nature
 Range            : 50000 yards
 Affecting spells : Extend Life (185158 effect#2)
+Family Flags     : 77, 121
 Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... ........ ........ 
                  : ..x..... ......x. ........ ........   ........ ........ ........ ......x. 
                  : .......x .......x ........ ........   ...x.... ........ .xx..... ........ 
@@ -3746,6 +3882,7 @@ Spell Level      : 56
 Range            : 5 yards
 Affecting spells : Thunder Focus Tea (116680 effect#1), Monk (137022 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Item - Monk T19 Windwalker 2P Bonus (211427 effect#1), Pressure Point (247255 effect#1), Rising Sun Kick (262840 effect#1), Swift Roundhouse (278710 effect#1), The Wind Blows (281452 effect#1), 
 Triggered by     : Rising Sun Kick (107428)
+Family Flags     : 39, 103
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3766,6 +3903,7 @@ Spell Level      : 40
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 12 seconds
+Family Flags     : 107
 Attributes       : ........ ........ x....... ........   ..x...x. ..x..... ........ ....xx.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -3791,6 +3929,7 @@ Stacks           : 1 maximum
 Proc Chance      : 101%
 Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Item - Monk T19 Mistweaver 4P Bonus (211423 effect#2), Upwelling (274963 effect#2), Font of Life (279875 effect#2)
 Triggered by     : Essence Font (191837)
+Family Flags     : 48, 108
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -3813,6 +3952,7 @@ School           : Nature
 Spell Level      : 4
 Range            : 100 yards
 Affecting spells : Mastery: Gust of Mists (117907 effect#3), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), 
+Family Flags     : 48, 110
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3878,6 +4018,7 @@ Proc Flags       : ...x.x.. ........ ........ ........
                  : White Melee Taken, Yellow Melee Taken
 Affecting spells : Mastery: Elusive Brawler (117906 effect#1)
 Triggered by     : Mastery: Elusive Brawler (117906)
+Family Flags     : 109
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3989,6 +4130,7 @@ Range            : 100 yards
 Duration         : 8 seconds
 Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), 
 Triggered by     : Eye of the Tiger (196607)
+Family Flags     : 44, 103
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .....x.. ........ ........ ........ 
@@ -4032,6 +4174,7 @@ GCD              : 1.5 seconds
 Duration         : 9 seconds
 Cooldown         : 9 seconds
 Affecting spells : Monk (137022 effect#1), Brewmaster Monk (137023 effect#9), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#14)
+Family Flags     : 76
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
@@ -4081,6 +4224,7 @@ School           : Physical
 Range            : 100 yards
 Duration         : 15 seconds
 Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), 
+Family Flags     : 103
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4166,15 +4310,19 @@ Effects          :
 #2 (id=344133)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 8 | Scaled Value: 8 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Light Stagger (124275)
+                   Family Flags: 86
 #3 (id=344134)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 12 | Scaled Value: 12 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Moderate Stagger (124274)
+                   Family Flags: 91
 #4 (id=344135)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Heavy Stagger (124273)
+                   Family Flags: 93
 #5 (id=726763)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Stagger (115069)
+                   Family Flags: 34
 Description      : Stagger is $s1% more effective at delaying damage.
 
 You gain up to $s4% Haste based on your current level of Stagger.
@@ -4212,9 +4360,11 @@ Effects          :
 #1 (id=288843)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Strike (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673)
+                   Family Flags: 103
 #2 (id=479821)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Strike (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673)
+                   Family Flags: 103
 #3 (id=479888)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 Description      : $@spelldesc196740
@@ -4230,6 +4380,7 @@ Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Heal
 Affecting spells : Extend Life (185158 effect#2), Lunar Glide (217153 effect#1)
+Family Flags     : 59
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4241,6 +4392,7 @@ Effects          :
 #1 (id=289621)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
                    Affected Spells: Vivify (116670)
+                   Family Flags: 26
 Description      : $@spelldesc115151
 Tooltip          : Your next Vivify causes $s1% increased healing.
 
@@ -4259,9 +4411,11 @@ Effects          :
 #1 (id=290809)   : Apply Aura (6) | Add Flat Modifier (107): Spell Max Stacks (37)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 37 | Target: Self (1)
                    Affected Spells: Thunder Focus Tea (116680)
+                   Family Flags: 0, 31
 #2 (id=290810)   : Apply Aura (6) | Add Flat Modifier (107): Unknown(31)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 31 | Target: Self (1)
                    Affected Spells: Thunder Focus Tea (116680)
+                   Family Flags: 0, 31
 Description      : Thunder Focus Tea now empowers your next ${$m1+1} spells.
 
 Name             : Mist Wrap (id=197900) [Spell Family (53), Passive] 
@@ -4279,9 +4433,11 @@ Effects          :
 #1 (id=290815)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Enveloping Mist (124682)
+                   Family Flags: 79
 #2 (id=290816)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 1000 | Scaled Value: 1000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Enveloping Mist (124682)
+                   Family Flags: 79
 Description      : Increases Enveloping Mist's duration by ${$m2/1000} sec and its healing bonus by $s1%.
 
 Name             : Mana Tea (id=197908) [Spell Family (53)] 
@@ -4290,6 +4446,7 @@ School           : Physical
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 90 seconds
+Family Flags     : 53
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4346,6 +4503,7 @@ Effects          :
 #1 (id=290838)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -25 | Scaled Value: -25 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Vivify (116670)
+                   Family Flags: 26
 Description      : $@spelldesc197915
 Tooltip          : Cost of your next Vivify reduced by $s1%.
 
@@ -4369,6 +4527,7 @@ Effects          :
 #1 (id=290846)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -25 | Scaled Value: -25 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Enveloping Mist (124682)
+                   Family Flags: 79
 Description      : $@spelldesc197915
 Tooltip          : Cost of your next Enveloping Mist reduced by $s1%.
 
@@ -4379,6 +4538,7 @@ Spell Level      : 10
 Range            : 60 yards
 Duration         : 30 seconds
 Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), 
+Family Flags     : 48, 112
 Attributes       : ........ ........ x....... ........   ..x...x. ........ ........ ..x..x.. 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..x.. ........ ........ 
@@ -4421,6 +4581,7 @@ School           : Nature
 Spell Level      : 1
 Range            : 100 yards
 Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), 
+Family Flags     : 48, 115
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4445,6 +4606,7 @@ GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 30 seconds
 Affecting spells : Brewmaster Monk (137023 effect#7), Windwalker Monk (137025 effect#14), Storm, Earth, and Fire (137639 effect#1), Extend Life (185158 effect#2)
+Family Flags     : 38
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4616,6 +4778,7 @@ GCD              : 1.5 seconds
 Cooldown         : 3 seconds
 Proc Chance      : 101%
 Affecting spells : Blackout Kick! (116768 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Blackout Kick (261916 effect#1), Blackout Kick (261917 effect#1), Elusive Footwork (278571 effect#3), The Wind Blows (281452 effect#1), 
+Family Flags     : 4, 67, 103
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4648,6 +4811,7 @@ GCD              : 0.5 seconds
 Duration         : 20 seconds
 Cooldown         : 1 seconds
 Affecting spells : Extend Life (185158 effect#2)
+Family Flags     : 24
 Attributes       : ........ ........ x....... ........   ..x...x. ........ ........ ..x..x.. 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..x.. ........ ...x.... 
@@ -4662,6 +4826,7 @@ Effects          :
 #2 (id=352117)   : Apply Aura (6) | Cast while Moving (Whitelist) (330)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Enveloping Mist (124682), Surging Mist (227344)
+                   Family Flags: 25, 79
 Description      : Heals the target for $o1 over $d.
 
 While channeling, Effuse and Enveloping Mist are instant cast, and will heal the soothed target without breaking the Soothing Mist channel.
@@ -4743,6 +4908,7 @@ Spell Level      : 66
 Range            : 100 yards
 Cast Time        : 10 seconds
 GCD              : 1.5 seconds
+Family Flags     : 46
 Attributes       : ........ ........ ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ....x... ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -4777,6 +4943,7 @@ Effects          :
 #2 (id=370575)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
                    Affected Spells: Touch of Death (115080)
+                   Family Flags: 40
 Description      : Touch of Death deals $s2% increased damage and can be used a second time within $213114d before its cooldown is triggered.
 
 Name             : Hidden Master's Forbidden Touch (id=213114) [Spell Family (53)] 
@@ -4795,6 +4962,7 @@ Effects          :
 #1 (id=316122)   : Apply Aura (6) | Ignore Spell Cooldown (383)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Touch of Death (115080)
+                   Family Flags: 40
 Description      : $@spelldesc213112
 Tooltip          : You may cast Touch of Death again before the cooldown is triggered.
 
@@ -4845,6 +5013,7 @@ School           : Physical
 Spell Level      : 28
 Duration         : 7 seconds
 Affecting spells : Eluding Movements (184906 effect#2), Item - Monk T19 Brewmaster 2P Bonus (211415 effect#1), 
+Family Flags     : 53, 111
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4856,6 +5025,7 @@ Effects          :
 #1 (id=320348)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
                    Base Value: 250 | Scaled Value: 250 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Stagger (115069)
+                   Family Flags: 34
 #2 (id=320349)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 4 | Target: Self (1)
 #3 (id=726759)   : Dummy (3)
@@ -4911,6 +5081,7 @@ GCD              : 1.5 seconds
 Charges          : 1 (8 seconds cooldown)
 Category         : 1511
 Affecting spells : Brewmaster Monk (137023 effect#14), Windwalker Monk (137025 effect#14)
+Family Flags     : 22
 Attributes       : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4965,6 +5136,7 @@ Effects          :
 #1 (id=328547)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Spinning Crane Kick (107270)
+                   Family Flags: 8
 #2 (id=328548)   : Apply Aura (6) | Unknown(408)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 101546 | Target: Self (1)
 Description      : $@spelldesc101546
@@ -5018,6 +5190,7 @@ Duration         : 6 seconds
 Stacks           : 2 maximum
 Proc Chance      : 101%
 Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Soothing Mist (209525 effect#2)
+Family Flags     : 25, 48
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5031,6 +5204,7 @@ Effects          :
 #2 (id=731442)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 50 | Scaled Value: 50 | Target: Friend (21)
                    Affected Spells: Surging Mist (227344)
+                   Family Flags: 25
 Description      : Heals the target for $s1 and increases the healing they take from Surging Mist by $s2% for $d.  Stacks up to $u times.
 Tooltip          : Increases healing received by the Monk's Surging Mist by $w2%.
 
@@ -5091,9 +5265,11 @@ Effects          :
 #1 (id=344191)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780)
+                   Family Flags: 10
 #2 (id=344192)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: -3000 | Scaled Value: -3000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Breath of Fire (115181)
+                   Family Flags: 19
 #3 (id=344193)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 #4 (id=344194)   : Apply Aura (6) | Dummy (4)
@@ -5107,6 +5283,7 @@ School           : Physical
 Spell Level      : 3
 Range            : 5 yards
 Affecting spells : Blackout Kick! (116768 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Blackout Kick (261916 effect#1), Blackout Kick (261917 effect#1), Elusive Footwork (278571 effect#3), The Wind Blows (281452 effect#1), 
+Family Flags     : 4, 103
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5145,6 +5322,7 @@ Effects          :
 #1 (id=349339)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
                    Affected Spells: Vivify (116670)
+                   Family Flags: 26
 Description      : Vivify healing is increased by $s1%.
 
 Name             : Enveloping Mist (rank=Rank 2) (id=231605) [Spell Family (53), Passive] 
@@ -5163,6 +5341,7 @@ Effects          :
 #1 (id=349343)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Enveloping Mist (124682)
+                   Family Flags: 79
 Description      : Enveloping Mist increases healing received from your other spells by $s1%.
 
 Name             : Storm, Earth, and Fire (rank=Rank 2) (id=231627) [Spell Family (53), Passive] 
@@ -5217,9 +5396,11 @@ Effects          :
 #1 (id=349815)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: -9000 | Scaled Value: -9000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Thunder Focus Tea (116680)
+                   Family Flags: 31
 #2 (id=349821)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Thunder Focus Tea (116680)
+                   Family Flags: 31
 Description      : Thunder Focus Tea can now additionally make your next Vivify have no mana cost, or reduce the cooldown of your next Rising Sun Kick by ${$s1/-1000} sec.
 
 Name             : Master of Combinations (id=238095) [Spell Family (53), Passive] 
@@ -5364,6 +5545,7 @@ School           : Physical
 Spell Level      : 55
 Duration         : 15 seconds
 Cooldown         : 90 seconds
+Family Flags     : 52, 53
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5612,6 +5794,7 @@ School           : Nature
 Spell Level      : 1
 Range            : 100 yards
 Affecting spells : Brewmaster Monk (137023 effect#7), Windwalker Monk (137025 effect#14), Storm, Earth, and Fire (137639 effect#1), Extend Life (185158 effect#2)
+Family Flags     : 38
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ ........ ........ ......x. 
                  : .......x .......x ........ ........   ...x.... ........ .xx..... ........ 
@@ -5639,6 +5822,7 @@ Proc Chance      : 100%
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
 Affecting spells : Monk (137022 effect#1), Brewmaster Monk (137023 effect#6), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#6), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1)
+Family Flags     : 5, 76
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..x.. ........ ........ 
@@ -5722,6 +5906,7 @@ Effects          :
 #1 (id=488020)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
                    Base Value: -1 | Scaled Value: -1 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Blackout Strike (205523), Blackout Kick (228649)
+                   Family Flags: 4
 Description      : Blackout Kick costs $s1 fewer Chi.
 
 Name             : Blackout Kick (rank=Rank 3) (id=261917) [Spell Family (53), Passive] 
@@ -5740,6 +5925,7 @@ Effects          :
 #1 (id=488021)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
                    Base Value: -1 | Scaled Value: -1 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Blackout Strike (205523), Blackout Kick (228649)
+                   Family Flags: 4
 Description      : Blackout Kick costs $s1 fewer Chi.
 
 Name             : Fist of the White Tiger (id=261947) [Spell Family (53)] 
@@ -5750,6 +5936,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 30 seconds
 Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (248101 effect#1), The Wind Blows (281452 effect#1), 
+Family Flags     : 103, 118
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ x....... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5775,6 +5962,7 @@ School           : Physical
 Range            : 5 yards
 Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (248101 effect#1), The Wind Blows (281452 effect#1), 
 Triggered by     : Fist of the White Tiger (261947)
+Family Flags     : 103, 118
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5822,6 +6010,7 @@ Effects          :
 #1 (id=624336)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 70 | Scaled Value: 70 | Target: Self (1)
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099)
+                   Family Flags: 39
 Description      : Rising Sun Kick deals $s1% increased damage.
 
 
@@ -5941,9 +6130,11 @@ Effects          :
 #1 (id=707705)   : Apply Aura (6) | Add Flat Modifier (107): Spell Radius (6)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 6 | Target: Self (1)
                    Affected Spells: Leg Sweep (119381)
+                   Family Flags: 41
 #2 (id=709600)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: -10000 | Scaled Value: -10000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Leg Sweep (119381)
+                   Family Flags: 41
 Description      : Increases the range of Leg Sweep by $s1 yds and reduces its cooldown by ${$s2/-1000} sec.
 
 Name             : Overwhelming Power (id=266180) [Scaling Spell (-7), Passive] 
@@ -6560,6 +6751,7 @@ Effects          :
 #2 (id=723911)   : Apply Aura (6) | Add Flat Modifier (107): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 81.08897 (coefficient=1.042945) | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Breath of Fire (123725)
+                   Family Flags: 125
                    Hotfixed: Coefficient (0.128617 -> 1.04295)
 Description      : Breath of Fire deals ${$s2*($123725d/$123725t1)} additional damage over its duration, and has a chance to summon a Healing Sphere each time it deals damage.
 
@@ -6769,6 +6961,7 @@ School           : Nature
 Spell Level      : 12
 Range            : 40 yards
 Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), 
+Family Flags     : 48
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6846,6 +7039,7 @@ School           : Nature
 Spell Level      : 1
 Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), 
 Triggered by     : Rising Mist (274909)
+Family Flags     : 48
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6879,6 +7073,7 @@ Effects          :
 #2 (id=727677)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 4000 | Scaled Value: 4000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Essence Font (191840)
+                   Family Flags: 108
 Description      : For every $s1 sec Essence Font spends off cooldown, your next Essence Font may be channeled for 1 additional second.
 
 The duration of Essence Font's heal over time is increased by ${$s2/1000} sec.
@@ -7024,6 +7219,7 @@ Effects          :
 #3 (id=736014)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 333.8957 (coefficient=4.294478) | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Blackout Strike (205523), Blackout Kick (228649)
+                   Family Flags: 4
                    Hotfixed: Coefficient (2.2 -> 4.29448)
 Description      : Blackout Strike deals an additional $s3 damage. Blackout Strike critical hits grant an additional $m2 $Lstack:stacks; of Elusive Brawler.
 
@@ -7048,6 +7244,7 @@ Effects          :
 #3 (id=736011)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 343.4356 (coefficient=4.417178) | Target: Self (1)
                    Affected Spells: Vivify (116670)
+                   Family Flags: 26
                    Hotfixed: Coefficient (1.1 -> 4.41718)
 Description      : Your Vivify heals for an additional $s3. Vivify critical heals reduce the cooldown of your Revival by ${$s2/1000}.1 sec.
 
@@ -7086,6 +7283,7 @@ Effects          :
 #1 (id=734386)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 6220 (coefficient=20) | Target: Self (1)
                    Affected Spells: Touch of Death (115080)
+                   Family Flags: 40
 #2 (id=734387)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
 Description      : When you Combo Strike, the cooldown of Touch of Death is reduced by ${$s2/100}.1 sec.
@@ -7134,6 +7332,7 @@ Effects          :
 #1 (id=734581)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099)
+                   Family Flags: 39
 #2 (id=734582)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 277669
 Description      : $@spelldesc277669
@@ -7158,6 +7357,7 @@ Effects          :
 #2 (id=736487)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 166.9478 (coefficient=2.147239) | Target: Self (1)
                    Affected Spells: Essence Font (191840)
+                   Family Flags: 108
                    Hotfixed: Coefficient (0.34 -> 2.14724)
 Description      : Your Essence Font's initial heal is increased by $s2 and has a chance to reduce the cooldown of Thunder Focus Tea by $s1 sec.
 
@@ -7202,6 +7402,7 @@ Effects          :
 #4 (id=736552)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 46.65 (coefficient=0.15) | Target: Self (1)
                    Affected Spells: Fists of Fury (117418)
+                   Family Flags: 20
 Description      : When Fists of Fury deals damage, it has a $s2% chance to refund $s3 Chi, and it deals $s4 additional damage.
 
 Name             : Earthlink (id=279926) [Scaling Spell (-1), Passive] 
@@ -7435,6 +7636,7 @@ Effects          :
 #1 (id=737585)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Touch of Karma (122470)
+                   Family Flags: 73
 Description      : Touch of Karma can now redirect an additional $s1% of your maximum health.
 
 Name             : Spiritual Focus (id=280197) [Spell Family (53), Passive, Hidden] 
