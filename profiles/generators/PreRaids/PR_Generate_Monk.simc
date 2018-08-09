@@ -20,7 +20,7 @@ finger1=murky_cerulean_signet,id=158318,bonus_id=4779/1512/4786,enchant=pact_of_
 finger2=seal_of_the_city_watch,id=162542,bonus_id=4779/1512/4786,enchant=pact_of_mastery
 trinket1=lustrous_golden_plumage,id=159617,bonus_id=4779/1512/4786
 trinket2=azerokks_resonating_heart,id=159612,bonus_id=4779/1512/4786
-main_hand=twinstrike_polearm,id=158370,bonus_id=4779/1512/4786,enchant=galeforce_striking
+main_hand=twinstrike_polearm,id=158370,bonus_id=4779/1512/4786,enchant=versatile_navigation
 
 save=PR_Monk_Brewmaster.simc
 
@@ -47,7 +47,7 @@ finger1=lord_waycrests_signet,id=158362,bonus_id=4779/1512/4786,enchant=pact_of_
 finger2=thornwoven_band,id=162548,bonus_id=4779/1512/4786,enchant=pact_of_mastery
 trinket1=deadeye_spyglass,id=159623,bonus_id=4779/1512/4786
 trinket2=lustrous_golden_plumage,id=159617,bonus_id=4779/1512/4786
-main_hand=bilestained_crawg_tusks,id=159653,bonus_id=4779/1512/4786,enchant=galeforce_striking
+main_hand=bilestained_crawg_tusks,id=159653,bonus_id=4779/1512/4786,enchant=deadly_navigation
 off_hand=bilestained_crawg_tusks,id=159653,bonus_id=4779/1512/4786,enchant=masterful_navigation
 
 save=PR_Monk_Windwalker.simc

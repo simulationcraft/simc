@@ -71,7 +71,7 @@ finger1=murky_cerulean_signet,id=158318,bonus_id=4779/1512/4786,enchant=pact_of_
 finger2=seal_of_the_city_watch,id=162542,bonus_id=4779/1512/4786,enchant=pact_of_mastery
 trinket1=lustrous_golden_plumage,id=159617,bonus_id=4779/1512/4786
 trinket2=azerokks_resonating_heart,id=159612,bonus_id=4779/1512/4786
-main_hand=twinstrike_polearm,id=158370,bonus_id=4779/1512/4786,enchant=galeforce_striking
+main_hand=twinstrike_polearm,id=158370,bonus_id=4779/1512/4786,enchant=versatile_navigation
 
 # Gear Summary
 # gear_ilvl=341.47

@@ -80,7 +80,7 @@ finger1=ritual_binders_ring,id=159459,bonus_id=4779/1512/4786,enchant=pact_of_ha
 finger2=seal_of_the_regal_loa,id=159458,bonus_id=4779/1512/4786,enchant=pact_of_haste
 trinket1=galecallers_boon,id=159614,bonus_id=4779/1512/4786
 trinket2=lustrous_golden_plumage,id=159617,bonus_id=4779/1512/4786
-main_hand=warglaive_of_the_sand_queen,id=160110,bonus_id=4779/1512/4786,enchant=galeforce_striking
+main_hand=warglaive_of_the_sand_queen,id=160110,bonus_id=4779/1512/4786,enchant=versatile_navigation
 off_hand=warglaive_of_the_sand_queen,id=160110,bonus_id=4779/1512/4786,enchant=quick_navigation
 
 # Gear Summary

@@ -49,7 +49,7 @@ finger1=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant
 finger2=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
 trinket1=galecallers_boon,id=159614,bonus_id=4779/1512/4786
 trinket2=deadeye_spyglass,id=159623,bonus_id=4779/1512/4786
-main_hand=twinstrike_polearm,id=158370,bonus_id=4779/1512/4786,enchant=galeforce_striking
+main_hand=twinstrike_polearm,id=158370,bonus_id=4779/1512/4786,enchant=quick_navigation
 
 save=PR_Druid_Feral.simc
 
@@ -76,6 +76,5 @@ finger1=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant
 finger2=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
 trinket1=galecallers_boon,id=159614,bonus_id=4779/1512/4786
 trinket2=deadeye_spyglass,id=159623,bonus_id=4779/1512/4786
-main_hand=twinstrike_polearm,id=158370,bonus_id=4779/1512/4786,enchant=galeforce_striking
-
+main_hand=twinstrike_polearm,id=158370,bonus_id=4779/1512/4786,enchant=quick_navigation
 save=PR_Druid_Guardian.simc

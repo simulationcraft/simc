@@ -20,7 +20,7 @@ finger1=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant
 finger2=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
 trinket1=galecallers_boon,id=159614,bonus_id=4779/1512/4786
 trinket2=deadeye_spyglass,id=159623,bonus_id=4779/1512/4786
-main_hand=howlis_crystal_shiv,id=159131,bonus_id=4779/1512/4786,enchant=galeforce_striking
+main_hand=howlis_crystal_shiv,id=159131,bonus_id=4779/1512/4786,enchant=deadly_navigation
 off_hand=howlis_crystal_shiv,id=159131,bonus_id=4779/1512/4786,enchant=quick_navigation
 
 save=PR_Rogue_Assassination.simc
@@ -47,7 +47,7 @@ finger1=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant
 finger2=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
 trinket1=galecallers_boon,id=159614,bonus_id=4779/1512/4786
 trinket2=deadeye_spyglass,id=159623,bonus_id=4779/1512/4786
-main_hand=howlis_crystal_shiv,id=159131,bonus_id=4779/1512/4786,enchant=galeforce_striking
+main_hand=howlis_crystal_shiv,id=159131,bonus_id=4779/1512/4786,enchant=deadly_navigation
 off_hand=howlis_crystal_shiv,id=159131,bonus_id=4779/1512/4786,enchant=quick_navigation
 
 save=PR_Rogue_Assassination_Exsg.simc
@@ -74,7 +74,7 @@ finger1=ritual_binders_ring,id=159459,bonus_id=4779/1512/4786,enchant=pact_of_ha
 finger2=seal_of_the_regal_loa,id=159458,bonus_id=4779/1512/4786,enchant=pact_of_haste
 trinket1=galecallers_boon,id=159614,bonus_id=4779/1512/4786
 trinket2=lustrous_golden_plumage,id=159617,bonus_id=4779/1512/4786
-main_hand=soulcharmers_bludgeon,id=159661,bonus_id=4779/1512/4786,enchant=galeforce_striking
+main_hand=soulcharmers_bludgeon,id=159661,bonus_id=4779/1512/4786,enchant=versatile_navigation
 off_hand=soulcharmers_bludgeon,id=159661,bonus_id=4779/1512/4786,enchant=quick_navigation
 
 save=PR_Rogue_Outlaw.simc
@@ -101,7 +101,7 @@ finger1=ritual_binders_ring,id=159459,bonus_id=4779/1512/4786,enchant=pact_of_ha
 finger2=seal_of_the_regal_loa,id=159458,bonus_id=4779/1512/4786,enchant=pact_of_haste
 trinket1=galecallers_boon,id=159614,bonus_id=4779/1512/4786
 trinket2=lustrous_golden_plumage,id=159617,bonus_id=4779/1512/4786
-main_hand=soulcharmers_bludgeon,id=159661,bonus_id=4779/1512/4786,enchant=galeforce_striking
+main_hand=soulcharmers_bludgeon,id=159661,bonus_id=4779/1512/4786,enchant=versatile_navigation
 off_hand=soulcharmers_bludgeon,id=159661,bonus_id=4779/1512/4786,enchant=quick_navigation
 
 save=PR_Rogue_Outlaw_SnD.simc
@@ -128,7 +128,7 @@ finger1=murky_cerulean_signet,id=158318,bonus_id=4779/1512/4786,enchant=pact_of_
 finger2=seal_of_the_city_watch,id=162542,bonus_id=4779/1512/4786,enchant=pact_of_mastery
 trinket1=deadeye_spyglass,id=159623,bonus_id=4779/1512/4786
 trinket2=azerokks_resonating_heart,id=159612,bonus_id=4779/1512/4786
-main_hand=heartpiercing_stalactite,id=159134,bonus_id=4779/1512/4786,enchant=galeforce_striking
+main_hand=heartpiercing_stalactite,id=159134,bonus_id=4779/1512/4786,enchant=quick_navigation
 off_hand=heartpiercing_stalactite,id=159134,bonus_id=4779/1512/4786,enchant=masterful_navigation
 
 save=PR_Rogue_Subtlety.simc

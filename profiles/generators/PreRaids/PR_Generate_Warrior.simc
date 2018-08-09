@@ -21,7 +21,7 @@ finger2=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant
 trinket1=briny_barnacle,id=159619,bonus_id=4779/1512/4786
 trinket2=rezans_gleaming_eye,id=158712,bonus_id=4779/1512/4786
 main_hand=getiikku_cut_of_death,id=159644,bonus_id=4779/1512/4786,enchant=quick_navigation
-off_hand=getiikku_cut_of_death,id=159644,bonus_id=4779/1512/4786,enchant=galeforce_striking
+off_hand=getiikku_cut_of_death,id=159644,bonus_id=4779/1512/4786,enchant=masterful_navigation
 
 save=PR_Warrior_Fury.simc
 
@@ -75,7 +75,7 @@ save=PR_Warrior_Arms.simc
 #finger2=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
 #trinket1=gorecrusted_butchers_block,id=159616,bonus_id=4779/1512/4786
 #trinket2=rezans_gleaming_eye,id=158712,bonus_id=4779/1512/4786
-#main_hand=adulation_enforcer,id=159632,bonus_id=4779/1512/4786,enchant=galeforce_striking
-#off_hand=disc_of_indomitable_will,id=158713,bonus_id=4779/1512/4786,enchant=quick_navigation
+#main_hand=adulation_enforcer,id=159632,bonus_id=4779/1512/4786,enchant=quick_navigation
+#off_hand=disc_of_indomitable_will,id=158713,bonus_id=4779/1512/4786
 #
 #save=PR_Warrior_Protection.simc
