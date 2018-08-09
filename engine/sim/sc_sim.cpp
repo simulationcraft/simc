@@ -1362,7 +1362,7 @@ sim_t::sim_t() :
   active_enemies( 0 ), active_allies( 0 ),
   _rng(), seed( 0 ), deterministic( 0 ), strict_work_queue( 0 ),
   average_range( true ), average_gauss( false ),
-  fight_style( "Patchwerk" ), add_waves( 0 ), overrides( overrides_t() ),
+  fight_style(), add_waves( 0 ), overrides( overrides_t() ),
   default_aura_delay( timespan_t::from_millis( 30 ) ),
   default_aura_delay_stddev( timespan_t::from_millis( 5 ) ),
   azerite_status( AZERITE_ENABLED ),
@@ -2175,6 +2175,10 @@ void sim_t::init_fight_style()
   else if ( util::str_compare_ci( fight_style, "CastingPatchwerk" ) )
   {
     raid_events_str += "/casting,cooldown=500,duration=500";
+  }
+  else
+  {
+    fight_style = "Patchwerk";
   }
 }
 
