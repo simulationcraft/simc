@@ -6691,8 +6691,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=725028)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 261.8696 (coefficient=3.368098) | Trigger Spell: 273419 | Target: Self (1)
-                   Hotfixed: Coefficient (0.33 -> 3.3681)
+                   Base Value: 0 | Scaled Value: 132.1273 (coefficient=1.699387) | Trigger Spell: 273419 | Target: Self (1)
+                   Hotfixed: Coefficient (3.3681 -> 1.69939)
 Description      : Nightblade increases the damage of your next Eviscerate within 8 sec by $s1. 
 
 Name             : Storm of Steel (id=273452) [Scaling Spell (-8), Spell Family (8), Passive] 

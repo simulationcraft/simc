@@ -199,6 +199,7 @@ Effects          :
 Description      : Increases Agility by $s1.
 
 Name             : Army of the Dead (id=42650) [Spell Family (15)] 
+Hotfixed         : Attributes
 Class            : Unholy Death Knight
 School           : Shadow
 Spell Type       : None
@@ -213,9 +214,9 @@ Category Cooldown: 480 seconds
 Family Flags     : 11
 Attributes       : ........ ........ ........ ........   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ....x... ........ 
 Effects          :
@@ -7219,12 +7220,14 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=723791)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 400.0001 (coefficient=1.286174) | Trigger Spell: 272719 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 403.5878 (coefficient=1.29771) | Trigger Spell: 272719 | Target: Self (1)
+                   Hotfixed: Coefficient (1.28617 -> 1.29771)
 #2 (id=723792)   : Dummy (3)
                    Base Value: 2000 | Scaled Value: 2000
 Description      : When Pillar of Frost expires, your Strength is increased by $s1 for $272723d. This effect lasts ${$s2/1000} sec longer for each Obliterate and Frostscythe critical strike during Pillar of Frost.
 
-Name             : Festering Doom (id=272738) [Scaling Spell (-1), Spell Family (15), Passive] 
+Name             : Festering Doom (id=272738) [Scaling Spell (-8), Spell Family (15), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -7240,7 +7243,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=723827)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 622 (coefficient=2) | Trigger Spell: 272739 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 883.3926 (coefficient=11.36196) | Trigger Spell: 272739 | Target: Self (1)
+                   Hotfixed: Coefficient (2 -> 11.362)
 Description      : Death Coil causes your next Festering Strike to deal an additional $s1 damage.
 Tooltip          : Death Coil causes your next Festering Strike to deal an additional $s1 damage.
 
@@ -7303,7 +7307,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724426)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 632.1137 (coefficient=2.03252) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 3208.76 (coefficient=10.31756) | Target: Self (1)
+                   Hotfixed: Coefficient (2.03252 -> 10.3176)
 Description      : When Dark Transformation expires, the unholy energy in your ghoul is expelled, dealing $s1 Shadow damage to all nearby enemies.
 
 Name             : Horrid Experimentation (id=273096) [Scaling Spell (-1), Spell Family (15)] 
@@ -7578,7 +7583,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 136.84 (coefficient=0.44) | Target: Self (1)
 Description      : Death Strike heals for an additional $s1 for each remaining charge of Bone Shield.
 
-Name             : Glacial Contagion (id=274070) [Scaling Spell (-1), Spell Family (15), Passive] 
+Name             : Glacial Contagion (id=274070) [Scaling Spell (-8), Spell Family (15), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -7594,9 +7600,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=726180)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 155.5 (coefficient=0.5) | Trigger Spell: 274071 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 391.1349 (coefficient=5.030674) | Trigger Spell: 274071 | Target: Self (1)
+                   Hotfixed: Coefficient (0.5 -> 5.03067)
 #2 (id=726181)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 116.625 (coefficient=0.375) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 130.2194 (coefficient=1.674847) | Target: Self (1)
+                   Hotfixed: Coefficient (0.375 -> 1.67485)
 Description      : Your autoattacks have a chance to apply Glacial Contagion, dealing ${$s1*($274074d/$274074t1)} Frost damage over $274074d. Obliterate deals an additional $s2 damage to targets infected with Glacial Contagion.
 
 Name             : Festermight (id=274081) [Scaling Spell (-1), Spell Family (15), Passive] 
@@ -7615,7 +7623,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=726196)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 24.88 (coefficient=0.08) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 37.98461 (coefficient=0.122137) | Target: Self (1)
+                   Hotfixed: Coefficient (0.08 -> 0.122137)
 Description      : Bursting a Festering Wound grants you $s1 Strength for 20 sec, stacking. Stacking this effect does not extend its duration.
 
 Name             : Consumption (id=274156) [Spell Family (15)] 
@@ -7710,7 +7719,8 @@ Description      : Bring doom upon the enemy, dealing $sw1 Shadow damage and bur
 
 Summons an Army of the Dead ghoul for $221180d for each burst Festering Wound.
 
-Name             : Echoing Howl (id=275917) [Scaling Spell (-1), Spell Family (15), Passive] 
+Name             : Echoing Howl (id=275917) [Scaling Spell (-8), Spell Family (15), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -7726,7 +7736,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=729270)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 871.9625 (coefficient=2.803738) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 620.092 (coefficient=7.97546) | Target: Self (1)
+                   Hotfixed: Coefficient (2.80374 -> 7.97546)
 Description      : When empowered by Rime, Howling Blast causes a secondary burst of icy wind around you that deals $s1 Frost damage to nearby enemies.
 
 Name             : Echoing Howl (id=275918) [Spell Family (15)] 
@@ -7770,7 +7781,8 @@ Effects          :
                    Hotfixed: Coefficient (1.08885 -> 1.08921)
 Description      : When Vampiric Blood expires, your Leech is increased by $s1 for $275926d.
 
-Name             : Harrowing Decay (id=275929) [Scaling Spell (-1), Spell Family (15), Passive] 
+Name             : Harrowing Decay (id=275929) [Scaling Spell (-8), Spell Family (15), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -7786,7 +7798,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=729285)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 99.52 (coefficient=0.32) | Trigger Spell: 275930 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 145.4832 (coefficient=1.871166) | Trigger Spell: 275930 | Target: Self (1)
+                   Hotfixed: Coefficient (0.32 -> 1.87117)
 Description      : Death Coil infects the target with Harrowing Decay, dealing ${$s1*($275931d/$275931t1)} Shadow damage over $275931d.
 
 Name             : Harbinger of Doom (id=276023) [Spell Family (15), Passive] 
@@ -7944,7 +7957,8 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : Dancing Rune Weapon grants you $s1 Strength, and each rune spent increases its duration by ${$s2/10}.1 sec, up to a maximum of $s3 sec.
 
-Name             : Killer Frost (id=278480) [Scaling Spell (-1), Spell Family (15), Passive] 
+Name             : Killer Frost (id=278480) [Scaling Spell (-8), Spell Family (15), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -7959,12 +7973,14 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734196)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 217.7 (coefficient=0.7) | Trigger Spell: 278603 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 179.8267 (coefficient=2.312883) | Trigger Spell: 278603 | Target: Self (1)
+                   Hotfixed: Coefficient (0.7 -> 2.31288)
 #2 (id=734501)   : Dummy (3)
                    Base Value: 15 | Scaled Value: 15
 Description      : Frost Strike deals $s1 additional damage with each hit and has a $s2% chance on critical strikes to grant Killing Machine.
 
-Name             : Cankerous Wounds (id=278482) [Scaling Spell (-1), Spell Family (15), Passive] 
+Name             : Cankerous Wounds (id=278482) [Scaling Spell (-8), Spell Family (15), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -7979,11 +7995,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734199)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 622 (coefficient=2) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1430.982 (coefficient=18.40491) | Target: Self (1)
                    Affected Spells: Festering Strike (85948)
                    Family Flags: 73
+                   Hotfixed: Coefficient (2 -> 18.4049)
 #2 (id=734200)   : Dummy (3)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Hotfixed: Base Value (10 -> 20)
 Description      : Festering Strike deals $s1 additional damage and has a $s2% increased chance of applying 3 Festering Wounds.
 
 Name             : Bones of the Damned (id=278484) [Scaling Spell (-1), Spell Family (15), Passive] 
@@ -8008,7 +8026,8 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : Marrowrend has a chance to grant an extra charge of Bone Shield. Bone Shield increases your Armor by $s1. 
 
-Name             : Frozen Tempest (id=278487) [Scaling Spell (-1), Spell Family (15), Passive] 
+Name             : Frozen Tempest (id=278487) [Scaling Spell (-8), Spell Family (15), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -8025,13 +8044,15 @@ Effects          :
 #1 (id=734208)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #2 (id=734209)   : Apply Aura (6) | Add Flat Modifier (107): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 155.5 (coefficient=0.5) | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 52.46935 (coefficient=0.674847) | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Remorseless Winter (196771), Remorseless Winter (211793)
                    Family Flags: 126
+                   Hotfixed: Coefficient (0.5 -> 0.674847)
 #3 (id=735829)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 155.5 (coefficient=0.5) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 52.46935 (coefficient=0.674847) | Target: Self (1)
                    Affected Spells: Remorseless Winter (196771), Remorseless Winter (211793)
                    Family Flags: 126
+                   Hotfixed: Coefficient (0.5 -> 0.674847)
 Description      : Remorseless Winter deals an additional $s2 damage. The first time Remorseless Winter deals damage to $s1 different enemies, you gain Rime.
 
 Name             : Last Surprise (id=278489) [Scaling Spell (-8), Spell Family (15), Passive] 
@@ -8049,7 +8070,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734211)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 388.75 (coefficient=5) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 922.5061 (coefficient=11.86503) | Target: Self (1)
+                   Hotfixed: Coefficient (5 -> 11.865)
 #2 (id=734212)   : Dummy (3)
                    Base Value: 33 | Scaled Value: 33 | Target: Self (1)
 Description      : When your ghouls expire, they explode in viscera dealing $s1 Shadow damage to nearby enemies. 
