@@ -1819,6 +1819,8 @@ std::vector<std::string> player_t::get_racial_actions()
   actions.push_back( "berserking" );
   actions.push_back( "arcane_torrent" );
   actions.push_back( "lights_judgment" );
+  actions.push_back( "fireblood" );
+  actions.push_back( "ancestral_call" );
 
   return actions;
 }
