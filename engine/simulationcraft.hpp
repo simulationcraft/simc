@@ -1102,6 +1102,11 @@ struct sim_t : private sc_thread_t
     double              archimondes_hatred_reborn_damage = 1.0;
   } legion_opts;
 
+  struct bfa_opt_t
+  {
+    unsigned            jes_howler_allies = 0;
+  } bfa_opts;
+
   // Expansion specific data
   struct legion_data_t
   {

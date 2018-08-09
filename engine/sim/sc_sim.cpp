@@ -3497,6 +3497,8 @@ void sim_t::create_options()
     return true;
   } ) );
 
+  add_option( opt_uint( "bfa.jes_howler_allies", bfa_opts.jes_howler_allies, 0, 4 ) );
+
   // applies to: "lavish_suramar_feast", battle for azeroth feasts
   add_option( opt_bool( "feast_as_dps", feast_as_dps ) );
 }
