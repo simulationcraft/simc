@@ -79,6 +79,7 @@ namespace items
   void hadals_nautilus( special_effect_t& );
   void jes_howler( special_effect_t& );
   void razdunks_big_red_button( special_effect_t& );
+  void merekthas_fang( special_effect_t& );
   // 8.0.1 - Uldir Trinkets
   void frenetic_corpuscle( special_effect_t& );
   void vigilants_bloodshaper(special_effect_t& );
@@ -327,6 +328,86 @@ void items::razdunks_big_red_button( special_effect_t& effect )
 {
   effect.execute_action = create_proc_action<aoe_proc_t>( "razdunks_big_red_button", effect,
       "razdunks_big_red_button", effect.trigger() );
+}
+
+// Merektha's Fang ==========================================================
+
+void items::merekthas_fang( special_effect_t& effect )
+{
+  struct noxious_venom_dot_t : public proc_t
+  {
+    noxious_venom_dot_t( const special_effect_t& effect ) :
+      proc_t( effect, "noxious_venom", 267410 )
+    {
+      dot_max_stack = data().max_stacks();
+    }
+
+    timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
+    { return dot->tick_event->remains() + triggered_duration; }
+
+    double last_tick_factor( const dot_t*, const timespan_t&, const timespan_t& ) const override
+    { return 1.0; }
+  };
+
+  struct noxious_venom_gland_aoe_driver_t : public spell_t
+  {
+    action_t* dot;
+
+    noxious_venom_gland_aoe_driver_t( const special_effect_t& effect ) :
+      spell_t( "noxious_venom_gland_aoe_driver", effect.player ),
+      dot( create_proc_action<noxious_venom_dot_t>( "noxious_venom", effect ) )
+    {
+      aoe = -1;
+      quiet = true;
+      background = callbacks = false;
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      dot->set_target( state->target );
+      dot->execute();
+    }
+  };
+
+  struct noxious_venom_gland_t : public proc_t
+  {
+    action_t* driver;
+
+    noxious_venom_gland_t( const special_effect_t& effect ) :
+      proc_t( effect, "noxious_venom_gland", effect.driver() ),
+      driver( new noxious_venom_gland_aoe_driver_t( effect ) )
+    {
+      channeled = tick_zero = true;
+      tick_may_crit = false;
+    }
+
+    void execute() override
+    {
+      proc_t::execute();
+
+      event_t::cancel( player->readying );
+    }
+
+    void tick( dot_t* d ) override
+    {
+      proc_t::tick( d );
+
+      driver->set_target( d->target );
+      driver->execute();
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      proc_t::last_tick( d );
+
+      if ( !player->readying )
+      {
+        player->schedule_ready();
+      }
+    }
+  };
+
+  effect.execute_action = create_proc_action<noxious_venom_gland_t>( "noxious_venom_gland", effect );
 }
 
 // Dead-Eye Spyglass ========================================================
@@ -688,6 +769,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 268544, items::vial_of_storms );
   register_special_effect( 266047, items::jes_howler );
   register_special_effect( 271374, items::razdunks_big_red_button );
+  register_special_effect( 267402, items::merekthas_fang );
   register_special_effect( 268758, items::deadeye_spyglass );
   register_special_effect( 268771, items::deadeye_spyglass );
   register_special_effect( 267177, items::tiny_electromental_in_a_jar );
