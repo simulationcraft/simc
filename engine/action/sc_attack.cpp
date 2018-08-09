@@ -363,22 +363,21 @@ double melee_attack_t::glance_chance( int delta_level ) const
 
 proc_types melee_attack_t::proc_type() const
 {
-  if ( !is_aoe() )
+  if ( s_data->ok() )
   {
-    if ( special )
-      return PROC1_MELEE_ABILITY;
-    else
-      return PROC1_MELEE;
+    switch ( s_data->dmg_class() )
+    {
+      case SPELL_TYPE_NONE:   return PROC1_NONE_SPELL;
+      case SPELL_TYPE_MAGIC:  return PROC1_MAGIC_SPELL;
+      case SPELL_TYPE_MELEE:  return special ? PROC1_MELEE_ABILITY : PROC1_MELEE;
+      case SPELL_TYPE_RANGED: return special ? PROC1_RANGED_ABILITY : PROC1_RANGED;
+    }
   }
+
+  if ( special )
+    return PROC1_MELEE_ABILITY;
   else
-  {
-    // "Fake" AOE based attacks as spells
-    if ( special )
-      return PROC1_AOE_SPELL;
-    // AOE white attacks shouldn't really happen ..
-    else
-      return PROC1_MELEE;
-  }
+    return PROC1_MELEE;
 }
 
 // ==========================================================================
@@ -445,20 +444,19 @@ void ranged_attack_t::schedule_execute( action_state_t* execute_state )
 
 proc_types ranged_attack_t::proc_type() const
 {
-  if ( !is_aoe() )
+  if ( s_data->ok() )
   {
-    if ( special )
-      return PROC1_RANGED_ABILITY;
-    else
-      return PROC1_RANGED;
+    switch ( s_data->dmg_class() )
+    {
+      case SPELL_TYPE_NONE:   return PROC1_NONE_SPELL;
+      case SPELL_TYPE_MAGIC:  return PROC1_MAGIC_SPELL;
+      case SPELL_TYPE_MELEE:  return special ? PROC1_MELEE_ABILITY : PROC1_MELEE;
+      case SPELL_TYPE_RANGED: return special ? PROC1_RANGED_ABILITY : PROC1_RANGED;
+    }
   }
+
+  if ( special )
+    return PROC1_RANGED_ABILITY;
   else
-  {
-    // "Fake" AOE based attacks as spells
-    if ( special )
-      return PROC1_AOE_SPELL;
-    // AOE white attacks shouldn't really happen ..
-    else
-      return PROC1_RANGED;
-  }
+    return PROC1_RANGED;
 }

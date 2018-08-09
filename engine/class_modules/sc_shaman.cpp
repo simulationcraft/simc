@@ -4306,11 +4306,6 @@ struct chained_overload_base_t : public elemental_overload_spell_t
     }
   }
 
-  proc_types proc_type() const override
-  {
-    return PROC1_SPELL;
-  }
-
   std::vector<player_t*> check_distance_targeting( std::vector<player_t*>& tl ) const override
   {
     return __check_distance_targeting( this, tl );
@@ -4365,12 +4360,6 @@ struct chained_base_t : public shaman_spell_t
     {
       aoe += (int)player->spec.chain_lightning_2->effectN( 1 ).base_value();
     }
-  }
-
-  // Make Chain Lightning a single target spell for procs
-  proc_types proc_type() const override
-  {
-    return PROC1_SPELL;
   }
 
   double overload_chance( const action_state_t* s ) const override

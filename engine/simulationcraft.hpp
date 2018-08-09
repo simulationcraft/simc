@@ -8204,7 +8204,7 @@ void effect_callbacks_t<T_CB>::add_proc_callback( proc_types type,
     if ( pt == PROC2_LANDED &&
          ( type == PROC1_PERIODIC || type == PROC1_PERIODIC_TAKEN ||
            type == PROC1_PERIODIC_HEAL || type == PROC1_PERIODIC_HEAL_TAKEN ||
-           type == PROC1_HEAL || type == PROC1_AOE_HEAL ) )
+           type == PROC1_NONE_HEAL || type == PROC1_MAGIC_HEAL ) )
     {
       add_callback( procs[ type ][ PROC2_HIT  ], cb );
       if ( cb -> listener -> sim -> debug )

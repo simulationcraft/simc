@@ -85,14 +85,14 @@ enum proc_types
   PROC1_RANGED_TAKEN,
   PROC1_RANGED_ABILITY,
   PROC1_RANGED_ABILITY_TAKEN,
-  PROC1_AOE_HEAL,
-  PROC1_AOE_HEAL_TAKEN,
-  PROC1_AOE_SPELL,
-  PROC1_AOE_SPELL_TAKEN,
-  PROC1_HEAL,
-  PROC1_HEAL_TAKEN,
-  PROC1_SPELL,
-  PROC1_SPELL_TAKEN,
+  PROC1_NONE_HEAL,
+  PROC1_NONE_HEAL_TAKEN,
+  PROC1_NONE_SPELL,
+  PROC1_NONE_SPELL_TAKEN,
+  PROC1_MAGIC_HEAL,
+  PROC1_MAGIC_HEAL_TAKEN,
+  PROC1_MAGIC_SPELL,
+  PROC1_MAGIC_SPELL_TAKEN,
   PROC1_PERIODIC,
   PROC1_PERIODIC_TAKEN,
   PROC1_ANY_DAMAGE_TAKEN,
@@ -100,7 +100,7 @@ enum proc_types
   PROC1_MAINHAND_ATTACK,
   PROC1_OFFHAND_ATTACK,
   // Relevant blizzard flags end here
-  
+
   // We need to separate heal ticks and damage ticks for our
   // system, so define a separate cooldown for them. Registering 
   // cooldowns will automatically infer the correct type from 
@@ -161,14 +161,14 @@ enum proc_flag
   PF_RANGED_TAKEN         = 1 << PROC1_RANGED_TAKEN,
   PF_RANGED_ABILITY       = 1 << PROC1_RANGED_ABILITY,
   PF_RANGED_ABILITY_TAKEN = 1 << PROC1_RANGED_ABILITY_TAKEN,
-  PF_AOE_HEAL             = 1 << PROC1_AOE_HEAL,
-  PF_AOE_HEAL_TAKEN       = 1 << PROC1_AOE_HEAL_TAKEN,
-  PF_AOE_SPELL            = 1 << PROC1_AOE_SPELL,
-  PF_AOE_SPELL_TAKEN      = 1 << PROC1_AOE_SPELL_TAKEN,
-  PF_HEAL                 = 1 << PROC1_HEAL,
-  PF_HEAL_TAKEN           = 1 << PROC1_HEAL_TAKEN,
-  PF_SPELL                = 1 << PROC1_SPELL, // Any "negative" spell
-  PF_SPELL_TAKEN          = 1 << PROC1_SPELL_TAKEN,
+  PF_NONE_HEAL            = 1 << PROC1_NONE_HEAL,
+  PF_NONE_HEAL_TAKEN      = 1 << PROC1_NONE_HEAL_TAKEN,
+  PF_NONE_SPELL           = 1 << PROC1_NONE_SPELL,
+  PF_NONE_SPELL_TAKEN     = 1 << PROC1_NONE_SPELL_TAKEN,
+  PF_MAGIC_HEAL           = 1 << PROC1_MAGIC_HEAL,
+  PF_MAGIC_HEAL_TAKEN     = 1 << PROC1_MAGIC_HEAL_TAKEN,
+  PF_MAGIC_SPELL          = 1 << PROC1_MAGIC_SPELL, // Any "negative" spell
+  PF_MAGIC_SPELL_TAKEN    = 1 << PROC1_MAGIC_SPELL_TAKEN,
   PF_PERIODIC             = 1 << PROC1_PERIODIC, // Any periodic ability landed
   PF_PERIODIC_TAKEN       = 1 << PROC1_PERIODIC_TAKEN,
 
@@ -184,13 +184,13 @@ enum proc_flag
   // Helper types
   PF_ALL_DAMAGE               = PF_MELEE | PF_MELEE_ABILITY |
                                 PF_RANGED | PF_RANGED_ABILITY |
-                                PF_AOE_SPELL | PF_SPELL,
-  PF_ALL_HEAL                 = PF_AOE_HEAL | PF_HEAL,
+                                PF_NONE_SPELL | PF_MAGIC_SPELL,
+  PF_ALL_HEAL                 = PF_NONE_HEAL | PF_MAGIC_HEAL,
 
   PF_DAMAGE_TAKEN         = PF_MELEE_TAKEN | PF_MELEE_ABILITY_TAKEN |
                             PF_RANGED_TAKEN | PF_RANGED_ABILITY_TAKEN |
-                            PF_AOE_SPELL_TAKEN | PF_SPELL_TAKEN,
-  PF_ALL_HEAL_TAKEN       = PF_AOE_HEAL_TAKEN | PF_HEAL_TAKEN,
+                            PF_NONE_SPELL_TAKEN | PF_MAGIC_SPELL_TAKEN,
+  PF_ALL_HEAL_TAKEN       = PF_NONE_HEAL_TAKEN | PF_MAGIC_HEAL_TAKEN,
 };
 
 // Qualifier on what result / advanced type allows a proc trigger

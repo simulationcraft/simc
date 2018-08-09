@@ -17,13 +17,13 @@ struct proc_parse_opt_t
 
 const proc_parse_opt_t __proc_opts[] =
 {
-  { "aoespell",    PF_AOE_SPELL                                                },
-  { "spell",       PF_SPELL | PF_PERIODIC                                      },
-  { "directspell", PF_SPELL                                                    },
+  { "genericpell", PF_NONE_SPELL                                               },
+  { "spell",       PF_MAGIC_SPELL | PF_PERIODIC                                },
+  { "directspell", PF_MAGIC_SPELL                                              },
   { "periodic",    PF_PERIODIC                                                 },
-  { "aoeheal",     PF_AOE_HEAL                                                 },
-  { "heal",        PF_HEAL | PF_PERIODIC                                       },
-  { "directheal",  PF_HEAL                                                     },
+  { "genericheal", PF_NONE_HEAL                                                },
+  { "heal",        PF_MAGIC_HEAL | PF_PERIODIC                                 },
+  { "directheal",  PF_MAGIC_HEAL                                               },
   { "attack",      PF_MELEE | PF_MELEE_ABILITY | PF_RANGED | PF_RANGED_ABILITY },
   { "wattack",     PF_MELEE | PF_RANGED                                        },
   { "sattack",     PF_MELEE_ABILITY | PF_RANGED_ABILITY                        },

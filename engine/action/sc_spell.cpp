@@ -94,23 +94,26 @@ void spell_base_t::schedule_execute( action_state_t* execute_state )
 
 proc_types spell_base_t::proc_type() const
 {
-  if ( ! is_aoe() )
+  bool is_heal = ( type == ACTION_HEAL || type == ACTION_ABSORB );
+
+  if ( s_data->ok() )
   {
-    if ( type == ACTION_SPELL )
-      return PROC1_SPELL;
-    // Only allow non-harmful abilities with "an amount" to count as heals
-    else if ( ( type == ACTION_HEAL || type == ACTION_ABSORB ) && has_amount_result() )
-      return PROC1_HEAL;
-  }
-  else
-  {
-    if ( type == ACTION_SPELL )
-      return PROC1_AOE_SPELL;
-    else if ( ( type == ACTION_HEAL || type == ACTION_ABSORB ) && has_amount_result() )
-      return PROC1_AOE_HEAL;
+    switch ( s_data->dmg_class() )
+    {
+      case SPELL_TYPE_NONE:   return is_heal ? PROC1_NONE_HEAL : PROC1_NONE_SPELL;
+      case SPELL_TYPE_MAGIC:  return is_heal ? PROC1_MAGIC_HEAL : PROC1_MAGIC_SPELL;
+      case SPELL_TYPE_MELEE:  return PROC1_MELEE_ABILITY;
+      case SPELL_TYPE_RANGED: return PROC1_RANGED_ABILITY;
+    }
   }
 
-  return PROC1_INVALID;
+  if ( type == ACTION_SPELL )
+    return PROC1_MAGIC_SPELL;
+  // Only allow non-harmful abilities with "an amount" to count as heals
+  else if ( is_heal && has_amount_result() )
+    return PROC1_MAGIC_HEAL;
+
+  return PROC1_NONE_SPELL;
 }
 
 // ==========================================================================

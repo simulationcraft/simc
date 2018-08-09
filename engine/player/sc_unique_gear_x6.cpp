@@ -1152,7 +1152,7 @@ void item::tarnished_sentinel_medallion( special_effect_t& effect )
   secondary -> type = SPECIAL_EFFECT_EQUIP;
   secondary -> source = SPECIAL_EFFECT_SOURCE_ITEM;
   // Spell data does not flag AOE spells as being able to proc it
-  secondary -> proc_flags_ = PF_RANGED_ABILITY | PF_RANGED | PF_SPELL | PF_AOE_SPELL | PF_PERIODIC;
+  secondary -> proc_flags_ = PF_RANGED_ABILITY | PF_RANGED | PF_MAGIC_SPELL | PF_NONE_SPELL | PF_PERIODIC;
   secondary -> proc_flags2_ = PF2_ALL_HIT;
   secondary -> item = effect.item;
   secondary -> spell_id = effect.spell_id;
@@ -1847,7 +1847,7 @@ struct norgannons_command_t : public dbc_proc_callback_t
 
 void item::norgannons_prowess( special_effect_t& effect )
 {
-  effect.proc_flags_ = effect.driver() -> proc_flags() | PF_AOE_SPELL;
+  effect.proc_flags_ = effect.driver() -> proc_flags() | PF_NONE_SPELL;
 
   // Pre-create the base trinket buff; we will use it as the "mark" buff for the pantheon state
   // system
@@ -1860,7 +1860,7 @@ void item::norgannons_prowess( special_effect_t& effect )
   secondary -> source = SPECIAL_EFFECT_SOURCE_ITEM;
   secondary -> type = SPECIAL_EFFECT_EQUIP;
   secondary -> spell_id = 256836;
-  secondary -> proc_flags_ = PF_SPELL | PF_AOE_SPELL | PF_PERIODIC;
+  secondary -> proc_flags_ = PF_MAGIC_SPELL | PF_NONE_SPELL | PF_PERIODIC;
   secondary -> proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
 
   effect.player -> special_effects.push_back( secondary );
@@ -1957,7 +1957,7 @@ struct personnel_decimator_driver_t : public dbc_proc_callback_t
 
 void item::prototype_personnel_decimator( special_effect_t& effect )
 {
-  effect.proc_flags_ = effect.driver() -> proc_flags() | PF_AOE_SPELL;
+  effect.proc_flags_ = effect.driver() -> proc_flags() | PF_NONE_SPELL;
   effect.execute_action = create_proc_action<personnel_decimator_t>( "personnel_decimator", effect );
 
   new personnel_decimator_driver_t( effect );
@@ -1990,7 +1990,7 @@ struct injector_proc_cb_t : public dbc_proc_callback_t
 
 void item::acrid_catalyst_injector( special_effect_t& effect )
 {
-  effect.proc_flags_ = effect.driver() -> proc_flags() | PF_AOE_SPELL;
+  effect.proc_flags_ = effect.driver() -> proc_flags() | PF_NONE_SPELL;
   effect.proc_flags2_ = PF2_CRIT;
 
   auto p = effect.player;
@@ -2226,7 +2226,7 @@ struct shadow_blades_buff_t : public buff_t
 
 void item::sheath_of_asara( special_effect_t& effect )
 {
-  effect.proc_flags_ = effect.driver() -> proc_flags() | PF_AOE_SPELL;
+  effect.proc_flags_ = effect.driver() -> proc_flags() | PF_NONE_SPELL;
   effect.custom_buff = new shadow_blades_buff_t( effect );
   new dbc_proc_callback_t( effect.item, effect );
 }
@@ -3932,7 +3932,7 @@ struct poisoned_dreams_t : public buff_t
     effect = new special_effect_t( p.source );
     effect -> name_str = "poisoned_dreams_damage_driver";
     effect -> proc_chance_ = 1.0;
-    effect -> proc_flags_ = PF_SPELL | PF_AOE_SPELL | PF_PERIODIC;
+    effect -> proc_flags_ = PF_MAGIC_SPELL | PF_NONE_SPELL | PF_PERIODIC;
     effect -> proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
     p.source -> special_effects.push_back( effect );
 
@@ -4022,7 +4022,7 @@ struct bough_of_corruption_constructor_t : public item_targetdata_initializer_t
 };
 void item::bough_of_corruption( special_effect_t& effect )
 {
-  effect.proc_flags_ = effect.driver() -> proc_flags()  | PF_AOE_SPELL;
+  effect.proc_flags_ = effect.driver() -> proc_flags()  | PF_NONE_SPELL;
   effect.proc_flags2_ = PF2_ALL_HIT;
 
   new bough_of_corruption_driver_t( effect );
@@ -4961,7 +4961,7 @@ void item::moonlit_prism( special_effect_t& effect )
   effect2 -> proc_chance_ = 1.0;
   effect2 -> spell_id = effect.driver() -> id();
   effect2 -> cooldown_ = timespan_t::zero();
-  effect2 -> proc_flags_ = PF_RANGED | PF_RANGED_ABILITY | PF_SPELL | PF_AOE_SPELL;
+  effect2 -> proc_flags_ = PF_RANGED | PF_RANGED_ABILITY | PF_MAGIC_SPELL | PF_NONE_SPELL;
   effect.player -> special_effects.push_back( effect2 );
 
   // Create callback; it will be enabled when the buff is active.
@@ -5458,7 +5458,7 @@ struct maddening_whispers_t : public buff_t
     effect2 -> source       = SPECIAL_EFFECT_SOURCE_ITEM;
     effect2 -> name_str     = "maddening_whispers_driver";
     effect2 -> proc_chance_ = 1.0;
-    effect2 -> proc_flags_  = PF_SPELL | PF_AOE_SPELL;
+    effect2 -> proc_flags_  = PF_MAGIC_SPELL | PF_NONE_SPELL;
     effect2 -> proc_flags2_  = PF2_ALL_HIT;
     effect.player -> special_effects.push_back( effect2 );
 
