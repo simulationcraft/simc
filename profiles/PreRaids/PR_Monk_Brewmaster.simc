@@ -38,6 +38,8 @@ actions+=/potion
 actions+=/blood_fury
 actions+=/berserking
 actions+=/lights_judgment
+actions+=/fireblood
+actions+=/ancestral_call
 actions+=/invoke_niuzao_the_black_ox,if=target.time_to_die>45
 actions+=/purifying_brew,if=stagger.heavy|(stagger.moderate&cooldown.brews.charges_fractional>=cooldown.brews.max_charges-0.5&buff.ironskin_brew.remains>=buff.ironskin_brew.duration*2.5)
 # About charge management, by default while tanking (always true on SimC) we lower it by 1 and up to 1.5 if we are tanking with less than half of Ironskin base duration up.

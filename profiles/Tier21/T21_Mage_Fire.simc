@@ -52,6 +52,8 @@ actions.combustion_phase+=/combustion
 actions.combustion_phase+=/potion
 actions.combustion_phase+=/blood_fury
 actions.combustion_phase+=/berserking
+actions.combustion_phase+=/fireblood
+actions.combustion_phase+=/ancestral_call
 actions.combustion_phase+=/use_items
 actions.combustion_phase+=/flamestrike,if=((talent.flame_patch.enabled&active_enemies>2)|active_enemies>6)&buff.hot_streak.react
 actions.combustion_phase+=/pyroblast,if=(buff.kaelthas_ultimate_ability.react|buff.pyroclasm.react)&buff.combustion.remains>execute_time

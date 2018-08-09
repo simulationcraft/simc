@@ -71,6 +71,8 @@ actions.cooldowns+=/use_items
 actions.cooldowns+=/blood_fury
 actions.cooldowns+=/berserking
 actions.cooldowns+=/lights_judgment
+actions.cooldowns+=/fireblood
+actions.cooldowns+=/ancestral_call
 
 actions.movement=blink,if=movement.distance>10
 actions.movement+=/ice_floes,if=buff.ice_floes.down
@@ -96,7 +98,7 @@ actions.single+=/blizzard,if=cast_time=0|active_enemies>1|buff.zannesu_journey.s
 # Glacial Spike is used when there's a Brain Freeze proc active (i.e. only when it can be shattered). This is a small to medium gain in most situations. Low mastery leans towards using it when available. When using Splitting Ice and having another target nearby, it's slightly better to use GS when available, as the second target doesn't benefit from shattering the main target.
 actions.single+=/glacial_spike,if=buff.brain_freeze.react|prev_gcd.1.ebonbolt|active_enemies>1&talent.splitting_ice.enabled
 actions.single+=/ice_nova
-actions.single+=/flurry,if=!buff.brain_freeze.react&buff.winters_reach.react&azerite.winters_reach.rank>=2
+actions.single+=/flurry,if=azerite.winters_reach.enabled&!buff.brain_freeze.react&buff.winters_reach.react
 actions.single+=/frostbolt
 actions.single+=/call_action_list,name=movement
 actions.single+=/ice_lance

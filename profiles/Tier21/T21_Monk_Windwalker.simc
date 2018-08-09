@@ -91,6 +91,8 @@ actions.cd+=/berserking
 # Use Arcane Torrent if you are missing at least 1 Chi and won't cap energy within 0.5 seconds
 actions.cd+=/arcane_torrent,if=chi.max-chi>=1&energy.time_to_max>=0.5
 actions.cd+=/lights_judgment
+actions.cd+=/fireblood
+actions.cd+=/ancestral_call
 # Cast ToD cycling through 2 targets if:
 # - You're using HMFT
 # - Your previous GCD was not ToD

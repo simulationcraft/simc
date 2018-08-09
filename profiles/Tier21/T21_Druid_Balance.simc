@@ -34,6 +34,8 @@ actions+=/blood_fury,if=buff.celestial_alignment.up|buff.incarnation.up
 actions+=/berserking,if=buff.celestial_alignment.up|buff.incarnation.up
 actions+=/arcane_torrent,if=buff.celestial_alignment.up|buff.incarnation.up
 actions+=/lights_judgment,if=buff.celestial_alignment.up|buff.incarnation.up
+actions+=/fireblood,if=buff.celestial_alignment.up|buff.incarnation.up
+actions+=/ancestral_call,if=buff.celestial_alignment.up|buff.incarnation.up
 actions+=/use_items
 actions+=/warrior_of_elune
 actions+=/run_action_list,name=ed,if=equipped.the_emerald_dreamcatcher&active_enemies<=1

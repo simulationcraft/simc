@@ -56,6 +56,8 @@ actions.burn+=/arcane_power
 actions.burn+=/use_items,if=buff.arcane_power.up|target.time_to_die<cooldown.arcane_power.remains
 actions.burn+=/blood_fury
 actions.burn+=/berserking
+actions.burn+=/fireblood
+actions.burn+=/ancestral_call
 actions.burn+=/presence_of_mind
 actions.burn+=/arcane_orb,if=buff.arcane_charge.stack=0|(active_enemies<3|(active_enemies<2&talent.resonance.enabled))
 actions.burn+=/arcane_blast,if=buff.presence_of_mind.up&set_bonus.tier20_2pc&talent.overpowered.enabled&buff.arcane_power.up

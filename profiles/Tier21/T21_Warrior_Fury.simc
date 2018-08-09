@@ -42,6 +42,8 @@ actions+=/blood_fury,if=buff.recklessness.up
 actions+=/berserking,if=buff.recklessness.up
 actions+=/arcane_torrent,if=rage<40&!buff.recklessness.up
 actions+=/lights_judgment,if=cooldown.recklessness.remains<3
+actions+=/fireblood,if=buff.recklessness.up
+actions+=/ancestral_call,if=buff.recklessness.up
 actions+=/run_action_list,name=single_target
 
 actions.movement=heroic_leap
