@@ -386,6 +386,23 @@ void items::merekthas_fang( special_effect_t& effect )
       proc_t::execute();
 
       event_t::cancel( player->readying );
+
+      // Interrupts auto-attacks so push them forward by the channeling time.
+      // TODO: Does this actually pause the cooldown or just let it run & insta attack potentially
+      // when channel ends?
+      if ( player->main_hand_attack && player->main_hand_attack->execute_event )
+      {
+        player->main_hand_attack->execute_event->reschedule(
+            player->main_hand_attack->execute_event->remains() +
+            composite_dot_duration( execute_state ) );
+      }
+
+      if ( player->off_hand_attack && player->off_hand_attack->execute_event )
+      {
+        player->off_hand_attack->execute_event->reschedule(
+            player->off_hand_attack->execute_event->remains() +
+            composite_dot_duration( execute_state ) );
+      }
     }
 
     void tick( dot_t* d ) override
