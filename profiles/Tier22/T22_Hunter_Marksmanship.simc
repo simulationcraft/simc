@@ -1,0 +1,100 @@
+hunter="T22_Hunter_Marksmanship"
+spec=marksmanship
+level=120
+race=lightforged_draenei
+role=attack
+position=ranged_back
+talents=2103012
+
+# Default consumables
+potion=battle_potion_of_agility
+flask=currents
+food=bountiful_captains_feast
+augmentation=battle_scarred
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/augmentation
+actions.precombat+=/food
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion
+actions.precombat+=/hunters_mark
+actions.precombat+=/double_tap,precast_time=5
+actions.precombat+=/aimed_shot,if=active_enemies<3
+actions.precombat+=/explosive_shot,if=active_enemies>2
+
+# Executed every time the actor is available.
+actions=auto_shot
+actions+=/counter_shot,if=equipped.sephuzs_secret&target.debuff.casting.react&cooldown.buff_sephuzs_secret.up&!buff.sephuzs_secret.up
+actions+=/use_items
+actions+=/call_action_list,name=cds
+actions+=/call_action_list,name=st,if=active_enemies<3
+actions+=/call_action_list,name=trickshots,if=active_enemies>2
+
+actions.cds=hunters_mark,if=debuff.hunters_mark.down
+actions.cds+=/double_tap,if=cooldown.rapid_fire.remains<gcd
+actions.cds+=/berserking,if=cooldown.trueshot.remains>30
+actions.cds+=/blood_fury,if=cooldown.trueshot.remains>30
+actions.cds+=/ancestral_call,if=cooldown.trueshot.remains>30
+actions.cds+=/fireblood,if=cooldown.trueshot.remains>30
+actions.cds+=/lights_judgment
+actions.cds+=/potion,if=(buff.trueshot.react&buff.bloodlust.react)|((consumable.prolonged_power&target.time_to_die<62)|target.time_to_die<31)
+actions.cds+=/trueshot,if=cooldown.aimed_shot.charges<1|talent.barrage.enabled&cooldown.aimed_shot.charges_fractional<1.3
+
+actions.st=explosive_shot
+actions.st+=/barrage,if=active_enemies>1
+actions.st+=/arcane_shot,if=buff.precise_shots.up&(cooldown.aimed_shot.full_recharge_time<gcd*buff.precise_shots.stack+action.aimed_shot.cast_time|buff.lethal_shots.up)
+actions.st+=/rapid_fire,if=(!talent.lethal_shots.enabled|buff.lethal_shots.up)&azerite.focused_fire.enabled|azerite.in_the_rhythm.enabled
+actions.st+=/aimed_shot,if=buff.precise_shots.down&(buff.double_tap.down&full_recharge_time<cast_time+gcd|buff.lethal_shots.up)
+actions.st+=/rapid_fire,if=!talent.lethal_shots.enabled|buff.lethal_shots.up
+actions.st+=/piercing_shot
+actions.st+=/a_murder_of_crows
+actions.st+=/serpent_sting,if=refreshable
+actions.st+=/aimed_shot,if=buff.precise_shots.down&(!talent.steady_focus.enabled&focus>70|!talent.lethal_shots.enabled|buff.lethal_shots.up)
+actions.st+=/arcane_shot,if=buff.precise_shots.up|focus>60&(!talent.lethal_shots.enabled|buff.lethal_shots.up)
+actions.st+=/steady_shot,if=focus+cast_regen<focus.max|(talent.lethal_shots.enabled&buff.lethal_shots.down)
+actions.st+=/arcane_shot
+
+actions.trickshots=barrage
+actions.trickshots+=/explosive_shot
+actions.trickshots+=/rapid_fire,if=buff.trick_shots.up&!talent.barrage.enabled
+actions.trickshots+=/aimed_shot,if=buff.trick_shots.up&buff.precise_shots.down&buff.double_tap.down&(!talent.lethal_shots.enabled|buff.lethal_shots.up|focus>60)
+actions.trickshots+=/rapid_fire,if=buff.trick_shots.up
+actions.trickshots+=/multishot,if=buff.trick_shots.down|(buff.precise_shots.up|buff.lethal_shots.up)&(!talent.barrage.enabled&buff.steady_focus.down&focus>45|focus>70)
+actions.trickshots+=/piercing_shot
+actions.trickshots+=/a_murder_of_crows
+actions.trickshots+=/serpent_sting,if=refreshable
+actions.trickshots+=/steady_shot,if=focus+cast_regen<focus.max|(talent.lethal_shots.enabled&buff.lethal_shots.down)
+
+head=soulscarred_headgear,id=159398,bonus_id=1557/4819/4775/4786,azerite_powers=3/36/22/14/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=
+shoulders=crashguard_spaulders,id=159360,bonus_id=1557/4819/4775/4786,azerite_powers=3/368/22/15/13
+back=fetid_horrors_tanglecloak,id=160643,bonus_id=4800/1507
+chest=chainvest_of_assured_quality,id=160627,bonus_id=4824/1507/4775,azerite_powers=3/368/22/15/13
+wrists=rubywrought_sparkguards,id=160629,bonus_id=4800/1507
+hands=gloves_of_involuntary_amputation,id=160626,bonus_id=4800/1507
+waist=cincture_of_profane_deeds,id=160724,bonus_id=4800/1507
+legs=blighted_anima_greaves,id=160716,bonus_id=4800/1507
+feet=fused_monstrosity_stompers,id=160628,bonus_id=4800/1507
+finger1=band_of_certain_annihilation,id=160646,bonus_id=4800/1507,enchant=pact_of_mastery
+finger2=ring_of_the_infinite_void,id=160647,bonus_id=4800/1507,enchant=pact_of_mastery
+trinket1=kul_tiran_cannonball_runner,id=159628,bonus_id=1542/4779
+trinket2=frenetic_corpuscle,id=160648,bonus_id=4800/1507
+main_hand=reorigination_pulse_rifle,id=160694,bonus_id=4800/1507,enchant=masterful_navigation
+
+# Gear Summary
+# gear_ilvl=385.27
+# gear_agility=4346
+# gear_stamina=7207
+# gear_crit_rating=510
+# gear_haste_rating=951
+# gear_mastery_rating=1047
+# gear_versatility_rating=497
+# gear_armor=2738

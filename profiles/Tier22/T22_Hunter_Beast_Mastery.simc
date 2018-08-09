@@ -1,0 +1,79 @@
+hunter="T22_Hunter_Beast_Mastery"
+spec=beast_mastery
+level=120
+race=orc
+role=attack
+position=ranged_back
+talents=1303011
+
+# Default consumables
+potion=battle_potion_of_agility
+flask=currents
+food=bountiful_captains_feast
+augmentation=battle_scarred
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/augmentation
+actions.precombat+=/food
+actions.precombat+=/summon_pet
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion
+actions.precombat+=/aspect_of_the_wild
+
+# Executed every time the actor is available.
+actions=auto_shot
+actions+=/counter_shot,if=equipped.sephuzs_secret&target.debuff.casting.react&cooldown.buff_sephuzs_secret.up&!buff.sephuzs_secret.up
+actions+=/use_items
+actions+=/berserking,if=cooldown.bestial_wrath.remains>30
+actions+=/blood_fury,if=cooldown.bestial_wrath.remains>30
+actions+=/ancestral_call,if=cooldown.bestial_wrath.remains>30
+actions+=/fireblood,if=cooldown.bestial_wrath.remains>30
+actions+=/lights_judgment
+actions+=/potion,if=buff.bestial_wrath.up&buff.aspect_of_the_wild.up
+actions+=/barbed_shot,if=pet.cat.buff.frenzy.up&pet.cat.buff.frenzy.remains<=gcd.max
+actions+=/a_murder_of_crows
+actions+=/spitting_cobra
+actions+=/stampede,if=buff.bestial_wrath.up|cooldown.bestial_wrath.remains<gcd|target.time_to_die<15
+actions+=/aspect_of_the_wild
+actions+=/bestial_wrath,if=!buff.bestial_wrath.up
+actions+=/multishot,if=spell_targets>2&(pet.cat.buff.beast_cleave.remains<gcd.max|pet.cat.buff.beast_cleave.down)
+actions+=/chimaera_shot
+actions+=/kill_command
+actions+=/dire_beast
+actions+=/barbed_shot,if=pet.cat.buff.frenzy.down&charges_fractional>1.4|full_recharge_time<gcd.max|target.time_to_die<9
+actions+=/multishot,if=spell_targets>1&(pet.cat.buff.beast_cleave.remains<gcd.max|pet.cat.buff.beast_cleave.down)
+actions+=/cobra_shot,if=(active_enemies<2|cooldown.kill_command.remains>focus.time_to_max)&(buff.bestial_wrath.up&active_enemies>1|cooldown.kill_command.remains>1+gcd&cooldown.bestial_wrath.remains>focus.time_to_max|focus-cost+focus.regen*(cooldown.kill_command.remains-1)>action.kill_command.cost)
+
+head=crest_of_the_undying_visionary,id=160630,bonus_id=4824/1507/4775,azerite_powers=3/366/22/44/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=
+shoulders=cannoneers_mantle,id=159393,bonus_id=1557/4819/4775/4786,azerite_powers=3/366/462/85/13
+back=plasmaspattered_greatcloak,id=160644,bonus_id=4800/1507
+chest=corrupted_hexxers_vestments,id=159370,bonus_id=1557/4819/4775/4786,azerite_powers=3/366/22/14/13
+wrists=rubywrought_sparkguards,id=160629,bonus_id=4800/1507
+hands=oblivion_crushers,id=160721,bonus_id=4800/1507
+waist=titanspark_energy_girdle,id=160633,bonus_id=4800/1507
+legs=legguards_of_coalescing_plasma,id=160631,bonus_id=4800/1507
+feet=fused_monstrosity_stompers,id=160628,bonus_id=4800/1507
+finger1=band_of_certain_annihilation,id=160646,bonus_id=4800/1507,enchant=pact_of_haste
+finger2=ring_of_the_infinite_void,id=160647,bonus_id=4800/1507,enchant=pact_of_haste
+trinket1=lustrous_golden_plumage,id=159617,bonus_id=1542/4779
+trinket2=frenetic_corpuscle,id=160648,bonus_id=4800/1507
+main_hand=bow_of_virulent_infection,id=160678,bonus_id=4800/1507,enchant=quick_navigation
+
+# Gear Summary
+# gear_ilvl=385.27
+# gear_agility=4346
+# gear_stamina=7207
+# gear_crit_rating=1083
+# gear_haste_rating=805
+# gear_mastery_rating=1002
+# gear_versatility_rating=115
+# gear_armor=2738

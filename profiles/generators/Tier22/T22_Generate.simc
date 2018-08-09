@@ -23,7 +23,7 @@ T22_Generate_Death_Knight.simc
 #T22_Generate_Druid.simc
 
 # Hunter
-#T22_Generate_Hunter.simc
+T22_Generate_Hunter.simc
 
 # Mage
 #T22_Generate_Mage.simc
