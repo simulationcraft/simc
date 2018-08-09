@@ -1638,9 +1638,9 @@ static stat_data_t __gt_race_stats[] =
   {  -3,  1, -1,  3,  0 }, // Goblin
   {  -3,  1,  0,  2,  0 }, // Blood Elf
   {   1, -3,  2,  0,  0 }, // Draenei
-  {   0,  0,  0,  0,  0 }, // Fel Orc
+  {   0,  0,  0,  0,  0 }, // Dark Iron Dwarf
   {   0,  0,  0,  0,  0 }, // Naga
-  {   0,  0,  0,  0,  0 }, // Broken
+  {   0,  0,  0,  0,  0 }, // Mag'har Orc
   {   0,  0,  0,  0,  0 }, // Skeleton
   {   0,  0,  0,  0,  0 }, // Vrykul
   {   0,  0,  0,  0,  0 }, // Tuskarr
