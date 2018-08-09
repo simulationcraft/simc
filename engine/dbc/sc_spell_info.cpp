@@ -884,17 +884,18 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
         }
         break;
       case A_PERIODIC_TRIGGER_SPELL:
-        if ( e -> trigger_spell_id() )
+        s << ": ";
+        if ( e -> trigger_spell_id() && dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
         {
-          if ( dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
-          {
-            s << ": " << dbc.spell( e -> trigger_spell_id() ) -> name_cstr();
-            if ( e -> period() != timespan_t::zero() )
-              s << " every " << e -> period().total_seconds() << " seconds";
-          }
-          else
-            s << ": (" << e -> trigger_spell_id() << ")";
+          s << dbc.spell( e -> trigger_spell_id() ) -> name_cstr();
         }
+        else
+        {
+          s << "Unknown(" << e->trigger_spell_id() << ")";
+        }
+
+        if ( e -> period() != timespan_t::zero() )
+          s << " every " << e -> period().total_seconds() << " seconds";
         break;
       case A_ADD_FLAT_MODIFIER:
       case A_ADD_PCT_MODIFIER:
