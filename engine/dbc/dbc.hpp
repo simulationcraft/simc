@@ -880,6 +880,7 @@ public:
   const char* _rank_str;           // 44
 
   unsigned    _req_max_level;      // 45
+  unsigned    _dmg_class;          // 46 SpellCategories.db2 classification for the spell
 
   // Pointers for runtime linking
   std::vector<const spelleffect_data_t*>* _effects;
@@ -889,10 +890,13 @@ public:
   const hotfix::client_hotfix_entry_t* _hotfix_entry; // First hotfix entry in the hotfix table, if available
 
   // Direct member access functions
-  uint32_t category() const
+  unsigned category() const
   { return _category; }
 
-  uint32_t class_mask() const
+  unsigned dmg_class() const
+  { return _dmg_class; }
+
+  unsigned class_mask() const
   { return _class_mask; }
 
   timespan_t cooldown() const

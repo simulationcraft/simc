@@ -1,6 +1,14 @@
 #ifndef DATA_ENUMS_HH
 #define DATA_ENUMS_HH
 
+enum spell_type
+{
+  SPELL_TYPE_NONE = 0u,
+  SPELL_TYPE_MAGIC,
+  SPELL_TYPE_MELEE,
+  SPELL_TYPE_RANGED
+};
+
 // Types for CombatRatingsMultByILvl.txt. The ordering is defined by dbc_extract outputter (see
 // dbc_extract.py 'scale' output option), however it follows the current game table ordering.
 enum combat_rating_multiplier_type

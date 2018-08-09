@@ -13,6 +13,10 @@ struct proc_map_t
   const char* proc;
 };
 
+static std::vector<std::string> _spell_type_map {
+  "None", "Magic", "Melee", "Ranged"
+};
+
 std::vector<std::string> _school_map = {
   "Physical",
   "Holy",
@@ -96,6 +100,8 @@ std::vector<std::string> _hotfix_spell_map = {
   "Tooltip",
   "Variables",
   "Rank",
+  "Required Max Level",
+  "Spell Type"
 };
 
 std::vector<std::string> _hotfix_power_map = {
@@ -1253,6 +1259,13 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
   std::string school_string = util::school_type_string( spell -> get_school_type() );
   school_string[ 0 ] = std::toupper( school_string[ 0 ] );
   s << "School           : " << school_string << std::endl;
+
+  std::string spell_type_str = "Unknown(" + util::to_string( spell->dmg_class() ) + ")";
+  if ( spell->dmg_class() < _spell_type_map.size() )
+  {
+    spell_type_str = _spell_type_map[ spell->dmg_class() ];
+  }
+  s << "Spell Type       : " << spell_type_str << std::endl;
 
   for ( size_t i = 0; spell -> _power && i < spell -> _power -> size(); i++ )
   {

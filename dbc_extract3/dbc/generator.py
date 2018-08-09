@@ -2685,6 +2685,10 @@ class SpellDataGenerator(DataGenerator):
             fields += spell.get_link('level').field('req_max_level')
             f, hfd = spell.get_link('level').get_hotfix_info(('req_max_level', 45))
 
+            # 46
+            fields += category.field('dmg_class')
+            f, hfd = category.get_hotfix_info(('dmg_class', 46))
+
             # Pad struct with empty pointers for direct access to spell effect data
             # 46, 47, 48, 49, 50
             fields += [ u'0', u'0', u'0', u'0', u'0', ]

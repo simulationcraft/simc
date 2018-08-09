@@ -63,6 +63,8 @@ bool spell_data_t::override_field( const std::string& field, double value )
     _cast_max = ( int ) value;
   else if ( util::str_compare_ci( field, "rppm" ) )
     _rppm = value;
+  else if ( util::str_compare_ci( field, "dmg_class" ) )
+    _dmg_class = static_cast<unsigned>( value );
   else
     return false;
   return true;
