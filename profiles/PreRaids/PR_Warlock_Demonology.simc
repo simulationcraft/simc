@@ -49,7 +49,7 @@ actions+=/soul_strike,if=soul_shard<5&buff.demonic_core.stack<=2
 actions+=/demonbolt,if=soul_shard<=3&buff.demonic_core.up&((cooldown.summon_demonic_tyrant.remains<10|cooldown.summon_demonic_tyrant.remains>22)|buff.demonic_core.stack>=3|buff.demonic_core.remains<5|time_to_die<25)
 actions+=/call_action_list,name=build_a_shard
 
-actions.build_a_shard=demonbolt,if=azerite.forbidden_knowledge.rank>=2&buff.forbidden_knowledge.react&!buff.demonic_core.react&cooldown.summon_demonic_tyrant.remains>20
+actions.build_a_shard=demonbolt,if=azerite.forbidden_knowledge.enabled&buff.forbidden_knowledge.react&!buff.demonic_core.react&cooldown.summon_demonic_tyrant.remains>20
 actions.build_a_shard+=/soul_strike
 actions.build_a_shard+=/shadow_bolt
 
