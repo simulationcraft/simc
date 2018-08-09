@@ -2282,6 +2282,7 @@ struct ambush_t : public rogue_attack_t
   ambush_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "ambush", p, p -> find_specialization_spell( "Ambush" ), options_str )
   {
+    may_dodge = may_block = may_parry = false;
     requires_stealth  = true;
   }
 
@@ -2854,6 +2855,7 @@ struct garrote_t : public rogue_attack_t
     rogue_attack_t( "garrote", p, p -> spec.garrote, options_str )
   {
     may_crit = false;
+    may_dodge = may_block = may_parry = false;
     hasted_ticks = true;
 
     if ( p -> sets -> has_set_bonus( ROGUE_ASSASSINATION, T20, B2 ) ) {
@@ -3301,7 +3303,6 @@ struct mutilate_strike_t : public rogue_attack_t
     rogue_attack_t( name, p, s ), crit_count_ref( crit_counter )
   {
     background  = true;
-    may_miss = may_dodge = may_parry = false;
   }
 
   bool procs_insignia_of_ravenholdt() const override
@@ -3344,7 +3345,7 @@ struct double_dose_t : public rogue_attack_t
     rogue_attack_t( "double_dose", p, p -> find_spell(273009) )
   {
     background  = true;
-    may_miss = may_dodge = may_parry = false;
+    may_miss = may_block = may_dodge = may_parry = false;
     base_dd_min = p -> azerite.double_dose.value();
     base_dd_max = p -> azerite.double_dose.value();
   }
@@ -3660,7 +3661,7 @@ struct shadow_blades_attack_t : public rogue_attack_t
     rogue_attack_t( "shadow_blades_attack", p, p -> find_spell( 279043 ) )
   {
     background = true;
-    may_crit = false;
+    may_crit = may_dodge = may_block = may_parry = false;
     attack_power_mod.direct = 0;
   }
 
@@ -3782,6 +3783,7 @@ struct shadowstrike_t : public rogue_attack_t
     rogue_attack_t( "shadowstrike", p, p -> spec.shadowstrike, options_str ),
     shadow_satyrs_walk( nullptr )
   {
+    may_dodge = may_block = may_parry = false;
     requires_weapon = WEAPON_DAGGER;
     requires_stealth = true;
   }
