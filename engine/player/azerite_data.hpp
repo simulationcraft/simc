@@ -177,6 +177,7 @@ void laser_matrix( special_effect_t& );
 void blightborne_infusion( special_effect_t& );
 void incite_the_pack( special_effect_t& );
 void dagger_in_the_back( special_effect_t& );
+void rezans_fury( special_effect_t& );
 } // Namespace special_effects ends
 
 } // Namespace azerite ends

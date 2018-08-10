@@ -591,6 +591,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 273823, special_effects::blightborne_infusion  );
   unique_gear::register_special_effect( 280410, special_effects::incite_the_pack       );
   unique_gear::register_special_effect( 280284, special_effects::dagger_in_the_back    );
+  unique_gear::register_special_effect( 273790, special_effects::rezans_fury           );
 }
 
 
@@ -1547,6 +1548,29 @@ void dagger_in_the_back( special_effect_t& effect )
     return;
 
   effect.execute_action = unique_gear::create_proc_action<dagger_in_the_back_t>( "dagger_in_the_back", effect, power );
+  effect.spell_id = power.spell_ref().effectN( 1 ).trigger() -> id();
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+void rezans_fury( special_effect_t& effect )
+{
+  struct rezans_fury_t : public unique_gear::proc_spell_t
+  {
+    rezans_fury_t( const special_effect_t& e, const azerite_power_t& power ):
+      proc_spell_t( "rezans_fury", e.player, e.player -> find_spell( 273794 ) )
+    {
+      base_dd_min = base_dd_max = power.value( 1 );
+      base_td = power.value( 2 );
+      tick_may_crit = true;
+    }
+  };
+
+  azerite_power_t power = effect.player -> find_azerite_spell( effect.driver() -> name_cstr() );
+  if ( !power.enabled() )
+    return;
+
+  effect.execute_action = unique_gear::create_proc_action<rezans_fury_t>( "rezans_fury", effect, power );
   effect.spell_id = power.spell_ref().effectN( 1 ).trigger() -> id();
 
   new dbc_proc_callback_t( effect.player, effect );
