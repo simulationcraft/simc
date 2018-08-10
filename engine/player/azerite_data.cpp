@@ -1755,7 +1755,9 @@ void barrage_of_many_bombs( special_effect_t& effect )
           effect.item )
     {
       aoe = -1;
-      std::tie( base_dd_min, std::ignore, base_dd_max ) = compute_value( power, data().effectN( 1 ) );
+      auto values = compute_value( power, data().effectN( 1 ) );
+      base_dd_min = std::get<0>( values );
+      base_dd_max = std::get<2>( values );
 
       // Grab missile speed from the driveer
       travel_speed = power.spell_ref().effectN( 1 ).trigger()->missile_speed();
