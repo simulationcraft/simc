@@ -4,7 +4,7 @@ level=120
 race=human
 role=attack
 position=back
-talents=2203001
+talents=2303003
 
 # Default consumables
 potion=battle_potion_of_strength
@@ -66,28 +66,28 @@ actions.opener+=/sequence,if=talent.wake_of_ashes.enabled&talent.crusade.enabled
 actions.opener+=/sequence,if=talent.wake_of_ashes.enabled&talent.crusade.enabled&!talent.execution_sentence.enabled&talent.hammer_of_wrath.enabled,name=wake_opener_HoW:shield_of_vengeance:blade_of_justice:judgment:crusade:templars_verdict:wake_of_ashes:templars_verdict:hammer_of_wrath:templars_verdict
 actions.opener+=/sequence,if=talent.wake_of_ashes.enabled&talent.inquisition.enabled,name=wake_opener_Inq:shield_of_vengeance:blade_of_justice:judgment:inquisition:avenging_wrath:wake_of_ashes
 
-head=soulspun_casque,id=155866,bonus_id=1557/4819/4775/4786,azerite_powers=187/30/13
+head=helm_of_the_defiled_laboratorium,id=160732,bonus_id=4824/1507/4775,azerite_powers=485/22/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536
 shoulders=pauldrons_of_the_horned_horror,id=159455,bonus_id=1557/4819/4775/4786,azerite_powers=154/30/13
 back=fetid_horrors_tanglecloak,id=160643,bonus_id=4800/1507
-chest=chestplate_of_apocalyptic_machinations,id=160722,bonus_id=4824/1507/4775,azerite_powers=187/461/13
+chest=chestplate_of_apocalyptic_machinations,id=160722,bonus_id=4824/1507/4775,azerite_powers=485/461/13
 wrists=imperious_vambraces,id=160723,bonus_id=4800/1507
 hands=waste_disposal_crushers,id=160635,bonus_id=4800/1507
 waist=decontaminators_greatbelt,id=160638,bonus_id=4800/1507
 legs=greaves_of_unending_vigil,id=160639,bonus_id=4800/1507
 feet=warboots_of_absolute_eradication,id=160640,bonus_id=4800/1507
-finger1=band_of_certain_annihilation,id=160646,bonus_id=4800/1507,enchant=pact_of_critical_strike
-finger2=rotscour_ring,id=160645,bonus_id=4800/1507,enchant=pact_of_critical_strike
+finger1=rotscour_ring,id=160645,bonus_id=4800/1507,enchant=pact_of_haste
+finger2=band_of_certain_annihilation,id=160646,bonus_id=4800/1507,enchant=pact_of_haste
 trinket1=syringe_of_bloodborne_infirmity,id=160655,bonus_id=4800/1507
 trinket2=disc_of_systematic_regression,id=160650,bonus_id=4800/1507
-main_hand=voror_gleaming_blade_of_the_stalwart,id=160686,bonus_id=4800/1507,enchant=deadly_navigation
+main_hand=voror_gleaming_blade_of_the_stalwart,id=160686,bonus_id=4800/1507,enchant=quick_navigation
 
 # Gear Summary
 # gear_ilvl=386.27
 # gear_strength=4388
 # gear_stamina=7207
-# gear_crit_rating=802
-# gear_haste_rating=1036
+# gear_crit_rating=728
+# gear_haste_rating=1110
 # gear_mastery_rating=806
 # gear_versatility_rating=360
 # gear_armor=4055

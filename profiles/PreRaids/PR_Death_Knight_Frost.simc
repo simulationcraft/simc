@@ -116,9 +116,9 @@ actions.standard+=/frost_strike
 actions.standard+=/horn_of_winter
 actions.standard+=/arcane_torrent
 
-head=helm_of_the_raptor_king,id=159422,bonus_id=4779/1512/4786/4775,azerite_powers=347/461/13
+head=helm_of_the_raptor_king,id=159422,bonus_id=4779/1512/4786/4775,azerite_powers=347/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=
-shoulders=kraken_shell_pauldrons,id=159431,bonus_id=4779/1512/4786/4775,azerite_powers=347/461/13
+shoulders=kraken_shell_pauldrons,id=159431,bonus_id=4779/1512/4786/4775,azerite_powers=347/459/13
 back=turncoats_cape,id=159293,bonus_id=4779/1512/4786
 chest=ashvane_wardens_cuirass,id=159440,bonus_id=4779/1512/4786/4775,azerite_powers=347/459/13
 wrists=stonefury_vambraces,id=158359,bonus_id=4779/1512/4786
