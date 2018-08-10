@@ -598,7 +598,8 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 280580, special_effects::combined_might        );
   unique_gear::register_special_effect( 280178, special_effects::relational_normalization_gizmo );
   unique_gear::register_special_effect( 280163, special_effects::barrage_of_many_bombs );
-  unique_gear::register_special_effect( 273682, special_effects::meticulous_scheming );
+  unique_gear::register_special_effect( 273682, special_effects::meticulous_scheming   );
+  unique_gear::register_special_effect( 280174, special_effects::synaptic_spark_capacitor );
 }
 
 void register_azerite_target_data_initializers( sim_t* sim )
@@ -1896,5 +1897,58 @@ void meticulous_scheming( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+void synaptic_spark_capacitor( special_effect_t& effect )
+{
+  struct spark_coil_t : public unique_gear::proc_spell_t
+  {
+    spark_coil_t( const special_effect_t& effect, const azerite_power_t& power ) :
+      proc_spell_t( "spark_coil", effect.player, effect.player->find_spell( 280847 ),
+          effect.item )
+    {
+      aoe = -1;
+      radius = power.spell_ref().effectN( 1 ).base_value();
+
+      auto values = compute_value( power, data().effectN( 2 ) );
+      base_dd_min = std::get<0>( values );
+      base_dd_max = std::get<2>( values );
+    }
+  };
+
+  // Driver for the spark coil that triggers damage
+  // TODO Last partial tick does minimal damage?
+  struct spark_coil_driver_t : public unique_gear::proc_spell_t
+  {
+    action_t* damage;
+
+    spark_coil_driver_t( const special_effect_t& effect, const azerite_power_t& power ) :
+      proc_spell_t( "spark_coil_driver", effect.player, effect.player->find_spell( 280655 ),
+          effect.item )
+    {
+      quiet = true;
+      damage = unique_gear::create_proc_action<spark_coil_t>( "spark_coil_damage", effect, power );
+      dot_duration = data().duration();
+      base_tick_time = damage->data().effectN( 2 ).period();
+    }
+
+    void tick( dot_t* d ) override
+    {
+      proc_spell_t::tick( d );
+
+      damage->set_target( d->target );
+      damage->execute();
+    }
+  };
+
+  azerite_power_t power = effect.player->find_azerite_spell( effect.driver()->name_cstr() );
+  if ( !power.enabled() )
+    return;
+
+  effect.execute_action = unique_gear::create_proc_action<spark_coil_driver_t>( "spark_coil",
+      effect, power );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 } // Namespace special effects ends
 } // Namespace azerite ends

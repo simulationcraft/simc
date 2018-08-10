@@ -7086,8 +7086,9 @@ struct proc_action_t : public T_ACTION
     this -> background = true;
     this -> callbacks = this -> hasted_ticks = false;
 
-    if ( ! this -> data().flags( spell_attribute::SX_CANNOT_CRIT ) )
-      this -> may_crit = this -> tick_may_crit = true;
+    this -> may_crit = ! this -> data().flags( spell_attribute::SX_CANNOT_CRIT );
+    this -> tick_may_crit = this->data().flags( spell_attribute::SX_TICK_MAY_CRIT );
+
     if ( this -> radius > 0 )
       this -> aoe = -1;
 
