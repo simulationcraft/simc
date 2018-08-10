@@ -1,4 +1,5 @@
-﻿// ==========================================================================
+
+// ==========================================================================
 // Dedmonwakeen's DPS-DPM Simulator.
 // Send questions to natehieter@gmail.com
 // ==========================================================================
@@ -27,6 +28,7 @@ MISTWEAVER:
 
 BREWMASTER:
 - Not Modeled:
+-- Expel Harm
 -- Summon Black Ox Statue
 -- Guard
 -- Zen Meditation
