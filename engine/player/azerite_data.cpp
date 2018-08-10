@@ -64,7 +64,7 @@ double azerite_power_t::value( size_t index ) const
          check_combat_rating_penalty( index ) )
     {
       value = item_database::apply_combat_rating_multiplier( m_player,
-          CR_MULTIPLIER_ARMOR, actual_level, value );
+          CR_MULTIPLIER_ARMOR, actual_level, value ) + 0.5;
     }
 
     // TODO: Is this floored, or allowed to accumulate with fractions (and floored at the end?)
