@@ -1387,7 +1387,7 @@ void wandering_soul( special_effect_t& effect )
       auto action = unique_gear::create_proc_action<ruinous_bolt_t>( "ruinous_bolt", effect, ruinous_bolt );
       buff -> set_tick_callback( [ action ]( buff_t* b, int, const timespan_t& ) {
         // TODO: review targeting behaviour
-        action -> set_target( b -> source -> target );
+        action -> set_target( b -> player -> target );
         action -> execute();
       } );
     }

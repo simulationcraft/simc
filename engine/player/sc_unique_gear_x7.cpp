@@ -80,6 +80,7 @@ namespace items
   void jes_howler( special_effect_t& );
   void razdunks_big_red_button( special_effect_t& );
   void merekthas_fang( special_effect_t& );
+  void lingering_sporepods( special_effect_t& );
   // 8.0.1 - Uldir Trinkets
   void frenetic_corpuscle( special_effect_t& );
   void vigilants_bloodshaper(special_effect_t& );
@@ -720,6 +721,34 @@ void items::hadals_nautilus( special_effect_t& effect )
   new nautilus_cb_t( effect );
 }
 
+// Lingering Sporepods ======================================================
+
+void items::lingering_sporepods( special_effect_t& effect )
+{
+  effect.custom_buff = buff_t::find( effect.player, "lingering_spore_pods" );
+  if ( !effect.custom_buff )
+  {
+    auto damage = create_proc_action<aoe_proc_t>( "lingering_spore_pods_damage", effect,
+        "lingering_spore_pods_damage", 268068 );
+
+    auto heal = create_proc_action<base_bfa_proc_t<proc_heal_t>>( "lingering_spore_pods_heal", effect,
+        "lingering_spore_pods_heal", 278708 );
+
+    effect.custom_buff = make_buff( effect.player, "lingering_spore_pods", effect.trigger() )
+      -> set_stack_change_callback( [ damage, heal ]( buff_t* b, int, int new_ ) {
+          if ( new_ == 0 )
+          {
+            damage -> set_target( b -> player -> target );
+            damage -> execute();
+            heal -> set_target( b -> player );
+            heal -> execute();
+          }
+        } );
+  }
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Frenetic Corpuscle =======================================================
 
 void items::frenetic_corpuscle( special_effect_t& effect )
@@ -797,6 +826,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 270809, items::vessel_of_skittering_shadows);
   register_special_effect( 278053, items::vigilants_bloodshaper);
   register_special_effect( 270921, items::hadals_nautilus );
+  register_special_effect( 268035, items::lingering_sporepods );
   register_special_effect( 268314, "268311Trigger" ); // Galecaller's Boon, assumes the player always stands in the area
   register_special_effect( 278140, items::frenetic_corpuscle );
 }
