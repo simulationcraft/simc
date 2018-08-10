@@ -104,6 +104,9 @@ timespan_t azerite_power_t::time_value( size_t index, time_type tt ) const
 }
 
 std::vector<double> azerite_power_t::budget() const
+{ return budget( m_spell ); }
+
+std::vector<double> azerite_power_t::budget( const spell_data_t* scaling_spell ) const
 {
   std::vector<double> b;
 
@@ -114,13 +117,13 @@ std::vector<double> azerite_power_t::budget() const
 
   range::for_each( m_ilevels, [ & ]( unsigned ilevel ) {
     unsigned min_ilevel = ilevel;
-    if ( m_spell -> max_scaling_level() > 0 && m_spell -> max_scaling_level() < min_ilevel )
+    if ( scaling_spell->max_scaling_level() > 0 && scaling_spell->max_scaling_level() < min_ilevel )
     {
-      min_ilevel = m_spell -> max_scaling_level();
+      min_ilevel = scaling_spell->max_scaling_level();
     }
 
     auto budget = item_database::item_budget( m_player, min_ilevel );
-    if ( m_spell->scaling_class() == PLAYER_SPECIAL_SCALE8 )
+    if ( scaling_spell->scaling_class() == PLAYER_SPECIAL_SCALE8 )
     {
       const auto& props = m_player->dbc.random_property( min_ilevel );
       budget = props.damage_replace_stat;
@@ -594,6 +597,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 273829, special_effects::secrets_of_the_deep   );
   unique_gear::register_special_effect( 280580, special_effects::combined_might        );
   unique_gear::register_special_effect( 280178, special_effects::relational_normalization_gizmo );
+  unique_gear::register_special_effect( 280163, special_effects::barrage_of_many_bombs );
 }
 
 
@@ -615,6 +619,26 @@ void register_azerite_target_data_initializers( sim_t* sim )
       td -> debuff.azerite_globules -> set_quiet( true );
     }
   } );
+}
+
+std::tuple<int, int, int > compute_value( const azerite_power_t& power, const spelleffect_data_t& effect )
+{
+  int min_ = 0, max_ = 0, avg_ = 0;
+  if ( !power.enabled() || effect.m_coefficient() == 0 )
+  {
+    return { 0, 0, 0 };
+  }
+
+  auto budgets = power.budget( effect.spell() );
+  range::for_each( budgets, [&]( double budget ) {
+    avg_ += static_cast<int>( budget * effect.m_coefficient() + 0.5 );
+    min_ += static_cast<int>( budget * effect.m_coefficient() *
+        ( 1.0 - effect.m_coefficient() / 2 ) + 0.5 );
+    max_ += static_cast<int>( budget * effect.m_coefficient() *
+        ( 1.0 + effect.m_coefficient() / 2 ) + 0.5 );
+  } );
+
+  return { min_, avg_, max_ };
 }
 
 } // Namespace azerite ends
@@ -1720,6 +1744,51 @@ void relational_normalization_gizmo( special_effect_t& effect )
   effect.player->buffs.normalization_increase = increase;
 
   new gizmo_cb_t( effect, { decrease, increase } );
+}
+
+void barrage_of_many_bombs( special_effect_t& effect )
+{
+  struct barrage_damage_t : public unique_gear::proc_spell_t
+  {
+    barrage_damage_t( const special_effect_t& effect, const azerite_power_t& power ) :
+      proc_spell_t( "barrage_of_many_bombs", effect.player, effect.player->find_spell( 280984 ),
+          effect.item )
+    {
+      aoe = -1;
+      std::tie( base_dd_min, std::ignore, base_dd_max ) = compute_value( power, data().effectN( 1 ) );
+
+      // Grab missile speed from the driveer
+      travel_speed = power.spell_ref().effectN( 1 ).trigger()->missile_speed();
+    }
+  };
+
+  struct bomb_cb_t : public dbc_proc_callback_t
+  {
+    action_t* damage;
+    int n_bombs;
+
+    bomb_cb_t( const special_effect_t& effect, const azerite_power_t& power ) :
+      dbc_proc_callback_t( effect.player, effect ),
+      damage( unique_gear::create_proc_action<barrage_damage_t>( "barrage_of_many_bombs", effect,
+              power ) ),
+      n_bombs( power.spell_ref().effectN( 3 ).base_value() )
+    { }
+
+    void execute( action_t*, action_state_t* state ) override
+    {
+      damage->set_target( state->target );
+      for ( int i = 0; i < n_bombs; ++i )
+      {
+        damage->execute();
+      }
+    }
+  };
+
+  azerite_power_t power = effect.player->find_azerite_spell( effect.driver()->name_cstr() );
+  if ( !power.enabled() )
+    return;
+
+  new bomb_cb_t( effect, power );
 }
 } // Namespace special effects ends
 } // Namespace azerite ends

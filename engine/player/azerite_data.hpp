@@ -18,6 +18,7 @@ struct sim_t;
 struct action_t;
 struct expr_t;
 struct special_effect_t;
+struct spelleffect_data_t;
 
 namespace azerite
 {
@@ -63,7 +64,7 @@ public:
   /// pointers
   operator const spell_data_t*() const;
 
-  // State of the azerite power
+  /// State of the azerite power
   bool ok() const;
   /// State of the azerite power
   bool enabled() const;
@@ -81,7 +82,10 @@ public:
   double percent( size_t index = 1 ) const;
   /// Return the raw budget values represented by the items for this azerite power.
   std::vector<double> budget() const;
-  /// List of items associated with this azerite power
+  /// Return the raw budget values represented by the items used for this power, using the given
+  /// spell as context
+  std::vector<double> budget( const spell_data_t* spell ) const;
+  /// List of item levels associated with this azerite power
   const std::vector<unsigned> ilevels() const;
   /// Number of items worn with this azerite power
   unsigned n_items() const;
@@ -147,6 +151,10 @@ void register_azerite_powers();
 /// Register generic azerite powers target data initializers
 void register_azerite_target_data_initializers( sim_t* );
 
+/// Compute the <min, avg, max> value of the spell effect given, based on the azerite power
+std::tuple<int, int, int> compute_value( const azerite_power_t& power,
+    const spelleffect_data_t* effect );
+
 namespace special_effects
 {
 void resounding_protection( special_effect_t& effect );
@@ -180,6 +188,7 @@ void rezans_fury( special_effect_t& );
 void secrets_of_the_deep( special_effect_t& );
 void combined_might( special_effect_t& );
 void relational_normalization_gizmo( special_effect_t& );
+void barrage_of_many_bombs( special_effect_t& );
 } // Namespace special_effects ends
 
 } // Namespace azerite ends
