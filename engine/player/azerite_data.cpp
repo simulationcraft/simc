@@ -598,8 +598,8 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 280580, special_effects::combined_might        );
   unique_gear::register_special_effect( 280178, special_effects::relational_normalization_gizmo );
   unique_gear::register_special_effect( 280163, special_effects::barrage_of_many_bombs );
+  unique_gear::register_special_effect( 273682, special_effects::meticulous_scheming );
 }
-
 
 void register_azerite_target_data_initializers( sim_t* sim )
 {
@@ -1791,6 +1791,110 @@ void barrage_of_many_bombs( special_effect_t& effect )
     return;
 
   new bomb_cb_t( effect, power );
+}
+
+void meticulous_scheming( special_effect_t& effect )
+{
+  // Apparently meticulous scheming bugs and does not proc from some foreground abilities. Blacklist
+  // specific abilities here
+  static std::unordered_map<unsigned, bool> __spell_blacklist {{
+    { 201427, true }, // Demon Hunter: Annihilation
+    { 210152, true }, // Demon Hunter: Death Sweep
+  } };
+
+  struct seize_driver_t : public dbc_proc_callback_t
+  {
+    std::vector<unsigned> casts;
+    buff_t* base;
+
+    seize_driver_t( const special_effect_t& effect ) :
+      dbc_proc_callback_t( effect.player, effect ), base( nullptr )
+    { }
+
+    bool trigger_seize() const
+    { return casts.size() == as<size_t>( effect.driver()->effectN( 1 ).base_value() ); }
+
+    void execute( action_t* a, action_state_t* ) override
+    {
+      // TODO: Do we need a whitelist here?
+      if ( a->background )
+      {
+        return;
+      }
+
+      // Presume the broken spells not affecting Meticulous Scheming is a bug
+      if ( listener->bugs && __spell_blacklist.find( a->id ) != __spell_blacklist.end() )
+      {
+        return;
+      }
+
+      auto it = range::find( casts, a->id );
+      if ( it == casts.end() )
+      {
+        casts.push_back( a->id );
+      }
+
+      if ( trigger_seize() )
+      {
+        base->expire();
+      }
+    }
+
+    void activate() override
+    {
+      dbc_proc_callback_t::activate();
+
+      casts.clear();
+    }
+  };
+
+  azerite_power_t power = effect.player->find_azerite_spell( effect.driver()->name_cstr() );
+  if ( !power.enabled() )
+    return;
+
+  auto secondary = new special_effect_t( effect.player );
+  secondary->name_str = "meticulous_scheming_driver";
+  secondary->spell_id = 273685;
+  secondary->type = effect.type;
+  secondary->source = effect.source;
+  secondary->proc_flags_ = PF_MELEE_ABILITY | PF_RANGED_ABILITY | PF_NONE_HEAL |
+                           PF_NONE_SPELL | PF_MAGIC_SPELL | PF_MAGIC_HEAL;
+  effect.player -> special_effects.push_back( secondary );
+
+  auto meticulous_cb = new seize_driver_t( *secondary );
+
+  auto haste_buff = unique_gear::create_buff<stat_buff_t>( effect.player, "seize_the_moment",
+      effect.player->find_spell( 273714 ) )
+    ->add_stat( STAT_HASTE_RATING, power.value( 4 ) );
+
+  auto base_buff = unique_gear::create_buff<buff_t>( effect.player, "meticulous_scheming",
+      effect.player->find_spell( 273685 ) )
+    ->set_stack_change_callback( [meticulous_cb, haste_buff]( buff_t*, int, int new_ ) {
+        if ( new_ == 0 )
+        {
+          meticulous_cb->deactivate();
+          if ( meticulous_cb->trigger_seize() )
+          {
+            haste_buff->trigger();
+          }
+        }
+        else
+        {
+          meticulous_cb->activate();
+        }
+    } );
+
+  meticulous_cb->deactivate();
+  meticulous_cb->base = base_buff;
+
+  effect.spell_id = 273684;
+  effect.custom_buff = base_buff;
+  // Spell data has no proc flags for the base spell, so make something up that would resemble
+  // "spells and abilities"
+  effect.proc_flags_ = PF_MELEE_ABILITY | PF_RANGED_ABILITY | PF_NONE_HEAL |
+                       PF_NONE_SPELL | PF_MAGIC_SPELL | PF_MAGIC_HEAL | PF_PERIODIC;
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 } // Namespace special effects ends
 } // Namespace azerite ends

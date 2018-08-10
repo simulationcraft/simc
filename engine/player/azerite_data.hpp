@@ -189,6 +189,7 @@ void secrets_of_the_deep( special_effect_t& );
 void combined_might( special_effect_t& );
 void relational_normalization_gizmo( special_effect_t& );
 void barrage_of_many_bombs( special_effect_t& );
+void meticulous_scheming( special_effect_t& );
 } // Namespace special_effects ends
 
 } // Namespace azerite ends
