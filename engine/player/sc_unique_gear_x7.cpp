@@ -27,14 +27,14 @@ template <typename BASE = proc_spell_t>
 struct base_bfa_aoe_proc_t : public base_bfa_proc_t<BASE>
 {
   base_bfa_aoe_proc_t( const special_effect_t& effect, const std::string& name, unsigned spell_id ) :
-    base_bfa_proc_t<BASE>( effect.player, name, spell_id )
+    base_bfa_proc_t<BASE>( effect, name, spell_id )
   {
     this->aoe = -1;
     this->split_aoe_damage = true;
   }
 
   base_bfa_aoe_proc_t( const special_effect_t& effect, const std::string& name, const spell_data_t* s ) :
-    base_bfa_proc_t<BASE>( effect.player, name, s )
+    base_bfa_proc_t<BASE>( effect, name, s )
   {
     this->aoe = -1;
     this->split_aoe_damage = true;
