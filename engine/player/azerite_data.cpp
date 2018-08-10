@@ -600,6 +600,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 280163, special_effects::barrage_of_many_bombs );
   unique_gear::register_special_effect( 273682, special_effects::meticulous_scheming   );
   unique_gear::register_special_effect( 280174, special_effects::synaptic_spark_capacitor );
+  unique_gear::register_special_effect( 280168, special_effects::ricocheting_inflatable_pyrosaw );
 }
 
 void register_azerite_target_data_initializers( sim_t* sim )
@@ -634,9 +635,9 @@ std::tuple<int, int, int > compute_value( const azerite_power_t& power, const sp
   range::for_each( budgets, [&]( double budget ) {
     avg_ += static_cast<int>( budget * effect.m_coefficient() + 0.5 );
     min_ += static_cast<int>( budget * effect.m_coefficient() *
-        ( 1.0 - effect.m_coefficient() / 2 ) + 0.5 );
+        ( 1.0 - effect.m_delta() / 2 ) + 0.5 );
     max_ += static_cast<int>( budget * effect.m_coefficient() *
-        ( 1.0 + effect.m_coefficient() / 2 ) + 0.5 );
+        ( 1.0 + effect.m_delta() / 2 ) + 0.5 );
   } );
 
   return std::make_tuple( min_, avg_, max_ );
@@ -1946,6 +1947,32 @@ void synaptic_spark_capacitor( special_effect_t& effect )
 
   effect.execute_action = unique_gear::create_proc_action<spark_coil_driver_t>( "spark_coil",
       effect, power );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+void ricocheting_inflatable_pyrosaw( special_effect_t& effect )
+{
+  struct rip_t : public unique_gear::proc_spell_t
+  {
+    rip_t( const special_effect_t& effect, const azerite_power_t& power ) :
+      proc_spell_t( "r.i.p.", effect.player, effect.player->find_spell( 280656 ) )
+    {
+      auto value = compute_value( power, data().effectN( 1 ) );
+      base_dd_min = std::get<0>( value );
+      base_dd_max = std::get<2>( value );
+    }
+  };
+
+  azerite_power_t power = effect.player->find_azerite_spell( effect.driver()->name_cstr() );
+  if ( !power.enabled() )
+    return;
+
+  effect.execute_action = unique_gear::create_proc_action<rip_t>( "r.i.p.",
+      effect, power );
+  // Just the DPS effect for now
+  effect.proc_flags_ = PF_MELEE_ABILITY | PF_RANGED_ABILITY | PF_NONE_SPELL | PF_MAGIC_SPELL |
+    PF_PERIODIC;
 
   new dbc_proc_callback_t( effect.player, effect );
 }

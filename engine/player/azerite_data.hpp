@@ -191,6 +191,7 @@ void relational_normalization_gizmo( special_effect_t& );
 void barrage_of_many_bombs( special_effect_t& );
 void meticulous_scheming( special_effect_t& );
 void synaptic_spark_capacitor( special_effect_t& );
+void ricocheting_inflatable_pyrosaw( special_effect_t& );
 } // Namespace special_effects ends
 
 } // Namespace azerite ends
