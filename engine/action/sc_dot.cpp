@@ -790,6 +790,28 @@ expr_t* dot_t::create_expression( dot_t* dot, action_t* action, action_t* source
     };
     return new ticks_remain_expr_t( dot, action, source_action, dynamic );
   }
+  else if ( name_str == "ticks_remain_fractional" )
+  {
+    struct ticks_remain_fractional_expr_t : public dot_expr_t
+    {
+      ticks_remain_fractional_expr_t(dot_t* d, action_t* a, action_t* sa, bool dynamic)
+        : dot_expr_t("dot_ticks_remain_fractional", d, a, sa, dynamic)
+      {
+      }
+      virtual double evaluate() override
+      {
+        dot_t* dt = dot();
+
+        if (!dt->current_action)
+          return 0;
+        if (!dt->is_ticking())
+          return 0;
+
+        return dt->remains() / dt->current_action->tick_time(dt->state);
+      }
+    };
+    return new ticks_remain_fractional_expr_t(dot, action, source_action, dynamic);
+  }
   else if ( name_str == "ticking" )
   {
     struct ticking_expr_t : public dot_expr_t
