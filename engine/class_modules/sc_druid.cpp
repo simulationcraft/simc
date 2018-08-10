@@ -4976,6 +4976,12 @@ struct streaking_stars_t : public druid_spell_t
   {
     background = 1;
     base_dd_min = base_dd_max = p->azerite.streaking_stars.value(1);
+    if (p->talent.incarnation_moonkin->ok())
+    {
+      //This spell deals less damage when incarnation is talented which is not found in the spelldata 8/10/18
+      base_dd_min *= 0.66;
+      base_dd_max *= 0.66;
+    }
   }
 };
 
