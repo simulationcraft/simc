@@ -5,14 +5,15 @@
 
 // TODO:
 // All : 
-// Check that all those azerite traits work
-// Implement bone spike graveyard healing
+// Check that all those azerite traits work as expected
+// Use pet spawner for army of the dead ghouls, apoc ghouls, and bloodworms
 // Unholy
-// - Skelebro has an aoe spell (Arrow Spray), but the AI using it is very inconsistent
 // - Army of the dead ghouls should spawn once every 0.5s for 4s rather than all at once
+// - Also add an option for army of the dead prepull timer at some point
 // - Fix Unholy Blight reporting : currently the uptime contains both the dot uptime (24.2s every 45s)
 //   and the driver uptime (6s every 45s)
-// - Wait for Blizzard to fix unholy pets damage tooltips to finally figure out their damage
+// - Risen Skulker has a weird delay between its attacks
+// - Look into Summon Gargoyle spawn delay
 // Blood
 //
 // Frost
