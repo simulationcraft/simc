@@ -1211,6 +1211,9 @@ class SpellDataGenerator(DataGenerator):
          270925,
          # Incessantly Ticking Clock mastery buff
          274431,
+         # Combined Might buffs
+         280841, 280842, 280843, 280844, 280845,
+         280866, 280867, 280868, 280869, 280870,
         ),
 
         # Warrior:

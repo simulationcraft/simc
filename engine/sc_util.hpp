@@ -115,6 +115,8 @@ player_e pet_class_type( pet_e type );
 player_e translate_class_id( int cid );
 player_e translate_class_str( const std::string& s );
 race_e translate_race_id( int rid );
+bool is_alliance( race_e );
+bool is_horde( race_e );
 stat_e translate_item_mod( int item_mod );
 bool is_combat_rating( item_mod_type t );
 int translate_stat( stat_e stat );

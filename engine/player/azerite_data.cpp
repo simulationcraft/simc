@@ -1594,19 +1594,76 @@ void secrets_of_the_deep( special_effect_t& effect )
 
 void combined_might( special_effect_t& effect )
 {
+  struct combined_might_cb_t : public dbc_proc_callback_t
+  {
+    std::vector<buff_t*> buffs;
+
+    combined_might_cb_t( const special_effect_t& effect, const std::vector<buff_t*>& b ) :
+      dbc_proc_callback_t( effect.player, effect ), buffs( b )
+    { }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      size_t index = static_cast<size_t>( rng().range( 0, buffs.size() ) );
+      buffs[ index ]->trigger();
+    }
+  };
+
   azerite_power_t power = effect.player->find_azerite_spell( effect.driver()->name_cstr() );
   if ( !power.enabled() )
     return;
 
-  auto buff = unique_gear::create_buff<stat_buff_t>( effect.player, "might_of_the_orcs",
-      effect.player->find_spell( 280841 ) )
-    ->add_stat( STAT_ATTACK_POWER, power.value( 1 ) )
-    ->add_stat( STAT_INTELLECT, power.value( 1 ) );
+  std::vector<buff_t*> buffs;
+  if ( util::is_alliance( effect.player->race ) )
+  {
+    buffs.push_back( unique_gear::create_buff<stat_buff_t>( effect.player, "strength_of_the_humans",
+        effect.player->find_spell( 280866 ) )
+      ->add_stat( STAT_ATTACK_POWER, power.value( 1 ) )
+      ->add_stat( STAT_INTELLECT, power.value( 1 ) ) );
+
+    buffs.push_back( unique_gear::create_buff<stat_buff_t>( effect.player, "strength_of_the_night_elves",
+        effect.player->find_spell( 280867 ) )
+      ->add_stat( STAT_HASTE_RATING, power.value( 3 ) ) );
+
+    buffs.push_back( unique_gear::create_buff<stat_buff_t>( effect.player, "strength_of_the_dwarves",
+        effect.player->find_spell( 280868 ) )
+      ->add_stat( STAT_VERSATILITY_RATING, power.value( 3 ) ) );
+
+    buffs.push_back( unique_gear::create_buff<stat_buff_t>( effect.player, "strength_of_the_draenei",
+        effect.player->find_spell( 280869 ) )
+      ->add_stat( STAT_CRIT_RATING, power.value( 3 ) ) );
+
+    buffs.push_back( unique_gear::create_buff<stat_buff_t>( effect.player, "strength_of_the_gnomes",
+        effect.player->find_spell( 280870 ) )
+      ->add_stat( STAT_MASTERY_RATING, power.value( 3 ) ) );
+  }
+  else
+  {
+    buffs.push_back( unique_gear::create_buff<stat_buff_t>( effect.player, "might_of_the_orcs",
+        effect.player->find_spell( 280841 ) )
+      ->add_stat( STAT_ATTACK_POWER, power.value( 1 ) )
+      ->add_stat( STAT_INTELLECT, power.value( 1 ) ) );
+
+    buffs.push_back( unique_gear::create_buff<stat_buff_t>( effect.player, "might_of_the_trolls",
+        effect.player->find_spell( 280842 ) )
+      ->add_stat( STAT_HASTE_RATING, power.value( 3 ) ) );
+
+    buffs.push_back( unique_gear::create_buff<stat_buff_t>( effect.player, "might_of_the_tauren",
+        effect.player->find_spell( 280843 ) )
+      ->add_stat( STAT_VERSATILITY_RATING, power.value( 3 ) ) );
+
+    buffs.push_back( unique_gear::create_buff<stat_buff_t>( effect.player, "might_of_the_forsaken",
+        effect.player->find_spell( 280844 ) )
+      ->add_stat( STAT_CRIT_RATING, power.value( 3 ) ) );
+
+    buffs.push_back( unique_gear::create_buff<stat_buff_t>( effect.player, "might_of_the_sindorei",
+        effect.player->find_spell( 280845 ) )
+      ->add_stat( STAT_MASTERY_RATING, power.value( 3 ) ) );
+  }
 
   effect.spell_id = 280848;
-  effect.custom_buff = buff;
 
-  new dbc_proc_callback_t( effect.player, effect );
+  new combined_might_cb_t( effect, buffs );
 }
 
 void relational_normalization_gizmo( special_effect_t& effect )

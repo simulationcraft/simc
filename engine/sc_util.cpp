@@ -3003,6 +3003,45 @@ double crit_multiplier( meta_gem_e gem )
   }
 }
 
+bool is_alliance( race_e race )
+{
+  switch ( race )
+  {
+    case RACE_NIGHT_ELF:
+    case RACE_HUMAN:
+    case RACE_GNOME:
+    case RACE_DWARF:
+    case RACE_DRAENEI:
+    case RACE_WORGEN:
+    case RACE_PANDAREN_ALLIANCE:
+    case RACE_VOID_ELF:
+    case RACE_LIGHTFORGED_DRAENEI:
+    case RACE_DARK_IRON_DWARF:
+      return true;
+    default:
+      return false;
+  }
+}
+
+bool is_horde( race_e race )
+{
+  switch ( race )
+  {
+    case RACE_ORC:
+    case RACE_TROLL:
+    case RACE_UNDEAD:
+    case RACE_BLOOD_ELF:
+    case RACE_TAUREN:
+    case RACE_GOBLIN:
+    case RACE_PANDAREN_HORDE:
+    case RACE_HIGHMOUNTAIN_TAUREN:
+    case RACE_NIGHTBORNE:
+    case RACE_MAGHAR_ORC:
+      return true;
+    default:
+      return false;
+  }
+}
 
 } // namespace util
 
