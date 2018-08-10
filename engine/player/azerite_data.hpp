@@ -174,7 +174,6 @@ void unstable_catalyst( special_effect_t& );
 void stand_as_one( special_effect_t& );
 void archive_of_the_titans( special_effect_t& );
 void laser_matrix( special_effect_t& );
-void blightborne_infusion( special_effect_t& );
 void incite_the_pack( special_effect_t& );
 void dagger_in_the_back( special_effect_t& );
 void rezans_fury( special_effect_t& );
