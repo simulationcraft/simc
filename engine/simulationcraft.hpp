@@ -3738,6 +3738,9 @@ struct player_t : public actor_t
     // 8.0
     buff_t* galeforce_striking; // Gale-Force Striking weapon enchant
     buff_t* torrent_of_elements; // Torrent of Elements weapon enchant
+
+    // Azerite power
+    buff_t* normalization_increase;
   } buffs;
 
   struct debuffs_t

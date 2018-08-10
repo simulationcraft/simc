@@ -593,6 +593,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 273790, special_effects::rezans_fury           );
   unique_gear::register_special_effect( 273829, special_effects::secrets_of_the_deep   );
   unique_gear::register_special_effect( 280580, special_effects::combined_might        );
+  unique_gear::register_special_effect( 280178, special_effects::relational_normalization_gizmo );
 }
 
 
@@ -1608,5 +1609,60 @@ void combined_might( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+void relational_normalization_gizmo( special_effect_t& effect )
+{
+  struct gizmo_cb_t : public dbc_proc_callback_t
+  {
+    std::vector<buff_t*> buffs;
+
+    gizmo_cb_t( const special_effect_t& effect, const std::vector<buff_t*>& b ) :
+      dbc_proc_callback_t( effect.player, effect ), buffs( b )
+    { }
+
+    // TODO: Probability distribution?
+    void execute( action_t*, action_state_t* ) override
+    {
+      size_t index = as<size_t>( rng().roll( 0.5 ) ); // Coin flip
+      buffs[ index ]->trigger();
+    }
+  };
+
+  azerite_power_t power = effect.player->find_azerite_spell( effect.driver()->name_cstr() );
+  if ( !power.enabled() )
+    return;
+
+  // Need to manually calculate the stat amounts for the buff, as they are not grabbed from the
+  // azerite power spell, like normal
+  auto ilevels = power.ilevels();
+  auto budgets = power.budget();
+
+  const spell_data_t* increase_spell = effect.player->find_spell( 280653 );
+  const spell_data_t* decrease_spell = effect.player->find_spell( 280654 );
+
+  double haste_amount = 0, stat_amount = 0, health_amount = 0;
+  for ( size_t i = 0, end = ilevels.size(); i < end; ++i )
+  {
+    double value = floor( increase_spell->effectN( 1 ).m_coefficient() * budgets[ i ] + 0.5 );
+    haste_amount += floor( item_database::apply_combat_rating_multiplier( effect.player,
+        CR_MULTIPLIER_ARMOR, ilevels[ i ], value ) );
+
+    stat_amount += floor( decrease_spell->effectN( 4 ).m_coefficient() * budgets[ i ] + 0.5 );
+    health_amount += floor( decrease_spell->effectN( 6 ).m_coefficient() * budgets[ i ] + 0.5 );
+  }
+
+  auto increase = unique_gear::create_buff<stat_buff_t>( effect.player, "normalization_increase",
+      effect.player->find_spell( 280653 ) )
+    ->add_stat( STAT_HASTE_RATING, haste_amount )
+    ->add_invalidate( CACHE_RUN_SPEED );
+
+  auto decrease = unique_gear::create_buff<stat_buff_t>( effect.player, "normalization_decrease",
+      effect.player->find_spell( 280654 ) )
+    ->add_stat( effect.player->primary_stat(), stat_amount )
+    ->add_stat( STAT_MAX_HEALTH, health_amount );
+
+  effect.player->buffs.normalization_increase = increase;
+
+  new gizmo_cb_t( effect, { decrease, increase } );
+}
 } // Namespace special effects ends
 } // Namespace azerite ends

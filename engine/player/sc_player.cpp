@@ -3520,6 +3520,11 @@ double player_t::temporary_movement_modifier() const
 
     if ( buffs.angelic_feather->check() )
       temporary = std::max( buffs.angelic_feather->data().effectN( 1 ).percent(), temporary );
+
+    if ( buffs.normalization_increase && buffs.normalization_increase->check() )
+    {
+      temporary = std::max( buffs.normalization_increase->data().effectN( 3 ).percent(), temporary );
+    }
   }
 
   return temporary;
