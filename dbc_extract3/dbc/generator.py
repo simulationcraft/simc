@@ -1206,7 +1206,7 @@ class SpellDataGenerator(DataGenerator):
          # 8.0.1 Kul Tiran Cannonball Runner damage
          271197,
          # 8.0.1 Endless Tincture of Fractional Power
-         265442, 265443, 265444, 265446
+         265442, 265443, 265444, 265446,
          # Hadal's Nautilus damage
          270925,
          # Incessantly Ticking Clock mastery buff
