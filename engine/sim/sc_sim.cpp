@@ -3498,6 +3498,10 @@ void sim_t::create_options()
   } ) );
 
   add_option( opt_uint( "bfa.jes_howler_allies", bfa_opts.jes_howler_allies, 0, 4 ) );
+  add_option( opt_float( "bfa.secrets_of_the_deep_chance",
+        bfa_opts.secrets_of_the_deep_chance, 0, 1 ) );
+  add_option( opt_float( "bfa.secrets_of_the_deep_collect_chance",
+        bfa_opts.secrets_of_the_deep_collect_chance, 0, 1 ) );
 
   // applies to: "lavish_suramar_feast", battle for azeroth feasts
   add_option( opt_bool( "feast_as_dps", feast_as_dps ) );

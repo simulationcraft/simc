@@ -591,6 +591,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 280410, special_effects::incite_the_pack       );
   unique_gear::register_special_effect( 280284, special_effects::dagger_in_the_back    );
   unique_gear::register_special_effect( 273790, special_effects::rezans_fury           );
+  unique_gear::register_special_effect( 273829, special_effects::secrets_of_the_deep   );
 }
 
 
@@ -1551,6 +1552,42 @@ void rezans_fury( special_effect_t& effect )
   effect.spell_id = power.spell_ref().effectN( 1 ).trigger() -> id();
 
   new dbc_proc_callback_t( effect.player, effect );
+}
+
+void secrets_of_the_deep( special_effect_t& effect )
+{
+  struct sotd_cb_t : public dbc_proc_callback_t
+  {
+    std::vector<buff_t*> buffs;
+
+    sotd_cb_t( const special_effect_t& effect, const std::vector<buff_t*>& b ) :
+      dbc_proc_callback_t( effect.player, effect ), buffs( b )
+    { }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      size_t index = as<size_t>( rng().roll( listener->sim->bfa_opts.secrets_of_the_deep_chance ) );
+      buffs[ index ]->trigger();
+    }
+  };
+
+  azerite_power_t power = effect.player->find_azerite_spell( effect.driver()->name_cstr() );
+  if ( !power.enabled() )
+    return;
+
+  auto normal_buff = unique_gear::create_buff<stat_buff_t>( effect.player, "secrets_of_the_deep",
+    effect.player->find_spell( 273843 ) )
+    ->add_stat( effect.player->primary_stat(), power.value( 1 ) )
+    ->set_chance( effect.player->sim->bfa_opts.secrets_of_the_deep_collect_chance );
+
+  auto rare_buff = unique_gear::create_buff<stat_buff_t>( effect.player, "secrets_of_the_deep_rare",
+    effect.player->find_spell( 273843 ) )
+    ->add_stat( effect.player->primary_stat(), power.value( 2 ) )
+    ->set_chance( effect.player->sim->bfa_opts.secrets_of_the_deep_collect_chance );
+
+  effect.spell_id = effect.driver()->effectN( 1 ).trigger()->id();
+
+  new sotd_cb_t( effect, { normal_buff, rare_buff } );
 }
 
 } // Namespace special effects ends
