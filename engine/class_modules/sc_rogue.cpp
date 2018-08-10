@@ -4125,6 +4125,9 @@ struct slice_and_dice_t : public rogue_attack_t
     p() -> buffs.slice_and_dice -> trigger( 1, snd_mod, -1.0, snd_duration );
 
     p() -> buffs.snake_eyes -> trigger( p() -> buffs.snake_eyes -> data().initial_stacks(), cp * p() -> azerite.snake_eyes.value() );
+
+    if ( p() -> azerite.paradise_lost.ok() )
+      p() -> buffs.paradise_lost -> trigger( 1, buff_t::DEFAULT_VALUE(), (-1.0), snd_duration );
   }
 };
 
