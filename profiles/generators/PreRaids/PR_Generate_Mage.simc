@@ -60,11 +60,11 @@ role=spell
 position=ranged_back
 talents=1013033
 
-head=,id=159252,bonus_id=4779/1512/4786/4775,azerite_powers=380/30/0/13
+head=,id=159252,bonus_id=4779/1512/4786/4775,azerite_powers=479/30/0/13
 neck=,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
 shoulder=,id=159232,bonus_id=4779/1512/4786/4775,azerite_powers=504/22/0/13
 back=,id=159294,bonus_id=4779/1512/4786
-chest=,id=159241,bonus_id=4779/1512/4786/4775,azerite_powers=194/21/0/13
+chest=,id=159268,bonus_id=4779/1512/4786/4775,azerite_powers=479/22/0/13
 wrists=,id=158348,bonus_id=4779/1512/4786
 hands=,id=155891,bonus_id=4779/1512/4786
 waist=,id=158346,bonus_id=4779/1512/4786
