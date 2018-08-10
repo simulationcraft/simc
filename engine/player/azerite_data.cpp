@@ -601,6 +601,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 273682, special_effects::meticulous_scheming   );
   unique_gear::register_special_effect( 280174, special_effects::synaptic_spark_capacitor );
   unique_gear::register_special_effect( 280168, special_effects::ricocheting_inflatable_pyrosaw );
+  unique_gear::register_special_effect( 266937, special_effects::gutripper             );
 }
 
 void register_azerite_target_data_initializers( sim_t* sim )
@@ -1975,6 +1976,54 @@ void ricocheting_inflatable_pyrosaw( special_effect_t& effect )
     PF_PERIODIC;
 
   new dbc_proc_callback_t( effect.player, effect );
+}
+
+void gutripper( special_effect_t& effect )
+{
+  struct gutripper_t : public unique_gear::proc_spell_t
+  {
+    gutripper_t( const special_effect_t& effect, const azerite_power_t& power ) :
+      proc_spell_t( "gutripper", effect.player, effect.player->find_spell( 269031 ) )
+    {
+      auto value = compute_value( power, power.spell_ref().effectN( 1 ) );
+      base_dd_min = std::get<0>( value );
+      base_dd_max = std::get<2>( value );
+    }
+  };
+
+  struct gutripper_cb_t : public dbc_proc_callback_t
+  {
+    double threshold;
+
+    gutripper_cb_t( const special_effect_t& effect, const azerite_power_t& power ) :
+      dbc_proc_callback_t( effect.player, effect ),
+      threshold( power.spell_ref().effectN( 2 ).base_value() )
+    { }
+
+    void trigger( action_t* a, void* call_data ) override
+    {
+      auto state = static_cast<action_state_t*>( call_data );
+      if ( state->target->health_percentage() < threshold )
+      {
+        rppm->set_frequency( effect.driver()->real_ppm() );
+      }
+      else
+      {
+        rppm->set_frequency( listener->sim->bfa_opts.gutripper_default_rppm );
+      }
+
+      dbc_proc_callback_t::trigger( a, call_data );
+    }
+  };
+
+  azerite_power_t power = effect.player->find_azerite_spell( effect.driver()->name_cstr() );
+  if ( !power.enabled() )
+    return;
+
+  effect.spell_id = 270668;
+  effect.execute_action = unique_gear::create_proc_action<gutripper_t>( "gutripper", effect, power );
+
+  new gutripper_cb_t( effect, power );
 }
 
 } // Namespace special effects ends
