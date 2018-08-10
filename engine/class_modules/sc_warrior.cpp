@@ -2887,8 +2887,7 @@ struct rampage_attack_t : public warrior_attack_t
       simmering_rage( false ),
       rage_from_valarjar_berserking( p->find_spell( 248179 )->effectN( 1 ).base_value() / 10.0 ),
       rage_from_simmering_rage(
-          ( p->azerite.simmering_rage.spell()->effectN( 1 ).base_value() * p->azerite.simmering_rage.n_items() ) /
-          10.0 )
+          ( p->azerite.simmering_rage.spell()->effectN( 1 ).base_value() ) / 10.0 )
   {
     dual = true;
     if ( p->sets->has_set_bonus( WARRIOR_FURY, T21, B4 ) )
@@ -6296,9 +6295,9 @@ double warrior_t::resource_gain( resource_e r, double a, gain_t* g, action_t* ac
   if ( buff.recklessness->check() && r == RESOURCE_RAGE )
   {
     bool do_not_double_rage = false;
-    do_not_double_rage      = ( g == gain.ceannar_rage || g == gain.valarjar_berserking );
+    do_not_double_rage      = ( g == gain.ceannar_rage || g == gain.valarjar_berserking || g == gain.simmering_rage );
 
-    if ( !do_not_double_rage )  // FIXME: remove this horror after BFA launches
+    if ( !do_not_double_rage )  // FIXME: remove this horror after BFA launches, keep Simmering Rage
       a *= 1.0 + spec.recklessness->effectN( 4 ).percent();
   }
   return player_t::resource_gain( r, a, g, action );
