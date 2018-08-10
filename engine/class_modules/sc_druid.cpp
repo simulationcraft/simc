@@ -1649,6 +1649,63 @@ public:
 
     return ab::verify_actor_spec();
   }
+
+  expr_t* create_expression(const std::string& name_str)
+  {
+    std::vector<std::string> splits = util::string_split(name_str, ".");
+
+    if (splits[0] == "dot" && splits[2] == "ticks_gained_on_refresh")
+    {
+      // Since we know some action names don't map to the actual dot portion, lets add some exceptions
+      // this may have to be made more robust if other specs are interested in using it, but for now lets
+      // default any ambiguity to what would make most sense for ferals.
+      if (splits[1] == "rake")
+        splits[1] = "rake_bleed";
+      if (p()->specialization() == DRUID_FERAL && splits[1] == "moonfire")
+        splits[1] = "lunar_inspiration";
+
+      action_t* action = p()->find_action(splits[1]);
+      if (action)
+        return make_fn_expr(name_str, [action]() -> double {
+        dot_t* dot = action->get_dot();
+        double remaining_ticks = 0;
+        double potential_ticks = 0;
+        timespan_t duration = action->dot_duration;
+        timespan_t ttd = action->target->time_to_percent(0);
+
+        if (dot->is_ticking())
+        {
+          remaining_ticks = std::min(dot->remains(), ttd) / dot->current_action->tick_time(dot->state);
+          duration = action->calculate_dot_refresh_duration(dot, duration);
+        }
+
+        potential_ticks = std::min(duration, ttd) / (action->base_tick_time * action->composite_haste());
+        return potential_ticks - remaining_ticks;
+      });
+      throw std::invalid_argument("invalid action");
+    }
+    else if (splits[0] == "ticks_gained_on_refresh")
+    {
+      return make_fn_expr(name_str, [this]() -> double {
+        dot_t* dot = get_dot();
+        double remaining_ticks = 0;
+        double potential_ticks = 0;
+        timespan_t duration = dot_duration;
+        timespan_t ttd = target->time_to_percent(0);
+
+        if (dot->is_ticking())
+        {
+          remaining_ticks = std::min(dot->remains(), ttd) / dot->current_action->tick_time(dot->state);
+          duration = calculate_dot_refresh_duration(dot, duration);
+        }
+
+        potential_ticks = std::min(duration, ttd) / (base_tick_time * composite_haste());
+        return potential_ticks - remaining_ticks;
+      });
+    }
+
+    return ab::create_expression(name_str);
+  }
 };
 
 // Druid melee attack base for cat_attack_t and bear_attack_t
@@ -3504,6 +3561,14 @@ struct rake_t : public cat_attack_t
     trigger_tier17_2pc = p -> sets -> has_set_bonus( DRUID_FERAL, T17, B2 );
  }
 
+  dot_t* get_dot(player_t* t) override
+  {
+    if (!t) t = target;
+    if (!t) return nullptr;
+
+    return td(t)->dots.rake;
+  }
+
   double composite_persistent_multiplier( const action_state_t* s ) const override
   {
     double pm = cat_attack_t::composite_persistent_multiplier( s );
@@ -5168,36 +5233,36 @@ struct thrash_proxy_t : public druid_spell_t
 {
   action_t* thrash_cat;
   action_t* thrash_bear;
-  
-  thrash_proxy_t(druid_t* p, const std::string& options_str) : druid_spell_t("thrash", p, spell_data_t::nil(), options_str)
-  {
-    thrash_cat = new cat_attacks::thrash_cat_t(p, options_str);
-    thrash_bear = new bear_attacks::thrash_bear_t(p, options_str);
 
-    //At the moment, both versions of these spells are the same 
+  thrash_proxy_t( druid_t* p, const std::string& options_str )
+    : druid_spell_t( "thrash", p, p->find_spell( 106832 ), options_str )
+  {
+    thrash_cat  = new cat_attacks::thrash_cat_t( p, options_str );
+    thrash_bear = new bear_attacks::thrash_bear_t( p, options_str );
+
+    // At the moment, both versions of these spells are the same
     //(and only the cat version has a talent that changes this)
-    //so we use this spell data here. If this changes we will
-    //have to think of something more robust. These two are
-    //important for the "ticks_gained_on_refresh" expression to work 
-    dot_duration = thrash_cat->dot_duration;
+    // so we use this spell data here. If this changes we will
+    // have to think of something more robust. These two are
+    // important for the "ticks_gained_on_refresh" expression to work
+    dot_duration   = thrash_cat->dot_duration;
     base_tick_time = thrash_cat->base_tick_time;
   }
 
   void execute() override
   {
-    if (p()->buff.cat_form->check())
+    if ( p()->buff.cat_form->check() )
       thrash_cat->execute();
 
-    else if (p()->buff.bear_form->check())
+    else if ( p()->buff.bear_form->check() )
       thrash_bear->execute();
-
   }
 
-  dot_t* get_dot(player_t* t) override
+  dot_t* get_dot( player_t* t ) override
   {
-    if (p()->buff.bear_form->check())
-      return thrash_bear->get_dot(t);
-    return thrash_cat->get_dot(t);
+    if ( p()->buff.bear_form->check() )
+      return thrash_bear->get_dot( t );
+    return thrash_cat->get_dot( t );
   }
 
   bool ready() override
@@ -8027,6 +8092,7 @@ void druid_t::init_procs()
   proc.clearcasting_wasted      = get_proc( "clearcasting_wasted"    );
   proc.gore                     = get_proc( "gore"                   );
   proc.gushing_lacerations      = get_proc( "gushing_lacerations"    );
+  proc.blood_mist = get_proc("blood_mist");
   proc.the_wildshapers_clutch   = get_proc( "the_wildshapers_clutch" );
   proc.predator                 = get_proc( "predator"               );
   proc.predator_wasted          = get_proc( "predator_wasted"        );
@@ -8056,7 +8122,7 @@ void druid_t::init_rng()
   // RPPM objects
   rppm.balance_tier18_2pc = get_rppm( "balance_tier18_2pc", sets->set( DRUID_BALANCE, T18, B2 ) );
   rppm.predator           = get_rppm( "predator", predator_rppm_rate );  // Predator: optional RPPM approximation.
-  rppm.blood_mist         = get_rppm( "blood_mist", azerite.blood_mist.spell()->real_ppm() );
+  rppm.blood_mist         = get_rppm( "blood_mist", find_spell(azerite.blood_mist.spell()->effectN(1).trigger_spell_id())->real_ppm() ) ;
 
   player_t::init_rng();
 }
@@ -8688,32 +8754,35 @@ expr_t* druid_t::create_expression( const std::string& name_str )
 
   std::vector<std::string> splits = util::string_split( name_str, "." );
 
-  if (splits[0] == "druid" && splits[2] == "ticks_gained_on_refresh")
+  if ( splits[ 0 ] == "druid" && splits[ 2 ] == "ticks_gained_on_refresh" )
   {
     // Since we know some action names don't map to the actual dot portion, lets add some exceptions
     // this may have to be made more robust if other specs are interested in using it, but for now lets
     // default any ambiguity to what would make most sense for ferals.
-    if (splits[1] == "rake") splits[1] = "rake_bleed";
-    if (specialization() == DRUID_FERAL && splits[1] == "moonfire") splits[1] = "lunar_inspiration";
+    if ( splits[ 1 ] == "rake" )
+      splits[ 1 ] = "rake_bleed";
+    if ( specialization() == DRUID_FERAL && splits[ 1 ] == "moonfire" )
+      splits[ 1 ] = "lunar_inspiration";
 
-    action_t* action = find_action(splits[1]);
-    if (action)
-      return make_fn_expr(name_str, [action]() -> double {
+    action_t* action = find_action( splits[ 1 ] );
+    if ( action )
+      return make_fn_expr( name_str, [action]() -> double {
+        dot_t* dot             = action->get_dot();
+        double remaining_ticks = 0;
+        double potential_ticks = 0;
+        timespan_t duration    = action->dot_duration;
+        timespan_t ttd         = action->target->time_to_percent( 0 );
 
-      dot_t* dot = action->get_dot();
-      double remaining_ticks = 0;
-      double potential_ticks = 0;
-      timespan_t duration = action->dot_duration;
+        if ( dot->is_ticking() )
+        {
+          remaining_ticks = std::min( dot->remains(), ttd ) / dot->current_action->tick_time( dot->state );
+          duration        = action->calculate_dot_refresh_duration( dot, duration );
+        }
 
-      if (dot->is_ticking())
-      {
-       remaining_ticks = dot->remains() / dot->current_action->tick_time(dot->state);
-       duration = action->calculate_dot_refresh_duration(dot, duration);
-      }
-      potential_ticks = duration / (action->base_tick_time * action->composite_haste());
-      return potential_ticks - remaining_ticks;
-    });
-    throw std::invalid_argument("invalid action");
+        potential_ticks = std::min( duration, ttd ) / ( action->base_tick_time * action->composite_haste() );
+        return potential_ticks - remaining_ticks;
+      } );
+    throw std::invalid_argument( "invalid action" );
   }
 
   if ( util::str_compare_ci( name_str, "astral_power" ) )
