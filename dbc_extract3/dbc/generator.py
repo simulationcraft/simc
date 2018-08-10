@@ -1214,6 +1214,8 @@ class SpellDataGenerator(DataGenerator):
          # Combined Might buffs
          280841, 280842, 280843, 280844, 280845,
          280866, 280867, 280868, 280869, 280870,
+         # Synaptic Spark Capacitor
+         280846,
         ),
 
         # Warrior:

@@ -626,7 +626,7 @@ std::tuple<int, int, int > compute_value( const azerite_power_t& power, const sp
   int min_ = 0, max_ = 0, avg_ = 0;
   if ( !power.enabled() || effect.m_coefficient() == 0 )
   {
-    return { 0, 0, 0 };
+    return std::make_tuple( 0, 0, 0 );
   }
 
   auto budgets = power.budget( effect.spell() );
@@ -638,7 +638,7 @@ std::tuple<int, int, int > compute_value( const azerite_power_t& power, const sp
         ( 1.0 + effect.m_coefficient() / 2 ) + 0.5 );
   } );
 
-  return { min_, avg_, max_ };
+  return std::make_tuple( min_, avg_, max_ );
 }
 
 } // Namespace azerite ends
