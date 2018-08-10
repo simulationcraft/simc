@@ -592,6 +592,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 280284, special_effects::dagger_in_the_back    );
   unique_gear::register_special_effect( 273790, special_effects::rezans_fury           );
   unique_gear::register_special_effect( 273829, special_effects::secrets_of_the_deep   );
+  unique_gear::register_special_effect( 280580, special_effects::combined_might        );
 }
 
 
@@ -1588,6 +1589,23 @@ void secrets_of_the_deep( special_effect_t& effect )
   effect.spell_id = effect.driver()->effectN( 1 ).trigger()->id();
 
   new sotd_cb_t( effect, { normal_buff, rare_buff } );
+}
+
+void combined_might( special_effect_t& effect )
+{
+  azerite_power_t power = effect.player->find_azerite_spell( effect.driver()->name_cstr() );
+  if ( !power.enabled() )
+    return;
+
+  auto buff = unique_gear::create_buff<stat_buff_t>( effect.player, "might_of_the_orcs",
+      effect.player->find_spell( 280841 ) )
+    ->add_stat( STAT_ATTACK_POWER, power.value( 1 ) )
+    ->add_stat( STAT_INTELLECT, power.value( 1 ) );
+
+  effect.spell_id = 280848;
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 } // Namespace special effects ends

@@ -178,6 +178,7 @@ void incite_the_pack( special_effect_t& );
 void dagger_in_the_back( special_effect_t& );
 void rezans_fury( special_effect_t& );
 void secrets_of_the_deep( special_effect_t& );
+void combined_might( special_effect_t& );
 } // Namespace special_effects ends
 
 } // Namespace azerite ends
