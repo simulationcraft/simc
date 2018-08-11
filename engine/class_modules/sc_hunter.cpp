@@ -985,6 +985,14 @@ struct hunter_melee_attack_t: public hunter_action_t < melee_attack_t >
                           const spell_data_t* s = spell_data_t::nil() ):
                           hunter_action_t( n, p, s )
   {}
+
+  void init()
+  {
+    hunter_action_t::init();
+
+    if ( weapon && weapon -> group() != WEAPON_2H )
+      background = true;
+  }
 };
 
 struct hunter_spell_t: public hunter_action_t < spell_t >
@@ -3196,10 +3204,10 @@ struct auto_attack_t: public action_t
 
 struct internal_bleeding_t
 {
-  struct internal_bleeding_action_t: hunter_melee_attack_t
+  struct internal_bleeding_action_t: hunter_ranged_attack_t
   {
     internal_bleeding_action_t( const std::string& n, hunter_t* p ):
-      hunter_melee_attack_t( n, p, p -> find_spell( 270343 ) )
+      hunter_ranged_attack_t( n, p, p -> find_spell( 270343 ) )
     {
       dual = true;
       dot_max_stack = as<int>( data().max_stacks() );
@@ -3410,8 +3418,11 @@ struct flanking_strike_t: hunter_melee_attack_t
   {
     hunter_melee_attack_t::execute();
 
-    damage -> set_target( target );
-    damage -> execute();
+    if ( p() -> main_hand_weapon.type == WEAPON_2H )
+    {
+      damage -> set_target( target );
+      damage -> execute();
+    }
 
     if ( auto pet = p() -> pets.main )
     {
@@ -3557,17 +3568,18 @@ struct raptor_strike_eagle_t: public raptor_strike_base_t
 
 struct harpoon_t: public hunter_melee_attack_t
 {
-  struct terms_of_engagement_t : hunter_melee_attack_t
+  struct terms_of_engagement_t : hunter_ranged_attack_t
   {
     terms_of_engagement_t( const std::string& n, hunter_t* p ):
-      hunter_melee_attack_t( n, p, p -> find_spell( 271625 ) )
+      hunter_ranged_attack_t( n, p, p -> find_spell( 271625 ) )
     {
       dual = true;
+      may_parry = may_dodge = may_block = false;
     }
 
     void impact( action_state_t* s ) override
     {
-      hunter_melee_attack_t::impact( s );
+      hunter_ranged_attack_t::impact( s );
 
       p() -> buffs.terms_of_engagement -> trigger();
     }
@@ -3582,6 +3594,7 @@ struct harpoon_t: public hunter_melee_attack_t
     harmful = false;
     base_teleport_distance  = data().max_range();
     movement_directionality = MOVEMENT_OMNI;
+    may_parry = may_dodge = may_block = false;
 
     cooldown -> duration += p -> find_spell( 231550 ) -> effectN( 1 ).time_value(); // Harpoon (Rank 2)
 
@@ -3590,6 +3603,9 @@ struct harpoon_t: public hunter_melee_attack_t
       terms_of_engagement = p -> get_background_action<terms_of_engagement_t>( "harpoon_terms_of_engagement" );
       add_child( terms_of_engagement );
     }
+
+    if ( p -> main_hand_weapon.group() != WEAPON_2H )
+      background = true;
   }
 
   void execute() override
@@ -3871,8 +3887,8 @@ struct summon_pet_t: public hunter_spell_t
   bool opt_disabled;
   pet_t* pet;
 
-  summon_pet_t( hunter_t* player, const std::string& options_str ):
-    hunter_spell_t( "summon_pet", player ),
+  summon_pet_t( hunter_t* p, const std::string& options_str ):
+    hunter_spell_t( "summon_pet", p, p -> find_spell( 883 ) ),
     opt_disabled( false ), pet( nullptr )
   {
     add_option( opt_string( "name", pet_name ) );
@@ -3883,7 +3899,7 @@ struct summon_pet_t: public hunter_spell_t
     ignore_false_positive = true;
 
     if ( pet_name.empty() )
-      pet_name = p() -> options.summon_pet_str;
+      pet_name = p -> options.summon_pet_str;
     opt_disabled = util::str_compare_ci( pet_name, "disabled" );
   }
 
@@ -5398,10 +5414,22 @@ std::string hunter_t::default_rune() const
 
 void hunter_t::init_action_list()
 {
-  const auto weapon_group = main_hand_weapon.group();
-  if ( specialization() == HUNTER_SURVIVAL ? weapon_group != WEAPON_2H : weapon_group != WEAPON_RANGED )
+  if ( main_hand_weapon.group() == WEAPON_RANGED )
   {
-    sim -> error( "Player {} does not have a proper weapon at the Main Hand slot.", name() );
+    const weapon_e type = main_hand_weapon.type;
+    if ( type != WEAPON_BOW && type != WEAPON_CROSSBOW && type != WEAPON_GUN )
+    {
+      sim -> error( "Player {} does not have a proper weapon type at the Main Hand slot: {}.",
+                    name(), util::weapon_subclass_string( items[ main_hand_weapon.slot ].parsed.data.item_subclass ) );
+      if ( specialization() != HUNTER_SURVIVAL )
+        sim -> cancel();
+    }
+  }
+
+  if ( specialization() == HUNTER_SURVIVAL && main_hand_weapon.group() != WEAPON_2H )
+  {
+    sim -> error( "Player {} does not have a proper weapon at the Main Hand slot: {}.",
+                  name(), util::weapon_type_string( main_hand_weapon.type ) );
   }
 
   if ( action_list_str.empty() )
