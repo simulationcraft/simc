@@ -1377,6 +1377,7 @@ void wandering_soul( special_effect_t& effect )
       proc_spell_t( "ruinous_bolt", e.player, e.player -> find_spell( 280206 ) )
     {
       aoe = 0;
+      range = data().effectN( 1 ).radius_max();
       base_dd_min = base_dd_max = power.value( 1 );
     }
   };
@@ -1415,9 +1416,11 @@ void wandering_soul( special_effect_t& effect )
     if ( ruinous_bolt.enabled() )
     {
       auto action = unique_gear::create_proc_action<ruinous_bolt_t>( "ruinous_bolt", effect, ruinous_bolt );
-      buff -> set_tick_callback( [ action ]( buff_t* b, int, const timespan_t& ) {
-        // TODO: review targeting behaviour
-        action -> set_target( b -> player -> target );
+      buff -> set_tick_callback( [ action ]( buff_t*, int, const timespan_t& ) {
+        const auto& tl = action -> target_list();
+        if ( tl.empty() )
+          return;
+        action -> set_target( tl[ action -> rng().range( tl.size() ) ] );
         action -> execute();
       } );
     }
