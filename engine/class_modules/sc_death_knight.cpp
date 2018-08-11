@@ -851,7 +851,6 @@ public:
     cooldown.army_of_the_dead = get_cooldown( "army_of_the_dead" );
     cooldown.apocalypse = get_cooldown( "apocalypse" );
     cooldown.bone_shield_icd = get_cooldown( "bone_shield_icd" );
-    cooldown.bone_shield_icd -> duration = timespan_t::from_seconds( 2.5 );
     cooldown.dancing_rune_weapon = get_cooldown( "dancing_rune_weapon" );
     cooldown.dark_transformation = get_cooldown( "dark_transformation" );
     cooldown.death_and_decay = get_cooldown( "death_and_decay" );
@@ -8425,7 +8424,7 @@ void death_knight_t::bone_shield_handler( const action_state_t* state ) const
     {
       cooldown.dancing_rune_weapon -> adjust( timespan_t::from_millis( sets -> set( DEATH_KNIGHT_BLOOD, T21, B2) -> effectN( 1 ).base_value() ), false );
     }
-    cooldown.bone_shield_icd -> start();
+    cooldown.bone_shield_icd -> start( spell.bone_shield -> internal_cooldown() );
 
     if ( ! buffs.bone_shield -> up() && buffs.bones_of_the_damned -> up() )
     {
@@ -8820,7 +8819,7 @@ void death_knight_t::invalidate_cache( cache_e c )
         player_t::invalidate_cache( CACHE_ATTACK_POWER );
       break;
     case CACHE_ATTACK_POWER:
-      if ( specialization() == DEATH_KNIGHT_BLOOD )
+      if ( spell.bone_shield -> ok() )
         player_t::invalidate_cache( CACHE_BONUS_ARMOR );
       break;
     default: break;
