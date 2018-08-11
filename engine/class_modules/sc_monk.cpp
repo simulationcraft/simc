@@ -3415,16 +3415,6 @@ struct blackout_kick_totm_proc : public monk_melee_attack_t
     return am;
   }
 
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double b = base_t::bonus_da( s );
-
-    if ( p()->azerite.elusive_footwork.ok() )
-      b += p()->azerite.elusive_footwork.value( 3 );
-
-    return b;
-  }
-
   virtual double cost() const override
   {
     return 0;
@@ -3542,16 +3532,6 @@ struct blackout_kick_t : public monk_melee_attack_t
         break;
     }
     return am;
-  }
-
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double b = base_t::bonus_da( s );
-
-    if ( p()->azerite.elusive_footwork.ok() )
-      b += p()->azerite.elusive_footwork.value( 3 );
-
-    return b;
   }
 
   virtual void consume_resource() override
