@@ -26,7 +26,7 @@ T22_Generate_Druid.simc
 T22_Generate_Hunter.simc
 
 # Mage
-#T22_Generate_Mage.simc
+T22_Generate_Mage.simc
 
 # Monk
 T22_Generate_Monk.simc
@@ -44,7 +44,7 @@ T22_Generate_Rogue.simc
 T22_Generate_Shaman.simc
 
 # Warlock
-#T22_Generate_Warlock.simc
+T22_Generate_Warlock.simc
 
 # Warrior
 T22_Generate_Warrior.simc

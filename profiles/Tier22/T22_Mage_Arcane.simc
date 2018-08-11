@@ -1,0 +1,128 @@
+mage="T22_Mage_Arcane"
+spec=arcane
+level=120
+race=troll
+role=spell
+position=back
+talents=2032021
+
+# Default consumables
+potion=battle_potion_of_intellect
+flask=endless_fathoms
+food=bountiful_captains_feast
+augmentation=battle_scarred
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+actions.precombat+=/arcane_intellect
+actions.precombat+=/summon_arcane_familiar
+# conserve_mana is the mana percentage we want to go down to during conserve. It needs to leave enough room to worst case scenario spam AB only during AP.
+actions.precombat+=/variable,name=conserve_mana,op=set,value=35,if=talent.overpowered.enabled
+actions.precombat+=/variable,name=conserve_mana,op=set,value=45,if=!talent.overpowered.enabled
+actions.precombat+=/snapshot_stats
+actions.precombat+=/mirror_image
+actions.precombat+=/potion
+actions.precombat+=/arcane_blast
+
+# Executed every time the actor is available.
+# Interrupt the boss when possible.
+actions=counterspell,if=target.debuff.casting.react
+actions+=/time_warp,if=time=0&buff.bloodlust.down
+# Swap to the 'Arcane Pressure' rotation when we got enough traits for it. This implies stuff like no longer casting Arcane Missiles, and throwing out Arcane Barrage whenever we got 4 AC.
+actions+=/variable,name=pressure_rotation,op=set,value=(azerite.arcane_pressure.rank>=2|(talent.resonance.enabled&active_enemies>=2))&target.health.pct<=35
+# Start a burn phase when important cooldowns are available. Start with 4 arcane charges, unless there's a good reason not to. (charged up)
+actions+=/call_action_list,name=burn,if=burn_phase|target.time_to_die<variable.average_burn_length|(cooldown.arcane_power.remains=0&cooldown.evocation.remains<=variable.average_burn_length&(buff.arcane_charge.stack=buff.arcane_charge.max_stack|(talent.charged_up.enabled&cooldown.charged_up.remains=0)))
+actions+=/call_action_list,name=conserve,if=!burn_phase
+actions+=/call_action_list,name=movement
+
+# Increment our burn phase counter. Whenever we enter the `burn` actions without being in a burn phase, it means that we are about to start one.
+actions.burn=variable,name=total_burns,op=add,value=1,if=!burn_phase
+actions.burn+=/start_burn_phase,if=!burn_phase
+# End the burn phase when we just evocated.
+actions.burn+=/stop_burn_phase,if=burn_phase&(prev_gcd.1.evocation|(equipped.gravity_spiral&cooldown.evocation.charges=0&prev_gcd.1.evocation))&target.time_to_die>variable.average_burn_length&burn_phase_duration>0
+actions.burn+=/mirror_image
+actions.burn+=/charged_up,if=buff.arcane_charge.stack<=1&(!set_bonus.tier20_2pc|cooldown.presence_of_mind.remains>5)
+actions.burn+=/nether_tempest,if=(refreshable|!ticking)&buff.arcane_charge.stack=buff.arcane_charge.max_stack&buff.rune_of_power.down&buff.arcane_power.down
+actions.burn+=/time_warp,if=buff.bloodlust.down&((buff.arcane_power.down&cooldown.arcane_power.remains=0)|(target.time_to_die<=buff.bloodlust.duration))
+actions.burn+=/lights_judgment,if=buff.arcane_power.down
+actions.burn+=/rune_of_power,if=!buff.arcane_power.up&(mana.pct>=50|cooldown.arcane_power.remains=0)&(buff.arcane_charge.stack=buff.arcane_charge.max_stack)
+actions.burn+=/arcane_power
+actions.burn+=/use_items,if=buff.arcane_power.up|target.time_to_die<cooldown.arcane_power.remains
+actions.burn+=/blood_fury
+actions.burn+=/berserking
+actions.burn+=/fireblood
+actions.burn+=/ancestral_call
+actions.burn+=/presence_of_mind
+actions.burn+=/arcane_orb,if=buff.arcane_charge.stack=0|(active_enemies<3|(active_enemies<2&talent.resonance.enabled))
+actions.burn+=/arcane_blast,if=buff.presence_of_mind.up&set_bonus.tier20_2pc&talent.overpowered.enabled&buff.arcane_power.up
+actions.burn+=/arcane_barrage,if=(active_enemies>=3|(active_enemies>=2&talent.resonance.enabled))&(buff.arcane_charge.stack=buff.arcane_charge.max_stack)
+actions.burn+=/arcane_explosion,if=active_enemies>=3|(active_enemies>=2&talent.resonance.enabled)
+actions.burn+=/arcane_barrage,if=variable.pressure_rotation&buff.arcane_charge.stack=buff.arcane_charge.max_stack
+actions.burn+=/arcane_missiles,if=(buff.clearcasting.react&mana.pct<=95)&variable.pressure_rotation=0,chain=1
+actions.burn+=/arcane_blast
+# Now that we're done burning, we can update the average_burn_length with the length of this burn.
+actions.burn+=/variable,name=average_burn_length,op=set,value=(variable.average_burn_length*variable.total_burns-variable.average_burn_length+(burn_phase_duration))%variable.total_burns
+actions.burn+=/evocation,interrupt_if=mana.pct>=97|(buff.clearcasting.react&mana.pct>=92)
+# For the rare occasion where we go oom before evocation is back up. (Usually because we get very bad rng so the burn is cut very short)
+actions.burn+=/arcane_barrage
+
+actions.conserve=mirror_image
+actions.conserve+=/charged_up,if=buff.arcane_charge.stack=0
+actions.conserve+=/presence_of_mind,if=set_bonus.tier20_2pc&buff.arcane_charge.stack=0
+actions.conserve+=/nether_tempest,if=(refreshable|!ticking)&buff.arcane_charge.stack=buff.arcane_charge.max_stack&buff.rune_of_power.down&buff.arcane_power.down
+actions.conserve+=/arcane_orb,if=buff.arcane_charge.stack<=2&(cooldown.arcane_power.remains>10|active_enemies<=2)
+# Arcane Blast shifts up in priority when running rule of threes. (Or Rhonin's)
+actions.conserve+=/arcane_blast,if=(buff.rule_of_threes.up|buff.rhonins_assaulting_armwraps.react)&buff.arcane_charge.stack>=3
+actions.conserve+=/rune_of_power,if=buff.arcane_charge.stack=buff.arcane_charge.max_stack&(full_recharge_time<=execute_time|recharge_time<=cooldown.arcane_power.remains|target.time_to_die<=cooldown.arcane_power.remains)
+actions.conserve+=/arcane_missiles,if=mana.pct<=95&buff.clearcasting.react&variable.pressure_rotation=0,chain=1
+actions.conserve+=/arcane_blast,if=equipped.mystic_kilt_of_the_rune_master&buff.arcane_charge.stack=0
+# During conserve, we still just want to continue not dropping charges as long as possible.So keep 'burning' as long as possible (aka conserve_mana threshhold) and then swap to a 4x AB->Abarr conserve rotation. This is mana neutral for RoT, mana negative with arcane familiar. If we do not have 4 AC, we can dip slightly lower to get a 4th AC.
+actions.conserve+=/arcane_barrage,if=((buff.arcane_charge.stack=buff.arcane_charge.max_stack)&(mana.pct<=variable.conserve_mana|variable.pressure_rotation)|(talent.arcane_orb.enabled&cooldown.arcane_orb.remains<=gcd&cooldown.arcane_power.remains>10))|mana.pct<=(variable.conserve_mana-10)
+# Supernova is barely worth casting, which is why it is so far down, only just above AB. 
+actions.conserve+=/supernova,if=mana.pct<=95
+# Keep 'burning' in aoe situations until conserve_mana pct. After that only cast AE with 3 Arcane charges, since it's almost equal mana cost to a 3 stack AB anyway. At that point AoE rotation will be AB x3 -> AE -> Abarr
+actions.conserve+=/arcane_explosion,if=active_enemies>=3&(mana.pct>=variable.conserve_mana|buff.arcane_charge.stack=3)
+actions.conserve+=/arcane_torrent
+actions.conserve+=/arcane_blast
+actions.conserve+=/arcane_barrage
+
+actions.movement=shimmer,if=movement.distance>=10
+actions.movement+=/blink,if=movement.distance>=10
+actions.movement+=/presence_of_mind
+actions.movement+=/arcane_missiles
+actions.movement+=/arcane_orb
+actions.movement+=/supernova
+
+head=headdress_of_the_first_empire,id=159236,bonus_id=1557/4819/4775/4786,azerite_powers=8/214/459/15/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=
+shoulders=amice_of_corrupting_horror,id=160726,bonus_id=4824/1507/4775,azerite_powers=8/214/21/85/13
+back=plasmaspattered_greatcloak,id=160644,bonus_id=4800/1507
+chest=ruffled_poet_blouse,id=158301,bonus_id=1557/4819/4775/4786,azerite_powers=8/214/21/14/13
+wrists=voidlashed_wristband,id=160617,bonus_id=4800/1507
+hands=mutagenic_protofluid_handwraps,id=160715,bonus_id=4800/1507
+waist=cord_of_septic_envelopment,id=160727,bonus_id=4800/1507
+legs=leggings_of_lingering_infestation,id=160615,bonus_id=4800/1507
+feet=volatile_walkers,id=160714,bonus_id=4800/1507
+finger1=rotscour_ring,id=160645,bonus_id=4800/1507,enchant=pact_of_mastery
+finger2=ring_of_the_infinite_void,id=160647,bonus_id=4800/1507,enchant=pact_of_mastery
+trinket1=lady_waycrests_music_box,id=159631,bonus_id=1542/4779
+trinket2=vigilants_bloodshaper,id=160651,bonus_id=4800/1507
+main_hand=heptavium_staff_of_torturous_knowledge,id=160690,bonus_id=4800/1507,enchant=torrent_of_elements
+
+# Gear Summary
+# gear_ilvl=385.27
+# gear_stamina=7207
+# gear_intellect=5479
+# gear_crit_rating=1201
+# gear_haste_rating=700
+# gear_mastery_rating=974
+# gear_versatility_rating=129
+# gear_armor=1159
