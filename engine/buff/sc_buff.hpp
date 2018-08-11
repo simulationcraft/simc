@@ -202,6 +202,8 @@ public:
   bool reverse, constant, quiet, overridden, can_cancel;
   bool requires_invalidation;
 
+  int reverse_stack_reduction; /// Number of stacks reduced when reverse = true
+
   // dynamic values
   double current_value;
   int current_stack;
@@ -418,6 +420,7 @@ public:
   buff_t* set_rppm( rppm_scale_e scale = RPPM_NONE, double freq = -1, double mod = -1);
   buff_t* set_trigger_spell( const spell_data_t* s );
   buff_t* set_stack_change_callback( const buff_stack_change_callback_t& cb );
+  buff_t* set_reverse_stack_count( int value );
 
 private:
   void update_trigger_calculations();

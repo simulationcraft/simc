@@ -2124,6 +2124,7 @@ struct special_effect_t
   unsigned int override_result_es_mask;
   unsigned result_es_mask;
   bool reverse;
+  int reverse_stack_reduction;
   int aoe;
   bool proc_delay;
   bool unique;

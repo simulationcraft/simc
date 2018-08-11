@@ -151,6 +151,7 @@ void special_effect_t::reset()
   discharge_amount = 0;
   discharge_scaling = 0;
   aoe = 0;
+  reverse_stack_reduction = 0;
 
   // Must match buff creator defaults for now
   max_stacks = -1;
@@ -326,6 +327,11 @@ stat_buff_t* special_effect_t::initialize_stat_buff() const
   if ( stat != STAT_NONE )
     buff->add_stat( stat, stat_amount );
 
+  if ( reverse_stack_reduction > 0 )
+  {
+    buff->set_reverse_stack_count( reverse_stack_reduction );
+  }
+
   return buff;
 }
 
@@ -389,6 +395,11 @@ absorb_buff_t* special_effect_t::initialize_absorb_buff() const
   buff->set_chance( 1 );
 
   buff->set_refresh_behavior( buff_refresh_behavior::DURATION );
+
+  if ( reverse_stack_reduction > 0 )
+  {
+    buff->set_reverse_stack_count( reverse_stack_reduction );
+  }
 
   return buff;
 }
@@ -938,7 +949,13 @@ inline std::ostream& operator<<(std::ostream &os, const special_effect_t& se)
     if ( se.tick_time() != timespan_t::zero() )
       os << " tick=" << se.tick_time().total_seconds();
     if ( se.reverse )
+    {
       os << " Reverse";
+      if ( se.reverse_stack_reduction > 0 )
+      {
+        os << "(" << se.reverse_stack_reduction << ")";
+      }
+    }
   }
 
   if ( se.school != SCHOOL_NONE )
@@ -1076,6 +1093,10 @@ void special_effect::parse_special_effect_encoding( special_effect_t& effect,
     else if ( t.name == "tick" )
     {
       effect.tick = timespan_t::from_seconds( t.value );
+    }
+    else if ( t.full == "stackreduction" )
+    {
+      effect.reverse_stack_reduction = as<int>( t.value );
     }
     else if ( t.full == "reverse" )
     {

@@ -447,6 +447,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params )
     overridden(),
     can_cancel( true ),
     requires_invalidation(),
+    reverse_stack_reduction( 1 ),
     current_value(),
     current_stack(),
     buff_duration( params._duration ),
@@ -935,6 +936,12 @@ buff_t* buff_t::set_trigger_spell( const spell_data_t* s )
 buff_t* buff_t::set_stack_change_callback( const buff_stack_change_callback_t& cb )
 {
   stack_change_callback = cb;
+  return this;
+}
+
+buff_t* buff_t::set_reverse_stack_count( int count )
+{
+  reverse_stack_reduction = count;
   return this;
 }
 
@@ -1475,7 +1482,7 @@ void buff_t::start( int stacks, double value, timespan_t duration )
     if ( period == d )
       period -= timespan_t::from_millis( 1 );
     assert( !tick_event );
-    tick_event = make_event<tick_t>( *sim, this, period, current_value, reverse ? 1 : stacks );
+    tick_event = make_event<tick_t>( *sim, this, period, current_value, reverse ? reverse_stack_reduction : stacks );
 
     if ( tick_zero && tick_callback )
     {
