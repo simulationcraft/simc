@@ -3502,6 +3502,8 @@ void sim_t::create_options()
         bfa_opts.secrets_of_the_deep_chance, 0, 1 ) );
   add_option( opt_float( "bfa.secrets_of_the_deep_collect_chance",
         bfa_opts.secrets_of_the_deep_collect_chance, 0, 1 ) );
+  add_option( opt_int( "bfa.battlefield_debuff_stacks",
+        bfa_opts.battlefield_debuff_stacks, 1, 25 ) );
 
   // applies to: "lavish_suramar_feast", battle for azeroth feasts
   add_option( opt_bool( "feast_as_dps", feast_as_dps ) );

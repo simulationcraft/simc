@@ -504,6 +504,7 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     buff_t* shadow_blades;
     buff_t* azerite_globules;
     buff_t* dead_ahead;
+    buff_t* battlefield_debuff;
   } debuff;
 
   struct atd_dot_t
@@ -1112,6 +1113,8 @@ struct sim_t : private sc_thread_t
     double              secrets_of_the_deep_collect_chance = 1.0;
     /// Gutripper base RPPM when target is above 30%
     double              gutripper_default_rppm = 1.0;
+    /// Number of Battlefield Focus / Precision stacks to trigger on the enemy
+    int                 battlefield_debuff_stacks = 2;
   } bfa_opts;
 
   // Expansion specific data
@@ -7086,11 +7089,14 @@ struct proc_action_t : public T_ACTION
 
   void __initialize()
   {
-    this -> background = true;
-    this -> callbacks = this -> hasted_ticks = false;
+    this->background = true;
+    this->callbacks = this->hasted_ticks = false;
 
-    this -> may_crit = ! this -> data().flags( spell_attribute::SX_CANNOT_CRIT );
-    this -> tick_may_crit = this->data().flags( spell_attribute::SX_TICK_MAY_CRIT );
+    this->may_crit = !this->data().flags( spell_attribute::SX_CANNOT_CRIT );
+    this->tick_may_crit = this->data().flags( spell_attribute::SX_TICK_MAY_CRIT );
+    this->may_miss = !this->data().flags( spell_attribute::SX_ALWAYS_HIT );
+    this->may_dodge = this->may_parry =
+      this->may_block = !this->data().flags( spell_attribute::SX_NO_D_P_B );
 
     if ( this -> radius > 0 )
       this -> aoe = -1;
