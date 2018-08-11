@@ -81,7 +81,6 @@ namespace items
   void razdunks_big_red_button( special_effect_t& );
   void merekthas_fang( special_effect_t& );
   void lingering_sporepods( special_effect_t& );
-  void ignition_mages_fuse( special_effect_t& );
   void lady_waycrests_music_box( special_effect_t& );
   void balefire_branch( special_effect_t& );
   // 8.0.1 - Uldir Trinkets
@@ -752,13 +751,6 @@ void items::lingering_sporepods( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-// Ignition Mage's Fuse =====================================================
-
-void items::ignition_mages_fuse ( special_effect_t& effect )
-{
-  effect.tick = effect.driver()->effectN( 1 ).period();
-}
-
 // Lady Waycrest's Music Box ================================================
 
 void items::lady_waycrests_music_box( special_effect_t& effect )
@@ -872,7 +864,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 278053, items::vigilants_bloodshaper);
   register_special_effect( 270921, items::hadals_nautilus );
   register_special_effect( 268035, items::lingering_sporepods );
-  register_special_effect( 271117, items::ignition_mages_fuse );
+  register_special_effect( 271117, "4Tick" );
   register_special_effect( 271631, items::lady_waycrests_music_box );
   register_special_effect( 268999, items::balefire_branch );
   register_special_effect( 268314, "268311Trigger" ); // Galecaller's Boon, assumes the player always stands in the area
