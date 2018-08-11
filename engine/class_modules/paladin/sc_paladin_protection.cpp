@@ -714,7 +714,7 @@ void paladin_t::target_mitigation( school_e school,
   if ( talents.last_defender -> ok() )
   {
     // Last Defender gives a multiplier of 0.97^N - coded using spell data in case that changes
-    s -> result_amount *= std::pow( 1.0 - talents.last_defender -> effectN( 2 ).percent(), buffs.last_defender -> current_stack );
+    s -> result_amount *= last_defender_mitigation();
   }
 
   // heathcliffs
@@ -940,7 +940,7 @@ void paladin_t::create_buffs_protection()
                            -> set_absorb_gain( get_gain( "holy_shield_absorb" ) );
   buffs.avengers_valor = make_buff( this, "avengers_valor", find_specialization_spell( "Avenger's Shield" ) -> effectN( 4 ).trigger() );
   buffs.avengers_valor -> set_default_value( find_specialization_spell( "Avenger's Shield" ) -> effectN( 4 ).trigger() -> effectN( 1 ).percent() );
-  buffs.ardent_defender = make_buff( this, "ardent_defender", find_specialization_spell( "Ardent Defender" ) );
+  buffs.ardent_defender = make_buff( this, "ardent_defender", find_specialization_spell( "Ardent Defender" ) );   
 
   // Azerite traits
   buffs.inspiring_vanguard = make_buff<stat_buff_t>( this, "inspiring_vanguard", find_spell( 279397 ) )

@@ -568,6 +568,18 @@ struct melee_t : public paladin_melee_attack_t
       return paladin_melee_attack_t::execute_time();
   }
 
+  virtual double action_multiplier() const override
+  {
+    double am = paladin_melee_attack_t::action_multiplier();
+
+    // Last Defender affects a whilelist of spells but also melee attacks
+    if ( p() -> talents.last_defender -> ok() )
+    {
+      am *= p() -> last_defender_damage();
+    }
+    return am;
+  }
+
   virtual void execute() override
   {
     if ( first )
@@ -1667,17 +1679,6 @@ double paladin_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  // These affect all damage done by the paladin
-
-  // Last Defender
-  if ( talents.last_defender -> ok() )
-  {
-    // Last defender gives the same amount of damage increase as it gives mitigation.
-    // Mitigation is 0.97^n, or (1-0.03)^n, where the 0.03 is in the spell data.
-    // The damage buff is then 1+(1-0.97^n), or 2-(1-0.03)^n.
-    m *= 2.0 - std::pow( 1.0 - talents.last_defender -> effectN( 2 ).percent(), buffs.last_defender -> current_stack );
-  }
-
   return m;
 }
 
@@ -2055,40 +2056,6 @@ void paladin_t::combat_begin()
   }
 }
 
-
-// Last defender ===========================================================
-
-struct last_defender_callback_t
-{
-  paladin_t* p;
-  double last_defender_distance;
-  last_defender_callback_t( paladin_t* p ) : p( p ), last_defender_distance( 0 )
-  {
-    last_defender_distance = p -> talents.last_defender -> effectN( 1 ).base_value();
-  }
-
-  void operator()( player_t* )
-  {
-    int num_enemies = p -> get_local_enemies( last_defender_distance );
-
-    p -> buffs.last_defender -> expire();
-    p -> buffs.last_defender -> trigger( num_enemies );
-  }
-};
-
-// paladin_t::create_actions ================================================
-
-void paladin_t::activate()
-{
-  player_t::activate();
-
-  if ( talents.last_defender -> ok() )
-  {
-    sim -> target_non_sleeping_list.register_callback( last_defender_callback_t( this ) );
-  }
-}
-
-
 // paladin_t::get_hand_of_light =============================================
 
 double paladin_t::get_hand_of_light() const
@@ -2115,6 +2082,27 @@ bool paladin_t::get_how_availability() const
   return true;
 }
 
+// Last Defender
+
+double paladin_t::last_defender_damage() const
+{
+  double distance = talents.last_defender -> effectN( 1 ).base_value();
+  double num_enemies = get_local_enemies( distance );
+
+  double damage_multiplier = std::pow( 1.0 + talents.last_defender -> effectN( 2 ).percent(), num_enemies );
+
+  return damage_multiplier;
+}
+
+double paladin_t::last_defender_mitigation() const
+{
+  double distance = talents.last_defender -> effectN( 1 ).base_value();
+  double num_enemies = get_local_enemies( distance );
+
+  double mitigation = std::pow( 1.0 - talents.last_defender -> effectN( 2 ).percent(), num_enemies );
+
+  return mitigation;
+}
 
 // player_t::create_expression ==============================================
 

@@ -860,11 +860,6 @@ void paladin_t::create_buffs_retribution()
                                                  ->set_tick_callback([this](buff_t*, int, const timespan_t&) { buffs.scarlet_inquisitors_expurgation -> trigger(); })
                                                  ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED );
 
-  buffs.last_defender = make_buff( this, "last_defender", talents.last_defender  )
-    ->set_chance( talents.last_defender -> ok() )
-    ->set_max_stack( 99 ) //Spell doesn't cite any limits, just has diminishing returns.
-    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-
   // Tier Bonuses
   buffs.ret_t21_4p             = buff_creator_t( this, "hidden_retribution_t21_4p", find_spell( 253806 ) );
 

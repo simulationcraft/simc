@@ -162,7 +162,6 @@ public:
     buff_t* grand_crusader;
     buff_t* infusion_of_light;
     buff_t* shield_of_the_righteous;
-    buff_t* last_defender;
     buff_t* avengers_valor;
     buff_t* ardent_defender;
 
@@ -485,7 +484,6 @@ public:
   virtual void      create_options() override;
   virtual double    matching_gear_multiplier( attribute_e attr ) const override;
   virtual action_t* create_action( const std::string& name, const std::string& options_str ) override;
-  void       activate() override;
   virtual resource_e primary_resource() const override { return RESOURCE_MANA; }
   virtual role_e    primary_role() const override;
   virtual stat_e    convert_hybrid_stat( stat_e s ) const override;
@@ -504,6 +502,8 @@ public:
   void    trigger_forbearance( player_t* target );
   int     get_local_enemies( double distance ) const;
   bool    standing_in_consecration() const;
+  double  last_defender_damage() const;
+  double  last_defender_mitigation() const;
 
   expr_t*   create_consecration_expression( const std::string& expr_str );
   
@@ -687,6 +687,7 @@ public:
   bool ret_inquisition;
   bool ret_crusade;
   bool avenging_wrath;
+  bool last_defender_increase;
 
   paladin_action_t( const std::string& n, paladin_t* player,
                     const spell_data_t* s = spell_data_t::nil() ) :
@@ -698,7 +699,8 @@ public:
     ret_damage_increase_two( ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 11 ) ) ),
     ret_damage_increase_three( ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 12 ) ) ),
     ret_damage_increase_four( ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 13 ) ) ),
-    ret_mastery_direct( ab::data().affected_by( player -> passives.hand_of_light -> effectN( 1 ) ) || ab::data().affected_by( player -> passives.hand_of_light -> effectN( 2 ) ) )
+    ret_mastery_direct( ab::data().affected_by( player -> passives.hand_of_light -> effectN( 1 ) ) || ab::data().affected_by( player -> passives.hand_of_light -> effectN( 2 ) ) ),
+    last_defender_increase( ab::data().affected_by( player -> talents.last_defender -> effectN( 5 ) ) )
   {
     // Aura buff to protection paladin added in 7.3
     if ( p() -> specialization() == PALADIN_PROTECTION && this -> data().affected_by( p() -> passives.protection_paladin -> effectN( 1 ) ) )
@@ -869,6 +871,11 @@ public:
         }
         am *= 1.0 + aw_multiplier;
       }
+    }
+
+    if ( p() -> talents.last_defender -> ok() && last_defender_increase )
+    {
+      am *= p() -> last_defender_damage();
     }
 
     return am;
