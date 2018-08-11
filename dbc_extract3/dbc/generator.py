@@ -1220,6 +1220,8 @@ class SpellDataGenerator(DataGenerator):
          280817, 282724, 280855, 282720,
          # Squalls Deck spells
          276124, 276125, 276126, 276127, 276128, 276129, 276130, 276131,
+         # Fathoms Deck spells
+         276187, 276188, 276189, 276190, 276191, 276192, 276193, 276194,
         ),
 
         # Warrior:

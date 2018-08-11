@@ -154,6 +154,33 @@ struct shuffle_event_t : public event_t
   { make_event<shuffle_event_t>( sim(), deck ); }
 };
 
+// Generic BFA darkmoon card template class to reduce copypasta
+template <typename T>
+struct bfa_darkmoon_deck_cb_t : public dbc_proc_callback_t
+{
+  darkmoon_action_deck_t<T>* deck;
+
+  bfa_darkmoon_deck_cb_t( const special_effect_t& effect, const std::vector<unsigned>& cards ) :
+    dbc_proc_callback_t( effect.player, effect ),
+    deck( new darkmoon_action_deck_t<T>( effect, cards ) )
+  {
+    deck->initialize();
+
+    effect.player->register_combat_begin( [ this ]( player_t* ) {
+      make_event<shuffle_event_t>( *listener->sim, deck, true );
+    } );
+  }
+
+  void execute( action_t*, action_state_t* state ) override
+  {
+    deck->top_card->set_target( state->target );
+    deck->top_card->schedule_execute();
+  }
+
+  ~bfa_darkmoon_deck_cb_t()
+  { delete deck; }
+};
+
 } // Namespace unique_gear ends
 
 #endif /* UNIQUE_GEAR_HPP */
