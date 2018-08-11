@@ -3678,7 +3678,7 @@ struct rjw_tick_action_t : public monk_melee_attack_t
   rjw_tick_action_t( const std::string& name, monk_t* p, const spell_data_t* data )
     : monk_melee_attack_t( name, p, data )
   {
-    ww_mastery                    = true;
+    ww_mastery = true;
 
     dual = background = true;
     aoe               = -1;
@@ -5355,10 +5355,14 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
 
     if ( d->is_ticking() )
     {
-      damage_remaining += d->state->result_amount;  // Assumes base_td == damage, no modifiers or crits
+      auto dot_state = debug_cast<residual_action::residual_periodic_state_t*>( d->state );
+      damage_remaining += dot_state -> tick_amount; // Assumes base_td == damage, no modifiers or crits
       damage_remaining *= percent_amount;
-      d->state->result_amount -= damage_remaining;
+      dot_state -> tick_amount -= damage_remaining;
     }
+
+    sim->print_debug( "{} partially clears stagger by {:.2f}% ({} / tick).", player->name(), percent_amount * 100.0,
+                      damage_remaining );
 
     p()->stagger_damage_changed();
 
@@ -5545,6 +5549,9 @@ struct purifying_brew_t : public monk_spell_t
     {
       p()->buff.fit_to_burst->trigger( p()->buff.fit_to_burst->max_stack() );
     }
+
+    // Reduce stagger damage
+    p()->active_actions.stagger_self_damage->clear_partial_damage( data().effectN( 1 ).percent() );
   }
 };
 
@@ -9616,12 +9623,13 @@ double monk_t::stagger_pct( int target_level )
 {
   double stagger_base = stagger_base_value();
 
-  double k_value = 0;
-  double lvl = level();
+  double k_value     = 0;
+  double lvl         = level();
   double level_check = target_level - lvl;
 
   // End game raiding of each expansion uses the player's level for +1, +2, and +3 level targets
-  if ( ( lvl == 60 || lvl == 70 || lvl == 80 || lvl == 85 || lvl == 90 || lvl == 100 || lvl == 110 ) && 0 <= level_check && level_check <= 3  )
+  if ( ( lvl == 60 || lvl == 70 || lvl == 80 || lvl == 85 || lvl == 90 || lvl == 100 || lvl == 110 ) &&
+       0 <= level_check && level_check <= 3 )
     k_value = dbc.npc_armor_mitigation_constant( lvl );
   else
     k_value = dbc.npc_armor_mitigation_constant( target_level );
