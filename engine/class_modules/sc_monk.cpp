@@ -3679,7 +3679,6 @@ struct rjw_tick_action_t : public monk_melee_attack_t
     : monk_melee_attack_t( name, p, data )
   {
     ww_mastery                    = true;
-    affected_by.sunrise_technique = true;
 
     dual = background = true;
     aoe               = -1;
