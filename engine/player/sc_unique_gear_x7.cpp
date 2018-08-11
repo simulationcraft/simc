@@ -6,8 +6,6 @@
 #include "simulationcraft.hpp"
 
 // TODO:
-//   Ignition Mage's Fuse automatically generated effect doesn't give extra stacks
-//   Lady Waycrest's Music Box doesn't do AoE damage
 //   Balefire Branch starts at 100 stacks and decays 5 stack every sec
 //   Azurethos' Singed Plumage starts at 5 stacks and goes down instead of going up
 
@@ -89,6 +87,7 @@ namespace items
   void merekthas_fang( special_effect_t& );
   void lingering_sporepods( special_effect_t& );
   void ignition_mages_fuse( special_effect_t& );
+  void lady_waycrests_music_box( special_effect_t& );
   // 8.0.1 - Uldir Trinkets
   void frenetic_corpuscle( special_effect_t& );
   void vigilants_bloodshaper(special_effect_t& );
@@ -764,6 +763,33 @@ void items::ignition_mages_fuse ( special_effect_t& effect )
   effect.tick = effect.driver()->effectN( 1 ).period();
 }
 
+// Lady Waycrest's Music Box ================================================
+
+void items::lady_waycrests_music_box( special_effect_t& effect )
+{
+  struct cacophonous_chord_t : public proc_t
+  {
+    cacophonous_chord_t( const special_effect_t& effect ) :
+      proc_t( effect, "cacophonous_chord", 271671 )
+    {
+      aoe = 0;
+    }
+
+    // Pick a random active target from the range
+    void execute() override
+    {
+      size_t target_index = static_cast<size_t>( rng().range( 0, as<double>( target_list().size() ) ) );
+      set_target( target_list()[ target_index ] );
+
+      proc_t::execute();
+    }
+  };
+
+  effect.execute_action = create_proc_action<cacophonous_chord_t>( "cacophonous_chord", effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Frenetic Corpuscle =======================================================
 
 void items::frenetic_corpuscle( special_effect_t& effect )
@@ -843,6 +869,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 270921, items::hadals_nautilus );
   register_special_effect( 268035, items::lingering_sporepods );
   register_special_effect( 271117, items::ignition_mages_fuse );
+  register_special_effect( 271631, items::lady_waycrests_music_box );
   register_special_effect( 268314, "268311Trigger" ); // Galecaller's Boon, assumes the player always stands in the area
   register_special_effect( 278140, items::frenetic_corpuscle );
 }
