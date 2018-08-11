@@ -2391,6 +2391,7 @@ struct earth_elemental_t : public primal_elemental_t
           make_buff<buff_t>( this, "rumbling_tremors", o()->azerite.rumbling_tremors.spell() )
               ->set_period( base_driver->effectN( 3 ).period() )
               ->set_duration( sim->expected_iteration_time * 2 )
+              ->set_tick_time_behavior( buff_tick_time_behavior::HASTED )
               ->set_tick_callback( [this, damage]( buff_t* /* b */, int /* s */, const timespan_t& /* tt */ ) {
                 damage->set_target( target );
                 damage->execute();
