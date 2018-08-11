@@ -21,6 +21,20 @@ enum secondary_trigger_e
   TRIGGER_SHURIKEN_TORNADO
 };
 
+enum stealth_type_e
+{
+  STEALTH_NORMAL = 0x01,
+  STEALTH_VANISH = 0x02,
+  STEALTH_SHADOWMELD = 0x04,
+  STEALTH_SUBTERFUGE = 0x08,
+  STEALTH_SHADOWDANCE = 0x10,
+
+  STEALTH_ROGUE = ( STEALTH_SUBTERFUGE | STEALTH_SHADOWDANCE ),   // Subterfuge + Shadowdance
+  STEALTH_BASIC = ( STEALTH_NORMAL | STEALTH_VANISH ),            // Normal + Vanish
+
+  STEALTH_ALL = 0xFF
+};
+
 struct rogue_t;
 namespace actions
 {
@@ -725,6 +739,7 @@ struct rogue_t : public player_t
   { return debug_cast<const actions::rogue_attack_t*>( action ); }
 
   void swap_weapon( weapon_slot_e slot, current_weapon_e to_weapon, bool in_combat = true );
+  bool stealthed( uint32_t stealth_mask = STEALTH_ALL ) const;
 };
 
 namespace actions { // namespace actions
@@ -961,11 +976,6 @@ struct rogue_attack_t : public melee_attack_t
     return t;
   }
 
-  bool stealthed()
-  {
-    return p() -> buffs.vanish -> check() || p() -> buffs.stealth -> check() || player -> buffs.shadowmeld -> check();
-  }
-
   // Helper function for expressions. Returns the number of guaranteed generated combo points for
   // this ability, taking into account any potential buffs.
   virtual double generate_cp() const
@@ -1154,8 +1164,7 @@ struct rogue_attack_t : public melee_attack_t
     double m = melee_attack_t::composite_persistent_multiplier( state );
 
     // Apply Nightstalker as a Persistent Multiplier for things that snapshot
-    if ( p()->talent.nightstalker->ok() && snapshots_nightstalker() &&
-      ( p()->buffs.stealth->check() || p()->buffs.shadow_dance->check() || p()->buffs.vanish->check() ) )
+    if ( p()->talent.nightstalker->ok() && snapshots_nightstalker() && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
     {
       m *= 1.0 + ( p()->talent.nightstalker->effectN( 2 ).percent() + p()->spec.subtlety_rogue->effectN( 4 ).percent() );
     }
@@ -1173,8 +1182,7 @@ struct rogue_attack_t : public melee_attack_t
     }
 
     // Apply Nightstalker as an Action Multiplier for things that don't snapshot
-    if ( p()->talent.nightstalker->ok() && !snapshots_nightstalker() &&
-      ( p()->buffs.stealth->check() || p()->buffs.shadow_dance->check() || p()->buffs.vanish->check() ) )
+    if ( p()->talent.nightstalker->ok() && !snapshots_nightstalker() && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
     {
       m *= 1.0 + ( p()->talent.nightstalker->effectN( 2 ).percent() + p()->spec.subtlety_rogue->effectN( 4 ).percent() );
     }
@@ -1953,8 +1961,7 @@ double rogue_attack_t::cost() const
   if ( c <= 0 )
     return 0;
 
-  if ( p() -> talent.shadow_focus -> ok() &&
-    ( p() -> buffs.stealth -> check() || p() -> buffs.vanish -> check() || p() -> buffs.shadow_dance -> check() ) )
+  if ( p()->talent.shadow_focus->ok() && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
   {
     c *= 1.0 + p() -> spell.shadow_focus -> effectN( 1 ).percent();
   }
@@ -2016,14 +2023,13 @@ void rogue_attack_t::execute()
   p() -> trigger_alacrity( execute_state );
   p() -> trigger_t19oh_8pc( execute_state );
 
-  if ( harmful && stealthed() )
+  if ( harmful && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWMELD ) )
   {
     player -> buffs.shadowmeld -> expire();
 
-    // Check stealthed again after shadowmeld is popped. If we're still
-    // stealthed, trigger subterfuge
-    if ( stealthed() && p() -> talent.subterfuge -> ok() && ! p() -> buffs.subterfuge -> check() )
-      p() -> buffs.subterfuge -> trigger();
+    // Check stealthed again after shadowmeld is popped. If we're still stealthed, trigger subterfuge
+    if ( p()->talent.subterfuge->ok() && !p()->buffs.subterfuge->check() && p()->stealthed( STEALTH_BASIC ) )
+      p()->buffs.subterfuge->trigger();
     else
       break_stealth( p() );
   }
@@ -2053,16 +2059,9 @@ inline bool rogue_attack_t::ready()
        player -> resources.current[ RESOURCE_COMBO_POINT ] < base_costs[ RESOURCE_COMBO_POINT ] )
     return false;
 
-  if ( requires_stealth )
+  if ( requires_stealth && !p()->stealthed() )
   {
-    if ( ! p() -> buffs.shadow_dance -> check() &&
-         ! p() -> buffs.stealth -> check() &&
-         ! player -> buffs.shadowmeld -> check() &&
-         ! p() -> buffs.vanish -> check() &&
-         ! p() -> buffs.subterfuge -> check() )
-    {
-      return false;
-    }
+    return false;
   }
 
   if ( requires_position != POSITION_NONE )
@@ -2877,7 +2876,7 @@ struct garrote_t : public rogue_attack_t
     if ( p() -> azerite.shrouded_suffocation.ok() )
     {
       // Note: Assuming Shadowmeld works, needs checking.
-      if ( p() -> buffs.stealth -> check() || p() -> buffs.vanish -> check() || p() -> buffs.subterfuge -> check() || p() -> player_t::buffs.shadowmeld -> check() )
+      if ( p()->stealthed() )
         debug_cast<garrote_state_t*>( state ) -> shrouded_suffocation = true;
     }
   }
@@ -2896,8 +2895,7 @@ struct garrote_t : public rogue_attack_t
   {
     double m = rogue_attack_t::composite_persistent_multiplier( state );
 
-    if ( p() -> talent.subterfuge -> ok() &&
-         ( p() -> buffs.stealth -> up() || p() -> buffs.vanish -> up() || p() -> buffs.subterfuge -> up() ) )
+    if ( p()->talent.subterfuge->ok() && p()->stealthed( STEALTH_BASIC | STEALTH_SUBTERFUGE ) )
     {
       m *= 1.0 + p() -> spell.subterfuge -> effectN( 2 ).percent();
     }
@@ -2934,8 +2932,7 @@ struct garrote_t : public rogue_attack_t
 
   void update_ready( timespan_t cd_duration = timespan_t::min() ) override
   {
-    if ( p() -> talent.subterfuge -> ok() &&
-         ( p() -> buffs.stealth -> check() || p() -> buffs.vanish -> check() || p() -> buffs.subterfuge -> check() ) )
+    if ( p()->talent.subterfuge->ok() && p()->stealthed( STEALTH_BASIC | STEALTH_SUBTERFUGE ) )
     {
       cd_duration = timespan_t::zero();
     }
@@ -2952,7 +2949,7 @@ struct garrote_t : public rogue_attack_t
     if ( p() -> azerite.shrouded_suffocation.ok() )
     {
       // Note: Assuming Shadowmeld works, needs checking.
-      if ( p() -> buffs.stealth -> check() || p() -> buffs.vanish -> check() || p() -> buffs.subterfuge -> check() || p() -> player_t::buffs.shadowmeld -> check() )
+      if ( p()->stealthed() )
         p() -> trigger_combo_point_gain( p() -> azerite.shrouded_suffocation.spell_ref().effectN( 2 ).base_value(), p() -> gains.shrouded_suffocation, this );
     }
   }
@@ -3865,7 +3862,7 @@ struct shadowstrike_t : public rogue_attack_t
   {
     double m = rogue_attack_t::action_multiplier();
 
-    if ( ( p() -> buffs.stealth -> up() || p() -> buffs.vanish -> up() ) )
+    if ( p()->stealthed( STEALTH_BASIC ) )
     {
       m *= 1.0 + p() -> spec.shadowstrike_2 -> effectN( 2 ).percent();
     }
@@ -3882,7 +3879,7 @@ struct shadowstrike_t : public rogue_attack_t
       return 0;
     }
 
-    if ( ( p() -> buffs.stealth -> up() || p() -> buffs.vanish -> up() ) )
+    if ( p()->stealthed( STEALTH_BASIC ) )
     {
       return range + p() -> spec.shadowstrike_2 -> effectN( 1 ).base_value();
     }
@@ -3929,7 +3926,7 @@ struct shuriken_storm_t: public rogue_attack_t
     double m = rogue_attack_t::action_multiplier();
 
     // Stealth Buff
-    if ( p() -> buffs.stealth -> up() || p() -> buffs.shadow_dance -> up() || p() -> buffs.vanish -> up() )
+    if ( p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
     {
       m *= 1.0 + data().effectN( 3 ).percent();
     }
@@ -6618,19 +6615,19 @@ expr_t* rogue_t::create_expression( const std::string& name_str )
     if ( util::str_compare_ci( split[ 1 ], "rogue" ) )
     {
       return make_fn_expr( split[ 0 ], [ this ]() {
-        return buffs.stealth -> check() || buffs.vanish -> check() || buffs.shadow_dance -> check() || buffs.subterfuge -> check();
+        return stealthed( stealth_type_e::STEALTH_BASIC | STEALTH_ROGUE );
       } );
     }
     else if ( util::str_compare_ci( split[ 1 ], "mantle" ) )
     {
       return make_fn_expr( split[ 0 ], [ this ]() {
-        return buffs.stealth -> check() || buffs.vanish -> check();
+        return stealthed( stealth_type_e::STEALTH_BASIC );
       } );
     }
     else if ( util::str_compare_ci( split[ 1 ], "all" ) )
     {
       return make_fn_expr( split[ 0 ], [ this ]() {
-        return buffs.stealth -> check() || buffs.vanish -> check() || buffs.shadow_dance -> check() || buffs.subterfuge -> check() || this -> player_t::buffs.shadowmeld -> check();
+        return stealthed();
       } );
     }
   }
@@ -7700,6 +7697,8 @@ void rogue_t::reset()
   weapon_data[ WEAPON_OFF_HAND ].reset();
 }
 
+// rogue_t::swap_weapon =====================================================
+
 void rogue_t::swap_weapon( weapon_slot_e slot, current_weapon_e to_weapon, bool in_combat )
 {
   if ( weapon_data[ slot ].current_weapon == to_weapon )
@@ -7760,6 +7759,28 @@ void rogue_t::swap_weapon( weapon_slot_e slot, current_weapon_e to_weapon, bool 
 
   // Set the current weapon wielding state for the slot
   weapon_data[ slot ].current_weapon = to_weapon;
+}
+
+// rogue_t::stealthed =======================================================
+
+bool rogue_t::stealthed( uint32_t stealth_mask ) const
+{
+  if ( ( stealth_mask & STEALTH_NORMAL ) && buffs.stealth->check() )
+    return true;
+
+  if ( ( stealth_mask & STEALTH_VANISH ) && buffs.vanish->check() )
+    return true;
+
+  if ( ( stealth_mask & STEALTH_SHADOWDANCE ) && buffs.shadow_dance->check() )
+    return true;
+
+  if ( ( stealth_mask & STEALTH_SUBTERFUGE ) && buffs.subterfuge->check() )
+    return true;
+
+  if ( ( stealth_mask & STEALTH_SHADOWMELD ) && player_t::buffs.shadowmeld->check() )
+    return true;
+
+  return false;
 }
 
 // rogue_t::arise ===========================================================
@@ -7856,7 +7877,7 @@ double rogue_t::passive_movement_modifier() const
   ms += spell.fleet_footed -> effectN( 1 ).percent();
   ms += talent.hit_and_run -> effectN( 1 ).percent();
 
-  if ( buffs.stealth -> up() || buffs.shadow_dance -> up() ) // Check if nightstalker is temporary or passive.
+  if ( stealthed( (STEALTH_BASIC | STEALTH_SHADOWDANCE) ) ) // Check if nightstalker is temporary or passive.
   {
     ms += talent.nightstalker -> effectN( 1 ).percent();
   }
