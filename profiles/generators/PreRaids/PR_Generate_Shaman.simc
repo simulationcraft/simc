@@ -6,22 +6,22 @@ role=spell
 position=back
 talents=2303023
 
-head=Visage_Of_Bloody_Horrors,id=159381,bonus_id=4779/1512/4786/4775,azerite_powers=457/21/14/13
+head=visage_of_bloody_horrors,id=159381,bonus_id=4779/1512/4786/4775,azerite_powers=457/21/14/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
-shoulders=Amalgamated_Abomination_Spaulders,id=159385,bonus_id=4779/1512/4786/4775,azerite_powers=194/459/83/13
-back=Raals_Bib,id=159294,bonus_id=4779/1512/4786
-chest=Loablessed_Chestguard,id=158355,bonus_id=4779/1512/4786/4775,azerite_powers=457/462/15/13
-wrist=Arcglass_Bindings,id=159380,bonus_id=4779/1512/4786
-hands=Thornshaper_Mitts,id=159399,bonus_id=4779/1512/4786
-waist=Chain_of_Consummate_Power,id=159377,bonus_id=4779/1512/4786
-legs=Gaolers_Chainmail_Gaiters,id=159392,bonus_id=4779/1512/4786
-feet=Souldrifting_Sabatons,id=158308,bonus_id=4779/1512/4786
-finger1=Lord_Waycrests_Signet,id=158362,bonus_id=4779/1512/4786,enchant=Pact_of_critical_strike
-finger2=Murky_Cerulean_Signet,id=158318,bonus_id=4779/1512/4786,enchant=Pact_of_critical_strike
-main_hand=Leaxas_Thoughtpiercer,id=159652,bonus_id=4779/1512/4786,enchant=Deadly_Navigation
-off_hand=Targe_of_the_Ancient_Warder,id=159665,bonus_id=4779/1512/4786
-trinket1=Lady_Waycrests_Music_Box,id=159631,bonus_id=4779/1512/4786
-trinket2=Rotcrusted_Voodoo_Doll,id=159624,bonus_id=4779/1512/4786
+shoulders=hookbarbed_spaulders,id=159376,bonus_id=4819/1512/4786/4775,azerite_powers=479/21/474/13
+back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
+chest=corrupted_hexxers_vestments,id=159370,bonus_id=4819/1512/4786/4775,azerite_powers=457/21/474/13
+wrist=raouls_barrelhook_bracers,id=159356,bonus_id=4779/1512/4786
+hands=water_shapers,id=159366,bonus_id=4779/1512/4786
+waist=waistguard_of_sanguine_fervor,id=159402,bonus_id=4779/1512/4786
+legs=chemical_blasters_legguards,id=158341,bonus_id=4779/1512/4786
+feet=souldrifting_sabatons,id=158308,bonus_id=4779/1512/4786
+finger1=ritual_binders_ring,id=159459,bonus_id=4779/1512/4786,enchant=pact_of_haste
+finger2=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
+main_hand=galvanized_stormcrusher,id=158369,bonus_id=4779/1512/4786,enchant=quick_navigation
+off_hand=g04w4y_crowd_repeller,id=159663,bonus_id=4779/1512/4786
+trinket1=lady_waycrests_music_box,id=159631,bonus_id=4779/1512/4786
+trinket2=rotcrusted_voodoo_doll,id=159624,bonus_id=4779/1512/4786
 
 save=PR_Shaman_Elemental.simc
 

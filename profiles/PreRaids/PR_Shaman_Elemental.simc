@@ -93,28 +93,28 @@ actions.single_target+=/frost_shock,moving=1
 
 head=visage_of_bloody_horrors,id=159381,bonus_id=4779/1512/4786/4775,azerite_powers=457/21/14/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=
-shoulders=amalgamated_abomination_spaulders,id=159385,bonus_id=4779/1512/4786/4775,azerite_powers=194/459/83/13
-back=raals_bib,id=159294,bonus_id=4779/1512/4786
-chest=loablessed_chestguard,id=158355,bonus_id=4779/1512/4786/4775,azerite_powers=457/462/15/13
-wrists=arcglass_bindings,id=159380,bonus_id=4779/1512/4786
-hands=thornshaper_mitts,id=159399,bonus_id=4779/1512/4786
-waist=chain_of_consummate_power,id=159377,bonus_id=4779/1512/4786
-legs=gaolers_chainmail_gaiters,id=159392,bonus_id=4779/1512/4786
+shoulders=hookbarbed_spaulders,id=159376,bonus_id=4819/1512/4786/4775,azerite_powers=479/21/474/13
+back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
+chest=corrupted_hexxers_vestments,id=159370,bonus_id=4819/1512/4786/4775,azerite_powers=457/21/474/13
+wrists=raouls_barrelhook_bracers,id=159356,bonus_id=4779/1512/4786
+hands=water_shapers,id=159366,bonus_id=4779/1512/4786
+waist=waistguard_of_sanguine_fervor,id=159402,bonus_id=4779/1512/4786
+legs=chemical_blasters_legguards,id=158341,bonus_id=4779/1512/4786
 feet=souldrifting_sabatons,id=158308,bonus_id=4779/1512/4786
-finger1=lord_waycrests_signet,id=158362,bonus_id=4779/1512/4786,enchant=pact_of_critical_strike
-finger2=murky_cerulean_signet,id=158318,bonus_id=4779/1512/4786,enchant=pact_of_critical_strike
+finger1=ritual_binders_ring,id=159459,bonus_id=4779/1512/4786,enchant=pact_of_haste
+finger2=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
 trinket1=lady_waycrests_music_box,id=159631,bonus_id=4779/1512/4786
 trinket2=rotcrusted_voodoo_doll,id=159624,bonus_id=4779/1512/4786
-main_hand=leaxas_thoughtpiercer,id=159652,bonus_id=4779/1512/4786,enchant=deadly_navigation
-off_hand=targe_of_the_ancient_warder,id=159665,bonus_id=4779/1512/4786
+main_hand=galvanized_stormcrusher,id=158369,bonus_id=4779/1512/4786,enchant=quick_navigation
+off_hand=g04w4y_crowd_repeller,id=159663,bonus_id=4779/1512/4786
 
 # Gear Summary
 # gear_ilvl=341.38
 # gear_strength=108
 # gear_stamina=4465
 # gear_intellect=3626
-# gear_crit_rating=1383
-# gear_haste_rating=498
-# gear_mastery_rating=474
-# gear_versatility_rating=125
+# gear_crit_rating=556
+# gear_haste_rating=1370
+# gear_mastery_rating=287
+# gear_versatility_rating=262
 # gear_armor=3594
