@@ -1867,7 +1867,7 @@ void paladin_t::invalidate_cache( cache_e c )
     player_t::invalidate_cache( CACHE_SPELL_POWER );
   }
 
-  if ( c == CACHE_ATTACK_POWER && specialization() == PALADIN_PROTECTION )
+  if ( c == CACHE_ATTACK_POWER && spells.shield_of_the_righteous -> ok() )
   {
     player_t::invalidate_cache( CACHE_BONUS_ARMOR );
   }
