@@ -6,21 +6,22 @@ role=spell
 position=back
 talents=2032021
 
-head=secret_spinners_miter,id=158315,bonus_id=4779/1512/4786/4775,azerite_powers=167/30/0/13
-neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
-shoulder=mantle_of_ceremonial_ascension,id=158344,bonus_id=4779/1512/4786/4775,azerite_powers=167/21/0/13
-back=parrotfeather_cloak,id=155884,bonus_id=4779/1512/4786
-chest=loa_betrayers_vestments,id=159233,bonus_id=4779/1512/4786/4775,azerite_powers=127/461/0/13
-wrists=ironkelp_wristwraps,id=159256,bonus_id=4779/1512/4786
-hands=captains_dustfinders,id=159237,bonus_id=4779/1512/4786
-waist=aqusirrs_swirling_sash,id=159239,bonus_id=4779/1512/4786
-legs=chumcoated_leggings,id=158302,bonus_id=4779/1512/4786
-feet=devilsaur_worshipers_sandals,id=158303,bonus_id=4779/1512/4786
-finger1=seal_of_the_city_watch,id=162542,bonus_id=4779/1512/4786,enchant=pact_of_mastery
-finger2=murky_cerulean_signet,id=158318,bonus_id=4779/1512/4786,enchant=pact_of_mastery
-trinket1=conch_of_dark_whispers,id=159620,bonus_id=4779/1512/4786
-trinket2=balefire_branch,id=159630,bonus_id=4779/1512/4786
-main_hand=seabreeze,id=158371,bonus_id=4779/1512/4786,enchant=torrent_of_elements
+head=headdress_of_the_first_empire,id=159236,bonus_id=4779/1512/4786/4775,azerite_powers=214/30/0/13
+neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524
+shoulders=amice_of_the_returned,id=159273,bonus_id=4779/1512/4786/4775,azerite_powers=214/30/0/13
+back=raals_bib,id=159294,bonus_id=4779/1512/4786
+chest=ruffled_poet_blouse,id=158301,bonus_id=4779/1512/4786/4775,azerite_powers=214/462/0/13
+wrists=wraps_of_everliving_fealty,id=158348,bonus_id=4779/1512/4786
+hands=greasy_bacongrabbers,id=155891,bonus_id=4779/1512/4786
+waist=sailcloth_waistband,id=158346,bonus_id=4779/1512/4786
+legs=wild_pyromancers_trousers,id=159277,bonus_id=4779/1512/4786
+feet=sandals_of_wise_voodoo,id=159243,bonus_id=4779/1512/4786
+finger1=lord_waycrests_signet,id=158362,bonus_id=4779/1512/4786,enchant=pact_of_critical_strike
+finger2=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_critical_strike
+trinket1=rotcrusted_voodoo_doll,id=159624,bonus_id=4779/1512/4786
+trinket2=lady_waycrests_music_box,id=159631,bonus_id=4779/1512/4786
+main_hand=aqmar_the_tidecaller,id=159646,bonus_id=4779/1512/4786,enchant=torrent_of_elements
+off_hand=aureus_vessel,id=158322,bonus_id=4779/1512/4786
 
 save=PR_Mage_Arcane.simc
 
