@@ -3343,12 +3343,17 @@ struct flanking_strike_t: hunter_melee_attack_t
     add_child( damage );
   }
 
-  void init_finished() override
+  void init_finished() override 
   {
     for ( auto pet : p() -> pet_list )
       add_pet_stats( pet, { "flanking_strike" } );
 
     hunter_melee_attack_t::init_finished();
+  }
+
+  double cast_regen( const action_state_t* s ) const override
+  {
+    return hunter_melee_attack_t::cast_regen( s ) + damage -> composite_energize_amount( nullptr );
   }
 
   void execute() override
@@ -4728,7 +4733,7 @@ expr_t* hunter_t::create_expression( const std::string& expression_str )
   else if ( splits.size() == 2 && splits[ 0 ] == "next_wi_bomb" )
   {
     if ( splits[ 1 ] == "shrapnel" )
-      return make_fn_expr( expression_str, [ this ]() { return next_wi_bomb == WILDFIRE_INFUSION_SHRAPNEL; } );
+      return make_fn_expr( expression_str, [ this ]() { return talents.wildfire_infusion -> ok() && next_wi_bomb == WILDFIRE_INFUSION_SHRAPNEL; } );
     if ( splits[ 1 ] == "pheromone" )
       return make_fn_expr( expression_str, [ this ]() { return next_wi_bomb == WILDFIRE_INFUSION_PHEROMONE; } );
     if ( splits[ 1 ] == "volatile" )
