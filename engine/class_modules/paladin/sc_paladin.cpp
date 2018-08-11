@@ -66,6 +66,8 @@ paladin_t::paladin_t( sim_t* sim, const std::string& name, race_e r ) :
   cooldowns.divine_hammer             = get_cooldown( "divine_hammer" );
   cooldowns.holy_shock                = get_cooldown( "holy_shock");
   cooldowns.light_of_dawn             = get_cooldown( "light_of_dawn");
+  
+  cooldowns.inner_light               = get_cooldown( "inner_light" );
 
   talent_points.register_validity_fn([this](const spell_data_t* spell)
   {
@@ -792,10 +794,21 @@ struct holy_shield_proc_t : public paladin_spell_t
 
 struct inner_light_damage : public paladin_spell_t
 {
+  timespan_t internal_cd;
+
   inner_light_damage( paladin_t* p ) :
-    paladin_spell_t( "inner_light", p, p -> find_spell( 275483 ) )
+    paladin_spell_t( "inner_light", p, p -> find_spell( 275483 ) ),
+    internal_cd( p -> find_spell( 275481 ) -> internal_cooldown() )
   {
     background = true;
+    base_dd_min = base_dd_max = p -> azerite.inner_light.value( 2 );
+  }
+
+  void execute() override
+  {
+    paladin_spell_t::execute();
+
+    p() -> cooldowns.inner_light -> start( internal_cd );
   }
 };
 
@@ -1928,7 +1941,7 @@ void paladin_t::assess_damage( school_e school,
 
   // Shamelessly copy the way blessed hammer checks for auto attack damage, assuming Inner Light only triggers on that
   // TODO : check if IL procs on every damage taken or just melee attacks
-  if ( buffs.inner_light -> up() && util::str_in_str_ci( s -> action -> name_str, "_hand" ) )
+  if ( buffs.inner_light -> up() && util::str_in_str_ci( s -> action -> name_str, "_hand" ) && cooldowns.inner_light -> up() )
   {
     active_inner_light_damage -> target = s -> action -> player;
     active_inner_light_damage -> schedule_execute();

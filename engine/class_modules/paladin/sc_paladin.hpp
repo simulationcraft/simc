@@ -244,6 +244,7 @@ public:
     cooldown_t* guardian_of_ancient_kings; // legen chest
     cooldown_t* holy_shock; // Holy Shock for Crusader's Might && DP
     cooldown_t* light_of_dawn; // Light of Dawn for DP
+    cooldown_t* inner_light;
 
     // whoo fist of justice
     cooldown_t* hammer_of_justice;
