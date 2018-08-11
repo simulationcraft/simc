@@ -32,6 +32,11 @@ BREWMASTER:
 -- Summon Black Ox Statue
 -- Guard
 -- Zen Meditation
+-- Azerite:
+--- training_of_niuzao
+--- staggering_strikes
+--- niuzaos_blessing
+--- boiling_brew healing sphere
 */
 #include "simulationcraft.hpp"
 
@@ -5171,9 +5176,9 @@ struct breath_of_fire_t : public monk_spell_t
       hasted_ticks             = false;
     }
 
-    double bonus_da( const action_state_t* s ) const override
+    double bonus_ta( const action_state_t* s ) const override
     {
-      double b = base_t::bonus_da( s );
+      double b = base_t::bonus_ta( s );
 
       if ( p()->azerite.boiling_brew.ok() )
         b += p()->azerite.boiling_brew.value( 2 );
