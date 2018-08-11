@@ -63,10 +63,35 @@ struct holy_word_chastise_t final : public priest_spell_t
 
 struct holy_nova_t final : public priest_spell_t
 {
-  holy_nova_t( priest_t& player, const std::string& options_str )
+	const spell_data_t* rank2;
+    holy_nova_t( priest_t& player, const std::string& options_str )
     : priest_spell_t( "holy_nova", player, player.find_class_spell( "Holy Nova" ) )
   {
     parse_options( options_str );
+
+	rank2 = priest().find_specialization_spell(231687);
+  }
+  void execute() override
+  {
+	  priest_spell_t::execute();
+
+	  double hf_proc_chance = priest().find_specialization_spell(231687)->effectN(1).percent();
+	  if (sim->debug)
+	  {
+		  sim->out_debug.printf(
+			  "%s tried to reset holy fire %s cast, using holy nova. ",
+			  priest().name(), name());
+	  }
+	  if (rank2->ok() && rng().roll(hf_proc_chance))
+	  {
+		  if (sim->debug)
+		  {
+			  sim->out_debug.printf(
+				  "%s reset holy fire %s cooldown, using holy nova. ",
+				  priest().name(), name());
+		  }
+		  priest().cooldowns.holy_fire->reset(true);
+	  }
   }
 };
 }  // namespace spells

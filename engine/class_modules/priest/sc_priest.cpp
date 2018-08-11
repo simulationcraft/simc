@@ -290,7 +290,7 @@ struct smite_t final : public priest_spell_t
     if ( sim->debug )
     {
       sim->out_debug.printf(
-      "%s tried to reset holy fire %s cast. ",
+      "%s tried to reset holy fire %s cast, using smite. ",
       priest().name(), name() );
     }
     if( rank2->ok() && rng().roll( hf_proc_chance ) )
@@ -298,7 +298,7 @@ struct smite_t final : public priest_spell_t
       if ( sim->debug )
       {
         sim->out_debug.printf(
-      "%s reset holy fire %s cooldown ",
+      "%s reset holy fire %s cooldown, using smite. ",
       priest().name(), name() );
     }
       priest().cooldowns.holy_fire -> reset(true);
