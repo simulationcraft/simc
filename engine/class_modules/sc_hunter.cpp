@@ -2153,30 +2153,6 @@ struct auto_shot_t : public auto_attack_base_t<ranged_attack_t>
   }
 };
 
-struct start_attack_t: public action_t
-{
-  start_attack_t( hunter_t* p, const std::string& options_str ):
-    action_t( ACTION_OTHER, "start_auto_shot", p )
-  {
-    parse_options( options_str );
-
-    p -> main_hand_attack = new auto_shot_t( p );
-    stats = p -> main_hand_attack -> stats;
-    ignore_false_positive = true;
-
-    trigger_gcd = timespan_t::zero();
-  }
-
-  void execute() override
-  {
-    player -> main_hand_attack -> schedule_execute();
-  }
-
-  bool ready() override
-  { return ! target -> is_sleeping() && player -> main_hand_attack -> execute_event == nullptr; } // not swinging
-};
-
-
 //==============================
 // Shared attacks
 //==============================
@@ -3154,34 +3130,6 @@ struct melee_t : public auto_attack_base_t<melee_attack_t>
 
     // technically there is a separate effect for auto attacks, but meh
     affected_by.coordinated_assault = true;
-  }
-};
-
-// Auto attack =======================================================================
-
-struct auto_attack_t: public action_t
-{
-  auto_attack_t( hunter_t* player, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "auto_attack", player )
-  {
-    parse_options( options_str );
-    player -> main_hand_attack = new melee_t( player );
-    ignore_false_positive = true;
-    range = 5;
-    trigger_gcd = timespan_t::zero();
-  }
-
-  void execute() override
-  {
-    player -> main_hand_attack -> schedule_execute();
-  }
-
-  bool ready() override
-  {
-    if ( player -> is_moving() )
-      return false;
-
-    return ! target -> is_sleeping() && player -> main_hand_attack -> execute_event == nullptr; // not swinging
   }
 };
 
@@ -4604,6 +4552,54 @@ struct muzzle_t: public interrupt_base_t
 //end spells
 }
 
+namespace actions {
+
+// Auto attack =======================================================================
+
+struct auto_attack_t: public action_t
+{
+  auto_attack_t( hunter_t* p, const std::string& options_str ) :
+    action_t( ACTION_OTHER, "auto_attack", p )
+  {
+    parse_options( options_str );
+
+    ignore_false_positive = true;
+    trigger_gcd = timespan_t::zero();
+
+    if ( p -> main_hand_weapon.type == WEAPON_NONE )
+    {
+      background = true;
+    }
+    else if ( p -> main_hand_weapon.group() == WEAPON_RANGED )
+    {
+      p -> main_hand_attack = new attacks::auto_shot_t( p );
+    }
+    else
+    {
+      p -> main_hand_attack = new attacks::melee_t( p );
+      range = 5;
+    }
+  }
+
+  void execute() override
+  {
+    player -> main_hand_attack -> schedule_execute();
+  }
+
+  bool ready() override
+  {
+    if ( player->is_moving() && !usable_moving() )
+      return false;
+
+    if ( target -> is_sleeping() )
+      return false;
+
+    return player -> main_hand_attack -> execute_event == nullptr; // not swinging
+  }
+};
+
+} // namespace actions
+
 hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
   actor_target_data_t( target, p ),
   debuffs(),
@@ -4750,8 +4746,8 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "aimed_shot"            ) return new             aimed_shot_t( this, options_str );
   if ( name == "arcane_shot"           ) return new            arcane_shot_t( this, options_str );
   if ( name == "aspect_of_the_wild"    ) return new     aspect_of_the_wild_t( this, options_str );
-  if ( name == "auto_attack"           ) return new            auto_attack_t( this, options_str );
-  if ( name == "auto_shot"             ) return new           start_attack_t( this, options_str );
+  if ( name == "auto_attack"           ) return new   actions::auto_attack_t( this, options_str );
+  if ( name == "auto_shot"             ) return new   actions::auto_attack_t( this, options_str );
   if ( name == "barrage"               ) return new                barrage_t( this, options_str );
   if ( name == "bestial_wrath"         ) return new          bestial_wrath_t( this, options_str );
   if ( name == "bursting_shot"         ) return new          bursting_shot_t( this, options_str );
