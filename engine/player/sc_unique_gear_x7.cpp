@@ -6,7 +6,6 @@
 #include "simulationcraft.hpp"
 
 // TODO:
-//   Balefire Branch starts at 100 stacks and decays 5 stack every sec
 //   Azurethos' Singed Plumage starts at 5 stacks and goes down instead of going up
 
 
@@ -88,6 +87,7 @@ namespace items
   void lingering_sporepods( special_effect_t& );
   void ignition_mages_fuse( special_effect_t& );
   void lady_waycrests_music_box( special_effect_t& );
+  void balefire_branch( special_effect_t& );
   // 8.0.1 - Uldir Trinkets
   void frenetic_corpuscle( special_effect_t& );
   void vigilants_bloodshaper(special_effect_t& );
@@ -790,6 +790,15 @@ void items::lady_waycrests_music_box( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Balefire Branch ==========================================================
+
+void items::balefire_branch( special_effect_t& effect )
+{
+  effect.reverse = true;
+  effect.tick = effect.driver()->effectN( 2 ).period();
+  effect.reverse_stack_reduction = 5; // Nowhere to be seen in the spell data
+}
+
 // Frenetic Corpuscle =======================================================
 
 void items::frenetic_corpuscle( special_effect_t& effect )
@@ -870,6 +879,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 268035, items::lingering_sporepods );
   register_special_effect( 271117, items::ignition_mages_fuse );
   register_special_effect( 271631, items::lady_waycrests_music_box );
+  register_special_effect( 268999, items::balefire_branch );
   register_special_effect( 268314, "268311Trigger" ); // Galecaller's Boon, assumes the player always stands in the area
   register_special_effect( 278140, items::frenetic_corpuscle );
 }
