@@ -7,7 +7,6 @@
 
 // TODO:
 //   Ignition Mage's Fuse automatically generated effect doesn't give extra stacks
-//   Rotcrused Voodoo Doll DoT tick time scales with haste, but so does the duration - always doing 7 ticks
 //   Lady Waycrest's Music Box doesn't do AoE damage
 //   Balefire Branch starts at 100 stacks and decays 5 stack every sec
 //   Azurethos' Singed Plumage starts at 5 stacks and goes down instead of going up
@@ -672,6 +671,17 @@ void items::rotcrusted_voodoo_doll( special_effect_t& effect )
       tick_zero = true;
 
       add_child( final_damage );
+    }
+
+    timespan_t composite_dot_duration( const action_state_t* state ) const override
+    { return ( dot_duration / base_tick_time ) * tick_time( state ); }
+
+    void init() override
+    {
+      proc_spell_t::init();
+
+      // Don't resnapshot haste on ticks so we get a nice fixed duration always
+      update_flags &= ~STATE_HASTE;
     }
 
     void last_tick( dot_t* d ) override
