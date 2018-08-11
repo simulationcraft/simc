@@ -526,8 +526,6 @@ void items::mydas_talisman( special_effect_t& effect )
 {
   struct touch_of_gold_cb_t : public dbc_proc_callback_t
   {
-    buff_t* buff = nullptr;
-
     touch_of_gold_cb_t( const special_effect_t& effect ) :
       dbc_proc_callback_t( effect.item, effect )
     {}
@@ -535,16 +533,11 @@ void items::mydas_talisman( special_effect_t& effect )
     void execute( action_t*, action_state_t* s ) override
     {
       assert( proc_action );
+      assert( proc_buff );
 
       proc_action -> set_target( s -> target );
       proc_action -> execute();
-
-      // in-game the buff has 5 stacks initially and each damage proc consumes a stack
-      // as there is no generic way to do this in simc we simply "reverse" it
-      if ( buff -> check() == buff -> max_stack() )
-        buff -> expire();
-      else
-        buff -> bump( 1 );
+      proc_buff -> decrement();
     }
   };
 
@@ -554,23 +547,19 @@ void items::mydas_talisman( special_effect_t& effect )
   effect2 -> proc_flags_ = effect.proc_flags();
   effect2 -> proc_chance_ = effect.proc_chance();
   effect2 -> cooldown_ = timespan_t::zero();
-  effect2 -> trigger_spell_id = 265953;
+  effect2 -> trigger_spell_id = effect.trigger() -> id();
   effect.player -> special_effects.push_back( effect2 );
 
   auto callback = new touch_of_gold_cb_t( *effect2 );
   callback -> deactivate();
 
-  effect.custom_buff = buff_t::find( effect.player, "touch_of_gold" );
-  if ( ! effect.custom_buff )
-  {
-    effect.custom_buff = make_buff( effect.player, "touch_of_gold", effect.driver() )
-      -> set_stack_change_callback( util::callback_buff_activator( callback ) )
-      -> set_refresh_behavior( buff_refresh_behavior::DISABLED );
-  }
-  // reset triggered spell; we don't want to trigger a spell on use
-  effect.trigger_spell_id = 0;
+  effect.custom_buff = create_buff<buff_t>( effect.player, "touch_of_gold", effect.driver() )
+    -> set_stack_change_callback( util::callback_buff_activator( callback ) )
+    -> set_reverse( true );
+  effect2 -> custom_buff = effect.custom_buff;
 
-  callback -> buff = effect.custom_buff;
+  // the trinket 'on use' essentially triggers itself
+  effect.trigger_spell_id = effect.driver() -> id();
 }
 
 // Harlan's Loaded Dice =====================================================
