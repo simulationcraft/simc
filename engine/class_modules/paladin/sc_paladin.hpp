@@ -317,6 +317,7 @@ public:
     const spell_data_t* avenging_wrath;
     const spell_data_t* shield_of_the_righteous;
     const spell_data_t* blade_of_wrath;
+    const spell_data_t* inspiring_vanguard;
   } spells;
 
   // Talents

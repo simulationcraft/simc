@@ -71,7 +71,7 @@ struct avengers_shield_t : public paladin_spell_t
     aoe = data().effectN( 1 ).chain_target();
     if ( p -> azerite.soaring_shield.enabled() )
     {
-      aoe = as<int>( p -> azerite.soaring_shield.value( 2 ) );
+      aoe = as<int>( p -> azerite.soaring_shield.spell() -> effectN( 2 ).base_value() );
     }
 
     // Redoubt offensive benefit
@@ -823,7 +823,7 @@ void paladin_t::trigger_grand_crusader()
   double gc_proc_chance = passives.grand_crusader -> proc_chance();
   if ( azerite.inspiring_vanguard.enabled() )
   {
-    gc_proc_chance = azerite.inspiring_vanguard.value( 2 ) / 100;
+    gc_proc_chance = spells.inspiring_vanguard -> effectN( 2 ).percent();
   }
 
   // attempts to proc the buff
@@ -1006,6 +1006,8 @@ void paladin_t::init_spells_protection()
   azerite.dauntless_divinity = find_azerite_spell( "Dauntless Divinity" );
   azerite.inner_light        = find_azerite_spell( "Inner Light"        );
   azerite.soaring_shield     = find_azerite_spell( "Soaring Shield"     );
+
+  spells.inspiring_vanguard  = azerite.inspiring_vanguard.spell();
 }
 
 void paladin_t::generate_action_prio_list_prot()
