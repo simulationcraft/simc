@@ -694,6 +694,7 @@ public:
     const spell_data_t* gravewarden;
     const spell_data_t* ossuary;
     const spell_data_t* rune_master;
+    const spell_data_t* eternal_rune_weapon;
 
     const spell_data_t* death_coil_damage;
     const spell_data_t* runic_corruption;
@@ -2614,9 +2615,9 @@ struct death_knight_action_t : public Base
     }
 
     if ( this -> base_costs[ RESOURCE_RUNE] > 0 && this -> last_resource_cost > 0 && p() -> buffs.dancing_rune_weapon -> up()
-         && p() -> azerite.eternal_rune_weapon.enabled() && p() -> eternal_rune_weapon_counter <= p() -> azerite.eternal_rune_weapon.value( 3 ) )
+         && p() -> azerite.eternal_rune_weapon.enabled() && p() -> eternal_rune_weapon_counter <= p() -> spell.eternal_rune_weapon -> effectN( 3 ).base_value() )
     {
-      double duration_increase = p() -> azerite.eternal_rune_weapon.value( 2 ) / 10 * this -> last_resource_cost;
+      double duration_increase = p() -> spell.eternal_rune_weapon -> effectN( 2 ).base_value() / 10 * this -> last_resource_cost;
       
       p() -> buffs.eternal_rune_weapon -> extend_duration( p(), timespan_t::from_seconds( duration_increase ) );
       p() -> buffs.dancing_rune_weapon -> extend_duration( p(), timespan_t::from_seconds( duration_increase ) );
@@ -3172,10 +3173,7 @@ struct glacial_contagion_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    if ( p() -> azerite.glacial_contagion.enabled() )
-    {
-      td( execute_state -> target ) -> debuff.glacial_contagion -> trigger();
-    }
+    td( execute_state -> target ) -> debuff.glacial_contagion -> trigger();
   }
 };
 
@@ -4827,10 +4825,18 @@ struct epidemic_t : public death_knight_spell_t
 
 struct festering_strike_t : public death_knight_melee_attack_t
 {
+  double cankerous_wounds_chance;
+
   festering_strike_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_melee_attack_t( "festering_strike", p, p -> find_specialization_spell( "Festering Strike" ) )
+    death_knight_melee_attack_t( "festering_strike", p, p -> find_specialization_spell( "Festering Strike" ) ),
+    cankerous_wounds_chance( 0 )
   {
     parse_options( options_str );
+
+    if ( p -> azerite.cankerous_wounds.enabled() )
+    {
+      cankerous_wounds_chance = p -> azerite.cankerous_wounds.spell() -> effectN( 2 ).base_value() / 100;
+    }
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -4864,7 +4870,7 @@ struct festering_strike_t : public death_knight_melee_attack_t
       unsigned n_stacks = fw_proc_stacks[ n ];
 
       // Assuming cankerous wounds is a separate roll
-      if ( p() -> azerite.cankerous_wounds.enabled() && rng().roll( p() -> azerite.cankerous_wounds.value( 2 ) / 100 ) )
+      if ( p() -> azerite.cankerous_wounds.enabled() && rng().roll( cankerous_wounds_chance ) )
       {
         // Not in cankerous spelldata smh
         n_stacks = 3;
@@ -4987,11 +4993,26 @@ struct frostwyrms_fury_t : public death_knight_spell_t
 
 struct frost_strike_strike_t : public death_knight_melee_attack_t
 {
+  double latent_chill_threshold;
+  double killer_frost_proc_chance;
+
   frost_strike_strike_t( death_knight_t* p, const std::string& n, weapon_t* w, const spell_data_t* s ) :
-    death_knight_melee_attack_t( n, p, s )
+    death_knight_melee_attack_t( n, p, s ),
+    latent_chill_threshold( 0 ),
+    killer_frost_proc_chance( 0 )
   {
     background = special = true;
     weapon = w;
+
+    if ( p -> azerite.latent_chill.enabled() )
+    {
+      latent_chill_threshold = p -> azerite.latent_chill.spell() -> effectN( 2 ).base_value();
+    }
+
+    if ( p -> azerite.killer_frost.enabled() )
+    {
+      killer_frost_proc_chance = p -> azerite.killer_frost.spell() -> effectN( 2 ).base_value() / 100;
+    }
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -5011,7 +5032,7 @@ struct frost_strike_strike_t : public death_knight_melee_attack_t
     }
 
     int empty_runes = p() -> _runes.runes_depleted() + p() -> _runes.runes_regenerating();
-    if ( p() -> azerite.latent_chill.enabled() && empty_runes >= p() -> azerite.latent_chill.value( 2 ) )
+    if ( p() -> azerite.latent_chill.enabled() && empty_runes >= latent_chill_threshold )
     {
       da += p() -> azerite.latent_chill.value( 1 );
     }
@@ -5030,7 +5051,7 @@ struct frost_strike_strike_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::impact( state );
 
-    if ( p() -> azerite.killer_frost.enabled() && state -> result == RESULT_CRIT && rng().roll( p() -> azerite.killer_frost.value( 2 ) / 100 ) )
+    if ( p() -> azerite.killer_frost.enabled() && state -> result == RESULT_CRIT && rng().roll( killer_frost_proc_chance ) )
     {
       p() -> buffs.killing_machine -> execute();
       p() -> procs.km_from_killer_frost -> occur();
@@ -5481,12 +5502,22 @@ struct mark_of_blood_t : public death_knight_spell_t
 
 struct marrowrend_t : public death_knight_melee_attack_t
 {
+  double bones_of_the_damned_proc_chance;
 
   marrowrend_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_melee_attack_t( "marrowrend", p, p -> spec.marrowrend )
+    death_knight_melee_attack_t( "marrowrend", p, p -> spec.marrowrend ),
+    bones_of_the_damned_proc_chance( 0 )
   {
     parse_options( options_str );
     weapon = &( p -> main_hand_weapon );
+
+    if ( p -> azerite.bones_of_the_damned.enabled() )
+    {
+      // Looks to be ~20% chance according to logs
+      // Could be using the spelldata (currently = 5) to calculate the chance, hard-coding for now
+      // bones_of_the_damned_proc_chance = 1.0 / ( p -> find_spell( 278484 ) -> effectN( 2 ).base_value() );
+      bones_of_the_damned_proc_chance = 0.20;
+    }
   }
 
   void execute() override
@@ -5506,8 +5537,7 @@ struct marrowrend_t : public death_knight_melee_attack_t
 
     int stack_gain = as<int>( data().effectN( 3 ).base_value() );
 
-    // Assuming that it's the right data for proc chance
-    if ( p() -> azerite.bones_of_the_damned.enabled() && rng().roll( p() -> azerite.bones_of_the_damned.value( 2 ) / 100 ) )
+    if ( p() -> azerite.bones_of_the_damned.enabled() && rng().roll( bones_of_the_damned_proc_chance ) )
     {
       stack_gain += 1; // Not in spell data
       p() -> buffs.bones_of_the_damned -> trigger();
@@ -5746,12 +5776,20 @@ struct outbreak_t : public death_knight_spell_t
 
 struct pillar_of_frost_buff_t : public buff_t
 {
+  double icy_citadel_duration;
+
   pillar_of_frost_buff_t( death_knight_t* p ) :
     buff_t( buff_creator_t( p, "pillar_of_frost", p -> spec.pillar_of_frost )
             .cd( timespan_t::zero() )
             .default_value( p -> spec.pillar_of_frost -> effectN( 1 ).percent() )
-            .add_invalidate( CACHE_STRENGTH ) )
-  { }
+            .add_invalidate( CACHE_STRENGTH ) ),
+    icy_citadel_duration( 0 )
+  {
+    if ( p -> azerite.icy_citadel.enabled() )
+    {
+      icy_citadel_duration = p -> azerite.icy_citadel.spell() -> effectN( 2 ).base_value();
+    }
+  }
 
   void expire_override( int s, timespan_t t ) override
   {
@@ -5762,7 +5800,7 @@ struct pillar_of_frost_buff_t : public buff_t
     if ( p -> azerite.icy_citadel.enabled() )
     {
       p -> buffs.icy_citadel -> trigger();
-      p -> buffs.icy_citadel -> extend_duration( p, timespan_t::from_millis( p -> azerite.icy_citadel.value( 2 ) * p -> buffs.icy_citadel_builder -> stack() ) );
+      p -> buffs.icy_citadel -> extend_duration( p, timespan_t::from_millis( icy_citadel_duration * p -> buffs.icy_citadel_builder -> stack() ) );
       p -> buffs.icy_citadel_builder -> expire();
     }
   }
@@ -5829,11 +5867,19 @@ struct raise_dead_t : public death_knight_spell_t
 
 struct remorseless_winter_damage_t : public death_knight_spell_t
 {
+  double frozen_tempest_target_threshold;
+
   remorseless_winter_damage_t( death_knight_t* p ) :
-    death_knight_spell_t( "remorseless_winter_damage", p, p -> find_spell( 196771 ) )
+    death_knight_spell_t( "remorseless_winter_damage", p, p -> find_spell( 196771 ) ),
+    frozen_tempest_target_threshold( 0 )
   {
     background = true;
     aoe = -1;
+
+    if ( p -> azerite.frozen_tempest.enabled() )
+    {
+      frozen_tempest_target_threshold = p -> azerite.frozen_tempest.spell() -> effectN( 1 ).base_value();
+    }
   }
 
   double action_multiplier() const override
@@ -5861,7 +5907,7 @@ struct remorseless_winter_damage_t : public death_knight_spell_t
   {
     death_knight_spell_t::impact( state );
 
-    if ( state -> n_targets >= p() -> azerite.frozen_tempest.value( 1 ) && p() -> azerite.frozen_tempest.enabled() && ! p() -> triggered_frozen_tempest )
+    if ( state -> n_targets >= frozen_tempest_target_threshold && p() -> azerite.frozen_tempest.enabled() && ! p() -> triggered_frozen_tempest )
     {
       p() -> buffs.rime -> trigger();
       p() -> triggered_frozen_tempest = true;
@@ -6303,10 +6349,18 @@ struct breath_of_sindragosa_t : public death_knight_spell_t
 
 struct antimagic_shell_buff_t : public buff_t
 {
+  double runic_barrier_duration;
+
   antimagic_shell_buff_t( death_knight_t* p ) :
     buff_t( buff_creator_t( p, "antimagic_shell", p -> spell.antimagic_shell )
-                              .cd( timespan_t::zero() ) )
-  { }
+                              .cd( timespan_t::zero() ) ),
+    runic_barrier_duration( 0 )
+  {
+    if ( p -> azerite.runic_barrier.enabled() )
+    {
+      runic_barrier_duration = p -> azerite.runic_barrier.spell() -> effectN( 2 ).base_value();
+    }
+  }
 
   void execute( int stacks, double value, timespan_t duration ) override
   {
@@ -6319,7 +6373,7 @@ struct antimagic_shell_buff_t : public buff_t
     if ( p -> azerite.runic_barrier.enabled() )
     {
       max_absorb += p -> azerite.runic_barrier.value( 3 );
-      duration = timespan_t::from_seconds( p -> azerite.runic_barrier.value( 2 ) );
+      duration = timespan_t::from_seconds( runic_barrier_duration );
     }
 
     max_absorb *= 1.0 + p -> cache.heal_versatility();
@@ -7633,6 +7687,7 @@ void death_knight_t::init_spells()
   spell.gravewarden            = find_spell( 242010 );
   spell.ossuary                = find_spell( 219788 );
   spell.rune_master            = find_spell( 253381 );
+  spell.eternal_rune_weapon    = find_spell( 278479 );
 
   // Frost
   
