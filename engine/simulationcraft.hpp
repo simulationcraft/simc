@@ -7118,7 +7118,8 @@ struct proc_action_t : public T_ACTION
       this -> dot_max_stack = this -> data().max_stacks();
     }
 
-    this -> hasted_ticks = this -> data().flags( spell_attribute::SX_DOT_HASTED );
+    this->hasted_ticks = this -> data().flags( spell_attribute::SX_DOT_HASTED );
+    this->tick_zero = this->data().flags( spell_attribute::SX_TICK_ON_APPLICATION );
 
     unique_gear::apply_label_modifiers( this );
   }

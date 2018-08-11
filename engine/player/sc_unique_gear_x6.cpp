@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
+#include "unique_gear.hpp"
 
 using namespace unique_gear;
 
@@ -4612,86 +4613,6 @@ void item::corrupted_starlight( special_effect_t& effect )
 
 // Darkmoon Decks ===========================================================
 
-struct darkmoon_deck_t
-{
-  player_t* player;
-  std::vector<stat_buff_t*> cards;
-  buff_t* top_card;
-  timespan_t shuffle_period;
-
-  darkmoon_deck_t( const special_effect_t& effect, const std::vector<unsigned>& c ) :
-    player( effect.player ), top_card( nullptr ),
-    shuffle_period( effect.driver() -> effectN( 1 ).period() )
-  {
-    for ( size_t i = 0; i < c.size(); i++ )
-    {
-      const spell_data_t* s = player -> find_spell( c[ i ] );
-      assert( s -> found() );
-
-      std::string n = s -> name_cstr();
-      ::util::tokenize( n );
-
-      cards.push_back( make_buff<stat_buff_t>( player, n, s, effect.item ) );
-    }
-  }
-
-  void shuffle()
-  {
-    if ( top_card )
-      top_card -> expire();
-
-    top_card = cards[ player -> rng().range( size_t(), cards.size() ) ];
-
-    top_card -> trigger();
-  }
-};
-
-struct shuffle_event_t : public event_t
-{
-  darkmoon_deck_t* deck;
-
-  static timespan_t delta_time( sim_t& sim, bool initial, darkmoon_deck_t* deck )
-  {
-    if ( initial )
-    {
-      return deck->shuffle_period * sim.rng().real();
-    }
-    else
-    {
-      return deck->shuffle_period;
-    }
-  }
-
-  shuffle_event_t( darkmoon_deck_t* d, bool initial = false )
-    : event_t( *d->player, delta_time( *d -> player -> sim, initial, d ) ), deck( d )
-  {
-    /* Shuffle when we schedule an event instead of when it executes.
-    This will assure the deck starts shuffled */
-    deck->shuffle();
-  }
-
-  const char* name() const override
-  { return "shuffle_event"; }
-
-  void execute() override
-  {
-    make_event<shuffle_event_t>( sim(), deck );
-  }
-};
-
-struct shuffle_activator_t
-{
-  darkmoon_deck_t* data;
-
-  shuffle_activator_t( darkmoon_deck_t* d ) : data( d )
-  { }
-
-  void operator()(void)
-  {
-    make_event<shuffle_event_t>( *data -> player -> sim, data, true );
-  }
-};
-
 // TODO: The sim could use an "arise" and "demise" callback, it's kinda wasteful to call these
 // things per every player actor shifting in the non-sleeping list. Another option would be to make
 // (yet another list) that holds active, non-pet players.
@@ -4718,9 +4639,12 @@ void item::darkmoon_deck( special_effect_t& effect )
       return;
   }
 
-  auto d = new darkmoon_deck_t( effect, cards );
+  auto d = new darkmoon_buff_deck_t<stat_buff_t>( effect, cards );
+  d->initialize();
 
-  effect.player -> callbacks_on_arise.emplace_back( shuffle_activator_t( d ) );
+  effect.player->register_combat_begin( [ d ]( player_t* ) {
+    make_event<shuffle_event_t>( *d->player -> sim, d, true );
+  } );
 }
 
 // Elementium Bomb Squirrel =================================================

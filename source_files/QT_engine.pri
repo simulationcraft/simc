@@ -20,6 +20,7 @@
  HEADERS += engine/player/artifact_data.hpp
  HEADERS += engine/player/azerite_data.hpp
  HEADERS += engine/player/pet_spawner.hpp
+ HEADERS += engine/player/unique_gear.hpp
  HEADERS += engine/dbc/sc_spell_info.hpp
  HEADERS += engine/dbc/specialization.hpp
  HEADERS += engine/dbc/dbc.hpp

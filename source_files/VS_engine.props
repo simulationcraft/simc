@@ -23,6 +23,7 @@ To change the list of source files, update the QT_ files and run synchronize.py
 		<ClInclude Include="..\engine\player\artifact_data.hpp" />
 		<ClInclude Include="..\engine\player\azerite_data.hpp" />
 		<ClInclude Include="..\engine\player\pet_spawner.hpp" />
+		<ClInclude Include="..\engine\player\unique_gear.hpp" />
 		<ClInclude Include="..\engine\dbc\sc_spell_info.hpp" />
 		<ClInclude Include="..\engine\dbc\specialization.hpp" />
 		<ClInclude Include="..\engine\dbc\dbc.hpp" />

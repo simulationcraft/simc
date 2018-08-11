@@ -1218,6 +1218,8 @@ class SpellDataGenerator(DataGenerator):
          280846,
          # Battlefield Focus/Precision debuff and damages
          280817, 282724, 280855, 282720,
+         # Squalls Deck spells
+         276124, 276125, 276126, 276127, 276128, 276129, 276130, 276131,
         ),
 
         # Warrior:

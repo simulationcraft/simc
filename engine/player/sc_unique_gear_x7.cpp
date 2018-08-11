@@ -5,6 +5,8 @@
 
 #include "simulationcraft.hpp"
 
+#include "unique_gear.hpp"
+
 using namespace unique_gear;
 
 namespace {
@@ -63,6 +65,8 @@ namespace enchants
 
 namespace items
 {
+  // 8.0 misc
+  void darkmoon_deck_squalls( special_effect_t& );
   // 8.0.1 - World Trinkets
   void kajafied_banana( special_effect_t& );
   void incessantly_ticking_clock( special_effect_t& );
@@ -821,6 +825,55 @@ void items::frenetic_corpuscle( special_effect_t& effect )
   new frenetic_corpuscle_cb_t( effect );
 }
 
+// Darkmoon Faire decks
+
+void items::darkmoon_deck_squalls( special_effect_t& effect )
+{
+  const std::vector<unsigned> cards = {
+    276124, 276125, 276126, 276127, 276128, 276129, 276130, 276131,
+  };
+
+  struct squall_damage_t : public proc_spell_t
+  {
+    const spell_data_t* duration;
+
+    squall_damage_t( const special_effect_t& effect, unsigned card_id ) :
+      proc_spell_t( "suffocating_squall", effect.player, effect.trigger(), effect.item ),
+      duration( effect.player->find_spell( card_id ) )
+    { }
+
+    timespan_t composite_dot_duration( const action_state_t* ) const override
+    { return duration->effectN( 1 ).time_value(); }
+  };
+
+  struct squall_cb_t : public dbc_proc_callback_t
+  {
+    darkmoon_action_deck_t<squall_damage_t>* deck;
+
+    squall_cb_t( const special_effect_t& effect, const std::vector<unsigned>& card_ids ) :
+      dbc_proc_callback_t( effect.player, effect ),
+      deck( new darkmoon_action_deck_t<squall_damage_t>( effect, card_ids ) )
+    {
+      deck->initialize();
+    }
+
+    void execute( action_t*, action_state_t* state ) override
+    {
+      deck->top_card->set_target( state->target );
+      deck->top_card->schedule_execute();
+    }
+
+    ~squall_cb_t()
+    { delete deck; }
+  };
+
+  auto cb = new squall_cb_t( effect, cards );
+
+  effect.player->register_combat_begin( [ cb ]( player_t* ) {
+    make_event<shuffle_event_t>( *cb->listener->sim, cb->deck, true );
+  } );
+}
+
 } // namespace bfa
 } // anon namespace
 
@@ -870,6 +923,9 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 268314, "268311Trigger" ); // Galecaller's Boon, assumes the player always stands in the area
   register_special_effect( 278140, items::frenetic_corpuscle );
   register_special_effect( 278383, "Reverse" ); // Azurethos' Singed Plumage
+
+  // Misc
+  register_special_effect( 276123, items::darkmoon_deck_squalls );
 }
 
 void unique_gear::register_target_data_initializers_bfa( sim_t* sim )

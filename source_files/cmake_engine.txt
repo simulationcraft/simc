@@ -17,6 +17,7 @@ report/sc_report.hpp
 player/artifact_data.hpp
 player/azerite_data.hpp
 player/pet_spawner.hpp
+player/unique_gear.hpp
 dbc/sc_spell_info.hpp
 dbc/specialization.hpp
 dbc/dbc.hpp
