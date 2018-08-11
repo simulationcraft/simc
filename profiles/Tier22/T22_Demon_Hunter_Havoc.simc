@@ -1,0 +1,115 @@
+demonhunter="T22_Demon_Hunter_Havoc"
+spec=havoc
+level=120
+race=night_elf
+timeofday=night
+role=attack
+position=back
+talents=3310223
+
+# Default consumables
+potion=battle_potion_of_agility
+flask=currents
+food=bountiful_captains_feast
+augmentation=battle_scarred
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/augmentation
+actions.precombat+=/food
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion
+actions.precombat+=/metamorphosis
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/variable,name=blade_dance,value=talent.first_blood.enabled|set_bonus.tier20_4pc|spell_targets.blade_dance1>=(3-talent.trail_of_ruin.enabled)
+actions+=/variable,name=waiting_for_nemesis,value=!(!talent.nemesis.enabled|cooldown.nemesis.ready|cooldown.nemesis.remains>target.time_to_die|cooldown.nemesis.remains>60)
+actions+=/variable,name=pooling_for_meta,value=!talent.demonic.enabled&cooldown.metamorphosis.remains<6&fury.deficit>30&(!variable.waiting_for_nemesis|cooldown.nemesis.remains<10)
+actions+=/variable,name=pooling_for_blade_dance,value=variable.blade_dance&(fury<75-talent.first_blood.enabled*20)
+actions+=/variable,name=waiting_for_dark_slash,value=talent.dark_slash.enabled&!variable.pooling_for_blade_dance&!variable.pooling_for_meta&cooldown.dark_slash.up
+actions+=/variable,name=waiting_for_momentum,value=talent.momentum.enabled&!buff.momentum.up
+actions+=/disrupt
+actions+=/call_action_list,name=cooldown,if=gcd.remains=0
+actions+=/pick_up_fragment,if=fury.deficit>=35
+actions+=/call_action_list,name=dark_slash,if=talent.dark_slash.enabled&(variable.waiting_for_dark_slash|debuff.dark_slash.up)
+actions+=/run_action_list,name=demonic,if=talent.demonic.enabled
+actions+=/run_action_list,name=normal
+
+actions.cooldown=metamorphosis,if=!(talent.demonic.enabled|variable.pooling_for_meta|variable.waiting_for_nemesis)|target.time_to_die<25
+actions.cooldown+=/metamorphosis,if=talent.demonic.enabled&buff.metamorphosis.up
+actions.cooldown+=/nemesis,target_if=min:target.time_to_die,if=raid_event.adds.exists&debuff.nemesis.down&(active_enemies>desired_targets|raid_event.adds.in>60)
+actions.cooldown+=/nemesis,if=!raid_event.adds.exists
+actions.cooldown+=/potion,if=buff.metamorphosis.remains>25|target.time_to_die<60
+
+actions.dark_slash=dark_slash,if=fury>=80&(!variable.blade_dance|!cooldown.blade_dance.ready)
+actions.dark_slash+=/annihilation,if=debuff.dark_slash.up
+actions.dark_slash+=/chaos_strike,if=debuff.dark_slash.up
+
+actions.demonic=fel_barrage,if=active_enemies>desired_targets|raid_event.adds.in>30
+actions.demonic+=/death_sweep,if=variable.blade_dance
+actions.demonic+=/blade_dance,if=variable.blade_dance&cooldown.eye_beam.remains>5&!cooldown.metamorphosis.ready
+actions.demonic+=/immolation_aura
+actions.demonic+=/felblade,if=fury<40|(buff.metamorphosis.down&fury.deficit>=40)
+actions.demonic+=/eye_beam,if=(!talent.blind_fury.enabled|fury.deficit>=70)&(!buff.metamorphosis.extended_by_demonic|(set_bonus.tier21_4pc&buff.metamorphosis.remains>16))
+actions.demonic+=/annihilation,if=(talent.blind_fury.enabled|fury.deficit<30|buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance
+actions.demonic+=/chaos_strike,if=(talent.blind_fury.enabled|fury.deficit<30)&!variable.pooling_for_meta&!variable.pooling_for_blade_dance
+actions.demonic+=/fel_rush,if=talent.demon_blades.enabled&!cooldown.eye_beam.ready&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))
+actions.demonic+=/demons_bite
+actions.demonic+=/throw_glaive,if=buff.out_of_range.up
+actions.demonic+=/fel_rush,if=movement.distance>15|buff.out_of_range.up
+actions.demonic+=/vengeful_retreat,if=movement.distance>15
+actions.demonic+=/throw_glaive,if=talent.demon_blades.enabled
+
+actions.normal=vengeful_retreat,if=talent.momentum.enabled&buff.prepared.down
+actions.normal+=/fel_rush,if=(variable.waiting_for_momentum|talent.fel_mastery.enabled)&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))
+actions.normal+=/fel_barrage,if=!variable.waiting_for_momentum&(active_enemies>desired_targets|raid_event.adds.in>30)
+actions.normal+=/immolation_aura
+actions.normal+=/eye_beam,if=active_enemies>1&(!raid_event.adds.exists|raid_event.adds.up)&!variable.waiting_for_momentum
+actions.normal+=/death_sweep,if=variable.blade_dance
+actions.normal+=/blade_dance,if=variable.blade_dance
+actions.normal+=/felblade,if=fury.deficit>=40
+actions.normal+=/eye_beam,if=!talent.blind_fury.enabled&!variable.waiting_for_dark_slash&raid_event.adds.in>cooldown
+actions.normal+=/annihilation,if=(talent.demon_blades.enabled|!variable.waiting_for_momentum|fury.deficit<30|buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance&!variable.waiting_for_dark_slash
+actions.normal+=/chaos_strike,if=(talent.demon_blades.enabled|!variable.waiting_for_momentum|fury.deficit<30)&!variable.pooling_for_meta&!variable.pooling_for_blade_dance&!variable.waiting_for_dark_slash
+actions.normal+=/eye_beam,if=talent.blind_fury.enabled&raid_event.adds.in>cooldown
+actions.normal+=/demons_bite
+actions.normal+=/fel_rush,if=!talent.momentum.enabled&raid_event.movement.in>charges*10&talent.demon_blades.enabled
+actions.normal+=/felblade,if=movement.distance>15|buff.out_of_range.up
+actions.normal+=/fel_rush,if=movement.distance>15|(buff.out_of_range.up&!talent.momentum.enabled)
+actions.normal+=/vengeful_retreat,if=movement.distance>15
+actions.normal+=/throw_glaive,if=talent.demon_blades.enabled
+
+head=high_altitude_turban,id=158364,bonus_id=1557/4819/4775/4786,azerite_powers=12/126/21/15/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=
+shoulders=tentaclelaced_spaulders,id=159307,bonus_id=1557/4819/4775/4786,azerite_powers=12/126/462/466/13
+back=fetid_horrors_tanglecloak,id=160643,bonus_id=4800/1507
+chest=spymasters_wrap,id=155860,bonus_id=1557/4819/4775/4786,azerite_powers=12/126/462/15/13
+wrists=wristwraps_of_coursing_miasma,id=160621,bonus_id=4800/1507
+hands=gloves_of_descending_madness,id=160618,bonus_id=4800/1507
+waist=replicated_chitin_cord,id=160717,bonus_id=4800/1507
+legs=pathogenic_legwraps,id=160625,bonus_id=4800/1507
+feet=quarantine_protocol_treads,id=160624,bonus_id=4800/1507
+finger1=rotscour_ring,id=160645,bonus_id=4800/1507,enchant=pact_of_haste
+finger2=band_of_certain_annihilation,id=160646,bonus_id=4800/1507,enchant=pact_of_haste
+trinket1=kul_tiran_cannonball_runner,id=159628,bonus_id=1542/4779
+trinket2=frenetic_corpuscle,id=160648,bonus_id=4800/1507
+main_hand=glaive_of_the_keepers,id=160681,bonus_id=4800/1507,enchant=versatile_navigation
+off_hand=glaive_of_the_keepers,id=160681,bonus_id=4800/1507,enchant=quick_navigation
+
+# Gear Summary
+# gear_ilvl=385.25
+# gear_agility=4345
+# gear_stamina=7205
+# gear_crit_rating=872
+# gear_haste_rating=1351
+# gear_mastery_rating=584
+# gear_versatility_rating=195
+# gear_armor=1897

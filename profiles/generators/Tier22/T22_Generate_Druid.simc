@@ -8,7 +8,7 @@ talents=3000231
 
 head=irontide_captains_hat,id=155888,bonus_id=1557/4819/4775/4786,azerite_powers=11/479/30/85/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
-shoulder=tentacle_laced_spaulders,id=159307,bonus_id=1557/4819/4775/4786,azerite_powers=11/122/21/467/13
+shoulder=tentaclelaced_spaulders,id=159307,bonus_id=1557/4819/4775/4786,azerite_powers=11/122/21/467/13
 back=fetid_horrors_tanglecloak,id=160643,bonus_id=4800/1507
 chest=cephalohide_jacket,id=159314,bonus_id=1557/4819/4775/4786,azerite_powers=11/479/18/85/13
 wrists=wristwraps_of_coursing_miasma,id=160621,bonus_id=4800/1507
@@ -20,7 +20,7 @@ finger1=rotscour_ring,id=160645,bonus_id=4800/1507,enchant=pact_of_haste
 finger2=band_of_certain_annihilation,id=160646,bonus_id=4800/1507,enchant=pact_of_haste
 trinket1=lady_waycrests_music_box,id=159631,bonus_id=1542/4779
 trinket2=vigilants_bloodshaper,id=160651,bonus_id=4800/1507
-main_hand=regurgitated_purifers_flamestaff,id=160689,bonus_id=4800/1507,enchant=quick_navigation
+main_hand=regurgitated_purifiers_flamestaff,id=160689,bonus_id=4800/1507,enchant=quick_navigation
 
 
 save=T22_Druid_Balance.simc
