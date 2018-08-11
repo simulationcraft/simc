@@ -17,10 +17,10 @@
 T22_Generate_Death_Knight.simc
 
 # Demon Hunter
-#T22_Generate_Demon_Hunter.simc
+T22_Generate_Demon_Hunter.simc
 
 # Druid
-#T22_Generate_Druid.simc
+T22_Generate_Druid.simc
 
 # Hunter
 T22_Generate_Hunter.simc
@@ -29,7 +29,7 @@ T22_Generate_Hunter.simc
 #T22_Generate_Mage.simc
 
 # Monk
-#T22_Generate_Monk.simc
+T22_Generate_Monk.simc
 
 # Paladin
 T22_Generate_Paladin.simc
@@ -47,4 +47,4 @@ T22_Generate_Shaman.simc
 #T22_Generate_Warlock.simc
 
 # Warrior
-#T22_Generate_Warrior.simc
+T22_Generate_Warrior.simc

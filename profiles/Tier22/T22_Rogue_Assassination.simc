@@ -41,6 +41,7 @@ actions+=/lights_judgment
 
 # Cooldowns
 actions.cds=potion,if=buff.bloodlust.react|target.time_to_die<=60|debuff.vendetta.up&cooldown.vanish.remains<5
+actions.cds+=/use_item,name=galecallers_boon
 actions.cds+=/blood_fury,if=debuff.vendetta.up
 actions.cds+=/berserking,if=debuff.vendetta.up
 actions.cds+=/fireblood,if=debuff.vendetta.up
@@ -92,11 +93,11 @@ actions.stealthed+=/garrote,cycle_targets=1,if=talent.subterfuge.enabled&remains
 actions.stealthed+=/pool_resource,for_next=1
 actions.stealthed+=/garrote,if=talent.subterfuge.enabled&talent.exsanguinate.enabled&cooldown.exsanguinate.remains<1&prev_gcd.1.rupture&dot.rupture.remains>5+4*cp_max_spend
 
-head=hood_of_pestilent_ichor,id=160623,bonus_id=4824/1507/4775,azerite_powers=4/483/459/15/13
+head=cowl_of_fluid_machinations,id=159302,bonus_id=1557/4819/4775/4786,azerite_powers=4/408/22/85/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=
-shoulders=usurpers_bloodcaked_spaulders,id=160620,bonus_id=4824/1507/4775,azerite_powers=4/483/30/44/13
+shoulders=goldtasseled_epaulets,id=159299,bonus_id=1557/4819/4775/4786,azerite_powers=4/408/459/14/13
 back=fetid_horrors_tanglecloak,id=160643,bonus_id=4800/1507
-chest=jerkin_of_the_aberrant_chimera,id=160619,bonus_id=4824/1507/4775,azerite_powers=4/483/21/15/13
+chest=jerkin_of_the_aberrant_chimera,id=160619,bonus_id=4824/1507/4775,azerite_powers=4/408/21/15/13
 wrists=wristwraps_of_coursing_miasma,id=160621,bonus_id=4800/1507
 hands=gloves_of_descending_madness,id=160618,bonus_id=4800/1507
 waist=replicated_chitin_cord,id=160717,bonus_id=4800/1507
@@ -104,14 +105,14 @@ legs=pathogenic_legwraps,id=160625,bonus_id=4800/1507
 feet=quarantine_protocol_treads,id=160624,bonus_id=4800/1507
 finger1=rotscour_ring,id=160645,bonus_id=4800/1507,enchant=pact_of_haste
 finger2=band_of_certain_annihilation,id=160646,bonus_id=4800/1507,enchant=pact_of_haste
-trinket1=construct_overcharger,id=160652,bonus_id=4800/1507
-trinket2=frenetic_corpuscle,id=160648,bonus_id=4800/1507
-main_hand=latticework_scalpel,id=160683,bonus_id=4800/1507,enchant=deadly_navigation
+trinket1=galecallers_boon,id=159614,bonus_id=1542/4779
+trinket2=harlans_loaded_dice,id=155881,bonus_id=1542/4779
+main_hand=latticework_scalpel,id=160683,bonus_id=4800/1507,enchant=masterful_navigation
 off_hand=latticework_scalpel,id=160683,bonus_id=4800/1507,enchant=quick_navigation
 
 # Gear Summary
-# gear_ilvl=386.19
-# gear_agility=4387
+# gear_ilvl=384.31
+# gear_agility=4303
 # gear_stamina=7205
 # gear_crit_rating=906
 # gear_haste_rating=1317
