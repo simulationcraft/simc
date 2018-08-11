@@ -274,20 +274,35 @@ struct blessed_dawnlight_medallion_t : public priest_spell_t
 // ==========================================================================
 struct smite_t final : public priest_spell_t
 {
+  const spell_data_t* rank2;
   smite_t( priest_t& p, const std::string& options_str ) : priest_spell_t( "smite", p, p.find_class_spell( "Smite" ) )
   {
     parse_options( options_str );
 
-    procs_courageous_primal_diamond = false;
+    rank2 = priest().find_specialization_spell( 231687 );
   }
 
   void execute() override
   {
     priest_spell_t::execute();
 
-    priest().buffs.holy_evangelism->trigger();
-
-    priest().buffs.power_overwhelming->trigger();
+    double hf_proc_chance = priest().find_specialization_spell( 231687 ) -> effectN( 1 ).percent();
+    if ( sim->debug )
+    {
+      sim->out_debug.printf(
+      "%s tried to reset holy fire %s cast. ",
+      priest().name(), name() );
+    }
+    if( rank2->ok() && rng().roll( hf_proc_chance ) )
+    {
+      if ( sim->debug )
+      {
+        sim->out_debug.printf(
+      "%s reset holy fire %s cooldown ",
+      priest().name(), name() );
+    }
+      priest().cooldowns.holy_fire -> reset(true);
+    }
   }
 };
 
@@ -442,7 +457,7 @@ void mangazas_madness( special_effect_t& effect )
 
   if ( priest->active_items.mangazas_madness )
   {
-    priest->cooldowns.mind_blast->charges += 
+    priest->cooldowns.mind_blast->charges +=
       (int)(float) priest->active_items.mangazas_madness->driver()->effectN( 1 ).base_value();
   }
 }
@@ -639,6 +654,7 @@ void priest_t::create_cooldowns()
   cooldowns.chakra            = get_cooldown( "chakra" );
   cooldowns.mindbender        = get_cooldown( "mindbender" );
   cooldowns.penance           = get_cooldown( "penance" );
+  cooldowns.holy_fire         = get_cooldown( "holy_fire" );
   cooldowns.power_word_shield = get_cooldown( "power_word_shield" );
   cooldowns.shadowfiend       = get_cooldown( "shadowfiend" );
   cooldowns.silence           = get_cooldown( "silence" );

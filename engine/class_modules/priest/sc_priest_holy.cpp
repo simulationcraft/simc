@@ -17,7 +17,6 @@ struct holy_fire_base_t : public priest_spell_t
 {
   holy_fire_base_t( const std::string& name, priest_t& p, const spell_data_t* sd ) : priest_spell_t( name, p, sd )
   {
-    procs_courageous_primal_diamond = false;
   }
 
   void execute() override
@@ -42,6 +41,30 @@ struct holy_fire_t final : public holy_fire_base_t
 {
   holy_fire_t( priest_t& player, const std::string& options_str )
     : holy_fire_base_t( "holy_fire", player, player.find_class_spell( "Holy Fire" ) )
+  {
+    parse_options( options_str );
+
+    auto rank2 = priest().find_specialization_spell( 231687 );
+    if( rank2 -> ok() )
+    {
+    dot_max_stack += rank2 -> effectN( 2 ).base_value();
+    }
+  }
+};
+
+struct holy_word_chastise_t final : public priest_spell_t
+{
+  holy_word_chastise_t( priest_t& player, const std::string& options_str )
+    : priest_spell_t( "holy_word_chastise", player, player.find_class_spell( "Holy Word: Chastise" ) )
+  {
+    parse_options( options_str );
+  }
+};
+
+struct holy_nova_t final : public priest_spell_t
+{
+  holy_nova_t( priest_t& player, const std::string& options_str )
+    : priest_spell_t( "holy_nova", player, player.find_class_spell( "Holy Nova" ) )
   {
     parse_options( options_str );
   }
@@ -124,6 +147,15 @@ action_t* priest_t::create_action_holy( const std::string& name, const std::stri
     return new holy_fire_t( *this, options_str );
   }
 
+  if ( name == "holy_nova" )
+  {
+    return new holy_nova_t( *this, options_str );
+  }
+
+  if ( name == "holy_word_chastise" )
+  {
+    return new holy_word_chastise_t( *this, options_str );
+  }
   return nullptr;
 }
 

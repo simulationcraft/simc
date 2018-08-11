@@ -257,6 +257,9 @@ public:
     // Holy
     const spell_data_t* holy;  /// General holy data
     const spell_data_t* rapid_renewal;
+    const spell_data_t* holy_word_chastise;
+    const spell_data_t* holy_nova;
+    const spell_data_t* holy_fire;
     const spell_data_t* serendipity;
     const spell_data_t* divine_providence;
 
@@ -294,6 +297,9 @@ public:
     propagate_const<cooldown_t*> psychic_horror;
     propagate_const<cooldown_t*> sephuzs_secret;
     propagate_const<cooldown_t*> dark_ascension;
+
+    propagate_const<cooldown_t*> holy_word_chastise;
+    propagate_const<cooldown_t*> holy_fire;
   } cooldowns;
 
   // Gains
@@ -351,6 +357,7 @@ public:
     propagate_const<proc_t*> surge_of_light_overflow;
     propagate_const<proc_t*> void_eruption_has_dots;
     propagate_const<proc_t*> void_eruption_no_dots;
+    propagate_const<proc_t*> holy_fire_cd;
   } procs;
 
   struct realppm_t
@@ -363,7 +370,7 @@ public:
   struct
   {
     propagate_const<actions::spells::mind_sear_tick_t*> mind_sear_tick;
-    propagate_const<actions::spells::shadowy_apparition_spell_t*> shadowy_apparitions;   
+    propagate_const<actions::spells::shadowy_apparition_spell_t*> shadowy_apparitions;
   } active_spells;
 
   struct
@@ -990,7 +997,7 @@ public:
       return true;
     }
     return false;
-  }
+  };
 
   bool trigger_zeks()
   {
