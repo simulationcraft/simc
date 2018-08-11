@@ -5,6 +5,14 @@
 
 #include "simulationcraft.hpp"
 
+// TODO:
+//   Ignition Mage's Fuse automatically generated effect doesn't give extra stacks
+//   Rotcrused Voodoo Doll DoT tick time scales with haste, but so does the duration - always doing 7 ticks
+//   Lady Waycrest's Music Box doesn't do AoE damage
+//   Balefire Branch starts at 100 stacks and decays 5 stack every sec
+//   Azurethos' Singed Plumage starts at 5 stacks and goes down instead of going up
+
+
 using namespace unique_gear;
 
 namespace {
