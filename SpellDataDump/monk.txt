@@ -460,7 +460,7 @@ Cooldown         : 3 seconds
 Category         : 1561
 Category Cooldown: 3 seconds
 Proc Chance      : 101%
-Affecting spells : Blackout Kick! (116768 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Blackout Kick (261916 effect#1), Blackout Kick (261917 effect#1), Elusive Footwork (278571 effect#3), The Wind Blows (281452 effect#1), 
+Affecting spells : Blackout Kick! (116768 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Blackout Kick (261916 effect#1), Blackout Kick (261917 effect#1), The Wind Blows (281452 effect#1), 
 Family Flags     : 4, 67, 103
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -4971,6 +4971,7 @@ Effects          :
 Description      : $@spelldesc205320
 
 Name             : Blackout Strike (id=205523) [Spell Family (53)] 
+Hotfixed         : Affecting Spells
 Replaces         : Blackout Kick (id=100784)
 Class            : Brewmaster Monk
 School           : Physical
@@ -4981,7 +4982,7 @@ GCD              : 1.5 seconds
 Cooldown         : 3 seconds
 Proc Chance      : 101%
 Affecting spells : Blackout Kick! (116768 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Blackout Kick (261916 effect#1), Blackout Kick (261917 effect#1), Elusive Footwork (278571 effect#3), The Wind Blows (281452 effect#1), 
-Family Flags     : 4, 67, 103
+Family Flags     : 4, 67, 80, 103
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5508,7 +5509,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 3
 Range            : 5 yards
-Affecting spells : Blackout Kick! (116768 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Blackout Kick (261916 effect#1), Blackout Kick (261917 effect#1), Elusive Footwork (278571 effect#3), The Wind Blows (281452 effect#1), 
+Affecting spells : Blackout Kick! (116768 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Blackout Kick (261916 effect#1), Blackout Kick (261917 effect#1), The Wind Blows (281452 effect#1), 
 Family Flags     : 4, 103
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -7067,7 +7068,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=723926)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.417084) | Trigger Spell: 272806 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=2.381773) | Trigger Spell: 272806 | Target: Self (1)
+                   Hotfixed: Coefficient (0.417084 -> 2.38177)
 #2 (id=723927)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4
 Description      : Fists of Fury grants you $s1 Critical Strike for $272806d when it hits at least $s2 enemies.
@@ -7092,7 +7094,8 @@ Effects          :
                    Hotfixed: Coefficient (2.57235 -> 11.3681)
 Description      : Your spells and abilities have a chance to draw a Wandering Soul from Thros to serve you for $280204d. The Soul blasts a nearby enemy every $280204t2 sec, dealing $s1 Shadow damage.
 
-Name             : Sunrise Technique (id=273291) [Scaling Spell (-1), Spell Family (53), Passive] 
+Name             : Sunrise Technique (id=273291) [Scaling Spell (-8), Spell Family (53), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -7108,7 +7111,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724795)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 199.04 (coefficient=0.64) | Trigger Spell: 273292 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 262.8236 (coefficient=3.380368) | Trigger Spell: 273292 | Target: Self (1)
+                   Hotfixed: Coefficient (0.64 -> 3.38037)
 Description      : Attacking a target with Rising Sun Kick causes your damaging melee abilities to deal $s1 additional Physical damage to that target for $273298d.
 
 Name             : Overflowing Mists (id=273328) [Scaling Spell (-8), Spell Family (53), Passive] 
@@ -7481,7 +7485,8 @@ Effects          :
                    Hotfixed: Coefficient (32.1557 -> 128.834)
 Description      : When Life Cocoon expires, it releases a burst of mist that restores $s1 health split among the target and nearby allies.
 
-Name             : Swift Roundhouse (id=277669) [Scaling Spell (-1), Spell Family (53), Passive] 
+Name             : Swift Roundhouse (id=277669) [Scaling Spell (-8), Spell Family (53), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -7497,7 +7502,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732971)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 300.3389 (coefficient=0.96572) | Trigger Spell: 278707 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1365.157 (coefficient=17.55828) | Trigger Spell: 278707 | Target: Self (1)
+                   Hotfixed: Coefficient (0.96572 -> 17.5583)
 Description      : Blackout Kick increases the damage of your next Rising Sun Kick by $s1, stacking up to $278710u times.
 
 Name             : Training of Niuzao (id=278569) [Scaling Spell (-7), Spell Family (53), Passive] 
@@ -7545,9 +7551,9 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1
 #3 (id=736014)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 333.8957 (coefficient=4.294478) | Target: Self (1)
-                   Affected Spells: Blackout Kick (100784), Blackout Strike (205523), Blackout Kick (228649)
-                   Family Flags: 4
-                   Hotfixed: Coefficient (2.2 -> 4.29448)
+                   Affected Spells: Blackout Strike (205523)
+                   Family Flags: 80
+                   Hotfixed: Coefficient (2.2 -> 4.29448), Affects Spells
 Description      : Blackout Strike deals an additional $s3 damage. Blackout Strike critical hits grant an additional $m2 $Lstack:stacks; of Elusive Brawler.
 
 Name             : Uplifted Spirits (id=278576) [Scaling Spell (-8), Spell Family (53), Passive] 
@@ -7576,7 +7582,8 @@ Effects          :
                    Hotfixed: Coefficient (1.1 -> 4.41718)
 Description      : Your Vivify heals for an additional $s3. Vivify critical heals reduce the cooldown of your Revival by ${$s2/1000}.1 sec.
 
-Name             : Pressure Point (id=278577) [Scaling Spell (-1), Spell Family (53), Passive] 
+Name             : Pressure Point (id=278577) [Scaling Spell (-8), Spell Family (53), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -7591,12 +7598,14 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734381)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 62.2 (coefficient=0.2) | Trigger Spell: 278718 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 772.73 (coefficient=9.938649) | Trigger Spell: 278718 | Target: Self (1)
+                   Hotfixed: Coefficient (0.2 -> 9.93865)
 #2 (id=734382)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
 Description      : Tiger Palm's chance to make your next Blackout Kick free is increased to $278718s1% and Tiger Palm deals an additional $s1 damage.
 
-Name             : Meridian Strikes (id=278580) [Scaling Spell (-1), Spell Family (53), Passive] 
+Name             : Meridian Strikes (id=278580) [Scaling Spell (-8), Spell Family (53), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -7611,11 +7620,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734386)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 6220 (coefficient=20) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 12502.49 (coefficient=160.8037) | Target: Self (1)
                    Affected Spells: Touch of Death (115080)
                    Family Flags: 40
+                   Hotfixed: Coefficient (20 -> 160.804)
 #2 (id=734387)   : Dummy (3)
-                   Base Value: 10 | Scaled Value: 10
+                   Base Value: 25 | Scaled Value: 25
+                   Hotfixed: Base Value (10 -> 25)
 Description      : When you Combo Strike, the cooldown of Touch of Death is reduced by ${$s2/100}.1 sec.
 
 Touch of Death deals an additional $s1 damage.
@@ -7714,7 +7725,8 @@ Effects          :
                    Hotfixed: Coefficient (0.447912 -> 0.194999)
 Description      : Your damaging abilities have a chance to grant $s1 critical strike rating for $279902d. This effect stacks up to $279902u times.
 
-Name             : Open Palm Strikes (id=279918) [Scaling Spell (-1), Spell Family (53), Passive] 
+Name             : Open Palm Strikes (id=279918) [Scaling Spell (-8), Spell Family (53), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -7735,9 +7747,10 @@ Effects          :
 #3 (id=736549)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
 #4 (id=736552)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 46.65 (coefficient=0.15) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 659.6825 (coefficient=8.484663) | Target: Self (1)
                    Affected Spells: Fists of Fury (117418)
                    Family Flags: 20
+                   Hotfixed: Coefficient (0.15 -> 8.48466)
 Description      : When Fists of Fury deals damage, it has a $s2% chance to refund $s3 Chi, and it deals $s4 additional damage.
 
 Name             : Earthlink (id=279926) [Scaling Spell (-1), Passive] 
@@ -8316,6 +8329,7 @@ Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman
 School           : Physical
 Spell Type       : None
 Azerite Power Id : 488
+Triggered by     : Battlefield Focus (280817)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

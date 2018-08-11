@@ -5134,27 +5134,33 @@ Effects          :
 #1 (id=290148)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #2 (id=340934)   : Apply Aura (6) | Modify Power Regen (110)
-                   Base Value: 35 | Scaled Value: 35 | Misc Value: 3 | Target: Self (1)
+                   Base Value: 45 | Scaled Value: 45 | Misc Value: 3 | Target: Self (1)
+                   Hotfixed: Base Value (35 -> 45)
 #3 (id=340949)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Base Value: 33 | Scaled Value: 33 | Target: Self (1)
                    Affected Spells: Swipe (106785)
                    Family Flags: 74
+                   Hotfixed: Base Value (15 -> 33)
 #4 (id=344680)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Base Value: 33 | Scaled Value: 33 | Target: Self (1)
                    Affected Spells: Ferocious Bite (22568)
                    Family Flags: 108
+                   Hotfixed: Base Value (15 -> 33)
 #5 (id=344848)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Rake (1822), Shred (5221), Rake (155722)
                    Family Flags: 12, 15
+                   Hotfixed: Base Value (0 -> 15)
 #6 (id=346473)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 33 | Scaled Value: 33 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rip (1079)
                    Family Flags: 85
+                   Hotfixed: Base Value (15 -> 33)
 #7 (id=346474)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rake (1822), Rake (155722)
                    Family Flags: 12
+                   Hotfixed: Base Value (0 -> 15)
 #8 (id=720148)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Shred (5221)
@@ -5759,27 +5765,33 @@ Effects          :
 #1 (id=297934)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #2 (id=340945)   : Apply Aura (6) | Modify Power Regen (110)
-                   Base Value: 35 | Scaled Value: 35 | Misc Value: 3 | Target: Self (1)
+                   Base Value: 45 | Scaled Value: 45 | Misc Value: 3 | Target: Self (1)
+                   Hotfixed: Base Value (35 -> 45)
 #3 (id=340951)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Base Value: 33 | Scaled Value: 33 | Target: Self (1)
                    Affected Spells: Swipe (106785)
                    Family Flags: 74
+                   Hotfixed: Base Value (15 -> 33)
 #4 (id=344681)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Base Value: 33 | Scaled Value: 33 | Target: Self (1)
                    Affected Spells: Ferocious Bite (22568)
                    Family Flags: 108
+                   Hotfixed: Base Value (15 -> 33)
 #5 (id=344851)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Rake (1822), Shred (5221), Rake (155722)
                    Family Flags: 12, 15
+                   Hotfixed: Base Value (0 -> 15)
 #6 (id=346475)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 33 | Scaled Value: 33 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rip (1079)
                    Family Flags: 85
+                   Hotfixed: Base Value (15 -> 33)
 #7 (id=346476)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rake (1822), Rake (155722)
                    Family Flags: 12
+                   Hotfixed: Base Value (0 -> 15)
 #8 (id=720147)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Shred (5221)
@@ -5814,27 +5826,33 @@ Effects          :
 #1 (id=297936)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #2 (id=340946)   : Apply Aura (6) | Modify Power Regen (110)
-                   Base Value: 35 | Scaled Value: 35 | Misc Value: 3 | Target: Self (1)
+                   Base Value: 45 | Scaled Value: 45 | Misc Value: 3 | Target: Self (1)
+                   Hotfixed: Base Value (35 -> 45)
 #3 (id=340950)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Base Value: 33 | Scaled Value: 33 | Target: Self (1)
                    Affected Spells: Swipe (106785)
                    Family Flags: 74
+                   Hotfixed: Base Value (15 -> 33)
 #4 (id=344682)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Base Value: 33 | Scaled Value: 33 | Target: Self (1)
                    Affected Spells: Ferocious Bite (22568)
                    Family Flags: 108
+                   Hotfixed: Base Value (15 -> 33)
 #5 (id=344859)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Rake (1822), Shred (5221), Rake (155722)
                    Family Flags: 12, 15
+                   Hotfixed: Base Value (0 -> 15)
 #6 (id=346477)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 33 | Scaled Value: 33 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rip (1079)
                    Family Flags: 85
+                   Hotfixed: Base Value (15 -> 33)
 #7 (id=346478)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rake (1822), Rake (155722)
                    Family Flags: 12
+                   Hotfixed: Base Value (0 -> 15)
 #8 (id=720149)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Shred (5221)
@@ -10190,6 +10208,7 @@ Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman
 School           : Physical
 Spell Type       : None
 Azerite Power Id : 488
+Triggered by     : Battlefield Focus (280817)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
