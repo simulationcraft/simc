@@ -755,10 +755,10 @@ void items::lingering_sporepods( special_effect_t& effect )
 
 void items::lady_waycrests_music_box( special_effect_t& effect )
 {
-  struct cacophonous_chord_t : public proc_t
+  struct cacaphonous_chord_t : public proc_t
   {
-    cacophonous_chord_t( const special_effect_t& effect ) :
-      proc_t( effect, "cacophonous_chord", 271671 )
+    cacaphonous_chord_t( const special_effect_t& effect ) :
+      proc_t( effect, "cacaphonous_chord", 271671 )
     {
       aoe = 0;
     }
@@ -773,7 +773,7 @@ void items::lady_waycrests_music_box( special_effect_t& effect )
     }
   };
 
-  effect.execute_action = create_proc_action<cacophonous_chord_t>( "cacophonous_chord", effect );
+  effect.execute_action = create_proc_action<cacaphonous_chord_t>( "cacaphonous_chord", effect );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
