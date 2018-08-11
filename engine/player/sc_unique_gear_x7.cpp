@@ -54,6 +54,7 @@ namespace consumables
 {
   void galley_banquet( special_effect_t& );
   void bountiful_captains_feast( special_effect_t& );
+  void potion_of_rising_death( special_effect_t& );
 }
 
 namespace enchants
@@ -152,6 +153,34 @@ void consumables::bountiful_captains_feast( special_effect_t& effect )
       { STAT_AGILITY,   259454 },
       { STAT_INTELLECT, 259455 },
       { STAT_STAMINA,   259457 } } );
+}
+
+// Potion of Rising Death ===================================================
+
+void consumables::potion_of_rising_death( special_effect_t& effect )
+{
+  effect.disable_action();
+
+  // Make a bog standard damage proc for the buff
+  auto secondary = new special_effect_t( effect.player );
+  secondary->type = SPECIAL_EFFECT_EQUIP;
+  secondary->spell_id = effect.spell_id;
+  secondary->cooldown_ = timespan_t::zero();
+  secondary->execute_action = create_proc_action<proc_spell_t>( "potion_of_rising_death",
+      effect );
+  effect.player->special_effects.push_back( secondary );
+
+  auto proc = new dbc_proc_callback_t( effect.player, *secondary );
+  proc->deactivate();
+  proc->initialize();
+
+  effect.custom_buff = buff_creator_t( effect.player, effect.name(), effect.driver() )
+    .stack_change_callback( [ proc ]( buff_t*, int, int new_ ) {
+      if ( new_ == 1 ) proc->activate();
+      else             proc->deactivate();
+    } )
+    .cd( timespan_t::zero() ) // Handled by the action
+    .chance( 1.0 ); // Override chance so the buff actually triggers
 }
 
 // Gale-Force Striking ======================================================
@@ -874,6 +903,7 @@ void unique_gear::register_special_effects_bfa()
   // Consumables
   register_special_effect( 259409, consumables::galley_banquet );
   register_special_effect( 259410, consumables::bountiful_captains_feast );
+  register_special_effect( 269853, consumables::potion_of_rising_death );
 
   // Enchants
   register_special_effect( 255151, enchants::galeforce_striking );
