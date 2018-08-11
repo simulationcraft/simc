@@ -1216,8 +1216,8 @@ class SpellDataGenerator(DataGenerator):
          280866, 280867, 280868, 280869, 280870,
          # Synaptic Spark Capacitor
          280846,
-         # Battlefield Focus debuff
-         280817,
+         # Battlefield Focus/Precision debuff and damages
+         280817, 282724, 280855, 282720,
         ),
 
         # Warrior:

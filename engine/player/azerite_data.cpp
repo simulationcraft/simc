@@ -602,6 +602,8 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 280174, special_effects::synaptic_spark_capacitor );
   unique_gear::register_special_effect( 280168, special_effects::ricocheting_inflatable_pyrosaw );
   unique_gear::register_special_effect( 266937, special_effects::gutripper             );
+  unique_gear::register_special_effect( 280582, special_effects::battlefield_focus_precision );
+  unique_gear::register_special_effect( 280627, special_effects::battlefield_focus_precision );
 }
 
 void register_azerite_target_data_initializers( sim_t* sim )
@@ -620,6 +622,33 @@ void register_azerite_target_data_initializers( sim_t* sim )
     {
       td -> debuff.azerite_globules = make_buff( *td, "azerite_globules" );
       td -> debuff.azerite_globules -> set_quiet( true );
+    }
+  } );
+
+  // Battlefield Focus / Precision
+  sim -> register_target_data_initializer( [] ( actor_target_data_t* td ) {
+    auto&& azerite = td -> source -> azerite;
+    if ( ! azerite )
+    {
+      return;
+    }
+
+    if ( azerite->is_enabled( "Battlefield Focus" ) )
+    {
+      td->debuff.battlefield_debuff = make_buff( *td, "battlefield_focus",
+          td->source->find_spell( 280817 ) );
+      td->debuff.battlefield_debuff->reset();
+    }
+    else if ( azerite->is_enabled( "Battlefield Precision" ) )
+    {
+      td->debuff.battlefield_debuff = make_buff( *td, "battlefield_precision",
+          td->source->find_spell( 280855 ) );
+      td->debuff.battlefield_debuff->reset();
+    }
+    else
+    {
+      td -> debuff.battlefield_debuff = make_buff( *td, "battlefield_debuff" );
+      td -> debuff.battlefield_debuff->set_quiet( true );
     }
   } );
 }
@@ -2027,6 +2056,83 @@ void gutripper( special_effect_t& effect )
   effect.execute_action = unique_gear::create_proc_action<gutripper_t>( "gutripper", effect, power );
 
   new gutripper_cb_t( effect, power );
+}
+
+void battlefield_focus_precision( special_effect_t& effect )
+{
+  struct bf_damage_cb_t : public dbc_proc_callback_t
+  {
+    bf_damage_cb_t( const special_effect_t& effect ) :
+      dbc_proc_callback_t( effect.player, effect )
+    { }
+
+    void execute( action_t*, action_state_t* state ) override
+    {
+      auto td = listener->get_target_data( state->target );
+      td->debuff.battlefield_debuff->decrement();
+      proc_action->set_target( state->target );
+      proc_action->schedule_execute();
+
+      // Self-deactivate when the debuff runs out
+      if ( td->debuff.battlefield_debuff->check() == 0 )
+      {
+        deactivate();
+      }
+    }
+  };
+
+  struct bf_trigger_cb_t : public dbc_proc_callback_t
+  {
+    action_callback_t* damage_cb;
+
+    bf_trigger_cb_t( const special_effect_t& effect, action_callback_t* cb ) :
+      dbc_proc_callback_t( effect.player, effect ), damage_cb( cb )
+    { }
+
+    void execute( action_t*, action_state_t* state ) override
+    {
+      auto td = listener->get_target_data( state->target );
+      td->debuff.battlefield_debuff->trigger(
+          listener->sim->bfa_opts.battlefield_debuff_stacks );
+      damage_cb->activate();
+    }
+  };
+
+  struct bf_damage_t : public unique_gear::proc_spell_t
+  {
+    bf_damage_t( const special_effect_t& effect, const azerite_power_t& power ) :
+      proc_spell_t( effect.name(), effect.player,
+          effect.player->find_spell( effect.spell_id == 280627 ? 282720 : 282724 ) )
+    {
+      base_dd_min = base_dd_max = power.value( 1 );
+    }
+  };
+
+  azerite_power_t power = effect.player->find_azerite_spell( effect.driver()->name_cstr() );
+  if ( !power.enabled() )
+    return;
+
+  // Since we are individualizing the Battlefield Debuff proc, we need to create a slightly custom
+  // secondary special effect that procs on this actor's damage
+  auto secondary = new special_effect_t( effect.player );
+  secondary->name_str = "battlefield_debuff_driver";
+  secondary->spell_id = effect.spell_id == 280627 ? 280855 : 280817;
+  secondary->type = effect.type;
+  secondary->source = effect.source;
+  // Note, we override the proc flags to be sourced from the actor, instead of the target's "taken"
+  secondary->proc_flags_ = PF_ALL_DAMAGE;
+  secondary->execute_action = unique_gear::create_proc_action<bf_damage_t>( effect.name(), effect,
+      power );
+
+  effect.player -> special_effects.push_back( secondary );
+
+  auto trigger_cb = new bf_damage_cb_t( *secondary );
+  trigger_cb->deactivate();
+
+  // Fix the driver to point to the RPPM base spell
+  effect.spell_id = effect.spell_id == 280627 ? 280854 : 280816;
+
+  new bf_trigger_cb_t( effect, trigger_cb );
 }
 
 } // Namespace special effects ends

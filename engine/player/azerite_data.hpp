@@ -193,6 +193,7 @@ void meticulous_scheming( special_effect_t& );
 void synaptic_spark_capacitor( special_effect_t& );
 void ricocheting_inflatable_pyrosaw( special_effect_t& );
 void gutripper( special_effect_t& );
+void battlefield_focus_precision( special_effect_t& );
 } // Namespace special_effects ends
 
 } // Namespace azerite ends
