@@ -1291,6 +1291,9 @@ namespace warlock {
     fnb->add_action( "havoc,cycle_targets=1,if=!(target=sim.target)&target.time_to_die>10&spell_targets.rain_of_fire<=4&talent.grimoire_of_supremacy.enabled&pet.infernal.active&pet.infernal.remains<=10" );
     fnb->add_action( "havoc,if=spell_targets.rain_of_fire<=4&talent.grimoire_of_supremacy.enabled&pet.infernal.active&pet.infernal.remains<=10" );
     fnb->add_action( "chaos_bolt,cycle_targets=1,if=!debuff.havoc.remains&talent.grimoire_of_supremacy.enabled&pet.infernal.remains>execute_time&active_enemies<=4&((108*spell_targets.rain_of_fire%3)<(240*(1+0.08*buff.grimoire_of_supremacy.stack)%2*(1+buff.active_havoc.remains>execute_time)))" );
+    fnb->add_action( "havoc,cycle_targets=1,if=!(target=sim.target)&target.time_to_die>10&spell_targets.rain_of_fire<=4" );
+    fnb->add_action( "havoc,if=spell_targets.rain_of_fire<=4" );
+    fnb->add_action( "chaos_bolt,cycle_targets=1,if=!debuff.havoc.remains&buff.active_havoc.remains>execute_time&spell_targets.rain_of_fire<=4" );
     fnb->add_action( "immolate,cycle_targets=1,if=!debuff.havoc.remains&refreshable&spell_targets.incinerate<=8" );
     fnb->add_action( "rain_of_fire" );
     fnb->add_action( "soul_fire,cycle_targets=1,if=!debuff.havoc.remains&spell_targets.incinerate=3" );
