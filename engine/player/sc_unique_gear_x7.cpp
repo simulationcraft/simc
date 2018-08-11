@@ -5,10 +5,6 @@
 
 #include "simulationcraft.hpp"
 
-// TODO:
-//   Azurethos' Singed Plumage starts at 5 stacks and goes down instead of going up
-
-
 using namespace unique_gear;
 
 namespace {
@@ -90,7 +86,7 @@ namespace items
   void balefire_branch( special_effect_t& );
   // 8.0.1 - Uldir Trinkets
   void frenetic_corpuscle( special_effect_t& );
-  void vigilants_bloodshaper(special_effect_t& );
+  void vigilants_bloodshaper( special_effect_t& );
 }
 
 namespace util
@@ -833,7 +829,6 @@ void items::frenetic_corpuscle( special_effect_t& effect )
   new frenetic_corpuscle_cb_t( effect );
 }
 
-
 } // namespace bfa
 } // anon namespace
 
@@ -882,6 +877,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 268999, items::balefire_branch );
   register_special_effect( 268314, "268311Trigger" ); // Galecaller's Boon, assumes the player always stands in the area
   register_special_effect( 278140, items::frenetic_corpuscle );
+  register_special_effect( 278383, "Reverse" ); // Azurethos' Singed Plumage
 }
 
 void unique_gear::register_target_data_initializers_bfa( sim_t* sim )
