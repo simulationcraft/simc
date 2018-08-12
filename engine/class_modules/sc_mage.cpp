@@ -6701,13 +6701,16 @@ void mage_t::apl_precombat()
 
 std::string mage_t::default_potion() const
 {
+  std::string lvl120_potion =
+    ( specialization() == MAGE_FROST ) ? "rising_death" :
+                                         "battle_potion_of_intellect";
+
   std::string lvl110_potion =
     ( specialization() == MAGE_ARCANE ) ? "deadly_grace" :
-    ( specialization() == MAGE_FIRE   ) ? "prolonged_power" :
                                           "prolonged_power";
 
   // TODO: Check Rising Death once it's implemented
-  return ( true_level > 110 ) ? "battle_potion_of_intellect" :
+  return ( true_level > 110 ) ? lvl120_potion :
          ( true_level > 100 ) ? lvl110_potion :
          ( true_level >  90 ) ? "draenic_intellect" :
          ( true_level >  85 ) ? "jade_serpent" :
