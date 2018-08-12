@@ -103,13 +103,13 @@ shoulders=mantle_of_ceremonial_ascension,id=158344,bonus_id=4779/1512/4786/4775,
 back=parrotfeather_cloak,id=155884,bonus_id=4779/1512/4786
 chest=inmates_straight_robe,id=159268,bonus_id=4779/1512/4786/4775,azerite_powers=8/377/21/468/13
 wrists=ironkelp_wristwraps,id=159256,bonus_id=4779/1512/4786
-hands=captains_dustfinders,id=159237,bonus_id=4779/1512/4786
-waist=aqusirrs_swirling_sash,id=159239,bonus_id=4779/1512/4786
-legs=chumcoated_leggings,id=158302,bonus_id=4779/1512/4786
-feet=devilsaur_worshipers_sandals,id=158303,bonus_id=4779/1512/4786
-finger1=seal_of_the_city_watch,id=162542,bonus_id=4779/1512/4786,enchant=pact_of_haste
-finger2=murky_cerulean_signet,id=158318,bonus_id=4779/1512/4786,enchant=pact_of_haste
-trinket1=conch_of_dark_whispers,id=159620,bonus_id=4779/1512/4786
+hands=twisted_sisters_handwraps,id=159272,bonus_id=4779/1512/4786
+waist=cord_of_the_pious_warder,id=159245,bonus_id=4779/1512/4786
+legs=powder_monkeys_leggings,id=159250,bonus_id=4779/1512/4786
+feet=blood_warders_moccasins,id=159270,bonus_id=4779/1512/4786
+finger1=overseers_lost_seal,id=159460,bonus_id=4779/1512/4786,enchant=pact_of_haste
+finger2=thornwoven_band,id=162548,bonus_id=4779/1512/4786,enchant=pact_of_haste
+trinket1=vessel_of_skittering_shadows,id=159610,bonus_id=4779/1512/4786
 trinket2=balefire_branch,id=159630,bonus_id=4779/1512/4786
 main_hand=seabreeze,id=158371,bonus_id=4779/1512/4786,enchant=torrent_of_elements
 
@@ -117,7 +117,8 @@ main_hand=seabreeze,id=158371,bonus_id=4779/1512/4786,enchant=torrent_of_element
 # gear_ilvl=341.47
 # gear_stamina=4465
 # gear_intellect=3423
-# gear_crit_rating=977
-# gear_haste_rating=327
-# gear_mastery_rating=1120
+# gear_crit_rating=277
+# gear_haste_rating=607
+# gear_mastery_rating=789
+# gear_versatility_rating=749
 # gear_armor=870
