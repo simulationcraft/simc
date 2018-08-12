@@ -6914,7 +6914,7 @@ void mage_t::apl_fire()
   standard    -> add_talent( this, "Phoenix Flames", "if=(buff.combustion.up|buff.rune_of_power.up|buff.incanters_flow.stack>3|talent.mirror_image.enabled)&(4-charges_fractional)*13<cooldown.combustion.remains+5|target.time_to_die<10" );
   standard    -> add_talent( this, "Phoenix Flames", "if=(buff.combustion.up|buff.rune_of_power.up)&(4-charges_fractional)*30<cooldown.combustion.remains+5" );
   standard    -> add_talent( this, "Phoenix Flames", "if=charges_fractional>2.5&cooldown.combustion.remains>23" );
-  standard    -> add_action( this, "Scorch", "if=target.health.pct<=30&talent.searing_touch.enabled" );
+  standard    -> add_action( this, "Scorch", "if=(target.health.pct<=30&talent.searing_touch.enabled)|(azerite.preheat.enabled&debuff.preheat.down)" );
   standard    -> add_action( this, "Fireball" );
   standard    -> add_action( this, "Scorch" );
 
