@@ -2876,8 +2876,7 @@ struct garrote_t : public rogue_attack_t
     if ( p() -> azerite.shrouded_suffocation.ok() )
     {
       // Note: Assuming Shadowmeld works, needs checking.
-      if ( p()->stealthed() )
-        debug_cast<garrote_state_t*>( state ) -> shrouded_suffocation = true;
+      debug_cast<garrote_state_t*>( state ) -> shrouded_suffocation = p() -> stealthed();
     }
   }
 
