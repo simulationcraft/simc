@@ -311,7 +311,7 @@ struct mind_flay_t final : public priest_spell_t
   }
 
   /// Legendary the_twins_painful_touch
-  void spread_twins_painsful_dots( action_state_t* s )
+  void spread_twins_painful_touch_dots( action_state_t* s )
   {
     priest_td_t& td = get_td( s->target );
 
@@ -352,9 +352,12 @@ struct mind_flay_t final : public priest_spell_t
     // spread dots to targets
     for ( const dot_t* dot : dots )
     {
-      for ( player_t* target : valid_targets )
+      if ( dot -> is_ticking() )
       {
-        dot->copy( target, DOT_COPY_CLONE );
+        for ( player_t* target : valid_targets )
+        {
+          dot->copy( target, DOT_COPY_CLONE );
+        }
       }
     }
   }
@@ -376,7 +379,7 @@ struct mind_flay_t final : public priest_spell_t
     priest_spell_t::impact( s );
     if ( priest().buffs.the_twins_painful_touch->up() )
     {
-      spread_twins_painsful_dots( s );
+      spread_twins_painful_touch_dots( s );
       priest().buffs.the_twins_painful_touch->expire();
     }
   }
