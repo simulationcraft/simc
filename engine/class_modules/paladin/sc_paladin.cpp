@@ -2089,7 +2089,7 @@ double paladin_t::last_defender_damage() const
   double distance = talents.last_defender -> effectN( 1 ).base_value();
   double num_enemies = get_local_enemies( distance );
 
-  double damage_multiplier = std::pow( 1.0 + talents.last_defender -> effectN( 2 ).percent(), num_enemies );
+  double damage_multiplier = 2.0 - std::pow( 1.0 - talents.last_defender -> effectN( 2 ).percent(), num_enemies );
 
   return damage_multiplier;
 }
