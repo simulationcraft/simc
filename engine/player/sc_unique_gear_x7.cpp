@@ -70,6 +70,7 @@ namespace items
   // 8.0 misc
   void darkmoon_deck_squalls( special_effect_t& );
   void darkmoon_deck_fathoms( special_effect_t& );
+  void endless_tincture_of_fractional_power( special_effect_t& );
   // 8.0.1 - World Trinkets
   void kajafied_banana( special_effect_t& );
   void incessantly_ticking_clock( special_effect_t& );
@@ -922,6 +923,55 @@ void items::darkmoon_deck_fathoms( special_effect_t& effect )
       { 276187, 276188, 276189, 276190, 276191, 276192, 276193, 276194 } );
 }
 
+// Endless Tincture of Fractional Power =====================================
+
+void items::endless_tincture_of_fractional_power( special_effect_t& effect )
+{
+  struct endless_tincture_of_fractional_power_t : public proc_spell_t
+  {
+    std::vector<stat_buff_t*> buffs;
+
+    endless_tincture_of_fractional_power_t( const special_effect_t& effect ) :
+      proc_spell_t( "endless_tincture_of_fractional_power", effect.player, effect.driver(), effect.item )
+    {
+      // TOCHECK: Buffs don't appear to scale from ilevel right now and only scale to 110
+      // Blizzard either has some script magic or the spells need fixing, needs testing
+      // As per Navv, added some checking of the ilevel flag in case they fix this via data
+      std::vector<unsigned> buff_ids = { 265442, 265443, 265444, 265446 };
+      for ( unsigned buff_id : buff_ids )
+      {
+        const spell_data_t* buff_spell = effect.player->find_spell( buff_id );
+        if( buff_spell->flags( spell_attribute::SX_SCALE_ILEVEL ) )
+          buffs.push_back( make_buff<stat_buff_t>( effect.player, util::tokenized_name( buff_spell ), buff_spell, effect.item ) );
+        else
+          buffs.push_back( make_buff<stat_buff_t>( effect.player, util::tokenized_name( buff_spell ), buff_spell ) );
+      }
+    }
+
+    void execute() override
+    {
+      if ( player->consumables.flask )
+      {
+        const stat_buff_t* flask_buff = dynamic_cast<stat_buff_t*>( player->consumables.flask );
+        if ( flask_buff && flask_buff->stats.size() > 0 )
+        {
+          // Check if the flask buff matches one of the trinket's stat buffs
+          const stat_e flask_stat = flask_buff->stats.front().stat;
+          const auto it = range::find_if( buffs, [ flask_stat ]( const stat_buff_t* buff ) {
+            return buff->stats.size() > 0 && buff->stats.front().stat == flask_stat;
+          } );
+
+          if ( it != buffs.end() )
+            ( *it )->trigger();
+        }
+      }
+    }
+  };
+
+  effect.execute_action = 
+    create_proc_action<endless_tincture_of_fractional_power_t>( "endless_tincture_of_fractional_power", effect );
+}
+
 } // namespace bfa
 } // anon namespace
 
@@ -977,6 +1027,7 @@ void unique_gear::register_special_effects_bfa()
   // Misc
   register_special_effect( 276123, items::darkmoon_deck_squalls );
   register_special_effect( 276176, items::darkmoon_deck_fathoms );
+  register_special_effect( 265440, items::endless_tincture_of_fractional_power );
 }
 
 void unique_gear::register_target_data_initializers_bfa( sim_t* sim )
