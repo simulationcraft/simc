@@ -1036,6 +1036,7 @@ void paladin_t::generate_action_prio_list_prot()
   
   def -> add_action( "auto_attack" );
 
+  def -> add_action( "fireblood,if=buff.avenging_wrath.up" );
   def -> add_talent( this, "Seraphim", "if=cooldown.shield_of_the_righteous.charges_fractional>=2", "Cooldowns" );
   def -> add_action( this, "Avenging Wrath", "if=buff.seraphim.up|cooldown.seraphim.remains<2|!talent.seraphim.enabled" );
   def -> add_action( "potion,if=buff.avenging_wrath.up" );
@@ -1049,12 +1050,12 @@ void paladin_t::generate_action_prio_list_prot()
   def -> add_action( "use_items,if=buff.seraphim.up|!talent.seraphim.enabled" );
   def -> add_action( "lights_judgment,if=buff.seraphim.up&buff.seraphim.remains<3" );
 
-  def -> add_action( this, "Avenger's Shield", "if=(cooldown.shield_of_the_righteous.charges_fractional>2.5&!buff.avengers_valor.up)|active_enemies>=2" );
-  def -> add_action( this, "Judgment", "if=(cooldown.judgment.remains<gcd&cooldown.judgment.charges_fractional>1)|!talent.crusaders_judgment.enabled" );
-  def -> add_action( this, "Avenger's Shield" );
+  def -> add_action( this, "Avenger's Shield", "if=((cooldown.shield_of_the_righteous.charges_fractional>2.5&!buff.avengers_valor.up)|active_enemies>=2)&cooldown_react" );
+  def -> add_action( this, "Judgment", "if=(cooldown.judgment.remains<gcd&cooldown.judgment.charges_fractional>1&cooldown_react)|!talent.crusaders_judgment.enabled" );
+  def -> add_action( this, "Avenger's Shield", ",if=cooldown_react" );
   def -> add_action( this, "Consecration", "if=(cooldown.judgment.remains<=gcd&!talent.crusaders_judgment.enabled)|cooldown.avenger_shield.remains<=gcd&consecration.remains<gcd" );
   def -> add_action( this, "Consecration", "if=!talent.crusaders_judgment.enabled&consecration.remains<(cooldown.judgment.remains+cooldown.avengers_shield.remains)&consecration.remains<3*gcd" );
-  def -> add_action( this, "Judgment" );
+  def -> add_action( this, "Judgment","if=cooldown_react|!talent.crusaders_judgment.enabled" );
   def -> add_action( "lights_judgment,if=!talent.seraphim.enabled|buff.seraphim.up" );
   def -> add_talent( this, "Blessed Hammer" );
   def -> add_action( this, "Hammer of the Righteous" );
