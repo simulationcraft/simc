@@ -1177,8 +1177,12 @@ std::string priest_t::default_potion() const
 {
   std::string lvl110_potion = "prolonged_power";
 
+  std::string lvl120_potion =
+    ( specialization() == PRIEST_SHADOW ) ? "rising_death" :
+                                            "battle_potion_of_intellect";
+
   return ( true_level > 110 )
-             ? "battle_potion_of_intellect"
+             ? lvl120_potion
              : ( true_level >= 100 )
                    ? lvl110_potion
                    : ( true_level >= 90 )
