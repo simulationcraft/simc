@@ -286,11 +286,11 @@ struct smite_t final : public priest_spell_t
   {
     priest_spell_t::execute();
 
-    double hf_proc_chance = priest().find_specialization_spell( 231687 ) -> effectN( 1 ).percent();
+    double hf_proc_chance = rank2 -> effectN( 1 ).percent();
     if ( sim->debug )
     {
       sim->out_debug.printf(
-      "%s tried to reset holy fire %s cast, using smite. ",
+      "%s tries to reset holy fire %s cast, using smite. ",
       priest().name(), name() );
     }
     if( rank2->ok() && rng().roll( hf_proc_chance ) )
