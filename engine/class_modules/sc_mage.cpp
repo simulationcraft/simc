@@ -6775,7 +6775,6 @@ void mage_t::apl_arcane()
   burn -> add_talent( this, "Mirror Image" );
   burn -> add_talent( this, "Charged Up", "if=buff.arcane_charge.stack<=1&(!set_bonus.tier20_2pc|cooldown.presence_of_mind.remains>5)" );
   burn -> add_talent( this, "Nether Tempest", "if=(refreshable|!ticking)&buff.arcane_charge.stack=buff.arcane_charge.max_stack&buff.rune_of_power.down&buff.arcane_power.down" );
-  burn -> add_action( this, "Time Warp", "if=buff.bloodlust.down&((buff.arcane_power.down&cooldown.arcane_power.remains=0)|(target.time_to_die<=buff.bloodlust.duration))" );
   burn -> add_action( "lights_judgment,if=buff.arcane_power.down" );
   burn -> add_talent( this, "Rune of Power", "if=!buff.arcane_power.up&(mana.pct>=50|cooldown.arcane_power.remains=0)&(buff.arcane_charge.stack=buff.arcane_charge.max_stack)" );
   burn -> add_action( this, "Arcane Power" );
