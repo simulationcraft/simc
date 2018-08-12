@@ -2053,6 +2053,49 @@ void trigger_bloodseeker_update( hunter_t* p )
 namespace attacks
 {
 
+template <typename Base>
+struct auto_attack_base_t : hunter_action_t<Base>
+{
+private:
+  using ab = hunter_action_t<Base>;
+
+public:
+  bool first = true;
+
+  auto_attack_base_t( const std::string& n, hunter_t* p, const spell_data_t* s = spell_data_t::nil() ) :
+    ab( n, p, s )
+  {
+    ab::background = ab::repeating = true;
+    ab::interrupt_auto_attack = false;
+    ab::special = false;
+    ab::trigger_gcd = timespan_t::zero();
+
+    ab::weapon = &( p -> main_hand_weapon );
+    ab::base_execute_time = ab::weapon -> swing_time;
+  }
+
+  void reset() override
+  {
+    ab::reset();
+    first = true;
+  }
+
+  timespan_t execute_time() const override
+  {
+    if ( !ab::player -> in_combat )
+      return timespan_t::from_millis( 10 );
+    if ( first )
+      return timespan_t::from_millis( 100 );
+    return ab::execute_time();
+  }
+
+  void execute() override
+  {
+    first = false;
+    ab::execute();
+  }
+};
+
 // ==========================================================================
 // Hunter Attacks
 // ==========================================================================
@@ -2071,68 +2114,35 @@ struct volley_t: hunter_ranged_attack_t
 
 // Auto Shot ================================================================
 
-struct auto_shot_t: public hunter_action_t < ranged_attack_t >
+struct auto_shot_t : public auto_attack_base_t<ranged_attack_t>
 {
   volley_t* volley = nullptr;
-  bool first_shot = true;
+  double wild_call_chance = 0;
 
-  auto_shot_t( hunter_t* p ):
-    hunter_action_t( "auto_shot", p, p -> find_spell( 75 ) )
+  auto_shot_t( hunter_t* p ) :
+    auto_attack_base_t( "auto_shot", p, p -> find_spell( 75 ) )
   {
-    background = true;
-    repeating = true;
-    interrupt_auto_attack = false;
-    special = false;
-    trigger_gcd = timespan_t::zero();
-
-    weapon = &( p -> main_hand_weapon );
-    base_execute_time = weapon -> swing_time;
-
     if ( p -> talents.volley -> ok() )
     {
       volley = p -> get_background_action<volley_t>( "volley" );
       add_child( volley );
     }
-  }
 
-  void reset() override
-  {
-    hunter_action_t::reset();
-    first_shot = true;
-  }
-
-  timespan_t execute_time() const override
-  {
-    if ( first_shot )
-      return timespan_t::from_millis( 100 );
-    return hunter_action_t::execute_time();
-  }
-
-  void execute() override
-  {
-    if ( first_shot )
-      first_shot = false;
-
-    hunter_action_t::execute();
+    wild_call_chance = p -> specs.wild_call -> proc_chance() +
+                       p -> talents.one_with_the_pack -> effectN( 1 ).percent();
   }
 
   void impact( action_state_t* s ) override
   {
-    hunter_action_t::impact( s );
+    auto_attack_base_t::impact( s );
 
     if ( p() -> buffs.lock_and_load -> trigger() )
       p() -> cooldowns.aimed_shot -> reset( true );
 
-    if ( s -> result == RESULT_CRIT && p() -> specialization() == HUNTER_BEAST_MASTERY )
+    if ( s -> result == RESULT_CRIT && p() -> specs.wild_call -> ok() && rng().roll( wild_call_chance ) )
     {
-      double wild_call_chance = p() -> specs.wild_call -> proc_chance() +
-                                p() -> talents.one_with_the_pack -> effectN( 1 ).percent();
-
-      if ( rng().roll( wild_call_chance ) )
-      {
-        p() -> cooldowns.barbed_shot -> reset( true );
-        p() -> procs.wild_call -> occur();
-      }
+      p() -> cooldowns.barbed_shot -> reset( true );
+      p() -> procs.wild_call -> occur();
     }
 
     if ( volley && rng().roll( p() -> talents.volley -> proc_chance() ) )
@@ -3133,42 +3143,17 @@ struct serpent_sting_mm_t: public hunter_ranged_attack_t
 
 // Melee attack ==============================================================
 
-struct melee_t: public hunter_melee_attack_t
+struct melee_t : public auto_attack_base_t<melee_attack_t>
 {
-  bool first = true;
-
-  melee_t( hunter_t* player ):
-    hunter_melee_attack_t( "auto_attack_mh", player )
+  melee_t( hunter_t* player ) :
+    auto_attack_base_t( "auto_attack_mh", player )
   {
     school             = SCHOOL_PHYSICAL;
-    base_execute_time  = player -> main_hand_weapon.swing_time;
-    weapon = &( player -> main_hand_weapon );
     weapon_multiplier  = 1.0;
-    background         = true;
-    repeating          = true;
     may_glance         = true;
-    special            = false;
-    trigger_gcd        = timespan_t::zero();
 
     // technically there is a separate effect for auto attacks, but meh
     affected_by.coordinated_assault = true;
-  }
-
-  timespan_t execute_time() const override
-  {
-    if ( ! player -> in_combat )
-      return timespan_t::from_seconds( 0.01 );
-    if ( first )
-      return timespan_t::zero();
-    else
-      return hunter_melee_attack_t::execute_time();
-  }
-
-  void execute() override
-  {
-    if ( first )
-      first = false;
-    hunter_melee_attack_t::execute();
   }
 };
 
