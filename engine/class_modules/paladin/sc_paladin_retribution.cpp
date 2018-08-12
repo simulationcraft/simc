@@ -1027,6 +1027,12 @@ void paladin_t::generate_action_prio_list_ret()
     {
       cds -> add_action( "lights_judgment,if=spell_targets.lights_judgment>=2|(!raid_event.adds.exists|raid_event.adds.in>75)" );
     }
+
+    if ( racial_actions[i] == "fireblood" )
+    {
+      cds -> add_action( "fireblood,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10" );
+    }
+
     /*
     TODO(mserrano): work out if the other racials are worth using
     else
