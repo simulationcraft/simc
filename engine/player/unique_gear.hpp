@@ -49,6 +49,10 @@ struct darkmoon_buff_deck_t : public darkmoon_deck_t
 
       cards.push_back( make_buff<BUFF_TYPE>( player, n, s, effect.item ) );
     } );
+
+    // Pick a card during init so top_card is always initialized.
+    size_t index = static_cast<size_t>( player->rng().range( 0u, cards.size() ) );
+    top_card = cards[ index ];
   }
 
   void shuffle() override
@@ -100,7 +104,9 @@ struct darkmoon_action_deck_t : public darkmoon_deck_t
       cards.push_back( unique_gear::create_proc_action<ACTION_TYPE>( n, effect, spell_id ) );
     } );
 
-    shuffle();
+    // Pick a card during init so top_card is always initialized.
+    size_t index = static_cast<size_t>( player->rng().range( 0u, cards.size() ) );
+    top_card = cards[ index ];
   }
 
   // For actions, just shuffle the deck, and optionally trigger the action if trigger_on_shuffle is
