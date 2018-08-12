@@ -99,6 +99,8 @@ struct darkmoon_action_deck_t : public darkmoon_deck_t
 
       cards.push_back( unique_gear::create_proc_action<ACTION_TYPE>( n, effect, spell_id ) );
     } );
+
+    shuffle();
   }
 
   // For actions, just shuffle the deck, and optionally trigger the action if trigger_on_shuffle is
