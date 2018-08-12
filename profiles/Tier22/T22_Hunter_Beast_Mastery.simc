@@ -30,7 +30,6 @@ actions.precombat+=/aspect_of_the_wild
 
 # Executed every time the actor is available.
 actions=auto_shot
-actions+=/counter_shot,if=equipped.sephuzs_secret&target.debuff.casting.react&cooldown.buff_sephuzs_secret.up&!buff.sephuzs_secret.up
 actions+=/use_items
 actions+=/berserking,if=cooldown.bestial_wrath.remains>30
 actions+=/blood_fury,if=cooldown.bestial_wrath.remains>30
