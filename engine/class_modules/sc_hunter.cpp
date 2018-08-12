@@ -3336,6 +3336,10 @@ struct flanking_strike_t: hunter_melee_attack_t
   {
     parse_options( options_str );
 
+    base_teleport_distance  = data().max_range();
+    movement_directionality = MOVEMENT_OMNI;
+    may_parry = may_dodge = may_block = false;
+
     add_child( damage );
   }
 
