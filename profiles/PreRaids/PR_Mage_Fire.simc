@@ -1,7 +1,7 @@
 mage="PR_Mage_Fire"
 spec=fire
 level=120
-race=orc
+race=dark_iron_dwarf
 role=spell
 position=ranged_back
 talents=1031023

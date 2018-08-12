@@ -28,7 +28,7 @@ save=PR_Mage_Arcane.simc
 
 mage="PR_Mage_Fire"
 level=120
-race=orc
+race=dark_iron_dwarf
 spec=fire
 role=spell
 position=ranged_back
