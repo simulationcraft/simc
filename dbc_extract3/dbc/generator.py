@@ -1530,6 +1530,7 @@ class SpellDataGenerator(DataGenerator):
           # General
           # Brewmaster
           ( 195630, 1 ), # Brewmaster Mastery Buff
+          ( 115129, 1 ), # Expel Harm Damage
           ( 124503, 0 ), # Gift of the Ox Orb Left
           ( 124506, 0 ), # Gift of the Ox Orb Right
           ( 178173, 0 ), # Gift of the Ox Explosion

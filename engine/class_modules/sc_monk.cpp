@@ -6099,6 +6099,43 @@ struct gift_of_the_ox_expire_t : public monk_heal_t
 };
 
 // ==========================================================================
+// Expel Harm
+// ==========================================================================
+
+struct expel_harm_dmg_t : public monk_spell_t
+{
+  expel_harm_dmg_t( monk_t* player ) : 
+    monk_spell_t( "expel_harm_damage", player, player->find_spell( 115129 ) )
+  {
+    background = true;
+  }
+};
+
+struct expel_harm_t : public monk_spell_t
+{
+  expel_harm_dmg_t* dmg;
+  expel_harm_t( monk_t* p, const std::string& options_str ) :
+    monk_spell_t( "expel_harm", p, p->spec.expel_harm ),
+    dmg( new expel_harm_dmg_t( p ) )
+  {
+    parse_options( options_str );
+  }
+
+  virtual bool ready() override
+  {
+    return p()->buff.gift_of_the_ox->check();
+  }
+
+  virtual void execute() override
+  {
+    monk_spell_t::execute();
+
+    double mult = p()->spec.expel_harm->effectN( 2 ).percent();
+//    p()->buff.gift_of_the_ox->decrement();
+  }
+};
+
+// ==========================================================================
 // Zen Pulse
 // ==========================================================================
 
@@ -6661,7 +6698,7 @@ struct gift_of_the_ox_buff_t : public monk_buff_t<buff_t>
       p->active_actions.gift_of_the_ox_trigger->execute();
 
       buff_t::decrement ( stacks, value );
-}
+    }
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -7157,6 +7194,8 @@ action_t* monk_t::create_action( const std::string& name, const std::string& opt
     return new blackout_strike_t( this, options_str );
   if ( name == "breath_of_fire" )
     return new breath_of_fire_t( *this, options_str );
+  if ( name == "expel_harm")
+    return new expel_harm_t( this, options_str );
   if ( name == "fortifying_brew" )
     return new fortifying_brew_t( *this, options_str );
   if ( name == "gift_of_the_ox" )
