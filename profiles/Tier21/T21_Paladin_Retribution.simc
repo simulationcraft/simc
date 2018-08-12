@@ -35,6 +35,7 @@ actions+=/call_action_list,name=generators
 
 actions.cooldowns=potion,if=(buff.bloodlust.react|buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<25|target.time_to_die<=40)
 actions.cooldowns+=/lights_judgment,if=spell_targets.lights_judgment>=2|(!raid_event.adds.exists|raid_event.adds.in>75)
+actions.cooldowns+=/fireblood,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10
 actions.cooldowns+=/shield_of_vengeance
 actions.cooldowns+=/avenging_wrath,if=buff.inquisition.up|!talent.inquisition.enabled
 actions.cooldowns+=/crusade,if=holy_power>=4

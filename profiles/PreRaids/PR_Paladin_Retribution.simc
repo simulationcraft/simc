@@ -7,7 +7,7 @@ position=back
 talents=2303003
 
 # Default consumables
-potion=battle_potion_of_strength
+potion=bursting_blood
 flask=flask_of_the_undertow
 food=bountiful_captains_feast
 augmentation=battle_scarred
@@ -36,6 +36,7 @@ actions+=/call_action_list,name=generators
 actions.cooldowns=use_item,name=jes_howler,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10
 actions.cooldowns+=/potion,if=(buff.bloodlust.react|buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<25|target.time_to_die<=40)
 actions.cooldowns+=/lights_judgment,if=spell_targets.lights_judgment>=2|(!raid_event.adds.exists|raid_event.adds.in>75)
+actions.cooldowns+=/fireblood,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10
 actions.cooldowns+=/shield_of_vengeance
 actions.cooldowns+=/avenging_wrath,if=buff.inquisition.up|!talent.inquisition.enabled
 actions.cooldowns+=/crusade,if=holy_power>=4
@@ -67,9 +68,9 @@ actions.opener+=/sequence,if=talent.wake_of_ashes.enabled&talent.crusade.enabled
 actions.opener+=/sequence,if=talent.wake_of_ashes.enabled&talent.crusade.enabled&!talent.execution_sentence.enabled&talent.hammer_of_wrath.enabled,name=wake_opener_HoW:shield_of_vengeance:blade_of_justice:judgment:crusade:templars_verdict:wake_of_ashes:templars_verdict:hammer_of_wrath:templars_verdict
 actions.opener+=/sequence,if=talent.wake_of_ashes.enabled&talent.inquisition.enabled,name=wake_opener_Inq:shield_of_vengeance:blade_of_justice:judgment:inquisition:avenging_wrath:wake_of_ashes
 
-head=soulspun_casque,id=155866,bonus_id=4779/1512/4775/4786,azerite_powers=157/461/13
+head=seabrawlers_greathelm,id=155885,bonus_id=4779/1512/4775/4786,azerite_powers=479/462/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/1524
-shoulders=pauldrons_of_the_horned_horror,id=159455,bonus_id=4779/1512/4775/4786,azerite_powers=154/459/13
+shoulders=pauldrons_of_the_great_unifier,id=159423,bonus_id=4779/1512/4775/4786,azerite_powers=157/22/13
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
 chest=harpooners_plate_cuirass,id=159416,bonus_id=4779/1512/4775/4786,azerite_powers=479/21/13
 wrists=embalmers_steadying_bracers,id=159409,bonus_id=4779/1512/4786
