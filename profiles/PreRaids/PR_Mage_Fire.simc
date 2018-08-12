@@ -4,7 +4,7 @@ level=120
 race=orc
 role=spell
 position=ranged_back
-talents=1011022
+talents=1031023
 
 # Default consumables
 potion=battle_potion_of_intellect
@@ -97,18 +97,18 @@ actions.standard_rotation+=/scorch,if=(target.health.pct<=30&talent.searing_touc
 actions.standard_rotation+=/fireball
 actions.standard_rotation+=/scorch
 
-head=secret_spinners_miter,id=158315,bonus_id=4779/1512/4786/4775,azerite_powers=128/30/0/13
-neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=
+head=stormlurkers_cowl,id=159244,bonus_id=4779/1512/4786/4775,azerite_powers=8/377/30/86/13
+neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524
 shoulders=mantle_of_ceremonial_ascension,id=158344,bonus_id=4779/1512/4786/4775,azerite_powers=377/21/0/13
 back=parrotfeather_cloak,id=155884,bonus_id=4779/1512/4786
-chest=loa_betrayers_vestments,id=159233,bonus_id=4779/1512/4786/4775,azerite_powers=168/461/0/13
+chest=inmates_straight_robe,id=159268,bonus_id=4779/1512/4786/4775,azerite_powers=8/377/21/468/13
 wrists=ironkelp_wristwraps,id=159256,bonus_id=4779/1512/4786
 hands=captains_dustfinders,id=159237,bonus_id=4779/1512/4786
 waist=aqusirrs_swirling_sash,id=159239,bonus_id=4779/1512/4786
 legs=chumcoated_leggings,id=158302,bonus_id=4779/1512/4786
 feet=devilsaur_worshipers_sandals,id=158303,bonus_id=4779/1512/4786
-finger1=seal_of_the_city_watch,id=162542,bonus_id=4779/1512/4786,enchant=pact_of_mastery
-finger2=murky_cerulean_signet,id=158318,bonus_id=4779/1512/4786,enchant=pact_of_mastery
+finger1=seal_of_the_city_watch,id=162542,bonus_id=4779/1512/4786,enchant=pact_of_haste
+finger2=murky_cerulean_signet,id=158318,bonus_id=4779/1512/4786,enchant=pact_of_haste
 trinket1=conch_of_dark_whispers,id=159620,bonus_id=4779/1512/4786
 trinket2=balefire_branch,id=159630,bonus_id=4779/1512/4786
 main_hand=seabreeze,id=158371,bonus_id=4779/1512/4786,enchant=torrent_of_elements
@@ -118,6 +118,6 @@ main_hand=seabreeze,id=158371,bonus_id=4779/1512/4786,enchant=torrent_of_element
 # gear_stamina=4465
 # gear_intellect=3423
 # gear_crit_rating=977
-# gear_haste_rating=253
-# gear_mastery_rating=1194
+# gear_haste_rating=327
+# gear_mastery_rating=1120
 # gear_armor=870
