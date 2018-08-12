@@ -6936,7 +6936,6 @@ void mage_t::apl_frost()
   default_list -> add_action( this, "Counterspell" );
   default_list -> add_action( this, "Ice Lance", "if=prev_gcd.1.flurry&brain_freeze_active&!buff.fingers_of_frost.react",
     "If the mage has FoF after casting instant Flurry, we can delay the Ice Lance and use other high priority action, if available." );
-  default_list -> add_action( this, "Time Warp", "if=buff.bloodlust.down&(buff.exhaustion.down|equipped.shard_of_the_exodar)&(prev_gcd.1.icy_veins|target.time_to_die<50)" );
   default_list -> add_action( "call_action_list,name=cooldowns" );
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>3&talent.freezing_rain.enabled|active_enemies>4",
     "The target threshold isn't exact. Between 3-5 targets, the differences between the ST and AoE action lists are rather small. "
@@ -6967,7 +6966,7 @@ void mage_t::apl_frost()
   single -> add_talent( this, "Ray of Frost", "if=!action.frozen_orb.in_flight&ground_aoe.frozen_orb.remains=0",
     "Ray of Frost is used after all Fingers of Frost charges have been used and there isn't active Frozen Orb that could generate more. "
     "This is only a small gain against multiple targets, as Ray of Frost isn't too impactful." );
-  single -> add_action( this, "Blizzard", "if=cast_time=0|active_enemies>1|buff.zannesu_journey.stack=5&buff.zannesu_journey.remains>cast_time",
+  single -> add_action( this, "Blizzard", "if=cast_time=0|active_enemies>1",
     "Blizzard is used as low priority filler against 2 targets. When using Freezing Rain, it's a medium gain to use the instant Blizzard even "
     "against a single target, especially with low mastery.");
   single -> add_talent( this, "Glacial Spike", "if=buff.brain_freeze.react|prev_gcd.1.ebonbolt|active_enemies>1&talent.splitting_ice.enabled",
@@ -7001,6 +7000,7 @@ void mage_t::apl_frost()
   aoe -> add_action( "call_action_list,name=movement" );
   aoe -> add_action( this, "Ice Lance" );
 
+  cooldowns -> add_action( this, "Time Warp" );
   cooldowns -> add_action( this, "Icy Veins" );
   cooldowns -> add_talent( this, "Mirror Image" );
   cooldowns -> add_talent( this, "Rune of Power", "if=time_to_die>10+cast_time&time_to_die<25" );
