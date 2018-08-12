@@ -444,9 +444,15 @@ expr_t* cooldown_t::create_expression( const std::string& name_str )
   if ( name_str == "remains" )
     return make_mem_fn_expr( name_str, *this, &cooldown_t::remains );
 
-  else if ( name_str == "duration" )
+  else if ( name_str == "base_duration" )
     return make_ref_expr( name_str, duration );
 
+  else if ( name_str == "duration" )
+  {
+    return make_fn_expr( name_str, [ this ] () {
+      return cooldown_duration( this );
+    } );
+  }
   else if ( name_str == "up" || name_str == "ready" )
     return make_mem_fn_expr( name_str, *this, &cooldown_t::up );
 
@@ -505,7 +511,7 @@ expr_t* cooldown_t::create_expression( const std::string& name_str )
         if ( cd -> recharge_event )
           return cd -> recharge_event -> remains().total_seconds();
         else
-          return cd -> duration.total_seconds();
+          return cooldown_duration( cd ).total_seconds();
       }
     };
     return new recharge_time_expr_t( this );
@@ -524,7 +530,7 @@ expr_t* cooldown_t::create_expression( const std::string& name_str )
         if ( cd -> recharge_event )
         {
           return cd -> current_charge_remains().total_seconds() +
-            ( cd -> charges - cd -> current_charge - 1 ) * cd -> duration.total_seconds();
+            ( cd -> charges - cd -> current_charge - 1 ) * cooldown_duration( cd ).total_seconds();
         }
         else
           return 0;
