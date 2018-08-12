@@ -6709,7 +6709,6 @@ std::string mage_t::default_potion() const
     ( specialization() == MAGE_ARCANE ) ? "deadly_grace" :
                                           "prolonged_power";
 
-  // TODO: Check Rising Death once it's implemented
   return ( true_level > 110 ) ? lvl120_potion :
          ( true_level > 100 ) ? lvl110_potion :
          ( true_level >  90 ) ? "draenic_intellect" :
