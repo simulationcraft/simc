@@ -59,8 +59,10 @@ actions.buffs+=/totem_mastery,if=buff.resonance_totem.remains<2
 
 # Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. 
 actions.cds=bloodlust,if=target.health.pct<25|time>0.500
-actions.cds+=/berserking,if=buff.ascendance.up|(feral_spirit.remains>5)|level<100
-actions.cds+=/blood_fury,if=buff.ascendance.up|(feral_spirit.remains>5)|level<100
+actions.cds+=/berserking,if=(talent.ascendance.enabled&buff.ascendance.up)|(talent.elemental_spirits.enabled&feral_spirit.remains>5)|(!talent.ascendance.enabled&!talent.elemental_spirits.enabled)
+actions.cds+=/blood_fury,if=(talent.ascendance.enabled&(buff.ascendance.up|cooldown.ascendance.remains>50))|(!talent.ascendance.enabled&(feral_spirit.remains>5|cooldown.feral_spirit.remains>50))
+actions.cds+=/fireblood,if=(talent.ascendance.enabled&(buff.ascendance.up|cooldown.ascendance.remains>50))|(!talent.ascendance.enabled&(feral_spirit.remains>5|cooldown.feral_spirit.remains>50))
+actions.cds+=/ancestral_call,if=(talent.ascendance.enabled&(buff.ascendance.up|cooldown.ascendance.remains>50))|(!talent.ascendance.enabled&(feral_spirit.remains>5|cooldown.feral_spirit.remains>50))
 actions.cds+=/potion,if=buff.ascendance.up|!talent.ascendance.enabled&feral_spirit.remains>5|target.time_to_die<=60
 actions.cds+=/feral_spirit
 actions.cds+=/ascendance,if=cooldown.strike.remains>0
@@ -76,7 +78,7 @@ actions.core+=/stormstrike,if=variable.OCPool70&variable.furyCheck35
 actions.core+=/sundering
 actions.core+=/crash_lightning,if=talent.forceful_winds.enabled&active_enemies>1&variable.furyCheck25
 actions.core+=/flametongue,if=talent.searing_assault.enabled
-actions.core+=/lava_lash,if=buff.hot_hand.react
+actions.core+=/lava_lash,if=talent.hot_hand.enabled&buff.hot_hand.react
 actions.core+=/crash_lightning,if=active_enemies>1&variable.furyCheck25
 
 actions.filler=rockbiter,if=maelstrom<70
