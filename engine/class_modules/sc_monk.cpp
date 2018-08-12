@@ -541,6 +541,13 @@ public:
     // Azerite Traits
   } passives;
 
+  // RPPM objects
+  struct rppms_t
+  {
+    // Azerite Traits
+    real_ppm_t* boiling_brew;
+  } rppm;
+
   struct legendary_t
   {
     // General
@@ -5187,6 +5194,14 @@ struct breath_of_fire_t : public monk_spell_t
 
       return b;
     }
+
+    virtual void impact( action_state_t* s ) override
+    {
+      monk_spell_t::impact( s );
+
+      if (p() -> azerite.boiling_brew.ok() && p() -> rppm.boiling_brew->trigger() )
+        p()->buff.gift_of_the_ox->trigger();
+    }
   };
 
   periodic_t* dot_action;
@@ -8015,6 +8030,10 @@ void monk_t::init_procs()
 void monk_t::init_rng()
 {
   player_t::init_rng();
+  if ( specialization() == DEMON_HUNTER_HAVOC )
+  {
+    rppm.boiling_brew = get_rppm( "boiling_brew", find_spell( 272797 ) );
+  }
 }
 
 // monk_t::init_resources ===================================================
