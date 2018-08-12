@@ -6705,10 +6705,7 @@ struct gift_of_the_ox_buff_t : public monk_buff_t<buff_t>
   {
     monk_t* p = debug_cast<monk_t*>( player );
 
-    if ( remaining_duration > timespan_t::zero() )
-      p->active_actions.gift_of_the_ox_trigger->execute();
-    else
-      p->active_actions.gift_of_the_ox_expire->execute();
+    p->active_actions.gift_of_the_ox_expire->execute();
 
     buff_t::expire_override( expiration_stacks, remaining_duration );
   }
