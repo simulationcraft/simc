@@ -8030,7 +8030,7 @@ void monk_t::init_procs()
 void monk_t::init_rng()
 {
   player_t::init_rng();
-  if ( specialization() == DEMON_HUNTER_HAVOC )
+  if ( specialization() == MONK_BREWMASTER )
   {
     rppm.boiling_brew = get_rppm( "boiling_brew", find_spell( 272797 ) );
   }
