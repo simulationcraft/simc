@@ -6614,13 +6614,13 @@ expr_t* rogue_t::create_expression( const std::string& name_str )
     if ( util::str_compare_ci( split[ 1 ], "rogue" ) )
     {
       return make_fn_expr( split[ 0 ], [ this ]() {
-        return stealthed( stealth_type_e::STEALTH_BASIC | STEALTH_ROGUE );
+        return stealthed( STEALTH_BASIC | STEALTH_ROGUE );
       } );
     }
     else if ( util::str_compare_ci( split[ 1 ], "mantle" ) )
     {
       return make_fn_expr( split[ 0 ], [ this ]() {
-        return stealthed( stealth_type_e::STEALTH_BASIC );
+        return stealthed( STEALTH_BASIC );
       } );
     }
     else if ( util::str_compare_ci( split[ 1 ], "all" ) )
