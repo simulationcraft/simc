@@ -508,10 +508,12 @@ expr_t* cooldown_t::create_expression( const std::string& name_str )
 
       virtual double evaluate() override
       {
-        if ( cd -> recharge_event )
+        if ( cd -> charges <= 1 )
+          return cd -> remains().total_seconds();
+        else if ( cd -> recharge_event )
           return cd -> recharge_event -> remains().total_seconds();
         else
-          return cooldown_duration( cd ).total_seconds();
+          return 0.0;
       }
     };
     return new recharge_time_expr_t( this );
