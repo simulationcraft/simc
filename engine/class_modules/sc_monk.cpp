@@ -187,6 +187,8 @@ public:
     action_t* sunrise_technique;
     actions::spells::stagger_self_damage_t* stagger_self_damage;
     action_t* fit_to_burst;
+    heal_t* gift_of_the_ox_trigger;
+    heal_t* gift_of_the_ox_expire;
     heal_t* celestial_fortune;
   } active_actions;
 
@@ -6058,6 +6060,44 @@ struct gift_of_the_ox_t : public monk_heal_t
   }
 };
 
+struct gift_of_the_ox_trigger_t : public monk_heal_t
+{
+  gift_of_the_ox_trigger_t( monk_t& p ) 
+    : monk_heal_t( "gift_of_the_ox_trigger", p, p.find_spell( 124507 ) )
+  {
+    background  = true;
+    target      = &p;
+    trigger_gcd = timespan_t::zero();
+  }
+
+  virtual void execute() override
+  {
+    monk_heal_t::execute();
+
+    if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T20, B4 ) )
+      p()->partial_clear_stagger( p()->sets->set( MONK_BREWMASTER, T20, B4 )->effectN( 1 ).percent() );
+  }
+};
+
+struct gift_of_the_ox_expire_t : public monk_heal_t
+{
+  gift_of_the_ox_expire_t( monk_t& p ) 
+    : monk_heal_t( "gift_of_the_ox_expire", p, p.find_spell( 178173 ) )
+  {
+    background  = true;
+    target      = &p;
+    trigger_gcd = timespan_t::zero();
+  }
+
+  virtual void execute() override
+  {
+    monk_heal_t::execute();
+
+    if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T20, B4 ) )
+      p()->partial_clear_stagger( p()->sets->set( MONK_BREWMASTER, T20, B4 )->effectN( 1 ).percent() );
+  }
+};
+
 // ==========================================================================
 // Zen Pulse
 // ==========================================================================
@@ -6595,6 +6635,44 @@ struct rushing_jade_wind_buff_t : public monk_buff_t<buff_t>
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+  }
+};
+
+struct gift_of_the_ox_buff_t : public monk_buff_t<buff_t>
+{
+  gift_of_the_ox_buff_t( monk_t& p, const std::string& n, const spell_data_t* s ) : monk_buff_t( p, n, s )
+  {
+    set_can_cancel( false );
+    set_cooldown( timespan_t::zero() );
+    stack_behavior = buff_stack_behavior::ASYNCHRONOUS;
+
+    set_refresh_behavior( buff_refresh_behavior::NONE );
+
+    set_duration( p.find_spell( 124503 )->duration() );
+    set_max_stack( 99 );
+  }
+
+  void decrement( int stacks, double value ) override
+  {
+    monk_t* p = debug_cast<monk_t*>( player );
+    if ( stacks > 0 && p->current_health() < p->max_health() )
+    {
+      p->active_actions.gift_of_the_ox_trigger->execute();
+
+      buff_t::decrement ( stacks, value );
+}
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    monk_t* p = debug_cast<monk_t*>( player );
+
+    if ( remaining_duration > timespan_t::zero() )
+      p->active_actions.gift_of_the_ox_trigger->execute();
+    else
+      p->active_actions.gift_of_the_ox_expire->execute();
+
     buff_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
@@ -7598,6 +7676,8 @@ void monk_t::init_spells()
     windwalking_aura = new actions::windwalking_aura_t( this );
 
   active_actions.sunrise_technique = new actions::sunrise_technique_t( this );
+  active_actions.gift_of_the_ox_trigger = new actions::gift_of_the_ox_trigger_t( *this );
+  active_actions.gift_of_the_ox_expire = new actions::gift_of_the_ox_expire_t( *this );
   active_actions.celestial_fortune = new actions::heals::celestial_fortune_t( *this );
 }
 
@@ -7735,10 +7815,12 @@ void monk_t::create_buffs()
   buff.ironskin_brew =
       make_buff( this, "ironskin_brew", passives.ironskin_brew )->set_refresh_behavior( buff_refresh_behavior::EXTEND );
 
-  buff.gift_of_the_ox = make_buff( this, "gift_of_the_ox", find_spell( 124503 ) )
+  buff.gift_of_the_ox = new buffs::gift_of_the_ox_buff_t( *this, "gift_of_the_ox", find_spell( 124503 ) );
+/*  buff.gift_of_the_ox = make_buff( this, "gift_of_the_ox", find_spell( 124503 ) )
                             ->set_duration( find_spell( 124503 )->duration() )
                             ->set_refresh_behavior( buff_refresh_behavior::NONE )
                             ->set_max_stack( 99 );
+*/
 
   buff.spitfire = make_buff( this, "spitfire", talent.spitfire->effectN( 1 ).trigger() );
 
@@ -8623,6 +8705,7 @@ void monk_t::assess_damage( school_e school, dmg_e dtype, action_state_t* s )
         cooldown.brewmaster_active_mitigation->adjust(
             -1 * timespan_t::from_seconds( legendary.anvil_hardened_wristwraps->effectN( 1 ).base_value() / 10 ) );
     }
+
   }
 
   if ( action_t::result_is_hit( s->result ) && s->action->id != passives.stagger_self_damage->id() )
@@ -8639,6 +8722,25 @@ void monk_t::assess_damage( school_e school, dmg_e dtype, action_state_t* s )
 
 void monk_t::target_mitigation( school_e school, dmg_e dt, action_state_t* s )
 {
+  // Gift of the Ox Trigger Calculations ===========================================================
+
+  // Gift of the Ox is no longer a random chance, under the hood. When you are hit, it increments a counter by
+  // (DamageTakenBeforeAbsorbsOrStagger / MaxHealth). It now drops an orb whenever that reaches 1.0, and decrements it
+  // by 1.0. The tooltip still says ‘chance’, to keep it understandable.
+  if ( s->action->id != passives.stagger_self_damage->id() )
+  {
+    double goto_proc_chance = s->result_amount / max_health();
+
+    gift_of_the_ox_proc_chance += goto_proc_chance;
+
+    if ( gift_of_the_ox_proc_chance > 1.0 )
+    {
+      buff.gift_of_the_ox->trigger();
+
+      gift_of_the_ox_proc_chance -= 1.0;
+    }
+  }
+
   // Dampen Harm // Reduces hits by 20 - 50% based on the size of the hit
   // Works on Stagger
   if ( buff.dampen_harm->up() )
@@ -8697,26 +8799,6 @@ void monk_t::target_mitigation( school_e school, dmg_e dt, action_state_t* s )
   }
 
   player_t::target_mitigation( school, dt, s );
-
-  // Gift of the Ox Trigger Calculations ===========================================================
-
-  if ( specialization() == MONK_BREWMASTER )
-  {
-    // Gift of the Ox is no longer a random chance, under the hood. When you are hit, it increments a counter by
-    // (DamageTakenBeforeAbsorbsOrStagger / MaxHealth). It now drops an orb whenever that reaches 1.0, and decrements it
-    // by 1.0. The tooltip still says ‘chance’, to keep it understandable. Gift of the Mists multiplies that counter
-    // increment by (2 - (HealthBeforeDamage - DamageTakenBeforeAbsorbsOrStagger) / MaxHealth);
-    double goto_proc_chance = s->result_amount / max_health();
-
-    gift_of_the_ox_proc_chance += goto_proc_chance;
-
-    if ( gift_of_the_ox_proc_chance > 1.0 )
-    {
-      buff.gift_of_the_ox->trigger();
-
-      gift_of_the_ox_proc_chance -= 1.0;
-    }
-  }
 }
 
 // monk_t::assess_damage_imminent_pre_absorb ==============================
