@@ -274,44 +274,41 @@ struct blessed_dawnlight_medallion_t : public priest_spell_t
 // ==========================================================================
 struct smite_t final : public priest_spell_t
 {
-	const spell_data_t* holy_fire_rank2;
-	const spell_data_t* holy_word_chastise;
+    const spell_data_t* holy_fire_rank2;
+    const spell_data_t* holy_word_chastise;
 	smite_t(priest_t& p, const std::string& options_str)
-		: priest_spell_t("smite", p, p.find_class_spell("Smite")),
-		holy_fire_rank2(priest().find_specialization_spell(231687)),
-		holy_word_chastise(priest().find_specialization_spell(88625))
+      : priest_spell_t("smite", p, p.find_class_spell("Smite")),
+      holy_fire_rank2(priest().find_specialization_spell(231687)),
+      holy_word_chastise(priest().find_specialization_spell(88625))
 	{
-		parse_options(options_str);
+       parse_options(options_str);
 	}
 
-	void impact(action_state_t* s) override
-	{
-		priest_spell_t::impact(s);
-
-		if (holy_fire_rank2->ok() && s->result_amount > 0)
-		{
-			double hf_proc_chance = holy_fire_rank2->effectN(1).percent();
-
-			if (rng().roll(hf_proc_chance))
-			{
-				if (sim->debug)
-				{
-					sim->out_debug.printf("%s reset holy fire %s cooldown, using smite. ", priest().name(), name());
-				}
-				priest().cooldowns.holy_fire->reset(true);
-			}
-		}
-
-		if (s->result_amount > 0)
-		{
-			priest().cooldowns.holy_word_chastise->adjust((-1000 * holy_word_chastise->effectN(2).time_value()));
-			double test = -1000 * holy_word_chastise->effectN(2).base_value();
-			if (sim->debug)
-			{
-				sim->out_debug.printf("%s reduced cooldown of Chastise, by %f mS", priest().name(), test);
-			}
-		}
-	}
+    void impact(action_state_t* s) override
+    {
+         priest_spell_t::impact(s);
+        if (holy_fire_rank2->ok() && s->result_amount > 0)
+        {
+            double hf_proc_chance = holy_fire_rank2->effectN(1).percent();
+            if (rng().roll(hf_proc_chance))
+            {
+                if (sim->debug)
+                {
+                    sim->out_debug.printf("%s reset holy fire %s cooldown, using smite. ", priest().name(), name());
+                }
+                priest().cooldowns.holy_fire->reset(true);
+            }
+        }
+        if (s->result_amount > 0)
+        {
+            priest().cooldowns.holy_word_chastise->adjust((-1000 * holy_word_chastise->effectN(2).time_value()));
+            double test = -1000 * holy_word_chastise->effectN(2).base_value();
+            if (sim->debug)
+            {
+                 sim->out_debug.printf("%s reduced cooldown of Chastise, by %f mS", priest().name(), test);
+            }
+        }
+    }
 };
 
 // ==========================================================================
