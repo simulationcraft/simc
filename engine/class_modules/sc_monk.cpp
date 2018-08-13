@@ -172,25 +172,30 @@ public:
   {
     luxurious_sample_data_t* stagger_tick_damage;
     luxurious_sample_data_t* stagger_total_damage;
-    luxurious_sample_data_t* purified_damage;
     luxurious_sample_data_t* light_stagger_total_damage;
     luxurious_sample_data_t* moderate_stagger_total_damage;
     luxurious_sample_data_t* heavy_stagger_total_damage;
+    luxurious_sample_data_t* purified_damage;
     double buffed_stagger_base;
     double buffed_stagger_pct_player_level, buffed_stagger_pct_target_level;
   } sample_datas;
 
   struct active_actions_t
   {
-    action_t* healing_elixir;
     action_t* rushing_jade_wind;
-    action_t* sunrise_technique;
-    actions::spells::stagger_self_damage_t* stagger_self_damage;
-    action_t* fit_to_burst;
+
+    // Brewmaster
+    heal_t* celestial_fortune;
     heal_t* gift_of_the_ox_trigger;
     heal_t* gift_of_the_ox_expire;
-    heal_t* celestial_fortune;
-  } active_actions;
+    actions::spells::stagger_self_damage_t* stagger_self_damage;
+
+    // Windwalker
+    action_t* sunrise_technique;
+
+    // Azerite Traits
+    action_t* fit_to_burst;
+} active_actions;
 
   combo_strikes_e previous_combo_strike;
   double spiritual_focus_count;
@@ -5546,12 +5551,6 @@ struct purifying_brew_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
-    if ( p()->talent.healing_elixir->ok() )
-    {
-      if ( p()->cooldown.healing_elixir->up() )
-        p()->active_actions.healing_elixir->execute();
-    }
-
     if ( p()->talent.special_delivery->ok() )
     {
       delivery->target = target;
@@ -5604,12 +5603,6 @@ struct mana_tea_t : public monk_spell_t
     monk_spell_t::execute();
 
     p()->buff.mana_tea->trigger();
-
-    if ( p()->talent.healing_elixir->ok() )
-    {
-      if ( p()->cooldown.healing_elixir->up() )
-        p()->active_actions.healing_elixir->execute();
-    }
   }
 };
 
@@ -5633,12 +5626,6 @@ struct thunder_focus_tea_t : public monk_spell_t
     monk_spell_t::execute();
 
     p()->buff.thunder_focus_tea->trigger( p()->buff.thunder_focus_tea->max_stack() );
-
-    if ( p()->talent.healing_elixir->ok() )
-    {
-      if ( p()->cooldown.healing_elixir->up() )
-        p()->active_actions.healing_elixir->execute();
-    }
   }
 };
 
@@ -6438,9 +6425,13 @@ struct celestial_fortune_t : public monk_heal_t
   }
 };
 
+// ==========================================================================
+// Fit to Burst
+// ==========================================================================
+
 struct fit_to_burst_t : public monk_heal_t
 {
-  fit_to_burst_t( monk_t& p ) : monk_heal_t( "fit_to_burst", p, p.find_spell( 275893 ) )
+  fit_to_burst_t( monk_t& p ) : monk_heal_t( "fit_to_burst", p, p.find_spell( 275894 ) )
   {
     background  = true;
     proc        = true;
@@ -7700,9 +7691,6 @@ void monk_t::init_spells()
   passives.the_emperors_capacitor = find_spell( 235054 );
   passives.the_wind_blows         = find_spell( 281452 );
 
-  // Azerite Traits
-  active_actions.fit_to_burst = new actions::heals::fit_to_burst_t( *this );
-
   // Mastery spells =========================================
   mastery.combo_strikes   = find_mastery_spell( MONK_WINDWALKER );
   mastery.elusive_brawler = find_mastery_spell( MONK_BREWMASTER );
@@ -7717,19 +7705,22 @@ void monk_t::init_spells()
   sample_datas.heavy_stagger_total_damage    = get_sample_data( "Amount of damage purified while at heavy stagger" );
 
   // SPELLS
-  if ( talent.healing_elixir->ok() )
-    active_actions.healing_elixir = new actions::healing_elixir_t( *this );
-
   if ( specialization() == MONK_BREWMASTER )
+  {
+    active_actions.celestial_fortune = new actions::heals::celestial_fortune_t( *this );
+    active_actions.gift_of_the_ox_trigger = new actions::gift_of_the_ox_trigger_t( *this );
+    active_actions.gift_of_the_ox_expire = new actions::gift_of_the_ox_expire_t( *this );
     active_actions.stagger_self_damage = new actions::stagger_self_damage_t( this );
 
-  if ( specialization() == MONK_WINDWALKER )
-    windwalking_aura = new actions::windwalking_aura_t( this );
+    // Azerite Traits
+    active_actions.fit_to_burst = new actions::heals::fit_to_burst_t(*this);
+  }
 
-  active_actions.sunrise_technique = new actions::sunrise_technique_t( this );
-  active_actions.gift_of_the_ox_trigger = new actions::gift_of_the_ox_trigger_t( *this );
-  active_actions.gift_of_the_ox_expire = new actions::gift_of_the_ox_expire_t( *this );
-  active_actions.celestial_fortune = new actions::heals::celestial_fortune_t( *this );
+  if ( specialization() == MONK_WINDWALKER )
+  {
+    active_actions.sunrise_technique = new actions::sunrise_technique_t( this );
+    windwalking_aura = new actions::windwalking_aura_t( this );
+  }
 }
 
 // monk_t::init_base ========================================================
@@ -7867,11 +7858,6 @@ void monk_t::create_buffs()
       make_buff( this, "ironskin_brew", passives.ironskin_brew )->set_refresh_behavior( buff_refresh_behavior::EXTEND );
 
   buff.gift_of_the_ox = new buffs::gift_of_the_ox_buff_t( *this, "gift_of_the_ox", find_spell( 124503 ) );
-/*  buff.gift_of_the_ox = make_buff( this, "gift_of_the_ox", find_spell( 124503 ) )
-                            ->set_duration( find_spell( 124503 )->duration() )
-                            ->set_refresh_behavior( buff_refresh_behavior::NONE )
-                            ->set_max_stack( 99 );
-*/
 
   buff.spitfire = make_buff( this, "spitfire", talent.spitfire->effectN( 1 ).trigger() );
 
