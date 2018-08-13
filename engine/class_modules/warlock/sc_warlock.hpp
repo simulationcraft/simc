@@ -226,29 +226,6 @@ namespace warlock
         azerite_power_t flashpoint;
       } azerite;
 
-      struct legendary_t
-      {
-        const special_effect_t* the_master_harvester;
-        const special_effect_t* sindorei_spite;
-        const special_effect_t* stretens_sleepless_shackles;
-        const special_effect_t* hood_of_eternal_disdain;
-        const special_effect_t* power_cord_of_lethtendris;
-        const special_effect_t* lessons_of_spacetime;
-        const special_effect_t* wakeners_loyalty;
-        const special_effect_t* soul_of_the_netherlord;
-        const special_effect_t* reap_and_sow;
-        const special_effect_t* sacrolashs_dark_strike;
-        const spell_data_t* sephuzs_secret;
-        const special_effect_t* kazzaks_final_curse;
-        const special_effect_t* recurrent_ritual;
-        const special_effect_t* magistrike_restraints;
-        const special_effect_t* feretory_of_souls;
-        const special_effect_t* alythesss_pyrogenics;
-        const special_effect_t* odr_shawl_of_the_ymirjar;
-        const special_effect_t* wilfreds_sigil_of_superior_summoning;
-
-      } legendary;
-
       // Mastery Spells
       struct mastery_spells_t
       {
@@ -267,7 +244,6 @@ namespace warlock
         propagate_const<cooldown_t*> haunt;
         propagate_const<cooldown_t*> shadowburn;
         propagate_const<cooldown_t*> soul_fire;
-        propagate_const<cooldown_t*> sindorei_spite_icd;
         propagate_const<cooldown_t*> call_dreadstalkers;
         propagate_const<cooldown_t*> deathbolt;
         propagate_const<cooldown_t*> phantom_singularity;
@@ -363,13 +339,6 @@ namespace warlock
         propagate_const<buff_t*> crashing_chaos;
         propagate_const<buff_t*> rolling_havoc;
         propagate_const<buff_t*> flashpoint;
-
-        // legendary buffs
-        propagate_const<buff_t*> soul_harvest;
-        propagate_const<buff_t*> sindorei_spite;
-        propagate_const<buff_t*> stretens_insanity;
-        propagate_const<buff_t*> sephuzs_secret;
-        propagate_const<buff_t*> alythesss_pyrogenics;
       } buffs;
 
       // Gains
@@ -397,17 +366,12 @@ namespace warlock
 
         gain_t* miss_refund;
 
-        gain_t* power_trip;
         gain_t* shadow_bolt;
         gain_t* doom;
         gain_t* demonic_meteor;
 
         gain_t* soulsnatcher;
         gain_t* t19_2pc_demonology;
-
-        gain_t* recurrent_ritual;
-        gain_t* feretory_of_souls;
-        gain_t* power_cord_of_lethtendris;
 
         gain_t* affliction_t20_2pc;
         gain_t* destruction_t20_2pc;
@@ -417,13 +381,11 @@ namespace warlock
       struct procs_t
       {
         proc_t* soul_conduit;
-        //proc_t* the_master_harvester;
         //aff
         proc_t* nightfall;
         proc_t* affliction_t21_2pc;
         //demo
         proc_t* demonic_calling;
-        proc_t* power_trip;
         proc_t* souls_consumed;
         proc_t* one_shard_hog;
         proc_t* two_shard_hog;
@@ -434,10 +396,7 @@ namespace warlock
         proc_t* summon_random_demon;
         proc_t* portal_summon;
         proc_t* demonology_t20_2pc;
-        proc_t* wilfreds_dog;
-        proc_t* wilfreds_imp;
         //destro
-        proc_t* t19_2pc_chaos_bolts;
         proc_t* reverse_entropy;
       } procs;
 
@@ -627,33 +586,6 @@ namespace warlock
         void init() override
         {
           action_t::init();
-
-          if ( p()->legendary.reap_and_sow )
-          {
-            if ( data().affected_by( p()->find_spell( 281494 )->effectN( 1 ) ) )
-              base_dd_multiplier *= 1.0 + p()->find_spell( 281494 )->effectN( 1 ).percent();
-
-            if ( data().affected_by( p()->find_spell( 281494 )->effectN( 2 ) ) )
-              base_td_multiplier *= 1.0 + p()->find_spell( 281494 )->effectN( 2 ).percent();
-          }
-
-          if ( p()->legendary.wakeners_loyalty )
-          {
-            if ( data().affected_by( p()->find_spell( 281495 )->effectN( 1 ) ) )
-              base_dd_multiplier *= 1.0 + p()->find_spell( 281495 )->effectN( 1 ).percent();
-
-            if ( data().affected_by( p()->find_spell( 281495 )->effectN( 2 ) ) )
-              base_td_multiplier *= 1.0 + p()->find_spell( 281495 )->effectN( 2 ).percent();
-          }
-
-          if ( p()->legendary.lessons_of_spacetime )
-          {
-            if ( data().affected_by( p()->find_spell( 281496 )->effectN( 1 ) ) )
-              base_dd_multiplier *= 1.0 + p()->find_spell( 281496 )->effectN( 1 ).percent();
-
-            if ( data().affected_by( p()->find_spell( 281496 )->effectN( 2 ) ) )
-              base_td_multiplier *= 1.0 + p()->find_spell( 281496 )->effectN( 2 ).percent();
-          }
 
           if ( p()->specialization() == WARLOCK_AFFLICTION )
           {

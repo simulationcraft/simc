@@ -45,9 +45,6 @@ namespace warlock {
       void execute() override
       {
         warlock_spell_t::execute();
-
-        if (can_feretory && p()->legendary.feretory_of_souls && rng().roll(p()->find_spell(205702)->proc_chance()) && dbc::is_school(school, SCHOOL_FIRE))
-          p()->resource_gain(RESOURCE_SOUL_SHARD, 1.0, p()->gains.feretory_of_souls);
       }
 
       void consume_resource() override
@@ -56,20 +53,6 @@ namespace warlock {
 
         if (resource_current == RESOURCE_SOUL_SHARD && p()->in_combat)
         {
-          if (p()->legendary.the_master_harvester)
-          {
-            double sh_proc_chance = p()->find_spell(p()->legendary.the_master_harvester->spell_id)->effectN(2).percent();
-
-            for (int i = 0; i < last_resource_cost; i++)
-            {
-              if (p()->rng().roll(sh_proc_chance))
-              {
-                p()->buffs.soul_harvest->trigger();
-              }
-            }
-
-          }
-
           p()->buffs.demonic_speed->trigger();
 
           if (p()->buffs.nether_portal->up())
@@ -379,23 +362,11 @@ namespace warlock {
                 p()->buffs.rage_of_guldan->stack_value(), 1.0,
                 p()->warlock_pet_list.dreadstalkers.duration() );
             }
-
-            if ( p()->legendary.wilfreds_sigil_of_superior_summoning )
-            {
-              p()->cooldowns.demonic_tyrant->adjust( p()->legendary.wilfreds_sigil_of_superior_summoning->driver()->effectN( 1 ).time_value() );
-              p()->procs.wilfreds_dog->occur();
-            }
-
         }
 
         p()->buffs.demonic_calling->up(); // benefit tracking
         p()->buffs.demonic_calling->decrement();
         p()->buffs.rage_of_guldan->expire();
-
-        if ( p()->legendary.recurrent_ritual )
-        {
-          p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.recurrent_ritual );
-        }
 
         if (p()->sets->has_set_bonus(WARLOCK_DEMONOLOGY, T20, B4))
         {
@@ -499,13 +470,6 @@ namespace warlock {
         demonology_spell_t::execute();
 
         p()->warlock_pet_list.demonic_tyrants.spawn( data().duration() );
-
-        if ( p()->legendary.sindorei_spite && p()->cooldowns.sindorei_spite_icd->up() )
-        {
-          p()->buffs.sindorei_spite->up();
-          p()->buffs.sindorei_spite->trigger();
-          p()->cooldowns.sindorei_spite_icd->start( timespan_t::from_seconds( 180.0 ) );
-        }
 
         p()->buffs.demonic_power->trigger();
 
@@ -704,36 +668,15 @@ namespace warlock {
           hasted_ticks = false;
       }
 
-      void tick(dot_t* d) override {
-          demonology_spell_t::tick(d);
-          if (d->state->result == RESULT_HIT || result_is_hit(d->state->result)) {
-              if (p()->sets->has_set_bonus(WARLOCK_DEMONOLOGY, T19, B2) && rng().roll(p()->sets->set(WARLOCK_DEMONOLOGY, T19, B2)->effectN(1).percent()))
-                  p()->resource_gain(RESOURCE_SOUL_SHARD, 1, p()->gains.t19_2pc_demonology);
-          }
-      }
-
-      virtual double action_multiplier()const override
+      void tick( dot_t* d ) override
       {
-        double m = demonology_spell_t::action_multiplier();
-        double pet_counter = 0.0;
+        demonology_spell_t::tick( d );
 
-        if ( p()->legendary.kazzaks_final_curse )
+        if ( d->state->result == RESULT_HIT || result_is_hit( d->state->result ) )
         {
-          for ( auto& pet : p()->pet_list )
-          {
-            pets::warlock_pet_t *lock_pet = static_cast< pets::warlock_pet_t* > ( pet );
-
-            if ( lock_pet != NULL )
-            {
-              if ( !lock_pet->is_sleeping() )
-              {
-                pet_counter += p()->find_spell( 214225 )->effectN( 1 ).percent();
-              }
-            }
-          }
-          m *= 1.0 + pet_counter;
+          if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T19, B2 ) && rng().roll( p()->sets->set( WARLOCK_DEMONOLOGY, T19, B2 )->effectN( 1 ).percent() ) )
+            p()->resource_gain( RESOURCE_SOUL_SHARD, 1, p()->gains.t19_2pc_demonology );
         }
-        return m;
       }
     };
 

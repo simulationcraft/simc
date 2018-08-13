@@ -66,19 +66,6 @@ namespace warlock
 
         if (resource_current == RESOURCE_SOUL_SHARD && p()->in_combat)
         {
-          if (p()->legendary.the_master_harvester)
-          {
-            double sh_proc_chance = p()->find_spell(p()->legendary.the_master_harvester->spell_id)->effectN(1).percent();
-
-            for (int i = 0; i < last_resource_cost; i++)
-            {
-              if (p()->rng().roll(sh_proc_chance))
-              {
-                p()->buffs.soul_harvest->trigger();
-              }
-            }
-          }
-
           p()->buffs.demonic_speed->trigger();
         }
       }
@@ -268,12 +255,6 @@ namespace warlock
         dot_max_stack += p()->talents.writhe_in_agony->ok() ? p()->talents.writhe_in_agony->effectN(1).base_value() : 0;
 
         affliction_spell_t::init();
-
-        if ( p()->legendary.hood_of_eternal_disdain )
-        {
-          base_tick_time *= 1.0 + p()->legendary.hood_of_eternal_disdain->driver()->effectN( 2 ).percent();
-          dot_duration *= 1.0 + p()->legendary.hood_of_eternal_disdain->driver()->effectN( 1 ).percent();
-        }
       }
 
       void execute() override
@@ -384,11 +365,6 @@ namespace warlock
       void init() override
       {
         affliction_spell_t::init();
-
-        if ( p()->legendary.sacrolashs_dark_strike )
-        {
-          base_multiplier *= 1.0 + p()->legendary.sacrolashs_dark_strike->driver()->effectN( 1 ).percent();
-        }
       }
 
       void tick( dot_t* d ) override
@@ -452,7 +428,6 @@ namespace warlock
 
         void last_tick( dot_t* d ) override
         {
-          p()->buffs.stretens_insanity->decrement( 1 );
           p()->buffs.active_uas->decrement( 1 );
 
           affliction_spell_t::last_tick( d );
@@ -550,21 +525,6 @@ namespace warlock
           {
             flag = true;
             break;
-          }
-        }
-
-        if ( p()->legendary.power_cord_of_lethtendris )
-        {
-          if ( !flag && rng().roll( p()->legendary.power_cord_of_lethtendris->driver()->effectN( 1 ).percent() ) )
-          {
-            p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.power_cord_of_lethtendris );
-          }
-        }
-        if ( p()->legendary.stretens_sleepless_shackles )
-        {
-          if ( !flag )
-          {
-            p()->buffs.stretens_insanity->increment( 1 );
           }
         }
       }
@@ -1108,7 +1068,6 @@ namespace warlock
     buffs.inevitable_demise = make_buff(this, "inevitable_demise", azerite.inevitable_demise)
       ->set_max_stack(find_spell(273525)->max_stacks())
       ->set_default_value(azerite.inevitable_demise.value());
-    //legendary
   }
 
   void warlock_t::init_spells_affliction()

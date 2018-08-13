@@ -36,19 +36,6 @@ const warlock_t* warlock_pet_t::o() const
   return static_cast<warlock_t*>( owner );
 }
 
-void warlock_pet_t::trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic )
-{
-  if ( !o()->legendary.sephuzs_secret )
-    return;
-
-  // trigger by default on interrupts and on adds/lower level stuff
-  if ( o()->allow_sephuz || mechanic == MECHANIC_INTERRUPT || state->target->is_add() ||
-    ( state->target->level() < o()->sim->max_player_level + 3 ) )
-  {
-    o()->buffs.sephuzs_secret->trigger();
-  }
-}
-
 void warlock_pet_t::create_buffs()
 {
   pet_t::create_buffs();
@@ -164,8 +151,6 @@ double warlock_pet_t::composite_player_multiplier(school_e school) const
     m *= 1.0 + (buffs.rage_of_guldan->check_stack_value() / 100);
 
   m *= 1.0 + buffs.grimoire_of_service->check_value();
-
-  m *= 1.0 + o()->buffs.sindorei_spite->check_stack_value();
 
   return m;
 }
@@ -703,11 +688,6 @@ void wild_imp_pet_t::arise()
   warlock_pet_t::arise();
   power_siphon = false;
   o()->buffs.wild_imps->increment();
-  if ( o()->legendary.wilfreds_sigil_of_superior_summoning )
-  {
-    o()->cooldowns.demonic_tyrant->adjust( o()->legendary.wilfreds_sigil_of_superior_summoning->driver()->effectN( 1 ).time_value() );
-    o()->procs.wilfreds_imp->occur();
-  }
 
   // Start casting fel firebolts
   firebolt->set_target( o()->target );

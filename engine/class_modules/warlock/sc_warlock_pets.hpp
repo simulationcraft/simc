@@ -72,8 +72,6 @@ struct warlock_pet_t : public pet_t
     pet_t::arise();
   }
 
-  void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic );
-
   struct travel_t : public action_t
   {
     travel_t( player_t* player ) : action_t( ACTION_OTHER, "travel", player )
