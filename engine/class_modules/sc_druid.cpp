@@ -1687,19 +1687,19 @@ public:
     else if (splits[0] == "ticks_gained_on_refresh")
     {
       return make_fn_expr(name_str, [this]() -> double {
-        dot_t* dot = get_dot();
+        dot_t* dot = this->get_dot();
         double remaining_ticks = 0;
         double potential_ticks = 0;
-        timespan_t duration = dot_duration;
-        timespan_t ttd = target->time_to_percent(0);
+        timespan_t duration = this->dot_duration;
+        timespan_t ttd = this->target->time_to_percent(0);
 
         if (dot->is_ticking())
         {
           remaining_ticks = std::min(dot->remains(), ttd) / dot->current_action->tick_time(dot->state);
-          duration = calculate_dot_refresh_duration(dot, duration);
+          duration = this->calculate_dot_refresh_duration(dot, duration);
         }
 
-        potential_ticks = std::min(duration, ttd) / (base_tick_time * composite_haste());
+        potential_ticks = std::min(duration, ttd) / (this->base_tick_time * this->composite_haste());
         return potential_ticks - remaining_ticks;
       });
     }
