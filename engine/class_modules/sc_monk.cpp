@@ -31,9 +31,6 @@ BREWMASTER:
 -- Summon Black Ox Statue
 -- Guard
 -- Zen Meditation
--- Azerite:
---- training_of_niuzao
---- staggering_strikes
 */
 #include "simulationcraft.hpp"
 
@@ -853,7 +850,8 @@ public:
   player_t* next_mark_of_the_crane_target( action_state_t* );
   int mark_of_the_crane_counter();
   double clear_stagger();
-  double partial_clear_stagger( double );
+  double partial_clear_stagger_pct( double );
+  double partial_clear_stagger_amount( double );
   bool has_stagger();
   double calculate_last_stagger_tick_damage( int n ) const;
 
@@ -3681,6 +3679,9 @@ struct blackout_strike_t : public monk_melee_attack_t
 
         if ( p()->azerite.elusive_footwork.ok() && s->result == RESULT_CRIT )
           p()->buff.elusive_brawler->trigger( p()->azerite.elusive_footwork.spell_ref().effectN( 2 ).base_value() );
+
+        if ( p()->azerite.staggering_strikes.ok() )
+          p()->partial_clear_stagger_amount( p()->azerite.staggering_strikes.value() );
       }
     }
   }
@@ -5373,7 +5374,7 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
   /* Clears part of the stagger dot. Used by Purifying Brew
    * Returns amount purged
    */
-  double clear_partial_damage( double percent_amount )
+  double clear_partial_damage_pct( double percent_amount )
   {
     dot_t* d                = get_dot();
     double damage_remaining = 0.0;
@@ -5388,6 +5389,29 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
 
     sim->print_debug( "{} partially clears stagger by {:.2f}% ({} / tick).", player->name(), percent_amount * 100.0,
                       damage_remaining );
+
+    p()->stagger_damage_changed();
+
+    return damage_remaining;
+  }
+
+  /* Clears part of the stagger dot. Used by Staggering Strikes Azerite Trait
+   * Returns amount purged
+   */
+  double clear_partial_damage_amount( double amount )
+  {
+    dot_t* d                = get_dot();
+    double damage_remaining = 0.0;
+
+    if ( d->is_ticking() )
+    {
+      auto dot_state = debug_cast<residual_action::residual_periodic_state_t*>( d->state );
+      damage_remaining += dot_state -> tick_amount; // Assumes base_td == damage, no modifiers or crits
+      damage_remaining = std::fmax( damage_remaining - amount, 0 );
+      dot_state -> tick_amount = damage_remaining;
+    }
+
+    sim->print_debug( "{} partially clears stagger by {} ({} / tick).", player->name(), amount, damage_remaining );
 
     p()->stagger_damage_changed();
 
@@ -5570,7 +5594,7 @@ struct purifying_brew_t : public monk_spell_t
     }
 
     // Reduce stagger damage
-    p()->active_actions.stagger_self_damage->clear_partial_damage( data().effectN( 1 ).percent() );
+    p()->active_actions.stagger_self_damage->clear_partial_damage_pct( data().effectN( 1 ).percent() );
   }
 };
 
@@ -6056,7 +6080,7 @@ struct gift_of_the_ox_t : public monk_heal_t
     p()->buff.gift_of_the_ox->decrement();
 
     if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T20, B4 ) )
-      p()->partial_clear_stagger( p()->sets->set( MONK_BREWMASTER, T20, B4 )->effectN( 1 ).percent() );
+      p()->partial_clear_stagger_pct( p()->sets->set( MONK_BREWMASTER, T20, B4 )->effectN( 1 ).percent() );
   }
 };
 
@@ -6075,7 +6099,7 @@ struct gift_of_the_ox_trigger_t : public monk_heal_t
     monk_heal_t::execute();
 
     if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T20, B4 ) )
-      p()->partial_clear_stagger( p()->sets->set( MONK_BREWMASTER, T20, B4 )->effectN( 1 ).percent() );
+      p()->partial_clear_stagger_pct( p()->sets->set( MONK_BREWMASTER, T20, B4 )->effectN( 1 ).percent() );
   }
 };
 
@@ -6094,7 +6118,7 @@ struct gift_of_the_ox_expire_t : public monk_heal_t
     monk_heal_t::execute();
 
     if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T20, B4 ) )
-      p()->partial_clear_stagger( p()->sets->set( MONK_BREWMASTER, T20, B4 )->effectN( 1 ).percent() );
+      p()->partial_clear_stagger_pct( p()->sets->set( MONK_BREWMASTER, T20, B4 )->effectN( 1 ).percent() );
   }
 };
 
@@ -8278,11 +8302,18 @@ bool monk_t::has_stagger()
   return active_actions.stagger_self_damage->stagger_ticking();
 }
 
-// monk_t::partial_clear_stagger ====================================================
+// monk_t::partial_clear_stagger_pct ====================================================
 
-double monk_t::partial_clear_stagger( double clear_percent )
+double monk_t::partial_clear_stagger_pct( double clear_percent )
 {
-  return active_actions.stagger_self_damage->clear_partial_damage( clear_percent );
+  return active_actions.stagger_self_damage->clear_partial_damage_pct( clear_percent );
+}
+
+// monk_t::partial_clear_stagger_amount =================================================
+
+double monk_t::partial_clear_stagger_amount( double clear_amount )
+{
+  return active_actions.stagger_self_damage->clear_partial_damage_amount( clear_amount );
 }
 
 // monk_t::clear_stagger ==================================================
