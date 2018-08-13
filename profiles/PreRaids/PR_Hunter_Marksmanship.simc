@@ -22,6 +22,7 @@ augmentation=battle_scarred
 actions.precombat=flask
 actions.precombat+=/augmentation
 actions.precombat+=/food
+actions.precombat+=/summon_pet,if=active_enemies<3
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
@@ -50,7 +51,7 @@ actions.cds+=/trueshot,if=cooldown.aimed_shot.charges<1|talent.barrage.enabled&c
 actions.st=explosive_shot
 actions.st+=/barrage,if=active_enemies>1
 actions.st+=/arcane_shot,if=buff.precise_shots.up&(cooldown.aimed_shot.full_recharge_time<gcd*buff.precise_shots.stack+action.aimed_shot.cast_time|buff.lethal_shots.up)
-actions.st+=/rapid_fire,if=(!talent.lethal_shots.enabled|buff.lethal_shots.up)&azerite.focused_fire.enabled|azerite.in_the_rhythm.enabled
+actions.st+=/rapid_fire,if=(!talent.lethal_shots.enabled|buff.lethal_shots.up)&azerite.focused_fire.enabled|azerite.in_the_rhythm.rank>1
 actions.st+=/aimed_shot,if=buff.precise_shots.down&(buff.double_tap.down&full_recharge_time<cast_time+gcd|buff.lethal_shots.up)
 actions.st+=/rapid_fire,if=!talent.lethal_shots.enabled|buff.lethal_shots.up
 actions.st+=/piercing_shot

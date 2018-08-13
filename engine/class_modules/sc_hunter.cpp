@@ -5436,7 +5436,9 @@ void hunter_t::init_action_list()
     precombat -> add_action( "augmentation" );
     precombat -> add_action( "food" );
 
-    if ( specialization() != HUNTER_MARKSMANSHIP )
+    if ( specialization() == HUNTER_MARKSMANSHIP )
+      precombat -> add_action( "summon_pet,if=active_enemies<3" );
+    else
       precombat -> add_action( "summon_pet" );
 
     precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
@@ -5560,7 +5562,7 @@ void hunter_t::apl_mm()
   st -> add_talent( this, "Explosive Shot" );
   st -> add_talent( this, "Barrage", "if=active_enemies>1" );
   st -> add_action( this, "Arcane Shot", "if=buff.precise_shots.up&(cooldown.aimed_shot.full_recharge_time<gcd*buff.precise_shots.stack+action.aimed_shot.cast_time|buff.lethal_shots.up)" );
-  st -> add_action( this, "Rapid Fire", "if=(!talent.lethal_shots.enabled|buff.lethal_shots.up)&azerite.focused_fire.enabled|azerite.in_the_rhythm.enabled" );
+  st -> add_action( this, "Rapid Fire", "if=(!talent.lethal_shots.enabled|buff.lethal_shots.up)&azerite.focused_fire.enabled|azerite.in_the_rhythm.rank>1" );
   st -> add_action( this, "Aimed Shot", "if=buff.precise_shots.down&(buff.double_tap.down&full_recharge_time<cast_time+gcd|buff.lethal_shots.up)" );
   st -> add_action( this, "Rapid Fire", "if=!talent.lethal_shots.enabled|buff.lethal_shots.up" );
   st -> add_talent( this, "Piercing Shot" );
