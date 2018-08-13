@@ -2165,7 +2165,7 @@ public:
         if ( affected_by.brewmaster.spell_da1 )
           ab::base_dd_multiplier *= 1.0 + player->spec.brewmaster_monk->effectN( 1 ).percent();
         if ( affected_by.brewmaster.spell_da2 ) // RJW uses direct hit for it's ticks
-          ab::base_td_multiplier *= 1.0 + player->spec.brewmaster_monk->effectN( 6 ).percent();
+          ab::base_dd_multiplier *= 1.0 + player->spec.brewmaster_monk->effectN( 6 ).percent();
         if ( affected_by.brewmaster.spell_da3 )
           ab::base_dd_multiplier *= 1.0 + player->spec.brewmaster_monk->effectN( 7 ).percent();
         if ( affected_by.brewmaster.spell_da4 )
