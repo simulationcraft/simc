@@ -1560,6 +1560,7 @@ class SpellDataGenerator(DataGenerator):
           ( 213114, 3 ), # Hidden Master's Forbidden Touch buff
           # Azerite Traits
           ( 278710, 3 ), # Swift Roundhouse
+          ( 278767, 1 ), # Training of Niuzao buff
         ),
 
         # Druid:

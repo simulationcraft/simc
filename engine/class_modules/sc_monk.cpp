@@ -11,7 +11,6 @@ NOTES:
 TODO:
 
 GENERAL:
-- Add Legendaries
 
 WINDWALKER:
 - Add Cyclone Strike Counter as an expression
@@ -28,15 +27,13 @@ MISTWEAVER:
 
 BREWMASTER:
 - Not Modeled:
--- Expel Harm
+-- Damage part of Expel Harm
 -- Summon Black Ox Statue
 -- Guard
 -- Zen Meditation
 -- Azerite:
 --- training_of_niuzao
 --- staggering_strikes
---- niuzaos_blessing
---- boiling_brew healing sphere
 */
 #include "simulationcraft.hpp"
 
@@ -275,6 +272,7 @@ public:
 
     // Azerite Trait
     stat_buff_t* iron_fists;
+    stat_buff_t* training_of_niuzao;
     buff_t* sunrise_technique;
     buff_t* swift_roundhouse;
     buff_t* fit_to_burst;
@@ -6104,6 +6102,17 @@ struct gift_of_the_ox_expire_t : public monk_heal_t
 // Expel Harm
 // ==========================================================================
 
+struct niuzaos_blessing_t : public monk_heal_t
+{
+  niuzaos_blessing_t( monk_t& p ) : 
+    monk_heal_t( "niuzaos_blessing", p, p.find_spell( 278535 ) )
+  {
+    background = true;
+    proc = true;
+    target = player;
+  }
+};
+
 struct expel_harm_dmg_t : public monk_spell_t
 {
   expel_harm_dmg_t( monk_t* player ) : 
@@ -6116,9 +6125,11 @@ struct expel_harm_dmg_t : public monk_spell_t
 struct expel_harm_t : public monk_spell_t
 {
   expel_harm_dmg_t* dmg;
+  niuzaos_blessing_t* niuzao;
   expel_harm_t( monk_t* p, const std::string& options_str ) :
     monk_spell_t( "expel_harm", p, p->spec.expel_harm ),
-    dmg( new expel_harm_dmg_t( p ) )
+    dmg( new expel_harm_dmg_t( p ) ),
+    niuzao( new niuzaos_blessing_t( *p ) )
   {
     parse_options( options_str );
   }
@@ -6132,8 +6143,21 @@ struct expel_harm_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
+    if (p()->azerite.niuzaos_blessing.ok())
+    {
+      double nb_dmg = p() -> azerite.niuzaos_blessing.value() * p() -> buff.gift_of_the_ox->stack();
+      niuzao->base_dd_min = nb_dmg;
+      niuzao->base_dd_max = nb_dmg;
+      niuzao->execute();
+    }
+
+    // Triggering the Gift of the ox heals, but not the damage
+    // TODO damage part of Expel Harm
     double mult = p()->spec.expel_harm->effectN( 2 ).percent();
-//    p()->buff.gift_of_the_ox->decrement();
+
+    for ( int i=0; i < p() ->buff.gift_of_the_ox->stack(); i++ )
+      p()->buff.gift_of_the_ox->decrement();
+    
   }
 };
 
@@ -7717,10 +7741,9 @@ void monk_t::init_spells()
   }
 
   if ( specialization() == MONK_WINDWALKER )
-  {
-    active_actions.sunrise_technique = new actions::sunrise_technique_t( this );
     windwalking_aura = new actions::windwalking_aura_t( this );
-  }
+
+  active_actions.sunrise_technique = new actions::sunrise_technique_t( this );
 }
 
 // monk_t::init_base ========================================================
@@ -7963,17 +7986,23 @@ void monk_t::create_buffs()
                                     ->set_default_value( passives.the_emperors_capacitor->effectN( 1 ).percent() );
 
   // Azerite Traits
+  buff.swift_roundhouse = make_buff( this, "swift_roundhouse", find_spell( 278710 ) )
+                              ->set_default_value( azerite.swift_roundhouse.value() );
+
+  // Brewmaster
+  buff.fit_to_burst = make_buff( this, "fit_to_burst", find_spell( 275893 ) )
+                          ->set_trigger_spell( azerite.fit_to_burst.spell() )
+                          ->set_reverse( true );
+  buff.training_of_niuzao = make_buff<stat_buff_t>( this, "training_of_niuzao", find_spell( 278767 ) )
+                            ->add_stat( STAT_MASTERY_RATING, azerite.training_of_niuzao.value() / 3 );
+  buff.training_of_niuzao->set_max_stack( 3 );
+  // Windwalker
   buff.iron_fists = make_buff<stat_buff_t>( this, "iron_fists", find_spell( 272806 ) )
                         ->add_stat( STAT_CRIT_RATING, azerite.iron_fists.value() );
 
   buff.sunrise_technique = make_buff( this, "sunrise_technique", find_spell( 273298 ) );
 
-  buff.swift_roundhouse = make_buff( this, "swift_roundhouse", find_spell( 278710 ) )
-                              ->set_default_value( azerite.swift_roundhouse.value() );
 
-  buff.fit_to_burst = make_buff( this, "fit_to_burst", find_spell( 275893 ) )
-                          ->set_trigger_spell( azerite.fit_to_burst.spell() )
-                          ->set_reverse( true );
 }
 
 // monk_t::init_gains =======================================================
@@ -9791,6 +9820,7 @@ void monk_t::stagger_damage_changed()
 
   buff_t* new_buff = nullptr;
   dot_t* dot       = nullptr;
+  int niuzao       = 0;
   if ( active_actions.stagger_self_damage )
     dot = active_actions.stagger_self_damage->get_dot();
   if ( dot && dot->is_ticking() )
@@ -9800,14 +9830,17 @@ void monk_t::stagger_damage_changed()
     if ( current_tick_dmg_per_max_health > 0.06 )
     {
       new_buff = buff.heavy_stagger;
+      niuzao = 3;
     }
     else if ( current_tick_dmg_per_max_health > 0.03 )
     {
       new_buff = buff.moderate_stagger;
+      niuzao = 2;
     }
     else if ( current_tick_dmg_per_max_health > 0.0 )
     {
       new_buff = buff.light_stagger;
+      niuzao = 1;
     }
   }
   sim->print_debug( "Stagger new buff is {}.", new_buff ? new_buff->name() : "none" );
@@ -9815,10 +9848,14 @@ void monk_t::stagger_damage_changed()
   if ( previous_buff && previous_buff != new_buff )
   {
     previous_buff->expire();
+    if ( buff.training_of_niuzao->up() )
+      buff.training_of_niuzao->expire();
   }
   if ( new_buff && previous_buff != new_buff )
   {
     new_buff->trigger();
+    if ( azerite.training_of_niuzao.ok() )
+      buff.training_of_niuzao->trigger( niuzao );
   }
 }
 
