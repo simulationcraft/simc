@@ -5077,7 +5077,7 @@ void warrior_t::apl_arms()
   five_target->add_action( this, "Colossus Smash", "if=debuff.colossus_smash.down" );
   five_target->add_talent( this, "Warbreaker", "if=debuff.colossus_smash.down" );
   five_target->add_action( this, "Bladestorm",
-                           "buff.sweeping_strikes.down&!buff.deadly_calm.up&((debuff.colossus_smash.remains>4.5&"
+                           "if=buff.sweeping_strikes.down&!buff.deadly_calm.up&((debuff.colossus_smash.remains>4.5&"
                            "!azerite.test_of_might.enabled)|buff.test_of_might.up)" );
   five_target->add_talent( this, "Cleave" );
   five_target->add_action( this, "Execute",
