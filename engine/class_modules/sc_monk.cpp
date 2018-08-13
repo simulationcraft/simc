@@ -2062,7 +2062,6 @@ public:
     double m = pet_t::composite_player_multiplier( school );
 
     monk_t* o = static_cast<monk_t*>( owner );
-
     m *= 1 + o->spec.brewmaster_monk->effectN( 3 ).percent();
 
     return m;
@@ -2109,12 +2108,12 @@ struct monk_action_t : public Base
       bool spell_da1;
       bool spell_da2;
       bool spell_da3;
+      bool spell_da4;
       bool spell_ta1;
       bool spell_ta2;
-      bool spell_ta3;
     } brewmaster;
 
-    struct
+     struct
     {
       bool spell_da1;
       bool spell_ta1;
@@ -2165,16 +2164,16 @@ public:
       {
         if ( affected_by.brewmaster.spell_da1 )
           ab::base_dd_multiplier *= 1.0 + player->spec.brewmaster_monk->effectN( 1 ).percent();
-        if ( affected_by.brewmaster.spell_da2 )
-          ab::base_dd_multiplier *= 1.0 + player->spec.brewmaster_monk->effectN( 7 ).percent();
+        if ( affected_by.brewmaster.spell_da2 ) // RJW uses direct hit for it's ticks
+          ab::base_td_multiplier *= 1.0 + player->spec.brewmaster_monk->effectN( 6 ).percent();
         if ( affected_by.brewmaster.spell_da3 )
+          ab::base_dd_multiplier *= 1.0 + player->spec.brewmaster_monk->effectN( 7 ).percent();
+        if ( affected_by.brewmaster.spell_da4 )
           ab::base_dd_multiplier *= 1.0 + player->spec.brewmaster_monk->effectN( 18 ).percent();
 
         if ( affected_by.brewmaster.spell_ta1 )
           ab::base_td_multiplier *= 1.0 + player->spec.brewmaster_monk->effectN( 2 ).percent();
         if ( affected_by.brewmaster.spell_ta2 )
-          ab::base_td_multiplier *= 1.0 + player->spec.brewmaster_monk->effectN( 6 ).percent();
-        if ( affected_by.brewmaster.spell_ta3 )
           ab::base_td_multiplier *= 1.0 + player->spec.brewmaster_monk->effectN( 8 ).percent();
 
         // Reduce GCD from 1.5 sec to 1 sec
@@ -2251,11 +2250,11 @@ public:
     } affects[] = {
         {p()->talent.serenity->effectN( 1 ), affected_by.serenity},
         {p()->spec.brewmaster_monk->effectN( 1 ), affected_by.brewmaster.spell_da1},
-        {p()->spec.brewmaster_monk->effectN( 7 ), affected_by.brewmaster.spell_da2},
-        {p()->spec.brewmaster_monk->effectN( 18 ), affected_by.brewmaster.spell_da3},
+        {p()->spec.brewmaster_monk->effectN( 6 ), affected_by.brewmaster.spell_da2},
+        {p()->spec.brewmaster_monk->effectN( 7 ), affected_by.brewmaster.spell_da3},
+        {p()->spec.brewmaster_monk->effectN( 18 ), affected_by.brewmaster.spell_da4},
         {p()->spec.brewmaster_monk->effectN( 2 ), affected_by.brewmaster.spell_ta1},
-        {p()->spec.brewmaster_monk->effectN( 6 ), affected_by.brewmaster.spell_ta2},
-        {p()->spec.brewmaster_monk->effectN( 8 ), affected_by.brewmaster.spell_ta3},
+        {p()->spec.brewmaster_monk->effectN( 8 ), affected_by.brewmaster.spell_ta2},
         {p()->spec.brewmaster_monk->effectN( 4 ), affected_by.hasted_cooldown},  // not yet working, see Keg Smash
         {p()->spec.brewmaster_monk->effectN( 5 ),
          affected_by.hasted_cooldown},  // not yet working, see Ironskin-/Purifying Brew
