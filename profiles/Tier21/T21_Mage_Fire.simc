@@ -34,8 +34,8 @@ actions+=/time_warp,if=time=0&buff.bloodlust.down
 actions+=/mirror_image,if=buff.combustion.down
 # Standard Talent RoP Logic.
 actions+=/rune_of_power,if=firestarter.active&action.rune_of_power.charges=2|cooldown.combustion.remains>40&buff.combustion.down&!talent.kindling.enabled|target.time_to_die<11|talent.kindling.enabled&(charges_fractional>1.8|time<40)&cooldown.combustion.remains>40
-# RoP use while using Legendary Items.
-actions+=/rune_of_power,if=((buff.kaelthas_ultimate_ability.react|buff.pyroclasm.react)&(cooldown.combustion.remains>40|action.rune_of_power.charges>1))|(buff.erupting_infernal_core.up&(cooldown.combustion.remains>40|action.rune_of_power.charges>1))
+# RoP use while using Pyroclasm.
+actions+=/rune_of_power,if=buff.pyroclasm.react&(cooldown.combustion.remains>40|action.rune_of_power.charges>1)
 actions+=/call_action_list,name=combustion_phase,if=cooldown.combustion.remains<=action.rune_of_power.cast_time+(!talent.kindling.enabled*gcd)&(!talent.firestarter.enabled|!firestarter.active|active_enemies>=4|active_enemies>=2&talent.flame_patch.enabled)|buff.combustion.up
 actions+=/call_action_list,name=rop_phase,if=buff.rune_of_power.up&buff.combustion.down
 actions+=/call_action_list,name=standard_rotation
@@ -56,7 +56,7 @@ actions.combustion_phase+=/fireblood
 actions.combustion_phase+=/ancestral_call
 actions.combustion_phase+=/use_items
 actions.combustion_phase+=/flamestrike,if=((talent.flame_patch.enabled&active_enemies>2)|active_enemies>6)&buff.hot_streak.react
-actions.combustion_phase+=/pyroblast,if=(buff.kaelthas_ultimate_ability.react|buff.pyroclasm.react)&buff.combustion.remains>execute_time
+actions.combustion_phase+=/pyroblast,if=buff.pyroclasm.react&buff.combustion.remains>execute_time
 actions.combustion_phase+=/pyroblast,if=buff.hot_streak.react
 actions.combustion_phase+=/fire_blast,if=buff.heating_up.react
 actions.combustion_phase+=/phoenix_flames
@@ -68,7 +68,6 @@ actions.rop_phase=rune_of_power
 actions.rop_phase+=/flamestrike,if=((talent.flame_patch.enabled&active_enemies>1)|active_enemies>4)&buff.hot_streak.react
 actions.rop_phase+=/pyroblast,if=buff.hot_streak.react
 actions.rop_phase+=/call_action_list,name=active_talents
-actions.rop_phase+=/pyroblast,if=buff.kaelthas_ultimate_ability.react&execute_time<buff.kaelthas_ultimate_ability.remains&buff.rune_of_power.remains>cast_time
 actions.rop_phase+=/pyroblast,if=buff.pyroclasm.react&execute_time<buff.pyroclasm.remains&buff.rune_of_power.remains>cast_time
 actions.rop_phase+=/fire_blast,if=!prev_off_gcd.fire_blast&buff.heating_up.react&firestarter.active&charges_fractional>1.7
 actions.rop_phase+=/phoenix_flames,if=!prev_gcd.1.phoenix_flames&charges_fractional>2.7&firestarter.active
@@ -85,7 +84,6 @@ actions.standard_rotation+=/pyroblast,if=buff.hot_streak.react&firestarter.activ
 actions.standard_rotation+=/phoenix_flames,if=charges_fractional>2.7&active_enemies>2
 actions.standard_rotation+=/pyroblast,if=buff.hot_streak.react&(!prev_gcd.1.pyroblast|action.pyroblast.in_flight)
 actions.standard_rotation+=/pyroblast,if=buff.hot_streak.react&target.health.pct<=30&talent.searing_touch.enabled
-actions.standard_rotation+=/pyroblast,if=buff.kaelthas_ultimate_ability.react&execute_time<buff.kaelthas_ultimate_ability.remains
 actions.standard_rotation+=/pyroblast,if=buff.pyroclasm.react&execute_time<buff.pyroclasm.remains
 actions.standard_rotation+=/call_action_list,name=active_talents
 actions.standard_rotation+=/fire_blast,if=!talent.kindling.enabled&buff.heating_up.react&(!talent.rune_of_power.enabled|charges_fractional>1.4|cooldown.combustion.remains<40)&(3-charges_fractional)*(12*spell_haste)<cooldown.combustion.remains+3|target.time_to_die<4
