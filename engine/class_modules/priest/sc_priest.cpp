@@ -655,20 +655,20 @@ priest_t::priest_t( sim_t* sim, const std::string& name, race_e r )
 /** Construct priest cooldowns */
 void priest_t::create_cooldowns()
 {
-  cooldowns.chakra            = get_cooldown( "chakra" );
-  cooldowns.mindbender        = get_cooldown( "mindbender" );
-  cooldowns.penance           = get_cooldown( "penance" );
-  cooldowns.holy_fire         = get_cooldown( "holy_fire" );
+  cooldowns.chakra             = get_cooldown( "chakra" );
+  cooldowns.mindbender         = get_cooldown( "mindbender" );
+  cooldowns.penance            = get_cooldown( "penance" );
+  cooldowns.holy_fire          = get_cooldown( "holy_fire" );
   cooldowns.holy_word_chastise = get_cooldown( "holy_word_chastise" );
-  cooldowns.power_word_shield = get_cooldown( "power_word_shield" );
-  cooldowns.shadowfiend       = get_cooldown( "shadowfiend" );
-  cooldowns.silence           = get_cooldown( "silence" );
-  cooldowns.mind_blast        = get_cooldown( "mind_blast" );
-  cooldowns.void_bolt         = get_cooldown( "void_bolt" );
-  cooldowns.mind_bomb         = get_cooldown( "mind_bomb" );
-  cooldowns.psychic_horror    = get_cooldown( "psychic_horror" );
-  cooldowns.sephuzs_secret    = get_cooldown( "sephuzs_secret" );
-  cooldowns.dark_ascension    = get_cooldown( "dark_ascension" );
+  cooldowns.power_word_shield  = get_cooldown( "power_word_shield" );
+  cooldowns.shadowfiend        = get_cooldown( "shadowfiend" );
+  cooldowns.silence            = get_cooldown( "silence" );
+  cooldowns.mind_blast         = get_cooldown( "mind_blast" );
+  cooldowns.void_bolt          = get_cooldown( "void_bolt" );
+  cooldowns.mind_bomb          = get_cooldown( "mind_bomb" );
+  cooldowns.psychic_horror     = get_cooldown( "psychic_horror" );
+  cooldowns.sephuzs_secret     = get_cooldown( "sephuzs_secret" );
+  cooldowns.dark_ascension     = get_cooldown( "dark_ascension" );
 
   if ( specialization() == PRIEST_DISCIPLINE )
   {
