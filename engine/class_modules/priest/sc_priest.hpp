@@ -264,6 +264,7 @@ public:
     const spell_data_t* divine_providence;
 
     const spell_data_t* focused_will;
+    const spell_data_t* holy_priest;
 
     // Shadow
     const spell_data_t* shadow;  /// General shadow data
@@ -466,7 +467,6 @@ public:
   priest_td_t* get_target_data( player_t* target ) const override;
   expr_t* create_expression( const std::string& name_str ) override;
   void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic, double proc_chance = -1.0 );
-  void trigger_call_to_the_void( const dot_t* d );
 
   void do_dynamic_regen() override
   {
@@ -920,6 +920,8 @@ struct priest_action_t : public Base
     bool mastery_madness_ta;
     bool shadow_priest_da;
     bool shadow_priest_ta;
+    bool holy_priest_da;
+    bool holy_priest_ta;
   } affected_by;
 
 
@@ -933,13 +935,28 @@ public:
     ab::tick_may_crit     = true;
     ab::weapon_multiplier = 0.0;
 
-    if ( affected_by.shadow_priest_da )
+    if ( p.specialization() == PRIEST_SHADOW )
     {
-      ab::base_dd_multiplier *= 1.0 + p.specs.shadow_priest->effectN( 1 ).percent();
+      if ( affected_by.shadow_priest_da )
+      {
+        ab::base_dd_multiplier *= 1.0 + p.specs.shadow_priest->effectN( 1 ).percent();
+      }
+      if ( affected_by.shadow_priest_ta )
+      {
+        ab::base_td_multiplier *= 1.0 + p.specs.shadow_priest->effectN( 2 ).percent();
+      }
     }
-    if ( affected_by.shadow_priest_ta )
+
+    else if ( p.specialization() == PRIEST_HOLY )
     {
-      ab::base_td_multiplier *= 1.0 + p.specs.shadow_priest->effectN( 2 ).percent();
+      if ( affected_by.holy_priest_da )
+      {
+        ab::base_dd_multiplier *= 1.0 + p.specs.holy_priest->effectN( 1 ).percent();
+      }
+      if ( affected_by.holy_priest_ta )
+      {
+        ab::base_td_multiplier *= 1.0 + p.specs.holy_priest->effectN( 2 ).percent();
+      }
     }
   }
 
@@ -962,6 +979,8 @@ public:
         {priest().mastery_spells.madness->effectN(2),     affected_by.mastery_madness_ta},
         {priest().specs.shadow_priest->effectN( 1 ),      affected_by.shadow_priest_da},
         {priest().specs.shadow_priest->effectN( 2 ),      affected_by.shadow_priest_ta},
+        {priest().specs.holy_priest->effectN( 3 ),        affected_by.holy_priest_da},
+        {priest().specs.holy_priest->effectN( 4 ),        affected_by.holy_priest_ta},
     };
 
     for (const auto& a : affects)
@@ -1001,7 +1020,7 @@ public:
 
   bool trigger_zeks()
   {
-    if ( priest().buffs.zeks_exterminatus->trigger() )
+    if ( priest().level() < 116 && priest().buffs.zeks_exterminatus->trigger() )
     {
       // proc doesn't reset the CD :
       // priest().cooldowns.shadow_word_death->reset(true);
@@ -1059,26 +1078,29 @@ public:
   {
     double m = ab::action_da_multiplier();
 
-    if ( affected_by.mastery_madness_da )
+    if ( priest().specialization() == PRIEST_SHADOW )
     {
-      m *= 1.0 + priest().cache.mastery_value();
-    }
-    if ( affected_by.voidform_da && priest().buffs.voidform->check()  )
-    {
-      double vf_multiplier = priest().buffs.voidform->data().effectN(1).percent();
-      if ( priest().active_items.zenkaram_iridis_anadem )
+      if ( affected_by.mastery_madness_da )
       {
-        vf_multiplier += priest().buffs.iridis_empowerment->data().effectN(2).percent();
+        m *= 1.0 + priest().cache.mastery_value();
       }
-      m *= 1.0 + vf_multiplier ;
-    }
-    if ( affected_by.shadowform_da && priest().buffs.shadowform->check()  )
-    {
-      m *= 1.0 + priest().buffs.shadowform->data().effectN(1).percent();
-    }
-    if ( affected_by.twist_of_fate_da && priest().buffs.twist_of_fate->check()  )
-    {
-      m *= 1.0 + priest().buffs.twist_of_fate->data().effectN(1).percent();
+      if ( affected_by.voidform_da && priest().buffs.voidform->check()  )
+      {
+        double vf_multiplier = priest().buffs.voidform->data().effectN( 1 ).percent();
+        if ( priest().level() < 116 && priest().active_items.zenkaram_iridis_anadem )
+        {
+          vf_multiplier += priest().buffs.iridis_empowerment->data().effectN( 2 ).percent();
+        }
+        m *= 1.0 + vf_multiplier ;
+      }
+      if ( affected_by.shadowform_da && priest().buffs.shadowform->check()  )
+      {
+        m *= 1.0 + priest().buffs.shadowform->data().effectN(1).percent();
+      }
+      if ( affected_by.twist_of_fate_da && priest().buffs.twist_of_fate->check()  )
+      {
+        m *= 1.0 + priest().buffs.twist_of_fate->data().effectN(1).percent();
+      }
     }
     return m;
   }

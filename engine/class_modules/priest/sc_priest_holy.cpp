@@ -45,9 +45,9 @@ struct holy_fire_t final : public holy_fire_base_t
     parse_options( options_str );
 
     auto rank2 = priest().find_specialization_spell( 231687 );
-    if( rank2 -> ok() )
+    if ( rank2->ok() )
     {
-    dot_max_stack += rank2 -> effectN( 2 ).base_value();
+      dot_max_stack += rank2->effectN( 2 ).base_value();
     }
   }
 };
@@ -61,37 +61,35 @@ struct holy_word_chastise_t final : public priest_spell_t
   }
 };
 
+//TODO Fix targeting to start from the priest and not the target
 struct holy_nova_t final : public priest_spell_t
 {
-	const spell_data_t* rank2;
-    holy_nova_t( priest_t& player, const std::string& options_str )
-    : priest_spell_t( "holy_nova", player, player.find_class_spell( "Holy Nova" ) )
+  const spell_data_t* holy_fire_rank2;
+
+  holy_nova_t( priest_t& player, const std::string& options_str )
+    : priest_spell_t( "holy_nova", player, player.find_class_spell( "Holy Nova" ) ),
+      holy_fire_rank2( player.find_specialization_spell( 231687 ) )
   {
     parse_options( options_str );
-
-	rank2 = priest().find_specialization_spell(231687);
+    aoe = -1;
   }
-  void execute() override
+  void impact( action_state_t* s ) override
   {
-	  priest_spell_t::execute();
+    priest_spell_t::impact( s );
 
-	  double hf_proc_chance = rank2->effectN(1).percent();
-	  if (sim->debug)
-	  {
-		  sim->out_debug.printf(
-			  "%s tries to reset holy fire %s cast, using holy nova. ",
-			  priest().name(), name());
-	  }
-	  if (rank2->ok() && rng().roll(hf_proc_chance))
-	  {
-		  if (sim->debug)
-		  {
-			  sim->out_debug.printf(
-				  "%s reset holy fire %s cooldown, using holy nova. ",
-				  priest().name(), name());
-		  }
-		  priest().cooldowns.holy_fire->reset(true);
-	  }
+    if ( holy_fire_rank2->ok() && s->result_amount > 0 )
+    {
+      double hf_proc_chance = holy_fire_rank2->effectN( 1 ).percent();
+      
+      if ( rng().roll( hf_proc_chance ) )
+      {
+        if ( sim->debug )
+        {
+          sim->out_debug.printf( "%s reset holy fire cooldown, using holy nova. ", priest().name() );
+        }
+        priest().cooldowns.holy_fire->reset( true );
+      }
+    }
   }
 };
 }  // namespace spells
@@ -143,6 +141,9 @@ void priest_t::init_spells_holy()
   specs.rapid_renewal     = find_specialization_spell( "Rapid Renewal" );
   specs.divine_providence = find_specialization_spell( "Divine Providence" );
   specs.focused_will      = find_specialization_spell( "Focused Will" );
+
+  // Spec Core
+  specs.holy_priest = find_specialization_spell( "Holy Priest" );
 
   // Range Based on Talents
   if ( base.distance != 5 )

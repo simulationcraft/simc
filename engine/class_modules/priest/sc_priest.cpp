@@ -274,34 +274,31 @@ struct blessed_dawnlight_medallion_t : public priest_spell_t
 // ==========================================================================
 struct smite_t final : public priest_spell_t
 {
-  const spell_data_t* rank2;
-  smite_t( priest_t& p, const std::string& options_str ) : priest_spell_t( "smite", p, p.find_class_spell( "Smite" ) )
+  const spell_data_t* holy_fire_rank2;
+  smite_t( priest_t& p, const std::string& options_str ) 
+    : priest_spell_t( "smite", p, p.find_class_spell( "Smite" ) ), 
+    holy_fire_rank2( priest().find_specialization_spell( 231687 ) )
   {
     parse_options( options_str );
-
-    rank2 = priest().find_specialization_spell( 231687 );
   }
 
-  void execute() override
+  void impact( action_state_t* s ) override
   {
-    priest_spell_t::execute();
+    priest_spell_t::impact( s );
 
-    double hf_proc_chance = rank2 -> effectN( 1 ).percent();
-    if ( sim->debug )
+   
+    if ( holy_fire_rank2->ok() && s->result_amount > 0 )
     {
-      sim->out_debug.printf(
-      "%s tries to reset holy fire %s cast, using smite. ",
-      priest().name(), name() );
-    }
-    if( rank2->ok() && rng().roll( hf_proc_chance ) )
-    {
-      if ( sim->debug )
+      double hf_proc_chance = holy_fire_rank2->effectN( 1 ).percent();
+
+      if ( rng().roll( hf_proc_chance ) )
       {
-        sim->out_debug.printf(
-      "%s reset holy fire %s cooldown, using smite. ",
-      priest().name(), name() );
-    }
-      priest().cooldowns.holy_fire -> reset(true);
+        if ( sim->debug )
+        {
+          sim->out_debug.printf( "%s reset holy fire %s cooldown, using smite. ", priest().name(), name() );
+        }
+        priest().cooldowns.holy_fire->reset( true );
+      }
     }
   }
 };
@@ -455,7 +452,7 @@ void mangazas_madness( special_effect_t& effect )
   assert( priest );
   do_trinket_init( priest, PRIEST_SHADOW, priest->active_items.mangazas_madness, effect );
 
-  if ( priest->active_items.mangazas_madness )
+  if ( priest->active_items.mangazas_madness && priest->level() < 116)
   {
     priest->cooldowns.mind_blast->charges +=
       (int)(float) priest->active_items.mangazas_madness->driver()->effectN( 1 ).base_value();
@@ -1228,30 +1225,33 @@ void priest_t::trigger_sephuzs_secret( const action_state_t* state, spell_mechan
     return;
   }
 
-  switch ( mechanic )
+  if ( level() < 116 )
   {
-      // Interrupts will always trigger sephuz
-    case MECHANIC_INTERRUPT:
-      break;
-    default:
-      // By default, proc sephuz on persistent enemies if they are below the "boss level"
-      // (playerlevel + 3), and on any kind of transient adds.
-      if ( state->target->type != ENEMY_ADD && ( state->target->level() >= sim->max_player_level + 3 ) )
-      {
-        return;
-      }
-      break;
-  }
+    switch ( mechanic )
+    {
+        // Interrupts will always trigger sephuz
+      case MECHANIC_INTERRUPT:
+        break;
+      default:
+        // By default, proc sephuz on persistent enemies if they are below the "boss level"
+        // (playerlevel + 3), and on any kind of transient adds.
+        if ( state->target->type != ENEMY_ADD && ( state->target->level() >= sim->max_player_level + 3 ) )
+        {
+          return;
+        }
+        break;
+    }
 
-  // Ensure Sephuz's Secret can even be procced. If the ring is not equipped, a fallback buff with
-  // proc chance of 0 (disabled) will be created
-  if ( buffs.sephuzs_secret->default_chance == 0 )
-  {
-    return;
-  }
+    // Ensure Sephuz's Secret can even be procced. If the ring is not equipped, a fallback buff with
+    // proc chance of 0 (disabled) will be created
+    if ( buffs.sephuzs_secret->default_chance == 0 )
+    {
+      return;
+    }
 
-  buffs.sephuzs_secret->trigger( 1, buff_t::DEFAULT_VALUE(), proc_chance );
-  cooldowns.sephuzs_secret->start();
+    buffs.sephuzs_secret->trigger( 1, buff_t::DEFAULT_VALUE(), proc_chance );
+    cooldowns.sephuzs_secret->start();
+  }
 }
 
 /** NO Spec Combat Action Priority List */
