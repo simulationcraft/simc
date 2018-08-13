@@ -5628,8 +5628,8 @@ void hunter_t::apl_surv()
   wfi_st -> add_action( this, "Wildfire Bomb", "if=next_wi_bomb.shrapnel&buff.mongoose_fury.down&(cooldown.kill_command.remains>gcd|focus>60)" );
   wfi_st -> add_talent( this, "Steel Trap" );
   wfi_st -> add_talent( this, "Flanking Strike", "if=focus+cast_regen<focus.max" );
-  wfi_st -> add_action( this, "Serpent Sting", "if=buff.vipers_venom.up|refreshable&(!talent.mongoose_bite.enabled|next_wi_bomb.volatile&!dot.shrapnel_bomb.ticking)" );
-  wfi_st -> add_action( this, "Harpoon", "if=talent.terms_of_engagement.enabled" );
+  wfi_st -> add_action( this, "Serpent Sting", "if=buff.vipers_venom.up|refreshable&(!talent.mongoose_bite.enabled|next_wi_bomb.volatile&!dot.shrapnel_bomb.ticking|azerite.venomous_fangs.enabled)" );
+  wfi_st -> add_action( this, "Harpoon", "if=talent.terms_of_engagement.enabled|azerite.up_close_and_personal.enabled" );
   wfi_st -> add_action( "mongoose_bite_eagle,if=buff.mongoose_fury.up|focus>60|dot.shrapnel_bomb.ticking" );
   wfi_st -> add_talent( this, "Mongoose Bite", "if=buff.mongoose_fury.up|focus>60|dot.shrapnel_bomb.ticking" );
   wfi_st -> add_action( "raptor_strike_eagle" );
@@ -5647,9 +5647,9 @@ void hunter_t::apl_surv()
   st -> add_talent( this, "Chakrams" );
   st -> add_talent( this, "Steel Trap" );
   st -> add_action( this, "Wildfire Bomb", "if=focus+cast_regen<focus.max&(full_recharge_time<gcd|dot.wildfire_bomb.refreshable&buff.mongoose_fury.down)" );
-  st -> add_action( this, "Harpoon", "if=talent.terms_of_engagement.enabled" );
+  st -> add_action( this, "Harpoon", "if=talent.terms_of_engagement.enabled|azerite.up_close_and_personal.enabled" );
   st -> add_talent( this, "Flanking Strike", "if=focus+cast_regen<focus.max" );
-  st -> add_action( this, "Serpent Sting", "if=buff.vipers_venom.up|refreshable&(!talent.mongoose_bite.enabled&focus<90|!talent.vipers_venom.enabled)" );
+  st -> add_action( this, "Serpent Sting", "if=buff.vipers_venom.up|refreshable&(!talent.mongoose_bite.enabled&focus<90|!talent.vipers_venom.enabled|azerite.venomous_fangs.enabled)" );
   st -> add_action( "mongoose_bite_eagle,if=buff.mongoose_fury.up|focus>60" );
   st -> add_talent( this, "Mongoose Bite", "if=buff.mongoose_fury.up|focus>60" );
   st -> add_action( "raptor_strike_eagle" );
@@ -5673,10 +5673,10 @@ void hunter_t::apl_surv()
   cleave -> add_talent( this, "Steel Trap" );
   cleave -> add_action( this, "Harpoon", "if=talent.terms_of_engagement.enabled" );
   cleave -> add_action( this, "Serpent Sting", "target_if=min:remains,if=refreshable&buff.tip_of_the_spear.stack<3" );
-  cleave -> add_action( "mongoose_bite_eagle" );
-  cleave -> add_talent( this, "Mongoose Bite" );
-  cleave -> add_action( "raptor_strike_eagle" );
-  cleave -> add_action( this, "Raptor Strike" );
+  cleave -> add_action( "mongoose_bite_eagle,target_if=max:debuff.latent_poison.stack" );
+  cleave -> add_talent( this, "Mongoose Bite", "target_if=max:debuff.latent_poison.stack" );
+  cleave -> add_action( "raptor_strike_eagle,target_if=max:debuff.latent_poison.stack" );
+  cleave -> add_action( this, "Raptor Strike", "target_if=max:debuff.latent_poison.stack" );
 }
 
 // NO Spec Combat Action Priority List ======================================
