@@ -7723,17 +7723,20 @@ void druid_t::apl_balance()
 
   ST -> add_talent( this, "Fury of Elune","if=(((raid_event.adds.duration%8)*(4)<(raid_event.adds.in%60))|(raid_event.adds.up))&((buff.celestial_alignment.up|buff.incarnation.up)|(cooldown.celestial_alignment.remains>30|cooldown.incarnation.remains>30))");
   ST -> add_talent( this, "Force of Nature","if=(buff.celestial_alignment.up|buff.incarnation.up)|(cooldown.celestial_alignment.remains>30|cooldown.incarnation.remains>30)");
+  ST -> add_action( this, "Starsurge", "if=buff.starlord.up&buff.starlord.stack<3");
   ST -> add_action( this, "Moonfire", "target_if=refreshable,if=target.time_to_die>8");
   ST -> add_action( this, "Sunfire", "target_if=refreshable,if=target.time_to_die>8");
   ST -> add_talent( this, "Stellar Flare", "target_if=refreshable,if=target.time_to_die>10");
   ST -> add_action( this, "Solar Wrath", "if=(buff.solar_empowerment.stack=3|buff.solar_empowerment.stack=2&buff.lunar_empowerment.stack=2&astral_power>=40)&astral_power.deficit>10");
   ST -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.stack=3&astral_power.deficit>14");
   ST -> add_action( this, "Starfall", "if=buff.oneths_overconfidence.react");
-  ST -> add_action( this, "Starsurge", "if=!buff.starlord.up|buff.starlord.remains>=4|(gcd.max*(astral_power%40))>target.time_to_die");
+  ST -> add_action( this, "Starsurge", "if=(!buff.starlord.up&astral_power>=55)|buff.starlord.remains>=4|(gcd.max*(astral_power%40))>target.time_to_die");
   ST -> add_action( this, "Lunar Strike", "if=(buff.warrior_of_elune.up|!buff.solar_empowerment.up)&buff.lunar_empowerment.up");
   ST -> add_action( this, "New Moon", "if=astral_power.deficit>10");
   ST -> add_action( this, "Half Moon", "if=astral_power.deficit>20");
   ST -> add_action( this, "Full Moon", "if=astral_power.deficit>40");
+  ST -> add_action( this, "Solar Wrath", "if=astral_power.deficit>10");
+  ST -> add_action( this, "Starsurge");
   ST -> add_action( this, "Solar Wrath");
   ST -> add_action( this, "Moonfire");
 
