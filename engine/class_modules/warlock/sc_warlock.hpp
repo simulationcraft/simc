@@ -327,7 +327,6 @@ namespace warlock
 
         //destruction_buffs
         propagate_const<buff_t*> backdraft;
-        propagate_const<buff_t*> embrace_chaos;
         propagate_const<buff_t*> active_havoc;
         propagate_const<buff_t*> reverse_entropy;
         propagate_const<buff_t*> grimoire_of_supremacy;

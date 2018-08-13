@@ -624,11 +624,6 @@ namespace warlock {
       virtual void schedule_execute(action_state_t* state = nullptr) override
       {
         destruction_spell_t::schedule_execute(state);
-
-        if (p()->buffs.embrace_chaos->check())
-        {
-          p()->procs.t19_2pc_chaos_bolts->occur();
-        }
       }
 
       virtual timespan_t execute_time() const override
@@ -637,9 +632,6 @@ namespace warlock {
 
         if (p()->buffs.backdraft->check())
           h *= backdraft_cast_time;
-
-        if (p()->buffs.embrace_chaos->check())
-          h *= 1.0 + p()->buffs.embrace_chaos->data().effectN(1).percent();
 
         return h;
       }
@@ -697,7 +689,6 @@ namespace warlock {
       {
         destruction_spell_t::execute();
 
-        p()->buffs.embrace_chaos->trigger();
         if(p()->azerite.chaotic_inferno.ok())
           p()->buffs.chaotic_inferno->trigger();
         p()->buffs.crashing_chaos->decrement();
@@ -1006,8 +997,6 @@ namespace warlock {
       ->set_refresh_behavior( buff_refresh_behavior::DURATION )
       ->set_max_stack( find_spell( 117828 )->max_stacks() + ( talents.flashover ? talents.flashover->effectN( 2 ).base_value() : 0 ) );
 
-    buffs.embrace_chaos = make_buff( this, "embrace_chaos", sets->set( WARLOCK_DESTRUCTION, T19, B2 )->effectN( 1 ).trigger() )
-      ->set_chance( sets->set( WARLOCK_DESTRUCTION, T19, B2 )->proc_chance() );
 
     buffs.active_havoc = make_buff( this, "active_havoc" )
       ->set_tick_behavior( buff_tick_behavior::NONE )
