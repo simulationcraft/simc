@@ -18,8 +18,8 @@ legs=wild_pyromancers_trousers,id=159277,bonus_id=4779/1512/4786
 feet=sandals_of_wise_voodoo,id=159243,bonus_id=4779/1512/4786
 finger1=lord_waycrests_signet,id=158362,bonus_id=4779/1512/4786,enchant=pact_of_critical_strike
 finger2=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_critical_strike
-trinket1=rotcrusted_voodoo_doll,id=159624,bonus_id=4779/1512/4786
-trinket2=lady_waycrests_music_box,id=159631,bonus_id=4779/1512/4786
+trinket1=balefire_branch,id=159630,bonus_id=4779/1512/4786
+trinket2=conch_of_dark_whispers,id=159620,bonus_id=4779/1512/4786
 main_hand=aqmar_the_tidecaller,id=159646,bonus_id=4779/1512/4786,enchant=torrent_of_elements
 off_hand=aureus_vessel,id=158322,bonus_id=4779/1512/4786
 
