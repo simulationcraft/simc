@@ -6860,7 +6860,7 @@ struct variable_t : public action_t
     double const_value = 0;
     if ( operation != OPERATION_SETIF )
     {
-      return value_expression->is_constant( &const_value );
+      return value_expression ? value_expression->is_constant( &const_value ) : true;
     }
     else
     {
