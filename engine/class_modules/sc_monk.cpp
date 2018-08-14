@@ -7751,22 +7751,19 @@ void monk_t::init_spells()
   sample_datas.moderate_stagger_total_damage = get_sample_data( "Amount of damage purified while at moderate stagger" );
   sample_datas.heavy_stagger_total_damage    = get_sample_data( "Amount of damage purified while at heavy stagger" );
 
-  // SPELLS
-  if ( specialization() == MONK_BREWMASTER )
-  {
-    active_actions.celestial_fortune = new actions::heals::celestial_fortune_t( *this );
-    active_actions.gift_of_the_ox_trigger = new actions::gift_of_the_ox_trigger_t( *this );
-    active_actions.gift_of_the_ox_expire = new actions::gift_of_the_ox_expire_t( *this );
-    active_actions.stagger_self_damage = new actions::stagger_self_damage_t( this );
+  // Active Action Spells
+  // Brewmaster
+  active_actions.celestial_fortune = new actions::heals::celestial_fortune_t( *this );
+  active_actions.gift_of_the_ox_trigger = new actions::gift_of_the_ox_trigger_t( *this );
+  active_actions.gift_of_the_ox_expire = new actions::gift_of_the_ox_expire_t( *this );
+  active_actions.stagger_self_damage = new actions::stagger_self_damage_t( this );
 
-    // Azerite Traits
-    active_actions.fit_to_burst = new actions::heals::fit_to_burst_t(*this);
-  }
-
-  if ( specialization() == MONK_WINDWALKER )
-    windwalking_aura = new actions::windwalking_aura_t( this );
-
+  // Windwalker
   active_actions.sunrise_technique = new actions::sunrise_technique_t( this );
+  windwalking_aura = new actions::windwalking_aura_t( this );
+
+  // Azerite Traits
+  active_actions.fit_to_burst = new actions::heals::fit_to_burst_t(*this);
 }
 
 // monk_t::init_base ========================================================
