@@ -272,6 +272,8 @@ struct runes_t
   extended_sample_data_t rune_waste;
   // Per iteration waste counter, added into cumulative_waste on reset
   timespan_t iteration_waste_sum;
+  // Cached regenerating runes array
+  std::vector<const rune_t*> regenerating_runes;
 
   runes_t( death_knight_t* p );
 
@@ -358,7 +360,7 @@ struct runes_t
 
   // Time it takes with the current rune regeneration speed to regenerate n_runes by the Death
   // Knight.
-  timespan_t time_to_regen( unsigned n_runes ) const;
+  timespan_t time_to_regen( unsigned n_runes );
 };
 
 // ==========================================================================
@@ -1235,7 +1237,7 @@ inline void runes_t::regenerate_immediate( const timespan_t& seconds )
   }
 }
 
-timespan_t runes_t::time_to_regen( unsigned n_runes ) const
+timespan_t runes_t::time_to_regen( unsigned n_runes )
 {
   if ( n_runes == 0 )
   {
@@ -1254,8 +1256,8 @@ timespan_t runes_t::time_to_regen( unsigned n_runes ) const
   }
 
   // First, collect regenerating runes into an array
-  std::vector<const rune_t*> regenerating_runes;
-  range::for_each( slot, [ &regenerating_runes ]( const rune_t& r ) {
+  regenerating_runes.clear();
+  range::for_each( slot, [ this ]( const rune_t& r ) {
     if ( r.is_regenerating() )
     {
       regenerating_runes.push_back( &( r ) );
