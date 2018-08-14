@@ -107,7 +107,7 @@ public:
     {
       _data.resize( index + 1 );
     }
-    _data.at( index ) += value;
+    _data[ index ] += value;
   }
 
   // Adjust timeline by dividing through divisor timeline
