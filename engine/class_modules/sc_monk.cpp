@@ -5347,7 +5347,7 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
         d->tick_event->reschedule( d->tick_event->remains() + seconds );
         if ( d->end_event )
         {
-          d->end_event->reschedule( d->tick_event->remains() );
+          d->end_event->reschedule( d->end_event->remains() + seconds );
         }
       }
     }
