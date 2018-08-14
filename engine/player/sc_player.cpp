@@ -4458,23 +4458,24 @@ void player_t::reset()
 
   init_resources( true );
 
-  for ( auto& action : action_list )
-    action->reset();
+  // Variable optimization must be done before action expression optimization (occurs in
+  // action_t::reset) since action expression optimization may reference the variables.
+  if ( sim->optimize_expressions && nth_iteration() == 1 )
+  {
+    range::for_each( variables, []( action_variable_t* var ) { var->optimize(); } );
+  }
 
-  for ( auto& cooldown : cooldown_list )
-    cooldown->reset_init();
+  range::for_each( action_list, []( action_t* action ) { action->reset(); } );
 
-  for ( auto& dot : dot_list )
-    dot->reset();
+  range::for_each( cooldown_list, []( cooldown_t* cooldown ) { cooldown->reset_init(); } );
 
-  for ( auto& stats : stats_list )
-    stats->reset();
+  range::for_each( dot_list, []( dot_t* dot ) { dot->reset(); } );
 
-  for ( auto& uptime : uptime_list )
-    uptime->reset();
+  range::for_each( stats_list, []( stats_t* stat ) { stat->reset(); } );
 
-  for ( auto& proc : proc_list )
-    proc->reset();
+  range::for_each( uptime_list, []( uptime_t* uptime ) { uptime->reset(); } );
+
+  range::for_each( proc_list, []( proc_t* proc ) { proc->reset(); } );
 
   range::for_each( rppm_list, []( real_ppm_t* rppm ) { rppm->reset(); } );
 
@@ -6671,7 +6672,7 @@ struct variable_t : public action_t
   {
     quiet   = true;
     harmful = proc = callbacks = may_miss = may_crit = may_block = may_parry = may_dodge = false;
-    trigger_gcd                                                                          = timespan_t::zero();
+    trigger_gcd = timespan_t::zero();
 
     std::string operation_;
     double default_   = 0;
@@ -6800,7 +6801,7 @@ struct variable_t : public action_t
     if ( !background && operation != OPERATION_FLOOR && operation != OPERATION_CEIL && operation != OPERATION_RESET &&
          operation != OPERATION_PRINT )
     {
-      value_expression = expr_t::parse( this, value_str );
+      value_expression = expr_t::parse( this, value_str, sim->optimize_expressions );
       if ( !value_expression )
       {
         sim->errorf( "Player %s unable to parse 'variable' value '%s'", player->name(), value_str.c_str() );
@@ -6808,19 +6809,95 @@ struct variable_t : public action_t
       }
       if ( operation == OPERATION_SETIF )
       {
-        condition_expression = expr_t::parse( this, condition_str );
+        condition_expression = expr_t::parse( this, condition_str, sim->optimize_expressions );
         if ( !condition_expression )
         {
           sim->errorf( "Player %s unable to parse 'condition' value '%s'", player->name(), condition_str.c_str() );
           background = true;
         }
-        value_else_expression = expr_t::parse( this, value_else_str );
+        value_else_expression = expr_t::parse( this, value_else_str, sim->optimize_expressions );
         if ( !value_else_expression )
         {
           sim->errorf( "Player %s unable to parse 'value_else' value '%s'", player->name(), value_else_str.c_str() );
           background = true;
         }
       }
+    }
+
+    if ( !background )
+    {
+      var->variable_actions.push_back( this );
+    }
+  }
+
+  void reset() override
+  {
+    action_t::reset();
+
+    // In addition to if= expression removing the variable from the APLs, if the the variable value
+    // is constant, we can remove any variable action referencing it from the APL
+    if ( action_list && sim->optimize_expressions && player->nth_iteration() == 1 &&
+         is_constant() )
+    {
+      auto it = range::find( action_list->foreground_action_list, this );
+      if ( it != action_list->foreground_action_list.end() )
+      {
+        sim->print_debug( "{} removing variable action {} from APL because the variable value is "
+                          "constant (value={})",
+            player->name(), signature_str, var->current_value_ );
+
+        action_list->foreground_action_list.erase( it );
+      }
+    }
+  }
+
+  // A variable action is constant if
+  // 1) The operation is not SETIF and the value expression is constant
+  // 2) The operation is SETIF and both the condition expression and the value (or value expression)
+  //    are both constant
+  bool is_constant() const
+  {
+    double const_value = 0;
+    if ( operation != OPERATION_SETIF )
+    {
+      return value_expression->is_constant( &const_value );
+    }
+    else
+    {
+      bool constant = condition_expression->is_constant( &const_value );
+      if ( !constant )
+      {
+        return false;
+      }
+
+      if ( const_value != 0 )
+      {
+        return value_expression->is_constant( &const_value );
+      }
+      else
+      {
+        return value_else_expression->is_constant( &const_value );
+      }
+    }
+  }
+
+  // Variable action expressions have to do an optimization pass before other actions, so that
+  // actions with variable expressions can know if the associated variable is constant
+  void optimize_expressions()
+  {
+    if ( value_expression )
+    {
+      value_expression = value_expression->optimize();
+    }
+
+    if ( condition_expression )
+    {
+      value_expression = value_expression->optimize();
+    }
+
+    if ( value_else_expression )
+    {
+      value_else_expression = value_else_expression->optimize();
     }
   }
 
@@ -9302,36 +9379,38 @@ expr_t* player_t::create_expression( const std::string& expression_str )
   // everything from here on requires splits
   std::vector<std::string> splits = util::string_split( expression_str, "." );
 
-  if ( splits.size() == 2)
+  if ( splits.size() == 2 )
   {
     // player variables
     if ( splits[ 0 ] == "variable"  )
     {
       struct variable_expr_t : public expr_t
       {
-        player_t* player_;
         const action_variable_t* var_;
 
-        variable_expr_t( player_t* p, const std::string& name ) : expr_t( "variable" ), player_( p ), var_( nullptr )
+        variable_expr_t( player_t* p, const std::string& name ) : expr_t( "variable" ),
+          var_( nullptr )
         {
-          for ( auto& elem : player_->variables )
+          auto it = range::find_if( p->variables, [&name]( const action_variable_t* var ) {
+            return util::str_compare_ci( name, var->name_ );
+          } );
+
+          if ( it == p->variables.end() )
           {
-            if ( util::str_compare_ci( name, elem->name_ ) )
-            {
-              var_ = elem;
-              break;
-            }
+            throw std::invalid_argument( fmt::format( "Player {} no variable named '{}' found",
+                  p->name(), name ) );
           }
-          if (!var_)
+          else
           {
-            throw std::invalid_argument(fmt::format("Player {} no variable named '{}' found", player_->name(), name));
+            var_ = *it;
           }
         }
 
+        bool is_constant( double* value ) override
+        { return var_->is_constant( value ); }
+
         double evaluate() override
-        {
-          return var_->current_value_;
-        }
+        { return var_->current_value_; }
       };
 
       return new variable_expr_t( this, splits[ 1 ] );
@@ -12466,4 +12545,43 @@ spawner::base_actor_spawner_t* player_t::find_spawner( const std::string& id ) c
   }
 
   return nullptr;
+}
+
+void action_variable_t::optimize()
+{
+  player_t* player = variable_actions.front()->player;
+  if ( !player->sim->optimize_expressions )
+  {
+    return;
+  }
+
+  if ( player->nth_iteration() != 1 )
+  {
+    return;
+  }
+
+  bool is_constant = true;
+  for ( auto action : variable_actions )
+  {
+    variable_t* var_action = debug_cast<variable_t*>( action );
+
+    var_action->optimize_expressions();
+
+    is_constant = var_action->is_constant();
+    if ( !is_constant )
+    {
+      break;
+    }
+  }
+
+  // This variable only has constant variable actions associated with it. The constant value will be
+  // whatever the value is in current_value_
+  if ( is_constant )
+  {
+    player->sim->print_debug( "{} variable {} is constant, value={}",
+        player->name(), name_, current_value_ );
+    constant_value_ = current_value_;
+    // Make default value also the constant value, so that debug output is sensible
+    default_ = current_value_;
+  }
 }

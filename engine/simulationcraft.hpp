@@ -3287,10 +3287,12 @@ namespace assessor
 struct action_variable_t
 {
   std::string name_;
-  double current_value_, default_;
+  double current_value_, default_, constant_value_;
+  std::vector<action_t*> variable_actions;
 
   action_variable_t( const std::string& name, double def = 0 ) :
-    name_( name ), current_value_( def ), default_( def )
+    name_( name ), current_value_( def ), default_( def ),
+    constant_value_( std::numeric_limits<double>::lowest() )
   { }
 
   double value() const
@@ -3298,6 +3300,15 @@ struct action_variable_t
 
   void reset()
   { current_value_ = default_; }
+
+  bool is_constant( double* constant_value ) const
+  {
+    *constant_value = constant_value_;
+    return constant_value_ != std::numeric_limits<double>::lowest();
+  }
+
+  // Implemented in sc_player.cpp
+  void optimize();
 };
 
 struct scaling_metric_data_t {
