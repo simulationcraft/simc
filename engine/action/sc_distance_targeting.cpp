@@ -61,7 +61,7 @@ std::vector<player_t*> action_t::targets_in_range_list(
   return tl;
 }
 
-std::vector<player_t*> action_t::check_distance_targeting(
+std::vector<player_t*>& action_t::check_distance_targeting(
     std::vector<player_t*>& tl ) const
 {
   if ( sim -> distance_targeting_enabled )

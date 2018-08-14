@@ -3022,7 +3022,7 @@ struct windwalking_aura_t : public monk_spell_t
     return tl.size();
   }
 
-  std::vector<player_t*> check_distance_targeting( std::vector<player_t*>& tl ) const override
+  std::vector<player_t*>& check_distance_targeting( std::vector<player_t*>& tl ) const override
   {
     size_t i = tl.size();
     while ( i > 0 )

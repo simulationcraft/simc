@@ -53,7 +53,7 @@ namespace
   of attempts, in which it gives up and just returns the current best path.  I wouldn't be
   terribly surprised if Blizz did something like this in game.
 **/
-static std::vector<player_t*> __check_distance_targeting( const action_t* action, std::vector<player_t*>& tl )
+static std::vector<player_t*>& __check_distance_targeting( const action_t* action, std::vector<player_t*>& tl )
 {
   sim_t* sim = action->sim;
   if ( !sim->distance_targeting_enabled )
@@ -4307,7 +4307,7 @@ struct chained_overload_base_t : public elemental_overload_spell_t
     }
   }
 
-  std::vector<player_t*> check_distance_targeting( std::vector<player_t*>& tl ) const override
+  std::vector<player_t*>& check_distance_targeting( std::vector<player_t*>& tl ) const override
   {
     return __check_distance_targeting( this, tl );
   }
@@ -4385,7 +4385,7 @@ struct chained_base_t : public shaman_spell_t
     p()->buff.stormkeeper->decrement();
   }
 
-  std::vector<player_t*> check_distance_targeting( std::vector<player_t*>& tl ) const override
+  std::vector<player_t*>& check_distance_targeting( std::vector<player_t*>& tl ) const override
   {
     return __check_distance_targeting( this, tl );
   }
