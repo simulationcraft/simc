@@ -12,7 +12,6 @@
 // - Also add an option for army of the dead prepull timer at some point
 // - Fix Unholy Blight reporting : currently the uptime contains both the dot uptime (24.2s every 45s)
 //   and the driver uptime (6s every 45s)
-// - Risen Skulker has a weird delay between its attacks, looks to be 2.4 seconds not reduced by haste
 // - Look into Summon Gargoyle spawn delay
 // - Trigger Virulent Eruption on enemy death if they're affected by Virulent Plague
 // - Proc Festermight on enemy death while afflicted by Festering Wounds
@@ -1999,6 +1998,12 @@ struct risen_skulker_pet_t : public death_knight_pet_t
       base_multiplier *= 2.0;
       aoe = -1;
       base_aoe_multiplier = 0.5;
+    }
+
+    timespan_t gcd() const override
+    {
+      // Risen Skulker has a 2.4s between each cast start, making its cast time scaling with haste irrelvevant
+      return p() -> o() -> bugs ? timespan_t::from_seconds( 2.4 ) : super::gcd();
     }
   };
 
