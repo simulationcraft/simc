@@ -1275,7 +1275,7 @@ bool item_database::load_item_from_data( item_t& item )
   util::tokenize( item.name_str );
 
   // Apply azerite level to item level conversion first, but only for Blizzard API sourced profiles
-  if ( item.player->profile_source == profile_source::BLIZZARD_API )
+  if ( item.player->profile_source_ == profile_source::BLIZZARD_API )
   {
     if ( item.parsed.azerite_level > 0 )
     {
