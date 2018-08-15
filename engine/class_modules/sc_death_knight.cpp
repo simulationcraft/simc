@@ -767,6 +767,12 @@ public:
     proc_t* pp_runic_corruption; // from pestilent pustules
     proc_t* rp_runic_corruption; // from RP spent
     proc_t* t19_2pc_unholy; // from t19 2P
+
+    proc_t* fw_festering_strike;
+    proc_t* fw_infected_claws;
+    proc_t* fw_pestilence;
+    proc_t* fw_unholy_frenzy;
+    proc_t* fw_t19_4p;
   } procs;
 
   // Azerite Traits
@@ -900,7 +906,7 @@ public:
   double    rune_regen_coefficient() const;
   void      trigger_runic_empowerment( double rpcost );
   bool      trigger_runic_corruption( double rpcost, double override_chance = -1.0 );
-  void      trigger_festering_wound( const action_state_t* state, unsigned n_stacks = 1 );
+  void      trigger_festering_wound( const action_state_t* state, unsigned n_stacks = 1, proc_t* proc = nullptr );
   void      burst_festering_wound( const action_state_t* state, unsigned n = 1 );
   void      default_apl_dps_precombat();
   void      default_apl_blood();
@@ -1602,7 +1608,7 @@ struct dt_melee_ability_t : public pet_melee_attack_t<T>
       return;
     }
 
-    this -> p() -> o() -> trigger_festering_wound( state, 1 );
+    this -> p() -> o() -> trigger_festering_wound( state, 1, this -> p() -> o() -> procs.fw_infected_claws );
   }
 
   void execute() override
@@ -3053,7 +3059,7 @@ struct melee_t : public death_knight_melee_attack_t
 
       if ( p() -> buffs.unholy_frenzy -> up() )
       {
-        p() -> trigger_festering_wound( s, 1 );
+        p() -> trigger_festering_wound( s, 1, p() -> procs.fw_unholy_frenzy );
       }
 
       if ( td( s -> target ) -> dot.blood_plague -> is_ticking() && p() -> dnds.size() == 0 )
@@ -3770,7 +3776,7 @@ struct death_and_decay_damage_base_t : public death_knight_spell_t
 
       if ( p() -> talent.pestilence -> ok() && rng().roll( p() -> talent.pestilence -> effectN( 1 ).percent() ) )
       {
-        p() -> trigger_festering_wound( s, 1 );
+        p() -> trigger_festering_wound( s, 1, p() -> procs.fw_pestilence );
       }
     }
   }
@@ -4077,7 +4083,7 @@ struct t21_death_coil_t : public death_knight_spell_t
     // Can't happen ingame but if anyone wants to have fun combining T21 4P and T19 4P, might as well let them
     if ( rng().roll( player -> sets -> set( DEATH_KNIGHT_UNHOLY, T19, B4 ) -> effectN( 1 ).percent() ) )
     {
-      p() -> trigger_festering_wound( state, 1 );
+      p() -> trigger_festering_wound( state, 1, p() -> procs.fw_t19_4p );
     }
 
     // Coils of Devastation application
@@ -4197,7 +4203,7 @@ struct death_coil_t : public death_knight_spell_t
     
     if ( rng().roll( player -> sets -> set( DEATH_KNIGHT_UNHOLY, T19, B4 ) -> effectN( 1 ).percent() ) )
     {
-      p() -> trigger_festering_wound( state, 1 );
+      p() -> trigger_festering_wound( state, 1, p() -> procs.fw_t19_4p );
     }
     
     // Coils of Devastation application
@@ -4686,7 +4692,7 @@ struct festering_strike_t : public death_knight_melee_attack_t
         n_stacks = 3;
       }
 
-      p() -> trigger_festering_wound( s, n_stacks );
+      p() -> trigger_festering_wound( s, n_stacks, p() -> procs.fw_festering_strike );
     }
   }
 };
@@ -6575,7 +6581,7 @@ bool death_knight_t::trigger_runic_corruption( double rpcost, double override_ch
   return true;
 }
 
-void death_knight_t::trigger_festering_wound( const action_state_t* state, unsigned n )
+void death_knight_t::trigger_festering_wound( const action_state_t* state, unsigned n, proc_t* proc )
 {
   if ( ! state -> action -> result_is_hit( state -> result ) )
   {
@@ -6585,6 +6591,10 @@ void death_knight_t::trigger_festering_wound( const action_state_t* state, unsig
   auto td = get_target_data( state -> target );
 
   td -> debuff.festering_wound -> trigger( n );
+  while ( n-- > 0 ) 
+  {
+    proc -> occur();
+  }
 }
 
 void death_knight_t::burst_festering_wound( const action_state_t* state, unsigned n )
@@ -7881,19 +7891,25 @@ void death_knight_t::init_procs()
 {
   player_t::init_procs();
 
-  procs.killing_machine_oblit = get_proc( "Killing Machine: Obliterate" );
-  procs.killing_machine_fsc   = get_proc( "Killing Machine: Frostscythe" );
-  procs.km_from_obliteration  = get_proc( "Killing Machine: Obliteration" );
-  procs.km_from_killer_frost  = get_proc( "Killing Machine: Killer Frost" );
+  procs.killing_machine_oblit = get_proc( "Killing Machine spent on Obliterate" );
+  procs.killing_machine_fsc   = get_proc( "Killing Machine spent on Frostscythe" );
+  procs.km_from_obliteration  = get_proc( "Killing Machine from Obliteration" );
+  procs.km_from_killer_frost  = get_proc( "Killing Machine from Killer Frost" );
 
   procs.ready_rune            = get_proc( "Rune ready" );
 
-  procs.rp_runic_corruption   = get_proc( "Runic Corruption : Runic Power Spent" );
-  procs.pp_runic_corruption   = get_proc( "Runic Corruption : Pestilent Pustules" );
+  procs.rp_runic_corruption   = get_proc( "Runic Corruption from Runic Power Spent" );
+  procs.pp_runic_corruption   = get_proc( "Runic Corruption from Pestilent Pustules" );
 
-  procs.t19_2pc_unholy        = get_proc( "Runic Corruption : T19 2P" );
+  procs.t19_2pc_unholy        = get_proc( "Runic Corruption from T19 2P" );
 
   procs.bloodworms            = get_proc( "Bloodworms" );
+
+  procs.fw_festering_strike = get_proc( "Festering Wound from Festering Strike" );
+  procs.fw_infected_claws   = get_proc( "Festering Wound from Infected Claws" );
+  procs.fw_pestilence       = get_proc( "Festering Wound from Pestilence" );
+  procs.fw_unholy_frenzy    = get_proc( "Festering Wound from Unholy Frenzy" );
+  procs.fw_t19_4p           = get_proc( "Festering Wound from T19 4P" );
 }
 
 // death_knight_t::init_finished ============================================
