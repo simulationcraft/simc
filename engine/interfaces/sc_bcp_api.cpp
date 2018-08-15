@@ -512,7 +512,7 @@ player_t* parse_player( sim_t*             sim,
   if ( ! p -> server_str.empty() )
     p -> armory_extensions( p -> region_str, p -> server_str, player.name, caching );
 
-  p->profile_source = profile_source::BLIZZARD_API;
+  p->profile_source_ = profile_source::BLIZZARD_API;
 
   return p;
 }

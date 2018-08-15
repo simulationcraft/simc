@@ -3262,7 +3262,7 @@ void print_html_player_description( report::sc_html_stream& os,
       util::inverse_tokenize( util::role_type_string( p.primary_role() ) )
           .c_str(),
       p.position_str.c_str(),
-      util::profile_source_string( p.profile_source ) );
+      util::profile_source_string( p.profile_source_ ) );
 }
 
 // print_html_player_results_spec_gear ======================================

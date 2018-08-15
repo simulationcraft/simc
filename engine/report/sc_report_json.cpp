@@ -644,7 +644,7 @@ void to_json( JsonOutput& arr, const player_t& p )
   root[ "level" ] = p.true_level;
   root[ "role" ] = util::role_type_string( p.role );
   root[ "specialization" ] = util::specialization_string( p.specialization() );
-  root[ "profile_source" ] = util::profile_source_string( p.profile_source );
+  root[ "profile_source" ] = util::profile_source_string( p.profile_source_ );
 
   talents_to_json( root[ "talents" ], p );
 

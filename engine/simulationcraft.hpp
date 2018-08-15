@@ -3426,7 +3426,7 @@ struct player_t : public actor_t
   double       death_pct; // Player will die if he has equal or less than this value as health-pct
   double       height; // Actor height, only used for enemies. Affects the travel distance calculation for spells.
   double       combat_reach; // AKA hitbox size, for enemies.
-  profile_source profile_source;
+  profile_source profile_source_;
   player_t*    default_target;
 
   // dynamic attributes - things which change during combat
