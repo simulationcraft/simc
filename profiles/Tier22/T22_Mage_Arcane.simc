@@ -37,7 +37,7 @@ actions.precombat+=/arcane_blast
 actions=counterspell,if=target.debuff.casting.react
 actions+=/time_warp,if=time=0&buff.bloodlust.down
 # Swap to the 'Arcane Pressure' rotation when we got enough traits for it. This implies stuff like no longer casting Arcane Missiles, and throwing out Arcane Barrage whenever we got 4 AC.
-actions+=/variable,name=pressure_rotation,op=set,value=(azerite.arcane_pressure.rank>=2|(talent.resonance.enabled&active_enemies>=2))&target.health.pct<=35
+actions+=/variable,name=pressure_rotation,op=set,value=(azerite.arcane_pressure.rank>=2|(azerite.arcane_pressure.rank>=1&talent.resonance.enabled&active_enemies>=2))&target.health.pct<=35
 # Start a burn phase when important cooldowns are available. Start with 4 arcane charges, unless there's a good reason not to. (charged up)
 actions+=/call_action_list,name=burn,if=burn_phase|target.time_to_die<variable.average_burn_length|(cooldown.arcane_power.remains=0&cooldown.evocation.remains<=variable.average_burn_length&(buff.arcane_charge.stack=buff.arcane_charge.max_stack|(talent.charged_up.enabled&cooldown.charged_up.remains=0)))
 actions+=/call_action_list,name=conserve,if=!burn_phase
@@ -65,6 +65,7 @@ actions.burn+=/arcane_barrage,if=(active_enemies>=3|(active_enemies>=2&talent.re
 actions.burn+=/arcane_explosion,if=active_enemies>=3|(active_enemies>=2&talent.resonance.enabled)
 actions.burn+=/arcane_barrage,if=variable.pressure_rotation&buff.arcane_charge.stack=buff.arcane_charge.max_stack
 actions.burn+=/arcane_missiles,if=(buff.clearcasting.react&mana.pct<=95)&variable.pressure_rotation=0,chain=1
+actions.burn+=/arcane_explosion,if=variable.pressure_rotation&buff.arcane_charge.stack<1
 actions.burn+=/arcane_blast
 # Now that we're done burning, we can update the average_burn_length with the length of this burn.
 actions.burn+=/variable,name=average_burn_length,op=set,value=(variable.average_burn_length*variable.total_burns-variable.average_burn_length+(burn_phase_duration))%variable.total_burns
@@ -87,6 +88,7 @@ actions.conserve+=/arcane_barrage,if=((buff.arcane_charge.stack=buff.arcane_char
 actions.conserve+=/supernova,if=mana.pct<=95
 # Keep 'burning' in aoe situations until conserve_mana pct. After that only cast AE with 3 Arcane charges, since it's almost equal mana cost to a 3 stack AB anyway. At that point AoE rotation will be AB x3 -> AE -> Abarr
 actions.conserve+=/arcane_explosion,if=active_enemies>=3&(mana.pct>=variable.conserve_mana|buff.arcane_charge.stack=3)
+actions.conserve+=/arcane_explosion,if=variable.pressure_rotation&buff.arcane_charge.stack<1
 actions.conserve+=/arcane_blast
 actions.conserve+=/arcane_barrage
 

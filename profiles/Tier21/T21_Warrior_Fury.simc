@@ -48,7 +48,7 @@ actions+=/run_action_list,name=single_target
 
 actions.movement=heroic_leap
 
-actions.single_target=siegebreaker,if=buff.recklessness.up|cooldown.recklessness.remains>28
+actions.single_target=siegebreaker,if=buff.recklessness.up|cooldown.recklessness.remains>20
 actions.single_target+=/rampage,if=buff.recklessness.up|(talent.frothing_berserker.enabled|talent.carnage.enabled&(buff.enrage.remains<gcd|rage>90)|talent.massacre.enabled&(buff.enrage.remains<gcd|rage>90))
 actions.single_target+=/execute,if=buff.enrage.up
 actions.single_target+=/bloodthirst,if=buff.enrage.down

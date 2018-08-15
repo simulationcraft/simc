@@ -4,10 +4,10 @@ level=120
 race=human
 role=attack
 position=back
-talents=2122122
+talents=2122123
 
 # Default consumables
-potion=battle_potion_of_strength
+potion=bursting_blood
 flask=undertow
 food=bountiful_captains_feast
 augmentation=battle_scarred
@@ -48,7 +48,7 @@ actions+=/run_action_list,name=single_target
 
 actions.movement=heroic_leap
 
-actions.single_target=siegebreaker,if=buff.recklessness.up|cooldown.recklessness.remains>28
+actions.single_target=siegebreaker,if=buff.recklessness.up|cooldown.recklessness.remains>20
 actions.single_target+=/rampage,if=buff.recklessness.up|(talent.frothing_berserker.enabled|talent.carnage.enabled&(buff.enrage.remains<gcd|rage>90)|talent.massacre.enabled&(buff.enrage.remains<gcd|rage>90))
 actions.single_target+=/execute,if=buff.enrage.up
 actions.single_target+=/bloodthirst,if=buff.enrage.down
@@ -75,13 +75,14 @@ finger2=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant
 trinket1=briny_barnacle,id=159619,bonus_id=4779/1512/4786
 trinket2=rezans_gleaming_eye,id=158712,bonus_id=4779/1512/4786
 main_hand=getiikku_cut_of_death,id=159644,bonus_id=4779/1512/4786,enchant=quick_navigation
-off_hand=getiikku_cut_of_death,id=159644,bonus_id=4779/1512/4786,enchant=masterful_navigation
+off_hand=jeweled_sharksplitter,id=159634,bonus_id=4779/1512/4786,enchant=masterful_navigation
 
 # Gear Summary
 # gear_ilvl=341.38
 # gear_strength=3099
 # gear_stamina=4809
 # gear_crit_rating=381
-# gear_haste_rating=1216
+# gear_haste_rating=1323
 # gear_mastery_rating=680
+# gear_versatility_rating=93
 # gear_armor=3050
