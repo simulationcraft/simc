@@ -339,14 +339,10 @@ void parse_items( player_t*  p,
     // this may result in incorrect stats if the player attained the item during leveling, but
     // there's little else we can do, as the "itemLevel" value of the item info is the base ilevel,
     // which in many cases is very incorrect.
-    if ( item_database::has_item_bonus_type( item, ITEM_BONUS_SCALING_2 ) )
+    if ( item_database::has_item_bonus_type( item, ITEM_BONUS_SCALING_2 ) &&
+         data.HasMember( "itemLevel" ) )
     {
-      auto item_data = p->dbc.item( item.parsed.data.id );
-      item.parsed.drop_level = p->true_level;
-      p->sim->errorf( "Player %s item '%s' in slot '%s' uses drop-level based scaling, setting "
-                      "drop level to %u.",
-        p->name(), item_data ? item_data->name : "unknown", item.slot_name(),
-        item.parsed.drop_level );
+      item.option_ilevel_str = util::to_string( data[ "itemLevel" ].GetUint() );
     }
 
     azerite::parse_blizzard_azerite_information( item, data );
