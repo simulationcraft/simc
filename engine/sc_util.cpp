@@ -937,7 +937,7 @@ weapon_e util::parse_weapon_type( const std::string& name )
   return parse_enum<weapon_e, WEAPON_NONE, WEAPON_MAX, weapon_type_string>( name );
 }
 
-enum profile_source util::parse_profile_source( const std::string& name )
+profile_source util::parse_profile_source( const std::string& name )
 {
   if ( util::str_compare_ci( name, "blizzard" ) )
   {
