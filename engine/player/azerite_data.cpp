@@ -1639,12 +1639,14 @@ void secrets_of_the_deep( special_effect_t& effect )
   auto normal_buff = unique_gear::create_buff<stat_buff_t>( effect.player, "secrets_of_the_deep",
     effect.player->find_spell( 273843 ) )
     ->add_stat( effect.player->primary_stat(), power.value( 1 ) )
-    ->set_chance( effect.player->sim->bfa_opts.secrets_of_the_deep_collect_chance );
+    ->set_chance( effect.player->sim->bfa_opts.secrets_of_the_deep_collect_chance )
+    ->set_refresh_behavior( buff_refresh_behavior::EXTEND );
 
   auto rare_buff = unique_gear::create_buff<stat_buff_t>( effect.player, "secrets_of_the_deep_rare",
     effect.player->find_spell( 273843 ) )
     ->add_stat( effect.player->primary_stat(), power.value( 2 ) )
-    ->set_chance( effect.player->sim->bfa_opts.secrets_of_the_deep_collect_chance );
+    ->set_chance( effect.player->sim->bfa_opts.secrets_of_the_deep_collect_chance )
+    ->set_refresh_behavior( buff_refresh_behavior::EXTEND );
 
   effect.spell_id = effect.driver()->effectN( 1 ).trigger()->id();
 
