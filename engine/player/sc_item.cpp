@@ -974,6 +974,10 @@ std::string item_t::encoded_item() const
   {
     s << ",azerite_powers=" << option_azerite_powers_str;
   }
+  else if ( parsed.azerite_ids.size() > 0 )
+  {
+    s << ",azerite_powers=" << util::string_join( parsed.azerite_ids, "/" );
+  }
 
   if ( ! option_enchant_str.empty() )
     s << ",enchant=" << encoded_enchant();

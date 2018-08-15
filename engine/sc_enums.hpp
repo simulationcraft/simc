@@ -10,6 +10,13 @@
 // Enumerations =============================================================
 // annex _e to enumerations
 
+// Source of the profile, defaults to command line / addon / etc
+enum class profile_source
+{
+  DEFAULT, /// Anything non-blizzard-api
+  BLIZZARD_API
+};
+
 // Attack power computation modes for Battle for Azeroth+
 enum attack_power_e
 {

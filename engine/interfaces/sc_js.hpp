@@ -235,7 +235,7 @@ public:
   { v_.SetString( v, d_.GetAllocator() ); return *this; }
 
   JsonOutput operator=( const std::string& v )
-  { v_.SetString( v, d_.GetAllocator() ); return *this; }
+  { v_.SetString( v.c_str(), d_.GetAllocator() ); return *this; }
 
   // Assign an external RapidJSON Value to the current value (v_)
   JsonOutput operator=( rapidjson::Value& v )

@@ -76,6 +76,7 @@ const char* buff_stack_behavior_string   ( buff_stack_behavior );
 const char* buff_tick_behavior_string   ( buff_tick_behavior );
 const char* buff_tick_time_behavior_string   ( buff_tick_time_behavior );
 std::string rppm_scaling_string       ( unsigned );
+std::string profile_source_string( profile_source );
 
 uint32_t    school_type_component     ( school_e s_type, school_e c_type );
 bool is_match_slot( slot_e slot );
@@ -98,6 +99,7 @@ school_e parse_school_type       ( const std::string& name );
 slot_e parse_slot_type           ( const std::string& name );
 stat_e parse_stat_type           ( const std::string& name );
 scale_metric_e parse_scale_metric( const std::string& name );
+enum profile_source parse_profile_source( const std::string& name );
 specialization_e parse_specialization_type( const std::string &name );
 movement_direction_e parse_movement_direction( const std::string& name );
 item_subclass_armor parse_armor_type( const std::string& name );

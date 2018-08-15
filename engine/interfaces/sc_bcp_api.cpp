@@ -333,7 +333,25 @@ void parse_items( player_t*  p,
       }
     }
 
-    if ( ! data.HasMember( "tooltipParams" ) )
+    // Since Armory API does not give us the drop level of items (such as quest items), we will need
+    // to implement a hack here. We do this by checking if Blizzard includes a ITEM_BONUS_SCALING_2
+    // type bonus in their bonusLists array, and set the drop level to the player's level. Note that
+    // this may result in incorrect stats if the player attained the item during leveling, but
+    // there's little else we can do, as the "itemLevel" value of the item info is the base ilevel,
+    // which in many cases is very incorrect.
+    if ( item_database::has_item_bonus_type( item, ITEM_BONUS_SCALING_2 ) )
+    {
+      auto item_data = p->dbc.item( item.parsed.data.id );
+      item.parsed.drop_level = p->true_level;
+      p->sim->errorf( "Player %s item '%s' in slot '%s' uses drop-level based scaling, setting "
+                      "drop level to %u.",
+        p->name(), item_data ? item_data->name : "unknown", item.slot_name(),
+        item.parsed.drop_level );
+    }
+
+    azerite::parse_blizzard_azerite_information( item, data );
+
+    if ( !data.HasMember( "tooltipParams" ) )
       continue;
 
     const rapidjson::Value& params = data[ "tooltipParams" ];
@@ -359,20 +377,6 @@ void parse_items( player_t*  p,
       {
         item.parsed = item_t::parsed_input_t();
       }
-    }
-
-    // Since Armory API does not give us the drop level of items (such as quest items), we will need
-    // to implement a hack here. We do this by checking if Blizzard includes a ITEM_BONUS_SCALING_2
-    // type bonus in their bonusLists array, and set the drop level to the player's level. Note that
-    // this may result in incorrect stats if the player attained the item during leveling, but
-    // there's little else we can do, as the "itemLevel" value of the item info is the base ilevel,
-    // which in many cases is very incorrect.
-    if ( item_database::has_item_bonus_type( item, ITEM_BONUS_SCALING_2 ) )
-    {
-      auto item_data = p -> dbc.item( item.parsed.data.id );
-      item.parsed.drop_level = p -> true_level;
-      p -> sim -> errorf( "Player %s item '%s' in slot '%s' uses drop-level based scaling, setting drop level to %u.",
-        p -> name(), item_data ? item_data -> name : "unknown", item.slot_name(), item.parsed.drop_level );
     }
   }
 }
@@ -512,7 +516,9 @@ player_t* parse_player( sim_t*             sim,
   if ( ! p -> server_str.empty() )
     p -> armory_extensions( p -> region_str, p -> server_str, player.name, caching );
 
-   return p;
+  p->profile_source = profile_source::BLIZZARD_API;
+
+  return p;
 }
 
 // download_item_data =======================================================

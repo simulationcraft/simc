@@ -673,6 +673,49 @@ std::tuple<int, int, int > compute_value( const azerite_power_t& power, const sp
   return std::make_tuple( min_, avg_, max_ );
 }
 
+void parse_blizzard_azerite_information( item_t& item, const rapidjson::Value& data )
+{
+  if ( data.HasMember( "azeriteEmpoweredItem" ) && data[ "azeriteEmpoweredItem" ].IsObject() )
+  {
+    const auto& azerite_data = data[ "azeriteEmpoweredItem" ];
+
+    if ( azerite_data.HasMember( "azeritePowers" ) && azerite_data[ "azeritePowers" ].IsArray() )
+    {
+      for ( rapidjson::SizeType i = 0, end = azerite_data[ "azeritePowers" ].Size(); i < end; i++ )
+      {
+        const auto& power = azerite_data[ "azeritePowers" ][ i ];
+        if ( !power.IsObject() || !power.HasMember( "id" ) )
+        {
+          continue;
+        }
+
+        auto id = power[ "id" ].GetUint();
+        if ( id == 0 )
+        {
+          continue;
+        }
+
+        item.parsed.azerite_ids.push_back( id );
+
+        if ( power.HasMember( "bonusListId" ) && power[ "bonusListId" ].GetInt() > 0 )
+        {
+          item.sim->error( "Player {} has non-zero bonusListId {} for item {}",
+              item.player->name(), power[ "bonusListId" ].GetInt(), item.name() );
+        }
+      }
+    }
+  }
+
+  if ( data.HasMember( "azeriteItem" ) )
+  {
+    const auto& azerite_data = data[ "azeriteItem" ];
+    if ( azerite_data.HasMember( "azeriteLevel" ) )
+    {
+      item.parsed.azerite_level = azerite_data[ "azeriteLevel" ].GetUint();
+    }
+  }
+}
+
 } // Namespace azerite ends
 
 namespace azerite

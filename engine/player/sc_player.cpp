@@ -632,6 +632,7 @@ player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r ) :
   death_pct( 0.0 ),
   height( 0 ),
   combat_reach( 1.0 ),
+  profile_source( profile_source::DEFAULT ),
   default_target( nullptr ),
   target( 0 ),
   initialized( false ),
@@ -9986,6 +9987,7 @@ std::string player_t::create_profile( save_e stype )
   {
     profile_str += util::player_type_string( type );
     profile_str += "=\"" + name_str + '"' + term;
+    profile_str += "source=" + util::profile_source_string( profile_source ) + term;
 
     if ( !origin_str.empty() )
       profile_str += "origin=\"" + origin_str + '"' + term;

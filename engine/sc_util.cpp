@@ -937,6 +937,18 @@ weapon_e util::parse_weapon_type( const std::string& name )
   return parse_enum<weapon_e, WEAPON_NONE, WEAPON_MAX, weapon_type_string>( name );
 }
 
+enum profile_source util::parse_profile_source( const std::string& name )
+{
+  if ( util::str_compare_ci( name, "blizzard" ) )
+  {
+    return profile_source::BLIZZARD_API;
+  }
+  else
+  {
+    return profile_source::DEFAULT;
+  }
+}
+
 // slot_type_string =========================================================
 
 const char* util::slot_type_string( slot_e slot )
@@ -2280,6 +2292,15 @@ std::string util::rppm_scaling_string( unsigned s )
     }
   }
   return r;
+}
+
+std::string util::profile_source_string( profile_source ps )
+{
+  switch( ps )
+  {
+    case profile_source::BLIZZARD_API: return "blizzard";
+    default:                           return "default";
+  }
 }
 
 // specialization_string ====================================================
