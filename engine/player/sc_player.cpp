@@ -460,6 +460,17 @@ bool parse_origin( sim_t* sim, const std::string&, const std::string& origin )
   return true;
 }
 
+// parse_source ===============================================================
+
+bool parse_source( sim_t* sim, const std::string&, const std::string& value )
+{
+  player_t& p = *sim->active_player;
+
+  p.profile_source = util::parse_profile_source( value );
+
+  return true;
+}
+
 bool parse_set_bonus( sim_t* sim, const std::string&, const std::string& value )
 {
   static const char* error_str = "%s invalid 'set_bonus' option value '%s' given, available options: %s";
@@ -10302,6 +10313,7 @@ void player_t::create_options()
   options.reserve( 180 );
   add_option( opt_string( "name", name_str ) );
   add_option( opt_func( "origin", parse_origin ) );
+  add_option( opt_func( "source", parse_source ) );
   add_option( opt_string( "region", region_str ) );
   add_option( opt_string( "server", server_str ) );
   add_option( opt_string( "thumbnail", report_information.thumbnail_url ) );
