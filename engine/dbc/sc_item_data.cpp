@@ -1274,6 +1274,23 @@ bool item_database::load_item_from_data( item_t& item )
 
   util::tokenize( item.name_str );
 
+  // Apply azerite level to item level conversion first, but only for Blizzard API sourced profiles
+  if ( item.player->profile_source == profile_source::BLIZZARD_API )
+  {
+    if ( item.parsed.azerite_level > 0 )
+    {
+      item.parsed.data.level = item.player->dbc.azerite_item_level( item.parsed.azerite_level );
+    }
+
+    // Aand also apply the "Azerite Empowered" trait, since it's not represented by a bonus id in
+    // the character JSON object
+    auto it = range::find( item.parsed.azerite_ids, AZERITE_EMPOWERED_POWER_ID );
+    if ( it != item.parsed.azerite_ids.end() )
+    {
+      item.parsed.data.level += AZERITE_EMPOWERED_ILEVEL_INCREASE;
+    }
+  }
+
   // Item bonus for local source only. TODO: BCP API and Wowhead will need ..
   // something similar
   for ( size_t i = 0, end = item.parsed.bonus_id.size(); i < end; i++ )

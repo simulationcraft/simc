@@ -53,6 +53,9 @@ enum
   WEAPON_POWER_COEFFICIENT = 6, // WDPS -> Attack Power Coefficient used for BfA Attack Power calculations
 
   MAX_AZERITE_LEVEL = 300, // Maximum Azerite level (for Heart of Azeroth) at the start of Battle for Azeroth
+
+  AZERITE_EMPOWERED_POWER_ID = 13, /// Azerite Empowered azerite power id
+  AZERITE_EMPOWERED_ILEVEL_INCREASE = 5, /// Ilevel increase for Azerite Empowered
 };
 
 // Azerite control
