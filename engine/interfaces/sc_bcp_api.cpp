@@ -796,11 +796,12 @@ player_t* bcp_api::download_player( sim_t*             sim,
   if ( use_new_endpoints )
   {
     std::string battlenet = "https://" + region + ".api.battle.net/";
+    std::string origin_prefix = "https://" + region + ".battle.net/";
 
     player.cleanurl = battlenet + "wow/character/" +
       server + '/' + name + "?fields=talents,items,professions&locale=en_US&apikey=";
     player.url = player.cleanurl + sim -> apikey;
-    player.origin = battlenet + "wow/character/" + server + '/' + name + "/advanced";
+    player.origin = origin_prefix + "wow/character/" + server + '/' + name + "/advanced";
 #ifdef SC_DEFAULT_APIKEY
   if ( sim -> apikey == std::string( SC_DEFAULT_APIKEY ) )
   //This is needed to prevent hitting the 'per second' api call limit.
