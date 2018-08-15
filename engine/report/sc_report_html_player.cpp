@@ -3255,12 +3255,14 @@ void print_html_player_description( report::sc_html_stream& os,
       "<li><b>Level:</b> %d%s</li>\n"
       "<li><b>Role:</b> %s</li>\n"
       "<li><b>Position:</b> %s</li>\n"
+      "<li><b>Profile Source:</b> %s</li>\n"
       "</ul>\n"
       "<div class=\"clear\"></div>\n",
       p.level(), sim.timewalk > 0 && !p.is_enemy() ? timewalk_str.c_str() : "",
       util::inverse_tokenize( util::role_type_string( p.primary_role() ) )
           .c_str(),
-      p.position_str.c_str() );
+      p.position_str.c_str(),
+      util::profile_source_string( p.profile_source ) );
 }
 
 // print_html_player_results_spec_gear ======================================
