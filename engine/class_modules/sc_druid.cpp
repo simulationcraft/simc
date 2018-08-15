@@ -2166,9 +2166,10 @@ struct moonfire_t : public druid_spell_t
 
       if (p->talent.twin_moons->ok())
       {
-          aoe += (int) p->talent.twin_moons->effectN(1).base_value();
-          base_dd_multiplier *= 1.0 + p->talent.twin_moons->effectN(2).percent();
-          base_td_multiplier *= 1.0 + p->talent.twin_moons->effectN(3).percent();
+        aoe += (int) p->talent.twin_moons->effectN(1).base_value();
+        radius = p->find_spell( 279621 )->effectN( 1 ).radius_max();
+        base_dd_multiplier *= 1.0 + p->talent.twin_moons->effectN(2).percent();
+        base_td_multiplier *= 1.0 + p->talent.twin_moons->effectN(3).percent();
       }
 
       /* June 2016: This hotfix is negated if you shift into Moonkin Form (ever),
