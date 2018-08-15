@@ -1,4 +1,5 @@
 rogue="T21_Rogue_Subtlety"
+source=default
 spec=subtlety
 level=110
 race=dwarf

@@ -1,4 +1,5 @@
 paladin="T21_Paladin_Protection"
+source=default
 spec=protection
 level=110
 race=blood_elf

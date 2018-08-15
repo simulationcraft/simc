@@ -1,4 +1,5 @@
 hunter="PR_Hunter_Marksmanship"
+source=default
 spec=marksmanship
 level=120
 race=lightforged_draenei

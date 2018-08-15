@@ -1,4 +1,5 @@
 demonhunter="T21_Demon_Hunter_Havoc"
+source=default
 spec=havoc
 level=110
 race=blood_elf

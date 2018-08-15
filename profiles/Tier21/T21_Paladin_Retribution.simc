@@ -1,4 +1,5 @@
 paladin="T21_Paladin_Retribution"
+source=default
 spec=retribution
 level=110
 race=blood_elf

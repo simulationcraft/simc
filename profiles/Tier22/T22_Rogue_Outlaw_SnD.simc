@@ -1,4 +1,5 @@
 rogue="T22_Rogue_Outlaw_SnD"
+source=default
 spec=outlaw
 level=120
 race=dwarf

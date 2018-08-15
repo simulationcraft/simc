@@ -1,4 +1,5 @@
 hunter="T21_Hunter_Survival"
+source=default
 spec=survival
 level=110
 race=troll

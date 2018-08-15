@@ -1,4 +1,5 @@
 deathknight="T21_Death_Knight_Unholy"
+source=default
 spec=unholy
 level=110
 race=troll
@@ -64,14 +65,7 @@ actions.aoe+=/death_coil,if=runic_power.deficit<20&!variable.pooling_for_gargoyl
 actions.aoe+=/festering_strike,if=((((debuff.festering_wound.stack<4&!buff.unholy_frenzy.up)|debuff.festering_wound.stack<3)&cooldown.apocalypse.remains<3)|debuff.festering_wound.stack<1)&cooldown.army_of_the_dead.remains>5
 actions.aoe+=/death_coil,if=!variable.pooling_for_gargoyle
 
-# Cold Heart legendary
-actions.cold_heart=chains_of_ice,if=buff.unholy_strength.remains<gcd&buff.unholy_strength.react&buff.cold_heart_item.stack>16
-actions.cold_heart+=/chains_of_ice,if=buff.master_of_ghouls.remains<gcd&buff.master_of_ghouls.up&buff.cold_heart_item.stack>17
-actions.cold_heart+=/chains_of_ice,if=buff.cold_heart_item.stack=20&buff.unholy_strength.react
-
-# Cold heart and other on-gcd cooldowns
-actions.cooldowns=call_action_list,name=cold_heart,if=equipped.cold_heart&buff.cold_heart_item.stack>10
-actions.cooldowns+=/army_of_the_dead
+actions.cooldowns=army_of_the_dead
 actions.cooldowns+=/apocalypse,if=debuff.festering_wound.stack>=4
 actions.cooldowns+=/dark_transformation,if=(equipped.137075&cooldown.summon_gargoyle.remains>40)|(!equipped.137075|!talent.summon_gargoyle.enabled)
 actions.cooldowns+=/summon_gargoyle,if=runic_power.deficit<14

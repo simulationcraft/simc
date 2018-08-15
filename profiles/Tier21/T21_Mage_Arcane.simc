@@ -1,4 +1,5 @@
 mage="T21_Mage_Arcane"
+source=default
 spec=arcane
 level=110
 race=troll
@@ -118,7 +119,7 @@ main_hand=aluneth,id=127857,bonus_id=729/1505/1505/1505,gem_id=155846/155850/155
 # Gear Summary
 # gear_ilvl=247.40
 # gear_stamina=1324
-# gear_intellect=1056
+# gear_intellect=732
 # gear_crit_rating=463
 # gear_haste_rating=579
 # gear_mastery_rating=271

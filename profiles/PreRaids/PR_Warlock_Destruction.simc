@@ -1,4 +1,5 @@
 warlock="PR_Warlock_Destruction"
+source=default
 spec=destruction
 level=120
 race=troll
@@ -124,7 +125,7 @@ main_hand=staff_of_the_lightning_serpent,id=159636,bonus_id=4779/1512/4786,encha
 # Gear Summary
 # gear_ilvl=341.47
 # gear_stamina=4465
-# gear_intellect=3628
+# gear_intellect=2883
 # gear_crit_rating=209
 # gear_haste_rating=1105
 # gear_mastery_rating=1100

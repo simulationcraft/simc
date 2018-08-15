@@ -1,4 +1,5 @@
 hunter="PR_Hunter_Survival"
+source=default
 spec=survival
 level=120
 race=lightforged_draenei

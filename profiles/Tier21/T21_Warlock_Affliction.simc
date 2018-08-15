@@ -1,4 +1,5 @@
 warlock="T21_Warlock_Affliction"
+source=default
 spec=affliction
 level=110
 race=human
@@ -97,7 +98,7 @@ main_hand=ulthalesh_the_deadwind_harvester,id=128942,bonus_id=747/1505/1505/1505
 # Gear Summary
 # gear_ilvl=248.07
 # gear_stamina=1334
-# gear_intellect=1074
+# gear_intellect=750
 # gear_crit_rating=220
 # gear_haste_rating=418
 # gear_mastery_rating=725

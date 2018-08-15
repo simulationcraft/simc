@@ -1,4 +1,5 @@
 paladin="T22_Paladin_Retribution"
+source=default
 spec=retribution
 level=120
 race=human

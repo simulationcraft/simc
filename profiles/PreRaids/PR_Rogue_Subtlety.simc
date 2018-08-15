@@ -1,4 +1,5 @@
 rogue="PR_Rogue_Subtlety"
+source=default
 spec=subtlety
 level=120
 race=blood_elf

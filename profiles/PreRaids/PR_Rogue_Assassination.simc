@@ -1,4 +1,5 @@
 rogue="PR_Rogue_Assassination"
+source=default
 spec=assassination
 level=120
 race=troll

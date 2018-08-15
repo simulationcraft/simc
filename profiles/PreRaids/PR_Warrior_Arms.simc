@@ -1,4 +1,5 @@
 warrior="PR_Warrior_Arms"
+source=default
 spec=arms
 level=120
 race=pandaren

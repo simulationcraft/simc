@@ -1,4 +1,5 @@
 warrior="T21_Warrior_Fury"
+source=default
 spec=fury
 level=110
 race=troll

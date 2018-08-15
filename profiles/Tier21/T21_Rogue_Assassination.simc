@@ -1,4 +1,5 @@
 rogue="T21_Rogue_Assassination"
+source=default
 spec=assassination
 level=110
 race=human

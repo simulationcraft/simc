@@ -1,4 +1,5 @@
 druid="PR_Druid_Feral"
+source=default
 spec=feral
 level=120
 race=night_elf

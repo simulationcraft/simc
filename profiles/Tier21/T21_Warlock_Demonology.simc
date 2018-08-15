@@ -1,4 +1,5 @@
 warlock="T21_Warlock_Demonology"
+source=default
 spec=demonology
 level=110
 race=troll
@@ -107,7 +108,7 @@ off_hand=skull_of_the_manari,id=128943,bonus_id=748/1505/1505/1505,gem_id=155852
 # Gear Summary
 # gear_ilvl=248.25
 # gear_stamina=1323
-# gear_intellect=1045
+# gear_intellect=817
 # gear_crit_rating=356
 # gear_haste_rating=690
 # gear_mastery_rating=406

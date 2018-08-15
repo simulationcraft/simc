@@ -1,4 +1,5 @@
 hunter="T22_Hunter_Survival"
+source=default
 spec=survival
 level=120
 race=pandaren

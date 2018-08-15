@@ -1,4 +1,5 @@
 hunter="PR_Hunter_Beast_Mastery"
+source=default
 spec=beast_mastery
 level=120
 race=orc

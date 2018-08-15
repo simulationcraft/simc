@@ -1,4 +1,5 @@
 warrior="PR_Warrior_Fury"
+source=default
 spec=fury
 level=120
 race=human

@@ -1,4 +1,5 @@
 demonhunter="PR_Demon_Hunter_Vengeance"
+source=default
 spec=vengeance
 level=120
 race=night_elf

@@ -1,4 +1,5 @@
 demonhunter="PR_Demon_Hunter_Havoc"
+source=default
 spec=havoc
 level=120
 race=night_elf

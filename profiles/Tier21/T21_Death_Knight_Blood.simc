@@ -1,4 +1,5 @@
 deathknight="T21_Death_Knight_Blood"
+source=default
 spec=blood
 level=110
 race=blood_elf
