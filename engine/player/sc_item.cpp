@@ -163,8 +163,6 @@ std::string item_t::item_stats_str() const
   else if ( item_database::armor_value( *this ) )
     s << item_database::armor_value( *this ) << " Armor, ";
 
-  std::vector<stat_e> decoded_stats;
-
   for ( size_t i = 0; i < sizeof_array( parsed.data.stat_type_e ); i++ )
   {
     if ( parsed.data.stat_type_e[ i ] <= 0 )
@@ -176,17 +174,10 @@ std::string item_t::item_stats_str() const
     if ( v == 0 )
       continue;
 
-    if ( range::find( decoded_stats, stat ) != decoded_stats.end() )
-    {
-      continue;
-    }
-
     if ( v > 0 )
       s << "+";
 
     s << v << " " << util::stat_type_abbrev( stat ) << ", ";
-
-    decoded_stats.push_back( stat );
   }
 
   std::string str = s.str();
@@ -1487,24 +1478,14 @@ void item_t::decode_stats()
     item_database::apply_item_scaling( *this, parsed.data.id_scaling_distribution, player -> level() );
   }
 
-  std::vector<stat_e> decoded_stats;
-
   for ( size_t i = 0; i < sizeof_array( parsed.data.stat_type_e ); i++ )
   {
     stat_e s = stat( i );
     if ( s == STAT_NONE )
       continue;
 
-    // Apparently Blizzard (no longer?) adds the same stat twice in the items
-    if ( range::find( decoded_stats, s ) != decoded_stats.end() )
-    {
-      continue;
-    }
-
     base_stats.add_stat( s, stat_value( i ) );
     stats.add_stat( s, stat_value( i ) );
-
-    decoded_stats.push_back( s );
   }
 
   // Hardcoded armor value in stats, use the approximation coefficient to do
