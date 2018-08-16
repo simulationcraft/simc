@@ -23,7 +23,7 @@ std::string format_time( double seconds, bool milliseconds = true )
   // For milliseconds, just use a quick format
   else if ( seconds < 1 )
   {
-    s << static_cast<int>( 1000 * seconds ) << "ms";
+    s << util::round( 1000.0 * seconds, 3 ) << "ms";
   }
   // Otherwise, do the whole thing
   else
@@ -817,7 +817,7 @@ void profilesets_t::output_progressbar( const sim_t* parent ) const
   auto time_left = ( work_left / m_max_workers ) * average_per_sim;
 
   // Average time per done simulation
-  s << " avg=" << format_time( average_per_sim );
+  s << " avg=" << format_time( average_per_sim / as<double>( m_max_workers ) );
 
   // Elapsed time
   s << " done=" << format_time( elapsed, false );
