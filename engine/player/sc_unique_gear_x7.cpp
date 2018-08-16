@@ -378,11 +378,48 @@ void items::vial_of_storms( special_effect_t& effect )
 // TODO: Targeting mechanism
 void items::landois_scrutiny( special_effect_t& effect )
 {
-  effect.custom_buff = create_buff<stat_buff_t>( effect.player, "landois_scrutiny",
-      effect.player->find_spell( 281546 ), effect.item )
-    ->set_max_stack( effect.trigger()->max_stacks() );
+  struct ls_cb_t : public dbc_proc_callback_t
+  {
+    buff_t* haste;
+    player_t* current_target;
 
-  new dbc_proc_callback_t( effect.player, effect );
+    ls_cb_t( const special_effect_t& effect, buff_t* h ) :
+      dbc_proc_callback_t( effect.player, effect ), haste( h )
+    { }
+
+    void reset() override
+    {
+      dbc_proc_callback_t::reset();
+
+      current_target = listener->default_target;
+    }
+
+    void execute( action_t*, action_state_t* state ) override
+    {
+      if ( state->target != current_target )
+      {
+        proc_buff->expire();
+        current_target = state->target;
+      }
+
+      proc_buff->trigger();
+
+      if ( proc_buff->check() == proc_buff->max_stack() )
+      {
+        haste->trigger();
+        proc_buff->expire();
+      }
+    }
+
+  };
+
+  auto haste_buff = create_buff<stat_buff_t>( effect.player, "landois_scrutiny_haste",
+      effect.player->find_spell( 281546 ), effect.item );
+
+  effect.custom_buff = create_buff<stat_buff_t>( effect.player, "landois_scrutiny",
+      effect.trigger() );
+
+  new ls_cb_t( effect, haste_buff );
 }
 
 
