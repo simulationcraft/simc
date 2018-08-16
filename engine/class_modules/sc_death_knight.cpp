@@ -2008,7 +2008,12 @@ struct risen_skulker_pet_t : public death_knight_pet_t
 
     timespan_t gcd() const override
     {
-      // Risen Skulker has a 2.4s between each cast start, making its cast time scaling with haste irrelvevant
+      // Risen Skulker has a 2.4s between each cast start, making its cast time scaling with haste nearly irrelvevant
+      // After further investigation,
+      // Risen skulker seems to receive an order to attack every 1.2s but won't attack otherwise
+      // If it's currently casting, nothing happens
+      // https://github.com/SimCMinMax/WoW-BugTracker/issues/345
+      // TODO : lower the interval to 1.2s for high haste moments (ie. bloodlust)
       return p() -> o() -> bugs ? timespan_t::from_seconds( 2.4 ) : super::gcd();
     }
   };
