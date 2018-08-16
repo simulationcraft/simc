@@ -3657,6 +3657,15 @@ struct blackout_strike_t : public monk_melee_attack_t
     return b;
   }
 
+  virtual bool ready() override
+  {
+    // Only usable with 2-handed weapons
+    if ( p()->main_hand_weapon.type <= WEAPON_1H || p()->main_hand_weapon.type == WEAPON_NONE )
+      return false;
+
+    return monk_melee_attack_t::ready();
+  }
+
   void execute() override
   {
     monk_melee_attack_t::execute();
