@@ -374,7 +374,7 @@ void items::leyshocks_grand_compilation( special_effect_t& effect )
 
   auto crit = create_buff<stat_buff_t>( effect.player, "precision_module", effect.player->find_spell( 281791 ), effect.item );
   auto haste = create_buff<stat_buff_t>( effect.player, "iteration_capacitor", effect.player->find_spell( 281792 ), effect.item );
-  auto versatility = create_buff<stat_buff_t>( effect.player, "adaptive_circuit", effect.player->find_spell( 281793 ), effect.item );
+  auto versatility = create_buff<stat_buff_t>( effect.player, "adaptive_circuit", effect.player->find_spell( 281795 ), effect.item );
   auto mastery = create_buff<stat_buff_t>( effect.player, "efficiency_widget", effect.player->find_spell( 281794 ), effect.item );
 
   struct leyshocks_cb_t : public dbc_proc_callback_t
