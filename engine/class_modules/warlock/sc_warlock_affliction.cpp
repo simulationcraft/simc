@@ -432,6 +432,13 @@ namespace warlock
 
           affliction_spell_t::last_tick( d );
         }
+
+        double bonus_ta( const action_state_t* s ) const override
+        {
+          double ta = affliction_spell_t::bonus_ta( s );
+          ta += p()->azerite.dreadful_calling.value( 2 );
+          return ta;
+        }
       };
 
       std::array<real_ua_t*, MAX_UAS> ua_dots;
@@ -497,13 +504,6 @@ namespace warlock
           real_ua->set_target( s->target );
           real_ua->schedule_execute();
         }
-      }
-
-      double bonus_ta(const action_state_t* s) const override
-      {
-        double ta = affliction_spell_t::bonus_ta(s);
-        ta += p()->azerite.dreadful_calling.value(2);
-        return ta;
       }
 
       void execute() override
