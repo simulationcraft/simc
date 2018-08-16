@@ -370,6 +370,8 @@ void items::snowpelt_mangler( special_effect_t& effect )
 
 void items::leyshocks_grand_compilation( special_effect_t& effect )
 {
+  effect.proc_flags_ = PF_NONE_SPELL | PF_NONE_HEAL | PF_MAGIC_SPELL | PF_MAGIC_HEAL | PF_PERIODIC;
+
   auto crit = create_buff<stat_buff_t>( effect.player, "precision_module", effect.player->find_spell( 281791 ), effect.item );
   auto haste = create_buff<stat_buff_t>( effect.player, "iteration_capacitor", effect.player->find_spell( 281792 ), effect.item );
   auto versatility = create_buff<stat_buff_t>( effect.player, "adaptive_circuit", effect.player->find_spell( 281793 ), effect.item );
