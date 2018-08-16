@@ -31,7 +31,13 @@ namespace warlock
       {
         inevitable_demise = p()->buffs.inevitable_demise->check_stack_value();
         warlock_spell_t::execute();
+      }
+
+      void last_tick( dot_t* d ) override
+      {
         p()->buffs.inevitable_demise->expire();
+
+        warlock_spell_t::last_tick( d );
       }
     };
 
