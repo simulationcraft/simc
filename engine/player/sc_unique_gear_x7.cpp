@@ -76,6 +76,7 @@ namespace items
   void incessantly_ticking_clock( special_effect_t& );
   void snowpelt_mangler( special_effect_t& );
   void vial_of_storms( special_effect_t& );
+  void landois_scrutiny( special_effect_t& );
   // 8.0.1 - Dungeon Trinkets
   void deadeye_spyglass( special_effect_t& );
   void tiny_electromental_in_a_jar( special_effect_t& );
@@ -371,6 +372,19 @@ void items::vial_of_storms( special_effect_t& effect )
   effect.execute_action = create_proc_action<aoe_proc_t>( "bottled_lightning", effect,
       "bottled_lightning", effect.trigger() );
 }
+
+// Landoi's Scrutiny ========================================================
+
+// TODO: Targeting mechanism
+void items::landois_scrutiny( special_effect_t& effect )
+{
+  effect.custom_buff = create_buff<stat_buff_t>( effect.player, "landois_scrutiny",
+      effect.player->find_spell( 281546 ), effect.item )
+    ->set_max_stack( effect.trigger()->max_stacks() );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 
 // Jes' Howler ==============================================================
 
@@ -1003,6 +1017,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 274429, items::incessantly_ticking_clock );
   register_special_effect( 268517, items::snowpelt_mangler );
   register_special_effect( 268544, items::vial_of_storms );
+  register_special_effect( 281544, items::landois_scrutiny );
   register_special_effect( 266047, items::jes_howler );
   register_special_effect( 271374, items::razdunks_big_red_button );
   register_special_effect( 267402, items::merekthas_fang );
