@@ -387,9 +387,12 @@ void items::leyshocks_grand_compilation( special_effect_t& effect )
 
     void execute( action_t*, action_state_t* ) override
     {
-      // which stat procs is entirely random
-      unsigned idx = rng().roll(4);
-      buffs[ idx ]->trigger();
+      // We don't know true proc rate or spell list just yet, so this is roughly educated guesstimate from in-game dummies
+      if ( rng().roll(0.15) ) {
+        // which stat procs is entirely random
+        unsigned idx = ::floor(rng().range(0, 3));
+        buffs[ idx ]->trigger();
+      }
     }
   };
 
