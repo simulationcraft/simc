@@ -4507,7 +4507,7 @@ struct empower_rune_weapon_t : public death_knight_spell_t
 
 struct epidemic_damage_main_t : public death_knight_spell_t
 {
-  epidemic_damage_main_t( death_knight_t* p, death_knight_spell_t* parent ) :
+  epidemic_damage_main_t( death_knight_t* p, death_knight_spell_t* /* parent */ ) :
     death_knight_spell_t( "epidemic_main", p, p -> find_spell( 212739 ) )
   {
     background = true;
@@ -7233,7 +7233,7 @@ void death_knight_t::init_spells()
   spell.freezing_death            = find_spell( 253590 ); // T21 4P
 
   // Unholy
-  spell.bursting_sores         = find_spell( 207627 );
+  spell.bursting_sores         = find_spell( 207267 );
   spell.death_coil_damage      = find_spell( 47632 );
   spell.festering_wound_debuff = find_spell( 194310 );
   spell.festering_wound_damage = find_spell( 194311 );
