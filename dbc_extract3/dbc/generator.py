@@ -1222,6 +1222,8 @@ class SpellDataGenerator(DataGenerator):
          276124, 276125, 276126, 276127, 276128, 276129, 276130, 276131,
          # Fathoms Deck spells
          276187, 276188, 276189, 276190, 276191, 276192, 276193, 276194,
+         # Leyshock's Grand Compilation
+         281791, 281792, 281793, 281794,
         ),
 
         # Warrior:
