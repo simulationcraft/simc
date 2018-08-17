@@ -3068,7 +3068,8 @@ struct brutal_slash_t : public cat_attack_t
   {
     double b = cat_attack_t::bonus_da(s);
 
-    if (td(s->target)->dots.thrash_cat->is_ticking())
+    if (td(s->target)->dots.thrash_cat->is_ticking() ||
+        td(s->target)->dots.thrash_bear->is_ticking())
     {
       b += p()->azerite.wild_fleshrending.value(2);
     }
@@ -3829,7 +3830,8 @@ struct shred_t : public cat_attack_t
   {
     double b = cat_attack_t::bonus_da( s );
 
-    if ( td( s->target )->dots.thrash_cat->is_ticking() )
+    if ( td( s->target )->dots.thrash_cat->is_ticking() ||
+         td( s->target )->dots.thrash_bear->is_ticking() )
     {
       b += p()->azerite.wild_fleshrending.value( 1 );
     }
@@ -3908,7 +3910,8 @@ public:
   {
     double b = cat_attack_t::bonus_da( s );
 
-    if ( td( s->target )->dots.thrash_cat->is_ticking() )
+    if ( td( s->target )->dots.thrash_cat->is_ticking() ||
+         td( s->target )->dots.thrash_bear->is_ticking() )
     {
       b += p()->azerite.wild_fleshrending.value( 2 );
     }
@@ -4302,6 +4305,19 @@ struct swipe_bear_t : public bear_attack_t
       cd = timespan_t::zero();
 
     bear_attack_t::update_ready( cd );
+  }
+
+  virtual double bonus_da( const action_state_t* s ) const override
+  {
+    double b = bear_attack_t::bonus_da( s );
+
+    if ( td( s->target )->dots.thrash_cat->is_ticking() ||
+         td( s->target )->dots.thrash_bear->is_ticking() )
+    {
+      b += p()->azerite.wild_fleshrending.value( 2 );
+    }
+
+    return b;
   }
 };
 
