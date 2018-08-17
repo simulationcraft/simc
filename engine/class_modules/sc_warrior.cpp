@@ -1927,7 +1927,6 @@ struct deep_wounds_ARMS_t : public warrior_attack_t
     double am = warrior_attack_t::action_multiplier();
 
     am *= 1.0 + p()->cache.mastery_value();
-    am += 0.08;  // Starts with an extra 8% on top of base mastery
 
     return am;
   }
