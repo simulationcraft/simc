@@ -340,6 +340,8 @@ public:
   static void combat_end( sim_t* ) {}
   static double evaluate_raid_event_expression(sim_t* s, std::string& type, std::string& filter,
       bool test_filter = false);
+
+  static bool has_raid_event( sim_t*, const std::string& type );
 private:
   virtual void _start() = 0;
   virtual void _finish() = 0;

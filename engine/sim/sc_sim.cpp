@@ -3097,7 +3097,16 @@ expr_t* sim_t::create_expression( const std::string& name_str )
     return expr_t::create_constant( name_str, enemy_targets );
 
   if ( util::str_compare_ci( name_str, "active_enemies" ) )
-    return make_ref_expr( name_str, active_enemies );
+  {
+    if ( target_list.size() == 1u && !raid_event_t::has_raid_event( this, "adds" ) )
+    {
+      return expr_t::create_constant( name_str, 1.0 );
+    }
+    else
+    {
+      return make_ref_expr( name_str, active_enemies );
+    }
+  }
 
   if ( util::str_compare_ci( name_str, "active_allies" ) )
     return make_ref_expr( name_str, active_allies );

@@ -1754,3 +1754,12 @@ std::ostream& operator<<( std::ostream& os, const raid_event_t& r )
   os << fmt::format( "Raid event (type={} name={})", r.type, r.name );
   return os;
 }
+
+bool raid_event_t::has_raid_event( sim_t* sim, const std::string& type )
+{
+  auto it = range::find_if( sim->raid_events, [&type]( const std::unique_ptr<raid_event_t>& re ) {
+    return re->type == type;
+  } );
+
+  return it != sim->raid_events.end();
+}
