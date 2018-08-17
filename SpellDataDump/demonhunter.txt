@@ -1,4 +1,4 @@
-SimulationCraft 801-01 for World of Warcraft 8.0.1 bfa-BETA (wow build 26095)
+SimulationCraft 801-02 for World of Warcraft 8.0.1 bfa-BETA (wow build 26095)
 
 Name             : Dual Wield (rank=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -3156,7 +3156,6 @@ Effects          :
 Description      : $@spelldesc212084
 
 Name             : Fel Devastation (id=212106) [Spell Family (107)] 
-Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Fire
 Spell Type       : None
@@ -4621,7 +4620,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=707038)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 6410.799 (coefficient=82.454) | Trigger Spell: 270568 | Target: Self (1)
-                   Hotfixed: Coefficient (10.8839 -> 82.454)
 Description      : Every $270568t1 sec, gain an absorb shield for $s1 for $269279d.
 
 Name             : Azerite Empowered (id=263978) [Passive] 
@@ -4659,11 +4657,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=707066)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.735425) | Trigger Spell: 270667 | Target: Self (1)
-                   Hotfixed: Coefficient (1 -> 0.735425)
 Description      : Your damaging abilities have a chance to grant you Elemental Whirl, increasing your Critical Strike, Haste, Mastery, or Versatility by $s1 for $268956d.
 
 Name             : Heed My Call (id=263987) [Scaling Spell (-8), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -4680,10 +4676,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=707069)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 2203.712 (coefficient=28.34356) | Misc Value: 1792 | Trigger Spell: 271681 | Target: Self (1)
-                   Hotfixed: Coefficient (2 -> 28.3436)
 #2 (id=713642)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 944.4478 (coefficient=12.14724)
-                   Hotfixed: Coefficient (0.2 -> 12.1472)
 Description      : Your damaging abilities have a chance to deal $s1 Nature damage to your target, and $s2 Nature damage to enemies within 3 yards of that target.
 Tooltip          : Your damaging abilities have a chance to deal $s1 Nature damage to your target, and $s2 Nature damage to enemies within 3 yards of that target.
 
@@ -4742,10 +4736,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=707293)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 69.30822 (coefficient=0.222856) | Misc Value: 33554432 | Target: Self (1)
-                   Hotfixed: Coefficient (0.361446 -> 0.222856)
 #2 (id=709390)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 34.65411 (coefficient=0.111428) | Misc Value: 65536 | Target: Self (1)
-                   Hotfixed: Coefficient (0.181818 -> 0.111428)
 Description      : Increases your Mastery by $s1 and your Leech by $s2.
 Tooltip          : Increases Mastery by $s1 and Leech by $s2.
 
@@ -4766,12 +4758,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=711012)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.069642) | Misc Value: 1792 | Trigger Spell: 271705 | Target: Self (1)
-                   Hotfixed: Coefficient (0.05 -> 0.069642)
 Description      : Your damaging abilities have a chance to grant you 25 applications of Overwhelming Power. Each stack of Overwhelming Power grants $s1 Haste. An application of Overwhelming Power is removed every 1 sec or whenever you take damage.
 Tooltip          : Your damaging abilities have a chance to grant you 25 applications of Overwhelming Power. Each stack of Overwhelming Power grants $s1 Haste. An application of Overwhelming Power is removed every 3 sec or whenever you take damage.
 
 Name             : Azerite Globules (id=266936) [Scaling Spell (-8), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -4788,14 +4778,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=713207)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 1049.387 (coefficient=13.49693) | Misc Value: 1792 | Trigger Spell: 279955 | Target: Self (1)
-                   Hotfixed: Coefficient (3 -> 13.4969)
 #2 (id=739251)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3
 Description      : Your damaging abilities have a chance to implant an Azerite Globule on your enemies. When an enemy collects $s2 Azerite Globules, they explode, dealing $s1 Fire damage to nearby enemies.
 Tooltip          : Your damaging abilities have a chance to implant an Azerite Globule on your enemies. When an enemy collects $s2 Azerite Globules, they explode, dealing $s1 Fire damage to nearby enemies.
 
 Name             : Gutripper (id=266937) [Scaling Spell (-8), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -4812,7 +4800,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=713208)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 1111.825 (coefficient=14.3) | Trigger Spell: 270668 | Target: Self (1)
-                   Hotfixed: Coefficient (4.5045 -> 14.3)
 #2 (id=720336)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
 Description      : Your damaging abilities have a chance to deal $s1 Physical damage to the target. Gutripper occurs much more often against targets below $s2% health. 
@@ -4833,10 +4820,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=714501)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 69.30822 (coefficient=0.222856) | Misc Value: 917504 | Target: Self (1)
-                   Hotfixed: Coefficient (0.361446 -> 0.222856)
 #2 (id=714502)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 34.65411 (coefficient=0.111428) | Misc Value: 1048576 | Target: Self (1)
-                   Hotfixed: Coefficient (0.181818 -> 0.111428)
 Description      : Increases your Haste by $s1 and your Avoidance by $s2.
 Tooltip          : Increases your Haste by $s1 and your Avoidance by $s2.
 
@@ -4860,11 +4845,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=714511)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.111428) | Trigger Spell: 270675 | Target: Self (1)
-                   Hotfixed: Coefficient (0.178571 -> 0.111428)
 Description      : Taking damage grants you $s1 Dodge for $269214d, stacking up to $269214u times.
 
 Name             : Azerite Veins (id=267683) [Scaling Spell (-8), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -4881,7 +4864,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=714531)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 3887.5 (coefficient=50) | Trigger Spell: 270673 | Target: Self (1)
-                   Hotfixed: Coefficient (0.446429 -> 50)
 Description      : Taking damage has a chance to grant you Azerite Veins, healing you for $s1 every $270674t1 sec. Lasts $270674d or until you are fully healed.
 
 Name             : Void Reaver (id=268175) [Spell Family (107), Passive, Hidden] 
@@ -4925,7 +4907,6 @@ Description      : $@spelldesc268175
 Tooltip          : Dealing $s1% less damage to the Demon Hunter.
 
 Name             : Azerite Fortification (id=268435) [Scaling Spell (-8), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -4942,12 +4923,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=715936)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 7628.85 (coefficient=98.12026) | Trigger Spell: 270658 | Target: Self (1)
-                   Hotfixed: Coefficient (4.5045 -> 98.1203)
 Description      : When stunned, immobilized, or knocked back, you heal for $s1.
 Tooltip          : When stunned, immobilized, or knocked back, you heal for $s1.
 
 Name             : Impassive Visage (id=268437) [Scaling Spell (-8), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -4968,12 +4947,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=715939)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 2243.779 (coefficient=28.8589) | Trigger Spell: 270654 | Target: Self (1)
-                   Hotfixed: Coefficient (1.80018 -> 28.8589)
 Description      : When you take damage, heal for $s1. Cannot occur more than once every $270654proccooldown sec.
 Tooltip          : When you take damage, heal for $s1. Cannot occur more than once every $270654proccooldown sec.
 
 Name             : Longstrider (id=268594) [Scaling Spell (-7), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -7)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -4989,15 +4966,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=716157)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.055714) | Misc Value: 8 | Trigger Spell: 270653 | Target: Self (1)
-                   Hotfixed: Coefficient (0.044346 -> 0.055714)
 #2 (id=716158)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.016714) | Target: Self (1)
-                   Hotfixed: Coefficient (0.013304 -> 0.016714)
 Description      : Increases your movement speed by $s1% of your highest secondary rating, up to $s2%.
 Tooltip          : Increases your movement speed by $s1% of your highest secondary rating, up to $s2%.
 
 Name             : Bulwark of the Masses (id=268595) [Scaling Spell (-8), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -5013,13 +4987,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=716159)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 6997.5 (coefficient=90) | Trigger Spell: 270655 | Target: Self (1)
-                   Hotfixed: Coefficient (10.8108 -> 90)
 #2 (id=720319)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4
 Description      : When you are surrounded by $s2 or more enemies, gain a shield that absorbs $s1 damage. Cannot occur more than once every $270656d.
 
 Name             : Gemhide (id=268596) [Scaling Spell (-1), Passive] 
-Hotfixed         : Scaling Spell (-7 -> -1)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -5036,10 +5008,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=716160)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 121.0763 (coefficient=0.389313) | Trigger Spell: 270579 | Target: Self (1)
-                   Hotfixed: Sub Type (4 -> 189), Coefficient (0.420473 -> 0.389313)
 #2 (id=716161)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 121.0763 (coefficient=0.389313) | Target: Self (1)
-                   Hotfixed: Coefficient (1.86384 -> 0.389313)
 #3 (id=720325)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
 Description      : When dealt damage greater than $s3% of your maximum health, gain $s1 Avoidance and $s2 Armor for $270576d.
@@ -5062,15 +5032,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=716165)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 3165.077 (coefficient=10.1771) | Trigger Spell: 270652 | Target: Self (1)
-                   Hotfixed: Coefficient (8.10811 -> 10.1771)
 #2 (id=720314)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 82.61684 (coefficient=0.265649) | Target: Self (1)
-                   Hotfixed: Coefficient (0.630631 -> 0.265649)
 Description      : When an enemy you harmed dies, you heal for $s1 and gain $s2 Speed for $269239d.
 Tooltip          : When an enemy you harmed dies, heal for $s1 and gain $s2 Speed for $269239d.
 
 Name             : Self Reliance (id=268600) [Scaling Spell (-8), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -5087,7 +5054,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=716167)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 598.3412 (coefficient=7.695707) | Trigger Spell: 270660 | Target: Self (1)
-                   Hotfixed: Coefficient (0.903614 -> 7.69571)
 #2 (id=716168)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
 Description      : While no enemies are within $s2 yds, you heal for $s1 every $270661t1 sec.
@@ -5110,16 +5076,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=721833)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 71.22149 (coefficient=0.229008) | Trigger Spell: 271537 | Target: Self (1)
-                   Hotfixed: Coefficient (1.08108 -> 0.229008)
 #2 (id=721834)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 61.7251 (coefficient=0.198473) | Target: Self (1)
-                   Hotfixed: Sub Type (189 -> 4), Coefficient (0.934579 -> 0.198473)
 #3 (id=721835)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
 Description      : When dealt damage greater than $s3% of your maximum health, gain $s2 Armor and cause melee attackers to suffer $s1 Physical damage. Lasts $271538d.
 
 Name             : Ablative Shielding (id=271540) [Scaling Spell (-1), Passive] 
-Hotfixed         : Scaling Spell (-7 -> -1)
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -5136,11 +5099,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=721842)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 622 (coefficient=2) | Trigger Spell: 271542 | Target: Self (1)
-                   Hotfixed: Coefficient (7.46966 -> 2)
 Description      : Falling below $271542s1% health grants you $s1 Armor for $271543d. Taking further Physical damage reduces the Armor granted. May only occur every $271544d.
 
 Name             : Strength in Numbers (id=271546) [Scaling Spell (-8), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -5156,7 +5117,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=721853)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 4415.532 (coefficient=56.79141) | Trigger Spell: 271547 | Target: Self (1)
-                   Hotfixed: Coefficient (14.1335 -> 56.7914)
 Description      : Taking damage has a chance to increase your maximum health by $s1 for each enemy within $271548A1 yds, up to $271550u enemies. Lasts $271550d.
 
 Name             : Shimmering Haven (id=271557) [Scaling Spell (-1), Passive] 
@@ -5177,7 +5137,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 7692.414 (coefficient=24.73445) | Trigger Spell: 271558 | Target: Self (1)
 #2 (id=721868)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 217.7 (coefficient=0.7) | Target: Self (1)
-                   Hotfixed: Sub Type (189 -> 4), Coefficient (1.44 -> 0.7)
 Description      : Taking damage has a chance to create an upwelling of Azerite beneath your feet, increasing your Health by $s1 and your Armor by $s2 while you stand within it. Lasts $271560d.
 
 Name             : Revel in Pain (id=272983) [Scaling Spell (-1), Spell Family (107), Passive] 
@@ -5199,7 +5158,6 @@ Effects          :
 Description      : When Fiery Brand expires on your primary target, you gain a shield that absorbs up to $s1 damage for $272987d, based on your damage dealt to them while Fiery Brand was active. 
 
 Name             : Ruinous Bolt (id=273150) [Scaling Spell (-8), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8), Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -5215,7 +5173,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=724558)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 883.8695 (coefficient=11.3681) | Trigger Spell: 273825 | Target: Self (1)
-                   Hotfixed: Coefficient (2.57235 -> 11.3681)
 Description      : Your spells and abilities have a chance to draw a Wandering Soul from Thros to serve you for $280204d. The Soul blasts a nearby enemy every $280204t2 sec, dealing $s1 Shadow damage.
 
 Name             : Furious Gaze (id=273231) [Scaling Spell (-7), Spell Family (107), Passive] 
@@ -5235,7 +5192,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=724687)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=1.699277) | Target: Self (1)
-                   Hotfixed: Coefficient (0.524296 -> 1.69928)
 Description      : When Eye Beam finishes fully channeling, your Haste is increased by $s1 for $273232d.
 
 Name             : Infernal Armor (id=273236) [Scaling Spell (-1), Spell Family (107), Passive] 
@@ -5255,14 +5211,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=724697)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 167.94 (coefficient=0.54) | Trigger Spell: 273237 | Target: Self (1)
-                   Hotfixed: Coefficient (0.304878 -> 0.54)
 #2 (id=724698)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 237.4046 (coefficient=0.763359) | Target: Self (1)
-                   Hotfixed: Sub Type (189 -> 4), Coefficient (1.04904 -> 0.763359)
 Description      : Immolation Aura increases your Armor by $s2, and causes melee attackers to take $s1 Fire damage.
 
 Name             : Meticulous Scheming (id=273682) [Scaling Spell (-7), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -7), Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -5285,11 +5238,9 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Trigger Spell: 273684 | Target: Self (1)
 #4 (id=725610)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=2.11156) | Target: Self (1)
-                   Hotfixed: Coefficient (0.720721 -> 2.11156)
 Description      : Your spells and abilities have a chance to grant you Meticulous Scheming for $273685d, which transforms into Seize the Moment! after you cast $s3 different spells, granting you $s4 Haste for $273714d.
 
 Name             : Rezan's Fury (id=273790) [Scaling Spell (-8), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8), Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -5305,14 +5256,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=725706)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 1502.531 (coefficient=19.32515) | Trigger Spell: 273153 | Target: Self (1)
-                   Hotfixed: Coefficient (2.03246 -> 19.3252)
 #2 (id=725707)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 751.2654 (coefficient=9.662577) | Target: Self (1)
-                   Hotfixed: Coefficient (0.406504 -> 9.66258)
 Description      : Your damaging abilities have a chance to call a Child of Rezan to viciously rend your target, dealing $s1 Physical damage and causing them to bleed for ${($273794d/$273794t2)*$s2} damage over $273794d.
 
 Name             : Blightborne Infusion (id=273823) [Scaling Spell (-7), Passive] 
-Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -5328,11 +5276,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=725757)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=3.342839) | Trigger Spell: 273825 | Target: Self (1)
-                   Hotfixed: Coefficient (1.2 -> 3.34284)
 Description      : Your spells and abilities have a chance to draw a Wandering Soul from Thros to serve you for $280204d. The Soul increases your Critical Strike by $s1.
 
 Name             : Secrets of the Deep (id=273829) [Scaling Spell (-1), Passive] 
-Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -5348,16 +5294,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=725766)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 144.8168 (coefficient=0.465649) | Trigger Spell: 273830 | Target: Self (1)
-                   Hotfixed: Coefficient (0.5 -> 0.465649)
 #2 (id=725767)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 284.8856 (coefficient=0.916031) | Target: Self (1)
-                   Hotfixed: Coefficient (1 -> 0.916031)
 Description      : Your spells and abilities have a chance to create a Surging Droplet nearby. Collecting it increases your primary stat by $s1 for $273842d.
 
 Rarely, a Void Droplet will be created, increasing your primary stat by $s2 for $273843d instead.
 
 Name             : Filthy Transfusion (id=273834) [Scaling Spell (-8), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8), Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -5374,11 +5317,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=725772)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 676.3773 (coefficient=8.699387) | Trigger Spell: 273835 | Target: Self (1)
-                   Hotfixed: Coefficient (3.5 -> 8.69939)
 Description      : Your damaging abilities have a chance to invoke a tainted swamp beneath the target, siphoning ${$s1*6} health from them over $273836d.
 
 Name             : Soulmonger (id=274344) [Scaling Spell (-8), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -5395,11 +5336,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=726617)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 1495.853 (coefficient=19.23927) | Trigger Spell: 274345 | Target: Self (1)
-                   Hotfixed: Coefficient (2.25 -> 19.2393)
 Description      : Consuming a Soul Fragment shields you, granting $s1 Absorb for $274346d
 
 Name             : Unbound Chaos (id=275144) [Scaling Spell (-8), Spell Family (107), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -5415,11 +5354,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=727995)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 2051.073 (coefficient=26.38037) | Target: Self (1)
-                   Hotfixed: Coefficient (1.62572 -> 26.3804)
 Description      : Your inner demon slams into nearby enemies at the end of your Fel Rush, dealing $s1 Chaos damage.
 
 Name             : Rigid Carapace (id=275350) [Scaling Spell (-1), Spell Family (107), Passive] 
-Hotfixed         : Scaling Spell (-7 -> -1)
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -5435,7 +5372,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=728344)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 35.61074 (coefficient=0.114504) | Target: Self (1)
-                   Hotfixed: Coefficient (0.304878 -> 0.114504)
 Description      : Demon Spikes increases your Armor by $s1 every $275351t2 sec, for $275351d.
 
 Name             : Seething Power (id=275934) [Scaling Spell (-1), Spell Family (107), Passive] 
@@ -5455,11 +5391,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=729292)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 41.78316 (coefficient=0.134351) | Trigger Spell: 275935 | Target: Self (1)
-                   Hotfixed: Coefficient (0.1 -> 0.134351)
 Description      : Chaos Strike increases your Agility by $s1 for $275936d. Stacking this effect does not extend its duration.
 
 Name             : Gaping Maw (id=275968) [Scaling Spell (-8), Spell Family (107), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -5476,7 +5410,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=729328)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 2575.767 (coefficient=33.12883) | Trigger Spell: 275969 | Target: Self (1)
-                   Hotfixed: Coefficient (4.67246 -> 33.1288)
 #2 (id=729330)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
 Description      : Soul Cleave grants you a shield that absorbs $s1 damage, increased by up to $s2% based on your missing health.
@@ -5539,7 +5472,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=734217)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 42.92943 (coefficient=0.552147) | Trigger Spell: 278729 | Target: Self (1)
-                   Hotfixed: Coefficient (0.262 -> 0.552147)
 #2 (id=734218)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
 Description      : Every $278729t1 sec, increase the damage of Chaos Strike by $s1 and reduce its cost by $s2 Fury. This effect stacks.
@@ -5560,7 +5492,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=734233)   : Apply Aura (6) | Dummy (4)
                    Base Value: 700 | Scaled Value: 700 | Trigger Spell: 279442 | Target: Self (1)
-                   Hotfixed: Base Value (1000 -> 700)
 #2 (id=734234)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 50.00009 (coefficient=0.160772) | Target: Self (1)
                    Affected Spells: Eye Beam (198030)
@@ -5568,7 +5499,6 @@ Effects          :
 Description      : Eye Beam deals an additional $?s203550[${$s2*15}][${$s2*10}] damage. Consuming a Soul Fragment reduces the cooldown of Eye Beam by ${$s1/1000}.1 sec.
 
 Name             : Essence Sever (id=278501) [Scaling Spell (-8), Spell Family (107), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -5585,7 +5515,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=734236)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 810.8896 (coefficient=10.42945) | Trigger Spell: 279449 | Target: Self (1)
-                   Hotfixed: Coefficient (1.28655 -> 10.4294)
 #2 (id=734237)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4
 Description      : $?s263642[Fracture][Shear] has a chance to rip Lesser Soul Fragments from up to $s2 nearby enemies, dealing $s1 Fire damage to each.
@@ -5612,7 +5541,6 @@ Effects          :
 Description      : Afflicting an enemy with a Sigil grants you $s1 Agility for $278769d and reduces the cooldown of your Sigils by $s2 sec. 
 
 Name             : Revolving Blades (id=279581) [Scaling Spell (-8), Spell Family (107), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -5632,7 +5560,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 209.8773 (coefficient=2.699386) | Target: Self (1)
                    Affected Spells: Blade Dance (188499), Blade Dance (199552), Blade Dance (200685), Death Sweep (210152), Death Sweep (210153), Death Sweep (210155)
                    Family Flags: 25, 37
-                   Hotfixed: Coefficient (0.192926 -> 2.69939)
 Description      : Blade Dance deals ${$s2*4} additional damage, and the cost of your next Blade Dance is reduced by $279584s1 Fury for each enemy struck by the final slash.
 
 Name             : Unstable Flames (id=279899) [Scaling Spell (-7), Passive] 
@@ -5652,7 +5579,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=736523)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.194999) | Misc Value: 1792 | Trigger Spell: 279900 | Target: Self (1)
-                   Hotfixed: Coefficient (0.447912 -> 0.194999)
 Description      : Your damaging abilities have a chance to grant $s1 critical strike rating for $279902d. This effect stacks up to $279902u times.
 
 Name             : Earthlink (id=279926) [Scaling Spell (-1), Passive] 
@@ -5672,11 +5598,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=736562)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 11.39535 (coefficient=0.036641) | Trigger Spell: 279927 | Target: Self (1)
-                   Hotfixed: Coefficient (0.099778 -> 0.036641)
 Description      : Azerite energy courses through you, reaching ${$s1*6} $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] and then diminishing down to $s1 $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat], cycling every 6 sec.
 
 Name             : Burning Soul (id=280012) [Scaling Spell (-8), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -5693,11 +5617,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=737265)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 6410.799 (coefficient=82.454) | Target: Self (1)
-                   Hotfixed: Coefficient (5.297 -> 82.454)
 Description      : When your Consume Magic consumes a beneficial Magic effect from the target, gain $s1 Absorb for $274289d and shatter a Soul Fragment from the target.
 
 Name             : Barrage Of Many Bombs (id=280163) [Scaling Spell (-8), Passive] 
-Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -5717,7 +5639,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=737505)   : Apply Aura (6) | Proc Trigger Spell (42): Barrage Of Many Bombs
                    Base Value: 0 | Scaled Value: 555.9125 (coefficient=7.15) | Trigger Spell: 280662 | Target: Self (1)
-                   Hotfixed: Coefficient (11.6822 -> 7.15)
 #2 (id=737506)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4
 #3 (id=737507)   : Dummy (3)
@@ -5729,7 +5650,6 @@ Description      : Your spells and abilities have a chance to fire a bomb at you
 Increases your Kul Tiran or Zandalari Engineering by $s4.
 
 Name             : Ricocheting Inflatable Pyrosaw (id=280168) [Passive] 
-Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -5760,7 +5680,6 @@ Beneficial spells have a chance to hurl a Mechanized External Needle Dispenser, 
 Increases your Kul Tiran or Zandalari Engineering by $s3.
 
 Name             : Auto-Self-Cauterizer (id=280172) [Scaling Spell (-8), Passive] 
-Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -5781,7 +5700,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=737533)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 7628.85 (coefficient=98.12026) | Target: Self (1)
-                   Hotfixed: Coefficient (93.4579 -> 98.1203)
 #2 (id=737534)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
 #3 (id=738963)   : Apply Aura (6) | Skill (30)
@@ -5793,7 +5711,6 @@ Increases your Kul Tiran or Zandalari Engineering by $s3.
 *Efficacy may vary.
 
 Name             : Synaptic Spark Capacitor (id=280174) [Scaling Spell (-8), Spell Family (7), Passive] 
-Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -5817,13 +5734,11 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
 #3 (id=742699)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 1065.175 (coefficient=13.7)
-                   Hotfixed: Coefficient (7.47664 -> 13.7)
 Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $s1 yards of the Spark Coil take $280847s2 damage every 2 seconds and deal $280847s1% reduced damage to you.
 
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
 Name             : Relational Normalization Gizmo (id=280178) [Scaling Spell (-1), Passive] 
-Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -5851,7 +5766,6 @@ Description      : Your spells and abilities have a chance to grow or shrink the
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
 Name             : Personal Absorb-o-Tron (id=280181) [Scaling Spell (-8), Passive] 
-Hotfixed         : Scaling Spell, Max Scaling Level, Internal Cooldown (60000 -> 20000), Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -5872,7 +5786,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=737557)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 12828.75 (coefficient=165) | Target: Self (1)
-                   Hotfixed: Coefficient (0 -> 165)
 #2 (id=738962)   : Apply Aura (6) | Skill (30)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 2499 | Target: Self (1)
 Description      : Taking damage has a chance to call your Personal Absorb-o-Tron, absorbing the next $280660s1 damage you take over $280660d.
@@ -5880,7 +5793,6 @@ Description      : Taking damage has a chance to call your Personal Absorb-o-Tro
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
 Name             : Dagger in the Back (id=280284) [Scaling Spell (-8), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8), Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -5897,13 +5809,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=737714)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 195.5675 (coefficient=2.515337) | Trigger Spell: 280285 | Target: Self (1)
-                   Hotfixed: Coefficient (0.1 -> 2.51534)
 #2 (id=737715)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 Description      : Your damaging spells and abilities have a chance to fling a dagger at your target, causing them to bleed for ${$s1*$280286d/$280286t1} Physical damage over $280286d, stacking up to $280286u times. Stabbing them in the back applies $s2 stacks.
 
 Name             : Thunderous Blast (id=280380) [Scaling Spell (-8), Passive] 
-Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -5920,13 +5830,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=737878)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 901.5184 (coefficient=11.59509) | Trigger Spell: 280383 | Target: Self (1)
-                   Hotfixed: Coefficient (3 -> 11.5951)
 #2 (id=738006)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : Dealing damage has a chance to call down a Thunderous Blast, dealing $s1 Nature damage to the enemy and increasing the damage of Thunderous Blast by $280385s1%. At ${$s2*$280385s1}% increased damage, Thunderous Blast will critically hit and reset this effect.
 
 Name             : Tidal Surge (id=280402) [Scaling Spell (-8), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8), Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Frost
 Spell Type       : None
@@ -5942,11 +5850,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=737915)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 1803.037 (coefficient=23.19018) | Trigger Spell: 280403 | Target: Self (1)
-                   Hotfixed: Coefficient (2.66152 -> 23.1902)
 Description      : Your damaging spells and abilities have a chance to release a tidal surge, dealing $s1 Frost damage to your target and slowing their movement speed by $280404s2% for $280404d.
 
 Name             : Blood Rite (id=280407) [Scaling Spell (-7), Passive] 
-Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -5963,11 +5869,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=737922)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=2.025204) | Trigger Spell: 280408 | Target: Self (1)
-                   Hotfixed: Coefficient (1.12952 -> 2.0252)
 Description      : Your spells and abilities have a chance to increase your Haste by $s1 for $280409d. Killing an enemy refreshes the duration of this effect.
 
 Name             : Incite the Pack (id=280410) [Scaling Spell (-7), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -7), Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -5984,16 +5888,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=737926)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=1.855276) | Trigger Spell: 280411 | Target: Self (1)
-                   Hotfixed: Coefficient (0.730928 -> 1.85528)
 #2 (id=737927)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.300856) | Target: Self (1)
-                   Hotfixed: Coefficient (0.170316 -> 0.300856)
 #3 (id=737931)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 Description      : You occasionally loose a tremendous roar, increasing your Mastery by $s1 and granting $s2 Mastery to up to $280413i nearby allies. Lasts $280412d.
 
 Name             : Swirling Sands (id=280429) [Scaling Spell (-7), Passive] 
-Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -6009,7 +5910,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=737972)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=2.50713) | Trigger Spell: 280432 | Target: Self (1)
-                   Hotfixed: Coefficient (1.5 -> 2.50713)
 #2 (id=737973)   : Dummy (3)
                    Base Value: 1000 | Scaled Value: 1000
 #3 (id=737974)   : Dummy (3)
@@ -6017,7 +5917,6 @@ Effects          :
 Description      : Your spells and abilities have a chance to conjure Swirling Sands, increasing your Critical Strike by $s1 for $280433d. Your critical effects extend Swirling Sands by ${$s2/1000} sec, up to a maximum duration of ${$280433d+($s3/1000)} sec.
 
 Name             : Archive of the Titans (id=280555) [Scaling Spell (-1), Passive] 
-Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -6033,13 +5932,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738151)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 5.697831 (coefficient=0.018321) | Trigger Spell: 280708 | Target: Self (1)
-                   Hotfixed: Coefficient (0.0133 -> 0.018321)
 Description      : Your armor gathers and analyzes combat data every $280708t1 sec, increasing your primary stat by $s1, stacking up to $280709u times. The data decays while out of combat.
 
 Enables $@spellname280573 within Uldir.
 
 Name             : Laser Matrix (id=280559) [Scaling Spell (-8), Passive] 
-Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -6055,16 +5952,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738156)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 4507.592 (coefficient=57.97546) | Trigger Spell: 280702 | Target: Self (1)
-                   Hotfixed: Coefficient (40 -> 57.9755)
 #2 (id=738401)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 5634.728 (coefficient=72.47239) | Target: Self (1)
-                   Hotfixed: Coefficient (16 -> 72.4724)
 Description      : Your spells and abilities have a chance to release a barrage of lasers, dealing $s1 Arcane damage split among all enemies and restoring $s2 health split among injured allies.
 
 Enables $@spellname280573 within Uldir.
 
 Name             : Glory in Battle (id=280577) [Scaling Spell (-7), Passive] 
-Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -6080,15 +5974,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738189)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.913709) | Trigger Spell: 280778 | Target: Self (1)
-                   Hotfixed: Coefficient (1.24408 -> 0.913709)
 #2 (id=738555)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.55714) | Target: Self (1)
-                   Hotfixed: Coefficient (0.779789 -> 0.55714)
 Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280780d. 
 Attacking a member of the opposite faction significantly increases this chance.
 
 Name             : Retaliatory Fury (id=280579) [Scaling Spell (-1), Passive] 
-Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -6105,15 +5996,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738191)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 320.5505 (coefficient=1.030709) | Trigger Spell: 280785 | Target: Self (1)
-                   Hotfixed: Sub Type (4 -> 189), Coefficient (0.6 -> 1.03071)
 #2 (id=738573)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 1121.974 (coefficient=3.607634) | Target: Self (1)
-                   Hotfixed: Coefficient (8 -> 3.60763)
 Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280788d. 
 Attacking a member of the opposite faction is more likely to activate this effect.
 
 Name             : Combined Might (id=280580) [Scaling Spell (-1), Passive] 
-Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -6130,16 +6018,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738192)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 277.2329 (coefficient=0.891424) | Trigger Spell: 280848 | Target: Self (1)
-                   Hotfixed: Sub Type (4 -> 189), Coefficient (3.5 -> 0.891424)
 #2 (id=738695)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4
 #3 (id=744340)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 131.9971 (coefficient=0.424428)
-                   Hotfixed: NEW EFFECT
 Description      : Your abilities have a chance to plant a factional banner for $280841d, empowering yourself and up to $s2 allies with the spirit of the Horde.
 
 Name             : Collective Will (id=280581) [Scaling Spell (-1), Passive] 
-Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -6156,19 +6041,16 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738193)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 144.8168 (coefficient=0.465649) | Trigger Spell: 280837 | Target: Self (1)
-                   Hotfixed: Coefficient (1 -> 0.465649)
 #2 (id=738669)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 2848.855 (coefficient=9.160305) | Target: Self (1)
-                   Hotfixed: Coefficient (6 -> 9.1603)
 Description      : Your abilities have a chance to drop a Horde Banner for $280830d, increasing $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1 and maximum health by $s2 for yourself and up to 4 allies.
 
 Name             : Battlefield Focus (id=280582) [Scaling Spell (-8), Passive] 
-Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
 Azerite Power Id : 488
-Triggered by     : Battlefield Focus (280817)
+Triggered by     : Battlefield Focus (280817), Battlefield Focus (282724)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6180,7 +6062,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738194)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 566.6687 (coefficient=7.288343) | Trigger Spell: 280816 | Target: Self (1)
-                   Hotfixed: Coefficient (2.67857 -> 7.28834)
 #2 (id=738645)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
 #3 (id=738646)   : Dummy (3)
@@ -6188,7 +6069,6 @@ Effects          :
 Description      : Your abilities have a chance to apply $s2 stacks of Battlefield Focus to an enemy, increasing damage taken from members of the Horde by $s1. Applying Battlefield Focus to a member of the Alliance grants an additional $s3 stacks. 
 
 Name             : Sylvanas' Resolve (id=280598) [Scaling Spell (-1), Passive] 
-Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -6205,13 +6085,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738213)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 395.0412 (coefficient=1.270229) | Trigger Spell: 280806 | Target: Self (1)
-                   Hotfixed: Coefficient (1.10865 -> 1.27023)
 #2 (id=738618)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 280810 | Target: Self (1)
 Description      : Your abilities have a chance to increase your $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1 for $280809d. If an ally dies nearby, you gain this effect.
 
 Name             : Liberator's Might (id=280623) [Scaling Spell (-7), Passive] 
-Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -6227,15 +6105,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738283)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.913709) | Trigger Spell: 280851 | Target: Self (1)
-                   Hotfixed: Coefficient (1.24408 -> 0.913709)
 #2 (id=738699)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.55714) | Target: Self (1)
-                   Hotfixed: Coefficient (0.780731 -> 0.55714)
 Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280852d. 
 Attacking a member of the opposite faction significantly increases this chance.
 
 Name             : Last Gift (id=280624) [Scaling Spell (-1), Passive] 
-Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -6252,15 +6127,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738284)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 320.5505 (coefficient=1.030709) | Trigger Spell: 280860 | Target: Self (1)
-                   Hotfixed: Sub Type (4 -> 189), Coefficient (0.6 -> 1.03071)
 #2 (id=738721)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 1121.974 (coefficient=3.607634) | Target: Self (1)
-                   Hotfixed: Coefficient (8 -> 3.60763)
 Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280862d. 
 Taking damage from a member of the opposite faction has a chance to activate this effect. 
 
 Name             : Stronger Together (id=280625) [Scaling Spell (-1), Passive] 
-Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -6277,16 +6149,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738285)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 277.2329 (coefficient=0.891424) | Trigger Spell: 280865 | Target: Self (1)
-                   Hotfixed: Sub Type (4 -> 189), Coefficient (3.5 -> 0.891424)
 #2 (id=738730)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4
 #3 (id=744329)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 131.9971 (coefficient=0.424428)
-                   Hotfixed: NEW EFFECT
 Description      : Your abilities have a chance to plant a factional banner for $280866d, empowering yourself and up to $s2 allies with the spirit of the Alliance.
 
 Name             : Stand As One (id=280626) [Scaling Spell (-1), Passive] 
-Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -6303,18 +6172,16 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738286)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 144.8168 (coefficient=0.465649) | Trigger Spell: 280856 | Target: Self (1)
-                   Hotfixed: Coefficient (1 -> 0.465649)
 #2 (id=738712)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 2848.855 (coefficient=9.160305) | Target: Self (1)
-                   Hotfixed: Coefficient (6 -> 9.1603)
 Description      : Your abilities have a chance to drop an Alliance Banner for $280858d, increasing $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1 and maximum health by $s2 for yourself and up to 4 allies.
 
 Name             : Battlefield Precision (id=280627) [Scaling Spell (-8), Passive] 
-Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
 Azerite Power Id : 494
+Triggered by     : Battlefield Precision (280855), Battlefield Precision (282720)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6326,7 +6193,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738287)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 566.6687 (coefficient=7.288343) | Trigger Spell: 280854 | Target: Self (1)
-                   Hotfixed: Coefficient (2.67857 -> 7.28834)
 #2 (id=738705)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
 #3 (id=738706)   : Dummy (3)
@@ -6334,7 +6200,6 @@ Effects          :
 Description      : Your abilities have a chance to apply $s2 stacks of Battlefield Focus to an enemy, increasing damage taken from members of the Alliance by $s1. Applying Battlefield Focus to a member of the Horde grants an additional $s3 stacks. 
 
 Name             : Anduin's Dedication (id=280628) [Scaling Spell (-1), Passive] 
-Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -6351,13 +6216,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738288)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 395.0412 (coefficient=1.270229) | Trigger Spell: 280872 | Target: Self (1)
-                   Hotfixed: Coefficient (1.109 -> 1.27023)
 #2 (id=738747)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 280874 | Target: Self (1)
 Description      : Your abilities have a chance to increase your $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1 for $280876d. If an ally dies nearby, you gain this effect.
 
 Name             : Champion of Azeroth (id=280710) [Scaling Spell (-7), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -7)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -6373,7 +6236,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738417)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.061285) | Trigger Spell: 280712 | Target: Self (1)
-                   Hotfixed: Coefficient (0.033 -> 0.061285)
 Description      : Your spells and abilities have a chance to increase all secondary stats by $s1 for $280713d, stacking up to $280713u times.
 
 Name             : Chaos Brand (id=281242) [Spell Family (107), Passive] 
@@ -6414,11 +6276,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=740102)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 194.6717 (coefficient=0.625954) | Trigger Spell: 281515 | Target: Self (1)
-                   Hotfixed: Coefficient (0.554324 -> 0.625954)
 Description      : Your spells and abilities have a chance to leak Azerite on the ground around you. Standing in the Azerite increases your primary stat by $s1 for $281516d.
 
 Name             : Tradewinds (id=281841) [Scaling Spell (-7), Passive] 
-Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -6435,10 +6295,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=741004)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=2.540558) | Trigger Spell: 281842 | Target: Self (1)
-                   Hotfixed: Coefficient (1 -> 2.54056)
 #2 (id=741005)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.501426) | Target: Self (1)
-                   Hotfixed: Coefficient (0.5 -> 0.501426)
 Description      : Your spells and abilities have a chance to grant you $s1 Mastery for $281843d. When this effect expires it jumps once to a nearby ally, granting them $s2 Mastery for $281844d.
 
 Name             : Torment (id=281854) [Spell Family (107)] 
