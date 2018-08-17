@@ -3024,8 +3024,16 @@ expr_t* action_t::create_expression( const std::string& name_str )
       return new spell_targets_t( *this, splits.size() > 1 ? splits[ 1 ] : this->name_str );
     }
     else
-    {  // If distance targeting is not enabled, default to active_enemies behavior.
-      return make_ref_expr( name_str, sim->active_enemies );
+    {
+      if ( sim->target_list.size() == 1u && !raid_event_t::has_raid_event( sim, "adds" ) )
+      {
+        return expr_t::create_constant( "spell_targets", 1.0 );
+      }
+      else
+      {
+        // If distance targeting is not enabled, default to active_enemies behavior.
+        return make_ref_expr( name_str, sim->active_enemies );
+      }
     }
   }
 
