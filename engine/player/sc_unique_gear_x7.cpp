@@ -390,7 +390,7 @@ void items::leyshocks_grand_compilation( special_effect_t& effect )
       // We don't know true proc rate or spell list just yet, so this is roughly educated guesstimate from in-game dummies
       if ( rng().roll(0.15) ) {
         // which stat procs is entirely random
-        unsigned idx = ::floor(rng().range(0, 3));
+        auto idx = static_cast<size_t>( rng().range( 0, as<double>( buffs.size() ) ) );
         buffs[ idx ]->trigger();
       }
     }
