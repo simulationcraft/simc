@@ -1490,7 +1490,7 @@ public:
   {
     double c = ab::cost();
 
-    if ( p() -> buff.innervate->up() )
+    if ( p() -> buff.innervate->up() && p() -> specialization()==DRUID_RESTORATION)
       c *= 0;
 
     return c;
