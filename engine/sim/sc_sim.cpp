@@ -1499,8 +1499,20 @@ double sim_t::iteration_time_adjust() const
   if ( current_iteration == 0 )
     return 1.0;
 
-  auto progress = work_queue -> progress();
-  return 1.0 + vary_combat_length * ( ( current_iteration % 2 ) ? 1 : -1 ) * progress.pct();
+  // Approximate uniform distribution for fight lengths through randomization when target error is
+  // used. Will generate more fair fight length distribution when reasonable (<0.5) target_error
+  // values are chosen, and removes issues with pathological cases where high values are used (high
+  // enough for analyze_error_interval to bound the number of iterations done, instead of the
+  // target_error).
+  if ( target_error != 0 )
+  {
+    return rng().range( 1.0 - vary_combat_length, 1.0 + vary_combat_length );
+  }
+  else
+  {
+    auto progress = work_queue -> progress();
+    return 1.0 + vary_combat_length * ( ( current_iteration % 2 ) ? 1 : -1 ) * progress.pct();
+  }
 }
 
 // sim_t::expected_max_time =================================================
