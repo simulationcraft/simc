@@ -77,6 +77,7 @@ namespace items
   void snowpelt_mangler( special_effect_t& );
   void vial_of_storms( special_effect_t& );
   void landois_scrutiny( special_effect_t& );
+  void leyshocks_grand_compilation( special_effect_t& );
   // 8.0.1 - Dungeon Trinkets
   void deadeye_spyglass( special_effect_t& );
   void tiny_electromental_in_a_jar( special_effect_t& );
@@ -363,6 +364,44 @@ void items::snowpelt_mangler( special_effect_t& effect )
       "sharpened_claws", effect.trigger() );
 
   new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Leyshock's Grand Compilation =============================================
+
+void items::leyshocks_grand_compilation( special_effect_t& effect )
+{
+  effect.proc_flags_ = PF_NONE_SPELL | PF_NONE_HEAL | PF_MAGIC_SPELL | PF_MAGIC_HEAL | PF_PERIODIC;
+
+  auto crit = create_buff<stat_buff_t>( effect.player, "precision_module", effect.player->find_spell( 281791 ), effect.item );
+  auto haste = create_buff<stat_buff_t>( effect.player, "iteration_capacitor", effect.player->find_spell( 281792 ), effect.item );
+  auto versatility = create_buff<stat_buff_t>( effect.player, "adaptive_circuit", effect.player->find_spell( 281795 ), effect.item );
+  auto mastery = create_buff<stat_buff_t>( effect.player, "efficiency_widget", effect.player->find_spell( 281794 ), effect.item );
+
+  struct leyshocks_cb_t : public dbc_proc_callback_t
+  {
+    std::vector<buff_t*> buffs;
+
+    leyshocks_cb_t( const special_effect_t& effect, const std::vector<buff_t*>& b ) :
+      dbc_proc_callback_t( effect.item, effect), buffs( b )
+    { }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      // We don't know true proc rate or spell list just yet, so this is roughly educated guesstimate from in-game dummies
+      if ( rng().roll(0.15) ) {
+        // which stat procs is entirely random
+        unsigned idx = ::floor(rng().range(0, 3));
+        buffs[ idx ]->trigger();
+      }
+    }
+  };
+
+  new leyshocks_cb_t( effect, {
+    crit,
+    haste,
+    mastery,
+    versatility
+  } );
 }
 
 // Vial of Storms ===========================================================
@@ -1055,6 +1094,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 268517, items::snowpelt_mangler );
   register_special_effect( 268544, items::vial_of_storms );
   register_special_effect( 281544, items::landois_scrutiny );
+  register_special_effect( 281547, items::leyshocks_grand_compilation);
   register_special_effect( 266047, items::jes_howler );
   register_special_effect( 271374, items::razdunks_big_red_button );
   register_special_effect( 267402, items::merekthas_fang );
