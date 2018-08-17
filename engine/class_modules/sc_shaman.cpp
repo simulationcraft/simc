@@ -7711,6 +7711,8 @@ void shaman_t::init_action_list_elemental()
   // Racials
   def->add_action( "blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
   def->add_action( "berserking,if=!talent.ascendance.enabled|buff.ascendance.up" );
+  def->add_action( "fireblood,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
+  def->add_action( "ancestral_call,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
 
   // Pick APL to run
   def->add_action(
@@ -7864,10 +7866,18 @@ void shaman_t::init_action_list_enhancement()
   cds->add_action( this, "Bloodlust", generate_bloodlust_options(),
                    "Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options "
                    "'bloodlust_percent', and 'bloodlust_time'. " );
-  cds->add_action( "berserking,if=(talent.ascendance.enabled&buff.ascendance.up)|(talent.elemental_spirits.enabled&feral_spirit.remains>5)|(!talent.ascendance.enabled&!talent.elemental_spirits.enabled)" );
-  cds->add_action( "blood_fury,if=(talent.ascendance.enabled&(buff.ascendance.up|cooldown.ascendance.remains>50))|(!talent.ascendance.enabled&(feral_spirit.remains>5|cooldown.feral_spirit.remains>50))" );
-  cds->add_action( "fireblood,if=(talent.ascendance.enabled&(buff.ascendance.up|cooldown.ascendance.remains>50))|(!talent.ascendance.enabled&(feral_spirit.remains>5|cooldown.feral_spirit.remains>50))" );
-  cds->add_action( "ancestral_call,if=(talent.ascendance.enabled&(buff.ascendance.up|cooldown.ascendance.remains>50))|(!talent.ascendance.enabled&(feral_spirit.remains>5|cooldown.feral_spirit.remains>50))" );
+  cds->add_action(
+      "berserking,if=(talent.ascendance.enabled&buff.ascendance.up)|(talent.elemental_spirits.enabled&feral_spirit."
+      "remains>5)|(!talent.ascendance.enabled&!talent.elemental_spirits.enabled)" );
+  cds->add_action(
+      "blood_fury,if=(talent.ascendance.enabled&(buff.ascendance.up|cooldown.ascendance.remains>50))|(!talent."
+      "ascendance.enabled&(feral_spirit.remains>5|cooldown.feral_spirit.remains>50))" );
+  cds->add_action(
+      "fireblood,if=(talent.ascendance.enabled&(buff.ascendance.up|cooldown.ascendance.remains>50))|(!talent."
+      "ascendance.enabled&(feral_spirit.remains>5|cooldown.feral_spirit.remains>50))" );
+  cds->add_action(
+      "ancestral_call,if=(talent.ascendance.enabled&(buff.ascendance.up|cooldown.ascendance.remains>50))|(!talent."
+      "ascendance.enabled&(feral_spirit.remains>5|cooldown.feral_spirit.remains>50))" );
   cds->add_action(
       "potion,if=buff.ascendance.up|!talent.ascendance.enabled&feral_spirit.remains>5|target.time_to_die<=60" );
   cds->add_action( this, "Feral Spirit" );
