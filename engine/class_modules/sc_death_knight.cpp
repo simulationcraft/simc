@@ -6778,11 +6778,6 @@ void death_knight_t::create_actions()
       active_spells.freezing_death = new freezing_death_t( this );
     }
 
-    if ( azerite.glacial_contagion.enabled() )
-    {
-      active_spells.glacial_contagion = new glacial_contagion_t( this );
-    }
-
     if ( talent.inexorable_assault -> ok() )
     {
       active_spells.inexorable_assault = new inexorable_assault_damage_t( this );
@@ -6799,17 +6794,22 @@ void death_knight_t::create_actions()
     if ( talent.bursting_sores -> ok() )
     {
       active_spells.bursting_sores = new bursting_sores_t( this );
-    } 
-
-    if ( azerite.last_surprise.enabled() )
-    {
-      active_spells.last_surprise = new last_surprise_t( this );
     }
   }
-  // Shared
+
   if ( azerite.bone_spike_graveyard.enabled() )
   {
     active_spells.bone_spike_graveyard = new bone_spike_graveyard_t( this );
+  }
+
+  if ( azerite.glacial_contagion.enabled() )
+  {
+    active_spells.glacial_contagion = new glacial_contagion_t( this );
+  }
+
+  if ( azerite.last_surprise.enabled() )
+  {
+    active_spells.last_surprise = new last_surprise_t( this );
   }
 
   player_t::create_actions();
