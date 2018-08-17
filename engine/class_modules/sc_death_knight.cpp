@@ -5529,7 +5529,7 @@ struct outbreak_debuff_t : public death_knight_spell_t
   const spell_data_t* outbreak_base;
 
   outbreak_debuff_t( death_knight_t* p, virulent_plague_t* vp ) :
-    death_knight_spell_t( "outbreak_driver", p, p -> find_spell( 196782 ) ),
+    death_knight_spell_t( "outbreak_driver", p, dbc::find_spell( p, 196782 ) ),
     spreader( new outbreak_spreader_t( p, vp ) ),
     outbreak_base( p -> spec.outbreak )
   {
