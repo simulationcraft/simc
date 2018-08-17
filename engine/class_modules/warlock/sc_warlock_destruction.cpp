@@ -523,7 +523,7 @@ namespace warlock {
       {
         timespan_t h = spell_t::execute_time();
 
-        if (p()->buffs.backdraft->check())
+        if (p()->buffs.backdraft->check() && !p()->buffs.chaotic_inferno->check() )
           h *= backdraft_cast_time;
 
         if (p()->buffs.chaotic_inferno->check())
@@ -539,7 +539,7 @@ namespace warlock {
         if (t == timespan_t::zero())
           return t;
 
-        if (p()->buffs.backdraft->check())
+        if (p()->buffs.backdraft->check() && !p()->buffs.chaotic_inferno->check() )
           t *= backdraft_gcd;
 
         if (t < min_gcd)
@@ -554,18 +554,18 @@ namespace warlock {
 
         p()->buffs.chaotic_inferno->decrement();
 
-        if (execute_state->target == p()->havoc_target)
+        if ( execute_state->target == p()->havoc_target )
           havocd = true;
 
-        if(!havocd)
+        if ( !havocd && !p()->buffs.chaotic_inferno->check() )
           p()->buffs.backdraft->decrement();
 
-        if (p()->sets->has_set_bonus(WARLOCK_DESTRUCTION, T20, B2))
-          p()->resource_gain(RESOURCE_SOUL_SHARD, 0.1, p()->gains.destruction_t20_2pc);
+        if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T20, B2 ) )
+          p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.destruction_t20_2pc );
 
-        if (!havocd && p()->talents.fire_and_brimstone->ok())
+        if ( !havocd && p()->talents.fire_and_brimstone->ok() )
         {
-          fnb_action->set_target(execute_state->target);
+          fnb_action->set_target( execute_state->target );
           fnb_action->execute();
         }
         havocd = false;
