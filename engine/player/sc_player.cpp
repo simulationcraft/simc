@@ -10264,6 +10264,7 @@ std::string player_t::create_profile( save_e stype )
 void player_t::copy_from( player_t* source )
 {
   origin_str      = source->origin_str;
+  profile_source_ = source->profile_source_;
   true_level      = source->true_level;
   race_str        = source->race_str;
   timeofday       = source->timeofday;
