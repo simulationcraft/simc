@@ -1020,7 +1020,7 @@ struct rogue_attack_t : public melee_attack_t
   { return energize_type != ENERGIZE_NONE && energize_resource == RESOURCE_COMBO_POINT; }
 
   virtual double proc_chance_main_gauche() const
-  { return p() -> cache.mastery_value(); }
+  { return p()->mastery.main_gauche->proc_chance(); }
 
   // Generic rules for snapshotting the Nightstalker pmultiplier, default to DoTs only
   virtual bool snapshots_nightstalker() const
@@ -1105,7 +1105,11 @@ struct rogue_attack_t : public melee_attack_t
     // Subtlety
     if ( p()->mastery.executioner->ok() && data().affected_by( p()->mastery.executioner->effectN( 2 ) ) )
     {
-      m *= 1.0 + p()->cache.mastery_value();
+      // 08/17/2018 - Mastery: Executioner has a different coefficient for periodic
+      if ( p()->bugs )
+        m *= 1.0 + p()->cache.mastery() * p()->mastery.executioner->effectN( 2 ).mastery_value();
+      else
+        m *= 1.0 + p()->cache.mastery_value();
     }
 
     if ( p()->buffs.symbols_of_death->up() && data().affected_by( p()->buffs.symbols_of_death->data().effectN( 2 ) ) )
@@ -1301,19 +1305,19 @@ struct main_gauche_t : public rogue_attack_t
   main_gauche_t( rogue_t* p ) :
     rogue_attack_t( "main_gauche", p, p -> find_spell( 86392 ) )
   {
-    attack_power_mod.direct = p -> mastery.main_gauche -> ok() ? 1.0 : 0.0; // Mastery mod below
     special = background = may_crit = true;
     proc = true; // it's proc; therefore it cannot trigger main_gauche for chain-procs
   }
 
-  double action_multiplier() const override
+  double attack_direct_power_coefficient( const action_state_t* s ) const override
   {
-    double m = rogue_attack_t::action_multiplier();
+    double ap = rogue_attack_t::attack_direct_power_coefficient( s );
 
-    // TEMP, very close to alpha value
-    m *= 2.0 * p() -> cache.mastery_value();
+    // Main Gauche is not set up like most masteries as it is a flat mod instead of a percent mod
+    // Need to reference the 2nd effect and directly apply the sp_coeff instead of dividing by 100
+    ap += p()->cache.mastery() * p()->mastery.main_gauche->effectN( 2 ).sp_coeff();
 
-    return m;
+    return ap;
   }
 
   bool procs_combat_potency() const override
@@ -6911,7 +6915,7 @@ void rogue_t::init_spells()
   spec.shuriken_combo       = find_specialization_spell( "Shuriken Combo" );
   spec.t20_2pc_subtlety     = sets->has_set_bonus( ROGUE_SUBTLETY, T20, B2 ) ?
                                 sets->set( ROGUE_SUBTLETY, T20, B2 ) : spell_data_t::not_found();
-
+  
   // Masteries
   mastery.potent_assassin   = find_mastery_spell( ROGUE_ASSASSINATION );
   mastery.main_gauche       = find_mastery_spell( ROGUE_OUTLAW );
