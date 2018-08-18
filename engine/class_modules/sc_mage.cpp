@@ -6030,7 +6030,7 @@ void mage_t::create_buffs()
                                -> set_default_value( azerite.tunnel_of_ice.value() );
   buffs.winters_reach      = make_buff( this, "winters_reach", find_spell( 273347 ) )
                                -> set_chance( azerite.winters_reach.spell_ref().effectN( 2 ).percent() )
-                               -> set_default_value( azerite.winters_reach.value() * ( 0.25 + 0.25 / azerite.winters_reach.n_items() ) );
+                               -> set_default_value( azerite.winters_reach.value() * ( 0.5 + 0.5 / azerite.winters_reach.n_items() ) );
 
   // Misc
   // N active GBoWs are modeled by a single buff that gives N times as much mana.
