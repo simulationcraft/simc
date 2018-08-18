@@ -1941,8 +1941,8 @@ struct icicle_t : public frost_mage_spell_t
     }
   }
 
-  virtual double spell_direct_power_coefficient( const action_state_t* ) const override
-  { return spell_power_mod.direct + icicle_sp_coefficient(); }
+  virtual double spell_direct_power_coefficient( const action_state_t* s ) const override
+  { return frost_mage_spell_t::spell_direct_power_coefficient( s ) + icicle_sp_coefficient(); }
 };
 
 // Presence of Mind Spell ===================================================
@@ -2074,11 +2074,15 @@ struct arcane_barrage_t : public arcane_mage_spell_t
     return da;
   }
 
+  virtual double spell_direct_power_coefficient( const action_state_t* s ) const override
+  {
+    // This is a hacky way of making sure AC applies before bonus_da.
+    return arcane_mage_spell_t::spell_direct_power_coefficient( s ) * arcane_charge_damage_bonus( true );
+  }
+
   virtual double action_multiplier() const override
   {
     double am = arcane_mage_spell_t::action_multiplier();
-
-    am *= arcane_charge_damage_bonus( true );
 
     if ( p() -> talents.resonance -> ok() )
     {
