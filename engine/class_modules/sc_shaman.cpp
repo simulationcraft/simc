@@ -701,6 +701,7 @@ public:
   void trigger_smoldering_heart( double cost );
   void trigger_natural_harmony( const action_state_t* );
   void trigger_strength_of_earth( const action_state_t* );
+  void trigger_primal_primer( const action_state_t* );
 
   // Legendary
   void trigger_eye_of_twisting_nether( const action_state_t* state );
@@ -1384,8 +1385,9 @@ public:
   bool may_proc_hot_hand;
   bool may_proc_icy_edge;
   bool may_proc_strength_of_earth;
+  bool may_proc_primal_primer;
 
-  proc_t *proc_wf, *proc_ft, *proc_fb, *proc_mw, *proc_sb, *proc_ls, *proc_hh;
+  proc_t *proc_wf, *proc_ft, *proc_fb, *proc_mw, *proc_sb, *proc_ls, *proc_hh, *proc_pp;
 
   shaman_attack_t( const std::string& token, shaman_t* p, const spell_data_t* s )
     : base_t( token, p, s ),
@@ -1398,6 +1400,7 @@ public:
       may_proc_hot_hand( p->talent.hot_hand->ok() ),
       may_proc_icy_edge( false ),
       may_proc_strength_of_earth( true ),
+      may_proc_primal_primer( true ),
       proc_wf( nullptr ),
       proc_ft( nullptr ),
       proc_fb( nullptr ),
@@ -1481,6 +1484,11 @@ public:
       proc_wf = player->get_proc( std::string( "Windfury: " ) + full_name() );
     }
 
+    if ( may_proc_primal_primer )
+    {
+      proc_pp = player->get_proc( std::string( "Primal Primer: " ) + full_name() );
+    }
+
     base_t::init_finished();
   }
 
@@ -1505,6 +1513,7 @@ public:
     p()->trigger_lightning_shield( state );
     p()->trigger_hot_hand( state );
     p()->trigger_icy_edge( state );
+    p()->trigger_primal_primer( state );
 
     // Azerite
     p()->trigger_strength_of_earth( state );
@@ -2737,19 +2746,6 @@ struct flametongue_weapon_spell_t : public shaman_spell_t
       attack_power_mod.direct = 0.044;
     }
   }
-
-  void impact( action_state_t* state ) override
-  {
-    shaman_spell_t::impact( state );
-
-    if ( state->result_amount > 0 )
-    {
-      if ( p()->azerite.primal_primer.ok() )
-      {
-        td( state->target )->debuff.primal_primer->trigger();
-      }
-    }
-  }
 };
 
 struct searing_assault_t : public shaman_spell_t
@@ -3591,6 +3587,7 @@ struct stormstrike_base_t : public shaman_attack_t
     shaman_attack_t::init();
     may_proc_flametongue = may_proc_windfury = may_proc_stormbringer = may_proc_frostbrand = false;
     may_proc_strength_of_earth                                                             = true;
+    may_proc_primal_primer = false;
   }
 
   void update_ready( timespan_t cd_duration = timespan_t::min() ) override
@@ -4195,12 +4192,20 @@ struct fury_of_air_t : public shaman_spell_t
   }
 };
 
+// TODO: Convert to shaman_spell_t, it is a spell, not an attack
 struct earthen_spike_t : public shaman_attack_t
 {
   earthen_spike_t( shaman_t* player, const std::string& options_str )
     : shaman_attack_t( "earthen_spike", player, player->talent.earthen_spike )
   {
     parse_options( options_str );
+  }
+
+  void init() override
+  {
+    shaman_attack_t::init();
+
+    may_proc_primal_primer = false;
   }
 
   void impact( action_state_t* s ) override
@@ -7071,6 +7076,36 @@ void shaman_t::trigger_hot_hand( const action_state_t* state )
 
   buff.hot_hand->trigger();
   attack->proc_hh->occur();
+}
+
+void shaman_t::trigger_primal_primer( const action_state_t* state )
+{
+  assert( debug_cast<shaman_attack_t*>( state->action ) != nullptr &&
+      "Primal primer called on invalid action type" );
+  shaman_attack_t* attack = debug_cast<shaman_attack_t*>( state->action );
+
+  if ( !azerite.primal_primer.enabled() )
+  {
+    return;
+  }
+
+  if ( !attack->may_proc_primal_primer )
+  {
+    return;
+  }
+
+  if ( !state->result_amount )
+  {
+    return;
+  }
+
+  if ( !buff.flametongue->up() )
+  {
+    return;
+  }
+
+  get_target_data( state->target )->debuff.primal_primer->trigger();
+  attack->proc_pp->occur();
 }
 
 // TODO: Target swaps
