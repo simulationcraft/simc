@@ -26,8 +26,7 @@ actions.precombat+=/augmentation
 actions.precombat+=/arcane_intellect
 actions.precombat+=/summon_arcane_familiar
 # conserve_mana is the mana percentage we want to go down to during conserve. It needs to leave enough room to worst case scenario spam AB only during AP.
-actions.precombat+=/variable,name=conserve_mana,op=set,value=35,if=talent.overpowered.enabled
-actions.precombat+=/variable,name=conserve_mana,op=set,value=45,if=!talent.overpowered.enabled
+actions.precombat+=/variable,name=conserve_mana,op=set,value=60
 actions.precombat+=/snapshot_stats
 actions.precombat+=/mirror_image
 actions.precombat+=/potion
@@ -58,15 +57,17 @@ actions.burn+=/blood_fury
 actions.burn+=/berserking
 actions.burn+=/fireblood
 actions.burn+=/ancestral_call
-actions.burn+=/presence_of_mind
+actions.burn+=/presence_of_mind,if=buff.rune_of_power.remains<=buff.presence_of_mind.max_stack*action.arcane_blast.execute_time|buff.arcane_power.remains<=buff.presence_of_mind.max_stack*action.arcane_blast.execute_time
+actions.burn+=/potion,if=buff.arcane_power.up&(buff.berserking.up|buff.blood_fury.up|!(race.troll|race.orc))
 actions.burn+=/arcane_orb,if=buff.arcane_charge.stack=0|(active_enemies<3|(active_enemies<2&talent.resonance.enabled))
 actions.burn+=/arcane_barrage,if=(active_enemies>=3|(active_enemies>=2&talent.resonance.enabled))&(buff.arcane_charge.stack=buff.arcane_charge.max_stack)
 actions.burn+=/arcane_explosion,if=active_enemies>=3|(active_enemies>=2&talent.resonance.enabled)
-actions.burn+=/arcane_missiles,if=buff.clearcasting.react&mana.pct<=95,chain=1
+# Ignore Arcane Missiles during Arcane Power, aside from some very specific exceptions, like not having Overpowered talented & running 3x Arcane Pummeling.
+actions.burn+=/arcane_missiles,if=buff.clearcasting.react&active_enemies<3&(talent.amplification.enabled|(!talent.overpowered.enabled&azerite.arcane_pummeling.rank>=2)|buff.arcane_power.down),chain=1
 actions.burn+=/arcane_blast
 # Now that we're done burning, we can update the average_burn_length with the length of this burn.
 actions.burn+=/variable,name=average_burn_length,op=set,value=(variable.average_burn_length*variable.total_burns-variable.average_burn_length+(burn_phase_duration))%variable.total_burns
-actions.burn+=/evocation,interrupt_if=mana.pct>=97|(buff.clearcasting.react&mana.pct>=92)
+actions.burn+=/evocation,interrupt_if=mana.pct>=85,interrupt_immediate=1
 # For the rare occasion where we go oom before evocation is back up. (Usually because we get very bad rng so the burn is cut very short)
 actions.burn+=/arcane_barrage
 
@@ -76,7 +77,7 @@ actions.conserve+=/presence_of_mind,if=set_bonus.tier20_2pc&buff.arcane_charge.s
 actions.conserve+=/nether_tempest,if=(refreshable|!ticking)&buff.arcane_charge.stack=buff.arcane_charge.max_stack&buff.rune_of_power.down&buff.arcane_power.down
 actions.conserve+=/arcane_orb,if=buff.arcane_charge.stack<=2&(cooldown.arcane_power.remains>10|active_enemies<=2)
 # Arcane Blast shifts up in priority when running rule of threes.
-actions.conserve+=/arcane_blast,if=buff.rule_of_threes.up&buff.arcane_charge.stack>=3
+actions.conserve+=/arcane_blast,if=buff.rule_of_threes.up&buff.arcane_charge.stack>3
 actions.conserve+=/rune_of_power,if=buff.arcane_charge.stack=buff.arcane_charge.max_stack&(full_recharge_time<=execute_time|recharge_time<=cooldown.arcane_power.remains|target.time_to_die<=cooldown.arcane_power.remains)
 actions.conserve+=/arcane_missiles,if=mana.pct<=95&buff.clearcasting.react,chain=1
 # During conserve, we still just want to continue not dropping charges as long as possible.So keep 'burning' as long as possible (aka conserve_mana threshhold) and then swap to a 4x AB->Abarr conserve rotation. This is mana neutral for RoT, mana negative with arcane familiar. If we do not have 4 AC, we can dip slightly lower to get a 4th AC.
