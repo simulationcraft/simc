@@ -6302,8 +6302,7 @@ void mage_t::apl_precombat()
   if ( specialization() == MAGE_ARCANE )
   {
     precombat -> add_action( "summon_arcane_familiar" );
-    precombat -> add_action( "variable,name=conserve_mana,op=set,value=35,if=talent.overpowered.enabled", "conserve_mana is the mana percentage we want to go down to during conserve. It needs to leave enough room to worst case scenario spam AB only during AP." );
-    precombat -> add_action( "variable,name=conserve_mana,op=set,value=45,if=!talent.overpowered.enabled" );
+    precombat -> add_action( "variable,name=conserve_mana,op=set,value=60", "conserve_mana is the mana percentage we want to go down to during conserve. It needs to leave enough room to worst case scenario spam AB only during AP." );
   }
   // Snapshot Stats
   precombat -> add_action( "snapshot_stats" );
@@ -6416,14 +6415,15 @@ void mage_t::apl_arcane()
     }
     burn -> add_action( racial_actions[ i ] );
   }
-  burn -> add_action( this, "Presence of Mind" );
+  burn -> add_action( this, "Presence of Mind", "if=buff.rune_of_power.remains<=buff.presence_of_mind.max_stack*action.arcane_blast.execute_time|buff.arcane_power.remains<=buff.presence_of_mind.max_stack*action.arcane_blast.execute_time" );
+  burn -> add_action( "potion,if=buff.arcane_power.up&(buff.berserking.up|buff.blood_fury.up|!(race.troll|race.orc))");
   burn -> add_talent( this, "Arcane Orb", "if=buff.arcane_charge.stack=0|(active_enemies<3|(active_enemies<2&talent.resonance.enabled))" );
   burn -> add_action( this, "Arcane Barrage", "if=(active_enemies>=3|(active_enemies>=2&talent.resonance.enabled))&(buff.arcane_charge.stack=buff.arcane_charge.max_stack)" );
   burn -> add_action( this, "Arcane Explosion", "if=active_enemies>=3|(active_enemies>=2&talent.resonance.enabled)" );
-  burn -> add_action( this, "Arcane Missiles", "if=buff.clearcasting.react&mana.pct<=95,chain=1" );
+  burn -> add_action( this, "Arcane Missiles", "if=buff.clearcasting.react&active_enemies<3&(talent.amplification.enabled|(!talent.overpowered.enabled&azerite.arcane_pummeling.rank>=2)|buff.arcane_power.down),chain=1", "Ignore Arcane Missiles during Arcane Power, aside from some very specific exceptions, like not having Overpowered talented & running 3x Arcane Pummeling." );
   burn -> add_action( this, "Arcane Blast" );
   burn -> add_action( "variable,name=average_burn_length,op=set,value=(variable.average_burn_length*variable.total_burns-variable.average_burn_length+(burn_phase_duration))%variable.total_burns", "Now that we're done burning, we can update the average_burn_length with the length of this burn." );
-  burn -> add_action( this, "Evocation", "interrupt_if=mana.pct>=97|(buff.clearcasting.react&mana.pct>=92)" );
+  burn -> add_action( this, "Evocation", "interrupt_if=mana.pct>=85,interrupt_immediate=1" );
   burn -> add_action( this, "Arcane Barrage", "", "For the rare occasion where we go oom before evocation is back up. (Usually because we get very bad rng so the burn is cut very short)" );
 
 
@@ -6432,7 +6432,7 @@ void mage_t::apl_arcane()
   conserve -> add_action( this, "Presence of Mind", "if=set_bonus.tier20_2pc&buff.arcane_charge.stack=0" );
   conserve -> add_talent( this, "Nether Tempest", "if=(refreshable|!ticking)&buff.arcane_charge.stack=buff.arcane_charge.max_stack&buff.rune_of_power.down&buff.arcane_power.down" );
   conserve -> add_talent( this, "Arcane Orb", "if=buff.arcane_charge.stack<=2&(cooldown.arcane_power.remains>10|active_enemies<=2)" );
-  conserve -> add_action( this, "Arcane Blast", "if=buff.rule_of_threes.up&buff.arcane_charge.stack>=3", "Arcane Blast shifts up in priority when running rule of threes." );
+  conserve -> add_action( this, "Arcane Blast", "if=buff.rule_of_threes.up&buff.arcane_charge.stack>3", "Arcane Blast shifts up in priority when running rule of threes." );
   conserve -> add_talent( this, "Rune of Power", "if=buff.arcane_charge.stack=buff.arcane_charge.max_stack&(full_recharge_time<=execute_time|recharge_time<=cooldown.arcane_power.remains|target.time_to_die<=cooldown.arcane_power.remains)" );
   conserve -> add_action( this, "Arcane Missiles", "if=mana.pct<=95&buff.clearcasting.react,chain=1" );
   conserve -> add_action( this, "Arcane Barrage", "if=((buff.arcane_charge.stack=buff.arcane_charge.max_stack)&mana.pct<=variable.conserve_mana|(talent.arcane_orb.enabled&cooldown.arcane_orb.remains<=gcd&cooldown.arcane_power.remains>10))|mana.pct<=(variable.conserve_mana-10)", "During conserve, we still just want to continue not dropping charges as long as possible.So keep 'burning' as long as possible (aka conserve_mana threshhold) and then swap to a 4x AB->Abarr conserve rotation. This is mana neutral for RoT, mana negative with arcane familiar. If we do not have 4 AC, we can dip slightly lower to get a 4th AC." );
