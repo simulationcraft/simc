@@ -43,7 +43,6 @@ actions.cds+=/blood_fury,if=cooldown.coordinated_assault.remains>30
 actions.cds+=/ancestral_call,if=cooldown.coordinated_assault.remains>30
 actions.cds+=/fireblood,if=cooldown.coordinated_assault.remains>30
 actions.cds+=/lights_judgment
-actions.cds+=/arcane_torrent,if=cooldown.kill_command.remains>gcd.max&focus<=30
 actions.cds+=/potion,if=buff.coordinated_assault.up&(buff.berserking.up|buff.blood_fury.up|!race.troll&!race.orc)
 actions.cds+=/aspect_of_the_eagle,if=target.distance>=6
 

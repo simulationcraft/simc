@@ -5526,7 +5526,7 @@ void hunter_t::apl_bm()
 // Arcane torrent if nothing else is available
   if ( race == RACE_BLOOD_ELF )
   {
-    cds->add_action( "arcane_torrent" );
+    default_list -> add_action( "arcane_torrent" );
   }
 }
 
@@ -5686,7 +5686,7 @@ void hunter_t::apl_surv()
 // Arcane torrent if nothing else is available
   if ( race == RACE_BLOOD_ELF )
   {
-    cds->add_action( "arcane_torrent" );
+    cds -> add_action( "arcane_torrent" );
   }
 }
 
