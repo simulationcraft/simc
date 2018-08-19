@@ -33,7 +33,7 @@ race=troll
 spec=demonology
 role=spell
 position=ranged_back
-talents=2303021
+talents=2303031
 default_pet=felguard
 
 head=grasping_crown_of_the_deep,id=159252,bonus_id=1557/4819/4775/4786,azerite_powers=9/479/18/14/13

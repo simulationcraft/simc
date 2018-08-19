@@ -32,7 +32,7 @@ race=troll
 spec=demonology
 role=spell
 position=ranged_back
-talents=1103021
+talents=2303031
 default_pet=felguard
 
 head=stormlurkers_cowl,id=159244,bonus_id=4779/1512/4786/4775,azerite_powers=13/30/428
