@@ -284,10 +284,10 @@ namespace warlock
         // Accurate as of 08-24-2018. TOCHECK regularly. If any changes are made to this section of
         // code, please also update the Time_to_Shard expression in sc_warlock.cpp.
         double increment_max = 0.368;
-        
+
         double active_agonies = p()->get_active_dots( internal_id );
         increment_max *= std::pow(active_agonies, -2.0 / 3.0);
-        
+
         if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T19, B4 ) )
         {
           increment_max *= 1.0 + p()->sets->set( WARLOCK_AFFLICTION, T19, B4 )->effectN( 1 ).percent();
@@ -792,6 +792,13 @@ namespace warlock
         may_miss = false;
         dual = true;
         aoe = -1;
+      }
+
+      result_e calculate_result( action_state_t* s) const
+      {
+        if (s->chain_target == 0)
+          return RESULT_HIT;
+        return affliction_spell_t::calculate_result(s);
       }
     };
 
