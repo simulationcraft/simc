@@ -1828,13 +1828,14 @@ void buff_t::expire( timespan_t delay )
   }
 
   expire_override( expiration_stacks, remaining_duration );  // virtual expire call
+
+  current_value = 0;
+  aura_loss();
+
   if ( stack_change_callback )
   {
     stack_change_callback( this, old_stack, current_stack );
   }
-
-  current_value = 0;
-  aura_loss();
 
   adjust_haste();
 
