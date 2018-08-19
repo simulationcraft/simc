@@ -795,7 +795,8 @@ struct rogue_attack_t : public melee_attack_t
 {
   bool         requires_stealth;
   position_e   requires_position;
-  weapon_e     requires_weapon;
+  weapon_e     requires_weapon_type;
+  weapon_e     requires_weapon_group;
 
   // Secondary triggered ability, due to Weaponmaster talent or Death from Above. Secondary
   // triggered abilities cost no resources or incur cooldowns.
@@ -823,7 +824,8 @@ struct rogue_attack_t : public melee_attack_t
                   const std::string& options = std::string() ):
     melee_attack_t( token, p, s ),
     requires_stealth( false ), requires_position( POSITION_NONE ),
-    requires_weapon( WEAPON_NONE ), secondary_trigger( TRIGGER_NONE )
+    requires_weapon_type( WEAPON_NONE ), requires_weapon_group( WEAPON_NONE ),
+    secondary_trigger( TRIGGER_NONE )
   {
     parse_options( options );
 
@@ -2072,9 +2074,17 @@ inline bool rogue_attack_t::ready()
     if ( p() -> position() != requires_position )
       return false;
 
-  if ( requires_weapon != WEAPON_NONE )
-    if ( ! weapon || weapon -> type != requires_weapon )
+  if ( requires_weapon_type != WEAPON_NONE )
+  {
+    if ( !weapon || weapon->type != requires_weapon_type )
       return false;
+  }
+
+  if ( requires_weapon_group != WEAPON_NONE )
+  {
+    if ( !weapon || weapon->group() != requires_weapon_group )
+      return false;
+  }
 
   return true;
 }
@@ -2310,7 +2320,7 @@ struct backstab_t : public rogue_attack_t
   backstab_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "backstab", p, p -> find_specialization_spell( "Backstab" ), options_str )
   {
-    requires_weapon = WEAPON_DAGGER;
+    requires_weapon_type = WEAPON_DAGGER;
   }
 
   double bonus_da( const action_state_t* state ) const override
@@ -2492,7 +2502,8 @@ struct blade_rush_t : public rogue_attack_t
   blade_rush_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "blade_rush", p, p -> talent.blade_rush, options_str )
   {
-    blade_rush_attack = new blade_rush_attack_t( p );
+    requires_weapon_group = WEAPON_1H;
+    blade_rush_attack = new blade_rush_attack_t( p );  
   }
 
   void execute() override
@@ -2511,7 +2522,7 @@ struct blindside_t: public rogue_attack_t
   blindside_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "blindside", p, p -> talent.blindside, options_str )
   {
-    requires_weapon = WEAPON_DAGGER;
+    requires_weapon_type = WEAPON_DAGGER;
   }
 
   bool ready() override
@@ -2575,6 +2586,7 @@ struct dispatch_t: public rogue_attack_t
   dispatch_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "dispatch", p, p -> find_specialization_spell( "Dispatch" ), options_str )
   {
+    requires_weapon_group = WEAPON_1H;
   }
 
   bool procs_main_gauche() const override
@@ -3033,7 +3045,7 @@ struct gloomblade_t : public rogue_attack_t
   gloomblade_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "gloomblade", p, p -> talent.gloomblade, options_str )
   {
-    requires_weapon = WEAPON_DAGGER;
+    requires_weapon_type = WEAPON_DAGGER;
   }
 
   double bonus_da( const action_state_t* state ) const override
@@ -3620,7 +3632,7 @@ struct secret_technique_t : public rogue_attack_t
   secret_technique_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "secret_technique", p, p -> talent.secret_technique, options_str )
   {
-    requires_weapon = WEAPON_DAGGER;
+    requires_weapon_type = WEAPON_DAGGER;
     may_miss = false;
     aoe = -1;
 
@@ -3784,7 +3796,7 @@ struct shadowstrike_t : public rogue_attack_t
     shadow_satyrs_walk( nullptr )
   {
     may_dodge = may_block = may_parry = false;
-    requires_weapon = WEAPON_DAGGER;
+    requires_weapon_type = WEAPON_DAGGER;
     requires_stealth = true;
   }
 
@@ -4198,7 +4210,7 @@ struct toxic_blade_t : public rogue_attack_t
   toxic_blade_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "toxic_blade", p, p -> talent.toxic_blade, options_str )
   {
-    requires_weapon = WEAPON_DAGGER;
+    requires_weapon_type = WEAPON_DAGGER;
   }
 
   void impact( action_state_t* s ) override
