@@ -2068,21 +2068,17 @@ struct arcane_barrage_t : public arcane_mage_spell_t
     if ( p() -> azerite.arcane_pressure.enabled()
       && s -> target -> health_percentage() < p() -> azerite.arcane_pressure.spell_ref().effectN( 2 ).base_value() )
     {
-      da += p() -> azerite.arcane_pressure.value() * p() -> buffs.arcane_charge -> check();
+      da += p() -> azerite.arcane_pressure.value() * p() -> buffs.arcane_charge -> check() / arcane_charge_damage_bonus( true );
     }
 
     return da;
   }
 
-  virtual double spell_direct_power_coefficient( const action_state_t* s ) const override
-  {
-    // This is a hacky way of making sure AC applies before bonus_da.
-    return arcane_mage_spell_t::spell_direct_power_coefficient( s ) * arcane_charge_damage_bonus( true );
-  }
-
   virtual double action_multiplier() const override
   {
     double am = arcane_mage_spell_t::action_multiplier();
+
+    am *= arcane_charge_damage_bonus( true );
 
     if ( p() -> talents.resonance -> ok() )
     {
