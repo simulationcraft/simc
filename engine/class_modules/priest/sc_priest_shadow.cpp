@@ -1990,7 +1990,9 @@ void priest_t::create_buffs_shadow()
       make_buff( this, "harvested_thoughts", azerite.thought_harvester.spell()->effectN( 1 ).trigger() );
 
   buffs.whispers_of_the_damned =
-      make_buff( this, "whispers_of_the_damned", azerite.whispers_of_the_damned.spell()->effectN( 1 ).trigger() );
+      make_buff( this, "whispers_of_the_damned", azerite.whispers_of_the_damned.spell()->effectN( 1 ).trigger() )
+      ->set_duration( find_spell( 275726 )->duration() )
+      ->set_max_stack( find_spell( 275726 )->max_stacks() );
 }
 
 void priest_t::init_rng_shadow()
