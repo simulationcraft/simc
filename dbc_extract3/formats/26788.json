@@ -102,6 +102,21 @@
     { "data_type": "H", "field": "id_distribution", "formats": { "cpp": "%4u"    } },
     { "data_type": "B", "field": "curve_index",     "formats": { "cpp": "%2u"    } }
   ],
+  "Difficulty": [
+    { "data_type": "S", "field": "name" },
+    { "data_type": "B", "field": "instance_type" },
+    { "data_type": "B", "field": "index" },
+    { "data_type": "b", "field": "unk_4" },
+    { "data_type": "B", "field": "id_fallback_difficulty" },
+    { "data_type": "B", "field": "min_players" },
+    { "data_type": "B", "field": "max_players" },
+    { "data_type": "B", "field": "flags" },
+    { "data_type": "B", "field": "item_context" },
+    { "data_type": "B", "field": "id_toggle_difficulty" },
+    { "data_type": "H", "field": "unk_11" },
+    { "data_type": "H", "field": "unk_12" },
+    { "data_type": "H", "field": "unk_13" }
+  ],
   "ExpectedStat": [
     { "data_type": "i", "field": "id_expansion" },
     { "data_type": "f", "field": "creature_health" },
