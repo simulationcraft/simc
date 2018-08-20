@@ -5522,6 +5522,12 @@ void hunter_t::apl_bm()
   default_list -> add_talent( this, "Barrage,if=active_enemies>1" );
   default_list -> add_action( this, "Multi-Shot", "if=spell_targets>1&(pet.cat.buff.beast_cleave.remains<gcd.max|pet.cat.buff.beast_cleave.down)" );
   default_list -> add_action( this, "Cobra Shot", "if=(active_enemies<2|cooldown.kill_command.remains>focus.time_to_max)&(buff.bestial_wrath.up&active_enemies>1|cooldown.kill_command.remains>1+gcd&cooldown.bestial_wrath.remains>focus.time_to_max|focus-cost+focus.regen*(cooldown.kill_command.remains-1)>action.kill_command.cost)" );
+
+// Arcane torrent if nothing else is available
+  if ( race == RACE_BLOOD_ELF )
+  {
+    default_list -> add_action( "arcane_torrent" );
+  }
 }
 
 // Marksman Action List ======================================================================
@@ -5613,7 +5619,6 @@ void hunter_t::apl_surv()
   for ( std::string racial : { "berserking", "blood_fury", "ancestral_call", "fireblood" } )
     cds -> add_action( racial + ",if=cooldown.coordinated_assault.remains>30" );
   cds -> add_action( "lights_judgment" );
-  cds -> add_action( "arcane_torrent,if=cooldown.kill_command.remains>gcd.max&focus<=30" );
 
   // In-combat potion
   cds -> add_action( "potion,if=buff.coordinated_assault.up&(buff.berserking.up|buff.blood_fury.up|!race.troll&!race.orc)" );
@@ -5677,6 +5682,12 @@ void hunter_t::apl_surv()
   cleave -> add_talent( this, "Mongoose Bite", "target_if=max:debuff.latent_poison.stack" );
   cleave -> add_action( "raptor_strike_eagle,target_if=max:debuff.latent_poison.stack" );
   cleave -> add_action( this, "Raptor Strike", "target_if=max:debuff.latent_poison.stack" );
+
+// Arcane torrent if nothing else is available
+  if ( race == RACE_BLOOD_ELF )
+  {
+    default_list -> add_action( "arcane_torrent" );
+  }
 }
 
 // NO Spec Combat Action Priority List ======================================
