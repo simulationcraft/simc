@@ -2248,7 +2248,6 @@ public:
       const spelleffect_data_t& effect;
       bool& affects;
     } affects[] = {
-        {p()->talent.serenity->effectN( 1 ), affected_by.serenity},
         {p()->spec.brewmaster_monk->effectN( 1 ), affected_by.brewmaster.spell_da1},
         {p()->spec.brewmaster_monk->effectN( 6 ), affected_by.brewmaster.spell_da2},
         {p()->spec.brewmaster_monk->effectN( 7 ), affected_by.brewmaster.spell_da3},
@@ -3341,7 +3340,8 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     if ( p->sets->has_set_bonus( MONK_WINDWALKER, T19, B2 ) )
       cooldown->duration += p->sets->set( MONK_WINDWALKER, T19, B2 )->effectN( 1 ).time_value();
 
-    sef_ability = SEF_RISING_SUN_KICK;
+    sef_ability          = SEF_RISING_SUN_KICK;
+    affected_by.serenity = true;
 
     attack_power_mod.direct = 0;
 
@@ -3908,7 +3908,8 @@ struct fists_of_fury_t : public monk_melee_attack_t
   {
     parse_options( options_str );
 
-    sef_ability = SEF_FISTS_OF_FURY;
+    sef_ability           = SEF_FISTS_OF_FURY;
+    affected_by.serenity  = true;
 
     channeled = tick_zero = true;
     interrupt_auto_attack = true;
@@ -4078,6 +4079,8 @@ struct fist_of_the_white_tiger_t : public monk_melee_attack_t
     sef_ability                   = SEF_FIST_OF_THE_WHITE_TIGER_OH;
     ww_mastery                    = true;
     affected_by.sunrise_technique = true;
+    affected_by.serenity          = false;
+    cooldown->hasted              = false;
 
     parse_options( options_str );
     may_dodge = may_parry = may_block = true;
@@ -6288,6 +6291,7 @@ struct chi_wave_t : public monk_spell_t
 
     parse_options( options_str );
     hasted_ticks = harmful = false;
+    cooldown->hasted       = false;
     dot_duration           = timespan_t::from_seconds( player->talent.chi_wave->effectN( 1 ).base_value() );
     base_tick_time         = timespan_t::from_seconds( 1.0 );
     add_child( heal );
@@ -6366,6 +6370,7 @@ struct chi_burst_t : public monk_spell_t
     heal->stats   = stats;
     damage        = new chi_burst_damage_t( *player );
     damage->stats = stats;
+    cooldown->hasted      = false;
 
     interrupt_auto_attack = false;
     // Forcing the minimum GCD to 750 milliseconds for all 3 specs
