@@ -2502,6 +2502,7 @@ struct blade_rush_t : public rogue_attack_t
   blade_rush_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "blade_rush", p, p -> talent.blade_rush, options_str )
   {
+    weapon = &( p->main_hand_weapon );
     requires_weapon_group = WEAPON_1H;
     blade_rush_attack = new blade_rush_attack_t( p );  
   }
