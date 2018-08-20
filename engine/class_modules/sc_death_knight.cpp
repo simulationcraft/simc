@@ -2334,9 +2334,10 @@ struct death_knight_action_t : public Base
   gain_t* gain;
 
   bool hasted_gcd;
+  weapon_e weapon_req;
 
   death_knight_action_t( const std::string& n, death_knight_t* p, const spell_data_t* s = spell_data_t::nil() ) :
-    action_base_t( n, p, s ), gain( nullptr ), hasted_gcd( false )
+    action_base_t( n, p, s ), gain( nullptr ), hasted_gcd( false ), weapon_req( WEAPON_NONE )
   {
     this -> may_crit   = true;
     this -> may_glance = false;
@@ -2600,7 +2601,6 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
     may_glance = false;
   }
 
-  void consume_resource() override;
   void execute() override;
   void schedule_travel( action_state_t* state ) override;
   void impact( action_state_t* state ) override;
@@ -2630,19 +2630,10 @@ struct death_knight_spell_t : public death_knight_action_t<spell_t>
     may_crit = true;
   }
 
-  virtual void consume_resource() override;
-  virtual void execute() override;
   virtual void impact( action_state_t* state ) override;
-
-  virtual double composite_da_multiplier( const action_state_t* state ) const override
-  {
-    double m = base_t::composite_da_multiplier( state );
-
-    return m;
-  }
+  bool ready() override;
 
   void trigger_freezing_death( const action_state_t* state ) const;
-
 };
 
 struct death_knight_heal_t : public death_knight_action_t<heal_t>
@@ -2650,8 +2641,7 @@ struct death_knight_heal_t : public death_knight_action_t<heal_t>
   death_knight_heal_t( const std::string& n, death_knight_t* p,
                        const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, p, s )
-  {
-  }
+  { }
 };
 
 // ==========================================================================
@@ -2661,13 +2651,6 @@ struct death_knight_heal_t : public death_knight_action_t<heal_t>
 // ==========================================================================
 // Death Knight Attack Methods
 // ==========================================================================
-
-// death_knight_melee_attack_t::consume_resource() ==========================
-
-void death_knight_melee_attack_t::consume_resource()
-{
-  base_t::consume_resource();
-}
 
 // death_knight_melee_attack_t::execute() ===================================
 
@@ -2705,7 +2688,15 @@ void death_knight_melee_attack_t::impact( action_state_t* state )
 
 bool death_knight_melee_attack_t::ready()
 {
-  return base_t::ready();
+  if ( ! base_t::ready() )
+    return false;
+
+  if ( weapon_req == WEAPON_NONE )
+    return true;
+  if ( weapon && weapon -> group() == weapon_req )
+    return true;
+
+  return false;
 }
 
 // death_knight_melee_attack_t::consume_killing_machine() ===================
@@ -2788,7 +2779,7 @@ void death_knight_melee_attack_t::trigger_freezing_death ( const action_state_t*
   p() -> active_spells.freezing_death -> execute();
 }
 
-// death_knight_spell_t::trigger_razorice ===================================
+// death_knight_melee_attack_t::trigger_razorice ===================================
 
 void death_knight_melee_attack_t::trigger_razorice( const action_state_t* state ) const
 {
@@ -2827,7 +2818,6 @@ void death_knight_melee_attack_t::trigger_razorice( const action_state_t* state 
     return;
   }
 
-
   razorice_attack -> set_target( state -> target );
   razorice_attack -> execute();
 
@@ -2839,21 +2829,6 @@ void death_knight_melee_attack_t::trigger_razorice( const action_state_t* state 
 // Death Knight Spell Methods
 // ==========================================================================
 
-
-// death_knight_spell_t::consume_resource() =================================
-
-void death_knight_spell_t::consume_resource()
-{
-  base_t::consume_resource();
-}
-
-// death_knight_spell_t::execute() ==========================================
-
-void death_knight_spell_t::execute()
-{
-  base_t::execute();
-}
-
 // death_knight_spell_t::impact() ===========================================
 
 void death_knight_spell_t::impact( action_state_t* state )
@@ -2862,7 +2837,22 @@ void death_knight_spell_t::impact( action_state_t* state )
   trigger_freezing_death( state );
 }
 
-// death_knight_spell_t::trigger_freezing_death ===================
+// death_knight_spell_t::ready() ============================================
+
+bool death_knight_spell_t::ready()
+{
+  if ( ! base_t::ready() )
+    return false;
+
+  if ( weapon_req == WEAPON_NONE )
+    return true;
+  if ( weapon && weapon -> group() == weapon_req )
+    return true;
+
+  return false;
+}
+
+// death_knight_spell_t::trigger_freezing_death =============================
 
 void death_knight_spell_t::trigger_freezing_death ( const action_state_t* state ) const
 {
@@ -4722,6 +4712,8 @@ struct frostscythe_t : public death_knight_melee_attack_t
     weapon = &( player -> main_hand_weapon );
     aoe = -1;
 
+    weapon_req = WEAPON_1H;
+
     // T21 2P bonus : damage increase to Howling Blast, Frostscythe and Obliterate
     if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T21, B2 ) )
     {
@@ -4865,6 +4857,8 @@ struct frost_strike_t : public death_knight_melee_attack_t
     parse_options( options_str );
     may_crit = false;
 
+    weapon_req = WEAPON_1H;
+
     mh = new frost_strike_strike_t( p, "frost_strike_mh", &( p -> main_hand_weapon ), data().effectN( 2 ).trigger() );
     add_child( mh );
     oh = new frost_strike_strike_t( p, "frost_strike_offhand", &( p -> off_hand_weapon ), data().effectN( 3 ).trigger() );
@@ -4933,6 +4927,8 @@ struct glacial_advance_t : public death_knight_spell_t
     death_knight_spell_t( "glacial_advance", player, player -> talent.glacial_advance )
   {
     parse_options( options_str );
+
+    weapon_req = WEAPON_1H;
 
     execute_action = new glacial_advance_damage_t( player, options_str );
   }
@@ -5418,6 +5414,8 @@ struct obliterate_t : public death_knight_melee_attack_t
     mh( nullptr ), oh( nullptr )
   {
     parse_options( options_str );
+
+    weapon_req = WEAPON_1H;
 
     mh = new obliterate_strike_t( p, "obliterate_mh", &( p -> main_hand_weapon ), data().effectN( 2 ).trigger() );
     oh = new obliterate_strike_t( p, "obliterate_offhand", &( p -> off_hand_weapon ), data().effectN( 3 ).trigger() );
