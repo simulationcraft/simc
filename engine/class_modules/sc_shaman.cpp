@@ -3077,10 +3077,12 @@ struct windlash_t : public shaman_attack_t
     may_proc_maelstrom_weapon = true;  // Presumption, but should be safe
   }
 
+  // Windlash is a special ability, but treated as an autoattack in terms of proccing
+  proc_types proc_type() const override
+  { return PROC1_MELEE; }
+
   double target_armor( player_t* ) const override
-  {
-    return 0.0;
-  }
+  { return 0.0; }
 
   timespan_t execute_time() const override
   {
