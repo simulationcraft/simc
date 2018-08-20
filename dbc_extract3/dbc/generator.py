@@ -1619,9 +1619,10 @@ class SpellDataGenerator(DataGenerator):
           ( 217060, 1 ), # Rage of the Illidari buff
           ( 202446, 1 ), # Anguish damage spell
           ( 222703, 1 ), # Fel Barrage proc rate
-		  ( 247938, 1 ), # Chaos Blades primary spell, still used by Chaos Theory
+          ( 247938, 1 ), # Chaos Blades primary spell, still used by Chaos Theory
           ( 211796, 1 ), # Chaos Blades MH damage spell
-		  ( 211797, 1 ), # Chaos Blades OH damage spell
+          ( 211797, 1 ), # Chaos Blades OH damage spell
+          ( 275148, 1 ), # Unbound Chaos Azerite damage spell
 
           # Vengeance
           ( 203557, 2 ), # Felblade proc rate
