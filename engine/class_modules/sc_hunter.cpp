@@ -5508,7 +5508,7 @@ void hunter_t::apl_bm()
   default_list -> add_action( "potion,if=buff.bestial_wrath.up&buff.aspect_of_the_wild.up" );
 
   // Generic APL
-  default_list -> add_action( this, "Barbed Shot", "if=pet.cat.buff.frenzy.up&pet.cat.buff.frenzy.remains<=gcd.max" );
+  default_list -> add_action( this, "Barbed Shot", "if=full_recharge_time<gcd.max|pet.cat.buff.frenzy.up&pet.cat.buff.frenzy.remains<=gcd.max" );
   default_list -> add_talent( this, "A Murder of Crows" );
   default_list -> add_talent( this, "Spitting Cobra" );
   default_list -> add_talent( this, "Stampede", "if=buff.bestial_wrath.up|cooldown.bestial_wrath.remains<gcd|target.time_to_die<15" );
@@ -5518,16 +5518,12 @@ void hunter_t::apl_bm()
   default_list -> add_talent( this, "Chimaera Shot" );
   default_list -> add_action( this, "Kill Command" );
   default_list -> add_talent( this, "Dire Beast" );
-  default_list -> add_action( this, "Barbed Shot", "if=pet.cat.buff.frenzy.down&charges_fractional>1.4|full_recharge_time<gcd.max|target.time_to_die<9" );
+  default_list -> add_action( this, "Barbed Shot", "if=pet.cat.buff.frenzy.down&charges_fractional>1.8|target.time_to_die<9" );
   default_list -> add_talent( this, "Barrage,if=active_enemies>1" );
   default_list -> add_action( this, "Multi-Shot", "if=spell_targets>1&(pet.cat.buff.beast_cleave.remains<gcd.max|pet.cat.buff.beast_cleave.down)" );
-  default_list -> add_action( this, "Cobra Shot", "if=(active_enemies<2|cooldown.kill_command.remains>focus.time_to_max)&(buff.bestial_wrath.up&active_enemies>1|cooldown.kill_command.remains>1+gcd&cooldown.bestial_wrath.remains>focus.time_to_max|focus-cost+focus.regen*(cooldown.kill_command.remains-1)>action.kill_command.cost)" );
-
-// Arcane torrent if nothing else is available
-  if ( race == RACE_BLOOD_ELF )
-  {
-    default_list -> add_action( "arcane_torrent" );
-  }
+  default_list -> add_action( this, "Cobra Shot", "if=(active_enemies<2|cooldown.kill_command.remains>focus.time_to_max)&(focus-cost+focus.regen*(cooldown.kill_command.remains-1)>action.kill_command.cost|cooldown.kill_command.remains>1+gcd)&cooldown.kill_command.remains>1" );
+  // Arcane torrent if nothing else is available
+  default_list -> add_action( "arcane_torrent" );
 }
 
 // Marksman Action List ======================================================================
@@ -5614,6 +5610,8 @@ void hunter_t::apl_surv()
   default_list -> add_action( "call_action_list,name=wfi_st,if=active_enemies<2&talent.wildfire_infusion.enabled" );
   default_list -> add_action( "call_action_list,name=st,if=active_enemies<2&!talent.wildfire_infusion.enabled" );
   default_list -> add_action( "call_action_list,name=cleave,if=active_enemies>1" );
+  // Arcane torrent if nothing else is available
+  default_list -> add_action( "arcane_torrent" );
 
   // Racials
   for ( std::string racial : { "berserking", "blood_fury", "ancestral_call", "fireblood" } )
@@ -5682,12 +5680,6 @@ void hunter_t::apl_surv()
   cleave -> add_talent( this, "Mongoose Bite", "target_if=max:debuff.latent_poison.stack" );
   cleave -> add_action( "raptor_strike_eagle,target_if=max:debuff.latent_poison.stack" );
   cleave -> add_action( this, "Raptor Strike", "target_if=max:debuff.latent_poison.stack" );
-
-// Arcane torrent if nothing else is available
-  if ( race == RACE_BLOOD_ELF )
-  {
-    default_list -> add_action( "arcane_torrent" );
-  }
 }
 
 // NO Spec Combat Action Priority List ======================================
