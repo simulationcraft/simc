@@ -53,7 +53,7 @@ struct holy_fire_t final : public holy_fire_base_t
     if ( rank2->ok() )
     {
       dot_max_stack += rank2->effectN( 2 ).base_value();
-	}
+    }
   }
 };
 
