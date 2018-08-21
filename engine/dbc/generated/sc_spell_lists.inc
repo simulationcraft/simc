@@ -1208,7 +1208,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       198793, // Vengeful Retreat
            0,
     },
-    // Havoc tree, 10 abilities
+    // Havoc tree, 11 abilities
     {
       202446, // Anguish
       211796, // Chaos Blades
@@ -1220,6 +1220,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       208605, // Nemesis
       217070, // Rage of the Illidari
       281854, // Torment
+      275148, // Unbound Chaos
            0,
     },
     // Vengeance tree, 15 abilities
