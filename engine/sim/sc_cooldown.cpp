@@ -535,8 +535,9 @@ expr_t* cooldown_t::create_expression( const std::string& name_str )
         }
         else if ( cd -> recharge_event )
         {
+          auto duration = cooldown_duration( cd, recharge_event_t::cast( cd -> recharge_event ) -> duration_ );
           return cd -> current_charge_remains().total_seconds() +
-            ( cd -> charges - cd -> current_charge - 1 ) * cooldown_duration( cd ).total_seconds();
+            ( cd -> charges - cd -> current_charge - 1 ) * duration.total_seconds();
         }
         else
           return 0;
