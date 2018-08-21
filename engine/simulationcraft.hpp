@@ -1116,7 +1116,7 @@ struct sim_t : private sc_thread_t
     /// Gutripper base RPPM when target is above 30%
     double              gutripper_default_rppm = 1.0;
     /// Number of Battlefield Focus / Precision stacks to trigger on the enemy
-    int                 battlefield_debuff_stacks = 2;
+    int                 battlefield_debuff_stacks = 20;
   } bfa_opts;
 
   // Expansion specific data
