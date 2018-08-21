@@ -659,6 +659,7 @@ void item_t::parse_options()
   option_name_str = options_str;
   std::string remainder = "";
   std::string DUMMY_REFORGE; // TODO-WOD: Remove once profiles update
+  std::string DUMMY_CONTEXT; // not used by simc but used by 3rd parties (raidbots)
 
   std::string::size_type cut_pt = options_str.find_first_of( "," );
 
@@ -698,6 +699,7 @@ void item_t::parse_options()
   options.push_back(opt_string("relic_ilevel", option_relic_ilevel_str));
   options.push_back(opt_string("azerite_powers", option_azerite_powers_str));
   options.push_back(opt_string("azerite_level", option_azerite_level_str));
+  options.push_back(opt_string("context", DUMMY_CONTEXT));
 
   try
   {
