@@ -2733,7 +2733,8 @@ void player_t::create_buffs()
     buffs.ancestral_call[ 3 ] = make_buff<stat_buff_t>( this, "might_of_the_blackrock", find_spell( 274742 ) );
 
     buffs.fireblood = make_buff<stat_buff_t>( this, "fireblood", find_spell( 265226 ) )
-                        ->add_stat( primary_stat(), util::round( find_spell( 265226 ) -> effectN( 1 ).average( this, level() ) ) * 3 );
+                        ->add_stat( convert_hybrid_stat( STAT_STR_AGI_INT ),
+                          util::round( find_spell( 265226 ) -> effectN( 1 ).average( this, level() ) ) * 3 );
 
     buffs.archmages_greater_incandescence_agi =
         buff_creator_t( this, "archmages_greater_incandescence_agi", find_spell( 177172 ) )
