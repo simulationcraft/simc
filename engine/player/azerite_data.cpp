@@ -1431,7 +1431,9 @@ void earthlink( special_effect_t& effect )
   if ( !buff )
   {
     buff = make_buff<earthlink_t>( effect.player )
-      -> add_stat( effect.player -> primary_stat(), power.value( 1 ) )
+      -> add_stat( STAT_STRENGTH, power.value( 1 ) )
+      -> add_stat( STAT_AGILITY, power.value( 1 ) )
+      -> add_stat( STAT_INTELLECT, power.value( 1 ) )
       -> set_duration( effect.player -> sim -> max_time * 3 )
       -> set_period( driver -> effectN( 1 ).period() );
   }
