@@ -3440,12 +3440,10 @@ struct fel_rush_t : public demon_hunter_attack_t
   struct unbound_chaos_damage_t : public demon_hunter_attack_t
   {
     unbound_chaos_damage_t( demon_hunter_t* p )
-      : demon_hunter_attack_t( "unbound_chaos", p, p->azerite.unbound_chaos )
+      : demon_hunter_attack_t( "unbound_chaos", p, p->find_spell( 275148 ) )
     {
-      background = dual = true;
+      background = true;
       aoe = -1;
-      school = SCHOOL_CHAOS; // spell data says SCHOOL_PHYSICAL but this effect is scripted
-
       base_dd_min = base_dd_max = p->azerite.unbound_chaos.value( 1 );
     }
   };
@@ -5201,6 +5199,7 @@ void demon_hunter_t::apl_havoc()
   apl_normal->add_action( this, "Eye Beam", "if=active_enemies>1&(!raid_event.adds.exists|raid_event.adds.up)&!variable.waiting_for_momentum" );
   apl_normal->add_action( this, spec.death_sweep, "death_sweep", "if=variable.blade_dance" );
   apl_normal->add_action( this, "Blade Dance", "if=variable.blade_dance" );
+  apl_normal->add_action( this, "Fel Rush", "if=!talent.momentum.enabled&!talent.demon_blades.enabled&azerite.unbound_chaos.rank>0" );
   apl_normal->add_talent( this, "Felblade", "if=fury.deficit>=40" );
   apl_normal->add_action( this, "Eye Beam", "if=!talent.blind_fury.enabled&!variable.waiting_for_dark_slash&raid_event.adds.in>cooldown" );
   apl_normal->add_action( this, spec.annihilation, "annihilation", "if=(talent.demon_blades.enabled|!variable.waiting_for_momentum|fury.deficit<30|buff.metamorphosis.remains<5)"
@@ -5225,6 +5224,7 @@ void demon_hunter_t::apl_havoc()
   apl_demonic->add_action( this, spec.annihilation, "annihilation", "if=(talent.blind_fury.enabled|fury.deficit<30|buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance" );
   apl_demonic->add_action( this, "Chaos Strike", "if=(talent.blind_fury.enabled|fury.deficit<30)&!variable.pooling_for_meta&!variable.pooling_for_blade_dance" );
   apl_demonic->add_action( this, "Fel Rush", "if=talent.demon_blades.enabled&!cooldown.eye_beam.ready&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
+  apl_demonic->add_action( this, "Fel Rush", "if=!talent.demon_blades.enabled&!cooldown.eye_beam.ready&azerite.unbound_chaos.rank>0" );
   apl_demonic->add_action( this, "Demon's Bite" );
   apl_demonic->add_action( this, "Throw Glaive", "if=buff.out_of_range.up" );
   apl_demonic->add_action( this, "Fel Rush", "if=movement.distance>15|buff.out_of_range.up" );
