@@ -2456,7 +2456,11 @@ struct death_knight_action_t : public Base
   {
     auto ret = action_base_t::consume_cost_per_tick( dot );
 
-    p() -> trigger_t20_2pc_frost( this -> last_resource_cost );
+    if ( this -> last_resource_cost > 0 )
+    {
+      p() -> buffs.icy_talons -> trigger();
+      p() -> trigger_t20_2pc_frost( this -> last_resource_cost );
+    }
 
     return ret;
   }
