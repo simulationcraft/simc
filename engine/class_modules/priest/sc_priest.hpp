@@ -25,6 +25,7 @@ struct shadowy_apparition_spell_t;
 struct blessed_dawnlight_medallion_t;
 struct angelic_feather_t;
 struct divine_star_t;
+struct apotheosis_t;
 struct halo_t;
 struct levitate_t;
 struct power_infusion_t;
@@ -62,6 +63,7 @@ public:
   struct buffs_t
   {
     propagate_const<buff_t*> schism;
+	propagate_const<buff_t*> apotheosis;
   } buffs;
 
   priest_t& priest()
@@ -101,6 +103,7 @@ public:
     propagate_const<buff_t*> inner_focus;
 
     // Holy
+	propagate_const<buff_t*> apotheosis;
 
     // Shadow
     propagate_const<buff_t*> dispersion;
@@ -177,14 +180,14 @@ public:
 
     // Holy
 
+    const spell_data_t* enlightenment;
     const spell_data_t* trail_of_light;
     const spell_data_t* enduring_renewal;
-    const spell_data_t* enlightenment;
 
-    const spell_data_t* body_and_mind;  // NYI
+    const spell_data_t* angels_mercy;  // NYI
     const spell_data_t* perseverance;   // NYI
 
-    const spell_data_t* light_of_the_naaru;
+    const spell_data_t* cosmic_ripple;
     const spell_data_t* guardian_angel;
     const spell_data_t* after_life;  // NYI
 
@@ -196,7 +199,7 @@ public:
 
     const spell_data_t* benediction;
 
-    const spell_data_t* cosmic_ripple;
+    const spell_data_t* light_of_the_naaru;
     const spell_data_t* apotheosis;
     const spell_data_t* holy_word_salvation;
 
@@ -260,6 +263,7 @@ public:
     const spell_data_t* holy_word_chastise;
     const spell_data_t* holy_nova;
     const spell_data_t* holy_fire;
+	const spell_data_t* apotheosis;
     const spell_data_t* serendipity;
     const spell_data_t* divine_providence;
 
@@ -301,6 +305,7 @@ public:
 
     propagate_const<cooldown_t*> holy_word_chastise;
     propagate_const<cooldown_t*> holy_fire;
+	propagate_const<cooldown_t*> apotheosis;
   } cooldowns;
 
   // Gains

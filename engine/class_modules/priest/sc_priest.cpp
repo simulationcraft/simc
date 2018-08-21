@@ -298,15 +298,35 @@ struct smite_t final : public priest_spell_t
                 priest().cooldowns.holy_fire->reset(true);
             }
         }
-        if (s->result_amount > 0)
+        if (sim->debug)
         {
-            priest().cooldowns.holy_word_chastise->adjust((-1000 * holy_word_chastise->effectN(2).time_value()));
-            double test = -1000 * holy_word_chastise->effectN(2).base_value();
+             sim->out_debug.printf("%s checking for Apotheosis buff and Light of the Naaru talent. ", priest().name(), name());
+        }
+        if (s->result_amount > 0 && priest().buffs.apotheosis->up())
+        {
+            priest().cooldowns.holy_word_chastise->adjust((-3000 * holy_word_chastise->effectN(2).time_value()));
+            double cd1 = -3000 * holy_word_chastise->effectN(2).base_value();
             if (sim->debug)
             {
-                 sim->out_debug.printf("%s reduced cooldown of Chastise, by %f mS", priest().name(), test);
+                sim->out_debug.printf("%s adjusted cooldown of Chastise, by %f mS, with Apotheosis.", priest().name(), cd1);
             }
-        }
+		}
+		else if (s->result_amount > 0 && priest().talents.light_of_the_naaru->ok())
+		{
+			priest().cooldowns.holy_word_chastise->adjust((-1330 * holy_word_chastise->effectN(2).time_value()));
+			double cd2 = -1330 * holy_word_chastise->effectN(2).base_value();
+			if (sim->debug)
+			{
+				sim->out_debug.printf("%s adjusted cooldown of Chastise, by %f mS, with Light of the Naaru.", priest().name(), cd2);
+			}
+		}
+		else if (s->result_amount > 0) {
+        priest().cooldowns.holy_word_chastise->adjust((-1000 * holy_word_chastise->effectN(2).time_value()));
+        double cd3 = -1000 * holy_word_chastise->effectN(2).base_value();
+        if (sim->debug){
+           sim->out_debug.printf("%s adjusted cooldown of Chastise, by %f mS, without Apotheosis", priest().name(), cd3);
+			           }
+			 }
     }
 };
 
@@ -658,6 +678,7 @@ void priest_t::create_cooldowns()
   cooldowns.chakra             = get_cooldown( "chakra" );
   cooldowns.mindbender         = get_cooldown( "mindbender" );
   cooldowns.penance            = get_cooldown( "penance" );
+  cooldowns.apotheosis         = get_cooldown("apotheosis ");
   cooldowns.holy_fire          = get_cooldown( "holy_fire" );
   cooldowns.holy_word_chastise = get_cooldown( "holy_word_chastise" );
   cooldowns.power_word_shield  = get_cooldown( "power_word_shield" );
