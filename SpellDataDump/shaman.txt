@@ -9483,24 +9483,26 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 279523 | Target: Self (1)
 Description      : $@spelldesc278709
 
-Name             : Rumbling Tremors (id=279523) [Scaling Spell (-1)] 
+Name             : Rumbling Tremors (id=279523) [Scaling Spell (-1), Hidden] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 60 seconds
 Triggered by     : Rumbling Tremors (279522)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ..x..... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Periodic effect affected by haste (173), Scales with item level (354)
+                 : Hidden (7), Periodic effect affected by haste (173), Scales with item level (354)
 Effects          :
-#1 (id=735841)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Radius: 0 - 40 yards | Target: Custom (18) -> AOE friendly (31)
+#1 (id=735841)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 40 yards | Target: Custom (18) -> AOE friendly (31)
+                   Hotfixed: Type (6 -> 3), Sub Type (4 -> 0), Misc Value (127 -> 0)
 #2 (id=735842)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 278709
 #3 (id=735843)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
