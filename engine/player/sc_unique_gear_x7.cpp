@@ -432,8 +432,8 @@ enum resource_category : unsigned
 };
 
 // Add different resource systems here
-static const std::unordered_map<int, std::tuple<timespan_t, timespan_t>> __resource_map { {
-  { RESOURCE_HOLY_POWER, { timespan_t::from_seconds( 1.0 ), timespan_t::from_seconds( 2.0 ) } }
+static const std::unordered_map<int, std::tuple<double, double>> __resource_map { {
+  { RESOURCE_HOLY_POWER, { 1.0, 2.0 } }
 } };
 
 // TODO: Prot paladin "resource" must be special cased
@@ -459,7 +459,7 @@ struct bba_cb_t : public dbc_proc_callback_t
       return timespan_t::zero();
     }
 
-    return cost * std::get<c>( resource_tuple->second );
+    return timespan_t::from_seconds( cost * std::get<c>( resource_tuple->second ) );
   }
 
   void trigger( action_t* a, void* raw_state ) override
