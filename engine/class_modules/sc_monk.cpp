@@ -7199,8 +7199,8 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p )
             // set the percent of the max hp as the default value.
             ->set_default_value( p->spec.touch_of_karma->effectN( 3 ).percent() +
                                  ( p->talent.good_karma->ok() ? p->talent.good_karma->effectN( 1 ).percent() : 0 ) );
-    debuff.sunrise_technique = make_buff( *this, "sunrise_technique_debuff", p->find_spell( 273299 ) );
   }
+  debuff.sunrise_technique = make_buff( *this, "sunrise_technique_debuff", p->find_spell( 273299 ) );
 
   if ( p->specialization() == MONK_BREWMASTER )
   {
@@ -9337,8 +9337,8 @@ void monk_t::apl_combat_windwalker()
           "procs, or you are under the effect of bloodlust, or target time to die is greater or equal to 60" );
     else
       def->add_action(
-          "potion,if=buff.storm_earth_and_fire.up|trinket.proc.agility.react|buff.bloodlust.react|target.time_to_die<="
-          "60" );
+          "potion,if=buff.serenity.up|buff.storm_earth_and_fire.up|(!talent.serenity.enabled&trinket.proc.agility.react)"
+          "|buff.bloodlust.react|target.time_to_die<=60" );
   }
 
   def->add_action( this, "Touch of Death", "if=target.time_to_die<=9" );
