@@ -20,7 +20,6 @@ namespace
   * Azerite Traits
   ** Implement Vengeance traits
   ** Test all Havoc traits when available
-  ** Check if Momentum buffs Unbound Chaos 
 
 */
 
@@ -5283,7 +5282,6 @@ void demon_hunter_t::apl_vengeance()
   apl_normal->add_talent( this, "Felblade", "if=pain<=70" );
   apl_normal->add_talent( this, "Fracture", "if=soul_fragments<=3" );
   apl_normal->add_talent( this, "Fel Devastation" );
-  apl_normal->add_action( this, "Soul Cleave" );
   apl_normal->add_action( this, "Sigil of Flame" );
   apl_normal->add_action( this, "Shear" );
   apl_normal->add_action( this, "Throw Glaive" );
