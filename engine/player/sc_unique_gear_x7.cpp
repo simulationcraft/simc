@@ -77,6 +77,7 @@ namespace items
   void snowpelt_mangler( special_effect_t& );
   void vial_of_storms( special_effect_t& );
   void landois_scrutiny( special_effect_t& );
+  void bygone_bee_almanac( special_effect_t& );
   // 8.0.1 - Dungeon Trinkets
   void deadeye_spyglass( special_effect_t& );
   void tiny_electromental_in_a_jar( special_effect_t& );
@@ -420,6 +421,157 @@ void items::landois_scrutiny( special_effect_t& effect )
       effect.trigger() );
 
   new ls_cb_t( effect, haste_buff );
+}
+
+
+// Bygone Bee Almanac =======================================================
+
+enum resource_category : unsigned
+{
+  RC_BUFF = 0u, RC_COOLDOWN
+};
+
+// Add different resource systems here
+static const std::unordered_map<int, std::tuple<timespan_t, timespan_t>> __resource_map { {
+  { RESOURCE_HOLY_POWER, { timespan_t::from_seconds( 1.0 ), timespan_t::from_seconds( 2.0 ) } }
+} };
+
+// TODO: Prot paladin "resource" must be special cased
+struct bba_cb_t : public dbc_proc_callback_t
+{
+  bba_cb_t( const special_effect_t& effect ) :
+    dbc_proc_callback_t( effect.player, effect )
+  { }
+
+  template <resource_category c>
+  timespan_t value( action_state_t* state ) const
+  {
+    int resource = static_cast<int>( state->action->current_resource() );
+    double cost = state->action->last_resource_cost;
+    if ( cost == 0.0 )
+    {
+      return timespan_t::zero();
+    }
+
+    auto resource_tuple = __resource_map.find( resource );
+    if ( resource_tuple == __resource_map.end() )
+    {
+      return timespan_t::zero();
+    }
+
+    return cost * std::get<c>( resource_tuple->second );
+  }
+
+  void trigger( action_t* a, void* raw_state ) override
+  {
+    auto state = reinterpret_cast<action_state_t*>( raw_state );
+    if ( state->action->last_resource_cost == 0 )
+    {
+      return;
+    }
+
+    dbc_proc_callback_t::trigger( a, raw_state );
+  }
+
+  void reset() override
+  {
+    dbc_proc_callback_t::reset();
+
+    deactivate();
+  }
+};
+
+void items::bygone_bee_almanac( special_effect_t& effect )
+{
+  // TODO: Prot paladin "resource" must be special cased
+  struct bba_active_cb_t : public bba_cb_t
+  {
+    buff_t* bba_buff;
+
+    bba_active_cb_t( const special_effect_t& effect ) : bba_cb_t( effect ), bba_buff( nullptr )
+    { }
+
+    void initialize() override
+    {
+      bba_cb_t::initialize();
+
+      bba_buff = buff_t::find( listener, "process_improvement" );
+      assert( bba_buff );
+    }
+
+    void execute( action_t*, action_state_t* state ) override
+    {
+      timespan_t adjust = value<RC_BUFF>( state );
+      if ( adjust == timespan_t::zero() )
+      {
+        return;
+      }
+
+      bba_buff->extend_duration( listener, adjust );
+    }
+  };
+
+  // TODO: Prot paladin "resource" must be special cased
+  struct bba_inactive_cb_t : public bba_cb_t
+  {
+    cooldown_t* cd;
+
+    bba_inactive_cb_t( const special_effect_t& effect, const special_effect_t& base ) :
+      bba_cb_t( effect ), cd( listener->get_cooldown( base.cooldown_name() ) )
+    { }
+
+    void execute( action_t*, action_state_t* state ) override
+    {
+      timespan_t adjust = value<RC_COOLDOWN>( state );
+      if ( adjust == timespan_t::zero() )
+      {
+        return;
+      }
+
+      cd->adjust( -adjust );
+    }
+  };
+
+  auto bba_active_effect = new special_effect_t( effect.player );
+  bba_active_effect->name_str = "bba_active_driver_callback";
+  bba_active_effect->type = SPECIAL_EFFECT_EQUIP;
+  bba_active_effect->source = SPECIAL_EFFECT_SOURCE_ITEM;
+  bba_active_effect->proc_chance_ = 1.0;
+  bba_active_effect->proc_flags_ = PF_ALL_DAMAGE | PF_PERIODIC;
+  effect.player->special_effects.push_back( bba_active_effect );
+
+  auto bba_active = new bba_active_cb_t( *bba_active_effect );
+
+  auto bba_inactive_effect = new special_effect_t( effect.player );
+  bba_inactive_effect->name_str = "bba_inactive_driver_callback";
+  bba_inactive_effect->type = SPECIAL_EFFECT_EQUIP;
+  bba_inactive_effect->source = SPECIAL_EFFECT_SOURCE_ITEM;
+  bba_inactive_effect->proc_chance_ = 1.0;
+  bba_inactive_effect->proc_flags_ = PF_ALL_DAMAGE | PF_PERIODIC;
+  effect.player->special_effects.push_back( bba_inactive_effect );
+
+  auto bba_inactive = new bba_inactive_cb_t( *bba_inactive_effect, effect );
+  effect.custom_buff = create_buff<stat_buff_t>( effect.player, "process_improvement",
+      effect.trigger(), effect.item )
+    -> set_stack_change_callback( [ bba_active, bba_inactive ]( buff_t*, int, int new_ ) {
+        if ( new_ == 0 )
+        {
+          bba_active->deactivate();
+          bba_inactive->activate();
+        }
+        else
+        {
+          bba_inactive->deactivate();
+          bba_active->activate();
+        }
+    } );
+
+  // Note must be done after buff creation above
+  bba_active->initialize();
+  bba_inactive->initialize();
+
+  bba_active->deactivate();
+  bba_inactive->deactivate();
 }
 
 
@@ -1055,6 +1207,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 268517, items::snowpelt_mangler );
   register_special_effect( 268544, items::vial_of_storms );
   register_special_effect( 281544, items::landois_scrutiny );
+  register_special_effect( 281543, items::bygone_bee_almanac );
   register_special_effect( 266047, items::jes_howler );
   register_special_effect( 271374, items::razdunks_big_red_button );
   register_special_effect( 267402, items::merekthas_fang );
