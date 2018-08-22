@@ -662,9 +662,9 @@ public:
     }
 
     if ( ab::data().affected_by( p()->spec.fury_warrior->effectN( 1 ) ) )
-      ab::attack_power_mod.direct *= 1.0 + p()->spec.fury_warrior->effectN( 1 ).percent();
+      ab::base_dd_multiplier *= 1.0 + p()->spec.fury_warrior->effectN( 1 ).percent();
     if ( ab::data().affected_by( p()->spec.fury_warrior->effectN( 2 ) ) )
-      ab::attack_power_mod.tick *= 1.0 + p()->spec.fury_warrior->effectN( 2 ).percent();
+      ab::base_td_multiplier *= 1.0 + p()->spec.fury_warrior->effectN( 2 ).percent();
 
     if ( ab::data().affected_by( p()->spec.arms_warrior->effectN( 2 ) ) )
       ab::attack_power_mod.direct *= 1.0 + p()->spec.arms_warrior->effectN( 2 ).percent();
@@ -1105,13 +1105,24 @@ struct devastate_t : public warrior_attack_t
 
 // Melee Attack =============================================================
 
+struct reckless_flurry_t : warrior_attack_t
+{
+  reckless_flurry_t( warrior_t* p )
+    : warrior_attack_t( "reckless_flurry", p, p->find_spell( 283810 ) )
+  {
+    background  = true;
+    base_dd_min = base_dd_max = p->azerite.reckless_flurry.value( 2 );
+  }
+};
+
 struct melee_t : public warrior_attack_t
 {
+  warrior_attack_t* reckless_flurry;
   bool mh_lost_melee_contact, oh_lost_melee_contact;
   double base_rage_generation, arms_rage_multiplier, fury_rage_multiplier, seasoned_soldier_crit_mult;
   devastate_t* devastator;
   melee_t( const std::string& name, warrior_t* p )
-    : warrior_attack_t( name, p, spell_data_t::nil() ),
+    : warrior_attack_t( name, p, spell_data_t::nil() ), reckless_flurry( nullptr ),
       mh_lost_melee_contact( true ),
       oh_lost_melee_contact( true ),
       // arms and fury multipliers are both 1, adjusted by the spec scaling auras (x4 for Arms and x1 for Fury)
@@ -1134,6 +1145,10 @@ struct melee_t : public warrior_attack_t
     {
       devastator = new devastate_t( p, "" );
       add_child( devastator );
+    }
+    if ( p->azerite.reckless_flurry.ok() )
+    {
+      reckless_flurry = new reckless_flurry_t( p );
     }
   }
 
@@ -1180,15 +1195,6 @@ struct melee_t : public warrior_attack_t
     {
       oh_lost_melee_contact = false;
     }
-  }
-
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double b = warrior_attack_t::bonus_da( s ); // Reckless Fury gives full bonus to MH and half bonus to OH
-    if ( weapon->slot == SLOT_OFF_HAND )
-      b += p()->azerite.reckless_flurry.value( 2 )* 0.5;
-    else b += p()->azerite.reckless_flurry.value( 2 );
-    return b;
   }
 
   void execute() override
@@ -1239,6 +1245,17 @@ struct melee_t : public warrior_attack_t
           }
         }
       }
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warrior_attack_t::impact( s );
+
+    if ( reckless_flurry && result_is_hit( s->result ) )
+    {
+      reckless_flurry->set_target( s->target );
+      reckless_flurry->execute();
     }
   }
 
@@ -2728,7 +2745,7 @@ struct sweeping_strikes_t : public warrior_spell_t
 struct seismic_wave_t : warrior_attack_t
 {
   seismic_wave_t( warrior_t* p )
-    : warrior_attack_t( "seismic_wave", p, p->find_spell( 277639 ) )  // change to 278497 after regenerate
+    : warrior_attack_t( "seismic_wave", p, p->find_spell( 277639 ) )
   {
     aoe         = -1;
     background  = true;
