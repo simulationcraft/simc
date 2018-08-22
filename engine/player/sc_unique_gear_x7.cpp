@@ -433,7 +433,7 @@ enum resource_category : unsigned
 
 // Add different resource systems here
 static const std::unordered_map<int, std::tuple<double, double>> __resource_map { {
-  { RESOURCE_HOLY_POWER, { 1.0, 2.0 } }
+  { RESOURCE_HOLY_POWER, std::tuple<double, double> { 1.0, 2.0 } }
 } };
 
 // TODO: Prot paladin "resource" must be special cased
