@@ -230,6 +230,7 @@ void priest_t::generate_apl_holy_d()
     action_priority_list_t* precombat = get_action_priority_list("precombat");
 
     // Precombat actions
+	precombat->add_action("potion");
     precombat->add_action(this, "Smite");
 
     // On-Use Items
