@@ -2129,16 +2129,16 @@ void battlefield_focus_precision( special_effect_t& effect )
   struct bf_trigger_cb_t : public dbc_proc_callback_t
   {
     action_callback_t* damage_cb;
+    unsigned stacks;
 
-    bf_trigger_cb_t( const special_effect_t& effect, action_callback_t* cb ) :
-      dbc_proc_callback_t( effect.player, effect ), damage_cb( cb )
+    bf_trigger_cb_t( const special_effect_t& effect, action_callback_t* cb, unsigned stacks ) :
+      dbc_proc_callback_t( effect.player, effect ), damage_cb( cb ), stacks( stacks )
     { }
 
     void execute( action_t*, action_state_t* state ) override
     {
       auto td = listener->get_target_data( state->target );
-      td->debuff.battlefield_debuff->trigger(
-          listener->sim->bfa_opts.battlefield_debuff_stacks );
+      td->debuff.battlefield_debuff->trigger( stacks );
       damage_cb->activate();
     }
   };
@@ -2165,7 +2165,7 @@ void battlefield_focus_precision( special_effect_t& effect )
   secondary->type = effect.type;
   secondary->source = effect.source;
   // Note, we override the proc flags to be sourced from the actor, instead of the target's "taken"
-  secondary->proc_flags_ = PF_ALL_DAMAGE;
+  secondary->proc_flags_ = PF_ALL_DAMAGE | PF_PERIODIC;
   secondary->execute_action = unique_gear::create_proc_action<bf_damage_t>( effect.name(), effect,
       power );
 
@@ -2177,7 +2177,7 @@ void battlefield_focus_precision( special_effect_t& effect )
   // Fix the driver to point to the RPPM base spell
   effect.spell_id = effect.spell_id == 280627 ? 280854 : 280816;
 
-  new bf_trigger_cb_t( effect, trigger_cb );
+  new bf_trigger_cb_t( effect, trigger_cb, power.spell_ref().effectN( 2 ).base_value() );
 }
 
 } // Namespace special effects ends
