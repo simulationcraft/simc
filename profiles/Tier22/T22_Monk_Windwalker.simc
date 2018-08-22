@@ -2,10 +2,10 @@ monk="T22_Monk_Windwalker"
 source=default
 spec=windwalker
 level=120
-race=troll
+race=pandaren
 role=dps
 position=back
-talents=2022032
+talents=2022033
 
 # Default consumables
 potion=battle_potion_of_agility
@@ -87,6 +87,7 @@ actions.aoe+=/chi_wave,if=chi<=3&(cooldown.rising_sun_kick.remains>=5|cooldown.w
 actions.aoe+=/chi_wave
 
 actions.cd=invoke_xuen_the_white_tiger
+actions.cd+=/use_item,name=lustrous_golden_plumage
 actions.cd+=/blood_fury
 actions.cd+=/berserking
 # Use Arcane Torrent if you are missing at least 1 Chi and won't cap energy within 0.5 seconds
@@ -192,29 +193,29 @@ actions.st+=/chi_burst,if=energy.time_to_max>1&talent.serenity.enabled
 actions.st+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&!prev_gcd.1.energizing_elixir&(chi.max-chi>=2|energy.time_to_max<3)&!buff.serenity.up
 actions.st+=/chi_burst,if=chi.max-chi>=3&energy.time_to_max>1&!talent.serenity.enabled
 
-head=irontide_captains_hat,id=155888,bonus_id=1557/4819/4775/4786,azerite_powers=4/479/31/85/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=
-shoulders=mantle_of_fastidious_machinations,id=158304,bonus_id=1557/4819/4775/4786,azerite_powers=10/388/461/84/13
-back=fetid_horrors_tanglecloak,id=160643,bonus_id=4800/1507
-chest=cephalohide_jacket,id=159314,bonus_id=1557/4819/4775/4786,azerite_powers=10/479/18/85/13
-wrists=wristwraps_of_coursing_miasma,id=160621,bonus_id=4800/1507
-hands=gloves_of_descending_madness,id=160618,bonus_id=4800/1507
-waist=replicated_chitin_cord,id=160717,bonus_id=4800/1507
-legs=pathogenic_legwraps,id=160625,bonus_id=4800/1507
-feet=quarantine_protocol_treads,id=160624,bonus_id=4800/1507
-finger1=rotscour_ring,id=160645,bonus_id=4800/1507,enchant=pact_of_haste
-finger2=band_of_certain_annihilation,id=160646,bonus_id=4800/1507,enchant=pact_of_haste
-trinket1=kul_tiran_cannonball_runner,id=159628,bonus_id=1542/4779
-trinket2=frenetic_corpuscle,id=160648,bonus_id=4800/1507
-main_hand=lancet_of_the_deft_hand,id=160693,bonus_id=4800/1507,enchant=deadly_navigation
-off_hand=lancet_of_the_deft_hand,id=160693,bonus_id=4800/1507,enchant=versatile_navigation
+head=cowl_of_fluid_machinations,id=159302,bonus_id=4779/1512/4786/4775,azerite_powers=388/22/0/13
+neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524
+shoulders=goldtasseled_epaulets,id=159299,bonus_id=4779/1512/4786/4775,azerite_powers=388/22/0/13
+back=sporecallers_shroud,id=159292,bonus_id=4779/1512/4786
+chest=goresplattered_vest,id=159330,bonus_id=4779/1512/4786/4775,azerite_powers=388/38/0/13
+wrists=kulas_butchering_wristwraps,id=159300,bonus_id=4779/1512/4786
+hands=gloves_of_corrupted_waters,id=159321,bonus_id=4779/1512/4786
+waist=belt_of_gleaming_determination,id=158306,bonus_id=4779/1512/4786
+legs=leggings_of_the_galeforce_viper,id=159329,bonus_id=4779/1512/4786
+feet=besiegers_deckstalkers,id=159320,bonus_id=4779/1512/4786
+finger1=lord_waycrests_signet,id=158362,bonus_id=4779/1512/4786,enchant=pact_of_mastery
+finger2=thornwoven_band,id=162548,bonus_id=4779/1512/4786,enchant=pact_of_mastery
+trinket1=deadeye_spyglass,id=159623,bonus_id=4779/1512/4786
+trinket2=lustrous_golden_plumage,id=159617,bonus_id=4779/1512/4786
+main_hand=bilestained_crawg_tusks,id=159653,bonus_id=4779/1512/4786,enchant=deadly_navigation
+off_hand=bilestained_crawg_tusks,id=159653,bonus_id=4779/1512/4786,enchant=masterful_navigation
 
 # Gear Summary
-# gear_ilvl=385.25
-# gear_agility=4345
-# gear_stamina=7205
-# gear_crit_rating=772
-# gear_haste_rating=1207
-# gear_mastery_rating=720
-# gear_versatility_rating=303
-# gear_armor=1897
+# gear_ilvl=341.38
+# gear_agility=2883
+# gear_stamina=4465
+# gear_crit_rating=610
+# gear_haste_rating=468
+# gear_mastery_rating=391
+# gear_versatility_rating=809
+# gear_armor=1427
