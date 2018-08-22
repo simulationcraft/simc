@@ -1,4 +1,4 @@
-SimulationCraft 801-02 for World of Warcraft 8.0.1 bfa-BETA (wow build 26095)
+SimulationCraft 801-02 for World of Warcraft 8.0.1 Live (wow build 27404)
 
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
@@ -4151,8 +4151,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=298697)   : Apply Aura (6) | Unknown(395)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 5839 | Target: Self (1)
+#1 (id=298697)   : Apply Aura (6) | Periodic Trigger Spell (23): Into the Fray every 1 seconds
+                   Base Value: 10 | Scaled Value: 10 | Trigger Spell: 283938 | Target: Self (1)
+                   Hotfixed: Sub Type (395 -> 23), Period (0 -> 1000), Misc Value (5839 -> 0), Trigger Spell (0 -> 283938)
 Description      : You gain $202602s1% Haste for each enemy or ally within $s1 yards, up to ${$202602s1*$202602u}% Haste.
 
 Name             : Booming Voice (id=202743) [Spell Family (4), Passive, Hidden] 
@@ -6180,8 +6181,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=716157)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.055714) | Misc Value: 8 | Trigger Spell: 270653 | Target: Self (1)
+#1 (id=716157)   : Apply Aura (6) | Unknown(277)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.055714) | Trigger Spell: 270653 | Target: Self (1)
+                   Hotfixed: Sub Type (4 -> 277), Misc Value (8 -> 0)
 #2 (id=716158)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.016714) | Target: Self (1)
 Description      : Increases your movement speed by $s1% of your highest secondary rating, up to $s2%.
@@ -8003,5 +8005,26 @@ Effects          :
 #2 (id=741005)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.501426) | Target: Self (1)
 Description      : Your spells and abilities have a chance to grant you $s1 Mastery for $281843d. When this effect expires it jumps once to a nearby ally, granting them $s2 Mastery for $281844d.
+
+Name             : Into the Fray (id=283938) [Spell Family (4)] 
+Hotfixed         : NEW SPELL
+Class            : Warrior
+School           : Physical
+Spell Type       : None
+Triggered by     : Into the Fray (202603)
+Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ xx...... ........ 
+                 : .......x ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
+Effects          :
+#1 (id=744783)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: Custom (18) -> AOE Custom (8)
+                   Hotfixed: NEW EFFECT
+Description      : $@spelldesc202603
+Tooltip          : Haste increased by $s1%.
 
 
