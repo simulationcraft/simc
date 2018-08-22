@@ -83,6 +83,11 @@ enum streaking_stars_e {
   SS_SUNFIRE,
   SS_STARSURGE,
   SS_STELLAR_FLARE,
+  //These target the last hit enemy in game
+  SS_STARFALL,
+  SS_FORCE_OF_NATURE,
+  SS_FURY_OF_ELUNE,
+  SS_CELESTIAL_ALIGNMENT,
 };
 
 struct druid_td_t : public actor_target_data_t
@@ -1623,9 +1628,16 @@ public:
     {
       if (!compare_previous_streaking_stars(new_ability)&(p()->buff.celestial_alignment->check() || p()->buff.incarnation_moonkin->check()))
       {
-        // Trigger Streaking Stars
         action_state_t* ss_s = p()->active.streaking_stars->get_state();
-        ss_s->target = s->target;
+        //Check if the trigger has a target, otherwise use the actors target
+        if (s != nullptr)
+        {
+          ss_s->target = s->target;
+        }
+        else
+        {
+          ss_s->target = ab::target;
+        }
         p()->active.streaking_stars->snapshot_state(ss_s, DMG_DIRECT);
         p()->active.streaking_stars->schedule_execute(ss_s);
       }
@@ -5046,8 +5058,11 @@ struct celestial_alignment_t : public druid_spell_t
   void execute() override
   {
     druid_spell_t::execute(); // Do not change the order here.
-
+    
     p() -> buff.celestial_alignment -> trigger();
+
+    //Trigger after triggering the buff so the cast procs the spell
+    streaking_stars_trigger(SS_CELESTIAL_ALIGNMENT, nullptr);
   }
 
   virtual bool ready() override
@@ -5104,6 +5119,9 @@ struct fury_of_elune_t : public druid_spell_t
   void execute() override
   {
       druid_spell_t::execute();
+
+      streaking_stars_trigger(SS_FURY_OF_ELUNE, nullptr);
+
       timespan_t pulse_time = data().effectN(3).period();
       make_event<ground_aoe_event_t>(*sim, p(), ground_aoe_params_t()
           .target(execute_state->target)
@@ -5399,6 +5417,10 @@ struct incarnation_t : public druid_spell_t
       p() -> buff.jungle_stalker -> trigger();
     }
 
+    if (p()->buff.incarnation_moonkin->check())
+    {
+      streaking_stars_trigger(SS_CELESTIAL_ALIGNMENT, nullptr);
+    }
 
     if ( ! p() -> in_combat )
     {
@@ -6213,6 +6235,8 @@ struct starfall_t : public druid_spell_t
     }
     druid_spell_t::execute();
 
+    streaking_stars_trigger(SS_STARFALL, nullptr);
+
     make_event<ground_aoe_event_t>(*sim, p(), ground_aoe_params_t()
       .target(execute_state->target)
       .pulse_time(data().duration() / 9) //ticks 9 times
@@ -6512,6 +6536,8 @@ struct force_of_nature_t : public druid_spell_t
   virtual void execute() override
   {
     druid_spell_t::execute();
+
+    streaking_stars_trigger(SS_FORCE_OF_NATURE, nullptr);
 
     for ( size_t i = 0; i < p() -> force_of_nature.size(); i++ )
     {
