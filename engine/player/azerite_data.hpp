@@ -13,6 +13,8 @@
 
 #include "sc_timespan.hpp"
 
+#include "dbc/azerite.hpp"
+
 struct spell_data_t;
 struct item_t;
 struct player_t;
@@ -52,6 +54,8 @@ class azerite_power_t
   std::vector<unsigned>       m_ilevels;
   /// Cached scaled (total) value
   mutable std::vector<double> m_value;
+  /// Azerite power data entry (client data)
+  const azerite_power_entry_t* m_data;
 
   /// Helper to check if the combat rating penalty needs to be applied to the azerite spell effect
   bool check_combat_rating_penalty( size_t index = 1 ) const;
@@ -59,8 +63,8 @@ public:
   using azerite_value_fn_t = std::function<double(const azerite_power_t&)>;
 
   azerite_power_t();
-  azerite_power_t( const player_t* p, const spell_data_t* spell, const std::vector<const item_t*>& items );
-  azerite_power_t( const player_t* p, const spell_data_t* spell, const std::vector<unsigned>& ilevels );
+  azerite_power_t( const player_t* p, const azerite_power_entry_t* data, const std::vector<const item_t*>& items );
+  azerite_power_t( const player_t* p, const azerite_power_entry_t* data, const std::vector<unsigned>& ilevels );
 
   /// Implicit conversion to spell_data_t* object for easy use in accessors that accept spell data
   /// pointers
@@ -91,6 +95,8 @@ public:
   const std::vector<unsigned> ilevels() const;
   /// Number of items worn with this azerite power
   unsigned n_items() const;
+  /// Azerite power client data information
+  const azerite_power_entry_t* data() const;
 };
 
 namespace azerite

@@ -6,16 +6,18 @@ azerite_power_t::azerite_power_t() :
   m_player( nullptr ), m_spell( spell_data_t::not_found() )
 { }
 
-azerite_power_t::azerite_power_t( const player_t* p, const spell_data_t* spell, const std::vector<const item_t*>& items ) :
-  m_player( p ), m_spell( spell )
+azerite_power_t::azerite_power_t( const player_t* p, const azerite_power_entry_t* data,
+    const std::vector<const item_t*>& items ) :
+  m_player( p ), m_spell( p->find_spell( data->spell_id ) ), m_data( data )
 {
   range::for_each( items, [ this ]( const item_t* item ) {
     m_ilevels.push_back( item -> item_level() );
   } );
 }
 
-azerite_power_t::azerite_power_t( const player_t* p, const spell_data_t* spell, const std::vector<unsigned>& ilevels ) :
-  m_player( p ), m_spell( spell ), m_ilevels( ilevels )
+azerite_power_t::azerite_power_t( const player_t* p, const azerite_power_entry_t* data,
+    const std::vector<unsigned>& ilevels ) :
+  m_player( p ), m_spell( p->find_spell( data->spell_id ) ), m_ilevels( ilevels ), m_data( data )
 { }
 
 azerite_power_t::operator const spell_data_t*() const
@@ -32,6 +34,9 @@ bool azerite_power_t::ok() const
 
 bool azerite_power_t::enabled() const
 { return ok(); }
+
+const azerite_power_entry_t* azerite_power_t::data() const
+{ return m_data; }
 
 double azerite_power_t::value( size_t index ) const
 {
@@ -254,7 +259,7 @@ azerite_power_t azerite_state_t::get_power( unsigned id )
             m_player -> name(), power.name, s.str().c_str() );
       }
 
-      return { m_player, m_player -> find_spell( power.spell_id ), override_it -> second };
+      return { m_player, &power, override_it -> second };
     }
   }
   else
@@ -283,7 +288,7 @@ azerite_power_t azerite_state_t::get_power( unsigned id )
             m_player -> name(), power.name, s.str().c_str() );
       }
 
-      return { m_player, m_player -> find_spell( power.spell_id ), m_items[ id ] };
+      return { m_player, &power, m_items[ id ] };
     }
     else
     {

@@ -52,7 +52,7 @@
   ],
   "AzeritePower": [
     { "data_type": "i", "field": "id_spell", "formats": { "cpp": "%6u" } },
-    { "data_type": "i", "field": "unk_2" },
+    { "data_type": "i", "field": "id_bonus", "formats": { "cpp": "%5u" } },
     { "data_type": "i", "field": "id_spec_set_member" },
     { "data_type": "i", "field": "unk_4" }
   ],

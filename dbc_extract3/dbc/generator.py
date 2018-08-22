@@ -4366,7 +4366,7 @@ class AzeriteDataGenerator(DataGenerator):
 
         for id in sorted(ids):
             entry = self._azeritepower_db[id]
-            fields = entry.field('id', 'id_spell')
+            fields = entry.field('id', 'id_spell', 'id_bonus')
             fields += self._spellname_db[entry.id_spell].field('name')
 
             self._out.write('  { %s },\n' % ', '.join(fields))
