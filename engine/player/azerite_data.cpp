@@ -3,7 +3,7 @@
 #include "simulationcraft.hpp"
 
 azerite_power_t::azerite_power_t() :
-  m_player( nullptr ), m_spell( spell_data_t::not_found() )
+  m_player( nullptr ), m_spell( spell_data_t::not_found() ), m_data( nullptr )
 { }
 
 azerite_power_t::azerite_power_t( const player_t* p, const azerite_power_entry_t* data,
