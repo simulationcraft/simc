@@ -993,7 +993,10 @@ QString SC_OptionsTab::get_globalSettings()
   options += QString::number( fight_variance_ );
   options += "\n";
 
-  options += "fight_style=" + choice.fight_style->currentText() + "\n";
+  if ( choice.fight_style->currentText() != "Patchwerk" )
+  {
+    options += "fight_style=" + choice.fight_style->currentText() + "\n";
+  }
 
   if ( choice.challenge_mode -> currentIndex() > 0 )
     options += "challenge_mode=1\n";
