@@ -96,11 +96,11 @@ struct holy_nova_t final : public priest_spell_t
     parse_options( options_str );
     aoe = -1;
   }
-  void impact( action_state_t* s ) override
+  void execute() override
   {
-    priest_spell_t::impact( s );
+	  priest_spell_t::execute();
 
-    if ( holy_fire_rank2->ok() && s->result_amount > 0 )
+    if ( holy_fire_rank2->ok() )
     {
       double hf_proc_chance = holy_fire_rank2->effectN( 1 ).percent();
       
