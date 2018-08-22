@@ -6376,6 +6376,7 @@ void rogue_t::init_action_list()
     def -> add_action( this, "Nightblade", "if=target.time_to_die>6&remains<gcd.max&combo_points>=4-(time<10)*2", "Apply Nightblade at 2+ CP during the first 10 seconds, after that 4+ CP if it expires within the next GCD or is not up" );
     def -> add_action( "call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold&combo_points.deficit>=4", "Consider using a Stealth CD when reaching the energy threshold and having space for at least 4 CP" );
     def -> add_action( "call_action_list,name=finish,if=combo_points>=4+talent.deeper_stratagem.enabled|target.time_to_die<=1&combo_points>=3", "Finish at 4+ without DS, 5+ with DS (outside stealth)" );
+    def -> add_action( "call_action_list,name=finish,if=spell_targets.shuriken_storm=4&combo_points>=4", "With DS also finish at 4+ against exactly 4 targets (outside stealth)" );
     def -> add_action( "call_action_list,name=build,if=energy.deficit<=variable.stealth_threshold-40*!(talent.alacrity.enabled|talent.shadow_focus.enabled|talent.master_of_shadows.enabled)", "Use a builder when reaching the energy threshold (minus 40 if none of Alacrity, Shadow Focus, and Master of Shadows is selected)" );
     def -> add_action( "arcane_torrent,if=energy.deficit>=15+energy.regen", "Lowest priority in all of the APL because it causes a GCD" );
     def -> add_action( "arcane_pulse" );
@@ -6411,7 +6412,7 @@ void rogue_t::init_action_list()
     stealth_cds -> add_action( this, "Vanish", "if=!variable.shd_threshold&debuff.find_weakness.remains<1", "Vanish unless we are about to cap on Dance charges. Only when Find Weakness is about to run out." );
     stealth_cds -> add_action( "pool_resource,for_next=1,extra_amount=40", "Pool for Shadowmeld + Shadowstrike unless we are about to cap on Dance charges. Only when Find Weakness is about to run out." );
     stealth_cds -> add_action( "shadowmeld,if=energy>=40&energy.deficit>=10&!variable.shd_threshold&debuff.find_weakness.remains<1" );
-    stealth_cds -> add_action( this, "Shadow Dance", "if=(!talent.dark_shadow.enabled|dot.nightblade.remains>=5+talent.subterfuge.enabled)&(variable.shd_threshold|buff.symbols_of_death.remains>=1.2|spell_targets>=4&cooldown.symbols_of_death.remains>10)", "With Dark Shadow only Dance when Nightblade will stay up. Use during Symbols or above threshold." );
+    stealth_cds -> add_action( this, "Shadow Dance", "if=(!talent.dark_shadow.enabled|dot.nightblade.remains>=5+talent.subterfuge.enabled)&(variable.shd_threshold|buff.symbols_of_death.remains>=1.2|spell_targets.shuriken_storm>=4&cooldown.symbols_of_death.remains>10)", "With Dark Shadow only Dance when Nightblade will stay up. Use during Symbols or above threshold." );
     stealth_cds -> add_action( this, "Shadow Dance", "if=target.time_to_die<cooldown.symbols_of_death.remains" );
 
     // Stealthed Rotation
@@ -6419,7 +6420,7 @@ void rogue_t::init_action_list()
     stealthed -> add_action( this, "Shadowstrike", "if=buff.stealth.up", "If stealth is up, we really want to use Shadowstrike to benefits from the passive bonus, even if we are at max cp (from the precombat MfD)." );
     stealthed -> add_action( "call_action_list,name=finish,if=combo_points.deficit<=1-(talent.deeper_stratagem.enabled&buff.vanish.up)", "Finish at 4+ CP without DS, 5+ with DS, and 6 with DS after Vanish" );
     stealthed -> add_action( this, "Shadowstrike", "cycle_targets=1,if=talent.secret_technique.enabled&talent.find_weakness.enabled&debuff.find_weakness.remains<1&spell_targets.shuriken_storm=2&target.time_to_die-remains>6", "At 2 targets with Secret Technique keep up Find Weakness by cycling Shadowstrike.");
-    stealthed -> add_action( this, "Shuriken Storm", "if=spell_targets.shuriken_storm>=3" );
+    stealthed -> add_action( this, "Shuriken Storm", "if=spell_targets>=3" );
     stealthed -> add_action( this, "Shadowstrike" );
 
     // Finishers
@@ -6434,7 +6435,7 @@ void rogue_t::init_action_list()
     // Builders
     action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
     build -> add_action( this, "Shuriken Toss", "if=buff.sharpened_blades.stack>=29&spell_targets.shuriken_storm<=1+3*azerite.sharpened_blades.rank=2+4*azerite.sharpened_blades.rank=3", "Shuriken Toss at 29+ Sharpened Blades stacks. 1T at Rank 1, up to 4 at Rank 2, up to 5 at Rank 3" );
-    build -> add_action( this, "Shuriken Storm", "if=spell_targets.shuriken_storm>=2|buff.the_dreadlords_deceit.stack>=29" );
+    build -> add_action( this, "Shuriken Storm", "if=spell_targets>=2|buff.the_dreadlords_deceit.stack>=29" );
     build -> add_talent( this, "Gloomblade" );
     build -> add_action( this, "Backstab" );
   }
