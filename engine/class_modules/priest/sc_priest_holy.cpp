@@ -44,8 +44,11 @@ struct apotheosis_t final : public priest_spell_t
 
 struct holy_fire_t final : public holy_fire_base_t
 {
+  double sacred_flame_value;
+
   holy_fire_t( priest_t& player, const std::string& options_str )
-    : holy_fire_base_t( "holy_fire", player, player.find_class_spell( "Holy Fire" ) )
+    : holy_fire_base_t( "holy_fire", player, player.find_class_spell( "Holy Fire" ) ),
+	  sacred_flame_value(priest().azerite.sacred_flame.value(1))
   {
     parse_options( options_str );
 
@@ -54,6 +57,15 @@ struct holy_fire_t final : public holy_fire_base_t
     {
       dot_max_stack += rank2->effectN( 2 ).base_value();
     }
+  }
+  double bonus_da(const action_state_t* state) const override
+  {
+	  double d = priest_spell_t::bonus_da(state);
+	  if (priest().azerite.sacred_flame.enabled())
+      { 
+          d += sacred_flame_value;
+      }
+	  return d;
   }
 };
 
@@ -154,6 +166,9 @@ void priest_t::init_spells_holy()
   specs.rapid_renewal     = find_specialization_spell( "Rapid Renewal" );
   specs.divine_providence = find_specialization_spell( "Divine Providence" );
   specs.focused_will      = find_specialization_spell( "Focused Will" );
+
+  // Azerite
+  azerite.sacred_flame = find_azerite_spell("Sacred Flame");
 
   // Spec Core
   specs.holy_priest = find_specialization_spell( "Holy Priest" );

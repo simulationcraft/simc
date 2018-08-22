@@ -139,6 +139,9 @@ public:
     propagate_const<buff_t*> harvested_thoughts;
     propagate_const<buff_t*> whispers_of_the_damned;
 
+    // Holy
+	propagate_const<buff_t*> sacred_flame;
+
   } buffs;
 
   // Talents
@@ -414,6 +417,7 @@ public:
   {
     azerite_power_t sanctum;
     // Holy
+	azerite_power_t sacred_flame;
     // Disc
     azerite_power_t depth_of_the_shadows;
     // Shadow
