@@ -260,12 +260,12 @@ void priest_t::generate_apl_holy_d()
         default_list->add_action("ancestral_call");
 
     // Default APL
-    default_list->add_action( this, "Holy Fire");
+    default_list->add_action( this, "Holy Fire", ",if=refreshable&dot.holy_fire.ticking|!dot.holy_fire.ticking");
     default_list->add_action(this, "Holy word: Chastise");
     default_list->add_talent( this, "Apotheosis");
     default_list->add_talent( this, "Divine Star");
     default_list->add_talent( this, "Halo");
-    default_list->add_action( this, "Holy Nova", "if=active_enemies>1");
+    default_list->add_action( this, "Holy Nova", "if=active_enemies>2");
     default_list->add_action( this, "Smite");
 }
 
