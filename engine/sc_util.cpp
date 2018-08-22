@@ -1502,13 +1502,9 @@ const char* util::spec_string_no_class( const player_t& p )
     return "Fury";
     case WARRIOR_PROTECTION:
     return "Protection";
-
     default:
-    // if this is a pet or an unknown spec, the AMR link is pointless anyway
-    assert( false );
-    break;
+    return "";
   }
-  return nullptr;
 }
 
 // parse_stat_type ==========================================================
