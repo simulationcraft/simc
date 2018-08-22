@@ -492,7 +492,6 @@ public:
   void invalidate_cache( cache_e ) override;
   resource_e primary_resource() const override;
   role_e primary_role() const override;
-  stat_e primary_stat() const override;
 
   // custom demon_hunter_t init functions
 private:
@@ -5056,21 +5055,6 @@ role_e demon_hunter_t::primary_role() const
       return ROLE_TANK;
     default:
       return ROLE_NONE;
-  }
-}
-
-// demon_hunter_t::primary_stat ==================================================
-
-stat_e demon_hunter_t::primary_stat() const
-{
-  switch (specialization())
-  {
-    case DEMON_HUNTER_HAVOC:
-      return STAT_AGILITY;
-    case DEMON_HUNTER_VENGEANCE:
-      return STAT_STAMINA;
-    default:
-      return STAT_NONE;
   }
 }
 

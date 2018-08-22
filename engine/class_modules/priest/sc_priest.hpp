@@ -454,10 +454,6 @@ public:
   }
   role_e primary_role() const override;
   stat_e convert_hybrid_stat( stat_e s ) const override;
-  stat_e primary_stat() const override
-  {
-    return STAT_INTELLECT;
-  }
   void assess_damage( school_e school, dmg_e dtype, action_state_t* s ) override;
   double composite_melee_haste() const override;
   double composite_melee_speed() const override;

@@ -4211,7 +4211,6 @@ public:
   virtual stat_e convert_hybrid_stat( stat_e s ) const
   { return s; }
   virtual stat_e normalize_by() const;
-  virtual stat_e primary_stat() const { return STAT_NONE; }
   virtual double health_percentage() const;
   virtual double max_health() const;
   virtual double current_health() const;

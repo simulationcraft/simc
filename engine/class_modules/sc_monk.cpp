@@ -806,7 +806,6 @@ public:
   virtual void copy_from( player_t* ) override;
   virtual resource_e primary_resource() const override;
   virtual role_e primary_role() const override;
-  virtual stat_e primary_stat() const override;
   virtual stat_e convert_hybrid_stat( stat_e s ) const override;
   virtual void pre_analyze_hook() override;
   virtual void combat_begin() override;
@@ -8678,21 +8677,6 @@ role_e monk_t::primary_role() const
     return ROLE_DPS;
 
   return ROLE_HYBRID;
-}
-
-// monk_t::primary_stat =====================================================
-
-stat_e monk_t::primary_stat() const
-{
-  switch ( specialization() )
-  {
-    case MONK_BREWMASTER:
-      return STAT_STAMINA;
-    case MONK_MISTWEAVER:
-      return STAT_INTELLECT;
-    default:
-      return STAT_AGILITY;
-  }
 }
 
 // monk_t::convert_hybrid_stat ==============================================

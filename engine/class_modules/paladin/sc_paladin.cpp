@@ -1429,19 +1429,6 @@ role_e paladin_t::primary_role() const
   return ROLE_HYBRID;
 }
 
-// paladin_t::primary_stat ==================================================
-
-stat_e paladin_t::primary_stat() const
-{
-  switch ( specialization() )
-  {
-    case PALADIN_PROTECTION:  return STAT_STAMINA;
-    case PALADIN_HOLY:        return STAT_INTELLECT;
-    case PALADIN_RETRIBUTION: return STAT_STRENGTH;
-    default:                  return STAT_STRENGTH;
-  }
-}
-
 // paladin_t::convert_hybrid_stat ===========================================
 
 stat_e paladin_t::convert_hybrid_stat( stat_e s ) const
