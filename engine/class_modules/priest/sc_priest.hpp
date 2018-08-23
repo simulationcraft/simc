@@ -960,11 +960,11 @@ public:
     {
       if ( affected_by.holy_priest_da )
       {
-        ab::base_dd_multiplier *= 1.0 + p.specs.holy_priest->effectN( 1 ).percent();
+        ab::base_dd_multiplier *= 1.0 + p.specs.holy_priest->effectN( 3 ).percent();
       }
       if ( affected_by.holy_priest_ta )
       {
-        ab::base_td_multiplier *= 1.0 + p.specs.holy_priest->effectN( 2 ).percent();
+        ab::base_td_multiplier *= 1.0 + p.specs.holy_priest->effectN( 4 ).percent();
       }
     }
   }

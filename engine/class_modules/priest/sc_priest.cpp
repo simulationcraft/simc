@@ -276,13 +276,22 @@ struct smite_t final : public priest_spell_t
 {
     const spell_data_t* holy_fire_rank2;
     const spell_data_t* holy_word_chastise;
+    const spell_data_t* smite_rank2_holy;
     smite_t(priest_t& p, const std::string& options_str)
       : priest_spell_t("smite", p, p.find_class_spell("Smite")),
       holy_fire_rank2(priest().find_specialization_spell(231687)),
-      holy_word_chastise(priest().find_specialization_spell(88625))
+      holy_word_chastise(priest().find_specialization_spell(88625)),
+      smite_rank2_holy(priest().find_specialization_spell(262861))
     {
        parse_options(options_str);
+       if( smite_rank2_holy -> ok() )
+       {
+       base_multiplier *= 1.0 + smite_rank2_holy->effectN(1).percent();
+       }
     }
+
+    
+
     void impact(action_state_t* s) override
     {
          priest_spell_t::impact(s);
