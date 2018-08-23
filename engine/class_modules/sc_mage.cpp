@@ -6537,11 +6537,12 @@ void mage_t::apl_frost()
 {
   std::vector<std::string> racial_actions = get_racial_actions();
 
-  action_priority_list_t* default_list = get_action_priority_list( "default"   );
-  action_priority_list_t* single       = get_action_priority_list( "single"    );
-  action_priority_list_t* aoe          = get_action_priority_list( "aoe"       );
-  action_priority_list_t* cooldowns    = get_action_priority_list( "cooldowns" );
-  action_priority_list_t* movement     = get_action_priority_list( "movement"  );
+  action_priority_list_t* default_list = get_action_priority_list( "default"    );
+  action_priority_list_t* single       = get_action_priority_list( "single"     );
+  action_priority_list_t* aoe          = get_action_priority_list( "aoe"        );
+  action_priority_list_t* cooldowns    = get_action_priority_list( "cooldowns"  );
+  action_priority_list_t* movement     = get_action_priority_list( "movement"   );
+  action_priority_list_t* talent_rop   = get_action_priority_list( "talent_rop" );
 
   default_list -> add_action( this, "Counterspell" );
   default_list -> add_action( this, "Ice Lance", "if=prev_gcd.1.flurry&brain_freeze_active&!buff.fingers_of_frost.react",
@@ -6613,21 +6614,13 @@ void mage_t::apl_frost()
   cooldowns -> add_action( this, "Time Warp" );
   cooldowns -> add_action( this, "Icy Veins" );
   cooldowns -> add_talent( this, "Mirror Image" );
-  cooldowns -> add_talent( this, "Rune of Power", "if=time_to_die>10+cast_time&time_to_die<25" );
-  cooldowns -> add_talent( this, "Rune of Power",
-    "if=active_enemies=1&talent.glacial_spike.enabled&buff.icicles.stack=5&("
-    "buff.brain_freeze.react|talent.ebonbolt.enabled&cooldown.ebonbolt.remains<cast_time)",
-    "With Glacial Spike, Rune of Power should be used right before the Glacial Spike combo (i.e. with 5 Icicles and a Brain Freeze). "
-    "When Ebonbolt is off cooldown, Rune of Power can also be used just with 5 Icicles." );
-  cooldowns -> add_talent( this, "Rune of Power",
-    "if=active_enemies=1&!talent.glacial_spike.enabled&("
-    "prev_gcd.1.frozen_orb|talent.ebonbolt.enabled&cooldown.ebonbolt.remains<cast_time"
-    "|talent.comet_storm.enabled&cooldown.comet_storm.remains<cast_time"
-    "|talent.ray_of_frost.enabled&cooldown.ray_of_frost.remains<cast_time|charges_fractional>1.9)",
-    "Without Glacial Spike, Rune of Power should be used before any bigger cooldown (Frozen Orb, Ebonbolt, Comet Storm, Ray of Frost) or "
-    "when Rune of Power is about to reach 2 charges." );
-  cooldowns -> add_talent( this, "Rune of Power", "if=active_enemies>1&prev_gcd.1.frozen_orb",
-    "With 2 or more targets, use Rune of Power exclusively with Frozen Orb. This is the case even with Glacial Spike." );
+  cooldowns -> add_talent( this, "Rune of Power", "if=prev_gcd.1.frozen_orb|time_to_die>10+cast_time&time_to_die<20",
+    "Rune of Power is always used with Frozen Orb. Any leftover charges at the end of the fight should be used, ideally "
+    "if the boss doesn't die in the middle of the Rune buff." );
+  cooldowns -> add_action( "call_action_list,name=talent_rop,if=talent.rune_of_power.enabled&active_enemies=1&"
+    "cooldown.rune_of_power.full_recharge_time<cooldown.frozen_orb.remains",
+    "On single target fights, the cooldown of Rune of Power is lower than the cooldown of Frozen Orb, this gives "
+    "extra Rune of Power charges that should be used with active talents, if possible." );
   cooldowns -> add_action( "potion,if=prev_gcd.1.icy_veins|target.time_to_die<70" );
   cooldowns -> add_action( "use_items" );
   for ( size_t i = 0; i < racial_actions.size(); i++ )
@@ -6637,6 +6630,18 @@ void mage_t::apl_frost()
 
     cooldowns -> add_action( racial_actions[ i ] );
   }
+
+  talent_rop -> add_talent( this, "Rune of Power",
+    "if=talent.glacial_spike.enabled&buff.icicles.stack=5&(buff.brain_freeze.react|talent.ebonbolt.enabled&cooldown.ebonbolt.remains<cast_time)",
+    "With Glacial Spike, Rune of Power should be used right before the Glacial Spike combo (i.e. with 5 Icicles and a Brain Freeze). "
+    "When Ebonbolt is off cooldown, Rune of Power can also be used just with 5 Icicles." );
+  talent_rop -> add_talent( this, "Rune of Power",
+    "if=!talent.glacial_spike.enabled&(talent.ebonbolt.enabled&cooldown.ebonbolt.remains<cast_time"
+    "|talent.comet_storm.enabled&cooldown.comet_storm.remains<cast_time"
+    "|talent.ray_of_frost.enabled&cooldown.ray_of_frost.remains<cast_time"
+    "|charges_fractional>1.9)",
+    "Without Glacial Spike, Rune of Power should be used before any bigger cooldown (Ebonbolt, Comet Storm, Ray of Frost) or "
+    "when Rune of Power is about to reach 2 charges." );
 
   movement -> add_action( this, "Blink", "if=movement.distance>10" );
   movement -> add_talent( this, "Ice Floes", "if=buff.ice_floes.down" );
