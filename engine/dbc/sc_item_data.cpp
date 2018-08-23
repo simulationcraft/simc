@@ -149,88 +149,112 @@ unsigned dbc_t::random_property_max_level() const
 
 const random_prop_data_t& dbc_t::random_property( unsigned ilevel ) const
 {
+  static random_prop_data_t __default {};
+  if ( ilevel < 1 || ilevel > MAX_ILEVEL )
+  {
+    return __default;
+  }
 #if SC_USE_PTR
-  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
   return ptr ? __ptr_rand_prop_points_data[ ilevel - 1 ] : __rand_prop_points_data[ ilevel - 1 ];
 #else
-  assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
   return __rand_prop_points_data[ ilevel - 1 ];
 #endif
 }
 
 const item_scale_data_t& dbc_t::item_damage_1h( unsigned ilevel ) const
 {
+  static item_scale_data_t __default {};
+  if ( ilevel < 1 || ilevel > MAX_ILEVEL )
+  {
+    return __default;
+  }
 #if SC_USE_PTR
-  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
   return ptr ? __ptr_itemdamageonehand_data[ ilevel - 1 ] : __itemdamageonehand_data[ ilevel - 1 ];
 #else
-  assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
   return __itemdamageonehand_data[ ilevel - 1 ];
 #endif
 }
 
 const item_scale_data_t& dbc_t::item_damage_2h( unsigned ilevel ) const
 {
+  static item_scale_data_t __default {};
+  if ( ilevel < 1 || ilevel > MAX_ILEVEL )
+  {
+    return __default;
+  }
 #if SC_USE_PTR
-  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
   return ptr ? __ptr_itemdamagetwohand_data[ ilevel - 1 ] : __itemdamagetwohand_data[ ilevel - 1 ];
 #else
-  assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
   return __itemdamagetwohand_data[ ilevel - 1 ];
 #endif
 }
 
 const item_scale_data_t& dbc_t::item_damage_caster_1h( unsigned ilevel ) const
 {
+  static item_scale_data_t __default {};
+  if ( ilevel < 1 || ilevel > MAX_ILEVEL )
+  {
+    return __default;
+  }
 #if SC_USE_PTR
-  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
   return ptr ? __ptr_itemdamageonehandcaster_data[ ilevel - 1 ] : __itemdamageonehandcaster_data[ ilevel - 1 ];
 #else
-  assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
   return __itemdamageonehandcaster_data[ ilevel - 1 ];
 #endif
 }
 
 const item_scale_data_t& dbc_t::item_damage_caster_2h( unsigned ilevel ) const
 {
+  static item_scale_data_t __default {};
+  if ( ilevel < 1 || ilevel > MAX_ILEVEL )
+  {
+    return __default;
+  }
 #if SC_USE_PTR
-  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
   return ptr ? __ptr_itemdamagetwohandcaster_data[ ilevel - 1 ] : __itemdamagetwohandcaster_data[ ilevel - 1 ];
 #else
-  assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
   return __itemdamagetwohandcaster_data[ ilevel - 1 ];
 #endif
 }
 
 const item_scale_data_t& dbc_t::item_armor_quality( unsigned ilevel ) const
 {
+  static item_scale_data_t __default {};
+  if ( ilevel < 1 || ilevel > MAX_ILEVEL )
+  {
+    return __default;
+  }
 #if SC_USE_PTR
-  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
   return ptr ? __ptr_itemarmorquality_data[ ilevel - 1 ] : __itemarmorquality_data[ ilevel - 1 ];
 #else
-  assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
   return __itemarmorquality_data[ ilevel - 1 ];
 #endif
 }
 
 const item_scale_data_t& dbc_t::item_armor_shield( unsigned ilevel ) const
 {
+  static item_scale_data_t __default {};
+  if ( ilevel < 1 || ilevel > MAX_ILEVEL )
+  {
+    return __default;
+  }
 #if SC_USE_PTR
-  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
   return ptr ? __ptr_itemarmorshield_data[ ilevel - 1 ] : __itemarmorshield_data[ ilevel - 1 ];
 #else
-  assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
   return __itemarmorshield_data[ ilevel - 1 ];
 #endif
 }
 
 const item_armor_type_data_t& dbc_t::item_armor_total( unsigned ilevel ) const
 {
+  static item_armor_type_data_t __default {};
+  if ( ilevel < 1 || ilevel > MAX_ILEVEL )
+  {
+    return __default;
+  }
 #if SC_USE_PTR
-  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
   return ptr ? __ptr_itemarmortotal_data[ ilevel - 1 ] : __itemarmortotal_data[ ilevel - 1 ];
 #else
-  assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
   return __itemarmortotal_data[ ilevel - 1 ];
 #endif
 }
