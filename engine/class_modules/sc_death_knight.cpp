@@ -7421,7 +7421,9 @@ void death_knight_t::default_apl_blood()
   def -> add_action( "berserking" );
 
   // On-use items
-  def -> add_action( "use_items" );
+  def -> add_action( "use_items,if=cooldown.dancing_rune_weapon.remains>90" );
+  def -> add_action( "use_item,name=razdunks_big_red_button" );
+  def -> add_action( "use_item,name=merekthas_fang" );
 
   // Cooldowns
   def -> add_action( "potion,if=buff.dancing_rune_weapon.up" );
@@ -7475,9 +7477,6 @@ void death_knight_t::default_apl_frost()
   def -> add_talent( this, "Glacial Advance", "if=buff.icy_talons.remains<=gcd&buff.icy_talons.up&spell_targets.glacial_advance>=2&(!talent.breath_of_sindragosa.enabled|cooldown.breath_of_sindragosa.remains>15)" );
   def -> add_action( this, "Frost Strike", "if=buff.icy_talons.remains<=gcd&buff.icy_talons.up&(!talent.breath_of_sindragosa.enabled|cooldown.breath_of_sindragosa.remains>15)" );
   
-  // Here until call_action_list can handle use_off_gcd
-  def -> add_talent( this, "Breath of Sindragosa", "if=cooldown.empower_rune_weapon.remains&cooldown.pillar_of_frost.remains" );
-
   // Choose APL
   def -> add_action( "call_action_list,name=cooldowns" );
   def -> add_action( "run_action_list,name=bos_pooling,if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains<5" );
@@ -7487,9 +7486,9 @@ void death_knight_t::default_apl_frost()
   def -> add_action( "call_action_list,name=standard" );
 
   // On-use itemos
-  cooldowns -> add_action( "use_items" );
-  cooldowns -> add_action( "use_item,name=horn_of_valor,"
-                           "if=buff.pillar_of_frost.up&(!talent.breath_of_sindragosa.enabled|!cooldown.breath_of_sindragosa.remains)" );
+  cooldowns -> add_action( "use_items,if=buff.pillar_of_frost.up&(!talent.breath_of_sindragosa.enabled|!dot.breath_of_sindragosa.ticking|cooldown.breath_of_sindragosa.remains>90)" );
+  cooldowns -> add_action( "use_item,name=razdunks_big_red_button" );
+  cooldowns -> add_action( "use_item,name=merekthas_fang" );
 
   // In-combat potion
   cooldowns -> add_action( "potion,if=buff.pillar_of_frost.up&buff.empower_rune_weapon.up" );
@@ -7500,6 +7499,7 @@ void death_knight_t::default_apl_frost()
 
   // Pillar of Frost
   cooldowns -> add_action( this, "Pillar of Frost", "if=cooldown.empower_rune_weapon.remains", "Frost cooldowns" );
+  cooldowns -> add_talent( this, "Breath of Sindragosa", "if=cooldown.empower_rune_weapon.remains&cooldown.pillar_of_frost.remains" );
   cooldowns -> add_action( this, "Empower Rune Weapon", "if=cooldown.pillar_of_frost.ready&!talent.breath_of_sindragosa.enabled&rune.time_to_5>gcd&runic_power.deficit>=10" );
   cooldowns -> add_action( this, "Empower Rune Weapon", "if=cooldown.pillar_of_frost.ready&talent.breath_of_sindragosa.enabled&rune>=3&runic_power>60" );
 
