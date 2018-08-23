@@ -7506,7 +7506,7 @@ void druid_t::apl_precombat()
     precombat->add_action( "variable,name=az_ds,value=azerite.dawning_sun.rank" );
     precombat->add_action( "variable,name=az_sb,value=azerite.sunblaze.rank" );
     precombat->add_action( "variable,name=az_hn,value=azerite.high_noon.rank",
-	                   "High Noon:\n# 1T: 3x noemp, 2x nospam, 1x nospam\n# 2T: 3x emp, 2x normal, 1x normal" );
+	                       "High Noon:\n# 1T: 3x noemp, 2x nospam, 1x nospam\n# 2T: 3x emp, 2x normal, 1x normal" );
     precombat->add_action( "variable,name=az_potm,value=azerite.power_of_the_moon.rank,if=talent.twin_moons.enabled",
                            "Power of the Moon:\n# 2T: 3x noemp, 2x emp, 1x normal\n# 3T: 3x lsemp, 2x normal, 1x normal\n# 4T: 3x lsemp, 2x normal, 1x normal" );
   }
@@ -7862,7 +7862,7 @@ void druid_t::apl_balance()
   default_list->add_talent( this, "Force of Nature","if=(buff.celestial_alignment.up|buff.incarnation.up)|(cooldown.celestial_alignment.remains>30|cooldown.incarnation.remains>30)");
   
   default_list->add_action( this, "Sunfire", "target_if=refreshable"
-	                          "|(variable.az_hn=3&active_enemies<=2&(dot.moonfire.ticking|time_to_die<=6.6)&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking|time_to_die<=7.2)&astral_power<40)," /*High Noon SF spam check*/
+	                          "|(variable.az_hn=3&active_enemies<=2&(dot.moonfire.ticking|time_to_die<=6.6)&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking|time_to_die<=7.2)&(astral_power<40|buff.starlord.remains<4))," /*High Noon SF spam check*/
 	                          "if=astral_power.deficit>=7&target.time_to_die>5.4"
 	                          "&(!buff.celestial_alignment.up&!buff.incarnation.up|!variable.az_streak|!prev_gcd.1.sunfire)" /*Streaking check*/
 	                          "|variable.az_hn=3", /*High Noon SF spam check*/
