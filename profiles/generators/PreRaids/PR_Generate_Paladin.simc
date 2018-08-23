@@ -4,24 +4,25 @@ race=lightforged_draenei
 spec=protection
 role=tank
 position=front
-talents=2112132
+talents=1200003
 
-head=soulspun_casque,id=155866,bonus_id=4779/1512/4786/4775
-neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
-shoulders=lockjaw_shoulderplate,id=159407,bonus_id=4779/1512/4786/4775
+
+head=helm_of_the_raptor_king,id=159422,bonus_id=4779/1512/4775/4786,azerite_powers=395/461/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/1524
+shoulders=kraken_shell_pauldrons,id=159431,bonus_id=4779/1512/4775/4786,azerite_powers=395/461/13
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-chest=chestguard_of_the_deep_denizen,id=159408,bonus_id=4779/1512/4786/4775
+chest=desert_guardians_breastplate,id=159424,bonus_id=4779/1512/4775/4786,azerite_powers=482/18/13
 wrists=embalmers_steadying_bracers,id=159409,bonus_id=4779/1512/4786
-hands=sharktoothknuckled_grips,id=155890,bonus_id=4779/1512/4786
+hands=gauntlets_of_total_subservience,id=155890,bonus_id=4779/1512/4786
 waist=belt_of_the_unrelenting_gale,id=159426,bonus_id=4779/1512/4786
 legs=legplates_of_profane_sacrifice,id=159443,bonus_id=4779/1512/4786
-feet=sabatons_of_rampaging_elements,id=159679,bonus_id=4779/1512/4786
-finger1=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
-finger2=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
-trinket1=deadeye_spyglass,id=159623,bonus_id=4779/1512/4786
-trinket2=galecallers_boon,id=159614,bonus_id=4779/1512/4786
-main_hand=adulation_enforcer,id=159632,bonus_id=4779/1512/4786,enchant=galeforce_striking
-off_hand=disc_of_indomitable_will,id=158713,bonus_id=4779/1512/4786,enchant=quick_navigation
+feet=ballast_sinkers,id=159428,bonus_id=4779/1512/4786
+finger1=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
+finger2=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
+trinket1=darkmoon_deck_fathoms,id=159125
+trinket2=briny_barnacle,id=159619,bonus_id=4779/1512/4786
+main_hand=adulation_enforcer,id=159632,bonus_id=4779/1512/4786,enchant=quick_navigation
+off_hand=disc_of_Indomitable_will,id=158713,bonus_id=4779/1512/4786
 
 save=PR_Paladin_Protection.simc
 
