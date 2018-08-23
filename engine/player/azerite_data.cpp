@@ -11,7 +11,10 @@ azerite_power_t::azerite_power_t( const player_t* p, const azerite_power_entry_t
   m_player( p ), m_spell( p->find_spell( data->spell_id ) ), m_data( data )
 {
   range::for_each( items, [ this ]( const item_t* item ) {
-    m_ilevels.push_back( item -> item_level() );
+    if ( item->item_level() > 0 && item->item_level() <= MAX_ILEVEL )
+    {
+      m_ilevels.push_back( item -> item_level() );
+    }
   } );
 }
 
@@ -121,6 +124,11 @@ std::vector<double> azerite_power_t::budget( const spell_data_t* scaling_spell )
   }
 
   range::for_each( m_ilevels, [ & ]( unsigned ilevel ) {
+    if ( ilevel < 1 || ilevel > MAX_ILEVEL )
+    {
+      return;
+    }
+
     unsigned min_ilevel = ilevel;
     if ( scaling_spell->max_scaling_level() > 0 && scaling_spell->max_scaling_level() < min_ilevel )
     {
