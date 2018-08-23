@@ -20,7 +20,6 @@ namespace
   * Azerite Traits
   ** Implement Vengeance traits
   ** Test all Havoc traits when available
-  ** Check if Momentum buffs Unbound Chaos 
 
 */
 
@@ -493,7 +492,6 @@ public:
   void invalidate_cache( cache_e ) override;
   resource_e primary_resource() const override;
   role_e primary_role() const override;
-  stat_e primary_stat() const override;
 
   // custom demon_hunter_t init functions
 private:
@@ -5060,21 +5058,6 @@ role_e demon_hunter_t::primary_role() const
   }
 }
 
-// demon_hunter_t::primary_stat ==================================================
-
-stat_e demon_hunter_t::primary_stat() const
-{
-  switch (specialization())
-  {
-    case DEMON_HUNTER_HAVOC:
-      return STAT_AGILITY;
-    case DEMON_HUNTER_VENGEANCE:
-      return STAT_STAMINA;
-    default:
-      return STAT_NONE;
-  }
-}
-
 // demon_hunter_t::default_flask ===================================================
 
 std::string demon_hunter_t::default_flask() const
@@ -5283,7 +5266,6 @@ void demon_hunter_t::apl_vengeance()
   apl_normal->add_talent( this, "Felblade", "if=pain<=70" );
   apl_normal->add_talent( this, "Fracture", "if=soul_fragments<=3" );
   apl_normal->add_talent( this, "Fel Devastation" );
-  apl_normal->add_action( this, "Soul Cleave" );
   apl_normal->add_action( this, "Sigil of Flame" );
   apl_normal->add_action( this, "Shear" );
   apl_normal->add_action( this, "Throw Glaive" );

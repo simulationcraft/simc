@@ -487,7 +487,6 @@ public:
   virtual resource_e primary_resource() const override { return RESOURCE_MANA; }
   virtual role_e    primary_role() const override;
   virtual stat_e    convert_hybrid_stat( stat_e s ) const override;
-  virtual stat_e    primary_stat() const override;
   virtual void      regen( timespan_t periodicity ) override;
   virtual void      combat_begin() override;
   virtual void      copy_from( player_t* ) override;

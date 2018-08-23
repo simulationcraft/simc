@@ -822,7 +822,6 @@ public:
   virtual role_e    primary_role() const override;
   virtual stat_e    convert_hybrid_stat( stat_e s ) const override;
   virtual double    resource_regen_per_second( resource_e ) const override;
-  virtual stat_e    primary_stat() const override;
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* ) override;
   virtual void      assess_damage( school_e, dmg_e, action_state_t* ) override;
   virtual void      assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t* ) override;
@@ -8954,23 +8953,6 @@ role_e druid_t::primary_role() const
   }
 
   return player_t::primary_role();
-}
-
-// druid_t::primary_stat ====================================================
-
-stat_e druid_t::primary_stat() const
-{
-   switch ( specialization() )
-   {
-   case DRUID_GUARDIAN:
-      return STAT_STAMINA;
-   case DRUID_FERAL:
-      return STAT_AGILITY;
-   case DRUID_BALANCE:
-   case DRUID_RESTORATION:
-   default:
-      return STAT_INTELLECT;
-   }
 }
 
 // druid_t::convert_hybrid_stat =============================================

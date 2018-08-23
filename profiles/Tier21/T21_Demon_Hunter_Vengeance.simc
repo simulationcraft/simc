@@ -59,7 +59,6 @@ actions.normal+=/immolation_aura,if=pain<=90
 actions.normal+=/felblade,if=pain<=70
 actions.normal+=/fracture,if=soul_fragments<=3
 actions.normal+=/fel_devastation
-actions.normal+=/soul_cleave
 actions.normal+=/sigil_of_flame
 actions.normal+=/shear
 actions.normal+=/throw_glaive

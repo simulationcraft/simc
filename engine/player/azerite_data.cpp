@@ -1139,7 +1139,7 @@ void unstable_catalyst( special_effect_t& effect )
   if ( !effect.custom_buff )
   {
     effect.custom_buff = make_buff<stat_buff_t>( effect.player, tokenized_name( spell ), spell )
-                             ->add_stat( effect.player->primary_stat(), power.value( 1 ) );
+                             ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), power.value( 1 ) );
   }
 
   // TODO assumes the player always stands in the pool - might be unrealistic
@@ -1163,7 +1163,7 @@ void stand_as_one( special_effect_t& effect )
   if ( !effect.custom_buff )
   {
     effect.custom_buff = make_buff<stat_buff_t>( effect.player, tokenized_name( spell ), spell )
-                             ->add_stat( effect.player->primary_stat(), power.value( 1 ) )
+                             ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), power.value( 1 ) )
                              ->add_stat( STAT_MAX_HEALTH, power.value( 2 ) );
   }
 
@@ -1188,7 +1188,7 @@ void archive_of_the_titans( special_effect_t& effect )
   if ( !buff )
   {
     buff = make_buff<stat_buff_t>( effect.player, tokenized_name( spell ), spell )
-      ->add_stat( effect.player->primary_stat(), power.value( 1 ) );
+      ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), power.value( 1 ) );
   }
 
   effect.player->register_combat_begin( [ buff, driver ]( player_t* ) {
@@ -1264,7 +1264,7 @@ void sylvanas_resolve( special_effect_t& effect )
   if ( !effect.custom_buff )
   {
     effect.custom_buff = make_buff<stat_buff_t>( effect.player, tokenized_name( spell ), spell )
-      -> add_stat( effect.player -> primary_stat(), power.value( 1 ) );
+      -> add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), power.value( 1 ) );
   }
 
   // Replace the driver spell, the azerite power does not hold the RPPM value
@@ -1686,13 +1686,13 @@ void secrets_of_the_deep( special_effect_t& effect )
 
   auto normal_buff = unique_gear::create_buff<stat_buff_t>( effect.player, "secrets_of_the_deep",
     effect.player->find_spell( 273843 ) )
-    ->add_stat( effect.player->primary_stat(), power.value( 1 ) )
+    ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), power.value( 1 ) )
     ->set_chance( effect.player->sim->bfa_opts.secrets_of_the_deep_collect_chance )
     ->set_refresh_behavior( buff_refresh_behavior::EXTEND );
 
   auto rare_buff = unique_gear::create_buff<stat_buff_t>( effect.player, "secrets_of_the_deep_rare",
     effect.player->find_spell( 273843 ) )
-    ->add_stat( effect.player->primary_stat(), power.value( 2 ) )
+    ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), power.value( 2 ) )
     ->set_chance( effect.player->sim->bfa_opts.secrets_of_the_deep_collect_chance )
     ->set_refresh_behavior( buff_refresh_behavior::EXTEND );
 
@@ -1823,7 +1823,7 @@ void relational_normalization_gizmo( special_effect_t& effect )
 
   auto decrease = unique_gear::create_buff<stat_buff_t>( effect.player, "normalization_decrease",
       effect.player->find_spell( 280654 ) )
-    ->add_stat( effect.player->primary_stat(), stat_amount )
+    ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), stat_amount )
     ->add_stat( STAT_MAX_HEALTH, health_amount );
 
   effect.player->buffs.normalization_increase = increase;
