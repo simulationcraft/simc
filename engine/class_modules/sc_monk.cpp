@@ -3246,6 +3246,7 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
   {
     double am = monk_melee_attack_t::action_multiplier();
 
+    // Rank 2 seems to be applied after Bonus Damage. Hence the reason for being in the Action Multiplier
     if ( p()->spec.rising_sun_kick_2 )
       am *= 1 + p()->spec.rising_sun_kick_2->effectN( 1 ).percent();
 
