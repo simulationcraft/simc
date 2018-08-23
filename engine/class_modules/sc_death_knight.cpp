@@ -15,7 +15,6 @@
 // - Look into Summon Gargoyle spawn delay
 // - Trigger Virulent Eruption on enemy death if they're affected by Virulent Plague
 // - Proc Festermight on enemy death while afflicted by Festering Wounds
-// - Add proc trackers to show the different sources of Festering Wounds on results
 // Blood
 // - Blood Plague healing
 // Frost
