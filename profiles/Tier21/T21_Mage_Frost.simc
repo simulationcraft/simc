@@ -60,13 +60,10 @@ actions.aoe+=/ice_lance
 actions.cooldowns=time_warp
 actions.cooldowns+=/icy_veins
 actions.cooldowns+=/mirror_image
-actions.cooldowns+=/rune_of_power,if=time_to_die>10+cast_time&time_to_die<25
-# With Glacial Spike, Rune of Power should be used right before the Glacial Spike combo (i.e. with 5 Icicles and a Brain Freeze). When Ebonbolt is off cooldown, Rune of Power can also be used just with 5 Icicles.
-actions.cooldowns+=/rune_of_power,if=active_enemies=1&talent.glacial_spike.enabled&buff.icicles.stack=5&(buff.brain_freeze.react|talent.ebonbolt.enabled&cooldown.ebonbolt.remains<cast_time)
-# Without Glacial Spike, Rune of Power should be used before any bigger cooldown (Frozen Orb, Ebonbolt, Comet Storm, Ray of Frost) or when Rune of Power is about to reach 2 charges.
-actions.cooldowns+=/rune_of_power,if=active_enemies=1&!talent.glacial_spike.enabled&(prev_gcd.1.frozen_orb|talent.ebonbolt.enabled&cooldown.ebonbolt.remains<cast_time|talent.comet_storm.enabled&cooldown.comet_storm.remains<cast_time|talent.ray_of_frost.enabled&cooldown.ray_of_frost.remains<cast_time|charges_fractional>1.9)
-# With 2 or more targets, use Rune of Power exclusively with Frozen Orb. This is the case even with Glacial Spike.
-actions.cooldowns+=/rune_of_power,if=active_enemies>1&prev_gcd.1.frozen_orb
+# Rune of Power is always used with Frozen Orb. Any leftover charges at the end of the fight should be used, ideally if the boss doesn't die in the middle of the Rune buff.
+actions.cooldowns+=/rune_of_power,if=prev_gcd.1.frozen_orb|time_to_die>10+cast_time&time_to_die<20
+# On single target fights, the cooldown of Rune of Power is lower than the cooldown of Frozen Orb, this gives extra Rune of Power charges that should be used with active talents, if possible.
+actions.cooldowns+=/call_action_list,name=talent_rop,if=talent.rune_of_power.enabled&active_enemies=1&cooldown.rune_of_power.full_recharge_time<cooldown.frozen_orb.remains
 actions.cooldowns+=/potion,if=prev_gcd.1.icy_veins|target.time_to_die<70
 actions.cooldowns+=/use_items
 actions.cooldowns+=/blood_fury
@@ -103,6 +100,11 @@ actions.single+=/flurry,if=azerite.winters_reach.enabled&!buff.brain_freeze.reac
 actions.single+=/frostbolt
 actions.single+=/call_action_list,name=movement
 actions.single+=/ice_lance
+
+# With Glacial Spike, Rune of Power should be used right before the Glacial Spike combo (i.e. with 5 Icicles and a Brain Freeze). When Ebonbolt is off cooldown, Rune of Power can also be used just with 5 Icicles.
+actions.talent_rop=rune_of_power,if=talent.glacial_spike.enabled&buff.icicles.stack=5&(buff.brain_freeze.react|talent.ebonbolt.enabled&cooldown.ebonbolt.remains<cast_time)
+# Without Glacial Spike, Rune of Power should be used before any bigger cooldown (Ebonbolt, Comet Storm, Ray of Frost) or when Rune of Power is about to reach 2 charges.
+actions.talent_rop+=/rune_of_power,if=!talent.glacial_spike.enabled&(talent.ebonbolt.enabled&cooldown.ebonbolt.remains<cast_time|talent.comet_storm.enabled&cooldown.comet_storm.remains<cast_time|talent.ray_of_frost.enabled&cooldown.ray_of_frost.remains<cast_time|charges_fractional>1.9)
 
 head=runebound_collar,id=152138,bonus_id=3612/1502
 neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr

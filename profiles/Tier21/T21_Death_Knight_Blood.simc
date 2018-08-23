@@ -32,7 +32,9 @@ actions=auto_attack
 actions+=/mind_freeze
 actions+=/blood_fury,if=cooldown.dancing_rune_weapon.ready&(!cooldown.blooddrinker.ready|!talent.blooddrinker.enabled)
 actions+=/berserking
-actions+=/use_items
+actions+=/use_items,if=cooldown.dancing_rune_weapon.remains>90
+actions+=/use_item,name=razdunks_big_red_button
+actions+=/use_item,name=merekthas_fang
 actions+=/potion,if=buff.dancing_rune_weapon.up
 actions+=/dancing_rune_weapon,if=!talent.blooddrinker.enabled|!cooldown.blooddrinker.ready
 actions+=/tombstone,if=buff.bone_shield.stack>=7
