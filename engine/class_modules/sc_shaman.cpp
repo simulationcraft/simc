@@ -3726,6 +3726,8 @@ struct stormstrike_t : public stormstrike_base_t
   void execute() override
   {
     stormstrike_base_t::execute();
+
+    p()->buff.landslide->decrement();
   }
 
   bool ready() override
@@ -3794,6 +3796,8 @@ struct windstrike_t : public stormstrike_base_t
   void execute() override
   {
     stormstrike_base_t::execute();
+
+    p()->buff.landslide->decrement();
   }
 };
 

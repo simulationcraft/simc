@@ -5,7 +5,7 @@ level=120
 race=troll
 role=attack
 position=back
-talents=3101033
+talents=3201033
 
 # Default consumables
 potion=battle_potion_of_agility
