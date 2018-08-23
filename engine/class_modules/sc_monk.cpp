@@ -3240,9 +3240,16 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     background                    = true;
     may_crit                      = true;
     affected_by.sunrise_technique = true;
+  }
 
-    if ( p->spec.rising_sun_kick_2 )
-      attack_power_mod.direct *= 1 + p->spec.rising_sun_kick_2->effectN( 1 ).percent();
+  virtual double action_multiplier() const override
+  {
+    double am = monk_melee_attack_t::action_multiplier();
+
+    if ( p()->spec.rising_sun_kick_2 )
+      am *= 1 + p()->spec.rising_sun_kick_2->effectN( 1 ).percent();
+
+    return am;
   }
 
   double bonus_da( const action_state_t* s ) const override
