@@ -3727,7 +3727,7 @@ struct stormstrike_t : public stormstrike_base_t
   {
     stormstrike_base_t::execute();
 
-    p()->buff.landslide->decrement();
+    p()->buff.landslide->expire();
   }
 
   bool ready() override
