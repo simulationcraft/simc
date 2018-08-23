@@ -161,24 +161,25 @@ public:
     const spell_data_t* mindbender;
 
     // Discipline
-    const spell_data_t* the_penitent;
     const spell_data_t* castigation;
     const spell_data_t* schism;
 
     const spell_data_t* body_and_soul;
     const spell_data_t* masochism;
 
-    const spell_data_t* power_word_solace;
     const spell_data_t* shield_discipline;
-    const spell_data_t* dominant_mind;
+    const spell_data_t* power_word_solace;
 
-    const spell_data_t* sanctuary;
-    const spell_data_t* clarity_of_will;
+	const spell_data_t* dominant_mind;
+
+    const spell_data_t* sins_of_the_many;
+    const spell_data_t* contrition;
     const spell_data_t* shadow_covenant;
 
     const spell_data_t* purge_the_wicked;
 
-    const spell_data_t* grace;
+    const spell_data_t* lenience;
+	const spell_data_t* luminous_barrier;
     const spell_data_t* evangelism;
 
     // Holy
