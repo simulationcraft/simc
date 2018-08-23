@@ -146,7 +146,7 @@ struct power_word_solace_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    double amount = data().effectN( 3 ).percent() / 100.0 * priest().resources.max[ RESOURCE_MANA ];
+    double amount = data().effectN( 2 ).percent() / 100.0 * priest().resources.max[ RESOURCE_MANA ];
     priest().resource_gain( RESOURCE_MANA, amount, priest().gains.power_word_solace );
   }
 };
