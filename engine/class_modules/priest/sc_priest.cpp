@@ -790,6 +790,8 @@ role_e priest_t::primary_role() const
     case ROLE_DPS:
     case ROLE_SPELL:
       return ROLE_SPELL;
+    case ROLE_ATTACK:
+      return ROLE_SPELL;
     default:
       if ( specialization() == PRIEST_HOLY )
       {
