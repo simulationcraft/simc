@@ -1626,7 +1626,7 @@ Spell Level      : 1
 Range            : 30 yards
 Cast Time        : 1.7 seconds
 GCD              : 1.5 seconds
-Duration         : 50 seconds
+Duration         : 60 seconds
 Proc Chance      : 100%
 Mechanic         : Polymorph
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
@@ -1658,7 +1658,7 @@ Spell Level      : 60
 Range            : 30 yards
 Cast Time        : 1.7 seconds
 GCD              : 1.5 seconds
-Duration         : 50 seconds
+Duration         : 60 seconds
 Proc Chance      : 100%
 Mechanic         : Polymorph
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
@@ -1690,7 +1690,7 @@ Spell Level      : 60
 Range            : 30 yards
 Cast Time        : 1.7 seconds
 GCD              : 1.5 seconds
-Duration         : 50 seconds
+Duration         : 60 seconds
 Proc Chance      : 100%
 Mechanic         : Polymorph
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
@@ -1722,7 +1722,7 @@ Spell Level      : 1
 Range            : 30 yards
 Cast Time        : 1.7 seconds
 GCD              : 1.5 seconds
-Duration         : 50 seconds
+Duration         : 60 seconds
 Proc Chance      : 100%
 Mechanic         : Polymorph
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
@@ -2642,7 +2642,7 @@ Spell Level      : 1
 Range            : 30 yards
 Cast Time        : 1.7 seconds
 GCD              : 1.5 seconds
-Duration         : 50 seconds
+Duration         : 60 seconds
 Proc Chance      : 100%
 Mechanic         : Polymorph
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
@@ -3483,7 +3483,7 @@ Spell Level      : 1
 Range            : 30 yards
 Cast Time        : 1.7 seconds
 GCD              : 1.5 seconds
-Duration         : 50 seconds
+Duration         : 60 seconds
 Proc Chance      : 100%
 Mechanic         : Polymorph
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
@@ -3515,7 +3515,7 @@ Spell Level      : 1
 Range            : 30 yards
 Cast Time        : 1.7 seconds
 GCD              : 1.5 seconds
-Duration         : 50 seconds
+Duration         : 60 seconds
 Proc Chance      : 100%
 Mechanic         : Polymorph
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
@@ -3547,7 +3547,7 @@ Spell Level      : 1
 Range            : 30 yards
 Cast Time        : 1.7 seconds
 GCD              : 1.5 seconds
-Duration         : 50 seconds
+Duration         : 60 seconds
 Proc Chance      : 100%
 Mechanic         : Polymorph
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
@@ -3579,7 +3579,7 @@ Spell Level      : 60
 Range            : 30 yards
 Cast Time        : 1.7 seconds
 GCD              : 1.5 seconds
-Duration         : 50 seconds
+Duration         : 60 seconds
 Proc Chance      : 100%
 Mechanic         : Polymorph
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 

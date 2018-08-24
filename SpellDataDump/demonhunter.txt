@@ -306,11 +306,11 @@ Attributes       : ........ ........ ..x..... x..x....   .....x.. ..x..... .....
 Effects          :
 #1 (id=229227)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Death Sweep (210153), Death Sweep (210155), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Dark Slash (258860), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148)
+                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Death Sweep (210153), Death Sweep (210155), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Dark Slash (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148)
                    Family Flags: 16
 #2 (id=479919)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Death Sweep (210153), Death Sweep (210155), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Dark Slash (258860), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148)
+                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Death Sweep (210153), Death Sweep (210155), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Dark Slash (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148)
                    Family Flags: 16
 #3 (id=479920)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
@@ -2692,11 +2692,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=308737)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
-                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Death Sweep (210153), Death Sweep (210155), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Dark Slash (258860), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148)
+                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Death Sweep (210153), Death Sweep (210155), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Dark Slash (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148)
                    Family Flags: 16
 #2 (id=479917)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Death Sweep (210153), Death Sweep (210155), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Dark Slash (258860), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148)
+                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Death Sweep (210153), Death Sweep (210155), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Dark Slash (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148)
                    Family Flags: 16
 #3 (id=479918)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
@@ -3233,11 +3233,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=315235)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 11 | Scaled Value: 11 | Target: Self (1)
-                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Death Sweep (210153), Death Sweep (210155), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Dark Slash (258860), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148)
+                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Death Sweep (210153), Death Sweep (210155), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Dark Slash (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148)
                    Family Flags: 16
 #2 (id=315236)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 11 | Scaled Value: 11 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Death Sweep (210153), Death Sweep (210155), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Dark Slash (258860), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148)
+                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Death Sweep (210153), Death Sweep (210155), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Dark Slash (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148)
                    Family Flags: 16
 #3 (id=315237)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | Target: Self (1)
@@ -4107,11 +4107,11 @@ Effects          :
                    Base Value: 150 | Scaled Value: 150 | Misc Value: 211796 | Trigger Spell: 211797 | Target: Self (1)
 #2 (id=464520)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Death Sweep (210153), Death Sweep (210155), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Dark Slash (258860), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148)
+                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Death Sweep (210153), Death Sweep (210155), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Dark Slash (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148)
                    Family Flags: 16
 #3 (id=479915)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Death Sweep (210153), Death Sweep (210155), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Dark Slash (258860), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148)
+                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Death Sweep (210153), Death Sweep (210155), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Dark Slash (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148)
                    Family Flags: 16
 #4 (id=479916)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
@@ -4376,14 +4376,15 @@ Effects          :
 Description      : The final slash of Blade Dance inflicts an additional $258883o1 Chaos damage over $258883d.
 
 Name             : Trail of Ruin (id=258883) [Spell Family (107)] 
+Hotfixed         : Affecting Spells
 Class            : Demon Hunter
 School           : Chromatic
 Spell Type       : Magic
 Range            : 8 yards
 Duration         : 4 seconds
-Affecting spells : Mastery: Demonic Presence (185164 effect#1), 
+Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), 
 Triggered by     : Trail of Ruin (258881)
-Family Flags     : 43
+Family Flags     : 16, 43
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 

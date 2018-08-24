@@ -2757,6 +2757,7 @@ Lasts $d. You may freely shapeshift in and out of this improved Bear Form for it
 Tooltip          : Incarnation: Guardian of Ursoc activated.
 
 Name             : Incarnation: Chosen of Elune (rank=Talent, Shapeshift) (id=102560) [Spell Family (7)] 
+Hotfixed         : Affecting Spells
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -2767,8 +2768,8 @@ Cooldown         : 180 seconds
 Category         : 1333
 Category Cooldown: 180 seconds
 Proc Chance      : 101%
-Affecting spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Incarnation (117679 effect#1), Druid (137009 effect#4), Feral Druid (137011 effect#4), Wildcat Celerity (184877 effect#1), Moonkin Form (231042 effect#1)
-Family Flags     : 43, 45
+Affecting spells : Incarnation (117679 effect#1), Druid (137009 effect#4), Wildcat Celerity (184877 effect#1)
+Family Flags     : 43
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -2932,7 +2933,8 @@ Effects          :
 #2 (id=222211)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #3 (id=222212)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.21746 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.25000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Hotfixed: AP Coefficient (0.217464 -> 0.25)
 Description      : Swipe nearby enemies, inflicting $s3 Physical damage.$?a231283[ Deals $s2% increased damage against bleeding targets.][]
 
 |cFFFFFFFFAwards $s1 combo $lpoint:points;.|r
@@ -2960,9 +2962,11 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=117262)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.06552 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.07540 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
+                   Hotfixed: AP Coefficient (0.06552 -> 0.0754)
 #2 (id=117263)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.03931 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.04520 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
+                   Hotfixed: AP Coefficient (0.039312 -> 0.0452)
 Description      : Strikes all nearby enemies, dealing $m1 Bleed damage and an additional $o2 Bleed damage over $d.
 
 |cFFFFFFFFAwards $211141s1 combo $lpoint:points;.|r
@@ -3661,7 +3665,7 @@ Effects          :
                    Family Flags: 15
 #4 (id=191156)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: 90000 | Scaled Value: 90000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Moonkin Form (24858), Incarnation: Chosen of Elune (102560), Moonkin Form (197625)
+                   Affected Spells: Moonkin Form (24858), Moonkin Form (197625)
                    Family Flags: 45
 #5 (id=191157)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 83 | Scaled Value: 83 | Target: Self (1)
@@ -5686,7 +5690,8 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=297726)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.50000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.60000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Hotfixed: AP Coefficient (0.5 -> 0.6)
 #2 (id=297727)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 Description      : Strikes all nearby enemies with a massive slash, inflicting $s1 Physical damage.
@@ -7277,7 +7282,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=348377)   : Apply Aura (6) | Add Flat Modifier (107): Spell Proc Chance (18)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 18 | Target: Self (1)
-                   Affected Spells: Moonkin Form (24858), Incarnation: Chosen of Elune (102560), Moonkin Form (197625)
+                   Affected Spells: Moonkin Form (24858), Moonkin Form (197625)
                    Family Flags: 45
 Description      : While in Moonkin Form, single-target attacks against you have a $s1% chance make your next Lunar Strike instant.
 

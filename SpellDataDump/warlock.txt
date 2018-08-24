@@ -2294,6 +2294,7 @@ Effects          :
 Description      : $@spelldesc105174
 
 Name             : Fel Firebolt (rank=Basic Attack) (id=104318) [Spell Family (5)] 
+Hotfixed         : Velocity (16 -> 30)
 Class            : Warlock
 School           : Fire
 Spell Type       : Magic
@@ -2301,7 +2302,7 @@ Resource         : 20 Energy (3) (id=191530)
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2 seconds
-Velocity         : 16 yards/sec
+Velocity         : 30 yards/sec
 Affecting spells : Demonic Power (265273 effect#4)
 Family Flags     : 12
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
