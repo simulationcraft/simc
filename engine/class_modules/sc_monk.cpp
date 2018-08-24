@@ -9336,14 +9336,14 @@ void monk_t::apl_combat_windwalker()
       "call_action_list,name=serenitySR,if=((talent.serenity.enabled&cooldown.serenity.remains<=0)|buff.serenity.up)&azerite.swift_roundhouse.rank>1&time>30",
       "Call the Serenity action list if you're using Serenity and have more than two ranks of Swift Roundhouse Trait" );
   def->add_action(
-      "call_action_list,name=serenity,if=((talent.serenity.enabled&cooldown.serenity.remains<=0)|buff.serenity.up)&time>30",
+      "call_action_list,name=serenity,if=((!azerite.swift_roundhouse.enabled&talent.serenity.enabled&cooldown.serenity.remains<=0)|buff.serenity.up)&time>30",
       "Call the Serenity action list if you're using Serenity and Serenity is available (or you're currently in "
       "Serenity)" );
   def->add_action(
       "call_action_list,name=serenity_openerSR,if=(talent.serenity.enabled&cooldown.serenity.remains<=0|buff.serenity.up)&time<30&azerite.swift_roundhouse.enabled",
       "Call the Serenity Opener action list if you're using Serenity and have more than two ranks of Swift Roundhouse Trait" );
   def->add_action(
-      "call_action_list,name=serenity_opener,if=(talent.serenity.enabled&cooldown.serenity.remains<=0|buff.serenity.up)&time<30",
+      "call_action_list,name=serenity_opener,if=(!azerite.swift_roundhouse.enabled&talent.serenity.enabled&cooldown.serenity.remains<=0|buff.serenity.up)&time<30",
       "Call the Serenity Opener action list if you're using Serenity and Serenity is available (or you're currently in "
       "Serenity)" );
   def->add_action(
