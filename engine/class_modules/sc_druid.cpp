@@ -2031,7 +2031,24 @@ public:
   {
     double tm = base_t::composite_ta_multiplier(s);
 
+    if (p()->buff.incarnation_moonkin->check() && data().affected_by(p()->talent.incarnation_moonkin->effectN(2)))
+    {
+      tm *= 1.0 + p()->buff.incarnation_moonkin->data().effectN(2).percent();
+    }
+
     return tm;
+  }
+
+  virtual double composite_da_multiplier(const action_state_t* s) const override
+  {
+    double dm = base_t::composite_da_multiplier(s);
+
+    if (data().affected_by(p()->talent.incarnation_moonkin->effectN(1)))
+    {
+      dm *= 1.0 + p()->buff.incarnation_moonkin->check_value();
+    }
+
+    return dm;
   }
 
   virtual double action_multiplier () const override
@@ -2042,10 +2059,7 @@ public:
     {
       m *= 1.0 + p()->buff.celestial_alignment->check_value();
     }
-    if (data().affected_by(p()->talent.incarnation_moonkin->effectN(1)))
-    {
-      m *= 1.0 + p()->buff.incarnation_moonkin->check_value();
-    }
+
     if (data().affected_by(p()->spec.moonkin_form->effectN(9)))
     {
       m *= 1.0 + p()->buff.moonkin_form->data().effectN(9).percent();
