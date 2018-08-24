@@ -6573,7 +6573,7 @@ void mage_t::apl_frost()
   single -> add_talent( this, "Comet Storm" );
   single -> add_talent( this, "Ebonbolt", "if=!talent.glacial_spike.enabled|buff.icicles.stack=5&!buff.brain_freeze.react",
     "Without GS, Ebonbolt is used on cooldown. With GS, Ebonbolt is only used to fill in the blank spots when fishing for a Brain Freeze proc, i.e. "
-    "the mage reaches 5 Icicles but still doesn't have a Brain Freeze proc." );
+    "the mage reaches 5 Icicles but still doesn't have a Brain Freeze proc. This is DPS neutral with low mastery and slight gain otherwise." );
   single -> add_talent( this, "Ray of Frost", "if=!action.frozen_orb.in_flight&ground_aoe.frozen_orb.remains=0",
     "Ray of Frost is used after all Fingers of Frost charges have been used and there isn't active Frozen Orb that could generate more. "
     "This is only a small gain against multiple targets, as Ray of Frost isn't too impactful." );
