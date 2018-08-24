@@ -949,10 +949,25 @@ double priest_t::composite_player_heal_multiplier( const action_state_t* s ) con
     m *= 1.0 + buffs.twist_of_fate->current_value;
   }
 
+  if ( specs.grace->ok() )
+  {
+    m *= 1.0 + specs.grace->effectN( 1 ).percent();
+  }
 
   return m;
 }
 
+double priest_t::composite_player_absorb_multiplier( const action_state_t* s ) const
+{
+  double m = player_t::composite_player_absorb_multiplier( s );
+
+  if ( specs.grace->ok() )
+  {
+    m *= 1.0 + specs.grace->effectN( 2 ).percent();
+  }
+
+  return m;
+}
 
 double priest_t::composite_player_target_multiplier( player_t* t, school_e school ) const
 {
