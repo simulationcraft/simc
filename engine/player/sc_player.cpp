@@ -2137,7 +2137,7 @@ void player_t::init_scaling()
 
     scaling->set( STAT_ARMOR, tank );
 
-    auto add_stat = []( double& to, double v, double d = 0 ) { if ( to + v < d ) to = d; else to += v; };
+    auto add_stat = []( double& to, double v, double d ) { if ( to + v < d ) to = d; else to += v; };
 
     if ( sim->scaling->scale_stat != STAT_NONE && scale_player )
     {
@@ -2146,63 +2146,63 @@ void player_t::init_scaling()
       switch ( sim->scaling->scale_stat )
       {
         case STAT_STRENGTH:
-          add_stat( initial.stats.attribute[ ATTR_STRENGTH ], v );
+          add_stat( initial.stats.attribute[ ATTR_STRENGTH ], v, 0 );
           break;
         case STAT_AGILITY:
-          add_stat( initial.stats.attribute[ ATTR_AGILITY ], v );
+          add_stat( initial.stats.attribute[ ATTR_AGILITY ], v, 0 );
           break;
         case STAT_STAMINA:
-          add_stat( initial.stats.attribute[ ATTR_STAMINA ], v );
+          add_stat( initial.stats.attribute[ ATTR_STAMINA ], v, 0 );
           break;
         case STAT_INTELLECT:
-          add_stat( initial.stats.attribute[ ATTR_INTELLECT ], v );
+          add_stat( initial.stats.attribute[ ATTR_INTELLECT ], v, 0 );
           break;
         case STAT_SPIRIT:
-          add_stat( initial.stats.attribute[ ATTR_SPIRIT ], v );
+          add_stat( initial.stats.attribute[ ATTR_SPIRIT ], v, 0 );
           break;
 
         case STAT_SPELL_POWER:
-          add_stat( initial.stats.spell_power, v );
+          add_stat( initial.stats.spell_power, v, 0 );
           break;
 
         case STAT_ATTACK_POWER:
-          add_stat( initial.stats.attack_power, v );
+          add_stat( initial.stats.attack_power, v, 0 );
           break;
 
         case STAT_CRIT_RATING:
-          add_stat( initial.stats.crit_rating, v );
+          add_stat( initial.stats.crit_rating, v, 0 );
           break;
 
         case STAT_HASTE_RATING:
-          add_stat( initial.stats.haste_rating, v );
+          add_stat( initial.stats.haste_rating, v, 0 );
           break;
 
         case STAT_MASTERY_RATING:
-          add_stat( initial.stats.mastery_rating, v );
+          add_stat( initial.stats.mastery_rating, v, 0 );
           break;
 
         case STAT_VERSATILITY_RATING:
-          add_stat( initial.stats.versatility_rating, v );
+          add_stat( initial.stats.versatility_rating, v, 0 );
           break;
 
         case STAT_DODGE_RATING:
-          add_stat( initial.stats.dodge_rating, v );
+          add_stat( initial.stats.dodge_rating, v, 0 );
           break;
 
         case STAT_PARRY_RATING:
-          add_stat( initial.stats.parry_rating, v );
+          add_stat( initial.stats.parry_rating, v, 0 );
           break;
 
         case STAT_SPEED_RATING:
-          add_stat( initial.stats.speed_rating, v );
+          add_stat( initial.stats.speed_rating, v, 0 );
           break;
 
         case STAT_AVOIDANCE_RATING:
-          add_stat( initial.stats.avoidance_rating, v );
+          add_stat( initial.stats.avoidance_rating, v, 0 );
           break;
 
         case STAT_LEECH_RATING:
-          add_stat( initial.stats.leech_rating, v );
+          add_stat( initial.stats.leech_rating, v, 0 );
           break;
 
         case STAT_WEAPON_DPS:
@@ -2226,15 +2226,15 @@ void player_t::init_scaling()
           break;
 
         case STAT_ARMOR:
-          add_stat( initial.stats.armor, v );
+          add_stat( initial.stats.armor, v, 0 );
           break;
 
         case STAT_BONUS_ARMOR:
-          add_stat( initial.stats.bonus_armor, v );
+          add_stat( initial.stats.bonus_armor, v, 0 );
           break;
 
         case STAT_BLOCK_RATING:
-          add_stat( initial.stats.block_rating, v );
+          add_stat( initial.stats.block_rating, v, 0 );
           break;
 
         case STAT_MAX:
