@@ -148,8 +148,8 @@ Attributes       : ........ ........ .......x x.......   .....x.. ..x..... .....
 Effects          :
 #2 (id=288193)   : Apply Aura (6) | Slow Fall (409)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Reduces your falling speed.
-
+Description      : Reduces your falling speed.
+
 You can activate this ability with the jump key while falling.
 Tooltip          : Falling speed reduced.
 
@@ -176,8 +176,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.45279 | Target: Enemy (6)
 #3 (id=287985)   : Energize Power (30)
                    Base Value: 25 | Scaled Value: 25 (coefficient=0, delta coefficient=0.4) | Misc Value: fury | Target: Self (1)
-Description      : Quickly attack for $s2 Physical damage.
-
+Description      : Quickly attack for $s2 Physical damage.
+
 |cFFFFFFFFGenerates $m3 to $?a258876[${$M3+$258876s1}][$M3] Fury.|r
 
 Name             : Metamorphosis (id=162264) [Spell Family (107)] 
@@ -218,8 +218,8 @@ Effects          :
 #8 (id=329388)   : Apply Aura (6) | Unknown(312)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 567 | Target: Self (1)
 Description      : $@spelldesc191427
-Tooltip          : Chaos Strike and Blade Dance upgraded to $@spellname201427 and $@spellname210152.
-Haste increased by $s6%.
+Tooltip          : Chaos Strike and Blade Dance upgraded to $@spellname201427 and $@spellname210152.
+Haste increased by $s6%.
 Leech increased by $w3%.
 
 Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden] 
@@ -345,11 +345,11 @@ Effects          :
                    Base Value: 80 | Scaled Value: 80 | Misc Value: pain | Target: Self (1)
 #4 (id=313444)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Engulf yourself in flames, instantly causing $187727s1 Fire damage to enemies within $187727A1 yards and radiating $178741s1 Fire damage every sec for $d.
-
+Description      : Engulf yourself in flames, instantly causing $187727s1 Fire damage to enemies within $187727A1 yards and radiating $178741s1 Fire damage every sec for $d.
+
 |cFFFFFFFFGenerates ${$s3/10+$178741s2/10*$d} Pain over $d.|r
-Tooltip          : Burns nearby enemies for $178741s1 Fire damage every $178740t1 sec.$?a207548[
-
+Tooltip          : Burns nearby enemies for $178741s1 Fire damage every $178740t1 sec.$?a207548[
+
 Movement speed increased by $w4%.][]
 
 Name             : Immolation Aura (id=178741) [Spell Family (107)] 
@@ -391,8 +391,8 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=257107)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
-Description      : Killing an enemy sometimes creates a Soul Fragment that is consumed when you approach it, healing you for $178963s1% of maximum health$?a206478[ and generating $210041s1 Fury][].
-
+Description      : Killing an enemy sometimes creates a Soul Fragment that is consumed when you approach it, healing you for $178963s1% of maximum health$?a206478[ and generating $210041s1 Fury][].
+
 If the Soul Fragment came from a Demon, you will deal $163073s1% increased damage for $163073d.
 
 Name             : Consume Soul (id=178963) [Spell Family (107)] 
@@ -457,8 +457,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20475 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #3 (id=738282)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | Radius: 0 - 8 yards | Mechanic: Stun | Target: Custom (18) -> AOE enemy (instant) (16)
-Description      : Unleash an eruption of fel energy, dealing $s2 Chaos damage and stunning all nearby enemies for $d.
-
+Description      : Unleash an eruption of fel energy, dealing $s2 Chaos damage and stunning all nearby enemies for $d.
+
 Each enemy stunned by Chaos Nova has a $s3% chance to generate a Lesser Soul Fragment.
 Tooltip          : Stunned.
 
@@ -483,10 +483,10 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=266200)   : Interrupt Cast (68)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Interrupt | Target: Enemy (6)
-Description      : Interrupts the enemy's spellcasting and locks them from that school of magic for $d.|cFFFFFFFF$?s178940[
-
-Generates $218903s1 Fury on a successful interrupt.][
-
+Description      : Interrupts the enemy's spellcasting and locks them from that school of magic for $d.|cFFFFFFFF$?s178940[
+
+Generates $218903s1 Fury on a successful interrupt.][
+
 Generates ${$218903s2/10} Pain on a successful interrupt.]|r
 
 Name             : Disrupt (id=183782) [Spell Family (107), Passive, Hidden] 
@@ -655,11 +655,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #7 (id=356685)   : Apply Aura (6) | Modify Base Resistance (142)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1 | Target: Self (1)
-Description      : Transform to demon form for $d, increasing current and maximum health by $s2% and Armor by $s7%.
-
+Description      : Transform to demon form for $d, increasing current and maximum health by $s2% and Armor by $s7%.
+
 |cFFFFFFFFGenerates ${$s4/10} Pain every $t4 sec.|r
-Tooltip          : Maximum health increased by $s2%. Armor increased by $s7%.
-
+Tooltip          : Maximum health increased by $s2%. Armor increased by $s7%.
+
 Generating ${$s4/10} Pain every $t4 sec.
 
 Name             : Blade Dance (id=188499) [Spell Family (107)] 
@@ -701,7 +701,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: 0x8 | Target: Self (1)
 Description      : Strike $?a206416[your primary target for $<firstbloodDmg> Physical damage, ][]all nearby enemies for $<baseDmg> Physical damage, and increase your chance to dodge by $s2% for $d.
 Tooltip          : Dodge chance increased by $s2%.
-Variables        : $baseDmg=${3*$199552sw2+$200685sw2} 
+Variables        : $baseDmg=${3*$199552sw2+$200685sw2} 
 $firstbloodDmg=${(3*$199552sw2+$200685sw2)*(100+$206416s1)/100}
 
 Name             : Spectral Sight (id=188501) [Spell Family (107)] 
@@ -729,10 +729,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 499 | Target: Self (1)
 #6 (id=320783)   : Unknown(167)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Allows you to see enemies and treasures through physical barriers, as well as enemies that are stealthed and invisible. Lasts $d.
-
+Description      : Allows you to see enemies and treasures through physical barriers, as well as enemies that are stealthed and invisible. Lasts $d.
+
 Attacking or taking damage disrupts the sight.
-Tooltip          : Can see invisible and stealthed enemies.
+Tooltip          : Can see invisible and stealthed enemies.
 Can see enemies and treasures through physical barriers.
 
 Name             : Infernal Strike (id=189110) [Spell Family (107)] 
@@ -824,8 +824,8 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 9 | Target: Unknown(87)
 #4 (id=475701)   : Trigger Spell (64): Metamorphosis
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 201453 | Target: Self (1)
-Description      : Leap into the air and land with explosive force, dealing $200166s2 Chaos damage to enemies within 8 yds, and stunning them for $200166d. Players are Dazed for $247121d instead.
-
+Description      : Leap into the air and land with explosive force, dealing $200166s2 Chaos damage to enemies within 8 yds, and stunning them for $200166d. Players are Dazed for $247121d instead.
+
 Upon landing, you are transformed into a hellish demon for $162264d, greatly empowering your Chaos Strike and Blade Dance abilities, gaining $162264s3% Leech, and $162264s6% Haste.
 
 Name             : Fel Rush (id=192611) [Spell Family (107)] 
@@ -951,7 +951,7 @@ Effects          :
 #3 (id=303655)   : Apply Aura (6) | Unknown(171)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 Description      : Slip into the nether, increasing movement speed by $s3% and becoming immune to damage, but unable to attack. Lasts $d.
-Tooltip          : Immune to damage and unable to attack.
+Tooltip          : Immune to damage and unable to attack.
 Movement speed increased by $s3%.
 
 Name             : Darkness (id=196718) [Spell Family (107)] 
@@ -1116,8 +1116,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=351230)   : Trigger Spell (64): Vengeful Retreat
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 232709 | Target: Self (1)
-Description      : Remove all snares and vault away. Nearby enemies take $198813s2 Physical damage and have their movement speed reduced by $198813s1% for $198813d.$?a203551[
-
+Description      : Remove all snares and vault away. Nearby enemies take $198813s2 Physical damage and have their movement speed reduced by $198813s1% for $198813d.$?a203551[
+
 |cFFFFFFFFGenerates ${($203650s1/5)*$203650d} Fury over $203650d if you damage an enemy.|r][]
 
 Name             : Vengeful Retreat (id=198813) [Spell Family (107)] 
@@ -1447,8 +1447,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Unknown(87)
 #2 (id=301812)   : Unknown(179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 6027 | Target: Unknown(87)
-Description      : Place a Sigil of Silence at the target location that activates after $d.
-
+Description      : Place a Sigil of Silence at the target location that activates after $d.
+
 Silences all enemies affected by the sigil for $204490d.
 
 Name             : Sigil of Chains (id=202138) [Spell Family (107)] 
@@ -1476,8 +1476,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Unknown(87)
 #2 (id=301844)   : Unknown(179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 6031 | Target: Unknown(87)
-Description      : Place a Sigil of Chains at the target location that activates after $d.
-
+Description      : Place a Sigil of Chains at the target location that activates after $d.
+
 All enemies affected by the sigil are pulled to its center and are snared, reducing movement speed by $204843s1% for $204843d.
 
 Name             : Anguish (id=202443) [Spell Family (107)] 
@@ -1785,8 +1785,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Demon Spikes (203819)
                    Family Flags: 7
-Description      : Increases the Armor bonus of Demon Spikes by an additional ${$s1}.1% of your Agility.
-
+Description      : Increases the Armor bonus of Demon Spikes by an additional ${$s1}.1% of your Agility.
+
 Also increases your attack power by ${$s2}.1%.
 
 Name             : Shear (id=203782) [Spell Family (107)] 
@@ -1812,8 +1812,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.40365 | Target: Enemy (6)
 #3 (id=310130)   : Energize Power (30)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: pain | Target: Self (1)
-Description      : Shears an enemy for $s2 Physical damage, and shatters a Lesser Soul Fragment from your target.
-
+Description      : Shears an enemy for $s2 Physical damage, and shatters a Lesser Soul Fragment from your target.
+
 |cFFFFFFFFGenerates ${$m3/10} Pain.|r
 
 Name             : Shear (id=203783) [Spell Family (107), Passive, Hidden] 
@@ -1841,8 +1841,8 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #4 (id=706164)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-Description      : Shear shatters the target's soul, leaving a Lesser Soul Fragment behind for $204255d.
-
+Description      : Shear shatters the target's soul, leaving a Lesser Soul Fragment behind for $204255d.
+
 Consuming a Lesser Soul Fragment heals you for $s2% of all damage taken in the last $s4 sec, minimum $s3% of maximum health.
 
 Name             : Consume Soul (id=203794) [Spell Family (107)] 
@@ -1937,7 +1937,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x1 | Target: Self (1)
                    Affected School(s): Physical
 Description      : $@spelldesc203720
-Tooltip          : Armor increased by ${$W2*$AGI/100}.
+Tooltip          : Armor increased by ${$W2*$AGI/100}.
 Parry chance increased by $w1%.
 
 Name             : Fiery Brand (id=204021) [Spell Family (107)] 
@@ -2015,12 +2015,12 @@ Attributes       : ....x.x. x....... ........ x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=301462)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
-Description      : Killing a target will sometimes shatter their soul, leaving a Soul Fragment behind for $203795d.
-
-The Soul Fragment will be consumed when you approach it, healing you for $210042s1 health.
-
-Consuming a Lesser Soul Fragment heals you for $203783s2% of all damage taken in the last $203783s4 sec, minimum $203783s3% of maximum health.
-
+Description      : Killing a target will sometimes shatter their soul, leaving a Soul Fragment behind for $203795d.
+
+The Soul Fragment will be consumed when you approach it, healing you for $210042s1 health.
+
+Consuming a Lesser Soul Fragment heals you for $203783s2% of all damage taken in the last $203783s4 sec, minimum $203783s3% of maximum health.
+
 Consuming a Demon's soul will grant you $163073s1% increased damage for $163073d.
 
 Name             : Soul Fragment (id=204255) [Spell Family (107)] 
@@ -2117,8 +2117,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Unknown(87)
 #2 (id=301966)   : Unknown(179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 6039 | Target: Unknown(87)
-Description      : Place a Sigil of Flame at the target location that activates after $d.
-
+Description      : Place a Sigil of Flame at the target location that activates after $d.
+
 Deals $204598s1 Fire damage, and an additional $204598o3 Fire damage over $204598d, to all enemies affected by the sigil.
 Tooltip          : Sigil of Flame is active.
 
@@ -2190,8 +2190,8 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Metamorphosis (162264), Metamorphosis (191427)
                    Family Flags: 15
-Description      : Leech increased by $s1%.
-
+Description      : Leech increased by $s1%.
+
 Gain an additional $s2% Leech while Metamorphosis is active.
 
 Name             : Desperate Instincts (id=205411) [Spell Family (107), Passive] 
@@ -2215,8 +2215,8 @@ Effects          :
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Blur (198589), Blur (212800)
                    Family Flags: 26
-Description      : Blur now reduces damage taken by an additional ${$abs($m3)}%.
-
+Description      : Blur now reduces damage taken by an additional ${$abs($m3)}%.
+
 Additionally, you automatically trigger Blur when you fall below $s1% health. This effect can only occur when Blur is not on cooldown.
 
 Name             : Desperate Instincts (id=205478) [Spell Family (107), Hidden] 
@@ -2257,7 +2257,7 @@ Effects          :
                    Affected Spells: Blade Dance (188499), Blade Dance (199552), Blade Dance (200685), Death Sweep (210152), Death Sweep (210153), Death Sweep (210155)
                    Family Flags: 25, 37
 Description      : Reduces the Fury cost of Blade Dance by $s2 and increases its damage to $<firstbloodDmg> against the first target struck.
-Variables        : $baseDmg=${3*$199552sw2+$200685sw2} 
+Variables        : $baseDmg=${3*$199552sw2+$200685sw2} 
 $firstbloodDmg=${(3*$199552sw2+$200685sw2)*(100+$206416s1)/100}
 
 Name             : Momentum (id=206476) [Spell Family (107), Passive] 
@@ -2281,8 +2281,8 @@ Effects          :
                    Base Value: -5000 | Scaled Value: -5000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Vengeful Retreat (198793), Vengeful Retreat (198813)
                    Family Flags: 3
-Description      : Fel Rush increases your damage done by $208628s1% for $208628d.
-
+Description      : Fel Rush increases your damage done by $208628s1% for $208628d.
+
 Vengeful Retreat's cooldown is reduced by ${$s1/-1000} sec, and it generates ${($203650s1/5)*$203650d} Fury over $203650d if it damages at least one enemy.
 
 Name             : Unleashed Power (id=206477) [Spell Family (107), Passive] 
@@ -2350,8 +2350,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=305378)   : Apply Aura (6) | Modify Damage Taken% from Caster (270)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 127 | Target: Enemy (6)
-Description      : Increases damage you inflict against the target by $s1% for $d. 
-
+Description      : Increases damage you inflict against the target by $s1% for $d. 
+
 When the target is slain, you will inflict $s1% additional damage against all creature types matching the original target (Humanoid, Dragonkin, etc.) for the remaining duration.
 Tooltip          : Damage taken increased by $s1%.
 
@@ -2498,8 +2498,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Unknown(87)
 #2 (id=307159)   : Unknown(179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 6351 | Target: Unknown(87)
-Description      : Place a Sigil of Misery at the target location that activates after $d.
-
+Description      : Place a Sigil of Misery at the target location that activates after $d.
+
 Causes all enemies affected by the sigil to cower in fear, disorienting them for $207685d.
 
 Name             : Sigil of Misery (id=207685) [Spell Family (107)] 
@@ -2765,8 +2765,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Misc Value 2: 0x1e | Target: Self (1)
 #2 (id=309745)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-Description      : Sustaining fatal damage instead transforms you to Metamorphosis form, and returns you to $s2% health.
-
+Description      : Sustaining fatal damage instead transforms you to Metamorphosis form, and returns you to $s2% health.
+
 This effect may only occur every $209261d.
 
 Name             : Uncontained Fel (id=209261) [Spell Family (107)] 
@@ -3370,7 +3370,7 @@ Effects          :
 #4 (id=357029)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc198589
-Tooltip          : Dodge increased by $s2%.
+Tooltip          : Dodge increased by $s2%.
 Damage taken reduced by $s3%.
 
 Name             : Fiery Demise (id=212817) [Spell Family (107), Passive] 
@@ -3617,8 +3617,8 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Metamorphosis (187827)
                    Family Flags: 28
-Description      : Leech increased by $s1%.
-
+Description      : Leech increased by $s1%.
+
 Gain an additional $s2% Leech while Metamorphosis is active.
 
 Name             : Feed the Demon (id=218612) [Spell Family (107), Passive, Hidden] 
@@ -3900,10 +3900,10 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Target: Enemy (6)
 #4 (id=344031)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.05000 | Target: Self (1)
-Description      : Viciously strike all enemies in front of you for $228478s1 Physical damage and heal yourself for $s4.
-
+Description      : Viciously strike all enemies in front of you for $228478s1 Physical damage and heal yourself for $s4.
+
 Consumes up to $s3 Soul Fragments within $s1 yds.
-Variables        : $cleaveDamage=${2.0*$228478sw1}
+Variables        : $cleaveDamage=${2.0*$228478sw1}
 $cleaveHeal=${2.0*$AP*5.8*$s4/1000}
 
 Name             : Soul Cleave (id=228478) [Spell Family (107)] 
@@ -3965,14 +3965,14 @@ Attributes       : ....x... ........ ..x..... .....x..   ........ .x...... .....
 Effects          :
 #1 (id=351567)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-Description      : Charge to your target and deal $213243sw2 Fire damage.
-
-$?s203513[Shear has a chance to reset the cooldown of Felblade.
-
-|cFFFFFFFFGenerates ${$213243s3/10} Pain.|r]?a203555[Demon Blades has a chance to reset the cooldown of Felblade.
-
-|cFFFFFFFFGenerates $213243s4 Fury.|r][Demon's Bite has a chance to reset the cooldown of Felblade.
-
+Description      : Charge to your target and deal $213243sw2 Fire damage.
+
+$?s203513[Shear has a chance to reset the cooldown of Felblade.
+
+|cFFFFFFFFGenerates ${$213243s3/10} Pain.|r]?a203555[Demon Blades has a chance to reset the cooldown of Felblade.
+
+|cFFFFFFFFGenerates $213243s4 Fury.|r][Demon's Bite has a chance to reset the cooldown of Felblade.
+
 |cFFFFFFFFGenerates $213243s4 Fury.|r]
 
 Name             : Felblade (id=236167) [Spell Family (107), Passive, Hidden] 
@@ -4039,8 +4039,8 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 #2 (id=707097)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-Description      : Consume up to $s2 Soul Fragments within $s1 yds and then explode, afflicting nearby enemies with Frailty for $247456d and damaging them for $247455s1 Fire per fragment.
-
+Description      : Consume up to $s2 Soul Fragments within $s1 yds and then explode, afflicting nearby enemies with Frailty for $247456d and damaging them for $247455s1 Fire per fragment.
+
 You heal for $247456s1% of all damage you deal to enemies with Frailty.
 
 Name             : Spirit Bomb (id=247455) [Spell Family (107)] 
@@ -4115,11 +4115,11 @@ Effects          :
                    Family Flags: 16
 #4 (id=479916)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-Description      : Increases all damage done by $s2% for $d.
-
+Description      : Increases all damage done by $s2% for $d.
+
 While active, your auto attack deals $s1% increased damage, and causes Chaos damage.
-Tooltip          : Damage done increased by $w2%.
-
+Tooltip          : Damage done increased by $w2%.
+
 Auto attack damage increased by $s1%, and deal Chaos damage.
 
 Name             : Vindicaar Matrix Crystal (id=251463) 
@@ -4304,8 +4304,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 33251.41 (coefficient=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=479677)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 33251.41 (coefficient=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
-Description      : Deals $s1 Holy Damage to enemies within $A1.
-
+Description      : Deals $s1 Holy Damage to enemies within $A1.
+
 Heals $s2 to allies within $A1. 
 
 Name             : Dark Slash (id=258860) [Spell Family (107)] 
@@ -4439,8 +4439,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 100 | Trigger Spell: 258921 | Target: Self (1)
 #3 (id=483169)   : Energize Power (30)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: fury | Target: Self (1)
-Description      : Engulf yourself in flames, instantly causing $258921s1 Fire damage to enemies within $258921A1 yards and radiating $258922s1 Fire damage every sec.  Lasts $d.
-
+Description      : Engulf yourself in flames, instantly causing $258921s1 Fire damage to enemies within $258921A1 yards and radiating $258922s1 Fire damage every sec.  Lasts $d.
+
 |cFFFFFFFFGenerates ${$s3+($258922s2*$d)} Fury over $d.|r
 Tooltip          : Burning nearby enemies for $178741s1 Fire damage every $178740t1 sec.
 
@@ -4574,8 +4574,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 150 | Trigger Spell: 225921
 #4 (id=706539)   : Energize Power (30)
                    Base Value: 250 | Scaled Value: 250 | Misc Value: pain | Target: Self (1)
-Description      : Rapidly slash your target for ${$225919sw1+$225921sw1} Physical damage, and shatter $s1 Lesser Soul Fragments from them.
-
+Description      : Rapidly slash your target for ${$225919sw1+$225921sw1} Physical damage, and shatter $s1 Lesser Soul Fragments from them.
+
 |cFFFFFFFFGenerates ${$s4/10} Pain.|r
 
 Name             : Soul Barrier (id=263648) [Spell Family (107)] 
@@ -4597,11 +4597,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
 #2 (id=706548)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
-Description      : Shield yourself for $d, absorbing $<baseAbsorb> damage.
-
+Description      : Shield yourself for $d, absorbing $<baseAbsorb> damage.
+
 Consumes all Soul Fragments within 25 yds to add $<fragmentAbsorb> to the shield per fragment.
 Tooltip          : Absorbs $w1 damage.
-Variables        : $baseAbsorb=${5*$AP*$pctH}
+Variables        : $baseAbsorb=${5*$AP*$pctH}
 $fragmentAbsorb=${1*$AP*$pctH}
 
 Name             : Resounding Protection (id=263962) [Scaling Spell (-8), Passive] 
@@ -5298,8 +5298,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 144.8168 (coefficient=0.465649) | Trigger Spell: 273830 | Target: Self (1)
 #2 (id=725767)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 284.8856 (coefficient=0.916031) | Target: Self (1)
-Description      : Your spells and abilities have a chance to create a Surging Droplet nearby. Collecting it increases your primary stat by $s1 for $273842d.
-
+Description      : Your spells and abilities have a chance to create a Surging Droplet nearby. Collecting it increases your primary stat by $s1 for $273842d.
+
 Rarely, a Void Droplet will be created, increasing your primary stat by $s2 for $273843d instead.
 
 Name             : Filthy Transfusion (id=273834) [Scaling Spell (-8), Passive] 
@@ -5669,8 +5669,8 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5
 #4 (id=738960)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
-Description      : Your spells and abilities have a chance to fire a bomb at your target, which when in proximity breaks into $s3 smaller bombs. Upon hitting the ground, each smaller bomb deals $280984s1 damage to all nearby enemies.
-
+Description      : Your spells and abilities have a chance to fire a bomb at your target, which when in proximity breaks into $s3 smaller bombs. Upon hitting the ground, each smaller bomb deals $280984s1 damage to all nearby enemies.
+
 Increases your Kul Tiran or Zandalari Engineering by $s4.
 
 Name             : Ricocheting Inflatable Pyrosaw (id=280168) [Passive] 
@@ -5697,10 +5697,10 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4
 #3 (id=738961)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
-Description      : Your spells and abilities have a chance to hurl a R.I.P that bounces among $s2 enemies, dealing $280656s1 Fire damage to each. 
-
-Beneficial spells have a chance to hurl a Mechanized External Needle Dispenser, healing up to $s2 allies for $280658s1.
-
+Description      : Your spells and abilities have a chance to hurl a R.I.P that bounces among $s2 enemies, dealing $280656s1 Fire damage to each. 
+
+Beneficial spells have a chance to hurl a Mechanized External Needle Dispenser, healing up to $s2 allies for $280658s1.
+
 Increases your Kul Tiran or Zandalari Engineering by $s3.
 
 Name             : Auto-Self-Cauterizer (id=280172) [Scaling Spell (-8), Passive] 
@@ -5728,10 +5728,10 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30
 #3 (id=738963)   : Apply Aura (6) | Skill (30)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 2499 | Target: Self (1)
-Description      : Taking damage has a chance to unleash your Auto-Self-Cauterizer, healing you for $280583s1, removing most* bleed effects, and snaring nearby enemies by $280583s2% for $280583d.
-
-Increases your Kul Tiran or Zandalari Engineering by $s3.
-
+Description      : Taking damage has a chance to unleash your Auto-Self-Cauterizer, healing you for $280583s1, removing most* bleed effects, and snaring nearby enemies by $280583s2% for $280583d.
+
+Increases your Kul Tiran or Zandalari Engineering by $s3.
+
 *Efficacy may vary.
 
 Name             : Synaptic Spark Capacitor (id=280174) [Scaling Spell (-8), Spell Family (7), Passive] 
@@ -5758,8 +5758,8 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
 #3 (id=742699)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 1065.175 (coefficient=13.7)
-Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $s1 yards of the Spark Coil take $280847s2 damage every 2 seconds and deal $280847s1% reduced damage to you.
-
+Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $s1 yards of the Spark Coil take $280847s2 damage every 2 seconds and deal $280847s1% reduced damage to you.
+
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
 Name             : Relational Normalization Gizmo (id=280178) [Scaling Spell (-1), Passive] 
@@ -5785,8 +5785,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 311 (coefficient=1) | Target: Self (1)
 #2 (id=738959)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
-Description      : Your spells and abilities have a chance to grow or shrink the world. Shrinking the world grants you $280654s4 primary stat and $280654s6 maximum health for $280654d. Growing the world grants you $280653s1 Haste and $280653s3% movement speed for $280653d.
-
+Description      : Your spells and abilities have a chance to grow or shrink the world. Shrinking the world grants you $280654s4 primary stat and $280654s6 maximum health for $280654d. Growing the world grants you $280653s1 Haste and $280653s3% movement speed for $280653d.
+
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
 Name             : Personal Absorb-o-Tron (id=280181) [Scaling Spell (-8), Passive] 
@@ -5812,8 +5812,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 12828.75 (coefficient=165) | Target: Self (1)
 #2 (id=738962)   : Apply Aura (6) | Skill (30)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 2499 | Target: Self (1)
-Description      : Taking damage has a chance to call your Personal Absorb-o-Tron, absorbing the next $280660s1 damage you take over $280660d.
-
+Description      : Taking damage has a chance to call your Personal Absorb-o-Tron, absorbing the next $280660s1 damage you take over $280660d.
+
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
 Name             : Dagger in the Back (id=280284) [Scaling Spell (-8), Passive] 
@@ -5956,8 +5956,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738151)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 5.697831 (coefficient=0.018321) | Trigger Spell: 280708 | Target: Self (1)
-Description      : Your armor gathers and analyzes combat data every $280708t1 sec, increasing your primary stat by $s1, stacking up to $280709u times. The data decays while out of combat.
-
+Description      : Your armor gathers and analyzes combat data every $280708t1 sec, increasing your primary stat by $s1, stacking up to $280709u times. The data decays while out of combat.
+
 Enables $@spellname280573 within Uldir.
 
 Name             : Laser Matrix (id=280559) [Scaling Spell (-8), Passive] 
@@ -5978,8 +5978,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 4507.592 (coefficient=57.97546) | Trigger Spell: 280702 | Target: Self (1)
 #2 (id=738401)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 5634.728 (coefficient=72.47239) | Target: Self (1)
-Description      : Your spells and abilities have a chance to release a barrage of lasers, dealing $s1 Arcane damage split among all enemies and restoring $s2 health split among injured allies.
-
+Description      : Your spells and abilities have a chance to release a barrage of lasers, dealing $s1 Arcane damage split among all enemies and restoring $s2 health split among injured allies.
+
 Enables $@spellname280573 within Uldir.
 
 Name             : Glory in Battle (id=280577) [Scaling Spell (-7), Passive] 
@@ -6000,7 +6000,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.913709) | Trigger Spell: 280778 | Target: Self (1)
 #2 (id=738555)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.55714) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280780d. 
+Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280780d. 
 Attacking a member of the opposite faction significantly increases this chance.
 
 Name             : Retaliatory Fury (id=280579) [Scaling Spell (-1), Passive] 
@@ -6022,7 +6022,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 320.5505 (coefficient=1.030709) | Trigger Spell: 280785 | Target: Self (1)
 #2 (id=738573)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 1121.974 (coefficient=3.607634) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280788d. 
+Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280788d. 
 Attacking a member of the opposite faction is more likely to activate this effect.
 
 Name             : Combined Might (id=280580) [Scaling Spell (-1), Passive] 
@@ -6131,7 +6131,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.913709) | Trigger Spell: 280851 | Target: Self (1)
 #2 (id=738699)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.55714) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280852d. 
+Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280852d. 
 Attacking a member of the opposite faction significantly increases this chance.
 
 Name             : Last Gift (id=280624) [Scaling Spell (-1), Passive] 
@@ -6153,7 +6153,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 320.5505 (coefficient=1.030709) | Trigger Spell: 280860 | Target: Self (1)
 #2 (id=738721)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 1121.974 (coefficient=3.607634) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280862d. 
+Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280862d. 
 Taking damage from a member of the opposite faction has a chance to activate this effect. 
 
 Name             : Stronger Together (id=280625) [Scaling Spell (-1), Passive] 

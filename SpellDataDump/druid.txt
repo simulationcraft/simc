@@ -53,8 +53,8 @@ Attributes       : ........ ........ x....... ......x.   ........ ..x..... .....
 Effects          :
 #1 (id=142)      : Apply Aura (6) | Root (455)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-Description      : Roots the target in place for $d. Damage may cancel the effect.$?s33891[
-
+Description      : Roots the target in place for $d. Damage may cancel the effect.$?s33891[
+
 |C0033AA11Tree of Life: Instant cast.|R][]
 Tooltip          : Rooted.
 
@@ -86,8 +86,8 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Radius: 40 yards | Target: Unknown(29)
 #3 (id=291495)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
-Description      : Heals all allies within $a2 yards for ${$157982s1*5} over $d. Each heal heals the target for another $157982o2 over $157982d, stacking.
-
+Description      : Heals all allies within $a2 yards for ${$157982s1*5} over $d. Each heal heals the target for another $157982o2 over $157982d, stacking.
+
 Healing increased by $s3% when not in a raid.
 Tooltip          : Healing all allies within $a1 yards for $157982s1 every $t1 sec.
 
@@ -120,11 +120,11 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | SP Coefficient: 0.25000 | Misc Value: 21 | Target: Self (1)
                    Affected Spells: Dash (1850), Tiger Dash (252216)
                    Family Flags: 67
-Description      : Shapeshift into Cat Form, increasing auto-attack damage by $s3%, movement speed by $113636s1%, granting protection from Polymorph effects, and reducing falling damage.
-
+Description      : Shapeshift into Cat Form, increasing auto-attack damage by $s3%, movement speed by $113636s1%, granting protection from Polymorph effects, and reducing falling damage.
+
 The act of shapeshifting frees you from movement impairing effects.
-Tooltip          : Autoattack damage increased by $w3%.
-Immune to Polymorph effects.
+Tooltip          : Autoattack damage increased by $w3%.
+Immune to Polymorph effects.
 Movement speed increased by $113636s1% and falling damage reduced.
 
 Name             : Rejuvenation (id=774) [Spell Family (7)] 
@@ -149,17 +149,17 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=311)      : Apply Aura (6) | Periodic Heal (8): every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.18000 | Target: Friend (21)
-Description      : Heals the target for $o1 over $d.$?s33891[
-
+Description      : Heals the target for $o1 over $d.$?s33891[
+
 |C0033AA11Tree of Life: Healing increased by $5420s5% and Mana cost reduced by $5420s4%.|R][]
 Tooltip          : Heals $w1 damage every $t1 seconds.
-Variables        : $mult=${1}
-$mstrshape=$?s48411[${1+0.01*$48411m1}][${1}]
-$gotem1=$?s51179[${1+0.01*$51179m1}][${1}]
-$gotem2=$?s51180[${1+0.01*$51180m1}][${$<gotem1>}]
-$gotem3=$?s51181[${1+0.01*$51181m1}][${$<gotem2>}]
-$tol=$?a5420[${1+0.01+$5420m1}][${1}]
-$gift=$?s87305[${1.25}][${1}]
+Variables        : $mult=${1}
+$mstrshape=$?s48411[${1+0.01*$48411m1}][${1}]
+$gotem1=$?s51179[${1+0.01*$51179m1}][${1}]
+$gotem2=$?s51180[${1+0.01*$51180m1}][${$<gotem1>}]
+$gotem3=$?s51181[${1+0.01*$51181m1}][${$<gotem2>}]
+$tol=$?a5420[${1+0.01+$5420m1}][${1}]
+$gift=$?s87305[${1.25}][${1}]
 $bloom=${$<gift>*$<genesis3>*$<mstrshape>*$<gotem3>*$<tol>}
 
 Name             : Travel Form (rank=Shapeshift) (id=783) [Spell Family (7)] 
@@ -182,10 +182,10 @@ Attributes       : ....x... ........ x.x..... ........   ........ ..x..... x....
 Effects          :
 #1 (id=314)      : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Misc Value 2: 0x2 | Target: Self (1)
-Description      : Shapeshift into a travel form appropriate to your current location, increasing movement speed on land, in water, or in the air, and granting protection from Polymorph effects.
-
-The act of shapeshifting frees you from movement impairing effects.$?a159456[
-
+Description      : Shapeshift into a travel form appropriate to your current location, increasing movement speed on land, in water, or in the air, and granting protection from Polymorph effects.
+
+The act of shapeshifting frees you from movement impairing effects.$?a159456[
+
 Land speed increased when used out of combat. This effect is disabled in battlegrounds and arenas.][]
 Tooltip          : Immune to Polymorph effects.  Movement speed increased.
 
@@ -218,12 +218,12 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Target: Enemy (6)
 #3 (id=117626)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6 | Target: Enemy (6)
-Description      : Finishing move that causes Bleed damage over $d. Damage increases per combo point:
-
-   1 point : ${$floor(1*$<rip>*12)} damage
-   2 points: ${$floor(2*$<rip>*12)} damage
-   3 points: ${$floor(3*$<rip>*12)} damage
-   4 points: ${$floor(4*$<rip>*12)} damage
+Description      : Finishing move that causes Bleed damage over $d. Damage increases per combo point:
+
+   1 point : ${$floor(1*$<rip>*12)} damage
+   2 points: ${$floor(2*$<rip>*12)} damage
+   3 points: ${$floor(3*$<rip>*12)} damage
+   4 points: ${$floor(4*$<rip>*12)} damage
    5 points: ${$floor(5*$<rip>*12)} damage
 Tooltip          : Bleeding for $w1 damage every $t1 sec.
 Variables        : $rip=${$s1}
@@ -287,10 +287,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 155722 | Target: Enemy (6)
 #4 (id=310505)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Target: Enemy (6)
-Description      : Rake the target for $s1 Bleed damage and an additional $155722o1 Bleed damage over $155722d.$?s48484[ Reduces the target's movement speed by $58180s1% for $58180d.][]$?a231052[ 
-
-While stealthed, Rake will also stun the target for $163505d, and deal $s4% increased damage.][]
-
+Description      : Rake the target for $s1 Bleed damage and an additional $155722o1 Bleed damage over $155722d.$?s48484[ Reduces the target's movement speed by $58180s1% for $58180d.][]$?a231052[ 
+
+While stealthed, Rake will also stun the target for $163505d, and deal $s4% increased damage.][]
+
 |cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
 
 Name             : Dash (id=1850) [Spell Family (7)] 
@@ -570,10 +570,10 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Target: Enemy (6)
 #4 (id=348398)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Target: Enemy (6)
-Description      : Shred the target, causing ${$s1*$<mult>} Physical damage to the target.$?a231063[ Deals $s4% increased damage against bleeding targets.][]$?a231057[
-
-While stealthed, Shred deals $m3% increased damage, and has double the chance to critically strike.][]
-
+Description      : Shred the target, causing ${$s1*$<mult>} Physical damage to the target.$?a231063[ Deals $s4% increased damage against bleeding targets.][]$?a231057[
+
+While stealthed, Shred deals $m3% increased damage, and has double the chance to critically strike.][]
+
 |cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
 Variables        : $mult=${($min($pl-1,19)*18+353)/695}
 
@@ -707,11 +707,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Rebirth (20484)
                    Family Flags: 28
-Description      : Shapeshift into Bear Form, increasing armor by $m3% and Stamina by $1178s2%, granting protection from Polymorph effects, and increasing threat generation.
-
+Description      : Shapeshift into Bear Form, increasing armor by $m3% and Stamina by $1178s2%, granting protection from Polymorph effects, and increasing threat generation.
+
 The act of shapeshifting frees you from movement impairing effects.
-Tooltip          : Armor increased by $w3%.
-Stamina increased by $1178s2%.
+Tooltip          : Armor increased by $w3%.
+Stamina increased by $1178s2%.
 Immune to Polymorph effects.
 
 Name             : Growl (id=6795) [Spell Family (7)] 
@@ -795,8 +795,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: rage | Target: Self (1)
 #3 (id=324055)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: astral_power | Target: Self (1)
-Description      : A quick beam of lunar light burns the enemy for $164812s1 Arcane damage and then an additional $164812o2 Arcane damage over $164812d.$?s5487[ Usable while in Bear Form.][]$?s197911[
-
+Description      : A quick beam of lunar light burns the enemy for $164812s1 Arcane damage and then an additional $164812o2 Arcane damage over $164812d.$?s5487[ Usable while in Bear Form.][]$?s197911[
+
 |cFFFFFFFFGenerates ${$m3/10} Astral Power.|r][]
 
 Name             : Regrowth (id=8936) [Spell Family (7)] 
@@ -824,17 +824,17 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.20000 | Target: Friend (21)
 #2 (id=3729)     : Apply Aura (6) | Periodic Heal (8): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.05000 | Target: Friend (21)
-Description      : Heals a friendly target for $s1 and another ${$o2*$<mult>} over $d.$?s231032[ Regrowth's initial heal has a $231032s1% increased chance for a critical effect.][]$?s24858|s197625[ Usable while in Moonkin Form.][]$?s33891[
-
+Description      : Heals a friendly target for $s1 and another ${$o2*$<mult>} over $d.$?s231032[ Regrowth's initial heal has a $231032s1% increased chance for a critical effect.][]$?s24858|s197625[ Usable while in Moonkin Form.][]$?s33891[
+
 |C0033AA11Tree of Life: Instant cast.|R][]
 Tooltip          : Heals $w2 every $t2 seconds.
-Variables        : $mult=${1}
-$mstrshape=$?s48411[${1+0.01*$48411m1}][${1}]
-$gotem1=$?s51179[${1+0.01*$51179m1}][${1}]
-$gotem2=$?s51180[${1+0.01*$51180m1}][${$<gotem1>}]
-$gotem3=$?s51181[${1+0.01*$51181m1}][${$<gotem2>}]
-$tol=$?a5420[${1+0.01+$5420m1}][${1}]
-$gift=$?s87305[${1.25}][${1}]
+Variables        : $mult=${1}
+$mstrshape=$?s48411[${1+0.01*$48411m1}][${1}]
+$gotem1=$?s51179[${1+0.01*$51179m1}][${1}]
+$gotem2=$?s51180[${1+0.01*$51180m1}][${$<gotem1>}]
+$gotem3=$?s51181[${1+0.01*$51181m1}][${$<gotem2>}]
+$tol=$?a5420[${1+0.01+$5420m1}][${1}]
+$gift=$?s87305[${1.25}][${1}]
 $bloom=${$<gift>*$<genesis3>*$<mstrshape>*$<gotem3>*$<tol>}
 
 Name             : Omen of Clarity (id=16864) [Spell Family (7), Passive] 
@@ -1150,14 +1150,14 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.98280 | Target: Enemy (6)
 #2 (id=12791)    : Power Burn (62)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 3 | Target: Self (1)
-Description      : Finishing move that causes Physical damage per combo point and consumes up to $?a106951[${25*$106951s1/-100}.1]?a102543[${25*$102543s1/-100}.1][25] additional Energy to increase damage by up to 100%.
-
-$?s202031[]?s231056[When used on targets below 25% health, ][]$?s231056[Ferocious Bite will also refresh the duration of your Rip on your target.
-
-][]   1 point  : ${$m1*1/5} damage
-   2 points: ${$m1*2/5} damage
-   3 points: ${$m1*3/5} damage
-   4 points: ${$m1*4/5} damage
+Description      : Finishing move that causes Physical damage per combo point and consumes up to $?a106951[${25*$106951s1/-100}.1]?a102543[${25*$102543s1/-100}.1][25] additional Energy to increase damage by up to 100%.
+
+$?s202031[]?s231056[When used on targets below 25% health, ][]$?s231056[Ferocious Bite will also refresh the duration of your Rip on your target.
+
+][]   1 point  : ${$m1*1/5} damage
+   2 points: ${$m1*2/5} damage
+   3 points: ${$m1*3/5} damage
+   4 points: ${$m1*4/5} damage
    5 points: ${$m1*5/5} damage
 
 Name             : Maim (id=22570) [Scaling Spell (-1), Spell Family (7)] 
@@ -1186,12 +1186,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=12793)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.06232 | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-Description      : Finishing move that causes Physical damage and stuns the target. Damage and duration increased per combo point:
-
-   1 point  : ${$s2*1} damage, 1 sec
-   2 points: ${$s2*2} damage, 2 sec
-   3 points: ${$s2*3} damage, 3 sec
-   4 points: ${$s2*4} damage, 4 sec
+Description      : Finishing move that causes Physical damage and stuns the target. Damage and duration increased per combo point:
+
+   1 point  : ${$s2*1} damage, 1 sec
+   2 points: ${$s2*2} damage, 2 sec
+   3 points: ${$s2*3} damage, 3 sec
+   4 points: ${$s2*4} damage, 4 sec
    5 points: ${$s2*5} damage, 5 sec
 Tooltip          : Stunned.
 Variables        : $mult=$?p61252[${4}][${2}]
@@ -1224,8 +1224,8 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 127 | Misc Value 2: 0xf | Target: Self (1)
 #5 (id=317118)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Your skin becomes as tough as bark, reducing all damage you take by $s2% and preventing damage from delaying your spellcasts. Lasts $d.
-
+Description      : Your skin becomes as tough as bark, reducing all damage you take by $s2% and preventing damage from delaying your spellcasts. Lasts $d.
+
 Usable while stunned, frozen, incapacitated, feared, or asleep, and in all shapeshift forms.
 Tooltip          : All damage taken reduced by $s2%.
 
@@ -1302,13 +1302,13 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Starsurge (78674), Moonfire (164812), Sunfire (164815), Solar Wrath (190984), Starfall (191037), Lunar Strike (194153), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (211545), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641)
                    Family Flags: 18
-Description      : Shapeshift into $?s114301[Astral Form][Moonkin Form], increasing the damage of your spells by $s9% and your armor by $m3%, and granting protection from Polymorph effects.$?a231042[
-
-While in this form, single-target attacks against you have a $h% chance to make your next Lunar Strike instant.][]
-
+Description      : Shapeshift into $?s114301[Astral Form][Moonkin Form], increasing the damage of your spells by $s9% and your armor by $m3%, and granting protection from Polymorph effects.$?a231042[
+
+While in this form, single-target attacks against you have a $h% chance to make your next Lunar Strike instant.][]
+
 The act of shapeshifting frees you from movement impairing effects.
-Tooltip          : Spell damage increased by $s9%.
-Immune to Polymorph effects.$?$w3>0[
+Tooltip          : Spell damage increased by $s9%.
+Immune to Polymorph effects.$?$w3>0[
 Armor increased by $w3%.][]
 
 Name             : Innervate (id=29166) [Spell Family (7)] 
@@ -1364,7 +1364,7 @@ Effects          :
 #1 (id=23639)    : Apply Aura (6) | Periodic Heal (8): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.09000 | Target: Friend (21)
 Description      : Heals the target for $o1 over $d. When Lifebloom expires or is dispelled, the target is instantly healed for $33778s1. Limit 1.
-Tooltip          : Healing $w1 every second.
+Tooltip          : Healing $w1 every second.
 Blooms for additional healing when effect expires or is dispelled.
 
 Name             : Lifebloom (id=33778) [Spell Family (7)] 
@@ -1415,11 +1415,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 17 | Target: Self (1)
 #3 (id=170940)   : Apply Aura (6) | Periodic Dummy (226): every 7 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 132213 | Target: Self (1)
-Description      : Shapeshift into the Tree of Life, increasing healing done by $5420s1%, increasing armor by $5420s3%, and granting protection from Polymorph effects.  Functionality of Rejuvenation, Wild Growth, Regrowth, and Entangling Roots is enhanced.
-
+Description      : Shapeshift into the Tree of Life, increasing healing done by $5420s1%, increasing armor by $5420s3%, and granting protection from Polymorph effects.  Functionality of Rejuvenation, Wild Growth, Regrowth, and Entangling Roots is enhanced.
+
 Lasts $117679d. You may shapeshift in and out of this form for its duration.
-Tooltip          : Healing increased by $5420s1%.
-Armor increased by $5420s3%.
+Tooltip          : Healing increased by $5420s1%.
+Armor increased by $5420s3%.
 Some spells are enhanced.
 
 Name             : Mangle (id=33917) [Spell Family (7)] 
@@ -1449,8 +1449,8 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Enemy (6)
 #4 (id=290296)   : Energize Power (30)
                    Base Value: 80 | Scaled Value: 80 | Misc Value: rage | Target: Self (1)
-Description      : Mangle the target for $s2 Physical damage.$?a231064[ Deals $s3% additional damage against bleeding targets.][]
-
+Description      : Mangle the target for $s2 Physical damage.$?a231064[ Deals $s3% additional damage against bleeding targets.][]
+
 |cFFFFFFFFGenerates ${$m4/10} Rage.|r
 
 Name             : Flight Form (Passive) (rank=Passive) (id=33948) [Spell Family (7), Passive] 
@@ -1567,8 +1567,8 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Radius: 0 - 30 yards | Target: Unknown(87) -> AOE friendly (31)
 #3 (id=40642)    : None (0)
                    Base Value: 6 | Scaled Value: 6
-Description      : Heals up to $s3 injured allies within $A1 yards of the target for $o1 over $d. Healing starts high and declines over the duration.$?s33891[
-
+Description      : Heals up to $s3 injured allies within $A1 yards of the target for $o1 over $d. Healing starts high and declines over the duration.$?s33891[
+
 |C0033AA11Tree of Life: Affects an additional 2 targets.|R][]
 Tooltip          : Heals $w1 damage every $t1 second.
 
@@ -1643,12 +1643,12 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 #3 (id=159999)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
-Description      : Finishing move that increases damage by $62071s1% while in Cat Form. Lasts longer per combo point:
-
-   1 point  : 12 seconds
-   2 points: 18 seconds
-   3 points: 24 seconds
-   4 points: 30 seconds
+Description      : Finishing move that increases damage by $62071s1% while in Cat Form. Lasts longer per combo point:
+
+   1 point  : 12 seconds
+   2 points: 18 seconds
+   3 points: 24 seconds
+   4 points: 30 seconds
    5 points: 36 seconds
 Tooltip          : Damage increased $w2% while in Cat Form.
 
@@ -1964,10 +1964,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.70000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Solar Empowerment (164545)
                    Family Flags: 95
-Description      : Increases Moonfire, Sunfire,$?s202347[, Stellar Flare][] and Starfall damage by ${$s1}.1%.
-
-Increases Starsurge damage by ${$s3}.1%.
-
+Description      : Increases Moonfire, Sunfire,$?s202347[, Stellar Flare][] and Starfall damage by ${$s1}.1%.
+
+Increases Starsurge damage by ${$s3}.1%.
+
 Increases the damage effects of Lunar Empowerment by an additional ${$s4}.1% and Solar Empowerment by an additional ${$s5}.1%.
 
 Name             : Mastery: Razor Claws (id=77493) [Spell Family (7), Passive] 
@@ -2040,8 +2040,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.08000 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=312099)   : Energize Power (30)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: rage | Target: Self (1)
-Description      : Strikes all nearby enemies, dealing $s1 Bleed damage and an additional $192090o1 Bleed damage over $192090d. When applied from Bear Form, this effect can stack up to $192090u times.
-
+Description      : Strikes all nearby enemies, dealing $s1 Bleed damage and an additional $192090o1 Bleed damage over $192090d. When applied from Bear Form, this effect can stack up to $192090u times.
+
 |cFFFFFFFFGenerates ${$m2/10} Rage.|r
 
 Name             : Starsurge (id=78674) [Spell Family (7)] 
@@ -2066,8 +2066,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=68268)    : School Damage (2): astral
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | Target: Enemy (6)
-Description      : Launch a surge of stellar energies at the target, dealing $78674s1 Astral damage.
-
+Description      : Launch a surge of stellar energies at the target, dealing $78674s1 Astral damage.
+
 Also grants you Lunar and Solar Empowerment.
 
 Name             : Solar Beam (id=78675) [Spell Family (7)] 
@@ -2405,8 +2405,8 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
 #3 (id=324054)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: astral_power | Target: Self (1)
-Description      : A quick beam of solar light burns the enemy for $164815s1 Nature damage and then an additional $164815o2 Nature damage over $164815d$?s231050[ to the primary target and all enemies within $164815A2 yards][].$?s137013[
-
+Description      : A quick beam of solar light burns the enemy for $164815s1 Nature damage and then an additional $164815o2 Nature damage over $164815d$?s231050[ to the primary target and all enemies within $164815A2 yards][].$?s137013[
+
 |cFFFFFFFFGenerates ${$m3/10} Astral Power.|r][]
 Tooltip          : Suffering $w2 Nature damage every $t2 sec.
 
@@ -2668,8 +2668,8 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 0.25000 | Misc Value: 3 | Target: Self (1)
 #3 (id=471804)   : Trigger Spell (64): Jungle Stalker
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 252071 | Target: Self (1)
-Description      : An improved Cat Form that allows the use of Prowl once while in combat, causes Shred and Rake to deal damage as if stealth were active, reduces the cost of all Cat Form abilities by $s1%, and increases maximum Energy by $s2.
-
+Description      : An improved Cat Form that allows the use of Prowl once while in combat, causes Shred and Rake to deal damage as if stealth were active, reduces the cost of all Cat Form abilities by $s1%, and increases maximum Energy by $s2.
+
 Lasts $d. You may shapeshift in and out of this improved Cat Form for its duration.
 Tooltip          : Reduces the energy cost of all Cat Form abilities by $s1% and increases maximum Energy by $s2.
 
@@ -2751,8 +2751,8 @@ Effects          :
                    Family Flags: 38
 #5 (id=357666)   : Apply Aura (6) | Modify Base Resistance (142)
                    Base Value: 15 | Scaled Value: 15 | SP Coefficient: 0.25000 | Misc Value: 1 | Target: Self (1)
-Description      : An improved Bear Form that reduces the cooldown on all melee damage abilities and Growl to 1.5 sec, causes Mangle to hit up to $s4 targets, and increases armor by $s5%.
-
+Description      : An improved Bear Form that reduces the cooldown on all melee damage abilities and Growl to 1.5 sec, causes Mangle to hit up to $s4 targets, and increases armor by $s5%.
+
 Lasts $d. You may freely shapeshift in and out of this improved Bear Form for its duration.
 Tooltip          : Incarnation: Guardian of Ursoc activated.
 
@@ -2794,10 +2794,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Solar Wrath (5176), Solar Wrath (190984), Lunar Strike (194153), Lunar Strike (197628), Solar Wrath (197629)
                    Family Flags: 0, 2
-Description      : An improved Moonkin Form that increases the damage of all your spells by $s1% and grants you $s3% Haste.
-
+Description      : An improved Moonkin Form that increases the damage of all your spells by $s1% and grants you $s3% Haste.
+
 Lasts $d. You may shapeshift in and out of this improved Moonkin Form for its duration.
-Tooltip          : Spell damage increased by $s1%.
+Tooltip          : Spell damage increased by $s1%.
 Haste increased by $s3%.
 
 Name             : Ursol's Vortex (id=102793) [Spell Family (7)] 
@@ -2935,8 +2935,8 @@ Effects          :
 #3 (id=222212)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.25000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
                    Hotfixed: AP Coefficient (0.217464 -> 0.25)
-Description      : Swipe nearby enemies, inflicting $s3 Physical damage.$?a231283[ Deals $s2% increased damage against bleeding targets.][]
-
+Description      : Swipe nearby enemies, inflicting $s3 Physical damage.$?a231283[ Deals $s2% increased damage against bleeding targets.][]
+
 |cFFFFFFFFAwards $s1 combo $lpoint:points;.|r
 
 Name             : Thrash (id=106830) [Spell Family (7)] 
@@ -2967,8 +2967,8 @@ Effects          :
 #2 (id=117263)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.04520 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
                    Hotfixed: AP Coefficient (0.039312 -> 0.0452)
-Description      : Strikes all nearby enemies, dealing $m1 Bleed damage and an additional $o2 Bleed damage over $d.
-
+Description      : Strikes all nearby enemies, dealing $m1 Bleed damage and an additional $o2 Bleed damage over $d.
+
 |cFFFFFFFFAwards $211141s1 combo $lpoint:points;.|r
 Tooltip          : Bleeding for $w2 damage every $t2 sec.
 
@@ -3045,8 +3045,8 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60 | Radius: 0 - 15 yards | Target: At Caster (22) -> AOE friendly (30)
 #2 (id=740276)   : Server Side Script (77)
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 15 yards | Target: At Caster (22) -> AOE friendly (30)
-Description      : Lets loose a wild roar, increasing the movement speed of all friendly players within $A1 yards by $s1% for $d.$?s114222[][
-
+Description      : Lets loose a wild roar, increasing the movement speed of all friendly players within $A1 yards by $s1% for $d.$?s114222[][
+
 Using this ability outside of Bear Form or Cat Form activates Bear Form.]
 Tooltip          : Movement speed increased by $s1%.
 
@@ -3180,8 +3180,8 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Starfall (191034), Starfall (191037)
                    Family Flags: 55
-Description      : Increases the damage bonuses from Lunar and Solar Empowerment by $s1%.
-
+Description      : Increases the damage bonuses from Lunar and Solar Empowerment by $s1%.
+
 Reduces the Astral Power cost of Starfall by ${$m2/-10}.
 
 Name             : Soul of the Forest (id=114108) [Spell Family (7)] 
@@ -4040,8 +4040,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.15000 | Target: Enemy (6)
 #3 (id=216290)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self (1)
-Description      : A quick beam of lunar light burns the enemy for $s2 Arcane damage and then an additional $o1 Arcane damage over $d.
-
+Description      : A quick beam of lunar light burns the enemy for $s2 Arcane damage and then an additional $o1 Arcane damage over $d.
+
 |cFFFFFFFFAwards $s3 combo $lpoint:points;.|r
 Tooltip          : Suffering $w1 Arcane damage every $t1 seconds.
 
@@ -4150,8 +4150,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=345062)   : Apply Aura (6) | Modify Absorb% Done (422)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | Target: Self (1)
-Description      : Increases your maximum health and healing received by ${$s1}.1%.
-
+Description      : Increases your maximum health and healing received by ${$s1}.1%.
+
 Also increases your attack power by ${$159195s1}.1%.
 
 Name             : Bristling Fur (id=155835) 
@@ -4350,8 +4350,8 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=223081)   : Apply Aura (6) | Proc Trigger Spell (42): Primal Fury
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 16953 | Target: Self (1)
-Description      : When you critically strike with an attack that generates a combo point, you gain an additional combo point.
-
+Description      : When you critically strike with an attack that generates a combo point, you gain an additional combo point.
+
 Damage over time cannot trigger this effect.
 
 Name             : Travel Form (rank=Rank 2) (id=159456) [Spell Family (7), Passive] 
@@ -4369,8 +4369,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=223349)   : Apply Aura (6) | Dummy (4)
                    Base Value: 60 | Scaled Value: 60 | Target: Self (1)
-Description      : You gain an additional $s1% movement speed while in the land version of Travel Form.  This movement speed bonus will not be granted if Travel Form is activated while in combat.
-
+Description      : You gain an additional $s1% movement speed while in the land version of Travel Form.  This movement speed bonus will not be granted if Travel Form is activated while in combat.
+
 This effect is disabled in battlegrounds and arenas.
 
 Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden] 
@@ -4650,10 +4650,10 @@ Attributes       : ....x... .......x ..x..... ....x...   ........ ..x..... x....
 Effects          :
 #1 (id=234328)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.25) | Misc Value: 29 | Misc Value 2: 0x6 | Target: Self (1)
-Description      : Shapeshift into flight form, increasing movement speed and allowing you to fly.  Cannot use in combat. 
-
+Description      : Shapeshift into flight form, increasing movement speed and allowing you to fly.  Cannot use in combat. 
+
 The act of shapeshifting frees the caster of movement impairing effects.
-Tooltip          : Immune to Polymorph effects.
+Tooltip          : Immune to Polymorph effects.
 Movement speed increased and allows you to fly.
 
 Name             : Glyph of the Sun (rank=Balance) (id=171803) [Spell Family (7), Passive, Hidden] 
@@ -4838,8 +4838,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.60000 | Target: Enemy (6)
 #2 (id=280099)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: astral_power | Target: Self (1)
-Description      : Hurl a ball of solar energy at the target, dealing $s1 Nature damage.$?a197911[
-
+Description      : Hurl a ball of solar energy at the target, dealing $s1 Nature damage.$?a197911[
+
 |cFFFFFFFFGenerates ${$m2/10} Astral Power.|r][]
 
 Name             : Starfall (id=191034) [Spell Family (7)] 
@@ -5005,8 +5005,8 @@ Effects          :
                    Base Value: 33 | Scaled Value: 33 | Radius: 0 - 8 yards | Target: Enemy (6)
 #4 (id=298448)   : Server Side Script (77)
                    Base Value: 20 | Scaled Value: 20 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-Description      : Call down a strike of lunar energy, causing $s1 Arcane damage to the target, and ${$m1*$m3/100} Arcane damage to all other enemies within $A1 yards.
-
+Description      : Call down a strike of lunar energy, causing $s1 Arcane damage to the target, and ${$m1*$m3/100} Arcane damage to all other enemies within $A1 yards.
+
 |cFFFFFFFFGenerates ${$m2/10} Astral Power.|r
 
 Name             : Celestial Alignment (id=194223) [Spell Family (7)] 
@@ -5041,7 +5041,7 @@ Effects          :
                    Affected Spells: Solar Wrath (5176), Solar Wrath (190984), Lunar Strike (194153), Lunar Strike (197628), Solar Wrath (197629)
                    Family Flags: 0, 2
 Description      : Celestial bodies align, increasing the damage of all your spells by $s1% and granting you $s3% Haste for $d.
-Tooltip          : Spell damage increased by $s1%.
+Tooltip          : Spell damage increased by $s1%.
 Haste increased by $s3%.
 
 Name             : Stonebark (id=197061) [Spell Family (7), Passive] 
@@ -5102,17 +5102,17 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=290146)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-Description      : You gain:
-
-$@spellicon197524 $@spellname197524
-$@spelldesc197524
-
-You also learn:
-
-$@spellicon197625 $@spellname197625
-$@spellicon197626 $@spellname197626
-$@spellicon197628 $@spellname197628
-$@spellicon197629 $@spellname197629
+Description      : You gain:
+
+$@spellicon197524 $@spellname197524
+$@spelldesc197524
+
+You also learn:
+
+$@spellicon197625 $@spellname197625
+$@spellicon197626 $@spellname197626
+$@spellicon197628 $@spellname197628
+$@spellicon197629 $@spellname197629
 $@spellicon197630 $@spellname197630
 
 Name             : Feral Affinity (id=197490) [Spell Family (7), Passive] 
@@ -5157,18 +5157,18 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Shred (5221)
                    Family Flags: 15
-Description      : You gain:
-
-$@spellicon131768 $@spellname131768
-$@spelldesc131768
-
-You also learn:
-
-$@spellicon1822 $@spellname1822
-$@spellicon1079 $@spellname1079
-$@spellicon22568 $@spellname22568
-$@spellicon106785 $@spellname106785
-
+Description      : You gain:
+
+$@spellicon131768 $@spellname131768
+$@spelldesc131768
+
+You also learn:
+
+$@spellicon1822 $@spellname1822
+$@spellicon1079 $@spellname1079
+$@spellicon22568 $@spellname22568
+$@spellicon106785 $@spellname106785
+
 Your energy regeneration is increased by $s2%.
 
 Name             : Guardian Affinity (id=197491) [Spell Family (7), Passive] 
@@ -5187,15 +5187,15 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=290149)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
-Description      : You gain:
-
-$@spellicon16931 $@spellname16931
-$@spelldesc16931
-
-You also learn:
-
-$@spellicon77758 $@spellname77758
-$@spellicon192081 $@spellname192081
+Description      : You gain:
+
+$@spellicon16931 $@spellname16931
+$@spelldesc16931
+
+You also learn:
+
+$@spellicon77758 $@spellname77758
+$@spellicon192081 $@spellname192081
 $@spellicon22842 $@spellname22842
 
 Name             : Restoration Affinity (id=197492) [Spell Family (7), Passive] 
@@ -5234,15 +5234,15 @@ Effects          :
                    Base Value: 10000 | Scaled Value: 10000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Wild Growth (48438)
                    Family Flags: 58
-Description      : You gain:
-
-$@spellicon145108 $@spellname145108
-$@spelldesc145108
-
-You also learn:
-
-$@spellicon774 $@spellname774
-$@spellicon18562 $@spellname18562
+Description      : You gain:
+
+$@spellicon145108 $@spellname145108
+$@spelldesc145108
+
+You also learn:
+
+$@spellicon774 $@spellname774
+$@spellicon18562 $@spellname18562
 $@spellicon48438 $@spellname48438
 
 Name             : Astral Influence (id=197524) [Spell Family (7), Passive] 
@@ -5309,10 +5309,10 @@ Effects          :
                    Base Value: 102383 | Scaled Value: 102383 | Target: Self (1)
                    Affected Spells: Wild Charge (102401)
                    Family Flags: 68
-Description      : Shapeshift into $?s114301[Astral Form][Moonkin Form], increasing your armor by $m3%, and granting protection from Polymorph effects.
-
+Description      : Shapeshift into $?s114301[Astral Form][Moonkin Form], increasing your armor by $m3%, and granting protection from Polymorph effects.
+
 The act of shapeshifting frees you from  movement impairing effects.
-Tooltip          : Immune to Polymorph effects.$?$w3>0[
+Tooltip          : Immune to Polymorph effects.$?$w3>0[
 Armor increased by $w3%.][]
 
 Name             : Starsurge (id=197626) [Spell Family (7)] 
@@ -5342,8 +5342,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 164547 | Target: Self (1)
 #3 (id=290378)   : Trigger Spell (64): Solar Empowerment
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 164545 | Target: Self (1)
-Description      : Instantly causes $s1 Astral damage to the target.
-
+Description      : Instantly causes $s1 Astral damage to the target.
+
 Also increase the damage of your next Lunar Strike, and your next Solar Wrath, by $164547s1%.
 
 Name             : Lunar Strike (id=197628) [Spell Family (7)] 
@@ -5435,15 +5435,15 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=290394)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-Description      : You gain:
-
-$@spellicon197524 $@spellname197524
-$@spelldesc197524
-
-You also learn:
-
-$@spellicon197625 $@spellname197625
-$@spellicon197626 $@spellname197626
+Description      : You gain:
+
+$@spellicon197524 $@spellname197524
+$@spelldesc197524
+
+You also learn:
+
+$@spellicon197625 $@spellname197625
+$@spellicon197626 $@spellname197626
 $@spellicon197628 $@spellname197628
 
 Name             : Feral Overrides Passive (rank=Passive) (id=197692) [Spell Family (7), Passive, Hidden] 
@@ -5694,8 +5694,8 @@ Effects          :
                    Hotfixed: AP Coefficient (0.5 -> 0.6)
 #2 (id=297727)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-Description      : Strikes all nearby enemies with a massive slash, inflicting $s1 Physical damage.
-
+Description      : Strikes all nearby enemies with a massive slash, inflicting $s1 Physical damage.
+
 |cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
 
 Name             : Sabertooth (id=202031) [Spell Family (7), Passive] 
@@ -5782,17 +5782,17 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Shred (5221)
                    Family Flags: 15
-Description      : You gain:
-
-$@spellicon131768 $@spellname131768
-$@spelldesc131768
-
-You also learn:
-
-$@spellicon1822 $@spellname1822
-$@spellicon1079 $@spellname1079
-$@spellicon22568 $@spellname22568
-
+Description      : You gain:
+
+$@spellicon131768 $@spellname131768
+$@spelldesc131768
+
+You also learn:
+
+$@spellicon1822 $@spellname1822
+$@spellicon1079 $@spellname1079
+$@spellicon22568 $@spellname22568
+
 Your energy regeneration is increased by $s2%.
 
 Name             : Feral Affinity (id=202157) [Spell Family (7), Passive] 
@@ -5837,17 +5837,17 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Shred (5221)
                    Family Flags: 15
-Description      : You gain:
-
-$@spellicon131768 $@spellname131768
-$@spelldesc131768
-
-You also learn:
-
-$@spellicon1822 $@spellname1822
-$@spellicon1079 $@spellname1079
-$@spellicon106785 $@spellname106785
-
+Description      : You gain:
+
+$@spellicon131768 $@spellname131768
+$@spelldesc131768
+
+You also learn:
+
+$@spellicon1822 $@spellname1822
+$@spellicon1079 $@spellname1079
+$@spellicon106785 $@spellname106785
+
 Your energy regeneration is increased by $s2%.
 
 Name             : Shooting Stars (id=202342) [Spell Family (7), Passive, Hidden] 
@@ -5885,8 +5885,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=298293)   : Apply Aura (6) | Dummy (4)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
-Description      : Starsurge and Starfall grant you $279709s1% Haste for $279709d.
-
+Description      : Starsurge and Starfall grant you $279709s1% Haste for $279709d.
+
 Stacks up to $279709u times. Gaining a stack does not refresh the duration.
 
 Name             : Stellar Flare (id=202347) [Spell Family (7)] 
@@ -5914,8 +5914,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.07000 | Target: Enemy (6)
 #3 (id=739525)   : Energize Power (30)
                    Base Value: 80 | Scaled Value: 80 | Misc Value: astral_power | Target: Self (1)
-Description      : Burns the target for $s1 Astral damage, and then an additional $o2 damage over $d.
-
+Description      : Burns the target for $s1 Astral damage, and then an additional $o2 damage over $d.
+
 |cFFFFFFFFGenerates ${$m3/10} Astral Power.|r
 Tooltip          : Suffering $w2 Astral damage every $t2 sec.
 
@@ -5992,8 +5992,8 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 #4 (id=736368)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
-Description      : While in combat you generate $m3 Astral Power every $m4 sec.
-
+Description      : While in combat you generate $m3 Astral Power every $m4 sec.
+
 While out of combat your Astral Power rebalances to 50 instead of depleting to empty.
 Tooltip          : Grants $m3 Astral Power every $m4 sec while in combat or while below 50 Astral Power.
 
@@ -6045,8 +6045,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=321942)   : Energize Power (30)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: astral_power | Target: Self (1)
-Description      : Deals $m1 Arcane damage to the target and empowers New Moon to become Half Moon. 
-
+Description      : Deals $m1 Arcane damage to the target and empowers New Moon to become Half Moon. 
+
 |cFFFFFFFFGenerates ${$m3/10} Astral Power.|r
 
 Name             : Half Moon (rank=Artifact) (id=202768) [Spell Family (7)] 
@@ -6073,8 +6073,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=321940)   : Energize Power (30)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: astral_power | Target: Self (1)
-Description      : Deals $m1 Arcane damage to the target and empowers Half Moon to become Full Moon.
-
+Description      : Deals $m1 Arcane damage to the target and empowers Half Moon to become Full Moon.
+
 |cFFFFFFFFGenerates ${$m3/10} Astral Power.|r
 
 Name             : Fury of Elune (id=202770) [Spell Family (7)] 
@@ -6102,8 +6102,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 6887 | Radius: 1.25 yards | Target: Unknown(148)
 #3 (id=726656)   : Apply Aura (6) | Periodic Energize Power (24): every 0.5 seconds
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 8 | Target: Self (1)
-Description      : Calls down a beam of pure celestial energy that follows the enemy, dealing $<dmg> Astral damage over $d to all nearby targets.
-
+Description      : Calls down a beam of pure celestial energy that follows the enemy, dealing $<dmg> Astral damage over $d to all nearby targets.
+
 |cFFFFFFFFGenerates ${$m3/10/$t3*$d} Astral Power over its duration.|r
 Tooltip          : Generating ${$m3/10/$t3*$d} Astral Power over $d.
 Variables        : $dmg=${$d*2*$211545s1}
@@ -6136,8 +6136,8 @@ Effects          :
                    Base Value: 202787 | Scaled Value: 202787
 #5 (id=302252)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: At Enemy (53)
-Description      : Deals $m1 Arcane damage to the target and reduced damage to all other nearby enemies, and resets Full Moon to become New Moon.
-
+Description      : Deals $m1 Arcane damage to the target and reduced damage to all other nearby enemies, and resets Full Moon to become New Moon.
+
 |cFFFFFFFFGenerates ${$m2/10} Astral Power.|r
 
 Name             : Goldrinn's Fang (id=203001) [Spell Family (7)] 
@@ -6174,8 +6174,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=300960)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Misc Value 2: 0xffffffd8 | Target: Self (1)
-Description      : Sharp brambles protect you, absorbing and reflecting up to $<shield> damage from each attack.$?s22812[
-
+Description      : Sharp brambles protect you, absorbing and reflecting up to $<shield> damage from each attack.$?s22812[
+
 While Barkskin is active, the brambles also deal $213709s1 Nature damage to all nearby enemies every $22812t5 sec.][]
 Variables        : $shield=${$AP*0.06}
 
@@ -6250,8 +6250,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=300976)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Your damage has a $h% chance to trigger a free automatic Moonfire on that target. 
-
+Description      : Your damage has a $h% chance to trigger a free automatic Moonfire on that target. 
+
 When this occurs, the next Moonfire you cast generates ${$213708m1/10} Rage, and deals $213708s3% increased direct damage.
 
 Name             : Survival of the Fittest (id=203965) [Spell Family (7), Passive] 
@@ -6413,8 +6413,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 300 | Trigger Spell: 248280 | Target: Unknown(87)
 #5 (id=736032)   : Energize Power (30)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: astral_power | Target: Self (1)
-Description      : Summons a stand of $s1 Treants for $248280d which immediately taunt and attack enemies in the targeted area.
-
+Description      : Summons a stand of $s1 Treants for $248280d which immediately taunt and attack enemies in the targeted area.
+
 |cFFFFFFFFGenerates ${$m5/10} Astral Power.|r
 Tooltip          : Granting ${$s5/10*$d} Astral Power over $d.
 
@@ -6626,8 +6626,8 @@ Effects          :
                    Base Value: 1000 | Scaled Value: 1000 | Target: Self (1)
 #6 (id=370141)   : Apply Aura (6) | Modify Min Speed% (305)
                    Base Value: 120 | Scaled Value: 120 | Target: Self (1)
-Description      : Shapeshift into a mountable stag form, increasing movement speed by $5419s1%.  Also protects the caster from Polymorph effects.  Only usable outdoors.
-
+Description      : Shapeshift into a mountable stag form, increasing movement speed by $5419s1%.  Also protects the caster from Polymorph effects.  Only usable outdoors.
+
 The act of shapeshifting frees the caster of movement impairing effects.
 Tooltip          : Immune to Polymorph effects.  Movement speed increased by $5419s1%.
 
@@ -6711,7 +6711,7 @@ Effects          :
 #2 (id=312056)   : Apply Aura (6) | Modify Armor% (101)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1 | Target: Self (1)
 Description      : $@spelldesc210650
-Tooltip          : Chance to dodge attacks increased by $w1%.
+Tooltip          : Chance to dodge attacks increased by $w1%.
 Armor increased by $s2%.
 
 Name             : Ashamane's Bite (id=210702) [Spell Family (7), Passive] 
@@ -6809,8 +6809,8 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Misc Value: combo_points | Target: Self (1)
 #4 (id=364768)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
-Description      : Unleash Ashamane's Frenzy, clawing your target $m2 times over $d for ${$210723s1*$m2} Physical damage and an additional ${$210723s3*3*$m2} Bleed damage over $210723d.
-
+Description      : Unleash Ashamane's Frenzy, clawing your target $m2 times over $d for ${$210723s1*$m2} Physical damage and an additional ${$210723s3*3*$m2} Bleed damage over $210723d.
+
 |cFFFFFFFFAwards $s3 combo $Lpoint:points;.|r
 
 Name             : Ashamane's Frenzy (id=210723) [Spell Family (7)] 
@@ -7127,7 +7127,7 @@ Effects          :
 #1 (id=318172)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1 | Target: Self (1)
 Description      : $@spelldesc210650
-Tooltip          : Chance to dodge attacks increased by $w1%.
+Tooltip          : Chance to dodge attacks increased by $w1%.
 Armor increased by $s2%.
 
 Name             : Guardian Affinity (id=217615) [Spell Family (7), Passive] 
@@ -7146,14 +7146,14 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=323911)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
-Description      : You gain:
-
-$@spellicon16931 $@spellname16931
-$@spelldesc16931
-
-You also learn:
-
-$@spellicon192081 $@spellname192081
+Description      : You gain:
+
+$@spellicon16931 $@spellname16931
+$@spelldesc16931
+
+You also learn:
+
+$@spellicon192081 $@spellname192081
 $@spellicon22842 $@spellname22842
 
 Name             : Essence of G'Hanir (id=218889) [Spell Family (7), Hidden] 
@@ -7284,7 +7284,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 18 | Target: Self (1)
                    Affected Spells: Moonkin Form (24858), Moonkin Form (197625)
                    Family Flags: 45
-Description      : While in Moonkin Form, single-target attacks against you have a $s1% chance make your next Lunar Strike instant.
+Description      : While in Moonkin Form, single-target attacks against you have a $s1% chance make your next Lunar Strike instant.
 
 
 Name             : Sunfire (rank=Rank 2) (id=231050) [Spell Family (7), Passive] 
@@ -7451,7 +7451,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 37 | Target: Self (1)
                    Affected Spells: Ironfur (192081)
                    Family Flags: 78
-Description      : Multiple uses of Ironfur may overlap.
+Description      : Multiple uses of Ironfur may overlap.
 
 
 Name             : Swipe (rank=Rank 2) (id=231283) [Spell Family (7), Passive] 
@@ -7520,8 +7520,8 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Omen of Clarity (16864), Clearcasting (16870), Clearcasting (135700)
                    Family Flags: 114
-Description      : Omen of Clarity now triggers $s2% more often, can accumulate up to ${$s135700u+$s1} charges, and increases the damage of your next Shred, Thrash, or $?s202028[Brutal Slash][Swipe] by $s4%.
-
+Description      : Omen of Clarity now triggers $s2% more often, can accumulate up to ${$s135700u+$s1} charges, and increases the damage of your next Shred, Thrash, or $?s202028[Brutal Slash][Swipe] by $s4%.
+
 Your maximum Energy is increased by $s3.
 
 Name             : Enraged Maul (rank=PvP Talent) (id=236716) [Spell Family (7)] 
@@ -7856,8 +7856,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 33251.41 (coefficient=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=479677)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 33251.41 (coefficient=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
-Description      : Deals $s1 Holy Damage to enemies within $A1.
-
+Description      : Deals $s1 Holy Damage to enemies within $A1.
+
 Heals $s2 to allies within $A1. 
 
 Name             : Haste (id=261582) [Scaling Spell (-1), Passive] 
@@ -8456,7 +8456,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Bear Form Passive (1178)
                    Family Flags: 122
-Description      : Bear Form gives an additional $s1% Stamina.
+Description      : Bear Form gives an additional $s1% Stamina.
 
 
 Name             : Crystalline Carapace (id=271536) [Scaling Spell (-1), Passive] 
@@ -8595,7 +8595,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=724350)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1568 | Target: Self (1)
-Description      : Frenzied Regeneration now has ${$s1+1} charges.
+Description      : Frenzied Regeneration now has ${$s1+1} charges.
 
 
 Name             : Ruinous Bolt (id=273150) [Scaling Spell (-8), Passive] 
@@ -8759,8 +8759,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 144.8168 (coefficient=0.465649) | Trigger Spell: 273830 | Target: Self (1)
 #2 (id=725767)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 284.8856 (coefficient=0.916031) | Target: Self (1)
-Description      : Your spells and abilities have a chance to create a Surging Droplet nearby. Collecting it increases your primary stat by $s1 for $273842d.
-
+Description      : Your spells and abilities have a chance to create a Surging Droplet nearby. Collecting it increases your primary stat by $s1 for $273842d.
+
 Rarely, a Void Droplet will be created, increasing your primary stat by $s2 for $273843d instead.
 
 Name             : Filthy Transfusion (id=273834) [Scaling Spell (-8), Passive] 
@@ -8808,8 +8808,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=726524)   : Energize Power (30)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: astral_power | Target: Self (1)
-Description      : Deals $m1 Arcane damage to the target and empowers New Moon to become Half Moon. 
-
+Description      : Deals $m1 Arcane damage to the target and empowers New Moon to become Half Moon. 
+
 |cFFFFFFFFGenerates ${$m3/10} Astral Power.|r
 
 Name             : Half Moon (id=274282) [Spell Family (7)] 
@@ -8838,8 +8838,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=726527)   : Energize Power (30)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: astral_power | Target: Self (1)
-Description      : Deals $m1 Arcane damage to the target and empowers Half Moon to become Full Moon.
-
+Description      : Deals $m1 Arcane damage to the target and empowers Half Moon to become Full Moon.
+
 |cFFFFFFFFGenerates ${$m3/10} Astral Power.|r
 
 Name             : Full Moon (id=274283) [Spell Family (7)] 
@@ -8872,8 +8872,8 @@ Effects          :
                    Base Value: 202787 | Scaled Value: 202787
 #5 (id=726532)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: At Enemy (53)
-Description      : Deals $m1 Arcane damage to the target and reduced damage to all other nearby enemies, and resets Full Moon to become New Moon.
-
+Description      : Deals $m1 Arcane damage to the target and reduced damage to all other nearby enemies, and resets Full Moon to become New Moon.
+
 |cFFFFFFFFGenerates ${$m2/10} Astral Power.|r
 
 Name             : Sunblaze (id=274397) [Scaling Spell (-8), Spell Family (7), Passive] 
@@ -8974,8 +8974,8 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Target: Enemy (6)
 #2 (id=727433)   : Apply Aura (6) | Periodic Dummy (226): every 0.2 seconds
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-Description      : Unleash a furious frenzy, clawing your target $m2 times for ${$274838s1*$m2} Physical damage and an additional ${$m2*$274838s3*$274838d/$274838t3} Bleed damage over $274838d.
-
+Description      : Unleash a furious frenzy, clawing your target $m2 times for ${$274838s1*$m2} Physical damage and an additional ${$m2*$274838s3*$274838d/$274838t3} Bleed damage over $274838d.
+
 |cFFFFFFFFAwards $s1 combo points.|r
 
 Name             : Feral Frenzy (id=274838) [Spell Family (7)] 
@@ -9023,8 +9023,8 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #2 (id=727557)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-Description      : While your Lifebloom is on yourself, your periodic heals heal $s1% faster.
-
+Description      : While your Lifebloom is on yourself, your periodic heals heal $s1% faster.
+
 While your Lifebloom is on an ally, your periodic heals on them have a $s2% chance to cause it to bloom.
 
 Name             : Twisted Claws (id=275906) [Scaling Spell (-1), Spell Family (7), Passive] 
@@ -9105,8 +9105,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=729420)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Your Travel Form allows you to fly and increases your movement speed by $33948s2%.$?S34090|S34091|S90265[][
-
+Description      : Your Travel Form allows you to fly and increases your movement speed by $33948s2%.$?S34090|S34091|S90265[][
+
 Requires Riding to be trained.]
 
 Name             : Dawning Sun (id=276152) [Scaling Spell (-8), Spell Family (7), Passive] 
@@ -9382,8 +9382,8 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #2 (id=736365)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-Description      : Lunar Strike has a $s1% chance to grant you Solar Empowerment.
-
+Description      : Lunar Strike has a $s1% chance to grant you Solar Empowerment.
+
 Solar Wrath has a $s2% chance to grant you Lunar Empowerment.
 
 Name             : Twin Moons (id=279620) [Spell Family (7), Passive, Hidden] 
@@ -9494,14 +9494,14 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=736171)   : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
-Description      : Starsurge grants you Lunar and Solar Empowerment:
-
-$@spellicon164547 |cFFFFFFFFLunar Empowerment|r
-Increases the damage of your next Lunar Strike by $164547s1% and reduces its cast time by $164547s2%.
-
-$@spellicon164545 |cFFFFFFFFSolar Empowerment|r
-Causes your next Solar Wrath to explode for an additional $164545s1% of its damage to all nearby enemies and reduces its cast time by $164545s2%.$?a231021[
-
+Description      : Starsurge grants you Lunar and Solar Empowerment:
+
+$@spellicon164547 |cFFFFFFFFLunar Empowerment|r
+Increases the damage of your next Lunar Strike by $164547s1% and reduces its cast time by $164547s2%.
+
+$@spellicon164545 |cFFFFFFFFSolar Empowerment|r
+Causes your next Solar Wrath to explode for an additional $164545s1% of its damage to all nearby enemies and reduces its cast time by $164545s2%.$?a231021[
+
 You can accumulate up to $164547u of each Empowerment.][]
 
 Name             : Starlord (id=279709) [Spell Family (7)] 
@@ -9626,8 +9626,8 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5
 #4 (id=738960)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
-Description      : Your spells and abilities have a chance to fire a bomb at your target, which when in proximity breaks into $s3 smaller bombs. Upon hitting the ground, each smaller bomb deals $280984s1 damage to all nearby enemies.
-
+Description      : Your spells and abilities have a chance to fire a bomb at your target, which when in proximity breaks into $s3 smaller bombs. Upon hitting the ground, each smaller bomb deals $280984s1 damage to all nearby enemies.
+
 Increases your Kul Tiran or Zandalari Engineering by $s4.
 
 Name             : Ricocheting Inflatable Pyrosaw (id=280168) [Passive] 
@@ -9654,10 +9654,10 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4
 #3 (id=738961)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
-Description      : Your spells and abilities have a chance to hurl a R.I.P that bounces among $s2 enemies, dealing $280656s1 Fire damage to each. 
-
-Beneficial spells have a chance to hurl a Mechanized External Needle Dispenser, healing up to $s2 allies for $280658s1.
-
+Description      : Your spells and abilities have a chance to hurl a R.I.P that bounces among $s2 enemies, dealing $280656s1 Fire damage to each. 
+
+Beneficial spells have a chance to hurl a Mechanized External Needle Dispenser, healing up to $s2 allies for $280658s1.
+
 Increases your Kul Tiran or Zandalari Engineering by $s3.
 
 Name             : Auto-Self-Cauterizer (id=280172) [Scaling Spell (-8), Passive] 
@@ -9685,10 +9685,10 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30
 #3 (id=738963)   : Apply Aura (6) | Skill (30)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 2499 | Target: Self (1)
-Description      : Taking damage has a chance to unleash your Auto-Self-Cauterizer, healing you for $280583s1, removing most* bleed effects, and snaring nearby enemies by $280583s2% for $280583d.
-
-Increases your Kul Tiran or Zandalari Engineering by $s3.
-
+Description      : Taking damage has a chance to unleash your Auto-Self-Cauterizer, healing you for $280583s1, removing most* bleed effects, and snaring nearby enemies by $280583s2% for $280583d.
+
+Increases your Kul Tiran or Zandalari Engineering by $s3.
+
 *Efficacy may vary.
 
 Name             : Synaptic Spark Capacitor (id=280174) [Scaling Spell (-8), Spell Family (7), Passive] 
@@ -9715,8 +9715,8 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
 #3 (id=742699)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 1065.175 (coefficient=13.7)
-Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $s1 yards of the Spark Coil take $280847s2 damage every 2 seconds and deal $280847s1% reduced damage to you.
-
+Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $s1 yards of the Spark Coil take $280847s2 damage every 2 seconds and deal $280847s1% reduced damage to you.
+
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
 Name             : Relational Normalization Gizmo (id=280178) [Scaling Spell (-1), Passive] 
@@ -9742,8 +9742,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 311 (coefficient=1) | Target: Self (1)
 #2 (id=738959)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
-Description      : Your spells and abilities have a chance to grow or shrink the world. Shrinking the world grants you $280654s4 primary stat and $280654s6 maximum health for $280654d. Growing the world grants you $280653s1 Haste and $280653s3% movement speed for $280653d.
-
+Description      : Your spells and abilities have a chance to grow or shrink the world. Shrinking the world grants you $280654s4 primary stat and $280654s6 maximum health for $280654d. Growing the world grants you $280653s1 Haste and $280653s3% movement speed for $280653d.
+
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
 Name             : Personal Absorb-o-Tron (id=280181) [Scaling Spell (-8), Passive] 
@@ -9769,8 +9769,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 12828.75 (coefficient=165) | Target: Self (1)
 #2 (id=738962)   : Apply Aura (6) | Skill (30)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 2499 | Target: Self (1)
-Description      : Taking damage has a chance to call your Personal Absorb-o-Tron, absorbing the next $280660s1 damage you take over $280660d.
-
+Description      : Taking damage has a chance to call your Personal Absorb-o-Tron, absorbing the next $280660s1 damage you take over $280660d.
+
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
 Name             : Dagger in the Back (id=280284) [Scaling Spell (-8), Passive] 
@@ -9913,8 +9913,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738151)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 5.697831 (coefficient=0.018321) | Trigger Spell: 280708 | Target: Self (1)
-Description      : Your armor gathers and analyzes combat data every $280708t1 sec, increasing your primary stat by $s1, stacking up to $280709u times. The data decays while out of combat.
-
+Description      : Your armor gathers and analyzes combat data every $280708t1 sec, increasing your primary stat by $s1, stacking up to $280709u times. The data decays while out of combat.
+
 Enables $@spellname280573 within Uldir.
 
 Name             : Laser Matrix (id=280559) [Scaling Spell (-8), Passive] 
@@ -9935,8 +9935,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 4507.592 (coefficient=57.97546) | Trigger Spell: 280702 | Target: Self (1)
 #2 (id=738401)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 5634.728 (coefficient=72.47239) | Target: Self (1)
-Description      : Your spells and abilities have a chance to release a barrage of lasers, dealing $s1 Arcane damage split among all enemies and restoring $s2 health split among injured allies.
-
+Description      : Your spells and abilities have a chance to release a barrage of lasers, dealing $s1 Arcane damage split among all enemies and restoring $s2 health split among injured allies.
+
 Enables $@spellname280573 within Uldir.
 
 Name             : Glory in Battle (id=280577) [Scaling Spell (-7), Passive] 
@@ -9957,7 +9957,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.913709) | Trigger Spell: 280778 | Target: Self (1)
 #2 (id=738555)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.55714) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280780d. 
+Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280780d. 
 Attacking a member of the opposite faction significantly increases this chance.
 
 Name             : Retaliatory Fury (id=280579) [Scaling Spell (-1), Passive] 
@@ -9979,7 +9979,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 320.5505 (coefficient=1.030709) | Trigger Spell: 280785 | Target: Self (1)
 #2 (id=738573)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 1121.974 (coefficient=3.607634) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280788d. 
+Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280788d. 
 Attacking a member of the opposite faction is more likely to activate this effect.
 
 Name             : Combined Might (id=280580) [Scaling Spell (-1), Passive] 
@@ -10088,7 +10088,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.913709) | Trigger Spell: 280851 | Target: Self (1)
 #2 (id=738699)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.55714) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280852d. 
+Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280852d. 
 Attacking a member of the opposite faction significantly increases this chance.
 
 Name             : Last Gift (id=280624) [Scaling Spell (-1), Passive] 
@@ -10110,7 +10110,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 320.5505 (coefficient=1.030709) | Trigger Spell: 280860 | Target: Self (1)
 #2 (id=738721)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 1121.974 (coefficient=3.607634) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280862d. 
+Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280862d. 
 Taking damage from a member of the opposite faction has a chance to activate this effect. 
 
 Name             : Stronger Together (id=280625) [Scaling Spell (-1), Passive] 

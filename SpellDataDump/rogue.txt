@@ -27,8 +27,8 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self (1)
 #4 (id=297239)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Target: Enemy (6)
-Description      : Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target.
-
+Description      : Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target.
+
 |cFFFFFFFFAwards $s3 combo $lpoint:points;.|r
 Variables        : $mult=${($max(0,$min($pl-10,10))*11+260)/370}
 
@@ -76,12 +76,12 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... ..x..
 Effects          :
 #1 (id=152)      : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.25) | Target: Enemy (6)
-Description      : Finishing move that stuns the target. Lasts longer per combo point:
-   1 point  : 2 seconds
-   2 points: 3 seconds
-   3 points: 4 seconds
-   4 points: 5 seconds
-   5 points: 6 seconds$?s193531[
+Description      : Finishing move that stuns the target. Lasts longer per combo point:
+   1 point  : 2 seconds
+   2 points: 3 seconds
+   3 points: 4 seconds
+   4 points: 5 seconds
+   5 points: 6 seconds$?s193531[
    6 points: 7 seconds][]
 Tooltip          : Stunned.
 
@@ -130,8 +130,8 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Target: Enemy (6)
 #3 (id=282)      : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self (1)
-Description      : Garrote the enemy, causing $o1 Bleed damage over $d.$?a231719[ Silences the target for $1330d when used from Stealth.][]
-
+Description      : Garrote the enemy, causing $o1 Bleed damage over $d.$?a231719[ Silences the target for $1330d when used from Stealth.][]
+
 |cFFFFFFFFAwards $s3 combo $lpoint:points;.|r
 Tooltip          : Suffering $w1 damage every $t1 seconds.
 
@@ -186,8 +186,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 5374 | Target: Enemy (6)
 #4 (id=314319)   : Trigger Spell (64): Mutilate
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 27576 | Target: Enemy (6)
-Description      : Attack with both weapons, dealing a total of $<dmg> Physical damage.
-
+Description      : Attack with both weapons, dealing a total of $<dmg> Physical damage.
+
 |cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
 Variables        : $dmg=${$5374s2+$27576s2*0.5}
 
@@ -263,8 +263,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.21762 | Target: Enemy (6)
 #2 (id=536)      : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self (1)
-Description      : Viciously strike an enemy, causing $s1 Physical damage.
-
+Description      : Viciously strike an enemy, causing $s1 Physical damage.
+
 |cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
 
 Name             : Kick (id=1766) [Spell Family (8)] 
@@ -321,10 +321,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=169690)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self (1)
-Description      : Gouges the eyes of an enemy target, incapacitating for $d. Damage will interrupt the effect.
-
-Must be in front of your target.
-
+Description      : Gouges the eyes of an enemy target, incapacitating for $d. Damage will interrupt the effect.
+
+Must be in front of your target.
+
 |cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
 Tooltip          : Incapacitated.
 
@@ -364,8 +364,8 @@ Effects          :
                    Affected Spells: Garrote (703)
                    Family Flags: 8
 Description      : Conceals you in the shadows until cancelled, allowing you to stalk enemies without being seen. $?s14062[Movement speed while stealthed is increased by $s3% and damage dealt is increased by $s4%.]?s108209[ Abilities cost $112942s1% less while stealthed. ][]$?s31223[ Attacks from Stealth and for $31223s1 sec after deal $31665s1% more damage.][]
-Tooltip          : Stealthed.$?$w3!=0[
-Movement speed increased by $w3%.][]$?$w4!=0[
+Tooltip          : Stealthed.$?$w3!=0[
+Movement speed increased by $w3%.][]$?$w4!=0[
 Damage increased by $w4%.][]
 
 Name             : Pick Lock (id=1804) [Spell Family (8)] 
@@ -415,8 +415,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=565)      : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: combo_points | Target: Self (1)
-Description      : Stuns the target for $d.
-
+Description      : Stuns the target for $d.
+
 |cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
 Tooltip          : Stunned.
 
@@ -501,13 +501,13 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 160 | Trigger Spell: 199672 | Target: Enemy (6)
 #5 (id=331324)   : Trigger Spell (64): Rupture
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 500 | Trigger Spell: 199672 | Target: Enemy (6)
-Description      : Finishing move that tears open the target, dealing Bleed damage over time. Lasts longer per combo point.
-
-   1 point  : ${$o1*2} over 8 sec
-   2 points: ${$o1*3} over 12 sec
-   3 points: ${$o1*4} over 16 sec
-   4 points: ${$o1*5} over 20 sec
-   5 points: ${$o1*6} over 24 sec$?s193531[
+Description      : Finishing move that tears open the target, dealing Bleed damage over time. Lasts longer per combo point.
+
+   1 point  : ${$o1*2} over 8 sec
+   2 points: ${$o1*3} over 12 sec
+   3 points: ${$o1*4} over 16 sec
+   4 points: ${$o1*5} over 20 sec
+   5 points: ${$o1*6} over 24 sec$?s193531[
    6 points: ${$o1*7} over 28 sec][]
 Tooltip          : Bleeding for $w1 damage every $t1 sec.
 
@@ -536,7 +536,7 @@ Effects          :
 #2 (id=127075)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
 Description      : Performs an evasive maneuver, reducing damage taken from area-of-effect attacks by $s1% $?s79008[and all other damage taken by $s2% ][]for $d.
-Tooltip          : Damage taken from area-of-effect attacks reduced by $s1%$?$w2!=0[ and all other damage taken reduced by $w2%.
+Tooltip          : Damage taken from area-of-effect attacks reduced by $s1%$?$w2!=0[ and all other damage taken reduced by $w2%.
 ][.]
 
 Name             : Blind (id=2094) [Spell Family (8)] 
@@ -593,12 +593,12 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=622)      : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.35000 | Target: Enemy (6)
-Description      : Finishing move that dispatches the enemy, dealing damage per combo point:
-   1 point  : ${$m1*1} damage
-   2 points: ${$m1*2} damage
-   3 points: ${$m1*3} damage
-   4 points: ${$m1*4} damage
-   5 points: ${$m1*5} damage$?s193531[
+Description      : Finishing move that dispatches the enemy, dealing damage per combo point:
+   1 point  : ${$m1*1} damage
+   2 points: ${$m1*2} damage
+   3 points: ${$m1*3} damage
+   4 points: ${$m1*4} damage
+   5 points: ${$m1*5} damage$?s193531[
    6 points: ${$m1*6} damage][]
 
 Name             : Deadly Poison (id=2818) [Spell Family (8)] 
@@ -695,11 +695,11 @@ Effects          :
                    Base Value: 70 | Scaled Value: 70 | Target: Self (1)
 #2 (id=328458)   : Apply Aura (6) | Periodic Dummy (226): every 0.25 seconds
                    Base Value: 1 | Scaled Value: 1
-Description      : Increases your movement speed by $s1% for $d. Usable while stealthed.$?s245751[
-
+Description      : Increases your movement speed by $s1% for $d. Usable while stealthed.$?s245751[
+
 Allows you to run over water.][]
-Tooltip          : Movement speed increased by $w1%.$?s245751[
-
+Tooltip          : Movement speed increased by $w1%.$?s245751[
+
 Allows you to run over water.][]
 
 Name             : Crippling Poison (id=3408) [Spell Family (8)] 
@@ -749,7 +749,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .x...
 Effects          :
 #1 (id=1114)     : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Target: Enemy (6)
-Description      : Coats a weapon with poison that lasts for 1 hour.
+Description      : Coats a weapon with poison that lasts for 1 hour.
 Each strike has a $3408h% chance of poisoning the enemy, slowing their movement speed by $3409s1% for $3409d.
 Tooltip          : Movement slowed by $s1%.
 
@@ -780,15 +780,15 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Self (1)
 #3 (id=356567)   : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: 15 | Scaled Value: 15 | SP Coefficient: 0.25000 | Misc Value: 3 | Target: Self (1)
-Description      : Finishing move that consumes combo points to increase attack speed by $s1% and Energy regeneration rate by $s3%. Lasts longer per combo point.
-   1 point  : 12 seconds
-   2 points: 18 seconds
-   3 points: 24 seconds
-   4 points: 30 seconds
-   5 points: 36 seconds$?s193531[
+Description      : Finishing move that consumes combo points to increase attack speed by $s1% and Energy regeneration rate by $s3%. Lasts longer per combo point.
+   1 point  : 12 seconds
+   2 points: 18 seconds
+   3 points: 24 seconds
+   4 points: 30 seconds
+   5 points: 36 seconds$?s193531[
    6 points: 42 seconds][]
-Tooltip          : Attack speed increased by $w1%.
-Energy regeneration increased by $w3%.$?$w2!=0[
+Tooltip          : Attack speed increased by $w1%.
+Energy regeneration increased by $w3%.$?$w2!=0[
 Regaining $w2 Energy every $t2 sec.][]
 
 Name             : Solar Wrath (rank=Solar) (id=5176) [Scaling Spell (3), Spell Family (7)] 
@@ -864,8 +864,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.35000 | Target: Enemy (6)
 #3 (id=715089)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
-Description      : Instantly attacks for $s2 Physical damage.
-
+Description      : Instantly attacks for $s2 Physical damage.
+
 |cFFFFFFFFAwards $s3 combo $lpoint:points;.|r
 
 Name             : Sap (id=6770) [Spell Family (8)] 
@@ -897,7 +897,7 @@ Effects          :
 #1 (id=2442)     : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.15) | Target: Enemy (6)
 Description      : Incapacitates a target not in combat for $d. Only works on Humanoids, Beasts, Demons, and Dragonkin. Damage will revive the target. Limit 1.
-Tooltip          : Incapacitated.$?$w2!=0[
+Tooltip          : Incapacitated.$?$w2!=0[
 Damage taken increased by $w2%.][]
 
 Name             : Ambush (id=8676) [Spell Family (8)] 
@@ -924,8 +924,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.95472 | Target: Enemy (6)
 #2 (id=3613)     : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: combo_points | Target: Self (1)
-Description      : Ambush the target, causing $s1 Physical damage.
-
+Description      : Ambush the target, causing $s1 Physical damage.
+
 |cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
 
 Name             : Wound Poison (id=8679) [Spell Family (8)] 
@@ -977,7 +977,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.417, delta coefficient=0.28) | AP Coefficient: 0.02129 | Target: Enemy (6)
 #2 (id=133966)   : Apply Aura (6) | Modify Healing Recevied% (118)
                    Base Value: -25 | Scaled Value: -25 | AP Coefficient: 0.03931 | Misc Value: 127 | Target: Enemy (6)
-Description      : Coats a weapon with poison that lasts for 1 hour.
+Description      : Coats a weapon with poison that lasts for 1 hour.
 Each strike has a $8679h% chance of poisoning the enemy, which instantly inflicts $8680s1 Nature damage and reduces the effect of healing received for $d.
 Tooltip          : Healing effects reduced by $w2%.
 
@@ -1015,8 +1015,8 @@ Effects          :
                    Affected Spells: Garrote (703)
                    Family Flags: 8
 Description      : $@spelldesc1856
-Tooltip          : Improved stealth.$?$w3!=0[
-Movement speed increased by $w3%.][]$?$w4!=0[
+Tooltip          : Improved stealth.$?$w3!=0[
+Movement speed increased by $w3%.][]$?$w4!=0[
 Damage increased by $w4%.][]
 
 Name             : Adrenaline Rush (id=13750) [Spell Family (8)] 
@@ -1046,7 +1046,7 @@ Effects          :
                    Affected Spells: Dispatch (2098), Slice and Dice (5171), Pistol Shot (185763), Sinister Strike (193315), Roll the Bones (193316), Ghostly Strike (196937), Between the Eyes (199804)
                    Family Flags: 18, 26, 60, 98, 101, 111, 112, 113
 Description      : Increases your Energy regeneration rate by $s1% and your attack speed by $s2% for $d.
-Tooltip          : Energy regeneration increased by $s1%.
+Tooltip          : Energy regeneration increased by $s1%.
 Attack speed increased by $s2%.
 
 Name             : Blade Flurry (id=13877) [Spell Family (8)] 
@@ -1338,8 +1338,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.35000 | Target: Enemy (6)
 #3 (id=715088)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
-Description      : Instantly attacks for $s2 Physical damage.
-
+Description      : Instantly attacks for $s2 Physical damage.
+
 |cFFFFFFFFAwards $s3 combo $lpoint:points;.|r
 
 Name             : Strength (id=27973) [Passive, Hidden] 
@@ -1421,7 +1421,7 @@ Effects          :
 #3 (id=20793)    : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x1 | Target: Self (1)
 Description      : Provides a moment of magic immunity, instantly removing all harmful spell effects. The cloak lingers, $?s63269[reducing physical damage taken by $63269s1% and ][]causing you to resist harmful spells for $d.
-Tooltip          : Resisting all harmful spells.$?$w3!=0[
+Tooltip          : Resisting all harmful spells.$?$w3!=0[
 Physical damage taken reduced by $w3%.][]
 
 Name             : Cheat Death (rank=Passive Talent) (id=31230) [Spell Family (8), Passive] 
@@ -1506,16 +1506,16 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Mutilate (5374), Mutilate (27576)
                    Family Flags: 33, 34
-Description      : Finishing move that drives your poisoned blades in deep, dealing instant Nature damage and increasing your poison application chance by $s2%. Damage and duration increased per combo point.
-
-   1 point  : ${$m1*1} damage, 2 sec
-   2 points: ${$m1*2} damage, 3 sec
-   3 points: ${$m1*3} damage, 4 sec
-   4 points: ${$m1*4} damage, 5 sec
-   5 points: ${$m1*5} damage, 6 sec$?s193531[
+Description      : Finishing move that drives your poisoned blades in deep, dealing instant Nature damage and increasing your poison application chance by $s2%. Damage and duration increased per combo point.
+
+   1 point  : ${$m1*1} damage, 2 sec
+   2 points: ${$m1*2} damage, 3 sec
+   3 points: ${$m1*3} damage, 4 sec
+   4 points: ${$m1*4} damage, 5 sec
+   5 points: ${$m1*5} damage, 6 sec$?s193531[
    6 points: ${$m1*6} damage, 7 sec][]
 Tooltip          : Poison application chance increased by $s2%.
-Variables        : $mult2=$?s84601[${1.17*(1+$@versadmg)}][${1.00*(1+$@versadmg)}]
+Variables        : $mult2=$?s84601[${1.17*(1+$@versadmg)}][${1.00*(1+$@versadmg)}]
 $mult=?s76803[${($76803m1/100+1)*$<mult2>}][${$<mult2>}]
 
 Name             : Combat Potency (id=35546) [Spell Family (8)] 
@@ -1624,7 +1624,7 @@ Effects          :
 #1 (id=37131)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : You have a $s1% chance to completely avoid any damaging attack that would otherwise kill you and reduce all damage taken by $45182s1% for $45182d.  This effect cannot occur more than once per minute.
-Tooltip          : You have recently escaped certain death.
+Tooltip          : You have recently escaped certain death.
 You will not likely be so lucky a second time...
 
 Name             : Cheating Death (id=45182) 
@@ -1694,8 +1694,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #4 (id=221814)   : Apply Aura (6) | Disable Abilities (263)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Teleport to an enemy within 10 yards, attacking with both weapons for a total of $<dmg> Physical damage over $d.
-
+Description      : Teleport to an enemy within 10 yards, attacking with both weapons for a total of $<dmg> Physical damage over $d.
+
 While Blade Flurry is active, also hits all nearby enemies for $s2% damage.
 Tooltip          : Attacking an enemy every $t1 sec.
 Variables        : $dmg=${$57841s2*6+$57842s1*6}
@@ -1722,8 +1722,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20500 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=150470)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
-Description      : Sprays knives at all targets within $A1 yards, dealing $s1 Physical damage and applying your active poisons at their normal rate.
-
+Description      : Sprays knives at all targets within $A1 yards, dealing $s1 Physical damage and applying your active poisons at their normal rate.
+
 |cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
 
 Name             : Increase Versatility 15 (id=55564) [Scaling Spell (-1), Passive, Hidden] 
@@ -1838,7 +1838,7 @@ Effects          :
 #3 (id=344026)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Unknown(57)
 Description      : $?s221622[Increases you and the target's damage by $221622m1%, and redirects][Redirects] all threat you cause to the targeted party or raid member, beginning with your next damaging attack within the next $d and lasting $59628d.
-Tooltip          : Threat redirected from Rogue.
+Tooltip          : Threat redirected from Rogue.
 $?s221622[Damage increased by $221622m1%.][]
 
 Name             : Relentless Strikes (rank=Passive) (id=58423) [Spell Family (8), Passive] 
@@ -1879,7 +1879,7 @@ Effects          :
 #1 (id=53201)    : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 127 | Target: Self (1)
 Description      : The current party or raid member becomes the target of your Tricks of the Trade$?s221622[, increasing you and the target's damage by $221622m1%][]. The threat caused by your next attack and all actions taken for $57933d afterwards will be transferred to the target.
-Tooltip          : All threat transferred from the Rogue to the target.
+Tooltip          : All threat transferred from the Rogue to the target.
 $?s221622[Damage increased by $221622m1%.][]
 
 Name             : Combat Potency (id=61329) [Spell Family (8), Passive] 
@@ -1898,8 +1898,8 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=55169)    : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: 35 | Scaled Value: 35 | Misc Value: 3 | Target: Self (1)
-Description      : Increases your Energy regeneration rate by $s1%.$?s35551[
-
+Description      : Increases your Energy regeneration rate by $s1%.$?s35551[
+
 Your off-hand attacks have a $35551s1% chance to generate $35546s1 Energy.][]
 
 Name             : Glyph of Disguise (id=63268) [Spell Family (8), Passive, Hidden] 
@@ -2139,8 +2139,8 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | SP Coefficient: 0.25000 | Misc Value: 12 | Target: Self (1)
 #2 (id=86614)    : Apply Aura (6) | Dummy (4)
                    Base Value: 7 | Scaled Value: 7 | Target: Self (1)
-Description      : You regain $s2 Energy each time your $?s154904[Garrote, Rupture, or Internal Bleeding][Garrote or Rupture] deal Bleed damage to a poisoned target.
-
+Description      : You regain $s2 Energy each time your $?s154904[Garrote, Rupture, or Internal Bleeding][Garrote or Rupture] deal Bleed damage to a poisoned target.
+
 If an enemy dies while afflicted by your Rupture, you regain energy based on its remaining duration.
 
 Name             : Vendetta (id=79140) [Spell Family (8)] 
@@ -2172,8 +2172,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #4 (id=479057)   : Trigger Spell (64): Vendetta
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 256495 | Target: Self (1)
-Description      : Marks an enemy for death for $d, increasing the damage your abilities and auto attacks deal to the target by $s1%, and making the target visible to you even through concealments such as stealth and invisibility.
-
+Description      : Marks an enemy for death for $d, increasing the damage your abilities and auto attacks deal to the target by $s1%, and making the target visible to you even through concealments such as stealth and invisibility.
+
 Generates ${$256495s1*$256495d/5} Energy over $256495d.
 Tooltip          : Marked for death, increasing damage taken from the Rogue's attacks, and always visible to the Rogue.
 
@@ -2378,10 +2378,10 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Vanish (11327)
                    Family Flags: 96
-Description      : Your abilities requiring Stealth can still be used for $115192d after Stealth breaks.$?c3[
-
-Also increases the duration of Shadow Dance by ${$m2/1000} sec.][
-
+Description      : Your abilities requiring Stealth can still be used for $115192d after Stealth breaks.$?c3[
+
+Also increases the duration of Shadow Dance by ${$m2/1000} sec.][
+
 Also causes Garrote to deal $115192s2% increased damage and have no cooldown when used from Stealth and for $115192d after breaking Stealth.]
 
 Name             : Shadow Focus (id=108209) [Spell Family (8), Passive] 
@@ -2469,10 +2469,10 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 #5 (id=709929)   : Dummy (3)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
-Description      : Exploits the vulnerability of foes with less than $s4% health, dealing $s2 Physical damage to the target.
-
-Mutilate has a $s5% chance to make your next Blindside free and usable on any target, regardless of their health.
-
+Description      : Exploits the vulnerability of foes with less than $s4% health, dealing $s2 Physical damage to the target.
+
+Mutilate has a $s5% chance to make your next Blindside free and usable on any target, regardless of their health.
+
 |cFFFFFFFFAwards $s3 combo $lpoint:points;.|r
 
 Name             : Shadow Focus (id=112942) [Spell Family (8), Hidden] 
@@ -2541,8 +2541,8 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.19656 | Misc Value: combo_points | Target: Self (1)
 #3 (id=344591)   : Dummy (3)
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
-Description      : Throws a shuriken at an enemy target for ${$s1*$<CAP>/$AP} Physical damage.
-
+Description      : Throws a shuriken at an enemy target for ${$s1*$<CAP>/$AP} Physical damage.
+
 |cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
 Variables        : $CAP=${($AP+$OAP)*2/3}
 
@@ -2688,13 +2688,13 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.09000 | Radius: 0 - 10 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=715792)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.03600 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
-Description      : Finishing move that slashes at all enemies within $A1 yards, dealing instant damage and causing victims to bleed for additional damage. Lasts longer per combo point.
-
-   1 point  : ${$s2*2} plus ${$o1*2} over 4 sec
-   2 points: ${$s2*3} plus ${$o1*3} over 6 sec
-   3 points: ${$s2*4} plus ${$o1*4} over 8 sec
-   4 points: ${$s2*5} plus ${$o1*5} over 10 sec
-   5 points: ${$s2*6} plus ${$o1*6} over 12 sec$?s193531[
+Description      : Finishing move that slashes at all enemies within $A1 yards, dealing instant damage and causing victims to bleed for additional damage. Lasts longer per combo point.
+
+   1 point  : ${$s2*2} plus ${$o1*2} over 4 sec
+   2 points: ${$s2*3} plus ${$o1*3} over 6 sec
+   3 points: ${$s2*4} plus ${$o1*4} over 8 sec
+   4 points: ${$s2*5} plus ${$o1*5} over 10 sec
+   5 points: ${$s2*6} plus ${$o1*6} over 12 sec$?s193531[
    6 points: ${$s2*7} plus ${$o1*7} over 14 sec][]
 Tooltip          : Bleeding for $w1 damage every $t1 sec.
 
@@ -3384,10 +3384,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.69880 | Target: Enemy (6)
 #2 (id=269260)   : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: combo_points | Target: Self (1)
-Description      : Strike the target, dealing $s1 Physical damage.$?a231718[
-
-While Stealthed, you strike through the shadows and appear behind your target up to ${5+$245623s1} yds away, dealing $245623s2% additional damage.][]
-
+Description      : Strike the target, dealing $s1 Physical damage.$?a231718[
+
+While Stealthed, you strike through the shadows and appear behind your target up to ${5+$245623s1} yds away, dealing $245623s2% additional damage.][]
+
 |cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
 
 Name             : Poisoned Knife (id=185565) [Scaling Spell (9), Spell Family (8)] 
@@ -3413,8 +3413,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=2) | AP Coefficient: 0.09828 | Target: Enemy (6)
 #2 (id=269457)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.19656 | Misc Value: combo_points | Target: Self (1)
-Description      : Throws a poison-coated knife, dealing $s1 damage and applying your active Lethal and Non-Lethal Poisons.
-
+Description      : Throws a poison-coated knife, dealing $s1 damage and applying your active Lethal and Non-Lethal Poisons.
+
 |cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
 
 Name             : Pistol Shot (id=185763) [Spell Family (8)] 
@@ -3444,8 +3444,8 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Enemy (6)
 #4 (id=316548)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Draw a concealed pistol and fire a quick shot at an enemy, dealing ${$s1*$<CAP>/$AP} Physical damage and reducing movement speed by $s3% for $d.
-
+Description      : Draw a concealed pistol and fire a quick shot at an enemy, dealing ${$s1*$<CAP>/$AP} Physical damage and reducing movement speed by $s3% for $d.
+
 |cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
 Tooltip          : Movement speed reduced by $s3%.
 Variables        : $CAP=${($AP+$OAP)*2/3}
@@ -3469,8 +3469,8 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Agonizing Poison (200803)
                    Family Flags: 120
-Description      : When Fan of Knives strikes targets poisoned with your Deadly Poison, Deadly Poison instantly deals $s1% of its remaining damage.$?s200802[
-
+Description      : When Fan of Knives strikes targets poisoned with your Deadly Poison, Deadly Poison instantly deals $s1% of its remaining damage.$?s200802[
+
 Increases the effect of Agonizing Poison's damage bonus by ${$m2/$<agonizingratio>}.1%][]
 Variables        : $agonizingratio = ${2}
 
@@ -3525,10 +3525,10 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Trigger Spell: 192853 | Target: Self (1)
 #6 (id=351090)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self (1)
-Description      : Releases lethal poison within |cFFFFCC99The Kingslayers|r and injects it into your target, dealing ${$222062sw1+$192760sw1} Nature damage instantly and an additional $o4 Nature damage over $d. 
-
-Each time you apply a Lethal Poison to a target affected by Kingsbane, Kingsbane damage increases by $192853s1%.
-
+Description      : Releases lethal poison within |cFFFFCC99The Kingslayers|r and injects it into your target, dealing ${$222062sw1+$192760sw1} Nature damage instantly and an additional $o4 Nature damage over $d. 
+
+Each time you apply a Lethal Poison to a target affected by Kingsbane, Kingsbane damage increases by $192853s1%.
+
 |cFFFFFFFFAwards $s6 combo $lpoint:points;.|r
 Tooltip          : Suffering $w4 Nature damage every $t4 sec.
 
@@ -3604,10 +3604,10 @@ Effects          :
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
 #4 (id=283622)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Target: Enemy (6)
-Description      : Viciously strike an enemy, causing ${$s1*$<mult>} Physical damage.$?s279876[
-
-Has a $s3% chance to hit an additional time, making your next Pistol Shot half cost and double damage.][]
-
+Description      : Viciously strike an enemy, causing ${$s1*$<mult>} Physical damage.$?s279876[
+
+Has a $s3% chance to hit an additional time, making your next Pistol Shot half cost and double damage.][]
+
 |cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
 Variables        : $mult=${($max(0,$min($pl-10,10))*8+195)/275}
 
@@ -3636,12 +3636,12 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
 #2 (id=283629)   : Apply Aura (6) | Periodic Energize Power (24): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Self (1)
-Description      : Finishing move that rolls the dice of fate, providing a random combat enhancement. Lasts longer per combo point:
-   1 point  : 12 seconds
-   2 points: 18 seconds
-   3 points: 24 seconds
-   4 points: 30 seconds
-   5 points: 36 seconds$?s193531[
+Description      : Finishing move that rolls the dice of fate, providing a random combat enhancement. Lasts longer per combo point:
+   1 point  : 12 seconds
+   2 points: 18 seconds
+   3 points: 24 seconds
+   4 points: 30 seconds
+   5 points: 36 seconds$?s193531[
    6 points: 42 seconds][]
 Tooltip          : Gained a random combat enhancement.
 
@@ -3699,7 +3699,7 @@ Effects          :
                    Affected Spells: Between the Eyes (199804)
                    Family Flags: 111
 Description      : Increases the critical ctrike chance of Between the Eyes by  ${$s1+$s2}% and the critical strike chance of all other abilities by $s1% for the duration of Roll the Bones.
-Tooltip          : Critical strike chance of Between the Eyes increased by ${$s1+$s2}%.
+Tooltip          : Critical strike chance of Between the Eyes increased by ${$s1+$s2}%.
 Critical strike chance of all other abilities increased by $s1%.
 
 Name             : Grand Melee (id=193358) [Spell Family (8)] 
@@ -3722,7 +3722,7 @@ Effects          :
 #2 (id=344594)   : Apply Aura (6) | Modify Leech% (443)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 Description      : Increases your attack speed by $s1% and your Leech by $s2% for the duration of Roll the Bones.
-Tooltip          : Attack speed increased by $s1%.
+Tooltip          : Attack speed increased by $s1%.
 Leech increased by $s2%.
 
 Name             : True Bearing (id=193359) [Spell Family (8)] 
@@ -3971,19 +3971,19 @@ Effects          :
                    Family Flags: 2, 17, 32, 75, 76, 92, 104, 109, 127
 #7 (id=733388)   : Apply Aura (6) | Modify Healing Recevied% (118)
                    Base Value: -15 | Scaled Value: -15 | Target: Enemy (6)
-Description      : Finishing move that infects the target with shadowy energy, dealing Shadow damage over time and reduces the effectiveness of healing on the target by $s7%. Lasts longer per combo point.
-   1 point  : ${$<damage>*8/6} over 8 sec
-   2 points: ${$<damage>*10/6} over 10 sec
-   3 points: ${$<damage>*12/6} over 12 sec
-   4 points: ${$<damage>*14/6} over 14 sec
-   5 points: ${$<damage>*16/6} over 16 sec$?s193531[
-   6 points: ${$<damage>*18/6} over 18 sec][]
-
+Description      : Finishing move that infects the target with shadowy energy, dealing Shadow damage over time and reduces the effectiveness of healing on the target by $s7%. Lasts longer per combo point.
+   1 point  : ${$<damage>*8/6} over 8 sec
+   2 points: ${$<damage>*10/6} over 10 sec
+   3 points: ${$<damage>*12/6} over 12 sec
+   4 points: ${$<damage>*14/6} over 14 sec
+   5 points: ${$<damage>*16/6} over 16 sec$?s193531[
+   6 points: ${$<damage>*18/6} over 18 sec][]
+
 You deal $s6% increased damage to enemies afflicted by your Nightblade.
-Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
-Healing effects reduced by $s7%.
+Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
+Healing effects reduced by $s7%.
 Taking $s6% increased damage from the Rogue.
-Variables        : $CAP=${($AP+$OAP)*2/3}
+Variables        : $CAP=${($AP+$OAP)*2/3}
 $damage=${$o1*$<CAP>/$AP}
 
 Name             : Grappling Hook (id=195457) [Spell Family (8)] 
@@ -4067,12 +4067,12 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=288959)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.17600 | Target: Enemy (6)
-Description      : Finishing move that disembowels the target, causing damage per combo point.
-   1 point  : ${$m1*1} damage
-   2 points: ${$m1*2} damage
-   3 points: ${$m1*3} damage
-   4 points: ${$m1*4} damage
-   5 points: ${$m1*5} damage$?s193531[
+Description      : Finishing move that disembowels the target, causing damage per combo point.
+   1 point  : ${$m1*1} damage
+   2 points: ${$m1*2} damage
+   3 points: ${$m1*3} damage
+   4 points: ${$m1*4} damage
+   5 points: ${$m1*5} damage$?s193531[
    6 points: ${$m1*6} damage][]
 
 Name             : Iron Wire (id=196861) [Spell Family (8), Passive] 
@@ -4094,8 +4094,8 @@ Effects          :
                    Family Flags: 61
 #2 (id=705892)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
-Description      : Increase the duration of Garrote's silence effect by $s2 sec.
-
+Description      : Increase the duration of Garrote's silence effect by $s2 sec.
+
 Enemies silenced by Garrote deal $256148s1% reduced damage for $256148d.
 
 Name             : Master Poisoner (id=196864) [Spell Family (8), Passive] 
@@ -4254,8 +4254,8 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 127 | Target: Enemy (6)
 #4 (id=289168)   : Apply Aura (6) | Periodic Dummy (226): every 3 seconds
                    Base Value: 10 | Scaled Value: 10 | Target: Enemy (6)
-Description      : Strikes an enemy, dealing $s1 Physical damage and causing the target to take $s3% increased damage from your abilities for $d.
-
+Description      : Strikes an enemy, dealing $s1 Physical damage and causing the target to take $s3% increased damage from your abilities for $d.
+
 |cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
 Tooltip          : Taking $s3% increased damage from the Rogue's abilities.
 
@@ -4342,12 +4342,12 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=289987)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.31500 | Target: Enemy (6)
-Description      : Finishing move that disembowels the target, causing damage per combo point.
-   1 point  : ${$<mult>*$m1*1} damage
-   2 points: ${$<mult>*$m1*2} damage
-   3 points: ${$<mult>*$m1*3} damage
-   4 points: ${$<mult>*$m1*4} damage
-   5 points: ${$<mult>*$m1*5} damage$?s193531[
+Description      : Finishing move that disembowels the target, causing damage per combo point.
+   1 point  : ${$<mult>*$m1*1} damage
+   2 points: ${$<mult>*$m1*2} damage
+   3 points: ${$<mult>*$m1*3} damage
+   4 points: ${$<mult>*$m1*4} damage
+   5 points: ${$<mult>*$m1*5} damage$?s193531[
    6 points: ${$<mult>*$m1*6} damage][]
 Variables        : $mult=${(1+$@versadmg)}
 
@@ -4377,16 +4377,16 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.29400 | Target: Enemy (6)
 #2 (id=289990)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 1 | Scaled Value: 1 | Mechanic: Bleed | Target: Enemy (6)
-Description      : Finishing move that infects the target with shadowy energy, dealing Shadow damage over time and causing attacks against the target to reduce movement speed by $206760s1% for $206760d. Lasts longer per combo point.
-   1 point  : ${$<bonus>*$m1*8/2} over 8 sec
-   2 points: ${$<bonus>*$m1*10/2} over 10 sec
-   3 points: ${$<bonus>*$m1*12/2} over 12 sec
-   4 points: ${$<bonus>*$m1*14/2} over 14 sec
-   5 points: ${$<bonus>*$m1*16/2} over 16 sec$?s193531[
+Description      : Finishing move that infects the target with shadowy energy, dealing Shadow damage over time and causing attacks against the target to reduce movement speed by $206760s1% for $206760d. Lasts longer per combo point.
+   1 point  : ${$<bonus>*$m1*8/2} over 8 sec
+   2 points: ${$<bonus>*$m1*10/2} over 10 sec
+   3 points: ${$<bonus>*$m1*12/2} over 12 sec
+   4 points: ${$<bonus>*$m1*14/2} over 14 sec
+   5 points: ${$<bonus>*$m1*16/2} over 16 sec$?s193531[
    6 points: ${$<bonus>*$m1*18/2} over 18 sec][]
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec and snared by attacks.
-Variables        : $resolve=$?s84601[${1.17}][${1}]
-$deeper=$?s193531[${1.1}][${1}]
+Variables        : $resolve=$?s84601[${1.17}][${1}]
+$deeper=$?s193531[${1.1}][${1}]
 $bonus=${$<resolve>*(1+$@versadmg)*$<deeper>}/1.1
 
 Name             : Finality: Eviscerate (id=197496) [Spell Family (8)] 
@@ -4449,10 +4449,10 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 #3 (id=344592)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
-Description      : Sprays shurikens at all targets within $A1 yards, dealing ${$s1*$<CAP>/$AP} Physical damage.
-
-Damage increased by $s3% while Stealth or Shadow Dance is active.
-
+Description      : Sprays shurikens at all targets within $A1 yards, dealing ${$s1*$<CAP>/$AP} Physical damage.
+
+Damage increased by $s3% while Stealth or Shadow Dance is active.
+
 |cFFFFFFFFAwards $s2 combo $lpoint:points; per target hit$?a121471[ plus an additional $121471s2][].|r
 Variables        : $CAP=${($AP+$OAP)*2/3}
 
@@ -4615,15 +4615,15 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.18100 | Target: Enemy (6)
 #2 (id=294040)   : Apply Aura (6) | Stun (12)
                    Base Value: 70 | Scaled Value: 70 | Mechanic: Stun | Target: Enemy (6)
-Description      : Finishing move that deals damage with your pistol and stuns the target.$?a235484[ Critical strikes with this ability deal four times normal damage.][]
-   1 point : ${$<damage>*1} damage, 1 sec
-   2 points: ${$<damage>*2} damage, 2 sec
-   3 points: ${$<damage>*3} damage, 3 sec
-   4 points: ${$<damage>*4} damage, 4 sec
-   5 points: ${$<damage>*5} damage, 5 sec$?s193531[
+Description      : Finishing move that deals damage with your pistol and stuns the target.$?a235484[ Critical strikes with this ability deal four times normal damage.][]
+   1 point : ${$<damage>*1} damage, 1 sec
+   2 points: ${$<damage>*2} damage, 2 sec
+   3 points: ${$<damage>*3} damage, 3 sec
+   4 points: ${$<damage>*4} damage, 4 sec
+   5 points: ${$<damage>*5} damage, 5 sec$?s193531[
    6 points: ${$<damage>*6} damage, 6 sec][]
 Tooltip          : Stunned.
-Variables        : $CAP=${($AP+$OAP)*2/3}
+Variables        : $CAP=${($AP+$OAP)*2/3}
 $damage=${$m1*$<CAP>/$AP}
 
 Name             : Weaponmaster (rank=Passive Talent) (id=200733) [Spell Family (8), Passive] 
@@ -4689,8 +4689,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.47151 | Target: Enemy (6)
 #2 (id=295617)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self (1)
-Description      : Punctures your target with your shadow-infused blade for $s1 Shadow damage, bypassing armor.
-
+Description      : Punctures your target with your shadow-infused blade for $s1 Shadow damage, bypassing armor.
+
 |cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
 
 Name             : Soothing Darkness (id=200759) [Spell Family (8), Passive, Hidden] 
@@ -4739,8 +4739,8 @@ Attributes       : ....x... ........ ........ ........   .....x.. ........ .x...
 Effects          :
 #1 (id=295686)   : Apply Aura (6) | Proc Trigger Spell (42): Agonizing Poison
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 200803 | Target: Self (1)
-Description      : Coats your weapons with a Lethal Poison that lasts for $d. Each strike has a $h% chance to poison the enemy for $200803d, increasing all damage taken from your abilities by ${$200803s1}.1%, stacking up to $200803u times.
-
+Description      : Coats your weapons with a Lethal Poison that lasts for $d. Each strike has a $h% chance to poison the enemy for $200803d, increasing all damage taken from your abilities by ${$200803s1}.1%, stacking up to $200803u times.
+
 Damage bonus increased by Mastery: Potent Poisons.
 Tooltip          : Each strike has a chance of causing the target to take ${$200803s1}.1% increased damage from your abilities for $200803d.
 
@@ -4906,8 +4906,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.33033 | Target: Enemy (6)
 #6 (id=299187)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.33033 | Target: Enemy (6)
-Description      : Draws a concealed blunderbuss and fires a quick shot at the target, dealing ${$m1*4} damage and reducing movement speed by $s3% for $d.
-
+Description      : Draws a concealed blunderbuss and fires a quick shot at the target, dealing ${$m1*4} damage and reducing movement speed by $s3% for $d.
+
 |cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
 Tooltip          : Movement speed reduced by $s3%.
 
@@ -4928,9 +4928,9 @@ Effects          :
                    Base Value: 202895 | Scaled Value: 202895 | Target: Self (1)
 #2 (id=341775)   : Apply Aura (6) | Dummy (4)
                    Base Value: 33 | Scaled Value: 33 | Target: Self (1)
-Description      : When Saber Slash strikes an additional time, there is a $s2% chance that your next Pistol Shot will be replaced with Blunderbuss.
-
-|Tinterface\icons\inv_weapon_rifle_07.blp:24|t |cFFFFFFFFBlunderbuss|r
+Description      : When Saber Slash strikes an additional time, there is a $s2% chance that your next Pistol Shot will be replaced with Blunderbuss.
+
+|Tinterface\icons\inv_weapon_rifle_07.blp:24|t |cFFFFFFFFBlunderbuss|r
 $@spelldesc202895
 
 Name             : Shadow's Grasp (id=206760) [Spell Family (8)] 
@@ -5012,8 +5012,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 209786 | Target: Enemy (6)
 #4 (id=329479)   : Trigger Spell (64): Goremaw's Bite
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 220901 | Target: Self (1)
-Description      : Lashes out at the target, inflicting ${$209783sw2+$209784sw2} Shadow damage and reducing movement speed by $209786s1% for $209786d. Grants $220901o2 Energy over $220901d.
-
+Description      : Lashes out at the target, inflicting ${$209783sw2+$209784sw2} Shadow damage and reducing movement speed by $209786s1% for $209786d. Grants $220901o2 Energy over $220901d.
+
 |cFFFFFFFFAwards $220901s1 combo $lpoint:points;.|r
 
 Name             : Goremaw's Bite (id=209783) [Spell Family (8)] 
@@ -5143,9 +5143,9 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #2 (id=314590)   : None (0)
                    Base Value: 3 | Scaled Value: 3
-Description      : Create a Crimson Vial to share with allies. Maximum of $212205m2 can be carried at once. 
-
-$@spellicon212198 $@spellname212198
+Description      : Create a Crimson Vial to share with allies. Maximum of $212205m2 can be carried at once. 
+
+$@spellicon212198 $@spellname212198
 $@spelldesc212198
 
 Name             : Symbols of Death (id=212283) [Spell Family (8)] 
@@ -5338,7 +5338,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=349578)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5 | Target: Self (1)
-Description      : Garrote silences the target for $1330d when used from Stealth.
+Description      : Garrote silences the target for $1330d when used from Stealth.
 
 
 Name             : Between the Eyes (rank=Rank 2) (id=235484) [Spell Family (8), Passive] 
@@ -5359,7 +5359,7 @@ Effects          :
                    Base Value: 200 | Scaled Value: 200 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Between the Eyes (199804)
                    Family Flags: 111
-Description      : Critical strikes with Between the Eyes deal four times normal damage.
+Description      : Critical strikes with Between the Eyes deal four times normal damage.
 
 
 Name             : Dreadblade's Vigor (id=238103) [Spell Family (8), Passive] 
@@ -5401,8 +5401,8 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1615 | Target: Self (1)
 #3 (id=485516)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-Description      : Deepening Shadows reduces the remaining cooldown of Shadow Dance by an additional $@switch<$s3>[${$s1/10}][${$s1/10}.1] sec per combo point spent.
-
+Description      : Deepening Shadows reduces the remaining cooldown of Shadow Dance by an additional $@switch<$s3>[${$s1/10}][${$s1/10}.1] sec per combo point spent.
+
 Shadow Dance gains $s2 additional charge.
 
 Name             : Toxic Blade (id=245388) [Spell Family (8)] 
@@ -5432,10 +5432,10 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self (1)
 #4 (id=373280)   : Trigger Spell (64): Toxic Blade
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 245389 | Target: Enemy (6)
-Description      : Stab your enemy with a toxic poisoned blade, dealing $s2 Nature damage.
-
-Your Nature damage done against the target is increased by $245389s1% for $245389d.
-
+Description      : Stab your enemy with a toxic poisoned blade, dealing $s2 Nature damage.
+
+Your Nature damage done against the target is increased by $245389s1% for $245389d.
+
 |cFFFFFFFFAwards $s3 combo $lpoint:points;.|r
 
 Name             : Toxic Blade (id=245389) [Spell Family (8)] 
@@ -5621,7 +5621,7 @@ Effects          :
                    Affected Spells: Rupture (1943), Dispatch (2098), Slice and Dice (5171), Pistol Shot (185763), Sinister Strike (193315), Roll the Bones (193316), Ghostly Strike (196937), Between the Eyes (199804)
                    Family Flags: 18, 20, 26, 60, 98, 101, 111, 112, 113
 Description      : Increases your Energy regeneration rate by $s1% and your attack speed by $s2% for $d.
-Tooltip          : Energy regeneration increased by $s1%.
+Tooltip          : Energy regeneration increased by $s1%.
 Attack speed increased by $s2%.
 
 Name             : Vindicaar Matrix Crystal (id=251463) 
@@ -6035,8 +6035,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 33251.41 (coefficient=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=479677)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 33251.41 (coefficient=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
-Description      : Deals $s1 Holy Damage to enemies within $A1.
-
+Description      : Deals $s1 Holy Damage to enemies within $A1.
+
 Heals $s2 to allies within $A1. 
 
 Name             : Shot in the Dark (rank=Passive Talent) (id=257505) [Spell Family (8), Passive] 
@@ -6450,10 +6450,10 @@ Attributes       : ....x... ........ ..x..... .....x..   ........ .x...... .....
 Effects          :
 #1 (id=722352)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Target: Enemy (6)
-Description      : Charge to your target with your blades out, dealing ${$271881sw1*$271881s2/100} Physical damage to the target and $271881sw1 to all other nearby enemies.
-
-While Blade Flurry is active, damage to non-primary targets is increased by $s1%.
-
+Description      : Charge to your target with your blades out, dealing ${$271881sw1*$271881s2/100} Physical damage to the target and $271881sw1 to all other nearby enemies.
+
+While Blade Flurry is active, damage to non-primary targets is increased by $s1%.
+
 |cFFFFFFFFGenerates ${$271896s1*$271896d/$271896t1} Energy over $271896d.
 
 Name             : Blade Rush (id=271881) [Spell Family (8)] 
@@ -6564,7 +6564,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=724153)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 1803.991 (coefficient=23.20246) | Misc Value: 23 | Trigger Spell: 272936 | Target: Self (1)
-Description      : Between the Eyes increases the damage of your next Pistol Shot by $s1.
+Description      : Between the Eyes increases the damage of your next Pistol Shot by $s1.
 
 
 Name             : Double Dose (id=273007) [Scaling Spell (-8), Spell Family (8), Passive] 
@@ -6666,7 +6666,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=725095)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 282.8574 (coefficient=3.638037) | Misc Value: 23 | Trigger Spell: 273454 | Target: Self (1)
-Description      : Extra strikes from Sinister Strike increase the damage of your next Dispatch by $s1.
+Description      : Extra strikes from Sinister Strike increase the damage of your next Dispatch by $s1.
 
 
 Name             : Twist the Knife (id=273488) [Scaling Spell (-8), Spell Family (8), Passive] 
@@ -6772,8 +6772,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 144.8168 (coefficient=0.465649) | Trigger Spell: 273830 | Target: Self (1)
 #2 (id=725767)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 284.8856 (coefficient=0.916031) | Target: Self (1)
-Description      : Your spells and abilities have a chance to create a Surging Droplet nearby. Collecting it increases your primary stat by $s1 for $273842d.
-
+Description      : Your spells and abilities have a chance to create a Surging Droplet nearby. Collecting it increases your primary stat by $s1 for $273842d.
+
 Rarely, a Void Droplet will be created, increasing your primary stat by $s2 for $273843d instead.
 
 Name             : Filthy Transfusion (id=273834) [Scaling Spell (-8), Passive] 
@@ -7306,8 +7306,8 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5
 #4 (id=738960)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
-Description      : Your spells and abilities have a chance to fire a bomb at your target, which when in proximity breaks into $s3 smaller bombs. Upon hitting the ground, each smaller bomb deals $280984s1 damage to all nearby enemies.
-
+Description      : Your spells and abilities have a chance to fire a bomb at your target, which when in proximity breaks into $s3 smaller bombs. Upon hitting the ground, each smaller bomb deals $280984s1 damage to all nearby enemies.
+
 Increases your Kul Tiran or Zandalari Engineering by $s4.
 
 Name             : Ricocheting Inflatable Pyrosaw (id=280168) [Passive] 
@@ -7334,10 +7334,10 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4
 #3 (id=738961)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
-Description      : Your spells and abilities have a chance to hurl a R.I.P that bounces among $s2 enemies, dealing $280656s1 Fire damage to each. 
-
-Beneficial spells have a chance to hurl a Mechanized External Needle Dispenser, healing up to $s2 allies for $280658s1.
-
+Description      : Your spells and abilities have a chance to hurl a R.I.P that bounces among $s2 enemies, dealing $280656s1 Fire damage to each. 
+
+Beneficial spells have a chance to hurl a Mechanized External Needle Dispenser, healing up to $s2 allies for $280658s1.
+
 Increases your Kul Tiran or Zandalari Engineering by $s3.
 
 Name             : Auto-Self-Cauterizer (id=280172) [Scaling Spell (-8), Passive] 
@@ -7365,10 +7365,10 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30
 #3 (id=738963)   : Apply Aura (6) | Skill (30)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 2499 | Target: Self (1)
-Description      : Taking damage has a chance to unleash your Auto-Self-Cauterizer, healing you for $280583s1, removing most* bleed effects, and snaring nearby enemies by $280583s2% for $280583d.
-
-Increases your Kul Tiran or Zandalari Engineering by $s3.
-
+Description      : Taking damage has a chance to unleash your Auto-Self-Cauterizer, healing you for $280583s1, removing most* bleed effects, and snaring nearby enemies by $280583s2% for $280583d.
+
+Increases your Kul Tiran or Zandalari Engineering by $s3.
+
 *Efficacy may vary.
 
 Name             : Synaptic Spark Capacitor (id=280174) [Scaling Spell (-8), Spell Family (7), Passive] 
@@ -7395,8 +7395,8 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
 #3 (id=742699)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 1065.175 (coefficient=13.7)
-Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $s1 yards of the Spark Coil take $280847s2 damage every 2 seconds and deal $280847s1% reduced damage to you.
-
+Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $s1 yards of the Spark Coil take $280847s2 damage every 2 seconds and deal $280847s1% reduced damage to you.
+
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
 Name             : Relational Normalization Gizmo (id=280178) [Scaling Spell (-1), Passive] 
@@ -7422,8 +7422,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 311 (coefficient=1) | Target: Self (1)
 #2 (id=738959)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
-Description      : Your spells and abilities have a chance to grow or shrink the world. Shrinking the world grants you $280654s4 primary stat and $280654s6 maximum health for $280654d. Growing the world grants you $280653s1 Haste and $280653s3% movement speed for $280653d.
-
+Description      : Your spells and abilities have a chance to grow or shrink the world. Shrinking the world grants you $280654s4 primary stat and $280654s6 maximum health for $280654d. Growing the world grants you $280653s1 Haste and $280653s3% movement speed for $280653d.
+
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
 Name             : Personal Absorb-o-Tron (id=280181) [Scaling Spell (-8), Passive] 
@@ -7449,8 +7449,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 12828.75 (coefficient=165) | Target: Self (1)
 #2 (id=738962)   : Apply Aura (6) | Skill (30)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 2499 | Target: Self (1)
-Description      : Taking damage has a chance to call your Personal Absorb-o-Tron, absorbing the next $280660s1 damage you take over $280660d.
-
+Description      : Taking damage has a chance to call your Personal Absorb-o-Tron, absorbing the next $280660s1 damage you take over $280660d.
+
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
 Name             : Dagger in the Back (id=280284) [Scaling Spell (-8), Passive] 
@@ -7593,8 +7593,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738151)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 5.697831 (coefficient=0.018321) | Trigger Spell: 280708 | Target: Self (1)
-Description      : Your armor gathers and analyzes combat data every $280708t1 sec, increasing your primary stat by $s1, stacking up to $280709u times. The data decays while out of combat.
-
+Description      : Your armor gathers and analyzes combat data every $280708t1 sec, increasing your primary stat by $s1, stacking up to $280709u times. The data decays while out of combat.
+
 Enables $@spellname280573 within Uldir.
 
 Name             : Laser Matrix (id=280559) [Scaling Spell (-8), Passive] 
@@ -7615,8 +7615,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 4507.592 (coefficient=57.97546) | Trigger Spell: 280702 | Target: Self (1)
 #2 (id=738401)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 5634.728 (coefficient=72.47239) | Target: Self (1)
-Description      : Your spells and abilities have a chance to release a barrage of lasers, dealing $s1 Arcane damage split among all enemies and restoring $s2 health split among injured allies.
-
+Description      : Your spells and abilities have a chance to release a barrage of lasers, dealing $s1 Arcane damage split among all enemies and restoring $s2 health split among injured allies.
+
 Enables $@spellname280573 within Uldir.
 
 Name             : Glory in Battle (id=280577) [Scaling Spell (-7), Passive] 
@@ -7637,7 +7637,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.913709) | Trigger Spell: 280778 | Target: Self (1)
 #2 (id=738555)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.55714) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280780d. 
+Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280780d. 
 Attacking a member of the opposite faction significantly increases this chance.
 
 Name             : Retaliatory Fury (id=280579) [Scaling Spell (-1), Passive] 
@@ -7659,7 +7659,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 320.5505 (coefficient=1.030709) | Trigger Spell: 280785 | Target: Self (1)
 #2 (id=738573)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 1121.974 (coefficient=3.607634) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280788d. 
+Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280788d. 
 Attacking a member of the opposite faction is more likely to activate this effect.
 
 Name             : Combined Might (id=280580) [Scaling Spell (-1), Passive] 
@@ -7768,7 +7768,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.913709) | Trigger Spell: 280851 | Target: Self (1)
 #2 (id=738699)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.55714) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280852d. 
+Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280852d. 
 Attacking a member of the opposite faction significantly increases this chance.
 
 Name             : Last Gift (id=280624) [Scaling Spell (-1), Passive] 
@@ -7790,7 +7790,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 320.5505 (coefficient=1.030709) | Trigger Spell: 280860 | Target: Self (1)
 #2 (id=738721)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 1121.974 (coefficient=3.607634) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280862d. 
+Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280862d. 
 Taking damage from a member of the opposite faction has a chance to activate this effect. 
 
 Name             : Stronger Together (id=280625) [Scaling Spell (-1), Passive] 
@@ -7946,14 +7946,14 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #5 (id=740606)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-Description      : Finishing move that creates shadow clones of yourself. You and your shadow clones each perform a piercing attack on all enemies near your target, dealing Physical damage to the primary target and reduced damage to other targets.
-   1 point  : ${$280720m1*1*$<mult>} total damage
-   2 points: ${$280720m1*2*$<mult>} total damage
-   3 points: ${$280720m1*3*$<mult>} total damage
-   4 points: ${$280720m1*4*$<mult>} total damage
-   5 points: ${$280720m1*5*$<mult>} total damage$?s193531[
-   6 points: ${$280720m1*6*$<mult>} total damage][]
-
+Description      : Finishing move that creates shadow clones of yourself. You and your shadow clones each perform a piercing attack on all enemies near your target, dealing Physical damage to the primary target and reduced damage to other targets.
+   1 point  : ${$280720m1*1*$<mult>} total damage
+   2 points: ${$280720m1*2*$<mult>} total damage
+   3 points: ${$280720m1*3*$<mult>} total damage
+   4 points: ${$280720m1*4*$<mult>} total damage
+   5 points: ${$280720m1*5*$<mult>} total damage$?s193531[
+   6 points: ${$280720m1*6*$<mult>} total damage][]
+
 Cooldown is reduced by by $s5 sec for every combo point you spend.
 Variables        : $mult=${3}
 

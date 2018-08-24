@@ -25,7 +25,7 @@ Effects          :
 #2 (id=87)       : Apply Aura (6) | Invisibility Detection (19)
                    Base Value: 0 | Scaled Value: 480 | Points Per Level: 5 | Target: Self (1)
 Description      : Summons an Eye of Kilrogg and binds your vision to it. The eye is stealthed and moves quickly but is very fragile.
-Tooltip          : Controlling Eye of Kilrogg.
+Tooltip          : Controlling Eye of Kilrogg.
 Detecting Invisibility.
 
 Name             : Corruption (id=172) [Spell Family (5)] 
@@ -77,8 +77,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.36000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=371976)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50
-Description      : Burns the enemy, causing $s1 Fire damage immediately and an additional $157736o1 Fire damage over $157736d.
-
+Description      : Burns the enemy, causing $s1 Fire damage immediately and an additional $157736o1 Fire damage over $157736d.
+
 |cFFFFFFFFPeriodic damage generates 1 Soul Shard Fragment and has a $s2% chance to generate an additional 1 on critical strikes.|r
 Variables        : $mastery=$?s77220[${((100+$77220m3)/100)}][${1.00}]
 
@@ -104,8 +104,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=267)      : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.30000 | Target: Enemy (6)
-Description      : Sends a shadowy bolt at the enemy, causing $s1 Shadow damage.$?c2[
-
+Description      : Sends a shadowy bolt at the enemy, causing $s1 Shadow damage.$?c2[
+
 |cFFFFFFFFGenerates 1 Soul Shard.|r][]
 
 Name             : Summon Imp (rank=Summon) (id=688) [Spell Family (5)] 
@@ -305,8 +305,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.00800 | Target: Enemy (6)
 #2 (id=198244)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-Description      : Inflicts increasing agony on the target, causing up to ${$o1*$u} Shadow damage over $d. Damage starts low and increases over the duration. Refreshing Agony maintains its current damage level.
-
+Description      : Inflicts increasing agony on the target, causing up to ${$o1*$u} Shadow damage over $d. Damage starts low and increases over the duration. Refreshing Agony maintains its current damage level.
+
 |cFFFFFFFFAgony damage sometimes generates 1 Soul Shard.|r
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec. Damage increases over time.
 
@@ -366,8 +366,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 22703 | Radius: 10 yards | Target: Unknown(87)
 #3 (id=268271)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 111685 | Target: Unknown(87)
-Description      : Summons an Infernal from the Twisting Nether, impacting for $22703s1 Fire damage and stunning all enemies in the area for $22703d.
-
+Description      : Summons an Infernal from the Twisting Nether, impacting for $22703s1 Fire damage and stunning all enemies in the area for $22703d.
+
 The Infernal will serve you for $111685d, dealing $20153s1 damage to all nearby enemies every $19483t1 sec and generating $264365s1 Soul Shard Fragment every $264364t1 sec.
 
 Name             : Use Soulstone (id=3026) [Spell Family (5)] 
@@ -410,10 +410,10 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=929)      : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.40000 | Target: Enemy (6)
-Description      : Deals $s1 Fire damage to a target.
-
+Description      : Deals $s1 Fire damage to a target.
+
 |cFF777777(Right-Click to toggle)|r
-Variables        : $mult=$?s56248[${1.20}][${1.00}]
+Variables        : $mult=$?s56248[${1.20}][${1.00}]
 $damage=${(($SP*0.50)*0.657)+$M1}
 
 Name             : Consuming Shadows (rank=Basic Attack) (id=3716) [Spell Family (57)] 
@@ -436,8 +436,8 @@ Attributes       : ........ ........ ........ ........   ........ .x...... .....
 Effects          :
 #1 (id=1298)     : Health Leech (9)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.07500 | Radius: 0 - 12 yards | Target: Custom (18) -> AOE enemy (instant) (16)
-Description      : Drains $s1 health from all nearby enemies.
-
+Description      : Drains $s1 health from all nearby enemies.
+
 |cFF777777(Right-Click to toggle)|r
 
 Name             : Shoot (id=5019) 
@@ -593,11 +593,11 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=2190)     : Apply Pet Area Aura (119) | Modify Total Stat% (137)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 2 | Misc Value 2: 0x4 | Radius: 100 yards | Target: Self (1)
-Description      : Increases the Stamina of you and your Imp by $s1%.
-
-|cFFFFFFFFAuto-Cast:|r
-Always keep this effect active.
-
+Description      : Increases the Stamina of you and your Imp by $s1%.
+
+|cFFFFFFFFAuto-Cast:|r
+Always keep this effect active.
+
 |cFF777777(Right-Click to toggle)|r
 Tooltip          : Increases Stamina by $s1%.
 
@@ -626,10 +626,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=740054)   : Dummy (3)
                    Base Value: 2000 | Scaled Value: 2000
-Description      : Burns the enemy's soul, dealing $s1 Fire damage.
-
-Cooldown is reduced by $<cdr> sec for every Soul Shard you spend.
-
+Description      : Burns the enemy's soul, dealing $s1 Fire damage.
+
+Cooldown is reduced by $<cdr> sec for every Soul Shard you spend.
+
 |cFFFFFFFFGenerates $281490s1 Soul Shard Fragments.|r
 Variables        : $cdr=${$s2/1000}
 
@@ -682,8 +682,8 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=2216)     : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Enemy (6)
-Description      : Whips the enemy, reducing movement speed by $s2% for $d.
-
+Description      : Whips the enemy, reducing movement speed by $s2% for $d.
+
 |cFF777777(Right-Click to toggle)|r
 Tooltip          : Movement slowed by $s2%.
 
@@ -743,8 +743,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.907) | SP Coefficient: 0.30000 | Target: Enemy (6)
 #2 (id=113763)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
-Description      : Lashes the target, dealing $s1 Shadow damage.
-
+Description      : Lashes the target, dealing $s1 Shadow damage.
+
 |cFF777777(Right-Click to toggle)|r
 
 Name             : Lesser Invisibility (rank=Special Ability) (id=7870) [Scaling Spell (-1), Spell Family (57)] 
@@ -774,11 +774,11 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #2 (id=99024)    : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-Description      : Makes the $?s108499[Shivarra][Succubus] invisible for $7870d.  Not usable in combat. Any action will break the effect.
-
-|cFFFFFFFFAuto-Cast:|r
-Reapply when the $?s108499[Shivarra][Succubus] leaves combat.
-
+Description      : Makes the $?s108499[Shivarra][Succubus] invisible for $7870d.  Not usable in combat. Any action will break the effect.
+
+|cFFFFFFFFAuto-Cast:|r
+Reapply when the $?s108499[Shivarra][Succubus] leaves combat.
+
 |cFF777777(Right-Click to toggle)|r
 Tooltip          : Invisible.
 
@@ -806,11 +806,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=9347)     : Apply Aura (6) | Taunt (11)
                    Base Value: 400 | Scaled Value: 400 | Target: Enemy (6)
-Description      : The $?s108499[Voidlord][Voidwalker] taunts the target to attack it for $d, and increases its threat against the target.
-
-|cFFFFFFFFAuto-Cast:|r
-Taunts the current target if it is not attacking the $?s108499[Voidlord][Voidwalker] and taunts any target who attacks its master.
-
+Description      : The $?s108499[Voidlord][Voidwalker] taunts the target to attack it for $d, and increases its threat against the target.
+
+|cFFFFFFFFAuto-Cast:|r
+Taunts the current target if it is not attacking the $?s108499[Voidlord][Voidwalker] and taunts any target who attacks its master.
+
 |cFF777777(Right-Click to toggle)|r
 Tooltip          : Taunted.
 
@@ -837,11 +837,11 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 #2 (id=169199)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 1 | Misc Value 2: 0x744 | Target: Self (1)
-Description      : Temporarilty increases current and maximum health by $s1% for $d.
-
-|cFFFFFFFFAuto-Cast:|r
-Use this ability when below 20% health.
-
+Description      : Temporarilty increases current and maximum health by $s1% for $d.
+
+|cFFFFFFFFAuto-Cast:|r
+Use this ability when below 20% health.
+
 |cFF777777(Right-Click to toggle)|r
 Tooltip          : Maximum health increased by $s1%.
 
@@ -870,10 +870,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.60000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=9475)     : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Target: Enemy (6)
-Description      : Blasts a target for $s1 Shadowflame damage. 
-
-If the target dies within $d and yields experience or honor, Shadowburn's cooldown is reset.
-
+Description      : Blasts a target for $s1 Shadowflame damage. 
+
+If the target dies within $d and yields experience or honor, Shadowburn's cooldown is reset.
+
 |cFFFFFFFFGenerates $245731s1 Soul Shard Fragments.|r
 Tooltip          : If the target dies and yields experience or honor, Shadowburn's cooldown is reset.
 
@@ -916,10 +916,10 @@ Attributes       : ........ ........ x....... ........   ........ ........ .x...
 Effects          :
 #1 (id=9553)     : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.90000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Description      : Triggers an explosion on the target, dealing $s1 Fire damage.$?s196406[
-
-Reduces the cast time of your next Incinerate or Chaos Bolt by $117828s1% for $117828d.][]
-
+Description      : Triggers an explosion on the target, dealing $s1 Fire damage.$?s196406[
+
+Reduces the cast time of your next Incinerate or Chaos Bolt by $117828s1% for $117828d.][]
+
 |cFFFFFFFFGenerates $245330s1 Soul Shard Fragments.|r
 
 Name             : Immolation (id=19483) [Spell Family (5)] 
@@ -965,7 +965,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1 | Target: Enemy (6)
 #2 (id=10728)    : None (0)
                    Base Value: 234 | Scaled Value: 234
-Description      : Purges $19505s1 beneficial magic $19505leffect:effects; from an enemy. If an effect is devoured, the $?s219450[Observer][Felhunter]$?s56249[ and Warlock][] will be healed for $19658m1 and gain 60 Fel Energy.
+Description      : Purges $19505s1 beneficial magic $19505leffect:effects; from an enemy. If an effect is devoured, the $?s219450[Observer][Felhunter]$?s56249[ and Warlock][] will be healed for $19658m1 and gain 60 Fel Energy.
 
 
 Name             : Spell Lock (rank=Command Demon Ability) (id=19647) [Spell Family (57)] 
@@ -1156,11 +1156,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #3 (id=154322)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-Description      : Embeds a demon seed in the enemy target that will explode after $d, dealing $27285s1 Shadow damage to all enemies within $27285A1 yards and applying Corruption to them.
-
+Description      : Embeds a demon seed in the enemy target that will explode after $d, dealing $27285s1 Shadow damage to all enemies within $27285A1 yards and applying Corruption to them.
+
 The seed will detonate early if the target is hit by other detonations, or takes ${$SPS*$s1/100} damage from your spells.
-Tooltip          : Embeded with a demon seed that will soon explode, dealing Shadow damage to the caster's enemies within $27285A1 yards, and applying Corruption to them.
-
+Tooltip          : Embeded with a demon seed that will soon explode, dealing Shadow damage to the caster's enemies within $27285A1 yards, and applying Corruption to them.
+
 The seed will detonate early if the target is hit by other detonations, or takes $w3 damage from your spells.
 
 Name             : Seed of Corruption (id=27285) [Spell Family (5)] 
@@ -1252,8 +1252,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.58275 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #3 (id=371982)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
-Description      : Draws fire toward the enemy, dealing $s2 Fire damage.
-
+Description      : Draws fire toward the enemy, dealing $s2 Fire damage.
+
 |cFFFFFFFFGenerates $244670s1 Soul Shard Fragments and an additional 1 on critical strikes.|r
 
 Name             : Unstable Affliction (id=30108) [Spell Family (5)] 
@@ -1283,12 +1283,12 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Target: Enemy (6)
 #3 (id=707282)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Target: Enemy (6)
-Description      : Afflicts the target with $233490o1 Shadow damage over $233490d. You may afflict a target with up to $s2 Unstable Afflictions at once.
-
-You deal $s3% increased damage to targets affected by your Unstable Affliction.
-
-If dispelled, deals ${$233490s1*$s1/100} damage to the dispeller and silences them for $196364d.$?a231791[
-
+Description      : Afflicts the target with $233490o1 Shadow damage over $233490d. You may afflict a target with up to $s2 Unstable Afflictions at once.
+
+You deal $s3% increased damage to targets affected by your Unstable Affliction.
+
+If dispelled, deals ${$233490s1*$s1/100} damage to the dispeller and silences them for $196364d.$?a231791[
+
 |cFFFFFFFFRefunds $231791m1 Soul $LShard:Shards; if the target dies while afflicted.|r][]
 
 Name             : Summon Felguard (rank=Summon) (id=30146) [Spell Family (5)] 
@@ -1340,14 +1340,14 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 30153 | Target: Enemy (6)
 #3 (id=92765)    : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-Description      : The Felguard charges an enemy, causing $<damage> Physical damage and increasing its movement speed by $30151s3% for $30151d.
-
-|cFFFFFFFFAuto-Cast:|r
-Use anytime the $?s108499[Wrathguard][Felguard]'s target is further than 8 yards away.
-
+Description      : The Felguard charges an enemy, causing $<damage> Physical damage and increasing its movement speed by $30151s3% for $30151d.
+
+|cFFFFFFFFAuto-Cast:|r
+Use anytime the $?s108499[Wrathguard][Felguard]'s target is further than 8 yards away.
+
 |cFF777777(Right-Click to toggle)|r
 Tooltip          : Movement speed increased by $s3%.
-Variables        : $demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]
+Variables        : $demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]
 $damage=${0.1326*($SP*0.5)*$<demoMastery>*(1+$@versadmg)}
 
 Name             : Pursuit (id=30153) [Scaling Spell (-1)] 
@@ -1367,11 +1367,11 @@ Attributes       : ....x... ........ x.x..... ........   ...x...x .x...... .....
 Effects          :
 #1 (id=19741)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.13260 | Target: Enemy (6)
-Description      : Charge an enemy, instantly causing $30153m1% weapon damage and increasing the $?s108499[Wrathguard][Felguard]'s movement speed by $30151s3% for $30151d.
-
-|cFFFFFFFFAuto-Cast:|r
-Use anytime the $?s108499[Wrathguard][Felguard]'s target is further than 8 yards away.
-
+Description      : Charge an enemy, instantly causing $30153m1% weapon damage and increasing the $?s108499[Wrathguard][Felguard]'s movement speed by $30151s3% for $30151d.
+
+|cFFFFFFFFAuto-Cast:|r
+Use anytime the $?s108499[Wrathguard][Felguard]'s target is further than 8 yards away.
+
 |cFF777777(Right-Click to toggle)|r
 
 Name             : Legion Strike (rank=Basic Attack) (id=30213) [Spell Family (57)] 
@@ -1398,11 +1398,11 @@ Effects          :
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 127 | Radius: 6 yards | Target: Cone Front (104)
 #3 (id=319698)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-Description      : A strong attack that deals $<damage> damage to all enemies in front of it, and reduces the effectiveness of any healing the victim receives by $s2% for $d.
-
+Description      : A strong attack that deals $<damage> damage to all enemies in front of it, and reduces the effectiveness of any healing the victim receives by $s2% for $d.
+
 |cFF777777(Right-Click to toggle)|r
 Tooltip          : Effectiveness of any healing reduced by $w2%.
-Variables        : $demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]
+Variables        : $demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]
 $damage=${0.68*($SP*0.5)*$<demoMastery>*(1+$@versadmg)}
 
 Name             : Shadowfury (id=30283) [Spell Family (5)] 
@@ -1451,7 +1451,7 @@ Effects          :
                    Base Value: -75 | Scaled Value: -75 | Misc Value: 127 | Target: Self (1)
 #3 (id=710724)   : Apply Aura (6) | Modify Aggro Distance (152)
                    Base Value: -6 | Scaled Value: -6 | Target: Self (1)
-Description      : Reduces the damage your pet takes from area of effect attacks by an additional $s1%.
+Description      : Reduces the damage your pet takes from area of effect attacks by an additional $s1%.
 Reduces the range at which enemies detect your pet.
 
 Name             : Shadow Embrace (id=32388) [Spell Family (5), Passive] 
@@ -1580,8 +1580,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.55000 | Target: Enemy (6)
 #2 (id=40332)    : Apply Aura (6) | Modify Damage Taken% from Caster (270)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 127 | Target: Enemy (6)
-Description      : A ghostly soul haunts the target, dealing $s1 Shadow damage and increasing your damage dealt to the target by $s2% for $d.
-
+Description      : A ghostly soul haunts the target, dealing $s1 Shadow damage and increasing your damage dealt to the target by $s2% for $d.
+
 If the target dies, Haunt's cooldown is reset.
 Tooltip          : Taking $s2% increased damage from the Warlock. Haunt's cooldown will be reset on death.
 
@@ -1604,8 +1604,8 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=46748)    : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.30000 | Target: Enemy (6)
-Description      : Bites the enemy, causing $s1 Shadow damage.
-
+Description      : Bites the enemy, causing $s1 Shadow damage.
+
 |cFF777777(Right-Click to toggle)|r
 
 Name             : Increase Versatility 15 (id=55564) [Scaling Spell (-1), Passive, Hidden] 
@@ -1885,8 +1885,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.66600 | Target: Self (1)
 #3 (id=318371)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Misc Value 2: 0xfffffff6 | Target: Self (1)
-Description      : Your spells deal ${$s1/2}.1% increased damage, plus a random amount of up to ${$s1/2}.1% additional increased damage.
-
+Description      : Your spells deal ${$s1/2}.1% increased damage, plus a random amount of up to ${$s1/2}.1% additional increased damage.
+
 You take ${$s2/3}.1% reduced damage, plus a random amount of up to ${$s2/3}.1% additional reduced damage.
 
 Name             : Havoc (id=80240) [Spell Family (5)] 
@@ -2011,7 +2011,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : The Felguard recklessly swings its weapon, striking all nearby targets within $89753A1 yards for $<damage> Physical damage every $t1 sec for $89751d. The Felguard cannot take any other action during Felstorm.
 Tooltip          : Striking for $<damage> Physical damage every $t1 sec. Unable to use other abilities.
-Variables        : $demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]
+Variables        : $demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]
 $damage=${0.33*($SP*0.5)*$<demoMastery>*(1+$@versadmg)}
 
 Name             : Felstorm (id=89753) [Spell Family (5)] 
@@ -2083,11 +2083,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 12 | Target: Self (1)
 #3 (id=97727)    : Trigger Spell (64): Flee
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 93282 | Target: Self (1)
-Description      : Escapes to the Master, removing all stuns and roots from himself.
-
-|cFFFFFFFFAuto-Cast:|r
-Cast when the Imp is stunned or rooted.
-
+Description      : Escapes to the Master, removing all stuns and roots from himself.
+
+|cFFFFFFFFAuto-Cast:|r
+Cast when the Imp is stunned or rooted.
+
 |cFF777777(Right-Click to toggle)|r
 
 Name             : Singe Magic (rank=Command Demon Ability) (id=89808) [Spell Family (57)] 
@@ -2109,11 +2109,11 @@ Attributes       : ........ ........ x....... ........   .......x ........ .....
 Effects          :
 #1 (id=92735)    : Dispel (38)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1 | Target: Friend (21)
-Description      : Burns harmful spells, removing $89808s1 harmful Magic effect from an ally.
-
-|cFFFFFFFFAuto-Cast:|r
-Cast upon master when $ghe:she; is unable to cast spells due to a Magic effect.
-
+Description      : Burns harmful spells, removing $89808s1 harmful Magic effect from an ally.
+
+|cFFFFFFFFAuto-Cast:|r
+Cast upon master when $ghe:she; is unable to cast spells due to a Magic effect.
+
 |cFF777777(Right-Click to toggle)|r
 
 Name             : Item - Proc Mastery (id=92322) [Spell Family (10), Passive, Hidden] 
@@ -2346,7 +2346,7 @@ Effects          :
 #4 (id=162716)   : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 9 | Target: Self (1)
 Description      : Hardens your skin, reducing all damage you take by $s3% and granting immunity to interrupt and silence effects for $d.
-Tooltip          : Damage taken reduced by $w3%.
+Tooltip          : Damage taken reduced by $w3%.
 Immune to interrupt and silence effects.
 
 Name             : Hand of Gul'dan (id=105174) [Spell Family (5)] 
@@ -2371,8 +2371,8 @@ Attributes       : ........ ........ x....... ........   .......x .x...... .....
 Effects          :
 #1 (id=114885)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Radius: 8 yards | Target: Enemy (6)
-Description      : Calls down a demonic meteor full of Wild Imps which burst forth to attack the target.
-
+Description      : Calls down a demonic meteor full of Wild Imps which burst forth to attack the target.
+
 Deals up to ${$m1*$86040m1} Shadowflame damage on impact to all enemies within $86040A1 yds of the target$?s196283[, applies Doom to each target,][] and summons up to ${$m1*$104317m2} Wild Imps, based on Soul Shards consumed.
 
 Name             : Soul Leech (rank=Talent) (id=108366) [Spell Family (5)] 
@@ -2458,8 +2458,8 @@ Attributes       : ......x. ........ x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=119506)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
-Description      : $108446s1% of all damage you take is taken by your demon pet instead.
-
+Description      : $108446s1% of all damage you take is taken by your demon pet instead.
+
 Soul Leech also heals you for $108446s2% and your pet for $108446s3% of the absorption it grants.
 
 Name             : Dark Pact (id=108416) 
@@ -2515,7 +2515,7 @@ Effects          :
 #3 (id=311358)   : Apply Owner Area Aura (143) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Value Multiplier: 1 | Misc Value: 127 | Radius: 100 yards | Target: Self (1)
 Description      : $@spelldesc108415
-Tooltip          : $s1% of all damage taken is split with the Warlock's summoned demon.  
+Tooltip          : $s1% of all damage taken is split with the Warlock's summoned demon.  
 The Warlock is healed for $s2% and your demon is healed for $s3% of all absorption granted by Soul Leech.
 
 Name             : Grimoire of Service (id=108501) [Spell Family (5), Passive] 
@@ -2537,12 +2537,12 @@ Attributes       : ......x. x....... ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=119638)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
-Description      : Summons a second demon which fights for you for $s1 sec and deals $216187s1% increased damage. 1.5 min cooldown. The demon will immmediately use one of its special abilities when summoned:
-
-$@spellname111859: Cleanses 1 harmful Magic effect from you.
-$@spellname111895 Taunts its target.
-$@spellname111896 Seduces its target.
-$@spellname111897 Interrupts its target.$?c2[
+Description      : Summons a second demon which fights for you for $s1 sec and deals $216187s1% increased damage. 1.5 min cooldown. The demon will immmediately use one of its special abilities when summoned:
+
+$@spellname111859: Cleanses 1 harmful Magic effect from you.
+$@spellname111895 Taunts its target.
+$@spellname111896 Seduces its target.
+$@spellname111897 Interrupts its target.$?c2[
 $@spellname111898 Stuns its target.][]
 
 Name             : Grimoire of Sacrifice (id=108503) [Spell Family (5)] 
@@ -2566,8 +2566,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Active Pet (5)
 #2 (id=124409)   : Trigger Spell (64): Grimoire of Sacrifice
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 196099 | Target: Self (1)
-Description      : Sacrifices your demon pet for power, gaining its command demon ability, and causing your spells to sometimes also deal $196100s1 additional Shadow damage.
-
+Description      : Sacrifices your demon pet for power, gaining its command demon ability, and causing your spells to sometimes also deal $196100s1 additional Shadow damage.
+
 Lasts $196099d or until you summon a demon pet.
 
 Name             : Nightfall (id=108558) [Spell Family (5), Passive, Hidden] 
@@ -2686,8 +2686,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=124417)   : Summon (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 416 | Misc Value 2: 0xcf2 | Target: Unknown(32)
-Description      : Summons an Imp who attacks the target for $108501s1 sec.
-
+Description      : Summons an Imp who attacks the target for $108501s1 sec.
+
 Imps cast ranged Firebolts and cleanse a hostile magic effect from their master.
 
 Name             : Grimoire: Voidwalker (rank=Summon) (id=111895) 
@@ -2713,8 +2713,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=124458)   : Summon (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1860 | Misc Value 2: 0xcf4 | Radius: 5 yards | Target: Unknown(32)
-Description      : Summons a Voidwalker who attacks the target for $108501s1 sec.
-
+Description      : Summons a Voidwalker who attacks the target for $108501s1 sec.
+
 Voidwalkers will taunt their target when summoned.
 
 Name             : Grimoire: Succubus (rank=Summon) (id=111896) 
@@ -2740,8 +2740,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=124465)   : Summon (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1863 | Misc Value 2: 0xcf3 | Radius: 5 yards | Target: Unknown(32)
-Description      : Summons a Succubus who attacks the target for $108501s1 sec.
-
+Description      : Summons a Succubus who attacks the target for $108501s1 sec.
+
 Succubi will seduce their target if it is Humanoid.
 
 Name             : Grimoire: Felhunter (rank=Summon) (id=111897) 
@@ -2767,8 +2767,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=124464)   : Summon (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 417 | Misc Value 2: 0xcb8 | Radius: 5 yards | Target: Unknown(32)
-Description      : Summons a Felhunter who attacks the target for $108501s1 sec.
-
+Description      : Summons a Felhunter who attacks the target for $108501s1 sec.
+
 Felhunters will Spell Lock their target when summoned.
 
 Name             : Grimoire: Felguard (rank=Summon) (id=111898) [Spell Family (5)] 
@@ -2795,8 +2795,8 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Target: Enemy (6)
 #2 (id=124456)   : Summon (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 17252 | Misc Value 2: 0xcf1 | Target: Unknown(32)
-Description      : Summons a Felguard who attacks the target for $s1 sec that deals $216187s1% increased damage.
-
+Description      : Summons a Felguard who attacks the target for $s1 sec that deals $216187s1% increased damage.
+
 This Felguard will stun their target when summoned.
 
 Name             : Threatening Presence (rank=Special Ability) (id=112042) [Spell Family (57)] 
@@ -2817,11 +2817,11 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=124613)   : Apply Aura (6) | Threat (10)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: 127 | Target: Self (1)
-Description      : Intimidates any target the Voidwalker attacks, increasing threat generation.
-
-|cFFFFFFFFAuto-Cast:|r
-Always keep this effect active.
-
+Description      : Intimidates any target the Voidwalker attacks, increasing threat generation.
+
+|cFFFFFFFFAuto-Cast:|r
+Always keep this effect active.
+
 |cFF777777(Right-Click to toggle)|r
 Tooltip          : Increases your threat generation while active.
 
@@ -2845,9 +2845,9 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=126897)   : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 7 | Target: Self (1)
-Description      : Infuses your soul with unstable power, increasing your critical strike chance by $113858s1% for $113858d.$?s56228[
-
-|cFFFFFFFFPassive:|r
+Description      : Infuses your soul with unstable power, increasing your critical strike chance by $113858s1% for $113858d.$?s56228[
+
+|cFFFFFFFFPassive:|r
 Increases your critical strike chance by ${$113858m1/$56228m1}%. This effect is disabled while on cooldown.][]
 Tooltip          : Critical strike chance increased by $w1%.
 
@@ -3047,12 +3047,12 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=139028)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Commands your demon to perform its most powerful ability. This spell will transform based on your active pet. 
-$?s30146[
-Felguard: $@spellname89766][]
-Felhunter: $@spellname19647
-Voidwalker: $@spellname17767
-Succubus: $@spellname6358
+Description      : Commands your demon to perform its most powerful ability. This spell will transform based on your active pet. 
+$?s30146[
+Felguard: $@spellname89766][]
+Felhunter: $@spellname19647
+Voidwalker: $@spellname17767
+Succubus: $@spellname6358
 Imp: $@spellname89808
 
 Name             : Threatening Presence (rank=Special Ability) (id=134477) [Spell Family (57)] 
@@ -3073,11 +3073,11 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=175237)   : Apply Aura (6) | Threat (10)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: 127 | Target: Self (1)
-Description      : Intimidates any target the Felguard attacks, increasing threat generation.
-
-|cFFFFFFFFAuto-Cast:|r
-Always keep this effect active.
-
+Description      : Intimidates any target the Felguard attacks, increasing threat generation.
+
+|cFFFFFFFFAuto-Cast:|r
+Always keep this effect active.
+
 |cFF777777(Right-Click to toggle)|r
 Tooltip          : Increases your threat generation while active.
 
@@ -3465,18 +3465,18 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 #4 (id=242704)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 0x1 | Target: Self (1)
-Description      : Intimidates any target you attack, increasing your threat generation.
-
-Also increases chance to dodge and parry by $s2%, and reduces physical damage taken by $s4%.
-
-|cFFFFFFFFAuto-Cast:|r
-Always keep this effect active.
-
+Description      : Intimidates any target you attack, increasing your threat generation.
+
+Also increases chance to dodge and parry by $s2%, and reduces physical damage taken by $s4%.
+
+|cFFFFFFFFAuto-Cast:|r
+Always keep this effect active.
+
 |cFF777777(Right-Click to toggle)|r
-Tooltip          : Threat generation increased.
-
-Dodge and Parry chance increased by $s2%.
-
+Tooltip          : Threat generation increased.
+
+Dodge and Parry chance increased by $s2%.
+
 Physical damage taken reduced by $s4%.
 
 Name             : Seethe (rank=Special Ability) (id=171014) [Scaling Spell (11), Spell Family (57)] 
@@ -3503,11 +3503,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=1.943) | Target: Enemy (6)
 #2 (id=242712)   : Apply Aura (6) | Taunt (11)
                    Base Value: 400 | Scaled Value: 400 | Target: Enemy (6)
-Description      : The $?s108499[Abyssal][Infernal] taunts the target to attack it, and increases threat that it generates against the target by for $d.
-
-|cFFFFFFFFAuto-Cast:|r
-Taunts the current target if it is not attacking the $?s108499[Abyssal][Infernal] and taunts any target who attacks its master.
-
+Description      : The $?s108499[Abyssal][Infernal] taunts the target to attack it, and increases threat that it generates against the target by for $d.
+
+|cFFFFFFFFAuto-Cast:|r
+Taunts the current target if it is not attacking the $?s108499[Abyssal][Infernal] and taunts any target who attacks its master.
+
 |cFF777777(Right-Click to toggle)|r
 Tooltip          : Taunted.
 
@@ -3553,11 +3553,11 @@ Attributes       : ........ ........ x....... ........   .......x ........ .....
 Effects          :
 #1 (id=242726)   : Dispel (38)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1 | Target: Enemy (6)
-Description      : Purges $s1 beneficial magic effect from an enemy.
-
-|cFFFFFFFFAuto-Cast:|r
-Use on the Infernal's current target.
-
+Description      : Purges $s1 beneficial magic effect from an enemy.
+
+|cFFFFFFFFAuto-Cast:|r
+Use on the Infernal's current target.
+
 |cFF777777(Right-Click to toggle)|r
 
 Name             : Shadow Lock (rank=Special Ability) (id=171138) [Spell Family (57)] 
@@ -3781,8 +3781,8 @@ Effects          :
 #1 (id=287830)   : Apply Aura (6) | Proc Trigger Spell (42): Grimoire of Sacrifice
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 196100 | Target: Self (1)
 Description      : $@spelldesc108503
-Tooltip          : Sacrificed your demon pet to gain its command demon ability.
-
+Tooltip          : Sacrificed your demon pet to gain its command demon ability.
+
 Your spells sometimes deal additional Shadow damage.
 
 Name             : Grimoire of Sacrifice (id=196100) [Spell Family (5)] 
@@ -3846,8 +3846,8 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Corruption (172), Corruption (146739)
                    Family Flags: 1
-Description      : Corruption is now permanent and deals $s2% increased damage.
-
+Description      : Corruption is now permanent and deals $s2% increased damage.
+
 Duration reduced to $s1 sec against players.
 
 Name             : Sow the Seeds (id=196226) [Spell Family (5), Passive] 
@@ -4132,8 +4132,8 @@ Effects          :
                    Base Value: 24710 | Scaled Value: 24710 | Target: Enemy (6)
 #2 (id=372097)   : Energize Power (30)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: soul_shard | Target: Self (1)
-Description      : Rips a hole in time and space, opening a portal that damages your target.
-
+Description      : Rips a hole in time and space, opening a portal that damages your target.
+
 |cFFFFFFFFGenerates $s2 Soul Shard Fragments.|r
 
 Name             : Shadowy Inspiration (id=196606) [Spell Family (5)] 
@@ -4242,10 +4242,10 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100
 #3 (id=734824)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
-Description      : Drains the target's soul, causing $o1 Shadow damage over $d.
-
-Damage is increased by $s2% against enemies below $s3% health.
-
+Description      : Drains the target's soul, causing $o1 Shadow damage over $d.
+
+Damage is increased by $s2% against enemies below $s3% health.
+
 |cFFFFFFFFGenerates 1 Soul Shard if the target dies during this effect.|r
 Tooltip          : Suffering $w1 Shadow damage every $t1 seconds.
 
@@ -4417,8 +4417,8 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 #4 (id=734780)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-Description      : Summons a Darkglare from the Twisting Nether that extends the duration of your damage over time effects on all enemies by $s2 sec.
-
+Description      : Summons a Darkglare from the Twisting Nether that extends the duration of your damage over time effects on all enemies by $s2 sec.
+
 The Darkglare will serve you for $d, blasting its target for $205231s1 Shadow damage, increased by $s3% for every damage over time effect you have active on any target.
 Tooltip          : Summons a Darkglare from the Twisting Nether that blasts its target for Shadow damage, dealing increased damage for every damage over time effect you have active on any target.
 
@@ -4720,7 +4720,7 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 Description      : $@spelldesc108501
-Tooltip          : Summoned by a Grimoire of Service.
+Tooltip          : Summoned by a Grimoire of Service.
 Damage done increased by $s1%.
 
 Name             : Reap Souls (rank=Artifact) (id=216698) 
@@ -4739,8 +4739,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=322412)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Consume all Tormented Souls collected by |cFFFFCC99Ulthalesh|r, increasing your damage by $216708s1% and doubling the effect of all of |cFFFFCC99Ulthalesh|r's other traits for $216708d per soul consumed.
-
+Description      : Consume all Tormented Souls collected by |cFFFFCC99Ulthalesh|r, increasing your damage by $216708s1% and doubling the effect of all of |cFFFFCC99Ulthalesh|r's other traits for $216708d per soul consumed.
+
 |cFFFFCC99Ulthalesh|r collects Tormented Souls from each target you kill and occasionally escaped souls it previously collected.
 
 Name             : Deadwind Harvester (id=216708) [Spell Family (5)] 
@@ -4999,7 +4999,7 @@ Effects          :
 #1 (id=352664)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.16000 | Target: Enemy (6)
 Description      : $@spelldesc30108
-Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
+Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 Taking $30108s3% increased damage from the Warlock.
 
 Name             : Unstable Affliction (id=233496) [Spell Family (5)] 
@@ -5025,7 +5025,7 @@ Effects          :
 #1 (id=352671)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.16000 | Target: Enemy (6)
 Description      : $@spelldesc30108
-Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
+Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 Taking $30108s3% increased damage from the Warlock.
 
 Name             : Unstable Affliction (id=233497) [Spell Family (5)] 
@@ -5051,7 +5051,7 @@ Effects          :
 #1 (id=352672)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.16000 | Target: Enemy (6)
 Description      : $@spelldesc30108
-Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
+Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 Taking $30108s3% increased damage from the Warlock.
 
 Name             : Unstable Affliction (id=233498) [Spell Family (5)] 
@@ -5077,7 +5077,7 @@ Effects          :
 #1 (id=352673)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.16000 | Target: Enemy (6)
 Description      : $@spelldesc30108
-Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
+Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 Taking $30108s3% increased damage from the Warlock.
 
 Name             : Unstable Affliction (id=233499) [Spell Family (5)] 
@@ -5103,7 +5103,7 @@ Effects          :
 #1 (id=352674)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.16000 | Target: Enemy (6)
 Description      : $@spelldesc30108
-Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
+Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 Taking $30108s3% increased damage from the Warlock.
 
 Name             : Drain Life (id=234153) [Spell Family (5)] 
@@ -5129,7 +5129,7 @@ Effects          :
 #1 (id=353731)   : Apply Aura (6) | Periodic Health Leech (53): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 5 | SP Coefficient: 0.12000 | Target: Enemy (6)
 Description      : Drains life from the target, causing $o1 Shadow damage over $d, and healing you for ${$e1*100}% of the damage done.
-Tooltip          : Suffering $s1 Shadow damage every $t1 seconds.
+Tooltip          : Suffering $s1 Shadow damage every $t1 seconds.
 Restoring health to the Warlock.
 
 Name             : Jaws of Shadow (id=242922) 
@@ -5246,10 +5246,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=376201)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7 | Target: Self (1)
-Description      : $?c1[Soul Shards are generated by your Agony's damage over time]?c2[Soul Shards are generated by your Shadow Bolt]?c3[Soul Shard Fragments are generated by many of your spells][].
-
-Soul Shards are consumed to cast your most powerful spells and summon demons to serve you.
-
+Description      : $?c1[Soul Shards are generated by your Agony's damage over time]?c2[Soul Shards are generated by your Shadow Bolt]?c3[Soul Shard Fragments are generated by many of your spells][].
+
+Soul Shards are consumed to cast your most powerful spells and summon demons to serve you.
+
 While out of combat you regenerate up to 3 Soul Shards.
 
 Name             : Vindicaar Matrix Crystal (id=251463) 
@@ -5413,8 +5413,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 33251.41 (coefficient=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=479677)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 33251.41 (coefficient=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
-Description      : Deals $s1 Holy Damage to enemies within $A1.
-
+Description      : Deals $s1 Holy Damage to enemies within $A1.
+
 Heals $s2 to allies within $A1. 
 
 Name             : Haste (id=261582) [Scaling Spell (-1), Passive] 
@@ -5471,7 +5471,7 @@ Effects          :
 #2 (id=623147)   : Apply Aura (6) | Modify Casting Pushback (149)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Misc Value 2: 0xf | Target: Self (1)
 Description      : $@spelldesc262031
-Tooltip          : Healing for $m1% of maximum health every $t1 sec.
+Tooltip          : Healing for $m1% of maximum health every $t1 sec.
 Spell casts are not delayed by taking damage.
 
 Name             : Resounding Protection (id=263962) [Scaling Spell (-8), Passive] 
@@ -5593,10 +5593,10 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=707212)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-Description      : Command your Felguard to strike into the soul of its enemy, dealing $<damage> Shadow damage.$?c2[
-
+Description      : Command your Felguard to strike into the soul of its enemy, dealing $<damage> Shadow damage.$?c2[
+
 |cFFFFFFFFGenerates 1 Soul Shard.|r][]
-Variables        : $demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]
+Variables        : $demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]
 $damage=${1*($SP*0.35)*$<demoMastery>*(1+$@versadmg)}
 
 Name             : Dreadlash (id=264078) [Spell Family (5), Passive, Hidden] 
@@ -5643,8 +5643,8 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30
 #3 (id=707411)   : Dummy (3)
                    Base Value: 16 | Scaled Value: 16
-Description      : Launches a bolt of death at the target, dealing $s2% of the total remaining damage of your damage over time effects on the target.$?s196103[
-
+Description      : Launches a bolt of death at the target, dealing $s2% of the total remaining damage of your damage over time effects on the target.$?s196103[
+
 Counts up to $s3 sec of your Corruption's damage.][]
 
 Name             : Blood Siphon (id=264108) [Scaling Spell (-1), Passive] 
@@ -5760,8 +5760,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=707419)   : School Damage (2): shadowflame
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.58000 | Target: Enemy (6)
-Description      : Send the fiery soul of a fallen demon at the enemy, causing $s1 Shadowflame damage.$?c2[
-
+Description      : Send the fiery soul of a fallen demon at the enemy, causing $s1 Shadowflame damage.$?c2[
+
 |cFFFFFFFFGenerates 2 Soul Shards.|r][]
 
 Name             : Embers (id=264364) [Spell Family (5)] 
@@ -5969,10 +5969,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.60000 | Target: Enemy (6)
 #2 (id=740500)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
-Description      : Inflicts impending doom upon the target, causing $265469s1 Shadow damage after $d. 
-
-If Doom kills the target, there is a $s2% chance to summon a Doomguard to fight for you for $280365d.
-
+Description      : Inflicts impending doom upon the target, causing $265469s1 Shadow damage after $d. 
+
+If Doom kills the target, there is a $s2% chance to summon a Doomguard to fight for you for $280365d.
+
 |cFFFFFFFFGenerates 1 Soul Shard when dealing damage.|r
 Tooltip          : Doomed to take $265469s1 Shadow damage.
 
@@ -6177,10 +6177,10 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 10 | Target: Self (1)
 #2 (id=718907)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 10 | Target: Self (1)
-Description      : When your Wild Imps expend all of their energy or are imploded, you have a $s1% chance to absorb their life essence, granting you a stack of Demonic Core. 
-
-When your summoned Dreadstalkers fade away, you have a $s2% chance to absorb their life essence, granting you a stack of Demonic Core.
-
+Description      : When your Wild Imps expend all of their energy or are imploded, you have a $s1% chance to absorb their life essence, granting you a stack of Demonic Core. 
+
+When your summoned Dreadstalkers fade away, you have a $s2% chance to absorb their life essence, granting you a stack of Demonic Core.
+
 Demonic Core reduces the cast time of Demonbolt by $264173s1%. Maximum $264173u stacks.
 
 Name             : Flashover (id=267115) [Spell Family (5), Passive] 
@@ -6690,11 +6690,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=715784)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : $@spelldesc48018
-
-You also learn:
-
-$@spellicon48020 $@spellname48020
+Description      : $@spelldesc48018
+
+You also learn:
+
+$@spellicon48020 $@spellname48020
 $@spelldesc48020
 
 Name             : Azerite Fortification (id=268435) [Scaling Spell (-8), Passive] 
@@ -7112,8 +7112,8 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=723224)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.80000 | Target: Enemy (6)
-Description      : The Ur'zul rears up and bites its target, dealing Physical damage. 
-
+Description      : The Ur'zul rears up and bites its target, dealing Physical damage. 
+
 You're not sure which face actually bit you after thinking about it.
 
 Name             : Wracking Brilliance (id=272891) [Scaling Spell (-1), Spell Family (5), Passive] 
@@ -7312,8 +7312,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 144.8168 (coefficient=0.465649) | Trigger Spell: 273830 | Target: Self (1)
 #2 (id=725767)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 284.8856 (coefficient=0.916031) | Target: Self (1)
-Description      : Your spells and abilities have a chance to create a Surging Droplet nearby. Collecting it increases your primary stat by $s1 for $273842d.
-
+Description      : Your spells and abilities have a chance to create a Surging Droplet nearby. Collecting it increases your primary stat by $s1 for $273842d.
+
 Rarely, a Void Droplet will be created, increasing your primary stat by $s2 for $273843d instead.
 
 Name             : Filthy Transfusion (id=273834) [Scaling Spell (-8), Passive] 
@@ -7463,7 +7463,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732939)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 1691.063 (coefficient=21.75) | Trigger Spell: 277705 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1691.062 (coefficient=21.75) | Trigger Spell: 277705 | Target: Self (1)
 #2 (id=732940)   : Apply Aura (6) | Dummy (4)
                    Base Value: 8 | Scaled Value: 8
 Description      : Summoning your Infernal increases the damage of your next $s2 Chaos Bolts by $s1.
@@ -7494,7 +7494,7 @@ Effects          :
 #2 (id=735650)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -30 | Scaled Value: -30 | Radius: 10 yards | Target: AOE enemy (instant) (16)
 Description      : Unleashes a vile explosion at the target location, dealing $o1 Shadow damage over $d to all enemies within $a1 yds and reducing their movement speed by $s2%.
-Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
+Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 Movement slowed by $s2%.
 
 Name             : Sudden Onset (id=278721) [Scaling Spell (-8), Spell Family (5), Passive] 
@@ -7766,8 +7766,8 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5
 #4 (id=738960)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
-Description      : Your spells and abilities have a chance to fire a bomb at your target, which when in proximity breaks into $s3 smaller bombs. Upon hitting the ground, each smaller bomb deals $280984s1 damage to all nearby enemies.
-
+Description      : Your spells and abilities have a chance to fire a bomb at your target, which when in proximity breaks into $s3 smaller bombs. Upon hitting the ground, each smaller bomb deals $280984s1 damage to all nearby enemies.
+
 Increases your Kul Tiran or Zandalari Engineering by $s4.
 
 Name             : Ricocheting Inflatable Pyrosaw (id=280168) [Passive] 
@@ -7794,10 +7794,10 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4
 #3 (id=738961)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
-Description      : Your spells and abilities have a chance to hurl a R.I.P that bounces among $s2 enemies, dealing $280656s1 Fire damage to each. 
-
-Beneficial spells have a chance to hurl a Mechanized External Needle Dispenser, healing up to $s2 allies for $280658s1.
-
+Description      : Your spells and abilities have a chance to hurl a R.I.P that bounces among $s2 enemies, dealing $280656s1 Fire damage to each. 
+
+Beneficial spells have a chance to hurl a Mechanized External Needle Dispenser, healing up to $s2 allies for $280658s1.
+
 Increases your Kul Tiran or Zandalari Engineering by $s3.
 
 Name             : Auto-Self-Cauterizer (id=280172) [Scaling Spell (-8), Passive] 
@@ -7825,10 +7825,10 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30
 #3 (id=738963)   : Apply Aura (6) | Skill (30)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 2499 | Target: Self (1)
-Description      : Taking damage has a chance to unleash your Auto-Self-Cauterizer, healing you for $280583s1, removing most* bleed effects, and snaring nearby enemies by $280583s2% for $280583d.
-
-Increases your Kul Tiran or Zandalari Engineering by $s3.
-
+Description      : Taking damage has a chance to unleash your Auto-Self-Cauterizer, healing you for $280583s1, removing most* bleed effects, and snaring nearby enemies by $280583s2% for $280583d.
+
+Increases your Kul Tiran or Zandalari Engineering by $s3.
+
 *Efficacy may vary.
 
 Name             : Synaptic Spark Capacitor (id=280174) [Scaling Spell (-8), Spell Family (7), Passive] 
@@ -7855,8 +7855,8 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
 #3 (id=742699)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 1065.175 (coefficient=13.7)
-Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $s1 yards of the Spark Coil take $280847s2 damage every 2 seconds and deal $280847s1% reduced damage to you.
-
+Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $s1 yards of the Spark Coil take $280847s2 damage every 2 seconds and deal $280847s1% reduced damage to you.
+
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
 Name             : Relational Normalization Gizmo (id=280178) [Scaling Spell (-1), Passive] 
@@ -7882,8 +7882,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 311 (coefficient=1) | Target: Self (1)
 #2 (id=738959)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
-Description      : Your spells and abilities have a chance to grow or shrink the world. Shrinking the world grants you $280654s4 primary stat and $280654s6 maximum health for $280654d. Growing the world grants you $280653s1 Haste and $280653s3% movement speed for $280653d.
-
+Description      : Your spells and abilities have a chance to grow or shrink the world. Shrinking the world grants you $280654s4 primary stat and $280654s6 maximum health for $280654d. Growing the world grants you $280653s1 Haste and $280653s3% movement speed for $280653d.
+
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
 Name             : Personal Absorb-o-Tron (id=280181) [Scaling Spell (-8), Passive] 
@@ -7909,8 +7909,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 12828.75 (coefficient=165) | Target: Self (1)
 #2 (id=738962)   : Apply Aura (6) | Skill (30)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 2499 | Target: Self (1)
-Description      : Taking damage has a chance to call your Personal Absorb-o-Tron, absorbing the next $280660s1 damage you take over $280660d.
-
+Description      : Taking damage has a chance to call your Personal Absorb-o-Tron, absorbing the next $280660s1 damage you take over $280660d.
+
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
 Name             : Dagger in the Back (id=280284) [Scaling Spell (-8), Passive] 
@@ -8075,8 +8075,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738151)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 5.697831 (coefficient=0.018321) | Trigger Spell: 280708 | Target: Self (1)
-Description      : Your armor gathers and analyzes combat data every $280708t1 sec, increasing your primary stat by $s1, stacking up to $280709u times. The data decays while out of combat.
-
+Description      : Your armor gathers and analyzes combat data every $280708t1 sec, increasing your primary stat by $s1, stacking up to $280709u times. The data decays while out of combat.
+
 Enables $@spellname280573 within Uldir.
 
 Name             : Laser Matrix (id=280559) [Scaling Spell (-8), Passive] 
@@ -8097,8 +8097,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 4507.592 (coefficient=57.97546) | Trigger Spell: 280702 | Target: Self (1)
 #2 (id=738401)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 5634.728 (coefficient=72.47239) | Target: Self (1)
-Description      : Your spells and abilities have a chance to release a barrage of lasers, dealing $s1 Arcane damage split among all enemies and restoring $s2 health split among injured allies.
-
+Description      : Your spells and abilities have a chance to release a barrage of lasers, dealing $s1 Arcane damage split among all enemies and restoring $s2 health split among injured allies.
+
 Enables $@spellname280573 within Uldir.
 
 Name             : Glory in Battle (id=280577) [Scaling Spell (-7), Passive] 
@@ -8119,7 +8119,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.913709) | Trigger Spell: 280778 | Target: Self (1)
 #2 (id=738555)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.55714) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280780d. 
+Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280780d. 
 Attacking a member of the opposite faction significantly increases this chance.
 
 Name             : Retaliatory Fury (id=280579) [Scaling Spell (-1), Passive] 
@@ -8141,7 +8141,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 320.5505 (coefficient=1.030709) | Trigger Spell: 280785 | Target: Self (1)
 #2 (id=738573)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 1121.974 (coefficient=3.607634) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280788d. 
+Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280788d. 
 Attacking a member of the opposite faction is more likely to activate this effect.
 
 Name             : Combined Might (id=280580) [Scaling Spell (-1), Passive] 
@@ -8250,7 +8250,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.913709) | Trigger Spell: 280851 | Target: Self (1)
 #2 (id=738699)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.55714) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280852d. 
+Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280852d. 
 Attacking a member of the opposite faction significantly increases this chance.
 
 Name             : Last Gift (id=280624) [Scaling Spell (-1), Passive] 
@@ -8272,7 +8272,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 320.5505 (coefficient=1.030709) | Trigger Spell: 280860 | Target: Self (1)
 #2 (id=738721)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 1121.974 (coefficient=3.607634) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280862d. 
+Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280862d. 
 Taking damage from a member of the opposite faction has a chance to activate this effect. 
 
 Name             : Stronger Together (id=280625) [Scaling Spell (-1), Passive] 

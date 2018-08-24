@@ -1,4 +1,4 @@
-SimulationCraft 801-01 for World of Warcraft 8.0.1 bfa-BETA (wow build 26095)
+SimulationCraft 801-02 for World of Warcraft 8.0.1 Live (wow build 27404)
 
 bonus_id={ 1 }, desc={ Heroic }, ilevel_adjust={ 20 }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
@@ -2583,7 +2583,7 @@ bonus_id={ 4799 }, base_ilevel={ 895 }, desc={ Heroic }
 bonus_id={ 4800 }, base_ilevel={ 910 }, desc={ Mythic }
 bonus_id={ 4801 }, base_ilevel={ 865 }, desc={ Raid Finder }
 bonus_id={ 4802 }, socket={ 1 }
-bonus_id={ 4803 }, quality={ rare }
+bonus_id={ 4803 }
 bonus_id={ 4804 }, ilevel={ 355 @plvl 0 - 355 @plvl 0 }
 bonus_id={ 4805 }, ilevel={ 370 @plvl 0 - 370 @plvl 0 }
 bonus_id={ 4806 }, ilevel={ 385 @plvl 0 - 385 @plvl 0 }
@@ -2624,7 +2624,7 @@ bonus_id={ 4986 }, base_ilevel={ 810 }, desc={ Challenger }, quality={ epic }
 bonus_id={ 4987 }, base_ilevel={ 810 }, desc={ Rival }, quality={ epic }
 bonus_id={ 4988 }, base_ilevel={ 810 }, desc={ Duelist }, quality={ epic }
 bonus_id={ 4989 }, base_ilevel={ 810 }, desc={ Gladiator }, quality={ epic }
-bonus_id={ 4990 }, quality={ rare }
+bonus_id={ 4990 }, quality={ rare }, ilevel={ 180 @plvl 0 - 273 @plvl 120 }
 bonus_id={ 4991 }, quality={ rare }
 bonus_id={ 4992 }, base_ilevel={ 810 }, quality={ epic }
 bonus_id={ 4993 }, base_ilevel={ 810 }, quality={ epic }
@@ -2645,7 +2645,7 @@ bonus_id={ 5007 }, base_ilevel={ 870 }, desc={ Mythic 7 }
 bonus_id={ 5008 }, base_ilevel={ 870 }, desc={ Mythic 8 }
 bonus_id={ 5009 }, base_ilevel={ 870 }, desc={ Mythic 9 }
 bonus_id={ 5010 }, base_ilevel={ 870 }, desc={ Mythic 10 }
-bonus_id={ 5036 }, quality={ rare }
+bonus_id={ 5036 }, quality={ rare }, ilevel={ 180 @plvl 0 - 273 @plvl 120 }
 bonus_id={ 5065 }, base_ilevel={ 810 }, quality={ epic }
 bonus_id={ 5066 }, base_ilevel={ 810 }, quality={ epic }
 bonus_id={ 5067 }, base_ilevel={ 810 }, quality={ epic }

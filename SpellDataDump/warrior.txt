@@ -49,8 +49,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=64)       : Energize Power (30)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: rage | Target: Self (1)
-Description      : Charge to an enemy, dealing $126664s2 Physical damage, rooting it for $105771d$?s103828[, and stunning it for $7922d][].
-
+Description      : Charge to an enemy, dealing $126664s2 Physical damage, rooting it for $105771d$?s103828[, and stunning it for $7922d][].
+
 |cFFFFFFFFGenerates $/10;s2 Rage.|r
 
 Name             : Block (rank=Passive) (id=107) [Passive] 
@@ -227,8 +227,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 #5 (id=298858)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: rage | Target: Self (1)
-Description      : $?s199023[Demoralizes all enemies within $A2 yards, reducing the damage they do by $s2% for $d.][Demoralizes all enemies within $A2 yards, reducing the damage they deal to you by $s1% for $d.]$?s202743[
-
+Description      : $?s199023[Demoralizes all enemies within $A2 yards, reducing the damage they do by $s2% for $d.][Demoralizes all enemies within $A2 yards, reducing the damage they deal to you by $s1% for $d.]$?s202743[
+
 |cFFFFFFFFGenerates ${$m5/10} Rage.|r][]
 Tooltip          : $?s199023[Demoralized, dealing $s2% less damage.][Demoralized, dealing $s1% less damage to the shouting Warrior.]
 
@@ -280,7 +280,7 @@ Effects          :
 #3 (id=293811)   : Trigger Spell (64): Whirlwind
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 400 | Trigger Spell: 199850 | Target: Self (1)
 Description      : Unleashes a whirlwind of steel, $?s202316[hitting your primary target with Slam and ][]striking all enemies within $199658A1 yards for $<baseDmg> Physical damage.
-Variables        : $baseDmg=${3*$199658s1}
+Variables        : $baseDmg=${3*$199658s1}
 $fervorDmg=${(3*$199658s1)*((100+$202316s1)/100)}
 
 Name             : Hamstring (id=1715) [Spell Family (4)] 
@@ -357,10 +357,10 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Avatar (107574)
                    Family Flags: 32
-Description      : Go berserk, increasing all Rage generation by $s4% and granting your abilities $s1% increased critical strike chance for $d.$?a202751[
-
+Description      : Go berserk, increasing all Rage generation by $s4% and granting your abilities $s1% increased critical strike chance for $d.$?a202751[
+
 |cFFFFFFFFGenerates ${$202751s2/10} Rage.|r][]
-Tooltip          : Rage generation increased by $s5%.
+Tooltip          : Rage generation increased by $s5%.
 Critical strike chance of all abilities increased by $w1%.
 
 Name             : Shield Block (id=2565) [Spell Family (4)] 
@@ -517,8 +517,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 100 | Trigger Spell: 163558 | Target: Enemy (6)
 #3 (id=738697)   : Energize Power (30)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: rage | Target: Self (1)
-Description      : Attempt to finish off a wounded foe, causing ${$280849sw1+$163558sw1} Physical damage. Only usable on enemies that have less than 20% health.
-
+Description      : Attempt to finish off a wounded foe, causing ${$280849sw1+$163558sw1} Physical damage. Only usable on enemies that have less than 20% health.
+
 |cFFFFFFFFGenerates ${$m3/10} Rage.|r
 
 Name             : Thunder Clap (id=6343) [Spell Family (4)] 
@@ -549,8 +549,8 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 #4 (id=357193)   : Energize Power (30)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: rage | Target: Self (1)
-Description      : Blasts all enemies within $6343A1 yards for $?s12712[${$6343m1*1.2}][$6343m1] damage$?s199045[, rooting them for $199042d and reducing their movement speed by $s2% for $d.][ and reduces their movement speed by $s2% for $d.]
-
+Description      : Blasts all enemies within $6343A1 yards for $?s12712[${$6343m1*1.2}][$6343m1] damage$?s199045[, rooting them for $199042d and reducing their movement speed by $s2% for $d.][ and reduces their movement speed by $s2% for $d.]
+
 |cFFFFFFFFGenerates ${$s4/10} Rage.|r
 Tooltip          : Movement speed reduced by $s2%.
 
@@ -579,7 +579,7 @@ Effects          :
 #2 (id=475719)   : Unknown(254)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 17 | Target: Unknown(87)
 Description      : Leap through the air toward a target location, slamming down with destructive force to deal $52174s1 Physical damage to all enemies within $52174a1 yards$?s23922[, and resetting the remaining cooldown on Taunt][].
-Variables        : $base=${1+0.5*$AP}
+Variables        : $base=${1+0.5*$AP}
 $damage=$?a2457[${1+0.5*$AP*1.1}][${$<base>}]
 
 Name             : Pummel (id=6552) [Spell Family (4)] 
@@ -627,8 +627,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=2316)     : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.45864 | Radius: 8 yards | Target: Cone Front (104)
-Description      : Swing in a wide arc, dealing $s1 damage to all enemies in front of you.
-
+Description      : Swing in a wide arc, dealing $s1 damage to all enemies in front of you.
+
 Your successful dodges and parries cause your next Revenge to become free.
 
 Name             : Battle Shout (id=6673) [Spell Family (4)] 
@@ -687,8 +687,8 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Mortal Strike (12294)
                    Family Flags: 25
-Description      : Overpower the enemy, dealing $s1 Physical damage. Cannot be blocked, dodged, or parried.
-
+Description      : Overpower the enemy, dealing $s1 Physical damage. Cannot be blocked, dodged, or parried.
+
 Increases the damage of your next Mortal Strike by $s2%, stacking up to $u times.
 Tooltip          : Your next Mortal Strike will deal $w2% increased damage.
 
@@ -738,10 +738,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 274818 | Target: Self (1)
 #2 (id=727376)   : Energize Power (30)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: rage | Target: Self (1)
-Description      : Cause a bloodbath, dealing $280736s1 Physical damage to all enemies in front of you.
-
-For the next $274818d, your melee attacks and abilities cause targets to bleed for $274818s1% additional damage over $113344d.
-
+Description      : Cause a bloodbath, dealing $280736s1 Physical damage to all enemies in front of you.
+
+For the next $274818d, your melee attacks and abilities cause targets to bleed for $274818s1% additional damage over $113344d.
+
 |cFFFFFFFFGenerates ${$s2/10} Rage.|r
 
 Name             : Mortal Strike (id=12294) [Spell Family (4)] 
@@ -877,8 +877,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 30 | Target: Self (1)
 #6 (id=334406)   : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 23 | Target: Self (1)
-Description      : Go berserk, removing and granting immunity to Fear, Sap, and Incapacitate effects for $d.$?(a206320&s184361)[
-
+Description      : Go berserk, removing and granting immunity to Fear, Sap, and Incapacitate effects for $d.$?(a206320&s184361)[
+
 Also Enrages you for $184362d.][]
 Tooltip          : Immune to Fear, Sap, and Incapacitate effects.
 
@@ -979,8 +979,8 @@ Effects          :
                    Base Value: 80 | Scaled Value: 80 | Misc Value: rage | Target: Self (1)
 #3 (id=156242)   : Dummy (3)
                    Base Value: 25 | Scaled Value: 25 | Target: Enemy (6)
-Description      : Assault the target in a bloodthirsty craze, dealing ${$s*$<mult>} Physical damage and restoring $117313s1% of your health.
-
+Description      : Assault the target in a bloodthirsty craze, dealing ${$s*$<mult>} Physical damage and restoring $117313s1% of your health.
+
 |cFFFFFFFFGenerates ${$m2/10} Rage.|r
 Variables        : $mult=${($max(0,$min($pl-10,10))*8+137)/217}
 
@@ -1012,7 +1012,7 @@ Effects          :
 #2 (id=280400)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 0x7e | Target: Self (1)
 Description      : Raise your shield, reflecting spells cast on you and reducing magical damage you take by $s2%. $?a188672[Lasts $d.][Lasts $d or until a spell is reflected.]
-Tooltip          : $?a188672[Reflecting all spells cast on you.][Reflects a spell cast on you.]
+Tooltip          : $?a188672[Reflecting all spells cast on you.][Reflects a spell cast on you.]
 Magical damage taken reduced by $s2%.
 
 Name             : Shield Slam (id=23922) [Spell Family (4)] 
@@ -1039,10 +1039,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #3 (id=290322)   : Energize Power (30)
                    Base Value: 150 | Scaled Value: 150 | Misc Value: rage | Target: Self (1)
-Description      : Slams the target with your shield, causing $s1 Physical damage.$?a231834[
-
-Devastate, Thunder Clap, and Revenge have a $231834s1% chance to reset the cooldown of Shield Slam.][]
-
+Description      : Slams the target with your shield, causing $s1 Physical damage.$?a231834[
+
+Devastate, Thunder Clap, and Revenge have a $231834s1% chance to reset the cooldown of Shield Slam.][]
+
 |cFFFFFFFFGenerates ${$s3/10} Rage.|r
 
 Name             : Strength (id=27973) [Passive, Hidden] 
@@ -1196,8 +1196,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=24417)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.40000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Description      : Strikes the target, causing $s1 damage and healing you for $118779s1% of your maximum health.
-
+Description      : Strikes the target, causing $s1 damage and healing you for $118779s1% of your maximum health.
+
 Only usable within $32216d after you kill an enemy that yields experience or honor.
 
 Name             : Agility 20 (id=41695) [Passive, Hidden] 
@@ -1289,12 +1289,12 @@ Effects          :
                    Family Flags: 11, 12, 13, 15, 17, 28, 49, 51, 68, 73, 84, 97, 113
 #4 (id=738383)   : Apply Aura (6) | Periodic Energize Power (24): every 1 seconds
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 1 | Target: Self (1)
-Description      : Become an unstoppable storm of destructive force, striking all targets within $50622A1 yards with both weapons for $<dmg> Physical damage over $d.
-
-You are immune to movement impairing and loss of control effects, but can use defensive abilities and avoid attacks.
-
+Description      : Become an unstoppable storm of destructive force, striking all targets within $50622A1 yards with both weapons for $<dmg> Physical damage over $d.
+
+You are immune to movement impairing and loss of control effects, but can use defensive abilities and avoid attacks.
+
 |cFFFFFFFFGenerates ${$o4/10} Rage over the duration.|r
-Tooltip          : Dealing damage to all nearby enemies every $t1 sec.
+Tooltip          : Dealing damage to all nearby enemies every $t1 sec.
 Immune to crowd control.
 Variables        : $dmg=${(1+$d)*($50622sw1+$95738sw1)}
 
@@ -1638,7 +1638,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=71863)    : Energize Power (30)
                    Base Value: 150 | Scaled Value: 150 | Misc Value: rage | Target: Self (1)
-Description      : Remove $s1 beneficial effect from all enemies within $A1 yards and increase your Rage by ${$m2/10}.
+Description      : Remove $s1 beneficial effect from all enemies within $A1 yards and increase your Rage by ${$m2/10}.
 
 
 Name             : Mastery: Unshackled Fury (id=76856) [Spell Family (4), Passive] 
@@ -1692,8 +1692,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 12880 | Target: Self (1)
 #5 (id=217532)   : Apply Aura (6) | Modify Melee Attack Power% (166)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self (1)
-Description      : Increases your chance to block by ${$s2}.1% and your chance to critically block (blocking twice the amount) by ${$s1}.1%.
-
+Description      : Increases your chance to block by ${$s2}.1% and your chance to critically block (blocking twice the amount) by ${$s1}.1%.
+
 Also increases your attack power by ${$s5}.1%.
 
 Name             : Raging Blow (id=85288) [Spell Family (4)] 
@@ -1724,10 +1724,10 @@ Effects          :
                    Base Value: 80 | Scaled Value: 80 | Misc Value: 50 | Trigger Spell: 96103 | Target: Enemy (6)
 #4 (id=317575)   : Trigger Spell (64): Raging Blow
                    Base Value: 80 | Scaled Value: 80 | Misc Value: 100 | Trigger Spell: 85384 | Target: Enemy (6)
-Description      : A mighty blow with both weapons that deals a total of ${($96103sw1+$85384sw1)*$<mult>} Physical damage.
-
-Raging Blow has a $s1% chance to instantly reset its own cooldown.
-
+Description      : A mighty blow with both weapons that deals a total of ${($96103sw1+$85384sw1)*$<mult>} Physical damage.
+
+Raging Blow has a $s1% chance to instantly reset its own cooldown.
+
 |cFFFFFFFFGenerates ${$m2/10} Rage.|r
 Variables        : $mult=${($max(0,$min($pl-13,7))*4+118)/146}
 
@@ -2009,8 +2009,8 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | Misc Value: rage | Target: Self (1)
 #3 (id=737788)   : Trigger Spell (64): Furious Slash
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 202539 | Target: Self (1)
-Description      : Aggressively strike with your off-hand weapon for ${$s1*$<mult>} Physical damage, and increases your Haste by $202539s3% for $202539d, stacking up to $202539u times.
-
+Description      : Aggressively strike with your off-hand weapon for ${$s1*$<mult>} Physical damage, and increases your Haste by $202539s3% for $202539d, stacking up to $202539u times.
+
 |cFFFFFFFFGenerates ${$m2/10} Rage.|r
 Variables        : $mult=${($max(0,$min($pl-10,10))*10+171)/271}
 
@@ -2138,8 +2138,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #7 (id=728320)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-Description      : Transform into a colossus for $d, causing you to deal $s1% increased damage and removing all roots and snares.
-
+Description      : Transform into a colossus for $d, causing you to deal $s1% increased damage and removing all roots and snares.
+
 |cFFFFFFFFGenerates ${$s5/10} Rage.|r
 Tooltip          : Damage done increased by $s1%.
 
@@ -2409,8 +2409,8 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: rage | Target: Self (1)
 #3 (id=738382)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Radius: 0 - 12 yards | Mechanic: Snare | Target: At Caster (22) -> AOE enemy (15)
-Description      : Roar explosively, dealing $m1 Physical damage to all enemies within $A1 yds and reducing their movement speed by $s3% for $d.
-
+Description      : Roar explosively, dealing $m1 Physical damage to all enemies within $A1 yds and reducing their movement speed by $s3% for $d.
+
 |cFFFFFFFFGenerates ${$m2/10} Rage.|r
 Tooltip          : Movement slowed by $s3%.
 
@@ -2438,7 +2438,7 @@ Effects          :
 #3 (id=225727)   : Apply Aura (6) | Modify Attacker Crit Chance (197)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Target: Self (1)
 Description      : Increases your parry chance by $s1% and reduces all damage you take by $s2% for $d.
-Tooltip          : Parry chance increased by $s1%.
+Tooltip          : Parry chance increased by $s1%.
 Damage taken reduced by $w2%.
 
 Name             : Victory Rush (id=118779) [Spell Family (4)] 
@@ -3015,10 +3015,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=254765)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
-Description      : Throws a whirling weapon at the target location that inflicts ${7*$156287s1} damage to all enemies within $156287A1 yards over $d. $?a137048[
-
-Also increases your Parry chance by $227744s1% for $227744d.][
-
+Description      : Throws a whirling weapon at the target location that inflicts ${7*$156287s1} damage to all enemies within $156287A1 yards over $d. $?a137048[
+
+Also increases your Parry chance by $227744s1% for $227744d.][
+
 |cFFFFFFFFGenerates ${$248439s1/10} Rage each time it deals damage.|r]
 Tooltip          : $?s23922[Chance to Parry increased by $s1%.][Ravager is currently active.]
 
@@ -3148,8 +3148,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 300 | Trigger Spell: 260798 | Target: Enemy (6)
 #2 (id=714082)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | Target: Enemy (6)
-Description      : Attempts to finish off a foe, causing up to $<damage> Physical damage based on Rage spent. Only usable on enemies that have less than 20% health.$?s231830[
-
+Description      : Attempts to finish off a foe, causing up to $<damage> Physical damage based on Rage spent. Only usable on enemies that have less than 20% health.$?s231830[
+
 If your foe survives, $s2% of the Rage spent is refunded.][]
 Variables        : $damage=${2.0*$260798sw2}
 
@@ -3223,9 +3223,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=737698)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-Description      : Becoming Enraged increases your damage done by $76856s1%, Haste by $184362s1%, and movement speed by $184362s2% for $184362d.
-
-$@spellicon23881 Bloodthirst has a $m2% chance to Enrage you.
+Description      : Becoming Enraged increases your damage done by $76856s1%, Haste by $184362s1%, and movement speed by $184362s2% for $184362d.
+
+$@spellicon23881 Bloodthirst has a $m2% chance to Enrage you.
 $@spellicon184367 Rampage always Enrages you.
 
 Name             : Enrage (id=184362) [Spell Family (4)] 
@@ -3254,9 +3254,9 @@ Effects          :
 #3 (id=737717)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
 Description      : $@spelldesc184361
-Tooltip          : Damage done increased by $76856s1%.
-Haste increased by $m1%.
-Movement speed increased by $m2%.$?s208154[
+Tooltip          : Damage done increased by $76856s1%.
+Haste increased by $m1%.
+Movement speed increased by $m2%.$?s208154[
 Damage taken reduced by $208154m3%.][]
 
 Name             : Enraged Regeneration (id=184364) [Spell Family (4)] 
@@ -3441,10 +3441,10 @@ Effects          :
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
 #11 (id=738459)   : Trigger Spell (64): Whirlwind
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 280714 | Target: Self (1)
-Description      : Unleashes a whirlwind of steel, striking all enemies within $199658A1 yards for ${3*($199667sw2+$44949sw2)} Physical damage.$?a12950[
-
-Causes your next $s7 single-target $lattack:attacks; to strike up to $85739s1 additional targets for $85739s3% damage.][]
-
+Description      : Unleashes a whirlwind of steel, striking all enemies within $199658A1 yards for ${3*($199667sw2+$44949sw2)} Physical damage.$?a12950[
+
+Causes your next $s7 single-target $lattack:attacks; to strike up to $85739s1 additional targets for $85739s3% damage.][]
+
 |cFFFFFFFFGenerates ${$m8} Rage, plus an additional $m9 per target hit. Maximum $m10 Rage.|r
 
 Name             : Ignore Pain (id=190456) [Spell Family (4)] 
@@ -3531,12 +3531,12 @@ Effects          :
                    Base Value: 8 | Scaled Value: 8 | Target: Unknown(25)
 #2 (id=291445)   : Energize Power (30)
                    Base Value: 150 | Scaled Value: 150 | Misc Value: rage | Target: Self (1)
-Description      : Run at high speed toward an enemy or ally.
-
-When targeting an enemy, deals $126664s2 Physical damage and roots the target for $105771d.
-
-When targeting an ally, intercepts the next melee or ranged attack against them within $147833d while the ally remains within $147833A2 yards.
-
+Description      : Run at high speed toward an enemy or ally.
+
+When targeting an enemy, deals $126664s2 Physical damage and roots the target for $105771d.
+
+When targeting an ally, intercepts the next melee or ranged attack against them within $147833d while the ally remains within $147833A2 yards.
+
 |cFFFFFFFFGenerates $/10;s2 Rage.|r
 
 Name             : Intercept (rank=PvP Talent) (id=198758) [Spell Family (4)] 
@@ -3562,14 +3562,14 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Unknown(25)
 #2 (id=292182)   : Energize Power (30)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: rage | Target: Self (1)
-Description      : Run at high speed toward an ally or enemy.
-
-When targeting an enemy, Intercept will $?s103828[stun][root] them for $?s103828[$237744d][$105771d]. 
-
-When targeting an ally, Intercept will intercept all melee and ranged attacks against them within $147833d while the target remains within $147833A2 yards.
-
-Generates $/10;s2 Rage.
-
+Description      : Run at high speed toward an ally or enemy.
+
+When targeting an enemy, Intercept will $?s103828[stun][root] them for $?s103828[$237744d][$105771d]. 
+
+When targeting an ally, Intercept will intercept all melee and ranged attacks against them within $147833d while the target remains within $147833A2 yards.
+
+Generates $/10;s2 Rage.
+
 This ability replaces Charge.
 
 Name             : Morale Killer (rank=PvP Talent) (id=199023) [Spell Family (4), Passive, Hidden] 
@@ -3909,8 +3909,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=297955)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.39312 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Description      : Instantly attack the target, causing $s1 damage and healing you for $202166s1% of your maximum health.
-
+Description      : Instantly attack the target, causing $s1 damage and healing you for $202166s1% of your maximum health.
+
 Killing an enemy that yields experience or honor resets the cooldown of Impending Victory.
 
 Name             : Furious Charge (id=202224) [Spell Family (4), Passive, Hidden] 
@@ -4718,7 +4718,7 @@ Effects          :
 #2 (id=371150)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 0x7e | Radius: 20 yards | Target: Raid Members (56)
 Description      : Reflects all spells cast on you and on all party and raid members within $a1 yards, and reduces magical damage taken by $s2% for $d.
-Tooltip          : Reflects all spells cast on you.
+Tooltip          : Reflects all spells cast on you.
 Magical damage taken reduced by $w2%.
 
 Name             : Trauma (id=215537) [Spell Family (4)] 
@@ -4845,7 +4845,7 @@ Effects          :
 #4 (id=739446)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 Description      : $@spelldesc215571
-Tooltip          : Damage done increased by $s1%.
+Tooltip          : Damage done increased by $s1%.
 Haste increased by $s2%.
 
 Name             : Inner Rage (id=215573) [Spell Family (4), Passive, Hidden] 
@@ -4916,8 +4916,8 @@ Effects          :
 #3 (id=325886)   : Trigger Spell (64): Enrage
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3800 | Trigger Spell: 184362 | Target: Self (1)
 Description      : Odyn has granted you a second chance to defeat that which has bested you in combat.  Do this within $d and Odyn will grant you your life and restore $218835s1% of your health.
-Tooltip          : Odyn has granted you a second chance to defeat your enemy!
-
+Tooltip          : Odyn has granted you a second chance to defeat your enemy!
+
 Failure results in death.
 
 Name             : Gaze of the Val'kyr (id=218834) [Spell Family (4)] 
@@ -5100,10 +5100,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Taunt (355), Shield Wall (871), Demoralizing Shout (1160), Shield Block (2565), Last Stand (12975), Berserker Rage (18499), Rallying Cry (97462), Rallying Cry (97463), Die by the Sword (118038), Enraged Regeneration (184364), Defensive Stance (197690)
                    Family Flags: 11, 12, 13, 15, 17, 28, 51, 68, 97, 113
-Description      : Become an unstoppable storm of destructive force, striking all targets within $50622A1 yards $?s137050[with both weapons for ${7*($50622sw1+$95738sw1)} Physical damage][for ${7*$50622sw1} Physical damage] over $d.
-
+Description      : Become an unstoppable storm of destructive force, striking all targets within $50622A1 yards $?s137050[with both weapons for ${7*($50622sw1+$95738sw1)} Physical damage][for ${7*$50622sw1} Physical damage] over $d.
+
 You are immune to movement impairing and loss of control effects, but can use defensive abilities and can avoid attacks.
-Tooltip          : Dealing damage to all nearby enemies every $t1 sec.
+Tooltip          : Dealing damage to all nearby enemies every $t1 sec.
 Immune to crowd control.
 
 Name             : Ravager (id=228920) [Spell Family (4)] 
@@ -5134,8 +5134,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=345050)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
-Description      : Throws a whirling weapon at the target location that inflicts ${7*$156287s1} damage to all enemies within $156287A1 yards over $d. $?s23922[
-
+Description      : Throws a whirling weapon at the target location that inflicts ${7*$156287s1} damage to all enemies within $156287A1 yards over $d. $?s23922[
+
 Also increases your Parry chance by $227744s1% for $227744d.][]
 Tooltip          : $?s23922[Chance to Parry increased by $s1%.][Ravager is currently active.]
 
@@ -5193,7 +5193,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=349758)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-Description      : Devastate, Thunder Clap, and Revenge have a $s1% chance to reset the remaining cooldown on Shield Slam.
+Description      : Devastate, Thunder Clap, and Revenge have a $s1% chance to reset the remaining cooldown on Shield Slam.
 
 
 Name             : Dual Wield (id=231842) [Spell Family (4), Passive] 
@@ -5593,8 +5593,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 33251.41 (coefficient=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=479677)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 33251.41 (coefficient=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
-Description      : Deals $s1 Holy Damage to enemies within $A1.
-
+Description      : Deals $s1 Holy Damage to enemies within $A1.
+
 Heals $s2 to allies within $A1. 
 
 Name             : Skullsplitter (id=260643) [Spell Family (4)] 
@@ -5620,8 +5620,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.84000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=485945)   : Energize Power (30)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: rage | Target: Self (1)
-Description      : Bash an enemy's skull, dealing $s1 Physical damage.
-
+Description      : Bash an enemy's skull, dealing $s1 Physical damage.
+
 |cFFFFFFFFGenerates ${$s2/10} Rage.|r
 
 Name             : Sweeping Strikes (id=260708) [Spell Family (4)] 
@@ -5712,8 +5712,8 @@ Effects          :
                    Affected Spells: Deep Wounds (262115)
                    Family Flags: 19
                    Hotfixed: SP Coefficient (1 -> 10), Base Value (8 -> 0)
-Description      : Deep Wounds damage is increased by ${$s1}.1%, dealing $262115o1 Bleed damage over $262115d.
-
+Description      : Deep Wounds damage is increased by ${$s1}.1%, dealing $262115o1 Bleed damage over $262115d.
+
 Striking an enemy with Mortal Strike$?s845[, Cleave][], Execute, or $?s152277[Ravager][Bladestorm] inflicts Deep Wounds.
 
 Name             : Deep Wounds (id=262115) [Spell Family (4)] 
@@ -5830,8 +5830,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 262232 | Target: Self (1)
 #2 (id=623312)   : Apply Aura (6) | Unknown(213)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-Description      : Your auto attacks generate $s2% more Rage.
-
+Description      : Your auto attacks generate $s2% more Rage.
+
 Killing an enemy instantly generates ${$262232s1/10} Rage, and increases your movement speed by $262232s2% for $262232d.
 
 Name             : War Machine (id=262232) [Spell Family (4)] 
@@ -6557,8 +6557,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 144.8168 (coefficient=0.465649) | Trigger Spell: 273830 | Target: Self (1)
 #2 (id=725767)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 284.8856 (coefficient=0.916031) | Target: Self (1)
-Description      : Your spells and abilities have a chance to create a Surging Droplet nearby. Collecting it increases your primary stat by $s1 for $273842d.
-
+Description      : Your spells and abilities have a chance to create a Surging Droplet nearby. Collecting it increases your primary stat by $s1 for $273842d.
+
 Rarely, a Void Droplet will be created, increasing your primary stat by $s2 for $273843d instead.
 
 Name             : Filthy Transfusion (id=273834) [Scaling Spell (-8), Passive] 
@@ -7178,8 +7178,8 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5
 #4 (id=738960)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
-Description      : Your spells and abilities have a chance to fire a bomb at your target, which when in proximity breaks into $s3 smaller bombs. Upon hitting the ground, each smaller bomb deals $280984s1 damage to all nearby enemies.
-
+Description      : Your spells and abilities have a chance to fire a bomb at your target, which when in proximity breaks into $s3 smaller bombs. Upon hitting the ground, each smaller bomb deals $280984s1 damage to all nearby enemies.
+
 Increases your Kul Tiran or Zandalari Engineering by $s4.
 
 Name             : Ricocheting Inflatable Pyrosaw (id=280168) [Passive] 
@@ -7206,10 +7206,10 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4
 #3 (id=738961)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
-Description      : Your spells and abilities have a chance to hurl a R.I.P that bounces among $s2 enemies, dealing $280656s1 Fire damage to each. 
-
-Beneficial spells have a chance to hurl a Mechanized External Needle Dispenser, healing up to $s2 allies for $280658s1.
-
+Description      : Your spells and abilities have a chance to hurl a R.I.P that bounces among $s2 enemies, dealing $280656s1 Fire damage to each. 
+
+Beneficial spells have a chance to hurl a Mechanized External Needle Dispenser, healing up to $s2 allies for $280658s1.
+
 Increases your Kul Tiran or Zandalari Engineering by $s3.
 
 Name             : Auto-Self-Cauterizer (id=280172) [Scaling Spell (-8), Passive] 
@@ -7237,10 +7237,10 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30
 #3 (id=738963)   : Apply Aura (6) | Skill (30)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 2499 | Target: Self (1)
-Description      : Taking damage has a chance to unleash your Auto-Self-Cauterizer, healing you for $280583s1, removing most* bleed effects, and snaring nearby enemies by $280583s2% for $280583d.
-
-Increases your Kul Tiran or Zandalari Engineering by $s3.
-
+Description      : Taking damage has a chance to unleash your Auto-Self-Cauterizer, healing you for $280583s1, removing most* bleed effects, and snaring nearby enemies by $280583s2% for $280583d.
+
+Increases your Kul Tiran or Zandalari Engineering by $s3.
+
 *Efficacy may vary.
 
 Name             : Synaptic Spark Capacitor (id=280174) [Scaling Spell (-8), Spell Family (7), Passive] 
@@ -7267,8 +7267,8 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
 #3 (id=742699)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 1065.175 (coefficient=13.7)
-Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $s1 yards of the Spark Coil take $280847s2 damage every 2 seconds and deal $280847s1% reduced damage to you.
-
+Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $s1 yards of the Spark Coil take $280847s2 damage every 2 seconds and deal $280847s1% reduced damage to you.
+
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
 Name             : Relational Normalization Gizmo (id=280178) [Scaling Spell (-1), Passive] 
@@ -7294,8 +7294,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 311 (coefficient=1) | Target: Self (1)
 #2 (id=738959)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
-Description      : Your spells and abilities have a chance to grow or shrink the world. Shrinking the world grants you $280654s4 primary stat and $280654s6 maximum health for $280654d. Growing the world grants you $280653s1 Haste and $280653s3% movement speed for $280653d.
-
+Description      : Your spells and abilities have a chance to grow or shrink the world. Shrinking the world grants you $280654s4 primary stat and $280654s6 maximum health for $280654d. Growing the world grants you $280653s1 Haste and $280653s3% movement speed for $280653d.
+
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
 Name             : Personal Absorb-o-Tron (id=280181) [Scaling Spell (-8), Passive] 
@@ -7321,8 +7321,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 12828.75 (coefficient=165) | Target: Self (1)
 #2 (id=738962)   : Apply Aura (6) | Skill (30)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 2499 | Target: Self (1)
-Description      : Taking damage has a chance to call your Personal Absorb-o-Tron, absorbing the next $280660s1 damage you take over $280660d.
-
+Description      : Taking damage has a chance to call your Personal Absorb-o-Tron, absorbing the next $280660s1 damage you take over $280660d.
+
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
 Name             : Endless Rage (id=280283) [Spell Family (4)] 
@@ -7507,8 +7507,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738151)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 5.697831 (coefficient=0.018321) | Trigger Spell: 280708 | Target: Self (1)
-Description      : Your armor gathers and analyzes combat data every $280708t1 sec, increasing your primary stat by $s1, stacking up to $280709u times. The data decays while out of combat.
-
+Description      : Your armor gathers and analyzes combat data every $280708t1 sec, increasing your primary stat by $s1, stacking up to $280709u times. The data decays while out of combat.
+
 Enables $@spellname280573 within Uldir.
 
 Name             : Laser Matrix (id=280559) [Scaling Spell (-8), Passive] 
@@ -7529,8 +7529,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 4507.592 (coefficient=57.97546) | Trigger Spell: 280702 | Target: Self (1)
 #2 (id=738401)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 5634.728 (coefficient=72.47239) | Target: Self (1)
-Description      : Your spells and abilities have a chance to release a barrage of lasers, dealing $s1 Arcane damage split among all enemies and restoring $s2 health split among injured allies.
-
+Description      : Your spells and abilities have a chance to release a barrage of lasers, dealing $s1 Arcane damage split among all enemies and restoring $s2 health split among injured allies.
+
 Enables $@spellname280573 within Uldir.
 
 Name             : Glory in Battle (id=280577) [Scaling Spell (-7), Passive] 
@@ -7551,7 +7551,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.913709) | Trigger Spell: 280778 | Target: Self (1)
 #2 (id=738555)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.55714) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280780d. 
+Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280780d. 
 Attacking a member of the opposite faction significantly increases this chance.
 
 Name             : Retaliatory Fury (id=280579) [Scaling Spell (-1), Passive] 
@@ -7573,7 +7573,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 320.5505 (coefficient=1.030709) | Trigger Spell: 280785 | Target: Self (1)
 #2 (id=738573)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 1121.974 (coefficient=3.607634) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280788d. 
+Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280788d. 
 Attacking a member of the opposite faction is more likely to activate this effect.
 
 Name             : Combined Might (id=280580) [Scaling Spell (-1), Passive] 
@@ -7682,7 +7682,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.913709) | Trigger Spell: 280851 | Target: Self (1)
 #2 (id=738699)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.55714) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280852d. 
+Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280852d. 
 Attacking a member of the opposite faction significantly increases this chance.
 
 Name             : Last Gift (id=280624) [Scaling Spell (-1), Passive] 
@@ -7704,7 +7704,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 320.5505 (coefficient=1.030709) | Trigger Spell: 280860 | Target: Self (1)
 #2 (id=738721)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 1121.974 (coefficient=3.607634) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280862d. 
+Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280862d. 
 Taking damage from a member of the opposite faction has a chance to activate this effect. 
 
 Name             : Stronger Together (id=280625) [Scaling Spell (-1), Passive] 
@@ -7895,8 +7895,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.85000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=738538)   : Energize Power (30)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: rage | Target: Self (1)
-Description      : Break the enemy's defenses, dealing $s1 Physical damage, and increasing your damage done to the target by $280773s1% for $280773d.
-
+Description      : Break the enemy's defenses, dealing $s1 Physical damage, and increasing your damage done to the target by $280773s1% for $280773d.
+
 |cFFFFFFFFGenerates ${$m2/10} Rage.|r
 
 Name             : Siegebreaker (id=280773) [Spell Family (4)] 
@@ -7944,8 +7944,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=738696)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.80000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Description      : Attempt to finish off a wounded foe, causing ${$s1+$163558sw1} Physical damage. Only usable on enemies that have less than 20% health.
-
+Description      : Attempt to finish off a wounded foe, causing ${$s1+$163558sw1} Physical damage. Only usable on enemies that have less than 20% health.
+
 |cFFFFFFFFGenerates ${$m2/10} Rage.|r
 
 Name             : Massacre (id=281001) [Spell Family (4), Passive, Hidden] 
