@@ -796,8 +796,7 @@ struct holy_shield_proc_t : public paladin_spell_t
   holy_shield_proc_t( paladin_t* p )
     : paladin_spell_t( "holy_shield", p, p -> talents.holy_shield -> effectN( 2 ).trigger() )
   {
-    background = true;
-    proc = true;
+    background = proc = may_crit = true;
     may_miss = false;
   }
 };
