@@ -42,11 +42,11 @@ actions+=/touch_of_death,if=target.time_to_die<=9
 # Call the Serenity action list if you're using Serenity and have more than two ranks of Swift Roundhouse Trait
 actions+=/call_action_list,name=serenitySR,if=((talent.serenity.enabled&cooldown.serenity.remains<=0)|buff.serenity.up)&azerite.swift_roundhouse.rank>1&time>30
 # Call the Serenity action list if you're using Serenity and Serenity is available (or you're currently in Serenity)
-actions+=/call_action_list,name=serenity,if=((talent.serenity.enabled&cooldown.serenity.remains<=0)|buff.serenity.up)&time>30
+actions+=/call_action_list,name=serenity,if=((!azerite.swift_roundhouse.enabled&talent.serenity.enabled&cooldown.serenity.remains<=0)|buff.serenity.up)&time>30
 # Call the Serenity Opener action list if you're using Serenity and have more than two ranks of Swift Roundhouse Trait
 actions+=/call_action_list,name=serenity_openerSR,if=(talent.serenity.enabled&cooldown.serenity.remains<=0|buff.serenity.up)&time<30&azerite.swift_roundhouse.enabled
 # Call the Serenity Opener action list if you're using Serenity and Serenity is available (or you're currently in Serenity)
-actions+=/call_action_list,name=serenity_opener,if=(talent.serenity.enabled&cooldown.serenity.remains<=0|buff.serenity.up)&time<30
+actions+=/call_action_list,name=serenity_opener,if=(!azerite.swift_roundhouse.enabled&talent.serenity.enabled&cooldown.serenity.remains<=0|buff.serenity.up)&time<30
 # Call the SEF action list if you're using SEF and are currently in SEF or have 2 SEF stacks
 actions+=/call_action_list,name=sef,if=!talent.serenity.enabled&(buff.storm_earth_and_fire.up|cooldown.storm_earth_and_fire.charges=2)
 # Call the SEF action list if you're not using Serenity and:
