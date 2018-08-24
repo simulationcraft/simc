@@ -31,7 +31,7 @@ actions.precombat+=/chi_wave
 
 # Executed every time the actor is available.
 actions=auto_attack
-actions+=/gift_of_the_ox
+actions+=/gift_of_the_ox,if=health<health.max*0.65
 actions+=/dampen_harm,if=incoming_damage_1500ms&buff.fortifying_brew.down
 actions+=/fortifying_brew,if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)
 actions+=/use_item,name=archimondes_hatred_reborn
@@ -41,22 +41,28 @@ actions+=/berserking
 actions+=/lights_judgment
 actions+=/fireblood
 actions+=/ancestral_call
-actions+=/invoke_niuzao_the_black_ox,if=target.time_to_die>45
-actions+=/purifying_brew,if=stagger.heavy|(stagger.moderate&cooldown.brews.charges_fractional>=cooldown.brews.max_charges-0.5&buff.ironskin_brew.remains>=buff.ironskin_brew.duration*2.5)
-# About charge management, by default while tanking (always true on SimC) we lower it by 1 and up to 1.5 if we are tanking with less than half of Ironskin base duration up.
-actions+=/ironskin_brew,if=buff.blackout_combo.down&cooldown.brews.charges_fractional>=cooldown.brews.max_charges-1.0-(1+buff.ironskin_brew.remains<=buff.ironskin_brew.duration*0.5)&buff.ironskin_brew.remains<=buff.ironskin_brew.duration*2
-actions+=/black_ox_brew,if=incoming_damage_1500ms&stagger.heavy&cooldown.brews.charges_fractional<=0.75
+actions+=/invoke_niuzao_the_black_ox,if=target.time_to_die>25
+# Ironskin Brew priority whenever it took significant damage and ironskin brew buff is missing (adjust the health.max coefficient according to intensity of damage taken), and to dump excess charges before BoB.
+actions+=/ironskin_brew,if=buff.blackout_combo.down&incoming_damage_1999ms>(health.max*0.1+stagger.last_tick_damage_4)&buff.elusive_brawler.stack<2&!buff.ironskin_brew.up
+actions+=/ironskin_brew,if=cooldown.brews.charges_fractional>1&cooldown.black_ox_brew.remains<3
+# Purifying behaviour is based on normalization (iE the late expression triggers if stagger size increased over the last 30 ticks or 15 seconds).
+actions+=/purifying_brew,if=stagger.pct>(6*(3-(cooldown.brews.charges_fractional)))&(stagger.last_tick_damage_1>((0.02+0.001*(3-cooldown.brews.charges_fractional))*stagger.last_tick_damage_30))
+# Black Ox Brew is currently used to either replenish brews based on less than half a brew charge available, or low energy to enable Keg Smash
+actions+=/black_ox_brew,if=cooldown.brews.charges_fractional<0.5
 actions+=/black_ox_brew,if=(energy+(energy.regen*cooldown.keg_smash.remains))<40&buff.blackout_combo.down&cooldown.keg_smash.up
-actions+=/arcane_torrent,if=energy<31
-actions+=/keg_smash,if=spell_targets>=3
-actions+=/tiger_palm,if=buff.blackout_combo.up
+# Offensively, the APL prioritizes KS on cleave, BoS else, with energy spenders and cds sorted below
+actions+=/keg_smash,if=spell_targets>=2
+actions+=/tiger_palm,if=talent.rushing_jade_wind.enabled&buff.blackout_combo.up&buff.rushing_jade_wind.up
+actions+=/tiger_palm,if=(talent.invoke_niuzao_the_black_ox.enabled|talent.special_delivery.enabled)&buff.blackout_combo.up
+actions+=/blackout_strike
 actions+=/keg_smash
 actions+=/rushing_jade_wind,if=buff.rushing_jade_wind.down
-actions+=/blackout_strike
 actions+=/breath_of_fire,if=buff.blackout_combo.down&(buff.bloodlust.down|(buff.bloodlust.up&&dot.breath_of_fire_dot.refreshable))
 actions+=/chi_burst
 actions+=/chi_wave
-actions+=/tiger_palm,if=!talent.blackout_combo.enabled&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*(cooldown.keg_smash.remains+gcd)))>=55
+actions+=/tiger_palm,if=!talent.blackout_combo.enabled&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*(cooldown.keg_smash.remains+gcd)))>=65
+actions+=/arcane_torrent,if=energy<31
+actions+=/rushing_jade_wind
 
 head=douli_of_chiji,id=152145,bonus_id=3612/1502
 neck=vulcanarcore_pendant,id=151965,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr

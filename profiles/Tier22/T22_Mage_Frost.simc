@@ -87,7 +87,7 @@ actions.single+=/blizzard,if=active_enemies>2|active_enemies>1&cast_time=0&buff.
 # Trying to pool charges of FoF for anything isn't worth it. Use them as they come.
 actions.single+=/ice_lance,if=buff.fingers_of_frost.react
 actions.single+=/comet_storm
-# Without GS, Ebonbolt is used on cooldown. With GS, Ebonbolt is only used to fill in the blank spots when fishing for a Brain Freeze proc, i.e. the mage reaches 5 Icicles but still doesn't have a Brain Freeze proc.
+# Without GS, Ebonbolt is used on cooldown. With GS, Ebonbolt is only used to fill in the blank spots when fishing for a Brain Freeze proc, i.e. the mage reaches 5 Icicles but still doesn't have a Brain Freeze proc. This is DPS neutral with low mastery and slight gain otherwise.
 actions.single+=/ebonbolt,if=!talent.glacial_spike.enabled|buff.icicles.stack=5&!buff.brain_freeze.react
 # Ray of Frost is used after all Fingers of Frost charges have been used and there isn't active Frozen Orb that could generate more. This is only a small gain against multiple targets, as Ray of Frost isn't too impactful.
 actions.single+=/ray_of_frost,if=!action.frozen_orb.in_flight&ground_aoe.frozen_orb.remains=0

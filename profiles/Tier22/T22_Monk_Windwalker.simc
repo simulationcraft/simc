@@ -128,8 +128,7 @@ actions.serenity+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,
 actions.serenitySR=tiger_palm,target_if=debuff.mark_of_the_crane.down,if=!prev_gcd.1.tiger_palm&!prev_gcd.1.energizing_elixir&energy=energy.max&chi<1&!buff.serenity.up
 actions.serenitySR+=/call_action_list,name=cd
 actions.serenitySR+=/serenity,if=cooldown.rising_sun_kick.remains<=2
-# if=buff.serenity.remains<=1.05
-actions.serenitySR+=/fists_of_fury
+actions.serenitySR+=/fists_of_fury,if=buff.serenity.remains<=1.05
 actions.serenitySR+=/rising_sun_kick,target_if=debuff.mark_of_the_crane.down
 actions.serenitySR+=/blackout_kick,target_if=debuff.mark_of_the_crane.down,if=!prev_gcd.1.blackout_kick&cooldown.rising_sun_kick.remains>=2&cooldown.fists_of_fury.remains>=2
 actions.serenitySR+=/blackout_kick,target_if=debuff.mark_of_the_crane.down
