@@ -25,8 +25,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Friend (21)
 Description      : Shields an ally for $d, absorbing $<shield> damage, and preventing damage from delaying spellcasting.
 Tooltip          : Absorbs $w1 damage.
-Variables        : $rapture=$?a47536[${(1+$47536s1/100)}][${1}]
-$shadow=$?a137033[${1.36}][${1}]
+Variables        : $rapture=$?a47536[${(1+$47536s1/100)}][${1}]
+$shadow=$?a137033[${1.36}][${1}]
 $shield=${$SP*1.54*(1+$@versadmg)*$<rapture>*$<shadow>}
 
 Name             : Renew (id=139) [Spell Family (6)] 
@@ -185,8 +185,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.16500 | Target: Enemy (6)
 #3 (id=323674)   : Energize Power (30)
                    Base Value: 400 | Scaled Value: 400 | Misc Value: insanity | Target: Self (1)
-Description      : A word of darkness that causes $s1 Shadow damage instantly, and an additional $o2 Shadow damage over $d.$?a185916[
-
+Description      : A word of darkness that causes $s1 Shadow damage instantly, and an additional $o2 Shadow damage over $d.$?a185916[
+
 |cFFFFFFFFGenerates ${$m3/100} Insanity.|r][]
 Tooltip          : Suffering $w2 Shadow damage every $t2 sec.
 
@@ -298,8 +298,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | SP Coefficient: 5.00000 | Target: Friend (21)
 #2 (id=709474)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6
-Description      : Perform a miracle, healing an ally for $s1.$?s63733[
-
+Description      : Perform a miracle, healing an ally for $s1.$?s63733[
+
 |cFFFFFFFFCooldown reduced by $s2 sec when you cast Heal or Flash Heal|r][]
 
 Name             : Heal (id=2060) [Spell Family (6)] 
@@ -428,8 +428,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.20000 | Target: Enemy (6)
 #2 (id=139174)   : Energize Power (30)
                    Base Value: 1200 | Scaled Value: 1200 | Misc Value: insanity | Target: Self (1)
-Description      : Blasts the target's mind for $s1 Shadow damage.$?a185916[
-
+Description      : Blasts the target's mind for $s1 Shadow damage.$?a185916[
+
 |cFFFFFFFFGenerates $/100;s2 Insanity.|r][]
 
 Name             : Psychic Scream (id=8122) [Spell Family (6)] 
@@ -579,8 +579,8 @@ Effects          :
                    Base Value: 300 | Scaled Value: 300 | Misc Value: 13 | Target: Self (1)
 #4 (id=623774)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4
-Description      : Assaults the target's mind with Shadow energy, causing $o1 Shadow damage over $d and slowing their movement speed by $s2%.$?a185916[
-
+Description      : Assaults the target's mind with Shadow energy, causing $o1 Shadow damage over $d and slowing their movement speed by $s2%.$?a185916[
+
 |cFFFFFFFFGenerates ${$s4*$m3/100} Insanity over the duration.|r][]
 Tooltip          : Movement speed slowed by $s2% and taking Shadow damage every $t1 sec.
 
@@ -699,8 +699,8 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .x...
 Effects          :
 #1 (id=12246)    : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 10 | Scaled Value: 10 | Misc Value 2: 0x4 | Radius: 100 yards | Target: Unknown(118)
-Description      : Infuses the target with vitality, increasing their Stamina by $s1% for $d.
-
+Description      : Infuses the target with vitality, increasing their Stamina by $s1% for $d.
+
 If the target is in your party or raid, all party and raid members will be affected.
 Tooltip          : Stamina increased by $w1%.
 
@@ -853,8 +853,8 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15
 #4 (id=709333)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
-Description      : A word of dark binding that inflicts $s1 Shadow damage to the target. Only usable on enemies that have less than $s2% health.
-
+Description      : A word of dark binding that inflicts $s1 Shadow damage to the target. Only usable on enemies that have less than $s2% health.
+
 |cFFFFFFFFGenerates $s3 Insanity, or $s4 Insanity if the target dies.|r
 
 Name             : Binding Heal (id=32546) [Spell Family (6)] 
@@ -885,8 +885,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.75000 | Target: Self (1)
 #4 (id=325998)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3
-Description      : Heals you, your target, and another friendly target within 20 yards for $s2.
-
+Description      : Heals you, your target, and another friendly target within 20 yards for $s2.
+
 |cFFFFFFFFReduces the remaining cooldown on both Holy Word: Serenity and Holy Word: Sanctify by $s4 sec|r
 
 Name             : Mass Dispel (id=32592) [Spell Family (6)] 
@@ -937,10 +937,10 @@ Effects          :
 #1 (id=22870)    : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Friend (21)
 Description      : Places a ward on an ally that heals them for $33110s1 the next time they take damage, and then jumps to another ally within $155793a1 yds. Jumps up to $s1 times and lasts $41635d after each jump.
-Variables        : $mult1=$?s87336[${1.25}][${1.0}]
-$mult2=$?s122098[${1.25*$<mult1>}][${$<mult1>}]
-$mending=${(1+($SP*0.666))*$pctH*$<mult2>}
-
+Variables        : $mult1=$?s87336[${1.25}][${1.0}]
+$mult2=$?s122098[${1.25*$<mult1>}][${$<mult1>}]
+$mending=${(1+($SP*0.666))*$pctH*$<mult2>}
+
 
 
 Name             : Prayer of Mending (id=33110) [Spell Family (6)] 
@@ -1020,8 +1020,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #3 (id=111848)   : Trigger Spell (64): (41967)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 41967 | Target: Self (1)
-Description      : Summons a shadowy fiend to attack the target for $d.$?c3[
-
+Description      : Summons a shadowy fiend to attack the target for $d.$?c3[
+
 |cFFFFFFFFGenerates ${$262485s1/100} Insanity each time the Shadowfiend attacks.|r][]
 
 Name             : Holy Word: Sanctify (id=34861) [Spell Family (6)] 
@@ -1052,8 +1052,8 @@ Effects          :
                    Base Value: 6 | Scaled Value: 6
 #4 (id=709476)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
-Description      : Releases miraculous light at a target location, healing up to $s2 allies within $a1 yds for $s1.
-
+Description      : Releases miraculous light at a target location, healing up to $s2 allies within $a1 yds for $s1.
+
 |cFFFFFFFFCooldown reduced by $s3 sec when you cast Prayer of Healing and by $s4 sec when you cast Renew|r
 
 Name             : Vampiric Touch (id=34914) [Spell Family (6)] 
@@ -1083,10 +1083,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.5 | SP Coefficient: 0.27500 | Target: Enemy (6)
 #3 (id=323673)   : Energize Power (30)
                    Base Value: 600 | Scaled Value: 600 | Misc Value: insanity | Target: Self (1)
-Description      : A touch of darkness that causes $34914o2 Shadow damage over $34914d, and heals you for ${$e2*100}% of damage dealt.
-
-If Vampiric Touch is dispelled, the dispeller flees in Horror for $87204d.
-
+Description      : A touch of darkness that causes $34914o2 Shadow damage over $34914d, and heals you for ${$e2*100}% of damage dealt.
+
+If Vampiric Touch is dispelled, the dispeller flees in Horror for $87204d.
+
 |cFFFFFFFFGenerates ${$m3/100} Insanity.|r
 Tooltip          : Suffering $w2 Shadow damage every $t2 sec.
 
@@ -1265,15 +1265,15 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7 | Target: Self (1)
 #7 (id=342505)   : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self (1)
-Description      : Disperse into pure shadow energy, reducing all damage taken by $47585s1% for $d, but you are unable to attack or cast spells.
-
-Clears all movement impairing effects and makes you immune to them while dispersed.
-
-Voidform's Insanity drain is temporarily reduced by $s2% while dispersed.
-
+Description      : Disperse into pure shadow energy, reducing all damage taken by $47585s1% for $d, but you are unable to attack or cast spells.
+
+Clears all movement impairing effects and makes you immune to them while dispersed.
+
+Voidform's Insanity drain is temporarily reduced by $s2% while dispersed.
+
 Castable while stunned, feared, or silenced. 
-Tooltip          : Damage taken reduced by $s1%.
-Immune to all movement impairing effects.
+Tooltip          : Damage taken reduced by $s1%.
+Immune to all movement impairing effects.
 Cannot attack or cast spells.
 
 Name             : Penance (id=47666) [Spell Family (6)] 
@@ -1391,8 +1391,8 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40
 #3 (id=188025)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Misc Value 2: 0x14 | Target: Friend (21)
-Description      : Calls upon a guardian spirit to watch over the friendly target for $d, increasing healing received by $s1%$?s159599[][ and preventing the target from dying by sacrificing itself.  This sacrifice terminates the effect and heals the target for $s2% of maximum health]. Castable while stunned.
-
+Description      : Calls upon a guardian spirit to watch over the friendly target for $d, increasing healing received by $s1%$?s159599[][ and preventing the target from dying by sacrificing itself.  This sacrifice terminates the effect and heals the target for $s2% of maximum health]. Castable while stunned.
+
 Massive damage amounts will kill the target despite this effect.
 Tooltip          : Increased healing received by $w1%$?$w1<100[ and will prevent 1 killing blow][].
 
@@ -1419,8 +1419,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 49821 | Target: Unknown(25)
 #2 (id=623751)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4
-Description      : Corrosive shadow energy radiates from the target, dealing ${$49821m2*$s2} Shadow damage over $48045d to all enemies within $49821a2 yards of the target.
-
+Description      : Corrosive shadow energy radiates from the target, dealing ${$49821m2*$s2} Shadow damage over $48045d to all enemies within $49821a2 yards of the target.
+
 |cFFFFFFFFGenerates ${$s2*$208232m1/100} Insanity over the duration per target hit.|r
 Tooltip          : Causing Shadow damage to all targets within $49821a2 yards every $t1 sec.
 
@@ -1596,8 +1596,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=57920)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 8152 | Target: Self (1)
-Description      : When you cast Flash Heal or Heal, the remaining cooldown on Holy Word: Serenity is reduced by $2050s2 sec.
-
+Description      : When you cast Flash Heal or Heal, the remaining cooldown on Holy Word: Serenity is reduced by $2050s2 sec.
+
 When you cast Smite, the remaining cooldown on Holy Word: Chastise is reduced by $88625s2 sec.
 
 Name             : Psychic Horror (id=64044) [Spell Family (6)] 
@@ -1889,10 +1889,10 @@ Effects          :
                    Base Value: 400 | Scaled Value: 400 | Misc Value: insanity | Target: Self (1)
 #4 (id=341205)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | Target: Enemy (6)
-Description      : Assail the target with shadowy spikes, dealing $73510s1 Shadowfrost damage and leaving a spike embedded in their mind.
-
-Mind Blast will detonate these spikes, each dealing $s2% of their original damage to the main target, and ${$m2*$m4/100}% to all nearby targets.
-
+Description      : Assail the target with shadowy spikes, dealing $73510s1 Shadowfrost damage and leaving a spike embedded in their mind.
+
+Mind Blast will detonate these spikes, each dealing $s2% of their original damage to the main target, and ${$m2*$m4/100}% to all nearby targets.
+
 |cFFFFFFFFGenerates ${$m3/100} Insanity.|r
 
 Name             : Mastery: Echo of Light (id=77485) [Spell Family (6), Passive] 
@@ -2008,8 +2008,8 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60 | Target: Self (1)
 #2 (id=178045)   : Dummy (3)
                    Base Value: 60 | Scaled Value: 60
-Description      : Power Word: Shield, Shadow Mend, and Power Word: Radiance apply Atonement to your target for $194384s5 sec.
-
+Description      : Power Word: Shield, Shadow Mend, and Power Word: Radiance apply Atonement to your target for $194384s5 sec.
+
 Your spell damage heals all targets affected by Atonement for $s1% of the damage done.
 
 Name             : Power Word: Barrier (id=81782) [Spell Family (6)] 
@@ -2083,8 +2083,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.12500 | Target: Enemy (6)
 #2 (id=709477)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4
-Description      : Chastises the target for $s1 Holy damage and $?s200199[stuns][incapacitates] them for $?s200199[$200200d][$200196d].$?s63733[
-
+Description      : Chastises the target for $s1 Holy damage and $?s200199[stuns][incapacitates] them for $?s200199[$200200d][$200196d].$?s63733[
+
 |cFFFFFFFFCooldown reduced by $s2 sec when you cast Smite|r][]
 
 Name             : Mysticism (rank=Passive) (id=89745) [Passive, Hidden] 
@@ -3285,8 +3285,8 @@ Attributes       : ........ ........ x....... .......x   ........ ........ .....
 Effects          :
 #1 (id=271185)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | SP Coefficient: 1.80000 | Target: Friend (21)
-Description      : Wraps an ally in shadows which heal for $m1, but at a price.
-
+Description      : Wraps an ally in shadows which heal for $m1, but at a price.
+
 The ally will take ${$m1/20} damage every $187464t1 sec, until they have taken ${$m1/2} total damage from all sources, or leave combat.
 
 Name             : Shadow Mend (id=186440) [Spell Family (6), Passive, Hidden] 
@@ -3540,8 +3540,8 @@ Effects          :
                    Family Flags: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127
 #3 (id=706293)   : Apply Aura (6) | Dummy (4)
                    Base Value: 90 | Scaled Value: 90 | Target: Self (1)
-Description      : All your Insanity-generating abilities generate $s1% more Insanity and you can cast while moving for $d.
-
+Description      : All your Insanity-generating abilities generate $s1% more Insanity and you can cast while moving for $d.
+
 Then, you take damage equal to $s3% of your maximum health and cannot generate Insanity for $263406d.
 Tooltip          : Generating $s1% more Insanity.
 
@@ -3661,9 +3661,9 @@ Effects          :
 #15 (id=706295)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -1500 | Scaled Value: -1500 | Misc Value: 1590 | Target: Self (1)
 Description      : $@spelldesc228264
-Tooltip          : $?s205351[Shadow Word: Void][Mind Blast] cooldown reduced by ${$w6/1000}.1 sec.
-Spell damage dealt increased by $w1%.
-Haste increased by ${$W4}.1%.
+Tooltip          : $?s205351[Shadow Word: Void][Mind Blast] cooldown reduced by ${$w6/1000}.1 sec.
+Spell damage dealt increased by $w1%.
+Haste increased by ${$W4}.1%.
 Losing ${$w3/500} Insanity every sec.
 
 Name             : Insanity (id=194251) [Spell Family (107), Hidden] 
@@ -3934,7 +3934,7 @@ Effects          :
                    Family Flags: 88, 99
 #3 (id=735853)   : Apply Aura (6) | Dummy (4)
                    Base Value: 45 | Scaled Value: 45 | Misc Value: 3
-Description      : Reduces the cooldown of $?s271466[Luminous Barrier][Power Word: Barrier] by ${($m2/1000)*-1)} sec.
+Description      : Reduces the cooldown of $?s271466[Luminous Barrier][Power Word: Barrier] by ${($m2/1000)*-1)} sec.
 $?s271466[Luminous Barrier absorbs an additional $s3% damage.][Power Word: Barrier reduces damage taken by an additional $s1%.]
 
 Name             : Power of the Dark Side (id=198068) [Spell Family (6), Passive] 
@@ -4065,8 +4065,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.40000 | Target: Enemy (6)
 #2 (id=294270)   : Dummy (3)
                    Base Value: 35 | Scaled Value: 35
-Description      : A word of dark binding that inflicts $s1 Shadow damage to the target. Only usable on enemies that have less than $s2% health.
-
+Description      : A word of dark binding that inflicts $s1 Shadow damage to the target. Only usable on enemies that have less than $s2% health.
+
 |cFFFFFFFFGenerates $/100;190714s1 Insanity.|r
 
 Name             : Power Leech (id=200010) 
@@ -4152,8 +4152,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 62982 | Misc Value 2: 0xcb6 | Target: At Enemy (53)
 #2 (id=294667)   : Trigger Spell (64): (41967)
                    Base Value: 75 | Scaled Value: 75 | Trigger Spell: 41967 | Target: Self (1)
-Description      : Summons a Mindbender to attack the target for $d.
-
+Description      : Summons a Mindbender to attack the target for $d.
+
 |cFFFFFFFFGenerates ${$200010s1/100} Insanity each time the Mindbender attacks.|r
 
 Name             : Apotheosis (id=200183) [Spell Family (6)] 
@@ -4446,11 +4446,11 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.55000 | Target: Enemy (6)
 #2 (id=302734)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-Description      : Raise your dagger into the sky, channeling a torrent of void energy into the target for $o Shadow damage over $d. Insanity does not drain during this channel.
-
+Description      : Raise your dagger into the sky, channeling a torrent of void energy into the target for $o Shadow damage over $d. Insanity does not drain during this channel.
+
 Requires Voidform.
-Tooltip          : Dealing $s1 Shadow damage to the target every $t sec.
-
+Tooltip          : Dealing $s1 Shadow damage to the target every $t sec.
+
 Insanity drain temporarily stopped.
 
 Name             : Shadow Word: Void (id=205351) [Spell Family (6)] 
@@ -4477,8 +4477,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.30000 | Target: Enemy (6)
 #2 (id=303209)   : Energize Power (30)
                    Base Value: 1500 | Scaled Value: 1500 | Misc Value: insanity | Target: Self (1)
-Description      : Blasts the target with a word of void for $s1 Shadow damage.$?a185916[
-
+Description      : Blasts the target with a word of void for $s1 Shadow damage.$?a185916[
+
 |cFFFFFFFFGenerates $/100;s2 Insanity.|r][]
 
 Name             : Mind Control (id=205364) [Spell Family (6)] 
@@ -4550,8 +4550,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .x...
 Effects          :
 #1 (id=303236)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-Description      : Inflicts the target with a Mind Bomb.
-
+Description      : Inflicts the target with a Mind Bomb.
+
 After $d or if the target dies, it unleashes a psychic explosion, disorienting all enemies within $226943A1 yds of the target for $226943d.
 Tooltip          : About to unleash a psychic explosion, disorienting all nearby enemies.
 
@@ -4577,8 +4577,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 205386 | Radius: 8 yards | Target: Unknown(87)
 #2 (id=303254)   : Energize Power (30)
                    Base Value: 2000 | Scaled Value: 2000 | Misc Value: insanity | Target: Self (1)
-Description      : Hurl a bolt of slow-moving Shadow energy at the destination, dealing $205386s1 Shadow damage to all targets within $205386A1 yards.
-
+Description      : Hurl a bolt of slow-moving Shadow energy at the destination, dealing $205386s1 Shadow damage to all targets within $205386A1 yards.
+
 |cFFFFFFFFGenerates $/100;s2 Insanity.|r
 
 Name             : Shadow Crash (id=205386) [Scaling Spell (-1), Spell Family (6)] 
@@ -4629,8 +4629,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 234746 | Target: Enemy (6)
 #3 (id=308158)   : Energize Power (30)
                    Base Value: 1600 | Scaled Value: 1600 | Misc Value: insanity | Target: Self (1)
-Description      : Sends a bolt of pure void energy at the enemy, causing $s1 Shadow damage$?a231688[ and extending the duration of Shadow Word: Pain and Vampiric Touch on all nearby targets by ${$231688s1/1000}.1 sec][]. Requires Voidform.
-
+Description      : Sends a bolt of pure void energy at the enemy, causing $s1 Shadow damage$?a231688[ and extending the duration of Shadow Word: Pain and Vampiric Touch on all nearby targets by ${$231688s1/1000}.1 sec][]. Requires Voidform.
+
 |cFFFFFFFFGenerates $/100;s3 Insanity.|r
 
 Name             : Id (id=205477) [Passive] 
@@ -5009,10 +5009,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=343555)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Radius: 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-Description      : Releases an explosive blast of pure void energy, activating Voidform and causing ${$228360s1*2} Shadow damage to all enemies within $a1 yds of your target.
-
-During Voidform, this ability is replaced by Void Bolt.
-
+Description      : Releases an explosive blast of pure void energy, activating Voidform and causing ${$228360s1*2} Shadow damage to all enemies within $a1 yds of your target.
+
+During Voidform, this ability is replaced by Void Bolt.
+
 |cFFFFFFFFRequires ${$C/100} Insanity to activate.|r
 
 Name             : Voidform (id=228264) [Spell Family (6), Passive] 
@@ -5034,8 +5034,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=706425)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-Description      : Activated by casting Void Eruption. Twists your Shadowform with the powers of the Void, increasing spell damage you deal by $194249s1%$?s8092[, reducing the cooldown on Mind Blast by ${$194249m6/-1000}.1 sec,][] and granting an additional ${$s2/10}.1% Haste every $194249t5 sec.
-
+Description      : Activated by casting Void Eruption. Twists your Shadowform with the powers of the Void, increasing spell damage you deal by $194249s1%$?s8092[, reducing the cooldown on Mind Blast by ${$194249m6/-1000}.1 sec,][] and granting an additional ${$s2/10}.1% Haste every $194249t5 sec.
+
 Your Insanity will drain increasingly fast until it reaches 0 and Voidform ends.
 
 Name             : Void Bolt (id=228266) [Spell Family (6), Passive] 
@@ -5055,8 +5055,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=343567)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : For the duration of Voidform, your Void Eruption ability is replaced by Void Bolt:
-
+Description      : For the duration of Voidform, your Void Eruption ability is replaced by Void Bolt:
+
 $@spelltooltip205448
 
 Name             : Void Eruption (id=228360) [Spell Family (6)] 
@@ -5197,7 +5197,7 @@ Effects          :
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Mind Sear (48045), Mind Sear (49821), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Shadow Word: Death (199911), Purge the Wicked (204197), Purge the Wicked (204213), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Schism (214621), Void Eruption (228360), Void Torrent (263165), Dark Void (263346), Dark Ascension (280800)
                    Family Flags: 72
 Description      : Assume a Shadowform, increasing your spell damage dealt by $s1%, and reducing your Physical damage taken by $s2%.
-Tooltip          : Spell damage dealt increased by $s1%.
+Tooltip          : Spell damage dealt increased by $s1%.
 Physical damage taken reduced by $s2%.
 
 Name             : Void Bolt (id=234746) [Spell Family (6), Hidden] 
@@ -5509,8 +5509,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 33251.41 (coefficient=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=479677)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 33251.41 (coefficient=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
-Description      : Deals $s1 Holy Damage to enemies within $A1.
-
+Description      : Deals $s1 Holy Damage to enemies within $A1.
+
 Heals $s2 to allies within $A1. 
 
 Name             : Haste (id=261582) [Scaling Spell (-1), Passive] 
@@ -5621,11 +5621,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.75000 | Target: Enemy (6)
 #2 (id=651861)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-Description      : Channel a torrent of void energy into the target, dealing $o Shadow damage over $d. Insanity does not drain during this channel.
-
+Description      : Channel a torrent of void energy into the target, dealing $o Shadow damage over $d. Insanity does not drain during this channel.
+
 Requires Voidform.
-Tooltip          : Dealing $s1 Shadow damage to the target every $t sec.
-
+Tooltip          : Dealing $s1 Shadow damage to the target every $t sec.
+
 Insanity drain temporarily stopped.
 
 Name             : Dark Void (id=263346) [Spell Family (6)] 
@@ -5650,8 +5650,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #2 (id=731117)   : Energize Power (30)
                    Base Value: 3000 | Scaled Value: 3000 | Misc Value: insanity | Target: Self (1)
-Description      : Unleashes an explosion of dark energy around the target, dealing $s1 Shadow damage and applying Shadow Word: Pain to all nearby enemies.
-
+Description      : Unleashes an explosion of dark energy around the target, dealing $s1 Shadow damage and applying Shadow Word: Pain to all nearby enemies.
+
 |cFFFFFFFFGenerates ${$s2/100} Insanity.|r
 
 Name             : Surrendered to Madness (id=263406) [Spell Family (6)] 
@@ -5837,8 +5837,8 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Radius: 0 - 40 yards | Target: At Caster (22) -> AOE friendly (30)
 #3 (id=709211)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | Radius: 0 - 40 yards | Target: At Caster (22) -> AOE friendly (30)
-Description      : Heals all allies within $A1 yards for $s1, and applies Renew and $s2 stacks of Prayer of Mending to each of them.
-
+Description      : Heals all allies within $A1 yards for $s1, and applies Renew and $s2 stacks of Prayer of Mending to each of them.
+
 |cFFFFFFFFCooldown reduced by $s3 sec when you cast Holy Word: Serenity or Holy Word: Sanctify.|r
 
 Name             : Twist of Fate (id=265258) [Spell Family (6)] 
@@ -6281,8 +6281,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 560.3604 (coefficient=1.801802) | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589)
                    Family Flags: 15
-Description      : Shadow Word: Pain's duration is increased by ${$s1/1000}.1 sec, and it deals $s2 additional damage instantly.
-
+Description      : Shadow Word: Pain's duration is increased by ${$s1/1000}.1 sec, and it deals $s2 additional damage instantly.
+
 |C000FFF00Discipline, Shadow|R
 
 Name             : Contrition (id=270501) [Spell Family (6)] 
@@ -6567,8 +6567,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 144.8168 (coefficient=0.465649) | Trigger Spell: 273830 | Target: Self (1)
 #2 (id=725767)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 284.8856 (coefficient=0.916031) | Target: Self (1)
-Description      : Your spells and abilities have a chance to create a Surging Droplet nearby. Collecting it increases your primary stat by $s1 for $273842d.
-
+Description      : Your spells and abilities have a chance to create a Surging Droplet nearby. Collecting it increases your primary stat by $s1 for $273842d.
+
 Rarely, a Void Droplet will be created, increasing your primary stat by $s2 for $273843d instead.
 
 Name             : Filthy Transfusion (id=273834) [Scaling Spell (-8), Passive] 
@@ -6935,8 +6935,8 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5
 #4 (id=738960)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
-Description      : Your spells and abilities have a chance to fire a bomb at your target, which when in proximity breaks into $s3 smaller bombs. Upon hitting the ground, each smaller bomb deals $280984s1 damage to all nearby enemies.
-
+Description      : Your spells and abilities have a chance to fire a bomb at your target, which when in proximity breaks into $s3 smaller bombs. Upon hitting the ground, each smaller bomb deals $280984s1 damage to all nearby enemies.
+
 Increases your Kul Tiran or Zandalari Engineering by $s4.
 
 Name             : Ricocheting Inflatable Pyrosaw (id=280168) [Passive] 
@@ -6963,10 +6963,10 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4
 #3 (id=738961)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
-Description      : Your spells and abilities have a chance to hurl a R.I.P that bounces among $s2 enemies, dealing $280656s1 Fire damage to each. 
-
-Beneficial spells have a chance to hurl a Mechanized External Needle Dispenser, healing up to $s2 allies for $280658s1.
-
+Description      : Your spells and abilities have a chance to hurl a R.I.P that bounces among $s2 enemies, dealing $280656s1 Fire damage to each. 
+
+Beneficial spells have a chance to hurl a Mechanized External Needle Dispenser, healing up to $s2 allies for $280658s1.
+
 Increases your Kul Tiran or Zandalari Engineering by $s3.
 
 Name             : Auto-Self-Cauterizer (id=280172) [Scaling Spell (-8), Passive] 
@@ -6994,10 +6994,10 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30
 #3 (id=738963)   : Apply Aura (6) | Skill (30)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 2499 | Target: Self (1)
-Description      : Taking damage has a chance to unleash your Auto-Self-Cauterizer, healing you for $280583s1, removing most* bleed effects, and snaring nearby enemies by $280583s2% for $280583d.
-
-Increases your Kul Tiran or Zandalari Engineering by $s3.
-
+Description      : Taking damage has a chance to unleash your Auto-Self-Cauterizer, healing you for $280583s1, removing most* bleed effects, and snaring nearby enemies by $280583s2% for $280583d.
+
+Increases your Kul Tiran or Zandalari Engineering by $s3.
+
 *Efficacy may vary.
 
 Name             : Synaptic Spark Capacitor (id=280174) [Scaling Spell (-8), Spell Family (7), Passive] 
@@ -7024,8 +7024,8 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
 #3 (id=742699)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 1065.175 (coefficient=13.7)
-Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $s1 yards of the Spark Coil take $280847s2 damage every 2 seconds and deal $280847s1% reduced damage to you.
-
+Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $s1 yards of the Spark Coil take $280847s2 damage every 2 seconds and deal $280847s1% reduced damage to you.
+
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
 Name             : Relational Normalization Gizmo (id=280178) [Scaling Spell (-1), Passive] 
@@ -7051,8 +7051,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 311 (coefficient=1) | Target: Self (1)
 #2 (id=738959)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
-Description      : Your spells and abilities have a chance to grow or shrink the world. Shrinking the world grants you $280654s4 primary stat and $280654s6 maximum health for $280654d. Growing the world grants you $280653s1 Haste and $280653s3% movement speed for $280653d.
-
+Description      : Your spells and abilities have a chance to grow or shrink the world. Shrinking the world grants you $280654s4 primary stat and $280654s6 maximum health for $280654d. Growing the world grants you $280653s1 Haste and $280653s3% movement speed for $280653d.
+
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
 Name             : Personal Absorb-o-Tron (id=280181) [Scaling Spell (-8), Passive] 
@@ -7078,8 +7078,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 12828.75 (coefficient=165) | Target: Self (1)
 #2 (id=738962)   : Apply Aura (6) | Skill (30)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 2499 | Target: Self (1)
-Description      : Taking damage has a chance to call your Personal Absorb-o-Tron, absorbing the next $280660s1 damage you take over $280660d.
-
+Description      : Taking damage has a chance to call your Personal Absorb-o-Tron, absorbing the next $280660s1 damage you take over $280660d.
+
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
 Name             : Dagger in the Back (id=280284) [Scaling Spell (-8), Passive] 
@@ -7239,8 +7239,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738151)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 5.697831 (coefficient=0.018321) | Trigger Spell: 280708 | Target: Self (1)
-Description      : Your armor gathers and analyzes combat data every $280708t1 sec, increasing your primary stat by $s1, stacking up to $280709u times. The data decays while out of combat.
-
+Description      : Your armor gathers and analyzes combat data every $280708t1 sec, increasing your primary stat by $s1, stacking up to $280709u times. The data decays while out of combat.
+
 Enables $@spellname280573 within Uldir.
 
 Name             : Laser Matrix (id=280559) [Scaling Spell (-8), Passive] 
@@ -7261,8 +7261,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 4507.592 (coefficient=57.97546) | Trigger Spell: 280702 | Target: Self (1)
 #2 (id=738401)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 5634.728 (coefficient=72.47239) | Target: Self (1)
-Description      : Your spells and abilities have a chance to release a barrage of lasers, dealing $s1 Arcane damage split among all enemies and restoring $s2 health split among injured allies.
-
+Description      : Your spells and abilities have a chance to release a barrage of lasers, dealing $s1 Arcane damage split among all enemies and restoring $s2 health split among injured allies.
+
 Enables $@spellname280573 within Uldir.
 
 Name             : Glory in Battle (id=280577) [Scaling Spell (-7), Passive] 
@@ -7283,7 +7283,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.913709) | Trigger Spell: 280778 | Target: Self (1)
 #2 (id=738555)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.55714) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280780d. 
+Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280780d. 
 Attacking a member of the opposite faction significantly increases this chance.
 
 Name             : Retaliatory Fury (id=280579) [Scaling Spell (-1), Passive] 
@@ -7305,7 +7305,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 320.5505 (coefficient=1.030709) | Trigger Spell: 280785 | Target: Self (1)
 #2 (id=738573)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 1121.974 (coefficient=3.607634) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280788d. 
+Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280788d. 
 Attacking a member of the opposite faction is more likely to activate this effect.
 
 Name             : Combined Might (id=280580) [Scaling Spell (-1), Passive] 
@@ -7414,7 +7414,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.913709) | Trigger Spell: 280851 | Target: Self (1)
 #2 (id=738699)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.55714) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280852d. 
+Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280852d. 
 Attacking a member of the opposite faction significantly increases this chance.
 
 Name             : Last Gift (id=280624) [Scaling Spell (-1), Passive] 
@@ -7436,7 +7436,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 320.5505 (coefficient=1.030709) | Trigger Spell: 280860 | Target: Self (1)
 #2 (id=738721)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 1121.974 (coefficient=3.607634) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280862d. 
+Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280862d. 
 Taking damage from a member of the opposite faction has a chance to activate this effect. 
 
 Name             : Stronger Together (id=280625) [Scaling Spell (-1), Passive] 
@@ -7565,8 +7565,8 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Radius: 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #2 (id=738419)   : Dummy (3)
                    Base Value: 5000 | Scaled Value: 5000
-Description      : Immediately activates a new Voidform, then releases an explosive blast of pure void energy, causing ${$280800s1*2} Shadow damage to all enemies within $a1 yds of your target.
-
+Description      : Immediately activates a new Voidform, then releases an explosive blast of pure void energy, causing ${$280800s1*2} Shadow damage to all enemies within $a1 yds of your target.
+
 |cFFFFFFFFGenerates ${$s2/100} Insanity.|r
 
 Name             : Dark Ascension (id=280800) [Spell Family (6)] 

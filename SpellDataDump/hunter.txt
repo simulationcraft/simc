@@ -198,10 +198,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=481)      : Apply Aura (6) | Periodic Trigger Spell (23): Tame Beast every 6 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 13481 | Target: Self (1)
-Description      : $?a166615[|CFFFF2020You must dismiss your current pet before you can tame another one.|CFFFFD200
-
-][]Tames a beast to be your companion.  If you lose the beast's attention for any reason, the taming process will fail.
-
+Description      : $?a166615[|CFFFF2020You must dismiss your current pet before you can tame another one.|CFFFFD200
+
+][]Tames a beast to be your companion.  If you lose the beast's attention for any reason, the taming process will fail.
+
 You must dismiss any active beast companions and have an empty Call Pet slot before you can begin taming a new beast. Only Beast Mastery specialized Hunters can tame Exotic Beasts.
 Tooltip          : Taming a pet.
 
@@ -293,8 +293,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #2 (id=101372)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.10951 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-Description      : Fires several missiles, hitting your current target and all enemies within $A2 yards for $s2 Physical damage$?s115939[ and triggering Beast Cleave][].$?s19434[
-
+Description      : Fires several missiles, hitting your current target and all enemies within $A2 yards for $s2 Physical damage$?s115939[ and triggering Beast Cleave][].$?s19434[
+
 |cFFFFFFFFGenerates $213363s1 Focus per target hit.|r][]
 
 Name             : Freezing Trap (id=3355) [Spell Family (9)] 
@@ -420,8 +420,8 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Trigger Spell: 1539 | Target: Self (1)
 #2 (id=2548)     : Trigger Spell (64): Feed Pet - Visual
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 51284 | Target: Active Pet (5)
-Description      : Feeds your pet the selected item, instantly restoring $1539s1% of its total health. Not usable in combat.
-
+Description      : Feeds your pet the selected item, instantly restoring $1539s1% of its total health. Not usable in combat.
+
 You may use the Beast Lore ability to identify what types of foods your pet will eat.
 
 Name             : Tame Beast (id=13481) 
@@ -507,10 +507,10 @@ Effects          :
 #1 (id=8519)     : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : Claw the enemy, causing ${$<damage>} damage. Deals $62762s2% more damage and costs $62762s1% more Focus when your pet has 50 or more Focus.
-Variables        : $aotb=$?s191384[${1.3}][${1.0}]
-$ce=$?s152244[${1.7}][${1.5}]
-$spiked=$?s53184[${1.1}][${1.0}]
-$blink=$?s130392[${1.5}][${1.0}]
+Variables        : $aotb=$?s191384[${1.3}][${1.0}]
+$ce=$?s152244[${1.7}][${1.5}]
+$spiked=$?s53184[${1.1}][${1.0}]
+$blink=$?s130392[${1.5}][${1.0}]
 $damage=${$<aotb>*$<ce>*$<spiked>*$<blink>*($RAP*0.333)*(1+$@versadmg)}
 
 Name             : Bite (rank=Basic Attack) (id=17253) [Spell Family (9)] 
@@ -536,10 +536,10 @@ Effects          :
 #1 (id=8994)     : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : Bite the enemy, causing ${$<damage>} damage. Deals $62762s2% more damage and costs $62762s1% more Focus when your pet has 50 or more Focus.
-Variables        : $aotb=$?s191384[${1.3}][${1.0}]
-$ce=$?s152244[${1.7}][${1.5}]
-$spiked=$?s53184[${1.1}][${1.0}]
-$blink=$?s130392[${1.5}][${1.0}]
+Variables        : $aotb=$?s191384[${1.3}][${1.0}]
+$ce=$?s152244[${1.7}][${1.5}]
+$spiked=$?s53184[${1.1}][${1.0}]
+$blink=$?s130392[${1.5}][${1.0}]
 $damage=${$<aotb>*$<ce>*$<spiked>*$<blink>*($RAP*0.333)*(1+$@versadmg)}
 
 Name             : Aimed Shot (id=19434) [Spell Family (9)] 
@@ -571,8 +571,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.07000 | Target: Enemy (6)
 #2 (id=101526)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50
-Description      : A powerful aimed shot that deals ${$s1*$<mult>} Physical damage. Damage increased by $s2% against a target you have not yet damaged. $?!s19434&c1[
-
+Description      : A powerful aimed shot that deals ${$s1*$<mult>} Physical damage. Damage increased by $s2% against a target you have not yet damaged. $?!s19434&c1[
+
 Replaces Cobra Shot.][]
 Variables        : $mult=${($max(0,$min($pl-10,10))*8+130)/210}
 
@@ -607,8 +607,8 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Auto Shot (75), Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565)
                    Family Flags: 0, 106
-Description      : Sends you and your pet into a rage, increasing all damage you both deal by $s1% for $d. $?s231548&s217200[
-
+Description      : Sends you and your pet into a rage, increasing all damage you both deal by $s1% for $d. $?s231548&s217200[
+
 Bestial Wrath's remaining cooldown is reduced by $s3 sec each time you use Barbed Shot.][]
 Tooltip          : Damage dealt increased by $w1%.
 
@@ -858,9 +858,9 @@ Attributes       : ....x... ........ x.x..... ..x.....   ........ .x...... .....
 Effects          :
 #1 (id=14663)    : Trigger Spell (64): Mortal Wounds
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 115804 | Target: Enemy (6)
-Description      : The Carrion Bird screeches, causing Mortal Wounds on the target.
-
-|Tinterface\icons\ability_criticalstrike.blp:24|t |cFFFFFFFFMortal Wounds|r
+Description      : The Carrion Bird screeches, causing Mortal Wounds on the target.
+
+|Tinterface\icons\ability_criticalstrike.blp:24|t |cFFFFFFFFMortal Wounds|r
 Grievously wounds the target, reducing the effectiveness of any healing received for $115804d.
 
 Name             : Prowl (rank=Bonus Ability) (id=24450) [Spell Family (9)] 
@@ -895,7 +895,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | SP Coefficient: 0.25000 | Misc Value: 0x41 | Target: Self (1)
                    Affected School(s): Physical, Arcane
 Description      : Puts your pet in stealth mode, but slows its movement speed by $s2%. The first attack from stealth receives a $s3% bonus to damage.  Lasts until cancelled.
-Tooltip          : Stealthed.
+Tooltip          : Stealthed.
 Movement speed slowed by $s2%.
 
 Name             : Strength (id=27973) [Passive, Hidden] 
@@ -968,8 +968,8 @@ Effects          :
 #2 (id=83780)    : Dummy (3)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
 Description      : Give the command to kill, causing your pet to savagely deal $<damage> Physical damage to the enemy.
-Variables        : $bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]
-$lowNerf=${0.5+$min($pl,20)*0.025}
+Variables        : $bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]
+$lowNerf=${0.5+$min($pl,20)*0.025}
 $damage=${$83381m1+($RAP*0.6)*$<bmMastery>*$<lowNerf>*(1+$@versadmg)}
 
 Name             : Misdirection (id=34477) [Spell Family (9)] 
@@ -1058,10 +1058,10 @@ Effects          :
 #1 (id=42080)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : Smack the enemy, causing ${$<damage>} damage. Deals $62762s2% more damage and costs $62762s1% more Focus when your pet has 50 or more Focus.
-Variables        : $aotb=$?s191384[${1.3}][${1.0}]
-$ce=$?s152244[${1.7}][${1.5}]
-$spiked=$?s53184[${1.1}][${1.0}]
-$blink=$?s130392[${1.5}][${1.0}]
+Variables        : $aotb=$?s191384[${1.3}][${1.0}]
+$ce=$?s152244[${1.7}][${1.5}]
+$spiked=$?s53184[${1.1}][${1.0}]
+$blink=$?s130392[${1.5}][${1.0}]
 $damage=${$<aotb>*$<ce>*$<spiked>*$<blink>*($RAP*0.333)*(1+$@versadmg)}
 
 Name             : Pin (rank=Special Ability) (id=50245) [Scaling Spell (-1), Spell Family (9)] 
@@ -1201,8 +1201,8 @@ Attributes       : .x..x... ........ x....... ........   ........ .x...... .....
 Effects          :
 #1 (id=45831)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy (6)
-Description      : A two-headed shot that hits your primary target and another nearby target, dealing $171457sw2 Nature damage to one and $171454sw2 Frost damage to the other.
-
+Description      : A two-headed shot that hits your primary target and another nearby target, dealing $171457sw2 Nature damage to one and $171454sw2 Frost damage to the other.
+
 |cFFFFFFFFGenerates $204304s1 Focus for each target hit.|r
 
 Name             : Exotic Beasts (id=53270) [Spell Family (9), Passive] 
@@ -1317,9 +1317,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=47525)    : Trigger Spell (64): Mortal Wounds
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 115804 | Target: Enemy (6)
-Description      : The Devilsaur ferociously bites the enemy, causing the Mortal Wounds effect.
-
-|Tinterface\icons\ability_criticalstrike.blp:24|t |cFFFFFFFFMortal Wounds|r
+Description      : The Devilsaur ferociously bites the enemy, causing the Mortal Wounds effect.
+
+|Tinterface\icons\ability_criticalstrike.blp:24|t |cFFFFFFFFMortal Wounds|r
 Grievously wounds the target, reducing the effectiveness of any healing received for $115804d.
 Tooltip          : Healing effects received reduced by $w1%.
 
@@ -1406,10 +1406,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.60000 | Target: Enemy (6)
 #2 (id=101525)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
-Description      : A steady shot that causes $s1 Physical damage.
-
-Usable while moving.
-
+Description      : A steady shot that causes $s1 Physical damage.
+
+Usable while moving.
+
 |cFFFFFFFFGenerates $s2 Focus.
 
 Name             : Sated (id=57724) 
@@ -1795,7 +1795,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | SP Coefficient: 0.25000 | Misc Value: 0x41 | Target: Self (1)
                    Affected School(s): Physical, Arcane
 Description      : Puts your pet in stealth mode, but slows its movement speed by $s2%. The first attack from stealth receives a $s3% bonus to damage.  Lasts until cancelled.
-Tooltip          : Stealthed.
+Tooltip          : Stealthed.
 Movement speed slowed by $s2%.
 
 Name             : Play (rank=Bonus Ability) (id=90347) [Spell Family (9)] 
@@ -1892,7 +1892,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 95725 | Target: Self (1)
 Description      : The Chimera channels a frozen breath attack, causing $<damage> Froststorm damage every $92380T1 sec for $92380d to all enemies within $95725a1 yards.
 Tooltip          : Causing Froststorm damage to all targets within $95725A1 yards.
-Variables        : $damage=${($95725m1+($RAP)*0.144)*(1+$@versadmg)}
+Variables        : $damage=${($95725m1+($RAP)*0.144)*(1+$@versadmg)}
 $aps=${$RAP}
 
 Name             : Hunter Pet Exotic Marker (DND) (id=93273) [Passive, Hidden] 
@@ -1970,7 +1970,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 95714 | Target: Self (1)
 Description      : The Worm burrows into the earth and shakes the ground above, dealing $<damage> Nature damage over $d.
 Tooltip          : Burrowed into the ground, dealing damage to enemies above.
-Variables        : $bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]
+Variables        : $bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]
 $damage= ${($95714m1+(($RAP*0.60)*0.096))*8*(1+$@versadmg)*$<bmMastery>}
 
 Name             : Rest (rank=Bonus Ability) (id=94019) [Spell Family (9)] 
@@ -2056,7 +2056,7 @@ Effects          :
 #1 (id=101379)   : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : The Worm burrows into the earth, shaking the ground above dealing $<damage> Nature damage over $93433d.
-Variables        : $bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]
+Variables        : $bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]
 $damage= ${($95714m1+(($RAP*0.60)*0.096))*8*(1+$@versadmg)*$<bmMastery>}
 
 Name             : Froststorm Breath (rank=Exotic Ability) (id=95725) [Scaling Spell (4), Spell Family (9)] 
@@ -2915,14 +2915,14 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=210781)   : Apply Aura (6) | Unknown(451)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Increases the effect of your pet's Combat Experience to $156843m2% increased damage. Your pet now gains the following abilities, regardless of its active spec:
-|cFFFFFFFF
-Spiked Collar
-Roar of Sacrifice
-Cornered
-Boar's Speed
-Last Stand
-Blood of the Rhino
+Description      : Increases the effect of your pet's Combat Experience to $156843m2% increased damage. Your pet now gains the following abilities, regardless of its active spec:
+|cFFFFFFFF
+Spiked Collar
+Roar of Sacrifice
+Cornered
+Boar's Speed
+Last Stand
+Blood of the Rhino
 Great Stamina|r
 
 Name             : Lone Wolf (id=155228) [Spell Family (9), Passive] 
@@ -3130,8 +3130,8 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40
 #3 (id=224305)   : Dummy (3)
                    Base Value: 120 | Scaled Value: 120
-Description      : When falling below $s2% health, the Clefthoof's skin will thicken, granting $160058s1% reduced incoming damage for $160058d.
-
+Description      : When falling below $s2% health, the Clefthoof's skin will thicken, granting $160058s1% reduced incoming damage for $160058d.
+
 This effect can only occur once every $s3 sec.
 
 Name             : Thick Hide (rank=Special Ability) (id=160058) [Spell Family (9)] 
@@ -3177,9 +3177,9 @@ Attributes       : ....x... ........ x.x..... ..x.....   ........ .x...... .....
 Effects          :
 #1 (id=224310)   : Trigger Spell (64): Mortal Wounds
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 115804 | Target: Enemy (6)
-Description      : The Scorpion lashes out with its tail, stinging the target and causing the Mortal Wounds effect.
-
-|Tinterface\icons\ability_criticalstrike.blp:24|t |cFFFFFFFFMortal Wounds|r
+Description      : The Scorpion lashes out with its tail, stinging the target and causing the Mortal Wounds effect.
+
+|Tinterface\icons\ability_criticalstrike.blp:24|t |cFFFFFFFFMortal Wounds|r
 Grievously wounds the target, reducing the effectiveness of any healing received for $115804d.
 
 Name             : Tendon Rip (rank=Special Ability) (id=160065) [Scaling Spell (-1), Spell Family (9)] 
@@ -3320,8 +3320,8 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .x...
 Effects          :
 #1 (id=228154)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 162496 | Radius: 3 yards | Target: Unknown(87)
-Description      : Hurls a Steel Trap to the target location that snaps shut on the first enemy that approaches, immobilizing them for $162480d and causing them to bleed for $162487o1 damage over $162487d. 
-
+Description      : Hurls a Steel Trap to the target location that snaps shut on the first enemy that approaches, immobilizing them for $162480d and causing them to bleed for $162487o1 damage over $162487d. 
+
 Damage other than Steel Trap may break the immobilization effect. Trap will exist for $162496d. Limit 1.
 
 Name             : Steel Trap (id=162496) [Spell Family (9)] 
@@ -3638,7 +3638,7 @@ Effects          :
 #8 (id=271196)   : Apply Aura (6) | Modify Attacker Ranged Hit Chance (185)
                    Base Value: -200 | Scaled Value: -200 | Target: Self (1)
 Description      : Deflects all attacks and reduces all damage you take by $s4% for $d, but you cannot attack.$?s83495[  Additionally, you have a $83495s1% chance to reflect spells back at the attacker.][]
-Tooltip          : Deflecting all attacks.
+Tooltip          : Deflecting all attacks.
 Damage taken reduced by $w4%.
 
 Name             : Raptor Strike (id=186270) [Spell Family (9)] 
@@ -3869,8 +3869,8 @@ Effects          :
                    Base Value: 1000 | Scaled Value: 1000
 #3 (id=739193)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
-Description      : A sweeping attack that strikes all enemies in front of you for $s1 Physical damage.
-
+Description      : A sweeping attack that strikes all enemies in front of you for $s1 Physical damage.
+
 Reduces the remaining cooldown on Wildfire Bomb by $<cdr> sec for each target hit, up to $s3.
 Variables        : $cdr=${$s2/1000}
 
@@ -3957,8 +3957,8 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Pathfinding (264656), Endurance Training (264662), Predator's Thirst (264663)
                    Family Flags: 13, 18, 23
-Description      : Increases the damage of your pet's abilities by $s1%.
-
+Description      : Increases the damage of your pet's abilities by $s1%.
+
 Increases the effectiveness of your pet's Predator's Thirst, Endurance Training, and Pathfinding passives by $s3%.
 
 Name             : Cobra Shot (id=193455) [Spell Family (9)] 
@@ -3987,8 +3987,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.27581 | Target: Enemy (6)
 #3 (id=481423)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
-Description      : A quick shot causing ${$s2*$<mult>} Physical damage.
-
+Description      : A quick shot causing ${$s2*$<mult>} Physical damage.
+
 Reduces the cooldown of Kill Command by $s3 sec.
 Variables        : $mult=${($min($pl-1,19)*12+112)/340}
 
@@ -4023,7 +4023,7 @@ Effects          :
                    Affected Spells: Aimed Shot (19434), Barrage (120361), A Murder of Crows (131894), A Murder of Crows (131900), Bursting Shot (186387), Piercing Shot (198670), Bursting Shot (224729), Rapid Fire (257044), Volley (260247), Serpent Sting (271788)
                    Family Flags: 5, 17, 34, 70, 76, 99, 118, 119
 Description      : Range of all your ranged abilities is increased by ${$s1}.1% and damage of all abilities increased by ${$s2}.1%.
-Tooltip          : Range increased by $w1%.
+Tooltip          : Range increased by $w1%.
 Focus spending abilites deal $s2% increased damage.
 
 Name             : Trueshot (id=193526) [Spell Family (9)] 
@@ -4086,7 +4086,7 @@ Effects          :
 #5 (id=739550)   : Apply Aura (6) | Periodic Energize Power (24): every 1 seconds
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 2 | Target: Active Pet (5)
 Description      : Grants you and your pet $s2 Focus per sec and $s1% increased critical strike chance for $d.
-Tooltip          : Gaining $s2 Focus per sec.
+Tooltip          : Gaining $s2 Focus per sec.
 Critical Strike chance increased by $s1%.
 
 Name             : Scent of Blood (id=193532) [Spell Family (9), Passive] 
@@ -4178,8 +4178,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 104493 | Misc Value 2: 0xec6 | Radius: 0 - 3 yards | Target: Custom (18) -> Unknown(85)
 #2 (id=305712)   : Apply Aura (6) | Periodic Energize Power (24): every 1 seconds
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 2 | Target: Self (1)
-Description      : Summons a Spitting Cobra for $d that attacks your target for $206685s1 Nature damage every 2 sec. 
-
+Description      : Summons a Spitting Cobra for $d that attacks your target for $206685s1 Nature damage every 2 sec. 
+
 While the Cobra is active you gain $s2 Focus every sec.
 Tooltip          : Generating $s2 additional Focus every sec.
 
@@ -4687,8 +4687,8 @@ Effects          :
 #2 (id=328701)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Discharge a massive jolt of electricity from |cFFFFCC99Titanstrike|r into all your pets$?s217200[][ and Dire Beasts], causing them to deal up to ${$RAP*1.15*0.5*$<bmMastery>} Nature damage to their target every $207094t sec. for $207094d.$?s217200[ Also causes the next pet frenzy caused by Barbed Shot to deal $218635s1 additional Nature damage on each of the 5 attacks.][]
-Variables        : $bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]
-$lowNerf=${0.5+$min($pl,20)*0.025}
+Variables        : $bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]
+$lowNerf=${0.5+$min($pl,20)*0.025}
 $damage=${$83381m1+($RAP*0.6)*$<bmMastery>*$<lowNerf>*(1+$@versadmg)}
 
 Name             : Titan's Thunder (id=207081) [Spell Family (9), Passive, Hidden] 
@@ -4825,8 +4825,8 @@ Effects          :
                    Family Flags: 63
 #2 (id=315469)   : Unknown(179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7019 | Target: Custom (18)
-Description      : Fires a slow-moving munition directly forward. Activating this ability a second time detonates the Shot, dealing up to $212680s1 Fire damage to all enemies within $212680A1 yds.
-
+Description      : Fires a slow-moving munition directly forward. Activating this ability a second time detonates the Shot, dealing up to $212680s1 Fire damage to all enemies within $212680A1 yds.
+
 If you do not detonate Explosive Shot, $269850s1 Focus and some of the cooldown will be refunded.
 
 Name             : Butchery (id=212436) [Spell Family (9)] 
@@ -4855,8 +4855,8 @@ Effects          :
                    Base Value: 1000 | Scaled Value: 1000
 #3 (id=740188)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
-Description      : Strike all nearby enemies in a flurry of strikes, inflicting $s1 Physical damage to each.
-
+Description      : Strike all nearby enemies in a flurry of strikes, inflicting $s1 Physical damage to each.
+
 Reduces the remaining cooldown on Wildfire Bomb by $<cdr> sec for each target hit, up to $s3.
 Variables        : $cdr=${$s2/1000}
 
@@ -4905,10 +4905,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.10000 | Target: Enemy (6)
 #2 (id=323303)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-Description      : Fire a shot that tears through your enemy, causing them to bleed for ${$s1*$d/$t1} damage over $d.
-
-Sends your pet into a frenzy, increasing attack speed by $272790s1% for $272790d, stacking up to $272790u times.
-
+Description      : Fire a shot that tears through your enemy, causing them to bleed for ${$s1*$d/$t1} damage over $d.
+
+Sends your pet into a frenzy, increasing attack speed by $272790s1% for $272790d, stacking up to $272790u times.
+
 |cFFFFFFFFGenerates ${$246152s1*$246152d/$246152t1} Focus over $246152d.|r
 Tooltip          : Suffering $sw1 damage every $t1 sec.
 
@@ -5286,8 +5286,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 33251.41 (coefficient=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=479677)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 33251.41 (coefficient=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
-Description      : Deals $s1 Holy Damage to enemies within $A1.
-
+Description      : Deals $s1 Holy Damage to enemies within $A1.
+
 Heals $s2 to allies within $A1. 
 
 Name             : Rapid Fire (id=257044) [Spell Family (9)] 
@@ -5314,10 +5314,10 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Enemy (6)
 #2 (id=738873)   : Apply Aura (6) | Periodic Trigger Spell (23): Rapid Fire every 0.33 seconds
                    Base Value: 40 | Scaled Value: 40 | Trigger Spell: 257045 | Target: Self (1)
-Description      : Shoot a stream of $s1 shots at your target over $d, dealing a total of ${$m1*$257045sw1} Physical damage. 
-
-Each shot generates $263585s1 Focus.
-
+Description      : Shoot a stream of $s1 shots at your target over $d, dealing a total of ${$m1*$257045sw1} Physical damage. 
+
+Each shot generates $263585s1 Focus.
+
 Usable while moving.
 
 Name             : Rapid Fire (id=257045) [Spell Family (9)] 
@@ -5366,11 +5366,11 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 127 | Target: Enemy (6)
 #2 (id=739461)   : Apply Aura (6) | Stalked (68)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-Description      : Apply Hunter's Mark to the target, increasing all damage you deal to the marked target by $s1%.  If the target dies while affected by Hunter's Mark, you instantly gain $259558s1 Focus. The target can always be seen and tracked by the Hunter.
-
+Description      : Apply Hunter's Mark to the target, increasing all damage you deal to the marked target by $s1%.  If the target dies while affected by Hunter's Mark, you instantly gain $259558s1 Focus. The target can always be seen and tracked by the Hunter.
+
 Only one Hunter's Mark can be applied at a time.
-Tooltip          : Damage taken from the Hunter increased by $s1%.
-
+Tooltip          : Damage taken from the Hunter increased by $s1%.
+
 Can always be seen and tracked by the Hunter.
 
 Name             : Multi-Shot (id=257620) [Spell Family (9)] 
@@ -5567,9 +5567,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=483863)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.90000 | Target: Enemy (6)
-Description      : A brutal attack that deals $s1 Physical damage and grants you Mongoose Fury.
-
-|cFFFFFFFFMongoose Fury|r
+Description      : A brutal attack that deals $s1 Physical damage and grants you Mongoose Fury.
+
+|cFFFFFFFFMongoose Fury|r
 Increases the damage of Mongoose Bite by $259388s1% for $259388d, stacking up to $259388u times. Successive attacks do not increase duration.
 
 Name             : Mongoose Fury (id=259388) [Spell Family (9)] 
@@ -5618,8 +5618,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 259398 | Target: Enemy (6)
 #2 (id=714420)   : Trigger Spell (64): Chakrams
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 267605 | Target: Self (1)
-Description      : Throw a pair of chakrams at your target, slicing all enemies in the chakrams' path for $<damage> Physical damage. The chakrams will return to you, damaging enemies again.
-
+Description      : Throw a pair of chakrams at your target, slicing all enemies in the chakrams' path for $<damage> Physical damage. The chakrams will return to you, damaging enemies again.
+
 Your primary target takes $259398s2% increased damage.
 Variables        : $damage=${$259396s1}
 
@@ -5694,12 +5694,12 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Misc Value: focus | Target: Self (1)
 #4 (id=485368)   : Trigger Spell (64): Tip of the Spear
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 260286 | Target: Self (1)
-Description      : Give the command to kill, causing your pet to savagely deal $<damage> Physical damage to the enemy.$?s263186[
-
-Has a $s2% chance to immediately reset its cooldown.][]
-
+Description      : Give the command to kill, causing your pet to savagely deal $<damage> Physical damage to the enemy.$?s263186[
+
+Has a $s2% chance to immediately reset its cooldown.][]
+
 |cFFFFFFFFGenerates $s3 Focus.|r
-Variables        : $damage=${$ap*($s1/100)*(1+$@versadmg)}
+Variables        : $damage=${$ap*($s1/100)*(1+$@versadmg)}
 
 
 Name             : Serpent Sting (id=259491) [Spell Family (9)] 
@@ -5974,8 +5974,8 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 #2 (id=485319)   : Apply Aura (6) | Unknown(395)
                    Base Value: 12 | Scaled Value: 12 | Misc Value: 12314 | Target: Self (1)
-Description      : Kill Command causes the target to bleed for ${$RAP*($s1/100)*($259277d/$259277t2)} damage over $259277d.
-
+Description      : Kill Command causes the target to bleed for ${$RAP*($s1/100)*($259277d/$259277t2)} damage over $259277d.
+
 You and your pet gain $260249s1% attack speed for every bleeding enemy within $s2 yds.
 
 Name             : Predator (id=260249) [Spell Family (9)] 
@@ -6328,8 +6328,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.10000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Spirit Bond (263140)
                    Family Flags: 54
-Description      : You and your pet's Focus spending abilities deal ${$s1}.1% increased damage.
-
+Description      : You and your pet's Focus spending abilities deal ${$s1}.1% increased damage.
+
 While your pet is active, you both regenerate ${$s4}.1% of maximum health every $t3 sec.
 
 Name             : Spirit Bond (id=263140) [Spell Family (9)] 
@@ -6371,8 +6371,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=651887)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Kill Command has a $259489s2% chance to immediately reset its cooldown.
-
+Description      : Kill Command has a $259489s2% chance to immediately reset its cooldown.
+
 Coordinated Assault increases this chance by another $266779s4%.
 
 Name             : Lock Jaw (rank=Special Ability) (id=263423) [Scaling Spell (-1), Spell Family (9)] 
@@ -6602,9 +6602,9 @@ Attributes       : ....x... ........ x.x..... ..x.....   ........ .x...... .....
 Effects          :
 #1 (id=706861)   : Trigger Spell (64): Mortal Wounds
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 115804 | Target: Enemy (6)
-Description      : The Hyena sinks its fangs into the target, infecting the target with Mortal Wounds.
-
-|Tinterface\icons\ability_criticalstrike.blp:24|t |cFFFFFFFFMortal Wounds|r
+Description      : The Hyena sinks its fangs into the target, infecting the target with Mortal Wounds.
+
+|Tinterface\icons\ability_criticalstrike.blp:24|t |cFFFFFFFFMortal Wounds|r
 Grievously wounds the target, reducing the effectiveness of any healing received for $115804d.
 
 Name             : Savage Rend (rank=Special Ability) (id=263854) [Scaling Spell (4), Spell Family (9)] 
@@ -6628,9 +6628,9 @@ Attributes       : ....x... ........ x.x..... ..x.....   ........ .x...... .....
 Effects          :
 #1 (id=706862)   : Trigger Spell (64): Mortal Wounds
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 115804 | Target: Enemy (6)
-Description      : The Raptor slashes deep into the target, causing Mortal Wounds.
-
-|Tinterface\icons\ability_criticalstrike.blp:24|t |cFFFFFFFFMortal Wounds|r
+Description      : The Raptor slashes deep into the target, causing Mortal Wounds.
+
+|Tinterface\icons\ability_criticalstrike.blp:24|t |cFFFFFFFFMortal Wounds|r
 Grievously wounds the target, reducing the effectiveness of any healing received for $115804d.
 
 Name             : Ravage (rank=Special Ability) (id=263857) [Scaling Spell (4), Spell Family (9)] 
@@ -6654,9 +6654,9 @@ Attributes       : ....x... ........ x.x..... ..x.....   ........ .x...... .....
 Effects          :
 #1 (id=706867)   : Trigger Spell (64): Mortal Wounds
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 115804 | Target: Enemy (6)
-Description      : The Ravager tears into the enemy,  causing the Mortal Wounds effect.
-
-|Tinterface\icons\ability_criticalstrike.blp:24|t |cFFFFFFFFMortal Wounds|r
+Description      : The Ravager tears into the enemy,  causing the Mortal Wounds effect.
+
+|Tinterface\icons\ability_criticalstrike.blp:24|t |cFFFFFFFFMortal Wounds|r
 Grievously wounds the target, reducing the effectiveness of any healing received for $115804d.
 
 Name             : Toxic Sting (rank=Special Ability) (id=263858) [Scaling Spell (4), Spell Family (9)] 
@@ -6680,9 +6680,9 @@ Attributes       : ....x... ........ x.x..... ..x.....   ........ .x...... .....
 Effects          :
 #1 (id=706868)   : Trigger Spell (64): Mortal Wounds
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 115804 | Target: Enemy (6)
-Description      : The Wasp dives in and stings the target, causing the Mortal Wounds effect.
-
-|Tinterface\icons\ability_criticalstrike.blp:24|t |cFFFFFFFFMortal Wounds|r
+Description      : The Wasp dives in and stings the target, causing the Mortal Wounds effect.
+
+|Tinterface\icons\ability_criticalstrike.blp:24|t |cFFFFFFFFMortal Wounds|r
 Grievously wounds the target, reducing the effectiveness of any healing received for $115804d.
 
 Name             : Obsidian Skin (rank=Special Ability) (id=263867) [Spell Family (9)] 
@@ -6844,8 +6844,8 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40
 #3 (id=706993)   : Dummy (3)
                    Base Value: 120 | Scaled Value: 120
-Description      : When falling below $s2% health, the Bear's fur will thicken, granting $160058s1% reduced incoming damage for $160058d.
-
+Description      : When falling below $s2% health, the Bear's fur will thicken, granting $160058s1% reduced incoming damage for $160058d.
+
 This effect can only occur once every $s3 sec.
 
 Name             : Silverback (rank=Special Ability) (id=263938) [Spell Family (9)] 
@@ -6897,8 +6897,8 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40
 #3 (id=707000)   : Dummy (3)
                    Base Value: 120 | Scaled Value: 120
-Description      : When falling below $s2% health, the Gorilla will shrug off attacks, granting $160058s1% reduced incoming damage for $160058d.
-
+Description      : When falling below $s2% health, the Gorilla will shrug off attacks, granting $160058s1% reduced incoming damage for $160058d.
+
 This effect can only occur once every $s3 sec.
 
 Name             : Resounding Protection (id=263962) [Scaling Spell (-8), Passive] 
@@ -7317,8 +7317,8 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | SP Coefficient: 0.25000 | Radius: 50000 yards | Target: Raid Members (56)
 #2 (id=708376)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 20 | Scaled Value: 20 | Radius: 50000 yards | Target: Raid Members (56)
-Description      : Increases haste by $s1% for all party and raid members for $d.
-
+Description      : Increases haste by $s1% for all party and raid members for $d.
+
 Allies receiving this effect will become Sated and unable to benefit from Primal Rage or similar effects again for $57724d.
 Tooltip          : Haste increased by $s1%.
 
@@ -7434,9 +7434,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=710469)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.90000 | Target: Enemy (6)
-Description      : A brutal attack that deals $sw1 Physical damage and grants you Mongoose Fury.
-
-|cFFFFFFFFMongoose Fury|r
+Description      : A brutal attack that deals $sw1 Physical damage and grants you Mongoose Fury.
+
+|cFFFFFFFFMongoose Fury|r
 Increases the damage of Mongoose Bite by $259388s1% for $259388d, stacking up to $259388u times. Successive attacks do not increase duration.
 
 Name             : Terms of Engagement (id=265895) [Spell Family (9), Passive] 
@@ -7549,10 +7549,10 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 #5 (id=739288)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-Description      : You and your pet attack as one, increasing all damage you both deal by $s1% for $d.$?s263186[
-
+Description      : You and your pet attack as one, increasing all damage you both deal by $s1% for $d.$?s263186[
+
 While Coordinated Assault is active, Kill Command's chance to reset is increased by $s4%.][]
-Tooltip          : Damage dealt increased by $s1%.$?s263186[
+Tooltip          : Damage dealt increased by $s1%.$?s263186[
 Kill Command's chance to reset increased by $s4%.][]
 
 Name             : Born To Be Wild (id=266921) [Spell Family (9), Passive] 
@@ -7659,8 +7659,8 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
 Effects          :
 #1 (id=714405)   : Unknown(179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 12253 | Target: Custom (18)
-Description      : Throw a pair of chakrams at your target, slicing all enemies in the chakrams' path for $259396s1 Physical damage. The chakrams will return to you, damaging enemies again.
-
+Description      : Throw a pair of chakrams at your target, slicing all enemies in the chakrams' path for $259396s1 Physical damage. The chakrams will return to you, damaging enemies again.
+
 Your primary target takes $259398s2% increased damage.
 
 Name             : Chakrams (id=267666) [Spell Family (9)] 
@@ -7976,11 +7976,11 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ .xx..... .....
 Effects          :
 #1 (id=718226)   : Dummy (3)
                    Base Value: 117 | Scaled Value: 117 | Target: Enemy (6)
-Description      : You and your pet leap to the target and strike it as one, dealing a total of $<damage> Physical damage.
-
+Description      : You and your pet leap to the target and strike it as one, dealing a total of $<damage> Physical damage.
+
 |cFFFFFFFFGenerates $269752s2 Focus for you and your pet.|r
-Variables        : $petDamage=${$ap*($s1/100)*(1+$@versadmg)}
-$hunterDamage=${$269752s1}
+Variables        : $petDamage=${$ap*($s1/100)*(1+$@versadmg)}
+$hunterDamage=${$269752s1}
 $damage=${$<petDamage>+$<hunterDamage>}
 
 Name             : Flanking Strike (id=269752) [Spell Family (9)] 
@@ -8048,8 +8048,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 270327 | Target: Enemy (6)
 #2 (id=719185)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
-Description      : Hurl a bomb at the target, exploding for $270329s1 Fire damage in a cone and coating enemies in pheromones, causing them to suffer $270332o1 Fire damage over $270332d.
-
+Description      : Hurl a bomb at the target, exploding for $270329s1 Fire damage in a cone and coating enemies in pheromones, causing them to suffer $270332o1 Fire damage over $270332d.
+
 Kill Command has a $s2% chance to reset against targets coated with Pheromone Bomb.
 
 Name             : Pheromone Bomb (id=270327) [Spell Family (9)] 
@@ -8138,8 +8138,8 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .x...
 Effects          :
 #1 (id=719199)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 270336 | Target: Enemy (6)
-Description      : Hurl a bomb at the target, exploding for $270338s1 Fire damage in a cone and impaling enemies with burning shrapnel, scorching them for $270339o1 Fire damage over $270339d.
-
+Description      : Hurl a bomb at the target, exploding for $270338s1 Fire damage in a cone and impaling enemies with burning shrapnel, scorching them for $270339o1 Fire damage over $270339d.
+
 $?s259387[Mongoose Bite][Raptor Strike] and $?s212436[Butchery][Carve] apply Internal Bleeding, causing $270343o1 damage over $270343d. Internal Bleeding stacks up to $270343u times.
 
 Name             : Shrapnel Bomb (id=270336) [Spell Family (9)] 
@@ -8210,7 +8210,7 @@ Effects          :
 #2 (id=719205)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : $@spelldesc270335
-Tooltip          : Suffering $w1 Fire damage every $t1 sec.
+Tooltip          : Suffering $w1 Fire damage every $t1 sec.
 $?s259387[Mongoose Bite][Raptor Strike] and Butchery apply a stack of Internal Bleeding.
 
 Name             : Internal Bleeding (id=270343) [Spell Family (9)] 
@@ -8275,12 +8275,12 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=720948)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Lace your Wildfire Bomb with extra reagents, randomly giving it one of the following enhancements each time you throw it:
-
-|cFFFFFFFFShrapnel Bomb: |rShrapnel pierces the targets, causing $?s259387[Mongoose Bite][Raptor Strike] and $?s212436[Butchery][Carve] to apply a bleed for $270343d that stacks up to $270343u times.
-
-|cFFFFFFFFPheromone Bomb: |rKill Command has a $270323s2% chance to reset against targets coated with Pheromones.
-
+Description      : Lace your Wildfire Bomb with extra reagents, randomly giving it one of the following enhancements each time you throw it:
+
+|cFFFFFFFFShrapnel Bomb: |rShrapnel pierces the targets, causing $?s259387[Mongoose Bite][Raptor Strike] and $?s212436[Butchery][Carve] to apply a bleed for $270343d that stacks up to $270343u times.
+
+|cFFFFFFFFPheromone Bomb: |rKill Command has a $270323s2% chance to reset against targets coated with Pheromones.
+
 |cFFFFFFFFVolatile Bomb: |rReacts violently with poison, causing an extra explosion against enemies suffering from your Serpent Sting and refreshes your Serpent Stings.
 
 Name             : Volatile Bomb (id=271045) [Spell Family (9)] 
@@ -8304,8 +8304,8 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .x...
 Effects          :
 #1 (id=721011)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 271047 | Target: Enemy (6)
-Description      : Hurl a bomb at the target, exploding for $271048s1 Fire damage in a cone and coating enemies in volatile wildfire, scorching them for $271049o1 Fire damage over $271049d.
-
+Description      : Hurl a bomb at the target, exploding for $271048s1 Fire damage in a cone and coating enemies in volatile wildfire, scorching them for $271049o1 Fire damage over $271049d.
+
 Volatile Bomb causes an extra explosion for $260231s1 Fire damage against targets affected by Serpent Sting, and refreshes your Serpent Stings when it explodes.
 
 Name             : Volatile Bomb (id=271047) [Spell Family (9)] 
@@ -8387,8 +8387,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=721436)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-Description      : H T1 N-Zero
-Points: $s1
+Description      : H T1 N-Zero
+Points: $s1
 My points should have changed
 
 Name             : Uncertainty (id=271263) [Passive] 
@@ -8407,8 +8407,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=721440)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-Description      : H T1 N-Zero
-Points: $s1
+Description      : H T1 N-Zero
+Points: $s1
 My parent has been changed. 
 
 Name             : Uncertainty (id=271266) [Passive] 
@@ -8427,8 +8427,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=721443)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-Description      : H T1 N-Zero
-Points: $s1
+Description      : H T1 N-Zero
+Points: $s1
 I am a new power
 
 Name             : Uncertainty (id=271267) [Passive] 
@@ -8447,8 +8447,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=721444)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-Description      : H T1 N-Zero
-Points: $s1
+Description      : H T1 N-Zero
+Points: $s1
 Different Powerset
 
 Name             : Harpoon (id=271625) [Spell Family (9)] 
@@ -8516,10 +8516,10 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=723668)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Commands your pet to perform its unique ability. This ability will transform based on the specialization of your active pet. 
-
-Ferocity: $@spellname264667
-Tenacity: $@spellname264735
+Description      : Commands your pet to perform its unique ability. This ability will transform based on the specialization of your active pet. 
+
+Ferocity: $@spellname264667
+Tenacity: $@spellname264735
 Cunning: $@spellname53271
 
 Name             : Serrated Jaws (id=272717) [Scaling Spell (-8), Spell Family (9), Passive] 
@@ -8887,8 +8887,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 144.8168 (coefficient=0.465649) | Trigger Spell: 273830 | Target: Self (1)
 #2 (id=725767)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 284.8856 (coefficient=0.916031) | Target: Self (1)
-Description      : Your spells and abilities have a chance to create a Surging Droplet nearby. Collecting it increases your primary stat by $s1 for $273842d.
-
+Description      : Your spells and abilities have a chance to create a Surging Droplet nearby. Collecting it increases your primary stat by $s1 for $273842d.
+
 Rarely, a Void Droplet will be created, increasing your primary stat by $s2 for $273843d instead.
 
 Name             : Filthy Transfusion (id=273834) [Scaling Spell (-8), Passive] 
@@ -9389,8 +9389,8 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5
 #4 (id=738960)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
-Description      : Your spells and abilities have a chance to fire a bomb at your target, which when in proximity breaks into $s3 smaller bombs. Upon hitting the ground, each smaller bomb deals $280984s1 damage to all nearby enemies.
-
+Description      : Your spells and abilities have a chance to fire a bomb at your target, which when in proximity breaks into $s3 smaller bombs. Upon hitting the ground, each smaller bomb deals $280984s1 damage to all nearby enemies.
+
 Increases your Kul Tiran or Zandalari Engineering by $s4.
 
 Name             : Ricocheting Inflatable Pyrosaw (id=280168) [Passive] 
@@ -9417,10 +9417,10 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4
 #3 (id=738961)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
-Description      : Your spells and abilities have a chance to hurl a R.I.P that bounces among $s2 enemies, dealing $280656s1 Fire damage to each. 
-
-Beneficial spells have a chance to hurl a Mechanized External Needle Dispenser, healing up to $s2 allies for $280658s1.
-
+Description      : Your spells and abilities have a chance to hurl a R.I.P that bounces among $s2 enemies, dealing $280656s1 Fire damage to each. 
+
+Beneficial spells have a chance to hurl a Mechanized External Needle Dispenser, healing up to $s2 allies for $280658s1.
+
 Increases your Kul Tiran or Zandalari Engineering by $s3.
 
 Name             : Auto-Self-Cauterizer (id=280172) [Scaling Spell (-8), Passive] 
@@ -9448,10 +9448,10 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30
 #3 (id=738963)   : Apply Aura (6) | Skill (30)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 2499 | Target: Self (1)
-Description      : Taking damage has a chance to unleash your Auto-Self-Cauterizer, healing you for $280583s1, removing most* bleed effects, and snaring nearby enemies by $280583s2% for $280583d.
-
-Increases your Kul Tiran or Zandalari Engineering by $s3.
-
+Description      : Taking damage has a chance to unleash your Auto-Self-Cauterizer, healing you for $280583s1, removing most* bleed effects, and snaring nearby enemies by $280583s2% for $280583d.
+
+Increases your Kul Tiran or Zandalari Engineering by $s3.
+
 *Efficacy may vary.
 
 Name             : Synaptic Spark Capacitor (id=280174) [Scaling Spell (-8), Spell Family (7), Passive] 
@@ -9478,8 +9478,8 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
 #3 (id=742699)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 1065.175 (coefficient=13.7)
-Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $s1 yards of the Spark Coil take $280847s2 damage every 2 seconds and deal $280847s1% reduced damage to you.
-
+Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $s1 yards of the Spark Coil take $280847s2 damage every 2 seconds and deal $280847s1% reduced damage to you.
+
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
 Name             : Relational Normalization Gizmo (id=280178) [Scaling Spell (-1), Passive] 
@@ -9505,8 +9505,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 311 (coefficient=1) | Target: Self (1)
 #2 (id=738959)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
-Description      : Your spells and abilities have a chance to grow or shrink the world. Shrinking the world grants you $280654s4 primary stat and $280654s6 maximum health for $280654d. Growing the world grants you $280653s1 Haste and $280653s3% movement speed for $280653d.
-
+Description      : Your spells and abilities have a chance to grow or shrink the world. Shrinking the world grants you $280654s4 primary stat and $280654s6 maximum health for $280654d. Growing the world grants you $280653s1 Haste and $280653s3% movement speed for $280653d.
+
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
 Name             : Personal Absorb-o-Tron (id=280181) [Scaling Spell (-8), Passive] 
@@ -9532,8 +9532,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 12828.75 (coefficient=165) | Target: Self (1)
 #2 (id=738962)   : Apply Aura (6) | Skill (30)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 2499 | Target: Self (1)
-Description      : Taking damage has a chance to call your Personal Absorb-o-Tron, absorbing the next $280660s1 damage you take over $280660d.
-
+Description      : Taking damage has a chance to call your Personal Absorb-o-Tron, absorbing the next $280660s1 damage you take over $280660d.
+
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
 Name             : Dagger in the Back (id=280284) [Scaling Spell (-8), Passive] 
@@ -9676,8 +9676,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738151)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 5.697831 (coefficient=0.018321) | Trigger Spell: 280708 | Target: Self (1)
-Description      : Your armor gathers and analyzes combat data every $280708t1 sec, increasing your primary stat by $s1, stacking up to $280709u times. The data decays while out of combat.
-
+Description      : Your armor gathers and analyzes combat data every $280708t1 sec, increasing your primary stat by $s1, stacking up to $280709u times. The data decays while out of combat.
+
 Enables $@spellname280573 within Uldir.
 
 Name             : Laser Matrix (id=280559) [Scaling Spell (-8), Passive] 
@@ -9698,8 +9698,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 4507.592 (coefficient=57.97546) | Trigger Spell: 280702 | Target: Self (1)
 #2 (id=738401)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 5634.728 (coefficient=72.47239) | Target: Self (1)
-Description      : Your spells and abilities have a chance to release a barrage of lasers, dealing $s1 Arcane damage split among all enemies and restoring $s2 health split among injured allies.
-
+Description      : Your spells and abilities have a chance to release a barrage of lasers, dealing $s1 Arcane damage split among all enemies and restoring $s2 health split among injured allies.
+
 Enables $@spellname280573 within Uldir.
 
 Name             : Glory in Battle (id=280577) [Scaling Spell (-7), Passive] 
@@ -9720,7 +9720,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.913709) | Trigger Spell: 280778 | Target: Self (1)
 #2 (id=738555)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.55714) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280780d. 
+Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280780d. 
 Attacking a member of the opposite faction significantly increases this chance.
 
 Name             : Retaliatory Fury (id=280579) [Scaling Spell (-1), Passive] 
@@ -9742,7 +9742,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 320.5505 (coefficient=1.030709) | Trigger Spell: 280785 | Target: Self (1)
 #2 (id=738573)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 1121.974 (coefficient=3.607634) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280788d. 
+Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280788d. 
 Attacking a member of the opposite faction is more likely to activate this effect.
 
 Name             : Combined Might (id=280580) [Scaling Spell (-1), Passive] 
@@ -9851,7 +9851,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.913709) | Trigger Spell: 280851 | Target: Self (1)
 #2 (id=738699)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.55714) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280852d. 
+Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280852d. 
 Attacking a member of the opposite faction significantly increases this chance.
 
 Name             : Last Gift (id=280624) [Scaling Spell (-1), Passive] 
@@ -9873,7 +9873,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 320.5505 (coefficient=1.030709) | Trigger Spell: 280860 | Target: Self (1)
 #2 (id=738721)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 1121.974 (coefficient=3.607634) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280862d. 
+Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280862d. 
 Taking damage from a member of the opposite faction has a chance to activate this effect. 
 
 Name             : Stronger Together (id=280625) [Scaling Spell (-1), Passive] 

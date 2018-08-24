@@ -359,7 +359,7 @@ Effects          :
                    Base Value: -6 | Scaled Value: -6 | Target: Self (1)
 #4 (id=710726)   : Apply Aura (6) | Modify Aggro Distance (152)
                    Base Value: -6 | Scaled Value: -6 | Target: Self (1)
-Description      : Reduces the damage your pet takes from area of effect attacks by an additional $s1%.
+Description      : Reduces the damage your pet takes from area of effect attacks by an additional $s1%.
 Reduces the range at which enemies detect your pet.
 
 Name             : Kindred Spirits (id=88680) [Spell Family (9), Passive, Hidden] 
@@ -430,22 +430,22 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
 #4 (id=368223)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Enemy (6)
-Description      : Attack with the palm of your hand, dealing $s1 damage.$?a137384[
-
-Tiger Palm has an $137384m1% chance to make your next Blackout Kick cost no Chi.][]$?a137023[
-
-Reduces the remaining cooldown on your Brews by $s3 sec.][]$?a137025[
-
+Description      : Attack with the palm of your hand, dealing $s1 damage.$?a137384[
+
+Tiger Palm has an $137384m1% chance to make your next Blackout Kick cost no Chi.][]$?a137023[
+
+Reduces the remaining cooldown on your Brews by $s3 sec.][]$?a137025[
+
 |cFFFFFFFFGenerates $s2 Chi.][]
-Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
-$dwm=$?a108561|a115697[${1}][${0.857143}]
-$offm=$?a108561|a115697[${0}][${1}]
-
-$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]
-$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]
-
-$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}
-$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
+Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
+$dwm=$?a108561|a115697[${1}][${0.857143}]
+$offm=$?a108561|a115697[${0}][${1}]
+
+$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]
+$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]
+
+$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}
+$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 
 
 Name             : Blackout Kick (id=100784) [Spell Family (53)] 
@@ -476,8 +476,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.77000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #3 (id=728117)   : Dummy (3)
                    Base Value: 1000 | Scaled Value: 1000
-Description      : Kick with a blast of Chi energy, dealing $?s137025[${$s1*$<CAP>/$AP}][$s1] Physical damage.$?c3[
-
+Description      : Kick with a blast of Chi energy, dealing $?s137025[${$s1*$<CAP>/$AP}][$s1] Physical damage.$?c3[
+
 Reduces the cooldown of Rising Sun Kick and Fists of Fury by ${$m3/1000}.1 sec when used.][]
 Variables        : $CAP=${($AP+$OAP)*2/3}
 
@@ -515,8 +515,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2156 | Target: Self (1)
 #8 (id=254019)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 388 | Target: Self (1)
-Description      : Soar forward through the air at high speed for $d.
- 
+Description      : Soar forward through the air at high speed for $d.
+ 
 If used again while active, you will land, dealing $123586m1 damage to all enemies within $123586A1 yards and reducing movement speed by $123586m2% for $123586d.
 
 Name             : Spinning Crane Kick (id=101546) [Spell Family (53)] 
@@ -547,10 +547,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=328541)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
-Description      : Spin while kicking in the air, dealing $?s137025[${4*$107270s1*$<CAP>/$AP}][${4*$107270s1}] Physical damage over $d to enemies within $107270A1 yds.$?c3&s116847[
-
-Spinning Crane Kick's damage is increased by $220358s1% for each unique target you've struck in the last $220358d with Tiger Palm, Blackout Kick, Rising Sun Kick, or Rushing Jade Wind.]?c3[
-
+Description      : Spin while kicking in the air, dealing $?s137025[${4*$107270s1*$<CAP>/$AP}][${4*$107270s1}] Physical damage over $d to enemies within $107270A1 yds.$?c3&s116847[
+
+Spinning Crane Kick's damage is increased by $220358s1% for each unique target you've struck in the last $220358d with Tiger Palm, Blackout Kick, Rising Sun Kick, or Rushing Jade Wind.]?c3[
+
 Spinning Crane Kick's damage is increased by $220358s1% for each unique target you've struck in the last $220358d with Tiger Palm, Blackout Kick, or Rising Sun Kick.][]
 Tooltip          : Attacking all nearby enemies for Physical damage every $101546t1 sec.
 Variables        : $CAP=${($AP+$OAP)*2/3}
@@ -618,8 +618,8 @@ Effects          :
 #1 (id=117946)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.10000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : $@spelldesc101546
-Tooltip          : Attacking all nearby enemies for Physical damage every $101546t1 sec.
-
+Tooltip          : Attacking all nearby enemies for Physical damage every $101546t1 sec.
+
 Movement speed reduced by $s2%.
 
 Name             : Rising Sun Kick (id=107428) [Spell Family (53)] 
@@ -724,15 +724,15 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 Description      : Pummels all targets in front of you, dealing ${5*$s5} damage over $113656d to your primary target and ${5*$s5*$s6/100} damage over $113656d to other targets. Can be channeled while moving.
 Tooltip          : $w3 damage every $t3 sec. $?s125671[Parrying all attacks.][]
-Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
-$dwm=$?a108561|a115697[${1}][${0.857143}]
-$offm=$?a108561|a115697[${0}][${1}]
-
-$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]
-$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]
-
-$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}
-$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
+Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
+$dwm=$?a108561|a115697[${1}][${0.857143}]
+$offm=$?a108561|a115697[${0}][${1}]
+
+$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]
+$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]
+
+$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}
+$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 
 
 Name             : Mystic Touch (id=113746) [Spell Family (53)] 
@@ -803,15 +803,15 @@ Effects          :
 #1 (id=128686)   : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 0.2 seconds
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 Description      : Land yourself, dealing $123586m1 damage to all enemies within $123586A1 yards, and slowing them by $123586s2% for $123586d.
-Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
-$dwm=$?a108561|a115697[${1}][${0.857143}]
-$offm=$?a108561|a115697[${0}][${1}]
-
-$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]
-$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]
-
-$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}
-$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
+Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
+$dwm=$?a108561|a115697[${1}][${0.857143}]
+$offm=$?a108561|a115697[${0}][${1}]
+
+$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]
+$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]
+
+$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}
+$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 
 
 Name             : Stagger (id=115069) [Spell Family (53), Passive] 
@@ -927,8 +927,8 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
 #2 (id=162038)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | Target: Enemy (6)
-Description      : Inflict mortal damage on an enemy, causing the target to take damage equal to $s2% of your maximum health after $d, reduced against players.
-
+Description      : Inflict mortal damage on an enemy, causing the target to take damage equal to $s2% of your maximum health after $d, reduced against players.
+
 During the $d duration, $271232s1% of all other damage you deal to the target will be added to the final damage dealt.
 Tooltip          : Taking $w1 damage when this effect expires.
 
@@ -1002,10 +1002,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Friend (21)
 #2 (id=290332)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Target: Friend (21)
-Description      : Surrounds the target with healing mists, restoring $119611o1 health over $119611d.
-
-If Renewing Mist heals a target past maximum health, it will travel to another injured ally within $119607A2 yds.$?a231606[
-
+Description      : Surrounds the target with healing mists, restoring $119611o1 health over $119611d.
+
+If Renewing Mist heals a target past maximum health, it will travel to another injured ally within $119607A2 yds.$?a231606[
+
 Each time Renewing Mist heals, it has a $s2% chance to increase the healing of your next Vivify by $197206s1%.][]
 
 Name             : Celerity (rank=Passive Talent) (id=115173) [Spell Family (53), Passive] 
@@ -1049,8 +1049,8 @@ Attributes       : ........ ........ ........ ........   ..x...x. ........ .....
 Effects          :
 #1 (id=128871)   : Apply Aura (6) | Periodic Heal (8): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | SP Coefficient: 0.40000 | Target: Friend (21)
-Description      : Heals the target for $o1 over $d.  While channeling, Enveloping Mist$?s227344[, Surging Mist,][] and Vivify may be cast instantly on the target.$?s117907[
-
+Description      : Heals the target for $o1 over $d.  While channeling, Enveloping Mist$?s227344[, Surging Mist,][] and Vivify may be cast instantly on the target.$?s117907[
+
 Each heal has a chance to cause a Gust of Mists on the target.][]
 Tooltip          : Healing for $w1 every $t1 sec.
 
@@ -1105,8 +1105,8 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
 Effects          :
 #1 (id=128879)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.23751 | Radius: 12 yards | Target: Cone Front (104)
-Description      : Breathe fire on targets in front of you, causing $s1 Fire damage.
-
+Description      : Breathe fire on targets in front of you, causing $s1 Fire damage.
+
 Targets affected by Keg Smash will also burn, taking $123725o1 Fire damage and dealing $123725s2% reduced damage to you for $123725d.
 
 Name             : Fortifying Brew (id=115203) [Scaling Spell (-1), Spell Family (53)] 
@@ -1127,7 +1127,7 @@ Effects          :
 #1 (id=128913)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 Description      : Turns your skin to stone for $120954d, increasing your current and maximum health by $<health>%, increasing the effectiveness of Stagger by $s1%, and reducing all damage you take by $<damage>%.
-Variables        : $health=$?s124997[${10}][${20}]
+Variables        : $health=$?s124997[${10}][${20}]
 $damage=$?s124997[${25}][${20}]
 
 Name             : Energizing Elixir (id=115288) [Spell Family (53)] 
@@ -1177,7 +1177,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: 0xfffffff5 | Target: Self (1)
 Description      : Guard against future attacks, causing the next $<absorb> damage delayed by Stagger to instead be prevented.
 Tooltip          : The next $w1 damage you Stagger will be prevented instead.
-Variables        : $absorb=${($AP*10)*(1+$@versadmg)}
+Variables        : $absorb=${($AP*10)*(1+$@versadmg)}
 
 
 Name             : Ironskin Brew (id=115308) [Spell Family (53)] 
@@ -1200,8 +1200,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=129069)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : A swig of strong brew allows you to Stagger substantially more damage for $215479d. 
-
+Description      : A swig of strong brew allows you to Stagger substantially more damage for $215479d. 
+
 Shares charges with Purifying Brew.
 
 Name             : Revival (id=115310) [Scaling Spell (-1), Spell Family (53)] 
@@ -1275,8 +1275,8 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 61146 | Misc Value 2: 0xc97 | Target: Unknown(87)
 #2 (id=129081)   : None (0)
                    Base Value: 30 | Scaled Value: 30
-Description      : Summons a Black Ox Statue at the target location for $d, pulsing threat to all enemies within $163178A1 yards.
-
+Description      : Summons a Black Ox Statue at the target location for $d, pulsing threat to all enemies within $163178A1 yards.
+
 You may cast Provoke on the statue to taunt all enemies near the statue.
 
 Name             : Ascension (id=115396) [Passive] 
@@ -1367,8 +1367,8 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
 Effects          :
 #1 (id=129419)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Unknown(25)
-Description      : Taunts the target and causes them to move toward you at $116189m3% increased speed.$?s115315[
-
+Description      : Taunts the target and causes them to move toward you at $116189m3% increased speed.$?s115315[
+
 This ability can be targeted on your Statue of the Black Ox, causing the same effect on all enemies within  $118635A1 yards of the statue.][]
 
 Name             : Mastery: Combo Strikes (id=115636) [Spell Family (53), Passive] 
@@ -1435,8 +1435,8 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 4 | Target: Self (1)
 #2 (id=163448)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
-Description      : When you kill an enemy, you summon a Healing Sphere, healing you for $125355s1 when you walk through it.
-
+Description      : When you kill an enemy, you summon a Healing Sphere, healing you for $125355s1 when you walk through it.
+
 When you kill an enemy with $?s152174[Chi Explosion][Blackout Kick], you have a $m2% chance to summon a Chi Sphere, granting 1 Chi when you walk through it.
 
 Name             : Disable (id=116095) [Spell Family (53)] 
@@ -1517,8 +1517,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=131760)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 8 | Target: Self (1)
-Description      : Tiger Palm causes your next Blackout Kick to strike an additional time, stacking up to $202090u.
-
+Description      : Tiger Palm causes your next Blackout Kick to strike an additional time, stacking up to $202090u.
+
 Blackout Kick has a $s1% chance to reset the remaining cooldown on Rising Sun Kick.
 
 Name             : Vivify (id=116670) [Spell Family (53)] 
@@ -1581,17 +1581,17 @@ Effects          :
                    Base Value: 10000 | Scaled Value: 10000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Renewing Mist (115151), Renewing Mist (119611)
                    Family Flags: 23
-Description      : Receive a jolt of energy, empowering your next $?a197895[$u spells][spell] cast:
-
-Enveloping Mist: Immediately heals for $274062s1.
-Renewing Mist: Duration increased by ${$s3/1000} sec.$?s231876[
-Vivify: No mana cost.
+Description      : Receive a jolt of energy, empowering your next $?a197895[$u spells][spell] cast:
+
+Enveloping Mist: Immediately heals for $274062s1.
+Renewing Mist: Duration increased by ${$s3/1000} sec.$?s231876[
+Vivify: No mana cost.
 Rising Sun Kick: Cooldown reduced by ${$s1/-1000} sec.][]
-Tooltip          : Your next ability is empowered:
-
-- Enveloping Mist immediately heals for $274062s1.
-- Renewing Mist's duration is increased by ${$w3/1000} sec.$?a231876[
-- Vivify costs no mana.
+Tooltip          : Your next ability is empowered:
+
+- Enveloping Mist immediately heals for $274062s1.
+- Renewing Mist's duration is increased by ${$w3/1000} sec.$?a231876[
+- Vivify costs no mana.
 - Rising Sun Kick's cooldown reduced by ${$w1/1000} sec][]
 
 Name             : Spear Hand Strike (id=116705) [Spell Family (53)] 
@@ -1770,15 +1770,15 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2
 Description      : Summons a whirling tornado around you, causing ${(1+$d/$t1)*$148187s1} damage over $d to enemies within $107270A1 yards.$?s220357[ Applies Mark of the Crane to up to $s2 nearby targets.][]
 Tooltip          : Dealing physical damage to nearby enemies every $116847t1 sec.
-Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
-$dwm=$?a108561|a115697[${1}][${0.857143}]
-$offm=$?a108561|a115697[${0}][${1}]
-
-$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]
-$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]
-
-$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}
-$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
+Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
+$dwm=$?a108561|a115697[${1}][${0.857143}]
+$offm=$?a108561|a115697[${0}][${1}]
+
+$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]
+$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]
+
+$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}
+$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 
 
 Name             : Life Cocoon (id=116849) [Spell Family (53)] 
@@ -1857,8 +1857,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=287196)   : Apply Aura (6) | Proc Trigger Spell (42): Elusive Brawler
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 195630 | Target: Self (1)
-Description      : Each time you are hit by a melee attack, or hit with Blackout Strike, you gain stacking ${$s1}.1% increased Dodge chance until your next successful Dodge.
-
+Description      : Each time you are hit by a melee attack, or hit with Blackout Strike, you gain stacking ${$s1}.1% increased Dodge chance until your next successful Dodge.
+
 Also increases your attack power by ${$s2}.1%.
 
 Name             : Mastery: Gust of Mists (id=117907) [Spell Family (53), Passive] 
@@ -1916,8 +1916,8 @@ Effects          :
                    Base Value: 200 | Scaled Value: 200 | Target: Enemy (6)
 Description      : Channel Jade lightning, causing $o1 Nature damage over $117952d to the target$?a154436[, generating 1 Chi each time it deals damage,][] and sometimes knocking back melee attackers.
 Tooltip          : Taking $w1 damage every $t1 sec.
-Variables        : $dmgMult=$?s113656[${12}][${1.0}]
-$healMult=$?s115070[${1.2}][${1.0}]
+Variables        : $dmgMult=$?s113656[${12}][${1.0}]
+$healMult=$?s115070[${1.2}][${1.0}]
 $damage=${4*($m1*$<dmgMult>)}
 
 Name             : Crackling Jade Lightning (id=117959) [Scaling Spell (6), Spell Family (53), Passive, Hidden] 
@@ -2032,8 +2032,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=137916)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
-Description      : Clears $s1% of your damage delayed with Stagger.
-
+Description      : Clears $s1% of your damage delayed with Stagger.
+
 Shares charges with Ironskin Brew.
 
 Name             : Renewing Mist (id=119607) [Spell Family (53)] 
@@ -2235,7 +2235,7 @@ Effects          :
                    Family Flags: 34
 Description      : $@spelldesc115203
 Tooltip          : Health increased by $<health>%, damage taken reduced by $<damage>%, and effectiveness of Stagger increased by $115203s1%.
-Variables        : $health=$?s124997[${10}][${20}]
+Variables        : $health=$?s124997[${10}][${20}]
 $damage=$?s124997[${25}][${20}]
 
 Name             : Gift of the Naaru (rank=Racial) (id=121093) 
@@ -2298,20 +2298,20 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 #5 (id=371335)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-Description      : Smash a keg of brew on the target, dealing $s2 damage to all enemies within $A2 yds and reducing their movement speed by $m3% for $d.
-
+Description      : Smash a keg of brew on the target, dealing $s2 damage to all enemies within $A2 yds and reducing their movement speed by $m3% for $d.
+
 Reduces the remaining cooldown on your Brews by $s4 sec.
-Tooltip          : $?$w3!=0[Movement speed reduced by $w3%.
+Tooltip          : $?$w3!=0[Movement speed reduced by $w3%.
 ][]Drenched in brew, vulnerable to Breath of Fire.
-Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
-$dwm=$?a108561|a115697[${1}][${0.857143}]
-$offm=$?a108561|a115697[${0}][${1}]
-
-$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]
-$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]
-
-$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}
-$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
+Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
+$dwm=$?a108561|a115697[${1}][${0.857143}]
+$offm=$?a108561|a115697[${0}][${1}]
+
+$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]
+$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]
+
+$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}
+$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 
 
 Name             : Power Strikes (id=121283) [Spell Family (53)] 
@@ -2489,15 +2489,15 @@ Effects          :
                    Base Value: -70 | Scaled Value: -70 | AP Coefficient: 0.14742 | Radius: 0 - 8 yards | Mechanic: Snare | Target: At Caster (22) -> AOE enemy (15)
 Description      : $@spelldesc101545
 Tooltip          : Movement speed reduced by $m2%.
-Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
-$dwm=$?a108561|a115697[${1}][${0.857143}]
-$offm=$?a108561|a115697[${0}][${1}]
-
-$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]
-$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]
-
-$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}
-$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
+Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
+$dwm=$?a108561|a115697[${1}][${0.857143}]
+$offm=$?a108561|a115697[${0}][${1}]
+
+$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]
+$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]
+
+$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}
+$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 
 
 Name             : Breath of Fire (id=123725) [Spell Family (53)] 
@@ -2578,15 +2578,15 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1315 | Target: Custom (18)
 #3 (id=739870)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-Description      : Hurls a torrent of Chi energy up to 40 yds forward, dealing $148135s1 Nature damage to all enemies, and $130654s1 healing to the Monk and all allies in its path.$?c1[
-
-Casting Chi Burst does not prevent avoiding attacks.][]$?c3[
-
+Description      : Hurls a torrent of Chi energy up to 40 yds forward, dealing $148135s1 Nature damage to all enemies, and $130654s1 healing to the Monk and all allies in its path.$?c1[
+
+Casting Chi Burst does not prevent avoiding attacks.][]$?c3[
+
 Chi Burst generates 1 Chi per enemy target damaged, up to a maximum of $s3.][]
-Variables        : $dmgMult=$?a103985[${1.1}][${1.0}]
-$healMult=$?a115070[${1.2}][${1.0}]
-$damage=${$148135m1+$<dmgMult>*$AP*2.75*(1+$@versadmg)}
-$healing=${$130654m1+$<healMult>*$AP*4.125*(1+$@versadmg)}
+Variables        : $dmgMult=$?a103985[${1.1}][${1.0}]
+$healMult=$?a115070[${1.2}][${1.0}]
+$damage=${$148135m1+$<dmgMult>*$AP*2.75*(1+$@versadmg)}
+$healing=${$130654m1+$<healMult>*$AP*4.125*(1+$@versadmg)}
 
 
 Name             : Crackling Tiger Lightning (id=123996) [Spell Family (53)] 
@@ -2692,8 +2692,8 @@ Effects          :
 #3 (id=344130)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc124255
-Tooltip          : $w1 damage is being staggered every $124255t1 sec.
-
+Tooltip          : $w1 damage is being staggered every $124255t1 sec.
+
 Stagger Remaining: $w2
 
 Name             : Moderate Stagger (id=124274) [Spell Family (53)] 
@@ -2719,8 +2719,8 @@ Effects          :
 #3 (id=344131)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc124255
-Tooltip          : $w1 damage is being staggered every $124255t1 sec.
-
+Tooltip          : $w1 damage is being staggered every $124255t1 sec.
+
 Stagger Remaining: $w2
 
 Name             : Light Stagger (id=124275) [Spell Family (53)] 
@@ -2746,8 +2746,8 @@ Effects          :
 #3 (id=344132)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc124255
-Tooltip          : $w1 damage is being staggered every $124255t1 sec.
-
+Tooltip          : $w1 damage is being staggered every $124255t1 sec.
+
 Stagger Remaining: $w2
 
 Name             : Touch of Karma (id=124280) [Scaling Spell (6), Spell Family (53)] 
@@ -2879,7 +2879,7 @@ Effects          :
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Soothing Mist (198533), Crane Heal (198756), Surging Mist (227344), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912)
                    Family Flags: 48, 102
 Description      : Wraps the target in healing mists, healing for $o1 over $d$?a231605[, and increasing healing received from your other spells by $m2%][].
-Tooltip          : Heals $w1 every $t1 sec.
+Tooltip          : Heals $w1 every $t1 sec.
 Healing received from the Monk increased by $m2%.
 
 Name             : Glyph of Rising Tiger Kick (rank=Mistweaver, Windwalker) (id=125151) [Spell Family (53), Passive, Hidden] 
@@ -3126,8 +3126,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #2 (id=161284)   : Trigger Spell (64)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1000 | Target: Self (1)
-Description      : Your spirit travels to your home temple, leaving your body behind. 
-
+Description      : Your spirit travels to your home temple, leaving your body behind. 
+
 Use Zen Pilgrimage again to return back to near your departure point.
 
 Name             : Zen Pilgrimage/Death Gate/Moonglade Storage Aura I (id=126893) [Scaling Spell (6), Spell Family (53), Hidden] 
@@ -3170,11 +3170,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=161282)   : Server Side Script (77)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-Description      : $?a200617[Returns your spirit back to its body, returning you near to where you once were.
-
-Leaving the Wandering Isle will cancel Zen Pilgrimage: Return.]
-[Returns your spirit back to its body, returning you near to where you once were.
-
+Description      : $?a200617[Returns your spirit back to its body, returning you near to where you once were.
+
+Leaving the Wandering Isle will cancel Zen Pilgrimage: Return.]
+[Returns your spirit back to its body, returning you near to where you once were.
+
 Leaving Peak of Serenity will cancel Zen Pilgrimage: Return.]
 
 Name             : Combat Conditioning (id=128595) [Scaling Spell (6), Spell Family (53), Passive, Hidden] 
@@ -3193,11 +3193,11 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=164151)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 4 | Target: Self (1)
-Description      : Your Blackout Kick now also deals an additional $m1% damage over $128531d if behind the target or heals you for $m1% of the damage done if in front of the target.
-
-Additionally, your Rising Sun Kick now also causes Mortal Wounds to the primary target.
-
-|Tinterface\icons\ability_criticalstrike.blp:24|t |cFFFFFFFFMortal Wounds|r
+Description      : Your Blackout Kick now also deals an additional $m1% damage over $128531d if behind the target or heals you for $m1% of the damage done if in front of the target.
+
+Additionally, your Rising Sun Kick now also causes Mortal Wounds to the primary target.
+
+|Tinterface\icons\ability_criticalstrike.blp:24|t |cFFFFFFFFMortal Wounds|r
 Grievously wounds the target, reducing the effectiveness of any healing received for $115804d.
 
 Name             : Arcane Torrent (rank=Racial) (id=129597) 
@@ -3676,12 +3676,12 @@ Effects          :
                    Base Value: 221771 | Scaled Value: 221771 | Misc Value: 127 | Target: Self (1)
                    Affected Spells: Storm, Earth, and Fire (137639)
                    Family Flags: 124
-Description      : Split into 3 elemental spirits for $d, each spirit dealing ${100+$m1}% of normal damage and healing.
-
-You directly control the Storm spirit, while Earth and Fire spirits mimic your attacks on nearby enemies.
-
+Description      : Split into 3 elemental spirits for $d, each spirit dealing ${100+$m1}% of normal damage and healing.
+
+You directly control the Storm spirit, while Earth and Fire spirits mimic your attacks on nearby enemies.
+
 While active, casting Storm, Earth, and Fire again will cause the spirits to fixate on your target.
-Tooltip          : Elemental spirits summoned, mirroring all of the Monk's attacks.
+Tooltip          : Elemental spirits summoned, mirroring all of the Monk's attacks.
 The Monk and spirits each do ${100+$m1}% of normal damage and healing.
 
 Name             : Chi Burst (id=148135) [Spell Family (53)] 
@@ -3762,7 +3762,7 @@ Effects          :
 #7 (id=739494)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 Description      : Enter an elevated state of mental and physical serenity for $?s115069[$s1 sec][$d]. While in this state, you deal $s2% increased damage and healing, and all Chi consumers are free and cool down $s4% more quickly.
-Tooltip          : Damage and healing increased by $w2%.
+Tooltip          : Damage and healing increased by $w2%.
 All Chi consumers are free and cool down $w4% more quickly.
 
 Name             : Whirling Dragon Punch (id=152175) [Spell Family (53)] 
@@ -3788,15 +3788,15 @@ Effects          :
 #2 (id=288846)   : Unknown(144)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1) -> Custom (18)
 Description      : Performs a devastating whirling upward strike, dealing ${3*$158221s1} damage to all nearby enemies. Only usable while both Fists of Fury and Rising Sun Kick are on cooldown.
-Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
-$dwm=$?a108561|a115697[${1}][${0.857143}]
-$offm=$?a108561|a115697[${0}][${1}]
-
-$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]
-$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]
-
-$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}
-$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
+Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
+$dwm=$?a108561|a115697[${1}][${0.857143}]
+$offm=$?a108561|a115697[${0}][${1}]
+
+$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]
+$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]
+
+$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}
+$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 
 
 Name             : Expansive Mind (rank=Racial Passive) (id=154744) [Passive] 
@@ -4095,8 +4095,8 @@ Attributes       : ........ ........ x....... ........   ..x...x. ..x..... .....
 Effects          :
 #1 (id=281435)   : Apply Aura (6) | Periodic Trigger Spell (23): Essence Font every 0.167 seconds
                    Base Value: 6 | Scaled Value: 6 | Trigger Spell: 191840 | Target: Self (1)
-Description      : Unleashes a rapid twirl of healing bolts at up to $s1 allies within $191840A1 yds, every ${6*$t1} sec for $d. Each bolt heals a target for $191840s1$?a231633[, plus an additional $191840o2 over $191840d.
-
+Description      : Unleashes a rapid twirl of healing bolts at up to $s1 allies within $191840A1 yds, every ${6*$t1} sec for $d. Each bolt heals a target for $191840s1$?a231633[, plus an additional $191840o2 over $191840d.
+
 Gust of Mists will heal affected targets twice.][.]  Castable while moving.
 
 Name             : Essence Font (id=191840) [Spell Family (53)] 
@@ -4401,15 +4401,15 @@ Effects          :
 #1 (id=288829)   : Apply Aura (6) | Proc Trigger Spell (42): Special Delivery
                    Base Value: 3 | Scaled Value: 3 | Trigger Spell: 196734 | Target: Self (1)
 Description      : Drinking Ironskin or Purifying Brew has a $h% chance to toss a keg high into the air that lands nearby after $s1 sec, dealing $196733s1 damage to all enemies within $196733A1 yards and reducing their movement speed by $196733m2% for $196733d.
-Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
-$dwm=$?a108561|a115697[${1}][${0.857143}]
-$offm=$?a108561|a115697[${0}][${1}]
-
-$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]
-$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]
-
-$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}
-$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
+Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
+$dwm=$?a108561|a115697[${1}][${0.857143}]
+$offm=$?a108561|a115697[${0}][${1}]
+
+$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]
+$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]
+
+$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}
+$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 
 
 Name             : Special Delivery (id=196733) [Spell Family (53)] 
@@ -4435,7 +4435,7 @@ Effects          :
 #3 (id=335941)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc196730
-Tooltip          : $?$w2!=0[Movement speed reduced by $w2%.
+Tooltip          : $?$w2!=0[Movement speed reduced by $w2%.
 ][]Drenched in brew, vulnerable to Breath of Fire.
 
 Name             : Special Delivery (id=196734) [Spell Family (53)] 
@@ -4483,11 +4483,11 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #5 (id=344195)   : Apply Aura (6) | Proc Trigger Spell (42): Blackout Combo
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 228563 | Target: Self (1)
-Description      : Blackout Strike also empowers your next ability:
-
-Tiger Palm: Damage increased by $s1%.
-Breath of Fire: Cooldown reduced by $s2 sec.
-Keg Smash: Reduces the remaining cooldown on your Brews by $s3 additional sec.
+Description      : Blackout Strike also empowers your next ability:
+
+Tiger Palm: Damage increased by $s1%.
+Breath of Fire: Cooldown reduced by $s2 sec.
+Keg Smash: Reduces the remaining cooldown on your Brews by $s3 additional sec.
 Ironskin Brew: Pauses Stagger damage for $s4 sec.
 
 Name             : High Tolerance (id=196737) [Spell Family (53), Passive] 
@@ -4521,8 +4521,8 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Stagger (115069)
                    Family Flags: 34
-Description      : Stagger is $s1% more effective at delaying damage.
-
+Description      : Stagger is $s1% more effective at delaying damage.
+
 You gain up to $s4% Haste based on your current level of Stagger.
 
 Name             : Hit Combo (id=196740) [Spell Family (53), Passive] 
@@ -4683,8 +4683,8 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=290836)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: 0x8 | Target: Self (1)
-Description      : Enveloping Mist reduces the mana cost of your next Vivify by $197916s1%.
-
+Description      : Enveloping Mist reduces the mana cost of your next Vivify by $197916s1%.
+
 Vivify reduces the mana cost of your next Enveloping Mist by $197919s1%.
 
 Name             : Lifecycles (Vivify) (id=197916) [Spell Family (53)] 
@@ -5009,15 +5009,15 @@ Effects          :
 #1 (id=303663)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.61179 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : Strike with a blast of Chi energy, dealing $s1 Physical damage$?s117906[ and generating a stack of Elusive Brawler][].
-Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
-$dwm=$?a108561|a115697[${1}][${0.857143}]
-$offm=$?a108561|a115697[${0}][${1}]
-
-$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]
-$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]
-
-$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}
-$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
+Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
+$dwm=$?a108561|a115697[${1}][${0.857143}]
+$offm=$?a108561|a115697[${0}][${1}]
+
+$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]
+$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]
+
+$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}
+$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 
 
 Name             : Soothing Mist (rank=PvP Talent) (id=209525) [Spell Family (53)] 
@@ -5047,8 +5047,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Enveloping Mist (124682), Surging Mist (227344)
                    Family Flags: 25, 79
-Description      : Heals the target for $o1 over $d.
-
+Description      : Heals the target for $o1 over $d.
+
 While channeling, Effuse and Enveloping Mist are instant cast, and will heal the soothed target without breaking the Soothing Mist channel.
 Tooltip          : Healing for $w1 every $t.
 
@@ -5537,15 +5537,15 @@ Effects          :
 #1 (id=344387)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.77000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : Kick with a blast of Chi energy, dealing $s1 Physical damage.
-Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
-$dwm=$?a108561|a115697[${1}][${0.857143}]
-$offm=$?a108561|a115697[${0}][${1}]
-
-$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]
-$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]
-
-$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}
-$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
+Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
+$dwm=$?a108561|a115697[${1}][${0.857143}]
+$offm=$?a108561|a115697[${0}][${1}]
+
+$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]
+$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]
+
+$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}
+$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 
 
 Name             : Vivify (rank=Rank 2) (id=231602) [Spell Family (53), Passive] 
@@ -5622,8 +5622,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=349457)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 12 | Target: Self (1)
-Description      : Each bolt of Essence Font heals a target for an additional $191840o2 over $191840d.
-
+Description      : Each bolt of Essence Font heals a target for an additional $191840o2 over $191840d.
+
 Gust of Mists will heal affected targets twice.
 
 Name             : Thunder Focus Tea (rank=Rank 2) (id=231876) [Spell Family (53), Passive] 
@@ -5816,7 +5816,7 @@ Effects          :
 #3 (id=369883)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 Description      : Turns your skin to stone, increasing your current and maximum health by $s1%, and reducing damage taken by $s2% for $d.
-Tooltip          : Maximum health increased by $w1%.
+Tooltip          : Maximum health increased by $w1%.
 Damage taken reduced by $w2%.
 
 Name             : Brewmaster's Balance (id=245013) [Spell Family (53), Passive] 
@@ -6033,8 +6033,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 33251.41 (coefficient=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=479677)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 33251.41 (coefficient=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
-Description      : Deals $s1 Holy Damage to enemies within $A1.
-
+Description      : Deals $s1 Holy Damage to enemies within $A1.
+
 Heals $s2 to allies within $A1. 
 
 Name             : Haste (id=261582) [Scaling Spell (-1), Passive] 
@@ -6106,15 +6106,15 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2
 Description      : Summons a whirling tornado around you, causing ${(1+$d/$t1)*$148187s1} damage every $t1 sec to all enemies within $107270A1 yards.
 Tooltip          : Dealing physical damage to nearby enemies every $116847t1 sec.
-Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
-$dwm=$?a108561|a115697[${1}][${0.857143}]
-$offm=$?a108561|a115697[${0}][${1}]
-
-$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]
-$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]
-
-$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}
-$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
+Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
+$dwm=$?a108561|a115697[${1}][${0.857143}]
+$offm=$?a108561|a115697[${0}][${1}]
+
+$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]
+$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]
+
+$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}
+$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 
 
 Name             : Inner Strength (id=261767) [Spell Family (53), Passive, Hidden] 
@@ -6225,8 +6225,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 500 | Trigger Spell: 261977 | Target: Self (1)
 #3 (id=569000)   : Trigger Spell (64): Fist of the White Tiger
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 261978 | Target: Self (1)
-Description      : Strike with the technique of the White Tiger, dealing ${$s1+$261977s1} Physical damage.
-
+Description      : Strike with the technique of the White Tiger, dealing ${$s1+$261977s1} Physical damage.
+
 |cFFFFFFFFGenerates $261978s1 Chi.
 
 Name             : Fist of the White Tiger (id=261977) [Spell Family (53)] 
@@ -6287,7 +6287,7 @@ Effects          :
                    Base Value: 70 | Scaled Value: 70 | Target: Self (1)
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099)
                    Family Flags: 39
-Description      : Rising Sun Kick deals $s1% increased damage.
+Description      : Rising Sun Kick deals $s1% increased damage.
 
 
 Name             : Resounding Protection (id=263962) [Scaling Spell (-8), Passive] 
@@ -7189,8 +7189,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 144.8168 (coefficient=0.465649) | Trigger Spell: 273830 | Target: Self (1)
 #2 (id=725767)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 284.8856 (coefficient=0.916031) | Target: Self (1)
-Description      : Your spells and abilities have a chance to create a Surging Droplet nearby. Collecting it increases your primary stat by $s1 for $273842d.
-
+Description      : Your spells and abilities have a chance to create a Surging Droplet nearby. Collecting it increases your primary stat by $s1 for $273842d.
+
 Rarely, a Void Droplet will be created, increasing your primary stat by $s2 for $273843d instead.
 
 Name             : Filthy Transfusion (id=273834) [Scaling Spell (-8), Passive] 
@@ -7248,7 +7248,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=726993)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Vivify heals all allies with your Renewing Mist active for $116670s2.
+Description      : Vivify heals all allies with your Renewing Mist active for $116670s2.
 
 
 Name             : Strength of Spirit (id=274762) [Scaling Spell (-8), Passive] 
@@ -7335,8 +7335,8 @@ Effects          :
                    Base Value: 4000 | Scaled Value: 4000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Essence Font (191840)
                    Family Flags: 108
-Description      : For every $s1 sec Essence Font spends off cooldown, your next Essence Font may be channeled for 1 additional second.
-
+Description      : For every $s1 sec Essence Font spends off cooldown, your next Essence Font may be channeled for 1 additional second.
+
 The duration of Essence Font's heal over time is increased by ${$s2/1000} sec.
 
 Name             : Fit to Burst (id=275892) [Scaling Spell (-8), Spell Family (53), Passive] 
@@ -7543,8 +7543,8 @@ Effects          :
                    Family Flags: 40
 #2 (id=734387)   : Dummy (3)
                    Base Value: 25 | Scaled Value: 25
-Description      : When you Combo Strike, the cooldown of Touch of Death is reduced by ${$s2/100}.1 sec.
-
+Description      : When you Combo Strike, the cooldown of Touch of Death is reduced by ${$s2/100}.1 sec.
+
 Touch of Death deals an additional $s1 damage.
 
 Name             : Swift Roundhouse (id=278707) [Scaling Spell (-1), Spell Family (53), Hidden] 
@@ -7748,8 +7748,8 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5
 #4 (id=738960)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
-Description      : Your spells and abilities have a chance to fire a bomb at your target, which when in proximity breaks into $s3 smaller bombs. Upon hitting the ground, each smaller bomb deals $280984s1 damage to all nearby enemies.
-
+Description      : Your spells and abilities have a chance to fire a bomb at your target, which when in proximity breaks into $s3 smaller bombs. Upon hitting the ground, each smaller bomb deals $280984s1 damage to all nearby enemies.
+
 Increases your Kul Tiran or Zandalari Engineering by $s4.
 
 Name             : Ricocheting Inflatable Pyrosaw (id=280168) [Passive] 
@@ -7776,10 +7776,10 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4
 #3 (id=738961)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
-Description      : Your spells and abilities have a chance to hurl a R.I.P that bounces among $s2 enemies, dealing $280656s1 Fire damage to each. 
-
-Beneficial spells have a chance to hurl a Mechanized External Needle Dispenser, healing up to $s2 allies for $280658s1.
-
+Description      : Your spells and abilities have a chance to hurl a R.I.P that bounces among $s2 enemies, dealing $280656s1 Fire damage to each. 
+
+Beneficial spells have a chance to hurl a Mechanized External Needle Dispenser, healing up to $s2 allies for $280658s1.
+
 Increases your Kul Tiran or Zandalari Engineering by $s3.
 
 Name             : Auto-Self-Cauterizer (id=280172) [Scaling Spell (-8), Passive] 
@@ -7807,10 +7807,10 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30
 #3 (id=738963)   : Apply Aura (6) | Skill (30)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 2499 | Target: Self (1)
-Description      : Taking damage has a chance to unleash your Auto-Self-Cauterizer, healing you for $280583s1, removing most* bleed effects, and snaring nearby enemies by $280583s2% for $280583d.
-
-Increases your Kul Tiran or Zandalari Engineering by $s3.
-
+Description      : Taking damage has a chance to unleash your Auto-Self-Cauterizer, healing you for $280583s1, removing most* bleed effects, and snaring nearby enemies by $280583s2% for $280583d.
+
+Increases your Kul Tiran or Zandalari Engineering by $s3.
+
 *Efficacy may vary.
 
 Name             : Synaptic Spark Capacitor (id=280174) [Scaling Spell (-8), Spell Family (7), Passive] 
@@ -7837,8 +7837,8 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
 #3 (id=742699)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 1065.175 (coefficient=13.7)
-Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $s1 yards of the Spark Coil take $280847s2 damage every 2 seconds and deal $280847s1% reduced damage to you.
-
+Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $s1 yards of the Spark Coil take $280847s2 damage every 2 seconds and deal $280847s1% reduced damage to you.
+
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
 Name             : Relational Normalization Gizmo (id=280178) [Scaling Spell (-1), Passive] 
@@ -7864,8 +7864,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 311 (coefficient=1) | Target: Self (1)
 #2 (id=738959)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
-Description      : Your spells and abilities have a chance to grow or shrink the world. Shrinking the world grants you $280654s4 primary stat and $280654s6 maximum health for $280654d. Growing the world grants you $280653s1 Haste and $280653s3% movement speed for $280653d.
-
+Description      : Your spells and abilities have a chance to grow or shrink the world. Shrinking the world grants you $280654s4 primary stat and $280654s6 maximum health for $280654d. Growing the world grants you $280653s1 Haste and $280653s3% movement speed for $280653d.
+
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
 Name             : Personal Absorb-o-Tron (id=280181) [Scaling Spell (-8), Passive] 
@@ -7891,8 +7891,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 12828.75 (coefficient=165) | Target: Self (1)
 #2 (id=738962)   : Apply Aura (6) | Skill (30)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 2499 | Target: Self (1)
-Description      : Taking damage has a chance to call your Personal Absorb-o-Tron, absorbing the next $280660s1 damage you take over $280660d.
-
+Description      : Taking damage has a chance to call your Personal Absorb-o-Tron, absorbing the next $280660s1 damage you take over $280660d.
+
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
 Name             : Good Karma (id=280195) [Spell Family (53), Passive, Hidden] 
@@ -8097,8 +8097,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738151)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 5.697831 (coefficient=0.018321) | Trigger Spell: 280708 | Target: Self (1)
-Description      : Your armor gathers and analyzes combat data every $280708t1 sec, increasing your primary stat by $s1, stacking up to $280709u times. The data decays while out of combat.
-
+Description      : Your armor gathers and analyzes combat data every $280708t1 sec, increasing your primary stat by $s1, stacking up to $280709u times. The data decays while out of combat.
+
 Enables $@spellname280573 within Uldir.
 
 Name             : Laser Matrix (id=280559) [Scaling Spell (-8), Passive] 
@@ -8119,8 +8119,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 4507.592 (coefficient=57.97546) | Trigger Spell: 280702 | Target: Self (1)
 #2 (id=738401)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 5634.728 (coefficient=72.47239) | Target: Self (1)
-Description      : Your spells and abilities have a chance to release a barrage of lasers, dealing $s1 Arcane damage split among all enemies and restoring $s2 health split among injured allies.
-
+Description      : Your spells and abilities have a chance to release a barrage of lasers, dealing $s1 Arcane damage split among all enemies and restoring $s2 health split among injured allies.
+
 Enables $@spellname280573 within Uldir.
 
 Name             : Glory in Battle (id=280577) [Scaling Spell (-7), Passive] 
@@ -8141,7 +8141,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.913709) | Trigger Spell: 280778 | Target: Self (1)
 #2 (id=738555)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.55714) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280780d. 
+Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280780d. 
 Attacking a member of the opposite faction significantly increases this chance.
 
 Name             : Retaliatory Fury (id=280579) [Scaling Spell (-1), Passive] 
@@ -8163,7 +8163,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 320.5505 (coefficient=1.030709) | Trigger Spell: 280785 | Target: Self (1)
 #2 (id=738573)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 1121.974 (coefficient=3.607634) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280788d. 
+Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280788d. 
 Attacking a member of the opposite faction is more likely to activate this effect.
 
 Name             : Combined Might (id=280580) [Scaling Spell (-1), Passive] 
@@ -8272,7 +8272,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.913709) | Trigger Spell: 280851 | Target: Self (1)
 #2 (id=738699)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.55714) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280852d. 
+Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280852d. 
 Attacking a member of the opposite faction significantly increases this chance.
 
 Name             : Last Gift (id=280624) [Scaling Spell (-1), Passive] 
@@ -8294,7 +8294,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 320.5505 (coefficient=1.030709) | Trigger Spell: 280860 | Target: Self (1)
 #2 (id=738721)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 1121.974 (coefficient=3.607634) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280862d. 
+Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280862d. 
 Taking damage from a member of the opposite faction has a chance to activate this effect. 
 
 Name             : Stronger Together (id=280625) [Scaling Spell (-1), Passive] 

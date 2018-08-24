@@ -80,8 +80,8 @@ Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..
 Effects          :
 #3 (id=327281)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-Description      : Transforms the enemy into a sheep, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
-
+Description      : Transforms the enemy into a sheep, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
+
 Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
 Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased health regeneration.
 
@@ -107,14 +107,14 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.381) | SP Coefficient: 0.37500 | Radius: 12 yards | Target: Cone Front (104)
 Description      : Targets in a cone in front of you take $s1 Frost damage and have movement slowed by $212792m1% for $212792d.
 Tooltip          : Movement slowed by $s1%.
-Variables        : $arctic1=$?s31674[${1.01}][${1}]
-$arctic2=$?s31675[${1.02}][${$<arctic1>}]
-$arctic3=$?s31676[${1.03}][${$<arctic2>}]
-$arctic4=$?s31677[${1.04}][${$<arctic3>}]
-$arctic5=$?s31678[${1.05}][${$<arctic4>}]
-$piercing1=$?s11151[${1.02}][${1}]
-$piercing2=$?s12952[${1.04}][${$<piercing1>}]
-$piercing3=$?s12953[${1.06}][${$<piercing2>}]
+Variables        : $arctic1=$?s31674[${1.01}][${1}]
+$arctic2=$?s31675[${1.02}][${$<arctic1>}]
+$arctic3=$?s31676[${1.03}][${$<arctic2>}]
+$arctic4=$?s31677[${1.04}][${$<arctic3>}]
+$arctic5=$?s31678[${1.05}][${$<arctic4>}]
+$piercing1=$?s11151[${1.02}][${1}]
+$piercing2=$?s12952[${1.04}][${$<piercing1>}]
+$piercing3=$?s12953[${1.06}][${$<piercing2>}]
 $mult=${$<arctic5>*$<piercing3>}
 
 Name             : Frost Nova (id=122) [Spell Family (3)] 
@@ -146,14 +146,14 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 12 yards | Mechanic: Root | Target: At Caster (22) -> AOE enemy (15)
 Description      : Blasts enemies within $A1 yds of you for $122s1 Frost damage and freezes them in place for $122d. Damage may interrupt the freeze effect.
 Tooltip          : Frozen in place.
-Variables        : $arctic1=$?s31674[${1.01}][${1}]
-$arctic2=$?s31675[${1.02}][${$<arctic1>}]
-$arctic3=$?s31676[${1.03}][${$<arctic2>}]
-$arctic4=$?s31677[${1.04}][${$<arctic3>}]
-$arctic5=$?s31678[${1.05}][${$<arctic4>}]
-$piercing1=$?s11151[${1.02}][${1}]
-$piercing2=$?s12952[${1.04}][${$<piercing1>}]
-$piercing3=$?s12953[${1.06}][${$<piercing2>}]
+Variables        : $arctic1=$?s31674[${1.01}][${1}]
+$arctic2=$?s31675[${1.02}][${$<arctic1>}]
+$arctic3=$?s31676[${1.03}][${$<arctic2>}]
+$arctic4=$?s31677[${1.04}][${$<arctic3>}]
+$arctic5=$?s31678[${1.05}][${$<arctic4>}]
+$piercing1=$?s11151[${1.02}][${1}]
+$piercing2=$?s12952[${1.04}][${$<piercing1>}]
+$piercing3=$?s12953[${1.06}][${$<piercing2>}]
 $mult=${$<arctic5>*$<piercing3>}
 
 Name             : Fireball (id=133) [Spell Family (3)] 
@@ -227,8 +227,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.60000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 #3 (id=740027)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: none | Target: Self (1)
-Description      : Causes an explosion of magic around the caster, dealing $s2 Arcane damage to all enemies within $A2 yards.
-
+Description      : Causes an explosion of magic around the caster, dealing $s2 Arcane damage to all enemies within $A2 yards.
+
 |cFFFFFFFFGenerates $s1 Arcane Charge if any targets are hit.|r
 
 Name             : Arcane Intellect (id=1459) [Spell Family (3)] 
@@ -250,8 +250,8 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .....
 Effects          :
 #1 (id=459)      : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 10 | Scaled Value: 10 | Misc Value 2: 0x8 | Radius: 100 yards | Target: Unknown(118)
-Description      : Infuses the target with brilliance, increasing their Intellect by $s1% for $d.  
-
+Description      : Infuses the target with brilliance, increasing their Intellect by $s1% for $d.  
+
 If target is in your party or raid, all party and raid members will be affected.
 Tooltip          : Intellect increased by $w1%.
 
@@ -514,11 +514,11 @@ Effects          :
                    Base Value: 22 | Scaled Value: 22 | Misc Value: 127 | Target: Self (1)
 #3 (id=355654)   : Apply Aura (6) | Modify Base Resistance (142)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self (1)
-Description      : Shields you with ice, absorbing ${$s2/100*$MHP} damage$?s235297[ and increasing your armor by $s3%][] for $d.
-
+Description      : Shields you with ice, absorbing ${$s2/100*$MHP} damage$?s235297[ and increasing your armor by $s3%][] for $d.
+
 Melee attacks against you reduce the attacker's movement speed by $205708s1%.
-Tooltip          : Absorbs $w1 damage.
-Melee attackers slowed by $205708s1%.$?s235297[
+Tooltip          : Absorbs $w1 damage.
+Melee attackers slowed by $205708s1%.$?s235297[
 Armor increased by $s3%.][]
 Variables        : $shield=${$s2/100*$MHP}
 
@@ -551,7 +551,7 @@ Effects          :
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856)
                    Family Flags: 3
 Description      : For $d, you deal $s1% more spell damage and your spells cost $s2% less mana.
-Tooltip          : Spell damage increased by $w1%.
+Tooltip          : Spell damage increased by $w1%.
 Mana costs of your damaging spells reduced by $w2%.
 
 Name             : Evocation (id=12051) [Spell Family (3)] 
@@ -631,7 +631,7 @@ Effects          :
 #3 (id=260628)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : $@spelldesc12846
-Tooltip          : Deals $w1 Fire damage every $t1 sec.$?$w3>0[
+Tooltip          : Deals $w1 Fire damage every $t1 sec.$?$w3>0[
 Movement speed reduced by $w3%.][]
 
 Name             : Mastery: Ignite (id=12846) [Spell Family (3), Passive] 
@@ -657,8 +657,8 @@ Effects          :
                    Base Value: 75 | Scaled Value: 75 | Target: Self (1)
 #3 (id=290011)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Your target burns for an additional ${$s1}.1% over $12654d of the total direct damage caused by your Fireball, Fire Blast, Scorch, Pyroblast$?s153561[, Meteor][]$?s257541[, Phoenix Flames][]$?s198929[, Cinderstorm][], and Flamestrike. If this effect is reapplied, any remaining damage will be added to the new Ignite.
-
+Description      : Your target burns for an additional ${$s1}.1% over $12654d of the total direct damage caused by your Fireball, Fire Blast, Scorch, Pyroblast$?s153561[, Meteor][]$?s257541[, Phoenix Flames][]$?s198929[, Cinderstorm][], and Flamestrike. If this effect is reapplied, any remaining damage will be added to the new Ignite.
+
 Every $t3 sec, your Ignites may spread to another nearby enemy.
 
 Name             : Shatter (id=12982) [Spell Family (3), Passive] 
@@ -764,8 +764,8 @@ Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..
 Effects          :
 #3 (id=327294)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-Description      : Transforms the enemy into a turtle, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
-
+Description      : Transforms the enemy into a turtle, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
+
 Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
 Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased health regeneration.
 
@@ -796,8 +796,8 @@ Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..
 Effects          :
 #3 (id=327289)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-Description      : Transforms the enemy into a pig, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
-
+Description      : Transforms the enemy into a pig, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
+
 Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
 Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased health regeneration.
 
@@ -872,10 +872,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.55000 | Target: Enemy (6)
 #2 (id=20029)    : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: none | Target: Self (1)
-Description      : Blasts the target with energy, dealing $30451s1 Arcane damage.
-
-Each Arcane Charge increases damage by $36032s1% and mana cost by $36032s5%, and reduces cast time by $36032s4%.
-
+Description      : Blasts the target with energy, dealing $30451s1 Arcane damage.
+
+Each Arcane Charge increases damage by $36032s1% and mana cost by $36032s5%, and reduces cast time by $36032s4%.
+
 |cFFFFFFFFGenerates 1 Arcane Charge.|r
 
 Name             : Ice Lance (id=30455) [Scaling Spell (5), Spell Family (3)] 
@@ -901,14 +901,14 @@ Attributes       : ........ ........ x.x..... ........   ...x...x ........ .....
 Effects          :
 #1 (id=20036)    : Server Side Script (77)
                    Base Value: 0 | Scaled Value: 0 (coefficient=1) | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
-Description      : Quickly fling a shard of ice at the target, dealing $228598s1 Frost damage$?s56377[, and ${$228598s1*$56377m2/100} Frost damage to a second nearby target][].
-
+Description      : Quickly fling a shard of ice at the target, dealing $228598s1 Frost damage$?s56377[, and ${$228598s1*$56377m2/100} Frost damage to a second nearby target][].
+
 Ice Lance damage is tripled against frozen targets.
-Variables        : $masteryMod=${$cond($gt($pl,79),1,0)}
-$masteryPoints=${$44544m4/100}
-$masteryMult=${(1+$<masteryMod>*$<masteryPoints>)}
-$fingersMult=${(2.00*$<masteryMult>)}
-
+Variables        : $masteryMod=${$cond($gt($pl,79),1,0)}
+$masteryPoints=${$44544m4/100}
+$masteryMult=${(1+$<masteryMod>*$<masteryPoints>)}
+$fingersMult=${(2.00*$<masteryMult>)}
+
 
 
 Name             : Slow (id=31589) [Spell Family (3)] 
@@ -1136,10 +1136,10 @@ Effects          :
                    Affected Spells: Arcane Blast (30451)
                    Family Flags: 29
 Description      : $@spelldesc114664
-Tooltip          : Increases the damage of Arcane Blast, Arcane Missiles, Arcane Explosion, and Arcane Barrage by $36032w1%.
-
-Increases the mana cost of Arcane Blast by $36032w2%$?{$w5<0}[, and reduces the cast time of Arcane Blast by $w5%.][.]
-
+Tooltip          : Increases the damage of Arcane Blast, Arcane Missiles, Arcane Explosion, and Arcane Barrage by $36032w1%.
+
+Increases the mana cost of Arcane Blast by $36032w2%$?{$w5<0}[, and reduces the cast time of Arcane Blast by $w5%.][.]
+
 Increases the number of targets hit by Arcane Barrage for 50% damage by $36032w3.
 
 Name             : Hypothermia (id=41425) [Spell Family (3)] 
@@ -1204,10 +1204,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.80000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=726826)   : Dummy (3)
                    Base Value: 40 | Scaled Value: 40 | Target: Enemy (6)
-Description      : Launches bolts of arcane energy at the enemy target, causing $s1 Arcane damage. 
-
-For each Arcane Charge, deals $36032s2% additional damage$?a231564[ and hits $36032s3 additional nearby $Ltarget:targets; for $s2% of its damage][].
-
+Description      : Launches bolts of arcane energy at the enemy target, causing $s1 Arcane damage. 
+
+For each Arcane Charge, deals $36032s2% additional damage$?a231564[ and hits $36032s3 additional nearby $Ltarget:targets; for $s2% of its damage][].
+
 |cFFFFFFFFConsumes all Arcane Charges.|r
 
 Name             : Pyroblast Clearcasting Driver (id=44448) [Spell Family (3), Passive, Hidden] 
@@ -1252,8 +1252,8 @@ Attributes       : ........ ........ x....... ..x.....   ........ ........ .....
 Effects          :
 #1 (id=36371)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-Description      : The target becomes a Living Bomb, taking $217694o1 Fire damage over $217694d, and then exploding to deal an additional $44461s2 Fire damage to the target and all other enemies within $44461A2 yards.
-
+Description      : The target becomes a Living Bomb, taking $217694o1 Fire damage over $217694d, and then exploding to deal an additional $44461s2 Fire damage to the target and all other enemies within $44461A2 yards.
+
 Other enemies hit by this explosion also become a Living Bomb, but this effect cannot spread further.
 Tooltip          : Causes $w1 Fire damage every $t1 sec. After $d, the target explodes, causing $w2 Fire damage to the target and all other enemies within $44461A2 yards$?$w3>0[, and spreading Living Bomb][].
 
@@ -1335,8 +1335,8 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Mechanic: Snare | Target: Enemy (6)
 #2 (id=376737)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.1) | Trigger Spell: 228354 | Target: Enemy (6)
-Description      : Unleash a flurry of ice, striking the target $s1 times for a total of ${$228354s2*$m1} Frost damage. Each hit reduces the target's movement speed by $228354s1% for $228354d.
-
+Description      : Unleash a flurry of ice, striking the target $s1 times for a total of ${$228354s2*$m1} Frost damage. Each hit reduces the target's movement speed by $228354s1% for $228354d.
+
 While Brain Freeze is active, Flurry applies Winter's Chill, causing your target to take damage from your spells as if it were frozen.
 
 Name             : Ice Block (id=45438) [Spell Family (3)] 
@@ -1367,10 +1367,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 126 | Target: Self (1)
 #4 (id=223391)   : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Encases you in a block of ice, protecting you from all attacks and damage for $d, but during that time you cannot attack, move, or cast spells.  
-
+Description      : Encases you in a block of ice, protecting you from all attacks and damage for $d, but during that time you cannot attack, move, or cast spells.  
+
 Causes Hypothermia, preventing you from recasting Ice Block for $41425d.
-Tooltip          : Immune to all attacks and damage.
+Tooltip          : Immune to all attacks and damage.
 Cannot attack, move, or use spells.
 
 Name             : Heating Up (id=48107) 
@@ -1487,8 +1487,8 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
                    Affected Spells: Ice Lance (30455), Icicle (148022), Ice Lance (228598)
                    Family Flags: 17, 115
-Description      : Your Ice Lance and Icicles now deal $s3% increased damage, and hit a second nearby target for $s2% of their damage.
-
+Description      : Your Ice Lance and Icicles now deal $s3% increased damage, and hit a second nearby target for $s2% of their damage.
+
 Your Ebonbolt and Glacial Spike also hit a second nearby target for $s2% of its damage.
 
 Name             : Glyph of Crittermorph (id=56382) [Spell Family (3), Passive, Hidden] 
@@ -1644,8 +1644,8 @@ Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..
 Effects          :
 #3 (id=327296)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-Description      : Transforms the enemy into a harmless serpent, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
-
+Description      : Transforms the enemy into a harmless serpent, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
+
 Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
 Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased health regeneration.
 
@@ -1676,8 +1676,8 @@ Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..
 Effects          :
 #3 (id=327291)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-Description      : Transforms the enemy into a harmless black cat, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
-
+Description      : Transforms the enemy into a harmless black cat, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
+
 Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
 Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased health regeneration.
 
@@ -1708,8 +1708,8 @@ Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..
 Effects          :
 #3 (id=327297)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-Description      : Transforms the enemy into a harmless rabbit, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
-
+Description      : Transforms the enemy into a harmless rabbit, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
+
 Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
 Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased health regeneration.
 
@@ -1740,8 +1740,8 @@ Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..
 Effects          :
 #3 (id=327295)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-Description      : Transforms the enemy into a turkey, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
-
+Description      : Transforms the enemy into a turkey, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
+
 Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
 Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased health regeneration.
 
@@ -1767,7 +1767,7 @@ Effects          :
                    Base Value: -6 | Scaled Value: -6 | Target: Self (1)
 #4 (id=710726)   : Apply Aura (6) | Modify Aggro Distance (152)
                    Base Value: -6 | Scaled Value: -6 | Target: Self (1)
-Description      : Reduces the damage your pet takes from area of effect attacks by an additional $s1%.
+Description      : Reduces the damage your pet takes from area of effect attacks by an additional $s1%.
 Reduces the range at which enemies detect your pet.
 
 Name             : Viciousness (rank=Racial Passive) (id=68975) [Passive] 
@@ -1861,10 +1861,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.90000 | Target: Self (1)
                    Affected Spells: Frozen Orb (84721)
                    Family Flags: 78
-Description      : Casting Frostbolt or Flurry grants you an Icicle. Casting Ice Lance causes all Icicles stored to begin launching at the target, each dealing $148022s1 Frost damage.
-
-Up to $s2 Icicles can be stored. Any excess Icicles gained will be automatically launched.
-
+Description      : Casting Frostbolt or Flurry grants you an Icicle. Casting Ice Lance causes all Icicles stored to begin launching at the target, each dealing $148022s1 Frost damage.
+
+Up to $s2 Icicles can be stored. Any excess Icicles gained will be automatically launched.
+
 Increases the damage of Frozen Orb by ${$s4}%.
 
 Name             : Clearcasting (id=79684) [Spell Family (3), Passive] 
@@ -1913,8 +1913,8 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | SP Coefficient: 0.25000 | Radius: 50000 yards | Target: Raid Members (56)
 #2 (id=88464)    : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 30 | Scaled Value: 30 | Radius: 50000 yards | Target: Raid Members (56)
-Description      : Warp the flow of time, increasing haste by $s1% for all party and raid members for $d.
-
+Description      : Warp the flow of time, increasing haste by $s1% for all party and raid members for $d.
+
 Allies will be unable to benefit from Bloodlust, Heroism, or Time Warp again for $57724d.
 Tooltip          : Haste increased by $s1%.
 
@@ -1990,8 +1990,8 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
 Effects          :
 #1 (id=85616)    : Unknown(179)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 8661 | Target: Unknown(47)
-Description      : Launches an orb of swirling ice up to $s1 yards forward which deals up to ${20*$84721s2} Frost damage to all enemies it passes through. Grants 1 charge of Fingers of Frost when it first damages an enemy.
-
+Description      : Launches an orb of swirling ice up to $s1 yards forward which deals up to ${20*$84721s2} Frost damage to all enemies it passes through. Grants 1 charge of Fingers of Frost when it first damages an enemy.
+
 Enemies damaged by the Frozen Orb are slowed by $205708s1% for $205708d.
 
 Name             : Frozen Orb (id=84721) [Spell Family (3)] 
@@ -2037,10 +2037,10 @@ Effects          :
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
 #3 (id=302842)   : Trigger Spell (64): Blazing Speed
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 108843 | Target: Self (1)
-Description      : Fatal damage instead brings you to $86949s2% health and then burns you for $87023o1% of your maximum health over $87023d.
-
-While burning, movement slowing effects are suppressed and your movement speed is increased by $108843s1%.
-
+Description      : Fatal damage instead brings you to $86949s2% health and then burns you for $87023o1% of your maximum health over $87023d.
+
+While burning, movement slowing effects are suppressed and your movement speed is increased by $108843s1%.
+
 This effect cannot occur more than once every $87024d.
 
 Name             : Cauterize (id=87023) 
@@ -2147,8 +2147,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.9) | SP Coefficient: 0.21000 | Target: Enemy (6)
 #2 (id=90298)    : Trigger Spell (64): Arcane Charge
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 36032 | Target: Self (1)
-Description      : Blasts the target with energy, dealing $30451s1 Arcane damage. Generates an Arcane Charge.
-
+Description      : Blasts the target with energy, dealing $30451s1 Arcane damage. Generates an Arcane Charge.
+
 Arcane Blast's damage is increased by $36032s1% per Arcane Charge, and its mana cost is increased by $36032s2% per Arcane Charge.
 
 Name             : Wizardry (rank=Passive) (id=89744) [Passive, Hidden] 
@@ -2310,8 +2310,8 @@ Attributes       : ........ ........ x...x... ........   ........ ..x..... .x...
 Effects          :
 #1 (id=123208)   : Trigger Spell (64): Greater Invisibility
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 110960 | Target: Self (1)
-Description      : Makes you invisible and untargetable for $110960d, removing all threat. Any action taken cancels this effect.
-
+Description      : Makes you invisible and untargetable for $110960d, removing all threat. Any action taken cancels this effect.
+
 You take $113862s1% reduced damage while invisible and for 3 sec after reappearing.
 
 Name             : Greater Invisibility (id=110960) [Spell Family (3)] 
@@ -2365,10 +2365,10 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10
 #4 (id=163932)   : Dummy (3)
                    Base Value: 25 | Scaled Value: 25
-Description      : Frostbolt has a $s1% chance and Frozen Orb damage has a $s2% to grant a charge of Fingers of Frost.
-
-Fingers of Frost causes your next Ice Lance to deal damage as if the target were frozen.
-
+Description      : Frostbolt has a $s1% chance and Frozen Orb damage has a $s2% to grant a charge of Fingers of Frost.
+
+Fingers of Frost causes your next Ice Lance to deal damage as if the target were frozen.
+
 Maximum $44544s1 charges.
 
 Name             : Ring of Frost (id=113724) [Spell Family (3)] 
@@ -2447,8 +2447,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.01422 | Target: Enemy (6)
 #2 (id=220453)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Enemy (6)
-Description      : Places a Nether Tempest on the target which deals $114923o1 Arcane damage over $114923d to the target and ${$114954m1*12/$t1} to all enemies within 10 yards. Limit 1 target.
-
+Description      : Places a Nether Tempest on the target which deals $114923o1 Arcane damage over $114923d to the target and ${$114954m1*12/$t1} to all enemies within 10 yards. Limit 1 target.
+
 Damage increased by $36032s1% per Arcane Charge.
 Tooltip          : Deals $w1 Arcane damage and an additional $w1 Arcane damage to all enemies within $114954A1 yards every $t sec.
 
@@ -2534,7 +2534,7 @@ Effects          :
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856)
                    Family Flags: 3
 Description      : $@spelldesc116011
-Tooltip          : Spell damage increased by $w1%.$?$w2=0[][
+Tooltip          : Spell damage increased by $w1%.$?$w2=0[][
 Health restored by $w2% per second.]
 
 Name             : Incanter's Flow (id=116267) [Spell Family (3)] 
@@ -2587,8 +2587,8 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 #2 (id=132773)   : Apply Aura (6) | Modify Combat Rating Multiplier (405)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1792 | Target: Self (1)
-Description      : Your spells have a $s1% increased chance to deal a critical strike.$?s231630[
-
+Description      : Your spells have a $s1% increased chance to deal a critical strike.$?s231630[
+
 You gain $s2% more of the Critical Strike stat from all sources.][]
 
 Name             : Ancient Teleport: Dalaran (id=120145) [Spell Family (3)] 
@@ -2660,8 +2660,8 @@ Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..
 Effects          :
 #3 (id=327292)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-Description      : Transforms the enemy into a porcupine, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
-
+Description      : Transforms the enemy into a porcupine, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
+
 Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
 Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased health regeneration.
 
@@ -3143,8 +3143,8 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1612 | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=293313)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: none | Target: Self (1)
-Description      : Launches an Arcane Orb forward from your position, traveling up to 40 yards, dealing $153640s1 Arcane damage to enemies it passes through.
-
+Description      : Launches an Arcane Orb forward from your position, traveling up to 40 yards, dealing $153640s1 Arcane damage to enemies it passes through.
+
 |cFFFFFFFFGrants 1 Arcane Charge when cast and every time it deals damage.|r
 
 Name             : Arcane Orb (id=153640) [Spell Family (3)] 
@@ -3235,8 +3235,8 @@ Effects          :
                    Base Value: 10000 | Scaled Value: 10000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Icy Veins (12472)
                    Family Flags: 46
-Description      : Icy Veins' duration is increased by ${$s2/1000} sec.
-
+Description      : Icy Veins' duration is increased by ${$s2/1000} sec.
+
 Your Ice Lances against frozen targets extend your Icy Veins by an additional $s1 sec.
 
 Name             : Meteor Burn (id=155158) [Spell Family (3)] 
@@ -3501,8 +3501,8 @@ Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..
 Effects          :
 #3 (id=327288)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-Description      : Transforms the enemy into a polar bear cub, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
-
+Description      : Transforms the enemy into a polar bear cub, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
+
 Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
 Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased health regeneration.
 
@@ -3533,8 +3533,8 @@ Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..
 Effects          :
 #3 (id=327287)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-Description      : Transforms the enemy into a monkey, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
-
+Description      : Transforms the enemy into a monkey, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
+
 Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
 Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased health regeneration.
 
@@ -3565,8 +3565,8 @@ Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..
 Effects          :
 #3 (id=327293)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-Description      : Transforms the enemy into a penguin, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
-
+Description      : Transforms the enemy into a penguin, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
+
 Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
 Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased health regeneration.
 
@@ -3597,8 +3597,8 @@ Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..
 Effects          :
 #3 (id=327290)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-Description      : Transforms the enemy into a peacock, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
-
+Description      : Transforms the enemy into a peacock, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
+
 Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
 Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased health regeneration.
 
@@ -3730,7 +3730,7 @@ Effects          :
 #3 (id=290009)   : Apply Aura (6) | Periodic Dummy (226): every 0.5 seconds
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 Description      : Engulfs you in flames for $d, increasing your spells' critical strike chance by $s1% and granting you Mastery equal to $s3% your Critical Strike stat. Castable while casting other spells.
-Tooltip          : Critical Strike chance of your spells increased by $w1%.$?a231630[
+Tooltip          : Critical Strike chance of your spells increased by $w1%.$?a231630[
 Mastery increased by $w2.][]
 
 Name             : Conjure Refreshment (id=190336) [Spell Family (3)] 
@@ -3783,8 +3783,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 #2 (id=278849)   : Unknown(179)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 4658 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
-Description      : Ice shards pelt the target area, dealing ${$190357m1*8} Frost damage over $d and reducing movement speed by $205708s1% for $205708d.$?a236662[
-
+Description      : Ice shards pelt the target area, dealing ${$190357m1*8} Frost damage over $d and reducing movement speed by $205708s1% for $205708d.$?a236662[
+
 Each time Blizzard deals damage, the cooldown of Frozen Orb is reduced by ${$236662s1/100}.1 sec.][]
 
 Name             : Blizzard (id=190357) [Spell Family (3)] 
@@ -3807,14 +3807,14 @@ Effects          :
 #1 (id=278848)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.14300 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc190356
-Variables        : $arctic1=$?s31674[${1.01}][${1}]
-$arctic2=$?s31675[${1.02}][${$<arctic1>}]
-$arctic3=$?s31676[${1.03}][${$<arctic2>}]
-$arctic4=$?s31677[${1.04}][${$<arctic3>}]
-$arctic5=$?s31678[${1.05}][${$<arctic4>}]
-$piercing1=$?s11151[${1.02}][${1}]
-$piercing2=$?s12952[${1.04}][${$<piercing1>}]
-$piercing3=$?s12953[${1.06}][${$<piercing2>}]
+Variables        : $arctic1=$?s31674[${1.01}][${1}]
+$arctic2=$?s31675[${1.02}][${$<arctic1>}]
+$arctic3=$?s31676[${1.03}][${$<arctic2>}]
+$arctic4=$?s31677[${1.04}][${$<arctic3>}]
+$arctic5=$?s31678[${1.05}][${$<arctic4>}]
+$piercing1=$?s11151[${1.02}][${1}]
+$piercing2=$?s12952[${1.04}][${$<piercing1>}]
+$piercing3=$?s12953[${1.06}][${$<piercing2>}]
 $mult=${$<arctic5>*$<piercing3>}
 
 Name             : Arcane Charge (id=190427) [Spell Family (3), Passive] 
@@ -3891,8 +3891,8 @@ Attributes       : ......x. ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=279088)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
-Description      : Frostbolt has a $m1% chance to empower your next Flurry to be instant cast$?a231584[,][ and] deal $190446s2% increased damage$?a231584[, and apply Winter's Chill to the target. 
-
+Description      : Frostbolt has a $m1% chance to empower your next Flurry to be instant cast$?a231584[,][ and] deal $190446s2% increased damage$?a231584[, and apply Winter's Chill to the target. 
+
 Winter's Chill causes the target to take damage from your spells as if it were frozen][].
 
 Name             : Mastery: Savant (id=190740) [Spell Family (3), Passive] 
@@ -3921,8 +3921,8 @@ Effects          :
                    Family Flags: 66
 #4 (id=357922)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.20000 | Target: Self (1)
-Description      : Increases your Mana regeneration rate and maximum Mana by ${$m1}.1%.
-
+Description      : Increases your Mana regeneration rate and maximum Mana by ${$m1}.1%.
+
 Arcane Charges increase the damage of Arcane Blast by an additional ${$m2}.1% and Arcane Barrage by ${$m3}.1%.
 
 Name             : Frostbolt (id=191764) 
@@ -4095,8 +4095,8 @@ Attributes       : ........ ........ ..x..... ..x..x..   ........ ..x..... .....
 Effects          :
 #1 (id=286705)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Tooltip          : Increases the mana cost of Arcane Blast by $36032w2%$?{$w5<0}[, and reduces the cast time of Arcane Blast by $w5%.][.]
-
+Tooltip          : Increases the mana cost of Arcane Blast by $36032w2%$?{$w5<0}[, and reduces the cast time of Arcane Blast by $w5%.][.]
+
 Increases the number of targets hit by Arcane Barrage for 50% damage by $36032w3.
 
 Name             : Displacement (id=195676) [Spell Family (3)] 
@@ -4196,10 +4196,10 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
 Effects          :
 #1 (id=294013)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0.8 | Chain Targets: 1 | Target: Enemy (6)
-Description      : Conjures a massive spike of ice, and merges your current Icicles into it. It impales your target, dealing $228600s1 damage plus all of the damage stored in your Icicles, and freezes the target in place for $228600d. Damage may interrupt the freeze effect.
-
-Requires 5 Icicles to cast.
-
+Description      : Conjures a massive spike of ice, and merges your current Icicles into it. It impales your target, dealing $228600s1 damage plus all of the damage stored in your Icicles, and freezes the target in place for $228600d. Damage may interrupt the freeze effect.
+
+Requires 5 Icicles to cast.
+
 |cFFFFFFFFPassive:|r Ice Lance no longer launches Icicles.
 Tooltip          : Frozen in place.
 
@@ -4271,10 +4271,10 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2
 #4 (id=740366)   : Dummy (3)
                    Base Value: -60 | Scaled Value: -60
-Description      : Channel an icy beam at the enemy for $d, dealing $s2 Frost damage every $t2 sec and slowing movement by $s4%. Each time Ray of Frost deals damage, its damage and snare increases by $208141s1%.
-
+Description      : Channel an icy beam at the enemy for $d, dealing $s2 Frost damage every $t2 sec and slowing movement by $s4%. Each time Ray of Frost deals damage, its damage and snare increases by $208141s1%.
+
 Generates $s3 charges of Fingers of Frost over its duration.
-Tooltip          : Movement slowed by $w1%.
+Tooltip          : Movement slowed by $w1%.
 Taking $w2 Frost damage every $t2 sec.
 
 Name             : Arcane Familiar (id=205022) [Spell Family (3)] 
@@ -4318,8 +4318,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=302650)   : Apply Aura (6) | Proc Trigger Spell (42): Conflagration
                    Base Value: 10 | Scaled Value: 10 | Trigger Spell: 226757 | Target: Self (1)
-Description      : Fireball applies Conflagration to the target, dealing an additional $226757o1 Fire damage over $226757d.
-
+Description      : Fireball applies Conflagration to the target, dealing an additional $226757o1 Fire damage over $226757d.
+
 Enemies affected by either Conflagration or Ignite have a $s1% chance to flare up and deal $205345s1 Fire damage to nearby enemies.
 
 Name             : Lonely Winter (id=205024) [Spell Family (3), Passive] 
@@ -4695,7 +4695,7 @@ Effects          :
                    Affected Spells: Ray of Frost (205021)
                    Family Flags: 56
 Description      : $@spelldesc205021
-Tooltip          : Ray of Frost's damage increased by $s1%.
+Tooltip          : Ray of Frost's damage increased by $s1%.
 Ray of Frost's snare increased by $s2%.
 
 Name             : Arcane Linguist (id=210086) [Spell Family (3), Passive] 
@@ -4782,7 +4782,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=312151)   : Unknown(179)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 6845 | Target: At Enemy (53) -> Unknown(87)
-Description      : Creates a runic prison at the target's location, slowing enemy movement speed by ${$211056s1/-1}%, inflicting ${$211088s1*6} Arcane damage over $d, and then detonating for Arcane damage equal to $s1% of your maximum mana.
+Description      : Creates a runic prison at the target's location, slowing enemy movement speed by ${$211056s1/-1}%, inflicting ${$211088s1*6} Arcane damage over $d, and then detonating for Arcane damage equal to $s1% of your maximum mana.
 
 
 Name             : Time Anomaly (rank=PvP Talent) (id=210805) [Spell Family (3), Passive, Hidden] 
@@ -5452,8 +5452,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=349319)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Brain Freeze causes your next Flurry to  apply Winter's Chill to the target. 
-
+Description      : Brain Freeze causes your next Flurry to  apply Winter's Chill to the target. 
+
 Winter's Chill causes the target to take damage from your spells as if it were frozen.
 
 Name             : Freeze (rank=Pet) (id=231596) [Spell Family (3), Passive] 
@@ -5472,9 +5472,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=349333)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
-Description      : Your Water Elemental can now cast Freeze:
-
-$@spellicon33395 $@spellname33395
+Description      : Your Water Elemental can now cast Freeze:
+
+$@spellicon33395 $@spellname33395
 $@spelldesc33395
 
 Name             : Critical Mass (rank=Rank 2) (id=231630) [Spell Family (3), Passive] 
@@ -5589,10 +5589,10 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Trigger Spell: 235314 | Target: Self (1)
 #3 (id=355719)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x1 | Target: Self (1)
-Description      : Shields you in flame, absorbing $<shield> damage$?s194315[ and reducing Physical damage taken by $s3%][] for $d.
-
+Description      : Shields you in flame, absorbing $<shield> damage$?s194315[ and reducing Physical damage taken by $s3%][] for $d.
+
 Melee attacks against you cause the attacker to take $235314s1 Fire damage.
-Tooltip          : Absorbs $w1 damage.
+Tooltip          : Absorbs $w1 damage.
 Melee attackers take $235314s1 Fire damage.
 Variables        : $shield=${$s2/100*$MHP}
 
@@ -5667,11 +5667,11 @@ Effects          :
                    Base Value: -25 | Scaled Value: -25 | Misc Value: 1 | Target: Self (1)
 #5 (id=731326)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 127 | Target: Self (1)
-Description      : Shields you with an arcane force, absorbing $<shield> damage and reducing magic damage taken by $s3% for $d.
-
+Description      : Shields you with an arcane force, absorbing $<shield> damage and reducing magic damage taken by $s3% for $d.
+
 The duration of harmful Magic effects against you is reduced by $s4%.
-Tooltip          : Absorbs $w1 damage.
-Magic damage taken reduced by $s3%.
+Tooltip          : Absorbs $w1 damage.
+Magic damage taken reduced by $s3%.
 Duration of all harmful Magic effects reduced by $w4%.
 Variables        : $shield=${$s5/100*$MHP}
 
@@ -5840,8 +5840,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Evocation (12051)
                    Family Flags: 26
-Description      : Clearcasting allows Arcane Missiles to be channeled while moving.
-
+Description      : Clearcasting allows Arcane Missiles to be channeled while moving.
+
 Evocation can be channeled while moving.
 
 Name             : Amplification (id=236628) [Spell Family (3), Passive] 
@@ -6314,8 +6314,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 33251.41 (coefficient=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=479677)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 33251.41 (coefficient=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
-Description      : Deals $s1 Holy Damage to enemies within $A1.
-
+Description      : Deals $s1 Holy Damage to enemies within $A1.
+
 Heals $s2 to allies within $A1. 
 
 Name             : Ebonbolt (id=257537) [Spell Family (3)] 
@@ -6843,8 +6843,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=718056)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
-Description      : Consuming Hot Streak has a $s1% chance to make your next non-instant Pyroblast cast within $269651d deal $269651s1% additional damage.
-
+Description      : Consuming Hot Streak has a $s1% chance to make your next non-instant Pyroblast cast within $269651d deal $269651s1% additional damage.
+
 Maximum 2 charges.
 
 Name             : Pyroclasm (id=269651) [Spell Family (3)] 
@@ -7129,8 +7129,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 144.8168 (coefficient=0.465649) | Trigger Spell: 273830 | Target: Self (1)
 #2 (id=725767)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 284.8856 (coefficient=0.916031) | Target: Self (1)
-Description      : Your spells and abilities have a chance to create a Surging Droplet nearby. Collecting it increases your primary stat by $s1 for $273842d.
-
+Description      : Your spells and abilities have a chance to create a Surging Droplet nearby. Collecting it increases your primary stat by $s1 for $273842d.
+
 Rarely, a Void Droplet will be created, increasing your primary stat by $s2 for $273843d instead.
 
 Name             : Filthy Transfusion (id=273834) [Scaling Spell (-8), Passive] 
@@ -7308,8 +7308,8 @@ Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..
 Effects          :
 #3 (id=733191)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-Description      : Transforms the enemy into a baby direhorn, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
-
+Description      : Transforms the enemy into a baby direhorn, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
+
 Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
 Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased health regeneration.
 
@@ -7340,8 +7340,8 @@ Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..
 Effects          :
 #3 (id=733199)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-Description      : Transforms the enemy into a bumblebee, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
-
+Description      : Transforms the enemy into a bumblebee, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
+
 Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
 Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased health regeneration.
 
@@ -7682,8 +7682,8 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5
 #4 (id=738960)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
-Description      : Your spells and abilities have a chance to fire a bomb at your target, which when in proximity breaks into $s3 smaller bombs. Upon hitting the ground, each smaller bomb deals $280984s1 damage to all nearby enemies.
-
+Description      : Your spells and abilities have a chance to fire a bomb at your target, which when in proximity breaks into $s3 smaller bombs. Upon hitting the ground, each smaller bomb deals $280984s1 damage to all nearby enemies.
+
 Increases your Kul Tiran or Zandalari Engineering by $s4.
 
 Name             : Ricocheting Inflatable Pyrosaw (id=280168) [Passive] 
@@ -7710,10 +7710,10 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4
 #3 (id=738961)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
-Description      : Your spells and abilities have a chance to hurl a R.I.P that bounces among $s2 enemies, dealing $280656s1 Fire damage to each. 
-
-Beneficial spells have a chance to hurl a Mechanized External Needle Dispenser, healing up to $s2 allies for $280658s1.
-
+Description      : Your spells and abilities have a chance to hurl a R.I.P that bounces among $s2 enemies, dealing $280656s1 Fire damage to each. 
+
+Beneficial spells have a chance to hurl a Mechanized External Needle Dispenser, healing up to $s2 allies for $280658s1.
+
 Increases your Kul Tiran or Zandalari Engineering by $s3.
 
 Name             : Auto-Self-Cauterizer (id=280172) [Scaling Spell (-8), Passive] 
@@ -7741,10 +7741,10 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30
 #3 (id=738963)   : Apply Aura (6) | Skill (30)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 2499 | Target: Self (1)
-Description      : Taking damage has a chance to unleash your Auto-Self-Cauterizer, healing you for $280583s1, removing most* bleed effects, and snaring nearby enemies by $280583s2% for $280583d.
-
-Increases your Kul Tiran or Zandalari Engineering by $s3.
-
+Description      : Taking damage has a chance to unleash your Auto-Self-Cauterizer, healing you for $280583s1, removing most* bleed effects, and snaring nearby enemies by $280583s2% for $280583d.
+
+Increases your Kul Tiran or Zandalari Engineering by $s3.
+
 *Efficacy may vary.
 
 Name             : Synaptic Spark Capacitor (id=280174) [Scaling Spell (-8), Spell Family (7), Passive] 
@@ -7771,8 +7771,8 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
 #3 (id=742699)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 1065.175 (coefficient=13.7)
-Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $s1 yards of the Spark Coil take $280847s2 damage every 2 seconds and deal $280847s1% reduced damage to you.
-
+Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $s1 yards of the Spark Coil take $280847s2 damage every 2 seconds and deal $280847s1% reduced damage to you.
+
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
 Name             : Relational Normalization Gizmo (id=280178) [Scaling Spell (-1), Passive] 
@@ -7798,8 +7798,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 311 (coefficient=1) | Target: Self (1)
 #2 (id=738959)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
-Description      : Your spells and abilities have a chance to grow or shrink the world. Shrinking the world grants you $280654s4 primary stat and $280654s6 maximum health for $280654d. Growing the world grants you $280653s1 Haste and $280653s3% movement speed for $280653d.
-
+Description      : Your spells and abilities have a chance to grow or shrink the world. Shrinking the world grants you $280654s4 primary stat and $280654s6 maximum health for $280654d. Growing the world grants you $280653s1 Haste and $280653s3% movement speed for $280653d.
+
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
 Name             : Personal Absorb-o-Tron (id=280181) [Scaling Spell (-8), Passive] 
@@ -7825,8 +7825,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 12828.75 (coefficient=165) | Target: Self (1)
 #2 (id=738962)   : Apply Aura (6) | Skill (30)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 2499 | Target: Self (1)
-Description      : Taking damage has a chance to call your Personal Absorb-o-Tron, absorbing the next $280660s1 damage you take over $280660d.
-
+Description      : Taking damage has a chance to call your Personal Absorb-o-Tron, absorbing the next $280660s1 damage you take over $280660d.
+
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
 Name             : Dagger in the Back (id=280284) [Scaling Spell (-8), Passive] 
@@ -7969,8 +7969,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738151)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 5.697831 (coefficient=0.018321) | Trigger Spell: 280708 | Target: Self (1)
-Description      : Your armor gathers and analyzes combat data every $280708t1 sec, increasing your primary stat by $s1, stacking up to $280709u times. The data decays while out of combat.
-
+Description      : Your armor gathers and analyzes combat data every $280708t1 sec, increasing your primary stat by $s1, stacking up to $280709u times. The data decays while out of combat.
+
 Enables $@spellname280573 within Uldir.
 
 Name             : Laser Matrix (id=280559) [Scaling Spell (-8), Passive] 
@@ -7991,8 +7991,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 4507.592 (coefficient=57.97546) | Trigger Spell: 280702 | Target: Self (1)
 #2 (id=738401)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 5634.728 (coefficient=72.47239) | Target: Self (1)
-Description      : Your spells and abilities have a chance to release a barrage of lasers, dealing $s1 Arcane damage split among all enemies and restoring $s2 health split among injured allies.
-
+Description      : Your spells and abilities have a chance to release a barrage of lasers, dealing $s1 Arcane damage split among all enemies and restoring $s2 health split among injured allies.
+
 Enables $@spellname280573 within Uldir.
 
 Name             : Glory in Battle (id=280577) [Scaling Spell (-7), Passive] 
@@ -8013,7 +8013,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.913709) | Trigger Spell: 280778 | Target: Self (1)
 #2 (id=738555)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.55714) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280780d. 
+Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280780d. 
 Attacking a member of the opposite faction significantly increases this chance.
 
 Name             : Retaliatory Fury (id=280579) [Scaling Spell (-1), Passive] 
@@ -8035,7 +8035,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 320.5505 (coefficient=1.030709) | Trigger Spell: 280785 | Target: Self (1)
 #2 (id=738573)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 1121.974 (coefficient=3.607634) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280788d. 
+Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280788d. 
 Attacking a member of the opposite faction is more likely to activate this effect.
 
 Name             : Combined Might (id=280580) [Scaling Spell (-1), Passive] 
@@ -8144,7 +8144,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.913709) | Trigger Spell: 280851 | Target: Self (1)
 #2 (id=738699)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.55714) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280852d. 
+Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280852d. 
 Attacking a member of the opposite faction significantly increases this chance.
 
 Name             : Last Gift (id=280624) [Scaling Spell (-1), Passive] 
@@ -8166,7 +8166,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 320.5505 (coefficient=1.030709) | Trigger Spell: 280860 | Target: Self (1)
 #2 (id=738721)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 1121.974 (coefficient=3.607634) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280862d. 
+Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280862d. 
 Taking damage from a member of the opposite faction has a chance to activate this effect. 
 
 Name             : Stronger Together (id=280625) [Scaling Spell (-1), Passive] 

@@ -37,8 +37,8 @@ Attributes       : ....x... ........ ..x..... x..x....   ........ ..x..... .x...
 Effects          :
 #2 (id=1295)     : Apply Aura (6) | Periodic Dummy (226): every 0.25 seconds
                    Base Value: 60068 | Scaled Value: 60068 | Target: Self (1)
-Description      : Activates a freezing aura for $d that creates ice beneath your feet, allowing party or raid members within $a1 yards to walk on water.
-
+Description      : Activates a freezing aura for $d that creates ice beneath your feet, allowing party or raid members within $a1 yards to walk on water.
+
 Usable while mounted, but being attacked or damaged will cancel the effect.
 Tooltip          : Grants the ability to walk across water.
 
@@ -65,10 +65,10 @@ Effects          :
 #1 (id=8994)     : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : Bite the enemy, causing ${$<damage>} damage. Deals $62762s2% more damage and costs $62762s1% more Focus when your pet has 50 or more Focus.
-Variables        : $aotb=$?s191384[${1.3}][${1.0}]
-$ce=$?s152244[${1.7}][${1.5}]
-$spiked=$?s53184[${1.1}][${1.0}]
-$blink=$?s130392[${1.5}][${1.0}]
+Variables        : $aotb=$?s191384[${1.3}][${1.0}]
+$ce=$?s152244[${1.7}][${1.5}]
+$spiked=$?s53184[${1.1}][${1.0}]
+$blink=$?s130392[${1.5}][${1.0}]
 $damage=${$<aotb>*$<ce>*$<spiked>*$<blink>*($RAP*0.333)*(1+$@versadmg)}
 
 Name             : Blood Fury (rank=Racial) (id=20572) [Scaling Spell (-1)] 
@@ -277,8 +277,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=274827)   : Unknown(179)
                    Base Value: 26 | Scaled Value: 26 | Misc Value: 4485 | Target: Unknown(87)
-Description      : Corrupts the targeted ground, causing ${$52212m1*11} Shadow damage over $d to targets within the area.
-
+Description      : Corrupts the targeted ground, causing ${$52212m1*11} Shadow damage over $d to targets within the area.
+
 While you remain within the area, your $?c1[Heart Strike will hit up to $188290m3 additional targets.]?s207311[Clawing Shadows will hit all enemies near the target.][Scourge Strike will hit all enemies near the target.]
 
 Name             : Death Strike (id=45470) [Spell Family (15)] 
@@ -372,8 +372,8 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=39690)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-Description      : Claw the enemy, dealing $91776s1 Physical damage.$?s63560[
-
+Description      : Claw the enemy, dealing $91776s1 Physical damage.$?s63560[
+
 |CFFE55BB0Dark Transformation: Rakes with deformed claws, dealing $<sweepingclaw> Shadow damage to all enemies nearby the monstrosity.|R][]
 Variables        : $sweepingclaw= ${$91778s2*3.35}
 
@@ -395,8 +395,8 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=39701)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-Description      : Bite and tear at a target's limbs, dealing light damage and stunning for $91800d.$?s63560[
-
+Description      : Bite and tear at a target's limbs, dealing light damage and stunning for $91800d.$?s63560[
+
 |CFFE55BB0Dark Transformation: Strike an enemy with a smashing attack, dealing $91797s2 Physical damage and stunning for $91797d.|R][]
 
 Name             : Leap (id=47482) 
@@ -419,8 +419,8 @@ Attributes       : ....x... ........ ........ .....x..   .....x.. ..x..... .....
 Effects          :
 #1 (id=39703)    : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
-Description      : Leap behind an enemy target.$?s63560[
-
+Description      : Leap behind an enemy target.$?s63560[
+
 |CFFE55BB0Dark Transformation: Charge an enemy, interrupting spellcasting and immobilizing them for $91807d.|R][]
 
 Name             : Huddle (id=47484) 
@@ -442,8 +442,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .x...
 Effects          :
 #1 (id=39705)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Go into a defensive crouch, reducing all damage taken by $91838s1% but preventing other actions for $91838d.$?s63560[
-
+Description      : Go into a defensive crouch, reducing all damage taken by $91838s1% but preventing other actions for $91838d.$?s63560[
+
 |CFFE55BB0Dark Transformation: Unleash a fortifying roar, reducing all damage taken by $91837s1% for $91837d.|R][]
 
 Name             : Mind Freeze (id=47528) [Spell Family (15)] 
@@ -494,12 +494,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=728053)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
-Description      : Fires a blast of unholy energy at the target, causing $47632s1 Shadow damage to an enemy.$?s137007[
-
+Description      : Fires a blast of unholy energy at the target, causing $47632s1 Shadow damage to an enemy.$?s137007[
+
 Reduces the cooldown of Dark Transformation by $s2 sec][].
-Variables        : $mastery=$?s55090[${((100+$77515m1)/100)}][${1.00}]
-$blood=$?a48263[${1.2}][${1.0}]
-$damage=${(0.80*1.1*$AP)*$<mastery>*$<blood>}
+Variables        : $mastery=$?s55090[${((100+$77515m1)/100)}][${1.00}]
+$blood=$?a48263[${1.2}][${1.0}]
+$damage=${(0.80*1.1*$AP)*$<mastery>*$<blood>}
 $healing=${(0.80*1.1*$AP)*5}
 
 Name             : Empower Rune Weapon (id=47568) [Spell Family (15)] 
@@ -530,7 +530,7 @@ Effects          :
 #3 (id=738867)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 Description      : Empower your rune weapon, gaining $s3% Haste and generating $s1 $LRune:Runes; and ${$m2/10} Runic Power instantly and every $t1 sec for $d.
-Tooltip          : Haste increased by $s3%.
+Tooltip          : Haste increased by $s3%.
 Ggenerating $s1 $LRune:Runes; and ${$m2/10} Runic Power and every $t1 sec.
 
 Name             : Death Coil (id=47632) [Spell Family (15)] 
@@ -616,8 +616,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | Misc Value: 1887 | Target: Self (1)
 #4 (id=728895)   : Apply Aura (6) | Resist Forced Movement% (485)
                    Base Value: -100 | Scaled Value: -100 | Value Multiplier: 1 | Target: Self (1)
-Description      : For $d, your movement speed is increased by $s1%, you cannot be slowed below $s2% of normal speed, and you are immune to forced movement effects and knockbacks.
-
+Description      : For $d, your movement speed is increased by $s1%, you cannot be slowed below $s2% of normal speed, and you are immune to forced movement effects and knockbacks.
+
 |cFFFFFFFFPassive:|r You cannot be slowed below $124285s1% of normal speed.
 Tooltip          : Your movement speed is increased by $s1%, you cannot be slowed below $s2% of normal speed, and you are immune to forced movement effects and knockbacks.
 
@@ -647,9 +647,9 @@ Effects          :
 #3 (id=306615)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e | Target: Self (1)
 Description      : Surrounds you in an Anti-Magic Shell for $d, absorbing up to $<shield> magic damage and preventing application of harmful magical effects.$?s207188[][ Damage absorbed generates Runic Power.]
-Tooltip          : Absorbing up to $w1 magic damage.
+Tooltip          : Absorbing up to $w1 magic damage.
 Immune to harmful magic effects.
-Variables        : $amb=$?s205727[${1.3}][${1.0}]
+Variables        : $amb=$?s205727[${1.3}][${1.0}]
 $shield=${$MHP*$m2/100*(1+$@versadmg)*$<amb>}
 
 Name             : Death Pact (id=48743) [Spell Family (15)] 
@@ -707,7 +707,7 @@ Effects          :
                    Affected Spells: Death Strike (45470)
                    Family Flags: 66
 Description      : Your blood freezes, granting immunity to Stun effects and reducing all damage you take by $s3% for $d.
-Tooltip          : Damage taken reduced by $w3%.
+Tooltip          : Damage taken reduced by $w3%.
 Immune to Stun effects.
 
 Name             : Obliterate (id=49020) [Spell Family (15)] 
@@ -768,8 +768,8 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Enemy (6)
 #4 (id=734380)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
-Description      : Summons a rune weapon for $s4 sec that mirrors your melee attacks and bolsters your defenses.
-
+Description      : Summons a rune weapon for $s4 sec that mirrors your melee attacks and bolsters your defenses.
+
 While active, you gain $81256s1% parry chance.
 
 Name             : Frost Strike (id=49143) [Scaling Spell (1), Spell Family (15)] 
@@ -820,9 +820,9 @@ Attributes       : ........ ........ ..x..... ........   ...x...x .x...... .....
 Effects          :
 #1 (id=41295)    : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.13432 | Target: Enemy (6)
-Description      : Blast the target with a frigid wind, dealing ${$s1*$<CAP>/$AP} $?s204088[Frost damage and applying Frost Fever to the target.][Frost damage to that foe, and ${$237680s1*$<CAP>/$AP} Frost damage to all other enemies within $237680A1 yards, infecting all targets with Frost Fever.]
-
-|Tinterface\icons\spell_deathknight_frostfever.blp:24|t |cFFFFFFFFFrost Fever|r
+Description      : Blast the target with a frigid wind, dealing ${$s1*$<CAP>/$AP} $?s204088[Frost damage and applying Frost Fever to the target.][Frost damage to that foe, and ${$237680s1*$<CAP>/$AP} Frost damage to all other enemies within $237680A1 yards, infecting all targets with Frost Fever.]
+
+|Tinterface\icons\spell_deathknight_frostfever.blp:24|t |cFFFFFFFFFrost Fever|r
 $@spelldesc55095
 Variables        : $CAP=${($AP+$OAP)*2/3}
 
@@ -855,8 +855,8 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Trigger Spell: 61777 | Target: Self (1)
 #4 (id=728503)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-Description      : Summon a Gargoyle into the area to bombard the target for $61777d.
-
+Description      : Summon a Gargoyle into the area to bombard the target for $61777d.
+
 The Gargoyle gains $211947s1% increased damage for every $s4 Runic Power you spend.
 
 Name             : Sudden Doom (id=49530) [Spell Family (15), Passive] 
@@ -997,9 +997,9 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=43101)    : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.30000 | Radius: 0 - 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
-Description      : Deals $s1 Shadow damage$?s212744[ to all enemies within $A1 yds.][ and infects all enemies within $A1 yds with Blood Plague.
-
-|Tinterface\icons\spell_deathknight_bloodplague.blp:24|t |cFFFFFFFFBlood Plague|r
+Description      : Deals $s1 Shadow damage$?s212744[ to all enemies within $A1 yds.][ and infects all enemies within $A1 yds with Blood Plague.
+
+|Tinterface\icons\spell_deathknight_bloodplague.blp:24|t |cFFFFFFFFBlood Plague|r
 $@spelldesc55078]
 
 Name             : Death Gate (id=50977) [Spell Family (15)] 
@@ -1026,8 +1026,8 @@ Attributes       : ........ ........ ........ ....x...   ........ ........ .x...
 Effects          :
 #2 (id=296536)   : Unknown(90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 98305 | Target: Self (1)
-Description      : Opens a gate which you can use to return to Ebon Hold.
-
+Description      : Opens a gate which you can use to return to Ebon Hold.
+
 Using a Death Gate while in Ebon Hold will return you back to near your departure point.
 
 Name             : Killing Machine (id=51124) [Spell Family (15)] 
@@ -1107,8 +1107,8 @@ Effects          :
                    Affected School(s): Frost
 #4 (id=739365)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 12 | Target: Self (1)
-Description      : The power of frost increases your Strength by $s1% for $d.
-
+Description      : The power of frost increases your Strength by $s1% for $d.
+
 Each Rune spent while active increases your Strength by an additional $s2%.
 Tooltip          : Strength increased by $w1%.
 
@@ -1547,8 +1547,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=52040)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Your Raise Dead spell summons a geist instead of a ghoul. 
-
+Description      : Your Raise Dead spell summons a geist instead of a ghoul. 
+
 $?s207313 [Disabled while talented into Sludge Belcher.][]
 
 Name             : Glyph of Foul Menagerie (id=58642) [Spell Family (15), Passive, Hidden] 
@@ -1772,7 +1772,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 24 | Target: Self (1)
 #5 (id=710727)   : Apply Aura (6) | Modify Aggro Distance (152)
                    Base Value: -6 | Scaled Value: -6 | Target: Self (1)
-Description      : Reduces the damage your summoned ghoul takes from creature area of effect attacks  by an additional $s1%.
+Description      : Reduces the damage your summoned ghoul takes from creature area of effect attacks  by an additional $s1%.
 Reduces the range at which enemies detect your pet.
 
 Name             : Stoneskin Gargoyle (id=62157) [Passive, Hidden] 
@@ -1858,7 +1858,7 @@ Effects          :
 #3 (id=191768)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 0 | Scaled Value: 0 | Target: Active Pet (5)
 Description      : Transform your $?s207313[abomination]?s58640[geist][ghoul] into a powerful undead monstrosity for $d. The $?s207313[abomination]?s58640[geist][ghoul]'s abilities are empowered and take on new functions while the transformation is active.
-Tooltip          : $?$w2>0[Transformed into an undead monstrosity.][Gassy.]
+Tooltip          : $?$w2>0[Transformed into an undead monstrosity.][Gassy.]
 Damage dealt increased by $w1%.
 
 Name             : Death Strike Off-Hand (id=66188) [Scaling Spell (-1), Spell Family (15)] 
@@ -2028,8 +2028,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | Misc Value: 2 | Target: Self (1)
 #2 (id=90621)    : Apply Aura (6) | Modify Melee Attack Power% (166)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self (1)
-Description      : Each time you heal yourself with Death Strike, you gain ${$s1}.1% of the base amount healed as a Physical damage absorption shield.
-
+Description      : Each time you heal yourself with Death Strike, you gain ${$s1}.1% of the base amount healed as a Physical damage absorption shield.
+
 Also increases your attack power by ${$s2}.1%.
 
 Name             : Mastery: Frozen Heart (id=77514) [Spell Family (15), Passive] 
@@ -2121,9 +2121,9 @@ Attributes       : ........ ........ ........ ........   ........ .x...... .....
 Effects          :
 #1 (id=68141)    : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.10000 | Target: Enemy (6)
-Description      : Deals $s1 Shadow damage and surrounds the target in a miasma for $196782d that infects nearby enemies with Virulent Plague.
-
-|Tinterface\icons\ability_creature_disease_02.blp:24|t |cFFFFFFFFVirulent Plague|r
+Description      : Deals $s1 Shadow damage and surrounds the target in a miasma for $196782d that infects nearby enemies with Virulent Plague.
+
+|Tinterface\icons\ability_creature_disease_02.blp:24|t |cFFFFFFFFVirulent Plague|r
 $@spelldesc191587
 
 Name             : Crimson Scourge (id=81136) [Spell Family (15), Passive] 
@@ -2297,9 +2297,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.01088 | Target: Enemy (6)
 #2 (id=87375)    : Dummy (3)
                    Base Value: 2.5 | Scaled Value: 2 - 3 (coefficient=0, delta coefficient=0.4) | Target: Enemy (6)
-Description      : Strikes for $s1 Physical damage and infects the target with $m2-$M2 Festering Wounds.
-
-|Tinterface\icons\spell_yorsahj_bloodboil_purpleoil.blp:24|t |cFFFFFFFFFestering Wound|r
+Description      : Strikes for $s1 Physical damage and infects the target with $m2-$M2 Festering Wounds.
+
+|Tinterface\icons\spell_yorsahj_bloodboil_purpleoil.blp:24|t |cFFFFFFFFFestering Wound|r
 $@spelldesc194310
 
 Name             : Plate Specialization (rank=Passive) (id=86113) [Passive, Hidden] 
@@ -2752,8 +2752,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=127901)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Misc Value 2: 0x1e | Target: Self (1)
-Description      : An unholy pact that prevents fatal damage, instead absorbing incoming healing equal to the damage prevented, lasting $116888d.
-
+Description      : An unholy pact that prevents fatal damage, instead absorbing incoming healing equal to the damage prevented, lasting $116888d.
+
 If any healing absorption remains when this effect expires, you will die. This effect may only occur every $123981d.
 
 Name             : Unholy Blight (id=115989) [Spell Family (15)] 
@@ -2842,7 +2842,7 @@ Effects          :
 #1 (id=132120)   : Apply Aura (6) | Absorb Healing (301)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Misc Value 2: 0x14 | Target: Self (1)
 Description      : $@spelldesc114556
-Tooltip          : Absorbing the next ${$w1-1} healing received.
+Tooltip          : Absorbing the next ${$w1-1} healing received.
 If any amount of heal absorption remains when this effect expires, you die.
 
 Name             : Perdition (id=123981) 
@@ -2956,10 +2956,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.10000 | Target: Enemy (6)
 #2 (id=168241)   : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: rune | Target: Self (1)
-Description      : Rip out an enemy's soul, dealing $<dmg> Shadow damage over $d.
-
-If the enemy that yields experience or honor dies while afflicted by Soul Reaper, you gain $215711s1% Haste for $215711d.
-
+Description      : Rip out an enemy's soul, dealing $<dmg> Shadow damage over $d.
+
+If the enemy that yields experience or honor dies while afflicted by Soul Reaper, you gain $215711s1% Haste for $215711d.
+
 |cFFFFFFFFGenerates $s2 $lRune:Runes;.|r
 Tooltip          : Suffering $sw1 damage every $t1 sec.
 Variables        : $dmg=${$o1}
@@ -3335,8 +3335,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=198232)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self (1)
-Description      : Your Raise Dead spell summons a skeleton instead of a ghoul. 
-
+Description      : Your Raise Dead spell summons a skeleton instead of a ghoul. 
+
 $?s207313 [Disabled while talented into Sludge Belcher.][]
 
 Name             : Frozen Power (id=147620) [Scaling Spell (-8), Spell Family (15)] 
@@ -3395,14 +3395,14 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=210781)   : Apply Aura (6) | Unknown(451)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Increases the effect of your pet's Combat Experience to $156843m2% increased damage. Your pet now gains the following abilities, regardless of its active spec:
-|cFFFFFFFF
-Spiked Collar
-Roar of Sacrifice
-Cornered
-Boar's Speed
-Last Stand
-Blood of the Rhino
+Description      : Increases the effect of your pet's Combat Experience to $156843m2% increased damage. Your pet now gains the following abilities, regardless of its active spec:
+|cFFFFFFFF
+Spiked Collar
+Roar of Sacrifice
+Cornered
+Boar's Speed
+Last Stand
+Blood of the Rhino
 Great Stamina|r
 
 Name             : Breath of Sindragosa (id=152279) [Spell Family (15)] 
@@ -3465,10 +3465,10 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #4 (id=216897)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Misc Value 2: 0xffffffec | Target: Self (1)
-Description      : Defile the targeted ground, dealing ${($156000s1*($d+1)/$t3)} Shadow damage to all enemies over $d.
-
-While you remain within your Defile, your $?s207311[Clawing Shadows][Scourge Strike] will hit all enemies near the target.
-
+Description      : Defile the targeted ground, dealing ${($156000s1*($d+1)/$t3)} Shadow damage to all enemies over $d.
+
+While you remain within your Defile, your $?s207311[Clawing Shadows][Scourge Strike] will hit all enemies near the target.
+
 If any enemies are standing in the Defile, it grows in size every sec.
 
 Name             : Expansive Mind (rank=Racial Passive) (id=154747) [Passive] 
@@ -4000,8 +4000,8 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Pathfinding (264656), Endurance Training (264662), Predator's Thirst (264663)
                    Family Flags: 13, 18, 23
-Description      : Increases the damage of your pet's abilities by $s1%.
-
+Description      : Increases the damage of your pet's abilities by $s1%.
+
 Increases the effectiveness of your pet's Predator's Thirst, Endurance Training, and Pathfinding passives by $s3%.
 
 Name             : Virulent Plague (id=191587) [Spell Family (15)] 
@@ -4028,8 +4028,8 @@ Effects          :
 #2 (id=288070)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
 Description      : A disease that deals ${7*$s1} Shadow damage over $d. It erupts when the infected target dies, dealing $191685s1 Shadow damage divided among nearby enemies, and has a $s2% chance to erupt each time it deals damage.
-Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
-Chance to erupt for $191685s1 damage split among all nearby enemies.
+Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
+Chance to erupt for $191685s1 damage split among all nearby enemies.
 Always erupts if the infected dies.
 
 Name             : Virulent Eruption (id=191685) [Spell Family (15)] 
@@ -4434,7 +4434,7 @@ Effects          :
 #5 (id=708241)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self (1)
 Description      : Surrounds you with a barrier of whirling bones, increasing Armor by ${$s1*$STR/100}, and your Haste by $s4%. Each melee attack against you consumes a charge. Lasts $d or until all charges are consumed.
-Tooltip          : Armor increased by ${$w1*$STR/100}.
+Tooltip          : Armor increased by ${$w1*$STR/100}.
 Haste increased by $w4%.
 
 Name             : Marrowrend (id=195182) [Spell Family (15)] 
@@ -4464,9 +4464,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.37557 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #3 (id=286519)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Description      : Smash the target, dealing $s2 Physical damage and generating $s3 charges of Bone Shield.
-
-|Tinterface\icons\ability_deathknight_boneshield.blp:24|t |cFFFFFFFFBone Shield|r
+Description      : Smash the target, dealing $s2 Physical damage and generating $s3 charges of Bone Shield.
+
+|Tinterface\icons\ability_deathknight_boneshield.blp:24|t |cFFFFFFFFBone Shield|r
 $@spelldesc195181
 
 Name             : Death's Caress (id=195292) [Spell Family (15)] 
@@ -4493,9 +4493,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.14742 | Target: Enemy (6)
 #2 (id=293371)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 55078 | Target: Enemy (6)
-Description      : Reach out with necrotic tendrils, dealing $s1 Shadow damage and applying Blood Plague to your target.
-
-|Tinterface\icons\spell_deathknight_bloodplague.blp:24|t |cFFFFFFFFBlood Plague|r
+Description      : Reach out with necrotic tendrils, dealing $s1 Shadow damage and applying Blood Plague to your target.
+
+|Tinterface\icons\spell_deathknight_bloodplague.blp:24|t |cFFFFFFFFBlood Plague|r
 $@spelldesc55078
 
 Name             : Frost Fever (id=195617) [Scaling Spell (1)] 
@@ -4567,10 +4567,10 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 1 | Trigger Spell: 197531 | Target: Self (1)
 #3 (id=327477)   : Dummy (3)
                    Base Value: 15 | Scaled Value: 15
-Description      : Your auto attacks have a chance to summon a Bloodworm.
-
-Bloodworms deal minor damage to your target for $198494d and then burst, healing you for $s3% of your missing health.
-
+Description      : Your auto attacks have a chance to summon a Bloodworm.
+
+Bloodworms deal minor damage to your target for $198494d and then burst, healing you for $s3% of your missing health.
+
 If you drop below $s2% health, your Bloodworms will immediately burst and heal you.
 
 Name             : Frozen Pulse (id=195750) [Spell Family (15)] 
@@ -4756,7 +4756,7 @@ Effects          :
 #1 (id=288906)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : $@spelldesc77575
-Tooltip          : Infecting nearby allies with Virulent 
+Tooltip          : Infecting nearby allies with Virulent 
 Plague.
 
 Name             : Festering Wound (id=197147) [Spell Family (15), Passive] 
@@ -4778,8 +4778,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=289532)   : Apply Aura (6) | Proc Trigger Spell (42): Festering Wound
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 195757 | Target: Self (1)
-Description      : Festering Strike applies a pustulent lesion that will burst on death or when damaged by Scourge Strike, dealing $194311s1 Shadow damage and generating $195757s1 Runic Power.
-
+Description      : Festering Strike applies a pustulent lesion that will burst on death or when damaged by Scourge Strike, dealing $194311s1 Shadow damage and generating $195757s1 Runic Power.
+
 Stacks up to $194310u times on any target.
 
 Name             : Bloodworms (id=197531) [Spell Family (15), Hidden] 
@@ -5084,8 +5084,8 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3
 #5 (id=321496)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -20 | Scaled Value: -20 | Chain Multiplier: 1 | Mechanic: Snare | Chain Targets: 2 | Target: Enemy (6)
-Description      : Instantly strike the target and 1 other nearby enemy, causing $s2 Physical damage, and reducing enemies' movement speed by $s5% for $d.
-
+Description      : Instantly strike the target and 1 other nearby enemy, causing $s2 Physical damage, and reducing enemies' movement speed by $s5% for $d.
+
 |cFFFFFFFFGenerates $?s221536[${$s3+$221536s1}][$s3] bonus Runic Power$?s221536[, plus ${$210738s1/10} Runic Power per additional enemy struck][].|r
 Tooltip          : Movement speed reduced by $s5%.
 
@@ -5113,8 +5113,8 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .....
 Effects          :
 #1 (id=306042)   : Apply Aura (6) | Periodic Health Leech (53): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | AP Coefficient: 0.44226 | Target: Enemy (6)
-Description      : Drains $o1 health from the target over $d.
-
+Description      : Drains $o1 health from the target over $d.
+
 You can move, parry, dodge, and use defensive abilities while channeling this ability.
 Tooltip          : Draining $s1 health from the target every $t1 sec.
 
@@ -5632,7 +5632,7 @@ Effects          :
 #1 (id=306573)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 Description      : Incites you into a killing frenzy for $d, increasing Haste by $s1% and causing your auto attacks to infect the target with a Festering Wound.
-Tooltip          : Haste increased by $s1%.
+Tooltip          : Haste increased by $s1%.
 Auto attacks infect the target with a Festering Wound.
 
 Name             : Clawing Shadows (id=207311) [Spell Family (15)] 
@@ -5767,10 +5767,10 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: rune | Target: Self (1)
 #3 (id=727293)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-Description      : Strike the target for $s1 Physical damage.
-
-Cooldown reduced by $s2 sec for every Rune you spend.
-
+Description      : Strike the target for $s1 Physical damage.
+
+Cooldown reduced by $s2 sec for every Rune you spend.
+
 |cFFFFFFFFGenerates $s2 Rune.|r
 
 Name             : Remorseless Winter (rank=Talent) (id=211793) [Spell Family (15)] 
@@ -5884,8 +5884,8 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=314799)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-Description      : Hack at the enemy, dealing $212335s1% of normal melee damage.$?s63560[
-
+Description      : Hack at the enemy, dealing $212335s1% of normal melee damage.$?s63560[
+
 |CFFE55BB0Dark Transformation: Expel vile gas, dealing $212338s1% of normal melee damage as Shadow to all enemies within $212338A1 yds.|R][]
 
 Name             : Cleaver (id=212335) 
@@ -5926,8 +5926,8 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=314802)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-Description      : Smash the target with the blunt side of the cleaver, dealing light damage and stunning for $91800d.$?s63560[
-
+Description      : Smash the target with the blunt side of the cleaver, dealing light damage and stunning for $91800d.$?s63560[
+
 |CFFE55BB0Dark Transformation: Strike an enemy with a smashing attack, dealing $91797s2% of normal melee damage and stunning for $91797d.|R][]
 
 Name             : Powerful Smash (id=212337) [Spell Family (15)] 
@@ -6031,11 +6031,11 @@ Effects          :
                    Base Value: -5 | Scaled Value: -5
 #7 (id=368591)   : None (0)
                    Base Value: 100 | Scaled Value: 100
-Description      : Sidestep into the shadowlands, removing all root effects and increasing your movement speed by $s1% for $d. Taking any action cancels the effect.
-
+Description      : Sidestep into the shadowlands, removing all root effects and increasing your movement speed by $s1% for $d. Taking any action cancels the effect.
+
 While active, your movement speed cannot be reduced below $m2%.
-Tooltip          : Movement speed increased by $w1%.
-Cannot be slowed below $s2% of normal movement speed.
+Tooltip          : Movement speed increased by $w1%.
+Cannot be slowed below $s2% of normal movement speed.
 Cannot attack.
 
 Name             : Wraith Walk (id=212654) [Spell Family (15), Hidden] 
@@ -6135,8 +6135,8 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #2 (id=330791)   : Apply Aura (6) | Modify Max Resource (418)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 6 | Target: Self (1)
-Description      : While you have at least $s1 Bone Shield charges, the cost of Death Strike is reduced by ${$219788m1/-10} Runic Power.
-
+Description      : While you have at least $s1 Bone Shield charges, the cost of Death Strike is reduced by ${$219788m1/-10} Runic Power.
+
 Additionally, your maximum Runic Power is increased by ${$m2/10}.
 
 Name             : Ossuary (id=219788) [Spell Family (15)] 
@@ -6329,7 +6329,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
 Effects          :
 #1 (id=331344)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.60000 | Target: Enemy (6)
-Description      : $@spelldesc49020
+Description      : $@spelldesc49020
 
 
 Name             : Frost Strike (id=222026) [Scaling Spell (-1), Spell Family (15)] 
@@ -6466,8 +6466,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=474096)   : Apply Aura (6) | Periodic Dummy (226): every 8 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Gain Inexorable Assault every $t1 sec, stacking up to $253595u times.
-
+Description      : Gain Inexorable Assault every $t1 sec, stacking up to $253595u times.
+
 $?s207230[Obliterate and Frostscythe consume][Obliterate consumes] a stack to deal an additional $253597s1 Frost damage.
 
 Name             : Inexorable Assault (id=253595) [Spell Family (15)] 
@@ -6657,8 +6657,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 33251.41 (coefficient=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=479677)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 33251.41 (coefficient=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
-Description      : Deals $s1 Holy Damage to enemies within $A1.
-
+Description      : Deals $s1 Holy Damage to enemies within $A1.
+
 Heals $s2 to allies within $A1. 
 
 Name             : Haste (id=261582) [Scaling Spell (-1), Passive] 
@@ -7377,8 +7377,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 144.8168 (coefficient=0.465649) | Trigger Spell: 273830 | Target: Self (1)
 #2 (id=725767)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 284.8856 (coefficient=0.916031) | Target: Self (1)
-Description      : Your spells and abilities have a chance to create a Surging Droplet nearby. Collecting it increases your primary stat by $s1 for $273842d.
-
+Description      : Your spells and abilities have a chance to create a Surging Droplet nearby. Collecting it increases your primary stat by $s1 for $273842d.
+
 Rarely, a Void Droplet will be created, increasing your primary stat by $s2 for $273843d instead.
 
 Name             : Filthy Transfusion (id=273834) [Scaling Spell (-8), Passive] 
@@ -7650,8 +7650,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.50000 | Target: Enemy (6)
 #2 (id=728915)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4
-Description      : Bring doom upon the enemy, dealing $sw1 Shadow damage and bursting up to $s2 Festering Wounds on the target.
-
+Description      : Bring doom upon the enemy, dealing $sw1 Shadow damage and bursting up to $s2 Festering Wounds on the target.
+
 Summons an Army of the Dead ghoul for $221180d for each burst Festering Wound.
 
 Name             : Echoing Howl (id=275917) [Scaling Spell (-8), Spell Family (15), Passive] 
@@ -7773,8 +7773,8 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 5 | Target: Self (1)
                    Affected Spells: Death Grip (49576), Death Grip (51399)
                    Family Flags: 25
-Description      : Increases the range of Death Grip by $s1 yds.
-
+Description      : Increases the range of Death Grip by $s1 yds.
+
 Killing an enemy that yields experience or honor resets the cooldown of Death Grip.
 
 Name             : Army of the Damned (id=276837) [Spell Family (15), Passive] 
@@ -7799,7 +7799,7 @@ Effects          :
 #2 (id=731639)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 Description      : $?s207317[Death Coil and Epidemic reduce][Death Coil reduces] the cooldown of Apocalypse by $<cd1> sec and Army of the Dead by $<cd2> sec.
-Variables        : $cd1=${$s1/10}
+Variables        : $cd1=${$s1/10}
 $cd2=${$s2/10}
 
 Name             : Pestilence (id=277234) [Spell Family (15), Passive] 
@@ -8170,8 +8170,8 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5
 #4 (id=738960)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
-Description      : Your spells and abilities have a chance to fire a bomb at your target, which when in proximity breaks into $s3 smaller bombs. Upon hitting the ground, each smaller bomb deals $280984s1 damage to all nearby enemies.
-
+Description      : Your spells and abilities have a chance to fire a bomb at your target, which when in proximity breaks into $s3 smaller bombs. Upon hitting the ground, each smaller bomb deals $280984s1 damage to all nearby enemies.
+
 Increases your Kul Tiran or Zandalari Engineering by $s4.
 
 Name             : Ricocheting Inflatable Pyrosaw (id=280168) [Passive] 
@@ -8198,10 +8198,10 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4
 #3 (id=738961)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
-Description      : Your spells and abilities have a chance to hurl a R.I.P that bounces among $s2 enemies, dealing $280656s1 Fire damage to each. 
-
-Beneficial spells have a chance to hurl a Mechanized External Needle Dispenser, healing up to $s2 allies for $280658s1.
-
+Description      : Your spells and abilities have a chance to hurl a R.I.P that bounces among $s2 enemies, dealing $280656s1 Fire damage to each. 
+
+Beneficial spells have a chance to hurl a Mechanized External Needle Dispenser, healing up to $s2 allies for $280658s1.
+
 Increases your Kul Tiran or Zandalari Engineering by $s3.
 
 Name             : Auto-Self-Cauterizer (id=280172) [Scaling Spell (-8), Passive] 
@@ -8229,10 +8229,10 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30
 #3 (id=738963)   : Apply Aura (6) | Skill (30)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 2499 | Target: Self (1)
-Description      : Taking damage has a chance to unleash your Auto-Self-Cauterizer, healing you for $280583s1, removing most* bleed effects, and snaring nearby enemies by $280583s2% for $280583d.
-
-Increases your Kul Tiran or Zandalari Engineering by $s3.
-
+Description      : Taking damage has a chance to unleash your Auto-Self-Cauterizer, healing you for $280583s1, removing most* bleed effects, and snaring nearby enemies by $280583s2% for $280583d.
+
+Increases your Kul Tiran or Zandalari Engineering by $s3.
+
 *Efficacy may vary.
 
 Name             : Synaptic Spark Capacitor (id=280174) [Scaling Spell (-8), Spell Family (7), Passive] 
@@ -8259,8 +8259,8 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
 #3 (id=742699)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 1065.175 (coefficient=13.7)
-Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $s1 yards of the Spark Coil take $280847s2 damage every 2 seconds and deal $280847s1% reduced damage to you.
-
+Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $s1 yards of the Spark Coil take $280847s2 damage every 2 seconds and deal $280847s1% reduced damage to you.
+
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
 Name             : Relational Normalization Gizmo (id=280178) [Scaling Spell (-1), Passive] 
@@ -8286,8 +8286,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 311 (coefficient=1) | Target: Self (1)
 #2 (id=738959)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
-Description      : Your spells and abilities have a chance to grow or shrink the world. Shrinking the world grants you $280654s4 primary stat and $280654s6 maximum health for $280654d. Growing the world grants you $280653s1 Haste and $280653s3% movement speed for $280653d.
-
+Description      : Your spells and abilities have a chance to grow or shrink the world. Shrinking the world grants you $280654s4 primary stat and $280654s6 maximum health for $280654d. Growing the world grants you $280653s1 Haste and $280653s3% movement speed for $280653d.
+
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
 Name             : Personal Absorb-o-Tron (id=280181) [Scaling Spell (-8), Passive] 
@@ -8313,8 +8313,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 12828.75 (coefficient=165) | Target: Self (1)
 #2 (id=738962)   : Apply Aura (6) | Skill (30)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 2499 | Target: Self (1)
-Description      : Taking damage has a chance to call your Personal Absorb-o-Tron, absorbing the next $280660s1 damage you take over $280660d.
-
+Description      : Taking damage has a chance to call your Personal Absorb-o-Tron, absorbing the next $280660s1 damage you take over $280660d.
+
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
 Name             : Dagger in the Back (id=280284) [Scaling Spell (-8), Passive] 
@@ -8457,8 +8457,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738151)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 5.697831 (coefficient=0.018321) | Trigger Spell: 280708 | Target: Self (1)
-Description      : Your armor gathers and analyzes combat data every $280708t1 sec, increasing your primary stat by $s1, stacking up to $280709u times. The data decays while out of combat.
-
+Description      : Your armor gathers and analyzes combat data every $280708t1 sec, increasing your primary stat by $s1, stacking up to $280709u times. The data decays while out of combat.
+
 Enables $@spellname280573 within Uldir.
 
 Name             : Laser Matrix (id=280559) [Scaling Spell (-8), Passive] 
@@ -8479,8 +8479,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 4507.592 (coefficient=57.97546) | Trigger Spell: 280702 | Target: Self (1)
 #2 (id=738401)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 5634.728 (coefficient=72.47239) | Target: Self (1)
-Description      : Your spells and abilities have a chance to release a barrage of lasers, dealing $s1 Arcane damage split among all enemies and restoring $s2 health split among injured allies.
-
+Description      : Your spells and abilities have a chance to release a barrage of lasers, dealing $s1 Arcane damage split among all enemies and restoring $s2 health split among injured allies.
+
 Enables $@spellname280573 within Uldir.
 
 Name             : Glory in Battle (id=280577) [Scaling Spell (-7), Passive] 
@@ -8501,7 +8501,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.913709) | Trigger Spell: 280778 | Target: Self (1)
 #2 (id=738555)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.55714) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280780d. 
+Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280780d. 
 Attacking a member of the opposite faction significantly increases this chance.
 
 Name             : Retaliatory Fury (id=280579) [Scaling Spell (-1), Passive] 
@@ -8523,7 +8523,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 320.5505 (coefficient=1.030709) | Trigger Spell: 280785 | Target: Self (1)
 #2 (id=738573)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 1121.974 (coefficient=3.607634) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280788d. 
+Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280788d. 
 Attacking a member of the opposite faction is more likely to activate this effect.
 
 Name             : Combined Might (id=280580) [Scaling Spell (-1), Passive] 
@@ -8632,7 +8632,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.913709) | Trigger Spell: 280851 | Target: Self (1)
 #2 (id=738699)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.55714) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280852d. 
+Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280852d. 
 Attacking a member of the opposite faction significantly increases this chance.
 
 Name             : Last Gift (id=280624) [Scaling Spell (-1), Passive] 
@@ -8654,7 +8654,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 320.5505 (coefficient=1.030709) | Trigger Spell: 280860 | Target: Self (1)
 #2 (id=738721)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 1121.974 (coefficient=3.607634) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280862d. 
+Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280862d. 
 Taking damage from a member of the opposite faction has a chance to activate this effect. 
 
 Name             : Stronger Together (id=280625) [Scaling Spell (-1), Passive] 

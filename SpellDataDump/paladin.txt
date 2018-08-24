@@ -110,8 +110,8 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .x...
 Effects          :
 #1 (id=251)      : Unknown(67)
                    Base Value: 0 | Scaled Value: 0 | Target: Friend (21)
-Description      : Heals a friendly target for an amount equal to your maximum health.
-
+Description      : Heals a friendly target for an amount equal to your maximum health.
+
 Cannot be used on a target with Forbearance. Causes Forbearance for $25771d.
 
 Name             : Divine Shield (id=642) [Spell Family (10)] 
@@ -138,8 +138,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
 #2 (id=255)      : Apply Aura (6) | School Immunity (39)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 126 | Target: Self (1)
-Description      : Grants immunity to all damage and harmful effects for $d. 
-
+Description      : Grants immunity to all damage and harmful effects for $d. 
+
 Cannot be used if you have Forbearance. Causes Forbearance for $25771d.
 Tooltip          : Immune to all attacks and harmful effects.
 
@@ -205,8 +205,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Unknown(57)
 #3 (id=263966)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e | Target: Unknown(57)
-Description      : Blesses a party or raid member, granting immunity to Physical damage and harmful effects for $d.
-
+Description      : Blesses a party or raid member, granting immunity to Physical damage and harmful effects for $d.
+
 Cannot be used on a target with Forbearance. Causes Forbearance for $25771d.
 Tooltip          : Immune to Physical damage and harmful effects.
 
@@ -299,8 +299,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Misc Value 2: 0xa | Target: Self (1)
 #3 (id=348781)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
-Description      : Blesses a party or raid member, reducing their damage taken by $s1%, but you suffer ${100*$e1}% of damage prevented.
-
+Description      : Blesses a party or raid member, reducing their damage taken by $s1%, but you suffer ${100*$e1}% of damage prevented.
+
 Last $d, or until transferred damage would cause you to fall below $s3% health.
 Tooltip          : $?$w1>0[$w1% of damage taken is transferred to the Paladin.][Taking ${$s1*$e1}% of damage taken by target ally.]
 
@@ -355,8 +355,8 @@ Attributes       : ........ ........ x...x... ........   ........ ..x..... .xx..
 Effects          :
 #1 (id=11180)    : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.25) | Target: Enemy (6)
-Description      : Forces an enemy target to meditate, incapacitating them for $d.
-
+Description      : Forces an enemy target to meditate, incapacitating them for $d.
+
 Usable against Humanoids, Demons, Undead, Dragonkin, and Giants.
 Tooltip          : Incapacitated.
 
@@ -384,8 +384,8 @@ Attributes       : ........ ........ x.x..x.. ........   ........ .x...... .....
 Effects          :
 #1 (id=11347)    : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.95000 | Target: Enemy (6)
-Description      : Judges the target, dealing $s1 Holy damage$?s231663[, and causing them to take $197277s1% increased damage from your next ability that costs Holy Power.][]$?s137027[
-
+Description      : Judges the target, dealing $s1 Holy damage$?s231663[, and causing them to take $197277s1% increased damage from your next ability that costs Holy Power.][]$?s137027[
+
 |cFFFFFFFFGenerates $220637s1 Holy Power.][]
 
 Name             : Holy Shock (id=20473) [Spell Family (10)] 
@@ -472,8 +472,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.92000 | Target: Enemy (6)
 #2 (id=714232)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: holy_power | Target: Self (1)
-Description      : Hurls a divine hammer that strikes an enemy for $s1 Holy damage. Only usable on enemies that have less than 20% health, or while you are empowered by $?s231895[Crusade][Avenging Wrath].
-
+Description      : Hurls a divine hammer that strikes an enemy for $s1 Holy damage. Only usable on enemies that have less than 20% health, or while you are empowered by $?s231895[Crusade][Avenging Wrath].
+
 |cFFFFFFFFGenerates $s2 Holy Power.
 
 Name             : Forbearance (id=25771) [Spell Family (10)] 
@@ -668,12 +668,12 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1) -> Self (1)
                    Affected Spells: Aura of Mercy (210291)
                    Family Flags: 120
-Description      : Empowers your chosen aura and increases its radius to ${$183425m2*(1+$m1/100)} yards for $d.$?s183425[
-
-Devotion Aura: all affected allies gain $183425s3% damage reduction.][]$?s183416[
-
-Aura of Sacrifice: causes $183416s4% of damage to be redirected to you and reduced by $183416s5%.][]$?s183415[
-
+Description      : Empowers your chosen aura and increases its radius to ${$183425m2*(1+$m1/100)} yards for $d.$?s183425[
+
+Devotion Aura: all affected allies gain $183425s3% damage reduction.][]$?s183416[
+
+Aura of Sacrifice: causes $183416s4% of damage to be redirected to you and reduced by $183416s5%.][]$?s183415[
+
 Aura of Mercy: has no target limit and healing increased by $s3%.][]
 Tooltip          : Aura effectiveness and radius increased.
 
@@ -701,10 +701,10 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #3 (id=728128)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Misc Value 2: 0x14 | Target: Self (1)
-Description      : Reduces all damage you take by $s1% for $d.
-
+Description      : Reduces all damage you take by $s1% for $d.
+
 While Ardent Defender is active, the next attack that would otherwise kill you will instead bring you to $s2% of your maximum health.
-Tooltip          : Damage taken reduced by $w1%.
+Tooltip          : Damage taken reduced by $w1%.
 The next attack that would otherwise kill you will instead bring you to $w2% of your maximum health.
 
 Name             : Avenging Wrath (id=31884) [Spell Family (10)] 
@@ -780,8 +780,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.26781 | Chain Multiplier: 1 | Mechanic: Silence | Target: Enemy (6)
 #4 (id=737804)   : Trigger Spell (64): Avenger's Valor
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 197561 | Target: Self (1)
-Description      : Hurls your shield at an enemy target, dealing $s1 Holy damage$?a231665[, interrupting and silencing the non-Player target for $d][], and then jumping to ${$x1-1} additional nearby enemies.
-
+Description      : Hurls your shield at an enemy target, dealing $s1 Holy damage$?a231665[, interrupting and silencing the non-Player target for $d][], and then jumping to ${$x1-1} additional nearby enemies.
+
 Increases the effects of your next Shield of the Righteous by $197561s2%.
 Tooltip          : Silenced.
 
@@ -803,7 +803,7 @@ Effects          :
 #1 (id=21964)    : Apply Aura (6) | Increase Mounted Speed% (172)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 Description      : You move $s1% faster while mounted. This does not stack with other movement speed increasing effects.
-Tooltip          : Mounted speed increased by $w1%.
+Tooltip          : Mounted speed increased by $w1%.
 This does not stack with other movement speed increasing effects.
 
 Name             : Invisibility (id=32612) [Spell Family (3)] 
@@ -855,8 +855,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.76500 | Target: Enemy (6)
 #2 (id=25580)    : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: holy_power | Target: Self (1)
-Description      : Strike the target for $s1 Physical damage.$?s137027[
-
+Description      : Strike the target for $s1 Physical damage.$?s137027[
+
 |cFFFFFFFFGenerates $s2 Holy Power.][]
 Variables        : $mult=${($min($pl-1,19)*6+96)/210}
 
@@ -952,8 +952,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Friend (21)
                    Affected Spells: Flash of Light (19750), Holy Shock (25914), Holy Light (82326), Light of Dawn (85222), Light of the Martyr (183998), Light of Dawn (225311)
                    Family Flags: 30, 48, 74, 82, 103, 124
-Description      : Wrap a single ally in holy energy, causing your heals on other party or raid members to also heal that ally for $53651s1% of the amount healed.$?a231642[ 
-
+Description      : Wrap a single ally in holy energy, causing your heals on other party or raid members to also heal that ally for $53651s1% of the amount healed.$?a231642[ 
+
 Targeting this ally directly with Flash of Light or Holy Light also refunds $231642s1% of Mana spent on those heals.][]
 Tooltip          : Healed whenever the Paladin heals a nearby ally.
 
@@ -1002,10 +1002,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.27000 | Target: Enemy (6)
 #2 (id=171314)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-Description      : Hammers the current target for $53595sw1 Physical damage.$?s26573&s203785[
-
-Hammer of the Righteous also causes a wave of light that hits all other targets within $88263A1 yds for $88263sw1 Holy damage.]?s26573[
-
+Description      : Hammers the current target for $53595sw1 Physical damage.$?s26573&s203785[
+
+Hammer of the Righteous also causes a wave of light that hits all other targets within $88263A1 yds for $88263sw1 Holy damage.]?s26573[
+
 While you are standing in your Consecration, Hammer of the Righteous also causes a wave of light that hits all other targets within $88263A1 yds for $88263sw1 Holy damage.][]
 
 Name             : Shield of the Righteous (id=53600) [Spell Family (10)] 
@@ -1383,8 +1383,8 @@ Effects          :
                    Family Flags: 20
 #3 (id=155890)   : Apply Aura (6) | Modify Melee Attack Power% (166)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self (1)
-Description      : Reduces all damage taken while inside your Consecration by ${-$s2}.1%.  Increases your chance to block melee attacks by ${$s1}.1%.
-
+Description      : Reduces all damage taken while inside your Consecration by ${-$s2}.1%.  Increases your chance to block melee attacks by ${$s1}.1%.
+
 Also increases your attack power by ${$s3}.1%.
 
 Name             : Consecration (id=81297) [Spell Family (10)] 
@@ -1478,10 +1478,10 @@ Effects          :
                    Base Value: 7 | Scaled Value: 7 | Target: Self (1)
 #4 (id=714745)   : Apply Aura (6) | Periodic Dummy (226): every 15 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Consumes up to 3 Holy Power to increase your damage done and Haste by $s1%.
-
+Description      : Consumes up to 3 Holy Power to increase your damage done and Haste by $s1%.
+
 Lasts $d per Holy Power consumed.
-Tooltip          : Damage done increased by $w1%.
+Tooltip          : Damage done increased by $w1%.
 Haste increased by $w3%.
 
 Name             : Grand Crusader (id=85043) [Spell Family (10), Passive] 
@@ -1997,10 +1997,10 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=127312)   : Dummy (3)
                    Base Value: 102 | Scaled Value: 102 | Target: Unknown(25)
-Description      : Fires a beam of light that scatters to strike a clump of targets. 
-
-If the beam is aimed at an enemy target, it deals $114852s1 Holy damage and radiates $114852s2 healing to 5 allies within $114852A2 yards.
-
+Description      : Fires a beam of light that scatters to strike a clump of targets. 
+
+If the beam is aimed at an enemy target, it deals $114852s1 Holy damage and radiates $114852s2 healing to 5 allies within $114852A2 yards.
+
 If the beam is aimed at a friendly target, it heals for $114871s1 and radiates $114871s2 Holy damage to 5 enemies within $114871A2 yards.
 
 Name             : Selfless Healer (id=114250) [Spell Family (10)] 
@@ -2028,7 +2028,7 @@ Effects          :
                    Affected Spells: Flash of Light (19750)
                    Family Flags: 30
 Description      : $@spelldesc85804
-Tooltip          : Flash of Light cast time reduced by $w1%.
+Tooltip          : Flash of Light cast time reduced by $w1%.
 Flash of Light heals for $w2% more.
 
 Name             : Holy Prism (id=114852) [Spell Family (10)] 
@@ -2734,8 +2734,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 1006.81 (coefficient=3.23733) | Misc Value: 1913521920 | Target: Self (1)
 #2 (id=218844)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-Description      : The Light temporarily magnifies your power, increasing your Haste, Critical Strike, Mastery, and Versatility by $s1.
-
+Description      : The Light temporarily magnifies your power, increasing your Haste, Critical Strike, Mastery, and Versatility by $s1.
+
 Consumes up to $s2 charges of Shield of the Righteous, and lasts $d per charge.
 Tooltip          : Haste, Critical Strike, Mastery, and Versatility increased by $s1.
 
@@ -3013,8 +3013,8 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 210291 | Target: Self (1) -> Self (1)
 #2 (id=340886)   : Apply Party Aura (35) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Radius: 10 yards | Target: Self (1) -> Self (1)
-Description      : Restores $210291s1 health to $210291s2 injured allies within $210291A1 yds every $t1 sec.
-
+Description      : Restores $210291s1 health to $210291s2 injured allies within $210291A1 yds every $t1 sec.
+
 While Aura Mastery is active, heals all allies in the aura and healing is increased by $31821s3%.
 Tooltip          : Restores health to $210291s2 injured allies within $210291A1 yards every $t1 sec.
 
@@ -3049,8 +3049,8 @@ Effects          :
                    Base Value: 75 | Scaled Value: 75
 #6 (id=725648)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Misc Value 2: 0xa | Target: Self (1)
-Description      : While you are above $s3% health, $s1% of all damage taken by allies within $s2 yds is redirected to you and reduced by half. 
-
+Description      : While you are above $s3% health, $s1% of all damage taken by allies within $s2 yds is redirected to you and reduced by half. 
+
 While Aura Mastery is active, $s4% of damage is redirected and reduced by $s5%.
 Tooltip          : $s1% of damage dealt to nearby allies is redirected to you and reduced by half, while you are above $s3% health.
 
@@ -3079,8 +3079,8 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1) -> Self (1)
 #3 (id=724358)   : Apply Aura (6) | Unknown(395)
                    Base Value: -20 | Scaled Value: -20 | SP Coefficient: 0.25000 | Misc Value: 6770 | Target: Self (1) -> Self (1)
-Description      : Damage dealt to allies within $s2 yards is reduced by up to $s1%, diminishing as more allies enter the aura.
-
+Description      : Damage dealt to allies within $s2 yards is reduced by up to $s1%, diminishing as more allies enter the aura.
+
 While Aura Mastery is active, all affected allies gain $s3% damage reduction.
 Tooltip          : Damage taken by allies within $s2 yards reduced by up to $s1%, diminishing as more allies enter the aura.
 
@@ -3131,7 +3131,7 @@ Effects          :
 #4 (id=479889)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 Description      : $@spelldesc183435
-Tooltip          : Damage done increased by $s1%.
+Tooltip          : Damage done increased by $s1%.
 Damage taken reduced by $s2%.
 
 Name             : Judgment of Light (id=183778) [Spell Family (10), Passive] 
@@ -3216,8 +3216,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ ...x.
 Effects          :
 #1 (id=266576)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.35000 | Target: Friend (21)
-Description      : Sacrifice a portion of your own health to instantly heal an ally for $s1. You take damage equal to $219562s1% of the healing done.
-
+Description      : Sacrifice a portion of your own health to instantly heal an ally for $s1. You take damage equal to $219562s1% of the healing done.
+
 Does not cause your Beacon of Light to be healed. Cannot be cast on yourself.
 
 Name             : Light of the Protector (id=184092) [Spell Family (10)] 
@@ -3269,8 +3269,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.45000 | Target: Enemy (6)
 #3 (id=267537)   : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: holy_power | Target: Self (1)
-Description      : Pierces an enemy with a blade of light, dealing ${$s2*$<mult>} Physical damage.
-
+Description      : Pierces an enemy with a blade of light, dealing ${$s2*$<mult>} Physical damage.
+
 |cFFFFFFFFGenerates $s3 Holy Power.|r
 Variables        : $mult=${($max(0,$min($pl-16,4))*12+352)/400}
 
@@ -3298,8 +3298,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
 #2 (id=358403)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-Description      : Creates a barrier of holy light that absorbs ${$s2/100*$MHP} damage for $d.
-
+Description      : Creates a barrier of holy light that absorbs ${$s2/100*$MHP} damage for $d.
+
 When the shield expires, it bursts to inflict Holy damage equal to the total amount absorbed, divided among all nearby enemies.
 Tooltip          : Absorbs $w1 damage and deals damage when the barrier fades or is fully consumed.
 Variables        : $shield=${($SP*$s2)*(1+$@versadmg)}
@@ -3492,8 +3492,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 198137 | Target: Self (1)
 #2 (id=340346)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-Description      : Divine Hammers spin around you, damaging enemies within $198137A1 yds for ${$d/$t1*$198137sw1} Holy damage over $d.
-
+Description      : Divine Hammers spin around you, damaging enemies within $198137A1 yds for ${$d/$t1*$198137sw1} Holy damage over $d.
+
 |cFFFFFFFFGenerates $s2 Holy Power.|r
 
 Name             : Fist of Justice (id=198054) [Spell Family (10), Passive] 
@@ -3591,8 +3591,8 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Radius: 0 - 30 yards | Target: Unknown(132) -> AOE friendly (31)
 #3 (id=340736)   : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | Radius: 0 - 30 yards | Target: Unknown(132) -> AOE friendly (31)
-Description      : Apply a Beacon of Light to your target and $s2 injured allies within $A2 yards for $d.
-
+Description      : Apply a Beacon of Light to your target and $s2 injured allies within $A2 yards for $d.
+
 All affected allies will be healed for $s3% of the amount of your other healing done.$?a231642[ Your Flash of Light and Holy Light on these targets will also refund $231642s1% of their Mana cost.][]
 Tooltip          : $@spellaura53563
 
@@ -3660,8 +3660,8 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=295441)   : Apply Aura (6) | Periodic Trigger Spell (23): Tyr's Deliverance every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 200653 | Target: Self (1)
-Description      : Releases the Light within |cFFFFCC99The Silver Hand|r for $d, healing an injured ally within $200653A1 yds for $200654s1 every $t1 sec.
-
+Description      : Releases the Light within |cFFFFCC99The Silver Hand|r for $d, healing an injured ally within $200653A1 yds for $200654s1 every $t1 sec.
+
 Allies healed also receive $200654s2% increased healing from your Holy Light and Flash of Light spells for $200654d.
 Tooltip          : Healing an injured ally for $200654s1 every $t1 sec.
 
@@ -3811,7 +3811,7 @@ Effects          :
 #3 (id=361463)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Friend (21)
 Description      : Places a powerful blessing on a single ally for $d, granting a shield that absorbs up to $<shield> damage every $t1 sec.
-Tooltip          : $?$w2>1[Absorbs the next ${$w2-1} damage.][]
+Tooltip          : $?$w2>1[Absorbs the next ${$w2-1} damage.][]
 Refreshed to $w1 absorption every $t1 sec.
 Variables        : $shield=${0.675*$SPH}
 
@@ -3865,8 +3865,8 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 18 | Target: Self (1)
                    Affected Spells: Grand Crusader (85043), Grand Crusader (85416), Crusader's Judgment (204023)
                    Family Flags: 106
-Description      : Avenger's Shield now deals $s1% increased damage to the first target hit.
-
+Description      : Avenger's Shield now deals $s1% increased damage to the first target hit.
+
 Grand Crusader now has an additional $s2% chance to occur.
 
 Name             : Last Defender (id=203791) [Spell Family (10), Passive] 
@@ -3971,8 +3971,8 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=301055)   : Apply Aura (6) | School Immunity (39)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 126 | Target: Unknown(57)
-Description      : Blesses a party or raid member, granting immunity to magical damage and harmful effects for $d.
-
+Description      : Blesses a party or raid member, granting immunity to magical damage and harmful effects for $d.
+
 Cannot be used on a target with Forbearance. Causes Forbearance for $25771d.
 Tooltip          : Immune to magical damage and harmful effects.
 
@@ -4241,8 +4241,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 13344 | Target: Custom (18)
 #3 (id=302980)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: holy_power | Target: Self (1)
-Description      : Consecrates the land beneath you, causing $<totaldmg> Holy damage over $d to enemies who enter the area.
-
+Description      : Consecrates the land beneath you, causing $<totaldmg> Holy damage over $d to enemies who enter the area.
+
 |cFFFFFFFFGenerates $s3 Holy Power.
 Tooltip          : Damage every $t1 $lsecond:seconds;.
 Variables        : $totaldmg=${$81297m1*($d+1)}
@@ -4272,12 +4272,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.29400 | Radius: 12 yards | Target: Cone Front (104)
 #4 (id=356924)   : Apply Aura (6) | Modify Damage Taken% from Caster (270)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Radius: 12 yards | Target: Cone Front (104)
-Description      : Lash out with the |cFFFFCC99Ashbringer|r, dealing $sw1 Radiant damage$?a179546[, and an additional $o3 Radiant damage over $d,][] to all enemies within $a1 yd in front of you, and reducing movement speed by $s2% for $d.
-
-Demon and Undead enemies are stunned for $205290d if struck by the Wake of Ashes.$?a179546[
-
+Description      : Lash out with the |cFFFFCC99Ashbringer|r, dealing $sw1 Radiant damage$?a179546[, and an additional $o3 Radiant damage over $d,][] to all enemies within $a1 yd in front of you, and reducing movement speed by $s2% for $d.
+
+Demon and Undead enemies are stunned for $205290d if struck by the Wake of Ashes.$?a179546[
+
 |cFFFFFFFFGenerates $218001s1 Holy Power.][]
-Tooltip          : Movement speed reduced by $s2%.
+Tooltip          : Movement speed reduced by $s2%.
 $?$w3!=0[Suffering $s3 Radiant damage every $t3 sec.][]
 
 Name             : Wake of Ashes (id=205290) [Spell Family (10)] 
@@ -4625,8 +4625,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | AP Coefficient: 1.50000 | Target: Enemy (6)
 #2 (id=320675)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | Target: Enemy (6)
-Description      : Focuses Holy energy to deliver a powerful weapon strike that deals $s1 Holy damage, and restores health equal to the damage done.
-
+Description      : Focuses Holy energy to deliver a powerful weapon strike that deals $s1 Holy damage, and restores health equal to the damage done.
+
 Damage is increased by $s2% when used against a stunned target.
 
 Name             : Avenging Crusader (id=216331) [Spell Family (10)] 
@@ -4669,13 +4669,13 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 180 | Target: Self (1)
 #7 (id=321945)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-Description      : You become the ultimate crusader of light, increasing your Crusader Strike, Judgment, and auto-attack damage by $s3%.
-
+Description      : You become the ultimate crusader of light, increasing your Crusader Strike, Judgment, and auto-attack damage by $s3%.
+
 Crusader Strike and Judgment cool down $m4% faster and heal up to $m2 injured allies for $m1% of the damage they deal. Lasts $d.
-Tooltip          : Crusader Strike, Judment and auto-attack damage increased by $w3%.
-
-Cooldown rate of your Crusader Strike and Judgment is increased by $w4%.
-
+Tooltip          : Crusader Strike, Judment and auto-attack damage increased by $w3%.
+
+Cooldown rate of your Crusader Strike and Judgment is increased by $w4%.
+
 $w2 nearby allies will be healed for $w1% of the damage done.
 
 Name             : Wake of Ashes (id=218001) [Spell Family (10)] 
@@ -5123,14 +5123,14 @@ Effects          :
                    Family Flags: 39
 #5 (id=741274)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-Description      : Call upon the Light and begin a crusade, increasing your damage done and Haste by $<damage>% for $d.
-
-Each Holy Power spent during Crusade increases damage done and Haste by an additional $<damage>%.
-
+Description      : Call upon the Light and begin a crusade, increasing your damage done and Haste by $<damage>% for $d.
+
+Each Holy Power spent during Crusade increases damage done and Haste by an additional $<damage>%.
+
 Maximum $u stacks.
-Tooltip          : $?a206338[Damage done increased by ${$w1}%.
+Tooltip          : $?a206338[Damage done increased by ${$w1}%.
 Haste increased by ${$w3}%.][Damage done and Haste increased by $<damage>%.]
-Variables        : $damage=${$s1/10}
+Variables        : $damage=${$s1/10}
 $haste=${$s3/10}
 
 Name             : Fist of Justice (id=234299) [Spell Family (10), Passive] 
@@ -5448,10 +5448,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 12 yards | Target: Cone Front (104)
                    Affected Spells: Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Avenger's Shield (31935), Crusader Strike (35395), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Holy Shield (157122), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Retribution Aura (204011), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Judgment (228288), Wake of Ashes (255937), Execution Sentence (267798), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145)
                    Family Flags: 65
-Description      : Lash out at your enemies, dealing $sw1 Radiant damage to all enemies within $a1 yd in front of you and reducing their movement speed by $s2% for $d.
-
-Demon and Undead enemies are also stunned for $255941d.
-
+Description      : Lash out at your enemies, dealing $sw1 Radiant damage to all enemies within $a1 yd in front of you and reducing their movement speed by $s2% for $d.
+
+Demon and Undead enemies are also stunned for $255941d.
+
 |cFFFFFFFFGenerates $s3 Holy Power.
 Tooltip          : Movement speed reduced by $s2%.
 
@@ -5519,8 +5519,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 33251.41 (coefficient=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=479677)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 33251.41 (coefficient=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
-Description      : Deals $s1 Holy Damage to enemies within $A1.
-
+Description      : Deals $s1 Holy Damage to enemies within $A1.
+
 Heals $s2 to allies within $A1. 
 
 Name             : Haste (id=261582) [Scaling Spell (-1), Passive] 
@@ -6766,8 +6766,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 144.8168 (coefficient=0.465649) | Trigger Spell: 273830 | Target: Self (1)
 #2 (id=725767)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 284.8856 (coefficient=0.916031) | Target: Self (1)
-Description      : Your spells and abilities have a chance to create a Surging Droplet nearby. Collecting it increases your primary stat by $s1 for $273842d.
-
+Description      : Your spells and abilities have a chance to create a Surging Droplet nearby. Collecting it increases your primary stat by $s1 for $273842d.
+
 Rarely, a Void Droplet will be created, increasing your primary stat by $s2 for $273843d instead.
 
 Name             : Filthy Transfusion (id=273834) [Scaling Spell (-8), Passive] 
@@ -7241,8 +7241,8 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5
 #4 (id=738960)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
-Description      : Your spells and abilities have a chance to fire a bomb at your target, which when in proximity breaks into $s3 smaller bombs. Upon hitting the ground, each smaller bomb deals $280984s1 damage to all nearby enemies.
-
+Description      : Your spells and abilities have a chance to fire a bomb at your target, which when in proximity breaks into $s3 smaller bombs. Upon hitting the ground, each smaller bomb deals $280984s1 damage to all nearby enemies.
+
 Increases your Kul Tiran or Zandalari Engineering by $s4.
 
 Name             : Ricocheting Inflatable Pyrosaw (id=280168) [Passive] 
@@ -7269,10 +7269,10 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4
 #3 (id=738961)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
-Description      : Your spells and abilities have a chance to hurl a R.I.P that bounces among $s2 enemies, dealing $280656s1 Fire damage to each. 
-
-Beneficial spells have a chance to hurl a Mechanized External Needle Dispenser, healing up to $s2 allies for $280658s1.
-
+Description      : Your spells and abilities have a chance to hurl a R.I.P that bounces among $s2 enemies, dealing $280656s1 Fire damage to each. 
+
+Beneficial spells have a chance to hurl a Mechanized External Needle Dispenser, healing up to $s2 allies for $280658s1.
+
 Increases your Kul Tiran or Zandalari Engineering by $s3.
 
 Name             : Auto-Self-Cauterizer (id=280172) [Scaling Spell (-8), Passive] 
@@ -7300,10 +7300,10 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30
 #3 (id=738963)   : Apply Aura (6) | Skill (30)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 2499 | Target: Self (1)
-Description      : Taking damage has a chance to unleash your Auto-Self-Cauterizer, healing you for $280583s1, removing most* bleed effects, and snaring nearby enemies by $280583s2% for $280583d.
-
-Increases your Kul Tiran or Zandalari Engineering by $s3.
-
+Description      : Taking damage has a chance to unleash your Auto-Self-Cauterizer, healing you for $280583s1, removing most* bleed effects, and snaring nearby enemies by $280583s2% for $280583d.
+
+Increases your Kul Tiran or Zandalari Engineering by $s3.
+
 *Efficacy may vary.
 
 Name             : Synaptic Spark Capacitor (id=280174) [Scaling Spell (-8), Spell Family (7), Passive] 
@@ -7330,8 +7330,8 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
 #3 (id=742699)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 1065.175 (coefficient=13.7)
-Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $s1 yards of the Spark Coil take $280847s2 damage every 2 seconds and deal $280847s1% reduced damage to you.
-
+Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $s1 yards of the Spark Coil take $280847s2 damage every 2 seconds and deal $280847s1% reduced damage to you.
+
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
 Name             : Relational Normalization Gizmo (id=280178) [Scaling Spell (-1), Passive] 
@@ -7357,8 +7357,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 311 (coefficient=1) | Target: Self (1)
 #2 (id=738959)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
-Description      : Your spells and abilities have a chance to grow or shrink the world. Shrinking the world grants you $280654s4 primary stat and $280654s6 maximum health for $280654d. Growing the world grants you $280653s1 Haste and $280653s3% movement speed for $280653d.
-
+Description      : Your spells and abilities have a chance to grow or shrink the world. Shrinking the world grants you $280654s4 primary stat and $280654s6 maximum health for $280654d. Growing the world grants you $280653s1 Haste and $280653s3% movement speed for $280653d.
+
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
 Name             : Personal Absorb-o-Tron (id=280181) [Scaling Spell (-8), Passive] 
@@ -7384,8 +7384,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 12828.75 (coefficient=165) | Target: Self (1)
 #2 (id=738962)   : Apply Aura (6) | Skill (30)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 2499 | Target: Self (1)
-Description      : Taking damage has a chance to call your Personal Absorb-o-Tron, absorbing the next $280660s1 damage you take over $280660d.
-
+Description      : Taking damage has a chance to call your Personal Absorb-o-Tron, absorbing the next $280660s1 damage you take over $280660d.
+
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
 Name             : Dagger in the Back (id=280284) [Scaling Spell (-8), Passive] 
@@ -7574,8 +7574,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738151)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 5.697831 (coefficient=0.018321) | Trigger Spell: 280708 | Target: Self (1)
-Description      : Your armor gathers and analyzes combat data every $280708t1 sec, increasing your primary stat by $s1, stacking up to $280709u times. The data decays while out of combat.
-
+Description      : Your armor gathers and analyzes combat data every $280708t1 sec, increasing your primary stat by $s1, stacking up to $280709u times. The data decays while out of combat.
+
 Enables $@spellname280573 within Uldir.
 
 Name             : Laser Matrix (id=280559) [Scaling Spell (-8), Passive] 
@@ -7596,8 +7596,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 4507.592 (coefficient=57.97546) | Trigger Spell: 280702 | Target: Self (1)
 #2 (id=738401)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 5634.728 (coefficient=72.47239) | Target: Self (1)
-Description      : Your spells and abilities have a chance to release a barrage of lasers, dealing $s1 Arcane damage split among all enemies and restoring $s2 health split among injured allies.
-
+Description      : Your spells and abilities have a chance to release a barrage of lasers, dealing $s1 Arcane damage split among all enemies and restoring $s2 health split among injured allies.
+
 Enables $@spellname280573 within Uldir.
 
 Name             : Glory in Battle (id=280577) [Scaling Spell (-7), Passive] 
@@ -7618,7 +7618,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.913709) | Trigger Spell: 280778 | Target: Self (1)
 #2 (id=738555)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.55714) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280780d. 
+Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280780d. 
 Attacking a member of the opposite faction significantly increases this chance.
 
 Name             : Retaliatory Fury (id=280579) [Scaling Spell (-1), Passive] 
@@ -7640,7 +7640,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 320.5505 (coefficient=1.030709) | Trigger Spell: 280785 | Target: Self (1)
 #2 (id=738573)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 1121.974 (coefficient=3.607634) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280788d. 
+Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280788d. 
 Attacking a member of the opposite faction is more likely to activate this effect.
 
 Name             : Combined Might (id=280580) [Scaling Spell (-1), Passive] 
@@ -7749,7 +7749,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.913709) | Trigger Spell: 280851 | Target: Self (1)
 #2 (id=738699)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.55714) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280852d. 
+Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280852d. 
 Attacking a member of the opposite faction significantly increases this chance.
 
 Name             : Last Gift (id=280624) [Scaling Spell (-1), Passive] 
@@ -7771,7 +7771,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 320.5505 (coefficient=1.030709) | Trigger Spell: 280860 | Target: Self (1)
 #2 (id=738721)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 1121.974 (coefficient=3.607634) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280862d. 
+Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280862d. 
 Taking damage from a member of the opposite faction has a chance to activate this effect. 
 
 Name             : Stronger Together (id=280625) [Scaling Spell (-1), Passive] 
