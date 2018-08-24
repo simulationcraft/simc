@@ -93,6 +93,14 @@ struct enemy_t : public player_t
     {
       initial_health = fixed_health;
     }
+
+    this->default_target = this->target = sim->player_no_pet_list[ sim->current_index ];
+    range::for_each( action_list, [ this ]( action_t* action ) {
+        if ( action->harmful )
+        {
+          action->default_target = action->target = sim->player_no_pet_list[ sim->current_index ];
+        }
+    } );
   }
 
   virtual bool taunt( player_t* source ) override;
@@ -156,7 +164,7 @@ struct enemy_action_t : public ACTION_TYPE
     return filtered_options;
   }
 
-  virtual void init()
+  void init() override
   {
     action_type_t::init();
 
@@ -194,7 +202,7 @@ struct enemy_action_t : public ACTION_TYPE
       this -> base_dd_max = this -> base_dd_min;
   }
 
-  virtual size_t available_targets( std::vector< player_t* >& tl ) const
+  size_t available_targets( std::vector< player_t* >& tl ) const override
   {
     // TODO: This does not work for heals at all, as it presumes enemies in the
     // actor list.
@@ -234,7 +242,7 @@ struct enemy_action_t : public ACTION_TYPE
     return tl.size();
   }
 
-  double calculate_direct_amount( action_state_t* s ) const
+  double calculate_direct_amount( action_state_t* s ) const override
   {
     // force boss attack size to vary regardless of whether the sim itself does
     int previous_average_range_state = this -> sim -> average_range;
@@ -247,7 +255,7 @@ struct enemy_action_t : public ACTION_TYPE
     return amount;
   }
 
-  void impact( action_state_t* s )
+  void impact( action_state_t* s ) override
   {
     if ( apply_debuff && num_debuff_stacks >= 0 )
       this -> target -> debuffs.damage_taken -> trigger( num_debuff_stacks );
@@ -257,7 +265,7 @@ struct enemy_action_t : public ACTION_TYPE
     action_type_t::impact( s );
   }
 
-  void tick( dot_t* d )
+  void tick( dot_t* d ) override
   {
     if ( apply_debuff && num_debuff_stacks >= 0 )
       this -> target -> debuffs.damage_taken -> trigger( num_debuff_stacks );
@@ -265,6 +273,17 @@ struct enemy_action_t : public ACTION_TYPE
       this -> target -> debuffs.damage_taken -> decrement( - num_debuff_stacks );
 
     action_type_t::tick( d );
+  }
+
+  bool ready() override
+  {
+    if ( this->sim->single_actor_batch == 1 &&
+         this->target->primary_role() != ROLE_TANK )
+    {
+      return false;
+    }
+
+    return action_type_t::ready();
   }
 };
 
@@ -323,7 +342,7 @@ struct enemy_action_driver_t : public CHILD_ACTION_TYPE
       this -> background = true;
   }
 
-  virtual void schedule_execute( action_state_t* s )
+  void schedule_execute( action_state_t* s ) override
   {
     // first, execute on the primary target
     child_action_type_t::schedule_execute( s );
@@ -363,6 +382,16 @@ struct enemy_action_driver_t : public CHILD_ACTION_TYPE
     }
   }
 
+  bool ready() override
+  {
+    if ( this->sim->single_actor_batch == 1 &&
+         this->target->primary_role() != ROLE_TANK )
+    {
+      return false;
+    }
+
+    return child_action_type_t::ready();
+  }
 };
 
 // Melee ====================================================================
@@ -500,6 +529,7 @@ struct auto_attack_t : public enemy_action_t<attack_t>
   virtual bool ready() override
   {
     if ( player -> is_moving() || ! player -> main_hand_attack ) return false;
+    if ( !base_t::ready() ) return false;
     return( player -> main_hand_attack -> execute_event == nullptr ); // not swinging
   }
 };
