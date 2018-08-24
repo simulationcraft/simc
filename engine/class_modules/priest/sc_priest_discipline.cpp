@@ -85,21 +85,6 @@ struct penance_t final : public priest_spell_t
     // Do not haste ticks!
     return base_tick_time;
   }
-
-  void execute() override
-  {
-    priest_spell_t::execute();
-
-    // re-checked 2014/07/07: offensive penance grants evangelism stacks, even though not mentioned in the tooltip.
-    priest().buffs.holy_evangelism->trigger();
-
-    // Set bonus says "...and generates 2 stacks of Evangelism." Need to check if this happens up front or after a
-    // particular tick. -Twintop 2014-07-11
-    if ( priest().sets->has_set_bonus( PRIEST_DISCIPLINE, T17, B2 ) )
-    {
-      priest().buffs.holy_evangelism->trigger();
-    }
-  }
 };
 
 // ==========================================================================
@@ -204,45 +189,10 @@ struct schism_t final : public priest_spell_t
 
 namespace buffs
 {
-/**
- * Custom archangel buff
- * snapshots evangelism stacks and expires it
- */
-struct archangel_t final : public priest_buff_t<buff_t>
-{
-  archangel_t( priest_t& p ) : base_t( p, "archangel", p.specs.archangel )
-  {
-    set_max_stack( 5 );
-    default_value = data().effectN( 1 ).percent();
-  }
-
-  bool trigger( int stacks, double /* value */, double chance, timespan_t duration ) override
-  {
-    stacks                 = priest().buffs.holy_evangelism->stack();
-    double archangel_value = default_value * stacks;
-    bool success           = base_t::trigger( stacks, archangel_value, chance, duration );
-
-    priest().buffs.holy_evangelism->expire();
-
-    return success;
-  }
-};
-
 }  // namespace buffs
 
 void priest_t::create_buffs_discipline()
 {
-  // Discipline
-  buffs.archangel = new buffs::archangel_t( *this );
-
-  buffs.borrowed_time = make_buff( this, "borrowed_time", find_spell( 59889 ) )
-                            ->set_chance( specs.borrowed_time->ok() )
-                            ->set_default_value( find_spell( 59889 )->effectN( 1 ).percent() )
-                            ->add_invalidate( CACHE_HASTE );
-
-  buffs.holy_evangelism = make_buff( this, "holy_evangelism", find_spell( 81661 ) )
-                              ->set_chance( specs.evangelism->ok() )
-                              ->set_activated( false );
 }
 
 void priest_t::init_rng_discipline()
@@ -253,33 +203,33 @@ void priest_t::init_spells_discipline()
 {
   // Talents
   // T15
-  talents.castigation   = find_talent_spell( "Castigation" );
-  talents.twist_of_fate = find_talent_spell( "Twist of Fate" );
-  talents.schism        = find_talent_spell( "Schism" );
+  talents.castigation           = find_talent_spell( "Castigation" );
+  talents.twist_of_fate         = find_talent_spell( "Twist of Fate" );
+  talents.schism                = find_talent_spell( "Schism" );
   // T30
-  talents.angelic_feather = find_talent_spell( "Angelic Feather" );
-  talents.body_and_soul   = find_talent_spell( "Body and Soul" );
-  talents.masochism       = find_talent_spell( "Masochism" );
+  talents.body_and_soul         = find_talent_spell( "Body and Soul" );
+  talents.masochism             = find_talent_spell( "Masochism" );
+  talents.angelic_feather       = find_talent_spell( "Angelic Feather" );
   // T45
-  talents.power_word_solace = find_talent_spell( "Power Word: Solace" );
-  talents.shield_discipline = find_talent_spell( "Shield Discipline" );
-  talents.mindbender        = find_talent_spell( "Mindbender" );
+  talents.shield_discipline     = find_talent_spell( "Shield Discipline" );
+  talents.mindbender            = find_talent_spell( "Mindbender" );
+  talents.power_word_solace     = find_talent_spell( "Power Word: Solace" );
   // T60
-  talents.psychic_voice = find_talent_spell( "Psychic Voice" );
-  talents.shining_force = find_talent_spell( "Shining Force" );
-  talents.dominant_mind = find_talent_spell( "Dominant Mind" );
+  talents.psychic_voice         = find_talent_spell( "Psychic Voice" );
+  talents.dominant_mind         = find_talent_spell( "Dominant Mind" );
+  talents.shining_force         = find_talent_spell( "Shining Force" );
   // T75
-  talents.sanctuary       = find_talent_spell( "Sanctuary" );
-  talents.clarity_of_will = find_talent_spell( "Clarity of Will" );
-  talents.shadow_covenant = find_talent_spell( "Shadow Covenant" );
+  talents.sins_of_the_many      = find_talent_spell( "Sins of the Many" );
+  talents.contrition            = find_talent_spell( "Contrition" );
+  talents.shadow_covenant       = find_talent_spell( "Shadow Covenant" );
   // T90
-  talents.purge_the_wicked = find_talent_spell( "Purge the Wicked" );
-  talents.divine_star      = find_talent_spell( "Divine Star" );
-  talents.halo             = find_talent_spell( "Halo" );
+  talents.purge_the_wicked      = find_talent_spell( "Purge the Wicked" );
+  talents.divine_star           = find_talent_spell( "Divine Star" );
+  talents.halo                  = find_talent_spell( "Halo" );
   // T100
-  talents.power_infusion = find_talent_spell( "Power Infusion" );
-  talents.grace          = find_talent_spell( "Grace" );
-  talents.evangelism     = find_talent_spell( "Evangelism" );
+  talents.lenience              = find_talent_spell( "Lenience" );
+  talents.luminous_barrier      = find_talent_spell( "Luminous Barrier" );
+  talents.evangelism            = find_talent_spell( "Evangelism" );
 
   // General Spells
   specs.priest          = dbc::get_class_passive(*this, SPEC_NONE);
@@ -287,13 +237,7 @@ void priest_t::init_spells_discipline()
   specs.discipline      = dbc::get_class_passive(*this, PRIEST_DISCIPLINE);
   specs.shadow          = dbc::get_class_passive(*this, PRIEST_SHADOW);
   specs.atonement       = find_specialization_spell( "Atonement" );
-  specs.archangel       = find_specialization_spell( "Archangel" );
-  specs.borrowed_time   = find_specialization_spell( "Borrowed Time" );
-  specs.divine_aegis    = find_specialization_spell( "Divine Aegis" );
-  specs.evangelism      = find_specialization_spell( "Evangelism" );
-  specs.grace           = find_specialization_spell( "Grace" );
   specs.mysticism       = find_specialization_spell( "Mysticism" );
-  specs.spirit_shell    = find_specialization_spell( "Spirit Shell" );
   specs.enlightenment   = find_specialization_spell( "Enlightenment" );
 
   // Range Based on Talents
@@ -419,8 +363,6 @@ void priest_t::generate_apl_discipline_d()
       def->add_action( racial_action );
     }
   }
-
-  def->add_talent( this, "Power Infusion", "if=talent.power_infusion.enabled" );
 
   def->add_talent( this, "Purge the Wicked", "if=!ticking" );
   def->add_action( this, "Shadow Word: Pain", "if=!ticking&!talent.purge_the_wicked.enabled" );
