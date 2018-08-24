@@ -1243,6 +1243,11 @@ double action_t::calculate_direct_amount( action_state_t* state ) const
   if ( !sim->average_range )
     amount = floor( amount + rng().real() );
 
+  if ( amount < 0 )
+  {
+    amount = 0;
+  }
+
   sim->print_debug(
       "{} direct amount for {}: amount={} initial_amount={} weapon={} base={} s_mod={} s_power={} "
       "a_mod={} a_power={} mult={} w_mult={} w_slot_mod={} bonus_da={}",

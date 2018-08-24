@@ -2137,6 +2137,8 @@ void player_t::init_scaling()
 
     scaling->set( STAT_ARMOR, tank );
 
+    auto add_stat = []( double& to, double v, double d = 0 ) { if ( to + v < d ) to = d; else to += v; };
+
     if ( sim->scaling->scale_stat != STAT_NONE && scale_player )
     {
       double v = sim->scaling->scale_value;
@@ -2144,95 +2146,95 @@ void player_t::init_scaling()
       switch ( sim->scaling->scale_stat )
       {
         case STAT_STRENGTH:
-          initial.stats.attribute[ ATTR_STRENGTH ] += v;
+          add_stat( initial.stats.attribute[ ATTR_STRENGTH ], v );
           break;
         case STAT_AGILITY:
-          initial.stats.attribute[ ATTR_AGILITY ] += v;
+          add_stat( initial.stats.attribute[ ATTR_AGILITY ], v );
           break;
         case STAT_STAMINA:
-          initial.stats.attribute[ ATTR_STAMINA ] += v;
+          add_stat( initial.stats.attribute[ ATTR_STAMINA ], v );
           break;
         case STAT_INTELLECT:
-          initial.stats.attribute[ ATTR_INTELLECT ] += v;
+          add_stat( initial.stats.attribute[ ATTR_INTELLECT ], v );
           break;
         case STAT_SPIRIT:
-          initial.stats.attribute[ ATTR_SPIRIT ] += v;
+          add_stat( initial.stats.attribute[ ATTR_SPIRIT ], v );
           break;
 
         case STAT_SPELL_POWER:
-          initial.stats.spell_power += v;
+          add_stat( initial.stats.spell_power, v );
           break;
 
         case STAT_ATTACK_POWER:
-          initial.stats.attack_power += v;
+          add_stat( initial.stats.attack_power, v );
           break;
 
         case STAT_CRIT_RATING:
-          initial.stats.crit_rating += v;
+          add_stat( initial.stats.crit_rating, v );
           break;
 
         case STAT_HASTE_RATING:
-          initial.stats.haste_rating += v;
+          add_stat( initial.stats.haste_rating, v );
           break;
 
         case STAT_MASTERY_RATING:
-          initial.stats.mastery_rating += v;
+          add_stat( initial.stats.mastery_rating, v );
           break;
 
         case STAT_VERSATILITY_RATING:
-          initial.stats.versatility_rating += v;
+          add_stat( initial.stats.versatility_rating, v );
           break;
 
         case STAT_DODGE_RATING:
-          initial.stats.dodge_rating += v;
+          add_stat( initial.stats.dodge_rating, v );
           break;
 
         case STAT_PARRY_RATING:
-          initial.stats.parry_rating += v;
+          add_stat( initial.stats.parry_rating, v );
           break;
 
         case STAT_SPEED_RATING:
-          initial.stats.speed_rating += v;
+          add_stat( initial.stats.speed_rating, v );
           break;
 
         case STAT_AVOIDANCE_RATING:
-          initial.stats.avoidance_rating += v;
+          add_stat( initial.stats.avoidance_rating, v );
           break;
 
         case STAT_LEECH_RATING:
-          initial.stats.leech_rating += v;
+          add_stat( initial.stats.leech_rating, v );
           break;
 
         case STAT_WEAPON_DPS:
           if ( main_hand_weapon.damage > 0 )
           {
-            main_hand_weapon.damage += main_hand_weapon.swing_time.total_seconds() * v;
-            main_hand_weapon.dps += v;
-            main_hand_weapon.min_dmg += main_hand_weapon.swing_time.total_seconds() * v;
-            main_hand_weapon.max_dmg += main_hand_weapon.swing_time.total_seconds() * v;
+            add_stat( main_hand_weapon.damage, main_hand_weapon.swing_time.total_seconds() * v, 1 );
+            add_stat( main_hand_weapon.dps, v, 1 );
+            add_stat( main_hand_weapon.min_dmg, main_hand_weapon.swing_time.total_seconds() * v, 1 );
+            add_stat( main_hand_weapon.max_dmg, main_hand_weapon.swing_time.total_seconds() * v, 1 );
           }
           break;
 
         case STAT_WEAPON_OFFHAND_DPS:
           if ( off_hand_weapon.damage > 0 )
           {
-            off_hand_weapon.damage += off_hand_weapon.swing_time.total_seconds() * v;
-            off_hand_weapon.dps += v;
-            off_hand_weapon.min_dmg += off_hand_weapon.swing_time.total_seconds() * v;
-            off_hand_weapon.max_dmg += off_hand_weapon.swing_time.total_seconds() * v;
+            add_stat( off_hand_weapon.damage, off_hand_weapon.swing_time.total_seconds() * v, 1 );
+            add_stat( off_hand_weapon.dps, v, 1 );
+            add_stat( off_hand_weapon.min_dmg, off_hand_weapon.swing_time.total_seconds() * v, 1 );
+            add_stat( off_hand_weapon.max_dmg, off_hand_weapon.swing_time.total_seconds() * v, 1 );
           }
           break;
 
         case STAT_ARMOR:
-          initial.stats.armor += v;
+          add_stat( initial.stats.armor, v );
           break;
 
         case STAT_BONUS_ARMOR:
-          initial.stats.bonus_armor += v;
+          add_stat( initial.stats.bonus_armor, v );
           break;
 
         case STAT_BLOCK_RATING:
-          initial.stats.block_rating += v;
+          add_stat( initial.stats.block_rating, v );
           break;
 
         case STAT_MAX:
