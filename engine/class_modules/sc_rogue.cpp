@@ -297,6 +297,7 @@ struct rogue_t : public player_t
     buff_t* brigands_blitz;
     buff_t* brigands_blitz_driver;
     buff_t* deadshot;
+    buff_t* double_dose; // Tracking Buff
     buff_t* nights_vengeance;
     buff_t* paradise_lost;
     buff_t* perforate;
@@ -1559,6 +1560,9 @@ struct rogue_poison_t : public rogue_attack_t
 
     set_target( source_state -> target );
     execute();
+
+    if ( p() -> azerite.double_dose.ok() && ( source_state -> action -> name_str == "mutilate_mh" || source_state -> action -> name_str == "mutilate_oh" ) )
+      p() -> buffs.double_dose -> trigger( 1 );
   }
 
   double composite_crit_chance() const override
@@ -3309,10 +3313,8 @@ struct marked_for_death_t : public rogue_attack_t
 
 struct mutilate_strike_t : public rogue_attack_t
 {
-  int& crit_count_ref;
-
-  mutilate_strike_t( rogue_t* p, const char* name, const spell_data_t* s, int& crit_counter ) :
-    rogue_attack_t( name, p, s ), crit_count_ref( crit_counter )
+  mutilate_strike_t( rogue_t* p, const char* name, const spell_data_t* s ) :
+    rogue_attack_t( name, p, s )
   {
     background  = true;
   }
@@ -3326,14 +3328,6 @@ struct mutilate_strike_t : public rogue_attack_t
     if ( p() -> buffs.poisoned_wire -> up() )
       c += p() -> buffs.poisoned_wire -> check_stack_value() / p() -> current.rating.attack_crit;
     return c;
-  }
-
-  void execute() override
-  {
-    rogue_attack_t::execute();
-
-    if ( execute_state -> result == RESULT_CRIT )
-      crit_count_ref++;
   }
 
   void impact( action_state_t* state ) override
@@ -3368,11 +3362,10 @@ struct mutilate_t : public rogue_attack_t
   rogue_attack_t* mh_strike;
   rogue_attack_t* oh_strike;
   rogue_attack_t* double_dose;
-  int strike_crits;
 
   mutilate_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "mutilate", p, p -> find_specialization_spell( "Mutilate" ), options_str ),
-    mh_strike( nullptr ), oh_strike( nullptr ), double_dose( nullptr), strike_crits( 0 )
+    mh_strike( nullptr ), oh_strike( nullptr ), double_dose( nullptr)
   {
     may_crit = false;
 
@@ -3383,10 +3376,10 @@ struct mutilate_t : public rogue_attack_t
       background = true;
     }
 
-    mh_strike = new mutilate_strike_t( p, "mutilate_mh", data().effectN( 3 ).trigger(), strike_crits );
+    mh_strike = new mutilate_strike_t( p, "mutilate_mh", data().effectN( 3 ).trigger() );
     add_child( mh_strike );
 
-    oh_strike = new mutilate_strike_t( p, "mutilate_oh", data().effectN( 4 ).trigger(), strike_crits );
+    oh_strike = new mutilate_strike_t( p, "mutilate_oh", data().effectN( 4 ).trigger() );
     add_child( oh_strike );
 
     if ( p -> azerite.double_dose.ok() )
@@ -3398,6 +3391,9 @@ struct mutilate_t : public rogue_attack_t
 
   void execute() override
   {
+    // Reset Double Dose tracker before anything happens.
+    p() -> buffs.double_dose -> expire();
+
     rogue_attack_t::execute();
 
     if ( result_is_hit( execute_state -> result ) )
@@ -3405,23 +3401,17 @@ struct mutilate_t : public rogue_attack_t
       if ( p() -> talent.blindside -> ok() && rng().roll( p() -> talent.blindside -> effectN( 5 ).percent() ) )
         p() -> buffs.blindside -> trigger();
 
-      // Reset counter before strikes
-      strike_crits = 0;
-
       mh_strike -> set_target( execute_state -> target );
       mh_strike -> execute();
 
       oh_strike -> set_target( execute_state -> target );
       oh_strike -> execute();
 
-      if ( double_dose && strike_crits >= 2 )
+      if ( double_dose && p() -> buffs.double_dose -> stack() == p() -> buffs.double_dose -> max_stack() )
       {
         double_dose -> set_target( execute_state -> target );
         double_dose -> execute();
       }
-
-      // Reset counter again after strikes
-      strike_crits = 0;
 
       if ( p() -> talent.venom_rush-> ok() && p() -> get_target_data( execute_state -> target ) -> poisoned() )
       {
@@ -7383,6 +7373,8 @@ void rogue_t::create_buffs()
   buffs.deadshot                           = make_buff( this, "deadshot", find_spell( 272940 ) )
                                              -> set_trigger_spell( azerite.deadshot.spell_ref().effectN( 1 ).trigger() )
                                              -> set_default_value( azerite.deadshot.value() );
+  buffs.double_dose                        = make_buff( this, "double_dose", find_spell( 273009 ) )
+                                             -> set_quiet( true );
   buffs.nights_vengeance                   = make_buff( this, "nights_vengeance", find_spell( 273424 ) )
                                              -> set_trigger_spell( azerite.nights_vengeance.spell_ref().effectN( 1 ).trigger() )
                                              -> set_default_value( azerite.nights_vengeance.value() );
