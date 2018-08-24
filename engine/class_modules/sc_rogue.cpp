@@ -5112,7 +5112,7 @@ struct roll_the_bones_t : public buff_t
     rogue -> buffs.paradise_lost -> expire();
   }
 
-  std::vector<buff_t*> random_roll()
+  std::vector<buff_t*> random_roll(bool loaded)
   {
     std::vector<buff_t*> rolled;
 
@@ -5130,10 +5130,18 @@ struct roll_the_bones_t : public buff_t
 
     if ( ! rogue -> fixed_rtb_odds.empty() )
     {
-      double roll = rng().range( 0.0, 100.0 );
+      std::vector<double> current_odds = rogue -> fixed_rtb_odds;
+      if (loaded)
+        current_odds[0] = 0.0;
+
+      double odd_sum = 0.0;
+      for ( const double& chance : current_odds )
+        odd_sum += chance;
+
+      double roll = rng().range( 0.0, odd_sum );
       size_t num_buffs = 0;
       double aggregate = 0.0;
-      for ( const double& chance : rogue -> fixed_rtb_odds )
+      for ( const double& chance : current_odds )
       {
         aggregate += chance;
         num_buffs++;
@@ -5169,11 +5177,7 @@ struct roll_the_bones_t : public buff_t
     std::vector<buff_t*> rolled;
     if ( rogue -> fixed_rtb.size() == 0 )
     {
-      do
-      {
-        rolled = random_roll();
-      }
-      while ( rogue -> buffs.loaded_dice -> up() && rolled.size() < 2 );
+      rolled = random_roll(rogue -> buffs.loaded_dice -> up());
     }
     else
     {
