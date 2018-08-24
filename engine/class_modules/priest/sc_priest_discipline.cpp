@@ -237,6 +237,7 @@ void priest_t::init_spells_discipline()
   specs.discipline      = dbc::get_class_passive(*this, PRIEST_DISCIPLINE);
   specs.shadow          = dbc::get_class_passive(*this, PRIEST_SHADOW);
   specs.atonement       = find_specialization_spell( "Atonement" );
+  specs.evangelism      = find_specialization_spell( "Evangelism" );
   specs.mysticism       = find_specialization_spell( "Mysticism" );
   specs.enlightenment   = find_specialization_spell( "Enlightenment" );
 
