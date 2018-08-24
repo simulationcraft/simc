@@ -434,8 +434,9 @@ enum resource_category : unsigned
 // Add different resource systems here
 // TODO : rage
 static const std::unordered_map<int, std::tuple<double, double>> __resource_map { {
-  { RESOURCE_HOLY_POWER, std::tuple<double, double> { 1.0, 2.0 } },
-  { RESOURCE_RUNIC_POWER, std::tuple<double, double> { 0.05, 0.1 } }
+  { RESOURCE_HOLY_POWER,  std::tuple<double, double> { 1.000, 2.000 } },
+  { RESOURCE_RUNIC_POWER, std::tuple<double, double> { 0.050, 0.100 } },
+  { RESOURCE_RAGE,        std::tuple<double, double> { 0.025, 0.050 } }
 } };
 
 // TODO: Prot paladin "resource" must be special cased
