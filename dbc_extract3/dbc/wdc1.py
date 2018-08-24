@@ -102,16 +102,9 @@ class WDC1HotfixKeyIdParser:
     def __init__(self, record_parser, unpack_bytes):
         self.record_parser = record_parser
         self.field_size = unpack_bytes
-
-        if unpack_bytes == 1:
-            self.unpacker = Struct('<B')
-        elif unpack_bytes == 2:
-            self.unpacker = Struct('<H')
-        elif unpack_bytes == 4:
-            self.unpacker = Struct('<I')
-        else:
-            raise ValueError('Invalid hotfix cache key field length {} for {}'.format(
-                unpack_bytes, record_parser.parser()))
+        self.u32 = Struct('<I')
+        self.u16 = Struct('<H')
+        self.u8 = Struct('<B')
 
     def __str__(self):
         return 'uint:key({})'.format(self.field_size * 8)
@@ -120,16 +113,17 @@ class WDC1HotfixKeyIdParser:
         return self.field_size
 
     def __call__(self, id, data, offset, bytes_left):
-        pad = bytes_left - self.field_size
+        if bytes_left == 4:
+            unpacker = self.u32
+        elif bytes_left == 3 or bytes_left == 2:
+            unpacker = self.u16
+        elif bytes_left == 1:
+            unpacker = self.u8
+        else:
+            raise ValueError('Unknown key field length {} in {}'.format(bytes_left,
+                self.record_parser.parser()))
 
-        if pad < 0:
-            raise ValueError('Negative pad: {} for {}'.format(pad, self.record_parser.parser()))
-
-        if bytes_left < self.unpacker.size:
-            raise ValueError('Too few bytes to parse, wanted {}, got {} for {}'.format(
-                self.unpacker.size, bytes_left, self.record_parser.parser()))
-
-        return self.unpacker.unpack_from(data, offset + pad)
+        return unpacker.unpack_from(data, offset)
 
 # Parse a segment of the record data, and return a tuple containing the column data
 class WDC1SegmentParser:
