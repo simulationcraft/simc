@@ -60,22 +60,22 @@ role=attack
 position=back
 talents=2310022
 
-head=irontide_captains_hat,id=155888,bonus_id=4779/1512/4786/4775,azerite_powers=479/30/0/13
+head=flashpowder_hood,id=159334,bonus_id=4779/1512/4786/4775,azerite_powers=129/22/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
-shoulder=mantle_of_fastidious_machinations,id=158304,bonus_id=4779/1512/4786/4775,azerite_powers=410/461/0/13
+shoulder=mantle_of_fastidious_machinations,id=158304,bonus_id=4779/1512/4786/4775,azerite_powers=410/22/0/13
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-chest=spymasters_wrap,id=155860,bonus_id=4779/1512/4786/4775,azerite_powers=180/461/0/13
-wrists=sea_dogs_cuffs,id=158305,bonus_id=4779/1512/4786
-hands=gloves_of_corrupted_waters,id=159321,bonus_id=4779/1512/4786
-waist=belt_of_gleaming_determination,id=158306,bonus_id=4779/1512/4786
-legs=singeblotched_britches,id=159306,bonus_id=4779/1512/4786
-feet=mercenary_miners_boots,id=159336,bonus_id=4779/1512/4786
-finger1=ritual_binders_ring,id=159459,bonus_id=4779/1512/4786,enchant=pact_of_haste
-finger2=seal_of_the_regal_loa,id=159458,bonus_id=4779/1512/4786,enchant=pact_of_haste
-trinket1=galecallers_boon,id=159614,bonus_id=4779/1512/4786
-trinket2=lustrous_golden_plumage,id=159617,bonus_id=4779/1512/4786
-main_hand=soulcharmers_bludgeon,id=159661,bonus_id=4779/1512/4786,enchant=versatile_navigation
-off_hand=soulcharmers_bludgeon,id=159661,bonus_id=4779/1512/4786,enchant=quick_navigation
+chest=vest_of_reverent_adoration,id=159303,bonus_id=4779/1512/4786/4775,azerite_powers=129/31/0/13
+wrist=venerated_raptorhide_bindings,id=160214,bonus_id=4779/1512/4786
+hands=grubby_servantgrabbers,id=159346,bonus_id=4779/1512/4786
+waist=cincture_of_the_azerite_arsenal,id=159333,bonus_id=4779/1512/4786
+legs=breeches_of_the_sacred_hall,id=159313,bonus_id=4779/1512/4786
+feet=footpads_of_the_serene_wake,id=159295,bonus_id=4779/1512/4786
+finger1=lord_waycrest's_signet,id=158362,bonus_id=4779/1512/4786,enchant=pact_of_haste
+finger2=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
+trinket1=lustrous_golden_plumage,id=159617,bonus_id=4779/1512/4786
+trinket2=kul_tiran_cannonball_runner,id=159628,bonus_id=4779/1512/4786
+main_hand=bilestained_crawg_tusks,id=159653,bonus_id=4779/1512/4786,enchant=deadly_navigation
+off_hand=bilestained_crawg_tusks,id=159653,bonus_id=4779/1512/4786,enchant=quick_navigation
 
 save=PR_Rogue_Outlaw.simc
 
