@@ -4930,6 +4930,7 @@ struct glacial_advance_t : public death_knight_spell_t
   {
     parse_options( options_str );
 
+    weapon = &( player -> main_hand_weapon );
     weapon_req = WEAPON_1H;
 
     execute_action = new glacial_advance_damage_t( player, options_str );
