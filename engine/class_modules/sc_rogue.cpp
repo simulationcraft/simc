@@ -5109,6 +5109,7 @@ struct roll_the_bones_t : public buff_t
     rogue -> buffs.ruthless_precision -> expire();
     rogue -> buffs.skull_and_crossbones -> expire();
     rogue -> buffs.true_bearing -> expire();
+    rogue -> buffs.paradise_lost -> expire();
   }
 
   std::vector<buff_t*> random_roll()
