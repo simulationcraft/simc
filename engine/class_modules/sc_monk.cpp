@@ -9420,7 +9420,7 @@ void monk_t::apl_combat_windwalker()
   serenitySR->add_action( this, "Tiger Palm", "target_if=debuff.mark_of_the_crane.down,if=!prev_gcd.1.tiger_palm&!prev_gcd.1.energizing_elixir&energy=energy.max&chi<1&!buff.serenity.up");
   serenitySR->add_action( "call_action_list,name=cd" );
   serenitySR->add_talent( this, "Serenity", "if=cooldown.rising_sun_kick.remains<=2" );
-  serenitySR->add_action( "Fists of Fury", "if=buff.serenity.remains<=1.05" );
+  serenitySR->add_action( this, "Fists of Fury", "if=buff.serenity.remains<=1.05" );
   serenitySR->add_action( this, "Rising Sun Kick", "target_if=debuff.mark_of_the_crane.down" );
   serenitySR->add_action( this, "Blackout Kick", "target_if=debuff.mark_of_the_crane.down,if=!prev_gcd.1.blackout_kick&cooldown.rising_sun_kick.remains>=2&cooldown.fists_of_fury.remains>=2" );
   serenitySR->add_action( this, "Blackout Kick", "target_if=debuff.mark_of_the_crane.down" );

@@ -130,7 +130,7 @@ actions.serenitySR=tiger_palm,target_if=debuff.mark_of_the_crane.down,if=!prev_g
 actions.serenitySR+=/call_action_list,name=cd
 actions.serenitySR+=/serenity,if=cooldown.rising_sun_kick.remains<=2
 # if=buff.serenity.remains<=1.05
-actions.serenitySR+=/Fists of Fury
+actions.serenitySR+=/fists_of_fury
 actions.serenitySR+=/rising_sun_kick,target_if=debuff.mark_of_the_crane.down
 actions.serenitySR+=/blackout_kick,target_if=debuff.mark_of_the_crane.down,if=!prev_gcd.1.blackout_kick&cooldown.rising_sun_kick.remains>=2&cooldown.fists_of_fury.remains>=2
 actions.serenitySR+=/blackout_kick,target_if=debuff.mark_of_the_crane.down
