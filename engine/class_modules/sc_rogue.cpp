@@ -4127,6 +4127,8 @@ struct slice_and_dice_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
+    p() -> trigger_restless_blades( execute_state );
+
     int cp = cast_state( execute_state ) -> cp;
     timespan_t snd_duration = ( cp + 1 ) * p() -> buffs.slice_and_dice -> data().duration();
 
