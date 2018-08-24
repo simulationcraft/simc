@@ -882,7 +882,7 @@ struct mirror_image_pet_t : public mage_pet_t
   mirror_image_pet_t( sim_t* sim, mage_t* owner )
     : mage_pet_t( sim, owner, "mirror_image", true ), arcane_charge( nullptr )
   {
-    owner_coeff.sp_from_sp = 0.60;
+    owner_coeff.sp_from_sp = 0.55;
   }
 
   virtual action_t* create_action( const std::string& name,
