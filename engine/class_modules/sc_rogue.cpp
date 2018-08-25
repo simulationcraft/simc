@@ -6433,7 +6433,7 @@ void rogue_t::init_action_list()
 
     // Builders
     action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
-    build -> add_action( this, "Shuriken Toss", "if=buff.sharpened_blades.stack>=29&spell_targets.shuriken_storm<=1+3*azerite.sharpened_blades.rank=2+4*azerite.sharpened_blades.rank=3", "Shuriken Toss at 29+ Sharpened Blades stacks. 1T at Rank 1, up to 4 at Rank 2, up to 5 at Rank 3" );
+    build -> add_action( this, "Shuriken Toss", "if=buff.sharpened_blades.stack>=29&spell_targets.shuriken_storm<=1+3*(azerite.sharpened_blades.rank=2)+4*(azerite.sharpened_blades.rank=3)", "Shuriken Toss at 29+ Sharpened Blades stacks. 1T at Rank 1, up to 4 at Rank 2, up to 5 at Rank 3" );
     build -> add_action( this, "Shuriken Storm", "if=spell_targets>=2|buff.the_dreadlords_deceit.stack>=29" );
     build -> add_talent( this, "Gloomblade" );
     build -> add_action( this, "Backstab" );
