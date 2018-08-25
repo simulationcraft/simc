@@ -264,7 +264,7 @@ void priest_t::generate_apl_holy_d()
     default_list->add_action( this, "Holy word: Chastise");
     default_list->add_talent( this, "Apotheosis");
     default_list->add_talent( this, "Divine Star");
-    default_list->add_talent( this, "Halo");
+    default_list->add_talent( this, "Halo", "if=!dot.holy_fire.stack=2");
     default_list->add_action( this, "Holy Nova", "if=active_enemies>2");
     default_list->add_action( this, "Smite");
 }

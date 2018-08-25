@@ -36,7 +36,7 @@ actions+=/holy_fire,if=refreshable&dot.holy_fire.ticking&dot.holy_fire.stack>1|d
 actions+=/holy_word_chastise
 actions+=/apotheosis
 actions+=/divine_star
-actions+=/halo
+actions+=/halo,if=!dot.holy_fire.stack=2
 actions+=/holy_nova,if=active_enemies>2
 actions+=/smite
 
