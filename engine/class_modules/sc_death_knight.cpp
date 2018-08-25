@@ -3493,10 +3493,9 @@ struct breath_of_sindragosa_t : public death_knight_spell_t
   {
     parse_options( options_str );
 
-    may_miss = may_crit = hasted_ticks = callbacks = false;
-    tick_zero = dynamic_tick_action = true;
-    use_off_gcd = true;
-
+    may_miss = may_crit = hasted_ticks;
+    tick_zero = dynamic_tick_action = use_off_gcd = callbacks = true;
+    
     tick_action = new breath_of_sindragosa_tick_t( p, this );
     school = tick_action -> school;
 
@@ -7487,7 +7486,7 @@ void death_knight_t::default_apl_frost()
   def -> add_action( "call_action_list,name=standard" );
 
   // On-use itemos
-  cooldowns -> add_action( "use_items,if=buff.pillar_of_frost.up&(!talent.breath_of_sindragosa.enabled|!dot.breath_of_sindragosa.ticking|cooldown.breath_of_sindragosa.remains>90)" );
+  cooldowns -> add_action( "use_items,if=cooldown.pillar_of_frost.ready&(!talent.breath_of_sindragosa.enabled|buff.empower_rune_weapon.up" );
   cooldowns -> add_action( "use_item,name=razdunks_big_red_button" );
   cooldowns -> add_action( "use_item,name=merekthas_fang" );
 
@@ -7515,10 +7514,11 @@ void death_knight_t::default_apl_frost()
   // "Breath of Sindragosa pooling rotation : starts 15s before the cd becomes available"
   bos_pooling -> add_action( this, "Howling Blast", "if=buff.rime.up", "Breath of Sindragosa pooling rotation : starts 20s before Pillar of Frost + BoS are available" );
   bos_pooling -> add_action( this, "Obliterate", "if=rune.time_to_4<gcd&runic_power.deficit>=25" );
-  bos_pooling -> add_talent( this, "Glacial Advance", "if=runic_power.deficit<20&cooldown.pillar_of_frost.remains>rune.time_to_4" );
+  bos_pooling -> add_talent( this, "Glacial Advance", "if=runic_power.deficit<20&cooldown.pillar_of_frost.remains>rune.time_to_4&spell_targets.glacial_advance>=2" );
   bos_pooling -> add_action( this, "Frost Strike", "if=runic_power.deficit<20&cooldown.pillar_of_frost.remains>rune.time_to_4" );
-  bos_pooling -> add_talent( this, "Frostscythe", "if=buff.killing_machine.up&runic_power.deficit>(15+talent.runic_attenuation.enabled*3)" );
-  bos_pooling -> add_action( this, "Obliterate", "if=runic_power.deficit>=(25+talent.runic_attenuation.enabled*3)" );
+  bos_pooling -> add_talent( this, "Frostscythe", "if=buff.killing_machine.up&runic_power.deficit>(15+talent.runic_attenuation.enabled*3)&spell_targets.frostscythe>=2" );
+  bos_pooling -> add_talent( this, "Frostscythe", "if=runic_power.deficit>=(35+talent.runic_attenuation.enabled*3)&spell_targets.frostscythe>=2" );
+  bos_pooling -> add_action( this, "Obliterate", "if=runic_power.deficit>=(35+talent.runic_attenuation.enabled*3)" );
   bos_pooling -> add_talent( this, "Glacial Advance", "if=cooldown.pillar_of_frost.remains>rune.time_to_4&runic_power.deficit<40&spell_targets.glacial_advance>=2" );
   bos_pooling -> add_action( this, "Frost Strike", "if=cooldown.pillar_of_frost.remains>rune.time_to_4&runic_power.deficit<40" );
 
@@ -7527,7 +7527,7 @@ void death_knight_t::default_apl_frost()
   bos_ticking -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm.enabled" );
   bos_ticking -> add_action( this, "Howling Blast", "if=buff.rime.up" );
   bos_ticking -> add_action( this, "Obliterate", "if=rune.time_to_5<gcd|runic_power<=45" );
-  bos_ticking -> add_talent( this, "Frostscythe", "if=buff.killing_machine.up" );
+  bos_ticking -> add_talent( this, "Frostscythe", "if=buff.killing_machine.up&spell_targets.frostscythe>=2" );
   bos_ticking -> add_talent( this, "Horn of Winter", "if=runic_power.deficit>=30&rune.time_to_3>gcd" );
   bos_ticking -> add_action( this, "Remorseless Winter" );
   bos_ticking -> add_talent( this, "Frostscythe", "if=spell_targets.frostscythe>=2" );
@@ -7537,7 +7537,7 @@ void death_knight_t::default_apl_frost()
   // Obliteration rotation
   obliteration -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm.enabled", "Obliteration rotation" );
   obliteration -> add_action( this, "Obliterate", "if=!talent.frostscythe.enabled&!buff.rime.up&spell_targets.howling_blast>=3" );
-  obliteration -> add_talent( this, "Frostscythe", "if=(buff.killing_machine.react|(buff.killing_machine.up&(prev_gcd.1.frost_strike|prev_gcd.1.howling_blast|prev_gcd.1.glacial_advance)))&(rune.time_to_4>gcd|spell_targets.frostscythe>=2)" );
+  obliteration -> add_talent( this, "Frostscythe", "if=(buff.killing_machine.react|(buff.killing_machine.up&(prev_gcd.1.frost_strike|prev_gcd.1.howling_blast|prev_gcd.1.glacial_advance)))&spell_targets.frostscythe>=2" );
   obliteration -> add_action( this, "Obliterate", "if=buff.killing_machine.react|(buff.killing_machine.up&(prev_gcd.1.frost_strike|prev_gcd.1.howling_blast|prev_gcd.1.glacial_advance))" );
   obliteration -> add_talent( this, "Glacial Advance", "if=(!buff.rime.up|runic_power.deficit<10|rune.time_to_2>gcd)&spell_targets.glacial_advance>=2" );
   obliteration -> add_action( this, "Howling Blast", "if=buff.rime.up&spell_targets.howling_blast>=2" );
