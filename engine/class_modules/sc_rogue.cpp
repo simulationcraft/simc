@@ -4067,7 +4067,7 @@ struct sinister_strike_t : public rogue_attack_t
       return;
     }
 
-    p() -> buffs.snake_eyes -> decrement( 1, p() -> buffs.snake_eyes -> check_value() );
+    p() -> buffs.snake_eyes -> decrement();
 
     if ( secondary_trigger != TRIGGER_SINISTER_STRIKE &&
          ( p() -> buffs.opportunity -> trigger( 1, buff_t::DEFAULT_VALUE(), sinister_strike_proc_chance() ) ) )

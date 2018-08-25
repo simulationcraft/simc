@@ -1303,6 +1303,9 @@ void buff_t::increment( int stacks, double value, timespan_t duration )
   }
   else
   {
+    if ( value == DEFAULT_VALUE() )
+      value = current_value;
+
     refresh( stacks, value, duration );
   }
 }
@@ -1335,10 +1338,7 @@ void buff_t::decrement( int stacks, double value )
 
     current_stack -= stacks;
 
-    if ( value == DEFAULT_VALUE() && default_value != DEFAULT_VALUE() )
-      value = default_value;
-
-    if ( value >= 0 )
+    if ( value != DEFAULT_VALUE() )
       current_value = value;
 
     if ( as<std::size_t>( current_stack ) < stack_uptime.size() )
