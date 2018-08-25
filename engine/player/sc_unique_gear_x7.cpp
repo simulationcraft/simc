@@ -1104,7 +1104,6 @@ void items::darkmoon_deck_squalls( special_effect_t& effect )
       duration( effect.player->find_spell( card_id ) )
     {
       tick_may_crit = true;
-      hasted_ticks = true;
     }
 
     timespan_t composite_dot_duration( const action_state_t* ) const override
