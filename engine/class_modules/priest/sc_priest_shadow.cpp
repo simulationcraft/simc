@@ -225,9 +225,9 @@ struct mind_sear_tick_t final : public priest_spell_t
     energize_type = ENERGIZE_NONE;  // disable resource generation from spell data
   }
 
-  double bonus_ta( const action_state_t* state ) const override
+  double bonus_da( const action_state_t* state ) const override
   {
-    double d = priest_spell_t::bonus_ta( state );
+    double d = priest_spell_t::bonus_da( state );
 
     if ( priest().azerite.searing_dialogue.enabled() )
     {
