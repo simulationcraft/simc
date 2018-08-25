@@ -7486,7 +7486,7 @@ void death_knight_t::default_apl_frost()
   def -> add_action( "call_action_list,name=standard" );
 
   // On-use itemos
-  cooldowns -> add_action( "use_items,if=cooldown.pillar_of_frost.ready&(!talent.breath_of_sindragosa.enabled|buff.empower_rune_weapon.up" );
+  cooldowns -> add_action( "use_items,if=cooldown.pillar_of_frost.ready&(!talent.breath_of_sindragosa.enabled|buff.empower_rune_weapon.up)" );
   cooldowns -> add_action( "use_item,name=razdunks_big_red_button" );
   cooldowns -> add_action( "use_item,name=merekthas_fang" );
 
