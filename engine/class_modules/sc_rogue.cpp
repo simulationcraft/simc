@@ -2963,7 +2963,7 @@ struct garrote_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    p() -> buffs.poisoned_wire -> trigger();
+    p() -> buffs.poisoned_wire -> trigger( p() -> buffs.poisoned_wire -> data().initial_stacks() );
 
     if ( p() -> azerite.shrouded_suffocation.ok() )
     {
@@ -3325,8 +3325,10 @@ struct mutilate_strike_t : public rogue_attack_t
   double composite_crit_chance() const override
   {
     double c = rogue_attack_t::composite_crit_chance();
+
     if ( p() -> buffs.poisoned_wire -> up() )
-      c += p() -> buffs.poisoned_wire -> check_stack_value() / p() -> current.rating.attack_crit;
+      c += p() -> buffs.poisoned_wire -> check_value() / p() -> current.rating.attack_crit;
+
     return c;
   }
 
@@ -3421,7 +3423,7 @@ struct mutilate_t : public rogue_attack_t
       }
     }
 
-    p() -> buffs.poisoned_wire -> expire();
+    p() -> buffs.poisoned_wire -> decrement();
   }
 };
 
