@@ -7430,7 +7430,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732971)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 1365.157 (coefficient=17.55828) | Trigger Spell: 278707 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 887.2086 (coefficient=11.41104) | Trigger Spell: 278707 | Target: Self (1)
+                   Hotfixed: Coefficient (17.5583 -> 11.411)
 Description      : Blackout Kick increases the damage of your next Rising Sun Kick by $s1, stacking up to $278710u times.
 
 Name             : Training of Niuzao (id=278569) [Scaling Spell (-7), Spell Family (53), Passive] 

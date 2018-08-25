@@ -2308,6 +2308,7 @@ Description      : $@spelldesc109215
 Tooltip          : Increased movement speed by $s1%.
 
 Name             : Barrage (id=120360) [Spell Family (9)] 
+Hotfixed         : Variables
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -2329,18 +2330,19 @@ Attributes       : .x..x... ........ x....... ........   ..x...x. .x....x. .....
                  : ........ ........ ........ ........   x....... ........ ....x... ........ 
                  : Ranged Ability (1), Channeled (34), Channeled (38), Tick on application (169), Periodic effect affected by haste (173)
 Effects          :
-#1 (id=139839)   : Apply Aura (6) | Periodic Trigger Spell (23): Barrage every 0.2 seconds
+#1 (id=139839)   : Apply Aura (6) | Periodic Trigger Spell (23): Barrage every 0.3 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 120361 | Target: Self (1)
+                   Hotfixed: Period (200 -> 300)
 Description      : Rapidly fires a spray of shots for $120360d, dealing an average of $<damageSec> Physical damage to all enemies in front of you. Usable while moving.
-Variables        : $damageSec=${$120361sw2*10}
+Variables        : $damageSec=${$120361sw2*11}
 
 Name             : Barrage (id=120361) [Spell Family (9)] 
+Hotfixed         : Velocity (45 -> 0)
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
 Spell Level      : 1
 Range            : 50 yards
-Velocity         : 45 yards/sec
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Triggered by     : Barrage (120360)
 Family Flags     : 106, 119, 121
@@ -2356,7 +2358,8 @@ Effects          :
 #1 (id=139841)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 50 yards | Target: Unknown(24)
 #2 (id=139842)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.14196 | Radius: 50 yards | Target: Unknown(24)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.21294 | Radius: 50 yards | Target: Unknown(24)
+                   Hotfixed: AP Coefficient (0.14196 -> 0.21294)
 Description      : $@spelldesc120360
 
 Name             : Dire Beast (id=120679) [Spell Family (9)] 
