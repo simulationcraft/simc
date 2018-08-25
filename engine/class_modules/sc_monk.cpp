@@ -3135,7 +3135,16 @@ struct tiger_palm_t : public monk_melee_attack_t
     double b = monk_melee_attack_t::bonus_da( s );
 
     if ( p()->azerite.pressure_point.ok() )
-      b += p()->azerite.pressure_point.value();
+    {
+      // Hotfix 2018-08-24: Pressure Point (Monk) damage for Brewmaster reduced by 60%. Damage for Mistweaver reduced by 28.5%.
+      // No spell data has this information. Manually adjusting as needed
+      switch ( p() -> specialization() )
+      {
+        case MONK_BREWMASTER: b += p() -> azerite.pressure_point.value() * ( 1 - 0.6 ); break;
+        case MONK_MISTWEAVER: b += p() -> azerite.pressure_point.value() * ( 1 - 0.285 ); break;
+        default: b += p() -> azerite.pressure_point.value(); break;
+      }
+    }
 
     return b;
   }
@@ -9483,11 +9492,11 @@ void monk_t::apl_combat_windwalker()
   aoe->add_action( this, "Fists of Fury", "if=!talent.serenity.enabled&energy.time_to_max>2" );
   aoe->add_action( this, "Fists of Fury", "if=cooldown.rising_sun_kick.remains>=3.5&chi<=5" );
   aoe->add_talent( this, "Whirling Dragon Punch" );
-  aoe->add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=cooldown.whirling_dragon_punch.remains>=gcd&!prev_gcd.1.rising_sun_kick&cooldown.fists_of_fury.remains>gcd" );
+  aoe->add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=cooldown.whirling_dragon_punch.remains<gcd&!prev_gcd.1.rising_sun_kick&cooldown.fists_of_fury.remains>gcd" );
   aoe->add_talent( this, "Chi Burst", "if=chi<=3&(cooldown.rising_sun_kick.remains>=5|cooldown.whirling_dragon_punch.remains>=5)&energy.time_to_max>1" );
   aoe->add_talent( this, "Chi Burst" );
   aoe->add_action( this, "Spinning Crane Kick", "if=(active_enemies>=3|(buff.bok_proc.up&chi.max-chi>=0))&!prev_gcd.1.spinning_crane_kick&set_bonus.tier21_4pc" );
-  aoe->add_action( this, "Spinning Crane Kick", "if=active_enemies>=3&!prev_gcd.1.spinning_crane_kick" );
+  aoe->add_action( this, "Spinning Crane Kick", "if=active_enemies>=3&!prev_gcd.1.spinning_crane_kick&cooldown.fists_of_fury.remains>gcd" );
   aoe->add_action( this, "Blackout Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick&chi.max-chi>=1&set_bonus.tier21_4pc&(!set_bonus.tier19_2pc|talent.serenity.enabled)" );
   aoe->add_action( this, "Blackout Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=(chi>1|buff.bok_proc.up|(talent.energizing_elixir.enabled&cooldown.energizing_elixir.remains<cooldown.fists_of_fury.remains))&((cooldown.rising_sun_kick.remains>1&(!talent.fist_of_the_white_tiger.enabled|cooldown.fist_of_the_white_tiger.remains>1)|chi>4)&(cooldown.fists_of_fury.remains>1|chi>2)|prev_gcd.1.tiger_palm)&!prev_gcd.1.blackout_kick" );
   aoe->add_action( this, "Crackling Jade Lightning", "if=equipped.the_emperors_capacitor&buff.the_emperors_capacitor.stack>=19&energy.time_to_max>3" );
