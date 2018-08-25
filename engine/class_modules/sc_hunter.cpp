@@ -3269,7 +3269,7 @@ struct mongoose_bite_base_t: melee_focus_spender_t
   mongoose_bite_base_t( const std::string& n, hunter_t* p, spell_data_ptr_t s ):
     melee_focus_spender_t( n, p, s )
   {
-    base_dd_adder += p -> azerite.wilderness_survival.value( 3 );
+    base_dd_adder += p -> azerite.wilderness_survival.value( 2 );
 
     for ( size_t i = 0; i < stats_.at_fury.size(); i++ )
       stats_.at_fury[ i ] = p -> get_proc( "bite_at_" + std::to_string( i ) + "_fury" );
@@ -3463,7 +3463,7 @@ struct raptor_strike_base_t: public melee_focus_spender_t
   raptor_strike_base_t( const std::string& n, hunter_t* p, spell_data_ptr_t s ):
     melee_focus_spender_t( n, p, s )
   {
-    base_dd_adder += p -> azerite.wilderness_survival.value( 2 );
+    base_dd_adder += p -> azerite.wilderness_survival.value( 3 );
     base_multiplier *= 1.0 + p -> find_spell( 262839 ) -> effectN( 1 ).percent(); // Raptor Strike (Rank 2)
     base_multiplier *= 1.0 + p -> sets -> set( HUNTER_SURVIVAL, T21, B4 ) -> effectN( 1 ).percent();
 
