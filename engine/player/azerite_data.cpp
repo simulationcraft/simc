@@ -1627,6 +1627,11 @@ void dagger_in_the_back( special_effect_t& effect )
       tick_may_crit = true;
     }
 
+    timespan_t calculate_dot_refresh_duration(const dot_t*  /* dot */, timespan_t triggered_duration ) const override
+    {
+      return triggered_duration;
+    }
+
     // XXX: simply apply twice here for the "from the back" case
     // in-game this happens with a slight delay of about ~250ms (beta realms from eu)
     // and may be better done through custom proc::execute scheduling an action execute event
