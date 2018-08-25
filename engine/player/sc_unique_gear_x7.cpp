@@ -1102,7 +1102,10 @@ void items::darkmoon_deck_squalls( special_effect_t& effect )
     squall_damage_t( const special_effect_t& effect, unsigned card_id ) :
       proc_spell_t( "suffocating_squall", effect.player, effect.trigger(), effect.item ),
       duration( effect.player->find_spell( card_id ) )
-    { }
+    {
+      tick_may_crit = true;
+      hasted_ticks = true;
+    }
 
     timespan_t composite_dot_duration( const action_state_t* ) const override
     { return duration->effectN( 1 ).time_value(); }
@@ -1174,7 +1177,7 @@ void items::endless_tincture_of_fractional_power( special_effect_t& effect )
     }
   };
 
-  effect.execute_action = 
+  effect.execute_action =
     create_proc_action<endless_tincture_of_fractional_power_t>( "endless_tincture_of_fractional_power", effect );
 }
 
