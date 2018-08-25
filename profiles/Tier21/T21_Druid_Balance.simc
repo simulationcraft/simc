@@ -27,10 +27,6 @@ actions.precombat+=/augmentation
 actions.precombat+=/variable,name=az_streak,value=azerite.streaking_stars.rank
 actions.precombat+=/variable,name=az_ds,value=azerite.dawning_sun.rank
 actions.precombat+=/variable,name=az_sb,value=azerite.sunblaze.rank
-# High Noon:
-# 1T: 3x noemp, 2x nospam, 1x nospam
-# 2T: 3x emp, 2x normal, 1x normal
-actions.precombat+=/variable,name=az_hn,value=azerite.high_noon.rank
 # Power of the Moon:
 # 2T: 3x noemp, 2x emp, 1x normal
 # 3T: 3x lsemp, 2x normal, 1x normal
@@ -59,12 +55,12 @@ actions+=/celestial_alignment,if=astral_power>=40&(!azerite.lively_spirit.enable
 actions+=/fury_of_elune,if=(((raid_event.adds.duration%8)*(4)<(raid_event.adds.in%60))|(raid_event.adds.up))&((buff.celestial_alignment.up|buff.incarnation.up)|(cooldown.celestial_alignment.remains>30|cooldown.incarnation.remains>30))
 actions+=/force_of_nature,if=(buff.celestial_alignment.up|buff.incarnation.up)|(cooldown.celestial_alignment.remains>30|cooldown.incarnation.remains>30)
 # DoTs
-actions+=/sunfire,target_if=refreshable|(variable.az_hn=3&active_enemies<=2&(dot.moonfire.ticking|time_to_die<=6.6)&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking|time_to_die<=7.2)&(astral_power<40|buff.starlord.remains<4)),if=astral_power.deficit>=7&target.time_to_die>5.4&(!buff.celestial_alignment.up&!buff.incarnation.up|!variable.az_streak|!prev_gcd.1.sunfire)|variable.az_hn=3
+actions+=/sunfire,target_if=refreshable,if=astral_power.deficit>=7&target.time_to_die>5.4&(!buff.celestial_alignment.up&!buff.incarnation.up|!variable.az_streak|!prev_gcd.1.sunfire)
 actions+=/moonfire,target_if=refreshable,if=astral_power.deficit>=7&target.time_to_die>6.6&(!buff.celestial_alignment.up&!buff.incarnation.up|!variable.az_streak|!prev_gcd.1.moonfire)
 actions+=/stellar_flare,target_if=refreshable,if=astral_power.deficit>=12&target.time_to_die>7.2&(!buff.celestial_alignment.up&!buff.incarnation.up|!variable.az_streak|!prev_gcd.1.stellar_flare)
 # Empowerment cap check
-actions+=/lunar_strike,if=astral_power.deficit>=16&(buff.lunar_empowerment.stack=3|(spell_targets<3&astral_power>=40&(buff.lunar_empowerment.stack=2&buff.solar_empowerment.stack=2)))&!(variable.az_hn=3&active_enemies=1)&!(spell_targets.moonfire>=2&variable.az_potm=3&active_enemies=2)
-actions+=/solar_wrath,if=astral_power.deficit>=12&(buff.solar_empowerment.stack=3|(variable.az_sb>1&spell_targets.starfall<3&astral_power>=32&!buff.sunblaze.up))&!(variable.az_hn=3&active_enemies=1)&!(spell_targets.moonfire>=2&active_enemies<=4&variable.az_potm=3)
+actions+=/lunar_strike,if=astral_power.deficit>=16&(buff.lunar_empowerment.stack=3|(spell_targets<3&astral_power>=40&(buff.lunar_empowerment.stack=2&buff.solar_empowerment.stack=2)))&!(spell_targets.moonfire>=2&variable.az_potm=3&active_enemies=2)
+actions+=/solar_wrath,if=astral_power.deficit>=12&(buff.solar_empowerment.stack=3|(variable.az_sb>1&spell_targets.starfall<3&astral_power>=32&!buff.sunblaze.up))&!(spell_targets.moonfire>=2&active_enemies<=4&variable.az_potm=3)
 # Rotation
 actions+=/starsurge,if=(spell_targets.starfall<3&(!buff.starlord.up|buff.starlord.remains>=4)|execute_time*(astral_power%40)>target.time_to_die)&(!buff.celestial_alignment.up&!buff.incarnation.up|variable.az_streak<2|!prev_gcd.1.starsurge)
 actions+=/starfall,if=spell_targets.starfall>=3&(!buff.starlord.up|buff.starlord.remains>=4)
