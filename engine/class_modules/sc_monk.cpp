@@ -9333,7 +9333,7 @@ void monk_t::apl_combat_windwalker()
 
   def->add_action( this, "Touch of Death", "if=target.time_to_die<=9" );
   def->add_action(
-      "call_action_list,name=serenitySR,if=((talent.serenity.enabled&cooldown.serenity.remains<=0)|buff.serenity.up)&azerite.swift_roundhouse.rank>1&time>30",
+      "call_action_list,name=serenitySR,if=((talent.serenity.enabled&cooldown.serenity.remains<=0)|buff.serenity.up)&azerite.swift_roundhouse.enabled&time>30",
       "Call the Serenity action list if you're using Serenity and have more than two ranks of Swift Roundhouse Trait" );
   def->add_action(
       "call_action_list,name=serenity,if=((!azerite.swift_roundhouse.enabled&talent.serenity.enabled&cooldown.serenity.remains<=0)|buff.serenity.up)&time>30",
@@ -9410,24 +9410,24 @@ void monk_t::apl_combat_windwalker()
   cd->add_action( this, "Touch of Death" );
 
   // Storm, Earth, and Fire
-  sef->add_action( this, "Tiger Palm", "target_if=debuff.mark_of_the_crane.down,if=!prev_gcd.1.tiger_palm&!prev_gcd.1.energizing_elixir&energy=energy.max&chi<1" );
+  sef->add_action( this, "Tiger Palm", "target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&!prev_gcd.1.energizing_elixir&energy=energy.max&chi<1" );
   sef->add_action( "call_action_list,name=cd" );
   sef->add_action( this, "Storm, Earth, and Fire", "if=!buff.storm_earth_and_fire.up" );
   sef->add_action( "call_action_list,name=aoe,if=active_enemies>3" );
   sef->add_action( "call_action_list,name=st,if=active_enemies<=3" );
 
   // Serenity with at least 2 ranks of Swift Roundhouse trait
-  serenitySR->add_action( this, "Tiger Palm", "target_if=debuff.mark_of_the_crane.down,if=!prev_gcd.1.tiger_palm&!prev_gcd.1.energizing_elixir&energy=energy.max&chi<1&!buff.serenity.up");
+  serenitySR->add_action( this, "Tiger Palm", "target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&!prev_gcd.1.energizing_elixir&energy=energy.max&chi<1&!buff.serenity.up");
   serenitySR->add_action( "call_action_list,name=cd" );
   serenitySR->add_talent( this, "Serenity", "if=cooldown.rising_sun_kick.remains<=2" );
   serenitySR->add_action( this, "Fists of Fury", "if=buff.serenity.remains<=1.05" );
-  serenitySR->add_action( this, "Rising Sun Kick", "target_if=debuff.mark_of_the_crane.down" );
-  serenitySR->add_action( this, "Blackout Kick", "target_if=debuff.mark_of_the_crane.down,if=!prev_gcd.1.blackout_kick&cooldown.rising_sun_kick.remains>=2&cooldown.fists_of_fury.remains>=2" );
-  serenitySR->add_action( this, "Blackout Kick", "target_if=debuff.mark_of_the_crane.down" );
+  serenitySR->add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains" );
+  serenitySR->add_action( this, "Blackout Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick&cooldown.rising_sun_kick.remains>=2&cooldown.fists_of_fury.remains>=2" );
+  serenitySR->add_action( this, "Blackout Kick", "target_if=min:debuff.mark_of_the_crane.remains" );
 
   // Serenity Opener
   serenity_opener -> add_talent( this, "Fist of the White Tiger", "if=buff.serenity.down" );
-  serenity_opener -> add_action( this, "Tiger Palm", "target_if=debuff.mark_of_the_crane.down,if=!prev_gcd.1.tiger_palm&buff.serenity.down&chi<4" );
+  serenity_opener -> add_action( this, "Tiger Palm", "target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&buff.serenity.down&chi<4" );
   serenity_opener -> add_action( "call_action_list,name=cd,if=buff.serenity.down" );
   serenity_opener -> add_action( "call_action_list,name=serenity,if=buff.bloodlust.down" );
   serenity_opener -> add_talent( this, "Serenity" );
@@ -9456,7 +9456,7 @@ void monk_t::apl_combat_windwalker()
 
   // Serenity Opener
   serenity_openerSR -> add_talent( this, "Fist of the White Tiger", "if=buff.serenity.down" );
-  serenity_openerSR -> add_action( this, "Tiger Palm", "target_if=debuff.mark_of_the_crane.down,if=buff.serenity.down&chi<4" );
+  serenity_openerSR -> add_action( this, "Tiger Palm", "target_if=min:debuff.mark_of_the_crane.remains,if=buff.serenity.down&chi<4" );
   serenity_openerSR -> add_action( "call_action_list,name=cd,if=buff.serenity.down" );
   serenity_openerSR -> add_action( "call_action_list,name=serenity,if=buff.bloodlust.down" );
   serenity_openerSR -> add_talent( this, "Serenity" );
@@ -9514,15 +9514,15 @@ void monk_t::apl_combat_windwalker()
                   "Cast Tiger Palm if:\n# - Previous GCD was not Tiger Palm\n# - Previous GCD was not EE (NOTE: redundant because of the Energy check, needs to be rewritten for BFA)\n# - You will cap Energy before next GCD\n# - You will gain 2 or more Chi" );
   st->add_action( this, "Tiger Palm", "target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=2&buff.serenity.down&cooldown.fist_of_the_white_tiger.remains>energy.time_to_max" );
   st->add_talent( this, "Whirling Dragon Punch" );
-  st->add_action( this, "Fists of Fury", "if=chi>=3&energy.time_to_max>2.5&azerite.swift_roundhouse.rank<2",
+  st->add_action( this, "Fists of Fury", "if=chi>=3&energy.time_to_max>2.5&azerite.swift_roundhouse.rank<3",
                   "FoF usage with Swift Roundhouse" );
   st->add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=((chi>=3&energy>=40)|chi>=5)&(talent.serenity.enabled|cooldown.serenity.remains>=6)&!azerite.swift_roundhouse.enabled",
                   "Cast Rising Sun Kick if:\n# - You are using SEF, and you have 3 or more Chi AND 40 or more energy OR 5 or more Chi\n# - You are using Serenity, 6 or more seconds remain on the cooldown of Serenity, and you have 3 or more Chi AND 40 or more energy OR 5 or more Chi " );
-  st->add_action( this, "Fists of Fury", "if=!talent.serenity.enabled&(azerite.swift_roundhouse.rank<2|cooldown.whirling_dragon_punch.remains<13)",
+  st->add_action( this, "Fists of Fury", "if=!talent.serenity.enabled&(azerite.swift_roundhouse.rank<3|cooldown.whirling_dragon_punch.remains<13)",
                   "Cast Fists of Fury if:\n# - You are using SEF" );
   st->add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=cooldown.serenity.remains>=5|(!talent.serenity.enabled)&!azerite.swift_roundhouse.enabled",
                   "Cast RSK if:\n# - You are using SEF OR you are using Serenity and 5 or more seconds remain on the cooldown of Serenity" );
-  st->add_action( this, "Blackout Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=cooldown.fists_of_fury.remains>2&!prev_gcd.1.blackout_kick&energy.time_to_max>1&azerite.swift_roundhouse.rank>1",
+  st->add_action( this, "Blackout Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=cooldown.fists_of_fury.remains>2&!prev_gcd.1.blackout_kick&energy.time_to_max>1&azerite.swift_roundhouse.rank>2",
                   "Cast Blackout Kick if:\n# - Previous GCD was not BoK\n# - You are not at max Chi" );
   st->add_action( this, "Flying Serpent Kick", "if=prev_gcd.1.blackout_kick&energy.time_to_max>2&chi>1,interrupt=1",
                   "Flying Serpent Kick for mastery resets" );
