@@ -7519,8 +7519,6 @@ void druid_t::apl_precombat()
     precombat->add_action( "variable,name=az_streak,value=azerite.streaking_stars.rank", "Azerite variables" );
     precombat->add_action( "variable,name=az_ds,value=azerite.dawning_sun.rank" );
     precombat->add_action( "variable,name=az_sb,value=azerite.sunblaze.rank" );
-    precombat->add_action( "variable,name=az_hn,value=azerite.high_noon.rank",
-	                       "High Noon:\n# 1T: 3x noemp, 2x nospam, 1x nospam\n# 2T: 3x emp, 2x normal, 1x normal" );
     precombat->add_action( "variable,name=az_potm,value=azerite.power_of_the_moon.rank,if=talent.twin_moons.enabled",
                            "Power of the Moon:\n# 2T: 3x noemp, 2x emp, 1x normal\n# 3T: 3x lsemp, 2x normal, 1x normal\n# 4T: 3x lsemp, 2x normal, 1x normal" );
   }
@@ -7875,23 +7873,19 @@ void druid_t::apl_balance()
   default_list->add_talent( this, "Fury of Elune","if=(((raid_event.adds.duration%8)*(4)<(raid_event.adds.in%60))|(raid_event.adds.up))&((buff.celestial_alignment.up|buff.incarnation.up)|(cooldown.celestial_alignment.remains>30|cooldown.incarnation.remains>30))");
   default_list->add_talent( this, "Force of Nature","if=(buff.celestial_alignment.up|buff.incarnation.up)|(cooldown.celestial_alignment.remains>30|cooldown.incarnation.remains>30)");
   
-  default_list->add_action( this, "Sunfire", "target_if=refreshable"
-	                          "|(variable.az_hn=3&active_enemies<=2&(dot.moonfire.ticking|time_to_die<=6.6)&(!talent.stellar_flare.enabled|dot.stellar_flare.ticking|time_to_die<=7.2)&(astral_power<40|buff.starlord.remains<4))," /*High Noon SF spam check*/
+  default_list->add_action( this, "Sunfire", "target_if=refreshable,"
 	                          "if=astral_power.deficit>=7&target.time_to_die>5.4"
-	                          "&(!buff.celestial_alignment.up&!buff.incarnation.up|!variable.az_streak|!prev_gcd.1.sunfire)" /*Streaking check*/
-	                          "|variable.az_hn=3", /*High Noon SF spam check*/
+	                          "&(!buff.celestial_alignment.up&!buff.incarnation.up|!variable.az_streak|!prev_gcd.1.sunfire)", /*Streaking check*/
 	                          "DoTs");
   default_list->add_action( this, "Moonfire", "target_if=refreshable,if=astral_power.deficit>=7&target.time_to_die>6.6"
 	                          "&(!buff.celestial_alignment.up&!buff.incarnation.up|!variable.az_streak|!prev_gcd.1.moonfire)"); /*Streaking check*/
   default_list->add_talent( this, "Stellar Flare", "target_if=refreshable,if=astral_power.deficit>=12&target.time_to_die>7.2"
 	                          "&(!buff.celestial_alignment.up&!buff.incarnation.up|!variable.az_streak|!prev_gcd.1.stellar_flare)"); /*Streaking check*/
   default_list->add_action( this, "Lunar Strike", "if=astral_power.deficit>=16&(buff.lunar_empowerment.stack=3|(spell_targets<3&astral_power>=40&(buff.lunar_empowerment.stack=2&buff.solar_empowerment.stack=2)))"
-	                          "&!(variable.az_hn=3&active_enemies=1)" /*High Noon SF spam check*/
 	                          "&!(spell_targets.moonfire>=2&variable.az_potm=3&active_enemies=2)", /*PotM MF spam check*/
 	                          "Empowerment cap check");
   default_list->add_action( this, "Solar Wrath", "if=astral_power.deficit>=12&(buff.solar_empowerment.stack=3"
 	                          "|(variable.az_sb>1&spell_targets.starfall<3&astral_power>=32&!buff.sunblaze.up))" /*Sunblaze check*/
-	                          "&!(variable.az_hn=3&active_enemies=1)" /*High Noon SF spam check*/
 	                          "&!(spell_targets.moonfire>=2&active_enemies<=4&variable.az_potm=3)"); /*PotM MF spam check*/
   default_list->add_action( this, "Starsurge", "if=(spell_targets.starfall<3&(!buff.starlord.up|buff.starlord.remains>=4)|execute_time*(astral_power%40)>target.time_to_die)"
 	                          "&(!buff.celestial_alignment.up&!buff.incarnation.up|variable.az_streak<2|!prev_gcd.1.starsurge)", /*Streaking check*/
