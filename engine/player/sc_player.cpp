@@ -6870,10 +6870,23 @@ struct variable_t : public action_t
   // 1) The operation is not SETIF and the value expression is constant
   // 2) The operation is SETIF and both the condition expression and the value (or value expression)
   //    are both constant
+  // 3) The operation is reset/floor/ceil and all of the other actions manipulating the variable are
+  //    constant
   bool is_constant() const
   {
     double const_value = 0;
-    if ( operation != OPERATION_SETIF )
+    // Special casing, some variables is only constant, if all of the other action variables in the
+    // set (that manipulates a variable) are constant
+    if ( operation == OPERATION_RESET || operation == OPERATION_FLOOR ||
+         operation == OPERATION_CEIL )
+    {
+      auto it = range::find_if( var->variable_actions, [this]( const action_t* action ) {
+        return action != this && debug_cast<const variable_t*>( action )->is_constant();
+      } );
+
+      return it == var->variable_actions.end();
+    }
+    else if ( operation != OPERATION_SETIF )
     {
       return value_expression ? value_expression->is_constant( &const_value ) : true;
     }
