@@ -7516,11 +7516,10 @@ void druid_t::apl_precombat()
   // Balance: Azerite rank variables
   if ( specialization() == DRUID_BALANCE )
   {
-    precombat->add_action( "variable,name=az_streak,value=azerite.streaking_stars.rank", "Azerite variables" );
+    precombat->add_action( "variable,name=az_streak,value=azerite.streaking_stars.rank", "Azerite variables\n# Streaking Stars:\n# Cast sw after every non-sw spell unless capping, sw sf sw if forced" );
     precombat->add_action( "variable,name=az_ds,value=azerite.dawning_sun.rank" );
     precombat->add_action( "variable,name=az_sb,value=azerite.sunblaze.rank" );
-    precombat->add_action( "variable,name=az_potm,value=azerite.power_of_the_moon.rank,if=talent.twin_moons.enabled",
-                           "Power of the Moon:\n# 2T: 3x noemp, 2x emp, 1x normal\n# 3T: 3x lsemp, 2x normal, 1x normal\n# 4T: 3x lsemp, 2x normal, 1x normal" );
+    precombat->add_action( "variable,name=az_potm,value=azerite.power_of_the_moon.rank,if=talent.twin_moons.enabled", "Power of the Moon:\n# 2T: 3x noemp, 2x emp, 1x normal\n# 3T: 3x lsemp, 2x normal, 1x normal\n# 4T: 3x lsemp, 2x normal, 1x normal" );
   }
   
   // Forms
@@ -7886,7 +7885,8 @@ void druid_t::apl_balance()
 	                          "Empowerment cap check");
   default_list->add_action( this, "Solar Wrath", "if=astral_power.deficit>=12&(buff.solar_empowerment.stack=3"
 	                          "|(variable.az_sb>1&spell_targets.starfall<3&astral_power>=32&!buff.sunblaze.up))" /*Sunblaze check*/
-	                          "&!(spell_targets.moonfire>=2&active_enemies<=4&variable.az_potm=3)"); /*PotM MF spam check*/
+	                          "&!(spell_targets.moonfire>=2&active_enemies<=4&variable.az_potm=3)" /*PotM MF spam check*/
+							  "|(variable.az_streak&(buff.celestial_alignment.up|buff.incarnation.up)&!prev_gcd.1.solar_wrath&astral_power.deficit>=12)"); /*Streaking sw weave*/
   default_list->add_action( this, "Starsurge", "if=(spell_targets.starfall<3&(!buff.starlord.up|buff.starlord.remains>=4)|execute_time*(astral_power%40)>target.time_to_die)"
 	                          "&(!buff.celestial_alignment.up&!buff.incarnation.up|variable.az_streak<2|!prev_gcd.1.starsurge)", /*Streaking check*/
 	                          "Rotation");
