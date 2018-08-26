@@ -451,6 +451,22 @@ struct bba_cb_t : public dbc_proc_callback_t
   {
     int resource = static_cast<int>( state->action->current_resource() );
     double cost = state->action->last_resource_cost;
+
+    // Custom handling of breath_of_sindragosa_tick
+    if ( state -> action -> name_str == "breath_of_sindragosa_tick" )
+    {
+      cost = 15.0;
+      resource = RESOURCE_RUNIC_POWER;
+
+      // There seems to be a bug / special handling of BoS on server side
+      // It only triggers bygone bee ~60% of the time
+      // This will need more data
+      if ( state -> action -> player -> bugs && rng().roll( 0.4 ) )
+      {
+        return timespan_t::zero();
+      }
+    }
+
     if ( cost == 0.0 )
     {
       return timespan_t::zero();
@@ -468,8 +484,16 @@ struct bba_cb_t : public dbc_proc_callback_t
   void trigger( action_t* a, void* raw_state ) override
   {
     auto state = reinterpret_cast<action_state_t*>( raw_state );
-    if ( state->action->last_resource_cost == 0 )
+
+    if ( state -> action -> last_resource_cost == 0 )
     {
+      // Custom call here for breath_of_sindragosa_tick because it doesn't consume resources
+      // The callback should probably rather check for ticks of breath_of_sindragosa, but this will do for now
+      if ( state -> action -> name_str == "breath_of_sindragosa_tick" )
+      {
+        dbc_proc_callback_t::trigger( a, raw_state );
+      }
+      
       return;
     }
 
