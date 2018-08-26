@@ -682,6 +682,7 @@ class ItemDataGenerator(DataGenerator):
         62367, 68719, 62368, 68763, 68718, 62366,   # Obsolete Cataclysm head enchants
         68721, 62369, 62422, 68722,                 #
         43097,                                      #
+        133755,                                     # Underlight Angler (Legion artifact fishing pole)
     ]
 
     _item_name_blacklist = [
