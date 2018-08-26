@@ -177,8 +177,8 @@ actions.st+=/fist_of_the_white_tiger,if=(chi<=2)
 # - Previous GCD was not EE (NOTE: redundant because of the Energy check, needs to be rewritten for BFA)
 # - You will cap Energy before next GCD
 # - You will gain 2 or more Chi
-actions.st+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=chi<=3&energy.time_to_max<2
-actions.st+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=2&buff.serenity.down&cooldown.fist_of_the_white_tiger.remains>energy.time_to_max
+actions.st+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&chi<=3&energy.time_to_max<2
+actions.st+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&chi.max-chi>=2&buff.serenity.down&cooldown.fist_of_the_white_tiger.remains>energy.time_to_max
 actions.st+=/whirling_dragon_punch
 # FoF usage with Swift Roundhouse
 actions.st+=/fists_of_fury,if=chi>=3&energy.time_to_max>2.5&azerite.swift_roundhouse.rank<3
