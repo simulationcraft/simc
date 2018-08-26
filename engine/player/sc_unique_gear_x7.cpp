@@ -432,14 +432,12 @@ enum resource_category : unsigned
 };
 
 // Add different resource systems here
-// TODO : rage
 static const std::unordered_map<int, std::tuple<double, double>> __resource_map { {
   { RESOURCE_HOLY_POWER,  std::tuple<double, double> { 1.000, 2.000 } },
   { RESOURCE_RUNIC_POWER, std::tuple<double, double> { 0.050, 0.100 } },
   { RESOURCE_RAGE,        std::tuple<double, double> { 0.025, 0.050 } }
 } };
 
-// TODO: Prot paladin "resource" must be special cased
 struct bba_cb_t : public dbc_proc_callback_t
 {
   bba_cb_t( const special_effect_t& effect ) :
@@ -467,6 +465,15 @@ struct bba_cb_t : public dbc_proc_callback_t
       }
     }
 
+    // Protection Paladins are special :
+    // - Casting SotR triggers the same duration whether it's to extend the trinket's buff or to reduce its cooldown
+    // - Consuming SotR charges with Seraphim doesn't trigger the callback
+    // - Even though SotR can be used without a target, the effect only happens if the spell hits at least one target
+    if ( state -> action -> name_str == "shield_of_the_righteous" && state -> action -> result_is_hit( state -> result ) )
+    {
+      return timespan_t::from_seconds( 3.0 );
+    }
+
     if ( cost == 0.0 )
     {
       return timespan_t::zero();
@@ -487,9 +494,10 @@ struct bba_cb_t : public dbc_proc_callback_t
 
     if ( state -> action -> last_resource_cost == 0 )
     {
-      // Custom call here for breath_of_sindragosa_tick because it doesn't consume resources
+      // Custom call here for BoS ticks and SotR because they don't consume resources
       // The callback should probably rather check for ticks of breath_of_sindragosa, but this will do for now
-      if ( state -> action -> name_str == "breath_of_sindragosa_tick" )
+      if ( state -> action -> name_str == "breath_of_sindragosa_tick" ||
+           state -> action -> name_str == "shield_of_the_righteous" )
       {
         dbc_proc_callback_t::trigger( a, raw_state );
       }
