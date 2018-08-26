@@ -6881,7 +6881,7 @@ struct variable_t : public action_t
          operation == OPERATION_CEIL )
     {
       auto it = range::find_if( var->variable_actions, [this]( const action_t* action ) {
-        return action != this && debug_cast<const variable_t*>( action )->is_constant();
+        return action != this && !debug_cast<const variable_t*>( action )->is_constant();
       } );
 
       return it == var->variable_actions.end();
