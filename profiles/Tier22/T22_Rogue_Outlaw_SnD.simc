@@ -94,8 +94,8 @@ finger1=rotscour_ring,id=160645,bonus_id=4800/1507,enchant=pact_of_haste
 finger2=band_of_certain_annihilation,id=160646,bonus_id=4800/1507,enchant=pact_of_haste
 trinket1=deadeye_spyglass,id=159623,bonus_id=1542/4779
 trinket2=frenetic_corpuscle,id=160648,bonus_id=4800/1507
-main_hand=lancet_of_the_deft_hand,id=160693,bonus_id=4800/1507,enchant=versatile_navigation
-off_hand=lancet_of_the_deft_hand,id=160693,bonus_id=4800/1507,enchant=quick_navigation
+main_hand=lancet_of_the_deft_hand,id=160693,bonus_id=4800/1507,enchant=deadly_navigation
+off_hand=lancet_of_the_deft_hand,id=160693,bonus_id=4800/1507,enchant=galeforce_striking
 
 # Gear Summary
 # gear_ilvl=385.25
