@@ -6849,10 +6849,11 @@ struct variable_t : public action_t
   {
     action_t::reset();
 
+    double cv = 0;
     // In addition to if= expression removing the variable from the APLs, if the the variable value
     // is constant, we can remove any variable action referencing it from the APL
     if ( action_list && sim->optimize_expressions && player->nth_iteration() == 1 &&
-         is_constant() )
+         var->is_constant( &cv ) )
     {
       auto it = range::find( action_list->foreground_action_list, this );
       if ( it != action_list->foreground_action_list.end() )
@@ -6875,7 +6876,7 @@ struct variable_t : public action_t
   bool is_constant() const
   {
     double const_value = 0;
-    // Special casing, some variables is only constant, if all of the other action variables in the
+    // Special casing, some actions are only constant, if all of the other action variables in the
     // set (that manipulates a variable) are constant
     if ( operation == OPERATION_RESET || operation == OPERATION_FLOOR ||
          operation == OPERATION_CEIL )
