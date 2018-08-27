@@ -66,7 +66,7 @@ paladin_t::paladin_t( sim_t* sim, const std::string& name, race_e r ) :
   cooldowns.divine_hammer             = get_cooldown( "divine_hammer" );
   cooldowns.holy_shock                = get_cooldown( "holy_shock");
   cooldowns.light_of_dawn             = get_cooldown( "light_of_dawn");
-  
+
   cooldowns.inner_light               = get_cooldown( "inner_light" );
 
   talent_points.register_validity_fn([this](const spell_data_t* spell)
@@ -1510,7 +1510,7 @@ double paladin_t::composite_attribute_multiplier( attribute_e attr ) const
   double m = player_t::composite_attribute_multiplier( attr );
 
   // Protection gets increased stamina
-  if ( attr == ATTR_STAMINA )
+  if ( specialization() == PALADIN_PROTECTION && attr == ATTR_STAMINA )
   {
     m *= 1.0 + passives.protection_paladin -> effectN( 3 ).percent();
   }
