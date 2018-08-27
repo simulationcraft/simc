@@ -3688,6 +3688,9 @@ struct blackout_strike_t : public monk_melee_attack_t
 
     if ( p()->talent.blackout_combo->ok() )
       p()->buff.blackout_combo->trigger();
+
+    if ( p()->azerite.swift_roundhouse.ok() )
+      p()->buff.swift_roundhouse->trigger();
   }
 
   virtual void impact( action_state_t* s ) override
