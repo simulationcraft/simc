@@ -2417,12 +2417,6 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     return 1.0;
   }
 
-  timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
-  {
-    // 30% refresh rule apparently works with AM as well!
-    return triggered_duration + std::min( triggered_duration * 0.3, dot -> remains() );
-  }
-
   virtual double cost() const override
   {
     double c = arcane_mage_spell_t::cost();
