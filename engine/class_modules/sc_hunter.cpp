@@ -3990,8 +3990,18 @@ struct kill_command_t: public hunter_spell_t
 
   bool ready() override
   {
-    if ( p() -> pets.main && p() -> pets.main -> active.kill_command -> ready() ) // Range check from the pet.
-      return hunter_spell_t::ready();
+    if ( p() -> pets.main )
+    {
+      if ( ! hunter_spell_t::ready() )
+      {
+        return false;
+      }
+
+      // Need to retarget the kill command spell to this spell's target before checking ready
+      p() -> pets.main -> active.kill_command -> set_target( target );
+      if ( p() -> pets.main -> active.kill_command -> ready() ) // Range check from the pet.
+        return true;
+    }
 
     return false;
   }
