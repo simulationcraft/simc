@@ -699,7 +699,6 @@ struct shield_of_vengeance_t : public paladin_absorb_t
     parse_options( options_str );
 
     harmful = false;
-    attack_power_mod.direct = 5;
 
     if ( ! ( p -> active_shield_of_vengeance_proc ) )
     {
@@ -715,9 +714,9 @@ struct shield_of_vengeance_t : public paladin_absorb_t
 
   virtual void execute() override
   {
+    base_dd_min = base_dd_max = p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 2 ).percent();
     paladin_absorb_t::execute();
-
-    p() -> buffs.shield_of_vengeance -> trigger();
+    p() -> buffs.shield_of_vengeance -> trigger( 1, base_dd_max );
   }
 };
 
