@@ -247,14 +247,18 @@ void priest_t::generate_apl_holy_d()
          "potion,if=buff.bloodlust.react|target.time_to_die<=80");
 
     // Racials
-    if (race == RACE_DARK_IRON_DWARF)
-        default_list->add_action("fireblood");
-    if (race == RACE_TROLL)
-        default_list->add_action("berserking");
-    if (race == RACE_LIGHTFORGED_DRAENEI)
-        default_list->add_action("lights_judgment");
-    if (race == RACE_MAGHAR_ORC)
-        default_list->add_action("ancestral_call");
+    if (race != RACE_BLOOD_ELF)
+    {
+        for (const std::string& racial_action : get_racial_actions())
+        {
+            default_list->add_action(racial_action);
+        }
+    }
+// Belf is a DPS decrease to use until like 20 targets for now
+//  if (race == RACE_BLOOD_ELF)
+//   {
+//           default_list->add_action("arcane_torrent,if=mana.pct<=95");
+//   }
 
     // Default APL
     default_list->add_action( this, "Holy Fire", "if=refreshable&dot.holy_fire.ticking&dot.holy_fire.stack>1|dot.holy_fire.stack<2");
