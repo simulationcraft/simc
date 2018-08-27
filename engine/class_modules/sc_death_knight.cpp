@@ -8,8 +8,6 @@
 // Check that all those azerite traits work as expected
 // Use pet spawner for army of the dead ghouls, apoc ghouls, and bloodworms
 // Unholy
-// - Army of the dead ghouls should spawn once every 0.5s for 4s rather than all at once
-// - Also add an option for army of the dead prepull timer at some point
 // - Fix Unholy Blight reporting : currently the uptime contains both the dot uptime (24.2s every 45s)
 //   and the driver uptime (6s every 45s)
 // - Look into Summon Gargoyle spawn delay
@@ -3212,17 +3210,55 @@ struct apocalypse_t : public death_knight_melee_attack_t
 
 struct army_of_the_dead_t : public death_knight_spell_t
 {
-  army_of_the_dead_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "army_of_the_dead", p, p -> spec.army_of_the_dead )
+  int precombat_delay;
+  timespan_t summon_duration;
+
+  struct summon_army_event_t : public event_t
   {
+    int n_ghoul;
+    timespan_t summon_interval;
+    timespan_t summon_duration;
+    death_knight_t* p;
+
+    summon_army_event_t( death_knight_t* dk, int n, const timespan_t& interval, const timespan_t& duration ) :
+      event_t( *dk, interval ), p( dk ), n_ghoul( n ), summon_interval( interval ), summon_duration( duration )
+    { }
+
+    void execute() override
+    {
+      p -> pets.army_ghoul[ n_ghoul ] -> summon( summon_duration );
+      if ( ++n_ghoul < 8 )
+      {
+        make_event<summon_army_event_t>( sim(), p, n_ghoul, summon_interval, summon_duration );
+      }
+    }
+  };
+
+  army_of_the_dead_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "army_of_the_dead", p, p -> spec.army_of_the_dead ),
+    summon_duration( p -> spec.army_of_the_dead -> effectN( 1 ).trigger() -> duration() ),
+    precombat_delay( 6 )
+  {
+    // If used during precombat, army is casted around X seconds before the fight begins
+    // This is done to save rune regeneration time once the fight starts
+    // Default duration is 6, and can be changed by the user
+
+    add_option( opt_int( "delay", precombat_delay ) );
     parse_options( options_str );
 
-    harmful = false;
-  }
+    // Limit Army of the dead precast option between 10s before pull (because rune regeneration time is 10s at 0 haste) and on pull
+    if ( precombat_delay > 10 )
+    {
+      precombat_delay = 10 ;
+      sim -> out_debug.printf( "%s tried to precast army of the dead more than 10s before combat begins", p -> name() );
+    }
+    else if ( precombat_delay < 0 )
+    { 
+      precombat_delay = 0; 
+      sim -> out_debug.printf( "%s tried to precast army of the dead after combat begins (negative delay value)", p -> name() );
+    }
 
-  void schedule_execute( action_state_t* s ) override
-  {
-    death_knight_spell_t::schedule_execute( s );
+    harmful = false;
   }
 
   // Army of the Dead should always cost resources
@@ -3233,38 +3269,45 @@ struct army_of_the_dead_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
+    p() -> buffs.t20_2pc_unholy -> trigger();
+
+    int n_ghoul = 0;
+
+    // There's a 0.5s interval between each ghoul's spawn
+    double const summon_interval = 0.5;
+
     if ( ! p() -> in_combat )
-    {
-      double precombat_army = 6.0;
-      timespan_t precombat_time = timespan_t::from_seconds( precombat_army );
-      timespan_t army_duration = p() -> spec.army_of_the_dead -> effectN( 1 ).trigger() -> duration();
+    {      
+      timespan_t precombat_time = timespan_t::from_seconds( precombat_delay );
 
-      // If used during precombat, army is casted around 6s before the fight begins
-      // so you don'twaste rune regen and enter the fight depleted.
-      // The time you get for ghouls is 4-6 seconds less.
-      for ( int i = 0; i < 8; i++ )
+      double duration_penalty = precombat_delay - ( n_ghoul + 1 ) * summon_interval;
+      while ( duration_penalty >= 0 && n_ghoul < 8 )
       {
-        p() -> pets.army_ghoul[ i ] -> summon( army_duration - precombat_time );
-        p() -> buffs.t20_2pc_unholy -> trigger();
+        p() -> pets.army_ghoul[ n_ghoul++ ] -> summon( summon_duration - timespan_t::from_seconds( duration_penalty ) );
+        duration_penalty -= summon_interval;
+      }
+      
+      // While casting army at 0 shouldn't be excluded, there's no point simulating a delay of 0 seconds for other mechanics
+      if ( precombat_delay != 0 )
+      {
+        p() -> buffs.t20_2pc_unholy -> extend_duration( p(), - precombat_time );
+        p() -> cooldown.army_of_the_dead -> adjust( - precombat_time, false );
+
+        // Simulate RP decay for X seconds
+        p() -> resource_loss( RESOURCE_RUNIC_POWER, p() -> runic_power_decay_rate * precombat_delay, nullptr, nullptr );
+
+        // Simulate rune regeneration for X seconds
+        p() -> _runes.regenerate_immediate( precombat_time );
       }
 
-      p() -> buffs.t20_2pc_unholy -> extend_duration( p(), - precombat_time );
-      p() -> cooldown.army_of_the_dead -> adjust( - precombat_time, false );
-
-      //simulate RP decay for that 6 seconds
-      p() -> resource_loss( RESOURCE_RUNIC_POWER, p() -> runic_power_decay_rate * precombat_army, nullptr, nullptr );
-
-      // Simulate rune regeneration for 6 seconds
-      p() -> _runes.regenerate_immediate( precombat_time );
+      // If every ghoul was summoned, return
+      if ( n_ghoul == 8 ) return;
     }
-    else
-    {
-      for ( int i = 0; i < 8; i++ )
-      {
-        p() -> pets.army_ghoul[ i ] -> summon( p() -> spec.army_of_the_dead -> effectN( 1 ).trigger() -> duration() );
-        p() -> buffs.t20_2pc_unholy -> trigger();
-      }
-    }
+
+    // If precombat didn't summon every ghoul (due to interval between each spawn)
+    // Or if the cast isn't during precombat
+    // Summon the rest
+    make_event<summon_army_event_t>( *sim, p(), n_ghoul, timespan_t::from_seconds( summon_interval ), summon_duration );
   }
 
   virtual bool ready() override
