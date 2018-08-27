@@ -234,10 +234,7 @@ void priest_t::generate_apl_holy_d()
     precombat->add_action(this, "Smite");
 
     // On-Use Items
-    for (const std::string& item_action : get_item_actions())
-    {
-        default_list->add_action(item_action);
-    }
+	default_list->add_action("use_items");
 
     // Professions
     for (const std::string& profession_action : get_profession_actions())
