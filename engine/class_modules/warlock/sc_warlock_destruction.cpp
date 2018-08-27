@@ -552,13 +552,13 @@ namespace warlock {
       {
         destruction_spell_t::execute();
 
-        p()->buffs.chaotic_inferno->decrement();
-
         if ( execute_state->target == p()->havoc_target )
           havocd = true;
 
         if ( !havocd && !p()->buffs.chaotic_inferno->check() )
           p()->buffs.backdraft->decrement();
+
+        p()->buffs.chaotic_inferno->decrement();
 
         if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T20, B2 ) )
           p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.destruction_t20_2pc );
