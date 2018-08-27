@@ -2411,12 +2411,6 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     return t;
   }
 
-  virtual double last_tick_factor( const dot_t*, const timespan_t&, const timespan_t& ) const override
-  {
-    // AM always does full damage, even on "partial" ticks.
-    return 1.0;
-  }
-
   virtual double cost() const override
   {
     double c = arcane_mage_spell_t::cost();
