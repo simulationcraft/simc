@@ -6293,7 +6293,7 @@ void rogue_t::init_action_list()
     action_priority_list_t* direct = get_action_priority_list( "direct", "Direct damage abilities" );
     direct -> add_action( this, "Envenom", "if=combo_points>=4+talent.deeper_stratagem.enabled&(debuff.vendetta.up|debuff.toxic_blade.up|energy.deficit<=25+variable.energy_regen_combined|spell_targets.fan_of_knives>=2)&(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)", "Envenom at 4+ (5+ with DS) CP. Immediately on 2+ targets, with Vendetta, or with TB; otherwise wait for some energy. Also wait if Exsg combo is coming up." );
     direct -> add_action( "variable,name=use_filler,value=combo_points.deficit>1|energy.deficit<=25+variable.energy_regen_combined|spell_targets.fan_of_knives>=2" );
-    direct -> add_action( this, "Poisoned Knife", "if=variable.use_filler&buff.sharpened_blades.stack>=29&(azerite.sharpened_blades.rank>=2|spell_targets.fan_of_knives<=4)", "Poisoned Knife at 29+ stacks of Sharpened Blades. Up to 4 targets with Rank 1, more otherwise." );
+    direct -> add_action( this, "Poisoned Knife", "if=variable.use_filler&buff.sharpened_blades.stack>=29", "Poisoned Knife at 29+ stacks of Sharpened Blades." );
     direct -> add_action( this, "Fan of Knives", "if=variable.use_filler&(buff.hidden_blades.stack>=19|spell_targets.fan_of_knives>=2+stealthed.rogue|buff.the_dreadlords_deceit.stack>=29)" );
     direct -> add_talent( this, "Blindside", "if=variable.use_filler&(buff.blindside.up|!talent.venom_rush.enabled)" );
     direct -> add_action( this, "Mutilate", "if=variable.use_filler" );
@@ -6434,7 +6434,7 @@ void rogue_t::init_action_list()
 
     // Builders
     action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
-    build -> add_action( this, "Shuriken Toss", "if=buff.sharpened_blades.stack>=29&spell_targets.shuriken_storm<=1+3*(azerite.sharpened_blades.rank=2)+4*(azerite.sharpened_blades.rank=3)", "Shuriken Toss at 29+ Sharpened Blades stacks. 1T at Rank 1, up to 4 at Rank 2, up to 5 at Rank 3" );
+    build -> add_action( this, "Shuriken Toss", "if=buff.sharpened_blades.stack>=29&spell_targets.shuriken_storm<=(3*azerite.sharpened_blades.rank)", "Shuriken Toss at 29+ Sharpened Blades stacks. Up to 3 targets per rank." );
     build -> add_action( this, "Shuriken Storm", "if=spell_targets>=2|buff.the_dreadlords_deceit.stack>=29" );
     build -> add_talent( this, "Gloomblade" );
     build -> add_action( this, "Backstab" );
