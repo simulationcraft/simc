@@ -1618,7 +1618,7 @@ public:
 
   virtual bool compare_previous_streaking_stars(streaking_stars_e new_ability)
   {
-    return p()->previous_streaking_stars == new_ability;
+    return p()->previous_streaking_stars == new_ability || new_ability == SS_CELESTIAL_ALIGNMENT; // INC & CA themselves do not proc streaking
   }
 
   virtual void streaking_stars_trigger(streaking_stars_e new_ability, action_state_t* s)
