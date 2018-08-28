@@ -2667,7 +2667,7 @@ struct blizzard_t : public frost_mage_spell_t
       = sim -> current_time() + ground_aoe_duration;
 
     make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
-      .target( execute_state -> target )
+      .target( target )
       .duration( ground_aoe_duration )
       .action( blizzard_shard )
       .hasted( ground_aoe_params_t::SPELL_SPEED ) );
@@ -2841,10 +2841,10 @@ struct counterspell_t : public mage_spell_t
     ignore_false_positive = true;
   }
 
-  virtual void execute() override
+  virtual void impact( action_state_t* s ) override
   {
-    mage_spell_t::execute();
-    p() -> apply_crowd_control( execute_state, MECHANIC_INTERRUPT );
+    mage_spell_t::impact( s );
+    p() -> apply_crowd_control( s, MECHANIC_INTERRUPT );
   }
 
   virtual bool target_ready( player_t* candidate_target ) override
@@ -3139,6 +3139,18 @@ struct flamestrike_t : public fire_mage_spell_t
         p() -> buffs.hot_streak -> trigger();
       }
     }
+
+    if ( p() -> talents.flame_patch -> ok() )
+    {
+      p() -> ground_aoe_expiration[ flame_patch -> name_str ]
+        = sim -> current_time() + flame_patch_duration;
+
+      make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+        .target( target )
+        .duration( flame_patch_duration )
+        .action( flame_patch )
+        .hasted( ground_aoe_params_t::SPELL_SPEED ) );
+    }
   }
 
   virtual void impact( action_state_t* state ) override
@@ -3148,18 +3160,6 @@ struct flamestrike_t : public fire_mage_spell_t
     if ( p() -> sets -> has_set_bonus( MAGE_FIRE, T20, B4 ) && state -> result == RESULT_CRIT )
     {
       p() -> buffs.critical_massive -> trigger();
-    }
-
-    if ( state -> chain_target == 0 && p() -> talents.flame_patch -> ok() )
-    {
-      p() -> ground_aoe_expiration[ flame_patch -> name_str ]
-        = sim -> current_time() + flame_patch_duration;
-
-      make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
-        .target( state -> target )
-        .duration( flame_patch_duration )
-        .action( flame_patch )
-        .hasted( ground_aoe_params_t::SPELL_SPEED ) );
     }
   }
 
@@ -3409,11 +3409,11 @@ struct frostbolt_t : public frost_mage_spell_t
     // TODO: Double check if it interacts this way
     trigger_brain_freeze( bf_proc_chance );
 
-    if ( execute_state -> target != p() -> last_frostbolt_target )
+    if ( target != p() -> last_frostbolt_target )
     {
       p() -> buffs.tunnel_of_ice -> expire();
     }
-    p() -> last_frostbolt_target = execute_state -> target;
+    p() -> last_frostbolt_target = target;
   }
 
   virtual void impact( action_state_t* s ) override
@@ -4283,12 +4283,11 @@ struct nether_tempest_t : public arcane_mage_spell_t
     if ( hit_any_target )
     {
       if ( p() -> last_bomb_target != nullptr &&
-           p() -> last_bomb_target != execute_state -> target )
+           p() -> last_bomb_target != target )
       {
         td( p() -> last_bomb_target ) -> dots.nether_tempest -> cancel();
       }
-
-      p() -> last_bomb_target = execute_state -> target;
+      p() -> last_bomb_target = target;
     }
   }
 
@@ -7639,7 +7638,7 @@ struct sorcerous_shadowruby_pendant_driver_t : public spell_t
     auto current_roll = static_cast<unsigned>( rng().range( 0, as<double>( sorcerous_spells.size() ) ) );
     auto spell = sorcerous_spells[ current_roll ];
 
-    spell -> set_target( execute_state -> target );
+    spell -> set_target( target );
     spell -> execute();
   }
 };
