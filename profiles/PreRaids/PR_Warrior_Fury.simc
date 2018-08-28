@@ -42,7 +42,7 @@ actions+=/whirlwind,if=spell_targets.whirlwind>1&!buff.meat_cleaver.up
 actions+=/blood_fury,if=buff.recklessness.up
 actions+=/berserking,if=buff.recklessness.up
 actions+=/arcane_torrent,if=rage<40&!buff.recklessness.up
-actions+=/lights_judgment,if=cooldown.recklessness.remains<3
+actions+=/lights_judgment,if=buff.recklessness.down
 actions+=/fireblood,if=buff.recklessness.up
 actions+=/ancestral_call,if=buff.recklessness.up
 actions+=/run_action_list,name=single_target
