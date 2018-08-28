@@ -4987,7 +4987,7 @@ void warrior_t::apl_fury()
     }
     else if ( racial_actions[ i ] == "lights_judgment" )
     {
-      default_list->add_action( racial_actions[ i ] + ",if=cooldown.recklessness.remains<3" );
+      default_list->add_action( racial_actions[ i ] + ",if=buff.recklessness.down" );
     }
     else
     {
