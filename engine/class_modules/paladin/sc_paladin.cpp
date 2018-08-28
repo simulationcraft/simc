@@ -1642,34 +1642,6 @@ double paladin_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
-// paladin_t::composite_player_heal_multiplier ==============================
-
-double paladin_t::composite_player_heal_multiplier( const action_state_t* s ) const
-{
-  double m = player_t::composite_player_heal_multiplier( s );
-
-  if ( buffs.avenging_wrath -> check() )
-  {
-    m *= 1.0 + buffs.avenging_wrath -> get_healing_mod();
-    if ( chain_of_thrayn )
-    {
-      // TODO: fix this for holy
-      m *= 1.0 + spells.chain_of_thrayn -> effectN( 2 ).percent();
-    }
-  }
-
-  if ( buffs.crusade -> check() )
-  {
-    m *= 1.0 + buffs.crusade -> get_healing_mod();
-    if ( chain_of_thrayn )
-    {
-      m *= 1.0 + spells.chain_of_thrayn -> effectN( 2 ).percent();
-    }
-  }
-
-  return m;
-}
-
 // paladin_t::composite_spell_power =========================================
 
 double paladin_t::composite_spell_power( school_e school ) const

@@ -462,7 +462,6 @@ public:
   virtual double    composite_melee_speed() const override;
   virtual double    composite_spell_haste() const override;
   virtual double    composite_player_multiplier( school_e school ) const override;
-  virtual double    composite_player_heal_multiplier( const action_state_t* s ) const override;
   virtual double    composite_spell_power( school_e school ) const override;
   virtual double    composite_spell_power_multiplier() const override;
   virtual double    composite_crit_avoidance() const override;
