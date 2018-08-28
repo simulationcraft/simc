@@ -337,6 +337,7 @@ public:
   // Miscellaneous
   double distance_from_rune;
   timespan_t firestarter_time;
+  timespan_t frozen_duration;
   int blessing_of_wisdom_count;
   bool allow_shimmer_lance;
 
@@ -5353,7 +5354,7 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   dots.nether_tempest = target -> get_dot( "nether_tempest", mage );
 
   debuffs.frozen            = make_buff( *this, "frozen" )
-                                -> set_duration( timespan_t::from_seconds( 0.5 ) );
+                                -> set_duration( mage -> frozen_duration );
   debuffs.winters_chill     = make_buff( *this, "winters_chill", mage -> find_spell( 228358 ) )
                                 -> set_chance( mage -> spec.brain_freeze_2 -> ok() ? 1.0 : 0.0 );
   debuffs.touch_of_the_magi = make_buff<buffs::touch_of_the_magi_t>( this );
@@ -5376,6 +5377,7 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   last_frostbolt_target( nullptr ),
   distance_from_rune( 0.0 ),
   firestarter_time( timespan_t::zero() ),
+  frozen_duration( timespan_t::from_seconds( 0.5 ) ),
   blessing_of_wisdom_count( 0 ),
   allow_shimmer_lance( false ),
   action( actions_t() ),
@@ -5566,6 +5568,7 @@ void mage_t::create_actions()
 void mage_t::create_options()
 {
   add_option( opt_timespan( "firestarter_time", firestarter_time ) );
+  add_option( opt_timespan( "frozen_duration", frozen_duration ) );
   add_option( opt_int( "blessing_of_wisdom_count", blessing_of_wisdom_count ) );
   add_option( opt_bool( "allow_shimmer_lance", allow_shimmer_lance ) );
   player_t::create_options();
@@ -5597,6 +5600,7 @@ void mage_t::copy_from( player_t* source )
   mage_t* p = debug_cast<mage_t*>( source );
 
   firestarter_time         = p -> firestarter_time;
+  frozen_duration          = p -> frozen_duration;
   blessing_of_wisdom_count = p -> blessing_of_wisdom_count;
   allow_shimmer_lance      = p -> allow_shimmer_lance;
 }
