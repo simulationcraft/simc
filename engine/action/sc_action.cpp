@@ -1500,6 +1500,7 @@ void action_t::execute()
   {
     std::vector<player_t*>& tl = target_list();
     num_targets                = ( n_targets() < 0 ) ? tl.size() : std::min( tl.size(), as<size_t>( n_targets() ) );
+    assert( tl.front() == target );
     for ( size_t t = 0, max_targets = tl.size(); t < num_targets && t < max_targets; t++ )
     {
       action_state_t* s = get_state( pre_execute_state );
@@ -1963,7 +1964,7 @@ bool action_t::select_target()
     {
       // If the target changes, we need to regenerate the target cache to get the new primary target
       // as the first element of target_list. Only do this for abilities that are aoe.
-      if ( n_targets() > 1 && potential_target != target )
+      if ( is_aoe() && potential_target != target )
       {
         target_cache.is_valid = false;
       }
