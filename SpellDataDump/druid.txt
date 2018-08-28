@@ -5263,8 +5263,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=290202)   : Apply Aura (6) | Add Flat Modifier (107): Spell Range (5)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 5 | Target: Self (1)
-                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Hibernate (2637), Remove Corruption (2782), Soothe (2908), Solar Wrath (5176), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Innervate (29166), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Typhoon (61391), Thrash (77758), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Nature's Cure (88423), Sunfire (93402), Skull Bash (93985), Solar Beam (97547), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102401), Ursol's Vortex (102793), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Efflorescence (145205), Moonfire (155625), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Brutal Slash (202028), Stellar Flare (202347), Fury of Elune (202770), Lunar Beam (204069), Force of Nature (205636), Fury of Elune (211545), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771), Enraged Maul (236716), Force of Nature (248280), New Moon (274281), Half Moon (274282), Full Moon (274283)
-                   Family Flags: 0, 2, 4, 5, 6, 9, 11, 12, 13, 15, 17, 19, 22, 23, 24, 25, 28, 33, 35, 36, 37, 38, 39, 40, 41, 49, 52, 53, 54, 55, 56, 58, 63, 64, 66, 68, 69, 73, 74, 79, 82, 85, 87, 89, 90, 91, 99, 100, 102, 103, 104, 105, 106, 108, 110, 111, 115, 117, 120, 123, 126
+                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Hibernate (2637), Remove Corruption (2782), Soothe (2908), Solar Wrath (5176), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Innervate (29166), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Typhoon (61391), Thrash (77758), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Nature's Cure (88423), Sunfire (93402), Skull Bash (93985), Solar Beam (97547), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102401), Ursol's Vortex (102793), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Efflorescence (145205), Moonfire (155625), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Brutal Slash (202028), Stellar Flare (202347), Fury of Elune (202770), Lunar Beam (204069), Force of Nature (205636), Fury of Elune (211545), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771), Enraged Maul (236716), Force of Nature (248280), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274837), Feral Frenzy (274838)
+                   Family Flags: 0, 2, 4, 5, 6, 9, 11, 12, 13, 15, 17, 19, 22, 23, 24, 25, 28, 33, 35, 36, 37, 38, 39, 40, 41, 49, 52, 53, 54, 55, 56, 58, 63, 64, 66, 68, 69, 73, 74, 79, 82, 85, 87, 89, 90, 91, 94, 99, 100, 102, 103, 104, 105, 106, 108, 110, 111, 115, 117, 120, 123, 126
+                   Hotfixed: Affects Spells
 #2 (id=314659)   : Apply Aura (6) | Unknown(153)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #3 (id=317501)   : Apply Aura (6) | Add Flat Modifier (107): Spell Radius (6)
@@ -8960,7 +8961,7 @@ GCD              : 1 seconds
 Duration         : 1 seconds
 Cooldown         : 45 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Berserk (279526 effect#1)
+Affecting spells : Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Astral Influence (197524 effect#1), Berserk (279526 effect#1)
 Family Flags     : 94
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8982,9 +8983,9 @@ Name             : Feral Frenzy (id=274838) [Spell Family (7)]
 Class            : Druid
 School           : Physical
 Spell Type       : Melee
-Range            : 5 yards
+Range            : 8 yards
 Duration         : 6 seconds
-Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Berserk (279526 effect#1)
+Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Astral Influence (197524 effect#1), Berserk (279526 effect#1)
 Family Flags     : 94, 98
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -9165,9 +9166,10 @@ Effects          :
 #1 (id=734244)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Trigger Spell: 279070 | Target: Self (1)
 #2 (id=734245)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 1126.66 (coefficient=14.4908) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 544.25 (coefficient=7) | Target: Self (1)
                    Affected Spells: Sunfire (93402), Sunfire (164815), Sunfire (197630)
                    Family Flags: 102
+                   Hotfixed: Coefficient (14.4908 -> 7)
 Description      : Sunfire's radius is increased to $<radius> yds, and it deals $s2 additional damage to its primary target. 
 Variables        : $radius=${11}
 

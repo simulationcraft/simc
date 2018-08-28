@@ -6823,8 +6823,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732931)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 1750.518 (coefficient=22.5147) | Trigger Spell: 278495 | Target: Self (1)
-                   Hotfixed: Coefficient (19.3252 -> 22.5147)
+                   Base Value: 0 | Scaled Value: 740.2944 (coefficient=9.521472) | Trigger Spell: 278495 | Target: Self (1)
+                   Hotfixed: Coefficient (19.3252 -> 9.52147)
 #2 (id=732932)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10
 Description      : Overpower causes a seismic wave that deals $s1 Physical damage to enemies in a $s2 yd line.
