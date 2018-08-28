@@ -1528,19 +1528,6 @@ double paladin_t::composite_rating_multiplier( rating_e r ) const
 
 }
 
-// paladin_t::composite_melee_crit_chance =========================================
-
-double paladin_t::composite_melee_crit_chance() const
-{
-  double m = player_t::composite_melee_crit_chance();
-
-  // This should only give a nonzero boost for Holy
-  if ( buffs.avenging_wrath -> check() )
-    m += buffs.avenging_wrath -> get_crit_bonus();
-
-  return m;
-}
-
 // paladin_t::composite_melee_expertise =====================================
 
 double paladin_t::composite_melee_expertise( const weapon_t* w ) const
@@ -1582,19 +1569,6 @@ double paladin_t::composite_melee_speed() const
   if ( buffs.zeal -> check() )
     s /= 1.0 + buffs.zeal -> data().effectN( 1 ).percent();
   return s;
-}
-
-// paladin_t::composite_spell_crit_chance ==========================================
-
-double paladin_t::composite_spell_crit_chance() const
-{
-  double m = player_t::composite_spell_crit_chance();
-
-  // This should only give a nonzero boost for Holy
-  if ( buffs.avenging_wrath -> check() )
-    m += buffs.avenging_wrath -> get_crit_bonus();
-
-  return m;
 }
 
 // paladin_t::composite_spell_haste ==========================================
@@ -1664,34 +1638,6 @@ double paladin_t::composite_bonus_armor() const
 double paladin_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
-
-  return m;
-}
-
-// paladin_t::composite_player_heal_multiplier ==============================
-
-double paladin_t::composite_player_heal_multiplier( const action_state_t* s ) const
-{
-  double m = player_t::composite_player_heal_multiplier( s );
-
-  if ( buffs.avenging_wrath -> check() )
-  {
-    m *= 1.0 + buffs.avenging_wrath -> get_healing_mod();
-    if ( chain_of_thrayn )
-    {
-      // TODO: fix this for holy
-      m *= 1.0 + spells.chain_of_thrayn -> effectN( 2 ).percent();
-    }
-  }
-
-  if ( buffs.crusade -> check() )
-  {
-    m *= 1.0 + buffs.crusade -> get_healing_mod();
-    if ( chain_of_thrayn )
-    {
-      m *= 1.0 + spells.chain_of_thrayn -> effectN( 2 ).percent();
-    }
-  }
 
   return m;
 }

@@ -457,14 +457,11 @@ public:
   virtual double    composite_bonus_armor() const override;
   virtual double    composite_melee_attack_power() const override;
   virtual double    composite_melee_attack_power( attack_power_e type ) const override;
-  virtual double    composite_melee_crit_chance() const override;
   virtual double    composite_melee_expertise( const weapon_t* weapon ) const override;
   virtual double    composite_melee_haste() const override;
   virtual double    composite_melee_speed() const override;
-  virtual double    composite_spell_crit_chance() const override;
   virtual double    composite_spell_haste() const override;
   virtual double    composite_player_multiplier( school_e school ) const override;
-  virtual double    composite_player_heal_multiplier( const action_state_t* s ) const override;
   virtual double    composite_spell_power( school_e school ) const override;
   virtual double    composite_spell_power_multiplier() const override;
   virtual double    composite_crit_avoidance() const override;
@@ -878,6 +875,18 @@ public:
     }
 
     return am;
+  }
+
+  double composite_crit_chance() const override
+  {
+    double cc = ab::composite_crit_chance();
+
+    if ( avenging_wrath && p() -> buffs.avenging_wrath -> check() )
+    {
+      cc += p() -> buffs.avenging_wrath -> get_crit_bonus();
+    }
+
+    return cc;
   }
 
   virtual double composite_target_multiplier( player_t* t ) const override
