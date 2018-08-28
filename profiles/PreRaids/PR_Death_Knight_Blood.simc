@@ -66,13 +66,13 @@ chest=desert_guardians_breastplate,id=159424,bonus_id=4779/1512/4786/4775,azerit
 wrists=embalmers_steadying_bracers,id=159409,bonus_id=4779/1512/4786
 hands=sharktoothknuckled_grips,id=155890,bonus_id=4779/1512/4786
 waist=belt_of_the_unrelenting_gale,id=159426,bonus_id=4779/1512/4786
-legs=pretified_wickerplate_greaves,id=159456,bonus_id=4779/1512/4786
-feet=sabatons_of_raging_elements,id=159679,bonus_id=4779/1512/4786
+legs=petrified_wickerplate_greaves,id=159456,bonus_id=4779/1512/4786
+feet=sabatons_of_rampaging_elements,id=159679,bonus_id=4779/1512/4786
 finger1=ritual_binders_ring,id=159459,bonus_id=4779/1512/4786,enchant=pact_of_haste
 finger2=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
 trinket1=darkmoon_deck_fathoms,id=159125
-trinket2=merethas_fang,id=158367,bonus_id=4779/1512/4786
-main_hand=geti_ikku_cut_of_death,id=159644,bonus_id=4779/43/1512/4786,enchant=rune_of_the_fallen_crusader
+trinket2=merekthas_fang,id=158367,bonus_id=4779/1512/4786
+main_hand=getiikku_cut_of_death,id=159644,bonus_id=4779/43/1512/4786,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
 # gear_ilvl=341.47
