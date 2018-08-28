@@ -1841,6 +1841,7 @@ class SpellDataGenerator(DataGenerator):
         69046,  # Pack hobgoblin (woe hogger)
         68978,  # Flayer (worgen racial)
         68996,  # Two forms (worgen racial)
+        221477, # Underlight (from Underlight Angler - Legion artifact fishing pole)
     ]
 
     _spell_name_blacklist = [
