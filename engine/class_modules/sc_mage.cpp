@@ -5377,7 +5377,7 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   last_frostbolt_target( nullptr ),
   distance_from_rune( 0.0 ),
   firestarter_time( timespan_t::zero() ),
-  frozen_duration( timespan_t::from_seconds( 0.5 ) ),
+  frozen_duration( timespan_t::from_seconds( 1.0 ) ),
   blessing_of_wisdom_count( 0 ),
   allow_shimmer_lance( false ),
   action( actions_t() ),
