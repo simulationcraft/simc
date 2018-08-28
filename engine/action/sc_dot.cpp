@@ -16,7 +16,7 @@ bool do_find_higher_priority_action( const action_priority_list_t::parent_t& par
   {
     auto a = apl -> foreground_action_list[ i ];
 
-    if ( a -> ready() )
+    if ( a -> action_ready() )
     {
       return true;
     }
@@ -40,7 +40,7 @@ bool do_find_higher_priority_action( action_t* ca )
     // FIXME Why not interrupt a channel for the same spell higher up the action
     // list?
     // if ( a -> id == current_action -> id ) continue;
-    if ( a -> ready() )
+    if ( a -> action_ready() )
     {
       return true;
     }
@@ -1172,7 +1172,7 @@ void dot_t::schedule_tick()
     if ( ( ( current_action->option.chain && current_tick + 1 == num_ticks ) ||
            ( current_tick > 0 && expr && expr->success() &&
              current_action->player->gcd_ready <= sim.current_time() ) ) &&
-         current_action->ready() && !is_higher_priority_action_available() )
+         current_action->action_ready() && !is_higher_priority_action_available() )
     {
       // FIXME: We can probably use "source" instead of "action->player"
 

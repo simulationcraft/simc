@@ -182,12 +182,12 @@ struct blessing_of_protection_t : public paladin_spell_t
     p() -> trigger_forbearance( execute_state -> target );
   }
 
-  virtual bool ready() override
+  virtual bool target_ready( player_t* candidate_target ) override
   {
-    if ( target -> debuffs.forbearance -> check() )
+    if ( candidate_target -> debuffs.forbearance -> check() )
       return false;
 
-    return paladin_spell_t::ready();
+    return paladin_spell_t::target_ready( candidate_target );
   }
 };
 
@@ -499,12 +499,12 @@ struct lay_on_hands_t : public paladin_heal_t
     p() -> trigger_forbearance( execute_state -> target );
   }
 
-  virtual bool ready() override
+  virtual bool target_ready( player_t* candidate_target ) override
   {
-    if ( target -> debuffs.forbearance -> check() )
+    if ( candidate_target -> debuffs.forbearance -> check() )
       return false;
 
-    return paladin_heal_t::ready();
+    return paladin_heal_t::target_ready( candidate_target );
   }
 };
 
@@ -639,15 +639,6 @@ struct auto_melee_attack_t : public paladin_melee_attack_t
   {
     if ( p() -> is_moving() )
       return false;
-
-    player_t* potential_target = select_target_if_target();
-    if ( potential_target && potential_target != p() -> main_hand_attack -> target )
-      p() -> main_hand_attack -> target = potential_target;
-
-    if ( p() -> main_hand_attack -> target -> is_sleeping() && potential_target == nullptr )
-    {
-      return false;
-    }
 
     return( p() -> main_hand_attack -> execute_event == nullptr ); // not swinging
   }
@@ -839,12 +830,12 @@ struct rebuke_t : public paladin_melee_attack_t
     weapon_multiplier = 0.0;
   }
 
-  virtual bool ready() override
+  virtual bool target_ready( player_t* candidate_target ) override
   {
-    if ( ! target -> debuffs.casting || ! target -> debuffs.casting -> check() )
+    if ( ! candidate_target -> debuffs.casting || ! candidate_target -> debuffs.casting -> check() )
       return false;
 
-    return paladin_melee_attack_t::ready();
+    return paladin_melee_attack_t::target_ready( candidate_target );
   }
 
   virtual void execute() override
@@ -2002,13 +1993,13 @@ double paladin_t::get_hand_of_light() const
   return handoflight;
 }
 
-bool paladin_t::get_how_availability() const
+bool paladin_t::get_how_availability( player_t* t ) const
 {
   if ( buffs.avenging_wrath -> up() || buffs.crusade -> up() )
     return true;
 
   // Otherwise, not available if target is above 20% health. Improved HoW perk raises the threshold to 35%
-  if ( target -> health_percentage() > 20 )
+  if ( t->health_percentage() > 20 )
     return false;
 
   return true;
@@ -2107,7 +2098,7 @@ expr_t* paladin_t::create_expression( const std::string& name_str )
         shortest_hpg_time = boj_cd -> remains();
 
       if ( paladin.talents.hammer_of_wrath -> ok() )
-        if ( paladin.get_how_availability() && how_cd -> remains() < shortest_hpg_time )
+        if ( paladin.get_how_availability( paladin.target ) && how_cd -> remains() < shortest_hpg_time )
           shortest_hpg_time = how_cd -> remains();
       if ( paladin.talents.wake_of_ashes -> ok() && wake_cd -> remains() < shortest_hpg_time )
         shortest_hpg_time = wake_cd -> remains();

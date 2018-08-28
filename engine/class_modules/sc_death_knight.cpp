@@ -1535,7 +1535,6 @@ struct auto_attack_t : public melee_attack_t
 
   bool ready() override
   {
-    if ( target -> is_sleeping() ) return false;
     if ( player -> is_moving() ) return false;
     return ( player -> main_hand_attack -> execute_event == nullptr );
   }
@@ -3150,11 +3149,6 @@ struct auto_attack_t : public death_knight_melee_attack_t
 
   virtual bool ready() override
   {
-    if ( target -> is_sleeping() )
-    {
-      return false;
-    }
-
     if ( player -> is_moving() )
       return false;
     return( player -> main_hand_attack -> execute_event == nullptr ); // not swinging
@@ -3196,13 +3190,13 @@ struct apocalypse_t : public death_knight_melee_attack_t
     }
   }
 
-  virtual bool ready() override
+  virtual bool target_ready( player_t* candidate_target ) override
   {
-    death_knight_td_t* td = p() -> get_target_data( target );
+    death_knight_td_t* td = p() -> get_target_data( candidate_target );
     if ( ! td -> debuff.festering_wound -> check() )
       return false;
 
-    return death_knight_melee_attack_t::ready();
+    return death_knight_melee_attack_t::target_ready( candidate_target );
   }
 };
 
@@ -5387,12 +5381,12 @@ struct mind_freeze_t : public death_knight_spell_t
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
   }
 
-  bool ready() override
+  bool target_ready( player_t* candidate_target ) override
   {
-    if ( ! target -> debuffs.casting || ! target -> debuffs.casting -> check() )
+    if ( ! candidate_target -> debuffs.casting || ! candidate_target -> debuffs.casting -> check() )
       return false;
 
-    return death_knight_spell_t::ready();
+    return death_knight_spell_t::target_ready( candidate_target );
   }
 };
 

@@ -1707,12 +1707,12 @@ struct disrupt_t : public demon_hunter_spell_t
     energize_amount = effect.resource( energize_resource );
   }
 
-  bool ready() override
+  bool target_ready( player_t* candidate_target ) override
   {
-    if ( !target->debuffs.casting || !target->debuffs.casting->check() )
+    if ( !candidate_target->debuffs.casting || !candidate_target->debuffs.casting->check() )
       return false;
 
-    return demon_hunter_spell_t::ready();
+    return demon_hunter_spell_t::target_ready( candidate_target );
   }
 };
 

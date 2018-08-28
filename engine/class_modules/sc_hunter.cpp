@@ -1763,7 +1763,7 @@ struct pet_auto_attack_t: public action_t
   }
 
   bool ready() override
-  { return ! target -> is_sleeping() && player -> main_hand_attack -> execute_event == nullptr; } // not swinging
+  { return player -> main_hand_attack -> execute_event == nullptr; } // not swinging
 };
 
 // Pet Claw/Bite/Smack ======================================================
@@ -3759,10 +3759,10 @@ struct interrupt_base_t: public hunter_spell_t
     may_miss = may_block = may_dodge = may_parry = false;
   }
 
-  bool ready() override
+  bool target_ready( player_t* candidate_target ) override
   {
-    if ( ! target -> debuffs.casting || ! target -> debuffs.casting -> check() ) return false;
-    return hunter_spell_t::ready();
+    if ( ! candidate_target -> debuffs.casting || ! candidate_target -> debuffs.casting -> check() ) return false;
+    return hunter_spell_t::target_ready( candidate_target );
   }
 
   void execute() override
@@ -3988,19 +3988,21 @@ struct kill_command_t: public hunter_spell_t
     }
   }
 
+  bool target_ready( player_t* candidate_target ) override
+  {
+    if ( p() -> pets.main &&
+         p() -> pets.main -> active.kill_command -> target_ready( candidate_target ) )
+      return hunter_spell_t::target_ready( candidate_target );
+
+    return false;
+  }
+
   bool ready() override
   {
-    if ( p() -> pets.main )
+    if ( p() -> pets.main &&
+         p() -> pets.main -> active.kill_command -> ready() ) // Range check from the pet.
     {
-      if ( ! hunter_spell_t::ready() )
-      {
-        return false;
-      }
-
-      // Need to retarget the kill command spell to this spell's target before checking ready
-      p() -> pets.main -> active.kill_command -> set_target( target );
-      if ( p() -> pets.main -> active.kill_command -> ready() ) // Range check from the pet.
-        return true;
+        return hunter_spell_t::ready();
     }
 
     return false;
@@ -4607,9 +4609,6 @@ struct auto_attack_t: public action_t
   bool ready() override
   {
     if ( player->is_moving() && !usable_moving() )
-      return false;
-
-    if ( target -> is_sleeping() )
       return false;
 
     return player -> main_hand_attack -> execute_event == nullptr; // not swinging

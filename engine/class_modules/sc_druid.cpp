@@ -4302,12 +4302,12 @@ struct pulverize_t : public bear_attack_t
     }
   }
 
-  virtual bool ready() override
+  bool target_ready( player_t* candidate_target ) override
   {
     // Call bear_attack_t::ready() first for proper targeting support.
     // Hardcode stack max since it may not be set if this code runs before Thrash is cast.
-    return bear_attack_t::ready() &&
-      td( target ) -> dots.thrash_bear -> current_stack() >= data().effectN( 3 ).base_value();
+    return bear_attack_t::target_ready( candidate_target ) &&
+      td( candidate_target ) -> dots.thrash_bear -> current_stack() >= data().effectN( 3 ).base_value();
   }
 };
 
@@ -4440,15 +4440,15 @@ struct cenarion_ward_t : public druid_heal_t
     p() -> buff.cenarion_ward -> trigger();
   }
 
-  virtual bool ready() override
+  virtual bool target_ready( player_t* candidate_target ) override
   {
-    if ( target != p() )
+    if ( candidate_target != p() )
     {
       assert( false && "Cenarion Ward will not trigger on other players!" );
       return false;
     }
 
-    return druid_heal_t::ready();
+    return druid_heal_t::target_ready( candidate_target );
   }
 };
 
@@ -4798,12 +4798,10 @@ struct swiftmend_t : public druid_heal_t
     }
   }
 
-  virtual bool ready() override
+  virtual bool target_ready( player_t* candidate_target ) override
   {
-    player_t* t = ( execute_state ) ? execute_state -> target : target;
-
-    if ( ! ( td( t ) -> dots.regrowth -> is_ticking() ||
-             td( t ) -> dots.rejuvenation -> is_ticking() ) )
+    if ( ! ( td( candidate_target ) -> dots.regrowth -> is_ticking() ||
+             td( candidate_target ) -> dots.rejuvenation -> is_ticking() ) )
       return false;
 
     return druid_heal_t::ready();
@@ -4919,8 +4917,6 @@ struct auto_attack_t : public melee_attack_t
   virtual bool ready() override
   {
     if ( player -> is_moving() )
-      return false;
-    if ( target -> is_sleeping() )
       return false;
 
     if ( ! player -> main_hand_attack )
@@ -5306,11 +5302,33 @@ struct thrash_proxy_t : public druid_spell_t
       thrash_bear->execute();
   }
 
+  bool action_ready() override
+  {
+    if ( p()->buff.cat_form->check() )
+      return thrash_cat->action_ready();
+
+    else if ( p()->buff.bear_form->check() )
+      return thrash_bear->action_ready();
+
+    return false;
+  }
+
   dot_t* get_dot( player_t* t ) override
   {
     if ( p()->buff.bear_form->check() )
       return thrash_bear->get_dot( t );
     return thrash_cat->get_dot( t );
+  }
+
+  bool target_ready( player_t* candidate_target ) override
+  {
+    if ( p()->buff.cat_form->check() )
+      return thrash_cat->target_ready( candidate_target );
+
+    else if ( p()->buff.bear_form->check() )
+      return thrash_bear->target_ready( candidate_target );
+
+    return false;
   }
 
   bool ready() override
@@ -5355,6 +5373,28 @@ struct swipe_proxy_t : public druid_spell_t
     else if (p()->buff.bear_form->check())
       swipe_bear->execute();
 
+  }
+
+  bool action_ready() override
+  {
+    if (p()->buff.cat_form->check())
+      return swipe_cat->action_ready();
+
+    else if (p()->buff.bear_form->check())
+      return swipe_bear->action_ready();
+
+    return false;
+  }
+
+  bool target_ready( player_t* candidate_target ) override
+  {
+    if (p()->buff.cat_form->check())
+      return swipe_cat->target_ready( candidate_target );
+
+    else if (p()->buff.bear_form->check())
+      return swipe_bear->target_ready( candidate_target );
+
+    return false;
   }
 
   bool ready() override
@@ -5946,12 +5986,12 @@ struct skull_bash_t : public druid_spell_t
       p() -> cooldown.tigers_fury -> reset( false );
   }
 
-  bool ready() override
+  bool target_ready( player_t* candidate_target ) override
   {
-    if ( ! target -> debuffs.casting || ! target -> debuffs.casting -> check() )
+    if ( ! candidate_target -> debuffs.casting || ! candidate_target -> debuffs.casting -> check() )
       return false;
 
-    return druid_spell_t::ready();
+    return druid_spell_t::target_ready( candidate_target );
   }
 };
 

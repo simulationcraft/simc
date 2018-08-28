@@ -204,6 +204,11 @@ player_t* action_t::select_target_if_target()
     if ( target == original_target )
       continue;
 
+    if ( !target_ready( target ) )
+    {
+      continue;
+    }
+
     double v = target_if_expr->evaluate();
 
     // Don't swap to targets that evaluate to identical value than the current

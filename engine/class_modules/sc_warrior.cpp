@@ -2116,30 +2116,27 @@ struct execute_arms_t : public warrior_attack_t
     }
   }
 
+  bool target_ready( player_t* candidate_target ) override
+  {
+    // Ayala's Stone Heart and Sudden Death allow execution on any target
+    bool always = p()->buff.ayalas_stone_heart->check() || p()->buff.sudden_death->check();
+
+    if ( ! always && candidate_target->health_percentage() > execute_pct )
+    {
+      return false;
+    }
+
+    return warrior_attack_t::target_ready( candidate_target );
+  }
+
   bool ready() override
   {
     if ( p()->main_hand_weapon.type == WEAPON_NONE )
     {
       return false;
     }
-    if ( p()->buff.ayalas_stone_heart->check() )
-    {
-      return warrior_attack_t::ready();
-    }
-    if ( p()->buff.sudden_death->check() )
-    {
-      return warrior_attack_t::ready();
-    }
 
-    // Call warrior_attack_t::ready() first for proper targeting support.
-    if ( warrior_attack_t::ready() && target->health_percentage() <= execute_pct )
-    {
-      return true;
-    }
-    else
-    {
-      return false;
-    }
+    return warrior_attack_t::ready();
   }
 };
 
@@ -2200,6 +2197,19 @@ struct fury_execute_parent_t : public warrior_attack_t
     p()->buff.ayalas_stone_heart->expire();
   }
 
+  bool target_ready( player_t* candidate_target ) override
+  {
+    // Ayala's Stone Heart and Sudden Death allow execution on any target
+    bool always = p()->buff.ayalas_stone_heart->check() || p()->buff.sudden_death->check();
+
+    if ( ! always && candidate_target->health_percentage() > execute_pct )
+    {
+      return false;
+    }
+
+    return warrior_attack_t::target_ready( candidate_target );
+  }
+
   bool ready() override
   {
     if ( p()->main_hand_weapon.type == WEAPON_NONE )
@@ -2207,25 +2217,7 @@ struct fury_execute_parent_t : public warrior_attack_t
       return false;
     }
 
-    if ( p()->buff.ayalas_stone_heart->check() )
-    {
-      return warrior_attack_t::ready();
-    }
-
-    if ( p()->buff.sudden_death->check() )
-    {
-      return warrior_attack_t::ready();
-    }
-
-    // Call warrior_attack_t::ready() first for proper targeting support.
-    if ( warrior_attack_t::ready() && target->health_percentage() <= execute_pct )
-    {
-      return true;
-    }
-    else
-    {
-      return false;
-    }
+    return warrior_attack_t::ready();
   }
 };
 

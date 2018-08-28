@@ -2064,8 +2064,6 @@ struct auto_attack_t : public melee_attack_t
 
   bool ready() override
   {
-    if ( target->is_sleeping() )
-      return false;
     if ( player->is_moving() )
       return false;
     return ( player->main_hand_attack->execute_event == nullptr );
@@ -3415,8 +3413,6 @@ struct auto_attack_t : public shaman_attack_t
 
   bool ready() override
   {
-    if ( target->is_sleeping() )
-      return false;
     if ( p()->is_moving() )
       return false;
     return ( p()->main_hand_attack->execute_event == nullptr );  // not swinging
@@ -5662,11 +5658,11 @@ struct wind_shear_t : public shaman_spell_t
     ignore_false_positive = true;
   }
 
-  virtual bool ready() override
+  bool target_ready( player_t* candidate_target ) override
   {
-    if ( target->debuffs.casting && !target->debuffs.casting->check() )
+    if ( candidate_target->debuffs.casting && !candidate_target->debuffs.casting->check() )
       return false;
-    return shaman_spell_t::ready();
+    return shaman_spell_t::target_ready( candidate_target );
   }
 
   void execute() override

@@ -152,7 +152,7 @@ struct execute_pet_action_t : public action_t
     if ( pet_action->player->is_sleeping() )
       return false;
 
-    return pet_action->ready();
+    return pet_action->action_ready();
   }
 };
 
@@ -3932,7 +3932,7 @@ void player_t::combat_begin()
   {
     for ( auto& action : precombat_action_list )
     {
-      if ( action->ready() )
+      if ( action->action_ready() )
       {
         if ( action->harmful )
         {
@@ -8260,7 +8260,7 @@ struct pool_resource_t : public action_t
 
     if ( next_action )
     {
-      if ( next_action->ready() )
+      if ( next_action->action_ready() )
         return false;
 
       // If the next action in the list would be "ready" if it was not constrained by energy,
@@ -8269,7 +8269,7 @@ struct pool_resource_t : public action_t
       double theoretical_cost = next_action->cost() + ( amount_expr ? amount_expr->eval() : 0 );
       player->resources.current[ resource ] += theoretical_cost;
 
-      bool resource_limited = next_action->ready();
+      bool resource_limited = next_action->action_ready();
 
       player->resources.current[ resource ] -= theoretical_cost;
 
@@ -12148,7 +12148,7 @@ action_t* player_t::select_action( const action_priority_list_t& list, bool off_
     if ( a->option.wait_on_ready == 1 )
       break;
 
-    if ( a->ready() )
+    if ( a->action_ready() )
     {
       // Execute variable operation, and continue processing
       if ( a->type == ACTION_VARIABLE )

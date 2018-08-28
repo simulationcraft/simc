@@ -491,7 +491,7 @@ public:
   virtual double current_health() const override;
 
   double  get_hand_of_light() const;
-  bool    get_how_availability() const;
+  bool    get_how_availability( player_t* t ) const;
   void    trigger_grand_crusader();
   void    trigger_holy_shield( action_state_t* s );
   void    trigger_inner_light( action_state_t* s );

@@ -235,12 +235,12 @@ struct blessing_of_spellwarding_t : public paladin_spell_t
     p() -> trigger_forbearance( execute_state -> target );
   }
 
-  virtual bool ready() override
+  virtual bool target_ready( player_t* candidate_target ) override
   {
-    if (target->debuffs.forbearance->check())
+    if (candidate_target->debuffs.forbearance->check())
       return false;
 
-    return paladin_spell_t::ready();
+    return paladin_spell_t::target_ready( candidate_target );
   }
 };
 

@@ -34,14 +34,14 @@ struct angelic_feather_t final : public priest_spell_t
     }
   }
 
-  bool ready() override
+  bool target_ready( player_t* candidate_target ) override
   {
-    if ( !target->buffs.angelic_feather )
+    if ( !candidate_target->buffs.angelic_feather )
     {
       return false;
     }
 
-    return priest_spell_t::ready();
+    return priest_spell_t::target_ready( candidate_target );
   }
 };
 

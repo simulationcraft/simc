@@ -5689,7 +5689,15 @@ public:
 
   virtual void update_ready(timespan_t cd_duration = timespan_t::min());
 
+  /// Is the _ability_ ready based on spell characteristics
   virtual bool ready();
+  /// Is the action ready, as a combination of ability characteristics and user input? Main
+  /// ntry-point when selecting something to do for an actor.
+  virtual bool action_ready();
+  /// Select a target to execute on
+  virtual bool select_target();
+  /// Target readiness state checking
+  virtual bool target_ready( player_t* target );
 
   virtual void init();
 

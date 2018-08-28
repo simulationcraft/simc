@@ -2847,14 +2847,14 @@ struct counterspell_t : public mage_spell_t
     p() -> apply_crowd_control( execute_state, MECHANIC_INTERRUPT );
   }
 
-  virtual bool ready() override
+  virtual bool target_ready( player_t* candidate_target ) override
   {
-    if ( ! target -> debuffs.casting || ! target -> debuffs.casting -> check() )
+    if ( ! candidate_target -> debuffs.casting || ! candidate_target -> debuffs.casting -> check() )
     {
       return false;
     }
 
-    return mage_spell_t::ready();
+    return mage_spell_t::target_ready( candidate_target );
   }
 };
 

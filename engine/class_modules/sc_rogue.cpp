@@ -2242,11 +2242,6 @@ struct auto_melee_attack_t : public action_t
 
   virtual bool ready() override
   {
-    if ( target -> is_sleeping() )
-    {
-      return false;
-    }
-
     if ( player -> is_moving() )
       return false;
 
@@ -2529,12 +2524,13 @@ struct blindside_t: public rogue_attack_t
     requires_weapon_type = WEAPON_DAGGER;
   }
 
-  bool ready() override
+  bool target_ready( player_t* candidate_target ) override
   {
-    if ( ! p() -> buffs.blindside -> check() && target -> health_percentage() >= data().effectN( 4 ).base_value() )
+    if ( ! p() -> buffs.blindside -> check() &&
+         candidate_target -> health_percentage() >= data().effectN( 4 ).base_value() )
       return false;
 
-    return rogue_attack_t::ready();
+    return rogue_attack_t::target_ready( candidate_target );
   }
 
   double cost() const override
@@ -3097,12 +3093,12 @@ struct kick_t : public rogue_attack_t
     ignore_false_positive = true;
   }
 
-  virtual bool ready() override
+  bool target_ready( player_t* candidate_target ) override
   {
-    if ( target -> debuffs.casting && ! target -> debuffs.casting -> check() )
+    if ( candidate_target -> debuffs.casting && ! candidate_target -> debuffs.casting -> check() )
       return false;
 
-    return rogue_attack_t::ready();
+    return rogue_attack_t::target_ready( candidate_target );
   }
 
   void execute() override

@@ -160,7 +160,23 @@ struct queued_action_execute_event_t : public event_t
     }
     else
     {
-      action->schedule_execute();
+      player_t* actor = action->player;
+      if ( !action->ready() || !action->target_ready( action->target ) )
+      {
+        if ( action->starved_proc )
+        {
+          action->starved_proc->occur();
+        }
+        actor->queueing = nullptr;
+        if ( !actor->readying )
+        {
+          actor->schedule_ready( actor->available() );
+        }
+      }
+      else
+      {
+        action->schedule_execute();
+      }
     }
   }
 };
@@ -171,9 +187,11 @@ struct action_execute_event_t : public player_event_t
 {
   action_t* action;
   action_state_t* execute_state;
+  bool has_cast_time;
 
   action_execute_event_t( action_t* a, timespan_t time_to_execute, action_state_t* state = nullptr )
-    : player_event_t( *a->player, time_to_execute ), action( a ), execute_state( state )
+    : player_event_t( *a->player, time_to_execute ), action( a ), execute_state( state ),
+    has_cast_time( time_to_execute > timespan_t::zero() )
   {
     sim().print_debug( "New Action Execute Event: player='{}' action='{}' time_to_execute={} (target={}, marker={})",
         p()->name(), a->name(), time_to_execute, ( state ) ? state->target->name() : a->target->name(),
@@ -217,7 +235,11 @@ struct action_execute_event_t : public player_event_t
       action->pre_execute_state = 0;
     }
 
-    if ( !target->is_sleeping() )
+    // Note, presumes that if the action is instant, it will still be ready, since it was ready on
+    // the (near) previous event. Does check target sleepiness, since technically there can be
+    // several damage events on the same timestamp one of which will kill the target.
+    if ( ( has_cast_time && action->ready() && action->target_ready( target ) ) ||
+         !target->is_sleeping() )
     {
       // Action target must follow any potential pre-execute-state target if it differs from the
       // current (default) target of the action.
@@ -1915,37 +1937,25 @@ bool action_t::usable_moving() const
   return true;
 }
 
-bool action_t::ready()
+bool action_t::target_ready( player_t* candidate_target )
 {
-  // Check conditions that do NOT pertain to the target before cycle_targets
-  if ( cooldown->is_ready() == false )
+  // Ensure target is valid to execute on
+  if ( candidate_target->is_sleeping() )
     return false;
 
-  if ( internal_cooldown->down() )
+  if ( candidate_target->debuffs.invulnerable &&
+       candidate_target->debuffs.invulnerable->check() && harmful )
     return false;
 
-  if ( rng().roll( false_negative_pct() ) )
+  if ( sim->distance_targeting_enabled && range > 0 &&
+       player->get_player_distance( *candidate_target ) > range + candidate_target->combat_reach )
     return false;
 
-  if ( line_cooldown.down() )
-    return false;
+  return true;
+}
 
-  if ( sync_action && !sync_action->ready() )
-    return false;
-
-  if ( player->is_moving() && !usable_moving() )
-    return false;
-
-  if ( option.moving != -1 && option.moving != ( player->is_moving() ? 1 : 0 ) )
-    return false;
-
-  if ( !player->resource_available( current_resource(), cost() ) )
-  {
-    if ( starved_proc )
-      starved_proc->occur();
-    return false;
-  }
-
+bool action_t::select_target()
+{
   if ( target_if_mode != TARGET_IF_NONE )
   {
     player_t* potential_target = select_target_if_target();
@@ -1987,7 +1997,7 @@ bool action_t::ready()
     for ( size_t i = 0; i < num_targets; i++ )
     {
       target = ctl[ i ];
-      if ( ready() )
+      if ( action_ready() )
       {
         found_ready = true;
         break;
@@ -2028,7 +2038,7 @@ bool action_t::ready()
     for ( size_t i = 0; i < num_targets; i++ )
     {
       target = tl[ i ];
-      if ( ready() )
+      if ( action_ready() )
       {
         found_ready = true;
         break;
@@ -2056,7 +2066,7 @@ bool action_t::ready()
     bool is_ready = false;
 
     if ( target )
-      is_ready = ready();
+      is_ready = action_ready();
 
     option.target_number = saved_target_number;
 
@@ -2068,24 +2078,86 @@ bool action_t::ready()
     return false;
   }
 
-  if ( sim->distance_targeting_enabled && range > 0 &&
-       player->get_player_distance( *target ) > range + target->combat_reach )
+  // Normal casting (no cycle_targets, cycle_players, target_number, or target_if specified). Check
+  // that we can cast on the target
+  if ( !target_ready( target ) )
+  {
     return false;
+  }
 
-  if ( target->debuffs.invulnerable && target->debuffs.invulnerable->check() && harmful )
-    return false;
+  return true;
+}
 
-  if ( target->is_sleeping() )
+bool action_t::action_ready()
+{
+  // Check that the ability itself is usable, before going on to other user-input related readiness
+  // checks. Note, no target-based stuff should be done here
+  if ( !ready() )
+  {
     return false;
+  }
+
+  // Can't find any target to cast on
+  if ( !select_target() )
+  {
+    return false;
+  }
+
+  // If cycle_targets was used, then we know that the ability is already usable, no need to test the
+  // rest of the readiness
+  if ( option.cycle_targets && sim->target_non_sleeping_list.size() > 1 )
+  {
+    return true;
+  }
+
+  if ( action_skill != 1 || player->current.skill_debuff != 0 )
+  {
+    if ( rng().roll( false_positive_pct() ) )
+      return true;
+
+    if ( rng().roll( false_negative_pct() ) )
+      return false;
+  }
 
   if ( !has_movement_directionality() )
     return false;
 
-  if ( rng().roll( false_positive_pct() ) )
-    return true;
+  if ( line_cooldown.down() )
+    return false;
+
+  if ( sync_action && !sync_action->action_ready() )
+    return false;
+
+  if ( option.moving != -1 && option.moving != ( player->is_moving() ? 1 : 0 ) )
+    return false;
 
   if ( if_expr && !if_expr->success() )
     return false;
+
+  return true;
+}
+
+// Properties that govern if the spell itself is executable, without considering any kind of user
+// options
+bool action_t::ready()
+{
+  // Check conditions that do NOT pertain to the target before cycle_targets
+  if ( cooldown->is_ready() == false )
+    return false;
+
+  if ( internal_cooldown->down() )
+    return false;
+
+  if ( player->is_moving() && !usable_moving() )
+    return false;
+
+  auto resource = current_resource();
+  if ( resource != RESOURCE_NONE && !player->resource_available( resource, cost() ) )
+  {
+    if ( starved_proc )
+      starved_proc->occur();
+    return false;
+  }
 
   return true;
 }

@@ -1251,8 +1251,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
     {
       if ( player->is_moving() )
         return false;
-      if ( target->is_sleeping() )
-        return false;
 
       return ( player->main_hand_attack->execute_event == nullptr );  // not swinging
     }
@@ -1886,8 +1884,6 @@ private:
     {
       if ( player->is_moving() )
         return false;
-      if ( target->is_sleeping() )
-        return false;
 
       return ( player->main_hand_attack->execute_event == nullptr );  // not swinging
     }
@@ -2024,8 +2020,6 @@ private:
     virtual bool ready() override
     {
       if ( player->is_moving() )
-        return false;
-      if ( target->is_sleeping() )
         return false;
 
       return ( player->main_hand_attack->execute_event == nullptr );  // not swinging
@@ -4255,9 +4249,6 @@ struct auto_attack_t : public monk_melee_attack_t
     if ( p()->current.distance_to_move > 5 )
       return false;
 
-    if ( target->is_sleeping() )
-      return false;
-
     return ( p()->main_hand_attack->execute_event == nullptr );  // not swinging
   }
 
@@ -4376,13 +4367,13 @@ struct touch_of_death_t : public monk_spell_t
     add_child( touch_of_death_amplifier );
   }
 
-  virtual bool ready() override
+  virtual bool target_ready( player_t* candidate_target ) override
   {
     // Cannot be used on a target that has Touch of Death on them already
-    if ( td( p()->target )->dots.touch_of_death->is_ticking() )
+    if ( td( candidate_target )->dots.touch_of_death->is_ticking() )
       return false;
 
-    return monk_spell_t::ready();
+    return monk_spell_t::target_ready( candidate_target );
   }
 
   void init() override
@@ -4989,18 +4980,24 @@ struct storm_earth_and_fire_t : public monk_spell_t
     monk_spell_t::update_ready( cd_duration );
   }
 
+  bool target_ready( player_t* candidate_target ) override
+  {
+    // Don't let user needlessly trigger SEF sticky targeting mode, if the user would just be
+    // triggering it on the same sticky target
+    if ( p()->buff.storm_earth_and_fire->check() &&
+         ( p()->pet.sef[ SEF_EARTH ]->sticky_target &&
+           candidate_target == p()->pet.sef[ SEF_EARTH ]->target ) )
+    {
+      return false;
+    }
+
+    return monk_spell_t::target_ready( candidate_target );
+  }
+
   bool ready() override
   {
     if ( p()->talent.serenity->ok() )
       return false;
-
-    // Don't let user needlessly trigger SEF sticky targeting mode, if the user would just be
-    // triggering it on the same sticky target
-    if ( p()->buff.storm_earth_and_fire->check() &&
-         ( p()->pet.sef[ SEF_EARTH ]->sticky_target && target == p()->pet.sef[ SEF_EARTH ]->target ) )
-    {
-      return false;
-    }
 
     return monk_spell_t::ready();
   }

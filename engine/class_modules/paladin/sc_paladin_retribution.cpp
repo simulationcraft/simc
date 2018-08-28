@@ -788,18 +788,17 @@ struct hammer_of_wrath_t : public holy_power_generator_t
     last_ready_was_ineligible = false;
   }
 
-  virtual bool ready() override
+  virtual bool target_ready( player_t* candidate_target ) override
   {
     // TODO(mserrano): this is also probably incorrect
-    if ( p() -> get_how_availability() )
+    if ( p() -> get_how_availability( candidate_target ) )
     {
-      bool result = holy_power_generator_t::ready();
-      if ( last_ready_was_ineligible && result )
+      if ( last_ready_was_ineligible && holy_power_generator_t::ready() )
       {
         last_ready_was_ineligible = false;
         cooldown -> last_charged = sim -> current_time();
       }
-      return result;
+      return true;
     }
     last_ready_was_ineligible = true;
     return false;

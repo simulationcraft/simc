@@ -436,6 +436,16 @@ struct shadow_word_death_t final : public priest_spell_t
     }
   }
 
+  bool target_ready( player_t* candidate_target ) override
+  {
+    if ( target->health_percentage() < as<double>( data().effectN( 2 ).base_value() ) )
+    {
+      return true;
+    }
+
+    return priest_spell_t::target_ready( candidate_target );
+  }
+
   bool ready() override
   {
     if ( !priest_spell_t::ready() )
@@ -444,11 +454,6 @@ struct shadow_word_death_t final : public priest_spell_t
     }
 
     if ( priest().buffs.zeks_exterminatus->up() && priest().level() < 116 )
-    {
-      return true;
-    }
-
-    if ( target->health_percentage() < as<double>( data().effectN( 2 ).base_value() ) )
     {
       return true;
     }
@@ -563,13 +568,15 @@ struct silence_t final : public priest_spell_t
     }
   }
 
-  bool ready() override
+  bool target_ready( player_t* candidate_target ) override
   {
-    return priest_spell_t::ready();
+    return priest_spell_t::target_ready( candidate_target );
     // Only available if the target is casting
     // Or if the target can get blank silenced
-    if ( !( target->type != ENEMY_ADD && ( target->level() < sim->max_player_level + 3 ) && target->debuffs.casting &&
-            target->debuffs.casting->check() ) )
+    if ( !( candidate_target->type != ENEMY_ADD &&
+          ( candidate_target->level() < sim->max_player_level + 3 ) &&
+          candidate_target->debuffs.casting &&
+            candidate_target->debuffs.casting->check() ) )
     {
       return false;
     }
