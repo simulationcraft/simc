@@ -6025,12 +6025,11 @@ struct solar_wrath_state_t :public action_state_t
 struct solar_empowerment_t : public druid_spell_t
 {
   solar_empowerment_t (druid_t* p) :
-    druid_spell_t ("solar_empowerment", p, p -> find_spell (164545))
+    druid_spell_t ("solar_empowerment", p, p -> find_spell (279729))
   {
     background = true;
     may_crit = false;
     aoe = -1;
-    radius = 8;
   }
 
   void init () override
