@@ -4852,7 +4852,6 @@ void demon_hunter_t::init_spells()
   spec.critical_strikes       = find_spell( 221351 );
   spec.demonic_wards          = find_specialization_spell( "Demonic Wards" ); // Two different spells with the same name
   spec.disrupt                = find_class_spell( "Disrupt" );
-  spec.metamorphosis          = find_class_spell("Metamorphosis");  
   spec.soul_fragment          = find_spell( 204255 );
 
   if ( specialization() == DEMON_HUNTER_HAVOC )
@@ -4861,7 +4860,8 @@ void demon_hunter_t::init_spells()
     spec.consume_soul_lesser    = spec.consume_soul_greater;
     spec.immolation_aura        = find_talent_spell( "Immolation Aura" );
     spec.leather_specialization = find_spell( 178976 );
-    spec.metamorphosis_buff     = find_spell( 162264 );
+    spec.metamorphosis          = find_class_spell( "Metamorphosis" );
+    spec.metamorphosis_buff     = spec.metamorphosis->effectN( 2 ).trigger();
   }
   else
   {
@@ -4869,7 +4869,8 @@ void demon_hunter_t::init_spells()
     spec.consume_soul_lesser    = find_spell( 203794 );
     spec.immolation_aura        = find_specialization_spell( "Immolation Aura" );
     spec.leather_specialization = find_spell( 226359 );
-    spec.metamorphosis_buff     = find_spell( 187827 );
+    spec.metamorphosis          = find_specialization_spell( "Metamorphosis" );
+    spec.metamorphosis_buff     = spec.metamorphosis;
   }
 
   // Havoc
