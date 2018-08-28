@@ -1606,6 +1606,7 @@ class SpellDataGenerator(DataGenerator):
           ( 274282, 1 ),       # Half Moon
           ( 274283, 1 ),       # Full Moon
           ( 279641, 1 ),       # Lunar Shrapnel Azerite Trait
+          ( 279729, 1 ),       # Solar Empowerment
         ),
         # Demon Hunter:
         (
