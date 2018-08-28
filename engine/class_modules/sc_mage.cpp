@@ -4388,6 +4388,7 @@ struct trailing_embers_t : public fire_mage_spell_t
     base_td = p -> azerite.trailing_embers.value();
     background = true;
     hasted_ticks = false;
+    tick_zero = true;
   }
 };
 
