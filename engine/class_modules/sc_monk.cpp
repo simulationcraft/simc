@@ -3136,13 +3136,12 @@ struct tiger_palm_t : public monk_melee_attack_t
 
     if ( p()->azerite.pressure_point.ok() )
     {
-      // Hotfix 2018-08-24: Pressure Point (Monk) damage for Brewmaster reduced by 60%. Damage for Mistweaver reduced by 28.5%.
-      // No spell data has this information. Manually adjusting as needed
+      double pp = p() -> azerite.pressure_point.value();
       switch ( p() -> specialization() )
       {
-        case MONK_BREWMASTER: b += p() -> azerite.pressure_point.value() * ( 1 - 0.6 ); break;
-        case MONK_MISTWEAVER: b += p() -> azerite.pressure_point.value() * ( 1 - 0.285 ); break;
-        default: b += p() -> azerite.pressure_point.value(); break;
+        case MONK_BREWMASTER: b += pp * ( 1 + p()->spec.brewmaster_monk -> effectN( 21 ).percent() ); break; // saved as -60
+        case MONK_MISTWEAVER: b += pp * ( 1 + p()->spec.mistweaver_monk -> effectN( 16 ).percent() ); break; // saved as -28.5
+        default: b += pp; break;
       }
     }
 
