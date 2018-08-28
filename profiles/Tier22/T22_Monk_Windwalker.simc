@@ -8,7 +8,7 @@ position=back
 talents=2022033
 
 # Default consumables
-potion=battle_potion_of_agility
+potion=bursting_blood
 flask=currents
 food=bountiful_captains_feast
 augmentation=battle_scarred
@@ -122,7 +122,6 @@ actions.serenity+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=
 actions.serenity+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick&cooldown.rising_sun_kick.remains>=2&cooldown.fists_of_fury.remains>=2
 actions.serenity+=/spinning_crane_kick,if=active_enemies>=3&!prev_gcd.1.spinning_crane_kick
 actions.serenity+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains
-actions.serenity+=/spinning_crane_kick,if=!prev_gcd.1.spinning_crane_kick
 actions.serenity+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick
 
 actions.serenitySR=tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&!prev_gcd.1.energizing_elixir&energy=energy.max&chi<1&!buff.serenity.up
