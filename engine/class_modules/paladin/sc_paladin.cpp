@@ -1528,19 +1528,6 @@ double paladin_t::composite_rating_multiplier( rating_e r ) const
 
 }
 
-// paladin_t::composite_melee_crit_chance =========================================
-
-double paladin_t::composite_melee_crit_chance() const
-{
-  double m = player_t::composite_melee_crit_chance();
-
-  // This should only give a nonzero boost for Holy
-  if ( buffs.avenging_wrath -> check() )
-    m += buffs.avenging_wrath -> get_crit_bonus();
-
-  return m;
-}
-
 // paladin_t::composite_melee_expertise =====================================
 
 double paladin_t::composite_melee_expertise( const weapon_t* w ) const
@@ -1582,19 +1569,6 @@ double paladin_t::composite_melee_speed() const
   if ( buffs.zeal -> check() )
     s /= 1.0 + buffs.zeal -> data().effectN( 1 ).percent();
   return s;
-}
-
-// paladin_t::composite_spell_crit_chance ==========================================
-
-double paladin_t::composite_spell_crit_chance() const
-{
-  double m = player_t::composite_spell_crit_chance();
-
-  // This should only give a nonzero boost for Holy
-  if ( buffs.avenging_wrath -> check() )
-    m += buffs.avenging_wrath -> get_crit_bonus();
-
-  return m;
 }
 
 // paladin_t::composite_spell_haste ==========================================
