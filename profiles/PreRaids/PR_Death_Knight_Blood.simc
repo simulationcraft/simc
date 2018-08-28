@@ -5,7 +5,7 @@ level=120
 race=undead
 role=tank
 position=front
-talents=3222022
+talents=2222022
 
 # Default consumables
 potion=battle_potion_of_strength
