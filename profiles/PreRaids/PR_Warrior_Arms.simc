@@ -5,7 +5,7 @@ level=120
 race=pandaren
 role=attack
 position=back
-talents=3312211
+talents=3112211
 
 # Default consumables
 potion=bursting_blood
@@ -102,26 +102,25 @@ actions.single_target+=/slam,if=!talent.fervor_of_battle.enabled&(!azerite.test_
 
 head=helm_of_the_raptor_king,id=159422,bonus_id=4779/1512/4786/4775,azerite_powers=226/30/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=
-shoulders=pauldrons_of_the_horned_horror,id=159455,bonus_id=4779/1512/4786/4775,azerite_powers=226/459/0/13
+shoulders=pauldrons_of_the_great_unifier,id=159423,bonus_id=4779/1512/4786/4775,azerite_powers=435/22/0/13
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
 chest=harpooners_plate_cuirass,id=159416,bonus_id=4779/1512/4786/4775,azerite_powers=226/31/0/13
 wrists=embalmers_steadying_bracers,id=159409,bonus_id=4779/1512/4786
-hands=sharktoothknuckled_grips,id=155890,bonus_id=4779/1512/4786
+hands=fangproof_gauntlets,id=159437,bonus_id=4779/1512/4786
 waist=belt_of_the_unrelenting_gale,id=159426,bonus_id=4779/1512/4786
 legs=legplates_of_profane_sacrifice,id=159443,bonus_id=4779/1512/4786
-feet=sabatons_of_rampaging_elements,id=159679,bonus_id=4779/1512/4786
+feet=ballast_sinkers,id=159428,bonus_id=4779/1512/4786
 finger1=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
 finger2=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
 trinket1=briny_barnacle,id=159619,bonus_id=4779/1512/4786
 trinket2=rezans_gleaming_eye,id=158712,bonus_id=4779/1512/4786
-main_hand=getiikku_cut_of_death,id=159644,bonus_id=4779/1512/4786,enchant=deadly_navigation
+main_hand=getiikku_cut_of_death,id=159644,bonus_id=4779/1512/4786,enchant=quick_navigation
 
 # Gear Summary
 # gear_ilvl=341.47
 # gear_strength=2883
 # gear_stamina=4465
-# gear_crit_rating=872
-# gear_haste_rating=1110
-# gear_mastery_rating=209
-# gear_versatility_rating=88
+# gear_crit_rating=833
+# gear_haste_rating=1178
+# gear_mastery_rating=268
 # gear_armor=3050
