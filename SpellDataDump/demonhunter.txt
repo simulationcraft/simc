@@ -5356,7 +5356,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=727995)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 2051.073 (coefficient=26.38037) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 964.0046 (coefficient=12.39877) | Target: Self (1)
+                   Hotfixed: Coefficient (26.3804 -> 12.3988)
 Description      : Your inner demon slams into nearby enemies at the end of your Fel Rush, dealing $s1 Chaos damage.
 
 Name             : Unbound Chaos (id=275148) [Scaling Spell (-1), Spell Family (107)] 
