@@ -1588,6 +1588,7 @@ public:
          ab::last_resource_cost > 0 && ab::rng().roll( ab::p()->talent.aftershock->effectN( 1 ).percent() ) )
     {
       ab::p()->resource_gain( RESOURCE_MAELSTROM, ab::last_resource_cost, ab::p()->gain.aftershock, nullptr );
+      expansion::bfa::trigger_leyshocks_grand_compilation( STAT_CRIT_RATING, ab::player );
     }
   }
 };
@@ -4064,11 +4065,13 @@ struct fire_elemental_t : public shaman_spell_t
     if ( p()->talent.primal_elementalist->ok() && p()->pet.pet_fire_elemental->is_sleeping() )
     {
       p()->pet.pet_fire_elemental->summon( base_spell->duration() );
+      expansion::bfa::trigger_leyshocks_grand_compilation( STAT_CRIT_RATING, player );
     }
     else if ( !p()->talent.primal_elementalist->ok() )
     {
       // Summon first non sleeping Fire Elemental
       pet::summon( p()->pet.guardian_fire_elemental, base_spell->duration() );
+      expansion::bfa::trigger_leyshocks_grand_compilation( STAT_VERSATILITY_RATING, player );
     }
   }
 
@@ -4781,7 +4784,14 @@ struct lava_burst_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     if ( p()->talent.master_of_the_elements->ok() )
+    {
       p()->buff.master_of_the_elements->trigger();
+      expansion::bfa::trigger_leyshocks_grand_compilation( STAT_MASTERY_RATING, player );
+    }
+    else
+    {
+      expansion::bfa::trigger_leyshocks_grand_compilation( STAT_HASTE_RATING, player );
+    }
 
     // Lava Surge buff does not get eaten, if the Lava Surge proc happened
     // during the Lava Burst cast
@@ -5013,11 +5023,20 @@ void trigger_elemental_blast_proc( shaman_t* p )
   unsigned b = static_cast<unsigned>( p->rng().range( 0, 3 ) );
 
   if ( b == 0 )
+  {
     p->buff.elemental_blast_crit->trigger();
+    expansion::bfa::trigger_leyshocks_grand_compilation( STAT_MASTERY_RATING, p );
+  }
   else if ( b == 1 )
+  {
     p->buff.elemental_blast_haste->trigger();
+    expansion::bfa::trigger_leyshocks_grand_compilation( STAT_VERSATILITY_RATING, p );
+  }
   else if ( b == 2 )
+  {
     p->buff.elemental_blast_mastery->trigger();
+    expansion::bfa::trigger_leyshocks_grand_compilation( STAT_CRIT_RATING, p );
+  }
 }
 
 struct elemental_blast_overload_t : public elemental_overload_spell_t
@@ -5468,6 +5487,9 @@ struct earth_shock_t : public shaman_spell_t
 
     p()->buff.t21_2pc_elemental->expire();
     p()->buff.lava_shock->expire();
+
+    expansion::bfa::trigger_leyshocks_grand_compilation(
+        last_resource_cost == 100.0 ? STAT_HASTE_RATING : STAT_MASTERY_RATING, player );
   }
 
   void impact( action_state_t* state ) override
@@ -5549,6 +5571,8 @@ struct flame_shock_t : public shaman_spell_t
       }
 
       p()->buff.lava_surge->trigger();
+
+      expansion::bfa::trigger_leyshocks_grand_compilation( STAT_MASTERY_RATING, player );
     }
 
     // Fire Elemental passive effect (MS generation on FS tick)
@@ -8958,6 +8982,49 @@ struct shaman_module_t : public module_t
     register_special_effect( 224837, pristine_protoscale_girdle_t() );
     register_special_effect( 248029, smoldering_heart_chance_t() );
     register_special_effect( 234814, uncertain_reminder_t() );
+
+    // Shaman Leyshock's Grand Compendium basic hooks
+
+    // Totem Mastery
+    expansion::bfa::register_leyshocks_trigger( 210643, STAT_CRIT_RATING );
+    // Lightning Bolt Overload (damage)
+    expansion::bfa::register_leyshocks_trigger( 45284,  STAT_CRIT_RATING );
+    // Frost Shock
+    expansion::bfa::register_leyshocks_trigger( 196840, STAT_CRIT_RATING );
+    // Flame Shock
+    expansion::bfa::register_leyshocks_trigger( 188389, STAT_HASTE_RATING );
+    // Chain Lightning
+    expansion::bfa::register_leyshocks_trigger( 188443, STAT_HASTE_RATING );
+    // Bloodlust
+    expansion::bfa::register_leyshocks_trigger( 2825,   STAT_HASTE_RATING );
+    // Earthquake rumbles
+    expansion::bfa::register_leyshocks_trigger( 77478,  STAT_MASTERY_RATING );
+    // Stormkeeper
+    expansion::bfa::register_leyshocks_trigger( 191634, STAT_MASTERY_RATING );
+    // Liquid Magma Totem
+    expansion::bfa::register_leyshocks_trigger( 192222, STAT_MASTERY_RATING );
+    // Thunderstorm
+    expansion::bfa::register_leyshocks_trigger( 51490,  STAT_MASTERY_RATING );
+    // Wind Shear
+    expansion::bfa::register_leyshocks_trigger( 57994,  STAT_MASTERY_RATING );
+    // Chain Lightning Overload
+    expansion::bfa::register_leyshocks_trigger( 45297,  STAT_MASTERY_RATING );
+    // Icefury
+    expansion::bfa::register_leyshocks_trigger( 210714, STAT_MASTERY_RATING );
+    // Ascendance (elemental)
+    expansion::bfa::register_leyshocks_trigger( 114050, STAT_MASTERY_RATING );
+    // Earth Elemental
+    expansion::bfa::register_leyshocks_trigger( 198103, STAT_VERSATILITY_RATING );
+    // Earthquake (TODO: Something more complex with number of targets?)
+    expansion::bfa::register_leyshocks_trigger( 61882,  STAT_VERSATILITY_RATING );
+    // Lightning Bolt (elemental)
+    expansion::bfa::register_leyshocks_trigger( 188196, STAT_VERSATILITY_RATING );
+    // Lava Burst Overload
+    expansion::bfa::register_leyshocks_trigger( 77451,  STAT_VERSATILITY_RATING );
+    // Earthen Rage
+    expansion::bfa::register_leyshocks_trigger( 170379, STAT_VERSATILITY_RATING );
+    // Storm Elemental
+    expansion::bfa::register_leyshocks_trigger( 192249, STAT_VERSATILITY_RATING );
   }
 
   void register_hotfixes() const override
