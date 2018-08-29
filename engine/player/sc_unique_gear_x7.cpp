@@ -452,8 +452,9 @@ struct bba_cb_t : public dbc_proc_callback_t
     int resource = static_cast<int>( state->action->current_resource() );
     double cost = state->action->last_resource_cost;
 
-    // Custom handling of breath_of_sindragosa_tick
-    if ( state -> action -> name_str == "breath_of_sindragosa_tick" )
+    // Breath of Sindragosa needs to be special cased, as the ticker does no damage, and
+    // Simulationcraft does not allow it to proc special effects
+    if ( state -> action -> data().id() == 155166u )
     {
       cost = 15.0;
       resource = RESOURCE_RUNIC_POWER;
@@ -469,9 +470,12 @@ struct bba_cb_t : public dbc_proc_callback_t
 
     // Protection Paladins are special :
     // - Consuming SotR charges with Seraphim doesn't trigger the callback
-    // - Even though SotR can be used without a target, the effect only happens if the spell hits at least one target
-    // - 2018-08-29 : Following changes, the values now seem tobe 3.25s buff extension and 1.9s cdr per SotR cast
-    if ( state -> action -> name_str == "shield_of_the_righteous" && state -> action -> result_is_hit( state -> result ) )
+    // - Even though SotR can be used without a target, the effect only happens if the spell hits at
+    //   least one target
+    // - 2018-08-29 : Following changes, the values now seem tobe 3.25s buff extension and 1.9s cdr
+    //   per SotR cast
+    if ( state -> action -> data().id() == 53600u &&
+         state -> action -> result_is_hit( state -> result ) )
     {
       return timespan_t::from_seconds( c == RC_BUFF ? 3.25 : 1.9 );
     }
