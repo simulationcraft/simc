@@ -6415,6 +6415,7 @@ void rogue_t::init_action_list()
     action_priority_list_t* stealthed = get_action_priority_list( "stealthed", "Stealthed Rotation" );
     stealthed -> add_action( this, "Shadowstrike", "if=buff.stealth.up", "If stealth is up, we really want to use Shadowstrike to benefits from the passive bonus, even if we are at max cp (from the precombat MfD)." );
     stealthed -> add_action( "call_action_list,name=finish,if=combo_points.deficit<=1-(talent.deeper_stratagem.enabled&buff.vanish.up)", "Finish at 4+ CP without DS, 5+ with DS, and 6 with DS after Vanish" );
+    stealthed -> add_action( this, "Shuriken Toss", "if=buff.sharpened_blades.stack>=29", "Shuriken Toss at 29+ Sharpened Blades stacks in Stealth for damage bonuses." );
     stealthed -> add_action( this, "Shadowstrike", "cycle_targets=1,if=talent.secret_technique.enabled&talent.find_weakness.enabled&debuff.find_weakness.remains<1&spell_targets.shuriken_storm=2&target.time_to_die-remains>6", "At 2 targets with Secret Technique keep up Find Weakness by cycling Shadowstrike.");
     stealthed -> add_action( this, "Shuriken Storm", "if=spell_targets>=3" );
     stealthed -> add_action( this, "Shadowstrike" );
@@ -6430,7 +6431,7 @@ void rogue_t::init_action_list()
 
     // Builders
     action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
-    build -> add_action( this, "Shuriken Toss", "if=buff.sharpened_blades.stack>=29&spell_targets.shuriken_storm<=(3*azerite.sharpened_blades.rank)", "Shuriken Toss at 29+ Sharpened Blades stacks. Up to 3 targets per rank." );
+    build -> add_action( this, "Shuriken Toss", "if=!talent.nightstalker.enabled&(!talent.dark_shadow.enabled|cooldown.symbols_of_death.remains>10)&buff.sharpened_blades.stack>=29&spell_targets.shuriken_storm<=(3*azerite.sharpened_blades.rank)", "Shuriken Toss at 29+ Sharpened Blades stacks. Up to 3 targets per rank. Save for stealth if using Nightstalker or Dark Shadow when possible." );
     build -> add_action( this, "Shuriken Storm", "if=spell_targets>=2|buff.the_dreadlords_deceit.stack>=29" );
     build -> add_talent( this, "Gloomblade" );
     build -> add_action( this, "Backstab" );

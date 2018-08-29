@@ -53,8 +53,8 @@ actions+=/arcane_pulse
 actions+=/lights_judgment
 
 # Builders
-# Shuriken Toss at 29+ Sharpened Blades stacks. Up to 3 targets per rank.
-actions.build=shuriken_toss,if=buff.sharpened_blades.stack>=29&spell_targets.shuriken_storm<=(3*azerite.sharpened_blades.rank)
+# Shuriken Toss at 29+ Sharpened Blades stacks. Up to 3 targets per rank. Save for stealth if using Nightstalker or Dark Shadow when possible.
+actions.build=shuriken_toss,if=!talent.nightstalker.enabled&(!talent.dark_shadow.enabled|cooldown.symbols_of_death.remains>10)&buff.sharpened_blades.stack>=29&spell_targets.shuriken_storm<=(3*azerite.sharpened_blades.rank)
 actions.build+=/shuriken_storm,if=spell_targets>=2|buff.the_dreadlords_deceit.stack>=29
 actions.build+=/gloomblade
 actions.build+=/backstab
@@ -102,6 +102,8 @@ actions.stealth_cds+=/shadow_dance,if=target.time_to_die<cooldown.symbols_of_dea
 actions.stealthed=shadowstrike,if=buff.stealth.up
 # Finish at 4+ CP without DS, 5+ with DS, and 6 with DS after Vanish
 actions.stealthed+=/call_action_list,name=finish,if=combo_points.deficit<=1-(talent.deeper_stratagem.enabled&buff.vanish.up)
+# Shuriken Toss at 29+ Sharpened Blades stacks in Stealth for damage bonuses.
+actions.stealthed+=/shuriken_toss,if=buff.sharpened_blades.stack>=29
 # At 2 targets with Secret Technique keep up Find Weakness by cycling Shadowstrike.
 actions.stealthed+=/shadowstrike,cycle_targets=1,if=talent.secret_technique.enabled&talent.find_weakness.enabled&debuff.find_weakness.remains<1&spell_targets.shuriken_storm=2&target.time_to_die-remains>6
 actions.stealthed+=/shuriken_storm,if=spell_targets>=3
