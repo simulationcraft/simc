@@ -3091,7 +3091,7 @@ struct player_collected_data_t
 
   player_collected_data_t( const player_t* player );
   void reserve_memory( const player_t& );
-  void merge( const player_collected_data_t& );
+  void merge( const player_t& );
   void analyze( const player_t& );
   void collect_data( const player_t& );
   void print_tmi_debug_csv( const sc_timeline_t* nma, const std::vector<double>& weighted_value, const player_t& p );

@@ -4285,7 +4285,7 @@ void merge( player_t& left, player_t& right )
  */
 void player_t::merge( player_t& other )
 {
-  collected_data.merge( other.collected_data );
+  collected_data.merge( other );
 
   for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
   {
@@ -11666,8 +11666,9 @@ void player_collected_data_t::reserve_memory( const player_t& p )
   }
 }
 
-void player_collected_data_t::merge( const player_collected_data_t& other )
+void player_collected_data_t::merge( const player_t& other_player )
 {
+  const auto& other = other_player.collected_data;
   // No data got collected for this player in this thread, so skip merging player collected data
   // entirely
   if ( other.fight_length.count() == 0 )
@@ -11709,12 +11710,14 @@ void player_collected_data_t::merge( const player_collected_data_t& other )
     resource_gained[ i ].merge( other.resource_gained[ i ] );
   }
 
-  assert( resource_timelines.size() == other.resource_timelines.size() );
-  for ( size_t i = 0; i < resource_timelines.size(); ++i )
+  if ( resource_timelines.size() == other.resource_timelines.size() )
   {
-    assert( resource_timelines[ i ].type == other.resource_timelines[ i ].type );
-    assert( resource_timelines[ i ].type != RESOURCE_NONE );
-    resource_timelines[ i ].timeline.merge( other.resource_timelines[ i ].timeline );
+    for ( size_t i = 0; i < resource_timelines.size(); ++i )
+    {
+      assert( resource_timelines[ i ].type == other.resource_timelines[ i ].type );
+      assert( resource_timelines[ i ].type != RESOURCE_NONE );
+      resource_timelines[ i ].timeline.merge( other.resource_timelines[ i ].timeline );
+    }
   }
 
   assert( stat_timelines.size() == other.stat_timelines.size() );
