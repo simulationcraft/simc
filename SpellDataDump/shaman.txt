@@ -9171,8 +9171,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=728551)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 707.3819 (coefficient=9.09816) | Target: Self (1)
-                   Hotfixed: Coefficient (13 -> 9.09816)
+                   Base Value: 0 | Scaled Value: 1010.75 (coefficient=13) | Target: Self (1)
 Description      : Every $275495t1 sec your Healing Stream Totem releases a lesser chain heal, restoring $s1 health to up to $275499x1 injured allies. Healing is reduced by ${(1-$275499f1)*100)}% after each jump.
 
 Name             : Overflowing Shores (id=277658) [Scaling Spell (-8), Spell Family (11), Passive] 

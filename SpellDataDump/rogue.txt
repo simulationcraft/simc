@@ -6544,8 +6544,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724115)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 251.3758 (coefficient=3.233129) | Trigger Spell: 272913 | Target: Self (1)
-                   Hotfixed: Coefficient (1.85276 -> 3.23313)
+                   Base Value: 0 | Scaled Value: 144.0522 (coefficient=1.852761) | Trigger Spell: 272913 | Target: Self (1)
 Description      : Your autoattacks increase the damage of your next Shuriken Toss or Poisoned Knife by $s, stacking up to $272916u times.
 
 Name             : Deadshot (id=272935) [Scaling Spell (-8), Spell Family (8), Passive] 
@@ -7026,8 +7025,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734512)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 389.704 (coefficient=5.01227) | Target: Self (1)
-                   Hotfixed: Coefficient (5.6319 -> 5.01227)
+                   Base Value: 0 | Scaled Value: 437.8804 (coefficient=5.631902) | Target: Self (1)
 #2 (id=734513)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 Description      : Garrote cast from Stealth generates $s2 additional Combo Points and deals $s1 additional damage. 

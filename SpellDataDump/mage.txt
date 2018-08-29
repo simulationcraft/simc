@@ -7401,10 +7401,9 @@ Effects          :
 #1 (id=734300)   : Apply Aura (6) | Dummy (4)
                    Base Value: 8 | Scaled Value: 8 | Trigger Spell: 279080 | Target: Self (1)
 #2 (id=734301)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 50 | Scaled Value: 143.0982 (coefficient=1.840491) | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 157.408 (coefficient=2.02454) | Target: Self (1)
                    Affected Spells: Arcane Blast (30451)
                    Family Flags: 29
-                   Hotfixed: Coefficient (2.02454 -> 1.84049)
 Description      : Arcane Blast deals an additional $s2 damage and has a $s1% chance to generate a second Arcane Charge.
 
 Name             : Explosive Echo (id=278537) [Scaling Spell (-8), Spell Family (3), Passive] 
@@ -7450,10 +7449,9 @@ Effects          :
 #1 (id=734306)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Trigger Spell: 279084 | Target: Self (1)
 #2 (id=734307)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 305.276 (coefficient=3.92638) | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 609.1212 (coefficient=7.834356) | Target: Self (1)
                    Affected Spells: Fireball (133)
                    Family Flags: 0
-                   Hotfixed: Coefficient (7.83436 -> 3.92638)
 Description      : Fireball deals an additional $s2 damage, and has a $s1% chance to launch a second Fireball.
 
 Name             : Firemind (id=278539) [Scaling Spell (-1), Spell Family (3), Passive] 
