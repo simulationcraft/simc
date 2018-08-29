@@ -644,11 +644,15 @@ void items::merekthas_fang( special_effect_t& effect )
     noxious_venom_dot_t( const special_effect_t& effect ) :
       proc_t( effect, "noxious_venom", 267410 )
     {
+      tick_may_crit = hasted_ticks = true;
       dot_max_stack = data().max_stacks();
     }
 
     timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
-    { return dot->tick_event->remains() + triggered_duration; }
+    {
+      // No pandemic, refreshes to base duration on every channel tick
+      return triggered_duration * dot->state->haste;
+    }
 
     double last_tick_factor( const dot_t*, const timespan_t&, const timespan_t& ) const override
     { return 1.0; }
@@ -670,6 +674,8 @@ void items::merekthas_fang( special_effect_t& effect )
     void impact( action_state_t* state ) override
     {
       dot->set_target( state->target );
+      // The debuff application ticks instantly but the refresh ticks do not
+      dot->tick_zero = !dot->get_dot()->is_ticking();
       dot->execute();
     }
   };
@@ -682,7 +688,7 @@ void items::merekthas_fang( special_effect_t& effect )
       proc_t( effect, "noxious_venom_gland", effect.driver() ),
       driver( new noxious_venom_gland_aoe_driver_t( effect ) )
     {
-      channeled = tick_zero = true;
+      channeled = tick_zero = hasted_ticks = true;
       tick_may_crit = false;
     }
 
