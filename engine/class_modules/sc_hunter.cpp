@@ -5650,12 +5650,12 @@ void hunter_t::apl_surv()
 
   st -> add_talent( this, "A Murder of Crows" );
   st -> add_action( this, "Coordinated Assault" );
-  st -> add_action( this, "Wildfire Bomb", "if=full_recharge_time<gcd" );
-  st -> add_action( this, "Serpent Sting", "if=refreshable&buff.mongoose_fury.stack=5" );
-  st -> add_talent( this, "Mongoose Bite", "if=buff.mongoose_fury.stack=5", 
+  st -> add_action( this, "Wildfire Bomb", "if=full_recharge_time<gcd&talent.alpha_predator.enabled" );
+  st -> add_action( this, "Serpent Sting", "if=refreshable&buff.mongoose_fury.stack=5&talent.alpha_predator.enabled" );
+  st -> add_talent( this, "Mongoose Bite", "if=buff.mongoose_fury.stack=5&talent.alpha_predator.enabled", 
                     "To simulate usage for Mongoose Bite or Raptor Strike during Aspect of the Eagle, copy each occurrence of the action and append _eagle to the action name." );
-  st -> add_action( this, "Raptor Strike", "if=talent.birds_of_prey.enabled&buff.coordinated_assault.up&(buff.coordinated_assault.remains<gcd|buff.blur_of_talons.remains<gcd)" );
-  st -> add_talent( this, "Mongoose Bite", "if=talent.birds_of_prey.enabled&buff.coordinated_assault.up&(buff.coordinated_assault.remains<gcd|buff.blur_of_talons.remains<gcd)" );
+  st -> add_action( this, "Raptor Strike", "if=talent.birds_of_prey.enabled&buff.coordinated_assault.up&(buff.coordinated_assault.remains<gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<gcd)" );
+  st -> add_talent( this, "Mongoose Bite", "if=talent.birds_of_prey.enabled&buff.coordinated_assault.up&(buff.coordinated_assault.remains<gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<gcd)" );
   st -> add_action( this, "Kill Command", "if=focus+cast_regen<focus.max&buff.tip_of_the_spear.stack<3" );
   st -> add_talent( this, "Chakrams" );
   st -> add_talent( this, "Steel Trap" );

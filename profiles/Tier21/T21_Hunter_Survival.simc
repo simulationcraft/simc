@@ -69,12 +69,12 @@ actions.cleave+=/raptor_strike,target_if=max:debuff.latent_poison.stack
 
 actions.st=a_murder_of_crows
 actions.st+=/coordinated_assault
-actions.st+=/wildfire_bomb,if=full_recharge_time<gcd
-actions.st+=/serpent_sting,if=refreshable&buff.mongoose_fury.stack=5
+actions.st+=/wildfire_bomb,if=full_recharge_time<gcd&talent.alpha_predator.enabled
+actions.st+=/serpent_sting,if=refreshable&buff.mongoose_fury.stack=5&talent.alpha_predator.enabled
 # To simulate usage for Mongoose Bite or Raptor Strike during Aspect of the Eagle, copy each occurrence of the action and append _eagle to the action name.
-actions.st+=/mongoose_bite,if=buff.mongoose_fury.stack=5
-actions.st+=/raptor_strike,if=talent.birds_of_prey.enabled&buff.coordinated_assault.up&(buff.coordinated_assault.remains<gcd|buff.blur_of_talons.remains<gcd)
-actions.st+=/mongoose_bite,if=talent.birds_of_prey.enabled&buff.coordinated_assault.up&(buff.coordinated_assault.remains<gcd|buff.blur_of_talons.remains<gcd)
+actions.st+=/mongoose_bite,if=buff.mongoose_fury.stack=5&talent.alpha_predator.enabled
+actions.st+=/raptor_strike,if=talent.birds_of_prey.enabled&buff.coordinated_assault.up&(buff.coordinated_assault.remains<gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<gcd)
+actions.st+=/mongoose_bite,if=talent.birds_of_prey.enabled&buff.coordinated_assault.up&(buff.coordinated_assault.remains<gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<gcd)
 actions.st+=/kill_command,if=focus+cast_regen<focus.max&buff.tip_of_the_spear.stack<3
 actions.st+=/chakrams
 actions.st+=/steel_trap

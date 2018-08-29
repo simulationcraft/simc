@@ -33,11 +33,11 @@ role=attack
 position=ranged_back
 talents=2103012
 
-head=hood_of_the_dark_reaper,id=159391,bonus_id=4779/1512/4786/4775,azerite_powers=504/21/15/86
+head=hood_of_the_dark_reaper,id=159391,bonus_id=4779/1512/4786/4775,azerite_powers=192/21/15/86
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
-shoulders=amalgamated_abomination_spaulders,id=159385,bonus_id=4779/1512/4786/4775,azerite_powers=194/459/15/86
+shoulders=hookbarbed_spaulders,id=159376,bonus_id=4779/1512/4786/4775,azerite_powers=479/30/0/13
 back=drape_of_the_loyal_vassal,id=158375,bonus_id=4779/1512/4786
-chest=deathslavers_hauberk,id=159395,bonus_id=4779/1512/4786/4775,azerite_powers=192/18/15/86
+chest=corrupted_hexxers_vestments,id=159370,bonus_id=4779/1512/4786/4775,azerite_powers=482/22/0/13
 wrists=slaughterhousechain_bracers,id=159397,bonus_id=4779/1512/4786
 hands=sepulchral_constructs_gloves,id=160213,bonus_id=4779/1512/4786
 waist=shalebiter_interlinked_chain,id=159361,bonus_id=4779/1512/4786
@@ -45,9 +45,9 @@ legs=sea_priests_greaves,id=159359,bonus_id=4779/1512/4786
 feet=surefoot_sabatons,id=159379,bonus_id=4779/1512/4786
 finger1=footbomb_championship_ring,id=159462,bonus_id=4779/1512/4786,enchant=pact_of_haste
 finger2=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
-trinket1=lustrous_golden_plumage,id=159617,bonus_id=4779/1512/4786
+trinket1=harlans_loaded_dice,id=155881,bonus_id=4779/1512
 trinket2=galecallers_boon,id=159614,bonus_id=4779/1512/4786
-main_hand=hallowed_ossein_longbow,id=158711,bonus_id=4779/1512/4786,enchant=crows_nest_scope
+main_hand=hallowed_ossein_longbow,id=158711,bonus_id=4779/1512/4786,enchant=incendiary_ammunition
 
 save=PR_Hunter_Marksmanship.simc
 
@@ -77,4 +77,3 @@ trinket2=lustrous_golden_plumage,id=159617,bonus_id=4779/1512/4786
 main_hand=twinstrike_polearm,id=158370,bonus_id=4779/1512/4786,enchant=quick_navigation
 
 save=PR_Hunter_Survival.simc
-
