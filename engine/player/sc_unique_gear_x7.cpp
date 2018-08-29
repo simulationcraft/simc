@@ -434,10 +434,8 @@ enum resource_category : unsigned
 };
 
 // Add different resource systems here
-// 2018-08-29 : Holy Power is now 1s / 1s and SotR was changed
-// Runic power and Rage will likely require updated values
 static const std::unordered_map<int, std::tuple<double, double>> __resource_map { {
-  { RESOURCE_HOLY_POWER,  std::tuple<double, double> { 1.000, 1.000 } },
+  { RESOURCE_HOLY_POWER,  std::tuple<double, double> { 1.000, 2.000 } },
   { RESOURCE_RUNIC_POWER, std::tuple<double, double> { 0.050, 0.100 } },
   { RESOURCE_RAGE,        std::tuple<double, double> { 0.025, 0.050 } }
 } };
@@ -454,8 +452,7 @@ struct bba_cb_t : public dbc_proc_callback_t
     int resource = static_cast<int>( state->action->current_resource() );
     double cost = state->action->last_resource_cost;
 
-    // Breath of Sindragosa needs to be special cased, as the ticker does no damage, and
-    // Simulationcraft does not allow it to proc special effects
+    // Breath of Sindragosa needs to be special cased, as the tick action doesn't cost any resource
     if ( state -> action -> data().id() == 155166u )
     {
       cost = 15.0;
@@ -473,13 +470,11 @@ struct bba_cb_t : public dbc_proc_callback_t
     // Protection Paladins are special :
     // - Consuming SotR charges with Seraphim doesn't trigger the callback
     // - Even though SotR can be used without a target, the effect only happens if the spell hits at
-    //   least one target
-    // - 2018-08-29 : Following changes, the values now seem tobe 3.25s buff extension and 1.9s cdr
-    //   per SotR cast
+    //   least one target and has a 3.0s value for both buff extension and the on-use's cdr
     if ( state -> action -> data().id() == 53600u &&
          state -> action -> result_is_hit( state -> result ) )
     {
-      return timespan_t::from_seconds( c == RC_BUFF ? 3.25 : 1.9 );
+      return timespan_t::from_seconds( c == RC_BUFF ? 3.0 : 3.0 );
     }
 
     if ( cost == 0.0 )
@@ -504,8 +499,8 @@ struct bba_cb_t : public dbc_proc_callback_t
     {
       // Custom call here for BoS ticks and SotR because they don't consume resources
       // The callback should probably rather check for ticks of breath_of_sindragosa, but this will do for now
-      if ( state -> action -> name_str == "breath_of_sindragosa_tick" ||
-           state -> action -> name_str == "shield_of_the_righteous" )
+      if ( state -> action -> data().id() == 155166u ||
+           state -> action -> data().id() == 53600u )
       {
         dbc_proc_callback_t::trigger( a, raw_state );
       }
@@ -526,7 +521,6 @@ struct bba_cb_t : public dbc_proc_callback_t
 
 void items::bygone_bee_almanac( special_effect_t& effect )
 {
-  // TODO: Prot paladin "resource" must be special cased
   struct bba_active_cb_t : public bba_cb_t
   {
     buff_t* bba_buff;
@@ -554,7 +548,6 @@ void items::bygone_bee_almanac( special_effect_t& effect )
     }
   };
 
-  // TODO: Prot paladin "resource" must be special cased
   struct bba_inactive_cb_t : public bba_cb_t
   {
     cooldown_t* cd;
