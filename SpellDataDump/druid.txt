@@ -1738,6 +1738,7 @@ Name             : Maim Damage (id=61252) [Spell Family (7), Passive, Hidden]
 Class            : Druid
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 85
 Attributes       : ....x.xx x....... ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9525,6 +9526,26 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 Description      : $@spelldesc202345
 Tooltip          : Haste increased by $s1%.
+
+Name             : Solar Wrath (rank=Solar) (id=279729) [Spell Family (7)] 
+Class            : Druid
+School           : Nature
+Spell Type       : Magic
+Range            : 50000 yards
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ...x.... .....x..   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : Cannot crit (93), Disable player multipliers (221)
+Effects          :
+#1 (id=736222)   : School Damage (2): nature
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+#2 (id=736367)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
+Description      : Solar Empowerment causes Solar Wrath to explode on impact for $164545s1% additional damage to all nearby enemies.
 
 Name             : Grove Tending (id=279778) [Scaling Spell (-8), Spell Family (7), Passive] 
 Class            : Druid
