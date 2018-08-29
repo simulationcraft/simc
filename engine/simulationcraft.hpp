@@ -2579,7 +2579,6 @@ private:
   double       rppm;
   timespan_t   last_trigger_attempt;
   timespan_t   last_successful_trigger;
-  timespan_t   initial_precombat_time;
   unsigned     scales_with;
 
   real_ppm_t(): player(nullptr), freq(0), modifier(0), rppm(0), scales_with()
@@ -2602,7 +2601,6 @@ public:
     rppm( freq * mod ),
     last_trigger_attempt( timespan_t::zero() ),
     last_successful_trigger( timespan_t::zero() ),
-    initial_precombat_time( timespan_t::zero() ),
     scales_with( s )
   { }
 
@@ -2619,11 +2617,6 @@ public:
 
   void set_frequency( double frequency )
   { freq = frequency; rppm = freq * modifier; }
-
-  void set_initial_precombat_time( timespan_t precombat )
-  {
-    initial_precombat_time = precombat;
-  }
 
   unsigned get_scaling() const
   {
@@ -2647,8 +2640,8 @@ public:
 
   void reset()
   {
-    last_trigger_attempt = timespan_t::from_seconds( -max_interval() );
-    last_successful_trigger = initial_precombat_time;
+    last_trigger_attempt = timespan_t::zero();
+    last_successful_trigger = timespan_t::zero();
   }
 
   bool trigger();
@@ -7662,7 +7655,6 @@ inline real_ppm_t::real_ppm_t( const std::string& name, player_t* p, const spell
   rppm( freq * modifier ),
   last_trigger_attempt( timespan_t::zero() ),
   last_successful_trigger( timespan_t::zero() ),
-  initial_precombat_time( timespan_t::zero() ),
   scales_with( p -> dbc.real_ppm_scale( data -> id() ) )
 { }
 
