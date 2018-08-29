@@ -96,6 +96,7 @@ namespace items
   // 8.0.1 - Uldir Trinkets
   void frenetic_corpuscle( special_effect_t& );
   void vigilants_bloodshaper( special_effect_t& );
+  void twitching_tentacle_of_xalzaix( special_effect_t& );
 }
 
 namespace util
@@ -964,6 +965,50 @@ void items::vigilants_bloodshaper( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Twitching Tentacle of Xalzaix
+
+void items::twitching_tentacle_of_xalzaix( special_effect_t& effect )
+{
+  struct lingering_power_callback_t : public dbc_proc_callback_t
+  {
+    buff_t* final_buff;
+
+    lingering_power_callback_t( player_t* p, special_effect_t& e, buff_t* b )
+      : dbc_proc_callback_t( p, e ), final_buff( b )
+    { }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      if ( proc_buff && proc_buff -> trigger() && proc_buff -> check() == proc_buff -> max_stack() )
+      {
+        final_buff -> trigger();
+        proc_buff -> expire();
+      }
+    }
+  };
+
+  effect.proc_flags2_ = PF2_ALL_HIT;
+
+  // Doesn't seem to be linked in the effect.
+  auto buff_data = effect.player -> find_spell( 278155 );
+  buff_t* buff = buff_t::find( effect.player, "lingering_power_of_xalzaix" );
+  if ( ! buff )
+  {
+    buff = make_buff( effect.player, "lingering_power_of_xalzaix", buff_data, effect.item );
+  }
+
+  effect.custom_buff = buff;
+
+  auto final_buff_data = effect.player -> find_spell( 278156 );
+  buff_t* final_buff = buff_t::find( effect.player, "uncontained_power" );
+  if ( ! final_buff )
+  {
+    final_buff = make_buff<stat_buff_t>( effect.player, "uncontained_power", final_buff_data, effect.item );
+  }
+
+  new lingering_power_callback_t( effect.player, effect, final_buff );
+}
+
 // Rotcrusted Voodoo Doll ===================================================
 
 void items::rotcrusted_voodoo_doll( special_effect_t& effect )
@@ -1277,6 +1322,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 268314, "268311Trigger" ); // Galecaller's Boon, assumes the player always stands in the area
   register_special_effect( 278140, items::frenetic_corpuscle );
   register_special_effect( 278383, "Reverse" ); // Azurethos' Singed Plumage
+  register_special_effect( 278154, items::twitching_tentacle_of_xalzaix );
 
   // Misc
   register_special_effect( 276123, items::darkmoon_deck_squalls );
