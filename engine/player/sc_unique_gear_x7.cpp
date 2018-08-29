@@ -432,8 +432,10 @@ enum resource_category : unsigned
 };
 
 // Add different resource systems here
+// 2018-08-29 : Holy Power is now 1s / 1s and SotR was changed
+// Runic power and Rage will likely require updated values
 static const std::unordered_map<int, std::tuple<double, double>> __resource_map { {
-  { RESOURCE_HOLY_POWER,  std::tuple<double, double> { 1.000, 2.000 } },
+  { RESOURCE_HOLY_POWER,  std::tuple<double, double> { 1.000, 1.000 } },
   { RESOURCE_RUNIC_POWER, std::tuple<double, double> { 0.050, 0.100 } },
   { RESOURCE_RAGE,        std::tuple<double, double> { 0.025, 0.050 } }
 } };
@@ -466,12 +468,12 @@ struct bba_cb_t : public dbc_proc_callback_t
     }
 
     // Protection Paladins are special :
-    // - Casting SotR triggers the same duration whether it's to extend the trinket's buff or to reduce its cooldown
     // - Consuming SotR charges with Seraphim doesn't trigger the callback
     // - Even though SotR can be used without a target, the effect only happens if the spell hits at least one target
+    // - 2018-08-29 : Following changes, the values now seem tobe 3.25s buff extension and 1.9s cdr per SotR cast
     if ( state -> action -> name_str == "shield_of_the_righteous" && state -> action -> result_is_hit( state -> result ) )
     {
-      return timespan_t::from_seconds( 3.0 );
+      return timespan_t::from_seconds( c == RC_BUFF ? 3.25 : 1.9 );
     }
 
     if ( cost == 0.0 )
