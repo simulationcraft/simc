@@ -3750,6 +3750,12 @@ struct player_t : public actor_t
     buff_t* galeforce_striking; // Gale-Force Striking weapon enchant
     buff_t* torrent_of_elements; // Torrent of Elements weapon enchant
 
+    // 8.0 - Leyshock's Grand Compendium stat buffs
+    buff_t* leyshock_crit;
+    buff_t* leyshock_haste;
+    buff_t* leyshock_mastery;
+    buff_t* leyshock_versa;
+
     // Azerite power
     buff_t* normalization_increase;
   } buffs;
@@ -7584,6 +7590,19 @@ namespace expansion
 namespace legion
 {
 } // namespace legion
+
+namespace bfa
+{
+// All Leyshocks-related functionality defined in sc_unique_gear_x7.cpp
+
+// Register a simple spell id -> stat buff type mapping
+void register_leyshocks_trigger( unsigned spell_id, stat_e stat_buff );
+
+// Trigger based on a spell id on a predetermined mappings on an actor
+void trigger_leyshocks_grand_compilation( unsigned spell_id, player_t* actor );
+// Bypass spell mapping to trigger any of the buffs required on an actor
+void trigger_leyshocks_grand_compilation( stat_e buff, player_t* actor );
+}
 } // namespace expansion
 
 // Inlines ==================================================================

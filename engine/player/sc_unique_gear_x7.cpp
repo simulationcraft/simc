@@ -78,6 +78,7 @@ namespace items
   void vial_of_storms( special_effect_t& );
   void landois_scrutiny( special_effect_t& );
   void bygone_bee_almanac( special_effect_t& );
+  void leyshocks_grand_compilation( special_effect_t& );
   // 8.0.1 - Dungeon Trinkets
   void deadeye_spyglass( special_effect_t& );
   void tiny_electromental_in_a_jar( special_effect_t& );
@@ -616,6 +617,24 @@ void items::bygone_bee_almanac( special_effect_t& effect )
   bba_inactive->deactivate();
 }
 
+// Leyshock's Grand Compilation ============================================
+
+void items::leyshocks_grand_compilation( special_effect_t& effect )
+{
+  // Crit
+  effect.player->buffs.leyshock_crit = create_buff<stat_buff_t>( effect.player, "precision_module",
+      effect.player->find_spell( 281791 ), effect.item );
+  effect.player->buffs.leyshock_haste = create_buff<stat_buff_t>( effect.player, "iteration_capacitor",
+      effect.player->find_spell( 281792 ), effect.item );
+  effect.player->buffs.leyshock_mastery = create_buff<stat_buff_t>( effect.player, "efficiency_widget",
+      effect.player->find_spell( 281794 ), effect.item );
+  effect.player->buffs.leyshock_versa = create_buff<stat_buff_t>( effect.player, "adaptive_circuit",
+      effect.player->find_spell( 281795 ), effect.item );
+
+  // We don't need to make a special effect from this item at all, since it needs very special
+  // handling. Just going to use the callback to initialize the buffs.
+  effect.type = SPECIAL_EFFECT_NONE;
+}
 
 // Jes' Howler ==============================================================
 
@@ -1302,6 +1321,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 268544, items::vial_of_storms );
   register_special_effect( 281544, items::landois_scrutiny );
   register_special_effect( 281543, items::bygone_bee_almanac );
+  register_special_effect( 281547, items::leyshocks_grand_compilation );
   register_special_effect( 266047, items::jes_howler );
   register_special_effect( 271374, items::razdunks_big_red_button );
   register_special_effect( 267402, items::merekthas_fang );
@@ -1337,3 +1357,61 @@ void unique_gear::register_target_data_initializers_bfa( sim_t* sim )
 
   sim -> register_target_data_initializer( deadeye_spyglass_constructor_t( 159623, items ) );
 }
+
+namespace expansion
+{
+namespace bfa
+{
+static std::unordered_map<unsigned, stat_e> __ls_cb_map { {
+
+} };
+
+void register_leyshocks_trigger( unsigned spell_id, stat_e stat_buff )
+{
+  __ls_cb_map[ spell_id ] = stat_buff;
+}
+
+void trigger_leyshocks_grand_compilation( unsigned spell_id, player_t* actor )
+{
+  if ( !actor->buffs.leyshock_crit )
+  {
+    return;
+  }
+
+  auto it = __ls_cb_map.find( spell_id );
+  if ( it == __ls_cb_map.end() )
+  {
+    return;
+  }
+
+  trigger_leyshocks_grand_compilation( it->second, actor );
+}
+
+void trigger_leyshocks_grand_compilation( stat_e stat, player_t* actor )
+{
+  if ( !actor->buffs.leyshock_crit )
+  {
+    return;
+  }
+
+  switch ( stat )
+  {
+    case STAT_CRIT_RATING:
+      actor->buffs.leyshock_crit->trigger();
+      break;
+    case STAT_HASTE_RATING:
+      actor->buffs.leyshock_haste->trigger();
+      break;
+    case STAT_MASTERY_RATING:
+      actor->buffs.leyshock_mastery->trigger();
+      break;
+    case STAT_VERSATILITY_RATING:
+      actor->buffs.leyshock_versa->trigger();
+      break;
+    default:
+      break;
+  }
+}
+
+} // Namespace bfa ends
+} // Namespace expansion ends

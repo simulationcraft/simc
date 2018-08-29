@@ -1261,6 +1261,11 @@ void buff_t::execute( int stacks, double value, timespan_t duration )
   }
   last_trigger = sim->current_time();
 
+  if ( data().id() > 0 )
+  {
+    expansion::bfa::trigger_leyshocks_grand_compilation( data().id(), source );
+  }
+
   // If the buff has a tick event ongoing, the rules change a bit for ongoing
   // ticking buffs, we treat executes as another "normal trigger", which
   // refreshes the buff
