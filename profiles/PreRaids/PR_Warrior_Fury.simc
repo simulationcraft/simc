@@ -61,15 +61,15 @@ actions.single_target+=/raging_blow,if=talent.carnage.enabled|(talent.massacre.e
 actions.single_target+=/furious_slash,if=talent.furious_slash.enabled
 actions.single_target+=/whirlwind
 
-head=helm_of_abyssal_malevolence,id=159430,bonus_id=4779/1512/4786/4775,azerite_powers=437/30/0/13
+head=helm_of_the_raptor_king,id=159422,bonus_id=4779/1512/4786/4775,azerite_powers=438/30/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=
-shoulders=lockjaw_shoulderplate,id=159407,bonus_id=4779/1512/4786/4775,azerite_powers=437/21/0/13
+shoulders=kraken_shell_pauldrons,id=159431,bonus_id=4779/1512/4786/4775,azerite_powers=438/459/0/13
 back=drape_of_the_loyal_vassal,id=158375,bonus_id=4779/1512/4786
-chest=breastplate_of_arterial_protection,id=159432,bonus_id=4779/1512/4786/4775,azerite_powers=437/22/0/13
+chest=ashvane_wardens_cuirass,id=159440,bonus_id=4779/1512/4786/4775,azerite_powers=438/30/0/13
 wrists=stonefury_vambraces,id=158359,bonus_id=4779/1512/4786
 hands=fangproof_gauntlets,id=159437,bonus_id=4779/1512/4786
 waist=girdle_of_pestilent_purification,id=159418,bonus_id=4779/1512/4786
-legs=sharkwater_waders,id=158361,bonus_id=4779/1512/4786
+legs=legplates_of_profane_sacrifice,id=159443,bonus_id=4779/1512/4786
 feet=ballast_sinkers,id=159428,bonus_id=4779/1512/4786
 finger1=loop_of_pulsing_veins,id=159463,bonus_id=4779/1512/4786,enchant=pact_of_haste
 finger2=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
@@ -82,8 +82,8 @@ off_hand=jeweled_sharksplitter,id=159634,bonus_id=4779/1512/4786,enchant=masterf
 # gear_ilvl=341.38
 # gear_strength=3099
 # gear_stamina=4809
-# gear_crit_rating=381
-# gear_haste_rating=1323
-# gear_mastery_rating=680
+# gear_crit_rating=468
+# gear_haste_rating=1362
+# gear_mastery_rating=554
 # gear_versatility_rating=93
 # gear_armor=3050

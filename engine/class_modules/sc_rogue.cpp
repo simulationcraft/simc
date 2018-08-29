@@ -6274,6 +6274,7 @@ void rogue_t::init_action_list()
     stealthed -> add_action( this, "Envenom", "if=combo_points>=cp_max_spend" );
     stealthed -> add_action( this, "Garrote", "cycle_targets=1,if=talent.subterfuge.enabled&refreshable&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>2", "Subterfuge: Apply or Refresh with buffed Garrotes" );
     stealthed -> add_action( this, "Garrote", "cycle_targets=1,if=talent.subterfuge.enabled&remains<=10&pmultiplier<=1&!exsanguinated&target.time_to_die-remains>2", "Subterfuge: Override normal Garrotes with snapshot versions" );
+    stealthed -> add_action( this, "Garrote", "cycle_targets=1,if=talent.subterfuge.enabled&azerite.shrouded_suffocation.enabled&target.time_to_die>remains", "Subterfuge w/ Shrouded Suffocation: Reapply for bonus CP and extended snapshot duration" );
     stealthed -> add_action( "pool_resource,for_next=1", "Subterfuge + Exsg: Even override a snapshot Garrote right after Rupture before Exsanguination" );
     stealthed -> add_action( this, "Garrote", "if=talent.subterfuge.enabled&talent.exsanguinate.enabled&cooldown.exsanguinate.remains<1&prev_gcd.1.rupture&dot.rupture.remains>5+4*cp_max_spend" );
 

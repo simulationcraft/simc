@@ -400,13 +400,6 @@ bool report::check_gear_ilevel( player_t& p, sim_t& sim )
     max_weapon_ilevel_allowed = 400;
     tier_name                 = "PR";
   }
-  else if ( p.report_information.save_str.find( "T21" ) != std::string::npos )
-  {
-    legendary_items_allowed      = 2;
-    max_ilevel_allowed           = 400; // TBD
-    max_weapon_ilevel_allowed    = 400;
-    tier_name                    = "T21";
-  }
   else if ( p.report_information.save_str.find( "T22" ) != std::string::npos )
   {
     legendary_items_allowed      = 0;
@@ -558,10 +551,10 @@ bool report::check_artifact_points( const player_t& p, sim_t& sim )
     max_purchased = 0;
     tier_name     = "PR";
   }
-  else if ( p.report_information.save_str.find( "T21" ) != std::string::npos )
+  else if ( p.report_information.save_str.find( "T22" ) != std::string::npos )
   {
     max_purchased = 0;
-    tier_name     = "T21";
+    tier_name     = "T22";
     max_crucible  = 0;
   }
   else
