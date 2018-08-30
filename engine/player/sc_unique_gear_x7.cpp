@@ -1460,7 +1460,7 @@ void register_leyshocks_trigger( unsigned spell_id, stat_e stat_buff )
 
 void trigger_leyshocks_grand_compilation( unsigned spell_id, player_t* actor )
 {
-  if ( !actor->buffs.leyshock_crit || !actor )
+  if ( !actor || !actor->buffs.leyshock_crit )
   {
     return;
   }
@@ -1476,7 +1476,7 @@ void trigger_leyshocks_grand_compilation( unsigned spell_id, player_t* actor )
 
 void trigger_leyshocks_grand_compilation( stat_e stat, player_t* actor )
 {
-  if ( !actor->buffs.leyshock_crit || !actor )
+  if ( !actor || !actor->buffs.leyshock_crit )
   {
     return;
   }
