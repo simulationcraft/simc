@@ -4273,6 +4273,8 @@ struct bloodlust_t : public shaman_spell_t
     {
       p()->buff.ancestral_resonance->trigger();
     }
+
+    expansion::bfa::trigger_leyshocks_grand_compilation( STAT_HASTE_RATING, player );
   }
 
   virtual bool ready() override
@@ -8995,8 +8997,6 @@ struct shaman_module_t : public module_t
     expansion::bfa::register_leyshocks_trigger( 188389, STAT_HASTE_RATING );
     // Chain Lightning
     expansion::bfa::register_leyshocks_trigger( 188443, STAT_HASTE_RATING );
-    // Bloodlust
-    expansion::bfa::register_leyshocks_trigger( 2825,   STAT_HASTE_RATING );
     // Earthquake rumbles
     expansion::bfa::register_leyshocks_trigger( 77478,  STAT_MASTERY_RATING );
     // Stormkeeper
