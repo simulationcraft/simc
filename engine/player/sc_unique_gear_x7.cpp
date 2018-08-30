@@ -1066,9 +1066,13 @@ void items::vanquished_tendril_of_ghuun( special_effect_t& effect )
     // Chill until we can shoot another bloody bile
     timespan_t available() const override
     {
-      return bloody_bile->cooldown->ready >= timespan_t::zero()
-             ? ( bloody_bile->cooldown->ready - sim->current_time() + timespan_t::from_millis( 1 ) )
-             : pet_t::available();
+      auto delta = bloody_bile->cooldown->ready - sim->current_time();
+      if ( delta > timespan_t::zero() )
+      {
+        return delta;
+      }
+
+      return pet_t::available();
     }
 
     void arise() override
