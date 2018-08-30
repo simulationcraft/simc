@@ -290,7 +290,7 @@ struct smite_t final : public priest_spell_t
        }
     }
 
-    
+
 
     void impact(action_state_t* s) override
     {
@@ -585,6 +585,50 @@ void init()
   unique_gear::register_special_effect( 208051, sephuzs_secret_enabler_t() );
   unique_gear::register_special_effect( 208051, sephuzs_secret_t(), true );
   unique_gear::register_special_effect( 248296, heart_of_the_void );
+
+  // Priest Leyshock's Grand Compendium basic hooks
+
+  // Haste
+  // Dark Void
+  expansion::bfa::register_leyshocks_trigger( 263346, STAT_HASTE_RATING );
+  // Dispersion
+  expansion::bfa::register_leyshocks_trigger( 47585, STAT_HASTE_RATING );
+  // Void Torrent
+  expansion::bfa::register_leyshocks_trigger( 263165, STAT_HASTE_RATING );
+  // Mind Bomb
+  expansion::bfa::register_leyshocks_trigger( 205369, STAT_HASTE_RATING );
+
+  // Critical Strike
+  // Psychic Horror
+  expansion::bfa::register_leyshocks_trigger( 64044, STAT_CRIT_RATING );
+  // Void Eruption
+  expansion::bfa::register_leyshocks_trigger( 228260, STAT_CRIT_RATING );
+  // Dispel Magic
+  expansion::bfa::register_leyshocks_trigger( 528, STAT_CRIT_RATING );
+
+  // Mastery
+  // Vampiric Embrace
+  expansion::bfa::register_leyshocks_trigger( 15286, STAT_MASTERY_RATING );
+  // Psychic Scream
+  expansion::bfa::register_leyshocks_trigger( 8122, STAT_MASTERY_RATING );
+  // Fade
+  expansion::bfa::register_leyshocks_trigger( 586, STAT_MASTERY_RATING );
+  // Purify Disease
+  expansion::bfa::register_leyshocks_trigger( 213634, STAT_MASTERY_RATING );
+
+  // Versatility
+  // Mind Flay
+  expansion::bfa::register_leyshocks_trigger( 15407, STAT_VERSATILITY_RATING );
+  // Shadow Mend
+  expansion::bfa::register_leyshocks_trigger( 186263, STAT_VERSATILITY_RATING );
+  // Shadow Word: Death
+  expansion::bfa::register_leyshocks_trigger( 32379, STAT_VERSATILITY_RATING );
+  // Silence
+  expansion::bfa::register_leyshocks_trigger( 15487, STAT_VERSATILITY_RATING );
+  // Surrender to Madness
+  expansion::bfa::register_leyshocks_trigger( 193223, STAT_VERSATILITY_RATING );
+  // Dark Ascension
+  expansion::bfa::register_leyshocks_trigger( 280711, STAT_VERSATILITY_RATING );
 }
 
 }  // namespace items

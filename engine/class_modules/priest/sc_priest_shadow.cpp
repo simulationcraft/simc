@@ -119,6 +119,14 @@ public:
 
     priest().buffs.power_overwhelming->trigger();
     priest().buffs.empty_mind->up();  // benefit tracking
+    if ( priest().talents.shadow_word_void->ok() )
+    {
+      expansion::bfa::trigger_leyshocks_grand_compilation( STAT_VERSATILITY_RATING, player );
+    }
+    else
+    {
+      expansion::bfa::trigger_leyshocks_grand_compilation( STAT_CRIT_RATING, player );
+    }
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
@@ -249,6 +257,8 @@ struct mind_sear_tick_t final : public priest_spell_t
     if ( result_is_hit( s->result ) )
     {
       priest().generate_insanity( insanity_gain, priest().gains.insanity_mind_sear, s->action );
+      expansion::bfa::trigger_leyshocks_grand_compilation( STAT_CRIT_RATING, player );
+      expansion::bfa::trigger_leyshocks_grand_compilation( STAT_HASTE_RATING, player );
     }
   }
 };
@@ -496,6 +506,8 @@ struct shadow_crash_t final : public priest_spell_t
     priest_spell_t::execute();
 
     priest().generate_insanity( insanity_gain, priest().gains.insanity_shadow_crash, execute_state->action );
+    expansion::bfa::trigger_leyshocks_grand_compilation( STAT_MASTERY_RATING, player );
+    expansion::bfa::trigger_leyshocks_grand_compilation( STAT_VERSATILITY_RATING, player );
   }
 
   timespan_t travel_time() const override
@@ -520,6 +532,7 @@ struct shadowform_t final : public priest_spell_t
 
     priest().buffs.shadowform_state->trigger();
     priest().buffs.shadowform->trigger();
+    expansion::bfa::trigger_leyshocks_grand_compilation( STAT_VERSATILITY_RATING, player );
   }
 };
 
@@ -755,6 +768,8 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
 
     priest().procs.shadowy_apparition->occur();
     schedule_execute();
+    // TODO: Determine if this is dependent on talenting into Auspicious Spirits
+    expansion::bfa::trigger_leyshocks_grand_compilation( STAT_HASTE_RATING, player );
   }
 };
 
@@ -847,6 +862,7 @@ struct shadow_word_pain_t final : public priest_spell_t
     {
       trigger_zeks();
     }
+    expansion::bfa::trigger_leyshocks_grand_compilation( STAT_HASTE_RATING, player );
   }
 
   void tick( dot_t* d ) override
@@ -866,6 +882,7 @@ struct shadow_word_pain_t final : public priest_spell_t
       if ( priest().rppm.shadowy_insight->trigger() )
       {
         trigger_shadowy_insight();
+        expansion::bfa::trigger_leyshocks_grand_compilation( STAT_MASTERY_RATING, player );
       }
     }
 
@@ -952,6 +969,7 @@ struct vampiric_touch_t final : public priest_spell_t
       child_swp->target = s->target;
       child_swp->execute();
     }
+    expansion::bfa::trigger_leyshocks_grand_compilation( STAT_MASTERY_RATING, player );
   }
 
   void tick( dot_t* d ) override
@@ -1012,6 +1030,8 @@ struct void_bolt_t final : public priest_spell_t
       {
         td.dots.vampiric_touch->extend_duration( dot_extension, true );
       }
+      // note: this is super buggy in-game and doesn't always give the buff
+      expansion::bfa::trigger_leyshocks_grand_compilation( STAT_CRIT_RATING, player );
     }
   };
 
@@ -1480,6 +1500,9 @@ struct insanity_drain_stacks_t final : public priest_buff_t<buff_t>
       {
         ids->stack_increase = make_event<stack_increase_event_t>( sim(), ids );
       }
+      // For some reason, as a shadow priest as long as you are not sitting you gain stacks of the VERS buffs
+      // I think it is ties to resource gen, but you effectively get 100% uptime
+      expansion::bfa::trigger_leyshocks_grand_compilation( STAT_VERSATILITY_RATING, priest );
     }
   };
 
