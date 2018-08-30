@@ -6418,6 +6418,7 @@ void rogue_t::init_action_list()
     stealthed -> add_action( "call_action_list,name=finish,if=combo_points.deficit<=1-(talent.deeper_stratagem.enabled&buff.vanish.up)", "Finish at 4+ CP without DS, 5+ with DS, and 6 with DS after Vanish" );
     stealthed -> add_action( this, "Shuriken Toss", "if=buff.sharpened_blades.stack>=29", "Shuriken Toss at 29+ Sharpened Blades stacks in Stealth for damage bonuses." );
     stealthed -> add_action( this, "Shadowstrike", "cycle_targets=1,if=talent.secret_technique.enabled&talent.find_weakness.enabled&debuff.find_weakness.remains<1&spell_targets.shuriken_storm=2&target.time_to_die-remains>6", "At 2 targets with Secret Technique keep up Find Weakness by cycling Shadowstrike.");
+    stealthed -> add_action( this, "Shadowstrike", "if=!talent.deeper_stratagem.enabled&azerite.blade_in_the_shadows.rank=3&spell_targets=3", "Without Deeper Stratagem and 3 Ranks of Blade in the Shadows it is worth using Shadowstrike on 3 targets." );
     stealthed -> add_action( this, "Shuriken Storm", "if=spell_targets>=3" );
     stealthed -> add_action( this, "Shadowstrike" );
 
