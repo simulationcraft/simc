@@ -1225,6 +1225,8 @@ class SpellDataGenerator(DataGenerator):
          276187, 276188, 276189, 276190, 276191, 276192, 276193, 276194, 276196, 276199,
          # Leyshock's Grand Compendium
          281792, 281794, 281795,
+         # Bloody Bite for Vanquished Tendril of G'huun
+         279664,
         ),
 
         # Warrior:

@@ -5,6 +5,8 @@
 
 #include "simulationcraft.hpp"
 
+#include "pet_spawner.hpp"
+
 #include "unique_gear.hpp"
 
 using namespace unique_gear;
@@ -98,6 +100,7 @@ namespace items
   void frenetic_corpuscle( special_effect_t& );
   void vigilants_bloodshaper( special_effect_t& );
   void twitching_tentacle_of_xalzaix( special_effect_t& );
+  void vanquished_tendril_of_ghuun( special_effect_t& );
 }
 
 namespace util
@@ -1021,6 +1024,96 @@ void items::twitching_tentacle_of_xalzaix( special_effect_t& effect )
   new lingering_power_callback_t( effect.player, effect, final_buff );
 }
 
+// Vanquished Tendril of G'huun =============================================
+
+void items::vanquished_tendril_of_ghuun( special_effect_t& effect )
+{
+  struct bloody_bile_t : public proc_spell_t
+  {
+    unsigned n_casts;
+
+    bloody_bile_t( player_t* p, const special_effect_t& effect ) :
+      proc_spell_t( "bloody_bile", p, p->find_spell( 279664 ), effect.item ),
+      n_casts( 0 )
+    {
+      background = false;
+      base_dd_min = effect.driver()->effectN( 1 ).min( effect.item );
+      base_dd_max = effect.driver()->effectN( 1 ).min( effect.item );
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      // Casts 6 times and then despawns
+      if ( ++n_casts == 6 )
+      {
+        make_event( *sim, timespan_t::zero(), [ this ]() { player->cast_pet()->dismiss(); } );
+      }
+    }
+  };
+
+  struct tendril_pet_t : public pet_t
+  {
+    bloody_bile_t* bloody_bile;
+    const special_effect_t* effect;
+
+    tendril_pet_t( const special_effect_t& effect ) :
+      pet_t( effect.player->sim, effect.player, "vanquished_tendril_of_ghuun", true, true ),
+      bloody_bile( nullptr ), effect( &effect )
+    { }
+
+    // Chill until we can shoot another bloody bile
+    timespan_t available() const override
+    {
+      return bloody_bile->cooldown->ready >= timespan_t::zero()
+             ? ( bloody_bile->cooldown->ready - sim->current_time() + timespan_t::from_millis( 1 ) )
+             : pet_t::available();
+    }
+
+    void arise() override
+    {
+      pet_t::arise();
+      bloody_bile->n_casts = 0u;
+    }
+
+    action_t* create_action( const std::string& name, const std::string& opts ) override
+    {
+      if ( ::util::str_compare_ci( name, "bloody_bile" ) )
+      {
+        bloody_bile = new bloody_bile_t( this, *effect );
+        return bloody_bile;
+      }
+      return pet_t::create_action( name, opts );
+    }
+
+    void init_action_list() override
+    {
+      pet_t::init_action_list();
+
+      get_action_priority_list( "default" )->add_action( "bloody_bile" );
+    }
+  };
+
+  struct tendril_cb_t : public dbc_proc_callback_t
+  {
+    spawner::pet_spawner_t<tendril_pet_t> spawner;
+
+    tendril_cb_t( const special_effect_t& effect ) :
+      dbc_proc_callback_t( effect.player, effect ),
+      spawner( "vanquished_tendril_of_ghuun", effect.player, [&effect]( player_t* ) {
+        return new tendril_pet_t( effect ); } )
+    {
+      spawner.set_default_duration( effect.player->find_spell( 278163 )->duration() );
+    }
+
+    void execute( action_t*, action_state_t* ) override
+    { spawner.spawn(); }
+  };
+
+  new tendril_cb_t( effect );
+}
+
 // Rotcrusted Voodoo Doll ===================================================
 
 void items::rotcrusted_voodoo_doll( special_effect_t& effect )
@@ -1336,6 +1429,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 278140, items::frenetic_corpuscle );
   register_special_effect( 278383, "Reverse" ); // Azurethos' Singed Plumage
   register_special_effect( 278154, items::twitching_tentacle_of_xalzaix );
+  register_special_effect( 278161, items::vanquished_tendril_of_ghuun );
 
   // Misc
   register_special_effect( 276123, items::darkmoon_deck_squalls );
