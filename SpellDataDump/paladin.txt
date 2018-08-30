@@ -1,4 +1,4 @@
-SimulationCraft 801-02 for World of Warcraft 8.0.1 Live (wow build 27404)
+SimulationCraft 801-02 for World of Warcraft 8.0.1 Live (wow build 27481)
 
 Name             : Haste (id=65) [Scaling Spell (-1)] 
 Class            : Paladin

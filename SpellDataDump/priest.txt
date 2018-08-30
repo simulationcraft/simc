@@ -1,4 +1,4 @@
-SimulationCraft 801-02 for World of Warcraft 8.0.1 Live (wow build 27404)
+SimulationCraft 801-02 for World of Warcraft 8.0.1 Live (wow build 27481)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
@@ -1199,6 +1199,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=39747)    : Apply Aura (6) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: 11 | Target: Self (1)
+#2 (id=476560)   : Apply Aura (6) | Modify Attack Power (104)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=476561)   : Apply Aura (6) | Unknown(235)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : For the next $d, Power Word: Shield absorbs an additional $s1%.

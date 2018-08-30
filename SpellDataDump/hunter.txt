@@ -1,4 +1,4 @@
-SimulationCraft 801-02 for World of Warcraft 8.0.1 Live (wow build 27404)
+SimulationCraft 801-02 for World of Warcraft 8.0.1 Live (wow build 27481)
 
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
