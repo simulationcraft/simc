@@ -1038,7 +1038,7 @@ void items::vanquished_tendril_of_ghuun( special_effect_t& effect )
     {
       background = false;
       base_dd_min = effect.driver()->effectN( 1 ).min( effect.item );
-      base_dd_max = effect.driver()->effectN( 1 ).min( effect.item );
+      base_dd_max = effect.driver()->effectN( 1 ).max( effect.item );
     }
 
     void execute() override
