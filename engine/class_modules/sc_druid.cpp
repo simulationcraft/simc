@@ -7184,6 +7184,8 @@ void druid_t::init_base_stats()
   resources.active_resource[ RESOURCE_RAGE         ] = primary_role() == ROLE_TANK || talent.guardian_affinity -> ok();
 
   resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10;
+  if ( specialization() == DRUID_FERAL )
+    resources.base_regen_per_second[ RESOURCE_ENERGY ] *= 1.0 + spec.feral->effectN( 12 ).percent();
   resources.base_regen_per_second[ RESOURCE_ENERGY ] *= 1.0 + talent.feral_affinity -> effectN( 2 ).percent();
 
   base_gcd = timespan_t::from_seconds( 1.5 );

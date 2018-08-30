@@ -213,7 +213,8 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=390)      : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.02703 | Mechanic: Bleed | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.03100 | Mechanic: Bleed | Target: Enemy (6)
+                   Hotfixed: AP Coefficient (0.027027 -> 0.031)
 #2 (id=117625)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Enemy (6)
 #3 (id=117626)   : Dummy (3)
@@ -2914,7 +2915,7 @@ Name             : Swipe (id=106785) [Spell Family (7)]
 Class            : Druid
 School           : Physical
 Spell Type       : Melee
-Resource         : 40 Energy (3) (id=9341)
+Resource         : 35 Energy (3) (id=9341) [Hotfixed: Cost (40 -> 35)]
 Spell Level      : 32
 Range            : 8 yards
 GCD              : 1 seconds
@@ -2944,7 +2945,7 @@ Name             : Thrash (id=106830) [Spell Family (7)]
 Class            : Druid
 School           : Physical
 Spell Type       : Melee
-Resource         : 45 Energy (3) (id=5069)
+Resource         : 40 Energy (3) (id=5069) [Hotfixed: Cost (45 -> 40)]
 Spell Level      : 12
 Range            : 8 yards
 GCD              : 1 seconds
@@ -2963,11 +2964,11 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=117262)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.07540 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
-                   Hotfixed: AP Coefficient (0.06552 -> 0.0754)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.06700 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
+                   Hotfixed: AP Coefficient (0.06552 -> 0.067)
 #2 (id=117263)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.04520 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
-                   Hotfixed: AP Coefficient (0.039312 -> 0.0452)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.04000 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
+                   Hotfixed: AP Coefficient (0.039312 -> 0.04)
 Description      : Strikes all nearby enemies, dealing $m1 Bleed damage and an additional $o2 Bleed damage over $d.
 
 |cFFFFFFFFAwards $211141s1 combo $lpoint:points;.|r
@@ -3057,7 +3058,7 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 40
 GCD              : 1 seconds
-Duration         : 15 seconds
+Duration         : 20 seconds
 Cooldown         : 180 seconds
 Category         : 1208
 Category Cooldown: 180 seconds
@@ -3681,7 +3682,8 @@ Effects          :
                    Affected Spells: Regrowth (8936)
                    Family Flags: 6
 #8 (id=260769)   : Apply Aura (6) | Modify Combat Rating Multiplier (405)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: 917504 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 917504 | Target: Self (1)
+                   Hotfixed: Base Value (50 -> 25)
 #9 (id=260770)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effects (8)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 8 | Target: Self (1)
                    Family Flags: 107
@@ -3691,6 +3693,9 @@ Effects          :
                    Family Flags: 63, 76
 #11 (id=260772)   : Apply Aura (6) | Override Spell Power per Attack Power% (366)
                    Base Value: 96 | Scaled Value: 96 | Target: Self (1)
+#12 (id=745960)   : Apply Aura (6) | Modify Power Regen (110)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 3 | Target: Self (1)
+                   Hotfixed: NEW EFFECT
 
 Name             : Restoration Druid (id=137012) [Spell Family (7), Passive, Hidden] 
 Class            : Restoration Druid
@@ -5674,7 +5679,7 @@ Name             : Brutal Slash (id=202028) [Spell Family (7)]
 Class            : Druid
 School           : Physical
 Spell Type       : Melee
-Resource         : 30 Energy (3) (id=10829)
+Resource         : 25 Energy (3) (id=10829) [Hotfixed: Cost (30 -> 25)]
 Spell Level      : 1
 Range            : 8 yards
 GCD              : 1 seconds
