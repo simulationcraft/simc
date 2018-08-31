@@ -27,19 +27,20 @@ actions.precombat+=/augmentation
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
 actions.precombat+=/raise_dead
-actions.precombat+=/army_of_the_dead
+actions.precombat+=/army_of_the_dead,delay=2
 
 # Executed every time the actor is available.
 actions=auto_attack
-actions+=/mind_freeze
-actions+=/variable,name=pooling_for_gargoyle,value=(cooldown.summon_gargoyle.remains<5&(cooldown.dark_transformation.remains<5|!equipped.137075))&talent.summon_gargoyle.enabled
+actions+=/variable,name=pooling_for_gargoyle,value=cooldown.summon_gargoyle.remains<5&talent.summon_gargoyle.enabled
 # Racials, Items, and other ogcds
 actions+=/arcane_torrent,if=runic_power.deficit>65&(pet.gargoyle.active|!talent.summon_gargoyle.enabled)&rune.deficit>=5
 actions+=/blood_fury,if=pet.gargoyle.active|!talent.summon_gargoyle.enabled
 actions+=/berserking,if=pet.gargoyle.active|!talent.summon_gargoyle.enabled
+# Custom trinkets usage
 actions+=/use_items
-actions+=/use_item,name=feloiled_infernal_machine,if=pet.gargoyle.active|!talent.summon_gargoyle.enabled
-actions+=/use_item,name=ring_of_collapsing_futures,if=(buff.temptation.stack=0&target.time_to_die>60)|target.time_to_die<60
+actions+=/use_item,name=bygone_bee_almanac,if=cooldown.summon_gargoyle.remains>60|!talent.summon_gargoyle.enabled
+actions+=/use_item,name=jes_howler,if=pet.gargoyle.active|!talent.summon_gargoyle.enabled
+actions+=/use_item,name=galecallers_beak,if=pet.gargoyle.active|!talent.summon_gargoyle.enabled
 actions+=/potion,if=cooldown.army_of_the_dead.ready|pet.gargoyle.active|buff.unholy_frenzy.up
 # Maintain Virulent Plague
 actions+=/outbreak,target_if=(dot.virulent_plague.tick_time_remains+tick_time<=dot.virulent_plague.remains)&dot.virulent_plague.remains<=gcd
@@ -55,6 +56,7 @@ actions.aoe+=/death_coil,if=death_and_decay.ticking&rune<2&!variable.pooling_for
 actions.aoe+=/scourge_strike,if=death_and_decay.ticking&cooldown.apocalypse.remains
 actions.aoe+=/clawing_shadows,if=death_and_decay.ticking&cooldown.apocalypse.remains
 actions.aoe+=/epidemic,if=!variable.pooling_for_gargoyle
+actions.aoe+=/festering_strike,target_if=debuff.festering_wound.stack<=1&cooldown.death_and_decay.remains
 actions.aoe+=/festering_strike,if=talent.bursting_sores.enabled&spell_targets.bursting_sores>=2&debuff.festering_wound.stack<=1
 actions.aoe+=/death_coil,if=buff.sudden_doom.react&rune.deficit>=4
 actions.aoe+=/death_coil,if=buff.sudden_doom.react&!variable.pooling_for_gargoyle|pet.gargoyle.active
@@ -67,7 +69,7 @@ actions.aoe+=/death_coil,if=!variable.pooling_for_gargoyle
 
 actions.cooldowns=army_of_the_dead
 actions.cooldowns+=/apocalypse,if=debuff.festering_wound.stack>=4
-actions.cooldowns+=/dark_transformation,if=(equipped.137075&cooldown.summon_gargoyle.remains>40)|(!equipped.137075|!talent.summon_gargoyle.enabled)
+actions.cooldowns+=/dark_transformation
 actions.cooldowns+=/summon_gargoyle,if=runic_power.deficit<14
 actions.cooldowns+=/unholy_frenzy,if=debuff.festering_wound.stack<4
 actions.cooldowns+=/unholy_frenzy,if=active_enemies>=2&((cooldown.death_and_decay.remains<=gcd&!talent.defile.enabled)|(cooldown.defile.remains<=gcd&talent.defile.enabled))

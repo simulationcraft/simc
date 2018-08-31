@@ -7451,7 +7451,8 @@ void death_knight_t::default_apl_blood()
   default_apl_dps_precombat();
 
   def -> add_action( "auto_attack" );
-  def -> add_action( this, "Mind Freeze" );
+  // Interrupt
+  // def -> add_action( this, "Mind Freeze" );
 
   // Racials
   def -> add_action( "blood_fury,if=cooldown.dancing_rune_weapon.ready&(!cooldown.blooddrinker.ready|!talent.blooddrinker.enabled)" );
@@ -7507,7 +7508,7 @@ void death_knight_t::default_apl_frost()
   def -> add_action( "auto_attack" );
 
   // Interrupt
-  def -> add_action( this, "Mind Freeze" );
+  // def -> add_action( this, "Mind Freeze" );
 
   // Apply frost fever and maintain Icy Talons
   def -> add_action( this, "Howling Blast", "if=!dot.frost_fever.ticking&(!talent.breath_of_sindragosa.enabled|cooldown.breath_of_sindragosa.remains>15)", "Apply Frost Fever and maintain Icy Talons" );
@@ -7623,22 +7624,23 @@ void death_knight_t::default_apl_unholy()
   default_apl_dps_precombat();
 
   precombat -> add_action( this, "Raise Dead" );
-  precombat -> add_action( this, "Army of the Dead" );
+  precombat -> add_action( this, "Army of the Dead", "delay=2" );
 
   def -> add_action( "auto_attack" );
-  def -> add_action( this, "Mind Freeze" );
+  // Interrupt
+  // def -> add_action( this, "Mind Freeze" );
   
   // Gargoyle pooling variable
-  def -> add_action( "variable,name=pooling_for_gargoyle,value=(cooldown.summon_gargoyle.remains<5&(cooldown.dark_transformation.remains<5|!equipped.137075))&talent.summon_gargoyle.enabled" );
+  def -> add_action( "variable,name=pooling_for_gargoyle,value=cooldown.summon_gargoyle.remains<5&talent.summon_gargoyle.enabled" );
 
   // Ogcd cooldowns
   def -> add_action( "arcane_torrent,if=runic_power.deficit>65&(pet.gargoyle.active|!talent.summon_gargoyle.enabled)&rune.deficit>=5", "Racials, Items, and other ogcds" );
   def -> add_action( "blood_fury,if=pet.gargoyle.active|!talent.summon_gargoyle.enabled" );
   def -> add_action( "berserking,if=pet.gargoyle.active|!talent.summon_gargoyle.enabled" );
-  def -> add_action( "use_items" );
-  def -> add_action( "use_item,name=feloiled_infernal_machine,if=pet.gargoyle.active|!talent.summon_gargoyle.enabled" );
-  def -> add_action( "use_item,name=ring_of_collapsing_futures,"
-                  "if=(buff.temptation.stack=0&target.time_to_die>60)|target.time_to_die<60" );
+  def -> add_action( "use_items", "Custom trinkets usage" );
+  def -> add_action( "use_item,name=bygone_bee_almanac,if=cooldown.summon_gargoyle.remains>60|!talent.summon_gargoyle.enabled" );
+  def -> add_action( "use_item,name=jes_howler,if=pet.gargoyle.active|!talent.summon_gargoyle.enabled" );
+  def -> add_action( "use_item,name=galecallers_beak,if=pet.gargoyle.active|!talent.summon_gargoyle.enabled" );
   def -> add_action( "potion,if=cooldown.army_of_the_dead.ready|pet.gargoyle.active|buff.unholy_frenzy.up" );
   // Maintain Virulent Plague
   def -> add_action( this, "Outbreak", "target_if=(dot.virulent_plague.tick_time_remains+tick_time<=dot.virulent_plague.remains)&dot.virulent_plague.remains<=gcd", "Maintain Virulent Plague" );
@@ -7649,7 +7651,7 @@ void death_knight_t::default_apl_unholy()
 
   cooldowns -> add_action( this, "Army of the Dead" );
   cooldowns -> add_action( this, "Apocalypse", "if=debuff.festering_wound.stack>=4" );
-  cooldowns -> add_action( this, "Dark Transformation", "if=(equipped.137075&cooldown.summon_gargoyle.remains>40)|(!equipped.137075|!talent.summon_gargoyle.enabled)" );
+  cooldowns -> add_action( this, "Dark Transformation" );
   cooldowns -> add_talent( this, "Summon Gargoyle", "if=runic_power.deficit<14" );
   cooldowns -> add_talent( this, "Unholy Frenzy", "if=debuff.festering_wound.stack<4" );
   cooldowns -> add_talent( this, "Unholy Frenzy", "if=active_enemies>=2&((cooldown.death_and_decay.remains<=gcd&!talent.defile.enabled)|(cooldown.defile.remains<=gcd&talent.defile.enabled))" );
@@ -7674,6 +7676,7 @@ void death_knight_t::default_apl_unholy()
   aoe -> add_action( this, "Scourge Strike", "if=death_and_decay.ticking&cooldown.apocalypse.remains" );
   aoe -> add_talent( this, "Clawing Shadows", "if=death_and_decay.ticking&cooldown.apocalypse.remains" );
   aoe -> add_talent( this, "Epidemic", "if=!variable.pooling_for_gargoyle" );
+  aoe -> add_action( this, "Festering Strike", "target_if=debuff.festering_wound.stack<=1&cooldown.death_and_decay.remains" );
   aoe -> add_action( this, "Festering Strike", "if=talent.bursting_sores.enabled&spell_targets.bursting_sores>=2&debuff.festering_wound.stack<=1" );
   aoe -> add_action( this, "Death Coil", "if=buff.sudden_doom.react&rune.deficit>=4" );
   aoe -> add_action( this, "Death Coil", "if=buff.sudden_doom.react&!variable.pooling_for_gargoyle|pet.gargoyle.active" );

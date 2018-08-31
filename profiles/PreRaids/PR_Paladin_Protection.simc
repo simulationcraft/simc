@@ -8,7 +8,7 @@ position=front
 talents=1200003
 
 # Default consumables
-potion=battle_potion_of_strength
+potion=bursting_blood
 flask=flask_of_the_undertow
 food=bountiful_captains_feast
 augmentation=battle_scarred
@@ -26,31 +26,32 @@ actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
+actions.precombat+=/lights_judgment
+actions.precombat+=/avenging_wrath
+actions.precombat+=/seraphim
 
 # Executed every time the actor is available.
 actions=auto_attack
-actions+=/fireblood,if=buff.avenging_wrath.up
-# Cooldowns
-actions+=/seraphim,if=cooldown.shield_of_the_righteous.charges_fractional>=2
-actions+=/avenging_wrath,if=buff.seraphim.up|cooldown.seraphim.remains<2|!talent.seraphim.enabled
-actions+=/potion,if=buff.avenging_wrath.up
+actions+=/call_action_list,name=cooldowns
 # Dumping SotR charges
 actions+=/shield_of_the_righteous,if=(buff.avengers_valor.up&cooldown.shield_of_the_righteous.charges_fractional>=2.5)&(cooldown.seraphim.remains>gcd|!talent.seraphim.enabled)
-actions+=/shield_of_the_righteous,if=(cooldown.shield_of_the_righteous.charges_fractional=3&cooldown.avenger_shield.remains>(2*gcd))
 actions+=/shield_of_the_righteous,if=(buff.avenging_wrath.up&!talent.seraphim.enabled)|buff.seraphim.up&buff.avengers_valor.up
 actions+=/shield_of_the_righteous,if=(buff.avenging_wrath.up&buff.avenging_wrath.remains<4&!talent.seraphim.enabled)|(buff.seraphim.remains<4&buff.seraphim.up)
-actions+=/use_items,if=buff.seraphim.up|!talent.seraphim.enabled
 actions+=/lights_judgment,if=buff.seraphim.up&buff.seraphim.remains<3
-actions+=/avengers_shield,if=((cooldown.shield_of_the_righteous.charges_fractional>2.5&!buff.avengers_valor.up)|active_enemies>=2)&cooldown_react
+actions+=/consecration,if=!consecration.up
 actions+=/judgment,if=(cooldown.judgment.remains<gcd&cooldown.judgment.charges_fractional>1&cooldown_react)|!talent.crusaders_judgment.enabled
 actions+=/avengers_shield,,if=cooldown_react
-actions+=/consecration,if=(cooldown.judgment.remains<=gcd&!talent.crusaders_judgment.enabled)|cooldown.avenger_shield.remains<=gcd&consecration.remains<gcd
-actions+=/consecration,if=!talent.crusaders_judgment.enabled&consecration.remains<(cooldown.judgment.remains+cooldown.avengers_shield.remains)&consecration.remains<3*gcd
 actions+=/judgment,if=cooldown_react|!talent.crusaders_judgment.enabled
 actions+=/lights_judgment,if=!talent.seraphim.enabled|buff.seraphim.up
-actions+=/blessed_hammer
+actions+=/blessed_hammer,strikes=2
 actions+=/hammer_of_the_righteous
 actions+=/consecration
+
+actions.cooldowns=fireblood,if=buff.avenging_wrath.up
+actions.cooldowns+=/seraphim,if=cooldown.shield_of_the_righteous.charges_fractional>=2
+actions.cooldowns+=/avenging_wrath,if=buff.seraphim.up|cooldown.seraphim.remains<2|!talent.seraphim.enabled
+actions.cooldowns+=/potion,if=buff.avenging_wrath.up
+actions.cooldowns+=/use_items,if=buff.seraphim.up|!talent.seraphim.enabled
 
 head=helm_of_the_raptor_king,id=159422,bonus_id=4779/1512/4775/4786,azerite_powers=395/461/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/1524
