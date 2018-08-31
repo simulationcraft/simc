@@ -3079,8 +3079,9 @@ struct windlash_t : public shaman_attack_t
   proc_types proc_type() const override
   { return PROC1_MELEE; }
 
-  double target_armor( player_t* ) const override
-  { return 0.0; }
+  // Windlash is bugged in-game and does not ignore armor (31 Aug 2018)
+  // double target_armor( player_t* ) const override
+  // { return 0.0; }
 
   timespan_t execute_time() const override
   {
