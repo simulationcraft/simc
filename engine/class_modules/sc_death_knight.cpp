@@ -14,7 +14,7 @@
 // - Trigger Virulent Eruption on enemy death if they're affected by Virulent Plague
 // - Proc Festermight on enemy death while afflicted by Festering Wounds
 // Blood
-// - Blood Plague healing
+// 
 // Frost
 //
 
@@ -3315,10 +3315,26 @@ struct army_of_the_dead_t : public death_knight_spell_t
 
 // Blood Boil and Blood Plague ==============================================
 
+struct blood_plague_heal_t : public death_knight_heal_t
+{
+  blood_plague_heal_t( death_knight_t* p ) :
+    death_knight_heal_t( "blood_plague_heal", p, p -> spell.blood_plague )
+  {
+    background = true;
+    callbacks = may_crit = may_miss = false;
+    target = p;
+    attack_power_mod.direct = attack_power_mod.tick = 0;
+    dot_duration = base_tick_time = timespan_t::zero();
+  }
+};
+
 struct blood_plague_t : public death_knight_spell_t
 {
+  blood_plague_heal_t* heal;
+
   blood_plague_t( death_knight_t* p ) :
-    death_knight_spell_t( "blood_plague", p, p -> spell.blood_plague )
+    death_knight_spell_t( "blood_plague", p, p -> spell.blood_plague ),
+    heal( new blood_plague_heal_t( p ) )
   {
     tick_may_crit = background = true;
     may_miss = may_crit = hasted_ticks = false;
@@ -3337,6 +3353,18 @@ struct blood_plague_t : public death_knight_spell_t
 
     return ta;
   }
+  
+  void tick( dot_t* d ) override
+  {
+    death_knight_spell_t::tick( d );
+
+    if ( d -> state -> result_amount > 0 )
+    {
+      heal -> base_dd_min = heal -> base_dd_max = d -> state -> result_amount;
+      heal -> execute();
+    }
+  }
+
 };
 
 struct blood_boil_t : public death_knight_spell_t
