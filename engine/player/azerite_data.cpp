@@ -1392,14 +1392,25 @@ void overwhelming_power( special_effect_t& effect )
   if ( !buff )
   {
     buff = make_buff<stat_buff_t>( effect.player, "overwhelming_power", spell )
-      -> add_stat( STAT_HASTE_RATING, power.value( 1 ) )
-      -> set_reverse( true );
+      -> add_stat( STAT_HASTE_RATING, power.value( 1 ) );
   }
 
   effect.custom_buff = buff;
   effect.spell_id = driver -> id();
 
-  new dbc_proc_callback_t( effect.player, effect );
+  struct overwhelming_power_cb_t : public dbc_proc_callback_t
+  {
+    overwhelming_power_cb_t( const special_effect_t& effect ) :
+      dbc_proc_callback_t( effect.player, effect )
+    { }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      proc_buff -> trigger( proc_buff -> max_stack() );
+    }
+  };
+
+  new overwhelming_power_cb_t( effect );
 
   // TODO: add on damage taken mechanic
   effect.player -> register_combat_begin( [ buff, driver ]( player_t* ) {
