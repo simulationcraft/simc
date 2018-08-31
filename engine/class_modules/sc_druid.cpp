@@ -2359,8 +2359,6 @@ struct moonfire_t : public druid_spell_t
       {
         p()->buff.lunar_empowerment->trigger();
       }
-      streaking_stars_trigger(SS_MOONFIRE, execute_state);
-
       // Force invalidate target cache so that it will impact on the correct targets.
       target_cache.is_valid = false;
 
@@ -2423,6 +2421,7 @@ struct moonfire_t : public druid_spell_t
   void execute() override
   {
     druid_spell_t::execute();
+    streaking_stars_trigger(SS_MOONFIRE, execute_state);
 
     damage -> target = execute_state -> target;
     damage -> schedule_execute();
