@@ -83,6 +83,9 @@ enum streaking_stars_e {
   SS_SUNFIRE,
   SS_STARSURGE,
   SS_STELLAR_FLARE,
+  SS_NEW_MOON,
+  SS_HALF_MOON,
+  SS_FULL_MOON,
   //These target the last hit enemy in game
   SS_STARFALL,
   SS_FORCE_OF_NATURE,
@@ -2275,8 +2278,6 @@ struct moonfire_t : public druid_spell_t
     {
       druid_spell_t::impact( s );
 
-      streaking_stars_trigger(SS_MOONFIRE, s);
-
       // The buff needs to be handled with the damage handler since 7.1 since it impacts Moonfire DD
       // IN-GAME BUG (Jan 20 2018): Lady and the Child Galactic Guardian procs benefit from both the DD modifier and the rage gain.
       if ( ( benefits_from_galactic_guardian || ( p() -> bugs && s -> chain_target > 0 ) )
@@ -2358,6 +2359,8 @@ struct moonfire_t : public druid_spell_t
       {
         p()->buff.lunar_empowerment->trigger();
       }
+      streaking_stars_trigger(SS_MOONFIRE, execute_state);
+
       // Force invalidate target cache so that it will impact on the correct targets.
       target_cache.is_valid = false;
 
@@ -5214,6 +5217,9 @@ struct full_moon_t : public druid_spell_t
   void execute() override
   {
     druid_spell_t::execute();
+    
+    streaking_stars_trigger(SS_FULL_MOON, execute_state);
+    
     if (p()->moon_stage == FULL_MOON && radiant_moonlight) {
       p()->moon_stage = FREE_FULL_MOON;
       p()->cooldown.moon_cd->reset(true);
@@ -5254,6 +5260,8 @@ struct half_moon_t : public druid_spell_t
   void execute() override
   {
     druid_spell_t::execute();
+    
+    streaking_stars_trigger(SS_HALF_MOON, execute_state);
 
     p() -> moon_stage++;
   }
@@ -5717,18 +5725,13 @@ struct lunar_strike_t : public druid_spell_t
 
     p() -> buff.power_of_elune -> trigger();
 
+    streaking_stars_trigger(SS_LUNAR_STRIKE, execute_state);
+
     if (p()->azerite.dawning_sun.ok())
     {
       p()->buff.dawning_sun->trigger(1, p()->azerite.dawning_sun.value());
     }
 
-  }
-
-
-  void impact(action_state_t* s) override
-  {
-    druid_spell_t::impact(s);
-    streaking_stars_trigger(SS_LUNAR_STRIKE, s);
   }
 };
 
@@ -5748,6 +5751,8 @@ struct new_moon_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
+    streaking_stars_trigger(SS_NEW_MOON, execute_state);
+    
     p() -> moon_stage++;
   }
 
@@ -5871,17 +5876,11 @@ struct sunfire_t : public druid_spell_t
   void execute() override
   {
     druid_spell_t::execute();
-
+    streaking_stars_trigger(SS_SUNFIRE, execute_state);
+ 
     damage -> target = execute_state -> target;
     damage -> schedule_execute();
   }
-
-  void impact(action_state_t* s) override
-  {
-    druid_spell_t::impact(s);
-    streaking_stars_trigger(SS_SUNFIRE, s);
-  }
-
 };
 
 // Moonkin Form Spell =======================================================
@@ -6094,7 +6093,6 @@ struct solar_wrath_t : public druid_spell_t
     {
       p ()->trigger_solar_empowerment (s);
     }
-    streaking_stars_trigger(SS_SOLAR_WRATH, s);
   }
 
   timespan_t gcd() const override
@@ -6139,6 +6137,7 @@ struct solar_wrath_t : public druid_spell_t
         {
             p()->buff.lunar_empowerment->trigger();
         }
+        streaking_stars_trigger(SS_SOLAR_WRATH, execute_state);
     }
 
     p() -> buff.power_of_elune -> trigger();
@@ -6453,12 +6452,11 @@ struct stellar_flare_t : public druid_spell_t
       return am;
   }
 
-  void impact(action_state_t* s) override
+  void execute() override
   {
-    druid_spell_t::impact(s);
-    streaking_stars_trigger(SS_STELLAR_FLARE, s);
+    druid_spell_t::execute();
+    streaking_stars_trigger(SS_STELLAR_FLARE, execute_state);
   }
-
 };
 
 // Survival Instincts =======================================================
