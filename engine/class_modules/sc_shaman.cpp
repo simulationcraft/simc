@@ -9025,6 +9025,10 @@ struct shaman_module_t : public module_t
     expansion::bfa::register_leyshocks_trigger( 170379, STAT_VERSATILITY_RATING );
     // Storm Elemental
     expansion::bfa::register_leyshocks_trigger( 192249, STAT_VERSATILITY_RATING );
+    // Lava Beam
+    expansion::bfa::register_leyshocks_trigger( 114074, STAT_VERSATILITY_RATING );
+    // Lava Beam Overload
+    expansion::bfa::register_leyshocks_trigger( 114738, STAT_VERSATILITY_RATING );
   }
 
   void register_hotfixes() const override
