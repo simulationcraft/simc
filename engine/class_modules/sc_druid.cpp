@@ -2359,6 +2359,8 @@ struct moonfire_t : public druid_spell_t
       {
         p()->buff.lunar_empowerment->trigger();
       }
+      streaking_stars_trigger(SS_MOONFIRE, execute_state);
+
       // Force invalidate target cache so that it will impact on the correct targets.
       target_cache.is_valid = false;
 
