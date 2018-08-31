@@ -5073,6 +5073,8 @@ struct celestial_alignment_t : public druid_spell_t
     
     p() -> buff.celestial_alignment -> trigger();
 
+    expansion::bfa::trigger_leyshocks_grand_compilation( STAT_VERSATILITY_RATING, player );
+    
     //Trigger after triggering the buff so the cast procs the spell
     streaking_stars_trigger(SS_CELESTIAL_ALIGNMENT, nullptr);
   }
@@ -5218,6 +5220,8 @@ struct full_moon_t : public druid_spell_t
   {
     druid_spell_t::execute();
     
+    expansion::bfa::trigger_leyshocks_grand_compilation( STAT_VERSATILITY_RATING, player );
+    
     streaking_stars_trigger(SS_FULL_MOON, execute_state);
     
     if (p()->moon_stage == FULL_MOON && radiant_moonlight) {
@@ -5260,6 +5264,8 @@ struct half_moon_t : public druid_spell_t
   void execute() override
   {
     druid_spell_t::execute();
+    
+    expansion::bfa::trigger_leyshocks_grand_compilation( STAT_HASTE_RATING, player );
     
     streaking_stars_trigger(SS_HALF_MOON, execute_state);
 
@@ -5480,6 +5486,7 @@ struct incarnation_t : public druid_spell_t
 
     if (p()->buff.incarnation_moonkin->check())
     {
+      expansion::bfa::trigger_leyshocks_grand_compilation( STAT_HASTE_RATING, player );
       streaking_stars_trigger(SS_CELESTIAL_ALIGNMENT, nullptr);
     }
 
@@ -5751,6 +5758,8 @@ struct new_moon_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
+    expansion::bfa::trigger_leyshocks_grand_compilation( STAT_VERSATILITY_RATING, player );
+    
     streaking_stars_trigger(SS_NEW_MOON, execute_state);
     
     p() -> moon_stage++;
@@ -6136,6 +6145,7 @@ struct solar_wrath_t : public druid_spell_t
         if (rng().roll(p()->spec.eclipse->effectN(1).percent()))
         {
             p()->buff.lunar_empowerment->trigger();
+            expansion::bfa::trigger_leyshocks_grand_compilation( STAT_VERSATILITY_RATING, player );
         }
         streaking_stars_trigger(SS_SOLAR_WRATH, execute_state);
     }
@@ -6594,6 +6604,7 @@ struct force_of_nature_t : public druid_spell_t
       if ( p() -> force_of_nature[i] -> is_sleeping() )
       {
         p() -> force_of_nature[i] -> summon( summon_duration );
+        expansion::bfa::trigger_leyshocks_grand_compilation( STAT_CRIT_RATING, player );
       }
     }
   }
@@ -10223,6 +10234,40 @@ struct druid_module_t : public module_t
     // register_special_effect( 207932, tearstone_of_elune );
     // register_special_effect( 207271, the_dark_titans_advice );
     // register_special_effect( 208191, essence_of_infusion_t() );
+
+    // Druid Leyshock's Grand Compendium basic hooks
+    // Balance
+    // Assumption is buff procs before streaking stars damage is calculated
+    // TODO:Moonfire (crit on dot ticks?)
+    //      Sunfire (vers on dot ticks?)
+    //      Force of Nature (crit on treant melee?)
+    //      Fury of Elune (haste on tick)
+    //      Starfall (mastery per tic, haste per impact?)
+    //      Shooting Stars (haste)
+    //      Solar Beam (vers & haste)
+    //      Nature's Balance (haste when out of combat)
+    //      Flap? (mastery)
+    //      Solar Empowerment Eclipse proc from Lunar Strike cast (which stat?)
+    //      Generic druid spells (many, see https://docs.google.com/spreadsheets/d/1QA5-57JSdpi_DJXxb-1UYnKeEz4-lNVX5OSHaYBc8nM/edit#gid=1802579435)
+    //
+    // Moonfire
+    expansion::bfa::register_leyshocks_trigger( 8921, STAT_CRIT_RATING );
+    // Sunfire
+    expansion::bfa::register_leyshocks_trigger( 93402, STAT_VERSATILITY_RATING );
+    // Solar Wrath
+    expansion::bfa::register_leyshocks_trigger( 190984, STAT_CRIT_RATING );
+    // Lunar Strike
+    expansion::bfa::register_leyshocks_trigger( 194153, STAT_HASTE_RATING );
+    // Starsurge
+    expansion::bfa::register_leyshocks_trigger( 78674, STAT_VERSATILITY_RATING );
+    // Warrior of Elune
+    expansion::bfa::register_leyshocks_trigger( 202425, STAT_HASTE_RATING );
+    // Stellar Flare
+    expansion::bfa::register_leyshocks_trigger( 202347, STAT_VERSATILITY_RATING );
+    // Fury of Elune
+    expansion::bfa::register_leyshocks_trigger( 202770, STAT_MASTERY_RATING );
+    // Innervate
+    expansion::bfa::register_leyshocks_trigger( 29166, STAT_MASTERY_RATING );
   }
 
   virtual void register_hotfixes() const override
