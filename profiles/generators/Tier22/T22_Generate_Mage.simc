@@ -60,7 +60,7 @@ role=spell
 position=ranged_back
 talents=1013033
 
-head=,id=160719,bonus_id=4824/1507/4775,azerite_powers=485/459/13
+head=,id=159252,bonus_id=1557/4819/4775/4786,azerite_powers=479/30/13
 neck=,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
 shoulder=,id=160726,bonus_id=4824/1507/4775,azerite_powers=485/21/13
 back=,id=160642,bonus_id=4800/1507
@@ -71,7 +71,7 @@ waist=,id=160734,bonus_id=4800/1507
 legs=,id=160615,bonus_id=4800/1507
 feet=,id=160714,bonus_id=4800/1507
 finger1=,id=160645,bonus_id=4800/1507,enchant=pact_of_versatility
-finger2=,id=158314,bonus_id=1542/4779,enchant=pact_of_versatility
+finger2=,id=159461,bonus_id=1542/4779,enchant=pact_of_versatility
 trinket1=,id=160651,bonus_id=4800/1507
 trinket2=,id=160656,bonus_id=4800/1507
 main_hand=,id=160689,bonus_id=4800/1507,enchant=torrent_of_elements
