@@ -1811,7 +1811,7 @@ struct eye_beam_t : public demon_hunter_spell_t
     timespan_t duration = composite_dot_duration( execute_state );
 
     // Since Demonic triggers Meta with 8s + hasted duration, need to extend by the hasted duration after have an execute_state
-    if (extend_meta)
+    if (true) // 8/30/2018 demonic meta always gets the increased channel time
     {
       p()->buff.metamorphosis->extend_duration(p(), duration);
     }
@@ -3843,40 +3843,43 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
       return false;
     }
 
-    if ( p().specialization() == DEMON_HUNTER_HAVOC )
-    {
-      // If we have an initial trigger from Eye Beam, set the flag for future validation
-      if ( p().executing && p().executing->id == p().spec.eye_beam->id() )
-      {
-        extended_by_demonic = true;
-      }
-      else
-      {
-        extended_by_demonic = false;
-      }
-    }
+    // 8/30/2018 currently you can extend demonic inside meta any # of times
+    //if ( p().specialization() == DEMON_HUNTER_HAVOC )
+    //{
+    //  // If we have an initial trigger from Eye Beam, set the flag for future validation
+    //  if ( p().executing && p().executing->id == p().spec.eye_beam->id() )
+    //  {
+    //    extended_by_demonic = true;
+    //  }
+    //  else
+    //  {
+    //    extended_by_demonic = false;
+    //  }
+    //}
 
     return true;
   }
 
   void extend_duration(player_t* p, timespan_t extra_seconds) override
   {
-    if ( this->p().specialization() == DEMON_HUNTER_HAVOC && p->executing )
-    {
-      // If we extend the duration with a proper Meta cast, we can clear the flag as successive Eye Beams can extend again
-      if ( p->executing->id == this->p().spec.metamorphosis->id() )
-      {
-        extended_by_demonic = false;
-      }
-      // If we are triggering from Eye Beam, we should disallow any additional full Demonic extensions
-      else if ( p->executing->id == this->p().spec.eye_beam->id() && extra_seconds == DEMONIC_EXTEND_DURATION )
-      {
-        if ( extended_by_demonic )
-          return;
 
-        extended_by_demonic = true;
-      }
-    }
+    // 8/30/2018 currently you can extend demonic inside meta any # of times
+    //if ( this->p().specialization() == DEMON_HUNTER_HAVOC && p->executing )
+    //{
+    //  // If we extend the duration with a proper Meta cast, we can clear the flag as successive Eye Beams can extend again
+    //  if ( p->executing->id == this->p().spec.metamorphosis->id() )
+    //  {
+    //    extended_by_demonic = false;
+    //  }
+    //  // If we are triggering from Eye Beam, we should disallow any additional full Demonic extensions
+    //  else if ( p->executing->id == this->p().spec.eye_beam->id() && extra_seconds == DEMONIC_EXTEND_DURATION )
+    //  {
+    //    if ( extended_by_demonic )
+    //      return;
+	//
+    //    extended_by_demonic = true;
+    //  }
+    //}
 
     buff_t::extend_duration(p, extra_seconds);
   }
