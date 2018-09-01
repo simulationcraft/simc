@@ -3448,6 +3448,15 @@ struct lunar_inspiration_t : public cat_attack_t
     return cat_attack_t::available_targets( tl );
   }
 
+  virtual double bonus_da(const action_state_t* s) const override
+  {
+    double da = cat_attack_t::bonus_da(s);
+
+    da += p()->azerite.power_of_the_moon.value(2);
+
+    return da;
+  }
+
   void execute() override
   {
     // Force invalidate target cache so that it will impact on the correct targets.
