@@ -26,73 +26,43 @@ actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
-actions.precombat+=/chi_burst
+actions.precombat+=/chi_burst,if=(!talent.serenity.enabled|!talent.fist_of_the_white_tiger.enabled)
 actions.precombat+=/chi_wave
 
 # Executed every time the actor is available.
 actions=auto_attack
 actions+=/spear_hand_strike,if=target.debuff.casting.react
+actions+=/rushing_jade_wind,if=talent.serenity.enabled&cooldown.serenity.remains<3&energy.time_to_max>1&buff.rushing_jade_wind.down
 # Touch of Karma on cooldown, if Good Karma is enabled equal to 100% of maximum health
 actions+=/touch_of_karma,interval=90,pct_health=0.5,if=!talent.Good_Karma.enabled,interval=90,pct_health=0.5
-actions+=/touch_of_karma,interval=90,pct_health=1.0,if=talent.good_karma.enabled&buff.bloodlust.down&time>1
-actions+=/touch_of_karma,interval=90,pct_health=1.0,if=talent.good_karma.enabled&prev_gcd.1.touch_of_death&buff.bloodlust.up
+actions+=/touch_of_karma,interval=90,pct_health=1,if=talent.Good_Karma.enabled,interval=90,pct_health=1
 # Potion if Serenity or Storm, Earth, and Fire are up or you are running serenity and a main stat trinket procs, or you are under the effect of bloodlust, or target time to die is greater or equal to 60
 actions+=/potion,if=buff.serenity.up|buff.storm_earth_and_fire.up|(!talent.serenity.enabled&trinket.proc.agility.react)|buff.bloodlust.react|target.time_to_die<=60
-actions+=/touch_of_death,if=target.time_to_die<=9
-# Call the Serenity action list if you're using Serenity and have more than two ranks of Swift Roundhouse Trait
-actions+=/call_action_list,name=serenitySR,if=((talent.serenity.enabled&cooldown.serenity.remains<=0)|buff.serenity.up)&azerite.swift_roundhouse.enabled&time>30
-# Call the Serenity action list if you're using Serenity and Serenity is available (or you're currently in Serenity)
-actions+=/call_action_list,name=serenity,if=((!azerite.swift_roundhouse.enabled&talent.serenity.enabled&cooldown.serenity.remains<=0)|buff.serenity.up)&time>30
-# Call the Serenity Opener action list if you're using Serenity and have more than two ranks of Swift Roundhouse Trait
-actions+=/call_action_list,name=serenity_openerSR,if=(talent.serenity.enabled&cooldown.serenity.remains<=0|buff.serenity.up)&time<30&azerite.swift_roundhouse.enabled
-# Call the Serenity Opener action list if you're using Serenity and Serenity is available (or you're currently in Serenity)
-actions+=/call_action_list,name=serenity_opener,if=(!azerite.swift_roundhouse.enabled&talent.serenity.enabled&cooldown.serenity.remains<=0|buff.serenity.up)&time<30
-# Call the SEF action list if you're using SEF and are currently in SEF or have 2 SEF stacks
-actions+=/call_action_list,name=sef,if=!talent.serenity.enabled&(buff.storm_earth_and_fire.up|cooldown.storm_earth_and_fire.charges=2)
-# Call the SEF action list if you're not using Serenity and:
-# - FoF cd <= 12
-# - Chi >= 3
-# - RSK cd >= 1
-# OR the target will die within 25 seconds OR ToD is on the target
-actions+=/call_action_list,name=sef,if=(!talent.serenity.enabled&cooldown.fists_of_fury.remains<=12&chi>=3&cooldown.rising_sun_kick.remains<=1)|target.time_to_die<=25|cooldown.touch_of_death.remains>112
-# Call the SEF action list if you're using Serenity and:
-# - Using DHC
-# - FoF cd <= 6
-# - Chi >= 3
-# - RSK cd <= 1
-# OR the target will die within 15 seconds OR ToD is on the target and you have 1 stack of SEF
-actions+=/call_action_list,name=sef,if=(!talent.serenity.enabled&!equipped.drinking_horn_cover&cooldown.fists_of_fury.remains<=6&chi>=3&cooldown.rising_sun_kick.remains<=1)|target.time_to_die<=15|cooldown.touch_of_death.remains>112&cooldown.storm_earth_and_fire.charges=1
-# Exactly the same as previous line, but with an added check whether you have 1 stack of SEF
-actions+=/call_action_list,name=sef,if=(!talent.serenity.enabled&cooldown.fists_of_fury.remains<=12&chi>=3&cooldown.rising_sun_kick.remains<=1)|target.time_to_die<=25|cooldown.touch_of_death.remains>112&cooldown.storm_earth_and_fire.charges=1
-# Call the AoE action list if there are more than 3 enemies
-actions+=/call_action_list,name=aoe,if=active_enemies>3
+actions+=/call_action_list,name=serenity,if=buff.serenity.up
+actions+=/fist_of_the_white_tiger,if=(energy.time_to_max<1|(talent.serenity.enabled&cooldown.serenity.remains<2))&chi.max-chi>=3
+actions+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=(energy.time_to_max<1|(talent.serenity.enabled&cooldown.serenity.remains<2))&chi.max-chi>=2&!prev_gcd.1.tiger_palm
+actions+=/call_action_list,name=cd
 # Call the ST action list if there are 3 or less enemies
-actions+=/call_action_list,name=st,if=active_enemies<=3
+actions+=/call_action_list,name=st,if=(active_enemies<4&azerite.swift_roundhouse.rank<3)|active_enemies<5
+# Call the AoE action list if there are more than 3 enemies
+actions+=/call_action_list,name=aoe,if=(active_enemies>=4&azerite.swift_roundhouse.rank<3)|active_enemies>=5
 
 # Actions.AoE is intended for use with Hectic_Add_Cleave and currently needs to be optimized
-actions.aoe=call_action_list,name=cd
-actions.aoe+=/energizing_elixir,if=!prev_gcd.1.tiger_palm&chi<=1&(cooldown.rising_sun_kick.remains=0|(talent.fist_of_the_white_tiger.enabled&cooldown.fist_of_the_white_tiger.remains=0)|energy<50)
+actions.aoe=whirling_dragon_punch
+actions.aoe+=/energizing_elixir,if=!prev_gcd.1.tiger_palm&chi<=1&energy<50
+actions.aoe+=/fists_of_fury,if=energy.time_to_max>2.5
+actions.aoe+=/rushing_jade_wind,if=buff.rushing_jade_wind.down&energy.time_to_max>1
+actions.aoe+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=(talent.whirling_dragon_punch.enabled&cooldown.whirling_dragon_punch.remains<gcd)&cooldown.fists_of_fury.remains>3
+actions.aoe+=/spinning_crane_kick,if=!prev_gcd.1.spinning_crane_kick
+actions.aoe+=/chi_burst,if=chi<=3
 actions.aoe+=/arcane_torrent,if=chi.max-chi>=1&energy.time_to_max>=0.5
-actions.aoe+=/fists_of_fury,if=talent.serenity.enabled&!equipped.drinking_horn_cover&cooldown.serenity.remains>=5&energy.time_to_max>2
-actions.aoe+=/fists_of_fury,if=talent.serenity.enabled&equipped.drinking_horn_cover&(cooldown.serenity.remains>=15|cooldown.serenity.remains<=4)&energy.time_to_max>2
-actions.aoe+=/fists_of_fury,if=!talent.serenity.enabled&energy.time_to_max>2
-actions.aoe+=/fists_of_fury,if=cooldown.rising_sun_kick.remains>=3.5&chi<=5
-actions.aoe+=/whirling_dragon_punch
-actions.aoe+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=(talent.whirling_dragon_punch.enabled&cooldown.whirling_dragon_punch.remains<gcd)&!prev_gcd.1.rising_sun_kick&cooldown.fists_of_fury.remains>gcd
-actions.aoe+=/chi_burst,if=chi<=3&(cooldown.rising_sun_kick.remains>=5|cooldown.whirling_dragon_punch.remains>=5)&energy.time_to_max>1
-actions.aoe+=/chi_burst
-actions.aoe+=/spinning_crane_kick,if=(active_enemies>=3|(buff.bok_proc.up&chi.max-chi>=0))&!prev_gcd.1.spinning_crane_kick&set_bonus.tier21_4pc
-actions.aoe+=/spinning_crane_kick,if=active_enemies>=3&!prev_gcd.1.spinning_crane_kick&cooldown.fists_of_fury.remains>gcd
-actions.aoe+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick&chi.max-chi>=1&set_bonus.tier21_4pc&(!set_bonus.tier19_2pc|talent.serenity.enabled)
-actions.aoe+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=(chi>1|buff.bok_proc.up|(talent.energizing_elixir.enabled&cooldown.energizing_elixir.remains<cooldown.fists_of_fury.remains))&((cooldown.rising_sun_kick.remains>1&(!talent.fist_of_the_white_tiger.enabled|cooldown.fist_of_the_white_tiger.remains>1)|chi>4)&(cooldown.fists_of_fury.remains>1|chi>2)|prev_gcd.1.tiger_palm)&!prev_gcd.1.blackout_kick
-actions.aoe+=/crackling_jade_lightning,if=equipped.the_emperors_capacitor&buff.the_emperors_capacitor.stack>=19&energy.time_to_max>3
-actions.aoe+=/crackling_jade_lightning,if=equipped.the_emperors_capacitor&buff.the_emperors_capacitor.stack>=14&cooldown.serenity.remains<13&talent.serenity.enabled&energy.time_to_max>3
-actions.aoe+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick&chi.max-chi>=1&set_bonus.tier21_4pc&buff.bok_proc.up
-actions.aoe+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&!prev_gcd.1.energizing_elixir&(chi.max-chi>=2|energy.time_to_max<3)
-actions.aoe+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&!prev_gcd.1.energizing_elixir&energy.time_to_max<=1&chi.max-chi>=2
-actions.aoe+=/chi_wave,if=chi<=3&(cooldown.rising_sun_kick.remains>=5|cooldown.whirling_dragon_punch.remains>=5)&energy.time_to_max>1
+actions.aoe+=/fist_of_the_white_tiger,if=chi.max-chi>=3&(energy>46|buff.rushing_jade_wind.down)
+actions.aoe+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&chi.max-chi>=2&(energy>56|buff.rushing_jade_wind.down)
 actions.aoe+=/chi_wave
+actions.aoe+=/flying_serpent_kick,if=buff.bok_proc.down,interrupt=1
+actions.aoe+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick
 
+# Cooldowns
 actions.cd=invoke_xuen_the_white_tiger
 actions.cd+=/use_item,name=lustrous_golden_plumage
 actions.cd+=/blood_fury
@@ -102,118 +72,30 @@ actions.cd+=/arcane_torrent,if=chi.max-chi>=1&energy.time_to_max>=0.5
 actions.cd+=/lights_judgment
 actions.cd+=/fireblood
 actions.cd+=/ancestral_call
-actions.cd+=/touch_of_death
+actions.cd+=/touch_of_death,if=target.time_to_die>9
+actions.cd+=/storm_earth_and_fire,if=cooldown.storm_earth_and_fire.charges=2|(cooldown.fists_of_fury.remains<=6&chi>=3&cooldown.rising_sun_kick.remains<=1)|target.time_to_die<=15
+actions.cd+=/serenity,if=cooldown.rising_sun_kick.remains<=2|target.time_to_die<=12
 
-actions.sef=tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&!prev_gcd.1.energizing_elixir&energy=energy.max&chi<1
-actions.sef+=/call_action_list,name=cd
-actions.sef+=/storm_earth_and_fire,if=!buff.storm_earth_and_fire.up
-actions.sef+=/call_action_list,name=aoe,if=active_enemies>3
-actions.sef+=/call_action_list,name=st,if=active_enemies<=3
+# Serenity priority
+actions.serenity=rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains
+actions.serenity+=/fists_of_fury,if=(buff.bloodlust.up&prev_gcd.1.rising_sun_kick&!azerite.swift_roundhouse.enabled)|buff.serenity.remains<1|active_enemies>1
+actions.serenity+=/spinning_crane_kick,if=!prev_gcd.1.spinning_crane_kick&(active_enemies>=3|(active_enemies=2&prev_gcd.1.blackout_kick))
+actions.serenity+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains
 
-actions.serenity=tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&!prev_gcd.1.energizing_elixir&energy=energy.max&chi<1&!buff.serenity.up
-actions.serenity+=/call_action_list,name=cd
-# Needs to be rewritten for BFA
-actions.serenity+=/rushing_jade_wind,if=talent.rushing_jade_wind.enabled&!prev_gcd.1.rushing_jade_wind&buff.rushing_jade_wind.down
-actions.serenity+=/serenity,if=cooldown.rising_sun_kick.remains<=2&cooldown.fists_of_fury.remains<=4
-actions.serenity+=/fists_of_fury,if=prev_gcd.1.rising_sun_kick&prev_gcd.2.serenity
-actions.serenity+=/fists_of_fury,if=buff.serenity.remains<=1.05
-actions.serenity+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains
-actions.serenity+=/fist_of_the_white_tiger,if=prev_gcd.1.blackout_kick&prev_gcd.2.rising_sun_kick&chi.max-chi>2
-actions.serenity+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=prev_gcd.1.blackout_kick&prev_gcd.2.rising_sun_kick&chi.max-chi>1
-actions.serenity+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick&cooldown.rising_sun_kick.remains>=2&cooldown.fists_of_fury.remains>=2
-actions.serenity+=/spinning_crane_kick,if=active_enemies>=3&!prev_gcd.1.spinning_crane_kick
-actions.serenity+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains
-actions.serenity+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick
-
-actions.serenitySR=tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&!prev_gcd.1.energizing_elixir&energy=energy.max&chi<1&!buff.serenity.up
-actions.serenitySR+=/call_action_list,name=cd
-actions.serenitySR+=/serenity,if=cooldown.rising_sun_kick.remains<=2
-actions.serenitySR+=/fists_of_fury,if=buff.serenity.remains<=1.05
-actions.serenitySR+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains
-actions.serenitySR+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick&cooldown.rising_sun_kick.remains>=2&cooldown.fists_of_fury.remains>=2
-actions.serenitySR+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains
-
-actions.serenity_opener=fist_of_the_white_tiger,if=buff.serenity.down
-actions.serenity_opener+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&buff.serenity.down&chi<4
-actions.serenity_opener+=/call_action_list,name=cd,if=buff.serenity.down
-actions.serenity_opener+=/call_action_list,name=serenity,if=buff.bloodlust.down
-actions.serenity_opener+=/serenity
-actions.serenity_opener+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains
-actions.serenity_opener+=/fists_of_fury,if=prev_gcd.1.rising_sun_kick&prev_gcd.2.serenity
-actions.serenity_opener+=/fists_of_fury,if=prev_gcd.1.rising_sun_kick&prev_gcd.2.blackout_kick
-actions.serenity_opener+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick&cooldown.rising_sun_kick.remains>=2&cooldown.fists_of_fury.remains>=2
-actions.serenity_opener+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick
-
-actions.serenity_openerSR=fist_of_the_white_tiger,if=buff.serenity.down
-actions.serenity_openerSR+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=buff.serenity.down&chi<4
-actions.serenity_openerSR+=/call_action_list,name=cd,if=buff.serenity.down
-actions.serenity_openerSR+=/call_action_list,name=serenity,if=buff.bloodlust.down
-actions.serenity_openerSR+=/serenity
-actions.serenity_openerSR+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains
-actions.serenity_openerSR+=/fists_of_fury,if=buff.serenity.remains<1
-actions.serenity_openerSR+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick&cooldown.rising_sun_kick.remains>=2&cooldown.fists_of_fury.remains>=2
-actions.serenity_openerSR+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains
-
-# Default action list
-actions.st=invoke_xuen_the_white_tiger
-actions.st+=/touch_of_death
-actions.st+=/storm_earth_and_fire,if=!buff.storm_earth_and_fire.up
-# Use Rising Sun Kick with 2 stacks of SR if applicable
-actions.st+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=azerite.swift_roundhouse.enabled&buff.swift_roundhouse.stack=2
-# Needs to be rewritten for BFA
-actions.st+=/rushing_jade_wind,if=buff.rushing_jade_wind.down&!prev_gcd.1.rushing_jade_wind
-actions.st+=/energizing_elixir,if=!prev_gcd.1.tiger_palm
-# T21 set bonus conditional
-# Cast Blackout Kick if:
-# - Previous GCD was not Blackout Kick
-# - Blackout Kick! is available
-# - You're not at max Chi
-actions.st+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick&chi.max-chi>=1&set_bonus.tier21_4pc&buff.bok_proc.up
-# Cast FotWT if you will gain 3 or more Chi
-actions.st+=/fist_of_the_white_tiger,if=(chi<=2)
-# Cast Tiger Palm if:
-# - Previous GCD was not Tiger Palm
-# - Previous GCD was not EE (NOTE: redundant because of the Energy check, needs to be rewritten for BFA)
-# - You will cap Energy before next GCD
-# - You will gain 2 or more Chi
-actions.st+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&chi<=3&energy.time_to_max<2
-actions.st+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&chi.max-chi>=2&buff.serenity.down&cooldown.fist_of_the_white_tiger.remains>energy.time_to_max
+# Single target / Cleave priority
+actions.st=cancel_buff,name=rushing_jade_wind,if=active_enemies=1&(!talent.serenity.enabled|cooldown.serenity.remains>3)
 actions.st+=/whirling_dragon_punch
-# FoF usage with Swift Roundhouse
-actions.st+=/fists_of_fury,if=chi>=3&energy.time_to_max>2.5&azerite.swift_roundhouse.rank<3
-# Cast Rising Sun Kick if:
-# - You are using SEF, and you have 3 or more Chi AND 40 or more energy OR 5 or more Chi
-# - You are using Serenity, 6 or more seconds remain on the cooldown of Serenity, and you have 3 or more Chi AND 40 or more energy OR 5 or more Chi 
-actions.st+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=((chi>=3&energy>=40)|chi>=5)&(talent.serenity.enabled|cooldown.serenity.remains>=6)&!azerite.swift_roundhouse.enabled
-# Cast Fists of Fury if:
-# - You are using SEF
-actions.st+=/fists_of_fury,if=!talent.serenity.enabled&(azerite.swift_roundhouse.rank<3|cooldown.whirling_dragon_punch.remains<13)
-# Cast RSK if:
-# - You are using SEF OR you are using Serenity and 5 or more seconds remain on the cooldown of Serenity
-actions.st+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=cooldown.serenity.remains>=5|(!talent.serenity.enabled)&!azerite.swift_roundhouse.enabled
-# Cast Blackout Kick if:
-# - Previous GCD was not BoK
-# - You are not at max Chi
-actions.st+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=cooldown.fists_of_fury.remains>2&!prev_gcd.1.blackout_kick&energy.time_to_max>1&azerite.swift_roundhouse.rank>2
-# Flying Serpent Kick for mastery resets
-actions.st+=/flying_serpent_kick,if=prev_gcd.1.blackout_kick&energy.time_to_max>2&chi>1,interrupt=1
-actions.st+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.swift_roundhouse.stack<2&!prev_gcd.1.blackout_kick
-# Legacy for The Emperors Capacitor
-actions.st+=/crackling_jade_lightning,if=equipped.the_emperors_capacitor&buff.the_emperors_capacitor.stack>=19&energy.time_to_max>3
-actions.st+=/crackling_jade_lightning,if=equipped.the_emperors_capacitor&buff.the_emperors_capacitor.stack>=14&cooldown.serenity.remains<13&talent.serenity.enabled&energy.time_to_max>3
-actions.st+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick
+actions.st+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=(cooldown.fists_of_fury.remains>2|chi>=5|azerite.swift_roundhouse.rank>2)
+actions.st+=/rushing_jade_wind,if=buff.rushing_jade_wind.down&energy.time_to_max>1&active_enemies>1
+actions.st+=/fists_of_fury,if=energy.time_to_max>2.5&(azerite.swift_roundhouse.rank<3|(cooldown.whirling_dragon_punch.remains<10&talent.whirling_dragon_punch.enabled)|active_enemies>1)
+actions.st+=/fist_of_the_white_tiger,if=chi<=2&(buff.rushing_jade_wind.down|energy>46)
+actions.st+=/energizing_elixir,if=chi<=3&energy<50
+actions.st+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick&(cooldown.rising_sun_kick.remains>2|chi>=3)&(cooldown.fists_of_fury.remains>2|chi>=4|azerite.swift_roundhouse.enabled)&buff.swift_roundhouse.stack<2
 actions.st+=/chi_wave
-# Will need to be rewritten for BFA
-# Current rule: Cast Chi Burst if:
-# - You have 3 or less Chi
-# - RSK is up in 5 or more seconds OR WDP is up in 5 or more seconds
-# - You will not cap energy before the next GCD
-actions.st+=/chi_burst,if=energy.time_to_max>1&talent.serenity.enabled
-# Cast Tiger Palm if:
-# - Previous ability was not Tiger Palm or Energizing Elixir
-# - You will gain at least 2 Chi, OR you will cap energy within 3 seconds (NOTE: Could cast TP even at 5 Chi just to prevent energy capping, in theory)
-actions.st+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&!prev_gcd.1.energizing_elixir&(chi.max-chi>=2|energy.time_to_max<3)&!buff.serenity.up
-actions.st+=/chi_burst,if=chi.max-chi>=3&energy.time_to_max>1&!talent.serenity.enabled
+actions.st+=/chi_burst,if=chi.max-chi>=1&active_enemies=1|chi.max-chi>=2
+actions.st+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&chi.max-chi>=2&(buff.rushing_jade_wind.down|energy>56)
+actions.st+=/flying_serpent_kick,if=prev_gcd.1.blackout_kick&chi>1&buff.swift_roundhouse.stack<2,interrupt=1
+actions.st+=/fists_of_fury,if=energy.time_to_max>2.5&cooldown.rising_sun_kick.remains>2&buff.swift_roundhouse.stack=2
 
 head=hood_of_the_slithering_loa,id=159318,bonus_id=4779/1512/4786/4775,azerite_powers=388/38/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524
