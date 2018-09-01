@@ -7553,13 +7553,15 @@ void druid_t::apl_precombat()
   // Feral: Rotational control variables
   if ( specialization() == DRUID_FERAL )
   {
-   /*  precombat -> add_action( "variable,name=rake_refresh,op=set,value=7", "Rake_refresh controls how aggresively to refresh rake. Lower means less aggresively." );
-     precombat -> add_action( "variable,name=rake_refresh,op=set,value=3,if=equipped.ailuro_pouncers" );
-     precombat -> add_action( "variable,name=pooling,op=set,value=3", "Pooling controlls how aggresively to pool. Lower means more aggresively" );
-     precombat -> add_action( "variable,name=pooling,op=set,value=10,if=equipped.chatoyant_signet" );
-     precombat -> add_action( "variable,name=pooling,op=set,value=3,if=equipped.the_wildshapers_clutch&!equipped.chatoyant_signet" );*/
-     precombat->add_action(   "variable,name=use_thrash,value=0" );
-     precombat->add_action(   "variable,name=use_thrash,value=1,if=equipped.luffa_wrappings" );
+    precombat->add_action( "variable,name=use_thrash,value=0" );
+    precombat->add_action( "variable,name=use_thrash,value=1,if=equipped.luffa_wrappings" );
+    precombat->add_action( "variable,name=opener_done,value=0" );
+    precombat->add_action( "variable,name=delayed_tf_opener,value=0",
+                           "Opener TF is delayed if we need to hardcast regrowth later on in the rotation" );
+    precombat->add_action(
+        "variable,name=delayed_tf_opener,value=1,if=talent.sabertooth.enabled&talent.bloodtalons.enabled&!talent.lunar_"
+        "inspiration.enabled",
+        "This happens when Sabertooth, Bloodtalons but not LI is talented" );
   }
 
   // Balance: Azerite rank variables
@@ -7599,6 +7601,11 @@ void druid_t::apl_precombat()
 
   // Snapshot stats
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+
+  if ( specialization() == DRUID_FERAL )
+  {
+    precombat->add_action( "berserk" );
+  }
 
   // Pre-Potion
   precombat->add_action("potion");
@@ -7661,22 +7668,40 @@ void druid_t::apl_feral()
    action_priority_list_t* st = get_action_priority_list("single_target");
    action_priority_list_t* finisher = get_action_priority_list("st_finishers");
    action_priority_list_t* generator = get_action_priority_list("st_generators");
+   action_priority_list_t* opener = get_action_priority_list("opener");
 
-   def->add_action("run_action_list,name=single_target,if=dot.rip.ticking|time>15");
-   def->add_action(this, "Rake", "if=!ticking|buff.prowl.up");
-   def->add_action(this, "Dash", "if=!buff.cat_form.up");
-   def->add_action("auto_attack");
-   def->add_action("moonfire_cat,if=talent.lunar_inspiration.enabled&!ticking");
-   def->add_action("savage_roar,if=!buff.savage_roar.up");
-   def->add_action("berserk");
-   def->add_action("incarnation");
-   def->add_action("tigers_fury");
-   def->add_action("regrowth,if=(talent.sabertooth.enabled|buff.predatory_swiftness.up)&talent.bloodtalons.enabled&buff.bloodtalons.down&combo_points=5");
-   def->add_action("rip,if=combo_points=5");
-   def->add_action("thrash_cat,if=!ticking&variable.use_thrash>0");
-   def->add_action("shred");
+   def->add_action("auto_attack,if=!buff.prowl.up&!buff.shadowmeld.up");
+   def->add_action("run_action_list,name=opener,if=variable.opener_done=0");
+   def->add_action("run_action_list,name=single_target");
 
-   cooldowns->add_action("dash,if=!buff.cat_form.up");
+   opener->add_action(
+       "tigers_fury,if=variable.delayed_tf_opener=0",
+       "# The opener generally follow the logic of the rest of the apl, but is separated out here for logical clarity\n"
+       "# Opening TF will be delayed if we need to hardcast later (which happens with sabertooth & bt but no li)\n"
+       "# Otherwise we will open with TF, you can safely cast this from stealth without breaking it." );
+
+   opener->add_action( "rake,if=!ticking|buff.prowl.up",
+                       "Always open with rake, consuming stealth and one BT charge (if talented)" );
+   opener->add_action( "variable,name=opener_done,value=1,if=dot.rip.ticking",
+                       "Lets make sure we end the opener \"sequence\" when our first rip is ticking" );
+   opener->add_action( "wait,sec=0.001,if=dot.rip.ticking", "Break out of the action list" );
+   opener->add_action( "moonfire_cat,if=!ticking|buff.bloodtalons.stack=1&combo_points<5",
+                       "If we have LI, and haven't applied it yet use moonfire.\n"
+                       "# OR, if we only have one BT charge active spam moonfire until we can apply rip with it" );
+   opener->add_action( "thrash,if=!ticking&combo_points<5",
+                       "Given current tuning it is always worth maintaining thrash, so lets apply it here." );
+   opener->add_action( "shred,if=combo_points<5", "And if none of the above apply, we simply shred until 5" );
+   opener->add_action(
+       "regrowth,if=combo_points=5&talent.bloodtalons.enabled&(talent.sabertooth.enabled&buff.bloodtalons.down|buff."
+       "predatory_swiftness.up)",
+       "Regrowth, when we have 5 combo points and bloodtalons and either:\n"
+       "# We have Sabertooth and no active bloodtalons stack (via MF spam) even if it requires a hard cast\n"
+       "# We have a predatory swiftness proc available (via SR fishing)" );
+   opener->add_action( "tigers_fury", "If we ended up hardcasting Regrowth, use TF to re-enter cat form" );
+   opener->add_action( "rip,if=combo_points=5",
+                       "And once we get here at 5 combo_points, just rip and we are up and running" );
+
+   cooldowns->add_action( "dash,if=!buff.cat_form.up" );
    //cooldowns->add_action("rake,if=buff.prowl.up|buff.shadowmeld.up");
    cooldowns->add_action("prowl,if=buff.incarnation.remains<0.5&buff.jungle_stalker.up");
    cooldowns->add_action("berserk,if=energy>=30&(cooldown.tigers_fury.remains>5|buff.tigers_fury.up)");
