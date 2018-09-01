@@ -2,7 +2,7 @@ rogue="PR_Rogue_Subtlety"
 source=default
 spec=subtlety
 level=120
-race=blood_elf
+race=void_elf
 role=attack
 position=back
 talents=2330031
@@ -61,6 +61,8 @@ actions.build+=/backstab
 
 # Cooldowns
 actions.cds=potion,if=buff.bloodlust.react|target.time_to_die<=60|(buff.vanish.up&(buff.shadow_blades.up|cooldown.shadow_blades.remains<=30))
+# Falling back to default item usage: Use when stealthed
+actions.cds+=/use_item,name=galecallers_boon,if=stealthed.rogue|target.time_to_die<20
 actions.cds+=/blood_fury,if=stealthed.rogue
 actions.cds+=/berserking,if=stealthed.rogue
 actions.cds+=/fireblood,if=stealthed.rogue
@@ -115,28 +117,30 @@ actions.stealthed+=/shadowstrike,if=!talent.deeper_stratagem.enabled&azerite.bla
 actions.stealthed+=/shuriken_storm,if=spell_targets>=3
 actions.stealthed+=/shadowstrike
 
-head=irontide_captains_hat,id=155888,bonus_id=4779/1512/4786/4775,azerite_powers=479/30/0/13
+head=hood_of_the_slithering_loa,id=159318,bonus_id=4819/1512/4775,azerite_powers=240/30/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=
-shoulders=mantle_of_fastidious_machinations,id=158304,bonus_id=4779/1512/4786/4775,azerite_powers=240/461/0/13
-back=parrotfeather_cloak,id=155884,bonus_id=4779/1512/4786
-chest=spymasters_wrap,id=155860,bonus_id=4779/1512/4786/4775,azerite_powers=414/461/0/13
-wrists=blood_elders_bindings,id=159324,bonus_id=4779/1512/4786
-hands=corrosive_handlers_gloves,id=159305,bonus_id=4779/1512/4786
-waist=unscrupulous_geologists_belt,id=159725,bonus_id=4779/1512/4786
-legs=shambling_berserkers_leggings,id=155869,bonus_id=4779/1512/4786
-feet=kraggs_rigging_scalers,id=155862,bonus_id=4779/1512/4786
-finger1=murky_cerulean_signet,id=158318,bonus_id=4779/1512/4786,enchant=pact_of_mastery
-finger2=seal_of_the_city_watch,id=162542,bonus_id=4779/1512/4786,enchant=pact_of_mastery
-trinket1=deadeye_spyglass,id=159623,bonus_id=4779/1512/4786
-trinket2=azerokks_resonating_heart,id=159612,bonus_id=4779/1512/4786
-main_hand=heartpiercing_stalactite,id=159134,bonus_id=4779/1512/4786,enchant=quick_navigation
-off_hand=heartpiercing_stalactite,id=159134,bonus_id=4779/1512/4786,enchant=masterful_navigation
+shoulders=mantle_of_fastidious_machinations,id=158304,bonus_id=4779/1512/4786/4775,azerite_powers=240/22/0/13
+back=sporecallers_shroud,id=159292,bonus_id=4779/42/1512/4786
+chest=cephalohide_jacket,id=159314,bonus_id=4819/1512/4775,azerite_powers=240/30/0/13
+wrists=venerated_raptorhide_bindings,id=160214,bonus_id=4779/1512
+hands=grubby_servantgrabbers,id=159346,bonus_id=4779/1512/4786
+waist=primal_dinomancers_belt,id=159301,bonus_id=4779/1512/4786
+legs=pustule_bearers_pants,id=159338,bonus_id=4779/1512
+feet=besiegers_deckstalkers,id=159320,bonus_id=4779/1512
+finger1=murky_cerulean_signet,id=158318,bonus_id=4779/1512/4786,enchant=pact_of_critical_strike
+finger2=seal_of_the_city_watch,id=162542,bonus_id=4779/1512/4786,enchant=pact_of_critical_strike
+trinket1=galecallers_boon,id=159614,bonus_id=4779/1512
+trinket2=harlans_loaded_dice,id=155881,bonus_id=4779/1512
+main_hand=howlis_crystal_shiv,id=159131,bonus_id=4779/1512,enchant=deadly_navigation
+off_hand=howlis_crystal_shiv,id=159131,bonus_id=4779/1512,enchant=versatile_navigation
 
 # Gear Summary
 # gear_ilvl=341.38
-# gear_agility=2678
+# gear_agility=2883
 # gear_stamina=4465
-# gear_crit_rating=1168
-# gear_haste_rating=209
-# gear_mastery_rating=1244
+# gear_crit_rating=1202
+# gear_haste_rating=456
+# gear_mastery_rating=522
+# gear_versatility_rating=298
+# gear_speed_rating=48
 # gear_armor=1427

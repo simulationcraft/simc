@@ -62,6 +62,8 @@ actions.build+=/backstab
 
 # Cooldowns
 actions.cds=potion,if=buff.bloodlust.react|target.time_to_die<=60|(buff.vanish.up&(buff.shadow_blades.up|cooldown.shadow_blades.remains<=30))
+# Falling back to default item usage: Use when stealthed
+actions.cds+=/use_item,name=galecallers_boon,if=stealthed.rogue|target.time_to_die<20
 actions.cds+=/blood_fury,if=stealthed.rogue
 actions.cds+=/berserking,if=stealthed.rogue
 actions.cds+=/fireblood,if=stealthed.rogue
@@ -126,19 +128,19 @@ hands=gloves_of_descending_madness,id=160618,bonus_id=4800/1507
 waist=replicated_chitin_cord,id=160717,bonus_id=4800/1507
 legs=pathogenic_legwraps,id=160625,bonus_id=4800/1507
 feet=quarantine_protocol_treads,id=160624,bonus_id=4800/1507
-finger1=ring_of_the_infinite_void,id=160647,bonus_id=4800/1507,enchant=pact_of_versatility
-finger2=rotscour_ring,id=160645,bonus_id=4800/1507,enchant=pact_of_versatility
+finger1=ring_of_the_infinite_void,id=160647,bonus_id=4800/1507,enchant=pact_of_critical_strike
+finger2=rotscour_ring,id=160645,bonus_id=4800/1507,enchant=pact_of_critical_strike
 trinket1=harlans_loaded_dice,id=155881,bonus_id=1542/4779
-trinket2=frenetic_corpuscle,id=160648,bonus_id=4800/1507
-main_hand=latticework_scalpel,id=160683,bonus_id=4800/1507,enchant=versatile_navigation
-off_hand=latticework_scalpel,id=160683,bonus_id=4800/1507,enchant=deadly_navigation
+trinket2=galecallers_boon,id=159614,bonus_id=1542/4779
+main_hand=latticework_scalpel,id=160683,bonus_id=4800/1507,enchant=deadly_navigation
+off_hand=latticework_scalpel,id=160683,bonus_id=4800/1507,enchant=versatile_navigation
 
 # Gear Summary
-# gear_ilvl=385.25
-# gear_agility=4345
+# gear_ilvl=384.31
+# gear_agility=4303
 # gear_stamina=7205
-# gear_crit_rating=1180
+# gear_crit_rating=1254
 # gear_haste_rating=917
 # gear_mastery_rating=582
-# gear_versatility_rating=323
+# gear_versatility_rating=249
 # gear_armor=1897

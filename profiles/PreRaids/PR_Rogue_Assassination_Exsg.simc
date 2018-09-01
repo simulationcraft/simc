@@ -2,7 +2,7 @@ rogue="PR_Rogue_Assassination_Exsg"
 source=default
 spec=assassination
 level=120
-race=human
+race=troll
 role=attack
 position=back
 talents=2210031
@@ -101,7 +101,7 @@ actions.stealthed+=/garrote,if=talent.subterfuge.enabled&talent.exsanguinate.ena
 
 head=cowl_of_fluid_machinations,id=159302,bonus_id=4819/1512/4775,azerite_powers=408/22/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=
-shoulders=tentaclelaced_spaulders,id=159307,bonus_id=4819/1512/4775,azerite_powers=136/31/0/13
+shoulders=goldtasseled_epaulets,id=159299,bonus_id=4819/1512/4775,azerite_powers=408/22/0/13
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
 chest=goresplattered_vest,id=159330,bonus_id=4819/1512/4775,azerite_powers=408/22/0/13
 wrists=servoarm_bindings,id=158353,bonus_id=4779/1512/4786
@@ -109,11 +109,11 @@ hands=underrot_grotto_tenders,id=159344,bonus_id=4779/1512/4786
 waist=port_pillagers_belt,id=159309,bonus_id=4779/1512/4786
 legs=seawalkers_pantaloons,id=159322,bonus_id=4779/1512/4786
 feet=sandshined_snakeskin_sandals,id=159327,bonus_id=4779/1512/4786
-finger1=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
-finger2=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
+finger1=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_mastery
+finger2=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_mastery
 trinket1=galecallers_boon,id=159614,bonus_id=4779/1512/4786
 trinket2=deadeye_spyglass,id=159623,bonus_id=4779/1512/4786
-main_hand=howlis_crystal_shiv,id=159131,bonus_id=4779/1512/4786,enchant=deadly_navigation
+main_hand=howlis_crystal_shiv,id=159131,bonus_id=4779/1512/4786,enchant=masterful_navigation
 off_hand=howlis_crystal_shiv,id=159131,bonus_id=4779/1512/4786,enchant=quick_navigation
 
 # Gear Summary
@@ -121,6 +121,6 @@ off_hand=howlis_crystal_shiv,id=159131,bonus_id=4779/1512/4786,enchant=quick_nav
 # gear_agility=2883
 # gear_stamina=4465
 # gear_crit_rating=962
-# gear_haste_rating=1305
-# gear_mastery_rating=209
+# gear_haste_rating=1231
+# gear_mastery_rating=283
 # gear_armor=1427

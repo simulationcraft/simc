@@ -2,7 +2,7 @@ rogue="PR_Rogue_Outlaw_SnD"
 source=default
 spec=outlaw
 level=120
-race=dwarf
+race=pandaren
 role=attack
 position=back
 talents=2310032
@@ -55,10 +55,6 @@ actions.build+=/sinister_strike
 
 # Cooldowns
 actions.cds=potion,if=buff.bloodlust.react|target.time_to_die<=60|buff.adrenaline_rush.up
-# Falling back to default item usage
-actions.cds+=/use_item,name=galecallers_boon,if=buff.bloodlust.react|target.time_to_die<=20|combo_points.deficit<=2
-# Falling back to default item usage
-actions.cds+=/use_item,name=lustrous_golden_plumage,if=buff.bloodlust.react|target.time_to_die<=20|combo_points.deficit<=2
 actions.cds+=/blood_fury
 actions.cds+=/berserking
 actions.cds+=/fireblood
@@ -89,11 +85,11 @@ actions.finish+=/dispatch
 # Stealth
 actions.stealth=ambush
 
-head=irontide_captains_hat,id=155888,bonus_id=4779/1512/4786/4775,azerite_powers=479/30/0/13
+head=hood_of_the_slithering_loa,id=159318,bonus_id=4819/1512/4775,azerite_powers=410/30/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=
 shoulders=mantle_of_fastidious_machinations,id=158304,bonus_id=4779/1512/4786/4775,azerite_powers=410/461/0/13
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-chest=spymasters_wrap,id=155860,bonus_id=4779/1512/4786/4775,azerite_powers=180/461/0/13
+chest=goresplattered_vest,id=159330,bonus_id=4819/1512/4775,azerite_powers=410/22/0/13
 wrists=sea_dogs_cuffs,id=158305,bonus_id=4779/1512/4786
 hands=gloves_of_corrupted_waters,id=159321,bonus_id=4779/1512/4786
 waist=belt_of_gleaming_determination,id=158306,bonus_id=4779/1512/4786
@@ -101,8 +97,8 @@ legs=singeblotched_britches,id=159306,bonus_id=4779/1512/4786
 feet=mercenary_miners_boots,id=159336,bonus_id=4779/1512/4786
 finger1=ritual_binders_ring,id=159459,bonus_id=4779/1512/4786,enchant=pact_of_haste
 finger2=seal_of_the_regal_loa,id=159458,bonus_id=4779/1512/4786,enchant=pact_of_haste
-trinket1=galecallers_boon,id=159614,bonus_id=4779/1512/4786
-trinket2=lustrous_golden_plumage,id=159617,bonus_id=4779/1512/4786
+trinket1=harlans_loaded_dice,id=155881,bonus_id=4779/1512
+trinket2=kul_tiran_cannonball_runner,id=159628,bonus_id=4779/1512
 main_hand=soulcharmers_bludgeon,id=159661,bonus_id=4779/1512/4786,enchant=deadly_navigation
 off_hand=soulcharmers_bludgeon,id=159661,bonus_id=4779/1512/4786,enchant=galeforce_striking
 
