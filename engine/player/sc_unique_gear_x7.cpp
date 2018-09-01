@@ -696,8 +696,6 @@ void items::merekthas_fang( special_effect_t& effect )
     void impact( action_state_t* state ) override
     {
       dot->set_target( state->target );
-      // The debuff application ticks instantly but the refresh ticks do not
-      dot->tick_zero = !dot->get_dot()->is_ticking();
       dot->execute();
     }
   };
@@ -710,8 +708,8 @@ void items::merekthas_fang( special_effect_t& effect )
       proc_t( effect, "noxious_venom_gland", effect.driver() ),
       driver( new noxious_venom_gland_aoe_driver_t( effect ) )
     {
-      channeled = tick_zero = hasted_ticks = true;
-      tick_may_crit = false;
+      channeled = hasted_ticks = true;
+      tick_may_crit = tick_zero = false;
     }
 
     void execute() override
