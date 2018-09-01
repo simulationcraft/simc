@@ -3818,6 +3818,7 @@ Refreshed to $w1 absorption every $t1 sec.
 Variables        : $shield=${0.675*$SPH}
 
 Name             : Greater Blessing of Wisdom (id=203539) [Spell Family (10)] 
+Hotfixed         : Attributes
 Class            : Retribution Paladin
 School           : Holy
 Spell Type       : Magic
@@ -3829,7 +3830,7 @@ Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken
 Family Flags     : 16
-Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ x.x..... ........   ........ ........ .x...... ........ 
                  : ........ x....... ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   .....x.. x....... ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 

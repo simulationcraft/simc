@@ -632,6 +632,7 @@ Description      : Swing in a wide arc, dealing $s1 damage to all enemies in fro
 Your successful dodges and parries cause your next Revenge to become free.
 
 Name             : Battle Shout (id=6673) [Spell Family (4)] 
+Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Spell Type       : Magic
@@ -641,7 +642,7 @@ Duration         : 3600 seconds
 Cooldown         : 15 seconds
 Affecting spells : Warrior (137047 effect#2)
 Family Flags     : 8, 16
-Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
+Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .x...... ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ x....... ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 

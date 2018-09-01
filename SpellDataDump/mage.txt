@@ -232,6 +232,7 @@ Description      : Causes an explosion of magic around the caster, dealing $s2 A
 |cFFFFFFFFGenerates $s1 Arcane Charge if any targets are hit.|r
 
 Name             : Arcane Intellect (id=1459) [Spell Family (3)] 
+Hotfixed         : Attributes
 Class            : Mage
 School           : Arcane
 Spell Type       : Magic
@@ -240,7 +241,7 @@ Spell Level      : 58
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 3600 seconds
-Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
+Attributes       : ........ ........ x....... ........   ........ ..x..... .x...... ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ x....... ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
