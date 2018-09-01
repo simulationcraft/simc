@@ -11,8 +11,6 @@
 // - Fix Unholy Blight reporting : currently the uptime contains both the dot uptime (24.2s every 45s)
 //   and the driver uptime (6s every 45s)
 // - Look into Summon Gargoyle spawn delay
-// - Trigger Virulent Eruption on enemy death if they're affected by Virulent Plague
-// - Proc Festermight on enemy death while afflicted by Festering Wounds
 // Blood
 // 
 // Frost
@@ -917,6 +915,8 @@ public:
   void      start_cold_heart();
 
   void      trigger_soul_reaper_death( player_t* );
+  void      trigger_festering_wound_death( player_t* );
+  void      trigger_virulent_plague_death( player_t* );
   void      trigger_last_surprise( player_t* target );
 
   // Actor is standing in their own Death and Decay or Defile
@@ -978,9 +978,21 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
   debuff.glacial_contagion = make_buff( *this, "glacial_contagion", p -> azerite.glacial_contagion.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
                            -> set_trigger_spell( p -> azerite.glacial_contagion );
 
-  if ( p -> specialization() == DEATH_KNIGHT_UNHOLY && p -> talent.soul_reaper -> ok() )
+  // On target death triggers
+  if ( p -> specialization() == DEATH_KNIGHT_UNHOLY )
   {
-    target -> callbacks_on_demise.push_back( std::bind( &death_knight_t::trigger_soul_reaper_death, p, std::placeholders::_1 ) );
+    if ( p -> talent.soul_reaper -> ok() )
+    {
+      target -> callbacks_on_demise.push_back( std::bind( &death_knight_t::trigger_soul_reaper_death, p, std::placeholders::_1 ) );
+    }
+    if ( p -> spec.festering_wound -> ok() )
+    {
+      target -> callbacks_on_demise.push_back( std::bind( &death_knight_t::trigger_festering_wound_death, p, std::placeholders::_1 ) );
+    }
+    if ( p -> spec.outbreak -> ok() ) 
+    {
+      target -> callbacks_on_demise.push_back( std::bind( &death_knight_t::trigger_virulent_plague_death, p, std::placeholders::_1 ) );
+    }
   }
 }
 
@@ -5563,10 +5575,15 @@ struct virulent_plague_t : public death_knight_spell_t
   {
     death_knight_spell_t::tick( dot );
 
-    if ( rng().roll( data().effectN( 2 ).percent() ) )
+    trigger_virulent_eruption( data().effectN( 2 ).percent(), dot -> target );
+  }
+
+  void trigger_virulent_eruption( double chance, player_t* t )
+  {
+    if ( rng().roll( chance ) )
     {
-      eruption -> set_target( dot -> target );
-      eruption -> schedule_execute();
+      eruption -> set_target( t );
+      eruption -> execute();
     }
   }
 };
@@ -6569,6 +6586,65 @@ void death_knight_t::trigger_soul_reaper_death( player_t* target )
 
     buffs.soul_reaper -> trigger();
   }
+}
+
+void death_knight_t::trigger_festering_wound_death( player_t* target )
+{
+  // Don't pollute results at the end-of-iteration deaths of everyone
+  if ( sim -> event_mgr.canceled )
+  {
+    return;
+  }
+
+  if ( ! spec.festering_wound -> ok() )
+  {
+    return;
+  }
+
+  death_knight_td_t* td = get_target_data( target );
+  int n_wounds = td -> debuff.festering_wound -> check();
+
+  if ( n_wounds == 0 ) return;
+
+  resource_gain( RESOURCE_RUNIC_POWER,
+                 spec.festering_wound -> effectN( 1 ).trigger() -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER ) * n_wounds,
+                 gains.festering_wound );
+
+  if ( talent.pestilent_pustules -> ok() )
+  {
+    if ( trigger_runic_corruption( 0, talent.pestilent_pustules -> effectN( 1 ).percent() * n_wounds ) )
+    {
+      procs.pp_runic_corruption -> occur();
+    }
+  }
+
+  if ( azerite.festermight.enabled() )
+  {
+    buffs.festermight -> trigger( n_wounds );
+  }
+}
+
+void death_knight_t::trigger_virulent_plague_death( player_t* target )
+{
+  // Don't pollute results at the end-of-iteration deaths of everyone
+  if ( sim -> event_mgr.canceled )
+  {
+    return;
+  }
+
+  if ( ! spec.outbreak -> ok() )
+  {
+    return;
+  }
+
+  death_knight_td_t* td = get_target_data( target );
+
+  if ( ! td -> dot.virulent_plague -> is_ticking() )
+  {
+    return;
+  }
+
+  debug_cast<virulent_plague_t*>( td -> dot.virulent_plague -> current_action ) -> trigger_virulent_eruption( 1, target );
 }
 
 bool death_knight_t::in_death_and_decay() const
