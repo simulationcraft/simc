@@ -2,8 +2,8 @@ optimal_raid=1
 default_actions=1
 
 T22_Death_Knight_Blood.simc
-# T22_Death_Knight_Frost.simc
-# T22_Death_Knight_Unholy.simc
+T22_Death_Knight_Frost.simc
+T22_Death_Knight_Unholy.simc
 
 T22_Demon_Hunter_Havoc.simc
 T22_Demon_Hunter_Vengeance.simc
@@ -23,7 +23,7 @@ T22_Hunter_Survival.simc
 T22_Monk_Brewmaster.simc
 T22_Monk_Windwalker.simc
 
-# T22_Paladin_Protection.simc
+T22_Paladin_Protection.simc
 T22_Paladin_Retribution.simc
 
 T22_Priest_Shadow.simc
