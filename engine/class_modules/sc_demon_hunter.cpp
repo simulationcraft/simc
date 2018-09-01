@@ -1811,8 +1811,14 @@ struct eye_beam_t : public demon_hunter_spell_t
     timespan_t duration = composite_dot_duration( execute_state );
 
     // Since Demonic triggers Meta with 8s + hasted duration, need to extend by the hasted duration after have an execute_state
-    if (true) // 8/30/2018 demonic meta always gets the increased channel time
+    // 8/30/2018 - Demonic Meta always gets the increased channel time
+    if (true) 
     {
+      // 8/31/2018 - The channel time extend during meta is erroneously double-reduced by meta haste
+      if ( p()->bugs && !extend_meta )
+      {
+        duration /= 1.0 + p()->buff.metamorphosis->default_value;
+      }
       p()->buff.metamorphosis->extend_duration(p(), duration);
     }
 
@@ -3876,7 +3882,7 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     //  {
     //    if ( extended_by_demonic )
     //      return;
-	//
+	  //
     //    extended_by_demonic = true;
     //  }
     //}
@@ -5179,14 +5185,14 @@ void demon_hunter_t::apl_havoc()
   add_havoc_use_items(this, apl_cooldown);
 
   action_priority_list_t* apl_normal = get_action_priority_list( "normal" );
-  apl_normal->add_action( this, "Vengeful Retreat", "if=talent.momentum.enabled&buff.prepared.down" );
+  apl_normal->add_action( this, "Vengeful Retreat", "if=talent.momentum.enabled&buff.prepared.down&time>1" );
   apl_normal->add_action( this, "Fel Rush", "if=(variable.waiting_for_momentum|talent.fel_mastery.enabled)&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
   apl_normal->add_talent( this, "Fel Barrage", "if=!variable.waiting_for_momentum&(active_enemies>desired_targets|raid_event.adds.in>30)" );
+  apl_normal->add_action( this, spec.death_sweep, "death_sweep", "if=variable.blade_dance" );
   apl_normal->add_talent( this, "Immolation Aura" );
   apl_normal->add_action( this, "Eye Beam", "if=active_enemies>1&(!raid_event.adds.exists|raid_event.adds.up)&!variable.waiting_for_momentum" );
-  apl_normal->add_action( this, spec.death_sweep, "death_sweep", "if=variable.blade_dance" );
   apl_normal->add_action( this, "Blade Dance", "if=variable.blade_dance" );
-  apl_normal->add_action( this, "Fel Rush", "if=!talent.momentum.enabled&!talent.demon_blades.enabled&azerite.unbound_chaos.rank>0" );
+  apl_normal->add_action( this, "Fel Rush", "if=!talent.momentum.enabled&!talent.demon_blades.enabled&azerite.unbound_chaos.enabled" );
   apl_normal->add_talent( this, "Felblade", "if=fury.deficit>=40" );
   apl_normal->add_action( this, "Eye Beam", "if=!talent.blind_fury.enabled&!variable.waiting_for_dark_slash&raid_event.adds.in>cooldown" );
   apl_normal->add_action( this, spec.annihilation, "annihilation", "if=(talent.demon_blades.enabled|!variable.waiting_for_momentum|fury.deficit<30|buff.metamorphosis.remains<5)"
@@ -5204,10 +5210,10 @@ void demon_hunter_t::apl_havoc()
   action_priority_list_t* apl_demonic = get_action_priority_list( "demonic" );
   apl_demonic->add_talent( this, "Fel Barrage", "if=active_enemies>desired_targets|raid_event.adds.in>30" );
   apl_demonic->add_action( this, spec.death_sweep, "death_sweep", "if=variable.blade_dance" );
-  apl_demonic->add_action( this, "Blade Dance", "if=variable.blade_dance&cooldown.eye_beam.remains>5&!cooldown.metamorphosis.ready" );
+  apl_demonic->add_action( this, "Eye Beam", "if=!buff.metamorphosis.extended_by_demonic" );
+  apl_demonic->add_action( this, "Blade Dance", "if=variable.blade_dance&!cooldown.metamorphosis.ready&cooldown.eye_beam.remains>(5-azerite.revolving_blades.rank*3)" );
   apl_demonic->add_talent( this, "Immolation Aura" );
   apl_demonic->add_talent( this, "Felblade", "if=fury<40|(buff.metamorphosis.down&fury.deficit>=40)" );
-  apl_demonic->add_action( this, "Eye Beam", "if=(!talent.blind_fury.enabled|fury.deficit>=70)&(!buff.metamorphosis.extended_by_demonic|(set_bonus.tier21_4pc&buff.metamorphosis.remains>16))" );
   apl_demonic->add_action( this, spec.annihilation, "annihilation", "if=(talent.blind_fury.enabled|fury.deficit<30|buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance" );
   apl_demonic->add_action( this, "Chaos Strike", "if=(talent.blind_fury.enabled|fury.deficit<30)&!variable.pooling_for_meta&!variable.pooling_for_blade_dance" );
   apl_demonic->add_action( this, "Fel Rush", "if=talent.demon_blades.enabled&!cooldown.eye_beam.ready&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
