@@ -567,7 +567,9 @@ std::vector<unsigned> azerite_state_t::enabled_spells() const
     spells.push_back( power.spell_id );
   }
 
-  range::unique( spells );
+  auto it = range::unique( spells );
+
+  spells.erase( it, spells.end() );
 
   return spells;
 }
