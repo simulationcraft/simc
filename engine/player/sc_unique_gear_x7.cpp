@@ -101,6 +101,7 @@ namespace items
   void vigilants_bloodshaper( special_effect_t& );
   void twitching_tentacle_of_xalzaix( special_effect_t& );
   void vanquished_tendril_of_ghuun( special_effect_t& );
+  void vial_of_animated_blood( special_effect_t& );
 }
 
 namespace util
@@ -507,7 +508,7 @@ struct bba_cb_t : public dbc_proc_callback_t
       {
         dbc_proc_callback_t::trigger( a, raw_state );
       }
-      
+
       return;
     }
 
@@ -1116,6 +1117,15 @@ void items::vanquished_tendril_of_ghuun( special_effect_t& effect )
   new tendril_cb_t( effect );
 }
 
+// Vial of Animated Blood ==========================================================
+
+void items::vial_of_animated_blood( special_effect_t& effect )
+{
+    effect.reverse = true;
+    effect.tick = effect.driver() -> effectN( 2 ).period();
+    effect.reverse_stack_reduction = 1;
+}
+
 // Rotcrusted Voodoo Doll ===================================================
 
 void items::rotcrusted_voodoo_doll( special_effect_t& effect )
@@ -1432,6 +1442,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 278383, "Reverse" ); // Azurethos' Singed Plumage
   register_special_effect( 278154, items::twitching_tentacle_of_xalzaix );
   register_special_effect( 278161, items::vanquished_tendril_of_ghuun );
+  register_special_effect( 268828, items::vial_of_animated_blood );
 
   // Misc
   register_special_effect( 276123, items::darkmoon_deck_squalls );
