@@ -1840,6 +1840,8 @@ race_e util::translate_race_id( int rid )
     case 28: return RACE_HIGHMOUNTAIN_TAUREN;
     case 29: return RACE_VOID_ELF;
     case 30: return RACE_LIGHTFORGED_DRAENEI;
+    case 34: return RACE_DARK_IRON_DWARF;
+    case 36: return RACE_MAGHAR_ORC;
   }
 
   return RACE_NONE;
