@@ -4672,6 +4672,13 @@ struct bursting_sores_t : public death_knight_spell_t
     aoe = -1;
   }
 
+  // Bursting sores have a slight delay ingame, but nothing really significant
+  // The travel time is overriden to zero to make it trigger properly on enemy death
+  timespan_t travel_time() const override
+  {
+    return timespan_t::zero();
+  }
+
   size_t available_targets( std::vector< player_t* >& tl ) const override
   {
     death_knight_spell_t::available_targets( tl );
@@ -6606,11 +6613,14 @@ void death_knight_t::trigger_festering_wound_death( player_t* target )
 
   if ( n_wounds == 0 ) return;
 
+  // Generate the RP you'd have gained if you popped the wounds manually
   resource_gain( RESOURCE_RUNIC_POWER,
                  spec.festering_wound -> effectN( 1 ).trigger() -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER ) * n_wounds,
                  gains.festering_wound );
 
-  if ( talent.pestilent_pustules -> ok() )
+  // Bug ? currently doesn't happen ingame
+  // https://github.com/SimCMinMax/WoW-BugTracker/issues/356
+  if ( ! bugs && talent.pestilent_pustules -> ok() )
   {
     if ( trigger_runic_corruption( 0, talent.pestilent_pustules -> effectN( 1 ).percent() * n_wounds ) )
     {
@@ -6618,6 +6628,17 @@ void death_knight_t::trigger_festering_wound_death( player_t* target )
     }
   }
 
+  // Triggers a bursting sores explosion for each wound on the target
+  if ( talent.bursting_sores -> ok() && active_spells.bursting_sores -> target_list().size() > 0 )
+  {
+    for ( int i = 0; i < n_wounds; i++ )
+    {
+      active_spells.bursting_sores -> set_target( target );
+      active_spells.bursting_sores -> execute();
+    }
+  }
+
+  // Gains a festermight stack for each wound on the target
   if ( azerite.festermight.enabled() )
   {
     buffs.festermight -> trigger( n_wounds );
