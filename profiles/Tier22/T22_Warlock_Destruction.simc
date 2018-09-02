@@ -106,11 +106,11 @@ actions.inf+=/conflagrate,cycle_targets=1,if=!debuff.havoc.remains
 actions.inf+=/shadowburn,cycle_targets=1,if=!debuff.havoc.remains&((charges=2|!buff.backdraft.remains|buff.backdraft.remains>buff.backdraft.stack*action.incinerate.execute_time))
 actions.inf+=/incinerate,cycle_targets=1,if=!debuff.havoc.remains
 
-head=grasping_crown_of_the_deep,id=159252,bonus_id=1557/4819/4775/4786,azerite_powers=9/479/18/14/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=
-shoulders=mantle_of_contained_corruption,id=160613,bonus_id=4824/1507/4775,azerite_powers=9/444/22/15/13
+head=soulfuel_headdress,id=159279,bonus_id=1557/4819/4775/4786,azerite_powers=193/22/0/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536
+shoulders=mantle_of_contained_corruption,id=160613,bonus_id=4824/1507/4775,azerite_powers=444/22/0/13
 back=cloak_of_rippling_whispers,id=160642,bonus_id=4800/1507
-chest=robes_of_the_reborn_serpent,id=159257,bonus_id=1557/4819/4775/4786,azerite_powers=9/482/18/85/13
+chest=petticoat_of_the_selfstylized_azerite_baron,id=158349,bonus_id=1557/4819/4775/4786,azerite_powers=444/30/0/13
 wrists=voidlashed_wristband,id=160617,bonus_id=4800/1507
 hands=mutagenic_protofluid_handwraps,id=160715,bonus_id=4800/1507
 waist=cord_of_septic_envelopment,id=160727,bonus_id=4800/1507
@@ -118,18 +118,18 @@ legs=leggings_of_lingering_infestation,id=160615,bonus_id=4800/1507
 feet=volatile_walkers,id=160714,bonus_id=4800/1507
 finger1=rotscour_ring,id=160645,bonus_id=4800/1507,enchant=pact_of_haste
 finger2=band_of_certain_annihilation,id=160646,bonus_id=4800/1507,enchant=pact_of_haste
-trinket1=rotcrusted_voodoo_doll,id=159624,bonus_id=1542/4779
-trinket2=vigilants_bloodshaper,id=160651,bonus_id=4800/1507
+trinket1=ignition_mages_fuse,id=159615,bonus_id=1542/4779
+trinket2=twitching_tentacle_of_xalzaix,id=160656,bonus_id=4800/1507
 main_hand=tusk_of_the_reborn_prophet,id=160691,bonus_id=4800/1507,enchant=quick_navigation
-off_hand=uldir_subject_manifest,id=160695,bonus_id=4800/1507
+off_hand=codex_of_imminent_ruin,id=160696,bonus_id=4800/1507
 
 # Gear Summary
 # gear_ilvl=385.25
 # gear_stamina=7205
-# gear_intellect=5476
-# gear_crit_rating=1068
-# gear_haste_rating=1059
-# gear_mastery_rating=641
-# gear_versatility_rating=234
+# gear_intellect=5163
+# gear_crit_rating=1172
+# gear_haste_rating=1125
+# gear_mastery_rating=697
+# gear_versatility_rating=183
 # gear_armor=1159
 default_pet=imp
