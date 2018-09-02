@@ -56,8 +56,8 @@ actions.dark_slash+=/chaos_strike,if=debuff.dark_slash.up
 
 actions.demonic=fel_barrage,if=active_enemies>desired_targets|raid_event.adds.in>30
 actions.demonic+=/death_sweep,if=variable.blade_dance
-actions.demonic+=/eye_beam,if=!buff.metamorphosis.extended_by_demonic
-actions.demonic+=/blade_dance,if=variable.blade_dance&!cooldown.metamorphosis.ready&cooldown.eye_beam.remains>(5-azerite.revolving_blades.rank*3)
+actions.demonic+=/eye_beam,if=!buff.metamorphosis.extended_by_demonic&(raid_event.adds.up|raid_event.adds.in>25)
+actions.demonic+=/blade_dance,if=variable.blade_dance&!cooldown.metamorphosis.ready&(cooldown.eye_beam.remains>(5-azerite.revolving_blades.rank*3)|(raid_event.adds.in>cooldown&raid_event.adds.in<25))
 actions.demonic+=/immolation_aura
 actions.demonic+=/felblade,if=fury<40|(buff.metamorphosis.down&fury.deficit>=40)
 actions.demonic+=/annihilation,if=(talent.blind_fury.enabled|fury.deficit<30|buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance
