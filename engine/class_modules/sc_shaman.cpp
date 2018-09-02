@@ -3077,7 +3077,9 @@ struct windlash_t : public shaman_attack_t
 
   // Windlash is a special ability, but treated as an autoattack in terms of proccing
   proc_types proc_type() const override
-  { return PROC1_MELEE; }
+  {
+    return PROC1_MELEE;
+  }
 
   // Windlash is bugged in-game and does not ignore armor (31 Aug 2018)
   // double target_armor( player_t* ) const override
@@ -3586,7 +3588,7 @@ struct stormstrike_base_t : public shaman_attack_t
     shaman_attack_t::init();
     may_proc_flametongue = may_proc_windfury = may_proc_stormbringer = may_proc_frostbrand = false;
     may_proc_strength_of_earth                                                             = true;
-    may_proc_primal_primer = false;
+    may_proc_primal_primer                                                                 = false;
   }
 
   void update_ready( timespan_t cd_duration = timespan_t::min() ) override
@@ -7106,8 +7108,7 @@ void shaman_t::trigger_hot_hand( const action_state_t* state )
 
 void shaman_t::trigger_primal_primer( const action_state_t* state )
 {
-  assert( debug_cast<shaman_attack_t*>( state->action ) != nullptr &&
-      "Primal primer called on invalid action type" );
+  assert( debug_cast<shaman_attack_t*>( state->action ) != nullptr && "Primal primer called on invalid action type" );
   shaman_attack_t* attack = debug_cast<shaman_attack_t*>( state->action );
 
   if ( !azerite.primal_primer.enabled() )
@@ -7799,7 +7800,11 @@ void shaman_t::init_action_list_elemental()
   aoe->add_action( this, "Frost Shock", "moving=1" );
 
   // Single target - Ascendance
-  single_target->add_action( this, "Flame Shock", "if=!ticking|dot.flame_shock.remains<=gcd" );
+  single_target->add_action(
+      this, "Flame Shock",
+      "if=!ticking|dot.flame_shock.remains<=gcd|talent.ascendance.enabled&dot.flame_shock.remains<(cooldown.ascendance."
+      "remains+buff.ascendance.duration)&cooldown.ascendance.remains<4&(!talent.storm_elemental."
+      "enabled|talent.storm_elemental.enabled&cooldown.storm_elemental.remains<120)" );
   single_target->add_talent( this, "Ascendance",
                              "if=talent.ascendance.enabled&(time>=60|buff.bloodlust.up)&cooldown.lava_burst.remains>0&!"
                              "talent.storm_elemental.enabled" );
@@ -8989,7 +8994,7 @@ struct shaman_module_t : public module_t
     // Totem Mastery
     expansion::bfa::register_leyshocks_trigger( 210643, STAT_CRIT_RATING );
     // Lightning Bolt Overload (damage)
-    expansion::bfa::register_leyshocks_trigger( 45284,  STAT_CRIT_RATING );
+    expansion::bfa::register_leyshocks_trigger( 45284, STAT_CRIT_RATING );
     // Frost Shock
     expansion::bfa::register_leyshocks_trigger( 196840, STAT_CRIT_RATING );
     // Flame Shock
@@ -8997,17 +9002,17 @@ struct shaman_module_t : public module_t
     // Chain Lightning
     expansion::bfa::register_leyshocks_trigger( 188443, STAT_HASTE_RATING );
     // Earthquake rumbles
-    expansion::bfa::register_leyshocks_trigger( 77478,  STAT_MASTERY_RATING );
+    expansion::bfa::register_leyshocks_trigger( 77478, STAT_MASTERY_RATING );
     // Stormkeeper
     expansion::bfa::register_leyshocks_trigger( 191634, STAT_MASTERY_RATING );
     // Liquid Magma Totem
     expansion::bfa::register_leyshocks_trigger( 192222, STAT_MASTERY_RATING );
     // Thunderstorm
-    expansion::bfa::register_leyshocks_trigger( 51490,  STAT_MASTERY_RATING );
+    expansion::bfa::register_leyshocks_trigger( 51490, STAT_MASTERY_RATING );
     // Wind Shear
-    expansion::bfa::register_leyshocks_trigger( 57994,  STAT_MASTERY_RATING );
+    expansion::bfa::register_leyshocks_trigger( 57994, STAT_MASTERY_RATING );
     // Chain Lightning Overload
-    expansion::bfa::register_leyshocks_trigger( 45297,  STAT_MASTERY_RATING );
+    expansion::bfa::register_leyshocks_trigger( 45297, STAT_MASTERY_RATING );
     // Icefury
     expansion::bfa::register_leyshocks_trigger( 210714, STAT_MASTERY_RATING );
     // Ascendance (elemental)
@@ -9015,13 +9020,13 @@ struct shaman_module_t : public module_t
     // Earth Elemental
     expansion::bfa::register_leyshocks_trigger( 198103, STAT_VERSATILITY_RATING );
     // Lava Surge buff
-    expansion::bfa::register_leyshocks_trigger( 77762,  STAT_MASTERY_RATING );
+    expansion::bfa::register_leyshocks_trigger( 77762, STAT_MASTERY_RATING );
     // Earthquake (TODO: Something more complex with number of targets?)
-    expansion::bfa::register_leyshocks_trigger( 61882,  STAT_VERSATILITY_RATING );
+    expansion::bfa::register_leyshocks_trigger( 61882, STAT_VERSATILITY_RATING );
     // Lightning Bolt (elemental)
     expansion::bfa::register_leyshocks_trigger( 188196, STAT_VERSATILITY_RATING );
     // Lava Burst Overload
-    expansion::bfa::register_leyshocks_trigger( 77451,  STAT_VERSATILITY_RATING );
+    expansion::bfa::register_leyshocks_trigger( 77451, STAT_VERSATILITY_RATING );
     // Earthen Rage
     expansion::bfa::register_leyshocks_trigger( 170379, STAT_VERSATILITY_RATING );
     // Storm Elemental
