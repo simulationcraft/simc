@@ -101,7 +101,7 @@ actions.single_target+=/whirlwind,if=talent.fervor_of_battle.enabled&(!azerite.t
 actions.single_target+=/slam,if=!talent.fervor_of_battle.enabled&(!azerite.test_of_might.enabled|(rage>=60|debuff.colossus_smash.up|buff.deadly_calm.up))
 
 head=helm_of_the_raptor_king,id=159422,bonus_id=4779/1512/4786/4775,azerite_powers=226/30/0/13
-neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=
+neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
 shoulders=pauldrons_of_the_great_unifier,id=159423,bonus_id=4779/1512/4786/4775,azerite_powers=435/22/0/13
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
 chest=harpooners_plate_cuirass,id=159416,bonus_id=4779/1512/4786/4775,azerite_powers=226/31/0/13

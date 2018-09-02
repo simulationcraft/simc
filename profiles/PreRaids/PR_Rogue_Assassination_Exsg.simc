@@ -100,7 +100,7 @@ actions.stealthed+=/pool_resource,for_next=1
 actions.stealthed+=/garrote,if=talent.subterfuge.enabled&talent.exsanguinate.enabled&cooldown.exsanguinate.remains<1&prev_gcd.1.rupture&dot.rupture.remains>5+4*cp_max_spend
 
 head=cowl_of_fluid_machinations,id=159302,bonus_id=4819/1512/4775,azerite_powers=408/22/0/13
-neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=
+neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
 shoulders=goldtasseled_epaulets,id=159299,bonus_id=4819/1512/4775,azerite_powers=408/22/0/13
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
 chest=goresplattered_vest,id=159330,bonus_id=4819/1512/4775,azerite_powers=408/22/0/13

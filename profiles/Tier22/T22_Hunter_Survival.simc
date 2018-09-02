@@ -105,7 +105,7 @@ actions.wfi_st+=/serpent_sting,if=refreshable
 actions.wfi_st+=/wildfire_bomb,if=next_wi_bomb.volatile&dot.serpent_sting.ticking|next_wi_bomb.pheromone|next_wi_bomb.shrapnel&focus>50
 
 head=coif_of_the_court_spider,id=159358,bonus_id=1557/4819/4775/4786,azerite_powers=3/163/30/85/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=
+neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
 shoulders=amalgamated_abomination_spaulders,id=159385,bonus_id=1557/4819/4775/4786,azerite_powers=3/372/30/84/13
 back=fetid_horrors_tanglecloak,id=160643,bonus_id=4800/1507
 chest=cthraxxi_generals_hauberk,id=160725,bonus_id=4824/1507/4775,azerite_powers=3/163/462/85/13

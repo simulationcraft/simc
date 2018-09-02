@@ -75,7 +75,7 @@ actions+=/sunfire,if=(!buff.celestial_alignment.up&!buff.incarnation.up|!variabl
 actions+=/moonfire
 
 head=irontide_captains_hat,id=155888,bonus_id=1557/4819/4775/4786,azerite_powers=11/479/30/85/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=
+neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
 shoulders=tentaclelaced_spaulders,id=159307,bonus_id=1557/4819/4775/4786,azerite_powers=11/122/21/467/13
 back=fetid_horrors_tanglecloak,id=160643,bonus_id=4800/1507
 chest=cephalohide_jacket,id=159314,bonus_id=1557/4819/4775/4786,azerite_powers=11/479/18/85/13

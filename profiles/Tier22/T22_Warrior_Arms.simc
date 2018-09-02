@@ -101,7 +101,7 @@ actions.single_target+=/whirlwind,if=talent.fervor_of_battle.enabled&(!azerite.t
 actions.single_target+=/slam,if=!talent.fervor_of_battle.enabled&(!azerite.test_of_might.enabled|(rage>=60|debuff.colossus_smash.up|buff.deadly_calm.up))
 
 head=seabrawlers_greathelm,id=155885,bonus_id=1557/4819/4775/4786,azerite_powers=1/479/462/15/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=
+neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
 shoulders=pauldrons_of_the_horned_horror,id=159455,bonus_id=1557/4819/4775/4786,azerite_powers=1/226/459/83/13
 back=cloak_of_rippling_whispers,id=160642,bonus_id=4800/1507
 chest=chestplate_of_apocalyptic_machinations,id=160722,bonus_id=4824/1507/4775,azerite_powers=1/485/462/85/13

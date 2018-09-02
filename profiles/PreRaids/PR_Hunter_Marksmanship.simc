@@ -75,7 +75,7 @@ actions.trickshots+=/serpent_sting,if=refreshable
 actions.trickshots+=/steady_shot,if=focus+cast_regen<focus.max|(talent.lethal_shots.enabled&buff.lethal_shots.down)
 
 head=hood_of_the_dark_reaper,id=159391,bonus_id=4779/1512/4786/4775,azerite_powers=192/21/15/86
-neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=
+neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
 shoulders=hookbarbed_spaulders,id=159376,bonus_id=4779/1512/4786/4775,azerite_powers=479/30/0/13
 back=drape_of_the_loyal_vassal,id=158375,bonus_id=4779/1512/4786
 chest=corrupted_hexxers_vestments,id=159370,bonus_id=4779/1512/4786/4775,azerite_powers=482/22/0/13

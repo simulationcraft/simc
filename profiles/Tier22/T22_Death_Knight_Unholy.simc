@@ -87,7 +87,7 @@ actions.generic+=/festering_strike,if=((((debuff.festering_wound.stack<4&!buff.u
 actions.generic+=/death_coil,if=!variable.pooling_for_gargoyle
 
 head=helm_of_the_defiled_laboratorium,id=160732,bonus_id=4800/1507/4775,azerite_powers=485/22/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=
+neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
 shoulders=dunecrawler_spaulders,id=157964,bonus_id=1557/4819/4775/4786,azerite_powers=482/31/13
 back=fetid_horrors_tanglecloak,id=160643,bonus_id=4800/1507
 chest=desert_guardians_breastplate,id=159424,bonus_id=1557/4819/4775/4786,azerite_powers=482/462/13

@@ -83,7 +83,7 @@ actions.single+=/mind_flay,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(
 actions.single+=/shadow_word_pain
 
 head=grasping_crown_of_the_deep,id=159252,bonus_id=4779/1512/4786/4775,azerite_powers=479/18/15/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=
+neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
 shoulders=exquisitely_aerodynamic_shoulderpads,id=159232,bonus_id=4779/1512/4786/4775,azerite_powers=504/31/86/13
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
 chest=inmates_straight_robe,id=159268,bonus_id=4779/1512/4786/4775,azerite_powers=479/22/472/13

@@ -83,7 +83,7 @@ actions.single+=/mind_flay,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(
 actions.single+=/shadow_word_pain
 
 head=visage_of_the_ascended_prophet,id=160719,bonus_id=4824/1507/4775,azerite_powers=485/21/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=
+neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
 shoulders=amice_of_corrupting_horror,id=160726,bonus_id=4824/1507/4775,azerite_powers=485/461/13
 back=fetid_horrors_tanglecloak,id=160643,bonus_id=4800/1507
 chest=inmates_straight_robe,id=159268,bonus_id=1557/4819/4775/4786,azerite_powers=479/22/13

@@ -62,7 +62,7 @@ actions.single_target+=/furious_slash,if=talent.furious_slash.enabled
 actions.single_target+=/whirlwind
 
 head=helm_of_the_defiled_laboratorium,id=160732,bonus_id=4824/1507/4775,azerite_powers=1/485/22/14/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=
+neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
 shoulders=pauldrons_of_the_great_unifier,id=159423,bonus_id=1557/4819/4775/4786,azerite_powers=1/157/22/44/13
 back=cloak_of_rippling_whispers,id=160642,bonus_id=4800/1507
 chest=desert_guardians_breastplate,id=159424,bonus_id=1557/4819/4775/4786,azerite_powers=1/482/18/85/13

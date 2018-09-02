@@ -75,7 +75,7 @@ actions.trickshots+=/serpent_sting,if=refreshable
 actions.trickshots+=/steady_shot,if=focus+cast_regen<focus.max|(talent.lethal_shots.enabled&buff.lethal_shots.down)
 
 head=soulscarred_headgear,id=159398,bonus_id=1557/4819/4775/4786,azerite_powers=3/36/22/14/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=
+neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
 shoulders=crashguard_spaulders,id=159360,bonus_id=1557/4819/4775/4786,azerite_powers=3/368/22/15/13
 back=fetid_horrors_tanglecloak,id=160643,bonus_id=4800/1507
 chest=chainvest_of_assured_quality,id=160627,bonus_id=4824/1507/4775,azerite_powers=3/368/22/15/13

@@ -97,7 +97,7 @@ actions.standard_rotation+=/fireball
 actions.standard_rotation+=/scorch
 
 head=stormlurkers_cowl,id=159244,bonus_id=1557/4819/4775/4786,azerite_powers=8/377/462/83/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=
+neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
 shoulders=mantle_of_ceremonial_ascension,id=158344,bonus_id=1557/4819/4775/4786,azerite_powers=8/377/22/205/13
 back=plasmaspattered_greatcloak,id=160644,bonus_id=4800/1507
 chest=robes_of_the_unraveler,id=160614,bonus_id=4824/1507/4775,azerite_powers=8/377/22/205/13

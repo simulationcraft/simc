@@ -35,7 +35,7 @@ actions.precombat+=/elemental_blast
 actions=bloodlust,if=target.health.pct<25|time>0.500
 # In-combat potion is preferentially linked to your Elemental, unless combat will end shortly
 actions+=/potion
-# Interrupt of casts and is reliable trigger of Sephuz Secret.
+# Interrupt of casts.
 actions+=/wind_shear
 actions+=/totem_mastery,if=talent.totem_mastery.enabled&buff.resonance_totem.remains<2
 actions+=/fire_elemental,if=!talent.storm_elemental.enabled
@@ -92,7 +92,7 @@ actions.single_target+=/flame_shock,moving=1,if=movement.distance>6
 actions.single_target+=/frost_shock,moving=1
 
 head=visage_of_bloody_horrors,id=159381,bonus_id=4779/1512/4786/4775,azerite_powers=457/21/14/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=
+neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
 shoulders=hookbarbed_spaulders,id=159376,bonus_id=4819/1512/4786/4775,azerite_powers=479/21/474/13
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
 chest=corrupted_hexxers_vestments,id=159370,bonus_id=4819/1512/4786/4775,azerite_powers=457/21/474/13

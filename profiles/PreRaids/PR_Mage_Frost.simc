@@ -107,7 +107,7 @@ actions.talent_rop=rune_of_power,if=talent.glacial_spike.enabled&buff.icicles.st
 actions.talent_rop+=/rune_of_power,if=!talent.glacial_spike.enabled&(talent.ebonbolt.enabled&cooldown.ebonbolt.remains<cast_time|talent.comet_storm.enabled&cooldown.comet_storm.remains<cast_time|talent.ray_of_frost.enabled&cooldown.ray_of_frost.remains<cast_time|charges_fractional>1.9)
 
 head=grasping_crown_of_the_deep,id=159252,bonus_id=4779/1512/4786/4775,azerite_powers=479/30/0/13
-neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=
+neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
 shoulders=exquisitely_aerodynamic_shoulderpads,id=159232,bonus_id=4779/1512/4786/4775,azerite_powers=504/22/0/13
 back=raals_bib,id=159294,bonus_id=4779/1512/4786
 chest=inmates_straight_robe,id=159268,bonus_id=4779/1512/4786/4775,azerite_powers=479/22/0/13

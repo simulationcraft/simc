@@ -92,7 +92,7 @@ actions.finish+=/dispatch
 actions.stealth=ambush
 
 head=flashpowder_hood,id=159334,bonus_id=4779/1512/4786/4775,azerite_powers=129/22/0/13
-neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=
+neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
 shoulders=mantle_of_fastidious_machinations,id=158304,bonus_id=4779/1512/4786/4775,azerite_powers=410/22/0/13
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
 chest=vest_of_reverent_adoration,id=159303,bonus_id=4779/1512/4786/4775,azerite_powers=129/31/0/13

@@ -55,7 +55,7 @@ actions+=/cobra_shot,if=(active_enemies<2|cooldown.kill_command.remains>focus.ti
 actions+=/arcane_torrent
 
 head=hood_of_the_dark_reaper,id=159391,bonus_id=4779/1512/4786/4775,azerite_powers=366/30/0/13
-neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=
+neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
 shoulders=hookbarbed_spaulders,id=159376,bonus_id=4779/1512/4786/4775,azerite_powers=479/30/0/13
 back=turncoats_cape,id=159293,bonus_id=4779/1512/4786
 chest=corrupted_hexxers_vestments,id=159370,bonus_id=4779/1512/4786/4775,azerite_powers=482/22/0/13
