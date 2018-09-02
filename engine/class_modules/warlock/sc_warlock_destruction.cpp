@@ -351,6 +351,9 @@ namespace warlock {
 
         if (d->state->result_amount > 0.0 && p()->azerite.flashpoint.ok() && d->target->health_percentage() > 80 )
           p()->buffs.flashpoint->trigger();
+
+        // For some reason this triggers on every tick
+        expansion::bfa::trigger_leyshocks_grand_compilation( STAT_CRIT_RATING, p() );
       }
     };
 
@@ -739,6 +742,19 @@ namespace warlock {
 
         aoe = -1;
         base_aoe_multiplier = data().effectN(2).sp_coeff() / data().effectN(1).sp_coeff();
+      }
+
+      void impact(action_state_t* s) override
+      {
+        destruction_spell_t::impact( s );
+        if (s->chain_target == 0)
+        {
+          expansion::bfa::trigger_leyshocks_grand_compilation( STAT_MASTERY_RATING, p() );
+        }
+        else
+        {
+          expansion::bfa::trigger_leyshocks_grand_compilation( STAT_CRIT_RATING, p() );
+        }
       }
     };
 

@@ -700,7 +700,11 @@ void wild_imp_pet_t::demise()
 
   o()->buffs.wild_imps->decrement();
   if (!power_siphon)
+  {
     o()->buffs.demonic_core->trigger(1, buff_t::DEFAULT_VALUE(), o()->spec.demonic_core->effectN(1).percent());
+    expansion::bfa::trigger_leyshocks_grand_compilation( STAT_HASTE_RATING, o() );
+    expansion::bfa::trigger_leyshocks_grand_compilation( STAT_VERSATILITY_RATING, o() );
+  }
 
   if (expiration)
   {
@@ -797,6 +801,8 @@ void dreadstalker_t::demise() {
 
   o()->buffs.dreadstalkers->decrement();
   o()->buffs.demonic_core->trigger(1, buff_t::DEFAULT_VALUE(), o()->spec.demonic_core->effectN(2).percent());
+  expansion::bfa::trigger_leyshocks_grand_compilation( STAT_HASTE_RATING, o() );
+  expansion::bfa::trigger_leyshocks_grand_compilation( STAT_VERSATILITY_RATING, o() );
   if (o()->azerite.shadows_bite.ok())
     o()->buffs.shadows_bite->trigger();
 }
@@ -897,6 +903,8 @@ void demonic_tyrant_t::demise() {
   if (o()->azerite.supreme_commander.ok())
   {
     o()->buffs.demonic_core->trigger(1);
+    expansion::bfa::trigger_leyshocks_grand_compilation( STAT_HASTE_RATING, o() );
+    expansion::bfa::trigger_leyshocks_grand_compilation( STAT_VERSATILITY_RATING, o() );
     o()->buffs.supreme_commander->trigger();
   }
 }

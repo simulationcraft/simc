@@ -152,6 +152,7 @@ namespace warlock {
           warlock_t* p = static_cast< warlock_t* >( player() );
 
           p->warlock_pet_list.wild_imps.spawn();
+          expansion::bfa::trigger_leyshocks_grand_compilation( STAT_HASTE_RATING, p );
         }
       };
 
@@ -227,6 +228,8 @@ namespace warlock {
         // Still keep it in impact instead of execute because of travel delay.
         if ( result_is_hit( s->result ) && s->target == target )
         {
+          expansion::bfa::trigger_leyshocks_grand_compilation( STAT_HASTE_RATING, p() );
+
           if ( shards_used >= 1 )
             make_event<imp_delay_event_t>( *sim, p(), rng().gauss( 400.0, 50.0 ) );
           if ( shards_used >= 2 )
@@ -677,6 +680,7 @@ namespace warlock {
           if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T19, B2 ) && rng().roll( p()->sets->set( WARLOCK_DEMONOLOGY, T19, B2 )->effectN( 1 ).percent() ) )
             p()->resource_gain( RESOURCE_SOUL_SHARD, 1, p()->gains.t19_2pc_demonology );
         }
+        expansion::bfa::trigger_leyshocks_grand_compilation( STAT_CRIT_RATING, p() );
       }
     };
 
@@ -962,6 +966,7 @@ namespace warlock {
         if (rng().roll(talents.inner_demons->effectN(1).percent())) {
           active.summon_random_demon->execute();
         }
+        expansion::bfa::trigger_leyshocks_grand_compilation( STAT_MASTERY_RATING, this );
       });
 
     buffs.nether_portal = make_buff(this, "nether_portal", talents.nether_portal)
