@@ -96,6 +96,8 @@ namespace items
   void lingering_sporepods( special_effect_t& );
   void lady_waycrests_music_box( special_effect_t& );
   void balefire_branch( special_effect_t& );
+  // 8.0.1 - World Boss Trinkets
+  void sandscoured_idol( special_effect_t& );
   // 8.0.1 - Uldir Trinkets
   void frenetic_corpuscle( special_effect_t& );
   void vigilants_bloodshaper( special_effect_t& );
@@ -1297,6 +1299,15 @@ void items::frenetic_corpuscle( special_effect_t& effect )
   new frenetic_corpuscle_cb_t( effect );
 }
 
+// Sandscoured Idol =======================================================
+
+void items::sandscoured_idol( special_effect_t& effect )
+{
+  effect.reverse = true;
+  effect.tick = effect.driver()->effectN( 2 ).period();
+  effect.reverse_stack_reduction = 4;
+}
+
 // Darkmoon Faire decks
 
 void items::darkmoon_deck_squalls( special_effect_t& effect )
@@ -1443,6 +1454,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 278154, items::twitching_tentacle_of_xalzaix );
   register_special_effect( 278161, items::vanquished_tendril_of_ghuun );
   register_special_effect( 268828, items::vial_of_animated_blood );
+  register_special_effect( 278267, items::sandscoured_idol );
 
   // Misc
   register_special_effect( 276123, items::darkmoon_deck_squalls );

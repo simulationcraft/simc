@@ -1227,6 +1227,8 @@ class SpellDataGenerator(DataGenerator):
          281792, 281794, 281795,
          # Bloody Bite for Vanquished Tendril of G'huun
          279664,
+         # Secrets of the Sands for Sandscoured Idol
+         278267,
         ),
 
         # Warrior:
@@ -1241,7 +1243,7 @@ class SpellDataGenerator(DataGenerator):
             ( 218836, 0 ),          # Gaze of the Val'kyr
             ( 218835, 0 ),          # Gaze of the Val'kyr (heal)
             ( 218834, 0 ),          # Gaze of the Val'kyr
-            ( 218822, 0 ),          # Gaze of the Val'kyr 
+            ( 218822, 0 ),          # Gaze of the Val'kyr
             ( 209493, 0 ),          # Precise Strikes
             ( 242952, 0 ),		    # Bloody Rage
             ( 242953, 0 ),          # Bloody Rage
@@ -4412,4 +4414,3 @@ class NpcArmorMitigationValues(DataGenerator):
                 entries[index + 4].armor_constant))
 
         self._out.write('} };\n')
-
