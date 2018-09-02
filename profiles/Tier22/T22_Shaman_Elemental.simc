@@ -1,10 +1,10 @@
-shaman="PR_Shaman_Elemental"
+shaman="T22_Shaman_Elemental"
 source=default
 spec=elemental
 level=120
 race=troll
 role=spell
-position=back
+position=ranged_back
 talents=2303023
 
 # Default consumables
@@ -91,30 +91,30 @@ actions.single_target+=/flame_shock,moving=1,if=movement.distance>6
 # Frost Shock is our movement filler.
 actions.single_target+=/frost_shock,moving=1
 
-head=visage_of_bloody_horrors,id=159381,bonus_id=4779/1512/4786/4775,azerite_powers=457/21/14/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=
-shoulders=hookbarbed_spaulders,id=159376,bonus_id=4819/1512/4786/4775,azerite_powers=479/21/474/13
-back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-chest=corrupted_hexxers_vestments,id=159370,bonus_id=4819/1512/4786/4775,azerite_powers=457/21/474/13
-wrists=raouls_barrelhook_bracers,id=159356,bonus_id=4779/1512/4786
-hands=water_shapers,id=159366,bonus_id=4779/1512/4786
-waist=waistguard_of_sanguine_fervor,id=159402,bonus_id=4779/1512/4786
-legs=chemical_blasters_legguards,id=158341,bonus_id=4779/1512/4786
-feet=souldrifting_sabatons,id=158308,bonus_id=4779/1512/4786
-finger1=ritual_binders_ring,id=159459,bonus_id=4779/1512/4786,enchant=pact_of_haste
-finger2=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
-trinket1=lady_waycrests_music_box,id=159631,bonus_id=4779/1512/4786
-trinket2=rotcrusted_voodoo_doll,id=159624,bonus_id=4779/1512/4786
-main_hand=galvanized_stormcrusher,id=158369,bonus_id=4779/1512/4786,enchant=quick_navigation
-off_hand=g04w4y_crowd_repeller,id=159663,bonus_id=4779/1512/4786
+head=visage_of_bloody_horrors,id=159381,bonus_id=1557/4819/4775/4786,azerite_powers=21/457/0/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=
+shoulders=spaulders_of_coagulated_viscera,id=160731,bonus_id=4824/1507/4775,azerite_powers=485/22/0/13
+back=cloak_of_rippling_whispers,id=160642,bonus_id=4800/1507
+chest=corrupted_hexxers_vestments,id=159370,bonus_id=1557/4819/4775/4786,azerite_powers=482/30/0/13
+wrists=rubywrought_sparkguards,id=160629,bonus_id=4800/1507
+hands=oblivion_crushers,id=160721,bonus_id=4800/1507
+waist=titanspark_energy_girdle,id=160633,bonus_id=4800/1507
+legs=blighted_anima_greaves,id=160716,bonus_id=4800/1507
+feet=fused_monstrosity_stompers,id=160628,bonus_id=4800/1507
+finger1=band_of_certain_annihilation,id=160646,bonus_id=4800/1507,enchant=pact_of_haste
+finger2=rotscour_ring,id=160645,bonus_id=4800/1507,enchant=pact_of_haste
+trinket1=ignition_mages_fuse,id=159615,bonus_id=1542/4779
+trinket2=vigilants_bloodshaper,id=160651,bonus_id=4800/1507
+main_hand=tusk_of_the_reborn_prophet,id=160691,bonus_id=4800/1507,enchant=quick_navigation
+off_hand=vector_deflector,id=160698,bonus_id=4800/1507
 
 # Gear Summary
-# gear_ilvl=341.38
-# gear_strength=108
-# gear_stamina=4465
-# gear_intellect=3626
-# gear_crit_rating=556
-# gear_haste_rating=1370
-# gear_mastery_rating=287
-# gear_versatility_rating=262
-# gear_armor=3594
+# gear_ilvl=385.25
+# gear_strength=164
+# gear_stamina=7205
+# gear_intellect=5476
+# gear_crit_rating=1039
+# gear_haste_rating=1134
+# gear_mastery_rating=508
+# gear_versatility_rating=321
+# gear_armor=4777

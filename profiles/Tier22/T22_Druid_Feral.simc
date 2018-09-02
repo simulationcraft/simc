@@ -27,26 +27,22 @@ actions.precombat+=/augmentation
 actions.precombat+=/regrowth,if=talent.bloodtalons.enabled
 actions.precombat+=/variable,name=use_thrash,value=0
 actions.precombat+=/variable,name=use_thrash,value=1,if=equipped.luffa_wrappings
+actions.precombat+=/variable,name=opener_done,value=0
+# Opener TF is delayed if we need to hardcast regrowth later on in the rotation
+actions.precombat+=/variable,name=delayed_tf_opener,value=0
+# This happens when Sabertooth, Bloodtalons but not LI is talented
+actions.precombat+=/variable,name=delayed_tf_opener,value=1,if=talent.sabertooth.enabled&talent.bloodtalons.enabled&!talent.lunar_inspiration.enabled
 actions.precombat+=/cat_form
 actions.precombat+=/prowl
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
+actions.precombat+=/berserk
 actions.precombat+=/potion
 
 # Executed every time the actor is available.
-actions=run_action_list,name=single_target,if=dot.rip.ticking|time>15
-actions+=/rake,if=!ticking|buff.prowl.up
-actions+=/dash,if=!buff.cat_form.up
-actions+=/auto_attack
-actions+=/moonfire_cat,if=talent.lunar_inspiration.enabled&!ticking
-actions+=/savage_roar,if=!buff.savage_roar.up
-actions+=/berserk
-actions+=/incarnation
-actions+=/tigers_fury
-actions+=/regrowth,if=(talent.sabertooth.enabled|buff.predatory_swiftness.up)&talent.bloodtalons.enabled&buff.bloodtalons.down&combo_points=5
-actions+=/rip,if=combo_points=5
-actions+=/thrash_cat,if=!ticking&variable.use_thrash>0
-actions+=/shred
+actions=auto_attack,if=!buff.prowl.up&!buff.shadowmeld.up
+actions+=/run_action_list,name=opener,if=variable.opener_done=0
+actions+=/run_action_list,name=single_target
 
 actions.cooldowns=dash,if=!buff.cat_form.up
 actions.cooldowns+=/prowl,if=buff.incarnation.remains<0.5&buff.jungle_stalker.up
@@ -58,6 +54,32 @@ actions.cooldowns+=/incarnation,if=energy>=30&(cooldown.tigers_fury.remains>15|b
 actions.cooldowns+=/potion,name=battle_potion_of_agility,if=target.time_to_die<65|(time_to_die<180&(buff.berserk.up|buff.incarnation.up))
 actions.cooldowns+=/shadowmeld,if=combo_points<5&energy>=action.rake.cost&dot.rake.pmultiplier<2.1&buff.tigers_fury.up&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>18)&!buff.incarnation.up
 actions.cooldowns+=/use_items
+
+# # The opener generally follow the logic of the rest of the apl, but is separated out here for logical clarity
+# Opening TF will be delayed if we need to hardcast later (which happens with sabertooth & bt but no li)
+# Otherwise we will open with TF, you can safely cast this from stealth without breaking it.
+actions.opener=tigers_fury,if=variable.delayed_tf_opener=0
+# Always open with rake, consuming stealth and one BT charge (if talented)
+actions.opener+=/rake,if=!ticking|buff.prowl.up
+# Lets make sure we end the opener "sequence" when our first rip is ticking
+actions.opener+=/variable,name=opener_done,value=1,if=dot.rip.ticking
+# Break out of the action list
+actions.opener+=/wait,sec=0.001,if=dot.rip.ticking
+# If we have LI, and haven't applied it yet use moonfire.
+# OR, if we only have one BT charge active spam moonfire until we can apply rip with it
+actions.opener+=/moonfire_cat,if=!ticking|buff.bloodtalons.stack=1&combo_points<5
+# Given current tuning it is always worth maintaining thrash, so lets apply it here.
+actions.opener+=/thrash,if=!ticking&combo_points<5
+# And if none of the above apply, we simply shred until 5
+actions.opener+=/shred,if=combo_points<5
+# Regrowth, when we have 5 combo points and bloodtalons and either:
+# We have Sabertooth and no active bloodtalons stack (via MF spam) even if it requires a hard cast
+# We have a predatory swiftness proc available (via SR fishing)
+actions.opener+=/regrowth,if=combo_points=5&talent.bloodtalons.enabled&(talent.sabertooth.enabled&buff.bloodtalons.down|buff.predatory_swiftness.up)
+# If we ended up hardcasting Regrowth, use TF to re-enter cat form
+actions.opener+=/tigers_fury
+# And once we get here at 5 combo_points, just rip and we are up and running
+actions.opener+=/rip,if=combo_points=5
 
 actions.single_target=cat_form,if=!buff.cat_form.up
 actions.single_target+=/rake,if=buff.prowl.up|buff.shadowmeld.up
