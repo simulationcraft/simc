@@ -249,7 +249,7 @@ void priest_t::generate_apl_holy_d()
     default_list->add_action(this, "Holy Fire", "if=dot.holy_fire.ticking&(dot.holy_fire.remains<=gcd|dot.holy_fire.stack<2)&spell_targets.holy_nova<7");
     default_list->add_action(this, "Holy Word: Chastise", "if=spell_targets.holy_nova<5");
     default_list->add_action(this, "Holy Fire", "if=dot.holy_fire.ticking&(dot.holy_fire.refreshable|dot.holy_fire.stack<2)&spell_targets.holy_nova<7");
-	default_list->add_action("berserking,if=raid_event.adds.in>30|raid_event.adds.remains>8|raid_event.adds.duration<8");
+    default_list->add_action("berserking,if=raid_event.adds.in>30|raid_event.adds.remains>8|raid_event.adds.duration<8");
     default_list->add_action("fireblood,if=raid_event.adds.in>20|raid_event.adds.remains>6|raid_event.adds.duration<6");
     default_list->add_action("ancestral_call,if=raid_event.adds.in>20|raid_event.adds.remains>10|raid_event.adds.duration<10");
     default_list->add_talent(this, "Divine Star", "if=(raid_event.adds.in>5|raid_event.adds.remains>2|raid_event.adds.duration<2)&spell_targets.divine_star>1" );
