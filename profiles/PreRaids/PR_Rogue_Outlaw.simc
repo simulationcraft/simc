@@ -80,12 +80,12 @@ actions.cds+=/vanish,if=!stealthed.all&variable.ambush_condition
 actions.cds+=/shadowmeld,if=!stealthed.all&variable.ambush_condition
 
 # Finishers
-# BtE over RtB rerolls with 2+ Deadshot traits.
-actions.finish=between_the_eyes,if=azerite.deadshot.rank>=2&buff.roll_the_bones.up
+# BtE over RtB rerolls with 2+ Deadshot traits or Ruthless Precision.
+actions.finish=between_the_eyes,if=buff.ruthless_precision.up|(azerite.deadshot.rank>=2&buff.roll_the_bones.up)
 actions.finish+=/slice_and_dice,if=buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<(1+combo_points)*1.8
 actions.finish+=/roll_the_bones,if=(buff.roll_the_bones.remains<=3|variable.rtb_reroll)&(target.time_to_die>20|buff.roll_the_bones.remains<target.time_to_die)
-# BtE with the Ruthless Precision buff from RtB or with the Ace Up Your Sleeve or Deadshot traits.
-actions.finish+=/between_the_eyes,if=buff.ruthless_precision.up|azerite.ace_up_your_sleeve.enabled|azerite.deadshot.enabled
+# BtE with the Ace Up Your Sleeve or Deadshot traits.
+actions.finish+=/between_the_eyes,if=azerite.ace_up_your_sleeve.enabled|azerite.deadshot.enabled
 actions.finish+=/dispatch
 
 # Stealth

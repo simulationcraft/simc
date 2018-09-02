@@ -6351,10 +6351,10 @@ void rogue_t::init_action_list()
 
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
-    finish -> add_action( this, "Between the Eyes", "if=azerite.deadshot.rank>=2&buff.roll_the_bones.up", "BtE over RtB rerolls with 2+ Deadshot traits." );
+    finish -> add_action( this, "Between the Eyes", "if=buff.ruthless_precision.up|(azerite.deadshot.rank>=2&buff.roll_the_bones.up)", "BtE over RtB rerolls with 2+ Deadshot traits or Ruthless Precision." );
     finish -> add_talent( this, "Slice and Dice", "if=buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<(1+combo_points)*1.8" );
     finish -> add_action( this, "Roll the Bones", "if=(buff.roll_the_bones.remains<=3|variable.rtb_reroll)&(target.time_to_die>20|buff.roll_the_bones.remains<target.time_to_die)" );
-    finish -> add_action( this, "Between the Eyes", "if=buff.ruthless_precision.up|azerite.ace_up_your_sleeve.enabled|azerite.deadshot.enabled", "BtE with the Ruthless Precision buff from RtB or with the Ace Up Your Sleeve or Deadshot traits." );
+    finish -> add_action( this, "Between the Eyes", "if=azerite.ace_up_your_sleeve.enabled|azerite.deadshot.enabled", "BtE with the Ace Up Your Sleeve or Deadshot traits." );
     finish -> add_action( this, "Dispatch" );
 
     // Builders
