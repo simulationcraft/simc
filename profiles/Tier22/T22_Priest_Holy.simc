@@ -8,7 +8,7 @@ position=ranged_back
 talents=1300031
 
 # Default consumables
-potion=potion_of_rising_death
+potion=rising_death
 flask=endless_fathoms
 food=bountiful_captains_feast
 augmentation=battle_scarred
@@ -50,7 +50,7 @@ actions+=/divine_star,if=(raid_event.adds.in>5|raid_event.adds.remains>2|raid_ev
 actions+=/holy_nova,if=raid_event.movement.remains>gcd*0.3&spell_targets.holy_nova>0
 
 head=visage_of_the_ascended_prophet,id=160719,bonus_id=4824/1507/4775,azerite_powers=485/21/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
+neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=
 shoulders=amice_of_corrupting_horror,id=160726,bonus_id=4824/1507/4775,azerite_powers=485/461/13
 back=cloak_of_rippling_whispers,id=160642,bonus_id=4800/1507
 chest=inmates_straight_robe,id=159268,bonus_id=1557/4819/4775/4786,azerite_powers=479/22/13
@@ -74,4 +74,4 @@ off_hand=uldir_subject_manifest,id=160695,bonus_id=4800/1507
 # gear_haste_rating=1183
 # gear_mastery_rating=251
 # gear_versatility_rating=177
-# gear_armor=1159
+# gear_armor=1136

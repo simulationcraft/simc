@@ -8,7 +8,7 @@ position=ranged_back
 talents=1300031
 
 # Default consumables
-potion=potion_of_rising_death
+potion=rising_death
 flask=endless_fathoms
 food=bountiful_captains_feast
 augmentation=battle_scarred
@@ -50,7 +50,7 @@ actions+=/divine_star,if=(raid_event.adds.in>5|raid_event.adds.remains>2|raid_ev
 actions+=/holy_nova,if=raid_event.movement.remains>gcd*0.3&spell_targets.holy_nova>0
 
 head=grasping_crown_of_the_deep,id=159252,bonus_id=4779/1512/4786/4775,azerite_powers=479/18/15/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
+neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=
 shoulders=exquisitely_aerodynamic_shoulderpads,id=159232,bonus_id=4779/1512/4786/4775,azerite_powers=504/31/86/13
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
 chest=inmates_straight_robe,id=159268,bonus_id=4779/1512/4786/4775,azerite_powers=479/22/472/13
