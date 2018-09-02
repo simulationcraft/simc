@@ -884,7 +884,7 @@ std::string item_t::encoded_item() const
     s << ",ilevel=" << option_ilevel_str;
 
   if ( ! option_azerite_level_str.empty() )
-    s << ",azerite_level=" << option_ilevel_str;
+    s << ",azerite_level=" << option_azerite_level_str;
   else if ( parsed.azerite_level > 0 )
     s << ",azerite_level=" << parsed.azerite_level;
 
