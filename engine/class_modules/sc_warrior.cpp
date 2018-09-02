@@ -663,9 +663,9 @@ public:
       ab::base_td_multiplier *= 1.0 + p()->spec.fury_warrior->effectN( 2 ).percent();
 
     if ( ab::data().affected_by( p()->spec.arms_warrior->effectN( 2 ) ) )
-      ab::attack_power_mod.direct *= 1.0 + p()->spec.arms_warrior->effectN( 2 ).percent();
+      ab::base_dd_multiplier *= 1.0 + p()->spec.arms_warrior->effectN( 2 ).percent();
     if ( ab::data().affected_by( p()->spec.arms_warrior->effectN( 3 ) ) )
-      ab::attack_power_mod.tick *= 1.0 + p()->spec.arms_warrior->effectN( 3 ).percent();
+      ab::base_td_multiplier *= 1.0 + p()->spec.arms_warrior->effectN( 3 ).percent();
 
     if ( ab::data().affected_by( p()->spec.prot_warrior->effectN( 1 ) ) )
       ab::attack_power_mod.direct *= 1.0 + p()->spec.prot_warrior->effectN( 1 ).percent();
@@ -2733,7 +2733,7 @@ struct sweeping_strikes_t : public warrior_spell_t
 struct seismic_wave_t : warrior_attack_t
 {
   seismic_wave_t( warrior_t* p )
-    : warrior_attack_t( "seismic_wave", p, p->find_spell( 277639 ) )
+    : warrior_attack_t( "seismic_wave", p, p->find_spell( 278497 ) )
   {
     aoe         = -1;
     background  = true;
