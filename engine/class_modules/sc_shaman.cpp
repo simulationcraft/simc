@@ -298,8 +298,6 @@ public:
     spell_t* lightning_conduit;
     spell_t* strength_of_earth;
 
-    // Legendary
-    action_t* ppsg;  // Pristine Proto-Scale Girdle legendary dot
   } action;
 
   // Pets
@@ -348,12 +346,6 @@ public:
     stat_buff_t* elemental_blast_haste;
     stat_buff_t* elemental_blast_mastery;
     buff_t* wind_gust;  // Storm Elemental passive 263806
-
-    // Legendary Buffs
-    buff_t* echoes_of_the_great_sundering;
-    buff_t* eotn_fire;
-    buff_t* eotn_shock;
-    buff_t* eotn_chill;
 
     // Enhancement
     buff_t* crash_lightning;
@@ -424,8 +416,6 @@ public:
     gain_t* forceful_winds;
     gain_t* lightning_shield_overcharge;
 
-    // Legendary
-    gain_t* the_deceivers_blood_pact;
   } gain;
 
   // Tracked Procs
@@ -584,12 +574,6 @@ public:
 
   struct legendary_t
   {
-    const spell_data_t* sephuzs_secret;
-    const spell_data_t* smoldering_heart;
-
-    legendary_t() : sephuzs_secret( spell_data_t::not_found() ), smoldering_heart( spell_data_t::not_found() )
-    {
-    }
   } legendary;
 
   // Cached pointer for ascendance / normal white melee
@@ -661,25 +645,6 @@ public:
     lightning_conduit = nullptr;
 
     regen_type = REGEN_DISABLED;
-
-    talent_points.register_validity_fn( [this]( const spell_data_t* spell ) {
-      // Soul of the Farseer
-      if ( find_item( 151647 ) )
-      {
-        switch ( specialization() )
-        {
-          // case SHAMAN_ENHANCEMENT:
-          //  return util::str_compare_ci( spell->name_cstr(), "Tempest" );
-          //  break;
-          case SHAMAN_ELEMENTAL:
-            return util::str_compare_ci( spell->name_cstr(), "Echo of the Elements" );
-            break;
-          default:
-            return false;
-        }
-      }
-      return false;
-    } );
   }
 
   virtual ~shaman_t();
@@ -697,14 +662,12 @@ public:
   void trigger_lightning_shield( const action_state_t* state );
   void trigger_earthen_rage( const action_state_t* state );
   void trigger_hot_hand( const action_state_t* state );
-  void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic, double proc_chance = -1.0 );
-  void trigger_smoldering_heart( double cost );
   void trigger_natural_harmony( const action_state_t* );
   void trigger_strength_of_earth( const action_state_t* );
   void trigger_primal_primer( const action_state_t* );
 
   // Legendary
-  void trigger_eye_of_twisting_nether( const action_state_t* state );
+  // empty - for now
 
   // Character Definition
   void init_spells() override;
@@ -1221,15 +1184,11 @@ public:
     ab::execute();
 
     trigger_maelstrom_gain( ab::execute_state );
-
-    p()->trigger_eye_of_twisting_nether( ab::execute_state );
   }
 
   void tick( dot_t* d ) override
   {
     ab::tick( d );
-
-    p()->trigger_eye_of_twisting_nether( d->state );
   }
 
   void impact( action_state_t* state ) override
@@ -1275,17 +1234,11 @@ public:
   void consume_resource() override
   {
     ab::consume_resource();
-    p()->trigger_smoldering_heart( ab::last_resource_cost );
   }
 
   bool consume_cost_per_tick( const dot_t& dot ) override
   {
     auto ret = ab::consume_cost_per_tick( dot );
-
-    if ( ab::consume_per_tick_ )
-    {
-      p()->trigger_smoldering_heart( ab::last_resource_cost );
-    }
 
     return ret;
   }
@@ -2134,15 +2087,11 @@ struct wolf_base_attack_t : public pet_melee_attack_t<T>
   void execute() override
   {
     pet_melee_attack_t<T>::execute();
-
-    this->p()->o()->trigger_eye_of_twisting_nether( this->execute_state );
   }
 
   void tick( dot_t* d ) override
   {
     pet_melee_attack_t<T>::tick( d );
-
-    this->p()->o()->trigger_eye_of_twisting_nether( d->state );
   }
 };
 
@@ -3177,19 +3126,6 @@ struct earthen_rage_driver_t : public spell_t
   timespan_t calculate_dot_refresh_duration( const dot_t*, timespan_t ) const override
   {
     return data().duration();
-  }
-};
-
-// Legendary item dot
-struct pristine_protoscale_girdle_dot_t : public shaman_spell_t
-{
-  pristine_protoscale_girdle_dot_t( shaman_t* p )
-    : shaman_spell_t( "pristine_protoscale_girdle", p, p->find_spell( 224852 ) )
-  {
-    background = tick_may_crit = true;
-    callbacks = may_crit = false;
-
-    dot_max_stack = data().max_stacks();
   }
 };
 
@@ -4824,13 +4760,6 @@ struct lava_burst_t : public shaman_spell_t
     {
       p()->buff.t21_2pc_elemental->trigger();
     }
-
-    // Pristine Proto-Scale Girdle legendary
-    if ( p()->action.ppsg )
-    {
-      p()->action.ppsg->set_target( state->target );
-      p()->action.ppsg->schedule_execute();
-    }
   }
 };
 
@@ -5353,11 +5282,6 @@ struct earthquake_damage_t : public shaman_spell_t
   {
     double m = shaman_spell_t::composite_persistent_multiplier( state );
 
-    if ( p()->buff.echoes_of_the_great_sundering->up() )
-    {
-      m *= 1.0 + p()->buff.echoes_of_the_great_sundering->default_value;
-    }
-
     m *= 1.0 + p()->buff.t21_2pc_elemental->stack_value();
 
     return m;
@@ -5366,9 +5290,6 @@ struct earthquake_damage_t : public shaman_spell_t
   void impact( action_state_t* state ) override
   {
     shaman_spell_t::impact( state );
-
-    // Knockdown is probably a stun internally
-    p()->trigger_sephuzs_secret( state, MECHANIC_STUN, kb_chance );
   }
 };
 
@@ -5386,11 +5307,6 @@ struct earthquake_t : public shaman_spell_t
 
   double cost() const override
   {
-    if ( p()->buff.echoes_of_the_great_sundering->check() )
-    {
-      return 0;
-    }
-
     return shaman_spell_t::cost();
   }
 
@@ -5404,7 +5320,6 @@ struct earthquake_t : public shaman_spell_t
 
     // Note, needs to be decremented after ground_aoe_event_t is created so that the rumble gets the
     // buff multiplier as persistent.
-    p()->buff.echoes_of_the_great_sundering->decrement();
 
     p()->buff.t21_2pc_elemental->expire();
   }
@@ -5435,14 +5350,10 @@ struct earth_shock_overload_t : public elemental_overload_spell_t
 struct earth_shock_t : public shaman_spell_t
 {
   action_t* t21_4pc;
-  double eotgs_base_chance;  // 7.0 legendary Echoes of the Great Sundering proc chance
-  double tdbp_proc_chance;   // 7.0 legendary The Deceiver's Blood Pact proc chance
 
   earth_shock_t( shaman_t* player, const std::string& options_str )
     : shaman_spell_t( "earth_shock", player, player->find_specialization_spell( "Earth Shock" ), options_str ),
-      t21_4pc( nullptr ),
-      eotgs_base_chance( 0 ),
-      tdbp_proc_chance( 0 )
+      t21_4pc( nullptr )
   {
     // hardcoded because spelldata doesn't provide the resource type
     resource_current                   = RESOURCE_MAELSTROM;
@@ -5474,16 +5385,6 @@ struct earth_shock_t : public shaman_spell_t
   void execute() override
   {
     shaman_spell_t::execute();
-
-    if ( eotgs_base_chance > 0 )
-    {
-      p()->buff.echoes_of_the_great_sundering->trigger( 1, buff_t::DEFAULT_VALUE(),
-                                                        eotgs_base_chance * last_resource_cost );
-    }
-    if ( rng().roll( tdbp_proc_chance ) )
-    {
-      p()->resource_gain( RESOURCE_MAELSTROM, last_resource_cost, p()->gain.the_deceivers_blood_pact, this );
-    }
 
     if ( p()->talent.exposed_elements->ok() )
     {
@@ -5695,8 +5596,6 @@ struct wind_shear_t : public shaman_spell_t
   void execute() override
   {
     shaman_spell_t::execute();
-
-    p()->trigger_sephuzs_secret( execute_state, MECHANIC_INTERRUPT );
   }
 };
 
@@ -5919,8 +5818,7 @@ struct shaman_totem_pet_t : public pet_t
       pulse_amplitude( timespan_t::zero() ),
       summon_pet( nullptr )
   {
-    regen_type                 = REGEN_DISABLED;
-    affects_wod_legendary_ring = false;
+    regen_type = REGEN_DISABLED;
   }
 
   virtual void summon( timespan_t = timespan_t::zero() ) override;
@@ -7155,101 +7053,6 @@ void shaman_t::trigger_earthen_rage( const action_state_t* state )
   action.earthen_rage->execute();
 }
 
-void shaman_t::trigger_eye_of_twisting_nether( const action_state_t* state )
-{
-  if ( state->action->harmful && state->result_amount > 0 && specialization() == SHAMAN_ELEMENTAL )
-  {
-    auto school = state->action->get_school();
-
-    if ( dbc::is_school( school, SCHOOL_FIRE ) )
-    {
-      buff.eotn_fire->trigger();
-    }
-
-    if ( dbc::is_school( school, SCHOOL_NATURE ) )
-    {
-      buff.eotn_shock->trigger();
-    }
-
-    if ( dbc::is_school( school, SCHOOL_FROST ) )
-    {
-      buff.eotn_chill->trigger();
-    }
-  }
-}
-
-void shaman_t::trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic,
-                                       double /* override_proc_chance */ )
-{
-  switch ( mechanic )
-  {
-    // Interrupts will always trigger sephuz
-    case MECHANIC_INTERRUPT:
-      break;
-    default:
-      // By default, proc sephuz on persistent enemies if they are below the "boss level"
-      // (playerlevel + 3), and on any kind of transient adds.
-      if ( state->target->type != ENEMY_ADD && ( state->target->level() >= sim->max_player_level + 3 ) )
-      {
-        return;
-      }
-      break;
-  }
-
-  // Ensure Sephuz's Secret can even be procced. If the ring is not equipped, a fallback buff with
-  // proc chance of 0 (disabled) will be created
-}
-
-void shaman_t::trigger_smoldering_heart( double cost )
-{
-  if ( !legendary.smoldering_heart->ok() )
-  {
-    return;
-  }
-
-  if ( cost <= 0 )
-  {
-    return;
-  }
-  if ( specialization() != SHAMAN_ELEMENTAL )
-    return;
-
-  auto sh_base_proc_chance = 0.0;
-
-  switch ( specialization() )
-  {
-    case SHAMAN_ELEMENTAL:
-      sh_base_proc_chance = legendary.smoldering_heart->effectN( 2 ).percent();
-      break;
-    case SHAMAN_ENHANCEMENT:
-      sh_base_proc_chance = legendary.smoldering_heart->effectN( 3 ).percent();
-      break;
-    default:
-      break;
-  }
-
-  sh_base_proc_chance /= 100.0;
-
-  if ( rng().roll( sh_base_proc_chance * cost ) )
-  {
-    auto duration = legendary.smoldering_heart->effectN( 1 ).time_value();
-    // Smoldering Heart spell ID: 248029
-    if ( buff.ascendance->up() )
-    {
-      buff.ascendance->extend_duration( this, duration );
-    }
-    else
-    {
-      buff.ascendance->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
-
-      if ( specialization() == SHAMAN_ENHANCEMENT )
-      {
-        cooldown.strike->reset( true );
-      }
-    }
-  }
-}
-
 void shaman_t::trigger_windfury_weapon( const action_state_t* state )
 {
   assert( debug_cast<shaman_attack_t*>( state->action ) != nullptr && "Windfury Weapon called on invalid action type" );
@@ -7581,9 +7384,6 @@ void shaman_t::init_gains()
   gain.resonance_totem             = get_gain( "Resonance Totem" );
   gain.lightning_shield_overcharge = get_gain( "Lightning Shield Overcharge" );
   gain.forceful_winds              = get_gain( "Forceful Winds" );
-
-  // Legendary
-  gain.the_deceivers_blood_pact = get_gain( "The Deceiver's Blood Pact" );
 }
 
 // shaman_t::init_procs =====================================================
@@ -7761,7 +7561,7 @@ void shaman_t::init_action_list_elemental()
                    "In-combat potion is preferentially linked to your Elemental, unless combat will end shortly" );
 
   // "Default" APL controlling logic flow to specialized sub-APLs
-  def->add_action( this, "Wind Shear", "", "Interrupt of casts and is reliable trigger of Sephuz Secret." );
+  def->add_action( this, "Wind Shear", "", "Interrupt of casts." );
   def->add_talent( this, "Totem Mastery", "if=talent.totem_mastery.enabled&buff.resonance_totem.remains<2" );
   def->add_action( this, "Fire Elemental", "if=!talent.storm_elemental.enabled" );
   def->add_talent( this, "Storm Elemental", "if=talent.storm_elemental.enabled" );
@@ -8127,11 +7927,6 @@ double shaman_t::composite_spell_haste() const
   if ( buff.unlimited_power->up() )
     h *= 1.0 / ( 1.0 + buff.unlimited_power->stack_value() );
 
-  // 7.2 Sephuz's Secret passive haste. If the item is missing, default_chance will be set to 0 (by
-  // the fallback buff creator).
-  if ( legendary.sephuzs_secret->ok() && specialization() == SHAMAN_ELEMENTAL )
-    h *= 1.0 / ( 1.0 + legendary.sephuzs_secret->effectN( 3 ).percent() );
-
   return h;
 }
 
@@ -8171,13 +7966,6 @@ double shaman_t::temporary_movement_modifier() const
 double shaman_t::passive_movement_modifier() const
 {
   double ms = player_t::passive_movement_modifier();
-
-  // 7.2 Sephuz's Secret passive movement speed. If the item is missing, default_chance will be set
-  // to 0 (by the fallback buff creator).
-  if ( legendary.sephuzs_secret->ok() && specialization() == SHAMAN_ELEMENTAL )
-  {
-    ms += legendary.sephuzs_secret->effectN( 2 ).percent();
-  }
 
   return ms;
 }
@@ -8295,11 +8083,6 @@ double shaman_t::composite_player_multiplier( school_e school ) const
       m *= 1.0 + buff.molten_weapon->default_value;
     }
   }
-
-  m *= 1.0 + buff.eotn_fire->stack_value();
-  m *= 1.0 + buff.eotn_shock->stack_value();
-  m *= 1.0 + buff.eotn_chill->stack_value();
-
   return m;
 }
 
@@ -8812,145 +8595,6 @@ private:
 
 using namespace unique_gear;
 
-struct echoes_of_the_great_sundering_t : public scoped_action_callback_t<earth_shock_t>
-{
-  echoes_of_the_great_sundering_t() : super( SHAMAN, "earth_shock" )
-  {
-  }
-
-  void manipulate( earth_shock_t* action, const special_effect_t& e ) override
-  {
-    action->eotgs_base_chance = e.driver()->effectN( 1 ).percent() / action->base_cost();
-  }
-};
-
-struct echoes_of_the_great_sundering_buff_t : public class_buff_cb_t<buff_t>
-{
-  echoes_of_the_great_sundering_buff_t() : super( SHAMAN, "echoes_of_the_great_sundering" )
-  {
-  }
-
-  buff_t*& buff_ptr( const special_effect_t& e ) override
-  {
-    return debug_cast<shaman_t*>( e.player )->buff.echoes_of_the_great_sundering;
-  }
-
-  buff_t* creator( const special_effect_t& e ) const override
-  {
-    return make_buff( e.player, buff_name )
-        ->set_default_value( e.player->find_spell( 208723 )->effectN( 2 ).percent() )
-        ->set_duration( e.player->find_spell( 208723 )->duration() );
-  }
-};
-
-struct eotn_buff_base_t : public class_buff_cb_t<buff_t>
-{
-  unsigned sid;
-
-  eotn_buff_base_t( const std::string& name_str, unsigned spell_id ) : super( SHAMAN, name_str ), sid( spell_id )
-  {
-  }
-
-  buff_t* creator( const special_effect_t& e ) const override
-  {
-    return make_buff( e.player, buff_name, e.player->find_spell( sid ) )
-        ->set_default_value( e.player->find_spell( sid )->effectN( 1 ).percent() * ( .1 ) )
-        ->set_duration( e.player->find_spell( sid )->duration() )
-        ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  }
-};
-
-struct eotn_buff_fire_t : public eotn_buff_base_t
-{
-  eotn_buff_fire_t() : eotn_buff_base_t( "fire_of_the_twisting_nether", 207995 )
-  {
-  }
-
-  buff_t*& buff_ptr( const special_effect_t& e ) override
-  {
-    return debug_cast<shaman_t*>( e.player )->buff.eotn_fire;
-  }
-};
-
-struct eotn_buff_shock_t : public eotn_buff_base_t
-{
-  eotn_buff_shock_t() : eotn_buff_base_t( "shock_of_the_twisting_nether", 207999 )
-  {
-  }
-
-  buff_t*& buff_ptr( const special_effect_t& e ) override
-  {
-    return debug_cast<shaman_t*>( e.player )->buff.eotn_shock;
-  }
-};
-
-struct eotn_buff_chill_t : public eotn_buff_base_t
-{
-  eotn_buff_chill_t() : eotn_buff_base_t( "chill_of_the_twisting_nether", 207998 )
-  {
-  }
-
-  buff_t*& buff_ptr( const special_effect_t& e ) override
-  {
-    return debug_cast<shaman_t*>( e.player )->buff.eotn_chill;
-  }
-};
-
-struct the_deceivers_blood_pact_t : public scoped_action_callback_t<earth_shock_t>
-{
-  the_deceivers_blood_pact_t() : super( SHAMAN, "earth_shock" )
-  {
-  }
-
-  void manipulate( earth_shock_t* action, const special_effect_t& e ) override
-  {
-    action->tdbp_proc_chance = e.driver()->proc_chance();
-  }
-};
-
-struct pristine_protoscale_girdle_t : public scoped_action_callback_t<lava_burst_t>
-{
-  pristine_protoscale_girdle_t() : super( SHAMAN, "lava_burst" )
-  {
-  }
-
-  void manipulate( lava_burst_t* action, const special_effect_t& ) override
-  {
-    if ( !action->p()->action.ppsg )
-    {
-      action->p()->action.ppsg = new pristine_protoscale_girdle_dot_t( action->p() );
-    }
-  }
-};
-
-struct smoldering_heart_chance_t : public unique_gear::scoped_actor_callback_t<shaman_t>
-{
-  smoldering_heart_chance_t() : super( SHAMAN )
-  {
-  }
-
-  void manipulate( shaman_t* shaman, const special_effect_t& e ) override
-  {
-    shaman->legendary.smoldering_heart = e.driver();
-  }
-};
-
-struct uncertain_reminder_t : public scoped_actor_callback_t<shaman_t>
-{
-  uncertain_reminder_t() : scoped_actor_callback_t( SHAMAN )
-  {
-  }
-
-  void manipulate( shaman_t* shaman, const special_effect_t& e ) override
-  {
-    auto buff = buff_t::find( shaman, "bloodlust" );
-    if ( buff && shaman->specialization() == SHAMAN_ELEMENTAL )
-    {
-      buff->buff_duration += timespan_t::from_seconds( e.driver()->effectN( 1 ).base_value() );
-    }
-  }
-};
-
 struct shaman_module_t : public module_t
 {
   shaman_module_t() : module_t( SHAMAN )
@@ -8979,16 +8623,6 @@ struct shaman_module_t : public module_t
 
   void static_init() const override
   {
-    register_special_effect( 208722, echoes_of_the_great_sundering_t() );
-    register_special_effect( 208722, echoes_of_the_great_sundering_buff_t(), true );
-    register_special_effect( 207994, eotn_buff_fire_t(), true );
-    register_special_effect( 207994, eotn_buff_shock_t(), true );
-    register_special_effect( 207994, eotn_buff_chill_t(), true );
-    register_special_effect( 214131, the_deceivers_blood_pact_t() );
-    register_special_effect( 224837, pristine_protoscale_girdle_t() );
-    register_special_effect( 248029, smoldering_heart_chance_t() );
-    register_special_effect( 234814, uncertain_reminder_t() );
-
     // Shaman Leyshock's Grand Compendium basic hooks
 
     // Totem Mastery
