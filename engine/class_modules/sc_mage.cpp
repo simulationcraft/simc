@@ -6388,8 +6388,12 @@ void mage_t::apl_arcane()
   burn -> add_action( "start_burn_phase,if=!burn_phase" );
   burn -> add_action( "stop_burn_phase,if=burn_phase&prev_gcd.1.evocation&target.time_to_die>variable.average_burn_length&burn_phase_duration>0", "End the burn phase when we just evocated." );
   burn -> add_talent( this, "Mirror Image" );
-  burn -> add_talent( this, "Charged Up", "if=buff.arcane_charge.stack<=1&(!set_bonus.tier20_2pc|cooldown.presence_of_mind.remains>5)" );
+  burn -> add_talent( this, "Charged Up", "if=buff.arcane_charge.stack<=1" );
   burn -> add_talent( this, "Nether Tempest", "if=(refreshable|!ticking)&buff.arcane_charge.stack=buff.arcane_charge.max_stack&buff.rune_of_power.down&buff.arcane_power.down" );
+  burn -> add_action( this, "Arcane Blast", "if=buff.rule_of_threes.up&talent.overpowered.enabled",
+                    "When running Overpowered, and we got a Rule of Threes proc (AKA we got our 4th Arcane Charge via "
+                    "Charged Up), use it before using RoP+AP, because the mana reduction is otherwise largely wasted "
+                    "since the AB was free anyway." );
   burn -> add_action( "lights_judgment,if=buff.arcane_power.down" );
   burn -> add_talent( this, "Rune of Power", "if=!buff.arcane_power.up&(mana.pct>=50|cooldown.arcane_power.remains=0)&(buff.arcane_charge.stack=buff.arcane_charge.max_stack)" );
   burn -> add_action( this, "Arcane Power" );
@@ -6416,13 +6420,12 @@ void mage_t::apl_arcane()
 
   conserve -> add_talent( this, "Mirror Image" );
   conserve -> add_talent( this, "Charged Up", "if=buff.arcane_charge.stack=0" );
-  conserve -> add_action( this, "Presence of Mind", "if=set_bonus.tier20_2pc&buff.arcane_charge.stack=0" );
   conserve -> add_talent( this, "Nether Tempest", "if=(refreshable|!ticking)&buff.arcane_charge.stack=buff.arcane_charge.max_stack&buff.rune_of_power.down&buff.arcane_power.down" );
   conserve -> add_talent( this, "Arcane Orb", "if=buff.arcane_charge.stack<=2&(cooldown.arcane_power.remains>10|active_enemies<=2)" );
   conserve -> add_action( this, "Arcane Blast", "if=buff.rule_of_threes.up&buff.arcane_charge.stack>3", "Arcane Blast shifts up in priority when running rule of threes." );
-  conserve -> add_talent( this, "Rune of Power", "if=buff.arcane_charge.stack=buff.arcane_charge.max_stack&(full_recharge_time<=execute_time|recharge_time<=cooldown.arcane_power.remains|target.time_to_die<=cooldown.arcane_power.remains)" );
+  conserve -> add_talent( this, "Rune of Power", "if=buff.arcane_charge.stack=buff.arcane_charge.max_stack&(full_recharge_time<=execute_time|full_recharge_time<=cooldown.arcane_power.remains|target.time_to_die<=cooldown.arcane_power.remains)" );
   conserve -> add_action( this, "Arcane Missiles", "if=mana.pct<=95&buff.clearcasting.react,chain=1" );
-  conserve -> add_action( this, "Arcane Barrage", "if=((buff.arcane_charge.stack=buff.arcane_charge.max_stack)&mana.pct<=variable.conserve_mana|(talent.arcane_orb.enabled&cooldown.arcane_orb.remains<=gcd&cooldown.arcane_power.remains>10))|mana.pct<=(variable.conserve_mana-10)", "During conserve, we still just want to continue not dropping charges as long as possible.So keep 'burning' as long as possible (aka conserve_mana threshhold) and then swap to a 4x AB->Abarr conserve rotation. This is mana neutral for RoT, mana negative with arcane familiar. If we do not have 4 AC, we can dip slightly lower to get a 4th AC." );
+  conserve -> add_action( this, "Arcane Barrage", "if=((buff.arcane_charge.stack=buff.arcane_charge.max_stack)&(mana.pct<=variable.conserve_mana|(cooldown.arcane_power.remains>cooldown.rune_of_power.full_recharge_time&mana.pct<=variable.conserve_mana+25))|(talent.arcane_orb.enabled&cooldown.arcane_orb.remains<=gcd&cooldown.arcane_power.remains>10))|mana.pct<=(variable.conserve_mana-10)", "During conserve, we still just want to continue not dropping charges as long as possible.So keep 'burning' as long as possible (aka conserve_mana threshhold) and then swap to a 4x AB->Abarr conserve rotation. If we do not have 4 AC, we can dip slightly lower to get a 4th AC. We also sustain at a higher mana percentage when we plan to use a Rune of Power during conserve phase, so we can burn during the Rune of Power." );
   conserve -> add_talent( this, "Supernova", "if=mana.pct<=95", "Supernova is barely worth casting, which is why it is so far down, only just above AB. " );
   conserve -> add_action( this, "Arcane Explosion", "if=active_enemies>=3&(mana.pct>=variable.conserve_mana|buff.arcane_charge.stack=3)", "Keep 'burning' in aoe situations until conserve_mana pct. After that only cast AE with 3 Arcane charges, since it's almost equal mana cost to a 3 stack AB anyway. At that point AoE rotation will be AB x3 -> AE -> Abarr" );
   conserve -> add_action( this, "Arcane Blast" );

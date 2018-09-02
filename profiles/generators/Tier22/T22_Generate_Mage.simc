@@ -6,21 +6,21 @@ role=spell
 position=back
 talents=2032021
 
-head=headdress_of_the_first_empire,id=159236,bonus_id=1557/4819/4775/4786,azerite_powers=8/214/459/15/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
-shoulder=amice_of_corrupting_horror,id=160726,bonus_id=4824/1507/4775,azerite_powers=8/214/21/85/13
-back=plasmaspattered_greatcloak,id=160644,bonus_id=4800/1507
-chest=ruffled_poet_blouse,id=158301,bonus_id=1557/4819/4775/4786,azerite_powers=8/214/21/14/13
-wrists=voidlashed_wristband,id=160617,bonus_id=4800/1507
-hands=mutagenic_protofluid_handwraps,id=160715,bonus_id=4800/1507
-waist=cord_of_septic_envelopment,id=160727,bonus_id=4800/1507
+head=soulfuel_headdress,id=159279,bonus_id=1557/4819/4775/4786,azerite_powers=374/22/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=
+shoulders=exquisitely_aerodynamic_shoulderpads,id=159232,bonus_id=1557/4819/4775/4786,azerite_powers=374/22/13
+back=cloak_of_rippling_whispers,id=160642,bonus_id=4800/1507
+chest=blooddrenched_robes,id=159241,bonus_id=1557/4819/4775/4786,azerite_powers=374/31/13
+wrists=bloody_experimenters_wraps,id=161071,bonus_id=4800/1507
+hands=spellbound_specimen_handlers,id=160612,bonus_id=4800/1507
+waist=cord_of_animated_contagion,id=160734,bonus_id=4800/1507
 legs=leggings_of_lingering_infestation,id=160615,bonus_id=4800/1507
 feet=volatile_walkers,id=160714,bonus_id=4800/1507
-finger1=rotscour_ring,id=160645,bonus_id=4800/1507,enchant=pact_of_mastery
-finger2=ring_of_the_infinite_void,id=160647,bonus_id=4800/1507,enchant=pact_of_mastery
-trinket1=lady_waycrests_music_box,id=159631,bonus_id=1542/4779
+finger1=ring_of_the_infinite_void,id=160647,bonus_id=4800/1507,enchant=pact_of_critical_strike
+finger2=rotscour_ring,id=160645,bonus_id=4800/1507,enchant=pact_of_critical_strike
+trinket1=balefire_branch,id=159630,bonus_id=1542/4779
 trinket2=vigilants_bloodshaper,id=160651,bonus_id=4800/1507
-main_hand=heptavium_staff_of_torturous_knowledge,id=160690,bonus_id=4800/1507,enchant=torrent_of_elements
+main_hand=regurgitated_purifiers_flamestaff,id=160689,bonus_id=4800/1507,enchant=torrent_of_elements
 
 save=T22_Mage_Arcane.simc
 
