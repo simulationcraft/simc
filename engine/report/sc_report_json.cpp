@@ -899,6 +899,7 @@ void to_json( JsonOutput root, const sim_t& sim )
   stats_root[ "merge_time_seconds" ] = sim.merge_time;
   stats_root[ "analyze_time_seconds" ] = sim.analyze_time;
   stats_root[ "simulation_length" ] = sim.simulation_length;
+  stats_root[ "total_events_processed" ] = sim.event_mgr.total_events_processed;
   add_non_zero( stats_root, "raid_dps", sim.raid_dps );
   add_non_zero( stats_root, "raid_hps", sim.raid_hps );
   add_non_zero( stats_root, "raid_aps", sim.raid_aps );
