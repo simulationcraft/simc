@@ -7377,10 +7377,22 @@ void mage_t::trigger_leyshock( unsigned id, const action_state_t* state, leyshoc
         case 44614: // Flurry
           switch ( buffs.icicles -> check() )
           {
-            case 2: buff = STAT_VERSATILITY_RATING; break;
-            case 4: buff = STAT_HASTE_RATING; break;
-            case 5: buff = STAT_CRIT_RATING; break;
-            default: buff = STAT_MASTERY_RATING; break;
+            case 4:
+            case 5:
+              buff = STAT_CRIT_RATING;
+              break;
+            case 3:
+              buff = STAT_HASTE_RATING;
+              break;
+            case 1:
+              buff = STAT_VERSATILITY_RATING;
+              break;
+            case 0:
+            case 2:
+              buff = STAT_MASTERY_RATING;
+              break;
+            default:
+              break;
           }
           break;
         default:
