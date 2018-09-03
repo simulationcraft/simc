@@ -10,10 +10,8 @@ struct blessing_of_sacrifice_redirect_t;
 namespace buffs {
                   struct avenging_wrath_buff_t;
                   struct crusade_buff_t;
-                  struct sephuzs_secret_buff_t;
                   struct holy_avenger_buff_t;
                   struct ardent_defender_buff_t;
-                  struct liadrins_fury_unleashed_t;
                   struct forbearance_t;
                   struct shield_of_vengeance_buff_t;
                 }
@@ -128,19 +126,6 @@ public:
   action_t* active_zeal;
   action_t* active_inner_light_damage;
 
-  const special_effect_t* whisper_of_the_nathrezim;
-  const special_effect_t* liadrins_fury_unleashed;
-  const special_effect_t* justice_gaze;
-  const special_effect_t* chain_of_thrayn;
-  const special_effect_t* ashes_to_dust;
-  const special_effect_t* scarlet_inquisitors_expurgation;
-  const special_effect_t* ferren_marcuss_strength;
-  const special_effect_t* saruans_resolve;
-  const special_effect_t* gift_of_the_golden_valkyr;
-  const special_effect_t* heathcliffs_immortality;
-  const special_effect_t* pillars_of_inmost_light;
-  const spell_data_t* sephuz;
-  const spell_data_t* topless_tower;
 
   struct active_actions_t
   {
@@ -153,7 +138,6 @@ public:
     // core
     buffs::avenging_wrath_buff_t* avenging_wrath;
     buffs::crusade_buff_t* crusade;
-    buffs::sephuzs_secret_buff_t* sephuz;
     buff_t* holy_avenger;
     buffs::shield_of_vengeance_buff_t* shield_of_vengeance;
     buff_t* divine_protection;
@@ -179,11 +163,6 @@ public:
     buff_t* divine_steed;
     buff_t* aegis_of_light;
     stat_buff_t* seraphim;
-
-    buff_t* whisper_of_the_nathrezim;
-    buffs::liadrins_fury_unleashed_t* liadrins_fury_unleashed;
-    buff_t* scarlet_inquisitors_expurgation_driver;
-    buff_t* scarlet_inquisitors_expurgation;
 
     // Set Bonuses
     buff_t* sacred_judgment;
@@ -304,15 +283,6 @@ public:
     const spell_data_t* sanctified_wrath; // needed to pull out cooldown reductions
     const spell_data_t* divine_purpose_ret;
     const spell_data_t* divine_purpose_holy;
-    const spell_data_t* liadrins_fury_unleashed;
-    const spell_data_t* justice_gaze;
-    const spell_data_t* pillars_of_inmost_light;
-    const spell_data_t* chain_of_thrayn;
-    const spell_data_t* ashes_to_dust;
-    const spell_data_t* ferren_marcuss_strength;
-    const spell_data_t* saruans_resolve;
-    const spell_data_t* gift_of_the_golden_valkyr;
-    const spell_data_t* heathcliffs_immortality;
     const spell_data_t* consecration_bonus;
     const spell_data_t* avenging_wrath;
     const spell_data_t* shield_of_the_righteous;
@@ -502,8 +472,8 @@ public:
   double  last_defender_mitigation() const;
 
   expr_t*   create_consecration_expression( const std::string& expr_str );
-  
- ground_aoe_event_t* active_consecration;
+
+  ground_aoe_event_t* active_consecration;
 
   std::string default_potion() const override;
   std::string default_flask() const override;
@@ -566,8 +536,6 @@ namespace buffs {
   {
     avenging_wrath_buff_t( player_t* p );
 
-    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
-
     double get_damage_mod() const
     {
       return damage_modifier;
@@ -613,8 +581,6 @@ namespace buffs {
   struct crusade_buff_t : public buff_t
   {
     crusade_buff_t( player_t* p );
-
-    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
 
     double get_damage_mod()
     {
@@ -850,22 +816,14 @@ public:
       }
       if ( ret_crusade ) {
         if ( p() -> buffs.crusade -> check() ) {
-          double aw_multiplier = 1.0 + p() -> buffs.crusade -> get_damage_mod();
-          if ( p() -> chain_of_thrayn ) {
-            aw_multiplier += p() -> spells.chain_of_thrayn -> effectN( 3 ).percent();
-          }
-          am *= aw_multiplier;
+          am *= 1.0 + p() -> buffs.crusade -> get_damage_mod();
         }
       }
     }
 
     if ( avenging_wrath ) {
       if ( p() -> buffs.avenging_wrath -> check() ) {
-        double aw_multiplier = p() -> buffs.avenging_wrath -> get_damage_mod();
-        if ( p() -> chain_of_thrayn ) {
-          aw_multiplier += p() -> spells.chain_of_thrayn -> effectN( 3 ).percent();
-        }
-        am *= 1.0 + aw_multiplier;
+        am *= 1.0 + p() -> buffs.avenging_wrath -> get_damage_mod();
       }
     }
 

@@ -613,27 +613,13 @@ struct light_of_dawn_t : public paladin_heal_t
       cooldown = p -> cooldowns.light_of_dawn;
   }
 
-    virtual void execute() override
+  virtual void execute() override
+  {
+    if ( p() -> sets -> has_set_bonus( PALADIN_HOLY, T20, B2 ) )
     {
-        if (p()->topless_tower) {
-            if (p()->shuffled_rngs.topless_tower->trigger())
-            {
-                p()->procs.topless_tower->occur();
-
-                timespan_t proc_duration = timespan_t::from_seconds(p()->topless_tower->effectN(2).base_value());
-                if (p()->buffs.avenging_wrath->check())
-                    p()->buffs.avenging_wrath->extend_duration(p(), proc_duration);
-                else
-                    p()->buffs.avenging_wrath->trigger(1, p()->buffs.avenging_wrath->default_value, -1.0, proc_duration);
-            }
-        }
-
-        if ( p() -> sets -> has_set_bonus( PALADIN_HOLY, T20, B2 ) )
-        {
-            p()->cooldowns.light_of_dawn->adjust( timespan_t::from_seconds(-2.0));
-        }
-
+      p() -> cooldowns.light_of_dawn -> adjust( timespan_t::from_seconds( -2.0 ) );
     }
+  }
 };
 
 

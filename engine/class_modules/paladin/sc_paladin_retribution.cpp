@@ -25,14 +25,6 @@ namespace buffs {
     add_invalidate( CACHE_HASTE );
   }
 
-  void crusade_buff_t::expire_override( int expiration_stacks, timespan_t remaining_duration )
-  {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-
-    paladin_t* p = static_cast<paladin_t*>( player );
-    p -> buffs.liadrins_fury_unleashed -> expire(); // Force Liadrin's Fury to fade
-  }
-
   struct shield_of_vengeance_buff_t : public absorb_buff_t
   {
     shield_of_vengeance_buff_t( player_t* p ):
@@ -149,43 +141,6 @@ void holy_power_generator_t::execute()
   }
 }
 
-// Custom events
-struct whisper_of_the_nathrezim_event_t : public event_t
-{
-  paladin_t* paladin;
-
-  whisper_of_the_nathrezim_event_t( paladin_t* p, timespan_t delay ) :
-    event_t( *p, delay ), paladin( p )
-  {
-  }
-
-  const char* name() const override
-  { return "whisper_of_the_nathrezim_delay"; }
-
-  void execute() override
-  {
-    paladin -> buffs.whisper_of_the_nathrezim -> trigger();
-  }
-};
-
-struct scarlet_inquisitors_expurgation_expiry_event_t : public event_t
-{
-  paladin_t* paladin;
-
-  scarlet_inquisitors_expurgation_expiry_event_t( paladin_t* p, timespan_t delay ) :
-    event_t( *p, delay ), paladin( p )
-  {
-  }
-
-  const char* name() const override
-  { return "scarlet_inquisitors_expurgation_expiry_delay"; }
-
-  void execute() override
-  {
-    paladin -> buffs.scarlet_inquisitors_expurgation -> expire();
-  }
-};
-
 // Crusade
 struct crusade_t : public paladin_heal_t
 {
@@ -216,11 +171,6 @@ struct crusade_t : public paladin_heal_t
     paladin_heal_t::execute();
 
     p() -> buffs.crusade -> trigger();
-
-    if ( p() -> liadrins_fury_unleashed )
-    {
-      p() -> buffs.liadrins_fury_unleashed -> trigger();
-    }
 
     if ( p() -> azerite.avengers_might.ok() )
       p() -> buffs.avengers_might -> trigger();
@@ -345,8 +295,6 @@ struct holy_power_consumer_impact_t : public paladin_melee_attack_t
   virtual double action_multiplier() const override
   {
     double am = paladin_melee_attack_t::action_multiplier();
-    if ( p() -> buffs.whisper_of_the_nathrezim -> check() )
-      am *= 1.0 + p() -> buffs.whisper_of_the_nathrezim -> data().effectN( 1 ).percent();
     if ( p() -> buffs.divine_purpose -> up() )
       am *= 1.0 + p() -> buffs.divine_purpose -> data().effectN( 2 ).percent();
     return am;
@@ -398,16 +346,6 @@ struct divine_storm_t: public holy_power_consumer_t
     weapon_multiplier = 0;
   }
 
-  virtual double action_multiplier() const override
-  {
-    double am = holy_power_consumer_t::action_multiplier();
-    if ( p() -> buffs.whisper_of_the_nathrezim -> check() )
-      am *= 1.0 + p() -> buffs.whisper_of_the_nathrezim -> data().effectN( 1 ).percent();
-    if ( p() -> buffs.scarlet_inquisitors_expurgation -> up() )
-      am *= 1.0 + p() -> buffs.scarlet_inquisitors_expurgation -> check_stack_value();
-    return am;
-  }
-
   virtual void execute() override
   {
     double c = cost();
@@ -417,19 +355,6 @@ struct divine_storm_t: public holy_power_consumer_t
       p() -> buffs.the_fires_of_justice -> expire();
     if ( p() -> buffs.ret_t21_4p -> up() && c > 0 )
       p() -> buffs.ret_t21_4p -> expire();
-
-    if ( p() -> whisper_of_the_nathrezim )
-    {
-      if ( p() -> buffs.whisper_of_the_nathrezim -> up() )
-        p() -> buffs.whisper_of_the_nathrezim -> expire();
-
-      make_event<whisper_of_the_nathrezim_event_t>( *sim, p(), timespan_t::from_millis( 300 ) );
-    }
-
-    if ( p() -> scarlet_inquisitors_expurgation )
-    {
-      make_event<scarlet_inquisitors_expurgation_expiry_event_t>( *sim, p(), timespan_t::from_millis( 800 ) );
-    }
   }
 
   virtual void impact(action_state_t* state) override
@@ -510,13 +435,6 @@ struct templars_verdict_t : public holy_power_consumer_t
     if ( result_is_miss( execute_state -> result ) && c > 0 )
     {
       p() -> resource_gain( RESOURCE_HOLY_POWER, c, p() -> gains.hp_templars_verdict_refund );
-    }
-
-    if ( p() -> whisper_of_the_nathrezim )
-    {
-      if ( p() -> buffs.whisper_of_the_nathrezim -> up() )
-        p() -> buffs.whisper_of_the_nathrezim -> expire();
-      make_event<whisper_of_the_nathrezim_event_t>( *sim, p(), timespan_t::from_millis( 300 ) );
     }
 
     if ( p() -> talents.righteous_verdict -> ok() )
@@ -844,19 +762,9 @@ void paladin_t::create_buffs_retribution()
   buffs.inquisition                    = new buffs::inquisition_buff_t( this );
   buffs.the_fires_of_justice           = make_buff( this, "fires_of_justice", find_spell( 209785 ) );
   buffs.blade_of_wrath                 = make_buff( this, "blade_of_wrath", find_spell( 281178 ) );
-  buffs.whisper_of_the_nathrezim       = make_buff( this, "whisper_of_the_nathrezim", find_spell( 207635 ) );
-  buffs.liadrins_fury_unleashed        = new buffs::liadrins_fury_unleashed_t( this );
   buffs.shield_of_vengeance            = new buffs::shield_of_vengeance_buff_t( this );
   buffs.sacred_judgment                = make_buff( this, "sacred_judgment", find_spell( 246973 ) );
   buffs.divine_judgment                = make_buff( this, "divine_judgment", find_spell( 271581 ) );
-
-  buffs.scarlet_inquisitors_expurgation = make_buff( this, "scarlet_inquisitors_expurgation", find_spell( 248289 ) )
-    ->set_default_value( find_spell( 248289 ) -> effectN( 1 ).percent() );
-  buffs.scarlet_inquisitors_expurgation_driver = make_buff( this, "scarlet_inquisitors_expurgation_driver", find_spell( 248103 ) )
-    ->set_period( find_spell( 248103 ) -> effectN( 1 ).period() )
-                                                 ->set_quiet( true )
-                                                 ->set_tick_callback([this](buff_t*, int, const timespan_t&) { buffs.scarlet_inquisitors_expurgation -> trigger(); })
-                                                 ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED );
 
   // Tier Bonuses
   buffs.ret_t21_4p             = buff_creator_t( this, "hidden_retribution_t21_4p", find_spell( 253806 ) );
@@ -907,10 +815,6 @@ void paladin_t::init_spells_retribution()
 
   // misc spells
   spells.divine_purpose_ret            = find_spell( 223817 );
-  spells.liadrins_fury_unleashed       = find_spell( 208408 );
-  spells.justice_gaze                  = find_spell( 211557 );
-  spells.chain_of_thrayn               = find_spell( 281573 );
-  spells.ashes_to_dust                 = find_spell( 236106 );
   spells.blade_of_wrath                = find_spell( 231832 );
 
   // Mastery

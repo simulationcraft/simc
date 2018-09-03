@@ -1,8 +1,8 @@
 #include "simulationcraft.hpp"
 #include "sc_paladin.hpp"
 
-// TODO : 
-// Defensive stuff : 
+// TODO :
+// Defensive stuff :
 // - correctly update sotr's armor bonus on each cast
 // - avenger's valor defensive benefit
 
@@ -36,8 +36,6 @@ struct ardent_defender_t : public paladin_spell_t
     paladin_spell_t( "ardent_defender", p, p -> find_specialization_spell( "Ardent Defender" ) )
   {
     parse_options( options_str );
-
-    cooldown -> duration *= 1.0 + p -> spells.pillars_of_inmost_light -> effectN( 1 ).percent();
 
     harmful = false;
     use_off_gcd = true;
@@ -86,17 +84,6 @@ struct avengers_shield_t : public paladin_spell_t
     cooldown -> duration = data().cooldown();
   }
 
-  void init() override
-  {
-    paladin_spell_t::init();
-
-    if ( p() -> ferren_marcuss_strength )
-    {
-      aoe += as<int>( p() -> spells.ferren_marcuss_strength -> effectN( 1 ).base_value() );
-      base_multiplier *= 1.0 + p() -> spells.ferren_marcuss_strength -> effectN( 2 ).percent();
-    }
-  }
-
   void execute() override
   {
     paladin_spell_t::execute();
@@ -107,12 +94,6 @@ struct avengers_shield_t : public paladin_spell_t
   void impact( action_state_t* s ) override
   {
     paladin_spell_t::impact( s );
-
-    if ( p() -> gift_of_the_golden_valkyr )
-    {
-      timespan_t reduction = timespan_t::from_seconds( -1.0 * p() -> spells.gift_of_the_golden_valkyr -> effectN(1).base_value() );
-      p() -> cooldowns.guardian_of_ancient_kings -> adjust( reduction );
-    }
 
     if ( p() -> azerite.soaring_shield.enabled() )
     {
@@ -249,7 +230,7 @@ struct blessing_of_spellwarding_t : public paladin_spell_t
 struct guardian_of_ancient_kings_buff_t : public buff_t
 {
   guardian_of_ancient_kings_buff_t( paladin_t* p ) :
-    buff_t( buff_creator_t( p, "guardian_of_ancient_kings", p -> find_specialization_spell( "Guardian of Ancient Kings" ) ) 
+    buff_t( buff_creator_t( p, "guardian_of_ancient_kings", p -> find_specialization_spell( "Guardian of Ancient Kings" ) )
       .cd( timespan_t::zero() ) )
   { }
 
@@ -442,7 +423,7 @@ struct judgment_prot_t : public paladin_melee_attack_t
 struct light_of_the_protector_t : public paladin_heal_t
 {
   light_of_the_protector_t( paladin_t* p, const std::string& options_str )
-    : paladin_heal_t( "light_of_the_protector", p, p -> find_specialization_spell( "Light of the Protector" ) ) 
+    : paladin_heal_t( "light_of_the_protector", p, p -> find_specialization_spell( "Light of the Protector" ) )
   {
     parse_options( options_str );
 
@@ -466,26 +447,6 @@ struct light_of_the_protector_t : public paladin_heal_t
     return m;
   }
 
-  void init() override
-  {
-    paladin_heal_t::init();
-
-    if ( p() -> saruans_resolve ) 
-    {
-      cooldown -> charges += as<int>( p() -> spells.saruans_resolve -> effectN( 1 ).base_value() );
-    }
-  }
-
-  double recharge_multiplier() const override 
-  {
-    double cdr = paladin_heal_t::recharge_multiplier();
-    if ( p() -> saruans_resolve )
-    {
-      cdr *= ( 1 + p() -> spells.saruans_resolve -> effectN( 3 ).percent() );
-    }
-    return cdr;
-  }
-
   bool ready() override
   {
     if ( p() -> talents.hand_of_the_protector -> ok() )
@@ -506,7 +467,7 @@ struct hand_of_the_protector_t : public paladin_heal_t
     parse_options( options_str );
 
     may_crit = true;
-    
+
     // link needed for Righteous Protector / SotR cooldown reduction
     cooldown = p -> cooldowns.hand_of_the_protector;
   }
@@ -522,26 +483,6 @@ struct hand_of_the_protector_t : public paladin_heal_t
     m *= 1 + missing_health_percent * data().effectN( 2 ).percent();
 
     return m;
-  }
-
-
-  void init() override
-  {
-    paladin_heal_t::init();
-
-    if ( p() -> saruans_resolve ) 
-    {
-      cooldown -> charges += as<int>( p() -> spells.saruans_resolve -> effectN( 1 ).base_value() );
-    }
-  }
-
-  double recharge_multiplier() const override{
-    double cdr = paladin_heal_t::recharge_multiplier();
-    if ( p() -> saruans_resolve )
-    {
-      cdr *= ( 1 + p() -> spells.saruans_resolve -> effectN( 3 ).percent() );
-    }
-    return cdr;
   }
 
   bool ready() override
@@ -716,13 +657,6 @@ void paladin_t::target_mitigation( school_e school,
     // Last Defender gives a multiplier of 0.97^N - coded using spell data in case that changes
     s -> result_amount *= last_defender_mitigation();
   }
-
-  // heathcliffs
-  if ( standing_in_consecration() && heathcliffs_immortality )
-  {
-    s -> result_amount *= 1.0 - spells.heathcliffs_immortality -> effectN( 1 ).percent();
-  }
-
 
   if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
     sim -> out_debug.printf( "Damage to %s after passive mitigation is %f", s -> target -> name(), s -> result_amount );
@@ -940,7 +874,7 @@ void paladin_t::create_buffs_protection()
                            -> set_absorb_gain( get_gain( "holy_shield_absorb" ) );
   buffs.avengers_valor = make_buff( this, "avengers_valor", find_specialization_spell( "Avenger's Shield" ) -> effectN( 4 ).trigger() );
   buffs.avengers_valor -> set_default_value( find_specialization_spell( "Avenger's Shield" ) -> effectN( 4 ).trigger() -> effectN( 1 ).percent() );
-  buffs.ardent_defender = make_buff( this, "ardent_defender", find_specialization_spell( "Ardent Defender" ) );   
+  buffs.ardent_defender = make_buff( this, "ardent_defender", find_specialization_spell( "Ardent Defender" ) );
 
   // Azerite traits
   buffs.inspiring_vanguard = make_buff<stat_buff_t>( this, "inspiring_vanguard", find_spell( 279397 ) )
@@ -980,11 +914,6 @@ void paladin_t::init_spells_protection()
   talents.last_defender              = find_talent_spell( "Last Defender" );
 
   // Spells
-  spells.pillars_of_inmost_light       = find_spell( 248102 );
-  spells.ferren_marcuss_strength       = find_spell( 207614 );
-  spells.saruans_resolve               = find_spell( 234653 );
-  spells.gift_of_the_golden_valkyr     = find_spell( 207628 );
-  spells.heathcliffs_immortality       = find_spell( 207599 );
   spells.consecration_bonus            = find_spell( 188370 );
   spells.shield_of_the_righteous       = find_spell( 132403 );
 
@@ -1025,7 +954,7 @@ void paladin_t::generate_action_prio_list_prot()
 
   // Snapshot stats
   precombat -> add_action( "snapshot_stats",  "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-  
+
   precombat -> add_action( "potion" );
   precombat -> add_action( "lights_judgment" );
   precombat -> add_action( this, "Avenging Wrath" );
@@ -1037,7 +966,7 @@ void paladin_t::generate_action_prio_list_prot()
 
   action_priority_list_t* def = get_action_priority_list( "default" );
   action_priority_list_t* cds = get_action_priority_list( "cooldowns" );
-  
+
   def -> add_action( "auto_attack" );
 
   def -> add_action( "call_action_list,name=cooldowns" );

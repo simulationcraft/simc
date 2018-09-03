@@ -30,19 +30,6 @@ paladin_t::paladin_t( sim_t* sim, const std::string& name, race_e r ) :
   last_jol_proc( timespan_t::from_seconds( 0.0 ) ),
   fake_sov( true )
 {
-  whisper_of_the_nathrezim            = nullptr;
-  liadrins_fury_unleashed             = nullptr;
-  chain_of_thrayn                     = nullptr;
-  ashes_to_dust                       = nullptr;
-  scarlet_inquisitors_expurgation     = nullptr;
-  justice_gaze                        = nullptr;
-  ferren_marcuss_strength             = nullptr;
-  pillars_of_inmost_light             = nullptr;
-  saruans_resolve                     = nullptr;
-  gift_of_the_golden_valkyr           = nullptr;
-  heathcliffs_immortality             = nullptr;
-  sephuz                              = nullptr;
-  topless_tower                       = nullptr;
   active_beacon_of_light              = nullptr;
   active_enlightened_judgments        = nullptr;
   active_shield_of_vengeance_proc     = nullptr;
@@ -149,14 +136,6 @@ namespace buffs {
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
   }
-
-  void avenging_wrath_buff_t::expire_override( int expiration_stacks, timespan_t remaining_duration )
-  {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-
-    paladin_t* p = static_cast<paladin_t*>( player );
-    p -> buffs.liadrins_fury_unleashed -> expire(); // Force Liadrin's Fury to fade
-  }
 }
 
  // end namespace buffs
@@ -219,10 +198,7 @@ struct avenging_wrath_t : public paladin_spell_t
     paladin_spell_t::execute();
 
     p() -> buffs.avenging_wrath -> trigger();
-    if ( p() -> liadrins_fury_unleashed )
-    {
-      p() -> buffs.liadrins_fury_unleashed -> trigger();
-    }
+
     if ( p() -> azerite.avengers_might.ok() )
       p() -> buffs.avengers_might -> trigger();
   }
@@ -756,28 +732,6 @@ struct hammer_of_justice_t : public paladin_melee_attack_t
     if ( ( p -> specialization() == PALADIN_RETRIBUTION ) )
       base_costs[ RESOURCE_MANA ] = 0;
   }
-
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    // TODO this is a hack; figure out a better way to do this
-    if ( t -> health_percentage() < p() -> spells.justice_gaze -> effectN( 1 ).base_value() )
-      return 0;
-    return paladin_melee_attack_t::composite_target_multiplier( t );
-  }
-
-  virtual void execute() override
-  {
-    paladin_melee_attack_t::execute();
-
-    if ( p() -> justice_gaze )
-    {
-      damage_spell -> schedule_execute();
-      if ( target -> health_percentage() > p() -> spells.justice_gaze -> effectN( 1 ).base_value() )
-        p() -> cooldowns.hammer_of_justice -> ready -= ( p() -> cooldowns.hammer_of_justice -> duration * p() -> spells.justice_gaze -> effectN( 2 ).percent() );
-
-      p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_justice_gaze );
-    }
-  }
 };
 
 // Holy Shield damage proc ====================================================
@@ -836,16 +790,6 @@ struct rebuke_t : public paladin_melee_attack_t
       return false;
 
     return paladin_melee_attack_t::target_ready( candidate_target );
-  }
-
-  virtual void execute() override
-  {
-    paladin_melee_attack_t::execute();
-
-    if ( p() -> sephuz )
-    {
-      p() -> buffs.sephuz -> trigger();
-    }
   }
 };
 
@@ -1149,7 +1093,6 @@ void paladin_t::create_buffs()
 
   // General
   buffs.avenging_wrath         = new buffs::avenging_wrath_buff_t( this );
-  buffs.sephuz                 = new buffs::sephuzs_secret_buff_t( this );
   buffs.divine_shield          = buff_creator_t( this, "divine_shield", find_class_spell( "Divine Shield" ) )
                                  .cd( timespan_t::zero() ) // Let the ability handle the CD
                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -1537,14 +1480,8 @@ double paladin_t::composite_melee_haste() const
   if ( buffs.crusade -> check() )
     h /= 1.0 + buffs.crusade -> get_haste_bonus();
 
-  if ( buffs.sephuz -> check() )
-    h /= 1.0 + buffs.sephuz -> check_value();
-
   if ( buffs.inquisition -> check() )
     h /= 1.0 + buffs.inquisition -> data().effectN( 3 ).percent();
-
-  if ( sephuz )
-    h /= 1.0 + sephuz -> effectN( 3 ).percent() ;
 
   if (buffs.holy_avenger -> check())
     h *= buffs.holy_avenger -> value();
@@ -1570,12 +1507,6 @@ double paladin_t::composite_spell_haste() const
 
   if ( buffs.crusade -> check() )
     h /= 1.0 + buffs.crusade -> get_haste_bonus();
-
-  if ( buffs.sephuz -> check() )
-    h /= 1.0 + buffs.sephuz -> check_value();
-
-  if ( sephuz )
-    h /= 1.0 + sephuz -> effectN( 3 ).percent();
 
   if ( buffs.inquisition -> check() )
     h /= 1.0 + buffs.inquisition -> data().effectN( 3 ).percent();
@@ -1971,12 +1902,6 @@ void paladin_t::combat_begin()
   player_t::combat_begin();
 
   resources.current[ RESOURCE_HOLY_POWER ] = 0;
-
-  if ( scarlet_inquisitors_expurgation )
-  {
-    buffs.scarlet_inquisitors_expurgation -> trigger( 30 );
-    buffs.scarlet_inquisitors_expurgation_driver -> trigger();
-  }
 }
 
 // paladin_t::get_hand_of_light =============================================
@@ -2249,116 +2174,6 @@ private:
   paladin_t& p;
 };
 
-static void do_trinket_init( paladin_t*                player,
-                             specialization_e         spec,
-                             const special_effect_t*& ptr,
-                             const special_effect_t&  effect )
-{
-  // Ensure we have the spell data. This will prevent the trinket effect from working on live
-  // Simulationcraft. Also ensure correct specialization.
-  if ( ! player -> find_spell( effect.spell_id ) -> ok() ||
-       player -> specialization() != spec )
-  {
-    return;
-  }
-  // Set pointer, module considers non-null pointer to mean the effect is "enabled"
-  ptr = &( effect );
-}
-
-// Legiondaries
-static void whisper_of_the_nathrezim( special_effect_t& effect )
-{
-  paladin_t* s = debug_cast<paladin_t*>( effect.player );
-  do_trinket_init( s, PALADIN_RETRIBUTION, s -> whisper_of_the_nathrezim, effect );
-}
-
-static void liadrins_fury_unleashed( special_effect_t& effect )
-{
-  paladin_t* s = debug_cast<paladin_t*>( effect.player );
-  do_trinket_init( s, PALADIN_RETRIBUTION, s -> liadrins_fury_unleashed, effect );
-}
-
-static void justice_gaze( special_effect_t& effect )
-{
-  paladin_t* s = debug_cast<paladin_t*>( effect.player );
-  do_trinket_init( s, PALADIN_RETRIBUTION, s -> justice_gaze, effect );
-  do_trinket_init( s, PALADIN_PROTECTION, s -> justice_gaze, effect);
-}
-
-static void chain_of_thrayn( special_effect_t& effect )
-{
-  paladin_t* s = debug_cast<paladin_t*>( effect.player );
-  do_trinket_init( s, PALADIN_RETRIBUTION, s -> chain_of_thrayn, effect );
-  do_trinket_init( s, PALADIN_PROTECTION, s -> chain_of_thrayn, effect);
-}
-
-static void ferren_marcuss_strength(special_effect_t& effect)
-{
-  paladin_t* s = debug_cast<paladin_t*>(effect.player);
-  do_trinket_init(s, PALADIN_PROTECTION, s->ferren_marcuss_strength, effect);
-}
-
-static void pillars_of_inmost_light(special_effect_t& effect)
-{
-  paladin_t* s = debug_cast<paladin_t*>(effect.player);
-  do_trinket_init(s, PALADIN_PROTECTION, s->pillars_of_inmost_light, effect);
-}
-
-static void saruans_resolve(special_effect_t& effect)
-{
-  paladin_t* s = debug_cast<paladin_t*>(effect.player);
-  do_trinket_init(s, PALADIN_PROTECTION, s->saruans_resolve, effect);
-}
-
-static void gift_of_the_golden_valkyr(special_effect_t& effect)
-{
-  paladin_t* s = debug_cast<paladin_t*>(effect.player);
-  do_trinket_init(s, PALADIN_PROTECTION, s->gift_of_the_golden_valkyr, effect);
-}
-
-static void heathcliffs_immortality(special_effect_t& effect)
-{
-  paladin_t* s = debug_cast<paladin_t*>(effect.player);
-  do_trinket_init(s, PALADIN_PROTECTION, s->heathcliffs_immortality, effect);
-}
-
-static void ashes_to_dust( special_effect_t& effect )
-{
-  paladin_t* s = debug_cast<paladin_t*>( effect.player );
-  do_trinket_init( s, PALADIN_RETRIBUTION, s -> ashes_to_dust, effect );
-}
-
-struct sephuzs_secret_enabler_t : public unique_gear::scoped_actor_callback_t<paladin_t>
-{
-  sephuzs_secret_enabler_t() : scoped_actor_callback_t( PALADIN )
-  { }
-
-  void manipulate( paladin_t* paladin, const special_effect_t& e ) override
-  { paladin -> sephuz = e.driver(); }
-};
-
-struct topless_tower_t : public unique_gear::scoped_actor_callback_t<paladin_t>
-{
-    topless_tower_t() : super(PALADIN_HOLY)
-    {
-    }
-
-    void manipulate(paladin_t* p, const special_effect_t& e) override
-    {
-        p->topless_tower = e.driver();
-
-        const int total_entries = 20; // 6/23/2017 -- Reddit AMA Comment
-        const int success_entries = (int)util::round(p->topless_tower->effectN(1).percent() * total_entries);
-        p->shuffled_rngs.topless_tower = p->get_shuffled_rng("topless_tower", success_entries, total_entries);
-    }
-};
-
-static void scarlet_inquisitors_expurgation( special_effect_t& effect )
-{
-  paladin_t* s = debug_cast<paladin_t*>( effect.player );
-  do_trinket_init( s, PALADIN_RETRIBUTION, s -> scarlet_inquisitors_expurgation, effect );
-}
-
 // PALADIN MODULE INTERFACE =================================================
 
 struct paladin_module_t : public module_t
@@ -2376,19 +2191,6 @@ struct paladin_module_t : public module_t
 
   virtual void static_init() const override
   {
-    unique_gear::register_special_effect( 207633, whisper_of_the_nathrezim );
-    unique_gear::register_special_effect( 208408, liadrins_fury_unleashed );
-    unique_gear::register_special_effect( 206338, chain_of_thrayn );
-    unique_gear::register_special_effect( 207614, ferren_marcuss_strength );
-    unique_gear::register_special_effect( 234653, saruans_resolve );
-    unique_gear::register_special_effect( 207628, gift_of_the_golden_valkyr );
-    unique_gear::register_special_effect( 207599, heathcliffs_immortality );
-    unique_gear::register_special_effect( 236106, ashes_to_dust );
-    unique_gear::register_special_effect( 211557, justice_gaze );
-    unique_gear::register_special_effect( 248102, pillars_of_inmost_light );
-    unique_gear::register_special_effect( 208051, sephuzs_secret_enabler_t() );
-    unique_gear::register_special_effect( 248103, scarlet_inquisitors_expurgation );
-    unique_gear::register_special_effect( 248033, topless_tower_t() );
   }
 
   virtual void init( player_t* p ) const override
