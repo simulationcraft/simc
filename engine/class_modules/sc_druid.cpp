@@ -5081,8 +5081,6 @@ struct celestial_alignment_t : public druid_spell_t
     
     p() -> buff.celestial_alignment -> trigger();
 
-    expansion::bfa::trigger_leyshocks_grand_compilation( STAT_VERSATILITY_RATING, player );
-    
     //Trigger after triggering the buff so the cast procs the spell
     streaking_stars_trigger(SS_CELESTIAL_ALIGNMENT, nullptr);
   }
@@ -5228,8 +5226,6 @@ struct full_moon_t : public druid_spell_t
   {
     druid_spell_t::execute();
     
-    expansion::bfa::trigger_leyshocks_grand_compilation( STAT_VERSATILITY_RATING, player );
-    
     streaking_stars_trigger(SS_FULL_MOON, execute_state);
     
     if (p()->moon_stage == FULL_MOON && radiant_moonlight) {
@@ -5272,8 +5268,6 @@ struct half_moon_t : public druid_spell_t
   void execute() override
   {
     druid_spell_t::execute();
-    
-    expansion::bfa::trigger_leyshocks_grand_compilation( STAT_HASTE_RATING, player );
     
     streaking_stars_trigger(SS_HALF_MOON, execute_state);
 
@@ -5494,7 +5488,6 @@ struct incarnation_t : public druid_spell_t
 
     if (p()->buff.incarnation_moonkin->check())
     {
-      expansion::bfa::trigger_leyshocks_grand_compilation( STAT_HASTE_RATING, player );
       streaking_stars_trigger(SS_CELESTIAL_ALIGNMENT, nullptr);
     }
 
@@ -5766,8 +5759,6 @@ struct new_moon_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    expansion::bfa::trigger_leyshocks_grand_compilation( STAT_VERSATILITY_RATING, player );
-    
     streaking_stars_trigger(SS_NEW_MOON, execute_state);
     
     p() -> moon_stage++;
@@ -10276,12 +10267,10 @@ struct druid_module_t : public module_t
     //      Force of Nature (crit on treant melee?)
     //      Fury of Elune (haste on tick)
     //      Starfall (mastery per tic, haste per impact?)
-    //      Shooting Stars (haste)
     //      Solar Beam (vers & haste)
     //      Nature's Balance (haste when out of combat)
     //      Flap? (mastery)
-    //      Solar Empowerment Eclipse proc from Lunar Strike cast (which stat?)
-    //      Generic druid spells (many, see https://docs.google.com/spreadsheets/d/1QA5-57JSdpi_DJXxb-1UYnKeEz4-lNVX5OSHaYBc8nM/edit#gid=1802579435)
+    //      Generic druid spells, see https://docs.google.com/spreadsheets/d/1QA5-57JSdpi_DJXxb-1UYnKeEz4-lNVX5OSHaYBc8nM/edit#gid=1802579435
     //
     // Moonfire
     expansion::bfa::register_leyshocks_trigger( 8921, STAT_CRIT_RATING );
@@ -10301,6 +10290,22 @@ struct druid_module_t : public module_t
     expansion::bfa::register_leyshocks_trigger( 202770, STAT_MASTERY_RATING );
     // Innervate
     expansion::bfa::register_leyshocks_trigger( 29166, STAT_MASTERY_RATING );
+    // Celestial Alignment
+    expansion::bfa::register_leyshocks_trigger( 194223, STAT_VERSATILITY_RATING );
+    // Incarnation: Chosen of Elune
+    expansion::bfa::register_leyshocks_trigger( 102560, STAT_HASTE_RATING );
+    // Full Moon
+    expansion::bfa::register_leyshocks_trigger( 274283, STAT_VERSATILITY_RATING );
+    // Half Moon
+    expansion::bfa::register_leyshocks_trigger( 274282, STAT_HASTE_RATING );
+    // New Moon
+    expansion::bfa::register_leyshocks_trigger( 274281, STAT_VERSATILITY_RATING );
+    // Shooting Stars
+    expansion::bfa::register_leyshocks_trigger( 202497, STAT_HASTE_RATING );
+    // Starfall
+    expansion::bfa::register_leyshocks_trigger( 191034, STAT_MASTERY_RATING );
+    expansion::bfa::register_leyshocks_trigger( 191037, STAT_MASTERY_RATING );
+    //expansion::bfa::register_leyshocks_trigger( 191037, STAT_HASTE_RATING ); In-game procs haste also, but leaving it out in-sim for simplicity purposes
   }
 
   virtual void register_hotfixes() const override
