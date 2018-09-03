@@ -6226,7 +6226,7 @@ void rogue_t::init_action_list()
   else if ( specialization() == ROGUE_OUTLAW )
     potion_action += "|buff.adrenaline_rush.up";
   else if ( specialization() == ROGUE_SUBTLETY )
-    potion_action += "|(buff.vanish.up&(buff.shadow_blades.up|cooldown.shadow_blades.remains<=30))";
+    potion_action += "|buff.symbols_of_death.up&(buff.shadow_blades.up|cooldown.shadow_blades.remains<=10)";
 
   if ( specialization() != ROGUE_SUBTLETY )
     precombat -> add_talent( this, "Marked for Death", "precombat_seconds=5,if=raid_event.adds.in>40" );
@@ -6390,7 +6390,11 @@ void rogue_t::init_action_list()
     {
       if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
       {
-        cds -> add_action( "use_item,name=" + items[i].name_str + ",if=stealthed.rogue|target.time_to_die<20", "Falling back to default item usage: Use when stealthed" );
+        // Use on-cd exceptions
+        if ( items[i].name_str == "mydas_talisman" )
+          cds -> add_action( "use_item,name=" + items[i].name_str, "Use on cooldown." );
+        else // Use with Symbols default
+          cds -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.symbols_of_death.up|target.time_to_die<20", "Falling back to default item usage: Use with Symbols of Death." );
       }
     }
     for ( size_t i = 0; i < racial_actions.size(); i++ )
@@ -6398,7 +6402,7 @@ void rogue_t::init_action_list()
       if ( racial_actions[i] == "lights_judgment" || racial_actions[i] == "arcane_torrent" )
         continue; // Manually added
       else
-        cds -> add_action( racial_actions[i] + ",if=stealthed.rogue" );
+        cds -> add_action( racial_actions[i] + ",if=buff.symbols_of_death.up" );
     }
     cds -> add_action( this, "Symbols of Death", "if=dot.nightblade.ticking" );
     cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.all&combo_points.deficit>=cp_max_spend)", "If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or not stealthed without any CP." );
