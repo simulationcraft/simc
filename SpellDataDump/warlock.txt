@@ -7151,7 +7151,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724173)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 455.0521 (coefficient=5.85276) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1228.259 (coefficient=15.79754) | Target: Self (1)
+                   Hotfixed: Coefficient (5.85276 -> 15.7975)
 Description      : When your summoned Dreadstalkers fade away, they increase the damage of your Demonbolt by $s1 for $272945d.
 
 Name             : Accelerant (id=272955) [Scaling Spell (-7), Spell Family (5), Passive] 

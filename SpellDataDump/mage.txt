@@ -7007,7 +7007,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724859)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 88.78926 (coefficient=0.285496) | Trigger Spell: 273327 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 147.1907 (coefficient=0.473282) | Trigger Spell: 273327 | Target: Self (1)
+                   Hotfixed: Coefficient (0.285496 -> 0.473282)
 Description      : While channeling Evocation, your Intellect is increased by $s1 every $273329t1 sec. Lasts $273330d.
 
 Name             : Preheat (id=273331) [Scaling Spell (-8), Spell Family (3), Passive] 

@@ -8748,7 +8748,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=725109)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 753.6503 (coefficient=9.693252) | Trigger Spell: 273463 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 904.3804 (coefficient=11.6319) | Trigger Spell: 273463 | Target: Self (1)
+                   Hotfixed: Coefficient (9.69325 -> 11.6319)
 Description      : Rockbiter causes your next melee ability, other than Rockbiter, to deal an additional $s1 Nature damage.
 
 Name             : Strength of Earth (id=273463) [Scaling Spell (-1), Spell Family (11), Hidden] 
