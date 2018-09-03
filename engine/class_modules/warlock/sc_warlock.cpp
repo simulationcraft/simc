@@ -478,7 +478,8 @@ void warlock_t::create_buffs()
   create_buffs_demonology();
   create_buffs_destruction();
 
-  buffs.grimoire_of_sacrifice = make_buff( this, "grimoire_of_sacrifice", talents.grimoire_of_sacrifice->effectN( 2 ).trigger() );
+  buffs.grimoire_of_sacrifice = make_buff( this, "grimoire_of_sacrifice", talents.grimoire_of_sacrifice->effectN( 2 ).trigger() )
+    ->set_chance( 1.0 );
 }
 
 void warlock_t::init_spells()
