@@ -10304,6 +10304,8 @@ struct druid_module_t : public module_t
     expansion::bfa::register_leyshocks_trigger( 202497, STAT_HASTE_RATING );
     // Starfall
     expansion::bfa::register_leyshocks_trigger( 191034, STAT_MASTERY_RATING );
+    expansion::bfa::register_leyshocks_trigger( 191037, STAT_MASTERY_RATING );
+    //expansion::bfa::register_leyshocks_trigger( 191037, STAT_HASTE_RATING ); In-game procs haste also, but leaving it out in-sim for simplicity purposes
   }
 
   virtual void register_hotfixes() const override
