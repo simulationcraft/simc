@@ -2967,6 +2967,7 @@ struct glacial_contagion_t : public death_knight_spell_t
   }
 };
 
+// TODO : move this to ghoul pets to make more sense
 struct last_surprise_t : public death_knight_spell_t
 {
   last_surprise_t( death_knight_t* p ) :
@@ -2975,6 +2976,21 @@ struct last_surprise_t : public death_knight_spell_t
     aoe = -1;
     background = true;
     base_dd_min = base_dd_max = p -> azerite.last_surprise.value( 1 );
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = death_knight_spell_t::action_multiplier();
+
+    if ( ! p() -> bugs ) return am;
+
+    // Last Suprise is affected by the spec aura and mastery through whitelisting
+    // It is then affected once again by spec aura through pet damage multiplier, and mastery because it's pet shadow damage
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/357
+    am *= 1.0 + p() -> cache.mastery_value();
+    am *= 1.0 + p() -> spec.unholy_death_knight -> effectN( 3 ).percent();
+
+    return am;
   }
 };
 
