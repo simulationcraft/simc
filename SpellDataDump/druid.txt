@@ -8206,7 +8206,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=714803)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 1166.25 (coefficient=15) | Trigger Spell: 272275 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1283.113 (coefficient=16.50307) | Trigger Spell: 272275 | Target: Self (1)
+                   Hotfixed: Coefficient (15 -> 16.5031)
 Description      : Your heals have a chance to apply Bracing Chill. Healing a target with Bracing Chill will heal for an additional $s1 and move Bracing Chill to a nearby ally (up to $272276u times).
 
 Name             : Ephemeral Recovery (id=267886) [Scaling Spell (-7), Passive] 
@@ -8565,7 +8566,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=723924)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 4478.4 (coefficient=57.6) | Trigger Spell: 272805 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 5150.103 (coefficient=66.23927) | Trigger Spell: 272805 | Target: Self (1)
+                   Hotfixed: Coefficient (57.6 -> 66.2393)
 Description      : Swiftmend causes your Efflorescence mushroom to burst, healing a nearby injured ally for $s1.
 Tooltip          : Swiftmend causes your Efflorescence mushroom to burst, healing a nearby injured ally for $s1.
 
@@ -8939,7 +8941,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=726761)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 158.61 (coefficient=2.04) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 119.2484 (coefficient=1.533742) | Target: Self (1)
+                   Hotfixed: Coefficient (2.04 -> 1.53374)
 Description      : If Rejuvenation is your only heal over time effect on the target, increase the healing of Rejuvenation by $s1. 
 
 Name             : Reawakening (id=274813) [Scaling Spell (-8), Passive] 

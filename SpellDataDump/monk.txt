@@ -6639,7 +6639,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=714803)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 1166.25 (coefficient=15) | Trigger Spell: 272275 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1283.113 (coefficient=16.50307) | Trigger Spell: 272275 | Target: Self (1)
+                   Hotfixed: Coefficient (15 -> 16.5031)
 Description      : Your heals have a chance to apply Bracing Chill. Healing a target with Bracing Chill will heal for an additional $s1 and move Bracing Chill to a nearby ally (up to $272276u times).
 
 Name             : Ephemeral Recovery (id=267886) [Scaling Spell (-7), Passive] 
@@ -7401,7 +7402,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732966)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 233.25 (coefficient=3) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 466.5 (coefficient=6) | Target: Self (1)
+                   Hotfixed: Coefficient (3 -> 6)
 Description      : Expel Harm restores ${$s1*($278535d/$278535t1)} health over $278535d for each Healing Sphere consumed.
 
 Name             : Burst of Life (id=277667) [Scaling Spell (-8), Spell Family (53), Passive] 

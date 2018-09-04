@@ -8211,7 +8211,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=714803)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 1166.25 (coefficient=15) | Trigger Spell: 272275 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1283.113 (coefficient=16.50307) | Trigger Spell: 272275 | Target: Self (1)
+                   Hotfixed: Coefficient (15 -> 16.5031)
 Description      : Your heals have a chance to apply Bracing Chill. Healing a target with Bracing Chill will heal for an additional $s1 and move Bracing Chill to a nearby ally (up to $272276u times).
 
 Name             : Ephemeral Recovery (id=267886) [Scaling Spell (-7), Passive] 
@@ -9391,7 +9392,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734592)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 1907.976 (coefficient=24.53988) | Trigger Spell: 279504 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 3052.761 (coefficient=39.2638) | Trigger Spell: 279504 | Target: Self (1)
+                   Hotfixed: Coefficient (24.5399 -> 39.2638)
 #2 (id=734593)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
 Description      : Spirit Link Totem restores $s1 health to all nearby allies $m2 $Lsecond:seconds; after it is dropped.

@@ -5999,7 +5999,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=714803)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 1166.25 (coefficient=15) | Trigger Spell: 272275 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1283.113 (coefficient=16.50307) | Trigger Spell: 272275 | Target: Self (1)
+                   Hotfixed: Coefficient (15 -> 16.5031)
 Description      : Your heals have a chance to apply Bracing Chill. Healing a target with Bracing Chill will heal for an additional $s1 and move Bracing Chill to a nearby ally (up to $272276u times).
 
 Name             : Ephemeral Recovery (id=267886) [Scaling Spell (-7), Passive] 
@@ -6482,7 +6483,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724321)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 6 | Scaled Value: 858.5891 (coefficient=11.04295) | Misc Value: 1 | Trigger Spell: 273032 | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 1287.883 (coefficient=16.56442) | Misc Value: 1 | Trigger Spell: 273032 | Target: Self (1)
+                   Hotfixed: Coefficient (11.0429 -> 16.5644)
 Description      : Light of the Martyr has a chance to cause your Blessing of Sacrifice to additionally heal the target for $s1. This effect can stack up to $273034u times.
 
 Name             : Inspiring Beacon (id=273130) [Scaling Spell (-1), Spell Family (10), Passive] 

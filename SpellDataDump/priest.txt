@@ -6044,7 +6044,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=714803)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 1166.25 (coefficient=15) | Trigger Spell: 272275 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1283.113 (coefficient=16.50307) | Trigger Spell: 272275 | Target: Self (1)
+                   Hotfixed: Coefficient (15 -> 16.5031)
 Description      : Your heals have a chance to apply Bracing Chill. Healing a target with Bracing Chill will heal for an additional $s1 and move Bracing Chill to a nearby ally (up to $272276u times).
 
 Name             : Ephemeral Recovery (id=267886) [Scaling Spell (-7), Passive] 
@@ -6680,7 +6681,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732992)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 286.1963 (coefficient=3.680981) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 195.0905 (coefficient=2.509202) | Target: Self (1)
+                   Hotfixed: Coefficient (3.68098 -> 2.5092)
 #2 (id=734277)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3
 Description      : Smite deals an additional $s1 damage if you have at least $s2 Atonements active.
@@ -6700,7 +6702,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732993)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 953.9877 (coefficient=12.26994) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1144.785 (coefficient=14.72393) | Target: Self (1)
+                   Hotfixed: Coefficient (12.2699 -> 14.7239)
 Description      : Heal restores up to $s1 additional health, based on your missing mana.
 
 Name             : Spiteful Apparitions (id=277682) [Scaling Spell (-8), Spell Family (6), Passive] 
