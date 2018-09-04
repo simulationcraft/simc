@@ -1124,12 +1124,12 @@ namespace warlock {
     def->add_action( "run_action_list,name=cata,if=spell_targets.infernal_awakening>=3&talent.cataclysm.enabled" );
     def->add_action( "run_action_list,name=fnb,if=spell_targets.infernal_awakening>=3&talent.fire_and_brimstone.enabled" );
     def->add_action( "run_action_list,name=inf,if=spell_targets.infernal_awakening>=3&talent.inferno.enabled" );
+    def->add_talent(this, "Cataclysm");
     def->add_action("immolate,cycle_targets=1,if=!debuff.havoc.remains&(refreshable|talent.internal_combustion.enabled&action.chaos_bolt.in_flight&remains-action.chaos_bolt.travel_time-5<duration*0.3)");
     def->add_action( "call_action_list,name=cds" );
-    def->add_action( "havoc,cycle_targets=1,if=!(target=sim.target)&target.time_to_die>10" );
-    def->add_action( "havoc,if=active_enemies>1" );
     def->add_talent(this, "Channel Demonfire" );
-    def->add_talent(this, "Cataclysm");
+    def->add_action("havoc,cycle_targets=1,if=!(target=sim.target)&target.time_to_die>10");
+    def->add_action("havoc,if=active_enemies>1");
     def->add_talent( this, "Soul Fire", "cycle_targets=1,if=!debuff.havoc.remains" );
     def->add_action("chaos_bolt,cycle_targets=1,if=!debuff.havoc.remains&execute_time+travel_time<target.time_to_die&(talent.internal_combustion.enabled|!talent.internal_combustion.enabled&soul_shard>=4|(talent.eradication.enabled&debuff.eradication.remains<=cast_time)|buff.dark_soul_instability.remains>cast_time|pet.infernal.active&talent.grimoire_of_supremacy.enabled)");
     def->add_action("conflagrate,cycle_targets=1,if=!debuff.havoc.remains&((talent.flashover.enabled&buff.backdraft.stack<=2)|(!talent.flashover.enabled&buff.backdraft.stack<2))");
