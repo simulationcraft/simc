@@ -528,6 +528,7 @@ public:
   struct options_t {
     std::string summon_pet_str = "cat";
     timespan_t pet_attack_speed = timespan_t::from_seconds( 2.0 );
+    timespan_t pet_basic_attack_delay = timespan_t::from_seconds( .6 );
   } options;
 
   hunter_t( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) :
@@ -1250,7 +1251,9 @@ struct hunter_main_pet_t : public hunter_main_pet_base_t
     const auto time_to_cd = active.basic_attack -> cooldown -> remains();
     const auto remains = std::max( time_to_cd, time_to_fc );
     // 23/07/2018 - hunter pets seem to have a "generic" lag of about .6s on basic attack usage
-    const auto lag = o() -> bugs ? timespan_t::from_millis( rng().gauss( 600, 100 ) ) : timespan_t::zero();
+    const auto delay_mean = o() -> options.pet_basic_attack_delay;
+    const auto delay_stddev = timespan_t::from_millis( 100 );
+    const auto lag = o() -> bugs ? rng().gauss( delay_mean, delay_stddev ) : timespan_t::zero();
     return std::max( remains + lag, timespan_t::from_millis( 100 ) );
   }
 
@@ -5702,6 +5705,8 @@ void hunter_t::create_options()
   add_option( opt_string( "summon_pet", options.summon_pet_str ) );
   add_option( opt_timespan( "hunter.pet_attack_speed", options.pet_attack_speed,
                             timespan_t::from_seconds( .5 ), timespan_t::from_seconds( 4 ) ) );
+  add_option( opt_timespan( "hunter.pet_basic_attack_delay", options.pet_basic_attack_delay,
+                            timespan_t::zero(), timespan_t::from_seconds( .6 ) ) );
   add_option( opt_obsoleted( "hunter_fixed_time" ) );
 }
 
@@ -5717,6 +5722,8 @@ std::string hunter_t::create_profile( save_e stype )
     profile_str += "summon_pet=" + options.summon_pet_str + "\n";
   if ( options.pet_attack_speed != defaults.pet_attack_speed )
     profile_str += "hunter.pet_attack_speed=" + util::to_string( options.pet_attack_speed.total_seconds() ) + "\n";
+  if ( options.pet_basic_attack_delay != defaults.pet_basic_attack_delay )
+    profile_str += "hunter.pet_basic_attack_delay" + util::to_string( options.pet_basic_attack_delay.total_seconds() ) + "\n";
 
   return profile_str;
 }
