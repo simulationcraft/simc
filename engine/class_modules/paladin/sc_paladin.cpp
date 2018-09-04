@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 /*
-  TODO: BfA
+  TODO: Update Holy for BfA
 */
 #include "simulationcraft.hpp"
 #include "sc_paladin.hpp"
@@ -986,23 +986,30 @@ void paladin_t::init_base_stats()
   base.attack_power_per_strength = 1.0;
   base.spell_power_per_intellect = 1.0;
 
-  // Boundless Conviction raises max holy power to 5
-  resources.base[ RESOURCE_HOLY_POWER ] = 3 + passives.boundless_conviction -> effectN( 1 ).base_value();
+  if ( specialization() != PALADIN_HOLY )
+  {
+    resources.base[ RESOURCE_MANA ] = 0;
+    resources.base_regen_per_second[ RESOURCE_MANA ] = 0;
+  }
+
+  if ( specialization() == PALADIN_RETRIBUTION )
+  {
+    // Boundless Conviction raises max holy power to 5
+    resources.base[ RESOURCE_HOLY_POWER ] = 3 + passives.boundless_conviction -> effectN( 1 ).base_value();
+  }
+
+  if ( specialization() == PALADIN_HOLY )
+  {
+    resources.base_regen_per_second[ RESOURCE_MANA ] = resources.base[ RESOURCE_MANA ] * 0.015;
+  }
 
   // Avoidance diminishing Returns constants/conversions now handled in player_t::init_base_stats().
   // Base miss, dodge, parry, and block are set in player_t::init_base_stats().
   // Just need to add class- or spec-based modifiers here.
-
   // add Sanctuary dodge
   base.dodge += passives.sanctuary -> effectN( 3 ).percent();
   // add Sanctuary expertise
   base.expertise += passives.sanctuary -> effectN( 4 ).percent();
-
-  // Holy Insight grants mana regen from spirit during combat
-  resources.base_regen_per_second[ RESOURCE_MANA ] = resources.base[ RESOURCE_MANA ] * 0.015;
-
-  // Holy Insight increases max mana for Holy
-//  resources.base_multiplier[ RESOURCE_MANA ] = 1.0 + passives.holy_insight -> effectN( 1 ).percent();
 }
 
 // paladin_t::reset =========================================================
@@ -1360,6 +1367,16 @@ role_e paladin_t::primary_role() const
     return ROLE_ATTACK;
 
   return ROLE_HYBRID;
+}
+
+// paladin_t::primary_resource() ============================================
+
+resource_e paladin_t::primary_resource() const
+{
+  if ( specialization() == PALADIN_HOLY )
+    return RESOURCE_MANA;
+
+  return RESOURCE_NONE;
 }
 
 // paladin_t::convert_hybrid_stat ===========================================

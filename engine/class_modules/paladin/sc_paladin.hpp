@@ -451,7 +451,7 @@ public:
   virtual void      create_options() override;
   virtual double    matching_gear_multiplier( attribute_e attr ) const override;
   virtual action_t* create_action( const std::string& name, const std::string& options_str ) override;
-  virtual resource_e primary_resource() const override { return RESOURCE_MANA; }
+  virtual resource_e primary_resource() const override;
   virtual role_e    primary_role() const override;
   virtual stat_e    convert_hybrid_stat( stat_e s ) const override;
   virtual void      regen( timespan_t periodicity ) override;
