@@ -7490,7 +7490,8 @@ std::string druid_t::default_potion() const
                               (true_level >= 80) ? "tolvir" :
                               "disabled";
 
-   std::string guardian_pot = (true_level > 100) ? "old_war" :
+   std::string guardian_pot = (true_level > 110) ? "potion_of_bursting_blood" :
+                              (true_level > 100) ? "old_war" :
                               (true_level >= 90) ? "draenic_agility" :
                               (true_level >= 85) ? "virmens_bite" :
                               (true_level >= 80) ? "tolvir" :
@@ -8021,6 +8022,7 @@ void druid_t::apl_guardian()
 
     bear -> add_action( this, "Bear Form" );
     bear -> add_action( this, "Maul", "if=rage.deficit<10&active_enemies<4" );
+    bear -> add_action( this, "Ironfur", "if=cost=0|(rage>cost&azerite.layered_mane.enabled&active_enemies>2)" );
     bear -> add_talent( this, "Pulverize", "target_if=dot.thrash_bear.stack=dot.thrash_bear.max_stacks" );
     bear -> add_action( this, "Moonfire", "target_if=dot.moonfire.refreshable&active_enemies<2" );
     bear -> add_action( "incarnation" );
@@ -8030,6 +8032,7 @@ void druid_t::apl_guardian()
     bear -> add_action( this, "Moonfire", "target_if=buff.galactic_guardian.up&active_enemies<2" );
     bear -> add_action( "thrash" );
     bear -> add_action( this, "Maul" );
+    bear -> add_action( this, "Moonfire", "if=azerite.power_of_the_moon.rank>1&active_enemies=1", "Fill with Moonfire with PotMx2" );
     bear -> add_action( "swipe" );
 
     cat -> add_action( this, "Cat Form" );
@@ -8041,6 +8044,7 @@ void druid_t::apl_guardian()
     default_list -> add_action( "auto_attack" );
     default_list -> add_action( "call_action_list,name=cooldowns" );
     default_list -> add_action( this, "Maul", "if=rage.deficit<10&active_enemies<4" );
+    default_list -> add_action( this, "Ironfur", "if=cost=0|(rage>cost&azerite.layered_mane.enabled&active_enemies>2)" );
     default_list -> add_talent( this, "Pulverize", "target_if=dot.thrash_bear.stack=dot.thrash_bear.max_stacks" );
     default_list -> add_action( this, "Moonfire", "target_if=dot.moonfire.refreshable&active_enemies<2" );
     default_list -> add_action( "incarnation" );
@@ -8050,6 +8054,7 @@ void druid_t::apl_guardian()
     default_list -> add_action( this, "Moonfire", "target_if=buff.galactic_guardian.up&active_enemies<2" );
     default_list -> add_action( "thrash" );
     default_list -> add_action( this, "Maul" );
+    default_list -> add_action( this, "Moonfire", "if=azerite.power_of_the_moon.rank>1&active_enemies=1", "Fill with Moonfire with PotMx2" );
     default_list -> add_action( "swipe" );
   }
 }
