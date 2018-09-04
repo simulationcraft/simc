@@ -940,6 +940,13 @@ namespace warlock
 
         affliction_spell_t::execute();
       }
+
+      void impact( action_state_t* s ) override
+      {
+        s->result_total = base_dd_min; // we already calculated how much the hit should be
+
+        warlock_spell_t::impact( s );
+      }
     };
 
     // lvl 100 - soul conduit|creeping death|dark soul misery
