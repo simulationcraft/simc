@@ -27,7 +27,6 @@ actions.precombat+=/augmentation
 actions.precombat+=/regrowth,if=talent.bloodtalons.enabled
 actions.precombat+=/variable,name=use_thrash,value=0
 actions.precombat+=/variable,name=use_thrash,value=1,if=equipped.luffa_wrappings
-actions.precombat+=/variable,name=opener_done,value=0
 # Opener TF is delayed if we need to hardcast regrowth later on in the rotation
 actions.precombat+=/variable,name=delayed_tf_opener,value=0
 # This happens when Sabertooth, Bloodtalons but not LI is talented
@@ -36,8 +35,8 @@ actions.precombat+=/cat_form
 actions.precombat+=/prowl
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/berserk
 actions.precombat+=/potion
+actions.precombat+=/berserk
 
 # Executed every time the actor is available.
 actions=auto_attack,if=!buff.prowl.up&!buff.shadowmeld.up
@@ -62,7 +61,7 @@ actions.opener=tigers_fury,if=variable.delayed_tf_opener=0
 # Always open with rake, consuming stealth and one BT charge (if talented)
 actions.opener+=/rake,if=!ticking|buff.prowl.up
 # Lets make sure we end the opener "sequence" when our first rip is ticking
-actions.opener+=/variable,name=opener_done,value=1,if=dot.rip.ticking
+actions.opener+=/variable,name=opener_done,value=dot.rip.ticking
 # Break out of the action list
 actions.opener+=/wait,sec=0.001,if=dot.rip.ticking
 # If we have LI, and haven't applied it yet use moonfire.

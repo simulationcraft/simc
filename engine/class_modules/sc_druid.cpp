@@ -7556,7 +7556,7 @@ void druid_t::apl_precombat()
   {
     precombat->add_action( "variable,name=use_thrash,value=0" );
     precombat->add_action( "variable,name=use_thrash,value=1,if=equipped.luffa_wrappings" );
-    precombat->add_action( "variable,name=opener_done,value=0" );
+    //precombat->add_action( "variable,name=opener_done,value=0" );
     precombat->add_action( "variable,name=delayed_tf_opener,value=0",
                            "Opener TF is delayed if we need to hardcast regrowth later on in the rotation" );
     precombat->add_action(
@@ -7603,11 +7603,6 @@ void druid_t::apl_precombat()
   // Snapshot stats
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
-  if ( specialization() == DRUID_FERAL )
-  {
-    precombat->add_action( "berserk" );
-  }
-
   // Pre-Potion
   precombat->add_action("potion");
 
@@ -7618,8 +7613,9 @@ void druid_t::apl_precombat()
   }
   else if ( specialization() == DRUID_GUARDIAN )
     precombat -> add_talent( this, "Cenarion Ward" );
-  else if ( specialization() == DRUID_FERAL && ( find_item( "soul_capacitor" ) || find_item( "maalus_the_blood_drinker" ) ) )
-    precombat -> add_action( "incarnation" );
+  else if ( specialization() == DRUID_FERAL )
+    precombat -> add_action("berserk");
+    
 }
 
 // NO Spec Combat Action Priority List ======================================
@@ -7683,7 +7679,7 @@ void druid_t::apl_feral()
 
    opener->add_action( "rake,if=!ticking|buff.prowl.up",
                        "Always open with rake, consuming stealth and one BT charge (if talented)" );
-   opener->add_action( "variable,name=opener_done,value=1,if=dot.rip.ticking",
+   opener->add_action( "variable,name=opener_done,value=dot.rip.ticking",
                        "Lets make sure we end the opener \"sequence\" when our first rip is ticking" );
    opener->add_action( "wait,sec=0.001,if=dot.rip.ticking", "Break out of the action list" );
    opener->add_action( "moonfire_cat,if=!ticking|buff.bloodtalons.stack=1&combo_points<5",
