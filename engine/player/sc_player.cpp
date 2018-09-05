@@ -6853,7 +6853,7 @@ struct variable_t : public action_t
     // In addition to if= expression removing the variable from the APLs, if the the variable value
     // is constant, we can remove any variable action referencing it from the APL
     if ( action_list && sim->optimize_expressions && player->nth_iteration() == 1 &&
-         var->is_constant( &cv ) )
+         var->is_constant( &cv ) && ( ! if_expr || ( if_expr && if_expr->is_constant( &cv ) ) ) )
     {
       auto it = range::find( action_list->foreground_action_list, this );
       if ( it != action_list->foreground_action_list.end() )
@@ -6876,6 +6876,13 @@ struct variable_t : public action_t
   bool is_constant() const
   {
     double const_value = 0;
+    // If the variable action is conditionally executed, and the conditional execution is not
+    // constant, the variable cannot be constant.
+    if ( if_expr && !if_expr->is_constant( &const_value ) )
+    {
+      return false;
+    }
+
     // Special casing, some actions are only constant, if all of the other action variables in the
     // set (that manipulates a variable) are constant
     if ( operation == OPERATION_RESET || operation == OPERATION_FLOOR ||
@@ -6914,6 +6921,11 @@ struct variable_t : public action_t
   // actions with variable expressions can know if the associated variable is constant
   void optimize_expressions()
   {
+    if ( if_expr )
+    {
+      if_expr = if_expr->optimize();
+    }
+
     if ( value_expression )
     {
       value_expression = value_expression->optimize();
