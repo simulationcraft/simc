@@ -974,9 +974,26 @@ void items::vessel_of_skittering_shadows( special_effect_t& effect )
 
 void items::vigilants_bloodshaper( special_effect_t& effect )
 {
-  effect.execute_action = create_proc_action<aoe_proc_t>( "volatile_blood_explosion", effect,
-      "volatile_blood_explosion", 278057 );
-  effect.execute_action->travel_speed = effect.trigger()->missile_speed();
+  struct volatile_blood_explosion_t : public aoe_proc_t
+  {
+    volatile_blood_explosion_t( const special_effect_t& effect ) :
+      aoe_proc_t( effect, "volatile_blood_explosion", 278057 )
+    {
+      travel_speed = effect.trigger() -> missile_speed();
+    }
+
+    virtual double action_multiplier() const override
+    {
+      double am = aoe_proc_t::action_multiplier();
+
+      // TODO: Server-side until a future patch
+      am *= 1.0 + 0.15 * ( std::min( as<int>( target_list().size() ), 6 ) - 1 );
+
+      return am;
+    }
+  };
+
+  effect.execute_action = create_proc_action<volatile_blood_explosion_t>( "volatile_blood_explosion", effect );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
