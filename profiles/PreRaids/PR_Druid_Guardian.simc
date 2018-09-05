@@ -8,7 +8,7 @@ position=front
 talents=1111123
 
 # Default consumables
-potion=old_war
+potion=potion_of_bursting_blood
 flask=flask_of_the_currents
 food=bountiful_captains_feast
 augmentation=battle_scarred
@@ -32,6 +32,7 @@ actions.precombat+=/potion
 actions=auto_attack
 actions+=/call_action_list,name=cooldowns
 actions+=/maul,if=rage.deficit<10&active_enemies<4
+actions+=/ironfur,if=cost=0|(rage>cost&azerite.layered_mane.enabled&active_enemies>2)
 actions+=/pulverize,target_if=dot.thrash_bear.stack=dot.thrash_bear.max_stacks
 actions+=/moonfire,target_if=dot.moonfire.refreshable&active_enemies<2
 actions+=/incarnation
@@ -41,6 +42,8 @@ actions+=/mangle,if=dot.thrash_bear.ticking
 actions+=/moonfire,target_if=buff.galactic_guardian.up&active_enemies<2
 actions+=/thrash
 actions+=/maul
+# Fill with Moonfire with PotMx2
+actions+=/moonfire,if=azerite.power_of_the_moon.rank>1&active_enemies=1
 actions+=/swipe
 
 actions.cooldowns=potion
