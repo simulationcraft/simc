@@ -133,7 +133,6 @@ namespace warlock {
         {
           base_td = p->azerite.umbral_blaze.value();
           hasted_ticks = false;
-          dot_behavior = DOT_CLIP;
         }
       };
 
