@@ -1261,8 +1261,8 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
   {
     // Specialization abilities for Ferocity
     {
-      264663, // Predator's Thirst (Ferocity Passive)
       264667, // Primal Rage (Ferocity Ability)
+      264663, // Predator's Thirst (Ferocity Passive)
       264656, // Pathfinding (Cunning Passive)
       264662, // Endurance Training (Tenacity Passive)
            0,
@@ -1277,8 +1277,8 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
     },
     // Specialization abilities for Cunning
     {
-      264656, // Pathfinding (Cunning Passive)
        53271, // Master's Call (Cunning Ability)
+      264656, // Pathfinding (Cunning Passive)
       264662, // Endurance Training (Tenacity Passive)
       264663, // Predator's Thirst (Ferocity Passive)
            0,
