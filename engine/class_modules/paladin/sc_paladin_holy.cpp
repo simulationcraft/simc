@@ -456,7 +456,7 @@ struct judgment_holy_t : public judgment_t
   judgment_holy_t( paladin_t* p, const std::string& options_str )
     : judgment_t( p, options_str )
   {
-    base_multiplier *= 1.0 + p -> passives.holy_paladin -> effectN( 11 ).percent();
+    base_multiplier *= 1.0 + p -> spec.holy_paladin -> effectN( 11 ).percent();
   }
 
   virtual void execute() override
@@ -630,7 +630,6 @@ void paladin_t::init_spells_holy()
   talents.devotion_aura              = find_talent_spell( "Devotion Aura" );
   talents.aura_of_sacrifice          = find_talent_spell( "Aura of Sacrifice" );
   talents.aura_of_mercy              = find_talent_spell( "Aura of Mercy" );
-    //    talents.divine_purpose           = find_talent_spell( "Sanctified Wrath" ); // TODO: Fix
   talents.holy_avenger               = find_talent_spell( "Holy Avenger" );
   talents.holy_prism                 = find_talent_spell( "Holy Prism" );
   talents.fervent_martyr             = find_talent_spell( "Fervent Martyr" );
@@ -648,7 +647,6 @@ void paladin_t::init_spells_holy()
   passives.lightbringer           = find_mastery_spell( PALADIN_HOLY );
 
   // Holy Passives
-  passives.holy_insight           = find_specialization_spell( "Holy Insight" );
   passives.infusion_of_light      = find_specialization_spell( "Infusion of Light" );
 
   if ( specialization() == PALADIN_HOLY )

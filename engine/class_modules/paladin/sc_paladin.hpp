@@ -205,6 +205,8 @@ public:
   struct spec_t
   {
     const spell_data_t* judgment_2;
+    const spell_data_t* holy_paladin;
+    const spell_data_t* protection_paladin;
     const spell_data_t* retribution_paladin;
   } spec;
 
@@ -238,17 +240,12 @@ public:
     const spell_data_t* divine_bulwark;
     const spell_data_t* grand_crusader;
     const spell_data_t* hand_of_light;
-    const spell_data_t* holy_insight;
     const spell_data_t* infusion_of_light;
     const spell_data_t* lightbringer;
     const spell_data_t* plate_specialization;
     const spell_data_t* riposte;   // hidden
     const spell_data_t* paladin;
-    const spell_data_t* retribution_paladin;
-    const spell_data_t* protection_paladin;
-    const spell_data_t* holy_paladin;
     const spell_data_t* sanctuary;
-    const spell_data_t* improved_block; //hidden
 
     const spell_data_t* judgment; // mystery, hidden
     const spell_data_t* execution_sentence;
@@ -665,13 +662,13 @@ public:
     last_defender_increase( ab::data().affected_by( player -> talents.last_defender -> effectN( 5 ) ) )
   {
     // Aura buff to protection paladin added in 7.3
-    if ( p() -> specialization() == PALADIN_PROTECTION && this -> data().affected_by( p() -> passives.protection_paladin -> effectN( 1 ) ) )
+    if ( p() -> specialization() == PALADIN_PROTECTION && this -> data().affected_by( p() -> spec.protection_paladin -> effectN( 1 ) ) )
     {
-      this -> base_dd_multiplier *= 1.0 + p() -> passives.protection_paladin -> effectN( 1 ).percent();
+      this -> base_dd_multiplier *= 1.0 + p() -> spec.protection_paladin -> effectN( 1 ).percent();
     }
-    if ( p() -> specialization() == PALADIN_PROTECTION && this -> data().affected_by( p() -> passives.protection_paladin -> effectN( 2 ) ) )
+    if ( p() -> specialization() == PALADIN_PROTECTION && this -> data().affected_by( p() -> spec.protection_paladin -> effectN( 2 ) ) )
     {
-      this -> base_td_multiplier *= 1.0 + p() -> passives.protection_paladin -> effectN( 2 ).percent();
+      this -> base_td_multiplier *= 1.0 + p() -> spec.protection_paladin -> effectN( 2 ).percent();
     }
 
 
@@ -710,9 +707,9 @@ public:
     if ( p() -> specialization() == PALADIN_RETRIBUTION ) {
       update_hasted_cooldowns_by_passive( player -> spec.retribution_paladin );
     } else if ( p() -> specialization() == PALADIN_PROTECTION ) {
-      update_hasted_cooldowns_by_passive( player -> passives.protection_paladin );
+      update_hasted_cooldowns_by_passive( player -> spec.protection_paladin );
     } else {
-      update_hasted_cooldowns_by_passive( player -> passives.holy_paladin );
+      update_hasted_cooldowns_by_passive( player -> spec.holy_paladin );
     }
     if ( hasted_cd && !hasted_gcd ) hasted_gcd = true;
   }
@@ -900,10 +897,7 @@ struct paladin_spell_t : public paladin_spell_base_t<spell_t>
   paladin_spell_t( const std::string& n, paladin_t* p,
                    const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, p, s )
-  {
-    // Holy Insight - Holy passive
-    base_multiplier *= 1.0 + p -> passives.holy_insight -> effectN( 6 ).percent();
-  }
+  { }
 };
 
 struct paladin_heal_t : public paladin_spell_base_t<heal_t>

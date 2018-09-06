@@ -792,7 +792,7 @@ double judgment_t::bonus_da( const action_state_t* s ) const
       amount *= ( our_percent - their_percent ) / 100.0;
 
       // Doesn't seem to be reduced for Holy
-      amount *= 1.0 + p() -> passives.protection_paladin -> effectN( 13 ).percent();
+      amount *= 1.0 + p() -> spec.protection_paladin -> effectN( 13 ).percent();
 
       da += amount;
     }
@@ -1377,9 +1377,11 @@ void paladin_t::init_spells()
   passives.boundless_conviction   = find_spell( 115675 ); // find_spell fails here
   passives.plate_specialization   = find_specialization_spell( "Plate Specialization" );
   passives.paladin                = find_spell( 137026 );  // find_spell fails here
-  passives.retribution_paladin    = find_spell( 137027 );
-  passives.protection_paladin     = find_spell( 137028 );
-  passives.holy_paladin           = find_spell( 137029 );
+
+  // Spec auras
+  spec.holy_paladin           = find_specialization_spell( "Holy Paladin" );
+  spec.protection_paladin     = find_specialization_spell( "Protection Paladin" );
+  spec.retribution_paladin    = find_specialization_spell( "Retribution Paladin" );
 
   // Ret Passives
   passives.judgment             = find_spell( 231663 );
@@ -1509,9 +1511,9 @@ double paladin_t::composite_attribute_multiplier( attribute_e attr ) const
   double m = player_t::composite_attribute_multiplier( attr );
 
   // Protection gets increased stamina
-  if ( specialization() == PALADIN_PROTECTION && attr == ATTR_STAMINA )
+  if ( attr == ATTR_STAMINA )
   {
-    m *= 1.0 + passives.protection_paladin -> effectN( 3 ).percent();
+    m *= 1.0 + spec.protection_paladin -> effectN( 3 ).percent();
   }
 
   return m;
@@ -1639,10 +1641,10 @@ double paladin_t::composite_spell_power( school_e school ) const
   switch ( specialization() )
   {
     case PALADIN_PROTECTION:
-      sp = passives.protection_paladin -> effectN( 8 ).percent() * composite_melee_attack_power( AP_WEAPON_MH ) * composite_attack_power_multiplier();
+      sp = spec.protection_paladin -> effectN( 8 ).percent() * composite_melee_attack_power( AP_WEAPON_MH ) * composite_attack_power_multiplier();
       break;
     case PALADIN_RETRIBUTION:
-      sp = passives.retribution_paladin -> effectN( 10 ).percent() * composite_melee_attack_power( AP_WEAPON_MH ) * composite_attack_power_multiplier();
+      sp = spec.retribution_paladin -> effectN( 10 ).percent() * composite_melee_attack_power( AP_WEAPON_MH ) * composite_attack_power_multiplier();
       break;
     default:
       break;
@@ -1718,7 +1720,7 @@ double paladin_t::composite_crit_avoidance() const
 {
   double c = player_t::composite_crit_avoidance();
 
-  c += passives.protection_paladin -> effectN( 9 ).percent();
+  c += spec.protection_paladin -> effectN( 9 ).percent();
 
   return c;
 }

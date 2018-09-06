@@ -349,9 +349,9 @@ struct judgment_prot_t : public judgment_t
     : judgment_t( p, options_str )
   {
     cooldown -> charges += as<int>( p -> talents.crusaders_judgment -> effectN( 1 ).base_value() );
-    cooldown -> duration *= 1.0 + p -> passives.protection_paladin -> effectN( 4 ).percent();
+    cooldown -> duration *= 1.0 + p -> spec.protection_paladin -> effectN( 4 ).percent();
   
-    base_multiplier *= 1.0 + p -> passives.protection_paladin -> effectN( 12 ).percent();
+    base_multiplier *= 1.0 + p -> spec.protection_paladin -> effectN( 12 ).percent();
     
     sotr_cdr = -1.0 * timespan_t::from_seconds( p -> spec.judgment_2 -> effectN( 1 ).base_value() );
   }

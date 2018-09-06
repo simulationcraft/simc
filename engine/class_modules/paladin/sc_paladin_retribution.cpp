@@ -779,9 +779,6 @@ void paladin_t::init_spells_retribution()
   passives.hand_of_light             = find_mastery_spell( PALADIN_RETRIBUTION );
   passives.execution_sentence        = find_spell( 267799 );
 
-  // Spec aura
-  spec.retribution_paladin = find_specialization_spell( "Retribution Paladin" );
-
   if ( specialization() == PALADIN_RETRIBUTION )
   {
     spec.judgment_2 = find_specialization_spell( 231663 );
