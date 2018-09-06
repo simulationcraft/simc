@@ -341,45 +341,24 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 
 // Judgment - Protection =================================================================
 
-struct judgment_prot_t : public paladin_melee_attack_t
+struct judgment_prot_t : public judgment_t
 {
   timespan_t sotr_cdr; // needed for sotr interaction for protection
+
   judgment_prot_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "judgment", p, p -> find_specialization_spell( "Judgment" ) )
+    : judgment_t( p, options_str )
   {
-    parse_options( options_str );
-
-    // no weapon multiplier
-    weapon_multiplier = 0.0;
-    may_block = may_parry = may_dodge = false;
-    cooldown -> charges = 1;
-
     cooldown -> charges += as<int>( p -> talents.crusaders_judgment -> effectN( 1 ).base_value() );
     cooldown -> duration *= 1.0 + p -> passives.protection_paladin -> effectN( 4 ).percent();
+  
     base_multiplier *= 1.0 + p -> passives.protection_paladin -> effectN( 12 ).percent();
+    
     sotr_cdr = -1.0 * timespan_t::from_seconds( p -> spec.judgment_2 -> effectN( 1 ).base_value() );
-  }
-
-  virtual double bonus_da(const action_state_t* s) const override
-  {
-    double da = paladin_melee_attack_t::bonus_da(s);
-    if ( p() -> azerite.indomitable_justice.ok() )
-    {
-      double amount = p() -> azerite.indomitable_justice.value();
-      double our_percent = p() -> health_percentage();
-      double their_percent = s -> target -> health_percentage();
-      if ( our_percent > their_percent )
-      {
-        amount *= (our_percent - their_percent) / 100.0;
-        da += amount;
-      }
-    }
-    return da;
   }
 
   virtual void execute() override
   {
-    paladin_melee_attack_t::execute();
+    judgment_t::execute();
 
     if ( p() -> talents.fist_of_justice -> ok() )
     {
@@ -388,37 +367,26 @@ struct judgment_prot_t : public paladin_melee_attack_t
     }
   }
 
-  proc_types proc_type() const override
-  {
-    return PROC1_MELEE_ABILITY;
-  }
-
   // Special things that happen when Judgment damages target
   void impact( action_state_t* s ) override
   {
     if ( result_is_hit( s -> result ) )
     {
-      if ( p() -> talents.judgment_of_light -> ok() )
-        td( s -> target ) -> buffs.judgment_of_light -> trigger( 40 );
-
       // Judgment hits/crits reduce SotR recharge time
-      if ( p() -> specialization() == PALADIN_PROTECTION )
+      if ( p() -> sets -> has_set_bonus( PALADIN_PROTECTION, T20, B2 ) &&
+           rng().roll( p() -> sets -> set( PALADIN_PROTECTION, T20, B2 ) -> proc_chance() ) )
       {
-        if ( p() -> sets -> has_set_bonus( PALADIN_PROTECTION, T20, B2 ) &&
-             rng().roll( p() -> sets -> set( PALADIN_PROTECTION, T20, B2 ) -> proc_chance() ) )
-        {
-          p() -> cooldowns.avengers_shield -> reset( true );
-        }
-
-        p() -> cooldowns.shield_of_the_righteous -> adjust( s -> result == RESULT_CRIT ? 2.0 * sotr_cdr : sotr_cdr );
+        p() -> cooldowns.avengers_shield -> reset( true );
       }
+
+      p() -> cooldowns.shield_of_the_righteous -> adjust( s -> result == RESULT_CRIT ? 2.0 * sotr_cdr : sotr_cdr );
     }
 
-    paladin_melee_attack_t::impact( s );
+    judgment_t::impact( s );
   }
 };
 
-// Light of the Protector (Protection) ========================================
+// Light of the Protector ===================================================
 
 struct light_of_the_protector_t : public paladin_heal_t
 {

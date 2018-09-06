@@ -768,6 +768,54 @@ struct inner_light_damage : public paladin_spell_t
   }
 };
 
+// Base Judgment spell ======================================================
+
+judgment_t::judgment_t( paladin_t* p, const std::string& options_str )
+    : paladin_melee_attack_t( "judgment", p, p -> find_specialization_spell( "Judgment" ) )
+{
+  parse_options( options_str );
+  // no weapon multiplier
+  weapon_multiplier = 0.0;
+  may_block = may_parry = may_dodge = false;
+}
+
+double judgment_t::bonus_da( const action_state_t* s ) const
+{
+  double da = paladin_melee_attack_t::bonus_da( s );
+  if ( p() -> azerite.indomitable_justice.ok() )
+  {
+    double amount = p() -> azerite.indomitable_justice.value();
+    double our_percent = p() -> health_percentage();
+    double their_percent = s -> target -> health_percentage();
+    if ( our_percent > their_percent )
+    {
+      amount *= ( our_percent - their_percent ) / 100.0;
+
+      // Doesn't seem to be reduced for Holy
+      amount *= 1.0 + p() -> passives.protection_paladin -> effectN( 13 ).percent();
+
+      da += amount;
+    }
+  }
+  return da;
+}
+
+proc_types judgment_t::proc_type() const
+{
+  return PROC1_MELEE_ABILITY;
+}
+
+void judgment_t::impact( action_state_t* s )
+{
+  if ( result_is_hit( s -> result ) )
+  {
+    if ( p() -> talents.judgment_of_light -> ok() )
+      td( s -> target ) -> buffs.judgment_of_light -> trigger( 25 );
+  }
+
+  paladin_melee_attack_t::impact( s );
+}
+
 // Rebuke ===================================================================
 
 struct rebuke_t : public paladin_melee_attack_t

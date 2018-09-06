@@ -451,41 +451,17 @@ struct holy_avenger_t : public paladin_heal_t
 
 // Judgment - Holy =================================================================
 
-struct judgment_holy_t : public paladin_melee_attack_t
+struct judgment_holy_t : public judgment_t
 {
   judgment_holy_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "judgment", p, p -> find_specialization_spell( "Judgment" ) )
+    : judgment_t( p, options_str )
   {
-    parse_options( options_str );
-
-    // no weapon multiplier
-    weapon_multiplier = 0.0;
-    may_block = may_parry = may_dodge = false;
-    cooldown -> charges = 1;
-
-    base_multiplier *= 1.0 + p -> passives.holy_paladin -> effectN( 6 ).percent();
-  }
-
-  virtual double bonus_da(const action_state_t* s) const override
-  {
-    double da = paladin_melee_attack_t::bonus_da(s);
-    if ( p() -> azerite.indomitable_justice.ok() )
-    {
-      double amount = p() -> azerite.indomitable_justice.value();
-      double our_percent = p() -> health_percentage();
-      double their_percent = s -> target -> health_percentage();
-      if ( our_percent > their_percent )
-      {
-        amount *= (our_percent - their_percent) / 100.0;
-        da += amount;
-      }
-    }
-    return da;
+    base_multiplier *= 1.0 + p -> passives.holy_paladin -> effectN( 11 ).percent();
   }
 
   virtual void execute() override
   {
-    paladin_melee_attack_t::execute();
+    judgment_t::execute();
 
     if ( p() -> talents.fist_of_justice -> ok() )
     {
@@ -494,23 +470,15 @@ struct judgment_holy_t : public paladin_melee_attack_t
     }
   }
 
-  proc_types proc_type() const override
-  {
-    return PROC1_MELEE_ABILITY;
-  }
-
   // Special things that happen when Judgment damages target
   void impact( action_state_t* s ) override
   {
     if ( result_is_hit( s -> result ) )
     {
       td( s -> target ) -> buffs.debuffs_judgment -> trigger();
-
-      if ( p() -> talents.judgment_of_light -> ok() )
-        td( s -> target ) -> buffs.judgment_of_light -> trigger( 40 );
     }
 
-    paladin_melee_attack_t::impact( s );
+    judgment_t::impact( s );
   }
 };
 

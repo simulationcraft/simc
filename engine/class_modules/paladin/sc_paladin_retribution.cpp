@@ -448,50 +448,20 @@ struct templars_verdict_t : public holy_power_consumer_t
 
 // Judgment - Retribution =================================================================
 
-struct judgment_ret_t : public paladin_melee_attack_t
+struct judgment_ret_t : public judgment_t
 {
   judgment_ret_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "judgment", p, p -> find_specialization_spell( "Judgment" ) )
+    : judgment_t( p, options_str )
   {
-    parse_options( options_str );
-
-    // no weapon multiplier
-    weapon_multiplier = 0.0;
-    may_block = may_parry = may_dodge = false;
-    cooldown -> charges = 1;
-
     // TODO: this is a hack; figure out what's really going on here.
     if ( p -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T21, B2 ) )
       base_multiplier *= 1.0 + p -> sets -> set( PALADIN_RETRIBUTION, T21, B2 ) -> effectN( 1 ).percent();
-
-  }
-
-  virtual double bonus_da(const action_state_t* s) const override
-  {
-    double da = paladin_melee_attack_t::bonus_da(s);
-    if ( p() -> azerite.indomitable_justice.ok() )
-    {
-      double amount = p() -> azerite.indomitable_justice.value();
-      double our_percent = p() -> health_percentage();
-      double their_percent = s -> target -> health_percentage();
-      if ( our_percent > their_percent )
-      {
-        amount *= (our_percent - their_percent) / 100.0;
-        da += amount;
-      }
-    }
-    return da;
   }
 
   virtual void execute() override
   {
-    paladin_melee_attack_t::execute();
+    judgment_t::execute();
 
-    if ( p() -> talents.fist_of_justice -> ok() )
-    {
-      double reduction = p() -> talents.fist_of_justice -> effectN( 1 ).base_value();
-      p() -> cooldowns.hammer_of_justice -> ready -= timespan_t::from_seconds( reduction );
-    }
     if ( p() -> talents.zeal -> ok() )
     {
       p() -> buffs.zeal -> trigger( as<int>( p() -> talents.zeal -> effectN( 1 ).base_value() ) );
@@ -506,14 +476,9 @@ struct judgment_ret_t : public paladin_melee_attack_t
       p() -> buffs.ret_t21_4p -> trigger();
   }
 
-  proc_types proc_type() const override
-  {
-    return PROC1_MELEE_ABILITY;
-  }
-
   virtual double action_multiplier() const override
   {
-    double am = paladin_melee_attack_t::action_multiplier();
+    double am = judgment_t::action_multiplier();
     if ( p() -> buffs.divine_judgment -> up() )
       am *= 1.0 + p() -> buffs.divine_judgment -> data().effectN( 1 ).percent() * p() -> buffs.divine_judgment -> stack();
     return am;
@@ -526,19 +491,12 @@ struct judgment_ret_t : public paladin_melee_attack_t
     {
       td( s -> target ) -> buffs.debuffs_judgment -> trigger();
 
-      if ( p() -> talents.judgment_of_light -> ok() )
-        td( s -> target ) -> buffs.judgment_of_light -> trigger( 40 );
-
-      if ( p() -> specialization() == PALADIN_RETRIBUTION )
-      {
-        p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.judgment );
-      }
+      p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.judgment );
     }
 
-    paladin_melee_attack_t::impact( s );
+    judgment_t::impact( s );
   }
 };
-
 
 // Justicar's Vengeance
 struct justicars_vengeance_t : public holy_power_consumer_t

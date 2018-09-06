@@ -1000,4 +1000,13 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
   virtual double cost() const override;
 };
 
+struct judgment_t : public paladin_melee_attack_t
+{
+  judgment_t( paladin_t* p, const std::string& options_str );
+  
+  virtual double bonus_da( const action_state_t* s ) const override;
+  proc_types proc_type() const override;
+  void impact( action_state_t* s ) override;
+};
+
 }
