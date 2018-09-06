@@ -105,6 +105,7 @@ namespace items
   void twitching_tentacle_of_xalzaix( special_effect_t& );
   void vanquished_tendril_of_ghuun( special_effect_t& );
   void syringe_of_bloodborne_infirmity( special_effect_t& );
+  void disc_of_systematic_regression( special_effect_t& );
 }
 
 namespace util
@@ -1482,6 +1483,33 @@ void items::syringe_of_bloodborne_infirmity( special_effect_t& effect )
     effect.create_buff(); // precreate the buff
 }
 
+// Disc of Systematic Regression ============================================
+
+void items::disc_of_systematic_regression( special_effect_t& effect )
+{
+  struct voided_sectors_t : public aoe_proc_t
+  {
+    voided_sectors_t( const special_effect_t& effect ) :
+      aoe_proc_t( effect, "voided_sectors", 278153 )
+    { }
+
+    virtual double action_multiplier() const override
+    {
+      double am = aoe_proc_t::action_multiplier();
+
+      // TODO: Server-side until a future patch
+      // +15% damage per enemy hit
+      am *= 1.0 + 0.15 * ( std::min( as<int>( target_list().size() ), 6 ) - 1 );
+
+      return am;
+    }
+  };
+
+  effect.execute_action = create_proc_action<voided_sectors_t>( "voided_sectors_t", effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 } // namespace bfa
 } // anon namespace
 
@@ -1542,6 +1570,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 278267, items::sandscoured_idol );
   register_special_effect( 278109, items::syringe_of_bloodborne_infirmity );
   register_special_effect( 278112, items::syringe_of_bloodborne_infirmity );
+  register_special_effect( 278152, items::disc_of_systematic_regression );
 
   // Misc
   register_special_effect( 276123, items::darkmoon_deck_squalls );
