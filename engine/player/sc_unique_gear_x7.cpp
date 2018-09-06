@@ -96,6 +96,7 @@ namespace items
   void lingering_sporepods( special_effect_t& );
   void lady_waycrests_music_box( special_effect_t& );
   void balefire_branch( special_effect_t& );
+  void vial_of_animated_blood( special_effect_t& );
   // 8.0.1 - World Boss Trinkets
   void sandscoured_idol( special_effect_t& );
   // 8.0.1 - Uldir Trinkets
@@ -103,7 +104,7 @@ namespace items
   void vigilants_bloodshaper( special_effect_t& );
   void twitching_tentacle_of_xalzaix( special_effect_t& );
   void vanquished_tendril_of_ghuun( special_effect_t& );
-  void vial_of_animated_blood( special_effect_t& );
+  void syringe_of_bloodborne_infirmity( special_effect_t& );
 }
 
 namespace util
@@ -1414,6 +1415,73 @@ void items::endless_tincture_of_fractional_power( special_effect_t& effect )
     create_proc_action<endless_tincture_of_fractional_power_t>( "endless_tincture_of_fractional_power", effect );
 }
 
+// Syringe of Bloodborne Infirmity ==========================================
+
+struct syringe_of_bloodborne_infirmity_constructor_t : public item_targetdata_initializer_t
+{
+  syringe_of_bloodborne_infirmity_constructor_t( unsigned iid, const std::vector< slot_e >& s ) :
+    item_targetdata_initializer_t( iid, s )
+  {}
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    const special_effect_t* effect = find_effect( td -> source );
+    if ( !effect )
+    {
+      td -> debuff.wasting_infection = make_buff( *td, "wasting_infection" );
+      return;
+    }
+    assert( !td -> debuff.wasting_infection );
+
+    special_effect_t* effect2 = new special_effect_t( effect -> item );
+    effect2 -> type = SPECIAL_EFFECT_EQUIP;
+    effect2 -> source = SPECIAL_EFFECT_SOURCE_ITEM;
+    effect2 -> spell_id = 278109;
+    effect -> player -> special_effects.push_back( effect2 );
+
+    auto callback = new dbc_proc_callback_t( effect -> item, *effect2 );
+    callback -> initialize();
+    callback -> deactivate();
+
+    td -> debuff.wasting_infection =
+      make_buff( *td, "wasting_infection_debuff", effect -> trigger() )
+      -> set_activated( false )
+      -> set_stack_change_callback( util::callback_buff_activator( callback ) );
+    td -> debuff.wasting_infection -> reset();
+  }
+};
+
+void items::syringe_of_bloodborne_infirmity( special_effect_t& effect )
+{
+  struct syringe_of_bloodborne_infirmity_cb_t : public dbc_proc_callback_t
+  {
+    action_t* damage;
+    syringe_of_bloodborne_infirmity_cb_t( const special_effect_t& effect ) :
+      dbc_proc_callback_t( effect.item, effect ),
+      damage( create_proc_action<proc_spell_t>( "wasting_infection", effect ) )
+    {}
+
+    void execute( action_t* /* a */, action_state_t* state ) override
+    {
+      damage -> set_target( state -> target );
+      damage -> execute();
+
+      auto td = listener -> get_target_data( state -> target );
+      assert( td );
+      assert( td -> debuff.wasting_infection );
+      td -> debuff.wasting_infection -> trigger();
+    }
+  };
+
+  // dot proc on attack
+  if ( effect.spell_id == 278112 )
+    new syringe_of_bloodborne_infirmity_cb_t( effect );
+  
+  // crit buff on attacking debuffed target
+  if ( effect.spell_id == 278109 )
+    effect.create_buff(); // precreate the buff
+}
+
 } // namespace bfa
 } // anon namespace
 
@@ -1472,6 +1540,8 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 278161, items::vanquished_tendril_of_ghuun );
   register_special_effect( 268828, items::vial_of_animated_blood );
   register_special_effect( 278267, items::sandscoured_idol );
+  register_special_effect( 278109, items::syringe_of_bloodborne_infirmity );
+  register_special_effect( 278112, items::syringe_of_bloodborne_infirmity );
 
   // Misc
   register_special_effect( 276123, items::darkmoon_deck_squalls );
@@ -1485,6 +1555,7 @@ void unique_gear::register_target_data_initializers_bfa( sim_t* sim )
   const std::vector<slot_e> items = { SLOT_TRINKET_1, SLOT_TRINKET_2 };
 
   sim -> register_target_data_initializer( deadeye_spyglass_constructor_t( 159623, items ) );
+  sim -> register_target_data_initializer( syringe_of_bloodborne_infirmity_constructor_t( 160655, items ) );
 }
 
 namespace expansion
