@@ -528,7 +528,7 @@ public:
   struct options_t {
     std::string summon_pet_str = "cat";
     timespan_t pet_attack_speed = timespan_t::from_seconds( 2.0 );
-    timespan_t pet_basic_attack_delay = timespan_t::from_seconds( .6 );
+    timespan_t pet_basic_attack_delay = timespan_t::from_seconds( .15 );
   } options;
 
   hunter_t( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) :
