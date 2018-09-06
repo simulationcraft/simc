@@ -442,8 +442,10 @@ enum resource_category : unsigned
 };
 
 // Add different resource systems here
+// Todo : values were changed, need confirmation on :
+// rage, runic power, shield of the righteous charges
 static const std::unordered_map<int, std::tuple<double, double>> __resource_map { {
-  { RESOURCE_HOLY_POWER,  std::tuple<double, double> { 1.000, 2.000 } },
+  { RESOURCE_HOLY_POWER,  std::tuple<double, double> { 0.800, 0.800 } },
   { RESOURCE_RUNIC_POWER, std::tuple<double, double> { 0.050, 0.100 } },
   { RESOURCE_RAGE,        std::tuple<double, double> { 0.025, 0.050 } }
 } };
