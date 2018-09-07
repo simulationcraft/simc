@@ -9339,6 +9339,12 @@ expr_t* player_t::create_expression( const std::string& expression_str )
   if ( expression_str == "mastery_value" )
     return make_mem_fn_expr( expression_str, this->cache, &player_stat_cache_t::mastery_value );
 
+  if ( expression_str == "attack_crit" )
+    return make_fn_expr( expression_str, [this] { return cache.attack_crit_chance(); } );
+
+  if ( expression_str == "spell_crit" )
+    return make_fn_expr( expression_str, [this] { return cache.attack_crit_chance(); } );
+
   if ( expression_str == "position_front" )
     return new position_expr_t( "position_front", *this, ( 1 << POSITION_FRONT ) | ( 1 << POSITION_RANGED_FRONT ) );
   if ( expression_str == "position_back" )
