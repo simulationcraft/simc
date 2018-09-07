@@ -3868,6 +3868,7 @@ struct shred_t : public cat_attack_t
     {
       p()->buff.shredding_fury->decrement();
     }
+    cat_attack_t::execute();
   }
 
   virtual double bonus_da( const action_state_t* s ) const override
@@ -3880,7 +3881,7 @@ struct shred_t : public cat_attack_t
       b += p()->azerite.wild_fleshrending.value( 1 );
     }
 
-    if ( p()->buff.shredding_fury->up() )
+    if ( p()->buff.shredding_fury->check() )
     {
       b += p()->buff.shredding_fury->value();
     }
