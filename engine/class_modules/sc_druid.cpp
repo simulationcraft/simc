@@ -3862,6 +3862,14 @@ struct shred_t : public cat_attack_t
       td( s -> target ) -> debuff.bloodletting -> trigger(); // Druid module debuff
   }
 
+  virtual void execute() override
+  {
+    if ( p()->buff.shredding_fury->up() )
+    {
+      p()->buff.shredding_fury->decrement();
+    }
+  }
+
   virtual double bonus_da( const action_state_t* s ) const override
   {
     double b = cat_attack_t::bonus_da( s );
@@ -3875,7 +3883,6 @@ struct shred_t : public cat_attack_t
     if ( p()->buff.shredding_fury->up() )
     {
       b += p()->buff.shredding_fury->value();
-      p()->buff.shredding_fury->decrement();
     }
 
     return b;
