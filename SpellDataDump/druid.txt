@@ -1,4 +1,4 @@
-SimulationCraft 801-02 for World of Warcraft 8.0.1 Live (wow build 27481)
+SimulationCraft 801-02 for World of Warcraft 8.0.1 Live (wow build 27602)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -4202,6 +4202,7 @@ Effects          :
 Description      : Increases your chance to critically strike by $s1%.
 
 Name             : Tranquility (id=157982) [Spell Family (7)] 
+Hotfixed         : Attributes
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -4214,7 +4215,7 @@ Affecting spells : Incarnation: Tree of Life (5420 effect#1), Nimble Healing Tou
 Triggered by     : Tranquility (740)
 Family Flags     : 7, 118
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ ........   ........ .x...... ........ ......x. 
+                 : ..x..... ........ ........ ........   .......x .x...... ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .x..x... ........ x.......   ........ ........ ........ ........ 

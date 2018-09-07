@@ -1,4 +1,4 @@
-SimulationCraft 801-02 for World of Warcraft 8.0.1 Live (wow build 27481)
+SimulationCraft 801-02 for World of Warcraft 8.0.1 Live (wow build 27602)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -6647,7 +6647,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=725028)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 132.1273 (coefficient=1.699387) | Trigger Spell: 273419 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 194.6135 (coefficient=2.503068) | Trigger Spell: 273419 | Target: Self (1)
+                   Hotfixed: Coefficient (1.69939 -> 2.50307)
 Description      : Nightblade increases the damage of your next Eviscerate within 8 sec by $s1. 
 
 Name             : Storm of Steel (id=273452) [Scaling Spell (-8), Spell Family (8), Passive] 
@@ -6852,7 +6853,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=729242)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 76.31901 (coefficient=0.981595) | Trigger Spell: 279752 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 68.68715 (coefficient=0.883436) | Trigger Spell: 279752 | Target: Self (1)
+                   Hotfixed: Coefficient (0.981595 -> 0.883436)
 Description      : Shadowstrike increases the damage your Shadowstrike deals by $s1 for $279754d, stacking up to $279754u times.
 
 Name             : Poisoned Wire (id=276072) [Scaling Spell (-7), Spell Family (8), Passive] 
@@ -7066,7 +7068,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734530)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 99.69175 (coefficient=1.282209) | Trigger Spell: 279712 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 319.1089 (coefficient=4.104294) | Trigger Spell: 279712 | Target: Self (1)
+                   Hotfixed: Coefficient (1.28221 -> 4.10429)
 #2 (id=734531)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 #3 (id=736175)   : Dummy (3)

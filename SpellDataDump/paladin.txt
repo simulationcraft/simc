@@ -1,4 +1,4 @@
-SimulationCraft 801-02 for World of Warcraft 8.0.1 Live (wow build 27481)
+SimulationCraft 801-02 for World of Warcraft 8.0.1 Live (wow build 27602)
 
 Name             : Haste (id=65) [Scaling Spell (-1)] 
 Class            : Paladin
@@ -6918,7 +6918,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=728560)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 2063.953 (coefficient=26.54601) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2497.54 (coefficient=32.1227) | Target: Self (1)
+                   Hotfixed: Coefficient (26.546 -> 32.1227)
 Description      : Judgment deals additional damage when your health percentage exceeds the target's, up to $s1 damage.
 
 Name             : Judgment (id=275773) [Spell Family (10)] 
@@ -7137,7 +7138,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734444)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 93.0138 (coefficient=1.196319) | Trigger Spell: 278982 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 144.0522 (coefficient=1.852761) | Trigger Spell: 278982 | Target: Self (1)
+                   Hotfixed: Coefficient (1.19632 -> 1.85276)
 Description      : Casting Crusader Strike increases the damage of your Crusader Strike by $s1 for $278989d, stacking up to $278989u times.
 
 Name             : Relentless Inquisitor (id=278617) [Scaling Spell (-7), Passive] 
