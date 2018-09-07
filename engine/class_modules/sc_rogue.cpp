@@ -6435,7 +6435,7 @@ void rogue_t::init_action_list()
 
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
-    finish -> add_action( this, "Eviscerate", "if=talent.shadow_focus.enabled&spell_targets.shuriken_storm>=5&buff.nights_vengeance.up", "Eviscerate gets highest priority at 5+ targets with Shadow Focus and Nights Vengeance up" );
+    finish -> add_action( this, "Eviscerate", "if=talent.shadow_focus.enabled&buff.nights_vengeance.up&spell_targets.shuriken_storm>=2+3*talent.secret_technique.enabled", "Eviscerate highest priority at 2+ targets with Shadow Focus (5+ with Secret Technique in addition) and Night's Vengeance up." );
     finish -> add_action( this, "Nightblade", "if=(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>6&remains<tick_time*2&(spell_targets.shuriken_storm<4|!buff.symbols_of_death.up)", "Keep up Nightblade if it is about to run out. Do not use NB during Dance, if talented into Dark Shadow." );
     finish -> add_action( this, "Nightblade", "cycle_targets=1,if=spell_targets.shuriken_storm>=2&(talent.secret_technique.enabled|azerite.nights_vengeance.enabled|spell_targets.shuriken_storm<=5)&!buff.shadow_dance.up&target.time_to_die>=(5+(2*combo_points))&refreshable", "Multidotting outside Dance on targets that will live for the duration of Nightblade with refresh during pandemic if you have less than 6 targets or play with Secret Technique." );
     finish -> add_action( this, "Nightblade", "if=remains<cooldown.symbols_of_death.remains+10&cooldown.symbols_of_death.remains<=5&target.time_to_die-remains>cooldown.symbols_of_death.remains+5", "Refresh Nightblade early if it will expire during Symbols. Do that refresh if SoD gets ready in the next 5s." );
