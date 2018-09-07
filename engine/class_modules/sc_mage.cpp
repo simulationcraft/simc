@@ -3626,14 +3626,14 @@ struct glacial_spike_t : public frost_mage_spell_t
     return frost_mage_spell_t::ready();
   }
 
-  virtual double spell_direct_power_coefficient( const action_state_t* ) const override
+  virtual double spell_direct_power_coefficient( const action_state_t* s ) const override
   {
     double extra_sp_coef = icicle_sp_coefficient();
 
     extra_sp_coef *=       p() -> spec.icicles -> effectN( 2 ).base_value();
     extra_sp_coef *= 1.0 + p() -> talents.splitting_ice -> effectN( 3 ).percent();
 
-    return spell_power_mod.direct + extra_sp_coef;
+    return frost_mage_spell_t::spell_direct_power_coefficient( s ) + extra_sp_coef;
   }
 
   virtual void execute() override
