@@ -3864,11 +3864,11 @@ struct shred_t : public cat_attack_t
 
   virtual void execute() override
   {
-    if ( p()->buff.shredding_fury->up() )
-    {
-      p()->buff.shredding_fury->decrement();
-    }
     cat_attack_t::execute();
+    
+    if ( p()->buff.shredding_fury->up() )
+      p()->buff.shredding_fury->decrement();
+    
   }
 
   virtual double bonus_da( const action_state_t* s ) const override
