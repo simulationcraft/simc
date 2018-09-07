@@ -5407,7 +5407,7 @@ void hunter_t::apl_surv()
   st -> add_action( this, "Coordinated Assault" );
   st -> add_action( this, "Wildfire Bomb", "if=full_recharge_time<gcd&talent.alpha_predator.enabled" );
   st -> add_action( this, "Serpent Sting", "if=refreshable&buff.mongoose_fury.stack=5&talent.alpha_predator.enabled" );
-  st -> add_talent( this, "Mongoose Bite", "if=buff.mongoose_fury.stack=5&talent.alpha_predator.enabled", 
+  st -> add_talent( this, "Mongoose Bite", "if=buff.mongoose_fury.stack=5&talent.alpha_predator.enabled",
                     "To simulate usage for Mongoose Bite or Raptor Strike during Aspect of the Eagle, copy each occurrence of the action and append _eagle to the action name." );
   st -> add_action( this, "Raptor Strike", "if=talent.birds_of_prey.enabled&buff.coordinated_assault.up&(buff.coordinated_assault.remains<gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<gcd)" );
   st -> add_talent( this, "Mongoose Bite", "if=talent.birds_of_prey.enabled&buff.coordinated_assault.up&(buff.coordinated_assault.remains<gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<gcd)" );
@@ -5439,7 +5439,7 @@ void hunter_t::apl_surv()
   cleave -> add_talent( this, "Steel Trap" );
   cleave -> add_action( this, "Harpoon", "if=talent.terms_of_engagement.enabled" );
   cleave -> add_action( this, "Serpent Sting", "target_if=min:remains,if=refreshable&buff.tip_of_the_spear.stack<3" );
-  cleave -> add_talent( this, "Mongoose Bite", "target_if=max:debuff.latent_poison.stack", 
+  cleave -> add_talent( this, "Mongoose Bite", "target_if=max:debuff.latent_poison.stack",
                         "To simulate usage for Mongoose Bite or Raptor Strike during Aspect of the Eagle, copy each occurrence of the action and append _eagle to the action name." );
   cleave -> add_action( this, "Raptor Strike", "target_if=max:debuff.latent_poison.stack" );
 }
@@ -5723,7 +5723,7 @@ std::string hunter_t::create_profile( save_e stype )
   if ( options.pet_attack_speed != defaults.pet_attack_speed )
     profile_str += "hunter.pet_attack_speed=" + util::to_string( options.pet_attack_speed.total_seconds() ) + "\n";
   if ( options.pet_basic_attack_delay != defaults.pet_basic_attack_delay )
-    profile_str += "hunter.pet_basic_attack_delay" + util::to_string( options.pet_basic_attack_delay.total_seconds() ) + "\n";
+    profile_str += "hunter.pet_basic_attack_delay=" + util::to_string( options.pet_basic_attack_delay.total_seconds() ) + "\n";
 
   return profile_str;
 }
