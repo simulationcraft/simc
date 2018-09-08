@@ -2096,7 +2096,6 @@ struct barrage_t: public hunter_spell_t
     parse_options( options_str );
 
     may_miss = may_crit = false;
-    callbacks = false;
     channeled = true;
 
     tick_zero = true;
@@ -2227,7 +2226,6 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
   {
     parse_options( options_str );
 
-    callbacks = false;
     aoe = 2;
     radius = 5.0;
 
@@ -2810,7 +2808,6 @@ struct rapid_fire_t: public hunter_spell_t
     parse_options( options_str );
 
     may_miss = may_crit = false;
-    callbacks = false;
     channeled = true;
     tick_zero = true;
 
@@ -3641,7 +3638,6 @@ struct moc_t : public hunter_spell_t
     parse_options( options_str );
 
     hasted_ticks = false;
-    callbacks = false;
     may_miss = may_crit = false;
 
     tick_zero = true;
@@ -3758,8 +3754,6 @@ struct kill_command_t: public hunter_spell_t
     flankers_advantage( p -> get_proc( "flankers_advantage" ) )
   {
     parse_options( options_str );
-
-    harmful = may_hit = false;
 
     cooldown -> charges += static_cast<int>( p -> talents.alpha_predator -> effectN( 1 ).base_value() );
   }
