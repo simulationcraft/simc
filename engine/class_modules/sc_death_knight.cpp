@@ -6634,9 +6634,7 @@ void death_knight_t::trigger_festering_wound_death( player_t* target )
                  spec.festering_wound -> effectN( 1 ).trigger() -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER ) * n_wounds,
                  gains.festering_wound );
 
-  // Bug ? currently doesn't happen ingame
-  // https://github.com/SimCMinMax/WoW-BugTracker/issues/356
-  if ( ! bugs && talent.pestilent_pustules -> ok() )
+  if ( talent.pestilent_pustules -> ok() )
   {
     if ( trigger_runic_corruption( 0, talent.pestilent_pustules -> effectN( 1 ).percent() * n_wounds ) )
     {
