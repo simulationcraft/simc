@@ -1916,6 +1916,9 @@ void meticulous_scheming( special_effect_t& effect )
     { 201427, true }, // Demon Hunter: Annihilation
     { 210152, true }, // Demon Hunter: Death Sweep
   } };
+  static constexpr unsigned __spell_whitelist[] = {
+    75, // Hunter: Auto Shot
+  };
 
   struct seize_driver_t : public dbc_proc_callback_t
   {
@@ -1931,8 +1934,7 @@ void meticulous_scheming( special_effect_t& effect )
 
     void execute( action_t* a, action_state_t* ) override
     {
-      // TODO: Do we need a whitelist here?
-      if ( a->background )
+      if ( a->background && range::find( __spell_whitelist, a->id ) == range::cend( __spell_whitelist ) )
       {
         return;
       }
@@ -1972,7 +1974,7 @@ void meticulous_scheming( special_effect_t& effect )
   secondary->spell_id = 273685;
   secondary->type = effect.type;
   secondary->source = effect.source;
-  secondary->proc_flags_ = PF_MELEE_ABILITY | PF_RANGED_ABILITY | PF_NONE_HEAL |
+  secondary->proc_flags_ = PF_MELEE_ABILITY | PF_RANGED | PF_RANGED_ABILITY | PF_NONE_HEAL |
                            PF_NONE_SPELL | PF_MAGIC_SPELL | PF_MAGIC_HEAL;
   effect.player -> special_effects.push_back( secondary );
 
@@ -2006,7 +2008,7 @@ void meticulous_scheming( special_effect_t& effect )
   effect.custom_buff = base_buff;
   // Spell data has no proc flags for the base spell, so make something up that would resemble
   // "spells and abilities"
-  effect.proc_flags_ = PF_MELEE_ABILITY | PF_RANGED_ABILITY | PF_NONE_HEAL |
+  effect.proc_flags_ = PF_MELEE_ABILITY | PF_RANGED | PF_RANGED_ABILITY | PF_NONE_HEAL |
                        PF_NONE_SPELL | PF_MAGIC_SPELL | PF_MAGIC_HEAL | PF_PERIODIC;
 
   new dbc_proc_callback_t( effect.player, effect );
