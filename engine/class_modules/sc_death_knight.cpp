@@ -917,7 +917,6 @@ public:
   void      trigger_soul_reaper_death( player_t* );
   void      trigger_festering_wound_death( player_t* );
   void      trigger_virulent_plague_death( player_t* );
-  void      trigger_last_surprise( player_t* target );
 
   // Actor is standing in their own Death and Decay or Defile
   bool      in_death_and_decay() const;
@@ -1832,11 +1831,41 @@ struct ghoul_pet_t : public dt_pet_t
 
 struct army_pet_t : public base_ghoul_pet_t
 {
+  pet_spell_t<army_pet_t>* last_surprise;
+
   struct army_claw_t : public pet_melee_attack_t<army_pet_t>
   {
     army_claw_t( army_pet_t* player, const std::string& options_str ) :
       super( player, "claw", player -> o() -> spell.pet_army_claw, options_str )
     { }
+  };
+
+  // TODO : move this to ghoul pets to make more sense
+  struct last_surprise_t : public pet_spell_t<army_pet_t>
+  {
+    last_surprise_t( army_pet_t* p ) :
+      super( p, "last_surprise", p -> o() -> find_spell( 279606 ) )
+    {
+      aoe = -1;
+      background = true;
+      base_dd_min = base_dd_max = p -> o() -> azerite.last_surprise.value( 1 );
+    }
+
+    virtual double action_multiplier() const override
+    {
+      double am = super::action_multiplier();
+
+      if ( ! p() -> bugs ) return am;
+
+      // Last Suprise is affected by the spec aura and mastery through whitelisting
+      // It is also affected once again by spec aura through the pet damage multiplier
+      // And mastery because it's considered pet shadow damage
+      // https://github.com/SimCMinMax/WoW-BugTracker/issues/357
+      am *= 1.0 + p() -> o() -> cache.mastery_value();
+      am *= 1.0 + p() -> o() -> spec.unholy_death_knight -> effectN( 1 ).percent();
+
+      return am;
+    }
   };
 
   army_pet_t( death_knight_t* owner, const std::string& name ) :
@@ -1858,6 +1887,16 @@ struct army_pet_t : public base_ghoul_pet_t
     def -> add_action( "Claw" );
   }
 
+  void init_spells() override
+  {
+    base_ghoul_pet_t::init_spells();
+    
+    if ( o() -> azerite.last_surprise.enabled() )
+    {
+      last_surprise = new last_surprise_t( this );
+    }
+  }
+
   action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
     if ( name == "claw" ) return new army_claw_t( this, options_str );
@@ -1867,7 +1906,12 @@ struct army_pet_t : public base_ghoul_pet_t
 
   void dismiss( bool expired ) override
   {
-    o() -> trigger_last_surprise( o() -> target );
+    if ( ! sim -> event_mgr.canceled && o() -> azerite.last_surprise.enabled() )
+    {
+      last_surprise -> set_target( target );
+      last_surprise -> execute();
+    }
+
     pet_t::dismiss( expired );
   }
 };
@@ -2966,34 +3010,6 @@ struct glacial_contagion_t : public death_knight_spell_t
     td( execute_state -> target ) -> debuff.glacial_contagion -> trigger();
   }
 };
-
-// TODO : move this to ghoul pets to make more sense
-struct last_surprise_t : public death_knight_spell_t
-{
-  last_surprise_t( death_knight_t* p ) :
-    death_knight_spell_t( "last_surprise", p, p -> find_spell( 279606 ) )
-  {
-    aoe = -1;
-    background = true;
-    base_dd_min = base_dd_max = p -> azerite.last_surprise.value( 1 );
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = death_knight_spell_t::action_multiplier();
-
-    if ( ! p() -> bugs ) return am;
-
-    // Last Suprise is affected by the spec aura and mastery through whitelisting
-    // It is then affected once again by spec aura through pet damage multiplier, and mastery because it's pet shadow damage
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/357
-    am *= 1.0 + p() -> cache.mastery_value();
-    am *= 1.0 + p() -> spec.unholy_death_knight -> effectN( 3 ).percent();
-
-    return am;
-  }
-};
-
 
 // ==========================================================================
 // Death Knight Attacks
@@ -6917,17 +6933,6 @@ void death_knight_t::start_cold_heart()
   } );
 }
 
-void death_knight_t::trigger_last_surprise( player_t* target )
-{
-  if ( ! azerite.last_surprise.enabled() )
-  {
-    return;
-  }
-
-  active_spells.last_surprise -> set_target( target );
-  active_spells.last_surprise -> execute();
-}
-
 // ==========================================================================
 // Death Knight Character Definition
 // ==========================================================================
@@ -6989,11 +6994,6 @@ void death_knight_t::create_actions()
   if ( azerite.glacial_contagion.enabled() )
   {
     active_spells.glacial_contagion = new glacial_contagion_t( this );
-  }
-
-  if ( azerite.last_surprise.enabled() )
-  {
-    active_spells.last_surprise = new last_surprise_t( this );
   }
 
   player_t::create_actions();
