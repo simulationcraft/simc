@@ -60,11 +60,11 @@ role=attack
 position=back
 talents=2310022
 
-head=flashpowder_hood,id=159334,bonus_id=4779/1512/4786/4775,azerite_powers=129/22/0/13
+head=high_altitude_turban,id=158364,bonus_id=4819/1512,azerite_powers=239/30/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
-shoulder=mantle_of_fastidious_machinations,id=158304,bonus_id=4779/1512/4786/4775,azerite_powers=410/22/0/13
+shoulder=goldtasseled_epaulets,id=159299,bonus_id=4819/1512,azerite_powers=239/22/0/13
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-chest=vest_of_reverent_adoration,id=159303,bonus_id=4779/1512/4786/4775,azerite_powers=129/31/0/13
+chest=raiment_of_the_blighted_tribe,id=159335,bonus_id=4819/1512,azerite_powers=239/31/0/13
 wrist=venerated_raptorhide_bindings,id=160214,bonus_id=4779/1512/4786
 hands=grubby_servantgrabbers,id=159346,bonus_id=4779/1512/4786
 waist=cincture_of_the_azerite_arsenal,id=159333,bonus_id=4779/1512/4786
