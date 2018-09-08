@@ -243,8 +243,8 @@ void priest_t::generate_apl_holy_d()
     }
 
     // Potions
-    default_list->add_action(
-         "potion,if=buff.bloodlust.react|target.time_to_die<=80");
+    default_list->add_action("potion,if=buff.bloodlust.react|(raid_event.adds.up&(raid_event.adds.remains>20|raid_event.adds.duration<20))|target.time_to_die<=30");
+
 
     // Racials
     if (race != RACE_BLOOD_ELF)
@@ -260,14 +260,24 @@ void priest_t::generate_apl_holy_d()
 //           default_list->add_action("arcane_torrent,if=mana.pct<=95");
 //   }
 
-    // Default APL
-    default_list->add_action( this, "Holy Fire", "if=refreshable&dot.holy_fire.ticking&dot.holy_fire.stack>1|dot.holy_fire.stack<2");
-    default_list->add_action( this, "Holy word: Chastise");
-    default_list->add_talent( this, "Apotheosis");
-    default_list->add_talent( this, "Divine Star");
-    default_list->add_talent( this, "Halo", "if=!dot.holy_fire.stack=2");
-    default_list->add_action( this, "Holy Nova", "if=active_enemies>2");
-    default_list->add_action( this, "Smite");
+    // Default APL	
+    default_list->add_action(this, "Holy Fire", "if=dot.holy_fire.ticking&(dot.holy_fire.remains<=gcd|dot.holy_fire.stack<2)&spell_targets.holy_nova<7");
+    default_list->add_action(this, "Holy Word: Chastise", "if=spell_targets.holy_nova<5");
+    default_list->add_action(this, "Holy Fire", "if=dot.holy_fire.ticking&(dot.holy_fire.refreshable|dot.holy_fire.stack<2)&spell_targets.holy_nova<7");
+    default_list->add_action("berserking,if=raid_event.adds.in>30|raid_event.adds.remains>8|raid_event.adds.duration<8");
+    default_list->add_action("fireblood,if=raid_event.adds.in>20|raid_event.adds.remains>6|raid_event.adds.duration<6");
+    default_list->add_action("ancestral_call,if=raid_event.adds.in>20|raid_event.adds.remains>10|raid_event.adds.duration<10");
+    default_list->add_talent(this, "Divine Star", "if=(raid_event.adds.in>5|raid_event.adds.remains>2|raid_event.adds.duration<2)&spell_targets.divine_star>1");
+    default_list->add_talent(this, "Halo", "if=(raid_event.adds.in>14|raid_event.adds.remains>2|raid_event.adds.duration<2)&spell_targets.halo>0");
+    default_list->add_action("lights_judgment,if=raid_event.adds.in>50|raid_event.adds.remains>4|raid_event.adds.duration<4");
+    default_list->add_action("arcane_pulse,if=(raid_event.adds.in>40|raid_event.adds.remains>2|raid_event.adds.duration<2)&spell_targets.arcane_pulse>2");
+    default_list->add_action(this, "Holy Fire", "if=!dot.holy_fire.ticking&spell_targets.holy_nova<7");
+    default_list->add_action(this, "Holy Nova", "if=spell_targets.holy_nova>3");
+    default_list->add_talent(this, "Apotheosis", "if=active_enemies<5&(raid_event.adds.in>15|raid_event.adds.in>raid_event.adds.cooldown-5)");
+    default_list->add_action(this, "Smite");
+    default_list->add_action(this, "Holy Fire");
+    default_list->add_talent(this, "Divine Star", "if=(raid_event.adds.in>5|raid_event.adds.remains>2|raid_event.adds.duration<2)&spell_targets.divine_star>0");
+    default_list->add_action(this, "Holy Nova", "if=raid_event.movement.remains>gcd*0.3&spell_targets.holy_nova>0");
 }
 
 /** Holy Heal Combat Action Priority List */

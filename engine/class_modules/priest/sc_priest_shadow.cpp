@@ -448,7 +448,7 @@ struct shadow_word_death_t final : public priest_spell_t
 
   bool target_ready( player_t* candidate_target ) override
   {
-    if ( target->health_percentage() < as<double>( data().effectN( 2 ).base_value() ) )
+      if (candidate_target->health_percentage() < as<double>(data().effectN(2).base_value()))
     {
       return priest_spell_t::target_ready( candidate_target );
     }
