@@ -325,6 +325,16 @@ namespace warlock
 
         affliction_spell_t::tick( d );
       }
+
+      virtual std::tuple<double, double> get_db_dot_state( dot_t* dot )
+      {
+        std::tuple<double, double>  agony = affliction_spell_t::get_db_dot_state( dot );
+
+        auto s = std::make_tuple( std::get<0>( agony ) * td( execute_state->target )->dots_agony->current_stack(),
+                                  std::get<1>( agony ) );
+
+        return s;
+      }
     };
 
     struct corruption_t : public affliction_spell_t
@@ -352,7 +362,7 @@ namespace warlock
 
       timespan_t get_db_dot_duration( dot_t* dot ) const override
       {
-        if ( p()->talents.deathbolt->ok() )
+        if ( p()->talents.absolute_corruption->ok() )
         {
           return timespan_t::from_seconds( p()->talents.deathbolt->effectN( 3 ).base_value() );
         }
