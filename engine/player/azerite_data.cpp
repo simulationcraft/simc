@@ -950,9 +950,12 @@ void thunderous_blast( special_effect_t& effect )
         building_pressure -> expire();
         rolling_thunder -> trigger();
       }
-      else
+      else if ( rolling_thunder -> check() )
       {
         rolling_thunder -> expire();
+      }
+      else
+      {
         building_pressure -> trigger();
       }
     }
