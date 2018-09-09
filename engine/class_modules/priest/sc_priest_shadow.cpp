@@ -448,13 +448,13 @@ struct shadow_word_death_t final : public priest_spell_t
 
   bool target_ready( player_t* candidate_target ) override
   {
-      if (candidate_target->health_percentage() < as<double>(data().effectN(2).base_value()))
+    if ( candidate_target->health_percentage() < as<double>( data().effectN( 2 ).base_value() ) )
     {
       return priest_spell_t::target_ready( candidate_target );
     }
 
     return false;
-  }
+ }
 
   bool ready() override
   {
@@ -2027,7 +2027,7 @@ void priest_t::create_buffs_shadow()
 
 void priest_t::init_rng_shadow()
 {
-  rppm.shadowy_insight = get_rppm( "shadowy_insight", talents.shadowy_insight );
+  rppm.shadowy_insight = get_rppm( "shadowy_insighty", talents.shadowy_insight );
 }
 
 void priest_t::init_spells_shadow()
