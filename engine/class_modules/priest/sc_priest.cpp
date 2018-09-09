@@ -290,8 +290,6 @@ struct smite_t final : public priest_spell_t
        }
     }
 
-
-
     void impact(action_state_t* s) override
     {
          priest_spell_t::impact(s);
