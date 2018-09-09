@@ -795,16 +795,16 @@ void priest_t::create_gains()
 /** Construct priest procs */
 void priest_t::create_procs()
 {
-  procs.shadowy_apparition       = get_proc( "Shadowy Apparition Procced" );
-  procs.shadowy_apparition       = get_proc( "Shadowy Apparition Insanity lost to overflow" );
-  procs.shadowy_insight          = get_proc( "Shadowy Insight Mind Blast CD Reset from Shadow Word: Pain" );
-  procs.shadowy_insight_overflow = get_proc( "Shadowy Insight Mind Blast CD Reset lost to overflow" );
-  procs.surge_of_light           = get_proc( "Surge of Light" );
-  procs.surge_of_light_overflow  = get_proc( "Surge of Light lost to overflow" );
-  procs.serendipity              = get_proc( "Serendipity (Non-Tier 17 4pc)" );
-  procs.serendipity_overflow     = get_proc( "Serendipity lost to overflow (Non-Tier 17 4pc)" );
-  procs.power_of_the_dark_side   = get_proc("Power of the Dark Side Penance damage buffed");
-  procs.power_of_the_dark_side_overflow = get_proc("Power of the Dark Side lost to overflow");
+  procs.shadowy_apparition              = get_proc( "Shadowy Apparition Procced" );
+  procs.shadowy_apparition              = get_proc( "Shadowy Apparition Insanity lost to overflow" );
+  procs.shadowy_insight                 = get_proc( "Shadowy Insight Mind Blast CD Reset from Shadow Word: Pain" );
+  procs.shadowy_insight_overflow        = get_proc( "Shadowy Insight Mind Blast CD Reset lost to overflow" );
+  procs.surge_of_light                  = get_proc( "Surge of Light" );
+  procs.surge_of_light_overflow         = get_proc( "Surge of Light lost to overflow" );
+  procs.serendipity                     = get_proc( "Serendipity (Non-Tier 17 4pc)" );
+  procs.serendipity_overflow            = get_proc( "Serendipity lost to overflow (Non-Tier 17 4pc)" );
+  procs.power_of_the_dark_side          = get_proc( "Power of the Dark Side Penance damage buffed" );
+  procs.power_of_the_dark_side_overflow = get_proc( "Power of the Dark Side lost to overflow" );
 
   procs.legendary_anunds_last_breath =
       get_proc( "Legendary - Anund's Seared Shackles - Void Bolt damage increases (3% per)" );
@@ -1190,9 +1190,9 @@ void priest_t::init_spells()
   init_spells_holy();
 
   // Mastery Spells
-  mastery_spells.grace    = find_mastery_spell( PRIEST_DISCIPLINE );
-  mastery_spells.echo_of_light = find_mastery_spell( PRIEST_HOLY );
-  mastery_spells.madness       = find_mastery_spell( PRIEST_SHADOW );
+  mastery_spells.grace          = find_mastery_spell( PRIEST_DISCIPLINE );
+  mastery_spells.echo_of_light  = find_mastery_spell( PRIEST_HOLY );
+  mastery_spells.madness        = find_mastery_spell( PRIEST_SHADOW );
 }
 
 void priest_t::create_buffs()

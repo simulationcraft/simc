@@ -1018,8 +1018,7 @@ public:
         {priest().specs.holy_priest->effectN( 4 ),        affected_by.holy_priest_ta},
         {priest().specs.discipline_priest->effectN( 1 ),  affected_by.discipline_priest_da},
         {priest().specs.discipline_priest->effectN( 2 ),  affected_by.discipline_priest_ta},
-        {priest().talents.sins_of_the_many->effectN( 1), affected_by.sins_of_the_many_da},
-        //{priest().buffs.sins_of_the_many->data().effectN( 1), affected_by.sins_of_the_many_ta },
+        {priest().talents.sins_of_the_many->effectN( 1), affected_by.sins_of_the_many_da}, //Sins of the Many affects both direct damage and dot damage
     };
 
     for (const auto& a : affects)

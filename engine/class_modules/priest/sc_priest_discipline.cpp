@@ -292,51 +292,51 @@ void priest_t::init_spells_discipline()
 {
   // Talents
   // T15
-  talents.castigation   = find_talent_spell( "Castigation" );
-  talents.twist_of_fate = find_talent_spell( "Twist of Fate" );
-  talents.schism        = find_talent_spell( "Schism" );
+  talents.castigation       = find_talent_spell( "Castigation" );
+  talents.twist_of_fate     = find_talent_spell( "Twist of Fate" );
+  talents.schism            = find_talent_spell( "Schism" );
   // T30
-  talents.angelic_feather = find_talent_spell( "Angelic Feather" );
-  talents.body_and_soul   = find_talent_spell( "Body and Soul" );
-  talents.masochism       = find_talent_spell( "Masochism" );
+  talents.angelic_feather   = find_talent_spell( "Angelic Feather" );
+  talents.body_and_soul     = find_talent_spell( "Body and Soul" );
+  talents.masochism         = find_talent_spell( "Masochism" );
   // T45
   talents.power_word_solace = find_talent_spell( "Power Word: Solace" );
   talents.shield_discipline = find_talent_spell( "Shield Discipline" );
   talents.mindbender        = find_talent_spell( "Mindbender" );
   // T60
-  talents.psychic_voice = find_talent_spell( "Psychic Voice" );
-  talents.shining_force = find_talent_spell( "Shining Force" );
-  talents.dominant_mind = find_talent_spell( "Dominant Mind" );
+  talents.psychic_voice     = find_talent_spell( "Psychic Voice" );
+  talents.shining_force     = find_talent_spell( "Shining Force" );
+  talents.dominant_mind     = find_talent_spell( "Dominant Mind" );
   // T75
-  talents.sanctuary       = find_talent_spell( "Sanctuary" );
-  talents.sins_of_the_many = find_talent_spell( "Sins of the Many" );
-  talents.clarity_of_will = find_talent_spell( "Clarity of Will" );
-  talents.shadow_covenant = find_talent_spell( "Shadow Covenant" );
+  talents.sanctuary         = find_talent_spell( "Sanctuary" );
+  talents.sins_of_the_many  = find_talent_spell( "Sins of the Many" );
+  talents.clarity_of_will   = find_talent_spell( "Clarity of Will" );
+  talents.shadow_covenant   = find_talent_spell( "Shadow Covenant" );
   // T90
-  talents.purge_the_wicked = find_talent_spell( "Purge the Wicked" );
-  talents.divine_star      = find_talent_spell( "Divine Star" );
-  talents.halo             = find_talent_spell( "Halo" );
+  talents.purge_the_wicked  = find_talent_spell( "Purge the Wicked" );
+  talents.divine_star       = find_talent_spell( "Divine Star" );
+  talents.halo              = find_talent_spell( "Halo" );
   // T100
-  talents.power_infusion = find_talent_spell( "Power Infusion" );
-  talents.grace          = find_talent_spell( "Grace" );
-  talents.evangelism     = find_talent_spell( "Evangelism" );
+  talents.power_infusion    = find_talent_spell( "Power Infusion" );
+  talents.grace             = find_talent_spell( "Grace" );
+  talents.evangelism        = find_talent_spell( "Evangelism" );
 
   // General Spells
-  specs.priest          = dbc::get_class_passive(*this, SPEC_NONE);
-  specs.holy            = dbc::get_class_passive(*this, PRIEST_HOLY);
-  specs.discipline      = dbc::get_class_passive(*this, PRIEST_DISCIPLINE);
-  specs.shadow          = dbc::get_class_passive(*this, PRIEST_SHADOW);
-  specs.atonement       = find_specialization_spell( "Atonement" );
-  specs.archangel       = find_specialization_spell( "Archangel" );
-  specs.borrowed_time   = find_specialization_spell( "Borrowed Time" );
-  specs.divine_aegis    = find_specialization_spell( "Divine Aegis" );
-  specs.evangelism      = find_specialization_spell( "Evangelism" );
-  specs.grace           = find_specialization_spell( "Grace" );
-  specs.mysticism       = find_specialization_spell( "Mysticism" );
-  specs.spirit_shell    = find_specialization_spell( "Spirit Shell" );
-  specs.enlightenment   = find_specialization_spell( "Enlightenment" );
-  specs.discipline_priest = find_specialization_spell( "Discipline Priest" );
-  specs.power_of_the_dark_side = find_spell( 198069 ); //Damage ID of Power of the Dark Side
+  specs.priest                  = dbc::get_class_passive(*this, SPEC_NONE);
+  specs.holy                    = dbc::get_class_passive(*this, PRIEST_HOLY);
+  specs.discipline              = dbc::get_class_passive(*this, PRIEST_DISCIPLINE);
+  specs.shadow                  = dbc::get_class_passive(*this, PRIEST_SHADOW);
+  specs.atonement               = find_specialization_spell( "Atonement" );
+  specs.archangel               = find_specialization_spell( "Archangel" );
+  specs.borrowed_time           = find_specialization_spell( "Borrowed Time" );
+  specs.divine_aegis            = find_specialization_spell( "Divine Aegis" );
+  specs.evangelism              = find_specialization_spell( "Evangelism" );
+  specs.grace                   = find_specialization_spell( "Grace" );
+  specs.mysticism               = find_specialization_spell( "Mysticism" );
+  specs.spirit_shell            = find_specialization_spell( "Spirit Shell" );
+  specs.enlightenment           = find_specialization_spell( "Enlightenment" );
+  specs.discipline_priest       = find_specialization_spell( "Discipline Priest" );
+  specs.power_of_the_dark_side  = find_spell( 198069 ); //Damage ID of Power of the Dark Side
 
   // Range Based on Talents
   if ( base.distance != 5 )
