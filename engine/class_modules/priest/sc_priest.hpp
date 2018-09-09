@@ -101,6 +101,8 @@ public:
     propagate_const<buff_t*> borrowed_time;
     propagate_const<buff_t*> holy_evangelism;
     propagate_const<buff_t*> inner_focus;
+    propagate_const<buff_t*> power_of_the_dark_side;
+    propagate_const<buff_t*> sins_of_the_many;
 
     // Holy
 	propagate_const<buff_t*> apotheosis;
@@ -172,6 +174,7 @@ public:
     const spell_data_t* shield_discipline;
     const spell_data_t* dominant_mind;
 
+    const spell_data_t* sins_of_the_many;
     const spell_data_t* sanctuary;
     const spell_data_t* clarity_of_will;
     const spell_data_t* shadow_covenant;
@@ -259,6 +262,8 @@ public:
     const spell_data_t* mysticism;
     const spell_data_t* spirit_shell;
     const spell_data_t* enlightenment;
+    const spell_data_t* discipline_priest;
+    const spell_data_t* power_of_the_dark_side; /// For buffing the damage of penance
 
     // Holy
     const spell_data_t* holy;  /// General holy data
@@ -284,7 +289,7 @@ public:
   // Mastery Spells
   struct
   {
-    const spell_data_t* absolution;  // NYI
+    const spell_data_t* grace;  // NYI
     const spell_data_t* echo_of_light;
     const spell_data_t* madness;
   } mastery_spells;
@@ -342,6 +347,7 @@ public:
     propagate_const<gain_t*> insanity_dark_void;
     propagate_const<gain_t*> insanity_dark_ascension;
     propagate_const<gain_t*> insanity_death_throes;
+    propagate_const<gain_t*> power_of_the_dark_side;
   } gains;
 
   // Benefits
@@ -367,12 +373,15 @@ public:
     propagate_const<proc_t*> void_eruption_has_dots;
     propagate_const<proc_t*> void_eruption_no_dots;
     propagate_const<proc_t*> holy_fire_cd;
+    propagate_const<proc_t*> power_of_the_dark_side;
+    propagate_const<proc_t*> power_of_the_dark_side_overflow;
   } procs;
 
   struct realppm_t
   {
     propagate_const<real_ppm_t*> call_to_the_void;
     propagate_const<real_ppm_t*> shadowy_insight;
+    propagate_const<real_ppm_t*> power_of_the_dark_side;
   } rppm;
 
   // Special
@@ -927,6 +936,9 @@ struct priest_action_t : public Base
     bool shadow_priest_ta;
     bool holy_priest_da;
     bool holy_priest_ta;
+    bool discipline_priest_da;
+    bool discipline_priest_ta;
+    bool sins_of_the_many_da;
   } affected_by;
 
 
@@ -951,7 +963,7 @@ public:
         ab::base_td_multiplier *= 1.0 + p.specs.shadow_priest->effectN( 2 ).percent();
       }
     }
-
+    
     else if ( p.specialization() == PRIEST_HOLY )
     {
       if ( affected_by.holy_priest_da )
@@ -963,6 +975,24 @@ public:
         ab::base_td_multiplier *= 1.0 + p.specs.holy_priest->effectN( 4 ).percent();
       }
     }
+    
+    else if (p.specialization() == PRIEST_DISCIPLINE)
+    {
+        if (affected_by.discipline_priest_da)
+        {
+            ab::base_dd_multiplier *= 1.0 + p.specs.discipline_priest->effectN(1).percent();
+        }
+        if (affected_by.discipline_priest_ta)
+        {
+            ab::base_td_multiplier *= 1.0 + p.specs.discipline_priest->effectN(2).percent();
+        }
+        if (p.talents.sins_of_the_many->ok())
+        {
+            ab::base_dd_multiplier *= 1.0 + p.talents.sins_of_the_many->effectN(1).percent();
+            ab::base_td_multiplier *= 1.0 + p.talents.sins_of_the_many->effectN(1).percent();
+        }
+    }
+    
   }
 
   /**
@@ -986,6 +1016,9 @@ public:
         {priest().specs.shadow_priest->effectN( 2 ),      affected_by.shadow_priest_ta},
         {priest().specs.holy_priest->effectN( 3 ),        affected_by.holy_priest_da},
         {priest().specs.holy_priest->effectN( 4 ),        affected_by.holy_priest_ta},
+        {priest().specs.discipline_priest->effectN( 1 ),  affected_by.discipline_priest_da},
+        {priest().specs.discipline_priest->effectN( 2 ),  affected_by.discipline_priest_ta},
+        {priest().talents.sins_of_the_many->effectN( 1), affected_by.sins_of_the_many_da}, //Sins of the Many affects both direct damage and dot damage
     };
 
     for (const auto& a : affects)
@@ -1022,6 +1055,22 @@ public:
     }
     return false;
   };
+
+  void trigger_power_of_the_dark_side()
+  {
+      int stack = priest().buffs.power_of_the_dark_side->check();
+      if (priest().buffs.power_of_the_dark_side->trigger())
+      {
+          if (priest().buffs.power_of_the_dark_side->check() == stack)
+          {
+              priest().procs.power_of_the_dark_side_overflow->occur();
+          }
+          else
+          {
+              priest().procs.power_of_the_dark_side->occur();
+          }
+      }
+  }
 
   bool trigger_zeks()
   {

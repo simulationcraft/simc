@@ -276,17 +276,17 @@ struct smite_t final : public priest_spell_t
 {
     const spell_data_t* holy_fire_rank2;
     const spell_data_t* holy_word_chastise;
-    const spell_data_t* smite_rank2_holy;
+    const spell_data_t* smite_rank2;
     smite_t(priest_t& p, const std::string& options_str)
       : priest_spell_t("smite", p, p.find_class_spell("Smite")),
       holy_fire_rank2(priest().find_specialization_spell(231687)),
       holy_word_chastise(priest().find_specialization_spell(88625)),
-      smite_rank2_holy(priest().find_specialization_spell(262861))
+      smite_rank2(priest().find_specialization_spell(262861))
     {
        parse_options(options_str);
-       if( smite_rank2_holy -> ok() )
+       if( smite_rank2 -> ok() )
        {
-       base_multiplier *= 1.0 + smite_rank2_holy->effectN(1).percent();
+       base_multiplier *= 1.0 + smite_rank2->effectN(1).percent();
        }
     }
 
@@ -795,14 +795,16 @@ void priest_t::create_gains()
 /** Construct priest procs */
 void priest_t::create_procs()
 {
-  procs.shadowy_apparition       = get_proc( "Shadowy Apparition Procced" );
-  procs.shadowy_apparition       = get_proc( "Shadowy Apparition Insanity lost to overflow" );
-  procs.shadowy_insight          = get_proc( "Shadowy Insight Mind Blast CD Reset from Shadow Word: Pain" );
-  procs.shadowy_insight_overflow = get_proc( "Shadowy Insight Mind Blast CD Reset lost to overflow" );
-  procs.surge_of_light           = get_proc( "Surge of Light" );
-  procs.surge_of_light_overflow  = get_proc( "Surge of Light lost to overflow" );
-  procs.serendipity              = get_proc( "Serendipity (Non-Tier 17 4pc)" );
-  procs.serendipity_overflow     = get_proc( "Serendipity lost to overflow (Non-Tier 17 4pc)" );
+  procs.shadowy_apparition              = get_proc( "Shadowy Apparition Procced" );
+  procs.shadowy_apparition              = get_proc( "Shadowy Apparition Insanity lost to overflow" );
+  procs.shadowy_insight                 = get_proc( "Shadowy Insight Mind Blast CD Reset from Shadow Word: Pain" );
+  procs.shadowy_insight_overflow        = get_proc( "Shadowy Insight Mind Blast CD Reset lost to overflow" );
+  procs.surge_of_light                  = get_proc( "Surge of Light" );
+  procs.surge_of_light_overflow         = get_proc( "Surge of Light lost to overflow" );
+  procs.serendipity                     = get_proc( "Serendipity (Non-Tier 17 4pc)" );
+  procs.serendipity_overflow            = get_proc( "Serendipity lost to overflow (Non-Tier 17 4pc)" );
+  procs.power_of_the_dark_side          = get_proc( "Power of the Dark Side Penance damage buffed" );
+  procs.power_of_the_dark_side_overflow = get_proc( "Power of the Dark Side lost to overflow" );
 
   procs.legendary_anunds_last_breath =
       get_proc( "Legendary - Anund's Seared Shackles - Void Bolt damage increases (3% per)" );
@@ -1188,9 +1190,9 @@ void priest_t::init_spells()
   init_spells_holy();
 
   // Mastery Spells
-  mastery_spells.absolution    = find_mastery_spell( PRIEST_DISCIPLINE );
-  mastery_spells.echo_of_light = find_mastery_spell( PRIEST_HOLY );
-  mastery_spells.madness       = find_mastery_spell( PRIEST_SHADOW );
+  mastery_spells.grace          = find_mastery_spell( PRIEST_DISCIPLINE );
+  mastery_spells.echo_of_light  = find_mastery_spell( PRIEST_HOLY );
+  mastery_spells.madness        = find_mastery_spell( PRIEST_SHADOW );
 }
 
 void priest_t::create_buffs()
@@ -1259,8 +1261,8 @@ std::string priest_t::default_potion() const
   std::string lvl110_potion = "prolonged_power";
 
   std::string lvl120_potion =
-      (specialization() == PRIEST_SHADOW) ? "rising_death" :
-      "battle_potion_of_intellect";
+    ( specialization() == PRIEST_SHADOW ) ? "rising_death" :
+                                            "battle_potion_of_intellect";
 
   return ( true_level > 110 )
              ? lvl120_potion
@@ -1399,11 +1401,11 @@ void priest_t::init_action_list()
     case PRIEST_DISCIPLINE:
       if ( primary_role() != ROLE_HEAL )
       {
-        generate_apl_discipline_h();
+        generate_apl_discipline_d();
       }
       else
       {
-        generate_apl_discipline_d();
+        generate_apl_discipline_h();
       }
       break;
     case PRIEST_HOLY:
