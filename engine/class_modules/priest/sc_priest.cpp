@@ -313,8 +313,8 @@ struct smite_t final : public priest_spell_t
         }
         if (s->result_amount > 0 && priest().buffs.apotheosis->up())
         {
-            priest().cooldowns.holy_word_chastise->adjust((-3000 * holy_word_chastise->effectN(2).time_value()));
-            double cd1 = -3000 * holy_word_chastise->effectN(2).base_value();
+            priest().cooldowns.holy_word_chastise->adjust((-10 * priest().talents.apotheosis->effectN(1).base_value() * holy_word_chastise->effectN(2).time_value()));
+            double cd1 = -10 * priest().talents.apotheosis->effectN(1).base_value() * holy_word_chastise->effectN(2).base_value();
             if (sim->debug)
             {
                 sim->out_debug.printf("%s adjusted cooldown of Chastise, by %f mS, with Apotheosis.", priest().name(), cd1);
@@ -322,8 +322,8 @@ struct smite_t final : public priest_spell_t
 		}
 		else if (s->result_amount > 0 && priest().talents.light_of_the_naaru->ok())
 		{
-			priest().cooldowns.holy_word_chastise->adjust((-1330 * holy_word_chastise->effectN(2).time_value()));
-			double cd2 = -1330 * holy_word_chastise->effectN(2).base_value();
+			priest().cooldowns.holy_word_chastise->adjust((-10 * (priest().talents.light_of_the_naaru->effectN(1).base_value() + 100) * holy_word_chastise->effectN(2).time_value()));
+			double cd2 = -10 * (priest().talents.light_of_the_naaru->effectN(1).base_value() + 100) * holy_word_chastise->effectN(2).base_value();
 			if (sim->debug)
 			{
 				sim->out_debug.printf("%s adjusted cooldown of Chastise, by %f mS, with Light of the Naaru.", priest().name(), cd2);
