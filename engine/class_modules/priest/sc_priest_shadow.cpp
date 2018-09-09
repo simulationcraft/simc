@@ -468,7 +468,7 @@ struct shadow_word_death_t final : public priest_spell_t
       return true;
     }
 
-    return false;
+    return true;
   }
 };
 
