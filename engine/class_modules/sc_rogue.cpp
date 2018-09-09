@@ -6250,7 +6250,10 @@ void rogue_t::init_action_list()
     {
       if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
       {
-        cds -> add_action( "use_item,name=" + items[i].name_str );
+        if ( items[i].name_str == "galecallers_boon" )
+          cds -> add_action( "use_item,name=" + items[i].name_str + ",if=cooldown.vendetta.remains<=1&(!talent.subterfuge.enabled|dot.garrote.pmultiplier>1)|cooldown.vendetta.remains>45" );
+        else // Default: Use on CD
+          cds -> add_action( "use_item,name=" + items[i].name_str, "Default Trinket usage: Use on cooldown." );
       }
     }
     for ( size_t i = 0; i < racial_actions.size(); i++ )
