@@ -64,6 +64,7 @@ actions.aoe+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=!p
 
 # Cooldowns
 actions.cd=invoke_xuen_the_white_tiger
+actions.cd+=/use_item,name=lustrous_golden_plumage
 actions.cd+=/blood_fury
 actions.cd+=/berserking
 # Use Arcane Torrent if you are missing at least 1 Chi and won't cap energy within 0.5 seconds
@@ -96,26 +97,26 @@ actions.st+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_
 actions.st+=/flying_serpent_kick,if=prev_gcd.1.blackout_kick&chi>1&buff.swift_roundhouse.stack<2,interrupt=1
 actions.st+=/fists_of_fury,if=energy.time_to_max>2.5&cooldown.rising_sun_kick.remains>2&buff.swift_roundhouse.stack=2
 
-head=irontide_captains_hat,id=155888,bonus_id=1557/4819/4775/4786,azerite_powers=4/479/31/85/13
+head=hood_of_the_slithering_loa,id=159318,bonus_id=1557/4819/4775/4786,azerite_powers=388/38/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536
 shoulders=mantle_of_fastidious_machinations,id=158304,bonus_id=1557/4819/4775/4786,azerite_powers=10/388/461/84/13
 back=fetid_horrors_tanglecloak,id=160643,bonus_id=4800/1507
-chest=cephalohide_jacket,id=159314,bonus_id=1557/4819/4775/4786,azerite_powers=10/479/18/85/13
+chest=cephalohide_jacket,id=159314,bonus_id=1557/4819/4775/4786,azerite_powers=10/388/18/85/13
 wrists=wristwraps_of_coursing_miasma,id=160621,bonus_id=4800/1507
 hands=gloves_of_descending_madness,id=160618,bonus_id=4800/1507
 waist=replicated_chitin_cord,id=160717,bonus_id=4800/1507
 legs=pathogenic_legwraps,id=160625,bonus_id=4800/1507
 feet=quarantine_protocol_treads,id=160624,bonus_id=4800/1507
-finger1=rotscour_ring,id=160645,bonus_id=4800/1507,enchant=pact_of_haste
-finger2=band_of_certain_annihilation,id=160646,bonus_id=4800/1507,enchant=pact_of_haste
-trinket1=kul_tiran_cannonball_runner,id=159628,bonus_id=1542/4779
-trinket2=frenetic_corpuscle,id=160648,bonus_id=4800/1507
+finger1=rotscour_ring,id=160645,bonus_id=4800/1507,enchant=pact_of_versatility
+finger2=band_of_certain_annihilation,id=160646,bonus_id=4800/1507,enchant=pact_of_versatility
+trinket1=darkmoon_deck_fathoms,id=159125
+trinket2=lustrous_golden_plumage,id=159617,bonus_id=1542/4779
 main_hand=lancet_of_the_deft_hand,id=160693,bonus_id=4800/1507,enchant=deadly_navigation
 off_hand=lancet_of_the_deft_hand,id=160693,bonus_id=4800/1507,enchant=versatile_navigation
 
 # Gear Summary
-# gear_ilvl=385.25
-# gear_agility=4345
+# gear_ilvl=383.38
+# gear_agility=4268
 # gear_stamina=7205
 # gear_crit_rating=772
 # gear_haste_rating=1207
