@@ -645,6 +645,7 @@ void items::jes_howler( special_effect_t& effect )
 {
   auto main_amount = effect.driver()->effectN( 1 ).average( effect.item );
   main_amount = item_database::apply_combat_rating_multiplier( *effect.item, main_amount );
+  main_amount /= ( 1 + effect.player->sim->bfa_opts.jes_howler_allies );
 
   auto ally_amount = effect.player->sim->bfa_opts.jes_howler_allies *
     effect.driver()->effectN( 2 ).average( effect.item );
