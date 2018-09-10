@@ -290,8 +290,6 @@ struct smite_t final : public priest_spell_t
        }
     }
 
-
-
     void impact(action_state_t* s) override
     {
          priest_spell_t::impact(s);
@@ -313,8 +311,8 @@ struct smite_t final : public priest_spell_t
         }
         if (s->result_amount > 0 && priest().buffs.apotheosis->up())
         {
-            priest().cooldowns.holy_word_chastise->adjust((-3000 * holy_word_chastise->effectN(2).time_value()));
-            double cd1 = -3000 * holy_word_chastise->effectN(2).base_value();
+            priest().cooldowns.holy_word_chastise->adjust((-10 * priest().talents.apotheosis->effectN(1).base_value() * holy_word_chastise->effectN(2).time_value()));
+            double cd1 = -10 * priest().talents.apotheosis->effectN(1).base_value() * holy_word_chastise->effectN(2).base_value();
             if (sim->debug)
             {
                 sim->out_debug.printf("%s adjusted cooldown of Chastise, by %f mS, with Apotheosis.", priest().name(), cd1);
@@ -322,8 +320,8 @@ struct smite_t final : public priest_spell_t
 		}
 		else if (s->result_amount > 0 && priest().talents.light_of_the_naaru->ok())
 		{
-			priest().cooldowns.holy_word_chastise->adjust((-1330 * holy_word_chastise->effectN(2).time_value()));
-			double cd2 = -1330 * holy_word_chastise->effectN(2).base_value();
+			priest().cooldowns.holy_word_chastise->adjust((-10 * (priest().talents.light_of_the_naaru->effectN(1).base_value() + 100) * holy_word_chastise->effectN(2).time_value()));
+			double cd2 = -10 * (priest().talents.light_of_the_naaru->effectN(1).base_value() + 100) * holy_word_chastise->effectN(2).base_value();
 			if (sim->debug)
 			{
 				sim->out_debug.printf("%s adjusted cooldown of Chastise, by %f mS, with Light of the Naaru.", priest().name(), cd2);
@@ -597,6 +595,12 @@ void init()
   expansion::bfa::register_leyshocks_trigger( 263165, STAT_HASTE_RATING );
   // Mind Bomb
   expansion::bfa::register_leyshocks_trigger( 205369, STAT_HASTE_RATING );
+  // Holy Nova
+  expansion::bfa::register_leyshocks_trigger( 132157, STAT_HASTE_RATING );
+  // Angelic Feather
+  expansion::bfa::register_leyshocks_trigger( 121536, STAT_HASTE_RATING );
+  // Smite
+  expansion::bfa::register_leyshocks_trigger( 585, STAT_HASTE_RATING );
 
   // Critical Strike
   // Psychic Horror
@@ -605,6 +609,10 @@ void init()
   expansion::bfa::register_leyshocks_trigger( 228260, STAT_CRIT_RATING );
   // Dispel Magic
   expansion::bfa::register_leyshocks_trigger( 528, STAT_CRIT_RATING );
+  // Holy Word: Chastise
+  expansion::bfa::register_leyshocks_trigger( 88625, STAT_CRIT_RATING );
+  // Halo
+  expansion::bfa::register_leyshocks_trigger( 120517, STAT_CRIT_RATING );
 
   // Mastery
   // Vampiric Embrace
@@ -615,6 +623,12 @@ void init()
   expansion::bfa::register_leyshocks_trigger( 586, STAT_MASTERY_RATING );
   // Purify Disease
   expansion::bfa::register_leyshocks_trigger( 213634, STAT_MASTERY_RATING );
+  // Divine Star
+  expansion::bfa::register_leyshocks_trigger( 110744, STAT_MASTERY_RATING);
+  // Holy Fire
+  expansion::bfa::register_leyshocks_trigger( 14914, STAT_MASTERY_RATING );
+  // Halo
+  expansion::bfa::register_leyshocks_trigger( 120517, STAT_MASTERY_RATING );
 
   // Versatility
   // Mind Flay
@@ -629,6 +643,8 @@ void init()
   expansion::bfa::register_leyshocks_trigger( 193223, STAT_VERSATILITY_RATING );
   // Dark Ascension
   expansion::bfa::register_leyshocks_trigger( 280711, STAT_VERSATILITY_RATING );
+  // Apotheosis
+  expansion::bfa::register_leyshocks_trigger( 200183, STAT_VERSATILITY_RATING );
 }
 
 }  // namespace items
