@@ -3843,6 +3843,9 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     tick_action =
         new sck_tick_action_t( "spinning_crane_kick_tick", p, p->spec.spinning_crane_kick->effectN( 1 ).trigger() );
+
+    if (p->specialization() == MONK_WINDWALKER)
+      base_costs[RESOURCE_CHI] -= p->passives.cyclone_strikes->effectN(2).base_value();
   }
 
   // N full ticks, but never additional ones.
