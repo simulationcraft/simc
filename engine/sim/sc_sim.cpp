@@ -3087,6 +3087,9 @@ expr_t* sim_t::create_expression( const std::string& name_str )
   if ( name_str == "time" )
     return make_ref_expr( name_str, event_mgr.current_time );
 
+  if ( util::str_compare_ci( name_str, "expected_combat_length" ) )
+    return make_ref_expr( name_str, expected_iteration_time );
+
   if ( name_str == "channel_lag" )
     return expr_t::create_constant( name_str, channel_lag );
 
