@@ -1189,6 +1189,7 @@ namespace warlock
     def->add_action( "unstable_affliction,cycle_targets=1,if=!variable.spammable_seed&(!talent.deathbolt.enabled|cooldown.deathbolt.remains>time_to_shard|soul_shard>1)&contagion<=cast_time+variable.padding&(!azerite.cascading_calamity.enabled|buff.cascading_calamity.remains>time_to_shard)" );
     def->add_action( "call_action_list,name=fillers" );
 
+    fil->add_action( "agony,if=remains<18&cooldown.summon_darkglare.remains>=30+gcd&cooldown.deathbolt.remains<=gcd&!prev_gcd.1.summon_darkglare&!prev_gcd.1.agony&(azerite.sudden_onset.rank>1|azerite.sudden_onset.rank=1&!talent.siphon_life.enabled)");
     fil->add_action( "deathbolt,if=cooldown.summon_darkglare.remains>=30+gcd|cooldown.summon_darkglare.remains>140" );
     fil->add_action( "shadow_bolt,if=buff.movement.up&buff.nightfall.remains" );
     fil->add_action( "agony,if=buff.movement.up&!(talent.siphon_life.enabled&(prev_gcd.1.agony&prev_gcd.2.agony&prev_gcd.3.agony)|prev_gcd.1.agony)" );
