@@ -25,8 +25,9 @@ actions.precombat=flask
 actions.precombat+=/food
 actions.precombat+=/augmentation
 actions.precombat+=/regrowth,if=talent.bloodtalons.enabled
-actions.precombat+=/variable,name=use_thrash,value=0
-actions.precombat+=/variable,name=use_thrash,value=1,if=equipped.luffa_wrappings
+# It is worth it for almost everyone to maintain thrash
+actions.precombat+=/variable,name=use_thrash,value=2
+actions.precombat+=/variable,name=use_thrash,value=1,if=azerite.power_of_the_moon.enabled
 # Opener TF is delayed if we need to hardcast regrowth later on in the rotation
 actions.precombat+=/variable,name=delayed_tf_opener,value=0
 # This happens when Sabertooth, Bloodtalons but not LI is talented
@@ -117,6 +118,8 @@ actions.st_generators+=/thrash_cat,if=refreshable&(variable.use_thrash=2|spell_t
 actions.st_generators+=/thrash_cat,if=refreshable&variable.use_thrash=1&buff.clearcasting.react
 actions.st_generators+=/pool_resource,for_next=1
 actions.st_generators+=/swipe_cat,if=spell_targets.swipe_cat>1
+actions.st_generators+=/shred,if=buff.clearcasting.react
+actions.st_generators+=/moonfire_cat,if=azerite.power_of_the_moon.enabled
 actions.st_generators+=/shred,if=dot.rake.remains>(action.shred.cost+action.rake.cost-energy)%energy.regen|buff.clearcasting.react
 
 head=irontide_captains_hat,id=155888,bonus_id=4779/1512/4786/4775,azerite_powers=111/30/0/13

@@ -7562,8 +7562,8 @@ void druid_t::apl_precombat()
   // Feral: Rotational control variables
   if ( specialization() == DRUID_FERAL )
   {
-    precombat->add_action( "variable,name=use_thrash,value=0" );
-    precombat->add_action( "variable,name=use_thrash,value=1,if=equipped.luffa_wrappings" );
+    precombat->add_action( "variable,name=use_thrash,value=2", "It is worth it for almost everyone to maintain thrash" );
+    precombat->add_action( "variable,name=use_thrash,value=1,if=azerite.power_of_the_moon.enabled");
     //precombat->add_action( "variable,name=opener_done,value=0" );
     precombat->add_action( "variable,name=delayed_tf_opener,value=0",
                            "Opener TF is delayed if we need to hardcast regrowth later on in the rotation" );
@@ -7757,6 +7757,8 @@ void druid_t::apl_feral()
    generator->add_action("thrash_cat,if=refreshable&variable.use_thrash=1&buff.clearcasting.react");
    generator->add_action("pool_resource,for_next=1");
    generator->add_action("swipe_cat,if=spell_targets.swipe_cat>1");
+   generator->add_action("shred,if=buff.clearcasting.react");
+   generator->add_action("moonfire_cat,if=azerite.power_of_the_moon.enabled");
    generator->add_action("shred,if=dot.rake.remains>(action.shred.cost+action.rake.cost-energy)%energy.regen|buff.clearcasting.react");
 
  //  action_priority_list_t* def = get_action_priority_list("default");
