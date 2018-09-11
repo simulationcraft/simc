@@ -1122,6 +1122,12 @@ struct incanters_flow_t : public buff_t
     } );
   }
 
+  virtual void reset() override
+  {
+    buff_t::reset();
+    reverse = false;
+  }
+
   virtual void bump( int stacks, double value ) override
   {
     if ( check() == max_stack() )
