@@ -2022,6 +2022,7 @@ struct dragon_roar_t : public warrior_attack_t
 struct execute_damage_t : public warrior_attack_t
 {
   double max_rage;
+  double cost_rage;
   execute_damage_t( warrior_t* p, const std::string& options_str )
     : warrior_attack_t( "execute", p, p->spec.execute->effectN( 1 ).trigger() ), max_rage( 40 )
   {
@@ -2033,10 +2034,10 @@ struct execute_damage_t : public warrior_attack_t
   {
     double am = warrior_attack_t::action_multiplier();
 
-    if ( last_resource_cost == 0 )  // If it was free, it's a full damage execute.
+    if ( cost_rage == 0 )  // If it was free, it's a full damage execute.
       am *= 2.0;
     else
-      am *= 2.0 * ( std::min( max_rage, last_resource_cost ) / max_rage );
+      am *= 2.0 * ( std::min( max_rage, cost_rage ) / max_rage );
     return am;
   }
 };
@@ -2102,7 +2103,7 @@ struct execute_arms_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    trigger_attack->last_resource_cost = last_resource_cost;
+    trigger_attack->cost_rage = last_resource_cost;
     trigger_attack->execute();
     p()->resource_gain( RESOURCE_RAGE, last_resource_cost * 0.3,
                         p()->gain.execute_refund );  // Not worth the trouble to check if the target died.
