@@ -1164,19 +1164,9 @@ void items::rotcrusted_voodoo_doll( special_effect_t& effect )
             effect.player->find_spell( 271468 ), effect.item ) )
     {
       tick_zero = true;
+      travel_speed = effect.driver()->missile_speed();
 
       add_child( final_damage );
-    }
-
-    timespan_t composite_dot_duration( const action_state_t* state ) const override
-    { return ( dot_duration / base_tick_time ) * tick_time( state ); }
-
-    void init() override
-    {
-      proc_spell_t::init();
-
-      // Don't resnapshot haste on ticks so we get a nice fixed duration always
-      update_flags &= ~STATE_HASTE;
     }
 
     void last_tick( dot_t* d ) override
