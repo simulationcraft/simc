@@ -9343,7 +9343,7 @@ expr_t* player_t::create_expression( const std::string& expression_str )
     return make_fn_expr( expression_str, [this] { return cache.attack_crit_chance(); } );
 
   if ( expression_str == "spell_crit" )
-    return make_fn_expr( expression_str, [this] { return cache.attack_crit_chance(); } );
+    return make_fn_expr( expression_str, [this] { return cache.spell_crit_chance(); } );
 
   if ( expression_str == "position_front" )
     return new position_expr_t( "position_front", *this, ( 1 << POSITION_FRONT ) | ( 1 << POSITION_RANGED_FRONT ) );
