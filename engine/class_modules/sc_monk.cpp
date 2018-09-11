@@ -9342,10 +9342,10 @@ void monk_t::apl_combat_windwalker()
   def->add_talent( this, "Fist of the White Tiger", "if=(energy.time_to_max<1|(talent.serenity.enabled&cooldown.serenity.remains<2))&chi.max-chi>=3" );
   def->add_action( this, "Tiger Palm", "target_if=min:debuff.mark_of_the_crane.remains,if=(energy.time_to_max<1|(talent.serenity.enabled&cooldown.serenity.remains<2))&chi.max-chi>=2&!prev_gcd.1.tiger_palm" );
   def->add_action( "call_action_list,name=cd" );
-  def->add_action( "call_action_list,name=st,if=(active_enemies<4&azerite.swift_roundhouse.rank<3)|active_enemies<5",
-                   "Call the ST action list if there are 3 or less enemies" );
-  def->add_action( "call_action_list,name=aoe,if=(active_enemies>=4&azerite.swift_roundhouse.rank<3)|active_enemies>=5",
-                   "Call the AoE action list if there are more than 3 enemies" );
+  def->add_action( "call_action_list,name=st,if=active_enemies<3|(active_enemies=3&azerite.swift_roundhouse.rank>2)",
+                   "Call the ST action list if there are 2 or less enemies" );
+  def->add_action( "call_action_list,name=aoe,if=active_enemies>3|(active_enemies=3&azerite.swift_roundhouse.rank<=2)",
+                   "Call the AoE action list if there are 3 or more enemies" );
 
   // Cooldowns
   cd->add_talent( this, "Invoke Xuen, the White Tiger", "", "Cooldowns" );
@@ -9406,16 +9406,8 @@ void monk_t::apl_combat_windwalker()
   aoe->add_action( this, "Fists of Fury", "if=energy.time_to_max>2.5" );
   aoe->add_talent( this, "Rushing Jade Wind", "if=buff.rushing_jade_wind.down&energy.time_to_max>1" );
   aoe->add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=(talent.whirling_dragon_punch.enabled&cooldown.whirling_dragon_punch.remains<gcd)&cooldown.fists_of_fury.remains>3" );
-  aoe->add_action( this, "Spinning Crane Kick", "if=!prev_gcd.1.spinning_crane_kick" );
+  aoe->add_action( this, "Spinning Crane Kick", "if=!prev_gcd.1.spinning_crane_kick&(chi>2|cooldown.fists_of_fury.remains>4)" );
   aoe->add_talent( this, "Chi Burst", "if=chi<=3" );
-
-  // Racials
-  for (size_t i = 0; i < racial_actions.size(); i++)
-  {
-    if (racial_actions[i] == "arcane_torrent")
-      aoe->add_action(racial_actions[i] + ",if=chi.max-chi>=1&energy.time_to_max>=0.5");
-  }
-
   aoe->add_talent( this, "Fist of the White Tiger", "if=chi.max-chi>=3&(energy>46|buff.rushing_jade_wind.down)" );
   aoe->add_action( this, "Tiger Palm", "target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&chi.max-chi>=2&(energy>56|buff.rushing_jade_wind.down)" );
   aoe->add_talent( this, "Chi Wave" );
@@ -9430,7 +9422,7 @@ void monk_t::apl_combat_windwalker()
   st->add_action( this, "Fists of Fury", "if=energy.time_to_max>2.5&(azerite.swift_roundhouse.rank<2|(cooldown.whirling_dragon_punch.remains<10&talent.whirling_dragon_punch.enabled)|active_enemies>1)" );
   st->add_talent( this, "Fist of the White Tiger", "if=chi<=2&(buff.rushing_jade_wind.down|energy>46)" );
   st->add_talent( this, "Energizing Elixir", "if=chi<=3&energy<50" );
-  st->add_action( this, "Blackout Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick&(cooldown.rising_sun_kick.remains>2|chi>=3)&(cooldown.fists_of_fury.remains>2|chi>=4|azerite.swift_roundhouse.enabled)&buff.swift_roundhouse.stack<2" );
+  st->add_action( this, "Blackout Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick&(cooldown.rising_sun_kick.remains>2|chi>=3)&(cooldown.fists_of_fury.remains>2|chi>=4|(azerite.swift_roundhouse.rank>=2&active_enemies=1))&buff.swift_roundhouse.stack<2" );
   st->add_talent( this, "Chi Wave" );
   st->add_talent( this, "Chi Burst", "if=chi.max-chi>=1&active_enemies=1|chi.max-chi>=2" );
   st->add_action( this, "Tiger Palm", "target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&chi.max-chi>=2&(buff.rushing_jade_wind.down|energy>56)" );
