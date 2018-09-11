@@ -3905,6 +3905,14 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
     return b;
   }
 
+  double composite_aoe_multiplier( const action_state_t* state ) const override
+  {
+    if ( state -> target != target )
+      return p()->spec.fists_of_fury->effectN( 6 ).percent();
+
+    return 1.0;
+  }
+  
   void execute() override
   {
     monk_melee_attack_t::execute();
