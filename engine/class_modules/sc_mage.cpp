@@ -689,6 +689,7 @@ public:
   virtual double      composite_mastery_rating() const override;
   virtual double      matching_gear_multiplier( attribute_e attr ) const override;
   virtual void        update_movement( timespan_t duration ) override;
+  virtual void        teleport( double distance, timespan_t duration ) override;
   virtual void        stun() override;
   virtual double      passive_movement_modifier() const override;
   virtual void        arise() override;
@@ -751,6 +752,7 @@ public:
   };
 
   // Public mage functions:
+  void      update_rune_distance( double distance );
   action_t* get_icicle();
   void      trigger_icicle( player_t* icicle_target, bool chain = false );
   void      trigger_evocation( timespan_t duration_override = timespan_t::min(), bool hasted = true );
@@ -6925,18 +6927,13 @@ void mage_t::stun()
 void mage_t::update_movement( timespan_t duration )
 {
   player_t::update_movement( duration );
+  update_rune_distance( duration.total_seconds() * composite_movement_speed() );
+}
 
-  double yards = duration.total_seconds() * composite_movement_speed();
-  distance_from_rune += yards;
-
-  if ( buffs.rune_of_power -> check() )
-  {
-    if ( distance_from_rune > talents.rune_of_power -> effectN( 2 ).radius() )
-    {
-      buffs.rune_of_power -> expire();
-      if ( sim -> debug ) sim -> out_debug.printf( "%s lost Rune of Power due to moving more than 8 yards away from it.", name() );
-    }
-  }
+void mage_t::teleport( double distance, timespan_t duration )
+{
+  player_t::teleport( distance, duration );
+  update_rune_distance( distance );
 }
 
 // mage_t::passive_movement_modifier ====================================
@@ -7234,6 +7231,20 @@ stat_e mage_t::convert_hybrid_stat( stat_e s ) const
   case STAT_BONUS_ARMOR:
     return STAT_NONE;
   default: return s;
+  }
+}
+
+void mage_t::update_rune_distance( double distance )
+{
+  distance_from_rune += distance;
+
+  if ( buffs.rune_of_power -> check() )
+  {
+    if ( distance_from_rune > talents.rune_of_power -> effectN( 2 ).radius() )
+    {
+      buffs.rune_of_power -> expire();
+      if ( sim -> debug ) sim -> out_debug.printf( "%s lost Rune of Power due to moving more than 8 yards away from it.", name() );
+    }
   }
 }
 
