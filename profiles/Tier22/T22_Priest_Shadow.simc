@@ -95,15 +95,15 @@ feet=volatile_walkers,id=160714,bonus_id=4800/1507
 finger1=band_of_certain_annihilation,id=160646,bonus_id=4800/1507,enchant=pact_of_haste
 finger2=rotscour_ring,id=160645,bonus_id=4800/1507,enchant=pact_of_haste
 trinket1=ignition_mages_fuse,id=159615,bonus_id=1542/4779
-trinket2=vigilants_bloodshaper,id=160651,bonus_id=4800/1507
+trinket2=twitching_tentacle_of_xalzaix,id=160656,bonus_id=4800/1507
 main_hand=tusk_of_the_reborn_prophet,id=160691,bonus_id=4800/1507,enchant=deadly_navigation
 off_hand=codex_of_imminent_ruin,id=160696,bonus_id=4800/1507
 
 # Gear Summary
 # gear_ilvl=385.25
 # gear_stamina=7205
-# gear_intellect=5476
-# gear_crit_rating=913
+# gear_intellect=5163
+# gear_crit_rating=1089
 # gear_haste_rating=1217
 # gear_mastery_rating=742
 # gear_versatility_rating=129
