@@ -8190,35 +8190,6 @@ struct rogue_module_t : public module_t
 
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Rogue", "2018-09-07", "Outlaw damage reduced by 5% (Direct)", 179720 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 13 )
-      .verification_value( 19 );
-
-    hotfix::register_effect( "Rogue", "2018-09-07", "Outlaw damage reduced by 5% (Periodic)", 191056 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 13 )
-      .verification_value( 19 );
-
-    hotfix::register_effect( "Rogue", "2018-09-07", "Subtlety damage reduced by 5% (Direct)", 179719 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 22 )
-      .verification_value( 28 );
-
-    hotfix::register_effect( "Rogue", "2018-09-07", "Subtlety damage reduced by 5% (Periodic)", 191060 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 22 )
-      .verification_value( 28 );
-
-    hotfix::register_effect( "Rogue", "2018-09-07", "Deadshot Azerite trait reduced by 20%", 724153 )
-      .field( "coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 0.8 )
-      .verification_value( 23.20246 );
   }
 
   virtual void init( player_t* ) const override {}
