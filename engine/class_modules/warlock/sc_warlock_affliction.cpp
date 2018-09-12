@@ -116,8 +116,11 @@ namespace warlock
         dot->current_action->calculate_tick_amount( state, 1.0 );
 
         timespan_t remaining = get_db_dot_duration( dot );
+        
+        bool max = ( remaining == db_max_contribution ? true : false );
 
         timespan_t dot_tick_time = dot->current_action->tick_time( state );
+
         double ticks_left = ( remaining - dot->time_to_next_tick() ) / dot_tick_time;
 
         if ( ticks_left == 0.0 )
@@ -128,6 +131,8 @@ namespace warlock
         {
           ticks_left += 1;
         }
+
+        ticks_left = max ? remaining / dot_tick_time : ticks_left;
 
         if ( sim->debug )
         {
