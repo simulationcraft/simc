@@ -4897,6 +4897,7 @@ Velocity         : 50 yards/sec
 Duration         : 8 seconds
 Charges          : 2 (12 seconds cooldown)
 Category         : 1675: Hunter (137014 effect#9)
+Mechanic         : Bleed
 Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3), Feeding Frenzy (278529 effect#2)
 Family Flags     : 1, 78
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ........ 
