@@ -116,13 +116,13 @@ race=night_elf
 spec=subtlety
 role=attack
 position=back
-talents=1320031
+talents=2330011
 
-head=cowl_of_dark_portents,id=163596,bonus_id=4824/1507/4775,azerite_powers=240/21/85/13
+head=circlet_of_the_enveloping_leviathan,id=159310,bonus_id=1557/4819/4775/4786,azerite_powers=124/30/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
-shoulder=usurpers_bloodcaked_spaulders,id=160620,bonus_id=4824/1507,azerite_powers=414/22/0/13
+shoulder=tentaclelaced_spaulders,id=159307,bonus_id=1557/4819/4775/4786,azerite_powers=124/31/0/13
 back=cloak_of_rippling_whispers,id=160642,bonus_id=4800/1507
-chest=cephalohide_jacket,id=159314,bonus_id=1557/4819/4775/4786,azerite_powers=240/459/85/13
+chest=venture_co._plenipotentiary_vest,id=159298,bonus_id=1557/4819/4775/4786,azerite_powers=124/22/0/13
 wrists=wristwraps_of_coursing_miasma,id=160621,bonus_id=4800/1507
 hands=gloves_of_descending_madness,id=160618,bonus_id=4800/1507
 waist=replicated_chitin_cord,id=160717,bonus_id=4800/1507
@@ -134,6 +134,5 @@ trinket1=harlans_loaded_dice,id=155881,bonus_id=1542/4779
 trinket2=galecallers_boon,id=159614,bonus_id=1542/4779
 main_hand=latticework_scalpel,id=160683,bonus_id=4800/1507,enchant=deadly_navigation
 off_hand=latticework_scalpel,id=160683,bonus_id=4800/1507,enchant=versatile_navigation
-
 
 save=T22_Rogue_Subtlety.simc
