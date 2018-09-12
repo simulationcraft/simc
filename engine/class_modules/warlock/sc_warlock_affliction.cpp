@@ -17,6 +17,7 @@ namespace warlock
     {
     public:
       gain_t * gain;
+      timespan_t db_max_contribution;
 
       affliction_spell_t(warlock_t* p, const std::string& n) :
         affliction_spell_t(n, p, p -> find_class_spell(n))
@@ -35,6 +36,8 @@ namespace warlock
         tick_may_crit = true;
         weapon_multiplier = 0.0;
         gain = player->get_gain(name_str);
+
+        db_max_contribution = timespan_t::zero();
       }
 
       void init() override
@@ -102,7 +105,8 @@ namespace warlock
 
       virtual timespan_t get_db_dot_duration( dot_t* dot ) const
       {
-        timespan_t base_dur = dot->current_action->dot_duration;
+        timespan_t base_dur = db_max_contribution;
+
         return dot->remains() > base_dur ? base_dur : dot->remains();
       }
 
@@ -241,6 +245,7 @@ namespace warlock
         wb = new wracking_brilliance_t();
 
         dot_max_stack = data().max_stacks() + p->spec.agony_2->effectN(1).base_value();
+        db_max_contribution = data().duration();
       }
 
       void last_tick( dot_t* d ) override
@@ -348,7 +353,7 @@ namespace warlock
         parse_options(options_str);
         may_crit = false;
         tick_zero = false;
-        dot_duration = data().effectN( 1 ).trigger()->duration();
+        dot_duration = db_max_contribution = data().effectN( 1 ).trigger()->duration();
         spell_power_mod.tick = data().effectN( 1 ).trigger()->effectN( 1 ).sp_coeff();
         base_tick_time = data().effectN( 1 ).trigger()->effectN( 1 ).period();
         // TOCHECK see if we can redo corruption in a way that spec aura applies to corruption naturally in init.
@@ -360,18 +365,6 @@ namespace warlock
             2 * sim->expected_iteration_time :
             2 * sim->max_time * ( 1.0 + sim->vary_combat_length ); // "infinite" duration
           base_multiplier *= 1.0 + p->talents.absolute_corruption->effectN( 2 ).percent();
-        }
-      }
-
-      timespan_t get_db_dot_duration( dot_t* dot ) const override
-      {
-        if ( p()->talents.absolute_corruption->ok() )
-        {
-          return timespan_t::from_seconds( p()->talents.deathbolt->effectN( 3 ).base_value() );
-        }
-        else
-        {
-          return affliction_spell_t::get_db_dot_duration( dot );
         }
       }
 
@@ -425,6 +418,7 @@ namespace warlock
           tick_zero = true;
           if ( p->sets->has_set_bonus( WARLOCK_AFFLICTION, T19, B2 ) )
             base_multiplier *= 1.0 + p->sets->set( WARLOCK_AFFLICTION, T19, B2 )->effectN( 1 ).percent();
+          db_max_contribution = data().duration();
         }
 
         timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -779,6 +773,7 @@ namespace warlock
       {
         parse_options(options_str);
         may_crit = false;
+        db_max_contribution = data().duration();
       }
 
       double composite_target_multiplier(player_t* target) const override
@@ -827,6 +822,8 @@ namespace warlock
         tick_action = new phantom_singularity_tick_t( p );
 
         spell_power_mod.tick = 0;
+
+        db_max_contribution = data().duration();
       }
 
       void init() override
@@ -881,6 +878,8 @@ namespace warlock
 
         hasted_ticks = tick_zero = true;
         aoe = -1;
+
+        db_max_contribution = data().duration();
       }
     };
     // lvl 75 - darkfury|mortal coil|demonic circle
@@ -888,13 +887,11 @@ namespace warlock
     // lvl 90 - nightfall|deathbolt|grimoire of sacrifice
     struct deathbolt_t : public affliction_spell_t
     {
-      timespan_t ac_max;
 
       deathbolt_t(warlock_t* p, const std::string& options_str) :
         affliction_spell_t("deathbolt", p, p -> talents.deathbolt)
       {
         parse_options(options_str);
-        ac_max = timespan_t::from_seconds(data().effectN(3).base_value());
       }
 
       void init() override
