@@ -3228,7 +3228,7 @@ struct flanking_strike_t: hunter_melee_attack_t
   {
     hunter_melee_attack_t::execute();
 
-    if ( p() -> main_hand_weapon.type == WEAPON_2H )
+    if ( p() -> main_hand_weapon.group() == WEAPON_2H )
     {
       damage -> set_target( target );
       damage -> execute();
