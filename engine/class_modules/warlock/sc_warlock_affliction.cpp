@@ -101,7 +101,10 @@ namespace warlock
       }
 
       virtual timespan_t get_db_dot_duration( dot_t* dot ) const
-      { return dot->remains(); }
+      {
+        timespan_t base_dur = dot->current_action->dot_duration;
+        return dot->remains() > base_dur ? base_dur : dot->remains();
+      }
 
       virtual std::tuple<double, double> get_db_dot_state( dot_t* dot )
       {
