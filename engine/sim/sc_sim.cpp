@@ -1909,10 +1909,12 @@ void sim_t::datacollection_end()
   total_absorb.add( iteration_absorb );
   raid_aps.add( current_time() != timespan_t::zero() ? iteration_absorb / current_time().total_seconds() : 0 );
 
-  if ( deterministic && report_iteration_data > 0 && current_iteration > 0 && current_time() > timespan_t::zero() )
+  if ( deterministic && report_iteration_data > 0 && current_iteration > 0 &&
+       current_time() > timespan_t::zero() )
   {
     // TODO: Metric should be selectable
-    iteration_data_entry_t entry( iteration_dmg / current_time().total_seconds(), seed, current_iteration );
+    iteration_data_entry_t entry( iteration_dmg / current_time().total_seconds(),
+        current_time().total_seconds(), seed, current_iteration );
     for ( size_t i = 0, end = target_list.size(); i < end; ++i )
     {
       const player_t* t = target_list[ i ];
