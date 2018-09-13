@@ -71,6 +71,8 @@ actions.cleave+=/raptor_strike,target_if=max:debuff.latent_poison.stack
 actions.mb_ap_wfi_st=serpent_sting,if=!dot.serpent_sting.ticking
 actions.mb_ap_wfi_st+=/wildfire_bomb,if=full_recharge_time<gcd|(focus+cast_regen<focus.max)&(next_wi_bomb.volatile&dot.serpent_sting.ticking&dot.serpent_sting.refreshable|next_wi_bomb.pheromone&!buff.mongoose_fury.up&focus+cast_regen<focus.max-action.kill_command.cast_regen*3)
 actions.mb_ap_wfi_st+=/coordinated_assault
+actions.mb_ap_wfi_st+=/a_murder_of_crows
+actions.mb_ap_wfi_st+=/steel_trap
 actions.mb_ap_wfi_st+=/mongoose_bite,if=buff.mongoose_fury.remains&next_wi_bomb.pheromone
 actions.mb_ap_wfi_st+=/kill_command,if=focus+cast_regen<focus.max&(buff.mongoose_fury.stack<5|focus<action.mongoose_bite.cost)
 actions.mb_ap_wfi_st+=/wildfire_bomb,if=next_wi_bomb.shrapnel&focus>60&dot.serpent_sting.remains>3*gcd
