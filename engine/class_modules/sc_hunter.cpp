@@ -5399,7 +5399,8 @@ void hunter_t::apl_surv()
   wfi_st -> add_action( this, "Serpent Sting", "if=refreshable" );
   wfi_st -> add_action( this, "Wildfire Bomb", "if=next_wi_bomb.volatile&dot.serpent_sting.ticking|next_wi_bomb.pheromone|next_wi_bomb.shrapnel&focus>50" );
 
-
+  mb_ap_wfi_st -> add_talent( this, "Mongoose Bite", "if=azerite.wilderness_survival.enabled&next_wi_bomb.volatile&dot.serpent_sting.remains>2.1*gcd&dot.serpent_sting.remains<3.5*gcd&cooldown.wildfire_bomb.remains>2.5*gcd",
+                          "To simulate usage for Mongoose Bite during Aspect of the Eagle, copy each occurrence of the action and append _eagle to the action name." );
   mb_ap_wfi_st -> add_action( this, "Serpent Sting", "if=!dot.serpent_sting.ticking" );
   mb_ap_wfi_st -> add_action( this, "Wildfire Bomb", "if=full_recharge_time<gcd|(focus+cast_regen<focus.max)&(next_wi_bomb.volatile&dot.serpent_sting.ticking&dot.serpent_sting.refreshable|next_wi_bomb.pheromone&!buff.mongoose_fury.up&focus+cast_regen<focus.max-action.kill_command.cast_regen*3)" );
   mb_ap_wfi_st -> add_action( this, "Coordinated Assault");

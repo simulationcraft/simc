@@ -68,7 +68,9 @@ actions.cleave+=/serpent_sting,target_if=min:remains,if=refreshable&buff.tip_of_
 actions.cleave+=/mongoose_bite,target_if=max:debuff.latent_poison.stack
 actions.cleave+=/raptor_strike,target_if=max:debuff.latent_poison.stack
 
-actions.mb_ap_wfi_st=serpent_sting,if=!dot.serpent_sting.ticking
+# To simulate usage for Mongoose Bite during Aspect of the Eagle, copy each occurrence of the action and append _eagle to the action name.
+actions.mb_ap_wfi_st=mongoose_bite,if=azerite.wilderness_survival.enabled&next_wi_bomb.volatile&dot.serpent_sting.remains>2.1*gcd&dot.serpent_sting.remains<3.5*gcd&cooldown.wildfire_bomb.remains>2.5*gcd
+actions.mb_ap_wfi_st+=/serpent_sting,if=!dot.serpent_sting.ticking
 actions.mb_ap_wfi_st+=/wildfire_bomb,if=full_recharge_time<gcd|(focus+cast_regen<focus.max)&(next_wi_bomb.volatile&dot.serpent_sting.ticking&dot.serpent_sting.refreshable|next_wi_bomb.pheromone&!buff.mongoose_fury.up&focus+cast_regen<focus.max-action.kill_command.cast_regen*3)
 actions.mb_ap_wfi_st+=/coordinated_assault
 actions.mb_ap_wfi_st+=/a_murder_of_crows
