@@ -2930,10 +2930,13 @@ struct dragons_breath_t : public fire_mage_spell_t
 
 struct evocation_t : public arcane_mage_spell_t
 {
+  bool precombat;
+
   evocation_t( mage_t* p, const std::string& options_str ) :
-    arcane_mage_spell_t( "evocation", p,
-                         p -> find_specialization_spell( "Evocation" ) )
+    arcane_mage_spell_t( "evocation", p, p -> find_specialization_spell( "Evocation" ) ),
+    precombat( false )
   {
+    add_option( opt_bool( "precombat", precombat ) );
     parse_options( options_str );
 
     base_tick_time = timespan_t::from_seconds( 1.0 );
@@ -2948,7 +2951,34 @@ struct evocation_t : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::execute();
 
-    p() -> trigger_evocation();
+    if ( ! precombat || p() -> in_combat )
+    {
+      // Only trigger the mana restoring buff for normal Evocation, precombat Evocation
+      // will be done at 100% mana so there's no need for any mana gains.
+      p() -> trigger_evocation();
+    }
+    else
+    {
+      // In this case the whole channel happens before combat starts, so we need to
+      // subtract the channel time from the cooldown.
+      cooldown -> adjust( -p() -> cache.spell_speed() * dot_duration );
+
+      if ( p() -> azerite.brain_storm.enabled() )
+      {
+        // Trigger 7 stacks of Brain Storm, for tick_zero + 6 normal ticks
+        p() -> buffs.brain_storm -> trigger( 7 );
+      }
+    }
+  }
+
+  virtual void trigger_dot( action_state_t* s )
+  {
+    // Only start the channel for normal Evocation, the precombat Evocation
+    // channel is done by the time combat starts.
+    if ( ! precombat || p() -> in_combat )
+    {
+      arcane_mage_spell_t::trigger_dot( s );
+    }
   }
 
   virtual void tick( dot_t* d ) override
