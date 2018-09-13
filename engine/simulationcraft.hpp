@@ -1117,6 +1117,8 @@ struct sim_t : private sc_thread_t
     double              secrets_of_the_deep_collect_chance = 1.0;
     /// Gutripper base RPPM when target is above 30%
     double              gutripper_default_rppm = 1.0;
+    /// Number of Reorigination array stats on the actors in the sim
+    int                 reorigination_array_stacks = 0;
   } bfa_opts;
 
   // Expansion specific data
@@ -3760,6 +3762,9 @@ struct player_t : public actor_t
 
     // Azerite power
     buff_t* normalization_increase;
+
+    // Uldir
+    buff_t* reorigination_array;
   } buffs;
 
   struct debuffs_t

@@ -1189,6 +1189,82 @@ void stand_as_one( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+struct reorigination_array_buff_t : public buff_t
+{
+  // Comes from server side, hardcoded somewhere there
+  double stat_value = 75.0;
+  stat_e current_stat = STAT_NONE;
+
+  stat_e rating_to_stat( rating_e r ) const
+  {
+    switch ( r )
+    {
+      case RATING_MELEE_CRIT: return STAT_CRIT_RATING;
+      case RATING_MELEE_HASTE: return STAT_HASTE_RATING;
+      case RATING_MASTERY: return STAT_MASTERY_RATING;
+      case RATING_DAMAGE_VERSATILITY: return STAT_VERSATILITY_RATING;
+      default: return STAT_NONE;
+    }
+  }
+
+  stat_e find_highest_stat() const
+  {
+    // Simc bunches ratings together so it does not matter which we pick here
+    static const std::vector<rating_e> ratings {
+      RATING_MELEE_CRIT, RATING_MELEE_HASTE, RATING_MASTERY, RATING_DAMAGE_VERSATILITY
+    };
+
+    double high = std::numeric_limits<double>::lowest();
+    rating_e rating = RATING_MAX;
+
+    for ( auto r : ratings )
+    {
+      auto composite = source->composite_rating( r );
+      // Calculate highest stat without reorigination array included
+      if ( rating_to_stat( r ) == current_stat )
+      {
+        composite -= current_stack * stat_value;
+      }
+
+      if ( composite > high )
+      {
+        high = composite;
+        rating = r;
+      }
+    }
+
+    return rating_to_stat( rating );
+  }
+
+  reorigination_array_buff_t( player_t* p, const std::string& name, const special_effect_t& effect ) :
+    buff_t( p, name, effect.player->find_spell( 280573 ), effect.item )
+  { }
+
+  void reset() override
+  {
+    buff_t::reset();
+
+    current_stat = STAT_NONE;
+  }
+
+  void execute ( int stacks = 1, double value = DEFAULT_VALUE(),
+                 timespan_t duration = timespan_t::min() ) override
+  {
+    bool is_started = current_stack == 0;
+    stat_e highest_stat = find_highest_stat();
+
+    buff_t::execute( stacks, value, duration );
+
+    // Only grant the stats on the initial trigger, the stat adjustments will be handled by a
+    // callback
+    if ( is_started && highest_stat != STAT_NONE )
+    {
+      source->stat_gain( highest_stat, stat_value * stacks );
+      current_stat = highest_stat;
+    }
+  }
+};
+
 void archive_of_the_titans( special_effect_t& effect )
 {
   azerite_power_t power = effect.player->find_azerite_spell( effect.driver()->name_cstr() );
@@ -1205,8 +1281,20 @@ void archive_of_the_titans( special_effect_t& effect )
       ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), power.value( 1 ) );
   }
 
-  effect.player->register_combat_begin( [ buff, driver ]( player_t* ) {
+  reorigination_array_buff_t* reorg = nullptr;
+  if ( effect.player->sim->bfa_opts.reorigination_array_stacks > 0 )
+  {
+    reorg = unique_gear::create_buff<reorigination_array_buff_t>( effect.player,
+        "reorigination_array", effect );
+  }
+
+  effect.player->register_combat_begin( [ buff, driver, reorg ]( player_t* ) {
     buff -> trigger();
+    if ( reorg )
+    {
+      reorg->trigger( buff->sim->bfa_opts.reorigination_array_stacks );
+    }
+
     make_repeating_event( *buff -> sim, driver -> effectN( 1 ).period(), [ buff ]() {
       buff -> trigger();
     } );
@@ -1239,6 +1327,15 @@ void laser_matrix( special_effect_t& effect )
   effect.spell_id       = driver->id();
 
   new dbc_proc_callback_t( effect.player, effect );
+
+  reorigination_array_buff_t* reorg = nullptr;
+  if ( effect.player->sim->bfa_opts.reorigination_array_stacks > 0 )
+  {
+    reorg = unique_gear::create_buff<reorigination_array_buff_t>( effect.player,
+        "reorigination_array", effect );
+
+    effect.player->register_combat_begin( [ reorg ]( player_t* ) { reorg->trigger(); } );
+  }
 }
 
 void incite_the_pack( special_effect_t& effect )
