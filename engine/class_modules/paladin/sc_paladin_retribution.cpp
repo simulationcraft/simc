@@ -65,6 +65,26 @@ void holy_power_consumer_t::execute()
 {
   double c = cost();
   paladin_melee_attack_t::execute();
+
+  bool dp_success = false;
+  
+  // Bug: Divine Purpose procs are instantly consumed when proccing off themselves
+  // https://github.com/SimCMinMax/WoW-BugTracker/issues/359
+  // First, check if dp proc was successful
+  if ( p() -> talents.divine_purpose -> ok() )
+  {
+    dp_success = rng().roll( p() -> spells.divine_purpose_ret -> effectN( 1 ).percent() );
+  }
+
+  // Then, if DP proc is successful, DP was active and bugs are enabled, refresh DP
+  if ( dp_success && p() -> buffs.divine_purpose -> check() && p() -> bugs )
+  {
+    p() -> buffs.divine_purpose -> trigger();
+    p() -> procs.divine_purpose -> occur();
+    // Set dp_success to false so it doesn't re-trigger DP after consuming it
+    dp_success = false;
+  }
+
   if ( c <= 0.0 )
   {
     if ( p() -> buffs.divine_purpose -> check() )
@@ -78,15 +98,11 @@ void holy_power_consumer_t::execute()
       p() -> buffs.the_fires_of_justice -> expire();
   }
 
-  if ( p() -> talents.divine_purpose -> ok() )
+  // If the dp proc was successful, but DP wasn't active or bugs were disabled, activate DP.
+  if ( dp_success )
   {
-    bool success = p() -> buffs.divine_purpose -> trigger( 1,
-      p() -> buffs.divine_purpose -> default_value,
-      // for some reason the proc chance is 100% and the actual proc chance is stored
-      // as a dummy value
-      p() -> spells.divine_purpose_ret -> effectN( 1 ).percent() );
-    if ( success )
-      p() -> procs.divine_purpose -> occur();
+    dp_success = p() -> buffs.divine_purpose -> trigger();
+    p() -> procs.divine_purpose -> occur();
   }
 
   if ( p() -> buffs.crusade -> check() )
