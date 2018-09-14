@@ -2025,7 +2025,7 @@ void synaptic_spark_capacitor( special_effect_t& effect )
       aoe = -1;
       radius = power.spell_ref().effectN( 1 ).base_value();
 
-      auto values = compute_value( power, data().effectN( 2 ) );
+      auto values = compute_value( power, power.spell_ref().effectN( 3 ) );
       base_dd_min = std::get<0>( values );
       base_dd_max = std::get<2>( values );
 
@@ -2053,6 +2053,10 @@ void synaptic_spark_capacitor( special_effect_t& effect )
     void tick( dot_t* d ) override
     {
       proc_spell_t::tick( d );
+
+      // TODO: The 6th (partial) tick never happens in game.
+      if ( d->get_last_tick_factor() < 1.0 )
+        return;
 
       damage->set_target( d->target );
       damage->execute();
