@@ -138,6 +138,7 @@ void simulate_profileset( sim_t* parent, profileset::profile_set_t& set, sim_t*&
   parent -> init_time    += profile_sim -> init_time;
   parent -> merge_time   += profile_sim -> merge_time;
   parent -> analyze_time += profile_sim -> analyze_time;
+  parent -> event_mgr.total_events_processed += profile_sim -> event_mgr.total_events_processed;
 
   set.cleanup_options();
 }
