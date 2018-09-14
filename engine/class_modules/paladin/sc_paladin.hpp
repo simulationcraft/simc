@@ -397,6 +397,7 @@ public:
   timespan_t last_jol_proc;
 
   bool fake_sov;
+  int indomitable_justice_pct;
 
   paladin_t( sim_t* sim, const std::string& name, race_e r = RACE_TAUREN );
 
@@ -996,6 +997,7 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
 
 struct judgment_t : public paladin_melee_attack_t
 {
+  int indomitable_justice_pct;
   judgment_t( paladin_t* p, const std::string& options_str );
   
   virtual double bonus_da( const action_state_t* s ) const override;

@@ -28,7 +28,8 @@ paladin_t::paladin_t( sim_t* sim, const std::string& name, race_e r ) :
   extra_regen_period( timespan_t::from_seconds( 0.0 ) ),
   extra_regen_percent( 0.0 ),
   last_jol_proc( timespan_t::from_seconds( 0.0 ) ),
-  fake_sov( true )
+  fake_sov( true ),
+  indomitable_justice_pct( 0 )
 {
   active_beacon_of_light              = nullptr;
   active_enlightened_judgments        = nullptr;
@@ -777,6 +778,21 @@ judgment_t::judgment_t( paladin_t* p, const std::string& options_str )
   // no weapon multiplier
   weapon_multiplier = 0.0;
   may_block = may_parry = may_dodge = false;
+
+  // Handle indomitable justice option
+  if ( p -> azerite.indomitable_justice.enabled() )  
+  {
+    // If using the default setting, set to 80% hp for protection, 100% hp for other specs
+    if ( p -> indomitable_justice_pct == 0 )
+    {
+      indomitable_justice_pct = p -> specialization() == PALADIN_PROTECTION ? 80 : 100;
+    }
+    // Else, clamp the value between -1 ("real" usage) and 100
+    else
+    {
+      indomitable_justice_pct = clamp<int>( p -> indomitable_justice_pct, -1, 100 );
+    }
+  }
 }
 
 double judgment_t::bonus_da( const action_state_t* s ) const
@@ -785,7 +801,14 @@ double judgment_t::bonus_da( const action_state_t* s ) const
   if ( p() -> azerite.indomitable_justice.ok() )
   {
     double amount = p() -> azerite.indomitable_justice.value();
-    double our_percent = p() -> health_percentage();
+    double our_percent = indomitable_justice_pct;
+    
+    // If indomitable_judgment_pct's value is -1, use the player's health
+    if ( indomitable_justice_pct < 0 ) 
+    {
+      our_percent = p() -> health_percentage();
+    }
+
     double their_percent = s -> target -> health_percentage();
     if ( our_percent > their_percent )
     {
@@ -1941,6 +1964,8 @@ void paladin_t::create_options()
 {
   // TODO: figure out a better solution for this.
   add_option( opt_bool( "paladin_fake_sov", fake_sov ) );
+  add_option( opt_int( "indomitable_justice_pct", indomitable_justice_pct ) );
+
   player_t::create_options();
 }
 
@@ -1953,6 +1978,7 @@ void paladin_t::copy_from( player_t* source )
   paladin_t* p = debug_cast<paladin_t*>( source );
 
   fake_sov = p -> fake_sov;
+  indomitable_justice_pct = p -> indomitable_justice_pct;
 }
 
 // paladin_t::current_health =================================================
