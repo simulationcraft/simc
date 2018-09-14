@@ -40,12 +40,13 @@ actions+=/call_action_list,name=st,if=active_enemies<2&!talent.wildfire_infusion
 actions+=/call_action_list,name=cleave,if=active_enemies>1
 actions+=/arcane_torrent
 
-actions.cds=berserking,if=cooldown.coordinated_assault.remains>30
-actions.cds+=/blood_fury,if=cooldown.coordinated_assault.remains>30
+actions.cds=blood_fury,if=cooldown.coordinated_assault.remains>30
 actions.cds+=/ancestral_call,if=cooldown.coordinated_assault.remains>30
 actions.cds+=/fireblood,if=cooldown.coordinated_assault.remains>30
 actions.cds+=/lights_judgment
-actions.cds+=/potion,if=buff.coordinated_assault.up&(buff.berserking.up|buff.blood_fury.up|!race.troll&!race.orc)
+# if=cooldown.coordinated_assault.remains>60|time_to_die<11 
+actions.cds+=/berserking
+actions.cds+=/potion,if=buff.coordinated_assault.up&(buff.berserking.up|buff.blood_fury.up|!race.troll&!race.orc)|time_to_die<26
 actions.cds+=/aspect_of_the_eagle,if=target.distance>=6
 
 actions.cleave=variable,name=carve_cdr,op=setif,value=active_enemies,value_else=5,condition=active_enemies<5
