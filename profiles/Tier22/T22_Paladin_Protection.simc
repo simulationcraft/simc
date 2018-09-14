@@ -66,13 +66,13 @@ feet=hematocyst_stompers,id=160733,bonus_id=4800/1507
 finger1=rotscour_ring,id=160645,bonus_id=4800/1507,enchant=pact_of_haste
 finger2=band_of_certain_annihilation,id=160646,bonus_id=4800/1507,enchant=pact_of_haste
 trinket1=disc_of_systematic_regression,id=160650,bonus_id=4800/1507
-trinket2=syringe_of_bloodborne_infirmity,id=160655,bonus_id=4800/1507
+trinket2=darkmoon_deck_fathoms,id=159125
 main_hand=luminous_edge_of_virtue,id=160692,bonus_id=4800/1507,enchant=quick_navigation
 off_hand=barricade_of_purifying_resolve,id=160699,bonus_id=4800/1507
 
 # Gear Summary
-# gear_ilvl=386.19
-# gear_strength=4387
+# gear_ilvl=384.31
+# gear_strength=4310
 # gear_stamina=7205
 # gear_crit_rating=899
 # gear_haste_rating=1075
