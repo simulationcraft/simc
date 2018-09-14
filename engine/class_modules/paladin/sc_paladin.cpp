@@ -815,7 +815,7 @@ double judgment_t::bonus_da( const action_state_t* s ) const
       amount *= ( our_percent - their_percent ) / 100.0;
 
       // Doesn't seem to be reduced for Holy
-      amount *= 1.0 + p() -> spec.protection_paladin -> effectN( 13 ).percent();
+      amount *= 1.0 + p() -> spec.protection_paladin -> effectN( 14 ).percent();
 
       da += amount;
     }
