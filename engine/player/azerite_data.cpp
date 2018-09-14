@@ -2028,6 +2028,9 @@ void synaptic_spark_capacitor( special_effect_t& effect )
       auto values = compute_value( power, data().effectN( 2 ) );
       base_dd_min = std::get<0>( values );
       base_dd_max = std::get<2>( values );
+
+      // The DoT is handled in the driver spell.
+      dot_duration = timespan_t::zero();
     }
   };
 
