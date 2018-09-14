@@ -5,7 +5,7 @@ level=120
 race=troll
 role=spell
 position=ranged_back
-talents=3302023
+talents=3102023
 
 # Default consumables
 potion=battle_potion_of_intellect
@@ -80,11 +80,11 @@ actions.fillers+=/shadow_bolt,cycle_targets=1,if=talent.shadow_embrace.enabled&t
 actions.fillers+=/shadow_bolt,target_if=min:debuff.shadow_embrace.remains,if=talent.shadow_embrace.enabled&talent.absolute_corruption.enabled&active_enemies=2
 actions.fillers+=/shadow_bolt
 
-head=grasping_crown_of_the_deep,id=159252,bonus_id=4779/1512/4786/4775,azerite_powers=123/18/0/13
+head=grasping_crown_of_the_deep,id=159252,bonus_id=4779/1512/4786/4775,azerite_powers=425/18/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/1524
-shoulders=amice_of_the_returned,id=159273,bonus_id=4779/1512/4786/4775,azerite_powers=230/459/0/13
+shoulders=amice_of_the_returned,id=159273,bonus_id=4779/1512/4786/4775,azerite_powers=425/459/0/13
 back=drape_of_the_loyal_vassal,id=158375,bonus_id=4779/1512/4786
-chest=loa_betrayers_vestments,id=159233,bonus_id=4779/1512/4786/4775,azerite_powers=123/461/0/13
+chest=loa_betrayers_vestments,id=159233,bonus_id=4779/1512/4786/4775,azerite_powers=425/461/0/13
 wrists=ironkelp_wristwraps,id=159256,bonus_id=4779/1512/4786
 hands=mine_rats_handwarmers,id=159231,bonus_id=4779/1512/4786
 waist=ouroborial_sash,id=159255,bonus_id=4779/1512/4786

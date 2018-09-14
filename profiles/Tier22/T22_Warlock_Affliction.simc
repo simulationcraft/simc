@@ -5,7 +5,7 @@ level=120
 race=troll
 role=spell
 position=ranged_back
-talents=3302023
+talents=3102023
 
 # Default consumables
 potion=battle_potion_of_intellect
@@ -80,11 +80,11 @@ actions.fillers+=/shadow_bolt,cycle_targets=1,if=talent.shadow_embrace.enabled&t
 actions.fillers+=/shadow_bolt,target_if=min:debuff.shadow_embrace.remains,if=talent.shadow_embrace.enabled&talent.absolute_corruption.enabled&active_enemies=2
 actions.fillers+=/shadow_bolt
 
-head=grasping_crown_of_the_deep,id=159252,bonus_id=1557/4819/4775/4786,azerite_powers=123/30/0/13
+head=grasping_crown_of_the_deep,id=159252,bonus_id=1557/4819/4775/4786,azerite_powers=425/30/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536
-shoulders=brood_cleansers_amice,id=159254,bonus_id=1557/4819/4775/4786,azerite_powers=123/461/0/13
+shoulders=brood_cleansers_amice,id=159254,bonus_id=1557/4819/4775/4786,azerite_powers=425/22/0/13
 back=fetid_horrors_tanglecloak,id=160643,bonus_id=4800/1507
-chest=loa_betrayers_vestments,id=159233,bonus_id=1557/4819/4775/4786,azerite_powers=123/461/0/13
+chest=loa_betrayers_vestments,id=159233,bonus_id=1557/4819/4775/4786,azerite_powers=425/22/0/13
 wrists=voidlashed_wristband,id=160617,bonus_id=4800/1507
 hands=mutagenic_protofluid_handwraps,id=160715,bonus_id=4800/1507
 waist=cord_of_septic_envelopment,id=160727,bonus_id=4800/1507
