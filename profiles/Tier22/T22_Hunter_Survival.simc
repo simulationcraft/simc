@@ -44,8 +44,7 @@ actions.cds=blood_fury,if=cooldown.coordinated_assault.remains>30
 actions.cds+=/ancestral_call,if=cooldown.coordinated_assault.remains>30
 actions.cds+=/fireblood,if=cooldown.coordinated_assault.remains>30
 actions.cds+=/lights_judgment
-# if=cooldown.coordinated_assault.remains>60|time_to_die<11 
-actions.cds+=/berserking
+actions.cds+=/berserking,if=cooldown.coordinated_assault.remains>60|time_to_die<11
 actions.cds+=/potion,if=buff.coordinated_assault.up&(buff.berserking.up|buff.blood_fury.up|!race.troll&!race.orc)|time_to_die<26
 actions.cds+=/aspect_of_the_eagle,if=target.distance>=6
 
