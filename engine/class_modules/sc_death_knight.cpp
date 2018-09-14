@@ -1861,7 +1861,7 @@ struct army_pet_t : public base_ghoul_pet_t
       // It is also affected once again by spec aura through the pet damage multiplier
       // And mastery because it's considered pet shadow damage
       // https://github.com/SimCMinMax/WoW-BugTracker/issues/357
-      am *= 1.0 + p() -> o() -> cache.mastery_value();
+      // Hotfixed: Doesn't double dip with mastery anymore, still affected twice by spec aura
       am *= 1.0 + p() -> o() -> spec.unholy_death_knight -> effectN( 1 ).percent();
 
       return am;
@@ -7827,7 +7827,7 @@ void death_knight_t::default_apl_unholy()
   aoe -> add_action( this, "Death Coil", "if=!variable.pooling_for_gargoyle" );
 }
 
-// death_knight_t::init_actions =============================================
+// death_knight_t::init_action_list =========================================
 
 void death_knight_t::init_action_list()
 {
