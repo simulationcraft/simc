@@ -270,7 +270,7 @@ struct adds_event_t : public raid_event_t
           }
         }
 
-        adds[ i ]->summon( saved_duration );
+        adds[ i ]->summon( duration_time() );
         adds[ i ]->x_position = x_offset + spawn_x_coord;
         adds[ i ]->y_position = y_offset + spawn_y_coord;
 
