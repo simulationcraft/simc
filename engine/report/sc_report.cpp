@@ -1422,10 +1422,10 @@ std::vector<std::string> report::buff_decorator_t::parms() const
 {
   std::vector<std::string> parms = super::parms();
 
-  if ( m_obj -> source && m_obj -> source -> specialization() != SPEC_NONE )
-  {
-    parms.push_back( "spec=" + util::to_string( m_obj -> source -> specialization() ) );
-  }
+  //if ( m_obj -> source && m_obj -> source -> specialization() != SPEC_NONE )
+  //{
+  //  parms.push_back( "spec=" + util::to_string( m_obj -> source -> specialization() ) );
+  //}
 
   return parms;
 }
@@ -1434,10 +1434,10 @@ std::vector<std::string> report::action_decorator_t::parms() const
 {
   std::vector<std::string> parms = super::parms();
 
-  if ( m_obj -> player && m_obj -> player -> specialization() != SPEC_NONE )
-  {
-    parms.push_back( "spec=" + util::to_string( m_obj -> player -> specialization() ) );
-  }
+  //if ( m_obj -> player && m_obj -> player -> specialization() != SPEC_NONE )
+  //{
+  //  parms.push_back( "spec=" + util::to_string( m_obj -> player -> specialization() ) );
+  //}
 
   return parms;
 }
@@ -1472,14 +1472,14 @@ std::vector<std::string> report::spell_data_decorator_t::parms() const
 {
   auto params = html_decorator_t::parms();
 
-  if ( m_player && m_player -> specialization() != SPEC_NONE )
-  {
-    params.push_back( "spec=" + util::to_string( m_player -> specialization() ) );
-  }
+  //if ( m_player && m_player -> specialization() != SPEC_NONE )
+  //{
+  //  params.push_back( "spec=" + util::to_string( m_player -> specialization() ) );
+  //}
 
   if ( m_item )
   {
-    params.push_back( "itemLevel=" + util::to_string( m_item -> item_level() ) );
+    params.push_back( "ilvl=" + util::to_string( m_item -> item_level() ) );
   }
 
   if ( m_power )
@@ -1533,12 +1533,12 @@ std::vector<std::string> report::item_decorator_t::parms() const
 
   if ( m_item -> parsed.enchant_id > 0 )
   {
-    params.push_back( "enchantment=" + util::to_string( m_item -> parsed.enchant_id ) );
+    params.push_back( "ench=" + util::to_string( m_item -> parsed.enchant_id ) );
   }
 
   if ( m_item -> parsed.upgrade_level > 0 )
   {
-    params.push_back( "upgradeNum=" + util::to_string( m_item -> parsed.upgrade_level ) );
+    params.push_back( "upgd=" + util::to_string( m_item -> parsed.upgrade_level ) );
   }
 
   std::stringstream gem_str;
@@ -1551,7 +1551,7 @@ std::vector<std::string> report::item_decorator_t::parms() const
 
     if ( gem_str.tellp() > 0 )
     {
-      gem_str << ",";
+      gem_str << ":";
     }
 
     gem_str << util::to_string( m_item -> parsed.gem_id[ i ] );
@@ -1577,16 +1577,36 @@ std::vector<std::string> report::item_decorator_t::parms() const
 
     if ( i < end - 1 )
     {
-      bonus_str << ",";
+      bonus_str << ":";
     }
   }
 
   if ( bonus_str.tellp() > 0 )
   {
-    params.push_back( "bonusIDs=" + bonus_str.str() );
+    params.push_back( "bonus=" + bonus_str.str() );
   }
 
-  params.push_back( "itemLevelOverride=" + util::to_string( m_item -> item_level() ) );
+  std::stringstream azerite_str;
+  if ( !m_item->parsed.azerite_ids.empty() )
+  {
+    azerite_str << util::class_id( m_item->player->type ) << ":";
+  }
+  for ( size_t i = 0, end = m_item->parsed.azerite_ids.size(); i < end; ++i )
+  {
+    azerite_str << util::to_string( m_item->parsed.azerite_ids[ i ] );
+
+    if ( i < end - 1 )
+    {
+      azerite_str << ":";
+    }
+  }
+
+  if ( azerite_str.tellp() > 0 )
+  {
+    params.push_back( "azerite-powers=" + azerite_str.str() );
+  }
+
+  params.push_back( "ilvl=" + util::to_string( m_item -> item_level() ) );
 
   return params;
 }
