@@ -428,7 +428,7 @@ public:
 
     if ( m_obj -> item )
     {
-      parameters.push_back( "itemLevel=" + util::to_string( m_obj -> item -> item_level() ) );
+      parameters.push_back( "ilvl=" + util::to_string( m_obj -> item -> item_level() ) );
     }
 
     return parameters;
