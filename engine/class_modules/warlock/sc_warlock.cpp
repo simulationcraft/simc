@@ -877,11 +877,11 @@ expr_t* warlock_t::create_expression( const std::string& name_str )
       double active_agonies = get_active_dots(agony_id);
       if (sim->debug)
         sim->out_debug.printf("active agonies: %f", active_agonies);
-      if (active_agonies == 0)
+      dot_t* agony = td->dots_agony;
+      if ( active_agonies == 0 || !agony->current_action )
       {
         return std::numeric_limits<double>::infinity();
       }
-      dot_t* agony = td->dots_agony;
       action_state_t* agony_state = agony->current_action->get_state(agony->state);
       timespan_t dot_tick_time = agony->current_action->tick_time(agony_state);
 
