@@ -404,8 +404,8 @@ public:
   {
     std::stringstream s;
 
-    s << "<a href=\"http://" << decoration_domain( *this -> m_obj -> sim )
-      << ".wowdb.com/spells/" << this -> m_obj -> data().id();
+    s << "<a href=\"https://" << decoration_domain( *this -> m_obj -> sim )
+      << ".wowhead.com/spell=" << this -> m_obj -> data().id();
 
     return s.str();
   }

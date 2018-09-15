@@ -1303,7 +1303,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
   }
 
   /* Based on previous implementation ( pets don't count but get full heal )
-   * and http://www.wowhead.com/spell=15286#comments:id=1796701
+   * and https://www.wowhead.com/spell=15286#comments:id=1796701
    * Last checked 2013-05-25
    */
   void trigger_vampiric_embrace( action_state_t* s )

@@ -1060,7 +1060,7 @@ void print_html_masthead( report::sc_html_stream& os, const sim_t& sim )
   os.printf(
       "<span id=\"logo\"></span>\n"
       "<h1><a href=\"%s\">SimulationCraft %s</a></h1>\n",
-      "http://www.simulationcraft.org/", SC_VERSION);
+      "https://www.simulationcraft.org/", SC_VERSION);
 
   const char* type =       ( sim.dbc.ptr ?
 #if SC_BETA
@@ -1444,16 +1444,23 @@ void print_html_( report::sc_html_stream& os, sim_t& sim )
 
   if ( sim.decorated_tooltips )
   {
-    os << "<script type=\"text/javascript\" "
-          "src=\"https://static-azeroth.cursecdn.com/current/js/syndication/"
-          "tt.js\"></script>\n";
+    //Apply the prettification stuff only if its a single report
+    if ( num_players > 1 || k > 1 )
+    {
+      os << R"(<script>var whTooltips = {colorLinks: false, iconizeLinks: false, renameLinks: false};</script>\n)";
+    }
+    else
+    {
+      os << R"(<script>var whTooltips = {colorLinks: true, iconizeLinks: true, renameLinks: true};</script>\n)";
+    }
+
+    os << R"(<script type="text/javascript" src="https://wow.zamimg.com/widgets/power.js"></script>\n)";
   }
 
   if ( sim.hosted_html )
   {
     // Google Analytics
-    os << "<script type=\"text/javascript\" "
-          "src=\"http://www.simulationcraft.org/js/ga.js\"></script>\n";
+    os << R"(<script type="text/javascript" src="https://www.simulationcraft.org/js/ga.js"></script>\n)";
   }
 
   print_html_image_load_scripts( os );
