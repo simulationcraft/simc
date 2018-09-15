@@ -6415,7 +6415,7 @@ void rogue_t::init_action_list()
     cds -> add_talent( this, "Marked for Death", "if=raid_event.adds.in>30-raid_event.adds.duration&!stealthed.all&combo_points.deficit>=cp_max_spend", "If no adds will die within the next 30s, use MfD on boss without any CP and no stealth." );
     cds -> add_action( this, "Shadow Blades", "if=combo_points.deficit>=2+stealthed.all" );
     cds -> add_talent( this, "Shuriken Tornado", "if=spell_targets>=3&dot.nightblade.ticking&buff.symbols_of_death.up&buff.shadow_dance.up");
-    cds -> add_action( this, "Shadow Dance", "if=!buff.shadow_dance.up&target.time_to_die<=5+talent.subterfuge.enabled" );
+    cds -> add_action( this, "Shadow Dance", "if=!stealthed.all&target.time_to_die<=5+talent.subterfuge.enabled" );
 
     // Stealth Cooldowns
     action_priority_list_t* stealth_cds = get_action_priority_list( "stealth_cds", "Stealth Cooldowns" );
@@ -6637,7 +6637,7 @@ expr_t* rogue_t::create_expression( const std::string& name_str )
 
   // Split expressions
 
-  // stealthed.(rogue|all)
+  // stealthed.(rogue|mantle|all)
   // rogue: all rogue abilities are checked (stealth, vanish, shadow_dance, subterfuge)
   // mantle: all abilities that maintain Mantle of the Master Assassin aura are checked (stealth, vanish)
   // all: all abilities that allow stealth are checked (rogue + shadowmeld)
