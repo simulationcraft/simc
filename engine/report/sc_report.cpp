@@ -1301,7 +1301,7 @@ std::string report::decorated_spell_name( const sim_t& sim,
   }
   else
   {
-    s << "<a href=\"http://" << decoration_domain( sim ) << ".wowdb.com/spells/"
+    s << "<a href=\"https://" << decoration_domain( sim ) << ".wowhead.com/spell="
       << spell.id() << ( !parms_str.empty() ? "?" + parms_str : "" ) << "\">"
       << spell.name_cstr() << "</a>";
   }
@@ -1370,8 +1370,8 @@ std::string report::decorated_item_name( const item_t* item )
     }
 
     s << "<a style=\"color:" << item_quality_color( *item )
-      << ";\" href=\"http://" << decoration_domain( *item->sim )
-      << ".wowdb.com/items/" << item->parsed.data.id;
+      << ";\" href=\"https://" << decoration_domain( *item->sim )
+      << ".wowhead.com/item=" << item->parsed.data.id;
 
     if ( params.size() > 0 )
     {
@@ -1494,8 +1494,8 @@ std::string report::spell_data_decorator_t::base_url() const
 {
   std::stringstream s;
 
-  s << "<a href=\"http://" << decoration_domain( *m_sim )
-    << ".wowdb.com/spells/" << m_spell -> id();
+  s << "<a href=\"https://" << decoration_domain( *m_sim )
+    << ".wowhead.com/spell=" << m_spell -> id();
 
   return s.str();
 }
@@ -1511,8 +1511,8 @@ std::string report::item_decorator_t::base_url() const
 
   s << "<a "
     << "style=\"color:" << item_quality_color( *m_item ) << ";\" "
-    << "href=\"http://" << decoration_domain( *m_item -> sim )
-    << ".wowdb.com/items/" << m_item -> parsed.data.id;
+    << "href=\"https://" << decoration_domain( *m_item -> sim )
+    << ".wowhead.com/item=" << m_item -> parsed.data.id;
 
   return s.str();
 }

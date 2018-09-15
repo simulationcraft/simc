@@ -94,7 +94,7 @@ std::array<std::string, SCALE_METRIC_MAX> gear_weights::wowhead(
     bool first = true;
 
     std::stringstream s;
-    s << "http://" << wowhead_domain_name( p.dbc.ptr ) << "/?items&amp;filter=";
+    s << "https://" << wowhead_domain_name( p.dbc.ptr ) << "/?items&amp;filter=";
     s << "ub=" << util::class_id( p.type ) << ";";
 
     // Restrict wowhead to rare gems. When epic gems become

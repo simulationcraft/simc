@@ -8630,7 +8630,7 @@ void player_t::create_talents_wowhead()
   // (total / 4) % 4, and (total / 16) % 4 respectively.
 
   talents_str.clear();
-  std::string result = "http://www.wowhead.com/talent#";
+  std::string result = "https://www.wowhead.com/talent#";
 
   // Class Type
   {
