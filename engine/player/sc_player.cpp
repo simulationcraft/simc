@@ -12516,7 +12516,7 @@ void player_t::acquire_target( retarget_event_e event, player_t* context )
     trigger_ready();
   }
   // If we really cannot find any sensible target, fall back to the first invulnerable target
-  else if ( first_invuln_target && first_invuln_target != target )
+  else if ( ! candidate_target && first_invuln_target && first_invuln_target != target )
   {
     if ( sim->debug )
     {
