@@ -7725,8 +7725,8 @@ void druid_t::apl_feral()
    st->add_action("call_action_list,name=cooldowns");
    st->add_action("ferocious_bite,target_if=dot.rip.ticking&dot.rip.remains<3&target.time_to_die>10&(target.health.pct<25|talent.sabertooth.enabled)");
    st->add_action("regrowth,if=combo_points=5&buff.predatory_swiftness.up&talent.bloodtalons.enabled&buff.bloodtalons.down&(!buff.incarnation.up|dot.rip.remains<8)");
-   st->add_action("regrowth,if=combo_points>3&talent.bloodtalons.enabled&buff.predatory_swiftness.up&buff.apex_predator.up&buff.incarnation.down");
-   st->add_action("ferocious_bite,if=buff.apex_predator.up&((combo_points>4&(buff.incarnation.up|talent.moment_of_clarity.enabled))|(talent.bloodtalons.enabled&buff.bloodtalons.up&combo_points>3))");
+   //st->add_action("regrowth,if=combo_points>3&talent.bloodtalons.enabled&buff.predatory_swiftness.up&buff.apex_predator.up&buff.incarnation.down");
+   //st->add_action("ferocious_bite,if=buff.apex_predator.up&((combo_points>4&(buff.incarnation.up|talent.moment_of_clarity.enabled))|(talent.bloodtalons.enabled&buff.bloodtalons.up&combo_points>3))");
    st->add_action("run_action_list,name=st_finishers,if=combo_points>4");
    st->add_action("run_action_list,name=st_generators");
 
@@ -7740,16 +7740,17 @@ void druid_t::apl_feral()
    finisher->add_action("ferocious_bite,max_energy=1");
 
    generator->add_action("regrowth,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&buff.bloodtalons.down&combo_points=4&dot.rake.remains<4");
-   generator->add_action("regrowth,if=equipped.ailuro_pouncers&talent.bloodtalons.enabled&(buff.predatory_swiftness.stack>2|(buff.predatory_swiftness.stack>1&dot.rake.remains<3))&buff.bloodtalons.down");
+   generator->add_action("regrowth,if=talent.bloodtalons.enabled&buff.bloodtalons.down&buff.predatory_swiftness.up&talent.lunar_inspiration.enabled&dot.rake.remains<1");
    generator->add_action("brutal_slash,if=spell_targets.brutal_slash>desired_targets");
    generator->add_action("pool_resource,for_next=1");
    generator->add_action("thrash_cat,if=refreshable&(spell_targets.thrash_cat>2)");
-   generator->add_action("pool_resource,for_next=1");
-   generator->add_action("thrash_cat,if=spell_targets.thrash_cat>3&equipped.luffa_wrappings&talent.brutal_slash.enabled");
+   //generator->add_action("pool_resource,for_next=1");
+   //generator->add_action("thrash_cat,if=spell_targets.thrash_cat>3&equipped.luffa_wrappings&talent.brutal_slash.enabled");
    generator->add_action("pool_resource,for_next=1");
    generator->add_action("rake,target_if=!ticking|(!talent.bloodtalons.enabled&remains<duration*0.3)&target.time_to_die>4");
    generator->add_action("pool_resource,for_next=1");
    generator->add_action("rake,target_if=talent.bloodtalons.enabled&buff.bloodtalons.up&((remains<=7)&persistent_multiplier>dot.rake.pmultiplier*0.85)&target.time_to_die>4");
+   generator->add_action("moonfire_cat,if=buff.bloodtalons.up&buff.predatory_swiftness.down&combo_points<5", "With LI & BT, we can use moonfire to save BT charges, allowing us to better refresh rake");
    generator->add_action("brutal_slash,if=(buff.tigers_fury.up&(raid_event.adds.in>(1+max_charges-charges_fractional)*recharge_time))");
    generator->add_action("moonfire_cat,target_if=refreshable");
    generator->add_action("pool_resource,for_next=1");
