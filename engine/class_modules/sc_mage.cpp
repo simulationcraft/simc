@@ -3272,7 +3272,6 @@ struct glacial_assault_t : public frost_mage_spell_t
   glacial_assault_t( mage_t* p ) :
     frost_mage_spell_t( "glacial_assault", p, p -> find_spell( 279856 ) )
   {
-    // TODO: Is this affected by shatter?
     background = true;
     aoe = -1;
 
@@ -3311,9 +3310,11 @@ struct flurry_bolt_t : public frost_mage_spell_t
 
     if ( rng().roll( glacial_assault_chance ) )
     {
-      // TODO: Double check the delay.
+      // Delay is around 1 s, but the impact seems to always happen in
+      // the Winter's Chill window. So here we just subtract 1 ms to make
+      // sure it hits while the debuff is up.
       make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
-        .pulse_time( timespan_t::from_seconds( 1.0 ) )
+        .pulse_time( timespan_t::from_millis( 999 ) )
         .target( s -> target )
         .n_pulses( 1 )
         .action( p() -> action.glacial_assault ) );
