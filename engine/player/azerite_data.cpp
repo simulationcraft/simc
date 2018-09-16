@@ -1334,7 +1334,7 @@ void laser_matrix( special_effect_t& effect )
     reorg = unique_gear::create_buff<reorigination_array_buff_t>( effect.player,
         "reorigination_array", effect );
 
-    effect.player->register_combat_begin( [ reorg ]( player_t* ) { reorg->trigger(); } );
+    effect.player->register_combat_begin( [ reorg, effect ]( player_t* ) { reorg->trigger( effect.player->sim->bfa_opts.reorigination_array_stacks); } );
   }
 }
 
