@@ -1714,6 +1714,19 @@ void action_t::last_tick( dot_t* d )
   {
     player->channeling = 0;
     player->readying   = 0;
+
+    // Retarget this channel skill, since during the channel a retargeting event may have occurred.
+    // The comparison is made against the actor's "current target", which can be considered the
+    // current baseline target all actions share (with some exceptions, such as fixed targeting).
+    if ( option.target_number == 0 && target != player->target )
+    {
+      if ( sim->debug )
+      {
+        sim->out_debug.print( "{} adjust channel target on last tick, current={}, new={}",
+          player->name(), target->name(), player->target->name() );
+      }
+      target = player->target;
+    }
   }
 }
 
@@ -3885,6 +3898,14 @@ void action_t::acquire_target( retarget_event_e /* event */, player_t* /* contex
 
   // If the user has indicated a target number for the action, don't adjust targets
   if ( option.target_number > 0 )
+  {
+    return;
+  }
+
+  // Ongoing channels won't be retargeted during channel. Note that this works in all current cases,
+  // since if the retargeting event is due to the target demise, the channel has already been
+  // interrupted before (due to the demise).
+  if ( player->channeling && player->channeling == this )
   {
     return;
   }
