@@ -685,6 +685,7 @@ namespace warlock {
         if (!td->dots_immolate->is_ticking())
           return;
 
+        internal_combustion->set_target(s->target);
         internal_combustion->execute();
       }
 
