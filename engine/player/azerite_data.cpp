@@ -1281,8 +1281,10 @@ void archive_of_the_titans( special_effect_t& effect )
       ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), power.value( 1 ) );
   }
 
-  reorigination_array_buff_t* reorg = nullptr;
-  if ( effect.player->sim->bfa_opts.reorigination_array_stacks > 0 )
+  buff_t* reorg = buff_t::find( effect.player, "reorigination_array" );
+  // Reorigination array has to be implemented uniquely, so only Archive of the Titans, or Laser
+  // Matrix will properly initialize the system.
+  if ( ! reorg && effect.player->sim->bfa_opts.reorigination_array_stacks > 0 )
   {
     reorg = unique_gear::create_buff<reorigination_array_buff_t>( effect.player,
         "reorigination_array", effect );
@@ -1328,8 +1330,10 @@ void laser_matrix( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 
-  reorigination_array_buff_t* reorg = nullptr;
-  if ( effect.player->sim->bfa_opts.reorigination_array_stacks > 0 )
+  buff_t* reorg = buff_t::find( effect.player, "reorigination_array" );
+  // Reorigination array has to be implemented uniquely, so only Archive of the Titans, or Laser
+  // Matrix will properly initialize the system.
+  if ( ! reorg && effect.player->sim->bfa_opts.reorigination_array_stacks > 0 )
   {
     reorg = unique_gear::create_buff<reorigination_array_buff_t>( effect.player,
         "reorigination_array", effect );
