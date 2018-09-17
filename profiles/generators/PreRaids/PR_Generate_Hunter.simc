@@ -58,7 +58,7 @@ race=lightforged_draenei
 spec=survival
 role=attack
 position=back
-talents=1101021
+talents=1101022
 
 head=visage_of_bloody_horrors,id=159381,bonus_id=4779/1512/4786/4775,azerite_powers=372/18/15/86
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27

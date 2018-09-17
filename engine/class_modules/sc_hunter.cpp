@@ -5444,6 +5444,7 @@ void hunter_t::apl_surv()
   cleave -> add_action( this, "Coordinated Assault" );
   cleave -> add_action( this, "Carve", "if=dot.shrapnel_bomb.ticking" );
   cleave -> add_action( this, "Wildfire Bomb", "if=!talent.guerrilla_tactics.enabled|full_recharge_time<gcd" );
+  cleave -> add_talent( this, "Mongoose Bite", "target_if=max:debuff.latent_poison.stack,if=debuff.latent_poison.stack=10" );
   cleave -> add_talent( this, "Chakrams" );
   cleave -> add_action( this, "Kill Command", "target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max" );
   cleave -> add_talent( this, "Butchery", "if=full_recharge_time<gcd|!talent.wildfire_infusion.enabled|dot.shrapnel_bomb.ticking&dot.internal_bleeding.stack<3" );

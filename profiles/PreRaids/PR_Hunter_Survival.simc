@@ -5,7 +5,7 @@ level=120
 race=lightforged_draenei
 role=attack
 position=back
-talents=1101021
+talents=1101022
 
 # Default consumables
 potion=bursting_blood
@@ -53,6 +53,7 @@ actions.cleave+=/a_murder_of_crows
 actions.cleave+=/coordinated_assault
 actions.cleave+=/carve,if=dot.shrapnel_bomb.ticking
 actions.cleave+=/wildfire_bomb,if=!talent.guerrilla_tactics.enabled|full_recharge_time<gcd
+actions.cleave+=/mongoose_bite,target_if=max:debuff.latent_poison.stack,if=debuff.latent_poison.stack=10
 actions.cleave+=/chakrams
 actions.cleave+=/kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max
 actions.cleave+=/butchery,if=full_recharge_time<gcd|!talent.wildfire_infusion.enabled|dot.shrapnel_bomb.ticking&dot.internal_bleeding.stack<3
