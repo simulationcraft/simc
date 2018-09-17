@@ -175,7 +175,8 @@ struct tick_t : public buff_event_t
         buff->decrement( current_stacks, current_value );
     }
     timespan_t period = buff->tick_time();
-    if ( buff->remains() >= period || buff->buff_duration == timespan_t::zero() )
+    if ( buff->current_stack > 0 &&
+         ( buff->remains() >= period || buff->buff_duration == timespan_t::zero() ) )
     {
       // Reorder the last tick to happen 1ms before expiration
       if ( buff->remains() == period )
