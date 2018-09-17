@@ -2382,18 +2382,28 @@ struct bursting_shot_t : public hunter_ranged_attack_t
 
 struct aimed_shot_base_t: public hunter_ranged_attack_t
 {
-  benefit_t *const careful_aim;
+  struct {
+    benefit_t* benefit = nullptr;
+    double percent = 0.0;
+    double high, low;
+  } careful_aim;
   const int trick_shots_targets;
 
   aimed_shot_base_t( const std::string& name, hunter_t* p ):
     hunter_ranged_attack_t( name, p, p -> specs.aimed_shot ),
-    careful_aim( p -> talents.careful_aim -> ok() ? p -> get_benefit( "careful_aim" ) : nullptr ),
     trick_shots_targets( static_cast<int>( p -> specs.trick_shots -> effectN( 1 ).base_value() ) )
   {
     radius = 8.0;
+    base_multiplier *= 1.0 + p -> sets -> set( HUNTER_MARKSMANSHIP, T21, B4 ) -> effectN( 1 ).percent();
     base_aoe_multiplier = p -> specs.trick_shots -> effectN( 4 ).percent();
 
-    base_multiplier *= 1.0 + p -> sets -> set( HUNTER_MARKSMANSHIP, T21, B4 ) -> effectN( 1 ).percent();
+    if ( p -> talents.careful_aim -> ok() )
+    {
+      careful_aim.benefit = p -> get_benefit( "careful_aim" );
+      careful_aim.percent = p -> talents.careful_aim -> effectN( 4 ).percent();
+      careful_aim.high = p -> talents.careful_aim -> effectN( 1 ).base_value();
+      careful_aim.low = p -> talents.careful_aim -> effectN( 2 ).base_value();
+    }
   }
 
   timespan_t execute_time() const override
@@ -2427,13 +2437,11 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
   {
     double m = hunter_ranged_attack_t::composite_target_da_multiplier( t );
 
-    if ( careful_aim )
+    if ( careful_aim.percent )
     {
-      const bool active =
-        t -> health_percentage() > p() -> talents.careful_aim -> effectN( 1 ).base_value() ||
-        t -> health_percentage() < p() -> talents.careful_aim -> effectN( 2 ).base_value();
-      const bool procced = active && rng().roll( p() -> talents.careful_aim -> effectN( 4 ).percent() );
-      careful_aim -> update( procced );
+      const bool active = t -> health_percentage() > careful_aim.high || t -> health_percentage() < careful_aim.low;
+      const bool procced = active && rng().roll( careful_aim.percent );
+      careful_aim.benefit -> update( procced );
       if ( procced )
         m *= 1.0 + p() -> talents.careful_aim -> effectN( 3 ).percent();
     }
