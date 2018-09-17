@@ -46,15 +46,14 @@ actions+=/stampede,if=buff.bestial_wrath.up|cooldown.bestial_wrath.remains<gcd|t
 actions+=/aspect_of_the_wild
 actions+=/multishot,if=spell_targets>2&(pet.cat.buff.beast_cleave.remains<gcd.max)
 actions+=/bestial_wrath,if=!buff.bestial_wrath.up
-actions+=/multishot,if=spell_targets>2&(pet.cat.buff.beast_cleave.remains<gcd.max|pet.cat.buff.beast_cleave.down)
 actions+=/chimaera_shot,if=spell_targets>1
+actions+=/multishot,if=spell_targets>1&(pet.cat.buff.beast_cleave.remains<gcd.max)
 actions+=/kill_command
 actions+=/chimaera_shot
 actions+=/a_murder_of_crows
 actions+=/dire_beast
 actions+=/barbed_shot,if=pet.cat.buff.frenzy.down&charges_fractional>1.8|target.time_to_die<9
 actions+=/barrage,if=active_enemies>1
-actions+=/multishot,if=spell_targets>1&(pet.cat.buff.beast_cleave.remains<gcd.max|pet.cat.buff.beast_cleave.down)
 actions+=/cobra_shot,if=(active_enemies<2|cooldown.kill_command.remains>focus.time_to_max)&(focus-cost+focus.regen*(cooldown.kill_command.remains-1)>action.kill_command.cost|cooldown.kill_command.remains>1+gcd)&cooldown.kill_command.remains>1
 actions+=/arcane_torrent
 
@@ -71,7 +70,7 @@ feet=shellkickers,id=158356,bonus_id=4779/1512/4786
 finger1=murky_cerulean_signet,id=158318,bonus_id=4779/1512/4786,enchant=pact_of_critical_strike
 finger2=band_of_the_roving_scalawag,id=162541,bonus_id=4779/1512/4786,enchant=pact_of_critical_strike
 trinket1=galecallers_boon,id=159614,bonus_id=4779/1512/4786
-trinket2=lustrous_golden_plumage,id=159617,bonus_id=4779/1512/4786
+trinket2=harlans_loaded_dice,id=155881,bonus_id=4779/1512
 main_hand=hallowed_ossein_longbow,id=158711,bonus_id=4779/1512/4786,enchant=incendiary_ammunition
 
 # Gear Summary

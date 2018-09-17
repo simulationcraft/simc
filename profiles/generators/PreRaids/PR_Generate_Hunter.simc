@@ -19,7 +19,7 @@ feet=shellkickers,id=158356,bonus_id=4779/1512/4786
 finger1=murky_cerulean_signet,id=158318,bonus_id=4779/1512/4786,enchant=pact_of_critical_strike
 finger2=band_of_the_roving_scalawag,id=162541,bonus_id=4779/1512/4786,enchant=pact_of_critical_strike
 trinket1=galecallers_boon,id=159614,bonus_id=4779/1512/4786
-trinket2=lustrous_golden_plumage,id=159617,bonus_id=4779/1512/4786
+trinket2=harlans_loaded_dice,id=155881,bonus_id=4779/1512
 main_hand=hallowed_ossein_longbow,id=158711,bonus_id=4779/1512/4786,enchant=incendiary_ammunition
 
 save=PR_Hunter_Beast_Mastery.simc
@@ -58,7 +58,7 @@ race=lightforged_draenei
 spec=survival
 role=attack
 position=back
-talents=1101022
+talents=3101022
 
 head=visage_of_bloody_horrors,id=159381,bonus_id=4779/1512/4786/4775,azerite_powers=372/18/15/86
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
@@ -73,7 +73,7 @@ feet=bramble_looped_boots,id=159404,bonus_id=4779/1512/4786
 finger1=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
 finger2=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
 trinket1=galecallers_boon,id=159614,bonus_id=4779/1512/4786
-trinket2=lustrous_golden_plumage,id=159617,bonus_id=4779/1512/4786
+trinket2=harlans_loaded_dice,id=155881,bonus_id=4779/1512
 main_hand=twinstrike_polearm,id=158370,bonus_id=4779/1512/4786,enchant=quick_navigation
 
 save=PR_Hunter_Survival.simc
