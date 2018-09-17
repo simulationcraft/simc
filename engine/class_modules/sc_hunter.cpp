@@ -5265,15 +5265,19 @@ void hunter_t::apl_bm()
   default_list -> add_action( "potion,if=buff.bestial_wrath.up&buff.aspect_of_the_wild.up" );
 
   // Generic APL
-  default_list -> add_action( this, "Barbed Shot", "if=full_recharge_time<gcd.max|pet.cat.buff.frenzy.up&pet.cat.buff.frenzy.remains<=gcd.max" );
-  default_list -> add_talent( this, "A Murder of Crows" );
+  default_list -> add_action( this, "Barbed Shot", "if=pet.cat.buff.frenzy.up&pet.cat.buff.frenzy.remains<=gcd.max" );
+  default_list -> add_talent( this, "A Murder of Crows", "if=active_enemies=1" );
+  default_list -> add_action( this, "Barbed Shot", "if=full_recharge_time<gcd.max&cooldown.bestial_wrath.remains" );
   default_list -> add_talent( this, "Spitting Cobra" );
   default_list -> add_talent( this, "Stampede", "if=buff.bestial_wrath.up|cooldown.bestial_wrath.remains<gcd|target.time_to_die<15" );
   default_list -> add_action( this, "Aspect of the Wild" );
+  default_list -> add_action( this, "Multi-Shot", "if=spell_targets>2&(pet.cat.buff.beast_cleave.remains<gcd.max)" );
   default_list -> add_action( this, "Bestial Wrath", "if=!buff.bestial_wrath.up" );
   default_list -> add_action( this, "Multi-Shot", "if=spell_targets>2&(pet.cat.buff.beast_cleave.remains<gcd.max|pet.cat.buff.beast_cleave.down)" );
-  default_list -> add_talent( this, "Chimaera Shot" );
+  default_list -> add_talent( this, "Chimaera Shot", "if=spell_targets>1");
   default_list -> add_action( this, "Kill Command" );
+  default_list -> add_talent( this, "Chimaera Shot" );
+  default_list -> add_talent( this, "A Murder of Crows" );
   default_list -> add_talent( this, "Dire Beast" );
   default_list -> add_action( this, "Barbed Shot", "if=pet.cat.buff.frenzy.down&charges_fractional>1.8|target.time_to_die<9" );
   default_list -> add_talent( this, "Barrage", "if=active_enemies>1" );
