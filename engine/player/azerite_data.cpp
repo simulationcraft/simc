@@ -1291,8 +1291,7 @@ struct reorigination_array_buff_t : public buff_t
     {
       rating_e current_rating = stat_to_rating( current_stat );
 
-      double current_amount = stat_value * sim->bfa_opts.reorigination_array_stacks *
-        source->composite_rating_multiplier( current_rating );
+      double current_amount = stat_value * sim->bfa_opts.reorigination_array_stacks;
 
       source->stat_loss( current_stat, current_amount );
 
@@ -1308,8 +1307,7 @@ struct reorigination_array_buff_t : public buff_t
     {
       rating_e new_rating = stat_to_rating( highest_stat );
 
-      double new_amount = stat_value * sim->bfa_opts.reorigination_array_stacks *
-        source->composite_rating_multiplier( new_rating );
+      double new_amount = stat_value * sim->bfa_opts.reorigination_array_stacks;
 
       source->stat_gain( highest_stat, new_amount );
 
