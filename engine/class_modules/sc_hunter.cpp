@@ -5264,7 +5264,8 @@ void hunter_t::apl_bm()
   action_priority_list_t* precombat    = get_action_priority_list( "precombat" );
 
   // Precombat actions
-  precombat -> add_action( this, "Aspect of the Wild" );
+  precombat -> add_action( this, "Aspect of the Wild", "if=!azerite.primal_instincts.enabled" );
+  precombat -> add_action( this, "Bestial Wrath", "if=azerite.primal_instincts.enabled" );
 
   default_list -> add_action( "auto_shot" );
 
