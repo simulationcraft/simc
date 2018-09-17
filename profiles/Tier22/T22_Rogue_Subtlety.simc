@@ -75,7 +75,7 @@ actions.cds+=/marked_for_death,target_if=min:target.time_to_die,if=raid_event.ad
 actions.cds+=/marked_for_death,if=raid_event.adds.in>30-raid_event.adds.duration&!stealthed.all&combo_points.deficit>=cp_max_spend
 actions.cds+=/shadow_blades,if=combo_points.deficit>=2+stealthed.all
 actions.cds+=/shuriken_tornado,if=spell_targets>=3&dot.nightblade.ticking&buff.symbols_of_death.up&buff.shadow_dance.up
-actions.cds+=/shadow_dance,if=!buff.shadow_dance.up&target.time_to_die<=5+talent.subterfuge.enabled
+actions.cds+=/shadow_dance,if=!stealthed.all&target.time_to_die<=5+talent.subterfuge.enabled
 
 # Finishers
 # Eviscerate highest priority at 2+ targets with Shadow Focus (5+ with Secret Technique in addition) and Night's Vengeance up.
