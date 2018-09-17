@@ -1538,6 +1538,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 281543, items::bygone_bee_almanac );
   register_special_effect( 281547, items::leyshocks_grand_compilation );
   register_special_effect( 266047, items::jes_howler );
+  register_special_effect( 278364, "Reverse" );
   register_special_effect( 271374, items::razdunks_big_red_button );
   register_special_effect( 267402, items::merekthas_fang );
   register_special_effect( 268758, items::deadeye_spyglass );
