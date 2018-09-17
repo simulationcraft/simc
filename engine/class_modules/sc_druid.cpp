@@ -1628,7 +1628,7 @@ public:
   {
     if (p()->azerite.streaking_stars.ok())
     {
-      if (!compare_previous_streaking_stars(new_ability)&(p()->buff.celestial_alignment->check() || p()->buff.incarnation_moonkin->check()))
+      if (!compare_previous_streaking_stars(new_ability)&&(p()->buff.celestial_alignment->check() || p()->buff.incarnation_moonkin->check()))
       {
         action_state_t* ss_s = p()->active.streaking_stars->get_state();
         //Check if the trigger has a target, otherwise use the actors target
@@ -6052,6 +6052,12 @@ struct solar_empowerment_t : public druid_spell_t
     druid_spell_t::init ();
 
     snapshot_flags = update_flags = 0;
+  }
+
+  void impact(action_state_t* s) override
+  {
+    druid_spell_t::impact(s);
+    streaking_stars_trigger(SS_SOLAR_WRATH, execute_state);
   }
 };
 
