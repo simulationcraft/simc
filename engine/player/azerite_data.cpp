@@ -1195,6 +1195,29 @@ struct reorigination_array_buff_t : public buff_t
   double stat_value = 75.0;
   stat_e current_stat = STAT_NONE;
 
+  proc_t* proc_crit, *proc_haste, *proc_mastery, *proc_versatility;
+
+  void add_proc( stat_e stat )
+  {
+    switch ( stat )
+    {
+      case STAT_CRIT_RATING:
+        proc_crit->occur();
+        break;
+      case STAT_HASTE_RATING:
+        proc_haste->occur();
+        break;
+      case STAT_MASTERY_RATING:
+        proc_mastery->occur();
+        break;
+      case STAT_VERSATILITY_RATING:
+        proc_versatility->occur();
+        break;
+      default:
+        break;
+    }
+  }
+
   stat_e rating_to_stat( rating_e r ) const
   {
     switch ( r )
@@ -1204,6 +1227,18 @@ struct reorigination_array_buff_t : public buff_t
       case RATING_MASTERY: return STAT_MASTERY_RATING;
       case RATING_DAMAGE_VERSATILITY: return STAT_VERSATILITY_RATING;
       default: return STAT_NONE;
+    }
+  }
+
+  rating_e stat_to_rating( stat_e s ) const
+  {
+    switch ( s )
+    {
+      case STAT_CRIT_RATING: return RATING_MELEE_CRIT;
+      case STAT_HASTE_RATING: return RATING_MELEE_HASTE;
+      case STAT_MASTERY_RATING: return RATING_MASTERY;
+      case STAT_VERSATILITY_RATING: return RATING_DAMAGE_VERSATILITY;
+      default: return RATING_MAX;
     }
   }
 
@@ -1223,7 +1258,15 @@ struct reorigination_array_buff_t : public buff_t
       // Calculate highest stat without reorigination array included
       if ( rating_to_stat( r ) == current_stat )
       {
-        composite -= current_stack * stat_value;
+        composite -= sim->bfa_opts.reorigination_array_stacks * stat_value *
+          source->composite_rating_multiplier( r );
+      }
+
+      if ( sim->debug )
+      {
+        sim->out_debug.print( "{} reorigination_array check_stat current_stat={} stat={} value={}",
+            source->name(), util::stat_type_string( current_stat ),
+            util::stat_type_string( rating_to_stat( r ) ), composite );
       }
 
       if ( composite > high )
@@ -1236,8 +1279,59 @@ struct reorigination_array_buff_t : public buff_t
     return rating_to_stat( rating );
   }
 
+  void trigger_dynamic_stat_change()
+  {
+    auto highest_stat = find_highest_stat();
+    if ( highest_stat == current_stat )
+    {
+      return;
+    }
+
+    if ( current_stat != STAT_NONE )
+    {
+      rating_e current_rating = stat_to_rating( current_stat );
+
+      double current_amount = stat_value * sim->bfa_opts.reorigination_array_stacks *
+        source->composite_rating_multiplier( current_rating );
+
+      source->stat_loss( current_stat, current_amount );
+
+      if ( sim->debug )
+      {
+        sim->out_debug.print( "{} reorigination_array stat change, current_stat={}, value={}, total={}",
+            source->name(), util::stat_type_string( current_stat ), -current_amount,
+            source->composite_rating( current_rating ) );
+      }
+    }
+
+    if ( highest_stat != STAT_NONE )
+    {
+      rating_e new_rating = stat_to_rating( highest_stat );
+
+      double new_amount = stat_value * sim->bfa_opts.reorigination_array_stacks *
+        source->composite_rating_multiplier( new_rating );
+
+      source->stat_gain( highest_stat, new_amount );
+
+      if ( sim->debug )
+      {
+        sim->out_debug.print( "{} reorigination_array stat change, new_stat={}, value={}, total={}",
+            source->name(), util::stat_type_string( highest_stat ), new_amount,
+            source->composite_rating( new_rating ) );
+      }
+
+      add_proc( highest_stat );
+    }
+
+    current_stat = highest_stat;
+  }
+
   reorigination_array_buff_t( player_t* p, const std::string& name, const special_effect_t& effect ) :
-    buff_t( p, name, effect.player->find_spell( 280573 ), effect.item )
+    buff_t( p, name, effect.player->find_spell( 280573 ), effect.item ),
+    proc_crit( p->get_proc( "Reorigination Array: Critical Strike" ) ),
+    proc_haste( p->get_proc( "Reorigination Array: Haste" ) ),
+    proc_mastery( p->get_proc( "Reorigination Array: Mastery" ) ),
+    proc_versatility( p->get_proc( "Reorigination Array: Versatility" ) )
   { }
 
   void reset() override
@@ -1247,20 +1341,19 @@ struct reorigination_array_buff_t : public buff_t
     current_stat = STAT_NONE;
   }
 
-  void execute ( int stacks = 1, double value = DEFAULT_VALUE(),
-                 timespan_t duration = timespan_t::min() ) override
+  void execute( int stacks = 1, double value = DEFAULT_VALUE(),
+                timespan_t duration = timespan_t::min() ) override
   {
-    bool is_started = current_stack == 0;
-    stat_e highest_stat = find_highest_stat();
-
-    buff_t::execute( stacks, value, duration );
-
-    // Only grant the stats on the initial trigger, the stat adjustments will be handled by a
-    // callback
-    if ( is_started && highest_stat != STAT_NONE )
+    // Ensure buff only executes once
+    if ( current_stack == 0 )
     {
-      source->stat_gain( highest_stat, stat_value * stacks );
-      current_stat = highest_stat;
+      buff_t::execute( stacks, value, duration );
+
+      trigger_dynamic_stat_change();
+
+      make_repeating_event( *sim, timespan_t::from_seconds( 5.0 ), [ this ]() {
+          trigger_dynamic_stat_change();
+      } );
     }
   }
 };
@@ -1338,7 +1431,9 @@ void laser_matrix( special_effect_t& effect )
     reorg = unique_gear::create_buff<reorigination_array_buff_t>( effect.player,
         "reorigination_array", effect );
 
-    effect.player->register_combat_begin( [ reorg, effect ]( player_t* ) { reorg->trigger( effect.player->sim->bfa_opts.reorigination_array_stacks); } );
+    effect.player->register_combat_begin( [ reorg ]( player_t* ) {
+      reorg->trigger( reorg->sim->bfa_opts.reorigination_array_stacks );
+    } );
   }
 }
 
