@@ -2427,10 +2427,6 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
   {
     double m = hunter_ranged_attack_t::composite_target_da_multiplier( t );
 
-    auto td = find_td( t );
-    if ( !( td && td -> damaged ) )
-      m *= 1.0 + data().effectN( 2 ).percent();
-
     if ( careful_aim )
     {
       const bool active =
@@ -2579,6 +2575,17 @@ struct aimed_shot_t : public aimed_shot_base_t
   bool usable_moving() const override
   {
     return false;
+  }
+
+  double composite_target_da_multiplier( player_t* t ) const override
+  {
+    double m = aimed_shot_base_t::composite_target_da_multiplier( t );
+
+    auto td = find_td( t );
+    if ( !( td && td -> damaged ) )
+      m *= 1.0 + data().effectN( 2 ).percent();
+
+    return m;
   }
 
   void try_t20_2p_mm() override { }
