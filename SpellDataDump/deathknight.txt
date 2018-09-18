@@ -7968,13 +7968,15 @@ Effects          :
 #1 (id=734208)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #2 (id=734209)   : Apply Aura (6) | Add Flat Modifier (107): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 52.46935 (coefficient=0.674847) | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 104.9386 (coefficient=1.349693) | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Remorseless Winter (196771), Remorseless Winter (211793)
                    Family Flags: 126
+                   Hotfixed: Coefficient (0.674847 -> 1.34969)
 #3 (id=735829)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 52.46935 (coefficient=0.674847) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 104.9386 (coefficient=1.349693) | Target: Self (1)
                    Affected Spells: Remorseless Winter (196771), Remorseless Winter (211793)
                    Family Flags: 126
+                   Hotfixed: Coefficient (0.674847 -> 1.34969)
 Description      : Remorseless Winter deals an additional $s2 damage. The first time Remorseless Winter deals damage to $s1 different enemies, you gain Rime.
 
 Name             : Last Surprise (id=278489) [Scaling Spell (-8), Spell Family (15), Passive] 
@@ -8356,7 +8358,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737878)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 901.5184 (coefficient=11.59509) | Trigger Spell: 280383 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 586.235 (coefficient=7.54) | Trigger Spell: 280383 | Target: Self (1)
+                   Hotfixed: Coefficient (11.5951 -> 7.54)
 #2 (id=738006)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : Dealing damage has a chance to call down a Thunderous Blast, dealing $s1 Nature damage to the enemy and increasing the damage of Thunderous Blast by $280385s1%. At ${$s2*$280385s1}% increased damage, Thunderous Blast will critically hit and reset this effect.
@@ -8458,7 +8461,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=738151)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 5.697831 (coefficient=0.018321) | Trigger Spell: 280708 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 6.8109 (coefficient=0.0219) | Trigger Spell: 280708 | Target: Self (1)
+                   Hotfixed: Coefficient (0.018321 -> 0.0219)
 Description      : Your armor gathers and analyzes combat data every $280708t1 sec, increasing your primary stat by $s1, stacking up to $280709u times. The data decays while out of combat.
 
 Enables $@spellname280573 within Uldir.
@@ -8478,7 +8482,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=738156)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 4507.592 (coefficient=57.97546) | Trigger Spell: 280702 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 3148.875 (coefficient=40.5) | Trigger Spell: 280702 | Target: Self (1)
+                   Hotfixed: Coefficient (57.9755 -> 40.5)
 #2 (id=738401)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 5634.728 (coefficient=72.47239) | Target: Self (1)
 Description      : Your spells and abilities have a chance to release a barrage of lasers, dealing $s1 Arcane damage split among all enemies and restoring $s2 health split among injured allies.

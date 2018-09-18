@@ -8712,7 +8712,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724756)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 250.4218 (coefficient=3.220859) | Trigger Spell: 273266 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 137.773 (coefficient=1.772) | Trigger Spell: 273266 | Target: Self (1)
+                   Hotfixed: Coefficient (3.22086 -> 1.772)
 Description      : Arcane Shot increases the damage of Arcane Shot by $s1 for $273267d, stacking up to $273267u times.
 
 Name             : Summon Animal Companion (id=273277) [Hidden] 
@@ -9088,9 +9089,10 @@ Effects          :
 #1 (id=734283)   : Apply Aura (6) | Dummy (4)
                    Base Value: 9000 | Scaled Value: 9000 | Trigger Spell: 279607 | Target: Self (1)
 #2 (id=734284)   : Apply Aura (6) | Add Flat Modifier (107): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 74.64 (coefficient=0.24) | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 373.2 (coefficient=1.2) | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Barbed Shot (217200), Frenzy (272790)
                    Family Flags: 78
+                   Hotfixed: Coefficient (0.24 -> 1.2)
 Description      : Barbed Shot deals ${$s2*($217200d/$217200t1)} additional damage over its duration, and Frenzy's duration is increased to ${$s1/1000}.1 sec.
 
 Name             : Rapid Reload (id=278530) [Scaling Spell (-8), Spell Family (9), Passive] 
@@ -9580,7 +9582,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737878)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 901.5184 (coefficient=11.59509) | Trigger Spell: 280383 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 586.235 (coefficient=7.54) | Trigger Spell: 280383 | Target: Self (1)
+                   Hotfixed: Coefficient (11.5951 -> 7.54)
 #2 (id=738006)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : Dealing damage has a chance to call down a Thunderous Blast, dealing $s1 Nature damage to the enemy and increasing the damage of Thunderous Blast by $280385s1%. At ${$s2*$280385s1}% increased damage, Thunderous Blast will critically hit and reset this effect.
@@ -9682,7 +9685,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=738151)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 5.697831 (coefficient=0.018321) | Trigger Spell: 280708 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 6.8109 (coefficient=0.0219) | Trigger Spell: 280708 | Target: Self (1)
+                   Hotfixed: Coefficient (0.018321 -> 0.0219)
 Description      : Your armor gathers and analyzes combat data every $280708t1 sec, increasing your primary stat by $s1, stacking up to $280709u times. The data decays while out of combat.
 
 Enables $@spellname280573 within Uldir.
@@ -9702,7 +9706,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=738156)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 4507.592 (coefficient=57.97546) | Trigger Spell: 280702 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 3148.875 (coefficient=40.5) | Trigger Spell: 280702 | Target: Self (1)
+                   Hotfixed: Coefficient (57.9755 -> 40.5)
 #2 (id=738401)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 5634.728 (coefficient=72.47239) | Target: Self (1)
 Description      : Your spells and abilities have a chance to release a barrage of lasers, dealing $s1 Arcane damage split among all enemies and restoring $s2 health split among injured allies.

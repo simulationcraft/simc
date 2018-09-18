@@ -7040,7 +7040,8 @@ Effects          :
 #1 (id=723926)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=2.381773) | Trigger Spell: 272806 | Target: Self (1)
 #2 (id=723927)   : Dummy (3)
-                   Base Value: 4 | Scaled Value: 4
+                   Base Value: 3 | Scaled Value: 3
+                   Hotfixed: Base Value (4 -> 3)
 Description      : Fists of Fury grants you $s1 Critical Strike for $272806d when it hits at least $s2 enemies.
 
 Name             : Ruinous Bolt (id=273150) [Scaling Spell (-8), Passive] 
@@ -7441,8 +7442,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732971)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 887.2086 (coefficient=11.41104) | Trigger Spell: 278707 | Target: Self (1)
-                   Hotfixed: Coefficient (17.5583 -> 11.411)
+                   Base Value: 0 | Scaled Value: 399.2438 (coefficient=5.134969) | Trigger Spell: 278707 | Target: Self (1)
+                   Hotfixed: Coefficient (17.5583 -> 5.13497)
 Description      : Blackout Kick increases the damage of your next Rising Sun Kick by $s1, stacking up to $278710u times.
 
 Name             : Training of Niuzao (id=278569) [Scaling Spell (-7), Spell Family (53), Passive] 
@@ -7991,7 +7992,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737878)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 901.5184 (coefficient=11.59509) | Trigger Spell: 280383 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 586.235 (coefficient=7.54) | Trigger Spell: 280383 | Target: Self (1)
+                   Hotfixed: Coefficient (11.5951 -> 7.54)
 #2 (id=738006)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : Dealing damage has a chance to call down a Thunderous Blast, dealing $s1 Nature damage to the enemy and increasing the damage of Thunderous Blast by $280385s1%. At ${$s2*$280385s1}% increased damage, Thunderous Blast will critically hit and reset this effect.
@@ -8110,7 +8112,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=738151)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 5.697831 (coefficient=0.018321) | Trigger Spell: 280708 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 6.8109 (coefficient=0.0219) | Trigger Spell: 280708 | Target: Self (1)
+                   Hotfixed: Coefficient (0.018321 -> 0.0219)
 Description      : Your armor gathers and analyzes combat data every $280708t1 sec, increasing your primary stat by $s1, stacking up to $280709u times. The data decays while out of combat.
 
 Enables $@spellname280573 within Uldir.
@@ -8130,7 +8133,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=738156)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 4507.592 (coefficient=57.97546) | Trigger Spell: 280702 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 3148.875 (coefficient=40.5) | Trigger Spell: 280702 | Target: Self (1)
+                   Hotfixed: Coefficient (57.9755 -> 40.5)
 #2 (id=738401)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 5634.728 (coefficient=72.47239) | Target: Self (1)
 Description      : Your spells and abilities have a chance to release a barrage of lasers, dealing $s1 Arcane damage split among all enemies and restoring $s2 health split among injured allies.
