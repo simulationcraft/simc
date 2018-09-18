@@ -6360,7 +6360,6 @@ void mage_t::apl_precombat()
   {
     precombat -> add_action( "summon_arcane_familiar" );
     precombat -> add_action( "variable,name=conserve_mana,op=set,value=60", "conserve_mana is the mana percentage we want to go down to during conserve. It needs to leave enough room to worst case scenario spam AB only during AP." );
-    precombat -> add_action( "variable,name=bs_rotation,op=set,value=1,if=azerite.brain_storm.rank>=2&talent.rune_of_power.enabled", "We change the rotation to burn AFTER Evocation instead of before when we have enough brain storm traits and the correct talents for it." );
   }
   // Snapshot Stats
   precombat -> add_action( "snapshot_stats" );
@@ -6373,8 +6372,7 @@ void mage_t::apl_precombat()
   switch ( specialization() )
   {
     case MAGE_ARCANE:
-      precombat -> add_action( this, "Evocation", "if=variable.bs_rotation=1,precombat=1" );
-      precombat -> add_action( this, "Arcane Blast", "if=variable.bs_rotation=0" );
+      precombat -> add_action( this, "Arcane Blast");
       break;
     case MAGE_FIRE:
       precombat -> add_action( this, "Pyroblast" );
@@ -6454,18 +6452,13 @@ void mage_t::apl_arcane()
   default_list -> add_action( this, "Time Warp", "if=time=0&buff.bloodlust.down" );
   default_list -> add_action( "call_action_list,name=burn,if=burn_phase|target.time_to_die<variable.average_burn_length", "Go to Burn Phase when already burning, or when boss will die soon." );
   default_list -> add_action( "call_action_list,name=burn,if=(cooldown.arcane_power.remains=0&cooldown.evocation.remains<=variable.average_burn_length&(buff.arcane_charge.stack=buff.arcane_charge.max_stack|(talent.charged_up.enabled&cooldown.charged_up.remains=0)))", "Start Burn Phase when Arcane Power is ready and Evocation will be ready (on average) before the burn phase is over. Also make sure we got 4 Arcane Charges, or can get 4 Arcane Charges with Charged Up." );
-  default_list -> add_action( "call_action_list,name=burn,if=variable.bs_rotation=1&(buff.brain_storm.up|cooldown.evocation.remains<=variable.average_burn_length)&(buff.arcane_charge.stack=buff.arcane_charge.max_stack|(talent.charged_up.enabled&cooldown.charged_up.remains=0))", "When running Brainstorm rotation, instead of making sure Arcane Power is ready, we check if Evocation is ready, or will be ready before OOMing. (on average) We still keep the same Arcane Charge logic." );
-  default_list -> add_action( "call_action_list,name=conserve,if=!burn_phase" );
+   default_list -> add_action( "call_action_list,name=conserve,if=!burn_phase" );
   default_list -> add_action( "call_action_list,name=movement" );
 
   burn -> add_action( "variable,name=total_burns,op=add,value=1,if=!burn_phase", "Increment our burn phase counter. Whenever we enter the `burn` actions without being in a burn phase, it means that we are about to start one." );
   burn -> add_action( "start_burn_phase,if=!burn_phase" );
-  burn -> add_action( "stop_burn_phase,if=burn_phase&variable.bs_rotation=0&prev_gcd.1.evocation&target.time_to_die>variable.average_burn_length&burn_phase_duration>0", "End the burn phase when we just evocated." );
-  burn -> add_action( "stop_burn_phase,if=burn_phase&variable.bs_rotation=1&buff.brain_storm.down&buff.arcane_power.down&cooldown.arcane_power.remains>10&target.time_to_die>variable.average_burn_length&burn_phase_duration>0", "When running the Brain Storm rotation, we instead end the Burn Phase when Arcane Power ends. " );
+  burn -> add_action( "stop_burn_phase,if=burn_phase&prev_gcd.1.evocation&target.time_to_die>variable.average_burn_length&burn_phase_duration>0", "End the burn phase when we just evocated." );
   burn -> add_talent( this, "Charged Up", "if=buff.arcane_charge.stack<=1", "Less than 1 instead of equals to 0, because of pre-cast Arcane Blast" );
-  burn -> add_talent( this, "Rune of Power", "if=variable.bs_rotation=1&!buff.arcane_power.up&mana.pct>=50&cooldown.arcane_power.remains>0&(buff.arcane_charge.stack=buff.arcane_charge.max_stack)&(full_recharge_time<=execute_time|full_recharge_time<=cooldown.arcane_power.remains|target.time_to_die<=cooldown.arcane_power.remains)", "During Brain Storm rotation, we can use 1 RoP before Arcane Power, as long as it means we will still have one for Arcane Power." );
-  burn -> add_action( this, "Arcane Blast", "if=variable.bs_rotation=1&(cooldown.evocation.remains>action.arcane_blast.execute_time&cooldown.evocation.remains<=variable.average_burn_length|cooldown.evocation.remains=0)&!prev_gcd.1.evocation", "During Brain Storm rotation, before using Evocation, we want to OOM ourselves as quickly as possible while doing max DPS, so spam Arcane Blast until OOM, as long as evocation is ready or ready soon" );
-  burn -> add_action( this, "Evocation", "if=variable.bs_rotation=1" );
   burn -> add_talent( this, "Mirror Image" );
   burn -> add_talent( this, "Nether Tempest", "if=(refreshable|!ticking)&buff.arcane_charge.stack=buff.arcane_charge.max_stack&buff.rune_of_power.down&buff.arcane_power.down" );
   burn -> add_action( this, "Arcane Blast", "if=buff.rule_of_threes.up&talent.overpowered.enabled",
@@ -6504,7 +6497,7 @@ void mage_t::apl_arcane()
   conserve -> add_action( this, "Arcane Blast", "if=buff.rule_of_threes.up&buff.arcane_charge.stack>3", "Arcane Blast shifts up in priority when running rule of threes." );
   conserve -> add_talent( this, "Rune of Power", "if=buff.arcane_charge.stack=buff.arcane_charge.max_stack&(full_recharge_time<=execute_time|full_recharge_time<=cooldown.arcane_power.remains|target.time_to_die<=cooldown.arcane_power.remains)" );
   conserve -> add_action( this, "Arcane Missiles", "if=mana.pct<=95&buff.clearcasting.react,chain=1" );
-  conserve -> add_action( this, "Arcane Barrage", "if=((buff.arcane_charge.stack=buff.arcane_charge.max_stack)&((mana.pct<=variable.conserve_mana&variable.bs_rotation=0|(mana.pct<=variable.conserve_mana-30&variable.bs_rotation=1&buff.rune_of_power.down))|(cooldown.arcane_power.remains>cooldown.rune_of_power.full_recharge_time&mana.pct<=variable.conserve_mana+25&variable.bs_rotation=0))|(talent.arcane_orb.enabled&cooldown.arcane_orb.remains<=gcd&cooldown.arcane_power.remains>10))|mana.pct<=(variable.conserve_mana-10)&variable.bs_rotation=0|mana.pct<=(variable.conserve_mana-50)&variable.bs_rotation=1", "During conserve, we still just want to continue not dropping charges as long as possible.So keep 'burning' as long as possible (aka conserve_mana threshhold) and then swap to a 4x AB->Abarr conserve rotation. If we do not have 4 AC, we can dip slightly lower to get a 4th AC. We also sustain at a higher mana percentage when we plan to use a Rune of Power during conserve phase, so we can burn during the Rune of Power." );
+  conserve -> add_action( this, "Arcane Barrage", "if=((buff.arcane_charge.stack=buff.arcane_charge.max_stack)&((mana.pct<=variable.conserve_mana)|(cooldown.arcane_power.remains>cooldown.rune_of_power.full_recharge_time&mana.pct<=variable.conserve_mana+25))|(talent.arcane_orb.enabled&cooldown.arcane_orb.remains<=gcd&cooldown.arcane_power.remains>10))|mana.pct<=(variable.conserve_mana-10)|mana.pct<=(variable.conserve_mana-50)", "During conserve, we still just want to continue not dropping charges as long as possible.So keep 'burning' as long as possible (aka conserve_mana threshhold) and then swap to a 4x AB->Abarr conserve rotation. If we do not have 4 AC, we can dip slightly lower to get a 4th AC. We also sustain at a higher mana percentage when we plan to use a Rune of Power during conserve phase, so we can burn during the Rune of Power." );
   conserve -> add_talent( this, "Supernova", "if=mana.pct<=95", "Supernova is barely worth casting, which is why it is so far down, only just above AB. " );
   conserve -> add_action( this, "Arcane Explosion", "if=active_enemies>=3&(mana.pct>=variable.conserve_mana|buff.arcane_charge.stack=3)", "Keep 'burning' in aoe situations until conserve_mana pct. After that only cast AE with 3 Arcane charges, since it's almost equal mana cost to a 3 stack AB anyway. At that point AoE rotation will be AB x3 -> AE -> Abarr" );
   conserve -> add_action( this, "Arcane Blast" );
