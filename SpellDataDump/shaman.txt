@@ -9323,11 +9323,14 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734562)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.245142) | Trigger Spell: 279027 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.343) | Trigger Spell: 279027 | Target: Self (1)
+                   Hotfixed: Coefficient (0.245142 -> 0.343)
 #2 (id=734563)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.245142)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.343)
+                   Hotfixed: Coefficient (0.245142 -> 0.343)
 #3 (id=734564)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.245142)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.343)
+                   Hotfixed: Coefficient (0.245142 -> 0.343)
 Description      : Dealing Fire damage grants $s1 critical strike for $279028d. 
 Dealing Frost damage grants $s2 mastery for $279029d.
 Dealing Nature damage grants $s3 haste for $279033d.
@@ -9832,7 +9835,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737878)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 901.5184 (coefficient=11.59509) | Trigger Spell: 280383 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 586.235 (coefficient=7.54) | Trigger Spell: 280383 | Target: Self (1)
+                   Hotfixed: Coefficient (11.5951 -> 7.54)
 #2 (id=738006)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : Dealing damage has a chance to call down a Thunderous Blast, dealing $s1 Nature damage to the enemy and increasing the damage of Thunderous Blast by $280385s1%. At ${$s2*$280385s1}% increased damage, Thunderous Blast will critically hit and reset this effect.
@@ -9934,7 +9938,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=738151)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 5.697831 (coefficient=0.018321) | Trigger Spell: 280708 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 6.8109 (coefficient=0.0219) | Trigger Spell: 280708 | Target: Self (1)
+                   Hotfixed: Coefficient (0.018321 -> 0.0219)
 Description      : Your armor gathers and analyzes combat data every $280708t1 sec, increasing your primary stat by $s1, stacking up to $280709u times. The data decays while out of combat.
 
 Enables $@spellname280573 within Uldir.
@@ -9954,7 +9959,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=738156)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 4507.592 (coefficient=57.97546) | Trigger Spell: 280702 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 3148.875 (coefficient=40.5) | Trigger Spell: 280702 | Target: Self (1)
+                   Hotfixed: Coefficient (57.9755 -> 40.5)
 #2 (id=738401)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 5634.728 (coefficient=72.47239) | Target: Self (1)
 Description      : Your spells and abilities have a chance to release a barrage of lasers, dealing $s1 Arcane damage split among all enemies and restoring $s2 health split among injured allies.
