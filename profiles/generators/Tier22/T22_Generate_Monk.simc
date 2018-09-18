@@ -31,13 +31,13 @@ race=pandaren
 spec=windwalker
 role=attack
 position=back
-talents=2022033
+talents=2022032
 
-head=hood_of_the_slithering_loa,id=159318,bonus_id=1557/4819/4775/4786,azerite_powers=388/38/0/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=
-shoulders=mantle_of_fastidious_machinations,id=158304,bonus_id=1557/4819/4775/4786,azerite_powers=10/388/461/84/13
+head=irontide_captains_hat,id=155888,bonus_id=1557/4819/4775/4786,azerite_powers=10/479/30/0/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536
+shoulders=usurpers_bloodcaked_spaulders,id=160620,bonus_id=4824/1507,azerite_powers=10/391/30/0/13
 back=fetid_horrors_tanglecloak,id=160643,bonus_id=4800/1507
-chest=cephalohide_jacket,id=159314,bonus_id=1557/4819/4775/4786,azerite_powers=10/388/18/85/13
+chest=cephalohide_jacket,id=159314,bonus_id=1557/4819/4775/4786,azerite_powers=10/479/18/85/13
 wrists=wristwraps_of_coursing_miasma,id=160621,bonus_id=4800/1507
 hands=gloves_of_descending_madness,id=160618,bonus_id=4800/1507
 waist=replicated_chitin_cord,id=160717,bonus_id=4800/1507
