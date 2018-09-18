@@ -9350,9 +9350,9 @@ void monk_t::apl_combat_windwalker()
   def->add_talent( this, "Fist of the White Tiger", "if=(energy.time_to_max<1|(talent.serenity.enabled&cooldown.serenity.remains<2))&chi.max-chi>=3" );
   def->add_action( this, "Tiger Palm", "target_if=min:debuff.mark_of_the_crane.remains,if=(energy.time_to_max<1|(talent.serenity.enabled&cooldown.serenity.remains<2))&chi.max-chi>=2&!prev_gcd.1.tiger_palm" );
   def->add_action( "call_action_list,name=cd" );
-  def->add_action( "call_action_list,name=st,if=active_enemies<3|(active_enemies=3&azerite.swift_roundhouse.rank>2)",
+  def->add_action( "call_action_list,name=st,if=active_enemies<3",
                    "Call the ST action list if there are 2 or less enemies" );
-  def->add_action( "call_action_list,name=aoe,if=active_enemies>3|(active_enemies=3&azerite.swift_roundhouse.rank<=2)",
+  def->add_action( "call_action_list,name=aoe,if=active_enemies>=3",
                    "Call the AoE action list if there are 3 or more enemies" );
 
   // Cooldowns
@@ -9427,15 +9427,14 @@ void monk_t::apl_combat_windwalker()
   st->add_talent( this, "Whirling Dragon Punch" );
   st->add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains" );
   st->add_talent( this, "Rushing Jade Wind", "if=buff.rushing_jade_wind.down&energy.time_to_max>1&active_enemies>1" );
-  st->add_action( this, "Fists of Fury", "if=energy.time_to_max>2.5&(azerite.swift_roundhouse.rank<2|(cooldown.whirling_dragon_punch.remains<10&talent.whirling_dragon_punch.enabled)|active_enemies>1)" );
+  st->add_action( this, "Fists of Fury", "if=energy.time_to_max>2.5" );
   st->add_talent( this, "Fist of the White Tiger", "if=chi<=2&(buff.rushing_jade_wind.down|energy>46)" );
   st->add_talent( this, "Energizing Elixir", "if=chi<=3&energy<50" );
-  st->add_action( this, "Blackout Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick&(cooldown.rising_sun_kick.remains>2|chi>=3)&(cooldown.fists_of_fury.remains>2|chi>=4|(chi=2&prev_gcd.1.tiger_palm)|(azerite.swift_roundhouse.rank>=2&active_enemies=1))&buff.swift_roundhouse.stack<2" );
+  st->add_action( this, "Blackout Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick&(cooldown.rising_sun_kick.remains>2|chi>=3)&(cooldown.fists_of_fury.remains>2|chi>=4|(chi=2&prev_gcd.1.tiger_palm))&buff.swift_roundhouse.stack<2" );
   st->add_talent( this, "Chi Wave" );
   st->add_talent( this, "Chi Burst", "if=chi.max-chi>=1&active_enemies=1|chi.max-chi>=2" );
   st->add_action( this, "Tiger Palm", "target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&chi.max-chi>=2&(buff.rushing_jade_wind.down|energy>56)" );
   st->add_action( this, "Flying Serpent Kick", "if=prev_gcd.1.blackout_kick&chi>1&buff.swift_roundhouse.stack<2,interrupt=1" );
-  st->add_action( this, "Fists of Fury", "if=energy.time_to_max>2.5&cooldown.rising_sun_kick.remains>2&buff.swift_roundhouse.stack=2" );
 }
 
 // Mistweaver Combat Action Priority List ==================================
