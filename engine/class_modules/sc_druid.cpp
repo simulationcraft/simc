@@ -6053,12 +6053,6 @@ struct solar_empowerment_t : public druid_spell_t
 
     snapshot_flags = update_flags = 0;
   }
-
-  void impact(action_state_t* s) override
-  {
-    druid_spell_t::impact(s);
-    streaking_stars_trigger(SS_SOLAR_WRATH, execute_state);
-  }
 };
 
 struct solar_wrath_t : public druid_spell_t
@@ -6115,6 +6109,7 @@ struct solar_wrath_t : public druid_spell_t
     {
       p ()->trigger_solar_empowerment (s);
     }
+    streaking_stars_trigger(SS_SOLAR_WRATH, execute_state);
   }
 
   timespan_t gcd() const override
