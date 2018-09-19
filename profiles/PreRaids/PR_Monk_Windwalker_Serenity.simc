@@ -1,11 +1,11 @@
-monk="PR_Monk_Windwalker"
+monk="PR_Monk_Windwalker_Serenity"
 source=default
 spec=windwalker
 level=120
 race=pandaren
 role=dps
 position=back
-talents=2022032
+talents=2022033
 
 # Default consumables
 potion=bursting_blood
