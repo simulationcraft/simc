@@ -7953,6 +7953,10 @@ void druid_t::apl_balance()
     default_list -> add_action( racial_actions[i] + ",if=buff.celestial_alignment.up|buff.incarnation.up" );
 
   default_list->add_action( "use_items" );
+  if (items[SLOT_TRINKET_1].name_str == "azurethos_singed_plumage" || items[SLOT_TRINKET_2].name_str == "azurethos_singed_plumage")
+    default_list->add_action("use_item,name=azurethos_singed_plumage,if=cooldown.incarnation.remains>30|cooldown.celestial_alignment.remains>30");
+  if (items[SLOT_TRINKET_1].name_str == "dread_gladiators_badge" || items[SLOT_TRINKET_2].name_str == "dread_gladiators_badge")
+    default_list->add_action("use_item,name=dread_gladiators_badge,if=cooldown.incarnation.remains>30|cooldown.celestial_alignment.remains>30");
   default_list->add_talent( this, "Warrior of Elune", "", "CDs");
   default_list->add_action( this, "Innervate", "if=azerite.lively_spirit.enabled&(cooldown.incarnation.up|cooldown.celestial_alignment.remains<12)&(((raid_event.adds.duration%15)*(4)<(raid_event.adds.in%180))|(raid_event.adds.up))");
   default_list->add_action( "incarnation,if=astral_power>=40&(((raid_event.adds.duration%30)*(4)<(raid_event.adds.in%180))|(raid_event.adds.up))" );
