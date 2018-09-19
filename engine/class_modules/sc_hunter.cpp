@@ -2032,6 +2032,20 @@ struct volley_t: hunter_ranged_attack_t
 
 // Auto Shot ================================================================
 
+struct auto_shot_state_t : public action_state_t
+{
+  auto_shot_state_t( action_t* action, player_t* target ) :
+    action_state_t( action, target )
+  { }
+
+  proc_types2 cast_proc_type2() const override
+  {
+    // Auto shot seems to trigger Meticulous Scheming (and possibly other
+    // effects that care about casts).
+    return PROC2_CAST_DAMAGE;
+  }
+};
+
 struct auto_shot_t : public auto_attack_base_t<ranged_attack_t>
 {
   volley_t* volley = nullptr;
@@ -2048,6 +2062,11 @@ struct auto_shot_t : public auto_attack_base_t<ranged_attack_t>
 
     wild_call_chance = p -> specs.wild_call -> proc_chance() +
                        p -> talents.one_with_the_pack -> effectN( 1 ).percent();
+  }
+
+  action_state_t* new_state() override
+  {
+    return new auto_shot_state_t( this, target );
   }
 
   void impact( action_state_t* s ) override

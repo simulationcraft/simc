@@ -2110,9 +2110,6 @@ void meticulous_scheming( special_effect_t& effect )
     { 201427, true }, // Demon Hunter: Annihilation
     { 210152, true }, // Demon Hunter: Death Sweep
   } };
-  static constexpr unsigned __spell_whitelist[] = {
-    75, // Hunter: Auto Shot
-  };
 
   struct seize_driver_t : public dbc_proc_callback_t
   {
@@ -2128,11 +2125,6 @@ void meticulous_scheming( special_effect_t& effect )
 
     void execute( action_t* a, action_state_t* ) override
     {
-      if ( a->background && range::find( __spell_whitelist, a->id ) == range::cend( __spell_whitelist ) )
-      {
-        return;
-      }
-
       // Presume the broken spells not affecting Meticulous Scheming is a bug
       if ( listener->bugs && __spell_blacklist.find( a->id ) != __spell_blacklist.end() )
       {
@@ -2170,6 +2162,7 @@ void meticulous_scheming( special_effect_t& effect )
   secondary->source = effect.source;
   secondary->proc_flags_ = PF_MELEE_ABILITY | PF_RANGED | PF_RANGED_ABILITY | PF_NONE_HEAL |
                            PF_NONE_SPELL | PF_MAGIC_SPELL | PF_MAGIC_HEAL;
+  secondary->proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
   effect.player -> special_effects.push_back( secondary );
 
   auto meticulous_cb = new seize_driver_t( *secondary );
