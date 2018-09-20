@@ -5306,16 +5306,17 @@ void hunter_t::apl_bm()
   default_list -> add_talent( this, "Spitting Cobra" );
   default_list -> add_talent( this, "Stampede", "if=buff.bestial_wrath.up|cooldown.bestial_wrath.remains<gcd|target.time_to_die<15" );
   default_list -> add_action( this, "Aspect of the Wild" );
-  default_list -> add_action( this, "Multi-Shot", "if=spell_targets>2&(pet.cat.buff.beast_cleave.remains<gcd.max)" );
+  default_list -> add_action( this, "Multi-Shot", "if=spell_targets>2&(!pet.cat.buff.beast_cleave.up|gcd.max-pet.cat.buff.beast_cleave.remains>0.25)" );
   default_list -> add_action( this, "Bestial Wrath", "if=!buff.bestial_wrath.up" );
+  default_list -> add_talent( this, "Barrage", "if=active_enemies>1" );
   default_list -> add_talent( this, "Chimaera Shot", "if=spell_targets>1");
-  default_list -> add_action( this, "Multi-Shot", "if=spell_targets>1&(pet.cat.buff.beast_cleave.remains<gcd.max)" );
+  default_list -> add_action( this, "Multi-Shot", "if=spell_targets>1&(!pet.cat.buff.beast_cleave.up|gcd.max-pet.cat.buff.beast_cleave.remains>0.25)" );
   default_list -> add_action( this, "Kill Command" );
   default_list -> add_talent( this, "Chimaera Shot" );
   default_list -> add_talent( this, "A Murder of Crows" );
   default_list -> add_talent( this, "Dire Beast" );
   default_list -> add_action( this, "Barbed Shot", "if=pet.cat.buff.frenzy.down&charges_fractional>1.8|target.time_to_die<9" );
-  default_list -> add_talent( this, "Barrage", "if=active_enemies>1" );
+  default_list -> add_talent( this, "Barrage" );
   default_list -> add_action( this, "Cobra Shot", "if=(active_enemies<2|cooldown.kill_command.remains>focus.time_to_max)&(focus-cost+focus.regen*(cooldown.kill_command.remains-1)>action.kill_command.cost|cooldown.kill_command.remains>1+gcd)&cooldown.kill_command.remains>1" );
   // Arcane torrent if nothing else is available
   default_list -> add_action( "arcane_torrent" );
