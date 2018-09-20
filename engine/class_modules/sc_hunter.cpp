@@ -5306,11 +5306,11 @@ void hunter_t::apl_bm()
   default_list -> add_talent( this, "Spitting Cobra" );
   default_list -> add_talent( this, "Stampede", "if=buff.bestial_wrath.up|cooldown.bestial_wrath.remains<gcd|target.time_to_die<15" );
   default_list -> add_action( this, "Aspect of the Wild" );
-  default_list -> add_action( this, "Multi-Shot", "if=spell_targets>2&(!pet.cat.buff.beast_cleave.up|gcd.max-pet.cat.buff.beast_cleave.remains>0.25)" );
+  default_list -> add_action( this, "Multi-Shot", "if=spell_targets>2&gcd.max-pet.cat.buff.beast_cleave.remains>0.25" );
   default_list -> add_action( this, "Bestial Wrath", "if=!buff.bestial_wrath.up" );
   default_list -> add_talent( this, "Barrage", "if=active_enemies>1" );
   default_list -> add_talent( this, "Chimaera Shot", "if=spell_targets>1");
-  default_list -> add_action( this, "Multi-Shot", "if=spell_targets>1&(!pet.cat.buff.beast_cleave.up|gcd.max-pet.cat.buff.beast_cleave.remains>0.25)" );
+  default_list -> add_action( this, "Multi-Shot", "if=spell_targets>1&gcd.max-pet.cat.buff.beast_cleave.remains>0.25" );
   default_list -> add_action( this, "Kill Command" );
   default_list -> add_talent( this, "Chimaera Shot" );
   default_list -> add_talent( this, "A Murder of Crows" );
