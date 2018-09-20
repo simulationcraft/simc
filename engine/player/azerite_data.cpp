@@ -611,7 +611,8 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 280284, special_effects::dagger_in_the_back    );
   unique_gear::register_special_effect( 273790, special_effects::rezans_fury           );
   unique_gear::register_special_effect( 273829, special_effects::secrets_of_the_deep   );
-  unique_gear::register_special_effect( 280580, special_effects::combined_might        );
+  unique_gear::register_special_effect( 280580, special_effects::combined_might        ); // Combined Might
+  unique_gear::register_special_effect( 280625, special_effects::combined_might        ); // Stronger Together
   unique_gear::register_special_effect( 280178, special_effects::relational_normalization_gizmo );
   unique_gear::register_special_effect( 280163, special_effects::barrage_of_many_bombs );
   unique_gear::register_special_effect( 273682, special_effects::meticulous_scheming   );
