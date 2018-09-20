@@ -19,7 +19,7 @@ feet=bramble_looped_boots,id=159404,bonus_id=1557/4779
 finger1=seal_of_questionable_loyalties,id=158314,bonus_id=1557/4779,enchant=pact_of_haste
 finger2=band_of_the_ancient_dredger,id=159461,bonus_id=1557/4779,enchant=pact_of_haste
 trinket1=lustrous_golden_plumage,id=159617,bonus_id=1542/4779
-trinket2=darkmoon_deck__fathoms,id=159125
+trinket2=darkmoon_deck_fathoms,id=159125
 main_hand=bow_of_virulent_infection,id=160678,bonus_id=4800/1507,enchant=incendiary_ammunition
 
 save=T22_Hunter_Beast_Mastery.simc
