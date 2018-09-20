@@ -8,7 +8,7 @@ position=back
 talents=3101022
 
 # Default consumables
-potion=bursting_blood
+potion=battle_potion_of_agility
 flask=currents
 food=bountiful_captains_feast
 augmentation=battle_scarred
