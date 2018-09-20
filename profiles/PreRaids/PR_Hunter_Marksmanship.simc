@@ -8,7 +8,7 @@ position=ranged_back
 talents=2103012
 
 # Default consumables
-potion=rising_death
+potion=battle_potion_of_agility
 flask=currents
 food=bountiful_captains_feast
 augmentation=battle_scarred
