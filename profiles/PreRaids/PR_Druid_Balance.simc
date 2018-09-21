@@ -48,6 +48,8 @@ actions+=/arcane_torrent,if=buff.celestial_alignment.up|buff.incarnation.up
 actions+=/lights_judgment,if=buff.celestial_alignment.up|buff.incarnation.up
 actions+=/fireblood,if=buff.celestial_alignment.up|buff.incarnation.up
 actions+=/ancestral_call,if=buff.celestial_alignment.up|buff.incarnation.up
+actions+=/use_item,name=azurethos_singed_plumage,if=equipped.161377&(cooldown.incarnation.remains>30|cooldown.celestial_alignment.remains>30)
+actions+=/use_item,name=dread_gladiators_badge,if=equipped.161902&(cooldown.incarnation.remains>30|cooldown.celestial_alignment.remains>30)
 actions+=/use_items
 # CDs
 actions+=/warrior_of_elune
