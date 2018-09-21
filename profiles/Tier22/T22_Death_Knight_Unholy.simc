@@ -86,11 +86,11 @@ actions.generic+=/death_coil,if=runic_power.deficit<20&!variable.pooling_for_gar
 actions.generic+=/festering_strike,if=((((debuff.festering_wound.stack<4&!buff.unholy_frenzy.up)|debuff.festering_wound.stack<3)&cooldown.apocalypse.remains<3)|debuff.festering_wound.stack<1)&cooldown.army_of_the_dead.remains>5
 actions.generic+=/death_coil,if=!variable.pooling_for_gargoyle
 
-head=helm_of_the_defiled_laboratorium,id=160732,bonus_id=4800/1507/4775,azerite_powers=485/22/13
+head=helm_of_the_defiled_laboratorium,id=160732,bonus_id=4800/1507/4775,azerite_powers=199/22/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
-shoulders=dunecrawler_spaulders,id=157964,bonus_id=1557/4819/4775/4786,azerite_powers=482/31/13
+shoulders=pauldrons_of_the_great_unifier,id=159423,bonus_id=1557/4819/4775/4786,azerite_powers=199/22/0/13
 back=fetid_horrors_tanglecloak,id=160643,bonus_id=4800/1507
-chest=desert_guardians_breastplate,id=159424,bonus_id=1557/4819/4775/4786,azerite_powers=482/462/13
+chest=desert_guardians_breastplate,id=159424,bonus_id=1557/4819/4775/4786,azerite_powers=199/462/0/13
 wrists=imperious_vambraces,id=160723,bonus_id=4800/1507
 hands=waste_disposal_crushers,id=160635,bonus_id=4800/1507
 waist=decontaminators_greatbelt,id=160638,bonus_id=4800/1507
@@ -103,11 +103,11 @@ trinket2=syringe_of_bloodborne_infirmity,id=160655,bonus_id=4800/1507
 main_hand=khor_hammer_of_the_corrupted,id=160679,bonus_id=4800/1507,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=384.93
-# gear_strength=4304
-# gear_stamina=7034
+# gear_ilvl=386.27
+# gear_strength=4388
+# gear_stamina=7207
 # gear_crit_rating=870
 # gear_haste_rating=1213
 # gear_mastery_rating=697
 # gear_versatility_rating=223
-# gear_armor=3989
+# gear_armor=4055
