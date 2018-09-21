@@ -61,11 +61,11 @@ actions.single_target+=/raging_blow,if=talent.carnage.enabled|(talent.massacre.e
 actions.single_target+=/furious_slash,if=talent.furious_slash.enabled
 actions.single_target+=/whirlwind
 
-head=helm_of_the_defiled_laboratorium,id=160732,bonus_id=4824/1507/4775,azerite_powers=1/485/22/14/13
+head=helm_of_the_raptor_king,id=159422,bonus_id=1557/4819/4775/4786,azerite_powers=438/30/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
-shoulders=pauldrons_of_the_great_unifier,id=159423,bonus_id=1557/4819/4775/4786,azerite_powers=1/157/22/44/13
+shoulders=kraken_shell_pauldrons,id=159431,bonus_id=1557/4819/4775/4786,azerite_powers=438/459/0/13
 back=cloak_of_rippling_whispers,id=160642,bonus_id=4800/1507
-chest=desert_guardians_breastplate,id=159424,bonus_id=1557/4819/4775/4786,azerite_powers=1/482/18/85/13
+chest=ashvane_wardens_cuirass,id=159440,bonus_id=1557/4819/4775/4786,azerite_powers=438/30/0/13
 wrists=imperious_vambraces,id=160723,bonus_id=4800/1507
 hands=waste_disposal_crushers,id=160635,bonus_id=4800/1507
 waist=decontaminators_greatbelt,id=160638,bonus_id=4800/1507
