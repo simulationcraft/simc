@@ -1214,11 +1214,11 @@ public:
     if ( track_cd_waste )
     {
       cd_wasted_exec =
-          p()-> get_data_entry<simple_sample_data_with_min_max_t, data_t>( ab::name_str, p()->cd_waste_exec );
-      cd_wasted_cumulative = p()-> get_data_entry<simple_sample_data_with_min_max_t, data_t>(
+          p()-> template get_data_entry<simple_sample_data_with_min_max_t, data_t>( ab::name_str, p()->cd_waste_exec );
+      cd_wasted_cumulative = p()-> template get_data_entry<simple_sample_data_with_min_max_t, data_t>(
           ab::name_str, p()->cd_waste_cumulative );
       cd_wasted_iter =
-          p()-> get_data_entry<simple_sample_data_t, simple_data_t>( ab::name_str, p()->cd_waste_iter );
+          p()-> template get_data_entry<simple_sample_data_t, simple_data_t>( ab::name_str, p()->cd_waste_iter );
     }
   }
 
@@ -4565,6 +4565,7 @@ void demon_hunter_t::create_buffs()
 
   const spell_data_t* seething_power_trigger = azerite.seething_power.spell()->effectN( 1 ).trigger();
   const spell_data_t* seething_power_buff    = seething_power_trigger->effectN( 1 ).trigger();
+
   buff.seething_power                        = make_buff<stat_buff_t>( this, "seething_power", seething_power_buff )
                             ->add_stat( STAT_AGILITY, azerite.seething_power.value( 1 ) )
                             ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
