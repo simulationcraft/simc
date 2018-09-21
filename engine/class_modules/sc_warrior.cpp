@@ -4991,7 +4991,7 @@ void warrior_t::apl_fury()
 
   movement->add_action( this, "Heroic Leap" );
 
-  single_target->add_talent( this, "Siegebreaker", "if=buff.recklessness.up|cooldown.recklessness.remains>20" );
+  single_target->add_talent( this, "Siegebreaker" );
   single_target->add_action( this, "Rampage",
                              "if=buff.recklessness.up|(talent.frothing_berserker.enabled|talent.carnage.enabled&(buff."
                              "enrage.remains<gcd|rage>90)|talent.massacre.enabled&(buff.enrage.remains<gcd|rage>90))" );
@@ -5001,8 +5001,7 @@ void warrior_t::apl_fury()
   single_target->add_action( this, "Bloodthirst" );
   single_target->add_talent( this, "Bladestorm",
                              "if=prev_gcd.1.rampage&(debuff.siegebreaker.up|!talent.siegebreaker.enabled)" );
-  single_target->add_talent( this, "Dragon Roar",
-                             "if=buff.enrage.up&(debuff.siegebreaker.up|!talent.siegebreaker.enabled)" );
+  single_target->add_talent( this, "Dragon Roar", "if=buff.enrage.up" );
   single_target->add_action(
       this, "Raging Blow",
       "if=talent.carnage.enabled|(talent.massacre.enabled&rage<80)|(talent.frothing_berserker.enabled&rage<90)" );

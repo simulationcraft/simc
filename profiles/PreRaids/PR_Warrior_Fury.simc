@@ -49,14 +49,14 @@ actions+=/run_action_list,name=single_target
 
 actions.movement=heroic_leap
 
-actions.single_target=siegebreaker,if=buff.recklessness.up|cooldown.recklessness.remains>20
+actions.single_target=siegebreaker
 actions.single_target+=/rampage,if=buff.recklessness.up|(talent.frothing_berserker.enabled|talent.carnage.enabled&(buff.enrage.remains<gcd|rage>90)|talent.massacre.enabled&(buff.enrage.remains<gcd|rage>90))
 actions.single_target+=/execute,if=buff.enrage.up
 actions.single_target+=/bloodthirst,if=buff.enrage.down
 actions.single_target+=/raging_blow,if=charges=2
 actions.single_target+=/bloodthirst
 actions.single_target+=/bladestorm,if=prev_gcd.1.rampage&(debuff.siegebreaker.up|!talent.siegebreaker.enabled)
-actions.single_target+=/dragon_roar,if=buff.enrage.up&(debuff.siegebreaker.up|!talent.siegebreaker.enabled)
+actions.single_target+=/dragon_roar,if=buff.enrage.up
 actions.single_target+=/raging_blow,if=talent.carnage.enabled|(talent.massacre.enabled&rage<80)|(talent.frothing_berserker.enabled&rage<90)
 actions.single_target+=/furious_slash,if=talent.furious_slash.enabled
 actions.single_target+=/whirlwind
