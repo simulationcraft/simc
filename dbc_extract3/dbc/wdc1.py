@@ -1062,8 +1062,7 @@ class WDC1Parser(DBCParserBase):
 
             # Parse key block at this point too, so we can create full record information
             if self.has_key_block():
-                key_id, _ = _CLONE_INFO.unpack_from(self.data,
-                    self.key_block_offset + _WDC1_KEY_HEADER.size + _CLONE_INFO.size * record_id)
+                key_id = self.key_block[record_id]
             else:
                 key_id = 0
 
@@ -1096,8 +1095,7 @@ class WDC1Parser(DBCParserBase):
                 # the information now associates with the correct dbc id, since the
                 # key block is record index based, not dbc id based.
                 if self.has_key_block():
-                    key_id, _ = _CLONE_INFO.unpack_from(self.data,
-                        self.key_block_offset + _WDC1_KEY_HEADER.size + _CLONE_INFO.size * record_id)
+                    key_id = self.key_block[record_id]
                 else:
                     key_id = 0
 
@@ -1120,8 +1118,7 @@ class WDC1Parser(DBCParserBase):
                 # the information now associates with the correct dbc id, since the
                 # key block is record index based, not dbc id based.
                 if self.has_key_block():
-                    key_id, _ = _CLONE_INFO.unpack_from(self.data,
-                        self.key_block_offset + _WDC1_KEY_HEADER.size + _CLONE_INFO.size * record_id)
+                    key_id = self.key_block[record_id]
                 else:
                     key_id = 0
 
@@ -1234,11 +1231,11 @@ class WDC1Parser(DBCParserBase):
         offset += _WDC1_KEY_HEADER.size
 
         # Just make a sparse table for this
-        self.key_block = [ 0 ] * self.records
+        self.key_block = collections.defaultdict(lambda : 0)
 
         # Value, record id pairs
         unpacker = Struct('II')
-        for index in range(0, self.records):
+        for index in range(0, records):
             value, record_id = unpacker.unpack_from(self.data, offset + index * unpacker.size)
             self.key_block[record_id] = value
 
@@ -1285,6 +1282,9 @@ class WDC1Parser(DBCParserBase):
         if self.has_extended_column_info_block() and not self.parse_extended_column_info_block():
             return False
 
+        if self.has_key_block() and not self.parse_key_block():
+            return False
+
         if self.has_id_block() and not self.parse_id_block():
             return False
 
@@ -1292,9 +1292,6 @@ class WDC1Parser(DBCParserBase):
             return False
 
         if self.has_sparse_block() and not self.parse_sparse_block():
-            return False
-
-        if self.has_key_block() and not self.parse_key_block():
             return False
 
         # If there is no ID block, generate a proxy ID block from actual record data
