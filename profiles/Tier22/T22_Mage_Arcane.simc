@@ -35,7 +35,6 @@ actions.precombat+=/arcane_blast
 # Executed every time the actor is available.
 # Interrupt the boss when possible.
 actions=counterspell,if=target.debuff.casting.react
-actions+=/time_warp,if=time=0&buff.bloodlust.down
 # Go to Burn Phase when already burning, or when boss will die soon.
 actions+=/call_action_list,name=burn,if=burn_phase|target.time_to_die<variable.average_burn_length
 # Start Burn Phase when Arcane Power is ready and Evocation will be ready (on average) before the burn phase is over. Also make sure we got 4 Arcane Charges, or can get 4 Arcane Charges with Charged Up.

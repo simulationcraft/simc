@@ -31,7 +31,6 @@ actions.precombat+=/pyroblast
 
 # Executed every time the actor is available.
 actions=counterspell,if=target.debuff.casting.react
-actions+=/time_warp,if=time=0&buff.bloodlust.down
 actions+=/mirror_image,if=buff.combustion.down
 # Standard Talent RoP Logic.
 actions+=/rune_of_power,if=firestarter.active&action.rune_of_power.charges=2|cooldown.combustion.remains>40&buff.combustion.down&!talent.kindling.enabled|target.time_to_die<11|talent.kindling.enabled&(charges_fractional>1.8|time<40)&cooldown.combustion.remains>40

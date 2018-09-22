@@ -57,8 +57,7 @@ actions.aoe+=/frostbolt
 actions.aoe+=/call_action_list,name=movement
 actions.aoe+=/ice_lance
 
-actions.cooldowns=time_warp
-actions.cooldowns+=/icy_veins
+actions.cooldowns=icy_veins
 actions.cooldowns+=/mirror_image
 # Rune of Power is always used with Frozen Orb. Any leftover charges at the end of the fight should be used, ideally if the boss doesn't die in the middle of the Rune buff.
 actions.cooldowns+=/rune_of_power,if=prev_gcd.1.frozen_orb|time_to_die>10+cast_time&time_to_die<20
