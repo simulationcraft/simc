@@ -6449,10 +6449,9 @@ void mage_t::apl_arcane()
 
 
   default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react", "Interrupt the boss when possible." );
-  default_list -> add_action( this, "Time Warp", "if=time=0&buff.bloodlust.down" );
   default_list -> add_action( "call_action_list,name=burn,if=burn_phase|target.time_to_die<variable.average_burn_length", "Go to Burn Phase when already burning, or when boss will die soon." );
   default_list -> add_action( "call_action_list,name=burn,if=(cooldown.arcane_power.remains=0&cooldown.evocation.remains<=variable.average_burn_length&(buff.arcane_charge.stack=buff.arcane_charge.max_stack|(talent.charged_up.enabled&cooldown.charged_up.remains=0)))", "Start Burn Phase when Arcane Power is ready and Evocation will be ready (on average) before the burn phase is over. Also make sure we got 4 Arcane Charges, or can get 4 Arcane Charges with Charged Up." );
-   default_list -> add_action( "call_action_list,name=conserve,if=!burn_phase" );
+  default_list -> add_action( "call_action_list,name=conserve,if=!burn_phase" );
   default_list -> add_action( "call_action_list,name=movement" );
 
   burn -> add_action( "variable,name=total_burns,op=add,value=1,if=!burn_phase", "Increment our burn phase counter. Whenever we enter the `burn` actions without being in a burn phase, it means that we are about to start one." );
@@ -6526,7 +6525,6 @@ void mage_t::apl_fire()
   action_priority_list_t* standard            = get_action_priority_list( "standard_rotation" );
 
   default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
-  default_list -> add_action( this, "Time Warp", "if=time=0&buff.bloodlust.down" );
   default_list -> add_talent( this, "Mirror Image", "if=buff.combustion.down" );
   default_list -> add_talent( this, "Rune of Power", "if=firestarter.active&action.rune_of_power.charges=2|cooldown.combustion.remains>40&buff.combustion.down&!talent.kindling.enabled|target.time_to_die<11|talent.kindling.enabled&(charges_fractional>1.8|time<40)&cooldown.combustion.remains>40",
     "Standard Talent RoP Logic." );
@@ -6678,7 +6676,6 @@ void mage_t::apl_frost()
   aoe -> add_action( "call_action_list,name=movement" );
   aoe -> add_action( this, "Ice Lance" );
 
-  cooldowns -> add_action( this, "Time Warp" );
   cooldowns -> add_action( this, "Icy Veins" );
   cooldowns -> add_talent( this, "Mirror Image" );
   cooldowns -> add_talent( this, "Rune of Power", "if=prev_gcd.1.frozen_orb|time_to_die>10+cast_time&time_to_die<20",
