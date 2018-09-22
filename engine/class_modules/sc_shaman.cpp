@@ -3030,9 +3030,10 @@ struct windlash_t : public shaman_attack_t
     return PROC1_MELEE;
   }
 
- 
   double target_armor( player_t* ) const override
-   { return 0.0; }
+  {
+    return 0.0;
+  }
 
   timespan_t execute_time() const override
   {
@@ -4218,19 +4219,20 @@ struct bloodlust_t : public shaman_spell_t
 
   virtual bool ready() override
   {
-    // Allow Bloodlust as a normal spell if the Azerite Trait Ancestral Resonance is not present.
-    // If the Trait is not present the default behavior (external bloodlust) is kept.
+    // If the trait Ancestral Resonance is present the shaman can use Bloodlust on his own.
+    // The externally triggered Bloodlust is still happening.
     if ( !p()->azerite.ancestral_resonance.ok() )
     {
-      if ( sim->overrides.bloodlust )
-        return false;
-
       if ( p()->buffs.exhaustion->check() )
         return false;
 
       if ( p()->buffs.bloodlust->cooldown->down() )
         return false;
     }
+
+    // If the global bloodlust override doesn't allow bloodlust, disable bloodlust
+    if ( !sim->overrides.bloodlust )
+      return false;
 
     return shaman_spell_t::ready();
   }
@@ -7552,9 +7554,8 @@ void shaman_t::init_action_list_elemental()
   precombat->add_talent( this, "Elemental Blast" );
 
   // All Shamans Bloodlust by default
-  def->add_action( this, "Bloodlust", generate_bloodlust_options(),
-                   "Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options "
-                   "'bloodlust_percent', and 'bloodlust_time'. " );
+  def->add_action( this, "Bloodlust", "if=azerite.ancestral_resonance.enabled",
+                   "Cast Bloodlust manually if the Azerite Trait Ancestral Resonance is present." );
 
   // In-combat potion
   def->add_action( "potion",
@@ -7729,9 +7730,8 @@ void shaman_t::init_action_list_enhancement()
                      "if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8+gcd&variable.furyCheck25" );
   buffs->add_talent( this, "Totem Mastery", "if=buff.resonance_totem.remains<2" );
 
-  cds->add_action( this, "Bloodlust", generate_bloodlust_options(),
-                   "Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options "
-                   "'bloodlust_percent', and 'bloodlust_time'. " );
+  cds->add_action( this, "Bloodlust", "if=azerite.ancestral_resonance.enabled",
+                   "Cast Bloodlust manually if the Azerite Trait Ancestral Resonance is present." );
   cds->add_action(
       "berserking,if=(talent.ascendance.enabled&buff.ascendance.up)|(talent.elemental_spirits.enabled&feral_spirit."
       "remains>5)|(!talent.ascendance.enabled&!talent.elemental_spirits.enabled)" );

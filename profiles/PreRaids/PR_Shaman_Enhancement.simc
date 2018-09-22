@@ -58,8 +58,8 @@ actions.buffs+=/flametongue,if=buff.flametongue.remains<4.8+gcd
 actions.buffs+=/frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8+gcd&variable.furyCheck25
 actions.buffs+=/totem_mastery,if=buff.resonance_totem.remains<2
 
-# Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. 
-actions.cds=bloodlust,if=target.health.pct<25|time>0.500
+# Cast Bloodlust manually if the Azerite Trait Ancestral Resonance is present.
+actions.cds=bloodlust,if=azerite.ancestral_resonance.enabled
 actions.cds+=/berserking,if=(talent.ascendance.enabled&buff.ascendance.up)|(talent.elemental_spirits.enabled&feral_spirit.remains>5)|(!talent.ascendance.enabled&!talent.elemental_spirits.enabled)
 actions.cds+=/blood_fury,if=(talent.ascendance.enabled&(buff.ascendance.up|cooldown.ascendance.remains>50))|(!talent.ascendance.enabled&(feral_spirit.remains>5|cooldown.feral_spirit.remains>50))
 actions.cds+=/fireblood,if=(talent.ascendance.enabled&(buff.ascendance.up|cooldown.ascendance.remains>50))|(!talent.ascendance.enabled&(feral_spirit.remains>5|cooldown.feral_spirit.remains>50))

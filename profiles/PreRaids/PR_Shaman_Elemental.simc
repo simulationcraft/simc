@@ -31,8 +31,8 @@ actions.precombat+=/potion
 actions.precombat+=/elemental_blast
 
 # Executed every time the actor is available.
-# Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. 
-actions=bloodlust,if=target.health.pct<25|time>0.500
+# Cast Bloodlust manually if the Azerite Trait Ancestral Resonance is present.
+actions=bloodlust,if=azerite.ancestral_resonance.enabled
 # In-combat potion is preferentially linked to your Elemental, unless combat will end shortly
 actions+=/potion
 # Interrupt of casts.
