@@ -54,7 +54,7 @@ save=T22_Hunter_Marksmanship.simc
 
 hunter="T22_Hunter_Survival"
 level=120
-race=pandaren
+race=troll
 spec=survival
 role=attack
 position=back
