@@ -4976,7 +4976,9 @@ void warrior_t::apl_fury()
   {
     if ( racial_actions[ i ] == "arcane_torrent" )
     {
-      default_list->add_action( racial_actions[ i ] + ",if=rage<40&!buff.recklessness.up" );
+      // While it's on the GCD, arcane torrent wasting a global
+      // is a dps decrease.
+      // default_list->add_action( racial_actions[ i ] + ",if=rage<40&!buff.recklessness.up" );
     }
     else if ( racial_actions[ i ] == "lights_judgment" )
     {
