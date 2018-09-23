@@ -122,6 +122,60 @@ struct movement_buff_t : public buff_t
                 timespan_t d = timespan_t::min() ) override;
 };
 
+typedef std::pair<std::string, simple_sample_data_with_min_max_t> data_t;
+typedef std::pair<std::string, simple_sample_data_t> simple_data_t;
+
+struct counter_t
+{
+  const sim_t* sim;
+
+  double value, interval;
+  timespan_t last;
+
+  counter_t( demon_hunter_t* p );
+
+  void add( double val )
+  {
+    // Skip iteration 0 for non-debug, non-log sims
+    if ( sim->current_iteration == 0 && sim->iterations > sim->threads && !sim->debug && !sim->log )
+      return;
+
+    value += val;
+    if ( last > timespan_t::min() )
+      interval += ( sim->current_time() - last ).total_seconds();
+    last = sim->current_time();
+  }
+
+  void reset()
+  {
+    last = timespan_t::min();
+  }
+
+  double divisor() const
+  {
+    if ( !sim->debug && !sim->log && sim->iterations > sim->threads )
+      return sim->iterations - sim->threads;
+    else
+      return std::min( sim->iterations, sim->threads );
+  }
+
+  double mean() const
+  {
+    return value / divisor();
+  }
+
+  double interval_mean() const
+  {
+    return interval / divisor();
+  }
+
+  void merge( const counter_t& other )
+  {
+    value += other.value;
+    interval += other.interval;
+  }
+};
+
 /* Demon Hunter class definition
  *
  * Derived from player_t. Contains everything that defines the Demon Hunter
@@ -131,6 +185,11 @@ class demon_hunter_t : public player_t
 {
 public:
   typedef player_t base_t;
+
+  // Data collection for cooldown waste
+  std::vector<counter_t*> counters;
+  auto_dispose<std::vector<data_t*>> cd_waste_exec, cd_waste_cumulative;
+  auto_dispose<std::vector<simple_data_t*>> cd_waste_iter;
 
   // Autoattacks
   actions::attacks::auto_attack_damage_t* melee_main_hand;
@@ -540,6 +599,9 @@ public:
   void interrupt() override;
   void recalculate_resource_max( resource_e ) override;
   void reset() override;
+  void merge( player_t& other );
+  void datacollection_begin() override;
+  void datacollection_end() override;
   void target_mitigation( school_e, dmg_e, action_state_t* ) override;
 
   // custom demon_hunter_t functions
@@ -557,9 +619,37 @@ public:
   }
   expr_t* create_sigil_expression( const std::string& );
 
+  // Cooldown Tracking
+  template <typename T_CONTAINER, typename T_DATA>
+  T_CONTAINER* get_data_entry( const std::string& name, std::vector<T_DATA*>& entries )
+  {
+    for ( size_t i = 0; i < entries.size(); i++ )
+    {
+      if ( entries[ i ]->first == name )
+      {
+        return &( entries[ i ]->second );
+      }
+    }
+
+    entries.push_back( new T_DATA( name, T_CONTAINER() ) );
+    return &( entries.back()->second );
+  }
+
+  virtual ~demon_hunter_t();
+
 private:
   target_specific_t<demon_hunter_td_t> _target_data;
 };
+
+demon_hunter_t::~demon_hunter_t()
+{
+  range::dispose( counters );
+}
+
+counter_t::counter_t( demon_hunter_t* p ) : sim( p->sim ), value( 0 ), interval( 0 ), last( timespan_t::min() )
+{
+  p->counters.push_back( this );
+}
 
 // Delayed Execute Event ====================================================
 
@@ -975,6 +1065,11 @@ public:
   bool hasted_gcd;
   double energize_delta;
 
+  // Cooldown tracking
+  bool track_cd_waste;
+  simple_sample_data_with_min_max_t *cd_wasted_exec, *cd_wasted_cumulative;
+  simple_sample_data_t* cd_wasted_iter;
+
   // Affect flags for various dynamic effects
   struct
   {
@@ -996,6 +1091,10 @@ public:
                          const spell_data_t* s = spell_data_t::nil(),
                          const std::string& o = std::string() )
     : ab( n, p, s ),
+    track_cd_waste( s->cooldown() > timespan_t::zero() || s->charge_cooldown() > timespan_t::zero() ),
+    cd_wasted_exec( nullptr ),
+    cd_wasted_cumulative( nullptr ),
+    cd_wasted_iter( nullptr ),
     hasted_gcd( false ),
     energize_delta( 0.0 )
   {
@@ -1117,6 +1216,21 @@ public:
       g = ab::min_gcd;
 
     return g;
+  }
+
+  void init() override
+  {
+    ab::init();
+
+    if ( track_cd_waste )
+    {
+      cd_wasted_exec =
+        p()-> template get_data_entry<simple_sample_data_with_min_max_t, data_t>( ab::name_str, p()->cd_waste_exec );
+      cd_wasted_cumulative = p()-> template get_data_entry<simple_sample_data_with_min_max_t, data_t>(
+        ab::name_str, p()->cd_waste_cumulative );
+      cd_wasted_iter =
+        p()-> template get_data_entry<simple_sample_data_t, simple_data_t>( ab::name_str, p()->cd_waste_iter );
+    }
   }
 
   void init_finished() override
@@ -1303,6 +1417,31 @@ public:
     }
 
     return ab::ready();
+  }
+
+  virtual void update_ready( timespan_t cd ) override
+  {
+    if ( cd_wasted_exec &&
+      ( cd > timespan_t::zero() || ( cd <= timespan_t::zero() && ab::cooldown->duration > timespan_t::zero() ) ) &&
+         ab::cooldown->current_charge == ab::cooldown->charges && ab::cooldown->last_charged > timespan_t::zero() &&
+         ab::cooldown->last_charged < ab::sim->current_time() )
+    {
+      double time_ = ( ab::sim->current_time() - ab::cooldown->last_charged ).total_seconds();
+      if ( p()->sim->debug )
+      {
+        p()->sim->out_debug.printf( "%s %s cooldown waste tracking waste=%.3f exec_time=%.3f", p()->name(), ab::name(),
+                                    time_, ab::time_to_execute.total_seconds() );
+      }
+      time_ -= ab::time_to_execute.total_seconds();
+
+      if ( time_ > 0 )
+      {
+        cd_wasted_exec->add( time_ );
+        cd_wasted_iter->add( time_ );
+      }
+    }
+
+    ab::update_ready( cd );
   }
 
   void trigger_refund()
@@ -5817,28 +5956,6 @@ void demon_hunter_t::recalculate_resource_max( resource_e r )
   }
 }
 
-// demon_hunter_t::reset ====================================================
-
-void demon_hunter_t::reset()
-{
-  base_t::reset();
-
-  soul_fragment_pick_up   = nullptr;
-  spirit_bomb_driver      = nullptr;
-  exit_melee_event        = nullptr;
-  next_fragment_spawn     = 0;
-  metamorphosis_health    = 0;
-  spirit_bomb_accumulator = 0.0;
-  sigil_of_flame_activates = timespan_t::zero();
-
-  for ( size_t i = 0; i < soul_fragments.size(); i++ )
-  {
-    delete soul_fragments[ i ];
-  }
-
-  soul_fragments.clear();
-}
-
 // demon_hunter_t::target_mitigation ========================================
 
 void demon_hunter_t::target_mitigation( school_e school, dmg_e dt, action_state_t* s )
@@ -5874,6 +5991,76 @@ void demon_hunter_t::target_mitigation( school_e school, dmg_e dt, action_state_
       s->result_amount *= 1.0 + td->debuffs.void_reaver->stack_value();
     }
   }
+}
+
+// demon_hunter_t::reset ====================================================
+
+void demon_hunter_t::reset()
+{
+  base_t::reset();
+
+  soul_fragment_pick_up   = nullptr;
+  spirit_bomb_driver      = nullptr;
+  exit_melee_event        = nullptr;
+  next_fragment_spawn     = 0;
+  metamorphosis_health    = 0;
+  spirit_bomb_accumulator = 0.0;
+  sigil_of_flame_activates = timespan_t::zero();
+
+  for ( size_t i = 0; i < soul_fragments.size(); i++ )
+  {
+    delete soul_fragments[ i ];
+  }
+
+  soul_fragments.clear();
+}
+
+// demon_hunter_t::merge ==========================================================
+
+void demon_hunter_t::merge( player_t& other )
+{
+  player_t::merge( other );
+
+  const demon_hunter_t& s = static_cast<demon_hunter_t&>( other );
+
+  for ( size_t i = 0, end = counters.size(); i < end; i++ )
+    counters[ i ]->merge( *s.counters[ i ] );
+
+  for ( size_t i = 0, end = cd_waste_exec.size(); i < end; i++ )
+  {
+    cd_waste_exec[ i ]->second.merge( s.cd_waste_exec[ i ]->second );
+    cd_waste_cumulative[ i ]->second.merge( s.cd_waste_cumulative[ i ]->second );
+  }
+}
+
+// demon_hunter_t::datacollection_begin ===========================================
+
+void demon_hunter_t::datacollection_begin()
+{
+  if ( active_during_iteration )
+  {
+    for ( size_t i = 0, end = cd_waste_iter.size(); i < end; ++i )
+    {
+      cd_waste_iter[ i ]->second.reset();
+    }
+  }
+
+  player_t::datacollection_begin();
+}
+
+// shaman_t::datacollection_end =============================================
+
+void demon_hunter_t::datacollection_end()
+{
+  if ( requires_data_collection() )
+  {
+    for ( size_t i = 0, end = cd_waste_iter.size(); i < end; ++i )
+    {
+      cd_waste_cumulative[ i ]->second.add( cd_waste_iter[ i ]->second.sum() );
+    }
+  }
+
+  player_t::datacollection_end();
 }
 
 // ==========================================================================
@@ -6128,17 +6315,83 @@ public:
   {
   }
 
-  void html_customsection( report::sc_html_stream& /* os*/ ) override
+  void cdwaste_table_header( report::sc_html_stream& os )
   {
-    ( void )p;
-    /*// Custom Class Section
-    os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
-        << "\t\t\t\t\t<h3 class=\"toggle open\">Custom Section</h3>\n"
+    os << "<table class=\"sc\" style=\"float: left;margin-right: 10px;\">\n"
+      << "<tr>\n"
+      << "<th></th>\n"
+      << "<th colspan=\"3\">Seconds per Execute</th>\n"
+      << "<th colspan=\"3\">Seconds per Iteration</th>\n"
+      << "</tr>\n"
+      << "<tr>\n"
+      << "<th>Ability</th>\n"
+      << "<th>Average</th>\n"
+      << "<th>Minimum</th>\n"
+      << "<th>Maximum</th>\n"
+      << "<th>Average</th>\n"
+      << "<th>Minimum</th>\n"
+      << "<th>Maximum</th>\n"
+      << "</tr>\n";
+  }
+
+  void cdwaste_table_footer( report::sc_html_stream& os )
+  {
+    os << "</table>\n";
+  }
+
+  void cdwaste_table_contents( report::sc_html_stream& os )
+  {
+    size_t n = 0;
+    for ( size_t i = 0; i < p.cd_waste_exec.size(); i++ )
+    {
+      const data_t* entry = p.cd_waste_exec[ i ];
+      if ( entry->second.count() == 0 )
+      {
+        continue;
+      }
+
+      const data_t* iter_entry = p.cd_waste_cumulative[ i ];
+
+      action_t* a = p.find_action( entry->first );
+      std::string name_str = entry->first;
+      if ( a )
+      {
+        name_str = report::action_decorator_t( a ).decorate();
+      }
+
+      std::string row_class_str = "";
+      if ( ++n & 1 )
+        row_class_str = " class=\"odd\"";
+
+      os.printf( "<tr%s>", row_class_str.c_str() );
+      os << "<td class=\"left\">" << name_str << "</td>";
+      os.printf( "<td class=\"right\">%.3f</td>", entry->second.mean() );
+      os.printf( "<td class=\"right\">%.3f</td>", entry->second.min() );
+      os.printf( "<td class=\"right\">%.3f</td>", entry->second.max() );
+      os.printf( "<td class=\"right\">%.3f</td>", iter_entry->second.mean() );
+      os.printf( "<td class=\"right\">%.3f</td>", iter_entry->second.min() );
+      os.printf( "<td class=\"right\">%.3f</td>", iter_entry->second.max() );
+      os << "</tr>\n";
+    }
+  }
+
+  void html_customsection( report::sc_html_stream& os ) override
+  {
+    (void)p;
+    os << "\t\t\t\t<div class=\"player-section custom_section\">\n";
+    if ( p.cd_waste_exec.size() > 0 )
+    {
+      os << "\t\t\t\t\t<h3 class=\"toggle open\">Cooldown Waste Details</h3>\n"
         << "\t\t\t\t\t<div class=\"toggle-content\">\n";
 
-    os << p.name();
+      cdwaste_table_header( os );
+      cdwaste_table_contents( os );
+      cdwaste_table_footer( os );
 
-    os << "\t\t\t\t\t\t</div>\n" << "\t\t\t\t\t</div>\n";*/
+      os << "\t\t\t\t\t</div>\n";
+      os << "<div class=\"clear\"></div>\n";
+    }
+    os << "\t\t\t\t\t</div>\n";
   }
 
 private:
