@@ -58,7 +58,7 @@ race=pandaren
 spec=outlaw
 role=attack
 position=back
-talents=2310022
+talents=2010022
 
 head=high_altitude_turban,id=158364,bonus_id=4819/1512,azerite_powers=239/30/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
@@ -85,7 +85,7 @@ race=pandaren
 spec=outlaw
 role=attack
 position=back
-talents=2310032
+talents=2010032
 
 head=hood_of_the_slithering_loa,id=159318,bonus_id=4819/1512,azerite_powers=410/30/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27

@@ -5,7 +5,7 @@ level=120
 race=pandaren
 role=attack
 position=back
-talents=2310022
+talents=2010022
 
 # Default consumables
 potion=battle_potion_of_agility
