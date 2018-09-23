@@ -6460,7 +6460,7 @@ void mage_t::apl_arcane()
   burn -> add_talent( this, "Charged Up", "if=buff.arcane_charge.stack<=1", "Less than 1 instead of equals to 0, because of pre-cast Arcane Blast" );
   burn -> add_talent( this, "Mirror Image" );
   burn -> add_talent( this, "Nether Tempest", "if=(refreshable|!ticking)&buff.arcane_charge.stack=buff.arcane_charge.max_stack&buff.rune_of_power.down&buff.arcane_power.down" );
-  burn -> add_action( this, "Arcane Blast", "if=buff.rule_of_threes.up&talent.overpowered.enabled",
+  burn -> add_action( this, "Arcane Blast", "if=buff.rule_of_threes.up&talent.overpowered.enabled&active_enemies<3",
                     "When running Overpowered, and we got a Rule of Threes proc (AKA we got our 4th Arcane Charge via "
                     "Charged Up), use it before using RoP+AP, because the mana reduction is otherwise largely wasted "
                     "since the AB was free anyway." );
