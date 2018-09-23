@@ -3939,7 +3939,10 @@ void player_t::combat_begin()
           if ( first_cast )
           {
             action->execute();
-            sequence_add( action, action->target, sim->current_time() );
+            if ( !is_enemy() )
+            {
+              sequence_add( action, action->target, sim->current_time() );
+            }
             first_cast = false;
           }
           else if ( sim->debug )
@@ -3950,7 +3953,10 @@ void player_t::combat_begin()
         else
         {
           action->execute();
-          sequence_add( action, action->target, sim->current_time() );
+          if ( !is_enemy() )
+          {
+            sequence_add( action, action->target, sim->current_time() );
+          }
         }
       }
     }
@@ -4598,7 +4604,10 @@ void player_t::schedule_ready( timespan_t delta_time, bool waiting )
 
   if ( waiting )
   {
-    sequence_add_wait( delta_time, sim->current_time() );
+    if ( !is_enemy() )
+    {
+      sequence_add_wait( delta_time, sim->current_time() );
+    }
     iteration_waiting_time += delta_time;
   }
   else
@@ -4983,7 +4992,10 @@ action_t* player_t::execute_action()
       else
         off_gcdactions.push_back( action );
 
-      sequence_add( action, action->target, sim->current_time() );
+      if ( !is_enemy() )
+      {
+        sequence_add( action, action->target, sim->current_time() );
+      }
     }
   }
 
