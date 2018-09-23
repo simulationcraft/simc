@@ -1664,7 +1664,7 @@ public:
     return ab::verify_actor_spec();
   }
 
-  expr_t* create_expression(const std::string& name_str)
+  expr_t* create_expression(const std::string& name_str) override
   {
     std::vector<std::string> splits = util::string_split(name_str, ".");
 
@@ -5315,6 +5315,14 @@ struct thrash_proxy_t : public druid_spell_t
     // important for the "ticks_gained_on_refresh" expression to work
     dot_duration   = thrash_cat->dot_duration;
     base_tick_time = thrash_cat->base_tick_time;
+  }
+
+  timespan_t gcd() const override
+  {
+    if ( p()->buff.cat_form->check() )
+      return thrash_cat->gcd();
+    else
+      return thrash_bear->gcd();
   }
 
   void execute() override
