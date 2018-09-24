@@ -5111,18 +5111,16 @@ void warrior_t::apl_arms()
                            "if=!talent.fervor_of_battle.enabled&!raid_event.adds.up" );
 
   five_target->add_talent( this, "Skullsplitter",
-                           "if=rage<60&(cooldown.deadly_calm.remains>3|!talent.deadly_calm.enabled)" );
-  five_target->add_talent( this, "Deadly Calm",
-                           "if=cooldown.bladestorm.remains>6&(cooldown.colossus_smash.remains<2|(talent."
-                           "warbreaker.enabled&cooldown.warbreaker.remains<2))" );
+                           "if=rage<60&(!talent.deadly_calm.enabled|buff.deadly_calm.down)" );
+
   five_target->add_talent( this, "Ravager",
-                           "if=!buff.deadly_calm.up&(cooldown.colossus_smash.remains<2|(talent.warbreaker."
-                           "enabled&cooldown.warbreaker.remains<2))" );
+                           "if=(!talent.warbreaker.enabled|cooldown.warbreaker.remains<2)" );
   five_target->add_action( this, "Colossus Smash", "if=debuff.colossus_smash.down" );
   five_target->add_talent( this, "Warbreaker", "if=debuff.colossus_smash.down" );
   five_target->add_action( this, "Bladestorm",
-                           "if=buff.sweeping_strikes.down&!buff.deadly_calm.up&((debuff.colossus_smash.remains>4.5&"
-                           "!azerite.test_of_might.enabled)|buff.test_of_might.up)" );
+                           "if=buff.sweeping_strikes.down&(!talent.deadly_calm.enabled|buff.deadly_calm.down)&"
+                            "((debuff.colossus_smash.remains>4.5&!azerite.test_of_might.enabled)|buff.test_of_might.up)" );
+  five_target->add_talent( this, "Deadly Calm" );
   five_target->add_talent( this, "Cleave" );
   five_target->add_action( this, "Execute",
                            "if=(!talent.cleave.enabled&dot.deep_wounds.remains<2)|(buff.sudden_death.react|buff.stone_"
@@ -5132,51 +5130,54 @@ void warrior_t::apl_arms()
                            "overpower.stack=2&(talent.dreadnaught.enabled|buff.executioners_precision.stack=2)" );
   five_target->add_action( this, "Whirlwind", "if=debuff.colossus_smash.up|(buff.crushing_assault.up&talent.fervor_of_"
                                  "battle.enabled)" );
+  five_target->add_action( this, "Whirlwind", "if=buff.deadly_calm.up|rage>60" );
   five_target->add_action( this, "Overpower" );
   five_target->add_action( this, "Whirlwind" );
 
 //execute->add_talent( this, "Rend", "if=remains<=duration*0.3&debuff.colossus_smash.down" ); Not worth casting at the moment
   execute->add_talent( this, "Skullsplitter",
-                       "if=rage<60&((cooldown.deadly_calm.remains>3&!buff.deadly_calm.up)|!talent.deadly_calm.enabled)" );
-  execute->add_talent( this, "Deadly Calm",
-                       "if=cooldown.bladestorm.remains>6&(cooldown.colossus_smash.remains<2|(talent.warbreaker.enabled&"
-                       "cooldown.warbreaker.remains<2))" );
+                       "if=rage<60&(!talent.deadly_calm.enabled|buff.deadly_calm.down)" );
   execute->add_talent( this, "Ravager",
                        "if=!buff.deadly_calm.up&(cooldown.colossus_smash.remains<2|(talent.warbreaker.enabled&cooldown."
                        "warbreaker.remains<2))" );
+  execute->add_talent( this, "Deadly Calm", "if=azerite.test_of_might.rank>1" );
   execute->add_action( this, "Colossus Smash", "if=debuff.colossus_smash.down" );
   execute->add_talent( this, "Warbreaker", "if=debuff.colossus_smash.down" );
+  execute->add_talent( this, "Deadly Calm");
   execute->add_action( this, "Bladestorm", "if=rage<30&!buff.deadly_calm.up" );
   execute->add_talent( this, "Cleave", "if=spell_targets.whirlwind>2" );
   execute->add_action( this, "Slam", "if=buff.crushing_assault.up" );
   execute->add_action( this, "Mortal Strike","if=debuff.colossus_smash.up&buff.overpower.stack=2&(talent.dreadnaught."
                              "enabled|buff.executioners_precision.stack=2)" );
+  execute->add_action( this, "Execute" , "if=buff.deadly_calm.up|rage>60");
   execute->add_action( this, "Overpower" );
   execute->add_action( this, "Execute" );
 
   single_target->add_talent( this, "Rend", "if=remains<=duration*0.3&debuff.colossus_smash.down" );
   single_target->add_talent( this, "Skullsplitter",
-                             "if=rage<60&(cooldown.deadly_calm.remains>3|!talent.deadly_calm.enabled)" );
-  single_target->add_talent( this, "Deadly Calm",
-                             "if=(cooldown.bladestorm.remains>6|talent.ravager.enabled&cooldown.ravager.remains>6)"
-                             "&(cooldown.colossus_smash.remains<2|(talent.warbreaker.enabled&cooldown.warbreaker.remains<2))" );
+                             "if=rage<60&(!talent.deadly_calm.enabled|buff.deadly_calm.down)" );
   single_target->add_talent( this, "Ravager", "if=!buff.deadly_calm.up&(cooldown.colossus_smash.remains<2|(talent."
-                             "warbreaker.enabled&cooldown.warbreaker.remains<2))" );
+                             "warbreaker.enabled&cooldown.warbreaker.remains<2))");
+  single_target->add_talent( this, "Deadly Calm", "if=azerite.test_of_might.rank>1" );
   single_target->add_action( this, "Colossus Smash", "if=debuff.colossus_smash.down" );
   single_target->add_talent( this, "Warbreaker", "if=debuff.colossus_smash.down" );
+  single_target->add_talent( this, "Deadly Calm" );
   single_target->add_action( this, "Execute", "if=buff.sudden_death.react" );
   single_target->add_action( this, "Bladestorm",
-                             "if=cooldown.mortal_strike.remains&((debuff.colossus_smash.up&"
-                             "!azerite.test_of_might.enabled)|buff.test_of_might.up)" );
+                             "if=cooldown.mortal_strike.remains&(!talent.deadly_calm.enabled|buff.deadly_calm.down)&"
+                             "((debuff.colossus_smash.up&!azerite.test_of_might.enabled)|buff.test_of_might.up)" );
   single_target->add_talent( this, "Cleave", "if=spell_targets.whirlwind>2" );
   single_target->add_action( this, "Overpower", "if=azerite.seismic_wave.rank=3" );
   single_target->add_action( this, "Mortal Strike" );
+  single_target->add_action( this, "Whirlwind", "if=talent.fervor_of_battle.enabled&buff.deadly_calm.up" );
+  single_target->add_action( this, "Slam", "if=!talent.fervor_of_battle.enabled&buff.deadly_calm.up" );
   single_target->add_action( this, "Overpower" );
   single_target->add_action( this, "Whirlwind",
-                             "if=talent.fervor_of_battle.enabled&(!azerite.test_of_might.enabled|(rage>=60|debuff."
-                             "colossus_smash.up|buff.deadly_calm.up))" );
-  single_target->add_action( this, "Slam", "if=!talent.fervor_of_battle.enabled&(!azerite.test_of_might.enabled|"
-                             "(rage>=60|debuff.colossus_smash.up|buff.deadly_calm.up))" );
+                             "if=talent.fervor_of_battle.enabled&(!azerite.test_of_might.enabled|rage>=60|"
+                             "debuff.colossus_smash.up)" );
+  single_target->add_action( this, "Slam", 
+                             "if=!talent.fervor_of_battle.enabled&(!azerite.test_of_might.enabled|rage>=60|"
+                             "debuff.colossus_smash.up)" );
 }
 
 // Protection Warrior Action Priority List ========================================
