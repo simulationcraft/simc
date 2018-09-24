@@ -6437,6 +6437,12 @@ struct runic_corruption_buff_t : public buff_t
 
 void runeforge::fallen_crusader( special_effect_t& effect )
 {
+  if ( effect.player->type != DEATH_KNIGHT )
+  {
+    effect.type == SPECIAL_EFFECT_NONE;
+    return;
+  }
+
   // Fallen Crusader buff is shared between mh/oh
   buff_t* b = buff_t::find( effect.item -> player, "unholy_strength" );
   if ( ! b )
@@ -6479,6 +6485,12 @@ void runeforge::fallen_crusader( special_effect_t& effect )
 
 void runeforge::stoneskin_gargoyle( special_effect_t& effect )
 {
+  if ( effect.player->type != DEATH_KNIGHT )
+  {
+    effect.type == SPECIAL_EFFECT_NONE;
+    return;
+  }
+
   death_knight_t* p = debug_cast<death_knight_t*>( effect.item -> player );
   p -> runeforge.rune_of_the_stoneskin_gargoyle -> default_chance = 1.0;
 }
