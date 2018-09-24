@@ -5148,7 +5148,7 @@ void warrior_t::apl_arms()
   execute->add_action( this, "Slam", "if=buff.crushing_assault.up" );
   execute->add_action( this, "Mortal Strike","if=debuff.colossus_smash.up&buff.overpower.stack=2&(talent.dreadnaught."
                              "enabled|buff.executioners_precision.stack=2)" );
-  execute->add_action( this, "Execute" , "if=buff.deadly_calm.up|rage>60");
+  execute->add_action( this, "Execute" , "if=buff.deadly_calm.up");
   execute->add_action( this, "Overpower" );
   execute->add_action( this, "Execute" );
 
