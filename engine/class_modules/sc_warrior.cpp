@@ -1919,8 +1919,10 @@ struct colossus_smash_t : public warrior_attack_t
       td( execute_state->target )->debuffs_colossus_smash->trigger();
       p()->buff.test_of_might_tracker->trigger();
 
-      p()->buff.in_for_the_kill->trigger();
       p()->buff.war_veteran->trigger();
+
+      if ( p()->talents.in_for_the_kill->ok() )
+        p()->buff.in_for_the_kill->trigger();
     }
   }
 };
@@ -2827,9 +2829,11 @@ struct warbreaker_t : public warrior_attack_t
 
     if ( hit_any_target )
     {
-      p()->buff.in_for_the_kill->trigger();
       p()->buff.war_veteran->trigger();
       p()->buff.test_of_might_tracker->trigger();
+
+      if ( p()->talents.in_for_the_kill->ok() )
+        p()->buff.in_for_the_kill->trigger();
     }
   }
 
