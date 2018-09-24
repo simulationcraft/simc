@@ -5140,7 +5140,6 @@ void warrior_t::apl_arms()
   execute->add_talent( this, "Ravager",
                        "if=!buff.deadly_calm.up&(cooldown.colossus_smash.remains<2|(talent.warbreaker.enabled&cooldown."
                        "warbreaker.remains<2))" );
-  execute->add_talent( this, "Deadly Calm", "if=azerite.test_of_might.rank>1" );
   execute->add_action( this, "Colossus Smash", "if=debuff.colossus_smash.down" );
   execute->add_talent( this, "Warbreaker", "if=debuff.colossus_smash.down" );
   execute->add_talent( this, "Deadly Calm");
@@ -5158,7 +5157,6 @@ void warrior_t::apl_arms()
                              "if=rage<60&(!talent.deadly_calm.enabled|buff.deadly_calm.down)" );
   single_target->add_talent( this, "Ravager", "if=!buff.deadly_calm.up&(cooldown.colossus_smash.remains<2|(talent."
                              "warbreaker.enabled&cooldown.warbreaker.remains<2))");
-  single_target->add_talent( this, "Deadly Calm", "if=azerite.test_of_might.rank>1" );
   single_target->add_action( this, "Colossus Smash", "if=debuff.colossus_smash.down" );
   single_target->add_talent( this, "Warbreaker", "if=debuff.colossus_smash.down" );
   single_target->add_talent( this, "Deadly Calm" );

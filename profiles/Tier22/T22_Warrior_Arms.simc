@@ -46,7 +46,6 @@ actions+=/run_action_list,name=single_target
 
 actions.execute=skullsplitter,if=rage<60&(!talent.deadly_calm.enabled|buff.deadly_calm.down)
 actions.execute+=/ravager,if=!buff.deadly_calm.up&(cooldown.colossus_smash.remains<2|(talent.warbreaker.enabled&cooldown.warbreaker.remains<2))
-actions.execute+=/deadly_calm,if=azerite.test_of_might.rank>1
 actions.execute+=/colossus_smash,if=debuff.colossus_smash.down
 actions.execute+=/warbreaker,if=debuff.colossus_smash.down
 actions.execute+=/deadly_calm
@@ -91,7 +90,6 @@ actions.hac+=/slam,if=!talent.fervor_of_battle.enabled&!raid_event.adds.up
 actions.single_target=rend,if=remains<=duration*0.3&debuff.colossus_smash.down
 actions.single_target+=/skullsplitter,if=rage<60&(!talent.deadly_calm.enabled|buff.deadly_calm.down)
 actions.single_target+=/ravager,if=!buff.deadly_calm.up&(cooldown.colossus_smash.remains<2|(talent.warbreaker.enabled&cooldown.warbreaker.remains<2))
-actions.single_target+=/deadly_calm,if=azerite.test_of_might.rank>1
 actions.single_target+=/colossus_smash,if=debuff.colossus_smash.down
 actions.single_target+=/warbreaker,if=debuff.colossus_smash.down
 actions.single_target+=/deadly_calm
