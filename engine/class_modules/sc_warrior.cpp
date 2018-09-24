@@ -5169,14 +5169,14 @@ void warrior_t::apl_arms()
   single_target->add_talent( this, "Cleave", "if=spell_targets.whirlwind>2" );
   single_target->add_action( this, "Overpower", "if=azerite.seismic_wave.rank=3" );
   single_target->add_action( this, "Mortal Strike" );
-  single_target->add_action( this, "Whirlwind", "if=talent.fervor_of_battle.enabled&buff.deadly_calm.up" );
-  single_target->add_action( this, "Slam", "if=!talent.fervor_of_battle.enabled&buff.deadly_calm.up" );
+  single_target->add_action( this, "Whirlwind", "if=talent.fervor_of_battle.enabled&(buff.deadly_calm.up|rage>=60)" );
+  single_target->add_action( this, "Slam", "if=!talent.fervor_of_battle.enabled&(buff.deadly_calm.up|rage>=60)" );
   single_target->add_action( this, "Overpower" );
   single_target->add_action( this, "Whirlwind",
-                             "if=talent.fervor_of_battle.enabled&(!azerite.test_of_might.enabled|rage>=60|"
+                             "if=talent.fervor_of_battle.enabled&(!azerite.test_of_might.enabled|"
                              "debuff.colossus_smash.up)" );
   single_target->add_action( this, "Slam", 
-                             "if=!talent.fervor_of_battle.enabled&(!azerite.test_of_might.enabled|rage>=60|"
+                             "if=!talent.fervor_of_battle.enabled&(!azerite.test_of_might.enabled|"
                              "debuff.colossus_smash.up)" );
 }
 
