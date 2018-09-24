@@ -44,30 +44,28 @@ actions+=/run_action_list,name=five_target,if=spell_targets.whirlwind>4
 actions+=/run_action_list,name=execute,if=(talent.massacre.enabled&target.health.pct<35)|target.health.pct<20
 actions+=/run_action_list,name=single_target
 
-actions.execute=skullsplitter,if=rage<60&(!talent.deadly_calm.enabled|buff.deadly_calm.down)
+actions.execute=skullsplitter,if=rage<60&((cooldown.deadly_calm.remains>3&!buff.deadly_calm.up)|!talent.deadly_calm.enabled)
+actions.execute+=/deadly_calm,if=cooldown.bladestorm.remains>6&(cooldown.colossus_smash.remains<2|(talent.warbreaker.enabled&cooldown.warbreaker.remains<2))
 actions.execute+=/ravager,if=!buff.deadly_calm.up&(cooldown.colossus_smash.remains<2|(talent.warbreaker.enabled&cooldown.warbreaker.remains<2))
 actions.execute+=/colossus_smash,if=debuff.colossus_smash.down
 actions.execute+=/warbreaker,if=debuff.colossus_smash.down
-actions.execute+=/deadly_calm
 actions.execute+=/bladestorm,if=rage<30&!buff.deadly_calm.up
 actions.execute+=/cleave,if=spell_targets.whirlwind>2
 actions.execute+=/slam,if=buff.crushing_assault.up
 actions.execute+=/mortal_strike,if=debuff.colossus_smash.up&buff.overpower.stack=2&(talent.dreadnaught.enabled|buff.executioners_precision.stack=2)
-actions.execute+=/execute,if=buff.deadly_calm.up
 actions.execute+=/overpower
 actions.execute+=/execute
 
-actions.five_target=skullsplitter,if=rage<60&(!talent.deadly_calm.enabled|buff.deadly_calm.down)
-actions.five_target+=/ravager,if=(!talent.warbreaker.enabled|cooldown.warbreaker.remains<2)
+actions.five_target=skullsplitter,if=rage<60&(cooldown.deadly_calm.remains>3|!talent.deadly_calm.enabled)
+actions.five_target+=/deadly_calm,if=cooldown.bladestorm.remains>6&(cooldown.colossus_smash.remains<2|(talent.warbreaker.enabled&cooldown.warbreaker.remains<2))
+actions.five_target+=/ravager,if=!buff.deadly_calm.up&(cooldown.colossus_smash.remains<2|(talent.warbreaker.enabled&cooldown.warbreaker.remains<2))
 actions.five_target+=/colossus_smash,if=debuff.colossus_smash.down
 actions.five_target+=/warbreaker,if=debuff.colossus_smash.down
-actions.five_target+=/bladestorm,if=buff.sweeping_strikes.down&(!talent.deadly_calm.enabled|buff.deadly_calm.down)&((debuff.colossus_smash.remains>4.5&!azerite.test_of_might.enabled)|buff.test_of_might.up)
-actions.five_target+=/deadly_calm
+actions.five_target+=/bladestorm,if=buff.sweeping_strikes.down&!buff.deadly_calm.up&((debuff.colossus_smash.remains>4.5&!azerite.test_of_might.enabled)|buff.test_of_might.up)
 actions.five_target+=/cleave
 actions.five_target+=/execute,if=(!talent.cleave.enabled&dot.deep_wounds.remains<2)|(buff.sudden_death.react|buff.stone_heart.react)&(buff.sweeping_strikes.up|cooldown.sweeping_strikes.remains>8)
 actions.five_target+=/mortal_strike,if=(!talent.cleave.enabled&dot.deep_wounds.remains<2)|buff.sweeping_strikes.up&buff.overpower.stack=2&(talent.dreadnaught.enabled|buff.executioners_precision.stack=2)
 actions.five_target+=/whirlwind,if=debuff.colossus_smash.up|(buff.crushing_assault.up&talent.fervor_of_battle.enabled)
-actions.five_target+=/whirlwind,if=buff.deadly_calm.up|rage>60
 actions.five_target+=/overpower
 actions.five_target+=/whirlwind
 
@@ -88,20 +86,19 @@ actions.hac+=/whirlwind,if=talent.fervor_of_battle.enabled
 actions.hac+=/slam,if=!talent.fervor_of_battle.enabled&!raid_event.adds.up
 
 actions.single_target=rend,if=remains<=duration*0.3&debuff.colossus_smash.down
-actions.single_target+=/skullsplitter,if=rage<60&(!talent.deadly_calm.enabled|buff.deadly_calm.down)
+actions.single_target+=/skullsplitter,if=rage<60&(cooldown.deadly_calm.remains>3|!talent.deadly_calm.enabled)
+actions.single_target+=/deadly_calm,if=(cooldown.bladestorm.remains>6|talent.ravager.enabled&cooldown.ravager.remains>6)&(cooldown.colossus_smash.remains<2|(talent.warbreaker.enabled&cooldown.warbreaker.remains<2))
 actions.single_target+=/ravager,if=!buff.deadly_calm.up&(cooldown.colossus_smash.remains<2|(talent.warbreaker.enabled&cooldown.warbreaker.remains<2))
 actions.single_target+=/colossus_smash,if=debuff.colossus_smash.down
 actions.single_target+=/warbreaker,if=debuff.colossus_smash.down
-actions.single_target+=/deadly_calm
 actions.single_target+=/execute,if=buff.sudden_death.react
-actions.single_target+=/bladestorm,if=cooldown.mortal_strike.remains&(!talent.deadly_calm.enabled|buff.deadly_calm.down)&((debuff.colossus_smash.up&!azerite.test_of_might.enabled)|buff.test_of_might.up)
+actions.single_target+=/bladestorm,if=cooldown.mortal_strike.remains&((debuff.colossus_smash.up&!azerite.test_of_might.enabled)|buff.test_of_might.up)
 actions.single_target+=/cleave,if=spell_targets.whirlwind>2
 actions.single_target+=/overpower,if=azerite.seismic_wave.rank=3
 actions.single_target+=/mortal_strike
-actions.single_target+=/whirlwind,if=talent.fervor_of_battle.enabled&(buff.deadly_calm.up|rage>=60)
 actions.single_target+=/overpower
-actions.single_target+=/whirlwind,if=talent.fervor_of_battle.enabled&(!azerite.test_of_might.enabled|debuff.colossus_smash.up)
-actions.single_target+=/slam,if=!talent.fervor_of_battle.enabled&(!azerite.test_of_might.enabled|debuff.colossus_smash.up|buff.deadly_calm.up|rage>=60)
+actions.single_target+=/whirlwind,if=talent.fervor_of_battle.enabled&(!azerite.test_of_might.enabled|(rage>=60|debuff.colossus_smash.up|buff.deadly_calm.up))
+actions.single_target+=/slam,if=!talent.fervor_of_battle.enabled&(!azerite.test_of_might.enabled|(rage>=60|debuff.colossus_smash.up|buff.deadly_calm.up))
 
 head=helm_of_the_raptor_king,id=159422,bonus_id=4779/1512/4786/4775,azerite_powers=226/30/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27

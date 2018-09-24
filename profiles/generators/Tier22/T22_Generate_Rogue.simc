@@ -60,7 +60,7 @@ race=pandaren
 spec=outlaw
 role=attack
 position=back
-talents=2010023
+talents=2010022
 
 head=high_altitude_turban,id=158364,bonus_id=1557/4819/4775/4786,azerite_powers=239/30/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
