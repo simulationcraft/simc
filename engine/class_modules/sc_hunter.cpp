@@ -5331,6 +5331,7 @@ void hunter_t::apl_mm()
   action_priority_list_t* default_list = get_action_priority_list( "default" );
   action_priority_list_t* precombat    = get_action_priority_list( "precombat" );
   action_priority_list_t* cds          = get_action_priority_list( "cds" );
+  action_priority_list_t* steady_st    = get_action_priority_list( "steady_st" );
   action_priority_list_t* st           = get_action_priority_list( "st" );
   action_priority_list_t* trickshots   = get_action_priority_list( "trickshots" );
 
@@ -5344,8 +5345,10 @@ void hunter_t::apl_mm()
   default_list -> add_action( "auto_shot" );
   default_list -> add_action( "use_items" );
   default_list -> add_action( "call_action_list,name=cds" );
-  default_list -> add_action( "call_action_list,name=st,if=active_enemies<3" );
-  default_list -> add_action( "call_action_list,name=trickshots,if=active_enemies>2" );
+  default_list -> add_action( "run_action_list,name=steady_st,if=active_enemies<2&talent.lethal_shots.enabled&talent.steady_focus.enabled&azerite.steady_aim.rank>1",
+                              "An alternate single target priority for 2 or more Steady Aim traits, Steady Focus, and Lethal Shots." );
+  default_list -> add_action( "run_action_list,name=st,if=active_enemies<3" );
+  default_list -> add_action( "run_action_list,name=trickshots" );
 
   cds -> add_talent( this, "Hunter's Mark", "if=debuff.hunters_mark.down" );
   cds -> add_talent( this, "Double Tap", "if=cooldown.rapid_fire.remains<gcd" );
@@ -5358,6 +5361,13 @@ void hunter_t::apl_mm()
   // In-combat potion
   cds -> add_action( "potion,if=(buff.trueshot.react&buff.bloodlust.react)|((consumable.prolonged_power&target.time_to_die<62)|target.time_to_die<31)" );
   cds -> add_action( this, "Trueshot", "if=cooldown.aimed_shot.charges<1|talent.barrage.enabled&cooldown.aimed_shot.charges_fractional<1.3" );
+
+  steady_st -> add_talent( this, "A Murder of Crows" );
+  steady_st -> add_action( this, "Aimed Shot", "if=buff.lethal_shots.up" );
+  steady_st -> add_action( this, "Steady Shot", "if=buff.lethal_shots.down" );
+  steady_st -> add_action( this, "Arcane Shot", "if=buff.precise_shots.up" );
+  steady_st -> add_talent( this, "Serpent Sting", "if=refreshable" );
+  steady_st -> add_action( this, "Steady Shot" );
 
   st -> add_talent( this, "Explosive Shot" );
   st -> add_talent( this, "Barrage", "if=active_enemies>1" );
@@ -5406,10 +5416,10 @@ void hunter_t::apl_surv()
   default_list -> add_action( "auto_attack" );
   default_list -> add_action( "use_items" );
   default_list -> add_action( "call_action_list,name=cds" );
-  default_list -> add_action( "call_action_list,name=wfi_st,if=active_enemies<2&talent.wildfire_infusion.enabled&(!talent.alpha_predator.enabled|!talent.mongoose_bite.enabled)");
-  default_list -> add_action( "call_action_list,name=mb_ap_wfi_st,if=active_enemies<2&talent.wildfire_infusion.enabled&talent.alpha_predator.enabled&talent.mongoose_bite.enabled" );
-  default_list -> add_action( "call_action_list,name=st,if=active_enemies<2&!talent.wildfire_infusion.enabled" );
-  default_list -> add_action( "call_action_list,name=cleave,if=active_enemies>1" );
+  default_list -> add_action( "run_action_list,name=mb_ap_wfi_st,if=active_enemies<2&talent.wildfire_infusion.enabled&talent.alpha_predator.enabled&talent.mongoose_bite.enabled" );
+  default_list -> add_action( "run_action_list,name=wfi_st,if=active_enemies<2&talent.wildfire_infusion.enabled");
+  default_list -> add_action( "run_action_list,name=st,if=active_enemies<2" );
+  default_list -> add_action( "run_action_list,name=cleave" );
   // Arcane torrent if nothing else is available
   default_list -> add_action( "arcane_torrent" );
 

@@ -36,8 +36,10 @@ actions.precombat+=/explosive_shot,if=active_enemies>2
 actions=auto_shot
 actions+=/use_items
 actions+=/call_action_list,name=cds
-actions+=/call_action_list,name=st,if=active_enemies<3
-actions+=/call_action_list,name=trickshots,if=active_enemies>2
+# An alternate single target priority for 2 or more Steady Aim traits, Steady Focus, and Lethal Shots.
+actions+=/run_action_list,name=steady_st,if=active_enemies<2&talent.lethal_shots.enabled&talent.steady_focus.enabled&azerite.steady_aim.rank>1
+actions+=/run_action_list,name=st,if=active_enemies<3
+actions+=/run_action_list,name=trickshots
 
 actions.cds=hunters_mark,if=debuff.hunters_mark.down
 actions.cds+=/double_tap,if=cooldown.rapid_fire.remains<gcd
@@ -62,6 +64,13 @@ actions.st+=/aimed_shot,if=buff.precise_shots.down&(!talent.steady_focus.enabled
 actions.st+=/arcane_shot,if=buff.precise_shots.up|focus>60&(!talent.lethal_shots.enabled|buff.lethal_shots.up)
 actions.st+=/steady_shot,if=focus+cast_regen<focus.max|(talent.lethal_shots.enabled&buff.lethal_shots.down)
 actions.st+=/arcane_shot
+
+actions.steady_st=a_murder_of_crows
+actions.steady_st+=/aimed_shot,if=buff.lethal_shots.up
+actions.steady_st+=/steady_shot,if=buff.lethal_shots.down
+actions.steady_st+=/arcane_shot,if=buff.precise_shots.up
+actions.steady_st+=/serpent_sting,if=refreshable
+actions.steady_st+=/steady_shot
 
 actions.trickshots=barrage
 actions.trickshots+=/explosive_shot
