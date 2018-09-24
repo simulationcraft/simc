@@ -99,10 +99,9 @@ actions.single_target+=/cleave,if=spell_targets.whirlwind>2
 actions.single_target+=/overpower,if=azerite.seismic_wave.rank=3
 actions.single_target+=/mortal_strike
 actions.single_target+=/whirlwind,if=talent.fervor_of_battle.enabled&(buff.deadly_calm.up|rage>=60)
-actions.single_target+=/slam,if=!talent.fervor_of_battle.enabled&(buff.deadly_calm.up|rage>=60)
 actions.single_target+=/overpower
 actions.single_target+=/whirlwind,if=talent.fervor_of_battle.enabled&(!azerite.test_of_might.enabled|debuff.colossus_smash.up)
-actions.single_target+=/slam,if=!talent.fervor_of_battle.enabled&(!azerite.test_of_might.enabled|debuff.colossus_smash.up)
+actions.single_target+=/slam,if=!talent.fervor_of_battle.enabled&(!azerite.test_of_might.enabled|debuff.colossus_smash.up|buff.deadly_calm.up|rage>=60)
 
 head=helm_of_the_defiled_laboratorium,id=160732,bonus_id=4800/1507/4775,azerite_powers=226/22/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
