@@ -7421,10 +7421,12 @@ void rogue_t::create_buffs()
   buffs.scent_of_blood                     = make_buff<stat_buff_t>( this, "scent_of_blood", find_spell( 277731 ) )
                                              -> add_stat( STAT_AGILITY, azerite.scent_of_blood.value() )
                                              -> set_duration( timespan_t::zero() ); // Infinite aura
+  double sharpened_value = azerite.sharpened_blades.value() * ( 0.5 + 0.5 / azerite.sharpened_blades.n_items() );
+  sharpened_value *= 1.0 + spec.subtlety_rogue -> effectN( 17 ).percent();
   buffs.sharpened_blades                   = make_buff( this, "sharpened_blades", find_spell( 272916 ) )
                                              -> set_trigger_spell( azerite.sharpened_blades.spell_ref().effectN( 1 ).trigger() )
                                              // 09/24/2018 - The benefit of having multiple copies of this trait active is reduced.
-                                             -> set_default_value( azerite.sharpened_blades.value() * ( 0.5 + 0.5 / azerite.sharpened_blades.n_items() ) );
+                                             -> set_default_value( sharpened_value );
   buffs.snake_eyes                         = make_buff( this, "snake_eyes", find_spell( 275863 ) )
                                              -> set_trigger_spell( azerite.snake_eyes.spell_ref().effectN( 1 ).trigger() )
                                              -> set_default_value( azerite.snake_eyes.value() );
