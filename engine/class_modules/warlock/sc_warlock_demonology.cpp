@@ -277,7 +277,7 @@ namespace warlock {
         double da = demonology_spell_t::bonus_da(s);
         if (s->action->execute_time() > timespan_t::from_millis(0) && p()->buffs.forbidden_knowledge->check())
         {
-          da += p()->azerite.forbidden_knowledge.value() * ( ( 1.0 + 0.70 * ( p()->azerite.forbidden_knowledge.n_items() - 1 ) ) / p()->azerite.forbidden_knowledge.n_items() );
+          da += p()->buffs.forbidden_knowledge->check_stack_value();
           if (sim->log)
             sim->out_log.printf("forbidden knowledge added %f", p()->azerite.forbidden_knowledge.value());
         }
