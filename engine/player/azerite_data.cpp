@@ -1419,6 +1419,7 @@ void laser_matrix( special_effect_t& effect )
 
   effect.execute_action = unique_gear::create_proc_action<laser_matrix_t>( "laser_matrix", effect, power );
   effect.spell_id       = driver->id();
+  effect.proc_flags_    = PF_ALL_DAMAGE;
 
   new dbc_proc_callback_t( effect.player, effect );
 
