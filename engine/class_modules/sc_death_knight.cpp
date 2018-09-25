@@ -6439,7 +6439,7 @@ void runeforge::fallen_crusader( special_effect_t& effect )
 {
   if ( effect.player->type != DEATH_KNIGHT )
   {
-    effect.type == SPECIAL_EFFECT_NONE;
+    effect.type = SPECIAL_EFFECT_NONE;
     return;
   }
 
@@ -6487,7 +6487,7 @@ void runeforge::stoneskin_gargoyle( special_effect_t& effect )
 {
   if ( effect.player->type != DEATH_KNIGHT )
   {
-    effect.type == SPECIAL_EFFECT_NONE;
+    effect.type = SPECIAL_EFFECT_NONE;
     return;
   }
 
