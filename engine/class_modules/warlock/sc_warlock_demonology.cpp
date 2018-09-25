@@ -277,7 +277,7 @@ namespace warlock {
         double da = demonology_spell_t::bonus_da(s);
         if (s->action->execute_time() > timespan_t::from_millis(0) && p()->buffs.forbidden_knowledge->check())
         {
-          da += p()->azerite.forbidden_knowledge.value();
+          da += p()->azerite.forbidden_knowledge.value() * ( ( 1.0 + 0.70 * ( p()->azerite.forbidden_knowledge.n_items() - 1 ) ) / p()->azerite.forbidden_knowledge.n_items() );
           if (sim->log)
             sim->out_log.printf("forbidden knowledge added %f", p()->azerite.forbidden_knowledge.value());
         }
@@ -984,8 +984,10 @@ namespace warlock {
         ->add_invalidate(CACHE_HASTE);
 
     // Azerite
-    buffs.forbidden_knowledge = make_buff(this, "forbidden_knowledge", azerite.forbidden_knowledge.spell_ref().effectN(1).trigger())
-      ->set_refresh_behavior(buff_refresh_behavior::DURATION);
+    buffs.forbidden_knowledge = make_buff( this, "forbidden_knowledge", azerite.forbidden_knowledge.spell_ref().effectN( 1 ).trigger() )
+      ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+      // Forbidden Knowledge has a built in 30% reduction to the value of ranks 2 and 3. This is applied as a flat multiplier to the total value.
+      ->set_default_value( azerite.forbidden_knowledge.value() * ( ( 1.0 + 0.70 * ( azerite.forbidden_knowledge.n_items() - 1 ) ) / azerite.forbidden_knowledge.n_items() ) );
     buffs.shadows_bite = make_buff(this, "shadows_bite", azerite.shadows_bite)
       ->set_duration(find_spell(272945)->duration())
       ->set_default_value(azerite.shadows_bite.value());
