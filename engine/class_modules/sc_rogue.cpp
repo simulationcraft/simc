@@ -2743,7 +2743,7 @@ struct eviscerate_t : public rogue_attack_t
     }
 
     p() -> buffs.nights_vengeance -> expire();
-    p() -> buffs.the_first_dance -> expire();
+    p() -> buffs.the_first_dance -> decrement();
   }
 };
 
@@ -3742,8 +3742,10 @@ struct shadow_dance_t : public rogue_attack_t
 
     p() -> buffs.shadow_dance -> trigger();
 
-    if ( p() -> azerite.the_first_dance.ok() )
-      p() -> buffs.the_first_dance -> trigger();
+    if ( p()->azerite.the_first_dance.ok() )
+    {
+      p()->buffs.the_first_dance->trigger( p()->buffs.the_first_dance->data().initial_stacks() );
+    }
 
     icd -> start();
   }
@@ -3834,7 +3836,7 @@ struct shadowstrike_t : public rogue_attack_t
     p() -> trigger_t21_4pc_subtlety( execute_state );
 
     p() -> buffs.blade_in_the_shadows -> trigger();
-    p() -> buffs.the_first_dance -> expire();
+    p() -> buffs.the_first_dance -> decrement();
   }
 
   void impact( action_state_t* state ) override
@@ -3963,7 +3965,7 @@ struct shuriken_storm_t: public rogue_attack_t
     if ( p() -> buffs.the_dreadlords_deceit -> up() )
       p() -> buffs.the_dreadlords_deceit -> expire();
 
-    p() -> buffs.the_first_dance -> expire();
+    p() -> buffs.the_first_dance -> decrement();
   }
 };
 
@@ -7421,7 +7423,8 @@ void rogue_t::create_buffs()
                                              -> set_duration( timespan_t::zero() ); // Infinite aura
   buffs.sharpened_blades                   = make_buff( this, "sharpened_blades", find_spell( 272916 ) )
                                              -> set_trigger_spell( azerite.sharpened_blades.spell_ref().effectN( 1 ).trigger() )
-                                             -> set_default_value( azerite.sharpened_blades.value() );
+                                             // 09/24/2018 - The benefit of having multiple copies of this trait active is reduced.
+                                             -> set_default_value( azerite.sharpened_blades.value() * ( 0.5 + 0.5 / azerite.sharpened_blades.n_items() ) );
   buffs.snake_eyes                         = make_buff( this, "snake_eyes", find_spell( 275863 ) )
                                              -> set_trigger_spell( azerite.snake_eyes.spell_ref().effectN( 1 ).trigger() )
                                              -> set_default_value( azerite.snake_eyes.value() );
@@ -8202,6 +8205,41 @@ struct rogue_module_t : public module_t
 
   void register_hotfixes() const override
   {
+    hotfix::register_effect( "Rogue", "2018-09-24", "(Assassination, Subtlety) Sharpened Blades: damage reduced by 30%", 724115 )
+      .field( "coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 0.7 )
+      .verification_value( 3.23313 );
+
+    hotfix::register_effect( "Rogue", "2018-09-24", "(Assassination) Poisoned Wire: Critical Strike increased by 50%.", 729498 )
+      .field( "coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.5 )
+      .verification_value( 4.011407 );
+
+    hotfix::register_effect( "Rogue", "2018-09-24", "(Outlaw) Brigand's Blitz: Haste increased by 50%.", 732986 )
+      .field( "coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.5 )
+      .verification_value( 0.247927 );
+
+    hotfix::register_effect( "Rogue", "2018-09-24", "(Subtlety) Blade in the Shadows: damage reduced by 25%.", 729242 )
+      .field( "coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 0.75 )
+      .verification_value( 0.883436 );
+
+    hotfix::register_effect( "Rogue", "2018-09-24", "(Subtlety) The First Dance: Critical Strike bonus reduced by 25%.", 734538 )
+      .field( "coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 0.75 )
+      .verification_value( 8.960177 );
+
+    hotfix::register_spell( "Rogue", "2018-09-24", "(Subtlety) The First Dance: Now grants 2 stacks of the Critical Strike bonus when activated.", 278981 )
+      .field( "proc_charges" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 2 )
+      .verification_value( 0 );
   }
 
   virtual void init( player_t* ) const override {}
