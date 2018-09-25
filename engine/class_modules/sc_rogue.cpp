@@ -8205,12 +8205,6 @@ struct rogue_module_t : public module_t
 
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Rogue", "2018-09-24", "(Assassination, Subtlety) Sharpened Blades: damage reduced by 30%", 724115 )
-      .field( "coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 0.7 )
-      .verification_value( 3.23313 );
-
     hotfix::register_effect( "Rogue", "2018-09-24", "(Assassination) Poisoned Wire: Critical Strike increased by 50%.", 729498 )
       .field( "coefficient" )
       .operation( hotfix::HOTFIX_MUL )
