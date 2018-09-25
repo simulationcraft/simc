@@ -1,4 +1,4 @@
-SimulationCraft 801-02 for World of Warcraft 8.0.1 Live (wow build 27602)
+SimulationCraft 801-02 for World of Warcraft 8.0.1 Live (wow build 27843)
 
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
@@ -8975,7 +8975,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=726776)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 273.0154 (coefficient=0.877863) | Trigger Spell: 274442 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 327.6183 (coefficient=1.053435) | Trigger Spell: 274442 | Target: Self (1)
+                   Hotfixed: Coefficient (0.877863 -> 1.05343)
 Description      : Barbed Shot has a chance equal to your critical strike chance to grant you $s1 Agility for $274443d.
 
 Name             : Unerring Vision (id=274444) [Scaling Spell (-7), Spell Family (9), Passive] 
@@ -8994,7 +8995,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=726781)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.445712) | Trigger Spell: 274445 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.891424) | Trigger Spell: 274445 | Target: Self (1)
+                   Hotfixed: Coefficient (0.445712 -> 0.891424)
 Description      : While Trueshot is active you gain $s1 Critical Strike rating every sec, stacking up to 10 times.
 
 Name             : Venomous Fangs (id=274590) [Scaling Spell (-8), Spell Family (9), Passive] 
@@ -9049,7 +9051,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732952)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 56.97707 (coefficient=0.183206) | Trigger Spell: 277966 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 94.01219 (coefficient=0.30229) | Trigger Spell: 277966 | Target: Self (1)
+                   Hotfixed: Coefficient (0.183206 -> 0.30229)
 #2 (id=733430)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 51.98116 (coefficient=0.167142) | Target: Self (1)
 Description      : During Coordinated Assault, $?s259387[Mongoose Bite][Raptor Strike] increases your Agility by $s1 and your Speed by $s2 for $277969d. Stacks up to $277969u times.
@@ -9069,7 +9072,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734282)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 202.7224 (coefficient=2.607362) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 324.3558 (coefficient=4.171779) | Target: Self (1)
+                   Hotfixed: Coefficient (2.60736 -> 4.17178)
 Description      : Your primary pet's Basic Attack deals $s1 more damage for each other pet you have active.
 
 Name             : Feeding Frenzy (id=278529) [Scaling Spell (-1), Spell Family (9), Passive] 
@@ -9111,9 +9115,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734285)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 238.497 (coefficient=3.067485) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 298.1212 (coefficient=3.834356) | Target: Self (1)
+                   Hotfixed: Coefficient (3.06749 -> 3.83436)
 #2 (id=734286)   : Dummy (3)
-                   Base Value: 3 | Scaled Value: 3
+                   Base Value: 2 | Scaled Value: 2
+                   Hotfixed: Base Value (3 -> 2)
 #3 (id=734287)   : None (0)
                    Base Value: 1 | Scaled Value: 1
 Description      : Multi-Shots that damage more than $s2 targets fire an additional wave of bullets, dealing $s1 damage and reducing the cooldown of your Aspects by $s3 sec.
@@ -9135,9 +9141,10 @@ Effects          :
 #1 (id=734288)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Trigger Spell: 279636 | Target: Self (1)
 #2 (id=734289)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 147.8681 (coefficient=1.90184) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 192.2286 (coefficient=2.472393) | Target: Self (1)
                    Affected Spells: Rapid Fire (257045)
                    Family Flags: 3
+                   Hotfixed: Coefficient (1.90184 -> 2.47239)
 Description      : Rapid Fire deals an additional ${$s2*($257044d/$257044t2)} damage over its duration, and each shot has a $279636h% chance to generate $s1 additional Focus.
 
 Name             : Wilderness Survival (id=278532) [Scaling Spell (-8), Spell Family (9), Passive] 
@@ -9181,7 +9188,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734294)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 1326.043 (coefficient=17.05522) | Trigger Spell: 279591 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1856.46 (coefficient=23.8773) | Trigger Spell: 279591 | Target: Self (1)
+                   Hotfixed: Coefficient (17.0552 -> 23.8773)
 #2 (id=734295)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
 Description      : Harpoon increases the damage of your next $?s259387[Mongoose Bite][Raptor Strike] by $s1, and reduces its cost by $s2 Focus.

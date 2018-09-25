@@ -1,4 +1,4 @@
-SimulationCraft 801-02 for World of Warcraft 8.0.1 Live (wow build 27602)
+SimulationCraft 801-02 for World of Warcraft 8.0.1 Live (wow build 27843)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
@@ -1199,6 +1199,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=39747)    : Apply Aura (6) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: 11 | Target: Self (1)
+#2 (id=476560)   : Apply Aura (6) | Modify Attack Power (104)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=476561)   : Apply Aura (6) | Unknown(235)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : For the next $d, Power Word: Shield absorbs an additional $s1%.
@@ -6046,7 +6048,8 @@ Effects          :
 #1 (id=714801)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 2332.5 (coefficient=30) | Trigger Spell: 270679 | Target: Self (1)
 #2 (id=720348)   : Dummy (3)
-                   Base Value: 35 | Scaled Value: 35
+                   Base Value: 50 | Scaled Value: 50
+                   Hotfixed: Base Value (35 -> 50)
 Description      : Your heals on targets below $s2% health have a chance to heal for an additional $s1.
 
 Name             : Bracing Chill (id=267884) [Scaling Spell (-8), Passive] 
@@ -6084,7 +6087,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=714807)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.044571) | Trigger Spell: 272570 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.051257) | Trigger Spell: 272570 | Target: Self (1)
+                   Hotfixed: Coefficient (0.044571 -> 0.051257)
 Description      : Casting a healing spell restores ${$s1*($272572d/$272572t1)} mana over $272572d. Stacks up to $272572u times.
 
 Name             : Blessed Portents (id=267889) [Scaling Spell (-1), Passive] 
@@ -6412,7 +6416,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=723891)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 572.3926 (coefficient=7.361963) | Trigger Spell: 272782 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 658.2516 (coefficient=8.466258) | Trigger Spell: 272782 | Target: Self (1)
+                   Hotfixed: Coefficient (7.36196 -> 8.46626)
 Description      : Flash Heal increases the healing of your Flash Heals on that ally by $s1 for $272783d.
 
 Name             : Searing Dialogue (id=272788) [Scaling Spell (-8), Spell Family (6), Passive] 
@@ -6430,7 +6435,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=723903)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 190.3206 (coefficient=2.447853) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 475.519 (coefficient=6.116) | Target: Self (1)
+                   Hotfixed: Coefficient (2.44785 -> 6.116)
 Description      : Mind Sear deals an additional $s1 damage to enemies suffering from your Shadow Word: Pain.
 
 Name             : Ruinous Bolt (id=273150) [Scaling Spell (-8), Passive] 
@@ -6486,7 +6492,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724838)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 715.4908 (coefficient=9.202454) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 787.0398 (coefficient=10.1227) | Target: Self (1)
+                   Hotfixed: Coefficient (9.20245 -> 10.1227)
 Description      : Echo of Light from Holy Word: Sanctify heals for an additional ${$s1*2}.
 
 Name             : Thought Harvester (id=273319) [Scaling Spell (-8), Spell Family (6), Passive] 
@@ -6647,7 +6654,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=728629)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 42.92943 (coefficient=0.552147) | Trigger Spell: 275542 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 51.51536 (coefficient=0.662577) | Trigger Spell: 275542 | Target: Self (1)
+                   Hotfixed: Coefficient (0.552147 -> 0.662577)
 Description      : Each time $?s204197[Purge the Wicked][Shadow Word: Pain] deals damage, the healing of your next Shadow Mend is increased by $s1, up to a maximum of ${$s1*30}.
 
 Name             : Prayerful Litany (id=275602) [Scaling Spell (-8), Spell Family (6), Passive] 
@@ -6742,7 +6750,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732994)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 476.9939 (coefficient=6.13497) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 834.7393 (coefficient=10.7362) | Target: Self (1)
+                   Hotfixed: Coefficient (6.13497 -> 10.7362)
 Description      : Shadowy Apparitions deal an additional $s1 damage to enemies suffering from your Vampiric Touch.
 
 Name             : Contemptuous Homily (id=278629) [Scaling Spell (-8), Spell Family (6), Passive] 

@@ -1,4 +1,4 @@
-SimulationCraft 801-02 for World of Warcraft 8.0.1 Live (wow build 27602)
+SimulationCraft 801-02 for World of Warcraft 8.0.1 Live (wow build 27843)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -2067,7 +2067,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=68268)    : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.30000 | Target: Enemy (6)
+                   Hotfixed: SP Coefficient (2 -> 2.3)
 Description      : Launch a surge of stellar energies at the target, dealing $78674s1 Astral damage.
 
 Also grants you Lunar and Solar Empowerment.
@@ -4902,7 +4903,8 @@ Attributes       : ........ ........ .......x x..x....   .....x.x ........ .....
                  : Does not break stealth (37), Not a proc (105), Treat as periodic (121), Requires line of sight (186)
 Effects          :
 #1 (id=280158)   : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.12000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.13800 | Target: Enemy (6)
+                   Hotfixed: SP Coefficient (0.12 -> 0.138)
 Description      : $@spelldesc191034
 
 Name             : Ironfur (id=192081) [Spell Family (7)] 
@@ -8193,7 +8195,8 @@ Effects          :
 #1 (id=714801)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 2332.5 (coefficient=30) | Trigger Spell: 270679 | Target: Self (1)
 #2 (id=720348)   : Dummy (3)
-                   Base Value: 35 | Scaled Value: 35
+                   Base Value: 50 | Scaled Value: 50
+                   Hotfixed: Base Value (35 -> 50)
 Description      : Your heals on targets below $s2% health have a chance to heal for an additional $s1.
 
 Name             : Bracing Chill (id=267884) [Scaling Spell (-8), Passive] 
@@ -8231,7 +8234,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=714807)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.044571) | Trigger Spell: 272570 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.051257) | Trigger Spell: 272570 | Target: Self (1)
+                   Hotfixed: Coefficient (0.044571 -> 0.051257)
 Description      : Casting a healing spell restores ${$s1*($272572d/$272572t1)} mana over $272572d. Stacks up to $272572u times.
 
 Name             : Blessed Portents (id=267889) [Scaling Spell (-1), Passive] 
@@ -8592,7 +8596,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724053)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 1843.104 (coefficient=23.70552) | Trigger Spell: 272872 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1105.672 (coefficient=14.22086) | Trigger Spell: 272872 | Target: Self (1)
+                   Hotfixed: Coefficient (23.7055 -> 14.2209)
 Description      : While Celestial Alignment is active, your damaging spells call a Streaking Star, dealing an additional $s1 damage when they are not a repeat of the previous ability.
 Tooltip          : While Celestial Alignment is active, your damaging spells cause an additional $s1 damage when they are not a repeat of the previous ability.
 
@@ -8668,9 +8673,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724883)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 528.7 (coefficient=1.7) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 581.57 (coefficient=1.87) | Target: Self (1)
+                   Hotfixed: Coefficient (1.7 -> 1.87)
 #2 (id=725191)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 311 (coefficient=1) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 342.1 (coefficient=1.1) | Target: Self (1)
+                   Hotfixed: Coefficient (1 -> 1.1)
 Description      : Increases your Mastery by $s1 and Armor by $s2 for $273349d after Survival Instincts expires.
 
 Name             : Power of the Moon (id=273367) [Scaling Spell (-8), Spell Family (7), Passive] 
@@ -8909,7 +8916,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=726695)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 556.1748 (coefficient=7.153374) | Trigger Spell: 274398 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 750.7884 (coefficient=9.656442) | Trigger Spell: 274398 | Target: Self (1)
+                   Hotfixed: Coefficient (7.15337 -> 9.65644)
 Description      : Solar Wrath increases the damage of your next Starsurge by $s1.
 
 Name             : Shredding Fury (id=274424) [Scaling Spell (-8), Spell Family (7), Passive] 
@@ -9100,7 +9108,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=729398)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 1663.278 (coefficient=21.39264) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2704.555 (coefficient=34.78527) | Target: Self (1)
+                   Hotfixed: Coefficient (21.3926 -> 34.7853)
 #2 (id=729399)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8
 Description      : Ferocious Bite has a $s2% chance per combo point to increase the damage of your next Maim by $s1 per combo point.
@@ -9143,7 +9152,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=730125)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 312.431 (coefficient=4.018405) | Trigger Spell: 276153 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 437.4215 (coefficient=5.626) | Trigger Spell: 276153 | Target: Self (1)
+                   Hotfixed: Coefficient (4.0184 -> 5.626)
 Description      : Lunar Strike increases the damage of your Solar Wrath by $s1 for $276154d.
 
 Name             : Craggy Bark (id=276155) [Scaling Spell (-8), Spell Family (7), Passive] 
@@ -9162,7 +9172,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=730129)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: -311 (coefficient=-4) | Trigger Spell: 276156 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: -357.7454 (coefficient=-4.601227) | Trigger Spell: 276156 | Target: Self (1)
+                   Hotfixed: Coefficient (-4 -> -4.60123)
 Description      : Barkskin reduces melee attacks against you by ${$s1/-1} damage.
 
 Name             : High Noon (id=278505) [Scaling Spell (-8), Spell Family (7), Passive] 
@@ -9249,7 +9260,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734253)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 906.2883 (coefficient=11.65644) | Trigger Spell: 279536 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1042.232 (coefficient=13.40491) | Trigger Spell: 279536 | Target: Self (1)
+                   Hotfixed: Coefficient (11.6564 -> 13.4049)
 #2 (id=734254)   : Dummy (3)
                    Base Value: 1000 | Scaled Value: 1000
 Description      : Mangle extends the duration of your active Frenzied Regeneration by ${$s2/1000}.1 sec, and Frenzied Regeneration restores an additional $s1 health every sec. 

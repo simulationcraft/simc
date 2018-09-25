@@ -1,4 +1,4 @@
-SimulationCraft 801-02 for World of Warcraft 8.0.1 Live (wow build 27602)
+SimulationCraft 801-02 for World of Warcraft 8.0.1 Live (wow build 27843)
 
 Name             : Dual Wield (rank=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -6622,7 +6622,8 @@ Effects          :
 #1 (id=714801)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 2332.5 (coefficient=30) | Trigger Spell: 270679 | Target: Self (1)
 #2 (id=720348)   : Dummy (3)
-                   Base Value: 35 | Scaled Value: 35
+                   Base Value: 50 | Scaled Value: 50
+                   Hotfixed: Base Value (35 -> 50)
 Description      : Your heals on targets below $s2% health have a chance to heal for an additional $s1.
 
 Name             : Bracing Chill (id=267884) [Scaling Spell (-8), Passive] 
@@ -6660,7 +6661,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=714807)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.044571) | Trigger Spell: 272570 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.051257) | Trigger Spell: 272570 | Target: Self (1)
+                   Hotfixed: Coefficient (0.044571 -> 0.051257)
 Description      : Casting a healing spell restores ${$s1*($272572d/$272572t1)} mana over $272572d. Stacks up to $272572u times.
 
 Name             : Blessed Portents (id=267889) [Scaling Spell (-1), Passive] 
@@ -7423,7 +7425,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732969)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 10016.87 (coefficient=128.8344) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 12020.25 (coefficient=154.6012) | Target: Self (1)
+                   Hotfixed: Coefficient (128.834 -> 154.601)
 Description      : When Life Cocoon expires, it releases a burst of mist that restores $s1 health split among the target and nearby allies.
 
 Name             : Swift Roundhouse (id=277669) [Scaling Spell (-8), Spell Family (53), Passive] 
@@ -7692,9 +7695,10 @@ Effects          :
 #3 (id=736549)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
 #4 (id=736552)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 659.6825 (coefficient=8.484663) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1055.456 (coefficient=13.575) | Target: Self (1)
                    Affected Spells: Fists of Fury (117418)
                    Family Flags: 20
+                   Hotfixed: Coefficient (8.48466 -> 13.575)
 Description      : When Fists of Fury deals damage, it has a $s2% chance to refund $s3 Chi, and it deals $s4 additional damage.
 
 Name             : Earthlink (id=279926) [Scaling Spell (-1), Passive] 

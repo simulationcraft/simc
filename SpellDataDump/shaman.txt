@@ -1,4 +1,4 @@
-SimulationCraft 801-02 for World of Warcraft 8.0.1 Live (wow build 27602)
+SimulationCraft 801-02 for World of Warcraft 8.0.1 Live (wow build 27843)
 
 Name             : Block (rank=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -8196,7 +8196,8 @@ Effects          :
 #1 (id=714801)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 2332.5 (coefficient=30) | Trigger Spell: 270679 | Target: Self (1)
 #2 (id=720348)   : Dummy (3)
-                   Base Value: 35 | Scaled Value: 35
+                   Base Value: 50 | Scaled Value: 50
+                   Hotfixed: Base Value (35 -> 50)
 Description      : Your heals on targets below $s2% health have a chance to heal for an additional $s1.
 
 Name             : Bracing Chill (id=267884) [Scaling Spell (-8), Passive] 
@@ -8234,7 +8235,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=714807)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.044571) | Trigger Spell: 272570 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.051257) | Trigger Spell: 272570 | Target: Self (1)
+                   Hotfixed: Coefficient (0.044571 -> 0.051257)
 Description      : Casting a healing spell restores ${$s1*($272572d/$272572t1)} mana over $272572d. Stacks up to $272572u times.
 
 Name             : Blessed Portents (id=267889) [Scaling Spell (-1), Passive] 
@@ -8605,7 +8607,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724256)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 763.1901 (coefficient=9.81595) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 839.5092 (coefficient=10.79755) | Target: Self (1)
+                   Hotfixed: Coefficient (9.81595 -> 10.7975)
 Description      : Your Chain Heal heals its primary target for an additional $s1 healing.
 
 Name             : Primal Primer (id=272992) [Scaling Spell (-8), Spell Family (11), Passive] 
@@ -8752,8 +8755,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=725109)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 904.3804 (coefficient=11.6319) | Trigger Spell: 273463 | Target: Self (1)
-                   Hotfixed: Coefficient (9.69325 -> 11.6319)
+                   Base Value: 0 | Scaled Value: 1446.15 (coefficient=18.6) | Trigger Spell: 273463 | Target: Self (1)
+                   Hotfixed: Coefficient (9.69325 -> 18.6)
 Description      : Rockbiter causes your next melee ability, other than Rockbiter, to deal an additional $s1 Nature damage.
 
 Name             : Strength of Earth (id=273463) [Scaling Spell (-1), Spell Family (11), Hidden] 
@@ -9420,7 +9423,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734600)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 314.8159 (coefficient=4.049079) | Trigger Spell: 279513 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 629.775 (coefficient=8.1) | Trigger Spell: 279513 | Target: Self (1)
+                   Hotfixed: Coefficient (4.04908 -> 8.1)
 #2 (id=734601)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 #3 (id=734602)   : Dummy (3)

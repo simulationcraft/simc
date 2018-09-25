@@ -1,4 +1,4 @@
-SimulationCraft 801-02 for World of Warcraft 8.0.1 Live (wow build 27602)
+SimulationCraft 801-02 for World of Warcraft 8.0.1 Live (wow build 27843)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Arcane Fire Frost Paladin, Mage
@@ -2888,15 +2888,18 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179704)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -18 | Scaled Value: -18 | Target: Self (1)
+                   Base Value: -15 | Scaled Value: -15 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856)
                    Family Flags: 3
+                   Hotfixed: Base Value (-18 -> -15)
 #2 (id=191116)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: -18 | Scaled Value: -18 | Misc Value: 22 | Target: Self (1)
+                   Base Value: -15 | Scaled Value: -15 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856)
                    Family Flags: 3
+                   Hotfixed: Base Value (-18 -> -15)
 #3 (id=191117)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: -18 | Scaled Value: -18 | Target: Self (1)
+                   Base Value: -15 | Scaled Value: -15 | Target: Self (1)
+                   Hotfixed: Base Value (-18 -> -15)
 #4 (id=191118)   : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: 60 | Scaled Value: 0 | Points Per Level: -2 | Target: Self (1)
 #5 (id=191119)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
@@ -6974,7 +6977,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724230)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 219.8942 (coefficient=2.828221) | Trigger Spell: 272969 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 483.605 (coefficient=6.22) | Trigger Spell: 272969 | Target: Self (1)
+                   Hotfixed: Coefficient (2.82822 -> 6.22)
 Description      : Ice Lance deals an additional $s1 damage to enemies recently damaged by your Frozen Orb.
 
 Name             : Ruinous Bolt (id=273150) [Scaling Spell (-8), Passive] 
@@ -7407,10 +7411,10 @@ Effects          :
 #1 (id=734300)   : Apply Aura (6) | Dummy (4)
                    Base Value: 8 | Scaled Value: 8 | Trigger Spell: 279080 | Target: Self (1)
 #2 (id=734301)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 50 | Scaled Value: 143.0982 (coefficient=1.840491) | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 93.0138 (coefficient=1.196319) | Target: Self (1)
                    Affected Spells: Arcane Blast (30451)
                    Family Flags: 29
-                   Hotfixed: Coefficient (2.02454 -> 1.84049)
+                   Hotfixed: Coefficient (2.02454 -> 1.19632)
 Description      : Arcane Blast deals an additional $s2 damage and has a $s1% chance to generate a second Arcane Charge.
 
 Name             : Explosive Echo (id=278537) [Scaling Spell (-8), Spell Family (3), Passive] 
@@ -7430,13 +7434,15 @@ Effects          :
 #1 (id=734302)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #2 (id=734303)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 3 | Scaled Value: 286.1963 (coefficient=3.680981) | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 235.635 (coefficient=3.030675) | Target: Self (1)
                    Affected Spells: Arcane Explosion (1449), Time and Space (240689)
                    Family Flags: 12
+                   Hotfixed: Coefficient (3.68098 -> 3.03068)
 #3 (id=734304)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
 #4 (id=734305)   : Dummy (3)
-                   Base Value: 50 | Scaled Value: 1946.135 (coefficient=25.03068)
+                   Base Value: 50 | Scaled Value: 1601.268 (coefficient=20.59509)
+                   Hotfixed: Coefficient (25.0307 -> 20.5951)
 Description      : Arcane Explosion deals an additional $s2 damage. When it damages at least $s1 targets, it has a $s3% chance to deal an additional $s4 Arcane damage to them.
 
 Name             : Duplicative Incineration (id=278538) [Scaling Spell (-8), Spell Family (3), Passive] 
@@ -7524,7 +7530,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734313)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 249.2749 (coefficient=0.801527) | Trigger Spell: 279685 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 498.5495 (coefficient=1.603053) | Trigger Spell: 279685 | Target: Self (1)
+                   Hotfixed: Coefficient (0.801527 -> 1.60305)
 Description      : Icy Veins grants you a charge of Fingers of Frost and increases your Intellect by $s1 for $279684d.
 
 Name             : Glacial Assault (id=279854) [Scaling Spell (-8), Spell Family (3), Passive] 
@@ -7547,11 +7554,12 @@ Effects          :
 Description      : Flurry has a $279855h% chance each strike to call down an icy comet, crashing into your target and nearby enemies for $s1 Frost damage.
 
 Name             : Glacial Assault (id=279855) [Scaling Spell (-1), Spell Family (3), Hidden] 
+Hotfixed         : Proc Chance (10 -> 20)
 Class            : Mage
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
-Proc Chance      : 10%
+Proc Chance      : 20%
 Proc Flags       : ........ ........ x....... ........ 
                  : Magic Hostile Spell
 Triggered by     : Glacial Assault (279854)

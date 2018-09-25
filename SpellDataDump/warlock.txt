@@ -1,4 +1,4 @@
-SimulationCraft 801-02 for World of Warcraft 8.0.1 Live (wow build 27602)
+SimulationCraft 801-02 for World of Warcraft 8.0.1 Live (wow build 27843)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -74,7 +74,8 @@ Attributes       : ........ ........ x....... .......x   ........ ........ .....
                  : Cannot cancel aura (31), Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=145)      : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.36000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.40000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Hotfixed: SP Coefficient (0.36 -> 0.4)
 #2 (id=371976)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50
 Description      : Burns the enemy, causing $s1 Fire damage immediately and an additional $157736o1 Fire damage over $157736d.
@@ -915,7 +916,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .x...
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=9553)     : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.90000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Hotfixed: SP Coefficient (0.9 -> 1)
 Description      : Triggers an explosion on the target, dealing $s1 Fire damage.$?s196406[
 
 Reduces the cast time of your next Incinerate or Chaos Bolt by $117828s1% for $117828d.][]
@@ -1249,7 +1251,8 @@ Effects          :
 #1 (id=19297)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=288276)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.58275 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.64100 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Hotfixed: SP Coefficient (0.58275 -> 0.641)
 #3 (id=371982)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 Description      : Draws fire toward the enemy, dealing $s2 Fire damage.
@@ -3381,7 +3384,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=219942)   : Apply Aura (6) | Periodic Damage (3): fire every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.22500 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Hotfixed: SP Coefficient (0.225 -> 0.25)
 Description      : $@spelldesc348
 Tooltip          : Suffering $w1 Fire damage every $t1 sec.
 Variables        : $mastery=$?s77220[${((100+$77220m3)/100)}][${1.00}]
@@ -7236,7 +7240,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=725221)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 1011.704 (coefficient=13.01227) | Trigger Spell: 273524 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1213.678 (coefficient=15.61) | Trigger Spell: 273524 | Target: Self (1)
+                   Hotfixed: Coefficient (13.0123 -> 15.61)
 #2 (id=725222)   : Dummy (3)
                    Base Value: 15 | Scaled Value: 15
 Description      : Your Hand of Guldan has a $s2% chance to burn its target for $s1 additional Shadowflame damage every $273526t1 sec for $273526d.
@@ -7474,7 +7479,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732939)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 1691.063 (coefficient=21.75) | Trigger Spell: 277705 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1183.355 (coefficient=15.22) | Trigger Spell: 277705 | Target: Self (1)
+                   Hotfixed: Coefficient (21.75 -> 15.22)
 #2 (id=732940)   : Apply Aura (6) | Dummy (4)
                    Base Value: 8 | Scaled Value: 8
 Description      : Summoning your Infernal increases the damage of your next $s2 Chaos Bolts by $s1.
@@ -7549,9 +7555,10 @@ Effects          :
 #1 (id=734619)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1000 | Scaled Value: 1000 | Trigger Spell: 279650 | Target: Self (1)
 #2 (id=734620)   : Apply Aura (6) | Add Flat Modifier (107): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 48.65338 (coefficient=0.625767) | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 62.9775 (coefficient=0.81) | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Unstable Affliction (30108), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499)
                    Family Flags: 40
+                   Hotfixed: Coefficient (0.625767 -> 0.81)
 Description      : Unstable Affliction deals ${$s2*($233490d/$233490t1)} additional damage, and casting Unstable Affliction reduce the cooldown of Summon Darkglare by ${$s1/1000} sec.
 
 Name             : Demonic Meteor (id=278737) [Scaling Spell (-1), Spell Family (5), Passive] 
@@ -7593,7 +7600,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734638)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 6033.972 (coefficient=77.60736) | Trigger Spell: 279665 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 8145.624 (coefficient=104.7669) | Trigger Spell: 279665 | Target: Self (1)
+                   Hotfixed: Coefficient (77.6074 -> 104.767)
 Description      : Call Dreadstalkers has a $279665h% chance to make your next non-instant Demonbolt deal $s1 additional damage.
 
 Name             : Rolling Havoc (id=278747) [Scaling Spell (-1), Spell Family (5), Passive] 

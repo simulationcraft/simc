@@ -1,4 +1,4 @@
-SimulationCraft 801-02 for World of Warcraft 8.0.1 Live (wow build 27602)
+SimulationCraft 801-02 for World of Warcraft 8.0.1 Live (wow build 27843)
 
 Name             : Dual Wield (rank=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -7195,7 +7195,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=723827)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 883.3926 (coefficient=11.36196) | Trigger Spell: 272739 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1104.241 (coefficient=14.20246) | Trigger Spell: 272739 | Target: Self (1)
+                   Hotfixed: Coefficient (11.362 -> 14.2025)
 Description      : Death Coil causes your next Festering Strike to deal an additional $s1 damage.
 Tooltip          : Death Coil causes your next Festering Strike to deal an additional $s1 damage.
 
@@ -7214,7 +7215,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724416)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 286.1963 (coefficient=3.680981) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 572.3927 (coefficient=7.361964) | Target: Self (1)
+                   Hotfixed: Coefficient (3.68098 -> 7.36196)
 #2 (id=724417)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 715.4909 (coefficient=9.202455) | Target: Self (1)
 Description      : Casting $?s152280[Defile][Death and Decay] impales enemies with bone spikes, inflicting $s1 Physical damage and healing you for $s2 per enemy.

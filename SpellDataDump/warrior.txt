@@ -1,4 +1,4 @@
-SimulationCraft 801-02 for World of Warcraft 8.0.1 Live (wow build 27602)
+SimulationCraft 801-02 for World of Warcraft 8.0.1 Live (wow build 27843)
 
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
@@ -2839,13 +2839,15 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179734)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -12 | Scaled Value: -12 | Target: Self (1)
+                   Base Value: -6 | Scaled Value: -6 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810)
                    Family Flags: 9
+                   Hotfixed: Base Value (-12 -> -6)
 #2 (id=191010)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: -12 | Scaled Value: -12 | Misc Value: 22 | Target: Self (1)
+                   Base Value: -6 | Scaled Value: -6 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810)
                    Family Flags: 9
+                   Hotfixed: Base Value (-12 -> -6)
 #3 (id=191011)   : Apply Aura (6) | Unknown(213)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=191012)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
@@ -6415,8 +6417,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724045)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 1501.001 (coefficient=19.30548) | Trigger Spell: 272867 | Target: Self (1)
-                   Hotfixed: Coefficient (16.5706 -> 19.3055)
+                   Base Value: 0 | Scaled Value: 2626.395 (coefficient=33.78) | Trigger Spell: 272867 | Target: Self (1)
+                   Hotfixed: Coefficient (16.5706 -> 33.78)
 Description      : Execute increases the damage of your next Mortal Strike against the target by $s1, stacking up to $272870u times.
 
 Name             : Ruinous Bolt (id=273150) [Scaling Spell (-8), Passive] 
@@ -6474,7 +6476,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=725030)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.601711) | Trigger Spell: 273423 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=1.2) | Trigger Spell: 273423 | Target: Self (1)
+                   Hotfixed: Coefficient (0.601711 -> 1.2)
 Description      : Bloodthirst gains $s1 critical strike rating every $273423t1 sec, up to ${$s1*$273428u} rating. This effect resets when Bloodthirst critically strikes.
 
 Name             : Meticulous Scheming (id=273682) [Scaling Spell (-7), Passive] 
@@ -6726,7 +6729,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=728612)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 34.66095 (coefficient=0.11145) | Trigger Spell: 275531 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 29.46103 (coefficient=0.09473) | Trigger Spell: 275531 | Target: Self (1)
+                   Hotfixed: Coefficient (0.11145 -> 0.09473)
 #2 (id=728613)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
 Description      : When $?s262161[Warbreaker][Colossus Smash] expires, your Strength is increased by $s1 for every $s2 Rage you spent during $?s262161[Warbreaker][Colossus Smash]. Lasts $275540d.
@@ -6766,7 +6770,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=729190)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 31.60569 (coefficient=0.101626) | Trigger Spell: 275864 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 34.76638 (coefficient=0.111789) | Trigger Spell: 275864 | Target: Self (1)
+                   Hotfixed: Coefficient (0.101626 -> 0.111789)
 Description      : Blocking an attack increases your Strength by $s1 for $275867d, stacking up to $275867u times.
 
 Name             : Brace for Impact (id=277636) [Scaling Spell (-1), Passive] 
@@ -6961,8 +6966,8 @@ Effects          :
 #1 (id=734700)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Trigger Spell: 279632 | Target: Self (1)
 #2 (id=734701)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 457.9142 (coefficient=1.472393) | Target: Self (1)
-                   Hotfixed: Sub Type (141 -> 4), Misc Value (1 -> 0)
+                   Base Value: 0 | Scaled Value: 343.344 (coefficient=1.104) | Target: Self (1)
+                   Hotfixed: Sub Type (141 -> 4), Coefficient (1.47239 -> 1.104), Misc Value (1 -> 0)
 Description      : Auto attacks deal $s2 additional damage and reduce the cooldown of Recklessness by ${$s1/1000}.1 sec.
 
 Name             : Callous Reprisal (id=278760) [Scaling Spell (-8), Spell Family (4), Passive] 

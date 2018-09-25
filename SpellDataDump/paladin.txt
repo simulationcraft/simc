@@ -1,4 +1,4 @@
-SimulationCraft 801-02 for World of Warcraft 8.0.1 Live (wow build 27602)
+SimulationCraft 801-02 for World of Warcraft 8.0.1 Live (wow build 27843)
 
 Name             : Haste (id=65) [Scaling Spell (-1)] 
 Class            : Paladin
@@ -5985,7 +5985,8 @@ Effects          :
 #1 (id=714801)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 2332.5 (coefficient=30) | Trigger Spell: 270679 | Target: Self (1)
 #2 (id=720348)   : Dummy (3)
-                   Base Value: 35 | Scaled Value: 35
+                   Base Value: 50 | Scaled Value: 50
+                   Hotfixed: Base Value (35 -> 50)
 Description      : Your heals on targets below $s2% health have a chance to heal for an additional $s1.
 
 Name             : Bracing Chill (id=267884) [Scaling Spell (-8), Passive] 
@@ -6023,7 +6024,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=714807)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.044571) | Trigger Spell: 272570 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.051257) | Trigger Spell: 272570 | Target: Self (1)
+                   Hotfixed: Coefficient (0.044571 -> 0.051257)
 Description      : Casting a healing spell restores ${$s1*($272572d/$272572t1)} mana over $272572d. Stacks up to $272572u times.
 
 Name             : Blessed Portents (id=267889) [Scaling Spell (-1), Passive] 
@@ -6655,7 +6657,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=725126)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 1192.485 (coefficient=15.33742) | Trigger Spell: 273476 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1371.357 (coefficient=17.63804) | Trigger Spell: 273476 | Target: Self (1)
+                   Hotfixed: Coefficient (15.3374 -> 17.638)
 Description      : Your Blade of Justice critical hits cause the target to burn for an additional $s1 Holy damage every $273481t1 sec over $273481d.
 
 Name             : Moment of Compassion (id=273513) [Scaling Spell (-8), Passive] 
@@ -6691,7 +6694,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=725290)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 2332.5 (coefficient=7.5) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2799 (coefficient=9) | Target: Self (1)
+                   Hotfixed: Coefficient (7.5 -> 9)
 Description      : When Guardian of Ancient Kings expires, your Block is increased by $s1 for $273555d 
 
 Name             : Meticulous Scheming (id=273682) [Scaling Spell (-7), Passive] 
@@ -7015,7 +7019,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732985)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 953.9877 (coefficient=12.26994) | Trigger Spell: 278573 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1049.387 (coefficient=13.49693) | Trigger Spell: 278573 | Target: Self (1)
+                   Hotfixed: Coefficient (12.2699 -> 13.4969)
 Description      : Your Judgment critical strikes reduce the damage of the target's melee attacks against you by $s1 for $278574d.
 
 Name             : Divine Right (id=277678) [Scaling Spell (-1), Passive] 
@@ -7034,7 +7039,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732989)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 329.0427 (coefficient=1.058015) | Trigger Spell: 278519 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 460.5649 (coefficient=1.480916) | Trigger Spell: 278519 | Target: Self (1)
+                   Hotfixed: Coefficient (1.05801 -> 1.48092)
 #2 (id=734266)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
 Description      : When Divine Storm damages an enemy who is below $s2% health, your Strength is increased by $s1 for $278523d.

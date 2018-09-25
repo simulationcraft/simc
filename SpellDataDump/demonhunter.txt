@@ -1,4 +1,4 @@
-SimulationCraft 801-02 for World of Warcraft 8.0.1 Live (wow build 27602)
+SimulationCraft 801-02 for World of Warcraft 8.0.1 Live (wow build 27843)
 
 Name             : Dual Wield (rank=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -5157,7 +5157,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724250)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 18963.41 (coefficient=60.97561) | Trigger Spell: 272985 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 22756.1 (coefficient=73.17073) | Trigger Spell: 272985 | Target: Self (1)
+                   Hotfixed: Coefficient (60.9756 -> 73.1707)
 Description      : When Fiery Brand expires on your primary target, you gain a shield that absorbs up to $s1 damage for $272987d, based on your damage dealt to them while Fiery Brand was active. 
 
 Name             : Ruinous Bolt (id=273150) [Scaling Spell (-8), Passive] 
@@ -5194,7 +5195,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724687)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=1.699277) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=2.378987) | Target: Self (1)
+                   Hotfixed: Coefficient (1.69928 -> 2.37899)
 Description      : When Eye Beam finishes fully channeling, your Haste is increased by $s1 for $273232d.
 
 Name             : Infernal Armor (id=273236) [Scaling Spell (-1), Spell Family (107), Passive] 
@@ -5497,7 +5499,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734217)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 42.92943 (coefficient=0.552147) | Trigger Spell: 278729 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 72.97615 (coefficient=0.9386) | Trigger Spell: 278729 | Target: Self (1)
+                   Hotfixed: Coefficient (0.552147 -> 0.9386)
 #2 (id=734218)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
 Description      : Every $278729t1 sec, increase the damage of Chaos Strike by $s1 and reduce its cost by $s2 Fury. This effect stacks.
@@ -5519,9 +5522,10 @@ Effects          :
 #1 (id=734233)   : Apply Aura (6) | Dummy (4)
                    Base Value: 700 | Scaled Value: 700 | Trigger Spell: 279442 | Target: Self (1)
 #2 (id=734234)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 50.00009 (coefficient=0.160772) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 59.99999 (coefficient=0.192926) | Target: Self (1)
                    Affected Spells: Eye Beam (198030)
                    Family Flags: 8
+                   Hotfixed: Coefficient (0.160772 -> 0.192926)
 Description      : Eye Beam deals an additional $?s203550[${$s2*15}][${$s2*10}] damage. Consuming a Soul Fragment reduces the cooldown of Eye Beam by ${$s1/1000}.1 sec.
 
 Name             : Essence Sever (id=278501) [Scaling Spell (-8), Spell Family (107), Passive] 
@@ -5583,9 +5587,10 @@ Effects          :
 #1 (id=735979)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 279582 | Target: Self (1)
 #2 (id=735980)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 209.8773 (coefficient=2.699386) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 136.4202 (coefficient=1.754601) | Target: Self (1)
                    Affected Spells: Blade Dance (188499), Blade Dance (199552), Blade Dance (200685), Death Sweep (210152), Death Sweep (210153), Death Sweep (210155)
                    Family Flags: 25, 37
+                   Hotfixed: Coefficient (2.69939 -> 1.7546)
 Description      : Blade Dance deals ${$s2*4} additional damage, and the cost of your next Blade Dance is reduced by $279584s1 Fury for each enemy struck by the final slash.
 
 Name             : Unstable Flames (id=279899) [Scaling Spell (-7), Passive] 
