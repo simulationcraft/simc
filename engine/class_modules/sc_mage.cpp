@@ -3928,7 +3928,15 @@ struct ice_lance_t : public frost_mage_spell_t
     const mage_td_t* td = p() -> target_data[ s -> target ];
     if ( td )
     {
-      da += td -> debuffs.packed_ice -> check_value();
+      double pi_bonus = td -> debuffs.packed_ice -> check_value();
+      if ( num_targets_hit > 1 )
+      {
+        // Splitting Ice nerfs this trait by 33%, see:
+        // https://us.battle.net/forums/en/wow/topic/20769009293#post-1
+        pi_bonus *= 0.666;
+      }
+
+      da += pi_bonus;
     }
 
     return da;
