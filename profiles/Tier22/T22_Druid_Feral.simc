@@ -96,6 +96,8 @@ actions.st_finishers+=/pool_resource,for_next=1
 actions.st_finishers+=/rip,target_if=!ticking|(remains<=duration*0.3)&(target.health.pct>25&!talent.sabertooth.enabled)|(remains<=duration*0.8&persistent_multiplier>dot.rip.pmultiplier)&target.time_to_die>8
 actions.st_finishers+=/pool_resource,for_next=1
 actions.st_finishers+=/savage_roar,if=buff.savage_roar.remains<12
+actions.st_finishers+=/pool_resource,for_next=1
+actions.st_finishers+=/maim,if=buff.iron_jaws.up
 actions.st_finishers+=/ferocious_bite,max_energy=1
 
 actions.st_generators=regrowth,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&buff.bloodtalons.down&combo_points=4&dot.rake.remains<4

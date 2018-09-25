@@ -3264,7 +3264,7 @@ struct ferocious_bite_t : public cat_attack_t
 
     p()->buff.iron_jaws->trigger( 1,
                                   p()->azerite.iron_jaws.value( 1 ) * ( 0.5 + 0.5 / p()->azerite.iron_jaws.n_items() ),
-                                  p()->azerite.iron_jaws.percent( 2 ) * combo_points );
+                                  p()->azerite.iron_jaws.spell()->effectN(2).percent() * combo_points );
 
     p()->buff.raking_ferocity->expire();
   }
@@ -3508,8 +3508,8 @@ struct maim_t : public cat_attack_t
   {
     double da = cat_attack_t::bonus_da( s );
 
-    if ( p()->buff.iron_jaws->up() )
-      da += p()->buff.iron_jaws->check_value() * p()->resources.current[ RESOURCE_COMBO_POINT ];
+    if (p()->buff.iron_jaws->up())
+      da += p()->buff.iron_jaws->check_value();
 
     return da;
   }
@@ -7746,7 +7746,8 @@ void druid_t::apl_feral()
    finisher->add_action("rip,target_if=!ticking|(remains<=duration*0.3)&(target.health.pct>25&!talent.sabertooth.enabled)|(remains<=duration*0.8&persistent_multiplier>dot.rip.pmultiplier)&target.time_to_die>8");
    finisher->add_action("pool_resource,for_next=1");
    finisher->add_action("savage_roar,if=buff.savage_roar.remains<12");
-   //finisher->add_action("maim,if=buff.fiery_red_maimers.up");
+   finisher->add_action("pool_resource,for_next=1");
+   finisher->add_action("maim,if=buff.iron_jaws.up");
    finisher->add_action("ferocious_bite,max_energy=1");
 
    generator->add_action("regrowth,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&buff.bloodtalons.down&combo_points=4&dot.rake.remains<4");
