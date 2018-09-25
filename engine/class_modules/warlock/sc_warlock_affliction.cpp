@@ -1095,8 +1095,9 @@ namespace warlock
       ->set_default_value( sets->set( WARLOCK_AFFLICTION, T20, B4 )->effectN( 1 ).trigger()->effectN( 1 ).percent() )
       ->add_invalidate(CACHE_HASTE);
     buffs.inevitable_demise = make_buff(this, "inevitable_demise", azerite.inevitable_demise)
-      ->set_max_stack(find_spell(273525)->max_stacks())
-      ->set_default_value(azerite.inevitable_demise.value());
+      ->set_max_stack( find_spell(273525)->max_stacks() )
+      // Inevitable Demise has a built in 25% reduction to the value of ranks 2 and 3. This is applied as a flat multiplier to the total value.
+      ->set_default_value( azerite.inevitable_demise.value() * ( ( 1.0 + 0.75 * ( azerite.inevitable_demise.n_items() - 1 ) ) / azerite.inevitable_demise.n_items() ) );
   }
 
   void warlock_t::init_spells_affliction()
