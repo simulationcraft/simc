@@ -8205,35 +8205,6 @@ struct rogue_module_t : public module_t
 
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Rogue", "2018-09-24", "(Assassination) Poisoned Wire: Critical Strike increased by 50%.", 729498 )
-      .field( "coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.5 )
-      .verification_value( 4.011407 );
-
-    hotfix::register_effect( "Rogue", "2018-09-24", "(Outlaw) Brigand's Blitz: Haste increased by 50%.", 732986 )
-      .field( "coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.5 )
-      .verification_value( 0.247927 );
-
-    hotfix::register_effect( "Rogue", "2018-09-24", "(Subtlety) Blade in the Shadows: damage reduced by 25%.", 729242 )
-      .field( "coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 0.75 )
-      .verification_value( 0.883436 );
-
-    hotfix::register_effect( "Rogue", "2018-09-24", "(Subtlety) The First Dance: Critical Strike bonus reduced by 25%.", 734538 )
-      .field( "coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 0.75 )
-      .verification_value( 8.960177 );
-
-    hotfix::register_spell( "Rogue", "2018-09-24", "(Subtlety) The First Dance: Now grants 2 stacks of the Critical Strike bonus when activated.", 278981 )
-      .field( "proc_charges" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 2 )
-      .verification_value( 0 );
   }
 
   virtual void init( player_t* ) const override {}
