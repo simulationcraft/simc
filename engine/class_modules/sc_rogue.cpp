@@ -2962,7 +2962,7 @@ struct garrote_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    p() -> buffs.poisoned_wire -> trigger( p() -> buffs.poisoned_wire -> data().initial_stacks() );
+    p() -> buffs.poisoned_wire -> trigger( p() -> buffs.poisoned_wire -> data().max_stacks() );
 
     if ( p() -> azerite.shrouded_suffocation.ok() )
     {
@@ -3490,7 +3490,7 @@ struct roll_the_bones_t : public rogue_attack_t
 
     p() -> buffs.roll_the_bones -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, d );
 
-    p() -> buffs.snake_eyes -> trigger( p() -> buffs.snake_eyes -> data().initial_stacks(), cp * p() -> azerite.snake_eyes.value() );
+    p() -> buffs.snake_eyes -> trigger( p() -> buffs.snake_eyes -> data().max_stacks(), cp * p() -> azerite.snake_eyes.value() );
   }
 
   bool ready() override
@@ -3744,7 +3744,7 @@ struct shadow_dance_t : public rogue_attack_t
 
     if ( p()->azerite.the_first_dance.ok() )
     {
-      p()->buffs.the_first_dance->trigger( p()->buffs.the_first_dance->data().initial_stacks() );
+      p()->buffs.the_first_dance->trigger( p()->buffs.the_first_dance->data().max_stacks() );
     }
 
     icd -> start();
@@ -4140,7 +4140,7 @@ struct slice_and_dice_t : public rogue_attack_t
     double snd_mod = 1.0; // Multiplier for the SnD effects. Was changed in Legion for Loaded Dice artifact trait.
     p() -> buffs.slice_and_dice -> trigger( 1, snd_mod, -1.0, snd_duration );
 
-    p() -> buffs.snake_eyes -> trigger( p() -> buffs.snake_eyes -> data().initial_stacks(), cp * p() -> azerite.snake_eyes.value() );
+    p() -> buffs.snake_eyes -> trigger( p() -> buffs.snake_eyes -> data().max_stacks(), cp * p() -> azerite.snake_eyes.value() );
 
     if ( p() -> azerite.paradise_lost.ok() )
       p() -> buffs.paradise_lost -> trigger( 1, buff_t::DEFAULT_VALUE(), (-1.0), snd_duration );
@@ -7421,11 +7421,11 @@ void rogue_t::create_buffs()
   buffs.scent_of_blood                     = make_buff<stat_buff_t>( this, "scent_of_blood", find_spell( 277731 ) )
                                              -> add_stat( STAT_AGILITY, azerite.scent_of_blood.value() )
                                              -> set_duration( timespan_t::zero() ); // Infinite aura
+  // 09/24/2018 - The benefit of having multiple copies of this trait active is reduced.
   double sharpened_value = azerite.sharpened_blades.value() * ( 0.5 + 0.5 / azerite.sharpened_blades.n_items() );
   sharpened_value *= 1.0 + spec.subtlety_rogue -> effectN( 17 ).percent();
   buffs.sharpened_blades                   = make_buff( this, "sharpened_blades", find_spell( 272916 ) )
                                              -> set_trigger_spell( azerite.sharpened_blades.spell_ref().effectN( 1 ).trigger() )
-                                             // 09/24/2018 - The benefit of having multiple copies of this trait active is reduced.
                                              -> set_default_value( sharpened_value );
   buffs.snake_eyes                         = make_buff( this, "snake_eyes", find_spell( 275863 ) )
                                              -> set_trigger_spell( azerite.snake_eyes.spell_ref().effectN( 1 ).trigger() )
