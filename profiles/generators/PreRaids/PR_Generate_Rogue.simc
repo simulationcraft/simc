@@ -4,13 +4,13 @@ race=troll
 spec=assassination
 role=attack
 position=back
-talents=2210021
+talents=2310021
 
-head=cowl_of_fluid_machinations,id=159302,bonus_id=4819/1512,azerite_powers=408/22/0/13
+head=high_altitude_turban,id=158364,bonus_id=4819/1512,azerite_powers=4/136/30/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
-shoulder=goldtasseled_epaulets,id=159299,bonus_id=4819/1512,azerite_powers=408/22/0/13
+shoulder=tentaclelaced_spaulders,id=159307,bonus_id=4819/1512,azerite_powers=4/136/31/0/13
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-chest=goresplattered_vest,id=159330,bonus_id=4819/1512,azerite_powers=408/22/0/13
+chest=spymasters_wrap,id=155860,bonus_id=4819/1512,azerite_powers=4/136/461/0/13
 wrists=servoarm_bindings,id=158353,bonus_id=4779/1512/4786
 hands=underrot_grotto_tenders,id=159344,bonus_id=4779/1512/4786
 waist=port_pillagers_belt,id=159309,bonus_id=4779/1512/4786
@@ -33,11 +33,11 @@ role=attack
 position=back
 talents=2210031
 
-head=cowl_of_fluid_machinations,id=159302,bonus_id=4819/1512,azerite_powers=408/22/0/13
+head=cowl_of_fluid_machinations,id=159302,bonus_id=4819/1512,azerite_powers=4/408/22/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
-shoulder=goldtasseled_epaulets,id=159299,bonus_id=4819/1512,azerite_powers=408/22/0/13
+shoulder=goldtasseled_epaulets,id=159299,bonus_id=4819/1512,azerite_powers=4/408/22/0/13
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-chest=goresplattered_vest,id=159330,bonus_id=4819/1512,azerite_powers=408/22/0/13
+chest=goresplattered_vest,id=159330,bonus_id=4819/1512,azerite_powers=4/408/22/0/13
 wrists=servoarm_bindings,id=158353,bonus_id=4779/1512/4786
 hands=underrot_grotto_tenders,id=159344,bonus_id=4779/1512/4786
 waist=port_pillagers_belt,id=159309,bonus_id=4779/1512/4786
@@ -60,11 +60,11 @@ role=attack
 position=back
 talents=2010022
 
-head=high_altitude_turban,id=158364,bonus_id=4819/1512,azerite_powers=239/30/0/13
+head=high_altitude_turban,id=158364,bonus_id=4819/1512,azerite_powers=4/239/30/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
-shoulder=goldtasseled_epaulets,id=159299,bonus_id=4819/1512,azerite_powers=239/22/0/13
+shoulder=goldtasseled_epaulets,id=159299,bonus_id=4819/1512,azerite_powers=4/239/22/0/13
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-chest=raiment_of_the_blighted_tribe,id=159335,bonus_id=4819/1512,azerite_powers=239/31/0/13
+chest=raiment_of_the_blighted_tribe,id=159335,bonus_id=4819/1512,azerite_powers=4/239/31/0/13
 wrist=venerated_raptorhide_bindings,id=160214,bonus_id=4779/1512/4786
 hands=grubby_servantgrabbers,id=159346,bonus_id=4779/1512/4786
 waist=cincture_of_the_azerite_arsenal,id=159333,bonus_id=4779/1512/4786
@@ -87,11 +87,11 @@ role=attack
 position=back
 talents=2010032
 
-head=hood_of_the_slithering_loa,id=159318,bonus_id=4819/1512,azerite_powers=410/30/0/13
+head=hood_of_the_slithering_loa,id=159318,bonus_id=4819/1512,azerite_powers=4/410/30/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
-shoulder=mantle_of_fastidious_machinations,id=158304,bonus_id=4779/1512/4786/4775,azerite_powers=410/461/0/13
+shoulder=mantle_of_fastidious_machinations,id=158304,bonus_id=4779/1512/4786/4775,azerite_powers=4/410/461/0/13
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-chest=goresplattered_vest,id=159330,bonus_id=4819/1512,azerite_powers=410/22/0/13
+chest=goresplattered_vest,id=159330,bonus_id=4819/1512,azerite_powers=4/410/22/0/13
 wrists=sea_dogs_cuffs,id=158305,bonus_id=4779/1512/4786
 hands=gloves_of_corrupted_waters,id=159321,bonus_id=4779/1512/4786
 waist=belt_of_gleaming_determination,id=158306,bonus_id=4779/1512/4786
@@ -112,13 +112,13 @@ race=void_elf
 spec=subtlety
 role=attack
 position=back
-talents=2330011
+talents=1320031
 
-head=circlet_of_the_enveloping_leviathan,id=159310,bonus_id=4819/1512,azerite_powers=124/30/0/13
+head=irontide_captains_hat,id=155888,bonus_id=4819/1512,azerite_powers=4/479/30/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
-shoulder=tentaclelaced_spaulders,id=159307,bonus_id=4819/1512,azerite_powers=124/31/0/13
+shoulder=goldtasseled_epaulets,id=159299,bonus_id=4819/1512,azerite_powers=4/414/22/0/13
 back=sporecallers_shroud,id=159292,bonus_id=4779/42/1512/4786
-chest=venture_co._plenipotentiary_vest,id=159298,bonus_id=4819/1512,azerite_powers=124/22/0/13
+chest=cephalohide_jacket,id=159314,bonus_id=4819/1512,azerite_powers=4/479/30/0/13
 wrists=venerated_raptorhide_bindings,id=160214,bonus_id=4779/1512
 hands=grubby_servantgrabbers,id=159346,bonus_id=4779/1512/4786
 waist=primal_dinomancers_belt,id=159301,bonus_id=4779/1512/4786

@@ -5,7 +5,7 @@ level=120
 race=void_elf
 role=attack
 position=back
-talents=2330011
+talents=1320031
 
 # Default consumables
 potion=battle_potion_of_agility
@@ -117,11 +117,11 @@ actions.stealthed+=/shadowstrike,if=!talent.deeper_stratagem.enabled&azerite.bla
 actions.stealthed+=/shuriken_storm,if=spell_targets>=3
 actions.stealthed+=/shadowstrike
 
-head=circlet_of_the_enveloping_leviathan,id=159310,bonus_id=4819/1512/4775,azerite_powers=124/30/0/13
+head=irontide_captains_hat,id=155888,bonus_id=4819/1512/4775,azerite_powers=4/479/30/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
-shoulders=tentaclelaced_spaulders,id=159307,bonus_id=4819/1512/4775,azerite_powers=124/31/0/13
+shoulders=goldtasseled_epaulets,id=159299,bonus_id=4819/1512/4775,azerite_powers=4/414/22/0/13
 back=sporecallers_shroud,id=159292,bonus_id=4779/42/1512/4786
-chest=venture_co._plenipotentiary_vest,id=159298,bonus_id=4819/1512/4775,azerite_powers=124/22/0/13
+chest=cephalohide_jacket,id=159314,bonus_id=4819/1512/4775,azerite_powers=4/479/30/0/13
 wrists=venerated_raptorhide_bindings,id=160214,bonus_id=4779/1512
 hands=grubby_servantgrabbers,id=159346,bonus_id=4779/1512/4786
 waist=primal_dinomancers_belt,id=159301,bonus_id=4779/1512/4786

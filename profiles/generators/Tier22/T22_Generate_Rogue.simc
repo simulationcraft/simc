@@ -4,13 +4,13 @@ race=troll
 spec=assassination
 role=attack
 position=back
-talents=2210021
+talents=2310021
 
-head=cowl_of_fluid_machinations,id=159302,bonus_id=1557/4819/4775/4786,azerite_powers=4/408/22/85/13
+head=high_altitude_turban,id=158364,bonus_id=1557/4819/4775/4786,azerite_powers=4/136/30/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
-shoulder=goldtasseled_epaulets,id=159299,bonus_id=1557/4819/4775/4786,azerite_powers=4/408/459/14/13
+shoulder=tentaclelaced_spaulders,id=159307,bonus_id=1557/4819/4775/4786,azerite_powers=4/136/31/0/13
 back=fetid_horrors_tanglecloak,id=160643,bonus_id=4800/1507
-chest=jerkin_of_the_aberrant_chimera,id=160619,bonus_id=4824/1507/4775,azerite_powers=4/408/21/15/13
+chest=spymasters_wrap,id=155860,bonus_id=1557/4819/4775/4786,azerite_powers=4/136/461/0/13
 wrists=wristwraps_of_coursing_miasma,id=160621,bonus_id=4800/1507
 hands=gloves_of_descending_madness,id=160618,bonus_id=4800/1507
 waist=replicated_chitin_cord,id=160717,bonus_id=4800/1507
@@ -34,11 +34,11 @@ role=attack
 position=back
 talents=2210031
 
-head=cowl_of_fluid_machinations,id=159302,bonus_id=1557/4819/4775/4786,azerite_powers=408/22/85/13
+head=cowl_of_fluid_machinations,id=159302,bonus_id=1557/4819/4775/4786,azerite_powers=4/408/22/85/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
-shoulder=goldtasseled_epaulets,id=159299,bonus_id=1557/4819/4775/4786,azerite_powers=408/459/14/13
+shoulder=goldtasseled_epaulets,id=159299,bonus_id=1557/4819/4775/4786,azerite_powers=4/408/459/14/13
 back=fetid_horrors_tanglecloak,id=160643,bonus_id=4800/1507
-chest=jerkin_of_the_aberrant_chimera,id=160619,bonus_id=4824/1507/4775,azerite_powers=408/21/15/13
+chest=jerkin_of_the_aberrant_chimera,id=160619,bonus_id=4824/1507/4775,azerite_powers=4/408/21/15/13
 wrists=wristwraps_of_coursing_miasma,id=160621,bonus_id=4800/1507
 hands=gloves_of_descending_madness,id=160618,bonus_id=4800/1507
 waist=replicated_chitin_cord,id=160717,bonus_id=4800/1507
@@ -62,11 +62,11 @@ role=attack
 position=back
 talents=2010022
 
-head=high_altitude_turban,id=158364,bonus_id=1557/4819/4775/4786,azerite_powers=239/30/0/13
+head=high_altitude_turban,id=158364,bonus_id=1557/4819/4775/4786,azerite_powers=4/239/30/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
-shoulders=goldtasseled_epaulets,id=159299,bonus_id=1557/4819/4775/4786,azerite_powers=239/22/0/13
+shoulders=goldtasseled_epaulets,id=159299,bonus_id=1557/4819/4775/4786,azerite_powers=4/239/22/0/13
 back=fetid_horrors_tanglecloak,id=160643,bonus_id=4800/1507
-chest=raiment_of_the_blighted_tribe,id=159335,bonus_id=1557/4819/4775/4786,azerite_powers=239/31/0/13
+chest=raiment_of_the_blighted_tribe,id=159335,bonus_id=1557/4819/4775/4786,azerite_powers=4/239/31/0/13
 wrists=wristwraps_of_coursing_miasma,id=160621,bonus_id=4800/1507
 hands=gloves_of_descending_madness,id=160618,bonus_id=4800/1507
 waist=replicated_chitin_cord,id=160717,bonus_id=4800/1507
@@ -90,11 +90,11 @@ role=attack
 position=back
 talents=2010032
 
-head=irontide_captains_hat,id=155888,bonus_id=1557/4819/4775/4786,azerite_powers=479/30/85/13
+head=irontide_captains_hat,id=155888,bonus_id=1557/4819/4775/4786,azerite_powers=4/479/30/85/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
-shoulder=mantle_of_fastidious_machinations,id=158304,bonus_id=1557/4819,azerite_powers=410/22/0/13
+shoulder=mantle_of_fastidious_machinations,id=158304,bonus_id=1557/4819,azerite_powers=4/410/22/0/13
 back=fetid_horrors_tanglecloak,id=160643,bonus_id=4800/1507
-chest=cephalohide_jacket,id=159314,bonus_id=1557/4819/4775/4786,azerite_powers=479/459/85/13
+chest=cephalohide_jacket,id=159314,bonus_id=1557/4819/4775/4786,azerite_powers=4/479/459/85/13
 wrists=wristwraps_of_coursing_miasma,id=160621,bonus_id=4800/1507
 hands=gloves_of_descending_madness,id=160618,bonus_id=4800/1507
 waist=replicated_chitin_cord,id=160717,bonus_id=4800/1507
@@ -116,13 +116,14 @@ race=night_elf
 spec=subtlety
 role=attack
 position=back
-talents=2330011
 
-head=circlet_of_the_enveloping_leviathan,id=159310,bonus_id=1557/4819/4775/4786,azerite_powers=124/30/0/13
+talents=1320031
+
+head=cowl_of_dark_portents,id=163596,bonus_id=4824/1507,azerite_powers=4/240/461/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
-shoulder=tentaclelaced_spaulders,id=159307,bonus_id=1557/4819/4775/4786,azerite_powers=124/31/0/13
+shoulder=usurpers_bloodcaked_spaulders,id=160620,bonus_id=4824/1507,azerite_powers=4/414/22/0/13
 back=cloak_of_rippling_whispers,id=160642,bonus_id=4800/1507
-chest=venture_co._plenipotentiary_vest,id=159298,bonus_id=1557/4819/4775/4786,azerite_powers=124/22/0/13
+chest=tunic_of_the_sanguine_deity,id=160728,bonus_id=4824/1507,azerite_powers=4/485/22/0/13
 wrists=wristwraps_of_coursing_miasma,id=160621,bonus_id=4800/1507
 hands=gloves_of_descending_madness,id=160618,bonus_id=4800/1507
 waist=replicated_chitin_cord,id=160717,bonus_id=4800/1507
