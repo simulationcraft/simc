@@ -4,7 +4,7 @@
 # * Heart of Azeroth Level needed to unlock the 4th ring is Level 33, we also add the 3/3 neck ilvl rep tokens (+45ilvl)
 # *   neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
 # * Mythic+ gear is permitted up to the Mythic+ item level cap (370)
-# * Dungeon azerite gear from the Mythic+10 weekly chest are allowed (ilvl 385)
+# * Dungeon azerite gear from the Mythic+10 weekly chest (ilvl 385) are not allowed
 # * No items from World Bosses / World Quests / BoEs
 # * No Random Gems (ie. Bonus RNG Gem Slots)
 # * No Tertiary Stats
