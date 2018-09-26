@@ -2998,7 +2998,25 @@ struct windstrike_attack_t : public stormstrike_attack_t
 {
   windstrike_attack_t( const std::string& n, shaman_t* player, const spell_data_t* s, weapon_t* w )
     : stormstrike_attack_t( n, player, s, w )
+  { }
+
+  double bonus_da( const action_state_t* s ) const override
   {
+    double b = shaman_attack_t::bonus_da( s );
+
+    if ( p()->buff.roiling_storm->check() && p()->buff.stormbringer->check() == 0 )
+    {
+      double rs_bonus = 0.5 * p()->buff.roiling_storm->stack_value();
+      // Apparently Roiling Storm is bugged on Windstrike, suffering from the off-hand damage
+      // penalty (50%), where Stormstrike offhand attacks are not.
+      if ( player->bugs && weapon && weapon->slot == SLOT_OFF_HAND )
+      {
+        rs_bonus *= 0.5;
+      }
+      b += rs_bonus;
+    }
+
+    return b;
   }
 
   double target_armor( player_t* ) const override
