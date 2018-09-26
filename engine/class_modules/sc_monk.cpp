@@ -1276,7 +1276,17 @@ struct storm_earth_and_fire_pet_t : public pet_t
     {
     }
 
-    void impact( action_state_t* state ) override
+    double bonus_da( const action_state_t* s ) const override
+    {
+      double b = sef_melee_attack_t::bonus_da( s );
+
+      if ( o()->azerite.pressure_point.ok() )
+          b += o()->azerite.pressure_point.value();
+
+      return b;
+    }
+
+  void impact( action_state_t* state ) override
     {
       sef_melee_attack_t::impact( state );
 
@@ -1324,6 +1334,16 @@ struct storm_earth_and_fire_pet_t : public pet_t
       : sef_melee_attack_t( "rising_sun_kick_dmg", player, player->o()->spec.rising_sun_kick->effectN( 1 ).trigger() )
     {
       background = true;
+    }
+
+    double bonus_da( const action_state_t* s ) const override
+    {
+      double b = sef_melee_attack_t::bonus_da( s );
+
+      if ( o()->buff.swift_roundhouse->up() )
+        b += o()->buff.swift_roundhouse->stack_value();
+
+      return b;
     }
 
     virtual double composite_crit_chance() const override
@@ -1386,6 +1406,16 @@ struct storm_earth_and_fire_pet_t : public pet_t
     sef_fists_of_fury_tick_t( storm_earth_and_fire_pet_t* p )
       : sef_tick_action_t( "fists_of_fury_tick", p, p->o()->passives.fists_of_fury_tick )
     {
+    }
+
+    double bonus_da( const action_state_t* s ) const override
+    {
+      double b = sef_tick_action_t::bonus_da( s );
+
+      if ( o()->azerite.open_palm_strikes.ok() )
+        b += o()->azerite.open_palm_strikes.value( 4 );
+
+      return b;
     }
   };
 
@@ -3260,10 +3290,7 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     double b = monk_melee_attack_t::bonus_da( s );
 
     if ( p()->buff.swift_roundhouse->up() )
-    {
       b += p()->buff.swift_roundhouse->stack_value();
-      p()->buff.swift_roundhouse->expire();
-    }
 
     return b;
   }
@@ -3330,7 +3357,10 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
       {
         p()->buff.sunrise_technique->trigger();
         td( s->target )->debuff.sunrise_technique->trigger();
-      }
+      }  
+
+      if (p()->buff.swift_roundhouse->up())
+        p()->buff.swift_roundhouse->expire();
     }
   }
 };
