@@ -33,11 +33,11 @@ role=attack
 position=back
 talents=2022032
 
-head=irontide_captains_hat,id=155888,bonus_id=4779/1512/4786/4775,azerite_powers=479/30/0/13
+head=cowl_of_fluid_machinations,id=159302,bonus_id=4819/1512,azerite_powers=389/2/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524
-shoulders=goldtasseled_epaulets,id=159299,bonus_id=4779/1512/4786/4775,azerite_powers=391/22/0/13
+shoulders=blood_bog_shoulderpads,id=157883,bonus_id=4819/1512,azerite_powers=389/38/0/13
 back=sporecallers_shroud,id=159292,bonus_id=4779/1512/4786
-chest=cephalohide_jacket,id=159314,bonus_id=4779/1512/4786/4775,azerite_powers=479/18/0/13
+chest=tidebound_chestguard,id=154449,bonus_id=4819/1512,azerite_powers=478/31/0/13
 wrists=venerated_raptorhide_bindings,id=160214,bonus_id=4779/1512/4786
 hands=sharkhide_grips,id=155889,bonus_id=4779/1512/4786
 waist=cincture_of_the_azerite_arsenal,id=159333,bonus_id=4779/1512/4786
@@ -60,11 +60,11 @@ role=attack
 position=back
 talents=2022033
 
-head=irontide_captains_hat,id=155888,bonus_id=4779/1512/4786/4775,azerite_powers=479/30/0/13
+head=cowl_of_fluid_machinations,id=159302,bonus_id=4819/1512,azerite_powers=389/2/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524
-shoulders=goldtasseled_epaulets,id=159299,bonus_id=4779/1512/4786/4775,azerite_powers=391/22/0/13
+shoulders=blood_bog_shoulderpads,id=157883,bonus_id=4819/1512,azerite_powers=389/38/0/13
 back=sporecallers_shroud,id=159292,bonus_id=4779/1512/4786
-chest=cephalohide_jacket,id=159314,bonus_id=4779/1512/4786/4775,azerite_powers=479/18/0/13
+chest=tidebound_chestguard,id=154449,bonus_id=4819/1512,azerite_powers=478/31/0/13
 wrists=venerated_raptorhide_bindings,id=160214,bonus_id=4779/1512/4786
 hands=sharkhide_grips,id=155889,bonus_id=4779/1512/4786
 waist=cincture_of_the_azerite_arsenal,id=159333,bonus_id=4779/1512/4786
