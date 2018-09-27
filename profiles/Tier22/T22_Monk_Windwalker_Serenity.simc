@@ -53,7 +53,7 @@ actions.aoe+=/energizing_elixir,if=!prev_gcd.1.tiger_palm&chi<=1&energy<50
 actions.aoe+=/fists_of_fury,if=energy.time_to_max>3
 actions.aoe+=/rushing_jade_wind,if=buff.rushing_jade_wind.down&energy.time_to_max>1
 actions.aoe+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=(talent.whirling_dragon_punch.enabled&cooldown.whirling_dragon_punch.remains<5)&cooldown.fists_of_fury.remains>3
-actions.aoe+=/spinning_crane_kick,if=!prev_gcd.1.spinning_crane_kick&((chi>3|cooldown.fists_of_fury.remains>6)&(chi>=5|cooldown.fists_of_fury.remains>2)|energy.time_to_max<=3)
+actions.aoe+=/spinning_crane_kick,if=!prev_gcd.1.spinning_crane_kick&(((chi>3|cooldown.fists_of_fury.remains>6)&(chi>=5|cooldown.fists_of_fury.remains>2))|energy.time_to_max<=3)
 actions.aoe+=/chi_burst,if=chi<=3
 actions.aoe+=/fist_of_the_white_tiger,if=chi.max-chi>=3&(energy>46|buff.rushing_jade_wind.down)
 actions.aoe+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=2&(energy>56|buff.rushing_jade_wind.down)&(!talent.hit_combo.enabled|!prev_gcd.1.tiger_palm)
@@ -96,11 +96,11 @@ actions.st+=/chi_burst,if=chi.max-chi>=1&active_enemies=1|chi.max-chi>=2
 actions.st+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&chi.max-chi>=2&(buff.rushing_jade_wind.down|energy>56)
 actions.st+=/flying_serpent_kick,if=prev_gcd.1.blackout_kick&chi>3&buff.swift_roundhouse.stack<2,interrupt=1
 
-head=irontide_captains_hat,id=155888,bonus_id=1557/4819/4775/4786,azerite_powers=10/479/30/0/13
+head=cowl_of_fluid_machinations,id=159302,bonus_id=1557/4819/4775/4786,azerite_powers=10/389/22/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536
-shoulders=usurpers_bloodcaked_spaulders,id=160620,bonus_id=4824/1507/4775,azerite_powers=10/391/30/0/13
+shoulders=blood_bog_shoulderpads,id=157883,bonus_id=1557/4819/4775/4786,azerite_powers=10/389/38/0/13
 back=cloak_of_rippling_whispers,id=160642,bonus_id=4800/1507
-chest=cephalohide_jacket,id=159314,bonus_id=1557/4819/4775/4786,azerite_powers=10/479/18/85/13
+chest=tidebound_chestguard,id=154449,bonus_id=1557/4819/4775/4786,azerite_powers=10/478/31/0/13
 wrists=armbands_of_sacrosanct_acts,id=160720,bonus_id=4800/1507
 hands=gloves_of_descending_madness,id=160618,bonus_id=4800/1507
 waist=replicated_chitin_cord,id=160717,bonus_id=4800/1507
@@ -114,11 +114,11 @@ main_hand=lancet_of_the_deft_hand,id=160693,bonus_id=4800/1507,enchant=deadly_na
 off_hand=lancet_of_the_deft_hand,id=160693,bonus_id=4800/1507,enchant=versatile_navigation
 
 # Gear Summary
-# gear_ilvl=383.38
-# gear_agility=4268
-# gear_stamina=7205
+# gear_ilvl=380.88
+# gear_agility=4072
+# gear_stamina=6803
 # gear_crit_rating=963
 # gear_haste_rating=753
 # gear_mastery_rating=781
 # gear_versatility_rating=505
-# gear_armor=1897
+# gear_armor=1827

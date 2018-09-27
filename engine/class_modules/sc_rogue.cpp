@@ -2962,7 +2962,7 @@ struct garrote_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    p() -> buffs.poisoned_wire -> trigger( p() -> buffs.poisoned_wire -> data().max_stacks() );
+    p() -> buffs.poisoned_wire -> trigger( p() -> buffs.poisoned_wire -> max_stack() );
 
     if ( p() -> azerite.shrouded_suffocation.ok() )
     {
@@ -3490,7 +3490,7 @@ struct roll_the_bones_t : public rogue_attack_t
 
     p() -> buffs.roll_the_bones -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, d );
 
-    p() -> buffs.snake_eyes -> trigger( p() -> buffs.snake_eyes -> data().max_stacks(), cp * p() -> azerite.snake_eyes.value() );
+    p() -> buffs.snake_eyes -> trigger( p() -> buffs.snake_eyes -> max_stack(), cp * p() -> azerite.snake_eyes.value() );
   }
 
   bool ready() override
@@ -3744,7 +3744,7 @@ struct shadow_dance_t : public rogue_attack_t
 
     if ( p()->azerite.the_first_dance.ok() )
     {
-      p()->buffs.the_first_dance->trigger( p()->buffs.the_first_dance->data().max_stacks() );
+      p()->buffs.the_first_dance->trigger( p()->buffs.the_first_dance->max_stack() );
     }
 
     icd -> start();
@@ -4140,7 +4140,7 @@ struct slice_and_dice_t : public rogue_attack_t
     double snd_mod = 1.0; // Multiplier for the SnD effects. Was changed in Legion for Loaded Dice artifact trait.
     p() -> buffs.slice_and_dice -> trigger( 1, snd_mod, -1.0, snd_duration );
 
-    p() -> buffs.snake_eyes -> trigger( p() -> buffs.snake_eyes -> data().max_stacks(), cp * p() -> azerite.snake_eyes.value() );
+    p() -> buffs.snake_eyes -> trigger( p() -> buffs.snake_eyes -> max_stack(), cp * p() -> azerite.snake_eyes.value() );
 
     if ( p() -> azerite.paradise_lost.ok() )
       p() -> buffs.paradise_lost -> trigger( 1, buff_t::DEFAULT_VALUE(), (-1.0), snd_duration );
@@ -7872,13 +7872,13 @@ void rogue_t::combat_begin()
 
   if ( legendary.the_dreadlords_deceit )
   {
-    buffs.the_dreadlords_deceit -> trigger( buffs.the_dreadlords_deceit -> data().max_stacks() );
+    buffs.the_dreadlords_deceit -> trigger( buffs.the_dreadlords_deceit -> max_stack() );
     buffs.the_dreadlords_deceit_driver -> trigger();
   }
 
   if ( talent.hidden_blades -> ok() )
   {
-    buffs.hidden_blades -> trigger( buffs.hidden_blades -> data().max_stacks() );
+    buffs.hidden_blades -> trigger( buffs.hidden_blades -> max_stack() );
     buffs.hidden_blades_driver -> trigger();
   }
 }

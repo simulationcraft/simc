@@ -52,7 +52,7 @@ actions.execute+=/deadly_calm
 actions.execute+=/bladestorm,if=rage<30&!buff.deadly_calm.up
 actions.execute+=/cleave,if=spell_targets.whirlwind>2
 actions.execute+=/slam,if=buff.crushing_assault.up
-actions.execute+=/mortal_strike,if=debuff.colossus_smash.up&buff.overpower.stack=2&(talent.dreadnaught.enabled|buff.executioners_precision.stack=2)
+actions.execute+=/mortal_strike,if=buff.overpower.stack=2&talent.dreadnaught.enabled|buff.executioners_precision.stack=2
 actions.execute+=/execute,if=buff.deadly_calm.up
 actions.execute+=/overpower
 actions.execute+=/execute
