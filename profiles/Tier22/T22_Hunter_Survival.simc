@@ -120,28 +120,28 @@ actions.wfi_st+=/raptor_strike
 actions.wfi_st+=/serpent_sting,if=refreshable
 actions.wfi_st+=/wildfire_bomb,if=next_wi_bomb.volatile&dot.serpent_sting.ticking|next_wi_bomb.pheromone|next_wi_bomb.shrapnel&focus>50
 
-head=coif_of_the_court_spider,id=159358,bonus_id=1557/4819/4775/4786,azerite_powers=163/30/0/13
+head=crest_of_the_undying_visionary,id=160630,bonus_id=4824/1507/4775,azerite_powers=483/30/44/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
-shoulders=flamesterilized_spaulders,id=160632,bonus_id=4824/1507/4775,azerite_powers=371/21/0/13
+shoulders=flamesterilized_spaulders,id=160632,bonus_id=4824/1507/4786/4775,azerite_powers=371/31/15/13
 back=fetid_horrors_tanglecloak,id=160643,bonus_id=4800/1507
-chest=corrupted_hexxers_vestments,id=159370,bonus_id=1557/4819/4775/4786,azerite_powers=371/30/0/13
+chest=chainvest_of_assured_quality,id=160627,bonus_id=4824/1507/4775,azerite_powers=372/22/469/13
 wrists=rubywrought_sparkguards,id=160629,bonus_id=4800/1507
 hands=oblivion_crushers,id=160721,bonus_id=4800/1507
 waist=titanspark_energy_girdle,id=160633,bonus_id=4800/1507
 legs=blighted_anima_greaves,id=160716,bonus_id=4800/1507
 feet=fused_monstrosity_stompers,id=160628,bonus_id=4800/1507
-finger1=band_of_certain_annihilation,id=160646,bonus_id=4800/1507,enchant=pact_of_haste
+finger1=seal_of_questionable_loyalties,id=158314,bonus_id=1542/4779,enchant=pact_of_haste
 finger2=rotscour_ring,id=160645,bonus_id=4800/1507,enchant=pact_of_haste
 trinket1=galecallers_boon,id=159614,bonus_id=1542/4779
 trinket2=frenetic_corpuscle,id=160648,bonus_id=4800/1507
 main_hand=voidbinder,id=160688,bonus_id=4800/1507,enchant=quick_navigation
 
 # Gear Summary
-# gear_ilvl=385.27
+# gear_ilvl=384.27
 # gear_agility=4346
-# gear_stamina=7207
-# gear_crit_rating=820
-# gear_haste_rating=1280
-# gear_mastery_rating=553
+# gear_stamina=7161
+# gear_crit_rating=947
+# gear_haste_rating=1324
+# gear_mastery_rating=356
 # gear_versatility_rating=351
 # gear_armor=2738
