@@ -7015,6 +7015,12 @@ void mage_t::combat_begin()
 
   if ( specialization() == MAGE_ARCANE )
   {
+    // When combat starts, any Arcane Charge stacks above one are
+    // removed.
+    int ac_stack = buffs.arcane_charge -> check();
+    if ( ac_stack > 1 )
+      buffs.arcane_charge -> decrement( ac_stack - 1 );
+
     uptime.burn_phase -> update( false, sim -> current_time() );
     uptime.conserve_phase -> update( true, sim -> current_time() );
   }
