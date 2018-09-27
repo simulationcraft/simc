@@ -1,4 +1,4 @@
-hunter=T22_Hunter_Beast_Mastery
+hunter="T22_Hunter_Beast_Mastery"
 level=120
 race=orc
 spec=beast_mastery
@@ -25,7 +25,7 @@ main_hand=bow_of_virulent_infection,id=160678,bonus_id=4800/1507,enchant=incendi
 save=T22_Hunter_Beast_Mastery.simc
 
 
-hunter=T22_Hunter_Marksmanship
+hunter="T22_Hunter_Marksmanship"
 level=120
 race=lightforged_draenei
 spec=marksmanship
@@ -53,7 +53,7 @@ main_hand=reorigination_pulse_rifle,id=160694,bonus_id=4800/1507,enchant=galefor
 save=T22_Hunter_Marksmanship.simc
 
 
-hunter=T22_Hunter_Survival
+hunter="T22_Hunter_Survival"
 level=120
 race=troll
 spec=survival
