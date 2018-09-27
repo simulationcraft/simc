@@ -1108,7 +1108,7 @@ struct incanters_flow_t : public buff_t
   incanters_flow_t( mage_t* p ) :
     buff_t( p, "incanters_flow", p -> find_spell( 116267 ) ) // Buff is a separate spell
   {
-    set_duration( p -> sim -> max_time * 3 ); // Long enough duration to trip twice_expected_event
+    set_duration( p -> sim -> max_time * 4 ); // Long enough to beat twice_expected_event with max vary_combat_length
     set_period( p -> talents.incanters_flow -> effectN( 1 ).period() ); // Period is in the talent
     set_default_value( data().effectN( 1 ).percent() );
 
