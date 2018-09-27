@@ -1355,6 +1355,17 @@ struct reorigination_array_buff_t : public buff_t
       } );
     }
   }
+
+  void expire_override( int stacks, timespan_t duration ) override
+  {
+    buff_t::expire_override( stacks, duration );
+
+    if ( current_stat != STAT_NONE )
+    {
+      source->stat_loss( current_stat, stat_value * sim->bfa_opts.reorigination_array_stacks );
+      current_stat = STAT_NONE;
+    }
+  }
 };
 
 void archive_of_the_titans( special_effect_t& effect )
