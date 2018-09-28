@@ -278,7 +278,7 @@
   ],
   "ItemChildEquipment": [
     { "data_type": "i", "field": "id_child", "formats": { "cpp": "%6u" } },
-    { "data_type": "B", "field": "unk_1" },
+    { "data_type": "i", "field": "unk_1" },
     { "data_type": "B", "field": "unk_2" }
   ],
   "ItemDamageOneHand": [
