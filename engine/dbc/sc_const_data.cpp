@@ -1006,8 +1006,8 @@ double dbc::item_level_squish( unsigned source_ilevel, bool ptr )
 #if SC_USE_PTR == 1
   if ( ptr )
   {
-    assert( sizeof_array( __ptr_item_level_squish ) >= source_ilevel );
-    return __ptr_item_level_squish[ source_ilevel - 1 ];
+    assert( sizeof_array( _ptr__item_level_squish ) >= source_ilevel );
+    return _ptr__item_level_squish[ source_ilevel - 1 ];
   }
   else
   {
@@ -1432,8 +1432,8 @@ unsigned dbc_t::azerite_item_level( unsigned power_level ) const
   }
 
 #if SC_USE_PTR
-  auto arr = ptr ? __ptr_azerite_level_to_item_level;
-                 : __azerite_level_to_item_level
+  auto arr = ptr ? _ptr__azerite_level_to_item_level
+                 : __azerite_level_to_item_level;
 #else
   auto arr = __azerite_level_to_item_level;
 #endif
@@ -1760,7 +1760,8 @@ double dbc_t::npc_armor_mitigation_constant( unsigned level ) const
     return 0;
   }
 #if SC_USE_PTR
-  return ptr ? _ptr__npc_armor_constants_data[ level - 1 ] : __npc_armor_constants_data[ level - 1 ];
+  return ptr ? __ptr_npc_armor_constants_data[ level - 1 ] :
+               __npc_armor_constants_data[ level - 1 ];
 #else
   return __npc_armor_constants_data[ level - 1 ];
 #endif

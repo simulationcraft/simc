@@ -1577,7 +1577,7 @@ static double _ptr_gt_resolve_dps_by_level[110] = // TO-DO: Dummy values for 101
   3615.3, 3615.3, 3615.3, 3615.3, 3615.3, 3615.3, 3615.3, 3615.3, 3615.3, 3615.3 // 101-110
 };
 
-static double _ptr_gt_avoid_per_str_agi_by_level[110] = // TO-DO: Pre-BfA values for 1 -> 109, Dummy values for 111 -> 119
+static double _ptr_gt_avoid_per_str_agi_by_level[120] = // TO-DO: Pre-BfA values for 1 -> 109, Dummy values for 111 -> 119
 {
   0, 0, 0, 0, 0,                 // 1-5
   0, 0, 0, 0, 0,                 // 6-10
