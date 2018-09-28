@@ -5148,6 +5148,7 @@ void warrior_t::apl_arms()
   execute->add_action( this, "Bladestorm", "if=rage<30&!buff.deadly_calm.up" );
   execute->add_talent( this, "Cleave", "if=spell_targets.whirlwind>2" );
   execute->add_action( this, "Slam", "if=buff.crushing_assault.up" );
+  execute->add_action( this, "Overpower","if=buff.overpower.stack<2&azerite.executioners_precision.enabled" );
   execute->add_action( this, "Mortal Strike","if=buff.overpower.stack=2&talent.dreadnaught."
                              "enabled|buff.executioners_precision.stack=2" );
   execute->add_action( this, "Execute" , "if=buff.deadly_calm.up");
