@@ -1143,8 +1143,9 @@ class WDC1Parser(DBCParserBase):
 
             source = self.dbc_id_table[source_id]
             if not source:
-                logging.error('Unable to find source data with dbc_id %d for cloning', source_id)
-                return False
+                logging.warn('Unable to find source data with dbc_id %d for cloning for id %d', source_id, target_id)
+                record_id += 1
+                continue
 
             record_info = DBCRecordInfo(target_id, source.record_id, source.record_offset, source.record_size, source.parent_id)
             self.id_table.append(record_info)
