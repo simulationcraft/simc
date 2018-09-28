@@ -4320,7 +4320,10 @@ class ItemChildEquipmentGenerator(DataGenerator):
         for key in sorted(self._itemchildequipment_db.keys()) + [0,]:
             data = self._itemchildequipment_db[key]
 
-            fields = data.field( 'id', self._options.build < 25600 and 'id_item' or 'id_parent', 'id_child' )
+            if self._options.build >= 27826:
+                fields = data.field( 'id', 'id_item', 'id_child' )
+            else:
+                fields = data.field( 'id', self._options.build < 25600 and 'id_item' or 'id_parent', 'id_child' )
             self._out.write('  { %s },\n' % (', '.join(fields)))
 
         self._out.write('};\n\n')
