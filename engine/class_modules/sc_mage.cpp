@@ -4721,9 +4721,9 @@ struct scorch_t : public fire_mage_spell_t
     return am;
   }
 
-  virtual double composite_crit_chance() const override
+  virtual double composite_target_crit_chance( player_t* target ) const override
   {
-    double c = fire_mage_spell_t::composite_crit_chance();
+    double c = fire_mage_spell_t::composite_target_crit_chance( target );
 
     if ( p() -> talents.searing_touch -> ok()
       && target -> health_percentage() <= p() -> talents.searing_touch -> effectN( 1 ).base_value() )
