@@ -4261,7 +4261,7 @@ struct meteor_t : public fire_mage_spell_t
 
   virtual timespan_t travel_time() const override
   {
-    timespan_t impact_time = meteor_delay * p() -> composite_spell_haste();
+    timespan_t impact_time = meteor_delay * p() -> cache.spell_speed();
     timespan_t meteor_spawn = impact_time - meteor_impact -> travel_time();
     meteor_spawn = std::max( timespan_t::zero(), meteor_spawn );
 
