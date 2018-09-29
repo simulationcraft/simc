@@ -161,7 +161,7 @@ struct cooldown_reduction_data_t
       if ( cd -> recharge_event )
       {
         remaining = cd -> current_charge_remains() +
-          ( cd -> charges - cd -> current_charge - 1 ) * cd -> duration;
+          ( cd -> charges - cd -> current_charge - 1 ) * cooldown_t::cooldown_duration( cd );
       }
     }
     else
