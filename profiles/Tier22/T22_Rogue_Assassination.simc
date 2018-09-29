@@ -105,11 +105,11 @@ actions.stealthed+=/garrote,cycle_targets=1,if=talent.subterfuge.enabled&azerite
 actions.stealthed+=/pool_resource,for_next=1
 actions.stealthed+=/garrote,if=talent.subterfuge.enabled&talent.exsanguinate.enabled&cooldown.exsanguinate.remains<1&prev_gcd.1.rupture&dot.rupture.remains>5+4*cp_max_spend
 
-head=high_altitude_turban,id=158364,bonus_id=1557/4819/4775/4786,azerite_powers=4/136/30/0/13
+head=hood_of_pestilent_ichor,id=160623,bonus_id=4824/1507/4775,azerite_powers=4/483/22/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
-shoulders=tentaclelaced_spaulders,id=159307,bonus_id=1557/4819/4775/4786,azerite_powers=4/136/31/0/13
+shoulders=usurpers_bloodcaked_spaulders,id=160620,bonus_id=4824/1507/4775,azerite_powers=4/483/30/0/13
 back=fetid_horrors_tanglecloak,id=160643,bonus_id=4800/1507
-chest=spymasters_wrap,id=155860,bonus_id=1557/4819/4775/4786,azerite_powers=4/136/461/0/13
+chest=tunic_of_the_sanguine_deity,id=160728,bonus_id=4824/1507/4775,azerite_powers=4/181/30/0/13
 wrists=wristwraps_of_coursing_miasma,id=160621,bonus_id=4800/1507
 hands=gloves_of_descending_madness,id=160618,bonus_id=4800/1507
 waist=replicated_chitin_cord,id=160717,bonus_id=4800/1507
