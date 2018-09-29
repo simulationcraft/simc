@@ -6963,7 +6963,7 @@ void mage_t::stun()
 void mage_t::update_movement( timespan_t duration )
 {
   player_t::update_movement( duration );
-  update_rune_distance( duration.total_seconds() * composite_movement_speed() );
+  update_rune_distance( duration.total_seconds() * cache.run_speed() );
 }
 
 void mage_t::teleport( double distance, timespan_t duration )
