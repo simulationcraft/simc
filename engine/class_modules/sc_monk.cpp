@@ -8056,6 +8056,7 @@ void monk_t::create_buffs()
   buff.storm_earth_and_fire = make_buff( this, "storm_earth_and_fire", spec.storm_earth_and_fire )
                                   ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                   ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER )
+                                  ->set_can_cancel(false) // Undocumented hotfix 28/09/2018 - SEF can no longer be canceled.
                                   ->set_cooldown( timespan_t::zero() );
 
   buff.pressure_point = make_buff( this, "pressure_point", find_spell( 247255 ) )
