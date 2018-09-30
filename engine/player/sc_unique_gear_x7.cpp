@@ -1296,6 +1296,11 @@ void items::lady_waycrests_music_box( special_effect_t& effect )
       aoe = 0;
     }
 
+    void init() override
+    {
+      waycrests_legacy_heal = player->find_action( "waycrest_legacy_heal" );
+    }
+
     // Pick a random active target from the range
     void execute() override
     {
@@ -1303,7 +1308,6 @@ void items::lady_waycrests_music_box( special_effect_t& effect )
       set_target( target_list()[ target_index ] );
 
       proc_t::execute();
-      waycrests_legacy_heal = player->find_action( "waycrest_legacy_heal" );
       if ( waycrests_legacy_heal != nullptr )
       {
         if ( rng().roll( waycrests_legacy->effectN( 1 ).base_value() / 100.0 ) )
@@ -1330,6 +1334,12 @@ void items::lady_waycrests_music_box_heal( special_effect_t& effect )
     {
       aoe = 0;
     }
+
+    void init() override
+    {
+      waycrests_legacy_damage = player->find_action( "waycrest_legacy_damage" );
+    }
+
     void execute() override
     {
       size_t target_index = static_cast< size_t >( rng().range( 0, as<double>( sim->player_no_pet_list.data().size() ) ) );
@@ -1337,7 +1347,6 @@ void items::lady_waycrests_music_box_heal( special_effect_t& effect )
 
       base_bfa_proc_t<proc_heal_t>::execute();
 
-      waycrests_legacy_damage = player->find_action( "waycrest_legacy_damage" );
       if ( waycrests_legacy_damage != nullptr )
       {
         if ( rng().roll( waycrests_legacy->effectN( 1 ).base_value() / 100.0 ) )
