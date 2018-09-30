@@ -95,6 +95,7 @@ namespace items
   void merekthas_fang( special_effect_t& );
   void lingering_sporepods( special_effect_t& );
   void lady_waycrests_music_box( special_effect_t& );
+  void lady_waycrests_music_box_heal( special_effect_t& );
   void balefire_branch( special_effect_t& );
   void vial_of_animated_blood( special_effect_t& );
   // 8.0.1 - World Boss Trinkets
@@ -146,6 +147,12 @@ buff_stack_change_callback_t callback_buff_activator( dbc_proc_callback_t* callb
 }
 
 } // namespace util
+
+namespace set_bonus
+{
+  // 8.0 Dungeon
+  void waycrest_legacy( special_effect_t& );
+}
 
 // Galley Banquet ===========================================================
 
@@ -1268,6 +1275,28 @@ void items::lady_waycrests_music_box( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+void items::lady_waycrests_music_box_heal( special_effect_t& effect )
+{
+  struct harmonious_chord_t : public base_bfa_proc_t<proc_heal_t>
+  {
+    harmonious_chord_t( const special_effect_t& effect ):
+      base_bfa_proc_t<proc_heal_t>( effect, "harmonious_chord", 271682 )
+    {
+      aoe = 0;
+    }
+    void execute() override
+    {
+      size_t target_index = static_cast< size_t >( rng().range( 0, as<double>( sim->player_list.data().size() ) ) );
+      set_target( sim->player_list.data()[ target_index ] );
+
+      base_bfa_proc_t<proc_heal_t>::execute();
+    }
+  };
+  effect.execute_action = create_proc_action<harmonious_chord_t>( "harmonious_chord", effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Balefire Branch ==========================================================
 
 void items::balefire_branch( special_effect_t& effect )
@@ -1502,6 +1531,15 @@ void items::disc_of_systematic_regression( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+void set_bonus::waycrest_legacy( special_effect_t& effect)
+{
+  const spell_data_t* spell = effect.player->find_spell( 277522 );
+
+  std::string spell_name = spell->name_cstr();
+  ::util::tokenize( spell_name );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 
 } // namespace bfa
 } // anon namespace
@@ -1554,6 +1592,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 268035, items::lingering_sporepods );
   register_special_effect( 271117, "4Tick" );
   register_special_effect( 271631, items::lady_waycrests_music_box );
+  register_special_effect( 271683, items::lady_waycrests_music_box_heal );
   register_special_effect( 268999, items::balefire_branch );
   register_special_effect( 268314, "268311Trigger" ); // Galecaller's Boon, assumes the player always stands in the area
   register_special_effect( 278140, items::frenetic_corpuscle );
@@ -1570,6 +1609,9 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 276123, items::darkmoon_deck_squalls );
   register_special_effect( 276176, items::darkmoon_deck_fathoms );
   register_special_effect( 265440, items::endless_tincture_of_fractional_power );
+
+  /* 8.0 Dungeon Set Bonuses*/
+  register_special_effect( 277522, set_bonus::waycrest_legacy );
 }
 
 void unique_gear::register_target_data_initializers_bfa( sim_t* sim )
