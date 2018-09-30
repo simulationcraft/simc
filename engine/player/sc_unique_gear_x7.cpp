@@ -1251,7 +1251,6 @@ void items::lingering_sporepods( special_effect_t& effect )
 // Lady Waycrest's Music Box ================================================
 struct waycrest_legacy_damage_t : public proc_t
 {
-  //This should probably cache 277522 instead of looking up
   waycrest_legacy_damage_t( const special_effect_t& effect ):
     proc_t( effect, "waycrest_legacy_damage", 271671 )
   {
@@ -1262,16 +1261,13 @@ struct waycrest_legacy_damage_t : public proc_t
   {
     size_t target_index = static_cast<size_t>( rng().range( 0, as<double>( target_list().size() ) ) );
     set_target( target_list()[ target_index ] );
-    if ( rng().roll( player->find_spell( 277522 )->effectN( 1 ).base_value() / 100.0 ) )
-    {
-      proc_t::execute();
-    }
+    
+    proc_t::execute();
   }
 };
 
 struct waycrest_legacy_heal_t : public base_bfa_proc_t<proc_heal_t>
 {
-  //This should probably cache 277522 instead of looking up
   waycrest_legacy_heal_t( const special_effect_t& effect ):
     base_bfa_proc_t<proc_heal_t>( effect, "waycrest_legacy_heal", 271682 )
   {
@@ -1280,13 +1276,10 @@ struct waycrest_legacy_heal_t : public base_bfa_proc_t<proc_heal_t>
   }
   void execute() override
   {
-    size_t target_index = static_cast< size_t >( rng().range( 0, as<double>( sim->player_list.data().size() ) ) );
+    size_t target_index = static_cast< size_t >( rng().range( 0, as<double>( sim->player_no_pet_list.data().size() ) ) );
     set_target( sim->player_list.data()[ target_index ] );
 
-    if ( rng().roll( player->find_spell( 277522 )->effectN( 1 ).base_value() / 100.0 ) )
-    {
-      base_bfa_proc_t<proc_heal_t>::execute();
-    }
+    base_bfa_proc_t<proc_heal_t>::execute();
   }
 };
 
@@ -1295,6 +1288,7 @@ void items::lady_waycrests_music_box( special_effect_t& effect )
 {
   struct cacaphonous_chord_t : public proc_t
   {
+    const spell_data_t* waycrests_legacy = player->find_spell( 277522 );
     action_t* waycrests_legacy_heal;
     cacaphonous_chord_t( const special_effect_t& effect ) :
       proc_t( effect, "cacaphonous_chord", 271671 )
@@ -1312,7 +1306,10 @@ void items::lady_waycrests_music_box( special_effect_t& effect )
       waycrests_legacy_heal = player->find_action( "waycrest_legacy_heal" );
       if ( waycrests_legacy_heal != nullptr )
       {
-        waycrests_legacy_heal-> schedule_execute( );
+        if ( rng().roll( waycrests_legacy->effectN( 1 ).base_value() / 100.0 ) )
+        {
+          waycrests_legacy_heal->schedule_execute();
+        }
       }
     }
   };
@@ -1326,6 +1323,7 @@ void items::lady_waycrests_music_box_heal( special_effect_t& effect )
 {
   struct harmonious_chord_t : public base_bfa_proc_t<proc_heal_t>
   {
+    const spell_data_t* waycrests_legacy = player->find_spell( 277522 );
     action_t* waycrests_legacy_damage;
     harmonious_chord_t( const special_effect_t& effect ):
       base_bfa_proc_t<proc_heal_t>( effect, "harmonious_chord", 271682 )
@@ -1334,7 +1332,7 @@ void items::lady_waycrests_music_box_heal( special_effect_t& effect )
     }
     void execute() override
     {
-      size_t target_index = static_cast< size_t >( rng().range( 0, as<double>( sim->player_list.data().size() ) ) );
+      size_t target_index = static_cast< size_t >( rng().range( 0, as<double>( sim->player_no_pet_list.data().size() ) ) );
       set_target( sim->player_list.data()[ target_index ] );
 
       base_bfa_proc_t<proc_heal_t>::execute();
@@ -1342,7 +1340,10 @@ void items::lady_waycrests_music_box_heal( special_effect_t& effect )
       waycrests_legacy_damage = player->find_action( "waycrest_legacy_damage" );
       if ( waycrests_legacy_damage != nullptr )
       {
-        waycrests_legacy_damage->schedule_execute();
+        if ( rng().roll( waycrests_legacy->effectN( 1 ).base_value() / 100.0 ) )
+        {
+          waycrests_legacy_damage->schedule_execute();
+        }
       }
     }
   };
