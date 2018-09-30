@@ -374,7 +374,7 @@ const color::rgb& item_quality_color( const item_t& item )
       return color::POOR;
   }
 }
-}  // UNNAMED NAMESPACE ======================================================
+}  // UNNAMED NAMESPACE =====================================================
 
 std::string report::pretty_spell_text( const spell_data_t& default_spell,
                                        const std::string& text,
@@ -383,36 +383,27 @@ std::string report::pretty_spell_text( const spell_data_t& default_spell,
   return tooltip_parser_t( p, default_spell, text ).parse();
 }
 
-// report::check_gear_ilevel ============================================
+// report::check_gear =======================================================
 
-bool report::check_gear_ilevel( player_t& p, sim_t& sim )
+bool report::check_gear( player_t& p, sim_t& sim )
 {
   int max_ilevel_allowed           = 0;
-  int max_weapon_ilevel_allowed    = 0;
-  int max_legendary_ilevel_allowed = 0;
-  int equipped_legendary_items     = 0;
-  int legendary_items_allowed      = 0;
   std::string tier_name            = "";
 
   if ( p.report_information.save_str.find( "PR" ) != std::string::npos )
   {
-    max_ilevel_allowed        = 400; // TBD
-    max_weapon_ilevel_allowed = 400;
+    max_ilevel_allowed        = 340;
     tier_name                 = "PR";
   }
   else if ( p.report_information.save_str.find( "T22" ) != std::string::npos )
   {
-    legendary_items_allowed      = 0;
-    max_ilevel_allowed           = 400; // TBD
-    max_weapon_ilevel_allowed    = 999;
+    max_ilevel_allowed           = 385;
     tier_name                    = "T22";
   }
   else
   {
     return true;
   }
-
-  max_legendary_ilevel_allowed = 1000;
 
   const slot_e SLOT_OUT_ORDER[] = {
       SLOT_HEAD,      SLOT_NECK,     SLOT_SHOULDERS, SLOT_BACK,
@@ -430,35 +421,7 @@ bool report::check_gear_ilevel( player_t& p, sim_t& sim )
   {
     item_t& item = p.items[ slot ];
 
-    if ( item.parsed.data.quality == 5 &&
-         item.parsed.data.id != 154172 ) // Ignore Aman'thul trinket
-      equipped_legendary_items++;
-
-    if ( slot == SLOT_MAIN_HAND || slot == SLOT_OFF_HAND ||
-         slot == SLOT_RANGED )
-    {
-      if ( item.parsed.data.level > max_weapon_ilevel_allowed )
-      {
-        sim.errorf(
-            "Player %s has weapon of ilevel %s, maximum allowed ilevel for %s "
-            "weapons is %s.\n",
-            p.name(), util::to_string( item.parsed.data.level ).c_str(),
-            tier_name.c_str(),
-            util::to_string( max_weapon_ilevel_allowed ).c_str() );
-      }
-    }
-    else if ( item.parsed.data.quality == 5 &&
-              ( item.parsed.data.level > max_legendary_ilevel_allowed ) )
-    {
-      sim.errorf(
-          "Player %s has %s of ilevel %s, maximum allowed ilevel for %s "
-          "legendarys is %s.\n",
-          p.name(), util::slot_type_string( slot ),
-          util::to_string( item.parsed.data.level ).c_str(), tier_name.c_str(),
-          util::to_string( max_legendary_ilevel_allowed ).c_str() );
-    }
-    else if ( item.parsed.data.quality != 5 &&
-              ( item.parsed.data.level > max_ilevel_allowed ) )
+    if ( item.parsed.data.level > max_ilevel_allowed )
     {
       sim.errorf(
           "Player %s has %s of ilevel %s, maximum allowed ilevel for %s is "
@@ -468,28 +431,24 @@ bool report::check_gear_ilevel( player_t& p, sim_t& sim )
           util::to_string( max_ilevel_allowed ).c_str() );
     }
 
-    if ( !( slot == SLOT_MAIN_HAND || slot == SLOT_OFF_HAND ||
-            slot == SLOT_RANGED ) && !(item.parsed.data.quality == 5 ) )
+    size_t num_gems = 0;
+    for ( size_t jj = 0; jj < item.parsed.gem_id.size(); ++jj )
     {
-      size_t num_gems = 0;
-      for ( size_t jj = 0; jj < item.parsed.gem_id.size(); ++jj )
+      if ( item.parsed.data.stat_alloc[0] == 7889 &&
+            item.parsed.gem_id[ jj ] > 0 && num_gems < 1 )
       {
-        if ( item.parsed.data.stat_alloc[0] == 7889 &&
-             item.parsed.gem_id[ jj ] > 0 && num_gems < 1 )
-        {
-          num_gems++;
-          continue; // 7889 seems to be the stat value for an item that comes with a socket by default, so we will allow 1 gem there.
-        }
-        if ( item.parsed.gem_id[ jj ] > 0 )
-        {
-          sim.errorf(
-              "Player %s has gems equipped in slot %s, there are no gems "
-              "allowed in default profiles even if they have a slot by "
-              "default, this is to ensure that all default profiles within %s "
-              "are as equal as possible.\n",
-              p.name(), util::slot_type_string( slot ), tier_name.c_str() );
-          break;
-        }
+        num_gems++;
+        continue; // 7889 seems to be the stat value for an item that comes with a socket by default, so we will allow 1 gem there.
+      }
+      if ( item.parsed.gem_id[ jj ] > 0 )
+      {
+        sim.errorf(
+            "Player %s has gems equipped in slot %s, there are no gems "
+            "allowed in default profiles even if they have a slot by "
+            "default, this is to ensure that all default profiles within %s "
+            "are as equal as possible.\n",
+            p.name(), util::slot_type_string( slot ), tier_name.c_str() );
+        break;
       }
     }
 
@@ -519,95 +478,6 @@ bool report::check_gear_ilevel( player_t& p, sim_t& sim )
       }
     }
   }
-  if ( equipped_legendary_items > legendary_items_allowed )
-  {
-    sim.errorf(
-        "Player %s has %s legendary items. %s allows %s legendary item(s).\n",
-        p.name(), util::to_string( equipped_legendary_items ).c_str(),
-        tier_name.c_str(), util::to_string( legendary_items_allowed ).c_str() );
-  }
-
-  return true;
-}
-
-// report::check_artifact_points ============================================
-// This is to make sure our default profiles are using the same number of
-// artifact points.
-
-bool report::check_artifact_points( const player_t& p, sim_t& sim )
-{
-  if ( p.is_enemy() || p.is_pet() )
-  {
-    return true;
-  }
-
-  unsigned max_purchased = 0;
-  unsigned max_crucible  = 0;
-
-  std::string tier_name = "";
-
-  if ( p.report_information.save_str.find( "PR" ) != std::string::npos )
-  {
-    max_purchased = 0;
-    tier_name     = "PR";
-  }
-  else if ( p.report_information.save_str.find( "T22" ) != std::string::npos )
-  {
-    max_purchased = 0;
-    tier_name     = "T22";
-    max_crucible  = 0;
-  }
-  else
-  {
-    return true;
-  }
-
-  unsigned purchased_points = p.artifact -> purchased_points();
-  unsigned crucible_points  = p.artifact -> crucible_points();
-
-  if ( purchased_points > max_purchased )
-  {
-    sim.errorf(
-        "Player %s has %s artifact points, maximum allowed for %s is %s.\n",
-        p.name(), util::to_string( purchased_points ).c_str(),
-        tier_name.c_str(), util::to_string( max_purchased ).c_str() );
-  }
-  else if ( purchased_points < max_purchased && p.level() == 110 )
-  {
-    sim.errorf(
-        "Player %s has %s artifact points, maximum allowed for %s is %s. Add more!\n",
-        p.name(), util::to_string( purchased_points ).c_str(),
-        tier_name.c_str(), util::to_string( max_purchased ).c_str() );
-  }
-
-  if ( crucible_points > max_crucible )
-  {
-    sim.errorf(
-        "Player %s has %s crucible points, maximum allowed for %s is %s.\n",
-        p.name(), util::to_string( crucible_points ).c_str(),
-        tier_name.c_str(), util::to_string( max_crucible ).c_str() );
-  }
-  else if ( crucible_points < max_crucible )
-  {
-    sim.errorf(
-        "Player %s has %s crucible points, maximum allowed for %s is %s. Add more!\n",
-        p.name(), util::to_string( crucible_points ).c_str(),
-        tier_name.c_str(), util::to_string( max_crucible ).c_str() );
-  }
-
-  for ( auto power : p.artifact -> powers() )
-  {
-    unsigned extra_ranks = p.artifact -> bonus_rank( power -> id )
-                         + p.artifact -> crucible_rank( power -> id );
-
-    if ( extra_ranks > 3 )
-    {
-      sim.errorf(
-          "Player %s has more than 3 extra points in trait %s.\n",
-          p.name(), power -> name );
-      return false;
-    }
-  }
 
   return true;
 }
@@ -623,12 +493,7 @@ void report::print_profiles( sim_t* sim )
     if ( p->is_pet() )
       continue;
 
-    if ( !check_artifact_points( *p, *sim ) )
-    {
-      continue;
-    }
-
-    if ( !check_gear_ilevel( *p, *sim ) )
+    if ( !check_gear( *p, *sim ) )
     {
       continue;
     }
