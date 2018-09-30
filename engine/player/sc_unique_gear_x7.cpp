@@ -1298,6 +1298,7 @@ void items::lady_waycrests_music_box( special_effect_t& effect )
 
     void init() override
     {
+      proc_t::init();
       waycrests_legacy_heal = player->find_action( "waycrest_legacy_heal" );
     }
 
@@ -1337,6 +1338,7 @@ void items::lady_waycrests_music_box_heal( special_effect_t& effect )
 
     void init() override
     {
+      proc_heal_t::init();
       waycrests_legacy_damage = player->find_action( "waycrest_legacy_damage" );
     }
 
