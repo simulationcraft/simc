@@ -6,11 +6,11 @@ role=tank
 position=front
 talents=2020033
 
-head=irontide_captains_hat,id=155888,bonus_id=1557/4819/4775/4786,azerite_powers=4/479/31/85/13
+head=irontide_captains_hat,id=155888,bonus_id=1557/4819/4775/4786,azerite_powers=479/31/85/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
-shoulder=mantle_of_fastidious_machinations,id=158304,bonus_id=1557/4819/4775/4786,azerite_powers=10/157/461/84/13
+shoulder=mantle_of_fastidious_machinations,id=158304,bonus_id=1557/4819/4775/4786,azerite_powers=157/461/84/13
 back=fetid_horrors_tanglecloak,id=160643,bonus_id=4800/1507
-chest=cephalohide_jacket,id=159314,bonus_id=1557/4819/4775/4786,azerite_powers=10/479/18/85/13
+chest=cephalohide_jacket,id=159314,bonus_id=1557/4819/4775/4786,azerite_powers=479/18/85/13
 wrists=wristwraps_of_coursing_miasma,id=160621,bonus_id=4800/1507
 hands=gloves_of_descending_madness,id=160618,bonus_id=4800/1507
 waist=replicated_chitin_cord,id=160717,bonus_id=4800/1507
@@ -33,11 +33,11 @@ role=attack
 position=back
 talents=2022032
 
-head=cowl_of_fluid_machinations,id=159302,bonus_id=1557/4819/4775/4786,azerite_powers=10/389/22/0/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536
-shoulders=blood_bog_shoulderpads,id=157883,bonus_id=1557/4819/4775/4786,azerite_powers=10/389/38/0/13
+head=cowl_of_fluid_machinations,id=159302,bonus_id=1557/4819/4775/4786,azerite_powers=389/22/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
+shoulders=blood_bog_shoulderpads,id=157883,bonus_id=1557/4819/4775/4786,azerite_powers=389/38/13
 back=cloak_of_rippling_whispers,id=160642,bonus_id=4800/1507
-chest=tidebound_chestguard,id=154449,bonus_id=1557/4819/4775/4786,azerite_powers=10/478/31/0/13
+chest=tidebound_chestguard,id=154449,bonus_id=1557/4819/4775/4786,azerite_powers=478/31/13
 wrists=armbands_of_sacrosanct_acts,id=160720,bonus_id=4800/1507
 hands=gloves_of_descending_madness,id=160618,bonus_id=4800/1507
 waist=replicated_chitin_cord,id=160717,bonus_id=4800/1507
@@ -60,11 +60,11 @@ role=attack
 position=back
 talents=2022033
 
-head=cowl_of_fluid_machinations,id=159302,bonus_id=1557/4819/4775/4786,azerite_powers=10/389/22/0/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536
-shoulders=blood_bog_shoulderpads,id=157883,bonus_id=1557/4819/4775/4786,azerite_powers=10/389/38/0/13
+head=cowl_of_fluid_machinations,id=159302,bonus_id=1557/4819/4775/4786,azerite_powers=389/22/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
+shoulders=blood_bog_shoulderpads,id=157883,bonus_id=1557/4819/4775/4786,azerite_powers=389/38/13
 back=cloak_of_rippling_whispers,id=160642,bonus_id=4800/1507
-chest=tidebound_chestguard,id=154449,bonus_id=1557/4819/4775/4786,azerite_powers=10/478/31/0/13
+chest=tidebound_chestguard,id=154449,bonus_id=1557/4819/4775/4786,azerite_powers=478/31/13
 wrists=armbands_of_sacrosanct_acts,id=160720,bonus_id=4800/1507
 hands=gloves_of_descending_madness,id=160618,bonus_id=4800/1507
 waist=replicated_chitin_cord,id=160717,bonus_id=4800/1507

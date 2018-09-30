@@ -91,11 +91,11 @@ actions.single_target+=/flame_shock,moving=1,if=movement.distance>6
 # Frost Shock is our movement filler.
 actions.single_target+=/frost_shock,moving=1
 
-head=visage_of_bloody_horrors,id=159381,bonus_id=1557/4819/4775/4786,azerite_powers=21/457/0/13
+head=visage_of_bloody_horrors,id=159381,bonus_id=1557/4819/4775/4786,azerite_powers=21/457/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
-shoulders=spaulders_of_coagulated_viscera,id=160731,bonus_id=4824/1507/4775,azerite_powers=485/22/0/13
+shoulders=spaulders_of_coagulated_viscera,id=160731,bonus_id=4824/1507/4775,azerite_powers=485/22/13
 back=cloak_of_rippling_whispers,id=160642,bonus_id=4800/1507
-chest=corrupted_hexxers_vestments,id=159370,bonus_id=1557/4819/4775/4786,azerite_powers=482/30/0/13
+chest=corrupted_hexxers_vestments,id=159370,bonus_id=1557/4819/4775/4786,azerite_powers=482/30/13
 wrists=rubywrought_sparkguards,id=160629,bonus_id=4800/1507
 hands=oblivion_crushers,id=160721,bonus_id=4800/1507
 waist=titanspark_energy_girdle,id=160633,bonus_id=4800/1507

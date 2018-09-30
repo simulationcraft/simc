@@ -70,7 +70,7 @@ actions.opener+=/sequence,if=talent.wake_of_ashes.enabled&talent.crusade.enabled
 actions.opener+=/sequence,if=talent.wake_of_ashes.enabled&talent.inquisition.enabled,name=wake_opener_Inq:shield_of_vengeance:blade_of_justice:judgment:inquisition:avenging_wrath:wake_of_ashes
 
 head=seabrawlers_greathelm,id=155885,bonus_id=4779/1512/4775/4786,azerite_powers=479/462/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/1524
+neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
 shoulders=pauldrons_of_the_great_unifier,id=159423,bonus_id=4779/1512/4775/4786,azerite_powers=157/22/13
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
 chest=harpooners_plate_cuirass,id=159416,bonus_id=4779/1512/4775/4786,azerite_powers=479/21/13

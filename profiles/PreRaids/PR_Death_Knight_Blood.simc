@@ -57,11 +57,11 @@ actions.standard+=/heart_strike,if=rune.time_to_3<gcd|buff.bone_shield.stack>6
 actions.standard+=/rune_strike
 actions.standard+=/arcane_torrent,if=runic_power.deficit>20
 
-head=greathelm_of_the_putrid_path,id=159446,bonus_id=4779/1512/4786/4775,azerite_powers=13/194/22/14
-neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524
-shoulders=pauldrons_of_the_great_unifier,id=159423,bonus_id=4779/1512/4786/4775,azerite_powers=13/157/22/44
+head=greathelm_of_the_putrid_path,id=159446,bonus_id=4779/1512/4786/4775,azerite_powers=194/22/14/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
+shoulders=pauldrons_of_the_great_unifier,id=159423,bonus_id=4779/1512/4786/4775,azerite_powers=157/22/44/13
 back=raals_bib,id=159294,bonus_id=4779/1512/4786
-chest=desert_guardians_breastplate,id=159424,bonus_id=4779/1512/4786/4775,azerite_powers=13/482/462/85
+chest=desert_guardians_breastplate,id=159424,bonus_id=4779/1512/4786/4775,azerite_powers=482/462/85/13
 wrists=embalmers_steadying_bracers,id=159409,bonus_id=4779/1512/4786
 hands=sharktoothknuckled_grips,id=155890,bonus_id=4779/1512/4786
 waist=belt_of_the_unrelenting_gale,id=159426,bonus_id=4779/1512/4786

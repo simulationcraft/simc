@@ -106,11 +106,11 @@ actions.inf+=/conflagrate,cycle_targets=1,if=!debuff.havoc.remains
 actions.inf+=/shadowburn,cycle_targets=1,if=!debuff.havoc.remains&((charges=2|!buff.backdraft.remains|buff.backdraft.remains>buff.backdraft.stack*action.incinerate.execute_time))
 actions.inf+=/incinerate,cycle_targets=1,if=!debuff.havoc.remains
 
-head=soulfuel_headdress,id=159279,bonus_id=4779/1512/4786/4775,azerite_powers=432/22/0/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/1524
-shoulders=pauldrons_of_vile_corruption,id=159267,bonus_id=4779/1512/4786/4775,azerite_powers=444/459/0/13
+head=soulfuel_headdress,id=159279,bonus_id=4779/1512/4786/4775,azerite_powers=432/22/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
+shoulders=pauldrons_of_vile_corruption,id=159267,bonus_id=4779/1512/4786/4775,azerite_powers=444/459/13
 back=drape_of_the_loyal_vassal,id=158375,bonus_id=4779/1512/4786
-chest=petticoat_of_the_selfstylized_azerite_baron,id=158349,bonus_id=4779/1512/4786/4775,azerite_powers=444/18/0/13
+chest=petticoat_of_the_selfstylized_azerite_baron,id=158349,bonus_id=4779/1512/4786/4775,azerite_powers=444/18/13
 wrists=ironkelp_wristwraps,id=159256,bonus_id=4779/1512/4786
 hands=mine_rats_handwarmers,id=159231,bonus_id=4779/1512/4786
 waist=ouroborial_sash,id=159255,bonus_id=4779/1512/4786

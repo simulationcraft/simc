@@ -7,7 +7,7 @@ position=back
 talents=2032021
 
 head=soulfuel_headdress,id=159279,bonus_id=1557/4819/4775/4786,azerite_powers=374/22/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=
+neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
 shoulders=exquisitely_aerodynamic_shoulderpads,id=159232,bonus_id=1557/4819/4775/4786,azerite_powers=374/22/13
 back=cloak_of_rippling_whispers,id=160642,bonus_id=4800/1507
 chest=blooddrenched_robes,id=159241,bonus_id=1557/4819/4775/4786,azerite_powers=374/31/13
@@ -33,11 +33,11 @@ role=spell
 position=ranged_back
 talents=3031023
 
-head=visage_of_the_ascended_prophet,id=160719,bonus_id=4824/1507/4775,azerite_powers=0/485/31/13
+head=visage_of_the_ascended_prophet,id=160719,bonus_id=4824/1507/4775,azerite_powers=485/31/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
-shoulders=amice_of_corrupting_horror,id=160726,bonus_id=4824/1507/4775,azerite_powers=0/485/462/13
+shoulders=amice_of_corrupting_horror,id=160726,bonus_id=4824/1507/4775,azerite_powers=485/462/13
 back=fetid_horrors_tanglecloak,id=160643,bonus_id=4800/1507
-chest=robes_of_the_reborn_serpent,id=159257,bonus_id=1557/4819/4775/4786,azerite_powers=0/482/30/13
+chest=robes_of_the_reborn_serpent,id=159257,bonus_id=1557/4819/4775/4786,azerite_powers=482/30/13
 wrists=voidlashed_wristband,id=160617,bonus_id=4800/1507
 hands=spellbound_specimen_handlers,id=160612,bonus_id=4800/1507
 waist=cord_of_animated_contagion,id=160734,bonus_id=4800/1507

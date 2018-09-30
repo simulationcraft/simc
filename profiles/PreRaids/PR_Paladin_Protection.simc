@@ -54,7 +54,7 @@ actions.cooldowns+=/potion,if=buff.avenging_wrath.up
 actions.cooldowns+=/use_items,if=buff.seraphim.up|!talent.seraphim.enabled
 
 head=helm_of_the_raptor_king,id=159422,bonus_id=4779/1512/4775/4786,azerite_powers=395/461/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/1524
+neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
 shoulders=kraken_shell_pauldrons,id=159431,bonus_id=4779/1512/4775/4786,azerite_powers=395/461/13
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
 chest=desert_guardians_breastplate,id=159424,bonus_id=4779/1512/4775/4786,azerite_powers=482/18/13

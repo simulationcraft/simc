@@ -8,7 +8,7 @@ talents=1200003
 
 
 head=helm_of_the_raptor_king,id=159422,bonus_id=4779/1512/4775/4786,azerite_powers=395/461/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/1524
+neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
 shoulders=kraken_shell_pauldrons,id=159431,bonus_id=4779/1512/4775/4786,azerite_powers=395/461/13
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
 chest=desert_guardians_breastplate,id=159424,bonus_id=4779/1512/4775/4786,azerite_powers=482/18/13
@@ -36,7 +36,7 @@ position=back
 talents=2303003
 
 head=seabrawlers_greathelm,id=155885,bonus_id=4779/1512/4775/4786,azerite_powers=479/462/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/1524
+neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
 shoulders=pauldrons_of_the_great_unifier,id=159423,bonus_id=4779/1512/4775/4786,azerite_powers=157/22/13
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
 chest=harpooners_plate_cuirass,id=159416,bonus_id=4779/1512/4775/4786,azerite_powers=479/21/13

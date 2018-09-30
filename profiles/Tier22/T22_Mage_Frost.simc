@@ -105,18 +105,18 @@ actions.talent_rop=rune_of_power,if=talent.glacial_spike.enabled&buff.icicles.st
 # Without Glacial Spike, Rune of Power should be used before any bigger cooldown (Ebonbolt, Comet Storm, Ray of Frost) or when Rune of Power is about to reach 2 charges.
 actions.talent_rop+=/rune_of_power,if=!talent.glacial_spike.enabled&(talent.ebonbolt.enabled&cooldown.ebonbolt.remains<cast_time|talent.comet_storm.enabled&cooldown.comet_storm.remains<cast_time|talent.ray_of_frost.enabled&cooldown.ray_of_frost.remains<cast_time|charges_fractional>1.9)
 
-head=grasping_crown_of_the_deep,id=159252,bonus_id=1557/4819/4775/4786,azerite_powers=479/30/13
+head=horrific_amalgams_hood,id=160616,bonus_id=4824/1507/4775,azerite_powers=483/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
 shoulders=mantle_of_contained_corruption,id=160613,bonus_id=4824/1507/4775,azerite_powers=483/22/13
 back=cloak_of_rippling_whispers,id=160642,bonus_id=4800/1507
-chest=inmates_straight_robe,id=159268,bonus_id=1557/4819/4775/4786,azerite_powers=479/22/13
+chest=robes_of_the_unraveler,id=160614,bonus_id=4824/1507/4775,azerite_powers=483/30/13
 wrists=bloody_experimenters_wraps,id=161071,bonus_id=4800/1507
 hands=mutagenic_protofluid_handwraps,id=160715,bonus_id=4800/1507
 waist=cord_of_animated_contagion,id=160734,bonus_id=4800/1507
 legs=leggings_of_lingering_infestation,id=160615,bonus_id=4800/1507
 feet=volatile_walkers,id=160714,bonus_id=4800/1507
 finger1=rotscour_ring,id=160645,bonus_id=4800/1507,enchant=pact_of_versatility
-finger2=ritual_binders_ring,id=159459,bonus_id=1542/4786,enchant=pact_of_versatility
+finger2=seal_of_the_regal_loa,id=159458,bonus_id=1542/4786,enchant=pact_of_versatility
 trinket1=vigilants_bloodshaper,id=160651,bonus_id=4800/1507
 trinket2=twitching_tentacle_of_xalzaix,id=160656,bonus_id=4800/1507
 main_hand=regurgitated_purifiers_flamestaff,id=160689,bonus_id=4800/1507,enchant=torrent_of_elements
@@ -126,7 +126,7 @@ main_hand=regurgitated_purifiers_flamestaff,id=160689,bonus_id=4800/1507,enchant
 # gear_stamina=7161
 # gear_intellect=5208
 # gear_crit_rating=1271
-# gear_haste_rating=963
+# gear_haste_rating=853
 # gear_mastery_rating=411
-# gear_versatility_rating=509
+# gear_versatility_rating=618
 # gear_armor=1159

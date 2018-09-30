@@ -7,11 +7,11 @@ position=ranged_back
 talents=3302023
 default_pet=imp
 
-head=grasping_crown_of_the_deep,id=159252,bonus_id=4779/1512/4786/4775,azerite_powers=123/18/0/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/1524
-shoulders=amice_of_the_returned,id=159273,bonus_id=4779/1512/4786/4775,azerite_powers=230/459/0/13
+head=grasping_crown_of_the_deep,id=159252,bonus_id=4779/1512/4786/4775,azerite_powers=123/18/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
+shoulders=amice_of_the_returned,id=159273,bonus_id=4779/1512/4786/4775,azerite_powers=230/459/13
 back=drape_of_the_loyal_vassal,id=158375,bonus_id=4779/1512/4786
-chest=loa_betrayers_vestments,id=159233,bonus_id=4779/1512/4786/4775,azerite_powers=123/461/0/13
+chest=loa_betrayers_vestments,id=159233,bonus_id=4779/1512/4786/4775,azerite_powers=123/461/13
 wrists=ironkelp_wristwraps,id=159256,bonus_id=4779/1512/4786
 hands=mine_rats_handwarmers,id=159231,bonus_id=4779/1512/4786
 waist=ouroborial_sash,id=159255,bonus_id=4779/1512/4786
@@ -35,11 +35,11 @@ position=ranged_back
 talents=2303031
 default_pet=felguard
 
-head=stormlurkers_cowl,id=159244,bonus_id=4779/1512/4786/4775,azerite_powers=13/30/428
-neck=heart_of_azeroth,id=158075,bonus_id=4929/1524
-shoulders=amice_of_the_returned,id=159273,bonus_id=4779/1512/4786/4775,azerite_powers=13/30/458
+head=stormlurkers_cowl,id=159244,bonus_id=4779/1512/4786/4775,azerite_powers=30/428/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
+shoulders=amice_of_the_returned,id=159273,bonus_id=4779/1512/4786/4775,azerite_powers=30/458/13
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-chest=robes_of_the_reborn_serpent,id=159257,bonus_id=4779/1512/4786/4775,azerite_powers=13/30/458
+chest=robes_of_the_reborn_serpent,id=159257,bonus_id=4779/1512/4786/4775,azerite_powers=30/458/13
 wrists=wraps_of_everliving_fealty,id=158348,bonus_id=4779/1512/4786
 hands=clawslit_brawlers_handwraps,id=159266,bonus_id=4779/1512/4786
 waist=sailcloth_waistband,id=158346,bonus_id=4779/1512/4786
@@ -64,11 +64,11 @@ position=ranged_back
 talents=1203023
 default_pet=imp
 
-head=soulfuel_headdress,id=159279,bonus_id=4779/1512/4786/4775,azerite_powers=432/22/0/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/1524
-shoulders=pauldrons_of_vile_corruption,id=159267,bonus_id=4779/1512/4786/4775,azerite_powers=444/459/0/13
+head=soulfuel_headdress,id=159279,bonus_id=4779/1512/4786/4775,azerite_powers=432/22/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
+shoulders=pauldrons_of_vile_corruption,id=159267,bonus_id=4779/1512/4786/4775,azerite_powers=444/459/13
 back=drape_of_the_loyal_vassal,id=158375,bonus_id=4779/1512/4786
-chest=petticoat_of_the_selfstylized_azerite_baron,id=158349,bonus_id=4779/1512/4786/4775,azerite_powers=444/18/0/13
+chest=petticoat_of_the_selfstylized_azerite_baron,id=158349,bonus_id=4779/1512/4786/4775,azerite_powers=444/18/13
 wrists=ironkelp_wristwraps,id=159256,bonus_id=4779/1512/4786
 hands=mine_rats_handwarmers,id=159231,bonus_id=4779/1512/4786
 waist=ouroborial_sash,id=159255,bonus_id=4779/1512/4786

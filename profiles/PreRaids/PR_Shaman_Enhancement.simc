@@ -90,11 +90,11 @@ actions.filler+=/flametongue
 
 actions.opener=rockbiter,if=maelstrom<15&time<gcd
 
-head=coif_of_the_court_spider,id=159358,bonus_id=4779/1512/4786/4775,azerite_powers=157/30/0/13
-neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
-shoulders=hookbarbed_spaulders,id=159376,bonus_id=4779/1512/4786/4775,azerite_powers=479/462/0/13
+head=coif_of_the_court_spider,id=159358,bonus_id=4779/1512/4786/4775,azerite_powers=157/30/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
+shoulders=hookbarbed_spaulders,id=159376,bonus_id=4779/1512/4786/4775,azerite_powers=479/462/13
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-chest=corrupted_hexxers_vestments,id=159370,bonus_id=4779/1512/4786/4775,azerite_powers=482/30/0/13
+chest=corrupted_hexxers_vestments,id=159370,bonus_id=4779/1512/4786/4775,azerite_powers=482/30/13
 wrists=raouls_barrelhook_bracers,id=159356,bonus_id=4779/1512/4786
 hands=water_shapers,id=159366,bonus_id=4779/1512/4786
 waist=anchor_chain_girdle,id=159386,bonus_id=4779/1512/4786

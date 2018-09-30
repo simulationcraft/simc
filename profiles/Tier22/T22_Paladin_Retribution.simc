@@ -69,7 +69,7 @@ actions.opener+=/sequence,if=talent.wake_of_ashes.enabled&talent.crusade.enabled
 actions.opener+=/sequence,if=talent.wake_of_ashes.enabled&talent.inquisition.enabled,name=wake_opener_Inq:shield_of_vengeance:blade_of_justice:judgment:inquisition:avenging_wrath:wake_of_ashes
 
 head=helm_of_the_defiled_laboratorium,id=160732,bonus_id=4824/1507/4775,azerite_powers=485/22/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536
+neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
 shoulders=pauldrons_of_the_horned_horror,id=159455,bonus_id=1557/4819/4775/4786,azerite_powers=154/30/13
 back=fetid_horrors_tanglecloak,id=160643,bonus_id=4800/1507
 chest=chestplate_of_apocalyptic_machinations,id=160722,bonus_id=4824/1507/4775,azerite_powers=485/461/13

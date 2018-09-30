@@ -88,11 +88,11 @@ actions.nether_portal_building+=/power_siphon,if=buff.wild_imps.stack>=2&buff.de
 actions.nether_portal_building+=/hand_of_guldan,if=soul_shard>=5
 actions.nether_portal_building+=/call_action_list,name=build_a_shard
 
-head=stormlurkers_cowl,id=159244,bonus_id=4779/1512/4786/4775,azerite_powers=13/30/428
-neck=heart_of_azeroth,id=158075,bonus_id=4929/1524
-shoulders=amice_of_the_returned,id=159273,bonus_id=4779/1512/4786/4775,azerite_powers=13/30/458
+head=stormlurkers_cowl,id=159244,bonus_id=4779/1512/4786/4775,azerite_powers=30/428/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
+shoulders=amice_of_the_returned,id=159273,bonus_id=4779/1512/4786/4775,azerite_powers=30/458/13
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-chest=robes_of_the_reborn_serpent,id=159257,bonus_id=4779/1512/4786/4775,azerite_powers=13/30/458
+chest=robes_of_the_reborn_serpent,id=159257,bonus_id=4779/1512/4786/4775,azerite_powers=30/458/13
 wrists=wraps_of_everliving_fealty,id=158348,bonus_id=4779/1512/4786
 hands=clawslit_brawlers_handwraps,id=159266,bonus_id=4779/1512/4786
 waist=sailcloth_waistband,id=158346,bonus_id=4779/1512/4786

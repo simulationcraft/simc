@@ -80,11 +80,11 @@ actions.fillers+=/shadow_bolt,cycle_targets=1,if=talent.shadow_embrace.enabled&t
 actions.fillers+=/shadow_bolt,target_if=min:debuff.shadow_embrace.remains,if=talent.shadow_embrace.enabled&talent.absolute_corruption.enabled&active_enemies=2
 actions.fillers+=/shadow_bolt
 
-head=visage_of_the_ascended_prophet,id=160719,bonus_id=4824/1507/4775,azerite_powers=183/21/0/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536
-shoulders=mantle_of_contained_corruption,id=160613,bonus_id=4824/1507/4775,azerite_powers=425/22/0/13
+head=visage_of_the_ascended_prophet,id=160719,bonus_id=4824/1507/4775,azerite_powers=183/21/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
+shoulders=mantle_of_contained_corruption,id=160613,bonus_id=4824/1507/4775,azerite_powers=425/22/13
 back=fetid_horrors_tanglecloak,id=160643,bonus_id=4800/1507
-chest=robes_of_the_unraveler,id=160614,bonus_id=4824/1507/4775,azerite_powers=483/30/0/13
+chest=robes_of_the_unraveler,id=160614,bonus_id=4824/1507/4775,azerite_powers=483/30/13
 wrists=voidlashed_wristband,id=160617,bonus_id=4800/1507
 hands=mutagenic_protofluid_handwraps,id=160715,bonus_id=4800/1507
 waist=cord_of_septic_envelopment,id=160727,bonus_id=4800/1507

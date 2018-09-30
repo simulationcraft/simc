@@ -76,11 +76,11 @@ actions+=/solar_wrath,if=(!buff.celestial_alignment.up&!buff.incarnation.up|vari
 actions+=/sunfire,if=(!buff.celestial_alignment.up&!buff.incarnation.up|!variable.az_streak|!prev_gcd.1.sunfire)&!(variable.az_potm>=2&spell_targets.moonfire>=2)
 actions+=/moonfire
 
-head=irontide_captains_hat,id=155888,bonus_id=4779/1512/4786/4775,azerite_powers=173/30/0/13
-neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
-shoulders=mantle_of_fastidious_machinations,id=158304,bonus_id=4779/1512/4786/4775,azerite_powers=173/461/0/13
+head=irontide_captains_hat,id=155888,bonus_id=4779/1512/4786/4775,azerite_powers=173/30/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
+shoulders=mantle_of_fastidious_machinations,id=158304,bonus_id=4779/1512/4786/4775,azerite_powers=173/461/13
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-chest=spymasters_wrap,id=155860,bonus_id=4779/1512/4786/4775,azerite_powers=122/20/0/13
+chest=spymasters_wrap,id=155860,bonus_id=4779/1512/4786/4775,azerite_powers=122/20/13
 wrists=servoarm_bindings,id=158353,bonus_id=4779/1512/4786
 hands=underrot_grotto_tenders,id=159344,bonus_id=4779/1512/4786
 waist=port_pillagers_belt,id=159309,bonus_id=4779/1512/4786

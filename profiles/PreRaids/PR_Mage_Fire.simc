@@ -95,11 +95,11 @@ actions.standard_rotation+=/scorch,if=(target.health.pct<=30&talent.searing_touc
 actions.standard_rotation+=/fireball
 actions.standard_rotation+=/scorch
 
-head=stormlurkers_cowl,id=159244,bonus_id=4779/1512/4786/4775,azerite_powers=8/377/30/86/13
-neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524
-shoulders=mantle_of_ceremonial_ascension,id=158344,bonus_id=4779/1512/4786/4775,azerite_powers=377/21/0/13
+head=stormlurkers_cowl,id=159244,bonus_id=4779/1512/4786/4775,azerite_powers=377/30/86/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
+shoulders=mantle_of_ceremonial_ascension,id=158344,bonus_id=4779/1512/4786/4775,azerite_powers=377/21/13
 back=parrotfeather_cloak,id=155884,bonus_id=4779/1512/4786
-chest=inmates_straight_robe,id=159268,bonus_id=4779/1512/4786/4775,azerite_powers=8/377/21/468/13
+chest=inmates_straight_robe,id=159268,bonus_id=4779/1512/4786/4775,azerite_powers=377/21/468/13
 wrists=ironkelp_wristwraps,id=159256,bonus_id=4779/1512/4786
 hands=twisted_sisters_handwraps,id=159272,bonus_id=4779/1512/4786
 waist=cord_of_the_pious_warder,id=159245,bonus_id=4779/1512/4786

@@ -59,11 +59,11 @@ actions+=/barrage
 actions+=/cobra_shot,if=(active_enemies<2|cooldown.kill_command.remains>focus.time_to_max)&(focus-cost+focus.regen*(cooldown.kill_command.remains-1)>action.kill_command.cost|cooldown.kill_command.remains>1+gcd)&cooldown.kill_command.remains>1
 actions+=/arcane_torrent
 
-head=hood_of_the_dark_reaper,id=159391,bonus_id=4779/1512/4786/4775,azerite_powers=366/30/0/13
-neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
-shoulders=hookbarbed_spaulders,id=159376,bonus_id=4779/1512/4786/4775,azerite_powers=479/30/0/13
+head=hood_of_the_dark_reaper,id=159391,bonus_id=4779/1512/4786/4775,azerite_powers=366/30/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
+shoulders=hookbarbed_spaulders,id=159376,bonus_id=4779/1512/4786/4775,azerite_powers=479/30/13
 back=turncoats_cape,id=159293,bonus_id=4779/1512/4786
-chest=corrupted_hexxers_vestments,id=159370,bonus_id=4779/1512/4786/4775,azerite_powers=482/22/0/13
+chest=corrupted_hexxers_vestments,id=159370,bonus_id=4779/1512/4786/4775,azerite_powers=482/22/13
 wrists=slaughterhousechain_bracers,id=159397,bonus_id=4779/1512/4786
 hands=linked_pummeler_grips,id=159357,bonus_id=4779/1512/4786
 waist=chain_of_consummate_power,id=159377,bonus_id=4779/1512/4786
