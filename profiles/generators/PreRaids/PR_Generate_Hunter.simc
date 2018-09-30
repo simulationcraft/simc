@@ -60,11 +60,11 @@ role=attack
 position=back
 talents=3101022
 
-head=visage_of_bloody_horrors,id=159381,bonus_id=4779/1512/4786/4775,azerite_powers=372/18/15/86
+head=visage_of_bloody_horrors,id=159381,bonus_id=4779/1512/4786/4775,azerite_powers=372/30/14/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
-shoulders=amalgamated_abomination_spaulders,id=159385,bonus_id=4779/1512/4786/4775,azerite_powers=194/459/15/86
+shoulders=amalgamated_abomination_spaulders,id=159385,bonus_id=4779/1512/4786/4775,azerite_powers=372/30/13
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-chest=corrupted_hexxers_vestments,id=159370,bonus_id=4779/1512/4786/4775,azerite_powers=371/459/15/86
+chest=corrupted_hexxers_vestments,id=159370,bonus_id=4779/1512/4786/4775,azerite_powers=371/30/14/13
 wrists=dread_captains_irons,id=159372,bonus_id=4779/1512/4786
 hands=water_shapers,id=159366,bonus_id=4779/1512/4786
 waist=anchor_chain_girdle,id=159386,bonus_id=4779/1512/4786
