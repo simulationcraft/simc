@@ -454,19 +454,17 @@ bool report::check_gear( player_t& p, sim_t& sim )
             powers++;
         }
         if ( powers > 1 )
-          sim.errorf( "Player %s has %s with %s azerite powers of tier %s.", p.name(), util::slot_type_string( slot ),
+          sim.errorf( "Player %s has %s with %s azerite powers of tier %s, should have 1.", p.name(), util::slot_type_string( slot ),
                       util::to_string( powers ).c_str(), util::to_string( i ).c_str() );
         if ( i != 1 && powers == 0 )
-          sim.errorf( "Player %s has %s with 0 azerite power of tier %s.", p.name(), util::slot_type_string( slot ),
+          sim.errorf( "Player %s has %s with 0 azerite power of tier %s, should have 1.", p.name(), util::slot_type_string( slot ),
                       util::to_string( i ).c_str() );
       }
-      // Check final ilevel (item level + bonus from azerite)
+      // Check final item level (item level + bonus from azerite)
       if ( item.parsed.data.level > max_azerite_ilevel_allowed )
-        sim.errorf(
-            "Player %s has %s of ilevel %s, maximum allowed ilevel for %s is "
-            "%s.\n",
-            p.name(), util::slot_type_string( slot ), util::to_string( item.parsed.data.level ).c_str(),
-            tier_name.c_str(), util::to_string( max_azerite_ilevel_allowed ).c_str() );
+        sim.errorf( "Player %s has %s of ilevel %s, maximum allowed ilevel for %s is %s.\n", p.name(),
+                    util::slot_type_string( slot ), util::to_string( item.parsed.data.level ).c_str(),
+                    tier_name.c_str(), util::to_string( max_azerite_ilevel_allowed ).c_str() );
     }
     // Normal gear
     else
@@ -481,12 +479,11 @@ bool report::check_gear( player_t& p, sim_t& sim )
           break;
         }
       }
+      // Check item level
       if ( !is_whitelisted && item.parsed.data.level > max_ilevel_allowed )
-        sim.errorf(
-            "Player %s has %s of ilevel %s, maximum allowed ilevel for %s is "
-            "%s.\n",
-            p.name(), util::slot_type_string( slot ), util::to_string( item.parsed.data.level ).c_str(),
-            tier_name.c_str(), util::to_string( max_ilevel_allowed ).c_str() );
+        sim.errorf( "Player %s has %s of ilevel %s, maximum allowed ilevel for %s is %s.\n", p.name(),
+                    util::slot_type_string( slot ), util::to_string( item.parsed.data.level ).c_str(),
+                    tier_name.c_str(), util::to_string( max_ilevel_allowed ).c_str() );
     }
 
     size_t num_gems = 0;
@@ -501,10 +498,8 @@ bool report::check_gear( player_t& p, sim_t& sim )
       if ( item.parsed.gem_id[ jj ] > 0 )
       {
         sim.errorf(
-            "Player %s has gems equipped in slot %s, there are no gems "
-            "allowed in default profiles even if they have a slot by "
-            "default, this is to ensure that all default profiles within %s "
-            "are as equal as possible.\n",
+            "Player %s has gems equipped in slot %s, there are no gems allowed in default profiles even if they have a "
+            "slot by default, this is to ensure that all default profiles within %s are as equal as possible.\n",
             p.name(), util::slot_type_string( slot ), tier_name.c_str() );
         break;
       }
@@ -527,12 +522,32 @@ bool report::check_gear( player_t& p, sim_t& sim )
           if ( p.dbc.item( unique.parsed.data.id )->flags_1 == 524288 &&
                p.dbc.item( item.parsed.data.id )->flags_1 == 524288 )
             sim.errorf(
-                "Player %s has equipped more than 1 of a unique item in slots "
-                "%s and %s, please remove one of the unique items.\n",
+                "Player %s has equipped more than 1 of a unique item in slots %s and %s, please remove one of the "
+                "unique items.\n",
                 p.name(), util::slot_type_string( slot ), util::slot_type_string( slot2 ) );
         }
       }
     }
+
+    // Check if the item is using ilevel=
+    if ( !item.option_ilevel_str.empty() )
+      sim.errorf( "Player %s has %s with ilevel=, use bonus_id= instead.\n", p.name(),
+                  util::slot_type_string( slot ) );
+
+    // Check if the item is using stats=
+    if ( !item.option_stats_str.empty() )
+      sim.errorf( "Player %s has %s with stats=, it is not allowed.\n", p.name(),
+                  util::slot_type_string( slot ) );
+
+    // Check if the item is using enchant_id=
+    if ( !item.option_enchant_id_str.empty() )
+      sim.errorf( "Player %s has %s with enchant_id=, use enchant= instead.\n", p.name(),
+                  util::slot_type_string( slot ) );
+
+    // Check if the item is using gems=
+    if ( !item.option_gems_str.empty() )
+      sim.errorf( "Player %s has %s with gems=, use gem_id= instead.\n", p.name(),
+                  util::slot_type_string( slot ) );
   }
 
   return true;
