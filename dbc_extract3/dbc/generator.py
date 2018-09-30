@@ -3719,6 +3719,11 @@ class SetBonusListGenerator(DataGenerator):
             'name'   : 'tier21',
             'bonuses': [ 1319, 1320, 1321, 1322, 1323, 1324, 1325, 1326, 1327, 1328, 1329, 1330 ],
             'tier'   : 21
+        },
+        {
+            'name'   : 'waycrests_legacy',
+            'bonuses': [ 1439 ],
+            'tier'   : 21
         }
     ]
 

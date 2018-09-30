@@ -1256,13 +1256,13 @@ struct waycrest_legacy_damage_t : public proc_t
     proc_t( effect, "waycrest_legacy_damage", 271671 )
   {
     aoe = 0;
-    base_dd_multiplier = effect.player->find_spell( 277522 )->effectN( 2 ).base_value();
+    base_dd_multiplier = effect.player->find_spell( 277522 )->effectN( 2 ).base_value() / 100.0;
   }
   void execute() override
   {
     size_t target_index = static_cast<size_t>( rng().range( 0, as<double>( target_list().size() ) ) );
     set_target( target_list()[ target_index ] );
-    if ( rng().roll( player->find_spell( 277522 )->effectN( 1 ).base_value() ) )
+    if ( rng().roll( player->find_spell( 277522 )->effectN( 1 ).base_value() / 100.0 ) )
     {
       proc_t::execute();
     }
@@ -1276,14 +1276,14 @@ struct waycrest_legacy_heal_t : public base_bfa_proc_t<proc_heal_t>
     base_bfa_proc_t<proc_heal_t>( effect, "waycrest_legacy_heal", 271682 )
   {
     aoe = 0;
-    base_dd_multiplier = effect.player->find_spell( 277522 )->effectN( 2 ).base_value();
+    base_dd_multiplier = effect.player->find_spell( 277522 )->effectN( 2 ).base_value() / 100.0;
   }
   void execute() override
   {
     size_t target_index = static_cast< size_t >( rng().range( 0, as<double>( sim->player_list.data().size() ) ) );
     set_target( sim->player_list.data()[ target_index ] );
 
-    if ( rng().roll( player->find_spell( 277522 )->effectN( 1 ).base_value() ) )
+    if ( rng().roll( player->find_spell( 277522 )->effectN( 1 ).base_value() / 100.0 ) )
     {
       base_bfa_proc_t<proc_heal_t>::execute();
     }
@@ -1295,6 +1295,7 @@ void items::lady_waycrests_music_box( special_effect_t& effect )
 {
   struct cacaphonous_chord_t : public proc_t
   {
+    action_t* waycrests_legacy_heal;
     cacaphonous_chord_t( const special_effect_t& effect ) :
       proc_t( effect, "cacaphonous_chord", 271671 )
     {
@@ -1308,14 +1309,15 @@ void items::lady_waycrests_music_box( special_effect_t& effect )
       set_target( target_list()[ target_index ] );
 
       proc_t::execute();
+      waycrests_legacy_heal = player->find_action( "waycrest_legacy_heal" );
+      if ( waycrests_legacy_heal != nullptr )
+      {
+        waycrests_legacy_heal-> schedule_execute( );
+      }
     }
   };
 
   effect.execute_action = create_proc_action<cacaphonous_chord_t>( "cacaphonous_chord", effect );
-  if ( unique_gear::find_special_effect( effect.player, 277522, SPECIAL_EFFECT_EQUIP ) )
-  {
-    effect.execute_action->add_child( new waycrest_legacy_heal_t( effect ) );
-  }
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -1324,6 +1326,7 @@ void items::lady_waycrests_music_box_heal( special_effect_t& effect )
 {
   struct harmonious_chord_t : public base_bfa_proc_t<proc_heal_t>
   {
+    action_t* waycrests_legacy_damage;
     harmonious_chord_t( const special_effect_t& effect ):
       base_bfa_proc_t<proc_heal_t>( effect, "harmonious_chord", 271682 )
     {
@@ -1335,13 +1338,15 @@ void items::lady_waycrests_music_box_heal( special_effect_t& effect )
       set_target( sim->player_list.data()[ target_index ] );
 
       base_bfa_proc_t<proc_heal_t>::execute();
+
+      waycrests_legacy_damage = player->find_action( "waycrest_legacy_damage" );
+      if ( waycrests_legacy_damage != nullptr )
+      {
+        waycrests_legacy_damage->schedule_execute();
+      }
     }
   };
   effect.execute_action = create_proc_action<harmonious_chord_t>( "harmonious_chord", effect );
-  if ( unique_gear::find_special_effect( effect.player, 277522, SPECIAL_EFFECT_EQUIP ) )
-  {
-    effect.execute_action->add_child( new waycrest_legacy_damage_t( effect ) );
-  }
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -1583,12 +1588,17 @@ void items::disc_of_systematic_regression( special_effect_t& effect )
 }
 void set_bonus::waycrest_legacy( special_effect_t& effect)
 {
-  const spell_data_t* spell = effect.player->find_spell( 277522 );
+  auto e = unique_gear::find_special_effect( effect.player, 271631, SPECIAL_EFFECT_EQUIP );
+  if ( e != nullptr )
+  {
+    e -> execute_action->add_child( new waycrest_legacy_heal_t( effect ) );
+  }
 
-  std::string spell_name = spell->name_cstr();
-  ::util::tokenize( spell_name );
-
-  new dbc_proc_callback_t( effect.player, effect );
+  auto e2 = unique_gear::find_special_effect( effect.player, 271683, SPECIAL_EFFECT_EQUIP );
+  if ( e2 != nullptr )
+  {
+    e -> execute_action->add_child( new waycrest_legacy_damage_t( effect ) );
+  }
 }
 
 } // namespace bfa
