@@ -388,22 +388,37 @@ std::string report::pretty_spell_text( const spell_data_t& default_spell,
 bool report::check_gear( player_t& p, sim_t& sim )
 {
   int max_ilevel_allowed           = 0;
+  int max_azerite_ilevel_allowed   = 0;
+  int hoa_ilevel       = 0;
+  unsigned hoa_level        = 0;
   std::string tier_name            = "";
 
   if ( p.report_information.save_str.find( "PR" ) != std::string::npos )
   {
-    max_ilevel_allowed        = 340;
-    tier_name                 = "PR";
+    max_ilevel_allowed         = 340;
+    max_azerite_ilevel_allowed = max_ilevel_allowed + 5;
+    hoa_ilevel                 = 347;
+    hoa_level                  = 27;
+    tier_name                  = "PR";
   }
   else if ( p.report_information.save_str.find( "T22" ) != std::string::npos )
   {
     max_ilevel_allowed           = 385;
+    max_azerite_ilevel_allowed   = max_ilevel_allowed + 5;
+    hoa_ilevel                   = 389;
+    hoa_level                    = 33;
     tier_name                    = "T22";
   }
   else
   {
     return true;
   }
+
+  unsigned whitelisted_items[] = {
+    152636, // Endless Tincture of Fractional Power
+    152632, // Surging Alchemist Stone
+    159125, 159126 // Darkmoon Deck: Fathoms, Darkmoon Deck: Squalls
+  };
 
   const slot_e SLOT_OUT_ORDER[] = {
       SLOT_HEAD,      SLOT_NECK,     SLOT_SHOULDERS, SLOT_BACK,
@@ -421,14 +436,61 @@ bool report::check_gear( player_t& p, sim_t& sim )
   {
     item_t& item = p.items[ slot ];
 
-    if ( item.parsed.data.level > max_ilevel_allowed )
+    // Heart of Azeroth
+    if ( slot == SLOT_NECK )
     {
-      sim.errorf(
-          "Player %s has %s of ilevel %s, maximum allowed ilevel for %s is "
-          "%s.\n",
-          p.name(), util::slot_type_string( slot ),
-          util::to_string( item.parsed.data.level ).c_str(), tier_name.c_str(),
-          util::to_string( max_ilevel_allowed ).c_str() );
+      // Check azerite_level
+      if ( item.parsed.azerite_level != hoa_level )
+      {
+        sim.errorf(
+            "Player %s has HoA of level %s, level for %s should be %s.\n",
+            p.name(), util::to_string( item.parsed.azerite_level ).c_str(),
+            tier_name.c_str(), util::to_string( hoa_level ).c_str() );
+      }
+      // Check final item level (since it's not only computed from azerite_level)
+      if ( item.parsed.data.level != hoa_ilevel )
+      {
+        sim.errorf(
+            "Player %s has HoA of ilevel %s, ilevel for %s should be %s.\n",
+            p.name(),util::to_string( item.parsed.data.level ).c_str(),
+            tier_name.c_str(), util::to_string( hoa_ilevel ).c_str() );
+      }
+    }
+    // Azerite gear
+    else if ( slot == SLOT_HEAD || slot == SLOT_SHOULDERS || slot == SLOT_CHEST )
+    {
+      if ( item.parsed.data.level > max_azerite_ilevel_allowed )
+      {
+        sim.errorf(
+            "Player %s has %s of ilevel %s, maximum allowed ilevel for %s is "
+            "%s.\n",
+            p.name(), util::slot_type_string( slot ),
+            util::to_string( item.parsed.data.level ).c_str(), tier_name.c_str(),
+            util::to_string( max_azerite_ilevel_allowed ).c_str() );
+      }
+    }
+    // Normal gear
+    else
+    {
+      bool is_whitelisted = false;
+      for ( auto& item_id : whitelisted_items )
+      {
+        if (item.parsed.data.id == item_id )
+        {
+          is_whitelisted = true;
+          break;
+        }
+      }
+
+      if ( !is_whitelisted && item.parsed.data.level > max_ilevel_allowed )
+      {
+        sim.errorf(
+            "Player %s has %s of ilevel %s, maximum allowed ilevel for %s is "
+            "%s.\n",
+            p.name(), util::slot_type_string( slot ),
+            util::to_string( item.parsed.data.level ).c_str(), tier_name.c_str(),
+            util::to_string( max_ilevel_allowed ).c_str() );
+      }
     }
 
     size_t num_gems = 0;
