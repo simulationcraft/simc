@@ -538,13 +538,13 @@ namespace warlock {
 
       bool ready() override
       {
-        if (p()->warlock_pet_list.active->pet_type != PET_FELGUARD)
+        auto active_pet = p()->warlock_pet_list.active;
+        if (active_pet->pet_type != PET_FELGUARD)
           return false;
-        if (p()->get_dot("felstorm", p()->warlock_pet_list.active)->is_ticking())
+        if (active_pet->find_action("felstorm")->get_dot()->is_ticking())
           return false;
-        if (p()->get_dot("demonic_strength_felstorm", p()->warlock_pet_list.active)->is_ticking())
+        if (active_pet->find_action("demonic_strength_felstorm")->get_dot()->is_ticking())
           return false;
-
         return spell_t::ready();
       }
 
