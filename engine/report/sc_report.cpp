@@ -459,6 +459,24 @@ bool report::check_gear( player_t& p, sim_t& sim )
     // Azerite gear
     else if ( slot == SLOT_HEAD || slot == SLOT_SHOULDERS || slot == SLOT_CHEST )
     {
+      // Check if there is at least one azerite power declared
+      if ( item.parsed.azerite_ids.empty() )
+      {
+        sim.errorf(
+            "Player %s has %s with no azerite added.",
+            p.name(), util::slot_type_string( slot ) );
+      }
+      // Check if the azerite power declared does exists
+      for ( auto& azerite_id : item.parsed.azerite_ids )
+      {
+        if (p.dbc.azerite_power( azerite_id ).id == 0)
+        {
+          sim.errorf(
+            "Player %s has %s with azerite power id %s which does not exists.",
+            p.name(), util::slot_type_string( slot ), util::to_string( azerite_id ).c_str() );
+        }
+      }
+      // Check final ilevel (item level + bonus from azerite)
       if ( item.parsed.data.level > max_azerite_ilevel_allowed )
       {
         sim.errorf(
@@ -472,6 +490,7 @@ bool report::check_gear( player_t& p, sim_t& sim )
     // Normal gear
     else
     {
+      // Check if the item is not whitelisted
       bool is_whitelisted = false;
       for ( auto& item_id : whitelisted_items )
       {
@@ -481,7 +500,6 @@ bool report::check_gear( player_t& p, sim_t& sim )
           break;
         }
       }
-
       if ( !is_whitelisted && item.parsed.data.level > max_ilevel_allowed )
       {
         sim.errorf(
