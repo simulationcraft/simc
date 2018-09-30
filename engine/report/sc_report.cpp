@@ -390,6 +390,8 @@ bool report::check_gear( player_t& p, sim_t& sim )
     return true;
   }
 
+  const unsigned azerite_tiers = 4;
+
   unsigned whitelisted_items[] = {
       152636,         // Endless Tincture of Fractional Power
       152632,         // Surging Alchemist Stone
@@ -418,45 +420,53 @@ bool report::check_gear( player_t& p, sim_t& sim )
     {
       // Check azerite_level
       if ( item.parsed.azerite_level != hoa_level )
-      {
         sim.errorf( "Player %s has HoA of level %s, level for %s should be %s.\n", p.name(),
                     util::to_string( item.parsed.azerite_level ).c_str(), tier_name.c_str(),
                     util::to_string( hoa_level ).c_str() );
-      }
       // Check final item level (since it's not only computed from azerite_level)
       if ( item.parsed.data.level != hoa_ilevel )
-      {
         sim.errorf( "Player %s has HoA of ilevel %s, ilevel for %s should be %s.\n", p.name(),
                     util::to_string( item.parsed.data.level ).c_str(), tier_name.c_str(),
                     util::to_string( hoa_ilevel ).c_str() );
-      }
     }
     // Azerite gear
     else if ( slot == SLOT_HEAD || slot == SLOT_SHOULDERS || slot == SLOT_CHEST )
     {
       // Check if there is at least one azerite power declared
       if ( item.parsed.azerite_ids.empty() )
-      {
         sim.errorf( "Player %s has %s with no azerite added.", p.name(), util::slot_type_string( slot ) );
-      }
       // Check if the azerite power declared does exists
       for ( auto& azerite_id : item.parsed.azerite_ids )
       {
-        if ( p.dbc.azerite_power( azerite_id ).id == 0 )
-        {
+        const auto& power = p.dbc.azerite_power( azerite_id );
+        if ( power.id == 0 )
           sim.errorf( "Player %s has %s with azerite power id %s which does not exists.", p.name(),
                       util::slot_type_string( slot ), util::to_string( azerite_id ).c_str() );
+      }
+      // Check if there is more than one azerite power per tier and less than one for all tiers but tier 1
+      for ( unsigned i = 0; i < azerite_tiers; i++ )
+      {
+        int powers = 0;
+        for ( auto& azerite_id : item.parsed.azerite_ids )
+        {
+          const auto& power = p.dbc.azerite_power( azerite_id );
+          if ( power.tier == i )
+            powers++;
         }
+        if ( powers > 1 )
+          sim.errorf( "Player %s has %s with %s azerite powers of tier %s.", p.name(), util::slot_type_string( slot ),
+                      util::to_string( powers ).c_str(), util::to_string( i ).c_str() );
+        if ( i != 1 && powers == 0 )
+          sim.errorf( "Player %s has %s with 0 azerite power of tier %s.", p.name(), util::slot_type_string( slot ),
+                      util::to_string( i ).c_str() );
       }
       // Check final ilevel (item level + bonus from azerite)
       if ( item.parsed.data.level > max_azerite_ilevel_allowed )
-      {
         sim.errorf(
             "Player %s has %s of ilevel %s, maximum allowed ilevel for %s is "
             "%s.\n",
             p.name(), util::slot_type_string( slot ), util::to_string( item.parsed.data.level ).c_str(),
             tier_name.c_str(), util::to_string( max_azerite_ilevel_allowed ).c_str() );
-      }
     }
     // Normal gear
     else
@@ -472,13 +482,11 @@ bool report::check_gear( player_t& p, sim_t& sim )
         }
       }
       if ( !is_whitelisted && item.parsed.data.level > max_ilevel_allowed )
-      {
         sim.errorf(
             "Player %s has %s of ilevel %s, maximum allowed ilevel for %s is "
             "%s.\n",
             p.name(), util::slot_type_string( slot ), util::to_string( item.parsed.data.level ).c_str(),
             tier_name.c_str(), util::to_string( max_ilevel_allowed ).c_str() );
-      }
     }
 
     size_t num_gems = 0;
@@ -487,8 +495,8 @@ bool report::check_gear( player_t& p, sim_t& sim )
       if ( item.parsed.data.stat_alloc[ 0 ] == 7889 && item.parsed.gem_id[ jj ] > 0 && num_gems < 1 )
       {
         num_gems++;
-        continue;  // 7889 seems to be the stat value for an item that comes with a socket by default, so we will allow
-                   // 1 gem there.
+        continue;  // 7889 seems to be the stat value for an item that comes with a socket by default,
+                   // so we will allow 1 gem there.
       }
       if ( item.parsed.gem_id[ jj ] > 0 )
       {
