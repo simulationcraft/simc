@@ -4380,6 +4380,11 @@ class AzeriteDataGenerator(DataGenerator):
             entry = self._azeritepower_db[id]
             fields = entry.field('id', 'id_spell', 'id_bonus')
             fields += self._spellname_db[entry.id_spell].field('name')
+            for id, data in self._azeritepowersetmember_db.items():
+                if entry.id != data.id_power:
+                    continue
+                fields += data.field('tier')
+                break
 
             self._out.write('  { %s },\n' % ', '.join(fields))
 
