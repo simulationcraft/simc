@@ -1249,6 +1249,47 @@ void items::lingering_sporepods( special_effect_t& effect )
 }
 
 // Lady Waycrest's Music Box ================================================
+struct waycrest_legacy_damage_t : public proc_t
+{
+  //This should probably cache 277522 instead of looking up
+  waycrest_legacy_damage_t( const special_effect_t& effect ):
+    proc_t( effect, "waycrest_legacy_damage", 271671 )
+  {
+    aoe = 0;
+    base_dd_multiplier = effect.player->find_spell( 277522 )->effectN( 2 ).base_value();
+  }
+  void execute() override
+  {
+    size_t target_index = static_cast<size_t>( rng().range( 0, as<double>( target_list().size() ) ) );
+    set_target( target_list()[ target_index ] );
+    if ( rng().roll( player->find_spell( 277522 )->effectN( 1 ).base_value() ) )
+    {
+      proc_t::execute();
+    }
+  }
+};
+
+struct waycrest_legacy_heal_t : public base_bfa_proc_t<proc_heal_t>
+{
+  //This should probably cache 277522 instead of looking up
+  waycrest_legacy_heal_t( const special_effect_t& effect ):
+    base_bfa_proc_t<proc_heal_t>( effect, "waycrest_legacy_heal", 271682 )
+  {
+    aoe = 0;
+    base_dd_multiplier = effect.player->find_spell( 277522 )->effectN( 2 ).base_value();
+  }
+  void execute() override
+  {
+    size_t target_index = static_cast< size_t >( rng().range( 0, as<double>( sim->player_list.data().size() ) ) );
+    set_target( sim->player_list.data()[ target_index ] );
+
+    if ( rng().roll( player->find_spell( 277522 )->effectN( 1 ).base_value() ) )
+    {
+      base_bfa_proc_t<proc_heal_t>::execute();
+    }
+  }
+};
+
 
 void items::lady_waycrests_music_box( special_effect_t& effect )
 {
@@ -1271,6 +1312,10 @@ void items::lady_waycrests_music_box( special_effect_t& effect )
   };
 
   effect.execute_action = create_proc_action<cacaphonous_chord_t>( "cacaphonous_chord", effect );
+  if ( unique_gear::find_special_effect( effect.player, 277522, SPECIAL_EFFECT_EQUIP ) )
+  {
+    effect.execute_action->add_child( new waycrest_legacy_heal_t( effect ) );
+  }
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -1293,9 +1338,14 @@ void items::lady_waycrests_music_box_heal( special_effect_t& effect )
     }
   };
   effect.execute_action = create_proc_action<harmonious_chord_t>( "harmonious_chord", effect );
+  if ( unique_gear::find_special_effect( effect.player, 277522, SPECIAL_EFFECT_EQUIP ) )
+  {
+    effect.execute_action->add_child( new waycrest_legacy_damage_t( effect ) );
+  }
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
 
 // Balefire Branch ==========================================================
 
