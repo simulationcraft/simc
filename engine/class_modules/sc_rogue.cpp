@@ -6260,6 +6260,9 @@ void rogue_t::init_action_list()
   if ( specialization() != ROGUE_SUBTLETY )
     precombat -> add_talent( this, "Marked for Death", "precombat_seconds=5,if=raid_event.adds.in>40" );
 
+  // Make restealth first action in the default list.
+  def -> add_action( this, "Stealth", "", "Restealth if possible (no vulnerable enemies in combat)" );
+
   if ( specialization() == ROGUE_ASSASSINATION )
   {
     def -> add_action( "variable,name=energy_regen_combined,value=energy.regen+poisoned_bleeds*7%(2*spell_haste)" );
