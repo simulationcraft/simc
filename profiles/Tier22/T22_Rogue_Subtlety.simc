@@ -32,8 +32,10 @@ actions.precombat+=/shadow_blades,precombat_seconds=1
 actions.precombat+=/potion
 
 # Executed every time the actor is available.
+# Restealth if possible (no vulnerable enemies in combat)
+actions=stealth
 # Check CDs at first
-actions=call_action_list,name=cds
+actions+=/call_action_list,name=cds
 # Run fully switches to the Stealthed Rotation (by doing so, it forces pooling if nothing is available).
 actions+=/run_action_list,name=stealthed,if=stealthed.all
 # Apply Nightblade at 2+ CP during the first 10 seconds, after that 4+ CP if it expires within the next GCD or is not up

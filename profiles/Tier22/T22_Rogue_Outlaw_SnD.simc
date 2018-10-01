@@ -33,8 +33,10 @@ actions.precombat+=/slice_and_dice,precombat_seconds=2
 actions.precombat+=/adrenaline_rush,precombat_seconds=1
 
 # Executed every time the actor is available.
+# Restealth if possible (no vulnerable enemies in combat)
+actions=stealth
 # Reroll for 2+ buffs with Loaded Dice up. Otherwise reroll for 2+ or Grand Melee or Ruthless Precision.
-actions=variable,name=rtb_reroll,value=rtb_buffs<2&(buff.loaded_dice.up|!buff.grand_melee.up&!buff.ruthless_precision.up)
+actions+=/variable,name=rtb_reroll,value=rtb_buffs<2&(buff.loaded_dice.up|!buff.grand_melee.up&!buff.ruthless_precision.up)
 # Reroll for 2+ buffs or Ruthless Precision with Deadshot or Ace up your Sleeve.
 actions+=/variable,name=rtb_reroll,op=set,if=azerite.deadshot.enabled|azerite.ace_up_your_sleeve.enabled,value=rtb_buffs<2&(buff.loaded_dice.up|buff.ruthless_precision.remains<=cooldown.between_the_eyes.remains)
 # Always reroll for 2+ buffs with Snake Eyes unless at 3 Ranks, then reroll everything.
