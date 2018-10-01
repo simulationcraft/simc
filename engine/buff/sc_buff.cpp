@@ -1476,6 +1476,12 @@ void buff_t::start( int stacks, double value, timespan_t duration )
   if ( d > timespan_t::zero() )
   {
     expiration.push_back( make_event<expiration_t>( *sim, this, stacks, d ) );
+    if ( expiration.size() > 1 )
+    {
+      range::sort( expiration, []( const event_t* a, const event_t* b ) {
+        return a->remains() < b->remains();
+      } );
+    }
     /* TOCHECK: This seems wrong, since bump() already removes expiration events when we are at max stacks
     if ( check() == before_stacks && stack_behavior == buff_stack_behavior::ASYNCHRONOUS )
     {

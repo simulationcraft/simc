@@ -1718,8 +1718,8 @@ struct event_t : private noncopyable
     schedule( delta_time );
   }
 
-  timespan_t occurs()  { return ( reschedule_time != timespan_t::zero() ) ? reschedule_time : time; }
-  timespan_t remains() { return occurs() - _sim.event_mgr.current_time; }
+  timespan_t occurs() const  { return ( reschedule_time != timespan_t::zero() ) ? reschedule_time : time; }
+  timespan_t remains() const { return occurs() - _sim.event_mgr.current_time; }
 
   void schedule( timespan_t delta_time );
 
