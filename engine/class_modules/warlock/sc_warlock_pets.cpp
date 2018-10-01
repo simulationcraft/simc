@@ -287,7 +287,10 @@ action_t* succubus_pet_t::create_action(const std::string& name, const std::stri
 struct consuming_shadows_t : public warlock_pet_spell_t
 {
   consuming_shadows_t(warlock_pet_t* p) : warlock_pet_spell_t(p, "Consuming Shadows")
-  { }
+  {
+    aoe = -1;
+    may_crit = false;
+  }
 };
 
 voidwalker_pet_t::voidwalker_pet_t( warlock_t* owner, const std::string& name ) :
