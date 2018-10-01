@@ -7163,7 +7163,7 @@ School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
 Internal Cooldown: 0.5 seconds
-Stacks           : 2 initial, 2 maximum
+Stacks           : 2 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ..x..... ........ 
                  : Yellow Melee, Periodic

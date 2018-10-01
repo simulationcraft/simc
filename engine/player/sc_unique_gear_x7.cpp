@@ -95,6 +95,7 @@ namespace items
   void merekthas_fang( special_effect_t& );
   void lingering_sporepods( special_effect_t& );
   void lady_waycrests_music_box( special_effect_t& );
+  void lady_waycrests_music_box_heal( special_effect_t& );
   void balefire_branch( special_effect_t& );
   void vial_of_animated_blood( special_effect_t& );
   // 8.0.1 - World Boss Trinkets
@@ -146,6 +147,12 @@ buff_stack_change_callback_t callback_buff_activator( dbc_proc_callback_t* callb
 }
 
 } // namespace util
+
+namespace set_bonus
+{
+  // 8.0 Dungeon
+  void waycrest_legacy( special_effect_t& );
+}
 
 // Galley Banquet ===========================================================
 
@@ -1242,15 +1249,57 @@ void items::lingering_sporepods( special_effect_t& effect )
 }
 
 // Lady Waycrest's Music Box ================================================
+struct waycrest_legacy_damage_t : public proc_t
+{
+  waycrest_legacy_damage_t( const special_effect_t& effect ):
+    proc_t( effect, "waycrest_legacy_damage", 271671 )
+  {
+    aoe = 0;
+    base_dd_multiplier = effect.player->find_spell( 277522 )->effectN( 2 ).base_value() / 100.0;
+  }
+  void execute() override
+  {
+    size_t target_index = static_cast<size_t>( rng().range( 0, as<double>( target_list().size() ) ) );
+    set_target( target_list()[ target_index ] );
+    
+    proc_t::execute();
+  }
+};
+
+struct waycrest_legacy_heal_t : public base_bfa_proc_t<proc_heal_t>
+{
+  waycrest_legacy_heal_t( const special_effect_t& effect ):
+    base_bfa_proc_t<proc_heal_t>( effect, "waycrest_legacy_heal", 271682 )
+  {
+    aoe = 0;
+    base_dd_multiplier = effect.player->find_spell( 277522 )->effectN( 2 ).base_value() / 100.0;
+  }
+  void execute() override
+  {
+    size_t target_index = static_cast< size_t >( rng().range( 0, as<double>( sim->player_no_pet_list.data().size() ) ) );
+    set_target( sim->player_list.data()[ target_index ] );
+
+    base_bfa_proc_t<proc_heal_t>::execute();
+  }
+};
+
 
 void items::lady_waycrests_music_box( special_effect_t& effect )
 {
   struct cacaphonous_chord_t : public proc_t
   {
+    const spell_data_t* waycrests_legacy = player->find_spell( 277522 );
+    action_t* waycrests_legacy_heal;
     cacaphonous_chord_t( const special_effect_t& effect ) :
       proc_t( effect, "cacaphonous_chord", 271671 )
     {
       aoe = 0;
+    }
+
+    void init() override
+    {
+      proc_t::init();
+      waycrests_legacy_heal = player->find_action( "waycrest_legacy_heal" );
     }
 
     // Pick a random active target from the range
@@ -1260,6 +1309,13 @@ void items::lady_waycrests_music_box( special_effect_t& effect )
       set_target( target_list()[ target_index ] );
 
       proc_t::execute();
+      if ( waycrests_legacy_heal != nullptr )
+      {
+        if ( rng().roll( waycrests_legacy->effectN( 1 ).base_value() / 100.0 ) )
+        {
+          waycrests_legacy_heal->schedule_execute();
+        }
+      }
     }
   };
 
@@ -1267,6 +1323,46 @@ void items::lady_waycrests_music_box( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+void items::lady_waycrests_music_box_heal( special_effect_t& effect )
+{
+  struct harmonious_chord_t : public base_bfa_proc_t<proc_heal_t>
+  {
+    const spell_data_t* waycrests_legacy = player->find_spell( 277522 );
+    action_t* waycrests_legacy_damage;
+    harmonious_chord_t( const special_effect_t& effect ):
+      base_bfa_proc_t<proc_heal_t>( effect, "harmonious_chord", 271682 )
+    {
+      aoe = 0;
+    }
+
+    void init() override
+    {
+      proc_heal_t::init();
+      waycrests_legacy_damage = player->find_action( "waycrest_legacy_damage" );
+    }
+
+    void execute() override
+    {
+      size_t target_index = static_cast< size_t >( rng().range( 0, as<double>( sim->player_no_pet_list.data().size() ) ) );
+      set_target( sim->player_list.data()[ target_index ] );
+
+      base_bfa_proc_t<proc_heal_t>::execute();
+
+      if ( waycrests_legacy_damage != nullptr )
+      {
+        if ( rng().roll( waycrests_legacy->effectN( 1 ).base_value() / 100.0 ) )
+        {
+          waycrests_legacy_damage->schedule_execute();
+        }
+      }
+    }
+  };
+  effect.execute_action = create_proc_action<harmonious_chord_t>( "harmonious_chord", effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 
 // Balefire Branch ==========================================================
 
@@ -1502,6 +1598,20 @@ void items::disc_of_systematic_regression( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+void set_bonus::waycrest_legacy( special_effect_t& effect)
+{
+  auto e = unique_gear::find_special_effect( effect.player, 271631, SPECIAL_EFFECT_EQUIP );
+  if ( e != nullptr )
+  {
+    e -> execute_action->add_child( new waycrest_legacy_heal_t( effect ) );
+  }
+
+  auto e2 = unique_gear::find_special_effect( effect.player, 271683, SPECIAL_EFFECT_EQUIP );
+  if ( e2 != nullptr )
+  {
+    e -> execute_action->add_child( new waycrest_legacy_damage_t( effect ) );
+  }
+}
 
 } // namespace bfa
 } // anon namespace
@@ -1554,6 +1664,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 268035, items::lingering_sporepods );
   register_special_effect( 271117, "4Tick" );
   register_special_effect( 271631, items::lady_waycrests_music_box );
+  register_special_effect( 271683, items::lady_waycrests_music_box_heal );
   register_special_effect( 268999, items::balefire_branch );
   register_special_effect( 268314, "268311Trigger" ); // Galecaller's Boon, assumes the player always stands in the area
   register_special_effect( 278140, items::frenetic_corpuscle );
@@ -1570,6 +1681,9 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 276123, items::darkmoon_deck_squalls );
   register_special_effect( 276176, items::darkmoon_deck_fathoms );
   register_special_effect( 265440, items::endless_tincture_of_fractional_power );
+
+  /* 8.0 Dungeon Set Bonuses*/
+  register_special_effect( 277522, set_bonus::waycrest_legacy );
 }
 
 void unique_gear::register_target_data_initializers_bfa( sim_t* sim )

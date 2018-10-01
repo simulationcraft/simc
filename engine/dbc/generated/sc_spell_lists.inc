@@ -3531,7 +3531,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
     },
   },
 };
-#define SET_BONUS_DATA_SIZE (688)
+#define SET_BONUS_DATA_SIZE (700)
 
 // Set bonus data, wow build 27843
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
@@ -4251,6 +4251,18 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Felreaper Vestments"                        ,     "tier21",     14,  1329,   21,   2,  12,  581, 251770, { 152118, 152119, 152120, 152121, 152122, 152123,  0 } },
   { "Felreaper Vestments"                        ,     "tier21",     14,  1329,   21,   4,  12,  577, 251769, { 152118, 152119, 152120, 152121, 152122, 152123,  0 } },
   { "Felreaper Vestments"                        ,     "tier21",     14,  1329,   21,   4,  12,  581, 251774, { 152118, 152119, 152120, 152121, 152122, 152123,  0 } },
+  { "Waycrest Legacy"                            , "waycrests_legacy",     15,  1439,   21,   2,   1,   -1, 277522, { 158362, 159631,  0 } },
+  { "Waycrest Legacy"                            , "waycrests_legacy",     15,  1439,   21,   2,   2,   -1, 277522, { 158362, 159631,  0 } },
+  { "Waycrest Legacy"                            , "waycrests_legacy",     15,  1439,   21,   2,   3,   -1, 277522, { 158362, 159631,  0 } },
+  { "Waycrest Legacy"                            , "waycrests_legacy",     15,  1439,   21,   2,   4,   -1, 277522, { 158362, 159631,  0 } },
+  { "Waycrest Legacy"                            , "waycrests_legacy",     15,  1439,   21,   2,   5,   -1, 277522, { 158362, 159631,  0 } },
+  { "Waycrest Legacy"                            , "waycrests_legacy",     15,  1439,   21,   2,   6,   -1, 277522, { 158362, 159631,  0 } },
+  { "Waycrest Legacy"                            , "waycrests_legacy",     15,  1439,   21,   2,   7,   -1, 277522, { 158362, 159631,  0 } },
+  { "Waycrest Legacy"                            , "waycrests_legacy",     15,  1439,   21,   2,   8,   -1, 277522, { 158362, 159631,  0 } },
+  { "Waycrest Legacy"                            , "waycrests_legacy",     15,  1439,   21,   2,   9,   -1, 277522, { 158362, 159631,  0 } },
+  { "Waycrest Legacy"                            , "waycrests_legacy",     15,  1439,   21,   2,  10,   -1, 277522, { 158362, 159631,  0 } },
+  { "Waycrest Legacy"                            , "waycrests_legacy",     15,  1439,   21,   2,  11,   -1, 277522, { 158362, 159631,  0 } },
+  { "Waycrest Legacy"                            , "waycrests_legacy",     15,  1439,   21,   2,  12,   -1, 277522, { 158362, 159631,  0 } },
 };
 #define RPPMMOD_SIZE (922)
 
