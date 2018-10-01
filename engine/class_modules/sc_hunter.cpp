@@ -231,13 +231,7 @@ void print_html_report( const player_t& player, const player_data_t& data, repor
 // ==========================================================================
 
 /* BfA TODO
- *  Marksmanship
- *   - Double Tap AiS 'delay' (do we actually care? it seems to matter *only* for the
- *     initial 50% bonus damage in the sub ~20yds range)
- *  Beast Mastery
- *   - review Barbed Shot refresh mechanic
  *  Survival
- *   - review Bloodseeker dot refresh mechanics
  *   - movement support for proper Harpoon & Terms of Engagement use
  */
 
