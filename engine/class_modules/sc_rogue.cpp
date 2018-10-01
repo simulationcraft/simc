@@ -4300,14 +4300,12 @@ struct vendetta_t : public rogue_attack_t
 // Stealth
 // ==========================================================================
 
-struct stealth_t : public spell_t
+struct stealth_t : public rogue_attack_t
 {
-  bool used;
-
   stealth_t( rogue_t* p, const std::string& options_str ) :
-    spell_t( "stealth", p, p -> find_class_spell( "Stealth" ) ), used( false )
+    rogue_attack_t( "stealth", p, p -> find_class_spell( "Stealth" ) )
   {
-    harmful = false;
+    may_miss = may_crit = harmful = false;
     ignore_false_positive = true;
 
     parse_options( options_str );
@@ -4315,24 +4313,41 @@ struct stealth_t : public spell_t
 
   virtual void execute() override
   {
-    rogue_t* p = debug_cast< rogue_t* >( player );
+    rogue_attack_t::execute();
 
     if ( sim -> log )
-      sim -> out_log.printf( "%s performs %s", p -> name(), name() );
+      sim -> out_log.printf( "%s performs %s", p() -> name(), name() );
 
-    p -> buffs.stealth -> trigger();
-    used = true;
+    p() -> buffs.stealth -> trigger();
+
+    // Stop autoattacks
+    if ( p() -> main_hand_attack && p() -> main_hand_attack -> execute_event )
+      event_t::cancel( p() -> main_hand_attack -> execute_event );
+
+    if ( p() -> off_hand_attack && p() -> off_hand_attack -> execute_event )
+      event_t::cancel( p() -> off_hand_attack -> execute_event );
   }
 
   virtual bool ready() override
   {
-    return ! used;
-  }
+    if ( p() -> stealthed( STEALTH_BASIC | STEALTH_ROGUE ) )
+      return false;
 
-  virtual void reset() override
-  {
-    spell_t::reset();
-    used = false;
+    if ( ! p() -> in_combat )
+      return true;
+
+    // Special case: We allow stealth when the actor is not been in "active combat" (only invulnerable targets).
+    // This allows us to better approximate restealthing in dungeons.
+    for ( const auto enemy : sim -> target_non_sleeping_list )
+    {
+      if ( enemy -> debuffs.invulnerable != nullptr && enemy -> debuffs.invulnerable->up() )
+        continue;
+
+      // We are in combat with an active damagable enemy
+      return false;
+    }
+
+    return rogue_attack_t::ready();
   }
 };
 
