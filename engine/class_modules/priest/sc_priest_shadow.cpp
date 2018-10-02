@@ -322,7 +322,7 @@ struct mind_flay_t final : public priest_spell_t
   {
     if ( priest().level() < 116 )
     {
-        priest_td_t& td = get_td( s->target );
+      priest_td_t& td = get_td( s->target );
 
       std::array<const dot_t*, 2> dots = {{td.dots.shadow_word_pain, td.dots.vampiric_touch}};
 
@@ -454,7 +454,7 @@ struct shadow_word_death_t final : public priest_spell_t
     }
 
     return false;
- }
+  }
 
   bool ready() override
   {
@@ -586,10 +586,8 @@ struct silence_t final : public priest_spell_t
     return priest_spell_t::target_ready( candidate_target );
     // Only available if the target is casting
     // Or if the target can get blank silenced
-    if ( !( candidate_target->type != ENEMY_ADD &&
-          ( candidate_target->level() < sim->max_player_level + 3 ) &&
-          candidate_target->debuffs.casting &&
-            candidate_target->debuffs.casting->check() ) )
+    if ( !( candidate_target->type != ENEMY_ADD && ( candidate_target->level() < sim->max_player_level + 3 ) &&
+            candidate_target->debuffs.casting && candidate_target->debuffs.casting->check() ) )
     {
       return false;
     }
@@ -703,6 +701,14 @@ struct shadowy_apparition_damage_t final : public priest_spell_t
     callbacks  = true;
     may_miss   = false;
     may_crit   = false;
+
+    // Hardcoded value. This is the behavior announced and tested in game
+    // However the value doesn't show up anywhere in the known spelldata
+    // Anshlun 2018-10-02
+    if ( spiteful_apparitions_bonus > 0.0 && !priest().talents.auspicious_spirits->ok() )
+    {
+      spiteful_apparitions_bonus *= 1.75;      
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -2021,8 +2027,8 @@ void priest_t::create_buffs_shadow()
 
   buffs.whispers_of_the_damned =
       make_buff( this, "whispers_of_the_damned", azerite.whispers_of_the_damned.spell()->effectN( 1 ).trigger() )
-      ->set_duration( find_spell( 275726 )->duration() )
-      ->set_max_stack( find_spell( 275726 )->max_stacks() );
+          ->set_duration( find_spell( 275726 )->duration() )
+          ->set_max_stack( find_spell( 275726 )->max_stacks() );
 }
 
 void priest_t::init_rng_shadow()
