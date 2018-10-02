@@ -503,7 +503,8 @@ namespace warlock {
           if (lock_pet->is_sleeping())
             continue;
 
-          if (lock_pet->pet_type == PET_DEMONIC_TYRANT)
+          //TOCHECK Random pets are currently bugged and do not benefit from Demonic Tyrant. Live as of 10-02-2018
+          if (lock_pet->pet_type == PET_DEMONIC_TYRANT || lock_pet->pet_type == PET_WARLOCK_RANDOM )
             continue;
 
           if (lock_pet->expiration)
