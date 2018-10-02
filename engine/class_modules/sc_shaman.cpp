@@ -2998,7 +2998,8 @@ struct windstrike_attack_t : public stormstrike_attack_t
 {
   windstrike_attack_t( const std::string& n, shaman_t* player, const spell_data_t* s, weapon_t* w )
     : stormstrike_attack_t( n, player, s, w )
-  { }
+  {
+  }
 
   double bonus_da( const action_state_t* s ) const override
   {
@@ -5290,7 +5291,7 @@ struct earthquake_damage_t : public shaman_spell_t
     aoe        = -1;
     ground_aoe = background = true;
     school                  = SCHOOL_PHYSICAL;
-    spell_power_mod.direct  = 0.25;  // still cool to hardcode the SP% into tooltip
+    spell_power_mod.direct  = 0.2875;  // still cool to hardcode the SP% into tooltip
   }
 
   double target_armor( player_t* ) const override
