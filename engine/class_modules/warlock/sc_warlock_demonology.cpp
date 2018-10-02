@@ -172,6 +172,9 @@ namespace warlock {
         parse_effect_data( p->find_spell( 86040 )->effectN( 1 ) );
         if ( p->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T21, B4 ) )
           base_multiplier *= 1.1;
+
+        // TOCHECK Because of how we structure HoG spelldata we have to manually apply spec aura.
+        base_multiplier *= 1.0 + p->spec.demonology->effectN( 3 ).percent();
       }
 
       timespan_t travel_time() const override {
