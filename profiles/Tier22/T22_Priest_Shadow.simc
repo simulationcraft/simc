@@ -81,9 +81,9 @@ actions.single+=/vampiric_touch,if=refreshable&target.time_to_die>6|(talent.mise
 actions.single+=/mind_flay,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(cooldown.void_bolt.up|cooldown.mind_blast.up)
 actions.single+=/shadow_word_pain
 
-head=visage_of_the_ascended_prophet,id=160719,bonus_id=4824/1507/4775,azerite_powers=485/21/13
+head=horrific_amalgams_hood,id=160616,bonus_id=4824/1507/4775,azerite_powers=483/22/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
-shoulders=mantle_of_ceremonial_ascension,id=158344,bonus_id=1557/4819/4775/4786,azerite_powers=405/21/13
+shoulders=mantle_of_contained_corruption,id=160613,bonus_id=4824/1507/4775,azerite_powers=403/459/13
 back=fetid_horrors_tanglecloak,id=160643,bonus_id=4800/1507
 chest=robes_of_the_unraveler,id=160614,bonus_id=4824/1507/4775,azerite_powers=405/30/13
 wrists=voidlashed_wristband,id=160617,bonus_id=4800/1507
