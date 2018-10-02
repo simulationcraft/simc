@@ -1850,22 +1850,6 @@ struct army_pet_t : public base_ghoul_pet_t
       background = true;
       base_dd_min = base_dd_max = p -> o() -> azerite.last_surprise.value( 1 );
     }
-
-    virtual double action_multiplier() const override
-    {
-      double am = super::action_multiplier();
-
-      if ( ! p() -> bugs ) return am;
-
-      // Last Suprise is affected by the spec aura and mastery through whitelisting
-      // It is also affected once again by spec aura through the pet damage multiplier
-      // And mastery because it's considered pet shadow damage
-      // https://github.com/SimCMinMax/WoW-BugTracker/issues/357
-      // Hotfixed: Doesn't double dip with mastery anymore, still affected twice by spec aura
-      am *= 1.0 + p() -> o() -> spec.unholy_death_knight -> effectN( 1 ).percent();
-
-      return am;
-    }
   };
 
   army_pet_t( death_knight_t* owner, const std::string& name ) :
