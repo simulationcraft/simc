@@ -775,6 +775,8 @@ dreadstalker_t::dreadstalker_t(warlock_t* owner) :
   action_list_str = "travel/dreadbite";
   regen_type = REGEN_DISABLED;
   owner_coeff.ap_from_sp = 0.4;
+  //TOCHECK hotfix live as of 10-02-2018. https://us.battle.net/forums/en/wow/topic/20769527059
+  owner_coeff.ap_from_sp *= 1.15;
 }
 
 void dreadstalker_t::init_base_stats()
