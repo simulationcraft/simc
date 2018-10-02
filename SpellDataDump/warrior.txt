@@ -19,9 +19,11 @@ Attributes       : ....x.x. ........ x.x..... x..x.x.x   ........ ..x..... .x...
                  : Passive (6), Cannot cancel aura (31)
 Effects          :
 #1 (id=43)       : Apply Aura (6) | Modify Armor by Primary Stat% (268)
-                   Base Value: 45 | Scaled Value: 45 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+                   Hotfixed: Base Value (45 -> 50)
 #2 (id=217521)   : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 35 | Scaled Value: 35 | Misc Value: 2 | Misc Value 2: 0x4 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | Misc Value: 2 | Misc Value 2: 0x4 | Target: Self (1)
+                   Hotfixed: Base Value (35 -> 40)
 Description      : Hardened by battle, your Stamina is increased by $s2%, and your armor is increased by $s1% of your Strength.
 
 Name             : Charge (id=100) [Spell Family (4)] 

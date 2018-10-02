@@ -3655,15 +3655,15 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179694)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 8 | Scaled Value: 8 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Brutal Slash (202028), Feral Frenzy (274838)
                    Family Flags: 98
-                   Hotfixed: Base Value (3 -> 8)
+                   Hotfixed: Base Value (3 -> 12)
 #2 (id=191154)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 8 | Scaled Value: 8 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Brutal Slash (202028), Feral Frenzy (274838)
                    Family Flags: 98
-                   Hotfixed: Base Value (3 -> 8)
+                   Hotfixed: Base Value (3 -> 12)
 #3 (id=191155)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Shred (5221)
