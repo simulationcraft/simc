@@ -274,6 +274,8 @@ public:
   // Misc
   bool lava_surge_during_lvb;
   std::vector<counter_t*> counters;
+  player_t* recent_target =
+      nullptr;  // required for Earthen Rage, whichs' ticks damage the most recently attacked target
 
   // Options
   unsigned stormlash_targets;
@@ -337,6 +339,7 @@ public:
     buff_t* lava_surge;
 
     // Elemental
+    buff_t* earthen_rage;
     buff_t* icefury;
     buff_t* liquid_magma;
     buff_t* master_of_the_elements;
@@ -660,7 +663,6 @@ public:
   void trigger_hailstorm( const action_state_t* );
   void trigger_stormbringer( const action_state_t* state, double proc_chance = -1.0, proc_t* proc_obj = nullptr );
   void trigger_lightning_shield( const action_state_t* state );
-  void trigger_earthen_rage( const action_state_t* state );
   void trigger_hot_hand( const action_state_t* state );
   void trigger_natural_harmony( const action_state_t* );
   void trigger_strength_of_earth( const action_state_t* );
@@ -1623,7 +1625,12 @@ public:
   {
     base_t::execute();
 
-    p()->trigger_earthen_rage( execute_state );
+    if ( p()->talent.earthen_rage->ok() && !background && execute_state->action->harmful )
+    {
+      p()->recent_target = execute_state->target;
+      p()->buff.earthen_rage->trigger();
+    }
+    // p()->trigger_earthen_rage( execute_state );
 
     // BfA Elemental talent - Master of the Elements
     if ( affected_by_master_of_the_elements && !background )
@@ -2998,7 +3005,8 @@ struct windstrike_attack_t : public stormstrike_attack_t
 {
   windstrike_attack_t( const std::string& n, shaman_t* player, const spell_data_t* s, weapon_t* w )
     : stormstrike_attack_t( n, player, s, w )
-  { }
+  {
+  }
 
   double bonus_da( const action_state_t* s ) const override
   {
@@ -3109,42 +3117,6 @@ struct earthen_rage_spell_t : public shaman_spell_t
   {
     background = proc = true;
     callbacks         = false;
-  }
-};
-
-struct earthen_rage_driver_t : public spell_t
-{
-  earthen_rage_spell_t* nuke;
-
-  earthen_rage_driver_t( shaman_t* p ) : spell_t( "earthen_rage_driver", p, p->find_spell( 170377 ) )
-  {
-    may_miss = may_crit = callbacks = proc = tick_may_crit = false;
-    background = hasted_ticks = quiet = dual = true;
-
-    nuke = new earthen_rage_spell_t( p );
-  }
-
-  timespan_t tick_time( const action_state_t* state ) const override
-  {
-    return timespan_t::from_seconds( rng().range( 0.001, 2 * base_tick_time.total_seconds() * state->haste ) );
-  }
-
-  void tick( dot_t* d ) override
-  {
-    spell_t::tick( d );
-
-    // Last tick will not cast a nuke like our normal dot system does
-    if ( d->remains() > timespan_t::zero() )
-    {
-      nuke->set_target( d->target );
-      nuke->schedule_execute();
-    }
-  }
-
-  // Maximum duration is extended by max of 6 seconds
-  timespan_t calculate_dot_refresh_duration( const dot_t*, timespan_t ) const override
-  {
-    return data().duration();
   }
 };
 
@@ -6631,7 +6603,7 @@ void shaman_t::create_actions()
 
   if ( talent.earthen_rage->ok() )
   {
-    action.earthen_rage = new earthen_rage_driver_t( this );
+    action.earthen_rage = new earthen_rage_spell_t( this );
   }
 
   if ( talent.searing_assault->ok() )
@@ -7053,26 +7025,6 @@ void shaman_t::trigger_primal_primer( const action_state_t* state )
   attack->proc_pp->occur();
 }
 
-// TODO: Target swaps
-void shaman_t::trigger_earthen_rage( const action_state_t* state )
-{
-  if ( !talent.earthen_rage->ok() )
-    return;
-
-  if ( !state->action->harmful )
-    return;
-
-  if ( !state->action->result_is_hit( state->result ) )
-    return;
-
-  // Molten earth does not trigger itself.
-  if ( state->action == debug_cast<earthen_rage_driver_t*>( action.earthen_rage )->nuke )
-    return;
-
-  action.earthen_rage->set_target( state->target );
-  action.earthen_rage->execute();
-}
-
 void shaman_t::trigger_windfury_weapon( const action_state_t* state )
 {
   assert( debug_cast<shaman_attack_t*>( state->action ) != nullptr && "Windfury Weapon called on invalid action type" );
@@ -7268,33 +7220,18 @@ void shaman_t::create_buffs()
   buff.stormkeeper = make_buff( this, "stormkeeper", talent.stormkeeper )
                          ->set_cooldown( timespan_t::zero() );  // Handled by the action
 
-  // Totem Mastery
-
-  // buff.resonance_totem =
-  //    make_buff( this, "resonance_totem", find_spell( 202192 ) )
-  //        ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-  //        ->set_duration( talent.totem_mastery->effectN( 1 ).trigger()->duration() )
-  //        ->set_period( find_spell( 202192 )->effectN( 1 ).period() )
-  //        ->set_tick_callback( [this]( buff_t* b, int, const timespan_t& ) {
-  //          this->resource_gain( RESOURCE_MAELSTROM, b->data().effectN( 1 ).resource( RESOURCE_MAELSTROM ),
-  //                               this->gain.resonance_totem, nullptr );
-  //        } );
-  // buff.storm_totem = make_buff( this, "storm_totem", find_spell( 210651 ) )
-  //                       ->set_duration( talent.totem_mastery->effectN( 2 ).trigger()->duration() )
-  //                       ->set_cooldown( timespan_t::zero() )  // Handled by the action
-  //                       // FIXME: 7.3 ptr got rid of the 2 effectN, now we need to use 1
-  //                       ->set_default_value( find_spell( 210651 )->effectN( 1 ).percent() );
-  // buff.ember_totem = make_buff( this, "ember_totem", find_spell( 210658 ) )
-  //                       ->set_duration( talent.totem_mastery->effectN( 3 ).trigger()->duration() )
-  //                       ->set_default_value( 1.0 + find_spell( 210658 )->effectN( 1 ).percent() );
-  // buff.tailwind_totem = make_buff<haste_buff_t>( this, "tailwind_totem", find_spell( 210659 ) );
-  // buff.tailwind_totem->add_invalidate( CACHE_HASTE )
-  //    ->set_duration( talent.totem_mastery->effectN( 4 ).trigger()->duration() )
-  //    ->set_default_value( 1.0 / ( 1.0 + find_spell( 210659 )->effectN( 1 ).percent() ) );
-
   buff.icefury = make_buff( this, "icefury", talent.icefury )
                      ->set_cooldown( timespan_t::zero() )  // Handled by the action
                      ->set_default_value( talent.icefury->effectN( 3 ).percent() );
+
+  buff.earthen_rage = make_buff( this, "earthen_rage", find_spell( 170377 ) )
+                          ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
+                          ->set_tick_time_behavior( buff_tick_time_behavior::HASTED )
+                          ->set_tick_callback( [this]( buff_t*, int, const timespan_t& ) {
+                            assert( action.earthen_rage );
+                            action.earthen_rage->set_target( recent_target );
+                            action.earthen_rage->execute();
+                          } );
 
   buff.master_of_the_elements = make_buff( this, "master_of_the_elements", find_spell( 260734 ) )
                                     ->set_default_value( find_spell( 260734 )->effectN( 1 ).percent() );
