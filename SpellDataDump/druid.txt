@@ -2862,9 +2862,9 @@ Attributes       : ....x.xx ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=117111)   : Apply Aura (6) | Unknown(332)
+#1 (id=117111)   : Apply Aura (6) | Dummy (4)
                    Base Value: 102543 | Scaled Value: 102543 | Target: Self (1)
-                   Family Flags: 3
+                   Hotfixed: Sub Type (332 -> 4), Affects Spells
 #2 (id=117124)   : Apply Aura (6) | Unknown(332)
                    Base Value: 102703 | Scaled Value: 102703 | Target: Self (1)
                    Family Flags: 19
@@ -2891,9 +2891,9 @@ Attributes       : ....x.xx ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=117113)   : Apply Aura (6) | Unknown(332)
+#1 (id=117113)   : Apply Aura (6) | Dummy (4)
                    Base Value: 102558 | Scaled Value: 102558 | Target: Self (1)
-                   Family Flags: 3
+                   Hotfixed: Sub Type (332 -> 4), Affects Spells
 #2 (id=117123)   : Apply Aura (6) | Unknown(332)
                    Base Value: 102706 | Scaled Value: 102706 | Target: Self (1)
                    Family Flags: 19
@@ -3730,9 +3730,9 @@ Effects          :
 #5 (id=191153)   : Apply Aura (6) | Unknown(332)
                    Base Value: 102693 | Scaled Value: 102693 | Target: Self (1)
                    Family Flags: 19
-#6 (id=260747)   : Apply Aura (6) | Unknown(332)
+#6 (id=260747)   : Apply Aura (6) | Dummy (4)
                    Base Value: 33891 | Scaled Value: 33891 | Target: Self (1)
-                   Family Flags: 3
+                   Hotfixed: Sub Type (332 -> 4), Affects Spells
 #7 (id=260748)   : Apply Aura (6) | Dummy (4)
                    Base Value: 108294 | Scaled Value: 108294 | Target: Self (1)
 #8 (id=260749)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -3774,9 +3774,9 @@ Effects          :
                    Base Value: 6000 | Scaled Value: 6000 | Misc Value: 1
                    Affected Spells: Moonfire (8921), Sunfire (93402), Moonfire (164812), Sunfire (164815), Sunfire (197630)
                    Family Flags: 1
-#5 (id=191149)   : Apply Aura (6) | Unknown(332)
+#5 (id=191149)   : Apply Aura (6) | Dummy (4)
                    Base Value: 102560 | Scaled Value: 102560 | Target: Self (1)
-                   Family Flags: 3
+                   Hotfixed: Sub Type (332 -> 4), Affects Spells
 #6 (id=260777)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 83 | Scaled Value: 83 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
@@ -9098,6 +9098,7 @@ School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
 Azerite Power Id : 247
+Triggered by     : Iron Jaws (276026)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9113,6 +9114,32 @@ Effects          :
 #2 (id=729399)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8
 Description      : Ferocious Bite has a $s2% chance per combo point to increase the damage of your next Maim by $s1 per combo point.
+
+Name             : Iron Jaws (id=276026) [Scaling Spell (-1), Spell Family (7)] 
+Class            : Druid
+School           : Physical
+Spell Type       : None
+Duration         : 30 seconds
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
+Proc Flags       : ....x... ........ ........ ........ 
+                 : Yellow Melee
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Scales with item level (354)
+Effects          :
+#1 (id=729406)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Hotfixed: Sub Type (107 -> 4), Affects Spells
+#2 (id=729407)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 276021
+Description      : $@spelldesc276021
+Tooltip          : Your next Maim will deal an additional $w1 damage per combo point.
 
 Name             : Flight Form (id=276029) [Spell Family (7), Passive] 
 Class            : Druid

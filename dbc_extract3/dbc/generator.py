@@ -1613,6 +1613,7 @@ class SpellDataGenerator(DataGenerator):
           ( 274283, 1 ),       # Full Moon
           ( 279641, 1 ),       # Lunar Shrapnel Azerite Trait
           ( 279729, 1 ),       # Solar Empowerment
+          ( 276026, 2 ),       # Iron Jaws, Feral Azerite Power
         ),
         # Demon Hunter:
         (
