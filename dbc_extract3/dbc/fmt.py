@@ -1,5 +1,7 @@
 import struct, json, pathlib, sys, re, logging
 
+import dbc
+
 class Field:
     def __init__(self, index, data):
         self.index = index
@@ -106,17 +108,23 @@ class DBFormat(object):
     def __find_newest_file(self, path):
         valid_files = []
         for f in path.iterdir():
-            mobj = re.search("^([0-9]+)", f.stem)
-            if mobj:
-                valid_files.append((mobj.group(1), f))
+            try:
+                ver = dbc.WowVersion(f.stem)
+            except:
+                continue
+            valid_files.append((ver, f))
 
-        valid_files.sort()
+        # Format file patch level must match the build patch level given
+        patch_files = list(filter(lambda x: x[0].patch_level() == self.options.build.patch_level(),
+            valid_files))
+        patch_files.sort()
         idx = 0
-        while idx < len(valid_files) and int(valid_files[idx][0]) <= self.options.build:
-            idx = idx + 1
 
-        logging.debug('Opened format file %s', valid_files[idx - 1][1])
-        return valid_files[idx - 1][1]
+        while idx < len(patch_files) and patch_files[idx][0] <= self.options.build:
+            idx += 1
+
+        logging.debug('Opened format file %s', patch_files[idx - 1][1])
+        return patch_files[idx - 1][1]
 
     def __find_format_file(self):
         if not self.options.format:

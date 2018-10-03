@@ -29,7 +29,7 @@ def output_hotfixes(generator, data_str, hotfix_data):
         len(hotfix_data.keys())
     ))
 
-    generator._out.write('// %d %s hotfix entries, wow build level %d\n' % (
+    generator._out.write('// %d %s hotfix entries, wow build level %s\n' % (
         len(hotfix_data.keys()), data_str, generator._options.build ))
     generator._out.write('static hotfix::client_hotfix_entry_t __%s%s_hotfix%s_data[] = {\n' % (
         generator._options.prefix and ('%s_' % generator._options.prefix) or '',
@@ -355,7 +355,7 @@ class RealPPMModifierGenerator(DataGenerator):
             (self._options.prefix and ('%s_' % self._options.prefix) or '').upper(),
             (self._options.suffix and ('_%s' % self._options.suffix) or '').upper(),
             len(output_data)))
-        self._out.write('// %d RPPM Modifiers, wow build level %d\n' % (len(output_data), self._options.build))
+        self._out.write('// %d RPPM Modifiers, wow build level %s\n' % (len(output_data), self._options.build))
         self._out.write('static struct rppm_modifier_t __%srppmmodifier%s_data[] = {\n' % (
             self._options.prefix and ('%s_' % self._options.prefix) or '',
             self._options.suffix and ('_%s' % self._options.suffix) or ''))
@@ -588,7 +588,7 @@ class TalentDataGenerator(DataGenerator):
             (self._options.prefix and ('%s_' % self._options.prefix) or '').upper(),
             (self._options.suffix and ('_%s' % self._options.suffix) or '').upper(),
             len(ids)))
-        self._out.write('// %d talents, wow build %d\n' % ( len(ids), self._options.build ))
+        self._out.write('// %d talents, wow build %s\n' % ( len(ids), self._options.build ))
         self._out.write('static struct talent_data_t __%stalent%s_data[] = {\n' % (
             self._options.prefix and ('%s_' % self._options.prefix) or '',
             self._options.suffix and ('_%s' % self._options.suffix) or '' ))
@@ -634,7 +634,7 @@ class RulesetItemUpgradeGenerator(DataGenerator):
         return sorted(self._rulesetitemupgrade_db.keys()) + [0]
 
     def generate(self, ids = None):
-        self._out.write('// Item upgrade rules, wow build level %d\n' % self._options.build)
+        self._out.write('// Item upgrade rules, wow build level %s\n' % self._options.build)
 
         self._out.write('static struct item_upgrade_rule_t __%sitem_upgrade_rule%s_data[] = {\n' % (
             self._options.prefix and ('%s_' % self._options.prefix) or '',
@@ -654,7 +654,7 @@ class ItemUpgradeDataGenerator(DataGenerator):
         super().__init__(options, data_store)
 
     def generate(self, ids = None):
-        self._out.write('// Upgrade rule data, wow build level %d\n' % self._options.build)
+        self._out.write('// Upgrade rule data, wow build level %s\n' % self._options.build)
 
         self._out.write('static struct item_upgrade_t __%supgrade_rule%s_data[] = {\n' % (
             self._options.prefix and ('%s_' % self._options.prefix) or '',
@@ -882,7 +882,7 @@ class ItemDataGenerator(DataGenerator):
             (self._options.prefix and ('%s_' % self._options.prefix) or '').upper(),
             (self._options.suffix and ('_%s' % self._options.suffix) or '').upper(),
             len(ids)))
-        self._out.write('// %d items, ilevel %d-%d, wow build level %d\n' % (
+        self._out.write('// %d items, ilevel %d-%d, wow build level %s\n' % (
             len(ids), self._options.min_ilevel, self._options.max_ilevel, self._options.build))
         self._out.write('static struct item_data_t __%sitem%s_data[] = {\n' % (
             self._options.prefix and ('%s_' % self._options.prefix) or '',
@@ -2475,7 +2475,7 @@ class SpellDataGenerator(DataGenerator):
             (self._options.suffix and ('_%s' % self._options.suffix) or '').upper(),
             len(ids)
         ))
-        self._out.write('// %d spells, wow build level %d\n' % ( len(ids), self._options.build ))
+        self._out.write('// %d spells, wow build level %s\n' % ( len(ids), self._options.build ))
         self._out.write('static struct spell_data_t __%sspell%s_data[] = {\n' % (
             self._options.prefix and ('%s_' % self._options.prefix) or '',
             self._options.suffix and ('_%s' % self._options.suffix) or ''
@@ -2744,7 +2744,7 @@ class SpellDataGenerator(DataGenerator):
             (self._options.prefix and ('%s_' % self._options.prefix) or '').upper(),
             (self._options.suffix and ('_%s' % self._options.suffix) or '').upper(),
             len(effects)))
-        self._out.write('// %d effects, wow build level %d\n' % ( len(effects), self._options.build ))
+        self._out.write('// %d effects, wow build level %s\n' % ( len(effects), self._options.build ))
         self._out.write('static struct spelleffect_data_t __%sspelleffect%s_data[] = {\n' % (
             self._options.prefix and ('%s_' % self._options.prefix) or '',
             self._options.suffix and ('_%s' % self._options.suffix) or ''))
@@ -2876,7 +2876,7 @@ class SpellDataGenerator(DataGenerator):
         powers.sort(key = lambda k: k.id)
 
         self._out.write('#define __%s_SIZE (%d)\n\n' % ( self.format_str( "spellpower" ).upper(), len(powers) ))
-        self._out.write('// %d effects, wow build level %d\n' % ( len(powers), self._options.build ))
+        self._out.write('// %d effects, wow build level %s\n' % ( len(powers), self._options.build ))
         self._out.write('static struct spellpower_data_t __%s_data[] = {\n' % ( self.format_str( "spellpower" ) ))
 
         for power in powers + [ self._spellpower_db[0] ]:
@@ -2930,7 +2930,7 @@ class SpellDataGenerator(DataGenerator):
         labels.sort(key = lambda k: k.id)
 
         self._out.write('#define __%s_SIZE (%d)\n\n' % ( self.format_str( "spelllabel" ).upper(), len(labels) ))
-        self._out.write('// %d labels, wow build level %d\n' % ( len(labels), self._options.build ))
+        self._out.write('// %d labels, wow build level %s\n' % ( len(labels), self._options.build ))
         self._out.write('static struct spelllabel_data_t __%s_data[] = {\n' % ( self.format_str( "spelllabel" ) ))
 
         for label in labels + [ self._spelllabel_db[0] ]:
@@ -3002,7 +3002,7 @@ class MasteryAbilityGenerator(DataGenerator):
         )
 
         self._out.write('#define %s_SIZE (%d)\n\n' % (data_str.upper(), max_ids))
-        self._out.write('// Class mastery abilities, wow build %d\n' % self._options.build)
+        self._out.write('// Class mastery abilities, wow build %s\n' % self._options.build)
         self._out.write('static unsigned __%s_data[MAX_CLASS][MAX_SPECS_PER_CLASS][%s_SIZE] = {\n' % (
             data_str,
             data_str.upper(),
@@ -3114,7 +3114,7 @@ class RacialSpellGenerator(SpellDataGenerator):
             self.format_str( 'MAX_RACE' ),
             self.format_str( 'MAX_RACE' ),
             len(DataGenerator._race_names) ))
-        self._out.write('// Racial abilities, wow build %d\n' % self._options.build)
+        self._out.write('// Racial abilities, wow build %s\n' % self._options.build)
         self._out.write('static unsigned __%s_data[%s][%s][%s_SIZE] = {\n' % (
             self.format_str( 'race_ability' ),
             self.format_str( 'MAX_RACE' ),
@@ -3203,7 +3203,7 @@ class SpecializationSpellGenerator(DataGenerator):
 
         self._out.write('#define %s_SIZE (%d)\n\n' % (data_str.upper(), max_ids))
 
-        self._out.write('// Talent tree specialization abilities, wow build %d\n' % self._options.build)
+        self._out.write('// Talent tree specialization abilities, wow build %s\n' % self._options.build)
         self._out.write('static unsigned __%s_data[][MAX_SPECS_PER_CLASS][%s_SIZE] = {\n' % (
             data_str,
             data_str.upper(),
@@ -3454,7 +3454,7 @@ class SpellListGenerator(SpellDataGenerator):
             self.format_str( 'MAX_CLASS' ),
             self.format_str( 'MAX_CLASS' ),
             len(DataGenerator._class_names)))
-        self._out.write('// Class based active abilities, wow build %d\n' % self._options.build)
+        self._out.write('// Class based active abilities, wow build %s\n' % self._options.build)
         self._out.write('static unsigned __%s_data[][%s_TREE_SIZE][%s_SIZE] = {\n' % (
             data_str,
             data_str.upper(),
@@ -3816,7 +3816,7 @@ class SetBonusListGenerator(DataGenerator):
             len(ids)
         ))
 
-        self._out.write('// Set bonus data, wow build %d\n' % self._options.build)
+        self._out.write('// Set bonus data, wow build %s\n' % self._options.build)
         self._out.write('static item_set_bonus_t __%s[%s_SIZE] = {\n' % (
             data_str,
             data_str.upper(),
@@ -3903,7 +3903,7 @@ class RandomSuffixGenerator(DataGenerator):
             (self._options.suffix and ('_%s' % self._options.suffix) or '').upper(),
             len(ids)
         ))
-        self._out.write('// Random new-style item suffixes, wow build %d\n' % self._options.build)
+        self._out.write('// Random new-style item suffixes, wow build %s\n' % self._options.build)
         self._out.write('static struct random_suffix_data_t __%srand_suffix%s_data[] = {\n' % (
             self._options.prefix and ('%s_' % self._options.prefix) or '',
             self._options.suffix and ('_%s' % self._options.suffix) or '' ))
@@ -3969,7 +3969,7 @@ class SpellItemEnchantmentGenerator(RandomSuffixGenerator):
             (self._options.suffix and ('_%s' % self._options.suffix) or '').upper(),
             len(ids)
         ))
-        self._out.write('// Item enchantment data, wow build %d\n' % self._options.build)
+        self._out.write('// Item enchantment data, wow build %s\n' % self._options.build)
         self._out.write('static struct item_enchantment_data_t __%sspell_item_ench%s_data[] = {\n' % (
             self._options.prefix and ('%s_' % self._options.prefix) or '',
             self._options.suffix and ('_%s' % self._options.suffix) or '' ))
@@ -4013,7 +4013,7 @@ class RandomPropertyPointsGenerator(DataGenerator):
             (self._options.suffix and ('_%s' % self._options.suffix) or '').upper(),
             len(ids)
         ))
-        self._out.write('// Random property points for item levels 1-%d, wow build %d\n' % (
+        self._out.write('// Random property points for item levels 1-%d, wow build %s\n' % (
             self._options.scale_ilevel, self._options.build ))
         self._out.write('static struct random_prop_data_t __%srand_prop_points%s_data[] = {\n' % (
             self._options.prefix and ('%s_' % self._options.prefix) or '',
@@ -4046,7 +4046,7 @@ class WeaponDamageDataGenerator(DataGenerator):
         for dbname in self._dbc:
             db = getattr(self, '_%s_db' % dbname.lower() )
 
-            self._out.write('// Item damage data from %s.dbc, ilevels 1-%d, wow build %d\n' % (
+            self._out.write('// Item damage data from %s.dbc, ilevels 1-%d, wow build %s\n' % (
                 dbname, self._options.scale_ilevel, self._options.build ))
             self._out.write('static struct item_scale_data_t __%s%s%s_data[] = {\n' % (
                 self._options.prefix and ('%s_' % self._options.prefix) or '',
@@ -4078,7 +4078,7 @@ class ArmorValueDataGenerator(DataGenerator):
         for dbname in self._dbc:
             db = getattr(self, '_%s_db' % dbname.lower() )
 
-            self._out.write('// Item armor values data from %s.dbc, ilevels 1-%d, wow build %d\n' % (
+            self._out.write('// Item armor values data from %s.dbc, ilevels 1-%d, wow build %s\n' % (
                 dbname, self._options.scale_ilevel, self._options.build ))
 
             self._out.write('static struct %s __%s%s%s_data[] = {\n' % (
@@ -4113,7 +4113,7 @@ class ArmorSlotDataGenerator(DataGenerator):
         return None
 
     def generate(self, ids = None):
-        s = '// Inventory type based armor multipliers, wow build %d\n' % ( self._options.build )
+        s = '// Inventory type based armor multipliers, wow build %s\n' % ( self._options.build )
 
         self._out.write('static struct item_armor_type_data_t __%sarmor_slot%s_data[] = {\n' % (
             self._options.prefix and ('%s_' % self._options.prefix) or '',
@@ -4144,7 +4144,7 @@ class GemPropertyDataGenerator(DataGenerator):
 
     def generate(self, ids = None):
         ids.sort()
-        self._out.write('// Gem properties, wow build %d\n' % ( self._options.build ))
+        self._out.write('// Gem properties, wow build %s\n' % ( self._options.build ))
 
         self._out.write('static struct gem_property_data_t __%sgem_property%s_data[] = {\n' % (
             self._options.prefix and ('%s_' % self._options.prefix) or '',
@@ -4173,7 +4173,7 @@ class ItemBonusDataGenerator(DataGenerator):
 
         self._out.write('#define %s_SIZE (%d)\n\n' % (data_str.upper(), len(self._itembonustreenode_db.keys()) + 1))
 
-        self._out.write('// Item bonus trees, wow build %d\n' % ( self._options.build ))
+        self._out.write('// Item bonus trees, wow build %s\n' % ( self._options.build ))
 
         self._out.write('static struct item_bonus_tree_entry_t __%s_data[%s_SIZE] = {\n' % (data_str, data_str.upper()))
 
@@ -4193,7 +4193,7 @@ class ItemBonusDataGenerator(DataGenerator):
         )
 
         self._out.write('#define %s_SIZE (%d)\n\n' % (data_str.upper(), len(self._itembonus_db.keys()) + 1))
-        self._out.write('// Item bonuses, wow build %d\n' % ( self._options.build ))
+        self._out.write('// Item bonuses, wow build %s\n' % ( self._options.build ))
 
         self._out.write('static struct item_bonus_entry_t __%s_data[%s_SIZE] = {\n' % (data_str, data_str.upper()))
 
@@ -4212,7 +4212,7 @@ class ItemBonusDataGenerator(DataGenerator):
         )
 
         self._out.write('#define %s_SIZE (%d)\n\n' % (data_str.upper(), len(self._itemxbonustree_db.keys()) + 1))
-        self._out.write('// Item bonus map, wow build %d\n' % ( self._options.build ))
+        self._out.write('// Item bonus map, wow build %s\n' % ( self._options.build ))
 
         self._out.write('static struct item_bonus_node_entry_t __%s_data[%s_SIZE] = {\n' % (data_str, data_str.upper()))
 
@@ -4251,7 +4251,7 @@ class ScalingStatDataGenerator(DataGenerator):
 
         self._out.write('#define %s_SIZE (%d)\n\n' % (data_str.upper(), len(self._scalingstatdistribution_db.keys()) + 1))
 
-        self._out.write('// Scaling stat distributions, wow build %d\n' % ( self._options.build ))
+        self._out.write('// Scaling stat distributions, wow build %s\n' % ( self._options.build ))
 
         self._out.write('static struct scaling_stat_distribution_t __%s_data[%s_SIZE] = {\n' % (data_str, data_str.upper()))
 
@@ -4270,7 +4270,7 @@ class ScalingStatDataGenerator(DataGenerator):
 
         self._out.write('#define %s_SIZE (%d)\n\n' % (data_str.upper(), len(self._curvepoint_db.keys()) + 1))
 
-        self._out.write('// Curve points data, wow build %d\n' % ( self._options.build ))
+        self._out.write('// Curve points data, wow build %s\n' % ( self._options.build ))
 
         self._out.write('static struct curve_point_t __%s_data[%s_SIZE] = {\n' % (data_str, data_str.upper()))
 
@@ -4296,7 +4296,7 @@ class ItemNameDescriptionDataGenerator(DataGenerator):
 
         self._out.write('#define %s_SIZE (%d)\n\n' % (data_str.upper(), len(self._itemnamedescription_db.keys()) + 1))
 
-        self._out.write('// Item name descriptions, wow build %d\n' % ( self._options.build ))
+        self._out.write('// Item name descriptions, wow build %s\n' % ( self._options.build ))
 
         self._out.write('static struct item_name_description_t __%s_data[%s_SIZE] = {\n' % (data_str, data_str.upper()))
 
@@ -4321,14 +4321,14 @@ class ItemChildEquipmentGenerator(DataGenerator):
 
         self._out.write('#define %s_SIZE (%d)\n\n' % (data_str.upper(), len(self._itemchildequipment_db.keys()) + 1))
 
-        self._out.write('// Item child equipment, wow build %d\n' % ( self._options.build ))
+        self._out.write('// Item child equipment, wow build %s\n' % ( self._options.build ))
 
         self._out.write('static struct item_child_equipment_t __%s_data[%s_SIZE] = {\n' % (data_str, data_str.upper()))
 
         for key in sorted(self._itemchildequipment_db.keys()) + [0,]:
             data = self._itemchildequipment_db[key]
 
-            if self._options.build >= 27826:
+            if self._options.build >= dbc.WowVersion(8, 1, 0, 27826):
                 fields = data.field( 'id', 'id_item', 'id_child' )
             else:
                 fields = data.field( 'id', self._options.build < 25600 and 'id_item' or 'id_parent', 'id_child' )
@@ -4379,7 +4379,7 @@ class AzeriteDataGenerator(DataGenerator):
             self._options.suffix and ('_%s' % self._options.suffix) or '',
         )
 
-        self._out.write('// Azerite powers, wow build %d\n' % ( self._options.build ))
+        self._out.write('// Azerite powers, wow build %s\n' % ( self._options.build ))
 
         self._out.write('static constexpr std::array<azerite_power_entry_t, %d> __%s_data { {\n' % (
             len(ids), data_str))
@@ -4416,7 +4416,7 @@ class NpcArmorMitigationValues(DataGenerator):
         ]
         entries = sorted(filtered_entries, key = lambda v: v.id_parent)
 
-        self._out.write('// Npc armor mitigation constants (K-values), wow build %d\n' %
+        self._out.write('// Npc armor mitigation constants (K-values), wow build %s\n' %
                 self._options.build)
 
         self._out.write('static constexpr std::array<double, %d> __%s_data { {\n' % (
