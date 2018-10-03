@@ -3180,10 +3180,6 @@ struct auto_attack_t : public death_knight_melee_attack_t
     if ( player -> is_moving() )
       return false;
 
-    player_t* potential_target = select_target_if_target();
-    if ( potential_target && potential_target != p() -> main_hand_attack -> target )
-      p() -> main_hand_attack -> target = potential_target;
-
     return( player -> main_hand_attack -> execute_event == nullptr ); // not swinging
   }
 };
@@ -7645,7 +7641,6 @@ void death_knight_t::default_apl_frost()
   // Setup precombat APL for DPS spec
   default_apl_dps_precombat();
 
-  def -> add_action( "auto_attack,target_if=(debuff.razorice.stack<5|debuff.razorice.remains<10)&!talent.frostscythe.enabled" );
   def -> add_action( "auto_attack" );
 
   // Interrupt
