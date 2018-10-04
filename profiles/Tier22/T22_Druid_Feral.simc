@@ -3,10 +3,10 @@ source=default
 spec=feral
 level=120
 race=night_elf
-timeofday=day
+timeofday=night
 role=attack
 position=back
-talents=3000212
+talents=3000232
 
 # Default consumables
 potion=battle_potion_of_agility
@@ -123,28 +123,28 @@ actions.st_generators+=/shred,if=buff.clearcasting.react
 actions.st_generators+=/moonfire_cat,if=azerite.power_of_the_moon.enabled&!buff.incarnation.up
 actions.st_generators+=/shred,if=dot.rake.remains>(action.shred.cost+action.rake.cost-energy)%energy.regen|buff.clearcasting.react
 
-head=irontide_captains_hat,id=155888,bonus_id=1557/4819/4775/4786,azerite_powers=479/30/85/13
+head=hood_of_pestilent_ichor,id=160623,bonus_id=4824/1507/4775,azerite_powers=359/459/467/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
-shoulders=shoulders_of_the_sanguine_monstrosity,id=159323,bonus_id=1557/4819/4775/4786,azerite_powers=169/18/15/13
-back=fetid_horrors_tanglecloak,id=160643,bonus_id=4800/1507
-chest=cephalohide_jacket,id=159314,bonus_id=1557/4819/4775/4786,azerite_powers=479/18/85/13
+shoulders=usurpers_bloodcaked_spaulders,id=160620,bonus_id=4824/1507/4775,azerite_powers=483/30/15/13
+back=cloak_of_rippling_whispers,id=160642,bonus_id=4800/1507
+chest=tunic_of_the_sanguine_deity,id=160728,bonus_id=4824/1507/4775,azerite_powers=485/22/14/13
 wrists=wristwraps_of_coursing_miasma,id=160621,bonus_id=4800/1507
 hands=gloves_of_descending_madness,id=160618,bonus_id=4800/1507
 waist=replicated_chitin_cord,id=160717,bonus_id=4800/1507
-legs=pathogenic_legwraps,id=160625,bonus_id=4800/1507
-feet=quarantine_protocol_treads,id=160624,bonus_id=4800/1507
+legs=emblazoned_tempest_leggings,id=162486,bonus_id=487
+feet=emblazoned_tempest_boots,id=162485,bonus_id=487
 finger1=rotscour_ring,id=160645,bonus_id=4800/1507,enchant=pact_of_haste
 finger2=band_of_certain_annihilation,id=160646,bonus_id=4800/1507,enchant=pact_of_haste
 trinket1=galecallers_boon,id=159614,bonus_id=1542/4779
-trinket2=frenetic_corpuscle,id=160648,bonus_id=4800/1507
+trinket2=darkmoon_deck_fathoms,id=159125
 main_hand=voidbinder,id=160688,bonus_id=4800/1507,enchant=quick_navigation
 
 # Gear Summary
-# gear_ilvl=385.27
-# gear_agility=4346
+# gear_ilvl=383.27
+# gear_agility=4269
 # gear_stamina=7207
-# gear_crit_rating=772
-# gear_haste_rating=1312
-# gear_mastery_rating=584
-# gear_versatility_rating=335
+# gear_crit_rating=855
+# gear_haste_rating=1393
+# gear_mastery_rating=448
+# gear_versatility_rating=309
 # gear_armor=1897
