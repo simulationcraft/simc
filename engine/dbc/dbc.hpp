@@ -889,6 +889,15 @@ public:
   std::vector<const spelllabel_data_t*>* _labels; // Applied (known) labels to the spell
   const hotfix::client_hotfix_entry_t* _hotfix_entry; // First hotfix entry in the hotfix table, if available
 
+  unsigned equipped_class() const
+  { return _equipped_class; }
+
+  unsigned equipped_invtype_mask() const
+  { return _equipped_invtype_mask; }
+
+  item_class equipped_subclass_mask() const
+  { return static_cast<item_class>( _equipped_subclass_mask ); }
+
   // Direct member access functions
   unsigned category() const
   { return _category; }

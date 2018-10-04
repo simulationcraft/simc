@@ -890,21 +890,27 @@ const char* util::weapon_subclass_string( int subclass )
 {
   switch ( subclass )
   {
-    case ITEM_SUBCLASS_WEAPON_AXE:
-    case ITEM_SUBCLASS_WEAPON_AXE2:     return "Axe";
+    case ITEM_SUBCLASS_WEAPON_AXE:      return "One-handed Axe";
+    case ITEM_SUBCLASS_WEAPON_AXE2:     return "Two-handed Axe";
     case ITEM_SUBCLASS_WEAPON_BOW:      return "Bow";
     case ITEM_SUBCLASS_WEAPON_GUN:      return "Gun";
-    case ITEM_SUBCLASS_WEAPON_MACE:
-    case ITEM_SUBCLASS_WEAPON_MACE2:    return "Mace";
+    case ITEM_SUBCLASS_WEAPON_MACE:     return "One-handed Mace";
+    case ITEM_SUBCLASS_WEAPON_MACE2:    return "Two-handed Mace";
     case ITEM_SUBCLASS_WEAPON_POLEARM:  return "Polearm";
-    case ITEM_SUBCLASS_WEAPON_SWORD:
-    case ITEM_SUBCLASS_WEAPON_SWORD2:   return "Sword";
+    case ITEM_SUBCLASS_WEAPON_SWORD:    return "One-handed Sword";
+    case ITEM_SUBCLASS_WEAPON_SWORD2:   return "Two-handed Sword";
     case ITEM_SUBCLASS_WEAPON_STAFF:    return "Staff";
     case ITEM_SUBCLASS_WEAPON_FIST:     return "Fist Weapon";
     case ITEM_SUBCLASS_WEAPON_DAGGER:   return "Dagger";
     case ITEM_SUBCLASS_WEAPON_THROWN:   return "Thrown";
     case ITEM_SUBCLASS_WEAPON_CROSSBOW: return "Crossbow";
     case ITEM_SUBCLASS_WEAPON_WAND:     return "Wand";
+    case ITEM_SUBCLASS_WEAPON_FISHING_POLE: return "Fishing Pole";
+    case ITEM_SUBCLASS_WEAPON_MISC:     return "Miscellaneous";
+    case ITEM_SUBCLASS_WEAPON_SPEAR:    return "Spear";
+    case ITEM_SUBCLASS_WEAPON_EXOTIC:   return "Exotic";
+    case ITEM_SUBCLASS_WEAPON_EXOTIC2:  return "Exotic (2)";
+    case ITEM_SUBCLASS_WEAPON_WARGLAIVE: return "War Glaive";
     default:                            return "Unknown";
   }
 }
@@ -2018,9 +2024,7 @@ item_subclass_weapon util::translate_weapon( weapon_e weapon )
     case WEAPON_THROWN:    return ITEM_SUBCLASS_WEAPON_THROWN;
     case WEAPON_WAND:      return ITEM_SUBCLASS_WEAPON_WAND;
     case WEAPON_WARGLAIVE: return ITEM_SUBCLASS_WEAPON_WARGLAIVE;
-    default:
-      assert( false );
-      return ITEM_SUBCLASS_WEAPON_MISC;
+    default:               return ITEM_SUBCLASS_WEAPON_INVALID;
   }
 }
 

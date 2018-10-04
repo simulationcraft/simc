@@ -309,7 +309,8 @@ enum item_subclass_weapon
     ITEM_SUBCLASS_WEAPON_SPEAR                = 17,
     ITEM_SUBCLASS_WEAPON_CROSSBOW             = 18,
     ITEM_SUBCLASS_WEAPON_WAND                 = 19,
-    ITEM_SUBCLASS_WEAPON_FISHING_POLE         = 20
+    ITEM_SUBCLASS_WEAPON_FISHING_POLE         = 20,
+    ITEM_SUBCLASS_WEAPON_INVALID              = 31
 };
 
 enum item_subclass_armor

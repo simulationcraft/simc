@@ -1385,6 +1385,24 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     s << std::endl;
   }
 
+  if ( spell->equipped_class() == ITEM_CLASS_WEAPON )
+  {
+    std::vector<std::string> weapon_types;
+    for ( auto wt = ITEM_SUBCLASS_WEAPON_AXE; wt < ITEM_SUBCLASS_WEAPON_FISHING_POLE; ++wt )
+    {
+      if ( spell->equipped_subclass_mask() & ( 1 << static_cast<unsigned>( wt ) ) )
+      {
+        weapon_types.push_back( util::weapon_subclass_string( wt ) );
+      }
+    }
+    s << "Requires weapon  : ";
+    if ( weapon_types.size() > 0 )
+    {
+      s << util::string_join( weapon_types );
+    }
+    s << std::endl;
+  }
+
   if ( spell -> cooldown() > timespan_t::zero() )
     s << "Cooldown         : " << spell -> cooldown().total_seconds() << " seconds" << std::endl;
 
