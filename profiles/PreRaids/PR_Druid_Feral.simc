@@ -114,12 +114,13 @@ actions.st_generators+=/moonfire_cat,if=buff.bloodtalons.up&buff.predatory_swift
 actions.st_generators+=/brutal_slash,if=(buff.tigers_fury.up&(raid_event.adds.in>(1+max_charges-charges_fractional)*recharge_time))
 actions.st_generators+=/moonfire_cat,target_if=refreshable
 actions.st_generators+=/pool_resource,for_next=1
-actions.st_generators+=/thrash_cat,if=refreshable&(variable.use_thrash=2|spell_targets.thrash_cat>1)
-actions.st_generators+=/thrash_cat,if=refreshable&variable.use_thrash=1&buff.clearcasting.react
+actions.st_generators+=/thrash_cat,if=refreshable&((variable.use_thrash=2&(!buff.incarnation.up|azerite.wild_fleshrending.enabled))|spell_targets.thrash_cat>1)
+actions.st_generators+=/thrash_cat,if=refreshable&variable.use_thrash=1&buff.clearcasting.react&(!buff.incarnation.up|azerite.wild_fleshrending.enabled)
 actions.st_generators+=/pool_resource,for_next=1
 actions.st_generators+=/swipe_cat,if=spell_targets.swipe_cat>1
 actions.st_generators+=/shred,if=buff.clearcasting.react
-actions.st_generators+=/moonfire_cat,if=azerite.power_of_the_moon.enabled
+# With Power of the Moon traits, Moonfire becomes our primary builder outside of Clearcasting and Incarnation
+actions.st_generators+=/moonfire_cat,if=azerite.power_of_the_moon.enabled&!buff.incarnation.up
 actions.st_generators+=/shred,if=dot.rake.remains>(action.shred.cost+action.rake.cost-energy)%energy.regen|buff.clearcasting.react
 
 head=irontide_captains_hat,id=155888,bonus_id=4779/1512/4786/4775,azerite_powers=111/30/13

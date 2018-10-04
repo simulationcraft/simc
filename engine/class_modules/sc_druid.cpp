@@ -7765,12 +7765,12 @@ void druid_t::apl_feral()
    generator->add_action("brutal_slash,if=(buff.tigers_fury.up&(raid_event.adds.in>(1+max_charges-charges_fractional)*recharge_time))");
    generator->add_action("moonfire_cat,target_if=refreshable");
    generator->add_action("pool_resource,for_next=1");
-   generator->add_action("thrash_cat,if=refreshable&(variable.use_thrash=2|spell_targets.thrash_cat>1)");
-   generator->add_action("thrash_cat,if=refreshable&variable.use_thrash=1&buff.clearcasting.react");
+   generator->add_action("thrash_cat,if=refreshable&((variable.use_thrash=2&(!buff.incarnation.up|azerite.wild_fleshrending.enabled))|spell_targets.thrash_cat>1)");
+   generator->add_action("thrash_cat,if=refreshable&variable.use_thrash=1&buff.clearcasting.react&(!buff.incarnation.up|azerite.wild_fleshrending.enabled)");
    generator->add_action("pool_resource,for_next=1");
    generator->add_action("swipe_cat,if=spell_targets.swipe_cat>1");
    generator->add_action("shred,if=buff.clearcasting.react");
-   generator->add_action("moonfire_cat,if=azerite.power_of_the_moon.enabled");
+   generator->add_action("moonfire_cat,if=azerite.power_of_the_moon.enabled&!buff.incarnation.up", "With Power of the Moon traits, Moonfire becomes our primary builder outside of Clearcasting and Incarnation");
    generator->add_action("shred,if=dot.rake.remains>(action.shred.cost+action.rake.cost-energy)%energy.regen|buff.clearcasting.react");
 
  //  action_priority_list_t* def = get_action_priority_list("default");
