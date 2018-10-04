@@ -33,11 +33,11 @@ role=attack
 position=back
 talents=2022032
 
-head=cowl_of_fluid_machinations,id=159302,bonus_id=1557/4819/4775/4786,azerite_powers=389/22/13
+head=hood_of_pestilent_ichor,id=160623,bonus_id=4824/1507/4775,azerite_powers=389/459/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
-shoulders=blood_bog_shoulderpads,id=157883,bonus_id=1557/4819/4775/4786,azerite_powers=389/38/13
+shoulders=usurpers_bloodcaked_spaulders,id=160620,bonus_id=4824/1507/4775,azerite_powers=391/30/13
 back=cloak_of_rippling_whispers,id=160642,bonus_id=4800/1507
-chest=tidebound_chestguard,id=154449,bonus_id=1557/4819/4775/4786,azerite_powers=478/31/13
+chest=jerkin_of_the_aberrant_chimera,id=160619,bonus_id=4824/1507/4775,azerite_powers=483/21/13
 wrists=armbands_of_sacrosanct_acts,id=160720,bonus_id=4800/1507
 hands=gloves_of_descending_madness,id=160618,bonus_id=4800/1507
 waist=replicated_chitin_cord,id=160717,bonus_id=4800/1507
@@ -45,7 +45,7 @@ legs=pathogenic_legwraps,id=160625,bonus_id=4800/1507
 feet=quarantine_protocol_treads,id=160624,bonus_id=4800/1507
 finger1=rotscour_ring,id=160645,bonus_id=4800/1507,enchant=pact_of_versatility
 finger2=ring_of_the_infinite_void,id=160647,bonus_id=4800/1507,enchant=pact_of_versatility
-trinket1=darkmoon_deck_fathoms,id=159125
+trinket1=frenetic_corpuscle,id=160648,bonus_id=4800/1507
 trinket2=lustrous_golden_plumage,id=159617,bonus_id=1542/4779
 main_hand=lancet_of_the_deft_hand,id=160693,bonus_id=4800/1507,enchant=deadly_navigation
 off_hand=lancet_of_the_deft_hand,id=160693,bonus_id=4800/1507,enchant=versatile_navigation
@@ -60,11 +60,11 @@ role=attack
 position=back
 talents=2022033
 
-head=cowl_of_fluid_machinations,id=159302,bonus_id=1557/4819/4775/4786,azerite_powers=389/22/13
+head=hood_of_pestilent_ichor,id=160623,bonus_id=4824/1507/4775,azerite_powers=389/459/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
-shoulders=blood_bog_shoulderpads,id=157883,bonus_id=1557/4819/4775/4786,azerite_powers=389/38/13
+shoulders=usurpers_bloodcaked_spaulders,id=160620,bonus_id=4824/1507/4775,azerite_powers=391/30/13
 back=cloak_of_rippling_whispers,id=160642,bonus_id=4800/1507
-chest=tidebound_chestguard,id=154449,bonus_id=1557/4819/4775/4786,azerite_powers=478/31/13
+chest=jerkin_of_the_aberrant_chimera,id=160619,bonus_id=4824/1507/4775,azerite_powers=483/21/13
 wrists=armbands_of_sacrosanct_acts,id=160720,bonus_id=4800/1507
 hands=gloves_of_descending_madness,id=160618,bonus_id=4800/1507
 waist=replicated_chitin_cord,id=160717,bonus_id=4800/1507
@@ -72,7 +72,7 @@ legs=pathogenic_legwraps,id=160625,bonus_id=4800/1507
 feet=quarantine_protocol_treads,id=160624,bonus_id=4800/1507
 finger1=rotscour_ring,id=160645,bonus_id=4800/1507,enchant=pact_of_versatility
 finger2=ring_of_the_infinite_void,id=160647,bonus_id=4800/1507,enchant=pact_of_versatility
-trinket1=darkmoon_deck_fathoms,id=159125
+trinket1=frenetic_corpuscle,id=160648,bonus_id=4800/1507
 trinket2=lustrous_golden_plumage,id=159617,bonus_id=1542/4779
 main_hand=lancet_of_the_deft_hand,id=160693,bonus_id=4800/1507,enchant=deadly_navigation
 off_hand=lancet_of_the_deft_hand,id=160693,bonus_id=4800/1507,enchant=versatile_navigation
