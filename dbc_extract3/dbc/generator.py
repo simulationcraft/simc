@@ -1568,6 +1568,8 @@ class SpellDataGenerator(DataGenerator):
           # Azerite Traits
           ( 278710, 3 ), # Swift Roundhouse
           ( 278767, 1 ), # Training of Niuzao buff
+          ( 287062, 3 ), # Fury of Xuen buff
+          ( 287063, 3 ), # Fury of Xuen proc
         ),
 
         # Druid:
