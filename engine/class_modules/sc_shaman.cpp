@@ -1625,7 +1625,7 @@ public:
   {
     base_t::execute();
 
-    if ( p()->talent.earthen_rage->ok() && !background && execute_state->action->harmful )
+    if ( p()->talent.earthen_rage->ok() && !background /*&& execute_state->action->harmful*/ )
     {
       p()->recent_target = execute_state->target;
       p()->buff.earthen_rage->trigger();
@@ -7225,8 +7225,9 @@ void shaman_t::create_buffs()
                      ->set_default_value( talent.icefury->effectN( 3 ).percent() );
 
   buff.earthen_rage = make_buff( this, "earthen_rage", find_spell( 170377 ) )
-                          ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
+                          ->set_refresh_behavior( buff_refresh_behavior::DURATION )
                           ->set_tick_time_behavior( buff_tick_time_behavior::HASTED )
+                          ->set_tick_behavior( buff_tick_behavior::REFRESH )
                           ->set_tick_callback( [this]( buff_t*, int, const timespan_t& ) {
                             assert( action.earthen_rage );
                             action.earthen_rage->set_target( recent_target );
