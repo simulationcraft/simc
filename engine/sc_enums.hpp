@@ -92,7 +92,11 @@ enum regen_type_e
 enum class buff_tick_behavior
 {
   NONE,
+
+  // tick timer is reset on refresh of the dot/buff (next tick is rescheduled)
   CLIP,
+
+  // tick timer stays intact on refresh of the dot/buff (next tick won't be rescheduled)
   REFRESH
 };
 
