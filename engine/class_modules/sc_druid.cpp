@@ -7251,7 +7251,7 @@ void druid_t::create_buffs()
   buff.shredding_fury =
       buff_creator_t( this, "shredding_fury", find_spell( 274426 ) ).default_value( azerite.shredding_fury.value() );
 
-  buff.iron_jaws = buff_creator_t( this, "iron_jaws", find_spell( 276026 ) ).duration( timespan_t::from_seconds( 30 ) );
+  buff.iron_jaws = buff_creator_t( this, "iron_jaws", find_spell( 276026 ) );
 
   buff.raking_ferocity = buff_creator_t( this, "raking_ferocity", find_spell( 273340 ) );
 
