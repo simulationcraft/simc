@@ -292,6 +292,10 @@ struct adds_event_t : public raid_event_t
 
   void _finish() override
   {
+    if ( adds.size() < adds_to_remove )
+    {
+      adds_to_remove = adds.size( );
+    }
     for ( size_t i = 0; i < adds_to_remove; i++ )
     {
       adds[ i ]->dismiss();

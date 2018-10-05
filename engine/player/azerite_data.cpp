@@ -1083,8 +1083,20 @@ void blood_rite( special_effect_t& effect )
   // Replace the driver spell, the azerite power does not hold the RPPM value
   effect.spell_id = driver -> id();
 
-  // TODO: add "Killing an enemy will refresh this effect." part
-  // ideally something generic so we can model all "on kill" effects
+  //Kills refresh buff
+  range::for_each( effect.player -> sim -> actor_list, [effect]( player_t* target ) {
+    if ( !target -> is_enemy() )
+    {
+      return;
+    }
+
+    target->callbacks_on_demise.push_back( [effect]( player_t* actor ) {
+      if ( effect.custom_buff -> up( ) )
+      {
+        effect.custom_buff -> refresh( );
+      }
+    } );
+  } );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
