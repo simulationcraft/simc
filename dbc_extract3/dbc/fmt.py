@@ -114,9 +114,13 @@ class DBFormat(object):
                 continue
             valid_files.append((ver, f))
 
-        # Format file patch level must match the build patch level given
+        # Format file patch level should match the build patch level given
         patch_files = list(filter(lambda x: x[0].patch_level() == self.options.build.patch_level(),
             valid_files))
+        # Nothing usable found for the patch level, just grab all we can and
+        # use the highest version format file we can find (in relation to build option)
+        if len(patch_files) == 0:
+            patch_files = valid_files
         patch_files.sort()
         idx = 0
 

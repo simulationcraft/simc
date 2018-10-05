@@ -1,7 +1,6 @@
 import collections, re
 
-# Wow versioning
-
+# Simple World of Warcraft versioning structure
 class WowVersion:
     def __init__(self, *args):
         # Presume a string
@@ -52,6 +51,12 @@ class WowVersion:
     def __ge__(self, other):
         return not self.__lt__(other)
 
+    def __eq__(self, other):
+        return not self.__gt__(other) and not self.__lt__(other)
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     def __cmp(self, val):
         build_only = False
         other_obj = None
@@ -70,7 +75,7 @@ class WowVersion:
         build_only, other_obj = self.__cmp(other)
 
         if build_only:
-            return self.__build > other
+            return self.build() > other
         else:
             return self.version() > other.version()
 
@@ -78,12 +83,12 @@ class WowVersion:
         build_only, other_obj = self.__cmp(other)
 
         if build_only:
-            return self.__build < other
+            return self.build() < other
         else:
             return self.version() < other.version()
 
     def __str__(self):
-        return '{}.{}.{}.{}'.format(self.__expansion, self.__patch, self.__minor, self.__build)
+        return '{}.{}.{}.{}'.format(self.expansion(), self.patch(), self.minor(), self.build())
 
 # Constants
 
