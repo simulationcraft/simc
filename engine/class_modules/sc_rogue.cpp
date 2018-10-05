@@ -6415,7 +6415,9 @@ void rogue_t::init_action_list()
     def -> add_action( "run_action_list,name=stealthed,if=stealthed.all", "Run fully switches to the Stealthed Rotation (by doing so, it forces pooling if nothing is available)." );
     def -> add_action( this, "Nightblade", "if=target.time_to_die>6&remains<gcd.max&combo_points>=4-(time<10)*2", "Apply Nightblade at 2+ CP during the first 10 seconds, after that 4+ CP if it expires within the next GCD or is not up" );
     def -> add_action( "variable,name=stealth_threshold,value=25+talent.vigor.enabled*35+talent.master_of_shadows.enabled*25+talent.shadow_focus.enabled*20+talent.alacrity.enabled*10+15*(spell_targets.shuriken_storm>=3)", "Used to define when to use stealth CDs or builders" );
-    def -> add_action( "call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold&(talent.dark_shadow.enabled&cooldown.secret_technique.up|combo_points.deficit>=4)", "Consider using a Stealth CD when reaching the energy threshold and having space for at least 4 CP or Secret Technique ready" );
+    def -> add_action( "call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold&combo_points.deficit>=4", "Consider using a Stealth CD when reaching the energy threshold and having space for at least 4 CP" );
+    def -> add_action( "call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold&talent.dark_shadow.enabled&talent.secret_technique.enabled&cooldown.secret_technique.up", "With Dark Shadow, also use a Stealth CD when reaching the energy threshold and Secret Technique is ready." );
+    def -> add_action( "call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold&talent.dark_shadow.enabled&!talent.secret_technique.enabled&spell_targets.shuriken_storm>=2&(!talent.shuriken_tornado.enabled|!cooldown.shuriken_tornado.up)", "With Dark Shadow and not talented into Secret Technique, we only care about energy against multiple targets. Exception: Tornado is ready." );
     def -> add_action( "call_action_list,name=finish,if=combo_points.deficit<=1|target.time_to_die<=1&combo_points>=3", "Finish at 4+ without DS, 5+ with DS (outside stealth)" );
     def -> add_action( "call_action_list,name=finish,if=spell_targets.shuriken_storm=4&combo_points>=4", "With DS also finish at 4+ against exactly 4 targets (outside stealth)" );
     def -> add_action( "call_action_list,name=build,if=energy.deficit<=variable.stealth_threshold", "Use a builder when reaching the energy threshold" );
@@ -6444,11 +6446,14 @@ void rogue_t::init_action_list()
       else
         cds -> add_action( racial_actions[i] + ",if=buff.symbols_of_death.up" );
     }
-    cds -> add_action( this, "Symbols of Death", "if=dot.nightblade.ticking" );
+    cds -> add_action( this, "Shadow Dance", "off_gcd=1,if=!buff.shadow_dance.up&buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5", "Use Dance off-gcd before the first Shuriken Storm from Tornado comes in." );
+    cds -> add_action( this, "Symbols of Death", "off_gcd=1,if=buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5", "(Unless already up because we took Shadow Focus) use Symbols off-gcd before the first Shuriken Storm from Tornado comes in." );
+    cds -> add_action( this, "Symbols of Death", "if=dot.nightblade.ticking&(!talent.shuriken_tornado.enabled|talent.shadow_focus.enabled|spell_targets.shuriken_storm<3|!cooldown.shuriken_tornado.up)", "Use Symbols on cooldown (after first Nightblade) unless we are going to pop Tornado and do not have Shadow Focus." );
     cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.all&combo_points.deficit>=cp_max_spend)", "If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or not stealthed without any CP." );
     cds -> add_talent( this, "Marked for Death", "if=raid_event.adds.in>30-raid_event.adds.duration&!stealthed.all&combo_points.deficit>=cp_max_spend", "If no adds will die within the next 30s, use MfD on boss without any CP and no stealth." );
     cds -> add_action( this, "Shadow Blades", "if=combo_points.deficit>=2+stealthed.all" );
-    cds -> add_talent( this, "Shuriken Tornado", "if=spell_targets>=3&dot.nightblade.ticking&buff.symbols_of_death.up&buff.shadow_dance.up");
+    cds -> add_talent( this, "Shuriken Tornado", "if=spell_targets>=3&!talent.shadow_focus.enabled&dot.nightblade.ticking&!stealthed.all&cooldown.symbols_of_death.up&cooldown.shadow_dance.charges>=1", "At 3+ without Shadow Focus use Tornado with SoD and Dance ready. We will pop those before the first storm comes in." );
+    cds -> add_talent( this, "Shuriken Tornado", "if=spell_targets>=3&talent.shadow_focus.enabled&dot.nightblade.ticking&buff.symbols_of_death.up", "At 3+ with Shadow Focus use Tornado with SoD already up." );
     cds -> add_action( this, "Shadow Dance", "if=!stealthed.all&target.time_to_die<=5+talent.subterfuge.enabled" );
 
     // Stealth Cooldowns
