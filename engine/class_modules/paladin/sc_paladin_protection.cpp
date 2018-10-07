@@ -942,10 +942,12 @@ void paladin_t::generate_action_prio_list_prot()
   cds -> add_action( "fireblood,if=buff.avenging_wrath.up" );
   cds -> add_talent( this, "Seraphim", "if=cooldown.shield_of_the_righteous.charges_fractional>=2" );
   cds -> add_action( this, "Avenging Wrath", "if=buff.seraphim.up|cooldown.seraphim.remains<2|!talent.seraphim.enabled" );
+  cds -> add_talent( this, "Bastion of Light", "if=cooldown.shield_of_the_righteous.charges_fractional<=0.5" );
   cds -> add_action( "potion,if=buff.avenging_wrath.up" );
 
   cds -> add_action( "use_items,if=buff.seraphim.up|!talent.seraphim.enabled" );
-  // TODO : add trinkets custom use here
+  cds -> add_action( "use_item,name=merekthas_fang,if=!buff.avenging_wrath.up&(buff.seraphim.up|!talent.seraphim.enabled)" );
+  cds -> add_action( "use_item,name=razdunks_big_red_button" );
 
   def -> add_action( this, "Shield of the Righteous", "if=(buff.avengers_valor.up&cooldown.shield_of_the_righteous.charges_fractional>=2.5)&(cooldown.seraphim.remains>gcd|!talent.seraphim.enabled)", "Dumping SotR charges" );
   def -> add_action( this, "Shield of the Righteous", "if=(buff.avenging_wrath.up&!talent.seraphim.enabled)|buff.seraphim.up&buff.avengers_valor.up" );
