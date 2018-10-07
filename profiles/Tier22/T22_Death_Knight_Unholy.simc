@@ -98,13 +98,13 @@ legs=greaves_of_unending_vigil,id=160639,bonus_id=4800/1507
 feet=warboots_of_absolute_eradication,id=160640,bonus_id=4800/1507
 finger1=band_of_certain_annihilation,id=160646,bonus_id=4800/1507,enchant=pact_of_haste
 finger2=rotscour_ring,id=160645,bonus_id=4800/1507,enchant=pact_of_haste
-trinket1=disc_of_systematic_regression,id=160650,bonus_id=4800/1507
+trinket1=darkmoon_deck_fathoms,id=159125
 trinket2=syringe_of_bloodborne_infirmity,id=160655,bonus_id=4800/1507
 main_hand=khor_hammer_of_the_corrupted,id=160679,bonus_id=4800/1507,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=386.27
-# gear_strength=4388
+# gear_ilvl=384.27
+# gear_strength=4311
 # gear_stamina=7207
 # gear_crit_rating=870
 # gear_haste_rating=1213

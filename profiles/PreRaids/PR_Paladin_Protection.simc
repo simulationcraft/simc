@@ -50,8 +50,11 @@ actions+=/consecration
 actions.cooldowns=fireblood,if=buff.avenging_wrath.up
 actions.cooldowns+=/seraphim,if=cooldown.shield_of_the_righteous.charges_fractional>=2
 actions.cooldowns+=/avenging_wrath,if=buff.seraphim.up|cooldown.seraphim.remains<2|!talent.seraphim.enabled
+actions.cooldowns+=/bastion_of_light,if=cooldown.shield_of_the_righteous.charges_fractional<=0.5
 actions.cooldowns+=/potion,if=buff.avenging_wrath.up
 actions.cooldowns+=/use_items,if=buff.seraphim.up|!talent.seraphim.enabled
+actions.cooldowns+=/use_item,name=merekthas_fang,if=!buff.avenging_wrath.up&(buff.seraphim.up|!talent.seraphim.enabled)
+actions.cooldowns+=/use_item,name=razdunks_big_red_button
 
 head=helm_of_the_raptor_king,id=159422,bonus_id=4779/1512/4775/4786,azerite_powers=395/461/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
