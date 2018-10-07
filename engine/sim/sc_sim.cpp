@@ -546,7 +546,7 @@ bool parse_fight_style( sim_t*             sim,
 {
   static std::vector<std::string> FIGHT_STYLES {
     "Patchwerk", "Ultraxion", "CleaveAdd", "HelterSkelter", "LightMovement", "HeavyMovement",
-    "HecticAddCleave", "Beastlord", "CastingPatchwerk"
+    "HecticAddCleave", "Beastlord", "CastingPatchwerk", "HeroDungeon"
   };
 
   auto it = range::find_if( FIGHT_STYLES, [ &value ]( const std::string& n ) {
@@ -2189,6 +2189,22 @@ void sim_t::init_fight_style()
   else if ( util::str_compare_ci( fight_style, "CastingPatchwerk" ) )
   {
     raid_events_str += "/casting,cooldown=500,duration=500";
+  }
+  else if ( util::str_compare_ci( fight_style, "HeroDungeon" ) )
+  { //Based on the Hero Dungeon setup
+    max_time                       = timespan_t::from_seconds( 360.0 );
+    //Disables all raidbuffs, except those provided by scrolls or the character itself.
+    optimal_raid                   = 0;
+    overrides.arcane_intellect     = 1;
+    overrides.battle_shout         = 1;
+    overrides.power_word_fortitude = 1;
+    overrides.bloodlust            = 1;
+
+    raid_events_str +=
+        "/invulnerable,cooldown=500,duration=500,retarget=1"
+        "/adds,name=Boss,count=1,cooldown=500,duration=140,duration_stddev=2"
+        "/adds,name=SmallAdd,count=5,count_range=1,first=140,cooldown=45,duration=15,duration_stddev=2"
+        "/adds,name=BigAdd,count=2,count_range=1,first=155,cooldown=45,duration=30,duration_stddev=2";
   }
   else
   {
