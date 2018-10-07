@@ -81,6 +81,7 @@ namespace items
   void landois_scrutiny( special_effect_t& );
   void bygone_bee_almanac( special_effect_t& );
   void leyshocks_grand_compilation( special_effect_t& );
+  void berserkers_juju( special_effect_t& );
   // 8.0.1 - Dungeon Trinkets
   void deadeye_spyglass( special_effect_t& );
   void tiny_electromental_in_a_jar( special_effect_t& );
@@ -1598,7 +1599,57 @@ void items::disc_of_systematic_regression( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
-void set_bonus::waycrest_legacy( special_effect_t& effect)
+
+//Berserker's Juju ============================================
+
+void items::berserkers_juju( special_effect_t& effect )
+{
+  struct berserkers_juju_t : public proc_spell_t
+  {
+    std::vector<stat_buff_t*> buffs;
+    const spell_data_t* spell;
+
+    berserkers_juju_t( const special_effect_t& effect ):
+      proc_spell_t( "berserkers_juju", effect.player, effect.driver(), effect.item )
+    {
+      const spell_data_t* spell = effect.item->player->find_spell( 274472 );
+      std::string buff_name = util::tokenized_name( spell );
+
+      buffs.push_back( make_buff<stat_buff_t>( effect.player, buff_name, spell ) );
+    }
+
+    void init() override
+    {
+      spell = player -> find_spell( 274472 );
+      proc_spell_t::init( );
+    }
+
+    virtual void execute( ) override
+    {
+      //Testing indicates buff amount is +-15% of spelldata (scaled with -7 type) amount
+      double health_percent = ( std::max( player -> resources.current[ RESOURCE_HEALTH ] * 1.0, 0.0 ) ) / player -> resources.max[ RESOURCE_HEALTH ] * 1.0;
+      //force to use -7 scaling type on spelldata value
+
+      auto amount = item_database::apply_combat_rating_multiplier( *item, spell -> effectN( 1 ).average( item ) );
+      //Then apply +-15 to that scaled values
+      double buff_amount = amount * ( 0.85 + ( 0.3 * (1 - health_percent ) ) );
+
+      buffs[0] -> stats[ 0 ].amount = buff_amount;
+
+      if ( player->sim->debug )
+        player->sim->out_debug.printf( "%s bersker's juju procs haste=%.0f of spelldata_raw_amount=%.0f spelldata_scaled_amount=%.0f",
+          player->name(), buff_amount, spell->effectN( 1 ).average( item ), amount );
+
+      buffs[0] -> trigger();
+    }
+  };
+
+  effect.execute_action = create_proc_action <berserkers_juju_t>( "berserkers_juju", effect );
+}
+
+//Waycrest's Legacy Set Bonus ============================================
+
+void set_bonus::waycrest_legacy( special_effect_t& effect )
 {
   auto e = unique_gear::find_special_effect( effect.player, 271631, SPECIAL_EFFECT_EQUIP );
   if ( e != nullptr )
@@ -1676,6 +1727,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 278109, items::syringe_of_bloodborne_infirmity );
   register_special_effect( 278112, items::syringe_of_bloodborne_infirmity );
   register_special_effect( 278152, items::disc_of_systematic_regression );
+  register_special_effect( 274472, items::berserkers_juju );
 
   // Misc
   register_special_effect( 276123, items::darkmoon_deck_squalls );
