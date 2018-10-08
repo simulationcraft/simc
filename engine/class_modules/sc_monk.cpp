@@ -4517,6 +4517,9 @@ struct touch_of_death_t : public monk_spell_t
 // and recalculates the dot size based on the current dot size. Just to make it easier to code, I'll wait until
 // the Touch of Karma buff expires before placing a dot on the target. Net result should be the same.
 
+// 8.1 Good Karma - If the player still has the ToK buff on them, each time the target hits the player, the amount
+// absorbed is immediatly healed by the Good Karma spell (id: 285594)
+
 struct touch_of_karma_dot_t : public residual_action::residual_periodic_action_t<monk_melee_attack_t>
 {
   touch_of_karma_dot_t( monk_t* p ) : base_t( "touch_of_karma", p, p->passives.touch_of_karma_tick )
@@ -6719,6 +6722,7 @@ struct serenity_buff_t : public monk_buff_t<buff_t>
   }
 };
 
+// Touch of Karma Buff ===================================================
 struct touch_of_karma_buff_t : public monk_buff_t<buff_t>
 {
   touch_of_karma_buff_t( monk_t& p, const std::string& n, const spell_data_t* s ) : monk_buff_t( p, n, s )
@@ -6743,6 +6747,7 @@ struct touch_of_karma_buff_t : public monk_buff_t<buff_t>
   }
 };
 
+// Rushing Jade Wind Buff ================================================
 struct rushing_jade_wind_buff_t : public monk_buff_t<buff_t>
 {
   static void rjw_callback( buff_t* b, int, const timespan_t& )
@@ -6795,6 +6800,7 @@ struct rushing_jade_wind_buff_t : public monk_buff_t<buff_t>
   }
 };
 
+// Gift of the Ox Buff ===================================================
 struct gift_of_the_ox_buff_t : public monk_buff_t<buff_t>
 {
   gift_of_the_ox_buff_t( monk_t& p, const std::string& n, const spell_data_t* s ) : monk_buff_t( p, n, s )
@@ -6830,6 +6836,7 @@ struct gift_of_the_ox_buff_t : public monk_buff_t<buff_t>
   }
 };
 
+// Windwalking Buff ======================================================
 struct windwalking_driver_t : public monk_buff_t<buff_t>
 {
   double movement_increase;
