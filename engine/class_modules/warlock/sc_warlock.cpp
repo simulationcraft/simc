@@ -161,9 +161,11 @@ namespace warlock
         }
       }
 
-      if (dots_drain_soul->is_ticking())
+      if ( dots_drain_soul->is_ticking() )
       {
-        warlock.resource_gain(RESOURCE_SOUL_SHARD, 1, warlock.gains.drain_soul);
+        warlock.sim->print_log( "Player {} demised. Warlock {} gains a shard from drain soul.", target->name(), warlock.name() );
+
+        warlock.resource_gain( RESOURCE_SOUL_SHARD, 1, warlock.gains.drain_soul );
       }
     }
 
@@ -174,11 +176,11 @@ namespace warlock
       warlock.cooldowns.haunt->reset( true );
     }
 
-    if (debuffs_shadowburn->check())
+    if ( debuffs_shadowburn->check() )
     {
-      warlock.sim->print_log("Player {} demised. Warlock {} reset haunt's cooldown.", target->name(), warlock.name());
+      warlock.sim->print_log( "Player {} demised. Warlock {} reset haunt's cooldown.", target->name(), warlock.name() );
 
-      warlock.cooldowns.shadowburn->reset(true);
+      warlock.cooldowns.shadowburn->reset( true );
     }
   }
 
