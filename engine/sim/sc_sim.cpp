@@ -546,7 +546,7 @@ bool parse_fight_style( sim_t*             sim,
 {
   static std::vector<std::string> FIGHT_STYLES {
     "Patchwerk", "Ultraxion", "CleaveAdd", "HelterSkelter", "LightMovement", "HeavyMovement",
-    "HecticAddCleave", "Beastlord", "CastingPatchwerk", "HeroDungeon"
+    "HecticAddCleave", "Beastlord", "CastingPatchwerk", "DungeonSlice"
   };
 
   auto it = range::find_if( FIGHT_STYLES, [ &value ]( const std::string& n ) {
@@ -2190,7 +2190,7 @@ void sim_t::init_fight_style()
   {
     raid_events_str += "/casting,cooldown=500,duration=500";
   }
-  else if ( util::str_compare_ci( fight_style, "HeroDungeon" ) )
+  else if ( util::str_compare_ci( fight_style, "DungeonSlice" ) )
   { //Based on the Hero Dungeon setup
     max_time                       = timespan_t::from_seconds( 360.0 );
     //Disables all raidbuffs, except those provided by scrolls or the character itself.
