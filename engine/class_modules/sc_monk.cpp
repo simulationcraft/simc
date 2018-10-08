@@ -1066,23 +1066,22 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
       // Take out the Owner's Hit Combo Multiplier, but only if the ability is going to snapshot
       // multipliers in the first place.
-      /*      if ( o() -> talent.hit_combo -> ok() )
-            {
-              if ( rt == DMG_DIRECT && ( flags & STATE_MUL_DA ) )
-              {
-                // Remove owner's Hit Combo
-                state -> da_multiplier /= ( 1 + o() -> buff.hit_combo -> stack_value() );
-                // .. aand add Pet's Hit Combo
-                state -> da_multiplier *= 1 + p() -> buff.hit_combo_sef -> stack_value();
-              }
+      if ( o() -> talent.hit_combo -> ok() )
+      {
+        if ( rt == DMG_DIRECT && ( flags & STATE_MUL_DA ) )
+        {
+          // Remove owner's Hit Combo
+          state -> da_multiplier /= ( 1 + o() -> buff.hit_combo -> stack_value() );
+          // .. aand add Pet's Hit Combo
+          state -> da_multiplier *= 1 + p() -> buff.hit_combo_sef -> stack_value();
+        }
 
-              if ( rt == DMG_OVER_TIME && ( flags & STATE_MUL_TA ) )
-              {
-                state -> ta_multiplier /= ( 1 + o() -> buff.hit_combo -> stack_value() );
-                state -> ta_multiplier *= 1 + p() -> buff.hit_combo_sef -> stack_value();
-              }
-            }
-            */
+        if ( rt == DMG_OVER_TIME && ( flags & STATE_MUL_TA ) )
+        {
+          state -> ta_multiplier /= ( 1 + o() -> buff.hit_combo -> stack_value() );
+          state -> ta_multiplier *= 1 + p() -> buff.hit_combo_sef -> stack_value();
+        }
+      }
     }
   };
 
@@ -1760,8 +1759,8 @@ public:
     if ( o()->buff.bok_proc->up() )
       buff.bok_proc_sef->trigger( 1, buff_t::DEFAULT_VALUE(), 1, o()->buff.bok_proc->remains() );
 
-    //    if ( o() -> buff.hit_combo -> up() )
-    //      buff.hit_combo_sef -> trigger( o() -> buff.hit_combo -> stack() );
+    if ( o() -> buff.hit_combo -> up() )
+      buff.hit_combo_sef -> trigger( o() -> buff.hit_combo -> stack() );
 
     if ( o()->buff.rushing_jade_wind->up() )
       buff.rushing_jade_wind_sef->trigger( 1, buff_t::DEFAULT_VALUE(), 1, o()->buff.rushing_jade_wind->remains() );
@@ -1797,10 +1796,9 @@ public:
                                          d->expire( timespan_t::from_millis( 1 ) );
                                      } );
 
-    /*    buff.hit_combo_sef = make_buff( this, "hit_combo_sef", o() -> passives.hit_combo )
+        buff.hit_combo_sef = make_buff( this, "hit_combo_sef", o() -> passives.hit_combo )
                              -> set_default_value( o() -> passives.hit_combo -> effectN( 1 ).percent() )
                              -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-                             */
   }
 
   void trigger_attack( sef_ability_e ability, const action_t* source_action )
@@ -1810,8 +1808,8 @@ public:
       size_t spell = static_cast<size_t>( ability - SEF_SPELL_MIN );
       assert( spells[ spell ] );
 
-      //      if ( o() -> buff.combo_strikes -> up() && o() -> talent.hit_combo -> ok() )
-      //        buff.hit_combo_sef -> trigger();
+      if ( o() -> buff.combo_strikes -> up() && o() -> talent.hit_combo -> ok() )
+        buff.hit_combo_sef -> trigger();
 
       spells[ spell ]->source_action = source_action;
       spells[ spell ]->execute();
@@ -1820,8 +1818,8 @@ public:
     {
       assert( attacks[ ability ] );
 
-      //      if ( o() -> buff.combo_strikes -> up() && o() -> talent.hit_combo -> ok() )
-      //        buff.hit_combo_sef -> trigger();
+      if ( o() -> buff.combo_strikes -> up() && o() -> talent.hit_combo -> ok() )
+        buff.hit_combo_sef -> trigger();
 
       attacks[ ability ]->source_action = source_action;
       attacks[ ability ]->execute();
@@ -1884,9 +1882,9 @@ private:
 
       // for future compatibility, we may want to grab Xuen and our tick spell and build this data from those (Xuen
       // summon duration, for example)
-      dot_duration = p->o()->talent.invoke_xuen->duration();
+      dot_duration = p->o()->talent.invoke_xuen->duration() + timespan_t::from_seconds(1);
       hasted_ticks = may_miss = false;
-      tick_zero = dynamic_tick_action = true;  // trigger tick when t == 0
+      dynamic_tick_action = true;  // trigger tick when t == 0
       base_tick_time =
           p->o()->passives.crackling_tiger_lightning_driver->effectN( 1 ).period();  // trigger a tick every second
       cooldown->duration      = p->o()->talent.invoke_xuen->duration();              // we're done after 45 seconds
