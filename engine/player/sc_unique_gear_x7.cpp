@@ -1606,8 +1606,9 @@ void items::berserkers_juju( special_effect_t& effect )
 {
   struct berserkers_juju_t : public proc_spell_t
   {
-    std::vector<stat_buff_t*> buffs;
+    stat_buff_t* buff;
     const spell_data_t* spell;
+    double amount;
 
     berserkers_juju_t( const special_effect_t& effect ):
       proc_spell_t( "berserkers_juju", effect.player, effect.driver(), effect.item )
@@ -1615,12 +1616,15 @@ void items::berserkers_juju( special_effect_t& effect )
       const spell_data_t* spell = effect.item->player->find_spell( 274472 );
       std::string buff_name = util::tokenized_name( spell );
 
-      buffs.push_back( make_buff<stat_buff_t>( effect.player, buff_name, spell ) );
+      buff = make_buff<stat_buff_t>( effect.player, buff_name, spell );
     }
 
     void init() override
     {
       spell = player -> find_spell( 274472 );
+      //force to use -7 scaling type on spelldata value
+      //Should probably add a check here for if spelldata changes to -7 to avoid double dipping 
+      amount = item_database::apply_combat_rating_multiplier( *item, spell->effectN( 1 ).average( item ) );
       proc_spell_t::init( );
     }
 
@@ -1628,19 +1632,17 @@ void items::berserkers_juju( special_effect_t& effect )
     {
       //Testing indicates buff amount is +-15% of spelldata (scaled with -7 type) amount
       double health_percent = ( std::max( player -> resources.current[ RESOURCE_HEALTH ] * 1.0, 0.0 ) ) / player -> resources.max[ RESOURCE_HEALTH ] * 1.0;
-      //force to use -7 scaling type on spelldata value
 
-      auto amount = item_database::apply_combat_rating_multiplier( *item, spell -> effectN( 1 ).average( item ) );
       //Then apply +-15 to that scaled values
       double buff_amount = amount * ( 0.85 + ( 0.3 * (1 - health_percent ) ) );
 
-      buffs[0] -> stats[ 0 ].amount = buff_amount;
+      buff -> stats[ 0 ].amount = buff_amount;
 
       if ( player->sim->debug )
         player->sim->out_debug.printf( "%s bersker's juju procs haste=%.0f of spelldata_raw_amount=%.0f spelldata_scaled_amount=%.0f",
           player->name(), buff_amount, spell->effectN( 1 ).average( item ), amount );
 
-      buffs[0] -> trigger();
+      buff -> trigger();
     }
   };
 
