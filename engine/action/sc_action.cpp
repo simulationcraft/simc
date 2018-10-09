@@ -586,6 +586,7 @@ action_t::action_t( action_e ty, const std::string& token, player_t* p, const sp
   // Interrupt_immediate forces a channeled action to interrupt on tick (if requested), even if the
   // GCD has not elapsed.
   add_option( opt_bool( "interrupt_immediate", option.interrupt_immediate ) );
+  add_option( opt_bool( "use_off_gcd", use_off_gcd ) );
 }
 
 action_t::~action_t()
