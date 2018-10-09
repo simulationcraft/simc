@@ -393,7 +393,11 @@ namespace warlock {
       {
         destruction_spell_t::impact(s);
 
-        p()->buffs.backdraft->trigger( 1 + ( p()->talents.flashover->ok() ? p()->talents.flashover->effectN(1).base_value() : 0 ) );
+        if ( s->target == p()->havoc_target )
+          havocd = true;
+
+        if ( havocd )
+          p()->buffs.backdraft->trigger( 1 + ( p()->talents.flashover->ok() ? p()->talents.flashover->effectN(1).base_value() : 0 ) );
 
         if (result_is_hit(s->result))
         {
