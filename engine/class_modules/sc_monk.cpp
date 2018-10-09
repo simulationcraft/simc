@@ -1066,13 +1066,11 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
       // Take out the Owner's Hit Combo Multiplier, but only if the ability is going to snapshot
       // multipliers in the first place.
-      if ( o() -> talent.hit_combo -> ok() )
+/*      if ( o() -> talent.hit_combo -> ok() )
       {
         if ( rt == DMG_DIRECT && ( flags & STATE_MUL_DA ) )
         {
-          // Remove owner's Hit Combo
           state -> da_multiplier /= ( 1 + o() -> buff.hit_combo -> stack_value() );
-          // .. aand add Pet's Hit Combo
           state -> da_multiplier *= 1 + p() -> buff.hit_combo_sef -> stack_value();
         }
 
@@ -1082,6 +1080,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
           state -> ta_multiplier *= 1 + p() -> buff.hit_combo_sef -> stack_value();
         }
       }
+      */
     }
   };
 
@@ -1117,6 +1116,24 @@ struct storm_earth_and_fire_pet_t : public pet_t
         return base_t::amount_type( state, periodic );
       }
     }
+
+/*    double action_multiplier() const override
+    {
+      double am = base_t::action_multiplier();
+
+      if (p()->buff.hit_combo_sef->up())
+      {
+        if (base_t::data().affected_by(o()->passives.hit_combo->effectN(1)))
+        {
+          // Remove owner's Hit Combo
+          am /= 1 + o()->buff.hit_combo->stack_value();
+          // .. aand add Pet's Hit Combo
+          am *= 1 + p()->buff.hit_combo_sef->stack_value();
+        }
+      }
+      return am;
+    }
+    */
   };
 
   struct sef_spell_t : public sef_action_base_t<spell_t>
@@ -1125,6 +1142,24 @@ struct storm_earth_and_fire_pet_t : public pet_t
       : base_t( n, p, data )
     {
     }
+
+/*    double action_multiplier() const override
+    {
+      double am = base_t::action_multiplier();
+
+      if (p()->buff.hit_combo_sef->up())
+      {
+        if (base_t::data().affected_by(o()->passives.hit_combo->effectN(1)))
+        {
+          // Remove owner's Hit Combo
+          am /= 1 + o()->buff.hit_combo->stack_value();
+          // .. aand add Pet's Hit Combo
+          am *= 1 + p()->buff.hit_combo_sef->stack_value();
+        }
+      }
+      return am;
+    }
+    */
   };
 
   // Auto attack ============================================================
@@ -1168,14 +1203,23 @@ struct storm_earth_and_fire_pet_t : public pet_t
       }
     }
 
-    double action_multiplier() const override
+/*    double action_multiplier() const override
     {
       double am = sef_melee_attack_t::action_multiplier();
 
       am *= 1.0 + o()->spec.storm_earth_and_fire->effectN( 1 ).percent();
 
+      if (p()->buff.hit_combo_sef->up())
+      {
+        // Remove owner's Hit Combo
+        am /= 1 + o()->buff.hit_combo->stack_value();
+        // .. aand add Pet's Hit Combo
+        am *= 1 + p()->buff.hit_combo_sef->stack_value();
+      }
+
       return am;
     }
+    */
 
     // A wild equation appears
     double composite_attack_power() const override
@@ -1796,9 +1840,9 @@ public:
                                          d->expire( timespan_t::from_millis( 1 ) );
                                      } );
 
-        buff.hit_combo_sef = make_buff( this, "hit_combo_sef", o() -> passives.hit_combo )
-                             -> set_default_value( o() -> passives.hit_combo -> effectN( 1 ).percent() )
-                             -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    buff.hit_combo_sef = make_buff( this, "hit_combo_sef", o() -> passives.hit_combo )
+                         -> set_default_value( o() -> passives.hit_combo -> effectN( 1 ).percent() )
+                         -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
   void trigger_attack( sef_ability_e ability, const action_t* source_action )
@@ -2797,7 +2841,7 @@ struct monk_spell_t : public monk_action_t<spell_t>
 
     if ( p()->buff.hit_combo->up() )
     {
-      if ( base_t::data().affected_by( p()->talent.hit_combo->effectN( 1 ) ) )
+      if ( base_t::data().affected_by( p()->passives.hit_combo->effectN( 1 ) ) )
         am *= 1 + p()->buff.hit_combo->stack_value();
     }
 
@@ -2861,7 +2905,7 @@ struct monk_heal_t : public monk_action_t<heal_t>
 
     if ( p()->buff.hit_combo->up() )
     {
-      if ( base_t::data().affected_by( p()->talent.hit_combo->effectN( 1 ) ) )
+      if ( base_t::data().affected_by( p()->passives.hit_combo->effectN( 1 ) ) )
         am *= 1 + p()->buff.hit_combo->stack_value();
     }
 
@@ -2966,7 +3010,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 
     if ( p()->buff.hit_combo->up() )
     {
-      if ( base_t::data().affected_by( p()->talent.hit_combo->effectN( 1 ) ) )
+      if ( base_t::data().affected_by( p()->passives.hit_combo->effectN( 1 ) ) )
         am *= 1 + p()->buff.hit_combo->stack_value();
     }
 
