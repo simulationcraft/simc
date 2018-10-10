@@ -72,6 +72,9 @@ class DBCParserBase:
 
         self.parse_offset += parser.size
 
+        return self.parse_extended_header()
+
+    def parse_extended_header(self):
         return True
 
     def parse_column_info(self):

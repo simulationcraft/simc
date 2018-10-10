@@ -48,10 +48,7 @@ class WDC2Parser(WDC1Parser):
         # Set heder format
         self.header_format = self.__WDC2_HEADER_FIELDS
 
-    def parse_header(self):
-        if not super().parse_header():
-            return False
-
+    def parse_extended_header(self):
         if self.extended_fields == 0:
             return True
 

@@ -1,10 +1,11 @@
 import os, logging, io
 
-import dbc, dbc.wdc1, dbc.xfth, dbc.wdc2
+import dbc, dbc.wdc1, dbc.xfth, dbc.wdc2, dbc.wdc3
 
 _PARSERS = {
     b'WDC1': dbc.wdc1.WDC1Parser,
-    b'WDC2': dbc.wdc2.WDC2Parser
+    b'WDC2': dbc.wdc2.WDC2Parser,
+    b'WDC3': dbc.wdc3.WDC3Parser
 }
 
 class HotfixIterator:

@@ -67,6 +67,12 @@
     { "data_type": "B", "field": "tier" },
     { "data_type": "B", "field": "azerite_level" }
   ],
+  "ChatChannels": [
+    { "data_type": "S", "field": "name" },
+    { "data_type": "S", "field": "shortcut" },
+    { "data_type": "i", "field": "flags" },
+    { "data_type": "b", "field": "faction" }
+  ],
   "ChrSpecialization": [
     { "data_type": "S", "field": "unk_4",      "formats": { } },
     { "data_type": "S", "field": "name",       "formats": { "cpp": "%25s" } },
@@ -662,6 +668,12 @@
   "SpellXDescriptionVariables": [
     { "data_type": "i", "field": "id_spell" },
     { "data_type": "i", "field": "id_desc_var" }
+  ],
+  "TactKey": [
+    { "data_type": "B", "field": "key", "elements": 16 }
+  ],
+  "TactKeyLookup": [
+    { "data_type": "B", "field": "key_name", "elements": 8 }
   ],
   "Talent": [
     { "data_type": "S", "field": "desc"                                    },
