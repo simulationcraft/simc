@@ -4226,6 +4226,9 @@ struct meteor_impact_t: public fire_mage_spell_t
   {
     fire_mage_spell_t::impact( s );
 
+    if ( s -> chain_target > 0 )
+      return;
+
     p() -> ground_aoe_expiration[ meteor_burn -> name_str ]
       = sim -> current_time() + meteor_burn_duration;
 
