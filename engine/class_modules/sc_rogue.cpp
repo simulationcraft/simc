@@ -3714,15 +3714,12 @@ struct shadow_blades_t : public rogue_attack_t
 
 struct shadow_dance_t : public rogue_attack_t
 {
-  bool off_gcd_option;
   cooldown_t* icd;
 
   shadow_dance_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "shadow_dance", p, p -> spec.shadow_dance ),
-    off_gcd_option( false ),
     icd( p -> get_cooldown( "shadow_dance_icd" ) )
   {
-    add_option( opt_bool( "off_gcd", off_gcd_option ) );
     parse_options( options_str );
 
     harmful = may_miss = may_crit = false;
@@ -3732,8 +3729,6 @@ struct shadow_dance_t : public rogue_attack_t
     {
       cooldown -> charges += p -> talent.enveloping_shadows -> effectN( 2 ).base_value();
     }
-
-    use_off_gcd = off_gcd_option;
   }
 
   void execute() override
@@ -4174,13 +4169,9 @@ struct sprint_t : public rogue_attack_t
 
 struct symbols_of_death_t : public rogue_attack_t
 {
-  bool off_gcd_option;
-
   symbols_of_death_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "symbols_of_death", p, p -> spec.symbols_of_death ),
-    off_gcd_option( false )
+    rogue_attack_t( "symbols_of_death", p, p -> spec.symbols_of_death )
   {
-    add_option( opt_bool( "off_gcd", off_gcd_option ) );
     parse_options( options_str );
 
     harmful = callbacks = false;
@@ -4190,8 +4181,6 @@ struct symbols_of_death_t : public rogue_attack_t
 
     if ( p -> sets -> has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) )
       cooldown -> duration -= timespan_t::from_seconds( p -> sets -> set( ROGUE_SUBTLETY, T20, B4 ) -> effectN( 3 ).base_value() );
-
-    use_off_gcd = off_gcd_option;
   }
 
   void execute() override
@@ -6446,8 +6435,8 @@ void rogue_t::init_action_list()
       else
         cds -> add_action( racial_actions[i] + ",if=buff.symbols_of_death.up" );
     }
-    cds -> add_action( this, "Shadow Dance", "off_gcd=1,if=!buff.shadow_dance.up&buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5", "Use Dance off-gcd before the first Shuriken Storm from Tornado comes in." );
-    cds -> add_action( this, "Symbols of Death", "off_gcd=1,if=buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5", "(Unless already up because we took Shadow Focus) use Symbols off-gcd before the first Shuriken Storm from Tornado comes in." );
+    cds -> add_action( this, "Shadow Dance", "use_off_gcd=1,if=!buff.shadow_dance.up&buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5", "Use Dance off-gcd before the first Shuriken Storm from Tornado comes in." );
+    cds -> add_action( this, "Symbols of Death", "use_off_gcd=1,if=buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5", "(Unless already up because we took Shadow Focus) use Symbols off-gcd before the first Shuriken Storm from Tornado comes in." );
     cds -> add_action( this, "Symbols of Death", "if=dot.nightblade.ticking&(!talent.shuriken_tornado.enabled|talent.shadow_focus.enabled|spell_targets.shuriken_storm<3|!cooldown.shuriken_tornado.up)", "Use Symbols on cooldown (after first Nightblade) unless we are going to pop Tornado and do not have Shadow Focus." );
     cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.all&combo_points.deficit>=cp_max_spend)", "If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or not stealthed without any CP." );
     cds -> add_talent( this, "Marked for Death", "if=raid_event.adds.in>30-raid_event.adds.duration&!stealthed.all&combo_points.deficit>=cp_max_spend", "If no adds will die within the next 30s, use MfD on boss without any CP and no stealth." );
