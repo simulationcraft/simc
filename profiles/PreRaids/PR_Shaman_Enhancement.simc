@@ -82,7 +82,7 @@ actions.core+=/flametongue,if=talent.searing_assault.enabled
 actions.core+=/lava_lash,if=talent.hot_hand.enabled&buff.hot_hand.react
 actions.core+=/crash_lightning,if=active_enemies>1&variable.furyCheck25
 
-actions.filler=rockbiter,if=maelstrom<70
+actions.filler=rockbiter,if=maelstrom<70&!buff.strength_of_earth.up
 actions.filler+=/crash_lightning,if=talent.crashing_storm.enabled&variable.OCPool60
 actions.filler+=/lava_lash,if=variable.OCPool80&variable.furyCheck45
 actions.filler+=/rockbiter
