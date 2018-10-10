@@ -15,6 +15,9 @@ _BLOCK_DATA_SIZE = 65535
 _NULL_CHUNK = 0x00
 _COMPRESSED_CHUNK = 0x5A
 _UNCOMPRESSED_CHUNK = 0x4E
+_ENCRYPTED_CHUNK = 0x45
+
+_ENCRYPTION_HEADER = struct.Struct('<B8sBIc')
 
 CDNIndexRecord = collections.namedtuple( 'CDNIndexRecord', [ 'index', 'size', 'offset' ] )
 
@@ -34,8 +37,8 @@ class BLTEChunk(object):
 			return False
 
 		type = data[0]
-		if type not in [ _NULL_CHUNK, _COMPRESSED_CHUNK, _UNCOMPRESSED_CHUNK ]:
-			sys.stderr.write('Unknown chunk type %#x for chunk%d\n' % (type, self.id))
+		if type not in [ _NULL_CHUNK, _COMPRESSED_CHUNK, _UNCOMPRESSED_CHUNK, _ENCRYPTED_CHUNK ]:
+			sys.stderr.write('Unknown chunk type %#x for chunk%d length=%d\n' % (type, self.id, len(data)))
 			return False
 
 		if type != 0x00:
@@ -49,7 +52,7 @@ class BLTEChunk(object):
 			self.output_data = ''
 		elif type == _UNCOMPRESSED_CHUNK:
 			self.output_data = data[1:]
-		else:
+		elif type == _COMPRESSED_CHUNK:
 			dc = zlib.decompressobj()
 			uncompressed_data = dc.decompress(data[1:])
 			if len(dc.unused_data) > 0:
@@ -62,6 +65,10 @@ class BLTEChunk(object):
 				return False
 
 			self.output_data = uncompressed_data
+		elif type == _ENCRYPTED_CHUNK:
+			self.output_data = b'\x00' * (len(data) - (1 + _ENCRYPTION_HEADER.size))
+		else:
+			return False
 
 		return True
 
@@ -169,6 +176,7 @@ class BLTEFile(object):
 				data = self.__read(chunk.chunk_length)
 				if not chunk.extract(data):
 					self.extract_status = False
+					return False
 
 				self.output_data += chunk.output_data
 				sum_in_file += len(chunk.output_data)
@@ -217,6 +225,10 @@ class BLTEExtract(object):
 			os.makedirs(dirname)
 
 		data = self.extract_buffer(data)
+		if not data:
+			print('Unable to extract %s ...' % os.path.basename(fname))
+			return
+
 		with open(fname, 'wb') as f:
 			f.write(data)
 
