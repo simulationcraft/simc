@@ -1116,7 +1116,7 @@ struct sim_t : private sc_thread_t
     /// Chance that the player collects the droplet, defaults to always
     double              secrets_of_the_deep_collect_chance = 1.0;
     /// Gutripper base RPPM when target is above 30%
-    double              gutripper_default_rppm = 1.0;
+    double              gutripper_default_rppm = 2.0;
     /// Number of Reorigination array stats on the actors in the sim
     int                 reorigination_array_stacks = 0;
   } bfa_opts;
