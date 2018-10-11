@@ -1352,37 +1352,21 @@ class SpellDataGenerator(DataGenerator):
           ( 52212, 0, False ), # Death and Decay false positive for activatable
           ( 81277, 5 ), ( 81280, 5 ), ( 50453, 5 ), # Bloodworms heal / burst
           ( 77535, 0 ), # Blood Shield
-          ( 116783, 0 ), # Death Siphon heal
-          ( 96171, 0 ), # Will of the Necropolish Rune Tap buff
-          ( 144948, 0 ), # T16 tank 4PC Bone Shield charge proc
-          ( 144953, 0 ), # T16 tank 2PC Death Strike proc
-          ( 144909, 0 ), # T16 dps 4PC frost driver spell
           ( 57330, 0, True ), # Horn of Winter needs to be explicitly put in the general tree, as our (over)zealous filtering thinks it's not an active ability
           ( 47568, 0, True ), # Same goes for Empower Rune Weapon
-          ( 170205, 0 ), # Frost T17 4pc driver continued ...
-          ( 187981, 0 ), ( 187970, 0 ), # T18 4pc unholy relevant spells
-          ( 184982, 0 ),    # Frozen Obliteration
-          ( 212333, 5 ),    # Cleaver for Sludge Belcher
-          ( 212332, 5 ),    # Smash for Sludge Belcher
-          ( 212338, 5 ),    # Vile Gas for Sludge Belcher
-          ( 212337, 5 ),	# Powerful Smash for Sludge Belcher
-          ( 198715, 5 ),    # Val'kyr Strike for Dark Arbiter
-          ( 211947, 0 ),    # Shadow Empowerment for Dark Arbiter
+          ( 211947, 0 ),    # Shadow Empowerment for Gargoyle
           ( 81141, 0 ),     # Crimson Scourge buff
           ( 212423, 5 ),    # Skulker Shot for All Will Serve
           ( 207260, 5 ),    # Arrow Spray for All Will Serve
           ( 45470, 0 ),     # Death Strike heal
           ( 196545, 0 ),    # Bonestorm heal
-          ( 221847, 0 ),    # Blood Mirror damage
-          ( 205164, 0 ),    # Crystalline Swords
-          ( 205165, 0 ),    # More crystalline swords stuff
-          ( 191730, 0 ), ( 191727, 0 ), ( 191728, 0 ), ( 191729, 0 ), # Armies of the Damned debuffs
           ( 253590, 0 ),    # T21 4P frost damage component
           ( 274373, 0 ),    # Festermight azerite trait
           ( 199373, 5 ),    # Army ghoul claw spell
           ( 275918, 0 ),    # Echoing Howl azerite trait
           ( 279606, 0 ),    # Last Surprise azerite trait
           ( 273096, 0 ),    # Horrid Experimentation azerite trait
+          ( 49088, 0 ),     # Anti-magic Shell RP generation
 
         ),
 
