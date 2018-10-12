@@ -1898,23 +1898,15 @@ void paladin_t::assess_damage( school_e school,
     trigger_grand_crusader();
   }
 
-  player_t::assess_damage( school, dtype, s );
-}
-
-// paladin_t::assess_damage_imminent ========================================
-
-void paladin_t::assess_damage_imminent( school_e school, dmg_e, action_state_t* s )
-{
-  // Holy Shield's magic block happens here, after all absorbs are accounted for (see player_t::assess_damage())
-  if ( talents.holy_shield -> ok() && s -> result_amount > 0.0 && school != SCHOOL_PHYSICAL )
+  // Holy Shield's magic block
+  if ( talents.holy_shield -> ok() && school != SCHOOL_PHYSICAL && !s -> action -> may_block )
   {
     // Block code mimics attack_t::block_chance()
     // cache.block() contains our block chance
     double block = cache.block();
     // add or subtract 1.5% per level difference
     block += ( level() - s -> action -> player -> level() ) * 0.015;
-
-
+    
     if ( block > 0 )
     {
       // Roll for "block"
@@ -1949,6 +1941,8 @@ void paladin_t::assess_damage_imminent( school_e school, dmg_e, action_state_t* 
     if ( sim->debug )
       sim -> out_debug.printf( "Damage to %s after Holy Shield mitigation is %f", name(), s -> result_amount );
   }
+
+  player_t::assess_damage( school, dtype, s );
 }
 
 // paladin_t::assess_heal ===================================================

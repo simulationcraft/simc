@@ -441,7 +441,6 @@ public:
 
   // combat outcome functions
   virtual void      assess_damage( school_e, dmg_e, action_state_t* ) override;
-  virtual void      assess_damage_imminent( school_e, dmg_e, action_state_t* ) override;
   virtual void      assess_heal( school_e, dmg_e, action_state_t* ) override;
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* ) override;
 
