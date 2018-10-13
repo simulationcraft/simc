@@ -886,7 +886,7 @@ bool action_t::verify_actor_level() const
 {
   if ( ! background && data().id() && !data().is_level( player->true_level ) && data().level() <= MAX_LEVEL )
   {
-    sim->errorf( "Player %s attempting to execute action %s without the required level (%d < %d).\n", player->name(),
+    sim->errorf( "Player %s attempting to use action %s without the required level (%d < %d).\n", player->name(),
                  name(), player->true_level, data().level() );
     return false;
   }
@@ -903,8 +903,55 @@ bool action_t::verify_actor_spec() const
   {
     // Note that this check can produce false positives for talent abilities which have a different spec set in their
     // talent data from that in the spell data pointed to.
-    sim->errorf( "Player %s attempting to execute action %s without the required spec.\n", player->name(), name() );
+    sim->errorf( "Player %s attempting to use action %s without the required spec.\n", player->name(), name() );
 
+    return false;
+  }
+
+  return true;
+}
+
+bool action_t::verify_actor_weapon() const
+{
+  if ( !data().ok() || data().equipped_class() != ITEM_CLASS_WEAPON )
+  {
+    return true;
+  }
+
+  auto mask = data().equipped_subclass_mask();
+  if ( data().flags( spell_attribute::SX_REQ_MAIN_HAND ) &&
+       !( mask & ( 1 << util::translate_weapon( player->main_hand_weapon.type ) ) ) )
+  {
+    std::vector<std::string> types;
+    for ( auto wt = ITEM_SUBCLASS_WEAPON_AXE; wt < ITEM_SUBCLASS_WEAPON_FISHING_POLE; ++wt )
+    {
+      if ( data().equipped_subclass_mask() & ( 1 << static_cast<unsigned>( wt ) ) )
+      {
+        types.push_back( util::weapon_subclass_string( wt ) );
+      }
+    }
+    sim->errorf( "Player %s attempting to use action %s without the required main-hand weapon "
+                 "(requires %s, wielded %s).\n",
+      player->name(), name(), util::string_join( types ).c_str(),
+      util::weapon_subclass_string( util::translate_weapon( player->main_hand_weapon.type ) ) );
+    return false;
+  }
+
+  if ( data().flags( spell_attribute::SX_REQ_OFF_HAND ) &&
+       !( mask & ( 1 << util::translate_weapon( player->off_hand_weapon.type ) ) ) )
+  {
+    std::vector<std::string> types;
+    for ( auto wt = ITEM_SUBCLASS_WEAPON_AXE; wt < ITEM_SUBCLASS_WEAPON_FISHING_POLE; ++wt )
+    {
+      if ( data().equipped_subclass_mask() & ( 1 << static_cast<unsigned>( wt ) ) )
+      {
+        types.push_back( util::weapon_subclass_string( wt ) );
+      }
+    }
+    sim->errorf( "Player %s attempting to use action %s without the required off-hand weapon "
+                 "(requires %s, wielded %s).\n",
+      player->name(), name(), util::string_join( types ).c_str(),
+      util::weapon_subclass_string( util::translate_weapon( player->off_hand_weapon.type ) ) );
     return false;
   }
 
@@ -2187,7 +2234,7 @@ void action_t::init()
   if ( initialized )
     return;
 
-  if ( !verify_actor_level() || !verify_actor_spec() )
+  if ( !verify_actor_level() || !verify_actor_spec() || !verify_actor_weapon() )
   {
     background = true;
   }

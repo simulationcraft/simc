@@ -5364,6 +5364,8 @@ public:
 
   virtual bool verify_actor_spec() const;
 
+  virtual bool verify_actor_weapon() const;
+
   virtual double cost() const;
 
   virtual double base_cost() const;
