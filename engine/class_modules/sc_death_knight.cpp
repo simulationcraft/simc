@@ -1840,7 +1840,6 @@ struct army_pet_t : public base_ghoul_pet_t
     { }
   };
 
-  // TODO : move this to ghoul pets to make more sense
   struct last_surprise_t : public pet_spell_t<army_pet_t>
   {
     last_surprise_t( army_pet_t* p ) :
@@ -3222,6 +3221,8 @@ struct apocalypse_t : public death_knight_melee_attack_t
   virtual bool target_ready( player_t* candidate_target ) override
   {
     death_knight_td_t* td = p() -> get_target_data( candidate_target );
+    
+    // In-game limitation: you can't use Apocalypse on a target that isn't affected by Festering Wounds
     if ( ! td -> debuff.festering_wound -> check() )
       return false;
 
@@ -7653,7 +7654,7 @@ void death_knight_t::default_apl_frost()
   
   // Choose APL
   def -> add_action( "call_action_list,name=cooldowns" );
-  def -> add_action( "run_action_list,name=bos_pooling,if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains<5" );
+  def -> add_action( "run_action_list,name=bos_pooling,if=talent.breath_of_sindragosa.enabled&(cooldown.breath_of_sindragosa.remains<5|(cooldown.breath_of_sindragosa.remains<20&target.time_to_die<35))" );
   def -> add_action( "run_action_list,name=bos_ticking,if=dot.breath_of_sindragosa.ticking" );
   def -> add_action( "run_action_list,name=obliteration,if=buff.pillar_of_frost.up&talent.obliteration.enabled" );
   def -> add_action( "run_action_list,name=aoe,if=active_enemies>=2" );
@@ -7674,16 +7675,18 @@ void death_knight_t::default_apl_frost()
   // Pillar of Frost
   cooldowns -> add_action( this, "Pillar of Frost", "if=cooldown.empower_rune_weapon.remains", "Frost cooldowns" );
   cooldowns -> add_talent( this, "Breath of Sindragosa", "if=cooldown.empower_rune_weapon.remains&cooldown.pillar_of_frost.remains" );
-  cooldowns -> add_action( this, "Empower Rune Weapon", "if=cooldown.pillar_of_frost.ready&!talent.breath_of_sindragosa.enabled&rune.time_to_5>gcd&runic_power.deficit>=10" );
-  cooldowns -> add_action( this, "Empower Rune Weapon", "if=cooldown.pillar_of_frost.ready&talent.breath_of_sindragosa.enabled&rune>=3&runic_power>60" );
+  cooldowns -> add_action( this, "Empower Rune Weapon", "if=cooldown.pillar_of_frost.ready&!talent.breath_of_sindragosa.enabled&rune.time_to_5>gcd&runic_power.deficit>=10|target.time_to_die<20" );
+  cooldowns -> add_action( this, "Empower Rune Weapon", "if=(cooldown.pillar_of_frost.ready|target.time_to_die<20)&talent.breath_of_sindragosa.enabled&rune>=3&runic_power>60" );
 
   // Cold Heart and Frostwyrm's Fury
   cooldowns -> add_action( "call_action_list,name=cold_heart,if=talent.cold_heart.enabled&((buff.cold_heart.stack>=10&debuff.razorice.stack=5)|target.time_to_die<=gcd)" );
-  cooldowns -> add_talent( this, "Frostwyrm's Fury", "if=buff.pillar_of_frost.remains<=gcd&buff.pillar_of_frost.up" );
+  cooldowns -> add_talent( this, "Frostwyrm's Fury", "if=(buff.pillar_of_frost.remains<=gcd|(buff.pillar_of_frost.remains<8&buff.unholy_strength.remains<=gcd&buff.unholy_strength.up))&buff.pillar_of_frost.up" );
+  cooldowns -> add_talent( this, "Frostwyrm's Fury", "if=target.time_to_die<gcd|(target.time_to_die<cooldown.pillar_of_frost.remains&buff.unholy_strength.up)" );
 
   // Cold Heart conditionals
   cold_heart -> add_action( this, "Chains of Ice", "if=buff.cold_heart.stack>5&target.time_to_die<gcd", "Cold heart conditions" );
   cold_heart -> add_action( this, "Chains of Ice", "if=(buff.pillar_of_frost.remains<=gcd*(1+cooldown.frostwyrms_fury.ready)|buff.pillar_of_frost.remains<rune.time_to_3)&buff.pillar_of_frost.up" );
+  cold_heart -> add_action( this, "Chains of Ice", "if=buff.pillar_of_frost.remains<8&buff.unholy_strength.remains<gcd*(1+cooldown.frostwyrms_fury.ready)&buff.unholy_strength.remains&buff.pillar_of_frost.up" );
 
   // "Breath of Sindragosa pooling rotation : starts 15s before the cd becomes available"
   bos_pooling -> add_action( this, "Howling Blast", "if=buff.rime.up", "Breath of Sindragosa pooling rotation : starts 20s before Pillar of Frost + BoS are available" );
@@ -8273,7 +8276,7 @@ double death_knight_t::composite_bonus_armor() const
 
   if ( buffs.bone_shield -> check() )
   {
-    ba += spell.bone_shield -> effectN( 1 ).percent() * cache.attack_power();
+    ba += spell.bone_shield -> effectN( 1 ).percent() * cache.strength();
   }
 
   return ba;
@@ -8478,7 +8481,7 @@ void death_knight_t::invalidate_cache( cache_e c )
       if ( specialization() == DEATH_KNIGHT_BLOOD )
         player_t::invalidate_cache( CACHE_ATTACK_POWER );
       break;
-    case CACHE_ATTACK_POWER:
+    case CACHE_STRENGTH:
       if ( spell.bone_shield -> ok() )
         player_t::invalidate_cache( CACHE_BONUS_ARMOR );
       break;
