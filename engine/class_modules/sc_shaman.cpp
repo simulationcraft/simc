@@ -2741,7 +2741,6 @@ struct windfury_attack_t : public shaman_attack_t
     weapon     = w;
     school     = SCHOOL_PHYSICAL;
     background = true;
-    callbacks  = false;
 
     // Windfury can not proc itself
     may_proc_windfury         = false;
