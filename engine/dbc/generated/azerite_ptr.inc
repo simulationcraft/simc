@@ -1,5 +1,5 @@
-// Azerite powers, wow build 27934
-static constexpr std::array<azerite_power_entry_t, 312> __ptr_azerite_power_data { {
+// Azerite powers, wow build 8.1.0.28085
+static constexpr std::array<azerite_power_entry_t, 314> __ptr_azerite_power_data { {
   {  13, 263978,  4775, "Azerite Empowered"                 , 0 },
   {  14, 268594,     0, "Longstrider"                       , 1 },
   {  15, 263962,     0, "Resounding Protection"             , 1 },
@@ -63,7 +63,7 @@ static constexpr std::array<azerite_power_entry_t, 312> __ptr_azerite_power_data
   { 134, 272983,     0, "Revel in Pain"                     , 3 },
   { 136, 273007,     0, "Double Dose"                       , 3 },
   { 137, 272992,     0, "Primal Primer"                     , 3 },
-  { 138, 272989,     0, "Soothing Waters"                   , 3 },
+  { 138, 287300,     0, "Turn of the Tide"                  , 3 },
   { 139, 273027,     0, "Martyr's Breath"                   , 3 },
   { 140, 273088,     0, "Bone Spike Graveyard"              , 3 },
   { 141, 273093,     0, "Latent Chill"                      , 3 },
@@ -188,7 +188,7 @@ static constexpr std::array<azerite_power_entry_t, 312> __ptr_azerite_power_data
   { 363, 278513,     0, "Waking Dream"                      , 3 },
   { 364, 279642,     0, "Lively Spirit"                     , 3 },
   { 365, 278528,     0, "Pack Alpha"                        , 3 },
-  { 366, 279806,     0, "Primal Instincts"                  , 3 },
+  { 366, 274443,     0, "Dance of Death"                    , 3 },
   { 367, 278529,     0, "Feeding Frenzy"                    , 3 },
   { 368, 277651,     0, "Steady Aim"                        , 3 },
   { 369, 278530,     0, "Rapid Reload"                      , 3 },
@@ -312,4 +312,6 @@ static constexpr std::array<azerite_power_entry_t, 312> __ptr_azerite_power_data
   { 503, 280172,     0, "Auto-Self-Cauterizer"              , 1 },
   { 504, 281514,     0, "Unstable Catalyst"                 , 3 },
   { 505, 281841,     0, "Tradewinds"                        , 3 },
+  { 506, 286121,     0, "Replicating Shadows"               , 4 },
+  { 511, 286832,     0, "Helchains"                         , 4 },
 } };

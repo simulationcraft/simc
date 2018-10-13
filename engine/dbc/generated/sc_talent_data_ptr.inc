@@ -1,6 +1,6 @@
 #define PTR_TALENT_SIZE (648)
 
-// 648 talents, wow build 27934
+// 648 talents, wow build 8.1.0.28085
 static struct talent_data_t __ptr_talent_data[] = {
   { "Second Wind"                       , 15757, 0x00, 0x0001,   0,   0,   3,   29838,       0,  0 },
   { "Punish"                            , 15759, 0x00, 0x0001,  73,   1,   0,  275334,       0,  0 },
@@ -63,7 +63,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Flash Flood"                       , 19265, 0x00, 0x0040, 264,   0,   5,  280614,       0,  0 },
   { "Primal Elementalist"               , 19266, 0x00, 0x0040, 262,   1,   5,  117013,       0,  0 },
   { "Graceful Spirit"                   , 19269, 0x00, 0x0040, 264,   1,   4,  192088,       0,  0 },
-  { "Call the Thunder"                  , 19271, 0x00, 0x0040, 262,   0,   3,  260897,       0,  0 },
+  { "Master of the Elements"            , 19271, 0x00, 0x0040, 262,   0,   3,   16166,       0,  0 },
   { "Storm Elemental"                   , 19272, 0x00, 0x0040, 262,   1,   3,  192249,  198067,  0 },
   { "Liquid Magma Totem"                , 19273, 0x00, 0x0040, 262,   2,   3,  192222,       0,  0 },
   { "Spirit Wolf"                       , 19275, 0x00, 0x0040,   0,   0,   2,  260878,       0,  0 },
@@ -270,7 +270,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Ossuary"                           , 22134, 0x00, 0x0020, 250,   1,   2,  219786,       0,  0 },
   { "Tombstone"                         , 22135, 0x00, 0x0020, 250,   2,   2,  219809,       0,  0 },
   { "Shadowy Insight"                   , 22136, 0x00, 0x0010, 258,   1,   0,  162452,       0,  0 },
-  { "Master of the Elements"            , 22139, 0x00, 0x0040, 262,   1,   1,   16166,       0,  0 },
+  { "Call the Thunder"                  , 22139, 0x00, 0x0040, 262,   1,   1,  260897,       0,  0 },
   { "Nature's Guardian"                 , 22144, 0x00, 0x0040,   0,   0,   4,   30884,       0,  0 },
   { "Surge of Power"                    , 22145, 0x00, 0x0040, 262,   0,   5,  262303,       0,  0 },
   { "Feral Lunge"                       , 22149, 0x00, 0x0040, 263,   1,   4,  196884,       0,  0 },

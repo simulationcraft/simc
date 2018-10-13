@@ -4,7 +4,7 @@
 #ifndef ptr_MAX_CLASS
 #define ptr_MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 27934
+// Class based active abilities, wow build 8.1.0.28085
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -260,7 +260,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       193526, // Trueshot
            0,
     },
-    // Survival tree, 17 abilities
+    // Survival tree, 18 abilities
     {
       186289, // Aspect of the Eagle
       187708, // Carve
@@ -269,6 +269,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       109304, // Exhilaration
       259516, // Flanking Strike
       187650, // Freezing Trap
+      190925, // Harpoon
        19577, // Intimidation
       259489, // Kill Command
        34477, // Misdirection
@@ -475,12 +476,13 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
        34433, // Shadowfiend
            0,
     },
-    // Holy tree, 18 abilities
+    // Holy tree, 19 abilities
     {
        19236, // Desperate Prayer
        64843, // Divine Hymn
         2061, // Flash Heal
        47788, // Guardian Spirit
+        2060, // Heal
        14914, // Holy Fire
       132157, // Holy Nova
        88625, // Holy Word: Chastise
@@ -597,18 +599,16 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
     {
            0,
     },
-    // Pet tree, 10 abilities
+    // Pet tree, 8 abilities
     {
       207260, // Arrow Spray
        81280, // Blood Burst
        47468, // Claw
-      212333, // Cleaver
        51963, // Gargoyle Strike
        47481, // Gnaw
        47484, // Huddle
        47482, // Leap
       212423, // Skulker Shot
-      198715, // Val'kyr Strike
            0,
     },
   },
@@ -1015,7 +1015,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       116670, // Vivify
            0,
     },
-    // Windwalker tree, 22 abilities
+    // Windwalker tree, 25 abilities
     {
       116768, // Blackout Kick!
       211432, // Combo Master
@@ -1026,6 +1026,9 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       101545, // Flying Serpent Kick
       115057, // Flying Serpent Kick
       252768, // Focus of Xuen
+      287062, // Fury of Xuen
+      287063, // Fury of Xuen
+      285594, // Good Karma
       213114, // Hidden Master's Forbidden Touch
       119381, // Leg Sweep
       228287, // Mark of the Crane
@@ -1110,7 +1113,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
        93402, // Sunfire (Solar)
            0,
     },
-    // Feral tree, 21 abilities
+    // Feral tree, 22 abilities
     {
       210705, // Ashamane's Rip
       106951, // Berserk
@@ -1119,6 +1122,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       210649, // Feral Instinct
       146874, // Feral Rage
        22568, // Ferocious Bite
+      276026, // Iron Jaws
        22570, // Maim
       155625, // Moonfire
        69369, // Predatory Swiftness
@@ -1253,7 +1257,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 };
 #define PTR_TREE_SPECIALIZATION_SIZE (34)
 
-// Talent tree specialization abilities, wow build 27934
+// Talent tree specialization abilities, wow build 8.1.0.28085
 static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1345,6 +1349,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
         6572, // Revenge
        12975, // Last Stand
        86535, // Plate Specialization
+       76857, // Mastery: Critical Block
       115768, // Deep Wounds
           71, // Vanguard
         1160, // Demoralizing Shout
@@ -1534,9 +1539,11 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
       187650, // Freezing Trap
       187698, // Tar Trap
       187707, // Muzzle
+      190925, // Harpoon
       162697, // Stat Negation Aura - Agility DPS
       195645, // Wing Clip
       109304, // Exhilaration
+      231550, // Harpoon (Rank 2)
       231546, // Exhilaration (Rank 2)
       259489, // Kill Command
       259495, // Wildfire Bomb
@@ -1705,6 +1712,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
     {
        88625, // Holy Word: Chastise
        20711, // Spirit of Redemption
+        2060, // Heal
          596, // Prayer of Healing
        34861, // Holy Word: Sanctify
        47788, // Guardian Spirit
@@ -2361,7 +2369,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
 };
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 27934
+// Class mastery abilities, wow build 8.1.0.28085
 static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2387,8 +2395,9 @@ static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS]
     {
       76856, // Mastery: Unshackled Fury
     },
+    // Masteries for Protection specialization
     {
-          0,
+      76857, // Mastery: Critical Block
     },
     {
           0,
@@ -2599,7 +2608,7 @@ static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS]
 #define ptr_MAX_RACE (31)
 #endif
 
-// Racial abilities, wow build 27934
+// Racial abilities, wow build 8.1.0.28085
 static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3525,9 +3534,9 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
     },
   },
 };
-#define PTR_SET_BONUS_DATA_SIZE (688)
+#define PTR_SET_BONUS_DATA_SIZE (700)
 
-// Set bonus data, wow build 27934
+// Set bonus data, wow build 8.1.0.28085
 static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -4245,10 +4254,22 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   { "Felreaper Vestments"                        ,     "tier21",     14,  1329,   21,   2,  12,  581, 251770, { 152118, 152119, 152120, 152121, 152122, 152123,  0 } },
   { "Felreaper Vestments"                        ,     "tier21",     14,  1329,   21,   4,  12,  577, 251769, { 152118, 152119, 152120, 152121, 152122, 152123,  0 } },
   { "Felreaper Vestments"                        ,     "tier21",     14,  1329,   21,   4,  12,  581, 251774, { 152118, 152119, 152120, 152121, 152122, 152123,  0 } },
+  { "Waycrest Legacy"                            , "waycrests_legacy",     15,  1439,   21,   2,   1,   -1, 277522, { 158362, 159631,  0 } },
+  { "Waycrest Legacy"                            , "waycrests_legacy",     15,  1439,   21,   2,   2,   -1, 277522, { 158362, 159631,  0 } },
+  { "Waycrest Legacy"                            , "waycrests_legacy",     15,  1439,   21,   2,   3,   -1, 277522, { 158362, 159631,  0 } },
+  { "Waycrest Legacy"                            , "waycrests_legacy",     15,  1439,   21,   2,   4,   -1, 277522, { 158362, 159631,  0 } },
+  { "Waycrest Legacy"                            , "waycrests_legacy",     15,  1439,   21,   2,   5,   -1, 277522, { 158362, 159631,  0 } },
+  { "Waycrest Legacy"                            , "waycrests_legacy",     15,  1439,   21,   2,   6,   -1, 277522, { 158362, 159631,  0 } },
+  { "Waycrest Legacy"                            , "waycrests_legacy",     15,  1439,   21,   2,   7,   -1, 277522, { 158362, 159631,  0 } },
+  { "Waycrest Legacy"                            , "waycrests_legacy",     15,  1439,   21,   2,   8,   -1, 277522, { 158362, 159631,  0 } },
+  { "Waycrest Legacy"                            , "waycrests_legacy",     15,  1439,   21,   2,   9,   -1, 277522, { 158362, 159631,  0 } },
+  { "Waycrest Legacy"                            , "waycrests_legacy",     15,  1439,   21,   2,  10,   -1, 277522, { 158362, 159631,  0 } },
+  { "Waycrest Legacy"                            , "waycrests_legacy",     15,  1439,   21,   2,  11,   -1, 277522, { 158362, 159631,  0 } },
+  { "Waycrest Legacy"                            , "waycrests_legacy",     15,  1439,   21,   2,  12,   -1, 277522, { 158362, 159631,  0 } },
 };
-#define PTR_RPPMMOD_SIZE (926)
+#define PTR_RPPMMOD_SIZE (924)
 
-// 926 RPPM Modifiers, wow build level 27934
+// 924 RPPM Modifiers, wow build level 8.1.0.28085
 static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   {  17495,    4,  1,  1.0000 },
   {  27656,    4,  1,  1.0000 },
@@ -5172,9 +5193,7 @@ static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   { 281712,    4,  1,  1.0000 },
   { 284971,    4,  1,  1.0000 },
   { 285023,    4,  1,  1.0000 },
-  { 286335,    4,  1,  1.0000 },
-  { 286336,    4,  1,  1.0000 },
-  { 286337,    4,  1,  1.0000 },
   { 286392,    4,  1,  1.0000 },
+  { 286586,    4,  1,  1.0000 },
   {      0,    0,  0,  0.0000 },
 };
