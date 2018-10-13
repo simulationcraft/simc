@@ -49,7 +49,12 @@ bool do_find_higher_priority_action( action_t* ca )
     // FIXME Why not interrupt a channel for the same spell higher up the action
     // list?
     // if ( a -> id == current_action -> id ) continue;
-    if ( a -> action_ready() )
+    if ( a->type == ACTION_VARIABLE && a->action_ready() )
+    {
+      a->execute();
+      continue;
+    }
+    else if ( a->action_ready() )
     {
       return true;
     }
