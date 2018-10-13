@@ -3188,13 +3188,6 @@ double player_t::composite_block_reduction( action_state_t* s ) const
   {
     // The block reduction rating is equal to 2.5 times the equipped shield's armor rating
     double block_reduction_rating = items[ SLOT_OFF_HAND ].stats.armor * 2.5;
-
-    b += block_reduction_rating / ( block_reduction_rating + s -> action -> player -> current.armor_coeff );
-
-    if ( meta_gem == META_ETERNAL_SHADOWSPIRIT || meta_gem == META_ETERNAL_PRIMAL )
-    {
-      b += 0.01;
-    }
   }
 
   return b;
@@ -6028,9 +6021,9 @@ void player_t::target_mitigation( school_e school, dmg_e dmg_type, action_state_
     if ( s->action )
     {
       double armor  = s->target_armor;
-      double resist = armor / ( armor + s->action->player->current.armor_coeff );
+      double resist = armor / ( armor + s -> action -> player -> current.armor_coeff );
       resist        = clamp( resist, 0.0, armor_cap );
-      s->result_amount *= 1.0 - resist;
+      s -> result_amount *= 1.0 - resist;
     }
 
     if ( sim->debug && s->action && !s->target->is_enemy() && !s->target->is_add() )
@@ -6043,11 +6036,13 @@ void player_t::target_mitigation( school_e school, dmg_e dmg_type, action_state_
     {
       double block_reduction = composite_block_reduction( s );
 
+      double block_resist = block_reduction / ( block_reduction + s -> action -> player -> current.armor_coeff );
+     
       if ( s -> block_result == BLOCK_RESULT_CRIT_BLOCKED )
-        block_reduction *= 2.0;
+        block_resist *= 2.0;
       
-      block_reduction = clamp( block_reduction, 0.0, armor_cap );
-      s -> result_amount *= 1.0 - block_reduction;
+      block_resist = clamp( block_resist, 0.0, armor_cap );
+      s -> result_amount *= 1.0 - block_resist;
 
       if ( s -> result_amount <= 0 )
         return;
