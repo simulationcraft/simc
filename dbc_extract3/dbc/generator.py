@@ -1,4 +1,4 @@
-import sys, os, re, types, html.parser, urllib, datetime, signal, json, pathlib, csv, logging, io, fnmatch, traceback
+import sys, os, re, types, html.parser, urllib, datetime, signal, json, pathlib, csv, logging, io, fnmatch, traceback, binascii
 
 import dbc.db, dbc.data, dbc.parser, dbc.file
 
@@ -4416,3 +4416,39 @@ class NpcArmorMitigationValues(DataGenerator):
                 entries[index + 4].armor_constant))
 
         self._out.write('} };\n')
+
+class TactKeyGenerator(DataGenerator):
+    def __init__(self, options, data_store = None):
+        super().__init__(options, data_store)
+
+        self._dbc = ['TactKey', 'TactKeyLookup']
+
+    def generate(self, ids = None):
+        map_ = {}
+
+        for id, data in self._tactkeylookup_db.items():
+            vals = []
+            for idx in range(0, 8):
+                vals.append('{:02x}'.format(getattr(data, 'key_name_{}'.format(idx + 1))))
+
+            map_[id] = {'key_name': ''.join(vals), 'key': None}
+
+
+        for id, data in self._tactkey_db.items():
+            if id not in map_:
+                map_[id] = {'key_name': None, 'key': None}
+
+            vals = []
+            for idx in range(0, 16):
+                vals.append('{:02x}'.format(getattr(data, 'key_{}'.format(idx + 1))))
+            map_[id]['key'] = ''.join(vals)
+
+        out = {}
+        for v in map_.values():
+            if v['key_name'] == None:
+                continue
+
+            out[v['key_name']] = v['key']
+
+        json.dump(out, fp = self._out, indent = 2, sort_keys = True)
+

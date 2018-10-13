@@ -46,10 +46,10 @@ class XFTHParser(DBCParserBase):
         sig = wdb_parser.table_hash
 
         if sig not in self.entries:
-            return DBCRecordInfo(-1, record_id, 0, 0, 0)
+            return dbc.EMPTY_RECORD
 
         if record_id >= len(self.entries[sig]):
-            return DBCRecordInfo(-1, record_id, 0, 0, 0)
+            return dbc.EMPTY_RECORD
 
         dbc_id = self.entries[sig][record_id]['record_id']
         key_id = 0
@@ -58,8 +58,8 @@ class XFTHParser(DBCParserBase):
             if real_record_info:
                 key_id = real_record_info.parent_id
 
-        return DBCRecordInfo(dbc_id, record_id, self.entries[sig][record_id]['offset'], \
-                self.entries[sig][record_id]['length'], key_id)
+        return DBCRecordInfo(dbc_id, self.entries[sig][record_id]['offset'],
+                self.entries[sig][record_id]['length'], key_id, 0)
 
     def get_record(self, dbc_id, offset, size, wdb_parser):
         sig = wdb_parser.table_hash

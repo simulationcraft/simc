@@ -107,5 +107,7 @@ def use_hotfix_key_field(wdb_name):
 
 HeaderFieldInfo = collections.namedtuple('HeaderFieldInfo', [ 'attr', 'format' ])
 
-DBCRecordInfo = collections.namedtuple('DBCRecordInfo', [ 'dbc_id', 'record_id', 'record_offset', 'record_size', 'parent_id' ])
+DBCRecordInfo = collections.namedtuple('DBCRecordInfo',
+    [ 'dbc_id', 'record_offset', 'record_size', 'parent_id', 'section_id' ])
 
+EMPTY_RECORD = DBCRecordInfo(-1, 0, 0, 0, -1)

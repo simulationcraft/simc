@@ -32,7 +32,7 @@ class HotfixIterator:
         if self._record == self._records:
             raise StopIteration
 
-        dbc_id, record_id, offset, size, key_id = self._parser.get_record_info(self._record, self._wdb_parser)
+        dbc_id, offset, size, key_id, _ = self._parser.get_record_info(self._record, self._wdb_parser)
         data = self._parser.get_record(dbc_id, offset, size, self._wdb_parser)
 
         if self._wdb_parser.has_key_block():
@@ -49,7 +49,7 @@ class HotfixIterator:
 
         self._record += 1
 
-        return self._data_class(self._parser, dbc_id, data, record_id, key_id)
+        return self._data_class(self._parser, dbc_id, data, key_id)
 
 class HotfixFile:
     def __init__(self, options):
@@ -82,12 +82,12 @@ class DBCFileIterator:
         if self._record == self._n_records:
             raise StopIteration
 
-        dbc_id, record_id, offset, size, key_id = self._parser.get_record_info(self._record)
+        dbc_id, offset, size, key_id, _ = self._parser.get_record_info(self._record)
         data = self._parser.get_record(dbc_id, offset, size)
 
         self._record += 1
 
-        return self._decorator(self._parser, dbc_id, data, record_id, key_id)
+        return self._decorator(self._parser, dbc_id, data, key_id)
 
 class DBCFile:
     def __init__(self, options, filename):
@@ -151,7 +151,7 @@ class DBCFile:
 
         data = self.parser.get_record(info.dbc_id, info.record_offset, info.record_size)
         if len(data) > 0:
-            return self.record_class(self.parser, info.dbc_id, data, info.record_id, info.parent_id)
+            return self.record_class(self.parser, info.dbc_id, data, info.parent_id)
         else:
             return None
 

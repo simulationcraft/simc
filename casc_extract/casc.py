@@ -1,6 +1,6 @@
 # vim: tabstop=4 shiftwidth=4 softtabstop=4
 # CASC file formats, based on the work of Caali et al. @ http://www.ownedcore.com/forums/world-of-warcraft/world-of-warcraft-model-editing/471104-analysis-of-casc-filesystem.html
-import os, sys, mmap, hashlib, stat, struct, zlib, glob, re, urllib.request, urllib.error, collections, codecs, io
+import os, sys, mmap, hashlib, stat, struct, zlib, glob, re, urllib.request, urllib.error, collections, codecs, io, binascii
 
 import jenkins
 
@@ -66,7 +66,42 @@ class BLTEChunk(object):
 
 			self.output_data = uncompressed_data
 		elif type == _ENCRYPTED_CHUNK:
-			self.output_data = b'\x00' * (len(data) - (1 + _ENCRYPTION_HEADER.size))
+			offset = 1
+			key_name_len = struct.unpack_from('<B', data, offset)[0]
+			offset += 1
+			if key_name_len != 8:
+				sys.stderr.write('Only key name lengths of 8 bytes are supported for encrypted chunks, given %d\n' %
+					key_name_len)
+				return False
+
+			key_name = struct.unpack_from('%ds' % key_name_len, data, offset)[0]
+			offset += key_name_len
+
+			iv_len = struct.unpack_from('<B', data, offset)[0]
+			offset += 1
+			if iv_len != 4:
+				sys.stderr.write('Only initial vector lengths of 4 bytes are supported for encrypted chunks, given %d\n' %
+					iv_len)
+				return False
+
+			iv = struct.unpack_from('%ds' % iv_len, data, offset)[0]
+			offset += iv_len
+
+			type_ = struct.unpack_from('<c', data, offset)[0]
+			offset += 1
+
+			if type_ != b'S':
+				sys.stderr.write('Only salsa20 encryption supported, given "%s"\n' %
+					type_.decode('ascii'))
+				return False
+
+			sys.stderr.write('Encrypted chunk %d, type=%s, key_name_len=%d, key_name=%s, iv_len=%d iv=%s, sz=%d\n' % (
+				self.id, type_.decode('ascii'), key_name_len, binascii.hexlify(key_name).decode('ascii'), iv_len,
+				binascii.hexlify(iv).decode('ascii'),
+				len(data) - (_ENCRYPTION_HEADER.size + 1)
+			))
+
+			self.output_data = b'\x00' * (len(data) - (_ENCRYPTION_HEADER.size + 1))
 		else:
 			return False
 

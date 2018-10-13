@@ -44,7 +44,7 @@ class DataStore:
         for idx in range(0, len(orig._fo)):
             fmt = orig._fo[idx]
             name = orig._fi[idx]
-            if 'S' in fmt and orig._dbcp.get_string(orig._d[idx], orig._record_id, idx) != hotfix._dbcp.get_string(hotfix._d[idx], orig._record_id, idx):
+            if 'S' in fmt and orig._dbcp.get_string(orig._d[idx], orig._id, idx) != hotfix._dbcp.get_string(hotfix._d[idx], orig._id, idx):
                 # Blacklist check
                 hotfix_fields |= (1 << idx)
                 hotfix.add_hotfix(orig._fi[idx], orig)

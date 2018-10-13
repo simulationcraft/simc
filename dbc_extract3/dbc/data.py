@@ -5,7 +5,7 @@ import dbc.fmt
 _FORMATDB = None
 
 class RawDBCRecord:
-    __slots__ = ( '_id', '_d', '_dbcp', '_flags', '_key', '_record_id' )
+    __slots__ = ('_id', '_d', '_dbcp', '_flags', '_key')
 
     _key_block = False
     _id_block = False
@@ -41,14 +41,13 @@ class RawDBCRecord:
     def is_hotfixed(self):
         return self._flags != 0
 
-    def __init__(self, parser, dbc_id, data, record_id, key = 0):
+    def __init__(self, parser, dbc_id, data, key = 0):
         self._dbcp = parser
 
         self._id = dbc_id
         self._d = data
         self._key = key
         self._flags = 0
-        self._record_id = record_id
 
         if not self._d:
             self._d = (0,) * len(self._fi)
@@ -87,7 +86,7 @@ class DBCRecord(RawDBCRecord):
     @classmethod
     def default(cls, parser):
         if not cls.__d:
-            cls.__d = cls(parser, 0, None, 0, 0)
+            cls.__d = cls(parser, 0, None, 0)
 
         return cls.__d
 
@@ -208,7 +207,7 @@ class DBCRecord(RawDBCRecord):
             return super().__getattr__(name)
 
         if self._fo[field_idx] == 'S' and self._d[field_idx] > 0:
-            return self._dbcp.get_string(self._d[field_idx], self._record_id, field_idx)
+            return self._dbcp.get_string(self._d[field_idx], self._id, field_idx)
         else:
             return self._d[field_idx]
 
@@ -237,7 +236,7 @@ class DBCRecord(RawDBCRecord):
                 if self._d[field_idx] == 0:
                     tmpstr = u"0"
                 else:
-                    tmpstr = self._dbcp.get_string(self._d[field_idx], self._record_id, field_idx)
+                    tmpstr = self._dbcp.get_string(self._d[field_idx], self._id, field_idx)
                     if len(tmpstr) > 0:
                         tmpstr = tmpstr.replace("\\", "\\\\")
                         tmpstr = tmpstr.replace("\"", "\\\"")
@@ -294,7 +293,7 @@ class DBCRecord(RawDBCRecord):
                 continue
 
             if type_ == 'S' and self._d[i] > 0:
-                str_ = self._dbcp.get_string(self._d[i], self._record_id, i)
+                str_ = self._dbcp.get_string(self._d[i], self._id, i)
                 s.append('%s=%s%s' % (field,
                     len(str_) and repr(str_) or '0',
                     len(str_) and ' ({})'.format(self._d[i]) or ''
@@ -327,7 +326,7 @@ class DBCRecord(RawDBCRecord):
 
             if type_ == 'S':
                 if self._d[i] > 0:
-                    d[field] = self._dbcp.get_string(self._d[i], self._record_id, i)
+                    d[field] = self._dbcp.get_string(self._d[i], self._id, i)
                 else:
                     d[field] = ""
             else:
@@ -355,7 +354,7 @@ class DBCRecord(RawDBCRecord):
 
             if type_ == 'S':
                 if self._d[i] > 0:
-                    s += '"%s"%c' % (self._dbcp.get_string(self._d[i], self._record_id, i).replace('"', '\\"'), delim)
+                    s += '"%s"%c' % (self._dbcp.get_string(self._d[i], self._id, i).replace('"', '\\"'), delim)
                 else:
                     s += '""%c' % delim
             elif type_ == 'f':
@@ -375,8 +374,8 @@ class DBCRecord(RawDBCRecord):
 class SpellName(DBCRecord):
     __slots__ = ( '_effects', 'max_effect_index' )
 
-    def __init__(self, dbc_parser, dbc_id, data, record_id, key_id):
-        DBCRecord.__init__(self, dbc_parser, dbc_id, data, record_id, key_id)
+    def __init__(self, dbc_parser, dbc_id, data, key_id):
+        super().__init__(dbc_parser, dbc_id, data, key_id)
 
         self._effects = []
         self.max_effect_index = -1
