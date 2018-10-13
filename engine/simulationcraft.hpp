@@ -4203,7 +4203,7 @@ public:
   virtual void demise();
   virtual timespan_t available() const
   { return timespan_t::from_seconds( 0.1 ); }
-  virtual action_t* select_action( const action_priority_list_t&, bool off_gcd = false );
+  virtual action_t* select_action( const action_priority_list_t&, bool off_gcd = false, const action_t* context = nullptr );
   virtual action_t* execute_action();
 
   virtual void   regen( timespan_t periodicity = timespan_t::from_seconds( 0.25 ) );
@@ -5788,7 +5788,6 @@ struct call_action_list_t : public action_t
   call_action_list_t( player_t*, const std::string& );
   void execute() override
   { assert( 0 ); }
-  void init() override;
 };
 
 // Attack ===================================================================
@@ -6614,8 +6613,6 @@ struct action_priority_t
 
 struct action_priority_list_t
 {
-  using parent_t = std::tuple<const action_priority_list_t*, action_t*>;
-
   // Internal ID of the action list, used in conjunction with the "new"
   // call_action_list action, that allows for potential infinite loops in the
   // APL.
@@ -6629,7 +6626,6 @@ struct action_priority_list_t
   bool used;
   std::vector<action_t*> foreground_action_list;
   std::vector<action_t*> off_gcd_actions;
-  std::vector<parent_t> parents;
   int random; // Used to determine how faceroll something actually is. :D
   action_priority_list_t( std::string name, player_t* p, const std::string& list_comment = std::string() ) :
     internal_id( 0 ), internal_id_mask( 0 ), name_str( name ), action_list_comment_str( list_comment ), player( p ), used( false ),

@@ -5,74 +5,6 @@
 
 #include "simulationcraft.hpp"
 
-namespace {
-
-bool do_find_higher_priority_action( const action_priority_list_t::parent_t& parent )
-{
-  auto apl = std::get<0>( parent );
-  auto callee = std::get<1>( parent );
-
-  for ( size_t i = 0; i < apl->foreground_action_list.size(); ++i )
-  {
-    auto a = apl->foreground_action_list[ i ];
-    if ( a == callee )
-    {
-      break;
-    }
-
-    if ( a->type == ACTION_VARIABLE && a->action_ready() )
-    {
-      a->execute();
-      continue;
-    }
-    else if ( a->action_ready() )
-    {
-      return true;
-    }
-  }
-
-  return range::find_if( apl->parents, []( const action_priority_list_t::parent_t& p ) {
-    return do_find_higher_priority_action( p );
-  } ) != apl->parents.end();
-}
-
-bool do_find_higher_priority_action( action_t* ca )
-{
-  auto apl = ca -> action_list;
-
-  for ( action_t* a : apl -> foreground_action_list )
-  {
-    if ( a == ca )
-    {
-      break;
-    }
-    // FIXME Why not interrupt a channel for the same spell higher up the action
-    // list?
-    // if ( a -> id == current_action -> id ) continue;
-    if ( a->type == ACTION_VARIABLE && a->action_ready() )
-    {
-      a->execute();
-      continue;
-    }
-    else if ( a->action_ready() )
-    {
-      return true;
-    }
-  }
-
-  if ( ca -> interrupt_global )
-  {
-    return range::find_if( apl -> parents, []( const action_priority_list_t::parent_t& p ) {
-      return do_find_higher_priority_action( p );
-    } ) != apl -> parents.end();
-  }
-  else
-  {
-    return false;
-  }
-}
-
-}
 // ==========================================================================
 // Dot
 // ==========================================================================
@@ -1323,7 +1255,9 @@ void dot_t::check_tick_zero()
     timespan_t previous_ttt = time_to_tick;
     time_to_tick            = timespan_t::zero();
     // Recalculate num_ticks:
+#ifndef NDEBUG
     timespan_t tick_time = current_action->tick_time( state );
+#endif
     assert( tick_time > timespan_t::zero() &&
             "A Dot needs a positive tick time!" );
     recalculate_num_ticks();
@@ -1341,7 +1275,17 @@ bool dot_t::is_higher_priority_action_available() const
 {
   assert( current_action->action_list );
 
-  return do_find_higher_priority_action( current_action );
+  auto player = current_action->player;
+  auto apl = current_action->interrupt_global ? player->active_action_list : current_action->action_list;
+
+  player->visited_apls_ = 0;
+  auto action = player->select_action( *apl, false, current_action );
+  if ( action && action->internal_id != current_action->internal_id && player->sim->debug )
+  {
+    player->sim->out_debug.print( "{} action available for context {}: {}", player->name(),
+      current_action->signature_str, action->signature_str );
+  }
+  return action != nullptr && action->internal_id != current_action->internal_id;
 }
 
 void dot_t::adjust( double coefficient )

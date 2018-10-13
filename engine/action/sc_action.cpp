@@ -3701,23 +3701,6 @@ call_action_list_t::call_action_list_t( player_t* player, const std::string& opt
   }
 }
 
-void call_action_list_t::init()
-{
-  action_t::init();
-
-  if ( action_list && alist )
-  {
-    auto it = range::find_if( alist->parents, [this]( const action_priority_list_t::parent_t& parent ) {
-      return std::get<0>( parent ) == action_list && std::get<1>( parent ) == this;
-    } );
-
-    if ( it == alist->parents.end() )
-    {
-      alist->parents.push_back( std::make_tuple( action_list, this ) );
-    }
-  }
-}
-
 /**
  * If the action is still ticking and all resources could be successfully consumed,
  * return true to indicate continued ticking.

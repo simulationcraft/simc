@@ -8136,23 +8136,6 @@ struct run_action_list_t : public swap_action_list_t
     ignore_false_positive = true;
   }
 
-  void init() override
-  {
-    swap_action_list_t::init();
-
-    if ( action_list && alist )
-    {
-      auto it = range::find_if( alist->parents, [this]( const action_priority_list_t::parent_t& parent ) {
-        return std::get<0>( parent ) == action_list && std::get<1>( parent ) == this;
-      } );
-
-      if ( it == alist->parents.end() )
-      {
-        alist->parents.push_back( std::make_tuple( action_list, this) );
-      }
-    }
-  }
-
   virtual void execute() override
   {
     if ( sim->log )
@@ -12127,7 +12110,7 @@ luxurious_sample_data_t::luxurious_sample_data_t( player_t& p, std::string n ) :
 }
 
 // Note, root call needs to set player_t::visited_apls_ to 0
-action_t* player_t::select_action( const action_priority_list_t& list, bool off_gcd )
+action_t* player_t::select_action( const action_priority_list_t& list, bool off_gcd, const action_t* context )
 {
   // Mark this action list as visited with the APL internal id
   visited_apls_ |= list.internal_id_mask;
@@ -12168,6 +12151,11 @@ action_t* player_t::select_action( const action_priority_list_t& list, bool off_
       }
     }
 
+    if ( context && a == context )
+    {
+      return nullptr;
+    }
+
     if ( a->background )
       continue;
 
@@ -12195,9 +12183,9 @@ action_t* player_t::select_action( const action_priority_list_t& list, bool off_
         }
 
         // We get an action from the call, return it
-        if ( action_t* real_a = select_action( *call->alist, off_gcd ) )
+        if ( action_t* real_a = select_action( *call->alist, off_gcd, context ) )
         {
-          if ( real_a->action_list )
+          if ( context == nullptr && real_a->action_list )
             real_a->action_list->used = true;
           return real_a;
         }
@@ -12210,7 +12198,7 @@ action_t* player_t::select_action( const action_priority_list_t& list, bool off_
     }
   }
 
-  return 0;
+  return nullptr;
 }
 
 player_t* player_t::actor_by_name_str( const std::string& name ) const
