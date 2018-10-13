@@ -12,19 +12,24 @@ bool do_find_higher_priority_action( const action_priority_list_t::parent_t& par
   auto apl = std::get<0>( parent );
   auto idx = std::get<1>( parent );
 
-  for ( size_t i = 0; i < apl -> foreground_action_list.size() && i < idx; ++i )
+  for ( size_t i = 0; i < apl->foreground_action_list.size() && i < idx; ++i )
   {
-    auto a = apl -> foreground_action_list[ i ];
+    auto a = apl->foreground_action_list[ i ];
 
-    if ( a -> action_ready() )
+    if ( a->type == ACTION_VARIABLE && a->action_ready() )
+    {
+      a->execute();
+      continue;
+    }
+    else if ( a->action_ready() )
     {
       return true;
     }
   }
 
-  return range::find_if( apl -> parents, []( const action_priority_list_t::parent_t& p ) {
+  return range::find_if( apl->parents, []( const action_priority_list_t::parent_t& p ) {
     return do_find_higher_priority_action( p );
-  } ) != apl -> parents.end();
+  } ) != apl->parents.end();
 }
 
 bool do_find_higher_priority_action( action_t* ca )
