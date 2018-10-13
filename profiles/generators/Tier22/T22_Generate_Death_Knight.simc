@@ -30,7 +30,7 @@ race=orc
 spec=frost
 role=attack
 position=back
-talents=3302033
+talents=3102033
 
 head=gridrunner_galea,id=160634,bonus_id=4800/1507/4775,azerite_powers=483/31/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
