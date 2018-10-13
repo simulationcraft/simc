@@ -13,7 +13,7 @@ namespace paladin {
 struct aegis_of_light_t : public paladin_spell_t
 {
   aegis_of_light_t( paladin_t* p, const std::string& options_str ) :
-    paladin_spell_t( "aegis_of_light", p, p -> find_talent_spell( "Aegis of Light" ) )
+    paladin_spell_t( "aegis_of_light", p, p -> talents.aegis_of_light )
   {
     parse_options( options_str );
 
@@ -40,6 +40,10 @@ struct ardent_defender_t : public paladin_spell_t
     harmful = false;
     use_off_gcd = true;
     trigger_gcd = timespan_t::zero();
+
+    // unbreakable spirit reduces cooldown
+    if ( p -> talents.unbreakable_spirit -> ok() )
+      cooldown -> duration = data().cooldown() * ( 1 + p -> talents.unbreakable_spirit -> effectN( 1 ).percent() );
   }
 
   virtual void execute() override
@@ -89,6 +93,10 @@ struct avengers_shield_t : public paladin_spell_t
     paladin_spell_t::execute();
 
     p() -> buffs.avengers_valor -> trigger();
+    if ( p() -> talents.redoubt -> ok() )
+    {
+      p() -> buffs.redoubt -> trigger();
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -522,10 +530,15 @@ struct seraphim_t : public paladin_spell_t
 
 struct shield_of_the_righteous_buff_t : public buff_t
 {
+  double avengers_valor_increase;
+
   shield_of_the_righteous_buff_t( paladin_t* p ) :
     buff_t( buff_creator_t( p, "shield_of_the_righteous", p -> spells.shield_of_the_righteous )
-      .add_invalidate( CACHE_BONUS_ARMOR ) )
-  { }
+      .add_invalidate( CACHE_BONUS_ARMOR ) ),
+    avengers_valor_increase( 0 )
+  {
+    
+  }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
@@ -537,6 +550,50 @@ struct shield_of_the_righteous_buff_t : public buff_t
     {
       p -> buffs.inner_light -> trigger();
     }
+  }
+
+  // Shield of the righteous' armor bonus is dynamic with strength, but uses a multiplier that is only updated on sotr cast
+  // avengers_valor_increase varies between 0 and 0.2 based on avenger's valor being up or not, and on the previous buff's remaining duration
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  {
+    paladin_t* p = debug_cast< paladin_t* >( player );
+
+    double new_avengers_valor = p -> buffs.avengers_valor -> up() ? 0.20 : 0;
+
+    if ( this -> up() )
+    {
+      if ( new_avengers_valor != avengers_valor_increase )
+      {
+        // TODO: handle max duration somewhere
+        avengers_valor_increase = avengers_valor_increase * remains().total_seconds() / ( remains().total_seconds() + buff_duration.total_seconds() ) 
+                                + new_avengers_valor * buff_duration.total_seconds() / ( remains().total_seconds() + buff_duration.total_seconds() );
+      }
+
+      if ( sim -> debug )
+      {
+        sim -> out_debug.printf( "Shield of the Righetous buff refreshed with a %f increase from Avenger's Valor", avengers_valor_increase );
+      }
+      
+      this -> extend_duration( p, buff_duration );
+      return true;
+    }
+    else
+    {
+      avengers_valor_increase = new_avengers_valor;
+      if ( sim -> debug )
+      {
+        sim -> out_debug.printf( "Shield of the Righetous buff triggered with a %f increase from Avenger's Valor", avengers_valor_increase );
+      }
+      return buff_t::trigger( stacks, value, chance, duration );
+    }
+  }
+
+  double value() override
+  {
+    buff_t::value();
+    paladin_t* p = debug_cast< paladin_t* >( player );
+
+    return p -> spells.shield_of_the_righteous -> effectN( 1 ).percent() * p -> cache.strength() * ( 1.0 + avengers_valor_increase );
   }
 };
 
@@ -580,15 +637,10 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
   {
     paladin_melee_attack_t::execute();
 
-    //Buff granted regardless of combat roll result
-    //Duration is additive on refresh, stats not recalculated
-
-    if ( p() -> buffs.shield_of_the_righteous -> check() )
-    {
-      p() -> buffs.shield_of_the_righteous -> extend_duration( p(), p() -> buffs.shield_of_the_righteous -> buff_duration );
-    }
-    else
-      p() -> buffs.shield_of_the_righteous -> trigger();
+    // Buff granted regardless of combat roll result
+    // Duration and armor bonus recalculation handled in the buff
+    
+    p() -> buffs.shield_of_the_righteous -> trigger();
 
     if ( result_is_hit( execute_state -> result ) ) // TODO: not needed anymore? Can we even miss?
     {
@@ -827,7 +879,7 @@ void paladin_t::create_buffs_protection()
 {
   buffs.guardian_of_ancient_kings = new guardian_of_ancient_kings_buff_t( this );
   buffs.shield_of_the_righteous = new shield_of_the_righteous_buff_t( this );
-  buffs.aegis_of_light = make_buff( this, "aegis_of_light", find_talent_spell( "Aegis of Light" ) );
+  buffs.aegis_of_light = make_buff( this, "aegis_of_light", talents.aegis_of_light );
   buffs.seraphim = make_buff<stat_buff_t>( this, "seraphim", talents.seraphim )
                   -> add_stat( STAT_HASTE_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
                   -> add_stat( STAT_CRIT_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
@@ -843,6 +895,7 @@ void paladin_t::create_buffs_protection()
   buffs.avengers_valor = make_buff( this, "avengers_valor", find_specialization_spell( "Avenger's Shield" ) -> effectN( 4 ).trigger() );
   buffs.avengers_valor -> set_default_value( find_specialization_spell( "Avenger's Shield" ) -> effectN( 4 ).trigger() -> effectN( 1 ).percent() );
   buffs.ardent_defender = make_buff( this, "ardent_defender", find_specialization_spell( "Ardent Defender" ) );
+  buffs.redoubt = make_buff( this, "redoubt", talents.redoubt -> effectN( 1 ).trigger() );
 
   // Azerite traits
   buffs.inspiring_vanguard = make_buff<stat_buff_t>( this, "inspiring_vanguard", find_spell( 279397 ) )

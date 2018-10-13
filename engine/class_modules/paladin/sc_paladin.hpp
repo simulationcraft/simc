@@ -163,6 +163,7 @@ public:
     buff_t* divine_steed;
     buff_t* aegis_of_light;
     stat_buff_t* seraphim;
+    buff_t* redoubt;
 
     // Set Bonuses
     buff_t* sacred_judgment;
@@ -325,14 +326,14 @@ public:
     const spell_data_t* crusaders_judgment;
     const spell_data_t* holy_shield;
     const spell_data_t* blessed_hammer;
-    const spell_data_t* redoubt; // NYI
+    const spell_data_t* redoubt;
     // skip T45
     const spell_data_t* blessing_of_spellwarding;
     const spell_data_t* blessing_of_salvation;
     const spell_data_t* retribution_aura;
     const spell_data_t* hand_of_the_protector;
     const spell_data_t* final_stand;
-    // skip unbreakable spirit - NYI
+    // skip unbreakable spirit
     const spell_data_t* aegis_of_light;
     // Judgment of Light seems to be a recopy from Holy.
     //const spell_data_t* judgment_of_light;

@@ -1639,7 +1639,7 @@ double paladin_t::composite_bonus_armor() const
 
   if ( buffs.shield_of_the_righteous -> check() )
   {
-    ba += spells.shield_of_the_righteous -> effectN( 1 ).percent() * cache.attack_power();
+    ba += buffs.shield_of_the_righteous -> value();
   }
 
   return ba;
@@ -1722,7 +1722,6 @@ double paladin_t::composite_block() const
   double block_subject_to_dr = cache.mastery() * passives.divine_bulwark -> effectN( 1 ).mastery_value();
   double b = player_t::composite_block_dr( block_subject_to_dr );
 
-  // Holy Shield (assuming for now that it's not affected by DR)
   b += talents.holy_shield -> effectN( 1 ).percent();
 
   return b;
@@ -1733,6 +1732,11 @@ double paladin_t::composite_block() const
 double paladin_t::composite_block_reduction( action_state_t* s ) const
 {
   double br = player_t::composite_block_reduction( s );
+
+  if ( buffs.redoubt -> up() )
+  {
+    br *= 1.0 + talents.redoubt -> effectN( 1 ).trigger() -> effectN( 1 ).percent();
+  }
 
   return br;
 }
@@ -1812,7 +1816,7 @@ void paladin_t::invalidate_cache( cache_e c )
     player_t::invalidate_cache( CACHE_SPELL_POWER );
   }
 
-  if ( c == CACHE_ATTACK_POWER && spells.shield_of_the_righteous -> ok() )
+  if ( c == CACHE_STRENGTH && spells.shield_of_the_righteous -> ok() )
   {
     player_t::invalidate_cache( CACHE_BONUS_ARMOR );
   }

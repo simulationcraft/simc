@@ -592,6 +592,10 @@ struct shield_of_vengeance_t : public paladin_absorb_t
 
     harmful = false;
 
+    // unbreakable spirit reduces cooldown
+    if ( p -> talents.unbreakable_spirit -> ok() )
+      cooldown -> duration = data().cooldown() * ( 1 + p -> talents.unbreakable_spirit -> effectN( 1 ).percent() );
+
     if ( ! ( p -> active_shield_of_vengeance_proc ) )
     {
       p -> active_shield_of_vengeance_proc = new shield_of_vengeance_proc_t( p );
