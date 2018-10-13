@@ -64,7 +64,8 @@ const sdata_field_t _effect_data_fields[] =
   { SD_TYPE_UNSIGNED, "chain_target",   O_SED( _chain_target )    },
   { SD_TYPE_UNSIGNED, "target_1",       O_SED( _targeting_1 )     },
   { SD_TYPE_UNSIGNED, "target_2",       O_SED( _targeting_2 )     },
-  { SD_TYPE_DOUBLE,   "m_value",        O_SED( _m_value )         }
+  { SD_TYPE_DOUBLE,   "m_value",        O_SED( _m_value )         },
+  { SD_TYPE_DOUBLE,   "pvp_coefficient",O_SED( _pvp_coeff )       }
 };
 
 #define O_SD(f) offsetof( spell_data_t, f )

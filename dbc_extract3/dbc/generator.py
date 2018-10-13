@@ -2820,9 +2820,9 @@ class SpellDataGenerator(DataGenerator):
             hotfix_data += hfd
 
             # 25, 26, 27, 28
-            fields += effect.field('chain_target', 'implicit_target_1', 'implicit_target_2', 'val_mul')
+            fields += effect.field('chain_target', 'implicit_target_1', 'implicit_target_2', 'val_mul', 'pvp_coefficient')
             f, hfd = effect.get_hotfix_info(('chain_target', 23), ('implicit_target_1', 24),
-                ('implicit_target_2', 25), ('val_mul', 26))
+                ('implicit_target_2', 25), ('val_mul', 26), ('pvp_coefficient', 27))
             hotfix_flags |= f
             hotfix_data += hfd
 

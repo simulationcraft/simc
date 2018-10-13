@@ -623,6 +623,7 @@ public:
   unsigned         _targeting_1;     // 25 Targeting related field 1
   unsigned         _targeting_2;     // 26 Targeting related field 2
   double           _m_value;         // 27 Misc multiplier used for some spells(?)
+  double           _pvp_coeff;       // 28 PvP Coefficient
 
   // Pointers for runtime linking
   spell_data_t* _spell;
@@ -718,6 +719,9 @@ public:
 
   double ap_coeff() const
   { return _ap_coeff; }
+
+  double pvp_coeff() const
+  { return _pvp_coeff; }
 
   timespan_t period() const
   { return timespan_t::from_millis( _amplitude ); }

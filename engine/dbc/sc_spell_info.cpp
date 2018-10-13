@@ -50,12 +50,12 @@ std::vector<std::string> _hotfix_effect_map = {
   "Chain Multiplier",
   "Points per Combo Points",
   "Points per Level",
-  "Die Sides",
   "Mechanic",
   "Chain Targets",
   "Target 1",
   "Target 2",
-  "Value Multiplier"
+  "Value Multiplier",
+  "PvP Coefficient"
 };
 
 std::vector<std::string> _hotfix_spell_map = {
@@ -979,6 +979,12 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
   {
     snprintf( tmp_buffer, sizeof( tmp_buffer ), "%.5f", e -> ap_coeff() );
     s << " | AP Coefficient: " << tmp_buffer;
+  }
+
+  if ( e -> pvp_coeff() != 0 )
+  {
+    snprintf( tmp_buffer, sizeof( tmp_buffer ), "%.5f", e -> pvp_coeff() );
+    s << " | PvP Coefficient: " << tmp_buffer;
   }
 
   if ( e -> chain_target() != 0 )
