@@ -1275,6 +1275,7 @@ class SpellDataGenerator(DataGenerator):
             ( 211561, 0 ),          # Justice Gaze
             ( 246973, 0 ),          # Sacred Judgment (Ret T20 4p)
             ( 275483, 0 ),          # Inner Light azerite trait damge
+            ( 184689, 0 ),          # Shield of Vengeance damage proc
         ),
 
         # Hunter:
