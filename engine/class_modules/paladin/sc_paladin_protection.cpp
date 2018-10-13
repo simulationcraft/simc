@@ -536,9 +536,7 @@ struct shield_of_the_righteous_buff_t : public buff_t
     buff_t( buff_creator_t( p, "shield_of_the_righteous", p -> spells.shield_of_the_righteous )
       .add_invalidate( CACHE_BONUS_ARMOR ) ),
     avengers_valor_increase( 0 )
-  {
-    
-  }
+  { }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
@@ -567,6 +565,8 @@ struct shield_of_the_righteous_buff_t : public buff_t
         // TODO: handle max duration somewhere
         avengers_valor_increase = avengers_valor_increase * remains().total_seconds() / ( remains().total_seconds() + buff_duration.total_seconds() ) 
                                 + new_avengers_valor * buff_duration.total_seconds() / ( remains().total_seconds() + buff_duration.total_seconds() );
+        p -> invalidate_cache( CACHE_BONUS_ARMOR );
+
       }
 
       if ( sim -> debug )
