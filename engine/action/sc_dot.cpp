@@ -10,11 +10,15 @@ namespace {
 bool do_find_higher_priority_action( const action_priority_list_t::parent_t& parent )
 {
   auto apl = std::get<0>( parent );
-  auto idx = std::get<1>( parent );
+  auto callee = std::get<1>( parent );
 
-  for ( size_t i = 0; i < apl->foreground_action_list.size() && i < idx; ++i )
+  for ( size_t i = 0; i < apl->foreground_action_list.size(); ++i )
   {
     auto a = apl->foreground_action_list[ i ];
+    if ( a == callee )
+    {
+      break;
+    }
 
     if ( a->type == ACTION_VARIABLE && a->action_ready() )
     {

@@ -3707,15 +3707,13 @@ void call_action_list_t::init()
 
   if ( action_list && alist )
   {
-    auto action_it  = range::find( action_list->foreground_action_list, this );
-    auto action_idx = std::distance( action_list->foreground_action_list.begin(), action_it );
-    auto it         = range::find_if( alist->parents, [this]( const action_priority_list_t::parent_t& parent ) {
-      return std::get<0>( parent ) == action_list;
+    auto it = range::find_if( alist->parents, [this]( const action_priority_list_t::parent_t& parent ) {
+      return std::get<0>( parent ) == action_list && std::get<1>( parent ) == this;
     } );
 
     if ( it == alist->parents.end() )
     {
-      alist->parents.push_back( std::make_tuple( action_list, action_idx ) );
+      alist->parents.push_back( std::make_tuple( action_list, this ) );
     }
   }
 }

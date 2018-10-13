@@ -6614,7 +6614,7 @@ struct action_priority_t
 
 struct action_priority_list_t
 {
-  using parent_t = std::tuple<const action_priority_list_t*, size_t>;
+  using parent_t = std::tuple<const action_priority_list_t*, action_t*>;
 
   // Internal ID of the action list, used in conjunction with the "new"
   // call_action_list action, that allows for potential infinite loops in the
