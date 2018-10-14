@@ -4789,6 +4789,16 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
     return m;
   }
 
+  double action_multiplier() const override
+  {
+    double m = shaman_spell_t::action_multiplier();
+    if ( maybe_ptr( p()->dbc.ptr ) && p()->buff.stormkeeper->up() )
+    {
+      m *= 1.0 + p()->talent.stormkeeper->effectN( 2 ).percent();
+    }
+    return m;
+  }
+
   void impact( action_state_t* state ) override
   {
     elemental_overload_spell_t::impact( state );
@@ -4874,6 +4884,16 @@ struct lightning_bolt_t : public shaman_spell_t
     if ( !maybe_ptr( p()->dbc.ptr ) && td( target )->debuff.exposed_elements->up() )
     {
       m *= 1.0 + td( target )->debuff.exposed_elements->default_value;
+    }
+    return m;
+  }
+
+  double action_multiplier() const override
+  {
+    double m = shaman_spell_t::action_multiplier();
+    if ( maybe_ptr( p()->dbc.ptr ) && p()->buff.stormkeeper->up() )
+    {
+      m *= 1.0 + p()->talent.stormkeeper->effectN( 2 ).percent();
     }
     return m;
   }
