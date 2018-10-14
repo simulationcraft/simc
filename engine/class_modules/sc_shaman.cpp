@@ -490,6 +490,7 @@ public:
     const spell_data_t* elemental_blast;
 
     const spell_data_t* aftershock;
+    const spell_data_t* call_the_thunder;
     const spell_data_t* master_of_the_elements;
 
     const spell_data_t* high_voltage;  // PTR TODO: delete once 8.1 goes live
@@ -4453,9 +4454,15 @@ struct lava_beam_t : public chained_base_t
 
 struct lava_burst_overload_t : public elemental_overload_spell_t
 {
-  lava_burst_overload_t( shaman_t* p ) : elemental_overload_spell_t( p, "lava_burst_overload", p->find_spell( 77451 ) )
+  lava_burst_overload_t( shaman_t* player )
+    : elemental_overload_spell_t( player, "lava_burst_overload", player->find_spell( 77451 ) )
   {
-    maelstrom_gain = p->find_spell( 190493 )->effectN( 5 ).resource( RESOURCE_MAELSTROM );
+    maelstrom_gain = player->find_spell( 190493 )->effectN( 5 ).resource( RESOURCE_MAELSTROM );
+
+    if ( maybe_ptr( p()->dbc.ptr ) )
+    {
+      spell_power_mod.direct = player->find_spell( 285466 )->effectN( 1 ).sp_coeff();
+    }
   }
 
   double action_multiplier() const override
@@ -4638,6 +4645,11 @@ struct lava_burst_t : public shaman_spell_t
     {
       overload = new lava_burst_overload_t( player );
       add_child( overload );
+    }
+
+    if ( maybe_ptr( p()->dbc.ptr ) )
+    {
+      spell_power_mod.direct = player->find_spell( 285452 )->effectN( 1 ).sp_coeff();
     }
   }
 
@@ -5289,7 +5301,12 @@ struct earthquake_t : public shaman_spell_t
 
   double cost() const override
   {
-    return shaman_spell_t::cost();
+    double d = shaman_spell_t::cost();
+    if ( maybe_ptr( p()->dbc.ptr ) && p()->talent.call_the_thunder->ok() )
+    {
+      d += p()->talent.call_the_thunder->effectN( 1 ).base_value();
+    }
+    return d;
   }
 
   void execute() override
@@ -5346,6 +5363,16 @@ struct earth_shock_t : public shaman_spell_t
       t21_4pc = new earth_shock_overload_t( player );
       add_child( t21_4pc );
     }
+  }
+
+  double cost() const override
+  {
+    double d = shaman_spell_t::cost();
+    if ( maybe_ptr( p()->dbc.ptr ) && p()->talent.call_the_thunder->ok() )
+    {
+      d += p()->talent.call_the_thunder->effectN( 1 ).base_value();
+    }
+    return d;
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -6679,21 +6706,19 @@ void shaman_t::init_spells()
   talent.totem_mastery = find_talent_spell( "Totem Mastery" );
 
   // Elemental
-  if ( !maybe_ptr( dbc.ptr ) )
-  {
-    talent.exposed_elements = find_talent_spell( "Exposed Elements" );
-  }
+
+  talent.exposed_elements = find_talent_spell( "Exposed Elements" );
+
   talent.echo_of_the_elements = find_talent_spell( "Echo of the Elements" );
   talent.elemental_blast      = find_talent_spell( "Elemental Blast" );
 
   talent.aftershock             = find_talent_spell( "Aftershock" );
+  talent.call_the_thunder       = find_talent_spell( "Call the Thunder" );
   talent.master_of_the_elements = find_talent_spell( "Master of the Elements" );
   // talent.totem_mastery          = find_talent_spell( "Totem Mastery" );
 
-  if ( !maybe_ptr( dbc.ptr ) )
-  {
-    talent.high_voltage = find_talent_spell( "High Voltage" );
-  }
+  talent.high_voltage = find_talent_spell( "High Voltage" );
+
   talent.storm_elemental    = find_talent_spell( "Storm Elemental" );
   talent.liquid_magma_totem = find_talent_spell( "Liquid Magma Totem" );
 
@@ -6775,6 +6800,11 @@ void shaman_t::init_base_stats()
 
   if ( specialization() == SHAMAN_ELEMENTAL || specialization() == SHAMAN_ENHANCEMENT )
     resources.base[ RESOURCE_MAELSTROM ] = 100;
+
+  if ( specialization() == SHAMAN_ELEMENTAL && talent.call_the_thunder->ok() )
+  {
+    resources.base[ RESOURCE_MAELSTROM ] += talent.call_the_thunder->effectN( 2 ).base_value();
+  }
 
   if ( spec.enhancement_shaman->ok() )
     resources.base[ RESOURCE_MAELSTROM ] += spec.enhancement_shaman->effectN( 6 ).base_value();
@@ -7575,12 +7605,7 @@ void shaman_t::init_action_list_elemental()
                              "Keep SK for large or soon add waves." );
   single_target->add_talent( this, "Liquid Magma Totem",
                              "if=talent.liquid_magma_totem.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)" );
-  single_target->add_action(
-      this, "Earthquake", "if=active_enemies>1&spell_targets.chain_lightning>1&!talent.exposed_elements.enabled", "" );
-  single_target->add_action(
-      this, "Lightning Bolt",
-      "if=talent.exposed_elements.enabled&debuff.exposed_elements.up&maelstrom>=60&!buff.ascendance.up",
-      "Use the debuff before casting Earth Shock again." );
+  single_target->add_action( this, "Earthquake", "if=active_enemies>1&spell_targets.chain_lightning>1", "" );
   single_target->add_action( this, "Earth Shock",
                              "if=talent.master_of_the_elements.enabled&(buff.master_of_the_elements.up|maelstrom>=92)|!"
                              "talent.master_of_the_elements.enabled",
