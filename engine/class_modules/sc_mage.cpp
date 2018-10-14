@@ -6632,13 +6632,17 @@ void mage_t::apl_frost()
   single -> add_talent( this, "Ice Nova", "if=cooldown.ice_nova.ready&debuff.winters_chill.up",
     "In some situations, you can shatter Ice Nova even after already casting Flurry and Ice Lance. "
     "Otherwise this action is used when the mage has FoF after casting Flurry, see above." );
-  single -> add_action( this, "Flurry", "if=!talent.glacial_spike.enabled&(prev_gcd.1.ebonbolt|buff.brain_freeze.react&prev_gcd.1.frostbolt)",
-    "Without GS, the mage just tries to shatter as many Frostbolts and Ebonbolts as possible. Forcing shatter on Frostbolt is still a small gain, "
-    "so is not caring about FoF. Ice Lance is too weak to warrant delaying Brain Freeze Flurry." );
-  single -> add_action( this, "Flurry", "if=talent.glacial_spike.enabled&buff.brain_freeze.react&(prev_gcd.1.frostbolt&buff.icicles.stack<4|prev_gcd.1.glacial_spike|prev_gcd.1.ebonbolt)",
-    "With GS, the mage only shatters Frostbolt that would put them at 1-3 Icicle stacks, Ebonbolt if it would waste Brain Freeze charge (i.e. when the mage "
-    "starts casting Ebonbolt with Brain Freeze active) and of course Glacial Spike. Difference between shattering Frostbolt with 1-3 Icicles and 1-4 Icicles is "
-    "small, but 1-3 tends to be better in more situations (the higher GS damage is, the more it leans towards 1-3)." );
+  single -> add_action( this, "Flurry", "if=talent.ebonbolt.enabled&prev_gcd.1.ebonbolt&(!talent.glacial_spike.enabled|buff.icicles.stack<4|buff.brain_freeze.react)",
+    "Without GS, Ebonbolt is always shattered. With GS, Ebonbolt is shattered if it would waste Brain Freeze charge (i.e. when the "
+    "mage starts casting Ebonbolt with Brain Freeze active) or when below 4 Icicles (if Ebonbolt is cast when the mage has 4-5 Icicles, "
+    "it's better to use the Brain Freeze from it on Glacial Spike)." );
+  single -> add_action( this, "Flurry", "if=talent.glacial_spike.enabled&prev_gcd.1.glacial_spike&buff.brain_freeze.react",
+    "Glacial Spike is always shattered." );
+  single -> add_action( this, "Flurry", "if=prev_gcd.1.frostbolt&buff.brain_freeze.react&(!talent.glacial_spike.enabled|buff.icicles.stack<4)",
+    "Without GS, the mage just tries to shatter as many Frostbolts as possible. With GS, the mage only shatters Frostbolt that would "
+    "put them at 1-3 Icicle stacks. Difference between shattering Frostbolt with 1-3 Icicles and 1-4 Icicles is small, but 1-3 tends "
+    "to be better in more situations (the higher GS damage is, the more it leans towards 1-3). Forcing shatter on Frostbolt is still "
+    "a small gain, so is not caring about FoF. Ice Lance is too weak to warrant delaying Brain Freeze Flurry." );
   single -> add_action( this, "Frozen Orb" );
   single -> add_action( this, "Blizzard", "if=active_enemies>2|active_enemies>1&cast_time=0&buff.fingers_of_frost.react<2",
     "With Freezing Rain and at least 2 targets, Blizzard needs to be used with higher priority to make sure you can fit both instant Blizzards "
@@ -6647,9 +6651,7 @@ void mage_t::apl_frost()
   single -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react",
     "Trying to pool charges of FoF for anything isn't worth it. Use them as they come." );
   single -> add_talent( this, "Comet Storm" );
-  single -> add_talent( this, "Ebonbolt", "if=!talent.glacial_spike.enabled|buff.icicles.stack=5&!buff.brain_freeze.react",
-    "Without GS, Ebonbolt is used on cooldown. With GS, Ebonbolt is only used to fill in the blank spots when fishing for a Brain Freeze proc, i.e. "
-    "the mage reaches 5 Icicles but still doesn't have a Brain Freeze proc. This is DPS neutral with low mastery and slight gain otherwise." );
+  single -> add_talent( this, "Ebonbolt" );
   single -> add_talent( this, "Ray of Frost", "if=!action.frozen_orb.in_flight&ground_aoe.frozen_orb.remains=0",
     "Ray of Frost is used after all Fingers of Frost charges have been used and there isn't active Frozen Orb that could generate more. "
     "This is only a small gain against multiple targets, as Ray of Frost isn't too impactful." );
