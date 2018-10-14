@@ -29,7 +29,6 @@
 //    + Natural Harmony             278697
 //    + Rumbling Tremors            278709
 //    + Synapse Shock               277671
-//    + Volcanic Lightning          272978    // disappeared as Azerite trait in 8.0.1.26871
 //
 // Enhancement
 // - Azerite stuff
@@ -195,7 +194,6 @@ struct shaman_td_t : public actor_target_data_t
   {
     // Elemental
     buff_t* exposed_elements;
-    buff_t* volcanic_lightning;
 
     // Enhancement
     buff_t* earthen_spike;
@@ -340,9 +338,10 @@ public:
 
     // Elemental
     buff_t* earthen_rage;
-    buff_t* icefury;
-    buff_t* liquid_magma;
     buff_t* master_of_the_elements;
+    buff_t* surge_of_power;
+    buff_t* surge_of_power_lightning;
+    buff_t* icefury;
     buff_t* unlimited_power;
     buff_t* stormkeeper;
     stat_buff_t* elemental_blast_crit;
@@ -487,18 +486,21 @@ public:
     const spell_data_t* static_charge;
 
     // Elemental
-    const spell_data_t* exposed_elements;
+    const spell_data_t* exposed_elements;  // PTR TODO: delete once 8.1 goes live
+    const spell_data_t* high_voltage;      // PTR TODO: delete once 8.1 goes live
+
+    const spell_data_t* earthen_rage;
     const spell_data_t* echo_of_the_elements;
     const spell_data_t* elemental_blast;
 
     const spell_data_t* aftershock;
-    const spell_data_t* master_of_the_elements;
+    const spell_data_t* call_the_thunder;
 
-    const spell_data_t* high_voltage;
+    const spell_data_t* master_of_the_elements;
     const spell_data_t* storm_elemental;
     const spell_data_t* liquid_magma_totem;
 
-    const spell_data_t* earthen_rage;
+    const spell_data_t* surge_of_power;
     const spell_data_t* primal_elementalist;
     const spell_data_t* icefury;
 
@@ -549,7 +551,6 @@ public:
     azerite_power_t echo_of_the_elementals;
     azerite_power_t igneous_potential;
     azerite_power_t lava_shock;
-    azerite_power_t volcanic_lightning;
 
     // Enhancement
     // azerite_power_t electropotence;  // hasn't been found in game yet, so current un-implemented in simc.
@@ -993,14 +994,11 @@ struct ascendance_buff_t : public buff_t
 shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t( target, p )
 {
   // Elemental
-  dot.flame_shock         = target->get_dot( "flame_shock", p );
+  dot.flame_shock = target->get_dot( "flame_shock", p );
+  // PTR TODO: delete me
   debuff.exposed_elements = buff_creator_t( *this, "exposed_elements", p->talent.exposed_elements )
                                 .default_value( p->find_spell( 269808 )->effectN( 1 ).percent() )
                                 .duration( p->find_spell( 269808 )->duration() );
-  debuff.volcanic_lightning = buff_creator_t( *this, "volcanic_lightning", p->azerite.volcanic_lightning )
-                                  .trigger_spell( p->find_spell( 272981 ) )
-                                  .duration( p->find_spell( 272981 )->duration() )
-                                  .default_value( p->azerite.volcanic_lightning.value() );
 
   // Enhancement
   dot.searing_assault  = target->get_dot( "searing_assault", p );
@@ -1722,7 +1720,10 @@ public:
     // roll for overload for each additional chance to trigger an overload
     for ( size_t i = 0; i < (unsigned)n_overload_chances( source_state ); i++ )
     {
-      overloads += rng().roll( overload_chance( source_state ) * p()->talent.high_voltage->effectN( 1 ).percent() );
+      if ( !maybe_ptr( p()->dbc.ptr ) )
+      {
+        overloads += rng().roll( overload_chance( source_state ) * p()->talent.high_voltage->effectN( 1 ).percent() );
+      }
     }
 
     overloads += (unsigned)n_overloads( source_state );
@@ -4381,7 +4382,7 @@ struct chain_lightning_t : public chained_base_t
   /* Number of potential overloads */
   size_t n_overload_chances( const action_state_t* ) const override
   {
-    if ( p()->talent.high_voltage->ok() )
+    if ( !maybe_ptr( p()->dbc.ptr ) && p()->talent.high_voltage->ok() )
       return (size_t)1;
     return (size_t)0;
   }
@@ -4389,11 +4390,6 @@ struct chain_lightning_t : public chained_base_t
   void impact( action_state_t* state ) override
   {
     chained_base_t::impact( state );
-
-    if ( p()->azerite.volcanic_lightning.ok() )
-    {
-      td( state->target )->debuff.volcanic_lightning->trigger();
-    }
 
     if ( p()->azerite.synapse_shock.ok() )
     {
@@ -4451,7 +4447,7 @@ struct lava_beam_t : public chained_base_t
   /* Number of potential overloads */
   size_t n_overload_chances( const action_state_t* ) const override
   {
-    if ( p()->talent.high_voltage->ok() )
+    if ( !maybe_ptr( p()->dbc.ptr ) && p()->talent.high_voltage->ok() )
       return (size_t)1;
     return (size_t)0;
   }
@@ -4461,9 +4457,15 @@ struct lava_beam_t : public chained_base_t
 
 struct lava_burst_overload_t : public elemental_overload_spell_t
 {
-  lava_burst_overload_t( shaman_t* p ) : elemental_overload_spell_t( p, "lava_burst_overload", p->find_spell( 77451 ) )
+  lava_burst_overload_t( shaman_t* player )
+    : elemental_overload_spell_t( player, "lava_burst_overload", player->find_spell( 77451 ) )
   {
-    maelstrom_gain = p->find_spell( 190493 )->effectN( 5 ).resource( RESOURCE_MAELSTROM );
+    maelstrom_gain = player->find_spell( 190493 )->effectN( 5 ).resource( RESOURCE_MAELSTROM );
+
+    if ( maybe_ptr( p()->dbc.ptr ) )
+    {
+      spell_power_mod.direct = player->find_spell( 285466 )->effectN( 1 ).sp_coeff();
+    }
   }
 
   double action_multiplier() const override
@@ -4481,7 +4483,7 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
   double bonus_da( const action_state_t* s ) const override
   {
     double b = shaman_spell_t::bonus_da( s );
-    b += td( target )->debuff.volcanic_lightning->stack_value();
+
     if ( p()->azerite.igneous_potential.ok() )
     {
       b += p()->azerite.igneous_potential.value( 2 );
@@ -4647,6 +4649,11 @@ struct lava_burst_t : public shaman_spell_t
       overload = new lava_burst_overload_t( player );
       add_child( overload );
     }
+
+    if ( maybe_ptr( p()->dbc.ptr ) )
+    {
+      spell_power_mod.direct = player->find_spell( 285452 )->effectN( 1 ).sp_coeff();
+    }
   }
 
   void init() override
@@ -4663,7 +4670,7 @@ struct lava_burst_t : public shaman_spell_t
   double bonus_da( const action_state_t* s ) const override
   {
     double b = shaman_spell_t::bonus_da( s );
-    b += td( target )->debuff.volcanic_lightning->stack_value();
+
     if ( p()->azerite.igneous_potential.ok() )
     {
       b += p()->azerite.igneous_potential.value( 2 );
@@ -4689,7 +4696,7 @@ struct lava_burst_t : public shaman_spell_t
 
     if ( p()->spec.lava_burst_2->ok() && td( target )->dot.flame_shock->is_ticking() )
     {
-      // hardcoded because I didn't find it it spell data yet
+      // hardcoded because I didn't find it in spell data yet
       m = 1.0;
     }
 
@@ -4714,6 +4721,13 @@ struct lava_burst_t : public shaman_spell_t
   void execute() override
   {
     shaman_spell_t::execute();
+
+    if ( maybe_ptr( p()->dbc.ptr ) && p()->buff.surge_of_power->up() )
+    {
+      p()->cooldown.fire_elemental->adjust( -1.0 * p()->talent.surge_of_power->effectN( 1 ).time_value() );
+      p()->cooldown.storm_elemental->adjust( -1.0 * p()->talent.surge_of_power->effectN( 1 ).time_value() );
+      p()->buff.surge_of_power->decrement();
+    }
 
     if ( p()->talent.master_of_the_elements->ok() )
     {
@@ -4768,9 +4782,19 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
   double composite_target_multiplier( player_t* target ) const override
   {
     auto m = shaman_spell_t::composite_target_multiplier( target );
-    if ( td( target )->debuff.exposed_elements->up() )
+    if ( !maybe_ptr( p()->dbc.ptr ) && td( target )->debuff.exposed_elements->up() )
     {
       m *= 1.0 + td( target )->debuff.exposed_elements->default_value;
+    }
+    return m;
+  }
+
+  double action_multiplier() const override
+  {
+    double m = shaman_spell_t::action_multiplier();
+    if ( maybe_ptr( p()->dbc.ptr ) && p()->buff.stormkeeper->up() )
+    {
+      m *= 1.0 + p()->talent.stormkeeper->effectN( 2 ).percent();
     }
     return m;
   }
@@ -4836,10 +4860,20 @@ struct lightning_bolt_t : public shaman_spell_t
     return chance;
   }
 
+  size_t n_overloads( const action_state_t* t ) const override
+  {
+    size_t n = shaman_spell_t::n_overloads( t );
+    if ( maybe_ptr( p()->dbc.ptr ) && ( p()->buff.surge_of_power->up() || p()->buff.surge_of_power_lightning->up() ) )
+    {
+      n += (size_t)1;
+    }
+    return n;
+  }
+
   /* Number of potential overloads */
   size_t n_overload_chances( const action_state_t* ) const override
   {
-    if ( p()->talent.high_voltage->ok() )
+    if ( !maybe_ptr( p()->dbc.ptr ) && p()->talent.high_voltage->ok() )
       return (size_t)1;
     return (size_t)0;
   }
@@ -4847,9 +4881,19 @@ struct lightning_bolt_t : public shaman_spell_t
   double composite_target_multiplier( player_t* target ) const override
   {
     auto m = shaman_spell_t::composite_target_multiplier( target );
-    if ( td( target )->debuff.exposed_elements->up() )
+    if ( !maybe_ptr( p()->dbc.ptr ) && td( target )->debuff.exposed_elements->up() )
     {
       m *= 1.0 + td( target )->debuff.exposed_elements->default_value;
+    }
+    return m;
+  }
+
+  double action_multiplier() const override
+  {
+    double m = shaman_spell_t::action_multiplier();
+    if ( maybe_ptr( p()->dbc.ptr ) && p()->buff.stormkeeper->up() )
+    {
+      m *= 1.0 + p()->talent.stormkeeper->effectN( 2 ).percent();
     }
     return m;
   }
@@ -4887,7 +4931,25 @@ struct lightning_bolt_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     p()->buff.stormkeeper->decrement();
-    td( target )->debuff.exposed_elements->expire();
+    if ( !maybe_ptr( p()->dbc.ptr ) )
+    {
+      td( target )->debuff.exposed_elements->expire();
+    }
+
+    if ( maybe_ptr( p()->dbc.ptr ) )
+    {
+      // Ingame behavior: With surge_of_power and surge_of_power_lightning active, surge_of_power
+      // is consumed on LB cast and surge_of_power_lightning is reset to 2 stacks
+      if ( p()->buff.surge_of_power->up() )
+      {
+        p()->buff.surge_of_power_lightning->trigger( p()->buff.surge_of_power_lightning->max_stack() );
+        p()->buff.surge_of_power->decrement();
+      }
+      else if ( p()->buff.surge_of_power_lightning->up() )
+      {
+        p()->buff.surge_of_power_lightning->decrement();
+      }
+    }
 
     if ( !p()->talent.overcharge->ok() && p()->specialization() == SHAMAN_ENHANCEMENT )
     {
@@ -4915,10 +4977,6 @@ struct lightning_bolt_t : public shaman_spell_t
     }
 
     // Azerite trait
-    if ( p()->azerite.volcanic_lightning.ok() )
-    {
-      td( target )->debuff.volcanic_lightning->trigger();
-    }
     if ( p()->azerite.synapse_shock.ok() )
     {
       p()->buff.synapse_shock->trigger();
@@ -4946,6 +5004,14 @@ struct lightning_bolt_t : public shaman_spell_t
 void trigger_elemental_blast_proc( shaman_t* p )
 {
   unsigned b = static_cast<unsigned>( p->rng().range( 0, 3 ) );
+
+  // EB can no longer proc the same buff twice
+  while ( maybe_ptr( p->dbc.ptr ) &&
+          ( b == 0 && p->buff.elemental_blast_crit->check() || b == 1 && p->buff.elemental_blast_haste->check() ||
+            b == 2 && p->buff.elemental_blast_mastery->check() ) )
+  {
+    b = static_cast<unsigned>( p->rng().range( 0, 3 ) );
+  }
 
   if ( b == 0 )
   {
@@ -5273,6 +5339,8 @@ struct earthquake_damage_t : public shaman_spell_t
   {
     double m = shaman_spell_t::composite_persistent_multiplier( state );
 
+    m *= 1.0 + p()->buff.master_of_the_elements->value();
+
     m *= 1.0 + p()->buff.t21_2pc_elemental->stack_value();
 
     return m;
@@ -5298,7 +5366,12 @@ struct earthquake_t : public shaman_spell_t
 
   double cost() const override
   {
-    return shaman_spell_t::cost();
+    double d = shaman_spell_t::cost();
+    if ( maybe_ptr( p()->dbc.ptr ) && p()->talent.call_the_thunder->ok() )
+    {
+      d += p()->talent.call_the_thunder->effectN( 1 ).base_value();
+    }
+    return d;
   }
 
   void execute() override
@@ -5311,7 +5384,7 @@ struct earthquake_t : public shaman_spell_t
 
     // Note, needs to be decremented after ground_aoe_event_t is created so that the rumble gets the
     // buff multiplier as persistent.
-
+    p()->buff.master_of_the_elements->expire();
     p()->buff.t21_2pc_elemental->expire();
   }
 };
@@ -5357,6 +5430,16 @@ struct earth_shock_t : public shaman_spell_t
     }
   }
 
+  double cost() const override
+  {
+    double d = shaman_spell_t::cost();
+    if ( maybe_ptr( p()->dbc.ptr ) && p()->talent.call_the_thunder->ok() )
+    {
+      d += p()->talent.call_the_thunder->effectN( 1 ).base_value();
+    }
+    return d;
+  }
+
   double bonus_da( const action_state_t* s ) const override
   {
     double b = shaman_spell_t::bonus_da( s );
@@ -5377,13 +5460,18 @@ struct earth_shock_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    if ( p()->talent.exposed_elements->ok() )
+    if ( !maybe_ptr( p()->dbc.ptr ) && p()->talent.exposed_elements->ok() )
     {
       td( target )->debuff.exposed_elements->trigger();
     }
 
     p()->buff.t21_2pc_elemental->expire();
     p()->buff.lava_shock->expire();
+
+    if ( maybe_ptr( p()->dbc.ptr ) && p()->talent.surge_of_power->ok() )
+    {
+      p()->buff.surge_of_power->trigger();
+    }
 
     expansion::bfa::trigger_leyshocks_grand_compilation(
         last_resource_cost == 100.0 ? STAT_HASTE_RATING : STAT_MASTERY_RATING, player );
@@ -5406,8 +5494,11 @@ struct earth_shock_t : public shaman_spell_t
 
 struct flame_shock_t : public shaman_spell_t
 {
+  flame_shock_spreader_t* spreader;
+
   flame_shock_t( shaman_t* player, const std::string& options_str = std::string() )
-    : shaman_spell_t( "flame_shock", player, player->find_specialization_spell( "Flame Shock" ), options_str )
+    : shaman_spell_t( "flame_shock", player, player->find_specialization_spell( "Flame Shock" ), options_str ),
+      spreader( player->talent.surge_of_power->ok() ? new flame_shock_spreader_t( player ) : nullptr )
   {
     tick_may_crit  = true;
     track_cd_waste = false;
@@ -5495,6 +5586,20 @@ struct flame_shock_t : public shaman_spell_t
     if ( p()->azerite.lava_shock.ok() )
     {
       p()->buff.lava_shock->trigger();
+    }
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    shaman_spell_t::impact( state );
+    if ( maybe_ptr( p()->dbc.ptr ) && p()->buff.surge_of_power->up() && sim->target_non_sleeping_list.size() > 1 )
+    {
+      spreader->target = state->target;
+      spreader->execute();
+    }
+    if ( maybe_ptr( p()->dbc.ptr ) )
+    {
+      p()->buff.surge_of_power->expire();
     }
   }
 };
@@ -6688,19 +6793,23 @@ void shaman_t::init_spells()
   talent.totem_mastery = find_talent_spell( "Totem Mastery" );
 
   // Elemental
-  talent.exposed_elements     = find_talent_spell( "Exposed Elements" );
+
+  talent.exposed_elements = find_talent_spell( "Exposed Elements" );  // PTR TODO: delete once 8.1 is live
+  talent.high_voltage     = find_talent_spell( "High Voltage" );      // PTR TODO: delete once 8.1 is live
+
+  talent.earthen_rage         = find_talent_spell( "Earthen Rage" );
   talent.echo_of_the_elements = find_talent_spell( "Echo of the Elements" );
   talent.elemental_blast      = find_talent_spell( "Elemental Blast" );
 
-  talent.aftershock             = find_talent_spell( "Aftershock" );
-  talent.master_of_the_elements = find_talent_spell( "Master of the Elements" );
+  talent.aftershock       = find_talent_spell( "Aftershock" );
+  talent.call_the_thunder = find_talent_spell( "Call the Thunder" );
   // talent.totem_mastery          = find_talent_spell( "Totem Mastery" );
 
-  talent.high_voltage       = find_talent_spell( "High Voltage" );
-  talent.storm_elemental    = find_talent_spell( "Storm Elemental" );
-  talent.liquid_magma_totem = find_talent_spell( "Liquid Magma Totem" );
+  talent.master_of_the_elements = find_talent_spell( "Master of the Elements" );
+  talent.storm_elemental        = find_talent_spell( "Storm Elemental" );
+  talent.liquid_magma_totem     = find_talent_spell( "Liquid Magma Totem" );
 
-  talent.earthen_rage        = find_talent_spell( "Earthen Rage" );
+  talent.surge_of_power      = find_talent_spell( "Surge of Power" );
   talent.primal_elementalist = find_talent_spell( "Primal Elementalist" );
   talent.icefury             = find_talent_spell( "Icefury" );
 
@@ -6741,7 +6850,6 @@ void shaman_t::init_spells()
   azerite.echo_of_the_elementals = find_azerite_spell( "Echo of the Elementals" );
   azerite.igneous_potential      = find_azerite_spell( "Igneous Potential" );
   azerite.lava_shock             = find_azerite_spell( "Lava Shock" );
-  azerite.volcanic_lightning     = find_azerite_spell( "Volcanic Lightning" );
 
   // Enhancement
   azerite.lightning_conduit = find_azerite_spell( "Lightning Conduit" );
@@ -6779,6 +6887,11 @@ void shaman_t::init_base_stats()
 
   if ( specialization() == SHAMAN_ELEMENTAL || specialization() == SHAMAN_ENHANCEMENT )
     resources.base[ RESOURCE_MAELSTROM ] = 100;
+
+  if ( specialization() == SHAMAN_ELEMENTAL && talent.call_the_thunder->ok() )
+  {
+    resources.base[ RESOURCE_MAELSTROM ] += talent.call_the_thunder->effectN( 2 ).base_value();
+  }
 
   if ( spec.enhancement_shaman->ok() )
     resources.base[ RESOURCE_MAELSTROM ] += spec.enhancement_shaman->effectN( 6 ).base_value();
@@ -7219,6 +7332,11 @@ void shaman_t::create_buffs()
   buff.stormkeeper = make_buff( this, "stormkeeper", talent.stormkeeper )
                          ->set_cooldown( timespan_t::zero() );  // Handled by the action
 
+  buff.surge_of_power =
+      make_buff( this, "surge_of_power", talent.surge_of_power )->set_duration( find_spell( 285514 )->duration() );
+
+  buff.surge_of_power_lightning = make_buff( this, "surge_of_power_lightning", find_spell( 285582 ) );
+
   buff.icefury = make_buff( this, "icefury", talent.icefury )
                      ->set_cooldown( timespan_t::zero() )  // Handled by the action
                      ->set_default_value( talent.icefury->effectN( 3 ).percent() );
@@ -7579,12 +7697,7 @@ void shaman_t::init_action_list_elemental()
                              "Keep SK for large or soon add waves." );
   single_target->add_talent( this, "Liquid Magma Totem",
                              "if=talent.liquid_magma_totem.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)" );
-  single_target->add_action(
-      this, "Earthquake", "if=active_enemies>1&spell_targets.chain_lightning>1&!talent.exposed_elements.enabled", "" );
-  single_target->add_action(
-      this, "Lightning Bolt",
-      "if=talent.exposed_elements.enabled&debuff.exposed_elements.up&maelstrom>=60&!buff.ascendance.up",
-      "Use the debuff before casting Earth Shock again." );
+  single_target->add_action( this, "Earthquake", "if=active_enemies>1&spell_targets.chain_lightning>1", "" );
   single_target->add_action( this, "Earth Shock",
                              "if=talent.master_of_the_elements.enabled&(buff.master_of_the_elements.up|maelstrom>=92)|!"
                              "talent.master_of_the_elements.enabled",
