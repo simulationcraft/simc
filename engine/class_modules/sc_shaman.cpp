@@ -5339,7 +5339,10 @@ struct earthquake_damage_t : public shaman_spell_t
   {
     double m = shaman_spell_t::composite_persistent_multiplier( state );
 
-    m *= 1.0 + p()->buff.master_of_the_elements->value();
+    if ( maybe_ptr( p()->dbc.ptr ) )
+    {
+      m *= 1.0 + p()->buff.master_of_the_elements->value();
+    }
 
     m *= 1.0 + p()->buff.t21_2pc_elemental->stack_value();
 
@@ -5384,7 +5387,10 @@ struct earthquake_t : public shaman_spell_t
 
     // Note, needs to be decremented after ground_aoe_event_t is created so that the rumble gets the
     // buff multiplier as persistent.
-    p()->buff.master_of_the_elements->expire();
+    if ( maybe_ptr( p()->dbc.ptr ) )
+    {
+      p()->buff.master_of_the_elements->expire();
+    }
     p()->buff.t21_2pc_elemental->expire();
   }
 };
@@ -7697,7 +7703,12 @@ void shaman_t::init_action_list_elemental()
                              "Keep SK for large or soon add waves." );
   single_target->add_talent( this, "Liquid Magma Totem",
                              "if=talent.liquid_magma_totem.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)" );
-  single_target->add_action( this, "Earthquake", "if=active_enemies>1&spell_targets.chain_lightning>1", "" );
+  single_target->add_action(
+      this, "Earthquake", "if=active_enemies>1&spell_targets.chain_lightning>1&!talent.exposed_elements.enabled", "" );
+  single_target->add_action(
+      this, "Lightning Bolt",
+      "if=talent.exposed_elements.enabled&debuff.exposed_elements.up&maelstrom>=60&!buff.ascendance.up",
+      "Use the debuff before casting Earth Shock again." );
   single_target->add_action( this, "Earth Shock",
                              "if=talent.master_of_the_elements.enabled&(buff.master_of_the_elements.up|maelstrom>=92)|!"
                              "talent.master_of_the_elements.enabled",
