@@ -4950,6 +4950,14 @@ void trigger_elemental_blast_proc( shaman_t* p )
 {
   unsigned b = static_cast<unsigned>( p->rng().range( 0, 3 ) );
 
+  // EB can no longer proc the same buff twice
+  while ( maybe_ptr( p->dbc.ptr ) &&
+          ( b == 0 && p->buff.elemental_blast_crit->check() || b == 1 && p->buff.elemental_blast_haste->check() ||
+            b == 2 && p->buff.elemental_blast_mastery->check() ) )
+  {
+    b = static_cast<unsigned>( p->rng().range( 0, 3 ) );
+  }
+
   if ( b == 0 )
   {
     p->buff.elemental_blast_crit->trigger();
