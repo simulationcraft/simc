@@ -5364,7 +5364,6 @@ void hunter_t::apl_mm()
 
   steady_st -> add_talent( this, "A Murder of Crows" );
   steady_st -> add_action( this, "Aimed Shot", "if=buff.lethal_shots.up" );
-  steady_st -> add_action( this, "Steady Shot", "if=buff.lethal_shots.down" );
   steady_st -> add_action( this, "Arcane Shot", "if=buff.precise_shots.up" );
   steady_st -> add_talent( this, "Serpent Sting", "if=refreshable" );
   steady_st -> add_action( this, "Steady Shot" );
