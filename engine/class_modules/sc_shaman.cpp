@@ -29,7 +29,6 @@
 //    + Natural Harmony             278697
 //    + Rumbling Tremors            278709
 //    + Synapse Shock               277671
-//    + Volcanic Lightning          272978    // disappeared as Azerite trait in 8.0.1.26871
 //
 // Enhancement
 // - Azerite stuff
@@ -195,7 +194,6 @@ struct shaman_td_t : public actor_target_data_t
   {
     // Elemental
     buff_t* exposed_elements;
-    buff_t* volcanic_lightning;
 
     // Enhancement
     buff_t* earthen_spike;
@@ -549,7 +547,6 @@ public:
     azerite_power_t echo_of_the_elementals;
     azerite_power_t igneous_potential;
     azerite_power_t lava_shock;
-    azerite_power_t volcanic_lightning;
 
     // Enhancement
     // azerite_power_t electropotence;  // hasn't been found in game yet, so current un-implemented in simc.
@@ -997,10 +994,6 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t(
   debuff.exposed_elements = buff_creator_t( *this, "exposed_elements", p->talent.exposed_elements )
                                 .default_value( p->find_spell( 269808 )->effectN( 1 ).percent() )
                                 .duration( p->find_spell( 269808 )->duration() );
-  debuff.volcanic_lightning = buff_creator_t( *this, "volcanic_lightning", p->azerite.volcanic_lightning )
-                                  .trigger_spell( p->find_spell( 272981 ) )
-                                  .duration( p->find_spell( 272981 )->duration() )
-                                  .default_value( p->azerite.volcanic_lightning.value() );
 
   // Enhancement
   dot.searing_assault  = target->get_dot( "searing_assault", p );
@@ -4390,11 +4383,6 @@ struct chain_lightning_t : public chained_base_t
   {
     chained_base_t::impact( state );
 
-    if ( p()->azerite.volcanic_lightning.ok() )
-    {
-      td( state->target )->debuff.volcanic_lightning->trigger();
-    }
-
     if ( p()->azerite.synapse_shock.ok() )
     {
       p()->buff.synapse_shock->trigger();
@@ -4481,7 +4469,7 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
   double bonus_da( const action_state_t* s ) const override
   {
     double b = shaman_spell_t::bonus_da( s );
-    b += td( target )->debuff.volcanic_lightning->stack_value();
+
     if ( p()->azerite.igneous_potential.ok() )
     {
       b += p()->azerite.igneous_potential.value( 2 );
@@ -4663,7 +4651,7 @@ struct lava_burst_t : public shaman_spell_t
   double bonus_da( const action_state_t* s ) const override
   {
     double b = shaman_spell_t::bonus_da( s );
-    b += td( target )->debuff.volcanic_lightning->stack_value();
+
     if ( p()->azerite.igneous_potential.ok() )
     {
       b += p()->azerite.igneous_potential.value( 2 );
@@ -4915,10 +4903,6 @@ struct lightning_bolt_t : public shaman_spell_t
     }
 
     // Azerite trait
-    if ( p()->azerite.volcanic_lightning.ok() )
-    {
-      td( target )->debuff.volcanic_lightning->trigger();
-    }
     if ( p()->azerite.synapse_shock.ok() )
     {
       p()->buff.synapse_shock->trigger();
@@ -6741,7 +6725,6 @@ void shaman_t::init_spells()
   azerite.echo_of_the_elementals = find_azerite_spell( "Echo of the Elementals" );
   azerite.igneous_potential      = find_azerite_spell( "Igneous Potential" );
   azerite.lava_shock             = find_azerite_spell( "Lava Shock" );
-  azerite.volcanic_lightning     = find_azerite_spell( "Volcanic Lightning" );
 
   // Enhancement
   azerite.lightning_conduit = find_azerite_spell( "Lightning Conduit" );
