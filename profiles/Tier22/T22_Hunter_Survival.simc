@@ -39,7 +39,7 @@ actions+=/call_action_list,name=bopVV,if=active_enemies<3&talent.birds_of_prey.e
 actions+=/call_action_list,name=mb_ap_wfi_st,if=active_enemies<3&talent.wildfire_infusion.enabled&talent.alpha_predator.enabled&talent.mongoose_bite.enabled
 actions+=/call_action_list,name=wfi_st,if=active_enemies<3&talent.wildfire_infusion.enabled
 actions+=/call_action_list,name=st,if=active_enemies<2
-actions+=/call_action_list,name=cleave
+actions+=/call_action_list,name=cleave,if=active_enemies>1
 actions+=/arcane_torrent
 
 actions.bopAP=mongoose_bite,if=buff.coordinated_assault.up&(buff.coordinated_assault.remains<gcd|buff.blur_of_talons.remains<gcd)
