@@ -485,14 +485,14 @@ public:
     const spell_data_t* static_charge;
 
     // Elemental
-    const spell_data_t* exposed_elements;
+    const spell_data_t* exposed_elements;  // PTR TODO: delete once 8.1 goes live
     const spell_data_t* echo_of_the_elements;
     const spell_data_t* elemental_blast;
 
     const spell_data_t* aftershock;
     const spell_data_t* master_of_the_elements;
 
-    const spell_data_t* high_voltage;
+    const spell_data_t* high_voltage;  // PTR TODO: delete once 8.1 goes live
     const spell_data_t* storm_elemental;
     const spell_data_t* liquid_magma_totem;
 
@@ -990,7 +990,8 @@ struct ascendance_buff_t : public buff_t
 shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t( target, p )
 {
   // Elemental
-  dot.flame_shock         = target->get_dot( "flame_shock", p );
+  dot.flame_shock = target->get_dot( "flame_shock", p );
+  // PTR TODO: delete me
   debuff.exposed_elements = buff_creator_t( *this, "exposed_elements", p->talent.exposed_elements )
                                 .default_value( p->find_spell( 269808 )->effectN( 1 ).percent() )
                                 .duration( p->find_spell( 269808 )->duration() );
@@ -1715,7 +1716,10 @@ public:
     // roll for overload for each additional chance to trigger an overload
     for ( size_t i = 0; i < (unsigned)n_overload_chances( source_state ); i++ )
     {
-      overloads += rng().roll( overload_chance( source_state ) * p()->talent.high_voltage->effectN( 1 ).percent() );
+      if ( !maybe_ptr( p()->dbc.ptr ) )
+      {
+        overloads += rng().roll( overload_chance( source_state ) * p()->talent.high_voltage->effectN( 1 ).percent() );
+      }
     }
 
     overloads += (unsigned)n_overloads( source_state );
@@ -4374,7 +4378,7 @@ struct chain_lightning_t : public chained_base_t
   /* Number of potential overloads */
   size_t n_overload_chances( const action_state_t* ) const override
   {
-    if ( p()->talent.high_voltage->ok() )
+    if ( !maybe_ptr( p()->dbc.ptr ) && p()->talent.high_voltage->ok() )
       return (size_t)1;
     return (size_t)0;
   }
@@ -4439,7 +4443,7 @@ struct lava_beam_t : public chained_base_t
   /* Number of potential overloads */
   size_t n_overload_chances( const action_state_t* ) const override
   {
-    if ( p()->talent.high_voltage->ok() )
+    if ( !maybe_ptr( p()->dbc.ptr ) && p()->talent.high_voltage->ok() )
       return (size_t)1;
     return (size_t)0;
   }
@@ -4756,7 +4760,7 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
   double composite_target_multiplier( player_t* target ) const override
   {
     auto m = shaman_spell_t::composite_target_multiplier( target );
-    if ( td( target )->debuff.exposed_elements->up() )
+    if ( !maybe_ptr( p()->dbc.ptr ) && td( target )->debuff.exposed_elements->up() )
     {
       m *= 1.0 + td( target )->debuff.exposed_elements->default_value;
     }
@@ -4827,7 +4831,7 @@ struct lightning_bolt_t : public shaman_spell_t
   /* Number of potential overloads */
   size_t n_overload_chances( const action_state_t* ) const override
   {
-    if ( p()->talent.high_voltage->ok() )
+    if ( !maybe_ptr( p()->dbc.ptr ) && p()->talent.high_voltage->ok() )
       return (size_t)1;
     return (size_t)0;
   }
@@ -4835,7 +4839,7 @@ struct lightning_bolt_t : public shaman_spell_t
   double composite_target_multiplier( player_t* target ) const override
   {
     auto m = shaman_spell_t::composite_target_multiplier( target );
-    if ( td( target )->debuff.exposed_elements->up() )
+    if ( !maybe_ptr( p()->dbc.ptr ) && td( target )->debuff.exposed_elements->up() )
     {
       m *= 1.0 + td( target )->debuff.exposed_elements->default_value;
     }
@@ -4875,7 +4879,10 @@ struct lightning_bolt_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     p()->buff.stormkeeper->decrement();
-    td( target )->debuff.exposed_elements->expire();
+    if ( !maybe_ptr( p()->dbc.ptr ) )
+    {
+      td( target )->debuff.exposed_elements->expire();
+    }
 
     if ( !p()->talent.overcharge->ok() && p()->specialization() == SHAMAN_ENHANCEMENT )
     {
@@ -5361,7 +5368,7 @@ struct earth_shock_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    if ( p()->talent.exposed_elements->ok() )
+    if ( !maybe_ptr( p()->dbc.ptr ) && p()->talent.exposed_elements->ok() )
     {
       td( target )->debuff.exposed_elements->trigger();
     }
@@ -6672,7 +6679,10 @@ void shaman_t::init_spells()
   talent.totem_mastery = find_talent_spell( "Totem Mastery" );
 
   // Elemental
-  talent.exposed_elements     = find_talent_spell( "Exposed Elements" );
+  if ( !maybe_ptr( dbc.ptr ) )
+  {
+    talent.exposed_elements = find_talent_spell( "Exposed Elements" );
+  }
   talent.echo_of_the_elements = find_talent_spell( "Echo of the Elements" );
   talent.elemental_blast      = find_talent_spell( "Elemental Blast" );
 
@@ -6680,7 +6690,10 @@ void shaman_t::init_spells()
   talent.master_of_the_elements = find_talent_spell( "Master of the Elements" );
   // talent.totem_mastery          = find_talent_spell( "Totem Mastery" );
 
-  talent.high_voltage       = find_talent_spell( "High Voltage" );
+  if ( !maybe_ptr( dbc.ptr ) )
+  {
+    talent.high_voltage = find_talent_spell( "High Voltage" );
+  }
   talent.storm_elemental    = find_talent_spell( "Storm Elemental" );
   talent.liquid_magma_totem = find_talent_spell( "Liquid Magma Totem" );
 
