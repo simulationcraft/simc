@@ -33,7 +33,7 @@ actions.precombat+=/army_of_the_dead,delay=2
 actions=auto_attack
 actions+=/variable,name=pooling_for_gargoyle,value=cooldown.summon_gargoyle.remains<5&talent.summon_gargoyle.enabled
 # Racials, Items, and other ogcds
-actions+=/arcane_torrent,if=runic_power.deficit>65&(pet.gargoyle.active|!talent.summon_gargoyle.enabled)&rune.deficit>=5
+actions+=/arcane_torrent,if=runic_power.deficit>65&(cooldown.summon_gargoyle.remains|!talent.summon_gargoyle.enabled)&rune.deficit>=5
 actions+=/blood_fury,if=pet.gargoyle.active|!talent.summon_gargoyle.enabled
 actions+=/berserking,if=pet.gargoyle.active|!talent.summon_gargoyle.enabled
 # Custom trinkets usage
@@ -73,7 +73,8 @@ actions.cooldowns+=/dark_transformation
 actions.cooldowns+=/summon_gargoyle,if=runic_power.deficit<14
 actions.cooldowns+=/unholy_frenzy,if=debuff.festering_wound.stack<4
 actions.cooldowns+=/unholy_frenzy,if=active_enemies>=2&((cooldown.death_and_decay.remains<=gcd&!talent.defile.enabled)|(cooldown.defile.remains<=gcd&talent.defile.enabled))
-actions.cooldowns+=/soul_reaper,target_if=(target.time_to_die<8|rune<=2)&!buff.unholy_frenzy.up
+actions.cooldowns+=/soul_reaper,target_if=target.time_to_die<8&target.time_to_die>4
+actions.cooldowns+=/soul_reaper,if=(!raid_event.adds.exists|raid_event.adds.in>20)&rune<=(1-buff.unholy_frenzy.up)
 actions.cooldowns+=/unholy_blight
 
 actions.generic=death_coil,if=buff.sudden_doom.react&!variable.pooling_for_gargoyle|pet.gargoyle.active

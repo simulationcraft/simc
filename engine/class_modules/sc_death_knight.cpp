@@ -7788,7 +7788,7 @@ void death_knight_t::default_apl_unholy()
   def -> add_action( "variable,name=pooling_for_gargoyle,value=cooldown.summon_gargoyle.remains<5&talent.summon_gargoyle.enabled" );
 
   // Ogcd cooldowns
-  def -> add_action( "arcane_torrent,if=runic_power.deficit>65&(pet.gargoyle.active|!talent.summon_gargoyle.enabled)&rune.deficit>=5", "Racials, Items, and other ogcds" );
+  def -> add_action( "arcane_torrent,if=runic_power.deficit>65&(cooldown.summon_gargoyle.remains|!talent.summon_gargoyle.enabled)&rune.deficit>=5", "Racials, Items, and other ogcds" );
   def -> add_action( "blood_fury,if=pet.gargoyle.active|!talent.summon_gargoyle.enabled" );
   def -> add_action( "berserking,if=pet.gargoyle.active|!talent.summon_gargoyle.enabled" );
   def -> add_action( "use_items", "Custom trinkets usage" );
@@ -7809,7 +7809,8 @@ void death_knight_t::default_apl_unholy()
   cooldowns -> add_talent( this, "Summon Gargoyle", "if=runic_power.deficit<14" );
   cooldowns -> add_talent( this, "Unholy Frenzy", "if=debuff.festering_wound.stack<4" );
   cooldowns -> add_talent( this, "Unholy Frenzy", "if=active_enemies>=2&((cooldown.death_and_decay.remains<=gcd&!talent.defile.enabled)|(cooldown.defile.remains<=gcd&talent.defile.enabled))" );
-  cooldowns -> add_talent( this, "Soul Reaper", "target_if=(target.time_to_die<8|rune<=2)&!buff.unholy_frenzy.up" );
+  cooldowns -> add_talent( this, "Soul Reaper", "target_if=target.time_to_die<8&target.time_to_die>4" );
+  cooldowns -> add_talent( this, "Soul Reaper", "if=(!raid_event.adds.exists|raid_event.adds.in>20)&rune<=(1-buff.unholy_frenzy.up)" );
   cooldowns -> add_talent( this, "Unholy Blight" );
 
   generic -> add_action( this, "Death Coil", "if=buff.sudden_doom.react&!variable.pooling_for_gargoyle|pet.gargoyle.active" );
