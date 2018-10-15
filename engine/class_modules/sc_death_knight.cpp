@@ -2301,7 +2301,8 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
   dancing_rune_weapon_pet_t( death_knight_t* owner ) :
     death_knight_pet_t( owner, "dancing_rune_weapon", true, true )
   {
-    main_hand_weapon.type       = WEAPON_BEAST_2H;
+    // The pet wields the same weapon type as its owner for spells with weapon requirements
+    main_hand_weapon.type       = owner -> main_hand_weapon.type;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 3.5 );
 
     owner_coeff.ap_from_ap = 1 / 3.0;
