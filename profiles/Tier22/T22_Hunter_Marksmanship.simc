@@ -67,7 +67,6 @@ actions.st+=/arcane_shot
 
 actions.steady_st=a_murder_of_crows
 actions.steady_st+=/aimed_shot,if=buff.lethal_shots.up
-actions.steady_st+=/steady_shot,if=buff.lethal_shots.down
 actions.steady_st+=/arcane_shot,if=buff.precise_shots.up
 actions.steady_st+=/serpent_sting,if=refreshable
 actions.steady_st+=/steady_shot
