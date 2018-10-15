@@ -1554,6 +1554,9 @@ class SpellDataGenerator(DataGenerator):
           # Azerite Traits
           ( 278710, 3 ), # Swift Roundhouse
           ( 278767, 1 ), # Training of Niuzao buff
+          ( 286585, 3 ), # Dance of Chi-Ji trait
+          ( 286586, 3 ), # Dance of Chi-Ji RPPM
+          ( 286587, 3 ), # Dance of Chi-Ji buff
           ( 287062, 3 ), # Fury of Xuen buff
           ( 287063, 3 ), # Fury of Xuen proc
         ),

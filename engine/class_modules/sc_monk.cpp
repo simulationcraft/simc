@@ -268,11 +268,12 @@ public:
     buff_t* the_emperors_capacitor;
 
     // Azerite Trait
+    buff_t* dance_of_chiji;
+    buff_t* fit_to_burst;
     stat_buff_t* iron_fists;
     stat_buff_t* training_of_niuzao;
     buff_t* sunrise_technique;
     buff_t* swift_roundhouse;
-    buff_t* fit_to_burst;
   } buff;
 
 public:
@@ -546,6 +547,7 @@ public:
   {
     // Azerite Traits
     real_ppm_t* boiling_brew;
+    real_ppm_t* dance_of_chiji;
   } rppm;
 
   struct legendary_t
@@ -651,6 +653,8 @@ public:
     azerite_power_t pressure_point;
     // Blackout Kick increases the damage of your next Rising Sun Kick by 74, stacking up to 2 times.
     azerite_power_t swift_roundhouse;
+    // Spending Chi has a chance to make your next Spinning Crane Kick free and deal 1274 additional damage.
+    azerite_power_t dance_of_chiji;
   } azerite;
 
   struct pets_t
@@ -2457,6 +2461,9 @@ public:
               timespan_t::from_seconds( -1 *
                                         ( p()->azerite.meridian_strikes.spell_ref().effectN( 2 ).base_value() / 100 ) ),
               true );  // Saved as 10
+
+        if ( p()->azerite.dance_of_chiji.ok() && p()->rppm.dance_of_chiji -> trigger() )
+          p()->buff.dance_of_chiji->trigger();
       }
       else
       {
@@ -3896,6 +3903,16 @@ struct sck_tick_action_t : public monk_melee_attack_t
 
     return am;
   }
+
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = monk_melee_attack_t::bonus_da( s );
+
+    if ( p()->azerite.dance_of_chiji.ok() )
+      b += p()->azerite.dance_of_chiji.value();
+
+    return b;
+  }
 };
 
 struct spinning_crane_kick_t : public monk_melee_attack_t
@@ -3926,6 +3943,16 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     return dot_duration * ( tick_time( s ) / base_tick_time );
   }
 
+  virtual double cost() const override
+  {
+    double c = monk_melee_attack_t::cost();
+
+    if ( p()->buff.dance_of_chiji->up() && !p()->buff.serenity->up() )
+      c += p()->buff.dance_of_chiji->data().effectN( 3 ).base_value();  // saved as -2
+
+    return c;
+  }
+
   virtual void consume_resource() override
   {
     monk_melee_attack_t::consume_resource();
@@ -3943,6 +3970,14 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     monk_melee_attack_t::execute();
 
     p()->buff.spinning_crane_kick->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, composite_dot_duration( execute_state ) );
+  }
+
+  virtual void last_tick(dot_t* dot) override
+  {
+    monk_melee_attack_t::last_tick(dot);
+
+    if ( p()->buff.dance_of_chiji->up() )
+      p()->buff.dance_of_chiji->expire();
   }
 };
 
@@ -7799,6 +7834,7 @@ void monk_t::init_spells()
   azerite.uplifting_spirits = find_azerite_spell( "Uplifted Spirits" );
 
   // Windwalker
+  azerite.dance_of_chiji    = find_azerite_spell( 286585 );
   azerite.iron_fists        = find_azerite_spell( "Iron Fists" );
   azerite.meridian_strikes  = find_azerite_spell( "Meridian Strikes" );
   azerite.open_palm_strikes = find_azerite_spell( "Open Palm Strikes" );
@@ -8135,6 +8171,8 @@ void monk_t::create_buffs()
                             ->add_stat( STAT_MASTERY_RATING, azerite.training_of_niuzao.value() / 3 );
   buff.training_of_niuzao->set_max_stack( 3 );
   // Windwalker
+  buff.dance_of_chiji = make_buff( this, "dance_of_chiji", find_spell(286587) );
+
   buff.iron_fists = make_buff<stat_buff_t>( this, "iron_fists", find_spell( 272806 ) )
                         ->add_stat( STAT_CRIT_RATING, azerite.iron_fists.value() );
 
@@ -8184,9 +8222,10 @@ void monk_t::init_rng()
 {
   player_t::init_rng();
   if ( specialization() == MONK_BREWMASTER )
-  {
     rppm.boiling_brew = get_rppm( "boiling_brew", find_spell( 272797 ) );
-  }
+
+  else if ( specialization() == MONK_WINDWALKER )
+    rppm.dance_of_chiji = get_rppm( "dance_of_chiji", find_spell( 286586 ) );
 }
 
 // monk_t::init_resources ===================================================
