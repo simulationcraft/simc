@@ -1682,7 +1682,7 @@ struct furious_slash_t : public warrior_attack_t
   int aoe_targets;
   furious_slash_t( warrior_t* p, const std::string& options_str )
     : warrior_attack_t( "furious_slash", p, p->talents.furious_slash ),
-      aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 2 ).percent() ) )
+      aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 2 ).base_value() ) )
   {
     parse_options( options_str );
     weapon              = &( p->off_hand_weapon );
