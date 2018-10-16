@@ -25,6 +25,7 @@ struct warrior_td_t : public actor_target_data_t
   buff_t* debuffs_siegebreaker;
   buff_t* debuffs_demoralizing_shout;
   buff_t* debuffs_taunt;
+  buff_t* debuffs_punish;
 
   warrior_t& warrior;
   warrior_td_t( player_t* target, warrior_t& p );
@@ -339,7 +340,7 @@ public:
 
     // Protection
     const spell_data_t* into_the_fray;
-    const spell_data_t* punish; // NYI
+    const spell_data_t* punish;
     // const spell_data_t* impending_victory; see arms
     
     const spell_data_t* crackling_thunder;
@@ -347,7 +348,7 @@ public:
     const spell_data_t* safeguard; // NYI
 
     const spell_data_t* best_served_cold;
-    const spell_data_t* unstoppable_force; // NYI
+    const spell_data_t* unstoppable_force;
     // const spell_data_t* dragon_roar; see fury
 
     const spell_data_t* indomitable;
@@ -539,8 +540,8 @@ public:
   }
   role_e primary_role() const override;
   stat_e convert_hybrid_stat( stat_e s ) const override;
-  void assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t* s ) override;
-  void assess_damage_imminent( school_e, dmg_e, action_state_t* s ) override;
+  // void assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t* s ) override;
+  // void assess_damage_imminent( school_e, dmg_e, action_state_t* s ) override;
   void assess_damage( school_e, dmg_e, action_state_t* ) override;
   void target_mitigation( school_e, dmg_e, action_state_t* ) override;
   void copy_from( player_t* ) override;
@@ -1207,26 +1208,20 @@ struct melee_t : public warrior_attack_t
 
       if ( result_is_hit( execute_state->result ) )
       {
-        if ( p()->specialization() == WARRIOR_PROTECTION )
+        if ( p()->talents.devastator->ok() )
         {
-          if ( p()->talents.devastator->ok() )
-          {
-            devastator->target = execute_state->target;
-            devastator->schedule_execute();
-          }
+          devastator->target = execute_state->target;
+          devastator->schedule_execute();
         }
-        else
+        trigger_rage_gain( execute_state );
+        if ( p()->azerite.reckless_flurry.ok() )  // does this need a spec = fury check?
         {
-          trigger_rage_gain( execute_state );
-          if ( p()->azerite.reckless_flurry.ok() )  // does this need a spec = fury check?
-          {
-            p()->cooldown.recklessness->adjust(
-                ( -1 * p()->azerite.reckless_flurry.spell_ref().effectN( 1 ).time_value() ) );
-          }
-          if ( p()->buff.infinite_fury->check() )  // does this need a spec = fury check?
-          {
-            ( p()->buff.infinite_fury->trigger() ); // auto attacks refresh the buff but do not trigger it initially
-          }
+          p()->cooldown.recklessness->adjust(
+              ( -1 * p()->azerite.reckless_flurry.spell_ref().effectN( 1 ).time_value() ) );
+        }
+        if ( p()->buff.infinite_fury->check() )  // does this need a spec = fury check?
+        {
+          ( p()->buff.infinite_fury->trigger() ); // auto attacks refresh the buff but do not trigger it initially
         }
       }
     }
@@ -1256,7 +1251,7 @@ struct melee_t : public warrior_attack_t
       }
       rage_gain *= 1.0 + p()->talents.war_machine->effectN( 2 ).percent();
     }
-    else
+    else if ( p() -> specialization() == WARRIOR_FURY )
     {
       rage_gain *= fury_rage_multiplier;
       if ( weapon->slot == SLOT_OFF_HAND )
@@ -1264,6 +1259,11 @@ struct melee_t : public warrior_attack_t
         rage_gain *= 0.5;
       }
       rage_gain *= 1.0 + p()->talents.war_machine->effectN( 2 ).percent();
+    }
+    else 
+    {
+      // Protection generates a static 2 rage per successful auto attacks landed
+      rage_gain = 2.0;
     }
 
     rage_gain = util::round( rage_gain, 1 );
@@ -1602,7 +1602,7 @@ struct bloodthirst_t : public warrior_attack_t
   bloodthirst_t( warrior_t* p, const std::string& options_str )
     : warrior_attack_t( "bloodthirst", p, p->spec.bloodthirst ),
       bloodthirst_heal( nullptr ),
-      aoe_targets( p->spell.whirlwind_buff->effectN( 1 ).base_value() ),
+      aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
       enrage_chance( p->spec.enrage->effectN( 2 ).percent() )
   {
     parse_options( options_str );
@@ -1682,7 +1682,7 @@ struct furious_slash_t : public warrior_attack_t
   int aoe_targets;
   furious_slash_t( warrior_t* p, const std::string& options_str )
     : warrior_attack_t( "furious_slash", p, p->talents.furious_slash ),
-      aoe_targets( p->spell.whirlwind_buff->effectN( 2 ).percent() )
+      aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 2 ).percent() ) )
   {
     parse_options( options_str );
     weapon              = &( p->off_hand_weapon );
@@ -1738,7 +1738,7 @@ struct charge_t : public warrior_attack_t
 
     if ( p->talents.double_time->ok() )
     {
-      cooldown->charges += p->talents.double_time->effectN( 1 ).base_value();
+      cooldown->charges += as<int>( p->talents.double_time->effectN( 1 ).base_value() );
       cooldown->duration += p->talents.double_time->effectN( 2 ).time_value();
     }
     p->cooldown.charge = cooldown;
@@ -1812,7 +1812,7 @@ struct intercept_t : public warrior_attack_t
 
     if ( p->talents.double_time->ok() )
     {
-      cooldown->charges += p->talents.double_time->effectN( 1 ).base_value();
+      cooldown->charges += as<int>( p->talents.double_time->effectN( 1 ).base_value() );
       cooldown->duration += p->talents.double_time->effectN( 2 ).time_value();
     }
   }
@@ -2554,7 +2554,8 @@ struct raging_blow_attack_t : public warrior_attack_t
 {
   int aoe_targets;
   raging_blow_attack_t( warrior_t* p, const char* name, const spell_data_t* s )
-    : warrior_attack_t( name, p, s ), aoe_targets( p->spell.whirlwind_buff->effectN( 1 ).base_value() )
+    : warrior_attack_t( name, p, s ),
+    aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) )
   {
     may_miss = may_dodge = may_parry = may_block = false;
     dual                                         = true;
@@ -2726,7 +2727,7 @@ struct overpower_t : public warrior_attack_t
 
     if ( p->talents.dreadnaught->ok() )
     {
-      cooldown->charges += p->talents.dreadnaught->effectN( 1 ).base_value();
+      cooldown->charges += as<int>( p->talents.dreadnaught->effectN( 1 ).base_value() );
     }
     p->cooldown.charge = cooldown;
     p->active.charge   = this;
@@ -2829,7 +2830,7 @@ struct rampage_attack_t : public warrior_attack_t
   double rage_from_simmering_rage;
   rampage_attack_t( warrior_t* p, const spell_data_t* rampage, const std::string& name )
     : warrior_attack_t( name, p, rampage ),
-      aoe_targets( p->spell.whirlwind_buff->effectN( 1 ).base_value() ),
+      aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
       first_attack( false ),
       first_attack_missed( false ),
       valarjar_berserking( false ),
@@ -3234,6 +3235,11 @@ struct shield_slam_t : public warrior_attack_t
       am *= 1.3 + heavy_repercussions;
     }
 
+    if ( p() -> talents.punish -> ok() )
+    {
+      am *= 1.0 + p() -> talents.punish -> effectN( 1 ).percent();
+    }
+
     return am;
   }
 
@@ -3360,8 +3366,8 @@ struct shockwave_t : public warrior_attack_t
   int rumbling_earth_targets_required;
   shockwave_t( warrior_t* p, const std::string& options_str )
     : warrior_attack_t( "shockwave", p, p->spec.shockwave ),
-      rumbling_earth_reduction( p->talents.rumbling_earth->effectN( 2 ).base_value() ),
-      rumbling_earth_targets_required( p->talents.rumbling_earth->effectN( 1 ).base_value() )
+      rumbling_earth_reduction( as<int>( p->talents.rumbling_earth->effectN( 2 ).base_value() ) ),
+      rumbling_earth_targets_required( as<int>( p->talents.rumbling_earth->effectN( 1 ).base_value() ) )
   {
     parse_options( options_str );
     may_dodge = may_parry = may_block = false;
@@ -3585,7 +3591,7 @@ struct fury_whirlwind_parent_t : public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
-    const int num_available_targets = target_list().size();
+    const int num_available_targets = as<int>( target_list().size() );
 
     p()->resource_gain( RESOURCE_RAGE, ( base_rage_gain + additional_rage_gain_per_target * num_available_targets ),
                         p()->gain.whirlwind );
@@ -4015,6 +4021,7 @@ struct last_stand_t : public warrior_spell_t
     range              = -1;
     cooldown->duration = data().cooldown();
     cooldown->duration *= 1.0 + p->sets->set( WARRIOR_PROTECTION, T18, B2 )->effectN( 1 ).percent();
+    cooldown -> duration += timespan_t::from_millis( p -> talents.bolster -> effectN( 1 ).base_value() )
   }
 
   void execute() override
@@ -4218,7 +4225,7 @@ struct shield_block_t : public warrior_spell_t
     parse_options( options_str );
     use_off_gcd      = true;
     cooldown->hasted = true;
-    cooldown->charges += p->spec.shield_block_2->effectN( 1 ).base_value();
+    cooldown->charges += as<int>( p->spec.shield_block_2->effectN( 1 ).base_value() );
   }
 
   void execute() override
@@ -5254,7 +5261,7 @@ struct test_of_might_t : public warrior_buff_t<buff_t>
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     stat_buff_t* test_of_might = warrior().buff.test_of_might;
-    const int strength = static_cast<int>( current_value / 10 ) * warrior().azerite.test_of_might.value( 1 );
+    const int strength = static_cast<int>( current_value / 10 ) * as<int>( warrior().azerite.test_of_might.value( 1 ) );
     test_of_might->manual_stats_added = false;
     test_of_might->add_stat( STAT_STRENGTH, strength );
     test_of_might->trigger();
@@ -5310,6 +5317,8 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
                              .cd( timespan_t::zero() );
 
   debuffs_demoralizing_shout = new buffs::debuff_demo_shout_t( *this );
+  debuffs_punish = buff_creator_t( static_cast<actor_pair_t>( *this ), "punish", p.talents.punish -> effectN( 2 ).trigger() )
+                   .default_value( p.talents.punish -> effectN( 2 ).trigger() -> effectN( 1 ).percent() );
   debuffs_taunt = buff_creator_t( static_cast<actor_pair_t>( *this ), "taunt", p.find_class_spell( "Taunt" ) );
 }
 
@@ -6267,25 +6276,6 @@ stat_e warrior_t::convert_hybrid_stat( stat_e s ) const
   }
 }
 
-// warrior_t::assess_damage_imminent_pre_absorb =============================
-
-void warrior_t::assess_damage_imminent_pre_absorb( school_e school, dmg_e dmg, action_state_t* s )
-{
-  player_t::assess_damage_imminent_pre_absorb( school, dmg, s );
-}
-
-void warrior_t::assess_damage_imminent( school_e school, dmg_e dmg, action_state_t* s )
-{
-  player_t::assess_damage_imminent( school, dmg, s );
-  if ( specialization() == WARRIOR_PROTECTION &&
-       s->result_amount > 0 )  // This is after absorbs and damage mitigation. Boo.
-  {
-    double rage_gain_from_damage_taken;
-    rage_gain_from_damage_taken = 50.0 * s->result_amount / expected_max_health;
-    resource_gain( RESOURCE_RAGE, rage_gain_from_damage_taken, gain.rage_from_damage_taken );
-  }
-}
-
 void warrior_t::assess_damage( school_e school, dmg_e type, action_state_t* s )
 {
   player_t::assess_damage( school, type, s );
@@ -6297,6 +6287,13 @@ void warrior_t::assess_damage( school_e school, dmg_e type, action_state_t* s )
       buff.revenge->trigger();
       cooldown.revenge_reset->start();
     }
+  }
+
+  // Generate 3 Rage on auto-attack taken. 
+  // TODO: Update with spelldata once it's regenerated
+  else if ( s -> action -> special )
+  {
+    resource_gain( RESOURCE_RAGE, 3.0, gain.rage_from_damage_taken, s -> action );
   }
 }
 
@@ -6318,6 +6315,11 @@ void warrior_t::target_mitigation( school_e school, dmg_e dtype, action_state_t*
     if ( td->debuffs_demoralizing_shout->up() )
     {
       s->result_amount *= 1.0 + td->debuffs_demoralizing_shout->value();
+    }
+
+    if ( td -> debuffs_punish -> up() )
+    {
+      s -> result_amount *= 1.0 + td -> debuffs_punish -> value();
     }
 
     if ( school != SCHOOL_PHYSICAL && buff.spell_reflection->up() )
