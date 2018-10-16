@@ -8179,27 +8179,26 @@ void death_knight_t::assess_heal( school_e school, dmg_e t, action_state_t* s )
 
 void death_knight_t::bone_shield_handler( const action_state_t* state ) const
 {
-  if ( ! buffs.bone_shield -> up() || ! cooldown.bone_shield_icd -> up() )
+  if ( ! buffs.bone_shield -> up() || ! cooldown.bone_shield_icd -> up() || state -> action -> special )
   {
     return;
   }
 
-  // Bone shield only lose stacks on auto-attack damage. The only distinguishing feature of auto attacks is that
-  // our enemies call them "melee_main_hand" and "melee_off_hand", so we need to check for "hand" in name_str
-  if ( util::str_in_str_ci( state -> action -> name_str, "_hand" ) )
+  if ( sim -> log )
   {
-    buffs.bone_shield -> decrement();
+    sim -> out_debug.printf( "%s took a successful auto attack and lost a stack on bone shield", name() );
+  }
+  buffs.bone_shield -> decrement();
 
-    if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T21, B2 ) )
-    {
-      cooldown.dancing_rune_weapon -> adjust( timespan_t::from_millis( sets -> set( DEATH_KNIGHT_BLOOD, T21, B2) -> effectN( 1 ).base_value() ), false );
-    }
-    cooldown.bone_shield_icd -> start( spell.bone_shield -> internal_cooldown() );
+  if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T21, B2 ) )
+  {
+    cooldown.dancing_rune_weapon -> adjust( timespan_t::from_millis( sets -> set( DEATH_KNIGHT_BLOOD, T21, B2) -> effectN( 1 ).base_value() ), false );
+  }
+  cooldown.bone_shield_icd -> start( spell.bone_shield -> internal_cooldown() );
 
-    if ( ! buffs.bone_shield -> up() && buffs.bones_of_the_damned -> up() )
-    {
-      buffs.bones_of_the_damned -> expire();
-    }
+  if ( ! buffs.bone_shield -> up() && buffs.bones_of_the_damned -> up() )
+  {
+    buffs.bones_of_the_damned -> expire();
   }
 }
 
