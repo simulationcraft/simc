@@ -5692,7 +5692,6 @@ struct outbreak_t : public death_knight_spell_t
 struct pillar_of_frost_buff_t : public buff_t
 {
   double icy_citadel_duration;
-  double str_bonus;
 
   pillar_of_frost_buff_t( death_knight_t* p ) :
     buff_t( p, "pillar_of_frost", p -> spec.pillar_of_frost )
