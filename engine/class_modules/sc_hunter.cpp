@@ -5421,7 +5421,7 @@ void hunter_t::apl_surv()
   default_list -> add_action( "call_action_list,name=bopVV,if=active_enemies<3&talent.birds_of_prey.enabled&talent.vipers_venom.enabled" );
   default_list -> add_action( "call_action_list,name=mb_ap_wfi_st,if=active_enemies<3&talent.wildfire_infusion.enabled&talent.alpha_predator.enabled&talent.mongoose_bite.enabled" );
   default_list -> add_action( "call_action_list,name=wfi_st,if=active_enemies<3&talent.wildfire_infusion.enabled");
-  default_list -> add_action( "call_action_list,name=st,if=active_enemies<2" );
+  default_list -> add_action( "call_action_list,name=st,if=active_enemies<2&!talent.birds_of_prey.enabled" );
   default_list -> add_action( "call_action_list,name=cleave,if=active_enemies>1" );
   // Arcane torrent if nothing else is available
   default_list -> add_action( "arcane_torrent" );
