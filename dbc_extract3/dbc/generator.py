@@ -1562,7 +1562,8 @@ class SpellDataGenerator(DataGenerator):
           ( 287055, 3 ), # Fury of Xuen trait
           ( 287062, 3 ), # Fury of Xuen buff
           ( 287063, 3 ), # Fury of Xuen proc
-          ( 288636, 3 ), # Glory of the Dawn trait
+          ( 288634, 3 ), # Glory of the Dawn trait
+          ( 288636, 3 ), # Glory of the Dawn proc
         ),
 
         # Druid:
