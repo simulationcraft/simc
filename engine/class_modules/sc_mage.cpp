@@ -20,6 +20,21 @@ namespace pets {
   }
 }
 
+enum frozen_type_e
+{
+  FROZEN_WINTERS_CHILL = 0,
+  FROZEN_ROOT,
+  FROZEN_FINGERS_OF_FROST,
+  FROZEN_MAX
+};
+
+enum frozen_flag_e
+{
+  FF_WINTERS_CHILL    = 1 << FROZEN_WINTERS_CHILL,
+  FF_ROOT             = 1 << FROZEN_ROOT,
+  FF_FINGERS_OF_FROST = 1 << FROZEN_FINGERS_OF_FROST
+};
+
 struct state_switch_t
 {
 private:
@@ -55,14 +70,14 @@ public:
     return true;
   }
 
-  bool on()
+  bool on() const
   {
     return state;
   }
 
-  timespan_t duration( timespan_t now )
+  timespan_t duration( timespan_t now ) const
   {
-    if ( !state )
+    if ( ! state )
     {
       return timespan_t::zero();
     }
@@ -117,18 +132,18 @@ struct buff_stack_benefit_t
   {
     for ( int i = 0; i <= buff -> max_stack(); i++ )
     {
-      buff_stack_benefit.push_back( buff -> player ->
-                                get_benefit( prefix + " " +
-                                             buff -> data().name_cstr() + " " +
-                                             util::to_string( i ) ) );
+      buff_stack_benefit.push_back(
+        buff -> player -> get_benefit(
+          prefix + " " + buff -> data().name_cstr() + " " + util::to_string( i ) ) );
     }
   }
 
   void update()
   {
-    for ( std::size_t i = 0; i < buff_stack_benefit.size(); ++i )
+    int stack = buff -> check();
+    for ( int i = 0; i < buff_stack_benefit.size(); ++i )
     {
-      buff_stack_benefit[ i ] -> update( i == as<unsigned>( buff -> check() ) );
+      buff_stack_benefit[ i ] -> update( i == stack );
     }
   }
 };
@@ -198,7 +213,7 @@ struct cooldown_waste_data_t : private noncopyable
   bool may_add( timespan_t cd_override = timespan_t::min() ) const
   {
     return ( cd -> duration > timespan_t::zero() || cd_override > timespan_t::zero() )
-        && ( ( cd -> charges == 1 && cd -> up() ) || ( cd -> charges >= 2 && cd -> current_charge == cd -> charges ) );
+        && ( ( cd -> charges == 1 && cd -> up() ) || ( cd -> charges > 1 && cd -> current_charge == cd -> charges ) );
   }
 
   void add( timespan_t cd_override = timespan_t::min(), timespan_t time_to_execute = timespan_t::zero() )
@@ -249,58 +264,54 @@ struct cooldown_waste_data_t : private noncopyable
   }
 };
 
-struct proc_source_t : private noncopyable
+struct shatter_source_t : private noncopyable
 {
   const std::string name_str;
-  auto_dispose<std::vector<proc_t*> > procs;
+  std::vector<simple_sample_data_t> count;
+  std::vector<int> iteration_count;
 
-  proc_source_t( sim_t& sim, const std::string& name, size_t count ) :
-    name_str( name )
+  shatter_source_t( const std::string& name ) :
+    name_str( name ),
+    count( FROZEN_MAX ),
+    iteration_count( FROZEN_MAX )
+  { }
+
+  void occur( frozen_type_e type )
   {
-    for ( size_t i = 0; i < count; i++ )
-    {
-      procs.push_back( new proc_t( sim, name_str + " " + util::to_string( i ) ) );
-    }
+    assert( index < FROZEN_MAX );
+    iteration_count[ type ]++;
   }
 
-  void occur( size_t index )
+  const simple_sample_data_t& get( frozen_type_e type ) const
   {
-    assert( index < procs.size() );
-    procs[ index ] -> occur();
-  }
-
-  const proc_t& get( size_t index ) const
-  {
-    assert( index < procs.size() );
-    return *procs[ index ];
+    assert( type < FROZEN_MAX );
+    return count[ type ];
   }
 
   bool active() const
   {
-    return range::find_if( procs, [] ( proc_t* p ) { return p -> count.sum() > 0.0; } ) != procs.end();
+    return range::find_if( count, [] ( const simple_sample_data_t& d ) { return d.pretty_mean() > 0; } ) != count.end();
   }
 
-  void reset()
+  void merge( const shatter_source_t& other )
   {
-    range::for_each( procs, std::mem_fn( &proc_t::reset ) );
-  }
-
-  void merge( const proc_source_t& other )
-  {
-    for ( size_t i = 0; i < procs.size(); i++ )
+    for ( size_t i = 0; i < count.size(); i++ )
     {
-      procs[ i ] -> merge( *other.procs[ i ] );
+      count[ i ].merge( other.count[ i ] );
     }
   }
 
   void datacollection_begin()
   {
-    range::for_each( procs, std::mem_fn( &proc_t::datacollection_begin ) );
+    range::fill( iteration_count, 0 );
   }
 
   void datacollection_end()
   {
-    range::for_each( procs, std::mem_fn( &proc_t::datacollection_end ) );
+    for ( size_t i = 0; i < count.size(); i++ )
+    {
+      count[ i ].add( as<double>( iteration_count[ i ] ) );
+    }
   }
 };
 
@@ -343,7 +354,7 @@ public:
 
   // Data collection
   auto_dispose<std::vector<cooldown_waste_data_t*> > cooldown_waste_data_list;
-  auto_dispose<std::vector<proc_source_t*> > proc_source_list;
+  auto_dispose<std::vector<shatter_source_t*> > shatter_source_list;
 
   // Cached actions
   struct actions_t
@@ -728,19 +739,19 @@ public:
     return cdw;
   }
 
-  proc_source_t* get_proc_source( const std::string& name, size_t count )
+  shatter_source_t* get_shatter_source( const std::string& name )
   {
-    for ( auto ps : proc_source_list )
+    for ( auto ss : shatter_source_list )
     {
-      if ( ps -> name_str == name )
+      if ( ss -> name_str == name )
       {
-        return ps;
+        return ss;
       }
     }
 
-    auto ps = new proc_source_t( *sim, name, count );
-    proc_source_list.push_back( ps );
-    return ps;
+    auto ss = new shatter_source_t( name );
+    shatter_source_list.push_back( ss );
+    return ss;
   }
 
   enum leyshock_trigger_e
@@ -1257,21 +1268,6 @@ struct mage_spell_t : public spell_t
 
   static const snapshot_state_e STATE_FROZEN = STATE_TGT_USER_1;
 
-  enum frozen_type_e
-  {
-    FROZEN_WINTERS_CHILL = 0,
-    FROZEN_ROOT,
-    FROZEN_FINGERS_OF_FROST,
-    FROZEN_MAX
-  };
-
-  enum frozen_flag_e
-  {
-    FF_WINTERS_CHILL    = 1 << FROZEN_WINTERS_CHILL,
-    FF_ROOT             = 1 << FROZEN_ROOT,
-    FF_FINGERS_OF_FROST = 1 << FROZEN_FINGERS_OF_FROST
-  };
-
   bool track_cd_waste;
   cooldown_waste_data_t* cd_waste;
 public:
@@ -1768,7 +1764,7 @@ struct frost_mage_spell_t : public mage_spell_t
   proc_t* proc_fof;
 
   bool track_shatter;
-  proc_source_t* shatter_source;
+  shatter_source_t* shatter_source;
 
   unsigned impact_flags;
 
@@ -1802,7 +1798,7 @@ struct frost_mage_spell_t : public mage_spell_t
   {
     if ( track_shatter && sim -> report_details != 0 )
     {
-      shatter_source = p() -> get_proc_source( "Shatter/" + name_str, FROZEN_MAX );
+      shatter_source = p() -> get_shatter_source( name_str );
     }
 
     mage_spell_t::init_finished();
@@ -1905,7 +1901,7 @@ struct frost_mage_spell_t : public mage_spell_t
   virtual result_e calculate_impact_result( action_state_t* s ) const
   { return mage_spell_t::calculate_result( s ); }
 
-  void record_shatter_source( const action_state_t* s, proc_source_t* source = nullptr )
+  void record_shatter_source( const action_state_t* s, shatter_source_t* source = nullptr )
   {
     unsigned frozen = debug_cast<const mage_spell_state_t*>( s ) -> frozen;
 
@@ -3737,7 +3733,7 @@ struct ice_lance_state_t : public mage_spell_state_t
 
 struct ice_lance_t : public frost_mage_spell_t
 {
-  proc_source_t* extension_source;
+  shatter_source_t* extension_source;
 
   ice_lance_t( mage_t* p, const std::string& options_str ) :
     frost_mage_spell_t( "ice_lance", p, p -> find_specialization_spell( "Ice Lance" ) ),
@@ -3765,7 +3761,7 @@ struct ice_lance_t : public frost_mage_spell_t
   {
     if ( p() -> talents.thermal_void -> ok() && sim -> report_details != 0 )
     {
-      extension_source = p() -> get_proc_source( "Shatter/Thermal Void extension", FROZEN_MAX );
+      extension_source = p() -> get_shatter_source( "Thermal Void extension" );
     }
 
     frost_mage_spell_t::init_finished();
@@ -5669,9 +5665,9 @@ void mage_t::merge( player_t& other )
     cooldown_waste_data_list[ i ] -> merge( *mage.cooldown_waste_data_list[ i ] );
   }
 
-  for ( size_t i = 0; i < proc_source_list.size(); i++ )
+  for ( size_t i = 0; i < shatter_source_list.size(); i++ )
   {
-    proc_source_list[ i ] -> merge( *mage.proc_source_list[ i ] );
+    shatter_source_list[ i ] -> merge( *mage.shatter_source_list[ i ] );
   }
 
   switch ( specialization() )
@@ -5733,7 +5729,7 @@ void mage_t::datacollection_begin()
   player_t::datacollection_begin();
 
   range::for_each( cooldown_waste_data_list, std::mem_fn( &cooldown_waste_data_t::datacollection_begin ) );
-  range::for_each( proc_source_list, std::mem_fn( &proc_source_t::datacollection_begin ) );
+  range::for_each( shatter_source_list, std::mem_fn( &shatter_source_t::datacollection_begin ) );
 }
 
 // mage_t::datacollection_end =================================================
@@ -5743,7 +5739,7 @@ void mage_t::datacollection_end()
   player_t::datacollection_end();
 
   range::for_each( cooldown_waste_data_list, std::mem_fn( &cooldown_waste_data_t::datacollection_end ) );
-  range::for_each( proc_source_list, std::mem_fn( &proc_source_t::datacollection_end ) );
+  range::for_each( shatter_source_list, std::mem_fn( &shatter_source_t::datacollection_end ) );
 }
 
 // mage_t::regen ==============================================================
@@ -6917,8 +6913,6 @@ void mage_t::reset()
   last_frostbolt_target = nullptr;
   ground_aoe_expiration.clear();
   burn_phase.reset();
-
-  range::for_each( proc_source_list, std::mem_fn( &proc_source_t::reset ) );
 }
 
 // mage_t::stun =============================================================
@@ -7638,7 +7632,7 @@ public:
 
   void html_customsection_shatter( report::sc_html_stream& os )
   {
-    if ( p.proc_source_list.empty() )
+    if ( p.shatter_source_list.empty() )
       return;
 
     os << "<div class=\"player-section custom_section\">\n"
@@ -7656,16 +7650,12 @@ public:
     double bff = p.procs.brain_freeze_flurry -> count.pretty_mean();
 
     size_t row = 0;
-    for ( const proc_source_t* data : p.proc_source_list )
+    for ( const shatter_source_t* data : p.shatter_source_list )
     {
       if ( ! data -> active() )
         continue;
 
-      const std::vector<std::string> splits = util::string_split( data -> name_str, "/" );
-      if ( splits.size() != 2 || splits[ 0 ] != "Shatter" )
-        continue;
-
-      std::string name = splits[ 1 ];
+      std::string name = data -> name_str;
       if ( action_t* a = p.find_action( name ) )
       {
         name = report::action_decorator_t( a ).decorate();
@@ -7693,9 +7683,9 @@ public:
       assert( data -> procs.size() == actions::mage_spell_t::FROZEN_MAX );
 
       os << "<td class=\"left\">" << name << "</td>";
-      format_cell( data -> get( actions::mage_spell_t::FROZEN_WINTERS_CHILL ).count.pretty_mean(), true );
-      format_cell( data -> get( actions::mage_spell_t::FROZEN_FINGERS_OF_FROST ).count.pretty_mean(), false );
-      format_cell( data -> get( actions::mage_spell_t::FROZEN_ROOT ).count.pretty_mean(), false );
+      format_cell( data -> get( FROZEN_WINTERS_CHILL ).pretty_mean(), true );
+      format_cell( data -> get( FROZEN_FINGERS_OF_FROST ).pretty_mean(), false );
+      format_cell( data -> get( FROZEN_ROOT ).pretty_mean(), false );
       os << "</tr>\n";
     }
 
