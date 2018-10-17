@@ -5149,7 +5149,7 @@ struct icicle_event_t : public event_t
     // If the target of the icicle is dead, stop the chain
     if ( target -> is_sleeping() )
     {
-      mage -> sim -> print_debug( "{} icicle use on {} (sleeping target), stopping", mage -> name(), target -> name() );
+      sim().print_debug( "{} icicle use on {} (sleeping target), stopping", mage -> name(), target -> name() );
       return;
     }
 
@@ -5162,7 +5162,7 @@ struct icicle_event_t : public event_t
     if ( new_action )
     {
       mage -> icicle_event = make_event<icicle_event_t>( sim(), *mage, new_action, target );
-      mage -> sim -> print_debug( "{} icicle use on {} (chained), total={}", mage -> name(), target -> name(), mage -> icicles.size() );
+      sim().print_debug( "{} icicle use on {} (chained), total={}", mage -> name(), target -> name(), mage -> icicles.size() );
     }
   }
 };
