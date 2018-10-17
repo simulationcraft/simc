@@ -5417,11 +5417,11 @@ void hunter_t::apl_surv()
   default_list -> add_action( "auto_attack" );
   default_list -> add_action( "use_items" );
   default_list -> add_action( "call_action_list,name=cds" );
-  default_list -> add_action( "call_action_list,name=bopAP,if=active_enemies<3&talent.birds_of_prey.enabled&talent.alpha_predator.enabled" );
-  default_list -> add_action( "call_action_list,name=bopVV,if=active_enemies<3&talent.birds_of_prey.enabled&talent.vipers_venom.enabled" );
+  default_list -> add_action( "run_action_list,name=bopAP,if=active_enemies<3&talent.birds_of_prey.enabled&talent.alpha_predator.enabled&talent.mongoose_bite.enabled" );
+  default_list -> add_action( "run_action_list,name=bopVV,if=active_enemies<3&talent.birds_of_prey.enabled&talent.vipers_venom.enabled&talent.mongoose_bite.enabled" );
   default_list -> add_action( "call_action_list,name=mb_ap_wfi_st,if=active_enemies<3&talent.wildfire_infusion.enabled&talent.alpha_predator.enabled&talent.mongoose_bite.enabled" );
   default_list -> add_action( "call_action_list,name=wfi_st,if=active_enemies<3&talent.wildfire_infusion.enabled");
-  default_list -> add_action( "call_action_list,name=st,if=active_enemies<2&!talent.birds_of_prey.enabled" );
+  default_list -> add_action( "call_action_list,name=st,if=active_enemies<2" );
   default_list -> add_action( "call_action_list,name=cleave,if=active_enemies>1" );
   // Arcane torrent if nothing else is available
   default_list -> add_action( "arcane_torrent" );
@@ -5477,6 +5477,7 @@ void hunter_t::apl_surv()
   bopAP -> add_action( this, "Mongoose Bite", "if=buff.mongoose_fury.up|focus>55");
   bopAP -> add_action( this, "Serpent Sting", "if=refreshable&!buff.coordinated_assault.up");
   bopAP -> add_action( this, "Wildfire Bomb");
+  bopAP -> add_action( "arcane_torrent");
 
   bopVV -> add_action( this, "Mongoose Bite", "if=buff.coordinated_assault.up&(buff.coordinated_assault.remains<gcd|buff.blur_of_talons.remains<gcd)");
   bopVV -> add_action( this, "Serpent Sting", "if=buff.vipers_venom.up&buff.vipers_venom.remains<1*gcd");
@@ -5487,6 +5488,7 @@ void hunter_t::apl_surv()
   bopVV -> add_action( this, "Mongoose Bite", "if=buff.mongoose_fury.up|focus>60");
   bopVV -> add_action( this, "Serpent Sting", "if=dot.serpent_sting.refreshable&!buff.coordinated_assault.up");
   bopVV -> add_action( this, "Wildfire Bomb", "if=dot.wildfire_bomb.refreshable");
+  bopVV -> add_action( "arcane_torrent");
 
   st -> add_talent( this, "A Murder of Crows" );
   st -> add_action( this, "Coordinated Assault" );
