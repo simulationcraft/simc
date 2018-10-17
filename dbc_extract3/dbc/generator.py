@@ -1248,6 +1248,7 @@ class SpellDataGenerator(DataGenerator):
             ( 242952, 0 ),		    # Bloody Rage
             ( 242953, 0 ),          # Bloody Rage
             ( 278497, 0 ),          # Seismic Wave (Azerite)
+            ( 195707, 0 ),          # Rage gain from taking hits
         ),
 
         # Paladin:
