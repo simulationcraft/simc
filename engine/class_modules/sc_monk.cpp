@@ -1707,7 +1707,7 @@ public:
     buff_t* rushing_jade_wind_sef = nullptr;
   } buff;
 
-  storm_earth_and_fire_pet_t( const std::string& name, sim_t* sim, monk_t* owner, bool dual_wield )
+  storm_earth_and_fire_pet_t( const std::string& name, sim_t* sim, monk_t* owner, bool dual_wield, weapon_e weapon_type )
     : pet_t( sim, owner, name, true ),
       attacks( SEF_ATTACK_MAX ),
       spells( SEF_SPELL_MAX - SEF_SPELL_MIN ),
@@ -1720,12 +1720,12 @@ public:
     // that do not have the specialization.
     _spec = MONK_WINDWALKER;
 
-    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.type       = weapon_type;
     main_hand_weapon.swing_time = timespan_t::from_seconds( dual_wield ? 2.6 : 3.6 );
 
     if ( dual_wield )
     {
-      off_hand_weapon.type       = WEAPON_BEAST;
+      off_hand_weapon.type       = weapon_type;
       off_hand_weapon.swing_time = timespan_t::from_seconds( 2.6 );
     }
 
@@ -7638,10 +7638,10 @@ void monk_t::create_pets()
 
   if ( specialization() == MONK_WINDWALKER && find_action( "storm_earth_and_fire" ) )
   {
-    pet.sef[ SEF_FIRE ] = new pets::storm_earth_and_fire_pet_t( "fire_spirit", sim, this, true );
+    pet.sef[ SEF_FIRE ] = new pets::storm_earth_and_fire_pet_t( "fire_spirit", sim, this, true, WEAPON_SWORD );
     // The player BECOMES the Storm Spirit
     // SEF EARTH was changed from 2-handed user to dual welding in Legion
-    pet.sef[ SEF_EARTH ] = new pets::storm_earth_and_fire_pet_t( "earth_spirit", sim, this, true );
+    pet.sef[ SEF_EARTH ] = new pets::storm_earth_and_fire_pet_t( "earth_spirit", sim, this, true, WEAPON_MACE );
   }
 }
 
