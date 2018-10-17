@@ -684,7 +684,7 @@ void paladin_t::target_mitigation( school_e school,
   // Damage Reduction Cooldowns
 
   // Guardian of Ancient Kings
-  if ( buffs.guardian_of_ancient_kings -> up() && specialization() == PALADIN_PROTECTION )
+  if ( buffs.guardian_of_ancient_kings -> up() )
   {
     s -> result_amount *= 1.0 + buffs.guardian_of_ancient_kings -> data().effectN( 3 ).percent();
     if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
@@ -694,10 +694,7 @@ void paladin_t::target_mitigation( school_e school,
   // Divine Protection
   if ( buffs.divine_protection -> up() )
   {
-    if ( util::school_type_component( school, SCHOOL_MAGIC ) )
-    {
-      s -> result_amount *= 1.0 + buffs.divine_protection -> data().effectN( 1 ).percent();
-    }
+    s -> result_amount *= 1.0 + buffs.divine_protection -> data().effectN( 1 ).percent();
     if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
       sim -> out_debug.printf( "Damage to %s after Divine Protection is %f", s -> target -> name(), s -> result_amount );
   }
@@ -711,7 +708,7 @@ void paladin_t::target_mitigation( school_e school,
 
     // BH only reduces auto-attack damage. The only distinguishing feature of auto attacks is that
     // our enemies call them "melee_main_hand" and "melee_off_hand", so we need to check for "hand" in name_str
-    if ( b -> up() && util::str_in_str_ci( s -> action -> name_str, "_hand" ) )
+    if ( b -> up() && !s -> action -> special )
     {
       // apply mitigation and expire the BH buff
       s -> result_amount *= 1.0 - b -> data().effectN( 2 ).percent();

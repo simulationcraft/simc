@@ -1888,15 +1888,13 @@ void paladin_t::assess_damage( school_e school,
     trigger_holy_shield( s );
   }
 
-  // Shamelessly copy the way blessed hammer checks for auto attack damage, assuming Inner Light only triggers on that
-  // TODO : check if IL procs on every damage taken or just melee attacks
-  if ( buffs.inner_light -> up() && util::str_in_str_ci( s -> action -> name_str, "_hand" ) && cooldowns.inner_light -> up() )
+  if ( buffs.inner_light -> up() && !s -> action -> special && cooldowns.inner_light -> up() )
   {
     active_inner_light_damage -> target = s -> action -> player;
     active_inner_light_damage -> schedule_execute();
   }
 
-  // Also trigger Grand Crusader on an avoidance event (TODO: test if it triggers on misses)
+  // Trigger Grand Crusader on an avoidance event (TODO: test if it triggers on misses)
   if ( s -> result == RESULT_DODGE || s -> result == RESULT_PARRY || s -> result == RESULT_MISS )
   {
     trigger_grand_crusader();
@@ -2040,7 +2038,8 @@ double paladin_t::last_defender_mitigation() const
 
   double mitigation = std::pow( 1.0 - talents.last_defender -> effectN( 2 ).percent(), num_enemies );
 
-  return mitigation;
+  // Last Defender's damage reduction is capped at 50% (between 22 and 23 targets)
+  return std::max( mitigation, 0.5 );
 }
 
 // player_t::create_expression ==============================================

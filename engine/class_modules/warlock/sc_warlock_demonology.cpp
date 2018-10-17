@@ -504,7 +504,7 @@ namespace warlock {
             continue;
 
           //TOCHECK Random pets are currently bugged and do not benefit from Demonic Tyrant. Live as of 10-02-2018
-          if (lock_pet->pet_type == PET_DEMONIC_TYRANT || lock_pet->pet_type == PET_WARLOCK_RANDOM )
+          if ( lock_pet->pet_type == PET_DEMONIC_TYRANT || ( p()->bugs && lock_pet->pet_type == PET_WARLOCK_RANDOM ) )
             continue;
 
           if (lock_pet->expiration)
@@ -961,12 +961,13 @@ namespace warlock {
       ->set_chance( talents.demonic_calling->proc_chance() );
 
     buffs.inner_demons = make_buff(this, "inner_demons", find_spell(267216))
-      ->set_period(timespan_t::from_seconds(talents.inner_demons->effectN(1).base_value()))
+      ->set_period( talents.inner_demons->effectN(1).period() )
       ->set_tick_time_behavior(buff_tick_time_behavior::UNHASTED)
       ->set_tick_callback([this](buff_t*, int, const timespan_t&)
       {
         warlock_pet_list.wild_imps.spawn();
-        if (rng().roll(talents.inner_demons->effectN(1).percent())) {
+        if ( rng().roll( talents.inner_demons->effectN( 1 ).percent() ) ) 
+        {
           active.summon_random_demon->execute();
         }
         expansion::bfa::trigger_leyshocks_grand_compilation( STAT_MASTERY_RATING, this );

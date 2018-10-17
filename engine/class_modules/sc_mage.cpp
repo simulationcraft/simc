@@ -1053,14 +1053,10 @@ struct touch_of_the_magi_t : public buff_t
 
   void accumulate_damage( const action_state_t* state )
   {
-    if ( sim -> debug )
-    {
-      sim -> out_debug.printf(
-        "%s's %s accumulates %f additional damage: %f -> %f",
-        player -> name(), name(), state -> result_total,
-        accumulated_damage, accumulated_damage + state -> result_total
-      );
-    }
+    sim -> print_debug(
+      "{}'s {} accumulates {} additional damage: {} -> {}",
+      player -> name(), name(), state -> result_total,
+      accumulated_damage, accumulated_damage + state -> result_total );
 
     accumulated_damage += state -> result_total;
   }
@@ -1689,18 +1685,11 @@ struct fire_mage_spell_t : public mage_spell_t
           p -> procs.heating_up_removed -> occur();
           p -> buffs.heating_up -> expire();
 
-          if ( sim -> debug )
-          {
-            sim -> out_log.printf( "Heating up removed by non-crit" );
-          }
+          sim -> print_debug( "Heating up removed by non-crit" );
         }
         else
         {
-          if ( sim -> debug )
-          {
-            sim -> out_log.printf(
-              "Heating up removal ignored due to 200 ms protection" );
-          }
+          sim -> print_debug( "Heating up removal ignored due to 200 ms protection" );
         }
       }
     }
@@ -4097,13 +4086,10 @@ void living_bomb_explosion_t::impact( action_state_t* s )
 
   if ( child_lb && s -> chain_target > 0 )
   {
-    if ( sim -> debug )
-    {
-      sim -> out_debug.printf(
-        "%s %s on %s applies %s on %s",
-        p() -> name(), name(), s -> action -> target -> name(),
-        child_lb -> name(), s -> target -> name() );
-    }
+    sim -> print_debug(
+      "{} {} on {} applies {} on {}",
+      p() -> name(), name(), s -> action -> target -> name(),
+      child_lb -> name(), s -> target -> name() );
 
     child_lb -> set_target( s -> target );
     child_lb -> execute();
@@ -5163,8 +5149,7 @@ struct icicle_event_t : public event_t
     // If the target of the icicle is dead, stop the chain
     if ( target -> is_sleeping() )
     {
-      if ( mage -> sim -> debug )
-        mage -> sim -> out_debug.printf( "%s icicle use on %s (sleeping target), stopping", mage -> name(), target -> name() );
+      sim().print_debug( "{} icicle use on {} (sleeping target), stopping", mage -> name(), target -> name() );
       return;
     }
 
@@ -5177,8 +5162,7 @@ struct icicle_event_t : public event_t
     if ( new_action )
     {
       mage -> icicle_event = make_event<icicle_event_t>( sim(), *mage, new_action, target );
-      if ( mage -> sim -> debug )
-        mage -> sim -> out_debug.printf( "%s icicle use on %s (chained), total=%u", mage -> name(), target -> name(), mage -> icicles.size() );
+      sim().print_debug( "{} icicle use on {} (chained), total={}", mage -> name(), target -> name(), mage -> icicles.size() );
     }
   }
 };
@@ -5226,10 +5210,8 @@ struct ignite_spread_event_t : public event_t
   {
     mage -> ignite_spread_event = nullptr;
     mage -> procs.ignite_spread -> occur();
-    if ( mage -> sim -> log )
-    {
-      sim().out_log.printf( "%s ignite spread event occurs", mage -> name() );
-    }
+
+    sim().print_log( "{} ignite spread event occurs", mage -> name() );
 
     std::vector< player_t* > tl = mage -> ignite -> target_list();
 
@@ -5304,22 +5286,16 @@ struct ignite_spread_event_t : public event_t
           // TODO: Use benefits to keep track of lost ignite banks
           destination -> cancel();
           mage -> procs.ignite_overwrite -> occur();
-          if ( mage -> sim -> log )
-          {
-            sim().out_log.printf( "%s ignite spreads from %s to %s (overwrite)",
-                                 mage -> name(), source -> target -> name(),
-                                 destination -> target -> name() );
-          }
+          sim().print_log( "{} ignite spreads from {} to {} (overwrite)",
+                           mage -> name(), source -> target -> name(),
+                           destination -> target -> name() );
         }
         else
         {
           mage -> procs.ignite_new_spread -> occur();
-          if ( mage -> sim -> log )
-          {
-            sim().out_log.printf( "%s ignite spreads from %s to %s (new)",
-                                 mage -> name(), source -> target -> name(),
-                                 destination -> target -> name() );
-          }
+          sim().print_log( "{} ignite spreads from {} to {} (new)",
+                           mage -> name(), source -> target -> name(),
+                           destination -> target -> name() );
         }
         source -> copy( destination -> target, DOT_COPY_CLONE );
 
@@ -5359,18 +5335,12 @@ struct time_anomaly_tick_event_t : public event_t
   {
     mage -> time_anomaly_tick_event = nullptr;
 
-    if ( mage -> sim -> log )
-    {
-      sim().out_log.printf( "%s Time Anomaly tick event occurs.", mage -> name() );
-    }
+    sim().print_log( "{} Time Anomaly tick event occurs.", mage -> name() );
 
     if ( mage -> shuffled_rng.time_anomaly -> trigger() )
     {
       // Proc was successful, figure out which effect to apply.
-      if ( mage -> sim -> log )
-      {
-        sim().out_log.printf( "%s Time Anomaly proc successful, triggering effects.", mage -> name() );
-      }
+      sim().print_log( "{} Time Anomaly proc successful, triggering effects.", mage -> name() );
 
       std::vector<ta_proc_type_e> possible_procs;
 
@@ -6799,13 +6769,11 @@ void mage_t::recalculate_resource_max( resource_e rt )
   {
     resources.max[ rt ] *= 1.0 + cache.mastery() * spec.savant -> effectN( 1 ).mastery_value();
     resources.current[ rt ] = resources.max[ rt ] * mana_percent;
-    if ( sim -> debug )
-    {
-      sim -> out_debug.printf(
-        "%s Savant adjusts mana from %.0f/%.0f to %.0f/%.0f",
-        name(), current_mana, current_mana_max,
-        resources.current[ rt ], resources.max[ rt ]);
-    }
+
+    sim -> print_debug(
+      "{} Savant adjusts mana from {}/{} to {}/{}",
+      name(), current_mana, current_mana_max,
+      resources.current[ rt ], resources.max[ rt ] );
 
     current_mana = resources.current[ rt ];
     current_mana_max = resources.max[ rt ];
@@ -6815,13 +6783,11 @@ void mage_t::recalculate_resource_max( resource_e rt )
   {
     resources.max[ rt ] *= 1.0 + buffs.arcane_familiar -> check_value();
     resources.current[ rt ] = resources.max[ rt ] * mana_percent;
-    if ( sim -> debug )
-    {
-      sim -> out_debug.printf(
-          "%s Arcane Familiar adjusts mana from %.0f/%.0f to %.0f/%.0f",
-          name(), current_mana, current_mana_max,
-          resources.current[ rt ], resources.max[ rt ]);
-    }
+
+    sim -> print_debug(
+      "{} Arcane Familiar adjusts mana from {}/{} to {}/{}",
+      name(), current_mana, current_mana_max,
+      resources.current[ rt ], resources.max[ rt ] );
   }
 }
 // mage_t::composite_player_critical_damage_multiplier ===================
@@ -7290,7 +7256,7 @@ void mage_t::update_rune_distance( double distance )
     if ( distance_from_rune > talents.rune_of_power -> effectN( 2 ).radius() )
     {
       buffs.rune_of_power -> expire();
-      if ( sim -> debug ) sim -> out_debug.printf( "%s lost Rune of Power due to moving more than 8 yards away from it.", name() );
+      sim -> print_debug( "{} lost Rune of Power due to moving more than 8 yards away from it.", name() );
     }
   }
 }
@@ -7339,10 +7305,7 @@ void mage_t::trigger_icicle( player_t* icicle_target, bool chain )
 
     icicle_event = make_event<events::icicle_event_t>( *sim, *this, icicle_action, icicle_target, true );
 
-    if ( sim -> debug )
-    {
-      sim -> out_debug.printf( "%s icicle use on %s (chained), total=%u", name(), icicle_target -> name(), icicles.size() );
-    }
+    sim -> print_debug( "{} icicle use on {} (chained), total={}", name(), icicle_target -> name(), icicles.size() );
   }
   else if ( ! chain )
   {
@@ -7353,10 +7316,7 @@ void mage_t::trigger_icicle( player_t* icicle_target, bool chain )
     icicle_action -> set_target( icicle_target );
     icicle_action -> execute();
 
-    if ( sim -> debug )
-    {
-      sim -> out_debug.printf( "%s icicle use on %s, total=%u", name(), icicle_target -> name(), icicles.size() );
-    }
+    sim -> print_debug( "{} icicle use on {}, total={}", name(), icicle_target -> name(), icicles.size() );
   }
 }
 
