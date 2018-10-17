@@ -5477,7 +5477,7 @@ void hunter_t::apl_surv()
   bopAP -> add_action( this, "Mongoose Bite", "if=buff.mongoose_fury.up|focus>55");
   bopAP -> add_action( this, "Serpent Sting", "if=refreshable&!buff.coordinated_assault.up");
   bopAP -> add_action( this, "Wildfire Bomb");
-  bopAP -> add_action( this, "Arcane Torrent");
+  bopAP -> add_action( "arcane_torrent");
 
   bopVV -> add_action( this, "Mongoose Bite", "if=buff.coordinated_assault.up&(buff.coordinated_assault.remains<gcd|buff.blur_of_talons.remains<gcd)");
   bopVV -> add_action( this, "Serpent Sting", "if=buff.vipers_venom.up&buff.vipers_venom.remains<1*gcd");
@@ -5488,7 +5488,7 @@ void hunter_t::apl_surv()
   bopVV -> add_action( this, "Mongoose Bite", "if=buff.mongoose_fury.up|focus>60");
   bopVV -> add_action( this, "Serpent Sting", "if=dot.serpent_sting.refreshable&!buff.coordinated_assault.up");
   bopVV -> add_action( this, "Wildfire Bomb", "if=dot.wildfire_bomb.refreshable");
-  bopVV -> add_action( this, "Arcane Torrent");
+  bopVV -> add_action( "arcane_torrent");
 
   st -> add_talent( this, "A Murder of Crows" );
   st -> add_action( this, "Coordinated Assault" );
