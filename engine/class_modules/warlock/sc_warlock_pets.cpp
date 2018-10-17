@@ -528,7 +528,11 @@ void felguard_pet_t::init_base_stats()
 {
   warlock_pet_t::init_base_stats();
 
+  // Felguard is the only warlock pet to use an actual weapon.
+  main_hand_weapon.type = WEAPON_AXE_2H;
   melee_attack = new warlock_pet_melee_t(this);
+
+  //TOCHECK Felguard has a hardcoded 10% multiplier for it's auto attack damage. Live as of 10-17-2018
   melee_attack->base_dd_multiplier *= 1.1;
   special_action = new axe_toss_t(this, "");
   if ( o()->talents.soul_strike )
