@@ -140,8 +140,8 @@ struct buff_stack_benefit_t
 
   void update()
   {
-    int stack = buff -> check();
-    for ( int i = 0; i < buff_stack_benefit.size(); ++i )
+    auto stack = as<unsigned>( buff -> check() );
+    for ( unsigned i = 0; i < buff_stack_benefit.size(); ++i )
     {
       buff_stack_benefit[ i ] -> update( i == stack );
     }
