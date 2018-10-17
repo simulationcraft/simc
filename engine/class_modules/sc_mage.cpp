@@ -278,7 +278,7 @@ struct shatter_source_t : private noncopyable
 
   void occur( frozen_type_e type )
   {
-    assert( index < FROZEN_MAX );
+    assert( type < FROZEN_MAX );
     iteration_count[ type ]++;
   }
 
@@ -7347,7 +7347,7 @@ void mage_t::trigger_arcane_charge( int stacks )
   }
 }
 
-void mage_t::trigger_leyshock( unsigned id, const action_state_t* state, leyshock_trigger_e trigger_type )
+void mage_t::trigger_leyshock( unsigned id, const action_state_t*, leyshock_trigger_e trigger_type )
 {
   if ( ! player_t::buffs.leyshock_crit )
     return;
@@ -7679,8 +7679,6 @@ public:
 
         os.printf( format_str.c_str(), mean, bff ? 100.0 * mean / bff : 0.0 );
       };
-
-      assert( data -> procs.size() == actions::mage_spell_t::FROZEN_MAX );
 
       os << "<td class=\"left\">" << name << "</td>";
       format_cell( data -> get( FROZEN_WINTERS_CHILL ).pretty_mean(), true );
