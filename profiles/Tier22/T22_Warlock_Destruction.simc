@@ -108,7 +108,7 @@ actions.inf+=/incinerate,cycle_targets=1,if=!debuff.havoc.remains
 
 head=horrific_amalgams_hood,id=160616,bonus_id=4824/1507/4775,azerite_powers=483/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
-shoulders=mantle_of_contained_corruption,id=160613,bonus_id=4824/1507/4775,azerite_powers=483/459/13
+shoulders=mantle_of_contained_corruption,id=160613,bonus_id=4824/1507/4775,azerite_powers=444/459/13
 back=cloak_of_rippling_whispers,id=160642,bonus_id=4800/1507
 chest=robes_of_the_unraveler,id=160614,bonus_id=4824/1507/4775,azerite_powers=432/30/13
 wrists=voidlashed_wristband,id=160617,bonus_id=4800/1507
