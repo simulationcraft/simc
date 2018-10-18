@@ -224,7 +224,7 @@ Effects          :
                    Affected School(s): All
 #3 (id=292881)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
-                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810)
+                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091)
                    Family Flags: 9
 #4 (id=298857)   : Apply Aura (6) | Modify Auto Attack Damage Taken% from Caster (343)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
@@ -335,7 +335,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=524)      : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810)
+                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091)
                    Family Flags: 9
 #2 (id=292217)   : Server Side Script (77)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE friendly (30)
@@ -976,7 +976,7 @@ Cooldown         : 4.5 seconds
 Category         : 971: Warrior (137047 effect#6)
 Category Cooldown: 4.5 seconds
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Vicious Strike (165640 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Bloody Rage (242952 effect#1), Bloody Rage (242953 effect#1), Siegebreaker (280773 effect#1)
-Family Flags     : 8, 9, 42
+Family Flags     : 8, 9, 18, 42
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1282,7 +1282,7 @@ GCD              : 1.5 seconds
 Velocity         : 10 yards/sec
 Duration         : 4 seconds
 Cooldown         : 60 seconds
-Affecting spells : Recklessness (1719 effect#8), Warrior (137047 effect#2), Arms Warrior (137049 effect#4), Gathering Storm (273415 effect#1)
+Affecting spells : Recklessness (1719 effect#8), Warrior (137047 effect#2), Arms Warrior (137049 effect#4)
 Family Flags     : 8, 46
 Attributes       : ....x... ........ x.x..... .....x..   ....x... .xx....x ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -1349,7 +1349,7 @@ Class            : Warrior
 School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Gathering Storm (273415 effect#1), Siegebreaker (280773 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1)
 Triggered by     : Bladestorm (46924), Bladestorm (227847)
 Family Flags     : 9, 46
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
@@ -1673,11 +1673,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68045)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.40000 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810)
+                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091)
                    Family Flags: 9
 #2 (id=88047)    : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.40000 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810)
+                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091)
                    Family Flags: 9
 #3 (id=739444)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.40000 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -1919,7 +1919,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Gathering Storm (273415 effect#1), Siegebreaker (280773 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1)
 Triggered by     : Bladestorm (50622)
 Family Flags     : 9, 46
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
@@ -2141,7 +2141,7 @@ Attributes       : ....x... ........ ..x..... ...x....   ........ ..x....x x....
 Effects          :
 #1 (id=118390)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810)
+                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091)
                    Family Flags: 9
 #2 (id=118391)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -2682,7 +2682,7 @@ Effects          :
 #1 (id=179731)   : Apply Aura (6) | Hasted Cooldown Duration (416)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Cleave (845), Slam (1464), Execute (5308), Thunder Clap (6343), Revenge (6572), Mortal Strike (12294), Bloodthirst (23881), Shield Slam (23922), Raging Blow (85288), Raging Blow (85384), Raging Blow (96103), Furious Slash (100130), Execute (163201), Execute Off-Hand (163558), Skullsplitter (260643), Execute (260798), Execute (280849)
-                   Family Flags: 6, 7, 10, 18, 22, 29, 41, 42, 45, 69
+                   Family Flags: 6, 7, 10, 18, 22, 29, 41, 45, 69
 #2 (id=188987)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Charge (100), Rend (772), Cleave (845), Demoralizing Shout (1160), Slam (1464), Whirlwind (1680), Hamstring (1715), Recklessness (1719), Intimidating Shout (5246), Execute (5308), Thunder Clap (6343), Revenge (6572), Battle Shout (6673), Overpower (7384), Bloodbath (12292), Mortal Strike (12294), Piercing Howl (12323), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Bladestorm (46924), Shockwave (46968), Heroic Throw (57755), Raging Blow (85288), Rallying Cry (97462), Furious Slash (100130), Storm Bolt (107570), Avatar (107574), Dragon Roar (118000), Ravager (152277), Execute (163201), Colossus Smash (167105), Rampage (184367), Whirlwind (190411), Ignore Pain (190456), Impending Victory (202168), Bladestorm (227847), Ravager (228920), Skullsplitter (260643), Sweeping Strikes (260708), Warbreaker (262161), Deadly Calm (262228), Siegebreaker (280772), Execute (280849)
@@ -2738,11 +2738,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179732)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810)
+                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091)
                    Family Flags: 9
 #2 (id=186944)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810)
+                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091)
                    Family Flags: 9
 #3 (id=191017)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1386 | Target: Self (1)
@@ -2778,7 +2778,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
 #15 (id=261036)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 22 | Misc Value 2: 248 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329), Primal Rage (288269)
 #16 (id=362031)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 289 (Label) | Target: Self (1)
                    Affected Spells (Label): Rethu's Incessant Courage (242597)
@@ -2790,7 +2790,7 @@ Effects          :
                    Affected Spells (Label): Xavaric's Magnum Opus (207472)
 #19 (id=477129)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329), Primal Rage (288269)
 #20 (id=485707)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #21 (id=485710)   : Apply Aura (6) | Dummy (4)
@@ -2816,11 +2816,11 @@ Effects          :
                    Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=186754)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810)
+                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091)
                    Family Flags: 9
 #3 (id=191014)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810)
+                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091)
                    Family Flags: 9
 #4 (id=191015)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -2860,11 +2860,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179734)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810)
+                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091)
                    Family Flags: 9
 #2 (id=191010)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810)
+                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091)
                    Family Flags: 9
 #3 (id=191011)   : Apply Aura (6) | Unknown(213)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -3018,7 +3018,7 @@ Velocity         : 30 yards/sec
 Duration         : 7 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 60 seconds
-Affecting spells : Warrior (137047 effect#2), Protection Warrior (137048 effect#8), Gathering Storm (273415 effect#1)
+Affecting spells : Warrior (137047 effect#2), Protection Warrior (137048 effect#8)
 Family Flags     : 8, 107
 Attributes       : ....x... ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3091,7 +3091,7 @@ Class            : Warrior
 School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Gathering Storm (273415 effect#1), Siegebreaker (280773 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1)
 Family Flags     : 9, 107
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -3320,7 +3320,7 @@ Spell Level      : 12
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
-Affecting spells : Warrior (137047 effect#2), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Frothing Berserker (215571 effect#2), Simmering Rage (278757 effect#2)
+Affecting spells : Warrior (137047 effect#2), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Frothing Berserker (215571 effect#2), Simmering Rage (278757 effect#2), Unbridled Ferocity (288056 effect#2)
 Family Flags     : 8, 108, 123
 Attributes       : ........ ........ ..x..... ........   ........ .xx..... ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -3351,7 +3351,7 @@ Spell Level      : 1
 Range            : 8 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215571 effect#2), Frothing Berserker (215572 effect#1), Simmering Rage (278757 effect#2), Siegebreaker (280773 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215571 effect#2), Frothing Berserker (215572 effect#1), Simmering Rage (278757 effect#2), Siegebreaker (280773 effect#1), Unbridled Ferocity (288056 effect#2)
 Triggered by     : Rampage (184367)
 Family Flags     : 9, 108
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -3375,7 +3375,7 @@ Spell Level      : 1
 Range            : 8 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215571 effect#2), Frothing Berserker (215572 effect#1), Simmering Rage (278757 effect#2), Siegebreaker (280773 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215571 effect#2), Frothing Berserker (215572 effect#1), Simmering Rage (278757 effect#2), Siegebreaker (280773 effect#1), Unbridled Ferocity (288056 effect#2)
 Triggered by     : Rampage (184367)
 Family Flags     : 9, 108
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -3503,6 +3503,22 @@ Effects          :
 Description      : Fight through the pain, ignoring $s2% of damage taken, up to $<absorb> total damage prevented.
 Tooltip          : Ignoring $s2% of damage taken, preventing $w1 total damage.
 Variables        : $absorb=${($s1+$AP*3.5)*(1+$@versadmg)}
+
+Name             : Rage (id=195707) [Spell Family (4)] 
+Class            : Warrior
+School           : Physical
+Spell Type       : None
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=287271)   : Energize Power (30)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
+Description      : Gained Rage due to taking a melee attack.
 
 Name             : Defensive Stance (id=197690) [Spell Family (4)] 
 Class            : Warrior
@@ -3777,7 +3793,7 @@ Spell Level      : 1
 Range            : 8 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215571 effect#2), Frothing Berserker (215572 effect#1), Simmering Rage (278757 effect#2), Siegebreaker (280773 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215571 effect#2), Frothing Berserker (215572 effect#1), Simmering Rage (278757 effect#2), Siegebreaker (280773 effect#1), Unbridled Ferocity (288056 effect#2)
 Triggered by     : Rampage (184367)
 Family Flags     : 9, 108, 119
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -3801,7 +3817,7 @@ Spell Level      : 1
 Range            : 8 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215571 effect#2), Frothing Berserker (215572 effect#1), Simmering Rage (278757 effect#2), Siegebreaker (280773 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215571 effect#2), Frothing Berserker (215572 effect#1), Simmering Rage (278757 effect#2), Siegebreaker (280773 effect#1), Unbridled Ferocity (288056 effect#2)
 Triggered by     : Rampage (184367)
 Family Flags     : 9, 108
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -4537,7 +4553,7 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... .....
 Effects          :
 #1 (id=307841)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810)
+                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091)
                    Family Flags: 9
 #2 (id=720649)   : Apply Aura (6) | Modify Auto Attack Damage Taken% from Caster (343)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -4872,13 +4888,13 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=320538)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810)
+                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091)
                    Family Flags: 9
 #2 (id=320539)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=739445)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810)
+                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091)
                    Family Flags: 9
 #4 (id=739446)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -5095,7 +5111,7 @@ Range            : 40 yards
 Velocity         : 30 yards/sec
 Duration         : 12 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Protection Warrior (137048 effect#8), Gathering Storm (273415 effect#1)
+Affecting spells : Protection Warrior (137048 effect#8)
 Family Flags     : 107
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5120,7 +5136,7 @@ GCD              : 1.5 seconds
 Velocity         : 10 yards/sec
 Duration         : 6 seconds
 Cooldown         : 90 seconds
-Affecting spells : Recklessness (1719 effect#8), Warrior (137047 effect#2), Arms Warrior (137049 effect#4), Gathering Storm (273415 effect#1)
+Affecting spells : Recklessness (1719 effect#8), Warrior (137047 effect#2), Arms Warrior (137049 effect#4)
 Family Flags     : 8, 46
 Attributes       : ....x... ........ x.x..... .....x..   ....x... .xx....x ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -5155,7 +5171,7 @@ Velocity         : 30 yards/sec
 Duration         : 7 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 60 seconds
-Affecting spells : Warrior (137047 effect#2), Protection Warrior (137048 effect#8), Gathering Storm (273415 effect#1)
+Affecting spells : Warrior (137047 effect#2), Protection Warrior (137048 effect#8)
 Family Flags     : 8, 107
 Attributes       : ....x... ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6488,11 +6504,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=725007)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 138.8466 (coefficient=0.446452) | PvP Coefficient: 0.66000 | Trigger Spell: 273412 | Target: Self (1)
-#2 (id=725008)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 62.2 (coefficient=0.2) | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : While $?s152277[Ravager is active][Bladestorming], every $273414t1 sec you gain $s2 Speed and $?s152277[Ravager's][Bladestorm's] damage increases by $s1. Lasts $273415d.
+#1 (id=725007)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 109.2061 (coefficient=0.351145) | PvP Coefficient: 0.66000 | Trigger Spell: 273412 | Target: Self (1)
+#2 (id=725008)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : While $?s152277[Ravager is active][Bladestorming], every $?c2[$288131t1][$273414t1] sec you gain $s2% movement speed and $s1 Strength, stacking. Lasts $273415d.
 
 Name             : Bloodcraze (id=273420) [Scaling Spell (-7), Spell Family (4), Passive] 
 Class            : Warrior
@@ -6934,7 +6950,6 @@ Class            : Warrior
 School           : Physical
 Spell Type       : None
 Azerite Power Id : 435
-Triggered by     : Lord of War (279203)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6944,13 +6959,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=734680)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Trigger Spell: 279202 | Target: Self (1)
+#1 (id=734680)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 279202 | Target: Self (1)
 #2 (id=734681)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 4492.985 (coefficient=57.78759) | PvP Coefficient: 0.45000 | Target: Self (1)
                    Affected Spells: Colossus Smash (167105), Colossus Smash (208086), Warbreaker (262161)
                    Family Flags: 23, 62
-Description      : $?s262161[Warbreaker][Colossus Smash] deals an additional $s2 damage and generates ${$s1/10} Rage.
+Description      : $?s262161[Warbreaker][Colossus Smash] deals an additional $s2 damage and generates ${$279203s1/10} Rage.
 
 Name             : Simmering Rage (id=278757) [Scaling Spell (-8), Spell Family (4), Passive] 
 Class            : Warrior
@@ -7953,7 +7968,7 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... .....
 Effects          :
 #1 (id=738534)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810)
+                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Seismic Wave (278497), Bloodbath (280736), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091)
                    Family Flags: 9
 #2 (id=739447)   : Apply Aura (6) | Modify Auto Attack Damage Taken% from Caster (343)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -8076,8 +8091,91 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=750325)   : Apply Aura (6) | Dummy (4)
+#1 (id=750325)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 258.771 (coefficient=0.832061) | PvP Coefficient: 1.00000 | Trigger Spell: 287378 | Target: Self (1)
 Description      : Avatar increases your Mastery by $s1 for $287379d, and instantly grants you Ignore Pain.
+
+Name             : Unbridled Ferocity (id=288056) [Scaling Spell (-8), Spell Family (4), Passive] 
+Class            : Warrior
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 544
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=751443)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 4000 | Scaled Value: 4000 | PvP Coefficient: 1.00000 | Trigger Spell: 288060 | Target: Self (1)
+#2 (id=751444)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
+                   Base Value: 0 | Scaled Value: 121.1564 (coefficient=1.558282) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Rampage (184367), Rampage (184707), Rampage (184709), Rampage (201363), Rampage (201364)
+                   Family Flags: 108
+Description      : Rampage deals an additional ${$184367s1*$s2} damage and has a $288060h% chance to grant you Recklessness for ${$s1/1000} sec.
+
+Name             : Cold Steel, Hot Blood (id=288080) [Scaling Spell (-7), Spell Family (4), Passive] 
+Class            : Warrior
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 545
+Triggered by     : Gushing Wound (288091)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=751474)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 288084 | Target: Self (1)
+#2 (id=751475)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=9.192808) | PvP Coefficient: 1.00000 | Trigger Spell: 288085 | Target: Self (1)
+Description      : Bloodthirst critical strikes generate $<rage> additional Rage, and inflict a Gushing Wound that leeches $<damage> health over $288091d.
+Variables        : $rage=${$288087s1/10}
+$damage=${$s2*3}
+
+Name             : Striking the Anvil (id=288452) [Scaling Spell (-1), Spell Family (4), Passive] 
+Class            : Warrior
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 550
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=752078)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 963.8627 (coefficient=3.099237) | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=752079)   : Dummy (3)
+                   Base Value: 1500 | Scaled Value: 1500 | PvP Coefficient: 1.00000
+Description      : The Tactician effect improves your next Overpower, causing it to deal $s1 additional damage and reduce the remaining cooldown of Mortal Strike by ${$s2/1000}.1 sec.
+
+Name             : Intimidating Presence (id=288641) [Scaling Spell (-8), Passive] 
+Class            : Warrior
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 554
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=752488)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 8108.896 (coefficient=104.2945) | PvP Coefficient: 1.00000 | Trigger Spell: 288642 | Target: Self (1)
+Description      : Intimidating Shout reduces the movement speed of affected enemies by $288644s1%, and prevents the next $s1 damage they deal after Intimidating Shout ends.
 
 

@@ -574,7 +574,7 @@ Effects          :
 #1 (id=40417)    : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
                    Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=40418)    : Apply Aura (6) | Modify Base Resistance (142)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
 #3 (id=40419)    : Apply Aura (6) | Threat (10)
                    Base Value: 350 | Scaled Value: 350 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
 #4 (id=139814)   : Apply Aura (6) | Modify Total Stat% (137)
@@ -589,7 +589,7 @@ Effects          :
                    Base Value: -5000 | Scaled Value: -5000 | PvP Coefficient: 1.00000 | Misc Value: 1428 | Target: Self (1)
 #8 (id=289403)   : Apply Aura (6) | Modify Max Resource (418)
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
-Description      : Stamina increased by $s4% and Armor increased by $s2%.
+Description      : Stamina increased by $s4%.
 
 Name             : Death's Advance (id=48265) [Spell Family (15)] 
 Class            : Death Knight
@@ -3034,7 +3034,7 @@ Effects          :
                    Family Flags: 43
 #3 (id=191175)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self (1)
-                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952), Pool of Pure Void (250766), Wave of Flame (251948)
+                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952), Pool of Pure Void (250766), Wave of Flame (251948), Bwonsamdi's Bargain (288186)
 #4 (id=191176)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=191177)   : Apply Aura (6) | Dummy (4)
@@ -3085,7 +3085,7 @@ Effects          :
                    Base Value: -8 | Scaled Value: -8 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=191172)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self (1)
-                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952), Pool of Pure Void (250766), Wave of Flame (251948)
+                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952), Pool of Pure Void (250766), Wave of Flame (251948), Bwonsamdi's Bargain (288186)
 #5 (id=191173)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Misc Value 2: 281 (Label) | Target: Self (1)
                    Affected Spells (Label): Fel-Crazed Rage (225777), Orb of Destruction (229700), Ceaseless Toxin (242497), Spear of Anguish (242605), Unending Hunger (242536), Dread Torrent (246464), Insidious Corruption (243941), Piercing Anguish (246751), Void Tendril (250834), Pool of Pure Void (250766), Shadow Strike (253324), Chaotic Darkness (252896), Shadowbind (252879), Isolated Strike (255609), Shadow Blades (257702)
@@ -3146,10 +3146,10 @@ Effects          :
                    Family Flags: 5
 #6 (id=260807)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329), Primal Rage (288269)
 #7 (id=260808)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 22 | Misc Value 2: 248 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329), Primal Rage (288269)
 #8 (id=260809)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 333 (Label) | Target: Self (1)
                    Affected Spells (Label): Void Slash (251034), Isolated Strike (255609), Lightning Arc (255586), Fire Mines (253321), Ravaging Storm (257286), Golganneth's Thunderous Wrath (257430)
@@ -4617,9 +4617,9 @@ Effects          :
 #1 (id=306100)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Misc Value 2: 0xfffffff6 | Target: Self (1)
 #2 (id=306101)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=306102)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Damage taken below $s3% Health is reduced by $s2%.
 
 Name             : Tightening Grasp (id=206970) [Spell Family (15), Passive] 
@@ -7124,14 +7124,18 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=733809)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188)
                    Family Flags: 4
 #2 (id=733810)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 3 (23)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188)
                    Family Flags: 4
-Description      : Death Strike's healing is increased by $s1%.
+#3 (id=751233)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+                   Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188)
+                   Family Flags: 4
+Description      : Death Strike's cost is reduced by ${$s3/-10}, and its healing is increased by $s1%.
 
 Name             : Eternal Rune Weapon (id=278479) [Scaling Spell (-1), Spell Family (15), Passive] 
 Class            : Death Knight
@@ -8175,5 +8179,46 @@ Effects          :
 #2 (id=749437)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 Description      : Dark Transformations links you and your pet with chains that deal $s1 Fire damage every sec to enemies between you for $s2 sec. 
+
+Name             : Frostwhelp's Indignation (id=287283) [Scaling Spell (-1), Spell Family (15), Passive] 
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 519
+Triggered by     : Frostwhelp's Indignation (287338)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=750152)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 949.6183 (coefficient=3.053435) | PvP Coefficient: 1.00000 | Trigger Spell: 287303 | Target: Self (1)
+#2 (id=750153)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 47.48099 (coefficient=0.152672) | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=750154)   : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
+Description      : Pillar of Frost summons a Frostwhelp who breathes on all enemies within 20 yards in front of you for $s1 Frost damage. Each unique enemy hit by Frostwhelp's Indignation grants you $s2 Mastery for $287338d, up to ${$s2*$s3}.
+
+Name             : Magus of the Dead (id=288417) [Scaling Spell (-8), Spell Family (15), Passive] 
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 552
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=752014)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 933 (coefficient=12) | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Apocalypse and Army of the Damned additionally summon a Magus of the Dead who hurls Frostbolts and Shadowbolts at your foes, dealing $s1 each.
 
 
