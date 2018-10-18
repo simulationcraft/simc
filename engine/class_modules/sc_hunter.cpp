@@ -5150,7 +5150,8 @@ void hunter_t::init_assessors()
 
 std::string hunter_t::default_potion() const
 {
-  return ( true_level >  110 ) ? "battle_potion_of_agility" :
+  return ( true_level >  110 && specialization() == HUNTER_MARKSMANSHIP) ? "potion_of_rising_death" :
+         ( true_level >  110 ) ? "battle_potion_of_agility" :
          ( true_level >= 100 ) ? "prolonged_power" :
          ( true_level >= 90  ) ? "draenic_agility" :
          ( true_level >= 85  ) ? "virmens_bite":
@@ -5353,11 +5354,11 @@ void hunter_t::apl_mm()
   cds -> add_action( "lights_judgment" );
 
   // In-combat potion
-  cds -> add_action( "potion,if=(buff.trueshot.react&buff.bloodlust.react)|((consumable.prolonged_power&target.time_to_die<62)|target.time_to_die<31)" );
-  cds -> add_action( this, "Trueshot", "if=cooldown.aimed_shot.charges<1|talent.barrage.enabled&cooldown.aimed_shot.charges_fractional<1.3" );
+  cds -> add_action( "potion,if=buff.trueshot.react&buff.bloodlust.react|buff.trueshot.react&target.health.pct<20&talent.careful_aim.enabled|target.time_to_die<25" );
+  cds -> add_action( this, "Trueshot", "if=(cooldown.aimed_shot.charges<1&!talent.lethal_shots.enabled&!talent.steady_focus.enabled)|buff.bloodlust.react|target.time_to_die>cooldown.trueshot.duration_guess+duration|((target.health.pct<20|!talent.careful_aim.enabled)&(buff.lethal_shots.up|!talent.lethal_shots.enabled))|target.time_to_die<15" );
 
-  steady_st -> add_talent( this, "A Murder of Crows" );
-  steady_st -> add_action( this, "Aimed Shot", "if=buff.lethal_shots.up" );
+  steady_st -> add_talent( this, "A Murder of Crows", "if=buff.steady_focus.down|target.time_to_die<16");
+  steady_st -> add_action( this, "Aimed Shot", "if=buff.lethal_shots.up|target.time_to_die<3|debuff.steady_aim.stack=5&(buff.lock_and_load.up|full_recharge_time<cast_time)" );
   steady_st -> add_action( this, "Arcane Shot", "if=buff.precise_shots.up" );
   steady_st -> add_talent( this, "Serpent Sting", "if=refreshable" );
   steady_st -> add_action( this, "Steady Shot" );
