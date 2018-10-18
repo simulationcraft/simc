@@ -1005,4 +1005,13 @@ struct judgment_t : public paladin_melee_attack_t
   void impact( action_state_t* s ) override;
 };
 
+struct shield_of_the_righteous_buff_t : public buff_t
+{
+  shield_of_the_righteous_buff_t( paladin_t* p );
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
+  void sotr_custom_trigger();
+
+  double avengers_valor_increase;
+};
+
 }

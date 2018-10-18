@@ -148,16 +148,16 @@ feet=hematocyst_stompers,id=160733,bonus_id=4800/1507
 finger1=ring_of_the_infinite_void,id=160647,bonus_id=4800/1507,enchant=pact_of_mastery
 finger2=rotscour_ring,id=160645,bonus_id=4800/1507,enchant=pact_of_mastery
 trinket1=jes_howler,id=159627,bonus_id=4779/1542
-trinket2=vial_of_animated_blood,id=159625,bonus_id=4779/1542
+trinket2=disc_of_systematic_regression,id=160650,bonus_id=4800/1507
 main_hand=biomelding_cleaver,id=160685,bonus_id=4800/1507,enchant=rune_of_razorice
 off_hand=biomelding_cleaver,id=160685,bonus_id=4800/1507,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=384.31
-# gear_strength=4032
+# gear_ilvl=385.25
+# gear_strength=4345
 # gear_stamina=7205
 # gear_crit_rating=1291
 # gear_haste_rating=380
-# gear_mastery_rating=1101
+# gear_mastery_rating=937
 # gear_versatility_rating=395
 # gear_armor=4055

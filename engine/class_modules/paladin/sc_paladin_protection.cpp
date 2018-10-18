@@ -528,74 +528,63 @@ struct seraphim_t : public paladin_spell_t
 
 // Shield of the Righteous ==================================================
 
-struct shield_of_the_righteous_buff_t : public buff_t
+shield_of_the_righteous_buff_t::shield_of_the_righteous_buff_t( paladin_t* p ) :
+    buff_t( buff_creator_t( p, "shield_of_the_righteous", p -> spells.shield_of_the_righteous ) )
 {
-  double avengers_valor_increase;
+  avengers_valor_increase = 0;
+  add_invalidate( CACHE_BONUS_ARMOR );
+  set_default_value( p -> spells.shield_of_the_righteous -> effectN( 1 ).percent() );
+}
 
-  shield_of_the_righteous_buff_t( paladin_t* p ) :
-    buff_t( buff_creator_t( p, "shield_of_the_righteous", p -> spells.shield_of_the_righteous )
-      .add_invalidate( CACHE_BONUS_ARMOR ) ),
-    avengers_valor_increase( 0 )
-  { }
+void shield_of_the_righteous_buff_t::expire_override( int expiration_stacks, timespan_t remaining_duration )
+{
+  buff_t::expire_override( expiration_stacks, remaining_duration );
 
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  paladin_t* p = debug_cast< paladin_t* >( player );
+
+  if ( p -> azerite.inner_light.enabled() )
   {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-
-    paladin_t* p = debug_cast< paladin_t* >( player );
-
-    if ( p -> azerite.inner_light.enabled() )
-    {
-      p -> buffs.inner_light -> trigger();
-    }
+    p -> buffs.inner_light -> trigger();
   }
+}
 
+// Custom trigger function to (re-)calculate the increase from avenger's valor
+// Use this to trigger or refresh the buff
+void shield_of_the_righteous_buff_t::sotr_custom_trigger()
+{
   // Shield of the righteous' armor bonus is dynamic with strength, but uses a multiplier that is only updated on sotr cast
   // avengers_valor_increase varies between 0 and 0.2 based on avenger's valor being up or not, and on the previous buff's remaining duration
-  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  paladin_t* p = debug_cast< paladin_t* >( player );
+
+  double new_avengers_valor = p -> buffs.avengers_valor -> up() ? 0.20 : 0;
+  
+  if ( this -> up() )
   {
-    paladin_t* p = debug_cast< paladin_t* >( player );
-
-    double new_avengers_valor = p -> buffs.avengers_valor -> up() ? 0.20 : 0;
-
-    if ( this -> up() )
+    if ( new_avengers_valor != avengers_valor_increase )
     {
-      if ( new_avengers_valor != avengers_valor_increase )
-      {
-        // TODO: handle max duration somewhere
-        avengers_valor_increase = avengers_valor_increase * remains().total_seconds() / ( remains().total_seconds() + buff_duration.total_seconds() ) 
-                                + new_avengers_valor * buff_duration.total_seconds() / ( remains().total_seconds() + buff_duration.total_seconds() );
-        p -> invalidate_cache( CACHE_BONUS_ARMOR );
-
-      }
-
-      if ( sim -> debug )
-      {
-        sim -> out_debug.printf( "Shield of the Righetous buff refreshed with a %f increase from Avenger's Valor", avengers_valor_increase );
-      }
-      
-      this -> extend_duration( p, buff_duration );
-      return true;
+      // TODO: handle max duration somewhere
+      avengers_valor_increase = avengers_valor_increase * remains().total_seconds() / ( remains().total_seconds() + buff_duration.total_seconds() ) 
+        + new_avengers_valor * buff_duration.total_seconds() / ( remains().total_seconds() + buff_duration.total_seconds() );
+      p -> invalidate_cache( CACHE_BONUS_ARMOR );
     }
-    else
+
+    if ( sim -> debug )
     {
-      avengers_valor_increase = new_avengers_valor;
-      if ( sim -> debug )
-      {
-        sim -> out_debug.printf( "Shield of the Righetous buff triggered with a %f increase from Avenger's Valor", avengers_valor_increase );
-      }
-      return buff_t::trigger( stacks, value, chance, duration );
+      sim -> out_debug.printf( "Shield of the Righetous buff refreshed with a %f increase from Avenger's Valor", avengers_valor_increase );
     }
+
+    extend_duration( p, buff_duration );
   }
-
-  double value() override
+  else
   {
-    buff_t::value();
-    paladin_t* p = debug_cast< paladin_t* >( player );
-
-    return p -> spells.shield_of_the_righteous -> effectN( 1 ).percent() * p -> cache.strength() * ( 1.0 + avengers_valor_increase );
+    avengers_valor_increase = new_avengers_valor;
+    if ( sim -> debug )
+    {
+      sim -> out_debug.printf( "Shield of the Righetous buff triggered with a %f increase from Avenger's Valor", avengers_valor_increase );
+    }
+    trigger();
   }
-};
+}    
 
 struct shield_of_the_righteous_t : public paladin_melee_attack_t
 {
@@ -639,8 +628,9 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
 
     // Buff granted regardless of combat roll result
     // Duration and armor bonus recalculation handled in the buff
-    
-    p() -> buffs.shield_of_the_righteous -> trigger();
+    shield_of_the_righteous_buff_t* sotr_buff = debug_cast<shield_of_the_righteous_buff_t*>( p() -> buffs.shield_of_the_righteous );
+
+    sotr_buff -> sotr_custom_trigger();
 
     if ( result_is_hit( execute_state -> result ) ) // TODO: not needed anymore? Can we even miss?
     {

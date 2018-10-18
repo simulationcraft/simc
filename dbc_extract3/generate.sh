@@ -9,7 +9,7 @@ OUTPATH=`dirname $PWD`/engine/dbc/generated
 BATCH_FILE=live.conf
 
 PTR=
-if [ "$1" == "ptr" ]; then
+if [ "$1" = "ptr" ]; then
     PTR=" --prefix=ptr"
     BATCH_FILE=ptr.conf
     shift

@@ -3183,11 +3183,11 @@ double player_t::composite_block_reduction( action_state_t* s ) const
 {
   double b = current.block_reduction;
 
-  // Players have base block reduction = 0, enemies have a fixed 0.30 damage reduction on block
+  // Players have a base block reduction = 0, enemies have a fixed 0.30 damage reduction on block
   if ( b == 0 )
   {
     // The block reduction rating is equal to 2.5 times the equipped shield's armor rating
-    double block_reduction_rating = items[ SLOT_OFF_HAND ].stats.armor * 2.5;
+    return items[ SLOT_OFF_HAND ].stats.armor * 2.5;
   }
 
   return b;

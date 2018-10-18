@@ -149,7 +149,7 @@ Spell Level      : 20
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Earth Shield (974 effect#1), Healing Trance (60515 effect#1), Unleash Life (73685 effect#2), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), High Tide (157154 effect#1), Harmony of the Elements (167703 effect#1), Jonat's Focus (210607 effect#1), Chain Heal (231780 effect#1), Ancestral Reach (263790 effect#1), Flash Flood (280615 effect#1)
+Affecting spells : Earth Shield (974 effect#1), Healing Trance (60515 effect#1), Unleash Life (73685 effect#2), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), Harmony of the Elements (167703 effect#1), Jonat's Focus (210607 effect#1), Chain Heal (231780 effect#1), Ancestral Reach (263790 effect#1), Flash Flood (280615 effect#1), High Tide (288675 effect#1), 
 Family Flags     : 8, 41
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -160,10 +160,10 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ x....... 
 Effects          :
 #1 (id=387)      : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.05000 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.7 | Chain Targets: 3 | Target: Chain Friendly (45)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.40000 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.7 | Chain Targets: 3 | Target: Chain Friendly (45)
 #2 (id=219186)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Chain Friendly (45)
-Description      : Heals the friendly target for $s1, then jumps to heal the most injured nearby party or raid members. Healing is reduced by $?a157154[15][30]% after each jump. Heals $x1 total targets.
+Description      : Heals the friendly target for $s1, then jumps to heal the ${$x1-1} most injured nearby allies. Healing is reduced by $s2% with each jump.
 
 Name             : Earthbind Totem (id=2484) [Spell Family (11)] 
 Class            : Shaman
@@ -586,6 +586,7 @@ Spell Level      : 26
 Cooldown         : 1800 seconds
 Category         : 1161
 Category Cooldown: 1800 seconds
+Affecting spells : Ancient Ankh Talisman (287777 effect#1)
 Family Flags     : 9
 Attributes       : ......x. ........ .......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
@@ -735,7 +736,7 @@ Stacks           : 2 initial, 2 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
-Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Gathering Storms (198300 effect#1), Stormbringer (201846 effect#4), Landslide (202004 effect#1), Item - Shaman T19 Enhancement 2P Bonus (211987 effect#1), Crackling Surge (224127 effect#1), Lightning Crash (242284 effect#1), Storm Totem (262397 effect#1)
+Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Gathering Storms (198300 effect#1), Stormbringer (201846 effect#4), Landslide (202004 effect#1), Item - Shaman T19 Enhancement 2P Bonus (211987 effect#1), Crackling Surge (224127 effect#1), Lightning Crash (242284 effect#1), Storm Totem (262397 effect#1), Thunderaan's Fury (287768 effect#2)
 Triggered by     : Stormstrike (17364)
 Family Flags     : 39, 76
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ........ 
@@ -760,7 +761,7 @@ Spell Type       : Melee
 Spell Level      : 40
 Range            : 5 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Gathering Storms (198300 effect#1), Stormbringer (201846 effect#4), Landslide (202004 effect#1), Item - Shaman T19 Enhancement 2P Bonus (211987 effect#1), Crackling Surge (224127 effect#1), Lightning Crash (242284 effect#1), Storm Totem (262397 effect#1)
+Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Gathering Storms (198300 effect#1), Stormbringer (201846 effect#4), Landslide (202004 effect#1), Item - Shaman T19 Enhancement 2P Bonus (211987 effect#1), Crackling Surge (224127 effect#1), Lightning Crash (242284 effect#1), Storm Totem (262397 effect#1), Thunderaan's Fury (287768 effect#2)
 Triggered by     : Stormstrike (17364)
 Family Flags     : 39, 76
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
@@ -858,7 +859,7 @@ Spell Level      : 24
 Proc Chance      : 25%
 Proc Flags       : ..x.x... ........ ......xx ........ 
                  : White Melee, Yellow Melee, Melee Main-Hand, Melee Off-Hand
-Affecting spells : Mastery: Enhanced Elements (77223 effect#4), Doom Winds (204945 effect#1), Tailwind Totem (262400 effect#1)
+Affecting spells : Mastery: Enhanced Elements (77223 effect#4), Doom Winds (204945 effect#1), Tailwind Totem (262400 effect#1), Thunderaan's Fury (287802 effect#2)
 Family Flags     : 72
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2146,7 +2147,7 @@ Class            : Shaman
 School           : Nature
 Spell Type       : Magic
 Spell Level      : 30
-Affecting spells : Praetorian's Tidecallers (210604 effect#1)
+Affecting spells : Praetorian's Tidecallers (210604 effect#1), Spouting Spirits (279504 effect#1)
 Family Flags     : 116
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2174,7 +2175,7 @@ GCD              : 1 seconds
 Duration         : 6 seconds
 Charges          : 1 (180 seconds cooldown)
 Category         : 1540
-Affecting spells : Praetorian's Tidecallers (210604 effect#1)
+Affecting spells : Praetorian's Tidecallers (210604 effect#1), Spouting Spirits (279504 effect#1)
 Family Flags     : 29, 116
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2213,7 +2214,7 @@ Class            : Shaman
 School           : Nature
 Spell Type       : None
 Spell Level      : 30
-Affecting spells : Praetorian's Tidecallers (210604 effect#1)
+Affecting spells : Praetorian's Tidecallers (210604 effect#1), Spouting Spirits (279504 effect#1)
 Triggered by     : Spirit Link (98017)
 Family Flags     : 116
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
@@ -2620,7 +2621,7 @@ Range            : 100 yards
 Velocity         : 30 yards/sec
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Proc Chance      : 101%
-Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Gathering Storms (198300 effect#1), Stormbringer (201846 effect#4), Landslide (202004 effect#1), Item - Shaman T19 Enhancement 2P Bonus (211987 effect#1), Crackling Surge (224127 effect#1), Lightning Crash (242284 effect#1), Storm Totem (262397 effect#1)
+Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Gathering Storms (198300 effect#1), Stormbringer (201846 effect#4), Landslide (202004 effect#1), Item - Shaman T19 Enhancement 2P Bonus (211987 effect#1), Crackling Surge (224127 effect#1), Lightning Crash (242284 effect#1), Storm Totem (262397 effect#1), Thunderaan's Fury (287768 effect#2)
 Triggered by     : Windstrike (115356)
 Family Flags     : 39, 76
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -2646,7 +2647,7 @@ Spell Level      : 40
 Range            : 100 yards
 Velocity         : 30 yards/sec
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Gathering Storms (198300 effect#1), Stormbringer (201846 effect#4), Landslide (202004 effect#1), Item - Shaman T19 Enhancement 2P Bonus (211987 effect#1), Crackling Surge (224127 effect#1), Lightning Crash (242284 effect#1), Storm Totem (262397 effect#1)
+Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Gathering Storms (198300 effect#1), Stormbringer (201846 effect#4), Landslide (202004 effect#1), Item - Shaman T19 Enhancement 2P Bonus (211987 effect#1), Crackling Surge (224127 effect#1), Lightning Crash (242284 effect#1), Storm Totem (262397 effect#1), Thunderaan's Fury (287768 effect#2)
 Triggered by     : Windstrike (115356)
 Family Flags     : 39, 76
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
@@ -2940,7 +2941,7 @@ Effects          :
                    Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
 #6 (id=260709)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self (1)
-                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952), Pool of Pure Void (250766), Wave of Flame (251948)
+                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952), Pool of Pure Void (250766), Wave of Flame (251948), Bwonsamdi's Bargain (288186)
 #7 (id=260710)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #8 (id=260711)   : Apply Aura (6) | Dummy (4)
@@ -3064,11 +3065,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179725)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -43 | Scaled Value: -43 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -43 | Scaled Value: -43 | PvP Coefficient: 1.07000 | Target: Self (1)
                    Affected Spells: Lightning Bolt (403), Chain Lightning (421), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Lightning Bolt (187837), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Flame Shock (188838), Lightning Shield (192109), Rockbiter (193786), Flametongue (193796), Crash Lightning (195592), Frostbrand (196834), Frost Shock (196840), Sundering (197214), Fury of Air (197385), Icefury (210714), Crashing Storm (210801), Hailstorm (210854), Stormlash (213307), Feral Lunge (215802), Icefury Overload (219271), Searing Assault (268429), Icy Edge (271920), Lightning Shield Overcharge (273323), Lightning Shield (273324), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst (285466)
                    Family Flags: 39
 #2 (id=191038)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: -43 | Scaled Value: -43 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: -43 | Scaled Value: -43 | PvP Coefficient: 1.07000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Lightning Bolt (403), Chain Lightning (421), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Lightning Bolt (187837), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Flame Shock (188838), Lightning Shield (192109), Rockbiter (193786), Flametongue (193796), Crash Lightning (195592), Frostbrand (196834), Frost Shock (196840), Sundering (197214), Fury of Air (197385), Icefury (210714), Crashing Storm (210801), Hailstorm (210854), Stormlash (213307), Feral Lunge (215802), Icefury Overload (219271), Searing Assault (268429), Icy Edge (271920), Lightning Shield Overcharge (273323), Lightning Shield (273324), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst (285466)
                    Family Flags: 39
 #3 (id=191039)   : Apply Aura (6) | Modify Pet Damage Done% (429)
@@ -3291,25 +3292,23 @@ Name             : High Tide (id=157154) [Spell Family (11), Passive]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
+Resource         : 1% Base Mana (0) (id=192045)
 Spell Level      : 1
+Proc Chance      : 100%
+Proc Flags       : ........ ......x. x....... ........ 
+                 : Magic Heal, Magic Hostile Spell
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ .....x.. ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=219030)   : Apply Aura (6) | Add Flat Modifier (107): Spell Target Bonus (20)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 20 | Target: Self (1)
-                   Affected Spells: Chain Heal (1064)
-                   Family Flags: 8
-#2 (id=253764)   : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 17 | Target: Self (1)
-                   Affected Spells: Chain Heal (1064)
-                   Family Flags: 8
-Description      : Chain Heal bounces to $m2 additional $Ltarget:targets;, and its falloff with each bounce is reduced by half.
+#1 (id=219030)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Misc Value: 20 | Target: Self (1)
+Description      : Every ${$c*$s1} mana you spend brings a High Tide, making your next $288675n Chain Heals heal for an additional $288675s1% and not reduce with each jump.
 
 Name             : Storm Elemental (id=157299) [Spell Family (11)] 
 Class            : Shaman
@@ -3891,7 +3890,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=274350)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.59000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.59000 | PvP Coefficient: 0.66667 | Target: Friend (21)
 #2 (id=306350)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: maelstrom | Target: Self (1)
 #3 (id=327366)   : Dummy (3)
@@ -9216,9 +9215,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=732968)   : Apply Aura (6) | Dummy (4)
+#1 (id=732968)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.233999) | PvP Coefficient: 1.00000 | Trigger Spell: 277926 | Target: Self (1)
-Description      : When you cast $?<s2825>[Bloodlust][Heroism], your Mastery increases by $s1 every second, stacking up to $277943u times.
+Description      : While under the effects of $?<s2825>[Bloodlust][Heroism], your Mastery increases by $s1 every second, stacking up to $277943u times.
 
 Name             : Synapse Shock (id=277671) [Scaling Spell (-1), Passive] 
 Class            : Shaman
@@ -9390,11 +9389,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=734592)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 3052.761 (coefficient=39.2638) | PvP Coefficient: 1.00000 | Trigger Spell: 279504 | Target: Self (1)
+#1 (id=734592)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 2643.5 (coefficient=34) | PvP Coefficient: 1.00000 | Trigger Spell: 279504 | Target: Self (1)
 #2 (id=734593)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000
-Description      : Spirit Link Totem restores $s1 health to all nearby allies $m2 $Lsecond:seconds; after it is dropped.
+Description      : Spirit Link Totem's radius is increased by $279504s2%, and it restores $s1 health to all nearby allies $m2 $Lsecond:seconds; after it is dropped.
 
 Name             : Roiling Storm (id=278719) [Scaling Spell (-8), Spell Family (11), Passive] 
 Class            : Shaman
@@ -10462,6 +10461,26 @@ Effects          :
 #1 (id=747606)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
+Name             : Tectonic Thunder (id=286949) [Scaling Spell (-8), Spell Family (11), Passive] 
+Class            : Shaman
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 512
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=749619)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 596.2424 (coefficient=7.668712) | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=749620)   : Dummy (3)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000
+Description      : Earthquake deals $s1 Physical damage instantly, and has a $s2% chance to make your next Chain Lightning be instant cast.
+
 Name             : Surge of Power (id=287185) [Spell Family (11), Hidden] 
 Class            : Shaman
 School           : Physical
@@ -10497,9 +10516,82 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=750187)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: 0 | Scaled Value: 953.9877 (coefficient=12.26994) | PvP Coefficient: 1.00000 | Misc Value: 23 | Trigger Spell: 287302 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 953.9877 (coefficient=12.26994) | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Tidal Waves (53390)
                    Family Flags: 105
-Description      : Both bonuses of Tidal Waves are increased $287302s1%, and spells affected by it heal for an additional $s1.
+#2 (id=752186)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 287302 | Target: Self (1)
+Description      : Both bonuses of Tidal Waves are increased by $287302s1%, and spells affected by it heal for an additional $s1.
+
+Name             : Thunderaan's Fury (id=287768) [Scaling Spell (-8), Spell Family (11), Passive] 
+Class            : Shaman
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 530
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=750959)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 13 | Scaled Value: 13 | PvP Coefficient: 1.00000 | Trigger Spell: 287801 | Target: Self (1)
+#2 (id=750960)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
+                   Base Value: 5 | Scaled Value: 201.2914 (coefficient=2.588957) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Stormstrike (32175), Stormstrike Off-Hand (32176), Windstrike (115357), Windstrike Off-Hand (115360)
+                   Family Flags: 76
+Description      : Stormstrike deals ${$m2+($m2*0.5)} additional damage, and has a $287801h% chance to summon Thunderaan's Fury Totem, increasing the chance to activate Windfury Weapon by $287802s2% for $287802d.
+
+Name             : Ancient Ankh Talisman (id=287774) [Scaling Spell (-8), Passive] 
+Class            : Shaman
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 539
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=750972)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 2876.75 (coefficient=37) | PvP Coefficient: 0.50000 | Trigger Spell: 287775 | Target: Self (1)
+Description      : While Reincarnation is off cooldown, your maximum health is increased by $s1.
+
+While you are at full health, Reincarnation cools down $287777s1% faster.
+
+Name             : High Tide (id=288675) [Spell Family (11)] 
+Class            : Shaman
+School           : Physical
+Spell Type       : None
+Spell Level      : 1
+Duration         : 15 seconds
+Stacks           : 2 initial, 2 maximum
+Proc Chance      : 100%
+Proc Flags       : ........ ......x. ........ ........ 
+                 : Magic Heal
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=752547)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Chain Heal (1064)
+                   Family Flags: 8
+#2 (id=752548)   : Apply Aura (6) | Add Flat Modifier (107): Spell Target Bonus (20)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 20 | Target: Self (1)
+                   Affected Spells: Chain Heal (1064)
+                   Family Flags: 8
+Description      : $@spelldesc157154
+Tooltip          : Chain Heal heals for an additional $s1% and is not reduced with each jump.
 
 

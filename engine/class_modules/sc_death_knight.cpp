@@ -441,6 +441,7 @@ public:
     buff_t* inexorable_assault;
     buff_t* killing_machine;
     buff_t* pillar_of_frost;
+    buff_t* pillar_of_frost_bonus;
     buff_t* remorseless_winter;
     buff_t* rime;
     
@@ -2531,7 +2532,7 @@ struct death_knight_action_t : public Base
 
     if ( this -> base_costs[ RESOURCE_RUNE] > 0 && this -> last_resource_cost > 0 && p() -> buffs.pillar_of_frost -> up() )
     {
-      p() -> buffs.pillar_of_frost -> increment( as<int>( this -> last_resource_cost ) );
+      p() -> buffs.pillar_of_frost_bonus -> trigger( as<int>( this -> last_resource_cost ) );
     }
 
     if ( this -> base_costs[ RESOURCE_RUNE] > 0 && this -> last_resource_cost > 0 && p() -> buffs.dancing_rune_weapon -> up()
@@ -5320,7 +5321,7 @@ struct howling_blast_t : public death_knight_spell_t
     // If Pillar of Frost is up, Rime procs still increases its value
     if ( p() -> buffs.pillar_of_frost -> up() && p() -> buffs.rime -> up() )
     {
-      p() -> buffs.pillar_of_frost -> increment( as<int>( base_costs[ RESOURCE_RUNE ] ) );
+      p() -> buffs.pillar_of_frost_bonus -> trigger( as<int>( base_costs[ RESOURCE_RUNE ] ) );
     }
 
     if ( p() -> buffs.rime -> up() && p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T19, B4 ) )
@@ -5689,6 +5690,19 @@ struct outbreak_t : public death_knight_spell_t
 
 // Pillar of Frost ==========================================================
 
+struct pillar_of_frost_bonus_buff_t : public buff_t
+{
+  pillar_of_frost_bonus_buff_t( death_knight_t* p ) :
+    buff_t( p, "pillar_of_frost_bonus" )
+  {
+    set_max_stack( 100 );
+    set_duration( p -> spec.pillar_of_frost -> duration() );
+    set_default_value( p -> spec.pillar_of_frost -> effectN( 2 ).percent() );
+
+    add_invalidate( CACHE_STRENGTH );
+  }
+};
+
 struct pillar_of_frost_buff_t : public buff_t
 {
   double icy_citadel_duration;
@@ -5699,12 +5713,6 @@ struct pillar_of_frost_buff_t : public buff_t
     set_cooldown( timespan_t::zero() );
     set_default_value( p -> spec.pillar_of_frost -> effectN( 1 ).percent() );
     add_invalidate( CACHE_STRENGTH );
-
-    // Not actually how it works ingame but it lets us track the evolution of the strength bonus as runes are spent
-    // Only drawback is if you want to cast Pillar of Frost while it's already active, it will add a stack and not refresh the duration
-    // But with current (2018-10-16) tuning, this isn't possible ingame anyway.
-    set_max_stack( 100 );
-    set_refresh_behavior( buff_refresh_behavior::DISABLED );
 
     if ( p -> azerite.icy_citadel.enabled() )
     {
@@ -5718,22 +5726,14 @@ struct pillar_of_frost_buff_t : public buff_t
 
     death_knight_t* p = debug_cast<death_knight_t*>( player );
 
+    p -> buffs.pillar_of_frost_bonus -> expire();
+
     if ( p -> azerite.icy_citadel.enabled() )
     {
       p -> buffs.icy_citadel -> trigger();
       p -> buffs.icy_citadel -> extend_duration( p, timespan_t::from_millis( icy_citadel_duration * p -> buffs.icy_citadel_builder -> stack() ) );
       p -> buffs.icy_citadel_builder -> expire();
     }
-  }
-
-  double value() override
-  {
-    buff_t::value();
-
-    death_knight_t* p = debug_cast< death_knight_t* >( player );
-
-    return p -> spec.pillar_of_frost -> effectN( 1 ).percent() // Original strength increase
-         + p -> spec.pillar_of_frost -> effectN( 2 ).percent() * ( stack() - 1 ); // Strength bonus from runes spent
   }
 };
 
@@ -8002,6 +8002,7 @@ void death_knight_t::create_buffs()
         -> set_default_value( find_spell( 51124 ) -> effectN( 1 ).percent() );
 
   buffs.pillar_of_frost = new pillar_of_frost_buff_t( this );
+  buffs.pillar_of_frost_bonus = new pillar_of_frost_bonus_buff_t( this );
 
   buffs.remorseless_winter = new remorseless_winter_buff_t( this );
 
@@ -8315,7 +8316,7 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
       m *= 1.0 + runeforge.rune_of_the_stoneskin_gargoyle -> data().effectN( 2 ).percent();
     }
 
-    m *= 1.0 + buffs.pillar_of_frost -> value();
+    m *= 1.0 + buffs.pillar_of_frost -> value() + buffs.pillar_of_frost_bonus -> stack_value();
   }
 
   else if ( attr == ATTR_STAMINA )
