@@ -98,11 +98,18 @@ struct penance_t final : public priest_spell_t
     return base_tick_time;
   }
 
+  void last_tick( dot_t* d ) override
+  {
+    priest_spell_t::last_tick( d );
+
+    priest().buffs.power_of_the_dark_side->expire();
+  }
+
   void execute() override
   {
     priest_spell_t::execute();
 
-    priest().buffs.power_of_the_dark_side->expire();
+    priest().buffs.power_of_the_dark_side->up();  // benefit tracking
 
     // re-checked 2014/07/07: offensive penance grants evangelism stacks, even though not mentioned in the tooltip.
     priest().buffs.holy_evangelism->trigger();
@@ -189,6 +196,19 @@ struct purge_the_wicked_t final : public priest_spell_t
       // tick_zero = false;
       energize_type = ENERGIZE_NONE;  // disable resource generation from spell data
       background    = true;
+    }
+
+    void tick( dot_t* d ) override
+    {
+      priest_spell_t::tick( d );
+
+      if ( d->state->result_amount > 0 )
+      {
+        if ( priest().rppm.power_of_the_dark_side->trigger() )
+        {
+          trigger_power_of_the_dark_side();
+        }
+      }
     }
   };
 
@@ -322,20 +342,20 @@ void priest_t::init_spells_discipline()
   talents.evangelism     = find_talent_spell( "Evangelism" );
 
   // General Spells
-  specs.priest            = dbc::get_class_passive( *this, SPEC_NONE );
-  specs.holy              = dbc::get_class_passive( *this, PRIEST_HOLY );
-  specs.discipline        = dbc::get_class_passive( *this, PRIEST_DISCIPLINE );
-  specs.shadow            = dbc::get_class_passive( *this, PRIEST_SHADOW );
-  specs.atonement         = find_specialization_spell( "Atonement" );
-  specs.archangel         = find_specialization_spell( "Archangel" );
-  specs.borrowed_time     = find_specialization_spell( "Borrowed Time" );
-  specs.divine_aegis      = find_specialization_spell( "Divine Aegis" );
-  specs.evangelism        = find_specialization_spell( "Evangelism" );
-  specs.grace             = find_specialization_spell( "Grace" );
-  specs.mysticism         = find_specialization_spell( "Mysticism" );
-  specs.spirit_shell      = find_specialization_spell( "Spirit Shell" );
-  specs.enlightenment     = find_specialization_spell( "Enlightenment" );
-  specs.discipline_priest = find_specialization_spell( "Discipline Priest" );
+  specs.priest                 = dbc::get_class_passive( *this, SPEC_NONE );
+  specs.holy                   = dbc::get_class_passive( *this, PRIEST_HOLY );
+  specs.discipline             = dbc::get_class_passive( *this, PRIEST_DISCIPLINE );
+  specs.shadow                 = dbc::get_class_passive( *this, PRIEST_SHADOW );
+  specs.atonement              = find_specialization_spell( "Atonement" );
+  specs.archangel              = find_specialization_spell( "Archangel" );
+  specs.borrowed_time          = find_specialization_spell( "Borrowed Time" );
+  specs.divine_aegis           = find_specialization_spell( "Divine Aegis" );
+  specs.evangelism             = find_specialization_spell( "Evangelism" );
+  specs.grace                  = find_specialization_spell( "Grace" );
+  specs.mysticism              = find_specialization_spell( "Mysticism" );
+  specs.spirit_shell           = find_specialization_spell( "Spirit Shell" );
+  specs.enlightenment          = find_specialization_spell( "Enlightenment" );
+  specs.discipline_priest      = find_specialization_spell( "Discipline Priest" );
   specs.power_of_the_dark_side = find_spell( 198069 );  // Damage ID of Power of the Dark Side
 
   // Range Based on Talents
