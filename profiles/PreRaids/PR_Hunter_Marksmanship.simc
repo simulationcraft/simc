@@ -67,7 +67,7 @@ actions.st+=/arcane_shot
 
 actions.steady_st=a_murder_of_crows,if=buff.steady_focus.down|target.time_to_die<16
 actions.steady_st+=/aimed_shot,if=buff.lethal_shots.up|target.time_to_die<3|debuff.steady_aim.stack=5&(buff.lock_and_load.up|full_recharge_time<cast_time)
-actions.steady_st+=/arcane_shot,if=buff.precise_shots.up
+actions.steady_st+=/arcane_shot,if=buff.precise_shots.up&(buff.lethal_shots.up|target.health.pct>20&target.health.pct<80)
 actions.steady_st+=/serpent_sting,if=refreshable
 actions.steady_st+=/steady_shot
 

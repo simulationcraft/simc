@@ -5359,7 +5359,7 @@ void hunter_t::apl_mm()
 
   steady_st -> add_talent( this, "A Murder of Crows", "if=buff.steady_focus.down|target.time_to_die<16");
   steady_st -> add_action( this, "Aimed Shot", "if=buff.lethal_shots.up|target.time_to_die<3|debuff.steady_aim.stack=5&(buff.lock_and_load.up|full_recharge_time<cast_time)" );
-  steady_st -> add_action( this, "Arcane Shot", "if=buff.precise_shots.up" );
+  steady_st -> add_action( this, "Arcane Shot", "if=buff.precise_shots.up&(buff.lethal_shots.up|target.health.pct>20&target.health.pct<80)" );
   steady_st -> add_talent( this, "Serpent Sting", "if=refreshable" );
   steady_st -> add_action( this, "Steady Shot" );
 
