@@ -9697,12 +9697,12 @@ double monk_t::stagger_base_value()
 
     if ( talent.high_tolerance->ok() )
     {
-      stagger_base *= talent.high_tolerance->effectN( 5 ).percent();
+      stagger_base *= 1 + talent.high_tolerance->effectN( 5 ).percent();
     }
 
     if ( buff.fortifying_brew->up() )
     {
-      stagger_base *= passives.fortifying_brew->effectN( 6 ).percent();
+      stagger_base *= 1 + passives.fortifying_brew->effectN( 6 ).percent();
       ;
     }
 
