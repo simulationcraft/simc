@@ -4,7 +4,7 @@
 #ifndef ptr_MAX_CLASS
 #define ptr_MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 8.1.0.28085
+// Class based active abilities, wow build 8.1.0.28151
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -257,7 +257,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       257044, // Rapid Fire
        56641, // Steady Shot
       187698, // Tar Trap
-      193526, // Trueshot
+      288613, // Trueshot
            0,
     },
     // Survival tree, 18 abilities
@@ -1015,11 +1015,12 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       116670, // Vivify
            0,
     },
-    // Windwalker tree, 25 abilities
+    // Windwalker tree, 27 abilities
     {
       116768, // Blackout Kick!
       211432, // Combo Master
       196061, // Crosswinds
+      286587, // Dance of Chi-Ji
       218164, // Detox
       116095, // Disable
       113656, // Fists of Fury
@@ -1028,6 +1029,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       252768, // Focus of Xuen
       287062, // Fury of Xuen
       287063, // Fury of Xuen
+      288636, // Glory of the Dawn
       285594, // Good Karma
       213114, // Hidden Master's Forbidden Touch
       119381, // Leg Sweep
@@ -1257,7 +1259,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 };
 #define PTR_TREE_SPECIALIZATION_SIZE (34)
 
-// Talent tree specialization abilities, wow build 8.1.0.28085
+// Talent tree specialization abilities, wow build 8.1.0.28151
 static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1517,7 +1519,6 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
       186387, // Bursting Shot
       162697, // Stat Negation Aura - Agility DPS
       193468, // Mastery: Sniper Training (Mastery)
-      193526, // Trueshot
          781, // Disengage
       231549, // Disengage (Rank 2)
       109304, // Exhilaration
@@ -1530,6 +1531,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
       257621, // Trick Shots
       155228, // Lone Wolf
       260240, // Precise Shots
+      288613, // Trueshot
            0,
     },
     // Specialization abilities for Survival
@@ -2369,7 +2371,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
 };
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 8.1.0.28085
+// Class mastery abilities, wow build 8.1.0.28151
 static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2608,7 +2610,7 @@ static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS]
 #define ptr_MAX_RACE (31)
 #endif
 
-// Racial abilities, wow build 8.1.0.28085
+// Racial abilities, wow build 8.1.0.28151
 static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3536,7 +3538,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
 };
 #define PTR_SET_BONUS_DATA_SIZE (700)
 
-// Set bonus data, wow build 8.1.0.28085
+// Set bonus data, wow build 8.1.0.28151
 static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -4267,9 +4269,9 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   { "Waycrest Legacy"                            , "waycrests_legacy",     15,  1439,   21,   2,  11,   -1, 277522, { 158362, 159631,  0 } },
   { "Waycrest Legacy"                            , "waycrests_legacy",     15,  1439,   21,   2,  12,   -1, 277522, { 158362, 159631,  0 } },
 };
-#define PTR_RPPMMOD_SIZE (924)
+#define PTR_RPPMMOD_SIZE (928)
 
-// 924 RPPM Modifiers, wow build level 8.1.0.28085
+// 928 RPPM Modifiers, wow build level 8.1.0.28151
 static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   {  17495,    4,  1,  1.0000 },
   {  27656,    4,  1,  1.0000 },
@@ -5148,6 +5150,7 @@ static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   { 272797,    4,  1,  1.0000 },
   { 272817,    4,  1,  1.0000 },
   { 273153,    4,  1,  1.0000 },
+  { 273389,    4,  1,  1.0000 },
   { 273835,    4,  1,  1.0000 },
   { 274071,    4,  1,  1.0000 },
   { 274072,    4,  1,  1.0000 },
@@ -5195,5 +5198,8 @@ static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   { 285023,    4,  1,  1.0000 },
   { 286392,    4,  1,  1.0000 },
   { 286586,    4,  1,  1.0000 },
+  { 288055,    4,  1,  1.0000 },
+  { 288109,    4,  1,  1.0000 },
+  { 288332,    4,  1,  1.0000 },
   {      0,    0,  0,  0.0000 },
 };
