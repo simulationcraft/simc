@@ -23,16 +23,18 @@ namespace pets {
 enum frozen_type_e
 {
   FROZEN_WINTERS_CHILL = 0,
-  FROZEN_ROOT,
   FROZEN_FINGERS_OF_FROST,
+  FROZEN_ROOT,
+
+  FROZEN_NONE,
   FROZEN_MAX
 };
 
 enum frozen_flag_e
 {
   FF_WINTERS_CHILL    = 1 << FROZEN_WINTERS_CHILL,
-  FF_ROOT             = 1 << FROZEN_ROOT,
-  FF_FINGERS_OF_FROST = 1 << FROZEN_FINGERS_OF_FROST
+  FF_FINGERS_OF_FROST = 1 << FROZEN_FINGERS_OF_FROST,
+  FF_ROOT             = 1 << FROZEN_ROOT
 };
 
 struct state_switch_t
@@ -1878,9 +1880,6 @@ struct frost_mage_spell_t : public mage_spell_t
   {
     unsigned frozen = debug_cast<const mage_spell_state_t*>( s ) -> frozen;
 
-    if ( ! frozen )
-      return;
-
     if ( ! source )
       source = shatter_source;
 
@@ -1890,8 +1889,10 @@ struct frost_mage_spell_t : public mage_spell_t
       source -> occur( FROZEN_WINTERS_CHILL );
     else if ( frozen & ~FF_FINGERS_OF_FROST )
       source -> occur( FROZEN_ROOT );
-    else
+    else if ( frozen & FF_FINGERS_OF_FROST )
       source -> occur( FROZEN_FINGERS_OF_FROST );
+    else
+      source -> occur( FROZEN_NONE );
   }
 
   virtual void impact( action_state_t* s ) override
@@ -1907,7 +1908,7 @@ struct frost_mage_spell_t : public mage_spell_t
 
     mage_spell_t::impact( s );
 
-    if ( result_is_hit( s -> result ) && shatter_source )
+    if ( result_is_hit( s -> result ) && shatter_source && s -> chain_target == 0 )
     {
       record_shatter_source( s );
     }
@@ -3652,10 +3653,12 @@ struct ice_lance_state_t : public mage_spell_state_t
 struct ice_lance_t : public frost_mage_spell_t
 {
   shatter_source_t* extension_source;
+  shatter_source_t* cleave_source;
 
   ice_lance_t( mage_t* p, const std::string& options_str ) :
     frost_mage_spell_t( "ice_lance", p, p -> find_specialization_spell( "Ice Lance" ) ),
-    extension_source( nullptr )
+    extension_source( nullptr ),
+    cleave_source( nullptr )
   {
     parse_options( options_str );
     parse_effect_data( p -> find_spell( 228598 ) -> effectN( 1 ) );
@@ -3677,12 +3680,16 @@ struct ice_lance_t : public frost_mage_spell_t
 
   void init_finished() override
   {
+    frost_mage_spell_t::init_finished();
+
+    if ( sim -> report_details != 0 )
+    {
+      cleave_source = p() -> get_shatter_source( "Ice Lance cleave" );
+    }
     if ( p() -> talents.thermal_void -> ok() && sim -> report_details != 0 )
     {
       extension_source = p() -> get_shatter_source( "Thermal Void extension" );
     }
-
-    frost_mage_spell_t::init_finished();
   }
 
   virtual action_state_t* new_state() override
@@ -3797,6 +3804,10 @@ struct ice_lance_t : public frost_mage_spell_t
       {
         p() -> procs.fingers_of_frost_wasted -> occur();
       }
+    }
+    else if ( ! primary )
+    {
+      record_shatter_source( s, cleave_source );
     }
 
     p() -> buffs.arctic_blast -> expire( timespan_t::from_seconds( 0.5 ) );
@@ -7539,10 +7550,22 @@ public:
     os << "<table class=\"sc\" style=\"margin-top: 5px;\">\n"
        << "<tr>\n"
        << "<th>Ability</th>\n"
-       << "<th>Winter's Chill (utilization)</th>\n"
-       << "<th>Fingers of Frost</th>\n"
-       << "<th>Other effects</th>\n"
+       << "<th colspan=\"2\">None</th>\n"
+       << "<th colspan=\"3\">Winter's Chill</th>\n"
+       << "<th colspan=\"2\">Fingers of Frost</th>\n"
+       << "<th colspan=\"2\">Other effects</th>\n"
        << "</tr>\n";
+
+    os << "<th></th>"
+       << "<th>Count</th>"
+       << "<th>Percent</th>"
+       << "<th>Count</th>"
+       << "<th>Percent</th>"
+       << "<th>Utilization</th>"
+       << "<th>Count</th>"
+       << "<th>Percent</th>"
+       << "<th>Count</th>"
+       << "<th>Percent</th>";
 
     double bff = p.procs.brain_freeze_flurry -> count.pretty_mean();
 
@@ -7564,23 +7587,44 @@ public:
 
       os.printf( "<tr%s>", row_class.c_str() );
 
-      auto format_cell = [ bff, &os ] ( double mean, bool wc_util )
+      double total = 0.0;
+      for ( const auto& source : data -> count )
+      {
+        total += source.pretty_mean();
+      }
+
+      auto format_cells = [ bff, &os, total ] ( double mean, bool util )
       {
         std::string format_str;
         format_str += "<td class=\"right\">";
         if ( mean > 0.0 )
+        {
           format_str += "%.1f";
-        if ( mean > 0.0 && wc_util )
-          format_str += " (%.1f%%)";
+        }
+        format_str += "</td><td class=\"right\">";
+        if ( mean > 0.0 )
+        {
+          format_str += "%.1f%%";
+        }
         format_str += "</td>";
+        if ( util )
+        {
+          format_str += "<td class=\"right\">";
+          if ( bff > 0.0 && mean > 0.0 )
+          {
+            format_str += "%.1f%%";
+          }
+          format_str += "</td>";
+        }
 
-        os.printf( format_str.c_str(), mean, bff ? 100.0 * mean / bff : 0.0 );
+        os.printf( format_str.c_str(), mean, 100.0 * mean / total, 100.0 * mean / bff );
       };
 
       os << "<td class=\"left\">" << name << "</td>";
-      format_cell( data -> get( FROZEN_WINTERS_CHILL ).pretty_mean(), true );
-      format_cell( data -> get( FROZEN_FINGERS_OF_FROST ).pretty_mean(), false );
-      format_cell( data -> get( FROZEN_ROOT ).pretty_mean(), false );
+      format_cells( data -> get( FROZEN_NONE ).pretty_mean(), false );
+      format_cells( data -> get( FROZEN_WINTERS_CHILL ).pretty_mean(), true );
+      format_cells( data -> get( FROZEN_FINGERS_OF_FROST ).pretty_mean(), false );
+      format_cells( data -> get( FROZEN_ROOT ).pretty_mean(), false );
       os << "</tr>\n";
     }
 
