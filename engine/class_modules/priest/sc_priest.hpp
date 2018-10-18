@@ -934,10 +934,14 @@ struct priest_action_t : public Base
     bool mastery_madness_ta;
     bool shadow_priest_da;
     bool shadow_priest_ta;
-    bool holy_priest_da;
-    bool holy_priest_ta;
-    bool discipline_priest_da;
-    bool discipline_priest_ta;
+    bool holy_priest_heal_da;
+    bool holy_priest_heal_ta;
+    bool holy_priest_damage_da;
+    bool holy_priest_damage_ta;
+    bool discipline_priest_heal_da;
+    bool discipline_priest_heal_ta;
+    bool discipline_priest_damage_da;
+    bool discipline_priest_damage_ta;
     bool sins_of_the_many_da;
   } affected_by;
 
@@ -964,28 +968,45 @@ public:
       }
     }
     
-    else if ( p.specialization() == PRIEST_HOLY )
+    if ( affected_by.holy_priest_heal_da )
     {
-      if ( affected_by.holy_priest_da )
-      {
-        ab::base_dd_multiplier *= 1.0 + p.specs.holy_priest->effectN( 3 ).percent();
-      }
-      if ( affected_by.holy_priest_ta )
-      {
-        ab::base_td_multiplier *= 1.0 + p.specs.holy_priest->effectN( 4 ).percent();
-      }
+      ab::base_dd_multiplier *= 1.0 + p.specs.holy_priest->effectN( 1 ).percent();
     }
-    
+    if ( affected_by.holy_priest_heal_ta )
+    {
+      ab::base_td_multiplier *= 1.0 + p.specs.holy_priest->effectN( 2 ).percent();
+    }
+
+    if ( affected_by.holy_priest_damage_da )
+    {
+      ab::base_dd_multiplier *= 1.0 + p.specs.holy_priest->effectN( 3 ).percent();
+    }
+    if ( affected_by.holy_priest_damage_ta )
+    {
+      ab::base_td_multiplier *= 1.0 + p.specs.holy_priest->effectN( 4 ).percent();
+    }
+
+    if (affected_by.discipline_priest_heal_da)
+    {
+        ab::base_dd_multiplier *= 1.0 + p.specs.discipline_priest->effectN(1).percent();
+    }
+    if (affected_by.discipline_priest_heal_ta)
+    {
+        ab::base_td_multiplier *= 1.0 + p.specs.discipline_priest->effectN(2).percent();
+    }
+
+    if (affected_by.discipline_priest_damage_da)
+    {
+        ab::base_dd_multiplier *= 1.0 + p.specs.discipline_priest->effectN(4).percent();
+    }
+    if (affected_by.discipline_priest_damage_ta)
+    {
+        ab::base_td_multiplier *= 1.0 + p.specs.discipline_priest->effectN(5).percent();
+    }
+
     else if (p.specialization() == PRIEST_DISCIPLINE)
     {
-        if (affected_by.discipline_priest_da)
-        {
-            ab::base_dd_multiplier *= 1.0 + p.specs.discipline_priest->effectN(1).percent();
-        }
-        if (affected_by.discipline_priest_ta)
-        {
-            ab::base_td_multiplier *= 1.0 + p.specs.discipline_priest->effectN(2).percent();
-        }
+
         if (p.talents.sins_of_the_many->ok())
         {
             ab::base_dd_multiplier *= 1.0 + p.talents.sins_of_the_many->effectN(1).percent();
@@ -1014,10 +1035,14 @@ public:
         {priest().mastery_spells.madness->effectN(2),     affected_by.mastery_madness_ta},
         {priest().specs.shadow_priest->effectN( 1 ),      affected_by.shadow_priest_da},
         {priest().specs.shadow_priest->effectN( 2 ),      affected_by.shadow_priest_ta},
-        {priest().specs.holy_priest->effectN( 3 ),        affected_by.holy_priest_da},
-        {priest().specs.holy_priest->effectN( 4 ),        affected_by.holy_priest_ta},
-        {priest().specs.discipline_priest->effectN( 1 ),  affected_by.discipline_priest_da},
-        {priest().specs.discipline_priest->effectN( 2 ),  affected_by.discipline_priest_ta},
+        {priest().specs.holy_priest->effectN( 1 ),        affected_by.holy_priest_heal_da},
+        {priest().specs.holy_priest->effectN( 2 ),        affected_by.holy_priest_heal_ta},
+        {priest().specs.holy_priest->effectN( 3 ),        affected_by.holy_priest_damage_da},
+        {priest().specs.holy_priest->effectN( 4 ),        affected_by.holy_priest_damage_ta},
+        {priest().specs.discipline_priest->effectN( 1 ),  affected_by.discipline_priest_heal_da},
+        {priest().specs.discipline_priest->effectN( 2 ),  affected_by.discipline_priest_heal_ta},
+        {priest().specs.discipline_priest->effectN( 4 ),  affected_by.discipline_priest_damage_da},
+        {priest().specs.discipline_priest->effectN( 5 ),  affected_by.discipline_priest_damage_ta},
         {priest().talents.sins_of_the_many->effectN( 1), affected_by.sins_of_the_many_da}, //Sins of the Many affects both direct damage and dot damage
     };
 
