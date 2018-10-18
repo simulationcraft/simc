@@ -76,6 +76,7 @@ enum moon_stage_e {
 
 //Azerite Trait 
 enum streaking_stars_e {
+  SS_NONE,
   // Spells
   SS_LUNAR_STRIKE,
   SS_SOLAR_WRATH,
@@ -716,6 +717,7 @@ public:
     initial_astral_power( 8 ),
     initial_moon_stage( NEW_MOON ),
     lively_spirit_stacks(9),  //set a usually fitting default value
+    previous_streaking_stars(SS_NONE),
     ahhhhh_the_great_outdoors( false ),
     catweave_bear( false ),
     t21_2pc(false),
@@ -8335,6 +8337,7 @@ void druid_t::reset()
   // Reset druid_t variables to their original state.
   form = NO_FORM;
   moon_stage = ( moon_stage_e ) initial_moon_stage;
+  previous_streaking_stars = SS_NONE;
 
   base_gcd = timespan_t::from_seconds( 1.5 );
 
