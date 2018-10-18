@@ -1341,6 +1341,7 @@ class SpellDataGenerator(DataGenerator):
             ( 194249, 3, False ),   # Void Form extra data
             ( 212570, 3, False ),   # Surrendered Soul (Surrender To Madness Death)
             ( 269555, 3 ),          # Azerite Trait Torment of Torments
+            ( 280398, 1, False ),   # Sins of the Many buff
         ),
 
         # Death Knight:
