@@ -3803,7 +3803,10 @@ struct ice_lance_t : public frost_mage_spell_t
     }
     else if ( ! primary )
     {
-      record_shatter_source( s, cleave_source );
+      if ( cleave_source )
+      {
+        record_shatter_source( s, cleave_source );
+      }
     }
 
     p() -> buffs.arctic_blast -> expire( timespan_t::from_seconds( 0.5 ) );
