@@ -222,6 +222,19 @@ struct special_effect_initializer_t
   { unique_gear::unregister_special_effects(); }
 };
 
+void print_version_info(const dbc_t& dbc)
+{
+  std::string build_info = fmt::format("wow build {}", dbc.build_level());
+  if ( git_info::available() )
+  {
+    build_info += fmt::format(", git build %s %s", git_info::branch(), git_info::revision());
+  }
+
+  fmt::print("SimulationCraft {} for World of Warcraft {} {} ({})\n\n",
+      SC_VERSION, dbc.wow_version(), dbc.wow_ptr_status(), build_info);
+  std::flush(std::cout);
+}
+
 } // anonymous namespace ====================================================
 
 // sim_t::main ==============================================================
@@ -237,18 +250,7 @@ int sim_t::main( const std::vector<std::string>& args )
 
     special_effect_initializer_t special_effect_init;
 
-    // Print simc version info
-    if ( !git_info::available() )
-    {
-    util::printf("SimulationCraft %s for World of Warcraft %s %s (wow build %s)\n",
-        SC_VERSION, dbc.wow_version(), dbc.wow_ptr_status(), util::to_string(dbc.build_level()).c_str());
-    }
-    else
-    {
-    util::printf("SimulationCraft %s for World of Warcraft %s %s (wow build %s, git build %s %s)\n",
-        SC_VERSION, dbc.wow_version(), dbc.wow_ptr_status(), util::to_string(dbc.build_level()).c_str(), git_info::branch(), git_info::revision());
-    }
-    std::cout << std::endl;
+    print_version_info(dbc);
 
     sim_control_t control;
 
