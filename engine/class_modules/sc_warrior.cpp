@@ -153,6 +153,7 @@ public:
     cooldown_t* last_stand;
     cooldown_t* mortal_strike;
     cooldown_t* overpower;
+    cooldown_t* rage_from_auto_attack;
     cooldown_t* rage_from_crit_block;
     cooldown_t* rage_of_the_valarjar_icd;
     cooldown_t* raging_blow;
@@ -4650,30 +4651,32 @@ void warrior_t::init_spells()
   cooldown.bladestorm     = get_cooldown( "bladestorm" );
   cooldown.bloodthirst    = get_cooldown( "bloodthirst" );
 
-  cooldown.charge                         = get_cooldown( "charge" );
-  cooldown.colossus_smash                 = get_cooldown( "colossus_smash" );
-  cooldown.deadly_calm                    = get_cooldown( "deadly_calm" );
-  cooldown.demoralizing_shout             = get_cooldown( "demoralizing_shout" );
-  cooldown.dragon_roar                    = get_cooldown( "dragon_roar" );
-  cooldown.enraged_regeneration           = get_cooldown( "enraged_regeneration" );
-  cooldown.execute                        = get_cooldown( "execute" );
-  cooldown.heroic_leap                    = get_cooldown( "heroic_leap" );
-  cooldown.last_stand                     = get_cooldown( "last_stand" );
-  cooldown.mortal_strike                  = get_cooldown( "mortal_strike" );
-  cooldown.overpower                      = get_cooldown( "overpower" );
-  cooldown.rage_from_crit_block           = get_cooldown( "rage_from_crit_block" );
-  cooldown.rage_from_crit_block->duration = timespan_t::from_seconds( 3.0 );
-  cooldown.raging_blow                    = get_cooldown( "raging_blow" );
-  cooldown.ravager                        = get_cooldown( "ravager" );
-  cooldown.revenge_reset                  = get_cooldown( "revenge_reset" );
-  cooldown.revenge_reset->duration        = spec.revenge_trigger->internal_cooldown();
-  cooldown.shield_slam                    = get_cooldown( "shield_slam" );
-  cooldown.shield_wall                    = get_cooldown( "shield_wall" );
-  cooldown.siegebreaker                   = get_cooldown( "siegebreaker" );
-  cooldown.skullsplitter                  = get_cooldown( "skullsplitter" );
-  cooldown.shockwave                      = get_cooldown( "shockwave" );
-  cooldown.storm_bolt                     = get_cooldown( "storm_bolt" );
-  cooldown.warbreaker                     = get_cooldown( "warbreaker" );
+  cooldown.charge                           = get_cooldown( "charge" );
+  cooldown.colossus_smash                   = get_cooldown( "colossus_smash" );
+  cooldown.deadly_calm                      = get_cooldown( "deadly_calm" );
+  cooldown.demoralizing_shout               = get_cooldown( "demoralizing_shout" );
+  cooldown.dragon_roar                      = get_cooldown( "dragon_roar" );
+  cooldown.enraged_regeneration             = get_cooldown( "enraged_regeneration" );
+  cooldown.execute                          = get_cooldown( "execute" );
+  cooldown.heroic_leap                      = get_cooldown( "heroic_leap" );
+  cooldown.last_stand                       = get_cooldown( "last_stand" );
+  cooldown.mortal_strike                    = get_cooldown( "mortal_strike" );
+  cooldown.overpower                        = get_cooldown( "overpower" );
+  cooldown.rage_from_auto_attack            = get_cooldown( "rage_from_auto_attack" );
+  cooldown.rage_from_auto_attack->duration  = timespan_t::from_seconds ( 1.0 );
+  cooldown.rage_from_crit_block             = get_cooldown( "rage_from_crit_block" );
+  cooldown.rage_from_crit_block->duration   = timespan_t::from_seconds( 3.0 );
+  cooldown.raging_blow                      = get_cooldown( "raging_blow" );
+  cooldown.ravager                          = get_cooldown( "ravager" );
+  cooldown.revenge_reset                    = get_cooldown( "revenge_reset" );
+  cooldown.revenge_reset->duration          = spec.revenge_trigger->internal_cooldown();
+  cooldown.shield_slam                      = get_cooldown( "shield_slam" );
+  cooldown.shield_wall                      = get_cooldown( "shield_wall" );
+  cooldown.siegebreaker                     = get_cooldown( "siegebreaker" );
+  cooldown.skullsplitter                    = get_cooldown( "skullsplitter" );
+  cooldown.shockwave                        = get_cooldown( "shockwave" );
+  cooldown.storm_bolt                       = get_cooldown( "storm_bolt" );
+  cooldown.warbreaker                       = get_cooldown( "warbreaker" );
 }
 
 // warrior_t::init_base =====================================================
@@ -6290,10 +6293,11 @@ void warrior_t::assess_damage( school_e school, dmg_e type, action_state_t* s )
   }
 
   // Generate 3 Rage on auto-attack taken. 
-  // TODO: Update with spelldata once it's regenerated
-  else if ( s -> action -> special )
+  // TODO: Update with spelldata once it actually exists
+  else if ( ! s -> action -> special && cooldown.rage_from_auto_attack->up() )
   {
     resource_gain( RESOURCE_RAGE, 3.0, gain.rage_from_damage_taken, s -> action );
+    cooldown.rage_from_auto_attack->start( cooldown.rage_from_auto_attack->duration );
   }
 }
 
