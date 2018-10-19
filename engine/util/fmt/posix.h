@@ -139,52 +139,10 @@ class buffered_file {
   // Destroys the object closing the file it represents if any.
   FMT_API ~buffered_file() FMT_DTOR_NOEXCEPT;
 
-#if !FMT_USE_RVALUE_REFERENCES
-  // Emulate a move constructor and a move assignment operator if rvalue
-  // references are not supported.
-
  private:
-  // A proxy object to emulate a move constructor.
-  // It is private to make it impossible call operator Proxy directly.
-  struct Proxy {
-    FILE *file;
-  };
+  buffered_file(const buffered_file &) = delete;
+  void operator=(const buffered_file &) = delete;
 
-public:
-  // A "move constructor" for moving from a temporary.
-  buffered_file(Proxy p) FMT_NOEXCEPT : file_(p.file) {}
-
-  // A "move constructor" for moving from an lvalue.
-  buffered_file(buffered_file &f) FMT_NOEXCEPT : file_(f.file_) {
-    f.file_ = FMT_NULL;
-  }
-
-  // A "move assignment operator" for moving from a temporary.
-  buffered_file &operator=(Proxy p) {
-    close();
-    file_ = p.file;
-    return *this;
-  }
-
-  // A "move assignment operator" for moving from an lvalue.
-  buffered_file &operator=(buffered_file &other) {
-    close();
-    file_ = other.file_;
-    other.file_ = FMT_NULL;
-    return *this;
-  }
-
-  // Returns a proxy object for moving from a temporary:
-  //   buffered_file file = buffered_file(...);
-  operator Proxy() FMT_NOEXCEPT {
-    Proxy p = {file_};
-    file_ = FMT_NULL;
-    return p;
-  }
-
-#else
- private:
-  FMT_DISALLOW_COPY_AND_ASSIGN(buffered_file);
 
  public:
   buffered_file(buffered_file &&other) FMT_NOEXCEPT : file_(other.file_) {
@@ -197,7 +155,6 @@ public:
     other.file_ = FMT_NULL;
     return *this;
   }
-#endif
 
   // Opens a file.
   FMT_API buffered_file(cstring_view filename, cstring_view mode);
@@ -249,52 +206,9 @@ class file {
   // Opens a file and constructs a file object representing this file.
   FMT_API file(cstring_view path, int oflag);
 
-#if !FMT_USE_RVALUE_REFERENCES
-  // Emulate a move constructor and a move assignment operator if rvalue
-  // references are not supported.
-
  private:
-  // A proxy object to emulate a move constructor.
-  // It is private to make it impossible call operator Proxy directly.
-  struct Proxy {
-    int fd;
-  };
-
- public:
-  // A "move constructor" for moving from a temporary.
-  file(Proxy p) FMT_NOEXCEPT : fd_(p.fd) {}
-
-  // A "move constructor" for moving from an lvalue.
-  file(file &other) FMT_NOEXCEPT : fd_(other.fd_) {
-    other.fd_ = -1;
-  }
-
-  // A "move assignment operator" for moving from a temporary.
-  file &operator=(Proxy p) {
-    close();
-    fd_ = p.fd;
-    return *this;
-  }
-
-  // A "move assignment operator" for moving from an lvalue.
-  file &operator=(file &other) {
-    close();
-    fd_ = other.fd_;
-    other.fd_ = -1;
-    return *this;
-  }
-
-  // Returns a proxy object for moving from a temporary:
-  //   file f = file(...);
-  operator Proxy() FMT_NOEXCEPT {
-    Proxy p = {fd_};
-    fd_ = -1;
-    return p;
-  }
-
-#else
- private:
-  FMT_DISALLOW_COPY_AND_ASSIGN(file);
+  file(const file &) = delete;
+  void operator=(const file &) = delete;
 
  public:
   file(file &&other) FMT_NOEXCEPT : fd_(other.fd_) {
@@ -307,7 +221,6 @@ class file {
     other.fd_ = -1;
     return *this;
   }
-#endif
 
   // Destroys the object closing the file it represents if any.
   FMT_API ~file() FMT_DTOR_NOEXCEPT;
@@ -353,7 +266,8 @@ class file {
 long getpagesize();
 
 #if (defined(LC_NUMERIC_MASK) || defined(_MSC_VER)) && \
-    !defined(__ANDROID__) && !defined(__CYGWIN__) && !defined(__OpenBSD__)
+    !defined(__ANDROID__) && !defined(__CYGWIN__) && !defined(__OpenBSD__) && \
+    !defined(__NEWLIB_H__)
 # define FMT_LOCALE
 #endif
 
@@ -381,7 +295,8 @@ class Locale {
 
   locale_t locale_;
 
-  FMT_DISALLOW_COPY_AND_ASSIGN(Locale);
+  Locale(const Locale &) = delete;
+  void operator=(const Locale &) = delete;
 
  public:
   typedef locale_t Type;
@@ -405,13 +320,5 @@ class Locale {
 };
 #endif  // FMT_LOCALE
 FMT_END_NAMESPACE
-
-#if !FMT_USE_RVALUE_REFERENCES
-namespace std {
-// For compatibility with C++98.
-inline fmt::buffered_file &move(fmt::buffered_file &f) { return f; }
-inline fmt::file &move(fmt::file &f) { return f; }
-}
-#endif
 
 #endif  // FMT_POSIX_H_

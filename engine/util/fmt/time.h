@@ -13,8 +13,12 @@
 
 FMT_BEGIN_NAMESPACE
 
+// Prevents expansion of a preceding token as a function-style macro.
+// Usage: f FMT_NOMACRO()
+#define FMT_NOMACRO
+
 namespace internal{
-inline null<> localtime_r(...) { return null<>(); }
+inline null<> localtime_r FMT_NOMACRO(...) { return null<>(); }
 inline null<> localtime_s(...) { return null<>(); }
 inline null<> gmtime_r(...) { return null<>(); }
 inline null<> gmtime_s(...) { return null<>(); }
@@ -54,7 +58,6 @@ inline std::tm localtime(std::time_t time) {
     return lt.tm_;
   // Too big time values may be unsupported.
   FMT_THROW(format_error("time_t value out of range"));
-  return std::tm();
 }
 
 // Thread-safe replacement for std::gmtime
@@ -90,7 +93,6 @@ inline std::tm gmtime(std::time_t time) {
     return gt.tm_;
   // Too big time values may be unsupported.
   FMT_THROW(format_error("time_t value out of range"));
-  return std::tm();
 }
 
 namespace internal {
