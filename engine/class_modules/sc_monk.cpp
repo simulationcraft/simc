@@ -6324,7 +6324,7 @@ struct expel_harm_t : public monk_spell_t
 
     // Triggering the Gift of the ox heals, but not the damage
     // TODO damage part of Expel Harm
-    double mult = p()->spec.expel_harm->effectN( 2 ).percent();
+    //double mult = p()->spec.expel_harm->effectN( 2 ).percent();
 
     for ( int i=0; i < p() ->buff.gift_of_the_ox->stack(); i++ )
       p()->buff.gift_of_the_ox->decrement();

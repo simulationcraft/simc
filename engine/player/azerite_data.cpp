@@ -1090,7 +1090,7 @@ void blood_rite( special_effect_t& effect )
       return;
     }
 
-    target->callbacks_on_demise.push_back( [effect]( player_t* actor ) {
+    target->callbacks_on_demise.push_back( [effect]( player_t* ) {
       if ( effect.custom_buff -> up( ) )
       {
         effect.custom_buff -> refresh( );

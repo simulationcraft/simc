@@ -3180,7 +3180,7 @@ double player_t::composite_parry() const
   return total_parry;
 }
 
-double player_t::composite_block_reduction( action_state_t* s ) const
+double player_t::composite_block_reduction( action_state_t* ) const
 {
   double b = current.block_reduction;
 
@@ -5062,6 +5062,7 @@ double player_t::resource_loss( resource_e resource_type, double amount, gain_t*
   double actual_amount;
   double previous_amount;
   double previous_pct_points;
+  bool has_active_resource_callbacks = this -> has_active_resource_callbacks;
   if (has_active_resource_callbacks)
   {
     previous_amount = resources.current[ resource_type ];

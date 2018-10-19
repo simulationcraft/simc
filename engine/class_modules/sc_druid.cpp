@@ -713,11 +713,11 @@ public:
     t16_2pc_starfall_bolt( nullptr ),
     t16_2pc_sun_bolt( nullptr ),
     starshards( 0.0 ),
+    previous_streaking_stars(SS_NONE),
     predator_rppm_rate( 0.0 ),
     initial_astral_power( 8 ),
     initial_moon_stage( NEW_MOON ),
     lively_spirit_stacks(9),  //set a usually fitting default value
-    previous_streaking_stars(SS_NONE),
     ahhhhh_the_great_outdoors( false ),
     catweave_bear( false ),
     t21_2pc(false),

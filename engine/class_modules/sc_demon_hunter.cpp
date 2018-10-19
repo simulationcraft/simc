@@ -1058,12 +1058,12 @@ public:
                          const spell_data_t* s = spell_data_t::nil(),
                          const std::string& o = std::string() )
     : ab( n, p, s ),
-    track_cd_waste( s->cooldown() > timespan_t::zero() || s->charge_cooldown() > timespan_t::zero() ),
-    cd_wasted_exec( nullptr ),
-    cd_wasted_cumulative( nullptr ),
-    cd_wasted_iter( nullptr ),
-    hasted_gcd( false ),
-    energize_delta( 0.0 )
+      hasted_gcd( false ),
+      energize_delta( 0.0 ),
+      track_cd_waste( s->cooldown() > timespan_t::zero() || s->charge_cooldown() > timespan_t::zero() ),
+      cd_wasted_exec( nullptr ),
+      cd_wasted_cumulative( nullptr ),
+      cd_wasted_iter( nullptr )
   {
     ab::parse_options( o );
     ab::may_crit = true;
@@ -4011,8 +4011,7 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
       ->set_default_value( p.find_spell( 268178 )->effectN( 1 ).percent() );
   }
 
-  // TODO: Make an option to register this for testing M+/dungeon scenarios
-  // target->callbacks_on_demise.push_back( std::bind( &demon_hunter_td_t::target_demise, this ) );
+  target->callbacks_on_demise.push_back( [this]( player_t* ) { target_demise(); } );
 }
 
 void demon_hunter_td_t::target_demise()
@@ -4021,8 +4020,10 @@ void demon_hunter_td_t::target_demise()
   if ( source->sim->event_mgr.canceled )
     return;
 
-  demon_hunter_t* p = static_cast<demon_hunter_t*>( source );
-  p->spawn_soul_fragment( soul_fragment::GREATER );
+
+  // TODO: Make an option to register this for testing M+/dungeon scenarios
+  //demon_hunter_t* p = static_cast<demon_hunter_t*>( source );
+  //p->spawn_soul_fragment( soul_fragment::GREATER );
 }
 
 // ==========================================================================

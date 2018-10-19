@@ -3246,7 +3246,11 @@ struct army_of_the_dead_t : public death_knight_spell_t
     death_knight_t* p;
 
     summon_army_event_t( death_knight_t* dk, int n, const timespan_t& interval, const timespan_t& duration ) :
-      event_t( *dk, interval ), p( dk ), n_ghoul( n ), summon_interval( interval ), summon_duration( duration )
+      event_t( *dk, interval ),
+      n_ghoul( n ),
+      summon_interval( interval ),
+      summon_duration( duration ),
+      p( dk )
     { }
 
     void execute() override
@@ -3261,8 +3265,8 @@ struct army_of_the_dead_t : public death_knight_spell_t
 
   army_of_the_dead_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "army_of_the_dead", p, p -> spec.army_of_the_dead ),
-    summon_duration( p -> spec.army_of_the_dead -> effectN( 1 ).trigger() -> duration() ),
-    precombat_delay( 6 )
+    precombat_delay( 6 ),
+    summon_duration( p -> spec.army_of_the_dead -> effectN( 1 ).trigger() -> duration() )
   {
     // If used during precombat, army is casted around X seconds before the fight begins
     // This is done to save rune regeneration time once the fight starts

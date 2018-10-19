@@ -529,16 +529,6 @@ namespace warlock
         {
           p()->cooldowns.darkglare->adjust((-1 * p()->azerite.dreadful_calling.spell_ref().effectN(1).time_value()));
         }
-
-        bool flag = false;
-        for ( int i = 0; i < MAX_UAS; i++ )
-        {
-          if ( td( target )->dots_unstable_affliction[i]->is_ticking() )
-          {
-            flag = true;
-            break;
-          }
-        }
       }
     };
 
