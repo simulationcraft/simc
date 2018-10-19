@@ -10132,7 +10132,7 @@ struct monk_module_t : public module_t
   virtual void init( player_t* p ) const override
   {
     p->buffs.windwalking_movement_aura =
-        buff_creator_t( p, "windwalking_movement_aura", p->find_spell( 166646 ) ).add_invalidate( CACHE_RUN_SPEED );
+        make_buff( p, "windwalking_movement_aura", p->find_spell( 166646 ) )->add_invalidate( CACHE_RUN_SPEED );
   }
   virtual void combat_begin( sim_t* ) const override
   {

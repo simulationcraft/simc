@@ -745,7 +745,7 @@ void paladin_t::create_buffs_retribution()
   buffs.divine_judgment                = make_buff( this, "divine_judgment", find_spell( 271581 ) );
 
   // Tier Bonuses
-  buffs.ret_t21_4p             = buff_creator_t( this, "hidden_retribution_t21_4p", find_spell( 253806 ) );
+  buffs.ret_t21_4p             = make_buff( this, "hidden_retribution_t21_4p", find_spell( 253806 ) );
 
   // Azerite
   buffs.avengers_might = make_buff<stat_buff_t>(this, "avengers_might", find_spell( 272903 ))

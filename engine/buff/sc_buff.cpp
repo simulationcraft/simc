@@ -436,6 +436,10 @@ buff_t::buff_t( actor_pair_t q, const std::string& name, const spell_data_t* spe
   : buff_t( buff_creation::buff_creator_basics_t( q, name, spell_data, item ) )
 {
 }
+buff_t::buff_t( sim_t* sim, const std::string& name, const spell_data_t* spell_data, const item_t* item )
+  : buff_t( buff_creation::buff_creator_basics_t( sim, name, spell_data, item ) )
+{
+}
 
 buff_t::buff_t( const buff_creation::buff_creator_basics_t& params )
   : sim( params._sim ),
@@ -802,7 +806,7 @@ buff_t* buff_t::add_invalidate( cache_e c )
   {
     invalidate_list.push_back( c );
     requires_invalidation = true;
-    if ( player->regen_caches[ c ] )
+    if ( !player || player->regen_caches[ c ] )
     {
       change_regen_rate = true;
     }

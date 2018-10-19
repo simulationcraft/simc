@@ -979,10 +979,10 @@ void blessing_of_sacrifice_t::execute()
 paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
   actor_target_data_t( target, paladin )
 {
-  buffs.execution_sentence = buff_creator_t( *this, "execution_sentence", paladin -> find_spell( 267799 ) );
-  buffs.debuffs_judgment = buff_creator_t( *this, "judgment", paladin -> find_spell( 197277 ));
-  buffs.judgment_of_light = buff_creator_t( *this, "judgment_of_light", paladin -> find_spell( 196941 ) );
-  buffs.blessed_hammer_debuff = buff_creator_t( *this, "blessed_hammer", paladin -> find_spell( 204301 ) );
+  buffs.execution_sentence = make_buff( *this, "execution_sentence", paladin -> find_spell( 267799 ) );
+  buffs.debuffs_judgment = make_buff( *this, "judgment", paladin -> find_spell( 197277 ));
+  buffs.judgment_of_light = make_buff( *this, "judgment_of_light", paladin -> find_spell( 196941 ) );
+  buffs.blessed_hammer_debuff = make_buff( *this, "blessed_hammer", paladin -> find_spell( 204301 ) );
 }
 
 // paladin_t::create_action =================================================
@@ -1166,15 +1166,17 @@ void paladin_t::create_buffs()
   create_buffs_protection();
   create_buffs_holy();
 
-  buffs.divine_steed                   = buff_creator_t( this, "divine_steed", find_spell( "Divine Steed" ) )
-                                          .duration( timespan_t::from_seconds( 3.0 ) ).chance( 1.0 ).default_value( 1.0 ); // TODO: change this to spellid 221883 & see if that automatically captures details
+  buffs.divine_steed                   = make_buff( this, "divine_steed", find_spell( "Divine Steed" ) )
+                                          ->set_duration( timespan_t::from_seconds( 3.0 ) )
+                                          ->set_chance( 1.0 )
+                                          ->set_default_value( 1.0 ); // TODO: change this to spellid 221883 & see if that automatically captures details
 
   // General
   buffs.avenging_wrath         = new buffs::avenging_wrath_buff_t( this );
-  buffs.divine_shield          = buff_creator_t( this, "divine_shield", find_class_spell( "Divine Shield" ) )
-                                 .cd( timespan_t::zero() ) // Let the ability handle the CD
-                                 .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buffs.divine_purpose                 = buff_creator_t( this, "divine_purpose", specialization() == PALADIN_HOLY ? find_spell( 197646 ) : find_spell( 223819 ) );
+  buffs.divine_shield          = make_buff( this, "divine_shield", find_class_spell( "Divine Shield" ) )
+                                 ->set_cooldown( timespan_t::zero() ) // Let the ability handle the CD
+                                 ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buffs.divine_purpose                 = make_buff( this, "divine_purpose", specialization() == PALADIN_HOLY ? find_spell( 197646 ) : find_spell( 223819 ) );
 }
 
 // paladin_t::default_potion ================================================
@@ -2287,7 +2289,7 @@ struct paladin_module_t : public module_t
 
   virtual void init( player_t* p ) const override
   {
-    p -> buffs.beacon_of_light          = buff_creator_t( p, "beacon_of_light", p -> find_spell( 53563 ) );
+    p -> buffs.beacon_of_light          = make_buff( p, "beacon_of_light", p -> find_spell( 53563 ) );
     p -> buffs.blessing_of_sacrifice    = new buffs::blessing_of_sacrifice_t( p );
     p -> debuffs.forbearance            = new buffs::forbearance_t( p, "forbearance" );
   }

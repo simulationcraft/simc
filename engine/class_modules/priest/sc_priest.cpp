@@ -689,7 +689,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
   dots.shadow_word_pain  = target->get_dot( "shadow_word_pain", &p );
   dots.vampiric_touch    = target->get_dot( "vampiric_touch", &p );
 
-  buffs.schism = buff_creator_t( *this, "schism", p.talents.schism );
+  buffs.schism = make_buff( *this, "schism", p.talents.schism );
 
   target->callbacks_on_demise.push_back( [this]( player_t* ) { target_demise(); } );
 }

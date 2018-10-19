@@ -2499,17 +2499,17 @@ void sim_t::init()
     }
   }
 
-  auras.arcane_intellect = buff_creator_t( this, "arcane_intellect", dbc::find_spell( this, 1459 ) )
-                           .default_value( dbc::find_spell( this, 1459 ) -> effectN( 1 ).percent() )
-                           .add_invalidate( CACHE_INTELLECT );
+  auras.arcane_intellect = make_buff( this, "arcane_intellect", dbc::find_spell( this, 1459 ) )
+                           ->set_default_value( dbc::find_spell( this, 1459 ) -> effectN( 1 ).percent() )
+                           ->add_invalidate( CACHE_INTELLECT );
 
-  auras.battle_shout = buff_creator_t( this, "battle_shout", dbc::find_spell( this, 6673 ) )
-                        .default_value( dbc::find_spell( this, 6673 )->effectN( 1 ).percent() )
-                        .add_invalidate( CACHE_ATTACK_POWER );
+  auras.battle_shout = make_buff( this, "battle_shout", dbc::find_spell( this, 6673 ) )
+                        ->set_default_value( dbc::find_spell( this, 6673 )->effectN( 1 ).percent() )
+                        ->add_invalidate( CACHE_ATTACK_POWER );
 
-  auras.power_word_fortitude = buff_creator_t( this, "power_word_fortitude", dbc::find_spell( this, 21562 ) )
-                           .default_value( dbc::find_spell( this, 21562 ) -> effectN( 1 ).percent() )
-                           .add_invalidate( CACHE_STAMINA );
+  auras.power_word_fortitude = make_buff( this, "power_word_fortitude", dbc::find_spell( this, 21562 ) )
+                           ->set_default_value( dbc::find_spell( this, 21562 ) -> effectN( 1 ).percent() )
+                           ->add_invalidate( CACHE_STAMINA );
 
   // Find Already defined target, otherwise create a new one.
   if ( debug )

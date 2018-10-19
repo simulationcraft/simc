@@ -1385,7 +1385,7 @@ void enemy_t::create_buffs()
   player_t::create_buffs();
 
   for ( unsigned int i = 1; i <= 10; ++ i )
-    buffs_health_decades.push_back( buff_creator_t( this, "Health Decade (" + util::to_string( ( i - 1 ) * 10 ) + " - " + util::to_string( i * 10 ) + ")" ) );
+    buffs_health_decades.push_back( make_buff( this, "Health Decade (" + util::to_string( ( i - 1 ) * 10 ) + " - " + util::to_string( i * 10 ) + ")" ) );
 }
 
 // enemy_t::init_resources ==================================================

@@ -238,9 +238,10 @@ struct blessing_of_spellwarding_t : public paladin_spell_t
 struct guardian_of_ancient_kings_buff_t : public buff_t
 {
   guardian_of_ancient_kings_buff_t( paladin_t* p ) :
-    buff_t( buff_creator_t( p, "guardian_of_ancient_kings", p -> find_specialization_spell( "Guardian of Ancient Kings" ) )
-      .cd( timespan_t::zero() ) )
-  { }
+    buff_t( p, "guardian_of_ancient_kings", p -> find_specialization_spell( "Guardian of Ancient Kings" ) )
+  {
+    set_cooldown( timespan_t::zero() );
+  }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
@@ -529,7 +530,7 @@ struct seraphim_t : public paladin_spell_t
 // Shield of the Righteous ==================================================
 
 shield_of_the_righteous_buff_t::shield_of_the_righteous_buff_t( paladin_t* p ) :
-    buff_t( buff_creator_t( p, "shield_of_the_righteous", p -> spells.shield_of_the_righteous ) )
+    buff_t( p, "shield_of_the_righteous", p -> spells.shield_of_the_righteous )
 {
   avengers_valor_increase = 0;
   add_invalidate( CACHE_BONUS_ARMOR );

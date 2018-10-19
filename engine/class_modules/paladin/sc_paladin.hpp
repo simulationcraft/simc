@@ -605,12 +605,12 @@ namespace buffs {
     paladin_t* paladin;
 
     forbearance_t( player_t* p, const char *name ) :
-      buff_t( buff_creator_t( p, name, p -> find_spell( 25771 ) ) ),
+      buff_t( p, name, p -> find_spell( 25771 ) ),
       paladin( nullptr )
     { }
 
     forbearance_t( paladin_td_t* ap, const char *name ) :
-      buff_t( buff_creator_t( *ap, name, ap -> source -> find_spell( 25771 ) ) ),
+      buff_t( *ap, name, ap -> source -> find_spell( 25771 ) ),
       paladin( debug_cast<paladin_t*>( ap -> source ) )
     { }
   };

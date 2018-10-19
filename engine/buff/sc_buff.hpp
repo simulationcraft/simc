@@ -252,6 +252,7 @@ public:
   virtual ~buff_t() {}
 
   buff_t( actor_pair_t q, const std::string& name, const spell_data_t* = spell_data_t::nil(), const item_t* item = nullptr );
+  buff_t( sim_t* sim, const std::string& name, const spell_data_t* = spell_data_t::nil(), const item_t* item = nullptr );
 protected:
   buff_t( const buff_creator_basics_t& params );
   friend struct buff_creation::buff_creator_t;

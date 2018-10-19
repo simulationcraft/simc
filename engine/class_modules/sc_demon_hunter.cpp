@@ -4193,31 +4193,31 @@ void demon_hunter_t::create_buffs()
   // General ================================================================
 
   buff.demon_soul =
-    buff_creator_t( this, "demon_soul", find_spell( 163073 ) )
-    .default_value( find_spell( 163073 )->effectN( 1 ).percent() )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+      make_buff( this, "demon_soul", find_spell( 163073 ) )
+    ->set_default_value( find_spell( 163073 )->effectN( 1 ).percent() )
+    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.metamorphosis = new buffs::metamorphosis_buff_t( this );
 
   if(specialization() == DEMON_HUNTER_HAVOC )
   {
     buff.immolation_aura =
-      buff_creator_t( this, "immolation_aura", spec.immolation_aura )
-      .tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
+        make_buff( this, "immolation_aura", spec.immolation_aura )
+      ->set_tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
         active.immolation_aura->execute();
       } )
-      .cd( timespan_t::zero() );
+      ->set_cooldown( timespan_t::zero() );
   }
   else // DEMON_HUNTER_VENGEANCE
   {
     buff.immolation_aura =
-      buff_creator_t( this, "immolation_aura", spec.immolation_aura )
-      .tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
+        make_buff( this, "immolation_aura", spec.immolation_aura )
+      ->set_tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
         active.immolation_aura->execute();
       } )
-      .default_value( talent.agonizing_flames->effectN( 2 ).percent() )
-      .add_invalidate( CACHE_RUN_SPEED )
-      .cd( timespan_t::zero() );
+      ->set_default_value( talent.agonizing_flames->effectN( 2 ).percent() )
+      ->add_invalidate( CACHE_RUN_SPEED )
+      ->set_cooldown( timespan_t::zero() );
   }
 
   // Havoc ==================================================================
