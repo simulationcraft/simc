@@ -1216,10 +1216,12 @@ struct mage_spell_state_t : public action_state_t
     if ( frozen )
     {
       auto p = debug_cast<const mage_t*>( action -> player );
-
-      // Multiplier is not in spell data, apparently.
-      c *= 1.5;
-      c += p -> spec.shatter -> effectN( 2 ).percent() + p -> spec.shatter_2 -> effectN( 1 ).percent();
+      if ( p -> spec.shatter -> ok() )
+      {
+        // Multiplier is not in spell data, apparently.
+        c *= 1.5;
+        c += p -> spec.shatter -> effectN( 2 ).percent() + p -> spec.shatter_2 -> effectN( 1 ).percent();
+      }
     }
 
     return c;
@@ -1294,7 +1296,7 @@ public:
     if ( affected_by.frost_mage )
       base_multiplier *= 1.0 + p() -> spec.frost_mage -> effectN( 1 ).percent();
 
-    if ( harmful && affected_by.shatter && p() -> spec.shatter -> ok() )
+    if ( harmful && affected_by.shatter )
     {
       snapshot_flags |= STATE_FROZEN;
       update_flags   |= STATE_FROZEN;
