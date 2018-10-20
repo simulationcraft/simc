@@ -4029,6 +4029,8 @@ struct recklessness_t : public warrior_spell_t
     bonus_crit = data().effectN( 1 ).percent();
     callbacks  = false;
 
+    harmful = false;
+
     if ( p->talents.reckless_abandon->ok() )
     {
       energize_amount   = p->talents.reckless_abandon->effectN( 2 ).base_value() / 10.0;
