@@ -1199,7 +1199,32 @@ struct mage_spell_state_t : public action_state_t
 
   virtual std::ostringstream& debug_str( std::ostringstream& s ) override
   {
-    action_state_t::debug_str( s ) << " frozen=" << frozen;
+    action_state_t::debug_str( s ) << " frozen=";
+
+    if ( frozen )
+    {
+      std::string str;
+
+      auto concat_flag_str = [ this, &str ] ( const char* flag_str, frozen_flag_e flag ) {
+        if ( frozen & flag )
+        {
+          if ( ! str.empty() )
+            str += "|";
+          str += flag_str;
+        }
+      };
+
+      concat_flag_str( "WC", FF_WINTERS_CHILL );
+      concat_flag_str( "FOF", FF_FINGERS_OF_FROST );
+      concat_flag_str( "ROOT", FF_ROOT );
+
+      s << "{ " << str << " }";
+    }
+    else
+    {
+      s << "0";
+    }
+
     return s;
   }
 
@@ -2547,7 +2572,7 @@ struct arcane_power_t : public arcane_mage_spell_t
 struct blast_wave_t : public fire_mage_spell_t
 {
   blast_wave_t( mage_t* p, const std::string& options_str ) :
-     fire_mage_spell_t( "blast_wave", p, p -> talents.blast_wave )
+    fire_mage_spell_t( "blast_wave", p, p -> talents.blast_wave )
   {
     parse_options( options_str );
     aoe = -1;
