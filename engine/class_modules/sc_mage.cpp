@@ -672,7 +672,6 @@ public:
   ~mage_t();
 
   // Character Definition
-  virtual std::string get_special_use_items( const std::string& item = std::string(), bool specials = false );
   virtual void        init_spells() override;
   virtual void        init_base_stats() override;
   virtual void        create_buffs() override;
@@ -1627,6 +1626,7 @@ struct fire_mage_spell_t : public mage_spell_t
           bool hu_react = p -> buffs.heating_up -> stack_react() > 0;
           p -> buffs.heating_up -> expire();
           p -> buffs.hot_streak -> trigger();
+
           if ( guaranteed && hu_react )
             p -> buffs.hot_streak -> predict();
 
@@ -1643,11 +1643,9 @@ struct fire_mage_spell_t : public mage_spell_t
           p -> buffs.heating_up -> trigger(
             1, buff_t::DEFAULT_VALUE(), -1.0,
             p -> buffs.heating_up -> buff_duration * p -> cache.spell_speed() );
-          if ( guaranteed )
-          {
-            p -> buffs.heating_up -> predict();
-          }
 
+          if ( guaranteed )
+            p -> buffs.heating_up -> predict();
         }
       }
     }
@@ -1656,8 +1654,7 @@ struct fire_mage_spell_t : public mage_spell_t
       // Non-crit with HU => remove HU
       if ( p -> buffs.heating_up -> check() )
       {
-        if ( p -> buffs.heating_up -> elapsed( sim -> current_time() ) >
-             timespan_t::from_millis( 200 ) )
+        if ( p -> buffs.heating_up -> elapsed( sim -> current_time() ) > timespan_t::from_millis( 200 ) )
         {
           p -> procs.heating_up_removed -> occur();
           p -> buffs.heating_up -> expire();
@@ -1672,7 +1669,7 @@ struct fire_mage_spell_t : public mage_spell_t
     }
   }
 
-  virtual double composite_ignite_multiplier( const action_state_t* /* s */ ) const
+  virtual double composite_ignite_multiplier( const action_state_t* ) const
   { return 1.0; }
 
   void trigger_ignite( action_state_t* state )
@@ -2266,8 +2263,7 @@ struct arcane_intellect_t : public mage_spell_t
 struct arcane_missiles_tick_t : public arcane_mage_spell_t
 {
   arcane_missiles_tick_t( mage_t* p ) :
-    arcane_mage_spell_t( "arcane_missiles_tick", p,
-                         p -> find_specialization_spell( "Arcane Missiles" ) -> effectN( 2 ).trigger() )
+    arcane_mage_spell_t( "arcane_missiles_tick", p, p -> find_spell( 7268 ) )
   {
     background  = true;
     base_multiplier *= 1.0 + p -> sets -> set( MAGE_ARCANE, T19, B2 ) -> effectN( 1 ).percent();
@@ -3118,7 +3114,7 @@ struct flamestrike_t : public fire_mage_spell_t
       }
     }
 
-    if ( p() -> talents.flame_patch -> ok() )
+    if ( flame_patch )
     {
       p() -> ground_aoe_expiration[ flame_patch -> name_str ]
         = sim -> current_time() + flame_patch_duration;
@@ -4479,7 +4475,7 @@ struct pyroblast_t : public fire_mage_spell_t
       }
     }
 
-    if ( p() -> azerite.trailing_embers.enabled() )
+    if ( trailing_embers )
     {
       for ( auto t : target_list() )
       {
@@ -4723,7 +4719,6 @@ struct summon_water_elemental_t : public frost_mage_spell_t
   virtual void execute() override
   {
     frost_mage_spell_t::execute();
-
     p() -> pets.water_elemental -> summon();
   }
 
@@ -5037,7 +5032,10 @@ struct icicle_event_t : public event_t
   player_t* target;
 
   icicle_event_t( mage_t& m, action_t* a, player_t* t, bool first = false ) :
-    event_t( m ), mage( &m ), icicle_action( a ), target( t )
+    event_t( m ),
+    mage( &m ),
+    icicle_action( a ),
+    target( t )
   {
     double cast_time = first ? 0.25 : 0.4 * mage -> cache.spell_speed();
 
@@ -5087,7 +5085,7 @@ struct ignite_spread_event_t : public event_t
     return ignite_state -> tick_amount * ignite -> ticks_left();
   }
 
-  static bool ignite_compare ( dot_t* a, dot_t* b )
+  static bool ignite_compare( dot_t* a, dot_t* b )
   {
     double lv = ignite_bank( a );
     double rv = ignite_bank( b );
@@ -5105,7 +5103,8 @@ struct ignite_spread_event_t : public event_t
   }
 
   ignite_spread_event_t( mage_t& m, timespan_t delta_time ) :
-    event_t( m, delta_time ), mage( &m )
+    event_t( m, delta_time ),
+    mage( &m )
   { }
 
   virtual const char* name() const override
@@ -5228,7 +5227,8 @@ struct time_anomaly_tick_event_t : public event_t
   };
 
   time_anomaly_tick_event_t( mage_t& m, timespan_t delta_time ) :
-    event_t( m, delta_time ), mage( &m )
+    event_t( m, delta_time ),
+    mage( &m )
   { }
 
   virtual const char* name() const override
@@ -5395,8 +5395,7 @@ bool mage_t::apply_crowd_control( const action_state_t* state, spell_mechanic ty
 
 // mage_t::create_action ====================================================
 
-action_t* mage_t::create_action( const std::string& name,
-                                 const std::string& options_str )
+action_t* mage_t::create_action( const std::string& name, const std::string& options_str )
 {
   using namespace actions;
 
@@ -6158,7 +6157,7 @@ void mage_t::init_action_list()
       apl_fire();
       break;
     default:
-      apl_default(); // DEFAULT
+      apl_default();
       break;
   }
 
@@ -6166,54 +6165,6 @@ void mage_t::init_action_list()
   use_default_action_list = true;
 
   player_t::init_action_list();
-}
-
-// This method only handles 1 item per call in order to allow the user to add special conditons and placements
-// to certain items.
-std::string mage_t::get_special_use_items( const std::string& item_name, bool specials )
-{
-  std::string actions;
-  std::string conditions;
-
-  // If we're dealing with a special item, find its special conditional for the right spec.
-  if ( specials )
-  {
-    if ( specialization() == MAGE_FIRE )
-    {
-      if ( item_name == "obelisk_of_the_void" )
-      {
-        conditions = "if=cooldown.combustion.remains>50";
-      }
-      if ( item_name == "horn_of_valor" )
-      {
-        conditions = "if=cooldown.combustion.remains>30";
-      }
-    }
-  }
-
-  for ( const auto& item : mage_t::player_t::items )
-  {
-    // This will skip Addon and Enchant-based on-use effects. Addons especially are important to
-    // skip from the default APLs since they will interfere with the potion timer, which is almost
-    // always preferred over an Addon.
-
-    // Special or not, we need the name and slot
-    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) && item_name == item.name_str)
-    {
-      std::string action_string = "use_item,name=";
-      action_string += item.name_str;
-
-      // If special, we care about special conditions and placement. Else, we only care about placement in the APL.
-      if ( specials )
-      {
-        action_string += ",";
-        action_string += conditions;
-      }
-      actions = action_string;
-    }
-  }
-
-  return actions;
 }
 
 // Pre-combat Action Priority List============================================
@@ -6417,7 +6368,7 @@ void mage_t::apl_fire()
     if ( racial_actions[ i ] == "lights_judgment" || racial_actions[ i ] == "arcane_torrent" )
       continue;  // Handled manually.
 
-    combustion_phase -> add_action( racial_actions[i] );
+    combustion_phase -> add_action( racial_actions[ i ] );
   }
 
   combustion_phase -> add_action( "use_items" );
@@ -6738,10 +6689,7 @@ double mage_t::composite_spell_crit_rating() const
 {
   double cr = player_t::composite_spell_crit_rating();
 
-  if ( spec.critical_mass -> ok() )
-  {
-    cr *= 1.0 + spec.critical_mass_2 -> effectN( 1 ).percent();
-  }
+  cr *= 1.0 + spec.critical_mass_2 -> effectN( 1 ).percent();
 
   return cr;
 }
@@ -6752,10 +6700,7 @@ double mage_t::composite_spell_crit_chance() const
 {
   double c = player_t::composite_spell_crit_chance();
 
-  if ( spec.critical_mass -> ok() )
-  {
-    c += spec.critical_mass -> effectN( 1 ).percent();
-  }
+  c += spec.critical_mass -> effectN( 1 ).percent();
 
   return c;
 }
