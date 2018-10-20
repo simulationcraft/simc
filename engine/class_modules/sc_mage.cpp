@@ -677,6 +677,11 @@ public:
   virtual void        create_buffs() override;
   virtual void        create_options() override;
   virtual void        init_assessors() override;
+  virtual void        init_action_list() override;
+  virtual std::string default_potion() const override;
+  virtual std::string default_flask() const override;
+  virtual std::string default_food() const override;
+  virtual std::string default_rune() const override;
   virtual void        init_gains() override;
   virtual void        init_procs() override;
   virtual void        init_benefits() override;
@@ -773,17 +778,11 @@ public:
   void      trigger_leyshock( unsigned id, const action_state_t* state, leyshock_trigger_e trigger_type );
   bool      apply_crowd_control( const action_state_t* state, spell_mechanic type );
 
-  void         apl_precombat();
-  void         apl_arcane();
-  void         apl_fire();
-  void         apl_frost();
-  void         apl_default();
-  virtual void init_action_list() override;
-
-  std::string default_potion() const override;
-  std::string default_flask() const override;
-  std::string default_food() const override;
-  std::string default_rune() const override;
+  void apl_precombat();
+  void apl_arcane();
+  void apl_fire();
+  void apl_frost();
+  void apl_default();
 };
 
 namespace pets
