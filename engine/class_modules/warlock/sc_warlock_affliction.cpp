@@ -799,6 +799,7 @@ namespace warlock
 
       result_e calculate_result( action_state_t* s) const
       {
+        //TOCHECK Bug - Phantom Singularity does not crit it's primary target. Live as of 10-19-2018.
         if (s->chain_target == 0)
           return RESULT_HIT;
         return affliction_spell_t::calculate_result(s);
