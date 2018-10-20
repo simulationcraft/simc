@@ -1132,12 +1132,10 @@ void player_t::init_base_stats()
     // Set block reduction to 0 for warrior/paladin because it's computed in composite_block_reduction()
     base.block_reduction = 0;
 
-    // Base block chance is 10% for paladin, 18% for warriors
+    // Base block chance is 10% for players, warriors have a bonus 8% in their spec aura
     switch ( type )
     {
     case WARRIOR:
-      base.block = 0.18;
-      break;
     case PALADIN:
       base.block = 0.10;
       break;

@@ -56,6 +56,7 @@ public:
   std::vector<attack_t*> rampage_attacks;
   bool non_dps_mechanics, warrior_fixed_time;
   int into_the_fray_friends;
+  int never_surrender_percentage;
   double expected_max_health;
 
   auto_dispose<std::vector<data_t*> > cd_waste_exec, cd_waste_cumulative;
@@ -81,7 +82,6 @@ public:
     buff_t* bounding_stride;
     buff_t* charge_movement;
     buff_t* defensive_stance;
-    buff_t* demoralizing_shout;
     buff_t* die_by_the_sword;
     buff_t* enrage;
     buff_t* frothing_berserker;
@@ -209,6 +209,8 @@ public:
     const spell_data_t* intervene;
     const spell_data_t* siegebreaker_debuff;
     const spell_data_t* whirlwind_buff;
+    const spell_data_t* ravager_protection;
+    const spell_data_t* shield_block_buff;
   } spell;
 
   // Mastery
@@ -278,6 +280,7 @@ public:
     const spell_data_t* fury_warrior;
     const spell_data_t* prot_warrior;
     const spell_data_t* avatar;
+    const spell_data_t* vanguard;
   } spec;
 
   // Talents
@@ -456,7 +459,8 @@ public:
     non_dps_mechanics =
         false;  // When set to false, disables stuff that isn't important, such as second wind, bloodthirst heal, etc.
     warrior_fixed_time    = true;
-    into_the_fray_friends = 0;
+    into_the_fray_friends = -1;
+    never_surrender_percentage = 70;
     expected_max_health   = 0;
 
     regen_type = REGEN_DISABLED;
@@ -493,15 +497,16 @@ public:
   void init_resources( bool ) override;
   void arise() override;
   void combat_begin() override;
-  // double composite_attribute( attribute_e attr ) const override;
+  double composite_attribute_multiplier( attribute_e attr ) const override;
   double composite_rating_multiplier( rating_e rating ) const override;
   double composite_player_multiplier( school_e school ) const override;
-  // double composite_player_target_multiplier( player_t* target, school_e school ) const override;
+  double composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   double composite_melee_haste() const override;
   // double composite_armor_multiplier() const override;
+  double composite_bonus_armor() const override;
   double composite_block() const override;
-  double composite_block_reduction( action_state_t* s ) const override;
+  // double composite_block_reduction( action_state_t* s ) const override;
   double composite_parry_rating() const override;
   double composite_parry() const override;
   double composite_melee_expertise( const weapon_t* ) const override;
@@ -593,7 +598,7 @@ struct warrior_action_t : public Base
     // mastery/buff damage increase.
     bool fury_mastery_direct, fury_mastery_dot;
     // talents
-    bool avatar, frothing_direct, frothing_dot, demo_shout, sweeping_strikes, deadly_calm;
+    bool avatar, frothing_direct, frothing_dot, sweeping_strikes, deadly_calm;
     // azerite
     bool crushing_assault;
 
@@ -603,7 +608,6 @@ struct warrior_action_t : public Base
         avatar( false ),
         frothing_direct( false ),
         frothing_dot( false ),
-        demo_shout( false ),
         sweeping_strikes( false ),
         deadly_calm( false ),
         crushing_assault( false )
@@ -675,7 +679,6 @@ public:
     affected_by.fury_mastery_direct = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 1 ) );
     affected_by.fury_mastery_dot    = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 2 ) );
     affected_by.avatar              = ab::data().affected_by( p()->talents.avatar->effectN( 1 ) );
-    affected_by.demo_shout          = ab::data().affected_by( p()->spec.demoralizing_shout->effectN( 1 ) );
     affected_by.sweeping_strikes    = ab::data().affected_by( p()->spec.sweeping_strikes->effectN( 1 ) );
 
     affected_by.frothing_direct =
@@ -773,11 +776,6 @@ public:
     if ( affected_by.frothing_direct && p()->buff.frothing_berserker->up() )
     {
       dm *= 1.0 + p()->buff.frothing_berserker->data().effectN( 1 ).percent();
-    }
-
-    if ( affected_by.demo_shout && p()->talents.booming_voice->ok() && p()->buff.demoralizing_shout->check() )
-    {
-      dm *= 1.0 + p()->talents.booming_voice->effectN( 2 ).percent();
     }
 
     if ( affected_by.sweeping_strikes && s->chain_target > 0 )
@@ -1093,6 +1091,7 @@ struct devastator_t : warrior_attack_t
     shield_slam_reset( p -> talents.devastator -> effectN( 2 ).percent() )
   {
     background = true;
+    impact_action = p->active.deep_wounds_PROT;
   }
 
   void execute() override
@@ -1147,7 +1146,6 @@ struct melee_t : public warrior_attack_t
     affected_by.fury_mastery_direct = p()->mastery.unshackled_fury->ok();
     affected_by.avatar              = p()->talents.avatar->ok();
     affected_by.frothing_direct     = p()->talents.frothing_berserker->ok();
-    affected_by.demo_shout          = p()->spec.demoralizing_shout->ok();
   }
 
   void reset() override
@@ -1263,7 +1261,7 @@ struct melee_t : public warrior_attack_t
     }
     else 
     {
-      // Protection generates a static 2 rage per successful auto attacks landed
+      // Protection generates a static 2 rage per successful auto attack landed
       rage_gain = 2.0;
     }
 
@@ -1811,11 +1809,8 @@ struct intercept_t : public warrior_attack_t
     energize_type           = ENERGIZE_ON_CAST;
     energize_resource       = RESOURCE_RAGE;
 
-    if ( p->talents.double_time->ok() )
-    {
-      cooldown->charges += as<int>( p->talents.double_time->effectN( 1 ).base_value() );
-      cooldown->duration += p->talents.double_time->effectN( 2 ).time_value();
-    }
+    cooldown-> charges += as<int>( p-> spec.prot_warrior -> effectN( 3 ).base_value() );
+    cooldown-> duration += timespan_t::from_millis( p -> spec.prot_warrior -> effectN( 4 ).base_value() );
   }
 
   void execute() override
@@ -1944,7 +1939,7 @@ struct deep_wounds_PROT_t : public warrior_attack_t
     : warrior_attack_t( "deep_wounds", p, p->spec.deep_wounds_PROT->effectN( 2 ).trigger() )
   {
     background = tick_may_crit = true;
-    hasted_ticks               = false;
+    hasted_ticks               = true;
   }
 };
 
@@ -1963,8 +1958,6 @@ struct demoralizing_shout : public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
-
-    p()->buff.demoralizing_shout->trigger( 1, data().effectN( 1 ).percent() );
     if ( rage_gain > 0 )
     {
       p()->resource_gain( RESOURCE_RAGE, rage_gain, p()->gain.booming_voice );
@@ -2230,6 +2223,8 @@ struct heroic_throw_t : public warrior_attack_t
 
     weapon    = &( player->main_hand_weapon );
     may_dodge = may_parry = may_block = false;
+
+    cooldown -> duration *= 1.0 + p -> spec.prot_warrior -> effectN( 5 ).percent();
   }
 
   bool ready() override
@@ -3010,7 +3005,8 @@ struct ravager_tick_t : public warrior_attack_t
     aoe           = -1;
     impact_action = p->active.deep_wounds_ARMS;
     dual = ground_aoe = true;
-    attack_power_mod.direct *= 1.0 + p->spec.prot_warrior->effectN( 8 ).percent();  // 89% damage decrease for prot.
+    // Protection's Ravager deals less damage
+    attack_power_mod.direct *= 1.0 + p->spec.prot_warrior->effectN( 8 ).percent();
     rage_from_ravager = p->find_spell( 248439 )->effectN( 1 ).resource( RESOURCE_RAGE );
   }
 
@@ -3143,7 +3139,7 @@ struct revenge_t : public warrior_attack_t
 
     am *= 1.0 + ( p()->talents.best_served_cold->effectN( 1 ).percent() *
                   std::min( target_list().size(),
-                            static_cast<size_t>( p()->talents.best_served_cold->effectN( 1 ).base_value() ) ) );
+                            static_cast<size_t>( p()->talents.best_served_cold->effectN( 2 ).base_value() ) ) );
 
     return am;
   }
@@ -3192,36 +3188,12 @@ struct rend_t : public warrior_attack_t
 };
 
 // Shield Slam ==============================================================
-
-struct shield_block_hr_t : public warrior_attack_t
-{
-  double extension;
-  shield_block_hr_t( warrior_t* p )
-    : warrior_attack_t( "shield_block_heavy_repercussions", p, p->spec.shield_block ),
-      extension( p->talents.heavy_repercussions->effectN( 1 ).base_value() / 100.0 )
-  {
-    background                  = true;
-    base_costs[ RESOURCE_RAGE ] = 0;
-    cooldown->duration          = timespan_t::zero();
-  }
-
-  void execute() override
-  {
-    warrior_attack_t::execute();
-    p()->buff.shield_block->extend_duration( p(), timespan_t::from_seconds( extension ) );
-  }
-};
-
 struct shield_slam_t : public warrior_attack_t
 {
   double rage_gain;
-  attack_t* shield_block_hr;
-  double heavy_repercussions;
   shield_slam_t( warrior_t* p, const std::string& options_str )
     : warrior_attack_t( "shield_slam", p, p->spec.shield_slam ),
-      rage_gain( data().effectN( 3 ).resource( RESOURCE_RAGE ) ),
-      shield_block_hr( new shield_block_hr_t( p ) ),
-      heavy_repercussions( p->talents.heavy_repercussions->effectN( 2 ).percent() )
+      rage_gain( data().effectN( 3 ).resource( RESOURCE_RAGE ) )
   {
     parse_options( options_str );
     energize_type = ENERGIZE_NONE;
@@ -3231,9 +3203,11 @@ struct shield_slam_t : public warrior_attack_t
   {
     double am = warrior_attack_t::action_multiplier();
 
-    if ( p()->buff.shield_block->up() )
+    if ( p() -> buff.shield_block->up() )
     {
-      am *= 1.3 + heavy_repercussions;
+      double sb_increase = p() -> spell.shield_block_buff -> effectN( 2 ).percent();
+      sb_increase += p() -> talents.heavy_repercussions -> effectN( 2 ).percent();
+      am *= 1.0 + sb_increase;
     }
 
     if ( p() -> talents.punish -> ok() )
@@ -3250,11 +3224,10 @@ struct shield_slam_t : public warrior_attack_t
 
     if ( p()->buff.shield_block->up() && p()->talents.heavy_repercussions->ok() )
     {
-      shield_block_hr->execute();
+      p () -> buff.shield_block -> extend_duration( p(), 
+          timespan_t::from_seconds( p() -> talents.heavy_repercussions -> effectN( 1 ).percent() ) );
     }
-
-
-
+    
     p()->resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.shield_slam );
 
     if ( p()->sets->has_set_bonus( WARRIOR_PROTECTION, T20, B4 ) )
@@ -3363,31 +3336,24 @@ struct slaughter_dot_t : public residual_action::residual_periodic_action_t<warr
 
 struct shockwave_t : public warrior_attack_t
 {
-  int rumbling_earth_reduction;
-  int rumbling_earth_targets_required;
   shockwave_t( warrior_t* p, const std::string& options_str )
-    : warrior_attack_t( "shockwave", p, p->spec.shockwave ),
-      rumbling_earth_reduction( as<int>( p->talents.rumbling_earth->effectN( 2 ).base_value() ) ),
-      rumbling_earth_targets_required( as<int>( p->talents.rumbling_earth->effectN( 1 ).base_value() ) )
+    : warrior_attack_t( "shockwave", p, p->spec.shockwave )
   {
     parse_options( options_str );
     may_dodge = may_parry = may_block = false;
     aoe                               = -1;
+    
+    base_multiplier *= 1.0 + p -> spec.prot_warrior -> effectN( 9 ).percent();
   }
 
-  void update_ready( timespan_t cd_duration ) override
+  void impact( action_state_t* state ) override
   {
-    cd_duration = cooldown->duration;
+    warrior_attack_t::impact( state );
 
-    if ( p()->talents.rumbling_earth->ok() &&
-         as<int>( execute_state->n_targets ) >= rumbling_earth_targets_required )
+    if ( state -> n_targets >= as<int>( p() -> talents.rumbling_earth->effectN( 1 ).base_value() ) )
     {
-      if ( cd_duration > timespan_t::from_seconds( rumbling_earth_reduction ) )
-        cd_duration += timespan_t::from_seconds( -1 * rumbling_earth_reduction );
-      else
-        cd_duration = timespan_t::zero();
+      p() -> cooldown.shockwave -> adjust( timespan_t::from_seconds( p() -> talents.rumbling_earth -> effectN( 2 ).base_value() ) );
     }
-    warrior_attack_t::update_ready( cd_duration );
   }
 };
 
@@ -3462,10 +3428,8 @@ struct thunder_clap_t : public warrior_attack_t
     {
       rm *= 1.0 + ( p() -> talents.unstoppable_force -> effectN( 2 ).percent() );
     }
-
     return rm;
   }
-
 };
 
 // Victory Rush =============================================================
@@ -3496,6 +3460,8 @@ struct victory_rush_t : public warrior_attack_t
       execute_action = victory_rush_heal;
     }
     cooldown->duration = timespan_t::from_seconds( 1000.0 );
+    // Prot's victory rush deals less damage
+    base_multiplier *= 1.0 + p -> spec.prot_warrior -> effectN( 9 ).percent();
   }
 };
 
@@ -3807,7 +3773,7 @@ struct avatar_t : public warrior_spell_t
 
   bool verify_actor_spec() const override
   {
-    if ( p()->talents.avatar->ok() )
+    if ( p()->talents.avatar->ok() && p() -> specialization() == WARRIOR_ARMS )
     {
       // Do not check spec if Arms talent avatar is available, so that spec check on the spell (required: protection)
       // does not fail.
@@ -4092,62 +4058,24 @@ struct ignore_pain_buff_t : public absorb_buff_t
   // Custom consume implementation to allow minimum absorb amount.
   double consume( double amount ) override
   {
-    // 20161103 (stangk) - Statistics should track the reduced amount
-    amount *= 0.9;
+    // IP only absorbs up to 50% of the damage taken
+    amount *= debug_cast< warrior_t* >( player ) -> spec.ignore_pain -> effectN( 2 ).percent();
+    double absorbed = absorb_buff_t::consume( amount );
 
-    // Limit the consumption to the current size of the buff.
-    amount = std::min( amount, current_value );
-
-    if ( absorb_source )
-    {
-      absorb_source->add_result( amount, 0, ABSORB, RESULT_HIT, BLOCK_RESULT_UNBLOCKED, player );
-    }
-
-    if ( absorb_gain )
-    {
-      absorb_gain->add( RESOURCE_HEALTH, amount, 0 );
-    }
-
-    if ( sim->debug )
-    {
-      sim->out_debug.printf( "%s %s absorbs %.2f (remaining: %.2f)", player->name(), name(), amount, current_value );
-    }
-
-    // 20161103 (stangk) - Since we don't call base, we need to deduct from current_value here
-    // or we get an infinite shield
-    current_value -= amount;
-
-    absorb_used( amount );
-
-    return amount;
+    return absorbed;
   }
 };
 
 struct ignore_pain_t : public warrior_spell_t
 {
-  double ip_cap_ratio;
   ignore_pain_t( warrior_t* p, const std::string& options_str )
-    : warrior_spell_t( "ignore_pain", p, p->spec.ignore_pain ), ip_cap_ratio( 0 )
+    : warrior_spell_t( "ignore_pain", p, p->spec.ignore_pain )
   {
     parse_options( options_str );
     may_crit     = false;
     range        = -1;
     target       = player;
-    ip_cap_ratio = 3;
-    if ( p->talents.never_surrender->ok() )
-    {
-      ip_cap_ratio *= 1.0 + p->talents.never_surrender->effectN( 1 ).percent();
-      sim->errorf(
-          "In sim, never surrender is modeled by selecting a number based on a gaussian distrubution with a mean of 70 "
-          "percent health" );
-      sim->errorf(
-          "and a range of 40-100 percent everytime ignore pain is cast. In the future, this will be user selectable." );
-    }
-    if ( p->talents.indomitable->ok() )
-    {
-      ip_cap_ratio *= 1.0 + p->talents.indomitable->effectN( 1 )
-                                .percent();  // basic support to fix segfault, prot will need full future overhaul
-    }
+
     base_dd_max = base_dd_min = 0;
   }
 
@@ -4158,52 +4086,38 @@ struct ignore_pain_t : public warrior_spell_t
     p()->buff.vengeance_revenge->trigger();
   }
 
-  double cost() const override
-  {
-    return std::min( 60.0 * ( 1.0 + p()->buff.vengeance_ignore_pain->check_value() ),
-                     std::max( p()->resources.current[ RESOURCE_RAGE ],
-                               20.0 * ( 1.0 + p()->buff.vengeance_ignore_pain->check_value() ) ) );
-  }
-
-  double tactician_cost() const override
-  {
-    return cost() / ( 1.0 + p()->buff.vengeance_ignore_pain->check_value() );
-  }
-
-  double max_ip() const
-  {
-    double ip_cap = 0;
-    ip_cap        = ip_cap_ratio *
-             ( data().effectN( 1 ).ap_coeff() * p()->composite_melee_attack_power() *
-               p()->composite_attack_power_multiplier() ) *
-             ( 1.0 + p()->cache.damage_versatility() );
-    return ip_cap;
-  }
-
   void impact( action_state_t* s ) override
   {
-    double amount;
+    double new_ip = s -> result_amount;
 
-    amount = s->result_amount;
-    // 20161103 - resource_consumed is only updated after this function is called
-    amount *= ( cost() / ( 60.0 * ( 1.0 + p()->buff.vengeance_ignore_pain->check_value() ) ) );
+    if ( p() -> talents.never_surrender -> ok() )
+    { 
+      double percent_health;
+      if ( p() -> never_surrender_percentage < 0 )
+      {
+        percent_health = p() -> health_percentage() / 100;
+      }
+      else
+      {
+        percent_health = ( rng().gauss( p() -> never_surrender_percentage / 100, 0.2 ) );
+      }
 
-    if ( p()->talents.never_surrender->ok() )
-    {  // TODO, add options to change the gaussian distribution.
-      double percent_health = ( 1 - rng().gauss( 0.7, 0.3 ) * p()->talents.never_surrender->effectN( 1 ).percent() );
-      amount *= 1.0 + percent_health;
+      new_ip *= 1.0 + percent_health * p() -> talents.never_surrender -> effectN( 1 ).percent();
     }
 
-    amount += p()->buff.ignore_pain->current_value;
+    double previous_ip = p() -> buff.ignore_pain -> current_value;
 
-    if ( amount > max_ip() )
+    // IP is capped at 1.3 times the amount of the current IP
+    double ip_cap_ratio = 1.3;
+
+    if ( previous_ip + new_ip > new_ip * ip_cap_ratio )
     {
-      amount = max_ip();
+      new_ip *= ip_cap_ratio;
     }
 
-    if ( amount > 0.0 )
+    if ( new_ip > 0.0 )
     {
-      p()->buff.ignore_pain->trigger( 1, amount );
+      p()->buff.ignore_pain->trigger( 1, new_ip );
     }
   }
 
@@ -4509,6 +4423,7 @@ void warrior_t::init_spells()
   spec.victory_rush     = find_specialization_spell( "Victory Rush" );
   // Only for Protection, the arms talent is under talents.avatar
   spec.avatar           = find_specialization_spell( "Avatar" );
+  spec.vanguard         = find_specialization_spell( "Vanguard" );
   if ( specialization() == WARRIOR_FURY )
   {
     spec.whirlwind   = find_specialization_spell( 190411 );
@@ -4609,6 +4524,8 @@ void warrior_t::init_spells()
   spell.heroic_leap           = find_class_spell( "Heroic Leap" );
   spell.siegebreaker_debuff   = find_spell( 280773 );
   spell.whirlwind_buff        = find_spell( 85739, WARRIOR_FURY );  // Used to be called Meat Cleaver
+  spell.ravager_protection    = find_spell( 227744 );
+  spell.shield_block_buff     = find_spell( 132404 );
 
   // Active spells
   active.deep_wounds_ARMS = nullptr;
@@ -5198,12 +5115,13 @@ struct rallying_cry_t : public warrior_buff_t<buff_t>
 
 // Last Stand ======================================================================
 
-struct last_stand_t : public warrior_buff_t<buff_t>
+struct last_stand_buff_t : public warrior_buff_t<buff_t>
 {
   int health_gain;
-  last_stand_t( warrior_t& p, const std::string& n, const spell_data_t* s )
+  last_stand_buff_t( warrior_t& p, const std::string& n, const spell_data_t* s )
     : base_t( p, n, s ), health_gain( 0 )
   {
+    add_invalidate( CACHE_BLOCK );
     set_cooldown( timespan_t::zero() );
   }
 
@@ -5360,11 +5278,7 @@ void warrior_t::create_buffs()
   buff.defensive_stance = buff_creator_t( this, "defensive_stance", talents.defensive_stance )
                               .activated( true )
                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-
-  buff.demoralizing_shout =
-      buff_creator_t( this, "demoralizing_shout", spec.demoralizing_shout )
-          .cd( timespan_t::zero() );
-
+  
   buff.die_by_the_sword = buff_creator_t( this, "die_by_the_sword", spec.die_by_the_sword )
                               .default_value( spec.die_by_the_sword->effectN( 2 ).percent() )
                               .cd( timespan_t::zero() )
@@ -5389,7 +5303,7 @@ void warrior_t::create_buffs()
                            .default_value( find_spell( 202602 )->effectN( 1 ).percent() )
                            .add_invalidate( CACHE_HASTE );
 
-  buff.last_stand = new buffs::last_stand_t( *this, "last_stand", spec.last_stand );
+  buff.last_stand = new buffs::last_stand_buff_t( *this, "last_stand", spec.last_stand );
 
   buff.meat_cleaver = buff_creator_t( this, "meat_cleaver", spell.whirlwind_buff );
 
@@ -5401,7 +5315,8 @@ void warrior_t::create_buffs()
 
   buff.ravager = buff_creator_t( this, "ravager", talents.ravager );
 
-  buff.ravager_protection = buff_creator_t( this, "ravager_protection", talents.ravager ).add_invalidate( CACHE_PARRY );
+  buff.ravager_protection = buff_creator_t( this, "ravager_protection", spell.ravager_protection )
+                            .add_invalidate( CACHE_PARRY );
 
   buff.spell_reflection = buff_creator_t( this, "spell_reflection", spec.spell_reflection );
 
@@ -5419,7 +5334,7 @@ void warrior_t::create_buffs()
 
   buff.deadly_calm = buff_creator_t( this, "deadly_calm", talents.deadly_calm ).cd( timespan_t::zero() );
 
-  buff.shield_block = buff_creator_t( this, "shield_block", find_spell( 132404 ) )
+  buff.shield_block = buff_creator_t( this, "shield_block", spell.shield_block_buff )
                           .cd( timespan_t::zero() )
                           .add_invalidate( CACHE_BLOCK );
 
@@ -5795,7 +5710,7 @@ void warrior_t::combat_begin()
     }
   }
   player_t::combat_begin();
-  buff.into_the_fray->trigger( into_the_fray_friends + 1 );
+  buff.into_the_fray -> trigger( into_the_fray_friends < 0 ? buff.into_the_fray -> max_stack() : into_the_fray_friends + 1 );
   buff.bloodcraze->trigger( buff.bloodcraze->data().max_stacks() );
   buff.bloodcraze_driver->trigger();
 }
@@ -5838,7 +5753,8 @@ void warrior_t::activate()
 {
   player_t::activate();
 
-  if ( talents.into_the_fray->ok() )
+  // If the value is equal to -1, don't use the callback and just assume max stacks all the time
+  if ( talents.into_the_fray->ok() && into_the_fray_friends >= 0 )
   {
     sim->target_non_sleeping_list.register_callback( into_the_fray_callback_t( this ) );
   }
@@ -5880,7 +5796,10 @@ void warrior_t::teleport( double, timespan_t )
 
 void warrior_t::trigger_movement( double distance, movement_direction_e direction )
 {
-  into_the_fray_callback_t( this );
+  if ( talents.into_the_fray->ok() && into_the_fray_friends >= 0 )
+  {
+    into_the_fray_callback_t( this );
+  }
   if ( heroic_charge )
   {
     event_t::cancel( heroic_charge );  // Cancel heroic leap if it's running to make sure nothing weird happens when
@@ -5915,14 +5834,19 @@ double warrior_t::composite_player_multiplier( school_e school ) const
 }
 
 // warrior_t::composite_player_target_multiplier ==============================
-/* commented off for possible later use
 double warrior_t::composite_player_target_multiplier( player_t* target, school_e school ) const
 {
   double m = player_t::composite_player_target_multiplier( target, school );
 
+  warrior_td_t* td = get_target_data( target );
+
+  if ( td -> debuffs_demoralizing_shout && talents.booming_voice -> ok() )
+  {
+    m *= 1.0 + talents.booming_voice->effectN( 2 ).percent();
+  }
+
   return m;
 }
-*/
 
 // warrior_t::composite_melee_haste ===========================================
 
@@ -5963,7 +5887,22 @@ double warrior_t::composite_mastery() const
   return player_t::composite_mastery();
 }
 
-// warrior_t::composite_rating_multiplier =====================================
+// warrior_t::composite_attribute_multiplier ================================
+
+double warrior_t::composite_attribute_multiplier( attribute_e attr ) const
+{
+  double m = player_t::composite_attribute_multiplier( attr );
+
+  // Protection has increased stamina from vanguard
+  if ( attr == ATTR_STAMINA )
+  {
+    m *= 1.0 + spec.vanguard -> effectN( 2 ).percent();
+  }
+
+  return m;
+}
+
+// warrior_t::composite_rating_multiplier ===================================
 
 double warrior_t::composite_rating_multiplier( rating_e rating ) const
 {
@@ -5987,6 +5926,17 @@ double warrior_t::matching_gear_multiplier( attribute_e attr ) const
   return 0.0;
 }
 
+// warrior_t::composite_bonus_armor ==========================================
+
+double warrior_t::composite_bonus_armor() const
+{
+  double ba = player_t::composite_bonus_armor();
+
+  ba += spec.vanguard -> effectN( 1 ).percent() * cache.strength();
+
+  return ba;
+}
+
 // warrior_t::composite_block ================================================
 
 double warrior_t::composite_block() const
@@ -5995,25 +5945,31 @@ double warrior_t::composite_block() const
   double block_subject_to_dr = cache.mastery() * mastery.critical_block->effectN( 2 ).mastery_value();
   double b                   = player_t::composite_block_dr( block_subject_to_dr );
 
-  // add in spec-specific block bonuses not subject to DR
-  b += spec.prot_warrior->effectN( 13 ).percent();
+  // Protection Warriors have a +8% block chance in their spec aura
+  b += spec.prot_warrior -> effectN( 13 ).percent();
 
   // shield block adds 100% block chance
-  if ( buff.shield_block->check() )
+  if ( buff.shield_block -> check() )
   {
-    b += buff.shield_block->data().effectN( 1 ).percent();
+    b += spell.shield_block_buff -> effectN( 1 ).percent();
   }
+
+  if ( buff.last_stand && talents.bolster -> ok() )
+  {
+    b+= talents.bolster -> effectN( 2 ).percent();
+  }
+
   return b;
 }
 
 // warrior_t::composite_block_reduction ======================================
-
+/*
 double warrior_t::composite_block_reduction( action_state_t* s ) const
 {
   double br = player_t::composite_block_reduction( s );
 
   return br;
-}
+}*/
 
 // warrior_t::composite_melee_attack_power ==================================
 /*
@@ -6045,7 +6001,7 @@ double warrior_t::composite_parry() const
 
   if ( buff.ravager_protection->check() )
   {
-    parry += talents.ravager->effectN( 1 ).percent();
+    parry += spell.ravager_protection -> effectN( 1 ).percent();
   }
   else if ( buff.die_by_the_sword->check() )
   {
@@ -6230,6 +6186,10 @@ void warrior_t::invalidate_cache( cache_e c )
   {
     player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
+  if ( c == CACHE_STRENGTH && spec.vanguard -> ok() )
+  {
+    player_t::invalidate_cache( CACHE_BONUS_ARMOR );
+  }
 }
 
 // warrior_t::primary_role() ================================================
@@ -6363,6 +6323,7 @@ void warrior_t::create_options()
   add_option( opt_bool( "non_dps_mechanics", non_dps_mechanics ) );
   add_option( opt_bool( "warrior_fixed_time", warrior_fixed_time ) );
   add_option( opt_int( "into_the_fray_friends", into_the_fray_friends ) );
+  add_option( opt_int( "never_surrender_percentage", never_surrender_percentage ) );
 }
 
 // warrior_t::create_profile ================================================
@@ -6388,6 +6349,7 @@ void warrior_t::copy_from( player_t* source )
   non_dps_mechanics     = p->non_dps_mechanics;
   warrior_fixed_time    = p->warrior_fixed_time;
   into_the_fray_friends = p->into_the_fray_friends;
+  never_surrender_percentage = p -> never_surrender_percentage;
 }
 
 /* Report Extension Class
