@@ -34,22 +34,6 @@ CONFIG(qt) {
 
 Release: DEFINES += QT_NO_DEBUG_OUTPUT
 
-win32-mingw
-{
-  ! macx {
-    # QT 5.4 for MinGW does not yet contain the new Web Engine
-    contains ( QT_MAJOR_VERSION , 5 ) {
-        greaterThan( QT_MINOR_VERSION, 3 ) {
-            QT -= webengine webenginewidgets
-            QT += webkit webkitwidgets
-            DEFINES -= SC_USE_WEBENGINE
-            DEFINES += SC_USE_WEBKIT
-            message("MinGW WebKit only")
-        }
-    }
-  }
-}
-
 CONFIG(console) {
   QT       -= gui
   CONFIG   -= app_bundle
@@ -143,6 +127,7 @@ win32-msvc2010 {
 }
 
 INCLUDEPATH += engine
+INCLUDEPATH += engine/util
 DEPENDPATH += engine
 
 PRECOMPILED_HEADER = engine/simulationcraft.hpp
