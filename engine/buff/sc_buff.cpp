@@ -112,8 +112,8 @@ struct expiration_t : public buff_event_t
   {
     if ( b->stack_behavior == buff_stack_behavior::ASYNCHRONOUS )
     {
-      b->sim->errorf( "Asynchronous buff %s on %s creates expiration with no stack count.", buff->name(),
-                      buff->player->name() );
+      b->sim->errorf( "{} {} creates asynchronous expiration with no stack count.",
+          *buff->player, *buff );
       b->sim->cancel();
     }
   }
@@ -157,9 +157,8 @@ struct tick_t : public buff_event_t
     int total_ticks =
         buff->expiration.empty() ? -1 : buff->current_tick + static_cast<int>( buff->remains() / buff->tick_time() );
 
-    if ( buff->sim->debug )
-      buff->sim->out_debug.printf( "%s buff %s ticks (%d of %d).", buff->player->name(), buff->name(),
-                                   buff->current_tick, total_ticks );
+    buff->sim->print_debug( "{} {} ticks ({} of {}).",
+        *buff->player, *buff, buff->current_tick, total_ticks );
 
     // Tick callback is called before the aura stack count is altered to ensure
     // that the buff is always up during the "tick". Last tick detection can be
@@ -698,15 +697,14 @@ buff_t* buff_t::set_max_stack( int max_stack )
 
   if ( _max_stack < 1 )
   {
-    sim->errorf( "buff %s: initialized with max_stack < 1 (%d). Setting max_stack to 1.\n", name_str.c_str(),
-                 _max_stack );
+    sim->error( "{} initialized with max_stack < 1 ({}). Setting max_stack to 1.\n", *this, _max_stack );
     _max_stack = 1;
   }
 
   if ( _max_stack > 999 )
   {
     _max_stack = 999;
-    sim->errorf( "buff %s: initialized with max_stack > 999. Setting max_stack to 999.\n", name_str.c_str() );
+    sim->errorf( "{} initialized with max_stack > 999. Setting max_stack to 999.\n", *this );
   }
 
   stack_react_time.resize( _max_stack + 1 );
@@ -787,13 +785,6 @@ buff_t* buff_t::set_period( timespan_t period )
 
   return this;
 }
-
-//
-// buff_t* buff_t::set_chance( double chance )
-//{
-//  assert( false && "not yet implemented" );
-//  return this;
-//}
 
 buff_t* buff_t::add_invalidate( cache_e c )
 {
@@ -978,8 +969,6 @@ void buff_t::datacollection_begin()
     stack_uptime[ i ].datacollection_begin();
 }
 
-// buff_t::datacollection_end ===============================================
-
 void buff_t::datacollection_end()
 {
   timespan_t time = player ? player->iteration_fight_length : sim->current_time();
@@ -1010,8 +999,6 @@ void buff_t::init()
 {
 }
 
-// buff_t:: refresh_duration ================================================
-
 timespan_t buff_t::refresh_duration( const timespan_t& new_duration ) const
 {
   switch ( refresh_behavior )
@@ -1024,22 +1011,20 @@ timespan_t buff_t::refresh_duration( const timespan_t& new_duration ) const
     {
       assert( tick_event );
       timespan_t residual = remains() % static_cast<tick_t*>( tick_event )->tick_time;
-      if ( sim->debug )
-        sim->out_debug.printf(
-            "%s %s carryover duration from ongoing tick: %.3f, refresh_duration=%.3f new_duration=%.3f", player->name(),
-            name(), residual.total_seconds(), new_duration.total_seconds(),
-            ( new_duration + residual ).total_seconds() );
+      sim->print_debug(
+            "{} {} carryover duration from ongoing tick: {}, refresh_duration={} new_duration={}",
+            *player, *this,
+            residual, new_duration, ( new_duration + residual ) );
 
       return new_duration + residual;
     }
     case buff_refresh_behavior::PANDEMIC:
     {
       timespan_t residual = std::min( new_duration * 0.3, remains() );
-      if ( sim->debug )
-        sim->out_debug.printf(
-            "%s %s carryover duration from ongoing tick: %.3f, refresh_duration=%.3f new_duration=%.3f", player->name(),
-            name(), residual.total_seconds(), new_duration.total_seconds(),
-            ( new_duration + residual ).total_seconds() );
+      sim->print_debug(
+            "{} {} carryover duration from ongoing tick: {}, refresh_duration={} new_duration={}",
+            *player, *this,
+            residual, new_duration, ( new_duration + residual ) );
 
       return new_duration + residual;
     }
@@ -1049,13 +1034,11 @@ timespan_t buff_t::refresh_duration( const timespan_t& new_duration ) const
       return refresh_duration_callback( this, new_duration );
     default:
     {
-      assert( 0 );
+      assert( false );
       return new_duration;
     }
   }
 }
-
-// buff_t::tick_time ======================================================
 
 timespan_t buff_t::tick_time() const
 {
@@ -1087,8 +1070,6 @@ int buff_t::stack()
   return cs;
 }
 
-// buff_t::total_stack ======================================================
-
 int buff_t::total_stack()
 {
   int s = current_stack;
@@ -1098,8 +1079,6 @@ int buff_t::total_stack()
 
   return std::min( s, _max_stack );
 }
-
-// buff_t::may_react ========================================================
 
 bool buff_t::may_react( int stack )
 {
@@ -1118,8 +1097,6 @@ bool buff_t::may_react( int stack )
   return sim->current_time() > stack_react_time[ stack ];
 }
 
-// buff_t::stack_react ======================================================
-
 int buff_t::stack_react()
 {
   int stack = current_stack;
@@ -1134,8 +1111,6 @@ int buff_t::stack_react()
   return stack;
 }
 
-// buff_t::remains ==========================================================
-
 timespan_t buff_t::remains() const
 {
   if ( current_stack <= 0 )
@@ -1148,8 +1123,6 @@ timespan_t buff_t::remains() const
   }
   return timespan_t::min();
 }
-
-// buff_t::remains_gt =======================================================
 
 bool buff_t::remains_gt( timespan_t time ) const
 {
@@ -1164,8 +1137,6 @@ bool buff_t::remains_gt( timespan_t time ) const
   return ( time_remaining > time );
 }
 
-// buff_t::remains_lt =======================================================
-
 bool buff_t::remains_lt( timespan_t time ) const
 {
   timespan_t time_remaining = remains();
@@ -1176,8 +1147,6 @@ bool buff_t::remains_lt( timespan_t time ) const
   return ( time_remaining < time );
 }
 
-// buff_t::trigger ==========================================================
-
 bool buff_t::trigger( action_t* a, int stacks, double value, timespan_t duration )
 {
   double chance = default_chance;
@@ -1185,8 +1154,6 @@ bool buff_t::trigger( action_t* a, int stacks, double value, timespan_t duration
     chance = a->ppm_proc_chance( -chance );
   return trigger( stacks, value, chance, duration );
 }
-
-// buff_t::trigger ==========================================================
 
 bool buff_t::trigger( int stacks, double value, double chance, timespan_t duration )
 {
@@ -1253,8 +1220,6 @@ bool buff_t::trigger( int stacks, double value, double chance, timespan_t durati
   return true;
 }
 
-// buff_t::execute ==========================================================
-
 void buff_t::execute( int stacks, double value, timespan_t duration )
 {
   if ( value == DEFAULT_VALUE() && default_value != DEFAULT_VALUE() )
@@ -1287,17 +1252,14 @@ void buff_t::execute( int stacks, double value, timespan_t duration )
   // new buff cooldown impl
   if ( cooldown->duration > timespan_t::zero() )
   {
-    if ( sim->debug )
-      sim->out_debug.printf( "%s starts buff %s cooldown (%s) with duration %.2f", source_name().c_str(),
-                             name_str.c_str(), cooldown->name(), cooldown->duration.total_seconds() );
+    sim->print_debug( "{} starts {} cooldown ({}) with duration {}", source_name(),
+                             *this, cooldown->name(), cooldown->duration );
 
     cooldown->start();
   }
 
   trigger_successes++;
 }
-
-// buff_t::increment ========================================================
 
 void buff_t::increment( int stacks, double value, timespan_t duration )
 {
@@ -1319,8 +1281,6 @@ void buff_t::increment( int stacks, double value, timespan_t duration )
     refresh( stacks, value, duration );
   }
 }
-
-// buff_t::decrement ========================================================
 
 void buff_t::decrement( int stacks, double value )
 {
@@ -1354,8 +1314,7 @@ void buff_t::decrement( int stacks, double value )
     if ( as<std::size_t>( current_stack ) < stack_uptime.size() )
       stack_uptime[ current_stack ].update( true, sim->current_time() );
 
-    if ( sim->debug )
-      sim->out_debug.printf( "buff %s decremented by %d to %d stacks", name_str.c_str(), stacks, current_stack );
+    sim->print_debug( "{} decremented by {} to {} stacks.", *this, stacks, current_stack );
 
     if ( old_stack != current_stack && stack_change_callback )
     {
@@ -1363,8 +1322,6 @@ void buff_t::decrement( int stacks, double value )
     }
   }
 }
-
-// buff_t::extend_duration ==================================================
 
 void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
 {
@@ -1384,9 +1341,8 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
   {
     expiration.front()->reschedule( expiration.front()->remains() + extra_seconds );
 
-    if ( sim->log )
-      sim->out_log.printf( "%s extends buff %s by %.1f seconds. New expiration time: %.1f", p->name(), name_str.c_str(),
-                           extra_seconds.total_seconds(), expiration.front()->occurs().total_seconds() );
+    sim->print_log( "{} extends {} by {}. New expiration time: {}",
+        *p, *this, extra_seconds, expiration.front()->occurs().total_seconds() );
   }
   else if ( extra_seconds < timespan_t::zero() )
   {
@@ -1409,14 +1365,10 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
 
     expiration.push_back( make_event<expiration_t>( *sim, this, reschedule_time ) );
 
-    if ( sim->debug )
-      sim->out_debug.printf( "%s decreases buff %s by %.1f seconds. New expiration time: %.1f", p->name(),
-                             name_str.c_str(), -extra_seconds.total_seconds(),
-                             expiration.back()->occurs().total_seconds() );
+    sim->print_debug( "{} decreases {} by {}. New expiration: {}",
+        *p, *this, -extra_seconds, expiration.back()->occurs().total_seconds() );
   }
 }
-
-// buff_t::start ============================================================
 
 void buff_t::start( int stacks, double value, timespan_t duration )
 {
@@ -1426,9 +1378,9 @@ void buff_t::start( int stacks, double value, timespan_t duration )
 #ifndef NDEBUG
   if ( stack_behavior != buff_stack_behavior::ASYNCHRONOUS && current_stack != 0 )
   {
-    sim->errorf( "buff_t::start assertion error current_stack is not zero, buff %s from %s.\n", name_str.c_str(),
-                 source_name().c_str() );
-    assert( 0 );
+    sim->error( "buff_t::start assertion error current_stack is not zero, {} from {}.\n", *this,
+                 source_name() );
+    assert( false );
   }
 #endif
 
@@ -1514,8 +1466,6 @@ void buff_t::start( int stacks, double value, timespan_t duration )
   }
 }
 
-// buff_t::refresh ==========================================================
-
 void buff_t::refresh( int stacks, double value, timespan_t duration )
 {
   if ( _max_stack == 0 )
@@ -1584,8 +1534,6 @@ void buff_t::refresh( int stacks, double value, timespan_t duration )
     }
   }
 }
-
-// buff_t::bump =============================================================
 
 void buff_t::bump( int stacks, double value )
 {
@@ -1712,18 +1660,17 @@ void buff_t::bump( int stacks, double value )
     player->trigger_ready();
 }
 
-// buff_t::override =========================================================
-
 void buff_t::override_buff( int stacks, double value )
 {
   if ( _max_stack == 0 )
     return;
+
 #ifndef NDEBUG
   if ( current_stack != 0 )
   {
-    sim->errorf( "buff_t::override assertion error current_stack is not zero, buff %s from %s.\n", name_str.c_str(),
-                 source_name().c_str() );
-    assert( 0 );
+    sim->error( "buff_t::override assertion error current_stack is not zero, {} from {}.\n", *this,
+                 source_name() );
+    assert( false );
   }
 #endif
 
@@ -1734,8 +1681,6 @@ void buff_t::override_buff( int stacks, double value )
   start( stacks, value );
   overridden = true;
 }
-
-// buff_t::expire ===========================================================
 
 void buff_t::expire( timespan_t delay )
 {
@@ -1854,54 +1799,46 @@ void buff_t::expire( timespan_t delay )
     player->trigger_ready();
 }
 
-// buff_t::predict ==========================================================
-
 void buff_t::predict()
 {
   // Guarantee that may_react() will return true if the buff is present.
   std::fill( stack_react_time.begin(), stack_react_time.begin() + current_stack + 1, timespan_t::min() );
 }
 
-// buff_t::aura_gain ========================================================
-
 void buff_t::aura_gain()
 {
   if ( sim->log )
   {
-    std::string s = name_str + "_" + util::to_string( current_stack );
+    std::string buff_display_name = fmt::format("{}_{}", name_str, current_stack );
 
     if ( player )
     {
-      if ( sim->log && !player->is_sleeping() )
+      if ( !player->is_sleeping() )
       {
-        sim->out_log.printf( "%s gains %s ( value=%.2f )", player->name(), s.c_str(), current_value );
+        sim->print_log( "{} gains {} (value={})", *player, buff_display_name, current_value );
       }
     }
     else
     {
-      if ( sim->log )
-        sim->out_log.printf( "Raid gains %s ( value=%.2f )", s.c_str(), current_value );
+      sim->print_log( "Raid gains {} (value={})", buff_display_name, current_value );
     }
   }
 }
-
-// buff_t::aura_loss ========================================================
 
 void buff_t::aura_loss()
 {
   if ( player )
   {
-    if ( sim->log && !player->is_sleeping() )
-      sim->out_log.printf( "%s loses %s", player->name(), name_str.c_str() );
+    if ( !player->is_sleeping() )
+    {
+      sim->print_log( "{} loses {}", *player, *this );
+    }
   }
   else
   {
-    if ( sim->log )
-      sim->out_log.printf( "Raid loses %s", name_str.c_str() );
+    sim->print_log( "Raid loses {}", *this );
   }
 }
-
-// buff_t::reset ============================================================
 
 void buff_t::reset()
 {
@@ -1913,8 +1850,6 @@ void buff_t::reset()
   last_start   = timespan_t::min();
   last_trigger = timespan_t::min();
 }
-
-// buff_t::merge ============================================================
 
 void buff_t::merge( const buff_t& other )
 {
@@ -1935,17 +1870,15 @@ void buff_t::merge( const buff_t& other )
 #ifndef NDEBUG
   if ( stack_uptime.size() != other.stack_uptime.size() )
   {
-    sim->errorf( "buff_t::merge buff %s from %s stack_uptime vector not of equal length.\n", name_str.c_str(),
-                 source_name().c_str() );
-    assert( 0 );
+    sim->error( "buff_t::merge {} from {} stack_uptime vector not of equal length.\n", *this,
+                 source_name() );
+    assert( false );
   }
 #endif
 
   for ( size_t i = 0; i < stack_uptime.size(); i++ )
     stack_uptime[ i ].merge( other.stack_uptime[ i ] );
 }
-
-// buff_t::analyze ==========================================================
 
 void buff_t::analyze()
 {
@@ -1962,17 +1895,17 @@ void buff_t::analyze()
   }
 }
 
-// buff_t::find =============================================================
-
 buff_t* buff_t::find( const std::vector<buff_t*>& buffs, const std::string& name_str, player_t* source )
 {
-  for ( size_t i = 0; i < buffs.size(); i++ )
+  for ( buff_t* buff : buffs )
   {
-    buff_t* b = buffs[ i ];
-
-    if ( name_str == b->name_str )
-      if ( !source || ( source == b->source ) )
-        return b;
+    if ( name_str == buff->name_str )
+    {
+      if ( !source || ( source == buff->source ) )
+      {
+        return buff;
+      }
+    }
   }
 
   return nullptr;
@@ -1982,23 +1915,15 @@ namespace
 {
 struct potion_spell_filter
 {
-  unsigned spell_id;
+  int spell_id;
 
-  potion_spell_filter( unsigned sid ) : spell_id( sid )
+  potion_spell_filter( unsigned spell_id ) : spell_id( as<int>(spell_id) )
   {
   }
 
   bool operator()( const item_data_t* item ) const
   {
-    for ( size_t spell_idx = 0, end = sizeof_array( item->id_spell ); spell_idx < end; spell_idx++ )
-    {
-      if ( item->id_spell[ spell_idx ] == static_cast<int>( spell_id ) )
-      {
-        return true;
-      }
-    }
-
-    return false;
+    return range::contains_value(item->id_spell, spell_id);
   }
 };
 }  // namespace
@@ -2007,7 +1932,6 @@ static buff_t* find_potion_buff( const std::vector<buff_t*>& buffs, player_t* so
 {
   for ( auto b : buffs )
   {
-    player_t* p = b->player;
     if ( b->data().id() == 0 )
     {
       continue;
@@ -2019,7 +1943,7 @@ static buff_t* find_potion_buff( const std::vector<buff_t*>& buffs, player_t* so
     }
 
     auto item =
-        dbc::find_consumable( ITEM_SUBCLASS_POTION, maybe_ptr( p->dbc.ptr ), potion_spell_filter( b->data().id() ) );
+        dbc::find_consumable( ITEM_SUBCLASS_POTION, maybe_ptr( b->player->dbc.ptr ), potion_spell_filter( b->data().id() ) );
     if ( item )
     {
       return b;
@@ -2036,8 +1960,6 @@ buff_t* buff_t::find_expressable( const std::vector<buff_t*>& buffs, const std::
   else
     return find( buffs, name, source );
 }
-
-// buff_t::to_str ===========================================================
 
 std::string buff_t::to_str() const
 {
@@ -2057,14 +1979,13 @@ expr_t* buff_t::create_expression( std::string buff_name, const std::string& typ
 {
   return create_buff_expression( buff_name, type, &action, nullptr );
 }
+
 expr_t* buff_t::create_expression( std::string buff_name, const std::string& type, buff_t& static_buff )
 {
   return create_buff_expression( buff_name, type, nullptr, &static_buff );
 }
 
 #if defined( SC_USE_STAT_CACHE )
-
-// buff_t::invalidate_cache =================================================
 
 void buff_t::invalidate_cache()
 {
@@ -2102,6 +2023,7 @@ std::string buff_t::source_name() const
 {
   if ( player )
     return player->name_str;
+
   return "noone";
 }
 
@@ -2160,6 +2082,12 @@ void buff_t::init_haste_type()
   }
 }
 
+std::ostream& operator<<(std::ostream &os, const buff_t& b)
+{
+  fmt::print(os, "Buff {}", b.name() );
+  return os;
+}
+
 // ==========================================================================
 // STAT_BUFF
 // ==========================================================================
@@ -2207,22 +2135,30 @@ stat_buff_t::stat_buff_t( actor_pair_t q, const std::string& name, const spell_d
       }
     }
     else if ( effect.subtype() == A_MOD_DAMAGE_DONE && ( effect.misc_value1() & 0x7E ) )
+    {
       s = STAT_SPELL_POWER;
+    }
     else if ( effect.subtype() == A_MOD_RESISTANCE )
+    {
       s = STAT_BONUS_ARMOR;
+    }
     else if ( !has_ap && ( effect.subtype() == A_MOD_ATTACK_POWER || effect.subtype() == A_MOD_RANGED_ATTACK_POWER ) )
     {
       s      = STAT_ATTACK_POWER;
       has_ap = true;
     }
     else if ( effect.subtype() == A_MOD_INCREASE_HEALTH_2 || effect.subtype() == A_MOD_INCREASE_HEALTH )
+    {
       s = STAT_MAX_HEALTH;
+    }
     else if ( effect.subtype() == A_465 )
+    {
       s = STAT_BONUS_ARMOR;
+    }
 
     if ( s != STAT_NONE )
     {
-      stats.push_back( buff_stat_t( s, amount ) );
+      stats.emplace_back( s, amount );
     }
   }
 }
@@ -2237,30 +2173,32 @@ stat_buff_t* stat_buff_t::add_stat( stat_e s, double a, std::function<bool( cons
   manual_stats_added = true;
 
   stats.emplace_back( s, a, c );
+
   return this;
 }
-
-// stat_buff_t::bump ========================================================
 
 void stat_buff_t::bump( int stacks, double /* value */ )
 {
   buff_t::bump( stacks );
-  for ( size_t i = 0; i < stats.size(); ++i )
+
+  for ( auto& buff_stat : stats )
   {
-    if ( stats[ i ].check_func && !stats[ i ].check_func( *this ) )
+    if ( buff_stat.check_func && !buff_stat.check_func( *this ) )
       continue;
-    double delta = stats[ i ].amount * current_stack - stats[ i ].current_value;
+
+    double delta = buff_stat.amount * current_stack - buff_stat.current_value;
     if ( delta > 0 )
-      player->stat_gain( stats[ i ].stat, delta, stat_gain, nullptr, buff_duration > timespan_t::zero() );
+    {
+      player->stat_gain( buff_stat.stat, delta, stat_gain, nullptr, buff_duration > timespan_t::zero() );
+    }
     else if ( delta < 0 )
-      player->stat_loss( stats[ i ].stat, std::fabs( delta ), stat_gain, nullptr, buff_duration > timespan_t::zero() );
-    else
-      assert( delta == 0 );
-    stats[ i ].current_value += delta;
+    {
+      player->stat_loss( buff_stat.stat, std::fabs( delta ), stat_gain, nullptr, buff_duration > timespan_t::zero() );
+    }
+
+    buff_stat.current_value += delta;
   }
 }
-
-// stat_buff_t::decrement ===================================================
 
 void stat_buff_t::decrement( int stacks, double /* value */ )
 {
@@ -2273,16 +2211,20 @@ void stat_buff_t::decrement( int stacks, double /* value */ )
     if ( as<std::size_t>( current_stack ) < stack_uptime.size() )
       stack_uptime[ current_stack ].update( false, sim->current_time() );
 
-    for ( size_t i = 0; i < stats.size(); ++i )
+    for ( auto& buff_stat : stats )
     {
-      double delta = stats[ i ].amount * stacks;
+      double delta = buff_stat.amount * stacks;
       if ( delta > 0 )
-        player->stat_loss( stats[ i ].stat, ( delta <= stats[ i ].current_value ) ? delta : 0.0, stat_gain, nullptr,
+      {
+        player->stat_loss( buff_stat.stat, ( delta <= buff_stat.current_value ) ? delta : 0.0, stat_gain, nullptr,
                            buff_duration > timespan_t::zero() );
+      }
       else if ( delta < 0 )
-        player->stat_gain( stats[ i ].stat, ( delta >= stats[ i ].current_value ) ? std::fabs( delta ) : 0.0, stat_gain,
+      {
+        player->stat_gain( buff_stat.stat, ( delta >= buff_stat.current_value ) ? std::fabs( delta ) : 0.0, stat_gain,
                            nullptr, buff_duration > timespan_t::zero() );
-      stats[ i ].current_value -= delta;
+      }
+      buff_stat.current_value -= delta;
     }
     current_stack -= stacks;
 
@@ -2291,27 +2233,28 @@ void stat_buff_t::decrement( int stacks, double /* value */ )
     if ( as<std::size_t>( current_stack ) < stack_uptime.size() )
       stack_uptime[ current_stack ].update( true, sim->current_time() );
 
-    if ( sim->debug )
-      sim->out_debug.printf( "buff %s decremented by %d to %d stacks", name_str.c_str(), stacks, current_stack );
+    sim->print_debug( "{} decremented by {} to {} stacks.", *this, stacks, current_stack );
 
     if ( player )
       player->trigger_ready();
   }
 }
 
-// stat_buff_t::expire ======================================================
-
 void stat_buff_t::expire_override( int expiration_stacks, timespan_t remaining_duration )
 {
-  for ( size_t i = 0; i < stats.size(); ++i )
+  for ( auto& buff_stat : stats )
   {
-    if ( stats[ i ].current_value > 0 )
-      player->stat_loss( stats[ i ].stat, stats[ i ].current_value, stat_gain, nullptr,
+    if ( buff_stat.current_value > 0 )
+    {
+      player->stat_loss( buff_stat.stat, buff_stat.current_value, stat_gain, nullptr,
                          buff_duration > timespan_t::zero() );
-    else if ( stats[ i ].current_value < 0 )
-      player->stat_gain( stats[ i ].stat, std::fabs( stats[ i ].current_value ), stat_gain, nullptr,
+    }
+    else if ( buff_stat.current_value < 0 )
+    {
+      player->stat_gain( buff_stat.stat, std::fabs( buff_stat.current_value ), stat_gain, nullptr,
                          buff_duration > timespan_t::zero() );
-    stats[ i ].current_value = 0;
+    }
+    buff_stat.current_value = 0;
   }
 
   buff_t::expire_override( expiration_stacks, remaining_duration );
@@ -2344,8 +2287,6 @@ cost_reduction_buff_t::cost_reduction_buff_t( actor_pair_t q, const std::string&
   }
 }
 
-// cost_reduction_buff_t::bump ==============================================
-
 void cost_reduction_buff_t::bump( int stacks, double value )
 {
   if ( value > 0 )
@@ -2363,8 +2304,6 @@ void cost_reduction_buff_t::bump( int stacks, double value )
     assert( delta == 0 );
 }
 
-// cost_reduction_buff_t::decrement =========================================
-
 void cost_reduction_buff_t::decrement( int stacks, double /* value */ )
 {
   if ( stacks == 0 || current_stack <= stacks )
@@ -2380,8 +2319,6 @@ void cost_reduction_buff_t::decrement( int stacks, double /* value */ )
   }
 }
 
-// cost_reduction_buff_t::expire ============================================
-
 void cost_reduction_buff_t::expire_override( int expiration_stacks, timespan_t remaining_duration )
 {
   player->cost_reduction_loss( school, current_value );
@@ -2395,33 +2332,6 @@ cost_reduction_buff_t* cost_reduction_buff_t::set_reduction( school_e school, do
   this->school = school;
   return this;
 }
-
-// tick_buff_t::trigger =====================================================
-/*
-bool tick_buff_t::trigger( int stacks, double value, double chance, timespan_t duration )
-{
-  assert( period > timespan_t::zero() );
-
-  if ( duration == timespan_t::min() )
-  {
-    assert( buff_duration > timespan_t::zero() );
-    duration = buff_duration;
-  }
-
-  if ( remains() > timespan_t::zero() )
-  {
-    timespan_t carryover = remains() % period;
-    assert( carryover < period );
-
-    if ( sim -> debug )
-      sim -> out_debug.printf( "%s carryover duration from ongoing tick: %f", name(), carryover.total_seconds() );
-
-    duration += carryover;
-  }
-
-  return buff_t::trigger( stacks, value, chance, duration );
-}
-*/
 
 absorb_buff_t::absorb_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* spell, const item_t* item )
   : buff_t( q, name, spell, item ),
@@ -2440,6 +2350,7 @@ void absorb_buff_t::start( int stacks, double value, timespan_t duration )
 {
   if ( max_stack() == 0 )
     return;
+
   buff_t::start( stacks, value, duration );
 
   assert( range::find( player->absorb_buff_list, this ) == player->absorb_buff_list.end() &&
@@ -2456,6 +2367,7 @@ void absorb_buff_t::expire_override( int expiration_stacks, timespan_t remaining
   {
     return;
   }
+
   auto it = range::find( player->absorb_buff_list, this );
   if ( it != player->absorb_buff_list.end() )
     player->absorb_buff_list.erase( it );
@@ -2474,8 +2386,7 @@ double absorb_buff_t::consume( double amount )
 
   current_value -= amount;
 
-  if ( sim->debug )
-    sim->out_debug.printf( "%s %s absorbs %.2f (remaining: %.2f)", player->name(), name(), amount, current_value );
+  sim->print_debug( "{} {} absorbs {} (remaining: {})", *player, *this, amount, current_value );
 
   absorb_used( amount );
 

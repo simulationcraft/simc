@@ -430,6 +430,8 @@ private:
 
 };
 
+std::ostream& operator<<(std::ostream &os, const buff_t& p);
+
 struct stat_buff_t : public buff_t
 {
   struct buff_stat_t
