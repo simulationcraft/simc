@@ -33,6 +33,7 @@ BREWMASTER:
 -- Zen Meditation
 */
 #include "simulationcraft.hpp"
+#include "player/pet_spawner.hpp"
 
 // ==========================================================================
 // Monk
@@ -660,6 +661,7 @@ public:
   struct pets_t
   {
     pets::storm_earth_and_fire_pet_t* sef[ SEF_PET_MAX ];
+//    spawner::pet_spawner_t<pets::xuen_pet_t, monk_t> force_of_xuen;
   } pet;
 
   // Options
@@ -1930,7 +1932,7 @@ private:
 
       // for future compatibility, we may want to grab Xuen and our tick spell and build this data from those (Xuen
       // summon duration, for example)
-      dot_duration = p->o()->talent.invoke_xuen->duration() + timespan_t::from_seconds(1);
+      dot_duration = p -> duration;
       hasted_ticks = may_miss = false;
       dynamic_tick_action = true;  // trigger tick when t == 0
       base_tick_time =
@@ -1974,7 +1976,7 @@ private:
   };
 
 public:
-  xuen_pet_t( sim_t* sim, monk_t* owner ) : pet_t( sim, owner, "xuen_the_white_tiger", true )
+  xuen_pet_t( sim_t* sim, monk_t* owner, std::string name, timespan_t dur ) : pet_t( sim, owner, name, true )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc.spell_scaling( o()->type, level() );
@@ -1982,6 +1984,7 @@ public:
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.0 );
     owner_coeff.ap_from_ap      = 1.00;
+    duration                    = dur + timespan_t::from_seconds( 1 ); // Xuen takes 1 second to get into position before attacking. Afterwards he spends the announce length of time.
   }
 
   monk_t* o()
@@ -7613,7 +7616,7 @@ pet_t* monk_t::create_pet( const std::string& name, const std::string& /* pet_ty
 
   using namespace pets;
   if ( name == "xuen_the_white_tiger" )
-    return new xuen_pet_t( sim, this );
+    return new xuen_pet_t( sim, this, name, talent.invoke_xuen -> duration() );
   if ( name == "niuzao_the_black_ox" )
     return new niuzao_pet_t( sim, this );
 
