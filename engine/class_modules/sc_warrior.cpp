@@ -26,6 +26,7 @@ struct warrior_td_t : public actor_target_data_t
   buff_t* debuffs_demoralizing_shout;
   buff_t* debuffs_taunt;
   buff_t* debuffs_punish;
+  buff_t* debuffs_callous_reprisal;
 
   warrior_t& warrior;
   warrior_td_t( player_t* target, warrior_t& p );
@@ -69,6 +70,7 @@ public:
     action_t* deep_wounds_PROT;
     action_t* charge;
     action_t* slaughter;  // Fury T21 2PC
+    action_t* iron_fortress; // Prot azerite trait                             
   } active;
 
   // Buffs
@@ -124,11 +126,14 @@ public:
     // Azerite Traits
     buff_t* bloodcraze;
     buff_t* bloodcraze_driver;
+    buff_t* bloodsport;
+    buff_t* brace_for_impact;
     buff_t* crushing_assault;
     buff_t* executioners_precision;
     buff_t* gathering_storm;
     buff_t* infinite_fury;
     buff_t* pulverizing_blows;
+    buff_t* reinforced_plating;
     buff_t* test_of_might_tracker;  // Used to track rage gain from test of might.
     stat_buff_t* test_of_might;
     buff_t* trample_the_weak;
@@ -150,6 +155,7 @@ public:
     cooldown_t* enraged_regeneration;
     cooldown_t* execute;
     cooldown_t* heroic_leap;
+    cooldown_t* iron_fortress_icd;
     cooldown_t* last_stand;
     cooldown_t* mortal_strike;
     cooldown_t* overpower;
@@ -506,7 +512,7 @@ public:
   // double composite_armor_multiplier() const override;
   double composite_bonus_armor() const override;
   double composite_block() const override;
-  // double composite_block_reduction( action_state_t* s ) const override;
+  double composite_block_reduction( action_state_t* s ) const override;
   double composite_parry_rating() const override;
   double composite_parry() const override;
   double composite_melee_expertise( const weapon_t* ) const override;
@@ -2392,6 +2398,43 @@ struct intervene_t : public warrior_attack_t
   }
 };
 
+// Iron Fortress azerite trait ==============================================
+
+struct iron_fortress_t : public warrior_attack_t
+{
+  timespan_t internal_cd;
+  bool crit_blocked;
+
+  iron_fortress_t( warrior_t* p ) :
+    warrior_attack_t( "iron_fortress", p, p -> azerite.iron_fortress.spell() -> effectN( 1 ).trigger() ),
+    internal_cd( p -> azerite.iron_fortress.spell() -> effectN( 1 ).trigger() -> internal_cooldown ),
+    crit_blocked( false )
+  {
+    base_dd_min = base_dd_max = p -> azerite.iron_fortress.value( 1 );
+  }
+
+  double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    // If the hit was critically blocked, deals twice as much damage (no spelldata for it)
+    if ( crit_blocked )
+    {
+      am *= 2.0;
+    }
+
+    return am;
+  }
+
+  void execute( block_result_e b )
+  {
+    crit_blocked = b == BLOCK_RESULT_CRIT_BLOCKED;
+
+    warrior_attack_t::execute();
+    p() -> cooldown.iron_fortress_icd -> start( internal_cd );
+  }
+};
+
 // Heroic Charge ============================================================
 
 struct heroic_charge_movement_ticker_t : public event_t
@@ -3124,6 +3167,15 @@ struct revenge_t : public warrior_attack_t
       p()->cooldown.shield_slam->reset( true );
   }
 
+  void impact( action_state_t* state ) override
+  {
+    warrior_attack_t::impact( state );
+    if ( p() -> azerite.callous_reprisal.enabled() )
+    {
+      td( state -> target ) -> debuffs_callous_reprisal -> trigger();
+    }
+  }
+
   bool ready() override
   {
     if ( p()->main_hand_weapon.type == WEAPON_NONE )
@@ -3216,6 +3268,15 @@ struct shield_slam_t : public warrior_attack_t
     }
 
     return am;
+  }
+
+  double bonus_da( const action_state_t* state ) const override
+  {
+    double da = warrior_attack_t::bonus_da( state );
+
+    da += p() -> buff.brace_for_impact -> stack_value();
+
+    return da;
   }
 
   void execute() override
@@ -3409,6 +3470,18 @@ struct thunder_clap_t : public warrior_attack_t
     return am;
   }
 
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double da = warrior_attack_t::bonus_da( s );
+
+    if ( p() -> azerite.deafening_crash.enabled() )
+    {
+      da += p() -> azerite.deafening_crash.value( 2 );
+    }
+
+    return da;
+  }
+
   void execute() override
   {
     warrior_attack_t::execute();
@@ -3429,6 +3502,16 @@ struct thunder_clap_t : public warrior_attack_t
       rm *= 1.0 + ( p() -> talents.unstoppable_force -> effectN( 2 ).percent() );
     }
     return rm;
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    warrior_attack_t::impact( state );
+
+    if ( p() -> azerite.deafening_crash.enabled() && td( state -> target ) -> debuffs_demoralizing_shout -> up() )
+    {
+      td( state -> target ) -> debuffs_demoralizing_shout -> extend_duration( p(), timespan_t::from_millis( p() -> azerite.deafening_crash.value( 1 ) ) );
+    }
   }
 };
 
@@ -4081,11 +4164,27 @@ struct ignore_pain_t : public warrior_spell_t
     base_dd_max = base_dd_min = 0;
   }
 
+  double bonus_da( const action_state_t* state ) const override
+  {
+    double da = warrior_spell_t::bonus_da( state );
+
+    if ( p() -> azerite.bloodsport.enabled() )
+    {
+      da += p() -> azerite.bloodsport.value( 3 );
+    }
+
+    return da;
+  }
+
   void execute() override
   {
     warrior_spell_t::execute();
     p()->buff.vengeance_ignore_pain->expire();
     p()->buff.vengeance_revenge->trigger();
+    if ( p() -> azerite.bloodsport.enabled() )
+    {
+      p() -> buff.bloodsport -> trigger();
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -4562,6 +4661,10 @@ void warrior_t::init_spells()
     this->rampage_attacks.push_back( third );
     this->rampage_attacks.push_back( fourth );
   }
+  if ( azerite.iron_fortress.enabled() )
+  {
+    active.iron_fortress = new iron_fortress_t( this );
+  }
 
   // Cooldowns
   cooldown.avatar         = get_cooldown( "avatar" );
@@ -4578,6 +4681,7 @@ void warrior_t::init_spells()
   cooldown.enraged_regeneration             = get_cooldown( "enraged_regeneration" );
   cooldown.execute                          = get_cooldown( "execute" );
   cooldown.heroic_leap                      = get_cooldown( "heroic_leap" );
+  cooldown.iron_fortress_icd                = get_cooldown( "iron_fortress" );
   cooldown.last_stand                       = get_cooldown( "last_stand" );
   cooldown.mortal_strike                    = get_cooldown( "mortal_strike" );
   cooldown.overpower                        = get_cooldown( "overpower" );
@@ -5242,6 +5346,9 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
   debuffs_demoralizing_shout = new buffs::debuff_demo_shout_t( *this );
   debuffs_punish = buff_creator_t( static_cast<actor_pair_t>( *this ), "punish", p.talents.punish -> effectN( 2 ).trigger() )
                    .default_value( p.talents.punish -> effectN( 2 ).trigger() -> effectN( 1 ).percent() );
+  debuffs_callous_reprisal = buff_creator_t( static_cast<actor_pair_t>( *this ), "callous_reprisal", 
+                                             p.azerite.callous_reprisal.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
+                              .default_value( p.azerite.callous_reprisal.value( 1 ) );
   debuffs_taunt = buff_creator_t( static_cast<actor_pair_t>( *this ), "taunt", p.find_class_spell( "Taunt" ) );
 }
 
@@ -5432,6 +5539,14 @@ void warrior_t::create_buffs()
                               ->add_stat( STAT_STRENGTH, azerite.trample_the_weak.value( 1 ) )
                               ->add_stat( STAT_STAMINA, azerite.trample_the_weak.value( 1 ) )
                               ->set_trigger_spell( trample_the_weak_trigger );
+  buff.bloodsport = make_buff<stat_buff_t>( this, "bloodsport", azerite.bloodsport.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
+                   -> add_stat( STAT_LEECH_RATING, azerite.bloodsport.value( 2 ) );
+  buff.brace_for_impact = make_buff( this, "brace_for_impact", azerite.brace_for_impact.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
+                         -> set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+  buff.reinforced_plating = make_buff<stat_buff_t>( this, "reinforced_plating", 
+                                                    azerite.reinforced_plating.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
+                           -> add_stat( STAT_STRENGTH, azerite.reinforced_plating.value( 1 ) );
+
 }
 
 // warrior_t::init_scaling ==================================================
@@ -5964,14 +6079,24 @@ double warrior_t::composite_block() const
   return b;
 }
 
-// warrior_t::composite_block_reduction ======================================
-/*
+// warrior_t::composite_block_reduction =====================================
+
 double warrior_t::composite_block_reduction( action_state_t* s ) const
 {
   double br = player_t::composite_block_reduction( s );
 
+  if ( buff.brace_for_impact -> up() )
+  {
+    br += azerite.brace_for_impact.value( 1 );
+  }
+
+  if ( azerite.iron_fortress.enabled() )
+  {
+    br += azerite.iron_fortress.value( 2 );
+  }
+  
   return br;
-}*/
+}
 
 // warrior_t::composite_melee_attack_power ==================================
 /*
@@ -6261,6 +6386,26 @@ void warrior_t::assess_damage( school_e school, dmg_e type, action_state_t* s )
     resource_gain( RESOURCE_RAGE, 3.0, gain.rage_from_damage_taken, s -> action );
     cooldown.rage_from_auto_attack->start( cooldown.rage_from_auto_attack->duration );
   }
+
+  if ( s -> block_result == BLOCK_RESULT_BLOCKED || s -> block_result == BLOCK_RESULT_CRIT_BLOCKED )
+  {
+    if ( azerite.iron_fortress.enabled() && cooldown.iron_fortress_icd -> up() )
+    {
+      // sanity check - no friendly-fire
+      if ( s -> action -> player -> is_enemy() )
+      {
+        iron_fortress_t* iron_fortress_active = debug_cast<iron_fortress_t*>( active.iron_fortress );
+
+        iron_fortress_active -> target = s -> action -> player;
+        iron_fortress_active -> execute( s -> block_result );
+      }
+    }
+
+    if ( azerite.reinforced_plating.enabled() )
+    {
+      buff.reinforced_plating -> trigger();
+    }
+  }
 }
 
 // warrior_t::target_mitigation ============================================
@@ -6281,6 +6426,12 @@ void warrior_t::target_mitigation( school_e school, dmg_e dtype, action_state_t*
     if ( td->debuffs_demoralizing_shout->up() )
     {
       s->result_amount *= 1.0 + td->debuffs_demoralizing_shout->value();
+    }
+
+    // 2018-10-21: Callous Reprisal's damage reduction is 0.5% per stack per equipped item with the trait selected
+    if ( td -> debuffs_callous_reprisal -> up() )
+    {
+      s -> result_amount *= 1.0 + td -> debuffs_callous_reprisal -> stack_value() * azerite.callous_reprisal.n_items();
     }
 
     if ( td -> debuffs_punish -> up() )
