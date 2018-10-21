@@ -1133,6 +1133,7 @@ namespace warlock
     gains.seed_of_corruption            = get_gain( "seed_of_corruption" );
     gains.unstable_affliction_refund    = get_gain( "unstable_affliction_refund" );
     gains.affliction_t20_2pc            = get_gain( "affliction_t20_2pc" );
+    gains.drain_soul                    = get_gain( "drain_soul" );
   }
 
   void warlock_t::init_rng_affliction()
