@@ -1119,6 +1119,8 @@ struct sim_t : private sc_thread_t
     double              gutripper_default_rppm = 2.0;
     /// Number of Reorigination array stats on the actors in the sim
     int                 reorigination_array_stacks = 0;
+    /// Allow Reorigination Array to ignore scale factor stat changes (default false)
+    bool                reorigination_array_ignore_scale_factors = false;
   } bfa_opts;
 
   // Expansion specific data

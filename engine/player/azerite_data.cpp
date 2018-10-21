@@ -1267,12 +1267,19 @@ struct reorigination_array_buff_t : public buff_t
 
     for ( auto r : ratings )
     {
+      auto stat = rating_to_stat( r );
       auto composite = source->composite_rating( r );
       // Calculate highest stat without reorigination array included
-      if ( rating_to_stat( r ) == current_stat )
+      if ( stat == current_stat )
       {
         composite -= sim->bfa_opts.reorigination_array_stacks * stat_value *
           source->composite_rating_multiplier( r );
+
+        if ( sim->scaling && sim->bfa_opts.reorigination_array_ignore_scale_factors &&
+             stat == sim->scaling->scale_stat )
+        {
+          composite -= sim->scaling->scale_value * source->composite_rating_multiplier( r );
+        }
       }
 
       if ( sim->debug )

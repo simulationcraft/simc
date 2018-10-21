@@ -3546,6 +3546,9 @@ void sim_t::create_options()
         bfa_opts.secrets_of_the_deep_collect_chance, 0, 1 ) );
   add_option( opt_int( "bfa.reorigination_array_stacks",
         bfa_opts.reorigination_array_stacks, 0, 10 ) );
+  add_option( opt_bool( "bfa.reorigination_array_ignore_scale_factors",
+        bfa_opts.reorigination_array_ignore_scale_factors ) );
+
 
   // applies to: "lavish_suramar_feast", battle for azeroth feasts
   add_option( opt_bool( "feast_as_dps", feast_as_dps ) );
