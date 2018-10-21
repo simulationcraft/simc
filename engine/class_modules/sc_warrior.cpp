@@ -2407,7 +2407,7 @@ struct iron_fortress_t : public warrior_attack_t
 
   iron_fortress_t( warrior_t* p ) :
     warrior_attack_t( "iron_fortress", p, p -> azerite.iron_fortress.spell() -> effectN( 1 ).trigger() ),
-    internal_cd( p -> azerite.iron_fortress.spell() -> effectN( 1 ).trigger() -> internal_cooldown ),
+    internal_cd( p -> azerite.iron_fortress.spell() -> effectN( 1 ).trigger() -> internal_cooldown() ),
     crit_blocked( false )
   {
     base_dd_min = base_dd_max = p -> azerite.iron_fortress.value( 1 );
@@ -3296,6 +3296,10 @@ struct shield_slam_t : public warrior_attack_t
       p()->cooldown.berserker_rage->adjust(
           timespan_t::from_seconds( -0.1 * p()->sets->set( WARRIOR_PROTECTION, T20, B4 )->effectN( 1 ).base_value() ),
           false );
+    }
+    if ( p() -> azerite.brace_for_impact.enabled() )
+    {
+      p() -> buff.brace_for_impact -> trigger();
     }
   }
 
