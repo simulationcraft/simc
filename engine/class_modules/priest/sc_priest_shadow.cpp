@@ -707,7 +707,7 @@ struct shadowy_apparition_damage_t final : public priest_spell_t
     // Anshlun 2018-10-02
     if ( spiteful_apparitions_bonus > 0.0 && !priest().talents.auspicious_spirits->ok() )
     {
-      spiteful_apparitions_bonus *= 1.75;      
+      spiteful_apparitions_bonus *= 1.75;
     }
   }
 
@@ -1656,7 +1656,7 @@ struct lingering_insanity_t final : public priest_buff_t<buff_t>
   {
     set_reverse( true );
     set_duration( timespan_t::from_seconds( 50 ) );
-    set_period( timespan_t::from_seconds( 1 ) );
+    set_period( timespan_t::from_seconds( p.talents.lingering_insanity->effectN( 2 ).base_value() ) );
     set_tick_behavior( buff_tick_behavior::REFRESH );
     set_tick_time_behavior( buff_tick_time_behavior::UNHASTED );
     set_max_stack( (int)(float)p.find_spell( 185916 )->effectN( 4 ).base_value() );  // or 18?
