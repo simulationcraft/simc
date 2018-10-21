@@ -422,6 +422,7 @@ public:
   buff_t* set_trigger_spell( const spell_data_t* s );
   buff_t* set_stack_change_callback( const buff_stack_change_callback_t& cb );
   buff_t* set_reverse_stack_count( int value );
+  buff_t* set_stack_behavior( buff_stack_behavior b );
 
 private:
   void update_trigger_calculations();

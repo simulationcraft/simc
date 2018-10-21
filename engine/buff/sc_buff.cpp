@@ -577,7 +577,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params )
     set_refresh_duration_callback( params._refresh_duration_callback );
   set_refresh_behavior( params._refresh_behavior );
 
-  stack_behavior = params._stack_behavior;
+  set_stack_behavior( params._stack_behavior );
 
   assert( refresh_behavior != buff_refresh_behavior::CUSTOM || refresh_duration_callback );
 
@@ -950,6 +950,12 @@ buff_t* buff_t::set_stack_change_callback( const buff_stack_change_callback_t& c
 buff_t* buff_t::set_reverse_stack_count( int count )
 {
   reverse_stack_reduction = count;
+  return this;
+}
+
+buff_t* buff_t::set_stack_behavior( buff_stack_behavior b )
+{
+  stack_behavior = b;
   return this;
 }
 
