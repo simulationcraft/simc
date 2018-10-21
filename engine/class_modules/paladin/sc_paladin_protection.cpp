@@ -802,20 +802,6 @@ void paladin_t::trigger_holy_shield( action_state_t* s )
   active_holy_shield_proc -> schedule_execute();
 }
 
-void paladin_t::trigger_inner_light( action_state_t* s )
-{
-  // escape if we don't have Holy Shield
-  if ( ! azerite.inner_light.enabled() )
-    return;
-
-  // sanity check - no friendly-fire
-  if ( ! s -> action -> player -> is_enemy() )
-    return;
-
-  active_inner_light_damage -> target = s -> action -> player;
-  active_inner_light_damage -> schedule_execute();
-}
-
 bool paladin_t::standing_in_consecration() const
 {
   if ( ! sim -> distance_targeting_enabled )
@@ -886,18 +872,14 @@ void paladin_t::create_buffs_protection()
   buffs.redoubt = make_buff( this, "redoubt", talents.redoubt -> effectN( 1 ).trigger() );
 
   // Azerite traits
-  buffs.inspiring_vanguard = make_buff<stat_buff_t>( this, "inspiring_vanguard", find_spell( 279397 ) )
-    -> add_stat( STAT_STRENGTH, azerite.inspiring_vanguard.value( 1 ) )
-    -> set_trigger_spell( azerite.inspiring_vanguard );
-  buffs.dauntless_divinity = make_buff<stat_buff_t>( this, "dauntless_divinity", find_spell( 273555 ) )
-    -> add_stat( STAT_BLOCK_RATING, azerite.dauntless_divinity.value() )
-    -> set_trigger_spell( azerite.dauntless_divinity );
-  buffs.inner_light = make_buff<stat_buff_t>( this, "inner_light", find_spell( 275481 ) )
-    -> add_stat( STAT_BLOCK_RATING, azerite.inner_light.value( 1 ) )
-    -> set_trigger_spell( azerite.inner_light );
-  buffs.soaring_shield = make_buff<stat_buff_t>( this, "soaring_shield", find_spell( 278954 ) )
-    -> add_stat( STAT_MASTERY_RATING, azerite.soaring_shield.value( 1 ) )
-    -> set_trigger_spell( azerite.soaring_shield );
+  buffs.inspiring_vanguard = make_buff<stat_buff_t>( this, "inspiring_vanguard", azerite.inspiring_vanguard.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
+    -> add_stat( STAT_STRENGTH, azerite.inspiring_vanguard.value( 1 ) );
+  buffs.dauntless_divinity = make_buff( this, "dauntless_divinity", find_spell( 273555 ) )
+    -> set_default_value( azerite.dauntless_divinity.value() );
+  buffs.inner_light = make_buff( this, "inner_light", find_spell( 275481 ) )
+    -> set_default_value( azerite.inner_light.value( 1 ) );
+  buffs.soaring_shield = make_buff<stat_buff_t>( this, "soaring_shield", azerite.soaring_shield.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
+    -> add_stat( STAT_MASTERY_RATING, azerite.soaring_shield.value( 1 ) );
 }
 
 void paladin_t::init_spells_protection()

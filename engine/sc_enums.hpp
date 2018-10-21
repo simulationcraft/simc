@@ -928,7 +928,7 @@ enum stat_e
   STAT_RESILIENCE_RATING,
   STAT_DODGE_RATING,
   STAT_PARRY_RATING,
-  STAT_BLOCK_RATING,
+  STAT_BLOCK_RATING, // Block CHANCE rating. Block damage reduction is in player_t::composite_block_reduction()
   STAT_PVP_POWER,
   STAT_WEAPON_DPS,
   STAT_WEAPON_OFFHAND_DPS,

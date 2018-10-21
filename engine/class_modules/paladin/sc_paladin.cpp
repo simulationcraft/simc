@@ -1737,6 +1737,9 @@ double paladin_t::composite_block_reduction( action_state_t* s ) const
 {
   double br = player_t::composite_block_reduction( s );
 
+  br += buffs.dauntless_divinity -> value();
+  br += buffs.inner_light -> value();
+
   if ( buffs.redoubt -> up() )
   {
     br *= 1.0 + talents.redoubt -> effectN( 1 ).trigger() -> effectN( 1 ).percent();
