@@ -271,6 +271,8 @@ public:
     // Azerite Trait
     buff_t* dance_of_chiji;
     buff_t* fit_to_burst;
+    buff_t* fury_of_xuen_stacks;
+    stat_buff_t* fury_of_xuen_haste;
     stat_buff_t* iron_fists;
     stat_buff_t* training_of_niuzao;
     buff_t* sunrise_technique;
@@ -541,6 +543,8 @@ public:
     const spell_data_t* the_wind_blows;
 
     // Azerite Traits
+    const spell_data_t* fury_of_xuen_stacking_buff;
+    const spell_data_t* fury_of_xuen_haste_buff;
   } passives;
 
   // RPPM objects
@@ -644,6 +648,9 @@ public:
     // Windwalker
     // Fists of Fury grants you 0 Critical Strike for 6 sec when it hits at least 4 enemies.
     azerite_power_t iron_fists;
+    // Your Combo Strikes grant you the Fury of Xuen, giving your next Fists of Fury a 3 % chance to grant 384 Haste 
+    // and invoke Xuen, The White Tiger for 8 sec.Stacks up to 33 times.
+    azerite_power_t fury_of_xuen;
     // When you Combo Strike, the cooldown of Touch of Death is reduced by 0.1 sec. Touch of Death deals an additional
     // 1540 damage.
     azerite_power_t meridian_strikes;
@@ -661,8 +668,12 @@ public:
   struct pets_t
   {
     pets::storm_earth_and_fire_pet_t* sef[ SEF_PET_MAX ];
-//    spawner::pet_spawner_t<pets::xuen_pet_t, monk_t> force_of_xuen;
   } pet;
+
+//  struct pets_t
+//  {
+//    spawner::pet_spawner_t<pets::xuen_pet_t, monk_t> force_of_xuen;
+ // } pet_spawner;
 
   // Options
   struct options_t
@@ -703,6 +714,7 @@ public:
       legendary( legendary_t() ),
       azerite( azerite_powers_t() ),
       pet( pets_t() ),
+//      pet_spawner( pets_t() ),
       user_options( options_t() ),
       light_stagger_threshold( 0 ),
       moderate_stagger_threshold( 0.01666 ),  // Moderate transfers at 33.3% Stagger; 1.67% every 1/2 sec
@@ -1976,7 +1988,7 @@ private:
   };
 
 public:
-  xuen_pet_t( sim_t* sim, monk_t* owner, std::string name, timespan_t dur ) : pet_t( sim, owner, name, true )
+  xuen_pet_t( sim_t* sim, monk_t* owner, std::string name ) : pet_t( sim, owner, name, true )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc.spell_scaling( o()->type, level() );
@@ -1984,7 +1996,6 @@ public:
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.0 );
     owner_coeff.ap_from_ap      = 1.00;
-    duration                    = dur + timespan_t::from_seconds( 1 ); // Xuen takes 1 second to get into position before attacking. Afterwards he spends the announce length of time.
   }
 
   monk_t* o()
@@ -2467,6 +2478,9 @@ public:
 
         if ( p()->azerite.dance_of_chiji.ok() && p()->rppm.dance_of_chiji -> trigger() )
           p()->buff.dance_of_chiji->trigger();
+
+        if ( p()->azerite.fury_of_xuen.ok() )
+          p()->buff.fury_of_xuen_stacks->trigger();
       }
       else
       {
@@ -4036,6 +4050,8 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
 
 struct fists_of_fury_t : public monk_melee_attack_t
 {
+//  fury_of_xuen_spell_t* xuen;
+
   fists_of_fury_t( monk_t* p, const std::string& options_str )
     : monk_melee_attack_t( "fists_of_fury", p, p->spec.fists_of_fury )
   {
@@ -4055,6 +4071,9 @@ struct fists_of_fury_t : public monk_melee_attack_t
     may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
 
     tick_action = new fists_of_fury_tick_t( p, "fists_of_fury_tick" );
+
+//    if ( p->azerite.fury_of_xuen.ok() )
+//      xuen = new fury_of_xuen_spell_t( p );
   }
 
   virtual bool ready() override
@@ -4092,6 +4111,18 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
   void execute() override
   {
+    // Check Fury of Xuen stacks prior to checking Combo Strikes
+    if ( p()->buff.fury_of_xuen_stacks->up() )
+    {
+      if ( rng().roll( p()->buff.fury_of_xuen_stacks->stack_value() ) )
+      {
+        p()->buff.fury_of_xuen_haste->trigger();
+//        xuen->execute();
+//        p()->pet_spawner.force_of_xuen.spawn( p()->passives.fury_of_xuen_haste_buff->duration() + timespan_t::from_seconds( 1 ), 1 );
+        p()->buff.fury_of_xuen_stacks->expire();
+      }
+    }
+
     // Trigger Combo Strikes
     // registers even on a miss
     combo_strikes_trigger( CS_FISTS_OF_FURY );
@@ -5045,10 +5076,26 @@ struct xuen_spell_t : public summon_pet_t
     parse_options( options_str );
 
     harmful            = false;
-    summoning_duration = data().duration();
+    summoning_duration = data().duration() + timespan_t::from_seconds( 1 );
     // Forcing the minimum GCD to 750 milliseconds
     min_gcd   = timespan_t::from_millis( 750 );
     gcd_haste = HASTE_SPELL;
+  }
+};
+
+// ==========================================================================
+// Fury of Xuen
+// ==========================================================================
+
+struct fury_of_xuen_spell_t : public summon_pet_t
+{
+  fury_of_xuen_spell_t( monk_t* p )
+    : summon_pet_t( "fury_of_xuen", "fury_of_xuen", p, p->azerite.fury_of_xuen )
+  {
+
+    harmful = false;
+    summoning_duration = p->passives.fury_of_xuen_haste_buff->duration() + timespan_t::from_seconds( 1 );
+    min_gcd = timespan_t::zero();
   }
 };
 
@@ -7616,7 +7663,9 @@ pet_t* monk_t::create_pet( const std::string& name, const std::string& /* pet_ty
 
   using namespace pets;
   if ( name == "xuen_the_white_tiger" )
-    return new xuen_pet_t( sim, this, name, talent.invoke_xuen -> duration() );
+    return new xuen_pet_t( sim, this, name );
+  if ( name == "fury_of_xuen" )
+    return new xuen_pet_t( sim, this, name );
   if ( name == "niuzao_the_black_ox" )
     return new niuzao_pet_t( sim, this );
 
@@ -7632,6 +7681,11 @@ void monk_t::create_pets()
   if ( talent.invoke_xuen->ok() && ( find_action( "invoke_xuen" ) || find_action( "invoke_xuen_the_white_tiger" ) ) )
   {
     create_pet( "xuen_the_white_tiger" );
+  }
+
+  if ( specialization() == MONK_WINDWALKER && azerite.fury_of_xuen.ok() )
+  {
+    create_pet( "fury_of_xuen" );
   }
 
   if ( talent.invoke_niuzao->ok() && ( find_action( "invoke_niuzao" ) || find_action( "invoke_niuzao_the_black_ox" ) ) )
@@ -7838,6 +7892,7 @@ void monk_t::init_spells()
 
   // Windwalker
   azerite.dance_of_chiji    = find_azerite_spell( 286585 );
+  azerite.fury_of_xuen      = find_azerite_spell( 287055 );
   azerite.iron_fists        = find_azerite_spell( "Iron Fists" );
   azerite.meridian_strikes  = find_azerite_spell( "Meridian Strikes" );
   azerite.open_palm_strikes = find_azerite_spell( "Open Palm Strikes" );
@@ -7889,6 +7944,10 @@ void monk_t::init_spells()
   passives.mark_of_the_crane                = find_spell( 228287 );
   passives.touch_of_karma_tick              = find_spell( 124280 );
   passives.whirling_dragon_punch_tick       = find_spell( 158221 );
+
+  // Azerite
+  passives.fury_of_xuen_stacking_buff       = find_spell( 287062 );
+  passives.fury_of_xuen_haste_buff          = find_spell( 287063 );
 
   // Legendaries
   passives.the_emperors_capacitor = find_spell( 235054 );
@@ -8173,8 +8232,15 @@ void monk_t::create_buffs()
   buff.training_of_niuzao = make_buff<stat_buff_t>( this, "training_of_niuzao", find_spell( 278767 ) )
                             ->add_stat( STAT_MASTERY_RATING, azerite.training_of_niuzao.value() / 3 );
   buff.training_of_niuzao->set_max_stack( 3 );
+
   // Windwalker
   buff.dance_of_chiji = make_buff( this, "dance_of_chiji", find_spell(286587) );
+
+  buff.fury_of_xuen_stacks = make_buff( this, "fury_of_xuen_stacks", passives.fury_of_xuen_stacking_buff )
+                            ->set_default_value( passives.fury_of_xuen_stacking_buff->effectN( 3 ).percent() );
+
+  buff.fury_of_xuen_haste = make_buff<stat_buff_t>( this, "fury_of_xuen_haste", passives.fury_of_xuen_haste_buff )
+                            ->add_stat( STAT_HASTE_RATING, azerite.fury_of_xuen.value() );
 
   buff.iron_fists = make_buff<stat_buff_t>( this, "iron_fists", find_spell( 272806 ) )
                         ->add_stat( STAT_CRIT_RATING, azerite.iron_fists.value() );
