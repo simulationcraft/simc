@@ -738,7 +738,7 @@ public:
     user_options.initial_chi = 0;
 
     talent_points.register_validity_fn( [this]( const spell_data_t* spell ) {
-      if ( find_item( 151643 ) != nullptr && level() < 120 )  // Soul of the Grandmaster Legendary
+      if ( find_item_by_id( 151643 ) != nullptr && level() < 120 )  // Soul of the Grandmaster Legendary
       {
         switch ( specialization() )
         {

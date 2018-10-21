@@ -764,7 +764,7 @@ public:
     regen_caches[ CACHE_ATTACK_HASTE ] = true;
 
     talent_points.register_validity_fn( [ this ]( const spell_data_t* spell ) {
-       return strcmp( spell->name_cstr() , "Soul of the Forest" ) == 0 && find_item( 151636 ) != nullptr;
+       return strcmp( spell->name_cstr() , "Soul of the Forest" ) == 0 && find_item_by_id( 151636 ) != nullptr;
     } );
   }
 

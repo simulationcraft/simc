@@ -473,7 +473,7 @@ public:
 
     talent_points.register_validity_fn( [this]( const spell_data_t* spell ) {
       // Soul of the Battlelord
-      if ( find_item( 151650 ) )
+      if ( find_item_by_id( 151650 ) )
       {
         switch ( specialization() )
         {

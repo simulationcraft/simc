@@ -267,9 +267,7 @@ namespace timespan_adl_barrier
 
   inline std::ostream& operator<<(std::ostream &os, const timespan_t& x)
   {
-    fmt::print(os, "{:d}:{:02d}.{:03d}", (int64_t)x.total_minutes(),
-                                         (int64_t)x.total_seconds() % 60,
-                                         (int64_t)x.total_millis() % 1000 );
+    fmt::print(os, "{:.3f}", x.total_seconds() );
     return os;
   }
 } // namespace timespan_adl_barrier

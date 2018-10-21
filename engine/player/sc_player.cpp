@@ -677,6 +677,7 @@ player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r ) :
   cooldown_tolerance_( timespan_t::min() ),
   dbc( s->dbc ),
   talent_points(),
+  profession(),
   artifact( nullptr ),
   azerite( nullptr ),
   base(),
@@ -825,7 +826,7 @@ player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r ) :
     index = -( ++( sim->num_enemies ) );
   }
 
-  // Fill healng lists with all non-enemy players.
+  // Fill healing lists with all non-enemy players.
   if ( !is_enemy() )
   {
     if ( !is_pet() )
@@ -846,8 +847,6 @@ player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r ) :
     current.skill = 1.0;
 
   resources.infinite_resource[ RESOURCE_HEALTH ] = true;
-
-  range::fill( profession, 0 );
 
   if ( !is_pet() )
   {
@@ -953,22 +952,19 @@ std::string player_t::base_initial_current_t::to_string()
   return s.str();
 }
 
-// player_t::init ===========================================================
-
 void player_t::init()
 {
-  if ( sim->debug )
-    sim->out_debug.printf( "Initializing player %s", name() );
+  sim->print_debug( "Initializing {}.", *this );
 
   // Ensure the precombat and default lists are the first listed
-  auto pc = get_action_priority_list( "precombat", "Executed before combat begins. Accepts non-harmful actions only." );
-  pc->used = true;
+  auto pre_combat = get_action_priority_list( "precombat", "Executed before combat begins. Accepts non-harmful actions only." );
+  pre_combat->used = true;
   get_action_priority_list( "default", "Executed every time the actor is available." );
 
   for ( auto& elem : alist_map )
   {
     if ( elem.first == "default" )
-      sim->errorf( "Ignoring action list named default." );
+      sim->error( "Ignoring action list named default." );
     else
       get_action_priority_list( elem.first )->action_list_str = elem.second;
   }
@@ -1031,26 +1027,23 @@ void player_t::init_character_properties()
  */
 void player_t::init_base_stats()
 {
-  if ( sim->debug )
-    sim->out_debug.printf( "Initializing base for player (%s)", name() );
+  sim->print_debug( "Initializing base stats for {}.", *this );
 
-#ifndef NDEBUG
-  for ( stat_e i = STAT_NONE; i < STAT_MAX; ++i )
+  // Ensure base stats have not been tampered with.
+  for ( stat_e stat = STAT_NONE; stat < STAT_MAX; ++stat )
   {
-    double s = base.stats.get_stat( i );
-    if ( s > 0 )
+    double stat_value = base.stats.get_stat( stat );
+    if ( stat_value > 0 )
     {
-      sim->errorf( "%s stat %s is %.4f", name(), util::stat_type_string( i ), s );
-      sim->errorf( " Please do not modify player_t::base before init_base_stats is called\n" );
+      sim->error( "{} stat {} is {} != 0.0", name(), util::stat_type_string( stat ), stat_value );
+      sim->error( " Please do not modify player_t::base before init_base_stats is called\n" );
     }
   }
-#endif
 
   if ( !is_enemy() )
     base.rating.init( dbc, level() );
 
-  if ( sim->debug )
-    sim->out_debug.printf( "%s: Base Ratings initialized: %s", name(), base.rating.to_string().c_str() );
+  sim->print_debug( "{} base ratings initialized: {}", *this, base.rating.to_string() );
 
   if ( !is_enemy() )
   {
@@ -1106,6 +1099,7 @@ void player_t::init_base_stats()
     // players have a base 7.5% hit/exp
     base.hit       = 0.075;
     base.expertise = 0.075;
+
     if ( base.distance < 1 )
       base.distance = 5;
   }
@@ -1121,10 +1115,11 @@ void player_t::init_base_stats()
         dbc.avoid_per_str_agi_by_level( level() ) / 100.0;  // exact values given by Blizzard, only have L90-L100 data
 
   // All classes get 3% dodge and miss
-  // Dodge from base agillity isn't affected by diminishing returns and is added here
-  base.dodge = 0.03 + racials.quickness->effectN( 1 ).percent() +
-    ( dbc.race_base( race ).agility + dbc.attribute_base( type, level() ).agility ) * base.dodge_per_agility;
+  base.dodge = 0.03;
   base.miss = 0.03;
+  // Dodge from base agillity isn't affected by diminishing returns and is added here
+  base.dodge += racials.quickness->effectN( 1 ).percent() +
+      ( dbc.race_base( race ).agility + dbc.attribute_base( type, level() ).agility ) * base.dodge_per_agility;
 
   // Only Warriors and Paladins (and enemies) can block, defaults to 0
   if ( type == WARRIOR || type == PALADIN || type == ENEMY || type == TMI_BOSS || type == TANK_DUMMY )
@@ -1188,8 +1183,7 @@ void player_t::init_base_stats()
       collected_data.dtps.change_mode( false );
   }
 
-  if ( sim->debug )
-    sim->out_debug.printf( "%s: Generic Base Stats: %s", name(), base.to_string().c_str() );
+  sim->print_debug( "{} generic base stats: {}", *this, base.to_string() );
 }
 
 /**
@@ -1199,20 +1193,18 @@ void player_t::init_base_stats()
  */
 void player_t::init_initial_stats()
 {
-  if ( sim->debug )
-    sim->out_debug.printf( "Initializing initial stats for player (%s)", name() );
+  sim->print_debug( "Initializing initial stats for {}.", *this );
 
-#ifndef NDEBUG
-  for ( stat_e i = STAT_NONE; i < STAT_MAX; ++i )
+  // Ensure initial stats have not been tampered with.
+  for ( stat_e stat = STAT_NONE; stat < STAT_MAX; ++stat )
   {
-    double s = initial.stats.get_stat( i );
-    if ( s > 0 )
+    double stat_value = initial.stats.get_stat( stat );
+    if ( stat_value > 0 )
     {
-      sim->errorf( "%s stat %s is %.4f", name(), util::stat_type_string( i ), s );
-      sim->errorf( " Please do not modify player_t::initial before init_initial_stats is called\n" );
+      sim->error( "{} initial stat {} is {} != 0", *this, util::stat_type_string( stat ), stat_value );
+      sim->error( " Please do not modify player_t::initial before init_initial_stats is called\n" );
     }
   }
-#endif
 
   initial = base;
   initial.stats += passive;
@@ -1234,8 +1226,7 @@ void player_t::init_initial_stats()
         total_gear.add_stat( stat, gear.get_stat( stat ) );
     }
 
-    if ( sim->debug )
-      sim->out_debug.printf( "%s: Total Gear Stats: %s", name(), total_gear.to_string().c_str() );
+    sim->print_debug( "{} total gear stats: {}", *this, total_gear.to_string() );
 
     initial.stats += enchant;
     initial.stats += sim->enchant;
@@ -1243,23 +1234,21 @@ void player_t::init_initial_stats()
 
   initial.stats += total_gear;
 
-  if ( sim->debug )
-    sim->out_debug.printf( "%s: Generic Initial Stats: %s", name(), initial.to_string().c_str() );
+  sim->print_debug( "{} generic initial stats: %s", *this, initial.to_string() );
 }
 
 void player_t::init_items()
 {
-  if ( sim->debug )
-    sim->out_debug.printf( "Initializing items for player (%s)", name() );
+  sim->print_debug( "Initializing items for {}.", *this );
 
   // Create items
   for ( const std::string& split : util::string_split( items_str, "/" ) )
   {
-    if ( find_item( split ) )
+    if ( find_item_by_name( split ) )
     {
-      sim->errorf( "Player %s has multiple %s equipped.\n", name(), split.c_str() );
+      sim->error( "{} has multiple %s equipped.\n", *this, split );
     }
-    items.push_back( item_t( this, split ) );
+    items.emplace_back( this, split );
   }
 
   std::array<bool, SLOT_MAX> matching_gear_slots;  // true if the given item is equal to the highest armor type the player can wear
@@ -1268,18 +1257,17 @@ void player_t::init_items()
 
   // We need to simple-parse the items first, this will set up some base information, and parse out
   // simple options
-  for ( size_t i = 0; i < items.size(); i++ )
+  for ( auto& item : items )
   {
-    item_t& item = items[ i ];
     try
     {
-
       // If the item has been specified in options we want to start from scratch, forgetting about
       // lingering stuff from profile copy
       if ( !item.options_str.empty() )
       {
+        auto slot = item.slot;
         item      = item_t( this, item.options_str );
-        item.slot = static_cast<slot_e>( i );
+        item.slot = slot;
       }
 
       item.parse_options();
@@ -1388,21 +1376,24 @@ void player_t::init_azerite()
     return;
   }
 
-  if ( sim -> debug )
-  {
-    sim -> out_debug.printf( "Initializing Azerite sub-system for player (%s)", name() );
-  }
+  sim->print_debug( "Initializing Azerite sub-system for {}.", *this );
 
   azerite -> initialize();
 }
 
 void player_t::init_meta_gem()
 {
-  if ( !meta_gem_str.empty() )
-    meta_gem = util::parse_meta_gem_type( meta_gem_str );
+  sim->print_debug( "Initializing meta-gem for {}.", *this );
 
-  if ( sim->debug )
-    sim->out_debug.printf( "Initializing meta-gem for player (%s)", name() );
+  if ( !meta_gem_str.empty() )
+  {
+    meta_gem = util::parse_meta_gem_type( meta_gem_str );
+    if ( meta_gem == META_GEM_NONE )
+    {
+      throw std::invalid_argument(fmt::format( "Invalid meta gem '{}'.", meta_gem_str ));
+    }
+  }
+
 
   if ( ( meta_gem == META_AUSTERE_EARTHSIEGE ) || ( meta_gem == META_AUSTERE_SHADOWSPIRIT ) )
   {
@@ -1412,8 +1403,7 @@ void player_t::init_meta_gem()
 
 void player_t::init_position()
 {
-  if ( sim->debug )
-    sim->out_debug.printf( "Initializing position for player (%s)", name() );
+  sim->print_debug( "Initializing position for {}.", *this );
 
   if ( !position_str.empty() )
   {
@@ -1443,14 +1433,12 @@ void player_t::init_position()
 
   position_str = util::position_type_string( base.position );
 
-  if ( sim->debug )
-    sim->out_debug.printf( "%s: Position set to %s", name(), position_str.c_str() );
+  sim->print_debug( "{} position set to {}.", *this, position_str );
 }
 
 void player_t::init_race()
 {
-  if ( sim->debug )
-    sim->out_debug.printf( "Initializing race for player (%s)", name() );
+  sim->print_debug( "Initializing race for {}.", *this );
 
   if ( race_str.empty() )
   {
@@ -1471,14 +1459,12 @@ void player_t::init_race()
  */
 void player_t::init_defense()
 {
-  if ( sim->debug )
-    sim->out_debug.printf( "Initializing defense for player (%s)", name() );
+  sim->print_debug( "Initializing defense for {}.", *this );
 
   if ( primary_role() == ROLE_TANK )
   {
     initial.position = POSITION_FRONT;
-    if ( sim->debug )
-      sim->out_debug.printf( "%s: Initial Position set to front because primary_role() == ROLE_TANK", name() );
+    sim->print_debug( "{} initial position set to front because primary_role() == ROLE_TANK", *this );
   }
 
   if ( !is_pet() && primary_role() == ROLE_TANK )
@@ -1491,15 +1477,13 @@ void player_t::init_defense()
 
   // Armor Coefficient
   initial.armor_coeff = dbc.armor_mitigation_constant( level() );
-  if ( sim->debug )
-    sim->out_debug.printf( "%s: Initial Armor Coeff set to %.4f", name(), initial.armor_coeff );
+  sim->print_debug( "{} initial armor coefficient set to {}.", *this, initial.armor_coeff );
 }
 
 void player_t::init_weapon( weapon_t& w )
 {
-  if ( sim->debug )
-    sim->out_debug.printf( "Initializing weapon ( type %s ) for player (%s)", util::weapon_type_string( w.type ),
-                           name() );
+  sim->print_debug( "Initializing weapon ( type {} ) for {}.", util::weapon_type_string( w.type ),
+                           *this );
 
   if ( w.type == WEAPON_NONE )
     return;
@@ -1517,8 +1501,7 @@ void player_t::create_special_effects()
     return;
   }
 
-  if ( sim->debug )
-    sim->out_debug.printf( "Creating special effects for player (%s)", name() );
+  sim->print_debug( "Creating special effects for {}.", *this );
 
   // Initialize all item-based special effects. This includes any DBC-backed enchants, gems, as well
   // as inherent item effects that use a spell
@@ -1532,11 +1515,10 @@ void player_t::create_special_effects()
   // master list of custom special effect in unique gear). This is to avoid
   // false positives with class-specific set bonuses that have to always be
   // implemented inside the class module anyhow.
-  std::vector<const item_set_bonus_t*> bonuses = sets->enabled_set_bonus_data();
-  for ( size_t i = 0; i < bonuses.size(); i++ )
+  for ( const auto& set_bonus : sets->enabled_set_bonus_data() )
   {
     special_effect_t effect( this );
-    unique_gear::initialize_special_effect( effect, bonuses[ i ]->spell_id );
+    unique_gear::initialize_special_effect( effect, set_bonus->spell_id );
 
     if ( effect.custom_init_object.size() == 0 )
     {
@@ -1567,14 +1549,15 @@ void player_t::init_special_effects()
     return;
   }
 
-  if ( sim->debug )
-    sim->out_debug.printf( "Initializing special effects for player (%s)", name() );
+  sim->print_debug( "Initializing special effects for {}.", *this );
 
   // ..and then move on to second phase initialization of all special effects.
   unique_gear::init( this );
 
   for ( auto& elem : callbacks.all_callbacks )
+  {
     elem->initialize();
+  }
 }
 
 namespace
@@ -1590,10 +1573,10 @@ double compute_max_resource( player_t* p, resource_e r )
 
   // re-ordered 2016-06-19 by Theck - initial_multiplier should do something for RESOURCE_HEALTH
   if ( r == RESOURCE_HEALTH )
-    value += floor( p->stamina() ) * p->current.health_per_stamina;
+    value += std::floor( p->stamina() ) * p->current.health_per_stamina;
 
   value *= p->resources.initial_multiplier[ r ];
-  value = floor( value );
+  value = std::floor( value );
 
   return value;
 }
@@ -1601,38 +1584,34 @@ double compute_max_resource( player_t* p, resource_e r )
 
 void player_t::init_resources( bool force )
 {
-  if ( sim->debug )
-    sim->out_debug.printf( "Initializing resources for player (%s)", name() );
+  sim->print_debug( "Initializing resources for {}.", *this );
 
-  for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
+  for ( resource_e resource = RESOURCE_NONE; resource < RESOURCE_MAX; resource++ )
   {
     // Don't reset non-forced and already-reset initial resources
-    if ( !force && resources.initial[ i ] != 0 )
+    if ( !force && resources.initial[ resource ] != 0 )
     {
       continue;
     }
 
-    double max_resource = compute_max_resource( this, i );
+    double max_resource = compute_max_resource( this, resource );
 
-    resources.initial[ i ] = max_resource;
-    resources.max[ i ]     = max_resource;
+    resources.initial[ resource ] = max_resource;
+    resources.max[ resource ]     = max_resource;
 
-    if ( resources.initial_opt[ i ] != -1.0 )
+    if ( resources.initial_opt[ resource ] != -1.0 )
     {
-      double actual_resource = std::min( max_resource, resources.initial_opt[ i ] );
+      double actual_resource = std::min( max_resource, resources.initial_opt[ resource ] );
 
-      if ( sim->debug )
-      {
-        sim->out_debug.printf( "%s resource %s overridden to %f", name(), util::resource_type_string( i ),
+      sim->print_debug( "{} resource {} overridden to {}", *this, util::resource_type_string( resource ),
                                actual_resource );
-      }
 
-      resources.current[ i ] = actual_resource;
+      resources.current[ resource ] = actual_resource;
     }
     else
     {
       // Actual "current" resource can never exceed the computed maximum resource for the actor
-      resources.current[ i ] = std::min( max_resource, resources.start_at[ i ] );
+      resources.current[ resource ] = std::min( max_resource, resources.start_at[ resource ] );
     }
   }
 
@@ -1641,11 +1620,11 @@ void player_t::init_resources( bool force )
   {
     if ( collected_data.resource_timelines.size() == 0 )
     {
-      for ( resource_e r = RESOURCE_NONE; r < RESOURCE_MAX; ++r )
+      for ( resource_e resource = RESOURCE_NONE; resource < RESOURCE_MAX; ++resource )
       {
-        if ( resources.max[ r ] > 0 )
+        if ( resources.max[ resource ] > 0 )
         {
-          collected_data.resource_timelines.emplace_back( r );
+          collected_data.resource_timelines.emplace_back( resource );
         }
       }
     }
@@ -1657,8 +1636,7 @@ void player_t::init_professions()
   if ( professions_str.empty() )
     return;
 
-  if ( sim->debug )
-    sim->out_debug.printf( "Initializing professions for player (%s)", name() );
+  sim->print_debug( "Initializing professions for {}.", *this );
 
   std::vector<std::string> splits = util::string_split( professions_str, ",/" );
 
@@ -1918,7 +1896,7 @@ void player_t::override_talent( std::string& override_str )
       talent_points.clear( row - 1 );
       if ( sim->num_players == 1 )
       {
-        sim->errorf( "talent_override: Talent row %u for player %s disabled\n", row, name() );
+        sim->error( "talent_override: Talent row {} for {} disabled.\n", row, *this );
       }
       return;
     }
@@ -1944,18 +1922,16 @@ void player_t::override_talent( std::string& override_str )
               override_str ));
         }
 
-        if ( sim->debug )
+        if ( talent_points.has_row_col( j, i ) )
         {
-          if ( talent_points.has_row_col( j, i ) )
-          {
-            sim->out_debug.printf( "talent_override: talent %s for player %s is already enabled\n",
-                                   override_str.c_str(), name() );
-          }
+          sim->print_debug( "talent_override: talent {} for {} is already enabled\n",
+                                 override_str, *this );
         }
+
         if ( sim->num_players == 1 )
         {  // To prevent spamming up raid reports, only do this with 1 player sims.
-          sim->errorf( "talent_override: talent %s for player %s replaced talent %s in tier %d\n", override_str.c_str(),
-                       name(), util::to_string( talent_points.choice( j ) + 1 ).c_str(), j + 1 );
+          sim->error( "talent_override: talent '{}' for {}s replaced talent {} in tier {}.\n", override_str,
+                       *this, talent_points.choice( j ) + 1, j + 1 );
         }
         talent_points.select_row_col( j, i );
       }
@@ -1965,8 +1941,7 @@ void player_t::override_talent( std::string& override_str )
 
 void player_t::init_talents()
 {
-  if ( sim->debug )
-    sim->out_debug.printf( "Initializing talents for player (%s)", name() );
+  sim->print_debug( "Initializing talents for {}.", *this );
 
   if ( !talent_overrides_str.empty() )
   {
@@ -1979,8 +1954,7 @@ void player_t::init_talents()
 
 void player_t::init_spells()
 {
-  if ( sim->debug )
-    sim->out_debug.printf( "Initializing spells for player (%s)", name() );
+  sim->print_debug( "Initializing spells for {}.", *this );
 
   racials.quickness             = find_racial_spell( "Quickness" );
   racials.command               = find_racial_spell( "Command" );
@@ -2013,8 +1987,7 @@ void player_t::init_spells()
 
 void player_t::init_gains()
 {
-  if ( sim->debug )
-    sim->out_debug.printf( "Initializing gains for player (%s)", name() );
+  sim->print_debug( "Initializing gains for {}.", *this );
 
   gains.arcane_torrent      = get_gain( "arcane_torrent" );
   gains.endurance_of_niuzao = get_gain( "endurance_of_niuzao" );
@@ -2034,16 +2007,14 @@ void player_t::init_gains()
 
 void player_t::init_procs()
 {
-  if ( sim->debug )
-    sim->out_debug.printf( "Initializing procs for player (%s)", name() );
+  sim->print_debug( "Initializing procs for {}.", *this );
 
   procs.parry_haste = get_proc( "parry_haste" );
 }
 
 void player_t::init_uptimes()
 {
-  if ( sim->debug )
-    sim->out_debug.printf( "Initializing uptimes for player (%s)", name() );
+  sim->print_debug( "Initializing uptimes for {}.", *this );
 
   uptimes.primary_resource_cap =
       get_uptime( util::inverse_tokenize( util::resource_type_string( primary_resource() ) ) + " Cap" );
@@ -2051,20 +2022,17 @@ void player_t::init_uptimes()
 
 void player_t::init_benefits()
 {
-  if ( sim->debug )
-    sim->out_debug.printf( "Initializing benefits for player (%s)", name() );
+  sim->print_debug( "Initializing benefits for {}.", *this );
 }
 
 void player_t::init_rng()
 {
-  if ( sim->debug )
-    sim->out_debug.printf( "Initializing rngs for player (%s)", name() );
+  sim->print_debug( "Initializing random number generators for {}.", *this );
 }
 
 void player_t::init_stats()
 {
-  if ( sim->debug )
-    sim->out_debug.printf( "Initializing stats for player (%s)", name() );
+  sim->print_debug( "Initializing stats for {}.", *this );
 
   if ( sim->maximize_reporting )
   {
@@ -2077,9 +2045,9 @@ void player_t::init_stats()
   {
     if ( collected_data.stat_timelines.size() == 0 )
     {
-      for ( size_t i = 0; i < stat_timelines.size(); ++i )
+      for ( stat_e stat : stat_timelines )
       {
-        collected_data.stat_timelines.emplace_back( stat_timelines[ i ] );
+        collected_data.stat_timelines.emplace_back( stat );
       }
     }
   }
@@ -2099,8 +2067,7 @@ void player_t::init_absorb_priority()
 
 void player_t::init_scaling()
 {
-  if ( sim->debug )
-    sim->out_debug.printf( "Initializing scaling for player (%s)", name() );
+  sim->print_debug( "Initializing scaling for {}.", *this );
 
   if ( !is_pet() && !is_enemy() )
   {
@@ -2135,7 +2102,13 @@ void player_t::init_scaling()
 
     scaling->set( STAT_ARMOR, tank );
 
-    auto add_stat = []( double& to, double v, double d ) { if ( to + v < d ) to = d; else to += v; };
+    auto add_stat = []( double& to, double value, double lower_limit )
+      {
+      if ( to + value < lower_limit )
+        to = lower_limit;
+      else
+        to += value;
+      };
 
     if ( sim->scaling->scale_stat != STAT_NONE && scale_player )
     {
@@ -2270,8 +2243,7 @@ void player_t::create_actions()
   std::vector<std::string> skip_actions;
   if ( !action_list_skip.empty() )
   {
-    if ( sim->debug )
-      sim->out_debug.printf( "Player %s: action_list_skip=%s", name(), action_list_skip.c_str() );
+    sim->print_debug( "{} action_list_skip={}", *this, action_list_skip );
 
     skip_actions = util::string_split( action_list_skip, "/" );
   }
@@ -2296,8 +2268,7 @@ void player_t::create_actions()
         apl->action_list.emplace_back( split, "" );
     }
 
-    if ( sim->debug )
-      sim->out_debug.printf( "Player %s: actions.%s=%s", name(), apl->name_str.c_str(), apl->action_list_str.c_str() );
+    sim->print_debug( "{} actions.{}={}", *this, apl->name_str, apl->action_list_str );
 
     for ( auto& action_priority : apl->action_list )
     {
@@ -2326,8 +2297,7 @@ void player_t::create_actions()
         util::tokenize( action_name );
         if ( action_name == modify_action )
         {
-          if ( sim->debug )
-            sim->out_debug.printf( "Player %s: modify_action=%s", name(), modify_action.c_str() );
+          sim->print_debug( "{}: modify_action={}", *this, modify_action );
 
           action_options = modify_action_options;
           action_str     = modify_action + "," + modify_action_options;
@@ -2338,7 +2308,7 @@ void player_t::create_actions()
       if ( !a )
       {
         throw std::invalid_argument(
-            fmt::format("Player {} unable to create action: {}", name(), action_str));
+            fmt::format("{} unable to create action: {}", *this, action_str));
       }
 
       bool skip = false;
@@ -2446,7 +2416,7 @@ void player_t::init_actions()
 
   if ( !default_action_list && choose_action_list != "default" )
   {
-    sim->errorf( "Action List %s not found, using default action list.\n", choose_action_list.c_str() );
+    sim->error( "Action List '{}' not found, using default action list.", choose_action_list );
     default_action_list = find_action_priority_list( "default" );
   }
 
@@ -2458,7 +2428,7 @@ void player_t::init_actions()
   }
   else
   {
-    sim->errorf( "No Default Action List available.\n" );
+    sim->error( "No Default Action List available." );
   }
 }
 
@@ -2491,16 +2461,16 @@ void player_t::init_assessors()
       {
         if ( type == DMG_DIRECT )
         {
-          sim->out_log.printf( "%s %s hits %s for %.0f %s damage (%s)", name(), state->action->name(),
-                               state->target->name(), state->result_amount,
+          sim->print_log( "{} {} hits {} for {} {} damage ({})", *this, state->action->name(),
+                               *state->target, state->result_amount,
                                util::school_type_string( state->action->get_school() ),
                                util::result_type_string( state->result ) );
         }
         else  // DMG_OVER_TIME
         {
           dot_t* dot = state->action->get_dot( state->target );
-          sim->out_log.printf( "%s %s ticks (%d of %d) %s for %.0f %s damage (%s)", name(), state->action->name(),
-                               dot->current_tick, dot->num_ticks, state->target->name(), state->result_amount,
+          sim->print_log( "{} {} ticks ({} of {}) on {} for {} {} damage ({})", *this, state->action->name(),
+                               dot->current_tick, dot->num_ticks, *state->target, state->result_amount,
                                util::school_type_string( state->action->get_school() ),
                                util::result_type_string( state->result ) );
         }
@@ -2655,21 +2625,16 @@ void player_t::min_threshold_trigger()
     if ( occurs > resource_threshold_trigger->occurs() )
     {
       resource_threshold_trigger->reschedule( time_to_threshold );
-      if ( sim->debug )
-      {
-        sim->out_debug.printf( "Player %s rescheduling Resource-Threshold event: threshold=%.1f delay=%.3f", name(),
-                               threshold, time_to_threshold.total_seconds() );
-      }
+      sim->print_debug( "{} rescheduling Resource-Threshold event: threshold={} delay={}", *this,
+                               threshold, time_to_threshold );
     }
     else if ( occurs < resource_threshold_trigger->occurs() )
     {
       event_t::cancel( resource_threshold_trigger );
       resource_threshold_trigger = make_event<resource_threshold_event_t>( *sim, this, time_to_threshold );
-      if ( sim->debug )
-      {
-        sim->out_debug.printf( "Player %s recreating Resource-Threshold event: threshold=%.1f delay=%.3f", name(),
-                               threshold, time_to_threshold.total_seconds() );
-      }
+
+      sim->print_debug( "{} recreating Resource-Threshold event: threshold={} delay={}", *this,
+                               threshold, time_to_threshold );
     }
   }
   else
@@ -2679,11 +2644,9 @@ void player_t::min_threshold_trigger()
     assert( !readying );
 
     resource_threshold_trigger = make_event<resource_threshold_event_t>( *sim, this, time_to_threshold );
-    if ( sim->debug )
-    {
-      sim->out_debug.printf( "Player %s scheduling new Resource-Threshold event: threshold=%.1f delay=%.3f", name(),
-                             threshold, time_to_threshold.total_seconds() );
-    }
+
+    sim->print_debug( "{} scheduling new Resource-Threshold event: threshold={} delay={}", *this,
+                             threshold, time_to_threshold );
   }
 }
 
@@ -2694,8 +2657,7 @@ void player_t::min_threshold_trigger()
  */
 void player_t::create_buffs()
 {
-  if ( sim->debug )
-    sim->out_debug.printf( "Creating Auras, Buffs, and Debuffs for player (%s)", name() );
+  sim->print_debug( "Creating Auras, Buffs, and Debuffs for {}.", *this );
 
   struct norgannons_foresight_buff_t : public buff_t
   {
@@ -2828,23 +2790,25 @@ void player_t::create_buffs()
   }
 }
 
-item_t* player_t::find_item( const std::string& str )
+item_t* player_t::find_item_by_name( const std::string& item_name )
 {
-  for ( auto& item : items )
-    if ( str == item.name() )
-      return &item;
+  auto it = range::find_if(items, [item_name](const item_t& item) { return item_name == item.name();});
+
+  if ( it != items.end())
+  {
+    return &(*it);
+  }
 
   return nullptr;
 }
 
-item_t* player_t::find_item( unsigned item_id )
+item_t* player_t::find_item_by_id( unsigned item_id )
 {
-  for ( auto& item : items )
+  auto it = range::find_if(items, [item_id](const item_t& item) { return item_id == item.parsed.data.id;});
+
+  if ( it != items.end())
   {
-    if ( item.parsed.data.id == item_id )
-    {
-      return &( item );
-    }
+    return &(*it);
   }
 
   return nullptr;
@@ -3287,7 +3251,9 @@ double player_t::composite_spell_crit_chance() const
   sc += racials.arcane_acuity->effectN( 1 ).percent();
 
   if ( timeofday == DAY_TIME )
+  {
     sc += racials.touch_of_elune->effectN( 1 ).percent();
+  }
 
   return sc;
 }
@@ -3778,8 +3744,7 @@ void player_t::invalidate_cache( cache_e c )
   if ( !cache.active )
     return;
 
-  if ( sim->debug )
-    sim->out_debug.printf( "%s invalidates %s", name(), util::cache_type_string( c ) );
+  sim->print_debug( "{} invalidates stat cache for {}.", *this, util::cache_type_string( c ) );
 
   // Special linked invalidations
   switch ( c )
@@ -3909,8 +3874,7 @@ void player_t::sequence_add( const action_t* a, const player_t* target, const ti
 
 void player_t::combat_begin()
 {
-  if ( sim->debug )
-    sim->out_debug.printf( "Combat begins for player %s", name() );
+  sim->print_debug( "Combat begins for {}.", *this );
 
   if ( !is_pet() && !is_add() )
   {
@@ -3937,9 +3901,9 @@ void player_t::combat_begin()
             }
             first_cast = false;
           }
-          else if ( sim->debug )
+          else
           {
-            sim->out_debug.printf( "Player %s attempting to cast multiple harmful spells precombat.", name() );
+            sim->print_debug( "{} attempting to cast multiple harmful spells during pre-combat.", *this );
           }
         }
         else
@@ -3989,15 +3953,18 @@ void player_t::combat_begin()
   }
 
   // Trigger registered combat-begin functions
-  range::for_each( combat_begin_functions, [ this ]( const combat_begin_fn_t& fn ) {
-    fn( this );
-  } );
+  for ( const auto& f : combat_begin_functions)
+  {
+    f( this );
+  }
 }
 
 void player_t::combat_end()
 {
   for ( size_t i = 0; i < pet_list.size(); ++i )
+  {
     pet_list[ i ]->combat_end();
+  }
 
   if ( !is_pet() )
   {
@@ -4006,9 +3973,8 @@ void player_t::combat_end()
   else
     cast_pet()->dismiss();
 
-  if ( sim->debug )
-    sim->out_debug.printf( "Combat ends for player %s at time %.4f fight_length=%.4f", name(),
-                           sim->current_time().total_seconds(), iteration_fight_length.total_seconds() );
+  sim->print_debug( "Combat ends for {} at time {} fight_length={}", *this,
+                           sim->current_time(), iteration_fight_length );
 
   // Defer parent actor find to combat end, and ensure it is only performed if the parent sim is
   // initialized. This will avoid a data race in case the main thread for some reason is in init
@@ -4048,8 +4014,7 @@ void player_t::datacollection_begin()
   if ( !active_during_iteration )
     return;
 
-  if ( sim->debug )
-    sim->out_debug.print( "Data collection begins for player {} (id={})", name(), index );
+  sim->print_debug( "Data collection begins for {} (id={})", *this, index );
 
   iteration_fight_length                = timespan_t::zero();
   iteration_waiting_time                = timespan_t::zero();
@@ -4112,12 +4077,13 @@ void player_t::datacollection_end()
     spawner->datacollection_end();
   } );
 
-  if ( sim->debug )
-    sim->out_debug.printf( "Data collection ends for player %s (id=%d) at time %.4f fight_length=%.4f", name(), index,
-                           sim->current_time().total_seconds(), iteration_fight_length.total_seconds() );
+  sim->print_debug( "Data collection ends for {} (id={}) at time {} fight_length={}", *this, index,
+                           sim->current_time(), iteration_fight_length );
 
-  for ( size_t i = 0; i < stats_list.size(); ++i )
-    stats_list[ i ]->datacollection_end();
+  for ( auto& stats : stats_list )
+  {
+    stats->datacollection_end();
+  }
 
   if ( !is_enemy() && !is_add() )
   {
@@ -4141,8 +4107,10 @@ void player_t::datacollection_end()
 
   range::for_each( buff_list, std::mem_fn( &buff_t::datacollection_end ) );
 
-  for ( size_t i = 0; i < uptime_list.size(); ++i )
-    uptime_list[ i ]->datacollection_end( iteration_fight_length );
+  for ( auto& uptime : uptime_list )
+  {
+    uptime->datacollection_end( iteration_fight_length );
+  }
 
   range::for_each( benefit_list, std::mem_fn( &benefit_t::datacollection_end ) );
   range::for_each( proc_list, std::mem_fn( &proc_t::datacollection_end ) );
@@ -4180,13 +4148,6 @@ bool compare( const buff_t* a, const buff_t* b )
   return a->source->index < b->source->index;
 }
 
-#ifndef NDEBUG
-const char* source_name( const buff_t& b )
-{
-  return b.source ? b.source->name() : "(none)";
-}
-#endif
-
 // Sort buff_list and check for uniqueness
 void prepare( player_t& p )
 {
@@ -4203,8 +4164,8 @@ void prepare( player_t& p )
     // ! ( [ i ] < [ i + 1 ] ), then [ i ] == [ i + 1 ].
     if ( !compare( p.buff_list[ i ], p.buff_list[ i + 1 ] ) )
     {
-      p.sim->errorf( "Player %s has duplicate buffs named '%s' with source '%s' - the end is near.", p.name(),
-                     p.buff_list[ i ]->name(), source_name( *p.buff_list[ i ] ) );
+      p.sim->error( "{} has duplicate buffs named '{}' with source '{}' - the end is near.", p,
+                     p.buff_list[ i ]->name(), p.buff_list[ i ]->source_name() );
     }
   }
 #endif
@@ -4218,7 +4179,7 @@ void report_unmatched( const buff_t& b )
    */
   if ( !b.source || b.source == b.player )
   {
-    b.sim->errorf( "Player '%s' can't merge buff %s with source '%s'", b.player->name(), b.name(), source_name( b ) );
+    b.sim->error( "{} can't merge buff '{}' with source '{}'.", *b.player, b.name(), b.source_name() );
   }
 #else
   // "Use" the parameters to silence compiler warnings.
@@ -4302,7 +4263,7 @@ void player_t::merge( player_t& other )
     else
     {
 #ifndef NDEBUG
-      sim->errorf( "%s player_t::merge can't merge proc %s", name(), proc.name() );
+      sim->error( "{} can't merge proc '{}'.", *this, proc.name() );
 #endif
     }
   }
@@ -4316,7 +4277,7 @@ void player_t::merge( player_t& other )
     else
     {
 #ifndef NDEBUG
-      sim->errorf( "%s player_t::merge can't merge gain %s", name(), gain.name() );
+      sim->error( "{} can't merge gain '{}'.", *this, gain.name() );
 #endif
     }
   }
@@ -4330,7 +4291,7 @@ void player_t::merge( player_t& other )
     else
     {
 #ifndef NDEBUG
-      sim->errorf( "%s player_t::merge can't merge stats %s", name(), stats.name() );
+      sim->error( "{} can't merge stats '{}'", *this, stats.name() );
 #endif
     }
   }
@@ -4344,7 +4305,7 @@ void player_t::merge( player_t& other )
     else
     {
 #ifndef NDEBUG
-      sim->errorf( "%s player_t::merge can't merge uptime %s", name(), uptime.name() );
+      sim->error( "{} can't merge uptime '{}'.", *this, uptime.name() );
 #endif
     }
   }
@@ -4358,7 +4319,7 @@ void player_t::merge( player_t& other )
     else
     {
 #ifndef NDEBUG
-      sim->errorf( "%s player_t::merge can't merge benefit %s", name(), benefit.name() );
+      sim->error( "{} can't merge benefit '{}'.", *this, benefit.name() );
 #endif
     }
   }
@@ -4372,7 +4333,7 @@ void player_t::merge( player_t& other )
     else
     {
 #ifndef NDEBUG
-      sim->errorf( "%s player_t::merge can't merge proc %s", name(), sd.name_str.c_str() );
+      sim->error("{} can't merge proc '{}'.", *this, sd.name_str );
 #endif
     }
   }
@@ -4381,7 +4342,7 @@ void player_t::merge( player_t& other )
   size_t n_entries = std::min( action_list.size(), other.action_list.size() );
   if ( action_list.size() != other.action_list.size() )
   {
-    sim->errorf( "%s player_t::merge action lists for actor differ (other=%s, size=%u, other.size=%u)!", name(),
+    sim->error( "{} can't merge action lists: size differs (other={}, size={}, other.size={})!", *this,
                  other.name(), action_list.size(), other.action_list.size() );
   }
 
@@ -4393,12 +4354,12 @@ void player_t::merge( player_t& other )
     }
     else
     {
-      sim->errorf(
-          "%s player_t::merge can't merge action %s::%s with %s::%s", name(),
+      sim->error(
+          "{} can't merge action {}::{} with {}::{} because ids do not match.", *this,
           action_list[ i ]->action_list ? action_list[ i ]->action_list->name_str.c_str() : "(none)",
-          action_list[ i ]->signature_str.c_str(),
+          action_list[ i ]->signature_str,
           other.action_list[ i ]->action_list ? other.action_list[ i ]->action_list->name_str.c_str() : "(none)",
-          other.action_list[ i ]->signature_str.c_str() );
+          other.action_list[ i ]->signature_str );
     }
   }
 }
@@ -4408,8 +4369,7 @@ void player_t::merge( player_t& other )
  */
 void player_t::reset()
 {
-  if ( sim->debug )
-    sim->out_debug.printf( "Resetting player %s", name() );
+  sim->print_debug( "Resetting {}.", *this );
 
   last_cast = timespan_t::zero();
   gcd_ready = timespan_t::zero();
@@ -4427,10 +4387,7 @@ void player_t::reset()
   // Restore default target
   target = default_target;
 
-  if ( sim->debug )
-  {
-    sim->out_debug.printf( "%s current stats ( reset to initial ): %s", name(), current.to_string().c_str() );
-  }
+  sim->print_debug( "{} resets current stats ( reset to initial ): {}", *this, current.to_string() );
 
   for ( auto& buff : buff_list )
     buff->reset();
@@ -4548,9 +4505,8 @@ void player_t::trigger_ready()
   if ( buffs.stunned->check() )
     return;
 
-  if ( sim->debug )
-    sim->out_debug.printf( "%s is triggering ready, interval=%f", name(),
-                           ( sim->current_time() - started_waiting ).total_seconds() );
+  sim->print_debug( "{} is triggering ready, interval={}", *this,
+                           ( sim->current_time() - started_waiting ) );
 
   iteration_waiting_time += sim->current_time() - started_waiting;
   started_waiting = timespan_t::min();
@@ -4565,17 +4521,14 @@ void player_t::schedule_ready( timespan_t delta_time, bool waiting )
 {
   if ( readying )
   {
-    std::runtime_error(fmt::format("Player '{}' scheduled ready while already ready.", name() ));
+    std::runtime_error(fmt::format("{} scheduled ready while already ready.", *this ));
   }
   action_t* was_executing = ( channeling ? channeling : executing );
 
   if ( queueing )
   {
-    if ( sim->debug )
-    {
-      sim->out_debug.printf( "%s canceling queued action %s at %.3f", name(), queueing->name(),
-                             queueing->queue_event->occurs().total_seconds() );
-    }
+    sim->print_debug( "{} canceling queued action '{}' at {}", *this, queueing->name(),
+                             queueing->queue_event->occurs() );
     event_t::cancel( queueing->queue_event );
     queueing = nullptr;
   }
@@ -4681,12 +4634,10 @@ void player_t::schedule_ready( timespan_t delta_time, bool waiting )
     {
       cast_delay_reaction = timespan_t::zero();
     }
-    if ( sim->debug )
-    {
-      sim->out_debug.printf( "%s %s schedule_ready(): cast_finishes=%f cast_delay=%f", name_str.c_str(),
-                             was_executing->name_str.c_str(), readying->occurs().total_seconds(),
-                             cast_delay_reaction.total_seconds() );
-    }
+
+    sim->print_debug( "{} {} schedule_ready(): cast_finishes={} cast_delay={}", *this,
+                             was_executing->name_str, readying->occurs(),
+                             cast_delay_reaction );
   }
 }
 
@@ -4695,8 +4646,7 @@ void player_t::schedule_ready( timespan_t delta_time, bool waiting )
  */
 void player_t::arise()
 {
-  if ( sim->log )
-    sim->out_log.printf( "%s tries to arise.", name() );
+  sim->print_log( "{} tries to arise.", *this );
 
   if ( !initial.sleeping )
     current.sleeping = false;
@@ -4706,8 +4656,7 @@ void player_t::arise()
 
   actor_spawn_index = sim->global_spawn_index++;
 
-  if ( sim->log )
-    sim->out_log.printf( "%s arises. Spawn Index=%d", name(), actor_spawn_index );
+  sim->print_log( "{} arises. Spawn Index={}", *this, actor_spawn_index );
 
   init_resources( true );
 
@@ -7562,7 +7511,7 @@ struct use_item_t : public action_t
 
     if ( !item_name.empty() )
     {
-      item = player->find_item( item_name );
+      item = player->find_item_by_name( item_name );
       if ( !item )
       {
         if ( sim->debug )
@@ -12575,7 +12524,7 @@ void player_t::register_combat_begin( double amount, resource_e resource, gain_t
 
 std::ostream& operator<<(std::ostream &os, const player_t& p)
 {
-  fmt::print(os, "Player '{}' ({})", p.name(), util::player_type_string(p.type) );
+  fmt::print(os, "Player '{}'", p.name() );
   return os;
 }
 

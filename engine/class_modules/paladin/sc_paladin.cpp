@@ -60,7 +60,7 @@ paladin_t::paladin_t( sim_t* sim, const std::string& name, race_e r ) :
   talent_points.register_validity_fn([this](const spell_data_t* spell)
   {
     // Soul of the Highlord
-    if (find_item(151644))
+    if (find_item_by_id(151644))
     {
       switch (specialization())
       {

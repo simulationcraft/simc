@@ -82,10 +82,12 @@ struct react_ready_trigger_t : public buff_event_t
   react_ready_trigger_t( buff_t* b, unsigned s, timespan_t d ) : buff_event_t( b, d ), stack( s )
   {
   }
+
   virtual const char* name() const override
   {
     return "react_ready_trigger";
   }
+
   void execute() override
   {
     buff->stack_react_ready_triggers[ stack ] = nullptr;
@@ -103,11 +105,6 @@ struct expiration_t : public buff_event_t
   {
   }
 
-  const char* name() const override
-  {
-    return "buff_expiration";
-  }
-
   expiration_t( buff_t* b, timespan_t d ) : buff_event_t( b, d ), stack( 0 )
   {
     if ( b->stack_behavior == buff_stack_behavior::ASYNCHRONOUS )
@@ -116,6 +113,11 @@ struct expiration_t : public buff_event_t
           *buff->player, *buff );
       b->sim->cancel();
     }
+  }
+
+  const char* name() const override
+  {
+    return "buff_expiration";
   }
 
   virtual void execute() override

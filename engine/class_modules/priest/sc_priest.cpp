@@ -770,7 +770,7 @@ void priest_t::create_cooldowns()
   }
   talent_points.register_validity_fn( [this]( const spell_data_t* spell ) {
     // Soul of the High Priest
-    if ( find_item( 151646 ) )
+    if ( find_item_by_id( 151646 ) )
     {
       return spell->id() == 109142;  // Twist of Fate
     }

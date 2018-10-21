@@ -633,7 +633,7 @@ struct rogue_t : public player_t
     // Register a custom talent validity function that allows Vigor to be used when the user has
     // Soul of the Shadowblade.
     talent_points.register_validity_fn( [ this ]( const spell_data_t* spell ) {
-      return spell -> id() == 14983 && find_item( 150936 ) != nullptr;
+      return spell -> id() == 14983 && find_item_by_id( 150936 ) != nullptr;
     } );
   }
 
@@ -7161,7 +7161,7 @@ void rogue_t::init_scaling()
   scaling -> enable( STAT_WEAPON_OFFHAND_DPS );
   scaling -> disable( STAT_STRENGTH );
 
-  if ( find_item( "thraxis_tricksy_treads" ) )
+  if ( find_item_by_name( "thraxis_tricksy_treads" ) )
   {
     scaling -> enable( STAT_SPEED_RATING );
   }
