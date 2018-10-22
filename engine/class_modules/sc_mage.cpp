@@ -368,6 +368,9 @@ public:
     action_t* arcane_assault;
     action_t* conflagration_flare_up;
     action_t* glacial_assault;
+    action_t* living_bomb_dot;
+    action_t* living_bomb_dot_spread;
+    action_t* living_bomb_explosion;
     action_t* touch_of_the_magi_explosion;
   } action;
 
@@ -3996,100 +3999,83 @@ struct fire_blast_t : public fire_mage_spell_t
 
 // Living Bomb Spell ========================================================
 
-struct living_bomb_explosion_t;
-struct living_bomb_t;
+struct living_bomb_dot_t : public fire_mage_spell_t
+{
+  // The game has two spells for the DoT, one for pre-spread one and one for
+  // post-spread one. This allows two copies of the DoT to be up on one target.
+  const bool primary;
+
+  static std::string dot_name( bool primary )
+  { return primary ? "living_bomb_dot" : "living_bomb_dot_spread"; }
+
+  static unsigned dot_spell_id( bool primary )
+  { return primary ? 217694 : 244813; }
+
+  living_bomb_dot_t( mage_t* p, bool primary_ ) :
+    fire_mage_spell_t( dot_name( primary_ ), p, p -> find_spell( dot_spell_id( primary_ ) ) ),
+    primary( primary_ )
+  {
+    background = true;
+  }
+
+  virtual void init() override
+  {
+    fire_mage_spell_t::init();
+    update_flags &= ~STATE_HASTE;
+  }
+
+  virtual timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    return dot_duration * ( tick_time( s ) / base_tick_time );
+  }
+
+  virtual void last_tick( dot_t* d ) override
+  {
+    fire_mage_spell_t::last_tick( d );
+
+    p() -> action.living_bomb_explosion -> set_target( d -> target );
+
+    if ( primary )
+    {
+      for ( auto t : p() -> action.living_bomb_explosion -> target_list() )
+      {
+        if ( t == d -> target )
+          continue;
+
+        p() -> action.living_bomb_dot_spread -> set_target( t );
+        p() -> action.living_bomb_dot_spread -> execute();
+      }
+    }
+
+    p() -> action.living_bomb_explosion -> execute();
+  }
+};
 
 struct living_bomb_explosion_t : public fire_mage_spell_t
 {
-  living_bomb_t* child_lb;
-
-  living_bomb_explosion_t( mage_t* p, bool create_dot );
-  virtual resource_e current_resource() const override;
-  void impact( action_state_t* s ) override;
+  living_bomb_explosion_t( mage_t* p ) :
+    fire_mage_spell_t( "living_bomb_explosion", p, p -> find_spell( 44461 ) )
+  {
+    aoe = -1;
+    background = true;
+  }
 };
 
 struct living_bomb_t : public fire_mage_spell_t
 {
-  living_bomb_explosion_t* explosion;
+  living_bomb_t( mage_t* p, const std::string& options_str ) :
+    fire_mage_spell_t( "living_bomb", p, p -> talents.living_bomb )
+  {
+    parse_options( options_str );
+    cooldown -> hasted = true;
+    may_miss = may_crit = false;
+    impact_action = p -> action.living_bomb_dot;
 
-  living_bomb_t( mage_t* p, const std::string& options_str, bool casted );
-  virtual timespan_t composite_dot_duration( const action_state_t* s ) const override;
-  virtual void last_tick( dot_t* d ) override;
-  virtual void init() override;
+    add_child( p -> action.living_bomb_dot );
+    add_child( p -> action.living_bomb_dot_spread );
+    add_child( p -> action.living_bomb_explosion );
+  }
 };
-
-living_bomb_explosion_t::living_bomb_explosion_t( mage_t* p, bool create_dot ) :
-  fire_mage_spell_t( "living_bomb_explosion", p, p -> find_spell( 44461 ) ),
-  child_lb( create_dot ? new living_bomb_t( p, "", false ) : nullptr )
-{
-  aoe = -1;
-  radius = 10;
-  background = true;
-}
-
-resource_e living_bomb_explosion_t::current_resource() const
-{ return RESOURCE_NONE; }
-
-void living_bomb_explosion_t::impact( action_state_t* s )
-{
-  fire_mage_spell_t::impact( s );
-
-  if ( child_lb && s -> chain_target > 0 )
-  {
-    sim -> print_debug(
-      "{} {} on {} applies {} on {}",
-      p() -> name(), name(), s -> action -> target -> name(),
-      child_lb -> name(), s -> target -> name() );
-
-    child_lb -> set_target( s -> target );
-    child_lb -> execute();
-  }
-}
-
-living_bomb_t::living_bomb_t( mage_t* p, const std::string& options_str, bool casted = true ) :
-  fire_mage_spell_t( "living_bomb", p, p -> talents.living_bomb ),
-  explosion( new living_bomb_explosion_t( p, casted ) )
-{
-  parse_options( options_str );
-  // Why in Azeroth would they put DOT spell data in a separate spell??
-  const spell_data_t* dot_data = p -> find_spell( 217694 );
-  dot_duration = dot_data -> duration();
-  for ( size_t i = 1; i <= dot_data -> effect_count(); i++ )
-  {
-    parse_effect_data( dot_data -> effectN( i ) );
-  }
-
-  cooldown -> hasted = true;
-  add_child( explosion );
-
-  if ( ! casted )
-  {
-    background = true;
-    base_costs[ RESOURCE_MANA ] = 0;
-    // TODO: Fix this in a proper way.
-    cooldown = p -> get_cooldown( "secondary_living_bomb" );
-  }
-}
-
-timespan_t living_bomb_t::composite_dot_duration( const action_state_t* s ) const
-{
-  timespan_t duration = fire_mage_spell_t::composite_dot_duration( s );
-  return duration * ( tick_time( s ) / base_tick_time );
-}
-
-void living_bomb_t::last_tick( dot_t* d )
-{
-  fire_mage_spell_t::last_tick( d );
-
-  explosion -> set_target( d -> target );
-  explosion -> execute();
-}
-
-void living_bomb_t::init()
-{
-  fire_mage_spell_t::init();
-  update_flags &= ~STATE_HASTE;
-}
 
 // Meteor Spell ===============================================================
 
@@ -5535,6 +5521,13 @@ void mage_t::create_actions()
   if ( talents.conflagration -> ok() )
   {
     action.conflagration_flare_up = new conflagration_flare_up_t( this );
+  }
+
+  if ( talents.living_bomb -> ok() )
+  {
+    action.living_bomb_dot        = new living_bomb_dot_t( this, true );
+    action.living_bomb_dot_spread = new living_bomb_dot_t( this, false );
+    action.living_bomb_explosion  = new living_bomb_explosion_t( this );
   }
 
   if ( talents.touch_of_the_magi -> ok() )

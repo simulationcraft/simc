@@ -1,4 +1,4 @@
-// Hit points per stamina for level 1 - 120, wow build 8.0.1.27980
+// Hit points per stamina for level 1 - 120, wow build 8.0.1.28153
 static double __hp_per_sta[120] = {
     8,	8,	8,	8,	8,	//    5
     8,	8,	8,	8,	8,	//   10
@@ -26,7 +26,7 @@ static double __hp_per_sta[120] = {
     20,	20,	20,	20,	20,	//  120
 };
 
-// Spell scaling multipliers for levels 1 - 120, wow build 8.0.1.27980
+// Spell scaling multipliers for levels 1 - 120, wow build 8.0.1.28153
 static double __spell_scaling[][120] = {
   {
     0,	0,	0,	0,	0,	//    5
@@ -569,7 +569,7 @@ static double __spell_scaling[][120] = {
   },
 };
 
-// Base mana points for levels 1 - 120, wow build 8.0.1.27980
+// Base mana points for levels 1 - 120, wow build 8.0.1.28153
 static double __base_mp[][120] = {
   {
     0,	0,	0,	0,	0,	//    5
@@ -923,7 +923,7 @@ static double __base_mp[][120] = {
   },
 };
 
-// Combat rating values for level 1 - 120, wow build 8.0.1.27980
+// Combat rating values for level 1 - 120, wow build 8.0.1.28153
 static double __combat_ratings[][120] = {
   // Dodge
   {
@@ -1521,7 +1521,7 @@ static double __combat_ratings[][120] = {
   },
 };
 
-// Combat rating multipliers for item level 1 - 1300, wow build 8.0.1.27980
+// Combat rating multipliers for item level 1 - 1300, wow build 8.0.1.28153
 static double __combat_ratings_mult_by_ilvl[][1300] = {
   // Armor Multiplier
   {
@@ -2577,7 +2577,7 @@ static double __combat_ratings_mult_by_ilvl[][1300] = {
   },
 };
 
-// Item level translation for item level 1 - 1300, wow build 8.0.1.27980
+// Item level translation for item level 1 - 1300, wow build 8.0.1.28153
 static double __item_level_squish[1300] = {
     1,	2,	3,	4,	5,	//    5
     6,	7,	8,	9,	10,	//   10
@@ -2841,7 +2841,7 @@ static double __item_level_squish[1300] = {
     576,	577,	578,	579,	580,	// 1300
 };
 
-// Item socket costs for item levels 1 - 1300, wow build 8.0.1.27980
+// Item socket costs for item levels 1 - 1300, wow build 8.0.1.28153
 static double __item_socket_cost_per_level[1300] = {
     0,	0,	0,	0,	0,	//    5
     0,	0,	0,	0,	0,	//   10
@@ -3045,7 +3045,7 @@ static double __item_socket_cost_per_level[1300] = {
     8,	8,	8,	8,	8,	// 1000
     };
 
-// Stamina multipliers for item level 1 - 1300, wow build 8.0.1.27980
+// Stamina multipliers for item level 1 - 1300, wow build 8.0.1.28153
 static double __stamina_mult_by_ilvl[][1300] = {
   // Armor Multiplier
   {
@@ -4101,7 +4101,7 @@ static double __stamina_mult_by_ilvl[][1300] = {
   },
 };
 
-// Enemy armor mitigation constants (K-value) for level 1 - 123, wow build 8.0.1.27980
+// Enemy armor mitigation constants (K-value) for level 1 - 123, wow build 8.0.1.28153
 static double __armor_mitigation_by_lvl[123] = {
     80,	93,	106,	120,	133,	//    5
     150,	166,	183,	200,	216,	//   10
@@ -4129,7 +4129,7 @@ static double __armor_mitigation_by_lvl[123] = {
     4161,	4406,	4669,	4953,	7765,	//  120
     7765,	7765,	7765,	};
 
-// Azerite level to item level 1 - 300, wow build 8.0.1.27980
+// Azerite level to item level 1 - 300, wow build 8.0.1.28153
 static unsigned __azerite_level_to_item_level[300] = {
     280,	282,	284,	286,	288,	//    5
     290,	292,	294,	296,	298,	//   10
@@ -4193,7 +4193,7 @@ static unsigned __azerite_level_to_item_level[300] = {
     870,	872,	874,	876,	878,	//  300
 };
 
-// Npc armor mitigation constants (K-values), wow build 8.0.1.27980
+// Npc armor mitigation constants (K-values), wow build 8.0.1.28153
 static constexpr std::array<double, 120> __npc_armor_constants_data { {
    118.00,  124.00,  130.00,  135.00,  141.00,
    147.00,  152.00,  158.00,  164.00,  169.00,

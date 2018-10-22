@@ -1431,6 +1431,7 @@ class SpellDataGenerator(DataGenerator):
           ( 148022, 0 ),                            # Icicle
           ( 155152, 5 ),                            # Prismatic Crystal nuke
           ( 157978, 0 ), ( 157979, 0 ),             # Unstable magic aoe
+          ( 244813, 0 ),                            # Second Living Bomb DoT
           ( 187677, 0 ),                            # Aegwynn's Ascendance AOE
           ( 191764, 0 ), ( 191799, 0 ),             # Arcane T18 2P Pet
           ( 194432, 0 ),                            # Felo'melorn - Aftershocks
