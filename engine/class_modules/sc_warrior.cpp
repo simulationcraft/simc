@@ -4854,11 +4854,12 @@ void warrior_t::apl_fury()
 {
   std::vector<std::string> racial_actions = get_racial_actions();
 
-  default_apl_dps_precombat();
-
   action_priority_list_t* default_list  = get_action_priority_list( "default" );
   action_priority_list_t* movement      = get_action_priority_list( "movement" );
   action_priority_list_t* single_target = get_action_priority_list( "single_target" );
+  action_priority_list_t* precombat     = get_action_priority_list( "precombat" );
+  
+  precombat->add_action( this, "Recklessness", "if=!talent.furious_slash.enabled&!talent.reckless_abandon.enabled" );
 
   default_list->add_action( "auto_attack" );
   default_list->add_action( this, "Charge" );
