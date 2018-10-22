@@ -4093,8 +4093,6 @@ struct living_bomb_t : public fire_mage_spell_t
 // - Meteor Burn (id=175396) provides the tooltip's burn duration (8 seconds),
 //   but doesn't match in game where we only see 7 ticks over 7 seconds.
 // - Meteor (id=177345) contains the time between cast and impact
-// None of these specify the 1 second falling duration given by Celestalon, so
-// we're forced to hardcode it.
 struct meteor_burn_t : public fire_mage_spell_t
 {
   meteor_burn_t( mage_t* p, int targets ) :
@@ -4143,7 +4141,7 @@ struct meteor_impact_t: public fire_mage_spell_t
 
   virtual timespan_t travel_time() const override
   {
-    return timespan_t::from_seconds( 1.0 );
+    return timespan_t::from_seconds( data().missile_speed() );
   }
 
   virtual void impact( action_state_t* s ) override
