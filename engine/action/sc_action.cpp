@@ -374,6 +374,7 @@ action_t::options_t::options_t()
     target_if_str(),
     interrupt_if_expr_str(),
     early_chain_if_expr_str(),
+    cancel_if_expr_str(),
     sync_str(),
     target_str()
 {
@@ -497,6 +498,7 @@ action_t::action_t( action_e ty, const std::string& token, player_t* p, const sp
     target_if_expr(),
     interrupt_if_expr(),
     early_chain_if_expr(),
+    cancel_if_expr( nullptr ),
     sync_action(),
     signature_str(),
     target_specific_dot( false ),
@@ -570,6 +572,7 @@ action_t::action_t( action_e ty, const std::string& token, player_t* p, const sp
   add_option( opt_string( "if", option.if_expr_str ) );
   add_option( opt_string( "interrupt_if", option.interrupt_if_expr_str ) );
   add_option( opt_string( "early_chain_if", option.early_chain_if_expr_str ) );
+  add_option( opt_string( "cancel_if", option.cancel_if_expr_str ) );
   add_option( opt_bool( "interrupt", option.interrupt ) );
   add_option( opt_bool( "interrupt_global", interrupt_global ) );
   add_option( opt_bool( "chain", option.chain ) );
@@ -597,6 +600,7 @@ action_t::~action_t()
   delete target_if_expr;
   delete interrupt_if_expr;
   delete early_chain_if_expr;
+  delete cancel_if_expr;
 
   while ( state_cache != 0 )
   {
@@ -2475,6 +2479,16 @@ void action_t::init_finished()
       throw std::invalid_argument(fmt::format("Could not parse chain if expression from '{}'", option.early_chain_if_expr_str));
     }
   }
+
+  if ( !option.cancel_if_expr_str.empty() )
+  {
+    cancel_if_expr = expr_t::parse( this, option.cancel_if_expr_str, sim->optimize_expressions );
+    if ( cancel_if_expr == nullptr )
+    {
+      throw std::invalid_argument( fmt::format( "Could not parse cancel if expression from '{}'",
+            option.cancel_if_expr_str ) );
+    }
+  }
 }
 
 void action_t::reset()
@@ -2513,6 +2527,8 @@ void action_t::reset()
       interrupt_if_expr = interrupt_if_expr->optimize();
     if ( early_chain_if_expr )
       early_chain_if_expr = early_chain_if_expr->optimize();
+    if ( cancel_if_expr )
+      cancel_if_expr = cancel_if_expr->optimize();
   }
 }
 

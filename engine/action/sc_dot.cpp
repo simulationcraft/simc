@@ -1110,6 +1110,18 @@ void dot_t::schedule_tick()
 
   if ( current_action->channeled )
   {
+    if ( current_action->cancel_if_expr && current_action->cancel_if_expr->success() )
+    {
+      if ( current_action->sim->debug )
+      {
+        current_action->sim->out_debug.print( "{} '{}' cancel_if returns {}, cancelling channel",
+          current_action->player->name(), current_action->signature_str,
+          current_action->cancel_if_expr->eval() );
+      }
+      cancel();
+      return;
+    }
+
     // FIXME: Find some way to make this more realistic - the actor shouldn't
     // have to recast quite this early
     // Response: "Have to"?  It might be good to recast early - since the GCD

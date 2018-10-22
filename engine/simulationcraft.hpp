@@ -5218,6 +5218,7 @@ public:
     std::string target_if_str;
     std::string interrupt_if_expr_str;
     std::string early_chain_if_expr_str;
+    std::string cancel_if_expr_str;
     std::string sync_str;
     std::string target_str;
     options_t();
@@ -5238,6 +5239,7 @@ public:
   expr_t* target_if_expr;
   expr_t* interrupt_if_expr;
   expr_t* early_chain_if_expr;
+  expr_t* cancel_if_expr;
   action_t* sync_action;
   std::string signature_str;
   target_specific_t<dot_t> target_specific_dot;
