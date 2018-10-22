@@ -4071,9 +4071,12 @@ struct living_bomb_t : public fire_mage_spell_t
     may_miss = may_crit = false;
     impact_action = p -> action.living_bomb_dot;
 
-    add_child( p -> action.living_bomb_dot );
-    add_child( p -> action.living_bomb_dot_spread );
-    add_child( p -> action.living_bomb_explosion );
+    if ( p -> talents.living_bomb -> ok() )
+    {
+      add_child( p -> action.living_bomb_dot );
+      add_child( p -> action.living_bomb_dot_spread );
+      add_child( p -> action.living_bomb_explosion );
+    }
   }
 };
 
