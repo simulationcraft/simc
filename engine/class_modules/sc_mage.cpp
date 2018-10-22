@@ -269,50 +269,58 @@ struct cooldown_waste_data_t : private noncopyable
 struct shatter_source_t : private noncopyable
 {
   const std::string name_str;
-  std::vector<simple_sample_data_t> count;
-  std::vector<int> iteration_count;
+  std::vector<simple_sample_data_t> counts;
+  std::vector<int> iteration_counts;
 
   shatter_source_t( const std::string& name ) :
     name_str( name ),
-    count( FROZEN_MAX ),
-    iteration_count( FROZEN_MAX )
+    counts( FROZEN_MAX ),
+    iteration_counts( FROZEN_MAX )
   { }
 
   void occur( frozen_type_e type )
   {
     assert( type < FROZEN_MAX );
-    iteration_count[ type ]++;
+    iteration_counts[ type ]++;
   }
 
-  const simple_sample_data_t& get( frozen_type_e type ) const
+  double count( frozen_type_e type ) const
   {
     assert( type < FROZEN_MAX );
-    return count[ type ];
+    return counts[ type ].pretty_mean();
+  }
+
+  double count_total() const
+  {
+    double res = 0.0;
+    for ( const auto& c : counts )
+      res += c.pretty_mean();
+    return res;
   }
 
   bool active() const
   {
-    return range::find_if( count, [] ( const simple_sample_data_t& d ) { return d.pretty_mean() > 0; } ) != count.end();
+    return count_total() > 0.0;
   }
 
   void merge( const shatter_source_t& other )
   {
-    for ( size_t i = 0; i < count.size(); i++ )
+    for ( size_t i = 0; i < counts.size(); i++ )
     {
-      count[ i ].merge( other.count[ i ] );
+      counts[ i ].merge( other.counts[ i ] );
     }
   }
 
   void datacollection_begin()
   {
-    range::fill( iteration_count, 0 );
+    range::fill( iteration_counts, 0 );
   }
 
   void datacollection_end()
   {
-    for ( size_t i = 0; i < count.size(); i++ )
+    for ( size_t i = 0; i < counts.size(); i++ )
     {
-      count[ i ].add( as<double>( iteration_count[ i ] ) );
+      counts[ i ].add( as<double>( iteration_counts[ i ] ) );
     }
   }
 };
@@ -6099,7 +6107,7 @@ void mage_t::init_uptimes()
       break;
 
     case MAGE_FROST:
-      sample_data.blizzard     = new cooldown_reduction_data_t( cooldowns.frozen_orb, "Blizzard" );
+      sample_data.blizzard = new cooldown_reduction_data_t( cooldowns.frozen_orb, "Blizzard" );
 
       if ( talents.thermal_void -> ok() )
       {
@@ -6220,7 +6228,7 @@ void mage_t::apl_precombat()
   switch ( specialization() )
   {
     case MAGE_ARCANE:
-      precombat -> add_action( this, "Arcane Blast");
+      precombat -> add_action( this, "Arcane Blast" );
       break;
     case MAGE_FIRE:
       precombat -> add_action( this, "Pyroblast" );
@@ -7554,11 +7562,7 @@ public:
 
       os.printf( "<tr%s>", row_class.c_str() );
 
-      double total = 0.0;
-      for ( const auto& source : data -> count )
-      {
-        total += source.pretty_mean();
-      }
+      double total = data -> count_total();
 
       auto format_cells = [ bff, &os, total ] ( double mean, bool util )
       {
@@ -7588,10 +7592,10 @@ public:
       };
 
       os << "<td class=\"left\">" << name << "</td>";
-      format_cells( data -> get( FROZEN_NONE ).pretty_mean(), false );
-      format_cells( data -> get( FROZEN_WINTERS_CHILL ).pretty_mean(), true );
-      format_cells( data -> get( FROZEN_FINGERS_OF_FROST ).pretty_mean(), false );
-      format_cells( data -> get( FROZEN_ROOT ).pretty_mean(), false );
+      format_cells( data -> count( FROZEN_NONE ), false );
+      format_cells( data -> count( FROZEN_WINTERS_CHILL ), true );
+      format_cells( data -> count( FROZEN_FINGERS_OF_FROST ), false );
+      format_cells( data -> count( FROZEN_ROOT ), false );
       os << "</tr>\n";
     }
 
