@@ -4066,6 +4066,8 @@ living_bomb_t::living_bomb_t( mage_t* p, const std::string& options_str, bool ca
   {
     background = true;
     base_costs[ RESOURCE_MANA ] = 0;
+    // TODO: Fix this in a proper way.
+    cooldown = p -> get_cooldown( "secondary_living_bomb" );
   }
 }
 
