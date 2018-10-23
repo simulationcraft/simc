@@ -99,7 +99,7 @@ struct action_data_t
 {
   simple_sample_data_with_min_max_t exec;
   simple_sample_data_with_min_max_t cumulative;
-  simple_sample_data_t iter;
+  timespan_t iter_sum;
 
   void update_ready( const action_t* action, timespan_t cd )
   {
@@ -109,19 +109,19 @@ struct action_data_t
          cooldown -> current_charge == cooldown -> charges && cooldown -> last_charged > timespan_t::zero() &&
          cooldown -> last_charged < sim -> current_time() )
     {
-      double time_ = ( sim -> current_time() - cooldown -> last_charged ).total_seconds();
+      timespan_t time_ = sim -> current_time() - cooldown -> last_charged;
       if ( sim -> debug )
       {
-        sim -> out_debug.print( "{} {} cooldown waste tracking waste={:.3f} exec_time={:.3f}",
+        sim -> out_debug.print( "{} {} cooldown waste tracking waste={} exec_time={}",
                                 action -> player -> name(), action -> name(),
-                                time_, action -> time_to_execute.total_seconds() );
+                                time_, action -> time_to_execute );
       }
-      time_ -= action -> time_to_execute.total_seconds();
+      time_ -= action -> time_to_execute;
 
-      if ( time_ > 0 )
+      if ( time_ > timespan_t::zero() )
       {
-        exec.add( time_ );
-        iter.add( time_ );
+        exec.add( time_.total_seconds() );
+        iter_sum += time_;
       }
     }
   }
@@ -154,13 +154,13 @@ struct player_data_t
   void datacollection_begin()
   {
     for ( auto& rec : data_ )
-      rec.second -> iter.reset();
+      rec.second -> iter_sum = timespan_t::zero();
   }
 
   void datacollection_end()
   {
     for ( auto& rec : data_ )
-      rec.second -> cumulative.add( rec.second -> iter.sum() );
+      rec.second -> cumulative.add( rec.second -> iter_sum.total_seconds() );
   }
 };
 
