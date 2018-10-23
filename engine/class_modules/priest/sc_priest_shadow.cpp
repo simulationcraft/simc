@@ -1401,9 +1401,15 @@ struct void_torrent_t final : public priest_spell_t
     // Adjust the Voidform end event (essentially remove it) after the Void Torrent buff is up, since it disables
     // insanity drain for the duration of the channel
     priest().insanity.adjust_end_event();
+  }
 
-    // TODO: might need to generate ( 30 / 4 ) insanity per each tick
-    priest().generate_insanity( insanity_gain, priest().gains.insanity_void_torrent, execute_state->action );
+  void tick( dot_t* d ) override
+  {
+    priest_spell_t::tick( d );
+
+    // Assuming that the spell data will give us the total insanity amount (i.e. 30 over 4s)
+    // we need to give each tick the right amount of insanity
+    priest().generate_insanity( ( insanity_gain / d->num_ticks ), priest().gains.insanity_void_torrent, d->state->action );
   }
 
   bool ready() override
