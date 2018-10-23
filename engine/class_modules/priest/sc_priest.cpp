@@ -801,7 +801,7 @@ void priest_t::create_gains()
   gains.insanity_vampiric_touch_ondamage       = get_gain( "Insanity Gained from Vampiric Touch Damage (T19 2P)" );
   gains.insanity_vampiric_touch_onhit          = get_gain( "Insanity Gained from Vampiric Touch Casts" );
   gains.insanity_void_bolt                     = get_gain( "Insanity Gained from Void Bolt" );
-  gains.insanity_void_torrent                  = get_gain( "Insanity Saved by Void Torrent" );
+  gains.insanity_void_torrent                  = get_gain( "Insanity Gained from Void Torrent" );
   gains.vampiric_touch_health                  = get_gain( "Health from Vampiric Touch Ticks" );
   gains.insanity_blessing                      = get_gain( "Insanity from Blessing Dawnlight Medallion" );
   gains.insanity_call_to_the_void              = get_gain( "Insanity Gained from Call to the Void" );
