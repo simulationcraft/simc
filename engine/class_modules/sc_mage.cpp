@@ -1823,17 +1823,13 @@ struct frost_mage_spell_t : public mage_spell_t
     if ( ! source )
       source = proc_fof;
 
+    assert( source );
+
     bool success = p() -> buffs.fingers_of_frost -> trigger( stacks, buff_t::DEFAULT_VALUE(), chance );
     if ( success )
     {
       if ( chance >= 1.0 )
         p() -> buffs.fingers_of_frost -> predict();
-
-      if ( ! source )
-      {
-        assert( false );
-        return;
-      }
 
       for ( int i = 0; i < stacks; i++ )
         source -> occur();
@@ -1915,12 +1911,9 @@ struct frost_mage_spell_t : public mage_spell_t
   virtual result_e calculate_impact_result( action_state_t* s ) const
   { return mage_spell_t::calculate_result( s ); }
 
-  void record_shatter_source( const action_state_t* s, shatter_source_t* source = nullptr )
+  void record_shatter_source( const action_state_t* s, shatter_source_t* source )
   {
     unsigned frozen = debug_cast<const mage_spell_state_t*>( s ) -> frozen;
-
-    if ( ! source )
-      source = shatter_source;
 
     assert( source );
 
@@ -1949,7 +1942,7 @@ struct frost_mage_spell_t : public mage_spell_t
 
     if ( result_is_hit( s -> result ) && shatter_source && s -> chain_target == 0 )
     {
-      record_shatter_source( s );
+      record_shatter_source( s, shatter_source );
     }
 
     if ( result_is_hit( s -> result ) && chills && p() -> talents.bone_chilling -> ok() )
