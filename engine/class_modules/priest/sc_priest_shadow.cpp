@@ -1441,7 +1441,10 @@ struct void_torrent_t final : public priest_spell_t
 
     // Assuming that the spell data will give us the total insanity amount (i.e. 30 over 4s)
     // we need to give each tick the right amount of insanity
-    priest().generate_insanity( ( insanity_gain / d->num_ticks ), priest().gains.insanity_void_torrent, d->state->action );
+    if ( maybe_ptr( priest().dbc.ptr ) )
+    {
+      priest().generate_insanity( ( insanity_gain / d->num_ticks ), priest().gains.insanity_void_torrent, d->state->action );
+    }
   }
 
   bool ready() override
