@@ -3022,12 +3022,10 @@ struct fireball_t : public fire_mage_spell_t
       if ( s -> result == RESULT_CRIT )
       {
         p() -> buffs.enhanced_pyrotechnics -> expire();
-        p() -> buffs.flames_of_alacrity -> expire();
       }
       else
       {
         p() -> buffs.enhanced_pyrotechnics -> trigger();
-        p() -> buffs.flames_of_alacrity -> trigger();
       }
 
       if ( conflagration )
@@ -5909,7 +5907,15 @@ void mage_t::create_buffs()
   buffs.enhanced_pyrotechnics  = make_buff( this, "enhanced_pyrotechnics", find_spell( 157644 ) )
                                    -> set_chance( spec.enhanced_pyrotechnics -> ok() ? 1.0 : 0.0 )
                                    -> set_default_value( find_spell( 157644 ) -> effectN( 1 ).percent()
-                                                       + sets -> set( MAGE_FIRE, T19, B2 ) -> effectN( 1 ).percent() );
+                                                       + sets -> set( MAGE_FIRE, T19, B2 ) -> effectN( 1 ).percent() )
+                                   ->set_stack_change_callback( [ this ] ( buff_t*, int prev, int cur )
+                                                {
+                                                  if ( prev > cur )
+                                                    buffs.flames_of_alacrity -> decrement( prev - cur );
+                                                  else
+                                                    buffs.flames_of_alacrity -> trigger( cur - prev );
+                                                } );
+
   buffs.heating_up             = make_buff( this, "heating_up",  find_spell( 48107 ) );
   buffs.hot_streak             = make_buff( this, "hot_streak",  find_spell( 48108 ) );
 
