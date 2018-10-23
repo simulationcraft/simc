@@ -339,7 +339,7 @@ namespace warlock
         affliction_spell_t::tick( d );
       }
 
-      virtual std::tuple<double, double> get_db_dot_state( dot_t* dot )
+      std::tuple<double, double> get_db_dot_state( dot_t* dot ) override
       {
         std::tuple<double, double>  agony = affliction_spell_t::get_db_dot_state( dot );
 

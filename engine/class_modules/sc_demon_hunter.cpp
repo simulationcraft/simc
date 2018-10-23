@@ -570,7 +570,7 @@ public:
   void interrupt() override;
   void recalculate_resource_max( resource_e ) override;
   void reset() override;
-  void merge( player_t& other );
+  void merge( player_t& other ) override;
   void datacollection_begin() override;
   void datacollection_end() override;
   void target_mitigation( school_e, dmg_e, action_state_t* ) override;

@@ -2426,7 +2426,7 @@ struct iron_fortress_t : public warrior_attack_t
     return am;
   }
 
-  void execute( block_result_e b )
+  void do_execute( block_result_e b )
   {
     crit_blocked = b == BLOCK_RESULT_CRIT_BLOCKED;
 
@@ -3415,7 +3415,7 @@ struct shockwave_t : public warrior_attack_t
   {
     warrior_attack_t::impact( state );
 
-    if ( state -> n_targets >= as<int>( p() -> talents.rumbling_earth->effectN( 1 ).base_value() ) )
+    if ( state -> n_targets >= as<size_t>( p() -> talents.rumbling_earth->effectN( 1 ).base_value() ) )
     {
       p() -> cooldown.shockwave -> adjust( timespan_t::from_seconds( p() -> talents.rumbling_earth -> effectN( 2 ).base_value() ) );
     }
@@ -6405,7 +6405,7 @@ void warrior_t::assess_damage( school_e school, dmg_e type, action_state_t* s )
         iron_fortress_t* iron_fortress_active = debug_cast<iron_fortress_t*>( active.iron_fortress );
 
         iron_fortress_active -> target = s -> action -> player;
-        iron_fortress_active -> execute( s -> block_result );
+        iron_fortress_active -> do_execute( s -> block_result );
       }
     }
 
