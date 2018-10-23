@@ -334,7 +334,7 @@ public:
     buff_t* trueshot;
     buff_t* master_marksman;
     buff_t* double_tap;
-    buff_t* lethal_shots;
+    buff_t* lethal_shots; // XXX [8.1]: remove
 
     // Survival
     buff_t* coordinated_assault;
@@ -373,6 +373,7 @@ public:
     cooldown_t* aspect_of_the_wild;
     cooldown_t* a_murder_of_crows;
     cooldown_t* aimed_shot;
+    cooldown_t* rapid_fire;
     cooldown_t* harpoon;
     cooldown_t* wildfire_bomb;
   } cooldowns;
@@ -391,6 +392,7 @@ public:
   struct procs_t
   {
     proc_t* wild_call;
+    proc_t* lethal_shots;
   } procs;
 
   // Talents
@@ -546,6 +548,7 @@ public:
     cooldowns.aspect_of_the_wild  = get_cooldown( "aspect_of_the_wild" );
     cooldowns.a_murder_of_crows   = get_cooldown( "a_murder_of_crows" );
     cooldowns.aimed_shot      = get_cooldown( "aimed_shot" );
+    cooldowns.rapid_fire      = get_cooldown( "rapid_fire" );
     cooldowns.wildfire_bomb   = get_cooldown( "wildfire_bomb" );
 
     base_gcd = timespan_t::from_seconds( 1.5 );
@@ -1962,6 +1965,21 @@ void trigger_bloodseeker_update( hunter_t* p )
   }
 }
 
+void trigger_lethal_shots( hunter_t* p )
+{
+  if ( !maybe_ptr( p -> dbc.ptr ) )
+    return;
+  if ( !p -> talents.lethal_shots -> ok() )
+    return;
+
+  if ( p -> rng().roll( p -> talents.lethal_shots -> proc_chance() ) )
+  {
+    const auto base_value = p -> talents.lethal_shots -> effectN( 1 ).base_value();
+    p -> cooldowns.rapid_fire -> adjust( -timespan_t::from_seconds( base_value / 10 ) );
+    p -> procs.lethal_shots -> occur();
+  }
+}
+
 namespace attacks
 {
 
@@ -2203,6 +2221,7 @@ struct multi_shot_t: public hunter_ranged_attack_t
       p() -> cooldowns.trueshot -> adjust( - p() -> talents.calling_the_shots -> effectN( 1 ).time_value() );
 
     trigger_t20_2pc_bm( p() );
+    trigger_lethal_shots( p() );
 
     if ( rapid_reload.action && num_targets_hit > rapid_reload.min_targets )
     {
@@ -2590,7 +2609,23 @@ struct aimed_shot_t : public aimed_shot_base_t
     if ( p() -> buffs.lock_and_load -> check() )
       return timespan_t::zero();
 
-    return aimed_shot_base_t::execute_time();
+    auto et = aimed_shot_base_t::execute_time();
+
+    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> buffs.trueshot -> check() )
+      et *= 1.0 + p() -> buffs.trueshot -> check_value();
+
+    return et;
+  }
+
+  double recharge_multiplier() const override
+  {
+    double m = aimed_shot_base_t::recharge_multiplier();
+
+    // XXX [8.1]: Hardcode to what the bluepost said. Spell data has insane numbers.
+    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> buffs.trueshot -> check() )
+      m /= 1.0 + .6; // p() -> specs.trueshot -> effectN( 3 ).percent();
+
+    return m;
   }
 
   bool usable_moving() const override
@@ -2601,6 +2636,9 @@ struct aimed_shot_t : public aimed_shot_base_t
   double composite_target_da_multiplier( player_t* t ) const override
   {
     double m = aimed_shot_base_t::composite_target_da_multiplier( t );
+
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+      return m;
 
     auto td = find_td( t );
     if ( !( td && td -> damaged ) )
@@ -2645,6 +2683,8 @@ struct arcane_shot_t: public hunter_ranged_attack_t
 
     if ( p() -> talents.calling_the_shots -> ok() )
       p() -> cooldowns.trueshot -> adjust( - p() -> talents.calling_the_shots -> effectN( 1 ).time_value() );
+
+    trigger_lethal_shots( p() );
   }
 
   double action_multiplier() const override
@@ -2698,7 +2738,8 @@ struct steady_shot_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    p() -> buffs.lethal_shots -> trigger();
+    if ( !maybe_ptr( p() -> dbc.ptr ) )
+      p() -> buffs.lethal_shots -> trigger();
   }
 
   timespan_t execute_time() const override
@@ -2781,6 +2822,8 @@ struct rapid_fire_t: public hunter_spell_t
       dual = true;
       direct_tick = true;
       radius = 8.0;
+      if ( maybe_ptr( p -> dbc.ptr ) )
+        base_aoe_multiplier = p -> specs.trick_shots -> effectN( 5 ).percent();
 
       parse_effect_data( p -> find_spell( 263585 ) -> effectN( 1 ) );
 
@@ -2923,6 +2966,17 @@ struct rapid_fire_t: public hunter_spell_t
     return num_ticks_;
   }
 
+  double recharge_multiplier() const override
+  {
+    double m = hunter_spell_t::recharge_multiplier();
+
+    // XXX [8.1]: Hardcode to what the bluepost said. Spell data has insane numbers.
+    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> buffs.trueshot -> check() )
+      m /= 1.0 + .6; // p() -> specs.trueshot -> effectN( 1 ).percent();
+
+    return m;
+  }
+
   action_state_t* new_state() override
   {
     return new rapid_fire_state_t( this, target );
@@ -2937,14 +2991,14 @@ struct rapid_fire_t: public hunter_spell_t
 
 // Explosive Shot  ====================================================================
 
-struct explosive_shot_t: public hunter_spell_t
+struct explosive_shot_t: public hunter_ranged_attack_t
 {
   static constexpr timespan_t precombat_travel_time = timespan_t::from_millis( 100 );
   bool in_combat = false;
 
-  struct explosive_shot_impact_t: hunter_ranged_attack_t
+  struct explosive_shot_aoe_t: hunter_ranged_attack_t
   {
-    explosive_shot_impact_t( const std::string& n, hunter_t* p ):
+    explosive_shot_aoe_t( const std::string& n, hunter_t* p ):
       hunter_ranged_attack_t( n, p, p -> find_spell( 212680 ) )
     {
       background = true;
@@ -2954,21 +3008,30 @@ struct explosive_shot_t: public hunter_spell_t
   };
 
   explosive_shot_t( hunter_t* p, const std::string& options_str ):
-    hunter_spell_t( "explosive_shot", p, p -> talents.explosive_shot )
+    hunter_ranged_attack_t( "explosive_shot", p, p -> talents.explosive_shot )
   {
     parse_options( options_str );
 
-    travel_speed = 20.0;
     may_miss = false;
+    hasted_ticks = false;
 
-    impact_action = p -> get_background_action<explosive_shot_impact_t>( "explosive_shot_impact" );
-    impact_action -> stats = stats;
+    if ( maybe_ptr( p -> dbc.ptr ) )
+    {
+      tick_action = p -> get_background_action<explosive_shot_aoe_t>( "explosive_shot_aoe" );
+      tick_action -> stats = stats;
+    }
+    else
+    {
+      travel_speed = 20.0;
+      impact_action = p -> get_background_action<explosive_shot_aoe_t>( "explosive_shot_aoe" );
+      impact_action -> stats = stats;
+    }
   }
 
   timespan_t travel_time() const override
   {
-    if ( in_combat )
-      return hunter_spell_t::travel_time();
+    if ( maybe_ptr( p() -> dbc.ptr ) || in_combat )
+      return hunter_ranged_attack_t::travel_time();
 
     return precombat_travel_time;
   }
@@ -2977,9 +3040,9 @@ struct explosive_shot_t: public hunter_spell_t
   {
     in_combat = player -> in_combat;
 
-    hunter_spell_t::execute();
+    hunter_ranged_attack_t::execute();
 
-    if ( ! in_combat )
+    if ( !maybe_ptr( p() -> dbc.ptr ) && ! in_combat )
     {
       in_combat = player -> in_combat;
       const timespan_t travel_time_ = travel_time() - precombat_travel_time;
@@ -2991,7 +3054,7 @@ struct explosive_shot_t: public hunter_spell_t
 
   void reset() override
   {
-    hunter_spell_t::reset();
+    hunter_ranged_attack_t::reset();
     in_combat = false;
   }
 };
@@ -4074,7 +4137,9 @@ struct trueshot_t: public hunter_spell_t
   {
     hunter_spell_t::execute();
 
-    p() -> cooldowns.aimed_shot -> reset( true );
+    if ( !maybe_ptr( p() -> dbc.ptr ) )
+      p() -> cooldowns.aimed_shot -> reset( true );
+
     p() -> buffs.trueshot -> trigger();
     p() -> buffs.unerring_vision_driver -> trigger();
   }
@@ -4922,10 +4987,21 @@ void hunter_t::create_buffs()
 
   buffs.trueshot =
     make_buff( this, "trueshot", specs.trueshot )
-      -> set_default_value( specs.trueshot -> effectN( 1 ).percent() )
       -> set_cooldown( timespan_t::zero() )
-      -> set_activated( true )
-      ->add_invalidate(CACHE_HASTE);
+      -> set_activated( true );
+  if ( maybe_ptr( dbc.ptr ) )
+  {
+    buffs.trueshot -> set_default_value( specs.trueshot -> effectN( 4 ).percent() );
+    buffs.trueshot -> set_stack_change_callback( [this]( buff_t*, int, int ) {
+        cooldowns.aimed_shot -> adjust_recharge_multiplier();
+        cooldowns.rapid_fire -> adjust_recharge_multiplier();
+      } );
+  }
+  else
+  {
+    buffs.trueshot -> set_default_value( specs.trueshot -> effectN( 1 ).percent() );
+    buffs.trueshot -> add_invalidate( CACHE_HASTE );
+  }
 
   buffs.lock_and_load =
     make_buff( this, "lock_and_load", talents.lock_and_load -> effectN( 1 ).trigger() )
@@ -5111,7 +5187,8 @@ void hunter_t::init_procs()
 {
   player_t::init_procs();
 
-  procs.wild_call                    = get_proc( "wild_call" );
+  procs.wild_call    = get_proc( "Wild Call" );
+  procs.lethal_shots = get_proc( "Lethal Shots" );
 }
 
 // hunter_t::init_rng =======================================================
@@ -5136,7 +5213,7 @@ void hunter_t::init_assessors()
 {
   player_t::init_assessors();
 
-  if ( specialization() == HUNTER_MARKSMANSHIP || talents.terms_of_engagement -> ok() )
+  if ( ( specialization() == HUNTER_MARKSMANSHIP && !maybe_ptr( dbc.ptr ) ) || talents.terms_of_engagement -> ok() )
   {
     assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, [this]( dmg_e, action_state_t* s ) {
       if ( s -> result_amount > 0 )
@@ -5600,7 +5677,7 @@ double hunter_t::composite_melee_haste() const
 {
   double h = player_t::composite_melee_haste();
 
-  if ( buffs.trueshot -> check() )
+  if ( !maybe_ptr( dbc.ptr ) && buffs.trueshot -> check() )
     h *= 1.0 / ( 1.0 + buffs.trueshot -> check_value() );
 
   if ( buffs.dire_beast -> check() )
@@ -5630,7 +5707,7 @@ double hunter_t::composite_spell_haste() const
 {
   double h = player_t::composite_spell_haste();
 
-  if ( buffs.trueshot -> check() )
+  if ( !maybe_ptr( dbc.ptr ) && buffs.trueshot -> check() )
     h *= 1.0 / ( 1.0 + buffs.trueshot -> check_value() );
 
   if ( buffs.dire_beast -> check() )
