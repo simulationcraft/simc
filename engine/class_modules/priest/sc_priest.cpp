@@ -1176,8 +1176,6 @@ void priest_t::init_base_stats()
 void priest_t::init_resources( bool force )
 {
   base_t::init_resources( force );
-
-  resources.current[ RESOURCE_INSANITY ] = 0.0;
 }
 
 void priest_t::init_scaling()
