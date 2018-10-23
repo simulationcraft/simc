@@ -219,10 +219,12 @@ public:
 struct mind_sear_tick_t final : public priest_spell_t
 {
   double insanity_gain;
+  double harvested_thoughts_value;
 
   mind_sear_tick_t( priest_t& p, const spell_data_t* mind_sear )
     : priest_spell_t( "mind_sear_tick", p, mind_sear->effectN( 1 ).trigger() ),
-      insanity_gain( p.find_spell( 208232 )->effectN( 1 ).percent() )
+      insanity_gain( p.find_spell( 208232 )->effectN( 1 ).percent() ),
+      harvested_thoughts_value( priest().azerite.thought_harvester.value( 2 ) )
   {
     background    = true;
     dual          = true;
@@ -247,7 +249,23 @@ struct mind_sear_tick_t final : public priest_spell_t
       }
     }
 
+    if ( priest().buffs.harvested_thoughts->check() && maybe_ptr( priest().dbc.ptr ) )
+    {
+      d += harvested_thoughts_value;
+    }
+
     return d;
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    priest_spell_t::last_tick( d );
+
+    // When you stop casting Mind Sear expire the buff from Thought Harvester
+    if ( maybe_ptr( priest().dbc.ptr ) )
+    {
+      priest().buffs.harvested_thoughts->expire();
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -919,13 +937,15 @@ struct shadow_word_pain_t final : public priest_spell_t
 struct vampiric_touch_t final : public priest_spell_t
 {
   double insanity_gain;
+  double harvested_thoughts_value;
   propagate_const<shadow_word_pain_t*> child_swp;
   bool ignore_healing = false;
 
   vampiric_touch_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "vampiric_touch", p, p.find_class_spell( "Vampiric Touch" ) ),
       insanity_gain( data().effectN( 3 ).resource( RESOURCE_INSANITY ) ),
-      ignore_healing( p.options.priest_ignore_healing )
+      ignore_healing( p.options.priest_ignore_healing ),
+      harvested_thoughts_value( priest().azerite.thought_harvester.value( 1 ) )
   {
     parse_options( options_str );
 
@@ -957,6 +977,18 @@ struct vampiric_touch_t final : public priest_spell_t
         priest().resource_gain( RESOURCE_HEALTH, amount_to_heal, priest().gains.vampiric_touch_health );
     double overheal = amount_to_heal - actual_amount;
     */
+  }
+
+  double bonus_da( const action_state_t* state ) const override
+  {
+    double d = priest_spell_t::bonus_da( state );
+
+    if ( priest().azerite.thought_harvester.enabled() && maybe_ptr( priest().dbc.ptr ) )
+    {
+      d += harvested_thoughts_value;
+    }
+
+    return d;
   }
 
   void impact( action_state_t* s ) override
