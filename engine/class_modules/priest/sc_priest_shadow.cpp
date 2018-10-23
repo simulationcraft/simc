@@ -145,14 +145,19 @@ public:
   {
     double d = priest_spell_t::bonus_da( state );
 
-    if ( priest().buffs.whispers_of_the_damned->check() )
+    if ( priest().buffs.whispers_of_the_damned->check() && !maybe_ptr( priest().dbc.ptr ) )
     {
       d += whispers_of_the_damned_value * priest().buffs.whispers_of_the_damned->check();
     }
 
-    if ( priest().buffs.harvested_thoughts->check() )
+    if ( priest().buffs.harvested_thoughts->check() && !maybe_ptr( priest().dbc.ptr ) )
     {
       d += harvested_thoughts_value;
+    }
+
+    if ( priest().azerite.whispers_of_the_damned.enabled() && maybe_ptr( priest().dbc.ptr ) )
+    {
+      d += whispers_of_the_damned_value;
     }
 
     return d;
@@ -165,9 +170,19 @@ public:
     double temp_gain = insanity_gain + ( priest().buffs.empty_mind->stack() *
                                          priest().buffs.empty_mind->data().effectN( 2 ).percent() );
 
+    // Generates 10 more insanity if it critically strikes
+    if ( s->result == RESULT_CRIT && priest().azerite.whispers_of_the_damned.enabled() && maybe_ptr( priest().dbc.ptr ) )
+    {
+      // TODO: replace with spell data once PTR data is updated
+      temp_gain += 10;
+    }
+
     priest().generate_insanity( temp_gain, priest().gains.insanity_mind_blast, s->action );
     priest().buffs.empty_mind->expire();
-    priest().buffs.harvested_thoughts->expire();
+    if ( !maybe_ptr( priest().dbc.ptr ) )
+    {
+      priest().buffs.harvested_thoughts->expire();
+    }
   }
 
   timespan_t execute_time() const override
@@ -997,6 +1012,7 @@ struct vampiric_touch_t final : public priest_spell_t
 
     priest().generate_insanity( insanity_gain, priest().gains.insanity_vampiric_touch_onhit, s->action );
 
+    // TODO: add in proc chance for PTR thought harvester
     if ( priest().azerite.thought_harvester.enabled() )
     {
       priest().buffs.harvested_thoughts->trigger();
@@ -1107,7 +1123,7 @@ struct void_bolt_t final : public priest_spell_t
       cooldown->reset( false );
     }
 
-    if ( priest().azerite.whispers_of_the_damned.enabled() )
+    if ( priest().azerite.whispers_of_the_damned.enabled() && !maybe_ptr( priest().dbc.ptr ) )
     {
       priest().buffs.whispers_of_the_damned->trigger();
     }
