@@ -1348,8 +1348,12 @@ struct dark_ascension_t final : public priest_spell_t
 
 struct void_torrent_t final : public priest_spell_t
 {
+  double insanity_gain;
+
+  // hard coding insanity value until spell data is released
   void_torrent_t( priest_t& p, const std::string& options_str )
-    : priest_spell_t( "void_torrent", p, p.find_talent_spell( "Void Torrent" ) )
+    : priest_spell_t( "void_torrent", p, p.find_talent_spell( "Void Torrent" ) ),
+      insanity_gain( 30 * maybe_ptr( priest().dbc.ptr ) )
   {
     parse_options( options_str );
 
@@ -1357,6 +1361,7 @@ struct void_torrent_t final : public priest_spell_t
     channeled   = true;
     use_off_gcd = true;
     tick_zero   = true;
+    energize_type = ENERGIZE_NONE;  // disable resource generation from spell data
 
     dot_duration = timespan_t::from_seconds( 4.0 );
   }
@@ -1396,11 +1401,14 @@ struct void_torrent_t final : public priest_spell_t
     // Adjust the Voidform end event (essentially remove it) after the Void Torrent buff is up, since it disables
     // insanity drain for the duration of the channel
     priest().insanity.adjust_end_event();
+
+    // TODO: might need to generate ( 30 / 4 ) insanity per each tick
+    priest().generate_insanity( insanity_gain, priest().gains.insanity_void_torrent, execute_state->action );
   }
 
   bool ready() override
   {
-    if ( !priest().buffs.voidform->check() )
+    if ( !priest().buffs.voidform->check() && !maybe_ptr( priest().dbc.ptr ) )
     {
       return false;
     }
@@ -1656,7 +1664,7 @@ struct lingering_insanity_t final : public priest_buff_t<buff_t>
   {
     set_reverse( true );
     set_duration( timespan_t::from_seconds( 50 ) );
-    set_period( timespan_t::from_seconds( p.talents.lingering_insanity->effectN( 2 ).base_value() ) );
+    set_period( timespan_t::from_seconds( p.talents.lingering_insanity->effectN( 2 ).base_value() + maybe_ptr( p.dbc.ptr ) ) );
     set_tick_behavior( buff_tick_behavior::REFRESH );
     set_tick_time_behavior( buff_tick_time_behavior::UNHASTED );
     set_max_stack( (int)(float)p.find_spell( 185916 )->effectN( 4 ).base_value() );  // or 18?
@@ -1748,7 +1756,8 @@ priest_t::insanity_state_t::insanity_state_t( priest_t& a )
     last_drained( timespan_t::zero() ),
     actor( a ),
     base_drain_per_sec( a.find_spell( 194249 )->effectN( 3 ).base_value() / -500.0 ),
-    stack_drain_multiplier( 0.80 ),  // Hardcoded Patch 8.0 (2018-06-20)
+    // 15% reduction as of 10/22/2018 on PTR
+    stack_drain_multiplier( 0.80 - ( 0.12 * maybe_ptr( a.dbc.ptr ) ) ),  // Hardcoded Patch 8.0 (2018-06-20)
     base_drain_multiplier( 1.0 )
 {
 }
