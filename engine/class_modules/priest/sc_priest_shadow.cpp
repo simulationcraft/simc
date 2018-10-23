@@ -1632,6 +1632,7 @@ struct voidform_t final : public priest_buff_t<buff_t>
 
     if ( priest().talents.lingering_insanity->ok() )
     {
+      priest().buffs.lingering_insanity->expire();
       priest().buffs.lingering_insanity->trigger( expiration_stacks / 2 );
     }
 
