@@ -1663,7 +1663,7 @@ struct lingering_insanity_t final : public priest_buff_t<buff_t>
   lingering_insanity_t( priest_t& p ) : base_t( p, "lingering_insanity", p.talents.lingering_insanity )
   {
     set_reverse( true );
-    set_duration( timespan_t::from_seconds( 50 ) );
+    set_duration( timespan_t::from_seconds( 60 ) );
     set_period( timespan_t::from_seconds( p.talents.lingering_insanity->effectN( 2 ).base_value() + maybe_ptr( p.dbc.ptr ) ) );
     set_tick_behavior( buff_tick_behavior::REFRESH );
     set_tick_time_behavior( buff_tick_time_behavior::UNHASTED );
