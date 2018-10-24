@@ -5918,7 +5918,6 @@ void mage_t::create_buffs()
                                         else
                                           buffs.flames_of_alacrity -> decrement( prev - cur );
                                       } );
-
   buffs.heating_up             = make_buff( this, "heating_up",  find_spell( 48107 ) );
   buffs.hot_streak             = make_buff( this, "hot_streak",  find_spell( 48108 ) );
 
