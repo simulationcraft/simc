@@ -4,7 +4,7 @@
 #ifndef ptr_MAX_CLASS
 #define ptr_MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 8.1.0.28151
+// Class based active abilities, wow build 8.1.0.28202
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -902,11 +902,10 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
     {
            0,
     },
-    // Pet tree, 43 abilities
+    // Pet tree, 42 abilities
     {
        89766, // Axe Toss (Special Ability)
       267997, // Bile Spit
-        6307, // Blood Pact (Special Ability)
       171011, // Burning Presence (Special Ability)
         3716, // Consuming Shadows (Basic Attack)
       170995, // Cripple
@@ -1259,7 +1258,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 };
 #define PTR_TREE_SPECIALIZATION_SIZE (34)
 
-// Talent tree specialization abilities, wow build 8.1.0.28151
+// Talent tree specialization abilities, wow build 8.1.0.28202
 static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1774,6 +1773,8 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
        73325, // Leap of Faith
        48045, // Mind Sear
       190719, // Shadow Word: Death
+       45243, // Focused Will
+      280752, // Hallucinations
            0,
     },
     {
@@ -1824,6 +1825,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
        81229, // Runic Empowerment
       278223, // Death Strike (Rank 2)
        51271, // Pillar of Frost
+       48263, // Veteran of the Third War
            0,
     },
     // Specialization abilities for Unholy
@@ -1848,6 +1850,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
        51462, // Runic Corruption
       275699, // Apocalypse
       278223, // Death Strike (Rank 2)
+       48263, // Veteran of the Third War
            0,
     },
     {
@@ -2287,6 +2290,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
       270100, // Bear Form (Rank 2)
       273048, // Frenzied Regeneration (Rank 2)
         2908, // Soothe
+      288826, // Stampeding Roar (Rank 2)
            0,
     },
     // Specialization abilities for Restoration
@@ -2371,7 +2375,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
 };
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 8.1.0.28151
+// Class mastery abilities, wow build 8.1.0.28202
 static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2610,7 +2614,7 @@ static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS]
 #define ptr_MAX_RACE (31)
 #endif
 
-// Racial abilities, wow build 8.1.0.28151
+// Racial abilities, wow build 8.1.0.28202
 static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3538,7 +3542,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
 };
 #define PTR_SET_BONUS_DATA_SIZE (700)
 
-// Set bonus data, wow build 8.1.0.28151
+// Set bonus data, wow build 8.1.0.28202
 static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -4269,9 +4273,9 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   { "Waycrest Legacy"                            , "waycrests_legacy",     15,  1439,   21,   2,  11,   -1, 277522, { 158362, 159631,  0 } },
   { "Waycrest Legacy"                            , "waycrests_legacy",     15,  1439,   21,   2,  12,   -1, 277522, { 158362, 159631,  0 } },
 };
-#define PTR_RPPMMOD_SIZE (928)
+#define PTR_RPPMMOD_SIZE (933)
 
-// 928 RPPM Modifiers, wow build level 8.1.0.28151
+// 933 RPPM Modifiers, wow build level 8.1.0.28202
 static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   {  17495,    4,  1,  1.0000 },
   {  27656,    4,  1,  1.0000 },
@@ -5201,5 +5205,10 @@ static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   { 288055,    4,  1,  1.0000 },
   { 288109,    4,  1,  1.0000 },
   { 288332,    4,  1,  1.0000 },
+  { 288757,    4,  1,  1.0000 },
+  { 288804,    4,  1,  1.0000 },
+  { 289287,    4,  1,  1.0000 },
+  { 289289,    4,  1,  1.0000 },
+  { 289391,    4,  1,  1.0000 },
   {      0,    0,  0,  0.0000 },
 };

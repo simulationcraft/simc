@@ -1,6 +1,6 @@
 #define PTR_TALENT_SIZE (648)
 
-// 648 talents, wow build 8.1.0.28151
+// 648 talents, wow build 8.1.0.28202
 static struct talent_data_t __ptr_talent_data[] = {
   { "Second Wind"                       , 15757, 0x00, 0x0001,   0,   0,   3,   29838,       0,  0 },
   { "Punish"                            , 15759, 0x00, 0x0001,  73,   1,   0,  275334,       0,  0 },
@@ -199,7 +199,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Downpour"                          , 21971, 0x00, 0x0040, 264,   1,   5,  207778,       0,  0 },
   { "Ascendance"                        , 21972, 0x00, 0x0040, 263,   2,   6,  114051,       0,  0 },
   { "Crashing Storm"                    , 21973, 0x00, 0x0040, 263,   0,   5,  192246,       0,  0 },
-  { "Mania"                             , 21976, 0x00, 0x0010, 258,   2,   1,  193173,       0,  0 },
+  { "Intangibility"                     , 21976, 0x00, 0x0010, 258,   2,   1,  288733,       0,  0 },
   { "Censure"                           , 21977, 0x00, 0x0010, 257,   1,   3,  200199,       0,  0 },
   { "Dark Ascension"                    , 21978, 0x00, 0x0010, 258,   1,   6,  280711,       0,  0 },
   { "Surrender to Madness"              , 21979, 0x00, 0x0010, 258,   2,   6,  193223,       0,  0 },
@@ -569,7 +569,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Frenetic Speed"                    , 22904, 0x00, 0x0080,  63,   0,   4,  236058,       0,  0 },
   { "Chrono Shift"                      , 22907, 0x00, 0x0080,  62,   0,   4,  235711,       0,  0 },
   { "Trail of Ruin"                     , 22909, 0x00, 0x0800, 577,   0,   2,  258881,       0,  0 },
-  { "Intimidating Roar"                 , 22916, 0x00, 0x0400, 104,   1,   1,  236748,      99,  0 },
+  { "Ursol's Vortex"                    , 22916, 0x00, 0x0400, 104,   1,   1,  102793,       0,  0 },
   { "Evangelism"                        , 22976, 0x00, 0x0010, 256,   2,   6,  246287,       0,  0 },
   { "Earthen Spike"                     , 22977, 0x00, 0x0040, 263,   1,   6,  188089,       0,  0 },
   { "Toxic Blade"                       , 23015, 0x00, 0x0008, 259,   1,   5,  245388,       0,  0 },
@@ -604,7 +604,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Totem Mastery"                     , 23109, 0x00, 0x0040, 263,   2,   1,  262395,       0,  0 },
   { "Earthgrab Totem"                   , 23110, 0x00, 0x0040, 264,   1,   2,   51485,       0,  0 },
   { "Icefury"                           , 23111, 0x00, 0x0040, 262,   2,   5,  210714,       0,  0 },
-  { "Rushing Jade Wind"                 , 23122, 0x00, 0x0200, 269,   1,   5,  261715,       0,  0 },
+  { "Rushing Jade Wind"                 , 23122, 0x00, 0x0200, 269,   1,   5,  116847,       0,  0 },
   { "Twist of Fate"                     , 23125, 0x00, 0x0010, 258,   0,   2,  109142,       0,  0 },
   { "Misery"                            , 23126, 0x00, 0x0010, 258,   1,   2,  238558,       0,  0 },
   { "Dark Void"                         , 23127, 0x00, 0x0010, 258,   2,   2,  263346,       0,  0 },
