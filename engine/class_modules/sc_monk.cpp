@@ -1930,8 +1930,8 @@ private:
     {
       aoe  = 3;
       dual = direct_tick = background = may_crit = may_miss = true;
-      range                                                 = radius;
-      radius                                                = 0;
+      //range                                                 = radius;
+      //radius                                                = 0;
     }
   };
 
@@ -1944,12 +1944,12 @@ private:
 
       // for future compatibility, we may want to grab Xuen and our tick spell and build this data from those (Xuen
       // summon duration, for example)
-      dot_duration = p -> duration;
+      dot_duration = p->o()->talent.invoke_xuen->duration() + timespan_t::from_seconds(1);
       hasted_ticks = may_miss = false;
       dynamic_tick_action = true;  // trigger tick when t == 0
       base_tick_time =
           p->o()->passives.crackling_tiger_lightning_driver->effectN( 1 ).period();  // trigger a tick every second
-      cooldown->duration      = p->o()->talent.invoke_xuen->duration();              // we're done after 45 seconds
+      cooldown->duration      = p->o()->talent.invoke_xuen->cooldown();              // we're done after 45 seconds
       attack_power_mod.direct = 0.0;
       attack_power_mod.tick   = 0.0;
 
