@@ -309,6 +309,7 @@ public:
     // Survival
     azerite_power_t blur_of_talons;
     azerite_power_t latent_poison;
+    azerite_power_t primeval_intuition;
     azerite_power_t up_close_and_personal;
     azerite_power_t venomous_fangs;
     azerite_power_t wilderness_survival;
@@ -358,6 +359,7 @@ public:
     buff_t* haze_of_rage;
     buff_t* in_the_rhythm;
     buff_t* primal_instincts;
+    buff_t* primeval_intuition;
     buff_t* unerring_vision_driver;
     buff_t* unerring_vision;
     buff_t* up_close_and_personal;
@@ -3183,6 +3185,7 @@ struct melee_focus_spender_t: hunter_melee_attack_t
     p() -> buffs.vipers_venom -> trigger();
     if ( p() -> buffs.coordinated_assault -> check() )
       p() -> buffs.blur_of_talons -> trigger();
+    p() -> buffs.primeval_intuition -> trigger();
 
     trigger_birds_of_prey( p(), target );
     if ( wilderness_survival_reduction != timespan_t::zero() )
@@ -4882,6 +4885,7 @@ void hunter_t::init_spells()
 
   azerite.blur_of_talons        = find_azerite_spell( "Blur of Talons" );
   azerite.latent_poison         = find_azerite_spell( "Latent Poison" );
+  azerite.primeval_intuition    = find_azerite_spell( "Primeval Intuition" );
   azerite.up_close_and_personal = find_azerite_spell( "Up Close And Personal" );
   azerite.venomous_fangs        = find_azerite_spell( "Venomous Fangs" );
   azerite.wilderness_survival   = find_azerite_spell( "Wilderness Survival" );
@@ -4919,6 +4923,8 @@ void hunter_t::init_base_stats()
   }
 
   resources.base[RESOURCE_FOCUS] = 100 + specs.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS );
+  if ( azerite.primeval_intuition.ok() )
+    resources.base[RESOURCE_FOCUS] += find_spell( 288571 ) -> effectN( 2 ).base_value();
 }
 
 // hunter_t::init_buffs =====================================================
@@ -5116,6 +5122,11 @@ void hunter_t::create_buffs()
     make_buff<stat_buff_t>( this, "primal_instincts", find_spell( 279810 ) )
       -> add_stat( STAT_MASTERY_RATING, azerite.primal_instincts.value( 1 ) )
       -> set_trigger_spell( azerite.primal_instincts );
+
+  buffs.primeval_intuition =
+    make_buff<stat_buff_t>( this, "primeval_intuition", find_spell( 288573 ) )
+      -> add_stat( STAT_CRIT_RATING, azerite.primeval_intuition.value( 1 ) )
+      -> set_trigger_spell( azerite.primeval_intuition );
 
   buffs.unerring_vision_driver =
     make_buff( this, "unerring_vision_driver", find_spell( 274446 ) )
