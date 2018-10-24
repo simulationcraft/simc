@@ -173,8 +173,7 @@ public:
     // Generates 10 more insanity if it critically strikes
     if ( s->result == RESULT_CRIT && priest().azerite.whispers_of_the_damned.enabled() && maybe_ptr( priest().dbc.ptr ) )
     {
-      // TODO: replace with spell data once PTR data is updated
-      temp_gain += 10;
+      temp_gain += priest().azerite.whispers_of_the_damned.spell_ref().effectN( 1 ).trigger()->effectN( 1 ).base_value();
     }
 
     priest().generate_insanity( temp_gain, priest().gains.insanity_mind_blast, s->action );
