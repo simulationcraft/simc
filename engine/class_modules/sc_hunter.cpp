@@ -305,6 +305,7 @@ public:
     azerite_power_t in_the_rhythm;
     azerite_power_t rapid_reload;
     azerite_power_t steady_aim;
+    azerite_power_t surging_shots;
     azerite_power_t unerring_vision;
     // Survival
     azerite_power_t blur_of_talons;
@@ -495,6 +496,7 @@ public:
     spell_data_ptr_t aimed_shot;
     spell_data_ptr_t lone_wolf;
     spell_data_ptr_t precise_shots;
+    spell_data_ptr_t rapid_fire;
     spell_data_ptr_t trick_shots;
     spell_data_ptr_t trueshot;
 
@@ -2525,6 +2527,10 @@ struct aimed_shot_t : public aimed_shot_base_t
     proc_t* double_tap;
     proc_t* lethal_shots;
   } procs;
+  struct {
+    double chance = 0;
+    proc_t* proc;
+  } surging_shots;
 
   aimed_shot_t( hunter_t* p, const std::string& options_str ) :
     aimed_shot_base_t( "aimed_shot", p ),
@@ -2540,6 +2546,12 @@ struct aimed_shot_t : public aimed_shot_base_t
 
     procs.double_tap = p -> get_proc( "double_tap_aimed" );
     procs.lethal_shots = p -> get_proc( "lethal_shots_aimed" );
+
+    if ( p -> azerite.surging_shots.ok() )
+    {
+      surging_shots.chance = p -> azerite.surging_shots.spell_ref().effectN( 1 ).percent();
+      surging_shots.proc = p -> get_proc( "Surging Shots Rapid Fire reset" );
+    }
   }
 
   double cost() const override
@@ -2588,6 +2600,12 @@ struct aimed_shot_t : public aimed_shot_base_t
     p() -> buffs.precise_shots -> trigger( 1 + rng().range( p() -> buffs.precise_shots -> max_stack() ) );
     p() -> buffs.master_marksman -> trigger();
     p() -> buffs.t20_4p_precision -> trigger();
+
+    if ( rng().roll( surging_shots.chance ) )
+    {
+      surging_shots.proc -> occur();
+      p() -> cooldowns.rapid_fire -> reset( true );
+    }
 
     if ( p() -> sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T20, B2 ) )
     {
@@ -2816,6 +2834,10 @@ struct rapid_fire_t: public hunter_spell_t
       double amount = 0.0;
       gain_t* gain = nullptr;
     } focused_fire;
+    struct {
+      double value = 0;
+      int max_num_ticks = 0;
+    } surging_shots;
 
     rapid_fire_damage_t( const std::string& n, hunter_t* p ):
       hunter_ranged_attack_t( n, p, p -> find_spell( 257044 ) -> effectN( 2 ).trigger() ),
@@ -2836,6 +2858,15 @@ struct rapid_fire_t: public hunter_spell_t
         focused_fire.chance = trigger_ -> proc_chance();
         focused_fire.amount = trigger_ -> effectN( 1 ).trigger() -> effectN( 1 ).base_value();
         focused_fire.gain = p -> get_gain( "focused_fire" );
+      }
+
+      if ( p -> azerite.surging_shots.ok() )
+      {
+        // XXX: The multipliers are emperically hardcoded. The tooltip is wrong.
+        base_dd_adder += p -> azerite.surging_shots.value( 2 ) * .5;
+        surging_shots.value = p -> azerite.surging_shots.value( 2 ) * .2;
+        // XXX: Does not scale beyond the base number of ticks
+        surging_shots.max_num_ticks = p -> specs.rapid_fire -> effectN( 1 ).base_value();
       }
     }
 
@@ -2864,6 +2895,15 @@ struct rapid_fire_t: public hunter_spell_t
 
       return cc;
     }
+
+    double bonus_da( const action_state_t* s ) const override
+    {
+      double b = hunter_ranged_attack_t::bonus_da( s );
+
+      b += surging_shots.value * std::min( parent_dot -> current_tick, surging_shots.max_num_ticks );
+
+      return b;
+    }
   };
 
   rapid_fire_damage_t* damage;
@@ -2874,7 +2914,7 @@ struct rapid_fire_t: public hunter_spell_t
   } procs;
 
   rapid_fire_t( hunter_t* p, const std::string& options_str ):
-    hunter_spell_t( "rapid_fire", p, p -> find_spell( 257044 ) ),
+    hunter_spell_t( "rapid_fire", p, p -> specs.rapid_fire ),
     damage( p -> get_background_action<rapid_fire_damage_t>( "rapid_fire_damage" ) ),
     base_num_ticks( data().effectN( 1 ).base_value() )
   {
@@ -4856,6 +4896,7 @@ void hunter_t::init_spells()
   specs.aimed_shot           = find_specialization_spell( "Aimed Shot" );
   specs.lone_wolf            = find_specialization_spell( "Lone Wolf" );
   specs.precise_shots        = find_specialization_spell( "Precise Shots" );
+  specs.rapid_fire           = find_specialization_spell( "Rapid Fire" );
   specs.trick_shots          = find_specialization_spell( "Trick Shots" );
   specs.trueshot             = find_specialization_spell( "Trueshot" );
 
@@ -4881,6 +4922,7 @@ void hunter_t::init_spells()
   azerite.in_the_rhythm         = find_azerite_spell( "In The Rhythm" );
   azerite.rapid_reload          = find_azerite_spell( "Rapid Reload" );
   azerite.steady_aim            = find_azerite_spell( "Steady Aim" );
+  azerite.surging_shots         = find_azerite_spell( "Surging Shots" );
   azerite.unerring_vision       = find_azerite_spell( "Unerring Vision" );
 
   azerite.blur_of_talons        = find_azerite_spell( "Blur of Talons" );
