@@ -5513,8 +5513,7 @@ void rogue_t::init_action_list()
 
     // Stealth
     action_priority_list_t* stealthed = get_action_priority_list( "stealthed", "Stealthed Actions" );
-    stealthed -> add_action( this, "Rupture", "if=combo_points>=4&(talent.nightstalker.enabled|talent.subterfuge.enabled&talent.exsanguinate.enabled&cooldown.exsanguinate.remains<=2&variable.single_target|!ticking)&target.time_to_die-remains>6", "Nighstalker, or Subt+Exsg on 1T: Snapshot Rupture; Also use Rupture over Envenom if it's not applied (Opener)" );
-    stealthed -> add_action( this, "Envenom", "if=combo_points>=cp_max_spend" );
+    stealthed -> add_action( this, "Rupture", "if=combo_points>=4&(talent.nightstalker.enabled|talent.subterfuge.enabled&(talent.exsanguinate.enabled&cooldown.exsanguinate.remains<=2|!ticking)&variable.single_target)&target.time_to_die-remains>6", "Nighstalker, or Subt+Exsg on 1T: Snapshot Rupture" );
     stealthed -> add_action( this, "Garrote", "cycle_targets=1,if=talent.subterfuge.enabled&refreshable&target.time_to_die-remains>2", "Subterfuge: Apply or Refresh with buffed Garrotes" );
     stealthed -> add_action( this, "Garrote", "cycle_targets=1,if=talent.subterfuge.enabled&remains<=10&pmultiplier<=1&target.time_to_die-remains>2", "Subterfuge: Override normal Garrotes with snapshot versions" );
     stealthed -> add_action( this, "Rupture", "if=talent.subterfuge.enabled&azerite.shrouded_suffocation.enabled&!dot.rupture.ticking", "Subterfuge + Shrouded Suffocation: Apply early Rupture that will be refreshed for pandemic." );
