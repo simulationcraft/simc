@@ -1,6 +1,6 @@
 # vim: tabstop=4 shiftwidth=4 softtabstop=4
 # CASC file formats, based on the work of Caali et al. @ http://www.ownedcore.com/forums/world-of-warcraft/world-of-warcraft-model-editing/471104-analysis-of-casc-filesystem.html
-import os, sys, mmap, hashlib, stat, struct, zlib, glob, re, urllib.request, urllib.error, collections, codecs, io, binascii
+import os, sys, mmap, hashlib, stat, struct, zlib, glob, re, urllib.request, urllib.error, collections, codecs, io, binascii, socket
 
 import jenkins
 
@@ -424,6 +424,7 @@ class CDNIndex(CASCObject):
 	PATCH_ALPHA = 'wow_alpha'
 	PATCH_PTR = 'wowt'
 	PATCH_LIVE = 'wow'
+	PATCH_CLASSIC = 'wow_classic'
 
 	def __init__(self, options):
 		CASCObject.__init__(self, options)
@@ -463,6 +464,8 @@ class CDNIndex(CASCObject):
 			return '%s/%s' % ( CDNIndex.PATCH_BASE_URL, CDNIndex.PATCH_BETA )
 		elif self.options.alpha:
 			return '%s/%s' % ( CDNIndex.PATCH_BASE_URL, CDNIndex.PATCH_ALPHA )
+		elif self.options.classic:
+			return '%s/%s' % ( CDNIndex.PATCH_BASE_URL, CDNIndex.PATCH_CLASSIC )
 		else:
 			return '%s/%s' % ( CDNIndex.PATCH_BASE_URL, CDNIndex.PATCH_LIVE )
 
@@ -532,6 +535,7 @@ class CDNIndex(CASCObject):
 		path = os.path.join(self.cache_dir('config'), self.cdn_hash)
 		url = self.cdn_url('config', self.cdn_hash)
 
+		print(path, url)
 		for line in self.cached_open(path, url):
 			mobj = re.match('^archives = (.+)', line.decode('utf-8'))
 			if mobj:
@@ -620,6 +624,27 @@ class CDNIndex(CASCObject):
 			handle = self.cached_open(key_file_path, self.cdn_url('data', codecs.encode(key, 'hex').decode('utf-8')))
 
 		return handle.read()
+
+class RibbitIndex(CDNIndex):
+	def get_url(self, content, headers = None):
+		if headers or 'http://' in content:
+			return super().get_url(content, headers)
+		else:
+			s = socket.create_connection(('us.version.battle.net', 1119), 10)
+			n_sent = s.send(bytes(content + '\r\n', 'ascii'))
+			return s.makefile('b')
+
+	def patch_base_url(self):
+		if self.options.ptr:
+			return 'v1/products/%s' % self.PATCH_PTR
+		elif self.options.beta:
+			return 'v1/products/%s' % self.PATCH_BETA
+		elif self.options.alpha:
+			return 'v1/products/%s' % self.PATCH_ALPHA
+		elif self.options.classic:
+			return 'v1/products/%s' % self.PATCH_CLASSIC
+		else:
+			return 'v1/products/%s' % self.PATCH_LIVE
 
 class CASCDataIndexFile(object):
 	def __init__(self, options, index, version, file):

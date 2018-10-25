@@ -23,14 +23,19 @@ parser.add_option( '-x', '--cache', type = 'string', dest = 'cache', default = '
 parser.add_option( '--ptr', action = 'store_true', dest = 'ptr', default = False, help = 'Download PTR files [default no, only used for --cdn]' )
 parser.add_option( '--beta', action = 'store_true', dest = 'beta', default = False, help = 'Download Beta files [default no, only used for --cdn]' )
 parser.add_option( '--alpha', action = 'store_true', dest = 'alpha', default = False, help = 'Download Alpha files [default no, only used for --cdn]' )
+parser.add_option( '--classic', action = 'store_true', dest = 'classic', default = False, help = 'Download Classic files [default no, only used for --cdn]' )
 parser.add_option( '--locale', action = 'store', dest = 'locale', default = 'en_US', help = 'Extraction locale [default en_US, only used for --cdn]' )
+parser.add_option( '--ribbit', action = 'store_true', dest = 'ribbit', default = False, help = 'Use Ribbit for configuration information')
 
 if __name__ == '__main__':
 	(opts, args) = parser.parse_args()
 	opts.parser = parser
 
 	if not opts.mode and opts.online:
-		cdn = casc.CDNIndex(opts)
+		if opts.ribbit:
+			cdn = casc.RibbitIndex(opts)
+		else:
+			cdn = casc.CDNIndex(opts)
 		cdn.CheckVersion()
 		sys.exit(0)
 	#elif opts.mode == 'fieldlist':
