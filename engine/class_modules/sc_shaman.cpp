@@ -4860,22 +4860,42 @@ struct lightning_bolt_t : public shaman_spell_t
     return chance;
   }
 
+  /* Number of guaranteed overloads */
   size_t n_overloads( const action_state_t* t ) const override
   {
     size_t n = shaman_spell_t::n_overloads( t );
-    if ( maybe_ptr( p()->dbc.ptr ) && ( p()->buff.surge_of_power->up() || p()->buff.surge_of_power_lightning->up() ) )
+    // TODO: revisit this with more data
+    // Does surge of power really act in addition to the base overload chance?
+    // Is the Surge of Power overload chance fixed like in the current implementation?
+    //   yes - what's the chance?
+    //   no - how does it interact with mastery?
+    if ( maybe_ptr( p()->dbc.ptr ) && p()->buff.surge_of_power_lightning->up() )
     {
       n += (size_t)1;
+
+      // we're rolling the fake chance twice and the second one only when the first one was successful
+      double fake_chance = 0.2;  // guess value, no chance in spell data
+      if ( rng().roll( fake_chance ) )
+      {
+        n += (size_t)1;
+
+        if ( rng().roll( fake_chance ) )
+        {
+          n += (size_t)1;
+        }
+      }
     }
+
     return n;
   }
 
   /* Number of potential overloads */
-  size_t n_overload_chances( const action_state_t* ) const override
+  size_t n_overload_chances( const action_state_t* t ) const override
   {
     if ( !maybe_ptr( p()->dbc.ptr ) && p()->talent.high_voltage->ok() )
       return (size_t)1;
-    return (size_t)0;
+
+    return shaman_spell_t::n_overload_chances( t );
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -4942,12 +4962,12 @@ struct lightning_bolt_t : public shaman_spell_t
       // is consumed on LB cast and surge_of_power_lightning is reset to 2 stacks
       if ( p()->buff.surge_of_power->up() )
       {
-        p()->buff.surge_of_power_lightning->trigger( p()->buff.surge_of_power_lightning->max_stack() );
+        p()->buff.surge_of_power_lightning->trigger( 2 );
         p()->buff.surge_of_power->decrement();
       }
       else if ( p()->buff.surge_of_power_lightning->up() )
       {
-        p()->buff.surge_of_power_lightning->decrement();
+        p()->buff.surge_of_power_lightning->expire();
       }
     }
 
@@ -7351,7 +7371,7 @@ void shaman_t::create_buffs()
   buff.surge_of_power =
       make_buff( this, "surge_of_power", talent.surge_of_power )->set_duration( find_spell( 285514 )->duration() );
 
-  buff.surge_of_power_lightning = make_buff( this, "surge_of_power_lightning", find_spell( 285582 ) );
+  buff.surge_of_power_lightning = make_buff( this, "surge_of_power_lightning", find_spell( 285514 ) );
 
   buff.icefury = make_buff( this, "icefury", talent.icefury )
                      ->set_cooldown( timespan_t::zero() )  // Handled by the action
