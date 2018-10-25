@@ -693,7 +693,7 @@ void paladin_t::target_mitigation( school_e school,
   // Other stuff
 
   // Blessed Hammer
-  if ( talents.blessed_hammer -> ok() )
+  if ( talents.blessed_hammer -> ok() && s -> action )
   {
     buff_t* b = get_target_data( s -> action -> player ) -> buffs.blessed_hammer_debuff;
 

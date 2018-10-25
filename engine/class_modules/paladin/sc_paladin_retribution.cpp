@@ -101,7 +101,7 @@ void holy_power_consumer_t::execute()
   // If the dp proc was successful, but DP wasn't active or bugs were disabled, activate DP.
   if ( dp_success )
   {
-    dp_success = p() -> buffs.divine_purpose -> trigger();
+    p() -> buffs.divine_purpose -> trigger();
     p() -> procs.divine_purpose -> occur();
   }
 

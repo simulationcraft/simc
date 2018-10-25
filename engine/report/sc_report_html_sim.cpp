@@ -1196,12 +1196,15 @@ void print_html_hotfixes( report::sc_html_stream& os, const sim_t& sim )
       first_group   = false;
     }
 
-    os << "<tr>\n";
-    os << "<td class=\"left\" style=\"white-space:nowrap;\"><strong>"
-       << entry->tag_.substr( 0, 10 ) << "</strong></td>\n";
-    os << "<td class=\"left\" colspan=\"5\"><strong>" << entry->note_
-       << "</strong></td>\n";
-    os << "</tr>\n";
+    if ( entry )
+    {
+      os << "<tr>\n";
+      os << "<td class=\"left\" style=\"white-space:nowrap;\"><strong>"
+         << entry->tag_.substr( 0, 10 ) << "</strong></td>\n";
+      os << "<td class=\"left\" colspan=\"5\"><strong>" << entry->note_
+         << "</strong></td>\n";
+      os << "</tr>\n";
+    }
     if ( const hotfix::effect_hotfix_entry_t* e =
              dynamic_cast<const hotfix::effect_hotfix_entry_t*>( entry ) )
     {

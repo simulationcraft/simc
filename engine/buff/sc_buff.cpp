@@ -2049,6 +2049,7 @@ void buff_t::adjust_haste()
   {
     return;
   }
+  assert(player && "Haste buffs for non-player buffs are not supported.");
 
   player->adjust_dynamic_cooldowns();
   // player->adjust_global_cooldown( haste_type );

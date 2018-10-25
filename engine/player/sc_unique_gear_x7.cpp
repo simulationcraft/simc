@@ -1653,16 +1653,16 @@ void items::berserkers_juju( special_effect_t& effect )
 
 void set_bonus::waycrest_legacy( special_effect_t& effect )
 {
-  auto e = unique_gear::find_special_effect( effect.player, 271631, SPECIAL_EFFECT_EQUIP );
-  if ( e != nullptr )
+  auto effect_heal = unique_gear::find_special_effect( effect.player, 271631, SPECIAL_EFFECT_EQUIP );
+  if ( effect_heal != nullptr )
   {
-    e -> execute_action->add_child( new waycrest_legacy_heal_t( effect ) );
+    effect_heal -> execute_action->add_child( new waycrest_legacy_heal_t( effect ) );
   }
 
-  auto e2 = unique_gear::find_special_effect( effect.player, 271683, SPECIAL_EFFECT_EQUIP );
-  if ( e2 != nullptr )
+  auto effect_damage = unique_gear::find_special_effect( effect.player, 271683, SPECIAL_EFFECT_EQUIP );
+  if ( effect_damage != nullptr )
   {
-    e -> execute_action->add_child( new waycrest_legacy_damage_t( effect ) );
+    effect_damage -> execute_action->add_child( new waycrest_legacy_damage_t( effect ) );
   }
 }
 
