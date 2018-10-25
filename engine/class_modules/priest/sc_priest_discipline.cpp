@@ -337,7 +337,6 @@ void priest_t::init_spells_discipline()
   talents.divine_star      = find_talent_spell( "Divine Star" );
   talents.halo             = find_talent_spell( "Halo" );
   // T100
-  talents.power_infusion = find_talent_spell( "Power Infusion" );
   talents.grace          = find_talent_spell( "Grace" );
   talents.evangelism     = find_talent_spell( "Evangelism" );
 
@@ -481,8 +480,6 @@ void priest_t::generate_apl_discipline_d()
       def->add_action( racial_action );
     }
   }
-
-  def->add_talent( this, "Power Infusion", "if=talent.power_infusion.enabled" );
 
   def->add_talent( this, "Purge the Wicked", "if=!ticking" );
   def->add_action( this, "Shadow Word: Pain", "if=!ticking&!talent.purge_the_wicked.enabled" );
