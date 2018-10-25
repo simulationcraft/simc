@@ -5006,9 +5006,9 @@ void trigger_elemental_blast_proc( shaman_t* p )
   unsigned b = static_cast<unsigned>( p->rng().range( 0, 3 ) );
 
   // EB can no longer proc the same buff twice
-  while ( maybe_ptr( p->dbc.ptr ) &&
-          ( ( b == 0 && p->buff.elemental_blast_crit->check() ) || ( b == 1 && p->buff.elemental_blast_haste->check() ) ||
-            ( b == 2 && p->buff.elemental_blast_mastery->check() ) ) )
+  while ( maybe_ptr( p->dbc.ptr ) && ( ( b == 0 && p->buff.elemental_blast_crit->check() ) ||
+                                       ( b == 1 && p->buff.elemental_blast_haste->check() ) ||
+                                       ( b == 2 && p->buff.elemental_blast_mastery->check() ) ) )
   {
     b = static_cast<unsigned>( p->rng().range( 0, 3 ) );
   }
@@ -5657,7 +5657,17 @@ struct frost_shock_t : public shaman_spell_t
 
   void execute() override
   {
+    if ( maybe_ptr( p()->dbc.ptr ) && p()->buff.icefury->up() )
+    {
+      maelstrom_gain = player->find_spell( 190493 )->effectN( 9 ).resource( RESOURCE_MAELSTROM );
+    }
+
     shaman_spell_t::execute();
+
+    if ( maybe_ptr( p()->dbc.ptr ) )
+    {
+      maelstrom_gain = 0.0;
+    }
 
     p()->buff.icefury->decrement();
 
