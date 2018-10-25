@@ -9,7 +9,7 @@ option(BUILD_GUI "Build the Qt gui along with cli binary" ON)
 option(SC_NO_THREADING "Disable all dependencies on pthreads" OFF)
 option(SC_NO_NETWORKING "Disable all networking related stuff." OFF)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 
 # enable colored output with ninja build system
 if(${CMAKE_GENERATOR} STREQUAL "Ninja")

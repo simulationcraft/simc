@@ -64,8 +64,8 @@
 #if defined( SC_CLANG ) && SC_CLANG < 30500
 #  error "clang++ below version 3.5 not supported"
 #endif
-#if defined( SC_GCC ) && SC_GCC < 40800
-#  error "g++ below version 4.8 not supported"
+#if defined( SC_GCC ) && SC_GCC < 50000
+#  error "g++ below version 5 not supported"
 #endif
 
 

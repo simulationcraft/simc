@@ -55,7 +55,7 @@ endif
 
 MKDIR      = mkdir
 CXX        = g++
-CPP_FLAGS  = -Wall -Wextra -W -I. -I./util -DSC_SHARED_DATA=\"$(SHARED_DATA)\" --std=c++11 -O3 -MMD -MP \
+CPP_FLAGS  = -Wall -Wextra -W -I. -I./util -DSC_SHARED_DATA=\"$(SHARED_DATA)\" --std=c++14 -O3 -MMD -MP \
 -Wpedantic \
 -Wcast-qual \
 -Wconversion-null
@@ -91,14 +91,8 @@ endif
 ifneq (${NO_DEBUG},)
   CPP_FLAGS += -DNDEBUG
 endif
-ifneq (${C++14},)
-  CPP_FLAGS += --std=c++1y
-endif
-ifneq (${c++0x},)
-  CPP_FLAGS += --std=c++0x
-endif
-ifneq (${C++03},)
-  CPP_FLAGS += --std=c++03
+ifneq (${C++17},)
+  CPP_FLAGS += --std=c++17
 endif
 ifneq (${LTO},)
   OPTS += -flto

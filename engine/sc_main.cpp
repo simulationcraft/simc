@@ -8,13 +8,6 @@
 #include "sim/sc_profileset.hpp"
 #include <locale>
 
-// ==========================================================================
-// Compiler Minimal Limit Deprecation Warning
-// Added here so that we only get 1 warning / build process
-// ==========================================================================
-#if defined( SC_GCC ) && SC_GCC < 50000
-#  warning "g++ below version 5 is deprecated for bfa-dev"
-#endif
 
 #ifdef SC_SIGACTION
 #include <csignal>
