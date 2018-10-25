@@ -9271,6 +9271,9 @@ expr_t* player_t::create_expression( const std::string& expression_str )
     return make_fn_expr( expression_str, [this] { return cache.attack_speed(); } );
 
   if ( expression_str == "spell_haste" )
+    return make_fn_expr( expression_str, [this] { return cache.spell_haste(); } );
+
+  if ( expression_str == "spell_speed" )
     return make_fn_expr( expression_str, [this] { return cache.spell_speed(); } );
 
   if ( expression_str == "mastery_value" )
