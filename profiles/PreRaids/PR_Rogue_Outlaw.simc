@@ -60,7 +60,7 @@ actions.build=pistol_shot,if=combo_points.deficit>=1+buff.broadside.up+talent.qu
 actions.build+=/sinister_strike
 
 # Cooldowns
-actions.cds=potion,if=buff.bloodlust.react|target.time_to_die<=60|buff.adrenaline_rush.up
+actions.cds=potion,if=buff.bloodlust.react|buff.adrenaline_rush.up
 # Falling back to default item usage
 actions.cds+=/use_item,name=lustrous_golden_plumage,if=buff.bloodlust.react|target.time_to_die<=20|combo_points.deficit<=2
 actions.cds+=/blood_fury
@@ -85,7 +85,7 @@ actions.cds+=/shadowmeld,if=!stealthed.all&variable.ambush_condition
 # BtE over RtB rerolls with Deadshot/Ace traits or Ruthless Precision.
 actions.finish=between_the_eyes,if=buff.ruthless_precision.up|(azerite.deadshot.enabled|azerite.ace_up_your_sleeve.enabled)&buff.roll_the_bones.up
 actions.finish+=/slice_and_dice,if=buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<(1+combo_points)*1.8
-actions.finish+=/roll_the_bones,if=(buff.roll_the_bones.remains<=3|variable.rtb_reroll)&(target.time_to_die>20|buff.roll_the_bones.remains<target.time_to_die)
+actions.finish+=/roll_the_bones,if=buff.roll_the_bones.remains<=3|variable.rtb_reroll
 # BtE with the Ace Up Your Sleeve or Deadshot traits.
 actions.finish+=/between_the_eyes,if=azerite.ace_up_your_sleeve.enabled|azerite.deadshot.enabled
 actions.finish+=/dispatch
