@@ -535,7 +535,6 @@ class CDNIndex(CASCObject):
 		path = os.path.join(self.cache_dir('config'), self.cdn_hash)
 		url = self.cdn_url('config', self.cdn_hash)
 
-		print(path, url)
 		for line in self.cached_open(path, url):
 			mobj = re.match('^archives = (.+)', line.decode('utf-8'))
 			if mobj:
