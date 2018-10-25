@@ -4874,12 +4874,12 @@ struct lightning_bolt_t : public shaman_spell_t
       n += (size_t)1;
 
       // we're rolling the fake chance twice and the second one only when the first one was successful
-      double fake_chance = 0.2;  // guess value, no chance in spell data
+      double fake_chance = 0.25;  // chance matches what I've seen in logs
       if ( rng().roll( fake_chance ) )
       {
         n += (size_t)1;
 
-        if ( rng().roll( fake_chance ) )
+        if ( rng().roll( fake_chance / 2.0 ) )
         {
           n += (size_t)1;
         }
