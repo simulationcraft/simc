@@ -61,7 +61,7 @@ actions+=/lights_judgment
 # Builders
 # Shuriken Toss at 29+ Sharpened Blades stacks. Up to 3 targets per rank. Save for stealth if using Nightstalker or Dark Shadow when possible.
 actions.build=shuriken_toss,if=!talent.nightstalker.enabled&(!talent.dark_shadow.enabled|cooldown.symbols_of_death.remains>10)&buff.sharpened_blades.stack>=29&spell_targets.shuriken_storm<=(3*azerite.sharpened_blades.rank)
-actions.build+=/shuriken_storm,if=spell_targets>=2|buff.the_dreadlords_deceit.stack>=29
+actions.build+=/shuriken_storm,if=spell_targets>=2
 actions.build+=/gloomblade
 actions.build+=/backstab
 

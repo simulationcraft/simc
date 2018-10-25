@@ -26,6 +26,7 @@ actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
+actions.precombat+=/recklessness,if=!talent.furious_slash.enabled&!talent.reckless_abandon.enabled
 
 # Executed every time the actor is available.
 actions=auto_attack
