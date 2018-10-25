@@ -716,7 +716,7 @@ public:
   virtual double      composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   virtual double      composite_player_pet_damage_multiplier( const action_state_t* ) const override;
   virtual double      composite_spell_crit_chance() const override;
-  virtual double      composite_spell_crit_rating() const override;
+  virtual double      composite_rating_multiplier( rating_e r ) const override;
   virtual double      composite_spell_haste() const override;
   virtual double      composite_mastery_rating() const override;
   virtual double      matching_gear_multiplier( attribute_e attr ) const override;
@@ -6601,15 +6601,24 @@ double mage_t::composite_mastery_rating() const
   return m;
 }
 
-// mage_t::composite_spell_crit_rating ===============================================
+// mage_t::composite_rating_multiplier ===============================================
 
-double mage_t::composite_spell_crit_rating() const
+double mage_t::composite_rating_multiplier( rating_e r ) const
 {
-  double cr = player_t::composite_spell_crit_rating();
+  double rm = player_t::composite_rating_multiplier( r );
 
-  cr *= 1.0 + spec.critical_mass_2 -> effectN( 1 ).percent();
+  switch ( r )
+  {
+    case RATING_MELEE_CRIT:
+    case RATING_RANGED_CRIT:
+    case RATING_SPELL_CRIT:
+      rm *= 1.0 + spec.critical_mass_2 -> effectN( 1 ).percent();
+      break;
+    default:
+      break;
+  }
 
-  return cr;
+  return rm;
 }
 
 // mage_t::composite_spell_crit_chance ===============================================
