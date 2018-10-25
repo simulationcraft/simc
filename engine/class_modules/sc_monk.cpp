@@ -4762,6 +4762,7 @@ struct spear_hand_strike_t : public monk_melee_attack_t
   {
     parse_options( options_str );
     ignore_false_positive = true;
+    trigger_gcd = timespan_t::zero();
     may_miss = may_block = may_dodge = may_parry = false;
   }
 
