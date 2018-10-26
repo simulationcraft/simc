@@ -718,7 +718,6 @@ public:
   virtual double      composite_spell_crit_chance() const override;
   virtual double      composite_rating_multiplier( rating_e r ) const override;
   virtual double      composite_spell_haste() const override;
-  virtual double      composite_mastery_rating() const override;
   virtual double      matching_gear_multiplier( attribute_e attr ) const override;
   virtual void        update_movement( timespan_t duration ) override;
   virtual void        teleport( double distance, timespan_t duration ) override;
@@ -1104,6 +1103,49 @@ struct brain_freeze_buff_t : public buff_t
     buff_t::expire_override( stacks, duration );
 
     debug_cast<mage_t*>( player ) -> buffs.arctic_blast -> trigger();
+  }
+};
+
+struct combustion_buff_t : public buff_t
+{
+  double current_amount;
+  double multiplier;
+
+  combustion_buff_t( mage_t* p ) :
+    buff_t( p, "combustion", p -> find_spell( 190319 ) ),
+    current_amount(),
+    multiplier( data().effectN( 3 ).percent() )
+  {
+    set_cooldown( timespan_t::zero() );
+    set_default_value( data().effectN( 1 ).percent() );
+    set_tick_zero( true );
+    buff_duration += p -> sets -> set( MAGE_FIRE, T21, B2 ) -> effectN( 1 ).time_value();
+
+    set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
+    {
+      if ( cur == 0 )
+      {
+        player -> stat_loss( STAT_MASTERY_RATING, current_amount );
+        current_amount = 0.0;
+      }
+    } );
+
+    set_tick_callback( [ this ] ( buff_t*, int, const timespan_t& )
+    {
+      double new_amount = multiplier * player -> composite_spell_crit_rating();
+      double diff = new_amount - current_amount;
+
+      if ( diff > 0.0 ) player -> stat_gain( STAT_MASTERY_RATING,  diff );
+      if ( diff < 0.0 ) player -> stat_loss( STAT_MASTERY_RATING, -diff );
+
+      current_amount = new_amount;
+    } );
+  }
+
+  virtual void reset() override
+  {
+    buff_t::reset();
+    current_amount = 0.0;
   }
 };
 
@@ -5790,11 +5832,7 @@ void mage_t::create_buffs()
 
 
   // Fire
-  buffs.combustion             = make_buff( this, "combustion", find_spell( 190319 ) )
-                                   -> set_cooldown( timespan_t::zero() )
-                                   -> add_invalidate( CACHE_MASTERY )
-                                   -> set_default_value( find_spell( 190319 ) -> effectN( 1 ).percent() );
-  buffs.combustion -> buff_duration += sets -> set( MAGE_FIRE, T21, B2 ) -> effectN( 1 ).time_value();
+  buffs.combustion             = make_buff<buffs::combustion_buff_t>( this );
   buffs.enhanced_pyrotechnics  = make_buff( this, "enhanced_pyrotechnics", find_spell( 157644 ) )
                                    -> set_chance( spec.enhanced_pyrotechnics -> ok() ? 1.0 : 0.0 )
                                    -> set_default_value( find_spell( 157644 ) -> effectN( 1 ).percent()
@@ -6488,23 +6526,11 @@ void mage_t::invalidate_cache( cache_e c )
   {
     case CACHE_MASTERY:
       if ( spec.savant -> ok() )
-      {
         recalculate_resource_max( RESOURCE_MANA );
-      }
-      break;
-    case CACHE_SPELL_CRIT_CHANCE:
-      // Combustion makes mastery dependent on spell crit chance rating. Thus
-      // any spell_crit_chance invalidation (which should include any
-      // spell_crit_rating changes) will also invalidate mastery.
-      if ( specialization() == MAGE_FIRE )
-      {
-        invalidate_cache( CACHE_MASTERY );
-      }
       break;
     default:
       break;
   }
-
 }
 
 // mage_t::recalculate_resource_max ===========================================
@@ -6583,20 +6609,6 @@ double mage_t::composite_player_multiplier( school_e school ) const
   double m = player_t::composite_player_multiplier( school );
 
   m *= 1.0 + buffs.expanding_mind -> check_value();
-
-  return m;
-}
-
-// mage_t::composite_mastery_rating =============================================
-
-double mage_t::composite_mastery_rating() const
-{
-  double m = player_t::composite_mastery_rating();
-
-  if ( buffs.combustion -> check() )
-  {
-    m += composite_rating_multiplier( RATING_MASTERY ) * composite_spell_crit_rating() * buffs.combustion -> data().effectN( 3 ).percent();
-  }
 
   return m;
 }
