@@ -5456,7 +5456,7 @@ void rogue_t::init_action_list()
   // Potion
   std::string potion_action = "potion,if=buff.bloodlust.react";
   if ( specialization() == ROGUE_ASSASSINATION )
-    potion_action += "|debuff.vendetta.up&cooldown.vanish.remains<5";
+    potion_action += "|debuff.vendetta.up";
   else if ( specialization() == ROGUE_OUTLAW )
     potion_action += "|buff.adrenaline_rush.up";
   else if ( specialization() == ROGUE_SUBTLETY )
@@ -5517,7 +5517,7 @@ void rogue_t::init_action_list()
     stealthed -> add_action( this, "Garrote", "cycle_targets=1,if=talent.subterfuge.enabled&refreshable&target.time_to_die-remains>2", "Subterfuge: Apply or Refresh with buffed Garrotes" );
     stealthed -> add_action( this, "Garrote", "cycle_targets=1,if=talent.subterfuge.enabled&remains<=10&pmultiplier<=1&target.time_to_die-remains>2", "Subterfuge: Override normal Garrotes with snapshot versions" );
     stealthed -> add_action( this, "Rupture", "if=talent.subterfuge.enabled&azerite.shrouded_suffocation.enabled&!dot.rupture.ticking", "Subterfuge + Shrouded Suffocation: Apply early Rupture that will be refreshed for pandemic." );
-    stealthed -> add_action( this, "Garrote", "cycle_targets=1,if=talent.subterfuge.enabled&azerite.shrouded_suffocation.enabled&target.time_to_die>remains", "Subterfuge w/ Shrouded Suffocation: Reapply for bonus CP and extended snapshot duration" );
+    stealthed -> add_action( this, "Garrote", "cycle_targets=1,if=talent.subterfuge.enabled&azerite.shrouded_suffocation.enabled&target.time_to_die>remains&combo_points.deficit>1", "Subterfuge w/ Shrouded Suffocation: Reapply for bonus CP and extended snapshot duration" );
     stealthed -> add_action( "pool_resource,for_next=1", "Subterfuge + Exsg: Even override a snapshot Garrote right after Rupture before Exsanguination" );
     stealthed -> add_action( this, "Garrote", "if=talent.subterfuge.enabled&talent.exsanguinate.enabled&cooldown.exsanguinate.remains<1&prev_gcd.1.rupture&dot.rupture.remains>5+4*cp_max_spend" );
 
