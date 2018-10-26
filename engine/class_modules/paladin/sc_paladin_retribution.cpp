@@ -30,6 +30,7 @@ namespace buffs {
     shield_of_vengeance_buff_t( player_t* p ):
       absorb_buff_t( p, "shield_of_vengeance", p -> find_spell( 184662 ) )
     {
+      cooldown -> duration = timespan_t::zero();
     }
 
     void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -556,20 +557,11 @@ struct justicars_vengeance_t : public holy_power_consumer_t
 struct shield_of_vengeance_proc_t : public paladin_spell_t
 {
   shield_of_vengeance_proc_t( paladin_t* p )
-    : paladin_spell_t( "shield_of_vengeance_proc", p, spell_data_t::nil() )
+    : paladin_spell_t( "shield_of_vengeance_proc", p, p -> find_spell( 184689 ) )
   {
-    school = SCHOOL_HOLY;
-    may_miss    = false;
-    may_dodge   = false;
-    may_parry   = false;
-    may_glance  = false;
-    background  = true;
-    trigger_gcd = timespan_t::zero();
-    id = 184689;
-
+    may_miss = may_dodge = may_parry = may_glance = false;
+    background = true;
     split_aoe_damage = true;
-    may_crit = true;
-    aoe = -1;
   }
 
   void init() override {

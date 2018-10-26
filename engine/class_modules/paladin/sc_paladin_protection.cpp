@@ -169,7 +169,7 @@ struct blessed_hammer_t : public paladin_spell_t
     parse_options( options_str );
 
     // Sane bounds for num_strikes - only makes three revolutions, impossible to hit one target more than 3 times.
-    // Likewise calling the pell with 0 strikes is sort of pointless.
+    // Likewise calling the spell with 0 or negative strikes is sort of pointless.
     if ( num_strikes < 1 ) { num_strikes = 1; sim -> out_debug.printf( "%s tried to hit less than one time with blessed_hammer", p -> name() ); }
     if ( num_strikes > 3 ) { num_strikes = 3; sim -> out_debug.printf( "%s tried to hit more than three times with blessed_hammer", p -> name() ); }
 
