@@ -2,6 +2,8 @@
 
 #include "azerite.hpp"
 
+#include "dbc/dbc.hpp"
+
 #include "generated/azerite.inc"
 #if SC_USE_PTR == 1
 #include "generated/azerite_ptr.inc"
