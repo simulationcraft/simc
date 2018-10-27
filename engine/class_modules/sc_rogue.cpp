@@ -321,6 +321,7 @@ struct rogue_t : public player_t
     gain_t* shadow_blades;
     gain_t* ace_up_your_sleeve;
     gain_t* shrouded_suffocation;
+    gain_t* the_first_dance;
   } gains;
 
   // Spec passives
@@ -2364,7 +2365,7 @@ struct eviscerate_t : public rogue_attack_t
   double composite_crit_chance() const override
   {
     double c = rogue_attack_t::composite_crit_chance();
-    if ( p()->buffs.the_first_dance->up() )
+    if ( ! maybe_ptr( p() -> dbc.ptr ) && p()->buffs.the_first_dance->up() )
     {
       const double rating = p()->buffs.the_first_dance->check_value() * p()->composite_rating_multiplier( RATING_MELEE_CRIT );
       c += rating / p()->current.rating.attack_crit;
@@ -2391,7 +2392,8 @@ struct eviscerate_t : public rogue_attack_t
     }
 
     p() -> buffs.nights_vengeance -> expire();
-    p() -> buffs.the_first_dance -> decrement();
+    if ( ! maybe_ptr( p() -> dbc.ptr ) )
+      p() -> buffs.the_first_dance -> decrement();
   }
 };
 
@@ -3309,7 +3311,16 @@ struct shadow_dance_t : public rogue_attack_t
 
     if ( p()->azerite.the_first_dance.ok() )
     {
-      p()->buffs.the_first_dance->trigger( p()->buffs.the_first_dance->max_stack() );
+      if ( maybe_ptr ( p()->dbc.ptr ) )
+      {
+        p()->buffs.the_first_dance->trigger();
+        p() -> trigger_combo_point_gain( p()->buffs.the_first_dance->data().effectN( 3 ).resource( RESOURCE_COMBO_POINT ),
+          p() -> gains.the_first_dance, this );
+      }
+      else
+      {
+        p()->buffs.the_first_dance->trigger( p()->buffs.the_first_dance->max_stack() );
+      }
     }
 
     icd -> start();
@@ -3373,7 +3384,8 @@ struct shadowstrike_t : public rogue_attack_t
     rogue_attack_t::execute();
 
     p() -> buffs.blade_in_the_shadows -> trigger();
-    p() -> buffs.the_first_dance -> decrement();
+    if ( ! maybe_ptr( p() -> dbc.ptr ) )
+      p() -> buffs.the_first_dance -> decrement();
   }
 
   void impact( action_state_t* state ) override
@@ -3401,7 +3413,7 @@ struct shadowstrike_t : public rogue_attack_t
   double composite_crit_chance() const override
   {
     double c = rogue_attack_t::composite_crit_chance();
-    if ( p()->buffs.the_first_dance->up() )
+    if ( ! maybe_ptr( p() -> dbc.ptr ) && p()->buffs.the_first_dance->up() )
     {
       const double rating = p()->buffs.the_first_dance->check_value() * p()->composite_rating_multiplier( RATING_MELEE_CRIT );
       c += rating / p()->current.rating.attack_crit;
@@ -3467,7 +3479,7 @@ struct shuriken_storm_t: public rogue_attack_t
   double composite_crit_chance() const override
   {
     double c = rogue_attack_t::composite_crit_chance();
-    if ( p()->buffs.the_first_dance->up() )
+    if ( ! maybe_ptr( p() -> dbc.ptr ) && p()->buffs.the_first_dance->up() )
     {
       const double rating = p()->buffs.the_first_dance->check_value() * p()->composite_rating_multiplier( RATING_MELEE_CRIT );
       c += rating / p()->current.rating.attack_crit;
@@ -3497,7 +3509,8 @@ struct shuriken_storm_t: public rogue_attack_t
       p() -> buffs.shuriken_combo -> trigger((int)(execute_state -> n_targets) - 1);
     }
 
-    p() -> buffs.the_first_dance -> decrement();
+    if ( ! maybe_ptr( p() -> dbc.ptr ) )
+      p() -> buffs.the_first_dance -> decrement();
   }
 };
 
@@ -4471,6 +4484,14 @@ struct shadow_dance_t : public stealth_like_buff_t
     {
       add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     }
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    stealth_like_buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    if ( maybe_ptr( rogue -> dbc.ptr ) )
+      rogue -> buffs.the_first_dance -> expire();
   }
 };
 
@@ -6286,6 +6307,7 @@ void rogue_t::init_gains()
   gains.symbols_of_death         = get_gain( "Symbols of Death"         );
   gains.ace_up_your_sleeve       = get_gain( "Ace Up Your Sleeve"       );
   gains.shrouded_suffocation     = get_gain( "Shrouded Suffocation"     );
+  gains.the_first_dance          = get_gain( "The First Dance"          );
 }
 
 // rogue_t::init_procs ======================================================
@@ -6531,8 +6553,16 @@ void rogue_t::create_buffs()
   buffs.storm_of_steel                     = make_buff( this, "storm_of_steel", find_spell( 273455 ) )
                                              -> set_trigger_spell( azerite.storm_of_steel.spell_ref().effectN( 1 ).trigger() )
                                              -> set_default_value( azerite.storm_of_steel.value() );
-  buffs.the_first_dance                    = make_buff( this, "the_first_dance", find_spell( 278981 ) )
+  if ( maybe_ptr ( dbc.ptr ) )
+  {
+    buffs.the_first_dance                    = make_buff<stat_buff_t>( this, "the_first_dance", find_spell( 278981 ) )
+                                             -> add_stat( STAT_HASTE_RATING, azerite.the_first_dance.value() );
+  }
+  else
+  {
+    buffs.the_first_dance                    = make_buff( this, "the_first_dance", find_spell( 278981 ) )
                                              -> set_default_value( azerite.the_first_dance.value() );
+  }
 }
 
 // rogue_t::create_options ==================================================
