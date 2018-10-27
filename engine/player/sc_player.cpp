@@ -2776,12 +2776,9 @@ void player_t::create_buffs()
         ->set_cooldown( timespan_t::from_seconds( 5.0 ) );
   }
 
-  // .. for players, but only if there's a "damage taken" raid event
-  if ( sim->has_raid_event( "damage_taken" ) )
-  {
-    debuffs.damage_taken =
+  // set up always since this can be applied by enemy actions and raid events.
+  debuffs.damage_taken =
         make_buff( this, "damage_taken" )->set_duration( timespan_t::from_seconds( 20.0 ) )->set_max_stack( 999 );
-  }
 
   if ( sim->has_raid_event( "damage_done" ) )
   {
