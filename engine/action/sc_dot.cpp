@@ -164,7 +164,7 @@ void dot_t::refresh_duration( uint32_t state_flags )
       state, state_flags,
       current_action->type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME );
 
-  refresh( current_action->dot_duration );
+  refresh( current_action->composite_dot_duration( state ) );
 
   current_action->stats->add_refresh( state->target );
 }
