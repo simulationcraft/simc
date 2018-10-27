@@ -2126,6 +2126,7 @@ struct special_effect_t
   double ppm_;
   unsigned rppm_scale_;
   double rppm_modifier_;
+  int rppm_blp_;
   timespan_t duration_, cooldown_, tick;
   bool cost_reduction;
   int refresh;
@@ -2577,6 +2578,12 @@ std::ostream& operator<<(std::ostream&, const set_bonus_t&);
 
 struct real_ppm_t
 {
+  enum blp : int
+  {
+    BLP_DISABLED = 0,
+    BLP_ENABLED
+  };
+
 private:
   player_t*    player;
   std::string  name_str;
@@ -2586,8 +2593,10 @@ private:
   timespan_t   last_trigger_attempt;
   timespan_t   last_successful_trigger;
   unsigned     scales_with;
+  blp          blp_state;
 
-  real_ppm_t(): player(nullptr), freq(0), modifier(0), rppm(0), scales_with()
+  real_ppm_t() : player( nullptr ), freq( 0 ), modifier( 0 ), rppm( 0 ), scales_with( 0 ),
+    blp_state( BLP_ENABLED )
   { }
 
   static double max_interval() { return 10.0; }
@@ -2597,9 +2606,10 @@ public:
                              double            PPM,
                              const timespan_t& last_trigger,
                              const timespan_t& last_successful_proc,
-                             unsigned          scales_with );
+                             unsigned          scales_with,
+                             blp               blp_state );
 
-  real_ppm_t( const std::string& name, player_t* p, double frequency = 0, double mod = 1.0, unsigned s = RPPM_NONE ) :
+  real_ppm_t( const std::string& name, player_t* p, double frequency = 0, double mod = 1.0, unsigned s = RPPM_NONE, blp b = BLP_ENABLED ) :
     player( p ),
     name_str( name ),
     freq( frequency ),
@@ -2607,7 +2617,8 @@ public:
     rppm( freq * mod ),
     last_trigger_attempt( timespan_t::zero() ),
     last_successful_trigger( timespan_t::zero() ),
-    scales_with( s )
+    scales_with( s ),
+    blp_state( b )
   { }
 
   real_ppm_t( const std::string& name, player_t* p, const spell_data_t* data = spell_data_t::nil(), const item_t* item = nullptr );
@@ -2624,6 +2635,9 @@ public:
   void set_frequency( double frequency )
   { freq = frequency; rppm = freq * modifier; }
 
+  void set_blp_state( blp state )
+  { blp_state = state; }
+
   unsigned get_scaling() const
   {
     return scales_with;
@@ -2637,6 +2651,9 @@ public:
 
   double get_rppm() const
   { return rppm; }
+
+  blp get_blp_state() const
+  { return blp_state; }
 
   void set_last_trigger_attempt( const timespan_t& ts )
   { last_trigger_attempt = ts; }
@@ -7683,43 +7700,59 @@ inline real_ppm_t::real_ppm_t( const std::string& name, player_t* p, const spell
   rppm( freq * modifier ),
   last_trigger_attempt( timespan_t::zero() ),
   last_successful_trigger( timespan_t::zero() ),
-  scales_with( p -> dbc.real_ppm_scale( data -> id() ) )
+  scales_with( p -> dbc.real_ppm_scale( data -> id() ) ),
+  blp_state( BLP_ENABLED )
 { }
 
 inline double real_ppm_t::proc_chance( player_t*         player,
                                        double            PPM,
                                        const timespan_t& last_trigger,
                                        const timespan_t& last_successful_proc,
-                                       unsigned          scales_with )
+                                       unsigned          scales_with,
+                                       blp               blp_state )
 {
+  auto sim = player->sim;
   double coeff = 1.0;
-  double seconds = std::min( ( player -> sim -> current_time() - last_trigger ).total_seconds(), max_interval() );
+  double seconds = std::min( ( sim->current_time() - last_trigger ).total_seconds(), max_interval() );
 
   if ( scales_with & RPPM_HASTE )
-    coeff *= 1.0 / std::min( player -> cache.spell_haste(), player -> cache.attack_haste() );
+    coeff *= 1.0 / std::min( player->cache.spell_haste(), player->cache.attack_haste() );
 
   // This might technically be two separate crit values, but this should be sufficient for our
   // cases. In any case, the client data does not offer information which crit it is (attack or
   // spell).
   if ( scales_with & RPPM_CRIT )
-    coeff *= 1.0 + std::max( player -> cache.attack_crit_chance(), player -> cache.spell_crit_chance() );
+    coeff *= 1.0 + std::max( player->cache.attack_crit_chance(), player->cache.spell_crit_chance() );
 
   if ( scales_with & RPPM_ATTACK_SPEED )
     coeff *= 1.0 / player -> cache.attack_speed();
 
   double real_ppm = PPM * coeff;
   double old_rppm_chance = real_ppm * ( seconds / 60.0 );
+  double rppm_chance = 0;
 
-  // RPPM Extension added on 12. March 2013: http://us.battle.net/wow/en/blog/8953693?page=44
-  // Formula see http://us.battle.net/wow/en/forum/topic/8197741003#1
-  double last_success = std::min( ( player -> sim -> current_time() - last_successful_proc ).total_seconds(), max_bad_luck_prot() );
-  double expected_average_proc_interval = 60.0 / real_ppm;
+  if ( blp_state == BLP_ENABLED )
+  {
+    // RPPM Extension added on 12. March 2013: http://us.battle.net/wow/en/blog/8953693?page=44
+    // Formula see http://us.battle.net/wow/en/forum/topic/8197741003#1
+    double last_success = std::min( ( sim->current_time() - last_successful_proc ).total_seconds(), max_bad_luck_prot() );
+    double expected_average_proc_interval = 60.0 / real_ppm;
 
-  double rppm_chance = std::max( 1.0, 1 + ( ( last_success / expected_average_proc_interval - 1.5 ) * 3.0 ) )  * old_rppm_chance;
-  if ( player -> sim -> debug )
-    player -> sim -> out_debug.printf( "base=%.3f coeff=%.3f last_trig=%.3f last_proc=%.3f scales=%d chance=%.5f%%",
-        PPM, coeff, last_trigger.total_seconds(), last_successful_proc.total_seconds(), scales_with,
-        rppm_chance * 100.0 );
+    rppm_chance = std::max( 1.0, 1 + ( ( last_success / expected_average_proc_interval - 1.5 ) * 3.0 ) )  * old_rppm_chance;
+  }
+  else
+  {
+    rppm_chance = old_rppm_chance;
+  }
+
+  if ( sim->debug )
+  {
+    sim->out_debug.print( "base={:.3f} coeff={:.3f} last_trig={:.3f} last_proc={:.3f}"
+                          " scales={} blp={} chance={:.5f}%",
+        PPM, coeff, last_trigger.total_seconds(), last_successful_proc.total_seconds(),
+        scales_with, blp_state == BLP_ENABLED ? "enabled" : "disabled", rppm_chance * 100.0 );
+  }
+
   return rppm_chance;
 }
 
@@ -7730,15 +7763,17 @@ inline bool real_ppm_t::trigger()
     return false;
   }
 
-  if ( last_trigger_attempt == player -> sim -> current_time() )
+  if ( last_trigger_attempt == player->sim->current_time() )
     return false;
 
-  bool success = player -> rng().roll( proc_chance( player, rppm, last_trigger_attempt, last_successful_trigger, scales_with ) );
+  double chance = proc_chance( player, rppm, last_trigger_attempt, last_successful_trigger,
+      scales_with, blp_state );
+  bool success = player->rng().roll( chance );
 
-  last_trigger_attempt = player -> sim -> current_time();
+  last_trigger_attempt = player->sim->current_time();
 
   if ( success )
-    last_successful_trigger = player -> sim -> current_time();
+    last_successful_trigger = player->sim->current_time();
   return success;
 }
 
