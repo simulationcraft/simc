@@ -3358,6 +3358,16 @@ struct shadowstrike_t : public rogue_attack_t
     requires_stealth = true;
   }
 
+  double cost() const override
+  {
+    double c = rogue_attack_t::cost();
+
+    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> azerite.blade_in_the_shadows.ok() )
+      c += p() -> azerite.blade_in_the_shadows.spell_ref().effectN( 1 ).trigger() -> effectN( 2 ).base_value();
+
+    return c;
+  }
+
   void execute() override
   {
     rogue_attack_t::execute();
