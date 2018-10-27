@@ -370,6 +370,21 @@ struct summon_mindbender_t final : public summon_pet_t
   }
 };
 
+/**
+ * Discipline and shadow heal
+ */
+struct shadow_mend_t final : public priest_heal_t
+{
+  shadow_mend_t( priest_t& p, const std::string& options_str )
+    : priest_heal_t( "shadow_mend", p, p.find_class_spell( "Shadow Mend" ) )
+  {
+    parse_options( options_str );
+    harmful            = false;
+
+    // TODO: add harmful ticking effect 187464
+  }
+};
+
 }  // namespace spells
 
 namespace heals
@@ -917,6 +932,10 @@ action_t* priest_t::create_action( const std::string& name, const std::string& o
     {
       return new summon_shadowfiend_t( *this, options_str );
     }
+  }
+  if ( name == "shadow_mend" )
+  {
+    return new shadow_mend_t( *this, options_str );
   }
 
   return base_t::create_action( name, options_str );

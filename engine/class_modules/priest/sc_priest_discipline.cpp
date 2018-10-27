@@ -436,7 +436,29 @@ expr_t* priest_t::create_expression_discipline( action_t*, const std::string& /*
 
 void priest_t::generate_apl_discipline_h()
 {
-  create_apl_default();
+
+  action_priority_list_t* def = get_action_priority_list( "default" );
+
+  // DEFAULT
+  if ( sim->allow_potions )
+  {
+    def->add_action( "mana_potion,if=mana.pct<=75" );
+  }
+
+  if ( find_class_spell( "Shadowfiend" )->ok() )
+  {
+    def->add_action( this, "Shadowfiend" );
+  }
+  if ( race == RACE_TROLL )
+  {
+    def->add_action( "berserking" );
+  }
+  if ( race == RACE_BLOOD_ELF )
+  {
+    def->add_action( "arcane_torrent,if=mana.pct<=90" );
+  }
+  def->add_action( this, "Penance" );
+  def->add_action( this, "Shadow Mend" );
 }
 
 /** Discipline Damage Combat Action Priority List */

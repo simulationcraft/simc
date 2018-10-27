@@ -18,12 +18,9 @@ namespace raw_ability_summary
 template <class ResultRange>
 double aggregate_damage( const ResultRange& results )
 {
-  double total = 0;
-  for ( const auto& result : results )
-  {
-    total += result.fight_actual_amount.mean();
-  }
-  return total;
+  return std::accumulate(begin(results), end(results), 0.0, [](auto l, auto r) {
+    return l + r.fight_actual_amount.mean();
+  });
 }
 
 /* Find the first action id associated with a given stats object
@@ -220,12 +217,12 @@ void print( report::sc_html_stream& os, const sim_t& sim )
  * single text strings,
  * because VS limits the size of static objects.
  */
-template <typename T, std::size_t N>
-void print_text_array( report::sc_html_stream& os, const T ( &data )[ N ] )
+template <typename Range>
+void print_text_array( report::sc_html_stream& os, const Range& range )
 {
-  for ( size_t i = 0; i < sizeof_array( data ); ++i )
+  for ( auto&& v : range )
   {
-    os << data[ i ];
+    os << v;
   }
 }
 

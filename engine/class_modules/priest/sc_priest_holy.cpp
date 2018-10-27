@@ -114,6 +114,29 @@ struct holy_nova_t final : public priest_spell_t
     }
   }
 };
+
+struct flash_heal_t final : public priest_heal_t
+{
+  flash_heal_t( priest_t& p, const std::string& options_str )
+    : priest_heal_t( "flash_heal", p, p.find_class_spell( "Flash Heal" ) )
+  {
+    parse_options( options_str );
+    harmful            = false;
+
+  }
+};
+
+struct renew_t final : public priest_heal_t
+{
+  renew_t( priest_t& p, const std::string& options_str )
+    : priest_heal_t( "renew", p, p.find_class_spell( "Renew" ) )
+  {
+    parse_options( options_str );
+    harmful            = false;
+
+  }
+};
+
 }  // namespace spells
 
 }  // namespace actions
@@ -214,6 +237,17 @@ action_t* priest_t::create_action_holy( const std::string& name, const std::stri
   {
     return new holy_word_chastise_t( *this, options_str );
   }
+
+  if ( name == "flash_heal" )
+  {
+    return new flash_heal_t( *this, options_str );
+  }
+
+  if ( name == "renew" )
+  {
+    return new renew_t( *this, options_str );
+  }
+
   return nullptr;
 }
 
