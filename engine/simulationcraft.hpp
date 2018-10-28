@@ -5577,6 +5577,11 @@ public:
 
   virtual double composite_target_multiplier( player_t* target ) const
   {
+    return player -> composite_player_target_multiplier( target, get_school() );
+  }
+
+  virtual double composite_target_damage_vulnerability( player_t* target ) const
+  {
     double target_vulnerability = 0.0;
     double tmp;
 
@@ -5586,7 +5591,7 @@ public:
       if ( tmp > target_vulnerability ) target_vulnerability = tmp;
     }
 
-    return target_vulnerability * player -> composite_player_target_multiplier( target, get_school() );
+    return target_vulnerability;
   }
 
   virtual double composite_versatility( const action_state_t* ) const
@@ -5847,6 +5852,15 @@ struct attack_t : public action_t
     return mul;
   }
 
+  virtual double composite_target_multiplier( player_t* target ) const override
+  {
+    double mul = action_t::composite_target_multiplier( target );
+
+    mul *= composite_target_damage_vulnerability( target );
+
+    return mul;
+  }
+
   virtual double composite_hit() const override
   { return action_t::composite_hit() + player -> cache.attack_hit(); }
 
@@ -5990,6 +6004,16 @@ public:
   { return action_t::composite_hit() + player -> cache.spell_hit(); }
   virtual double composite_versatility( const action_state_t* state ) const override
   { return spell_base_t::composite_versatility( state ) + player -> cache.damage_versatility(); }
+
+  virtual double composite_target_multiplier( player_t* target ) const override
+  {
+    double mul = action_t::composite_target_multiplier( target );
+
+    mul *= composite_target_damage_vulnerability( target );
+
+    return mul;
+  }
+
 };
 
 // Heal =====================================================================
