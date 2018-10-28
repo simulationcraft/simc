@@ -260,6 +260,7 @@ struct rogue_t : public player_t
     buff_t* deadshot;
     buff_t* double_dose; // Tracking Buff
     buff_t* nights_vengeance;
+    buff_t* nothing_personal;
     buff_t* paradise_lost;
     buff_t* perforate;
     buff_t* poisoned_wire;
@@ -305,6 +306,7 @@ struct rogue_t : public player_t
     gain_t* combat_potency;
     gain_t* energy_refund;
     gain_t* master_of_shadows;
+    gain_t* nothing_personal;
     gain_t* vendetta;
     gain_t* venom_rush;
     gain_t* venomous_wounds;
@@ -474,6 +476,7 @@ struct rogue_t : public player_t
     azerite_power_t fan_of_blades;
     azerite_power_t inevitability;
     azerite_power_t nights_vengeance;
+    azerite_power_t nothing_personal;
     azerite_power_t paradise_lost;
     azerite_power_t perforate;
     azerite_power_t poisoned_wire;
@@ -3806,16 +3809,37 @@ struct vanish_t : public rogue_attack_t
 
 struct vendetta_t : public rogue_attack_t
 {
+  struct nothing_personal_t : rogue_attack_t
+  {
+    nothing_personal_t( rogue_t* p ) :
+      rogue_attack_t( "nothing_personal", p, p -> find_spell( 286581 ) )
+    {
+      may_dodge = may_parry = may_block = false;
+      may_crit = tick_may_crit = false;
+      background = true;
+      harmful = true;
+      hasted_ticks = false;
+      base_td = p -> azerite.nothing_personal.value();
+    }
+  };
+
   double precombat_seconds;
+  nothing_personal_t* nothing_personal_dot;
 
   vendetta_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "vendetta", p, p -> find_specialization_spell( "Vendetta" ) ),
-    precombat_seconds( 0.0 )
+    precombat_seconds( 0.0 ), nothing_personal_dot( nullptr )
   {
     add_option( opt_float( "precombat_seconds", precombat_seconds ) );
     parse_options( options_str );
 
     harmful = may_miss = may_crit = false;
+
+    if ( p -> azerite.nothing_personal.ok() )
+    {
+      nothing_personal_dot = new nothing_personal_t( p );
+      add_child( nothing_personal_dot );
+    }
   }
 
   void execute() override
@@ -3823,6 +3847,13 @@ struct vendetta_t : public rogue_attack_t
     rogue_attack_t::execute();
 
     p() -> buffs.vendetta -> trigger();
+    p() -> buffs.nothing_personal -> trigger();
+
+    if ( nothing_personal_dot )
+    {
+      nothing_personal_dot -> set_target( execute_state -> target );
+      nothing_personal_dot -> execute();
+    }
 
     rogue_td_t* td = this -> td( execute_state -> target );
     td -> debuffs.vendetta -> trigger();
@@ -6276,6 +6307,7 @@ void rogue_t::init_spells()
   azerite.fan_of_blades        = find_azerite_spell( "Fan of Blades" );
   azerite.inevitability        = find_azerite_spell( "Inevitability" );
   azerite.nights_vengeance     = find_azerite_spell( "Night's Vengeance" );
+  azerite.nothing_personal     = find_azerite_spell( "Nothing Personal" );
   azerite.paradise_lost        = find_azerite_spell( "Paradise Lost" );
   azerite.perforate            = find_azerite_spell( "Perforate" );
   azerite.poisoned_wire        = find_azerite_spell( "Poisoned Wire" );
@@ -6330,6 +6362,7 @@ void rogue_t::init_gains()
   gains.ace_up_your_sleeve       = get_gain( "Ace Up Your Sleeve"       );
   gains.shrouded_suffocation     = get_gain( "Shrouded Suffocation"     );
   gains.the_first_dance          = get_gain( "The First Dance"          );
+  gains.nothing_personal         = get_gain( "Nothing Personal"         );
 }
 
 // rogue_t::init_procs ======================================================
@@ -6551,6 +6584,10 @@ void rogue_t::create_buffs()
   buffs.nights_vengeance                   = make_buff( this, "nights_vengeance", find_spell( 273424 ) )
                                              -> set_trigger_spell( azerite.nights_vengeance.spell_ref().effectN( 1 ).trigger() )
                                              -> set_default_value( azerite.nights_vengeance.value() );
+  buffs.nothing_personal                   = make_buff( this, "nothing_personal", find_spell( 289467 ) )
+                                             -> set_trigger_spell( azerite.nothing_personal.spell_ref().effectN( 1 ).trigger() )
+                                             -> set_affects_regen( true )
+                                             -> set_default_value( find_spell( 289467 ) -> effectN( 2 ).percent() );
   buffs.paradise_lost                      = make_buff<stat_buff_t>( this, "paradise_lost", find_spell( 278962 ) )
                                              -> add_stat( STAT_AGILITY, azerite.paradise_lost.value() )
                                              -> set_refresh_behavior( buff_refresh_behavior::DURATION );
@@ -7058,6 +7095,12 @@ void rogue_t::regen( timespan_t periodicity )
     {
       double energy_regen = periodicity.total_seconds() * resource_regen_per_second( RESOURCE_ENERGY ) * buffs.adrenaline_rush -> data().effectN( 1 ).percent();
       resource_gain( RESOURCE_ENERGY, energy_regen, gains.adrenaline_rush );
+    }
+
+    if ( buffs.nothing_personal -> up() )
+    {
+      double energy_regen = periodicity.total_seconds() * resource_regen_per_second( RESOURCE_ENERGY ) * buffs.nothing_personal -> check_value();
+      resource_gain( RESOURCE_ENERGY, energy_regen, gains.nothing_personal );
     }
 
     // Additional energy gains
