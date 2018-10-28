@@ -595,7 +595,7 @@ namespace warlock
       struct seed_of_corruption_aoe_t : public affliction_spell_t
       {
         corruption_t* corruption;
-        bool deathbloom; //azerite_trait
+        //bool deathbloom; //azerite_trait
 
         seed_of_corruption_aoe_t( warlock_t* p ) :
           affliction_spell_t( "seed_of_corruption_aoe", p, p -> find_spell( 27285 ) ),
@@ -603,7 +603,7 @@ namespace warlock
         {
           aoe = -1;
           background = true;
-          deathbloom = false;
+          //deathbloom = false;
           p->spells.seed_of_corruption_aoe = this;
           base_costs[RESOURCE_MANA] = 0;
 
@@ -615,7 +615,10 @@ namespace warlock
         double bonus_da(const action_state_t* s) const override
         {
           double da = affliction_spell_t::bonus_da(s);
-          if(!deathbloom)
+
+          //TOCHECK commented out as the code doesn't work. This is an edge case that should never happen,
+          //but should still be corrected to in-game functionality
+          //if(deathbloom)
             da += p()->azerite.deathbloom.value();
           return da;
         }
@@ -699,9 +702,11 @@ namespace warlock
       {
         affliction_spell_t::last_tick( d );
 
-        if (!d->end_event) {
-          explosion->deathbloom = true;
-        }
+        //TOCHECK commented out as the code doesn't work. This is an edge case that should never happen,
+        //but should still be corrected to in-game functionality
+        //if (!d->end_event) {
+        //  explosion->deathbloom = true;
+        //}
         explosion->set_target( d->target );
         explosion->schedule_execute();
       }
