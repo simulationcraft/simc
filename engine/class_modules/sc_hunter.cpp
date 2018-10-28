@@ -2840,7 +2840,7 @@ struct rapid_fire_t: public hunter_spell_t
     } surging_shots;
 
     rapid_fire_damage_t( const std::string& n, hunter_t* p ):
-      hunter_ranged_attack_t( n, p, p -> find_spell( 257044 ) -> effectN( 2 ).trigger() ),
+      hunter_ranged_attack_t( n, p, p -> find_spell( 257045 ) ),
       trick_shots_targets( as<int>( p -> specs.trick_shots -> effectN( 3 ).base_value() ) )
     {
       dual = true;
