@@ -1070,8 +1070,6 @@ namespace warlock
     buffs.nightfall = make_buff( this, "nightfall", find_spell( 264571 ) )
       ->set_default_value( find_spell( 264571 )->effectN( 2 ).percent() )
       ->set_trigger_spell( talents.nightfall )
-      //REMOVE
-      ->set_rppm( RPPM_HASTE );
     //azerite
     buffs.cascading_calamity = make_buff<stat_buff_t>(this, "cascading_calamity", azerite.cascading_calamity)
       ->add_stat(STAT_HASTE_RATING, azerite.cascading_calamity.value())
@@ -1167,8 +1165,8 @@ namespace warlock
     def->add_action( "drain_soul,interrupt_global=1,chain=1,cycle_targets=1,if=target.time_to_die<=gcd&soul_shard<5" );
     def->add_action( "haunt,if=spell_targets.seed_of_corruption_aoe<=2+raid_event.invulnerable.up" );
     def->add_action( "summon_darkglare,if=dot.agony.ticking&dot.corruption.ticking&(buff.active_uas.stack=5|soul_shard=0)&(!talent.phantom_singularity.enabled|cooldown.phantom_singularity.remains)&(!talent.deathbolt.enabled|cooldown.deathbolt.remains<=gcd|!cooldown.deathbolt.remains|spell_targets.seed_of_corruption_aoe>1+raid_event.invulnerable.up)" );
-    def->add_action( "agony,target_if=min:dot.agony.remains,if=remains<=gcd+action.shadow_bolt.execute_time&target.time_to_die>8" );
     def->add_action( "deathbolt,if=cooldown.summon_darkglare.remains&spell_targets.seed_of_corruption_aoe=1+raid_event.invulnerable.up" );
+    def->add_action( "agony,target_if=min:dot.agony.remains,if=remains<=gcd+action.shadow_bolt.execute_time&target.time_to_die>8" );
     def->add_action( "unstable_affliction,target_if=!contagion&target.time_to_die<=8" );
     def->add_action( "drain_soul,target_if=min:debuff.shadow_embrace.remains,cancel_if=ticks_remain<5,if=talent.shadow_embrace.enabled&variable.maintain_se&debuff.shadow_embrace.remains&debuff.shadow_embrace.remains<=gcd*2" );
     def->add_action( "shadow_bolt,target_if=min:debuff.shadow_embrace.remains,if=talent.shadow_embrace.enabled&variable.maintain_se&debuff.shadow_embrace.remains&debuff.shadow_embrace.remains<=execute_time*2+travel_time&!action.shadow_bolt.in_flight" );
@@ -1209,7 +1207,6 @@ namespace warlock
     fil->add_action( "unstable_affliction,line_cd=15,if=cooldown.deathbolt.remains<=gcd*2&spell_targets.seed_of_corruption_aoe=1+raid_event.invulnerable.up&cooldown.summon_darkglare.remains>20" );
     fil->add_action( "call_action_list,name=db_refresh,if=spell_targets.seed_of_corruption_aoe=1+raid_event.invulnerable.up&(dot.agony.remains<dot.agony.duration*0.75|dot.corruption.remains<dot.corruption.duration*0.75|dot.siphon_life.remains<dot.siphon_life.duration*0.75)&cooldown.deathbolt.remains<=action.agony.gcd*4&cooldown.summon_darkglare.remains>20" );
     fil->add_action( "call_action_list,name=db_refresh,if=spell_targets.seed_of_corruption_aoe=1+raid_event.invulnerable.up&cooldown.summon_darkglare.remains<=soul_shard*action.agony.gcd+action.agony.gcd*3&(dot.agony.remains<dot.agony.duration*1|dot.corruption.remains<dot.corruption.duration*1|dot.siphon_life.remains<dot.siphon_life.duration*1)" );
-    fil->add_action( "agony,if=talent.deathbolt.enabled&cooldown.summon_darkglare.remains>=30+gcd&cooldown.deathbolt.remains<=gcd&!prev_gcd.1.summon_darkglare&!prev_gcd.1.agony&talent.writhe_in_agony.enabled&azerite.sudden_onset.enabled&remains<duration*0.5");
     fil->add_action( "deathbolt,if=cooldown.summon_darkglare.remains>=30+gcd|cooldown.summon_darkglare.remains>140" );
     fil->add_action( "shadow_bolt,if=buff.movement.up&buff.nightfall.remains" );
     fil->add_action( "agony,if=buff.movement.up&!(talent.siphon_life.enabled&(prev_gcd.1.agony&prev_gcd.2.agony&prev_gcd.3.agony)|prev_gcd.1.agony)" );
