@@ -922,11 +922,6 @@ struct rogue_attack_t : public melee_attack_t
   virtual bool procs_combat_potency() const
   { return callbacks && ! proc && weapon != nullptr && weapon -> slot == SLOT_OFF_HAND; }
 
-  // Generic rules for proccing Insignia of Ravenholdt, used by
-  // rogue_t::trigger_insignia_of_ravenholdt()
-  virtual bool procs_insignia_of_ravenholdt() const
-  { return energize_type != ENERGIZE_NONE && energize_resource == RESOURCE_COMBO_POINT; }
-
   virtual double proc_chance_main_gauche() const
   { return p()->mastery.main_gauche->proc_chance(); }
 
@@ -2453,9 +2448,6 @@ struct fan_of_knives_t: public rogue_attack_t
     }
   }
 
-  bool procs_insignia_of_ravenholdt() const override
-  { return false; }
-
   double bonus_da( const action_state_t* state ) const override
   {
     double b = rogue_attack_t::bonus_da( state );
@@ -2951,9 +2943,6 @@ struct mutilate_strike_t : public rogue_attack_t
   {
     background  = true;
   }
-
-  bool procs_insignia_of_ravenholdt() const override
-  { return true; }
 
   double composite_crit_chance() const override
   {
@@ -3511,9 +3500,6 @@ struct shuriken_storm_t: public rogue_attack_t
     affected_by.shadow_blades = true;
   }
 
-  bool procs_insignia_of_ravenholdt() const override
-  { return false; }
-
   double composite_crit_chance() const override
   {
     double c = rogue_attack_t::composite_crit_chance();
@@ -3953,9 +3939,6 @@ struct poisoned_knife_t : public rogue_attack_t
 
     return b;
   }
-
-  bool procs_insignia_of_ravenholdt() const override
-  { return false; }
 
   double composite_poison_flat_modifier( const action_state_t* ) const override
   { return 1.0; }
