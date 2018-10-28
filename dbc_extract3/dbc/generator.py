@@ -1329,6 +1329,7 @@ class SpellDataGenerator(DataGenerator):
             ( 278981, 0 ),          # The First Dance, Azerite trait aura
             ( 273009, 0 ),          # Double Dose, Azerite trait dmg spell
             ( 278962, 0 ),          # Paradise Lost, Azerite trait buff
+            ( 286131, 0 ),          # Replicating Shadows, Azerite trait dmg effect
         ),
 
         # Priest:
