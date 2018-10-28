@@ -470,6 +470,7 @@ struct rogue_t : public player_t
     azerite_power_t brigands_blitz;
     azerite_power_t deadshot;
     azerite_power_t double_dose;
+    azerite_power_t echoing_blades;
     azerite_power_t fan_of_blades;
     azerite_power_t inevitability;
     azerite_power_t nights_vengeance;
@@ -2417,8 +2418,25 @@ struct exsanguinate_t : public rogue_attack_t
 
 struct fan_of_knives_t: public rogue_attack_t
 {
+  struct echoing_blades_t : public rogue_attack_t
+  {
+    echoing_blades_t( rogue_t* p ) :
+      rogue_attack_t( "echoing_blades", p, p -> find_spell(287653) )
+    {
+      aoe = -1;
+      background  = true;
+      may_miss = may_block = may_dodge = may_parry = false;
+      base_dd_min = p -> azerite.echoing_blades.value( 3 );
+      base_dd_max = p -> azerite.echoing_blades.value( 3 );
+    }
+  };
+
+  echoing_blades_t* echoing_blades_attack;
+  int echoing_blades_crit_count;
+
   fan_of_knives_t( rogue_t* p, const std::string& options_str ):
-    rogue_attack_t( "fan_of_knives", p, p -> find_specialization_spell( "Fan of Knives" ), options_str )
+    rogue_attack_t( "fan_of_knives", p, p -> find_specialization_spell( "Fan of Knives" ), options_str ),
+    echoing_blades_attack( nullptr ), echoing_blades_crit_count( 0 )
   {
     aoe = -1;
     energize_type     = ENERGIZE_ON_HIT;
@@ -2427,6 +2445,12 @@ struct fan_of_knives_t: public rogue_attack_t
 
     if ( p -> azerite.fan_of_blades.ok() )
       radius = p -> azerite.fan_of_blades.spell_ref().effectN( 2 ).base_value();
+
+    if ( p -> azerite.echoing_blades.ok() )
+    {
+      echoing_blades_attack = new echoing_blades_t( p );
+      add_child( echoing_blades_attack );
+    }
   }
 
   bool procs_insignia_of_ravenholdt() const override
@@ -2437,6 +2461,7 @@ struct fan_of_knives_t: public rogue_attack_t
     double b = rogue_attack_t::bonus_da( state );
     if ( p() -> azerite.fan_of_blades.ok() && state -> n_targets >= p() -> azerite.fan_of_blades.spell_ref().effectN( 3 ).base_value() )
       b += p() -> azerite.fan_of_blades.value();
+    b += p() -> azerite.echoing_blades.value( 2 );
     return b;
   }
 
@@ -2453,6 +2478,8 @@ struct fan_of_knives_t: public rogue_attack_t
 
     if ( p() -> buffs.hidden_blades -> up() )
       p() -> buffs.hidden_blades -> expire();
+
+    echoing_blades_crit_count = 0;
   }
 
   void schedule_travel( action_state_t* state ) override
@@ -2468,6 +2495,17 @@ struct fan_of_knives_t: public rogue_attack_t
 
       if ( p() -> active_nonlethal_poison )
         p() -> active_nonlethal_poison -> trigger( state );
+    }
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    rogue_attack_t::impact( state );
+
+    if ( echoing_blades_attack && state -> result == RESULT_CRIT && ++echoing_blades_crit_count <= p() -> azerite.echoing_blades.spell_ref().effectN( 4 ).base_value() )
+    {
+      echoing_blades_attack -> set_target( state -> target );
+      echoing_blades_attack -> execute();
     }
   }
 };
@@ -6251,6 +6289,7 @@ void rogue_t::init_spells()
   azerite.brigands_blitz       = find_azerite_spell( "Brigand's Blitz" );
   azerite.deadshot             = find_azerite_spell( "Deadshot" );
   azerite.double_dose          = find_azerite_spell( "Double Dose" );
+  azerite.echoing_blades       = find_azerite_spell( "Echoing Blades" );
   azerite.fan_of_blades        = find_azerite_spell( "Fan of Blades" );
   azerite.inevitability        = find_azerite_spell( "Inevitability" );
   azerite.nights_vengeance     = find_azerite_spell( "Night's Vengeance" );
