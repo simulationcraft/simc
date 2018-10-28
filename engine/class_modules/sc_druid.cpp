@@ -317,7 +317,6 @@ public:
   struct azerite_t
   {  // Not yet implemented
      // Balance
-    azerite_power_t lively_spirit; //how to even implement
     azerite_power_t long_night; //seems to be removed
 
     // Guardian
@@ -326,12 +325,14 @@ public:
 
     // Implemented
     // Balance
+    azerite_power_t lively_spirit;
     azerite_power_t dawning_sun;
-    azerite_power_t lunar_sharpnel;
+    azerite_power_t lunar_shrapnel;
     azerite_power_t power_of_the_moon;
     azerite_power_t sunblaze;
     azerite_power_t high_noon;
     azerite_power_t streaking_stars;
+    azerite_power_t arcanic_pulsar;
     // Feral
     azerite_power_t blood_mist; //check spelldata
     azerite_power_t gushing_lacerations; //check spelldata
@@ -431,6 +432,7 @@ public:
     buff_t* shredding_fury;
     buff_t* iron_jaws;
     buff_t* raking_ferocity;
+    buff_t* arcanic_pulsar;
 
   } buff;
 
@@ -6221,7 +6223,7 @@ struct lunar_shrapnel_t : public druid_spell_t
   {
     background = true;
     aoe = -1;
-    base_dd_min = base_dd_max = p->azerite.lunar_sharpnel.value(1);
+    base_dd_min = base_dd_max = p->azerite.lunar_shrapnel.value(1);
   }
 };
 
@@ -6263,7 +6265,7 @@ struct starfall_t : public druid_spell_t
     virtual void impact(action_state_t* s) override
     {
       druid_spell_t::impact(s);
-      if (p()->azerite.lunar_sharpnel.ok() && td(target)->dots.moonfire->is_ticking())
+      if (p()->azerite.lunar_shrapnel.ok() && td(target)->dots.moonfire->is_ticking())
       {
         p()->active.lunar_shrapnel->set_target(s->target);
         p()->active.lunar_shrapnel->execute();
@@ -6282,7 +6284,7 @@ struct starfall_t : public druid_spell_t
       p->active.starfall->stats = stats;
     }
 
-    if (p->azerite.lunar_sharpnel.ok())
+    if (p->azerite.lunar_shrapnel.ok())
     {
       add_child(p->active.lunar_shrapnel);
     }
@@ -6373,7 +6375,7 @@ struct starsurge_t : public druid_spell_t
     double am = druid_spell_t::action_multiplier();
 
     if ( p() -> mastery.starlight -> ok() )
-      am *= 1.0 + p() -> cache.mastery()*p()->mastery.starlight->effectN(3).mastery_value();
+      maybe_ptr(p()->dbc.ptr) ? am *= 1.0 + p() -> cache.mastery_value() : am *= 1.0 + p() -> cache.mastery()*p()->mastery.starlight->effectN(3).mastery_value();
 
     if (p()->sets->has_set_bonus(DRUID_BALANCE, T21, B2))
       am *= 1.0 + p()->sets->set(DRUID_BALANCE, T21, B2)->effectN(2).percent();
@@ -6440,6 +6442,16 @@ struct starsurge_t : public druid_spell_t
       p() -> buff.oneths_intuition -> decrement();
 
     p() -> buff.oneths_overconfidence -> trigger();
+
+    if (p()->azerite.arcanic_pulsar.ok())
+    {
+      if (p()->buff.arcanic_pulsar->check() == p()->azerite.arcanic_pulsar.value(4) - 1 && !p()->buff.incarnation_moonkin->up() && !p()->buff.celestial_alignment->up())
+      {
+        p()->buff.celestial_alignment->trigger(1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds(p()->azerite.arcanic_pulsar.value(3)));
+      }
+      p()->buff.arcanic_pulsar->trigger();
+    }
+
   }
 
   virtual double bonus_da(const action_state_t* s) const override
@@ -6448,6 +6460,9 @@ struct starsurge_t : public druid_spell_t
 
     if(p()->buff.sunblaze->up())
       da += p()->azerite.sunblaze.value(1);
+
+    if (p()->azerite.arcanic_pulsar.ok())
+      da += p()->azerite.arcanic_pulsar.value(2);
 
     return da;
   }
@@ -7085,10 +7100,11 @@ void druid_t::init_spells()
   azerite.high_noon = find_azerite_spell("High Noon");
   azerite.lively_spirit = find_azerite_spell("Lively Spirit");
   azerite.long_night = find_azerite_spell("Long Night");
-  azerite.lunar_sharpnel = find_azerite_spell("Lunar Shrapnel");
+  azerite.lunar_shrapnel = find_azerite_spell("Lunar Shrapnel");
   azerite.power_of_the_moon = find_azerite_spell("Power of the Moon");
   azerite.streaking_stars = find_azerite_spell("Streaking Stars");
   azerite.sunblaze = find_azerite_spell("Sunblaze");
+  azerite.arcanic_pulsar = find_azerite_spell("Arcanic Pulsar");
 
   // Feral
   azerite.blood_mist = find_azerite_spell("Blood Mist");
@@ -7170,7 +7186,7 @@ void druid_t::init_spells()
 
   active.solar_empowerment = new spells::solar_empowerment_t (this);
 
-  if (azerite.lunar_sharpnel.ok())
+  if (azerite.lunar_shrapnel.ok())
   {
     active.lunar_shrapnel = new spells::lunar_shrapnel_t(this);
   }
@@ -7263,6 +7279,9 @@ void druid_t::create_buffs()
 
   buff.lively_spirit = make_buff<stat_buff_t>(this, "lively_spirit", find_spell(279648))
     ->add_stat(STAT_INTELLECT, azerite.lively_spirit.value());
+
+  buff.arcanic_pulsar = make_buff(this, "arcanic_pulsar", find_spell(287790))
+    ->set_max_stack((int)azerite.arcanic_pulsar.value(4) - 1);
 
   // Talent buffs
 
@@ -9381,8 +9400,15 @@ void druid_t::trigger_natures_guardian( const action_state_t* trigger_state )
 void druid_t::trigger_solar_empowerment (const action_state_t* state)
 {
   double dm = buff.solar_empowerment->data ().effectN (1).percent ();
+  if (maybe_ptr(dbc.ptr))
+  {
+    dm += mastery.starlight->ok() * cache.mastery()*mastery.starlight->effectN(4).mastery_value();
+  }
+  else
+  {
+    dm += mastery.starlight->ok() * cache.mastery()*mastery.starlight->effectN(5).mastery_value();
+  }
 
-  dm += mastery.starlight->ok () * cache.mastery()*mastery.starlight->effectN(5).mastery_value();
   if(talent.soul_of_the_forest->ok())
     dm *= (1.0 + talent.soul_of_the_forest->effectN (1).percent ());
   dm = floor(dm*100)/100; //Currently Solar Wrath Empowerment is rounded down to the next %
