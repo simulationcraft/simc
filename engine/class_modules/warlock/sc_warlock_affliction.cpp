@@ -1069,7 +1069,7 @@ namespace warlock
 
     buffs.nightfall = make_buff( this, "nightfall", find_spell( 264571 ) )
       ->set_default_value( find_spell( 264571 )->effectN( 2 ).percent() )
-      ->set_trigger_spell( talents.nightfall )
+      ->set_trigger_spell( talents.nightfall );
     //azerite
     buffs.cascading_calamity = make_buff<stat_buff_t>(this, "cascading_calamity", azerite.cascading_calamity)
       ->add_stat(STAT_HASTE_RATING, azerite.cascading_calamity.value())
