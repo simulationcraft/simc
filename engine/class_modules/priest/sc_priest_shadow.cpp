@@ -768,13 +768,13 @@ struct vampiric_touch_t final : public priest_spell_t
   double insanity_gain;
   double harvested_thoughts_value;
   propagate_const<shadow_word_pain_t*> child_swp;
-  bool ignore_healing = false;
+  bool ignore_healing;
 
   vampiric_touch_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "vampiric_touch", p, p.find_class_spell( "Vampiric Touch" ) ),
       insanity_gain( data().effectN( 3 ).resource( RESOURCE_INSANITY ) ),
-      ignore_healing( p.options.priest_ignore_healing ),
-      harvested_thoughts_value( priest().azerite.thought_harvester.value( 1 ) )
+      harvested_thoughts_value( priest().azerite.thought_harvester.value( 1 ) ),
+      ignore_healing( p.options.priest_ignore_healing )
   {
     parse_options( options_str );
 

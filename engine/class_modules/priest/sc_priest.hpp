@@ -241,7 +241,9 @@ public:
     // Holy
     const spell_data_t* holy;  /// General holy data
     const spell_data_t* rapid_renewal;
+    const spell_data_t* holy_words;
     const spell_data_t* holy_word_chastise;
+    const spell_data_t* holy_word_serenity;
     const spell_data_t* holy_nova;
     const spell_data_t* holy_fire;
 	  const spell_data_t* apotheosis;
@@ -287,6 +289,7 @@ public:
 
     // Holy
     propagate_const<cooldown_t*> holy_word_chastise;
+    propagate_const<cooldown_t*> holy_word_serenity;
     propagate_const<cooldown_t*> holy_fire;
 	  propagate_const<cooldown_t*> apotheosis;
   } cooldowns;
@@ -448,6 +451,8 @@ public:
     insanity.drain();
     insanity.adjust_end_event();
   }
+
+  void adjust_holy_word_serenity_cooldown();
 
 private:
   void create_cooldowns();

@@ -612,6 +612,7 @@ void priest_t::create_cooldowns()
   cooldowns.apotheosis         = get_cooldown("apotheosis ");
   cooldowns.holy_fire          = get_cooldown( "holy_fire" );
   cooldowns.holy_word_chastise = get_cooldown( "holy_word_chastise" );
+  cooldowns.holy_word_serenity = get_cooldown( "holy_word_serenity" );
   cooldowns.power_word_shield  = get_cooldown( "power_word_shield" );
   cooldowns.shadowfiend        = get_cooldown( "shadowfiend" );
   cooldowns.silence            = get_cooldown( "silence" );

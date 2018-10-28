@@ -83,6 +83,17 @@ struct holy_word_chastise_t final : public priest_spell_t
   }
 };
 
+struct holy_word_serenity_t final : public priest_heal_t
+{
+  holy_word_serenity_t( priest_t& p, const std::string& options_str )
+    : priest_heal_t( "holy_word_serenity", p, p.find_class_spell( "Holy Word: Serenity" ) )
+  {
+    parse_options( options_str );
+    harmful            = false;
+
+  }
+};
+
 // TODO Fix targeting to start from the priest and not the target
 struct holy_nova_t final : public priest_spell_t
 {
@@ -124,6 +135,13 @@ struct flash_heal_t final : public priest_heal_t
     harmful            = false;
 
   }
+
+  void impact(action_state_t* s ) override
+  {
+    priest_heal_t::impact( s );
+
+    priest().adjust_holy_word_serenity_cooldown();
+  }
 };
 
 struct renew_t final : public priest_heal_t
@@ -134,6 +152,24 @@ struct renew_t final : public priest_heal_t
     parse_options( options_str );
     harmful            = false;
 
+  }
+};
+
+struct holy_heal_t final : public priest_heal_t
+{
+  holy_heal_t( priest_t& p, const std::string& options_str )
+    : priest_heal_t( "heal", p, p.find_class_spell( "Heal" ) )
+  {
+    parse_options( options_str );
+    harmful            = false;
+
+  }
+
+  void impact(action_state_t* s ) override
+  {
+    priest_heal_t::impact( s );
+
+    priest().adjust_holy_word_serenity_cooldown();
   }
 };
 
@@ -188,6 +224,8 @@ void priest_t::init_spells_holy()
   specs.rapid_renewal     = find_specialization_spell( "Rapid Renewal" );
   specs.divine_providence = find_specialization_spell( "Divine Providence" );
   specs.focused_will      = find_specialization_spell( "Focused Will" );
+  specs.holy_words = find_specialization_spell( "Holy Words" );
+  specs.holy_word_serenity = find_specialization_spell( "Holy Word: Serenity" );
 
   // Azerite
   azerite.sacred_flame = find_azerite_spell( "Sacred Flame" );
@@ -238,6 +276,11 @@ action_t* priest_t::create_action_holy( const std::string& name, const std::stri
     return new holy_word_chastise_t( *this, options_str );
   }
 
+  if ( name == "holy_word_serenity" )
+  {
+    return new holy_word_serenity_t( *this, options_str );
+  }
+
   if ( name == "flash_heal" )
   {
     return new flash_heal_t( *this, options_str );
@@ -248,12 +291,31 @@ action_t* priest_t::create_action_holy( const std::string& name, const std::stri
     return new renew_t( *this, options_str );
   }
 
+  if ( name == "heal" )
+  {
+    return new holy_heal_t( *this, options_str );
+  }
+
   return nullptr;
 }
 
 expr_t* priest_t::create_expression_holy( action_t*, const std::string& /*name_str*/ )
 {
   return nullptr;
+}
+
+/**
+ * Adjust cooldown of Holy Word: Serenity when casting Flash Heal or Heal
+ */
+void priest_t::adjust_holy_word_serenity_cooldown()
+{
+  if (!specs.holy_words->ok())
+  {
+    return;
+  }
+
+  auto adjustment = -timespan_t::from_seconds(specs.holy_word_serenity->effectN( 2 ).base_value());
+  cooldowns.holy_word_serenity->adjust(adjustment);
 }
 
 /** Holy Damage Combat Action Priority List */
