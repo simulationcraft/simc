@@ -733,6 +733,7 @@ public:
     real_ppm_t* freezing_death;
     real_ppm_t* glacial_contagion;
     real_ppm_t* runic_attenuation;
+    real_ppm_t* killing_machine;
   } rppm;
 
   // Pets and Guardians
@@ -757,9 +758,18 @@ public:
     proc_t* killing_machine_oblit;
     proc_t* killing_machine_fsc;
     
-    proc_t* km_from_obliteration;
+    proc_t* km_from_crit_aa;
+    proc_t* km_from_obliteration_fs;
+    proc_t* km_from_obliteration_hb;
+    proc_t* km_from_obliteration_ga;
     proc_t* km_from_killer_frost;
-    
+
+    proc_t* km_from_crit_aa_wasted;
+    proc_t* km_from_obliteration_fs_wasted;
+    proc_t* km_from_obliteration_hb_wasted;
+    proc_t* km_from_obliteration_ga_wasted;
+    proc_t* km_from_killer_frost_wasted;
+
     proc_t* pp_runic_corruption; // from pestilent pustules
     proc_t* rp_runic_corruption; // from RP spent
     proc_t* t19_2pc_unholy; // from t19 2P
@@ -899,6 +909,7 @@ public:
 
   double    runes_per_second() const;
   double    rune_regen_coefficient() const;
+  bool      trigger_killing_machine( double chance, proc_t* proc = nullptr );
   void      trigger_runic_empowerment( double rpcost );
   bool      trigger_runic_corruption( double rpcost, double override_chance = -1.0 );
   void      trigger_festering_wound( const action_state_t* state, unsigned n_stacks = 1, proc_t* proc = nullptr );
@@ -2050,7 +2061,7 @@ struct risen_skulker_pet_t : public death_knight_pet_t
       
       timespan_t interval = super::gcd();
 
-      if ( p() -> o() -> bugs )
+      if ( p() -> o() -> bugs && !maybe_ptr( p() -> o() -> dbc.ptr ) )
       {
         interval = execute_time() <= timespan_t::from_seconds( 1.2 ) ?
                             timespan_t::from_seconds( 1.2 ) :
@@ -2747,7 +2758,7 @@ void death_knight_melee_attack_t::consume_killing_machine( const action_state_t*
     return;
   }
 
-  if ( ! p() -> buffs.killing_machine -> check() )
+  if ( ! p() -> buffs.killing_machine -> up() )
   {
     return;
   }
@@ -3078,7 +3089,8 @@ struct melee_t : public death_knight_melee_attack_t
 
       if ( s -> result == RESULT_CRIT )
       {
-        p() -> buffs.killing_machine -> trigger();
+        if ( p() -> trigger_killing_machine( 0, p() -> procs.km_from_crit_aa ) )
+          p() -> procs.km_from_crit_aa_wasted -> occur();
       }
 
       if ( weapon && p() -> buffs.frozen_pulse -> up() )
@@ -3504,13 +3516,20 @@ struct bonestorm_heal_t : public death_knight_heal_t
 struct bonestorm_damage_t : public death_knight_spell_t
 {
   bonestorm_heal_t* heal;
+  int heal_count;
 
-  bonestorm_damage_t( death_knight_t* p, bonestorm_heal_t* heal ) :
+  bonestorm_damage_t( death_knight_t* p, bonestorm_heal_t* h ) :
     death_knight_spell_t( "bonestorm_damage", p, p -> talent.bonestorm -> effectN( 3 ).trigger() ),
-    heal( heal )
+    heal( h ), heal_count( 0 )
   {
     background = true;
     aoe = -1;
+  }
+
+  void execute() override
+  {
+    heal_count = 0;
+    death_knight_spell_t::execute();
   }
 
   void impact( action_state_t* state ) override
@@ -3519,7 +3538,17 @@ struct bonestorm_damage_t : public death_knight_spell_t
 
     if ( result_is_hit( state -> result ) )
     {
-      heal -> execute();
+      // Healing is limited at 5 occurnces per tick, regardless of enemies hit
+      if ( maybe_ptr( p() -> dbc.ptr ) )
+      { 
+        if ( heal_count < p() -> talent.bonestorm -> effectN( 4 ).base_value() )
+        {
+          heal -> execute();
+          heal_count++;
+        }
+      }
+      else 
+        heal -> execute();
     }
   }
 };
@@ -3554,35 +3583,7 @@ struct breath_of_sindragosa_tick_t: public death_knight_spell_t
     aoe = -1;
     background = true;
 
-    // Bug ? Seem to always deal 30% of the original damage to secondary targets
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/93
-    if ( p -> bugs )
-    {
-      base_aoe_multiplier = 0.3;
-    }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    if ( s -> target == target )
-    {
-      death_knight_spell_t::impact( s );
-    }
-
-    else
-    {
-      double damage = s -> result_amount;
-      // Damage nerfed on secondary targets on BfA alpha
-      // Bug ? Seem to always deal 30% of the original damage to secondary targets, handled in constructor
-      // https://github.com/SimCMinMax/WoW-BugTracker/issues/93
-      if ( !p() -> bugs )
-      {
-        damage /= ( execute_state -> n_targets * 5/3 );
-      }
-
-      s -> result_amount = s -> result_total = damage;
-      death_knight_spell_t::impact( s );
-    }
+    base_aoe_multiplier = 0.3;
   }
 };
 
@@ -4945,11 +4946,10 @@ struct frost_strike_strike_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::impact( state );
 
-    if ( p() -> azerite.killer_frost.enabled() && state -> result == RESULT_CRIT &&
-         rng().roll( p() -> azerite.killer_frost.spell() -> effectN( 2 ).base_value() / 100 ) )
+    if ( p() -> azerite.killer_frost.enabled() && state -> result == RESULT_CRIT )
     {
-      p() -> buffs.killing_machine -> execute();
-      p() -> procs.km_from_killer_frost -> occur();
+      if ( p() -> trigger_killing_machine( p() -> azerite.killer_frost.spell() -> effectN( 2 ).percent(), p() -> procs.km_from_killer_frost ) )
+        p() -> procs.km_from_killer_frost_wasted -> occur();
     }
   }
 };
@@ -4987,14 +4987,13 @@ struct frost_strike_t : public death_knight_melee_attack_t
       p() -> trigger_runic_empowerment( last_resource_cost );
     }
 
-    // Note note, killing machine is a RPPM thing, but we need to trigger it unconditionally when
-    // obliterate is up, so just bypas "trigger" and directly execute the buff, while making sure
-    // correct bookkeeping information is kept. Ugly but will work for now.
     if ( p() -> buffs.pillar_of_frost -> up() && p() -> talent.obliteration -> ok() )
     {
-      p() -> buffs.killing_machine -> execute();
-      p() -> procs.km_from_obliteration -> occur();
-
+      if ( p() -> trigger_killing_machine( 1.0, p() -> procs.km_from_obliteration_fs ) )
+      {
+        p() -> procs.km_from_obliteration_fs_wasted -> occur();
+      }
+      // Obliteration's rune generation
       if ( rng().roll( p() -> talent.obliteration -> effectN( 2 ).percent() ) )
       {
         // WTB spelldata for the rune gain
@@ -5046,14 +5045,13 @@ struct glacial_advance_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    // Note note, killing machine is a RPPM thing, but we need to trigger it unconditionally when
-    // obliterate is up, so just bypas "trigger" and directly execute the buff, while making sure
-    // correct bookkeeping information is kept. Ugly but will work for now.
     if ( p() -> buffs.pillar_of_frost -> up() && p() -> talent.obliteration -> ok() )
     {
-      p() -> buffs.killing_machine -> execute();
-      p() -> procs.km_from_obliteration -> occur();
-
+      if ( p() -> trigger_killing_machine( 1.0, p() -> procs.km_from_obliteration_ga ) )
+      {
+        p() -> procs.km_from_obliteration_ga_wasted -> occur();
+      }
+      // Obliteration's rune generation
       if ( rng().roll( p() -> talent.obliteration -> effectN( 2 ).percent() ) )
       {
         // WTB spelldata for the rune gain
@@ -5336,14 +5334,13 @@ struct howling_blast_t : public death_knight_spell_t
                             this );
     }
 
-    // Note, killing machine is a RPPM thing, but we need to trigger it unconditionally when
-    // obliterate is up, so just bypas "trigger" and directly execute the buff, while making sure
-    // correct bookkeeping information is kept. Ugly but will work for now.
     if ( p() -> buffs.pillar_of_frost -> up() && p() -> talent.obliteration -> ok() )
     {
-      p() -> buffs.killing_machine -> execute();
-      p() -> procs.km_from_obliteration -> occur();
-
+      if ( p() -> trigger_killing_machine( 1.0, p() -> procs.km_from_obliteration_hb ) )
+      {
+        p() -> procs.km_from_obliteration_hb_wasted -> occur();
+      }
+      // Obliteration's rune generation
       if ( rng().roll( p() -> talent.obliteration -> effectN( 2 ).percent() ) )
       {
         // WTB spelldata for the rune gain
@@ -6760,6 +6757,44 @@ unsigned death_knight_t::replenish_rune( unsigned n, gain_t* gain )
   return replenished;
 }
 
+// Helper function to trigger Killing Machine, whether it's from a "forced" proc, a % chance, or the regular rppm proc
+// Returns true if the proc is wasted
+bool death_knight_t::trigger_killing_machine( double chance, proc_t* proc )
+{
+  bool triggered = false;
+  bool wasted = buffs.killing_machine -> up();
+  // If the chance is 0, use the rppm effect
+  if ( !chance )
+  {
+    if ( rppm.killing_machine -> trigger() )
+    {
+      triggered = true;
+    }
+  }
+  // Else, use RNG
+  else
+  {
+    triggered = rng().roll( chance );
+  }
+
+  // If the proc didn't happen, there's no waste and nothing else to do
+  if ( !triggered )
+  {
+    return false;
+  }
+
+  buffs.killing_machine -> trigger();
+  
+  // The given proc occurs only if there's no waste
+  // Wasted procs are handled in the source action
+  if ( !wasted )
+  {
+    proc -> occur();
+  }
+  
+  return wasted;
+}
+
 void death_knight_t::trigger_runic_empowerment( double rpcost )
 {
   double base_chance = spec.runic_empowerment -> effectN( 1 ).percent() / 10.0;
@@ -7252,6 +7287,7 @@ void death_knight_t::init_rng()
   rppm.bloodworms = get_rppm( "bloodworms", talent.bloodworms );
   rppm.runic_attenuation = get_rppm( "runic_attenuation", talent.runic_attenuation );
   rppm.glacial_contagion = get_rppm( "glacial_contagion", azerite.glacial_contagion.spell() -> effectN( 1 ).trigger() );
+  rppm.killing_machine = get_rppm( "killing_machine", spec.killing_machine );
 }
 
 // death_knight_t::init_base ================================================
@@ -7267,7 +7303,15 @@ void death_knight_t::init_base_stats()
   base.attack_power_per_agility = 0.0;
 
   resources.base[ RESOURCE_RUNIC_POWER ] = 100;
-  resources.base[ RESOURCE_RUNIC_POWER ] += ( spec.veteran_of_the_third_war -> effectN( 8 ).resource( RESOURCE_RUNIC_POWER ) );
+  if ( maybe_ptr( dbc.ptr ) )
+  {
+    resources.base[ RESOURCE_RUNIC_POWER ] += spec.blood_death_knight -> effectN( 12 ).resource( RESOURCE_RUNIC_POWER );
+  }
+  else
+  {
+    resources.base[ RESOURCE_RUNIC_POWER ] += ( spec.veteran_of_the_third_war -> effectN( 8 ).resource( RESOURCE_RUNIC_POWER ) );
+  }
+  
   if ( talent.ossuary -> ok() )
     resources.base [ RESOURCE_RUNIC_POWER ] += ( talent.ossuary -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER ) );
 
@@ -8003,6 +8047,7 @@ void death_knight_t::create_buffs()
 
   buffs.killing_machine = make_buff( this, "killing_machine", spec.killing_machine -> effectN( 1 ).trigger() )
         -> set_trigger_spell( spec.killing_machine )
+        -> set_chance( 1.0 )
         -> set_default_value( find_spell( 51124 ) -> effectN( 1 ).percent() );
 
   buffs.pillar_of_frost = new pillar_of_frost_buff_t( this );
@@ -8122,8 +8167,18 @@ void death_knight_t::init_procs()
 
   procs.killing_machine_oblit = get_proc( "Killing Machine spent on Obliterate" );
   procs.killing_machine_fsc   = get_proc( "Killing Machine spent on Frostscythe" );
-  procs.km_from_obliteration  = get_proc( "Killing Machine from Obliteration" );
-  procs.km_from_killer_frost  = get_proc( "Killing Machine from Killer Frost" );
+  
+  procs.km_from_crit_aa         = get_proc( "Killing Machine: Critical auto attacks" );
+  procs.km_from_obliteration_fs = get_proc( "Killing Machine: Frost Strike" );
+  procs.km_from_obliteration_hb = get_proc( "Killing Machine: Howling Blast" );
+  procs.km_from_obliteration_ga = get_proc( "Killing Machine: Glacial Advance" );
+  procs.km_from_killer_frost    = get_proc( "Killing Machine: Killer Frost" );
+
+  procs.km_from_crit_aa_wasted         = get_proc( "Killing Machine wasted: Critical auto attacks" );
+  procs.km_from_obliteration_fs_wasted = get_proc( "Killing Machine wasted: Frost Strike" );
+  procs.km_from_obliteration_hb_wasted = get_proc( "Killing Machine wasted: Howling Blast" );
+  procs.km_from_obliteration_ga_wasted = get_proc( "Killing Machine wasted: Glacial Advance" );
+  procs.km_from_killer_frost_wasted    = get_proc( "Killing Machine wasted: Killer Frost" );
 
   procs.ready_rune            = get_proc( "Rune ready" );
 
@@ -8271,7 +8326,10 @@ double death_knight_t::composite_base_armor_multiplier() const
 {
   double bam = player_t::composite_base_armor_multiplier();
 
-  bam *= 1.0 + spec.veteran_of_the_third_war -> effectN( 2 ).percent();
+  if ( !maybe_ptr( dbc.ptr ) )
+  {
+    bam *= 1.0 + spec.veteran_of_the_third_war -> effectN( 2 ).percent();
+  }
 
   return bam;
 }
@@ -8325,8 +8383,15 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
 
   else if ( attr == ATTR_STAMINA )
   {
-    m *= 1.0 + spec.veteran_of_the_third_war -> effectN( 4 ).percent();
-    
+    if ( maybe_ptr( dbc.ptr ) )
+    {
+      m *= 1.0 + spec.veteran_of_the_third_war -> effectN( 1 ).percent() + spec.blood_death_knight -> effectN( 13 ).percent();
+    }
+    else
+    {
+      m *= 1.0 + spec.veteran_of_the_third_war -> effectN( 4 ).percent();
+    }
+
     if ( runeforge.rune_of_the_stoneskin_gargoyle -> check() )
     {
       m *= 1.0 + runeforge.rune_of_the_stoneskin_gargoyle -> data().effectN( 2 ).percent();
@@ -8373,7 +8438,14 @@ double death_knight_t::composite_melee_expertise( const weapon_t* ) const
 {
   double expertise = player_t::composite_melee_expertise( nullptr );
 
-  expertise += spec.veteran_of_the_third_war -> effectN( 5 ).percent();
+  if ( maybe_ptr( dbc.ptr ) )
+  {
+    expertise += spec.blood_death_knight -> effectN( 10 ).percent();
+  }
+  else
+  {
+    expertise += spec.veteran_of_the_third_war -> effectN( 5 ).percent();
+  }
 
   return expertise;
 }
@@ -8464,7 +8536,14 @@ double death_knight_t::composite_crit_avoidance() const
 {
   double c = player_t::composite_crit_avoidance();
 
-  c += spec.veteran_of_the_third_war -> effectN( 1 ).percent();
+  if ( maybe_ptr( dbc.ptr ) )
+  {
+    c += spec.blood_death_knight -> effectN( 8 ).percent();
+  }
+  else 
+  {
+    c += spec.veteran_of_the_third_war -> effectN( 1 ).percent();
+  }
 
   return c;
 }
