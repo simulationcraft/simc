@@ -7046,6 +7046,7 @@ struct arcane_torrent_t : public racial_spell_t
     gain_pct( 0 ),
     gain_energy( 0 )
   {
+    harmful = false;
     energize_type = ENERGIZE_ON_CAST;
     // Some specs need special handling here
     switch ( p->specialization() )
