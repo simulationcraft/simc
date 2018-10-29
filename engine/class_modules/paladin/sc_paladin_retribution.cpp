@@ -79,8 +79,11 @@ void holy_power_consumer_t::execute()
     dp_success = rng().roll( p() -> spells.divine_purpose_ret -> effectN( 1 ).percent() );
   }
 
+  // The bug is fixed on 8.1 PTR
+  bool use_dp_bug = p() -> bugs && !maybe_ptr( p() -> dbc.ptr );
+
   // Then, if DP proc is successful, DP was active and bugs are enabled, refresh DP
-  if ( dp_success && p() -> buffs.divine_purpose -> check() && p() -> bugs )
+  if ( dp_success && p() -> buffs.divine_purpose -> check() && use_dp_bug )
   {
     p() -> buffs.divine_purpose -> trigger();
     p() -> procs.divine_purpose -> occur();
