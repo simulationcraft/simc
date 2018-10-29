@@ -1997,7 +1997,12 @@ void paladin_t::combat_begin()
 {
   player_t::combat_begin();
 
-  resources.current[ RESOURCE_HOLY_POWER ] = 0;
+  auto hp_overflow = resources.current[ RESOURCE_HOLY_POWER ] - MAX_START_OF_COMBAT_HOLY_POWER;
+  
+  if ( hp_overflow > 0 )
+  {
+    resource_loss( RESOURCE_HOLY_POWER, hp_overflow );
+  }
 }
 
 // paladin_t::get_hand_of_light =============================================

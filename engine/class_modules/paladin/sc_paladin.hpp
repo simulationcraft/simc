@@ -15,7 +15,7 @@ namespace buffs {
                   struct forbearance_t;
                   struct shield_of_vengeance_buff_t;
                 }
-
+const int MAX_START_OF_COMBAT_HOLY_POWER = 1;
 // ==========================================================================
 // Paladin Target Data
 // ==========================================================================
