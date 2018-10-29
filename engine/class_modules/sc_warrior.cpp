@@ -3514,7 +3514,7 @@ struct thunder_clap_t : public warrior_attack_t
 
     if ( p() -> azerite.deafening_crash.enabled() && td( state -> target ) -> debuffs_demoralizing_shout -> up() )
     {
-      td( state -> target ) -> debuffs_demoralizing_shout -> extend_duration( p(), timespan_t::from_millis( p() -> azerite.deafening_crash.value( 1 ) ) );
+      td( state -> target ) -> debuffs_demoralizing_shout -> extend_duration( p(), timespan_t::from_millis( p() -> azerite.deafening_crash.spell() -> effectN( 1 ).base_value() ) );
     }
   }
 };
@@ -5356,7 +5356,7 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
                    .default_value( p.talents.punish -> effectN( 2 ).trigger() -> effectN( 1 ).percent() );
   debuffs_callous_reprisal = buff_creator_t( static_cast<actor_pair_t>( *this ), "callous_reprisal", 
                                              p.azerite.callous_reprisal.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
-                              .default_value( p.azerite.callous_reprisal.value( 1 ) );
+                              .default_value( p.azerite.callous_reprisal.spell() -> effectN( 1 ).percent() );
   debuffs_taunt = buff_creator_t( static_cast<actor_pair_t>( *this ), "taunt", p.find_class_spell( "Taunt" ) );
 }
 
