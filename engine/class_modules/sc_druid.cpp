@@ -6445,12 +6445,15 @@ struct starsurge_t : public druid_spell_t
 
     if (p()->azerite.arcanic_pulsar.ok())
     {
+      p()->buff.arcanic_pulsar->trigger();
       if (p()->buff.arcanic_pulsar->check() == p()->buff.arcanic_pulsar->max_stack() && !p()->buff.incarnation_moonkin->up() && !p()->buff.celestial_alignment->up())
       {
-        p()->buff.celestial_alignment->trigger(1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds(p()->azerite.arcanic_pulsar.spell_ref().effectN(3).base_value()));
+        if(p()->talent.incarnation_moonkin->ok())
+          p()->buff.incarnation_moonkin->trigger(1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds(p()->azerite.arcanic_pulsar.spell_ref().effectN(3).base_value()));
+        else
+          p()->buff.celestial_alignment->trigger(1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds(p()->azerite.arcanic_pulsar.spell_ref().effectN(3).base_value()));
         p()->buff.arcanic_pulsar->expire();
       }
-      p()->buff.arcanic_pulsar->trigger();
     }
 
   }
@@ -7282,7 +7285,7 @@ void druid_t::create_buffs()
     ->add_stat(STAT_INTELLECT, azerite.lively_spirit.value());
 
   buff.arcanic_pulsar = make_buff(this, "arcanic_pulsar", find_spell(287790))
-    ->set_max_stack((int)azerite.arcanic_pulsar.spell_ref().effectN(4).base_value() - 1);
+    ->set_max_stack((int)azerite.arcanic_pulsar.spell_ref().effectN(4).base_value());
 
   // Talent buffs
 
