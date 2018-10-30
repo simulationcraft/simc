@@ -4864,25 +4864,25 @@ struct lightning_bolt_t : public shaman_spell_t
   size_t n_overloads( const action_state_t* t ) const override
   {
     size_t n = shaman_spell_t::n_overloads( t );
-    // TODO: revisit this with more data
-    // Does surge of power really act in addition to the base overload chance?
-    // Is the Surge of Power overload chance fixed like in the current implementation?
-    //   yes - what's the chance?
-    //   no - how does it interact with mastery?
+    // Surge of Power is an addition to the base overload chance
     if ( maybe_ptr( p()->dbc.ptr ) && p()->buff.surge_of_power_lightning->up() )
     {
-      n += (size_t)1;
-
-      // we're rolling the fake chance twice and the second one only when the first one was successful
-      double fake_chance = 0.25;  // chance matches what I've seen in logs
-      if ( rng().roll( fake_chance ) )
+      // roll one 100 sided dice once.
+      // 80% chance to get 1 overload,
+      // 18% chance to get 2 overloads,
+      //  2% chance to get 3 overloads
+      double roll = rng().range( 0.0, 1.0 );
+      if ( roll >= 0.98 )
+      {
+        n += (size_t)3;
+      }
+      else if ( roll >= 0.8 )
+      {
+        n += (size_t)2;
+      }
+      else
       {
         n += (size_t)1;
-
-        if ( rng().roll( fake_chance / 2.0 ) )
-        {
-          n += (size_t)1;
-        }
       }
     }
 
