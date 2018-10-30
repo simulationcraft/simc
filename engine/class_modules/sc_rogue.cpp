@@ -18,7 +18,8 @@ enum secondary_trigger_e
   TRIGGER_SINISTER_STRIKE,
   TRIGGER_WEAPONMASTER,
   TRIGGER_SECRET_TECHNIQUE,
-  TRIGGER_SHURIKEN_TORNADO
+  TRIGGER_SHURIKEN_TORNADO,
+  TRIGGER_REPLICATING_SHADOWS
 };
 
 enum stealth_type_e
@@ -190,12 +191,16 @@ struct rogue_t : public player_t
   actions::rogue_poison_t* active_nonlethal_poison;
   action_t* active_main_gauche;
   action_t* poison_bomb;
+  action_t* replicating_shadows;
 
   // Autoattacks
   action_t* auto_attack;
   actions::melee_t* melee_main_hand;
   actions::melee_t* melee_off_hand;
   actions::shadow_blades_attack_t* shadow_blades_attack;
+
+  // Track target of last manual Nightblade application for Replicating Shadows azerite power
+  player_t* last_nightblade_target;
 
   // Experimental weapon swapping
   weapon_info_t weapon_data[ 2 ];
@@ -480,6 +485,7 @@ struct rogue_t : public player_t
     azerite_power_t paradise_lost;
     azerite_power_t perforate;
     azerite_power_t poisoned_wire;
+    azerite_power_t replicating_shadows;
     azerite_power_t scent_of_blood;
     azerite_power_t sharpened_blades;
     azerite_power_t shrouded_suffocation;
@@ -523,8 +529,10 @@ struct rogue_t : public player_t
     active_nonlethal_poison( nullptr ),
     active_main_gauche( nullptr ),
     poison_bomb( nullptr ),
+    replicating_shadows( nullptr ),
     auto_attack( nullptr ), melee_main_hand( nullptr ), melee_off_hand( nullptr ),
     shadow_blades_attack( nullptr ),
+    last_nightblade_target( nullptr ),
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
     gains( gains_t() ),
@@ -1175,13 +1183,14 @@ struct secondary_ability_trigger_t : public event_t
     attack -> secondary_trigger = source;
     if ( state )
     {
+      attack -> set_target( state -> target );
       attack -> pre_execute_state = state;
     }
     // No state, construct one and grab combo points from the event instead of current CP amount.
     else
     {
       action_state_t* s = attack -> get_state();
-      s -> target = target;
+      attack -> set_target( target );
       actions::rogue_attack_t::cast_state( s ) -> cp = cp;
       // Calling snapshot_internal, snapshot_state would overwrite CP.
       attack -> snapshot_internal( s, attack -> snapshot_flags, attack -> amount_type( s ) );
@@ -3058,6 +3067,9 @@ struct nightblade_t : public rogue_attack_t
     may_crit = false;
     hasted_ticks = true;
     ap_type = AP_WEAPON_BOTH;
+
+    if ( p ->  replicating_shadows )
+      add_child( p ->  replicating_shadows );
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -3066,12 +3078,80 @@ struct nightblade_t : public rogue_attack_t
     return data().duration() + base_per_tick * cast_state( s ) -> cp;
   }
 
+  double composite_persistent_multiplier( const action_state_t* state ) const override
+  {
+    // Copy the persistent multiplier from the origin of replications.
+    if ( secondary_trigger == TRIGGER_REPLICATING_SHADOWS )
+      return p() -> get_target_data( p() -> last_nightblade_target ) -> dots.nightblade -> state -> persistent_multiplier;
+    return rogue_attack_t::composite_persistent_multiplier( state );
+  }
+
   void execute() override
   {
     rogue_attack_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) )
+    // Check if this is a manually applied Nightblade that hits
+    if ( secondary_trigger == TRIGGER_NONE && result_is_hit( execute_state -> result ) )
+    {
       p() -> buffs.nights_vengeance -> trigger();
+
+      // Save the target for Replicating Shadows
+      p() -> last_nightblade_target = execute_state -> target;
+    }
+  }
+};
+
+struct replicating_shadows_t : public rogue_attack_t
+{
+  action_t* nightblade_action;
+
+  replicating_shadows_t( rogue_t* p ) :
+    rogue_attack_t( "replicating_shadows", p, p -> find_spell(286131) ),
+    nightblade_action( nullptr )
+  {
+    background  = true;
+    may_miss = may_block = may_dodge = may_parry = false;
+    base_dd_min = p -> azerite.replicating_shadows.value();
+    base_dd_max = p -> azerite.replicating_shadows.value();
+  }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    if ( ! p() -> last_nightblade_target )
+      return;
+
+    // Get the last manually applied Nightblade as origin. Has to be still up.
+    rogue_td_t* last_nb_tdata = p() -> get_target_data( p() -> last_nightblade_target );
+    if ( last_nb_tdata -> dots.nightblade -> is_ticking() )
+    {
+      // Find the closest target to that manual target without a Nightblade debuff.
+      double minDist = 0.0;
+      player_t* minDistTarget = nullptr;
+      for ( const auto enemy : sim -> target_non_sleeping_list )
+      {
+        rogue_td_t* tdata = p() -> get_target_data( enemy );
+        if ( ! tdata -> dots.nightblade -> is_ticking() )
+        {
+          double dist = enemy -> get_position_distance( p() -> last_nightblade_target -> x_position, p() -> last_nightblade_target -> y_position );
+          if ( ! minDistTarget || dist < minDist)
+          {
+            minDist = dist;
+            minDistTarget = enemy;
+          }
+        }
+      }
+
+      // If it exists, trigger a new nightblade with 0 CP duration. We also copy the persistent multiplier in nightblade_t.
+      if ( minDistTarget )
+      {
+        if ( !nightblade_action )
+          nightblade_action = p() -> find_action( "nightblade" );
+        if ( nightblade_action )
+          make_event<actions::secondary_ability_trigger_t>( *sim, minDistTarget, nightblade_action, 0, TRIGGER_REPLICATING_SHADOWS );
+      }
+    }
   }
 };
 
@@ -5279,6 +5359,13 @@ void rogue_t::spend_combo_points( const action_state_t* state )
     sectec_cdr *= -max_spend;
     cooldowns.secret_technique -> adjust( sectec_cdr, false );
   }
+
+  // Proc Replicating Shadows on the current target.
+  if ( replicating_shadows && rng().roll( max_spend * azerite.replicating_shadows.spell_ref().effectN( 2 ).percent() ) )
+  {
+    replicating_shadows -> set_target( state -> target );
+    replicating_shadows -> execute();
+  }
 }
 
 void rogue_t::trigger_shadow_blades_attack( action_state_t* state )
@@ -6311,6 +6398,7 @@ void rogue_t::init_spells()
   azerite.paradise_lost        = find_azerite_spell( "Paradise Lost" );
   azerite.perforate            = find_azerite_spell( "Perforate" );
   azerite.poisoned_wire        = find_azerite_spell( "Poisoned Wire" );
+  azerite.replicating_shadows  = find_azerite_spell( "Replicating Shadows" );
   azerite.scent_of_blood       = find_azerite_spell( "Scent of Blood" );
   azerite.sharpened_blades     = find_azerite_spell( "Sharpened Blades" );
   azerite.shrouded_suffocation = find_azerite_spell( "Shrouded Suffocation" );
@@ -6332,6 +6420,11 @@ void rogue_t::init_spells()
   if ( talent.poison_bomb -> ok() )
   {
     poison_bomb = new actions::poison_bomb_t( this );
+  }
+
+  if ( azerite.replicating_shadows.ok() )
+  {
+    replicating_shadows = new actions::replicating_shadows_t( this );
   }
 }
 
@@ -6900,6 +6993,8 @@ void rogue_t::reset()
   poisoned_enemies = 0;
 
   shadow_techniques = 0;
+
+  last_nightblade_target = nullptr;
 
   weapon_data[ WEAPON_MAIN_HAND ].reset();
   weapon_data[ WEAPON_OFF_HAND ].reset();
