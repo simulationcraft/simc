@@ -7709,7 +7709,7 @@ void shaman_t::init_action_list_elemental()
   aoe->add_action( this, "Flame Shock", "moving=1,target_if=refreshable" );
   aoe->add_action( this, "Frost Shock", "moving=1" );
 
-  // Single target - Ascendance
+  // Single target APL
   single_target->add_action(
       this, "Flame Shock",
       "if=!ticking|dot.flame_shock.remains<=gcd|talent.ascendance.enabled&dot.flame_shock.remains<(cooldown.ascendance."
@@ -7743,6 +7743,9 @@ void shaman_t::init_action_list_elemental()
                              "if=talent.master_of_the_elements.enabled&(buff.master_of_the_elements.up|maelstrom>=92)|!"
                              "talent.master_of_the_elements.enabled",
                              "If possible, use Earth Shock with Master of the Elements." );
+  single_target->add_action( this, "Lightning Bolt", "if=buff.wind_gust.stack>=14&!buff.lava_surge.up",
+                             "Once you have enough Wind Gust stacks, don't hardcast Lava Burst anymore (keep casting "
+                             "Lava Burst with Lava Surge procs)." );
   single_target->add_action( this, "Lava Burst", "if=cooldown_react|buff.ascendance.up" );
   single_target->add_action( this, "Flame Shock", "target_if=refreshable" );
   single_target->add_talent( this, "Totem Mastery",
