@@ -259,9 +259,11 @@ public:
     // Feral
     real_ppm_t* predator;  // Optional RPPM approximation
     real_ppm_t* blood_mist;  // Azerite trait
+    
 
     // Balance
     real_ppm_t* balance_tier18_2pc;
+    real_ppm_t* power_of_the_moon;
   } rppm;
 
   // Options
@@ -534,6 +536,7 @@ public:
 
     // Balance
     proc_t* starshards;
+    proc_t* power_of_the_moon;
 
     // Guardian
     proc_t* gore;
@@ -2230,9 +2233,20 @@ struct moonfire_t : public druid_spell_t
     {
       double da = druid_spell_t::bonus_da(s);
 
-      da += p()->azerite.power_of_the_moon.value(2);
+      if (!maybe_ptr(p()->dbc.ptr))
+        da += p()->azerite.power_of_the_moon.value(2);
 
       return da;
+    }
+
+    double bonus_ta(const action_state_t* s) const override
+    {
+      double ta = druid_spell_t::bonus_ta(s);
+
+      if (maybe_ptr(p()->dbc.ptr))
+        ta += p()->azerite.power_of_the_moon.value(2);
+
+      return ta;
     }
 
     dot_t* get_dot( player_t* t ) override
@@ -2275,6 +2289,14 @@ struct moonfire_t : public druid_spell_t
       }
 
       trigger_balance_tier18_2pc();
+
+      if (!p()->azerite.power_of_the_moon.ok() || !maybe_ptr(p()->dbc.ptr))
+        return;
+      if (!p()->rppm.power_of_the_moon->trigger())
+        return;
+
+      p()->proc.power_of_the_moon->occur();
+      p()->buff.lunar_empowerment->trigger();
 
     }
 
@@ -2359,7 +2381,7 @@ struct moonfire_t : public druid_spell_t
 
     void execute() override
     {
-      if (p()->rng().roll(p()->find_spell(273389)->proc_chance()) && p()->azerite.power_of_the_moon.ok())
+      if (!maybe_ptr(p()->dbc.ptr) && p()->rng().roll(p()->find_spell(273389)->proc_chance()) && p()->azerite.power_of_the_moon.ok())
       {
         p()->buff.lunar_empowerment->trigger();
       }
@@ -5869,14 +5891,22 @@ struct sunfire_t : public druid_spell_t
     {
       double da = druid_spell_t::bonus_da(s);
 
-      if (p()->azerite.high_noon.ok())
-      {
+      if (!maybe_ptr(p()->dbc.ptr))
         da += p()->azerite.high_noon.value(2);
-      }
 
       return da;
     }
   };
+
+  double bonus_ta(const action_state_t* s) const override
+  {
+    double ta = druid_spell_t::bonus_ta(s);
+
+    if (maybe_ptr(p()->dbc.ptr))
+      ta += p()->azerite.high_noon.value(2);
+
+    return ta;
+  }
 
   sunfire_damage_t* damage;
 
@@ -8274,6 +8304,7 @@ void druid_t::init_procs()
   proc.primal_fury              = get_proc( "primal_fury"            );
   proc.starshards               = get_proc( "Starshards"             );
   proc.tier17_2pc_melee         = get_proc( "tier17_2pc_melee"       );
+  proc.power_of_the_moon = get_proc("power_of_the_moon");
 }
 
 // druid_t::init_resources ==================================================
@@ -8298,6 +8329,7 @@ void druid_t::init_rng()
   rppm.balance_tier18_2pc = get_rppm( "balance_tier18_2pc", sets->set( DRUID_BALANCE, T18, B2 ) );
   rppm.predator           = get_rppm( "predator", predator_rppm_rate );  // Predator: optional RPPM approximation.
   rppm.blood_mist         = get_rppm( "blood_mist", find_spell(azerite.blood_mist.spell()->effectN(1).trigger_spell_id())->real_ppm() ) ;
+  rppm.power_of_the_moon = get_rppm("power_of_the_moon", find_spell(azerite.power_of_the_moon.spell()->effectN(1).trigger_spell_id())->real_ppm());
 
   player_t::init_rng();
 }
