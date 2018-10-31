@@ -558,6 +558,7 @@ public:
     const spell_data_t* unholy_death_knight;
     const spell_data_t* death_and_decay;
     const spell_data_t* icebound_fortitude;
+    const spell_data_t* death_strike_2;
 
     // Blood
     const spell_data_t* blood_boil;
@@ -4394,7 +4395,7 @@ struct death_strike_heal_t : public death_knight_heal_t
   double base_da_min( const action_state_t* ) const override
   {
     return std::max( player -> resources.max[ RESOURCE_HEALTH ] * p() -> spell.death_strike -> effectN( 3 ).percent(),
-      player -> compute_incoming_damage( interval ) * p() -> spell.death_strike -> effectN( 2 ).percent() );
+                     player -> compute_incoming_damage( interval ) * p() -> spell.death_strike -> effectN( 2 ).percent() );
   }
 
   double base_da_max( const action_state_t* ) const override
@@ -4512,6 +4513,11 @@ struct death_strike_t : public death_knight_melee_attack_t
     if ( p() -> buffs.t20_blood -> check() && p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T20, B4 ) )
     {
       c += p() -> spell.gravewarden -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER );
+    }
+
+    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> spec.death_strike_2 -> ok() )
+    {
+      c += p() -> spec.death_strike_2 -> effectN( 3 ).resource( RESOURCE_RUNIC_POWER );
     }
 
     return c;
@@ -7346,6 +7352,7 @@ void death_knight_t::init_spells()
   // Shared
   spec.icebound_fortitude   = find_specialization_spell( "Icebound Fortitude" );
   spec.death_and_decay      = find_specialization_spell( "Death and Decay" );
+  spec.death_strike_2       = find_specialization_spell( 278223 );
 
   // Blood
   spec.blood_death_knight       = find_specialization_spell( "Blood Death Knight" );
