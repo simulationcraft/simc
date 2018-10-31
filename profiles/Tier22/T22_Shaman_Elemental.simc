@@ -78,6 +78,8 @@ actions.single_target+=/earthquake,if=active_enemies>1&spell_targets.chain_light
 actions.single_target+=/lightning_bolt,if=talent.exposed_elements.enabled&debuff.exposed_elements.up&maelstrom>=60&!buff.ascendance.up
 # If possible, use Earth Shock with Master of the Elements.
 actions.single_target+=/earth_shock,if=talent.master_of_the_elements.enabled&(buff.master_of_the_elements.up|maelstrom>=92)|!talent.master_of_the_elements.enabled
+# Once you have enough Wind Gust stacks, don't hardcast Lava Burst anymore (keep casting Lava Burst with Lava Surge procs).
+actions.single_target+=/lightning_bolt,if=buff.wind_gust.stack>=14&!buff.lava_surge.up
 actions.single_target+=/lava_burst,if=cooldown_react|buff.ascendance.up
 actions.single_target+=/flame_shock,target_if=refreshable
 actions.single_target+=/totem_mastery,if=talent.totem_mastery.enabled&(buff.resonance_totem.remains<6|(buff.resonance_totem.remains<(buff.ascendance.duration+cooldown.ascendance.remains)&cooldown.ascendance.remains<15))
