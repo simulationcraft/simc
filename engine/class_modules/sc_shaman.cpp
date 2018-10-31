@@ -4868,21 +4868,21 @@ struct lightning_bolt_t : public shaman_spell_t
     if ( maybe_ptr( p()->dbc.ptr ) && p()->buff.surge_of_power_lightning->up() )
     {
       // roll one 100 sided dice once.
-      // 80% chance to get 1 overload,
+      //  2% chance to get 3 overloads,
       // 18% chance to get 2 overloads,
-      //  2% chance to get 3 overloads
-      double roll = rng().range( 0.0, 1.0 );
+      // 80% chance to get 1 overload
+      double roll = rng().real();
       if ( roll >= 0.98 )
       {
-        n += (size_t)3;
+        n += 3u;
       }
       else if ( roll >= 0.8 )
       {
-        n += (size_t)2;
+        n += 2u;
       }
       else
       {
-        n += (size_t)1;
+        n += 1u;
       }
     }
 
