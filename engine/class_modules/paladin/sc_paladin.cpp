@@ -130,6 +130,10 @@ namespace buffs {
     if ( paladin -> specialization() == PALADIN_HOLY )
       buff_duration *= 1.0 + paladin -> talents.sanctified_wrath -> effectN( 1 ).percent();
 
+    // ... or if we have Light's Decree
+    if ( paladin -> azerite.lights_decree.ok() )
+      buff_duration += paladin -> spells.lights_decree -> effectN( 2 ).time_value();
+
     // let the ability handle the cooldown
     cooldown -> duration = timespan_t::zero();
 
@@ -780,7 +784,7 @@ judgment_t::judgment_t( paladin_t* p, const std::string& options_str )
   may_block = may_parry = may_dodge = false;
 
   // Handle indomitable justice option
-  if ( p -> azerite.indomitable_justice.enabled() )  
+  if ( p -> azerite.indomitable_justice.enabled() )
   {
     // If using the default setting, set to 80% hp for protection, 100% hp for other specs
     if ( p -> indomitable_justice_pct == 0 )
@@ -802,9 +806,9 @@ double judgment_t::bonus_da( const action_state_t* s ) const
   {
     double amount = p() -> azerite.indomitable_justice.value();
     double our_percent = indomitable_justice_pct;
-    
+
     // If indomitable_judgment_pct's value is -1, use the player's health
-    if ( indomitable_justice_pct < 0 ) 
+    if ( indomitable_justice_pct < 0 )
     {
       our_percent = p() -> health_percentage();
     }
@@ -1915,7 +1919,7 @@ void paladin_t::assess_damage( school_e school,
     double block = cache.block();
     // add or subtract 1.5% per level difference
     block += ( level() - s -> action -> player -> level() ) * 0.015;
-    
+
     if ( block > 0 )
     {
       // Roll for "block"
@@ -1998,7 +2002,7 @@ void paladin_t::combat_begin()
   player_t::combat_begin();
 
   auto hp_overflow = resources.current[ RESOURCE_HOLY_POWER ] - MAX_START_OF_COMBAT_HOLY_POWER;
-  
+
   if ( hp_overflow > 0 )
   {
     resource_loss( RESOURCE_HOLY_POWER, hp_overflow );
@@ -2293,6 +2297,7 @@ struct paladin_module_t : public module_t
 
   virtual void static_init() const override
   {
+    unique_gear::register_special_effect( 286390, empyrean_power );
   }
 
   virtual void init( player_t* p ) const override

@@ -1,8 +1,6 @@
 #include "simulationcraft.hpp"
 #include "sc_paladin.hpp"
 
-// TODO: Add Empyrean Power azerite trait (azerite id 507)
-// Also add Light's Decree (azerite id 508)
 namespace paladin {
 
 namespace buffs {
@@ -18,6 +16,12 @@ namespace buffs {
     damage_modifier = data().effectN( 1 ).percent() / 10.0;
     haste_bonus = data().effectN( 3 ).percent() / 10.0;
     healing_modifier = 0;
+
+    // increase duration if we have Light's Decree
+    paladin_t* paladin = static_cast<paladin_t*>( p );
+    if ( paladin -> azerite.lights_decree.ok() )
+      buff_duration += paladin -> spells.lights_decree -> effectN( 2 ).time_value();
+
 
     // let the ability handle the cooldown
     cooldown -> duration = timespan_t::zero();
@@ -60,92 +64,119 @@ namespace buffs {
   };
 }
 
-holy_power_consumer_t::holy_power_consumer_t( const std::string& n, paladin_t* p,
-                                              const spell_data_t* s ) : paladin_melee_attack_t( n, p, s )
-{ }
-
-void holy_power_consumer_t::execute()
+struct holy_power_consumer_t : public paladin_melee_attack_t
 {
-  double c = cost();
-  paladin_melee_attack_t::execute();
-
-  bool dp_success = false;
-  
-  // Bug: Divine Purpose procs are instantly consumed when proccing off themselves
-  // https://github.com/SimCMinMax/WoW-BugTracker/issues/359
-  // First, check if dp proc was successful
-  if ( p() -> talents.divine_purpose -> ok() )
-  {
-    dp_success = rng().roll( p() -> spells.divine_purpose_ret -> effectN( 1 ).percent() );
-  }
-
-  // The bug is fixed on 8.1 PTR
-  bool use_dp_bug = p() -> bugs && !maybe_ptr( p() -> dbc.ptr );
-
-  // Then, if DP proc is successful, DP was active and bugs are enabled, refresh DP
-  if ( dp_success && p() -> buffs.divine_purpose -> check() && use_dp_bug )
-  {
-    p() -> buffs.divine_purpose -> trigger();
-    p() -> procs.divine_purpose -> occur();
-    // Set dp_success to false so it doesn't re-trigger DP after consuming it
-    dp_success = false;
-  }
-
-  if ( c <= 0.0 )
-  {
-    if ( p() -> buffs.divine_purpose -> check() )
+  struct lights_decree_t : public paladin_spell_t {
+    lights_decree_t( paladin_t* p ) : paladin_spell_t( "lights_decree", p, p -> find_spell( 286232 ) )
     {
-      p() -> buffs.divine_purpose -> expire();
+      base_dd_min = base_dd_max = p -> azerite.lights_decree.value();
+    }
+  };
+
+  lights_decree_t* lights_decree;
+
+  holy_power_consumer_t( const std::string& n, paladin_t* p,
+                          const spell_data_t* s = spell_data_t::nil() ) :
+    paladin_melee_attack_t( n, p, s ),
+    lights_decree( new lights_decree_t( p ) )
+  {
+    if ( p -> azerite.lights_decree.ok() )
+      add_child( lights_decree );
+  }
+
+  virtual void execute() override
+  {
+    double c = cost();
+    paladin_melee_attack_t::execute();
+
+    bool dp_success = false;
+
+    // Bug: Divine Purpose procs are instantly consumed when proccing off themselves
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/359
+    // First, check if dp proc was successful
+    if ( p() -> talents.divine_purpose -> ok() )
+    {
+      dp_success = rng().roll( p() -> spells.divine_purpose_ret -> effectN( 1 ).percent() );
+    }
+
+    // The bug is fixed on 8.1 PTR
+    bool use_dp_bug = p() -> bugs && !maybe_ptr( p() -> dbc.ptr );
+
+    // Then, if DP proc is successful, DP was active and bugs are enabled, refresh DP
+    if ( dp_success && p() -> buffs.divine_purpose -> check() && use_dp_bug )
+    {
+      p() -> buffs.divine_purpose -> trigger();
+      p() -> procs.divine_purpose -> occur();
+      // Set dp_success to false so it doesn't re-trigger DP after consuming it
+      dp_success = false;
+    }
+
+    if ( c <= 0.0 )
+    {
+      if ( p() -> buffs.divine_purpose -> check() )
+      {
+        p() -> buffs.divine_purpose -> expire();
+      }
+    }
+    else
+    {
+      if ( p() -> buffs.the_fires_of_justice -> check() )
+        p() -> buffs.the_fires_of_justice -> expire();
+    }
+
+    // If the dp proc was successful, but DP wasn't active or bugs were disabled, activate DP.
+    if ( dp_success )
+    {
+      p() -> buffs.divine_purpose -> trigger();
+      p() -> procs.divine_purpose -> occur();
+    }
+
+    if ( p() -> buffs.crusade -> check() )
+    {
+      int num_stacks = (int)base_cost();
+      p() -> buffs.crusade -> trigger( num_stacks );
+    }
+
+    if ( p() -> azerite.relentless_inquisitor.ok() )
+    {
+      int num_stacks = (int)base_cost();
+      p() -> buffs.relentless_inquisitor -> trigger( num_stacks );
+    }
+
+    if ( p() -> azerite.lights_decree.ok() )
+    {
+      if ( p() -> buffs.avenging_wrath -> up() || p() -> buffs.crusade -> up() )
+      {
+        // TODO(mserrano): this is a hack - do we need this?
+        lights_decree -> set_target( p() -> target );
+        lights_decree -> execute();
+      }
     }
   }
-  else
+
+  virtual void impact( action_state_t* s ) override
   {
-    if ( p() -> buffs.the_fires_of_justice -> check() )
-      p() -> buffs.the_fires_of_justice -> expire();
+    paladin_melee_attack_t::impact( s );
+    if ( result_is_hit( s -> result ) )
+    {
+      paladin_td_t* td = this -> td( s -> target );
+      if ( td -> buffs.debuffs_judgment -> up() )
+        td -> buffs.debuffs_judgment -> expire();
+    }
   }
 
-  // If the dp proc was successful, but DP wasn't active or bugs were disabled, activate DP.
-  if ( dp_success )
+  virtual double cost() const override
   {
-    p() -> buffs.divine_purpose -> trigger();
-    p() -> procs.divine_purpose -> occur();
+    double base_cost = paladin_melee_attack_t::cost();
+
+    int discounts = 0;
+    if ( p() -> buffs.the_fires_of_justice -> up() && base_cost > discounts )
+      discounts++;
+    if ( p() -> buffs.ret_t21_4p -> up() && base_cost > discounts )
+      discounts++;
+    return base_cost - discounts;
   }
-
-  if ( p() -> buffs.crusade -> check() )
-  {
-    int num_stacks = (int)base_cost();
-    p() -> buffs.crusade -> trigger( num_stacks );
-  }
-
-  if ( p() -> azerite.relentless_inquisitor.ok() )
-  {
-    int num_stacks = (int)base_cost();
-    p() -> buffs.relentless_inquisitor -> trigger( num_stacks );
-  }
-}
-
-void holy_power_consumer_t::impact( action_state_t* s )
-{
-  paladin_melee_attack_t::impact( s );
-  if ( result_is_hit( s -> result ) )
-  {
-    paladin_td_t* td = this -> td( s -> target );
-    if ( td -> buffs.debuffs_judgment -> up() )
-      td -> buffs.debuffs_judgment -> expire();
-  }
-}
-
-double holy_power_consumer_t::cost() const
-{
-  double base_cost = paladin_melee_attack_t::cost();
-
-  int discounts = 0;
-  if ( p() -> buffs.the_fires_of_justice -> up() && base_cost > discounts )
-    discounts++;
-  if ( p() -> buffs.ret_t21_4p -> up() && base_cost > discounts )
-    discounts++;
-  return base_cost - discounts;
-}
+};
 
 void holy_power_generator_t::execute()
 {
@@ -347,6 +378,13 @@ struct divine_storm_t: public holy_power_consumer_t
     divine_storm_damage_t( paladin_t* p )
       : holy_power_consumer_impact_t( "divine_storm_dmg", p, p -> find_spell( 224239 ) )
     {}
+
+    double bonus_da( const action_state_t* s ) const override
+    {
+      double b = holy_power_consumer_impact_t::bonus_da( s );
+      b += p() -> buffs.empyrean_power -> value();
+      return b;
+    }
   };
 
   divine_storm_t( paladin_t* p, const std::string& options_str )
@@ -377,6 +415,8 @@ struct divine_storm_t: public holy_power_consumer_t
       p() -> buffs.the_fires_of_justice -> expire();
     if ( p() -> buffs.ret_t21_4p -> up() && c > 0 )
       p() -> buffs.ret_t21_4p -> expire();
+    if ( p() -> buffs.empyrean_power -> up() )
+      p() -> buffs.empyrean_power -> expire();
   }
 
   virtual void impact(action_state_t* state) override
@@ -393,6 +433,13 @@ struct divine_storm_t: public holy_power_consumer_t
         p() -> buffs.divine_right -> trigger();
       }
     }
+  }
+
+  virtual double cost() const
+  {
+    if ( p() -> buffs.empyrean_power -> up() )
+      return 0;
+    return holy_power_consumer_t::cost();
   }
 
   void record_data( action_state_t* ) override {}
@@ -753,6 +800,8 @@ void paladin_t::create_buffs_retribution()
                                   -> add_stat( STAT_HASTE_RATING, azerite.relentless_inquisitor.value() );
   buffs.zealotry = make_buff( this, "zealotry", find_spell( 278989 ))
                       -> set_default_value( azerite.zealotry.value() );
+  buffs.empyrean_power = make_buff( this, "empyrean_power", find_spell( 286393 ))
+                            -> set_default_value( azerite.empyrean_power.value() );
 }
 
 void paladin_t::init_rng_retribution()
@@ -809,6 +858,37 @@ void paladin_t::init_spells_retribution()
   azerite.grace_of_the_justicar = find_azerite_spell( 393 );
   azerite.relentless_inquisitor = find_azerite_spell( 154 );
   azerite.zealotry              = find_azerite_spell( 396 );
+  azerite.empyrean_power        = find_azerite_spell( 507 );
+  azerite.lights_decree         = find_azerite_spell( 508 );
+  spells.lights_decree          = find_spell( 286231 );
+}
+
+void empyrean_power( special_effect_t& effect )
+{
+  azerite_power_t power = effect.player -> find_azerite_spell( effect.driver() -> name_cstr() );
+  if ( !power.enabled() )
+    return;
+
+  const spell_data_t* driver = effect.player -> find_spell( 286392 );
+
+  buff_t* buff = buff_t::find( effect.player, "empyrean_power" );
+
+  effect.custom_buff = buff;
+  effect.spell_id = driver -> id();
+
+  struct empyrean_power_cb_t : public dbc_proc_callback_t
+  {
+    empyrean_power_cb_t( const special_effect_t& effect ) :
+      dbc_proc_callback_t( effect.player, effect )
+    { }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      proc_buff -> trigger();
+    }
+  };
+
+  new empyrean_power_cb_t( effect );
 }
 
 void paladin_t::init_assessors_retribution()

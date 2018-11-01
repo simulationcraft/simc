@@ -175,6 +175,7 @@ public:
     buff_t* divine_right;
     buff_t* relentless_inquisitor;
     buff_t* zealotry;
+    buff_t* empyrean_power;
     // Prot
     buff_t* inspiring_vanguard;
     buff_t* dauntless_divinity;
@@ -286,6 +287,7 @@ public:
     const spell_data_t* shield_of_the_righteous;
     const spell_data_t* blade_of_wrath;
     const spell_data_t* inspiring_vanguard;
+    const spell_data_t* lights_decree;
   } spells;
 
   // Talents
@@ -387,6 +389,8 @@ public:
     azerite_power_t grace_of_the_justicar; // healing
     azerite_power_t relentless_inquisitor;
     azerite_power_t zealotry;
+    azerite_power_t empyrean_power;
+    azerite_power_t lights_decree;
   } azerite;
 
   player_t* beacon_target;
@@ -985,21 +989,11 @@ struct holy_power_generator_t : public paladin_melee_attack_t
   virtual void execute() override;
 };
 
-struct holy_power_consumer_t : public paladin_melee_attack_t
-{
-  holy_power_consumer_t( const std::string& n, paladin_t* p,
-                          const spell_data_t* s = spell_data_t::nil() );
-
-  virtual void execute() override;
-  virtual void impact( action_state_t* s ) override;
-  virtual double cost() const override;
-};
-
 struct judgment_t : public paladin_melee_attack_t
 {
   int indomitable_justice_pct;
   judgment_t( paladin_t* p, const std::string& options_str );
-  
+
   virtual double bonus_da( const action_state_t* s ) const override;
   proc_types proc_type() const override;
   void impact( action_state_t* s ) override;
@@ -1013,5 +1007,7 @@ struct shield_of_the_righteous_buff_t : public buff_t
 
   double avengers_valor_increase;
 };
+
+void empyrean_power( special_effect_t& effect );
 
 }
