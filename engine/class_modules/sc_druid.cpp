@@ -7315,7 +7315,7 @@ void druid_t::create_buffs()
     ->add_stat(STAT_INTELLECT, azerite.lively_spirit.value());
 
   buff.arcanic_pulsar = make_buff(this, "arcanic_pulsar", find_spell(287790))
-    ->set_max_stack((int)azerite.arcanic_pulsar.spell_ref().effectN(4).base_value());
+    ->set_max_stack(maybe_ptr(dbc.ptr)?(int)azerite.arcanic_pulsar.spell_ref().effectN(4).base_value():9);
 
   // Talent buffs
 
