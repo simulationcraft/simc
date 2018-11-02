@@ -177,8 +177,8 @@ struct cooldown_reduction_data_t
     {
       if ( cd->recharge_event )
       {
-        remaining = cd->current_charge_remains() +
-          ( cd->charges - cd->current_charge - 1 ) * cooldown_t::cooldown_duration( cd );
+        remaining = cd->current_charge_remains()
+          + ( cd->charges - cd->current_charge - 1 ) * cooldown_t::cooldown_duration( cd );
       }
     }
     else
@@ -2160,8 +2160,8 @@ struct arcane_blast_t : public arcane_mage_spell_t
   {
     double c = arcane_mage_spell_t::cost();
 
-    c *= 1.0 + p()->buffs.arcane_charge->check() *
-               p()->spec.arcane_charge->effectN( 5 ).percent();
+    c *= 1.0 + p()->buffs.arcane_charge->check()
+             * p()->spec.arcane_charge->effectN( 5 ).percent();
 
     c *= 1.0 + p()->buffs.rule_of_threes->check_value();
 
@@ -2216,8 +2216,8 @@ struct arcane_blast_t : public arcane_mage_spell_t
 
     timespan_t t = arcane_mage_spell_t::execute_time();
 
-    t *=  1.0 + p()->buffs.arcane_charge->check() *
-                p()->spec.arcane_charge->effectN( 4 ).percent();
+    t *= 1.0 + p()->buffs.arcane_charge->check()
+             * p()->spec.arcane_charge->effectN( 4 ).percent();
 
     return t;
   }
@@ -4090,7 +4090,7 @@ struct meteor_burn_t : public fire_mage_spell_t
   }
 };
 
-struct meteor_impact_t: public fire_mage_spell_t
+struct meteor_impact_t : public fire_mage_spell_t
 {
   meteor_burn_t* meteor_burn;
   timespan_t meteor_burn_duration;
@@ -4204,7 +4204,7 @@ struct mirror_image_t : public mage_spell_t
 };
 
 // Nether Tempest AoE Spell ===================================================
-struct nether_tempest_aoe_t: public arcane_mage_spell_t
+struct nether_tempest_aoe_t : public arcane_mage_spell_t
 {
   nether_tempest_aoe_t( mage_t* p ) :
     arcane_mage_spell_t( "nether_tempest_aoe", p, p->find_spell( 114954 ) )
@@ -5921,14 +5921,13 @@ void mage_t::create_buffs()
 
   // Misc
   // N active GBoWs are modeled by a single buff that gives N times as much mana.
-  buffs.greater_blessing_of_widsom =
-    make_buff( this, "greater_blessing_of_wisdom", find_spell( 203539 ) )
-      ->set_tick_callback( [ this ] ( buff_t*, int, const timespan_t& )
-        { resource_gain( RESOURCE_MANA,
-                         resources.max[ RESOURCE_MANA ] * 0.002 * options.blessing_of_wisdom_count,
-                         gains.greater_blessing_of_wisdom ); } )
-      ->set_period( find_spell( 203539 )->effectN( 2 ).period() )
-      ->set_tick_behavior( buff_tick_behavior::CLIP );
+  buffs.greater_blessing_of_widsom = make_buff( this, "greater_blessing_of_wisdom", find_spell( 203539 ) )
+    ->set_tick_callback( [ this ] ( buff_t*, int, const timespan_t& )
+      { resource_gain( RESOURCE_MANA,
+                       resources.max[ RESOURCE_MANA ] * 0.002 * options.blessing_of_wisdom_count,
+                       gains.greater_blessing_of_wisdom ); } )
+    ->set_period( find_spell( 203539 )->effectN( 2 ).period() )
+    ->set_tick_behavior( buff_tick_behavior::CLIP );
   buffs.shimmer = make_buff( this, "shimmer", find_spell( 212653 ) );
 }
 
@@ -7349,10 +7348,10 @@ public:
 
     highchart::histogram_chart_t burn_duration_history_chart( highchart::build_id( p, "burn_duration_history" ), *p.sim );
     if ( chart::generate_distribution(
-        burn_duration_history_chart, &p, p.sample_data.burn_duration_history->distribution, "Burn Duration",
-        p.sample_data.burn_duration_history->mean(),
-        p.sample_data.burn_duration_history->min(),
-        p.sample_data.burn_duration_history->max() ) )
+      burn_duration_history_chart, &p, p.sample_data.burn_duration_history->distribution, "Burn Duration",
+      p.sample_data.burn_duration_history->mean(),
+      p.sample_data.burn_duration_history->min(),
+      p.sample_data.burn_duration_history->max() ) )
     {
       burn_duration_history_chart.set( "tooltip.headerFormat", "<b>{point.key}</b> s<br/>" );
       burn_duration_history_chart.set( "chart.width", "575" );
@@ -7400,9 +7399,9 @@ public:
     p.sample_data.icy_veins_duration->create_histogram( num_buckets );
 
     if ( chart::generate_distribution(
-          chart, &p, p.sample_data.icy_veins_duration->distribution, "Icy Veins Duration",
-          p.sample_data.icy_veins_duration->mean(), p.sample_data.icy_veins_duration->min(),
-          p.sample_data.icy_veins_duration->max() ) )
+      chart, &p, p.sample_data.icy_veins_duration->distribution, "Icy Veins Duration",
+      p.sample_data.icy_veins_duration->mean(), p.sample_data.icy_veins_duration->min(),
+      p.sample_data.icy_veins_duration->max() ) )
     {
       chart.set( "tooltip.headerFormat", "<b>{point.key}</b> s<br/>" );
       chart.set( "chart.width", std::to_string( 80 + num_buckets * 13 ) );
@@ -7683,9 +7682,9 @@ public:
   }
 
   virtual bool valid() const override { return true; }
-  virtual void init        ( player_t* ) const override {}
+  virtual void init( player_t* ) const override {}
   virtual void combat_begin( sim_t* ) const override {}
-  virtual void combat_end  ( sim_t* ) const override {}
+  virtual void combat_end( sim_t* ) const override {}
 };
 
 } // UNNAMED NAMESPACE
