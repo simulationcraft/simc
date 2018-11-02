@@ -1697,8 +1697,8 @@ struct fire_mage_spell_t : public mage_spell_t
           if ( guaranteed && hu_react )
             p->buffs.hot_streak->predict();
 
-          if ( p->sets->has_set_bonus( MAGE_FIRE, T19, B4 ) &&
-               rng().roll( p->sets->set( MAGE_FIRE, T19, B4 )->effectN( 1 ).percent() ) )
+          if ( p->sets->has_set_bonus( MAGE_FIRE, T19, B4 )
+            && rng().roll( p->sets->set( MAGE_FIRE, T19, B4 )->effectN( 1 ).percent() ) )
           {
             p->buffs.streaking->trigger();
           }
@@ -2285,7 +2285,7 @@ struct arcane_explosion_t : public arcane_mage_spell_t
 
     if ( p()->azerite.explosive_echo.enabled()
       && target_list().size() >= as<size_t>( p()->azerite.explosive_echo.spell_ref().effectN( 1 ).base_value() )
-      && rng().roll ( p()->azerite.explosive_echo.spell_ref().effectN( 3 ).percent() ) )
+      && rng().roll( p()->azerite.explosive_echo.spell_ref().effectN( 3 ).percent() ) )
     {
       da += p()->azerite.explosive_echo.value( 4 );
     }
@@ -5026,9 +5026,7 @@ struct ignite_spread_event_t : public event_t
   static double ignite_bank( dot_t* ignite )
   {
     if ( !ignite->is_ticking() )
-    {
       return 0.0;
-    }
 
     auto ignite_state = debug_cast<residual_action::residual_periodic_state_t*>( ignite->state );
     return ignite_state->tick_amount * ignite->ticks_left();
@@ -5100,7 +5098,7 @@ struct ignite_spread_event_t : public event_t
     // guaranteeing that every source will have a larger ignite bank than the
     // destination. It also guarantees that each ignite will spread to a unique
     // target. This allows us to avoid N^2 spread validity checks.
-    while ( active_ignites.size() > 0 )
+    while ( !active_ignites.empty() )
     {
       dot_t* source = active_ignites.back();
       active_ignites.pop_back();
@@ -5127,7 +5125,7 @@ struct ignite_spread_event_t : public event_t
         // TODO: Filter valid candidates by ignite spread range
 
         // Randomly select spread target from remaining candidates
-        index = as<int>( floor( mage->rng().real() * index ) );
+        index = rng().range( index );
         dot_t* destination = candidates[ index ];
 
         if ( destination->is_ticking() )
@@ -5205,7 +5203,7 @@ struct time_anomaly_tick_event_t : public event_t
 
       if ( !possible_procs.empty() )
       {
-        auto random_index = static_cast<unsigned>( rng().range( 0, as<double>( possible_procs.size() ) ) );
+        auto random_index = rng().range( possible_procs.size() );
         auto proc = possible_procs[ random_index ];
 
         switch ( proc )
@@ -6047,7 +6045,6 @@ void mage_t::init_uptimes()
     default:
       break;
   }
-
 }
 
 void mage_t::init_rng()
@@ -6740,7 +6737,7 @@ void mage_t::arise()
 
   if ( spec.ignite->ok() )
   {
-    timespan_t first_spread = timespan_t::from_seconds( rng().real() * 2.0 );
+    timespan_t first_spread = rng().real() * spec.ignite->effectN( 3 ).period();
     ignite_spread_event = make_event<events::ignite_spread_event_t>( *sim, *this, first_spread );
   }
   if ( talents.time_anomaly->ok() )
@@ -7618,7 +7615,7 @@ struct sorcerous_shadowruby_pendant_driver_t : public spell_t
   {
     spell_t::execute();
 
-    auto current_roll = static_cast<unsigned>( rng().range( 0, as<double>( sorcerous_spells.size() ) ) );
+    auto current_roll = rng().range( sorcerous_spells.size() );
     auto spell = sorcerous_spells[ current_roll ];
 
     spell->set_target( target );
