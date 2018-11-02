@@ -2324,7 +2324,7 @@ struct arcane_missiles_tick_t : public arcane_mage_spell_t
   arcane_missiles_tick_t( mage_t* p ) :
     arcane_mage_spell_t( "arcane_missiles_tick", p, p->find_spell( 7268 ) )
   {
-    background  = true;
+    background = true;
     base_multiplier *= 1.0 + p->sets->set( MAGE_ARCANE, T19, B2 )->effectN( 1 ).percent();
   }
 
@@ -3188,7 +3188,7 @@ struct flamestrike_t : public fire_mage_spell_t
     }
 
     return c;
-   }
+  }
 };
 
 // Flurry Spell ===============================================================
@@ -4096,7 +4096,7 @@ struct meteor_impact_t: public fire_mage_spell_t
   timespan_t meteor_burn_duration;
   timespan_t meteor_burn_pulse_time;
 
-  meteor_impact_t( mage_t* p, meteor_burn_t* meteor_burn, int targets ):
+  meteor_impact_t( mage_t* p, meteor_burn_t* meteor_burn, int targets ) :
     fire_mage_spell_t( "meteor_impact", p, p->find_spell( 153564 ) ),
     meteor_burn( meteor_burn ),
     meteor_burn_duration( p->find_spell( 175396 )->duration() )
@@ -4705,7 +4705,7 @@ struct summon_water_elemental_t : public frost_mage_spell_t
 struct arcane_assault_t : public arcane_mage_spell_t
 {
   arcane_assault_t( mage_t* p ) :
-    arcane_mage_spell_t( "arcane_assault", p,  p->find_spell( 225119 ) )
+    arcane_mage_spell_t( "arcane_assault", p, p->find_spell( 225119 ) )
   {
     background = true;
   }
@@ -4870,7 +4870,7 @@ struct start_burn_phase_t : public action_t
 struct stop_burn_phase_t : public action_t
 {
   stop_burn_phase_t( mage_t* p, const std::string& options_str ) :
-     action_t( ACTION_USE, "stop_burn_phase", p )
+    action_t( ACTION_USE, "stop_burn_phase", p )
   {
     parse_options( options_str );
     trigger_gcd = timespan_t::zero();
@@ -5156,7 +5156,7 @@ struct ignite_spread_event_t : public event_t
 
     // Schedule next spread for 2 seconds later
     mage->ignite_spread_event = make_event<events::ignite_spread_event_t>(
-        sim(), *mage, timespan_t::from_seconds( 2.0 ) );
+      sim(), *mage, timespan_t::from_seconds( 2.0 ) );
   }
 };
 
@@ -5522,7 +5522,7 @@ void mage_t::merge( player_t& other )
   switch ( specialization() )
   {
     case MAGE_ARCANE:
-      sample_data.burn_duration_history->merge ( *mage.sample_data.burn_duration_history );
+      sample_data.burn_duration_history->merge( *mage.sample_data.burn_duration_history );
       sample_data.burn_initial_mana->merge( *mage.sample_data.burn_initial_mana );
       break;
 
@@ -6246,19 +6246,19 @@ void mage_t::apl_arcane()
   burn->add_action( "use_items,if=buff.arcane_power.up|target.time_to_die<cooldown.arcane_power.remains" );
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
-    if ( racial_actions[ i ] == "lights_judgment" || racial_actions[ i ] == "arcane_torrent" || racial_actions[ i ] == "berserking")
+    if ( racial_actions[ i ] == "lights_judgment" || racial_actions[ i ] == "arcane_torrent" || racial_actions[ i ] == "berserking" )
     {
       continue;
     }
     burn->add_action( racial_actions[ i ] );
   }
   burn->add_action( this, "Presence of Mind", "if=buff.rune_of_power.remains<=buff.presence_of_mind.max_stack*action.arcane_blast.execute_time|buff.arcane_power.remains<=buff.presence_of_mind.max_stack*action.arcane_blast.execute_time" );
-  burn->add_action( "potion,if=buff.arcane_power.up&(buff.berserking.up|buff.blood_fury.up|!(race.troll|race.orc))");
+  burn->add_action( "potion,if=buff.arcane_power.up&(buff.berserking.up|buff.blood_fury.up|!(race.troll|race.orc))" );
   burn->add_talent( this, "Arcane Orb", "if=buff.arcane_charge.stack=0|(active_enemies<3|(active_enemies<2&talent.resonance.enabled))" );
   burn->add_action( this, "Arcane Barrage", "if=active_enemies>=3&(buff.arcane_charge.stack=buff.arcane_charge.max_stack)" );
   burn->add_action( this, "Arcane Explosion", "if=active_enemies>=3" );
   burn->add_action( this, "Arcane Missiles", "if=buff.clearcasting.react&active_enemies<3&(talent.amplification.enabled|(!talent.overpowered.enabled&azerite.arcane_pummeling.rank>=2)|buff.arcane_power.down),chain=1", "Ignore Arcane Missiles during Arcane Power, aside from some very specific exceptions, like not having Overpowered talented & running 3x Arcane Pummeling." );
-  burn->add_action( this, "Arcane Blast", "if=active_enemies<3");
+  burn->add_action( this, "Arcane Blast", "if=active_enemies<3" );
   burn->add_action( "variable,name=average_burn_length,op=set,value=(variable.average_burn_length*variable.total_burns-variable.average_burn_length+(burn_phase_duration))%variable.total_burns", "Now that we're done burning, we can update the average_burn_length with the length of this burn." );
   burn->add_action( this, "Evocation", "interrupt_if=mana.pct>=85,interrupt_immediate=1" );
   burn->add_action( this, "Arcane Barrage", "", "For the rare occasion where we go oom before evocation is back up. (Usually because we get very bad rng so the burn is cut very short)" );
@@ -6332,7 +6332,7 @@ void mage_t::apl_fire()
   combustion_phase->add_talent( this, "Phoenix Flames" );
   combustion_phase->add_action( this, "Scorch", "if=buff.combustion.remains>cast_time" );
   combustion_phase->add_action( this, "Dragon's Breath", "if=!buff.hot_streak.react&action.fire_blast.charges<1" );
-  combustion_phase->add_action( this, "Scorch", "if=target.health.pct<=30&talent.searing_touch.enabled");
+  combustion_phase->add_action( this, "Scorch", "if=target.health.pct<=30&talent.searing_touch.enabled" );
 
   rop_phase->add_talent( this, "Rune of Power" );
   rop_phase->add_action( this, "Flamestrike", "if=((talent.flame_patch.enabled&active_enemies>1)|active_enemies>4)&buff.hot_streak.react" );
@@ -6421,7 +6421,7 @@ void mage_t::apl_frost()
     "This is only a small gain against multiple targets, as Ray of Frost isn't too impactful." );
   single->add_action( this, "Blizzard", "if=cast_time=0|active_enemies>1",
     "Blizzard is used as low priority filler against 2 targets. When using Freezing Rain, it's a medium gain to use the instant Blizzard even "
-    "against a single target, especially with low mastery.");
+    "against a single target, especially with low mastery." );
   single->add_talent( this, "Glacial Spike", "if=buff.brain_freeze.react|prev_gcd.1.ebonbolt|active_enemies>1&talent.splitting_ice.enabled",
     "Glacial Spike is used when there's a Brain Freeze proc active (i.e. only when it can be shattered). This is a small to medium gain "
     "in most situations. Low mastery leans towards using it when available. When using Splitting Ice and having another target nearby, "
@@ -7255,7 +7255,7 @@ class mage_report_t : public player_report_extension_t
 {
 public:
   mage_report_t( mage_t& player ) :
-      p( player )
+    p( player )
   { }
 
   void html_customsection_cd_waste( report::sc_html_stream& os )
