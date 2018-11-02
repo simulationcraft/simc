@@ -8014,6 +8014,7 @@ void druid_t::apl_balance()
 
   default_list->add_action( "use_item,name=azurethos_singed_plumage,if=equipped.161377&(cooldown.incarnation.remains>30|cooldown.celestial_alignment.remains>30)");
   default_list->add_action( "use_item,name=dread_gladiators_badge,if=equipped.161902&(cooldown.incarnation.remains>30|cooldown.celestial_alignment.remains>30)");
+  default_list->add_action( "use_item,name=balefire_branch,if=equipped.159630&(cooldown.incarnation.remains>30|cooldown.celestial_alignment.remains>30)");
   default_list->add_action( "use_items" );
   default_list->add_talent( this, "Warrior of Elune", "", "CDs");
   default_list->add_action( this, "Innervate", "if=azerite.lively_spirit.enabled&(cooldown.incarnation.up|cooldown.celestial_alignment.remains<12)&(((raid_event.adds.duration%15)*(4)<(raid_event.adds.in%180))|(raid_event.adds.up))");
