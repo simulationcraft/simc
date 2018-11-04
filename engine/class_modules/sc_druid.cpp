@@ -5896,17 +5896,18 @@ struct sunfire_t : public druid_spell_t
 
       return da;
     }
+    
+    double bonus_ta(const action_state_t* s) const override
+    {
+      double ta = druid_spell_t::bonus_ta(s);
+
+      if (maybe_ptr(p()->dbc.ptr))
+        ta += p()->azerite.high_noon.value(2);
+
+      return ta;
+    }
+
   };
-
-  double bonus_ta(const action_state_t* s) const override
-  {
-    double ta = druid_spell_t::bonus_ta(s);
-
-    if (maybe_ptr(p()->dbc.ptr))
-      ta += p()->azerite.high_noon.value(2);
-
-    return ta;
-  }
 
   sunfire_damage_t* damage;
 
