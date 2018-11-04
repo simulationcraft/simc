@@ -15,20 +15,18 @@
 // - Further seperate Totem Mastery buffs between the 2 specs
 //
 // Elemental
-// - Add Talents
-//   - Add Spirit Wolf
-// - Add Azerite traits
 //
 // + implemented
 // - missing
 //      Name                        ID
-//    + Ancestral Resonance
+//    + Ancestral Resonance         277666
 //    + Echo of the Elementals      275381
 //    + Igneous Potential           279829
 //    + Lava Shock                  273448
 //    + Natural Harmony             278697
 //    + Rumbling Tremors            278709
 //    + Synapse Shock               277671
+//    ? Tectonic Thunder            286949 - find and whitelist the actual CL buff, fix implementation based on that
 //
 // Enhancement
 // - Azerite stuff
@@ -390,6 +388,7 @@ public:
     buff_t* roiling_storm;
     buff_t* roiling_storm_buff_driver;
     buff_t* strength_of_earth;
+    buff_t* tectonic_thunder;
   } buff;
 
   // Cooldowns
@@ -551,6 +550,7 @@ public:
     azerite_power_t echo_of_the_elementals;
     azerite_power_t igneous_potential;
     azerite_power_t lava_shock;
+    azerite_power_t tectonic_thunder;
 
     // Enhancement
     // azerite_power_t electropotence;  // hasn't been found in game yet, so current un-implemented in simc.
@@ -4325,6 +4325,7 @@ struct chained_base_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     p()->buff.stormkeeper->decrement();
+    p()->buff.tectonic_thunder->expire();
   }
 
   std::vector<player_t*>& check_distance_targeting( std::vector<player_t*>& tl ) const override
@@ -4349,13 +4350,23 @@ struct chain_lightning_t : public chained_base_t
 
   timespan_t execute_time() const override
   {
+    timespan_t t = chained_base_t::execute_time();
+
+    t *= 1.0 + p()->buff.wind_gust->stack_value();
+
     if ( p()->buff.stormkeeper->up() )
     {
       // stormkeeper has a -100 millisec% value as effect 1
-      return ( chained_base_t::execute_time() * ( 1 + p()->talent.stormkeeper->effectN( 1 ).percent() ) );
+      return ( t * ( 1 + p()->talent.stormkeeper->effectN( 1 ).percent() ) );
     }
 
-    return chained_base_t::execute_time() * ( 1.0 + p()->buff.wind_gust->stack_value() );
+    if ( maybe_ptr( p()->dbc.ptr ) && p()->buff.tectonic_thunder->up() )
+    {
+      // Tectonic Thunder makes CL instant
+      t *= 0;
+    }
+
+    return t;
   }
 
   timespan_t gcd() const override
@@ -5375,16 +5386,53 @@ struct earthquake_damage_t : public shaman_spell_t
   }
 };
 
+struct tectonic_thunder_damage_t : public shaman_spell_t
+{
+  tectonic_thunder_damage_t( shaman_t* player )
+    : shaman_spell_t( "tectonic_thunder_", player, player->find_spell( 286949 ) )
+  {
+    aoe        = -1;
+    ground_aoe = background = true;
+    school                  = SCHOOL_PHYSICAL;
+    base_dd_min = base_dd_max = p()->azerite.tectonic_thunder.value( 1 );
+  }
+
+  double target_armor( player_t* ) const override
+  {
+    return 0;
+  }
+
+  double composite_persistent_multiplier( const action_state_t* state ) const override
+  {
+    double m = shaman_spell_t::composite_persistent_multiplier( state );
+
+    if ( maybe_ptr( p()->dbc.ptr ) )
+    {
+      m *= 1.0 + p()->buff.master_of_the_elements->value();
+    }
+
+    m *= 1.0 + p()->buff.t21_2pc_elemental->stack_value();
+
+    return m;
+  }
+};
+
 struct earthquake_t : public shaman_spell_t
 {
   earthquake_damage_t* rumble;
+  tectonic_thunder_damage_t* thunder;  // azerite trait
 
   earthquake_t( shaman_t* player, const std::string& options_str )
     : shaman_spell_t( "earthquake", player, player->find_specialization_spell( "Earthquake" ), options_str ),
-      rumble( new earthquake_damage_t( player ) )
+      rumble( new earthquake_damage_t( player ) ),
+      thunder( new tectonic_thunder_damage_t( player ) )
   {
     dot_duration = timespan_t::zero();  // The periodic effect is handled by ground_aoe_event_t
     add_child( rumble );
+    if ( maybe_ptr( p()->dbc.ptr ) && p()->azerite.tectonic_thunder.ok() )
+    {
+      add_child( thunder );  // azerite trait
+    }
   }
 
   double cost() const override
@@ -5404,6 +5452,21 @@ struct earthquake_t : public shaman_spell_t
     make_event<ground_aoe_event_t>(
         *sim, p(),
         ground_aoe_params_t().target( execute_state->target ).duration( data().duration() ).action( rumble ) );
+
+    if ( maybe_ptr( p()->dbc.ptr ) && p()->azerite.tectonic_thunder.ok() )
+    {
+      make_event<ground_aoe_event_t>( *sim, p(),
+                                      ground_aoe_params_t()
+                                          .target( execute_state->target )
+                                          .duration( timespan_t::from_seconds( 1 ) )
+                                          .action( thunder ) );
+    }
+
+    if ( maybe_ptr( p()->dbc.ptr ) && p()->azerite.tectonic_thunder.ok() &&
+         rng().roll( p()->azerite.tectonic_thunder.spell()->effectN( 2 ).percent() ) )
+    {
+      p()->buff.tectonic_thunder->trigger();
+    }
 
     // Note, needs to be decremented after ground_aoe_event_t is created so that the rumble gets the
     // buff multiplier as persistent.
@@ -6886,6 +6949,7 @@ void shaman_t::init_spells()
   azerite.echo_of_the_elementals = find_azerite_spell( "Echo of the Elementals" );
   azerite.igneous_potential      = find_azerite_spell( "Igneous Potential" );
   azerite.lava_shock             = find_azerite_spell( "Lava Shock" );
+  azerite.tectonic_thunder       = find_azerite_spell( "Tectonic Thunder" );
 
   // Enhancement
   azerite.lightning_conduit = find_azerite_spell( "Lightning Conduit" );
@@ -7418,19 +7482,6 @@ void shaman_t::create_buffs()
                            ->add_stat( STAT_AGILITY, azerite.synapse_shock.value() )
                            ->set_trigger_spell( azerite.synapse_shock );
 
-  // Azerite Traits - Ele
-  buff.lava_shock = make_buff( this, "lava_shock", azerite.lava_shock )
-                        ->set_default_value( azerite.lava_shock.value() )
-                        ->set_trigger_spell( find_spell( 273453 ) )
-                        ->set_max_stack( find_spell( 273453 )->max_stacks() )
-                        ->set_duration( find_spell( 273453 )->duration() );
-
-  // Azerite Traits - Enh
-  buff.roiling_storm             = new roiling_storm_buff_t( this );
-  buff.roiling_storm_buff_driver = new roiling_storm_buff_driver_t( this );
-  buff.strength_of_earth         = new strength_of_earth_buff_t( this );
-
-  // Azerite Traits - Shared
   buff.ancestral_resonance =
       make_buff<stat_buff_t>( this, "ancestral_resonance", find_spell( 277943 ) )
           ->add_stat( STAT_MASTERY_RATING, azerite.ancestral_resonance.value( 1 ) )
@@ -7439,6 +7490,21 @@ void shaman_t::create_buffs()
           ->set_period( find_spell( 277942 )->effectN( 1 ).period() )
           ->set_tick_behavior( buff_tick_behavior::REFRESH )
           ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED );
+
+  // Azerite Traits - Ele
+  buff.lava_shock = make_buff( this, "lava_shock", azerite.lava_shock )
+                        ->set_default_value( azerite.lava_shock.value() )
+                        ->set_trigger_spell( find_spell( 273453 ) )
+                        ->set_max_stack( find_spell( 273453 )->max_stacks() )
+                        ->set_duration( find_spell( 273453 )->duration() );
+
+  buff.tectonic_thunder =
+      make_buff( this, "tectonic_thunder", azerite.tectonic_thunder )->set_duration( timespan_t::from_seconds( 15 ) );
+
+  // Azerite Traits - Enh
+  buff.roiling_storm             = new roiling_storm_buff_t( this );
+  buff.roiling_storm_buff_driver = new roiling_storm_buff_driver_t( this );
+  buff.strength_of_earth         = new strength_of_earth_buff_t( this );
 
   //
   // Enhancement
