@@ -2705,6 +2705,7 @@ struct combustion_t : public fire_mage_spell_t
     parse_options( options_str );
     dot_duration = timespan_t::zero();
     harmful = false;
+    usable_while_casting = true;
   }
 
   virtual void execute() override
@@ -3575,6 +3576,7 @@ struct ice_floes_t : public mage_spell_t
   {
     parse_options( options_str );
     may_miss = may_crit = harmful = false;
+    usable_while_casting = true;
     internal_cooldown->duration = data().internal_cooldown();
   }
 
@@ -3897,6 +3899,8 @@ struct fire_blast_t : public fire_mage_spell_t
     cooldown->duration -= 1000 * p->talents.flame_on->effectN( 3 ).time_value();
 
     cooldown->hasted = true;
+
+    usable_while_casting = true;
 
     triggers_hot_streak = true;
     triggers_ignite = true;
@@ -4579,7 +4583,7 @@ struct shimmer_t : public mage_spell_t
     parse_options( options_str );
 
     harmful = false;
-    ignore_false_positive = true;
+    ignore_false_positive = usable_while_casting = true;
 
     base_teleport_distance = data().effectN( 1 ).radius_max();
     movement_directionality = MOVEMENT_OMNI;
@@ -4873,7 +4877,7 @@ struct freeze_t : public action_t
     parse_options( options_str );
 
     may_miss = may_crit = callbacks = false;
-    dual = use_off_gcd = ignore_false_positive = true;
+    dual = usable_while_casting = ignore_false_positive = true;
     trigger_gcd = timespan_t::zero();
     action_skill = 1;
 
