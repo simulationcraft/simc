@@ -1175,10 +1175,12 @@ struct void_torrent_t final : public priest_spell_t
         return;
 
     // Currently each tick of Void Torrent gives 6 insanity, but caps out after 30 insanity
-    if ( maybe_ptr( priest().dbc.ptr ) and total_gain < insanity_gain )
+    // BUG: Currently it does NOT cap at 30 insanity. So if you get more ticks you get more insanity.
+    if ( maybe_ptr( priest().dbc.ptr ) && ( total_gain < insanity_gain ) )
     {
       priest().generate_insanity( ( insanity_gain / 5 ), priest().gains.insanity_void_torrent, d->state->action ); // give the actor 30 / 5 = 6 insanity
-      total_gain += ( insanity_gain / 5 ); // add 30 / 5 = 6 to the total_gain counter
+      // Once bug is fixed, uncomment this line
+      // total_gain += ( insanity_gain / 5 ); // add 30 / 5 = 6 to the total_gain counter
     }
   }
 
