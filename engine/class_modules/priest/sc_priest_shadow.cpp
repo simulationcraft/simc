@@ -68,7 +68,7 @@ public:
     : priest_spell_t( "mind_blast", player,
                       player.talents.shadow_word_void->ok() ? player.find_talent_spell( "Shadow Word: Void" )
                                                             : player.find_class_spell( "Mind Blast" ) ),
-      whispers_of_the_damned_value( priest().azerite.whispers_of_the_damned.value( 1 ) ),
+      whispers_of_the_damned_value( priest().azerite.whispers_of_the_damned.value( 2 ) ),
       harvested_thoughts_value( priest().azerite.thought_harvester.value( 1 ) )
   {
     parse_options( options_str );
@@ -134,6 +134,7 @@ public:
   {
     priest_spell_t::impact( s );
 
+    // TODO: Fix insanity generation
     // Generates 10 more insanity if it critically strikes
     if ( s->result == RESULT_CRIT && priest().azerite.whispers_of_the_damned.enabled() && maybe_ptr( priest().dbc.ptr ) )
     {
@@ -773,7 +774,7 @@ struct vampiric_touch_t final : public priest_spell_t
   vampiric_touch_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "vampiric_touch", p, p.find_class_spell( "Vampiric Touch" ) ),
       insanity_gain( data().effectN( 3 ).resource( RESOURCE_INSANITY ) ),
-      harvested_thoughts_value( priest().azerite.thought_harvester.value( 1 ) ),
+      harvested_thoughts_value( priest().azerite.thought_harvester.value( 2 ) ),
       ignore_healing( p.options.priest_ignore_healing )
   {
     parse_options( options_str );
@@ -820,7 +821,7 @@ struct vampiric_touch_t final : public priest_spell_t
 
     priest().generate_insanity( insanity_gain, priest().gains.insanity_vampiric_touch_onhit, s->action );
 
-    // TODO: add in proc chance for PTR thought harvester
+    // TODO: add in proc chance for thought harvester
     if ( priest().azerite.thought_harvester.enabled() )
     {
       priest().buffs.harvested_thoughts->trigger();

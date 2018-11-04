@@ -353,6 +353,7 @@ public:
   {
     propagate_const<real_ppm_t*> shadowy_insight;
     propagate_const<real_ppm_t*> power_of_the_dark_side;
+    propagate_const<real_ppm_t*> thought_harvester;
   } rppm;
 
   // Special
