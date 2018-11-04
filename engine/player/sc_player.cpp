@@ -8096,7 +8096,7 @@ struct swap_action_list_t : public action_t
     usable_while_casting = true;
   }
 
-  execute_type execute_type() const
+  execute_type get_execute_type() const
   {
     if ( player->executing && player->executing != this )
     {
@@ -8116,7 +8116,7 @@ struct swap_action_list_t : public action_t
   {
     if ( sim->log )
       sim->out_log.printf( "%s swaps to action list %s", player->name(), alist->name_str.c_str() );
-    player->activate_action_list( alist, execute_type() );
+    player->activate_action_list( alist, get_execute_type() );
   }
 
   virtual bool ready() override
@@ -8147,7 +8147,7 @@ struct run_action_list_t : public swap_action_list_t
 
     if ( player->restore_action_list == 0 )
       player->restore_action_list = player->active_action_list;
-    player->activate_action_list( alist, execute_type() );
+    player->activate_action_list( alist, get_execute_type() );
   }
 };
 
