@@ -1107,8 +1107,9 @@ struct dark_ascension_t final : public priest_spell_t
 struct void_torrent_t final : public priest_spell_t
 {
   double insanity_gain;
+  double total_gain;
 
-  // hard coding insanity value until spell data is released
+  // TODO: hard coding insanity value until spell data is released
   void_torrent_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "void_torrent", p, p.find_talent_spell( "Void Torrent" ) ),
       insanity_gain( 30 * maybe_ptr( priest().dbc.ptr ) )
@@ -1148,6 +1149,9 @@ struct void_torrent_t final : public priest_spell_t
 
     // When Void Torrent ends, restart the insanity drain tracking
     priest().insanity.begin_tracking();
+
+    // reset our total gain back to 0 for the next cast
+    total_gain = 0;
   }
 
   void execute() override
@@ -1165,11 +1169,15 @@ struct void_torrent_t final : public priest_spell_t
   {
     priest_spell_t::tick( d );
 
-    // Assuming that the spell data will give us the total insanity amount (i.e. 30 over 4s)
-    // we need to give each tick the right amount of insanity
-    if ( maybe_ptr( priest().dbc.ptr ) )
+    // Partial tick is not counted for insanity gains
+    if ( d->get_last_tick_factor() < 1.0 )
+        return;
+
+    // Currently each tick of Void Torrent gives 6 insanity, but caps out after 30 insanity
+    if ( maybe_ptr( priest().dbc.ptr ) and total_gain < insanity_gain )
     {
-      priest().generate_insanity( ( insanity_gain / d->num_ticks ), priest().gains.insanity_void_torrent, d->state->action );
+      priest().generate_insanity( ( insanity_gain / 5 ), priest().gains.insanity_void_torrent, d->state->action ); // give the actor 30 / 5 = 6 insanity
+      total_gain += ( insanity_gain / 5 ); // add 30 / 5 = 6 to the total_gain counter
     }
   }
 
