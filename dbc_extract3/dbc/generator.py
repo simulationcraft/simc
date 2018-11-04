@@ -1343,6 +1343,9 @@ class SpellDataGenerator(DataGenerator):
             ( 212570, 3, False ),   # Surrendered Soul (Surrender To Madness Death)
             ( 269555, 3 ),          # Azerite Trait Torment of Torments
             ( 280398, 1, False ),   # Sins of the Many buff
+            ( 275725, 0 ),          # Whispers of the Damned trigger effect
+            ( 275726, 0 ),          # Whispers of the damned insanity gain
+            ( 288342, 0 ),          # Thought Harvester trigger buff for Mind Sear
         ),
 
         # Death Knight:
@@ -4462,4 +4465,3 @@ class TactKeyGenerator(DataGenerator):
             out[v['key_name']] = v['key']
 
         json.dump(out, fp = self._out, indent = 2, sort_keys = True)
-
