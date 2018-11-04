@@ -127,16 +127,14 @@ struct buff_stack_benefit_t
   const buff_t* buff;
   std::vector<benefit_t*> buff_stack_benefit;
 
-  buff_stack_benefit_t( const buff_t* _buff,
-                        const std::string& prefix ) :
+  buff_stack_benefit_t( const buff_t* _buff, const std::string& prefix ) :
     buff( _buff ),
     buff_stack_benefit()
   {
     for ( int i = 0; i <= buff->max_stack(); i++ )
     {
-      buff_stack_benefit.push_back(
-        buff->player->get_benefit(
-          prefix + " " + buff->data().name_cstr() + " " + util::to_string( i ) ) );
+      buff_stack_benefit.push_back( buff->player->get_benefit(
+        prefix + " " + buff->data().name_cstr() + " " + util::to_string( i ) ) );
     }
   }
 
@@ -1453,52 +1451,6 @@ public:
     return c;
   }
 
-  struct buff_delay_event_t : public event_t
-  {
-    buff_t* buff;
-
-    buff_delay_event_t( buff_t* b, timespan_t delay ) :
-      event_t( *b->player, delay ),
-      buff( b )
-    { }
-
-    virtual const char* name() const override
-    {
-      return "buff_delay";
-    }
-
-    virtual void execute() override
-    {
-      buff->trigger();
-    }
-  };
-
-  virtual void consume_resource() override
-  {
-    spell_t::consume_resource();
-
-    if ( !harmful || current_resource() != RESOURCE_MANA || !p()->spec.clearcasting->ok() )
-      return;
-
-    // Mana spending required for 1% chance.
-    double mana_step = p()->spec.clearcasting->cost( POWER_MANA ) * p()->resources.base[ RESOURCE_MANA ];
-    mana_step /= p()->spec.clearcasting->effectN( 1 ).percent();
-
-    double cc_proc_chance = 0.01 * last_resource_cost / mana_step;
-
-    if ( rng().roll( cc_proc_chance ) )
-    {
-      if ( p()->buffs.clearcasting->check() )
-      {
-        make_event<buff_delay_event_t>( *sim, p()->buffs.clearcasting, timespan_t::from_seconds( 0.15 ) );
-      }
-      else
-      {
-        p()->buffs.clearcasting->trigger();
-      }
-    }
-  }
-
   virtual void update_ready( timespan_t cd ) override
   {
     if ( cd_waste )
@@ -1515,15 +1467,43 @@ public:
     return spell_t::usable_moving();
   }
 
+  bool trigger_delayed_buff( buff_t* buff, double chance, timespan_t delay = timespan_t::from_seconds( 0.15 ) )
+  {
+    bool success = rng().roll( chance );
+    if ( success )
+    {
+      if ( buff->check() )
+        make_event( sim, delay, [ buff ] () { buff->trigger(); } );
+      else
+        buff->trigger();
+    }
+
+    return success;
+  }
+
+  virtual void consume_cost_reductions()
+  { }
+
   virtual void execute() override
   {
     spell_t::execute();
     p()->trigger_leyshock( id, execute_state, mage_t::LEYSHOCK_EXECUTE );
 
-    if ( background )
-      return;
+    // Make sure we remove all cost reduction buffs before we trigger new ones.
+    // This will prevent for example Arcane Blast consuming its own Clearcasting proc.
+    consume_cost_reductions();
 
-    if ( affected_by.ice_floes
+    if ( p()->spec.clearcasting->ok() && harmful && current_resource() == RESOURCE_MANA )
+    {
+      // Mana spending required for 1% chance.
+      double mana_step = p()->spec.clearcasting->cost( POWER_MANA ) * p()->resources.base[ RESOURCE_MANA ];
+      mana_step /= p()->spec.clearcasting->effectN( 1 ).percent();
+
+      trigger_delayed_buff( p()->buffs.clearcasting, 0.01 * last_resource_cost / mana_step );
+    }
+
+    if ( !background
+      && affected_by.ice_floes
       && p()->talents.ice_floes->ok()
       && time_to_execute > timespan_t::zero()
       && p()->buffs.ice_floes->up() )
@@ -1554,9 +1534,37 @@ typedef residual_action::residual_periodic_action_t<mage_spell_t> residual_actio
 
 struct arcane_mage_spell_t : public mage_spell_t
 {
+  std::vector<buff_t*> cost_reductions;
+
   arcane_mage_spell_t( const std::string& n, mage_t* p, const spell_data_t* s = spell_data_t::nil() ) :
-    mage_spell_t( n, p, s )
+    mage_spell_t( n, p, s ),
+    cost_reductions()
   { }
+
+  virtual void consume_cost_reductions() override
+  {
+    // Consume first applicable buff and then stop.
+    for ( auto cr : cost_reductions )
+    {
+      if ( cr->check() )
+      {
+        cr->decrement();
+        break;
+      }
+    }
+  }
+
+  virtual double cost() const override
+  {
+    double c = mage_spell_t::cost();
+
+    for ( auto cr : cost_reductions )
+    {
+      c *= 1.0 + cr->check_value();
+    }
+
+    return c;
+  }
 
   double arcane_charge_damage_bonus( bool arcane_barrage = false ) const
   {
@@ -1865,20 +1873,7 @@ struct frost_mage_spell_t : public mage_spell_t
   }
 
   void trigger_brain_freeze( double chance )
-  {
-    if ( rng().roll( chance ) )
-    {
-      if ( p()->buffs.brain_freeze->check() )
-      {
-        // Brain Freeze was already active, delay the new application
-        make_event<buff_delay_event_t>( *sim, p()->buffs.brain_freeze, timespan_t::from_seconds( 0.15 ) );
-      }
-      else
-      {
-        p()->buffs.brain_freeze->trigger();
-      }
-    }
-  }
+  { trigger_delayed_buff( p()->buffs.brain_freeze, chance ); }
 
   double icicle_sp_coefficient() const
   {
@@ -2153,6 +2148,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
     arcane_mage_spell_t( "arcane_blast", p, p->find_specialization_spell( "Arcane Blast" ) )
   {
     parse_options( options_str );
+    cost_reductions = { p->buffs.rule_of_threes };
     base_dd_adder += p->azerite.galvanizing_spark.value( 2 );
   }
 
@@ -2163,8 +2159,6 @@ struct arcane_blast_t : public arcane_mage_spell_t
     c *= 1.0 + p()->buffs.arcane_charge->check()
              * p()->spec.arcane_charge->effectN( 5 ).percent();
 
-    c *= 1.0 + p()->buffs.rule_of_threes->check_value();
-
     return c;
   }
 
@@ -2172,11 +2166,6 @@ struct arcane_blast_t : public arcane_mage_spell_t
   {
     p()->benefits.arcane_charge.arcane_blast->update();
     arcane_mage_spell_t::execute();
-
-    if ( last_resource_cost == 0 )
-    {
-      p()->buffs.rule_of_threes->decrement();
-    }
 
     p()->buffs.arcane_charge->up();
 
@@ -2242,27 +2231,14 @@ struct arcane_explosion_t : public arcane_mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
+    cost_reductions = { p->buffs.clearcasting };
 
     base_dd_adder += p->azerite.explosive_echo.value( 2 );
-  }
-
-  virtual double cost() const override
-  {
-    double c = arcane_mage_spell_t::cost();
-
-    c *= 1.0 + p()->buffs.clearcasting->check_value();
-
-    return c;
   }
 
   virtual void execute() override
   {
     arcane_mage_spell_t::execute();
-
-    if ( last_resource_cost == 0 )
-    {
-      p()->buffs.clearcasting->decrement();
-    }
 
     if ( hit_any_target )
     {
@@ -2385,6 +2361,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     may_miss = false;
     tick_zero = channeled = true;
     tick_action = new arcane_missiles_tick_t( p );
+    cost_reductions = { p->buffs.clearcasting, p->buffs.rule_of_threes };
 
     auto cc_data = p->buffs.clearcasting_channel->data();
     cc_duration_reduction  = cc_data.effectN( 1 ).percent();
@@ -2452,16 +2429,6 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     return t;
   }
 
-  virtual double cost() const override
-  {
-    double c = arcane_mage_spell_t::cost();
-
-    c *= 1.0 + p()->buffs.rule_of_threes->check_value();
-    c *= 1.0 + p()->buffs.clearcasting->check_value();
-
-    return c;
-  }
-
   virtual void execute() override
   {
     p()->buffs.arcane_pummeling->expire();
@@ -2476,18 +2443,6 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     }
 
     arcane_mage_spell_t::execute();
-
-    if ( last_resource_cost == 0 )
-    {
-      if ( p()->buffs.clearcasting->check() )
-      {
-        p()->buffs.clearcasting->decrement();
-      }
-      else
-      {
-        p()->buffs.rule_of_threes->decrement();
-      }
-    }
 
     if ( p()->sets->has_set_bonus( MAGE_ARCANE, T19, B4 ) )
     {
