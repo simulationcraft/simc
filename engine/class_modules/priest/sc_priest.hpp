@@ -984,6 +984,13 @@ public:
    */
   void init_affected_by()
   {
+    size_t effectNumber;
+    if ( maybe_ptr( priest().dbc.ptr ) )
+    {
+      effectNumber = 4;
+    } else {
+      effectNumber = 5;
+    }
     struct affect_init_t{
       const spelleffect_data_t& effect;
       bool& affects;
@@ -991,7 +998,7 @@ public:
         {priest().buffs.voidform->data().effectN(1),      affected_by.voidform_da},
         {priest().buffs.voidform->data().effectN(2),      affected_by.voidform_ta},
         {priest().buffs.shadowform->data().effectN(1),    affected_by.shadowform_da},
-        {priest().buffs.shadowform->data().effectN(5),    affected_by.shadowform_ta},
+        {priest().buffs.shadowform->data().effectN(effectNumber),    affected_by.shadowform_ta},
         {priest().buffs.twist_of_fate->data().effectN(1), affected_by.twist_of_fate_da},
         {priest().buffs.twist_of_fate->data().effectN(2), affected_by.twist_of_fate_ta},
         {priest().mastery_spells.madness->effectN(1),     affected_by.mastery_madness_da},
@@ -1115,7 +1122,11 @@ public:
       double vf_multiplier = priest().buffs.voidform->data().effectN(2).percent();
       m *= 1.0 + vf_multiplier ;
     }
-    if ( affected_by.shadowform_ta && priest().buffs.shadowform->check() )
+    if ( affected_by.shadowform_ta && priest().buffs.shadowform->check() && maybe_ptr( priest().dbc.ptr ) )
+    {
+      m *= 1.0 + priest().buffs.shadowform->data().effectN(4).percent();
+    }
+    if ( affected_by.shadowform_ta && priest().buffs.shadowform->check() && !maybe_ptr( priest().dbc.ptr ) )
     {
       m *= 1.0 + priest().buffs.shadowform->data().effectN(5).percent();
     }
