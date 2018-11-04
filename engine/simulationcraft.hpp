@@ -4945,6 +4945,9 @@ public:
    */
   bool use_off_gcd;
 
+  /// True if ability should be used while casting another spell.
+  bool use_while_casting;
+
   /// True if ability is usable while casting another spell
   bool usable_while_casting;
 

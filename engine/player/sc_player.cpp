@@ -2415,7 +2415,7 @@ void player_t::init_actions()
       }
     }
 
-    if ( action->action_list && !action->background && action->usable_while_casting )
+    if ( action->action_list && !action->background && action->use_while_casting && action->usable_while_casting )
     {
       action->action_list->cast_while_casting_actions.push_back( action );
 
@@ -8093,6 +8093,7 @@ struct swap_action_list_t : public action_t
 
     trigger_gcd = timespan_t::zero();
     use_off_gcd = true;
+    use_while_casting = true;
     usable_while_casting = true;
   }
 

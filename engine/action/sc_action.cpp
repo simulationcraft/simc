@@ -482,6 +482,7 @@ action_t::action_t( action_e ty, const std::string& token, player_t* p, const sp
     quiet(),
     background(),
     use_off_gcd(),
+    use_while_casting(),
     usable_while_casting( false ),
     interrupt_auto_attack( true ),
     ignore_false_positive(),
@@ -670,6 +671,7 @@ action_t::action_t( action_e ty, const std::string& token, player_t* p, const sp
   // GCD has not elapsed.
   add_option( opt_bool( "interrupt_immediate", option.interrupt_immediate ) );
   add_option( opt_bool( "use_off_gcd", use_off_gcd ) );
+  add_option( opt_bool( "use_while_casting", use_while_casting ) );
 }
 
 action_t::~action_t()
@@ -3865,6 +3867,7 @@ call_action_list_t::call_action_list_t( player_t* player, const std::string& opt
   ignore_false_positive = true;  // Truly terrible things could happen if a false positive comes back on this.
   use_off_gcd = true;
   trigger_gcd = timespan_t::zero();
+  use_while_casting = true;
   usable_while_casting = true;
 
   if ( alist_name.empty() )
