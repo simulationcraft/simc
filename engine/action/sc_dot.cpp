@@ -1292,7 +1292,7 @@ bool dot_t::is_higher_priority_action_available() const
   auto apl = current_action->interrupt_global ? player->active_action_list : current_action->action_list;
 
   player->visited_apls_ = 0;
-  auto action = player->select_action( *apl, false, current_action );
+  auto action = player->select_action( *apl, execute_type::FOREGROUND, current_action );
   if ( action && action->internal_id != current_action->internal_id && player->sim->debug )
   {
     player->sim->out_debug.print( "{} action available for context {}: {}", player->name(),

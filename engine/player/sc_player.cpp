@@ -37,6 +37,9 @@ struct player_ready_event_t : public player_event_t
     }
     // Player that's checking for off gcd actions to use, cancels that checking when there's a ready event firing.
     event_t::cancel( p()->off_gcd );
+    // Also cancel checks during casting, since player-ready event by definition means that the
+    // actor is not going to be casting.
+    event_t::cancel( p()->cast_while_casting_poll_event );
 
     if ( !p()->execute_action() )
     {
@@ -701,6 +704,7 @@ player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r ) :
   readying( 0 ),
   off_gcd( 0 ),
   off_gcd_ready( timespan_t::min() ),
+  cast_while_casting_ready( timespan_t::min() ),
   in_combat( false ),
   action_queued( false ),
   first_cast( true ),
@@ -1852,10 +1856,12 @@ bool player_t::add_action( const spell_data_t* s, std::string options, std::stri
 /**
  * Adds all on use item actions for all items with their on use effect not excluded in the exclude_effects string.
  */
-void player_t::activate_action_list( action_priority_list_t* a, bool off_gcd )
+void player_t::activate_action_list( action_priority_list_t* a, execute_type type )
 {
-  if ( off_gcd )
+  if ( type == execute_type::OFF_GCD )
     active_off_gcd_list = a;
+  else if ( type == execute_type::CAST_WHILE_CASTING )
+    active_cast_while_casting_list = a;
   else
     active_action_list = a;
   a->used = true;
@@ -2362,7 +2368,7 @@ namespace
 // Only "real" off gcd actions should trigger the off gcd apl behavior since it has a performance
 // impact. Some meta-actions (call_action_list, variable, run_action_list, swap_action_list) alone
 // cannot trigger off-gcd apl behavior.
-bool is_real_off_gcd_action( const action_t* a )
+bool is_real_action( const action_t* a )
 {
   return a -> type != ACTION_CALL && a -> type != ACTION_VARIABLE &&
          ! util::str_compare_ci( a->name_str, "run_action_list" ) &&
@@ -2386,6 +2392,7 @@ void player_t::init_actions()
   }
 
   bool have_off_gcd_actions = false;
+  bool have_cast_while_casting_actions = false;
   for ( auto action : action_list )
   {
     if ( action->action_list && action->trigger_gcd == timespan_t::zero() && !action->background &&
@@ -2394,7 +2401,7 @@ void player_t::init_actions()
       action->action_list->off_gcd_actions.push_back( action );
       // Optimization: We don't need to do off gcd stuff when there are no other off gcd actions
       // than "meta actions"
-      if ( is_real_off_gcd_action( action ) )
+      if ( is_real_action( action ) )
       {
         have_off_gcd_actions = true;
         if ( action -> cooldown -> duration > timespan_t::zero() )
@@ -2403,6 +2410,24 @@ void player_t::init_actions()
           if ( it == off_gcd_cd.end() )
           {
             off_gcd_cd.push_back( action -> cooldown );
+          }
+        }
+      }
+    }
+
+    if ( action->action_list && !action->background && action->usable_while_casting )
+    {
+      action->action_list->cast_while_casting_actions.push_back( action );
+
+      if ( is_real_action( action ) )
+      {
+        have_cast_while_casting_actions = true;
+        if ( action->cooldown->duration > timespan_t::zero() )
+        {
+          auto it = range::find( cast_while_casting_cd, action->cooldown );
+          if ( it == cast_while_casting_cd.end() )
+          {
+            cast_while_casting_cd.push_back( action->cooldown );
           }
         }
       }
@@ -2424,7 +2449,10 @@ void player_t::init_actions()
   {
     activate_action_list( default_action_list );
     if ( have_off_gcd_actions )
-      activate_action_list( default_action_list, true );
+      activate_action_list( default_action_list, execute_type::OFF_GCD );
+
+    if ( have_cast_while_casting_actions )
+      activate_action_list( default_action_list, execute_type::CAST_WHILE_CASTING );
   }
   else
   {
@@ -4371,6 +4399,7 @@ void player_t::reset()
   last_cast = timespan_t::zero();
   gcd_ready = timespan_t::zero();
   off_gcd_ready = timespan_t::min();
+  cast_while_casting_ready = timespan_t::min();
 
   cache.invalidate_all();
 
@@ -4400,7 +4429,8 @@ void player_t::reset()
   channeling      = nullptr;
   readying        = nullptr;
   strict_sequence = 0;
-  off_gcd         = 0;
+  off_gcd         = nullptr;
+  cast_while_casting_poll_event = nullptr;
   in_combat       = false;
 
   current_attack_speed    = 1.0;
@@ -4476,6 +4506,11 @@ void player_t::reset()
   if ( active_off_gcd_list && active_off_gcd_list != default_action_list )
   {
     active_off_gcd_list = default_action_list;
+  }
+
+  if ( active_cast_while_casting_list && active_cast_while_casting_list != default_action_list )
+  {
+    active_cast_while_casting_list = default_action_list;
   }
 
   reset_resource_callbacks();
@@ -4814,6 +4849,8 @@ void player_t::interrupt()
       if ( channeling )
         channeling->interrupt_action();
 
+      event_t::cancel( cast_while_casting_poll_event );
+
       if ( strict_sequence )
       {
         strict_sequence->cancel();
@@ -4918,7 +4955,7 @@ action_t* player_t::execute_action()
   if ( action )
   {
     action->line_cooldown.start();
-    action->queue_execute( false );
+    action->queue_execute( execute_type::FOREGROUND );
     if ( !action->quiet )
     {
       iteration_executed_foreground_actions++;
@@ -8056,13 +8093,30 @@ struct swap_action_list_t : public action_t
 
     trigger_gcd = timespan_t::zero();
     use_off_gcd = true;
+    usable_while_casting = true;
+  }
+
+  execute_type execute_type() const
+  {
+    if ( player->executing && player->executing != this )
+    {
+      return execute_type::CAST_WHILE_CASTING;
+    }
+    else if ( player->readying )
+    {
+      return execute_type::OFF_GCD;
+    }
+    else
+    {
+      return execute_type::FOREGROUND;
+    }
   }
 
   virtual void execute() override
   {
     if ( sim->log )
       sim->out_log.printf( "%s swaps to action list %s", player->name(), alist->name_str.c_str() );
-    player->activate_action_list( alist, player->readying != nullptr );
+    player->activate_action_list( alist, execute_type() );
   }
 
   virtual bool ready() override
@@ -8093,7 +8147,7 @@ struct run_action_list_t : public swap_action_list_t
 
     if ( player->restore_action_list == 0 )
       player->restore_action_list = player->active_action_list;
-    player->activate_action_list( alist, player->readying != nullptr );
+    player->activate_action_list( alist, execute_type() );
   }
 };
 
@@ -12060,7 +12114,9 @@ luxurious_sample_data_t::luxurious_sample_data_t( player_t& p, std::string n ) :
 }
 
 // Note, root call needs to set player_t::visited_apls_ to 0
-action_t* player_t::select_action( const action_priority_list_t& list, bool off_gcd, const action_t* context )
+action_t* player_t::select_action( const action_priority_list_t& list,
+                                   execute_type                  type,
+                                   const action_t*               context )
 {
   // Mark this action list as visited with the APL internal id
   visited_apls_ |= list.internal_id_mask;
@@ -12070,9 +12126,21 @@ action_t* player_t::select_action( const action_priority_list_t& list, bool off_
   uint64_t _visited       = visited_apls_;
   size_t attempted_random = 0;
 
-  const auto& action_list = off_gcd ? list.off_gcd_actions : list.foreground_action_list;
+  const std::vector<action_t*>* action_list = nullptr;
+  switch ( type )
+  {
+    case execute_type::OFF_GCD:
+      action_list = &( list.off_gcd_actions );
+      break;
+    case execute_type::CAST_WHILE_CASTING:
+      action_list = &( list.cast_while_casting_actions );
+      break;
+    default:
+      action_list = &( list.foreground_action_list );
+      break;
+  }
 
-  for ( size_t i = 0, num_actions = action_list.size(); i < num_actions; ++i )
+  for ( size_t i = 0, num_actions = action_list->size(); i < num_actions; ++i )
   {
     visited_apls_ = _visited;
     action_t* a   = 0;
@@ -12080,7 +12148,7 @@ action_t* player_t::select_action( const action_priority_list_t& list, bool off_
     if ( list.random == 1 )
     {
       size_t random = static_cast<size_t>( rng().range( 0, static_cast<double>( num_actions ) ) );
-      a             = action_list[ random ];
+      a             = (*action_list)[ random ];
     }
     else
     {
@@ -12089,7 +12157,7 @@ action_t* player_t::select_action( const action_priority_list_t& list, bool off_
       {
         size_t max_random_attempts = static_cast<size_t>( num_actions * ( skill * 0.5 ) );
         size_t random              = static_cast<size_t>( rng().range( 0, static_cast<double>( num_actions ) ) );
-        a                          = action_list[ random ];
+        a                          = (*action_list)[ random ];
         attempted_random++;
         // Limit the amount of attempts to select a random action based on skill, then bail out and try again in 100 ms.
         if ( attempted_random > max_random_attempts )
@@ -12097,7 +12165,7 @@ action_t* player_t::select_action( const action_priority_list_t& list, bool off_
       }
       else
       {
-        a = action_list[ i ];
+        a = (*action_list)[ i ];
       }
     }
 
@@ -12133,7 +12201,7 @@ action_t* player_t::select_action( const action_priority_list_t& list, bool off_
         }
 
         // We get an action from the call, return it
-        if ( action_t* real_a = select_action( *call->alist, off_gcd, context ) )
+        if ( action_t* real_a = select_action( *call->alist, type, context ) )
         {
           if ( context == nullptr && real_a->action_list )
             real_a->action_list->used = true;
@@ -12317,6 +12385,19 @@ void player_t::adjust_auto_attack( haste_type_e haste_type )
   current_attack_speed = cache.attack_speed();
 }
 
+timespan_t find_minimum_cd( const std::vector<const cooldown_t*> list )
+{
+  timespan_t min_ready = timespan_t::max();
+  range::for_each( list, [ &min_ready ]( const cooldown_t* cd ) {
+    if ( cd->queueable() < min_ready )
+    {
+      min_ready = cd->queueable();
+    }
+  } );
+
+  return min_ready;
+}
+
 // Calculate the minimum readiness time for all off gcd actions that are flagged as usable during
 // gcd (i.e., action_t::use_off_gcd == true). Note that this does not take into account
 // line_cooldown option, since that is APL-line specific.
@@ -12327,20 +12408,31 @@ void player_t::update_off_gcd_ready()
     return;
   }
 
-  timespan_t min_ready = timespan_t::max();
-  range::for_each( off_gcd_cd, [&min_ready]( const cooldown_t* cd ) {
-    if ( cd -> ready < min_ready )
-    {
-      min_ready = cd -> ready;
-    }
-  } );
-
-  off_gcd_ready = min_ready;
+  off_gcd_ready = find_minimum_cd( off_gcd_cd );
 
   if ( sim -> debug )
   {
     sim -> out_debug.print( "{} next off-GCD cooldown ready at {}",
       name(), off_gcd_ready.total_seconds() );
+  }
+}
+
+// Calculate the minimum readiness time for all off gcd actions that are flagged as usable during
+// gcd (i.e., action_t::use_off_gcd == true). Note that this does not take into account
+// line_cooldown option, since that is APL-line specific.
+void player_t::update_cast_while_casting_ready()
+{
+  if ( cast_while_casting_cd.size() == 0 )
+  {
+    return;
+  }
+
+  cast_while_casting_ready = find_minimum_cd( cast_while_casting_cd );
+
+  if ( sim -> debug )
+  {
+    sim -> out_debug.print( "{} next cast while casting cooldown ready at {}",
+      name(), cast_while_casting_ready.total_seconds() );
   }
 }
 

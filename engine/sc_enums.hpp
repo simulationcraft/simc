@@ -10,6 +10,16 @@
 // Enumerations =============================================================
 // annex _e to enumerations
 
+
+// Type of internal execution of an action
+enum class execute_type
+{
+  FOREGROUND,
+  OFF_GCD,
+  CAST_WHILE_CASTING
+};
+
+
 // Source of the profile, defaults to command line / addon / etc
 enum class profile_source
 {

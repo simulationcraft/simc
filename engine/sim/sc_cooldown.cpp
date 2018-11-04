@@ -68,6 +68,11 @@ struct recharge_event_t : event_t
       cooldown_ -> player -> update_off_gcd_ready();
     }
 
+    if ( cooldown_->action && cooldown_->action->usable_while_casting )
+    {
+      cooldown_->player->update_cast_while_casting_ready();
+    }
+
     cooldown_ -> player -> trigger_ready();
   }
 
@@ -221,6 +226,11 @@ void cooldown_t::adjust_recharge_multiplier()
   {
     player -> update_off_gcd_ready();
   }
+
+  if ( action && action->usable_while_casting )
+  {
+    player->update_cast_while_casting_ready();
+  }
 }
 
 void cooldown_t::adjust( timespan_t amount, bool require_reaction )
@@ -304,6 +314,11 @@ void cooldown_t::adjust( timespan_t amount, bool require_reaction )
     player -> update_off_gcd_ready();
   }
 
+  if ( action && action->usable_while_casting )
+  {
+    player->update_cast_while_casting_ready();
+  }
+
   if ( player -> queueing && player -> queueing -> cooldown == this )
   {
     player -> queueing -> reschedule_queue_event();
@@ -354,6 +369,11 @@ void cooldown_t::reset( bool require_reaction, bool all_charges )
   if ( action && action -> use_off_gcd )
   {
     player -> update_off_gcd_ready();
+  }
+
+  if ( action && action->usable_while_casting )
+  {
+    player -> update_cast_while_casting_ready();
   }
 
   if ( player )
@@ -427,6 +447,11 @@ void cooldown_t::start( action_t* a, timespan_t _override, timespan_t delay )
   if ( action && action -> use_off_gcd )
   {
     player -> update_off_gcd_ready();
+  }
+
+  if ( action && action->usable_while_casting )
+  {
+    player -> update_cast_while_casting_ready();
   }
 
   assert( player );
