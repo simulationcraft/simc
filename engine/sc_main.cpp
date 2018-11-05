@@ -220,7 +220,7 @@ void print_version_info(const dbc_t& dbc)
   std::string build_info = fmt::format("wow build {}", dbc.build_level());
   if ( git_info::available() )
   {
-    build_info += fmt::format(", git build %s %s", git_info::branch(), git_info::revision());
+    build_info += fmt::format(", git build {} {}", git_info::branch(), git_info::revision());
   }
 
   fmt::print("SimulationCraft {} for World of Warcraft {} {} ({})\n\n",
