@@ -6329,7 +6329,7 @@ void mage_t::apl_fire()
     "Without another proc generating method, fish for a crit using Fireball. If you have Heating Up, you convert at the end of cast with Fire Blast or Phoenix Flames, then Pyroblast" );
 
   active_talents->add_talent( this, "Living Bomb", "if=active_enemies>1&buff.combustion.down&(cooldown.combustion.remains>cooldown.living_bomb.duration|cooldown.combustion.ready)",
-    "Living Bomb is used mostly on cooldown in any multitarget situation." );
+    "Living Bomb is used mostly on cooldown in any multitarget situation. Make sure we time the use such that it is exploding inside Combustion." );
   active_talents->add_talent( this, "Meteor", "if=buff.rune_of_power.up&(firestarter.remains>cooldown.meteor.duration|!firestarter.active)|cooldown.rune_of_power.remains>target.time_to_die&action.rune_of_power.charges<1|(cooldown.meteor.duration<cooldown.combustion.remains|cooldown.combustion.ready)&!talent.rune_of_power.enabled",
     "Meteor should be synced with Rune of Power if possible (and therefore also Combustion)." );
   active_talents->add_action( this, "Dragon's Breath", "if=talent.alexstraszas_fury.enabled&(buff.combustion.down&!buff.hot_streak.react|buff.combustion.up&action.fire_blast.charges<action.fire_blast.max_charges&!buff.hot_streak.react)",
