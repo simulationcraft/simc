@@ -1969,9 +1969,17 @@ void priest_t::generate_apl_shadow()
                       "cooldown.shadow_word_death.charges=2|"
                       "(cooldown.shadow_word_death.charges=1&"
                       "cooldown.shadow_word_death.remains<gcd.max)" );
-  single->add_talent( this, "Surrender to Madness",
-                      "if=buff.voidform.stack>=(15+buff.bloodlust.up)&"
-                      "target.time_to_die>200|target.time_to_die<75" );
+
+  if ( maybe_ptr( dbc.ptr ) )
+  {
+    single->add_talent( this, "Surrender to Madness",
+                        "if=target.time_to_die>200|target.time_to_die<75" );
+  } else {
+    single->add_talent( this, "Surrender to Madness",
+                        "if=buff.voidform.stack>=(15+buff.bloodlust.up)&"
+                        "target.time_to_die>200|target.time_to_die<75" );
+  }
+
   single->add_talent( this, "Dark Void", "if=raid_event.adds.in>10" );
   single->add_talent( this, "Mindbender" );
   single->add_talent( this, "Shadow Word: Death",
@@ -2000,7 +2008,14 @@ void priest_t::generate_apl_shadow()
   cleave->add_talent( this, "Dark Ascension", "if=buff.voidform.down" );
   cleave->add_action( this, "Void Bolt" );
   cleave->add_talent( this, "Shadow Word: Death", "target_if=target.time_to_die<3|buff.voidform.down" );
-  cleave->add_talent( this, "Surrender to Madness", "if=buff.voidform.stack>=(15+buff.bloodlust.up)" );
+
+  if ( maybe_ptr( dbc.ptr ) )
+  {
+    cleave->add_talent( this, "Surrender to Madness" );
+  } else {
+    cleave->add_talent( this, "Surrender to Madness", "if=buff.voidform.stack>=(15+buff.bloodlust.up)" );
+  }
+
   cleave->add_talent( this, "Dark Void", "if=raid_event.adds.in>10" );
   cleave->add_talent( this, "Mindbender" );
   cleave->add_action( this, "Mind Blast" );
