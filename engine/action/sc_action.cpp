@@ -3111,6 +3111,11 @@ expr_t* action_t::create_expression( const std::string& name_str )
     return make_fn_expr( name_str, [this]() { return execute_event != nullptr; } );
   }
 
+  if ( name_str == "execute_remains" )
+  {
+    return make_fn_expr( name_str, [ this ] () { return execute_event ? execute_event->remains().total_seconds() : 0.0; } );
+  }
+
   std::vector<std::string> splits = util::string_split( name_str, "." );
 
   if ( splits.size() == 2 )
