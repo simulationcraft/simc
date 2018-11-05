@@ -703,6 +703,7 @@ player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r ) :
   strict_sequence( 0 ),
   readying( 0 ),
   off_gcd( 0 ),
+  cast_while_casting_poll_event(),
   off_gcd_ready( timespan_t::min() ),
   cast_while_casting_ready( timespan_t::min() ),
   in_combat( false ),
