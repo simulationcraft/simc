@@ -1262,7 +1262,7 @@ struct waycrest_legacy_damage_t : public proc_t
   {
     size_t target_index = static_cast<size_t>( rng().range( 0, as<double>( target_list().size() ) ) );
     set_target( target_list()[ target_index ] );
-    
+
     proc_t::execute();
   }
 };
@@ -1567,7 +1567,7 @@ void items::syringe_of_bloodborne_infirmity( special_effect_t& effect )
   // dot proc on attack
   if ( effect.spell_id == 278112 )
     new syringe_of_bloodborne_infirmity_cb_t( effect );
-  
+
   // crit buff on attacking debuffed target
   if ( effect.spell_id == 278109 )
     effect.create_buff(); // precreate the buff
@@ -1623,7 +1623,7 @@ void items::berserkers_juju( special_effect_t& effect )
     {
       spell = player -> find_spell( 274472 );
       //force to use -7 scaling type on spelldata value
-      //Should probably add a check here for if spelldata changes to -7 to avoid double dipping 
+      //Should probably add a check here for if spelldata changes to -7 to avoid double dipping
       amount = item_database::apply_combat_rating_multiplier( *item, spell->effectN( 1 ).average( item ) );
       proc_spell_t::init( );
     }
@@ -1730,6 +1730,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 278112, items::syringe_of_bloodborne_infirmity );
   register_special_effect( 278152, items::disc_of_systematic_regression );
   register_special_effect( 274472, items::berserkers_juju );
+  register_special_effect( 285495, "285496Trigger" ); // Moonstone of Zin-Azshari
 
   // Misc
   register_special_effect( 276123, items::darkmoon_deck_squalls );
