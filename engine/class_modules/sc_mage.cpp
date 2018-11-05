@@ -4792,7 +4792,7 @@ void report_burn_switch_error( action_t* a )
 struct start_burn_phase_t : public action_t
 {
   start_burn_phase_t( mage_t* p, const std::string& options_str ) :
-    action_t( ACTION_USE, "start_burn_phase", p )
+    action_t( ACTION_OTHER, "start_burn_phase", p )
   {
     parse_options( options_str );
     trigger_gcd = timespan_t::zero();
@@ -4829,7 +4829,7 @@ struct start_burn_phase_t : public action_t
 struct stop_burn_phase_t : public action_t
 {
   stop_burn_phase_t( mage_t* p, const std::string& options_str ) :
-    action_t( ACTION_USE, "stop_burn_phase", p )
+    action_t( ACTION_OTHER, "stop_burn_phase", p )
   {
     parse_options( options_str );
     trigger_gcd = timespan_t::zero();
