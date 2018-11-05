@@ -721,6 +721,7 @@ player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r ) :
   active_action_list(),
   default_action_list(),
   active_off_gcd_list(),
+  active_cast_while_casting_list(),
   restore_action_list(),
   no_action_list_provided(),
   // Reporting
