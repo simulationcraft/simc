@@ -1649,7 +1649,10 @@ void sim_t::reset()
     buff -> reset();
 
   for ( auto& target : target_list )
+  {
     target -> reset();
+    range::for_each( target->pet_list, []( pet_t* pet ) { pet->reset(); } );
+  }
 
   if ( single_actor_batch )
   {
