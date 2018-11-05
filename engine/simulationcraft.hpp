@@ -2792,6 +2792,8 @@ struct cooldown_t
   timespan_t queue_delay() const
   { return std::max( timespan_t::zero(), ready - sim.current_time() ); }
 
+  timespan_t queueable() const;
+
   const char* name() const
   { return name_str.c_str(); }
 
@@ -3565,8 +3567,11 @@ struct player_t : public actor_t
   action_t* strict_sequence; // Strict sequence of actions currently being executed
   event_t* readying;
   event_t* off_gcd;
+  event_t* cast_while_casting_poll_event; // Periodically check for something to do while casting
   std::vector<const cooldown_t*> off_gcd_cd;
+  std::vector<const cooldown_t*> cast_while_casting_cd;
   timespan_t off_gcd_ready;
+  timespan_t cast_while_casting_ready;
   bool in_combat;
   bool action_queued;
   bool first_cast;
@@ -3599,6 +3604,7 @@ struct player_t : public actor_t
   action_priority_list_t* active_action_list;
   action_priority_list_t* default_action_list;
   action_priority_list_t* active_off_gcd_list;
+  action_priority_list_t* active_cast_while_casting_list;
   action_priority_list_t* restore_action_list;
   std::unordered_map<std::string, std::string> alist_map;
   std::string action_list_information; // comment displayed in profile
@@ -4222,7 +4228,7 @@ public:
   virtual void demise();
   virtual timespan_t available() const
   { return timespan_t::from_seconds( 0.1 ); }
-  virtual action_t* select_action( const action_priority_list_t&, bool off_gcd = false, const action_t* context = nullptr );
+  virtual action_t* select_action( const action_priority_list_t&, execute_type type = execute_type::FOREGROUND, const action_t* context = nullptr );
   virtual action_t* execute_action();
 
   virtual void   regen( timespan_t periodicity = timespan_t::from_seconds( 0.25 ) );
@@ -4296,7 +4302,7 @@ public:
   /* New stuff */
   virtual double composite_player_vulnerability( school_e ) const;
 
-  virtual void activate_action_list( action_priority_list_t* a, bool off_gcd = false );
+  virtual void activate_action_list( action_priority_list_t* a, execute_type type = execute_type::FOREGROUND );
 
   virtual void analyze( sim_t& );
 
@@ -4417,6 +4423,7 @@ public:
   void register_combat_begin( double amount, resource_e resource, gain_t* g = nullptr );
 
   void update_off_gcd_ready();
+  void update_cast_while_casting_ready();
 
   // Stuff, testing
   std::vector<spawner::base_actor_spawner_t*> spawners;
@@ -4937,6 +4944,12 @@ public:
    * Slows simulation down significantly.
    */
   bool use_off_gcd;
+
+  /// True if ability should be used while casting another spell.
+  bool use_while_casting;
+
+  /// True if ability is usable while casting another spell
+  bool usable_while_casting;
 
   /// true if channeled action does not reschedule autoattacks, used on abilities such as bladestorm.
   bool interrupt_auto_attack;
@@ -5717,9 +5730,11 @@ public:
 
   virtual void schedule_execute(action_state_t* execute_state = nullptr);
 
-  virtual void queue_execute( bool off_gcd );
+  virtual void queue_execute( execute_type type );
 
   virtual void reschedule_execute(timespan_t time);
+
+  virtual void start_gcd();
 
   virtual void update_ready(timespan_t cd_duration = timespan_t::min());
 
@@ -6673,10 +6688,11 @@ struct action_priority_list_t
   bool used;
   std::vector<action_t*> foreground_action_list;
   std::vector<action_t*> off_gcd_actions;
+  std::vector<action_t*> cast_while_casting_actions;
   int random; // Used to determine how faceroll something actually is. :D
   action_priority_list_t( std::string name, player_t* p, const std::string& list_comment = std::string() ) :
     internal_id( 0 ), internal_id_mask( 0 ), name_str( name ), action_list_comment_str( list_comment ), player( p ), used( false ),
-    foreground_action_list( 0 ), off_gcd_actions( 0 ), random( 0 )
+    foreground_action_list(), off_gcd_actions(), cast_while_casting_actions(), random( 0 )
   { }
 
   action_priority_t* add_action( const std::string& action_priority_str, const std::string& comment = std::string() );
@@ -7878,6 +7894,11 @@ public:
   }
 };
 
+inline timespan_t cooldown_t::queueable() const
+{
+  return ready - player->cooldown_tolerance();
+}
+
 inline bool cooldown_t::is_ready() const
 {
   if ( up() )
@@ -7897,7 +7918,7 @@ inline bool cooldown_t::is_ready() const
 
   // Cooldown is not up, and is action-bound (essentially foreground action), check if it's within
   // the player's (or default) cooldown tolerance for queueing.
-  return ready - player -> cooldown_tolerance() <= sim.current_time();
+  return queueable() <= sim.current_time();
 }
 
 template <class T>
