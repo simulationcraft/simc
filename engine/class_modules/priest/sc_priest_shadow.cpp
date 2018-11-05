@@ -1982,7 +1982,7 @@ void priest_t::generate_apl_shadow()
   single->add_action( this, "Mind Blast", "if=variable.dots_up" );
   single->add_talent( this, "Void Torrent",
                       "if=dot.shadow_word_pain.remains>4&"
-                      "dot.vampiric_touch.remains>4" );
+                      "dot.vampiric_touch.remains>4&buff.voidform.up" );
   single->add_action( this, "Shadow Word: Pain",
                       "if=refreshable&target.time_to_die>4&"
                       "!talent.misery.enabled&!talent.dark_void.enabled" );
@@ -2014,7 +2014,8 @@ void priest_t::generate_apl_shadow()
   cleave->add_action( this, "Vampiric Touch",
                       "target_if=dot.shadow_word_pain.refreshable,"
                       "if=(talent.misery.enabled&target.time_to_die>4)" );
-  cleave->add_talent( this, "Void Torrent" );
+  cleave->add_talent( this, "Void Torrent",
+                      "if=buff.voidform.up" );
   cleave->add_action( this, "Mind Sear",
                       "target_if=spell_targets.mind_sear>2"
                       ",chain=1,interrupt=1" );
