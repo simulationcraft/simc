@@ -61,7 +61,7 @@ actions.cleave+=/shadow_crash,if=(raid_event.adds.in>5&raid_event.adds.duration<
 actions.cleave+=/shadow_word_pain,target_if=refreshable&target.time_to_die>4,if=!talent.misery.enabled&!talent.dark_void.enabled
 actions.cleave+=/vampiric_touch,target_if=refreshable,if=(target.time_to_die>6)
 actions.cleave+=/vampiric_touch,target_if=dot.shadow_word_pain.refreshable,if=(talent.misery.enabled&target.time_to_die>4)
-actions.cleave+=/void_torrent
+actions.cleave+=/void_torrent,if=buff.voidform.up
 actions.cleave+=/mind_sear,target_if=spell_targets.mind_sear>2,chain=1,interrupt=1
 actions.cleave+=/mind_flay,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(cooldown.void_bolt.up|cooldown.mind_blast.up)
 actions.cleave+=/shadow_word_pain
@@ -76,7 +76,7 @@ actions.single+=/mindbender
 actions.single+=/shadow_word_death,if=!buff.voidform.up|(cooldown.shadow_word_death.charges=2&buff.voidform.stack<15)
 actions.single+=/shadow_crash,if=raid_event.adds.in>5&raid_event.adds.duration<20
 actions.single+=/mind_blast,if=variable.dots_up
-actions.single+=/void_torrent,if=dot.shadow_word_pain.remains>4&dot.vampiric_touch.remains>4
+actions.single+=/void_torrent,if=dot.shadow_word_pain.remains>4&dot.vampiric_touch.remains>4&buff.voidform.up
 actions.single+=/shadow_word_pain,if=refreshable&target.time_to_die>4&!talent.misery.enabled&!talent.dark_void.enabled
 actions.single+=/vampiric_touch,if=refreshable&target.time_to_die>6|(talent.misery.enabled&dot.shadow_word_pain.refreshable)
 actions.single+=/mind_flay,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(cooldown.void_bolt.up|cooldown.mind_blast.up)
