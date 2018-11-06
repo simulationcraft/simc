@@ -4,7 +4,11 @@ import os, sys, mmap, hashlib, stat, struct, zlib, glob, re, urllib.request, url
 
 import jenkins
 
-import requests
+try:
+    import requests
+except Exception as error:
+    print('ERROR: %s, casc_extract.py requires the Python requests (http://docs.python-requests.org/en/master/) package to function' % error, file = sys.stderr)
+    sys.exit(1)
 
 _S = requests.Session()
 _S.mount('http://', requests.adapters.HTTPAdapter(pool_connections = 1, pool_maxsize = 1))
