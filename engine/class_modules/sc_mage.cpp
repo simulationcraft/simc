@@ -7535,55 +7535,14 @@ private:
 };
 
 // Custom Gear ==============================================================
-using namespace unique_gear;
-using namespace actions;
+
 // Legion Mage JC Neck
 
-struct sorcerous_fireball_t : public spell_t
+struct sorcerous_spell_t : public unique_gear::proc_spell_t
 {
-  sorcerous_fireball_t( const special_effect_t& effect ) :
-    spell_t( "sorcerous_fireball", effect.player, effect.player->find_spell( 222305 ) )
-  {
-    background = true;
-    may_crit = true;
-    hasted_ticks = false;
-    base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
-    base_td = data().effectN( 2 ).average( effect.item );
-  }
-
-  virtual double composite_crit_chance() const override
-  { return 0.1; }
-
-  virtual double composite_crit_chance_multiplier() const override
-  { return 1.0; }
-};
-
-struct sorcerous_frostbolt_t : public spell_t
-{
-  sorcerous_frostbolt_t( const special_effect_t& effect ) :
-    spell_t( "sorcerous_frostbolt", effect.player, effect.player->find_spell( 222320 ) )
-  {
-    background = true;
-    may_crit = true;
-    base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
-  }
-
-  virtual double composite_crit_chance() const override
-  { return 0.1; }
-
-  virtual double composite_crit_chance_multiplier() const override
-  { return 1.0; }
-};
-
-struct sorcerous_arcane_blast_t : public spell_t
-{
-  sorcerous_arcane_blast_t( const special_effect_t& effect ) :
-    spell_t( "sorcerous_arcane_blast", effect.player, effect.player->find_spell( 222321 ) )
-  {
-    background = true;
-    may_crit = true;
-    base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
-  }
+  sorcerous_spell_t( const std::string& name, const special_effect_t& effect, const spell_data_t* spell ) :
+    proc_spell_t( name, effect.player, spell, effect.item )
+  { }
 
   virtual double composite_crit_chance() const override
   { return 0.1; }
@@ -7594,24 +7553,28 @@ struct sorcerous_arcane_blast_t : public spell_t
 
 struct sorcerous_shadowruby_pendant_driver_t : public spell_t
 {
-  std::array<spell_t*, 3> sorcerous_spells;
+  std::vector<action_t*> sorcerous_spells;
+
   sorcerous_shadowruby_pendant_driver_t( const special_effect_t& effect ) :
     spell_t( "wanton_sorcery", effect.player, effect.player->find_spell( 222276 ) )
   {
     callbacks = harmful = false;
     background = quiet = true;
-    sorcerous_spells[ 0 ] = new sorcerous_fireball_t( effect );
-    sorcerous_spells[ 1 ] = new sorcerous_frostbolt_t( effect );
-    sorcerous_spells[ 2 ] = new sorcerous_arcane_blast_t( effect );
+
+    for ( auto id : { 222305, 222320, 222321 } )
+    {
+      auto spell = effect.player->find_spell( id );
+      auto name = std::string( "Sorcerous " ) + spell->name_cstr();
+      util::tokenize( name );
+      sorcerous_spells.push_back( new sorcerous_spell_t( name, effect, spell ) );
+    }
   }
 
   virtual void execute() override
   {
     spell_t::execute();
 
-    auto current_roll = rng().range( sorcerous_spells.size() );
-    auto spell = sorcerous_spells[ current_roll ];
-
+    auto spell = sorcerous_spells[ rng().range( sorcerous_spells.size() ) ];
     spell->set_target( target );
     spell->execute();
   }
