@@ -165,14 +165,14 @@ struct player_cwc_event_t : public special_execute_event_t<player_cwc_event_t>
  */
 void do_execute( action_t* action, execute_type type )
 {
-  action->execute();
-  action->line_cooldown.start();
   if ( !action->quiet )
   {
     action->player->iteration_executed_foreground_actions++;
     action->total_executions++;
     action->player->sequence_add( action, action->target, action->sim->current_time() );
   }
+  action->execute();
+  action->line_cooldown.start();
 
   if ( type == execute_type::OFF_GCD )
   {

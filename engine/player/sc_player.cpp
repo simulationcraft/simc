@@ -3921,11 +3921,11 @@ void player_t::combat_begin()
         {
           if ( first_cast )
           {
-            action->execute();
             if ( !is_enemy() )
             {
               sequence_add( action, action->target, sim->current_time() );
             }
+            action->execute();
             first_cast = false;
           }
           else
@@ -3935,11 +3935,11 @@ void player_t::combat_begin()
         }
         else
         {
-          action->execute();
           if ( !is_enemy() )
           {
             sequence_add( action, action->target, sim->current_time() );
           }
+          action->execute();
         }
       }
     }
