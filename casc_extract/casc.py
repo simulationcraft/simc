@@ -4,6 +4,11 @@ import os, sys, mmap, hashlib, stat, struct, zlib, glob, re, urllib.request, url
 
 import jenkins
 
+import requests
+
+_S = requests.Session()
+_S.mount('http://', requests.adapters.HTTPAdapter(pool_connections = 1, pool_maxsize = 1))
+
 _BLTE_MAGIC = b'BLTE'
 _CHUNK_DATA_OFFSET_LEN = 4
 _CHUNK_HEADER_LEN = 4
@@ -358,19 +363,15 @@ class CASCObject(object):
 
 	def get_url(self, url, headers = None):
 		try:
-			req = urllib.request.Request(url)
-			if headers:
-				for k, v in headers.items():
-					req.add_header(k, v)
+			r = _S.get(url, headers = headers)
 
 			print('Fetching %s ...' % url)
-			f = urllib.request.urlopen(req, timeout = 5)
-			if f.getcode() not in [200, 206]:
-				self.options.parser.error('HTTP request for %s returns %u' % (url, f.getcode()))
-		except urllib.error.URLError as e:
-			self.options.parser.error('Unable to fetch %s: %s' % (url, e.reason))
+			if r.status_code not in [200, 206]:
+				self.options.parser.error('HTTP request for %s returns %u' % (url, r.status_code))
+		except Exception as e:
+			self.options.parser.error('Unable to fetch %s: %s' % (url, r.reason))
 
-		return f
+		return r
 
 	def cache_dir(self, path = None):
 		dir = self.options.cache
@@ -390,7 +391,7 @@ class CASCObject(object):
 
 		if not os.path.exists(file):
 			handle = self.get_url(url, headers)
-			data = handle.read()
+			data = handle.content
 			with open(file, 'wb') as f:
 				f.write(data)
 
@@ -473,14 +474,15 @@ class CDNIndex(CASCObject):
 		cdns_url = '%s/cdns' % self.patch_base_url()
 		handle = self.get_url(cdns_url)
 
-		data = handle.read().decode('utf-8').strip().split('\n')
+		data = handle.text.strip().split('\n')
 		for line in data:
 			split = line.split('|')
 			if split[0] != 'us':
 				continue
 
 			self.cdn_path = split[1]
-			self.cdn_host = split[2].split(' ')[0].strip()
+			cdns = [urllib.parse.urlparse(x).netloc for x in split[3].split(' ')]
+			self.cdn_host = cdns[0]
 
 		if not self.cdn_path or not self.cdn_host:
 			sys.stderr.write('Unable to extract CDN information\n')
@@ -496,7 +498,7 @@ class CDNIndex(CASCObject):
 		version_url =  '%s/versions' % self.patch_base_url()
 		handle = self.get_url(version_url)
 
-		for line in handle.readlines():
+		for line in handle.iter_lines():
 			split = line.decode('utf-8').strip().split('|')
 			if split[0] != 'us':
 				continue
@@ -750,7 +752,7 @@ class CASCEncodingFile(CASCObject):
 
 		handle = self.get_url(self.build.encoding_blte_url())
 
-		blte = BLTEFile(handle.read())
+		blte = BLTEFile(handle.content)
 		if not blte.extract():
 			self.options.parser.error('Unable to uncompress BLTE data for encoding file')
 
@@ -943,7 +945,7 @@ class CASCRootFile(CASCObject):
 
 			handle = self.get_url(self.build.cdn_url('data', codecs.encode(keys[0], 'hex').decode('utf-8')))
 
-			blte = BLTEFile(handle.read())
+			blte = BLTEFile(handle.content)
 			if not blte.extract():
 				self.options.parser.error('Unable to uncompress BLTE data for root file')
 
