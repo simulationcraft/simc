@@ -7556,7 +7556,7 @@ struct sorcerous_shadowruby_pendant_driver_t : public spell_t
   std::vector<action_t*> sorcerous_spells;
 
   sorcerous_shadowruby_pendant_driver_t( const special_effect_t& effect ) :
-    spell_t( "wanton_sorcery", effect.player, effect.player->find_spell( 222276 ) )
+    spell_t( "wanton_sorcery", effect.player, effect.driver() )
   {
     callbacks = harmful = false;
     background = quiet = true;
