@@ -6698,6 +6698,54 @@ Effects          :
                    Base Value: 0 | Scaled Value: 375.3942 (coefficient=4.828221) | PvP Coefficient: 1.00000 | Trigger Spell: 275725 | Target: Self (1)
 Description      : Void Bolt increases the damage of $?s205351[Shadow Word: Void][Mind Blast] by $s1 for $275726d, stacking up to 6 times.
 
+Name             : Whispers of the Damned (id=275725) [Scaling Spell (-1), Spell Family (6), Hidden] 
+Class            : Priest
+School           : Shadow
+Spell Type       : None
+Duration         : Aura (infinite)
+Proc Chance      : 100%
+Proc Flags       : ........ ........ x....... ........ 
+                 : Magic Hostile Spell
+Triggered by     : Whispers of the Damned (275722)
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ......x. 
+                 : Hidden (7), Scales with item level (354)
+Effects          :
+#1 (id=728946)   : Apply Aura (6) | Proc Trigger Spell (42): Whispers of the Damned
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 275726 | Target: Self (1)
+Description      : $@spelldesc275722
+
+Name             : Whispers of the Damned (id=275726) [Scaling Spell (-1), Spell Family (6)] 
+Class            : Priest
+School           : Shadow
+Spell Type       : None
+Range            : 100 yards
+Duration         : 6 seconds
+Stacks           : 6 maximum
+Proc Chance      : 101%
+Triggered by     : Whispers of the Damned (275725)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=728947)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Mind Blast (8092), Shadow Word: Void (205351)
+                   Family Flags: 13, 30
+#2 (id=728948)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 275722
+Description      : $@spelldesc275725
+Tooltip          : Your $?s205351[Shadow Word: Void][Mind Blast] deals an additional $w1 damage.
+
 Name             : Gift of Forgiveness (id=277680) [Scaling Spell (-8), Spell Family (6), Passive] 
 Class            : Priest
 School           : Physical
