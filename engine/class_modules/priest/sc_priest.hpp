@@ -1086,6 +1086,7 @@ public:
   double action_da_multiplier() const override
   {
     double m = ab::action_da_multiplier();
+    double lotv_multiplier;
 
     if ( priest().specialization() == PRIEST_SHADOW )
     {
@@ -1096,7 +1097,13 @@ public:
       if ( affected_by.voidform_da && priest().buffs.voidform->check()  )
       {
         double vf_multiplier = priest().buffs.voidform->data().effectN( 1 ).percent();
-        m *= 1.0 + vf_multiplier ;
+        // TODO: add this directly into vf_multiplier after PTR
+        // Grab the Legacy of the Void Damage increase
+        if ( maybe_ptr( priest().dbc.ptr ) )
+        {
+          lotv_multiplier = priest().talents.legacy_of_the_void->effectN( 7 ).percent();
+        }
+        m *= 1.0 + vf_multiplier + lotv_multiplier;
       }
       if ( affected_by.shadowform_da && priest().buffs.shadowform->check()  )
       {
@@ -1113,6 +1120,7 @@ public:
   double action_ta_multiplier() const override
   {
     double m = ab::action_ta_multiplier();
+    double lotv_multiplier;
 
     if ( affected_by.mastery_madness_ta )
     {
@@ -1121,7 +1129,13 @@ public:
     if ( affected_by.voidform_ta && priest().buffs.voidform->check() )
     {
       double vf_multiplier = priest().buffs.voidform->data().effectN(2).percent();
-      m *= 1.0 + vf_multiplier ;
+      // TODO: add this directly into vf_multiplier after PTR
+      // Grab the Legacy of the Void Damage increase
+      if ( maybe_ptr( priest().dbc.ptr ) )
+      {
+        lotv_multiplier = priest().talents.legacy_of_the_void->effectN( 7 ).percent();
+      }
+      m *= 1.0 + vf_multiplier + lotv_multiplier;
     }
     if ( affected_by.shadowform_ta && priest().buffs.shadowform->check() && maybe_ptr( priest().dbc.ptr ) )
     {
