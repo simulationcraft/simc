@@ -5,7 +5,7 @@
 
 #include "simulationcraft.hpp"
 
-namespace { // UNNAMED NAMESPACE
+namespace {
 
 // ==========================================================================
 // Mage
@@ -804,14 +804,10 @@ struct mage_pet_t : public pet_t
   { }
 
   const mage_t* o() const
-  {
-    return static_cast<mage_t*>( owner );
-  }
+  { return static_cast<mage_t*>( owner ); }
 
   mage_t* o()
-  {
-    return static_cast<mage_t*>( owner );
-  }
+  { return static_cast<mage_t*>( owner ); }
 };
 
 struct mage_pet_spell_t : public spell_t
@@ -824,20 +820,18 @@ struct mage_pet_spell_t : public spell_t
   }
 
   mage_t* o()
-  {
-    return static_cast<mage_pet_t*>( player )->o();
-  }
+  { return static_cast<mage_pet_t*>( player )->o(); }
 
   const mage_t* o() const
-  {
-    return static_cast<mage_pet_t*>( player )->o();
-  }
+  { return static_cast<mage_pet_t*>( player )->o(); }
 };
 
 namespace water_elemental {
+
 // ==========================================================================
 // Pet Water Elemental
 // ==========================================================================
+
 struct water_elemental_pet_t : public mage_pet_t
 {
   water_elemental_pet_t( sim_t* sim, mage_t* owner ) :
@@ -899,6 +893,7 @@ action_t* water_elemental_pet_t::create_action( const std::string& name, const s
 }  // water_elemental
 
 namespace mirror_image {
+
 // ==========================================================================
 // Pet Mirror Image
 // ==========================================================================
@@ -1020,7 +1015,8 @@ action_t* mirror_image_pet_t::create_action( const std::string& name, const std:
 }  // pets
 
 namespace buffs {
-// Touch of the Magi debuff ===================================================
+
+// Touch of the Magi debuff =================================================
 
 struct touch_of_the_magi_t : public buff_t
 {
@@ -1067,7 +1063,8 @@ struct touch_of_the_magi_t : public buff_t
   }
 };
 
-// Custom buffs ===============================================================
+// Custom buffs =============================================================
+
 struct brain_freeze_buff_t : public buff_t
 {
   brain_freeze_buff_t( mage_t* p ) :
@@ -1212,11 +1209,12 @@ struct icy_veins_buff_t : public buff_t
   }
 };
 
-} // buffs
+}  // buffs
 
 
 namespace actions {
-// ============================================================================
+
+// ==========================================================================
 // Mage Spell
 // ==========================================================================
 
@@ -1528,9 +1526,9 @@ public:
 typedef residual_action::residual_periodic_action_t<mage_spell_t> residual_action_t;
 
 
-// ============================================================================
+// ==========================================================================
 // Arcane Mage Spell
-// ============================================================================
+// ==========================================================================
 
 struct arcane_mage_spell_t : public mage_spell_t
 {
@@ -1586,9 +1584,9 @@ struct arcane_mage_spell_t : public mage_spell_t
 };
 
 
-// ============================================================================
+// ==========================================================================
 // Fire Mage Spell
-// ============================================================================
+// ==========================================================================
 
 struct ignite_spell_state_t : public mage_spell_state_t
 {
@@ -1791,9 +1789,9 @@ struct fire_mage_spell_t : public mage_spell_t
 };
 
 
-// ============================================================================
+// ==========================================================================
 // Frost Mage Spell
-// ============================================================================
+// ==========================================================================
 
 // Some Frost spells snapshot on impact (rather than execute). This is handled via
 // the calculate_on_impact flag.
@@ -1975,6 +1973,7 @@ struct frost_mage_spell_t : public mage_spell_t
   }
 };
 
+
 // Icicles ==================================================================
 
 struct icicle_t : public frost_mage_spell_t
@@ -2031,7 +2030,7 @@ struct presence_of_mind_t : public arcane_mage_spell_t
   }
 };
 
-// Ignite Spell ===================================================================
+// Ignite Spell =============================================================
 
 struct ignite_t : public residual_action_t
 {
@@ -2062,7 +2061,7 @@ struct ignite_t : public residual_action_t
   }
 };
 
-// Arcane Barrage Spell =======================================================
+// Arcane Barrage Spell =====================================================
 
 struct arcane_barrage_t : public arcane_mage_spell_t
 {
@@ -2138,7 +2137,6 @@ struct arcane_barrage_t : public arcane_mage_spell_t
     return am;
   }
 };
-
 
 // Arcane Blast Spell =======================================================
 
@@ -2222,7 +2220,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
   }
 };
 
-// Arcane Explosion Spell =====================================================
+// Arcane Explosion Spell ===================================================
 
 struct arcane_explosion_t : public arcane_mage_spell_t
 {
@@ -2478,7 +2476,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
   }
 };
 
-// Arcane Orb Spell ===========================================================
+// Arcane Orb Spell =========================================================
 
 struct arcane_orb_bolt_t : public arcane_mage_spell_t
 {
@@ -2544,7 +2542,7 @@ struct arcane_power_t : public arcane_mage_spell_t
   }
 };
 
-// Blast Wave Spell ==========================================================
+// Blast Wave Spell =========================================================
 
 struct blast_wave_t : public fire_mage_spell_t
 {
@@ -2555,7 +2553,6 @@ struct blast_wave_t : public fire_mage_spell_t
     aoe = -1;
   }
 };
-
 
 // Blink Spell ==============================================================
 
@@ -2578,7 +2575,6 @@ struct blink_t : public mage_spell_t
     }
   }
 };
-
 
 // Blizzard Spell ===========================================================
 
@@ -2674,7 +2670,7 @@ struct charged_up_t : public arcane_mage_spell_t
   }
 };
 
-// Cold Snap Spell ============================================================
+// Cold Snap Spell ==========================================================
 
 struct cold_snap_t : public frost_mage_spell_t
 {
@@ -2694,8 +2690,7 @@ struct cold_snap_t : public frost_mage_spell_t
   }
 };
 
-
-// Combustion Spell ===========================================================
+// Combustion Spell =========================================================
 
 struct combustion_t : public fire_mage_spell_t
 {
@@ -2721,8 +2716,7 @@ struct combustion_t : public fire_mage_spell_t
   }
 };
 
-
-// Comet Storm Spell =======================================================
+// Comet Storm Spell ========================================================
 
 struct comet_storm_projectile_t : public frost_mage_spell_t
 {
@@ -2768,7 +2762,6 @@ struct comet_storm_t : public frost_mage_spell_t
   }
 };
 
-
 // Cone of Cold Spell =======================================================
 
 struct cone_of_cold_t : public frost_mage_spell_t
@@ -2782,8 +2775,7 @@ struct cone_of_cold_t : public frost_mage_spell_t
   }
 };
 
-
-// Conflagration Spell =====================================================
+// Conflagration Spell ======================================================
 
 struct conflagration_t : public fire_mage_spell_t
 {
@@ -2804,7 +2796,6 @@ struct conflagration_flare_up_t : public fire_mage_spell_t
     aoe = -1;
   }
 };
-
 
 // Counterspell Spell =======================================================
 
@@ -2834,6 +2825,7 @@ struct counterspell_t : public mage_spell_t
 };
 
 // Dragon's Breath Spell ====================================================
+
 struct dragons_breath_t : public fire_mage_spell_t
 {
   dragons_breath_t( mage_t* p, const std::string& options_str ) :
@@ -3011,7 +3003,7 @@ struct fireball_t : public fire_mage_spell_t
   }
 };
 
-// Flame Patch Spell ==========================================================
+// Flame Patch Spell ========================================================
 
 struct flame_patch_t : public fire_mage_spell_t
 {
@@ -3028,7 +3020,7 @@ struct flame_patch_t : public fire_mage_spell_t
   }
 };
 
-// Flamestrike Spell ==========================================================
+// Flamestrike Spell ========================================================
 
 struct flamestrike_t : public fire_mage_spell_t
 {
@@ -3147,7 +3139,7 @@ struct flamestrike_t : public fire_mage_spell_t
   }
 };
 
-// Flurry Spell ===============================================================
+// Flurry Spell =============================================================
 
 struct glacial_assault_t : public frost_mage_spell_t
 {
@@ -3380,7 +3372,7 @@ struct frostbolt_t : public frost_mage_spell_t
   }
 };
 
-// Frost Nova Spell ========================================================
+// Frost Nova Spell =========================================================
 
 struct frost_nova_t : public mage_spell_t
 {
@@ -3514,7 +3506,7 @@ struct frozen_orb_t : public frost_mage_spell_t
   }
 };
 
-// Glacial Spike Spell ==============================================================
+// Glacial Spike Spell ======================================================
 
 struct glacial_spike_t : public frost_mage_spell_t
 {
@@ -3567,7 +3559,7 @@ struct glacial_spike_t : public frost_mage_spell_t
 };
 
 
-// Ice Floes Spell ============================================================
+// Ice Floes Spell ==========================================================
 
 struct ice_floes_t : public mage_spell_t
 {
@@ -3586,7 +3578,6 @@ struct ice_floes_t : public mage_spell_t
     p()->buffs.ice_floes->trigger();
   }
 };
-
 
 // Ice Lance Spell ==========================================================
 
@@ -3824,8 +3815,7 @@ struct ice_lance_t : public frost_mage_spell_t
   }
 };
 
-
-// Ice Nova Spell ==========================================================
+// Ice Nova Spell ===========================================================
 
 struct ice_nova_t : public frost_mage_spell_t
 {
@@ -3847,7 +3837,6 @@ struct ice_nova_t : public frost_mage_spell_t
     p()->apply_crowd_control( s, MECHANIC_ROOT );
   }
 };
-
 
 // Icy Veins Spell ==========================================================
 
@@ -3884,7 +3873,7 @@ struct icy_veins_t : public frost_mage_spell_t
   }
 };
 
-// Fire Blast Spell ======================================================
+// Fire Blast Spell =========================================================
 
 struct fire_blast_t : public fire_mage_spell_t
 {
@@ -3932,7 +3921,6 @@ struct fire_blast_t : public fire_mage_spell_t
     return da;
   }
 };
-
 
 // Living Bomb Spell ========================================================
 
@@ -4017,7 +4005,7 @@ struct living_bomb_t : public fire_mage_spell_t
   }
 };
 
-// Meteor Spell ===============================================================
+// Meteor Spell =============================================================
 
 // TODO: Have they fixed Meteor's implementation in Legion?
 // Implementation details from Celestalon:
@@ -4128,7 +4116,7 @@ struct meteor_t : public fire_mage_spell_t
   }
 };
 
-// Mirror Image Spell =========================================================
+// Mirror Image Spell =======================================================
 
 struct mirror_image_t : public mage_spell_t
 {
@@ -4162,7 +4150,8 @@ struct mirror_image_t : public mage_spell_t
   }
 };
 
-// Nether Tempest AoE Spell ===================================================
+// Nether Tempest Spell =====================================================
+
 struct nether_tempest_aoe_t : public arcane_mage_spell_t
 {
   nether_tempest_aoe_t( mage_t* p ) :
@@ -4178,8 +4167,6 @@ struct nether_tempest_aoe_t : public arcane_mage_spell_t
   }
 };
 
-
-// Nether Tempest Spell =======================================================
 struct nether_tempest_t : public arcane_mage_spell_t
 {
   nether_tempest_aoe_t* nether_tempest_aoe;
@@ -4233,8 +4220,7 @@ struct nether_tempest_t : public arcane_mage_spell_t
   }
 };
 
-
-// Phoenix Flames Spell ======================================================
+// Phoenix Flames Spell =====================================================
 
 struct phoenix_flames_splash_t : public fire_mage_spell_t
 {
@@ -4284,7 +4270,8 @@ struct phoenix_flames_t : public fire_mage_spell_t
   }
 };
 
-// Pyroblast Spell ===================================================================
+// Pyroblast Spell ==========================================================
+
 struct trailing_embers_t : public fire_mage_spell_t
 {
   trailing_embers_t( mage_t* p ) :
@@ -4440,8 +4427,7 @@ struct pyroblast_t : public fire_mage_spell_t
   }
 };
 
-
-// Ray of Frost Spell ===============================================================
+// Ray of Frost Spell =======================================================
 
 struct ray_of_frost_t : public frost_mage_spell_t
 {
@@ -4493,8 +4479,7 @@ struct ray_of_frost_t : public frost_mage_spell_t
   }
 };
 
-
-// Rune of Power Spell ==============================================================
+// Rune of Power Spell ======================================================
 
 struct rune_of_power_t : public mage_spell_t
 {
@@ -4513,7 +4498,6 @@ struct rune_of_power_t : public mage_spell_t
     p()->buffs.rune_of_power->trigger();
   }
 };
-
 
 // Scorch Spell =============================================================
 
@@ -4596,7 +4580,6 @@ struct shimmer_t : public mage_spell_t
   }
 };
 
-
 // Slow Spell ===============================================================
 
 struct slow_t : public arcane_mage_spell_t
@@ -4626,7 +4609,7 @@ struct supernova_t : public arcane_mage_spell_t
   }
 };
 
-// Summon Water Elemental Spell ====================================================
+// Summon Water Elemental Spell =============================================
 
 struct summon_water_elemental_t : public frost_mage_spell_t
 {
@@ -4659,7 +4642,7 @@ struct summon_water_elemental_t : public frost_mage_spell_t
   }
 };
 
-// Summon Arcane Familiar Spell ===============================================
+// Summon Arcane Familiar Spell =============================================
 
 struct arcane_assault_t : public arcane_mage_spell_t
 {
@@ -4695,8 +4678,7 @@ struct summon_arcane_familiar_t : public arcane_mage_spell_t
   }
 };
 
-
-// Time Warp Spell ============================================================
+// Time Warp Spell ==========================================================
 
 struct time_warp_t : public mage_spell_t
 {
@@ -4734,7 +4716,7 @@ struct time_warp_t : public mage_spell_t
   }
 };
 
-// Touch of the Magi ==========================================================
+// Touch of the Magi Spell ==================================================
 
 struct touch_of_the_magi_explosion_t : public arcane_mage_spell_t
 {
@@ -4776,11 +4758,11 @@ struct touch_of_the_magi_explosion_t : public arcane_mage_spell_t
   }
 };
 
-// ============================================================================
+// ==========================================================================
 // Mage Custom Actions
-// ============================================================================
+// ==========================================================================
 
-// Arcane Mage "Burn" State Switch Action =====================================
+// Arcane Mage "Burn" State Switch Action ===================================
 
 void report_burn_switch_error( action_t* a )
 {
@@ -4864,7 +4846,7 @@ struct stop_burn_phase_t : public action_t
   }
 };
 
-// Proxy Freeze action ========================================================
+// Proxy Freeze Action ======================================================
 
 struct freeze_t : public action_t
 {
@@ -4929,8 +4911,7 @@ struct freeze_t : public action_t
   }
 };
 
-} // namespace actions
-
+}  // namespace actions
 
 namespace events {
 
@@ -5196,13 +5177,12 @@ struct time_anomaly_tick_event_t : public event_t
       sim(), *mage, mage->talents.time_anomaly->effectN( 1 ).period() );
   }
 };
-} // namespace events
+
+}  // namespace events
 
 // ==========================================================================
 // Mage Character Definition
 // ==========================================================================
-
-// mage_td_t ================================================================
 
 mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   actor_target_data_t( target, mage ),
@@ -5261,7 +5241,6 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   regen_type = REGEN_DYNAMIC;
 }
 
-
 mage_t::~mage_t()
 {
   delete benefits.arcane_charge.arcane_barrage;
@@ -5296,8 +5275,6 @@ bool mage_t::apply_crowd_control( const action_state_t* state, spell_mechanic ty
 
   return false;
 }
-
-// mage_t::create_action ====================================================
 
 action_t* mage_t::create_action( const std::string& name, const std::string& options_str )
 {
@@ -5378,8 +5355,6 @@ action_t* mage_t::create_action( const std::string& name, const std::string& opt
   return player_t::create_action( name, options_str );
 }
 
-// mage_t::create_actions =====================================================
-
 void mage_t::create_actions()
 {
   using namespace actions;
@@ -5425,7 +5400,6 @@ void mage_t::create_actions()
   player_t::create_actions();
 }
 
-// mage_t::create_options =====================================================
 void mage_t::create_options()
 {
   add_option( opt_timespan( "firestarter_time", options.firestarter_time ) );
@@ -5434,8 +5408,6 @@ void mage_t::create_options()
   add_option( opt_bool( "allow_shimmer_lance", options.allow_shimmer_lance ) );
   player_t::create_options();
 }
-
-// mage_t::create_profile ================================================
 
 std::string mage_t::create_profile( save_e save_type )
 {
@@ -5452,15 +5424,11 @@ std::string mage_t::create_profile( save_e save_type )
   return profile;
 }
 
-// mage_t::copy_from =====================================================
-
 void mage_t::copy_from( player_t* source )
 {
   player_t::copy_from( source );
   options = debug_cast<mage_t*>( source )->options;
 }
-
-// mage_t::merge =========================================================
 
 void mage_t::merge( player_t& other )
 {
@@ -5500,8 +5468,6 @@ void mage_t::merge( player_t& other )
   }
 }
 
-// mage_t::analyze =======================================================
-
 void mage_t::analyze( sim_t& s )
 {
   player_t::analyze( s );
@@ -5530,8 +5496,6 @@ void mage_t::analyze( sim_t& s )
   }
 }
 
-// mage_t::datacollection_begin ===============================================
-
 void mage_t::datacollection_begin()
 {
   player_t::datacollection_begin();
@@ -5540,8 +5504,6 @@ void mage_t::datacollection_begin()
   range::for_each( shatter_source_list, std::mem_fn( &shatter_source_t::datacollection_begin ) );
 }
 
-// mage_t::datacollection_end =================================================
-
 void mage_t::datacollection_end()
 {
   player_t::datacollection_end();
@@ -5549,8 +5511,6 @@ void mage_t::datacollection_end()
   range::for_each( cooldown_waste_data_list, std::mem_fn( &cooldown_waste_data_t::datacollection_end ) );
   range::for_each( shatter_source_list, std::mem_fn( &shatter_source_t::datacollection_end ) );
 }
-
-// mage_t::regen ==============================================================
 
 void mage_t::regen( timespan_t periodicity )
 {
@@ -5570,8 +5530,6 @@ void mage_t::regen( timespan_t periodicity )
     }
   }
 }
-
-// mage_t::create_pets ========================================================
 
 void mage_t::create_pets()
 {
@@ -5593,8 +5551,6 @@ void mage_t::create_pets()
     }
   }
 }
-
-// mage_t::init_spells ========================================================
 
 void mage_t::init_spells()
 {
@@ -5712,8 +5668,6 @@ void mage_t::init_spells()
   azerite.winters_reach            = find_azerite_spell( "Winter's Reach"           );
 }
 
-// mage_t::init_base ========================================================
-
 void mage_t::init_base_stats()
 {
   if ( base.distance < 1 )
@@ -5734,8 +5688,6 @@ void mage_t::init_base_stats()
     regen_caches[ CACHE_MASTERY ] = true;
   }
 }
-
-// mage_t::create_buffs =======================================================
 
 void mage_t::create_buffs()
 {
@@ -5890,8 +5842,6 @@ void mage_t::create_buffs()
   buffs.shimmer = make_buff( this, "shimmer", find_spell( 212653 ) );
 }
 
-// mage_t::init_gains =======================================================
-
 void mage_t::init_gains()
 {
   player_t::init_gains();
@@ -5899,8 +5849,6 @@ void mage_t::init_gains()
   gains.evocation                  = get_gain( "Evocation"                  );
   gains.greater_blessing_of_wisdom = get_gain( "Greater Blessing of Wisdom" );
 }
-
-// mage_t::init_procs =======================================================
 
 void mage_t::init_procs()
 {
@@ -5935,7 +5883,6 @@ void mage_t::init_procs()
   }
 }
 
-// mage_t::init_resources =====================================================
 void mage_t::init_resources( bool force )
 {
   player_t::init_resources( force );
@@ -5949,8 +5896,6 @@ void mage_t::init_resources( bool force )
     recalculate_resource_max( RESOURCE_MANA );
   }
 }
-
-// mage_t::init_benefits ======================================================
 
 void mage_t::init_benefits()
 {
@@ -5966,8 +5911,6 @@ void mage_t::init_benefits()
     }
   }
 }
-
-// mage_t::init_uptimes =======================================================
 
 void mage_t::init_uptimes()
 {
@@ -6014,7 +5957,6 @@ void mage_t::init_rng()
   shuffled_rng.time_anomaly = get_shuffled_rng( "time_anomaly", 1, 16 );
 }
 
-// mage_t::init_assessors =====================================================
 void mage_t::init_assessors()
 {
   player_t::init_assessors();
@@ -6041,8 +5983,6 @@ void mage_t::init_assessors()
     }
   }
 }
-
-// mage_t::init_actions =====================================================
 
 void mage_t::init_action_list()
 {
@@ -6077,8 +6017,6 @@ void mage_t::init_action_list()
 
   player_t::init_action_list();
 }
-
-// Pre-combat Action Priority List============================================
 
 void mage_t::apl_precombat()
 {
@@ -6178,8 +6116,6 @@ std::string mage_t::default_rune() const
                                  "disabled";
 }
 
-// Arcane Mage Action List====================================================
-
 void mage_t::apl_arcane()
 {
   std::vector<std::string> racial_actions = get_racial_actions();
@@ -6252,8 +6188,6 @@ void mage_t::apl_arcane()
   movement->add_talent( this, "Arcane Orb" );
   movement->add_talent( this, "Supernova" );
 }
-
-// Fire Mage Action List ===================================================================================================
 
 void mage_t::apl_fire()
 {
@@ -6364,8 +6298,6 @@ void mage_t::apl_fire()
   standard->add_action( this, "Scorch", "",
     "Scorch can be cast while moving, so it is used in scenarios where Fireball cannot be." );
 }
-
-// Frost Mage Action List ==============================================================================================================
 
 void mage_t::apl_frost()
 {
@@ -6482,15 +6414,11 @@ void mage_t::apl_frost()
   movement->add_talent( this, "Ice Floes", "if=buff.ice_floes.down" );
 }
 
-// Default Action List ========================================================
-
 void mage_t::apl_default()
 {
   action_priority_list_t* default_list = get_action_priority_list( "default" );
   default_list->add_action( "Frostbolt" );
 }
-
-// mage_t::mana_regen_per_second ==============================================
 
 double mage_t::resource_regen_per_second( resource_e r ) const
 {
@@ -6507,8 +6435,6 @@ double mage_t::resource_regen_per_second( resource_e r ) const
   return reg;
 }
 
-// mage_t::invalidate_cache ===================================================
-
 void mage_t::invalidate_cache( cache_e c )
 {
   player_t::invalidate_cache( c );
@@ -6523,8 +6449,6 @@ void mage_t::invalidate_cache( cache_e c )
       break;
   }
 }
-
-// mage_t::recalculate_resource_max ===========================================
 
 void mage_t::recalculate_resource_max( resource_e rt )
 {
@@ -6564,7 +6488,6 @@ void mage_t::recalculate_resource_max( resource_e rt )
       resources.current[ rt ], resources.max[ rt ] );
   }
 }
-// mage_t::composite_player_critical_damage_multiplier ===================
 
 double mage_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const
 {
@@ -6575,8 +6498,6 @@ double mage_t::composite_player_critical_damage_multiplier( const action_state_t
 
   return m;
 }
-
-// mage_t::composite_player_pet_damage_multiplier ============================
 
 double mage_t::composite_player_pet_damage_multiplier( const action_state_t* s ) const
 {
@@ -6593,8 +6514,6 @@ double mage_t::composite_player_pet_damage_multiplier( const action_state_t* s )
   return m;
 }
 
-// mage_t::composite_player_multiplier =======================================
-
 double mage_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
@@ -6603,8 +6522,6 @@ double mage_t::composite_player_multiplier( school_e school ) const
 
   return m;
 }
-
-// mage_t::composite_rating_multiplier ===============================================
 
 double mage_t::composite_rating_multiplier( rating_e r ) const
 {
@@ -6624,8 +6541,6 @@ double mage_t::composite_rating_multiplier( rating_e r ) const
   return rm;
 }
 
-// mage_t::composite_spell_crit_chance ===============================================
-
 double mage_t::composite_spell_crit_chance() const
 {
   double c = player_t::composite_spell_crit_chance();
@@ -6634,8 +6549,6 @@ double mage_t::composite_spell_crit_chance() const
 
   return c;
 }
-
-// mage_t::composite_spell_haste ==============================================
 
 double mage_t::composite_spell_haste() const
 {
@@ -6648,8 +6561,6 @@ double mage_t::composite_spell_haste() const
   return h;
 }
 
-// mage_t::matching_gear_multiplier =========================================
-
 double mage_t::matching_gear_multiplier( attribute_e attr ) const
 {
   if ( attr == ATTR_INTELLECT )
@@ -6657,8 +6568,6 @@ double mage_t::matching_gear_multiplier( attribute_e attr ) const
 
   return 0.0;
 }
-
-// mage_t::reset ============================================================
 
 void mage_t::reset()
 {
@@ -6683,15 +6592,11 @@ void mage_t::reset()
   burn_phase.reset();
 }
 
-// mage_t::stun =============================================================
-
 void mage_t::stun()
 {
   // FIX ME: override this to handle Blink
   player_t::stun();
 }
-
-// mage_t::update_movement==================================================
 
 void mage_t::update_movement( timespan_t duration )
 {
@@ -6705,8 +6610,6 @@ void mage_t::teleport( double distance, timespan_t duration )
   update_rune_distance( distance );
 }
 
-// mage_t::passive_movement_modifier ====================================
-
 double mage_t::passive_movement_modifier() const
 {
   double pmm = player_t::passive_movement_modifier();
@@ -6716,8 +6619,6 @@ double mage_t::passive_movement_modifier() const
 
   return pmm;
 }
-
-// mage_t::arise ============================================================
 
 void mage_t::arise()
 {
@@ -6853,8 +6754,6 @@ expr_t* mage_t::create_action_expression( action_t& action, const std::string& n
 
   return player_t::create_action_expression( action, name );
 }
-
-// mage_t::create_expression ================================================
 
 expr_t* mage_t::create_expression( const std::string& name_str )
 {
@@ -6998,8 +6897,6 @@ expr_t* mage_t::create_expression( const std::string& name_str )
   return player_t::create_expression( name_str );
 }
 
-// mage_t::convert_hybrid_stat ==============================================
-
 stat_e mage_t::convert_hybrid_stat( stat_e s ) const
 {
   // this converts hybrid stats that either morph based on spec or only work
@@ -7032,8 +6929,6 @@ void mage_t::update_rune_distance( double distance )
     }
   }
 }
-
-// mage_t::get_icicle =======================================================
 
 action_t* mage_t::get_icicle()
 {
@@ -7536,8 +7431,6 @@ private:
 
 // Custom Gear ==============================================================
 
-// Legion Mage JC Neck
-
 struct sorcerous_spell_t : public unique_gear::proc_spell_t
 {
   sorcerous_spell_t( const std::string& name, const special_effect_t& effect, const spell_data_t* spell ) :
@@ -7645,7 +7538,7 @@ public:
   virtual void combat_end( sim_t* ) const override {}
 };
 
-} // UNNAMED NAMESPACE
+}  // UNNAMED NAMESPACE
 
 const module_t* module_t::mage()
 {
