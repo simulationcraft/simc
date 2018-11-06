@@ -1086,7 +1086,7 @@ public:
   double action_da_multiplier() const override
   {
     double m = ab::action_da_multiplier();
-    double lotv_multiplier;
+    double lotv_multiplier = 1.0;
 
     if ( priest().specialization() == PRIEST_SHADOW )
     {
@@ -1120,7 +1120,7 @@ public:
   double action_ta_multiplier() const override
   {
     double m = ab::action_ta_multiplier();
-    double lotv_multiplier;
+    double lotv_multiplier = 1.0;
 
     if ( affected_by.mastery_madness_ta )
     {
