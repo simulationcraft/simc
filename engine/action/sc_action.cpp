@@ -3565,17 +3565,19 @@ expr_t* action_t::create_expression( const std::string& name_str )
   }
 
   if ( ( splits.size() == 3 && splits[ 0 ] == "action" ) || splits[ 0 ] == "in_flight" ||
-       splits[ 0 ] == "in_flight_to_target" )
+       splits[ 0 ] == "in_flight_to_target" || splits[ 0 ] == "in_flight_remains" )
   {
     std::vector<action_t*> in_flight_list;
-    bool in_flight_singleton = ( splits[ 0 ] == "in_flight" || splits[ 0 ] == "in_flight_to_target" );
+    bool in_flight_singleton = ( splits[ 0 ] == "in_flight" ||
+      splits[ 0 ] == "in_flight_to_target" || splits[ 0 ] == "in_flight_remains" );
     std::string action_name  = ( in_flight_singleton ) ? name_str : splits[ 1 ];
     for ( size_t i = 0; i < player->action_list.size(); ++i )
     {
       action_t* action = player->action_list[ i ];
       if ( action->name_str == action_name )
       {
-        if ( in_flight_singleton || splits[ 2 ] == "in_flight" || splits[ 2 ] == "in_flight_to_target" )
+        if ( in_flight_singleton || splits[ 2 ] == "in_flight" ||
+          splits[ 2 ] == "in_flight_to_target" || splits[ 2 ] == "in_flight_remains" )
         {
           in_flight_list.push_back( action );
         }
@@ -3630,6 +3632,35 @@ expr_t* action_t::create_expression( const std::string& name_str )
           }
         };
         return new in_flight_to_target_multi_expr_t( in_flight_list, *this );
+      }
+      else if ( splits[ 0 ] == "in_flight_remains" ||
+        ( !in_flight_singleton && splits[ 2 ] == "in_flight_remains" ) )
+      {
+        struct in_flight_remains_multi_expr_t : public expr_t
+        {
+          const std::vector<action_t*> action_list;
+          in_flight_remains_multi_expr_t( const std::vector<action_t*>& al ) :
+            expr_t( "in_flight" ),
+            action_list( al )
+          { }
+
+          virtual double evaluate() override
+          {
+            bool event_found = false;
+            timespan_t t = timespan_t::max();
+            for ( auto a : action_list )
+            {
+              if ( a->has_travel_events() )
+              {
+                event_found = true;
+                t = std::min( t, a->shortest_travel_event() );
+              }
+            }
+
+            return event_found ? t.total_seconds() : 0.0;
+          }
+        };
+        return new in_flight_remains_multi_expr_t( in_flight_list );
       }
     }
   }
@@ -3866,6 +3897,21 @@ bool action_t::has_travel_events_for( const player_t* target ) const
   }
 
   return false;
+}
+
+/**
+ * Determine the remaining duration of the next travel event.
+ */
+timespan_t action_t::shortest_travel_event() const
+{
+  if ( travel_events.empty() )
+    return timespan_t::zero();
+
+  timespan_t t = timespan_t::max();
+  for ( const auto& travel_event : travel_events )
+    t = std::min( t, travel_event->remains() );
+
+  return t;
 }
 
 void action_t::remove_travel_event( travel_event_t* e )

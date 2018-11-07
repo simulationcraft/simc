@@ -5364,6 +5364,8 @@ public:
   bool has_travel_events() const
   { return ! travel_events.empty(); }
 
+  timespan_t shortest_travel_event() const;
+
   bool has_travel_events_for( const player_t* target ) const;
 
   /** Determine if the action can have a resulting damage/heal amount > 0 */
