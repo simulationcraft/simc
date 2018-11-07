@@ -3106,14 +3106,65 @@ expr_t* action_t::create_expression( const std::string& name_str )
     return expr_t::create_constant( name_str, data().found() );
   }
 
+  if ( name_str == "casting" )
+  {
+    return make_fn_expr( name_str, [ this ] ()
+    {
+      return player->executing && player->executing->execute_event && player->executing->internal_id == internal_id;
+    } );
+  }
+
+  if ( name_str == "cast_remains" )
+  {
+    return make_fn_expr( name_str, [ this ] ()
+    {
+      if ( player->executing && player->executing->execute_event && player->executing->internal_id == internal_id )
+        return player->executing->execute_event->remains().total_seconds();
+
+      return 0.0;
+    } );
+  }
+
+  if ( name_str == "channeling" )
+  {
+    return make_fn_expr( name_str, [ this ] ()
+    {
+      return player->channeling && player->channeling->internal_id == internal_id;
+    } );
+  }
+
+  if ( name_str == "channel_remains" )
+  {
+    return make_fn_expr( name_str, [ this ] ()
+    {
+      if ( player->channeling && player->channeling->internal_id == internal_id )
+        return player->channeling->get_dot()->remains().total_seconds();
+
+      return 0.0;
+    } );
+  }
+
   if ( name_str == "executing" )
   {
-    return make_fn_expr( name_str, [this]() { return execute_event != nullptr; } );
+    return make_fn_expr( name_str, [ this ] ()
+    {
+      action_t* current_action = player->executing ? player->executing : player->channeling;
+      return current_action && current_action->internal_id == internal_id;
+    } );
   }
 
   if ( name_str == "execute_remains" )
   {
-    return make_fn_expr( name_str, [ this ] () { return execute_event ? execute_event->remains().total_seconds() : 0.0; } );
+    return make_fn_expr( name_str, [ this ] ()
+    {
+      if ( player->executing && player->executing->execute_event && player->executing->internal_id == internal_id )
+        return player->executing->execute_event->remains().total_seconds();
+
+      if ( player->channeling && player->channeling->internal_id == internal_id )
+        return player->channeling->get_dot()->remains().total_seconds();
+
+      return 0.0;
+    } );
   }
 
   std::vector<std::string> splits = util::string_split( name_str, "." );
