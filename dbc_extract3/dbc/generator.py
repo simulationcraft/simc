@@ -1618,6 +1618,8 @@ class SpellDataGenerator(DataGenerator):
           ( 279641, 1 ),       # Lunar Shrapnel Azerite Trait
           ( 279729, 1 ),       # Solar Empowerment
           ( 276026, 2 ),       # Iron Jaws, Feral Azerite Power
+          ( 289314, 3 ),       # Burst of Savagery Azerite Trait
+          ( 289315, 3 ),       # Burst of Savagery Azerite Trait buff
         ),
         # Demon Hunter:
         (
