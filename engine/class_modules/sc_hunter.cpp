@@ -4105,6 +4105,16 @@ struct stampede_t: public hunter_spell_t
       background = true;
       may_crit = true;
     }
+
+    double action_multiplier() const override
+    {
+      double am = hunter_spell_t::action_multiplier();
+
+      if ( p() -> mastery.master_of_beasts -> ok() )
+        am *= 1.0 + p() -> cache.mastery_value();
+
+      return am;
+    }
   };
 
   stampede_t( hunter_t* p, const std::string& options_str ):
@@ -4119,16 +4129,6 @@ struct stampede_t: public hunter_spell_t
     school = SCHOOL_PHYSICAL;
 
     tick_action = new stampede_tick_t( p );
-  }
-
-  double action_multiplier() const override
-  {
-    double am = hunter_spell_t::action_multiplier();
-
-    if ( p() -> mastery.master_of_beasts -> ok() )
-      am *= 1.0 + p() -> cache.mastery_value();
-
-    return am;
   }
 };
 
