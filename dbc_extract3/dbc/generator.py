@@ -1422,6 +1422,7 @@ class SpellDataGenerator(DataGenerator):
           ( 275394, 0 ),                                # Lightning Conduit
           ( 273466, 0 ),                                # Strength of Earth
           ( 279556, 0 ),                                # Rumbling Tremors damage spell
+          ( 286976, 0 ),                                # Tectonic Thunder Azerite Trait buff
         ),
 
         # Mage:
