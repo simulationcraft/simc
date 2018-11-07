@@ -664,6 +664,7 @@ public:
     bool aotw_crit_chance;
     bool aotw_gcd_reduce;
     bool bestial_wrath;
+    bool master_of_beasts;
     bool thrill_of_the_hunt;
     // mm
     bool lone_wolf;
@@ -692,6 +693,7 @@ public:
     affected_by.aotw_crit_chance = ab::data().affected_by( p() -> specs.aspect_of_the_wild -> effectN( 1 ) );
     affected_by.aotw_gcd_reduce = ab::data().affected_by( p() -> specs.aspect_of_the_wild -> effectN( 3 ) );
     affected_by.bestial_wrath = ab::data().affected_by( p() -> specs.bestial_wrath -> effectN( 1 ) );
+    affected_by.master_of_beasts = ab::data().affected_by( p() -> mastery.master_of_beasts -> effectN( 3 ) );
     affected_by.thrill_of_the_hunt = ab::data().affected_by( p() -> talents.thrill_of_the_hunt -> effectN( 1 ).trigger() -> effectN( 1 ) );
 
     affected_by.lone_wolf = ab::data().affected_by( p() -> specs.lone_wolf -> effectN( 1 ) );
@@ -759,6 +761,9 @@ public:
 
     if ( affected_by.coordinated_assault )
       am *= 1.0 + p() -> buffs.coordinated_assault -> check_value();
+
+    if ( affected_by.master_of_beasts )
+      am *= 1.0 + p() -> cache.mastery() * p() -> mastery.master_of_beasts -> effectN( 3 ).mastery_value();
 
     if ( affected_by.sniper_training )
       am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
@@ -3759,16 +3764,6 @@ struct moc_t : public hunter_spell_t
       may_parry = may_block = may_dodge = false;
       travel_speed = 0.0;
     }
-
-    double action_multiplier() const override
-    {
-      double am = hunter_ranged_attack_t::action_multiplier();
-
-      if ( p() -> mastery.master_of_beasts -> ok() )
-          am *= 1.0 + p() -> cache.mastery_value();
-
-      return am;
-    }
   };
 
   moc_t( hunter_t* p, const std::string& options_str ) :
@@ -4104,16 +4099,6 @@ struct stampede_t: public hunter_spell_t
       aoe = -1;
       background = true;
       may_crit = true;
-    }
-
-    double action_multiplier() const override
-    {
-      double am = hunter_spell_t::action_multiplier();
-
-      if ( p() -> mastery.master_of_beasts -> ok() )
-        am *= 1.0 + p() -> cache.mastery_value();
-
-      return am;
     }
   };
 
