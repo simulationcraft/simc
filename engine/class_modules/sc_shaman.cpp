@@ -338,7 +338,6 @@ public:
     buff_t* earthen_rage;
     buff_t* master_of_the_elements;
     buff_t* surge_of_power;
-    buff_t* surge_of_power_lightning;
     buff_t* icefury;
     buff_t* unlimited_power;
     buff_t* stormkeeper;
@@ -4876,7 +4875,7 @@ struct lightning_bolt_t : public shaman_spell_t
   {
     size_t n = shaman_spell_t::n_overloads( t );
     // Surge of Power is an addition to the base overload chance
-    if ( maybe_ptr( p()->dbc.ptr ) && p()->buff.surge_of_power_lightning->up() )
+    if ( maybe_ptr( p()->dbc.ptr ) && p()->buff.surge_of_power->up() )
     {
       // roll one 100 sided dice once.
       //  2% chance to get 3 overloads,
@@ -4969,17 +4968,8 @@ struct lightning_bolt_t : public shaman_spell_t
 
     if ( maybe_ptr( p()->dbc.ptr ) )
     {
-      // Ingame behavior: With surge_of_power and surge_of_power_lightning active, surge_of_power
-      // is consumed on LB cast and surge_of_power_lightning is reset to 2 stacks
-      if ( p()->buff.surge_of_power->up() )
-      {
-        p()->buff.surge_of_power_lightning->trigger( 2 );
-        p()->buff.surge_of_power->decrement();
-      }
-      else if ( p()->buff.surge_of_power_lightning->up() )
-      {
-        p()->buff.surge_of_power_lightning->expire();
-      }
+      // Ingame behavior: With surge_of_power active, surge_of_power
+      p()->buff.surge_of_power->decrement();
     }
 
     if ( !p()->talent.overcharge->ok() && p()->specialization() == SHAMAN_ENHANCEMENT )
@@ -7434,8 +7424,6 @@ void shaman_t::create_buffs()
 
   buff.surge_of_power =
       make_buff( this, "surge_of_power", talent.surge_of_power )->set_duration( find_spell( 285514 )->duration() );
-
-  buff.surge_of_power_lightning = make_buff( this, "surge_of_power_lightning", find_spell( 285514 ) );
 
   buff.icefury = make_buff( this, "icefury", talent.icefury )
                      ->set_cooldown( timespan_t::zero() )  // Handled by the action
