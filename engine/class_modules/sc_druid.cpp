@@ -6473,20 +6473,6 @@ struct starsurge_t : public druid_spell_t
       p() -> buff.oneths_intuition -> decrement();
 
     p() -> buff.oneths_overconfidence -> trigger();
-
-    if (p()->azerite.arcanic_pulsar.ok())
-    {
-      p()->buff.arcanic_pulsar->trigger();
-      if (p()->buff.arcanic_pulsar->check() == p()->buff.arcanic_pulsar->max_stack() && !p()->buff.incarnation_moonkin->up() && !p()->buff.celestial_alignment->up())
-      {
-        if(p()->talent.incarnation_moonkin->ok())
-          p()->buff.incarnation_moonkin->trigger(1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds(p()->azerite.arcanic_pulsar.spell_ref().effectN(3).base_value()));
-        else
-          p()->buff.celestial_alignment->trigger(1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds(p()->azerite.arcanic_pulsar.spell_ref().effectN(3).base_value()));
-        p()->buff.arcanic_pulsar->expire();
-      }
-    }
-
   }
 
   virtual double bonus_da(const action_state_t* s) const override
@@ -6506,6 +6492,23 @@ struct starsurge_t : public druid_spell_t
   void impact(action_state_t* s) override
   {
     druid_spell_t::impact(s);
+
+    if (p()->azerite.arcanic_pulsar.ok())
+    {
+      p()->buff.arcanic_pulsar->trigger();
+      if (p()->buff.arcanic_pulsar->check() == p()->buff.arcanic_pulsar->max_stack() && !p()->buff.incarnation_moonkin->up() && !p()->buff.celestial_alignment->up())
+      {
+        if(p()->talent.incarnation_moonkin->ok()) {
+          p()->buff.incarnation_moonkin->trigger(1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds(p()->azerite.arcanic_pulsar.spell_ref().effectN(3).base_value()));
+          p()->buff.incarnation_proxy->trigger( 1, 0, -1.0, p()->buff.incarnation_moonkin->remains() );
+        } else {
+          p()->buff.celestial_alignment->trigger(1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds(p()->azerite.arcanic_pulsar.spell_ref().effectN(3).base_value()));
+        }
+        p()->buff.arcanic_pulsar->expire();
+        streaking_stars_trigger(SS_CELESTIAL_ALIGNMENT, nullptr);
+      }
+    }
+
     streaking_stars_trigger(SS_STARSURGE, s);
     if (p()->buff.sunblaze->up())
       p()->buff.sunblaze->expire();
