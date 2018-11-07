@@ -519,6 +519,7 @@ struct rogue_t : public player_t
   int initial_combo_points;
   bool rogue_optimize_expressions;
   bool rogue_ready_trigger;
+  bool priority_rotation;
 
   rogue_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, ROGUE, name, r ),
@@ -543,7 +544,8 @@ struct rogue_t : public player_t
     procs( procs_t() ),
     initial_combo_points( 0 ),
     rogue_optimize_expressions( true ),
-    rogue_ready_trigger( true )
+    rogue_ready_trigger( true ),
+    priority_rotation( false )
   {
     // Cooldowns
     cooldowns.adrenaline_rush          = get_cooldown( "adrenaline_rush"          );
@@ -5795,10 +5797,12 @@ void rogue_t::init_action_list()
     def -> add_action( "call_action_list,name=cds", "Check CDs at first" );
     def -> add_action( "run_action_list,name=stealthed,if=stealthed.all", "Run fully switches to the Stealthed Rotation (by doing so, it forces pooling if nothing is available)." );
     def -> add_action( this, "Nightblade", "if=target.time_to_die>6&remains<gcd.max&combo_points>=4-(time<10)*2", "Apply Nightblade at 2+ CP during the first 10 seconds, after that 4+ CP if it expires within the next GCD or is not up" );
+    def -> add_action( "variable,name=use_priority_rotation,value=priority_rotation&spell_targets.shuriken_storm>=2", "Only change rotation if we have priority_rotation set and multiple targets up." );
+    def -> add_action( "call_action_list,name=stealth_cds,if=variable.use_priority_rotation", "Priority Rotation? Let's give a crap about energy for the stealth CDs (builder still respect it). Yup, it can be that simple." );
     def -> add_action( "variable,name=stealth_threshold,value=25+talent.vigor.enabled*35+talent.master_of_shadows.enabled*25+talent.shadow_focus.enabled*20+talent.alacrity.enabled*10+15*(spell_targets.shuriken_storm>=3)", "Used to define when to use stealth CDs or builders" );
     def -> add_action( "call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold&combo_points.deficit>=4", "Consider using a Stealth CD when reaching the energy threshold and having space for at least 4 CP" );
     def -> add_action( "call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold&talent.dark_shadow.enabled&talent.secret_technique.enabled&cooldown.secret_technique.up", "With Dark Shadow, also use a Stealth CD when reaching the energy threshold and Secret Technique is ready." );
-    def -> add_action( "call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold&talent.dark_shadow.enabled&!talent.secret_technique.enabled&spell_targets.shuriken_storm>=2&(!talent.shuriken_tornado.enabled|!cooldown.shuriken_tornado.up)", "With Dark Shadow and not talented into Secret Technique, we only care about energy against multiple targets. Exception: Tornado is ready." );
+    def -> add_action( "call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold&talent.dark_shadow.enabled&spell_targets.shuriken_storm>=2&(!talent.shuriken_tornado.enabled|!cooldown.shuriken_tornado.up)", "With Dark Shadow against multiple targets, we only care about energy. Exception: Tornado is ready." );
     def -> add_action( "call_action_list,name=finish,if=combo_points.deficit<=1|target.time_to_die<=1&combo_points>=3", "Finish at 4+ without DS, 5+ with DS (outside stealth)" );
     def -> add_action( "call_action_list,name=finish,if=spell_targets.shuriken_storm=4&combo_points>=4", "With DS also finish at 4+ against exactly 4 targets (outside stealth)" );
     def -> add_action( "call_action_list,name=build,if=energy.deficit<=variable.stealth_threshold", "Use a builder when reaching the energy threshold" );
@@ -5843,7 +5847,7 @@ void rogue_t::init_action_list()
     stealth_cds -> add_action( this, "Vanish", "if=!variable.shd_threshold&debuff.find_weakness.remains<1&combo_points.deficit>1", "Vanish unless we are about to cap on Dance charges. Only when Find Weakness is about to run out." );
     stealth_cds -> add_action( "pool_resource,for_next=1,extra_amount=40", "Pool for Shadowmeld + Shadowstrike unless we are about to cap on Dance charges. Only when Find Weakness is about to run out." );
     stealth_cds -> add_action( "shadowmeld,if=energy>=40&energy.deficit>=10&!variable.shd_threshold&debuff.find_weakness.remains<1&combo_points.deficit>1" );
-    stealth_cds -> add_action( this, "Shadow Dance", "if=(!talent.dark_shadow.enabled|dot.nightblade.remains>=5+talent.subterfuge.enabled)&(variable.shd_threshold|buff.symbols_of_death.remains>=1.2|spell_targets.shuriken_storm>=4&cooldown.symbols_of_death.remains>10)", "With Dark Shadow only Dance when Nightblade will stay up. Use during Symbols or above threshold." );
+    stealth_cds -> add_action( this, "Shadow Dance", "if=(!talent.dark_shadow.enabled|dot.nightblade.remains>=5+talent.subterfuge.enabled)&(!talent.nightstalker.enabled&!talent.dark_shadow.enabled|!variable.use_priority_rotation|combo_points.deficit<=1)&(variable.shd_threshold|buff.symbols_of_death.remains>=1.2|spell_targets.shuriken_storm>=4&cooldown.symbols_of_death.remains>10)", "With Dark Shadow only Dance when Nightblade will stay up. Use during Symbols or above threshold. Only before finishers if we have amp talents and priority rotation." );
     stealth_cds -> add_action( this, "Shadow Dance", "if=target.time_to_die<cooldown.symbols_of_death.remains&!raid_event.adds.up" );
 
     // Stealthed Rotation
@@ -5860,7 +5864,7 @@ void rogue_t::init_action_list()
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
     finish -> add_action( this, "Eviscerate", "if=talent.shadow_focus.enabled&buff.nights_vengeance.up&spell_targets.shuriken_storm>=2+3*talent.secret_technique.enabled", "Eviscerate highest priority at 2+ targets with Shadow Focus (5+ with Secret Technique in addition) and Night's Vengeance up." );
     finish -> add_action( this, "Nightblade", "if=(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>6&remains<tick_time*2&(spell_targets.shuriken_storm<4|!buff.symbols_of_death.up)", "Keep up Nightblade if it is about to run out. Do not use NB during Dance, if talented into Dark Shadow." );
-    finish -> add_action( this, "Nightblade", "cycle_targets=1,if=spell_targets.shuriken_storm>=2&(talent.secret_technique.enabled|azerite.nights_vengeance.enabled|spell_targets.shuriken_storm<=5)&!buff.shadow_dance.up&target.time_to_die>=(5+(2*combo_points))&refreshable", "Multidotting outside Dance on targets that will live for the duration of Nightblade with refresh during pandemic if you have less than 6 targets or play with Secret Technique." );
+    finish -> add_action( this, "Nightblade", "cycle_targets=1,if=!variable.use_priority_rotation&spell_targets.shuriken_storm>=2&(talent.secret_technique.enabled|azerite.nights_vengeance.enabled|spell_targets.shuriken_storm<=5)&!buff.shadow_dance.up&target.time_to_die>=(5+(2*combo_points))&refreshable", "Multidotting outside Dance on targets that will live for the duration of Nightblade with refresh during pandemic if you have less than 6 targets or play with Secret Technique." );
     finish -> add_action( this, "Nightblade", "if=remains<cooldown.symbols_of_death.remains+10&cooldown.symbols_of_death.remains<=5&target.time_to_die-remains>cooldown.symbols_of_death.remains+5", "Refresh Nightblade early if it will expire during Symbols. Do that refresh if SoD gets ready in the next 5s." );
     finish -> add_talent( this, "Secret Technique", "if=buff.symbols_of_death.up&(!talent.dark_shadow.enabled|buff.shadow_dance.up)", "Secret Technique during Symbols. With Dark Shadow only during Shadow Dance (until threshold in next line)." );
     finish -> add_talent( this, "Secret Technique", "if=spell_targets.shuriken_storm>=2+talent.dark_shadow.enabled+talent.nightstalker.enabled", "With enough targets always use SecTec on CD." );
@@ -6021,6 +6025,10 @@ expr_t* rogue_t::create_expression( const std::string& name_str )
       n_buffs += buffs.buried_treasure -> check() != 0;
       return n_buffs;
     } );
+  }
+  else if ( util::str_compare_ci(name_str, "priority_rotation") )
+  {
+    return make_ref_expr(name_str, priority_rotation);
   }
 
   // Split expressions
@@ -6832,6 +6840,7 @@ void rogue_t::create_options()
   add_option( opt_func( "fixed_rtb_odds", parse_fixed_rtb_odds ) );
   add_option( opt_bool( "rogue_optimize_expressions", rogue_optimize_expressions ) );
   add_option( opt_bool( "rogue_ready_trigger", rogue_ready_trigger ) );
+  add_option( opt_bool( "priority_rotation", priority_rotation ) );
 
   player_t::create_options();
 }
@@ -6861,6 +6870,7 @@ void rogue_t::copy_from( player_t* source )
 
   fixed_rtb = rogue -> fixed_rtb;
   fixed_rtb_odds = rogue -> fixed_rtb_odds;
+  priority_rotation = rogue -> priority_rotation;
 }
 
 // rogue_t::create_profile  =================================================
