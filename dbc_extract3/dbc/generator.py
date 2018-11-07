@@ -1297,6 +1297,7 @@ class SpellDataGenerator(DataGenerator):
           ( 273289, 0 ), # Latent Poison (Azerite)
           ( 272745, 0 ), # Wildfire Cluster (Azerite)
           ( 278565, 0 ), # Rapid Reload (Azerite)
+          ( 120694, 0 ), # Dire Beast energize
         ),
 
         # Rogue:

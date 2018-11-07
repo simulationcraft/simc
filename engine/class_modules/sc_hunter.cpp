@@ -3985,13 +3985,15 @@ struct kill_command_t: public hunter_spell_t
 
 struct dire_beast_t: public hunter_spell_t
 {
-  dire_beast_t( hunter_t* player, const std::string& options_str ):
-    hunter_spell_t( "dire_beast", player, player -> talents.dire_beast )
+  dire_beast_t( hunter_t* p, const std::string& options_str ):
+    hunter_spell_t( "dire_beast", p, p -> talents.dire_beast )
   {
     parse_options( options_str );
 
     harmful = may_hit = false;
-    dot_duration = timespan_t::zero();
+
+    parse_effect_data( p -> find_spell( 120694 ) -> effectN( 1 ) );
+    energize_amount += p -> talents.scent_of_blood -> effectN( 1 ).base_value();
   }
 
   void init_finished() override
