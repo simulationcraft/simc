@@ -39,7 +39,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Stance Mask      : 0x88000000
-Affecting spells : Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Atonement (194384 effect#2), An'juna's Trance (207555 effect#1), Light of T'uure (208065 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
+Affecting spells : Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), An'juna's Trance (207555 effect#1), Light of T'uure (208065 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
 Family Flags     : 6, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ...x.... x....... ...x.... ........   .......x ........ ........ ........ 
@@ -200,7 +200,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Atonement (194384 effect#2), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effect#1), Everlasting Hope (253443 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
+Affecting spells : Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effect#1), Everlasting Hope (253443 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
 Family Flags     : 9, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -284,7 +284,7 @@ GCD              : 1.5 seconds
 Charges          : 1 (60 seconds cooldown)
 Category         : 1673
 Stance Mask      : 0x80000000
-Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Atonement (194384 effect#2), Apotheosis (200183 effect#2), Light of T'uure (208065 effect#1), Rammal's Ulterior Motive (234711 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
+Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Apotheosis (200183 effect#2), Light of T'uure (208065 effect#1), Rammal's Ulterior Motive (234711 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
 Family Flags     : 10, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -312,7 +312,7 @@ Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Complete Healing (184914 effect#1), Surrender to Madness (193223 effect#2), Atonement (194384 effect#2), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effect#1), Rammal's Ulterior Motive (234711 effect#1), Answered Prayers (253437 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1), Promise of Deliverance (287340 effect#1)
+Affecting spells : Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Complete Healing (184914 effect#1), Surrender to Madness (193223 effect#2), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effect#1), Rammal's Ulterior Motive (234711 effect#1), Answered Prayers (253437 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1), Promise of Deliverance (287340 effect#1)
 Family Flags     : 12, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -336,7 +336,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Spirit Shell (109964 effect#1), Surge of Light (114255 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Complete Healing (184914 effect#1), Surrender to Madness (193223 effect#2), Atonement (194384 effect#2), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effect#1), Rammal's Ulterior Motive (234711 effect#1), Answered Prayers (253437 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1), Promise of Deliverance (287340 effect#1)
+Affecting spells : Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Spirit Shell (109964 effect#1), Surge of Light (114255 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Complete Healing (184914 effect#1), Surrender to Madness (193223 effect#2), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effect#1), Rammal's Ulterior Motive (234711 effect#1), Answered Prayers (253437 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1), Promise of Deliverance (287340 effect#1)
 Triggered by     : Surge of Light (114255)
 Family Flags     : 11, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -528,7 +528,7 @@ Duration         : 7 seconds
 Cooldown         : 10 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Holy Fire (231687 effect#2), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), Sacred Flame (278655 effect#1), Sins of the Many (280398 effect#1), 
+Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Holy Fire (231687 effect#2), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), 
 Family Flags     : 20, 72
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
@@ -889,7 +889,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Healing Trance (37706 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Atonement (194384 effect#2), Light of T'uure (208065 effect#1), Answered Prayers (253437 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
+Affecting spells : Healing Trance (37706 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Light of T'uure (208065 effect#1), Answered Prayers (253437 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
 Family Flags     : 34, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ...x.... ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -971,7 +971,7 @@ School           : Holy
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Atonement (194384 effect#2), Light of T'uure (208065 effect#1), Twist of Fate (265258 effect#1), Word of Mending (278645 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
+Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Light of T'uure (208065 effect#1), Twist of Fate (265258 effect#1), Word of Mending (278645 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
 Family Flags     : 117, 126
 Attributes       : ........ ........ ..x..... ...x....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -1056,7 +1056,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Healing Trance (37706 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Atonement (194384 effect#2), Apotheosis (200183 effect#2), Light of T'uure (208065 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
+Affecting spells : Healing Trance (37706 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Apotheosis (200183 effect#2), Light of T'uure (208065 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
 Family Flags     : 28, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   .......x ........ ........ ........ 
@@ -1260,7 +1260,7 @@ Name             : Dispersion (id=47585) [Spell Family (6)]
 Class            : Shadow Priest
 School           : Shadow
 Spell Type       : Magic
-Spell Level      : 48
+Spell Level      : 28
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 120 seconds
@@ -1332,7 +1332,7 @@ Spell Type       : Magic
 Spell Level      : 60
 Range            : 40 yards
 Velocity         : 40 yards/sec
-Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Reparation (186478 effect#1), Surrender to Madness (193223 effect#2), Atonement (194384 effect#2), Power Word: Shield (211558 effect#1), Radiant Focus (252848 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
+Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Reparation (186478 effect#1), Surrender to Madness (193223 effect#2), Power Word: Shield (211558 effect#1), Radiant Focus (252848 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
 Family Flags     : 48, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ..x..... ........ ......x. ........   ........ .x...... ........ ........ 
@@ -1713,7 +1713,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 Duration         : 8 seconds
-Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Atonement (194384 effect#2), Light of T'uure (208065 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
+Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Light of T'uure (208065 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
 Triggered by     : Divine Hymn (64843)
 Family Flags     : 66, 126
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
@@ -2033,7 +2033,7 @@ Effects          :
                    Base Value: 55 | Scaled Value: 55 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=178045)   : Dummy (3)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000
-Description      : Power Word: Shield, Shadow Mend, and Power Word: Radiance apply Atonement to your target for $194384s5 sec.
+Description      : Power Word: Shield, Shadow Mend, and Power Word: Radiance apply Atonement to your target for $194384s3 sec.
 
 Your spell damage heals all targets affected by Atonement for $s1% of the damage done.
 
@@ -2177,7 +2177,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
 Stance Mask      : 0x80000000
-Affecting spells : Surrender to Madness (193223 effect#2), Atonement (194384 effect#2), Power Word: Shield (211558 effect#1), Dejahna's Inspiration (281456 effect#1), 
+Affecting spells : Surrender to Madness (193223 effect#2), Power Word: Shield (211558 effect#1), Dejahna's Inspiration (281456 effect#1), 
 Family Flags     : 74
 Attributes       : ........ ........ x....... x..x....   .....x.. ..x..... ........ ........ 
                  : ..x..... ......x. ...x.... ........   ........ .x...... ........ ......x. 
@@ -2189,7 +2189,7 @@ Attributes       : ........ ........ x....... x..x....   .....x.. ..x..... .....
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=99434)    : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 120 | Points Per Level: 1 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 119 | Points Per Level: 1 | PvP Coefficient: 1.00000 | Target: Friend (21)
 Description      : $@spelldesc81749
 
 Name             : Prayer of Healing (id=98367) [Spell Family (6), Hidden] 
@@ -2344,7 +2344,7 @@ Class            : Priest
 School           : Holy
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Atonement (194384 effect#2), Light of T'uure (208065 effect#1), Power Word: Shield (211558 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
+Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Light of T'uure (208065 effect#1), Power Word: Shield (211558 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
 Family Flags     : 98, 126
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ...x.... ........   ........ .x...... ........ ......x. 
@@ -2507,7 +2507,7 @@ Class            : Priest
 School           : Holy
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Atonement (194384 effect#2), Light of T'uure (208065 effect#1), Power Word: Shield (211558 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
+Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Light of T'uure (208065 effect#1), Power Word: Shield (211558 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
 Family Flags     : 97, 126
 Attributes       : ........ ........ .......x x..x....   .....x.x ........ ........ ........ 
                  : .......x ......x. ........ ........   ........ ........ ........ ......xx 
@@ -3303,7 +3303,7 @@ Spell Level      : 28
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Shadow Priest (137033 effect#8), Surrender to Madness (193223 effect#2), Atonement (194384 effect#2), Power Word: Shield (211558 effect#1), Twist of Fate (265258 effect#1), Depth of the Shadows (275544 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
+Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Shadow Priest (137033 effect#8), Surrender to Madness (193223 effect#2), Power Word: Shield (211558 effect#1), Twist of Fate (265258 effect#1), Depth of the Shadows (275544 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
 Family Flags     : 52, 126
 Attributes       : ........ ........ x....... .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -3711,7 +3711,7 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 60 yards
 Duration         : 15 seconds
-Affecting spells : Surrender to Madness (193223 effect#2), Lenience (238063 effect#1), Mastery: Grace (271534 effect#1)
+Affecting spells : Surrender to Madness (193223 effect#2), Lenience (238063 effect#1)
 Family Flags     : 94
 Attributes       : ........ ........ x.x..... ........   ........ ........ .x...... ........ 
                  : ...x.... x....... ........ ........   ........ ........ ........ ........ 
@@ -3723,17 +3723,9 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .x...
 Effects          :
 #1 (id=285346)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Friend (21)
-#2 (id=294886)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
-                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Binding Heal (32546), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Atonement (94472), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Shadow Covenant (204065), Circle of Healing (204883), Cosmic Ripple (243241), Holy Word: Salvation (265202), Contrition (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265)
-                   Family Flags: 74, 126
-#3 (id=325533)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
-                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Binding Heal (32546), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Shadow Covenant (204065), Circle of Healing (204883), Cosmic Ripple (243241), Holy Word: Salvation (265202), Contrition (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265)
-                   Family Flags: 126
-#4 (id=362006)   : Apply Aura (6) | Modify Damage Taken% (87)
+#2 (id=294886)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Friend (21)
-#5 (id=733034)   : Apply Aura (6) | Dummy (4)
+#3 (id=325533)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Friend (21)
 Description      : $@spelldesc81749
 Tooltip          : Healed whenever the Priest damages an enemy.
@@ -3750,7 +3742,7 @@ GCD              : 1.5 seconds
 Charges          : 2 (20 seconds cooldown)
 Category         : 1690
 Stance Mask      : 0x80000000
-Affecting spells : Rapid Healing (24546 effect#2), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Atonement (194384 effect#2), Power Word: Shield (211558 effect#1), Twist of Fate (265258 effect#1), Enduring Luminescence (278643 effect#2), Enduring Luminescence (279245 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
+Affecting spells : Rapid Healing (24546 effect#2), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Power Word: Shield (211558 effect#1), Twist of Fate (265258 effect#1), Enduring Luminescence (278643 effect#2), Enduring Luminescence (279245 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
 Family Flags     : 22, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -4148,7 +4140,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=294596)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : When you cast Heal or Flash Heal, $s1% of the healing is replicated to the previous target you healed with Heal or Flash Heal.
 
 Name             : Enduring Renewal (id=200153) [Spell Family (6), Passive] 
@@ -4346,7 +4338,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 12 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Atonement (194384 effect#2), Power Word: Shield (211558 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
+Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Power Word: Shield (211558 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
 Family Flags     : 104, 126
 Attributes       : ........ ........ x....... ..x....x   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -4374,7 +4366,7 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Proc Chance      : 101%
-Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Holy Fire (231687 effect#2), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), Sacred Flame (278655 effect#1), Sins of the Many (280398 effect#1), 
+Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Holy Fire (231687 effect#2), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), 
 Family Flags     : 20, 72
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4398,7 +4390,7 @@ Spell Level      : 1
 Range            : 40 yards
 Duration         : 20 seconds
 Proc Chance      : 101%
-Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Holy Fire (231687 effect#2), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), Sacred Flame (278655 effect#1), Death Throes (278659 effect#1), Sins of the Many (280398 effect#1), 
+Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Holy Fire (231687 effect#2), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), Death Throes (278659 effect#1), Sins of the Many (280398 effect#1), 
 Triggered by     : Purge the Wicked (204197)
 Family Flags     : 20, 72, 100
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -4450,7 +4442,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 15 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Twist of Fate (123254 effect#1), Priest (137030 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Atonement (194384 effect#2), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
+Affecting spells : Twist of Fate (123254 effect#1), Priest (137030 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
 Family Flags     : 86, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -4672,7 +4664,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 234746 | Target: Enemy (6)
 #3 (id=308158)   : Energize Power (30)
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
-Description      : Sends a bolt of pure void energy at the enemy, causing $s1 Shadow damage$?a231688[ and extending the duration of Shadow Word: Pain and Vampiric Touch on all nearby targets by $<ext> sec. Requires Voidform.
+Description      : Sends a bolt of pure void energy at the enemy, causing $s1 Shadow damage$?a231688[ and extending the duration of Shadow Word: Pain and Vampiric Touch on all nearby targets by $<ext> sec.][] Requires Voidform.
 
 |cFFFFFFFFGenerates $/100;s3 Insanity.|r
 Variables        : $ext=${$231688s1/1000} sec
@@ -5193,7 +5185,7 @@ Race             : Blood Elf (0x200)
 School           : Arcane
 Spell Type       : Magic
 GCD              : 1.5 seconds
-Cooldown         : 90 seconds
+Cooldown         : 120 seconds
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5291,8 +5283,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=360748)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
-                   Base Value: -3 | Scaled Value: -3 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
+#1 (id=360748)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
+                   Base Value: -3 | Scaled Value: -3 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Atonement (194384)
                    Family Flags: 94
 Description      : Atonement reduces damage taken by $s1%.
@@ -5356,7 +5348,7 @@ Class            : Priest
 School           : Holy
 Spell Type       : None
 Spell Level      : 1
-Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Atonement (194384 effect#2), Light of T'uure (208065 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
+Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Light of T'uure (208065 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
 Family Flags     : 93, 126
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ ........ ........ ........ 
@@ -5649,7 +5641,7 @@ Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3
 Family Flags     : 51, 72
 Attributes       : ........ ........ ........ ..x.....   ..x..... ......x. ........ .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
-                 : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
+                 : ........ ........ ........ ........   ........ .x...x.. ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5657,17 +5649,17 @@ Attributes       : ........ ........ ........ ..x.....   ..x..... ......x. .....
                  : Channeled (34), Tick on application (169), Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=651860)   : Apply Aura (6) | Periodic Damage (3): shadow every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.75000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-#2 (id=651861)   : Apply Aura (6) | Periodic Energize Power (24): every 1 seconds
-                   Base Value: 600 | Scaled Value: 600 | PvP Coefficient: 1.00000 | Misc Value: 13 | Target: Self (1)
-#3 (id=752705)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Channel a torrent of void energy into the target, dealing $o Shadow damage over $d. Insanity does not drain during this channel.
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.90000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+#2 (id=651861)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=754067)   : Trigger Spell (64): Void Torrent
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 289577 | Target: Self (1)
+Description      : Channel a torrent of void energy into the target, dealing $o Shadow damage over $d.
 
-Requires Voidform.
+Insanity does not drain during this channel.
 
-|cFFFFFFFFGenerates ${$s2*$s3/100} Insanity over the duration.|r
-Tooltip          : Dealing $s1 Shadow damage to the target every $t sec.
+|cFFFFFFFFGenerates ${$289577s1*$289577s2/100} Insanity over the duration.|r
+Tooltip          : Dealing $s1 Shadow damage to the target every $t1 sec.
 
 Insanity drain temporarily stopped.
 
@@ -5769,7 +5761,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=707038)   : Apply Aura (6) | Dummy (4)
+#1 (id=707038)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 6410.799 (coefficient=82.454) | PvP Coefficient: 0.50000 | Trigger Spell: 270568 | Target: Self (1)
 Description      : Every $270568t1 sec, gain an absorb shield for $s1 for $269279d.
 
@@ -5789,7 +5781,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=707058)   : Dummy (3)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000
-Description      : Increases the item level of this item by 5.
+Description      : Increases Item Level by 5 and increases the potency of all Azerite powers granted by this item.
 
 Name             : Elemental Whirl (id=263984) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -5864,7 +5856,7 @@ Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Cooldown         : 720 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Atonement (194384 effect#2), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
+Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
 Family Flags     : 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -6095,7 +6087,6 @@ Class            : Paladin, Priest, Shaman, Monk, Druid
 School           : Physical
 Spell Type       : None
 Azerite Power Id : 105
-Triggered by     : Ephemeral Recovery (272572)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6105,7 +6096,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=714807)   : Apply Aura (6) | Dummy (4)
+#1 (id=714807)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 (coefficient=22) | PvP Coefficient: 1.00000 | Trigger Spell: 272570 | Target: Self (1)
 Description      : When you go below $272570s1% mana, you gain $s1 mana. Can occur once every $289362d.
 
@@ -6187,7 +6178,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=715939)   : Apply Aura (6) | Dummy (4)
+#1 (id=715939)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 2243.779 (coefficient=28.8589) | PvP Coefficient: 0.50000 | Trigger Spell: 270654 | Target: Self (1)
 Description      : When you take damage, heal for $s1. Cannot occur more than once every $270654proccooldown sec.
 Tooltip          : When you take damage, heal for $s1. Cannot occur more than once every $270654proccooldown sec.
@@ -6227,7 +6218,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=716159)   : Apply Aura (6) | Dummy (4)
+#1 (id=716159)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 6997.5 (coefficient=90) | PvP Coefficient: 0.50000 | Trigger Spell: 270655 | Target: Self (1)
 #2 (id=720319)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
@@ -6272,7 +6263,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=716165)   : Apply Aura (6) | Dummy (4)
+#1 (id=716165)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 3165.077 (coefficient=10.1771) | PvP Coefficient: 0.50000 | Trigger Spell: 270652 | Target: Self (1)
 #2 (id=720314)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 82.61684 (coefficient=0.265649) | PvP Coefficient: 0.50000 | Target: Self (1)
@@ -6294,7 +6285,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=716167)   : Apply Aura (6) | Dummy (4)
+#1 (id=716167)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 598.3412 (coefficient=7.695707) | PvP Coefficient: 0.50000 | Trigger Spell: 270660 | Target: Self (1)
 #2 (id=716168)   : Dummy (3)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000
@@ -6333,10 +6324,7 @@ School           : Holy
 Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
-Proc Chance      : 100%
-Proc Flags       : ........ ......x. ........ ........ 
-                 : Magic Heal
-Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Atonement (194384 effect#2), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
+Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
 Family Flags     : 76, 126
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ......x. 
@@ -6392,10 +6380,8 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=721830)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
+#1 (id=721830)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.20000 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Atonement (194384)
-                   Family Flags: 94
 Description      : Your healing and absorption is increased by ${$s1}.1% on targets with Atonement.
 
 Name             : Moment of Repose (id=272775) [Scaling Spell (-8), Spell Family (6), Passive] 
@@ -6628,7 +6614,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=726642)   : Apply Aura (6) | Dummy (4)
+#1 (id=726642)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 8077.606 (coefficient=103.892) | PvP Coefficient: 0.50000 | Trigger Spell: 274368 | Target: Self (1)
 Description      : When you cast Fade, absorb $s1 Magic damage for $274369d.
 
@@ -6693,25 +6679,47 @@ Effects          :
                    Family Flags: 13, 30
 Description      : $?s205351[Shadow Word: Void][Mind Blast] deals $s2 additional damage and generates ${$275726s1/100} additional Insanity on critical strikes.
 
-Name             : Gift of Forgiveness (id=277680) [Scaling Spell (-8), Spell Family (6), Passive] 
+Name             : Whispers of the Damned (id=275725) [Scaling Spell (-1), Spell Family (6), Hidden] 
 Class            : Priest
-School           : Physical
+School           : Shadow
 Spell Type       : None
-Azerite Power Id : 397
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Duration         : Aura (infinite)
+Proc Chance      : 100%
+Proc Flags       : ........ ........ x....... ........ 
+                 : Magic Hostile Spell
+Triggered by     : Whispers of the Damned (275722)
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ......x. 
+                 : Hidden (7), Scales with item level (354)
+Effects          :
+#1 (id=728946)   : Apply Aura (6) | Proc Trigger Spell (42): Whispers of the Damned
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 275726 | Target: Self (1)
+Description      : $@spelldesc275722
+
+Name             : Whispers of the Damned (id=275726) [Scaling Spell (-1), Spell Family (6)] 
+Class            : Priest
+School           : Shadow
+Spell Type       : None
+Range            : 100 yards
+Stacks           : 6 maximum
+Proc Chance      : 101%
+Triggered by     : Whispers of the Damned (275725)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Scales with item level (354)
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=732992)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 195.0905 (coefficient=2.509202) | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=734277)   : Dummy (3)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000
-Description      : Smite deals an additional $s1 damage if you have at least $s2 Atonements active.
+#1 (id=728947)   : Energize Power (30)
+                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
+Description      : $@spelldesc275725
 
 Name             : Everlasting Light (id=277681) [Scaling Spell (-8), Spell Family (6), Passive] 
 Class            : Priest
@@ -6814,28 +6822,6 @@ Effects          :
 #2 (id=734481)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Prayer of Mending heals for an additional $s1 and reduces Holy Word: Sanctify's cooldown by ${$s2/1000} sec.
-
-Name             : Sacred Flame (id=278655) [Scaling Spell (-1), Spell Family (6), Passive] 
-Class            : Priest
-School           : Holy
-Spell Type       : None
-Azerite Power Id : 402
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Scales with item level (354)
-Effects          :
-#1 (id=734493)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 500.2298 (coefficient=1.608456) | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Holy Fire (14914), Purge the Wicked (204197), Purge the Wicked (204213)
-                   Family Flags: 20
-#2 (id=734494)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 133.8961 (coefficient=0.430534) | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Holy Fire deals an additional $s1 damage instantly, and restores $s2 mana each time it deals damage.
 
 Name             : Death Throes (id=278659) [Scaling Spell (-8), Spell Family (6), Passive] 
 Class            : Priest
@@ -7385,7 +7371,7 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 #3 (id=744340)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 131.9971 (coefficient=0.424428) | PvP Coefficient: 1.00000
-Description      : Your abilities have a chance to plant a factional banner for $280841d, empowering yourself and up to $s2 allies with the spirit of the Horde.
+Description      : Your abilities have a chance to plant a banner representing a Horde race for $280841d, granting you and up to $s2 allies $s3 of their primary stat or $s1 of a secondary stat.
 
 Name             : Collective Will (id=280581) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -7516,7 +7502,7 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 #3 (id=744329)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 131.9971 (coefficient=0.424428) | PvP Coefficient: 1.00000
-Description      : Your abilities have a chance to plant a factional banner for $280866d, empowering yourself and up to $s2 allies with the spirit of the Alliance.
+Description      : Your abilities have a chance to plant a banner representing an Alliance race for $280866d, granting you and up to $s2 allies $s3 of their primary stat or $s1 of a secondary stat.
 
 Name             : Stand As One (id=280626) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -7671,7 +7657,7 @@ Class            : Priest
 School           : Holy
 Spell Type       : Magic
 Spell Level      : 33
-Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Atonement (194384 effect#2), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
+Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
 Triggered by     : Holy Nova (132157)
 Family Flags     : 126
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
@@ -7749,7 +7735,7 @@ Name             : Promise of Deliverance (id=287336) [Scaling Spell (-8), Spell
 Class            : Priest
 School           : Holy
 Spell Type       : None
-Azerite Power Id : 534
+Azerite Power Id : 402
 Triggered by     : Promise of Deliverance (287340)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7760,7 +7746,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=750248)   : Apply Aura (6) | Dummy (4)
+#1 (id=750248)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 524.6932 (coefficient=6.748466) | PvP Coefficient: 1.00000 | Trigger Spell: 287337 | Target: Self (1)
 #2 (id=750269)   : Dummy (3)
                    Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -7771,7 +7757,7 @@ Name             : Sudden Revelation (id=287355) [Scaling Spell (-8), Spell Fami
 Class            : Priest
 School           : Holy
 Spell Type       : None
-Azerite Power Id : 535
+Azerite Power Id : 397
 Triggered by     : Sudden Revelation (287360)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7787,7 +7773,7 @@ Effects          :
 Description      : Power Word: Radiance has a $287356h% chance to cause your next Holy Nova to deal $s1 additional damage and reduce the cooldown of Power Word: Radiance by ${$287356s2/1000} sec.
 
 Name             : Shadow of Elune (id=287467) [Scaling Spell (-7), Passive] 
-Class            : Priest, Mage, Warlock
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
 Azerite Power Id : 521
@@ -7805,7 +7791,7 @@ Effects          :
 Description      : Your spells and abilities have a chance to increase your Haste by $s1 for $287471d. At night, you also gain $287471s2% movement speed for the duration.
 
 Name             : Ancients' Bulwark (id=287604) [Scaling Spell (-1), Passive] 
-Class            : Priest, Mage, Warlock
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
 Azerite Power Id : 522
@@ -7825,7 +7811,7 @@ Effects          :
 Description      : Standing still grants you Deep Roots, increasing your Versatility by $s2. Moving instead grants you Uprooted, healing you for $s1 every $287608t1 sec.
 
 Name             : Apothecary's Concoctions (id=287631) [Scaling Spell (-8), Passive] 
-Class            : Priest, Mage, Warlock
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
 Azerite Power Id : 523
@@ -7849,7 +7835,7 @@ Variables        : $dmg=${$s1*3}
 $heal=${$s2*3}
 
 Name             : Endless Hunger (id=287662) [Scaling Spell (-1), Passive] 
-Class            : Priest, Mage, Warlock
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Spell Type       : None
 Azerite Power Id : 526
@@ -7883,9 +7869,27 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=750865)   : Apply Aura (6) | Dummy (4)
+#1 (id=750865)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 11924.85 (coefficient=153.3742) | PvP Coefficient: 0.50000 | Trigger Spell: 287719 | Target: Self (1)
 Description      : Leap of Faith absorbs the next $s1 damage to the target within $287722d. While the shield holds, Leap of Faith cools down $287723s1% faster.
+
+Name             : Fight or Flight (id=287818) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 541
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=751037)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 370.3512 (coefficient=1.19084) | PvP Coefficient: 1.00000 | Trigger Spell: 287821 | Target: Self (1)
+Description      : When you damage an enemy who is below $287821s1% health, or fall below $287821s1% health yourself, gain $s1 primary stat and $287827s5% movement speed for $287827d. Can only occur once every $287825d.
 
 Name             : Thought Harvester (id=288340) [Scaling Spell (-8), Spell Family (6), Passive] 
 Class            : Priest
@@ -7908,6 +7912,50 @@ Effects          :
                    Affected Spells: Vampiric Touch (34914)
                    Family Flags: 42
 Description      : Vampiric Touch damage is increased by $s2, and each time Vampiric Touch deals damage you have a chance to increase the damage of your next Mind Sear within $288343d by $288343s1%.
+
+Name             : Thought Harvester (id=288342) [Spell Family (6), Hidden] 
+Class            : Priest
+School           : Shadow
+Spell Type       : None
+Duration         : Aura (infinite)
+Proc Chance      : 101%
+Real PPM         : 2
+Proc Flags       : ........ ........ ..x..... ........ 
+                 : Periodic
+Triggered by     : Thought Harvester (288340)
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ......x. 
+                 : Hidden (7), Scales with item level (354)
+Effects          :
+#1 (id=751895)   : Apply Aura (6) | Proc Trigger Spell (42): Thought Harvester
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 288343 | Target: Self (1)
+Description      : $@spelldesc288340
+
+Name             : Thought Harvester (id=288343) [Spell Family (6)] 
+Class            : Priest
+School           : Shadow
+Spell Type       : None
+Duration         : 20 seconds
+Triggered by     : Thought Harvester (288342)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=751896)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Mind Sear (48045), Mind Sear (49821)
+                   Family Flags: 65
+Description      : $@spelldesc288340
+Tooltip          : Mind Sear damage increased by $s1%.
 
 Name             : Intangibility (id=288733) [Spell Family (6), Passive, Hidden] 
 Class            : Priest
@@ -7933,5 +7981,93 @@ Effects          :
 #3 (id=752651)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Dispersion heals for $s3% of your maximum health over its duration and has ${$m1/-1000} sec reduced cooldown.
+
+Name             : Seductive Power (id=288749) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 561
+Triggered by     : Seductive Power (288777)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=752664)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 28.48853 (coefficient=0.091603) | PvP Coefficient: 1.00000 | Trigger Spell: 288757 | Target: Self (1)
+#2 (id=752673)   : Dummy (3)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000
+Description      : Your spells and abilities have a chance to conjure Bwonsamdi's spectral visage, beckoning you closer. If you approach him, gain $s1 to all stats for $288777d, stacking up to $288777u times. If you fail to heed his call, lose $s2 $Lstack:stacks;.
+
+Name             : Bonded Souls (id=288802) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 560
+Triggered by     : Bonded Souls (288839)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=752745)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 623.7739 (coefficient=2.005704) | PvP Coefficient: 1.00000 | Trigger Spell: 288804 | Target: Self (1)
+#2 (id=752815)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 3798.473 (coefficient=12.21374) | PvP Coefficient: 1.00000
+Description      : Your spells and abilities have a chance to trigger a Soulbond for $288841d. During Soulbond, every $288841t1 sec you and your nearest ally are both healed for $s2 and gain $s1 Haste for $288839d.
+
+Name             : Treacherous Covenant (id=288953) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 562
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=752982)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 166.1832 (coefficient=0.534351) | PvP Coefficient: 1.00000 | Trigger Spell: 288964 | Target: Self (1)
+#2 (id=752991)   : Dummy (3)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
+#3 (id=752992)   : Dummy (3)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000
+#4 (id=752993)   : Dummy (3)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
+Description      : Your primary stat is increased by $s1 while you are above $s2% health. You take $s3% increased damage while below $s4% health.
+
+Name             : Void Torrent (id=289577) [Spell Family (6)] 
+Class            : Priest
+School           : Shadow
+Spell Type       : None
+Duration         : 3.9 seconds
+Triggered by     : Void Torrent (263165)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ....xx.. 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : Tick on application (169)
+Effects          :
+#1 (id=754055)   : Apply Aura (6) | Periodic Energize Power (24): every 0.975 seconds
+                   Base Value: 600 | Scaled Value: 600 | PvP Coefficient: 1.00000 | Misc Value: 13 | Target: Self (1)
+#2 (id=754058)   : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc263165
+Tooltip          : |cFFFFFFFFGenerates ${$s1*$s2/100} Insanity over $d.|r
 
 

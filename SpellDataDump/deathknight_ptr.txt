@@ -676,6 +676,7 @@ Cooldown         : 180 seconds
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
+Affecting spells : Cold Hearted (288425 effect#2)
 Family Flags     : 20
 Attributes       : ....x... ........ ..x..... ........   ........ ..x....x ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -973,7 +974,7 @@ Race             : Blood Elf (0x200)
 School           : Arcane
 Spell Type       : Magic
 GCD              : 1.5 seconds
-Cooldown         : 90 seconds
+Cooldown         : 120 seconds
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1363,7 +1364,7 @@ Attributes       : ....x... ........ ........ ..x.....   ........ ........ .....
                  : Always hits (114), Disable weapon procs (151), Periodic effect can crit (265)
 Effects          :
 #1 (id=47999)    : Apply Aura (6) | Periodic Health Leech (53): every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.158) | Value Multiplier: 1 | AP Coefficient: 0.06224 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | AP Coefficient: 0.06224 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 #2 (id=48000)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.05176 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 Description      : A shadowy disease that drains $o1 health from the target over $d.  
@@ -1495,7 +1496,7 @@ Effects          :
 #1 (id=49248)    : Unknown(114)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=49249)    : Apply Aura (6) | Taunt (11)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Command the target to attack you.
 Tooltip          : Taunted.
 
@@ -2042,11 +2043,11 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68126)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Howling Blast (49184), Razorice (50401), Frost Fever (55095), Frost Strike Off-Hand (66196), Breath of Sindragosa (155166), Frozen Pulse (195750), Glacial Advance (195975), Remorseless Winter (196771), Avalanche (207150), Frostscythe (207230), Frost Strike (222026), Howling Blast (237680), Inexorable Assault (253597), Glacial Contagion (274074), Echoing Howl (275918), Frost Breath (279303), Cold Heart (281209), Cold Heart (281210)
+                   Affected Spells: Howling Blast (49184), Razorice (50401), Frost Fever (55095), Frost Strike Off-Hand (66196), Breath of Sindragosa (155166), Frozen Pulse (195750), Glacial Advance (195975), Remorseless Winter (196771), Avalanche (207150), Frostscythe (207230), Frost Strike (222026), Howling Blast (237680), Inexorable Assault (253597), Glacial Contagion (274074), Echoing Howl (275918), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210)
                    Family Flags: 120
 #2 (id=90622)    : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Howling Blast (49184), Razorice (50401), Frost Fever (55095), Frost Strike Off-Hand (66196), Breath of Sindragosa (155166), Frozen Pulse (195750), Glacial Advance (195975), Remorseless Winter (196771), Avalanche (207150), Frostscythe (207230), Frost Strike (222026), Howling Blast (237680), Inexorable Assault (253597), Glacial Contagion (274074), Echoing Howl (275918), Frost Breath (279303), Cold Heart (281209), Cold Heart (281210)
+                   Affected Spells: Howling Blast (49184), Razorice (50401), Frost Fever (55095), Frost Strike Off-Hand (66196), Breath of Sindragosa (155166), Frozen Pulse (195750), Glacial Advance (195975), Remorseless Winter (196771), Avalanche (207150), Frostscythe (207230), Frost Strike (222026), Howling Blast (237680), Inexorable Assault (253597), Glacial Contagion (274074), Echoing Howl (275918), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210)
                    Family Flags: 120
 Description      : Increases the damage of your Frost abilities by ${$s1}.1%.
 
@@ -2278,7 +2279,7 @@ Spell Level      : 55
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
-Affecting spells : Death Knight (137005 effect#2), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), Festering Doom (272741 effect#1), Cankerous Wounds (278482 effect#1)
+Affecting spells : Death Knight (137005 effect#2), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), Cankerous Wounds (278482 effect#1)
 Family Flags     : 43, 73, 127
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -3015,11 +3016,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179689)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Soul Reaper (130736), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Rune Strike (210764), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Howling Blast (237680), Inexorable Assault (253597), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frost Breath (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286978), Helchains (286979)
+                   Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Soul Reaper (130736), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Rune Strike (210764), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Howling Blast (237680), Inexorable Assault (253597), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286978), Helchains (286979)
                    Family Flags: 43
 #2 (id=191174)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Soul Reaper (130736), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Rune Strike (210764), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Howling Blast (237680), Inexorable Assault (253597), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frost Breath (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286978), Helchains (286979)
+                   Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Soul Reaper (130736), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Rune Strike (210764), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Howling Blast (237680), Inexorable Assault (253597), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286978), Helchains (286979)
                    Family Flags: 43
 #3 (id=191175)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self (1)
@@ -3064,11 +3065,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179690)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -8 | Scaled Value: -8 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Soul Reaper (130736), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Rune Strike (210764), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Howling Blast (237680), Inexorable Assault (253597), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frost Breath (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286978), Helchains (286979)
+                   Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Soul Reaper (130736), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Rune Strike (210764), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Howling Blast (237680), Inexorable Assault (253597), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286978), Helchains (286979)
                    Family Flags: 43
 #2 (id=191170)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -8 | Scaled Value: -8 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Soul Reaper (130736), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Rune Strike (210764), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Howling Blast (237680), Inexorable Assault (253597), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frost Breath (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286978), Helchains (286979)
+                   Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Soul Reaper (130736), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Rune Strike (210764), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Howling Blast (237680), Inexorable Assault (253597), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286978), Helchains (286979)
                    Family Flags: 43
 #3 (id=191171)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: -8 | Scaled Value: -8 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -3117,11 +3118,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179691)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 29 | Scaled Value: 29 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Soul Reaper (130736), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Rune Strike (210764), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Howling Blast (237680), Inexorable Assault (253597), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frost Breath (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286978), Helchains (286979)
+                   Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Soul Reaper (130736), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Rune Strike (210764), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Howling Blast (237680), Inexorable Assault (253597), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286978), Helchains (286979)
                    Family Flags: 43
 #2 (id=191166)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 29 | Scaled Value: 29 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Soul Reaper (130736), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Rune Strike (210764), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Howling Blast (237680), Inexorable Assault (253597), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frost Breath (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286978), Helchains (286979)
+                   Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Soul Reaper (130736), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Rune Strike (210764), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Howling Blast (237680), Inexorable Assault (253597), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286978), Helchains (286979)
                    Family Flags: 43
 #3 (id=191167)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -3617,7 +3618,7 @@ Range            : 50000 yards
 Duration         : 30 seconds
 Internal Cooldown: 1 seconds
 Stacks           : -1 initial, 6 maximum
-Proc Chance      : 20%
+Proc Chance      : 100%
 Proc Flags       : ........ ...x...x ........ .......x 
                  : Generic Heal Taken, Magic Heal Taken
 Family Flags     : 112
@@ -5975,7 +5976,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=707038)   : Apply Aura (6) | Dummy (4)
+#1 (id=707038)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 6410.799 (coefficient=82.454) | PvP Coefficient: 0.50000 | Trigger Spell: 270568 | Target: Self (1)
 Description      : Every $270568t1 sec, gain an absorb shield for $s1 for $269279d.
 
@@ -5995,7 +5996,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=707058)   : Dummy (3)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000
-Description      : Increases the item level of this item by 5.
+Description      : Increases Item Level by 5 and increases the potency of all Azerite powers granted by this item.
 
 Name             : Elemental Whirl (id=263984) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -6165,6 +6166,25 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.111428) | PvP Coefficient: 1.00000 | Trigger Spell: 270675 | Target: Self (1)
 Description      : Taking damage grants you $s1 Dodge for $269214d, stacking up to $269214u times.
 
+Name             : Blinding Mists (id=267682) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 464
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=714530)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 155.5 (coefficient=0.5) | PvP Coefficient: 1.00000 | Misc Value: 1792 | Target: Self (1)
+Description      : Your damaging abilities have a chance to apply Blinding Mists to all targets within 8 yards, reducing the damage dealt by their next 3 melee hits by $s1.
+Tooltip          : Your damaging abilities have a chance to apply Blinding Mists to all targets within 8 yards, reducing the damage dealt by their next 3 melee hits by $s1.
+
 Name             : Azerite Veins (id=267683) [Scaling Spell (-8), Passive] 
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
@@ -6223,7 +6243,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=715939)   : Apply Aura (6) | Dummy (4)
+#1 (id=715939)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 2243.779 (coefficient=28.8589) | PvP Coefficient: 0.50000 | Trigger Spell: 270654 | Target: Self (1)
 Description      : When you take damage, heal for $s1. Cannot occur more than once every $270654proccooldown sec.
 Tooltip          : When you take damage, heal for $s1. Cannot occur more than once every $270654proccooldown sec.
@@ -6263,7 +6283,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=716159)   : Apply Aura (6) | Dummy (4)
+#1 (id=716159)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 6997.5 (coefficient=90) | PvP Coefficient: 0.50000 | Trigger Spell: 270655 | Target: Self (1)
 #2 (id=720319)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
@@ -6308,7 +6328,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=716165)   : Apply Aura (6) | Dummy (4)
+#1 (id=716165)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 3165.077 (coefficient=10.1771) | PvP Coefficient: 0.50000 | Trigger Spell: 270652 | Target: Self (1)
 #2 (id=720314)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 82.61684 (coefficient=0.265649) | PvP Coefficient: 0.50000 | Target: Self (1)
@@ -6330,7 +6350,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=716167)   : Apply Aura (6) | Dummy (4)
+#1 (id=716167)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 598.3412 (coefficient=7.695707) | PvP Coefficient: 0.50000 | Trigger Spell: 270660 | Target: Self (1)
 #2 (id=716168)   : Dummy (3)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000
@@ -6457,26 +6477,6 @@ Effects          :
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000
 Description      : When Pillar of Frost expires, your Strength is increased by $s1 for $272723d. This effect lasts ${$s2/1000} sec longer for each Obliterate and Frostscythe critical strike during Pillar of Frost.
 
-Name             : Festering Doom (id=272738) [Scaling Spell (-8), Spell Family (15), Passive] 
-Class            : Death Knight
-School           : Physical
-Spell Type       : None
-Azerite Power Id : 109
-Triggered by     : Festering Doom (272741)
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Scales with item level (354)
-Effects          :
-#1 (id=723827)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 1104.241 (coefficient=14.20246) | PvP Coefficient: 1.00000 | Trigger Spell: 272739 | Target: Self (1)
-Description      : Death Coil causes your next Festering Strike to deal an additional $s1 damage.
-Tooltip          : Death Coil causes your next Festering Strike to deal an additional $s1 damage.
-
 Name             : Bone Spike Graveyard (id=273088) [Scaling Spell (-8), Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
@@ -6521,7 +6521,6 @@ Name             : Horrid Experimentation (id=273095) [Scaling Spell (-1), Spell
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
-Azerite Power Id : 142
 Triggered by     : Horrid Experimentation (273096)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6802,27 +6801,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 136.84 (coefficient=0.44) | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Death Strike heals for an additional $s1 for each remaining charge of Bone Shield.
 
-Name             : Glacial Contagion (id=274070) [Scaling Spell (-8), Spell Family (15), Passive] 
-Class            : Death Knight
-School           : Physical
-Spell Type       : None
-Azerite Power Id : 198
-Triggered by     : Glacial Contagion (274074)
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Scales with item level (354)
-Effects          :
-#1 (id=726180)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 391.1349 (coefficient=5.030674) | PvP Coefficient: 1.00000 | Trigger Spell: 274071 | Target: Self (1)
-#2 (id=726181)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 130.2194 (coefficient=1.674847) | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Your autoattacks have a chance to apply Glacial Contagion, dealing ${$s1*($274074d/$274074t1)} Frost damage over $274074d. Obliterate deals an additional $s2 damage to targets infected with Glacial Contagion.
-
 Name             : Festermight (id=274081) [Scaling Spell (-1), Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
@@ -6975,25 +6953,6 @@ Effects          :
 #2 (id=729272)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 275917
 Description      : $@spelldesc275917
-
-Name             : Embrace of the Darkfallen (id=275924) [Scaling Spell (-7), Spell Family (15), Passive] 
-Class            : Death Knight
-School           : Physical
-Spell Type       : None
-Azerite Power Id : 243
-Triggered by     : Embrace of the Darkfallen (275926)
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Scales with item level (354)
-Effects          :
-#1 (id=729279)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=1.089209) | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : When Vampiric Blood expires, your Leech is increased by $s1 for $275926d.
 
 Name             : Harrowing Decay (id=275929) [Scaling Spell (-8), Spell Family (15), Passive] 
 Class            : Death Knight
@@ -7302,7 +7261,7 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: 14881 | Target: Custom (18)
 Description      : Summons a frostwyrm who breathes on all enemies within $s1 yd in front of you, dealing $279303s1 Frost damage and slowing movement speed by $279303s2% for $279303d.
 
-Name             : Frost Breath (id=279303) [Spell Family (15)] 
+Name             : Frostwyrm's Fury (id=279303) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
 Spell Type       : Magic
@@ -7399,7 +7358,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=737261)   : Apply Aura (6) | Dummy (4)
+#1 (id=737261)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 280132 | Target: Self (1)
 #2 (id=737262)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000
@@ -7424,7 +7383,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=737263)   : Apply Aura (6) | Dummy (4)
+#1 (id=737263)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.972209) | PvP Coefficient: 0.50000 | Trigger Spell: 280143 | Target: Self (1)
 #2 (id=737264)   : Dummy (3)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000
@@ -7833,7 +7792,7 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 #3 (id=744340)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 131.9971 (coefficient=0.424428) | PvP Coefficient: 1.00000
-Description      : Your abilities have a chance to plant a factional banner for $280841d, empowering yourself and up to $s2 allies with the spirit of the Horde.
+Description      : Your abilities have a chance to plant a banner representing a Horde race for $280841d, granting you and up to $s2 allies $s3 of their primary stat or $s1 of a secondary stat.
 
 Name             : Collective Will (id=280581) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -7964,7 +7923,7 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 #3 (id=744329)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 131.9971 (coefficient=0.424428) | PvP Coefficient: 1.00000
-Description      : Your abilities have a chance to plant a factional banner for $280866d, empowering yourself and up to $s2 allies with the spirit of the Alliance.
+Description      : Your abilities have a chance to plant a banner representing an Alliance race for $280866d, granting you and up to $s2 allies $s3 of their primary stat or $s1 of a secondary stat.
 
 Name             : Stand As One (id=280626) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -8176,7 +8135,7 @@ Name             : Helchains (id=286832) [Scaling Spell (-8), Spell Family (15),
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Azerite Power Id : 511
+Azerite Power Id : 142
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8189,14 +8148,14 @@ Effects          :
 #1 (id=749436)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 343.4356 (coefficient=4.417178) | PvP Coefficient: 1.00000 | Trigger Spell: 286834 | Target: Self (1)
 #2 (id=749437)   : Dummy (3)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000
 Description      : Dark Transformations ignites you and your pet with flaming chains that deal $s1 Fire damage every sec to enemies between you for $s2 sec. 
 
 Name             : Frostwhelp's Indignation (id=287283) [Scaling Spell (-1), Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Azerite Power Id : 519
+Azerite Power Id : 198
 Triggered by     : Frostwhelp's Indignation (287338)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8215,11 +8174,111 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 Description      : Pillar of Frost summons a Frostwhelp who breathes on all enemies within 20 yards in front of you for $s1 Frost damage. Each unique enemy hit by Frostwhelp's Indignation grants you $s2 Mastery for $287338d, up to ${$s2*$s3}.
 
+Name             : Shadow of Elune (id=287467) [Scaling Spell (-7), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 521
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=750457)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=2.025204) | PvP Coefficient: 1.00000 | Trigger Spell: 287468 | Target: Self (1)
+Description      : Your spells and abilities have a chance to increase your Haste by $s1 for $287471d. At night, you also gain $287471s2% movement speed for the duration.
+
+Name             : Ancients' Bulwark (id=287604) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 522
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=750674)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 284.8856 (coefficient=0.916031) | PvP Coefficient: 1.00000 | Trigger Spell: 287605 | Target: Self (1)
+#2 (id=750675)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 242.5788 (coefficient=0.779996) | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Standing still grants you Deep Roots, increasing your Versatility by $s2. Moving instead grants you Uprooted, healing you for $s1 every $287608t1 sec.
+
+Name             : Apothecary's Concoctions (id=287631) [Scaling Spell (-8), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 523
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=750714)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 467.454 (coefficient=6.01227) | PvP Coefficient: 1.00000 | Trigger Spell: 287633 | Target: Self (1)
+#2 (id=750715)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 894.3635 (coefficient=11.50307) | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=750716)   : Dummy (3)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
+Description      : Your damaging abilities have a chance to deal $<dmg> Plague damage over $287638d, and your healing abilities have a chance to restore $<heal> health over $287639d. These effects are increased by up to $s3% based on the target's missing health.
+Variables        : $dmg=${$s1*3}
+$heal=${$s2*3}
+
+Name             : Endless Hunger (id=287662) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 526
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=750767)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 1994.198 (coefficient=6.412213) | PvP Coefficient: 1.00000 | Trigger Spell: 287664 | Target: Self (1)
+#2 (id=750768)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 242.6276 (coefficient=0.780153) | PvP Coefficient: 1.00000 | Misc Value: 1879048192 | Target: Self (1)
+Description      : Your Versatility is increased by $s2. Moving near an enemy's corpse consumes their essence, restoring $s1 health.
+
+Name             : Fight or Flight (id=287818) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 541
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=751037)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 370.3512 (coefficient=1.19084) | PvP Coefficient: 1.00000 | Trigger Spell: 287821 | Target: Self (1)
+Description      : When you damage an enemy who is below $287821s1% health, or fall below $287821s1% health yourself, gain $s1 primary stat and $287827s5% movement speed for $287827d. Can only occur once every $287825d.
+
 Name             : Magus of the Dead (id=288417) [Scaling Spell (-8), Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Azerite Power Id : 552
+Azerite Power Id : 109
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8231,13 +8290,100 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=752014)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 933 (coefficient=12) | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Apocalypse and Army of the Damned additionally summon a Magus of the Dead who hurls Frostbolts and Shadowbolts at your foes, dealing $s1 damage each.
+Description      : Apocalypse and Army of the Damned additionally summon a Magus of the Dead for $288544d who hurls Frostbolts and Shadow Bolts at your foes, dealing $s1 damage each. 
+
+Name             : Cold Hearted (id=288424) [Scaling Spell (-8), Spell Family (15), Passive] 
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 549
+Triggered by     : Cold Hearted (288426)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=752031)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 1907.975 (coefficient=24.53988) | PvP Coefficient: 1.00000 | Trigger Spell: 288425 | Target: Self (1)
+#2 (id=752032)   : Dummy (3)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000
+Description      : Icebound Fortitude heals for $s1 every sec and its cooldown is reduced by $s2 seconds.
+
+Name             : Seductive Power (id=288749) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 561
+Triggered by     : Seductive Power (288777)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=752664)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 28.48853 (coefficient=0.091603) | PvP Coefficient: 1.00000 | Trigger Spell: 288757 | Target: Self (1)
+#2 (id=752673)   : Dummy (3)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000
+Description      : Your spells and abilities have a chance to conjure Bwonsamdi's spectral visage, beckoning you closer. If you approach him, gain $s1 to all stats for $288777d, stacking up to $288777u times. If you fail to heed his call, lose $s2 $Lstack:stacks;.
+
+Name             : Bonded Souls (id=288802) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 560
+Triggered by     : Bonded Souls (288839)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=752745)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 623.7739 (coefficient=2.005704) | PvP Coefficient: 1.00000 | Trigger Spell: 288804 | Target: Self (1)
+#2 (id=752815)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 3798.473 (coefficient=12.21374) | PvP Coefficient: 1.00000
+Description      : Your spells and abilities have a chance to trigger a Soulbond for $288841d. During Soulbond, every $288841t1 sec you and your nearest ally are both healed for $s2 and gain $s1 Haste for $288839d.
+
+Name             : Treacherous Covenant (id=288953) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 562
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=752982)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 166.1832 (coefficient=0.534351) | PvP Coefficient: 1.00000 | Trigger Spell: 288964 | Target: Self (1)
+#2 (id=752991)   : Dummy (3)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
+#3 (id=752992)   : Dummy (3)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000
+#4 (id=752993)   : Dummy (3)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
+Description      : Your primary stat is increased by $s1 while you are above $s2% health. You take $s3% increased damage while below $s4% health.
 
 Name             : Bloody Runeblade (id=289339) [Scaling Spell (-8), Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Azerite Power Id : 557
+Azerite Power Id : 243
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

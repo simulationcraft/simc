@@ -1635,7 +1635,7 @@ Race             : Blood Elf (0x200)
 School           : Arcane
 Spell Type       : Magic
 GCD              : 1.5 seconds
-Cooldown         : 90 seconds
+Cooldown         : 120 seconds
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2393,6 +2393,26 @@ Effects          :
 #2 (id=739064)   : Trigger Spell (64): Dire Beast
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 281036 | Target: Self (1)
 Description      : Summons a powerful wild beast that attacks the target and roars, increasing your Haste by $281036s1% for $d.
+
+Name             : Dire Beast (id=120694) [Spell Family (9)] 
+Class            : Hunter
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Affecting spells : Scent of Blood (193532 effect#1), Dire Longevity (215911 effect#1)
+Family Flags     : 89
+Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+Effects          :
+#1 (id=140521)   : Energize Power (30)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: focus | Target: Unknown(27)
+Description      : $@spelldesc120679
+Tooltip          : Generating ${$w1*$d/$t1} Focus over $d.
 
 Name             : Glaive Toss (id=120761) [Spell Family (9)] 
 Class            : Hunter
@@ -3479,7 +3499,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 70 yards/sec
 Requires weapon  : Bow, Gun, Crossbow
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effect#1), Coordinated Assault (266779 effect#1), Master Marksman (269576 effect#1), Arcane Flurry (273267 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effect#1), Coordinated Assault (266779 effect#1), Master Marksman (269576 effect#1)
 Triggered by     : Precise Shots (260242)
 Family Flags     : 1, 105, 106, 121
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
@@ -3528,7 +3548,7 @@ Spell Type       : None
 Spell Level      : 20
 Duration         : 4 seconds
 Affecting spells : One with the Pack (199528 effect#1)
-Triggered by     : Wild Call (185789)
+Triggered by     : Wild Call (185789), Primal Instincts (279807)
 Family Flags     : 127
 Attributes       : .......x ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -3687,7 +3707,7 @@ Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Eagle (186289 effect#1), Aspect of the Wild (193530 effect#1), Raptor's Cry (203638 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Tip of the Spear (260286 effect#1), Raptor Strike (262839 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), Wilderness Survival (278532 effect#3), Up Close And Personal (279593 effect#2), 
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Eagle (186289 effect#1), Aspect of the Wild (193530 effect#1), Raptor's Cry (203638 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Tip of the Spear (260286 effect#1), Raptor Strike (262839 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), Wilderness Survival (278532 effect#3)
 Family Flags     : 1, 55, 80, 106
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -4121,7 +4141,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=283926)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effects (8)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 8 | Target: Self (1)
-                   Affected Spells: Barbed Shot (246152)
+                   Affected Spells: Dire Beast (120694), Barbed Shot (246152)
                    Family Flags: 89
 #2 (id=374727)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -4146,7 +4166,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=283927)   : Apply Aura (6) | Dummy (4)
                    Base Value: 250 | Scaled Value: 250 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Using Steady Shot reduces the cast time of Steady Shot by $193534s1%, stacking up to $193534u times.  Using any other shot removes this effect.
+Description      : Using Steady Shot reduces the cast time of Steady Shot by $193534s1%, stacking up to $193534u times. Using any other shot removes this effect.
 
 Name             : Steady Focus (id=193534) [Spell Family (9)] 
 Class            : Hunter
@@ -5340,6 +5360,7 @@ Description      : Shoot a stream of $s1 shots at your target over $d, dealing a
 Each shot generates $263585s1 Focus.
 
 Usable while moving.
+Tooltip          : Being targeted by Rapid Fire.
 
 Name             : Rapid Fire (id=257045) [Spell Family (9)] 
 Class            : Hunter
@@ -5352,7 +5373,7 @@ Requires weapon  : Bow, Gun, Crossbow
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Lethal Shots (260395 effect#1), Coordinated Assault (266779 effect#1), Focused Fire (278531 effect#2)
 Family Flags     : 3, 106, 121
 Attributes       : .x...... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ .x...... ........   .....x.. .x...... ........ ........ 
+                 : ..x..... ........ .x...... ........   .....x.. .x...... ........ ........ 
                  : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
@@ -5439,12 +5460,12 @@ Effects          :
 #2 (id=716810)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 9 | Target: Self (1)
 #3 (id=738672)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 9 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 9 | Target: Self (1)
 #4 (id=738673)   : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: 9 | Target: Self (1)
 #5 (id=753424)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 9 | Target: Self (1)
-Description      : When Multi-Shot hits $s2 or more targets, your next Aimed Shot will ricochet and hit up to $s1 additional targets for $s4% of normal damage, or each shot of your next Rapid Fire will ricochet to $s3 additional nearby targets for $s5% of normal damage.
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: 9 | Target: Self (1)
+Description      : When Multi-Shot hits $s2 or more targets, your next Aimed Shot or Rapid Fire will ricochet and hit up to $s1 additional targets for $s4% of normal damage.
 
 Name             : Trick Shots (id=257622) [Spell Family (9)] 
 Class            : Hunter
@@ -5466,7 +5487,7 @@ Effects          :
 #1 (id=480921)   : Apply Aura (6) | Dummy (4)
                    Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
 Description      : $@spelldesc257621
-Tooltip          : Your next Aimed Shot will ricochet and hit $257621s1 additional targets for $257621s4% of normal damage, or each shot of your next Rapid Fire will ricochet to up to $257621s3 additional targets.
+Tooltip          : Your next Aimed Shot or Rapid Fire will ricochet and hit $257621s1 additional targets for $257621s4% of normal damage.
 
 Name             : Venomous Bite (id=257891) [Spell Family (9), Passive] 
 Class            : Hunter
@@ -5579,7 +5600,7 @@ Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Blackness (184902 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mongoose Fury (259388 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), Wilderness Survival (278532 effect#2), Up Close And Personal (279593 effect#1), 
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Blackness (184902 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mongoose Fury (259388 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), Wilderness Survival (278532 effect#2)
 Family Flags     : 1, 55, 96, 106
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -6940,7 +6961,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=707038)   : Apply Aura (6) | Dummy (4)
+#1 (id=707038)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 6410.799 (coefficient=82.454) | PvP Coefficient: 0.50000 | Trigger Spell: 270568 | Target: Self (1)
 Description      : Every $270568t1 sec, gain an absorb shield for $s1 for $269279d.
 
@@ -6960,7 +6981,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=707058)   : Dummy (3)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000
-Description      : Increases the item level of this item by 5.
+Description      : Increases Item Level by 5 and increases the potency of all Azerite powers granted by this item.
 
 Name             : Elemental Whirl (id=263984) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -7427,7 +7448,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Eagle (186289 effect#1), Aspect of the Wild (193530 effect#1), Raptor's Cry (203638 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Tip of the Spear (260286 effect#1), Raptor Strike (262839 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), Wilderness Survival (278532 effect#3), Up Close And Personal (279593 effect#2), 
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Eagle (186289 effect#1), Aspect of the Wild (193530 effect#1), Raptor's Cry (203638 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Tip of the Spear (260286 effect#1), Raptor Strike (262839 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), Wilderness Survival (278532 effect#3)
 Family Flags     : 1, 55, 80, 106
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -7452,7 +7473,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Blackness (184902 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mongoose Fury (259388 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), Wilderness Survival (278532 effect#2), Up Close And Personal (279593 effect#1), 
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Blackness (184902 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mongoose Fury (259388 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), Wilderness Survival (278532 effect#2)
 Family Flags     : 1, 55, 96, 106
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -7753,7 +7774,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=715939)   : Apply Aura (6) | Dummy (4)
+#1 (id=715939)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 2243.779 (coefficient=28.8589) | PvP Coefficient: 0.50000 | Trigger Spell: 270654 | Target: Self (1)
 Description      : When you take damage, heal for $s1. Cannot occur more than once every $270654proccooldown sec.
 Tooltip          : When you take damage, heal for $s1. Cannot occur more than once every $270654proccooldown sec.
@@ -7842,7 +7863,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=716159)   : Apply Aura (6) | Dummy (4)
+#1 (id=716159)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 6997.5 (coefficient=90) | PvP Coefficient: 0.50000 | Trigger Spell: 270655 | Target: Self (1)
 #2 (id=720319)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
@@ -7887,7 +7908,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=716165)   : Apply Aura (6) | Dummy (4)
+#1 (id=716165)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 3165.077 (coefficient=10.1771) | PvP Coefficient: 0.50000 | Trigger Spell: 270652 | Target: Self (1)
 #2 (id=720314)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 82.61684 (coefficient=0.265649) | PvP Coefficient: 0.50000 | Target: Self (1)
@@ -7909,7 +7930,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=716167)   : Apply Aura (6) | Dummy (4)
+#1 (id=716167)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 598.3412 (coefficient=7.695707) | PvP Coefficient: 0.50000 | Trigger Spell: 270660 | Target: Self (1)
 #2 (id=716168)   : Dummy (3)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000
@@ -8701,25 +8722,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 413.0839 (coefficient=1.328244) | PvP Coefficient: 1.00000 | Trigger Spell: 273263 | Target: Self (1)
 Description      : Bestial Wrath increases your Agility by $s1 for $273264d.
 
-Name             : Arcane Flurry (id=273265) [Scaling Spell (-8), Spell Family (9), Passive] 
-Class            : Hunter
-School           : Physical
-Spell Type       : None
-Azerite Power Id : 162
-Triggered by     : Arcane Flurry (273267)
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Scales with item level (354)
-Effects          :
-#1 (id=724756)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 137.773 (coefficient=1.772) | PvP Coefficient: 1.00000 | Trigger Spell: 273266 | Target: Self (1)
-Description      : Arcane Shot increases the damage of Arcane Shot by $s1 for $273267d, stacking up to $273267u times.
-
 Name             : Summon Animal Companion (id=273277) [Hidden] 
 Class            : Hunter
 School           : Physical
@@ -8959,7 +8961,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=726630)   : Apply Aura (6) | Dummy (4)
+#1 (id=726630)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 1077.014 (coefficient=13.85227) | PvP Coefficient: 0.50000 | Trigger Spell: 274356 | Target: Self (1)
 Description      : Every $274357t1 sec Aspect of the Turtle is active, heal for $s1.
 
@@ -8981,32 +8983,6 @@ Effects          :
 #1 (id=726776)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 327.6183 (coefficient=1.053435) | PvP Coefficient: 1.00000 | Trigger Spell: 274442 | Target: Self (1)
 Description      : Barbed Shot has a chance equal to your critical strike chance to grant you $s1 Agility for $274443d.
-
-Name             : Dance of Death (id=274443) [Scaling Spell (-1), Spell Family (9)] 
-Class            : Hunter
-School           : Physical
-Spell Type       : None
-Duration         : 8 seconds
-Proc Chance      : 100%
-Azerite Power Id : 366
-Proc Flags       : ........ x....... ........ ........ 
-                 : Yellow Ranged
-Triggered by     : Dance of Death (274442)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : ........ ........ ........ .......x   ........ ........ ........ ........ 
-                 : Scales with item level (354)
-Effects          :
-#1 (id=726778)   : Apply Aura (6) | Attribute (29)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-#2 (id=726779)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 274441 | Target: Self (1)
-Description      : $@spelldesc274441
-Tooltip          : Increases Agility by $w1.
 
 Name             : Unerring Vision (id=274444) [Scaling Spell (-7), Spell Family (9), Passive] 
 Class            : Hunter
@@ -9083,24 +9059,6 @@ Effects          :
 #2 (id=733430)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 51.98116 (coefficient=0.167142) | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : During Coordinated Assault, $?s259387[Mongoose Bite][Raptor Strike] increases your Agility by $s1 and your Speed by $s2 for $277969d. Stacks up to $277969u times.
-
-Name             : Pack Alpha (id=278528) [Scaling Spell (-8), Spell Family (9), Passive] 
-Class            : Hunter
-School           : Physical
-Spell Type       : None
-Azerite Power Id : 365
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Scales with item level (354)
-Effects          :
-#1 (id=734282)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 324.3558 (coefficient=4.171779) | PvP Coefficient: 0.32000 | Target: Self (1)
-Description      : Your primary pet's Basic Attack deals $s1 more damage for each other pet you have active.
 
 Name             : Feeding Frenzy (id=278529) [Scaling Spell (-1), Spell Family (9), Passive] 
 Class            : Hunter
@@ -9195,26 +9153,6 @@ Effects          :
                    Family Flags: 80
 Description      : $?s259387[Mongoose Bite][Raptor Strike] deals an additional $s2 damage and reduces the remaining cooldown of Wildfire Bomb by ${$s1/1000}.1 sec.
 
-Name             : Up Close And Personal (id=278533) [Scaling Spell (-8), Spell Family (9), Passive] 
-Class            : Hunter
-School           : Physical
-Spell Type       : None
-Azerite Power Id : 373
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Scales with item level (354)
-Effects          :
-#1 (id=734294)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 1856.46 (coefficient=23.8773) | PvP Coefficient: 1.00000 | Trigger Spell: 279591 | Target: Self (1)
-#2 (id=734295)   : Dummy (3)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000
-Description      : Harpoon increases the damage of your next $?s259387[Mongoose Bite][Raptor Strike] by $s1, and reduces its cost by $s2 Focus.
-
 Name             : Multi-Shot (id=278565) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -9288,6 +9226,25 @@ Effects          :
                    Base Value: 8921 | Scaled Value: 8921 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc279620
 
+Name             : Primal Instincts (id=279806) [Scaling Spell (-7), Spell Family (9), Passive] 
+Class            : Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 366
+Triggered by     : Primal Instincts (279810)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=736377)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=2.729986) | PvP Coefficient: 1.00000 | Trigger Spell: 279807 | Target: Self (1)
+Description      : Aspect of the Wild increases your Mastery by $s1, and grants you a charge of Barbed Shot.
+
 Name             : Unstable Flames (id=279899) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
@@ -9341,7 +9298,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=737267)   : Apply Aura (6) | Dummy (4)
+#1 (id=737267)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 8975.118 (coefficient=115.4356) | PvP Coefficient: 0.50000 | Trigger Spell: 280169 | Target: Self (1)
 #2 (id=737268)   : Dummy (3)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000
@@ -9786,7 +9743,7 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 #3 (id=744340)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 131.9971 (coefficient=0.424428) | PvP Coefficient: 1.00000
-Description      : Your abilities have a chance to plant a factional banner for $280841d, empowering yourself and up to $s2 allies with the spirit of the Horde.
+Description      : Your abilities have a chance to plant a banner representing a Horde race for $280841d, granting you and up to $s2 allies $s3 of their primary stat or $s1 of a secondary stat.
 
 Name             : Collective Will (id=280581) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -9917,7 +9874,7 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 #3 (id=744329)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 131.9971 (coefficient=0.424428) | PvP Coefficient: 1.00000
-Description      : Your abilities have a chance to plant a factional banner for $280866d, empowering yourself and up to $s2 allies with the spirit of the Alliance.
+Description      : Your abilities have a chance to plant a banner representing an Alliance race for $280866d, granting you and up to $s2 allies $s3 of their primary stat or $s1 of a secondary stat.
 
 Name             : Stand As One (id=280626) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -10086,7 +10043,7 @@ Name             : Dire Consequences (id=287093) [Scaling Spell (-8), Spell Fami
 Class            : Hunter
 School           : Physical
 Spell Type       : None
-Azerite Power Id : 518
+Azerite Power Id : 365
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10103,11 +10060,93 @@ Effects          :
 Description      : Kill Command deals $<damage> additional damage, and has a chance to summon a Dire Beast.
 Variables        : $damage=$?a137017[${$s2}][${$s1}]
 
+Name             : Shadow of Elune (id=287467) [Scaling Spell (-7), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 521
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=750457)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=2.025204) | PvP Coefficient: 1.00000 | Trigger Spell: 287468 | Target: Self (1)
+Description      : Your spells and abilities have a chance to increase your Haste by $s1 for $287471d. At night, you also gain $287471s2% movement speed for the duration.
+
+Name             : Ancients' Bulwark (id=287604) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 522
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=750674)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 284.8856 (coefficient=0.916031) | PvP Coefficient: 1.00000 | Trigger Spell: 287605 | Target: Self (1)
+#2 (id=750675)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 242.5788 (coefficient=0.779996) | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Standing still grants you Deep Roots, increasing your Versatility by $s2. Moving instead grants you Uprooted, healing you for $s1 every $287608t1 sec.
+
+Name             : Apothecary's Concoctions (id=287631) [Scaling Spell (-8), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 523
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=750714)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 467.454 (coefficient=6.01227) | PvP Coefficient: 1.00000 | Trigger Spell: 287633 | Target: Self (1)
+#2 (id=750715)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 894.3635 (coefficient=11.50307) | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=750716)   : Dummy (3)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
+Description      : Your damaging abilities have a chance to deal $<dmg> Plague damage over $287638d, and your healing abilities have a chance to restore $<heal> health over $287639d. These effects are increased by up to $s3% based on the target's missing health.
+Variables        : $dmg=${$s1*3}
+$heal=${$s2*3}
+
+Name             : Endless Hunger (id=287662) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 526
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=750767)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 1994.198 (coefficient=6.412213) | PvP Coefficient: 1.00000 | Trigger Spell: 287664 | Target: Self (1)
+#2 (id=750768)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 242.6276 (coefficient=0.780153) | PvP Coefficient: 1.00000 | Misc Value: 1879048192 | Target: Self (1)
+Description      : Your Versatility is increased by $s2. Moving near an enemy's corpse consumes their essence, restoring $s1 health.
+
 Name             : Surging Shots (id=287707) [Scaling Spell (-8), Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
-Azerite Power Id : 528
+Azerite Power Id : 162
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10122,6 +10161,24 @@ Effects          :
 #2 (id=750852)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 207.4924 (coefficient=2.668712) | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Rapid Fire damage is increased by up to ${$m2*1.5} per shot fired, this damage starts lower and increases per shot of Rapid Fire. Aimed Shot has a $s1% chance to reset the cooldown of Rapid Fire.
+
+Name             : Fight or Flight (id=287818) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 541
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=751037)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 370.3512 (coefficient=1.19084) | PvP Coefficient: 1.00000 | Trigger Spell: 287821 | Target: Self (1)
+Description      : When you damage an enemy who is below $287821s1% health, or fall below $287821s1% health yourself, gain $s1 primary stat and $287827s5% movement speed for $287827d. Can only occur once every $287825d.
 
 Name             : Nature's Salve (id=287938) [Scaling Spell (-8), Spell Family (9), Passive] 
 Class            : Hunter
@@ -10147,7 +10204,7 @@ Name             : Primeval Intuition (id=288570) [Scaling Spell (-7), Spell Fam
 Class            : Hunter
 School           : Physical
 Spell Type       : None
-Azerite Power Id : 551
+Azerite Power Id : 373
 Triggered by     : Primeval Intuition (288573)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10193,7 +10250,73 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Aimed Shot (19434)
                    Family Flags: 17
-Description      : Reduces the cooldown of your Aimed Shot and Rapid Fire abilities by ${$m1/4}%, and causes Aimed Shot to cast $s4% faster for $d.
-Tooltip          : The cooldown of Aimed Shot and Rapid Fire is reduced by ${$m1/4}%, and Aimed Shot will cast $s4% faster.
+Description      : Reduces the cooldown of your Aimed Shot and Rapid Fire by ${$m1/4}%, and causes Aimed Shot to cast $s4% faster for $d.
+Tooltip          : The cooldown of Aimed Shot and Rapid Fire is reduced by ${$m1/4}%, and Aimed Shot casts $s4% faster.
+
+Name             : Seductive Power (id=288749) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 561
+Triggered by     : Seductive Power (288777)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=752664)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 28.48853 (coefficient=0.091603) | PvP Coefficient: 1.00000 | Trigger Spell: 288757 | Target: Self (1)
+#2 (id=752673)   : Dummy (3)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000
+Description      : Your spells and abilities have a chance to conjure Bwonsamdi's spectral visage, beckoning you closer. If you approach him, gain $s1 to all stats for $288777d, stacking up to $288777u times. If you fail to heed his call, lose $s2 $Lstack:stacks;.
+
+Name             : Bonded Souls (id=288802) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 560
+Triggered by     : Bonded Souls (288839)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=752745)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 623.7739 (coefficient=2.005704) | PvP Coefficient: 1.00000 | Trigger Spell: 288804 | Target: Self (1)
+#2 (id=752815)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 3798.473 (coefficient=12.21374) | PvP Coefficient: 1.00000
+Description      : Your spells and abilities have a chance to trigger a Soulbond for $288841d. During Soulbond, every $288841t1 sec you and your nearest ally are both healed for $s2 and gain $s1 Haste for $288839d.
+
+Name             : Treacherous Covenant (id=288953) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 562
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=752982)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 166.1832 (coefficient=0.534351) | PvP Coefficient: 1.00000 | Trigger Spell: 288964 | Target: Self (1)
+#2 (id=752991)   : Dummy (3)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
+#3 (id=752992)   : Dummy (3)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000
+#4 (id=752993)   : Dummy (3)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
+Description      : Your primary stat is increased by $s1 while you are above $s2% health. You take $s3% increased damage while below $s4% health.
 
 

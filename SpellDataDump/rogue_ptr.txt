@@ -824,7 +824,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=1837)     : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 (coefficient=2.676) | SP Coefficient: 0.57750 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.57750 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Causes $s1 Nature damage to the target.
 
 Name             : Evasion (id=5277) [Spell Family (8)] 
@@ -857,7 +857,7 @@ Spell Type       : Melee
 Spell Level      : 1
 Range            : 5 yards
 Requires weapon  : Dagger
-Affecting spells : Master of Subtlety (31665 effect#1), Envenom (32645 effect#4), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Cold Blood (170882 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1), Contaminant (269308 effect#2), Poisoned Wire (276083 effect#1)
+Affecting spells : Master of Subtlety (31665 effect#1), Envenom (32645 effect#4), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Cold Blood (170882 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1), Contaminant (269308 effect#2)
 Triggered by     : Mutilate (1329)
 Family Flags     : 33, 54
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
@@ -988,7 +988,7 @@ Attributes       : ........ ........ .....x.. ........   ...x...x ........ .....
                  : Cannot dodge/parry/block (21)
 Effects          :
 #1 (id=3617)     : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.417, delta coefficient=0.28) | AP Coefficient: 0.02129 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.28) | AP Coefficient: 0.02129 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=133966)   : Apply Aura (6) | Modify Healing Recevied% (118)
                    Base Value: -25 | Scaled Value: -25 | AP Coefficient: 0.03931 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Enemy (6)
 Description      : Coats a weapon with poison that lasts for 1 hour.
@@ -1314,7 +1314,7 @@ Race             : Blood Elf (0x200)
 School           : Arcane
 Spell Type       : Magic
 GCD              : 1 seconds
-Cooldown         : 90 seconds
+Cooldown         : 120 seconds
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1336,7 +1336,7 @@ Spell Type       : Melee
 Spell Level      : 1
 Range            : 5 yards
 Requires weapon  : Dagger
-Affecting spells : Master of Subtlety (31665 effect#1), Envenom (32645 effect#4), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Cold Blood (170882 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1), Contaminant (269308 effect#2), Poisoned Wire (276083 effect#1)
+Affecting spells : Master of Subtlety (31665 effect#1), Envenom (32645 effect#4), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Cold Blood (170882 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1), Contaminant (269308 effect#2)
 Triggered by     : Mutilate (1329)
 Family Flags     : 34, 54
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
@@ -1473,11 +1473,11 @@ Attributes       : ........ ........ ........ ...x....   ........ ..x..... .....
 Effects          :
 #1 (id=21282)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Poisoned Wire (276083), Secret Technique (280719), Secret Technique (280720), Echoing Blades (287653)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Echoing Blades (287653)
                    Family Flags: 54
 #2 (id=479892)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Poisoned Wire (276083), Secret Technique (280719), Secret Technique (280720), Echoing Blades (287653)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Echoing Blades (287653)
                    Family Flags: 54
 #3 (id=479893)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -1726,7 +1726,7 @@ Resource         : 35 Energy (3) (id=2351)
 Spell Level      : 63
 GCD              : 1 seconds
 Velocity         : 35 yards/sec
-Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), The Dreadlord's Deceit (208693 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1), Hidden Blades (270070 effect#1), Fan of Blades (279030 effect#1), Echoing Blades (287649 effect#2)
+Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), The Dreadlord's Deceit (208693 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1), Hidden Blades (270070 effect#1), Echoing Blades (287649 effect#2)
 Family Flags     : 50, 54
 Attributes       : ....x... ........ x....... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2035,11 +2035,11 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68022)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.70000 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Garrote (703), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Envenom (32645), Deadly Poison (113780), Crimson Tempest (121411), Internal Bleeding (154953), Agonizing Poison (200803), Toxic Blade (245388), Poison Bomb (255546), Double Dose (273009), Poisoned Wire (276083)
+                   Affected Spells: Garrote (703), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Envenom (32645), Deadly Poison (113780), Crimson Tempest (121411), Internal Bleeding (154953), Agonizing Poison (200803), Toxic Blade (245388), Poison Bomb (255546), Double Dose (273009)
                    Family Flags: 8, 14, 16, 20, 28, 35, 36, 81, 86, 95, 97, 119
 #2 (id=68023)    : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.70000 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Garrote (703), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Deadly Poison (113780), Crimson Tempest (121411), Internal Bleeding (154953), Agonizing Poison (200803), Toxic Blade (245388), Double Dose (273009), Poisoned Wire (276083)
+                   Affected Spells: Garrote (703), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Deadly Poison (113780), Crimson Tempest (121411), Internal Bleeding (154953), Agonizing Poison (200803), Toxic Blade (245388), Double Dose (273009)
                    Family Flags: 8, 14, 16, 20, 28, 36, 81, 95, 97, 119
 Description      : Increases the damage done by your poisons and bleeds by ${$s1}.1%.
 
@@ -2184,7 +2184,7 @@ Attributes       : ........ ........ ........ ........   .....x.. ..x..... .....
 Effects          :
 #1 (id=68390)    : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.66667 | Target: Enemy (6)
-                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Poisoned Wire (276083), Secret Technique (280719), Secret Technique (280720), Echoing Blades (287653)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Echoing Blades (287653)
                    Family Flags: 54
 #2 (id=68391)    : Apply Aura (6) | Modify Auto Attack Damage Taken% from Caster (343)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.66667 | Target: Enemy (6)
@@ -2489,7 +2489,7 @@ Effects          :
 #3 (id=123505)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
 #4 (id=485675)   : Dummy (3)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=709929)   : Dummy (3)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Exploits the vulnerability of foes with less than $s4% health, dealing $s2 Physical damage to the target.
@@ -2858,11 +2858,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179719)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 21 | Scaled Value: 21 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Poisoned Wire (276083), Secret Technique (280719), Secret Technique (280720), Echoing Blades (287653)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Echoing Blades (287653)
                    Family Flags: 54
 #2 (id=191060)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 21 | Scaled Value: 21 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Poisoned Wire (276083), Secret Technique (280719), Secret Technique (280720), Echoing Blades (287653)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Echoing Blades (287653)
                    Family Flags: 54
 #3 (id=191061)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: -38 | Scaled Value: -38 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
@@ -2899,7 +2899,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #17 (id=748997)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 599 (Label) | Target: Self (1)
-                   Affected Spells (Label): Sharpened Blades (272911)
+                   Affected Spells (Label): 
 
 Name             : Outlaw Rogue (id=137036) [Spell Family (8), Passive, Hidden] 
 Class            : Outlaw Rogue
@@ -2916,11 +2916,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179720)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 13 | Scaled Value: 13 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Poisoned Wire (276083), Secret Technique (280719), Secret Technique (280720), Echoing Blades (287653)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Echoing Blades (287653)
                    Family Flags: 54
 #2 (id=191056)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 13 | Scaled Value: 13 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Poisoned Wire (276083), Secret Technique (280719), Secret Technique (280720), Echoing Blades (287653)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Echoing Blades (287653)
                    Family Flags: 54
 #3 (id=191057)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -2964,11 +2964,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179721)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 27 | Scaled Value: 27 | PvP Coefficient: 0.77778 | Target: Self (1)
-                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Poisoned Wire (276083), Secret Technique (280719), Secret Technique (280720), Echoing Blades (287653)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Echoing Blades (287653)
                    Family Flags: 54
 #2 (id=191052)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 27 | Scaled Value: 27 | PvP Coefficient: 0.77778 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Poisoned Wire (276083), Secret Technique (280719), Secret Technique (280720), Echoing Blades (287653)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Echoing Blades (287653)
                    Family Flags: 54
 #3 (id=191053)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
@@ -3353,11 +3353,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=373905)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Poisoned Wire (276083), Secret Technique (280719), Secret Technique (280720), Echoing Blades (287653)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Echoing Blades (287653)
                    Family Flags: 54
 #5 (id=479896)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Poisoned Wire (276083), Secret Technique (280719), Secret Technique (280720), Echoing Blades (287653)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Echoing Blades (287653)
                    Family Flags: 54
 #6 (id=479897)   : Apply Aura (6) | Unknown(275)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -3722,7 +3722,7 @@ Attributes       : ....x... ........ ..x..... .....x.x   .....x.. ..x..... .....
 Effects          :
 #1 (id=283681)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Poisoned Wire (276083), Secret Technique (280719), Secret Technique (280720), Echoing Blades (287653)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Echoing Blades (287653)
                    Family Flags: 54
 #2 (id=733347)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
@@ -3953,11 +3953,11 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=284088)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Poisoned Wire (276083), Secret Technique (280719), Secret Technique (280720), Echoing Blades (287653)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Echoing Blades (287653)
                    Family Flags: 54
 #2 (id=479907)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Poisoned Wire (276083), Secret Technique (280719), Secret Technique (280720), Echoing Blades (287653)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Echoing Blades (287653)
                    Family Flags: 54
 #3 (id=479908)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -5207,11 +5207,11 @@ Attributes       : ....x... ........ x.x..... ........   .....x.. ..x..... .....
 Effects          :
 #1 (id=314702)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.66667 | Target: Self (1)
-                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Poisoned Wire (276083), Secret Technique (280719), Secret Technique (280720), Echoing Blades (287653)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Echoing Blades (287653)
                    Family Flags: 54
 #2 (id=466105)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.66667 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Poisoned Wire (276083), Secret Technique (280719), Secret Technique (280720), Echoing Blades (287653)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Echoing Blades (287653)
                    Family Flags: 54
 #3 (id=466120)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.66667 | Target: Self (1)
@@ -5498,7 +5498,7 @@ Attributes       : ....x... ........ ..x..... ..x....x   ........ ........ .....
 Effects          :
 #1 (id=373279)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.66667 | Target: Enemy (6)
-                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Wound Poison (8679), Wound Poison (8680), Envenom (32645), Deadly Poison (113780), Agonizing Poison (200803), Toxic Blade (245388), Poison Bomb (255546), Double Dose (273009), Poisoned Wire (276083)
+                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Wound Poison (8679), Wound Poison (8680), Envenom (32645), Deadly Poison (113780), Agonizing Poison (200803), Toxic Blade (245388), Poison Bomb (255546), Double Dose (273009), Nothing Personal (286581)
                    Family Flags: 16, 28, 29, 35, 36, 70, 85, 86, 97, 119
 Description      : $@spelldesc245388
 Tooltip          : $s1% increased damage taken from poisons from the casting Rogue.
@@ -6024,7 +6024,7 @@ Attributes       : ........ ........ ........ ...x...x   .....x.. ........ .....
 Effects          :
 #1 (id=479461)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Poisoned Wire (276083), Secret Technique (280719), Secret Technique (280720), Echoing Blades (287653)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Echoing Blades (287653)
                    Family Flags: 54
 #2 (id=730848)   : Apply Aura (6) | Unknown(334)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -6129,7 +6129,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=707038)   : Apply Aura (6) | Dummy (4)
+#1 (id=707038)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 6410.799 (coefficient=82.454) | PvP Coefficient: 0.50000 | Trigger Spell: 270568 | Target: Self (1)
 Description      : Every $270568t1 sec, gain an absorb shield for $s1 for $269279d.
 
@@ -6149,7 +6149,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=707058)   : Dummy (3)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000
-Description      : Increases the item level of this item by 5.
+Description      : Increases Item Level by 5 and increases the potency of all Azerite powers granted by this item.
 
 Name             : Elemental Whirl (id=263984) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -6315,7 +6315,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=715939)   : Apply Aura (6) | Dummy (4)
+#1 (id=715939)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 2243.779 (coefficient=28.8589) | PvP Coefficient: 0.50000 | Trigger Spell: 270654 | Target: Self (1)
 Description      : When you take damage, heal for $s1. Cannot occur more than once every $270654proccooldown sec.
 Tooltip          : When you take damage, heal for $s1. Cannot occur more than once every $270654proccooldown sec.
@@ -6355,7 +6355,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=716159)   : Apply Aura (6) | Dummy (4)
+#1 (id=716159)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 6997.5 (coefficient=90) | PvP Coefficient: 0.50000 | Trigger Spell: 270655 | Target: Self (1)
 #2 (id=720319)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
@@ -6400,7 +6400,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=716165)   : Apply Aura (6) | Dummy (4)
+#1 (id=716165)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 3165.077 (coefficient=10.1771) | PvP Coefficient: 0.50000 | Trigger Spell: 270652 | Target: Self (1)
 #2 (id=720314)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 82.61684 (coefficient=0.265649) | PvP Coefficient: 0.50000 | Target: Self (1)
@@ -6422,7 +6422,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=716167)   : Apply Aura (6) | Dummy (4)
+#1 (id=716167)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 598.3412 (coefficient=7.695707) | PvP Coefficient: 0.50000 | Trigger Spell: 270660 | Target: Self (1)
 #2 (id=716168)   : Dummy (3)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000
@@ -6570,26 +6570,6 @@ Effects          :
                    Family Flags: 43
 Description      : Increases the duration of Blade Flurry by ${$s2/1000} sec and its damage by $s3%.
 
-Name             : Sharpened Blades (id=272911) [Scaling Spell (-8), Passive] 
-Class            : Rogue
-School           : Physical
-Spell Type       : None
-Labels           : 599: Subtlety Rogue (137035 effect#17)
-Azerite Power Id : 124
-Triggered by     : Sharpened Blades (272916)
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Scales with item level (354)
-Effects          :
-#1 (id=724115)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 251.3758 (coefficient=3.233129) | PvP Coefficient: 1.00000 | Trigger Spell: 272913 | Target: Self (1)
-Description      : Your autoattacks increase the damage of your next Shuriken Toss or Poisoned Knife by $s, stacking up to $272916u times.
-
 Name             : Deadshot (id=272935) [Scaling Spell (-8), Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
@@ -6696,57 +6676,6 @@ Effects          :
 #1 (id=725028)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 194.6135 (coefficient=2.503068) | PvP Coefficient: 0.22222 | Trigger Spell: 273419 | Target: Self (1)
 Description      : Nightblade increases the damage of your next Eviscerate within 8 sec by $s1. 
-
-Name             : Night's Vengeance (id=273419) [Scaling Spell (-1), Spell Family (8), Hidden] 
-Class            : Rogue
-School           : Physical
-Spell Type       : None
-Duration         : Aura (infinite)
-Proc Chance      : 100%
-Proc Flags       : ....x... ........ x.x..... ........ 
-                 : Yellow Melee, Magic Hostile Spell, Periodic
-Triggered by     : Night's Vengeance (273418)
-Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
-                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : ........ ........ ........ .......x   ........ ........ ........ ......x. 
-                 : Hidden (7), Scales with item level (354)
-Effects          :
-#1 (id=725029)   : Apply Aura (6) | Proc Trigger Spell (42): Night's Vengeance
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 273424 | Target: Self (1)
-Description      : $@spelldesc273418
-
-Name             : Night's Vengeance (id=273424) [Scaling Spell (-1), Spell Family (8)] 
-Class            : Rogue
-School           : Physical
-Spell Type       : None
-Range            : 100 yards
-Duration         : 8 seconds
-Stacks           : 1 initial, 1 maximum
-Proc Chance      : 100%
-Proc Flags       : ....x... ........ ........ ........ 
-                 : Yellow Melee
-Triggered by     : Night's Vengeance (273419), Replicating Shadows (286130)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Scales with item level (354)
-Effects          :
-#1 (id=725035)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Eviscerate (196819)
-                   Family Flags: 17
-#2 (id=725036)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 273418
-Description      : $@spelldesc273418
-Tooltip          : Your next Eviscerate deals an additional $w1 damage.
 
 Name             : Storm of Steel (id=273452) [Scaling Spell (-8), Spell Family (8), Passive] 
 Class            : Rogue
@@ -6915,7 +6844,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=727160)   : Apply Aura (6) | Dummy (4)
+#1 (id=727160)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 (coefficient=1.604145) | PvP Coefficient: 0.50000 | Trigger Spell: 274694 | Target: Self (1)
 #2 (id=727161)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -6958,25 +6887,6 @@ Effects          :
 #1 (id=729242)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 31.1 (coefficient=0.4) | PvP Coefficient: 1.00000 | Trigger Spell: 279752 | Target: Self (1)
 Description      : Shadowstrike increases the damage your Shadowstrike deals by $s1, stacking up to $279754u times, and costs $279752s2 less Energy.
-
-Name             : Poisoned Wire (id=276072) [Scaling Spell (-7), Spell Family (8), Passive] 
-Class            : Rogue
-School           : Physical
-Spell Type       : None
-Azerite Power Id : 249
-Triggered by     : Poisoned Wire (276083)
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Scales with item level (354)
-Effects          :
-#1 (id=729498)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=6) | PvP Coefficient: 1.00000 | Trigger Spell: 276076 | Target: Self (1)
-Description      : Garrote increases the critical strike rating of your next Mutilate by $s1. 
 
 Name             : Perforate (id=277673) [Scaling Spell (-8), Passive] 
 Class            : Rogue
@@ -7092,34 +7002,6 @@ Effects          :
 #1 (id=733395)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 5 | Target: Self (1)
 Description      : Shuriken Storm reduces enemies' movement speed by $206760s1% for $206760d.
-
-Name             : Fan of Blades (id=278664) [Scaling Spell (-8), Spell Family (8), Passive] 
-Class            : Rogue
-School           : Physical
-Spell Type       : None
-Azerite Power Id : 407
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Scales with item level (354)
-Effects          :
-#1 (id=734508)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 120.2024 (coefficient=1.546012) | PvP Coefficient: 0.25000 | Trigger Spell: 279030 | Target: Self (1)
-#2 (id=734509)   : Dummy (3)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000
-#3 (id=734510)   : Dummy (3)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000
-Description      : Fan of Knives' radius is increased to $s2 yds and damage is increased by ${$s1* $<assassinationNoMastery>} if it hits at least $s3 targets.
-Variables        : $spec=${1+$137037s1/100}.2
-$vers=${1+$@versadmg}.2
-$mastery=${1+$76803s1/100}.2
-$assassinationMastery=${$<spec>*$<vers>*$<mastery>}.2
-$assassinationNoMastery=${$<spec>*$<vers>}.2
-
 
 Name             : Shrouded Suffocation (id=278666) [Scaling Spell (-8), Spell Family (8), Passive] 
 Class            : Rogue
@@ -7388,7 +7270,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=737278)   : Apply Aura (6) | Dummy (4)
+#1 (id=737278)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 688.8893 (coefficient=2.215078) | PvP Coefficient: 1.00000 | Trigger Spell: 280199 | Target: Self (1)
 #2 (id=737279)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 311 (coefficient=1) | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -7797,7 +7679,7 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 #3 (id=744340)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 131.9971 (coefficient=0.424428) | PvP Coefficient: 1.00000
-Description      : Your abilities have a chance to plant a factional banner for $280841d, empowering yourself and up to $s2 allies with the spirit of the Horde.
+Description      : Your abilities have a chance to plant a banner representing a Horde race for $280841d, granting you and up to $s2 allies $s3 of their primary stat or $s1 of a secondary stat.
 
 Name             : Collective Will (id=280581) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -7928,7 +7810,7 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 #3 (id=744329)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 131.9971 (coefficient=0.424428) | PvP Coefficient: 1.00000
-Description      : Your abilities have a chance to plant a factional banner for $280866d, empowering yourself and up to $s2 allies with the spirit of the Alliance.
+Description      : Your abilities have a chance to plant a banner representing an Alliance race for $280866d, granting you and up to $s2 allies $s3 of their primary stat or $s1 of a secondary stat.
 
 Name             : Stand As One (id=280626) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -8135,7 +8017,7 @@ Name             : Replicating Shadows (id=286121) [Scaling Spell (-8), Passive]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Azerite Power Id : 506
+Azerite Power Id : 124
 Triggered by     : Replicating Shadows (286131)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8150,7 +8032,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 740.7715 (coefficient=9.527608) | PvP Coefficient: 0.22222 | Trigger Spell: 286130 | Target: Self (1)
 #2 (id=748344)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Each combo point spent has an $s2% chance to cause your Nightblade deal $s1 Shadow damage and replicate to a nearby enemy.
+Description      : Each combo point spent has an $s2% chance to cause your Nightblade to deal $s1 Shadow damage and replicate to a nearby enemy.
 
 Name             : Replicating Shadows (id=286130) [Scaling Spell (-1), Spell Family (8), Hidden] 
 Class            : Rogue
@@ -8170,8 +8052,8 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ .......x   ........ ........ ........ ......x. 
                  : Hidden (7), Scales with item level (354)
 Effects          :
-#1 (id=748355)   : Apply Aura (6) | Proc Trigger Spell (42): Night's Vengeance
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 273424 | Target: Self (1)
+#1 (id=748355)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc286121
 
 Name             : Replicating Shadows (id=286131) [Scaling Spell (-1), Spell Family (8)] 
@@ -8199,7 +8081,7 @@ Name             : Nothing Personal (id=286573) [Scaling Spell (-8), Spell Famil
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Azerite Power Id : 509
+Azerite Power Id : 249
 Triggered by     : Nothing Personal (286581)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8210,11 +8092,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=749028)   : Apply Aura (6) | Dummy (4)
+#1 (id=749028)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 861.9279 (coefficient=11.08589) | PvP Coefficient: 1.00000 | Trigger Spell: 286579 | Target: Self (1)
 #2 (id=749029)   : Dummy (3)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
-Description      : Vendetta grants you $s2 energy over $286581d and poisons the target, dealing ${$s1*10*$<assassinationMastery>} Nature damage over $286581d.
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000
+Description      : Vendetta poisons the target, dealing ${$s1*10*$<assassinationMastery>} Nature damage over $286581d, and grants you $s2 energy over $286581d.
 Variables        : $spec=${1+$137037s1/100}.2
 $vers=${1+$@versadmg}.2
 $mastery=${1+$76803s1/100}.2
@@ -8222,11 +8104,73 @@ $assassinationMastery=${$<spec>*$<vers>*$<mastery>}.2
 $assassinationNoMastery=${$<spec>*$<vers>}.2
 
 
+Name             : Shadow of Elune (id=287467) [Scaling Spell (-7), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 521
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=750457)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=2.025204) | PvP Coefficient: 1.00000 | Trigger Spell: 287468 | Target: Self (1)
+Description      : Your spells and abilities have a chance to increase your Haste by $s1 for $287471d. At night, you also gain $287471s2% movement speed for the duration.
+
+Name             : Ancients' Bulwark (id=287604) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 522
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=750674)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 284.8856 (coefficient=0.916031) | PvP Coefficient: 1.00000 | Trigger Spell: 287605 | Target: Self (1)
+#2 (id=750675)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 242.5788 (coefficient=0.779996) | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Standing still grants you Deep Roots, increasing your Versatility by $s2. Moving instead grants you Uprooted, healing you for $s1 every $287608t1 sec.
+
+Name             : Apothecary's Concoctions (id=287631) [Scaling Spell (-8), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 523
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=750714)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 467.454 (coefficient=6.01227) | PvP Coefficient: 1.00000 | Trigger Spell: 287633 | Target: Self (1)
+#2 (id=750715)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 894.3635 (coefficient=11.50307) | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=750716)   : Dummy (3)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
+Description      : Your damaging abilities have a chance to deal $<dmg> Plague damage over $287638d, and your healing abilities have a chance to restore $<heal> health over $287639d. These effects are increased by up to $s3% based on the target's missing health.
+Variables        : $dmg=${$s1*3}
+$heal=${$s2*3}
+
 Name             : Echoing Blades (id=287649) [Scaling Spell (-8), Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Azerite Power Id : 524
+Azerite Power Id : 407
 Triggered by     : Echoing Blades (287653)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8249,13 +8193,51 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 #5 (id=753866)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000
-Description      : Fan of Knives damage is increased by ${$s2*$<assassinationNoMastery>}. For each of the first $s4 critical strikes, it will fire a second spray of knives at that location, dealing ${$s3*$<assassinationNoMastery>} damage to enemies within $s4 yards.
+Description      : Fan of Knives damage is increased by ${$s2*$<assassinationNoMastery>}. For each of the first $s4 critical strikes, it will fire a second spray of knives at that location, dealing ${$s3*$<assassinationNoMastery>} damage to enemies within $s5 yards.
 Variables        : $spec=${1+$137037s1/100}.2
 $vers=${1+$@versadmg}.2
 $mastery=${1+$76803s1/100}.2
 $assassinationMastery=${$<spec>*$<vers>*$<mastery>}.2
 $assassinationNoMastery=${$<spec>*$<vers>}.2
 
+
+Name             : Endless Hunger (id=287662) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 526
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=750767)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 1994.198 (coefficient=6.412213) | PvP Coefficient: 1.00000 | Trigger Spell: 287664 | Target: Self (1)
+#2 (id=750768)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 242.6276 (coefficient=0.780153) | PvP Coefficient: 1.00000 | Misc Value: 1879048192 | Target: Self (1)
+Description      : Your Versatility is increased by $s2. Moving near an enemy's corpse consumes their essence, restoring $s1 health.
+
+Name             : Fight or Flight (id=287818) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 541
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=751037)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 370.3512 (coefficient=1.19084) | PvP Coefficient: 1.00000 | Trigger Spell: 287821 | Target: Self (1)
+Description      : When you damage an enemy who is below $287821s1% health, or fall below $287821s1% health yourself, gain $s1 primary stat and $287827s5% movement speed for $287827d. Can only occur once every $287825d.
 
 Name             : Lying In Wait (id=288079) [Scaling Spell (-1), Passive] 
 Class            : Rogue
@@ -8271,12 +8253,78 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=751471)   : Apply Aura (6) | Dummy (4)
+#1 (id=751471)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 688.8893 (coefficient=2.215078) | PvP Coefficient: 1.00000 | Trigger Spell: 288202 | Target: Self (1)
 #2 (id=751472)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 173.2705 (coefficient=0.55714) | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=751473)   : Dummy (3)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000
 Description      : While no enemy is within $s3 yds, heal for $s1 every sec. While any enemy is within $s3 yds, gain $s2 Speed.
+
+Name             : Seductive Power (id=288749) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 561
+Triggered by     : Seductive Power (288777)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=752664)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 28.48853 (coefficient=0.091603) | PvP Coefficient: 1.00000 | Trigger Spell: 288757 | Target: Self (1)
+#2 (id=752673)   : Dummy (3)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000
+Description      : Your spells and abilities have a chance to conjure Bwonsamdi's spectral visage, beckoning you closer. If you approach him, gain $s1 to all stats for $288777d, stacking up to $288777u times. If you fail to heed his call, lose $s2 $Lstack:stacks;.
+
+Name             : Bonded Souls (id=288802) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 560
+Triggered by     : Bonded Souls (288839)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=752745)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 623.7739 (coefficient=2.005704) | PvP Coefficient: 1.00000 | Trigger Spell: 288804 | Target: Self (1)
+#2 (id=752815)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 3798.473 (coefficient=12.21374) | PvP Coefficient: 1.00000
+Description      : Your spells and abilities have a chance to trigger a Soulbond for $288841d. During Soulbond, every $288841t1 sec you and your nearest ally are both healed for $s2 and gain $s1 Haste for $288839d.
+
+Name             : Treacherous Covenant (id=288953) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 562
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=752982)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 166.1832 (coefficient=0.534351) | PvP Coefficient: 1.00000 | Trigger Spell: 288964 | Target: Self (1)
+#2 (id=752991)   : Dummy (3)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
+#3 (id=752992)   : Dummy (3)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000
+#4 (id=752993)   : Dummy (3)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
+Description      : Your primary stat is increased by $s1 while you are above $s2% health. You take $s3% increased damage while below $s4% health.
 
 

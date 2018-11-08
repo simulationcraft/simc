@@ -446,7 +446,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=1837)     : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 (coefficient=2.676) | SP Coefficient: 0.57750 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.57750 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Causes $s1 Nature damage to the target.
 
 Name             : Mighty Bash (id=5211) [Spell Family (7)] 
@@ -616,11 +616,11 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=124697)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Germination (155675), Tranquility (157982), Cultivation (200389), Spring Blossoms (207386), Fungal Essence (272807), Grove Tending (279793)
+                   Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Germination (155675), Tranquility (157982), Cultivation (200389), Spring Blossoms (207386), Grove Tending (279793)
                    Family Flags: 118
 #2 (id=124698)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Germination (155675), Tranquility (157982), Cultivation (200389), Spring Blossoms (207386), Fungal Essence (272807), Grove Tending (279793)
+                   Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Germination (155675), Tranquility (157982), Cultivation (200389), Spring Blossoms (207386), Grove Tending (279793)
                    Family Flags: 118
 #3 (id=1947)     : Apply Aura (6) | Modify Armor% (101)
                    Base Value: 120 | Scaled Value: 120 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
@@ -743,7 +743,7 @@ Effects          :
 #1 (id=2451)     : Unknown(114)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=2452)     : Apply Aura (6) | Taunt (11)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 4200 | Scaled Value: 4200 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Taunts the target to attack you.
 Tooltip          : Taunted.
 
@@ -845,7 +845,6 @@ Class            : Feral Druid
 School           : Physical
 Spell Type       : Magic
 Spell Level      : 48
-Internal Cooldown: 1.05 seconds
 Proc Chance      : 100%
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
@@ -2056,7 +2055,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 45 yards/sec
 Stance Mask      : 0x40000000
-Affecting spells : Moonkin Form (24858 effect#9), Mastery: Starlight (77492 effect#1), Incarnation: Chosen of Elune (102560 effect#1), Restoration Druid (137012 effect#8), Balance Druid (137013 effect#1), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Oneth's Intuition (209406 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), The Emerald Dreamcatcher (224706 effect#1), Item - Druid T20 Balance 2P Bonus (242231 effect#2), Item - Druid  T21 Balance 2P Bonus (251803 effect#2), Sunblaze (274399 effect#1), Arcanic Pulsar (287773 effect#2)
+Affecting spells : Moonkin Form (24858 effect#9), Mastery: Starlight (77492 effect#1), Incarnation: Chosen of Elune (102560 effect#1), Restoration Druid (137012 effect#8), Balance Druid (137013 effect#1), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Oneth's Intuition (209406 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), The Emerald Dreamcatcher (224706 effect#1), Item - Druid T20 Balance 2P Bonus (242231 effect#2), Item - Druid  T21 Balance 2P Bonus (251803 effect#2), Arcanic Pulsar (287773 effect#2)
 Family Flags     : 18, 89
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -2608,7 +2607,7 @@ Attributes       : ........ ........ ........ ......x.   ........ ..x..... .....
 Effects          :
 #1 (id=111098)   : Apply Aura (6) | Root (455)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-Description      : Roots the target and all enemies with $A1 yards in place for $d. Damage may interrupt the effect. Usable in all shapeshift forms.
+Description      : Roots the target and all enemies within $A1 yards in place for $d. Damage may interrupt the effect. Usable in all shapeshift forms.
 Tooltip          : Rooted.
 
 Name             : Wild Charge (id=102401) [Spell Family (7)] 
@@ -3121,7 +3120,7 @@ Class            : Restoration Druid
 School           : Physical
 Spell Type       : Magic
 Spell Level      : 48
-Proc Chance      : 4%
+Proc Chance      : 100%
 Proc Flags       : ........ ......x. ..x..x.. ........ 
                  : Magic Heal, Periodic, Trap Triggered
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -3134,8 +3133,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=125741)   : Apply Aura (6) | Proc Trigger Spell (42): Clearcasting
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Trigger Spell: 16870 | Target: Self (1)
-Description      : Your healing over time from Lifebloom has a $h% chance to cause a Clearcasting state, making your next $?a155577[${$155577m1+1} Regrowths][Regrowth] cost no mana.
+                   Base Value: 4 | Scaled Value: 4 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Trigger Spell: 16870 | Target: Self (1)
+Description      : Your healing over time from Lifebloom has a $s1% chance to cause a Clearcasting state, making your next $?a155577[${$155577m1+1} Regrowths][Regrowth] cost no mana.
 
 Name             : Cat Form (rank=Passive) (id=113636) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
@@ -3701,11 +3700,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179695)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 44 | Scaled Value: 44 | PvP Coefficient: 0.70000 | Target: Self (1)
-                   Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Germination (155675), Tranquility (157982), Cultivation (200389), Spring Blossoms (207386), Fungal Essence (272807), Grove Tending (279793)
+                   Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Germination (155675), Tranquility (157982), Cultivation (200389), Spring Blossoms (207386), Grove Tending (279793)
                    Family Flags: 118
 #2 (id=191150)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 44 | Scaled Value: 44 | PvP Coefficient: 0.70000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Germination (155675), Tranquility (157982), Cultivation (200389), Spring Blossoms (207386), Fungal Essence (272807), Grove Tending (279793)
+                   Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Germination (155675), Tranquility (157982), Cultivation (200389), Spring Blossoms (207386), Grove Tending (279793)
                    Family Flags: 118
 #3 (id=191151)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -4937,7 +4936,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.02500 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
 #2 (id=301092)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-                   Affected Spells: Rejuvenation (774), Rip (1079), Rake (1822), Solar Wrath (5176), Shred (5221), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Thrash (77758), Starsurge (78674), Pulverize (80313), Efflorescence (81269), Sunfire (93402), Cenarion Ward (102352), Germination (155675), Rake (155722), Tranquility (157982), Pulverize (158792), Moonfire (164812), Sunfire (164815), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Cultivation (200389), Brutal Slash (202028), Spring Blossoms (207386), Swipe (213771), Enraged Maul (236716), Fungal Essence (272807), Grove Tending (279793)
+                   Affected Spells: Rejuvenation (774), Rip (1079), Rake (1822), Solar Wrath (5176), Shred (5221), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Thrash (77758), Starsurge (78674), Pulverize (80313), Efflorescence (81269), Sunfire (93402), Cenarion Ward (102352), Germination (155675), Rake (155722), Tranquility (157982), Pulverize (158792), Moonfire (164812), Sunfire (164815), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Cultivation (200389), Brutal Slash (202028), Spring Blossoms (207386), Swipe (213771), Enraged Maul (236716), Grove Tending (279793)
                    Family Flags: 0, 1, 2, 11, 12, 15, 16, 38, 39, 40, 52, 55, 85, 89, 91, 99, 108, 118, 123
 #3 (id=301093)   : Apply Aura (6) | Modify Auto Attack Damage Taken% from Caster (343)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -5319,7 +5318,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 28 yards/sec
 Cooldown         : 10 seconds
-Affecting spells : Mastery: Starlight (77492 effect#1), Restoration Druid (137012 effect#8), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Oneth's Intuition (209406 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), The Emerald Dreamcatcher (224706 effect#1), Item - Druid T20 Balance 2P Bonus (242231 effect#2), Item - Druid  T21 Balance 2P Bonus (251803 effect#2), Sunblaze (274399 effect#1), Arcanic Pulsar (287773 effect#2)
+Affecting spells : Mastery: Starlight (77492 effect#1), Restoration Druid (137012 effect#8), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Oneth's Intuition (209406 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), The Emerald Dreamcatcher (224706 effect#1), Item - Druid T20 Balance 2P Bonus (242231 effect#2), Item - Druid  T21 Balance 2P Bonus (251803 effect#2), Arcanic Pulsar (287773 effect#2)
 Family Flags     : 89
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6720,7 +6719,7 @@ Class            : Guardian Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 48
-Proc Chance      : 15%
+Proc Chance      : 100%
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Affecting spells : Item - Druid T19 Guardian 2P Bonus (211149 effect#1)
@@ -6735,8 +6734,8 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=312122)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Thrash, Swipe, Moonfire, and Maul have a $h% chance to reset the cooldown on Mangle, and to cause it to generate an additional ${$93622m1/10} Rage.
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Thrash, Swipe, Moonfire, and Maul have a $s1% chance to reset the cooldown on Mangle, and to cause it to generate an additional ${$93622m1/10} Rage.
 
 Name             : Ashamane's Frenzy (rank=Artifact) (id=210722) [Spell Family (7)] 
 Class            : Druid
@@ -7442,10 +7441,8 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 37 | Target: Self (1)
                    Affected Spells: Omen of Clarity (16864), Clearcasting (16870), Clearcasting (135700)
                    Family Flags: 114
-#2 (id=356851)   : Apply Aura (6) | Add Percent Modifier (108): Spell Proc Frequency (26)
+#2 (id=356851)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 26 | Target: Self (1)
-                   Affected Spells: Omen of Clarity (16864), Clearcasting (16870), Clearcasting (135700)
-                   Family Flags: 114
 #3 (id=356852)   : Apply Aura (6) | Increase Energy (35)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
 #4 (id=356853)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
@@ -7801,7 +7798,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=707038)   : Apply Aura (6) | Dummy (4)
+#1 (id=707038)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 6410.799 (coefficient=82.454) | PvP Coefficient: 0.50000 | Trigger Spell: 270568 | Target: Self (1)
 Description      : Every $270568t1 sec, gain an absorb shield for $s1 for $269279d.
 
@@ -7821,7 +7818,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=707058)   : Dummy (3)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000
-Description      : Increases the item level of this item by 5.
+Description      : Increases Item Level by 5 and increases the potency of all Azerite powers granted by this item.
 
 Name             : Elemental Whirl (id=263984) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -7991,6 +7988,25 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.111428) | PvP Coefficient: 1.00000 | Trigger Spell: 270675 | Target: Self (1)
 Description      : Taking damage grants you $s1 Dodge for $269214d, stacking up to $269214u times.
 
+Name             : Blinding Mists (id=267682) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 464
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=714530)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 155.5 (coefficient=0.5) | PvP Coefficient: 1.00000 | Misc Value: 1792 | Target: Self (1)
+Description      : Your damaging abilities have a chance to apply Blinding Mists to all targets within 8 yards, reducing the damage dealt by their next 3 melee hits by $s1.
+Tooltip          : Your damaging abilities have a chance to apply Blinding Mists to all targets within 8 yards, reducing the damage dealt by their next 3 melee hits by $s1.
+
 Name             : Azerite Veins (id=267683) [Scaling Spell (-8), Passive] 
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
@@ -8112,7 +8128,6 @@ Class            : Paladin, Priest, Shaman, Monk, Druid
 School           : Physical
 Spell Type       : None
 Azerite Power Id : 105
-Triggered by     : Ephemeral Recovery (272572)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8122,7 +8137,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=714807)   : Apply Aura (6) | Dummy (4)
+#1 (id=714807)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 (coefficient=22) | PvP Coefficient: 1.00000 | Trigger Spell: 272570 | Target: Self (1)
 Description      : When you go below $272570s1% mana, you gain $s1 mana. Can occur once every $289362d.
 
@@ -8204,7 +8219,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=715939)   : Apply Aura (6) | Dummy (4)
+#1 (id=715939)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 2243.779 (coefficient=28.8589) | PvP Coefficient: 0.50000 | Trigger Spell: 270654 | Target: Self (1)
 Description      : When you take damage, heal for $s1. Cannot occur more than once every $270654proccooldown sec.
 Tooltip          : When you take damage, heal for $s1. Cannot occur more than once every $270654proccooldown sec.
@@ -8244,7 +8259,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=716159)   : Apply Aura (6) | Dummy (4)
+#1 (id=716159)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 6997.5 (coefficient=90) | PvP Coefficient: 0.50000 | Trigger Spell: 270655 | Target: Self (1)
 #2 (id=720319)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
@@ -8289,7 +8304,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=716165)   : Apply Aura (6) | Dummy (4)
+#1 (id=716165)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 3165.077 (coefficient=10.1771) | PvP Coefficient: 0.50000 | Trigger Spell: 270652 | Target: Self (1)
 #2 (id=720314)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 82.61684 (coefficient=0.265649) | PvP Coefficient: 0.50000 | Target: Self (1)
@@ -8311,7 +8326,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=716167)   : Apply Aura (6) | Dummy (4)
+#1 (id=716167)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 598.3412 (coefficient=7.695707) | PvP Coefficient: 0.50000 | Trigger Spell: 270660 | Target: Self (1)
 #2 (id=716168)   : Dummy (3)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000
@@ -8445,26 +8460,6 @@ Effects          :
 #2 (id=721868)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 217.7 (coefficient=0.7) | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Taking damage has a chance to create an upwelling of Azerite beneath your feet, increasing your Health by $s1 and your Armor by $s2 while you stand within it. Lasts $271560d.
-
-Name             : Fungal Essence (id=272802) [Scaling Spell (-8), Spell Family (7), Passive] 
-Class            : Druid
-School           : Nature
-Spell Type       : None
-Azerite Power Id : 120
-Triggered by     : Fungal Essence (272807)
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Scales with item level (354)
-Effects          :
-#1 (id=723924)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 5150.103 (coefficient=66.23927) | PvP Coefficient: 1.00000 | Trigger Spell: 272805 | Target: Self (1)
-Description      : Swiftmend causes your Efflorescence mushroom to burst, healing a nearby injured ally for $s1.
-Tooltip          : Swiftmend causes your Efflorescence mushroom to burst, healing a nearby injured ally for $s1.
 
 Name             : Streaking Stars (id=272871) [Scaling Spell (-8), Spell Family (7), Passive] 
 Class            : Druid
@@ -8792,31 +8787,12 @@ Description      : Deals $m1 Arcane damage to the target and reduced damage to a
 
 |cFFFFFFFFGenerates ${$m2/10} Astral Power.|r
 
-Name             : Sunblaze (id=274397) [Scaling Spell (-8), Spell Family (7), Passive] 
-Class            : Druid
-School           : Physical
-Spell Type       : None
-Azerite Power Id : 200
-Triggered by     : Sunblaze (274399)
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Scales with item level (354)
-Effects          :
-#1 (id=726695)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 750.7884 (coefficient=9.656442) | PvP Coefficient: 0.75000 | Trigger Spell: 274398 | Target: Self (1)
-Description      : Solar Wrath increases the damage of your next Starsurge by $s1.
-
 Name             : Jungle Fury (id=274424) [Scaling Spell (-7), Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
 Spell Type       : None
 Azerite Power Id : 209
-Triggered by     : Shredding Fury (274426)
+Triggered by     : Jungle Fury (274426)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9073,25 +9049,6 @@ Effects          :
 #1 (id=730125)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 437.4215 (coefficient=5.626) | PvP Coefficient: 1.00000 | Trigger Spell: 276153 | Target: Self (1)
 Description      : Lunar Strike increases the damage of your Solar Wrath by $s1 for $276154d.
-
-Name             : Craggy Bark (id=276155) [Scaling Spell (-8), Spell Family (7), Passive] 
-Class            : Druid
-School           : Physical
-Spell Type       : None
-Azerite Power Id : 251
-Triggered by     : Craggy Bark (276157)
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Scales with item level (354)
-Effects          :
-#1 (id=730129)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: -207.9694 (coefficient=-2.674847) | PvP Coefficient: 1.00000 | Trigger Spell: 276156 | Target: Self (1)
-Description      : Barkskin reduces Physical attacks against you by ${$s1/-1} damage.
 
 Name             : High Noon (id=278505) [Scaling Spell (-8), Spell Family (7), Passive] 
 Class            : Druid
@@ -9564,7 +9521,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=737266)   : Apply Aura (6) | Dummy (4)
+#1 (id=737266)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 10770.14 (coefficient=138.5227) | PvP Coefficient: 0.50000 | Trigger Spell: 280161 | Target: Self (1)
 Description      : When you use Barkskin or Survival Instincts, absorb $s1 damage over $280165d.
 
@@ -9971,7 +9928,7 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 #3 (id=744340)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 131.9971 (coefficient=0.424428) | PvP Coefficient: 1.00000
-Description      : Your abilities have a chance to plant a factional banner for $280841d, empowering yourself and up to $s2 allies with the spirit of the Horde.
+Description      : Your abilities have a chance to plant a banner representing a Horde race for $280841d, granting you and up to $s2 allies $s3 of their primary stat or $s1 of a secondary stat.
 
 Name             : Collective Will (id=280581) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -10102,7 +10059,7 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 #3 (id=744329)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 131.9971 (coefficient=0.424428) | PvP Coefficient: 1.00000
-Description      : Your abilities have a chance to plant a factional banner for $280866d, empowering yourself and up to $s2 allies with the spirit of the Alliance.
+Description      : Your abilities have a chance to plant a banner representing an Alliance race for $280866d, granting you and up to $s2 allies $s3 of their primary stat or $s1 of a secondary stat.
 
 Name             : Stand As One (id=280626) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -10298,7 +10255,7 @@ Name             : Early Harvest (id=287251) [Scaling Spell (-8), Spell Family (
 Class            : Druid
 School           : Nature
 Spell Type       : None
-Azerite Power Id : 532
+Azerite Power Id : 120
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10313,11 +10270,93 @@ Effects          :
 Description      : When Wild Growth expires, it heals the target for $s1 if they are injured, or it reduces the cooldown of Innervate by $<reduction> sec if they are not.
 Variables        : $reduction=${$287253s2/1000}
 
+Name             : Shadow of Elune (id=287467) [Scaling Spell (-7), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 521
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=750457)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=2.025204) | PvP Coefficient: 1.00000 | Trigger Spell: 287468 | Target: Self (1)
+Description      : Your spells and abilities have a chance to increase your Haste by $s1 for $287471d. At night, you also gain $287471s2% movement speed for the duration.
+
+Name             : Ancients' Bulwark (id=287604) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 522
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=750674)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 284.8856 (coefficient=0.916031) | PvP Coefficient: 1.00000 | Trigger Spell: 287605 | Target: Self (1)
+#2 (id=750675)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 242.5788 (coefficient=0.779996) | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Standing still grants you Deep Roots, increasing your Versatility by $s2. Moving instead grants you Uprooted, healing you for $s1 every $287608t1 sec.
+
+Name             : Apothecary's Concoctions (id=287631) [Scaling Spell (-8), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 523
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=750714)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 467.454 (coefficient=6.01227) | PvP Coefficient: 1.00000 | Trigger Spell: 287633 | Target: Self (1)
+#2 (id=750715)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 894.3635 (coefficient=11.50307) | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=750716)   : Dummy (3)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
+Description      : Your damaging abilities have a chance to deal $<dmg> Plague damage over $287638d, and your healing abilities have a chance to restore $<heal> health over $287639d. These effects are increased by up to $s3% based on the target's missing health.
+Variables        : $dmg=${$s1*3}
+$heal=${$s2*3}
+
+Name             : Endless Hunger (id=287662) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 526
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=750767)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 1994.198 (coefficient=6.412213) | PvP Coefficient: 1.00000 | Trigger Spell: 287664 | Target: Self (1)
+#2 (id=750768)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 242.6276 (coefficient=0.780153) | PvP Coefficient: 1.00000 | Misc Value: 1879048192 | Target: Self (1)
+Description      : Your Versatility is increased by $s2. Moving near an enemy's corpse consumes their essence, restoring $s1 health.
+
 Name             : Arcanic Pulsar (id=287773) [Scaling Spell (-8), Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Azerite Power Id : 529
+Azerite Power Id : 200
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10367,6 +10406,66 @@ $@spellname22842: $s1 Avoidance
 $@spellname18562: Absorb $s2 damage.
 
 
+Name             : Fight or Flight (id=287818) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 541
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=751037)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 370.3512 (coefficient=1.19084) | PvP Coefficient: 1.00000 | Trigger Spell: 287821 | Target: Self (1)
+Description      : When you damage an enemy who is below $287821s1% health, or fall below $287821s1% health yourself, gain $s1 primary stat and $287827s5% movement speed for $287827d. Can only occur once every $287825d.
+
+Name             : Seductive Power (id=288749) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 561
+Triggered by     : Seductive Power (288777)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=752664)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 28.48853 (coefficient=0.091603) | PvP Coefficient: 1.00000 | Trigger Spell: 288757 | Target: Self (1)
+#2 (id=752673)   : Dummy (3)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000
+Description      : Your spells and abilities have a chance to conjure Bwonsamdi's spectral visage, beckoning you closer. If you approach him, gain $s1 to all stats for $288777d, stacking up to $288777u times. If you fail to heed his call, lose $s2 $Lstack:stacks;.
+
+Name             : Bonded Souls (id=288802) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 560
+Triggered by     : Bonded Souls (288839)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=752745)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 623.7739 (coefficient=2.005704) | PvP Coefficient: 1.00000 | Trigger Spell: 288804 | Target: Self (1)
+#2 (id=752815)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 3798.473 (coefficient=12.21374) | PvP Coefficient: 1.00000
+Description      : Your spells and abilities have a chance to trigger a Soulbond for $288841d. During Soulbond, every $288841t1 sec you and your nearest ally are both healed for $s2 and gain $s1 Haste for $288839d.
+
 Name             : Stampeding Roar (rank=Rank 2) (id=288826) [Spell Family (7), Passive] 
 Class            : Guardian Druid
 School           : Nature
@@ -10384,7 +10483,73 @@ Effects          :
 #1 (id=752785)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: -60000 | Scaled Value: -60000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Stampeding Roar (106898)
-                   Family Flags: 27
+                   Family Flags: 27, 87
 Description      : The cooldown of Stampeding Roar is reduced by ${$m1/-1000} sec.
+
+Name             : Treacherous Covenant (id=288953) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 562
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=752982)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 166.1832 (coefficient=0.534351) | PvP Coefficient: 1.00000 | Trigger Spell: 288964 | Target: Self (1)
+#2 (id=752991)   : Dummy (3)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
+#3 (id=752992)   : Dummy (3)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000
+#4 (id=752993)   : Dummy (3)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
+Description      : Your primary stat is increased by $s1 while you are above $s2% health. You take $s3% increased damage while below $s4% health.
+
+Name             : Burst of Savagery (id=289314) [Scaling Spell (-7), Spell Family (7), Passive] 
+Class            : Druid
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 251
+Triggered by     : Burst of Savagery (289315)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=753603)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=1.337136) | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=753606)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Consuming Gore grants you $s1 mastery for $289315d and has a $s2% chance to activate Gore.
+
+Name             : Burst of Savagery (id=289315) [Scaling Spell (-1), Spell Family (7)] 
+Class            : Druid
+School           : Physical
+Spell Type       : None
+Duration         : 5 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Scales with item level (354)
+Effects          :
+#1 (id=753604)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 33554432 | Target: Self (1)
+#2 (id=753605)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 289314 | Target: Self (1)
+Description      : $@spelldesc289314
+Tooltip          : Mastery increased by $w1.
 
 

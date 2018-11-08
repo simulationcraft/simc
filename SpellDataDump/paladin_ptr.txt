@@ -645,9 +645,6 @@ Spell Level      : 70
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 180 seconds
-Proc Chance      : 100%
-Proc Flags       : ........ ..x...x. .....x.. ........ 
-                 : Generic Heal, Magic Heal, Trap Triggered
 Affecting spells : Item - Paladin WoD PvP Holy 2P Bonus (170860 effect#1)
 Family Flags     : 79
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -842,7 +839,7 @@ GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Charges          : 1 (6 seconds cooldown)
 Category         : 1627: Retribution Paladin (137027 effect#5), Paladin (137026 effect#5)
-Affecting spells : Avenging Wrath (31884 effect#1), Improved Crusader Strike (44300 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#4), Retribution (183436 effect#1), Last Defender (203791 effect#5), Judgment (214222 effect#1), Avenging Crusader (216331 effect#3), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Zealotry (278989 effect#1)
+Affecting spells : Avenging Wrath (31884 effect#1), Improved Crusader Strike (44300 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#4), Retribution (183436 effect#1), Last Defender (203791 effect#5), Judgment (214222 effect#1), Avenging Crusader (216331 effect#3), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4)
 Family Flags     : 47, 65
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ....x... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -1284,7 +1281,7 @@ Effects          :
 #1 (id=56098)    : Unknown(114)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=56099)    : Apply Aura (6) | Taunt (11)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Commands the attention of an enemy target, forcing them to attack you.
 Tooltip          : Taunted.
 
@@ -2094,9 +2091,9 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : Not a proc (105), Requires line of sight (186)
 Effects          :
 #1 (id=128396)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=14.131) | SP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Target: Friend (21)
 #2 (id=128397)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (coefficient=9.529) | SP Coefficient: 0.45000 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Target: Unknown(132) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.45000 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Target: Unknown(132) -> AOE enemy (instant) (16)
 #3 (id=128398)   : Server Side Script (77)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Target: Unknown(132) -> AOE Custom (8)
 Description      : $@spelldesc114165
@@ -2223,7 +2220,7 @@ Attributes       : ........ ........ ........ ...x....   ........ ........ .....
                  : Not a proc (105), Treat as periodic (121), Requires line of sight (186)
 Effects          :
 #1 (id=139112)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=3.179) | SP Coefficient: 0.12500 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(87) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.12500 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(87) -> AOE friendly (31)
 Description      : $@spelldesc114158
 
 Name             : Contemplation (id=121183) [Spell Family (10)] 
@@ -2757,7 +2754,7 @@ Race             : Blood Elf (0x200)
 School           : Arcane
 Spell Type       : Magic
 GCD              : 1.5 seconds
-Cooldown         : 90 seconds
+Cooldown         : 120 seconds
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3240,7 +3237,7 @@ Spell Level      : 40
 GCD              : 1.5 seconds
 Charges          : 1 (17 seconds cooldown)
 Category         : 1668: Paladin (137026 effect#8)
-Affecting spells : Avenging Wrath (31884 effect#1), Protection Paladin (137028 effect#5), Holy Paladin (137029 effect#1), Beacon of Faith (156910 effect#3)
+Affecting spells : Avenging Wrath (31884 effect#1), Protection Paladin (137028 effect#5), Holy Paladin (137029 effect#1), Beacon of Faith (156910 effect#3), Righteous Conviction (287126 effect#1)
 Family Flags     : 46, 125
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4559,7 +4556,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (15 seconds cooldown)
 Category         : 1667: Paladin (137026 effect#7)
-Affecting spells : Avenging Wrath (31884 effect#1), Protection Paladin (137028 effect#5), Holy Paladin (137029 effect#1), Beacon of Faith (156910 effect#3)
+Affecting spells : Avenging Wrath (31884 effect#1), Protection Paladin (137028 effect#5), Holy Paladin (137029 effect#1), Beacon of Faith (156910 effect#3), Righteous Conviction (287126 effect#1)
 Family Flags     : 46, 125
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5591,7 +5588,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=707038)   : Apply Aura (6) | Dummy (4)
+#1 (id=707038)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 6410.799 (coefficient=82.454) | PvP Coefficient: 0.50000 | Trigger Spell: 270568 | Target: Self (1)
 Description      : Every $270568t1 sec, gain an absorb shield for $s1 for $269279d.
 
@@ -5611,7 +5608,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=707058)   : Dummy (3)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000
-Description      : Increases the item level of this item by 5.
+Description      : Increases Item Level by 5 and increases the potency of all Azerite powers granted by this item.
 
 Name             : Elemental Whirl (id=263984) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -5868,6 +5865,25 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.111428) | PvP Coefficient: 1.00000 | Trigger Spell: 270675 | Target: Self (1)
 Description      : Taking damage grants you $s1 Dodge for $269214d, stacking up to $269214u times.
 
+Name             : Blinding Mists (id=267682) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 464
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=714530)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 155.5 (coefficient=0.5) | PvP Coefficient: 1.00000 | Misc Value: 1792 | Target: Self (1)
+Description      : Your damaging abilities have a chance to apply Blinding Mists to all targets within 8 yards, reducing the damage dealt by their next 3 melee hits by $s1.
+Tooltip          : Your damaging abilities have a chance to apply Blinding Mists to all targets within 8 yards, reducing the damage dealt by their next 3 melee hits by $s1.
+
 Name             : Azerite Veins (id=267683) [Scaling Spell (-8), Passive] 
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
@@ -6039,7 +6055,6 @@ Class            : Paladin, Priest, Shaman, Monk, Druid
 School           : Physical
 Spell Type       : None
 Azerite Power Id : 105
-Triggered by     : Ephemeral Recovery (272572)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6049,7 +6064,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=714807)   : Apply Aura (6) | Dummy (4)
+#1 (id=714807)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 (coefficient=22) | PvP Coefficient: 1.00000 | Trigger Spell: 272570 | Target: Self (1)
 Description      : When you go below $272570s1% mana, you gain $s1 mana. Can occur once every $289362d.
 
@@ -6131,7 +6146,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=715939)   : Apply Aura (6) | Dummy (4)
+#1 (id=715939)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 2243.779 (coefficient=28.8589) | PvP Coefficient: 0.50000 | Trigger Spell: 270654 | Target: Self (1)
 Description      : When you take damage, heal for $s1. Cannot occur more than once every $270654proccooldown sec.
 Tooltip          : When you take damage, heal for $s1. Cannot occur more than once every $270654proccooldown sec.
@@ -6171,7 +6186,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=716159)   : Apply Aura (6) | Dummy (4)
+#1 (id=716159)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 6997.5 (coefficient=90) | PvP Coefficient: 0.50000 | Trigger Spell: 270655 | Target: Self (1)
 #2 (id=720319)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
@@ -6216,7 +6231,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=716165)   : Apply Aura (6) | Dummy (4)
+#1 (id=716165)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 3165.077 (coefficient=10.1771) | PvP Coefficient: 0.50000 | Trigger Spell: 270652 | Target: Self (1)
 #2 (id=720314)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 82.61684 (coefficient=0.265649) | PvP Coefficient: 0.50000 | Target: Self (1)
@@ -6238,7 +6253,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=716167)   : Apply Aura (6) | Dummy (4)
+#1 (id=716167)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 598.3412 (coefficient=7.695707) | PvP Coefficient: 0.50000 | Trigger Spell: 270660 | Target: Self (1)
 #2 (id=716168)   : Dummy (3)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000
@@ -6456,7 +6471,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=724096)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=1.782848) | PvP Coefficient: 1.00000 | Trigger Spell: 272904 | Target: Self (1)
-Description      : While Avenging Wrath is active, your Mastery is increased by $s1.
+Description      : While $?<s231895>[Crusade][Avenging Wrath] is active, your Mastery is increased by $s1.
 
 Name             : Holy Shock (rank=Rank 2) (id=272906) [Spell Family (10), Passive] 
 Class            : Holy Paladin
@@ -6496,25 +6511,6 @@ Effects          :
 #1 (id=724241)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 4665 (coefficient=60) | PvP Coefficient: 1.00000 | Trigger Spell: 272977 | Target: Self (1)
 Description      : Avenger's Shield grants you a shield, absorbing $s1 damage for $272979d.
-
-Name             : Martyr's Breath (id=273027) [Scaling Spell (-8), Spell Family (10), Passive] 
-Class            : Paladin
-School           : Physical
-Spell Type       : None
-Azerite Power Id : 139
-Triggered by     : Martyr's Breath (273034)
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Scales with item level (354)
-Effects          :
-#1 (id=724321)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 6 | Scaled Value: 1287.883 (coefficient=16.56442) | PvP Coefficient: 1.00000 | Misc Value: 1 | Trigger Spell: 273032 | Target: Self (1)
-Description      : Light of the Martyr has a chance to cause your Blessing of Sacrifice to additionally heal the target for $s1. This effect can stack up to $273034u times.
 
 Name             : Inspiring Beacon (id=273130) [Scaling Spell (-1), Spell Family (10), Passive] 
 Class            : Paladin
@@ -6665,24 +6661,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 249.9448 (coefficient=3.214724) | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your Flash of Light heals for an additional $s1 when cast on a target affected by your Beacon of Light.
 
-Name             : Dauntless Divinity (id=273553) [Scaling Spell (-1), Passive] 
-Class            : Paladin
-School           : Holy
-Spell Type       : None
-Azerite Power Id : 189
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Scales with item level (354)
-Effects          :
-#1 (id=725290)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 2799 (coefficient=9) | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : When Guardian of Ancient Kings expires, your Block is increased by $s1 for $273555d 
-
 Name             : Meticulous Scheming (id=273682) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
@@ -6802,7 +6780,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=726680)   : Apply Aura (6) | Dummy (4)
+#1 (id=726680)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 3231.042 (coefficient=41.55682) | PvP Coefficient: 0.50000 | Trigger Spell: 274391 | Target: Self (1)
 Description      : When you cast Divine Shield, grant $s1 absorb for $274395d to nearby allies.
 
@@ -7010,27 +6988,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 1049.387 (coefficient=13.49693) | PvP Coefficient: 1.00000 | Trigger Spell: 278573 | Target: Self (1)
 Description      : Your Judgment critical strikes reduce the damage of the target's melee attacks against you by $s1 for $278574d.
 
-Name             : Divine Right (id=277678) [Scaling Spell (-1), Passive] 
-Class            : Paladin
-School           : Holy
-Spell Type       : None
-Azerite Power Id : 453
-Triggered by     : Divine Right (278523)
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Scales with item level (354)
-Effects          :
-#1 (id=732989)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 460.5649 (coefficient=1.480916) | PvP Coefficient: 1.00000 | Trigger Spell: 278519 | Target: Self (1)
-#2 (id=734266)   : Dummy (3)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
-Description      : When Divine Storm damages an enemy who is below $s2% health, your Strength is increased by $s1 for $278523d.
-
 Name             : Grace of the Justicar (id=278593) [Scaling Spell (-8), Passive] 
 Class            : Paladin
 School           : Holy
@@ -7120,25 +7077,6 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 Description      : Grand Crusader's chance is increased to $s2% and it grants you $s1 Strength for $279397d.
 
-Name             : Zealotry (id=278615) [Scaling Spell (-8), Passive] 
-Class            : Paladin
-School           : Holy
-Spell Type       : None
-Azerite Power Id : 396
-Triggered by     : Zealotry (278989)
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Scales with item level (354)
-Effects          :
-#1 (id=734444)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 144.0522 (coefficient=1.852761) | PvP Coefficient: 1.00000 | Trigger Spell: 278982 | Target: Self (1)
-Description      : Casting Crusader Strike increases the damage of your Crusader Strike by $s1 for $278989d, stacking up to $278989u times.
-
 Name             : Relentless Inquisitor (id=278617) [Scaling Spell (-7), Passive] 
 Class            : Paladin
 School           : Holy
@@ -7213,7 +7151,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=737273)   : Apply Aura (6) | Dummy (4)
+#1 (id=737273)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 (coefficient=1.458313) | PvP Coefficient: 0.50000 | Trigger Spell: 280189 | Target: Self (1)
 #2 (id=737274)   : Dummy (3)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000
@@ -7668,7 +7606,7 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 #3 (id=744340)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 131.9971 (coefficient=0.424428) | PvP Coefficient: 1.00000
-Description      : Your abilities have a chance to plant a factional banner for $280841d, empowering yourself and up to $s2 allies with the spirit of the Horde.
+Description      : Your abilities have a chance to plant a banner representing a Horde race for $280841d, granting you and up to $s2 allies $s3 of their primary stat or $s1 of a secondary stat.
 
 Name             : Collective Will (id=280581) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -7799,7 +7737,7 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 #3 (id=744329)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 131.9971 (coefficient=0.424428) | PvP Coefficient: 1.00000
-Description      : Your abilities have a chance to plant a factional banner for $280866d, empowering yourself and up to $s2 allies with the spirit of the Alliance.
+Description      : Your abilities have a chance to plant a banner representing an Alliance race for $280866d, granting you and up to $s2 allies $s3 of their primary stat or $s1 of a secondary stat.
 
 Name             : Stand As One (id=280626) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -7979,7 +7917,7 @@ Name             : Light's Decree (id=286229) [Scaling Spell (-8), Spell Family 
 Class            : Paladin
 School           : Physical
 Spell Type       : None
-Azerite Power Id : 508
+Azerite Power Id : 396
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7989,15 +7927,15 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=748526)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 1568.356 (coefficient=20.17178) | PvP Coefficient: 1.00000 | Trigger Spell: 286231 | Target: Self (1)
-Description      : Your abilities that consume Holy Power explode with Holy light for $s1 damage to nearby enemies while Avenging Wrath is active. Avenging Wrath's duration is increased by ${$286231s2/1000} sec.
+#1 (id=748526)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 522.7852 (coefficient=6.723926) | PvP Coefficient: 1.00000 | Trigger Spell: 286231 | Target: Self (1)
+Description      : Spending Holy Power during $?<s231895>[Crusade][Avenging Wrath] causes you to explode with Holy light for $s1 damage per Holy Power spent to nearby enemies. $?<s231895>[Crusade][Avenging Wrath]'s duration is increased by ${$286231s2/1000} sec.
 
 Name             : Empyrean Power (id=286390) [Scaling Spell (-8), Passive] 
 Class            : Paladin
 School           : Physical
 Spell Type       : None
-Azerite Power Id : 507
+Azerite Power Id : 453
 Triggered by     : Empyrean Power (286393)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8016,7 +7954,7 @@ Name             : Righteous Conviction (id=287126) [Scaling Spell (-8), Spell F
 Class            : Paladin
 School           : Physical
 Spell Type       : None
-Azerite Power Id : 527
+Azerite Power Id : 189
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8026,15 +7964,17 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=749914)   : Apply Aura (6) | Dummy (4)
+#1 (id=749914)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 1432.413 (coefficient=18.42331) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Light of the Protector (184092), Hand of the Protector (213652)
+                   Family Flags: 125
 Description      : Your Light of the Protector heals for $s1 additional healing, and is always increased by 200% during Avenging Wrath.
 
 Name             : Glimmer of Light (id=287268) [Scaling Spell (-8), Spell Family (10), Passive] 
 Class            : Paladin
 School           : Physical
 Spell Type       : None
-Azerite Power Id : 533
+Azerite Power Id : 139
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8044,11 +7984,93 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=750129)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 6 | Scaled Value: 467.454 (coefficient=6.01227) | PvP Coefficient: 1.00000 | Misc Value: 1 | Trigger Spell: 287269 | Target: Self (1)
+#1 (id=750129)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 6 | Scaled Value: 467.454 (coefficient=6.01227) | PvP Coefficient: 1.00000 | Trigger Spell: 287269 | Target: Self (1)
 #2 (id=750167)   : Apply Aura (6) | Dummy (4)
                    Base Value: 6 | Scaled Value: 810.8896 (coefficient=10.42945) | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
 Description      : Holy Shock leaves a Glimmer of Light on the target for $287280d.  When you Holy Shock, all targets with Glimmer of Light are damaged for $s1 or healed for $s2.
+
+Name             : Shadow of Elune (id=287467) [Scaling Spell (-7), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 521
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=750457)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=2.025204) | PvP Coefficient: 1.00000 | Trigger Spell: 287468 | Target: Self (1)
+Description      : Your spells and abilities have a chance to increase your Haste by $s1 for $287471d. At night, you also gain $287471s2% movement speed for the duration.
+
+Name             : Ancients' Bulwark (id=287604) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 522
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=750674)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 284.8856 (coefficient=0.916031) | PvP Coefficient: 1.00000 | Trigger Spell: 287605 | Target: Self (1)
+#2 (id=750675)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 242.5788 (coefficient=0.779996) | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Standing still grants you Deep Roots, increasing your Versatility by $s2. Moving instead grants you Uprooted, healing you for $s1 every $287608t1 sec.
+
+Name             : Apothecary's Concoctions (id=287631) [Scaling Spell (-8), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 523
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=750714)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 467.454 (coefficient=6.01227) | PvP Coefficient: 1.00000 | Trigger Spell: 287633 | Target: Self (1)
+#2 (id=750715)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 894.3635 (coefficient=11.50307) | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=750716)   : Dummy (3)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
+Description      : Your damaging abilities have a chance to deal $<dmg> Plague damage over $287638d, and your healing abilities have a chance to restore $<heal> health over $287639d. These effects are increased by up to $s3% based on the target's missing health.
+Variables        : $dmg=${$s1*3}
+$heal=${$s2*3}
+
+Name             : Endless Hunger (id=287662) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 526
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=750767)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 1994.198 (coefficient=6.412213) | PvP Coefficient: 1.00000 | Trigger Spell: 287664 | Target: Self (1)
+#2 (id=750768)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 242.6276 (coefficient=0.780153) | PvP Coefficient: 1.00000 | Misc Value: 1879048192 | Target: Self (1)
+Description      : Your Versatility is increased by $s2. Moving near an enemy's corpse consumes their essence, restoring $s1 health.
 
 Name             : Empyreal Ward (id=287729) [Scaling Spell (-1), Passive] 
 Class            : Paladin
@@ -8068,5 +8090,109 @@ Effects          :
 #1 (id=750887)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 284.8856 (coefficient=0.916031) | PvP Coefficient: 0.50000 | Trigger Spell: 287730 | Target: Self (1)
 Description      : Lay on Hands grants the target $s1 armor for $287731d.
+
+Name             : Fight or Flight (id=287818) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 541
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=751037)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 370.3512 (coefficient=1.19084) | PvP Coefficient: 1.00000 | Trigger Spell: 287821 | Target: Self (1)
+Description      : When you damage an enemy who is below $287821s1% health, or fall below $287821s1% health yourself, gain $s1 primary stat and $287827s5% movement speed for $287827d. Can only occur once every $287825d.
+
+Name             : Seductive Power (id=288749) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 561
+Triggered by     : Seductive Power (288777)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=752664)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 28.48853 (coefficient=0.091603) | PvP Coefficient: 1.00000 | Trigger Spell: 288757 | Target: Self (1)
+#2 (id=752673)   : Dummy (3)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000
+Description      : Your spells and abilities have a chance to conjure Bwonsamdi's spectral visage, beckoning you closer. If you approach him, gain $s1 to all stats for $288777d, stacking up to $288777u times. If you fail to heed his call, lose $s2 $Lstack:stacks;.
+
+Name             : Bonded Souls (id=288802) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 560
+Triggered by     : Bonded Souls (288839)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=752745)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 623.7739 (coefficient=2.005704) | PvP Coefficient: 1.00000 | Trigger Spell: 288804 | Target: Self (1)
+#2 (id=752815)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 3798.473 (coefficient=12.21374) | PvP Coefficient: 1.00000
+Description      : Your spells and abilities have a chance to trigger a Soulbond for $288841d. During Soulbond, every $288841t1 sec you and your nearest ally are both healed for $s2 and gain $s1 Haste for $288839d.
+
+Name             : Treacherous Covenant (id=288953) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 562
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=752982)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 166.1832 (coefficient=0.534351) | PvP Coefficient: 1.00000 | Trigger Spell: 288964 | Target: Self (1)
+#2 (id=752991)   : Dummy (3)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
+#3 (id=752992)   : Dummy (3)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000
+#4 (id=752993)   : Dummy (3)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
+Description      : Your primary stat is increased by $s1 while you are above $s2% health. You take $s3% increased damage while below $s4% health.
+
+Name             : Holy Shock (id=289941) [Spell Family (10), Passive, Hidden] 
+Class            : Holy Paladin
+School           : Holy
+Spell Type       : None
+Spell Level      : 10
+Proc Chance      : 100%
+Proc Flags       : ........ ......x. x....... ........ 
+                 : Magic Heal, Magic Hostile Spell
+Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=754640)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 

@@ -43,7 +43,7 @@ Effects          :
 #2 (id=140019)   : Unknown(114)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Mechanic: Heal | Target: Enemy (6)
 #3 (id=140020)   : Apply Aura (6) | Taunt (11)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Mechanic: Heal | Target: Enemy (6)
+                   Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Mechanic: Heal | Target: Enemy (6)
 Description      : Your pet growls at the target, generating threat, taunting the target to attack the pet.
 Tooltip          : Taunted.
 
@@ -919,7 +919,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 120 seconds
-Affecting spells : Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#14), Scroll of Touch of Death (168797 effect#1), Hidden Master's Forbidden Touch (213112 effect#2), Hidden Master's Forbidden Touch (213114 effect#1), Meridian Strikes (278580 effect#1)
+Affecting spells : Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#14), Scroll of Touch of Death (168797 effect#1), Hidden Master's Forbidden Touch (213112 effect#2), Hidden Master's Forbidden Touch (213114 effect#1)
 Family Flags     : 40, 67
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ .....x..   ........ ..x..... ........ ........ 
@@ -1500,7 +1500,7 @@ Effects          :
 #1 (id=131037)   : Unknown(114)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=131038)   : Apply Aura (6) | Taunt (11)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=131039)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc115546
@@ -1540,7 +1540,7 @@ Spell Level      : 8
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Thunder Focus Tea (116680 effect#2), Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#18), Mistweaver Monk (137024 effect#1), Windwalker Monk (137025 effect#11), Extend Life (185158 effect#2), Uplifting Trance (197206 effect#1), Lifecycles (Vivify) (197916 effect#1), Infusion of Life (199380 effect#1), Vivify (231602 effect#1), Invigorating Brew (269622 effect#1), Uplifted Spirits (278576 effect#3), Lunar Glide (281521 effect#1), 
+Affecting spells : Thunder Focus Tea (116680 effect#2), Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#18), Mistweaver Monk (137024 effect#1), Windwalker Monk (137025 effect#11), Extend Life (185158 effect#2), Uplifting Trance (197206 effect#1), Lifecycles (Vivify) (197916 effect#1), Infusion of Life (199380 effect#1), Vivify (231602 effect#1), Uplifted Spirits (278576 effect#3), Lunar Glide (281521 effect#1), 
 Family Flags     : 26, 48
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1969,7 +1969,7 @@ Effects          :
 #1 (id=135217)   : Unknown(114)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(63) -> AOE enemy (instant) (16)
 #2 (id=135218)   : Apply Aura (6) | Taunt (11)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(63) -> AOE enemy (instant) (16)
+                   Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(63) -> AOE enemy (instant) (16)
 #3 (id=135219)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(63) -> AOE enemy (instant) (16)
 Description      : $@spelldesc115546
@@ -2434,7 +2434,7 @@ Effects          :
 #3 (id=220987)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
 #4 (id=753843)   : Dummy (3)
-                   Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000
+                   Base Value: 70 | Scaled Value: 70 | PvP Coefficient: 1.00000
 Description      : Absorbs all damage taken for $d, up to $s3% of your maximum health, and redirects $s4% of that amount to the enemy target as Nature damage over $124280d.
 Tooltip          : Damage dealt to the Monk is redirected to you as Nature damage over $124280d.
 
@@ -2983,28 +2983,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=159595)   : Apply Aura (6) | Proc Trigger Spell (42): Honorable Bow
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 3 | Trigger Spell: 125735 | Target: Self (1)
+#1 (id=159595)   : Apply Aura (6) | Proc Trigger Spell (42)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
 Description      : You honorably bow after each successful Touch of Death.
-
-Name             : Honorable Bow (id=125735) [Spell Family (53)] 
-Class            : Monk
-School           : Nature
-Spell Type       : Magic
-Spell Level      : 1
-Range            : 50000 yards
-Triggered by     : Glyph of Honor (125732)
-Attributes       : ........ ........ ........ ........   ........ ........ .x...... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-Effects          :
-#1 (id=159598)   : Dummy (3)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $@spelldesc125732
 
 Name             : Honor (id=125739) 
 Class            : Monk
@@ -3219,7 +3200,7 @@ Race             : Blood Elf (0x200)
 School           : Arcane
 Spell Type       : Magic
 GCD              : 1 seconds
-Cooldown         : 90 seconds
+Cooldown         : 120 seconds
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3584,15 +3565,15 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179709)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -23 | Scaled Value: -23 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -21 | Scaled Value: -21 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Strike (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636)
                    Family Flags: 103
 #2 (id=191100)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: -23 | Scaled Value: -23 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: -21 | Scaled Value: -21 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Strike (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636)
                    Family Flags: 103
 #3 (id=191101)   : Apply Aura (6) | Dummy (4)
-                   Base Value: -23 | Scaled Value: -23 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -21 | Scaled Value: -21 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=191102)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780)
@@ -4010,7 +3991,7 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
                  : Hidden (7), Requires line of sight (186)
 Effects          :
 #1 (id=229488)   : Threat (63)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Radius: 0 - 30 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Radius: 0 - 20 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 
 Name             : Windwalking (id=166646) [Spell Family (53)] 
 Class            : Monk
@@ -6284,7 +6265,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=707038)   : Apply Aura (6) | Dummy (4)
+#1 (id=707038)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 6410.799 (coefficient=82.454) | PvP Coefficient: 0.50000 | Trigger Spell: 270568 | Target: Self (1)
 Description      : Every $270568t1 sec, gain an absorb shield for $s1 for $269279d.
 
@@ -6304,7 +6285,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=707058)   : Dummy (3)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000
-Description      : Increases the item level of this item by 5.
+Description      : Increases Item Level by 5 and increases the potency of all Azerite powers granted by this item.
 
 Name             : Elemental Whirl (id=263984) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -6497,6 +6478,25 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.111428) | PvP Coefficient: 1.00000 | Trigger Spell: 270675 | Target: Self (1)
 Description      : Taking damage grants you $s1 Dodge for $269214d, stacking up to $269214u times.
 
+Name             : Blinding Mists (id=267682) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 464
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=714530)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 155.5 (coefficient=0.5) | PvP Coefficient: 1.00000 | Misc Value: 1792 | Target: Self (1)
+Description      : Your damaging abilities have a chance to apply Blinding Mists to all targets within 8 yards, reducing the damage dealt by their next 3 melee hits by $s1.
+Tooltip          : Your damaging abilities have a chance to apply Blinding Mists to all targets within 8 yards, reducing the damage dealt by their next 3 melee hits by $s1.
+
 Name             : Azerite Veins (id=267683) [Scaling Spell (-8), Passive] 
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
@@ -6618,7 +6618,6 @@ Class            : Paladin, Priest, Shaman, Monk, Druid
 School           : Physical
 Spell Type       : None
 Azerite Power Id : 105
-Triggered by     : Ephemeral Recovery (272572)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6628,7 +6627,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=714807)   : Apply Aura (6) | Dummy (4)
+#1 (id=714807)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 (coefficient=22) | PvP Coefficient: 1.00000 | Trigger Spell: 272570 | Target: Self (1)
 Description      : When you go below $272570s1% mana, you gain $s1 mana. Can occur once every $289362d.
 
@@ -6710,7 +6709,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=715939)   : Apply Aura (6) | Dummy (4)
+#1 (id=715939)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 2243.779 (coefficient=28.8589) | PvP Coefficient: 0.50000 | Trigger Spell: 270654 | Target: Self (1)
 Description      : When you take damage, heal for $s1. Cannot occur more than once every $270654proccooldown sec.
 Tooltip          : When you take damage, heal for $s1. Cannot occur more than once every $270654proccooldown sec.
@@ -6750,7 +6749,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=716159)   : Apply Aura (6) | Dummy (4)
+#1 (id=716159)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 6997.5 (coefficient=90) | PvP Coefficient: 0.50000 | Trigger Spell: 270655 | Target: Self (1)
 #2 (id=720319)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
@@ -6795,7 +6794,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=716165)   : Apply Aura (6) | Dummy (4)
+#1 (id=716165)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 3165.077 (coefficient=10.1771) | PvP Coefficient: 0.50000 | Trigger Spell: 270652 | Target: Self (1)
 #2 (id=720314)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 82.61684 (coefficient=0.265649) | PvP Coefficient: 0.50000 | Target: Self (1)
@@ -6817,31 +6816,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=716167)   : Apply Aura (6) | Dummy (4)
+#1 (id=716167)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 598.3412 (coefficient=7.695707) | PvP Coefficient: 0.50000 | Trigger Spell: 270660 | Target: Self (1)
 #2 (id=716168)   : Dummy (3)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000
 Description      : While no enemies are within $s2 yds, you heal for $s1 every $270661t1 sec.
 Tooltip          : While no enemies are within $s2 yds, you heal for $w1 every $270661t1 sec.
-
-Name             : Invigorating Brew (id=269621) [Scaling Spell (-8), Spell Family (53), Passive] 
-Class            : Monk
-School           : Physical
-Spell Type       : None
-Azerite Power Id : 76
-Triggered by     : Invigorating Brew (269622)
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : ........ ........ ........ .......x   ........ ........ ........ ........ 
-                 : Passive (6), Scales with item level (354)
-Effects          :
-#1 (id=718012)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 953.9877 (coefficient=12.26994) | PvP Coefficient: 1.00000 | Trigger Spell: 270639 | Target: Self (1)
-Description      : Vivify does an additional $s1 healing when empowered by Thunder Focus Tea.
 
 Name             : Touch of Death Amplifier (id=271232) [Spell Family (53), Passive, Hidden] 
 Class            : Windwalker Monk
@@ -6989,27 +6969,6 @@ Effects          :
                    Affected Spells: Breath of Fire (123725)
                    Family Flags: 125
 Description      : Breath of Fire deals ${$s2*($123725d/$123725t1)} additional damage over its duration, and has a chance to summon a Healing Sphere each time it deals damage.
-
-Name             : Iron Fists (id=272804) [Scaling Spell (-7), Spell Family (53), Passive] 
-Class            : Monk
-School           : Physical
-Spell Type       : None
-Azerite Power Id : 117
-Triggered by     : Iron Fists (272806)
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Scales with item level (354)
-Effects          :
-#1 (id=723926)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=2.381773) | PvP Coefficient: 1.00000 | Trigger Spell: 272806 | Target: Self (1)
-#2 (id=723927)   : Dummy (3)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000
-Description      : Fists of Fury grants you $s1 Critical Strike for $272806d when it hits at least $s2 enemies.
 
 Name             : Ruinous Bolt (id=273150) [Scaling Spell (-8), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -7244,7 +7203,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=727285)   : Apply Aura (6) | Dummy (4)
+#1 (id=727285)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 825.7108 (coefficient=10.62007) | PvP Coefficient: 0.50000 | Trigger Spell: 274771 | Target: Self (1)
 Description      : While $?c3[Touch of Karma][Fortifying Brew] is active, heal for $s1 every second.
 
@@ -7355,25 +7314,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=1.894276) | PvP Coefficient: 1.00000 | Trigger Spell: 280386 | Target: Self (1)
 Description      : When your Renewing Mists heals an ally, you have a chance to gain $s1 Haste for $276025d.
 
-Name             : Niuzao's Blessing (id=277665) [Scaling Spell (-8), Spell Family (53), Passive] 
-Class            : Monk
-School           : Physical
-Spell Type       : None
-Azerite Power Id : 382
-Triggered by     : Niuzao's Blessing (278535)
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Scales with item level (354)
-Effects          :
-#1 (id=732966)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 466.5 (coefficient=6) | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Expel Harm restores ${$s1*($278535d/$278535t1)} health over $278535d for each Healing Sphere consumed.
-
 Name             : Burst of Life (id=277667) [Scaling Spell (-8), Spell Family (53), Passive] 
 Class            : Monk
 School           : Physical
@@ -7396,7 +7336,6 @@ Name             : Swift Roundhouse (id=277669) [Scaling Spell (-8), Spell Famil
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Azerite Power Id : 388
 Triggered by     : Swift Roundhouse (278710)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7502,30 +7441,6 @@ Effects          :
 #2 (id=734382)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000
 Description      : Tiger Palm's chance to make your next Blackout Kick free is increased to $278718s1% and Tiger Palm deals an additional $s1 damage.
-
-Name             : Meridian Strikes (id=278580) [Scaling Spell (-8), Spell Family (53), Passive] 
-Class            : Monk
-School           : Physical
-Spell Type       : None
-Azerite Power Id : 391
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Scales with item level (354)
-Effects          :
-#1 (id=734386)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 12502.49 (coefficient=160.8037) | PvP Coefficient: 0.40000 | Target: Self (1)
-                   Affected Spells: Touch of Death (115080)
-                   Family Flags: 40
-#2 (id=734387)   : Dummy (3)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000
-Description      : When you Combo Strike, the cooldown of Touch of Death is reduced by ${$s2/100}.1 sec.
-
-Touch of Death deals an additional $s1 damage.
 
 Name             : Swift Roundhouse (id=278707) [Scaling Spell (-1), Spell Family (53), Hidden] 
 Class            : Monk
@@ -7696,7 +7611,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=737270)   : Apply Aura (6) | Dummy (4)
+#1 (id=737270)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 (coefficient=1.06943) | PvP Coefficient: 0.50000 | Trigger Spell: 280182 | Target: Self (1)
 #2 (id=737271)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
@@ -8165,7 +8080,7 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 #3 (id=744340)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 131.9971 (coefficient=0.424428) | PvP Coefficient: 1.00000
-Description      : Your abilities have a chance to plant a factional banner for $280841d, empowering yourself and up to $s2 allies with the spirit of the Horde.
+Description      : Your abilities have a chance to plant a banner representing a Horde race for $280841d, granting you and up to $s2 allies $s3 of their primary stat or $s1 of a secondary stat.
 
 Name             : Collective Will (id=280581) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -8296,7 +8211,7 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 #3 (id=744329)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 131.9971 (coefficient=0.424428) | PvP Coefficient: 1.00000
-Description      : Your abilities have a chance to plant a factional banner for $280866d, empowering yourself and up to $s2 allies with the spirit of the Alliance.
+Description      : Your abilities have a chance to plant a banner representing an Alliance race for $280866d, granting you and up to $s2 allies $s3 of their primary stat or $s1 of a secondary stat.
 
 Name             : Stand As One (id=280626) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -8460,7 +8375,7 @@ Name             : Straight, No Chaser (id=285958) [Scaling Spell (-1), Spell Fa
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Azerite Power Id : 513
+Azerite Power Id : 382
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8480,7 +8395,7 @@ Name             : Dance of Chi-Ji (id=286585) [Scaling Spell (-8), Spell Family
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Azerite Power Id : 516
+Azerite Power Id : 391
 Triggered by     : Dance of Chi-Ji (286587)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8491,7 +8406,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=749049)   : Apply Aura (6) | Dummy (4)
+#1 (id=749049)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 1414.764 (coefficient=18.19632) | PvP Coefficient: 1.00000 | Trigger Spell: 286586 | Target: Self (1)
 Description      : Spending Chi has a chance to make your next Spinning Crane Kick free and deal $s1 additional damage.
 
@@ -8507,7 +8422,7 @@ Proc Flags       : ....x... x.x.x.x. x.x..x.. ........
 Triggered by     : Dance of Chi-Ji (286585)
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ..x..... ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ..x..... ........ ........ ........ 
@@ -8555,13 +8470,13 @@ School           : Physical
 Spell Type       : None
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 101%
-Azerite Power Id : 517
+Azerite Power Id : 117
 Triggered by     : Fury of Xuen (287062), Fury of Xuen (287063)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ..x..... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
@@ -8592,9 +8507,9 @@ Effects          :
 #2 (id=749809)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 287055
 #3 (id=749810)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc287055
-Tooltip          : Your next Fists of Fury has a $w3% chance to grant $s1 Haste and invoke Xuen, The White Tiger for $287063d.
+Tooltip          : Your next Fists of Fury has a $w3% chance to grant $w1 Haste and invoke Xuen, The White Tiger for $287063d.
 
 Name             : Fury of Xuen (id=287063) [Scaling Spell (-1), Spell Family (53)] 
 Class            : Monk
@@ -8620,11 +8535,111 @@ Effects          :
 Description      : $@spelldesc287062
 Tooltip          : Haste increased by $w1.
 
+Name             : Shadow of Elune (id=287467) [Scaling Spell (-7), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 521
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=750457)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=2.025204) | PvP Coefficient: 1.00000 | Trigger Spell: 287468 | Target: Self (1)
+Description      : Your spells and abilities have a chance to increase your Haste by $s1 for $287471d. At night, you also gain $287471s2% movement speed for the duration.
+
+Name             : Ancients' Bulwark (id=287604) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 522
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=750674)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 284.8856 (coefficient=0.916031) | PvP Coefficient: 1.00000 | Trigger Spell: 287605 | Target: Self (1)
+#2 (id=750675)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 242.5788 (coefficient=0.779996) | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Standing still grants you Deep Roots, increasing your Versatility by $s2. Moving instead grants you Uprooted, healing you for $s1 every $287608t1 sec.
+
+Name             : Apothecary's Concoctions (id=287631) [Scaling Spell (-8), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 523
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=750714)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 467.454 (coefficient=6.01227) | PvP Coefficient: 1.00000 | Trigger Spell: 287633 | Target: Self (1)
+#2 (id=750715)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 894.3635 (coefficient=11.50307) | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=750716)   : Dummy (3)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
+Description      : Your damaging abilities have a chance to deal $<dmg> Plague damage over $287638d, and your healing abilities have a chance to restore $<heal> health over $287639d. These effects are increased by up to $s3% based on the target's missing health.
+Variables        : $dmg=${$s1*3}
+$heal=${$s2*3}
+
+Name             : Endless Hunger (id=287662) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 526
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=750767)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 1994.198 (coefficient=6.412213) | PvP Coefficient: 1.00000 | Trigger Spell: 287664 | Target: Self (1)
+#2 (id=750768)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 242.6276 (coefficient=0.780153) | PvP Coefficient: 1.00000 | Misc Value: 1879048192 | Target: Self (1)
+Description      : Your Versatility is increased by $s2. Moving near an enemy's corpse consumes their essence, restoring $s1 health.
+
+Name             : Fight or Flight (id=287818) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 541
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=751037)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 370.3512 (coefficient=1.19084) | PvP Coefficient: 1.00000 | Trigger Spell: 287821 | Target: Self (1)
+Description      : When you damage an enemy who is below $287821s1% health, or fall below $287821s1% health yourself, gain $s1 primary stat and $287827s5% movement speed for $287827d. Can only occur once every $287825d.
+
 Name             : Secret Infusion (id=287829) [Scaling Spell (-7), Spell Family (53), Passive] 
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Azerite Power Id : 536
+Azerite Power Id : 76
 Triggered by     : Secret Infusion (287831)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8635,7 +8650,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=751061)   : Apply Aura (6) | Dummy (4)
+#1 (id=751061)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 (coefficient=1.67142) | PvP Coefficient: 1.00000 | Trigger Spell: 287830 | Target: Self (1)
 Description      : After using Thunder Focus Tea, your next spell gives $s1 of a stat for $287831d:
 $@spellname124682: Critical strike
@@ -8647,7 +8662,7 @@ Name             : Glory of the Dawn (id=288634) [Scaling Spell (-8), Spell Fami
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Azerite Power Id : 553
+Azerite Power Id : 388
 Triggered by     : Glory of the Dawn (288636)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8662,7 +8677,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 3815.951 (coefficient=49.07976) | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=752478)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000
-Description      : Rising Sun Kick has a chance to trigger a second time, dealing $s1 Physical damage and restoring $s2 Chi.
+#3 (id=754207)   : Dummy (3)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000
+Description      : Rising Sun Kick has a $s3% chance to trigger a second time, dealing $s1 Physical damage and restoring $s2 Chi.
 
 Name             : Glory of the Dawn (id=288636) [Spell Family (53)] 
 Class            : Monk
@@ -8672,7 +8689,7 @@ Spell Level      : 56
 Range            : 5 yards
 Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), 
 Family Flags     : 103
-Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ...x.... 
+Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8687,5 +8704,90 @@ Effects          :
 #3 (id=752491)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: chi | Target: Self (1)
 Description      : $@spelldesc107428
+
+Name             : Seductive Power (id=288749) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 561
+Triggered by     : Seductive Power (288777)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=752664)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 28.48853 (coefficient=0.091603) | PvP Coefficient: 1.00000 | Trigger Spell: 288757 | Target: Self (1)
+#2 (id=752673)   : Dummy (3)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000
+Description      : Your spells and abilities have a chance to conjure Bwonsamdi's spectral visage, beckoning you closer. If you approach him, gain $s1 to all stats for $288777d, stacking up to $288777u times. If you fail to heed his call, lose $s2 $Lstack:stacks;.
+
+Name             : Bonded Souls (id=288802) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 560
+Triggered by     : Bonded Souls (288839)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=752745)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 623.7739 (coefficient=2.005704) | PvP Coefficient: 1.00000 | Trigger Spell: 288804 | Target: Self (1)
+#2 (id=752815)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 3798.473 (coefficient=12.21374) | PvP Coefficient: 1.00000
+Description      : Your spells and abilities have a chance to trigger a Soulbond for $288841d. During Soulbond, every $288841t1 sec you and your nearest ally are both healed for $s2 and gain $s1 Haste for $288839d.
+
+Name             : Treacherous Covenant (id=288953) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 562
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=752982)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 166.1832 (coefficient=0.534351) | PvP Coefficient: 1.00000 | Trigger Spell: 288964 | Target: Self (1)
+#2 (id=752991)   : Dummy (3)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
+#3 (id=752992)   : Dummy (3)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000
+#4 (id=752993)   : Dummy (3)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
+Description      : Your primary stat is increased by $s1 while you are above $s2% health. You take $s3% increased damage while below $s4% health.
+
+Name             : Exit Strategy (id=289322) [Scaling Spell (-7), Passive] 
+Class            : Monk
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 566
+Triggered by     : Exit Strategy (289324)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=753617)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.935995) | PvP Coefficient: 0.50000 | Trigger Spell: 289323 | Target: Self (1)
+Description      : Rolling grants you $s1 Avoidance for $289324d. Taking non-periodic damage in this time reduces the cooldown of Roll by $289324s3 sec.
 
 
