@@ -4,7 +4,7 @@
 #ifndef ptr_MAX_CLASS
 #define ptr_MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 8.1.0.28202
+// Class based active abilities, wow build 8.1.0.28366
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -1140,10 +1140,11 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
         5217, // Tiger's Fury
            0,
     },
-    // Guardian tree, 17 abilities
+    // Guardian tree, 18 abilities
     {
        22812, // Barkskin
       203958, // Brambles
+      289315, // Burst of Savagery
        22842, // Frenzied Regeneration
           99, // Incapacitating Roar
       192081, // Ironfur
@@ -1258,7 +1259,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 };
 #define PTR_TREE_SPECIALIZATION_SIZE (34)
 
-// Talent tree specialization abilities, wow build 8.1.0.28202
+// Talent tree specialization abilities, wow build 8.1.0.28366
 static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1411,6 +1412,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
       200327, // Blessing of Sacrifice (Rank 2)
       275773, // Judgment
       231644, // Judgment (Rank 2)
+      289941, // Holy Shock
            0,
     },
     // Specialization abilities for Protection
@@ -2375,7 +2377,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
 };
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 8.1.0.28202
+// Class mastery abilities, wow build 8.1.0.28366
 static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2614,7 +2616,7 @@ static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS]
 #define ptr_MAX_RACE (31)
 #endif
 
-// Racial abilities, wow build 8.1.0.28202
+// Racial abilities, wow build 8.1.0.28366
 static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3542,7 +3544,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
 };
 #define PTR_SET_BONUS_DATA_SIZE (700)
 
-// Set bonus data, wow build 8.1.0.28202
+// Set bonus data, wow build 8.1.0.28366
 static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -4273,9 +4275,9 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   { "Waycrest Legacy"                            , "waycrests_legacy",     15,  1439,   21,   2,  11,   -1, 277522, { 158362, 159631,  0 } },
   { "Waycrest Legacy"                            , "waycrests_legacy",     15,  1439,   21,   2,  12,   -1, 277522, { 158362, 159631,  0 } },
 };
-#define PTR_RPPMMOD_SIZE (933)
+#define PTR_RPPMMOD_SIZE (932)
 
-// 933 RPPM Modifiers, wow build level 8.1.0.28202
+// 932 RPPM Modifiers, wow build level 8.1.0.28366
 static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   {  17495,    4,  1,  1.0000 },
   {  27656,    4,  1,  1.0000 },
@@ -5202,9 +5204,8 @@ static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   { 285023,    4,  1,  1.0000 },
   { 286392,    4,  1,  1.0000 },
   { 286586,    4,  1,  1.0000 },
-  { 288055,    4,  1,  1.0000 },
   { 288109,    4,  1,  1.0000 },
-  { 288332,    4,  1,  1.0000 },
+  { 288328,    4,  1,  1.0000 },
   { 288757,    4,  1,  1.0000 },
   { 288804,    4,  1,  1.0000 },
   { 289287,    4,  1,  1.0000 },
