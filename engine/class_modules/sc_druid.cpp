@@ -1456,7 +1456,7 @@ public:
     hasted_gcd( ab::data().affected_by( player -> spec.druid -> effectN( 4 ) ) ),
     resto_damage( ab::data().affected_by( player -> spec.restoration -> effectN(8) ) ),
     resto_damage_periodic( ab::data().affected_by( player -> spec.restoration -> effectN(9) ) ),
-    gore_chance( player -> spec.gore -> proc_chance() ), triggers_galactic_guardian( true )
+    gore_chance( player -> dbc.ptr ? player -> spec.gore -> effectN( 1 ).percent() : player -> spec.gore -> proc_chance() ), triggers_galactic_guardian( true )
   {
     ab::may_crit      = true;
     ab::tick_may_crit = true;
