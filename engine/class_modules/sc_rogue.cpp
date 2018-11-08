@@ -6688,7 +6688,7 @@ void rogue_t::create_buffs()
   buffs.nothing_personal                   = make_buff( this, "nothing_personal", find_spell( 289467 ) )
                                              -> set_trigger_spell( azerite.nothing_personal.spell_ref().effectN( 1 ).trigger() )
                                              -> set_affects_regen( true )
-                                             -> set_default_value( find_spell( 289467 ) -> effectN( 2 ).percent() );
+                                             -> set_default_value( find_spell( 289467 ) -> effectN( 2 ).base_value() / 5.0 );
   buffs.paradise_lost                      = make_buff<stat_buff_t>( this, "paradise_lost", find_spell( 278962 ) )
                                              -> add_stat( STAT_AGILITY, azerite.paradise_lost.value() )
                                              -> set_refresh_behavior( buff_refresh_behavior::DURATION );
@@ -7202,13 +7202,9 @@ void rogue_t::regen( timespan_t periodicity )
       resource_gain( RESOURCE_ENERGY, energy_regen, gains.adrenaline_rush );
     }
 
-    if ( buffs.nothing_personal -> up() )
-    {
-      double energy_regen = periodicity.total_seconds() * resource_regen_per_second( RESOURCE_ENERGY ) * buffs.nothing_personal -> check_value();
-      resource_gain( RESOURCE_ENERGY, energy_regen, gains.nothing_personal );
-    }
-
     // Additional energy gains
+    if ( buffs.nothing_personal -> up() )
+      resource_gain( RESOURCE_ENERGY, buffs.nothing_personal -> check_value() * periodicity.total_seconds(), gains.nothing_personal );
     if ( buffs.buried_treasure -> up() )
       resource_gain( RESOURCE_ENERGY, buffs.buried_treasure -> check_value() * periodicity.total_seconds(), gains.buried_treasure );
     if ( buffs.vendetta -> up() )
