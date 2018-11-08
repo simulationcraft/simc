@@ -275,16 +275,19 @@ namespace warlock {
         return et;
       }
 
-      double bonus_da(const action_state_t* s) const override
+      double bonus_da( const action_state_t* s ) const override
       {
-        double da = demonology_spell_t::bonus_da(s);
-        if (s->action->execute_time() > timespan_t::from_millis(0) && p()->buffs.forbidden_knowledge->check())
+        double da = demonology_spell_t::bonus_da( s );
+
+        if ( !p()->dbc.ptr && s->action->execute_time() > timespan_t::from_millis( 0 ) && p()->buffs.forbidden_knowledge->check() )
         {
           da += p()->buffs.forbidden_knowledge->check_stack_value();
-          if (sim->log)
-            sim->out_log.printf("forbidden knowledge added %f", p()->azerite.forbidden_knowledge.value());
+          if ( sim->log )
+            sim->out_log.printf( "forbidden knowledge added %f", p()->azerite.forbidden_knowledge.value() );
         }
+
         da += p()->buffs.shadows_bite->check_value();
+
         return da;
       }
 
@@ -292,8 +295,9 @@ namespace warlock {
       {
         demonology_spell_t::execute();
 
-        if (this->execute_time() > timespan_t::from_millis(0))
+        if ( !p()->dbc.ptr && this->execute_time() > timespan_t::from_millis(0))
           p()->buffs.forbidden_knowledge->decrement();
+
         else
         {
           p()->buffs.demonic_core->up(); // benefit tracking
@@ -1053,7 +1057,6 @@ namespace warlock {
     // Azerite
     azerite.demonic_meteor                  = find_azerite_spell("Demonic Meteor");
     azerite.forbidden_knowledge             = find_azerite_spell("Forbidden Knowledge");
-    //azerite.meteoric_flare                  = find_azerite_spell("Meteoric Flare"); //no current data
     azerite.shadows_bite                    = find_azerite_spell("Shadow's Bite");
     azerite.supreme_commander               = find_azerite_spell("Supreme Commander");
     azerite.umbral_blaze                    = find_azerite_spell("Umbral Blaze");
@@ -1149,7 +1152,8 @@ namespace warlock {
     imp->add_action( "doom,cycle_targets=1,max_cycle_targets=7,if=refreshable" );
     imp->add_action( "call_action_list,name=build_a_shard" );
 
-    bas->add_action( "demonbolt,if=azerite.forbidden_knowledge.enabled&buff.forbidden_knowledge.react&!buff.demonic_core.react&cooldown.summon_demonic_tyrant.remains>20" );
+    if ( !dbc.ptr )
+      bas->add_action( "demonbolt,if=azerite.forbidden_knowledge.enabled&buff.forbidden_knowledge.react&!buff.demonic_core.react&cooldown.summon_demonic_tyrant.remains>20" );
     bas->add_action("soul_strike");
     bas->add_action("shadow_bolt");
   }
