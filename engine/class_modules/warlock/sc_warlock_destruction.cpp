@@ -919,7 +919,7 @@ namespace warlock {
         virtual void execute() override
         {
           destruction_spell_t::execute();
-          if (this->num_targets_hit >= 3 && p()->azerite.accelerant.ok())
+          if ( !p()->dbc.ptr&&this->num_targets_hit >= 3 && p()->azerite.accelerant.ok() )
             p()->buffs.accelerant->trigger();
         }
       };
