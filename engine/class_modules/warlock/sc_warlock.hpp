@@ -203,11 +203,11 @@ namespace warlock
         //Demo
         azerite_power_t demonic_meteor;
         azerite_power_t forbidden_knowledge;
-        //azerite_power_t meteoric_flare; //no current data
         azerite_power_t shadows_bite;
         azerite_power_t supreme_commander;
         azerite_power_t umbral_blaze;
         azerite_power_t explosive_potential;
+        azerite_power_t baleful_invocation;
 
         //Aff
         azerite_power_t cascading_calamity;
@@ -368,6 +368,7 @@ namespace warlock
         gain_t* shadow_bolt;
         gain_t* doom;
         gain_t* demonic_meteor;
+        gain_t* baleful_invocation;
 
         gain_t* soulsnatcher;
         gain_t* t19_2pc_demonology;

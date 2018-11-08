@@ -883,6 +883,16 @@ struct demonfire_t : public warlock_pet_spell_t
     parse_options(options_str);
   }
 
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double da = warlock_pet_spell_t::bonus_da( s );
+    
+    if ( p()->dbc.ptr )
+      da += p()->o()->azerite.baleful_invocation.value( 1 );
+
+    return da;
+  }
+
   double action_multiplier() const override
   {
     double m = warlock_pet_spell_t::action_multiplier();

@@ -482,6 +482,9 @@ namespace warlock {
 
         p()->buffs.demonic_power->trigger();
 
+        if ( p()->dbc.ptr && p()->azerite.baleful_invocation.ok() )
+          p()->resource_gain( RESOURCE_SOUL_SHARD, p()->find_spell( 287060 )->effectN( 1 ).base_value() / 10.0, p()->gains.baleful_invocation );
+
         if (p()->talents.demonic_consumption->ok())
         {
           for ( auto imp : p() -> warlock_pet_list.wild_imps )
@@ -1034,35 +1037,37 @@ namespace warlock {
       ->set_refresh_behavior(buff_refresh_behavior::DURATION);
   }
 
-  void warlock_t::init_spells_demonology() {
-    spec.demonology                         = find_specialization_spell(137044);
-    mastery_spells.master_demonologist      = find_mastery_spell(WARLOCK_DEMONOLOGY);
+  void warlock_t::init_spells_demonology()
+  {
+    spec.demonology                         = find_specialization_spell( 137044 );
+    mastery_spells.master_demonologist      = find_mastery_spell( WARLOCK_DEMONOLOGY );
     // spells
     // Talents
-    talents.dreadlash                       = find_talent_spell("Dreadlash");
-    talents.demonic_strength                = find_talent_spell("Demonic Strength");
-    talents.bilescourge_bombers             = find_talent_spell("Bilescourge Bombers");
-    talents.demonic_calling                 = find_talent_spell("Demonic Calling");
-    talents.power_siphon                    = find_talent_spell("Power Siphon");
-    talents.doom                            = find_talent_spell("Doom");
-    talents.from_the_shadows                = find_talent_spell("From the Shadows");
-    talents.soul_strike                     = find_talent_spell("Soul Strike");
-    talents.summon_vilefiend                = find_talent_spell("Summon Vilefiend");
-    talents.inner_demons                    = find_talent_spell("Inner Demons");
-    talents.grimoire_felguard               = find_talent_spell("Grimoire: Felguard");
-    talents.sacrificed_souls                = find_talent_spell("Sacrificed Souls");
-    talents.demonic_consumption             = find_talent_spell("Demonic Consumption");
-    talents.nether_portal                   = find_talent_spell("Nether Portal");
+    talents.dreadlash                       = find_talent_spell( "Dreadlash" );
+    talents.demonic_strength                = find_talent_spell( "Demonic Strength" );
+    talents.bilescourge_bombers             = find_talent_spell( "Bilescourge Bombers" );
+    talents.demonic_calling                 = find_talent_spell( "Demonic Calling" );
+    talents.power_siphon                    = find_talent_spell( "Power Siphon" );
+    talents.doom                            = find_talent_spell( "Doom" );
+    talents.from_the_shadows                = find_talent_spell( "From the Shadows" );
+    talents.soul_strike                     = find_talent_spell( "Soul Strike" );
+    talents.summon_vilefiend                = find_talent_spell( "Summon Vilefiend" );
+    talents.inner_demons                    = find_talent_spell( "Inner Demons" );
+    talents.grimoire_felguard               = find_talent_spell( "Grimoire: Felguard" );
+    talents.sacrificed_souls                = find_talent_spell( "Sacrificed Souls" );
+    talents.demonic_consumption             = find_talent_spell( "Demonic Consumption" );
+    talents.nether_portal                   = find_talent_spell( "Nether Portal" );
 
     // Azerite
-    azerite.demonic_meteor                  = find_azerite_spell("Demonic Meteor");
-    azerite.forbidden_knowledge             = find_azerite_spell("Forbidden Knowledge");
-    azerite.shadows_bite                    = find_azerite_spell("Shadow's Bite");
-    azerite.supreme_commander               = find_azerite_spell("Supreme Commander");
-    azerite.umbral_blaze                    = find_azerite_spell("Umbral Blaze");
-    azerite.explosive_potential             = find_azerite_spell("Explosive Potential");
+    azerite.demonic_meteor                  = find_azerite_spell( "Demonic Meteor" );
+    azerite.forbidden_knowledge             = find_azerite_spell( "Forbidden Knowledge" );
+    azerite.shadows_bite                    = find_azerite_spell( "Shadow's Bite" );
+    azerite.supreme_commander               = find_azerite_spell( "Supreme Commander" );
+    azerite.umbral_blaze                    = find_azerite_spell( "Umbral Blaze" );
+    azerite.explosive_potential             = find_azerite_spell( "Explosive Potential" );
+    azerite.baleful_invocation              = find_azerite_spell( "Baleful Invocation" );
 
-    active.summon_random_demon              = new actions_demonology::summon_random_demon_t(this, "");
+    active.summon_random_demon = new actions_demonology::summon_random_demon_t( this, "" );
 
     // Initialize some default values for pet spawners
     auto imp_summon_spell = find_spell( 104317 );
@@ -1070,12 +1075,14 @@ namespace warlock {
 
     auto dreadstalker_spell = find_spell( 193332 );
     warlock_pet_list.dreadstalkers.set_default_duration( dreadstalker_spell->duration() +
-        sets->set( WARLOCK_DEMONOLOGY, T19, B4 )->effectN( 1 ).time_value() );
+                                                         sets->set( WARLOCK_DEMONOLOGY, T19, B4 )->effectN( 1 ).time_value() );
   }
 
-  void warlock_t::init_gains_demonology() {
-    gains.t19_2pc_demonology = get_gain("t19_2pc_demonology");
-    gains.demonic_meteor = get_gain("demonic_meteor");
+  void warlock_t::init_gains_demonology()
+  {
+    gains.t19_2pc_demonology = get_gain( "t19_2pc_demonology" );
+    gains.demonic_meteor = get_gain( "demonic_meteor" );
+    gains.baleful_invocation = get_gain( "baleful_invocation" );
   }
 
   void warlock_t::init_rng_demonology() {
