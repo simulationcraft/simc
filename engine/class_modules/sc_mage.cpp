@@ -6282,7 +6282,7 @@ void mage_t::apl_frost()
   action_priority_list_t* talent_rop   = get_action_priority_list( "talent_rop" );
 
   default_list->add_action( this, "Counterspell" );
-  default_list->add_action( this, "Ice Lance", "if=prev_gcd.1.flurry&brain_freeze_active&!buff.fingers_of_frost.react",
+  default_list->add_action( this, "Ice Lance", "if=prev_gcd.1.flurry&!buff.fingers_of_frost.react",
     "If the mage has FoF after casting instant Flurry, we can delay the Ice Lance and use other high priority action, if available." );
   default_list->add_action( "call_action_list,name=cooldowns" );
   default_list->add_action( "call_action_list,name=aoe,if=active_enemies>3&talent.freezing_rain.enabled|active_enemies>4",
@@ -6808,21 +6808,6 @@ expr_t* mage_t::create_expression( const std::string& name_str )
     };
 
     return new sicicles_expr_t( *this );
-  }
-
-  if ( util::str_compare_ci( name_str, "brain_freeze_active" ) )
-  {
-    struct brain_freeze_expr_t : public mage_expr_t
-    {
-      brain_freeze_expr_t( mage_t& m ) :
-        mage_expr_t( "brain_freeze_active", m )
-      { }
-
-      virtual double evaluate() override
-      { return mage.state.brain_freeze_active; }
-    };
-
-    return new brain_freeze_expr_t( *this );
   }
 
   std::vector<std::string> splits = util::string_split( name_str, "." );
