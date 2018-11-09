@@ -2434,7 +2434,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     bool cc_delay = p()->bugs && get_dot( target )->is_ticking();
 
     // Arcane Pummeling seems to ignore the normal CC state that we model here through
-    // the hidden clearcasting_channel buff, snapshot it separetly.
+    // the hidden clearcasting_channel buff, snapshot it separately.
     p()->state.clearcasting_active = cc_active;
 
     if ( !cc_delay )
