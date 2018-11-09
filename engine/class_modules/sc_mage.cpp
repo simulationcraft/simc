@@ -449,7 +449,6 @@ public:
 
     buff_t* frigid_grasp;
     buff_t* tunnel_of_ice;
-    buff_t* winters_reach;
 
 
     // Miscellaneous Buffs
@@ -567,7 +566,6 @@ public:
   struct state_t
   {
     bool brain_freeze_active;
-    bool winters_reach_active;
     bool fingers_of_frost_active;
 
     int flurry_bolt_count;
@@ -667,7 +665,6 @@ public:
     azerite_power_t packed_ice;
     azerite_power_t tunnel_of_ice;
     azerite_power_t whiteout;
-    azerite_power_t winters_reach;
   } azerite;
 
   struct uptimes_t
@@ -3217,20 +3214,6 @@ struct flurry_bolt_t : public frost_mage_spell_t
 
     return am;
   }
-
-  virtual double bonus_da( const action_state_t* s ) const override
-  {
-    double da = frost_mage_spell_t::bonus_da( s );
-
-    if ( p()->state.winters_reach_active )
-    {
-      // Buff most likely won't be active here, need to grab its default_value
-      // instead of using value/stack_value.
-      da += p()->buffs.winters_reach->default_value;
-    }
-
-    return da;
-  }
 };
 
 struct flurry_t : public frost_mage_spell_t
@@ -3281,17 +3264,8 @@ struct flurry_t : public frost_mage_spell_t
     p()->buffs.brain_freeze->decrement();
     p()->state.flurry_bolt_count = 0;
 
-    p()->state.winters_reach_active = !brain_freeze && p()->buffs.winters_reach->up();
-
     if ( brain_freeze )
-    {
-      p()->buffs.winters_reach->trigger();
       p()->procs.brain_freeze_flurry->occur();
-    }
-    else
-    {
-      p()->buffs.winters_reach->decrement();
-    }
   }
 
   virtual void impact( action_state_t* s ) override
@@ -5666,7 +5640,6 @@ void mage_t::init_spells()
   azerite.packed_ice               = find_azerite_spell( "Packed Ice"               );
   azerite.tunnel_of_ice            = find_azerite_spell( "Tunnel of Ice"            );
   azerite.whiteout                 = find_azerite_spell( "Whiteout"                 );
-  azerite.winters_reach            = find_azerite_spell( "Winter's Reach"           );
 }
 
 void mage_t::init_base_stats()
@@ -5827,9 +5800,6 @@ void mage_t::create_buffs()
   buffs.tunnel_of_ice      = make_buff( this, "tunnel_of_ice", find_spell( 277904 ) )
                                ->set_default_value( azerite.tunnel_of_ice.value() )
                                ->set_chance( azerite.tunnel_of_ice.enabled() ? 1.0 : 0.0 );
-  buffs.winters_reach      = make_buff( this, "winters_reach", find_spell( 273347 ) )
-                               ->set_default_value( azerite.winters_reach.value() * ( 0.5 + 0.5 / azerite.winters_reach.n_items() ) )
-                               ->set_chance( azerite.winters_reach.spell_ref().effectN( 2 ).percent() );
 
   // Misc
   // N active GBoWs are modeled by a single buff that gives N times as much mana.
@@ -6354,7 +6324,6 @@ void mage_t::apl_frost()
     "in most situations. Low mastery leans towards using it when available. When using Splitting Ice and having another target nearby, "
     "it's slightly better to use GS when available, as the second target doesn't benefit from shattering the main target." );
   single->add_talent( this, "Ice Nova" );
-  single->add_action( this, "Flurry", "if=azerite.winters_reach.enabled&!buff.brain_freeze.react&buff.winters_reach.react" );
   single->add_action( this, "Frostbolt" );
   single->add_action( "call_action_list,name=movement" );
   single->add_action( this, "Ice Lance" );
