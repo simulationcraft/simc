@@ -348,6 +348,7 @@ public:
     azerite_power_t layered_mane; // TODO: check if second Ironfur benefits from Guardian of Elune
     azerite_power_t masterful_instincts;
     azerite_power_t twisted_claws;
+    azerite_power_t burst_of_savagery;
 
   } azerite;
 
@@ -419,6 +420,7 @@ public:
     buff_t* guardians_wrath;
     buff_t* masterful_instincts;
     buff_t* twisted_claws;
+    buff_t* burst_of_savagery;
 
     // Restoration
     buff_t* incarnation_tree;
@@ -4271,12 +4273,19 @@ struct mangle_t : public bear_attack_t
   {
     bear_attack_t::execute();
 
-    if ( p() -> buff.gore -> up() && p() -> sets -> has_set_bonus( DRUID_GUARDIAN, T21, B2 ) ) {
-      auto reduction = p() -> sets -> set( DRUID_GUARDIAN, T21, B2 ) -> effectN( 1 ).time_value();
-      p() -> cooldown.barkskin -> adjust( - reduction );
-    }
+    if ( p() -> buff.gore -> up() ) {
+      if ( p() -> sets -> has_set_bonus( DRUID_GUARDIAN, T21, B2 ) ) {
+        auto reduction = p() -> sets -> set( DRUID_GUARDIAN, T21, B2 ) -> effectN( 1 ).time_value();
+        p() -> cooldown.barkskin -> adjust( - reduction );
+      }
 
-    p() -> buff.gore -> expire();
+      p() -> buff.gore -> expire();
+
+      if ( p() -> azerite.burst_of_savagery.ok() ) {
+        p() -> buff.burst_of_savagery -> trigger();
+        trigger_gore();
+      }
+    }
 
     p() -> buff.guardian_tier19_4pc -> trigger();
   }
@@ -7160,6 +7169,7 @@ void druid_t::init_spells()
   azerite.layered_mane = find_azerite_spell("Layered Mane");
   azerite.masterful_instincts = find_azerite_spell("Masterful Instincts");
   azerite.twisted_claws = find_azerite_spell("Twisted Claws");
+  azerite.burst_of_savagery = find_azerite_spell("Burst of Savagery");
 
   // Affinities =============================================================
 
@@ -7478,6 +7488,9 @@ void druid_t::create_buffs()
   buff.twisted_claws         = make_buff<stat_buff_t>( this, "twisted_claws", find_spell( 275909 ) )
                                -> add_stat( STAT_AGILITY, azerite.twisted_claws.value( 1 ) )
                                -> set_chance( find_spell( 275908 ) -> proc_chance() );
+
+  buff.burst_of_savagery     = make_buff<stat_buff_t>( this, "burst_of_savagery", find_spell( 289315 ) )
+                               -> add_stat( STAT_MASTERY_RATING, azerite.burst_of_savagery.value( 1 ) );
 
   // Restoration
   buff.harmony               = buff_creator_t( this, "harmony", mastery.harmony -> ok() ? find_spell( 100977 ) : spell_data_t::not_found() );
