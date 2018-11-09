@@ -4362,7 +4362,7 @@ struct chain_lightning_t : public chained_base_t
     if ( maybe_ptr( p()->dbc.ptr ) && p()->buff.tectonic_thunder->up() )
     {
       // Tectonic Thunder makes CL instant
-      t *= 0;
+      t *= 1 + p()->buff.tectonic_thunder->value() / 100;
     }
 
     return t;
@@ -7486,8 +7486,7 @@ void shaman_t::create_buffs()
                         ->set_max_stack( find_spell( 273453 )->max_stacks() )
                         ->set_duration( find_spell( 273453 )->duration() );
 
-  buff.tectonic_thunder =
-      make_buff( this, "tectonic_thunder", azerite.tectonic_thunder )->set_duration( timespan_t::from_seconds( 15 ) );
+  buff.tectonic_thunder = make_buff( this, "tectonic_thunder", find_spell( 286976 ) );
 
   // Azerite Traits - Enh
   buff.roiling_storm             = new roiling_storm_buff_t( this );
