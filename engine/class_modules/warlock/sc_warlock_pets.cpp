@@ -127,7 +127,7 @@ double warlock_pet_t::resource_regen_per_second( resource_e r ) const
   if ( r == RESOURCE_ENERGY )
   {
     // TOCHECK As of 07-29-2018, warlock pets' energy regen scales off haste twice.
-    if ( o()->dbc.ptr && o()->bugs )
+    if ( !o()->dbc.ptr && o()->bugs )
       reg /= cache.spell_haste();
   }
 
