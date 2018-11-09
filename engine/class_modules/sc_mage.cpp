@@ -565,6 +565,7 @@ public:
   struct state_t
   {
     bool brain_freeze_active;
+    bool clearcasting_active;
     bool fingers_of_frost_active;
 
     int flurry_bolt_count;
@@ -1491,7 +1492,9 @@ public:
       double mana_step = p()->spec.clearcasting->cost( POWER_MANA ) * p()->resources.base[ RESOURCE_MANA ];
       mana_step /= p()->spec.clearcasting->effectN( 1 ).percent();
 
-      trigger_delayed_buff( p()->buffs.clearcasting, 0.01 * last_resource_cost / mana_step );
+      double proc_chance = 0.01 * last_resource_cost / mana_step;
+      proc_chance *= 1.0 + p()->azerite.arcane_pummeling.spell_ref().effectN( 2 ).percent();
+      trigger_delayed_buff( p()->buffs.clearcasting, proc_chance );
     }
 
     if ( !background
@@ -2299,7 +2302,9 @@ struct arcane_missiles_tick_t : public arcane_mage_spell_t
   virtual void execute() override
   {
     arcane_mage_spell_t::execute();
-    p()->buffs.arcane_pummeling->trigger();
+
+    if ( p()->state.clearcasting_active )
+      p()->buffs.arcane_pummeling->trigger();
   }
 
   virtual double bonus_da( const action_state_t* s ) const override
@@ -2427,6 +2432,10 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     // In game, the channel refresh happens before the hidden Clearcasting buff is updated.
     bool cc_active = p()->buffs.clearcasting->check() != 0;
     bool cc_delay = p()->bugs && get_dot( target )->is_ticking();
+
+    // Arcane Pummeling seems to ignore the normal CC state that we model here through
+    // the hidden clearcasting_channel buff, snapshot it separetly.
+    p()->state.clearcasting_active = cc_active;
 
     if ( !cc_delay )
     {
