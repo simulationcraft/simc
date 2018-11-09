@@ -116,7 +116,6 @@ struct mage_td_t : public actor_target_data_t
 
     // Azerite
     buff_t* packed_ice;
-    buff_t* preheat;
   } debuffs;
 
   mage_td_t( player_t* target, mage_t* mage );
@@ -656,7 +655,6 @@ public:
     azerite_power_t duplicative_incineration;
     azerite_power_t firemind;
     azerite_power_t flames_of_alacrity;
-    azerite_power_t preheat;
     azerite_power_t trailing_embers;
 
     // Frost
@@ -3882,19 +3880,6 @@ struct fire_blast_t : public fire_mage_spell_t
 
     p()->buffs.blaster_master->trigger();
   }
-
-  virtual double bonus_da( const action_state_t* s ) const override
-  {
-    double da = fire_mage_spell_t::bonus_da( s );
-
-    const mage_td_t* td = p()->target_data[ s->target ];
-    if ( td )
-    {
-      da += td->debuffs.preheat->check_value();
-    }
-
-    return da;
-  }
 };
 
 // Living Bomb Spell ========================================================
@@ -4520,11 +4505,6 @@ struct scorch_t : public fire_mage_spell_t
     if ( p()->talents.frenetic_speed->ok() )
     {
       p()->buffs.frenetic_speed->trigger();
-    }
-
-    if ( p()->azerite.preheat.enabled() )
-    {
-      td( s->target )->debuffs.preheat->trigger();
     }
   }
 
@@ -5174,9 +5154,6 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   debuffs.packed_ice        = make_buff( *this, "packed_ice", mage->find_spell( 272970 ) )
                                 ->set_chance( mage->azerite.packed_ice.enabled() ? 1.0 : 0.0 )
                                 ->set_default_value( mage->azerite.packed_ice.value() );
-  debuffs.preheat           = make_buff( *this, "preheat", mage->find_spell( 273333 ) )
-                                ->set_chance( mage->azerite.preheat.enabled() ? 1.0 : 0.0 )
-                                ->set_default_value( mage->azerite.preheat.value() );
 }
 
 mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
@@ -5632,7 +5609,6 @@ void mage_t::init_spells()
   azerite.duplicative_incineration = find_azerite_spell( "Duplicative Incineration" );
   azerite.firemind                 = find_azerite_spell( "Firemind"                 );
   azerite.flames_of_alacrity       = find_azerite_spell( "Flames of Alacrity"       );
-  azerite.preheat                  = find_azerite_spell( "Preheat"                  );
   azerite.trailing_embers          = find_azerite_spell( "Trailing Embers"          );
 
   azerite.frigid_grasp             = find_azerite_spell( "Frigid Grasp"             );
@@ -6262,8 +6238,8 @@ void mage_t::apl_fire()
     "Alexstrasza's Fury can be used during the standard rotation to help squeeze out more Hot Streaks, while Living Bomb is used on CD in multitarget" );
   standard->add_action( this, "Dragon's Breath", "if=active_enemies>1",
     "Dragon's Breath on cooldown is a gain even without talents in AoE scenarios" );
-  standard->add_action( this, "Scorch", "if=(target.health.pct<=30&talent.searing_touch.enabled)|(azerite.preheat.enabled&debuff.preheat.down)",
-    "Below 30%, Scorch replaces Fireball as a filler with Searing Touch talented. A single Scorch is occasionally woven into the rotation to keep up the Preheat buff if that trait is present" );
+  standard->add_action( this, "Scorch", "if=target.health.pct<=30&talent.searing_touch.enabled",
+    "Below 30%, Scorch replaces Fireball as a filler with Searing Touch talented." );
   standard->add_action( this, "Fireball", "",
     "Fireball is the standard filler spell" );
   standard->add_action( this, "Scorch", "",
