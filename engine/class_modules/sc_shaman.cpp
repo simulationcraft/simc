@@ -5618,6 +5618,12 @@ struct flame_shock_t : public shaman_spell_t
 
     double proc_chance = p()->spec.lava_surge->proc_chance();
 
+    if ( maybe_ptr( p()->dbc.ptr ) )
+    {
+      // proc chance suddenly bacame 100% and the actual chance became effectN 1
+      proc_chance = p()->spec.lava_surge->effectN( 1 ).percent();
+    }
+
     if ( p()->azerite.igneous_potential.ok() )
     {
       proc_chance = p()->azerite.igneous_potential.spell_ref().effectN( 3 ).percent();
