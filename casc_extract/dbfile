@@ -651,6 +651,7 @@ DBFilesClient\AzeriteItemMilestonePower.db2
 DBFilesClient\AzeritePower.db2
 DBFilesClient\AzeritePowerSetMember.db2
 DBFilesClient\AzeriteTierUnlock.db2
+DBFilesClient\AzeriteTierUnlockSet.db2
 DBFilesClient\AzeriteEmpoweredItem.db2
 DBFilesClient\AzeriteItem.db2
 GameTablesServer\AvoidanceDiminishing.txt
