@@ -490,12 +490,16 @@ namespace warlock {
           for ( auto imp : p() -> warlock_pet_list.wild_imps )
           {
             double available = imp->resources.current[RESOURCE_ENERGY];
+
+            imp->demonic_consumption = true;
             imp->dismiss();
+
             for (auto dt : p()->warlock_pet_list.demonic_tyrants)
             {
               if (!dt->is_sleeping())
               {
-                dt->buffs.demonic_consumption->trigger(available / 20 * 5); // TODO: check if hardcoded value can be replaced.
+                //Demonic Consumption's effect has been doubled on ptr.
+                dt->buffs.demonic_consumption->trigger(available / ( p()->dbc.ptr ? 10 : 20 ) * 5); // TODO: check if hardcoded value can be replaced.
               }
             }
           }

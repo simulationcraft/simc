@@ -20,6 +20,7 @@ warlock_pet_t::warlock_pet_t(warlock_t* owner, const std::string& pet_name, pet_
 {
   owner_coeff.ap_from_sp = 0.5;
   owner_coeff.sp_from_sp = 1.0;
+  
   owner_coeff.health = 0.5;
 
   callbacks_on_arise.push_back( [ owner ]() { owner->active_pets++; } );
@@ -152,6 +153,10 @@ double warlock_pet_t::composite_player_multiplier(school_e school) const
 
   m *= 1.0 + buffs.grimoire_of_service->check_value();
 
+  //TOCHECK random demons received a 25% buff on ptr.
+  if ( o()->dbc.ptr && pet_type == PET_WARLOCK_RANDOM )
+    m *= 1.25;
+
   return m;
 }
 
@@ -196,6 +201,10 @@ felhunter_pet_t::felhunter_pet_t(warlock_t* owner, const std::string& name) :
 void felhunter_pet_t::init_base_stats()
 {
   warlock_pet_t::init_base_stats();
+
+  if ( o()->dbc.ptr )
+    owner_coeff.ap_from_sp *= 1.15;
+
   melee_attack = new warlock_pet_melee_t(this);
 }
 
@@ -218,6 +227,9 @@ imp_pet_t::imp_pet_t( warlock_t* owner, const std::string& name ) :
   firebolt_cost( find_spell( 3110 )->cost( POWER_ENERGY ) )
 {
   action_list_str = "firebolt";
+
+  if ( o()->dbc.ptr )
+    owner_coeff.ap_from_sp *= 1.15;
 }
 
 action_t* imp_pet_t::create_action( const std::string& name, const std::string& options_str )
@@ -273,6 +285,9 @@ void succubus_pet_t::init_base_stats()
 {
   warlock_pet_t::init_base_stats();
 
+  if ( o()->dbc.ptr )
+    owner_coeff.ap_from_sp *= 1.15;
+
   main_hand_weapon.swing_time = timespan_t::from_seconds(3.0);
   melee_attack = new warlock_pet_melee_t(this);
 }
@@ -302,6 +317,10 @@ voidwalker_pet_t::voidwalker_pet_t( warlock_t* owner, const std::string& name ) 
 void voidwalker_pet_t::init_base_stats()
 {
   warlock_pet_t::init_base_stats();
+
+  if ( o()->dbc.ptr )
+    owner_coeff.ap_from_sp *= 1.15;
+
   melee_attack = new warlock_pet_melee_t(this);
 }
 
@@ -532,6 +551,9 @@ void felguard_pet_t::init_base_stats()
   main_hand_weapon.type = WEAPON_AXE_2H;
   melee_attack = new warlock_pet_melee_t(this);
 
+  if ( o()->dbc.ptr )
+    owner_coeff.ap_from_sp *= 1.15;
+
   //TOCHECK Felguard has a hardcoded 10% multiplier for it's auto attack damage. Live as of 10-17-2018
   melee_attack->base_dd_multiplier *= 1.1;
   special_action = new axe_toss_t(this, "");
@@ -626,7 +648,7 @@ struct fel_firebolt_t : public warlock_pet_spell_t
 };
 
 wild_imp_pet_t::wild_imp_pet_t( warlock_t* owner )
-  : warlock_pet_t( owner, "wild_imp", PET_WILD_IMP ), firebolt( nullptr ), power_siphon( false )
+  : warlock_pet_t( owner, "wild_imp", PET_WILD_IMP ), firebolt( nullptr ), power_siphon( false ), demonic_consumption( false )
 {
   regen_type = REGEN_DISABLED;
 }
@@ -693,7 +715,9 @@ void wild_imp_pet_t::finish_moving()
 void wild_imp_pet_t::arise()
 {
   warlock_pet_t::arise();
+
   power_siphon = false;
+  demonic_consumption = false;
   o()->buffs.wild_imps->increment();
 
   // Start casting fel firebolts
@@ -706,7 +730,8 @@ void wild_imp_pet_t::demise()
   warlock_pet_t::demise();
 
   o()->buffs.wild_imps->decrement();
-  if (!power_siphon)
+
+  if ( !power_siphon && ( o()->dbc.ptr || !demonic_consumption ) )
   {
     o()->buffs.demonic_core->trigger(1, buff_t::DEFAULT_VALUE(), o()->spec.demonic_core->effectN(1).percent());
     expansion::bfa::trigger_leyshocks_grand_compilation( STAT_HASTE_RATING, o() );

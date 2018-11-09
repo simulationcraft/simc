@@ -349,6 +349,7 @@ struct wild_imp_pet_t : public warlock_pet_t
 {
   action_t* firebolt;
   bool power_siphon;
+  bool demonic_consumption;
 
   wild_imp_pet_t(warlock_t* owner);
   void init_base_stats() override;
