@@ -643,7 +643,6 @@ public:
   struct azerite_powers_t
   {
     // Arcane
-    azerite_power_t anomalous_impact;
     azerite_power_t arcane_pressure;
     azerite_power_t arcane_pummeling;
     azerite_power_t brain_storm;
@@ -2307,7 +2306,6 @@ struct arcane_missiles_tick_t : public arcane_mage_spell_t
   {
     double da = arcane_mage_spell_t::bonus_da( s );
 
-    da += p()->azerite.anomalous_impact.value() * p()->buffs.arcane_charge->check();
     da += p()->buffs.arcane_pummeling->check_stack_value();
 
     return da;
@@ -5598,7 +5596,6 @@ void mage_t::init_spells()
   spec.icicles               = find_mastery_spell( MAGE_FROST );
 
   // Azerite
-  azerite.anomalous_impact         = find_azerite_spell( "Anomalous Impact"         );
   azerite.arcane_pressure          = find_azerite_spell( "Arcane Pressure"          );
   azerite.arcane_pummeling         = find_azerite_spell( "Arcane Pummeling"         );
   azerite.brain_storm              = find_azerite_spell( "Brain Storm"              );
