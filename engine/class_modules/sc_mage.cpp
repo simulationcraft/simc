@@ -1398,7 +1398,7 @@ public:
     return m;
   }
 
-  double composite_crit_chance() const override
+  virtual double composite_crit_chance() const override
   {
     double c = spell_t::composite_crit_chance();
 
@@ -1842,7 +1842,7 @@ struct frost_mage_spell_t : public mage_spell_t
     }
   }
 
-  void init_finished() override
+  virtual void init_finished() override
   {
     mage_spell_t::init_finished();
 
@@ -3328,7 +3328,7 @@ struct frostbolt_t : public frost_mage_spell_t
     }
   }
 
-  void init_finished() override
+  virtual void init_finished() override
   {
     proc_fof = p()->get_proc( std::string( "Fingers of Frost from " ) + data().name_cstr() );
     frost_mage_spell_t::init_finished();
@@ -3405,7 +3405,7 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
     background = chills = true;
   }
 
-  void init_finished() override
+  virtual void init_finished() override
   {
     proc_fof = p()->get_proc( "Fingers of Frost from Frozen Orb Tick" );
     frost_mage_spell_t::init_finished();
@@ -3456,7 +3456,7 @@ struct frozen_orb_t : public frost_mage_spell_t
     add_child( frozen_orb_bolt );
   }
 
-  void init_finished() override
+  virtual void init_finished() override
   {
     proc_fof = p()->get_proc( "Fingers of Frost from Frozen Orb Initial Impact" );
     frost_mage_spell_t::init_finished();
@@ -3636,7 +3636,7 @@ struct ice_lance_t : public frost_mage_spell_t
     }
   }
 
-  void init_finished() override
+  virtual void init_finished() override
   {
     frost_mage_spell_t::init_finished();
 
@@ -3849,7 +3849,7 @@ struct icy_veins_t : public frost_mage_spell_t
     harmful = false;
   }
 
-  void init_finished() override
+  virtual void init_finished() override
   {
     if ( p()->azerite.frigid_grasp.enabled() )
     {
@@ -4128,7 +4128,7 @@ struct mirror_image_t : public mage_spell_t
     harmful = false;
   }
 
-  void init_finished() override
+  virtual void init_finished() override
   {
     for ( pet_t* image : p()->pets.mirror_images )
     {
@@ -4439,7 +4439,7 @@ struct ray_of_frost_t : public frost_mage_spell_t
     channeled = chills = true;
   }
 
-  void init_finished() override
+  virtual void init_finished() override
   {
     proc_fof = p()->get_proc( std::string( "Fingers of Frost from " ) + data().name_cstr() );
     frost_mage_spell_t::init_finished();
@@ -6711,7 +6711,7 @@ expr_t* mage_t::create_action_expression( action_t& action, const std::string& n
         type( type )
       { }
 
-      double evaluate() override
+      virtual double evaluate() override
       {
         if ( !mage.talents.firestarter->ok() )
           return 0.0;
