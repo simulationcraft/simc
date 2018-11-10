@@ -647,6 +647,7 @@ public:
     azerite_power_t arcane_pressure;
     azerite_power_t arcane_pummeling;
     azerite_power_t brain_storm;
+    azerite_power_t equipoise;
     azerite_power_t explosive_echo;
     azerite_power_t galvanizing_spark;
 
@@ -2139,22 +2140,49 @@ struct arcane_barrage_t : public arcane_mage_spell_t
 
 struct arcane_blast_t : public arcane_mage_spell_t
 {
+  double equipoise_threshold;
+  double equipoise_reduction;
+
   arcane_blast_t( mage_t* p, const std::string& options_str ) :
-    arcane_mage_spell_t( "arcane_blast", p, p->find_specialization_spell( "Arcane Blast" ) )
+    arcane_mage_spell_t( "arcane_blast", p, p->find_specialization_spell( "Arcane Blast" ) ),
+    equipoise_threshold(),
+    equipoise_reduction()
   {
     parse_options( options_str );
     cost_reductions = { p->buffs.rule_of_threes };
     base_dd_adder += p->azerite.galvanizing_spark.value( 2 );
+
+    if ( p->azerite.equipoise.enabled() )
+    {
+      // Equipoise data is stored across 4 different spells.
+      equipoise_threshold = p->find_spell( 264351 )->effectN( 1 ).percent();
+      equipoise_reduction = p->find_spell( 264353 )->effectN( 1 ).base_value();
+    }
   }
 
   virtual double cost() const override
   {
     double c = arcane_mage_spell_t::cost();
 
+    // TODO: It looks like the flat cost reduction is applied after Arcane Power et al,
+    // but before Arcane Charge. This might not be intended, double check later.
+    if ( p()->resources.pct( RESOURCE_MANA ) <= equipoise_threshold )
+      c += equipoise_reduction;
+
     c *= 1.0 + p()->buffs.arcane_charge->check()
              * p()->spec.arcane_charge->effectN( 5 ).percent();
 
     return c;
+  }
+
+  virtual double bonus_da( const action_state_t* s ) const override
+  {
+    double da = arcane_mage_spell_t::bonus_da( s );
+
+    if ( p()->resources.pct( RESOURCE_MANA ) > equipoise_threshold )
+      da += p()->azerite.equipoise.value();
+
+    return da;
   }
 
   virtual void execute() override
@@ -5608,6 +5636,7 @@ void mage_t::init_spells()
   azerite.arcane_pressure          = find_azerite_spell( "Arcane Pressure"          );
   azerite.arcane_pummeling         = find_azerite_spell( "Arcane Pummeling"         );
   azerite.brain_storm              = find_azerite_spell( "Brain Storm"              );
+  azerite.equipoise                = find_azerite_spell( "Equipoise"                );
   azerite.explosive_echo           = find_azerite_spell( "Explosive Echo"           );
   azerite.galvanizing_spark        = find_azerite_spell( "Galvanizing Spark"        );
 
