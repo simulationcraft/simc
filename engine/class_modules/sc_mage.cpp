@@ -659,6 +659,7 @@ public:
     azerite_power_t trailing_embers;
 
     // Frost
+    azerite_power_t flash_freeze;
     azerite_power_t frigid_grasp;
     azerite_power_t glacial_assault;
     azerite_power_t packed_ice;
@@ -1982,6 +1983,7 @@ struct icicle_t : public frost_mage_spell_t
     proc = background = true;
 
     base_dd_min = base_dd_max = 1.0;
+    base_dd_adder += p->azerite.flash_freeze.value( 2 );
 
     if ( p->talents.splitting_ice->ok() )
     {
@@ -1989,6 +1991,18 @@ struct icicle_t : public frost_mage_spell_t
       base_multiplier *= 1.0 + p->talents.splitting_ice->effectN( 3 ).percent();
       base_aoe_multiplier *= p->talents.splitting_ice->effectN( 2 ).percent();
     }
+  }
+
+  virtual void init_finished() override
+  {
+    proc_fof = p()->get_proc( "Fingers of Frost from Flash Freeze" );
+    frost_mage_spell_t::init_finished();
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    frost_mage_spell_t::impact( s );
+    trigger_fof( p()->azerite.flash_freeze.spell_ref().effectN( 1 ).percent() );
   }
 
   virtual double spell_direct_power_coefficient( const action_state_t* s ) const override
@@ -3525,11 +3539,19 @@ struct glacial_spike_t : public frost_mage_spell_t
 
     calculate_on_impact = track_shatter = true;
 
+    base_dd_adder += p->azerite.flash_freeze.value( 2 ) * p->spec.icicles->effectN( 2 ).base_value();
+
     if ( p->talents.splitting_ice->ok() )
     {
       aoe = as<int>( 1 + p->talents.splitting_ice->effectN( 1 ).base_value() );
       base_aoe_multiplier *= p->talents.splitting_ice->effectN( 2 ).percent();
     }
+  }
+
+  virtual void init_finished() override
+  {
+    proc_fof = p()->get_proc( "Fingers of Frost from Flash Freeze" );
+    frost_mage_spell_t::init_finished();
   }
 
   virtual bool ready() override
@@ -3540,14 +3562,22 @@ struct glacial_spike_t : public frost_mage_spell_t
     return frost_mage_spell_t::ready();
   }
 
-  virtual double spell_direct_power_coefficient( const action_state_t* s ) const override
+  virtual double action_multiplier() const override
   {
-    double extra_sp_coef = icicle_sp_coefficient();
+    double am = frost_mage_spell_t::action_multiplier();
 
-    extra_sp_coef *=       p()->spec.icicles->effectN( 2 ).base_value();
-    extra_sp_coef *= 1.0 + p()->talents.splitting_ice->effectN( 3 ).percent();
+    double icicle_coef = icicle_sp_coefficient();
+    icicle_coef *=       p()->spec.icicles->effectN( 2 ).base_value();
+    icicle_coef *= 1.0 + p()->talents.splitting_ice->effectN( 3 ).percent();
 
-    return frost_mage_spell_t::spell_direct_power_coefficient( s ) + extra_sp_coef;
+    // The damage from Icicles is added as multiplier that corresponds to
+    // 1 + Icicle damage / base damage, for some reason.
+    //
+    // TODO: This causes mastery to affect Flash Freeze bonus damage and
+    // therefore might not be intended.
+    am *= 1.0 + icicle_coef / spell_power_mod.direct;
+
+    return am;
   }
 
   virtual void execute() override
@@ -3556,6 +3586,10 @@ struct glacial_spike_t : public frost_mage_spell_t
 
     p()->icicles.clear();
     p()->buffs.icicles->expire();
+
+    double fof_proc_chance = p()->azerite.flash_freeze.spell_ref().effectN( 1 ).percent();
+    for ( int i = 0; i < as<int>( p()->spec.icicles->effectN( 2 ).base_value() ); i++ )
+      trigger_fof( fof_proc_chance );
   }
 
   virtual void impact( action_state_t* s ) override
@@ -5646,6 +5680,7 @@ void mage_t::init_spells()
   azerite.flames_of_alacrity       = find_azerite_spell( "Flames of Alacrity"       );
   azerite.trailing_embers          = find_azerite_spell( "Trailing Embers"          );
 
+  azerite.flash_freeze             = find_azerite_spell( "Flash Freeze"             );
   azerite.frigid_grasp             = find_azerite_spell( "Frigid Grasp"             );
   azerite.glacial_assault          = find_azerite_spell( "Glacial Assault"          );
   azerite.packed_ice               = find_azerite_spell( "Packed Ice"               );
