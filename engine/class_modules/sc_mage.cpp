@@ -445,6 +445,7 @@ public:
     buff_t* blaster_master;
     buff_t* firemind;
     buff_t* flames_of_alacrity;
+    buff_t* wildfire;
 
     buff_t* frigid_grasp;
     buff_t* tunnel_of_ice;
@@ -657,6 +658,7 @@ public:
     azerite_power_t firemind;
     azerite_power_t flames_of_alacrity;
     azerite_power_t trailing_embers;
+    azerite_power_t wildfire;
 
     // Frost
     azerite_power_t flash_freeze;
@@ -2757,6 +2759,10 @@ struct combustion_t : public fire_mage_spell_t
     {
       p()->buffs.inferno->trigger();
     }
+    if ( p()->azerite.wildfire.enabled() )
+    {
+      p()->buffs.wildfire->trigger();
+    }
   }
 };
 
@@ -4327,6 +4333,8 @@ struct pyroblast_t : public fire_mage_spell_t
     triggers_hot_streak = true;
     triggers_kindling = true;
 
+    base_dd_adder += p->azerite.wildfire.value( 2 );
+
     if ( p->azerite.trailing_embers.enabled() )
     {
       trailing_embers = new trailing_embers_t( p );
@@ -5679,6 +5687,7 @@ void mage_t::init_spells()
   azerite.firemind                 = find_azerite_spell( "Firemind"                 );
   azerite.flames_of_alacrity       = find_azerite_spell( "Flames of Alacrity"       );
   azerite.trailing_embers          = find_azerite_spell( "Trailing Embers"          );
+  azerite.wildfire                 = find_azerite_spell( "Wildfire"                 );
 
   azerite.flash_freeze             = find_azerite_spell( "Flash Freeze"             );
   azerite.frigid_grasp             = find_azerite_spell( "Frigid Grasp"             );
@@ -5840,6 +5849,10 @@ void mage_t::create_buffs()
   buffs.flames_of_alacrity = make_buff<stat_buff_t>( this, "flames_of_alacrity", find_spell( 272934 ) )
                                ->add_stat( STAT_HASTE_RATING, azerite.flames_of_alacrity.value() )
                                ->set_chance( azerite.flames_of_alacrity.enabled() ? 1.0 : 0.0 );
+  // TODO: The crit value doesn't match anything in spell data. Figure out where it's coming from.
+  buffs.wildfire           = make_buff<stat_buff_t>( this, "wildfire", find_spell( 288800 ) )
+                               ->add_stat( STAT_CRIT_RATING, 576.0 )
+                               ->set_chance( azerite.wildfire.enabled() ? 1.0 : 0.0 );
 
   buffs.frigid_grasp       = make_buff<stat_buff_t>( this, "frigid_grasp", find_spell( 279684 ) )
                                ->add_stat( STAT_INTELLECT, azerite.frigid_grasp.value() );
