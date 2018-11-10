@@ -1657,7 +1657,7 @@ struct fire_mage_spell_t : public mage_spell_t
 
       if ( triggers_kindling && p()->talents.kindling->ok() && s->result == RESULT_CRIT )
       {
-        p()->cooldowns.combustion->adjust( -1000 * p()->talents.kindling->effectN( 1 ).time_value() );
+        p()->cooldowns.combustion->adjust( -p()->talents.kindling->effectN( 1 ).time_value() );
       }
     }
   }
