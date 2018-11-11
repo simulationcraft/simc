@@ -480,6 +480,7 @@ public:
   {
     timespan_t firestarter_time = timespan_t::zero();
     timespan_t frozen_duration  = timespan_t::from_seconds( 1.0 );
+    timespan_t scorch_delay     = timespan_t::zero();
 
     int blessing_of_wisdom_count = 0;
 
@@ -4554,6 +4555,11 @@ struct scorch_t : public fire_mage_spell_t
     }
   }
 
+  virtual timespan_t travel_time() const override
+  {
+    return fire_mage_spell_t::travel_time() + p()->options.scorch_delay;
+  }
+
   virtual bool usable_moving() const override
   { return true; }
 };
@@ -5405,6 +5411,7 @@ void mage_t::create_options()
 {
   add_option( opt_timespan( "firestarter_time", options.firestarter_time ) );
   add_option( opt_timespan( "frozen_duration", options.frozen_duration ) );
+  add_option( opt_timespan( "scorch_delay", options.scorch_delay ) );
   add_option( opt_int( "blessing_of_wisdom_count", options.blessing_of_wisdom_count ) );
   add_option( opt_bool( "allow_shimmer_lance", options.allow_shimmer_lance ) );
   player_t::create_options();
