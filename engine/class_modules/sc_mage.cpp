@@ -1692,7 +1692,7 @@ struct fire_mage_spell_t : public mage_spell_t
         {
           p->procs.hot_streak->occur();
           // Check if HS was triggered by IB
-          if ( s->action->id == 108853 )
+          if ( id == 108853 )
           {
             p->procs.heating_up_ib_converted->occur();
           }
@@ -1703,6 +1703,20 @@ struct fire_mage_spell_t : public mage_spell_t
 
           if ( guaranteed && hu_react )
             p->buffs.hot_streak->predict();
+
+          // If Scorch generates Hot Streak and the actor is currently casting Pyroblast,
+          // the game will immediately finish the cast. This is presumably done to work
+          // around the buff application delay inside Combustion or with Searing Touch
+          // active. The following code is a huge hack.
+          if ( id == 2948 && p->executing && p->executing->id == 11366 )
+          {
+            assert( p->executing->execute_event );
+            event_t::cancel( p->executing->execute_event );
+            event_t::cancel( p->cast_while_casting_poll_event );
+            // We need to set time_to_execute to zero, start a new action execute event and
+            // adjust GCD. action_t::schedule_execute should handle all these.
+            p->executing->schedule_execute();
+          }
 
           if ( p->sets->has_set_bonus( MAGE_FIRE, T19, B4 )
             && rng().roll( p->sets->set( MAGE_FIRE, T19, B4 )->effectN( 1 ).percent() ) )
