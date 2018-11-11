@@ -2697,30 +2697,6 @@ void action_t::interrupt_action()
   if ( sim->debug )
     sim->out_debug.printf( "action %s of %s is interrupted", name(), player->name() );
 
-  // Don't start cooldown if we're queueing this action
-  if ( !player->queueing && cooldown->duration > timespan_t::zero() && !dual )
-  {
-    if ( sim->debug )
-      sim->out_debug.printf( "%s starts cooldown for %s (%s)", player->name(), name(), cooldown->name() );
-
-    // Cooldown must be usable to start it. TODO: Is this really right? Interrupting a cooldowned
-    // cast should not start the cooldown, imo?
-    if ( cooldown->up() )
-    {
-      cooldown->start( this );
-    }
-  }
-
-  // Don't start internal cooldown if we're queueing this action
-  if ( !player->queueing && internal_cooldown->duration > timespan_t::zero() && !dual )
-  {
-    if ( sim->debug )
-      sim->out_debug.printf( "%s starts internal_cooldown for %s (%s)", player->name(), name(),
-                             internal_cooldown->name() );
-
-    internal_cooldown->start( this );
-  }
-
   if ( player->executing == this )
     player->executing = nullptr;
   if ( player->queueing == this )
