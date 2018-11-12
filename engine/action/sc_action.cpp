@@ -2708,6 +2708,16 @@ void action_t::interrupt_action()
     dot->cancel();
   }
 
+  if ( !background && execute_event )
+  {
+    // Interrupting a cast resets GCD, allowing the player to start doing
+    // something else right away. The delay between interrupting a cast
+    // and starting a new cast seems to be twice the current latency.
+    timespan_t lag        = player->world_lag_override        ? player->world_lag        : sim->world_lag;
+    timespan_t lag_stddev = player->world_lag_stddev_override ? player->world_lag_stddev : sim->world_lag_stddev;
+    player->gcd_ready = std::min( player->gcd_ready, sim->current_time() + 2 * rng().gauss( lag, lag_stddev ) );
+  }
+
   event_t::cancel( execute_event );
   event_t::cancel( queue_event );
 
