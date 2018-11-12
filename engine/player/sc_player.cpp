@@ -8062,6 +8062,33 @@ struct cancel_buff_t : public action_t
   }
 };
 
+struct cancel_action_t : public action_t
+{
+  cancel_action_t( player_t* player, const std::string& options_str ) :
+    action_t( ACTION_OTHER, "cancel_action", player )
+  {
+    parse_options( options_str );
+    harmful = false;
+    usable_while_casting = use_while_casting = ignore_false_positive = true;
+    trigger_gcd = timespan_t::zero();
+    action_skill = 1;
+  }
+
+  virtual void execute() override
+  {
+    sim->print_log( "{} performs {}", player->name(), name() );
+    player->interrupt();
+  }
+
+  virtual bool ready() override
+  {
+    if ( !player->executing && !player->channeling )
+      return false;
+
+    return action_t::ready();
+  }
+};
+
 struct swap_action_list_t : public action_t
 {
   action_priority_list_t* alist;
@@ -8312,6 +8339,8 @@ action_t* player_t::create_action( const std::string& name, const std::string& o
   if ( name == "stoneform" )
     return new stoneform_t( this, options_str );
 
+  if ( name == "cancel_action" )
+    return new cancel_action_t( this, options_str );
   if ( name == "cancel_buff" )
     return new cancel_buff_t( this, options_str );
   if ( name == "swap_action_list" )

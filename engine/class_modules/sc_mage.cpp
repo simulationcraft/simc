@@ -479,6 +479,7 @@ public:
   {
     timespan_t firestarter_time = timespan_t::zero();
     timespan_t frozen_duration  = timespan_t::from_seconds( 1.0 );
+    timespan_t scorch_delay     = timespan_t::zero();
 
     int blessing_of_wisdom_count = 0;
 
@@ -1692,7 +1693,7 @@ struct fire_mage_spell_t : public mage_spell_t
         {
           p->procs.hot_streak->occur();
           // Check if HS was triggered by IB
-          if ( s->action->id == 108853 )
+          if ( id == 108853 )
           {
             p->procs.heating_up_ib_converted->occur();
           }
@@ -1703,6 +1704,20 @@ struct fire_mage_spell_t : public mage_spell_t
 
           if ( guaranteed && hu_react )
             p->buffs.hot_streak->predict();
+
+          // If Scorch generates Hot Streak and the actor is currently casting Pyroblast,
+          // the game will immediately finish the cast. This is presumably done to work
+          // around the buff application delay inside Combustion or with Searing Touch
+          // active. The following code is a huge hack.
+          if ( id == 2948 && p->executing && p->executing->id == 11366 )
+          {
+            assert( p->executing->execute_event );
+            event_t::cancel( p->executing->execute_event );
+            event_t::cancel( p->cast_while_casting_poll_event );
+            // We need to set time_to_execute to zero, start a new action execute event and
+            // adjust GCD. action_t::schedule_execute should handle all these.
+            p->executing->schedule_execute();
+          }
 
           if ( p->sets->has_set_bonus( MAGE_FIRE, T19, B4 )
             && rng().roll( p->sets->set( MAGE_FIRE, T19, B4 )->effectN( 1 ).percent() ) )
@@ -4585,6 +4600,11 @@ struct scorch_t : public fire_mage_spell_t
     }
   }
 
+  virtual timespan_t travel_time() const override
+  {
+    return fire_mage_spell_t::travel_time() + p()->options.scorch_delay;
+  }
+
   virtual bool usable_moving() const override
   { return true; }
 };
@@ -5433,6 +5453,7 @@ void mage_t::create_options()
 {
   add_option( opt_timespan( "firestarter_time", options.firestarter_time ) );
   add_option( opt_timespan( "frozen_duration", options.frozen_duration ) );
+  add_option( opt_timespan( "scorch_delay", options.scorch_delay ) );
   add_option( opt_int( "blessing_of_wisdom_count", options.blessing_of_wisdom_count ) );
   add_option( opt_bool( "allow_shimmer_lance", options.allow_shimmer_lance ) );
   player_t::create_options();
