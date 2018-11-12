@@ -2703,6 +2703,9 @@ void action_t::interrupt_action()
     player->queueing = nullptr;
   if ( player->channeling == this )
   {
+    // Forcefully interrupting a channel should not incur the channel lag.
+    interrupt_immediate_occurred = true;
+
     dot_t* dot = get_dot( execute_state->target );
     assert( dot->is_ticking() );
     dot->cancel();
