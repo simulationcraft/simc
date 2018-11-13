@@ -1111,7 +1111,7 @@ struct void_torrent_t final : public priest_spell_t
 
   void_torrent_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "void_torrent", p, p.find_talent_spell( "Void Torrent" ) ),
-      insanity_gain( p.find_spell( 289577 )->effectN( 1 ).resource( RESOURCE_INSANITY ) )
+      insanity_gain( p.dbc.ptr ? p.talents.void_torrent->effectN( 3 ).trigger()->effectN( 1 ).resource( RESOURCE_INSANITY ) : 0 )
   {
     parse_options( options_str );
 
