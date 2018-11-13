@@ -457,6 +457,7 @@ public:
     cooldown_t* tigers_fury;
     cooldown_t* warrior_of_elune;
     cooldown_t* barkskin;
+    cooldown_t* rage_from_melees;
   } cooldown;
 
   // Gains
@@ -759,8 +760,10 @@ public:
     cooldown.warrior_of_elune    = get_cooldown( "warrior_of_elune"    );
     cooldown.barkskin            = get_cooldown( "barkskin"            );
     cooldown.innervate           = get_cooldown( "innervate"           );
+    cooldown.rage_from_melees    = get_cooldown( "rage_from_melees"    );
 
     cooldown.wod_pvp_4pc_melee -> duration = timespan_t::from_seconds( 30.0 );
+    cooldown.rage_from_melees -> duration  = timespan_t::from_seconds( 1.0 );
 
     legendary.the_wildshapers_clutch = 0.0;
     sylvan_walker = 0;
@@ -9290,11 +9293,12 @@ void druid_t::assess_damage_imminent_pre_absorb( school_e school, dmg_e dmg, act
   {
 
     // Guardian rage from melees
-    if ( specialization() == DRUID_GUARDIAN && !s -> action -> special )
+    if ( specialization() == DRUID_GUARDIAN && !s -> action -> special && cooldown.rage_from_melees -> up())
     {
       resource_gain( RESOURCE_RAGE,
                      spec.bear_form -> effectN( 3 ).base_value(),
                      gain.rage_from_melees );
+      cooldown.rage_from_melees -> start( cooldown.rage_from_melees -> duration );
     }
 
     if ( buff.cenarion_ward -> up() )
