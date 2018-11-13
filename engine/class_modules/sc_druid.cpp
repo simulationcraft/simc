@@ -22,8 +22,6 @@ namespace { // UNNAMED NAMESPACE
   Still need AP Coeff for Treants
 
   Guardian ==================================================================
-  Investigate Mastery-AP as a modifier on ability damage
-  Blacklist FR from trigger_natures_guardian()
   Catweaving APL
 
   Resto =====================================================================
@@ -9465,7 +9463,9 @@ void druid_t::trigger_natures_guardian( const action_state_t* trigger_state )
     return;
   if ( trigger_state -> result_total <= 0 )
     return;
-  if ( trigger_state -> action == active.natures_guardian )
+  if ( trigger_state -> action == active.natures_guardian ||
+       trigger_state -> action -> name() == "frenzied_regeneration" || 
+       trigger_state -> action -> name() == "yseras_gift" )
     return;
 
   active.natures_guardian -> base_dd_min = active.natures_guardian -> base_dd_max =
