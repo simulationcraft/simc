@@ -5058,6 +5058,11 @@ struct glacial_advance_t : public death_knight_spell_t
         p() -> replenish_rune( 1, p() -> gains.obliteration );
       }
     }
+
+    if ( result_is_hit( execute_state->result ) )
+    {
+      p() -> trigger_runic_empowerment( last_resource_cost );
+    }
   }
 };
 
