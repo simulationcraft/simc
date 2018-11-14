@@ -2408,13 +2408,10 @@ void player_t::init_actions()
       if ( is_real_action( action ) )
       {
         have_off_gcd_actions = true;
-        if ( action -> cooldown -> duration > timespan_t::zero() )
+        auto it = range::find( off_gcd_cd, action -> cooldown );
+        if ( it == off_gcd_cd.end() )
         {
-          auto it = range::find( off_gcd_cd, action -> cooldown );
-          if ( it == off_gcd_cd.end() )
-          {
-            off_gcd_cd.push_back( action -> cooldown );
-          }
+          off_gcd_cd.push_back( action -> cooldown );
         }
       }
     }
@@ -2426,13 +2423,10 @@ void player_t::init_actions()
       if ( is_real_action( action ) )
       {
         have_cast_while_casting_actions = true;
-        if ( action->cooldown->duration > timespan_t::zero() )
+        auto it = range::find( cast_while_casting_cd, action->cooldown );
+        if ( it == cast_while_casting_cd.end() )
         {
-          auto it = range::find( cast_while_casting_cd, action->cooldown );
-          if ( it == cast_while_casting_cd.end() )
-          {
-            cast_while_casting_cd.push_back( action->cooldown );
-          }
+          cast_while_casting_cd.push_back( action->cooldown );
         }
       }
     }
