@@ -5077,10 +5077,14 @@ void rogue_t::trigger_blade_flurry( const action_state_t* state )
   if ( !state -> action -> result_is_hit( state -> result ) )
     return;
 
-  if ( sim -> active_enemies == 1 )
+  if ( state -> action -> is_aoe() )
     return;
 
-  if ( state -> action -> is_aoe() )
+  // As of 2018-11-14: Keep Your Wits works on single target.
+  if ( azerite.keep_your_wits_about_you.ok() )
+    buffs.keep_your_wits_about_you -> trigger();
+
+  if ( sim -> active_enemies == 1 )
     return;
 
   // Compute Blade Flurry modifier
@@ -5100,9 +5104,6 @@ void rogue_t::trigger_blade_flurry( const action_state_t* state )
   active_blade_flurry -> base_dd_max = damage;
   active_blade_flurry -> set_target( state->target );
   active_blade_flurry -> execute();
-
-  if ( azerite.keep_your_wits_about_you.ok() )
-    buffs.keep_your_wits_about_you -> trigger();
 }
 
 void rogue_t::trigger_combo_point_gain( int     cp,
