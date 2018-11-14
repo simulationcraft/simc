@@ -12,9 +12,9 @@
 
 
 // Type of internal execution of an action
-enum class execute_type : unsigned
+enum class execute_type
 {
-  FOREGROUND = 0u,
+  FOREGROUND,
   OFF_GCD,
   CAST_WHILE_CASTING
 };

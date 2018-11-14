@@ -11,167 +11,6 @@
 
 namespace
 {
-// Specialized execute for off-gcd and cast-while-casting execution of abilities. Both cases need to
-// perform a subset of the normal foreground execution process, and also have to take into account
-// execution-type specific bookkeeping on the actor level.
-template <typename T>
-struct special_execute_event_t : public player_event_t
-{
-  special_execute_event_t( player_t& p, timespan_t delta_time ) :
-    player_event_t( p, delta_time )
-  { }
-
-  void execute() override
-  {
-    ptr() = nullptr;
-
-    bool has_restore_apl = p()->restore_action_list != nullptr;
-
-    execute_action();
-
-    // Create a new specialized execute check event only in the case we didnt find anything to queue
-    // (could use an ability right away) and the action we executed was not a run_action_list.
-    //
-    // Note also that a new specialized execute check event may have been created in do_execute() if
-    // this event execution found an off gcd action to execute, in this case, do not create new
-    // event.
-    reschedule();
-
-    if ( has_restore_apl )
-    {
-      p()->activate_action_list( p()->restore_action_list, type() );
-      p()->restore_action_list = nullptr;
-    }
-  }
-
-  // Select and execute a specialized action based on the execution type (currently off-gcd or cast
-  // while casting)
-  virtual void execute_action()
-  {
-    // Dynamically regenerating actors must be regenerated before selecting an action, otherwise
-    // resource-specific expressions may not function properly.
-    if ( p()->regen_type == REGEN_DYNAMIC )
-    {
-      p()->do_dynamic_regen();
-    }
-
-    p()->visited_apls_ = 0;
-
-    action_t* a = p()->select_action( apl(), type() );
-    if ( a == nullptr )
-    {
-      return;
-    }
-
-    // Don't attempt to execute an action that's already being queued (this should not happen
-    // anyhow)
-    if ( p()->queueing && p()->queueing->internal_id == a->internal_id )
-    {
-      return;
-    }
-
-    // Don't queue the action if the specialized execution interval would elapse before the action
-    // is usable again
-    if ( usable( a ) )
-    {
-      // If we're queueing something, it's something different from what we are about to do.
-      // Cancel existing queued action, and queue the new one.
-      if ( p()->queueing )
-      {
-        event_t::cancel( p()->queueing->queue_event );
-        p()->queueing = nullptr;
-      }
-
-      a->queue_execute( type() );
-    }
-  }
-
-  // Poll rate of the specialized execute event, defaults to 100ms
-  static timespan_t poll_rate()
-  { return timespan_t::from_seconds( 0.1 ); }
-
-  // Type of specialized action execute
-  virtual execute_type type() const = 0;
-  // Base list of actions that is being run for the action execute
-  virtual action_priority_list_t& apl() const = 0;
-  // Pointer to the player-object event tracking member variable (holds this event object)
-  virtual event_t*& ptr() = 0;
-  // Is a selected action usable during the specialized execute interval (a GCD, or a cast/channel
-  // time)
-  virtual bool usable( const action_t* a ) const = 0;
-  // Perform a reschedule of the polling event if applicable
-  virtual void reschedule() = 0;
-};
-
-struct player_gcd_event_t : public special_execute_event_t<player_gcd_event_t>
-{
-  player_gcd_event_t( player_t& p, timespan_t delta_time ) :
-    special_execute_event_t( p, delta_time )
-  {
-    sim().print_debug( "New Player-Ready-GCD Event: {}", p.name() );
-  }
-
-  const char* name() const override
-  { return "Player-Ready-GCD"; }
-
-  execute_type type() const override
-  { return execute_type::OFF_GCD; }
-
-  action_priority_list_t& apl() const override
-  { return *p()->active_off_gcd_list; }
-
-  event_t*& ptr() override
-  { return p()->off_gcd; }
-
-  void reschedule() override
-  { p()->schedule_off_gcd_ready(); }
-
-  // Action is only usable while a GCD is elapsing, and the action is queueable before the ready
-  // event occurs
-  bool usable( const action_t* a ) const override
-  { return a->usable_during_current_gcd(); }
-
-  void execute_action() override
-  {
-    // It is possible to orchestrate events such that an action is currently executing when an
-    // off-gcd event occurs, if this is the case, don't do anything
-    if ( p()->executing )
-    {
-      return;
-    }
-
-    special_execute_event_t<player_gcd_event_t>::execute_action();
-  }
-};
-
-struct player_cwc_event_t : public special_execute_event_t<player_cwc_event_t>
-{
-  player_cwc_event_t( player_t& p, timespan_t delta_time ) :
-    special_execute_event_t( p, delta_time )
-  {
-    sim().print_debug( "New Player-Ready-Cast-While-Casting Event: {}", p.name() );
-  }
-
-  const char* name() const override
-  { return "Player-Ready-Cast-While-Casting"; }
-
-  execute_type type() const override
-  { return execute_type::CAST_WHILE_CASTING; }
-
-  action_priority_list_t& apl() const override
-  { return *p()->active_cast_while_casting_list; }
-
-  event_t*& ptr() override
-  { return p()->cast_while_casting_poll_event; }
-
-  bool usable( const action_t* a ) const override
-  { return a->usable_during_current_cast(); }
-
-  void reschedule() override
-  { p()->schedule_cwc_ready(); }
-
-};
-
 // Player Ready Event =======================================================
 
 struct player_ready_event_t : public player_event_t
@@ -2560,8 +2399,8 @@ void player_t::init_actions()
   bool have_cast_while_casting_actions = false;
   for ( auto action : action_list )
   {
-    if ( action->action_list && action->trigger_gcd == timespan_t::zero() &&
-         !action->background && action->use_off_gcd )
+    if ( action->action_list && action->trigger_gcd == timespan_t::zero() && !action->background &&
+         action->use_off_gcd )
     {
       action->action_list->off_gcd_actions.push_back( action );
       // Optimization: We don't need to do off gcd stuff when there are no other off gcd actions
@@ -2574,16 +2413,10 @@ void player_t::init_actions()
         {
           off_gcd_cd.push_back( action -> cooldown );
         }
-
-        if ( range::find( off_gcd_icd, action->internal_cooldown ) == off_gcd_icd.end() )
-        {
-          off_gcd_icd.push_back( action->internal_cooldown );
-        }
       }
     }
 
-    if ( action->action_list && !action->background && action->use_while_casting &&
-         action->usable_while_casting )
+    if ( action->action_list && !action->background && action->use_while_casting && action->usable_while_casting )
     {
       action->action_list->cast_while_casting_actions.push_back( action );
 
@@ -2594,12 +2427,6 @@ void player_t::init_actions()
         if ( it == cast_while_casting_cd.end() )
         {
           cast_while_casting_cd.push_back( action->cooldown );
-        }
-
-        auto icd_it = range::find( cast_while_casting_icd, action->internal_cooldown );
-        if ( icd_it == cast_while_casting_icd.end() )
-        {
-          cast_while_casting_icd.push_back( action->internal_cooldown );
         }
       }
     }
@@ -4715,87 +4542,6 @@ void player_t::trigger_ready()
   started_waiting = timespan_t::min();
 
   schedule_ready( available() );
-}
-
-void player_t::schedule_off_gcd_ready( timespan_t delta_time )
-{
-  // Already polling, do nothing
-  if ( off_gcd )
-  {
-    return;
-  }
-
-  // Casting or channeling something
-  if ( executing || channeling )
-  {
-    return;
-  }
-
-  if ( !readying )
-  {
-    return;
-  }
-
-  // No time left to perform a poll event before GCD elapses
-  if ( sim->current_time() + delta_time >= readying->occurs() )
-  {
-    return;
-  }
-
-  // No off-gcd cooldown will be ready during this GCD interval
-  if ( off_gcd_ready >= readying->occurs() )
-  {
-    return;
-  }
-
-  off_gcd = make_event<player_gcd_event_t>( *sim, *this, delta_time );
-}
-
-void player_t::schedule_cwc_ready( timespan_t delta_time )
-{
-  // Already polling, do nothing
-  if ( cast_while_casting_poll_event )
-  {
-    return;
-  }
-
-  // Not casting, or channeling anything, nor trying to find something to do
-  if ( ( !executing || !executing->execute_event ) && !channeling && !readying )
-  {
-    return;
-  }
-
-  // Figure out a safe threshold where the poller should not trigger any more, based on the next
-  // ready event (actor finding something to do), when the channel ends, or when the current cast
-  // ends.
-  timespan_t threshold;
-  if ( readying )
-  {
-    threshold = readying->occurs();
-  }
-  else if ( channeling )
-  {
-    threshold = channeling->get_dot()->end_event->occurs();
-    threshold += 4 * sim->channel_lag_stddev;
-  }
-  else
-  {
-    threshold = executing->execute_event->occurs();
-  }
-
-  // No cast while casting ability cd ready before the threshold finishes
-  if ( cast_while_casting_ready >= threshold )
-  {
-    return;
-  }
-
-  // No time left to perform a poll event before the threshold finishes
-  if ( sim->current_time() + delta_time >= threshold )
-  {
-    return;
-  }
-
-  cast_while_casting_poll_event = make_event<player_cwc_event_t>( *sim, *this, delta_time );
 }
 
 /**
@@ -12663,11 +12409,11 @@ void player_t::adjust_auto_attack( haste_type_e haste_type )
   current_attack_speed = cache.attack_speed();
 }
 
-timespan_t find_minimum_cd( const std::vector<const cooldown_t*>& list )
+timespan_t find_minimum_cd( const std::vector<const cooldown_t*> list )
 {
-  timespan_t min_ready = timespan_t::min();
+  timespan_t min_ready = timespan_t::max();
   range::for_each( list, [ &min_ready ]( const cooldown_t* cd ) {
-    if ( min_ready == timespan_t::min() || cd->queueable() < min_ready )
+    if ( cd->queueable() < min_ready )
     {
       min_ready = cd->queueable();
     }
@@ -12681,20 +12427,18 @@ timespan_t find_minimum_cd( const std::vector<const cooldown_t*>& list )
 // line_cooldown option, since that is APL-line specific.
 void player_t::update_off_gcd_ready()
 {
-  if ( off_gcd_cd.size() == 0 && off_gcd_icd.size() == 0 )
+  if ( off_gcd_cd.size() == 0 )
   {
     return;
   }
 
-  off_gcd_ready = std::max( find_minimum_cd( off_gcd_cd ), find_minimum_cd( off_gcd_icd ) );
+  off_gcd_ready = find_minimum_cd( off_gcd_cd );
 
   if ( sim -> debug )
   {
     sim -> out_debug.print( "{} next off-GCD cooldown ready at {}",
       name(), off_gcd_ready.total_seconds() );
   }
-
-  schedule_off_gcd_ready();
 }
 
 // Calculate the minimum readiness time for all off gcd actions that are flagged as usable during
@@ -12702,21 +12446,18 @@ void player_t::update_off_gcd_ready()
 // line_cooldown option, since that is APL-line specific.
 void player_t::update_cast_while_casting_ready()
 {
-  if ( cast_while_casting_cd.size() == 0 && cast_while_casting_icd.size() == 0 )
+  if ( cast_while_casting_cd.size() == 0 )
   {
     return;
   }
 
-  cast_while_casting_ready = std::max( find_minimum_cd( cast_while_casting_cd ),
-      find_minimum_cd( cast_while_casting_icd ) );
+  cast_while_casting_ready = find_minimum_cd( cast_while_casting_cd );
 
   if ( sim -> debug )
   {
     sim -> out_debug.print( "{} next cast while casting cooldown ready at {}",
       name(), cast_while_casting_ready.total_seconds() );
   }
-
-  schedule_cwc_ready();
 }
 
 /**

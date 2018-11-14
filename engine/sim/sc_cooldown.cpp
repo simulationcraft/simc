@@ -17,7 +17,8 @@ struct recharge_event_t : event_t
       cooldown_( cd ),
       duration_( base_duration ),
       event_duration_( cooldown_t::cooldown_duration( cd, base_duration ) )
-  { }
+  {
+  }
 
   recharge_event_t( cooldown_t* cd, timespan_t event_duration,
                     timespan_t base_duration )
@@ -25,42 +26,54 @@ struct recharge_event_t : event_t
       cooldown_( cd ),
       duration_( base_duration ),
       event_duration_( event_duration )
-  { }
+  {
+  }
 
-  const char* name() const override
+  virtual const char* name() const override
   { return "recharge_event"; }
 
-  void execute() override
+  virtual void execute() override
   {
-    assert( cooldown_->current_charge < cooldown_->charges );
-    cooldown_->current_charge++;
-    cooldown_->ready = cooldown_t::ready_init();
+    assert( cooldown_ -> current_charge < cooldown_ -> charges );
+    cooldown_ -> current_charge++;
+    cooldown_ -> ready = cooldown_t::ready_init();
 
-    if ( cooldown_->current_charge < cooldown_->charges )
+    if ( cooldown_ -> current_charge < cooldown_ -> charges )
     {
-      cooldown_->recharge_event = make_event<recharge_event_t>( sim(), cooldown_, duration_ );
+      cooldown_ -> recharge_event = make_event<recharge_event_t>( sim(), cooldown_, duration_ );
     }
     else
     {
-      cooldown_->recharge_event = nullptr;
-      cooldown_->last_charged = sim().current_time();
+      cooldown_ -> recharge_event = nullptr;
+      cooldown_ -> last_charged = sim().current_time();
     }
 
     if ( sim().debug )
     {
       auto dur = cooldown_t::cooldown_duration( cooldown_, duration_ ).total_seconds();
-      auto true_base_duration = dur / cooldown_->recharge_multiplier;
+      auto true_base_duration = dur / cooldown_ -> recharge_multiplier;
       sim().out_debug.printf( "%s recharge cooldown %s regenerated charge, current=%d, total=%d, next=%.3f, ready=%.3f, dur=%.3f, base_dur=%.3f, mul=%f",
-        cooldown_->player->name(), cooldown_->name_str.c_str(), cooldown_->current_charge, cooldown_->charges,
-        cooldown_->recharge_event ? cooldown_->recharge_event->occurs().total_seconds() : 0,
-        cooldown_->ready.total_seconds(),
+        cooldown_ -> player -> name(), cooldown_ -> name_str.c_str(), cooldown_ -> current_charge, cooldown_ -> charges,
+        cooldown_ -> recharge_event ? cooldown_ -> recharge_event -> occurs().total_seconds() : 0,
+        cooldown_ -> ready.total_seconds(),
         dur,
         true_base_duration,
-        cooldown_->recharge_multiplier );
+        cooldown_ -> recharge_multiplier );
     }
 
-    cooldown_->update_ready_thresholds();
-    cooldown_->player->trigger_ready();
+    // Update the minimum off-gcd readiness time for off gcd actions that are flagged as usable
+    // during the GCD (i.e., action_t::use_off_gcd == true)
+    if ( cooldown_ -> action && cooldown_ -> action -> use_off_gcd )
+    {
+      cooldown_ -> player -> update_off_gcd_ready();
+    }
+
+    if ( cooldown_->action && cooldown_->action->usable_while_casting )
+    {
+      cooldown_->player->update_cast_while_casting_ready();
+    }
+
+    cooldown_ -> player -> trigger_ready();
   }
 
   static recharge_event_t* cast( event_t* e )
@@ -125,8 +138,7 @@ cooldown_t::cooldown_t( const std::string& n, player_t& p ) :
   last_charged( timespan_t::zero() ),
   recharge_multiplier( 1.0 ),
   hasted( false ),
-  action( nullptr ),
-  execute_types_mask( 0u )
+  action( nullptr )
 {}
 
 cooldown_t::cooldown_t( const std::string& n, sim_t& s ) :
@@ -144,8 +156,7 @@ cooldown_t::cooldown_t( const std::string& n, sim_t& s ) :
   last_charged( timespan_t::zero() ),
   recharge_multiplier( 1.0 ),
   hasted( false ),
-  action( nullptr ),
-  execute_types_mask( 0u )
+  action( nullptr )
 {}
 
 /**
@@ -209,7 +220,17 @@ void cooldown_t::adjust_recharge_multiplier()
     last_charged = ready;
   }
 
-  update_ready_thresholds();
+  // Update the minimum off-gcd readiness time for off gcd actions that are flagged as usable
+  // during the GCD (i.e., action_t::use_off_gcd == true)
+  if ( action && action -> use_off_gcd )
+  {
+    player -> update_off_gcd_ready();
+  }
+
+  if ( action && action->usable_while_casting )
+  {
+    player->update_cast_while_casting_ready();
+  }
 }
 
 void cooldown_t::adjust( timespan_t amount, bool require_reaction )
@@ -286,7 +307,17 @@ void cooldown_t::adjust( timespan_t amount, bool require_reaction )
     }
   }
 
-  update_ready_thresholds();
+  // Update the minimum off-gcd readiness time for off gcd actions that are flagged as usable
+  // during the GCD (i.e., action_t::use_off_gcd == true)
+  if ( action && action -> use_off_gcd )
+  {
+    player -> update_off_gcd_ready();
+  }
+
+  if ( action && action->usable_while_casting )
+  {
+    player->update_cast_while_casting_ready();
+  }
 
   if ( player -> queueing && player -> queueing -> cooldown == this )
   {
@@ -333,7 +364,17 @@ void cooldown_t::reset( bool require_reaction, bool all_charges )
   }
   event_t::cancel( ready_trigger_event );
 
-  update_ready_thresholds();
+  // Update the minimum off-gcd readiness time for off gcd actions that are flagged as usable
+  // during the GCD (i.e., action_t::use_off_gcd == true)
+  if ( action && action -> use_off_gcd )
+  {
+    player -> update_off_gcd_ready();
+  }
+
+  if ( action && action->usable_while_casting )
+  {
+    player -> update_cast_while_casting_ready();
+  }
 
   if ( player )
   {
@@ -401,7 +442,17 @@ void cooldown_t::start( action_t* a, timespan_t _override, timespan_t delay )
     last_charged = ready;
   }
 
-  update_ready_thresholds();
+  // Update the minimum off-gcd readiness time for off gcd actions that are flagged as usable
+  // during the GCD (i.e., action_t::use_off_gcd == true)
+  if ( action && action -> use_off_gcd )
+  {
+    player -> update_off_gcd_ready();
+  }
+
+  if ( action && action->usable_while_casting )
+  {
+    player -> update_cast_while_casting_ready();
+  }
 
   assert( player );
   if ( player -> ready_type == READY_TRIGGER )
@@ -523,17 +574,4 @@ expr_t* cooldown_t::create_expression( const std::string& name_str )
     return make_ref_expr( name_str, charges );
 
   throw std::invalid_argument(fmt::format("Unsupported cooldown expression '{}'.", name_str));
-}
-
-void cooldown_t::update_ready_thresholds()
-{
-  if ( execute_types_mask & ( 1 << static_cast<unsigned>( execute_type::OFF_GCD ) ) )
-  {
-    player->update_off_gcd_ready();
-  }
-
-  if ( execute_types_mask & ( 1 << static_cast<unsigned>( execute_type::CAST_WHILE_CASTING ) ) )
-  {
-    player->update_cast_while_casting_ready();
-  }
 }

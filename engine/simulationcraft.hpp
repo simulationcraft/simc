@@ -2755,10 +2755,6 @@ struct cooldown_t
   bool hasted; // Hasted cooldowns will reschedule based on haste state changing (through buffs). TODO: Separate hastes?
   action_t* action; // Dynamic cooldowns will need to know what action triggered the cd
 
-  // Associated execution types amongst all the actions shared by this cooldown. Bitmasks based on
-  // the execute_type enum class
-  unsigned execute_types_mask;
-
   cooldown_t( const std::string& name, player_t& );
   cooldown_t( const std::string& name, sim_t& );
 
@@ -2796,11 +2792,7 @@ struct cooldown_t
   timespan_t queue_delay() const
   { return std::max( timespan_t::zero(), ready - sim.current_time() ); }
 
-  // Point in time when the cooldown is queueable
   timespan_t queueable() const;
-
-  // Trigger update of specialized execute thresholds for this cooldown
-  void update_ready_thresholds();
 
   const char* name() const
   { return name_str.c_str(); }
@@ -2809,9 +2801,6 @@ struct cooldown_t
   { return ready - last_start; }
 
   expr_t* create_expression( const std::string& name_str );
-
-  void add_execute_type( execute_type e )
-  { execute_types_mask |= ( 1 << static_cast<unsigned>( e ) ); }
 
   static timespan_t ready_init()
   { return timespan_t::from_seconds( -60 * 60 ); }
@@ -3579,8 +3568,8 @@ struct player_t : public actor_t
   event_t* readying;
   event_t* off_gcd;
   event_t* cast_while_casting_poll_event; // Periodically check for something to do while casting
-  std::vector<const cooldown_t*> off_gcd_cd, off_gcd_icd;
-  std::vector<const cooldown_t*> cast_while_casting_cd, cast_while_casting_icd;
+  std::vector<const cooldown_t*> off_gcd_cd;
+  std::vector<const cooldown_t*> cast_while_casting_cd;
   timespan_t off_gcd_ready;
   timespan_t cast_while_casting_ready;
   bool in_combat;
@@ -4235,8 +4224,6 @@ public:
   virtual void clear_debuffs();
   virtual void trigger_ready();
   virtual void schedule_ready( timespan_t delta_time = timespan_t::zero(), bool waiting = false );
-  virtual void schedule_off_gcd_ready( timespan_t delta_time = timespan_t::from_millis( 100 ) );
-  virtual void schedule_cwc_ready( timespan_t delta_time = timespan_t::from_millis( 100 ) );
   virtual void arise();
   virtual void demise();
   virtual timespan_t available() const
@@ -5762,11 +5749,6 @@ public:
   virtual bool select_target();
   /// Target readiness state checking
   virtual bool target_ready( player_t* target );
-
-  /// Ability usable during an on-going cast
-  virtual bool usable_during_current_cast() const;
-  /// Ability usable during the on-going global cooldown
-  virtual bool usable_during_current_gcd() const;
 
   virtual void init();
 
