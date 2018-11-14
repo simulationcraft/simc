@@ -5548,9 +5548,9 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : Disable player multipliers (221)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 33251.41 (coefficient=0.4) | PvP Coefficient: 0.50000 | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 33337.43 (coefficient=0.4) | PvP Coefficient: 0.50000 | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=479677)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 33251.41 (coefficient=0.4) | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 33337.43 (coefficient=0.4) | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
@@ -7946,7 +7946,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=748751)   : Apply Aura (6) | Dummy (4)
+#1 (id=748751)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 1212.518 (coefficient=15.59509) | PvP Coefficient: 1.00000 | Trigger Spell: 286392 | Target: Self (1)
 Description      : Your attacks have a chance to make your next Divine Storm free and deal $s1 additional damage.
 

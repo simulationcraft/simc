@@ -213,9 +213,9 @@ Category Cooldown: 480 seconds
 Family Flags     : 11
 Attributes       : ........ ........ ........ ........   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ....x... ........ 
 Effects          :
@@ -3481,7 +3481,7 @@ Effects          :
                    Affected Spells: Heart Strike (206930)
                    Family Flags: 24
 Description      : $@spelldesc43265
-Tooltip          : $?s206930[Heart Strike will hit up to ${$m3+2} targets.][Scourge Strike will hit all enemies near the target.]
+Tooltip          : $?s206930[Heart Strike will hit up to ${$m3+2} targets.]?s207311[Clawing Shadows will hit all enemies near the target.][Scourge Strike will hit all enemies near the target.]
 
 Name             : Sindragosa's Fury (rank=Artifact) (id=190778) [Spell Family (15)] 
 Class            : Death Knight
@@ -4936,7 +4936,9 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Festering Wound (194311)
                    Family Flags: 119
-Description      : Festering Wounds deal $s1% more damage when burst, and all enemies within $207267A1 yds of a burst Festering Wound suffer $207267s1 Shadow damage.
+#2 (id=756116)   : Dummy (3)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Bursting a Festering Wound deals $s1% more damage, and deals $207267s1 Shadow damage to up to $s2 nearby targets.
 
 Name             : Bursting Sores (id=207267) [Spell Family (15)] 
 Class            : Death Knight
@@ -5936,9 +5938,9 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : Disable player multipliers (221)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 33251.41 (coefficient=0.4) | PvP Coefficient: 0.50000 | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 33337.43 (coefficient=0.4) | PvP Coefficient: 0.50000 | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=479677)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 33251.41 (coefficient=0.4) | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 33337.43 (coefficient=0.4) | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
@@ -6818,7 +6820,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=726196)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 37.98461 (coefficient=0.122137) | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Bursting a Festering Wound grants you $s1 Strength for 20 sec, stacking. Stacking this effect does not extend its duration.
+Description      : Bursting a Festering Wound grants you $s1 Strength for $274373d, stacking. Stacking this effect does not extend its duration.
 
 Name             : Consumption (id=274156) [Spell Family (15)] 
 Class            : Death Knight

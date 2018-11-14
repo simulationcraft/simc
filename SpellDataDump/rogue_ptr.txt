@@ -113,18 +113,19 @@ Spell Level      : 12
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 18 seconds
+Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
 Cooldown         : 6 seconds
 Mechanic         : Bleed
 Affecting spells : Stealth (1784 effect#5), Vanish (11327 effect#5), Master of Subtlety (31665 effect#1), Mastery: Potent Assassin (76803 effect#1), Vendetta (79140 effect#1), Subterfuge (115192 effect#3), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Item - Rogue T20 Assassination 4P Bonus (242274 effect#1), Item - Rogue T20 Assassination 2P Bonus (242275 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
 Family Flags     : 8, 54
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ..xx.... 
-                 : ........ ........ ....x... ........   ........ ........ ........ ........ 
+                 : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x......x ........ ....x... ........ 
-                 : Cannot dodge/parry/block (21), Periodic effect affected by haste (173), Periodic effect can crit (265)
+                 : Cannot dodge/parry/block (21), Requires main-hand weapon (106), Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=280)      : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.12000 | PvP Coefficient: 0.80000 | Mechanic: Bleed | Target: Enemy (6)
@@ -588,7 +589,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon
-Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Deceit (166878 effect#1), Cold Blood (182304 effect#1), Eviscerating Blade (184917 effect#2), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Acrobatic Strikes (196924 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Lesser Adrenaline Rush (246558 effect#3), Sharpened Sabers (252285 effect#1), Master Assassin (256735 effect#1), Storm of Steel (273455 effect#1)
+Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Deceit (166878 effect#1), Cold Blood (182304 effect#1), Eviscerating Blade (184917 effect#2), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Acrobatic Strikes (196924 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Lesser Adrenaline Rush (246558 effect#3), Sharpened Sabers (252285 effect#1), Master Assassin (256735 effect#1)
 Family Flags     : 54, 112
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
@@ -1001,10 +1002,11 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 24
 Duration         : 3 seconds
+Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Stance Mask      : 0x20000000
-Proc Flags       : ..x.x.x. x...x... x....... ........ 
-                 : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
+Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Affecting spells : Nightstalker (14062 effect#1), Subterfuge (108208 effect#3), Item - Rogue T18 Subtlety 2P Bonus (186278 effect#1), Hit and Run (196922 effect#2), Acrobatic Strikes (196924 effect#2)
 Family Flags     : 11, 96
 Attributes       : ....x... ........ x.x.x... .x.x....   .....x.. ..x..... ........ ........ 
@@ -3615,7 +3617,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
-Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Cold Blood (182304 effect#1), Shadow Dance (185313 effect#4), Broadside (193356 effect#2), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Acrobatic Strikes (196924 effect#1), Skull and Crossbones (199603 effect#1), Weaponmaster (200733 effect#1), Swordplay (211669 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Lesser Adrenaline Rush (246558 effect#3), Master Assassin (256735 effect#1), Snake Eyes (275863 effect#1)
+Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Cold Blood (182304 effect#1), Shadow Dance (185313 effect#4), Broadside (193356 effect#2), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Acrobatic Strikes (196924 effect#1), Skull and Crossbones (199603 effect#1), Weaponmaster (200733 effect#1), Swordplay (211669 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Lesser Adrenaline Rush (246558 effect#3), Master Assassin (256735 effect#1), Snake Eyes (275863 effect#1), Keep Your Wits About You (288988 effect#1)
 Family Flags     : 54, 98
 Attributes       : ....x... ........ x.x..... .......x   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
@@ -6072,9 +6074,9 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : Disable player multipliers (221)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 33251.41 (coefficient=0.4) | PvP Coefficient: 0.50000 | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 33337.43 (coefficient=0.4) | PvP Coefficient: 0.50000 | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=479677)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 33251.41 (coefficient=0.4) | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 33337.43 (coefficient=0.4) | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
@@ -6677,26 +6679,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 194.6135 (coefficient=2.503068) | PvP Coefficient: 0.22222 | Trigger Spell: 273419 | Target: Self (1)
 Description      : Nightblade increases the damage of your next Eviscerate within 8 sec by $s1. 
 
-Name             : Storm of Steel (id=273452) [Scaling Spell (-8), Spell Family (8), Passive] 
-Class            : Rogue
-School           : Physical
-Spell Type       : None
-Azerite Power Id : 180
-Triggered by     : Storm of Steel (273455)
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Scales with item level (354)
-Effects          :
-#1 (id=725095)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 282.8574 (coefficient=3.638037) | PvP Coefficient: 1.00000 | Misc Value: 23 | Trigger Spell: 273454 | Target: Self (1)
-Description      : Extra strikes from Sinister Strike increase the damage of your next Dispatch by $s1.
-
-
 Name             : Twist the Knife (id=273488) [Scaling Spell (-8), Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
@@ -6865,7 +6847,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=729163)   : Apply Aura (6) | Dummy (4)
+#1 (id=729163)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 90.15182 (coefficient=1.159509) | PvP Coefficient: 1.00000 | Trigger Spell: 275858 | Target: Self (1)
 Description      : For each combo point spent on $?s5171[Slice and Dice][Roll the Bones], it causes your next $275863n Sinister Strikes to deal $s1 additional damage.
 
@@ -6924,7 +6906,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Scales with item level (354)
 Effects          :
-#1 (id=732986)   : Apply Aura (6) | Dummy (4)
+#1 (id=732986)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.372) | PvP Coefficient: 1.00000 | Trigger Spell: 277723 | Target: Self (1)
 Description      : Adrenaline Rush increases your Haste by $s1 every sec, stacking up to $277724U times. Lasts ${2*$277725d} seconds.
 
@@ -8326,5 +8308,26 @@ Effects          :
 #4 (id=752993)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 Description      : Your primary stat is increased by $s1 while you are above $s2% health. You take $s3% increased damage while below $s4% health.
+
+Name             : Keep Your Wits About You (id=288979) [Scaling Spell (-8), Spell Family (8), Passive] 
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 180
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=753023)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Trigger Spell: 288985 | Target: Self (1)
+#2 (id=753032)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
+                   Base Value: 0 | Scaled Value: 286.1963 (coefficient=3.680981) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Family Flags: 23
+Description      : Each time an attack Blade Flurries,  increase the chance for Sinister Strike to strike again by $s1%. Additional strikes of Sinister Strike deal $s2 more damage.
 
 

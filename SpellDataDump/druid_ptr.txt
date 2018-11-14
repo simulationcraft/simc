@@ -2615,7 +2615,6 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Range            : 5 - 25 yards
-GCD              : 0.5 seconds
 Duration         : 0.5 seconds
 Cooldown         : 15 seconds
 Category         : 1205
@@ -7758,9 +7757,9 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : Disable player multipliers (221)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 33251.41 (coefficient=0.4) | PvP Coefficient: 0.50000 | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 33337.43 (coefficient=0.4) | PvP Coefficient: 0.50000 | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=479677)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 33251.41 (coefficient=0.4) | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 33337.43 (coefficient=0.4) | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
@@ -8844,7 +8843,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=727372)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 32266.25 (coefficient=415) | PvP Coefficient: 0.50000 | Target: Self (1)
-Description      : When you resurrect an ally with Rebirth, they absorb $s1 damage and gain Well Fed, increasing their Agility, Intellect, or Strength by $285719s1.
+Description      : When you resurrect an ally with Rebirth, they absorb $s1 damage for $274814d and gain Well Fed, increasing their Agility, Intellect, or Strength by $285719s1 for $285719d.
 
 Name             : Feral Frenzy (id=274837) [Spell Family (7)] 
 Class            : Druid
