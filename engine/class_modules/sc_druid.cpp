@@ -9464,8 +9464,8 @@ void druid_t::trigger_natures_guardian( const action_state_t* trigger_state )
   if ( trigger_state -> result_total <= 0 )
     return;
   if ( trigger_state -> action == active.natures_guardian ||
-       trigger_state -> action -> name() == "frenzied_regeneration" || 
-       trigger_state -> action -> name() == "yseras_gift" )
+       trigger_state -> action == active.yseras_gift || 
+       trigger_state -> action -> id == 22842 ) // Frenzied Regeneration
     return;
 
   active.natures_guardian -> base_dd_min = active.natures_guardian -> base_dd_max =
