@@ -203,7 +203,10 @@ void felhunter_pet_t::init_base_stats()
   warlock_pet_t::init_base_stats();
 
   if ( o()->dbc.ptr )
+  {
     owner_coeff.ap_from_sp *= 1.15;
+    owner_coeff.sp_from_sp *= 1.15;
+  }
 
   melee_attack = new warlock_pet_melee_t(this);
 }
@@ -229,7 +232,10 @@ imp_pet_t::imp_pet_t( warlock_t* owner, const std::string& name ) :
   action_list_str = "firebolt";
 
   if ( o()->dbc.ptr )
+  {
     owner_coeff.ap_from_sp *= 1.15;
+    owner_coeff.sp_from_sp *= 1.15;
+  }
 }
 
 action_t* imp_pet_t::create_action( const std::string& name, const std::string& options_str )
@@ -286,7 +292,10 @@ void succubus_pet_t::init_base_stats()
   warlock_pet_t::init_base_stats();
 
   if ( o()->dbc.ptr )
+  {
     owner_coeff.ap_from_sp *= 1.15;
+    owner_coeff.sp_from_sp *= 1.15;
+  }
 
   main_hand_weapon.swing_time = timespan_t::from_seconds(3.0);
   melee_attack = new warlock_pet_melee_t(this);
@@ -319,7 +328,10 @@ void voidwalker_pet_t::init_base_stats()
   warlock_pet_t::init_base_stats();
 
   if ( o()->dbc.ptr )
+  {
     owner_coeff.ap_from_sp *= 1.15;
+    owner_coeff.sp_from_sp *= 1.15;
+  }
 
   melee_attack = new warlock_pet_melee_t(this);
 }
@@ -552,7 +564,10 @@ void felguard_pet_t::init_base_stats()
   melee_attack = new warlock_pet_melee_t(this);
 
   if ( o()->dbc.ptr )
+  {
     owner_coeff.ap_from_sp *= 1.15;
+    owner_coeff.sp_from_sp *= 1.15;
+  }
 
   //TOCHECK Felguard has a hardcoded 10% multiplier for it's auto attack damage. Live as of 10-17-2018
   melee_attack->base_dd_multiplier *= 1.1;
