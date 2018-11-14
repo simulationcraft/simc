@@ -4704,8 +4704,10 @@ struct regrowth_t: public druid_heal_t
 
     // Hack for feral to be able to use target-related expressions on this action
     // Disables healing entirely
-    target = sim -> target;
-    base_multiplier = 0;
+    if ( p -> specialization() == DRUID_FERAL ) {
+      target = sim -> target;
+      base_multiplier = 0;
+    }
   }
 
   double cost() const override
