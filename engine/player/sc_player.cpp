@@ -4696,8 +4696,9 @@ void player_t::arise()
 
   cache.invalidate_all();
 
-  readying = 0;
-  off_gcd  = 0;
+  readying = nullptr;
+  off_gcd  = nullptr;
+  cast_while_casting_poll_event = nullptr;
 
   arise_time = sim->current_time();
   last_regen = sim->current_time();
@@ -4783,13 +4784,9 @@ void player_t::demise()
   arise_time               = timespan_t::min();
   current.distance_to_move = 0;
 
-  if ( readying )
-  {
-    event_t::cancel( readying );
-    readying = 0;
-  }
-
+  event_t::cancel( readying );
   event_t::cancel( off_gcd );
+  event_t::cancel( cast_while_casting_poll_event );
 
   range::for_each( callbacks_on_demise, [this]( const std::function<void( player_t* )>& fn ) { fn( this ); } );
 
