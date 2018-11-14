@@ -3897,7 +3897,8 @@ struct vendetta_t : public rogue_attack_t
       rogue_attack_t( "nothing_personal", p, p -> find_spell( 286581 ) )
     {
       may_dodge = may_parry = may_block = false;
-      may_crit = tick_may_crit = false;
+      may_crit = false;
+      tick_may_crit = true;
       background = true;
       harmful = true;
       hasted_ticks = false;
