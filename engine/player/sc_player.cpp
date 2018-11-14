@@ -26,6 +26,8 @@ struct player_ready_event_t : public player_event_t
   }
   virtual void execute() override
   {
+    p()->readying = nullptr;
+
     // There are certain chains of events where an off-gcd ability can be queued such that the queue
     // time for the action exceeds Player-Ready event (essentially end of GCD). In this case, the
     // simple solution is to just cancel the queue execute and let the actor select an action from
@@ -4926,8 +4928,7 @@ void player_t::clear_debuffs()
 
 action_t* player_t::execute_action()
 {
-  readying = 0;
-  off_gcd  = 0;
+  assert( !readying );
 
   action_t* action = 0;
 

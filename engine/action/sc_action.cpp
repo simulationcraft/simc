@@ -1846,8 +1846,7 @@ void action_t::last_tick( dot_t* d )
 
   if ( channeled && player->channeling == this )
   {
-    player->channeling = 0;
-    player->readying   = 0;
+    player->channeling = nullptr;
 
     // Retarget this channel skill, since during the channel a retargeting event may have occurred.
     // The comparison is made against the actor's "current target", which can be considered the
