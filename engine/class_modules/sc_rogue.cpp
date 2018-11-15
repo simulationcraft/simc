@@ -2630,6 +2630,8 @@ struct garrote_t : public rogue_attack_t
 
   void execute() override
   {
+    bool castFromStealth = p() -> stealthed();
+
     rogue_attack_t::execute();
 
     p() -> buffs.poisoned_wire -> trigger( p() -> buffs.poisoned_wire -> max_stack() );
@@ -2637,7 +2639,7 @@ struct garrote_t : public rogue_attack_t
     if ( p() -> azerite.shrouded_suffocation.ok() )
     {
       // Note: Looks like Shadowmeld works for the CP gain.
-      if ( p()->stealthed() )
+      if ( castFromStealth )
         p() -> trigger_combo_point_gain( p() -> azerite.shrouded_suffocation.spell_ref().effectN( 2 ).base_value(), p() -> gains.shrouded_suffocation, this );
     }
   }
@@ -5715,7 +5717,7 @@ void rogue_t::init_action_list()
     cds -> add_action( this, "Vanish", "if=talent.nightstalker.enabled&!talent.exsanguinate.enabled&combo_points>=cp_max_spend&debuff.vendetta.up", "Vanish with Nightstalker + No Exsg: Maximum CP and Vendetta up" );
     cds -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&(!talent.exsanguinate.enabled|!variable.single_target)&!stealthed.rogue&cooldown.garrote.up&dot.garrote.refreshable&(spell_targets.fan_of_knives<=3&combo_points.deficit>=1+spell_targets.fan_of_knives|spell_targets.fan_of_knives>=4&combo_points.deficit>=4)", "Vanish with Subterfuge + (No Exsg or 2T+): No stealth/subterfuge, Garrote Refreshable, enough space for incoming Garrote CP" );
     cds -> add_action( this, "Vanish", "if=talent.master_assassin.enabled&!stealthed.all&master_assassin_remains<=0&!dot.rupture.refreshable", "Vanish with Master Assasin: No stealth and no active MA buff, Rupture not in refresh range" );
-    cds -> add_action( "shadowmeld,if=!stealthed.all&azerite.shrouded_suffocation.enabled&!dot.garrote.ticking&combo_points.deficit>=1", "Shadowmeld for Shrouded Suffocation garrote after vanished Garrote drops" );
+    cds -> add_action( "shadowmeld,if=!stealthed.all&azerite.shrouded_suffocation.enabled&dot.garrote.refreshable&dot.garrote.pmultiplier<=1&combo_points.deficit>=3", "Shadowmeld for Shrouded Suffocation CP (dmg amp does not work)" );
     cds -> add_talent( this, "Exsanguinate", "if=dot.rupture.remains>4+4*cp_max_spend&!dot.garrote.refreshable", "Exsanguinate when both Rupture and Garrote are up for long enough" );
     cds -> add_talent( this, "Toxic Blade", "if=dot.rupture.ticking" );
 
