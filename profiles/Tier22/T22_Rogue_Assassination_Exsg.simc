@@ -66,6 +66,8 @@ actions.cds+=/vanish,if=talent.nightstalker.enabled&!talent.exsanguinate.enabled
 actions.cds+=/vanish,if=talent.subterfuge.enabled&(!talent.exsanguinate.enabled|!variable.single_target)&!stealthed.rogue&cooldown.garrote.up&dot.garrote.refreshable&(spell_targets.fan_of_knives<=3&combo_points.deficit>=1+spell_targets.fan_of_knives|spell_targets.fan_of_knives>=4&combo_points.deficit>=4)
 # Vanish with Master Assasin: No stealth and no active MA buff, Rupture not in refresh range
 actions.cds+=/vanish,if=talent.master_assassin.enabled&!stealthed.all&master_assassin_remains<=0&!dot.rupture.refreshable
+# Shadowmeld for Shrouded Suffocation garrote after vanished Garrote drops
+actions.cds+=/shadowmeld,if=!stealthed.all&azerite.shrouded_suffocation.enabled&!dot.garrote.ticking&combo_points.deficit>=1
 # Exsanguinate when both Rupture and Garrote are up for long enough
 actions.cds+=/exsanguinate,if=dot.rupture.remains>4+4*cp_max_spend&!dot.garrote.refreshable
 actions.cds+=/toxic_blade,if=dot.rupture.ticking
