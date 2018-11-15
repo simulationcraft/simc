@@ -419,7 +419,7 @@ public:
     // Prot
     azerite_power_t reinforced_plating;
     azerite_power_t iron_fortress;
-    azerite_power_t deafening_crash;
+    azerite_power_t deafening_crash; // TODO: Add duration cap from 8.1
     azerite_power_t callous_reprisal;
     azerite_power_t brace_for_impact;
     azerite_power_t bloodsport;
