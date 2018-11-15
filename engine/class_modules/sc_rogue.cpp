@@ -2579,8 +2579,8 @@ struct garrote_t : public rogue_attack_t
 
     if ( p() -> azerite.shrouded_suffocation.ok() )
     {
-      // Note: Assuming Shadowmeld works, needs checking.
-      debug_cast<garrote_state_t*>( state ) -> shrouded_suffocation = p() -> stealthed();
+      // Note: Looks like Shadowmeld does not work for the damage gain.
+      debug_cast<garrote_state_t*>( state ) -> shrouded_suffocation = p() -> stealthed( STEALTH_BASIC | STEALTH_SUBTERFUGE );
     }
   }
 
@@ -2636,7 +2636,7 @@ struct garrote_t : public rogue_attack_t
 
     if ( p() -> azerite.shrouded_suffocation.ok() )
     {
-      // Note: Assuming Shadowmeld works, needs checking.
+      // Note: Looks like Shadowmeld works for the CP gain.
       if ( p()->stealthed() )
         p() -> trigger_combo_point_gain( p() -> azerite.shrouded_suffocation.spell_ref().effectN( 2 ).base_value(), p() -> gains.shrouded_suffocation, this );
     }
