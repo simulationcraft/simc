@@ -4111,12 +4111,6 @@ void action_t::reschedule_queue_event()
   }
 
   timespan_t new_queue_delay = cooldown->queue_delay();
-
-  if ( new_queue_delay <= timespan_t::zero() )
-  {
-    return;
-  }
-
   timespan_t remaining = queue_event->remains();
 
   // The actual queue delay did not change, so no need to do anything

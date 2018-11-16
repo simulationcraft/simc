@@ -5036,7 +5036,6 @@ void hunter_t::create_buffs()
     buffs.trueshot -> set_stack_change_callback( [this]( buff_t*, int, int ) {
         cooldowns.aimed_shot -> adjust_recharge_multiplier();
         cooldowns.rapid_fire -> adjust_recharge_multiplier();
-        adjust_action_queue_time();
       } );
   }
   else

@@ -2054,7 +2054,6 @@ void buff_t::adjust_haste()
   player->adjust_dynamic_cooldowns();
   // player->adjust_global_cooldown( haste_type );
   player->adjust_auto_attack( haste_type );
-  player->adjust_action_queue_time();
 }
 
 void buff_t::init_haste_type()

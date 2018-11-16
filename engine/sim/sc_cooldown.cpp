@@ -22,7 +22,7 @@ struct recharge_event_t : event_t
 
   recharge_event_t( cooldown_t* cd, timespan_t event_duration,
                     timespan_t base_duration )
-    : event_t( *cd->player, event_duration ),
+    : event_t( cd->sim, event_duration ),
       cooldown_( cd ),
       duration_( base_duration ),
       event_duration_( event_duration )
@@ -53,7 +53,8 @@ struct recharge_event_t : event_t
       auto dur = cooldown_t::cooldown_duration( cooldown_, duration_ ).total_seconds();
       auto true_base_duration = dur / cooldown_ -> recharge_multiplier;
       sim().out_debug.printf( "%s recharge cooldown %s regenerated charge, current=%d, total=%d, next=%.3f, ready=%.3f, dur=%.3f, base_dur=%.3f, mul=%f",
-        cooldown_ -> player -> name(), cooldown_ -> name_str.c_str(), cooldown_ -> current_charge, cooldown_ -> charges,
+        cooldown_ -> player ? cooldown_ -> player -> name() : "sim",
+        cooldown_ -> name_str.c_str(), cooldown_ -> current_charge, cooldown_ -> charges,
         cooldown_ -> recharge_event ? cooldown_ -> recharge_event -> occurs().total_seconds() : 0,
         cooldown_ -> ready.total_seconds(),
         dur,
@@ -63,17 +64,20 @@ struct recharge_event_t : event_t
 
     // Update the minimum off-gcd readiness time for off gcd actions that are flagged as usable
     // during the GCD (i.e., action_t::use_off_gcd == true)
-    if ( cooldown_ -> action && cooldown_ -> action -> use_off_gcd )
+    if ( cooldown_->action && cooldown_->action->use_off_gcd )
     {
-      cooldown_ -> player -> update_off_gcd_ready();
+      cooldown_->action->player->update_off_gcd_ready();
     }
 
     if ( cooldown_->action && cooldown_->action->usable_while_casting )
     {
-      cooldown_->player->update_cast_while_casting_ready();
+      cooldown_->action->player->update_cast_while_casting_ready();
     }
 
-    cooldown_ -> player -> trigger_ready();
+    if ( cooldown_->player )
+    {
+      cooldown_->player->trigger_ready();
+    }
   }
 
   static recharge_event_t* cast( event_t* e )
@@ -207,7 +211,7 @@ void cooldown_t::adjust_recharge_multiplier()
   if ( sim.debug )
   {
     sim.out_debug.printf("%s dynamic cooldown %s adjusted: new_ready=%.3f old_ready=%.3f remains=%.3f old_mul=%f new_mul=%f",
-        player -> name(), name(), (sim.current_time() + new_remains).total_seconds(), ready.total_seconds(),
+        action -> player -> name(), name(), (sim.current_time() + new_remains).total_seconds(), ready.total_seconds(),
         remains.total_seconds(), old_multiplier, recharge_multiplier );
   }
 
@@ -222,14 +226,19 @@ void cooldown_t::adjust_recharge_multiplier()
 
   // Update the minimum off-gcd readiness time for off gcd actions that are flagged as usable
   // during the GCD (i.e., action_t::use_off_gcd == true)
-  if ( action && action -> use_off_gcd )
+  if ( action && action->use_off_gcd )
   {
-    player -> update_off_gcd_ready();
+    action->player->update_off_gcd_ready();
   }
 
   if ( action && action->usable_while_casting )
   {
-    player->update_cast_while_casting_ready();
+    action->player->update_cast_while_casting_ready();
+  }
+
+  if ( player && player->queueing && player->queueing->cooldown == this )
+  {
+    player->queueing->reschedule_queue_event();
   }
 }
 
@@ -273,7 +282,7 @@ void cooldown_t::adjust( timespan_t amount, bool require_reaction )
 
       if ( sim.debug )
         sim.out_debug.printf( "%s recharge cooldown %s adjustment=%.3f, remains=%.3f, occurs=%.3f, ready=%.3f",
-          player -> name(), name_str.c_str(), amount.total_seconds(), remains.total_seconds(),
+          player ? player -> name() : "sim", name_str.c_str(), amount.total_seconds(), remains.total_seconds(),
           recharge_event -> occurs().total_seconds(), ready.total_seconds() );
     }
     // Recharged a charge
@@ -299,7 +308,7 @@ void cooldown_t::adjust( timespan_t amount, bool require_reaction )
       if ( sim.debug )
       {
         sim.out_debug.printf( "%s recharge cooldown %s regenerated charge, current=%d, total=%d, reminder=%.3f, next=%.3f, ready=%.3f",
-          player -> name(), name_str.c_str(), current_charge, charges,
+          player ? player -> name() : "sim", name_str.c_str(), current_charge, charges,
           remains.total_seconds(),
           recharge_event ? recharge_event -> occurs().total_seconds() : 0,
           ready.total_seconds() );
@@ -309,19 +318,19 @@ void cooldown_t::adjust( timespan_t amount, bool require_reaction )
 
   // Update the minimum off-gcd readiness time for off gcd actions that are flagged as usable
   // during the GCD (i.e., action_t::use_off_gcd == true)
-  if ( action && action -> use_off_gcd )
+  if ( action && action->use_off_gcd )
   {
-    player -> update_off_gcd_ready();
+    action->player->update_off_gcd_ready();
   }
 
   if ( action && action->usable_while_casting )
   {
-    player->update_cast_while_casting_ready();
+    action->player->update_cast_while_casting_ready();
   }
 
-  if ( player -> queueing && player -> queueing -> cooldown == this )
+  if ( player && player->queueing && player->queueing->cooldown == this )
   {
-    player -> queueing -> reschedule_queue_event();
+    player->queueing->reschedule_queue_event();
   }
 }
 
@@ -366,19 +375,24 @@ void cooldown_t::reset( bool require_reaction, bool all_charges )
 
   // Update the minimum off-gcd readiness time for off gcd actions that are flagged as usable
   // during the GCD (i.e., action_t::use_off_gcd == true)
-  if ( action && action -> use_off_gcd )
+  if ( action && action->use_off_gcd )
   {
-    player -> update_off_gcd_ready();
+    action->player->update_off_gcd_ready();
   }
 
   if ( action && action->usable_while_casting )
   {
-    player -> update_cast_while_casting_ready();
+    action->player->update_cast_while_casting_ready();
+  }
+
+  if ( player && player->queueing && player->queueing->cooldown == this )
+  {
+    player->queueing->reschedule_queue_event();
   }
 
   if ( player )
   {
-    player -> trigger_ready();
+    player->trigger_ready();
   }
 }
 
@@ -444,19 +458,20 @@ void cooldown_t::start( action_t* a, timespan_t _override, timespan_t delay )
 
   // Update the minimum off-gcd readiness time for off gcd actions that are flagged as usable
   // during the GCD (i.e., action_t::use_off_gcd == true)
-  if ( action && action -> use_off_gcd )
+  if ( action && action->use_off_gcd )
   {
-    player -> update_off_gcd_ready();
+    action->player->update_off_gcd_ready();
   }
 
   if ( action && action->usable_while_casting )
   {
-    player -> update_cast_while_casting_ready();
+    action->player->update_cast_while_casting_ready();
   }
 
-  assert( player );
-  if ( player -> ready_type == READY_TRIGGER )
+  if ( player && player->ready_type == READY_TRIGGER )
+  {
     ready_trigger_event = make_event<ready_trigger_event_t>( sim, *player, this );
+  }
 }
 
 void cooldown_t::start( timespan_t _override, timespan_t delay )

@@ -5289,8 +5289,6 @@ void player_t::stat_gain( stat_e stat, double amount, gain_t* gain, action_t* ac
       adjust_dynamic_cooldowns();
       // adjust_global_cooldown( HASTE_ANY );
       adjust_auto_attack( HASTE_ANY );
-      // Queued execute must be adjusted after dynamid cooldowns / global cooldown
-      adjust_action_queue_time();
       break;
     }
 
@@ -5478,8 +5476,6 @@ void player_t::stat_loss( stat_e stat, double amount, gain_t* gain, action_t* ac
       adjust_dynamic_cooldowns();
       // adjust_global_cooldown( HASTE_ANY );
       adjust_auto_attack( HASTE_ANY );
-      // Queued execute must be adjusted after dynamid cooldowns / global cooldown
-      adjust_action_queue_time();
       break;
     }
 
@@ -12458,20 +12454,6 @@ void player_t::update_cast_while_casting_ready()
     sim -> out_debug.print( "{} next cast while casting cooldown ready at {}",
       name(), cast_while_casting_ready.total_seconds() );
   }
-}
-
-/**
- * Adjust the queue-delayed action execution if the ability currently being executed has a hasted cooldown, and haste
- * changes.
- */
-void player_t::adjust_action_queue_time()
-{
-  if ( !queueing )
-  {
-    return;
-  }
-
-  queueing->reschedule_queue_event();
 }
 
 /**
