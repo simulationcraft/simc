@@ -804,7 +804,7 @@ public:
     
     // Frost
     azerite_power_t echoing_howl; // TODO : I have no idea how that actually works ingame
-    azerite_power_t frostwhelps_indignation;
+    azerite_power_t frostwhelps_indignation; // TODO: Find the damaging spell's ID
     azerite_power_t frozen_tempest; // TODO : check if the damage is increased per tick or per cast
     azerite_power_t glacial_contagion; // TODO : does the amp to obliterate affect both hits ? Does the trait interact with Frostscythe ? Need more info on the dot as well
                                        // TODO: remove once 8.1 goes live
@@ -4903,6 +4903,7 @@ struct frostwyrms_fury_damage_t : public death_knight_spell_t
     death_knight_spell_t( "frostwyrms_fury", p, p -> find_spell( 279303 ) )
   {
     aoe = -1;
+    background = true;
   }
 };
 
@@ -5727,16 +5728,20 @@ struct outbreak_t : public death_knight_spell_t
 struct frostwhelps_indignation_t : public death_knight_spell_t
 {
   frostwhelps_indignation_t( death_knight_t* p ) :
-    death_knight_spell_t( "frostwhelps_indignation", p,
+    death_knight_spell_t( "frostwhelps_indignation", p ,
                           p -> azerite.frostwhelps_indignation.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
+    // TODO: May not be the right spell ID because that one doesn't seem
+    // to be affected by spec aura or mastery, blizzard oversight or different spell?
   {
     aoe = -1;
+    background = true;
 
     base_dd_min = base_dd_max = p -> azerite.frostwhelps_indignation.value( 1 );
   }
 
   void impact( action_state_t* s ) override
   {
+    death_knight_spell_t::impact( s );
     p() -> buffs.frostwhelps_indignation -> trigger();
   }
 };
@@ -8194,10 +8199,8 @@ void death_knight_t::create_buffs()
   buffs.bloody_runeblade = make_buff<stat_buff_t>( this, "bloody_runeblade", find_spell( 289349 ) )
     -> add_stat( STAT_HASTE_RATING, azerite.bloody_runeblade.value( 2 ) );
 
-  // TODO: check if max stacks on the buff is 5 (data from azerite trait and tooltip) or 6 (data from the buff)
   buffs.frostwhelps_indignation = make_buff<stat_buff_t>( this, "frostwhelps_indignation", find_spell( 287338 ) )
     -> add_stat( STAT_MASTERY_RATING, azerite.frostwhelps_indignation.value( 2 ) );
-    // -> set_max_stack( dbc.ptr ? azerite.frostwhelps_indignation.spell() -> effectN( 3 ).base_value() : 6 );
 }
 
 // death_knight_t::init_gains ===============================================
