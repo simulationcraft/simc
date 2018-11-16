@@ -22,8 +22,6 @@ namespace { // UNNAMED NAMESPACE
   Still need AP Coeff for Treants
 
   Guardian ==================================================================
-  Investigate Mastery-AP as a modifier on ability damage
-  Blacklist FR from trigger_natures_guardian()
   Catweaving APL
 
   Resto =====================================================================
@@ -457,6 +455,7 @@ public:
     cooldown_t* tigers_fury;
     cooldown_t* warrior_of_elune;
     cooldown_t* barkskin;
+    cooldown_t* rage_from_melees;
   } cooldown;
 
   // Gains
@@ -759,8 +758,10 @@ public:
     cooldown.warrior_of_elune    = get_cooldown( "warrior_of_elune"    );
     cooldown.barkskin            = get_cooldown( "barkskin"            );
     cooldown.innervate           = get_cooldown( "innervate"           );
+    cooldown.rage_from_melees    = get_cooldown( "rage_from_melees"    );
 
     cooldown.wod_pvp_4pc_melee -> duration = timespan_t::from_seconds( 30.0 );
+    cooldown.rage_from_melees -> duration  = timespan_t::from_seconds( 1.0 );
 
     legendary.the_wildshapers_clutch = 0.0;
     sylvan_walker = 0;
@@ -4703,8 +4704,10 @@ struct regrowth_t: public druid_heal_t
 
     // Hack for feral to be able to use target-related expressions on this action
     // Disables healing entirely
-    target = sim -> target;
-    base_multiplier = 0;
+    if ( p -> specialization() == DRUID_FERAL ) {
+      target = sim -> target;
+      base_multiplier = 0;
+    }
   }
 
   double cost() const override
@@ -9290,11 +9293,12 @@ void druid_t::assess_damage_imminent_pre_absorb( school_e school, dmg_e dmg, act
   {
 
     // Guardian rage from melees
-    if ( specialization() == DRUID_GUARDIAN && !s -> action -> special )
+    if ( specialization() == DRUID_GUARDIAN && !s -> action -> special && cooldown.rage_from_melees -> up())
     {
       resource_gain( RESOURCE_RAGE,
                      spec.bear_form -> effectN( 3 ).base_value(),
                      gain.rage_from_melees );
+      cooldown.rage_from_melees -> start( cooldown.rage_from_melees -> duration );
     }
 
     if ( buff.cenarion_ward -> up() )
@@ -9461,7 +9465,9 @@ void druid_t::trigger_natures_guardian( const action_state_t* trigger_state )
     return;
   if ( trigger_state -> result_total <= 0 )
     return;
-  if ( trigger_state -> action == active.natures_guardian )
+  if ( trigger_state -> action == active.natures_guardian ||
+       trigger_state -> action == active.yseras_gift || 
+       trigger_state -> action -> id == 22842 ) // Frenzied Regeneration
     return;
 
   active.natures_guardian -> base_dd_min = active.natures_guardian -> base_dd_max =
