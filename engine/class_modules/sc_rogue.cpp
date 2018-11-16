@@ -2579,8 +2579,8 @@ struct garrote_t : public rogue_attack_t
 
     if ( p() -> azerite.shrouded_suffocation.ok() )
     {
-      // Note: Looks like Shadowmeld does not work for the damage gain.
-      debug_cast<garrote_state_t*>( state ) -> shrouded_suffocation = p() -> stealthed( STEALTH_BASIC | STEALTH_SUBTERFUGE );
+      // Note: Looks like Shadowmeld works for the damage gain.
+      debug_cast<garrote_state_t*>( state ) -> shrouded_suffocation = p() -> stealthed();
     }
   }
 
@@ -4286,6 +4286,17 @@ expr_t* actions::rogue_attack_t::create_expression( const std::string& name_str 
   {
     return new exsanguinated_expr_t( this );
   }
+  else if ( util::str_compare_ci( name_str, "ss_buffed") )
+  {
+    return make_fn_expr( "ss_buffed", [ this ]() {
+    rogue_td_t* td_ = td( target );
+    if ( ! td_ -> dots.garrote -> is_ticking() )
+    {
+      return 0.0;
+    }
+    return debug_cast<const garrote_state_t*>( td_ -> dots.garrote -> state ) -> shrouded_suffocation ? 1.0 : 0.0;
+  } );
+  }
 
   return melee_attack_t::create_expression( name_str );
 }
@@ -5717,7 +5728,7 @@ void rogue_t::init_action_list()
     cds -> add_action( this, "Vanish", "if=talent.nightstalker.enabled&!talent.exsanguinate.enabled&combo_points>=cp_max_spend&debuff.vendetta.up", "Vanish with Nightstalker + No Exsg: Maximum CP and Vendetta up" );
     cds -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&(!talent.exsanguinate.enabled|!variable.single_target)&!stealthed.rogue&cooldown.garrote.up&dot.garrote.refreshable&(spell_targets.fan_of_knives<=3&combo_points.deficit>=1+spell_targets.fan_of_knives|spell_targets.fan_of_knives>=4&combo_points.deficit>=4)", "Vanish with Subterfuge + (No Exsg or 2T+): No stealth/subterfuge, Garrote Refreshable, enough space for incoming Garrote CP" );
     cds -> add_action( this, "Vanish", "if=talent.master_assassin.enabled&!stealthed.all&master_assassin_remains<=0&!dot.rupture.refreshable", "Vanish with Master Assasin: No stealth and no active MA buff, Rupture not in refresh range" );
-    cds -> add_action( "shadowmeld,if=!stealthed.all&azerite.shrouded_suffocation.enabled&dot.garrote.refreshable&dot.garrote.pmultiplier<=1&combo_points.deficit>=3", "Shadowmeld for Shrouded Suffocation CP (dmg amp does not work)" );
+    cds -> add_action( "shadowmeld,if=!stealthed.all&azerite.shrouded_suffocation.enabled&dot.garrote.refreshable&dot.garrote.pmultiplier<=1&combo_points.deficit>=1", "Shadowmeld for Shrouded Suffocation" );
     cds -> add_talent( this, "Exsanguinate", "if=dot.rupture.remains>4+4*cp_max_spend&!dot.garrote.refreshable", "Exsanguinate when both Rupture and Garrote are up for long enough" );
     cds -> add_talent( this, "Toxic Blade", "if=dot.rupture.ticking" );
 
@@ -5735,7 +5746,7 @@ void rogue_t::init_action_list()
     action_priority_list_t* dot = get_action_priority_list( "dot", "Damage over time abilities" );
     dot -> add_action( this, "Rupture", "if=talent.exsanguinate.enabled&((combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1)|(!ticking&(time>10|combo_points>=2)))", "Special Rupture setup for Exsg" );
     dot -> add_action( "pool_resource,for_next=1", "Garrote upkeep, also tries to use it as a special generator for the last CP before a finisher" );
-    dot -> add_action( this, "Garrote", "cycle_targets=1,if=(!talent.subterfuge.enabled|!(cooldown.vanish.up&cooldown.vendetta.remains<=4))&combo_points.deficit>=1&refreshable&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&(target.time_to_die-remains>4&spell_targets.fan_of_knives<=1|target.time_to_die-remains>12)" );
+    dot -> add_action( this, "Garrote", "cycle_targets=1,if=(!talent.subterfuge.enabled|!(cooldown.vanish.up&cooldown.vendetta.remains<=4))&combo_points.deficit>=1&refreshable&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&!ss_buffed&(target.time_to_die-remains>4&spell_targets.fan_of_knives<=1|target.time_to_die-remains>12)" );
     dot -> add_talent( this, "Crimson Tempest", "if=spell_targets>=2&remains<2+(spell_targets>=5)&combo_points>=4", "Crimson Tempest only on multiple targets at 4+ CP when running out in 2s (up to 4 targets) or 3s (5+ targets)" );
     dot -> add_action( this, "Rupture", "cycle_targets=1,if=combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&target.time_to_die-remains>4", "Keep up Rupture at 4+ on all targets (when living long enough and not snapshot)" );
 
