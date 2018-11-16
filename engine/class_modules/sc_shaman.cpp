@@ -909,12 +909,15 @@ struct lightning_shield_overcharge_buff_t : public buff_t
     : buff_t( p, "lightning_shield_overcharge", p->find_spell( 273323 ) )
   {
     set_duration( s_data->duration() );
-    set_period( s_data->effectN( 2 ).period() );
+    if ( !p->dbc.ptr )
+    {
+      set_period( s_data->effectN( 2 ).period() );
 
-    set_tick_callback( [p]( buff_t* b, int, const timespan_t& ) {
-      double g = b->data().effectN( 2 ).base_value();
-      p->resource_gain( RESOURCE_MAELSTROM, g, p->gain.lightning_shield_overcharge );
-    } );
+      set_tick_callback( [p]( buff_t* b, int, const timespan_t& ) {
+        double g = b->data().effectN( 2 ).base_value();
+        p->resource_gain( RESOURCE_MAELSTROM, g, p->gain.lightning_shield_overcharge );
+      } );
+    }
   }
 };
 
