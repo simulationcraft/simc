@@ -4423,7 +4423,7 @@ struct death_strike_heal_t : public death_knight_heal_t
   double base_da_max( const action_state_t* ) const override
   {
     return std::max( player -> resources.max[ RESOURCE_HEALTH ] * p() -> spell.death_strike -> effectN( 3 ).percent(),
-      player -> compute_incoming_damage( interval ) * p() -> spell.death_strike -> effectN( 2 ).percent() );
+                     player -> compute_incoming_damage( interval ) * p() -> spell.death_strike -> effectN( 2 ).percent() );
   }
 
   double action_multiplier() const override
@@ -4722,7 +4722,10 @@ struct bursting_sores_t : public death_knight_spell_t
   {
     background = true;
     // Adding one target because the main target is ignored when dealing damage
-    aoe = p -> talent.bursting_sores -> effectN( 2 ).base_value() + 1;
+    if ( p -> dbc.ptr )
+      aoe = as<int> ( p -> talent.bursting_sores -> effectN( 2 ).base_value() + 1 );
+    else
+      aoe = -1;
   }
 
   // Bursting sores have a slight delay ingame, but nothing really significant
@@ -5729,7 +5732,8 @@ struct frostwhelps_indignation_t : public death_knight_spell_t
 {
   frostwhelps_indignation_t( death_knight_t* p ) :
     death_knight_spell_t( "frostwhelps_indignation", p ,
-                          p -> azerite.frostwhelps_indignation.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
+                          p -> dbc.ptr ? p -> azerite.frostwhelps_indignation.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() : 
+                          spell_data_t::nil() )
     // TODO: May not be the right spell ID because that one doesn't seem
     // to be affected by spec aura or mastery, blizzard oversight or different spell?
   {
