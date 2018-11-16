@@ -1,4 +1,4 @@
-// Azerite powers, wow build 8.1.0.28366
+// Azerite powers, wow build 8.1.0.28440
 static constexpr std::array<azerite_power_entry_t, 367> __ptr_azerite_power_data { {
   {  13, 263978,  4775, "Azerite Empowered"                 , 0 },
   {  14, 268594,     0, "Longstrider"                       , 1 },
@@ -98,7 +98,7 @@ static constexpr std::array<azerite_power_entry_t, 367> __ptr_azerite_power_data
   { 177, 279172,     0, "Bloodsport"                        , 3 },
   { 178, 273448,     0, "Lava Shock"                        , 3 },
   { 179, 273461,     0, "Strength of Earth"                 , 3 },
-  { 180, 273452,     0, "Storm of Steel"                    , 3 },
+  { 180, 288979,     0, "Keep Your Wits About You"          , 3 },
   { 181, 273488,     0, "Twist the Knife"                   , 3 },
   { 183, 273521,     0, "Inevitable Demise"                 , 3 },
   { 184, 273291,     0, "Sunrise Technique"                 , 3 },

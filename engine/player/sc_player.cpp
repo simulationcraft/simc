@@ -26,6 +26,8 @@ struct player_ready_event_t : public player_event_t
   }
   virtual void execute() override
   {
+    p()->readying = nullptr;
+
     // There are certain chains of events where an off-gcd ability can be queued such that the queue
     // time for the action exceeds Player-Ready event (essentially end of GCD). In this case, the
     // simple solution is to just cancel the queue execute and let the actor select an action from
@@ -2406,13 +2408,10 @@ void player_t::init_actions()
       if ( is_real_action( action ) )
       {
         have_off_gcd_actions = true;
-        if ( action -> cooldown -> duration > timespan_t::zero() )
+        auto it = range::find( off_gcd_cd, action -> cooldown );
+        if ( it == off_gcd_cd.end() )
         {
-          auto it = range::find( off_gcd_cd, action -> cooldown );
-          if ( it == off_gcd_cd.end() )
-          {
-            off_gcd_cd.push_back( action -> cooldown );
-          }
+          off_gcd_cd.push_back( action -> cooldown );
         }
       }
     }
@@ -2424,13 +2423,10 @@ void player_t::init_actions()
       if ( is_real_action( action ) )
       {
         have_cast_while_casting_actions = true;
-        if ( action->cooldown->duration > timespan_t::zero() )
+        auto it = range::find( cast_while_casting_cd, action->cooldown );
+        if ( it == cast_while_casting_cd.end() )
         {
-          auto it = range::find( cast_while_casting_cd, action->cooldown );
-          if ( it == cast_while_casting_cd.end() )
-          {
-            cast_while_casting_cd.push_back( action->cooldown );
-          }
+          cast_while_casting_cd.push_back( action->cooldown );
         }
       }
     }
@@ -4696,8 +4692,9 @@ void player_t::arise()
 
   cache.invalidate_all();
 
-  readying = 0;
-  off_gcd  = 0;
+  readying = nullptr;
+  off_gcd  = nullptr;
+  cast_while_casting_poll_event = nullptr;
 
   arise_time = sim->current_time();
   last_regen = sim->current_time();
@@ -4783,13 +4780,9 @@ void player_t::demise()
   arise_time               = timespan_t::min();
   current.distance_to_move = 0;
 
-  if ( readying )
-  {
-    event_t::cancel( readying );
-    readying = 0;
-  }
-
+  event_t::cancel( readying );
   event_t::cancel( off_gcd );
+  event_t::cancel( cast_while_casting_poll_event );
 
   range::for_each( callbacks_on_demise, [this]( const std::function<void( player_t* )>& fn ) { fn( this ); } );
 
@@ -4929,8 +4922,7 @@ void player_t::clear_debuffs()
 
 action_t* player_t::execute_action()
 {
-  readying = 0;
-  off_gcd  = 0;
+  assert( !readying );
 
   action_t* action = 0;
 

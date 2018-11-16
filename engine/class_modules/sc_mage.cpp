@@ -3921,11 +3921,17 @@ struct icy_veins_t : public frost_mage_spell_t
     frost_mage_spell_t::init_finished();
   }
 
+  virtual void schedule_execute( action_state_t* s ) override
+  {
+    // Icy Veins buff is applied before the spell is cast, allowing it to
+    // reduce GCD of the action that triggered it.
+    p()->buffs.icy_veins->trigger();
+    frost_mage_spell_t::schedule_execute( s );
+  }
+
   virtual void execute() override
   {
     frost_mage_spell_t::execute();
-
-    p()->buffs.icy_veins->trigger();
 
     if ( p()->azerite.frigid_grasp.enabled() )
     {

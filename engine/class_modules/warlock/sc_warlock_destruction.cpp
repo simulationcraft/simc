@@ -445,8 +445,18 @@ namespace warlock {
           energize_type = ENERGIZE_PER_HIT;
           energize_resource = RESOURCE_SOUL_SHARD;
           energize_amount = std::double_t(p->talents.fire_and_brimstone->effectN(2).base_value()) / 10;
-          gain = p->gains.fnb_bits;
+          gain = p->gains.incinerate_fnb;
         }
+      }
+
+      double bonus_da( const action_state_t* s ) const override
+      {
+        double da = destruction_spell_t::bonus_da( s );
+
+        if ( p()->dbc.ptr )
+          da += p()->azerite.chaos_shards.value( 2 );
+
+        return da;
       }
 
       double cost() const override
@@ -488,7 +498,7 @@ namespace warlock {
         destruction_spell_t::impact(s);
 
         if (s->result == RESULT_CRIT)
-          p()->resource_gain(RESOURCE_SOUL_SHARD, 0.1, p()->gains.incinerate_crits);
+          p()->resource_gain(RESOURCE_SOUL_SHARD, 0.1, p()->gains.incinerate_fnb_crits);
       }
 
       virtual double composite_target_crit_chance(player_t* target) const override
@@ -524,6 +534,16 @@ namespace warlock {
         energize_type = ENERGIZE_ON_CAST;
         energize_resource = RESOURCE_SOUL_SHARD;
         energize_amount = std::double_t(p->find_spell(244670)->effectN(1).base_value()) / 10;
+      }
+
+      double bonus_da( const action_state_t* s ) const override
+      {
+        double da = destruction_spell_t::bonus_da( s );
+
+        if ( p()->dbc.ptr )
+          da += p()->azerite.chaos_shards.value( 2 );
+
+        return da;
       }
 
       virtual timespan_t execute_time() const override
@@ -919,7 +939,7 @@ namespace warlock {
         virtual void execute() override
         {
           destruction_spell_t::execute();
-          if ( !p()->dbc.ptr&&this->num_targets_hit >= 3 && p()->azerite.accelerant.ok() )
+          if ( !p()->dbc.ptr && this->num_targets_hit >= 3 && p()->azerite.accelerant.ok() )
             p()->buffs.accelerant->trigger();
         }
       };
@@ -1054,59 +1074,69 @@ namespace warlock {
       ->add_stat( STAT_INTELLECT, azerite.rolling_havoc.value() );
     buffs.flashpoint = make_buff<stat_buff_t>( this, "flashpoint", find_spell( 275429 ) )
       ->add_stat( STAT_HASTE_RATING, azerite.flashpoint.value() );
+    //TOCHECK What happens when we get 2 procs within 2 seconds?
+    buffs.chaos_shards = make_buff<stat_buff_t>( this, "chaos_shards", find_spell( 287660 ) )
+      ->set_period( find_spell( 287660 )->effectN( 1 ).period() )
+      ->set_tick_zero( true )
+      ->set_tick_callback( [this]( buff_t* b, int, const timespan_t& ) {
+      resource_gain( RESOURCE_SOUL_SHARD, b->data().effectN( 1 ).base_value() / 10.0, gains.chaos_shards );
+    } );
   }
 
   void warlock_t::init_spells_destruction() {
     using namespace actions_destruction;
 
-    spec.destruction                    = find_specialization_spell(137046);
-    mastery_spells.chaotic_energies     = find_mastery_spell(WARLOCK_DESTRUCTION);
+    spec.destruction                    = find_specialization_spell( 137046 );
+    mastery_spells.chaotic_energies     = find_mastery_spell( WARLOCK_DESTRUCTION );
 
-    spec.conflagrate                    = find_specialization_spell("Conflagrate");
-    spec.conflagrate_2                  = find_specialization_spell(231793);
-    spec.havoc                          = find_specialization_spell("Havoc");
+    spec.conflagrate                    = find_specialization_spell( "Conflagrate" );
+    spec.conflagrate_2                  = find_specialization_spell( 231793 );
+    spec.havoc                          = find_specialization_spell( "Havoc" );
     // Talents
-    talents.flashover                   = find_talent_spell("Flashover");
-    talents.eradication                 = find_talent_spell("Eradication");
-    talents.soul_fire                   = find_talent_spell("Soul Fire");
+    talents.flashover                   = find_talent_spell( "Flashover" );
+    talents.eradication                 = find_talent_spell( "Eradication" );
+    talents.soul_fire                   = find_talent_spell( "Soul Fire" );
 
-    talents.reverse_entropy             = find_talent_spell("Reverse Entropy");
-    talents.internal_combustion         = find_talent_spell("Internal Combustion");
-    talents.shadowburn                  = find_talent_spell("Shadowburn");
+    talents.reverse_entropy             = find_talent_spell( "Reverse Entropy" );
+    talents.internal_combustion         = find_talent_spell( "Internal Combustion" );
+    talents.shadowburn                  = find_talent_spell( "Shadowburn" );
 
-    talents.inferno                     = find_talent_spell("Inferno");
-    talents.fire_and_brimstone          = find_talent_spell("Fire and Brimstone");
-    talents.cataclysm                   = find_talent_spell("Cataclysm");
+    talents.inferno                     = find_talent_spell( "Inferno" );
+    talents.fire_and_brimstone          = find_talent_spell( "Fire and Brimstone" );
+    talents.cataclysm                   = find_talent_spell( "Cataclysm" );
 
-    talents.roaring_blaze               = find_talent_spell("Roaring Blaze");
-    talents.grimoire_of_supremacy       = find_talent_spell("Grimoire of Supremacy");
+    talents.roaring_blaze               = find_talent_spell( "Roaring Blaze" );
+    talents.grimoire_of_supremacy       = find_talent_spell( "Grimoire of Supremacy" );
 
-    talents.channel_demonfire           = find_talent_spell("Channel Demonfire");
-    talents.dark_soul_instability       = find_talent_spell("Dark Soul: Instability");
+    talents.channel_demonfire           = find_talent_spell( "Channel Demonfire" );
+    talents.dark_soul_instability       = find_talent_spell( "Dark Soul: Instability" );
 
     // Azerite
-    azerite.accelerant                  = find_azerite_spell("Accelerant");
-    azerite.bursting_flare              = find_azerite_spell("Bursting Flare");
-    azerite.chaotic_inferno             = find_azerite_spell("Chaotic Inferno");
-    azerite.crashing_chaos              = find_azerite_spell("Crashing Chaos");
-    azerite.rolling_havoc               = find_azerite_spell("Rolling Havoc");
-    azerite.flashpoint                  = find_azerite_spell("Flashpoint");
+    azerite.accelerant                  = find_azerite_spell( "Accelerant" );
+    azerite.bursting_flare              = find_azerite_spell( "Bursting Flare" );
+    azerite.chaotic_inferno             = find_azerite_spell( "Chaotic Inferno" );
+    azerite.crashing_chaos              = find_azerite_spell( "Crashing Chaos" );
+    azerite.rolling_havoc               = find_azerite_spell( "Rolling Havoc" );
+    azerite.flashpoint                  = find_azerite_spell( "Flashpoint" );
+    azerite.chaos_shards                = find_azerite_spell( "Chaos Shards" );
   }
 
-  void warlock_t::init_gains_destruction() {
-    gains.conflagrate                   = get_gain("conflagrate");
-    gains.shadowburn                    = get_gain("shadowburn");
-    gains.immolate                      = get_gain("immolate");
-    gains.immolate_crits                = get_gain("immolate_crits");
-    gains.reverse_entropy               = get_gain("reverse_entropy");
-    gains.incinerate                    = get_gain("incinerate");
-    gains.incinerate_crits              = get_gain("incinerate_crits");
-    gains.fnb_bits                      = get_gain("fnb_bits");
-    gains.soul_fire                     = get_gain("soul_fire");
-    gains.infernal                      = get_gain("infernal");
-    gains.shadowburn_shard              = get_gain("shadowburn_shard");
-    gains.inferno                       = get_gain("inferno");
-    gains.destruction_t20_2pc           = get_gain("destruction_t20_2pc");
+  void warlock_t::init_gains_destruction()
+  {
+    gains.conflagrate                   = get_gain( "conflagrate" );
+    gains.shadowburn                    = get_gain( "shadowburn" );
+    gains.immolate                      = get_gain( "immolate" );
+    gains.immolate_crits                = get_gain( "immolate_crits" );
+    gains.incinerate                    = get_gain( "incinerate" );
+    gains.incinerate_crits              = get_gain( "incinerate_crits" );
+    gains.incinerate_fnb                = get_gain( "incinerate_fnb" );
+    gains.incinerate_fnb_crits          = get_gain( "incinerate_fnb_crits" );
+    gains.soul_fire                     = get_gain( "soul_fire" );
+    gains.infernal                      = get_gain( "infernal" );
+    gains.shadowburn_shard              = get_gain( "shadowburn_shard" );
+    gains.inferno                       = get_gain( "inferno" );
+    gains.destruction_t20_2pc           = get_gain( "destruction_t20_2pc" );
+    gains.chaos_shards                  = get_gain( "chaos_shards" );
   }
 
   void warlock_t::init_rng_destruction() {

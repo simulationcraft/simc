@@ -264,6 +264,7 @@ struct rogue_t : public player_t
     buff_t* brigands_blitz_driver;
     buff_t* deadshot;
     buff_t* double_dose; // Tracking Buff
+    buff_t* keep_your_wits_about_you;
     buff_t* nights_vengeance;
     buff_t* nothing_personal;
     buff_t* paradise_lost;
@@ -480,6 +481,7 @@ struct rogue_t : public player_t
     azerite_power_t echoing_blades;
     azerite_power_t fan_of_blades;
     azerite_power_t inevitability;
+    azerite_power_t keep_your_wits_about_you;
     azerite_power_t nights_vengeance;
     azerite_power_t nothing_personal;
     azerite_power_t paradise_lost;
@@ -2577,8 +2579,8 @@ struct garrote_t : public rogue_attack_t
 
     if ( p() -> azerite.shrouded_suffocation.ok() )
     {
-      // Note: Assuming Shadowmeld works, needs checking.
-      debug_cast<garrote_state_t*>( state ) -> shrouded_suffocation = p() -> stealthed();
+      // Note: Looks like Shadowmeld does not work for the damage gain.
+      debug_cast<garrote_state_t*>( state ) -> shrouded_suffocation = p() -> stealthed( STEALTH_BASIC | STEALTH_SUBTERFUGE );
     }
   }
 
@@ -2628,14 +2630,16 @@ struct garrote_t : public rogue_attack_t
 
   void execute() override
   {
+    bool castFromStealth = p() -> stealthed();
+
     rogue_attack_t::execute();
 
     p() -> buffs.poisoned_wire -> trigger( p() -> buffs.poisoned_wire -> max_stack() );
 
     if ( p() -> azerite.shrouded_suffocation.ok() )
     {
-      // Note: Assuming Shadowmeld works, needs checking.
-      if ( p()->stealthed() )
+      // Note: Looks like Shadowmeld works for the CP gain.
+      if ( castFromStealth )
         p() -> trigger_combo_point_gain( p() -> azerite.shrouded_suffocation.spell_ref().effectN( 2 ).base_value(), p() -> gains.shrouded_suffocation, this );
     }
   }
@@ -3704,13 +3708,19 @@ struct sinister_strike_t : public rogue_attack_t
     double opportunity_proc_chance = data().effectN( 3 ).percent();
     opportunity_proc_chance += p() -> talent.weaponmaster -> effectN( 1 ).percent();
     opportunity_proc_chance += p() -> buffs.skull_and_crossbones -> stack_value();
+    opportunity_proc_chance += p() -> buffs.keep_your_wits_about_you -> stack_value();
     return opportunity_proc_chance;
   }
 
   double bonus_da( const action_state_t* s ) const override
   {
     double b = rogue_attack_t::bonus_da( s );
+
     b += p() -> buffs.snake_eyes -> value();
+
+    if ( secondary_trigger == TRIGGER_SINISTER_STRIKE )
+      b += p() -> azerite.keep_your_wits_about_you.value( 2 );
+
     return b;
   }
 
@@ -3897,7 +3907,8 @@ struct vendetta_t : public rogue_attack_t
       rogue_attack_t( "nothing_personal", p, p -> find_spell( 286581 ) )
     {
       may_dodge = may_parry = may_block = false;
-      may_crit = tick_may_crit = false;
+      may_crit = false;
+      tick_may_crit = true;
       background = true;
       harmful = true;
       hasted_ticks = false;
@@ -4486,16 +4497,31 @@ struct proxy_rupture_t : public buff_t
 
 struct adrenaline_rush_t : public buff_t
 {
-  rogue_t* r;
-
   adrenaline_rush_t( rogue_t* p ) :
-    buff_t( p, "adrenaline_rush", p -> find_class_spell( "Adrenaline Rush" ) ),
-    r( p )
+    buff_t( p, "adrenaline_rush", p -> find_class_spell( "Adrenaline Rush" ) )
   { 
     set_cooldown( timespan_t::zero() );
     set_default_value( p -> find_class_spell( "Adrenaline Rush" ) -> effectN( 2 ).percent() );
     set_affects_regen( true );
     add_invalidate( CACHE_ATTACK_SPEED );
+  }
+};
+
+struct blade_flurry_t : public buff_t
+{
+  blade_flurry_t( rogue_t* p ) :
+    buff_t( p, "blade_flurry", p -> spec.blade_flurry )
+  {
+    set_cooldown( timespan_t::zero() );
+    set_duration( p -> spec.blade_flurry -> duration() + p -> talent.dancing_steel -> effectN( 2 ).time_value() );
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    rogue_t* rogue = debug_cast<rogue_t*>( source );
+    rogue -> buffs.keep_your_wits_about_you -> expire();
   }
 };
 
@@ -5053,10 +5079,14 @@ void rogue_t::trigger_blade_flurry( const action_state_t* state )
   if ( !state -> action -> result_is_hit( state -> result ) )
     return;
 
-  if ( sim -> active_enemies == 1 )
+  if ( state -> action -> is_aoe() )
     return;
 
-  if ( state -> action -> is_aoe() )
+  // As of 2018-11-14: Keep Your Wits works on single target.
+  if ( azerite.keep_your_wits_about_you.ok() )
+    buffs.keep_your_wits_about_you -> trigger();
+
+  if ( sim -> active_enemies == 1 )
     return;
 
   // Compute Blade Flurry modifier
@@ -5687,6 +5717,7 @@ void rogue_t::init_action_list()
     cds -> add_action( this, "Vanish", "if=talent.nightstalker.enabled&!talent.exsanguinate.enabled&combo_points>=cp_max_spend&debuff.vendetta.up", "Vanish with Nightstalker + No Exsg: Maximum CP and Vendetta up" );
     cds -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&(!talent.exsanguinate.enabled|!variable.single_target)&!stealthed.rogue&cooldown.garrote.up&dot.garrote.refreshable&(spell_targets.fan_of_knives<=3&combo_points.deficit>=1+spell_targets.fan_of_knives|spell_targets.fan_of_knives>=4&combo_points.deficit>=4)", "Vanish with Subterfuge + (No Exsg or 2T+): No stealth/subterfuge, Garrote Refreshable, enough space for incoming Garrote CP" );
     cds -> add_action( this, "Vanish", "if=talent.master_assassin.enabled&!stealthed.all&master_assassin_remains<=0&!dot.rupture.refreshable", "Vanish with Master Assasin: No stealth and no active MA buff, Rupture not in refresh range" );
+    cds -> add_action( "shadowmeld,if=!stealthed.all&azerite.shrouded_suffocation.enabled&dot.garrote.refreshable&dot.garrote.pmultiplier<=1&combo_points.deficit>=3", "Shadowmeld for Shrouded Suffocation CP (dmg amp does not work)" );
     cds -> add_talent( this, "Exsanguinate", "if=dot.rupture.remains>4+4*cp_max_spend&!dot.garrote.refreshable", "Exsanguinate when both Rupture and Garrote are up for long enough" );
     cds -> add_talent( this, "Toxic Blade", "if=dot.rupture.ticking" );
 
@@ -6401,6 +6432,7 @@ void rogue_t::init_spells()
   azerite.echoing_blades       = find_azerite_spell( "Echoing Blades" );
   azerite.fan_of_blades        = find_azerite_spell( "Fan of Blades" );
   azerite.inevitability        = find_azerite_spell( "Inevitability" );
+  azerite.keep_your_wits_about_you = find_azerite_spell( "Keep Your Wits About You" );
   azerite.nights_vengeance     = find_azerite_spell( "Night's Vengeance" );
   azerite.nothing_personal     = find_azerite_spell( "Nothing Personal" );
   azerite.paradise_lost        = find_azerite_spell( "Paradise Lost" );
@@ -6577,9 +6609,7 @@ void rogue_t::create_buffs()
 
   // Outlaw
   buffs.adrenaline_rush       = new buffs::adrenaline_rush_t( this );
-  buffs.blade_flurry          = make_buff( this, "blade_flurry", spec.blade_flurry )
-                                -> set_cooldown( timespan_t::zero() )
-                                -> set_duration( spec.blade_flurry -> duration() + talent.dancing_steel -> effectN( 2 ).time_value() );
+  buffs.blade_flurry          = new buffs::blade_flurry_t( this );
   buffs.blade_rush            = make_buff( this, "blade_rush", find_spell( 271896 ) )
                                 -> set_period( find_spell( 271896 ) -> effectN( 1 ).period() )
                                 -> set_tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
@@ -6682,6 +6712,9 @@ void rogue_t::create_buffs()
                                              -> set_default_value( azerite.deadshot.value() );
   buffs.double_dose                        = make_buff( this, "double_dose", find_spell( 273009 ) )
                                              -> set_quiet( true );
+  buffs.keep_your_wits_about_you           = make_buff( this, "keep_your_wits_about_you", find_spell( 288988 ) )
+                                             -> set_trigger_spell( azerite.keep_your_wits_about_you.spell_ref().effectN( 1 ).trigger() )
+                                             -> set_default_value( find_spell( 288988 ) -> effectN( 1 ).percent() );
   buffs.nights_vengeance                   = make_buff( this, "nights_vengeance", find_spell( 273424 ) )
                                              -> set_trigger_spell( azerite.nights_vengeance.spell_ref().effectN( 1 ).trigger() )
                                              -> set_default_value( azerite.nights_vengeance.value() );
