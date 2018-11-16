@@ -2717,7 +2717,12 @@ struct flametongue_weapon_spell_t : public shaman_spell_t
     if ( player->specialization() == SHAMAN_ENHANCEMENT )
     {
       snapshot_flags          = STATE_AP;
-      attack_power_mod.direct = 0.044;
+      attack_power_mod.direct = player->dbc.ptr ? 0.0264 : 0.044;
+
+	  if ( player->main_hand_weapon.type != WEAPON_NONE )
+      {
+        attack_power_mod.direct *= player->main_hand_weapon.swing_time.total_seconds() / 2.6;
+      }
     }
   }
 };
