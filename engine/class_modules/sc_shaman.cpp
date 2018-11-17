@@ -29,9 +29,8 @@
 //    ? Tectonic Thunder            286949 - find and whitelist the actual CL buff, fix implementation based on that
 //
 // Enhancement
-// - Azerite stuff
-// - Forceful winds is evaluating per windfury proc, instead of before
-//      all windfury damage is dealt in aoe. Added an event delay, but only kinda works.
+// Nothing at the moment.
+//
 // Legion TODO
 //
 // Remove any remaining vestiges of legion stuff
@@ -388,6 +387,7 @@ public:
     buff_t* roiling_storm_buff_driver;
     buff_t* strength_of_earth;
     buff_t* tectonic_thunder;
+    buff_t* thunderaans_fury;
   } buff;
 
   // Cooldowns
@@ -559,6 +559,7 @@ public:
     azerite_power_t primal_primer;
     azerite_power_t roiling_storm;
     azerite_power_t strength_of_earth;
+    azerite_power_t thunderaans_fury;
 
     // shared
     azerite_power_t ancestral_resonance;
@@ -885,6 +886,15 @@ struct strength_of_earth_buff_t : public buff_t
   }
 };
 
+struct thunderaans_fury_buff_t : public buff_t
+{
+  thunderaans_fury_buff_t( shaman_t* p ) : buff_t( p, "thunderaans_fury", p->find_spell( 287802 ) )
+  {
+    set_default_value( s_data->effectN( 2 ).percent() );
+    set_duration( s_data->duration() );
+  }
+};
+
 struct lightning_shield_buff_t : public buff_t
 {
   lightning_shield_buff_t( shaman_t* p ) : buff_t( p, "lightning_shield", p->find_spell( 192106 ) )
@@ -899,12 +909,15 @@ struct lightning_shield_overcharge_buff_t : public buff_t
     : buff_t( p, "lightning_shield_overcharge", p->find_spell( 273323 ) )
   {
     set_duration( s_data->duration() );
-    set_period( s_data->effectN( 2 ).period() );
+    if ( !p->dbc.ptr )
+    {
+      set_period( s_data->effectN( 2 ).period() );
 
-    set_tick_callback( [p]( buff_t* b, int, const timespan_t& ) {
-      double g = b->data().effectN( 2 ).base_value();
-      p->resource_gain( RESOURCE_MAELSTROM, g, p->gain.lightning_shield_overcharge );
-    } );
+      set_tick_callback( [p]( buff_t* b, int, const timespan_t& ) {
+        double g = b->data().effectN( 2 ).base_value();
+        p->resource_gain( RESOURCE_MAELSTROM, g, p->gain.lightning_shield_overcharge );
+      } );
+    }
   }
 };
 
@@ -1337,6 +1350,7 @@ public:
   bool may_proc_icy_edge;
   bool may_proc_strength_of_earth;
   bool may_proc_primal_primer;
+  double tf_proc_chance;
 
   proc_t *proc_wf, *proc_ft, *proc_fb, *proc_mw, *proc_sb, *proc_ls, *proc_hh, *proc_pp;
 
@@ -1352,6 +1366,7 @@ public:
       may_proc_icy_edge( false ),
       may_proc_strength_of_earth( true ),
       may_proc_primal_primer( true ),
+      tf_proc_chance( 0 ),
       proc_wf( nullptr ),
       proc_ft( nullptr ),
       proc_fb( nullptr ),
@@ -1396,6 +1411,11 @@ public:
     may_proc_lightning_shield = ab::weapon != nullptr;
 
     may_proc_strength_of_earth = true;
+
+    if ( p()->azerite.thunderaans_fury.ok() )
+    {
+      tf_proc_chance = p()->find_spell( 287801 )->effectN( 1 ).percent();
+    }
   }
 
   void init_finished() override
@@ -2073,7 +2093,7 @@ struct base_wolf_t : public shaman_pet_t
   base_wolf_t( shaman_t* owner, const std::string& name )
     : shaman_pet_t( owner, name ), alpha_wolf( nullptr ), alpha_wolf_buff( nullptr ), wolf_type( SPIRIT_WOLF )
   {
-    owner_coeff.ap_from_ap = 1.0;
+    owner_coeff.ap_from_ap = dbc.ptr ? 0.6 : 1.0;
 
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
   }
@@ -2697,7 +2717,12 @@ struct flametongue_weapon_spell_t : public shaman_spell_t
     if ( player->specialization() == SHAMAN_ENHANCEMENT )
     {
       snapshot_flags          = STATE_AP;
-      attack_power_mod.direct = 0.044;
+      attack_power_mod.direct = player->dbc.ptr ? 0.0264 : 0.044;
+
+	  if ( player->main_hand_weapon.type != WEAPON_NONE )
+      {
+        attack_power_mod.direct *= player->main_hand_weapon.swing_time.total_seconds() / 2.6;
+      }
     }
   }
 };
@@ -2984,6 +3009,14 @@ struct stormstrike_attack_t : public shaman_attack_t
       b += rs_bonus;
     }
 
+    if ( p()->azerite.thunderaans_fury.ok() )
+    {
+	  //currently buggy on ptr, is applying 2/3 to each hit instead of 1/3 on oh
+      //double tf_bonus = 0.5 * p()->azerite.thunderaans_fury.value( 2 );
+      double tf_bonus = (2/3) * p()->azerite.thunderaans_fury.value( 2 );
+      b += tf_bonus;
+    }
+
     return b;
   }
 
@@ -3021,6 +3054,14 @@ struct windstrike_attack_t : public stormstrike_attack_t
         rs_bonus *= 0.5;
       }
       b += rs_bonus;
+    }
+
+    if ( p()->azerite.thunderaans_fury.ok() )
+    {
+      // currently buggy on ptr, is applying 2/3 to each hit instead of 1/3 on oh
+      // double tf_bonus = 0.5 * p()->azerite.thunderaans_fury.value( 2 );
+      double tf_bonus = ( 2 / 3 ) * p()->azerite.thunderaans_fury.value( 2 );
+      b += tf_bonus;
     }
 
     return b;
@@ -3570,6 +3611,14 @@ struct stormstrike_base_t : public shaman_attack_t
       {
         cl->set_target( execute_state->target );
         cl->execute();
+      }
+
+      if ( p()->azerite.thunderaans_fury.ok() )
+      {
+        if ( rng().roll( tf_proc_chance ) )
+        {
+          p()->buff.thunderaans_fury->trigger();
+        }
       }
     }
 
@@ -6952,6 +7001,7 @@ void shaman_t::init_spells()
   azerite.primal_primer     = find_azerite_spell( "Primal Primer" );
   azerite.roiling_storm     = find_azerite_spell( "Roiling Storm" );
   azerite.strength_of_earth = find_azerite_spell( "Strength of Earth" );
+  azerite.thunderaans_fury  = find_azerite_spell( "Thunderaan's Fury" );
 
   // Shared
   azerite.ancestral_resonance = find_azerite_spell( "Ancestral Resonance" );
@@ -7249,6 +7299,11 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
   proc_chance += cache.mastery() * mastery.enhanced_elements->effectN( 4 ).mastery_value();
   proc_chance *= 1.0 + buff.tailwind_totem_enh->value();
 
+  if (buff.thunderaans_fury->up())
+  {
+    proc_chance = proc_chance * (1.0 + buff.thunderaans_fury->value());
+  }
+
   if ( rng().roll( proc_chance ) )
   {
     action_t* a = nullptr;
@@ -7498,6 +7553,7 @@ void shaman_t::create_buffs()
   buff.roiling_storm             = new roiling_storm_buff_t( this );
   buff.roiling_storm_buff_driver = new roiling_storm_buff_driver_t( this );
   buff.strength_of_earth         = new strength_of_earth_buff_t( this );
+  buff.thunderaans_fury          = new thunderaans_fury_buff_t( this );
 
   //
   // Enhancement
@@ -7923,9 +7979,6 @@ void shaman_t::init_action_list_enhancement()
 
   core->add_talent( this, "Earthen Spike", "if=variable.furyCheck25" );
   core->add_talent( this, "Sundering", "if=active_enemies>=3" );
-  core->add_action( this, "Stormstrike",
-                    "cycle_targets=1,if=azerite.lightning_conduit.enabled&!debuff.lightning_conduit.up&active_enemies>"
-                    "1&(buff.stormbringer.up|(variable.OCPool70&variable.furyCheck35))" );
   core->add_action( this, "Stormstrike",
                     "if=buff.stormbringer.up|(buff.gathering_storms.up&variable.OCPool70&variable.furyCheck35)" );
   core->add_action( this, "Crash Lightning", "if=active_enemies>=3&variable.furyCheck25" );

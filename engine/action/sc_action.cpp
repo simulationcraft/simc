@@ -181,7 +181,7 @@ void do_execute( action_t* action, execute_type type )
     timespan_t interval = player_gcd_event_t::poll_rate();
     if ( !action->player->off_gcd &&
          action->sim->current_time() + interval < action->player->gcd_ready &&
-         action->player->off_gcd_ready < action->sim->current_time() )
+         action->player->off_gcd_ready < action->player->gcd_ready )
     {
       action->player->off_gcd = make_event<player_gcd_event_t>( *action->sim, *action->player,
           interval );
@@ -1846,8 +1846,7 @@ void action_t::last_tick( dot_t* d )
 
   if ( channeled && player->channeling == this )
   {
-    player->channeling = 0;
-    player->readying   = 0;
+    player->channeling = nullptr;
 
     // Retarget this channel skill, since during the channel a retargeting event may have occurred.
     // The comparison is made against the actor's "current target", which can be considered the
@@ -2703,6 +2702,9 @@ void action_t::interrupt_action()
     player->queueing = nullptr;
   if ( player->channeling == this )
   {
+    // Forcefully interrupting a channel should not incur the channel lag.
+    interrupt_immediate_occurred = true;
+
     dot_t* dot = get_dot( execute_state->target );
     assert( dot->is_ticking() );
     dot->cancel();
@@ -4109,12 +4111,6 @@ void action_t::reschedule_queue_event()
   }
 
   timespan_t new_queue_delay = cooldown->queue_delay();
-
-  if ( new_queue_delay <= timespan_t::zero() )
-  {
-    return;
-  }
-
   timespan_t remaining = queue_event->remains();
 
   // The actual queue delay did not change, so no need to do anything

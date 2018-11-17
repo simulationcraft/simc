@@ -22,8 +22,6 @@ namespace { // UNNAMED NAMESPACE
   Still need AP Coeff for Treants
 
   Guardian ==================================================================
-  Investigate Mastery-AP as a modifier on ability damage
-  Blacklist FR from trigger_natures_guardian()
   Catweaving APL
 
   Resto =====================================================================
@@ -243,10 +241,6 @@ public:
   // counters for snapshot tracking
   std::vector<snapshot_counter_t*> counters;
 
-  // Active
-  action_t* t16_2pc_starfall_bolt;
-  action_t* t16_2pc_sun_bolt;
-
   double starshards;
   double expected_max_health; // For Bristling Fur calculations.
 
@@ -262,7 +256,6 @@ public:
     
 
     // Balance
-    real_ppm_t* balance_tier18_2pc;
     real_ppm_t* power_of_the_moon;
   } rppm;
 
@@ -296,7 +289,6 @@ public:
   } active;
 
   // Pets
-  std::array<pet_t*, 11> pet_fey_moonwing; // 30 second duration, 3 second internal icd... create 11 to be safe.
   std::array<pet_t*, 3> force_of_nature;
   // Auto-attacks
   weapon_t caster_form_weapon;
@@ -382,7 +374,6 @@ public:
     buff_t* solar_empowerment;
     buff_t* the_emerald_dreamcatcher; // Legion Legendary
     buff_t* warrior_of_elune;
-    buff_t* balance_tier18_4pc; // T18 4P Balance
     buff_t* solar_solstice; //T21 4P Balance
     buff_t* starfall;
     buff_t* astral_acceleration; //T20 4P Balance
@@ -457,6 +448,7 @@ public:
     cooldown_t* tigers_fury;
     cooldown_t* warrior_of_elune;
     cooldown_t* barkskin;
+    cooldown_t* rage_from_melees;
   } cooldown;
 
   // Gains
@@ -717,8 +709,6 @@ public:
   druid_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, DRUID, name, r ),
     form( NO_FORM ),
-    t16_2pc_starfall_bolt( nullptr ),
-    t16_2pc_sun_bolt( nullptr ),
     starshards( 0.0 ),
     previous_streaking_stars(SS_NONE),
     predator_rppm_rate( 0.0 ),
@@ -730,7 +720,6 @@ public:
     t21_2pc(false),
     t21_4pc(false),
     active( active_actions_t() ),
-    pet_fey_moonwing(),
     force_of_nature(),
     caster_form_weapon(),
     caster_melee_attack( nullptr ),
@@ -759,8 +748,10 @@ public:
     cooldown.warrior_of_elune    = get_cooldown( "warrior_of_elune"    );
     cooldown.barkskin            = get_cooldown( "barkskin"            );
     cooldown.innervate           = get_cooldown( "innervate"           );
+    cooldown.rage_from_melees    = get_cooldown( "rage_from_melees"    );
 
     cooldown.wod_pvp_4pc_melee -> duration = timespan_t::from_seconds( 30.0 );
+    cooldown.rage_from_melees -> duration  = timespan_t::from_seconds( 1.0 );
 
     legendary.the_wildshapers_clutch = 0.0;
     sylvan_walker = 0;
@@ -1062,61 +1053,6 @@ struct force_of_nature_t : public pet_t
   {
     if ( name == "auto_attack" ) return new auto_attack_t( this );
 
-    return pet_t::create_action( name, options_str );
-  }
-};
-
-// T18 2PC Balance Fairies ==================================================
-
-struct fey_moonwing_t: public pet_t
-{
-  struct fey_missile_t: public spell_t
-  {
-    fey_missile_t( fey_moonwing_t* player ):
-      spell_t( "fey_missile", player, player -> find_spell( 188046 ) )
-    {
-      if ( player -> o() -> pet_fey_moonwing[0] )
-        stats = player -> o() -> pet_fey_moonwing[0] -> get_stats( "fey_missile" );
-      may_crit = true;
-
-      // Casts have a delay that decreases with haste. This is a very rough approximation.
-      cooldown -> duration = timespan_t::from_millis( 600 );
-      cooldown -> hasted = true;
-    }
-  };
-  druid_t* o() { return static_cast<druid_t*>( owner ); }
-
-  fey_moonwing_t( sim_t* sim, druid_t* owner ):
-    pet_t( sim, owner, "fey_moonwing", true /*GUARDIAN*/, true )
-  {
-    owner_coeff.sp_from_sp = 0.75;
-    regen_type = REGEN_DISABLED;
-  }
-
-  void init_base_stats() override
-  {
-    pet_t::init_base_stats();
-
-    resources.base[RESOURCE_HEALTH] = owner -> resources.max[RESOURCE_HEALTH] * 0.4;
-    resources.base[RESOURCE_MANA] = 0;
-
-    initial.stats.attribute[ATTR_INTELLECT] = 0;
-    initial.spell_power_per_intellect = 0;
-    intellect_per_owner = 0;
-    stamina_per_owner = 0;
-    action_list_str = "fey_missile";
-  }
-
-  void summon( timespan_t duration ) override
-  {
-    pet_t::summon( duration );
-    o() -> buff.balance_tier18_4pc -> trigger();
-  }
-
-  action_t* create_action( const std::string& name,
-                           const std::string& options_str ) override
-  {
-    if ( name == "fey_missile"  ) return new fey_missile_t( this );
     return pet_t::create_action( name, options_str );
   }
 };
@@ -2097,24 +2033,6 @@ public:
     ab::execute();
   }
 
-  virtual void trigger_balance_tier18_2pc()
-  {
-    if ( ! p() -> sets -> has_set_bonus( DRUID_BALANCE, T18, B2 ) )
-      return;
-
-    if ( ! p() -> rppm.balance_tier18_2pc -> trigger() )
-      return;
-
-    for ( pet_t* pet : p() -> pet_fey_moonwing )
-    {
-      if ( pet -> is_sleeping() )
-      {
-        pet -> summon( timespan_t::from_seconds( 30 ) );
-        return;
-      }
-    }
-  }
-
   virtual void trigger_impeccable_fel_essence()
   {
     if ( p() -> legendary.impeccable_fel_essence == timespan_t::zero() )
@@ -2289,8 +2207,6 @@ struct moonfire_t : public druid_spell_t
           p()->active.shooting_stars->execute();
         }
       }
-
-      trigger_balance_tier18_2pc();
 
       if (!p()->azerite.power_of_the_moon.ok() || !maybe_ptr(p()->dbc.ptr))
         return;
@@ -4703,8 +4619,10 @@ struct regrowth_t: public druid_heal_t
 
     // Hack for feral to be able to use target-related expressions on this action
     // Disables healing entirely
-    target = sim -> target;
-    base_multiplier = 0;
+    if ( p -> specialization() == DRUID_FERAL ) {
+      target = sim -> target;
+      base_multiplier = 0;
+    }
   }
 
   double cost() const override
@@ -5119,12 +5037,17 @@ struct celestial_alignment_t : public druid_spell_t
     dot_duration = timespan_t::zero();
   }
 
+  void schedule_execute( action_state_t* s ) override
+  {
+    // buff applied first to reduce GCD
+    p() -> buff.celestial_alignment -> trigger();
+    druid_spell_t::schedule_execute( s );
+  }
+
   void execute() override
   {
-    druid_spell_t::execute(); // Do not change the order here.
+    druid_spell_t::execute();
     
-    p() -> buff.celestial_alignment -> trigger();
-
     //Trigger after triggering the buff so the cast procs the spell
     streaking_stars_trigger(SS_CELESTIAL_ALIGNMENT, nullptr);
   }
@@ -5526,12 +5449,17 @@ struct incarnation_t : public druid_spell_t
 
     harmful = false;
   }
+  
+  void schedule_execute( action_state_t* s ) override
+  {
+    // buff applied first to reduce GCD for moonkin
+    spec_buff -> trigger();
+    druid_spell_t::schedule_execute( s );
+  }
 
   void execute() override
   {
     druid_spell_t::execute();
-
-    spec_buff -> trigger();
 
     if ( p() -> buff.incarnation_cat -> check() )
     {
@@ -5716,8 +5644,6 @@ struct lunar_strike_t : public druid_spell_t
   {
     aoe = -1;
     base_aoe_multiplier = player->talent.balance_affinity->ok() ? data().effectN(2).percent() : data().effectN(3).percent();
-
-    base_execute_time *= 1.0 + player -> sets -> set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
   }
 
   double composite_crit_chance() const override
@@ -5892,8 +5818,6 @@ struct sunfire_t : public druid_spell_t
           p()->active.shooting_stars->execute();
         }
       }
-
-      trigger_balance_tier18_2pc();
     }
 
     double bonus_da(const action_state_t* s) const override
@@ -6120,7 +6044,6 @@ struct solar_wrath_t : public druid_spell_t
 
     add_child (player->active.solar_empowerment);
 
-    base_execute_time *= 1.0 + player -> sets -> set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
     energize_amount = player -> spec.astral_power -> effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
   }
 
@@ -6192,12 +6115,6 @@ struct solar_wrath_t : public druid_spell_t
     p() -> buff.solar_empowerment -> up();
 
     druid_spell_t::execute();
-
-    if ( p() -> sets -> has_set_bonus( DRUID_BALANCE, T17, B4 ) )
-    {
-      p() -> cooldown.celestial_alignment ->
-        adjust( -p() -> sets -> set( DRUID_BALANCE, T17, B4 ) -> effectN( 1 ).time_value() );
-    }
 
     p() -> buff.solar_empowerment -> decrement();
 
@@ -6969,12 +6886,6 @@ void druid_t::create_pets()
 {
   player_t::create_pets();
 
-  if ( sets -> has_set_bonus( DRUID_BALANCE, T18, B2 ) )
-  {
-    for ( pet_t*& pet : pet_fey_moonwing )
-      pet = new pets::fey_moonwing_t( sim, this );
-  }
-
   if ( talent.force_of_nature -> ok() )
   {
     for ( pet_t*& pet : force_of_nature )
@@ -7511,11 +7422,6 @@ void druid_t::create_buffs()
   }
 
   // Set Bonuses
-
-  buff.balance_tier18_4pc    = buff_creator_t( this, "faerie_blessing", find_spell( 188086 ) )
-                               .default_value( find_spell( 188086 ) -> effectN( 1 ).percent() )
-                               .chance( sets -> has_set_bonus( DRUID_BALANCE, T18, B4 ) )
-                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.feral_tier17_4pc      = buff_creator_t( this, "feral_tier17_4pc", find_spell( 166639 ) )
                                .quiet( true );
@@ -8367,7 +8273,6 @@ void druid_t::init_resources( bool force )
 void druid_t::init_rng()
 {
   // RPPM objects
-  rppm.balance_tier18_2pc = get_rppm( "balance_tier18_2pc", sets->set( DRUID_BALANCE, T18, B2 ) );
   rppm.predator           = get_rppm( "predator", predator_rppm_rate );  // Predator: optional RPPM approximation.
   rppm.blood_mist         = get_rppm( "blood_mist", find_spell(azerite.blood_mist.spell()->effectN(1).trigger_spell_id())->real_ppm() ) ;
   rppm.power_of_the_moon = get_rppm("power_of_the_moon", find_spell(azerite.power_of_the_moon.spell()->effectN(1).trigger_spell_id())->real_ppm());
@@ -8660,11 +8565,6 @@ double druid_t::composite_armor_multiplier() const
 double druid_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
-
-  if ( dbc::is_school( school, SCHOOL_ARCANE ) || dbc::is_school( school, SCHOOL_NATURE ) )
-  {
-    m *= 1.0 + buff.balance_tier18_4pc -> check_value();
-  }
 
   m *= 1.0 + legendary.LegendaryDamageMod;
 
@@ -9290,11 +9190,12 @@ void druid_t::assess_damage_imminent_pre_absorb( school_e school, dmg_e dmg, act
   {
 
     // Guardian rage from melees
-    if ( specialization() == DRUID_GUARDIAN && !s -> action -> special )
+    if ( specialization() == DRUID_GUARDIAN && !s -> action -> special && cooldown.rage_from_melees -> up())
     {
       resource_gain( RESOURCE_RAGE,
                      spec.bear_form -> effectN( 3 ).base_value(),
                      gain.rage_from_melees );
+      cooldown.rage_from_melees -> start( cooldown.rage_from_melees -> duration );
     }
 
     if ( buff.cenarion_ward -> up() )
@@ -9461,7 +9362,9 @@ void druid_t::trigger_natures_guardian( const action_state_t* trigger_state )
     return;
   if ( trigger_state -> result_total <= 0 )
     return;
-  if ( trigger_state -> action == active.natures_guardian )
+  if ( trigger_state -> action == active.natures_guardian ||
+       trigger_state -> action == active.yseras_gift || 
+       trigger_state -> action -> id == 22842 ) // Frenzied Regeneration
     return;
 
   active.natures_guardian -> base_dd_min = active.natures_guardian -> base_dd_max =

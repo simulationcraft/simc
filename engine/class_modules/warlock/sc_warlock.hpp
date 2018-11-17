@@ -224,6 +224,7 @@ namespace warlock
         azerite_power_t crashing_chaos;
         azerite_power_t rolling_havoc;
         azerite_power_t flashpoint;
+        azerite_power_t chaos_shards;
       } azerite;
 
       // Mastery Spells
@@ -338,6 +339,7 @@ namespace warlock
         propagate_const<buff_t*> crashing_chaos;
         propagate_const<buff_t*> rolling_havoc;
         propagate_const<buff_t*> flashpoint;
+        propagate_const<buff_t*> chaos_shards;
       } buffs;
 
       // Gains
@@ -354,14 +356,15 @@ namespace warlock
         gain_t* shadowburn;
         gain_t* incinerate;
         gain_t* incinerate_crits;
-        gain_t* fnb_bits;
+        gain_t* incinerate_fnb;
+        gain_t* incinerate_fnb_crits;
         gain_t* immolate;
         gain_t* immolate_crits;
         gain_t* soul_fire;
         gain_t* infernal;
         gain_t* shadowburn_shard;
         gain_t* inferno;
-        gain_t* reverse_entropy;
+        gain_t* chaos_shards;
 
         gain_t* miss_refund;
 

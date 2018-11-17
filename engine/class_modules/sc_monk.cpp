@@ -6835,7 +6835,6 @@ struct serenity_buff_t : public monk_buff_t<buff_t>
     buff_t::execute( stacks, value, duration );
 
     range::for_each( m.serenity_cooldowns, []( cooldown_t* cd ) { cd->adjust_recharge_multiplier(); } );
-    player->adjust_action_queue_time();
   }
 
   void expire( timespan_t delay ) override
@@ -6847,7 +6846,6 @@ struct serenity_buff_t : public monk_buff_t<buff_t>
     if ( expired )
     {
       range::for_each( m.serenity_cooldowns, []( cooldown_t* cd ) { cd->adjust_recharge_multiplier(); } );
-      player->adjust_action_queue_time();
     }
   }
 };

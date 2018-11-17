@@ -71,7 +71,6 @@ actions.cds+=/earth_elemental
 
 actions.core=earthen_spike,if=variable.furyCheck25
 actions.core+=/sundering,if=active_enemies>=3
-actions.core+=/stormstrike,cycle_targets=1,if=azerite.lightning_conduit.enabled&!debuff.lightning_conduit.up&active_enemies>1&(buff.stormbringer.up|(variable.OCPool70&variable.furyCheck35))
 actions.core+=/stormstrike,if=buff.stormbringer.up|(buff.gathering_storms.up&variable.OCPool70&variable.furyCheck35)
 actions.core+=/crash_lightning,if=active_enemies>=3&variable.furyCheck25
 actions.core+=/lightning_bolt,if=talent.overcharge.enabled&active_enemies=1&variable.furyCheck45&maelstrom>=40

@@ -4076,10 +4076,16 @@ struct aspect_of_the_wild_t: public hunter_spell_t
     dot_duration = timespan_t::zero();
   }
 
+  void schedule_execute( action_state_t* s ) override
+  {
+    // AotW buff is applied before the spell is cast, allowing it to
+    // reduce GCD of the action that triggered it.
+    p() -> buffs.aspect_of_the_wild -> trigger();
+    hunter_spell_t::schedule_execute( s );
+  }
+
   void execute() override
   {
-    p() -> buffs.aspect_of_the_wild -> trigger();
-
     hunter_spell_t::execute();
 
     if ( p() -> buffs.primal_instincts -> trigger() )
@@ -5030,7 +5036,6 @@ void hunter_t::create_buffs()
     buffs.trueshot -> set_stack_change_callback( [this]( buff_t*, int, int ) {
         cooldowns.aimed_shot -> adjust_recharge_multiplier();
         cooldowns.rapid_fire -> adjust_recharge_multiplier();
-        adjust_action_queue_time();
       } );
   }
   else

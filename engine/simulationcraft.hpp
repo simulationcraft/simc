@@ -4380,7 +4380,6 @@ public:
     return active_dots[ action_id ];
   }
 
-  virtual void adjust_action_queue_time();
   virtual void adjust_dynamic_cooldowns()
   { range::for_each( dynamic_cooldown_list, []( cooldown_t* cd ) { cd -> adjust_recharge_multiplier(); } ); }
   virtual void adjust_global_cooldown( haste_type_e haste_type );

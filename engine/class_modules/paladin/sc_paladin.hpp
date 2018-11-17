@@ -377,18 +377,18 @@ public:
     // holy
     // protection
     azerite_power_t inspiring_vanguard; // TODO : check how it interacts with First Avenger
-    azerite_power_t dauntless_divinity;
+    azerite_power_t dauntless_divinity; // TODO: remove once 8.1 goes live
     azerite_power_t inner_light;
     azerite_power_t soaring_shield;
 
     // retribution
     azerite_power_t avengers_might;
     azerite_power_t deferred_sentence; // NYI - spell data makes no sense
-    azerite_power_t divine_right;
+    azerite_power_t divine_right; // TODO: remove once 8.1 goes live
     azerite_power_t expurgation;
     azerite_power_t grace_of_the_justicar; // healing
     azerite_power_t relentless_inquisitor;
-    azerite_power_t zealotry;
+    azerite_power_t zealotry; // TODO: remove once 8.1 goes live
     azerite_power_t empyrean_power;
     azerite_power_t lights_decree;
   } azerite;

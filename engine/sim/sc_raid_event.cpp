@@ -831,8 +831,10 @@ struct heal_event_t : public raid_event_t
   double amount_range;
   double to_pct, to_pct_range;
 
+  heal_t* raid_heal;
+
   heal_event_t( sim_t* s, const std::string& options_str )
-    : raid_event_t( s, "heal" ), amount( 1 ), amount_range( 0 ), to_pct( 0 ), to_pct_range( 0 )
+    : raid_event_t( s, "heal" ), amount( 1 ), amount_range( 0 ), to_pct( 0 ), to_pct_range( 0 ), raid_heal( 0 )
   {
     add_option( opt_float( "amount", amount ) );
     add_option( opt_float( "amount_range", amount_range ) );
@@ -848,6 +850,23 @@ struct heal_event_t : public raid_event_t
 
   virtual void _start() override
   {
+    if ( !raid_heal )
+    {
+      struct raid_heal_t : public heal_t
+      {
+        raid_heal_t( const char* n, player_t* player ) : heal_t( n, player, spell_data_t::nil() )
+        {
+          school      = SCHOOL_HOLY;
+          may_crit    = false;
+          background  = true;
+          trigger_gcd = timespan_t::zero();
+        }
+      };
+
+      raid_heal = new raid_heal_t( name.empty() ? type.c_str() : name.c_str(), sim -> active_player );
+      raid_heal -> init();
+    }
+
     for ( auto p : affected_players )
     {
       double amount_to_heal = 0.0;
@@ -869,15 +888,16 @@ struct heal_event_t : public raid_event_t
       else
       {
         amount_to_heal = sim->rng().range( amount - amount_range, amount + amount_range );
-        p->resource_gain( RESOURCE_HEALTH, amount_to_heal );
       }
 
       // heal if there's any healing to be done
       if ( amount_to_heal > 0.0 )
       {
-        sim->print_log( "{} heals {} for '{}'.", *this, p->name(), amount_to_heal );
+        raid_heal -> base_dd_min = raid_heal -> base_dd_max = amount_to_heal;
+        raid_heal -> target = p;
+        raid_heal -> execute();
 
-        p->resource_gain( RESOURCE_HEALTH, amount_to_heal );
+        sim -> print_log( "Event {} healed {} for '{}' (before player modifiers).", name.c_str(), p -> name(), amount_to_heal );
       }
     }
   }
