@@ -4903,7 +4903,7 @@ struct frostscythe_t : public death_knight_melee_attack_t
 struct frostwyrms_fury_damage_t : public death_knight_spell_t
 {
   frostwyrms_fury_damage_t( death_knight_t* p ) :
-    death_knight_spell_t( "frostwyrms_fury", p, p -> find_spell( 279303 ) )
+    death_knight_spell_t( p -> dbc.ptr ? "frostwyrms_fury" : "frost_breath" , p, p -> find_spell( 279303 ) )
   {
     aoe = -1;
     background = true;
@@ -4915,7 +4915,7 @@ struct frostwyrms_fury_t : public death_knight_spell_t
   frostwyrms_fury_damage_t* damage;
 
   frostwyrms_fury_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "frostwyrms_fury", p, p -> talent.frostwyrms_fury ),
+    death_knight_spell_t( "frostwyrms_fury_driver", p, p -> talent.frostwyrms_fury ),
     damage( new frostwyrms_fury_damage_t( p ) )
   {
     parse_options( options_str );
