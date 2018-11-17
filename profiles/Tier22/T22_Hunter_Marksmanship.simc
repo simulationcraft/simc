@@ -53,9 +53,9 @@ actions.cds+=/trueshot,if=(cooldown.aimed_shot.charges<1&!talent.lethal_shots.en
 
 actions.st=explosive_shot
 actions.st+=/barrage,if=active_enemies>1
-actions.st+=/arcane_shot,if=buff.precise_shots.up&(cooldown.aimed_shot.full_recharge_time<gcd*buff.precise_shots.stack+action.aimed_shot.cast_time|buff.lethal_shots.up)
-actions.st+=/rapid_fire,if=(!talent.lethal_shots.enabled|buff.lethal_shots.up)&azerite.focused_fire.enabled|azerite.in_the_rhythm.rank>1
-actions.st+=/aimed_shot,if=buff.precise_shots.down&(buff.double_tap.down&full_recharge_time<cast_time+gcd|buff.lethal_shots.up)
+actions.st+=/arcane_shot,if=buff.precise_shots.up&(cooldown.aimed_shot.full_recharge_time<gcd*buff.precise_shots.stack+action.aimed_shot.cast_time|buff.lethal_shots.react)
+actions.st+=/rapid_fire,if=(!talent.lethal_shots.enabled|buff.lethal_shots.react)&azerite.focused_fire.enabled|azerite.in_the_rhythm.rank>1
+actions.st+=/aimed_shot,if=buff.precise_shots.down&(buff.double_tap.down&full_recharge_time<cast_time+gcd|buff.lethal_shots.react)
 actions.st+=/rapid_fire,if=!talent.lethal_shots.enabled|buff.lethal_shots.up
 actions.st+=/piercing_shot
 actions.st+=/a_murder_of_crows
@@ -66,8 +66,8 @@ actions.st+=/steady_shot,if=focus+cast_regen<focus.max|(talent.lethal_shots.enab
 actions.st+=/arcane_shot
 
 actions.steady_st=a_murder_of_crows,if=buff.steady_focus.down|target.time_to_die<16
-actions.steady_st+=/aimed_shot,if=buff.lethal_shots.up|target.time_to_die<3|debuff.steady_aim.stack=5&(buff.lock_and_load.up|full_recharge_time<cast_time)
-actions.steady_st+=/arcane_shot,if=buff.precise_shots.up&(buff.lethal_shots.up|target.health.pct>20&target.health.pct<80)
+actions.steady_st+=/aimed_shot,if=buff.lethal_shots.react|target.time_to_die<3|debuff.steady_aim.stack=5&(buff.lock_and_load.react|full_recharge_time<cast_time)
+actions.steady_st+=/arcane_shot,if=buff.precise_shots.up&(buff.lethal_shots.react|target.health.pct>20&target.health.pct<80)
 actions.steady_st+=/serpent_sting,if=refreshable
 actions.steady_st+=/steady_shot
 
@@ -76,7 +76,7 @@ actions.trickshots+=/explosive_shot
 actions.trickshots+=/rapid_fire,if=buff.trick_shots.up&!talent.barrage.enabled
 actions.trickshots+=/aimed_shot,if=buff.trick_shots.up&buff.precise_shots.down&buff.double_tap.down&(!talent.lethal_shots.enabled|buff.lethal_shots.up|focus>60)
 actions.trickshots+=/rapid_fire,if=buff.trick_shots.up
-actions.trickshots+=/multishot,if=buff.trick_shots.down|(buff.precise_shots.up|buff.lethal_shots.up)&(!talent.barrage.enabled&buff.steady_focus.down&focus>45|focus>70)
+actions.trickshots+=/multishot,if=buff.trick_shots.down|(buff.precise_shots.up|buff.lethal_shots.react)&(!talent.barrage.enabled&buff.steady_focus.down&focus>45|focus>70)
 actions.trickshots+=/piercing_shot
 actions.trickshots+=/a_murder_of_crows
 actions.trickshots+=/serpent_sting,if=refreshable

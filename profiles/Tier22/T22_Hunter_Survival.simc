@@ -60,7 +60,7 @@ actions.cleave+=/butchery,if=full_recharge_time<gcd|!talent.wildfire_infusion.en
 actions.cleave+=/carve,if=talent.guerrilla_tactics.enabled
 actions.cleave+=/flanking_strike,if=focus+cast_regen<focus.max
 actions.cleave+=/wildfire_bomb,if=dot.wildfire_bomb.refreshable|talent.wildfire_infusion.enabled
-actions.cleave+=/serpent_sting,target_if=min:remains,if=buff.vipers_venom.up
+actions.cleave+=/serpent_sting,target_if=min:remains,if=buff.vipers_venom.react
 actions.cleave+=/carve,if=cooldown.wildfire_bomb.remains>variable.carve_cdr%2
 actions.cleave+=/steel_trap
 actions.cleave+=/harpoon,if=talent.terms_of_engagement.enabled
@@ -78,7 +78,7 @@ actions.mb_ap_wfi_st+=/steel_trap
 actions.mb_ap_wfi_st+=/mongoose_bite,if=buff.mongoose_fury.remains&next_wi_bomb.pheromone
 actions.mb_ap_wfi_st+=/kill_command,if=focus+cast_regen<focus.max&(buff.mongoose_fury.stack<5|focus<action.mongoose_bite.cost)
 actions.mb_ap_wfi_st+=/wildfire_bomb,if=next_wi_bomb.shrapnel&focus>60&dot.serpent_sting.remains>3*gcd
-actions.mb_ap_wfi_st+=/serpent_sting,if=buff.vipers_venom.up|refreshable&(!talent.mongoose_bite.enabled|!talent.vipers_venom.enabled|next_wi_bomb.volatile&!dot.shrapnel_bomb.ticking|azerite.latent_poison.enabled|azerite.venomous_fangs.enabled)
+actions.mb_ap_wfi_st+=/serpent_sting,if=buff.vipers_venom.react|refreshable&(!talent.mongoose_bite.enabled|!talent.vipers_venom.enabled|next_wi_bomb.volatile&!dot.shrapnel_bomb.ticking|azerite.latent_poison.enabled|azerite.venomous_fangs.enabled)
 actions.mb_ap_wfi_st+=/mongoose_bite,if=buff.mongoose_fury.up|focus>60|dot.shrapnel_bomb.ticking
 actions.mb_ap_wfi_st+=/serpent_sting,if=refreshable
 actions.mb_ap_wfi_st+=/wildfire_bomb,if=next_wi_bomb.volatile&dot.serpent_sting.ticking|next_wi_bomb.pheromone|next_wi_bomb.shrapnel&focus>50
@@ -87,10 +87,10 @@ actions.st=a_murder_of_crows
 # To simulate usage for Mongoose Bite or Raptor Strike during Aspect of the Eagle, copy each occurrence of the action and append _eagle to the action name.
 actions.st+=/mongoose_bite,if=talent.birds_of_prey.enabled&buff.coordinated_assault.up&(buff.coordinated_assault.remains<gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<gcd)
 actions.st+=/raptor_strike,if=talent.birds_of_prey.enabled&buff.coordinated_assault.up&(buff.coordinated_assault.remains<gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<gcd)
-actions.st+=/serpent_sting,if=buff.vipers_venom.up&buff.vipers_venom.remains<gcd
+actions.st+=/serpent_sting,if=buff.vipers_venom.react&buff.vipers_venom.remains<gcd
 actions.st+=/kill_command,if=focus+cast_regen<focus.max&(!talent.alpha_predator.enabled|full_recharge_time<gcd)
 actions.st+=/wildfire_bomb,if=focus+cast_regen<focus.max&(full_recharge_time<gcd|!dot.wildfire_bomb.ticking&(buff.mongoose_fury.down|full_recharge_time<4.5*gcd))
-actions.st+=/serpent_sting,if=buff.vipers_venom.up&dot.serpent_sting.remains<4*gcd|!talent.vipers_venom.enabled&!dot.serpent_sting.ticking&!buff.coordinated_assault.up|refreshable&(azerite.latent_poison.enabled|azerite.venomous_fangs.enabled)
+actions.st+=/serpent_sting,if=buff.vipers_venom.react&dot.serpent_sting.remains<4*gcd|!talent.vipers_venom.enabled&!dot.serpent_sting.ticking&!buff.coordinated_assault.up|refreshable&(azerite.latent_poison.enabled|azerite.venomous_fangs.enabled)
 actions.st+=/steel_trap
 actions.st+=/harpoon,if=talent.terms_of_engagement.enabled|azerite.up_close_and_personal.enabled
 actions.st+=/coordinated_assault
@@ -112,7 +112,7 @@ actions.wfi_st+=/raptor_strike,if=dot.internal_bleeding.stack<3&dot.shrapnel_bom
 actions.wfi_st+=/wildfire_bomb,if=next_wi_bomb.shrapnel&buff.mongoose_fury.down&(cooldown.kill_command.remains>gcd|focus>60)&!dot.serpent_sting.refreshable
 actions.wfi_st+=/steel_trap
 actions.wfi_st+=/flanking_strike,if=focus+cast_regen<focus.max
-actions.wfi_st+=/serpent_sting,if=buff.vipers_venom.up|refreshable&(!talent.mongoose_bite.enabled|!talent.vipers_venom.enabled|next_wi_bomb.volatile&!dot.shrapnel_bomb.ticking|azerite.latent_poison.enabled|azerite.venomous_fangs.enabled|buff.mongoose_fury.stack=5)
+actions.wfi_st+=/serpent_sting,if=buff.vipers_venom.react|refreshable&(!talent.mongoose_bite.enabled|!talent.vipers_venom.enabled|next_wi_bomb.volatile&!dot.shrapnel_bomb.ticking|azerite.latent_poison.enabled|azerite.venomous_fangs.enabled|buff.mongoose_fury.stack=5)
 actions.wfi_st+=/harpoon,if=talent.terms_of_engagement.enabled|azerite.up_close_and_personal.enabled
 actions.wfi_st+=/mongoose_bite,if=buff.mongoose_fury.up|focus>60|dot.shrapnel_bomb.ticking
 actions.wfi_st+=/raptor_strike
