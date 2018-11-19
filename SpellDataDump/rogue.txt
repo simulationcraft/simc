@@ -814,7 +814,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Stance Mask      : 0x40000000
-Affecting spells : Incarnation: Chosen of Elune (102560 effect#5), Restoration Druid (137012 effect#8), Solar Empowerment (164545 effect#2), Item - Druid T17 Balance 2P Bonus (165433 effect#1), Celestial Fury (180719 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#4), Astral Influence (197524 effect#1), Astral Power (197911 effect#2), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Solar Empowerment (211089 effect#1), Dawning Sun (276154 effect#1)
+Affecting spells : Incarnation: Chosen of Elune (102560 effect#5), Restoration Druid (137012 effect#8), Solar Empowerment (164545 effect#2), Item - Druid T17 Balance 2P Bonus (165433 effect#1), Celestial Fury (180719 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#4), Astral Influence (197524 effect#1), Astral Power (197911 effect#2), Stellar Drift (202461 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Solar Empowerment (211089 effect#1), Dawning Sun (276154 effect#1)
 Family Flags     : 0
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -6602,8 +6602,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724115)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 251.3758 (coefficient=3.233129) | PvP Coefficient: 1.00000 | Trigger Spell: 272913 | Target: Self (1)
-                   Hotfixed: Coefficient (1.85276 -> 3.23313)
+                   Base Value: 0 | Scaled Value: 251.3758 (coefficient=3.233129) | PvP Coefficient: 0.56000 | Trigger Spell: 272913 | Target: Self (1)
+                   Hotfixed: Coefficient (1.85276 -> 3.23313), PvP Coefficient (1 -> 0.56)
 Description      : Your autoattacks increase the damage of your next Shuriken Toss or Poisoned Knife by $s, stacking up to $272916u times.
 
 Name             : Deadshot (id=272935) [Scaling Spell (-8), Spell Family (8), Passive] 

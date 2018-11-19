@@ -2397,6 +2397,26 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 281036 | Target: Self (1)
 Description      : Summons a powerful wild beast that attacks the target and roars, increasing your Haste by $281036s1% for $d.
 
+Name             : Dire Beast (id=120694) [Spell Family (9)] 
+Class            : Hunter
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Affecting spells : Scent of Blood (193532 effect#1), Dire Longevity (215911 effect#1)
+Family Flags     : 89
+Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+Effects          :
+#1 (id=140521)   : Energize Power (30)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: focus | Target: Unknown(27)
+Description      : $@spelldesc120679
+Tooltip          : Generating ${$w1*$d/$t1} Focus over $d.
+
 Name             : Glaive Toss (id=120761) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -4134,7 +4154,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=283926)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effects (8)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 8 | Target: Self (1)
-                   Affected Spells: Barbed Shot (246152)
+                   Affected Spells: Dire Beast (120694), Barbed Shot (246152)
                    Family Flags: 89
 #2 (id=374727)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
