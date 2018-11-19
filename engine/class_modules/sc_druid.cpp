@@ -378,6 +378,7 @@ public:
     buff_t* starfall;
     buff_t* astral_acceleration; //T20 4P Balance
     buff_t* starlord; //talent 
+    buff_t* stellar_drift_2; // stellar drift mobility buff ID 202461
 
     // Feral
     buff_t* apex_predator;
@@ -581,8 +582,8 @@ public:
     const spell_data_t* balance_tier19_2pc;
     const spell_data_t* starsurge_2;
     const spell_data_t* moonkin_2;
-    const spell_data_t* starfall_2;
     const spell_data_t* sunfire_2;
+    const spell_data_t* stellar_drift_2; // stellar drift mobility buff ID 202461
 
     // Guardian
     const spell_data_t* guardian;
@@ -2014,6 +2015,14 @@ public:
     }
 
     return m;
+  }
+  
+  virtual bool usable_moving() const override
+  {
+    if (p()->buff.stellar_drift_2->check() && data().affected_by(p()->spec.stellar_drift_2->effectN(1)))
+      return true;
+    
+    return spell_t::usable_moving();
   }
 
   virtual void execute() override
@@ -6286,6 +6295,17 @@ struct starfall_t : public druid_spell_t
       p()->buff.oneths_overconfidence->decrement();
     p()->buff.oneths_intuition->trigger();
     p()->buff.starfall->trigger();
+    /* Stellar Drift free movement is granted by uncategorized spell ID 202461
+       which is separate from the talent. Currently implemented to grant you this
+       buff along with the normal 'starfall' buff. Assumption is that you will
+       always choose to place your starfall such that it will cover any movement
+       you make. Inaccurate for more complex movement modeling, but such modeling
+       is highly unlikely to be examined in the near future.
+       
+       NOTE that buff is named stellar_drift_2 to hopefully avoid potential confusion
+       with the talent spell */
+    if (p()->talent.stellar_drift->ok())
+      p()->buff.stellar_drift_2->trigger();
   }
 };
 struct starshards_t : public starfall_t
@@ -6918,8 +6938,8 @@ void druid_t::init_spells()
   spec.balance_tier19_2pc         = sets -> has_set_bonus( DRUID_BALANCE, T19, B2 ) ? find_spell( 211089 ) : spell_data_t::not_found();
   spec.starsurge_2                = find_specialization_spell( 231021 );
   spec.moonkin_2                  = find_specialization_spell( 231042 );
-  spec.starfall_2                 = find_specialization_spell( 231049 );
   spec.sunfire_2                  = find_specialization_spell( 231050 );
+  spec.stellar_drift_2            = find_spell( 202461 ); // stellar drift mobility buff
 
   // Feral
   spec.cat_form                   = find_class_spell( "Cat Form" ) -> ok() ? find_spell( 3025   ) : spell_data_t::not_found();
@@ -7333,6 +7353,9 @@ void druid_t::create_buffs()
 
   buff.starfall = buff_creator_t(this, "starfall", find_spell(191034))
       .duration(timespan_t::from_seconds(8));
+
+  buff.stellar_drift_2 = buff_creator_t(this, "stellar_drift", find_spell(202461))
+      .duration(timespan_t::from_seconds(8)); // stellar drift mobiliy buff ID 202461
 
   // Feral
 
