@@ -2525,6 +2525,10 @@ void action_t::init()
     get_dot( target );
   }
 
+  // Make sure spells that have GCD shorter than the global min GCD trigger
+  // the correct (short) GCD.
+  min_gcd = std::min( min_gcd, trigger_gcd );
+
   // Make sure background is set for triggered actions.
   // Leads to double-readying of the player otherwise.
   assert( ( !execute_action || execute_action->background ) && "Execute action needs to be set to background." );
