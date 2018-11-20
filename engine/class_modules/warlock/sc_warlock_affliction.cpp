@@ -1180,9 +1180,6 @@ namespace warlock
     talents.deathbolt                   = find_talent_spell( "Deathbolt" );
     talents.creeping_death              = find_talent_spell( "Creeping Death" );
     talents.dark_soul_misery            = find_talent_spell( "Dark Soul: Misery" );
-    // Tier
-    active.tormented_agony              = new tormented_agony_t( this );
-    active.pandemic_invocation          = new pandemic_invocation_t( this );
     // Azerite
     azerite.cascading_calamity          = find_azerite_spell("Cascading Calamity");
     azerite.dreadful_calling            = find_azerite_spell("Dreadful Calling");
@@ -1191,6 +1188,9 @@ namespace warlock
     azerite.wracking_brilliance         = find_azerite_spell("Wracking Brilliance");
     azerite.deathbloom                  = find_azerite_spell("Deathbloom");
     azerite.pandemic_invocation         = find_azerite_spell( "Pandemic Invocation" );
+    // Actives
+    active.tormented_agony              = new tormented_agony_t( this );
+    active.pandemic_invocation          = new pandemic_invocation_t( this );
   }
 
   void warlock_t::init_gains_affliction()
