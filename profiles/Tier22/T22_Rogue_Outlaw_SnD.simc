@@ -103,14 +103,14 @@ legs=pathogenic_legwraps,id=160625,bonus_id=4800/1507
 feet=quarantine_protocol_treads,id=160624,bonus_id=4800/1507
 finger1=rotscour_ring,id=160645,bonus_id=4800/1507,enchant=pact_of_haste
 finger2=band_of_certain_annihilation,id=160646,bonus_id=4800/1507,enchant=pact_of_haste
-trinket1=harlans_loaded_dice,id=155881,bonus_id=1542/4779
+trinket1=darkmoon_deck_fathoms,id=159125
 trinket2=frenetic_corpuscle,id=160648,bonus_id=4800/1507
 main_hand=lancet_of_the_deft_hand,id=160693,bonus_id=4800/1507,enchant=quick_navigation
 off_hand=lancet_of_the_deft_hand,id=160693,bonus_id=4800/1507,enchant=galeforce_striking
 
 # Gear Summary
-# gear_ilvl=385.25
-# gear_agility=4345
+# gear_ilvl=384.31
+# gear_agility=4310
 # gear_stamina=7205
 # gear_crit_rating=772
 # gear_haste_rating=1207
