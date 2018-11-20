@@ -5039,23 +5039,41 @@ struct cat_form_t : public druid_spell_t
 
 struct celestial_alignment_t : public druid_spell_t
 {
+  bool precombat;
+
   celestial_alignment_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "celestial_alignment", player, player -> spec.celestial_alignment , options_str )
+    druid_spell_t( "celestial_alignment", player, player -> spec.celestial_alignment , options_str ),
+    precombat()
   {
     harmful = false;
     dot_duration = timespan_t::zero();
   }
 
+  void init_finished() override
+  {
+    druid_spell_t::init_finished();
+
+    if ( action_list -> name_str == "precombat" )
+      precombat = true;
+  }
+
   void schedule_execute( action_state_t* s ) override
   {
     // buff applied first to reduce GCD
-    p() -> buff.celestial_alignment -> trigger();
+    if ( !precombat )
+      p() -> buff.celestial_alignment -> trigger();
+
     druid_spell_t::schedule_execute( s );
   }
 
   void execute() override
   {
     druid_spell_t::execute();
+
+    // Precombat actions skip schedule_execute, so the buff needs to be
+    // triggered here for precombat actions.
+    if ( precombat )
+      p() -> buff.celestial_alignment -> trigger();
     
     //Trigger after triggering the buff so the cast procs the spell
     streaking_stars_trigger(SS_CELESTIAL_ALIGNMENT, nullptr);

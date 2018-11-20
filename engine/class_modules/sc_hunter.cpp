@@ -4067,8 +4067,11 @@ struct bestial_wrath_t: public hunter_spell_t
 
 struct aspect_of_the_wild_t: public hunter_spell_t
 {
+  bool precombat;
+
   aspect_of_the_wild_t( hunter_t* p, const std::string& options_str ):
-    hunter_spell_t( "aspect_of_the_wild", p, p -> specs.aspect_of_the_wild )
+    hunter_spell_t( "aspect_of_the_wild", p, p -> specs.aspect_of_the_wild ),
+    precombat()
   {
     parse_options( options_str );
 
@@ -4076,17 +4079,32 @@ struct aspect_of_the_wild_t: public hunter_spell_t
     dot_duration = timespan_t::zero();
   }
 
+  void init_finished() override
+  {
+    hunter_spell_t::init_finished();
+
+    if ( action_list -> name_str == "precombat" )
+      precombat = true;
+  }
+
   void schedule_execute( action_state_t* s ) override
   {
     // AotW buff is applied before the spell is cast, allowing it to
     // reduce GCD of the action that triggered it.
-    p() -> buffs.aspect_of_the_wild -> trigger();
+    if ( !precombat )
+      p() -> buffs.aspect_of_the_wild -> trigger();
+
     hunter_spell_t::schedule_execute( s );
   }
 
   void execute() override
   {
     hunter_spell_t::execute();
+
+    // Precombat actions skip schedule_execute, so the buff needs to be
+    // triggered here for precombat actions.
+    if ( precombat )
+      p() -> buffs.aspect_of_the_wild -> trigger();
 
     if ( p() -> buffs.primal_instincts -> trigger() )
       p() -> cooldowns.barbed_shot -> reset( true );

@@ -3857,8 +3857,11 @@ struct ice_nova_t : public frost_mage_spell_t
 
 struct icy_veins_t : public frost_mage_spell_t
 {
+  bool precombat;
+
   icy_veins_t( mage_t* p, const std::string& options_str ) :
-    frost_mage_spell_t( "icy_veins", p, p->find_specialization_spell( "Icy Veins" ) )
+    frost_mage_spell_t( "icy_veins", p, p->find_specialization_spell( "Icy Veins" ) ),
+    precombat()
   {
     parse_options( options_str );
     harmful = false;
@@ -3872,19 +3875,29 @@ struct icy_veins_t : public frost_mage_spell_t
     }
 
     frost_mage_spell_t::init_finished();
+
+    if ( action_list->name_str == "precombat" )
+      precombat = true;
   }
 
   virtual void schedule_execute( action_state_t* s ) override
   {
     // Icy Veins buff is applied before the spell is cast, allowing it to
     // reduce GCD of the action that triggered it.
-    p()->buffs.icy_veins->trigger();
+    if ( !precombat )
+      p()->buffs.icy_veins->trigger();
+
     frost_mage_spell_t::schedule_execute( s );
   }
 
   virtual void execute() override
   {
     frost_mage_spell_t::execute();
+
+    // Precombat actions skip schedule_execute, so the buff needs to be
+    // triggered here for precombat actions.
+    if ( precombat )
+      p()->buffs.icy_veins->trigger();
 
     if ( p()->azerite.frigid_grasp.enabled() )
     {
