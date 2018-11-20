@@ -348,6 +348,11 @@ namespace warlock
           p()->procs.affliction_t21_2pc->occur();
         }
 
+        if ( p()->dbc.ptr && result_is_hit( d->state->result ) && p()->azerite.inevitable_demise.ok() )
+        {
+          p()->buffs.inevitable_demise->trigger();
+        }
+
         affliction_spell_t::tick( d );
       }
 
@@ -412,7 +417,7 @@ namespace warlock
             p()->resource_gain(RESOURCE_SOUL_SHARD, 1.0, p()->gains.affliction_t20_2pc); //trigger the buff
         }
 
-        if (result_is_hit(d->state->result) && p()->azerite.inevitable_demise.ok())
+        if ( !p()->dbc.ptr && result_is_hit( d->state->result ) && p()->azerite.inevitable_demise.ok() )
         {
           p()->buffs.inevitable_demise->trigger();
         }
