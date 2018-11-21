@@ -351,7 +351,7 @@ public:
     buff_t* bear_form;
     buff_t* cat_form;
     buff_t* dash;
-    buff_t* displacer_beast;
+    buff_t* tiger_dash;
     buff_t* cenarion_ward;
     buff_t* clearcasting;
     buff_t* incarnation_proxy;
@@ -609,7 +609,7 @@ public:
   {
     // Multiple Specs
     const spell_data_t* renewal;
-    const spell_data_t* displacer_beast;
+    const spell_data_t* tiger_dash;
     const spell_data_t* wild_charge;
 
     const spell_data_t* balance_affinity;
@@ -1286,6 +1286,25 @@ struct innervate_buff_t : public druid_buff_t<buff_t>
     {
       p->buff.lively_spirit->trigger(p->lively_spirit_stacks);
     }
+  }
+};
+
+//Tiger Dash Buff ===========================================================
+struct tiger_dash_buff_t : public druid_buff_t<buff_t>
+{
+  tiger_dash_buff_t(druid_t& p) : base_t(p, "tiger_dash", p.talent.tiger_dash)
+  {
+    set_default_value(p.talent.tiger_dash->effectN(1).percent());
+    set_cooldown(timespan_t::zero());
+    set_tick_callback([this] (buff_t* b, int, const timespan_t&)
+    {
+      b->current_value -= b->data().effectN(2).percent();
+    } );
+  }
+  
+  bool freeze_stacks() override
+  {
+    return true;
   }
 };
 
@@ -5167,26 +5186,24 @@ struct dash_t : public druid_spell_t
   }
 };
 
-// Displacer Beast ==========================================================
+// Tiger Dash =====================================================================
 
-struct displacer_beast_t : public druid_spell_t
+struct tiger_dash_t : public druid_spell_t
 {
-  displacer_beast_t( druid_t* p, const std::string& options_str ) :
-    druid_spell_t( "displacer_beast", p, p -> talent.displacer_beast, options_str )
+  tiger_dash_t( druid_t* player, const std::string& options_str ) :
+    druid_spell_t( "tiger_dash", player, player -> talent.tiger_dash, options_str )
   {
     autoshift = form_mask = CAT_FORM;
 
-    harmful = may_crit = may_miss = false;
+    harmful = false;
     ignore_false_positive = true;
-    base_teleport_distance = radius;
-    movement_directionality = MOVEMENT_OMNI;
   }
 
   void execute() override
   {
     druid_spell_t::execute();
 
-    p() -> buff.displacer_beast -> trigger();
+    p() -> buff.tiger_dash -> trigger();
   }
 };
 
@@ -6862,7 +6879,7 @@ action_t* druid_t::create_action( const std::string& name,
        name == "ca"                     ) return new    celestial_alignment_t( this, options_str );
   if ( name == "cenarion_ward"          ) return new          cenarion_ward_t( this, options_str );
   if ( name == "dash"                   ) return new                   dash_t( this, options_str );
-  if ( name == "displacer_beast"        ) return new        displacer_beast_t( this, options_str );
+  if ( name == "tiger_dash"             ) return new             tiger_dash_t( this, options_str );
   if ( name == "feral_frenzy"           ) return new    feral_frenzy_driver_t( this, options_str );
   if ( name == "ferocious_bite"         ) return new         ferocious_bite_t( this, options_str );
   if ( name == "force_of_nature"        ) return new        force_of_nature_t( this, options_str );
@@ -7020,7 +7037,7 @@ void druid_t::init_spells()
 
   // Multiple Specs
   talent.renewal                        = find_talent_spell( "Renewal" );
-  talent.displacer_beast                = find_talent_spell( "Displacer Beast" );
+  talent.tiger_dash                     = find_talent_spell( "Tiger Dash" );
   talent.wild_charge                    = find_talent_spell( "Wild Charge" );
 
   talent.balance_affinity               = find_talent_spell( "Balance Affinity" );
@@ -7300,9 +7317,18 @@ void druid_t::create_buffs()
     ->set_max_stack(maybe_ptr(dbc.ptr)?(int)find_spell(287773)->effectN(4).base_value():9);
 
   // Talent buffs
-
-  buff.displacer_beast       = buff_creator_t( this, "displacer_beast", talent.displacer_beast -> effectN( 2 ).trigger() )
-                               .default_value( talent.displacer_beast -> effectN( 2 ).trigger() -> effectN( 1 ).percent() );
+  buff.tiger_dash = new tiger_dash_buff_t(*this);
+  /*
+  buff.tiger_dash = make_buff(this, "tiger_dash", talent.tiger_dash)
+    ->set_default_value(talent.tiger_dash->effectN(1).percent())
+    ->set_cooldown(timespan_t::zero())
+    ->set_reverse(true)
+    ->set_tick_callback( [this] (buff_t* b, int, const timespan_t&)
+      {
+        sim->print_debug( "TIGER_DASH_DEBUG: OLD value={}", b->current_value);
+        b->current_value -= b->data().effectN(2).percent();
+        sim->print_debug( "TIGER_DASH_DEBUG: NEW value={}", b->current_value);
+      } );*/
 
   buff.wild_charge_movement  = buff_creator_t( this, "wild_charge_movement" );
 
@@ -8684,13 +8710,13 @@ double druid_t::temporary_movement_modifier() const
 
   if ( buff.dash -> up() )
     active = std::max( active, buff.dash -> value() );
-
+  
   if ( buff.wild_charge_movement -> up() )
     active = std::max( active, buff.wild_charge_movement -> value() );
 
-  if ( buff.displacer_beast -> up() )
-    active = std::max( active, buff.displacer_beast -> value() );
-
+  if ( buff.tiger_dash -> up() )
+    active = std::max(active, buff.tiger_dash->value());
+    
   return active;
 }
 
