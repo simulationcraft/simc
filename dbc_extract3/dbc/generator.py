@@ -763,8 +763,8 @@ class ItemDataGenerator(DataGenerator):
                 # All tabards
                 elif data.inv_type == 19:
                     filter_ilevel = False
-                # All heirlooms
-                elif data.quality == 7:
+                # All epic+ armor/weapons
+                elif data.quality >= 4:
                     filter_ilevel = False
                 else:
                     # On-use item, with a valid spell (and cooldown)
