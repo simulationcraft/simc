@@ -5445,6 +5445,7 @@ struct swipe_proxy_t : public druid_spell_t
 struct incarnation_t : public druid_spell_t
 {
   buff_t* spec_buff;
+  bool precombat;
 
   incarnation_t( druid_t* p, const std::string& options_str ) :
     druid_spell_t( "incarnation", p,
@@ -5452,7 +5453,8 @@ struct incarnation_t : public druid_spell_t
                    p -> specialization() == DRUID_FERAL       ? p -> talent.incarnation_cat     :
                    p -> specialization() == DRUID_GUARDIAN    ? p -> talent.incarnation_bear    :
                    p -> specialization() == DRUID_RESTORATION ? p -> talent.incarnation_tree    :
-                   spell_data_t::nil(), options_str )
+                   spell_data_t::nil(), options_str ),
+    precombat()
   {
     switch ( p -> specialization() )
     {
@@ -5476,17 +5478,32 @@ struct incarnation_t : public druid_spell_t
 
     harmful = false;
   }
+
+  void init_finished() override
+  {
+    druid_spell_t::init_finished();
+
+    if ( action_list -> name_str == "precombat" )
+      precombat = true;
+  }
   
   void schedule_execute( action_state_t* s ) override
   {
     // buff applied first to reduce GCD for moonkin
-    spec_buff -> trigger();
+    if ( !precombat )
+      spec_buff -> trigger();
+
     druid_spell_t::schedule_execute( s );
   }
 
   void execute() override
   {
     druid_spell_t::execute();
+
+    // Precombat actions skip schedule_execute, so the buff needs to be
+    // triggered here for precombat actions.
+    if ( precombat )
+      spec_buff -> trigger();
 
     if ( p() -> buff.incarnation_cat -> check() )
     {
