@@ -5170,11 +5170,13 @@ struct fury_of_elune_t : public druid_spell_t
 struct dash_t : public druid_spell_t
 {
   dash_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "dash", player, player -> find_class_spell( "Dash" ), options_str )
+    druid_spell_t("dash", player,
+      player->talent.tiger_dash->ok() ? player->talent.tiger_dash : player->find_class_spell("Dash"),
+      options_str )
   {
     autoshift = form_mask = CAT_FORM;
 
-    harmful = false;
+    harmful = may_crit = may_miss = false;
     ignore_false_positive = true;
   }
 
@@ -5182,7 +5184,10 @@ struct dash_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    p() -> buff.dash -> trigger();
+    if (p()->talent.tiger_dash->ok())
+      p()->buff.tiger_dash->trigger();
+    else
+      p()->buff.dash->trigger();
   }
 };
 
@@ -5195,7 +5200,7 @@ struct tiger_dash_t : public druid_spell_t
   {
     autoshift = form_mask = CAT_FORM;
 
-    harmful = false;
+    harmful = may_crit = may_miss = false;
     ignore_false_positive = true;
   }
 
@@ -7318,18 +7323,7 @@ void druid_t::create_buffs()
 
   // Talent buffs
   buff.tiger_dash = new tiger_dash_buff_t(*this);
-  /*
-  buff.tiger_dash = make_buff(this, "tiger_dash", talent.tiger_dash)
-    ->set_default_value(talent.tiger_dash->effectN(1).percent())
-    ->set_cooldown(timespan_t::zero())
-    ->set_reverse(true)
-    ->set_tick_callback( [this] (buff_t* b, int, const timespan_t&)
-      {
-        sim->print_debug( "TIGER_DASH_DEBUG: OLD value={}", b->current_value);
-        b->current_value -= b->data().effectN(2).percent();
-        sim->print_debug( "TIGER_DASH_DEBUG: NEW value={}", b->current_value);
-      } );*/
-
+  
   buff.wild_charge_movement  = buff_creator_t( this, "wild_charge_movement" );
 
   buff.cenarion_ward         = buff_creator_t( this, "cenarion_ward", find_talent_spell( "Cenarion Ward" ) );
@@ -8708,14 +8702,14 @@ double druid_t::temporary_movement_modifier() const
 {
   double active = player_t::temporary_movement_modifier();
 
-  if ( buff.dash -> up() )
+  if ( buff.dash -> up() && buff.cat_form -> up() )
     active = std::max( active, buff.dash -> value() );
   
   if ( buff.wild_charge_movement -> up() )
     active = std::max( active, buff.wild_charge_movement -> value() );
 
-  if ( buff.tiger_dash -> up() )
-    active = std::max(active, buff.tiger_dash->value());
+  if ( buff.tiger_dash -> up() && buff.cat_form -> up() )
+    active = std::max( active, buff.tiger_dash -> value() );
     
   return active;
 }
