@@ -3013,7 +3013,7 @@ struct stormstrike_attack_t : public shaman_attack_t
     {
 	  //currently buggy on ptr, is applying 2/3 to each hit instead of 1/3 on oh
       //double tf_bonus = 0.5 * p()->azerite.thunderaans_fury.value( 2 );
-      double tf_bonus = (2/3) * p()->azerite.thunderaans_fury.value( 2 );
+      double tf_bonus = ( 2 / 3.0 ) * p()->azerite.thunderaans_fury.value( 2 );
       b += tf_bonus;
     }
 
@@ -3060,7 +3060,7 @@ struct windstrike_attack_t : public stormstrike_attack_t
     {
       // currently buggy on ptr, is applying 2/3 to each hit instead of 1/3 on oh
       // double tf_bonus = 0.5 * p()->azerite.thunderaans_fury.value( 2 );
-      double tf_bonus = ( 2 / 3 ) * p()->azerite.thunderaans_fury.value( 2 );
+      double tf_bonus = ( 2 / 3.0 ) * p()->azerite.thunderaans_fury.value( 2 );
       b += tf_bonus;
     }
 
