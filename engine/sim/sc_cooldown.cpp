@@ -51,7 +51,7 @@ struct recharge_event_t : event_t
       auto dur = cooldown_t::cooldown_duration( cooldown_, duration_ ).total_seconds();
       auto true_base_duration = dur / cooldown_->recharge_multiplier;
       sim().out_debug.printf( "%s recharge cooldown %s regenerated charge, current=%d, total=%d, next=%.3f, ready=%.3f, dur=%.3f, base_dur=%.3f, mul=%f",
-        cooldown_->player->name(), cooldown_->name_str.c_str(), cooldown_->current_charge, cooldown_->charges,
+        cooldown_->player ? cooldown_->player->name() : "sim", cooldown_->name_str.c_str(), cooldown_->current_charge, cooldown_->charges,
         cooldown_->recharge_event ? cooldown_->recharge_event->occurs().total_seconds() : 0,
         cooldown_->ready.total_seconds(),
         dur,
@@ -542,6 +542,11 @@ expr_t* cooldown_t::create_expression( const std::string& name_str )
 
 void cooldown_t::update_ready_thresholds()
 {
+  if ( player == nullptr )
+  {
+    return;
+  }
+
   if ( execute_types_mask & ( 1 << static_cast<unsigned>( execute_type::OFF_GCD ) ) )
   {
     player->update_off_gcd_ready();
