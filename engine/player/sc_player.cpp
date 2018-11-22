@@ -3024,7 +3024,7 @@ void player_t::create_buffs()
   else
   {
     debuffs.bleeding      = make_buff( this, "bleeding" )->set_max_stack( 1 );
-    debuffs.invulnerable  = make_buff( this, "invulnerable" )->set_max_stack( 1 );
+    debuffs.invulnerable  = new invulnerable_debuff_t( this );
     debuffs.vulnerable    = make_buff( this, "vulnerable" )->set_max_stack( 1 );
     debuffs.flying        = make_buff( this, "flying" )->set_max_stack( 1 );
     debuffs.mortal_wounds = make_buff( this, "mortal_wounds", find_spell( 115804 ) )
