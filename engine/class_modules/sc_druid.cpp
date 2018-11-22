@@ -2600,6 +2600,9 @@ public:
       form_mask |= CAT_FORM;
     }
 
+    if (p->specialization() == DRUID_BALANCE || p->specialization() == DRUID_RESTORATION)
+      ap_type = AP_NO_WEAPON;
+
     razor_claws.direct = data().affected_by( p -> mastery.razor_claws -> effectN( 1 ) );
     razor_claws.tick = data().affected_by( p -> mastery.razor_claws -> effectN( 2 ) );
 
@@ -2649,7 +2652,20 @@ public:
           continue;
 
         if ( data().affected_by( effect ) )
-          base_multiplier *= 1.0 + effect.percent();
+        {
+          switch(static_cast<property_type_t>(effect.misc_value1()))
+          {
+            case P_GENERIC:
+              base_dd_multiplier *= 1.0 + effect.percent();
+              break;
+            case P_TICK_DAMAGE:
+              base_td_multiplier *= 1.0 + effect.percent();
+              break;
+            default:
+              base_multiplier *= 1.0 + effect.percent();
+              break;
+          }
+        }
       }
     }
   }
@@ -4063,6 +4079,9 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
     base_t( n, p, s ), gore( false )
   {
     parse_options( options_str );
+
+    if (p->specialization() == DRUID_BALANCE || p->specialization() == DRUID_RESTORATION)
+      ap_type = AP_NO_WEAPON;
 
     // Apply Guardian Druid aura damage modifiers
     if (p -> specialization() == DRUID_GUARDIAN)
