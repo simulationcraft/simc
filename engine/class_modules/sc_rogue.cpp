@@ -4008,6 +4008,10 @@ struct stealth_t : public rogue_attack_t
     if ( ! p() -> in_combat )
       return true;
 
+    // HAX: Allow restealth for DungeonSlice against non-"boss" targets because Shadowmeld drops combat against trash.
+    if ( p()->sim->fight_style == "DungeonSlice" && p()->player_t::buffs.shadowmeld->check() && target->name_str.find("Boss") == std::string::npos )
+      return true;
+
     if ( !p()->restealth_allowed )
       return false;
 
