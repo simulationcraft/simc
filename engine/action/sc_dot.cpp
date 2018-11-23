@@ -1143,6 +1143,11 @@ void dot_t::schedule_tick()
                current_action->execute_state->result ) )
       {
         current_action->player->channeling = current_action;
+
+        if ( current_action->player->active_cast_while_casting_list != nullptr )
+        {
+          current_action->player->schedule_cwc_ready( timespan_t::zero() );
+        }
       }
       else
         cancel();
@@ -1151,12 +1156,6 @@ void dot_t::schedule_tick()
     {
       current_action->player->channeling = current_action;
     }
-
-    if ( current_action->player->active_cast_while_casting_list != nullptr )
-    {
-      current_action->player->schedule_cwc_ready( timespan_t::zero() );
-    }
-
   }
 }
 

@@ -144,13 +144,6 @@ struct action_execute_event_t : public player_event_t
 
   void execute() override
   {
-    // There's still GCD left after casting, except if the cast spell is a channel. Then we need to
-    // keep CAST_WHILE_CASTING as the execute type
-    if ( action->player->gcd_ready > sim().current_time() && !action->channeled )
-    {
-      action->player->current_execute_type = execute_type::OFF_GCD;
-    }
-
     player_t* target = action->target;
 
     // Pass the carried execute_state to the action. This saves us a few
@@ -190,19 +183,32 @@ struct action_execute_event_t : public player_event_t
 
     if ( !p()->channeling )
     {
-      if (p()->readying)
+      if ( p()->readying )
       {
-        throw std::runtime_error(fmt::format("Non-channeling action '{}' for actor {} is trying to overwrite "
-            "player-ready-event upon execute.", action->name(), p()->name()));
+        throw std::runtime_error( fmt::format( "Non-channeling action '{}' for actor {} is trying to overwrite "
+          "player-ready-event upon execute.", action->name(), p()->name() ) );
       }
 
       p()->schedule_ready( timespan_t::zero() );
     }
 
-    if ( p()->active_off_gcd_list != nullptr )
+    if ( p()->channeling )
     {
-      assert( p()->off_gcd == nullptr );
-      p()->schedule_off_gcd_ready( timespan_t::zero() );
+      p()->current_execute_type = execute_type::CAST_WHILE_CASTING;
+      if ( p()->active_cast_while_casting_list != nullptr )
+      {
+        p()->schedule_cwc_ready( timespan_t::zero() );
+      }
+    }
+    else if ( p()->gcd_ready > sim().current_time() )
+    {
+      // We are not channeling and there's still time left on GCD.
+      p()->current_execute_type = execute_type::OFF_GCD;
+      if ( p()->active_off_gcd_list != nullptr )
+      {
+        assert( p()->off_gcd == nullptr );
+        p()->schedule_off_gcd_ready( timespan_t::zero() );
+      }
     }
   }
 };
@@ -1824,11 +1830,6 @@ void action_t::schedule_execute( action_state_t* execute_state )
   if ( trigger_gcd > timespan_t::zero() )
     player->off_gcdactions.clear();
 
-  if ( time_to_execute > timespan_t::zero() || channeled )
-  {
-    player->current_execute_type = execute_type::CAST_WHILE_CASTING;
-  }
-
   if ( !background )
   {
     // We were queueing this on an almost finished cooldown, so queueing is over, and we begin
@@ -1842,10 +1843,14 @@ void action_t::schedule_execute( action_state_t* execute_state )
 
     start_gcd();
 
-    if ( player->active_cast_while_casting_list != nullptr )
+    if ( time_to_execute > timespan_t::zero() )
     {
-      assert( player->cast_while_casting_poll_event == nullptr );
-      player->schedule_cwc_ready( timespan_t::zero() );
+      player->current_execute_type = execute_type::CAST_WHILE_CASTING;
+      if ( player->active_cast_while_casting_list != nullptr )
+      {
+        assert( player->cast_while_casting_poll_event == nullptr );
+        player->schedule_cwc_ready( timespan_t::zero() );
+      }
     }
 
     if ( special && time_to_execute > timespan_t::zero() && !proc && interrupt_auto_attack )

@@ -148,10 +148,6 @@ struct special_execute_event_t : public player_event_t
     }
   }
 
-  // Poll rate of the specialized execute event, defaults to 100ms
-  static timespan_t poll_rate()
-  { return timespan_t::from_seconds( 0.1 ); }
-
   // Type of specialized action execute
   virtual execute_type type() const = 0;
   // Base list of actions that is being run for the action execute
@@ -250,6 +246,7 @@ struct player_ready_event_t : public player_event_t
   virtual void execute() override
   {
     p()->readying = nullptr;
+    p()->current_execute_type = execute_type::FOREGROUND;
 
     // There are certain chains of events where an off-gcd ability can be queued such that the queue
     // time for the action exceeds Player-Ready event (essentially end of GCD). In this case, the
@@ -4671,6 +4668,8 @@ void player_t::reset()
   cast_while_casting_poll_event = nullptr;
   in_combat       = false;
 
+  current_execute_type = execute_type::FOREGROUND;
+
   current_attack_speed    = 1.0;
   gcd_current_haste_value = 1.0;
   gcd_haste_type          = HASTE_NONE;
@@ -5260,8 +5259,6 @@ action_t* player_t::execute_action()
   assert( !readying );
 
   action_t* action = 0;
-
-  current_execute_type = execute_type::FOREGROUND;
 
   if ( regen_type == REGEN_DYNAMIC )
     do_dynamic_regen();
