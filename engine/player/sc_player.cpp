@@ -5164,40 +5164,34 @@ void player_t::interrupt()
 {
   // FIXME! Players will need to override this to handle background repeating actions.
 
-  if ( buffs.norgannons_foresight_ready )
+  if ( sim->log )
+    sim->out_log.printf( "%s is interrupted", name() );
+
+  if ( executing )
+    executing->interrupt_action();
+  if ( queueing )
+    queueing->interrupt_action();
+  if ( channeling )
+    channeling->interrupt_action();
+
+  event_t::cancel( cast_while_casting_poll_event );
+
+  if ( strict_sequence )
   {
-    if ( !buffs.norgannons_foresight_ready->check() || buffs.stunned->check() )
-    {
-      if ( sim->log )
-        sim->out_log.printf( "%s is interrupted", name() );
-
-      if ( executing )
-        executing->interrupt_action();
-      if ( queueing )
-        queueing->interrupt_action();
-      if ( channeling )
-        channeling->interrupt_action();
-
-      event_t::cancel( cast_while_casting_poll_event );
-
-      if ( strict_sequence )
-      {
-        strict_sequence->cancel();
-        strict_sequence = 0;
-      }
-      if ( buffs.stunned->check() )
-      {
-        if ( readying )
-          event_t::cancel( readying );
-        if ( off_gcd )
-          event_t::cancel( off_gcd );
-      }
-      else
-      {
-        if ( !readying && !current.sleeping )
-          schedule_ready();
-      }
-    }
+    strict_sequence->cancel();
+    strict_sequence = 0;
+  }
+  if ( buffs.stunned->check() )
+  {
+    if ( readying )
+      event_t::cancel( readying );
+    if ( off_gcd )
+      event_t::cancel( off_gcd );
+  }
+  else
+  {
+    if ( !readying && !current.sleeping )
+      schedule_ready();
   }
 }
 
@@ -5221,7 +5215,10 @@ void player_t::stun()
 
 void player_t::moving()
 {
-  halt();
+  if ( !buffs.norgannons_foresight_ready || !buffs.norgannons_foresight_ready->check() )
+  {
+    halt();
+  }
 }
 
 void player_t::finish_moving()
