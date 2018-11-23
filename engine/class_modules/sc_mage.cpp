@@ -732,6 +732,7 @@ public:
   virtual void        datacollection_begin() override;
   virtual void        datacollection_end() override;
   virtual void        regen( timespan_t ) override;
+  virtual void        moving() override;
 
   target_specific_t<mage_td_t> target_data;
 
@@ -5569,6 +5570,16 @@ void mage_t::regen( timespan_t periodicity )
         ( buffs.evocation->check_value() - 1.0 ) * base * periodicity.total_seconds(),
         gains.evocation );
     }
+  }
+}
+
+void mage_t::moving()
+{
+  if ( ( executing  && !executing->usable_moving() )
+    || ( queueing   && !queueing->usable_moving() )
+    || ( channeling && !channeling->usable_moving() ) )
+  {
+    player_t::moving();
   }
 }
 
