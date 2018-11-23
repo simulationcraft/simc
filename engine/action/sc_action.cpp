@@ -195,20 +195,14 @@ struct action_execute_event_t : public player_event_t
     if ( p()->channeling )
     {
       p()->current_execute_type = execute_type::CAST_WHILE_CASTING;
-      if ( p()->active_cast_while_casting_list != nullptr )
-      {
-        p()->schedule_cwc_ready( timespan_t::zero() );
-      }
+      p()->schedule_cwc_ready( timespan_t::zero() );
     }
     else if ( p()->gcd_ready > sim().current_time() )
     {
       // We are not channeling and there's still time left on GCD.
       p()->current_execute_type = execute_type::OFF_GCD;
-      if ( p()->active_off_gcd_list != nullptr )
-      {
-        assert( p()->off_gcd == nullptr );
-        p()->schedule_off_gcd_ready( timespan_t::zero() );
-      }
+      assert( p()->off_gcd == nullptr );
+      p()->schedule_off_gcd_ready( timespan_t::zero() );
     }
   }
 };
@@ -1846,11 +1840,8 @@ void action_t::schedule_execute( action_state_t* execute_state )
     if ( time_to_execute > timespan_t::zero() )
     {
       player->current_execute_type = execute_type::CAST_WHILE_CASTING;
-      if ( player->active_cast_while_casting_list != nullptr )
-      {
-        assert( player->cast_while_casting_poll_event == nullptr );
-        player->schedule_cwc_ready( timespan_t::zero() );
-      }
+      assert( player->cast_while_casting_poll_event == nullptr );
+      player->schedule_cwc_ready( timespan_t::zero() );
     }
 
     if ( special && time_to_execute > timespan_t::zero() && !proc && interrupt_auto_attack )

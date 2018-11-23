@@ -4785,6 +4785,11 @@ void player_t::trigger_ready()
 
 void player_t::schedule_off_gcd_ready( timespan_t delta_time )
 {
+  if ( active_off_gcd_list == nullptr )
+  {
+    return;
+  }
+
   if ( current_execute_type != execute_type::OFF_GCD )
   {
     return;
@@ -4826,6 +4831,11 @@ void player_t::schedule_off_gcd_ready( timespan_t delta_time )
 
 void player_t::schedule_cwc_ready( timespan_t delta_time )
 {
+  if ( active_cast_while_casting_list == nullptr )
+  {
+    return;
+  }
+
   if ( current_execute_type != execute_type::CAST_WHILE_CASTING )
   {
     return;
@@ -5187,11 +5197,19 @@ void player_t::interrupt()
       event_t::cancel( readying );
     if ( off_gcd )
       event_t::cancel( off_gcd );
+
+    current_execute_type = execute_type::FOREGROUND;
   }
   else
   {
     if ( !readying && !current.sleeping )
       schedule_ready();
+
+    if ( current_execute_type == execute_type::CAST_WHILE_CASTING )
+    {
+      current_execute_type = execute_type::OFF_GCD;
+      schedule_off_gcd_ready( timespan_t::zero() );
+    }
   }
 }
 
