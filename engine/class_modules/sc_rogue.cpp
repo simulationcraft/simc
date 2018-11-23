@@ -202,6 +202,9 @@ struct rogue_t : public player_t
   // Track target of last manual Nightblade application for Replicating Shadows azerite power
   player_t* last_nightblade_target;
 
+  // Is using stealth during combat allowed? Relevant for Dungeon sims.
+  bool restealth_allowed;
+
   // Experimental weapon swapping
   weapon_info_t weapon_data[ 2 ];
 
@@ -536,6 +539,7 @@ struct rogue_t : public player_t
     auto_attack( nullptr ), melee_main_hand( nullptr ), melee_off_hand( nullptr ),
     shadow_blades_attack( nullptr ),
     last_nightblade_target( nullptr ),
+    restealth_allowed( false ),
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
     gains( gains_t() ),
@@ -593,6 +597,7 @@ struct rogue_t : public player_t
   std::string      create_profile( save_e stype ) override;
   void      init_action_list() override;
   void      reset() override;
+  void      activate() override;
   void      arise() override;
   void      combat_begin() override;
   void      regen( timespan_t periodicity ) override;
@@ -1747,6 +1752,9 @@ void rogue_attack_t::consume_resource()
 void rogue_attack_t::execute()
 {
   melee_attack_t::execute();
+
+  if ( harmful )
+    p() -> restealth_allowed = false;
 
   p() -> trigger_auto_attack( execute_state );
 
@@ -4000,16 +4008,8 @@ struct stealth_t : public rogue_attack_t
     if ( ! p() -> in_combat )
       return true;
 
-    // Special case: We allow stealth when the actor is not been in "active combat" (only invulnerable targets).
-    // This allows us to better approximate restealthing in dungeons.
-    for ( const auto enemy : sim -> target_non_sleeping_list )
-    {
-      if ( enemy -> debuffs.invulnerable != nullptr && enemy -> debuffs.invulnerable->up() )
-        continue;
-
-      // We are in combat with an active damagable enemy
+    if ( !p()->restealth_allowed )
       return false;
-    }
 
     return rogue_attack_t::ready();
   }
@@ -7050,8 +7050,35 @@ void rogue_t::reset()
 
   last_nightblade_target = nullptr;
 
+  restealth_allowed = false;
+
   weapon_data[ WEAPON_MAIN_HAND ].reset();
   weapon_data[ WEAPON_OFF_HAND ].reset();
+}
+
+// rogue_t::activate ========================================================
+
+struct restealth_callback_t
+{
+  rogue_t* r;
+  restealth_callback_t( rogue_t* p ) : r( p )
+  { }
+
+  void operator()( player_t* )
+  {
+    // Special case: We allow stealth when the actor has no active targets
+    // (which excludes invulnerable ones if ignore_invulnerable_targets is set like in the DungeonSlice fightstyle).
+    // This allows us to better approximate restealthing in dungeons.
+    if ( r->sim->target_non_sleeping_list.empty() )
+      r->restealth_allowed = true;
+  }
+};
+
+void rogue_t::activate()
+{
+  player_t::activate();
+
+  sim->target_non_sleeping_list.register_callback( restealth_callback_t( this ) );
 }
 
 // rogue_t::swap_weapon =====================================================
