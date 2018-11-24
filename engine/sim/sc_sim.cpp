@@ -3797,7 +3797,7 @@ void sim_t::detailed_progress( std::string* detail, int current_iterations, int 
   if ( detail )
   {
     detail -> clear();
-    *detail = fmt::format("fooo {:d}/{:d}", current_iterations, total_iterations );
+    *detail = fmt::format("Iteration {:d}/{:d}", current_iterations, total_iterations );
   }
 }
 
