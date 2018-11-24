@@ -771,8 +771,8 @@ class WDC1Column:
         if self.__block_type in [COLUMN_TYPE_BIT_S]:
             fields.append('signed=True')
 
-        if self.__block_type in [COLUMN_TYPE_ARRAY]:
-            fields.append('elements={:<2d}'.format(self.__elements))
+        if self.elements() > 1:
+            fields.append('elements={:<2d}'.format(self.elements()))
 
         if self.__block_type in [COLUMN_TYPE_SPARSE]:
             fields.append('default={}'.format(self.__default_value))
@@ -847,6 +847,8 @@ class WDC1Parser(DBCParserBase):
 
         # Column information
         self.column_info = []
+        # Column information for raw data
+        self.data_column_info = []
 
         # Sparse block data, preprocess if present so we can have fast lookups during parsing
         self.sparse_blocks = []
@@ -890,6 +892,9 @@ class WDC1Parser(DBCParserBase):
 
     def column(self, idx):
         return self.column_info[idx]
+
+    def data_column(self, idx ):
+        return self.data_column_info[idx]
 
     def id_format(self):
         if self.__id_format:
@@ -1151,6 +1156,9 @@ class WDC1Parser(DBCParserBase):
             offset += _WDC1_COLUMN_INFO.size
 
         logging.debug('Parsed extended column info block')
+
+        for column in self.column_info:
+            self.data_column_info += [ column ] * column.elements()
 
         return True
 

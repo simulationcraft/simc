@@ -351,12 +351,17 @@ class WDC2Parser(WDC1Parser):
         return True
 
     def get_string_offset(self, raw_offset, dbc_id, field_index):
-        column = self.column(field_index)
+        column = self.data_column(field_index)
         record = self.id_table[dbc_id]
         section = self.section_data[record.section_id]
+        # String arrays need to figure out the element indices so that string
+        # offsets begin from the start of the corrent array element (instead
+        # from the beginning of the array)
+        element_index = field_index - column.index()
 
         # Compute relative (to the section's string block offset) string offset inside the section
         string_offset = raw_offset + record.record_offset + column.field_byte_offset()
+        string_offset += element_index * column.field_whole_bytes()
         string_offset -= (self.records - section.total_records) * self.record_size
 
         return string_offset
