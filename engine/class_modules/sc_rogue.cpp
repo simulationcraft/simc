@@ -1184,6 +1184,10 @@ struct secondary_ability_trigger_t : public event_t
 
   void execute() override
   {
+    // Ensure target is still available and did not demise during delay.
+    if ( state && state->target && state->target->is_sleeping() || target && target->is_sleeping() )
+      return;
+
     actions::rogue_attack_t* attack = rogue_t::cast_attack( action );
     auto bg = attack -> background, d = attack -> dual, r = attack -> repeating;
 
@@ -1198,8 +1202,8 @@ struct secondary_ability_trigger_t : public event_t
     // No state, construct one and grab combo points from the event instead of current CP amount.
     else
     {
-      action_state_t* s = attack -> get_state();
       attack -> set_target( target );
+      action_state_t* s = attack -> get_state();
       actions::rogue_attack_t::cast_state( s ) -> cp = cp;
       // Calling snapshot_internal, snapshot_state would overwrite CP.
       attack -> snapshot_internal( s, attack -> snapshot_flags, attack -> amount_type( s ) );
