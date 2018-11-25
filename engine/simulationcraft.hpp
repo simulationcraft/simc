@@ -2898,6 +2898,7 @@ private:
   mutable double _player_mult[SCHOOL_MAX + 1], _player_heal_mult[SCHOOL_MAX + 1];
   mutable double _damage_versatility, _heal_versatility, _mitigation_versatility;
   mutable double _leech, _run_speed, _avoidance;
+  mutable double _rppm_haste_coeff, _rppm_crit_coeff;
 public:
   bool active; // runtime active-flag
   void invalidate_all();
@@ -2940,6 +2941,8 @@ public:
   double leech() const;
   double run_speed() const;
   double avoidance() const;
+  double rppm_haste_coeff() const;
+  double rppm_crit_coeff() const;
 #else
   // Passthrough cache stat functions for inactive cache
   double strength() const  { return _player -> strength();  }
@@ -7797,13 +7800,13 @@ inline double real_ppm_t::proc_chance( player_t*         player,
   double seconds = std::min( ( sim->current_time() - last_trigger ).total_seconds(), max_interval() );
 
   if ( scales_with & RPPM_HASTE )
-    coeff *= 1.0 / std::min( player->cache.spell_haste(), player->cache.attack_haste() );
+    coeff *= player->cache.rppm_haste_coeff();
 
   // This might technically be two separate crit values, but this should be sufficient for our
   // cases. In any case, the client data does not offer information which crit it is (attack or
   // spell).
   if ( scales_with & RPPM_CRIT )
-    coeff *= 1.0 + std::max( player->cache.attack_crit_chance(), player->cache.spell_crit_chance() );
+    coeff *= player->cache.rppm_crit_coeff();
 
   if ( scales_with & RPPM_ATTACK_SPEED )
     coeff *= 1.0 / player -> cache.attack_speed();

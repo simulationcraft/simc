@@ -4032,12 +4032,20 @@ void player_t::invalidate_cache( cache_e c )
       break;
     case CACHE_ATTACK_HASTE:
       invalidate_cache( CACHE_ATTACK_SPEED );
+      invalidate_cache( CACHE_RPPM_HASTE );
       break;
     case CACHE_SPELL_HASTE:
       invalidate_cache( CACHE_SPELL_SPEED );
+      invalidate_cache( CACHE_RPPM_HASTE );
       break;
     case CACHE_BONUS_ARMOR:
       invalidate_cache( CACHE_ARMOR );
+      break;
+    case CACHE_ATTACK_CRIT_CHANCE:
+      invalidate_cache( CACHE_RPPM_CRIT );
+      break;
+    case CACHE_SPELL_CRIT_CHANCE:
+      invalidate_cache( CACHE_RPPM_CRIT );
       break;
     default:
       break;
@@ -11462,6 +11470,34 @@ double player_stat_cache_t::spell_crit_chance() const
   else
     assert( _spell_crit_chance == player->composite_spell_crit_chance() );
   return _spell_crit_chance;
+}
+
+double player_stat_cache_t::rppm_haste_coeff() const
+{
+  if ( !active || !valid[ CACHE_RPPM_HASTE ] )
+  {
+    valid[ CACHE_RPPM_HASTE ] = true;
+    _rppm_haste_coeff          = 1.0 / std::min( player->cache.spell_haste(), player->cache.attack_haste() );
+  }
+  else
+  {
+    assert( _rppm_haste_coeff == 1.0 / std::min( player->cache.spell_haste(), player->cache.attack_haste() ) );
+  }
+  return _rppm_haste_coeff;
+}
+
+double player_stat_cache_t::rppm_crit_coeff() const
+{
+  if ( !active || !valid[ CACHE_RPPM_CRIT ] )
+  {
+    valid[ CACHE_RPPM_CRIT ] = true;
+    _rppm_crit_coeff          = 1.0 + std::max( player->cache.attack_crit_chance(), player->cache.spell_crit_chance() );
+  }
+  else
+  {
+    assert( _rppm_crit_coeff == 1.0 + std::max( player->cache.attack_crit_chance(), player->cache.spell_crit_chance() ) );
+  }
+  return _rppm_crit_coeff;
 }
 
 double player_stat_cache_t::spell_haste() const
