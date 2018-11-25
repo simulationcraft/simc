@@ -1859,11 +1859,13 @@ public:
   typedef druid_spell_base_t base_t;
 
   bool cat_form_gcd;
+  bool reset_melee_swing; // TRUE(default) to reset swing timer on execute (as most cast time spells do)
 
   druid_spell_base_t( const std::string& n, druid_t* player,
                       const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ),
-    cat_form_gcd( ab::data().affected_by( player -> spec.cat_form -> effectN( 4 ) ) )
+    cat_form_gcd( ab::data().affected_by( player -> spec.cat_form -> effectN( 4 ) ) ),
+    reset_melee_swing( true )
   { }
 
   virtual timespan_t gcd() const override
@@ -1882,6 +1884,20 @@ public:
       return ab::min_gcd;
     else
       return g;
+  }
+
+  virtual void execute() override
+  {
+    if (ab::execute_time() > timespan_t::zero() && !ab::proc && reset_melee_swing)
+    {
+      if (ab::p()->main_hand_attack && ab::p()->main_hand_attack->execute_event)
+      {
+        ab::p()->main_hand_attack->execute_event->reschedule(ab::p()->main_hand_weapon.swing_time);
+      }
+      // Nothing for OH, as druids don't DW
+    }
+
+    ab::execute();
   }
 };
 
