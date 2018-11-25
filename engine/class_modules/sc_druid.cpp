@@ -9085,13 +9085,13 @@ expr_t* druid_t::create_expression( const std::string& name_str )
       return expr_t::create_constant(name_str, s->ok());
     } break;
 
-    case DRUID_RESTORATION:
+    case DRUID_GUARDIAN:
     {
       const spell_data_t* s = find_talent_spell("incarnation_guardian_of_ursoc", specialization(), true);
       return expr_t::create_constant(name_str, s->ok());
     } break;
 
-    case DRUID_GUARDIAN:
+    case DRUID_RESTORATION:
     {
       const spell_data_t* s = find_talent_spell("incarnation_tree_of_life", specialization(), true);
       return expr_t::create_constant(name_str, s->ok());
