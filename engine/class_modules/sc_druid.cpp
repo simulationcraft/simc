@@ -8212,13 +8212,16 @@ void druid_t::apl_restoration()
   for ( size_t i = 0; i < item_actions.size(); i++ )
     default_list -> add_action( item_actions[i] );
 
-  default_list -> add_action("rake,if=buff.shadowmeld.up|buff.prowl.up");
+  default_list->add_action("rake,if=buff.shadowmeld.up|buff.prowl.up");
   default_list->add_action("auto_attack");
   default_list->add_action("moonfire,if=refreshable|(prev_gcd.1.sunfire&remains<duration*0.5)");
   default_list->add_action("sunfire,if=refreshable|(prev_gcd.1.moonfire&remains<duration*0.5)");
+  default_list->add_action("innervate,if=!buff.cat_form.up&energy<40");
   default_list->add_action("cat_form,if=!buff.cat_form.up&energy>50");
+  default_list->add_action("ferocious_bite,if=(combo_points>3&target.time_to_die<3)|(combo_points=5&energy>=50&dot.rip.remains>14)|(dot.rip.ticking&target.health.pct<25&combo_points=5&energy>=50)|(dot.rip.ticking&dot.rip.remains<3&target.health.pct<25)");
+  default_list->add_action("swipe_cat,if=spell_targets.swipe_cat>=6");
   default_list->add_action("rip,if=refreshable&combo_points=5");
-  default_list->add_action("ferocious_bite,max_energy=1,if=combo_points=5&energy.time_to_max<2");
+  default_list->add_action("ferocious_bite,max_energy=1,if=combo_points=5&energy.time_to_max<2")
   default_list->add_action("rake,if=refreshable");
   default_list->add_action("swipe_cat,if=spell_targets.swipe_cat>=2");
   default_list->add_action("shred");
