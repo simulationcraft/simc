@@ -12,9 +12,9 @@
 
 
 // Type of internal execution of an action
-enum class execute_type
+enum class execute_type : unsigned
 {
-  FOREGROUND,
+  FOREGROUND = 0u,
   OFF_GCD,
   CAST_WHILE_CASTING
 };
@@ -1005,9 +1005,11 @@ enum cache_e
   CACHE_CRIT_CHANCE,
   CACHE_ATTACK_CRIT_CHANCE,
   CACHE_SPELL_CRIT_CHANCE,
+  CACHE_RPPM_CRIT,
   CACHE_HASTE,
   CACHE_ATTACK_HASTE,
   CACHE_SPELL_HASTE,
+  CACHE_RPPM_HASTE,
   CACHE_SPEED,
   CACHE_ATTACK_SPEED,
   CACHE_SPELL_SPEED,

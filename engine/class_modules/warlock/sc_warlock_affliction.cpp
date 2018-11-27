@@ -241,6 +241,7 @@ namespace warlock
 
       double chance;
       wracking_brilliance_t* wb;
+      bool pandemic_invocation_usable;
 
       agony_t( warlock_t* p, const std::string& options_str ) :
         affliction_spell_t( p, "Agony")
@@ -248,6 +249,7 @@ namespace warlock
         parse_options( options_str );
         may_crit = false;
         wb = new wracking_brilliance_t();
+        pandemic_invocation_usable = false;
 
         dot_max_stack = data().max_stacks() + p->spec.agony_2->effectN(1).base_value();
         db_max_contribution = data().duration();
@@ -272,7 +274,17 @@ namespace warlock
 
       void execute() override
       {
+        // Do checks for Pandemic Invocation before parent execute() is called so we get the correct DoT states.
+        if ( p()->dbc.ptr && p()->azerite.pandemic_invocation.ok() && td( target )->dots_agony->is_ticking() && td( target )->dots_agony->remains() <= p()->azerite.pandemic_invocation.spell_ref().effectN( 2 ).time_value() )
+          pandemic_invocation_usable = true;
+
         affliction_spell_t::execute();
+
+        if ( pandemic_invocation_usable )
+        {
+          p()->active.pandemic_invocation->schedule_execute();
+          pandemic_invocation_usable = false;
+        }
 
         if (p()->azerite.sudden_onset.ok() && td(execute_state->target)->dots_agony->current_stack() < (int)p()->azerite.sudden_onset.spell_ref().effectN(2).base_value())
         {
@@ -336,6 +348,11 @@ namespace warlock
           p()->procs.affliction_t21_2pc->occur();
         }
 
+        if ( p()->dbc.ptr && result_is_hit( d->state->result ) && p()->azerite.inevitable_demise.ok() )
+        {
+          p()->buffs.inevitable_demise->trigger();
+        }
+
         affliction_spell_t::tick( d );
       }
 
@@ -352,12 +369,15 @@ namespace warlock
 
     struct corruption_t : public affliction_spell_t
     {
+      bool pandemic_invocation_usable;
+
       corruption_t( warlock_t* p, const std::string& options_str) :
         affliction_spell_t( "Corruption", p, p -> find_spell(172) )  //triggers 146739
       {
         parse_options(options_str);
         may_crit = false;
         tick_zero = false;
+        pandemic_invocation_usable = false;
         dot_duration = db_max_contribution = data().effectN( 1 ).trigger()->duration();
         spell_power_mod.tick = data().effectN( 1 ).trigger()->effectN( 1 ).sp_coeff();
         base_tick_time = data().effectN( 1 ).trigger()->effectN( 1 ).period();
@@ -397,12 +417,27 @@ namespace warlock
             p()->resource_gain(RESOURCE_SOUL_SHARD, 1.0, p()->gains.affliction_t20_2pc); //trigger the buff
         }
 
-        if (result_is_hit(d->state->result) && p()->azerite.inevitable_demise.ok())
+        if ( !p()->dbc.ptr && result_is_hit( d->state->result ) && p()->azerite.inevitable_demise.ok() )
         {
           p()->buffs.inevitable_demise->trigger();
         }
 
         affliction_spell_t::tick( d );
+      }
+
+      void execute() override
+      {
+        // Do checks for Pandemic Invocation before parent execute() is called so we get the correct DoT states.
+        if ( p()->dbc.ptr && p()->azerite.pandemic_invocation.ok() && td( target )->dots_corruption->is_ticking() && td( target )->dots_corruption->remains() <= p()->azerite.pandemic_invocation.spell_ref().effectN( 2 ).time_value() )
+          pandemic_invocation_usable = true;
+
+        affliction_spell_t::execute();
+
+        if ( pandemic_invocation_usable )
+        {
+          p()->active.pandemic_invocation->schedule_execute();
+          pandemic_invocation_usable = false;
+        }
       }
     };
 
@@ -759,12 +794,15 @@ namespace warlock
     // lvl 30 - writhe|ac|siphon life
     struct siphon_life_t : public affliction_spell_t
     {
+      bool pandemic_invocation_usable;
+
       siphon_life_t(warlock_t* p, const std::string& options_str) :
         affliction_spell_t("siphon_life", p, p -> talents.siphon_life)
       {
         parse_options(options_str);
         may_crit = false;
         db_max_contribution = data().duration();
+        pandemic_invocation_usable = false;
       }
 
       double composite_target_multiplier(player_t* target) const override
@@ -777,6 +815,21 @@ namespace warlock
           m *= 1.0 + td->debuffs_tormented_agony->data().effectN(1).percent();
 
         return m;
+      }
+
+      void execute() override
+      {
+        // Do checks for Pandemic Invocation before parent execute() is called so we get the correct DoT states.
+        if ( p()->dbc.ptr && p()->azerite.pandemic_invocation.ok() && td( target )->dots_siphon_life->is_ticking() && td( target )->dots_siphon_life->remains() <= p()->azerite.pandemic_invocation.spell_ref().effectN( 2 ).time_value() )
+          pandemic_invocation_usable = true;
+
+        affliction_spell_t::execute();
+
+        if ( pandemic_invocation_usable )
+        {
+          p()->active.pandemic_invocation->schedule_execute();
+          pandemic_invocation_usable = false;
+        }
       }
     };
     // lvl 45 - demon skin|burning rush|dark pact
@@ -951,6 +1004,26 @@ namespace warlock
       }
     };
 
+    // Azerite
+    struct pandemic_invocation_t : public affliction_spell_t
+    {
+      pandemic_invocation_t( warlock_t* p ):
+        affliction_spell_t( "Pandemic Invocation", p, p->find_spell( 289367 ) )
+      {
+        background = true;
+
+        base_dd_min = base_dd_max = p->azerite.pandemic_invocation.value();
+      }
+
+      void execute() override
+      {
+        affliction_spell_t::execute();
+
+        if ( p()->rng().roll( p()->azerite.pandemic_invocation.spell_ref().effectN( 3 ).percent() / 100.0 ) )
+          p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.pandemic_invocation );
+      }
+    };
+
     // lvl 100 - soul conduit|creeping death|dark soul misery
     struct dark_soul_t : public affliction_spell_t
     {
@@ -1112,8 +1185,6 @@ namespace warlock
     talents.deathbolt                   = find_talent_spell( "Deathbolt" );
     talents.creeping_death              = find_talent_spell( "Creeping Death" );
     talents.dark_soul_misery            = find_talent_spell( "Dark Soul: Misery" );
-    // Tier
-    active.tormented_agony              = new tormented_agony_t( this );
     // Azerite
     azerite.cascading_calamity          = find_azerite_spell("Cascading Calamity");
     azerite.dreadful_calling            = find_azerite_spell("Dreadful Calling");
@@ -1121,6 +1192,10 @@ namespace warlock
     azerite.sudden_onset                = find_azerite_spell("Sudden Onset");
     azerite.wracking_brilliance         = find_azerite_spell("Wracking Brilliance");
     azerite.deathbloom                  = find_azerite_spell("Deathbloom");
+    azerite.pandemic_invocation         = find_azerite_spell( "Pandemic Invocation" );
+    // Actives
+    active.tormented_agony              = new tormented_agony_t( this );
+    active.pandemic_invocation          = new pandemic_invocation_t( this );
   }
 
   void warlock_t::init_gains_affliction()
@@ -1130,6 +1205,7 @@ namespace warlock
     gains.unstable_affliction_refund    = get_gain( "unstable_affliction_refund" );
     gains.affliction_t20_2pc            = get_gain( "affliction_t20_2pc" );
     gains.drain_soul                    = get_gain( "drain_soul" );
+    gains.pandemic_invocation           = get_gain( "pandemic_invocation" );
   }
 
   void warlock_t::init_rng_affliction()
@@ -1201,8 +1277,8 @@ namespace warlock
     dbr->add_action( "corruption,line_cd=15,if=(dot.corruption.remains%dot.corruption.duration)<=(dot.agony.remains%dot.agony.duration)&(dot.corruption.remains%dot.corruption.duration)<=(dot.siphon_life.remains%dot.siphon_life.duration)&dot.corruption.remains<dot.corruption.duration*1.3" );
 
     fil->add_action( "unstable_affliction,line_cd=15,if=cooldown.deathbolt.remains<=gcd*2&spell_targets.seed_of_corruption_aoe=1+raid_event.invulnerable.up&cooldown.summon_darkglare.remains>20" );
-    fil->add_action( "call_action_list,name=db_refresh,if=spell_targets.seed_of_corruption_aoe=1+raid_event.invulnerable.up&(dot.agony.remains<dot.agony.duration*0.75|dot.corruption.remains<dot.corruption.duration*0.75|dot.siphon_life.remains<dot.siphon_life.duration*0.75)&cooldown.deathbolt.remains<=action.agony.gcd*4&cooldown.summon_darkglare.remains>20" );
-    fil->add_action( "call_action_list,name=db_refresh,if=spell_targets.seed_of_corruption_aoe=1+raid_event.invulnerable.up&cooldown.summon_darkglare.remains<=soul_shard*action.agony.gcd+action.agony.gcd*3&(dot.agony.remains<dot.agony.duration*1|dot.corruption.remains<dot.corruption.duration*1|dot.siphon_life.remains<dot.siphon_life.duration*1)" );
+    fil->add_action( "call_action_list,name=db_refresh,if=talent.deathbolt.enabled&spell_targets.seed_of_corruption_aoe=1+raid_event.invulnerable.up&(dot.agony.remains<dot.agony.duration*0.75|dot.corruption.remains<dot.corruption.duration*0.75|dot.siphon_life.remains<dot.siphon_life.duration*0.75)&cooldown.deathbolt.remains<=action.agony.gcd*4&cooldown.summon_darkglare.remains>20" );
+    fil->add_action( "call_action_list,name=db_refresh,if=talent.deathbolt.enabled&spell_targets.seed_of_corruption_aoe=1+raid_event.invulnerable.up&cooldown.summon_darkglare.remains<=soul_shard*action.agony.gcd+action.agony.gcd*3&(dot.agony.remains<dot.agony.duration*1|dot.corruption.remains<dot.corruption.duration*1|dot.siphon_life.remains<dot.siphon_life.duration*1)" );
     fil->add_action( "deathbolt,if=cooldown.summon_darkglare.remains>=30+gcd|cooldown.summon_darkglare.remains>140" );
     fil->add_action( "shadow_bolt,if=buff.movement.up&buff.nightfall.remains" );
     fil->add_action( "agony,if=buff.movement.up&!(talent.siphon_life.enabled&(prev_gcd.1.agony&prev_gcd.2.agony&prev_gcd.3.agony)|prev_gcd.1.agony)" );

@@ -1123,6 +1123,8 @@ const char* util::cache_type_string( cache_e c )
     case CACHE_MITIGATION_VERSATILITY:  return "mitigation_versatility";
     case CACHE_LEECH: return "leech";
     case CACHE_RUN_SPEED: return "run_speed";
+    case CACHE_RPPM_HASTE: return "rppm_haste_coeff";
+    case CACHE_RPPM_CRIT: return "rppm_crit_coeff";
 
     default: return "unknown";
   }

@@ -457,10 +457,12 @@ public:
     buff_t* t20_2pc_unholy;
 
     // Azerite Traits
+    buff_t* bloody_runeblade;
     buff_t* bones_of_the_damned;
     buff_t* embrace_of_the_darkfallen;
     buff_t* eternal_rune_weapon;
 
+    buff_t* frostwhelps_indignation;
     buff_t* icy_citadel_builder;
     buff_t* icy_citadel;
 
@@ -531,6 +533,7 @@ public:
     gain_t* tombstone;
 
     gain_t* t19_4pc_blood;
+    gain_t* bloody_runeblade;
 
     // Frost
     gain_t* empower_rune_weapon;
@@ -558,6 +561,7 @@ public:
     const spell_data_t* unholy_death_knight;
     const spell_data_t* death_and_decay;
     const spell_data_t* icebound_fortitude;
+    const spell_data_t* death_strike_2;
 
     // Blood
     const spell_data_t* blood_boil;
@@ -788,29 +792,35 @@ public:
     // Shared
     azerite_power_t bone_spike_graveyard;
     azerite_power_t runic_barrier; // TODO : interaction with talents for overall duration also shield amount
+    azerite_power_t cold_hearted; // NYI
 
     // Blood
+    azerite_power_t bloody_runeblade;
     azerite_power_t bones_of_the_damned; // TODO : make sure the effectN( 2 ) is used for the % chance to proc. Check how it interacts with DRW
     azerite_power_t deep_cuts; // TODO : does it work with DRW ? both in application and damage amp
-    azerite_power_t embrace_of_the_darkfallen;
+    azerite_power_t embrace_of_the_darkfallen; // TODO: remove once 8.1 goes live
     azerite_power_t eternal_rune_weapon;
     azerite_power_t marrowblood; // TODO : how does it interact with blood shield ?
     
     // Frost
     azerite_power_t echoing_howl; // TODO : I have no idea how that actually works ingame
+    azerite_power_t frostwhelps_indignation; // TODO: Find the damaging spell's ID
     azerite_power_t frozen_tempest; // TODO : check if the damage is increased per tick or per cast
     azerite_power_t glacial_contagion; // TODO : does the amp to obliterate affect both hits ? Does the trait interact with Frostscythe ? Need more info on the dot as well
+                                       // TODO: remove once 8.1 goes live
     azerite_power_t icy_citadel;
     azerite_power_t killer_frost; // TODO : check if it procs KM from both swings as well
     azerite_power_t latent_chill; // TODO : check that the wording actually means what it means
 
     // Unholy
     azerite_power_t cankerous_wounds; // Is it a separate roll or does it affect the 50/50 roll between 2-3 wounds ?
-    azerite_power_t festering_doom;
+    azerite_power_t festering_doom; // TODO: Remove once 8.1 goes live
     azerite_power_t festermight;
     azerite_power_t harrowing_decay; // TODO : How does it refresh on multiple DC casts in a row ?
+    azerite_power_t helchains; // TODO: NYI
     azerite_power_t horrid_experimentation;
     azerite_power_t last_surprise; 
+    azerite_power_t magus_of_the_dead; // TODO: NYI
   }azerite;
 
   // Runes
@@ -2061,7 +2071,7 @@ struct risen_skulker_pet_t : public death_knight_pet_t
       
       timespan_t interval = super::gcd();
 
-      if ( p() -> o() -> bugs && !maybe_ptr( p() -> o() -> dbc.ptr ) )
+      if ( p() -> o() -> bugs && !p() -> o() -> dbc.ptr )
       {
         interval = execute_time() <= timespan_t::from_seconds( 1.2 ) ?
                             timespan_t::from_seconds( 1.2 ) :
@@ -3017,6 +3027,7 @@ struct melee_t : public death_knight_melee_attack_t
   int sync_weapons;
   bool first;
   action_t* frozen_pulse;
+  double bloody_runeblade_gen;
 
   melee_t( const char* name, death_knight_t* p, int sw ) :
     death_knight_melee_attack_t( name, p ), sync_weapons( sw ), first ( true ),
@@ -3030,6 +3041,11 @@ struct melee_t : public death_knight_melee_attack_t
     special           = false;
     weapon_multiplier = 1.0;
     
+    if ( p -> dbc.ptr )
+    {
+      bloody_runeblade_gen = p -> find_spell( 289348 ) -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
+    }
+
     // Dual wielders have a -19% chance to hit on melee attacks
     if ( p -> dual_wield() )
       base_hit -= 0.19;
@@ -3104,11 +3120,18 @@ struct melee_t : public death_knight_melee_attack_t
         p() -> trigger_festering_wound( s, 1, p() -> procs.fw_unholy_frenzy );
       }
 
+      // Crimson scourge doesn't proc if death and decay is ticking
       if ( td( s -> target ) -> dot.blood_plague -> is_ticking() && p() -> dnds.size() == 0 )
       {
         if ( p() -> buffs.crimson_scourge -> trigger() )
         {
           p() -> cooldown.death_and_decay -> reset( true );
+          if ( p() -> azerite.bloody_runeblade.enabled() )
+          {
+            // TODO: check if it's always 5 RP or if it scales with number of traits
+            p() -> resource_gain( RESOURCE_RUNIC_POWER, bloody_runeblade_gen, p() -> gains.bloody_runeblade );
+            p() -> buffs.bloody_runeblade -> trigger();
+          }
         }
       }
 
@@ -3539,7 +3562,7 @@ struct bonestorm_damage_t : public death_knight_spell_t
     if ( result_is_hit( state -> result ) )
     {
       // Healing is limited at 5 occurnces per tick, regardless of enemies hit
-      if ( maybe_ptr( p() -> dbc.ptr ) )
+      if ( p() -> dbc.ptr )
       { 
         if ( heal_count < p() -> talent.bonestorm -> effectN( 4 ).base_value() )
         {
@@ -4394,13 +4417,13 @@ struct death_strike_heal_t : public death_knight_heal_t
   double base_da_min( const action_state_t* ) const override
   {
     return std::max( player -> resources.max[ RESOURCE_HEALTH ] * p() -> spell.death_strike -> effectN( 3 ).percent(),
-      player -> compute_incoming_damage( interval ) * p() -> spell.death_strike -> effectN( 2 ).percent() );
+                     player -> compute_incoming_damage( interval ) * p() -> spell.death_strike -> effectN( 2 ).percent() );
   }
 
   double base_da_max( const action_state_t* ) const override
   {
     return std::max( player -> resources.max[ RESOURCE_HEALTH ] * p() -> spell.death_strike -> effectN( 3 ).percent(),
-      player -> compute_incoming_damage( interval ) * p() -> spell.death_strike -> effectN( 2 ).percent() );
+                     player -> compute_incoming_damage( interval ) * p() -> spell.death_strike -> effectN( 2 ).percent() );
   }
 
   double action_multiplier() const override
@@ -4512,6 +4535,11 @@ struct death_strike_t : public death_knight_melee_attack_t
     if ( p() -> buffs.t20_blood -> check() && p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T20, B4 ) )
     {
       c += p() -> spell.gravewarden -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER );
+    }
+
+    if ( p() -> dbc.ptr && p() -> spec.death_strike_2 -> ok() )
+    {
+      c += p() -> spec.death_strike_2 -> effectN( 3 ).resource( RESOURCE_RUNIC_POWER );
     }
 
     return c;
@@ -4693,7 +4721,11 @@ struct bursting_sores_t : public death_knight_spell_t
     death_knight_spell_t( "bursting_sores", p, p -> spell.bursting_sores )
   {
     background = true;
-    aoe = -1;
+    // Adding one target because the main target is ignored when dealing damage
+    if ( p -> dbc.ptr )
+      aoe = as<int> ( p -> talent.bursting_sores -> effectN( 2 ).base_value() + 1 );
+    else
+      aoe = -1;
   }
 
   // Bursting sores have a slight delay ingame, but nothing really significant
@@ -4868,22 +4900,23 @@ struct frostscythe_t : public death_knight_melee_attack_t
 
 // Frostwyrm's Fury =========================================================
 
-struct frost_breath_t : public death_knight_spell_t
+struct frostwyrms_fury_damage_t : public death_knight_spell_t
 {
-  frost_breath_t( death_knight_t* p ) :
-    death_knight_spell_t( "frost_breath", p, p -> find_spell( 279303 ) )
+  frostwyrms_fury_damage_t( death_knight_t* p ) :
+    death_knight_spell_t( p -> dbc.ptr ? "frostwyrms_fury" : "frost_breath" , p, p -> find_spell( 279303 ) )
   {
     aoe = -1;
+    background = true;
   }
 };
 
 struct frostwyrms_fury_t : public death_knight_spell_t
 {
-  frost_breath_t* damage;
+  frostwyrms_fury_damage_t* damage;
 
   frostwyrms_fury_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "frostwyrms_fury", p, p -> talent.frostwyrms_fury ),
-    damage( new frost_breath_t( p ) )
+    death_knight_spell_t( "frostwyrms_fury_driver", p, p -> talent.frostwyrms_fury ),
+    damage( new frostwyrms_fury_damage_t( p ) )
   {
     parse_options( options_str );
   }
@@ -4895,7 +4928,6 @@ struct frostwyrms_fury_t : public death_knight_spell_t
     damage -> execute();
   }
 };
-
 
 // Frost Strike =============================================================
 
@@ -5696,6 +5728,28 @@ struct outbreak_t : public death_knight_spell_t
 
 // Pillar of Frost ==========================================================
 
+struct frostwhelps_indignation_t : public death_knight_spell_t
+{
+  frostwhelps_indignation_t( death_knight_t* p ) :
+    death_knight_spell_t( "frostwhelps_indignation", p ,
+                          p -> dbc.ptr ? p -> azerite.frostwhelps_indignation.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() : 
+                          spell_data_t::nil() )
+    // TODO: May not be the right spell ID because that one doesn't seem
+    // to be affected by spec aura or mastery, blizzard oversight or different spell?
+  {
+    aoe = -1;
+    background = true;
+
+    base_dd_min = base_dd_max = p -> azerite.frostwhelps_indignation.value( 1 );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    death_knight_spell_t::impact( s );
+    p() -> buffs.frostwhelps_indignation -> trigger();
+  }
+};
+
 struct pillar_of_frost_bonus_buff_t : public buff_t
 {
   pillar_of_frost_bonus_buff_t( death_knight_t* p ) :
@@ -5745,10 +5799,17 @@ struct pillar_of_frost_buff_t : public buff_t
 
 struct pillar_of_frost_t : public death_knight_spell_t
 {
+  frostwhelps_indignation_t* whelp;
+
   pillar_of_frost_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "pillar_of_frost", p, p -> spec.pillar_of_frost )
   {
     parse_options( options_str );
+
+    if ( p -> dbc.ptr && p -> azerite.frostwhelps_indignation.enabled() )
+    {
+      whelp = new frostwhelps_indignation_t( p );
+    }
 
     harmful = false;
   }
@@ -5761,6 +5822,12 @@ struct pillar_of_frost_t : public death_knight_spell_t
                                              p() -> buffs.pillar_of_frost -> default_value +
                                              p() -> buffs.t20_4pc_frost -> stack_value() );
     p() -> buffs.t20_4pc_frost -> expire();
+
+    if ( p() -> dbc.ptr && p() -> azerite.frostwhelps_indignation.enabled() )
+    {
+      whelp -> set_target( p() -> target );
+      whelp -> execute();
+    }
   }
 };
 
@@ -7308,7 +7375,7 @@ void death_knight_t::init_base_stats()
   base.attack_power_per_agility = 0.0;
 
   resources.base[ RESOURCE_RUNIC_POWER ] = 100;
-  if ( maybe_ptr( dbc.ptr ) )
+  if ( dbc.ptr )
   {
     resources.base[ RESOURCE_RUNIC_POWER ] += spec.blood_death_knight -> effectN( 12 ).resource( RESOURCE_RUNIC_POWER );
   }
@@ -7346,6 +7413,7 @@ void death_knight_t::init_spells()
   // Shared
   spec.icebound_fortitude   = find_specialization_spell( "Icebound Fortitude" );
   spec.death_and_decay      = find_specialization_spell( "Death and Decay" );
+  spec.death_strike_2       = find_specialization_spell( 278223 );
 
   // Blood
   spec.blood_death_knight       = find_specialization_spell( "Blood Death Knight" );
@@ -7508,6 +7576,7 @@ void death_knight_t::init_spells()
   // Shared
   azerite.runic_barrier        = find_azerite_spell( "Runic Barrier" );
   azerite.bone_spike_graveyard = find_azerite_spell( "Bone Spike Graveyard" );
+  azerite.cold_hearted         = find_azerite_spell( "Cold Hearted" ); // NYI
 
   // Blood
   azerite.deep_cuts                 = find_azerite_spell( "Deep Cuts" );
@@ -7515,14 +7584,16 @@ void death_knight_t::init_spells()
   azerite.embrace_of_the_darkfallen = find_azerite_spell( "Embrace of the Darkfallen" );
   azerite.bones_of_the_damned       = find_azerite_spell( "Bones of the Damned" );
   azerite.eternal_rune_weapon       = find_azerite_spell( "Eternal Rune Weapon" );
-
+  azerite.bloody_runeblade          = find_azerite_spell( "Bloody Runeblade" );
+  
   // Frost
-  azerite.frozen_tempest    = find_azerite_spell( "Frozen Tempest" );
-  azerite.killer_frost      = find_azerite_spell( "Killer Frost" );
-  azerite.icy_citadel       = find_azerite_spell( "Icy Citadel" );
-  azerite.latent_chill      = find_azerite_spell( "Latent Chill" );
-  azerite.glacial_contagion = find_azerite_spell( "Glacial Contagion" );
-  azerite.echoing_howl      = find_azerite_spell( "Echoing Howl" );
+  azerite.frozen_tempest          = find_azerite_spell( "Frozen Tempest" );
+  azerite.killer_frost            = find_azerite_spell( "Killer Frost" );
+  azerite.icy_citadel             = find_azerite_spell( "Icy Citadel" );
+  azerite.latent_chill            = find_azerite_spell( "Latent Chill" );
+  azerite.glacial_contagion       = find_azerite_spell( "Glacial Contagion" );
+  azerite.echoing_howl            = find_azerite_spell( "Echoing Howl" );
+  azerite.frostwhelps_indignation = find_azerite_spell( "Frostwhelp's Indignation" );
 
   // Unholy
   azerite.last_surprise          = find_azerite_spell( "Last Surprise" );
@@ -7531,6 +7602,8 @@ void death_knight_t::init_spells()
   azerite.festermight            = find_azerite_spell( "Festermight" );
   azerite.harrowing_decay        = find_azerite_spell( "Harrowing Decay" );
   azerite.cankerous_wounds       = find_azerite_spell( "Cankerous Wounds" );
+  azerite.magus_of_the_dead      = find_azerite_spell( "Magus of the Dead" ); // TODO: NYI
+  azerite.helchains              = find_azerite_spell( "Helchains" ); // TODO: NYI
 }
 
 // death_knight_t::default_apl_dps_precombat ================================
@@ -8126,6 +8199,12 @@ void death_knight_t::create_buffs()
   buffs.festermight = make_buff<stat_buff_t>( this, "festermight", find_spell( 274373 ) )
         -> add_stat( STAT_STRENGTH, azerite.festermight.value() )
         -> set_refresh_behavior( buff_refresh_behavior::DISABLED );
+
+  buffs.bloody_runeblade = make_buff<stat_buff_t>( this, "bloody_runeblade", find_spell( 289349 ) )
+    -> add_stat( STAT_HASTE_RATING, azerite.bloody_runeblade.value( 2 ) );
+
+  buffs.frostwhelps_indignation = make_buff<stat_buff_t>( this, "frostwhelps_indignation", find_spell( 287338 ) )
+    -> add_stat( STAT_MASTERY_RATING, azerite.frostwhelps_indignation.value( 2 ) );
 }
 
 // death_knight_t::init_gains ===============================================
@@ -8147,6 +8226,7 @@ void death_knight_t::init_gains()
   gains.tombstone                        = get_gain( "Tombstone" );
 
   gains.t19_4pc_blood                    = get_gain( "Tier19 Blood 4PC" );
+  gains.bloody_runeblade                 = get_gain( "Bloody Runeblade" );
 
   // Frost
   gains.empower_rune_weapon              = get_gain( "Empower Rune Weapon" );
@@ -8331,7 +8411,7 @@ double death_knight_t::composite_base_armor_multiplier() const
 {
   double bam = player_t::composite_base_armor_multiplier();
 
-  if ( !maybe_ptr( dbc.ptr ) )
+  if ( !dbc.ptr )
   {
     bam *= 1.0 + spec.veteran_of_the_third_war -> effectN( 2 ).percent();
   }
@@ -8388,7 +8468,7 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
 
   else if ( attr == ATTR_STAMINA )
   {
-    if ( maybe_ptr( dbc.ptr ) )
+    if ( dbc.ptr )
     {
       m *= 1.0 + spec.veteran_of_the_third_war -> effectN( 1 ).percent() + spec.blood_death_knight -> effectN( 13 ).percent();
     }
@@ -8443,7 +8523,7 @@ double death_knight_t::composite_melee_expertise( const weapon_t* ) const
 {
   double expertise = player_t::composite_melee_expertise( nullptr );
 
-  if ( maybe_ptr( dbc.ptr ) )
+  if ( dbc.ptr )
   {
     expertise += spec.blood_death_knight -> effectN( 10 ).percent();
   }
@@ -8541,7 +8621,7 @@ double death_knight_t::composite_crit_avoidance() const
 {
   double c = player_t::composite_crit_avoidance();
 
-  if ( maybe_ptr( dbc.ptr ) )
+  if ( dbc.ptr )
   {
     c += spec.blood_death_knight -> effectN( 8 ).percent();
   }

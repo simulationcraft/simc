@@ -105,9 +105,9 @@ namespace warlock
       struct active_t
       {
         action_t* grimoire_of_sacrifice_proc;
-        action_t* cry_havoc;
         action_t* tormented_agony;
         action_t* chaotic_flames;
+        spell_t* pandemic_invocation;
         spell_t* corruption;
         spell_t* roaring_blaze;
         spell_t* internal_combustion;
@@ -216,6 +216,7 @@ namespace warlock
         azerite_power_t sudden_onset;
         azerite_power_t wracking_brilliance;
         azerite_power_t deathbloom;
+        azerite_power_t pandemic_invocation;
 
         //Destro
         azerite_power_t accelerant;
@@ -351,6 +352,7 @@ namespace warlock
         gain_t* drain_soul;
         gain_t* seed_of_corruption;
         gain_t* unstable_affliction_refund;
+        gain_t* pandemic_invocation;
 
         gain_t* conflagrate;
         gain_t* shadowburn;

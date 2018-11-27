@@ -963,6 +963,8 @@ void print_json_pretty( FILE* o, const sim_t& sim )
   root[ "beta_enabled" ] = SC_BETA;
   root[ "build_date" ] = __DATE__;
   root[ "build_time" ] = __TIME__;
+  root[ "timestamp" ] = as<uint64_t>( std::time( nullptr ) );
+
   if ( git_info::available())
   {
     root[ "git_revision" ] = git_info::revision();

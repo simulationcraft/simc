@@ -2054,7 +2054,6 @@ void buff_t::adjust_haste()
   player->adjust_dynamic_cooldowns();
   // player->adjust_global_cooldown( haste_type );
   player->adjust_auto_attack( haste_type );
-  player->adjust_action_queue_time();
 }
 
 void buff_t::init_haste_type()
@@ -2527,4 +2526,24 @@ void movement_buff_t::expire_override( int expiration_stacks, timespan_t remaini
 {
   buff_t::expire_override( expiration_stacks, remaining_duration );
   source->finish_moving();
+}
+
+void invulnerable_debuff_t::start( int stacks, double value, timespan_t duration )
+{
+  buff_t::start( stacks, value, duration );
+  if ( sim->ignore_invulnerable_targets && range::contains_value( sim->target_non_sleeping_list, player ) )
+  {
+    sim->target_non_sleeping_list.find_and_erase_unordered( player );
+    sim->active_enemies--;
+  }
+}
+
+void invulnerable_debuff_t::expire_override( int expiration_stacks, timespan_t remaining_duration )
+{
+  buff_t::expire_override( expiration_stacks, remaining_duration );
+  if ( sim->ignore_invulnerable_targets && !range::contains_value( sim->target_non_sleeping_list, player ) )
+  {
+    sim->target_non_sleeping_list.push_back( player );
+    sim->active_enemies++;
+  }
 }

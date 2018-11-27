@@ -241,10 +241,6 @@ public:
   // counters for snapshot tracking
   std::vector<snapshot_counter_t*> counters;
 
-  // Active
-  action_t* t16_2pc_starfall_bolt;
-  action_t* t16_2pc_sun_bolt;
-
   double starshards;
   double expected_max_health; // For Bristling Fur calculations.
 
@@ -260,7 +256,6 @@ public:
     
 
     // Balance
-    real_ppm_t* balance_tier18_2pc;
     real_ppm_t* power_of_the_moon;
   } rppm;
 
@@ -294,7 +289,6 @@ public:
   } active;
 
   // Pets
-  std::array<pet_t*, 11> pet_fey_moonwing; // 30 second duration, 3 second internal icd... create 11 to be safe.
   std::array<pet_t*, 3> force_of_nature;
   // Auto-attacks
   weapon_t caster_form_weapon;
@@ -357,7 +351,7 @@ public:
     buff_t* bear_form;
     buff_t* cat_form;
     buff_t* dash;
-    buff_t* displacer_beast;
+    buff_t* tiger_dash;
     buff_t* cenarion_ward;
     buff_t* clearcasting;
     buff_t* incarnation_proxy;
@@ -380,11 +374,11 @@ public:
     buff_t* solar_empowerment;
     buff_t* the_emerald_dreamcatcher; // Legion Legendary
     buff_t* warrior_of_elune;
-    buff_t* balance_tier18_4pc; // T18 4P Balance
     buff_t* solar_solstice; //T21 4P Balance
     buff_t* starfall;
     buff_t* astral_acceleration; //T20 4P Balance
     buff_t* starlord; //talent 
+    buff_t* stellar_drift_2; // stellar drift mobility buff ID 202461
 
     // Feral
     buff_t* apex_predator;
@@ -588,8 +582,8 @@ public:
     const spell_data_t* balance_tier19_2pc;
     const spell_data_t* starsurge_2;
     const spell_data_t* moonkin_2;
-    const spell_data_t* starfall_2;
     const spell_data_t* sunfire_2;
+    const spell_data_t* stellar_drift_2; // stellar drift mobility buff ID 202461
 
     // Guardian
     const spell_data_t* guardian;
@@ -615,7 +609,7 @@ public:
   {
     // Multiple Specs
     const spell_data_t* renewal;
-    const spell_data_t* displacer_beast;
+    const spell_data_t* tiger_dash;
     const spell_data_t* wild_charge;
 
     const spell_data_t* balance_affinity;
@@ -716,8 +710,6 @@ public:
   druid_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, DRUID, name, r ),
     form( NO_FORM ),
-    t16_2pc_starfall_bolt( nullptr ),
-    t16_2pc_sun_bolt( nullptr ),
     starshards( 0.0 ),
     previous_streaking_stars(SS_NONE),
     predator_rppm_rate( 0.0 ),
@@ -729,7 +721,6 @@ public:
     t21_2pc(false),
     t21_4pc(false),
     active( active_actions_t() ),
-    pet_fey_moonwing(),
     force_of_nature(),
     caster_form_weapon(),
     caster_melee_attack( nullptr ),
@@ -1066,61 +1057,6 @@ struct force_of_nature_t : public pet_t
     return pet_t::create_action( name, options_str );
   }
 };
-
-// T18 2PC Balance Fairies ==================================================
-
-struct fey_moonwing_t: public pet_t
-{
-  struct fey_missile_t: public spell_t
-  {
-    fey_missile_t( fey_moonwing_t* player ):
-      spell_t( "fey_missile", player, player -> find_spell( 188046 ) )
-    {
-      if ( player -> o() -> pet_fey_moonwing[0] )
-        stats = player -> o() -> pet_fey_moonwing[0] -> get_stats( "fey_missile" );
-      may_crit = true;
-
-      // Casts have a delay that decreases with haste. This is a very rough approximation.
-      cooldown -> duration = timespan_t::from_millis( 600 );
-      cooldown -> hasted = true;
-    }
-  };
-  druid_t* o() { return static_cast<druid_t*>( owner ); }
-
-  fey_moonwing_t( sim_t* sim, druid_t* owner ):
-    pet_t( sim, owner, "fey_moonwing", true /*GUARDIAN*/, true )
-  {
-    owner_coeff.sp_from_sp = 0.75;
-    regen_type = REGEN_DISABLED;
-  }
-
-  void init_base_stats() override
-  {
-    pet_t::init_base_stats();
-
-    resources.base[RESOURCE_HEALTH] = owner -> resources.max[RESOURCE_HEALTH] * 0.4;
-    resources.base[RESOURCE_MANA] = 0;
-
-    initial.stats.attribute[ATTR_INTELLECT] = 0;
-    initial.spell_power_per_intellect = 0;
-    intellect_per_owner = 0;
-    stamina_per_owner = 0;
-    action_list_str = "fey_missile";
-  }
-
-  void summon( timespan_t duration ) override
-  {
-    pet_t::summon( duration );
-    o() -> buff.balance_tier18_4pc -> trigger();
-  }
-
-  action_t* create_action( const std::string& name,
-                           const std::string& options_str ) override
-  {
-    if ( name == "fey_missile"  ) return new fey_missile_t( this );
-    return pet_t::create_action( name, options_str );
-  }
-};
 } // end namespace pets
 
 namespace buffs {
@@ -1350,6 +1286,25 @@ struct innervate_buff_t : public druid_buff_t<buff_t>
     {
       p->buff.lively_spirit->trigger(p->lively_spirit_stacks);
     }
+  }
+};
+
+//Tiger Dash Buff ===========================================================
+struct tiger_dash_buff_t : public druid_buff_t<buff_t>
+{
+  tiger_dash_buff_t(druid_t& p) : base_t(p, "tiger_dash", p.talent.tiger_dash)
+  {
+    set_default_value(p.talent.tiger_dash->effectN(1).percent());
+    set_cooldown(timespan_t::zero());
+    set_tick_callback([this] (buff_t* b, int, const timespan_t&)
+    {
+      b->current_value -= b->data().effectN(2).percent();
+    } );
+  }
+  
+  bool freeze_stacks() override
+  {
+    return true;
   }
 };
 
@@ -1904,11 +1859,13 @@ public:
   typedef druid_spell_base_t base_t;
 
   bool cat_form_gcd;
+  bool reset_melee_swing; // TRUE(default) to reset swing timer on execute (as most cast time spells do)
 
   druid_spell_base_t( const std::string& n, druid_t* player,
                       const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ),
-    cat_form_gcd( ab::data().affected_by( player -> spec.cat_form -> effectN( 4 ) ) )
+    cat_form_gcd( ab::data().affected_by( player -> spec.cat_form -> effectN( 4 ) ) ),
+    reset_melee_swing( true )
   { }
 
   virtual timespan_t gcd() const override
@@ -1927,6 +1884,20 @@ public:
       return ab::min_gcd;
     else
       return g;
+  }
+
+  virtual void execute() override
+  {
+    if (ab::execute_time() > timespan_t::zero() && !ab::proc && reset_melee_swing)
+    {
+      if (ab::p()->main_hand_attack && ab::p()->main_hand_attack->execute_event)
+      {
+        ab::p()->main_hand_attack->execute_event->reschedule(ab::p()->main_hand_weapon.swing_time);
+      }
+      // Nothing for OH, as druids don't DW
+    }
+
+    ab::execute();
   }
 };
 
@@ -2080,6 +2051,14 @@ public:
 
     return m;
   }
+  
+  virtual bool usable_moving() const override
+  {
+    if (p()->buff.stellar_drift_2->check() && data().affected_by(p()->spec.stellar_drift_2->effectN(1)))
+      return true;
+    
+    return spell_t::usable_moving();
+  }
 
   virtual void execute() override
   {
@@ -2096,24 +2075,6 @@ public:
     }
 
     ab::execute();
-  }
-
-  virtual void trigger_balance_tier18_2pc()
-  {
-    if ( ! p() -> sets -> has_set_bonus( DRUID_BALANCE, T18, B2 ) )
-      return;
-
-    if ( ! p() -> rppm.balance_tier18_2pc -> trigger() )
-      return;
-
-    for ( pet_t* pet : p() -> pet_fey_moonwing )
-    {
-      if ( pet -> is_sleeping() )
-      {
-        pet -> summon( timespan_t::from_seconds( 30 ) );
-        return;
-      }
-    }
   }
 
   virtual void trigger_impeccable_fel_essence()
@@ -2290,8 +2251,6 @@ struct moonfire_t : public druid_spell_t
           p()->active.shooting_stars->execute();
         }
       }
-
-      trigger_balance_tier18_2pc();
 
       if (!p()->azerite.power_of_the_moon.ok() || !maybe_ptr(p()->dbc.ptr))
         return;
@@ -2657,6 +2616,9 @@ public:
       form_mask |= CAT_FORM;
     }
 
+    if (p->specialization() == DRUID_BALANCE || p->specialization() == DRUID_RESTORATION)
+      ap_type = AP_NO_WEAPON;
+
     razor_claws.direct = data().affected_by( p -> mastery.razor_claws -> effectN( 1 ) );
     razor_claws.tick = data().affected_by( p -> mastery.razor_claws -> effectN( 2 ) );
 
@@ -2706,7 +2668,20 @@ public:
           continue;
 
         if ( data().affected_by( effect ) )
-          base_multiplier *= 1.0 + effect.percent();
+        {
+          switch(static_cast<property_type_t>(effect.misc_value1()))
+          {
+            case P_GENERIC:
+              base_dd_multiplier *= 1.0 + effect.percent();
+              break;
+            case P_TICK_DAMAGE:
+              base_td_multiplier *= 1.0 + effect.percent();
+              break;
+            default:
+              base_multiplier *= 1.0 + effect.percent();
+              break;
+          }
+        }
       }
     }
   }
@@ -4121,6 +4096,9 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
   {
     parse_options( options_str );
 
+    if (p->specialization() == DRUID_BALANCE || p->specialization() == DRUID_RESTORATION)
+      ap_type = AP_NO_WEAPON;
+
     // Apply Guardian Druid aura damage modifiers
     if (p -> specialization() == DRUID_GUARDIAN)
     {
@@ -5115,19 +5093,42 @@ struct cat_form_t : public druid_spell_t
 
 struct celestial_alignment_t : public druid_spell_t
 {
+  bool precombat;
+
   celestial_alignment_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "celestial_alignment", player, player -> spec.celestial_alignment , options_str )
+    druid_spell_t( "celestial_alignment", player, player -> spec.celestial_alignment , options_str ),
+    precombat()
   {
     harmful = false;
     dot_duration = timespan_t::zero();
   }
 
+  void init_finished() override
+  {
+    druid_spell_t::init_finished();
+
+    if ( action_list -> name_str == "precombat" )
+      precombat = true;
+  }
+
+  void schedule_execute( action_state_t* s ) override
+  {
+    // buff applied first to reduce GCD
+    if ( !precombat )
+      p() -> buff.celestial_alignment -> trigger();
+
+    druid_spell_t::schedule_execute( s );
+  }
+
   void execute() override
   {
-    druid_spell_t::execute(); // Do not change the order here.
-    
-    p() -> buff.celestial_alignment -> trigger();
+    druid_spell_t::execute();
 
+    // Precombat actions skip schedule_execute, so the buff needs to be
+    // triggered here for precombat actions.
+    if ( precombat )
+      p() -> buff.celestial_alignment -> trigger();
+    
     //Trigger after triggering the buff so the cast procs the spell
     streaking_stars_trigger(SS_CELESTIAL_ALIGNMENT, nullptr);
   }
@@ -5204,42 +5205,45 @@ struct fury_of_elune_t : public druid_spell_t
 struct dash_t : public druid_spell_t
 {
   dash_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "dash", player, player -> find_class_spell( "Dash" ), options_str )
-  {
-    autoshift = form_mask = CAT_FORM;
-
-    harmful = false;
-    ignore_false_positive = true;
-  }
-
-  void execute() override
-  {
-    druid_spell_t::execute();
-
-    p() -> buff.dash -> trigger();
-  }
-};
-
-// Displacer Beast ==========================================================
-
-struct displacer_beast_t : public druid_spell_t
-{
-  displacer_beast_t( druid_t* p, const std::string& options_str ) :
-    druid_spell_t( "displacer_beast", p, p -> talent.displacer_beast, options_str )
+    druid_spell_t("dash", player,
+      player->talent.tiger_dash->ok() ? player->talent.tiger_dash : player->find_class_spell("Dash"),
+      options_str )
   {
     autoshift = form_mask = CAT_FORM;
 
     harmful = may_crit = may_miss = false;
     ignore_false_positive = true;
-    base_teleport_distance = radius;
-    movement_directionality = MOVEMENT_OMNI;
   }
 
   void execute() override
   {
     druid_spell_t::execute();
 
-    p() -> buff.displacer_beast -> trigger();
+    if (p()->talent.tiger_dash->ok())
+      p()->buff.tiger_dash->trigger();
+    else
+      p()->buff.dash->trigger();
+  }
+};
+
+// Tiger Dash =====================================================================
+
+struct tiger_dash_t : public druid_spell_t
+{
+  tiger_dash_t( druid_t* player, const std::string& options_str ) :
+    druid_spell_t( "tiger_dash", player, player -> talent.tiger_dash, options_str )
+  {
+    autoshift = form_mask = CAT_FORM;
+
+    harmful = may_crit = may_miss = false;
+    ignore_false_positive = true;
+  }
+
+  void execute() override
+  {
+    druid_spell_t::execute();
+
+    p() -> buff.tiger_dash -> trigger();
   }
 };
 
@@ -5498,6 +5502,7 @@ struct swipe_proxy_t : public druid_spell_t
 struct incarnation_t : public druid_spell_t
 {
   buff_t* spec_buff;
+  bool precombat;
 
   incarnation_t( druid_t* p, const std::string& options_str ) :
     druid_spell_t( "incarnation", p,
@@ -5505,7 +5510,8 @@ struct incarnation_t : public druid_spell_t
                    p -> specialization() == DRUID_FERAL       ? p -> talent.incarnation_cat     :
                    p -> specialization() == DRUID_GUARDIAN    ? p -> talent.incarnation_bear    :
                    p -> specialization() == DRUID_RESTORATION ? p -> talent.incarnation_tree    :
-                   spell_data_t::nil(), options_str )
+                   spell_data_t::nil(), options_str ),
+    precombat()
   {
     switch ( p -> specialization() )
     {
@@ -5530,11 +5536,31 @@ struct incarnation_t : public druid_spell_t
     harmful = false;
   }
 
+  void init_finished() override
+  {
+    druid_spell_t::init_finished();
+
+    if ( action_list -> name_str == "precombat" )
+      precombat = true;
+  }
+  
+  void schedule_execute( action_state_t* s ) override
+  {
+    // buff applied first to reduce GCD for moonkin
+    if ( !precombat )
+      spec_buff -> trigger();
+
+    druid_spell_t::schedule_execute( s );
+  }
+
   void execute() override
   {
     druid_spell_t::execute();
 
-    spec_buff -> trigger();
+    // Precombat actions skip schedule_execute, so the buff needs to be
+    // triggered here for precombat actions.
+    if ( precombat )
+      spec_buff -> trigger();
 
     if ( p() -> buff.incarnation_cat -> check() )
     {
@@ -5719,8 +5745,6 @@ struct lunar_strike_t : public druid_spell_t
   {
     aoe = -1;
     base_aoe_multiplier = player->talent.balance_affinity->ok() ? data().effectN(2).percent() : data().effectN(3).percent();
-
-    base_execute_time *= 1.0 + player -> sets -> set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
   }
 
   double composite_crit_chance() const override
@@ -5895,8 +5919,6 @@ struct sunfire_t : public druid_spell_t
           p()->active.shooting_stars->execute();
         }
       }
-
-      trigger_balance_tier18_2pc();
     }
 
     double bonus_da(const action_state_t* s) const override
@@ -6123,7 +6145,6 @@ struct solar_wrath_t : public druid_spell_t
 
     add_child (player->active.solar_empowerment);
 
-    base_execute_time *= 1.0 + player -> sets -> set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
     energize_amount = player -> spec.astral_power -> effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
   }
 
@@ -6195,12 +6216,6 @@ struct solar_wrath_t : public druid_spell_t
     p() -> buff.solar_empowerment -> up();
 
     druid_spell_t::execute();
-
-    if ( p() -> sets -> has_set_bonus( DRUID_BALANCE, T17, B4 ) )
-    {
-      p() -> cooldown.celestial_alignment ->
-        adjust( -p() -> sets -> set( DRUID_BALANCE, T17, B4 ) -> effectN( 1 ).time_value() );
-    }
 
     p() -> buff.solar_empowerment -> decrement();
 
@@ -6372,6 +6387,17 @@ struct starfall_t : public druid_spell_t
       p()->buff.oneths_overconfidence->decrement();
     p()->buff.oneths_intuition->trigger();
     p()->buff.starfall->trigger();
+    /* Stellar Drift free movement is granted by uncategorized spell ID 202461
+       which is separate from the talent. Currently implemented to grant you this
+       buff along with the normal 'starfall' buff. Assumption is that you will
+       always choose to place your starfall such that it will cover any movement
+       you make. Inaccurate for more complex movement modeling, but such modeling
+       is highly unlikely to be examined in the near future.
+       
+       NOTE that buff is named stellar_drift_2 to hopefully avoid potential confusion
+       with the talent spell */
+    if (p()->talent.stellar_drift->ok())
+      p()->buff.stellar_drift_2->trigger();
   }
 };
 struct starshards_t : public starfall_t
@@ -6893,7 +6919,7 @@ action_t* druid_t::create_action( const std::string& name,
        name == "ca"                     ) return new    celestial_alignment_t( this, options_str );
   if ( name == "cenarion_ward"          ) return new          cenarion_ward_t( this, options_str );
   if ( name == "dash"                   ) return new                   dash_t( this, options_str );
-  if ( name == "displacer_beast"        ) return new        displacer_beast_t( this, options_str );
+  if ( name == "tiger_dash"             ) return new             tiger_dash_t( this, options_str );
   if ( name == "feral_frenzy"           ) return new    feral_frenzy_driver_t( this, options_str );
   if ( name == "ferocious_bite"         ) return new         ferocious_bite_t( this, options_str );
   if ( name == "force_of_nature"        ) return new        force_of_nature_t( this, options_str );
@@ -6972,12 +6998,6 @@ void druid_t::create_pets()
 {
   player_t::create_pets();
 
-  if ( sets -> has_set_bonus( DRUID_BALANCE, T18, B2 ) )
-  {
-    for ( pet_t*& pet : pet_fey_moonwing )
-      pet = new pets::fey_moonwing_t( sim, this );
-  }
-
   if ( talent.force_of_nature -> ok() )
   {
     for ( pet_t*& pet : force_of_nature )
@@ -7010,8 +7030,8 @@ void druid_t::init_spells()
   spec.balance_tier19_2pc         = sets -> has_set_bonus( DRUID_BALANCE, T19, B2 ) ? find_spell( 211089 ) : spell_data_t::not_found();
   spec.starsurge_2                = find_specialization_spell( 231021 );
   spec.moonkin_2                  = find_specialization_spell( 231042 );
-  spec.starfall_2                 = find_specialization_spell( 231049 );
   spec.sunfire_2                  = find_specialization_spell( 231050 );
+  spec.stellar_drift_2            = find_spell( 202461 ); // stellar drift mobility buff
 
   // Feral
   spec.cat_form                   = find_class_spell( "Cat Form" ) -> ok() ? find_spell( 3025   ) : spell_data_t::not_found();
@@ -7057,7 +7077,7 @@ void druid_t::init_spells()
 
   // Multiple Specs
   talent.renewal                        = find_talent_spell( "Renewal" );
-  talent.displacer_beast                = find_talent_spell( "Displacer Beast" );
+  talent.tiger_dash                     = find_talent_spell( "Tiger Dash" );
   talent.wild_charge                    = find_talent_spell( "Wild Charge" );
 
   talent.balance_affinity               = find_talent_spell( "Balance Affinity" );
@@ -7337,10 +7357,8 @@ void druid_t::create_buffs()
     ->set_max_stack(maybe_ptr(dbc.ptr)?(int)find_spell(287773)->effectN(4).base_value():9);
 
   // Talent buffs
-
-  buff.displacer_beast       = buff_creator_t( this, "displacer_beast", talent.displacer_beast -> effectN( 2 ).trigger() )
-                               .default_value( talent.displacer_beast -> effectN( 2 ).trigger() -> effectN( 1 ).percent() );
-
+  buff.tiger_dash = new tiger_dash_buff_t(*this);
+  
   buff.wild_charge_movement  = buff_creator_t( this, "wild_charge_movement" );
 
   buff.cenarion_ward         = buff_creator_t( this, "cenarion_ward", find_talent_spell( "Cenarion Ward" ) );
@@ -7425,6 +7443,9 @@ void druid_t::create_buffs()
 
   buff.starfall = buff_creator_t(this, "starfall", find_spell(191034))
       .duration(timespan_t::from_seconds(8));
+
+  buff.stellar_drift_2 = buff_creator_t(this, "stellar_drift", find_spell(202461))
+      .duration(timespan_t::from_seconds(8)); // stellar drift mobiliy buff ID 202461
 
   // Feral
 
@@ -7514,11 +7535,6 @@ void druid_t::create_buffs()
   }
 
   // Set Bonuses
-
-  buff.balance_tier18_4pc    = buff_creator_t( this, "faerie_blessing", find_spell( 188086 ) )
-                               .default_value( find_spell( 188086 ) -> effectN( 1 ).percent() )
-                               .chance( sets -> has_set_bonus( DRUID_BALANCE, T18, B4 ) )
-                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.feral_tier17_4pc      = buff_creator_t( this, "feral_tier17_4pc", find_spell( 166639 ) )
                                .quiet( true );
@@ -8196,11 +8212,14 @@ void druid_t::apl_restoration()
   for ( size_t i = 0; i < item_actions.size(); i++ )
     default_list -> add_action( item_actions[i] );
 
-  default_list -> add_action("rake,if=buff.shadowmeld.up|buff.prowl.up");
+  default_list->add_action("rake,if=buff.shadowmeld.up|buff.prowl.up");
   default_list->add_action("auto_attack");
   default_list->add_action("moonfire,if=refreshable|(prev_gcd.1.sunfire&remains<duration*0.5)");
   default_list->add_action("sunfire,if=refreshable|(prev_gcd.1.moonfire&remains<duration*0.5)");
+  default_list->add_action("innervate,if=!buff.cat_form.up&energy<40");
   default_list->add_action("cat_form,if=!buff.cat_form.up&energy>50");
+  default_list->add_action("ferocious_bite,if=(combo_points>3&target.time_to_die<3)|(combo_points=5&energy>=50&dot.rip.remains>14)|(dot.rip.ticking&target.health.pct<25&combo_points=5&energy>=50)|(dot.rip.ticking&dot.rip.remains<3&target.health.pct<25)");
+  default_list->add_action("swipe_cat,if=spell_targets.swipe_cat>=6");
   default_list->add_action("rip,if=refreshable&combo_points=5");
   default_list->add_action("ferocious_bite,max_energy=1,if=combo_points=5&energy.time_to_max<2");
   default_list->add_action("rake,if=refreshable");
@@ -8370,7 +8389,6 @@ void druid_t::init_resources( bool force )
 void druid_t::init_rng()
 {
   // RPPM objects
-  rppm.balance_tier18_2pc = get_rppm( "balance_tier18_2pc", sets->set( DRUID_BALANCE, T18, B2 ) );
   rppm.predator           = get_rppm( "predator", predator_rppm_rate );  // Predator: optional RPPM approximation.
   rppm.blood_mist         = get_rppm( "blood_mist", find_spell(azerite.blood_mist.spell()->effectN(1).trigger_spell_id())->real_ppm() ) ;
   rppm.power_of_the_moon = get_rppm("power_of_the_moon", find_spell(azerite.power_of_the_moon.spell()->effectN(1).trigger_spell_id())->real_ppm());
@@ -8664,11 +8682,6 @@ double druid_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  if ( dbc::is_school( school, SCHOOL_ARCANE ) || dbc::is_school( school, SCHOOL_NATURE ) )
-  {
-    m *= 1.0 + buff.balance_tier18_4pc -> check_value();
-  }
-
   m *= 1.0 + legendary.LegendaryDamageMod;
 
   // Fury of Nature increases Arcane and Nature damage
@@ -8727,15 +8740,15 @@ double druid_t::temporary_movement_modifier() const
 {
   double active = player_t::temporary_movement_modifier();
 
-  if ( buff.dash -> up() )
+  if ( buff.dash -> up() && buff.cat_form -> up() )
     active = std::max( active, buff.dash -> value() );
-
+  
   if ( buff.wild_charge_movement -> up() )
     active = std::max( active, buff.wild_charge_movement -> value() );
 
-  if ( buff.displacer_beast -> up() )
-    active = std::max( active, buff.displacer_beast -> value() );
-
+  if ( buff.tiger_dash -> up() && buff.cat_form -> up() )
+    active = std::max( active, buff.tiger_dash -> value() );
+    
   return active;
 }
 
@@ -9091,13 +9104,13 @@ expr_t* druid_t::create_expression( const std::string& name_str )
       return expr_t::create_constant(name_str, s->ok());
     } break;
 
-    case DRUID_RESTORATION:
+    case DRUID_GUARDIAN:
     {
       const spell_data_t* s = find_talent_spell("incarnation_guardian_of_ursoc", specialization(), true);
       return expr_t::create_constant(name_str, s->ok());
     } break;
 
-    case DRUID_GUARDIAN:
+    case DRUID_RESTORATION:
     {
       const spell_data_t* s = find_talent_spell("incarnation_tree_of_life", specialization(), true);
       return expr_t::create_constant(name_str, s->ok());

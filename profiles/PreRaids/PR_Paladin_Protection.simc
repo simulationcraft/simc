@@ -40,7 +40,7 @@ actions+=/shield_of_the_righteous,if=(buff.avenging_wrath.up&buff.avenging_wrath
 actions+=/lights_judgment,if=buff.seraphim.up&buff.seraphim.remains<3
 actions+=/consecration,if=!consecration.up
 actions+=/judgment,if=(cooldown.judgment.remains<gcd&cooldown.judgment.charges_fractional>1&cooldown_react)|!talent.crusaders_judgment.enabled
-actions+=/avengers_shield,,if=cooldown_react
+actions+=/avengers_shield,if=cooldown_react
 actions+=/judgment,if=cooldown_react|!talent.crusaders_judgment.enabled
 actions+=/lights_judgment,if=!talent.seraphim.enabled|buff.seraphim.up
 actions+=/blessed_hammer,strikes=2

@@ -763,8 +763,8 @@ class ItemDataGenerator(DataGenerator):
                 # All tabards
                 elif data.inv_type == 19:
                     filter_ilevel = False
-                # All heirlooms
-                elif data.quality == 7:
+                # All epic+ armor/weapons
+                elif data.quality >= 4:
                     filter_ilevel = False
                 else:
                     # On-use item, with a valid spell (and cooldown)
@@ -1595,6 +1595,7 @@ class SpellDataGenerator(DataGenerator):
           ( 137542, 0 ),       # Displacer Beast buff
           ( 185321, 3 ),       # Stalwart Guardian buff (T18 trinket)
           ( 188046, 5 ),       # T18 2P Faerie casts this spell
+          ( 202461, 1 ),       # Stellar Drift mobility buff
           ( 202771, 1 ),       # Half Moon artifact power
           ( 202768, 1 ),       # Full Moon artifact power
           ( 203001, 1 ),       # Goldrinn's Fang, Spirit of Goldrinn artifact power

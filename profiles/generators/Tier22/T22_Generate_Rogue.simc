@@ -74,7 +74,7 @@ legs=pathogenic_legwraps,id=160625,bonus_id=4800/1507
 feet=quarantine_protocol_treads,id=160624,bonus_id=4800/1507
 finger1=rotscour_ring,id=160645,bonus_id=4800/1507,enchant=pact_of_versatility
 finger2=lord_waycrests_signet,id=158362,bonus_id=1542/4779,enchant=pact_of_versatility
-trinket1=kul_tiran_cannonball_runner,id=159628,bonus_id=1542/4779
+trinket1=darkmoon_deck_fathoms,id=159125
 trinket2=frenetic_corpuscle,id=160648,bonus_id=4800/1507
 main_hand=mothers_twin_gaze,id=160682,bonus_id=4800/1507,enchant=deadly_navigation
 off_hand=mothers_twin_gaze,id=160682,bonus_id=4800/1507,enchant=quick_navigation
@@ -102,7 +102,7 @@ legs=pathogenic_legwraps,id=160625,bonus_id=4800/1507
 feet=quarantine_protocol_treads,id=160624,bonus_id=4800/1507
 finger1=rotscour_ring,id=160645,bonus_id=4800/1507,enchant=pact_of_haste
 finger2=band_of_certain_annihilation,id=160646,bonus_id=4800/1507,enchant=pact_of_haste
-trinket1=harlans_loaded_dice,id=155881,bonus_id=1542/4779
+trinket1=darkmoon_deck_fathoms,id=159125
 trinket2=frenetic_corpuscle,id=160648,bonus_id=4800/1507
 main_hand=lancet_of_the_deft_hand,id=160693,bonus_id=4800/1507,enchant=quick_navigation
 off_hand=lancet_of_the_deft_hand,id=160693,bonus_id=4800/1507,enchant=galeforce_striking

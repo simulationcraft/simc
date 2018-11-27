@@ -801,6 +801,7 @@ player_t* bcp_api::download_player( sim_t*             sim,
     player.cleanurl = battlenet + "wow/character/" +
       server + '/' + name + "?fields=talents,items,professions&locale=en_US&apikey=";
     player.url = player.cleanurl + sim -> apikey;
+    player.cleanurl += "[REDACTED]";
     player.origin = origin_prefix + "wow/character/" + server + '/' + name + "/advanced";
 #ifdef SC_DEFAULT_APIKEY
   if ( sim -> apikey == std::string( SC_DEFAULT_APIKEY ) )

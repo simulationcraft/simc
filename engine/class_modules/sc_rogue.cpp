@@ -202,6 +202,9 @@ struct rogue_t : public player_t
   // Track target of last manual Nightblade application for Replicating Shadows azerite power
   player_t* last_nightblade_target;
 
+  // Is using stealth during combat allowed? Relevant for Dungeon sims.
+  bool restealth_allowed;
+
   // Experimental weapon swapping
   weapon_info_t weapon_data[ 2 ];
 
@@ -536,6 +539,7 @@ struct rogue_t : public player_t
     auto_attack( nullptr ), melee_main_hand( nullptr ), melee_off_hand( nullptr ),
     shadow_blades_attack( nullptr ),
     last_nightblade_target( nullptr ),
+    restealth_allowed( false ),
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
     gains( gains_t() ),
@@ -593,6 +597,7 @@ struct rogue_t : public player_t
   std::string      create_profile( save_e stype ) override;
   void      init_action_list() override;
   void      reset() override;
+  void      activate() override;
   void      arise() override;
   void      combat_begin() override;
   void      regen( timespan_t periodicity ) override;
@@ -1179,6 +1184,10 @@ struct secondary_ability_trigger_t : public event_t
 
   void execute() override
   {
+    // Ensure target is still available and did not demise during delay.
+    if ( state && state->target && state->target->is_sleeping() || target && target->is_sleeping() )
+      return;
+
     actions::rogue_attack_t* attack = rogue_t::cast_attack( action );
     auto bg = attack -> background, d = attack -> dual, r = attack -> repeating;
 
@@ -1193,8 +1202,8 @@ struct secondary_ability_trigger_t : public event_t
     // No state, construct one and grab combo points from the event instead of current CP amount.
     else
     {
-      action_state_t* s = attack -> get_state();
       attack -> set_target( target );
+      action_state_t* s = attack -> get_state();
       actions::rogue_attack_t::cast_state( s ) -> cp = cp;
       // Calling snapshot_internal, snapshot_state would overwrite CP.
       attack -> snapshot_internal( s, attack -> snapshot_flags, attack -> amount_type( s ) );
@@ -1747,6 +1756,9 @@ void rogue_attack_t::consume_resource()
 void rogue_attack_t::execute()
 {
   melee_attack_t::execute();
+
+  if ( harmful )
+    p() -> restealth_allowed = false;
 
   p() -> trigger_auto_attack( execute_state );
 
@@ -2579,8 +2591,8 @@ struct garrote_t : public rogue_attack_t
 
     if ( p() -> azerite.shrouded_suffocation.ok() )
     {
-      // Note: Looks like Shadowmeld does not work for the damage gain.
-      debug_cast<garrote_state_t*>( state ) -> shrouded_suffocation = p() -> stealthed( STEALTH_BASIC | STEALTH_SUBTERFUGE );
+      // Note: Looks like Shadowmeld works for the damage gain.
+      debug_cast<garrote_state_t*>( state ) -> shrouded_suffocation = p() -> stealthed();
     }
   }
 
@@ -4000,16 +4012,12 @@ struct stealth_t : public rogue_attack_t
     if ( ! p() -> in_combat )
       return true;
 
-    // Special case: We allow stealth when the actor is not been in "active combat" (only invulnerable targets).
-    // This allows us to better approximate restealthing in dungeons.
-    for ( const auto enemy : sim -> target_non_sleeping_list )
-    {
-      if ( enemy -> debuffs.invulnerable != nullptr && enemy -> debuffs.invulnerable->up() )
-        continue;
+    // HAX: Allow restealth for DungeonSlice against non-"boss" targets because Shadowmeld drops combat against trash.
+    if ( p()->sim->fight_style == "DungeonSlice" && p()->player_t::buffs.shadowmeld->check() && target->name_str.find("Boss") == std::string::npos )
+      return true;
 
-      // We are in combat with an active damagable enemy
+    if ( !p()->restealth_allowed )
       return false;
-    }
 
     return rogue_attack_t::ready();
   }
@@ -4285,6 +4293,17 @@ expr_t* actions::rogue_attack_t::create_expression( const std::string& name_str 
             ( data().id() == 703 || data().id() == 1943 || this -> name_str == "crimson_tempest" ) )
   {
     return new exsanguinated_expr_t( this );
+  }
+  else if ( util::str_compare_ci( name_str, "ss_buffed") )
+  {
+    return make_fn_expr( "ss_buffed", [ this ]() {
+    rogue_td_t* td_ = td( target );
+    if ( ! td_ -> dots.garrote -> is_ticking() )
+    {
+      return 0.0;
+    }
+    return debug_cast<const garrote_state_t*>( td_ -> dots.garrote -> state ) -> shrouded_suffocation ? 1.0 : 0.0;
+  } );
   }
 
   return melee_attack_t::create_expression( name_str );
@@ -5717,7 +5736,7 @@ void rogue_t::init_action_list()
     cds -> add_action( this, "Vanish", "if=talent.nightstalker.enabled&!talent.exsanguinate.enabled&combo_points>=cp_max_spend&debuff.vendetta.up", "Vanish with Nightstalker + No Exsg: Maximum CP and Vendetta up" );
     cds -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&(!talent.exsanguinate.enabled|!variable.single_target)&!stealthed.rogue&cooldown.garrote.up&dot.garrote.refreshable&(spell_targets.fan_of_knives<=3&combo_points.deficit>=1+spell_targets.fan_of_knives|spell_targets.fan_of_knives>=4&combo_points.deficit>=4)", "Vanish with Subterfuge + (No Exsg or 2T+): No stealth/subterfuge, Garrote Refreshable, enough space for incoming Garrote CP" );
     cds -> add_action( this, "Vanish", "if=talent.master_assassin.enabled&!stealthed.all&master_assassin_remains<=0&!dot.rupture.refreshable", "Vanish with Master Assasin: No stealth and no active MA buff, Rupture not in refresh range" );
-    cds -> add_action( "shadowmeld,if=!stealthed.all&azerite.shrouded_suffocation.enabled&dot.garrote.refreshable&dot.garrote.pmultiplier<=1&combo_points.deficit>=3", "Shadowmeld for Shrouded Suffocation CP (dmg amp does not work)" );
+    cds -> add_action( "shadowmeld,if=!stealthed.all&azerite.shrouded_suffocation.enabled&dot.garrote.refreshable&dot.garrote.pmultiplier<=1&combo_points.deficit>=1", "Shadowmeld for Shrouded Suffocation" );
     cds -> add_talent( this, "Exsanguinate", "if=dot.rupture.remains>4+4*cp_max_spend&!dot.garrote.refreshable", "Exsanguinate when both Rupture and Garrote are up for long enough" );
     cds -> add_talent( this, "Toxic Blade", "if=dot.rupture.ticking" );
 
@@ -5735,7 +5754,7 @@ void rogue_t::init_action_list()
     action_priority_list_t* dot = get_action_priority_list( "dot", "Damage over time abilities" );
     dot -> add_action( this, "Rupture", "if=talent.exsanguinate.enabled&((combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1)|(!ticking&(time>10|combo_points>=2)))", "Special Rupture setup for Exsg" );
     dot -> add_action( "pool_resource,for_next=1", "Garrote upkeep, also tries to use it as a special generator for the last CP before a finisher" );
-    dot -> add_action( this, "Garrote", "cycle_targets=1,if=(!talent.subterfuge.enabled|!(cooldown.vanish.up&cooldown.vendetta.remains<=4))&combo_points.deficit>=1&refreshable&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&(target.time_to_die-remains>4&spell_targets.fan_of_knives<=1|target.time_to_die-remains>12)" );
+    dot -> add_action( this, "Garrote", "cycle_targets=1,if=(!talent.subterfuge.enabled|!(cooldown.vanish.up&cooldown.vendetta.remains<=4))&combo_points.deficit>=1&refreshable&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&!ss_buffed&(target.time_to_die-remains>4&spell_targets.fan_of_knives<=1|target.time_to_die-remains>12)" );
     dot -> add_talent( this, "Crimson Tempest", "if=spell_targets>=2&remains<2+(spell_targets>=5)&combo_points>=4", "Crimson Tempest only on multiple targets at 4+ CP when running out in 2s (up to 4 targets) or 3s (5+ targets)" );
     dot -> add_action( this, "Rupture", "cycle_targets=1,if=combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&target.time_to_die-remains>4", "Keep up Rupture at 4+ on all targets (when living long enough and not snapshot)" );
 
@@ -5743,10 +5762,11 @@ void rogue_t::init_action_list()
     action_priority_list_t* direct = get_action_priority_list( "direct", "Direct damage abilities" );
     direct -> add_action( this, "Envenom", "if=combo_points>=4+talent.deeper_stratagem.enabled&(debuff.vendetta.up|debuff.toxic_blade.up|energy.deficit<=25+variable.energy_regen_combined|!variable.single_target)&(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)", "Envenom at 4+ (5+ with DS) CP. Immediately on 2+ targets, with Vendetta, or with TB; otherwise wait for some energy. Also wait if Exsg combo is coming up." );
     direct -> add_action( "variable,name=use_filler,value=combo_points.deficit>1|energy.deficit<=25+variable.energy_regen_combined|!variable.single_target" );
-    direct -> add_action( this, "Poisoned Knife", "if=variable.use_filler&buff.sharpened_blades.stack>=29", "Poisoned Knife at 29+ stacks of Sharpened Blades." );
+    if ( !maybe_ptr( dbc.ptr ) )
+      direct -> add_action( this, "Poisoned Knife", "if=variable.use_filler&buff.sharpened_blades.stack>=29", "Poisoned Knife at 29+ stacks of Sharpened Blades." );
     direct -> add_action( this, "Fan of Knives", "if=variable.use_filler&(buff.hidden_blades.stack>=19|spell_targets.fan_of_knives>=4+(azerite.double_dose.rank>2)+stealthed.rogue)" );
     direct -> add_action( this, "Fan of Knives", "target_if=!dot.deadly_poison_dot.ticking,if=variable.use_filler&spell_targets.fan_of_knives>=3", "Fan of Knives to apply Deadly Poison if inactive on any target at 3 targets" );
-    direct -> add_talent( this, "Blindside", "if=variable.use_filler&(buff.blindside.up|!talent.venom_rush.enabled)" );
+    direct -> add_talent( this, "Blindside", "if=variable.use_filler&(buff.blindside.up|!talent.venom_rush.enabled&!azerite.double_dose.enabled)" );
     direct -> add_action( this, "Mutilate", "target_if=!dot.deadly_poison_dot.ticking,if=variable.use_filler&spell_targets.fan_of_knives=2", "Tab-Mutilate to apply Deadly Poison at 2 targets" );
     direct -> add_action( this, "Mutilate", "if=variable.use_filler" );
   }
@@ -5761,7 +5781,7 @@ void rogue_t::init_action_list()
     def -> add_action( "variable,name=rtb_reroll,value=rtb_buffs<2&(buff.loaded_dice.up|!buff.grand_melee.up&!buff.ruthless_precision.up)", "Reroll for 2+ buffs with Loaded Dice up. Otherwise reroll for 2+ or Grand Melee or Ruthless Precision." );
     def -> add_action( "variable,name=rtb_reroll,op=set,if=azerite.deadshot.enabled|azerite.ace_up_your_sleeve.enabled,value=rtb_buffs<2&(buff.loaded_dice.up|buff.ruthless_precision.remains<=cooldown.between_the_eyes.remains)", "Reroll for 2+ buffs or Ruthless Precision with Deadshot or Ace up your Sleeve." );
     def -> add_action( "variable,name=rtb_reroll,op=set,if=azerite.snake_eyes.enabled,value=rtb_buffs<2|(azerite.snake_eyes.rank=3&rtb_buffs<5)", "Always reroll for 2+ buffs with Snake Eyes unless at 3 Ranks, then reroll everything." );
-    def -> add_action( "variable,name=rtb_reroll,op=reset,if=azerite.snake_eyes.rank>=2&buff.snake_eyes.stack>=2-buff.broadside.up", "Do not reroll if Snake Eyes is at 2+ Ranks and 2+ stacks of the buff (1+ stack with Broadside up)" );
+    def -> add_action( "variable,name=rtb_reroll,op=reset,if=azerite.snake_eyes.enabled&buff.snake_eyes.stack>=2-buff.broadside.up", "Do not reroll with 2+ stacks of the Snake Eyes buff (1+ stack with Broadside up)." );
     def -> add_action( "variable,name=ambush_condition,value=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&cooldown.ghostly_strike.remains<1)+buff.broadside.up&energy>60&!buff.skull_and_crossbones.up" );
     def -> add_action( "variable,name=blade_flurry_sync,value=spell_targets.blade_flurry<2&raid_event.adds.in>20|buff.blade_flurry.up", "With multiple targets, this variable is checked to decide whether some CDs should be synced with Blade Flurry" );
     def -> add_action( "call_action_list,name=stealth,if=stealthed.all" );
@@ -5903,7 +5923,8 @@ void rogue_t::init_action_list()
 
     // Builders
     action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
-    build -> add_action( this, "Shuriken Toss", "if=!talent.nightstalker.enabled&(!talent.dark_shadow.enabled|cooldown.symbols_of_death.remains>10)&buff.sharpened_blades.stack>=29&spell_targets.shuriken_storm<=(3*azerite.sharpened_blades.rank)", "Shuriken Toss at 29+ Sharpened Blades stacks. Up to 3 targets per rank. Save for stealth if using Nightstalker or Dark Shadow when possible." );
+    if ( !maybe_ptr( dbc.ptr ) )
+      build -> add_action( this, "Shuriken Toss", "if=!talent.nightstalker.enabled&(!talent.dark_shadow.enabled|cooldown.symbols_of_death.remains>10)&buff.sharpened_blades.stack>=29&spell_targets.shuriken_storm<=(3*azerite.sharpened_blades.rank)", "Shuriken Toss at 29+ Sharpened Blades stacks. Up to 3 targets per rank. Save for stealth if using Nightstalker or Dark Shadow when possible." );
     build -> add_action( this, "Shuriken Storm", "if=spell_targets>=2" );
     build -> add_talent( this, "Gloomblade" );
     build -> add_action( this, "Backstab" );
@@ -7039,8 +7060,35 @@ void rogue_t::reset()
 
   last_nightblade_target = nullptr;
 
+  restealth_allowed = false;
+
   weapon_data[ WEAPON_MAIN_HAND ].reset();
   weapon_data[ WEAPON_OFF_HAND ].reset();
+}
+
+// rogue_t::activate ========================================================
+
+struct restealth_callback_t
+{
+  rogue_t* r;
+  restealth_callback_t( rogue_t* p ) : r( p )
+  { }
+
+  void operator()( player_t* )
+  {
+    // Special case: We allow stealth when the actor has no active targets
+    // (which excludes invulnerable ones if ignore_invulnerable_targets is set like in the DungeonSlice fightstyle).
+    // This allows us to better approximate restealthing in dungeons.
+    if ( r->sim->target_non_sleeping_list.empty() )
+      r->restealth_allowed = true;
+  }
+};
+
+void rogue_t::activate()
+{
+  player_t::activate();
+
+  sim->target_non_sleeping_list.register_callback( restealth_callback_t( this ) );
 }
 
 // rogue_t::swap_weapon =====================================================

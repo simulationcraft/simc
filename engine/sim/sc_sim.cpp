@@ -1395,6 +1395,7 @@ sim_t::sim_t() :
   maximize_reporting( false ),
   apikey( get_api_key() ),
   distance_targeting_enabled( false ),
+  ignore_invulnerable_targets( false ),
   enable_dps_healing( false ),
   scaling_normalized( 1.0 ),
   // Multi-Threading
@@ -2202,6 +2203,8 @@ void sim_t::init_fight_style()
     overrides.battle_shout         = 1;
     overrides.power_word_fortitude = 1;
     overrides.bloodlust            = 1;
+
+    ignore_invulnerable_targets = true;
 
     raid_events_str +=
         "/invulnerable,cooldown=500,duration=500,retarget=1"
@@ -3476,6 +3479,7 @@ void sim_t::create_options()
   add_option( opt_func( "maximize_reporting", parse_maximize_reporting ) );
   add_option( opt_string( "apikey", apikey ) );
   add_option( opt_bool( "distance_targeting_enabled", distance_targeting_enabled ) );
+  add_option( opt_bool( "ignore_invulnerable_targets", ignore_invulnerable_targets ) );
   add_option( opt_bool( "enable_dps_healing", enable_dps_healing ) );
   add_option( opt_float( "scaling_normalized", scaling_normalized ) );
   add_option( opt_int( "global_item_upgrade_level", global_item_upgrade_level ) );
@@ -3547,6 +3551,8 @@ void sim_t::create_options()
         bfa_opts.secrets_of_the_deep_chance, 0, 1 ) );
   add_option( opt_float( "bfa.secrets_of_the_deep_collect_chance",
         bfa_opts.secrets_of_the_deep_collect_chance, 0, 1 ) );
+  add_option( opt_int( "bfa.initial_archive_of_the_titans_stacks",
+        bfa_opts.initial_archive_of_the_titans_stacks, 0, 20 ) );
   add_option( opt_int( "bfa.reorigination_array_stacks",
         bfa_opts.reorigination_array_stacks, 0, 10 ) );
   add_option( opt_bool( "bfa.reorigination_array_ignore_scale_factors",
@@ -3793,7 +3799,7 @@ void sim_t::detailed_progress( std::string* detail, int current_iterations, int 
   if ( detail )
   {
     detail -> clear();
-    *detail = fmt::format("fooo {:d}/{:d}", current_iterations, total_iterations );
+    *detail = fmt::format("Iteration {:d}/{:d}", current_iterations, total_iterations );
   }
 }
 

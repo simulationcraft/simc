@@ -4,33 +4,33 @@ import subprocess
 import math
 
 import numpy as np
-import xml.etree.ElementTree as ET
+import json
 
 
 def main():
     simc_bin = "../engine/simc"
-    # profile_dir="../profiles/Tier16H/"
-    name = "Raid_T18M"
+    name = "T22_Raid"
     profile = name + ".simc"
     extra_options = "deterministic=1"
     threads = 1
-    output_dir = "/home/sc/tmp/"
+    output_dir = "/tmp"
 
     iterations = 100
-    num_repetitions = 20
+    num_repetitions = 100
     list_cpu_seconds = []
 
     for repetition in range(num_repetitions):
-        command = "{bin} {profile} {eo} iterations={iterations} threads={threads} output={output} xml={xml}".format(bin=simc_bin, profile=profile, eo=extra_options, iterations=iterations, threads=threads, output=output_dir + profile + ".txt", xml=output_dir + profile + ".xml")
+        json_file = output_dir + profile + ".json"
+        command = "{bin} {profile} {eo} iterations={iterations} threads={threads} output={output} json={json}".format(bin=simc_bin, profile=profile, eo=extra_options, iterations=iterations, threads=threads, output=output_dir + profile + ".txt", json=json_file)
         command = command.split(" ")
         print("Calling cmd={}".format(command))
         subprocess.call(command)
 
-        tree = ET.parse(output_dir + profile + ".xml")
-        root = tree.getroot()
-        cpu_seconds = float(root.find("performance").find("cpu_seconds").text)
-        print("Done simulation #{n} of {rep} with iterations={it}: cpu_seconds={t}".format(n=(repetition + 1), rep=num_repetitions, it=iterations, t=cpu_seconds))
-        list_cpu_seconds.append(cpu_seconds)
+        with open(json_file) as f:
+            data = json.load(f)
+            cpu_seconds = float(data["sim"]["statistics"]["elapsed_time_seconds"])
+            print("Done simulation #{n} of {rep} with iterations={it}: cpu_seconds={t}".format(n=(repetition + 1), rep=num_repetitions, it=iterations, t=cpu_seconds))
+            list_cpu_seconds.append(cpu_seconds)
 
     print("mean: %s" % (np.mean(list_cpu_seconds)))
     print("stddev: %s" % (np.std(list_cpu_seconds)))

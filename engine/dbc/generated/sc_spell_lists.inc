@@ -1083,7 +1083,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       114282, // Treant Form (Shapeshift)
            0,
     },
-    // Balance tree, 23 abilities
+    // Balance tree, 24 abilities
     {
        22812, // Barkskin
       194223, // Celestial Alignment
@@ -1107,6 +1107,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         2908, // Soothe
       191034, // Starfall
        78674, // Starsurge
+      202461, // Stellar Drift
        93402, // Sunfire (Solar)
            0,
     },

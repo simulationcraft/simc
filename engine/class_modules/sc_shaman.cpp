@@ -909,12 +909,15 @@ struct lightning_shield_overcharge_buff_t : public buff_t
     : buff_t( p, "lightning_shield_overcharge", p->find_spell( 273323 ) )
   {
     set_duration( s_data->duration() );
-    set_period( s_data->effectN( 2 ).period() );
+    if ( !p->dbc.ptr )
+    {
+      set_period( s_data->effectN( 2 ).period() );
 
-    set_tick_callback( [p]( buff_t* b, int, const timespan_t& ) {
-      double g = b->data().effectN( 2 ).base_value();
-      p->resource_gain( RESOURCE_MAELSTROM, g, p->gain.lightning_shield_overcharge );
-    } );
+      set_tick_callback( [p]( buff_t* b, int, const timespan_t& ) {
+        double g = b->data().effectN( 2 ).base_value();
+        p->resource_gain( RESOURCE_MAELSTROM, g, p->gain.lightning_shield_overcharge );
+      } );
+    }
   }
 };
 
@@ -2090,7 +2093,7 @@ struct base_wolf_t : public shaman_pet_t
   base_wolf_t( shaman_t* owner, const std::string& name )
     : shaman_pet_t( owner, name ), alpha_wolf( nullptr ), alpha_wolf_buff( nullptr ), wolf_type( SPIRIT_WOLF )
   {
-    owner_coeff.ap_from_ap = 1.0;
+    owner_coeff.ap_from_ap = dbc.ptr ? 0.6 : 1.0;
 
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
   }
@@ -2714,7 +2717,12 @@ struct flametongue_weapon_spell_t : public shaman_spell_t
     if ( player->specialization() == SHAMAN_ENHANCEMENT )
     {
       snapshot_flags          = STATE_AP;
-      attack_power_mod.direct = 0.044;
+      attack_power_mod.direct = player->dbc.ptr ? 0.0264 : 0.044;
+
+	  if ( player->main_hand_weapon.type != WEAPON_NONE )
+      {
+        attack_power_mod.direct *= player->main_hand_weapon.swing_time.total_seconds() / 2.6;
+      }
     }
   }
 };
@@ -3005,7 +3013,7 @@ struct stormstrike_attack_t : public shaman_attack_t
     {
 	  //currently buggy on ptr, is applying 2/3 to each hit instead of 1/3 on oh
       //double tf_bonus = 0.5 * p()->azerite.thunderaans_fury.value( 2 );
-      double tf_bonus = (2/3) * p()->azerite.thunderaans_fury.value( 2 );
+      double tf_bonus = ( 2 / 3.0 ) * p()->azerite.thunderaans_fury.value( 2 );
       b += tf_bonus;
     }
 
@@ -3052,7 +3060,7 @@ struct windstrike_attack_t : public stormstrike_attack_t
     {
       // currently buggy on ptr, is applying 2/3 to each hit instead of 1/3 on oh
       // double tf_bonus = 0.5 * p()->azerite.thunderaans_fury.value( 2 );
-      double tf_bonus = ( 2 / 3 ) * p()->azerite.thunderaans_fury.value( 2 );
+      double tf_bonus = ( 2 / 3.0 ) * p()->azerite.thunderaans_fury.value( 2 );
       b += tf_bonus;
     }
 

@@ -980,7 +980,7 @@ void paladin_t::generate_action_prio_list_prot()
   def -> add_action( this, "Consecration", "if=!consecration.up" );
 
   def -> add_action( this, "Judgment", "if=(cooldown.judgment.remains<gcd&cooldown.judgment.charges_fractional>1&cooldown_react)|!talent.crusaders_judgment.enabled" );
-  def -> add_action( this, "Avenger's Shield", ",if=cooldown_react" );
+  def -> add_action( this, "Avenger's Shield", "if=cooldown_react" );
   def -> add_action( this, "Judgment","if=cooldown_react|!talent.crusaders_judgment.enabled" );
   def -> add_action( "lights_judgment,if=!talent.seraphim.enabled|buff.seraphim.up" );
   def -> add_talent( this, "Blessed Hammer", "strikes=2" );
