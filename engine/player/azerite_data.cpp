@@ -1413,6 +1413,11 @@ void archive_of_the_titans( special_effect_t& effect )
   }
 
   effect.player->register_combat_begin( [ buff, driver, reorg ]( player_t* ) {
+    if ( buff->sim->bfa_opts.initial_archive_of_the_titans_stacks )
+    {
+      buff->trigger( buff->sim->bfa_opts.initial_archive_of_the_titans_stacks );
+    }
+
     if ( reorg )
     {
       reorg->trigger( buff->sim->bfa_opts.reorigination_array_stacks );

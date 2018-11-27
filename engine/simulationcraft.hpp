@@ -1117,6 +1117,8 @@ struct sim_t : private sc_thread_t
     double              secrets_of_the_deep_collect_chance = 1.0;
     /// Gutripper base RPPM when target is above 30%
     double              gutripper_default_rppm = 2.0;
+    /// Initial stacks for Archive of the Titans
+    int                 initial_archive_of_the_titans_stacks = 0;
     /// Number of Reorigination array stats on the actors in the sim
     int                 reorigination_array_stacks = 0;
     /// Allow Reorigination Array to ignore scale factor stat changes (default false)

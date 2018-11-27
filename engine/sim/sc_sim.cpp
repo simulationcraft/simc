@@ -3551,6 +3551,8 @@ void sim_t::create_options()
         bfa_opts.secrets_of_the_deep_chance, 0, 1 ) );
   add_option( opt_float( "bfa.secrets_of_the_deep_collect_chance",
         bfa_opts.secrets_of_the_deep_collect_chance, 0, 1 ) );
+  add_option( opt_int( "bfa.initial_archive_of_the_titans_stacks",
+        bfa_opts.initial_archive_of_the_titans_stacks, 0, 20 ) );
   add_option( opt_int( "bfa.reorigination_array_stacks",
         bfa_opts.reorigination_array_stacks, 0, 10 ) );
   add_option( opt_bool( "bfa.reorigination_array_ignore_scale_factors",
