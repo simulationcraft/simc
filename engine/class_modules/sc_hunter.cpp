@@ -4035,11 +4035,16 @@ struct dire_beast_t: public hunter_spell_t
 
 struct bestial_wrath_t: public hunter_spell_t
 {
+  timespan_t precast_time = timespan_t::zero();
+
   bestial_wrath_t( hunter_t* player, const std::string& options_str ):
     hunter_spell_t( "bestial_wrath", player, player -> specs.bestial_wrath )
   {
+    add_option( opt_timespan( "precast_time", precast_time ) );
     parse_options( options_str );
     harmful = may_hit = false;
+    
+    precast_time = clamp( precast_time, timespan_t::zero(), data().duration() );
   }
 
   void execute() override
@@ -4052,6 +4057,17 @@ struct bestial_wrath_t: public hunter_spell_t
 
     for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p() -> pets.main, p() -> pets.animal_companion ) )
       pet -> buffs.bestial_wrath -> trigger();
+
+    // adjust for precasting
+    if ( ! player -> in_combat && precast_time != timespan_t::zero() )
+    {
+      p() -> buffs.bestial_wrath -> extend_duration( player, -precast_time );
+      p() -> buffs.haze_of_rage -> extend_duration( player, -precast_time );
+      cooldown -> adjust( -precast_time );
+
+      for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p() -> pets.main, p() -> pets.animal_companion ) )
+        pet -> buffs.bestial_wrath -> extend_duration (pet, -precast_time);
+    }
   }
 
   bool ready() override
@@ -4068,15 +4084,19 @@ struct bestial_wrath_t: public hunter_spell_t
 struct aspect_of_the_wild_t: public hunter_spell_t
 {
   bool precombat;
+  timespan_t precast_time = timespan_t::zero();
 
   aspect_of_the_wild_t( hunter_t* p, const std::string& options_str ):
     hunter_spell_t( "aspect_of_the_wild", p, p -> specs.aspect_of_the_wild ),
     precombat()
-  {
+  {   
+    add_option( opt_timespan( "precast_time", precast_time ) );
     parse_options( options_str );
 
     harmful = may_hit = false;
     dot_duration = timespan_t::zero();
+        
+    precast_time = clamp( precast_time, timespan_t::zero(), data().duration() );
   }
 
   void init_finished() override
@@ -4108,6 +4128,13 @@ struct aspect_of_the_wild_t: public hunter_spell_t
 
     if ( p() -> buffs.primal_instincts -> trigger() )
       p() -> cooldowns.barbed_shot -> reset( true );
+
+    // adjust for precasting
+    if ( ! player -> in_combat && precast_time != timespan_t::zero() )
+    {
+      p() -> buffs.aspect_of_the_wild -> extend_duration( player, -precast_time );
+      cooldown -> adjust( -precast_time );
+    }
   }
 };
 
@@ -5421,8 +5448,8 @@ void hunter_t::apl_bm()
   action_priority_list_t* precombat    = get_action_priority_list( "precombat" );
 
   // Precombat actions
-  precombat -> add_action( this, "Aspect of the Wild", "if=!azerite.primal_instincts.enabled" );
-  precombat -> add_action( this, "Bestial Wrath", "if=azerite.primal_instincts.enabled" );
+  precombat -> add_action( this, "Aspect of the Wild", "precast_time=1.5", "if=!azerite.primal_instincts.enabled" );
+  precombat -> add_action( this, "Bestial Wrath", "precast_time=1.5", if=azerite.primal_instincts.enabled" );
 
   default_list -> add_action( "auto_shot" );
 
