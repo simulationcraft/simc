@@ -4062,11 +4062,8 @@ struct bestial_wrath_t: public hunter_spell_t
     if ( ! player -> in_combat && precast_time != timespan_t::zero() )
     {
       p() -> buffs.bestial_wrath -> extend_duration( player, -precast_time );
-      if(precast_time >= timespan_t::from_seconds( 8.0 )) {
-        p() -> buffs.haze_of_rage -> extend_duration( player, -timespan_t::from_seconds( 8.0 ) );
-      } else {
-        p() -> buffs.haze_of_rage -> extend_duration( player, -precast_time );
-      }
+      p() -> buffs.haze_of_rage -> extend_duration( player, std::max( -precast_time, -timespan_t::from_seconds( 8.0 ) ));
+
       cooldown -> adjust( -precast_time );
 
       for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p() -> pets.main, p() -> pets.animal_companion ) )
@@ -5452,8 +5449,8 @@ void hunter_t::apl_bm()
   action_priority_list_t* precombat    = get_action_priority_list( "precombat" );
 
   // Precombat actions
-  precombat -> add_action( this, "Aspect of the Wild", "precast_time=2", "if=!azerite.primal_instincts.enabled" );
-  precombat -> add_action( this, "Bestial Wrath", "precast_time=2", "if=azerite.primal_instincts.enabled" );
+  precombat -> add_action( this, "Aspect of the Wild", "precast_time=2,if=!azerite.primal_instincts.enabled" );
+  precombat -> add_action( this, "Bestial Wrath", "precast_time=2,if=azerite.primal_instincts.enabled" );
 
   default_list -> add_action( "auto_shot" );
 

@@ -27,10 +27,8 @@ actions.precombat+=/summon_pet
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
-# if=!azerite.primal_instincts.enabled
-actions.precombat+=/aspect_of_the_wild,precast_time=2
-# if=azerite.primal_instincts.enabled
-actions.precombat+=/bestial_wrath,precast_time=2
+actions.precombat+=/aspect_of_the_wild,precast_time=2,if=!azerite.primal_instincts.enabled
+actions.precombat+=/bestial_wrath,precast_time=2,if=azerite.primal_instincts.enabled
 
 # Executed every time the actor is available.
 actions=auto_shot
