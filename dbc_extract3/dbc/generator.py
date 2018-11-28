@@ -1593,6 +1593,7 @@ class SpellDataGenerator(DataGenerator):
           ( 135597, 3 ),       # Tooth and Claw absorb buff
           ( 155784, 3 ),       # Primal Tenacity buff
           ( 137542, 0 ),       # Displacer Beast buff
+          ( 157228, 1 ),       # Owlkin Frenzy
           ( 185321, 3 ),       # Stalwart Guardian buff (T18 trinket)
           ( 188046, 5 ),       # T18 2P Faerie casts this spell
           ( 202461, 1 ),       # Stellar Drift mobility buff
