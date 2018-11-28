@@ -1747,23 +1747,21 @@ double dbc_t::armor_mitigation_constant( unsigned level ) const
 {
   assert( level > 0 && level <= ( MAX_SCALING_LEVEL + 3 ) );
 #if SC_USE_PTR
-  return ptr ? _ptr__armor_mitigation_by_lvl[ level - 1 ] : __armor_mitigation_by_lvl[ level - 1 ];
+  return ptr ? __ptr_armor_mitigation_constants_data[ level - 1 ]
+             : __armor_mitigation_constants_data[ level - 1 ];
 #else
-  return __armor_mitigation_by_lvl[ level - 1 ];
+  return __armor_mitigation_constants_data[ level - 1 ];
 #endif
 }
 
-double dbc_t::npc_armor_mitigation_constant( unsigned level ) const
+double dbc_t::npc_armor_value( unsigned level ) const
 {
-  if ( level == 0 || level > MAX_LEVEL )
-  {
-    return 0;
-  }
+  assert( level > 0 && level <= ( MAX_SCALING_LEVEL + 3 ) );
 #if SC_USE_PTR
-  return ptr ? __ptr_npc_armor_constants_data[ level - 1 ] :
-               __npc_armor_constants_data[ level - 1 ];
+  return ptr ? __ptr_npc_armor_data[ level - 1 ]
+             : __npc_armor_data[ level - 1 ];
 #else
-  return __npc_armor_constants_data[ level - 1 ];
+  return __npc_armor_data[ level - 1 ];
 #endif
 }
 

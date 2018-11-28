@@ -1517,7 +1517,7 @@ public:
   double health_per_stamina( unsigned level ) const;
   double item_socket_cost( unsigned ilevel ) const;
   double armor_mitigation_constant( unsigned level ) const;
-  double npc_armor_mitigation_constant( unsigned level ) const;
+  double npc_armor_value( unsigned level ) const;
 
   double combat_rating( unsigned combat_rating_id, unsigned level ) const;
 

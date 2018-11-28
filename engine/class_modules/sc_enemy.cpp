@@ -1266,6 +1266,7 @@ void enemy_t::init_defense()
     double& a = initial.stats.armor;
 
     // a wild equation appears. It's super effective.
+    /*
     switch ( level() )
     {
       case 1: a = 36; break;
@@ -1347,6 +1348,8 @@ void enemy_t::init_defense()
       case 123: a = 3336; break; // checked
       default: a = std::floor(0.006464588162215 * std::exp(0.123782410252464 * level()) + 0.5); break;
     }
+    */
+    a = dbc.npc_armor_value( level() );
   }
 
   // for future reference, the equations above fit the given values
