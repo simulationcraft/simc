@@ -19,7 +19,8 @@ enum secondary_trigger_e
   TRIGGER_WEAPONMASTER,
   TRIGGER_SECRET_TECHNIQUE,
   TRIGGER_SHURIKEN_TORNADO,
-  TRIGGER_REPLICATING_SHADOWS
+  TRIGGER_REPLICATING_SHADOWS,
+  TRIGGER_INTERNAL_BLEEDING
 };
 
 enum stealth_type_e
@@ -1291,8 +1292,6 @@ struct internal_bleeding_t : public rogue_attack_t
   {
     background = true;
     hasted_ticks = true;
-    // Need to fake this here so it uses the correct AP coefficient
-    base_costs[ RESOURCE_COMBO_POINT ] = 1;
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -1312,6 +1311,13 @@ struct internal_bleeding_t : public rogue_attack_t
     rogue_attack_t::tick( d );
 
     p() -> trigger_venomous_wounds( d -> state );
+  }
+
+  double composite_persistent_multiplier( const action_state_t* state ) const override
+  {
+    double m = rogue_attack_t::composite_persistent_multiplier( state );
+    m *= cast_state( state ) -> cp;
+    return m;
   }
 };
 
@@ -4048,7 +4054,7 @@ struct kidney_shot_t : public rogue_attack_t
 
     if ( internal_bleeding )
     {
-      internal_bleeding -> schedule_execute( internal_bleeding -> get_state( state ) );
+      make_event<actions::secondary_ability_trigger_t>( *sim, state -> target, internal_bleeding, cast_state( state ) -> cp, TRIGGER_INTERNAL_BLEEDING );
     }
   }
 };
