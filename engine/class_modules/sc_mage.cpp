@@ -2923,8 +2923,11 @@ struct dragons_breath_t : public fire_mage_spell_t
 
 struct evocation_t : public arcane_mage_spell_t
 {
+  int brain_storm_charges;
+
   evocation_t( mage_t* p, const std::string& options_str ) :
-    arcane_mage_spell_t( "evocation", p, p->find_specialization_spell( "Evocation" ) )
+    arcane_mage_spell_t( "evocation", p, p->find_specialization_spell( "Evocation" ) ),
+    brain_storm_charges()
   {
     parse_options( options_str );
 
@@ -2934,12 +2937,18 @@ struct evocation_t : public arcane_mage_spell_t
     harmful = false;
 
     cooldown->duration *= 1.0 + p->spec.evocation_2->effectN( 1 ).percent();
+
+    if ( p->azerite.brain_storm.enabled() )
+      brain_storm_charges = as<int>( p->find_spell( 288466 )->effectN( 1 ).base_value() );
   }
 
   virtual void execute() override
   {
     arcane_mage_spell_t::execute();
+
     p()->trigger_evocation();
+    if ( brain_storm_charges > 0 )
+      p()->trigger_arcane_charge( brain_storm_charges );
   }
 
   virtual void tick( dot_t* d ) override
