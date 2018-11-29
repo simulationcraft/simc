@@ -374,6 +374,7 @@ public:
     buff_t* solar_empowerment;
     buff_t* the_emerald_dreamcatcher; // Legion Legendary
     buff_t* warrior_of_elune;
+    buff_t* owlkin_frenzy;
     buff_t* solar_solstice; //T21 4P Balance
     buff_t* starfall;
     buff_t* astral_acceleration; //T20 4P Balance
@@ -584,6 +585,7 @@ public:
     const spell_data_t* moonkin_2;
     const spell_data_t* sunfire_2;
     const spell_data_t* stellar_drift_2; // stellar drift mobility buff ID 202461
+    const spell_data_t* owlkin_frenzy;
 
     // Guardian
     const spell_data_t* guardian;
@@ -1356,7 +1358,9 @@ struct warrior_of_elune_buff_t : public druid_buff_t<buff_t>
 {
   warrior_of_elune_buff_t( druid_t& p ) :
     base_t( p, "warrior_of_elune", p.talent.warrior_of_elune )
-  {}
+  {
+    set_default_value(p.talent.warrior_of_elune->effectN(1).percent());
+  }
 
   virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
@@ -1955,12 +1959,14 @@ private:
   typedef druid_spell_base_t<spell_t> ab;
 public:
   bool warrior_of_elune;
+  bool owlkin_frenzy;
 
   druid_spell_t( const std::string& token, druid_t* p,
                  const spell_data_t* s      = spell_data_t::nil(),
                  const std::string& options = std::string() )
     : base_t( token, p, s ),
-      warrior_of_elune( data().affected_by( p -> talent.warrior_of_elune -> effectN( 1 ) ) )
+      warrior_of_elune( data().affected_by( p -> talent.warrior_of_elune -> effectN( 1 ) ) ),
+      owlkin_frenzy( data().affected_by( p -> spec.owlkin_frenzy -> effectN( 1 ) ) )
   {
     parse_options( options );
 
@@ -1989,7 +1995,6 @@ public:
     {
       if (warrior_of_elune && p() -> buff.warrior_of_elune -> up() )
         e *= 1.0 + p()->talent.warrior_of_elune->effectN(2).percent();
-
     }
 
     return e;
@@ -2060,6 +2065,18 @@ public:
     return spell_t::usable_moving();
   }
 
+  virtual timespan_t execute_time() const override
+  {
+    timespan_t et = ab::execute_time();
+
+    if (warrior_of_elune)
+      et *= 1 + p()->buff.warrior_of_elune->check_value();
+    if (owlkin_frenzy)
+      et *= 1 + p()->buff.owlkin_frenzy->check_value();
+
+    return et;
+  }
+
   virtual void execute() override
   {
     // Adjust buffs and cooldowns if we're in precombat.
@@ -2075,6 +2092,14 @@ public:
     }
 
     ab::execute();
+
+    if (time_to_execute == timespan_t::zero()) // Check on instant cast to see if instant-cast-buff decrement is needed
+    {
+      if (warrior_of_elune && p()->buff.warrior_of_elune->up())
+        p()->buff.warrior_of_elune->decrement();
+      else if (owlkin_frenzy && p()->buff.owlkin_frenzy->up())
+        p()->buff.owlkin_frenzy->decrement();
+    }
   }
 
   virtual void trigger_impeccable_fel_essence()
@@ -5786,21 +5811,16 @@ struct lunar_strike_t : public druid_spell_t
     if (p() -> buff.lunar_empowerment -> check() )
       et *= 1 + p()->find_spell(164547)->effectN(2).percent();
 
-    if ( p() -> buff.warrior_of_elune -> check() )
-      et *= 1 + p() -> talent.warrior_of_elune -> effectN( 1 ).percent();
-
     return et;
   }
 
   void execute() override
   {
     p() -> buff.lunar_empowerment -> up();
-    p() -> buff.warrior_of_elune -> up();
 
     druid_spell_t::execute();
 
     p() -> buff.lunar_empowerment -> decrement();
-    p() -> buff.warrior_of_elune -> decrement();
 
     if (player->specialization() == DRUID_BALANCE)
     {
@@ -7028,10 +7048,11 @@ void druid_t::init_spells()
   spec.eclipse                    = find_specialization_spell( "Eclipse");
   spec.starfall                   = find_specialization_spell( "Starfall" );
   spec.balance_tier19_2pc         = sets -> has_set_bonus( DRUID_BALANCE, T19, B2 ) ? find_spell( 211089 ) : spell_data_t::not_found();
-  spec.starsurge_2                = find_specialization_spell( 231021 );
-  spec.moonkin_2                  = find_specialization_spell( 231042 );
-  spec.sunfire_2                  = find_specialization_spell( 231050 );
+  spec.starsurge_2                = find_specialization_spell( 231021 ); // Increased empowerment max stacks
+  spec.moonkin_2                  = find_specialization_spell( 231042 ); // Owlkin Frenzy proc rate RAWR
+  spec.sunfire_2                  = find_specialization_spell( 231050 ); // Sunfire spread. currently contains no value data.
   spec.stellar_drift_2            = find_spell( 202461 ); // stellar drift mobility buff
+  spec.owlkin_frenzy              = find_spell( 157228 ); // Owlkin Frenzy RAWR
 
   // Feral
   spec.cat_form                   = find_class_spell( "Cat Form" ) -> ok() ? find_spell( 3025   ) : spell_data_t::not_found();
@@ -7425,6 +7446,10 @@ void druid_t::create_buffs()
                                .max_stack( find_spell( 164545 ) -> max_stacks() + (unsigned) spec.starsurge_2 -> effectN( 1 ).base_value() );
 
   buff.warrior_of_elune      = new warrior_of_elune_buff_t( *this );
+
+  buff.owlkin_frenzy = make_buff(this, "owlkin_frenzy", spec.owlkin_frenzy)
+    ->set_default_value(spec.owlkin_frenzy->effectN(1).percent())
+    ->set_chance(spec.moonkin_2->effectN(1).percent());
 
   buff.astral_acceleration   = make_buff(this, "astral_acceleration", find_spell(242232))
       ->set_cooldown(timespan_t::zero())
@@ -9313,6 +9338,9 @@ void druid_t::assess_damage_imminent_pre_absorb( school_e school, dmg_e dmg, act
                      gain.rage_from_melees );
       cooldown.rage_from_melees -> start( cooldown.rage_from_melees -> duration );
     }
+
+    if (specialization() == DRUID_BALANCE && buff.moonkin_form->check())
+      buff.owlkin_frenzy->trigger();
 
     if ( buff.cenarion_ward -> up() )
       active.cenarion_ward_hot -> execute();
