@@ -202,8 +202,7 @@ struct mind_sear_tick_t final : public priest_spell_t
 
   mind_sear_tick_t( priest_t& p, const spell_data_t* mind_sear )
     : priest_spell_t( "mind_sear_tick", p, mind_sear->effectN( 1 ).trigger() ),
-      insanity_gain( p.find_spell( 208232 )->effectN( 1 ).percent() ),
-      harvested_thoughts_value( priest().azerite.thought_harvester.value( 2 ) )
+      insanity_gain( p.find_spell( 208232 )->effectN( 1 ).percent() )
   {
     background    = true;
     dual          = true;
@@ -228,23 +227,19 @@ struct mind_sear_tick_t final : public priest_spell_t
       }
     }
 
-    if ( priest().buffs.harvested_thoughts->check() && maybe_ptr( priest().dbc.ptr ) )
-    {
-      d += harvested_thoughts_value;
-    }
-
     return d;
   }
 
-  void last_tick( dot_t* d ) override
+  double composite_da_multiplier( const action_state_t* state ) const override
   {
-    priest_spell_t::last_tick( d );
+    double d = priest_spell_t::composite_da_multiplier( state );
 
-    // When you stop casting Mind Sear expire the buff from Thought Harvester
-    if ( maybe_ptr( priest().dbc.ptr ) )
+    if ( priest().buffs.harvested_thoughts->check() && maybe_ptr( priest().dbc.ptr ) )
     {
-      priest().buffs.harvested_thoughts->expire();
+      d *= ( 1.0 + priest().azerite.thought_harvester.spell()->effectN( 1 ).trigger()->effectN( 1 ).trigger()->effectN( 1 ).percent() );
     }
+
+    return d;
   }
 
   void impact( action_state_t* s ) override
@@ -273,6 +268,18 @@ struct mind_sear_t final : public priest_spell_t
     tick_zero           = false;
 
     tick_action = new mind_sear_tick_t( p, p.find_class_spell( "Mind Sear" ) );
+  }
+
+  // TODO: This only works if you DON'T chain mind sear
+  // by chaining sear you will never expire the buff
+  void last_tick( dot_t* d ) override
+  {
+    priest_spell_t::last_tick( d );
+
+    if ( maybe_ptr( priest().dbc.ptr ) )
+    {
+      priest().buffs.harvested_thoughts->expire();
+    }
   }
 };
 
@@ -803,9 +810,9 @@ struct vampiric_touch_t final : public priest_spell_t
     */
   }
 
-  double bonus_da( const action_state_t* state ) const override
+  double bonus_ta( const action_state_t* state ) const override
   {
-    double d = priest_spell_t::bonus_da( state );
+    double d = priest_spell_t::bonus_ta( state );
 
     if ( priest().azerite.thought_harvester.enabled() && maybe_ptr( priest().dbc.ptr ) )
     {
@@ -820,12 +827,6 @@ struct vampiric_touch_t final : public priest_spell_t
     priest_spell_t::impact( s );
 
     priest().generate_insanity( insanity_gain, priest().gains.insanity_vampiric_touch_onhit, s->action );
-
-    // TODO: add in proc chance for thought harvester
-    if ( priest().azerite.thought_harvester.enabled() )
-    {
-      priest().buffs.harvested_thoughts->trigger();
-    }
 
     if ( priest().talents.misery->ok() )
     {
@@ -842,6 +843,14 @@ struct vampiric_touch_t final : public priest_spell_t
     if ( !ignore_healing )
     {
       trigger_heal( d->state );
+    }
+
+    if ( d->state->result_amount > 0 && priest().azerite.thought_harvester.enabled() && maybe_ptr( priest().dbc.ptr ) )
+    {
+      if ( priest().rppm.harvested_thoughts->trigger() )
+      {
+        priest().buffs.harvested_thoughts->trigger();
+      }
     }
   }
 };
@@ -1727,8 +1736,16 @@ void priest_t::create_buffs_shadow()
           ->add_invalidate( CACHE_CRIT_CHANCE )
           ->set_max_stack( 100 );
 
-  buffs.harvested_thoughts =
-      make_buff( this, "harvested_thoughts", azerite.thought_harvester.spell()->effectN( 1 ).trigger() );
+  if ( maybe_ptr( dbc.ptr ) )
+  {
+    buffs.harvested_thoughts =
+        make_buff( this, "harvested_thoughts", azerite.thought_harvester.spell()->effectN( 1 ).trigger()->effectN( 1 ).trigger() );
+  }
+  else
+  {
+    buffs.harvested_thoughts =
+        make_buff( this, "harvested_thoughts", azerite.thought_harvester.spell()->effectN( 1 ).trigger() );
+  }
 
   buffs.whispers_of_the_damned =
       make_buff( this, "whispers_of_the_damned", azerite.whispers_of_the_damned.spell()->effectN( 1 ).trigger() )
@@ -1739,6 +1756,7 @@ void priest_t::create_buffs_shadow()
 void priest_t::init_rng_shadow()
 {
   rppm.shadowy_insight = get_rppm( "shadowy_insighty", talents.shadowy_insight );
+  rppm.harvested_thoughts = get_rppm( "harvested_thoughts", azerite.thought_harvester.spell()->effectN( 1 ).trigger() );
 }
 
 void priest_t::init_spells_shadow()
@@ -1979,6 +1997,13 @@ void priest_t::generate_apl_shadow()
                       "buff.voidform.stack<15)" );
   single->add_talent( this, "Shadow Crash", "if=raid_event.adds.in>5&raid_event.adds.duration<20" );
   single->add_action( this, "Mind Blast", "if=variable.dots_up" );
+
+  if ( maybe_ptr( dbc.ptr ) )
+  {
+    single->add_action( this, "Mind Sear",
+                     "if=buff.harvested_thoughts.up" );
+  }
+
   single->add_talent( this, "Void Torrent",
                       "if=dot.shadow_word_pain.remains>4&"
                       "dot.vampiric_touch.remains>4&buff.voidform.up" );
@@ -1997,6 +2022,13 @@ void priest_t::generate_apl_shadow()
   // cleave APL
   cleave->add_action( this, "Void Eruption" );
   cleave->add_talent( this, "Dark Ascension", "if=buff.voidform.down" );
+
+  if ( maybe_ptr( dbc.ptr ) )
+  {
+    cleave->add_action( this, "Mind Sear",
+                     "if=buff.harvested_thoughts.up" );
+  }
+
   cleave->add_action( this, "Void Bolt" );
   cleave->add_talent( this, "Shadow Word: Death", "target_if=target.time_to_die<3|buff.voidform.down" );
 
@@ -2023,7 +2055,8 @@ void priest_t::generate_apl_shadow()
   cleave->add_talent( this, "Void Torrent",
                       "if=buff.voidform.up" );
   cleave->add_action( this, "Mind Sear",
-                      "target_if=spell_targets.mind_sear>2"
+                      "target_if=spell_targets.mind_sear>2&"
+                      "buff.harvested_thoughts.down"
                       ",chain=1,interrupt=1" );
   cleave->add_action( this, "Mind Flay",
                       "chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&"
@@ -2033,6 +2066,13 @@ void priest_t::generate_apl_shadow()
   // aoe APL
   aoe->add_action( this, "Void Eruption" );
   aoe->add_talent( this, "Dark Ascension", "if=buff.voidform.down" );
+
+  if ( maybe_ptr( dbc.ptr ) )
+  {
+    aoe->add_action( this, "Mind Sear",
+                     "if=buff.harvested_thoughts.up" );
+  }
+
   aoe->add_action( this, "Void Bolt",
                    "if=talent.dark_void.enabled&"
                    "dot.shadow_word_pain.remains>travel_time" );
@@ -2040,7 +2080,24 @@ void priest_t::generate_apl_shadow()
   aoe->add_talent( this, "Dark Void", "if=raid_event.adds.in>10" );
   aoe->add_talent( this, "Mindbender" );
   aoe->add_talent( this, "Shadow Crash", "if=raid_event.adds.in>5&raid_event.adds.duration<20" );
+
+  if ( maybe_ptr( dbc.ptr ) )
+  {
+    aoe->add_action( this, "Vampiric Touch",
+                     "target_if=refreshable,if=(target.time_to_die>6)&"
+                      "azerite.thought_harvester.rank>0" );
+    aoe->add_action( this, "Vampiric Touch",
+                     "target_if=dot.shadow_word_pain.refreshable,"
+                     "if=(talent.misery.enabled&target.time_to_die>4)&"
+                     "azerite.thought_harvester.rank>0" );
+    aoe->add_action( this, "Mind Sear",
+                     "if=buff.harvested_thoughts.down,"
+                     "chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&"
+                     "(cooldown.void_bolt.up|cooldown.mind_blast.up)" );
+  }
+
   aoe->add_action( this, "Mind Sear",
+                   "if=buff.harvested_thoughts.down,"
                    "chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&"
                    "(cooldown.void_bolt.up|cooldown.mind_blast.up)" );
   aoe->add_action( this, "Shadow Word: Pain" );

@@ -1,0 +1,133 @@
+
+DPS Ranking:
+  11558 100.0%  Raid
+  11558  100.0%  Base
+
+HPS Ranking:
+      0 100.0%%  Raid
+
+Player: Base none priest shadow 120
+  DPS=11558.3 DPS-Error=18.1572/0.16% DPS-Range=942.423/8.15%
+
+  Talents: 1111132
+  Core Stats:    strength=1527|1467(1467)  agility=1527|1467(1467)  stamina=8838|8035(8035)  intellect=7709|6590(6277)  spirit=0|0(0)  health=176760|160700  mana=19999|19999
+  Generic Stats: mastery=21.97%|21.97%(742)  versatility=1.52%|1.52%(129)  leech=0.00%|0.00%(0)  runspeed=7.00%|7.00%(0)
+  Spell Stats:   power=7709|6590(0)  hit=15.00%|15.00%(0)  crit=17.68%|17.68%(913)  haste=17.90%|17.90%(1217)  speed=17.90%|17.90%  manareg=640|640(0)
+  Attack Stats:  power=0|0(0)  hit=7.50%|7.50%(0)  crit=17.68%|17.68%(913)  expertise=7.50%|7.50%(0)  haste=17.90%|17.90%(1217)  speed=17.90%|17.90%
+  Defense Stats: armor=1142|1142(1142) miss=3.00%|3.00%  dodge=3.00%|3.00%(0)  parry=0.00%|0.00%(0)  block=0.00%|0.00%(0) crit=0.00%|0.00%  versatility=0.76%|0.76%(129)
+  Priorities (actions.precombat):
+    flask/food/augmentation/snapshot_stats/potion/shadowform,if=!buff.shadowform.up/mind_blast/shadow_word_void
+  Priorities (actions.default):
+    potion,if=buff.bloodlust.react|target.time_to_die<=80|target.health.pct<35
+    variable,name=dots_up,op=set,value=dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking
+    run_action_list,name=aoe,if=spell_targets.mind_sear>(5+1*talent.misery.enabled)/run_action_list,name=cleave,if=active_enemies>1
+    run_action_list,name=single,if=active_enemies=1
+  Priorities (actions.single):
+    void_eruption/dark_ascension,if=buff.voidform.down/void_bolt
+    shadow_word_death,if=target.time_to_die<3|cooldown.shadow_word_death.charges=2|(cooldown.shadow_word_death.charges=1&cooldown.shadow_word_death.remains<gcd.max)
+    surrender_to_madness,if=buff.voidform.stack>=(15+buff.bloodlust.up)&target.time_to_die>200|target.time_to_die<75
+    dark_void,if=raid_event.adds.in>10/mindbender
+    shadow_word_death,if=!buff.voidform.up|(cooldown.shadow_word_death.charges=2&buff.voidform.stack<15)
+    shadow_crash,if=raid_event.adds.in>5&raid_event.adds.duration<20/mind_blast,if=variable.dots_up
+    void_torrent,if=dot.shadow_word_pain.remains>4&dot.vampiric_touch.remains>4&buff.voidform.up
+    shadow_word_pain,if=refreshable&target.time_to_die>4&!talent.misery.enabled&!talent.dark_void.enabled
+    vampiric_touch,if=refreshable&target.time_to_die>6|(talent.misery.enabled&dot.shadow_word_pain.refreshable)
+    mind_flay,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(cooldown.void_bolt.up|cooldown.mind_blast.up)/shadow_word_pain
+  Actions:
+    dark_ascension          Count=   5.4| 60.678sec  DPE=21539| 0.00%  DPET=16876  DPR=  0  pDPS=   0
+    dark_ascension_damage   Count=   5.4| 60.678sec  DPE=21539| 3.37%  DPET=    0  DPR=  0  pDPS= 390  Miss= 0.00%  Hit=  7672|  7436|  8180  Crit= 23067| 14873| 32720|20.38%
+    mind_blast              Count=  39.6|  7.477sec  DPE=13124|15.02%  DPET=11141  DPR=  0  pDPS=1735  Miss= 0.00%  Hit= 10666| 10333| 11366  Crit= 21350| 20665| 22732|19.98%
+    mind_flay               Count=  80.5|  3.565sec  DPE=10186|23.68%  DPET= 6687  DPR=  0  pDPS=2733  TickCount=   206  MissTick= 0.00%  Tick=  3306|  3196|  3516  CritTick=  6614|  6392|  7032|20.18%  UpTime= 40.27%
+    potion                  Count=   2.0|  0.000sec  DPE=    0| 0.00%  DPET=    0  DPR=  0  pDPS=   0
+    potion_of_rising_death  Count=   7.9| 30.490sec  DPE=12879| 2.94%  DPET=    0  DPR=  0  pDPS= 344  Miss= 0.00%  Hit= 10732| 10732| 10732  Crit= 21464| 21464| 21464|20.01%
+    shadow_word_pain        Count=   8.4| 36.837sec  DPE=52915| 9.29%  DPET=43646  DPR=  0  pDPS=1073  Miss= 0.00%  Hit=  1781|  1722|  1894  Crit=  3553|  3444|  3789|20.35%  TickCount=   189  MissTick= 0.00%  Tick=  1334|    30|  1421  CritTick=  2670|    40|  2841|20.31%  UpTime= 98.59%
+    shadowfiend             Count=   2.0|180.880sec  DPE=    0| 0.00%  DPET=    0  DPR=  0  pDPS=   0
+    shadowy_apparition      Count=  37.8|  7.540sec  DPE= 3320| 3.62%  DPET=    0  DPR=  0  pDPS= 418  Miss= 0.00%  Hit=  3320|  3209|  3530
+    shadowy_apparitions     Count=  38.4|  7.538sec  DPE= 3267| 0.00%  DPET=    0  DPR=  0  pDPS=   0
+    vampiric_touch          Count=   6.6| 47.442sec  DPE=50163| 9.61%  DPET=41954  DPR=  0  pDPS=1109  TickCount=   125  MissTick= 0.00%  Tick=  2221|    21|  2368  CritTick=  4444|   293|  4736|20.22%  UpTime= 97.35%
+    void_bolt               Count=  58.3|  5.147sec  DPE=11648|19.60%  DPET=10023  DPR=  0  pDPS=2266  Miss= 0.00%  Hit=  9698|  9393| 10333  Crit= 19404| 18787| 20665|20.34%
+    void_eruption           Count=   4.8| 60.149sec  DPE=21550| 0.00%  DPET=10649  DPR=  0  pDPS=   0
+    void_eruption_damage    Count=   4.8| 60.149sec  DPE=21550| 3.02%  DPET=    0  DPR=  0  pDPS= 348  Miss= 0.00%  Hit=  7693|  7436|  8180  Crit= 23020| 14873| 32720|20.33%
+    void_torrent            Count=   6.1| 51.813sec  DPE=36681| 6.49%  DPET= 8682  DPR=  0  pDPS= 749  TickCount=    40  MissTick= 0.00%  Tick=  4649|    37|  5295  CritTick=  9312|    24| 10589|20.12%  UpTime=  8.11%
+   shadowfiend (DPS=3884.15)
+    melee                   Count=  28.0|  7.211sec  DPE= 4162| 3.37%  DPET= 3921  DPR=  0  pDPS=3884  Miss= 0.00%  Hit=  3501|  3501|  3501  Crit=  7001|  7001|  7001|18.88%
+
+  Constant Buffs:
+    arcane_intellect/battle_shout/battlescarred_augmentation/bountiful_captains_feast/flask_of_endless_fathoms/power_word_fortitude
+  Dynamic Buffs:
+    bloodlust               : start=  1.0 refresh=  0.0 interval=  0.0 trigger=  0.0 uptime= 13.52%
+    deadly_navigation       : start=  6.0 refresh= 22.4 interval= 52.4 trigger= 10.3 uptime= 66.62%
+    deadly_navigation_final : start=  5.3 refresh=  0.0 interval= 52.3 trigger= 52.3 uptime= 17.44%
+    insanity_drain_stacks   : start= 10.3 refresh=188.9 interval= 30.8 trigger= 29.7 uptime= 72.85%
+    potion_of_rising_death  : start=  2.0 refresh=  0.0 interval=196.2 trigger=  0.0 uptime= 16.22%
+    shadowform              : start= 10.5 refresh=  0.0 interval= 29.7 trigger= 29.9 uptime= 27.15%
+    twist_of_fate           : start=  1.0 refresh=122.5 interval=  0.0 trigger=  0.8 uptime= 34.63%
+    void_torrent            : start=  6.1 refresh=  0.0 interval= 51.7 trigger= 51.7 uptime=  8.12%
+    voidform                : start= 10.3 refresh=  0.0 interval= 30.8 trigger= 29.7 uptime= 72.85%  benefit= 63.55%
+  Procs:
+    38.4034 | 7.56618sec : Shadowy Apparition Insanity lost to overflow
+  Gains:
+        74.9 : Insanity Gained from Auspicious Spirits      (insanity)     
+       583.3 : Insanity Gained from Mind Blast              (insanity)     
+       742.6 : Insanity Gained from Mind Flay               (insanity)     
+        83.9 : Insanity Gained from Shadowfiend             (insanity)     
+        33.3 : Insanity Gained from Shadow Word: Pain Casts (insanity)       (overflow=1.50%)
+        39.8 : Insanity Gained from Vampiric Touch Casts    (insanity)     
+       781.7 : Insanity Gained from Void Bolt               (insanity)       (overflow=16.14%)
+         0.0 : mana_regen                                   (mana)           (overflow=100.00%)
+    Pet "shadowfiend" Gains:
+  Waiting:  0.00%
+
+
+ *** Targets *** 
+
+Target: Fluffy_Pillow humanoid enemy unknown 123
+  DTPS=11558.3 DTPS-Error=18.1572/0.16% DTPS-Range=942.423/8.15%
+  DPR=0 RPS-Out=11175.4 RPS-In=0 Resource=health Waiting=0 ApM=0
+  Talents: 0000000
+  Core Stats:    strength=0|0(0)  agility=0|0(0)  stamina=0|0(0)  intellect=0|0(0)  spirit=0|0(0)  health=0|2680922  mana=0|0
+  Generic Stats: mastery=0.00%|0.00%(0)  versatility=0.00%|0.00%(0)  leech=0.00%|0.00%(0)  runspeed=7.00%|7.00%(0)
+  Spell Stats:   power=0|0(0)  hit=0.00%|0.00%(0)  crit=0.00%|0.00%(0)  haste=0.00%|0.00%(0)  speed=0.00%|0.00%  manareg=0|0(0)
+  Attack Stats:  power=0|0(0)  hit=0.00%|0.00%(0)  crit=5.00%|5.00%(0)  expertise=0.00%|0.00%(0)  haste=0.00%|0.00%(0)  speed=0.00%|0.00%
+  Defense Stats: armor=3336|3336(3336) miss=3.00%|3.00%  dodge=3.00%|3.00%(0)  parry=3.00%|3.00%(0)  block=3.00%|3.00%(0) crit=0.00%|0.00%  versatility=0.00%|0.00%(0)
+  Priorities (actions.precombat):
+    snapshot_stats
+  Priorities (actions.default):
+
+  Actions:
+
+  Constant Buffs:
+    arcane_intellect/battle_shout/bleeding/chaos_brand/mortal_wounds/mystic_touch/power_word_fortitude
+  Dynamic Buffs:
+    Health Decade (0 - 10)   : start=  1.0 refresh=  0.0 interval=  0.0 trigger=  0.0 uptime= 13.29%
+    Health Decade (10 - 20)  : start=  1.0 refresh=  0.0 interval=  0.0 trigger=  0.0 uptime=  9.85%
+    Health Decade (20 - 30)  : start=  1.0 refresh=  0.0 interval=  0.0 trigger=  0.0 uptime=  8.73%
+    Health Decade (30 - 40)  : start=  1.0 refresh=  0.0 interval=  0.0 trigger=  0.0 uptime=  9.76%
+    Health Decade (40 - 50)  : start=  1.0 refresh=  0.0 interval=  0.0 trigger=  0.0 uptime= 10.70%
+    Health Decade (50 - 60)  : start=  1.0 refresh=  0.0 interval=  0.0 trigger=  0.0 uptime= 11.10%
+    Health Decade (60 - 70)  : start=  1.0 refresh=  0.0 interval=  0.0 trigger=  0.0 uptime= 11.18%
+    Health Decade (70 - 80)  : start=  1.0 refresh=  0.0 interval=  0.0 trigger=  0.0 uptime= 10.56%
+    Health Decade (80 - 90)  : start=  1.0 refresh=  0.0 interval=  0.0 trigger=  0.0 uptime=  8.38%
+    Health Decade (90 - 100) : start=  1.0 refresh=  0.0 interval=  0.0 trigger=  0.0 uptime=  6.45%
+  Waiting:  0.00%
+
+
+Baseline Performance:
+  RNG Engine    = sse2-sfmt
+  Iterations    = 1003 (355, 237, 206, 205)
+  TotalEvents   = 2 748 438
+  MaxEventQueue = 41
+  TargetHealth  = 2680923
+  SimSeconds    = 299637
+  CpuSeconds    = 1.42188
+  WallSeconds   = 1.49432
+  InitSeconds   = 2.56643
+  MergeSeconds  = 0.00359439
+  AnalyzeSeconds= 0.00404162
+  SpeedUp       = 211577
+  EndTime       = 2018-11-12 17:59:38-0600 (1542067178)
+
+
+Waiting:
+    All players active 100% of the time.
+
