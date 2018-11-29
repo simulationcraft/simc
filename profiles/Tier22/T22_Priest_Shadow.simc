@@ -45,7 +45,7 @@ actions.aoe+=/surrender_to_madness,if=buff.voidform.stack>=(15+buff.bloodlust.up
 actions.aoe+=/dark_void,if=raid_event.adds.in>10
 actions.aoe+=/mindbender
 actions.aoe+=/shadow_crash,if=raid_event.adds.in>5&raid_event.adds.duration<20
-actions.aoe+=/mind_sear,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(cooldown.void_bolt.up|cooldown.mind_blast.up)
+actions.aoe+=/mind_sear,if=buff.harvested_thoughts.down,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(cooldown.void_bolt.up|cooldown.mind_blast.up)
 actions.aoe+=/shadow_word_pain
 
 actions.cleave=void_eruption
@@ -61,7 +61,7 @@ actions.cleave+=/shadow_word_pain,target_if=refreshable&target.time_to_die>4,if=
 actions.cleave+=/vampiric_touch,target_if=refreshable,if=(target.time_to_die>6)
 actions.cleave+=/vampiric_touch,target_if=dot.shadow_word_pain.refreshable,if=(talent.misery.enabled&target.time_to_die>4)
 actions.cleave+=/void_torrent,if=buff.voidform.up
-actions.cleave+=/mind_sear,target_if=spell_targets.mind_sear>2,chain=1,interrupt=1
+actions.cleave+=/mind_sear,target_if=spell_targets.mind_sear>2&buff.harvested_thoughts.down,chain=1,interrupt=1
 actions.cleave+=/mind_flay,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(cooldown.void_bolt.up|cooldown.mind_blast.up)
 actions.cleave+=/shadow_word_pain
 
