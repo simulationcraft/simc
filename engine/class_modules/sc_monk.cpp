@@ -9800,9 +9800,9 @@ double monk_t::stagger_pct( int target_level )
   // End game raiding of each expansion uses the player's level for +1, +2, and +3 level targets
   if ( ( lvl == 60 || lvl == 70 || lvl == 80 || lvl == 85 || lvl == 90 || lvl == 100 || lvl == 110 ) &&
        0 <= level_check && level_check <= 3 )
-    k_value = dbc.npc_armor_mitigation_constant( lvl );
+    k_value = dbc.armor_mitigation_constant( lvl );
   else
-    k_value = dbc.npc_armor_mitigation_constant( target_level );
+    k_value = dbc.armor_mitigation_constant( target_level );
 
   double stagger = stagger_base / ( stagger_base + k_value );
   return std::min( stagger, 0.99 );

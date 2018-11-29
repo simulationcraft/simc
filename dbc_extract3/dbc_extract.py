@@ -416,18 +416,6 @@ elif options.type == 'scale':
     g.generate()
 
     g = CSVDataGenerator(options, {
-        'file': 'ArmorMitigationByLvl.txt',
-        'comment': '// Enemy armor mitigation constants (K-value) for level 1 - %d, wow build %s\n' % (
-            options.level + 3, options.build),
-        'values': [ 'Constant' ],
-        'max_rows': options.level + 3
-    })
-    if not g.initialize():
-        sys.exit(1)
-
-    g.generate()
-
-    g = CSVDataGenerator(options, {
         'file': 'AzeriteLevelToItemLevel.txt',
         'key': 'Azerite Level',
         'comment': '// Azerite level to item level 1 - %d, wow build %s\n' % (

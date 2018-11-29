@@ -1083,7 +1083,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       114282, // Treant Form (Shapeshift)
            0,
     },
-    // Balance tree, 24 abilities
+    // Balance tree, 25 abilities
     {
        22812, // Barkskin
       194223, // Celestial Alignment
@@ -1100,6 +1100,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        24858, // Moonkin Form
       209406, // Oneth's Intuition
       209407, // Oneth's Overconfidence
+      157228, // Owlkin Frenzy
         5215, // Prowl
         2782, // Remove Corruption
        78675, // Solar Beam
