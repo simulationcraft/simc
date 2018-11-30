@@ -4125,14 +4125,13 @@ struct meteor_impact_t : public fire_mage_spell_t
   meteor_impact_t( mage_t* p, meteor_burn_t* meteor_burn, int targets ) :
     fire_mage_spell_t( "meteor_impact", p, p->find_spell( 153564 ) ),
     meteor_burn( meteor_burn ),
-    meteor_burn_duration( p->find_spell( 175396 )->duration() )
+    meteor_burn_duration( p->find_spell( 175396 )->duration() ),
+    meteor_burn_pulse_time( meteor_burn->data().effectN( 1 ).period() )
   {
     background = split_aoe_damage = true;
     aoe = targets;
 
     triggers_ignite = true;
-
-    meteor_burn_pulse_time = meteor_burn->data().effectN( 1 ).period();
   }
 
   virtual timespan_t travel_time() const override
