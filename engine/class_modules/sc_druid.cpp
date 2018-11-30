@@ -334,6 +334,9 @@ public:
     azerite_power_t raking_ferocity; //-||-
     azerite_power_t shredding_fury; //-||-
     azerite_power_t wild_fleshrending; //-||-
+    azerite_power_t jungle_fury;
+    azerite_power_t untamed_ferocity;
+
     // Guardian
     azerite_power_t guardians_wrath;
     azerite_power_t layered_mane; // TODO: check if second Ironfur benefits from Guardian of Elune
@@ -428,6 +431,7 @@ public:
     buff_t* iron_jaws;
     buff_t* raking_ferocity;
     buff_t* arcanic_pulsar;
+    buff_t* jungle_fury;
 
   } buff;
 
@@ -646,6 +650,8 @@ public:
     
     const spell_data_t* bloodtalons;
     const spell_data_t* feral_frenzy;
+    const spell_data_t* scent_of_blood;
+    const spell_data_t* primal_wrath;
 
     // Balance
     const spell_data_t* natures_balance;
@@ -853,6 +859,9 @@ public:
   void trigger_natures_guardian( const action_state_t* );
   void trigger_solar_empowerment (const action_state_t*);
   double calculate_expected_max_health() const;
+  const spelleffect_data_t* query_aura_effect( const spell_data_t* aura_spell, effect_type_t type = E_APPLY_AURA,
+                                               effect_subtype_t subtype = A_ADD_PCT_MODIFIER, double misc_value = 0,
+                                               const spell_data_t* affected_spell = spell_data_t::nil() );
 
 private:
   void              apl_precombat();
@@ -1267,6 +1276,31 @@ struct innervate_buff_t : public druid_buff_t<buff_t>
   }
 };
 
+struct tigers_fury_buff_t : public druid_buff_t<buff_t>
+{
+  tigers_fury_buff_t(druid_t& p) : base_t(p, "tigers_fury", p.spec.tigers_fury)
+  {
+    set_default_value(p.spec.tigers_fury->effectN(1).percent());
+    set_cooldown(timespan_t::zero());
+  }
+
+  virtual void start(int stacks, double value, timespan_t duration) override
+  {
+    if (p().azerite.jungle_fury.ok())
+      p().buff.jungle_fury->trigger(1, DEFAULT_VALUE(), 1.0, duration);
+
+    base_t::start(stacks, value, duration);
+  }
+
+  virtual void expire_override(int expiration_stacks, timespan_t remaining_duration) override
+  {
+    p().buff.jungle_fury->expire();
+
+    base_t::expire_override(expiration_stacks, remaining_duration);
+  }
+
+};
+
 //Tiger Dash Buff ===========================================================
 struct tiger_dash_buff_t : public druid_buff_t<buff_t>
 {
@@ -1610,7 +1644,7 @@ public:
   {
     std::vector<std::string> splits = util::string_split(name_str, ".");
 
-    if (splits[0] == "dot" && splits[2] == "ticks_gained_on_refresh")
+    if (splits[0] == "dot" && splits[2] == "ticks_gained_on_refresh" | splits[2] == "ticks_gained_on_refresh_pmultiplier")
     {
       // Since we know some action names don't map to the actual dot portion, lets add some exceptions
       // this may have to be made more robust if other specs are interested in using it, but for now lets
@@ -1620,22 +1654,134 @@ public:
       if (p()->specialization() == DRUID_FERAL && splits[1] == "moonfire")
         splits[1] = "lunar_inspiration";
 
+      bool pmult_adjusted = false;
+      if (splits[2] == "ticks_gained_on_refresh_pmultiplier") pmult_adjusted = true;
+
+      if ( splits[ 1 ] == "primal_wrath" )  // special case since pw applies in aoe
+      {
+        action_t* rip = p()->find_action( "rip" );
+        action_t* pw  = p()->find_action( "primal_wrath" );
+
+        return make_fn_expr( name_str, [pw, rip, pmult_adjusted]() -> double {
+          int cp = as<int>( pw->player->resources.current[ RESOURCE_COMBO_POINT ] );
+
+          double gained_ticks  = 0;
+          timespan_t duration  = rip->dot_duration * 0.5 * ( 1 + cp );
+          timespan_t tick_time = rip->base_tick_time * rip->composite_haste();
+
+          for ( player_t* pw_target : pw->targets_in_range_list( pw->target_list() ) )
+          {
+            timespan_t ttd         = pw_target->time_to_percent( 0 );
+            dot_t* dot             = pw_target->get_dot( "rip", pw->player );
+            double remaining_ticks = 0;
+            double potential_ticks = 0;
+            timespan_t durrem      = timespan_t::zero();
+            double pmult = 0;
+
+            if ( dot->is_ticking() )
+            {
+              remaining_ticks = std::min( dot->remains(), ttd ) / tick_time;
+              durrem          = rip->calculate_dot_refresh_duration( dot, duration );
+              remaining_ticks *= pmult_adjusted ? dot->state->persistent_multiplier : 1.0;
+            }
+
+            if (pmult_adjusted)
+            {
+              action_state_t* state = rip->get_state();
+
+              pw->snapshot_state(state, RESULT_TYPE_NONE);
+              state->target = pw_target;
+
+              pmult = pw->composite_persistent_multiplier(state);
+
+              delete state;
+            }
+
+            potential_ticks = std::min( std::max( durrem, duration ), ttd ) / tick_time;
+            potential_ticks *= pmult_adjusted ? pmult : 1.0;
+            gained_ticks += potential_ticks - remaining_ticks;
+          }
+          return gained_ticks;
+        } );
+      }
+      else if ( splits[ 1 ] == "thrash_cat" )  // special case since pw applies in aoe
+      {
+        // action_t* rip = p()->find_action("rip");
+        action_t* tc = p()->find_action( "thrash_cat" );
+
+        return make_fn_expr( name_str, [tc, pmult_adjusted]() -> double {
+          double gained_ticks  = 0;
+          timespan_t duration  = tc->dot_duration;
+          timespan_t tick_time = tc->base_tick_time * tc->composite_haste();
+          
+
+          for ( player_t* tc_target : tc->targets_in_range_list( tc->target_list() ) )
+          {
+            timespan_t ttd         = tc_target->time_to_percent( 0 );
+            dot_t* dot             = tc_target->get_dot( "Thrash", tc->player );
+            double remaining_ticks = 0;
+            double potential_ticks = 0;
+            timespan_t durrem      = timespan_t::zero();
+            double pmult = 0;
+
+            if ( dot->is_ticking() )
+            {
+              remaining_ticks = std::min( dot->remains(), ttd ) / tick_time;
+              durrem          = tc->calculate_dot_refresh_duration( dot, duration );
+              remaining_ticks *= pmult_adjusted ? dot->state->persistent_multiplier : 1.0;
+            }
+
+            if (pmult_adjusted)
+            {
+              action_state_t* state = tc->get_state();
+
+              tc->snapshot_state(state, RESULT_TYPE_NONE);
+              state->target = tc_target;
+
+              pmult = tc->composite_persistent_multiplier(state);
+
+              delete state;
+            }
+
+            potential_ticks = std::min( std::max( durrem, duration ), ttd ) / tick_time;
+            potential_ticks *= pmult_adjusted ? pmult : 1.0;
+            gained_ticks += potential_ticks - remaining_ticks;
+          }
+          return gained_ticks;
+        } );
+      }
+
       action_t* action = p()->find_action(splits[1]);
       if (action)
-        return make_fn_expr(name_str, [action]() -> double {
+        return make_fn_expr(name_str, [action, pmult_adjusted]() -> double {
         dot_t* dot = action->get_dot();
         double remaining_ticks = 0;
         double potential_ticks = 0;
         timespan_t duration = action->dot_duration;
         timespan_t ttd = action->target->time_to_percent(0);
+        double pmult = 0;
 
         if (dot->is_ticking())
         {
           remaining_ticks = std::min(dot->remains(), ttd) / dot->current_action->tick_time(dot->state);
           duration = action->calculate_dot_refresh_duration(dot, duration);
+          remaining_ticks *= pmult_adjusted ? dot->state->persistent_multiplier : 1.0;
+        }
+
+        if (pmult_adjusted)
+        {
+          action_state_t* state = action->get_state();
+
+          action->snapshot_state(state, RESULT_TYPE_NONE);
+          state->target = action->target;
+
+          pmult = action->composite_persistent_multiplier(state);
+
+          delete state;
         }
 
         potential_ticks = std::min(duration, ttd) / (action->base_tick_time * action->composite_haste());
+        potential_ticks *= pmult_adjusted ? pmult : 1.0;
         return potential_ticks - remaining_ticks;
       });
       throw std::invalid_argument("invalid action");
@@ -2544,6 +2690,7 @@ public:
   bool    consumes_clearcasting;
   bool    trigger_tier17_2pc;
   bool    snapshots_tf;
+  bool    trigger_untamed_ferocity;
 
   // whether the attack gets a damage bonus from Moment of Clarity
   bool    moment_of_clarity;
@@ -2559,19 +2706,17 @@ public:
   } savage_roar;
   bool    tigers_fury;
 
-  cat_attack_t( const std::string& token, druid_t* p,
-                const spell_data_t* s      = spell_data_t::nil(),
+  cat_attack_t( const std::string& token, druid_t* p, const spell_data_t* s = spell_data_t::nil(),
                 const std::string& options = std::string() )
     : base_t( token, p, s ),
       requires_stealth( false ),
       consumes_combo_points( false ),
-      consumes_clearcasting( data().affected_by(
-          p->spec.omen_of_clarity->effectN( 1 ).trigger()->effectN( 1 ) ) ),
+      consumes_clearcasting( data().affected_by( p->spec.omen_of_clarity->effectN( 1 ).trigger()->effectN( 1 ) ) ),
       trigger_tier17_2pc( false ),
       snapshots_tf( true ),
-      moment_of_clarity( data().affected_by(
-          p->spec.omen_of_clarity->effectN( 1 ).trigger()->effectN( 3 ) ) ),
-      tigers_fury( data().affected_by( p -> spec.tigers_fury -> effectN( 1 ) ) )
+      moment_of_clarity( data().affected_by( p->spec.omen_of_clarity->effectN( 1 ).trigger()->effectN( 3 ) ) ),
+      tigers_fury( data().affected_by( p->spec.tigers_fury->effectN( 1 ) ) ),
+      trigger_untamed_ferocity( data().affected_by( p->azerite.untamed_ferocity.spell()->effectN( 2 ) ) )
   {
     parse_options( options );
 
@@ -2599,6 +2744,9 @@ public:
 
     if ( p -> spec.tigers_fury -> effectN( 1 ).percent() != p -> spec.tigers_fury -> effectN( 3 ).percent() )
       p -> sim -> errorf( "%s (id=%i) spell data has inconsistent Tiger's Fury modifiers.", name_str, id );
+
+    if (trigger_untamed_ferocity && !p->azerite.untamed_ferocity.ok() )
+      trigger_untamed_ferocity = false;
 
     // Apply Feral Druid Aura damage modifiers
     if ( p -> specialization() == DRUID_FERAL )
@@ -2821,6 +2969,16 @@ public:
     return tm;
   }
 
+  virtual double bonus_da(const action_state_t* s) const override
+  {
+    double da = base_t::bonus_da(s);
+
+    if (trigger_untamed_ferocity)
+      da += p()->azerite.untamed_ferocity.value(2);
+
+    return da;
+  }
+
   virtual void impact( action_state_t* s ) override
   {
     base_t::impact( s );
@@ -2856,6 +3014,12 @@ public:
       {
         trigger_primal_fury();
       }
+    }
+
+    if ( hit_any_target && trigger_untamed_ferocity )
+    {
+      p()->cooldown.berserk->adjust( -p()->azerite.untamed_ferocity.time_value( 3 ), false );
+      p()->cooldown.incarnation->adjust( -p()->azerite.untamed_ferocity.time_value( 4 ), false );
     }
 
     if ( ! hit_any_target )
@@ -2981,9 +3145,9 @@ struct rip_state_t : public action_state_t
   int combo_points;
   druid_t* druid;
 
-  rip_state_t( druid_t* p, action_t* a, player_t* target ) :
-    action_state_t( a, target ), combo_points( 0 ), druid( p )
-  { }
+  rip_state_t( druid_t* p, action_t* a, player_t* target ) : action_state_t( a, target ), combo_points( 0 ), druid( p )
+  {
+  }
 
   void initialize() override
   {
@@ -3056,7 +3220,9 @@ struct brutal_slash_t : public cat_attack_t
   double cost() const override
   {
     double c = cat_attack_t::cost();
-  
+ 
+    c -= p()->buff.scent_of_blood->check_stack_value();
+
     return c;
   }
 
@@ -3164,6 +3330,7 @@ struct ferocious_bite_t : public cat_attack_t
 {
   double excess_energy;
   double max_excess_energy;
+  double combo_points;
   bool max_energy;
 
   ferocious_bite_t( druid_t* p, const std::string& options_str ) :
@@ -3225,7 +3392,7 @@ struct ferocious_bite_t : public cat_attack_t
     excess_energy = std::min( max_excess_energy,
       ( p() -> resources.current[ RESOURCE_ENERGY ] - cat_attack_t::cost() ) );
 
-    double combo_points = p() -> resources.current[RESOURCE_COMBO_POINT];
+    combo_points = p() -> resources.current[RESOURCE_COMBO_POINT];
 
     cat_attack_t::execute();
 
@@ -3253,9 +3420,16 @@ struct ferocious_bite_t : public cat_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( s -> target -> health_percentage() <= 25 || p() -> talent.sabertooth -> ok() )
+      if ( p()->dbc.ptr && p()->talent.sabertooth->ok() )
       {
-        td( s -> target ) -> dots.rip -> refresh_duration( 0 );
+        td( s->target )
+            ->dots.rip->extend_duration(
+                timespan_t::from_seconds( p()->talent.sabertooth->effectN( 2 ).base_value() * combo_points ),
+                timespan_t::from_seconds( 32 ), 0 );
+      }
+      else if ( s->target->health_percentage() <= 25 || p()->talent.sabertooth->ok() )
+      {
+        td( s->target )->dots.rip->refresh_duration( 0 );
       }
     }
   }
@@ -3278,7 +3452,6 @@ struct ferocious_bite_t : public cat_attack_t
      }
 
      p() -> buff.apex_predator -> expire();
-
 
   }
 
@@ -3422,9 +3595,20 @@ struct lunar_inspiration_t : public cat_attack_t
   {
     double da = cat_attack_t::bonus_da(s);
 
-    da += p()->azerite.power_of_the_moon.value(2);
+    if (!p()->dbc.ptr)
+      da += p()->azerite.power_of_the_moon.value(2);
 
     return da;
+  }
+
+  virtual double bonus_ta(const action_state_t* s) const override
+  {
+    double ta = cat_attack_t::bonus_ta(s);
+
+    if (p()->dbc.ptr)
+      ta += p()->azerite.power_of_the_moon.value(2);
+
+    return ta;
   }
 
   void execute() override
@@ -3699,8 +3883,21 @@ struct rip_t : public cat_attack_t
   action_state_t* new_state() override
   { return new rip_state_t( p(), this, target ); }
 
+  timespan_t composite_dot_duration(const action_state_t* s) const
+  {
+    timespan_t t = cat_attack_t::composite_dot_duration(s);
+
+    if ( p()->dbc.ptr )
+      return t *= p()->resources.current[ RESOURCE_COMBO_POINT ];
+
+    return t;
+  }
+
   double attack_tick_power_coefficient( const action_state_t* s ) const override
   {
+    if (p()->dbc.ptr)
+      return cat_attack_t::attack_tick_power_coefficient(s);
+
     /* FIXME: Does this even work correctly for tick_damage expression?
      probably just uses the CP of the Rip already on the target */
     rip_state_t* rip_state = debug_cast<rip_state_t*>( td( s -> target ) -> dots.rip -> state );
@@ -3719,7 +3916,15 @@ struct rip_t : public cat_attack_t
       return cat_attack_t::bonus_ta( s );
 
     double ta = cat_attack_t::bonus_ta( s );
-    ta += p()->azerite.gushing_lacerations.value( 2 ) * rip_state->combo_points;
+
+    if ( p()->dbc.ptr )
+    {
+      ta += p()->azerite.gushing_lacerations.value( 2 );
+    }
+    else
+    {
+      ta += p()->azerite.gushing_lacerations.value( 2 ) * rip_state->combo_points;
+    }
 
     if ( p()->buff.berserk->up() || p()->buff.incarnation_cat->up() )
     {
@@ -3762,6 +3967,83 @@ struct rip_t : public cat_attack_t
       bloody_gash -> execute();
     }
   }
+};
+
+// Primal Wrath =============================================================
+struct primal_wrath_t : public cat_attack_t
+{
+  int combo_points;
+  rip_t* rip;
+
+  primal_wrath_t( druid_t* p, const std::string& options_str )
+    : cat_attack_t( "primal_wrath", p, p->talent.primal_wrath, options_str ), combo_points( 0 )
+  {
+    parse_options( options_str );
+
+    snapshots_tf          = true;
+    consumes_bloodtalons  = true;
+    consumes_clearcasting = false;
+    special               = true;
+
+    // rip = (rip_t*)p->find_action("rip");
+
+    /*if (!rip)
+    {*/
+    rip = new rip_t( p, "" );
+    //}
+    rip->stats = stats;
+
+    // stats->add_child(rip->stats);
+
+    // add_child(rip);
+  }
+
+  dot_t* get_dot( player_t* t ) override
+  {
+    if ( !t )
+      t = target;
+    if ( !t )
+      return nullptr;
+
+    return td( t )->dots.rip;
+  }
+
+  double attack_direct_power_coefficient(const action_state_t* s) const override
+  {
+    double adpc = cat_attack_t::attack_direct_power_coefficient(s);
+
+    adpc *= 1 + combo_points;
+
+    return adpc;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    cat_attack_t::impact( s );
+
+    rip_state_t* b_state = (rip_state_t*)rip->get_state();
+    b_state->target      = s->target;
+    rip->snapshot_state( b_state, DMG_OVER_TIME );
+    // Copy persistent multipliers from the direct attack.
+    b_state->persistent_multiplier = s->persistent_multiplier;
+
+    if ( !td( s->target )->dots.rip->state )
+    {
+      td( s->target )->dots.rip->state          = rip->new_state();
+      td( s->target )->dots.rip->current_action = rip;
+    }
+
+    td( s->target )->dots.rip->state->copy_state( b_state );
+    td( s->target )->dots.rip->trigger( rip->dot_duration * 0.5 * ( combo_points + 1 ) );  // this seems to be hardcoded
+  }
+
+  void execute() override
+  {
+    combo_points = as<int>(p()->resources.current[RESOURCE_COMBO_POINT]);
+
+    cat_attack_t::execute();
+  }
+
 };
 
 // Savage Roar ==============================================================
@@ -3820,8 +4102,15 @@ struct shred_t : public cat_attack_t
     cat_attack_t( "shred", p, p -> find_class_spell( "Shred" ), options_str )
   {
     // Base spell generates 0 CP, Feral passive or Feral Affinity increase it to 1 CP.
-    energize_amount += p -> spec.feral -> effectN( 3 ).base_value()
-      + p -> talent.feral_affinity -> effectN( 8 ).base_value();
+    /*energize_amount += p -> spec.feral -> effectN( 3 ).base_value()
+      + p -> talent.feral_affinity -> effectN( 8 ).base_value();*/
+
+    energize_amount +=
+        p->query_aura_effect( p->spec.feral, E_APPLY_AURA, A_ADD_FLAT_MODIFIER, 12, p->find_class_spell( "Shred" ) )
+            ->base_value() +
+        p->query_aura_effect( p->talent.feral_affinity, E_APPLY_AURA, A_ADD_FLAT_MODIFIER, 12,
+                              p->find_class_spell( "Shred" ) )
+            ->base_value();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -3916,6 +4205,7 @@ public:
   {
     double c = cat_attack_t::cost();
 
+    c -= p()->buff.scent_of_blood->check_stack_value();
 
     return c;
   }
@@ -3977,21 +4267,26 @@ struct tigers_fury_t : public cat_attack_t
     autoshift = form_mask = CAT_FORM;
     energize_type = ENERGIZE_ON_CAST;
     energize_amount += p -> spec.tigers_fury_2 -> effectN( 1 ).resource( RESOURCE_ENERGY );
+
+    if ( p->talent.predator->ok() )
+      duration += p->talent.predator->effectN( 1 ).time_value();
+
+    if ( p->azerite.jungle_fury.ok() )
+    {
+      if ( p->talent.predator->ok() )
+        duration = p->azerite.jungle_fury.time_value( 1, azerite_power_t::S );
+      else
+        duration = p->azerite.jungle_fury.time_value( 2, azerite_power_t::S );
+    }
   }
 
   void execute() override
   {
     cat_attack_t::execute();
 
-    if ( p() -> talent.predator -> ok() )
-    {
-       p() -> buff.tigers_fury -> trigger(1, buff_t::DEFAULT_VALUE(), 1.0,
-          duration + duration.from_millis( p() -> talent.predator -> effectN(1).base_value() ));
-    }
-    else
-    {
-       p() -> buff.tigers_fury -> trigger(1, buff_t::DEFAULT_VALUE(), 1.0, duration);
-    }
+    p()->buff.tigers_fury->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
+
+    p()->buff.jungle_fury->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
 
     if ( p()->azerite.shredding_fury.ok() )
       p()->buff.shredding_fury->trigger( p()->buff.shredding_fury->max_stack() );
@@ -4032,11 +4327,15 @@ struct thrash_cat_t : public cat_attack_t
 
     if ( p() -> azerite.twisted_claws.ok() )
       p() -> buff.twisted_claws -> trigger();
+
+    p() -> buff.scent_of_blood -> trigger();
+
   }
 
   void execute() override
   {
-     // Trigger before consume_resource(), so it can get the damage bonus from Moment of Clarity.
+    // Remove potential existing scent of blood buff here
+    p()->buff.scent_of_blood->expire();
 
     cat_attack_t::execute();
   }
@@ -4607,20 +4906,34 @@ struct regrowth_t: public druid_heal_t
     form_mask = NO_FORM | MOONKIN_FORM;
     may_autounshift = true;
     ignore_false_positive = true; // Prevents cat/bear from failing a skill check and going into caster form.
-
+    
     // Spec passive modifiers. Note: Resto also has a modifier, but as a part
     // of a "spec-wide" modifier so better to account for that somewhere else.
-    base_dd_multiplier *= 1.0 + p -> spec.feral -> effectN( 5 ).percent()
-      + p -> spec.balance -> effectN( 6 ).percent()
-      + p -> spec.guardian -> effectN( 4 ).percent();
+    //base_dd_multiplier *= 1.0 + p->spec.feral->effectN( 5 ).percent() + p->spec.balance->effectN( 6 ).percent() +
+    //                      p->spec.guardian->effectN( 4 ).percent();
 
-    base_td_multiplier *= 1.0 + p -> spec.feral -> effectN( 6 ).percent()
-      + p -> spec.balance -> effectN( 7 ).percent()
-      + p -> spec.guardian -> effectN( 5 ).percent();
+    //base_td_multiplier *= 1.0 + p->spec.feral->effectN( 6 ).percent() + p->spec.balance->effectN( 7 ).percent() +
+    //                      p->spec.guardian->effectN( 5 ).percent();
 
-    base_costs[ RESOURCE_MANA ] *= 1.0 + p -> spec.feral -> effectN( 7 ).percent()
-      + p -> spec.balance -> effectN( 8 ).percent()
-      + p -> spec.guardian -> effectN( 6 ).percent();
+    //base_costs[ RESOURCE_MANA ] *= 1.0 + p->spec.feral->effectN( 7 ).percent() +
+    //                               p->spec.balance->effectN( 8 ).percent() + p->spec.guardian->effectN( 6 ).percent();
+
+    const spell_data_t* spelldata = p->find_class_spell("Regrowth");
+
+    base_dd_multiplier *=
+        1.0 + p->query_aura_effect( p->spec.feral, E_APPLY_AURA, A_ADD_PCT_MODIFIER, 0, spelldata )->percent() +
+        p->query_aura_effect( p->spec.balance, E_APPLY_AURA, A_ADD_PCT_MODIFIER, 0, spelldata )->percent() +
+        p->query_aura_effect( p->spec.guardian, E_APPLY_AURA, A_ADD_PCT_MODIFIER, 0, spelldata )->percent();
+
+    base_td_multiplier *=
+        1.0 + p->query_aura_effect( p->spec.feral, E_APPLY_AURA, A_ADD_PCT_MODIFIER, 22, spelldata )->percent() +
+        p->query_aura_effect( p->spec.balance, E_APPLY_AURA, A_ADD_PCT_MODIFIER, 22, spelldata )->percent() +
+        p->query_aura_effect( p->spec.guardian, E_APPLY_AURA, A_ADD_PCT_MODIFIER, 22, spelldata )->percent();
+
+    base_costs[ RESOURCE_MANA ] *=
+        1.0 + p->query_aura_effect( p->spec.feral, E_APPLY_AURA, A_ADD_PCT_MODIFIER, 14, spelldata )->percent() +
+        p->query_aura_effect( p->spec.balance, E_APPLY_AURA, A_ADD_PCT_MODIFIER, 14, spelldata )->percent() +
+        p->query_aura_effect( p->spec.guardian, E_APPLY_AURA, A_ADD_PCT_MODIFIER, 14, spelldata )->percent();
 
     // Hack for feral to be able to use target-related expressions on this action
     // Disables healing entirely
@@ -6783,10 +7096,6 @@ void druid_t::activate()
                p->proc.predator->occur();
             }
          });
-
-
-
-
       });
 
 
@@ -6857,6 +7166,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "sunfire"                ) return new                sunfire_t( this, options_str );
   if ( name == "moonkin_form"           ) return new   spells::moonkin_form_t( this, options_str );
   if ( name == "moonkin_form_affinity"  ) return new   spells::moonkin_form_affinity_t(this, options_str);
+  if ( name == "primal_wrath"           ) return new           primal_wrath_t( this, options_str );
   if ( name == "pulverize"              ) return new              pulverize_t( this, options_str );
   if ( name == "rake"                   ) return new                   rake_t( this, options_str );
   if ( name == "renewal"                ) return new                renewal_t( this, options_str );
@@ -7024,7 +7334,9 @@ void druid_t::init_spells()
 
   talent.sabertooth                     = find_talent_spell( "Sabertooth" );
   talent.jagged_wounds                  = find_talent_spell( "Jagged Wounds" );
-  
+
+  talent.scent_of_blood = find_talent_spell("Scent of Blood");
+  talent.primal_wrath = find_talent_spell("Primal Wrath");
 
   talent.savage_roar                    = find_talent_spell( "Savage Roar" );
   talent.bloodtalons                    = find_talent_spell( "Bloodtalons" );
@@ -7108,6 +7420,8 @@ void druid_t::init_spells()
   azerite.raking_ferocity = find_azerite_spell("Raking Ferocity");
   azerite.shredding_fury = find_azerite_spell("Shredding Fury");
   azerite.wild_fleshrending = find_azerite_spell("Wild Fleshrending");
+  azerite.jungle_fury = find_azerite_spell("Jungle Fury");
+  azerite.untamed_ferocity = find_azerite_spell("Untamed Ferocity");
 
   // Guardian
   azerite.craggy_bark = find_azerite_spell("Craggy Bark");
@@ -7224,7 +7538,10 @@ void druid_t::init_base_stats()
 
   resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10;
   if ( specialization() == DRUID_FERAL )
-    resources.base_regen_per_second[ RESOURCE_ENERGY ] *= 1.0 + spec.feral->effectN( 12 ).percent();
+  {
+    resources.base_regen_per_second[ RESOURCE_ENERGY ] *=
+        1.0 + query_aura_effect( spec.feral, E_APPLY_AURA, A_MOD_POWER_REGEN_PERCENT, 3 )->percent();
+  }
   resources.base_regen_per_second[ RESOURCE_ENERGY ] *= 1.0 + talent.feral_affinity -> effectN( 2 ).percent();
 
   base_gcd = timespan_t::from_seconds( 1.5 );
@@ -7263,6 +7580,9 @@ void druid_t::create_buffs()
   // Azerite
   buff.shredding_fury =
       buff_creator_t( this, "shredding_fury", find_spell( 274426 ) ).default_value( azerite.shredding_fury.value() );
+
+  buff.jungle_fury = make_buff<stat_buff_t>( this, "jungle_fury", find_spell( 274425 ) )
+                         ->add_stat( STAT_CRIT_RATING, azerite.jungle_fury.value( 1 ) );
 
   buff.iron_jaws = buff_creator_t( this, "iron_jaws", find_spell( 276026 ) );
 
@@ -7393,9 +7713,15 @@ void druid_t::create_buffs()
                                .refresh_behavior( buff_refresh_behavior::DURATION ) // Pandemic refresh is done by the action
                                .tick_behavior( buff_tick_behavior::NONE );
 
-  buff.tigers_fury           = buff_creator_t( this, "tigers_fury", spec.tigers_fury )
+  buff.tigers_fury           = new tigers_fury_buff_t( *this );
+    /*= buff_creator_t( this, "tigers_fury", spec.tigers_fury )
                                .default_value( spec.tigers_fury -> effectN( 1 ).percent() )
-                               .cd( timespan_t::zero() );
+                               .cd( timespan_t::zero() );*/
+
+  buff.scent_of_blood = make_buff( this, "Scent of Blood", find_spell( 285646 ) )
+                            ->set_max_stack( 10 )
+                            ->set_default_value( talent.scent_of_blood->effectN( 1 ).base_value() )
+                            ->set_chance( talent.scent_of_blood->ok() ? 1.0 : 0.0 );
 
   // Guardian
   buff.barkskin              = buff_creator_t( this, "barkskin", find_specialization_spell( "Barkskin" ) )
@@ -8419,6 +8745,12 @@ double druid_t::resource_regen_per_second( resource_e r ) const
       reg *= 1.0 + buff.moonkin_form -> data().effectN( 5 ).percent() + ( 1 / cache.spell_haste() );
   }
 
+  if (r == RESOURCE_ENERGY)
+  {
+    if (buff.savage_roar->check() && buff.savage_roar->data().effectN(3).subtype() == A_MOD_POWER_REGEN_PERCENT)
+      reg *= 1.0 + buff.savage_roar->data().effectN(3).percent();
+  }
+
   return reg;
 }
 
@@ -8622,6 +8954,8 @@ double druid_t::composite_player_multiplier( school_e school ) const
 double druid_t::composite_rating_multiplier( rating_e rating ) const
 {
   double rm = player_t::composite_rating_multiplier( rating );
+
+  if (dbc.ptr) return rm;
 
   switch( rating )
   {
@@ -8945,7 +9279,7 @@ expr_t* druid_t::create_expression( const std::string& name_str )
 
   std::vector<std::string> splits = util::string_split( name_str, "." );
 
-  if ( splits[ 0 ] == "druid" && splits[ 2 ] == "ticks_gained_on_refresh" )
+  if ( splits[ 0 ] == "druid" && (splits[ 2 ] == "ticks_gained_on_refresh" | splits[2] == "ticks_gained_on_refresh_pmultiplier" ))
   {
     // Since we know some action names don't map to the actual dot portion, lets add some exceptions
     // this may have to be made more robust if other specs are interested in using it, but for now lets
@@ -8954,6 +9288,10 @@ expr_t* druid_t::create_expression( const std::string& name_str )
       splits[ 1 ] = "rake_bleed";
     if ( specialization() == DRUID_FERAL && splits[ 1 ] == "moonfire" )
       splits[ 1 ] = "lunar_inspiration";
+
+    bool pmult_adjusted = false;
+
+    if (splits[2] == "ticks_gained_on_refresh_pmultiplier") pmult_adjusted = true;
 
     action_t* action = find_action( splits[ 1 ] );
     if ( action )
@@ -9493,6 +9831,34 @@ double druid_t::calculate_expected_max_health() const
   return expected_health;
 }
 
+const spelleffect_data_t* druid_t::query_aura_effect( const spell_data_t* aura_spell, effect_type_t type,
+                                                      effect_subtype_t subtype, double misc_value,
+                                                      const spell_data_t* affected_spell )
+{ 
+  for ( size_t i = 1; i <= aura_spell->effect_count(); i++ )
+  {
+    const spelleffect_data_t& effect = aura_spell->effectN( i );
+
+    if ( affected_spell != spell_data_t::nil() && !affected_spell->affected_by( effect ) )
+      return spelleffect_data_t::nil();
+
+    if ( effect.type() == type && effect.subtype() == subtype )
+    {
+      if ( misc_value != 0 )
+      {
+        if ( effect.misc_value1() == misc_value )
+          return &effect;
+      }
+      else
+      {
+        return &effect;
+      }
+    }
+  }
+
+  return spelleffect_data_t::nil();
+}
+
 druid_td_t::druid_td_t( player_t& target, druid_t& source )
   : actor_target_data_t( &target, &source ),
     dots( dots_t() ),
@@ -9519,7 +9885,6 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   debuff.bloodletting        = buff_creator_t( *this, "bloodletting", source.find_spell( 165699 ) )
                                .default_value( source.find_spell( 165699 ) -> effectN( 1 ).percent() );
 }
-
 
 // Copypasta for reporting
 bool has_amount_results( const std::array<stats_t::stats_results_t, FULLTYPE_MAX>& res )

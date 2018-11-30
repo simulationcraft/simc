@@ -39,13 +39,6 @@ class azerite_state_t;
  */
 class azerite_power_t
 {
-  /// Time type conversion for azerite_power_t::time_value
-  enum time_type
-  {
-    MS = 0,
-    S,
-  };
-
   /// Actor the power belongs to
   const player_t*             m_player;
   /// Associated spell data
@@ -60,6 +53,13 @@ class azerite_power_t
   /// Helper to check if the combat rating penalty needs to be applied to the azerite spell effect
   bool check_combat_rating_penalty( size_t index = 1 ) const;
 public:
+  /// Time type conversion for azerite_power_t::time_value
+  enum time_type
+  {
+    MS = 0,
+    S,
+  };
+
   using azerite_value_fn_t = std::function<double(const azerite_power_t&)>;
 
   azerite_power_t();
