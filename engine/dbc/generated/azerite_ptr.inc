@@ -1,5 +1,5 @@
-// Azerite powers, wow build 8.1.0.28485
-static constexpr std::array<azerite_power_entry_t, 367> __ptr_azerite_power_data { {
+// Azerite powers, wow build 8.1.0.28616
+static constexpr std::array<azerite_power_entry_t, 366> __ptr_azerite_power_data { {
   {  13, 263978,  4775, "Azerite Empowered"                 , 0 },
   {  14, 268594,     0, "Longstrider"                       , 1 },
   {  15, 263962,     0, "Resounding Protection"             , 1 },
@@ -139,7 +139,7 @@ static constexpr std::array<azerite_power_entry_t, 367> __ptr_azerite_power_data
   { 220, 288754,     0, "Chaotic Transformation"            , 3 },
   { 221, 275350,     0, "Rigid Carapace"                    , 3 },
   { 222, 275381,     0, "Echo of the Elementals"            , 3 },
-  { 223, 287768,     0, "Thunderaan's Fury"                 , 3 },
+  { 223, 275388,     0, "Lightning Conduit"                 , 3 },
   { 224, 275488,     0, "Swelling Stream"                   , 3 },
   { 225, 279854,     0, "Glacial Assault"                   , 3 },
   { 226, 275529,     0, "Test of Might"                     , 3 },
@@ -271,7 +271,6 @@ static constexpr std::array<azerite_power_entry_t, 367> __ptr_azerite_power_data
   { 461, 279926,     0, "Earthlink"                         , 3 },
   { 462, 266936,     0, "Azerite Globules"                  , 2 },
   { 463, 267889,     0, "Blessed Portents"                  , 2 },
-  { 464, 267682,     0, "Blinding Mists"                    , 2 },
   { 465, 280011,     0, "March of the Damned"               , 1 },
   { 466, 280012,     0, "Burning Soul"                      , 1 },
   { 467, 280013,     0, "Ursoc's Endurance"                 , 1 },
