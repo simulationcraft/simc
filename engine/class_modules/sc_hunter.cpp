@@ -5452,7 +5452,7 @@ void hunter_t::apl_bm()
   // Precombat actions
   precombat -> add_action( this, "Aspect of the Wild", "precast_time=1.1,if=!azerite.primal_instincts.enabled",
           "Adjusts the duration and cooldown of Aspect of the Wild and Primal Instincts by the duration of an unhasted GCD when they're used precombat. As AotW has a 1.3s GCD and affects itself this is 1.1s." );
-  precombat -> add_action( this, "Bestial Wrath", "precast_time=1.,if=azerite.primal_instincts.enabled",
+  precombat -> add_action( this, "Bestial Wrath", "precast_time=1.5,if=azerite.primal_instincts.enabled",
           "Adjusts the duration and cooldown of Bestial Wrath and Haze of Rage by the duration of an unhasted GCD when they're used precombat." );
 
   default_list -> add_action( "auto_shot" );
