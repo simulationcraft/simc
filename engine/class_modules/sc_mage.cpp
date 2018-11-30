@@ -2705,7 +2705,7 @@ struct blizzard_t : public frost_mage_spell_t
       .target( target )
       .duration( ground_aoe_duration )
       .action( blizzard_shard )
-      .hasted( ground_aoe_params_t::SPELL_SPEED ) );
+      .hasted( ground_aoe_params_t::SPELL_SPEED ), true );
   }
 };
 
