@@ -919,7 +919,7 @@ public:
 
   double    runes_per_second() const;
   double    rune_regen_coefficient() const;
-  bool      trigger_killing_machine( double chance, proc_t* proc = nullptr );
+  void      trigger_killing_machine( double chance, proc_t* proc, proc_t* wasted_proc );
   void      trigger_runic_empowerment( double rpcost );
   bool      trigger_runic_corruption( double rpcost, double override_chance = -1.0 );
   void      trigger_festering_wound( const action_state_t* state, unsigned n_stacks = 1, proc_t* proc = nullptr );
@@ -3103,8 +3103,8 @@ struct melee_t : public death_knight_melee_attack_t
 
       if ( s -> result == RESULT_CRIT )
       {
-        if ( p() -> trigger_killing_machine( 0, p() -> procs.km_from_crit_aa ) )
-          p() -> procs.km_from_crit_aa_wasted -> occur();
+        p() -> trigger_killing_machine( 0, p() -> procs.km_from_crit_aa,
+                                           p() -> procs.km_from_crit_aa_wasted );
       }
 
       if ( weapon && p() -> buffs.frozen_pulse -> up() )
@@ -3314,10 +3314,10 @@ struct army_of_the_dead_t : public death_knight_spell_t
       precombat_delay = 10 ;
       sim -> out_debug.printf( "%s tried to precast army of the dead more than 10s before combat begins", p -> name() );
     }
-    else if ( precombat_delay < 0 )
+    else if ( precombat_delay < 1 )
     { 
-      precombat_delay = 0; 
-      sim -> out_debug.printf( "%s tried to precast army of the dead after combat begins (negative delay value)", p -> name() );
+      precombat_delay = 1; 
+      sim -> out_debug.printf( "%s tried to precast army of the dead too late (delay has to be >= 1s", p -> name() );
     }
 
     harmful = false;
@@ -3349,18 +3349,14 @@ struct army_of_the_dead_t : public death_knight_spell_t
         duration_penalty -= summon_interval;
       }
       
-      // While casting army at 0 shouldn't be excluded, there's no point simulating a delay of 0 seconds for other mechanics
-      if ( precombat_delay != 0 )
-      {
-        p() -> buffs.t20_2pc_unholy -> extend_duration( p(), - precombat_time );
-        p() -> cooldown.army_of_the_dead -> adjust( - precombat_time, false );
+      p() -> buffs.t20_2pc_unholy -> extend_duration( p(), - precombat_time );
+      p() -> cooldown.army_of_the_dead -> adjust( - precombat_time, false );
 
-        // Simulate RP decay for X seconds
-        p() -> resource_loss( RESOURCE_RUNIC_POWER, p() -> runic_power_decay_rate * precombat_delay, nullptr, nullptr );
+      // Simulate RP decay for X seconds
+      p() -> resource_loss( RESOURCE_RUNIC_POWER, p() -> runic_power_decay_rate * precombat_delay, nullptr, nullptr );
 
-        // Simulate rune regeneration for X seconds
-        p() -> _runes.regenerate_immediate( precombat_time );
-      }
+      // Simulate rune regeneration for X seconds
+      p() -> _runes.regenerate_immediate( precombat_time );
 
       // If every ghoul was summoned, return
       if ( n_ghoul == 8 ) return;
@@ -4970,8 +4966,9 @@ struct frost_strike_strike_t : public death_knight_melee_attack_t
 
     if ( p() -> azerite.killer_frost.enabled() && state -> result == RESULT_CRIT )
     {
-      if ( p() -> trigger_killing_machine( p() -> azerite.killer_frost.spell() -> effectN( 2 ).percent(), p() -> procs.km_from_killer_frost ) )
-        p() -> procs.km_from_killer_frost_wasted -> occur();
+      p() -> trigger_killing_machine( p() -> azerite.killer_frost.spell() -> effectN( 2 ).percent(),
+                                      p() -> procs.km_from_killer_frost,
+                                      p() -> procs.km_from_killer_frost_wasted );
     }
   }
 };
@@ -5011,10 +5008,9 @@ struct frost_strike_t : public death_knight_melee_attack_t
 
     if ( p() -> buffs.pillar_of_frost -> up() && p() -> talent.obliteration -> ok() )
     {
-      if ( p() -> trigger_killing_machine( 1.0, p() -> procs.km_from_obliteration_fs ) )
-      {
-        p() -> procs.km_from_obliteration_fs_wasted -> occur();
-      }
+      p() -> trigger_killing_machine( 1.0, p() -> procs.km_from_obliteration_fs,
+                                           p() -> procs.km_from_obliteration_fs_wasted );
+      
       // Obliteration's rune generation
       if ( rng().roll( p() -> talent.obliteration -> effectN( 2 ).percent() ) )
       {
@@ -5069,10 +5065,9 @@ struct glacial_advance_t : public death_knight_spell_t
 
     if ( p() -> buffs.pillar_of_frost -> up() && p() -> talent.obliteration -> ok() )
     {
-      if ( p() -> trigger_killing_machine( 1.0, p() -> procs.km_from_obliteration_ga ) )
-      {
-        p() -> procs.km_from_obliteration_ga_wasted -> occur();
-      }
+      p() -> trigger_killing_machine( 1.0, p() -> procs.km_from_obliteration_ga,
+                                           p() -> procs.km_from_obliteration_ga_wasted );
+
       // Obliteration's rune generation
       if ( rng().roll( p() -> talent.obliteration -> effectN( 2 ).percent() ) )
       {
@@ -5363,10 +5358,9 @@ struct howling_blast_t : public death_knight_spell_t
 
     if ( p() -> buffs.pillar_of_frost -> up() && p() -> talent.obliteration -> ok() )
     {
-      if ( p() -> trigger_killing_machine( 1.0, p() -> procs.km_from_obliteration_hb ) )
-      {
-        p() -> procs.km_from_obliteration_hb_wasted -> occur();
-      }
+      p() -> trigger_killing_machine( 1.0, p() -> procs.km_from_obliteration_hb,
+                                           p() -> procs.km_from_obliteration_hb_wasted );
+
       // Obliteration's rune generation
       if ( rng().roll( p() -> talent.obliteration -> effectN( 2 ).percent() ) )
       {
@@ -6819,8 +6813,7 @@ unsigned death_knight_t::replenish_rune( unsigned n, gain_t* gain )
 }
 
 // Helper function to trigger Killing Machine, whether it's from a "forced" proc, a % chance, or the regular rppm proc
-// Returns true if the proc is wasted
-bool death_knight_t::trigger_killing_machine( double chance, proc_t* proc )
+void death_knight_t::trigger_killing_machine( double chance, proc_t* proc, proc_t* wasted_proc )
 {
   bool triggered = false;
   bool wasted = buffs.killing_machine -> up();
@@ -6839,21 +6832,27 @@ bool death_knight_t::trigger_killing_machine( double chance, proc_t* proc )
   }
 
   // If the proc didn't happen, there's no waste and nothing else to do
-  if ( !triggered )
+  if ( triggered )
   {
-    return false;
-  }
+    buffs.killing_machine -> trigger();
 
-  buffs.killing_machine -> trigger();
+    // If the proc is guaranteed, allow the player to instantly react to it
+    if ( chance == 1.0 )
+    {
+      buffs.killing_machine -> predict();
+    }
   
-  // The given proc occurs only if there's no waste
-  // Wasted procs are handled in the source action
-  if ( !wasted )
-  {
-    proc -> occur();
+    // The given proc occurs only if there's no waste
+    // Wasted procs are handled in the source action
+    if ( !wasted )
+    {
+      proc -> occur();
+    }
+    else 
+    {
+      wasted_proc -> occur();
+    }
   }
-  
-  return wasted;
 }
 
 void death_knight_t::trigger_runic_empowerment( double rpcost )
