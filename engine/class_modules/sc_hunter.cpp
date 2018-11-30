@@ -4134,6 +4134,7 @@ struct aspect_of_the_wild_t: public hunter_spell_t
     if ( ! player -> in_combat && precast_time != timespan_t::zero() )
     {
       p() -> buffs.aspect_of_the_wild -> extend_duration( player, -precast_time );
+      p() -> buffs.primal_instincts -> extend_duration( player, -precast_time );
       cooldown -> adjust( -precast_time );
     }
   }
@@ -5449,8 +5450,10 @@ void hunter_t::apl_bm()
   action_priority_list_t* precombat    = get_action_priority_list( "precombat" );
 
   // Precombat actions
-  precombat -> add_action( this, "Aspect of the Wild", "precast_time=2,if=!azerite.primal_instincts.enabled" );
-  precombat -> add_action( this, "Bestial Wrath", "precast_time=2,if=azerite.primal_instincts.enabled" );
+  precombat -> add_action( this, "Aspect of the Wild", "precast_time=1.1,if=!azerite.primal_instincts.enabled",
+          "Adjusts the duration and cooldown of Aspect of the Wild and Primal Instincts by the duration of an unhasted GCD when they're used precombat. As AotW has a 1.3s GCD and affects itself this is 1.1s." );
+  precombat -> add_action( this, "Bestial Wrath", "precast_time=1.,if=azerite.primal_instincts.enabled",
+          "Adjusts the duration and cooldown of Bestial Wrath and Haze of Rage by the duration of an unhasted GCD when they're used precombat." );
 
   default_list -> add_action( "auto_shot" );
 
