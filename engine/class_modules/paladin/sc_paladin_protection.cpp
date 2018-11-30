@@ -948,8 +948,6 @@ void paladin_t::generate_action_prio_list_prot()
 
   precombat -> add_action( "potion" );
   precombat -> add_action( "lights_judgment" );
-  precombat -> add_action( this, "Avenging Wrath" );
-  precombat -> add_talent( this, "Seraphim" );
 
   ///////////////////////
   // Action Priority List
