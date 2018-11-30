@@ -1,6 +1,6 @@
 #define PTR_TALENT_SIZE (648)
 
-// 648 talents, wow build 8.1.0.28485
+// 648 talents, wow build 8.1.0.28616
 static struct talent_data_t __ptr_talent_data[] = {
   { "Second Wind"                       , 15757, 0x00, 0x0001,   0,   0,   3,   29838,       0,  0 },
   { "Punish"                            , 15759, 0x00, 0x0001,  73,   1,   0,  275334,       0,  0 },
@@ -161,7 +161,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Soul of the Forest"                , 21708, 0x00, 0x0400, 103,   0,   4,  158476,       0,  0 },
   { "Soul of the Forest"                , 21709, 0x00, 0x0400, 104,   0,   4,  158477,       0,  0 },
   { "Soul of the Forest"                , 21710, 0x00, 0x0400, 105,   0,   4,  158478,       0,  0 },
-  { "Brutal Slash"                      , 21711, 0x00, 0x0400, 103,   1,   5,  202028,  213764,  0 },
+  { "Brutal Slash"                      , 21711, 0x00, 0x0400, 103,   1,   5,  202028,  106785,  0 },
   { "Twin Moons"                        , 21712, 0x00, 0x0400, 102,   1,   5,  279620,       0,  0 },
   { "Survival of the Fittest"           , 21713, 0x00, 0x0400, 104,   1,   5,  203965,       0,  0 },
   { "Scent of Blood"                    , 21714, 0x00, 0x0400, 103,   0,   5,  285564,       0,  0 },

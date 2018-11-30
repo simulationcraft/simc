@@ -67,7 +67,6 @@ actions.bm_combustion_phase+=/fire_blast,use_while_casting=1,use_off_gcd=1,if=bu
 actions.bm_combustion_phase+=/living_bomb,if=buff.combustion.remains<gcd.max&active_enemies>1
 actions.bm_combustion_phase+=/dragons_breath,if=buff.combustion.remains<gcd.max
 actions.bm_combustion_phase+=/scorch
-actions.bm_combustion_phase+=/call_action_list,name=trinkets
 
 # Combustion phase prepares abilities with a delay, then launches into the Combustion sequence
 actions.combustion_phase=lights_judgment,if=buff.combustion.down

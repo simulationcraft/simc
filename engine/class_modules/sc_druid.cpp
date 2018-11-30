@@ -1888,7 +1888,7 @@ public:
 
   virtual void execute() override
   {
-    if (ab::execute_time() > timespan_t::zero() && !ab::proc && reset_melee_swing)
+    if (ab::time_to_execute > timespan_t::zero() && !ab::proc && !ab::background && reset_melee_swing)
     {
       if (ab::p()->main_hand_attack && ab::p()->main_hand_attack->execute_event)
       {
@@ -4685,7 +4685,6 @@ struct regrowth_t: public druid_heal_t
     if ( p -> specialization() == DRUID_FERAL ) {
       target = sim -> target;
       base_multiplier = 0;
-      reset_melee_swing = false; //TODO(Xan): Fix underlaying issue
     }
   }
 
