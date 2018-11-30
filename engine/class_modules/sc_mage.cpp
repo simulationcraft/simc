@@ -4133,13 +4133,6 @@ struct meteor_impact_t : public fire_mage_spell_t
     triggers_ignite = true;
 
     meteor_burn_pulse_time = meteor_burn->data().effectN( 1 ).period();
-
-    // It seems that the 8th tick happens only very rarely in game.
-    // As of build 25881, 2018-01-22.
-    if ( p->bugs )
-    {
-      meteor_burn_duration -= meteor_burn_pulse_time;
-    }
   }
 
   virtual timespan_t travel_time() const override
