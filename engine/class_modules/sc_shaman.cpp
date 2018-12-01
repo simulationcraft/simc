@@ -2719,7 +2719,7 @@ struct flametongue_weapon_spell_t : public shaman_spell_t
       snapshot_flags          = STATE_AP;
       attack_power_mod.direct = player->dbc.ptr ? 0.0264 : 0.044;
 
-	  if ( player->main_hand_weapon.type != WEAPON_NONE )
+      if ( player->main_hand_weapon.type != WEAPON_NONE )
       {
         attack_power_mod.direct *= player->main_hand_weapon.swing_time.total_seconds() / 2.6;
       }
@@ -3011,8 +3011,8 @@ struct stormstrike_attack_t : public shaman_attack_t
 
     if ( p()->azerite.thunderaans_fury.ok() )
     {
-	  //currently buggy on ptr, is applying 2/3 to each hit instead of 1/3 on oh
-      //double tf_bonus = 0.5 * p()->azerite.thunderaans_fury.value( 2 );
+      // currently buggy on ptr, is applying 2/3 to each hit instead of 1/3 on oh
+      // double tf_bonus = 0.5 * p()->azerite.thunderaans_fury.value( 2 );
       double tf_bonus = ( 2 / 3.0 ) * p()->azerite.thunderaans_fury.value( 2 );
       b += tf_bonus;
     }
@@ -4514,10 +4514,13 @@ struct lava_beam_t : public chained_base_t
 
 // Lava Burst Spell =========================================================
 
+// As of 8.1 Lava Burst checks its state on impact. Lava Burst -> Flame Shock now forces the critical strike
 struct lava_burst_overload_t : public elemental_overload_spell_t
 {
+  unsigned impact_flags;
+
   lava_burst_overload_t( shaman_t* player )
-    : elemental_overload_spell_t( player, "lava_burst_overload", player->find_spell( 77451 ) )
+    : elemental_overload_spell_t( player, "lava_burst_overload", player->find_spell( 77451 ) ), impact_flags()
   {
     maelstrom_gain = player->find_spell( 190493 )->effectN( 5 ).resource( RESOURCE_MAELSTROM );
 
@@ -4525,6 +4528,64 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
     {
       spell_power_mod.direct = player->find_spell( 285466 )->effectN( 1 ).sp_coeff();
     }
+  }
+
+  void init() override
+  {
+    elemental_overload_spell_t::init();
+
+    if ( maybe_ptr( p()->dbc.ptr ) )
+    {
+      std::swap( snapshot_flags, impact_flags );
+    }
+  }
+
+  void snapshot_impact_state( action_state_t* s, dmg_e rt )
+  {
+    if ( maybe_ptr( p()->dbc.ptr ) )
+    {
+      snapshot_internal( s, impact_flags, rt );
+    }
+  }
+
+  virtual double calculate_direct_amount( action_state_t* s ) const override
+  {
+    if ( maybe_ptr( p()->dbc.ptr ) )
+    {
+      // Don't do any extra work, this result won't be used.
+      return 0.0;
+    }
+    else
+    {
+      return elemental_overload_spell_t::calculate_direct_amount( s );
+    }
+  }
+
+  result_e calculate_result( action_state_t* s ) const override
+  {
+    if ( maybe_ptr( p()->dbc.ptr ) )
+    {
+      // Don't do any extra work, this result won't be used.
+      return RESULT_NONE;
+    }
+    else
+    {
+      elemental_overload_spell_t::calculate_result( s );
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    if ( maybe_ptr( p()->dbc.ptr ) )
+    {
+      // Re-call functions here, before the impact call to do the damage calculations as we impact.
+      snapshot_impact_state( s, amount_type( s ) );
+
+      s->result        = elemental_overload_spell_t::calculate_result( s );
+      s->result_amount = elemental_overload_spell_t::calculate_direct_amount( s );
+    }
+
+    elemental_overload_spell_t::impact( s );
   }
 
   double action_multiplier() const override
@@ -4554,7 +4615,7 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
   {
     double m = shaman_spell_t::composite_target_crit_chance( t );
 
-    if ( p()->spec.elemental_shaman->ok() )
+    if ( p()->spec.lava_burst_2->ok() && td( target )->dot.flame_shock->is_ticking() )
     {
       // hardcoded because I didn't find it in spelldata yet
       m = 1.0;
@@ -4691,10 +4752,16 @@ struct flame_shock_spreader_t : public shaman_spell_t
   }
 };
 
+/**
+ * As of 8.1 Lava Burst checks its state on impact. Lava Burst -> Flame Shock now forces the critical strike
+ */
 struct lava_burst_t : public shaman_spell_t
 {
+  unsigned impact_flags;
+
   lava_burst_t( shaman_t* player, const std::string& options_str )
-    : shaman_spell_t( "lava_burst", player, player->find_specialization_spell( "Lava Burst" ), options_str )
+    : shaman_spell_t( "lava_burst", player, player->find_specialization_spell( "Lava Burst" ), options_str ),
+      impact_flags()
   {
     // Manacost is only for resto
     if ( p()->specialization() == SHAMAN_ELEMENTAL )
@@ -4719,10 +4786,68 @@ struct lava_burst_t : public shaman_spell_t
   {
     shaman_spell_t::init();
 
+    if ( maybe_ptr( p()->dbc.ptr ) )
+    {
+      std::swap( snapshot_flags, impact_flags );
+    }
+
     // Elemental and Restoration gain a second Lava Burst charge via Echo of the Elements
     if ( p()->talent.echo_of_the_elements->ok() )
     {
       cooldown->charges = (int)data().charges() + (int)p()->talent.echo_of_the_elements->effectN( 2 ).base_value();
+    }
+  }
+
+  void snapshot_impact_state( action_state_t* s, dmg_e rt )
+  {
+    if ( maybe_ptr( p()->dbc.ptr ) )
+    {
+      snapshot_internal( s, impact_flags, rt );
+    }
+  }
+
+  virtual double calculate_direct_amount( action_state_t* s ) const override
+  {
+    if ( maybe_ptr( p()->dbc.ptr ) )
+    {
+      // Don't do any extra work, this result won't be used.
+      return 0.0;
+    }
+    else
+    {
+      shaman_spell_t::calculate_direct_amount( s );
+    }
+  }
+
+  result_e calculate_result( action_state_t* s ) const override
+  {
+    if ( maybe_ptr( p()->dbc.ptr ) )
+    {
+      // Don't do any extra work, this result won't be used.
+      return RESULT_NONE;
+    }
+    else
+    {
+      shaman_spell_t::calculate_result( s );
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    if ( maybe_ptr( p()->dbc.ptr ) )
+    {
+      // Re-call functions here, before the impact call to do the damage calculations as we impact.
+      snapshot_impact_state( s, amount_type( s ) );
+
+      s->result        = shaman_spell_t::calculate_result( s );
+      s->result_amount = shaman_spell_t::calculate_direct_amount( s );
+    }
+
+    shaman_spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) )
+    {
+      p()->buff.t21_2pc_elemental->trigger();
     }
   }
 
@@ -4814,16 +4939,6 @@ struct lava_burst_t : public shaman_spell_t
     }
 
     return shaman_spell_t::execute_time();
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    shaman_spell_t::impact( state );
-
-    if ( result_is_hit( state->result ) )
-    {
-      p()->buff.t21_2pc_elemental->trigger();
-    }
   }
 };
 
@@ -7299,9 +7414,9 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
   proc_chance += cache.mastery() * mastery.enhanced_elements->effectN( 4 ).mastery_value();
   proc_chance *= 1.0 + buff.tailwind_totem_enh->value();
 
-  if (buff.thunderaans_fury->up())
+  if ( buff.thunderaans_fury->up() )
   {
-    proc_chance = proc_chance * (1.0 + buff.thunderaans_fury->value());
+    proc_chance = proc_chance * ( 1.0 + buff.thunderaans_fury->value() );
   }
 
   if ( rng().roll( proc_chance ) )
