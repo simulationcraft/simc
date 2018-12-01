@@ -2394,8 +2394,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     }
   }
 
-  // Flag Arcane Missiles as direct damage for triggering effects
-  virtual dmg_e amount_type( const action_state_t*, bool ) const override
+  virtual dmg_e amount_type( const action_state_t*, bool = false ) const override
   {
     return DMG_DIRECT;
   }
@@ -2601,6 +2600,11 @@ struct blizzard_shard_t : public frost_mage_spell_t
   {
     aoe = -1;
     background = ground_aoe = chills = true;
+  }
+
+  virtual dmg_e amount_type( const action_state_t*, bool = false ) const override
+  {
+    return DMG_OVER_TIME;
   }
 
   virtual void execute() override
@@ -3030,7 +3034,7 @@ struct flame_patch_t : public fire_mage_spell_t
     ground_aoe = background = true;
   }
 
-  virtual dmg_e amount_type( const action_state_t*, bool ) const override
+  virtual dmg_e amount_type( const action_state_t*, bool = false ) const override
   {
     return DMG_OVER_TIME;
   }
@@ -4067,7 +4071,7 @@ struct meteor_burn_t : public fire_mage_spell_t
     radius = p->find_spell( 153564 )->effectN( 1 ).radius_max();
   }
 
-  virtual dmg_e amount_type( const action_state_t*, bool ) const override
+  virtual dmg_e amount_type( const action_state_t*, bool = false ) const override
   {
     return DMG_OVER_TIME;
   }
@@ -4195,6 +4199,11 @@ struct nether_tempest_aoe_t : public arcane_mage_spell_t
   {
     aoe = -1;
     background = true;
+  }
+
+  virtual dmg_e amount_type( const action_state_t*, bool = false ) const override
+  {
+    return DMG_OVER_TIME;
   }
 
   virtual timespan_t travel_time() const override
