@@ -134,11 +134,9 @@ public:
   {
     priest_spell_t::impact( s );
 
-    // TODO: Fix insanity generation
-    // Generates 10 more insanity if it critically strikes
     if ( s->result == RESULT_CRIT && priest().azerite.whispers_of_the_damned.enabled() && maybe_ptr( priest().dbc.ptr ) )
     {
-      insanity_gain += priest().azerite.whispers_of_the_damned.spell_ref().effectN( 1 ).trigger()->effectN( 1 ).base_value();
+      insanity_gain += priest().azerite.whispers_of_the_damned.spell()->effectN( 1 ).trigger()->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_INSANITY );
     }
 
     priest().generate_insanity( insanity_gain, priest().gains.insanity_mind_blast, s->action );
