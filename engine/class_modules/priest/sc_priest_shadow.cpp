@@ -141,6 +141,10 @@ public:
 
     priest().generate_insanity( insanity_gain, priest().gains.insanity_mind_blast, s->action );
 
+    // TODO: clean this up
+    // reset insanity gain back
+    insanity_gain = data().effectN( 2 ).resource( RESOURCE_INSANITY );
+
     if ( !maybe_ptr( priest().dbc.ptr ) )
     {
       priest().buffs.harvested_thoughts->expire();
