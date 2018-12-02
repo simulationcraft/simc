@@ -254,7 +254,6 @@ public:
     real_ppm_t* predator;  // Optional RPPM approximation
     real_ppm_t* blood_mist;  // Azerite trait
     
-
     // Balance
     real_ppm_t* power_of_the_moon;
   } rppm;
@@ -1381,10 +1380,6 @@ public:
 
   bool rend_and_tear;
   bool hasted_gcd;
-  bool balance_damage;
-  bool balance_damage_periodic;
-  bool resto_damage;
-  bool resto_damage_periodic;
   double gore_chance;
   bool triggers_galactic_guardian;
 
@@ -1394,8 +1389,6 @@ public:
     form_mask( ab::data().stance_mask() ), may_autounshift( true ), autoshift( 0 ),
     rend_and_tear( ab::data().affected_by( player -> spec.thrash_bear_dot -> effectN( 2 ) ) ),
     hasted_gcd( ab::data().affected_by( player -> spec.druid -> effectN( 4 ) ) ),
-    resto_damage( ab::data().affected_by( player -> spec.restoration -> effectN(8) ) ),
-    resto_damage_periodic( ab::data().affected_by( player -> spec.restoration -> effectN(9) ) ),
     gore_chance( player -> dbc.ptr ? player -> spec.gore -> effectN( 1 ).percent() : player -> spec.gore -> proc_chance() ), triggers_galactic_guardian( true )
   {
     ab::may_crit      = true;
@@ -1406,23 +1399,26 @@ public:
 
     if (player->specialization() == DRUID_BALANCE)
     {
-      //dots
-      if (s->affected_by(player->spec.balance->effectN(2)))
+      if (s->affected_by(player->spec.balance->effectN(2))) // Periodic Damage
       {
         ab::base_td_multiplier *= 1.0 + player->spec.balance->effectN(2).percent();
       }
-      //dd
-      if (s->affected_by(player->spec.balance->effectN(1)))
+      if (s->affected_by(player->spec.balance->effectN(1))) // Direct Damage
       {
         ab::base_dd_multiplier *= 1.0 + player->spec.balance->effectN(1).percent();
       }
     }
-
-    if (resto_damage)
-      ab::base_dd_multiplier *= 1.0 + player->spec.restoration->effectN(8).percent();
-    if (resto_damage_periodic)
-      ab::base_td_multiplier *= 1.0 + player->spec.restoration->effectN(9).percent();
-
+    else if (player->specialization() == DRUID_RESTORATION)
+    {
+      if (s->affected_by(player->spec.restoration->effectN(9))) // Periodic Damage
+      {
+        ab::base_td_multiplier *= 1.0 + player->spec.restoration->effectN(8).percent();
+      }
+      if (s->affected_by(player->spec.restoration->effectN(8))) // Direct Damage
+      {
+        ab::base_dd_multiplier *= 1.0 + player->spec.restoration->effectN(8).percent();
+      }
+    }
   }
 
   druid_t* p()
@@ -1971,7 +1967,7 @@ public:
 
     if ( energize_resource_() == RESOURCE_ASTRAL_POWER )
     {
-      if (warrior_of_elune && p() -> buff.warrior_of_elune -> up() )
+      if (warrior_of_elune && p()->buff.warrior_of_elune->check())
         e *= 1.0 + p()->talent.warrior_of_elune->effectN(2).percent();
     }
 
@@ -2429,14 +2425,12 @@ namespace heals {
 
 struct druid_heal_t : public druid_spell_base_t<heal_t>
 {
-  action_t* living_seed;
   bool target_self;
 
   druid_heal_t( const std::string& token, druid_t* p,
                 const spell_data_t* s = spell_data_t::nil(),
                 const std::string& options_str = std::string() ) :
     base_t( token, p, s ),
-    living_seed( nullptr ),
     target_self( 0 )
   {
     add_option( opt_bool( "target_self", target_self ) );
@@ -2450,28 +2444,13 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
     harmful           = false;
   }
 
-protected:
-  void init_living_seed();
-
 public:
   virtual void execute() override
   {
     base_t::execute();
 
-    if ( base_execute_time > timespan_t::zero() )
-      p() -> buff.soul_of_the_forest -> expire();
-
     if ( p() -> mastery.harmony -> ok() && spell_power_mod.direct > 0 && ! background )
       p() -> buff.harmony -> trigger( 1, p() -> mastery.harmony -> ok() ? p() -> cache.mastery_value() : 0.0 );
-  }
-
-  virtual double composite_haste() const override
-  {
-    double h = base_t::composite_haste();
-
-    h *= 1.0 / ( 1.0 + p() -> buff.soul_of_the_forest -> value() );
-
-    return h;
   }
 
   virtual double action_da_multiplier() const override
@@ -2488,38 +2467,14 @@ public:
 
   virtual double action_ta_multiplier() const override
   {
-    double adm = base_t::action_ta_multiplier();
+    double atm = base_t::action_da_multiplier();
 
-    adm += p() -> buff.incarnation_tree -> check_value();
+    atm *= 1.0 + p() -> buff.incarnation_tree -> check_value();
 
-    adm += p() -> buff.harmony -> check_value();
+    if ( p() -> mastery.harmony -> ok() )
+      atm *= 1.0 + p() -> cache.mastery_value();
 
-    return adm;
-  }
-
-  void trigger_lifebloom_refresh( action_state_t* s )
-  {
-    druid_td_t& td = *this -> td( s -> target );
-
-    if ( td.dots.lifebloom -> is_ticking() )
-    {
-      td.dots.lifebloom -> refresh_duration();
-
-      if ( td.buff.lifebloom -> check() )
-        td.buff.lifebloom -> refresh();
-    }
-  }
-
-  void trigger_living_seed( action_state_t* s )
-  {
-    // Technically this should be a buff on the target, then bloom when they're attacked
-    // For simplicity we're going to assume it always heals the target
-    if ( living_seed )
-    {
-      living_seed -> base_dd_min = s -> result_amount;
-      living_seed -> base_dd_max = s -> result_amount;
-      living_seed -> execute();
-    }
+    return atm;
   }
 
   void trigger_clearcasting()
@@ -4492,29 +4447,6 @@ struct cenarion_ward_t : public druid_heal_t
   }
 };
 
-// Living Seed ==============================================================
-
-struct living_seed_t : public druid_heal_t
-{
-  living_seed_t( druid_t* player ) :
-    druid_heal_t( "living_seed", player, player -> find_specialization_spell( "Living Seed" ) )
-  {
-    background = true;
-    may_crit   = false;
-    proc       = true;
-    school     = SCHOOL_NATURE;
-  }
-
-  double composite_da_multiplier( const action_state_t* ) const override
-  { return data().effectN( 1 ).percent(); }
-};
-
-void druid_heal_t::init_living_seed()
-{
-  if ( p() -> specialization() == DRUID_RESTORATION )
-    living_seed = new living_seed_t( p() );
-}
-
 // Frenzied Regeneration ====================================================
 
 struct frenzied_regeneration_t : public heals::druid_heal_t
@@ -4734,19 +4666,6 @@ struct regrowth_t: public druid_heal_t
     return am;
   }
 
-  void impact( action_state_t* state ) override
-  {
-    druid_heal_t::impact( state );
-
-    if ( result_is_hit( state -> result ) )
-    {
-      trigger_lifebloom_refresh( state );
-
-      if ( state -> result == RESULT_CRIT )
-        trigger_living_seed( state );
-    }
-  }
-
   bool check_form_restriction() override
   {
     if ( p() -> buff.predatory_swiftness -> check() )
@@ -4803,28 +4722,9 @@ struct renewal_t : public druid_heal_t
 // TODO: in game, you can swiftmend other druids' hots, which is not supported here
 struct swiftmend_t : public druid_heal_t
 {
-  struct swiftmend_aoe_heal_t : public druid_heal_t
-  {
-    swiftmend_aoe_heal_t( druid_t* p, const spell_data_t* s ) :
-      druid_heal_t( "swiftmend_aoe", p, s )
-    {
-      aoe            = 3;
-      background     = true;
-      base_tick_time = timespan_t::from_seconds( 1.0 );
-      hasted_ticks   = true;
-      may_crit       = false;
-      proc           = true;
-      tick_may_crit  = false;
-    }
-  };
-
   swiftmend_t( druid_t* p, const std::string& options_str ) :
     druid_heal_t( "swiftmend", p, p -> find_class_spell( "Swiftmend" ), options_str )
-  {
-    init_living_seed();
-
-    impact_action = new swiftmend_aoe_heal_t( p, &data() );
-  }
+  {}
 
   virtual void impact( action_state_t* state ) override
   {
@@ -4832,21 +4732,9 @@ struct swiftmend_t : public druid_heal_t
 
     if ( result_is_hit( state -> result ) )
     {
-      if ( state -> result == RESULT_CRIT )
-        trigger_living_seed( state );
-
       if ( p() -> talent.soul_of_the_forest -> ok() )
         p() -> buff.soul_of_the_forest -> trigger();
     }
-  }
-
-  virtual bool target_ready( player_t* candidate_target ) override
-  {
-    if ( ! ( td( candidate_target ) -> dots.regrowth -> is_ticking() ||
-             td( candidate_target ) -> dots.rejuvenation -> is_ticking() ) )
-      return false;
-
-    return druid_heal_t::ready();
   }
 };
 
@@ -4857,7 +4745,7 @@ struct tranquility_t : public druid_heal_t
   tranquility_t( druid_t* p, const std::string& options_str ) :
     druid_heal_t( "tranquility", p, p -> find_specialization_spell( "Tranquility" ), options_str )
   {
-    aoe               = (int) data().effectN( 3 ).base_value(); // Heals 5 targets
+    aoe               = -1;
     base_execute_time = data().duration();
     channeled         = true;
 
@@ -5106,7 +4994,6 @@ struct celestial_alignment_t : public druid_spell_t
     precombat()
   {
     harmful = false;
-    dot_duration = timespan_t::zero();
   }
 
   void init_finished() override
@@ -5160,8 +5047,8 @@ struct streaking_stars_t : public druid_spell_t
     if (p->talent.incarnation_moonkin->ok())
     {
       //This spell deals less damage when incarnation is talented which is not found in the spelldata 8/10/18
-      base_dd_min *= 0.66;
-      base_dd_max *= 0.66;
+      base_dd_min *= 0.6667;
+      base_dd_max *= 0.6667;
     }
   }
 };
@@ -5534,9 +5421,9 @@ struct incarnation_t : public druid_spell_t
       spec_buff = p -> buff.incarnation_tree;
       break;
     default:
-    {
-      assert( false && "Actor attempted to create incarnation action with no specialization." );
-    }
+      {
+        assert( false && "Actor attempted to create incarnation action with no specialization." );
+      }
     }
 
     harmful = false;
@@ -6118,7 +6005,7 @@ struct solar_wrath_state_t :public action_state_t
 struct solar_empowerment_t : public druid_spell_t
 {
   solar_empowerment_t (druid_t* p) :
-    druid_spell_t("Solar_empowerment", p, p->spec.solar_wrath_empowerment)
+    druid_spell_t("solar_empowerment", p, p->spec.solar_wrath_empowerment)
   {
     background = true;
     may_crit = false;
@@ -6236,7 +6123,7 @@ struct solar_wrath_t : public druid_spell_t
   {
     double da = druid_spell_t::bonus_da(s);
 
-    da += p()->buff.dawning_sun->check_value();
+    da += p()->buff.dawning_sun->value();
 
     return da;
   }
@@ -7295,8 +7182,8 @@ void druid_t::init_base_stats()
   resources.base[ RESOURCE_RAGE         ] = 100;
   resources.base[ RESOURCE_COMBO_POINT  ] = 5;
   resources.base[ RESOURCE_ASTRAL_POWER ] = 100
-      + sets -> set( DRUID_BALANCE, T20, B2 ) -> effectN( 1 ).resource( RESOURCE_ASTRAL_POWER );
-  resources.base[RESOURCE_ENERGY] = 100
+      + sets -> set( DRUID_BALANCE, T20, B2 )->effectN(1).resource(RESOURCE_ASTRAL_POWER);
+  resources.base[ RESOURCE_ENERGY       ] = 100
       + sets->set(DRUID_FERAL, T18, B2)->effectN(2).resource(RESOURCE_ENERGY)
       + talent.moment_of_clarity->effectN(3).resource(RESOURCE_ENERGY);
 
@@ -7425,23 +7312,6 @@ void druid_t::create_buffs()
     ->add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
     ->add_invalidate(CACHE_HASTE)
     ->add_invalidate(CACHE_SPELL_HASTE);
-
-  //buff.incarnation_moonkin   = new incarnation_moonkin_buff_t( *this );
-
-/*/ Incarnation: Chosen of Elune ==========================================
-
-struct incarnation_moonkin_buff_t : public druid_buff_t< buff_t >
-{
-  incarnation_moonkin_buff_t( druid_t& p ) :
-    base_t( p, "incarnation_chosen_of_elune", p.talent.incarnation_moonkin )
-  {
-    set_default_value( p.talent.incarnation_moonkin -> effectN( 1 ).percent() );
-    set_cooldown( timespan_t::zero() );
-    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-    add_invalidate(CACHE_HASTE);
-    add_invalidate(CACHE_SPELL_HASTE);
-  }
-};*/
   
   buff.fury_of_elune = make_buff(this, "fury_of_elune", talent.fury_of_elune)
     ->set_tick_callback([this](buff_t*, int, const timespan_t&) {
@@ -7694,9 +7564,6 @@ void druid_t::apl_precombat()
    // Rune
    precombat->add_action("augmentation");
 
-  // Mark of the Wild
-  precombat -> add_action( this, "Mark of the Wild", "if=!aura.str_agi_int.up" );
-
   // Feral: Bloodtalons
   if ( specialization() == DRUID_FERAL && true_level >= 100 )
     precombat -> add_action( this, "Regrowth", "if=talent.bloodtalons.enabled" );
@@ -7736,8 +7603,8 @@ void druid_t::apl_precombat()
   }
   else if ( specialization() == DRUID_RESTORATION && role == ROLE_ATTACK )
   {
-    precombat -> add_action("cat_form");
-    precombat -> add_action("prowl");
+    precombat -> add_action( this, "Cat Form" );
+    precombat -> add_action( this, "Prowl" );
   }
   else if ( primary_role() == ROLE_TANK )
   {
@@ -7756,14 +7623,14 @@ void druid_t::apl_precombat()
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   // Pre-Potion
-  precombat->add_action("potion");
+  precombat -> add_action("potion");
 
   // Spec Specific Optimizations
   if ( specialization() == DRUID_BALANCE )
   {
     precombat -> add_action( this, "Solar Wrath" );
   }
-  else if ( specialization() == DRUID_GUARDIAN )
+  else if ( specialization() == DRUID_RESTORATION )
     precombat -> add_talent( this, "Cenarion Ward" );
   else if ( specialization() == DRUID_FERAL )
     precombat -> add_action("berserk");
@@ -8779,14 +8646,14 @@ double druid_t::temporary_movement_modifier() const
 {
   double active = player_t::temporary_movement_modifier();
 
-  if ( buff.dash -> up() && buff.cat_form -> up() )
-    active = std::max( active, buff.dash -> value() );
+  if ( buff.dash -> up() && buff.cat_form -> check() )
+    active = std::max( active, buff.dash -> check_value() );
   
-  if ( buff.wild_charge_movement -> up() )
-    active = std::max( active, buff.wild_charge_movement -> value() );
+  if ( buff.wild_charge_movement -> check() )
+    active = std::max( active, buff.wild_charge_movement -> check_value() );
 
-  if ( buff.tiger_dash -> up() && buff.cat_form -> up() )
-    active = std::max( active, buff.tiger_dash -> value() );
+  if ( buff.tiger_dash -> up() && buff.cat_form -> check() )
+    active = std::max( active, buff.tiger_dash -> check_value() );
     
   return active;
 }
