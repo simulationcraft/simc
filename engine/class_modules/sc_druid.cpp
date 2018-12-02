@@ -8284,9 +8284,7 @@ void druid_t::init_resources( bool force )
 
   resources.current[ RESOURCE_RAGE ] = 0;
   resources.current[ RESOURCE_COMBO_POINT ] = 0;
-  if (talent.natures_balance->ok()) {
-      resources.current[RESOURCE_ASTRAL_POWER] = 42;  //Nature's Balance causes you to drop to 50 instead of 20 Astral Power at the start of combat
-  } else {resources.current[RESOURCE_ASTRAL_POWER] = initial_astral_power;}
+  resources.current[ RESOURCE_ASTRAL_POWER ] = std::max(talent.natures_balance->ok() ? 42.0 : 0.0, initial_astral_power);
   expected_max_health = calculate_expected_max_health();
 }
 
