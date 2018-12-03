@@ -2089,21 +2089,22 @@ struct arcane_barrage_t : public arcane_mage_spell_t
     base_aoe_multiplier *= data().effectN( 2 ).percent();
   }
 
-  virtual void execute() override
+  virtual int n_targets() const override
   {
     int charges = p()->buffs.arcane_charge->check();
+    return p()->spec.arcane_barrage_2->ok() && charges > 0 ? charges + 1 : 0;
+  }
 
-    if ( p()->spec.arcane_barrage_2->ok() )
-      aoe = 1 + charges;
-
+  virtual void execute() override
+  {
     p()->benefits.arcane_charge.arcane_barrage->update();
 
     arcane_mage_spell_t::execute();
 
     if ( p()->sets->has_set_bonus( MAGE_ARCANE, T21, B2 ) )
     {
-      p()->buffs.expanding_mind
-         ->trigger( 1, charges * p()->sets->set( MAGE_ARCANE, T21, B2 )->effectN( 1 ).percent() );
+      p()->buffs.expanding_mind->trigger( 1,
+        p()->buffs.arcane_charge->check() * p()->sets->set( MAGE_ARCANE, T21, B2 )->effectN( 1 ).percent() );
     }
 
     p()->buffs.arcane_charge->expire();
