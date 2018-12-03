@@ -4570,7 +4570,7 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
     }
     else
     {
-      elemental_overload_spell_t::calculate_result( s );
+      return elemental_overload_spell_t::calculate_result( s );
     }
   }
 
@@ -4815,7 +4815,7 @@ struct lava_burst_t : public shaman_spell_t
     }
     else
     {
-      shaman_spell_t::calculate_direct_amount( s );
+      return shaman_spell_t::calculate_direct_amount( s );
     }
   }
 
@@ -4828,7 +4828,7 @@ struct lava_burst_t : public shaman_spell_t
     }
     else
     {
-      shaman_spell_t::calculate_result( s );
+      return shaman_spell_t::calculate_result( s );
     }
   }
 

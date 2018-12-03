@@ -1186,7 +1186,8 @@ struct secondary_ability_trigger_t : public event_t
   void execute() override
   {
     // Ensure target is still available and did not demise during delay.
-    if ( state && state->target && state->target->is_sleeping() || target && target->is_sleeping() )
+    if ( ( state && state->target && state->target->is_sleeping() ) ||
+         ( target && target->is_sleeping() ) )
       return;
 
     actions::rogue_attack_t* attack = rogue_t::cast_attack( action );
