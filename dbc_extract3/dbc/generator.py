@@ -1229,6 +1229,8 @@ class SpellDataGenerator(DataGenerator):
          279664,
          # Secrets of the Sands for Sandscoured Idol
          278267,
+         # Deep Roots for Ancients' Bulwark
+         287610,
         ),
 
         # Warrior:
