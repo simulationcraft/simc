@@ -62,6 +62,7 @@ private:
   double insanity_gain;
   double whispers_of_the_damned_value;
   double harvested_thoughts_value;
+  double whispers_bonus_insanity;
 
 public:
   mind_blast_t( priest_t& player, const std::string& options_str )
@@ -69,7 +70,12 @@ public:
                       player.talents.shadow_word_void->ok() ? player.find_talent_spell( "Shadow Word: Void" )
                                                             : player.find_class_spell( "Mind Blast" ) ),
       whispers_of_the_damned_value( priest().azerite.whispers_of_the_damned.value( 2 ) ),
-      harvested_thoughts_value( priest().azerite.thought_harvester.value( 1 ) )
+      harvested_thoughts_value( priest().azerite.thought_harvester.value( 1 ) ),
+      whispers_bonus_insanity( priest()
+                                   .azerite.whispers_of_the_damned.spell()
+                                   ->effectN( 1 ).trigger()
+                                   ->effectN( 1 ).trigger()
+                                   ->effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
     parse_options( options_str );
 
@@ -133,17 +139,14 @@ public:
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
+    double total_insanity_gain = insanity_gain;
 
-    if ( s->result == RESULT_CRIT && priest().azerite.whispers_of_the_damned.enabled() && maybe_ptr( priest().dbc.ptr ) )
+    if ( priest().azerite.whispers_of_the_damned.enabled() && s->result == RESULT_CRIT && maybe_ptr( priest().dbc.ptr ) )
     {
-      insanity_gain += priest().azerite.whispers_of_the_damned.spell()->effectN( 1 ).trigger()->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_INSANITY );
+      total_insanity_gain += whispers_bonus_insanity;
     }
 
-    priest().generate_insanity( insanity_gain, priest().gains.insanity_mind_blast, s->action );
-
-    // TODO: clean this up
-    // reset insanity gain back
-    insanity_gain = data().effectN( 2 ).resource( RESOURCE_INSANITY );
+    priest().generate_insanity( total_insanity_gain, priest().gains.insanity_mind_blast, s->action );
 
     if ( !maybe_ptr( priest().dbc.ptr ) )
     {
