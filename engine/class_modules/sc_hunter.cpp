@@ -5626,7 +5626,7 @@ void hunter_t::apl_surv()
                         "To simulate usage for Mongoose Bite or Raptor Strike during Aspect of the Eagle, copy each occurrence of the action and append _eagle to the action name." );
   mb_ap_wfi_st -> add_action( this, "Kill Command", "if=focus+cast_regen<focus.max&(buff.mongoose_fury.stack<5|focus<action.mongoose_bite.cost)" );
   mb_ap_wfi_st -> add_action( this, "Wildfire Bomb", "if=next_wi_bomb.shrapnel&focus>60&dot.serpent_sting.remains>3*gcd" );
-  mb_ap_wfi_st -> add_action( this, "Serpent Sting", "if=buff.vipers_venom.react|refreshable&(!talent.mongoose_bite.enabled|!talent.vipers_venom.enabled|next_wi_bomb.volatile&!dot.shrapnel_bomb.ticking|azerite.latent_poison.enabled|azerite.venomous_fangs.enabled)" );
+  mb_ap_wfi_st -> add_action( this, "Serpent Sting", "if=refreshable&(next_wi_bomb.volatile&!dot.shrapnel_bomb.ticking|azerite.latent_poison.enabled|azerite.venomous_fangs.enabled)" );
   mb_ap_wfi_st -> add_talent( this, "Mongoose Bite", "if=buff.mongoose_fury.up|focus>60|dot.shrapnel_bomb.ticking" );
   mb_ap_wfi_st -> add_action( this, "Serpent Sting", "if=refreshable" );
   mb_ap_wfi_st -> add_action( this, "Wildfire Bomb", "if=next_wi_bomb.volatile&dot.serpent_sting.ticking|next_wi_bomb.pheromone|next_wi_bomb.shrapnel&focus>50" );
