@@ -4663,8 +4663,8 @@ struct flame_shock_spreader_t : public shaman_spell_t
     if ( copy_target && sim->debug )
     {
       sim->out_debug.printf(
-          "%s volcanic_rage spreads flame_shock from %s to shortest remaining target %s (remains=%.3f)", player->name(),
-          target->name(), copy_target->name(), min_remains.total_seconds() );
+          "%s surge_of_power spreads flame_shock from %s to shortest remaining target %s (remains=%.3f)",
+          player->name(), target->name(), copy_target->name(), min_remains.total_seconds() );
     }
 
     return copy_target;
@@ -4716,7 +4716,7 @@ struct flame_shock_spreader_t : public shaman_spell_t
 
     if ( copy_target && sim->debug )
     {
-      sim->out_debug.printf( "%s volcanic_rage spreads flame_shock from %s to closest target %s (distance=%.3f)",
+      sim->out_debug.printf( "%s surge_of_power spreads flame_shock from %s to closest target %s (distance=%.3f)",
                              player->name(), target->name(), copy_target->name(), min_distance );
     }
 
