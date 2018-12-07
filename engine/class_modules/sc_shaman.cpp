@@ -8067,14 +8067,26 @@ void shaman_t::init_action_list_elemental()
     aoe->add_talent(
         this, "Ascendance",
         "if=talent.ascendance.enabled&(talent.storm_elemental.enabled&cooldown.storm_elemental.remains<120&"
-        "cooldown.storm_elemental."
-        "remains>15|!talent.storm_elemental.enabled)" );
+        "cooldown.storm_elemental.remains>15|!talent.storm_elemental.enabled)" );
     aoe->add_talent( this, "Liquid Magma Totem", "if=talent.liquid_magma_totem.enabled" );
-    aoe->add_action( this, "Flame Shock", "if=spell_targets.chain_lightning<4,target_if=refreshable" );
-    aoe->add_action( this, "Earthquake" );
-    aoe->add_action( this, "Lava Burst", "if=(buff.lava_surge.up|buff.ascendance.up)&spell_targets.chain_lightning<4",
-                     "Only cast Lava Burst on three targets if it is an instant." );
-    aoe->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled&spell_targets.chain_lightning<4" );
+    aoe->add_action( this, "Flame Shock",
+                     "if=spell_targets.chain_lightning<5&(!talent.storm_elemental.enabled|(cooldown.storm_elemental."
+                     "remains<120|spell_target.chain_lightning==3&buff.wind_gust.stack<14),target_if=refreshable",
+                     "Spread Flame Shock in <=4 target fights, but not during SE uptime, unless you're fighting 3 "
+                     "targets and have less than 14 Wind Gust stacks." );
+    aoe->add_action(
+        this, "Earthquake",
+        "if=!talent.master_of_the_elements.enabled|buff.stormkeeper.up|maelstrom>=(100-4*spell_targets."
+        "chain_lightning)|buff.master_of_the_elements.up|spell_targets.chain_lightning>3",
+        "Try to game Earthquake with Master of the Elements buff when fighting 3 targets. Don't overcap Maelstrom!" );
+    aoe->add_action( this, "Lava Burst",
+                     "if=(buff.lava_surge.up|buff.ascendance.up)&spell_targets.chain_lightning<4&(!talent.storm_"
+                     "elemental.enabled|cooldown.storm_elemental.remains<120)",
+                     "Only cast Lava Burst on three targets if it is an instant and Storm Elemental is NOT active." );
+    aoe->add_talent( this, "Elemental Blast",
+                     "if=talent.elemental_blast.enabled&spell_targets.chain_lightning<4&(!talent.storm_elemental."
+                     "enabled|cooldown.storm_elemental.remains<120)",
+                     "Use Elemental Blast against up to 3 targets as long as Storm Elemental is not active." );
     aoe->add_action( this, "Lava Beam", "if=talent.ascendance.enabled" );
     aoe->add_action( this, "Chain Lightning" );
     aoe->add_action( this, "Lava Burst", "moving=1,if=talent.ascendance.enabled" );
@@ -8114,6 +8126,8 @@ void shaman_t::init_action_list_elemental()
                                "if=talent.liquid_magma_totem.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)" );
     single_target->add_action( this, "Earthquake", "if=active_enemies>1&spell_targets.chain_lightning>1",
                                "There might come an update for this line with some SoP logic." );
+    single_target->add_action( this, "Chain Lightning",
+                               "if=active_enemies>1&buff.stormkeeper.up&buff.master_of_the_elements.up" );
     single_target->add_action(
         this, "Lightning Bolt",
         "if=buff.stormkeeper.up&(buff.master_of_the_elements.up&!talent.surge_of_power.enabled|buff.surge_of_power.up)",
@@ -8290,7 +8304,9 @@ void shaman_t::init_action_list_enhancement()
 
   core->add_talent( this, "Earthen Spike", "if=variable.furyCheck25" );
   core->add_talent( this, "Sundering", "if=active_enemies>=3" );
-  core->add_action( this, "Stormstrike", "cycle_targets=1,if=azerite.lightning_conduit.enabled&!debuff.lightning_conduit.up&active_enemies>1&(buff.stormbringer.up|(variable.OCPool70&variable.furyCheck35))" );
+  core->add_action( this, "Stormstrike",
+                    "cycle_targets=1,if=azerite.lightning_conduit.enabled&!debuff.lightning_conduit.up&active_enemies>"
+                    "1&(buff.stormbringer.up|(variable.OCPool70&variable.furyCheck35))" );
   core->add_action( this, "Stormstrike",
                     "if=buff.stormbringer.up|(buff.gathering_storms.up&variable.OCPool70&variable.furyCheck35)" );
   core->add_action( this, "Crash Lightning", "if=active_enemies>=3&variable.furyCheck25" );
