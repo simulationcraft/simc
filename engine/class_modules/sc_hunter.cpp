@@ -5486,14 +5486,13 @@ void hunter_t::apl_mm()
   st -> add_talent( this, "Explosive Shot" );
   st -> add_talent( this, "Barrage", "if=active_enemies>1" );
   st -> add_talent( this, "A Murder of Crows" );
-  st -> add_talent( this, "Serpent Sting", "if=refreshable" );
+  st -> add_talent( this, "Serpent Sting", "if=refreshable&!action.serpent_sting.in_flight" );
   st -> add_action( this, "Arcane Shot", "if=buff.precise_shots.up&cooldown.aimed_shot.full_recharge_time<gcd*buff.precise_shots.stack+action.aimed_shot.cast_time" );
   st -> add_action( this, "Aimed Shot", "if=buff.precise_shots.down" );
   st -> add_action( this, "Rapid Fire", "if=focus+cast_regen<focus.max|azerite.focused_fire.enabled|azerite.in_the_rhythm.rank>1|azerite.surging_shots.enabled|talent.streamline.enabled" );
   st -> add_talent( this, "Piercing Shot" );
   st -> add_action( this, "Arcane Shot", "if=focus>60|buff.precise_shots.up" );
-  st -> add_action( this, "Steady Shot", "if=focus+cast_regen<focus.max" );
-  st -> add_action( this, "Arcane Shot" );
+  st -> add_action( this, "Steady Shot" );
 
   trickshots -> add_talent( this, "Barrage" );
   trickshots -> add_talent( this, "Explosive Shot" );
@@ -5503,9 +5502,8 @@ void hunter_t::apl_mm()
   trickshots -> add_action( this, "Multi-Shot", "if=buff.trick_shots.down|buff.precise_shots.up|focus>70" );
   trickshots -> add_talent( this, "Piercing Shot" );
   trickshots -> add_talent( this, "A Murder of Crows" );
-  trickshots -> add_talent( this, "Serpent Sting", "if=refreshable" );
-  trickshots -> add_action( this, "Steady Shot", "if=focus+cast_regen<focus.max" );
-  trickshots -> add_action( this, "Multi-Shot" );
+  trickshots -> add_talent( this, "Serpent Sting", "if=refreshable&!action.serpent_sting.in_flight" );
+  trickshots -> add_action( this, "Steady Shot" );
 }
 
 // Survival Action List ===================================================================
