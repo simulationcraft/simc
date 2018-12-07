@@ -1571,7 +1571,7 @@ public:
   {
     if (p()->azerite.streaking_stars.ok())
     {
-      if (!compare_previous_streaking_stars(new_ability)&&(p()->buff.celestial_alignment->check() || p()->buff.incarnation_moonkin->check()))
+      if (!compare_previous_streaking_stars(new_ability) && (p()->buff.celestial_alignment->check() || p()->buff.incarnation_moonkin->check()))
       {
         action_state_t* ss_s = p()->active.streaking_stars->get_state();
         //Check if the trigger has a target, otherwise use the actors target
@@ -2164,6 +2164,10 @@ struct moonfire_t : public druid_spell_t
       if (p->talent.twin_moons->ok())
       {
         aoe += (int) p->talent.twin_moons->effectN(1).base_value();
+        /* Twin Moons seems to fire off another MF spell - sometimes concurrently,
+           sometimes up to 100ms later. While there are very limited cases where
+           this could have an effect, those cases do exist. Possibly worth investigating
+           further in the future. */
         radius = p->talent.twin_moons->effectN(1).trigger()->effectN(1).radius_max();
         base_dd_multiplier *= 1.0 + p->talent.twin_moons->effectN(2).percent();
         base_td_multiplier *= 1.0 + p->talent.twin_moons->effectN(3).percent();
@@ -2402,6 +2406,9 @@ struct moonfire_t : public druid_spell_t
 
   void impact( action_state_t* s ) override
   {
+    druid_spell_t::impact(s);
+    streaking_stars_trigger(SS_MOONFIRE, s);
+
     if ( result_is_hit( s -> result ) )
     {
       trigger_gore();
@@ -2411,7 +2418,6 @@ struct moonfire_t : public druid_spell_t
   void execute() override
   {
     druid_spell_t::execute();
-    streaking_stars_trigger(SS_MOONFIRE, execute_state);
 
     damage -> target = execute_state -> target;
     damage -> schedule_execute();
@@ -5166,11 +5172,16 @@ struct full_moon_t : public druid_spell_t
     return da;
   }
 
+  void impact(action_state_t* s) override
+  {
+    druid_spell_t::impact(s);
+    streaking_stars_trigger(SS_FULL_MOON, s); // double proc shenanigans
+  }
+
   void execute() override
   {
     druid_spell_t::execute();
-    
-    streaking_stars_trigger(SS_FULL_MOON, execute_state);
+    streaking_stars_trigger(SS_FULL_MOON, execute_state); // double proc shenanigans
     
     if (p()->moon_stage == FULL_MOON && radiant_moonlight) {
       p()->moon_stage = FREE_FULL_MOON;
@@ -5209,12 +5220,16 @@ struct half_moon_t : public druid_spell_t
     cooldown = player -> cooldown.moon_cd;
   }
 
+  void impact(action_state_t* s) override
+  {
+    druid_spell_t::impact(s);
+    streaking_stars_trigger(SS_HALF_MOON, s); // double proc shenanigans
+  }
+
   void execute() override
   {
     druid_spell_t::execute();
-    
-    streaking_stars_trigger(SS_HALF_MOON, execute_state);
-
+    streaking_stars_trigger(SS_HALF_MOON, execute_state); // double proc shenanigans
     p() -> moon_stage++;
   }
 
@@ -5682,6 +5697,12 @@ struct lunar_strike_t : public druid_spell_t
     return et;
   }
 
+  void impact(action_state_t* s)
+  {
+    druid_spell_t::impact(s);
+    streaking_stars_trigger(SS_LUNAR_STRIKE, s);
+  }
+
   void execute() override
   {
     p() -> buff.lunar_empowerment -> up();
@@ -5699,8 +5720,6 @@ struct lunar_strike_t : public druid_spell_t
     }
 
     p() -> buff.power_of_elune -> trigger();
-
-    streaking_stars_trigger(SS_LUNAR_STRIKE, execute_state);
 
     if (p()->azerite.dawning_sun.ok())
     {
@@ -5722,12 +5741,16 @@ struct new_moon_t : public druid_spell_t
     cooldown -> charges  = data().charges();
   }
 
+  void impact (action_state_t* s) override
+  {
+    druid_spell_t::impact(s);
+    streaking_stars_trigger(SS_NEW_MOON, s); // double proc shenanigans
+  }
+
   void execute() override
   {
     druid_spell_t::execute();
-
-    streaking_stars_trigger(SS_NEW_MOON, execute_state);
-    
+    streaking_stars_trigger(SS_NEW_MOON, execute_state); // double proc shenanigans
     p() -> moon_stage++;
   }
 
@@ -5854,10 +5877,15 @@ struct sunfire_t : public druid_spell_t
     // Add damage modifiers in sunfire_damage_t, not here.
   }
 
+  void impact(action_state_t* s) override
+  {
+    druid_spell_t::impact(s);
+    streaking_stars_trigger(SS_SUNFIRE, s);
+  }
+
   void execute() override
   {
     druid_spell_t::execute();
-    streaking_stars_trigger(SS_SUNFIRE, execute_state);
  
     damage -> target = execute_state -> target;
     damage -> schedule_execute();
@@ -6073,7 +6101,7 @@ struct solar_wrath_t : public druid_spell_t
     {
       p ()->trigger_solar_empowerment (s);
     }
-    streaking_stars_trigger(SS_SOLAR_WRATH, execute_state);
+    streaking_stars_trigger(SS_SOLAR_WRATH, execute_state); // double proc shenanigans
   }
 
   timespan_t gcd() const override
@@ -6113,7 +6141,7 @@ struct solar_wrath_t : public druid_spell_t
             p()->buff.lunar_empowerment->trigger();
             expansion::bfa::trigger_leyshocks_grand_compilation( STAT_VERSATILITY_RATING, player );
         }
-        streaking_stars_trigger(SS_SOLAR_WRATH, execute_state);
+        streaking_stars_trigger(SS_SOLAR_WRATH, execute_state); // double proc shenanigans
     }
 
     p() -> buff.power_of_elune -> trigger();
@@ -6421,14 +6449,30 @@ struct starsurge_t : public druid_spell_t
     if (p()->azerite.arcanic_pulsar.ok())
     {
       p()->buff.arcanic_pulsar->trigger();
-      if (p()->buff.arcanic_pulsar->check() == p()->buff.arcanic_pulsar->max_stack() && !p()->buff.incarnation_moonkin->check() && !p()->buff.celestial_alignment->check())
+
+      if (p()->buff.arcanic_pulsar->check() == p()->buff.arcanic_pulsar->max_stack())
       {
-        if(p()->talent.incarnation_moonkin->ok()) {
-          p()->buff.incarnation_moonkin->trigger(1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds(p()->azerite.arcanic_pulsar.spell()->effectN(3).base_value()));
-          p()->buff.incarnation_proxy->trigger( 1, 0, -1.0, p()->buff.incarnation_moonkin->remains() );
-        } else {
-          p()->buff.celestial_alignment->trigger(1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds(p()->azerite.arcanic_pulsar.spell()->effectN(3).base_value()));
+        timespan_t pulsar_dur = timespan_t::from_seconds(p()->azerite.arcanic_pulsar.spell()->effectN(3).base_value());
+        bool is_inc = p()->talent.incarnation_moonkin->ok();
+        buff_t* proc_buff = is_inc ? p()->buff.incarnation_moonkin : p()->buff.celestial_alignment;
+
+        if (proc_buff->check())
+        {
+          proc_buff->extend_duration(p(), pulsar_dur);
+          if (is_inc)
+          {
+            p()->buff.incarnation_proxy->extend_duration(p(), pulsar_dur);
+          }
         }
+        else
+        {
+          proc_buff->trigger(1, buff_t::DEFAULT_VALUE(), 1.0, pulsar_dur);
+          if (is_inc)
+          {
+            p()->buff.incarnation_proxy->trigger(1, 0, -1.0, proc_buff->remains());
+          }
+        }
+
         p()->buff.arcanic_pulsar->expire();
         streaking_stars_trigger(SS_CELESTIAL_ALIGNMENT, nullptr);
       }
@@ -6459,10 +6503,10 @@ struct stellar_flare_t : public druid_spell_t
       return am;
   }
 
-  void execute() override
+  void impact(action_state_t* s) override
   {
-    druid_spell_t::execute();
-    streaking_stars_trigger(SS_STELLAR_FLARE, execute_state);
+    druid_spell_t::impact(s);
+    streaking_stars_trigger(SS_STELLAR_FLARE, s);
   }
 };
 
