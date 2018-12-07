@@ -8105,7 +8105,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=749436)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 343.4356 (coefficient=4.417178) | PvP Coefficient: 1.00000 | Trigger Spell: 286834 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 429.2944 (coefficient=5.521472) | PvP Coefficient: 1.00000 | Trigger Spell: 286834 | Target: Self (1)
+                   Hotfixed: Coefficient (4.41718 -> 5.52147)
 #2 (id=749437)   : Dummy (3)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000
 Description      : Dark Transformations ignites you and your pet with flaming chains that deal $s1 Fire damage every sec to enemies between you for $s2 sec. 
@@ -8126,7 +8127,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=750152)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 949.6183 (coefficient=3.053435) | PvP Coefficient: 1.00000 | Trigger Spell: 287303 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2374.046 (coefficient=7.633588) | PvP Coefficient: 1.00000 | Trigger Spell: 287303 | Target: Self (1)
+                   Hotfixed: Coefficient (3.05343 -> 7.63359)
 #2 (id=750153)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 47.48099 (coefficient=0.152672) | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=750154)   : Dummy (3)
@@ -8248,7 +8250,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=752014)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 933 (coefficient=12) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 691.6411 (coefficient=8.895705) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Hotfixed: Coefficient (12 -> 8.8957)
 Description      : Apocalypse and Army of the Damned additionally summon a Magus of the Dead for $288544d who hurls Frostbolts and Shadow Bolts at your foes, dealing $s1 damage each. 
 
 Name             : Cold Hearted (id=288424) [Scaling Spell (-8), Spell Family (15), Passive] 

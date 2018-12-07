@@ -6662,9 +6662,10 @@ Effects          :
 #1 (id=728943)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 275725 | Target: Self (1)
 #2 (id=751888)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 572.3926 (coefficient=7.361963) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 887.2086 (coefficient=11.41104) | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Mind Blast (8092), Shadow Word: Void (205351)
                    Family Flags: 13, 30
+                   Hotfixed: Coefficient (7.36196 -> 11.411)
 Description      : $?s205351[Shadow Word: Void][Mind Blast] deals $s2 additional damage and generates ${$275726s1/100} additional Insanity on critical strikes.
 
 Name             : Whispers of the Damned (id=275725) [Scaling Spell (-1), Spell Family (6), Hidden] 
@@ -6706,7 +6707,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=728947)   : Energize Power (30)
-                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
+                   Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
+                   Hotfixed: Base Value (1000 -> 2000)
 Description      : $@spelldesc275725
 
 Name             : Everlasting Light (id=277681) [Scaling Spell (-8), Spell Family (6), Passive] 
@@ -7896,9 +7898,10 @@ Effects          :
 #1 (id=751893)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 288342 | Target: Self (1)
 #2 (id=751938)   : Apply Aura (6) | Add Flat Modifier (107): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 124.4954 (coefficient=1.601227) | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 128.7884 (coefficient=1.656442) | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Vampiric Touch (34914)
                    Family Flags: 42
+                   Hotfixed: Coefficient (1.60123 -> 1.65644)
 Description      : Vampiric Touch damage is increased by $s2, and each time Vampiric Touch deals damage you have a chance to increase the damage of your next Mind Sear within $288343d by $288343s1%.
 
 Name             : Thought Harvester (id=288342) [Spell Family (6), Hidden] 
@@ -7939,7 +7942,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=751896)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Hotfixed: Base Value (300 -> 150)
 Description      : $@spelldesc288340
 Tooltip          : Mind Sear damage increased by $s1%.
 
