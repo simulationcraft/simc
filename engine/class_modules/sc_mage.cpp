@@ -1997,7 +1997,8 @@ struct icicle_t : public frost_mage_spell_t
   icicle_t( mage_t* p, const std::string& trigger_spell ) :
     frost_mage_spell_t( trigger_spell + "_icicle", p, p->find_spell( 148022 ) )
   {
-    proc = background = true;
+    background = true;
+    callbacks = false;
 
     base_dd_min = base_dd_max = 1.0;
 
@@ -2812,7 +2813,6 @@ struct conflagration_flare_up_t : public fire_mage_spell_t
   conflagration_flare_up_t( mage_t* p ) :
     fire_mage_spell_t( "conflagration_flare_up", p, p->find_spell( 205345 ) )
   {
-    callbacks = false;
     background = true;
     aoe = -1;
   }
