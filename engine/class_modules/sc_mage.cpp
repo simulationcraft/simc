@@ -5913,7 +5913,7 @@ void mage_t::create_buffs()
                                ->set_chance( azerite.flames_of_alacrity.enabled() ? 1.0 : 0.0 );
   // TODO: The crit value doesn't match anything in spell data. Figure out where it's coming from.
   buffs.wildfire           = make_buff<stat_buff_t>( this, "wildfire", find_spell( 288800 ) )
-                               ->add_stat( STAT_CRIT_RATING, 576.0 )
+                               ->add_stat( STAT_CRIT_RATING, 768.0 )
                                ->set_chance( azerite.wildfire.enabled() ? 1.0 : 0.0 );
 
   buffs.frigid_grasp       = make_buff<stat_buff_t>( this, "frigid_grasp", find_spell( 279684 ) )
