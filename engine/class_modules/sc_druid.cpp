@@ -353,7 +353,6 @@ public:
     buff_t* tiger_dash;
     buff_t* cenarion_ward;
     buff_t* clearcasting;
-    buff_t* incarnation_proxy;
     buff_t* prowl;
     buff_t* stampeding_roar;
     buff_t* wild_charge_movement;
@@ -2059,7 +2058,6 @@ public:
       {
         timespan_t time = std::max( std::max( min_gcd, trigger_gcd * composite_haste() ), base_execute_time * composite_haste() );
         p() -> buff.incarnation_moonkin -> extend_duration( p(), -time );
-        p() -> buff.incarnation_proxy -> extend_duration( p(), -time );
         p() -> cooldown.incarnation -> adjust( -time );
       }
     }
@@ -5493,9 +5491,6 @@ struct incarnation_t : public druid_spell_t
         p() -> regen( time );
     }
 
-    // Proxy buff for APL laziness.
-    p() -> buff.incarnation_proxy -> trigger( 1, 0, -1.0, spec_buff -> remains() );
-
     if ( p() -> buff.incarnation_bear -> check() )
     {
       p() -> cooldown.mangle      -> reset( false );
@@ -6454,25 +6449,12 @@ struct starsurge_t : public druid_spell_t
       if (p()->buff.arcanic_pulsar->check() == p()->buff.arcanic_pulsar->max_stack())
       {
         timespan_t pulsar_dur = timespan_t::from_seconds(p()->azerite.arcanic_pulsar.spell()->effectN(3).base_value());
-        bool is_inc = p()->talent.incarnation_moonkin->ok();
-        buff_t* proc_buff = is_inc ? p()->buff.incarnation_moonkin : p()->buff.celestial_alignment;
+        buff_t* proc_buff = p()->talent.incarnation_moonkin->ok() ? p()->buff.incarnation_moonkin : p()->buff.celestial_alignment;
 
         if (proc_buff->check())
-        {
           proc_buff->extend_duration(p(), pulsar_dur);
-          if (is_inc)
-          {
-            p()->buff.incarnation_proxy->extend_duration(p(), pulsar_dur);
-          }
-        }
         else
-        {
           proc_buff->trigger(1, buff_t::DEFAULT_VALUE(), 1.0, pulsar_dur);
-          if (is_inc)
-          {
-            p()->buff.incarnation_proxy->trigger(1, 0, -1.0, proc_buff->remains());
-          }
-        }
 
         p()->buff.arcanic_pulsar->expire();
         streaking_stars_trigger(SS_CELESTIAL_ALIGNMENT, nullptr);
@@ -6847,8 +6829,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "brutal_slash"           ) return new           brutal_slash_t( this, options_str );
   if ( name == "bristling_fur"          ) return new          bristling_fur_t( this, options_str );
   if ( name == "cat_form"               ) return new       spells::cat_form_t( this, options_str );
-  if ( name == "celestial_alignment" ||
-       name == "ca"                     ) return new    celestial_alignment_t( this, options_str );
+  if ( name == "celestial_alignment"    ) return new    celestial_alignment_t( this, options_str );
   if ( name == "cenarion_ward"          ) return new          cenarion_ward_t( this, options_str );
   if ( name == "dash"                   ) return new                   dash_t( this, options_str );
   if ( name == "tiger_dash"             ) return new             tiger_dash_t( this, options_str );
@@ -7303,10 +7284,6 @@ void druid_t::create_buffs()
 
   buff.cenarion_ward         = buff_creator_t( this, "cenarion_ward", find_talent_spell( "Cenarion Ward" ) );
 
-  buff.incarnation_proxy     = buff_creator_t( this, "incarnation", spell_data_t::nil() )
-                               .quiet( true )
-                               .chance( 1 );
-
   buff.incarnation_cat       = new incarnation_cat_buff_t( *this );
 
   buff.jungle_stalker        = buff_creator_t( this, "jungle_stalker", find_spell( 252071 ) );
@@ -7338,7 +7315,7 @@ void druid_t::create_buffs()
 
   // Balance
 
-  buff.natures_balance = make_buff(this, "nature's balance", talent.natures_balance)
+  buff.natures_balance = make_buff(this, "natures_balance", talent.natures_balance)
     ->set_tick_zero(true)
     ->set_tick_callback([this] (buff_t*, int, const timespan_t&) {
         resource_gain(RESOURCE_ASTRAL_POWER, talent.natures_balance->effectN(1).resource(RESOURCE_ASTRAL_POWER), gain.natures_balance);
@@ -9037,36 +9014,29 @@ expr_t* druid_t::create_expression( const std::string& name_str )
     return new moon_stage_expr_t( *this, name_str );
   }
 
-  if (util::str_compare_ci(name_str, "talent.incarnation.enabled"))
+  // Convert talent.incarnation.* & buff.incarnation.* to spec-based incarnations. cooldown.incarnation.* doesn't need name conversion.
+  if ((util::str_compare_ci(splits[0], "buff") || util::str_compare_ci(splits[0], "talent")) && util::str_compare_ci(splits[1], "incarnation"))
   {
+    std::string inc_name_str = name_str;
     
-    switch (specialization())
+    switch(specialization())
     {
-    case DRUID_FERAL: {
-      const spell_data_t* s = find_talent_spell("incarnation_king_of_the_jungle", specialization(), true);
-      return expr_t::create_constant(name_str, s->ok());
-    } break;
-      
-    case DRUID_BALANCE:
-    {
-      const spell_data_t* s = find_talent_spell("incarnation_chosen_of_elune", specialization(), true);
-      return expr_t::create_constant(name_str, s->ok());
-    } break;
-
-    case DRUID_GUARDIAN:
-    {
-      const spell_data_t* s = find_talent_spell("incarnation_guardian_of_ursoc", specialization(), true);
-      return expr_t::create_constant(name_str, s->ok());
-    } break;
-
-    case DRUID_RESTORATION:
-    {
-      const spell_data_t* s = find_talent_spell("incarnation_tree_of_life", specialization(), true);
-      return expr_t::create_constant(name_str, s->ok());
-    } break;
-
-    default: break;
+      case DRUID_BALANCE: {
+        util::replace_all(inc_name_str, "incarnation", "incarnation_chosen_of_elune");
+      } break;
+      case DRUID_FERAL: {
+        util::replace_all(inc_name_str, "incarnation", "incarnation_king_of_the_jungle");
+      } break;
+      case DRUID_GUARDIAN: {
+        util::replace_all(inc_name_str, "incarnation", "incarnation_guardian_of_ursoc");
+      } break;
+      case DRUID_RESTORATION: {
+        util::replace_all(inc_name_str, "incarnation", "incarnation_tree_of_life");
+      } break;
+      default: break;
     }
+
+    return player_t::create_expression(inc_name_str);
   }
 
   return player_t::create_expression( name_str );
