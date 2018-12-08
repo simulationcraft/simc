@@ -294,7 +294,7 @@ struct mind_sear_t final : public priest_spell_t
         ( (mind_sear_tick_t*)tick_action )->thought_harvester_empowered = true;
         priest().buffs.harvested_thoughts->expire();
       }
-      else { 
+      else {
         ( (mind_sear_tick_t*)tick_action )->thought_harvester_empowered = false;
       }
     }
@@ -2013,12 +2013,6 @@ void priest_t::generate_apl_shadow()
                       "buff.voidform.stack<15)" );
   single->add_talent( this, "Shadow Crash", "if=raid_event.adds.in>5&raid_event.adds.duration<20" );
   single->add_action( this, "Mind Blast", "if=variable.dots_up" );
-
-  if ( maybe_ptr( dbc.ptr ) )
-  {
-    single->add_action( this, "Mind Sear", "if=buff.harvested_thoughts.up" );
-  }
-
   single->add_talent( this, "Void Torrent",
                       "if=dot.shadow_word_pain.remains>4&"
                       "dot.vampiric_touch.remains>4&buff.voidform.up" );
@@ -2070,8 +2064,7 @@ void priest_t::generate_apl_shadow()
                       "if=(talent.misery.enabled&target.time_to_die>4)" );
   cleave->add_talent( this, "Void Torrent", "if=buff.voidform.up" );
   cleave->add_action( this, "Mind Sear",
-                      "target_if=spell_targets.mind_sear>2&"
-                      "buff.harvested_thoughts.down"
+                      "target_if=spell_targets.mind_sear>2"
                       ",chain=1,interrupt=1" );
   cleave->add_action( this, "Mind Flay",
                       "chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&"
@@ -2104,14 +2097,9 @@ void priest_t::generate_apl_shadow()
                      "target_if=dot.shadow_word_pain.refreshable,"
                      "if=(talent.misery.enabled&target.time_to_die>4)&"
                      "azerite.thought_harvester.rank>0" );
-    aoe->add_action( this, "Mind Sear",
-                     "if=buff.harvested_thoughts.down,"
-                     "chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&"
-                     "(cooldown.void_bolt.up|cooldown.mind_blast.up)" );
   }
 
   aoe->add_action( this, "Mind Sear",
-                   "if=buff.harvested_thoughts.down,"
                    "chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&"
                    "(cooldown.void_bolt.up|cooldown.mind_blast.up)" );
   aoe->add_action( this, "Shadow Word: Pain" );
