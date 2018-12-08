@@ -1231,6 +1231,8 @@ class SpellDataGenerator(DataGenerator):
          278267,
          # Deep Roots for Ancients' Bulwark
          287610,
+         # Webweaver's Soul Gem
+         270827,
         ),
 
         # Warrior:
