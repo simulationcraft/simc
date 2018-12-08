@@ -1086,7 +1086,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       114282, // Treant Form (Shapeshift)
            0,
     },
-    // Balance tree, 25 abilities
+    // Balance tree, 26 abilities
     {
        22812, // Barkskin
       194223, // Celestial Alignment
@@ -1112,6 +1112,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       191034, // Starfall
        78674, // Starsurge
       202461, // Stellar Drift
+      272873, // Streaking Star
        93402, // Sunfire (Solar)
            0,
     },
