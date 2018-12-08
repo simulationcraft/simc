@@ -1231,6 +1231,8 @@ class SpellDataGenerator(DataGenerator):
          278267,
          # Deep Roots for Ancients' Bulwark
          287610,
+         # Boralus Blood Sausage Feast
+         290469, 290468, 290467, 288075, 288074
         ),
 
         # Warrior:
