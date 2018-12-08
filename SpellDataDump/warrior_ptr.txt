@@ -19,7 +19,8 @@ Attributes       : ....x.x. ........ x.x..... x..x.x.x   ........ ..x..... .x...
                  : Passive (6), Cannot cancel aura (31)
 Effects          :
 #1 (id=43)       : Apply Aura (6) | Modify Armor by Primary Stat% (268)
-                   Base Value: 55 | Scaled Value: 55 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Hotfixed: Base Value (55 -> 60)
 #2 (id=217521)   : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Misc Value: 2 | Misc Value 2: 0x4 | Target: Self (1)
 Description      : Hardened by battle, your Stamina is increased by $s2%, and your armor is increased by $s1% of your Strength.
