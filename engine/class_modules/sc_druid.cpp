@@ -9014,6 +9014,18 @@ expr_t* druid_t::create_expression( const std::string& name_str )
     return new moon_stage_expr_t( *this, name_str );
   }
 
+  if (specialization() == DRUID_BALANCE && util::str_compare_ci(splits[1], "ca_inc"))
+  {
+    std::string ca_inc_name_str = name_str;
+
+    if (util::str_compare_ci(splits[0], "cooldown"))
+      util::replace_all(ca_inc_name_str, "ca_inc", talent.incarnation_moonkin->ok() ? "incarnation" : "celestial_alignment");
+    else
+      util::replace_all(ca_inc_name_str, "ca_inc", talent.incarnation_moonkin->ok() ? "incarnation_chosen_of_elune" : "celestial_alignment");
+
+    return player_t::create_expression(ca_inc_name_str);
+  }
+
   // Convert talent.incarnation.* & buff.incarnation.* to spec-based incarnations. cooldown.incarnation.* doesn't need name conversion.
   if ((util::str_compare_ci(splits[0], "buff") || util::str_compare_ci(splits[0], "talent")) && util::str_compare_ci(splits[1], "incarnation"))
   {
