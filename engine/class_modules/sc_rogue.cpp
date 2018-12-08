@@ -5830,8 +5830,6 @@ void rogue_t::init_action_list()
     cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.rogue&combo_points.deficit>=cp_max_spend-1)", "If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or without any CP." );
     cds -> add_talent( this, "Marked for Death", "if=raid_event.adds.in>30-raid_event.adds.duration&!stealthed.rogue&combo_points.deficit>=cp_max_spend-1", "If no adds will die within the next 30s, use MfD on boss without any CP." );
     cds -> add_action( this, "Blade Flurry", "if=spell_targets>=2&!buff.blade_flurry.up&(!raid_event.adds.exists|raid_event.adds.remains>8|raid_event.adds.in>(2-cooldown.blade_flurry.charges_fractional)*25)", "Blade Flurry on 2+ enemies. With adds: Use if they stay for 8+ seconds or if your next charge will be ready in time for the next wave." );
-    if ( maybe_ptr( dbc.ptr ) )
-      cds -> add_action( this, "Blade Flurry", "if=azerite.keep_your_wits_about_you.enabled&!buff.blade_flurry.up&raid_event.adds.in>25", "Blade Flurry also on ST with Keep Your Wits when enough time until new adds." );
     cds -> add_talent( this, "Ghostly Strike", "if=variable.blade_flurry_sync&combo_points.deficit>=1+buff.broadside.up" );
     cds -> add_talent( this, "Killing Spree", "if=variable.blade_flurry_sync&(energy.time_to_max>5|energy<15)" );
     cds -> add_talent( this, "Blade Rush", "if=variable.blade_flurry_sync&energy.time_to_max>1" );
