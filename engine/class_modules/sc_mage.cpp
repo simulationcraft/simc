@@ -2206,7 +2206,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
     c *= 1.0 + p()->buffs.arcane_charge->check()
              * p()->spec.arcane_charge->effectN( 5 ).percent();
 
-    return c;
+    return std::max( 0.0, c );
   }
 
   virtual double bonus_da( const action_state_t* s ) const override
