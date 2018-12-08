@@ -1284,6 +1284,15 @@ struct blade_flurry_attack_t : public rogue_attack_t
     }
     return tl.size();
   }
+
+  void impact( action_state_t* state ) override
+  {
+    rogue_attack_t::impact( state );
+
+    // As of 2018-12-08: Keep Your Wits stacks per BF hit per target.
+    if ( p() -> azerite.keep_your_wits_about_you.ok() )
+      p() -> buffs.keep_your_wits_about_you -> trigger();
+  }
 };
 
 struct internal_bleeding_t : public rogue_attack_t
@@ -5107,10 +5116,6 @@ void rogue_t::trigger_blade_flurry( const action_state_t* state )
 
   if ( state -> action -> is_aoe() )
     return;
-
-  // As of 2018-11-14: Keep Your Wits works on single target.
-  if ( azerite.keep_your_wits_about_you.ok() )
-    buffs.keep_your_wits_about_you -> trigger();
 
   if ( sim -> active_enemies == 1 )
     return;
