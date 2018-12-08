@@ -5930,6 +5930,7 @@ Effects          :
 Description      : Deal $s1 Shadowflame damage to your enemy target.
 
 Name             : Doom (id=265412) [Spell Family (5)] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -5941,12 +5942,12 @@ Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137
 Family Flags     : 33, 49
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ....x... ........   ........ ........ ........ ........ 
+                 : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ........ .x..x... .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x......x ........ ....x... ........ 
-                 : Periodic effect can crit (265)
+                 : Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=709547)   : Apply Aura (6) | Periodic Damage (3): shadow every 30 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.60000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -8444,11 +8445,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=750725)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Trigger Spell: 287656 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Trigger Spell: 287656 | Target: Self (1)
+                   Hotfixed: Base Value (50 -> 40)
 #2 (id=750726)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 5 | Scaled Value: 219.4172 (coefficient=2.822086) | PvP Coefficient: 1.00000
+                   Base Value: 5 | Scaled Value: 310.046 (coefficient=3.98773) | PvP Coefficient: 1.00000
                    Affected Spells: Incinerate (29722), Incinerate (244670)
                    Family Flags: 38
+                   Hotfixed: Coefficient (2.82209 -> 3.98773)
 Description      : Incinerate damage is increased by $s2, and when you fill up a Soul Shard, you have a ${$m1/10}.1% chance to generate an additional full Soul Shard over $287660d.
 
 Name             : Endless Hunger (id=287662) [Scaling Spell (-1), Passive] 
@@ -8609,7 +8612,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=753682)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 691.6411 (coefficient=8.895705) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 484.1488 (coefficient=6.226994) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Hotfixed: Coefficient (8.8957 -> 6.22699)
 #2 (id=753683)   : Dummy (3)
                    Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 1.00000
 #3 (id=753684)   : Dummy (3)

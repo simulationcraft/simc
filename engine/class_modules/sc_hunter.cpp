@@ -5626,7 +5626,7 @@ void hunter_t::apl_surv()
                         "To simulate usage for Mongoose Bite or Raptor Strike during Aspect of the Eagle, copy each occurrence of the action and append _eagle to the action name." );
   mb_ap_wfi_st -> add_action( this, "Kill Command", "if=focus+cast_regen<focus.max&(buff.mongoose_fury.stack<5|focus<action.mongoose_bite.cost)" );
   mb_ap_wfi_st -> add_action( this, "Wildfire Bomb", "if=next_wi_bomb.shrapnel&focus>60&dot.serpent_sting.remains>3*gcd" );
-  mb_ap_wfi_st -> add_action( this, "Serpent Sting", "if=buff.vipers_venom.react|refreshable&(!talent.mongoose_bite.enabled|!talent.vipers_venom.enabled|next_wi_bomb.volatile&!dot.shrapnel_bomb.ticking|azerite.latent_poison.enabled|azerite.venomous_fangs.enabled)" );
+  mb_ap_wfi_st -> add_action( this, "Serpent Sting", "if=refreshable&(next_wi_bomb.volatile&!dot.shrapnel_bomb.ticking|azerite.latent_poison.enabled|azerite.venomous_fangs.enabled)" );
   mb_ap_wfi_st -> add_talent( this, "Mongoose Bite", "if=buff.mongoose_fury.up|focus>60|dot.shrapnel_bomb.ticking" );
   mb_ap_wfi_st -> add_action( this, "Serpent Sting", "if=refreshable" );
   mb_ap_wfi_st -> add_action( this, "Wildfire Bomb", "if=next_wi_bomb.volatile&dot.serpent_sting.ticking|next_wi_bomb.pheromone|next_wi_bomb.shrapnel&focus>50" );
@@ -5638,7 +5638,8 @@ void hunter_t::apl_surv()
   st -> add_action( this, "Serpent Sting", "if=buff.vipers_venom.react&buff.vipers_venom.remains<gcd" );
   st -> add_action( this, "Kill Command", "if=focus+cast_regen<focus.max&(!talent.alpha_predator.enabled|full_recharge_time<gcd)" );
   st -> add_action( this, "Wildfire Bomb", "if=focus+cast_regen<focus.max&(full_recharge_time<gcd|!dot.wildfire_bomb.ticking&(buff.mongoose_fury.down|full_recharge_time<4.5*gcd))" );
-  st -> add_action( this, "Serpent Sting", "if=buff.vipers_venom.react&dot.serpent_sting.remains<4*gcd|!talent.vipers_venom.enabled&!dot.serpent_sting.ticking&!buff.coordinated_assault.up|refreshable&(azerite.latent_poison.enabled|azerite.venomous_fangs.enabled)" );
+  st -> add_action( this, "Serpent Sting", "if=buff.vipers_venom.react&dot.serpent_sting.remains<4*gcd|!talent.vipers_venom.enabled&!dot.serpent_sting.ticking&!buff.coordinated_assault.up" );
+  st -> add_action( this, "Serpent Sting", "if=refreshable&(azerite.latent_poison.rank>2|azerite.latent_poison.enabled&azerite.venomous_fangs.enabled|(azerite.latent_poison.enabled|azerite.venomous_fangs.enabled)&(!azerite.blur_of_talons.enabled|!talent.birds_of_prey.enabled|!buff.coordinated_assault.up))" );
   st -> add_talent( this, "Steel Trap" );
   st -> add_action( this, "Harpoon", "if=talent.terms_of_engagement.enabled|azerite.up_close_and_personal.enabled" );
   st -> add_action( this, "Coordinated Assault" );

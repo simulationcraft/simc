@@ -7285,7 +7285,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=727013)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=1.337136) | PvP Coefficient: 1.00000 | Trigger Spell: 274597 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.802281) | PvP Coefficient: 1.00000 | Trigger Spell: 274597 | Target: Self (1)
+                   Hotfixed: Coefficient (1.33714 -> 0.802281)
 Description      : Fire Blast increases your Mastery by $s1 for 3 sec. This effect stacks.
 
 Name             : Trailing Embers (id=277656) [Scaling Spell (-8), Spell Family (3), Passive] 

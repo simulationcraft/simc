@@ -2192,7 +2192,7 @@ void print_html_player_action_priority_list( report::sc_html_stream& os,
     {
       if ( j == 12 )
         j = 2;
-      os.printf( ".{}_seq_target_{} {{ color: #{}; }}\n", p.name(),
+      os.printf( ".%s_seq_target_%s { color: #%s; }\n", p.name(),
                  targets[ i ].c_str(), colors[ j ] );
       j++;
     }

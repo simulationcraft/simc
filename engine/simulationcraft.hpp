@@ -886,8 +886,6 @@ private:
 
 #ifndef NDEBUG
 #define ACTOR_EVENT_BOOKKEEPING 1
-#else
-#define ACTOR_EVENT_BOOKKEEPING 0
 #endif
 
 // Event Manager ============================================================
@@ -1706,7 +1704,7 @@ struct event_t : private noncopyable
   bool        canceled;
   bool        recycled;
   bool scheduled;
-#if ACTOR_EVENT_BOOKKEEPING
+#ifdef ACTOR_EVENT_BOOKKEEPING
   actor_t*    actor;
 #endif
   event_t( sim_t& s, actor_t* a = nullptr );
@@ -3214,15 +3212,19 @@ struct actor_t : private noncopyable
   std::string name_str;
   int event_counter; // safety counter. Shall never be less than zero
 
-#if defined(ACTOR_EVENT_BOOKKEEPING)
+#ifdef ACTOR_EVENT_BOOKKEEPING
   /// Measure cpu time for actor-specific events.
   stopwatch_t event_stopwatch;
 #endif // ACTOR_EVENT_BOOKKEEPING
 
   actor_t( sim_t* s, const std::string& name ) :
     sim( s ), spawner( nullptr ), name_str( name ),
+#ifdef ACTOR_EVENT_BOOKKEEPING
     event_counter( 0 ),
     event_stopwatch( STOPWATCH_THREAD )
+#else
+    event_counter( 0 )
+#endif
   {
 
   }

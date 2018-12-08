@@ -1390,7 +1390,7 @@ expr_t* expr_t::parse( action_t* action, const std::string& expr_str,
 
     if ( !expression::convert_to_rpn( tokens ) )
     {
-      throw std::invalid_argument("Unable to convert '{}' into RPN.");
+      throw std::invalid_argument( fmt::format( "Unable to convert '{}' into RPN.", expr_str ) );
     }
 
     if ( action->sim->debug )

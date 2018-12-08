@@ -1186,7 +1186,8 @@ struct secondary_ability_trigger_t : public event_t
   void execute() override
   {
     // Ensure target is still available and did not demise during delay.
-    if ( state && state->target && state->target->is_sleeping() || target && target->is_sleeping() )
+    if ( ( state && state->target && state->target->is_sleeping() ) ||
+         ( target && target->is_sleeping() ) )
       return;
 
     actions::rogue_attack_t* attack = rogue_t::cast_attack( action );
@@ -5935,11 +5936,14 @@ void rogue_t::init_action_list()
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
     finish -> add_action( this, "Eviscerate", "if=talent.shadow_focus.enabled&buff.nights_vengeance.up&spell_targets.shuriken_storm>=2+3*talent.secret_technique.enabled", "Eviscerate highest priority at 2+ targets with Shadow Focus (5+ with Secret Technique in addition) and Night's Vengeance up." );
-    finish -> add_action( this, "Nightblade", "if=(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>6&remains<tick_time*2&(spell_targets.shuriken_storm<4|!buff.symbols_of_death.up)", "Keep up Nightblade if it is about to run out. Do not use NB during Dance, if talented into Dark Shadow." );
+    if ( !maybe_ptr( dbc.ptr ) )
+      finish -> add_action( this, "Nightblade", "if=(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>6&remains<tick_time*2&(spell_targets.shuriken_storm<4|!buff.symbols_of_death.up)", "Keep up Nightblade if it is about to run out. Do not use NB during Dance, if talented into Dark Shadow." );
+    else
+      finish -> add_action( this, "Nightblade", "if=(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>6&remains<tick_time*2", "Keep up Nightblade if it is about to run out. Do not use NB during Dance, if talented into Dark Shadow." );
     if ( !maybe_ptr( dbc.ptr ) )
       finish -> add_action( this, "Nightblade", "cycle_targets=1,if=!variable.use_priority_rotation&spell_targets.shuriken_storm>=2&(talent.secret_technique.enabled|azerite.nights_vengeance.enabled|spell_targets.shuriken_storm<=5)&!buff.shadow_dance.up&target.time_to_die>=(5+(2*combo_points))&refreshable", "Multidotting outside Dance on targets that will live for the duration of Nightblade with refresh during pandemic if you have less than 6 targets or play with Secret Technique." );
     else
-      finish -> add_action( this, "Nightblade", "cycle_targets=1,if=!variable.use_priority_rotation&spell_targets.shuriken_storm>=2&(azerite.nights_vengeance.enabled|(!azerite.replicating_shadows.enabled|spell_targets.shuriken_storm-active_dot.nightblade>=2)&(talent.secret_technique.enabled|spell_targets.shuriken_storm<=5))&!buff.shadow_dance.up&target.time_to_die>=(5+(2*combo_points))&refreshable", "Multidotting outside Dance on targets that will live for the duration of Nightblade with refresh during pandemic if you have less than 6 targets or play with Secret Technique. Always with Nights Vengeance. Multidot as long as 2+ targets do not have Nightblade up with Replicating Shadows." );
+      finish -> add_action( this, "Nightblade", "cycle_targets=1,if=!variable.use_priority_rotation&spell_targets.shuriken_storm>=2&(azerite.nights_vengeance.enabled|!azerite.replicating_shadows.enabled|spell_targets.shuriken_storm-active_dot.nightblade>=2)&!buff.shadow_dance.up&target.time_to_die>=(5+(2*combo_points))&refreshable", "Multidotting outside Dance on targets that will live for the duration of Nightblade, refresh during pandemic. Multidot as long as 2+ targets do not have Nightblade up with Replicating Shadows (unless you have Night's Vengeance too)." );
     finish -> add_action( this, "Nightblade", "if=remains<cooldown.symbols_of_death.remains+10&cooldown.symbols_of_death.remains<=5&target.time_to_die-remains>cooldown.symbols_of_death.remains+5", "Refresh Nightblade early if it will expire during Symbols. Do that refresh if SoD gets ready in the next 5s." );
     finish -> add_talent( this, "Secret Technique", "if=buff.symbols_of_death.up&(!talent.dark_shadow.enabled|buff.shadow_dance.up)", "Secret Technique during Symbols. With Dark Shadow only during Shadow Dance (until threshold in next line)." );
     finish -> add_talent( this, "Secret Technique", "if=spell_targets.shuriken_storm>=2+talent.dark_shadow.enabled+talent.nightstalker.enabled", "With enough targets always use SecTec on CD." );

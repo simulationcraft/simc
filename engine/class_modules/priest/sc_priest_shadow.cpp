@@ -62,6 +62,7 @@ private:
   double insanity_gain;
   double whispers_of_the_damned_value;
   double harvested_thoughts_value;
+  double whispers_bonus_insanity;
 
 public:
   mind_blast_t( priest_t& player, const std::string& options_str )
@@ -69,7 +70,12 @@ public:
                       player.talents.shadow_word_void->ok() ? player.find_talent_spell( "Shadow Word: Void" )
                                                             : player.find_class_spell( "Mind Blast" ) ),
       whispers_of_the_damned_value( priest().azerite.whispers_of_the_damned.value( 2 ) ),
-      harvested_thoughts_value( priest().azerite.thought_harvester.value( 1 ) )
+      harvested_thoughts_value( priest().azerite.thought_harvester.value( 1 ) ),
+      whispers_bonus_insanity( priest()
+                                   .azerite.whispers_of_the_damned.spell()
+                                   ->effectN( 1 ).trigger()
+                                   ->effectN( 1 ).trigger()
+                                   ->effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
     parse_options( options_str );
 
@@ -133,15 +139,15 @@ public:
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
+    double total_insanity_gain = insanity_gain;
 
-    // TODO: Fix insanity generation
-    // Generates 10 more insanity if it critically strikes
-    if ( s->result == RESULT_CRIT && priest().azerite.whispers_of_the_damned.enabled() && maybe_ptr( priest().dbc.ptr ) )
+    if ( priest().azerite.whispers_of_the_damned.enabled() && s->result == RESULT_CRIT &&
+         maybe_ptr( priest().dbc.ptr ) )
     {
-      insanity_gain += priest().azerite.whispers_of_the_damned.spell_ref().effectN( 1 ).trigger()->effectN( 1 ).base_value();
+      total_insanity_gain += whispers_bonus_insanity;
     }
 
-    priest().generate_insanity( insanity_gain, priest().gains.insanity_mind_blast, s->action );
+    priest().generate_insanity( total_insanity_gain, priest().gains.insanity_mind_blast, s->action );
 
     if ( !maybe_ptr( priest().dbc.ptr ) )
     {
@@ -198,18 +204,25 @@ public:
 struct mind_sear_tick_t final : public priest_spell_t
 {
   double insanity_gain;
-  double harvested_thoughts_value;
+  double harvested_thoughts_multiplier;
+  bool thought_harvester_empowered = false;
 
   mind_sear_tick_t( priest_t& p, const spell_data_t* mind_sear )
     : priest_spell_t( "mind_sear_tick", p, mind_sear->effectN( 1 ).trigger() ),
-      insanity_gain( p.find_spell( 208232 )->effectN( 1 ).percent() )
+      insanity_gain( p.find_spell( 208232 )->effectN( 1 ).percent() ),
+      harvested_thoughts_multiplier( priest()
+                                         .azerite.thought_harvester.spell()
+                                         ->effectN( 1 ).trigger()
+                                         ->effectN( 1 ).trigger()
+                                         ->effectN( 1 ).percent() )
   {
     background    = true;
     dual          = true;
     aoe           = -1;
     callbacks     = false;
-    direct_tick   = true;
+    direct_tick   = false;
     use_off_gcd   = true;
+    dynamic_tick_action = true;
     energize_type = ENERGIZE_NONE;  // disable resource generation from spell data
   }
 
@@ -234,9 +247,9 @@ struct mind_sear_tick_t final : public priest_spell_t
   {
     double d = priest_spell_t::composite_da_multiplier( state );
 
-    if ( priest().buffs.harvested_thoughts->check() && maybe_ptr( priest().dbc.ptr ) )
+    if ( thought_harvester_empowered && maybe_ptr( priest().dbc.ptr ) )
     {
-      d *= ( 1.0 + priest().azerite.thought_harvester.spell()->effectN( 1 ).trigger()->effectN( 1 ).trigger()->effectN( 1 ).percent() );
+      d *= ( 1.0 + harvested_thoughts_multiplier );
     }
 
     return d;
@@ -270,15 +283,20 @@ struct mind_sear_t final : public priest_spell_t
     tick_action = new mind_sear_tick_t( p, p.find_class_spell( "Mind Sear" ) );
   }
 
-  // TODO: This only works if you DON'T chain mind sear
-  // by chaining sear you will never expire the buff
-  void last_tick( dot_t* d ) override
+  void execute() override
   {
-    priest_spell_t::last_tick( d );
+    priest_spell_t::execute();
 
     if ( maybe_ptr( priest().dbc.ptr ) )
     {
-      priest().buffs.harvested_thoughts->expire();
+      if ( priest().buffs.harvested_thoughts->check() )
+      {
+        ( (mind_sear_tick_t*)tick_action )->thought_harvester_empowered = true;
+        priest().buffs.harvested_thoughts->expire();
+      }
+      else { 
+        ( (mind_sear_tick_t*)tick_action )->thought_harvester_empowered = false;
+      }
     }
   }
 };
@@ -317,11 +335,6 @@ struct shadow_word_death_t final : public priest_spell_t
     : priest_spell_t( "shadow_word_death", p, p.talents.shadow_word_death )
   {
     parse_options( options_str );
-  }
-
-  void execute() override
-  {
-    priest_spell_t::execute();
   }
 
   void impact( action_state_t* s ) override
@@ -1120,14 +1133,15 @@ struct void_torrent_t final : public priest_spell_t
 
   void_torrent_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "void_torrent", p, p.find_talent_spell( "Void Torrent" ) ),
-      insanity_gain( p.dbc.ptr ? p.talents.void_torrent->effectN( 3 ).trigger()->effectN( 1 ).resource( RESOURCE_INSANITY ) : 0 )
+      insanity_gain(
+          p.dbc.ptr ? p.talents.void_torrent->effectN( 3 ).trigger()->effectN( 1 ).resource( RESOURCE_INSANITY ) : 0 )
   {
     parse_options( options_str );
 
-    may_crit    = false;
-    channeled   = true;
-    use_off_gcd = true;
-    tick_zero   = true;
+    may_crit      = false;
+    channeled     = true;
+    use_off_gcd   = true;
+    tick_zero     = true;
     energize_type = ENERGIZE_NONE;  // disable resource generation from spell data
 
     dot_duration = timespan_t::from_seconds( 4.0 );
@@ -1176,7 +1190,7 @@ struct void_torrent_t final : public priest_spell_t
 
     // Partial tick is not counted for insanity gains
     if ( d->get_last_tick_factor() < 1.0 )
-        return;
+      return;
 
     if ( maybe_ptr( priest().dbc.ptr ) )
     {
@@ -1400,7 +1414,8 @@ struct lingering_insanity_t final : public priest_buff_t<buff_t>
   {
     set_reverse( true );
     set_duration( timespan_t::from_seconds( 60 ) );
-    set_period( timespan_t::from_seconds( p.talents.lingering_insanity->effectN( 2 ).base_value() + maybe_ptr( p.dbc.ptr ) ) );
+    set_period(
+        timespan_t::from_seconds( p.talents.lingering_insanity->effectN( 2 ).base_value() + maybe_ptr( p.dbc.ptr ) ) );
     set_tick_behavior( buff_tick_behavior::REFRESH );
     set_tick_time_behavior( buff_tick_time_behavior::UNHASTED );
     set_max_stack( (int)(float)p.find_spell( 185916 )->effectN( 4 ).base_value() );  // or 18?
@@ -1738,8 +1753,8 @@ void priest_t::create_buffs_shadow()
 
   if ( maybe_ptr( dbc.ptr ) )
   {
-    buffs.harvested_thoughts =
-        make_buff( this, "harvested_thoughts", azerite.thought_harvester.spell()->effectN( 1 ).trigger()->effectN( 1 ).trigger() );
+    buffs.harvested_thoughts = make_buff(
+        this, "harvested_thoughts", azerite.thought_harvester.spell()->effectN( 1 ).trigger()->effectN( 1 ).trigger() );
   }
   else
   {
@@ -1755,7 +1770,7 @@ void priest_t::create_buffs_shadow()
 
 void priest_t::init_rng_shadow()
 {
-  rppm.shadowy_insight = get_rppm( "shadowy_insighty", talents.shadowy_insight );
+  rppm.shadowy_insight    = get_rppm( "shadowy_insighty", talents.shadowy_insight );
   rppm.harvested_thoughts = get_rppm( "harvested_thoughts", azerite.thought_harvester.spell()->effectN( 1 ).trigger() );
 }
 
@@ -1981,9 +1996,10 @@ void priest_t::generate_apl_shadow()
 
   if ( maybe_ptr( dbc.ptr ) )
   {
-    single->add_talent( this, "Surrender to Madness",
-                        "if=target.time_to_die>200|target.time_to_die<75" );
-  } else {
+    single->add_talent( this, "Surrender to Madness", "if=target.time_to_die>200|target.time_to_die<75" );
+  }
+  else
+  {
     single->add_talent( this, "Surrender to Madness",
                         "if=buff.voidform.stack>=(15+buff.bloodlust.up)&"
                         "target.time_to_die>200|target.time_to_die<75" );
@@ -2000,8 +2016,7 @@ void priest_t::generate_apl_shadow()
 
   if ( maybe_ptr( dbc.ptr ) )
   {
-    single->add_action( this, "Mind Sear",
-                     "if=buff.harvested_thoughts.up" );
+    single->add_action( this, "Mind Sear", "if=buff.harvested_thoughts.up" );
   }
 
   single->add_talent( this, "Void Torrent",
@@ -2025,8 +2040,7 @@ void priest_t::generate_apl_shadow()
 
   if ( maybe_ptr( dbc.ptr ) )
   {
-    cleave->add_action( this, "Mind Sear",
-                     "if=buff.harvested_thoughts.up" );
+    cleave->add_action( this, "Mind Sear", "if=buff.harvested_thoughts.up" );
   }
 
   cleave->add_action( this, "Void Bolt" );
@@ -2035,7 +2049,9 @@ void priest_t::generate_apl_shadow()
   if ( maybe_ptr( dbc.ptr ) )
   {
     cleave->add_talent( this, "Surrender to Madness" );
-  } else {
+  }
+  else
+  {
     cleave->add_talent( this, "Surrender to Madness", "if=buff.voidform.stack>=(15+buff.bloodlust.up)" );
   }
 
@@ -2052,8 +2068,7 @@ void priest_t::generate_apl_shadow()
   cleave->add_action( this, "Vampiric Touch",
                       "target_if=dot.shadow_word_pain.refreshable,"
                       "if=(talent.misery.enabled&target.time_to_die>4)" );
-  cleave->add_talent( this, "Void Torrent",
-                      "if=buff.voidform.up" );
+  cleave->add_talent( this, "Void Torrent", "if=buff.voidform.up" );
   cleave->add_action( this, "Mind Sear",
                       "target_if=spell_targets.mind_sear>2&"
                       "buff.harvested_thoughts.down"
@@ -2069,8 +2084,7 @@ void priest_t::generate_apl_shadow()
 
   if ( maybe_ptr( dbc.ptr ) )
   {
-    aoe->add_action( this, "Mind Sear",
-                     "if=buff.harvested_thoughts.up" );
+    aoe->add_action( this, "Mind Sear", "if=buff.harvested_thoughts.up" );
   }
 
   aoe->add_action( this, "Void Bolt",
@@ -2085,7 +2099,7 @@ void priest_t::generate_apl_shadow()
   {
     aoe->add_action( this, "Vampiric Touch",
                      "target_if=refreshable,if=(target.time_to_die>6)&"
-                      "azerite.thought_harvester.rank>0" );
+                     "azerite.thought_harvester.rank>0" );
     aoe->add_action( this, "Vampiric Touch",
                      "target_if=dot.shadow_word_pain.refreshable,"
                      "if=(talent.misery.enabled&target.time_to_die>4)&"

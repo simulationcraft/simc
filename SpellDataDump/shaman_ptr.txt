@@ -9194,9 +9194,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732968)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=1.532135) | PvP Coefficient: 1.00000 | Trigger Spell: 277926 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=1.39285) | PvP Coefficient: 1.00000 | Trigger Spell: 277926 | Target: Self (1)
+                   Hotfixed: Coefficient (1.53214 -> 1.39285)
 #2 (id=754433)   : Dummy (3)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
+                   Hotfixed: Base Value (60 -> 50)
 #3 (id=756142)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 277942 | Target: Self (1)
 Description      : Your spells and abilities have a chance to increase your Mastery by $s1 for $277943d. $?<s2825>[Bloodlust][Heroism]'s duration is increased to $s2 seconds on you, and Ancestral Resonance's chance to activate is greatly increased during $?<s2825>[Bloodlust][Heroism].
@@ -10631,9 +10633,10 @@ Effects          :
 #1 (id=750959)   : Apply Aura (6) | Unknown(285)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Trigger Spell: 287801 | Target: Self (1)
 #2 (id=750960)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 5 | Scaled Value: 201.2914 (coefficient=2.588957) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 241.3589 (coefficient=3.104295) | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Stormstrike (32175), Stormstrike Off-Hand (32176), Windstrike (115357), Windstrike Off-Hand (115360)
                    Family Flags: 76
+                   Hotfixed: Coefficient (2.58896 -> 3.1043)
 Description      : Stormstrike deals ${$m2+($m2*0.5)} additional damage, and has a $287801h% chance to summon Thunderaan's Fury Totem, doubling the chance to activate Windfury Weapon for $287802d.
 
 Name             : Ancient Ankh Talisman (id=287774) [Scaling Spell (-8), Passive] 

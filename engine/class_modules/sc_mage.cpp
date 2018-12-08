@@ -1998,7 +1998,8 @@ struct icicle_t : public frost_mage_spell_t
   icicle_t( mage_t* p, const std::string& trigger_spell ) :
     frost_mage_spell_t( trigger_spell + "_icicle", p, p->find_spell( 148022 ) )
   {
-    proc = background = true;
+    background = true;
+    callbacks = false;
 
     base_dd_min = base_dd_max = 1.0;
     base_dd_adder += p->azerite.flash_freeze.value( 2 );
@@ -2103,21 +2104,22 @@ struct arcane_barrage_t : public arcane_mage_spell_t
     base_aoe_multiplier *= data().effectN( 2 ).percent();
   }
 
-  virtual void execute() override
+  virtual int n_targets() const override
   {
     int charges = p()->buffs.arcane_charge->check();
+    return p()->spec.arcane_barrage_2->ok() && charges > 0 ? charges + 1 : 0;
+  }
 
-    if ( p()->spec.arcane_barrage_2->ok() )
-      aoe = 1 + charges;
-
+  virtual void execute() override
+  {
     p()->benefits.arcane_charge.arcane_barrage->update();
 
     arcane_mage_spell_t::execute();
 
     if ( p()->sets->has_set_bonus( MAGE_ARCANE, T21, B2 ) )
     {
-      p()->buffs.expanding_mind
-         ->trigger( 1, charges * p()->sets->set( MAGE_ARCANE, T21, B2 )->effectN( 1 ).percent() );
+      p()->buffs.expanding_mind->trigger( 1,
+        p()->buffs.arcane_charge->check() * p()->sets->set( MAGE_ARCANE, T21, B2 )->effectN( 1 ).percent() );
     }
 
     p()->buffs.arcane_charge->expire();
@@ -2436,8 +2438,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     }
   }
 
-  // Flag Arcane Missiles as direct damage for triggering effects
-  virtual dmg_e amount_type( const action_state_t*, bool ) const override
+  virtual dmg_e amount_type( const action_state_t*, bool = false ) const override
   {
     return DMG_DIRECT;
   }
@@ -2649,6 +2650,11 @@ struct blizzard_shard_t : public frost_mage_spell_t
     background = ground_aoe = chills = true;
   }
 
+  virtual dmg_e amount_type( const action_state_t*, bool = false ) const override
+  {
+    return DMG_OVER_TIME;
+  }
+
   virtual void execute() override
   {
     frost_mage_spell_t::execute();
@@ -2857,7 +2863,6 @@ struct conflagration_flare_up_t : public fire_mage_spell_t
   conflagration_flare_up_t( mage_t* p ) :
     fire_mage_spell_t( "conflagration_flare_up", p, p->find_spell( 205345 ) )
   {
-    callbacks = false;
     background = true;
     aoe = -1;
   }
@@ -3089,7 +3094,7 @@ struct flame_patch_t : public fire_mage_spell_t
     ground_aoe = background = true;
   }
 
-  virtual dmg_e amount_type( const action_state_t*, bool ) const override
+  virtual dmg_e amount_type( const action_state_t*, bool = false ) const override
   {
     return DMG_OVER_TIME;
   }
@@ -4110,7 +4115,7 @@ struct meteor_burn_t : public fire_mage_spell_t
     radius = p->find_spell( 153564 )->effectN( 1 ).radius_max();
   }
 
-  virtual dmg_e amount_type( const action_state_t*, bool ) const override
+  virtual dmg_e amount_type( const action_state_t*, bool = false ) const override
   {
     return DMG_OVER_TIME;
   }
@@ -4230,6 +4235,11 @@ struct nether_tempest_aoe_t : public arcane_mage_spell_t
   {
     aoe = -1;
     background = true;
+  }
+
+  virtual dmg_e amount_type( const action_state_t*, bool = false ) const override
+  {
+    return DMG_OVER_TIME;
   }
 
   virtual timespan_t travel_time() const override

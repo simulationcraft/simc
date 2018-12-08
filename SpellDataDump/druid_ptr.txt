@@ -1299,11 +1299,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #9 (id=353641)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Starsurge (78674), Moonfire (164812), Sunfire (164815), Solar Wrath (190984), Starfall (191037), Lunar Strike (194153), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (211545), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641)
+                   Affected Spells: Starsurge (78674), Moonfire (164812), Sunfire (164815), Solar Wrath (190984), Starfall (191037), Lunar Strike (194153), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (211545), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641)
                    Family Flags: 18
 #10 (id=479759)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Starsurge (78674), Moonfire (164812), Sunfire (164815), Solar Wrath (190984), Starfall (191037), Lunar Strike (194153), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (211545), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641)
+                   Affected Spells: Starsurge (78674), Moonfire (164812), Sunfire (164815), Solar Wrath (190984), Starfall (191037), Lunar Strike (194153), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (211545), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641)
                    Family Flags: 18
 Description      : Shapeshift into $?s114301[Astral Form][Moonkin Form], increasing the damage of your spells by $s9% and your armor by $m3%, and granting protection from Polymorph effects.$?a231042[
 
@@ -2783,11 +2783,11 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... x....
 Effects          :
 #1 (id=111387)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Starsurge (78674), Moonfire (164812), Sunfire (164815), Solar Wrath (190984), Starfall (191037), Lunar Strike (194153), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (211545), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641)
+                   Affected Spells: Starsurge (78674), Moonfire (164812), Sunfire (164815), Solar Wrath (190984), Starfall (191037), Lunar Strike (194153), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (211545), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641)
                    Family Flags: 18
 #2 (id=310508)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Starsurge (78674), Moonfire (164812), Sunfire (164815), Solar Wrath (190984), Starfall (191037), Lunar Strike (194153), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (211545), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641)
+                   Affected Spells: Starsurge (78674), Moonfire (164812), Sunfire (164815), Solar Wrath (190984), Starfall (191037), Lunar Strike (194153), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (211545), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641)
                    Family Flags: 18
 #3 (id=310509)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -3747,11 +3747,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179696)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -18 | Scaled Value: -18 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Starsurge (78674), Moonfire (164812), Sunfire (164815), Solar Wrath (190984), Starfall (191037), Lunar Strike (194153), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (211545), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641)
+                   Affected Spells: Starsurge (78674), Moonfire (164812), Sunfire (164815), Solar Wrath (190984), Starfall (191037), Lunar Strike (194153), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (211545), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641)
                    Family Flags: 18
 #2 (id=191146)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -18 | Scaled Value: -18 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Starsurge (78674), Moonfire (164812), Sunfire (164815), Solar Wrath (190984), Starfall (191037), Lunar Strike (194153), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (211545), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641)
+                   Affected Spells: Starsurge (78674), Moonfire (164812), Sunfire (164815), Solar Wrath (190984), Starfall (191037), Lunar Strike (194153), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (211545), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641)
                    Family Flags: 18
 #3 (id=191147)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -4515,7 +4515,8 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   x......x ........ ........ ........ 
 Effects          :
 #1 (id=231955)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Hotfixed: Base Value (10 -> 20)
 #2 (id=232253)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Solar Wrath (5176), Solar Wrath (190984), Solar Wrath (197629)
@@ -5046,11 +5047,11 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=285082)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Starsurge (78674), Moonfire (164812), Sunfire (164815), Solar Wrath (190984), Starfall (191037), Lunar Strike (194153), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (211545), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641)
+                   Affected Spells: Starsurge (78674), Moonfire (164812), Sunfire (164815), Solar Wrath (190984), Starfall (191037), Lunar Strike (194153), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (211545), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641)
                    Family Flags: 18
 #2 (id=285083)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Starsurge (78674), Moonfire (164812), Sunfire (164815), Solar Wrath (190984), Starfall (191037), Lunar Strike (194153), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (211545), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641)
+                   Affected Spells: Starsurge (78674), Moonfire (164812), Sunfire (164815), Solar Wrath (190984), Starfall (191037), Lunar Strike (194153), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (211545), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641)
                    Family Flags: 18
 #3 (id=285088)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -5992,7 +5993,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=298471)   : Apply Aura (6) | Cast while Moving (Whitelist) (330)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Incapacitating Roar (99), Entangling Roots (339), Tranquility (740), Cat Form (768), Rejuvenation (774), Travel Form (783), Rip (1079), Bear Form Passive (1178), Rake (1822), Dash (1850), Hibernate (2637), Remove Corruption (2782), Soothe (2908), Solar Wrath (5176), Mighty Bash (5211), Prowl (5215), Tiger's Fury (5217), Shred (5221), Bear Form (5487), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Omen of Clarity (16864), Clearcasting (16870), Thick Hide (16931), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Barkskin (22812), Frenzied Regeneration (22842), Moonkin Form (24858), Innervate (29166), Lifebloom (33763), Lifebloom (33778), Incarnation: Tree of Life (33891), Mangle (33917), Wild Growth (48438), Survival Instincts (50322), Savage Roar (52610), Survival Instincts (61336), Typhoon (61391), Savage Roar (62071), Predatory Swiftness (69369), Thrash (77758), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Efflorescence (81262), Efflorescence (81269), Nature's Cure (88423), Sunfire (93402), Gore (93622), Skull Bash (93985), Solar Beam (97547), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102401), Incarnation: King of the Jungle (102543), Prowl (102547), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Ursol's Vortex (102793), Swipe (106785), Thrash (106830), Thrash (106832), Skull Bash (106839), Stampeding Roar (106898), Berserk (106951), Renewal (108238), Typhoon (132469), Clearcasting (135700), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Efflorescence (145205), Moonfire (155625), Germination (155675), Rake (155722), Tranquility (157982), Pulverize (158792), Solar Empowerment (164545), Lunar Empowerment (164547), Moonfire (164812), Sunfire (164815), Flight Form (165962), Solar Wrath (190984), Starfall (191034), Starfall (191037), Ironfur (192081), Thrash (192090), Dreamwalk (193753), Lunar Strike (194153), Celestial Alignment (194223), Astral Influence (197524), Moonkin Form (197625), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Feral Overrides Passive (197692), Cultivation (200389), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (202770), Brambles (203958), Lunar Beam (204069), Force of Nature (205636), Spring Blossoms (207386), Stag Form (210053), Gore (210706), Fury of Elune (211545), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771), Enraged Maul (236716), Force of Nature (248280), Jungle Stalker (252071), Tiger Dash (252216), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274837), Feral Frenzy (274838), Aquatic Form (276012), Flight Form (276029), Berserk (279526), Lunar Shrapnel (279641), Grove Tending (279793), Primal Wrath (285381)
+                   Affected Spells: Incapacitating Roar (99), Entangling Roots (339), Tranquility (740), Cat Form (768), Rejuvenation (774), Travel Form (783), Rip (1079), Bear Form Passive (1178), Rake (1822), Dash (1850), Hibernate (2637), Remove Corruption (2782), Soothe (2908), Solar Wrath (5176), Mighty Bash (5211), Prowl (5215), Tiger's Fury (5217), Shred (5221), Bear Form (5487), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Omen of Clarity (16864), Clearcasting (16870), Thick Hide (16931), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Barkskin (22812), Frenzied Regeneration (22842), Moonkin Form (24858), Innervate (29166), Lifebloom (33763), Lifebloom (33778), Incarnation: Tree of Life (33891), Mangle (33917), Wild Growth (48438), Survival Instincts (50322), Savage Roar (52610), Survival Instincts (61336), Typhoon (61391), Savage Roar (62071), Predatory Swiftness (69369), Thrash (77758), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Efflorescence (81262), Efflorescence (81269), Nature's Cure (88423), Sunfire (93402), Gore (93622), Skull Bash (93985), Solar Beam (97547), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102401), Incarnation: King of the Jungle (102543), Prowl (102547), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Ursol's Vortex (102793), Swipe (106785), Thrash (106830), Thrash (106832), Skull Bash (106839), Stampeding Roar (106898), Berserk (106951), Renewal (108238), Typhoon (132469), Clearcasting (135700), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Efflorescence (145205), Moonfire (155625), Germination (155675), Rake (155722), Tranquility (157982), Pulverize (158792), Solar Empowerment (164545), Lunar Empowerment (164547), Moonfire (164812), Sunfire (164815), Flight Form (165962), Solar Wrath (190984), Starfall (191034), Starfall (191037), Ironfur (192081), Thrash (192090), Dreamwalk (193753), Lunar Strike (194153), Celestial Alignment (194223), Astral Influence (197524), Moonkin Form (197625), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Feral Overrides Passive (197692), Cultivation (200389), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (202770), Brambles (203958), Lunar Beam (204069), Force of Nature (205636), Spring Blossoms (207386), Stag Form (210053), Gore (210706), Fury of Elune (211545), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771), Enraged Maul (236716), Force of Nature (248280), Jungle Stalker (252071), Tiger Dash (252216), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274837), Feral Frenzy (274838), Aquatic Form (276012), Flight Form (276029), Berserk (279526), Lunar Shrapnel (279641), Grove Tending (279793), Primal Wrath (285381)
                    Family Flags: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127
 Description      : Can cast while moving while inside Starfall.
 Tooltip          : Can cast while moving while inside Starfall.
@@ -8494,7 +8495,6 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Azerite Power Id : 122
-Triggered by     : Streaking Star (272873)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8565,9 +8565,10 @@ Effects          :
 #1 (id=724873)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 273339 | Target: Self (1)
 #2 (id=753655)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 95.39878 (coefficient=1.226994) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 143.0982 (coefficient=1.840491) | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Rake (1822), Shred (5221), Swipe (106785), Thrash (106830), Rake (155722), Brutal Slash (202028), Feral Frenzy (274837), Feral Frenzy (274838)
                    Family Flags: 12, 15, 74, 94, 99, 126
+                   Hotfixed: Coefficient (1.22699 -> 1.84049)
 #3 (id=753656)   : Apply Aura (6) | Dummy (4)
                    Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=753659)   : Apply Aura (6) | Dummy (4)
@@ -8612,9 +8613,10 @@ Effects          :
 #1 (id=724916)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 273389 | Target: Self (1)
 #2 (id=736537)   : Apply Aura (6) | Add Flat Modifier (107): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 71.54905 (coefficient=0.920245) | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 81.08897 (coefficient=1.042945) | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Moonfire (155625), Moonfire (164812)
                    Family Flags: 92, 120
+                   Hotfixed: Coefficient (0.920245 -> 1.04295)
 Description      : Moonfire deals $s2 additional periodic damage, and has a chance to grant Lunar Empowerment.
 
 Name             : Meticulous Scheming (id=273682) [Scaling Spell (-7), Passive] 
@@ -9140,9 +9142,10 @@ Effects          :
 #1 (id=734251)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 279468 | Target: Self (1)
 #2 (id=734252)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
-                   Base Value: 0 | Scaled Value: 52.48125 (coefficient=0.675) | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 69.16415 (coefficient=0.889571) | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Rip (1079)
                    Family Flags: 85
+                   Hotfixed: Coefficient (0.675 -> 0.889571)
 Description      : Rip deals $s2 additional periodic damage, and has a $279468h% chance to award a combo point each time it deals damage.
 
 Name             : Gory Regeneration (id=278510) [Scaling Spell (-8), Spell Family (7), Passive] 
@@ -10397,9 +10400,10 @@ Effects          :
 #1 (id=750968)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 287784 | Target: Self (1)
 #2 (id=750969)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 476.9938 (coefficient=6.134969) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 715.4909 (coefficient=9.202455) | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Starsurge (78674), Starsurge (197626)
                    Family Flags: 89
+                   Hotfixed: Coefficient (6.13497 -> 9.20246)
 #3 (id=750970)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000
 #4 (id=750971)   : Dummy (3)

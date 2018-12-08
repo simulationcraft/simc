@@ -1089,6 +1089,7 @@ void print_reference_dps( std::ostream& os, sim_t& sim )
   }
 }
 
+#ifdef ACTOR_EVENT_BOOKKEEPING
 struct sort_by_event_stopwatch
 {
   bool operator()( player_t* l, player_t* r )
@@ -1099,7 +1100,6 @@ struct sort_by_event_stopwatch
 
 void event_manager_infos( std::ostream& os, const sim_t& sim )
 {
-#if defined( ACTOR_EVENT_BOOKKEEPING )
   if ( !sim.event_mgr.monitor_cpu )
     return;
 
@@ -1123,8 +1123,8 @@ void event_manager_infos( std::ostream& os, const sim_t& sim )
         p->event_stopwatch.current() / total_event_time * 100.0,
         p->name() );
   }
-#endif  // ACTOR_EVENT_BOOKKEEPING
 }
+#endif // ACTOR_EVENT_BOOKKEEPING
 
 void print_collected_amount( std::ostream& os, const player_t& p, std::string name, const extended_sample_data_t& sd )
 {
@@ -1301,7 +1301,9 @@ void print_text_report( std::ostream& os, sim_t* sim, bool detail )
     print_iteration_data( os, *sim );
     print_raid_scale_factors( os, sim );
     print_reference_dps( os, *sim );
+#ifdef ACTOR_EVENT_BOOKKEEPING
     event_manager_infos( os, *sim );
+#endif
   }
 
   fmt::print( os, "\n" );

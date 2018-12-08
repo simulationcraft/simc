@@ -317,6 +317,7 @@ Effects          :
 Description      : Increases your Versatility by $s1.
 
 Name             : Dash (rank=Basic Ability) (id=61684) [Spell Family (9)] 
+Hotfixed         : Category
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -8506,7 +8507,7 @@ Effects          :
 #2 (id=749812)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 287055
 #3 (id=749813)   : Summon (28)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 63508 | Misc Value 2: 0xcbe | Target: At Enemy (53)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 63508 | Misc Value 2: 0x11e4 | Target: At Enemy (53)
 Description      : $@spelldesc287062
 Tooltip          : Haste increased by $w1.
 
