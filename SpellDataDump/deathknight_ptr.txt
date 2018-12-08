@@ -3899,7 +3899,8 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   x......x ........ ........ ........ 
 Effects          :
 #1 (id=286506)   : Apply Aura (6) | Modify Armor by Primary Stat% (268)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Hotfixed: Base Value (50 -> 40)
 #2 (id=293376)   : Apply Aura (6) | Unknown(408)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 195182 | Target: Self (1)
 #3 (id=306110)   : Apply Aura (6) | Modify Max Health% (133)

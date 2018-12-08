@@ -7973,16 +7973,20 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=748343)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 740.7715 (coefficient=9.527608) | PvP Coefficient: 0.22222 | Trigger Spell: 286130 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2787.075 (coefficient=35.84663) | PvP Coefficient: 0.22222 | Trigger Spell: 286130 | Target: Self (1)
+                   Hotfixed: Coefficient (9.52761 -> 35.8466)
 #2 (id=748344)   : Dummy (3)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Hotfixed: Base Value (10 -> 2)
 Description      : Each combo point spent has an $s2% chance to cause your Nightblade to deal $s1 Shadow damage and replicate to a nearby enemy.
 
 Name             : Replicating Shadows (id=286130) [Scaling Spell (-1), Spell Family (8), Hidden] 
+Hotfixed         : Internal Cooldown (0 -> 1000)
 Class            : Rogue
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
+Internal Cooldown: 1 seconds
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
@@ -8037,7 +8041,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=749028)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 861.9279 (coefficient=11.08589) | PvP Coefficient: 1.00000 | Trigger Spell: 286579 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 527.0782 (coefficient=6.779141) | PvP Coefficient: 1.00000 | Trigger Spell: 286579 | Target: Self (1)
+                   Hotfixed: Coefficient (11.0859 -> 6.77914)
 #2 (id=749029)   : Dummy (3)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000
 Description      : Vendetta poisons the target, dealing ${$s1*10*$<assassinationMastery>} Nature damage over $286581d, and grants you $s2 energy over $286581d.
@@ -8128,11 +8133,13 @@ Effects          :
 #1 (id=750744)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 287650 | Target: Self (1)
 #2 (id=750745)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 120.2024 (coefficient=1.546012) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 153.115 (coefficient=1.969325) | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Fan of Knives (51723)
                    Family Flags: 50
+                   Hotfixed: Coefficient (1.54601 -> 1.96932)
 #3 (id=750746)   : Dummy (3)
-                   Base Value: 15 | Scaled Value: 286.1964 (coefficient=3.680982) | PvP Coefficient: 1.00000
+                   Base Value: 15 | Scaled Value: 611.5062 (coefficient=7.865031) | PvP Coefficient: 1.00000
+                   Hotfixed: Coefficient (3.68098 -> 7.86503)
 #4 (id=750747)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 #5 (id=753866)   : Dummy (3)
@@ -8288,8 +8295,9 @@ Effects          :
 #1 (id=753023)   : Apply Aura (6) | Unknown(285)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Trigger Spell: 288985 | Target: Self (1)
 #2 (id=753032)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 286.1963 (coefficient=3.680981) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 879.5767 (coefficient=11.31288) | PvP Coefficient: 1.00000 | Target: Self (1)
                    Family Flags: 23
+                   Hotfixed: Coefficient (3.68098 -> 11.3129)
 Description      : Each time an attack Blade Flurries,  increase the chance for Sinister Strike to strike again by $s1%. Additional strikes of Sinister Strike deal $s2 more damage.
 
 
