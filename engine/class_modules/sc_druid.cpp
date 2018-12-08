@@ -4261,7 +4261,7 @@ struct maul_t : public bear_attack_t
   {
     bear_attack_t::impact( s );
 
-    if ( result_is_hit( s -> result ) )
+    if ( result_is_hit( s -> result ) && p() -> azerite.guardians_wrath.ok() )
     {
       p() -> buff.guardians_wrath -> up(); // benefit tracking
       p() -> buff.guardians_wrath -> trigger();
