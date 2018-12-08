@@ -4261,7 +4261,7 @@ struct maul_t : public bear_attack_t
   {
     bear_attack_t::impact( s );
 
-    if ( result_is_hit( s -> result ) )
+    if ( result_is_hit( s -> result ) && p() -> azerite.guardians_wrath.ok() )
     {
       p() -> buff.guardians_wrath -> up(); // benefit tracking
       p() -> buff.guardians_wrath -> trigger();
@@ -5046,7 +5046,8 @@ struct celestial_alignment_t : public druid_spell_t
 struct streaking_stars_t : public druid_spell_t
 {
   streaking_stars_t(druid_t* p) :
-    druid_spell_t("streaking_stars", p, p->azerite.streaking_stars.spell()->effectN(1).trigger()->effectN(1).trigger())
+    //druid_spell_t("streaking_stars", p, p->azerite.streaking_stars.spell()->effectN(1).trigger()->effectN(1).trigger())
+    druid_spell_t("streaking_stars", p, p->find_spell(272873)) // blizz decided to remove all references to this spell, so hardcoded by ID now
   {
     background = 1;
     base_dd_min = base_dd_max = p->azerite.streaking_stars.value(1);

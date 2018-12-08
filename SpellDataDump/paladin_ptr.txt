@@ -7911,7 +7911,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=748526)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 522.7852 (coefficient=6.723926) | PvP Coefficient: 1.00000 | Trigger Spell: 286231 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 563.8068 (coefficient=7.251534) | PvP Coefficient: 1.00000 | Trigger Spell: 286231 | Target: Self (1)
+                   Hotfixed: Coefficient (6.72393 -> 7.25153)
 Description      : Spending Holy Power during $?<s231895>[Crusade][Avenging Wrath] causes you to explode with Holy light for $s1 damage per Holy Power spent to nearby enemies. $?<s231895>[Crusade][Avenging Wrath]'s duration is increased by ${$286231s2/1000} sec.
 
 Name             : Empyrean Power (id=286390) [Scaling Spell (-8), Passive] 
@@ -7930,7 +7931,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=748751)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 1212.518 (coefficient=15.59509) | PvP Coefficient: 1.00000 | Trigger Spell: 286392 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1220.627 (coefficient=15.69939) | PvP Coefficient: 1.00000 | Trigger Spell: 286392 | Target: Self (1)
+                   Hotfixed: Coefficient (15.5951 -> 15.6994)
 Description      : Your attacks have a chance to make your next Divine Storm free and deal $s1 additional damage.
 
 Name             : Righteous Conviction (id=287126) [Scaling Spell (-8), Spell Family (10), Passive] 

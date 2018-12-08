@@ -6658,9 +6658,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=707710)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
-                   Base Value: -150 | Scaled Value: -150 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+                   Base Value: -190 | Scaled Value: -190 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Arcane Blast (30451)
                    Family Flags: 29
+                   Hotfixed: Base Value (-150 -> -190)
 Description      : $@spelldesc286027
 Tooltip          : Arcane Blast cost reduced by $s1.
 
@@ -8408,7 +8409,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=748188)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 57.23924 (coefficient=0.736196) | PvP Coefficient: 1.00000 | Trigger Spell: 264351 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 71.54905 (coefficient=0.920245) | PvP Coefficient: 1.00000 | Trigger Spell: 264351 | Target: Self (1)
+                   Hotfixed: Coefficient (0.736196 -> 0.920245)
 Description      : While you are above $264351s1% mana, Arcane Blast deals $s1 additional damage.
 
 While you are below $264351s1% mana, Arcane Blast's cost is reduced by $264353s1.
@@ -8555,9 +8557,10 @@ Effects          :
 #1 (id=751603)   : Apply Aura (6) | Unknown(285)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 288204 | Target: Self (1)
 #2 (id=751604)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 5 | Scaled Value: 330.0798 (coefficient=4.245399) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 427.8635 (coefficient=5.503068) | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Icicle (148022)
                    Family Flags: 115
+                   Hotfixed: Coefficient (4.2454 -> 5.50307)
 Description      : Each of your Icicles deals $s2 additional damage, and when an Icicle deals damage you have a $s1% chance to gain the Fingers of Frost effect.
 
 Name             : Seductive Power (id=288749) [Scaling Spell (-1), Passive] 
@@ -8598,9 +8601,10 @@ Effects          :
 #1 (id=752674)   : Apply Aura (6) | Unknown(285)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Trigger Spell: 288795 | Target: Self (1)
 #2 (id=752737)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 572.3926 (coefficient=7.361963) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 446.9432 (coefficient=5.748466) | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Pyroblast (11366)
                    Family Flags: 22
+                   Hotfixed: Coefficient (7.36196 -> 5.74847)
 Description      : Pyroblast deals $s2 additional damage. When you activate Combustion, you gain $288800s1 Critical Strike, and up to $288803I nearby allies gain $288803s1 Critical Strike for $288800d.
 
 Name             : Bonded Souls (id=288802) [Scaling Spell (-1), Passive] 
