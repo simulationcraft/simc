@@ -720,7 +720,6 @@ public:
   virtual double      matching_gear_multiplier( attribute_e attr ) const override;
   virtual void        update_movement( timespan_t duration ) override;
   virtual void        teleport( double distance, timespan_t duration ) override;
-  virtual void        stun() override;
   virtual double      passive_movement_modifier() const override;
   virtual void        arise() override;
   virtual void        combat_begin() override;
@@ -4155,9 +4154,7 @@ struct meteor_t : public fire_mage_spell_t
   {
     timespan_t impact_time = meteor_delay * p()->cache.spell_speed();
     timespan_t meteor_spawn = impact_time - impact_action->travel_time();
-    meteor_spawn = std::max( timespan_t::zero(), meteor_spawn );
-
-    return meteor_spawn;
+    return std::max( timespan_t::zero(), meteor_spawn );
   }
 };
 
@@ -4748,9 +4745,8 @@ struct time_warp_t : public mage_spell_t
   {
     mage_spell_t::execute();
 
-    for ( size_t i = 0; i < sim->player_non_sleeping_list.size(); ++i )
+    for ( player_t* p : sim->player_non_sleeping_list )
     {
-      player_t* p = sim->player_non_sleeping_list[ i ];
       if ( p->buffs.exhaustion->check() || p->is_pet() )
         continue;
 
@@ -5151,7 +5147,7 @@ struct ignite_spread_event_t : public event_t
 
     // Schedule next spread for 2 seconds later
     mage->ignite_spread_event = make_event<events::ignite_spread_event_t>(
-      sim(), *mage, timespan_t::from_seconds( 2.0 ) );
+      sim(), *mage, mage->spec.ignite->effectN( 3 ).period() );
   }
 };
 
@@ -6657,12 +6653,6 @@ void mage_t::reset()
   last_frostbolt_target = nullptr;
   ground_aoe_expiration.clear();
   burn_phase.reset();
-}
-
-void mage_t::stun()
-{
-  // FIX ME: override this to handle Blink
-  player_t::stun();
 }
 
 void mage_t::update_movement( timespan_t duration )
