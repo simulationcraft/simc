@@ -8709,9 +8709,9 @@ double druid_t::composite_spell_haste() const
 {
   double sh = player_t::composite_spell_haste();
 
-  sh *= 1.0 / ( 1.0 + buff.astral_acceleration -> check_stack_value() );
+  sh *= 1.0 / (1.0 + buff.astral_acceleration->stack_value());
 
-  sh *= 1.0 / (1.0 + buff.starlord->check_stack_value());
+  sh *= 1.0 / (1.0 + buff.starlord->stack_value());
 
   if (buff.celestial_alignment->check())
       sh /= (1.0 + spec.celestial_alignment->effectN(3).percent());
