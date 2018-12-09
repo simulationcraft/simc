@@ -273,11 +273,8 @@ struct rogue_t : public player_t
     buff_t* nothing_personal;
     buff_t* paradise_lost;
     buff_t* perforate;
-    buff_t* poisoned_wire;
     buff_t* scent_of_blood;
-    buff_t* sharpened_blades;
     buff_t* snake_eyes;
-    buff_t* storm_of_steel;
     buff_t* the_first_dance;
   } buffs;
 
@@ -483,20 +480,16 @@ struct rogue_t : public player_t
     azerite_power_t deadshot;
     azerite_power_t double_dose;
     azerite_power_t echoing_blades;
-    azerite_power_t fan_of_blades;
     azerite_power_t inevitability;
     azerite_power_t keep_your_wits_about_you;
     azerite_power_t nights_vengeance;
     azerite_power_t nothing_personal;
     azerite_power_t paradise_lost;
     azerite_power_t perforate;
-    azerite_power_t poisoned_wire;
     azerite_power_t replicating_shadows;
     azerite_power_t scent_of_blood;
-    azerite_power_t sharpened_blades;
     azerite_power_t shrouded_suffocation;
     azerite_power_t snake_eyes;
-    azerite_power_t storm_of_steel;
     azerite_power_t the_first_dance;
     azerite_power_t twist_the_knife;
   } azerite;
@@ -1901,12 +1894,8 @@ struct melee_t : public rogue_attack_t
     {
       first = false;
     }
-    rogue_attack_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) )
-    {
-      p() -> buffs.sharpened_blades -> trigger();
-    }
+    rogue_attack_t::execute();
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -2335,20 +2324,11 @@ struct dispatch_t: public rogue_attack_t
     return false;
   }
 
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double b = rogue_attack_t::bonus_da( s );
-    b += p() -> buffs.storm_of_steel -> stack_value(); // CP Mult is applied as a mod later.
-    return b;
-  }
-
   void execute() override
   {
     rogue_attack_t::execute();
 
     p() -> trigger_restless_blades( execute_state );
-
-    p() -> buffs.storm_of_steel -> expire();
   }
 };
 
@@ -2469,9 +2449,6 @@ struct fan_of_knives_t: public rogue_attack_t
     energize_resource = RESOURCE_COMBO_POINT;
     energize_amount   = data().effectN( 2 ).base_value();
 
-    if ( p -> azerite.fan_of_blades.ok() )
-      radius = p -> azerite.fan_of_blades.spell_ref().effectN( 2 ).base_value();
-
     if ( p -> azerite.echoing_blades.ok() )
     {
       echoing_blades_attack = new echoing_blades_t( p );
@@ -2482,8 +2459,6 @@ struct fan_of_knives_t: public rogue_attack_t
   double bonus_da( const action_state_t* state ) const override
   {
     double b = rogue_attack_t::bonus_da( state );
-    if ( p() -> azerite.fan_of_blades.ok() && state -> n_targets >= p() -> azerite.fan_of_blades.spell_ref().effectN( 3 ).base_value() )
-      b += p() -> azerite.fan_of_blades.value();
     b += p() -> azerite.echoing_blades.value( 2 );
     return b;
   }
@@ -2648,8 +2623,6 @@ struct garrote_t : public rogue_attack_t
     bool castFromStealth = p() -> stealthed();
 
     rogue_attack_t::execute();
-
-    p() -> buffs.poisoned_wire -> trigger( p() -> buffs.poisoned_wire -> max_stack() );
 
     if ( p() -> azerite.shrouded_suffocation.ok() )
     {
@@ -2977,19 +2950,6 @@ struct mutilate_strike_t : public rogue_attack_t
     background  = true;
   }
 
-  double composite_crit_chance() const override
-  {
-    double c = rogue_attack_t::composite_crit_chance();
-
-    if ( p()->buffs.poisoned_wire->up() )
-    {
-      const double rating = p()->buffs.poisoned_wire->check_value() * p()->composite_rating_multiplier( RATING_MELEE_CRIT );
-      c += rating / p()->current.rating.attack_crit;
-    }
-
-    return c;
-  }
-
   void impact( action_state_t* state ) override
   {
     rogue_attack_t::impact( state );
@@ -3073,8 +3033,6 @@ struct mutilate_t : public rogue_attack_t
               p() -> gains.venom_rush );
       }
     }
-
-    p() -> buffs.poisoned_wire -> decrement();
   }
 };
 
@@ -3637,22 +3595,6 @@ struct shuriken_toss_t : public rogue_attack_t
   {
     ap_type = AP_WEAPON_BOTH;
   }
-
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double b = rogue_attack_t::bonus_da( s );
-
-    b += p() -> buffs.sharpened_blades -> stack_value();
-
-    return b;
-  }
-
-  void execute() override
-  {
-    rogue_attack_t::execute();
-
-    p() -> buffs.sharpened_blades -> expire();
-  }
 };
 
 // Sinister Strike ==========================================================
@@ -3721,11 +3663,6 @@ struct sinister_strike_t : public rogue_attack_t
     {
       make_event<actions::secondary_ability_trigger_t>( *sim, execute_state -> target, this, 0, TRIGGER_SINISTER_STRIKE, extra_attack_delay );
       p() -> procs.sinister_strike_extra_attack -> occur();
-    }
-
-    if ( secondary_trigger == TRIGGER_SINISTER_STRIKE )
-    {
-      p() -> buffs.storm_of_steel -> trigger();
     }
 
     // secondary_trigger != TRIGGER_SINISTER_STRIKE &&
@@ -4032,24 +3969,8 @@ struct poisoned_knife_t : public rogue_attack_t
     rogue_attack_t( "poisoned_knife", p, p -> find_specialization_spell( "Poisoned Knife" ), options_str )
   { }
 
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double b = rogue_attack_t::bonus_da( s );
-
-    b += p() -> buffs.sharpened_blades -> stack_value();
-
-    return b;
-  }
-
   double composite_poison_flat_modifier( const action_state_t* ) const override
   { return 1.0; }
-
-  void execute() override
-  {
-    rogue_attack_t::execute();
-
-    p() -> buffs.sharpened_blades -> expire();
-  }
 };
 
 // ==========================================================================
@@ -6410,20 +6331,16 @@ void rogue_t::init_spells()
   azerite.deadshot             = find_azerite_spell( "Deadshot" );
   azerite.double_dose          = find_azerite_spell( "Double Dose" );
   azerite.echoing_blades       = find_azerite_spell( "Echoing Blades" );
-  azerite.fan_of_blades        = find_azerite_spell( "Fan of Blades" );
   azerite.inevitability        = find_azerite_spell( "Inevitability" );
   azerite.keep_your_wits_about_you = find_azerite_spell( "Keep Your Wits About You" );
   azerite.nights_vengeance     = find_azerite_spell( "Night's Vengeance" );
   azerite.nothing_personal     = find_azerite_spell( "Nothing Personal" );
   azerite.paradise_lost        = find_azerite_spell( "Paradise Lost" );
   azerite.perforate            = find_azerite_spell( "Perforate" );
-  azerite.poisoned_wire        = find_azerite_spell( "Poisoned Wire" );
   azerite.replicating_shadows  = find_azerite_spell( "Replicating Shadows" );
   azerite.scent_of_blood       = find_azerite_spell( "Scent of Blood" );
-  azerite.sharpened_blades     = find_azerite_spell( "Sharpened Blades" );
   azerite.shrouded_suffocation = find_azerite_spell( "Shrouded Suffocation" );
   azerite.snake_eyes           = find_azerite_spell( "Snake Eyes" );
-  azerite.storm_of_steel       = find_azerite_spell( "Storm of Steel" );
   azerite.the_first_dance      = find_azerite_spell( "The First Dance" );
   azerite.twist_the_knife      = find_azerite_spell( "Twist the Knife" );
 
@@ -6708,24 +6625,12 @@ void rogue_t::create_buffs()
   buffs.perforate                          = make_buff( this, "perforate", find_spell( 277720 ) )
                                              -> set_trigger_spell( azerite.perforate.spell_ref().effectN( 1 ).trigger() )
                                              -> set_default_value( azerite.perforate.value() );
-  buffs.poisoned_wire                      = make_buff( this, "poisoned_wire", find_spell( 276083 ) )
-                                             -> set_trigger_spell( azerite.poisoned_wire.spell_ref().effectN( 1 ).trigger() )
-                                             -> set_default_value( azerite.poisoned_wire.value() );
   buffs.scent_of_blood                     = make_buff<stat_buff_t>( this, "scent_of_blood", find_spell( 277731 ) )
                                              -> add_stat( STAT_AGILITY, azerite.scent_of_blood.value() )
                                              -> set_duration( timespan_t::zero() ); // Infinite aura
-  // 09/24/2018 - The benefit of having multiple copies of this trait active is reduced.
-  double sharpened_value = azerite.sharpened_blades.value() * ( 0.5 + 0.5 / azerite.sharpened_blades.n_items() );
-  sharpened_value *= 1.0 + spec.subtlety_rogue -> effectN( 17 ).percent();
-  buffs.sharpened_blades                   = make_buff( this, "sharpened_blades", find_spell( 272916 ) )
-                                             -> set_trigger_spell( azerite.sharpened_blades.spell_ref().effectN( 1 ).trigger() )
-                                             -> set_default_value( sharpened_value );
   buffs.snake_eyes                         = make_buff( this, "snake_eyes", find_spell( 275863 ) )
                                              -> set_trigger_spell( azerite.snake_eyes.spell_ref().effectN( 1 ).trigger() )
                                              -> set_default_value( azerite.snake_eyes.value() );
-  buffs.storm_of_steel                     = make_buff( this, "storm_of_steel", find_spell( 273455 ) )
-                                             -> set_trigger_spell( azerite.storm_of_steel.spell_ref().effectN( 1 ).trigger() )
-                                             -> set_default_value( azerite.storm_of_steel.value() );
   buffs.the_first_dance                    = make_buff<stat_buff_t>( this, "the_first_dance", find_spell( 278981 ) )
                                              -> add_stat( STAT_HASTE_RATING, azerite.the_first_dance.value() );
 }
