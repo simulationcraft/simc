@@ -1,10 +1,10 @@
-#define CLASS_ABILITY_SIZE (49)
+#define CLASS_ABILITY_SIZE (51)
 #define CLASS_ABILITY_TREE_SIZE (6)
 
 #ifndef MAX_CLASS
 #define MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 8.0.1.28153
+// Class based active abilities, wow build 8.1.0.28710
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -257,7 +257,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       257044, // Rapid Fire
        56641, // Steady Shot
       187698, // Tar Trap
-      193526, // Trueshot
+      288613, // Trueshot
            0,
     },
     // Survival tree, 18 abilities
@@ -285,7 +285,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     {
            0,
     },
-    // Pet tree, 49 abilities
+    // Pet tree, 51 abilities
     {
       263446, // Acid Spit (Special Ability)
       160011, // Agile Reflexes (Special Ability)
@@ -310,6 +310,8 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       263853, // Infected Bite (Special Ability)
        19577, // Intimidation
        24394, // Intimidation
+       83381, // Kill Command
+      259277, // Kill Command
       263423, // Lock Jaw (Special Ability)
        54680, // Monstrous Bite (Special Ability)
       264264, // Nether Shock (Special Ability)
@@ -599,9 +601,8 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     {
            0,
     },
-    // Pet tree, 8 abilities
+    // Pet tree, 7 abilities
     {
-      207260, // Arrow Spray
        81280, // Blood Burst
        47468, // Claw
        51963, // Gargoyle Strike
@@ -625,14 +626,14 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         2484, // Earthbind Totem
         2645, // Ghost Wolf
        32182, // Heroism
-       51514, // Hex
-      210873, // Hex
-      211004, // Hex
-      211010, // Hex
-      211015, // Hex
-      269352, // Hex
-      277778, // Hex
-      277784, // Hex
+       51514, // Hex (Frog)
+      210873, // Hex (Compy)
+      211004, // Hex (Spider)
+      211010, // Hex (Snake)
+      211015, // Hex (Cockroach)
+      269352, // Hex (Skeletal Hatchling)
+      277778, // Hex (Zandalari Tendonripper)
+      277784, // Hex (Wicker Mongrel)
          370, // Purge
       205495, // Stormkeeper (Artifact)
         8143, // Tremor Totem (Earth Totem)
@@ -902,11 +903,10 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     {
            0,
     },
-    // Pet tree, 43 abilities
+    // Pet tree, 42 abilities
     {
        89766, // Axe Toss (Special Ability)
       267997, // Bile Spit
-        6307, // Blood Pact (Special Ability)
       171011, // Burning Presence (Special Ability)
         3716, // Consuming Shadows (Basic Attack)
       170995, // Cripple
@@ -1015,17 +1015,22 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       116670, // Vivify
            0,
     },
-    // Windwalker tree, 22 abilities
+    // Windwalker tree, 27 abilities
     {
       116768, // Blackout Kick!
       211432, // Combo Master
       196061, // Crosswinds
+      286587, // Dance of Chi-Ji
       218164, // Detox
       116095, // Disable
       113656, // Fists of Fury
       101545, // Flying Serpent Kick
       115057, // Flying Serpent Kick
       252768, // Focus of Xuen
+      287062, // Fury of Xuen
+      287063, // Fury of Xuen
+      288636, // Glory of the Dawn
+      285594, // Good Karma
       213114, // Hidden Master's Forbidden Touch
       119381, // Leg Sweep
       228287, // Mark of the Crane
@@ -1083,7 +1088,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       114282, // Treant Form (Shapeshift)
            0,
     },
-    // Balance tree, 25 abilities
+    // Balance tree, 26 abilities
     {
        22812, // Barkskin
       194223, // Celestial Alignment
@@ -1109,6 +1114,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       191034, // Starfall
        78674, // Starsurge
       202461, // Stellar Drift
+      272873, // Streaking Star
        93402, // Sunfire (Solar)
            0,
     },
@@ -1138,10 +1144,11 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         5217, // Tiger's Fury
            0,
     },
-    // Guardian tree, 17 abilities
+    // Guardian tree, 18 abilities
     {
        22812, // Barkskin
       203958, // Brambles
+      289315, // Burst of Savagery
        22842, // Frenzied Regeneration
           99, // Incapacitating Roar
       192081, // Ironfur
@@ -1254,9 +1261,9 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     },
   },
 };
-#define TREE_SPECIALIZATION_SIZE (35)
+#define TREE_SPECIALIZATION_SIZE (34)
 
-// Talent tree specialization abilities, wow build 8.0.1.28153
+// Talent tree specialization abilities, wow build 8.1.0.28710
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1409,6 +1416,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       200327, // Blessing of Sacrifice (Rank 2)
       275773, // Judgment
       231644, // Judgment (Rank 2)
+      289941, // Holy Shock
            0,
     },
     // Specialization abilities for Protection
@@ -1516,7 +1524,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       186387, // Bursting Shot
       162697, // Stat Negation Aura - Agility DPS
       193468, // Mastery: Sniper Training (Mastery)
-      193526, // Trueshot
          781, // Disengage
       231549, // Disengage (Rank 2)
       109304, // Exhilaration
@@ -1529,6 +1536,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       257621, // Trick Shots
       155228, // Lone Wolf
       260240, // Precise Shots
+      288613, // Trueshot
            0,
     },
     // Specialization abilities for Survival
@@ -1665,7 +1673,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       231691, // Sprint (Rank 2)
       231716, // Eviscerate (Rank 2)
       231718, // Shadowstrike (Rank 2)
-      245639, // Shuriken Combo
       245751, // Sprint (Rank 2)
       277950, // Shadow's Grasp
            0,
@@ -1737,6 +1744,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
         8122, // Psychic Scream
        64901, // Symbol of Hope
         2096, // Mind Vision
+      285485, // Focused Will (Rank 2)
            0,
     },
     // Specialization abilities for Shadow
@@ -1770,6 +1778,8 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        73325, // Leap of Faith
        48045, // Mind Sear
       190719, // Shadow Word: Death
+       45243, // Focused Will
+      280752, // Hallucinations
            0,
     },
     {
@@ -1820,6 +1830,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        81229, // Runic Empowerment
       278223, // Death Strike (Rank 2)
        51271, // Pillar of Frost
+       48263, // Veteran of the Third War
            0,
     },
     // Specialization abilities for Unholy
@@ -1844,6 +1855,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        51462, // Runic Corruption
       275699, // Apocalypse
       278223, // Death Strike (Rank 2)
+       48263, // Veteran of the Third War
            0,
     },
     {
@@ -2082,6 +2094,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
         1122, // Summon Infernal (Guardian)
        30283, // Shadowfury
       196406, // Backdraft
+      157903, // Warlock
            0,
     },
     {
@@ -2245,7 +2258,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       228545, // Shapeshift Form (Shapeshift)
       231052, // Rake (Rank 2)
       231055, // Tiger's Fury (Rank 2)
-      231056, // Ferocious Bite (Rank 2)
       231057, // Shred (Rank 3)
       231063, // Shred (Rank 2)
       159456, // Travel Form (Rank 2)
@@ -2283,6 +2295,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       270100, // Bear Form (Rank 2)
       273048, // Frenzied Regeneration (Rank 2)
         2908, // Soothe
+      288826, // Stampeding Roar (Rank 2)
            0,
     },
     // Specialization abilities for Restoration
@@ -2367,7 +2380,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 };
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 8.0.1.28153
+// Class mastery abilities, wow build 8.1.0.28710
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2606,7 +2619,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (31)
 #endif
 
-// Racial abilities, wow build 8.0.1.28153
+// Racial abilities, wow build 8.1.0.28710
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3534,7 +3547,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 };
 #define SET_BONUS_DATA_SIZE (700)
 
-// Set bonus data, wow build 8.0.1.28153
+// Set bonus data, wow build 8.1.0.28710
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -4265,9 +4278,9 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Waycrest Legacy"                            , "waycrests_legacy",     15,  1439,   21,   2,  11,   -1, 277522, { 158362, 159631,  0 } },
   { "Waycrest Legacy"                            , "waycrests_legacy",     15,  1439,   21,   2,  12,   -1, 277522, { 158362, 159631,  0 } },
 };
-#define RPPMMOD_SIZE (922)
+#define RPPMMOD_SIZE (933)
 
-// 922 RPPM Modifiers, wow build level 8.0.1.28153
+// 933 RPPM Modifiers, wow build level 8.1.0.28710
 static struct rppm_modifier_t __rppmmodifier_data[] = {
   {  17495,    4,  1,  1.0000 },
   {  27656,    4,  1,  1.0000 },
@@ -4318,7 +4331,6 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 137595,  268,  4, -0.4000 },
   { 137595,   66,  4, -0.4000 },
   { 137595,   73,  4, -0.4000 },
-  { 138120,   72,  4, -0.6250 },
   { 138365,    4,  1,  1.0000 },
   { 138367,    4,  1,  1.0000 },
   { 138849,    4,  1,  1.0000 },
@@ -4638,7 +4650,6 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 238498,   66,  4, -0.5000 },
   { 238524,  435,  3, -0.5000 },
   { 238524,    4,  1,  1.0000 },
-  { 241496,    4,  1,  1.0000 },
   { 242207,  476,  3, -0.5000 },
   { 242207,  251,  4, -0.5000 },
   { 242207,  252,  4, -0.5000 },
@@ -5148,6 +5159,7 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 272797,    4,  1,  1.0000 },
   { 272817,    4,  1,  1.0000 },
   { 273153,    4,  1,  1.0000 },
+  { 273389,    4,  1,  1.0000 },
   { 273835,    4,  1,  1.0000 },
   { 274071,    4,  1,  1.0000 },
   { 274072,    4,  1,  1.0000 },
@@ -5166,6 +5178,7 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 276176,    4,  1,  1.0000 },
   { 277522,    4,  1,  1.0000 },
   { 277905,    4,  1,  1.0000 },
+  { 277926,    4,  1,  1.0000 },
   { 278053,    4,  1,  1.0000 },
   { 278112,    4,  1,  1.0000 },
   { 278140,    4,  1,  1.0000 },
@@ -5191,5 +5204,16 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 280837,    4,  1,  1.0000 },
   { 280854,    4,  1,  1.0000 },
   { 281712,    4,  1,  1.0000 },
+  { 284971,    4,  1,  1.0000 },
+  { 285023,    4,  1,  1.0000 },
+  { 286392,    4,  1,  1.0000 },
+  { 286586,    4,  1,  1.0000 },
+  { 288109,    4,  1,  1.0000 },
+  { 288328,    4,  1,  1.0000 },
+  { 288757,    4,  1,  1.0000 },
+  { 288804,    4,  1,  1.0000 },
+  { 289287,    4,  1,  1.0000 },
+  { 289289,    4,  1,  1.0000 },
+  { 289391,    4,  1,  1.0000 },
   {      0,    0,  0,  0.0000 },
 };
