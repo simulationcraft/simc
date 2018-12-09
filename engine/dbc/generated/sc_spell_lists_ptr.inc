@@ -1,4 +1,4 @@
-#define PTR_CLASS_ABILITY_SIZE (49)
+#define PTR_CLASS_ABILITY_SIZE (50)
 #define PTR_CLASS_ABILITY_TREE_SIZE (6)
 
 #ifndef ptr_MAX_CLASS
@@ -285,7 +285,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
     {
            0,
     },
-    // Pet tree, 49 abilities
+    // Pet tree, 50 abilities
     {
       263446, // Acid Spit (Special Ability)
       160011, // Agile Reflexes (Special Ability)
@@ -310,6 +310,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       263853, // Infected Bite (Special Ability)
        19577, // Intimidation
        24394, // Intimidation
+       83381, // Kill Command
       263423, // Lock Jaw (Special Ability)
        54680, // Monstrous Bite (Special Ability)
       264264, // Nether Shock (Special Ability)
