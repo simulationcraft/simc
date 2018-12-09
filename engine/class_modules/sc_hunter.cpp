@@ -300,7 +300,6 @@ public:
     azerite_power_t primal_instincts;
     azerite_power_t serrated_jaws;
     // Marksmanship
-    azerite_power_t arcane_flurry;
     azerite_power_t focused_fire;
     azerite_power_t in_the_rhythm;
     azerite_power_t rapid_reload;
@@ -353,7 +352,6 @@ public:
     buff_t* t20_4p_bestial_rage;
 
     // azerite
-    buff_t* arcane_flurry;
     buff_t* blur_of_talons;
     buff_t* dance_of_death;
     buff_t* haze_of_rage;
@@ -2693,8 +2691,6 @@ struct arcane_shot_t: public hunter_ranged_attack_t
     p() -> buffs.master_marksman -> up(); // benefit tracking
     p() -> buffs.master_marksman -> decrement();
 
-    p() -> buffs.arcane_flurry -> trigger();
-
     if ( p() -> talents.calling_the_shots -> ok() )
       p() -> cooldowns.trueshot -> adjust( - p() -> talents.calling_the_shots -> effectN( 1 ).time_value() );
 
@@ -2710,14 +2706,6 @@ struct arcane_shot_t: public hunter_ranged_attack_t
     return am;
   }
 
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double b = hunter_ranged_attack_t::bonus_da( s );
-
-    b += p() -> buffs.arcane_flurry -> stack_value();
-
-    return b;
-  }
 };
 
 // Piercing Shot  =========================================================================
@@ -4897,7 +4885,6 @@ void hunter_t::init_spells()
   azerite.primal_instincts      = find_azerite_spell( "Primal Instincts" );
   azerite.serrated_jaws         = find_azerite_spell( "Serrated Jaws" );
 
-  azerite.arcane_flurry         = find_azerite_spell( "Arcane Flurry" );
   azerite.focused_fire          = find_azerite_spell( "Focused Fire" );
   azerite.in_the_rhythm         = find_azerite_spell( "In The Rhythm" );
   azerite.rapid_reload          = find_azerite_spell( "Rapid Reload" );
@@ -5105,11 +5092,6 @@ void hunter_t::create_buffs()
       -> set_trigger_spell( sets -> set( HUNTER_BEAST_MASTERY, T20, B4 ) );
 
   // Azerite
-
-  buffs.arcane_flurry =
-    make_buff( this, "arcane_flurry", find_spell( 273267 ) )
-      -> set_default_value( azerite.arcane_flurry.value( 1 ) )
-      -> set_trigger_spell( azerite.arcane_flurry );
 
   buffs.blur_of_talons =
     make_buff<stat_buff_t>( this, "blur_of_talons", find_spell( 277969 ) )
