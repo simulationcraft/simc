@@ -1304,7 +1304,8 @@ class SpellDataGenerator(DataGenerator):
           ( 272745, 0 ), # Wildfire Cluster (Azerite)
           ( 278565, 0 ), # Rapid Reload (Azerite)
           ( 120694, 0 ), # Dire Beast energize
-          ( 83381, 5 ),  # Pet Kill Command
+          ( 83381, 5 ),  # BM Pet Kill Command
+          ( 259277, 5 ), # SV Pet Kill Command
         ),
 
         # Rogue:
