@@ -719,7 +719,6 @@ public:
   virtual double      matching_gear_multiplier( attribute_e attr ) const override;
   virtual void        update_movement( timespan_t duration ) override;
   virtual void        teleport( double distance, timespan_t duration ) override;
-  virtual void        stun() override;
   virtual double      passive_movement_modifier() const override;
   virtual void        arise() override;
   virtual void        combat_begin() override;
@@ -781,7 +780,7 @@ public:
   };
 
   void      update_rune_distance( double distance );
-  action_t* get_icicle();
+  action_t* get_icicle( bool erase = true );
   void      trigger_icicle( player_t* icicle_target, bool chain = false );
   void      trigger_evocation( timespan_t duration_override = timespan_t::min(), bool hasted = true );
   void      trigger_arcane_charge( int stacks = 1 );
@@ -4190,9 +4189,7 @@ struct meteor_t : public fire_mage_spell_t
   {
     timespan_t impact_time = meteor_delay * p()->cache.spell_speed();
     timespan_t meteor_spawn = impact_time - impact_action->travel_time();
-    meteor_spawn = std::max( timespan_t::zero(), meteor_spawn );
-
-    return meteor_spawn;
+    return std::max( timespan_t::zero(), meteor_spawn );
   }
 };
 
@@ -4780,9 +4777,8 @@ struct time_warp_t : public mage_spell_t
   {
     mage_spell_t::execute();
 
-    for ( size_t i = 0; i < sim->player_non_sleeping_list.size(); ++i )
+    for ( player_t* p : sim->player_non_sleeping_list )
     {
-      player_t* p = sim->player_non_sleeping_list[ i ];
       if ( p->buffs.exhaustion->check() || p->is_pet() )
         continue;
 
@@ -5005,13 +5001,11 @@ namespace events {
 struct icicle_event_t : public event_t
 {
   mage_t* mage;
-  action_t* icicle_action;
   player_t* target;
 
-  icicle_event_t( mage_t& m, action_t* a, player_t* t, bool first = false ) :
+  icicle_event_t( mage_t& m, player_t* t, bool first = false ) :
     event_t( m ),
     mage( &m ),
-    icicle_action( a ),
     target( t )
   {
     double cast_time = first ? 0.25 : 0.4 * mage->cache.spell_speed();
@@ -5032,15 +5026,17 @@ struct icicle_event_t : public event_t
       return;
     }
 
+    action_t* icicle_action = mage->get_icicle();
+    if ( !icicle_action )
+      return;
+
     icicle_action->set_target( target );
     icicle_action->execute();
-
     mage->buffs.icicles->decrement();
 
-    action_t* new_action = mage->get_icicle();
-    if ( new_action )
+    if ( mage->get_icicle( false ) )
     {
-      mage->icicle_event = make_event<icicle_event_t>( sim(), *mage, new_action, target );
+      mage->icicle_event = make_event<icicle_event_t>( sim(), *mage, target );
       sim().print_debug( "{} icicle use on {} (chained), total={}", mage->name(), target->name(), mage->icicles.size() );
     }
   }
@@ -5183,7 +5179,7 @@ struct ignite_spread_event_t : public event_t
 
     // Schedule next spread for 2 seconds later
     mage->ignite_spread_event = make_event<events::ignite_spread_event_t>(
-      sim(), *mage, timespan_t::from_seconds( 2.0 ) );
+      sim(), *mage, mage->spec.ignite->effectN( 3 ).period() );
   }
 };
 
@@ -6686,12 +6682,6 @@ void mage_t::reset()
   burn_phase.reset();
 }
 
-void mage_t::stun()
-{
-  // FIX ME: override this to handle Blink
-  player_t::stun();
-}
-
 void mage_t::update_movement( timespan_t duration )
 {
   player_t::update_movement( duration );
@@ -6969,7 +6959,7 @@ expr_t* mage_t::create_expression( const std::string& name_str )
     }
     else
     {
-      sim->errorf( "Player %s ground_aoe expression: unknown operation '%s'", name(), splits[ 2 ].c_str() );
+      throw std::invalid_argument( fmt::format( "Unknown ground_aoe operation '{}'", splits[ 2 ] ) );
     }
   }
 
@@ -7009,11 +6999,8 @@ void mage_t::update_rune_distance( double distance )
   }
 }
 
-action_t* mage_t::get_icicle()
+action_t* mage_t::get_icicle( bool erase )
 {
-  if ( icicles.empty() )
-    return nullptr;
-
   // All Icicles created before the treshold timed out.
   timespan_t threshold = sim->current_time() - buffs.icicles->buff_duration;
 
@@ -7023,14 +7010,15 @@ action_t* mage_t::get_icicle()
   // Remove all timed out icicles
   icicles.erase( icicles.begin(), idx );
 
-  if ( !icicles.empty() )
-  {
-    action_t* icicle_action = icicles.front().icicle_action;
-    icicles.erase( icicles.begin() );
-    return icicle_action;
-  }
+  if ( icicles.empty() )
+    return nullptr;
 
-  return nullptr;
+  action_t* icicle_action = icicles.front().icicle_action;
+
+  if ( erase )
+    icicles.erase( icicles.begin() );
+
+  return icicle_action;
 }
 
 void mage_t::trigger_icicle( player_t* icicle_target, bool chain )
@@ -7040,25 +7028,17 @@ void mage_t::trigger_icicle( player_t* icicle_target, bool chain )
   if ( !spec.icicles->ok() )
     return;
 
-  if ( icicles.empty() )
+  if ( !get_icicle( false ) )
     return;
 
   if ( chain && !icicle_event )
   {
-    action_t* icicle_action = get_icicle();
-    if ( !icicle_action )
-      return;
-
-    icicle_event = make_event<events::icicle_event_t>( *sim, *this, icicle_action, icicle_target, true );
-
+    icicle_event = make_event<events::icicle_event_t>( *sim, *this, icicle_target, true );
     sim->print_debug( "{} icicle use on {} (chained), total={}", name(), icicle_target->name(), icicles.size() );
   }
   else if ( !chain )
   {
     action_t* icicle_action = get_icicle();
-    if ( !icicle_action )
-      return;
-
     icicle_action->set_target( icicle_target );
     icicle_action->execute();
 

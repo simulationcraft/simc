@@ -67,9 +67,9 @@ namespace buffs {
 struct holy_power_consumer_t : public paladin_melee_attack_t
 {
   struct lights_decree_t : public paladin_spell_t {
-    lights_decree_t( paladin_t* p ) : paladin_spell_t( "lights_decree", p, p -> find_spell( 286229 ) )
+    lights_decree_t( paladin_t* p, float parent_cost ) : paladin_spell_t( "lights_decree", p, p -> find_spell( 286229 ) )
     {
-      base_dd_min = base_dd_max = p -> azerite.lights_decree.value();
+      base_dd_min = base_dd_max = p -> azerite.lights_decree.value() * parent_cost;
       aoe = -1;
       may_crit = true;
     }
@@ -81,7 +81,7 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
   holy_power_consumer_t( const std::string& n, paladin_t* p,
                           const spell_data_t* s = spell_data_t::nil() ) :
     paladin_melee_attack_t( n, p, s ),
-    lights_decree( new lights_decree_t( p ) )
+    lights_decree( new lights_decree_t( p, base_cost() ) )
   {
   }
 
