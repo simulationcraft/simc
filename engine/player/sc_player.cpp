@@ -7601,7 +7601,8 @@ struct lights_judgment_t : public racial_spell_t
   lights_judgment_t( player_t* p, const std::string& options_str ) :
     racial_spell_t( p, "lights_judgment", p->find_racial_spell( "Light's Judgment" ), options_str )
   {
-    may_miss = callbacks = false;
+    // The cast doesn't trigger combat
+    may_miss = callbacks = harmful = false;
 
     damage = p->find_action( "lights_judgment_damage" );
     if ( damage == nullptr )
@@ -7612,10 +7613,25 @@ struct lights_judgment_t : public racial_spell_t
     add_child( damage );
   }
 
-  // Missile travels for 3 seconds according to tooltip
+  void execute() override
+  {
+    racial_spell_t::execute();
+    // Reduce the cooldown by 1.5s when used during precombat
+    if ( ! player -> in_combat )
+    {
+      cooldown -> adjust( timespan_t::from_seconds( -1.5 ) );
+    }
+  }
+
+  // Missile travels for 3 seconds, stored in missile speed
   timespan_t travel_time() const override
   {
-    return timespan_t::from_seconds( 3.0 );
+    // Reduce the delay before the hit by 1.5s when used during precombat
+    if ( ! player -> in_combat )
+    {
+      return timespan_t::from_seconds( travel_speed - 1.5 );
+    }
+    return timespan_t::from_seconds( travel_speed );
   }
 
   void impact( action_state_t* state ) override
