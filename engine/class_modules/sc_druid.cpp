@@ -1422,7 +1422,7 @@ public:
     form_mask( ab::data().stance_mask() ), may_autounshift( true ), autoshift( 0 ),
     rend_and_tear( ab::data().affected_by( player -> spec.thrash_bear_dot -> effectN( 2 ) ) ),
     hasted_gcd( ab::data().affected_by( player -> spec.druid -> effectN( 4 ) ) ),
-    gore_chance( player -> dbc.ptr ? player -> spec.gore -> effectN( 1 ).percent() : player -> spec.gore -> proc_chance() ), triggers_galactic_guardian( true )
+    gore_chance( player -> spec.gore -> effectN( 1 ).percent() ), triggers_galactic_guardian( true )
   {
     ab::may_crit      = true;
     ab::tick_may_crit = true;
@@ -2341,10 +2341,6 @@ struct moonfire_t : public druid_spell_t
     virtual double bonus_da(const action_state_t* s) const override
     {
       double da = druid_spell_t::bonus_da(s);
-
-      if (!maybe_ptr(p()->dbc.ptr))
-        da += p()->azerite.power_of_the_moon.value(2);
-
       return da;
     }
 
@@ -2352,8 +2348,7 @@ struct moonfire_t : public druid_spell_t
     {
       double ta = druid_spell_t::bonus_ta(s);
 
-      if (maybe_ptr(p()->dbc.ptr))
-        ta += p()->azerite.power_of_the_moon.value(2);
+      ta += p()->azerite.power_of_the_moon.value(2);
 
       return ta;
     }
@@ -2397,7 +2392,7 @@ struct moonfire_t : public druid_spell_t
         }
       }
 
-      if (!p()->azerite.power_of_the_moon.ok() || !maybe_ptr(p()->dbc.ptr))
+      if (!p()->azerite.power_of_the_moon.ok())
         return;
       if (!p()->rppm.power_of_the_moon->trigger())
         return;
@@ -2488,10 +2483,6 @@ struct moonfire_t : public druid_spell_t
 
     void execute() override
     {
-      if (!maybe_ptr(p()->dbc.ptr) && p()->rng().roll(p()->find_spell(273389)->proc_chance()) && p()->azerite.power_of_the_moon.ok())
-      {
-        p()->buff.lunar_empowerment->trigger();
-      }
       // Force invalidate target cache so that it will impact on the correct targets.
       target_cache.is_valid = false;
 
@@ -6143,10 +6134,6 @@ struct sunfire_t : public druid_spell_t
     double bonus_da(const action_state_t* s) const override
     {
       double da = druid_spell_t::bonus_da(s);
-
-      if (!maybe_ptr(p()->dbc.ptr))
-        da += p()->azerite.high_noon.value(2);
-
       return da;
     }
     
@@ -6154,8 +6141,7 @@ struct sunfire_t : public druid_spell_t
     {
       double ta = druid_spell_t::bonus_ta(s);
 
-      if (maybe_ptr(p()->dbc.ptr))
-        ta += p()->azerite.high_noon.value(2);
+      ta += p()->azerite.high_noon.value(2);
 
       return ta;
     }
@@ -6401,10 +6387,6 @@ struct solar_wrath_t : public druid_spell_t
   {
     druid_spell_t::impact (s);
 
-    if (!maybe_ptr(p()->dbc.ptr) && p()->azerite.sunblaze.ok())
-    {
-      p()->buff.sunblaze->trigger(1, p()->azerite.sunblaze.value());
-    }
     solar_wrath_state_t* st = debug_cast<solar_wrath_state_t*>(s);
     if (st->empowered)
     {
@@ -6668,7 +6650,7 @@ struct starsurge_t : public druid_spell_t
     double am = druid_spell_t::action_multiplier();
 
     if ( p() -> mastery.starlight -> ok() )
-      maybe_ptr(p()->dbc.ptr) ? am *= 1.0 + p() -> cache.mastery_value() : am *= 1.0 + p() -> cache.mastery()*p()->mastery.starlight->effectN(3).mastery_value();
+      am *= 1.0 + p() -> cache.mastery_value();
 
     if (p()->sets->has_set_bonus(DRUID_BALANCE, T21, B2))
       am *= 1.0 + p()->sets->set(DRUID_BALANCE, T21, B2)->effectN(2).percent();
@@ -6741,9 +6723,6 @@ struct starsurge_t : public druid_spell_t
   {
     double da = druid_spell_t::bonus_da(s);
 
-    if(!maybe_ptr(p()->dbc.ptr) && p()->buff.sunblaze->up())
-      da += p()->azerite.sunblaze.value(1);
-
     if (p()->azerite.arcanic_pulsar.ok())
       da += p()->azerite.arcanic_pulsar.value(2);
 
@@ -6775,8 +6754,6 @@ struct starsurge_t : public druid_spell_t
     }
 
     streaking_stars_trigger(SS_STARSURGE, s);
-    if (!maybe_ptr(p()->dbc.ptr) && p()->buff.sunblaze->up())
-      p()->buff.sunblaze->expire();
   }
 };
 
@@ -7407,10 +7384,7 @@ void druid_t::init_spells()
   azerite.lunar_shrapnel = find_azerite_spell("Lunar Shrapnel");
   azerite.power_of_the_moon = find_azerite_spell("Power of the Moon");
   azerite.streaking_stars = find_azerite_spell("Streaking Stars");
-  if (!maybe_ptr(dbc.ptr))
-    azerite.sunblaze = find_azerite_spell("Sunblaze");
-  else
-    azerite.arcanic_pulsar = find_azerite_spell("Arcanic Pulsar");
+  azerite.arcanic_pulsar = find_azerite_spell("Arcanic Pulsar");
 
   // Feral
   azerite.blood_mist = find_azerite_spell("Blood Mist");
@@ -7935,10 +7909,6 @@ void druid_t::apl_precombat()
   {
     precombat->add_action( "variable,name=az_streak,value=azerite.streaking_stars.rank", "Azerite variables\n# Streaking Stars:\n# Cast sw after every non-sw spell unless capping, sw sf sw if forced" );
     precombat->add_action( "variable,name=az_ds,value=azerite.dawning_sun.rank" );
-    if (!maybe_ptr(dbc.ptr)) {
-      precombat->add_action( "variable,name=az_sb,value=azerite.sunblaze.rank" );
-      precombat->add_action( "variable,name=az_potm,value=azerite.power_of_the_moon.rank,if=talent.twin_moons.enabled", "Power of the Moon:\n# 2T: 3x noemp, 2x emp, 1x normal\n# 3T: 3x lsemp, 2x normal, 1x normal\n# 4T: 3x lsemp, 2x normal, 1x normal" );
-    }
   }
   
   // Forms
@@ -8328,22 +8298,11 @@ void druid_t::apl_balance()
   default_list->add_talent( this, "Stellar Flare", "target_if=refreshable,if=astral_power.deficit>=12&target.time_to_die>7.2"
                                   "&(!buff.celestial_alignment.up&!buff.incarnation.up|!variable.az_streak|!prev_gcd.1.stellar_flare)" /*Streaking check*/
                                  );
-  if (!maybe_ptr(dbc.ptr)) {
-    default_list->add_action( this, "Lunar Strike", "if=astral_power.deficit>=16&(buff.lunar_empowerment.stack=3|(spell_targets<3&astral_power>=40&(buff.lunar_empowerment.stack=2&buff.solar_empowerment.stack=2)))"
-                                  "&!(spell_targets.moonfire>=2&variable.az_potm=3&active_enemies=2)" /*PotM MF spam check*/
-                                 ,"Empowerment cap check");
-    default_list->add_action( this, "Solar Wrath", "if=astral_power.deficit>=12&(buff.solar_empowerment.stack=3"
-                                  "|(variable.az_sb>1&spell_targets.starfall<3&astral_power>=32&!buff.sunblaze.up))" /*Sunblaze check*/
-                                  "&!(spell_targets.moonfire>=2&active_enemies<=4&variable.az_potm=3)" /*PotM MF spam check*/
-                                  "|(variable.az_streak&(buff.celestial_alignment.up|buff.incarnation.up)&!prev_gcd.1.solar_wrath&astral_power.deficit>=12)" /*Streaking sw weave*/
-                                 );
-  } else {
-    default_list->add_action( this, "Lunar Strike", "if=astral_power.deficit>=16&(buff.lunar_empowerment.stack=3|(spell_targets<3&astral_power>=40&(buff.lunar_empowerment.stack=2&buff.solar_empowerment.stack=2)))"
-                                 ,"Empowerment cap check");
-    default_list->add_action( this, "Solar Wrath", "if=astral_power.deficit>=12&buff.solar_empowerment.stack=3"
-                                  "|(variable.az_streak&(buff.celestial_alignment.up|buff.incarnation.up)&!prev_gcd.1.solar_wrath&astral_power.deficit>=12)" /*Streaking sw weave*/
-                                 );
-  }
+  default_list->add_action( this, "Lunar Strike", "if=astral_power.deficit>=16&(buff.lunar_empowerment.stack=3|(spell_targets<3&astral_power>=40&(buff.lunar_empowerment.stack=2&buff.solar_empowerment.stack=2)))"
+                                ,"Empowerment cap check");
+  default_list->add_action( this, "Solar Wrath", "if=astral_power.deficit>=12&buff.solar_empowerment.stack=3"
+                                "|(variable.az_streak&(buff.celestial_alignment.up|buff.incarnation.up)&!prev_gcd.1.solar_wrath&astral_power.deficit>=12)" /*Streaking sw weave*/
+                                );
   default_list->add_action( this, "Starsurge", "if=(spell_targets.starfall<3&(!buff.starlord.up|buff.starlord.remains>=4)|execute_time*(astral_power%40)>target.time_to_die)"
                                   "&(!buff.celestial_alignment.up&!buff.incarnation.up|variable.az_streak<2|!prev_gcd.1.starsurge)" /*Streaking check*/
                                   "&(raid_event.movement.in>(buff.lunar_empowerment.stack*action.lunar_strike.execute_time+buff.solar_empowerment.stack*action.solar_wrath.execute_time)|(astral_power+buff.lunar_empowerment.stack*12+buff.solar_empowerment.stack*8)>=96)" /*Movement*/
@@ -8352,28 +8311,14 @@ void druid_t::apl_balance()
   default_list->add_action( this, "New Moon", "if=astral_power.deficit>10+execute_time%1.5");
   default_list->add_action( this, "Half Moon", "if=astral_power.deficit>20+execute_time%1.5");
   default_list->add_action( this, "Full Moon", "if=astral_power.deficit>40+execute_time%1.5");
-  if (!maybe_ptr(dbc.ptr)) {
-    default_list->add_action( this, "Lunar Strike", "if=((buff.warrior_of_elune.up|buff.lunar_empowerment.up|spell_targets>=3&!buff.solar_empowerment.up)"
-                                  "&(!buff.celestial_alignment.up&!buff.incarnation.up|variable.az_streak<2|!prev_gcd.1.lunar_strike)" /*Streaking check*/
-                                  "|(variable.az_ds&!buff.dawning_sun.up))" /*Dawning Sun check*/
-                                  "&!(spell_targets.moonfire>=2&active_enemies<=4&(variable.az_potm=3|variable.az_potm=2&active_enemies=2))" /*PotM MF spam check*/
-                                 );
-    default_list->add_action( this, "Solar Wrath", "if=(!buff.celestial_alignment.up&!buff.incarnation.up|variable.az_streak<2|!prev_gcd.1.solar_wrath)" /*Streaking check*/
-                                  "&!(spell_targets.moonfire>=2&active_enemies<=4&(variable.az_potm=3|variable.az_potm=2&active_enemies=2))" /*PotM MF spam check*/
-                                 );
-    default_list->add_action( this, "Sunfire", "if=(!buff.celestial_alignment.up&!buff.incarnation.up|!variable.az_streak|!prev_gcd.1.sunfire)" /*Streaking check*/
-                                  "&!(variable.az_potm>=2&spell_targets.moonfire>=2)" /*PotM MF spam check*/
-                                 );
-  } else {
-    default_list->add_action( this, "Lunar Strike", "if=(buff.warrior_of_elune.up|buff.lunar_empowerment.up|spell_targets>=3&!buff.solar_empowerment.up)"
-                                  "&(!buff.celestial_alignment.up&!buff.incarnation.up|variable.az_streak<2|!prev_gcd.1.lunar_strike)" /*Streaking check*/
-                                  "|(variable.az_ds&!buff.dawning_sun.up)" /*Dawning Sun check*/
-                                 );
-    default_list->add_action( this, "Solar Wrath", "if=(!buff.celestial_alignment.up&!buff.incarnation.up|variable.az_streak<2|!prev_gcd.1.solar_wrath)" /*Streaking check*/
-                                 );
-    default_list->add_action( this, "Sunfire", "if=(!buff.celestial_alignment.up&!buff.incarnation.up|!variable.az_streak|!prev_gcd.1.sunfire)" /*Streaking check*/
-                                 );
-  }
+  default_list->add_action( this, "Lunar Strike", "if=(buff.warrior_of_elune.up|buff.lunar_empowerment.up|spell_targets>=3&!buff.solar_empowerment.up)"
+                                "&(!buff.celestial_alignment.up&!buff.incarnation.up|variable.az_streak<2|!prev_gcd.1.lunar_strike)" /*Streaking check*/
+                                "|(variable.az_ds&!buff.dawning_sun.up)" /*Dawning Sun check*/
+                                );
+  default_list->add_action( this, "Solar Wrath", "if=(!buff.celestial_alignment.up&!buff.incarnation.up|variable.az_streak<2|!prev_gcd.1.solar_wrath)" /*Streaking check*/
+                                );
+  default_list->add_action( this, "Sunfire", "if=(!buff.celestial_alignment.up&!buff.incarnation.up|!variable.az_streak|!prev_gcd.1.sunfire)" /*Streaking check*/
+                                );
   default_list->add_action( this, "Moonfire");
 }
 
@@ -9769,14 +9714,7 @@ void druid_t::trigger_solar_empowerment (const action_state_t* state)
 {
   double dm = buff.solar_empowerment->data().effectN(1).percent();
 
-  if (maybe_ptr(dbc.ptr))
-  {
-    dm += mastery.starlight->ok() * cache.mastery()*mastery.starlight->effectN(4).mastery_value();
-  }
-  else
-  {
-    dm += mastery.starlight->ok() * cache.mastery()*mastery.starlight->effectN(5).mastery_value();
-  }
+  dm += mastery.starlight->ok() * cache.mastery()*mastery.starlight->effectN(4).mastery_value();
 
   if(talent.soul_of_the_forest->ok())
     dm *= (1.0 + talent.soul_of_the_forest->effectN (1).percent ());

@@ -125,13 +125,6 @@ double warlock_pet_t::resource_regen_per_second( resource_e r ) const
 {
   double reg = base_t::resource_regen_per_second( r );
 
-  if ( r == RESOURCE_ENERGY )
-  {
-    // TOCHECK As of 07-29-2018, warlock pets' energy regen scales off haste twice.
-    if ( !o()->dbc.ptr && o()->bugs )
-      reg /= cache.spell_haste();
-  }
-
   return reg;
 }
 
@@ -154,7 +147,7 @@ double warlock_pet_t::composite_player_multiplier(school_e school) const
   m *= 1.0 + buffs.grimoire_of_service->check_value();
 
   //TOCHECK random demons received a 25% buff on ptr.
-  if ( o()->dbc.ptr && pet_type == PET_WARLOCK_RANDOM )
+  if ( pet_type == PET_WARLOCK_RANDOM )
     m *= 1.25;
 
   return m;
@@ -231,11 +224,8 @@ imp_pet_t::imp_pet_t( warlock_t* owner, const std::string& name ) :
 {
   action_list_str = "firebolt";
 
-  if ( o()->dbc.ptr )
-  {
-    owner_coeff.ap_from_sp *= 1.15;
-    owner_coeff.sp_from_sp *= 1.15;
-  }
+  owner_coeff.ap_from_sp *= 1.15;
+  owner_coeff.sp_from_sp *= 1.15;
 }
 
 action_t* imp_pet_t::create_action( const std::string& name, const std::string& options_str )
@@ -291,11 +281,8 @@ void succubus_pet_t::init_base_stats()
 {
   warlock_pet_t::init_base_stats();
 
-  if ( o()->dbc.ptr )
-  {
-    owner_coeff.ap_from_sp *= 1.15;
-    owner_coeff.sp_from_sp *= 1.15;
-  }
+  owner_coeff.ap_from_sp *= 1.15;
+  owner_coeff.sp_from_sp *= 1.15;
 
   main_hand_weapon.swing_time = timespan_t::from_seconds(3.0);
   melee_attack = new warlock_pet_melee_t(this);
@@ -327,11 +314,8 @@ void voidwalker_pet_t::init_base_stats()
 {
   warlock_pet_t::init_base_stats();
 
-  if ( o()->dbc.ptr )
-  {
-    owner_coeff.ap_from_sp *= 1.15;
-    owner_coeff.sp_from_sp *= 1.15;
-  }
+  owner_coeff.ap_from_sp *= 1.15;
+  owner_coeff.sp_from_sp *= 1.15;
 
   melee_attack = new warlock_pet_melee_t(this);
 }
@@ -563,11 +547,8 @@ void felguard_pet_t::init_base_stats()
   main_hand_weapon.type = WEAPON_AXE_2H;
   melee_attack = new warlock_pet_melee_t(this);
 
-  if ( o()->dbc.ptr )
-  {
-    owner_coeff.ap_from_sp *= 1.15;
-    owner_coeff.sp_from_sp *= 1.15;
-  }
+  owner_coeff.ap_from_sp *= 1.15;
+  owner_coeff.sp_from_sp *= 1.15;
 
   //TOCHECK Felguard has a hardcoded 10% multiplier for it's auto attack damage. Live as of 10-17-2018
   melee_attack->base_dd_multiplier *= 1.1;
@@ -746,7 +727,7 @@ void wild_imp_pet_t::demise()
 
   o()->buffs.wild_imps->decrement();
 
-  if ( !power_siphon && ( o()->dbc.ptr || !demonic_consumption ) )
+  if ( !power_siphon )
   {
     o()->buffs.demonic_core->trigger(1, buff_t::DEFAULT_VALUE(), o()->spec.demonic_core->effectN(1).percent());
     expansion::bfa::trigger_leyshocks_grand_compilation( STAT_HASTE_RATING, o() );
@@ -926,9 +907,8 @@ struct demonfire_t : public warlock_pet_spell_t
   double bonus_da( const action_state_t* s ) const override
   {
     double da = warlock_pet_spell_t::bonus_da( s );
-    
-    if ( p()->dbc.ptr )
-      da += p()->o()->azerite.baleful_invocation.value( 1 );
+
+    da += p()->o()->azerite.baleful_invocation.value( 1 );
 
     return da;
   }

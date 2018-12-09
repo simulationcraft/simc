@@ -648,8 +648,6 @@ struct crusader_strike_t : public holy_power_generator_t
   double bonus_da( const action_state_t* s ) const override
   {
     double b = holy_power_generator_t::bonus_da( s );
-    if ( ! ( p() -> dbc.ptr ) )
-      b += p() -> buffs.zealotry -> stack_value();
     return b;
   }
 
@@ -685,11 +683,6 @@ struct crusader_strike_t : public holy_power_generator_t
   void execute() override
   {
     holy_power_generator_t::execute();
-
-    if ( ( ! ( p() -> dbc.ptr ) ) &&  p() -> azerite.zealotry.ok() )
-    {
-      p() -> buffs.zealotry -> trigger();
-    }
   }
 
   double composite_target_multiplier( player_t* t ) const override

@@ -275,7 +275,7 @@ namespace warlock
       void execute() override
       {
         // Do checks for Pandemic Invocation before parent execute() is called so we get the correct DoT states.
-        if ( p()->dbc.ptr && p()->azerite.pandemic_invocation.ok() && td( target )->dots_agony->is_ticking() && td( target )->dots_agony->remains() <= p()->azerite.pandemic_invocation.spell_ref().effectN( 2 ).time_value() )
+        if ( p()->azerite.pandemic_invocation.ok() && td( target )->dots_agony->is_ticking() && td( target )->dots_agony->remains() <= p()->azerite.pandemic_invocation.spell_ref().effectN( 2 ).time_value() )
           pandemic_invocation_usable = true;
 
         affliction_spell_t::execute();
@@ -348,7 +348,7 @@ namespace warlock
           p()->procs.affliction_t21_2pc->occur();
         }
 
-        if ( p()->dbc.ptr && result_is_hit( d->state->result ) && p()->azerite.inevitable_demise.ok() )
+        if ( result_is_hit( d->state->result ) && p()->azerite.inevitable_demise.ok() )
         {
           p()->buffs.inevitable_demise->trigger();
         }
@@ -417,18 +417,13 @@ namespace warlock
             p()->resource_gain(RESOURCE_SOUL_SHARD, 1.0, p()->gains.affliction_t20_2pc); //trigger the buff
         }
 
-        if ( !p()->dbc.ptr && result_is_hit( d->state->result ) && p()->azerite.inevitable_demise.ok() )
-        {
-          p()->buffs.inevitable_demise->trigger();
-        }
-
         affliction_spell_t::tick( d );
       }
 
       void execute() override
       {
         // Do checks for Pandemic Invocation before parent execute() is called so we get the correct DoT states.
-        if ( p()->dbc.ptr && p()->azerite.pandemic_invocation.ok() && td( target )->dots_corruption->is_ticking() && td( target )->dots_corruption->remains() <= p()->azerite.pandemic_invocation.spell_ref().effectN( 2 ).time_value() )
+        if ( p()->azerite.pandemic_invocation.ok() && td( target )->dots_corruption->is_ticking() && td( target )->dots_corruption->remains() <= p()->azerite.pandemic_invocation.spell_ref().effectN( 2 ).time_value() )
           pandemic_invocation_usable = true;
 
         affliction_spell_t::execute();
@@ -648,9 +643,6 @@ namespace warlock
         double bonus_da(const action_state_t* s) const override
         {
           double da = affliction_spell_t::bonus_da(s);
-
-          if( !p()->dbc.ptr )
-            da += p()->azerite.deathbloom.value();
           return da;
         }
 
@@ -820,7 +812,7 @@ namespace warlock
       void execute() override
       {
         // Do checks for Pandemic Invocation before parent execute() is called so we get the correct DoT states.
-        if ( p()->dbc.ptr && p()->azerite.pandemic_invocation.ok() && td( target )->dots_siphon_life->is_ticking() && td( target )->dots_siphon_life->remains() <= p()->azerite.pandemic_invocation.spell_ref().effectN( 2 ).time_value() )
+        if ( p()->azerite.pandemic_invocation.ok() && td( target )->dots_siphon_life->is_ticking() && td( target )->dots_siphon_life->remains() <= p()->azerite.pandemic_invocation.spell_ref().effectN( 2 ).time_value() )
           pandemic_invocation_usable = true;
 
         affliction_spell_t::execute();

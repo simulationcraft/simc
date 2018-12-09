@@ -1976,8 +1976,6 @@ void trigger_bloodseeker_update( hunter_t* p )
 
 void trigger_lethal_shots( hunter_t* p )
 {
-  if ( !maybe_ptr( p -> dbc.ptr ) )
-    return;
   if ( !p -> talents.lethal_shots -> ok() )
     return;
 
@@ -2636,7 +2634,7 @@ struct aimed_shot_t : public aimed_shot_base_t
 
     auto et = aimed_shot_base_t::execute_time();
 
-    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> buffs.trueshot -> check() )
+    if ( p() -> buffs.trueshot -> check() )
       et *= 1.0 + p() -> buffs.trueshot -> check_value();
 
     return et;
@@ -2647,7 +2645,7 @@ struct aimed_shot_t : public aimed_shot_base_t
     double m = aimed_shot_base_t::recharge_multiplier();
 
     // XXX [8.1]: Hardcode to what the bluepost said. Spell data has insane numbers.
-    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> buffs.trueshot -> check() )
+    if ( p() -> buffs.trueshot -> check() )
       m /= 1.0 + .6; // p() -> specs.trueshot -> effectN( 3 ).percent();
 
     return m;
@@ -2661,13 +2659,6 @@ struct aimed_shot_t : public aimed_shot_base_t
   double composite_target_da_multiplier( player_t* t ) const override
   {
     double m = aimed_shot_base_t::composite_target_da_multiplier( t );
-
-    if ( maybe_ptr( p() -> dbc.ptr ) )
-      return m;
-
-    auto td = find_td( t );
-    if ( !( td && td -> damaged ) )
-      m *= 1.0 + data().effectN( 2 ).percent();
 
     return m;
   }
@@ -2762,9 +2753,6 @@ struct steady_shot_t: public hunter_ranged_attack_t
   void execute() override
   {
     hunter_ranged_attack_t::execute();
-
-    if ( !maybe_ptr( p() -> dbc.ptr ) )
-      p() -> buffs.lethal_shots -> trigger();
   }
 
   timespan_t execute_time() const override
@@ -2851,8 +2839,7 @@ struct rapid_fire_t: public hunter_spell_t
       dual = true;
       direct_tick = true;
       radius = 8.0;
-      if ( maybe_ptr( p -> dbc.ptr ) )
-        base_aoe_multiplier = p -> specs.trick_shots -> effectN( 5 ).percent();
+      base_aoe_multiplier = p -> specs.trick_shots -> effectN( 5 ).percent();
 
       parse_effect_data( p -> find_spell( 263585 ) -> effectN( 1 ) );
 
@@ -3018,7 +3005,7 @@ struct rapid_fire_t: public hunter_spell_t
     double m = hunter_spell_t::recharge_multiplier();
 
     // XXX [8.1]: Hardcode to what the bluepost said. Spell data has insane numbers.
-    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> buffs.trueshot -> check() )
+    if ( p() -> buffs.trueshot -> check() )
       m /= 1.0 + .6; // p() -> specs.trueshot -> effectN( 1 ).percent();
 
     return m;
@@ -3062,25 +3049,13 @@ struct explosive_shot_t: public hunter_ranged_attack_t
     may_miss = false;
     hasted_ticks = false;
 
-    if ( maybe_ptr( p -> dbc.ptr ) )
-    {
-      tick_action = p -> get_background_action<explosive_shot_aoe_t>( "explosive_shot_aoe" );
-      tick_action -> stats = stats;
-    }
-    else
-    {
-      travel_speed = 20.0;
-      impact_action = p -> get_background_action<explosive_shot_aoe_t>( "explosive_shot_aoe" );
-      impact_action -> stats = stats;
-    }
+    tick_action = p -> get_background_action<explosive_shot_aoe_t>( "explosive_shot_aoe" );
+    tick_action -> stats = stats;
   }
 
   timespan_t travel_time() const override
   {
-    if ( maybe_ptr( p() -> dbc.ptr ) || in_combat )
-      return hunter_ranged_attack_t::travel_time();
-
-    return precombat_travel_time;
+    return hunter_ranged_attack_t::travel_time();
   }
 
   void execute() override
@@ -3088,15 +3063,6 @@ struct explosive_shot_t: public hunter_ranged_attack_t
     in_combat = player -> in_combat;
 
     hunter_ranged_attack_t::execute();
-
-    if ( !maybe_ptr( p() -> dbc.ptr ) && ! in_combat )
-    {
-      in_combat = player -> in_combat;
-      const timespan_t travel_time_ = travel_time() - precombat_travel_time;
-      // TODO: handle standing in melee range?
-      cooldown -> adjust( -travel_time_ );
-      player -> regen( travel_time_ );
-    }
   }
 
   void reset() override
@@ -4220,9 +4186,6 @@ struct trueshot_t: public hunter_spell_t
   {
     hunter_spell_t::execute();
 
-    if ( !maybe_ptr( p() -> dbc.ptr ) )
-      p() -> cooldowns.aimed_shot -> reset( true );
-
     p() -> buffs.trueshot -> trigger();
     p() -> buffs.unerring_vision_driver -> trigger();
   }
@@ -5077,19 +5040,11 @@ void hunter_t::create_buffs()
     make_buff( this, "trueshot", specs.trueshot )
       -> set_cooldown( timespan_t::zero() )
       -> set_activated( true );
-  if ( maybe_ptr( dbc.ptr ) )
-  {
-    buffs.trueshot -> set_default_value( specs.trueshot -> effectN( 4 ).percent() );
-    buffs.trueshot -> set_stack_change_callback( [this]( buff_t*, int, int ) {
-        cooldowns.aimed_shot -> adjust_recharge_multiplier();
-        cooldowns.rapid_fire -> adjust_recharge_multiplier();
-      } );
-  }
-  else
-  {
-    buffs.trueshot -> set_default_value( specs.trueshot -> effectN( 1 ).percent() );
-    buffs.trueshot -> add_invalidate( CACHE_HASTE );
-  }
+  buffs.trueshot -> set_default_value( specs.trueshot -> effectN( 4 ).percent() );
+  buffs.trueshot -> set_stack_change_callback( [this]( buff_t*, int, int ) {
+      cooldowns.aimed_shot -> adjust_recharge_multiplier();
+      cooldowns.rapid_fire -> adjust_recharge_multiplier();
+    } );
 
   buffs.lock_and_load =
     make_buff( this, "lock_and_load", talents.lock_and_load -> effectN( 1 ).trigger() )
@@ -5306,7 +5261,7 @@ void hunter_t::init_assessors()
 {
   player_t::init_assessors();
 
-  if ( ( specialization() == HUNTER_MARKSMANSHIP && !maybe_ptr( dbc.ptr ) ) || talents.terms_of_engagement -> ok() )
+  if ( talents.terms_of_engagement -> ok() )
   {
     assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, [this]( dmg_e, action_state_t* s ) {
       if ( s -> result_amount > 0 )
@@ -5773,9 +5728,6 @@ double hunter_t::composite_melee_haste() const
 {
   double h = player_t::composite_melee_haste();
 
-  if ( !maybe_ptr( dbc.ptr ) && buffs.trueshot -> check() )
-    h *= 1.0 / ( 1.0 + buffs.trueshot -> check_value() );
-
   if ( buffs.dire_beast -> check() )
     h *= 1.0 / ( 1.0 + buffs.dire_beast -> check_value() );
 
@@ -5802,9 +5754,6 @@ double hunter_t::composite_melee_speed() const
 double hunter_t::composite_spell_haste() const
 {
   double h = player_t::composite_spell_haste();
-
-  if ( !maybe_ptr( dbc.ptr ) && buffs.trueshot -> check() )
-    h *= 1.0 / ( 1.0 + buffs.trueshot -> check_value() );
 
   if ( buffs.dire_beast -> check() )
     h *= 1.0 / ( 1.0 + buffs.dire_beast -> check_value() );

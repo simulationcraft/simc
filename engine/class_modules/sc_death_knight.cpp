@@ -2071,12 +2071,13 @@ struct risen_skulker_pet_t : public death_knight_pet_t
       
       timespan_t interval = super::gcd();
 
-      if ( p() -> o() -> bugs && !p() -> o() -> dbc.ptr )
+      // Can this be removed? commented out on 8.1 switch by Mystler
+      /*if ( p() -> o() -> bugs && !p() -> o() -> dbc.ptr )
       {
         interval = execute_time() <= timespan_t::from_seconds( 1.2 ) ?
                             timespan_t::from_seconds( 1.2 ) :
                             timespan_t::from_seconds( 2.4 );
-      }
+      }*/
 
       return interval;
     }
@@ -3040,11 +3041,8 @@ struct melee_t : public death_knight_melee_attack_t
     trigger_gcd       = timespan_t::zero();
     special           = false;
     weapon_multiplier = 1.0;
-    
-    if ( p -> dbc.ptr )
-    {
-      bloody_runeblade_gen = p -> find_spell( 289348 ) -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
-    }
+
+    bloody_runeblade_gen = p -> find_spell( 289348 ) -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
 
     // Dual wielders have a -19% chance to hit on melee attacks
     if ( p -> dual_wield() )
@@ -3562,16 +3560,11 @@ struct bonestorm_damage_t : public death_knight_spell_t
     if ( result_is_hit( state -> result ) )
     {
       // Healing is limited at 5 occurnces per tick, regardless of enemies hit
-      if ( p() -> dbc.ptr )
-      { 
-        if ( heal_count < p() -> talent.bonestorm -> effectN( 4 ).base_value() )
-        {
-          heal -> execute();
-          heal_count++;
-        }
-      }
-      else 
+      if ( heal_count < p() -> talent.bonestorm -> effectN( 4 ).base_value() )
+      {
         heal -> execute();
+        heal_count++;
+      }
     }
   }
 };
@@ -4537,7 +4530,7 @@ struct death_strike_t : public death_knight_melee_attack_t
       c += p() -> spell.gravewarden -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER );
     }
 
-    if ( p() -> dbc.ptr && p() -> spec.death_strike_2 -> ok() )
+    if ( p() -> spec.death_strike_2 -> ok() )
     {
       c += p() -> spec.death_strike_2 -> effectN( 3 ).resource( RESOURCE_RUNIC_POWER );
     }
@@ -4722,10 +4715,7 @@ struct bursting_sores_t : public death_knight_spell_t
   {
     background = true;
     // Adding one target because the main target is ignored when dealing damage
-    if ( p -> dbc.ptr )
-      aoe = as<int> ( p -> talent.bursting_sores -> effectN( 2 ).base_value() + 1 );
-    else
-      aoe = -1;
+    aoe = as<int> ( p -> talent.bursting_sores -> effectN( 2 ).base_value() + 1 );
   }
 
   // Bursting sores have a slight delay ingame, but nothing really significant
@@ -4903,7 +4893,7 @@ struct frostscythe_t : public death_knight_melee_attack_t
 struct frostwyrms_fury_damage_t : public death_knight_spell_t
 {
   frostwyrms_fury_damage_t( death_knight_t* p ) :
-    death_knight_spell_t( p -> dbc.ptr ? "frostwyrms_fury" : "frost_breath" , p, p -> find_spell( 279303 ) )
+    death_knight_spell_t( "frostwyrms_fury", p, p -> find_spell( 279303 ) )
   {
     aoe = -1;
     background = true;
@@ -5732,8 +5722,7 @@ struct frostwhelps_indignation_t : public death_knight_spell_t
 {
   frostwhelps_indignation_t( death_knight_t* p ) :
     death_knight_spell_t( "frostwhelps_indignation", p ,
-                          p -> dbc.ptr ? p -> azerite.frostwhelps_indignation.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() : 
-                          spell_data_t::nil() )
+                          p -> azerite.frostwhelps_indignation.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
     // TODO: May not be the right spell ID because that one doesn't seem
     // to be affected by spec aura or mastery, blizzard oversight or different spell?
   {
@@ -5806,7 +5795,7 @@ struct pillar_of_frost_t : public death_knight_spell_t
   {
     parse_options( options_str );
 
-    if ( p -> dbc.ptr && p -> azerite.frostwhelps_indignation.enabled() )
+    if ( p -> azerite.frostwhelps_indignation.enabled() )
     {
       whelp = new frostwhelps_indignation_t( p );
     }
@@ -5823,7 +5812,7 @@ struct pillar_of_frost_t : public death_knight_spell_t
                                              p() -> buffs.t20_4pc_frost -> stack_value() );
     p() -> buffs.t20_4pc_frost -> expire();
 
-    if ( p() -> dbc.ptr && p() -> azerite.frostwhelps_indignation.enabled() )
+    if ( p() -> azerite.frostwhelps_indignation.enabled() )
     {
       whelp -> set_target( p() -> target );
       whelp -> execute();
@@ -7375,15 +7364,8 @@ void death_knight_t::init_base_stats()
   base.attack_power_per_agility = 0.0;
 
   resources.base[ RESOURCE_RUNIC_POWER ] = 100;
-  if ( dbc.ptr )
-  {
-    resources.base[ RESOURCE_RUNIC_POWER ] += spec.blood_death_knight -> effectN( 12 ).resource( RESOURCE_RUNIC_POWER );
-  }
-  else
-  {
-    resources.base[ RESOURCE_RUNIC_POWER ] += ( spec.veteran_of_the_third_war -> effectN( 8 ).resource( RESOURCE_RUNIC_POWER ) );
-  }
-  
+  resources.base[ RESOURCE_RUNIC_POWER ] += spec.blood_death_knight -> effectN( 12 ).resource( RESOURCE_RUNIC_POWER );
+
   if ( talent.ossuary -> ok() )
     resources.base [ RESOURCE_RUNIC_POWER ] += ( talent.ossuary -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER ) );
 
@@ -8410,12 +8392,6 @@ void death_knight_t::target_mitigation( school_e school, dmg_e type, action_stat
 double death_knight_t::composite_base_armor_multiplier() const
 {
   double bam = player_t::composite_base_armor_multiplier();
-
-  if ( !dbc.ptr )
-  {
-    bam *= 1.0 + spec.veteran_of_the_third_war -> effectN( 2 ).percent();
-  }
-
   return bam;
 }
 
@@ -8468,14 +8444,7 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
 
   else if ( attr == ATTR_STAMINA )
   {
-    if ( dbc.ptr )
-    {
-      m *= 1.0 + spec.veteran_of_the_third_war -> effectN( 1 ).percent() + spec.blood_death_knight -> effectN( 13 ).percent();
-    }
-    else
-    {
-      m *= 1.0 + spec.veteran_of_the_third_war -> effectN( 4 ).percent();
-    }
+    m *= 1.0 + spec.veteran_of_the_third_war -> effectN( 1 ).percent() + spec.blood_death_knight -> effectN( 13 ).percent();
 
     if ( runeforge.rune_of_the_stoneskin_gargoyle -> check() )
     {
@@ -8523,14 +8492,7 @@ double death_knight_t::composite_melee_expertise( const weapon_t* ) const
 {
   double expertise = player_t::composite_melee_expertise( nullptr );
 
-  if ( dbc.ptr )
-  {
-    expertise += spec.blood_death_knight -> effectN( 10 ).percent();
-  }
-  else
-  {
-    expertise += spec.veteran_of_the_third_war -> effectN( 5 ).percent();
-  }
+  expertise += spec.blood_death_knight -> effectN( 10 ).percent();
 
   return expertise;
 }
@@ -8621,14 +8583,7 @@ double death_knight_t::composite_crit_avoidance() const
 {
   double c = player_t::composite_crit_avoidance();
 
-  if ( dbc.ptr )
-  {
-    c += spec.blood_death_knight -> effectN( 8 ).percent();
-  }
-  else 
-  {
-    c += spec.veteran_of_the_third_war -> effectN( 1 ).percent();
-  }
+  c += spec.blood_death_knight -> effectN( 8 ).percent();
 
   return c;
 }

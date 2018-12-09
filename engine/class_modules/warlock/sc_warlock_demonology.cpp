@@ -279,13 +279,6 @@ namespace warlock {
       {
         double da = demonology_spell_t::bonus_da( s );
 
-        if ( !p()->dbc.ptr && s->action->execute_time() > timespan_t::from_millis( 0 ) && p()->buffs.forbidden_knowledge->check() )
-        {
-          da += p()->buffs.forbidden_knowledge->check_stack_value();
-          if ( sim->log )
-            sim->out_log.printf( "forbidden knowledge added %f", p()->azerite.forbidden_knowledge.value() );
-        }
-
         da += p()->buffs.shadows_bite->check_value();
 
         return da;
@@ -295,14 +288,8 @@ namespace warlock {
       {
         demonology_spell_t::execute();
 
-        if ( !p()->dbc.ptr && this->execute_time() > timespan_t::from_millis(0))
-          p()->buffs.forbidden_knowledge->decrement();
-
-        else
-        {
-          p()->buffs.demonic_core->up(); // benefit tracking
-          p()->buffs.demonic_core->decrement();
-        }
+        p()->buffs.demonic_core->up(); // benefit tracking
+        p()->buffs.demonic_core->decrement();
 
         if ( p()->talents.demonic_calling->ok() )
           p()->buffs.demonic_calling->trigger();
@@ -482,7 +469,7 @@ namespace warlock {
 
         p()->buffs.demonic_power->trigger();
 
-        if ( p()->dbc.ptr && p()->azerite.baleful_invocation.ok() )
+        if ( p()->azerite.baleful_invocation.ok() )
           p()->resource_gain( RESOURCE_SOUL_SHARD, p()->find_spell( 287060 )->effectN( 1 ).base_value() / 10.0, p()->gains.baleful_invocation );
 
         if (p()->talents.demonic_consumption->ok())
@@ -499,7 +486,7 @@ namespace warlock {
               if (!dt->is_sleeping())
               {
                 //Demonic Consumption's effect has been doubled on ptr.
-                dt->buffs.demonic_consumption->trigger(available / ( p()->dbc.ptr ? 10 : 20 ) * 5); // TODO: check if hardcoded value can be replaced.
+                dt->buffs.demonic_consumption->trigger(available / 10 * 5); // TODO: check if hardcoded value can be replaced.
               }
             }
           }
@@ -515,7 +502,7 @@ namespace warlock {
             continue;
 
           //TOCHECK Random pets are currently bugged and do not benefit from Demonic Tyrant. Live as of 10-02-2018
-          if ( lock_pet->pet_type == PET_DEMONIC_TYRANT || ( !p()->dbc.ptr && p()->bugs && lock_pet->pet_type == PET_WARLOCK_RANDOM ) )
+          if ( lock_pet->pet_type == PET_DEMONIC_TYRANT )
             continue;
 
           if (lock_pet->expiration)
@@ -1165,8 +1152,6 @@ namespace warlock {
     imp->add_action( "doom,cycle_targets=1,max_cycle_targets=7,if=refreshable" );
     imp->add_action( "call_action_list,name=build_a_shard" );
 
-    if ( !dbc.ptr )
-      bas->add_action( "demonbolt,if=azerite.forbidden_knowledge.enabled&buff.forbidden_knowledge.react&!buff.demonic_core.react&cooldown.summon_demonic_tyrant.remains>20" );
     bas->add_action("soul_strike");
     bas->add_action("shadow_bolt");
   }

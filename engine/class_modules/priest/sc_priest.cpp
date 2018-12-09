@@ -747,11 +747,6 @@ expr_t* priest_t::create_expression( const std::string& name_str )
 
 void priest_t::assess_damage( school_e school, dmg_e dtype, action_state_t* s )
 {
-  if ( buffs.shadowform->check() && !maybe_ptr( dbc.ptr ) )
-  {
-    s->result_amount *= 1.0 + buffs.shadowform->check() * buffs.shadowform->data().effectN( 2 ).percent();
-  }
-
   player_t::assess_damage( school, dtype, s );
 }
 

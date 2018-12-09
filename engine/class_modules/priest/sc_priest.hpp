@@ -985,13 +985,7 @@ public:
    */
   void init_affected_by()
   {
-    size_t effectNumber;
-    if ( maybe_ptr( priest().dbc.ptr ) )
-    {
-      effectNumber = 4;
-    } else {
-      effectNumber = 5;
-    }
+    size_t effectNumber = 4;
     struct affect_init_t{
       const spelleffect_data_t& effect;
       bool& affects;
@@ -1099,10 +1093,7 @@ public:
         double vf_multiplier = priest().buffs.voidform->data().effectN( 1 ).percent();
         // TODO: add this directly into vf_multiplier after PTR
         // Grab the Legacy of the Void Damage increase
-        if ( maybe_ptr( priest().dbc.ptr ) )
-        {
-          lotv_multiplier = priest().talents.legacy_of_the_void->effectN( 7 ).percent();
-        }
+        lotv_multiplier = priest().talents.legacy_of_the_void->effectN( 7 ).percent();
         m *= 1.0 + vf_multiplier + lotv_multiplier;
       }
       if ( affected_by.shadowform_da && priest().buffs.shadowform->check()  )
@@ -1131,19 +1122,12 @@ public:
       double vf_multiplier = priest().buffs.voidform->data().effectN(2).percent();
       // TODO: add this directly into vf_multiplier after PTR
       // Grab the Legacy of the Void Damage increase
-      if ( maybe_ptr( priest().dbc.ptr ) )
-      {
-        lotv_multiplier = priest().talents.legacy_of_the_void->effectN( 7 ).percent();
-      }
+      lotv_multiplier = priest().talents.legacy_of_the_void->effectN( 7 ).percent();
       m *= 1.0 + vf_multiplier + lotv_multiplier;
     }
-    if ( affected_by.shadowform_ta && priest().buffs.shadowform->check() && maybe_ptr( priest().dbc.ptr ) )
+    if ( affected_by.shadowform_ta && priest().buffs.shadowform->check() )
     {
       m *= 1.0 + priest().buffs.shadowform->data().effectN(4).percent();
-    }
-    if ( affected_by.shadowform_ta && priest().buffs.shadowform->check() && !maybe_ptr( priest().dbc.ptr ) )
-    {
-      m *= 1.0 + priest().buffs.shadowform->data().effectN(5).percent();
     }
     if ( affected_by.twist_of_fate_ta && priest().buffs.twist_of_fate->check() )
     {

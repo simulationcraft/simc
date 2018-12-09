@@ -376,7 +376,7 @@ double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t
       expansion::bfa::trigger_leyshocks_grand_compilation( STAT_VERSATILITY_RATING, this );
     }
 
-    if ( dbc.ptr && specialization() == WARLOCK_DESTRUCTION && azerite.chaos_shards.ok() )
+    if ( specialization() == WARLOCK_DESTRUCTION && azerite.chaos_shards.ok() )
     {
       if ( // check if we fill a shard.
         ( resources.current[RESOURCE_SOUL_SHARD] < 1.0 && resources.current[RESOURCE_SOUL_SHARD] + amount >= 1.0 ) ||

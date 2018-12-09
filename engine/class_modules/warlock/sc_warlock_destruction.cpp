@@ -453,8 +453,7 @@ namespace warlock {
       {
         double da = destruction_spell_t::bonus_da( s );
 
-        if ( p()->dbc.ptr )
-          da += p()->azerite.chaos_shards.value( 2 );
+        da += p()->azerite.chaos_shards.value( 2 );
 
         return da;
       }
@@ -540,8 +539,7 @@ namespace warlock {
       {
         double da = destruction_spell_t::bonus_da( s );
 
-        if ( p()->dbc.ptr )
-          da += p()->azerite.chaos_shards.value( 2 );
+        da += p()->azerite.chaos_shards.value( 2 );
 
         return da;
       }
@@ -939,8 +937,6 @@ namespace warlock {
         virtual void execute() override
         {
           destruction_spell_t::execute();
-          if ( !p()->dbc.ptr && this->num_targets_hit >= 3 && p()->azerite.accelerant.ok() )
-            p()->buffs.accelerant->trigger();
         }
       };
 

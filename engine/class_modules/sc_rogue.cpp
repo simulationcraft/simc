@@ -2119,7 +2119,7 @@ struct backstab_t : public rogue_attack_t
     if ( p() -> position() == POSITION_BACK )
     {
       p() -> buffs.perforate -> trigger();
-      if ( maybe_ptr( p() -> dbc.ptr ) && p() -> azerite.perforate.ok() )
+      if ( p() -> azerite.perforate.ok() )
       {
         timespan_t v = - p() -> azerite.perforate.spell_ref().effectN( 2 ).time_value();
         p() -> cooldowns.shadow_blades -> adjust( v, false );
@@ -2402,17 +2402,6 @@ struct eviscerate_t : public rogue_attack_t
     return b;
   }
 
-  double composite_crit_chance() const override
-  {
-    double c = rogue_attack_t::composite_crit_chance();
-    if ( ! maybe_ptr( p() -> dbc.ptr ) && p()->buffs.the_first_dance->up() )
-    {
-      const double rating = p()->buffs.the_first_dance->check_value() * p()->composite_rating_multiplier( RATING_MELEE_CRIT );
-      c += rating / p()->current.rating.attack_crit;
-    }
-    return c;
-  }
-
   double action_multiplier() const override
   {
     double m = rogue_attack_t::action_multiplier();
@@ -2432,8 +2421,6 @@ struct eviscerate_t : public rogue_attack_t
     }
 
     p() -> buffs.nights_vengeance -> expire();
-    if ( ! maybe_ptr( p() -> dbc.ptr ) )
-      p() -> buffs.the_first_dance -> decrement();
   }
 };
 
@@ -3455,16 +3442,9 @@ struct shadow_dance_t : public rogue_attack_t
 
     if ( p()->azerite.the_first_dance.ok() )
     {
-      if ( maybe_ptr ( p()->dbc.ptr ) )
-      {
-        p()->buffs.the_first_dance->trigger();
-        p() -> trigger_combo_point_gain( p()->buffs.the_first_dance->data().effectN( 3 ).resource( RESOURCE_COMBO_POINT ),
-          p() -> gains.the_first_dance, this );
-      }
-      else
-      {
-        p()->buffs.the_first_dance->trigger( p()->buffs.the_first_dance->max_stack() );
-      }
+      p()->buffs.the_first_dance->trigger();
+      p() -> trigger_combo_point_gain( p()->buffs.the_first_dance->data().effectN( 3 ).resource( RESOURCE_COMBO_POINT ),
+        p() -> gains.the_first_dance, this );
     }
 
     icd -> start();
@@ -3517,7 +3497,7 @@ struct shadowstrike_t : public rogue_attack_t
   {
     double c = rogue_attack_t::cost();
 
-    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> azerite.blade_in_the_shadows.ok() )
+    if ( p() -> azerite.blade_in_the_shadows.ok() )
       c += p() -> azerite.blade_in_the_shadows.spell_ref().effectN( 1 ).trigger() -> effectN( 2 ).base_value();
 
     return c;
@@ -3528,8 +3508,6 @@ struct shadowstrike_t : public rogue_attack_t
     rogue_attack_t::execute();
 
     p() -> buffs.blade_in_the_shadows -> trigger();
-    if ( ! maybe_ptr( p() -> dbc.ptr ) )
-      p() -> buffs.the_first_dance -> decrement();
   }
 
   void impact( action_state_t* state ) override
@@ -3552,17 +3530,6 @@ struct shadowstrike_t : public rogue_attack_t
       b += p() -> azerite.inevitability.value( 3 );
 
     return b;
-  }
-
-  double composite_crit_chance() const override
-  {
-    double c = rogue_attack_t::composite_crit_chance();
-    if ( ! maybe_ptr( p() -> dbc.ptr ) && p()->buffs.the_first_dance->up() )
-    {
-      const double rating = p()->buffs.the_first_dance->check_value() * p()->composite_rating_multiplier( RATING_MELEE_CRIT );
-      c += rating / p()->current.rating.attack_crit;
-    }
-    return c;
   }
 
   double action_multiplier() const override
@@ -3617,17 +3584,6 @@ struct shuriken_storm_t: public rogue_attack_t
     affected_by.shadow_blades = true;
   }
 
-  double composite_crit_chance() const override
-  {
-    double c = rogue_attack_t::composite_crit_chance();
-    if ( ! maybe_ptr( p() -> dbc.ptr ) && p()->buffs.the_first_dance->up() )
-    {
-      const double rating = p()->buffs.the_first_dance->check_value() * p()->composite_rating_multiplier( RATING_MELEE_CRIT );
-      c += rating / p()->current.rating.attack_crit;
-    }
-    return c;
-  }
-
   double action_multiplier() const override
   {
     double m = rogue_attack_t::action_multiplier();
@@ -3649,9 +3605,6 @@ struct shuriken_storm_t: public rogue_attack_t
     {
       p() -> buffs.shuriken_combo -> trigger((int)(execute_state -> n_targets) - 1);
     }
-
-    if ( ! maybe_ptr( p() -> dbc.ptr ) )
-      p() -> buffs.the_first_dance -> decrement();
   }
 };
 
@@ -4685,8 +4638,7 @@ struct shadow_dance_t : public stealth_like_buff_t
   {
     stealth_like_buff_t::expire_override( expiration_stacks, remaining_duration );
 
-    if ( maybe_ptr( rogue -> dbc.ptr ) )
-      rogue -> buffs.the_first_dance -> expire();
+    rogue -> buffs.the_first_dance -> expire();
   }
 };
 
@@ -5774,10 +5726,7 @@ void rogue_t::init_action_list()
     action_priority_list_t* direct = get_action_priority_list( "direct", "Direct damage abilities" );
     direct -> add_action( this, "Envenom", "if=combo_points>=4+talent.deeper_stratagem.enabled&(debuff.vendetta.up|debuff.toxic_blade.up|energy.deficit<=25+variable.energy_regen_combined|!variable.single_target)&(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)", "Envenom at 4+ (5+ with DS) CP. Immediately on 2+ targets, with Vendetta, or with TB; otherwise wait for some energy. Also wait if Exsg combo is coming up." );
     direct -> add_action( "variable,name=use_filler,value=combo_points.deficit>1|energy.deficit<=25+variable.energy_regen_combined|!variable.single_target" );
-    if ( !maybe_ptr( dbc.ptr ) )
-      direct -> add_action( this, "Poisoned Knife", "if=variable.use_filler&buff.sharpened_blades.stack>=29", "Poisoned Knife at 29+ stacks of Sharpened Blades." );
-    if ( maybe_ptr( dbc.ptr ) )
-      direct -> add_action( this, "Fan of Knives", "if=variable.use_filler&azerite.echoing_blades.enabled&spell_targets.fan_of_knives>=2", "With Echoing Blades, Fan of Knives at 2+ targets." );
+    direct -> add_action( this, "Fan of Knives", "if=variable.use_filler&azerite.echoing_blades.enabled&spell_targets.fan_of_knives>=2", "With Echoing Blades, Fan of Knives at 2+ targets." );
     direct -> add_action( this, "Fan of Knives", "if=variable.use_filler&(buff.hidden_blades.stack>=19|spell_targets.fan_of_knives>=4+(azerite.double_dose.rank>2)+stealthed.rogue)", "Fan of Knives at 19+ stacks of Hidden Blades or against 4+ (5+ with Double Dose) targets." );
     direct -> add_action( this, "Fan of Knives", "target_if=!dot.deadly_poison_dot.ticking,if=variable.use_filler&spell_targets.fan_of_knives>=3", "Fan of Knives to apply Deadly Poison if inactive on any target at 3 targets." );
     direct -> add_talent( this, "Blindside", "if=variable.use_filler&(buff.blindside.up|!talent.venom_rush.enabled&!azerite.double_dose.enabled)" );
@@ -5794,10 +5743,7 @@ void rogue_t::init_action_list()
     // Main Rotation
     def -> add_action( "variable,name=rtb_reroll,value=rtb_buffs<2&(buff.loaded_dice.up|!buff.grand_melee.up&!buff.ruthless_precision.up)", "Reroll for 2+ buffs with Loaded Dice up. Otherwise reroll for 2+ or Grand Melee or Ruthless Precision." );
     def -> add_action( "variable,name=rtb_reroll,op=set,if=azerite.deadshot.enabled|azerite.ace_up_your_sleeve.enabled,value=rtb_buffs<2&(buff.loaded_dice.up|buff.ruthless_precision.remains<=cooldown.between_the_eyes.remains)", "Reroll for 2+ buffs or Ruthless Precision with Deadshot or Ace up your Sleeve." );
-    if ( !maybe_ptr( dbc.ptr ) )
-      def -> add_action( "variable,name=rtb_reroll,op=set,if=azerite.snake_eyes.enabled,value=rtb_buffs<2|(azerite.snake_eyes.rank=3&rtb_buffs<5)", "Always reroll for 2+ buffs with Snake Eyes unless at 3 Ranks, then reroll everything." );
-    else
-      def -> add_action( "variable,name=rtb_reroll,op=set,if=azerite.snake_eyes.enabled,value=rtb_buffs<2", "Always reroll for 2+ buffs with Snake Eyes." );
+    def -> add_action( "variable,name=rtb_reroll,op=set,if=azerite.snake_eyes.enabled,value=rtb_buffs<2", "Always reroll for 2+ buffs with Snake Eyes." );
     def -> add_action( "variable,name=rtb_reroll,op=reset,if=azerite.snake_eyes.enabled&buff.snake_eyes.stack>=2-buff.broadside.up", "Do not reroll with 2+ stacks of the Snake Eyes buff (1+ stack with Broadside up)." );
     def -> add_action( "variable,name=ambush_condition,value=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&cooldown.ghostly_strike.remains<1)+buff.broadside.up&energy>60&!buff.skull_and_crossbones.up" );
     def -> add_action( "variable,name=blade_flurry_sync,value=spell_targets.blade_flurry<2&raid_event.adds.in>20|buff.blade_flurry.up", "With multiple targets, this variable is checked to decide whether some CDs should be synced with Blade Flurry" );
@@ -5869,12 +5815,7 @@ void rogue_t::init_action_list()
     def -> add_action( "call_action_list,name=stealth_cds,if=variable.use_priority_rotation", "Priority Rotation? Let's give a crap about energy for the stealth CDs (builder still respect it). Yup, it can be that simple." );
     def -> add_action( "variable,name=stealth_threshold,value=25+talent.vigor.enabled*35+talent.master_of_shadows.enabled*25+talent.shadow_focus.enabled*20+talent.alacrity.enabled*10+15*(spell_targets.shuriken_storm>=3)", "Used to define when to use stealth CDs or builders" );
     def -> add_action( "call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold&combo_points.deficit>=4", "Consider using a Stealth CD when reaching the energy threshold and having space for at least 4 CP" );
-    if ( !maybe_ptr( dbc.ptr ) )
-      def -> add_action( "call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold&talent.dark_shadow.enabled&talent.secret_technique.enabled&cooldown.secret_technique.up", "With Dark Shadow, also use a Stealth CD when reaching the energy threshold and Secret Technique is ready." );
-    else
-      def -> add_action( "call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold&talent.dark_shadow.enabled&talent.secret_technique.enabled&cooldown.secret_technique.up&spell_targets.shuriken_storm<=4", "With Dark Shadow, also use a Stealth CD when reaching the energy threshold and Secret Technique is ready. Only a gain up to 4 targets." );
-    if ( !maybe_ptr( dbc.ptr ) )
-      def -> add_action( "call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold&talent.dark_shadow.enabled&spell_targets.shuriken_storm>=2&(!talent.shuriken_tornado.enabled|!cooldown.shuriken_tornado.up)", "With Dark Shadow against multiple targets, we only care about energy. Exception: Tornado is ready." );
+    def -> add_action( "call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold&talent.dark_shadow.enabled&talent.secret_technique.enabled&cooldown.secret_technique.up&spell_targets.shuriken_storm<=4", "With Dark Shadow, also use a Stealth CD when reaching the energy threshold and Secret Technique is ready. Only a gain up to 4 targets." );
     def -> add_action( "call_action_list,name=finish,if=combo_points.deficit<=1|target.time_to_die<=1&combo_points>=3", "Finish at 4+ without DS, 5+ with DS (outside stealth)" );
     def -> add_action( "call_action_list,name=finish,if=spell_targets.shuriken_storm=4&combo_points>=4", "With DS also finish at 4+ against exactly 4 targets (outside stealth)" );
     def -> add_action( "call_action_list,name=build,if=energy.deficit<=variable.stealth_threshold", "Use a builder when reaching the energy threshold" );
@@ -5919,18 +5860,13 @@ void rogue_t::init_action_list()
     stealth_cds -> add_action( this, "Vanish", "if=!variable.shd_threshold&debuff.find_weakness.remains<1&combo_points.deficit>1", "Vanish unless we are about to cap on Dance charges. Only when Find Weakness is about to run out." );
     stealth_cds -> add_action( "pool_resource,for_next=1,extra_amount=40", "Pool for Shadowmeld + Shadowstrike unless we are about to cap on Dance charges. Only when Find Weakness is about to run out." );
     stealth_cds -> add_action( "shadowmeld,if=energy>=40&energy.deficit>=10&!variable.shd_threshold&debuff.find_weakness.remains<1&combo_points.deficit>1" );
-    if ( !maybe_ptr( dbc.ptr ) )
-      stealth_cds -> add_action( this, "Shadow Dance", "if=(!talent.dark_shadow.enabled|dot.nightblade.remains>=5+talent.subterfuge.enabled)&(!talent.nightstalker.enabled&!talent.dark_shadow.enabled|!variable.use_priority_rotation|combo_points.deficit<=1)&(variable.shd_threshold|buff.symbols_of_death.remains>=1.2|spell_targets.shuriken_storm>=4&cooldown.symbols_of_death.remains>10)", "With Dark Shadow only Dance when Nightblade will stay up. Use during Symbols or above threshold. Only before finishers if we have amp talents and priority rotation." );
-    else
-      stealth_cds -> add_action( this, "Shadow Dance", "if=(!talent.dark_shadow.enabled|dot.nightblade.remains>=5+talent.subterfuge.enabled)&(!talent.nightstalker.enabled&!talent.dark_shadow.enabled|!variable.use_priority_rotation|combo_points.deficit<=1+2*azerite.the_first_dance.enabled)&(variable.shd_threshold|buff.symbols_of_death.remains>=1.2|spell_targets.shuriken_storm>=4&cooldown.symbols_of_death.remains>10)", "With Dark Shadow only Dance when Nightblade will stay up. Use during Symbols or above threshold. Only before finishers if we have amp talents and priority rotation." );
+    stealth_cds -> add_action( this, "Shadow Dance", "if=(!talent.dark_shadow.enabled|dot.nightblade.remains>=5+talent.subterfuge.enabled)&(!talent.nightstalker.enabled&!talent.dark_shadow.enabled|!variable.use_priority_rotation|combo_points.deficit<=1+2*azerite.the_first_dance.enabled)&(variable.shd_threshold|buff.symbols_of_death.remains>=1.2|spell_targets.shuriken_storm>=4&cooldown.symbols_of_death.remains>10)", "With Dark Shadow only Dance when Nightblade will stay up. Use during Symbols or above threshold. Only before finishers if we have amp talents and priority rotation." );
     stealth_cds -> add_action( this, "Shadow Dance", "if=target.time_to_die<cooldown.symbols_of_death.remains&!raid_event.adds.up" );
 
     // Stealthed Rotation
     action_priority_list_t* stealthed = get_action_priority_list( "stealthed", "Stealthed Rotation" );
     stealthed -> add_action( this, "Shadowstrike", "if=buff.stealth.up", "If stealth is up, we really want to use Shadowstrike to benefits from the passive bonus, even if we are at max cp (from the precombat MfD)." );
     stealthed -> add_action( "call_action_list,name=finish,if=combo_points.deficit<=1-(talent.deeper_stratagem.enabled&buff.vanish.up)", "Finish at 4+ CP without DS, 5+ with DS, and 6 with DS after Vanish" );
-    if ( !maybe_ptr( dbc.ptr ) )
-      stealthed -> add_action( this, "Shuriken Toss", "if=buff.sharpened_blades.stack>=29&(!talent.find_weakness.enabled|debuff.find_weakness.up)", "Shuriken Toss at 29+ Sharpened Blades stacks in Stealth for damage bonuses. Hold for Find Weakness if possible." );
     stealthed -> add_action( this, "Shadowstrike", "cycle_targets=1,if=talent.secret_technique.enabled&talent.find_weakness.enabled&debuff.find_weakness.remains<1&spell_targets.shuriken_storm=2&target.time_to_die-remains>6", "At 2 targets with Secret Technique keep up Find Weakness by cycling Shadowstrike.");
     stealthed -> add_action( this, "Shadowstrike", "if=!talent.deeper_stratagem.enabled&azerite.blade_in_the_shadows.rank=3&spell_targets.shuriken_storm=3", "Without Deeper Stratagem and 3 Ranks of Blade in the Shadows it is worth using Shadowstrike on 3 targets." );
     stealthed -> add_action( this, "Shuriken Storm", "if=spell_targets>=3" );
@@ -5939,14 +5875,8 @@ void rogue_t::init_action_list()
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
     finish -> add_action( this, "Eviscerate", "if=talent.shadow_focus.enabled&buff.nights_vengeance.up&spell_targets.shuriken_storm>=2+3*talent.secret_technique.enabled", "Eviscerate highest priority at 2+ targets with Shadow Focus (5+ with Secret Technique in addition) and Night's Vengeance up." );
-    if ( !maybe_ptr( dbc.ptr ) )
-      finish -> add_action( this, "Nightblade", "if=(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>6&remains<tick_time*2&(spell_targets.shuriken_storm<4|!buff.symbols_of_death.up)", "Keep up Nightblade if it is about to run out. Do not use NB during Dance, if talented into Dark Shadow." );
-    else
-      finish -> add_action( this, "Nightblade", "if=(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>6&remains<tick_time*2", "Keep up Nightblade if it is about to run out. Do not use NB during Dance, if talented into Dark Shadow." );
-    if ( !maybe_ptr( dbc.ptr ) )
-      finish -> add_action( this, "Nightblade", "cycle_targets=1,if=!variable.use_priority_rotation&spell_targets.shuriken_storm>=2&(talent.secret_technique.enabled|azerite.nights_vengeance.enabled|spell_targets.shuriken_storm<=5)&!buff.shadow_dance.up&target.time_to_die>=(5+(2*combo_points))&refreshable", "Multidotting outside Dance on targets that will live for the duration of Nightblade with refresh during pandemic if you have less than 6 targets or play with Secret Technique." );
-    else
-      finish -> add_action( this, "Nightblade", "cycle_targets=1,if=!variable.use_priority_rotation&spell_targets.shuriken_storm>=2&(azerite.nights_vengeance.enabled|!azerite.replicating_shadows.enabled|spell_targets.shuriken_storm-active_dot.nightblade>=2)&!buff.shadow_dance.up&target.time_to_die>=(5+(2*combo_points))&refreshable", "Multidotting outside Dance on targets that will live for the duration of Nightblade, refresh during pandemic. Multidot as long as 2+ targets do not have Nightblade up with Replicating Shadows (unless you have Night's Vengeance too)." );
+    finish -> add_action( this, "Nightblade", "if=(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>6&remains<tick_time*2", "Keep up Nightblade if it is about to run out. Do not use NB during Dance, if talented into Dark Shadow." );
+    finish -> add_action( this, "Nightblade", "cycle_targets=1,if=!variable.use_priority_rotation&spell_targets.shuriken_storm>=2&(azerite.nights_vengeance.enabled|!azerite.replicating_shadows.enabled|spell_targets.shuriken_storm-active_dot.nightblade>=2)&!buff.shadow_dance.up&target.time_to_die>=(5+(2*combo_points))&refreshable", "Multidotting outside Dance on targets that will live for the duration of Nightblade, refresh during pandemic. Multidot as long as 2+ targets do not have Nightblade up with Replicating Shadows (unless you have Night's Vengeance too)." );
     finish -> add_action( this, "Nightblade", "if=remains<cooldown.symbols_of_death.remains+10&cooldown.symbols_of_death.remains<=5&target.time_to_die-remains>cooldown.symbols_of_death.remains+5", "Refresh Nightblade early if it will expire during Symbols. Do that refresh if SoD gets ready in the next 5s." );
     finish -> add_talent( this, "Secret Technique", "if=buff.symbols_of_death.up&(!talent.dark_shadow.enabled|buff.shadow_dance.up)", "Secret Technique during Symbols. With Dark Shadow only during Shadow Dance (until threshold in next line)." );
     finish -> add_talent( this, "Secret Technique", "if=spell_targets.shuriken_storm>=2+talent.dark_shadow.enabled+talent.nightstalker.enabled", "With enough targets always use SecTec on CD." );
@@ -5954,8 +5884,6 @@ void rogue_t::init_action_list()
 
     // Builders
     action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
-    if ( !maybe_ptr( dbc.ptr ) )
-      build -> add_action( this, "Shuriken Toss", "if=!talent.nightstalker.enabled&(!talent.dark_shadow.enabled|cooldown.symbols_of_death.remains>10)&buff.sharpened_blades.stack>=29&spell_targets.shuriken_storm<=(3*azerite.sharpened_blades.rank)", "Shuriken Toss at 29+ Sharpened Blades stacks. Up to 3 targets per rank. Save for stealth if using Nightstalker or Dark Shadow when possible." );
     build -> add_action( this, "Shuriken Storm", "if=spell_targets>=2" );
     build -> add_talent( this, "Gloomblade" );
     build -> add_action( this, "Backstab" );
@@ -6798,16 +6726,8 @@ void rogue_t::create_buffs()
   buffs.storm_of_steel                     = make_buff( this, "storm_of_steel", find_spell( 273455 ) )
                                              -> set_trigger_spell( azerite.storm_of_steel.spell_ref().effectN( 1 ).trigger() )
                                              -> set_default_value( azerite.storm_of_steel.value() );
-  if ( maybe_ptr ( dbc.ptr ) )
-  {
-    buffs.the_first_dance                    = make_buff<stat_buff_t>( this, "the_first_dance", find_spell( 278981 ) )
+  buffs.the_first_dance                    = make_buff<stat_buff_t>( this, "the_first_dance", find_spell( 278981 ) )
                                              -> add_stat( STAT_HASTE_RATING, azerite.the_first_dance.value() );
-  }
-  else
-  {
-    buffs.the_first_dance                    = make_buff( this, "the_first_dance", find_spell( 278981 ) )
-                                             -> set_default_value( azerite.the_first_dance.value() );
-  }
 }
 
 // rogue_t::create_options ==================================================
