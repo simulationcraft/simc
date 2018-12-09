@@ -322,7 +322,6 @@ public:
     azerite_power_t dawning_sun;
     azerite_power_t lunar_shrapnel;
     azerite_power_t power_of_the_moon;
-    azerite_power_t sunblaze; // maybe_ptr ** removed in 8.1
     azerite_power_t high_noon;
     azerite_power_t streaking_stars;
     azerite_power_t arcanic_pulsar;
@@ -425,7 +424,6 @@ public:
 
     // Azerite
     buff_t* dawning_sun;
-    buff_t* sunblaze; // maybe_ptr ** removed in 8.1
     buff_t* lively_spirit;
     buff_t* shredding_fury;
     buff_t* iron_jaws;
@@ -7568,8 +7566,6 @@ void druid_t::create_buffs()
     ->add_stat(STAT_INTELLECT, azerite.lively_spirit.value());
 
   buff.arcanic_pulsar = make_buff(this, "arcanic_pulsar", azerite.arcanic_pulsar.spell()->effectN(1).trigger()->effectN(1).trigger());
-  
-  buff.sunblaze = buff_creator_t(this, "sunblaze", find_spell(274399));
 
   // Talent buffs
   buff.tiger_dash = new tiger_dash_buff_t(*this);
