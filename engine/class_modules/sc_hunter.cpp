@@ -296,7 +296,6 @@ public:
     azerite_power_t dance_of_death;
     azerite_power_t feeding_frenzy;
     azerite_power_t haze_of_rage;
-    azerite_power_t pack_alpha;
     azerite_power_t primal_instincts;
     azerite_power_t serrated_jaws;
     // Marksmanship
@@ -1697,12 +1696,10 @@ struct basic_attack_t : public hunter_main_pet_attack_t
     benefit_t* benefit = nullptr;
   } wild_hunt;
   const double venomous_fangs_bonus_da;
-  const double pack_alpha_bonus_da;
 
   basic_attack_t( hunter_main_pet_t* p, const std::string& n, const std::string& options_str ):
     hunter_main_pet_attack_t( n, p, p -> find_pet_spell( n ) ),
     venomous_fangs_bonus_da( p -> o() -> azerite.venomous_fangs.value( 1 ) ),
-    pack_alpha_bonus_da( p -> o() -> azerite.pack_alpha.value( 1 ) )
   {
     parse_options( options_str );
 
@@ -1765,20 +1762,6 @@ struct basic_attack_t : public hunter_main_pet_attack_t
 
     if ( o() -> get_target_data( s -> target ) -> dots.serpent_sting -> is_ticking() )
       b += venomous_fangs_bonus_da;
-
-    if ( o() -> azerite.pack_alpha.ok() )
-    {
-      const pet_t* pets[] = { o() -> pets.animal_companion, o() -> pets.dire_beast, o() -> pets.spitting_cobra };
-      // TODO: it also counts Stampede as a single pet
-      auto pet_count = range::count_if( pets, []( const pet_t* p ) { return p && !p -> is_sleeping(); } );
-      double bonus = pack_alpha_bonus_da * pet_count;
-      // 04-08-2018: it looks like Pack Alpha bonus damage is not affected by the
-      // blanket pet damage aura of Animal Companion; not sure how they do this in-game
-      // but we simply premultiply it to cancel-out the effect
-      if ( o() -> talents.animal_companion -> ok() )
-        bonus *= 1.0 / ( 1.0 + o() -> talents.animal_companion -> effectN( 2 ).percent() );
-      b += bonus;
-    }
 
     return b;
   }
@@ -4881,7 +4864,6 @@ void hunter_t::init_spells()
   azerite.dance_of_death        = find_azerite_spell( "Dance of Death" );
   azerite.feeding_frenzy        = find_azerite_spell( "Feeding Frenzy" );
   azerite.haze_of_rage          = find_azerite_spell( "Haze of Rage" );
-  azerite.pack_alpha            = find_azerite_spell( "Pack Alpha" );
   azerite.primal_instincts      = find_azerite_spell( "Primal Instincts" );
   azerite.serrated_jaws         = find_azerite_spell( "Serrated Jaws" );
 
