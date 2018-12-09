@@ -6957,7 +6957,7 @@ expr_t* mage_t::create_expression( const std::string& name_str )
     }
     else
     {
-      sim->errorf( "Player %s ground_aoe expression: unknown operation '%s'", name(), splits[ 2 ].c_str() );
+      throw std::invalid_argument( fmt::format( "Unknown ground_aoe operation '{}'", splits[ 2 ] ) );
     }
   }
 
