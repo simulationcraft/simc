@@ -1456,7 +1456,7 @@ public:
     if ( success )
     {
       if ( buff->check() )
-        make_event( sim, delay, [ buff ] () { buff->trigger(); } );
+        make_event( sim, delay, [ buff ] { buff->trigger(); } );
       else
         buff->trigger();
     }
