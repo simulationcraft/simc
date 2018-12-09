@@ -4269,11 +4269,6 @@ struct bloodlust_t : public shaman_spell_t
     : shaman_spell_t( "bloodlust", player, player->find_class_spell( "Bloodlust" ), options_str )
   {
     harmful = false;
-    if ( maybe_ptr( p()->dbc.ptr ) && p()->azerite.ancestral_resonance.ok() )
-    {
-      player->buffs.bloodlust->buff_duration =
-          timespan_t::from_seconds( p()->azerite.ancestral_resonance.spell_ref().effectN( 2 ).base_value() );
-    }
   }
 
   virtual void execute() override
@@ -7624,6 +7619,13 @@ void shaman_t::create_buffs()
   buff.storm_totem     = new storm_totem_buff_t( this );
   buff.ember_totem     = new ember_totem_buff_t( this );
   buff.ghost_wolf      = make_buff( this, "ghost_wolf", find_class_spell( "Ghost Wolf" ) );
+
+  // Apply Azerite Trait Ancestral Resonance to Bloodlust
+  if ( maybe_ptr( dbc.ptr ) && azerite.ancestral_resonance.ok() )
+  {
+    buffs.bloodlust->buff_duration =
+        timespan_t::from_seconds( azerite.ancestral_resonance.spell_ref().effectN( 2 ).base_value() );
+  }
   //
   // Elemental
   //
