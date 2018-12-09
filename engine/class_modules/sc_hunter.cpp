@@ -5457,8 +5457,9 @@ void hunter_t::apl_mm()
   action_priority_list_t* trickshots   = get_action_priority_list( "trickshots" );
 
   // Precombat actions
-  precombat -> add_talent( this, "Hunter's Mark", "precast_time=2" );
-  precombat -> add_talent( this, "Double Tap", "precast_time=5" );
+  precombat -> add_talent( this, "Hunter's Mark" );
+  precombat -> add_talent( this, "Double Tap", "precast_time=19",
+        "Precast this as early as possible to potentially gain another cast during the fight." );
   precombat -> add_talent( this, "Trueshot", "precast_time=1.5,if=active_enemies>2" );
   precombat -> add_action( this, "Aimed Shot", "if=active_enemies<3" );
 
@@ -5496,7 +5497,7 @@ void hunter_t::apl_mm()
 
   trickshots -> add_talent( this, "Barrage" );
   trickshots -> add_talent( this, "Explosive Shot" );
-  trickshots -> add_action( this, "Rapid Fire", "if=buff.trick_shots.up&(azerite.focused_fire.enabled|azerite.in_the_rhythm.rank>1|azerite.surging_shots.enabled)" );
+  trickshots -> add_action( this, "Rapid Fire", "if=buff.trick_shots.up&(azerite.focused_fire.enabled|azerite.in_the_rhythm.rank>1|azerite.surging_shots.enabled|talent.streamline.enabled)" );
   trickshots -> add_action( this, "Aimed Shot", "if=buff.trick_shots.up&buff.precise_shots.down" );
   trickshots -> add_action( this, "Rapid Fire", "if=buff.trick_shots.up" );
   trickshots -> add_action( this, "Multi-Shot", "if=buff.trick_shots.down|buff.precise_shots.up|focus>70" );
