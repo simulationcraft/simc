@@ -650,6 +650,7 @@ private:
   typedef Base ab;
 public:
 
+  bool precombat = false;
   bool track_cd_waste;
   cdwaste::action_data_t* cd_waste;
 
@@ -710,6 +711,13 @@ public:
 
     if ( track_cd_waste )
       cd_waste = p() -> cd_waste.get( this );
+  }
+
+  void init_finished() override
+  {
+    ab::init_finished();
+
+    precombat = ab::action_list -> name_str == "precombat";
   }
 
   timespan_t gcd() const override
@@ -872,6 +880,22 @@ public:
       if ( s )
         ab::stats -> add_child( s );
     }
+  }
+
+  bool trigger_buff( buff_t *const buff, timespan_t precast_time ) const
+  {
+    const bool in_combat = ab::player -> in_combat;
+    const bool triggered = buff -> trigger();
+    if ( triggered && precombat && !in_combat && precast_time > timespan_t::zero() )
+      buff -> extend_duration( ab::player, -std::min( precast_time, buff -> data().duration() ) );
+    return triggered;
+  }
+
+  void adjust_precast_cooldown( timespan_t precast_time ) const
+  {
+    const bool in_combat = ab::player -> in_combat;
+    if ( precombat && !in_combat && precast_time > timespan_t::zero() )
+      ab::cooldown -> adjust( -precast_time );
   }
 };
 
@@ -3896,24 +3920,14 @@ struct bestial_wrath_t: public hunter_spell_t
   {
     hunter_spell_t::execute();
 
-    p() -> buffs.bestial_wrath  -> trigger();
-    p() -> buffs.t20_4p_bestial_rage -> trigger();
-    p() -> buffs.haze_of_rage -> trigger();
+    trigger_buff( p() -> buffs.bestial_wrath, precast_time );
+    trigger_buff( p() -> buffs.t20_4p_bestial_rage, precast_time );
+    trigger_buff( p() -> buffs.haze_of_rage, precast_time );
 
     for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p() -> pets.main, p() -> pets.animal_companion ) )
-      pet -> buffs.bestial_wrath -> trigger();
+      trigger_buff( pet -> buffs.bestial_wrath, precast_time );
 
-    // adjust for precasting
-    if ( ! player -> in_combat && precast_time != timespan_t::zero() )
-    {
-      p() -> buffs.bestial_wrath -> extend_duration( player, -precast_time );
-      p() -> buffs.haze_of_rage -> extend_duration( player, std::max( -precast_time, -timespan_t::from_seconds( 8.0 ) ));
-
-      cooldown -> adjust( -precast_time );
-
-      for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p() -> pets.main, p() -> pets.animal_companion ) )
-        pet -> buffs.bestial_wrath -> extend_duration (pet, -precast_time);
-    }
+    adjust_precast_cooldown( precast_time );
   }
 
   bool ready() override
@@ -3929,12 +3943,10 @@ struct bestial_wrath_t: public hunter_spell_t
 
 struct aspect_of_the_wild_t: public hunter_spell_t
 {
-  bool precombat;
   timespan_t precast_time = timespan_t::zero();
 
   aspect_of_the_wild_t( hunter_t* p, const std::string& options_str ):
-    hunter_spell_t( "aspect_of_the_wild", p, p -> specs.aspect_of_the_wild ),
-    precombat()
+    hunter_spell_t( "aspect_of_the_wild", p, p -> specs.aspect_of_the_wild )
   {
     add_option( opt_timespan( "precast_time", precast_time ) );
     parse_options( options_str );
@@ -3943,14 +3955,6 @@ struct aspect_of_the_wild_t: public hunter_spell_t
     dot_duration = timespan_t::zero();
 
     precast_time = clamp( precast_time, timespan_t::zero(), data().duration() );
-  }
-
-  void init_finished() override
-  {
-    hunter_spell_t::init_finished();
-
-    if ( action_list -> name_str == "precombat" )
-      precombat = true;
   }
 
   void schedule_execute( action_state_t* s ) override
@@ -3970,18 +3974,12 @@ struct aspect_of_the_wild_t: public hunter_spell_t
     // Precombat actions skip schedule_execute, so the buff needs to be
     // triggered here for precombat actions.
     if ( precombat )
-      p() -> buffs.aspect_of_the_wild -> trigger();
+      trigger_buff( p() -> buffs.aspect_of_the_wild, precast_time );
 
-    if ( p() -> buffs.primal_instincts -> trigger() )
+    if ( trigger_buff( p() -> buffs.primal_instincts, precast_time ) )
       p() -> cooldowns.barbed_shot -> reset( true );
 
-    // adjust for precasting
-    if ( ! player -> in_combat && precast_time != timespan_t::zero() )
-    {
-      p() -> buffs.aspect_of_the_wild -> extend_duration( player, -precast_time );
-      p() -> buffs.primal_instincts -> extend_duration( player, -precast_time );
-      cooldown -> adjust( -precast_time );
-    }
+    adjust_precast_cooldown( precast_time );
   }
 };
 
@@ -4116,14 +4114,9 @@ struct double_tap_t: public hunter_spell_t
   {
     hunter_spell_t::execute();
 
-    p() -> buffs.double_tap -> trigger();
+    trigger_buff( p() -> buffs.double_tap, precast_time );
 
-    // adjust for precasting
-    if ( ! player -> in_combat && precast_time != timespan_t::zero() )
-    {
-      p() -> buffs.double_tap -> extend_duration( player, -precast_time );
-      cooldown -> adjust( -precast_time );
-    }
+    adjust_precast_cooldown( precast_time );
   }
 };
 
