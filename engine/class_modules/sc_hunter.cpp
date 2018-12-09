@@ -311,7 +311,6 @@ public:
     azerite_power_t blur_of_talons;
     azerite_power_t latent_poison;
     azerite_power_t primeval_intuition;
-    azerite_power_t up_close_and_personal;
     azerite_power_t venomous_fangs;
     azerite_power_t wilderness_survival;
     azerite_power_t wildfire_cluster;
@@ -363,7 +362,6 @@ public:
     buff_t* primeval_intuition;
     buff_t* unerring_vision_driver;
     buff_t* unerring_vision;
-    buff_t* up_close_and_personal;
   } buffs;
 
   // Cooldowns
@@ -3180,15 +3178,6 @@ struct melee_focus_spender_t: hunter_melee_attack_t
       latent_poison = p -> get_background_action<latent_poison_t>( "latent_poison" );
   }
 
-  double cost() const override
-  {
-    double c = hunter_melee_attack_t::cost();
-
-    c -= p() -> buffs.up_close_and_personal -> check_value();
-
-    return c;
-  }
-
   void execute() override
   {
     hunter_melee_attack_t::execute();
@@ -3202,7 +3191,6 @@ struct melee_focus_spender_t: hunter_melee_attack_t
     if ( wilderness_survival_reduction != timespan_t::zero() )
       p() -> cooldowns.wildfire_bomb -> adjust( -wilderness_survival_reduction );
 
-    p() -> buffs.up_close_and_personal -> expire();
   }
 
   void impact( action_state_t* s ) override
@@ -3213,16 +3201,6 @@ struct melee_focus_spender_t: hunter_melee_attack_t
 
     if ( latent_poison )
       latent_poison -> trigger( s -> target );
-  }
-
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double b = hunter_melee_attack_t::bonus_da( s );
-
-    if ( p() -> buffs.up_close_and_personal -> up() )
-      b += p() -> azerite.up_close_and_personal.value( 1 );
-
-    return b;
   }
 
   bool ready() override
@@ -3520,7 +3498,6 @@ struct harpoon_t: public hunter_melee_attack_t
       terms_of_engagement -> execute();
     }
 
-    p() -> buffs.up_close_and_personal -> trigger();
   }
 
   bool ready() override
@@ -4931,7 +4908,6 @@ void hunter_t::init_spells()
   azerite.blur_of_talons        = find_azerite_spell( "Blur of Talons" );
   azerite.latent_poison         = find_azerite_spell( "Latent Poison" );
   azerite.primeval_intuition    = find_azerite_spell( "Primeval Intuition" );
-  azerite.up_close_and_personal = find_azerite_spell( "Up Close And Personal" );
   azerite.venomous_fangs        = find_azerite_spell( "Venomous Fangs" );
   azerite.wilderness_survival   = find_azerite_spell( "Wilderness Survival" );
   azerite.wildfire_cluster      = find_azerite_spell( "Wildfire Cluster" );
@@ -5175,10 +5151,6 @@ void hunter_t::create_buffs()
     make_buff<stat_buff_t>( this, "unerring_vision", find_spell( 274447 ) )
       -> add_stat( STAT_CRIT_RATING, azerite.unerring_vision.value( 1 ) );
 
-  buffs.up_close_and_personal =
-    make_buff( this, "up_close_and_personal", find_spell( 279593 ) )
-      -> set_default_value( azerite.up_close_and_personal.spell() -> effectN( 2 ).base_value() )
-      -> set_trigger_spell( azerite.up_close_and_personal );
 }
 
 // hunter_t::init_special_effects ===========================================
