@@ -333,7 +333,6 @@ public:
     buff_t* trueshot;
     buff_t* master_marksman;
     buff_t* double_tap;
-    buff_t* lethal_shots; // XXX [8.1]: remove
 
     // Survival
     buff_t* coordinated_assault;
@@ -1699,7 +1698,7 @@ struct basic_attack_t : public hunter_main_pet_attack_t
 
   basic_attack_t( hunter_main_pet_t* p, const std::string& n, const std::string& options_str ):
     hunter_main_pet_attack_t( n, p, p -> find_pet_spell( n ) ),
-    venomous_fangs_bonus_da( p -> o() -> azerite.venomous_fangs.value( 1 ) ),
+    venomous_fangs_bonus_da( p -> o() -> azerite.venomous_fangs.value( 1 ) )
   {
     parse_options( options_str );
 
@@ -2441,16 +2440,6 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
     return hunter_ranged_attack_t::n_targets();
   }
 
-  double composite_crit_chance() const override
-  {
-    double cc = hunter_ranged_attack_t::composite_crit_chance();
-
-    if ( p() -> buffs.lethal_shots -> up() )
-      cc += p() -> buffs.lethal_shots -> data().effectN( 2 ).percent();
-
-    return cc;
-  }
-
   double composite_target_da_multiplier( player_t* t ) const override
   {
     double m = hunter_ranged_attack_t::composite_target_da_multiplier( t );
@@ -2507,7 +2496,6 @@ struct aimed_shot_t : public aimed_shot_base_t
   bool lock_and_loaded = false;
   struct {
     proc_t* double_tap;
-    proc_t* lethal_shots;
   } procs;
   struct {
     double chance = 0;
@@ -2527,7 +2515,6 @@ struct aimed_shot_t : public aimed_shot_base_t
     }
 
     procs.double_tap = p -> get_proc( "double_tap_aimed" );
-    procs.lethal_shots = p -> get_proc( "lethal_shots_aimed" );
 
     if ( p -> azerite.surging_shots.ok() )
     {
@@ -2574,10 +2561,6 @@ struct aimed_shot_t : public aimed_shot_base_t
     if ( lock_and_loaded )
       p() -> buffs.lock_and_load -> decrement();
     lock_and_loaded = false;
-
-    if ( p() -> buffs.lethal_shots -> check() )
-      procs.lethal_shots -> occur();
-    p() -> buffs.lethal_shots -> decrement();
 
     p() -> buffs.precise_shots -> trigger( 1 + rng().range( p() -> buffs.precise_shots -> max_stack() ) );
     p() -> buffs.master_marksman -> trigger();
@@ -2635,13 +2618,6 @@ struct aimed_shot_t : public aimed_shot_base_t
     return false;
   }
 
-  double composite_target_da_multiplier( player_t* t ) const override
-  {
-    double m = aimed_shot_base_t::composite_target_da_multiplier( t );
-
-    return m;
-  }
-
   void try_t20_2p_mm() override { }
 };
 
@@ -2688,7 +2664,6 @@ struct arcane_shot_t: public hunter_ranged_attack_t
 
     return am;
   }
-
 };
 
 // Piercing Shot  =========================================================================
@@ -2717,11 +2692,6 @@ struct steady_shot_t: public hunter_ranged_attack_t
     energize_type = ENERGIZE_ON_CAST;
     energize_resource = RESOURCE_FOCUS;
     energize_amount = data().effectN( 2 ).base_value();
-  }
-
-  void execute() override
-  {
-    hunter_ranged_attack_t::execute();
   }
 
   timespan_t execute_time() const override
@@ -2848,15 +2818,6 @@ struct rapid_fire_t: public hunter_spell_t
         p() -> resource_gain( RESOURCE_FOCUS, focused_fire.amount, focused_fire.gain, this );
     }
 
-    double composite_crit_chance() const override
-    {
-      double cc = hunter_ranged_attack_t::composite_crit_chance();
-
-      cc += p() -> buffs.lethal_shots -> value();
-
-      return cc;
-    }
-
     double bonus_da( const action_state_t* s ) const override
     {
       double b = hunter_ranged_attack_t::bonus_da( s );
@@ -2871,7 +2832,6 @@ struct rapid_fire_t: public hunter_spell_t
   int base_num_ticks;
   struct {
     proc_t* double_tap;
-    proc_t* lethal_shots;
   } procs;
 
   rapid_fire_t( hunter_t* p, const std::string& options_str ):
@@ -2889,7 +2849,6 @@ struct rapid_fire_t: public hunter_spell_t
     dot_duration += p -> talents.streamline -> effectN( 1 ).time_value();
 
     procs.double_tap = p -> get_proc( "double_tap_rapid_fire" );
-    procs.lethal_shots = p -> get_proc( "lethal_shots_rapid_fire" );
   }
 
   void init() override
@@ -2922,10 +2881,6 @@ struct rapid_fire_t: public hunter_spell_t
     hunter_spell_t::last_tick( d );
 
     p() -> buffs.trick_shots -> decrement();
-
-    if ( p() -> buffs.lethal_shots -> check() )
-      procs.lethal_shots -> occur();
-    p() -> buffs.lethal_shots -> decrement();
 
     if ( p() -> buffs.double_tap -> check() )
       procs.double_tap -> occur();
@@ -2996,9 +2951,6 @@ struct rapid_fire_t: public hunter_spell_t
 
 struct explosive_shot_t: public hunter_ranged_attack_t
 {
-  static constexpr timespan_t precombat_travel_time = timespan_t::from_millis( 100 );
-  bool in_combat = false;
-
   struct explosive_shot_aoe_t: hunter_ranged_attack_t
   {
     explosive_shot_aoe_t( const std::string& n, hunter_t* p ):
@@ -3021,26 +2973,7 @@ struct explosive_shot_t: public hunter_ranged_attack_t
     tick_action = p -> get_background_action<explosive_shot_aoe_t>( "explosive_shot_aoe" );
     tick_action -> stats = stats;
   }
-
-  timespan_t travel_time() const override
-  {
-    return hunter_ranged_attack_t::travel_time();
-  }
-
-  void execute() override
-  {
-    in_combat = player -> in_combat;
-
-    hunter_ranged_attack_t::execute();
-  }
-
-  void reset() override
-  {
-    hunter_ranged_attack_t::reset();
-    in_combat = false;
-  }
 };
-constexpr timespan_t explosive_shot_t::precombat_travel_time;
 
 // Serpent Sting (Marksmanship) ==============================================
 
@@ -3161,7 +3094,6 @@ struct melee_focus_spender_t: hunter_melee_attack_t
     trigger_birds_of_prey( p(), target );
     if ( wilderness_survival_reduction != timespan_t::zero() )
       p() -> cooldowns.wildfire_bomb -> adjust( -wilderness_survival_reduction );
-
   }
 
   void impact( action_state_t* s ) override
@@ -3468,7 +3400,6 @@ struct harpoon_t: public hunter_melee_attack_t
       terms_of_engagement -> set_target( target );
       terms_of_engagement -> execute();
     }
-
   }
 
   bool ready() override
@@ -3957,7 +3888,7 @@ struct bestial_wrath_t: public hunter_spell_t
     add_option( opt_timespan( "precast_time", precast_time ) );
     parse_options( options_str );
     harmful = may_hit = false;
-    
+
     precast_time = clamp( precast_time, timespan_t::zero(), data().duration() );
   }
 
@@ -4004,13 +3935,13 @@ struct aspect_of_the_wild_t: public hunter_spell_t
   aspect_of_the_wild_t( hunter_t* p, const std::string& options_str ):
     hunter_spell_t( "aspect_of_the_wild", p, p -> specs.aspect_of_the_wild ),
     precombat()
-  {   
+  {
     add_option( opt_timespan( "precast_time", precast_time ) );
     parse_options( options_str );
 
     harmful = may_hit = false;
     dot_duration = timespan_t::zero();
-        
+
     precast_time = clamp( precast_time, timespan_t::zero(), data().duration() );
   }
 
@@ -5010,11 +4941,6 @@ void hunter_t::create_buffs()
       -> set_activated( true )
       -> set_default_value( talents.double_tap -> effectN( 1 ).percent() );
 
-  buffs.lethal_shots =
-    make_buff( this, "lethal_shots", talents.lethal_shots -> effectN( 1 ).trigger() )
-      -> set_default_value( talents.lethal_shots -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
-      -> set_trigger_spell( talents.lethal_shots );
-
   // Survival
 
   buffs.coordinated_assault =
@@ -5114,7 +5040,6 @@ void hunter_t::create_buffs()
   buffs.unerring_vision =
     make_buff<stat_buff_t>( this, "unerring_vision", find_spell( 274447 ) )
       -> add_stat( STAT_CRIT_RATING, azerite.unerring_vision.value( 1 ) );
-
 }
 
 // hunter_t::init_special_effects ===========================================
