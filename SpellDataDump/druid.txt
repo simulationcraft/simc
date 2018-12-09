@@ -4198,6 +4198,27 @@ Effects          :
 Description      : Bristle your fur, causing you to generate Rage based on damage taken for $d.
 Tooltip          : Generating Rage from taking damage.
 
+Name             : Owlkin Frenzy (id=157228) [Spell Family (7)] 
+Class            : Druid
+School           : Physical
+Spell Type       : Magic
+Duration         : 10 seconds
+Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ xx...... ........ 
+                 : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : Disable player procs (112), Disable target procs (113)
+Effects          :
+#1 (id=219152)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
+                   Affected Spells: Lunar Strike (194153), Lunar Strike (197628)
+                   Family Flags: 2
+Description      : $@spelldesc24858
+Tooltip          : Your next Lunar Strike is instant cast.
+
 Name             : Critical Strikes (rank=Passive) (id=157447) [Passive] 
 Class            : Feral Guardian Druid
 School           : Physical
@@ -5010,7 +5031,7 @@ Range            : 40 yards
 Cast Time        : 2.25 seconds
 GCD              : 1.5 seconds
 Stance Mask      : 0x40000002
-Affecting spells : Moonkin Form (24858 effect#9), Incarnation: Chosen of Elune (102560 effect#1), Restoration Druid (137012 effect#8), Balance Druid (137013 effect#1), Lunar Empowerment (164547 effect#1), Item - Druid T17 Balance 2P Bonus (165433 effect#2), Celestial Fury (180719 effect#1), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Warrior of Elune (202425 effect#1), Stellar Drift (202461 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1)
+Affecting spells : Moonkin Form (24858 effect#9), Incarnation: Chosen of Elune (102560 effect#1), Restoration Druid (137012 effect#8), Balance Druid (137013 effect#1), Owlkin Frenzy (157228 effect#1), Lunar Empowerment (164547 effect#1), Item - Druid T17 Balance 2P Bonus (165433 effect#2), Celestial Fury (180719 effect#1), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Warrior of Elune (202425 effect#1), Stellar Drift (202461 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1)
 Triggered by     : Lunar Empowerment (164547)
 Family Flags     : 2, 18
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -5384,7 +5405,7 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Incarnation: Chosen of Elune (102560 effect#5), Restoration Druid (137012 effect#8), Lunar Empowerment (164547 effect#1), Item - Druid T17 Balance 2P Bonus (165433 effect#2), Celestial Fury (180719 effect#1), Thrash (192090 effect#2), Celestial Alignment (194223 effect#4), Astral Influence (197524 effect#1), Warrior of Elune (202425 effect#1), Stellar Drift (202461 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1)
+Affecting spells : Incarnation: Chosen of Elune (102560 effect#5), Restoration Druid (137012 effect#8), Owlkin Frenzy (157228 effect#1), Lunar Empowerment (164547 effect#1), Item - Druid T17 Balance 2P Bonus (165433 effect#2), Celestial Fury (180719 effect#1), Thrash (192090 effect#2), Celestial Alignment (194223 effect#4), Astral Influence (197524 effect#1), Warrior of Elune (202425 effect#1), Stellar Drift (202461 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1)
 Family Flags     : 2
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

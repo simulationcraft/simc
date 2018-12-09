@@ -1727,6 +1727,26 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Unknown(32)
 Description      : Summons your fifth pet to you.
 
+Name             : Kill Command (id=83381) [Spell Family (9)] 
+Class            : Hunter
+School           : Physical
+Spell Type       : Melee
+Spell Level      : 1
+Range            : 100 yards
+Affecting spells : Roar of the Seven Lions (207318 effect#1), Bestial Rage (246116 effect#1), Item - Hunter T21 Beast Mastery 2P Bonus (251755 effect#1), Rotting Jaws (264195 effect#1)
+Family Flags     : 43
+Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+Effects          :
+#1 (id=83776)    : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Description      : $@spelldesc34026
+
 Name             : Mail Specialization (rank=Passive) (id=86538) [Passive, Hidden] 
 Class            : Hunter
 School           : Physical
@@ -7080,7 +7100,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=707444)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 311 (coefficient=1) | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Kill Command (34026)
+                   Affected Spells: Kill Command (34026), Kill Command (83381)
                    Family Flags: 43
 Description      : Kill Command has a chance to deal $s1 to ${$s1*5} additional damage and grants you 6 Focus over 3 sec.
 Tooltip          : Kill Command has a chance to deal $w1 to ${$w1*5} additional damage and grants you 6 Focus over 3 sec.
