@@ -5458,7 +5458,7 @@ void hunter_t::apl_mm()
 
   // Precombat actions
   precombat -> add_talent( this, "Hunter's Mark" );
-  precombat -> add_talent( this, "Double Tap", "precast_time=19",
+  precombat -> add_talent( this, "Double Tap", "precast_time=10",
         "Precast this as early as possible to potentially gain another cast during the fight." );
   precombat -> add_talent( this, "Trueshot", "precast_time=1.5,if=active_enemies>2" );
   precombat -> add_action( this, "Aimed Shot", "if=active_enemies<3" );
