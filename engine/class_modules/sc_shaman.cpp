@@ -379,6 +379,7 @@ public:
 
     // Azerite traits
     buff_t* ancestral_resonance;
+    buff_t* ancestral_resonance_81;
     buff_t* lava_shock;
     stat_buff_t* natural_harmony_fire;    // crit
     stat_buff_t* natural_harmony_frost;   // mastery
@@ -1001,6 +1002,36 @@ struct ascendance_buff_t : public buff_t
   void ascendance( attack_t* mh, attack_t* oh, timespan_t lvb_cooldown );
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override;
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
+};
+
+struct ancestral_resonance_buff_t : public stat_buff_t
+{
+  double standard_rppm;
+  double bloodlust_rppm;
+
+  ancestral_resonance_buff_t( shaman_t* p )
+    : stat_buff_t( p, "ancestral_resonance", p->find_spell( 277943 ) ),
+      standard_rppm( 1u ),
+      bloodlust_rppm( p->find_spell( 277926 )->real_ppm() )
+  {
+    add_invalidate( CACHE_MASTERY );
+    add_stat( stat_e::STAT_MASTERY_RATING, p->azerite.ancestral_resonance.value( 1 ) );
+    set_rppm( rppm_scale_e::RPPM_HASTE, standard_rppm );  // standard value is not in spell data
+  }
+
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  {
+    if ( player->buffs.bloodlust->up() )
+    {
+      rppm->set_frequency( bloodlust_rppm );
+    }
+    else
+    {
+      rppm->set_frequency( standard_rppm );
+    }
+
+    return stat_buff_t::trigger( stacks, value, chance, duration );
+  }
 };
 
 shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t( target, p )
@@ -1647,12 +1678,17 @@ public:
       p()->recent_target = execute_state->target;
       p()->buff.earthen_rage->trigger();
     }
-    // p()->trigger_earthen_rage( execute_state );
 
     // BfA Elemental talent - Master of the Elements
     if ( affected_by_master_of_the_elements && !background )
     {
       p()->buff.master_of_the_elements->decrement();
+    }
+
+    // BfA Azerite Trait - Ancestral Resonance
+    if ( !background && p()->azerite.ancestral_resonance.ok() && maybe_ptr( p()->dbc.ptr ) )
+    {
+      p()->buff.ancestral_resonance_81->trigger();
     }
   }
 
@@ -4233,6 +4269,11 @@ struct bloodlust_t : public shaman_spell_t
     : shaman_spell_t( "bloodlust", player, player->find_class_spell( "Bloodlust" ), options_str )
   {
     harmful = false;
+    if ( maybe_ptr( p()->dbc.ptr ) && p()->azerite.ancestral_resonance.ok() )
+    {
+      player->buffs.bloodlust->buff_duration =
+          timespan_t::from_seconds( p()->azerite.ancestral_resonance.spell_ref().effectN( 2 ).base_value() );
+    }
   }
 
   virtual void execute() override
@@ -4247,7 +4288,7 @@ struct bloodlust_t : public shaman_spell_t
       p->buffs.bloodlust->trigger();
       p->buffs.exhaustion->trigger();
     }
-    if ( p()->azerite.ancestral_resonance.ok() )
+    if ( !maybe_ptr( p()->dbc.ptr ) && p()->azerite.ancestral_resonance.ok() )
     {
       p()->buff.ancestral_resonance->trigger();
     }
@@ -4259,7 +4300,8 @@ struct bloodlust_t : public shaman_spell_t
   {
     // If the trait Ancestral Resonance is present the shaman can use Bloodlust on his own.
     // The externally triggered Bloodlust is still happening.
-    if ( !p()->azerite.ancestral_resonance.ok() )
+    // With 8.1 we no longer need to manually trigger Bloodlust.
+    if ( !maybe_ptr( p()->dbc.ptr ) && !p()->azerite.ancestral_resonance.ok() )
     {
       if ( p()->buffs.exhaustion->check() )
         return false;
@@ -7654,6 +7696,8 @@ void shaman_t::create_buffs()
           ->set_period( find_spell( 277942 )->effectN( 1 ).period() )
           ->set_tick_behavior( buff_tick_behavior::REFRESH )
           ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED );
+
+  buff.ancestral_resonance_81 = new ancestral_resonance_buff_t( this );
 
   // Azerite Traits - Ele
   buff.lava_shock = make_buff( this, "lava_shock", azerite.lava_shock )
