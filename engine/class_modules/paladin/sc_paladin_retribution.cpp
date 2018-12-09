@@ -81,7 +81,7 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
   holy_power_consumer_t( const std::string& n, paladin_t* p,
                           const spell_data_t* s = spell_data_t::nil() ) :
     paladin_melee_attack_t( n, p, s ),
-    lights_decree( new lights_decree_t( p ), base_cost() )
+    lights_decree( new lights_decree_t( p, base_cost() ) )
   {
   }
 
