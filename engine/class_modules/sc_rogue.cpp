@@ -236,7 +236,6 @@ struct rogue_t : public player_t
     buff_t* ruthless_precision;
     buff_t* true_bearing;
     // Subtlety
-    buff_t* shuriken_combo;
     buff_t* shadow_blades;
     buff_t* shadow_dance;
     buff_t* symbols_of_death;
@@ -374,7 +373,6 @@ struct rogue_t : public player_t
     const spell_data_t* eviscerate_2;
     const spell_data_t* shadowstrike;
     const spell_data_t* shadowstrike_2;
-    const spell_data_t* shuriken_combo;
   } spec;
 
   // Spell Data
@@ -2382,23 +2380,9 @@ struct eviscerate_t : public rogue_attack_t
     return b;
   }
 
-  double action_multiplier() const override
-  {
-    double m = rogue_attack_t::action_multiplier();
-
-    m *= 1.0 + p() -> buffs.shuriken_combo -> check_stack_value();
-
-    return m;
-  }
-
   void execute() override
   {
     rogue_attack_t::execute();
-
-    if ( p() -> buffs.shuriken_combo -> up() )
-    {
-      p() -> buffs.shuriken_combo -> expire();
-    }
 
     p() -> buffs.nights_vengeance -> expire();
   }
@@ -3553,16 +3537,6 @@ struct shuriken_storm_t: public rogue_attack_t
     }
 
     return m;
-  }
-
-  void execute() override
-  {
-    rogue_attack_t::execute();
-
-    if ( p() -> spec.shuriken_combo -> ok() && execute_state -> n_targets > 1 )
-    {
-      p() -> buffs.shuriken_combo -> trigger((int)(execute_state -> n_targets) - 1);
-    }
   }
 };
 
@@ -6244,8 +6218,7 @@ void rogue_t::init_spells()
   spec.eviscerate_2         = find_specialization_spell( 231716 );
   spec.shadowstrike         = find_specialization_spell( "Shadowstrike" );
   spec.shadowstrike_2       = find_spell( 245623 );
-  spec.shuriken_combo       = find_specialization_spell( "Shuriken Combo" );
-  
+
   // Masteries
   mastery.potent_assassin   = find_mastery_spell( ROGUE_ASSASSINATION );
   mastery.main_gauche       = find_mastery_spell( ROGUE_OUTLAW );
@@ -6533,8 +6506,6 @@ void rogue_t::create_buffs()
   // Note, since I (navv) am a slacker, this needs to be constructed after the secondary buffs.
   buffs.roll_the_bones        = new buffs::roll_the_bones_t( this );
   // Subtlety
-  buffs.shuriken_combo        = make_buff( this, "shuriken_combo", find_spell( 245640 ) )
-                                -> set_default_value( find_spell( 245640 ) -> effectN( 1 ).percent() );
   buffs.shadow_blades         = make_buff( this, "shadow_blades", spec.shadow_blades )
                                 -> set_cooldown( timespan_t::zero() )
                                 -> set_default_value( spec.shadow_blades -> effectN( 1 ).percent() );
