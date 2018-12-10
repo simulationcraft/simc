@@ -6355,7 +6355,7 @@ void mage_t::apl_fire()
   standard->add_talent( this, "Phoenix Flames", "if=(buff.heating_up.react|(!buff.hot_streak.react&(action.fire_blast.charges>0|talent.searing_touch.enabled&target.health.pct<=30)))&!variable.phoenix_pooling" );
   standard->add_action( "call_action_list,name=active_talents" );
   standard->add_action( this, "Dragon's Breath", "if=active_enemies>1" );
-  standard->add_action( this, "Scorch", "if=(target.health.pct<=30&talent.searing_touch.enabled)|(azerite.preheat.enabled&debuff.preheat.down)" );
+  standard->add_action( this, "Scorch", "if=target.health.pct<=30&talent.searing_touch.enabled" );
   standard->add_action( this, "Fireball" );
   standard->add_action( this, "Scorch" );
 
