@@ -1485,9 +1485,7 @@ struct kill_command_bm_t: public kill_command_base_t
   kill_command_bm_t( hunter_main_pet_base_t* p ):
     kill_command_base_t( p, p -> find_spell( 83381 ) )
   {
-    // Kill Command seems to use base damage in BfA
-    base_dd_min = data().effectN( 1 ).min( p );
-    base_dd_max = data().effectN( 1 ).max( p );
+    attack_power_mod.direct = o() -> specs.kill_command -> effectN( 2 ).percent();
 
     if ( o() -> talents.killer_instinct -> ok() )
     {
@@ -1497,14 +1495,9 @@ struct kill_command_bm_t: public kill_command_base_t
     }
   }
 
-  double bonus_da( const action_state_t* s ) const override
+  double composite_attack_power() const override
   {
-    double b = kill_command_base_t::bonus_da( s );
-    /* It looks like KC kept the owner ap part of its damage going into bfa,
-     * with the same coefficient. Model it as a simple bonus damage adder.
-     */
-    constexpr double owner_coeff_ = 3.0 / 4.0;
-    return b + o() -> cache.attack_power() * o() -> composite_attack_power_multiplier() * owner_coeff_;
+    return o() -> cache.attack_power() * o() -> composite_attack_power_multiplier();
   }
 
   double composite_target_multiplier( player_t* t ) const override
