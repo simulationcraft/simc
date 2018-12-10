@@ -3900,20 +3900,26 @@ struct spitting_cobra_t: public hunter_spell_t
 
 struct trueshot_t: public hunter_spell_t
 {
+  timespan_t precast_time = timespan_t::zero();
+
   trueshot_t( hunter_t* p, const std::string& options_str ):
     hunter_spell_t( "trueshot", p, p -> specs.trueshot )
   {
+    add_option( opt_timespan( "precast_time", precast_time ) );
     parse_options( options_str );
-
     harmful = may_hit = false;
+
+    precast_time = clamp( precast_time, timespan_t::zero(), data().duration() );
   }
 
   void execute() override
   {
     hunter_spell_t::execute();
 
-    p() -> buffs.trueshot -> trigger();
-    p() -> buffs.unerring_vision_driver -> trigger();
+    trigger_buff( p() -> buffs.trueshot, precast_time );
+    trigger_buff( p() -> buffs.unerring_vision_driver, precast_time );
+
+    adjust_precast_cooldown( precast_time );
   }
 };
 
@@ -5139,7 +5145,7 @@ void hunter_t::apl_mm()
   precombat -> add_talent( this, "Hunter's Mark" );
   precombat -> add_talent( this, "Double Tap", "precast_time=10",
         "Precast this as early as possible to potentially gain another cast during the fight." );
-  precombat -> add_talent( this, "Trueshot", "precast_time=1.5,if=active_enemies>2" );
+  precombat -> add_action( this, "Trueshot", "precast_time=1.5,if=active_enemies>2" );
   precombat -> add_action( this, "Aimed Shot", "if=active_enemies<3" );
 
   // Generic APL
