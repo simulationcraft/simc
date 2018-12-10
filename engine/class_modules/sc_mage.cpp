@@ -2429,6 +2429,14 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     cc_tick_time_reduction = cc_data.effectN( 2 ).percent() + p->talents.amplification->effectN( 1 ).percent();
   }
 
+  void handle_clearcasting( bool apply )
+  {
+    if ( apply )
+      p()->buffs.clearcasting_channel->trigger();
+    else
+      p()->buffs.clearcasting_channel->expire();
+  }
+
   virtual dmg_e amount_type( const action_state_t*, bool = false ) const override
   {
     return DMG_DIRECT;
@@ -2482,6 +2490,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     p()->buffs.arcane_pummeling->expire();
 
     bool cc_active = p()->buffs.clearcasting->check() != 0;
+    bool refresh = get_dot( target )->is_ticking();
 
     // Arcane Pummeling only checks if Clearcasting was consumed when
     // the last Arcane Missiles was cast. It doesn't care about the state
@@ -2495,21 +2504,12 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     // In particular, the first refresh never benefits from Clearcasting,
     // even if Clearcasting was consumed on the refresh. The second refresh
     // checks if the first refresh had Clearcasting and so on.
-    //
-    // Given that second and further refreshes are rarely relevant, we just
-    // never let active channel gain the Clearcasting effects on a refresh.
-    //
-    // TODO: Should we model this?
-    if ( cc_active && !get_dot( target )->is_ticking() )
-    {
-      p()->buffs.clearcasting_channel->trigger();
-    }
-    else
-    {
-      p()->buffs.clearcasting_channel->expire();
-    }
+    if ( !refresh )
+      handle_clearcasting( cc_active );
 
     arcane_mage_spell_t::execute();
+
+    handle_clearcasting( cc_active && refresh );
 
     if ( p()->sets->has_set_bonus( MAGE_ARCANE, T19, B4 ) )
     {
