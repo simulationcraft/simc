@@ -4962,8 +4962,7 @@ void hunter_t::init_assessors()
 
 std::string hunter_t::default_potion() const
 {
-  return ( true_level >  110 && specialization() == HUNTER_MARKSMANSHIP) ? "potion_of_rising_death" :
-         ( true_level >  110 ) ? "battle_potion_of_agility" :
+  return ( true_level >  110 ) ? "battle_potion_of_agility" :
          ( true_level >= 100 ) ? "prolonged_power" :
          ( true_level >= 90  ) ? "draenic_agility" :
          ( true_level >= 85  ) ? "virmens_bite":
