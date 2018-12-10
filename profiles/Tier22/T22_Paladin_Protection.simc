@@ -27,8 +27,6 @@ actions.precombat+=/augmentation
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
 actions.precombat+=/lights_judgment
-actions.precombat+=/avenging_wrath
-actions.precombat+=/seraphim
 
 # Executed every time the actor is available.
 actions=auto_attack
@@ -81,4 +79,4 @@ off_hand=barricade_of_purifying_resolve,id=160699,bonus_id=4800/1507
 # gear_haste_rating=1075
 # gear_mastery_rating=882
 # gear_versatility_rating=146
-# gear_armor=6094
+# gear_armor=6134

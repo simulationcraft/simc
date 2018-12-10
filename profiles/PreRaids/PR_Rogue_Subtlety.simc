@@ -47,10 +47,8 @@ actions+=/call_action_list,name=stealth_cds,if=variable.use_priority_rotation
 actions+=/variable,name=stealth_threshold,value=25+talent.vigor.enabled*35+talent.master_of_shadows.enabled*25+talent.shadow_focus.enabled*20+talent.alacrity.enabled*10+15*(spell_targets.shuriken_storm>=3)
 # Consider using a Stealth CD when reaching the energy threshold and having space for at least 4 CP
 actions+=/call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold&combo_points.deficit>=4
-# With Dark Shadow, also use a Stealth CD when reaching the energy threshold and Secret Technique is ready.
-actions+=/call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold&talent.dark_shadow.enabled&talent.secret_technique.enabled&cooldown.secret_technique.up
-# With Dark Shadow against multiple targets, we only care about energy. Exception: Tornado is ready.
-actions+=/call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold&talent.dark_shadow.enabled&spell_targets.shuriken_storm>=2&(!talent.shuriken_tornado.enabled|!cooldown.shuriken_tornado.up)
+# With Dark Shadow, also use a Stealth CD when reaching the energy threshold and Secret Technique is ready. Only a gain up to 4 targets.
+actions+=/call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold&talent.dark_shadow.enabled&talent.secret_technique.enabled&cooldown.secret_technique.up&spell_targets.shuriken_storm<=4
 # Finish at 4+ without DS, 5+ with DS (outside stealth)
 actions+=/call_action_list,name=finish,if=combo_points.deficit<=1|target.time_to_die<=1&combo_points>=3
 # With DS also finish at 4+ against exactly 4 targets (outside stealth)
@@ -63,9 +61,7 @@ actions+=/arcane_pulse
 actions+=/lights_judgment
 
 # Builders
-# Shuriken Toss at 29+ Sharpened Blades stacks. Up to 3 targets per rank. Save for stealth if using Nightstalker or Dark Shadow when possible.
-actions.build=shuriken_toss,if=!talent.nightstalker.enabled&(!talent.dark_shadow.enabled|cooldown.symbols_of_death.remains>10)&buff.sharpened_blades.stack>=29&spell_targets.shuriken_storm<=(3*azerite.sharpened_blades.rank)
-actions.build+=/shuriken_storm,if=spell_targets>=2
+actions.build=shuriken_storm,if=spell_targets>=2
 actions.build+=/gloomblade
 actions.build+=/backstab
 
@@ -98,9 +94,9 @@ actions.cds+=/shadow_dance,if=!buff.shadow_dance.up&target.time_to_die<=5+talent
 # Eviscerate highest priority at 2+ targets with Shadow Focus (5+ with Secret Technique in addition) and Night's Vengeance up.
 actions.finish=eviscerate,if=talent.shadow_focus.enabled&buff.nights_vengeance.up&spell_targets.shuriken_storm>=2+3*talent.secret_technique.enabled
 # Keep up Nightblade if it is about to run out. Do not use NB during Dance, if talented into Dark Shadow.
-actions.finish+=/nightblade,if=(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>6&remains<tick_time*2&(spell_targets.shuriken_storm<4|!buff.symbols_of_death.up)
-# Multidotting outside Dance on targets that will live for the duration of Nightblade with refresh during pandemic if you have less than 6 targets or play with Secret Technique.
-actions.finish+=/nightblade,cycle_targets=1,if=!variable.use_priority_rotation&spell_targets.shuriken_storm>=2&(talent.secret_technique.enabled|azerite.nights_vengeance.enabled|spell_targets.shuriken_storm<=5)&!buff.shadow_dance.up&target.time_to_die>=(5+(2*combo_points))&refreshable
+actions.finish+=/nightblade,if=(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>6&remains<tick_time*2
+# Multidotting outside Dance on targets that will live for the duration of Nightblade, refresh during pandemic. Multidot as long as 2+ targets do not have Nightblade up with Replicating Shadows (unless you have Night's Vengeance too).
+actions.finish+=/nightblade,cycle_targets=1,if=!variable.use_priority_rotation&spell_targets.shuriken_storm>=2&(azerite.nights_vengeance.enabled|!azerite.replicating_shadows.enabled|spell_targets.shuriken_storm-active_dot.nightblade>=2)&!buff.shadow_dance.up&target.time_to_die>=(5+(2*combo_points))&refreshable
 # Refresh Nightblade early if it will expire during Symbols. Do that refresh if SoD gets ready in the next 5s.
 actions.finish+=/nightblade,if=remains<cooldown.symbols_of_death.remains+10&cooldown.symbols_of_death.remains<=5&target.time_to_die-remains>cooldown.symbols_of_death.remains+5
 # Secret Technique during Symbols. With Dark Shadow only during Shadow Dance (until threshold in next line).
@@ -118,7 +114,7 @@ actions.stealth_cds+=/vanish,if=!variable.shd_threshold&debuff.find_weakness.rem
 actions.stealth_cds+=/pool_resource,for_next=1,extra_amount=40
 actions.stealth_cds+=/shadowmeld,if=energy>=40&energy.deficit>=10&!variable.shd_threshold&debuff.find_weakness.remains<1&combo_points.deficit>1
 # With Dark Shadow only Dance when Nightblade will stay up. Use during Symbols or above threshold. Only before finishers if we have amp talents and priority rotation.
-actions.stealth_cds+=/shadow_dance,if=(!talent.dark_shadow.enabled|dot.nightblade.remains>=5+talent.subterfuge.enabled)&(!talent.nightstalker.enabled&!talent.dark_shadow.enabled|!variable.use_priority_rotation|combo_points.deficit<=1)&(variable.shd_threshold|buff.symbols_of_death.remains>=1.2|spell_targets.shuriken_storm>=4&cooldown.symbols_of_death.remains>10)
+actions.stealth_cds+=/shadow_dance,if=(!talent.dark_shadow.enabled|dot.nightblade.remains>=5+talent.subterfuge.enabled)&(!talent.nightstalker.enabled&!talent.dark_shadow.enabled|!variable.use_priority_rotation|combo_points.deficit<=1+2*azerite.the_first_dance.enabled)&(variable.shd_threshold|buff.symbols_of_death.remains>=1.2|spell_targets.shuriken_storm>=4&cooldown.symbols_of_death.remains>10)
 actions.stealth_cds+=/shadow_dance,if=target.time_to_die<cooldown.symbols_of_death.remains&!raid_event.adds.up
 
 # Stealthed Rotation
@@ -126,8 +122,6 @@ actions.stealth_cds+=/shadow_dance,if=target.time_to_die<cooldown.symbols_of_dea
 actions.stealthed=shadowstrike,if=buff.stealth.up
 # Finish at 4+ CP without DS, 5+ with DS, and 6 with DS after Vanish
 actions.stealthed+=/call_action_list,name=finish,if=combo_points.deficit<=1-(talent.deeper_stratagem.enabled&buff.vanish.up)
-# Shuriken Toss at 29+ Sharpened Blades stacks in Stealth for damage bonuses. Hold for Find Weakness if possible.
-actions.stealthed+=/shuriken_toss,if=buff.sharpened_blades.stack>=29&(!talent.find_weakness.enabled|debuff.find_weakness.up)
 # At 2 targets with Secret Technique keep up Find Weakness by cycling Shadowstrike.
 actions.stealthed+=/shadowstrike,cycle_targets=1,if=talent.secret_technique.enabled&talent.find_weakness.enabled&debuff.find_weakness.remains<1&spell_targets.shuriken_storm=2&target.time_to_die-remains>6
 # Without Deeper Stratagem and 3 Ranks of Blade in the Shadows it is worth using Shadowstrike on 3 targets.
@@ -161,4 +155,4 @@ off_hand=howlis_crystal_shiv,id=159131,bonus_id=4779/1512,enchant=versatile_navi
 # gear_mastery_rating=522
 # gear_versatility_rating=298
 # gear_speed_rating=48
-# gear_armor=1427
+# gear_armor=1430

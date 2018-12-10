@@ -77,7 +77,7 @@ actions.cd+=/serenity,if=cooldown.rising_sun_kick.remains<=2|target.time_to_die<
 
 # Serenity priority
 actions.serenity=rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=active_enemies<3|prev_gcd.1.spinning_crane_kick
-actions.serenity+=/fists_of_fury,if=(buff.bloodlust.up&prev_gcd.1.rising_sun_kick&!azerite.swift_roundhouse.enabled)|buff.serenity.remains<1|(active_enemies>1&active_enemies<5)
+actions.serenity+=/fists_of_fury,if=(buff.bloodlust.up&prev_gcd.1.rising_sun_kick)|buff.serenity.remains<1|(active_enemies>1&active_enemies<5)
 actions.serenity+=/spinning_crane_kick,if=!prev_gcd.1.spinning_crane_kick&(active_enemies>=3|(active_enemies=2&prev_gcd.1.blackout_kick))
 actions.serenity+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains
 
@@ -121,4 +121,4 @@ off_hand=lancet_of_the_deft_hand,id=160693,bonus_id=4800/1507,enchant=versatile_
 # gear_haste_rating=753
 # gear_mastery_rating=781
 # gear_versatility_rating=505
-# gear_armor=1897
+# gear_armor=1911

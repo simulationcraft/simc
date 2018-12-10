@@ -76,8 +76,8 @@ actions.cds+=/toxic_blade,if=dot.rupture.ticking
 # Envenom at 4+ (5+ with DS) CP. Immediately on 2+ targets, with Vendetta, or with TB; otherwise wait for some energy. Also wait if Exsg combo is coming up.
 actions.direct=envenom,if=combo_points>=4+talent.deeper_stratagem.enabled&(debuff.vendetta.up|debuff.toxic_blade.up|energy.deficit<=25+variable.energy_regen_combined|!variable.single_target)&(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)
 actions.direct+=/variable,name=use_filler,value=combo_points.deficit>1|energy.deficit<=25+variable.energy_regen_combined|!variable.single_target
-# Poisoned Knife at 29+ stacks of Sharpened Blades.
-actions.direct+=/poisoned_knife,if=variable.use_filler&buff.sharpened_blades.stack>=29
+# With Echoing Blades, Fan of Knives at 2+ targets.
+actions.direct+=/fan_of_knives,if=variable.use_filler&azerite.echoing_blades.enabled&spell_targets.fan_of_knives>=2
 # Fan of Knives at 19+ stacks of Hidden Blades or against 4+ (5+ with Double Dose) targets.
 actions.direct+=/fan_of_knives,if=variable.use_filler&(buff.hidden_blades.stack>=19|spell_targets.fan_of_knives>=4+(azerite.double_dose.rank>2)+stealthed.rogue)
 # Fan of Knives to apply Deadly Poison if inactive on any target at 3 targets.
@@ -138,4 +138,4 @@ off_hand=latticework_scalpel,id=160683,bonus_id=4800/1507,enchant=quick_navigati
 # gear_haste_rating=1317
 # gear_mastery_rating=584
 # gear_versatility_rating=195
-# gear_armor=1897
+# gear_armor=1911

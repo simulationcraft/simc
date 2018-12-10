@@ -52,8 +52,7 @@ actions+=/demonbolt,if=soul_shard<=3&buff.demonic_core.up&((cooldown.summon_demo
 actions+=/bilescourge_bombers,if=ptr=1
 actions+=/call_action_list,name=build_a_shard
 
-actions.build_a_shard=demonbolt,if=azerite.forbidden_knowledge.enabled&buff.forbidden_knowledge.react&!buff.demonic_core.react&cooldown.summon_demonic_tyrant.remains>20
-actions.build_a_shard+=/soul_strike
+actions.build_a_shard=soul_strike
 actions.build_a_shard+=/shadow_bolt
 
 actions.implosion=implosion,if=(buff.wild_imps.stack>=6&(soul_shard<3|prev_gcd.1.call_dreadstalkers|buff.wild_imps.stack>=9|prev_gcd.1.bilescourge_bombers|(!prev_gcd.1.hand_of_guldan&!prev_gcd.2.hand_of_guldan))&!prev_gcd.1.hand_of_guldan&!prev_gcd.2.hand_of_guldan&buff.demonic_power.down)|(time_to_die<3&buff.wild_imps.stack>0)|(prev_gcd.2.call_dreadstalkers&buff.wild_imps.stack>2&!talent.demonic_calling.enabled)
@@ -115,5 +114,5 @@ off_hand=codex_of_imminent_ruin,id=160696,bonus_id=4800/1507
 # gear_haste_rating=1217
 # gear_mastery_rating=742
 # gear_versatility_rating=129
-# gear_armor=1159
+# gear_armor=1165
 default_pet=felguard

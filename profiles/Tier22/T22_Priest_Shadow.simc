@@ -40,19 +40,23 @@ actions+=/run_action_list,name=single,if=active_enemies=1
 
 actions.aoe=void_eruption
 actions.aoe+=/dark_ascension,if=buff.voidform.down
+actions.aoe+=/mind_sear,if=buff.harvested_thoughts.up
 actions.aoe+=/void_bolt,if=talent.dark_void.enabled&dot.shadow_word_pain.remains>travel_time
 actions.aoe+=/surrender_to_madness,if=buff.voidform.stack>=(15+buff.bloodlust.up)
 actions.aoe+=/dark_void,if=raid_event.adds.in>10
 actions.aoe+=/mindbender
 actions.aoe+=/shadow_crash,if=raid_event.adds.in>5&raid_event.adds.duration<20
-actions.aoe+=/mind_sear,if=buff.harvested_thoughts.down,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(cooldown.void_bolt.up|cooldown.mind_blast.up)
+actions.aoe+=/vampiric_touch,target_if=refreshable,if=(target.time_to_die>6)&azerite.thought_harvester.rank>0
+actions.aoe+=/vampiric_touch,target_if=dot.shadow_word_pain.refreshable,if=(talent.misery.enabled&target.time_to_die>4)&azerite.thought_harvester.rank>0
+actions.aoe+=/mind_sear,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(cooldown.void_bolt.up|cooldown.mind_blast.up)
 actions.aoe+=/shadow_word_pain
 
 actions.cleave=void_eruption
 actions.cleave+=/dark_ascension,if=buff.voidform.down
+actions.cleave+=/mind_sear,if=buff.harvested_thoughts.up
 actions.cleave+=/void_bolt
 actions.cleave+=/shadow_word_death,target_if=target.time_to_die<3|buff.voidform.down
-actions.cleave+=/surrender_to_madness,if=buff.voidform.stack>=(15+buff.bloodlust.up)
+actions.cleave+=/surrender_to_madness
 actions.cleave+=/dark_void,if=raid_event.adds.in>10
 actions.cleave+=/mindbender
 actions.cleave+=/mind_blast
@@ -61,7 +65,7 @@ actions.cleave+=/shadow_word_pain,target_if=refreshable&target.time_to_die>4,if=
 actions.cleave+=/vampiric_touch,target_if=refreshable,if=(target.time_to_die>6)
 actions.cleave+=/vampiric_touch,target_if=dot.shadow_word_pain.refreshable,if=(talent.misery.enabled&target.time_to_die>4)
 actions.cleave+=/void_torrent,if=buff.voidform.up
-actions.cleave+=/mind_sear,target_if=spell_targets.mind_sear>2&buff.harvested_thoughts.down,chain=1,interrupt=1
+actions.cleave+=/mind_sear,target_if=spell_targets.mind_sear>2,chain=1,interrupt=1
 actions.cleave+=/mind_flay,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(cooldown.void_bolt.up|cooldown.mind_blast.up)
 actions.cleave+=/shadow_word_pain
 
@@ -69,7 +73,7 @@ actions.single=void_eruption
 actions.single+=/dark_ascension,if=buff.voidform.down
 actions.single+=/void_bolt
 actions.single+=/shadow_word_death,if=target.time_to_die<3|cooldown.shadow_word_death.charges=2|(cooldown.shadow_word_death.charges=1&cooldown.shadow_word_death.remains<gcd.max)
-actions.single+=/surrender_to_madness,if=buff.voidform.stack>=(15+buff.bloodlust.up)&target.time_to_die>200|target.time_to_die<75
+actions.single+=/surrender_to_madness,if=target.time_to_die>200|target.time_to_die<75
 actions.single+=/dark_void,if=raid_event.adds.in>10
 actions.single+=/mindbender
 actions.single+=/shadow_word_death,if=!buff.voidform.up|(cooldown.shadow_word_death.charges=2&buff.voidform.stack<15)
@@ -106,4 +110,4 @@ off_hand=codex_of_imminent_ruin,id=160696,bonus_id=4800/1507
 # gear_haste_rating=1217
 # gear_mastery_rating=742
 # gear_versatility_rating=129
-# gear_armor=1159
+# gear_armor=1165

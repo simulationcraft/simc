@@ -27,8 +27,6 @@ actions.precombat+=/augmentation
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
 actions.precombat+=/lights_judgment
-actions.precombat+=/avenging_wrath
-actions.precombat+=/seraphim
 
 # Executed every time the actor is available.
 actions=auto_attack
@@ -81,4 +79,4 @@ off_hand=disc_of_indomitable_will,id=158713,bonus_id=4779/1512/4786
 # gear_haste_rating=1275
 # gear_mastery_rating=267
 # gear_versatility_rating=102
-# gear_armor=4585
+# gear_armor=4593
