@@ -33,7 +33,7 @@ actions.precombat+=/frostbolt
 # Executed every time the actor is available.
 actions=counterspell
 # If the mage has FoF after casting instant Flurry, we can delay the Ice Lance and use other high priority action, if available.
-actions+=/ice_lance,if=prev_gcd.1.flurry&brain_freeze_active&!buff.fingers_of_frost.react
+actions+=/ice_lance,if=prev_gcd.1.flurry&!buff.fingers_of_frost.react
 actions+=/call_action_list,name=cooldowns
 # The target threshold isn't exact. Between 3-5 targets, the differences between the ST and AoE action lists are rather small. However, Freezing Rain prefers using AoE action list sooner as it benefits greatly from the high priority Blizzard action.
 actions+=/call_action_list,name=aoe,if=active_enemies>3&talent.freezing_rain.enabled|active_enemies>4
@@ -96,7 +96,6 @@ actions.single+=/blizzard,if=cast_time=0|active_enemies>1
 # Glacial Spike is used when there's a Brain Freeze proc active (i.e. only when it can be shattered). This is a small to medium gain in most situations. Low mastery leans towards using it when available. When using Splitting Ice and having another target nearby, it's slightly better to use GS when available, as the second target doesn't benefit from shattering the main target.
 actions.single+=/glacial_spike,if=buff.brain_freeze.react|prev_gcd.1.ebonbolt|active_enemies>1&talent.splitting_ice.enabled
 actions.single+=/ice_nova
-actions.single+=/flurry,if=azerite.winters_reach.enabled&!buff.brain_freeze.react&buff.winters_reach.react
 actions.single+=/frostbolt
 actions.single+=/call_action_list,name=movement
 actions.single+=/ice_lance
@@ -131,5 +130,5 @@ off_hand=aureus_vessel,id=158322,bonus_id=4779/1512/4786
 # gear_haste_rating=753
 # gear_mastery_rating=209
 # gear_versatility_rating=512
-# gear_armor=870
+# gear_armor=873
 # set_bonus=waycrests_legacy_2pc=1

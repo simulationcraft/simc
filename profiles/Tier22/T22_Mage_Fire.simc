@@ -117,7 +117,7 @@ actions.standard_rotation+=/pyroblast,if=prev_gcd.1.scorch&buff.heating_up.up&ta
 actions.standard_rotation+=/phoenix_flames,if=(buff.heating_up.react|(!buff.hot_streak.react&(action.fire_blast.charges>0|talent.searing_touch.enabled&target.health.pct<=30)))&!variable.phoenix_pooling
 actions.standard_rotation+=/call_action_list,name=active_talents
 actions.standard_rotation+=/dragons_breath,if=active_enemies>1
-actions.standard_rotation+=/scorch,if=(target.health.pct<=30&talent.searing_touch.enabled)|(azerite.preheat.enabled&debuff.preheat.down)
+actions.standard_rotation+=/scorch,if=target.health.pct<=30&talent.searing_touch.enabled
 actions.standard_rotation+=/fireball
 actions.standard_rotation+=/scorch
 
@@ -147,4 +147,4 @@ main_hand=regurgitated_purifiers_flamestaff,id=160689,bonus_id=4800/1507,enchant
 # gear_haste_rating=978
 # gear_mastery_rating=922
 # gear_versatility_rating=732
-# gear_armor=1159
+# gear_armor=1165
