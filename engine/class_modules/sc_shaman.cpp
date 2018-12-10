@@ -4309,8 +4309,14 @@ struct chained_base_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    p()->buff.stormkeeper->decrement();
-    p()->buff.tectonic_thunder->expire();
+    if ( p()->buff.stormkeeper->check() )
+    {
+      p()->buff.stormkeeper->decrement();
+    }
+    else
+    {
+      p()->buff.tectonic_thunder->expire();
+    }
   }
 
   std::vector<player_t*>& check_distance_targeting( std::vector<player_t*>& tl ) const override
@@ -4341,11 +4347,10 @@ struct chain_lightning_t : public chained_base_t
 
     if ( p()->buff.stormkeeper->up() )
     {
-      // stormkeeper has a -100 millisec% value as effect 1
-      return ( t * ( 1 + p()->talent.stormkeeper->effectN( 1 ).percent() ) );
+      // stormkeeper has a -100% value as effect 1
+      t *= 1 + p()->talent.stormkeeper->effectN( 1 ).percent();
     }
-
-    if ( p()->buff.tectonic_thunder->up() )
+    else if ( p()->buff.tectonic_thunder->up() )
     {
       // Tectonic Thunder makes CL instant
       t *= 1 + p()->buff.tectonic_thunder->value() / 100;
