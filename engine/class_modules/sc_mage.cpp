@@ -2429,18 +2429,6 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     cc_tick_time_reduction = cc_data.effectN( 2 ).percent() + p->talents.amplification->effectN( 1 ).percent();
   }
 
-  void handle_clearcasting( bool is_active )
-  {
-    if ( is_active )
-    {
-      p()->buffs.clearcasting_channel->trigger();
-    }
-    else
-    {
-      p()->buffs.clearcasting_channel->expire();
-    }
-  }
-
   virtual dmg_e amount_type( const action_state_t*, bool = false ) const override
   {
     return DMG_DIRECT;
@@ -2493,17 +2481,32 @@ struct arcane_missiles_t : public arcane_mage_spell_t
   {
     p()->buffs.arcane_pummeling->expire();
 
-    // In game, the channel refresh happens before the hidden Clearcasting buff is updated.
     bool cc_active = p()->buffs.clearcasting->check() != 0;
-    bool cc_delay = p()->bugs && get_dot( target )->is_ticking();
 
-    // Arcane Pummeling seems to ignore the normal CC state that we model here through
-    // the hidden clearcasting_channel buff, snapshot it separately.
+    // Arcane Pummeling only checks if Clearcasting was consumed when
+    // the last Arcane Missiles was cast. It doesn't care about the state
+    // of the current channel.
     p()->state.clearcasting_active = cc_active;
 
-    if ( !cc_delay )
+    // The channel time and tick time reduction, however, don't check
+    // if last Arcane Missiles consumed Clearcasting or not. They work in
+    // a different, not very clear way.
+    //
+    // In particular, the first refresh never benefits from Clearcasting,
+    // even if Clearcasting was consumed on the refresh. The second refresh
+    // checks if the first refresh had Clearcasting and so on.
+    //
+    // Given that second and further refreshes are rarely relevant, we just
+    // never let active channel gain the Clearcasting effects on a refresh.
+    //
+    // TODO: Should we model this?
+    if ( cc_active && !get_dot( target )->is_ticking() )
     {
-      handle_clearcasting( cc_active );
+      p()->buffs.clearcasting_channel->trigger();
+    }
+    else
+    {
+      p()->buffs.clearcasting_channel->expire();
     }
 
     arcane_mage_spell_t::execute();
@@ -2520,11 +2523,6 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     }
 
     p()->buffs.quick_thinker->trigger();
-
-    if ( cc_delay )
-    {
-      handle_clearcasting( cc_active );
-    }
   }
 
   virtual bool usable_moving() const override
