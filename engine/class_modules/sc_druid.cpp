@@ -3408,16 +3408,12 @@ struct ferocious_bite_t : public cat_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( p()->dbc.ptr && p()->talent.sabertooth->ok() )
+      if (p()->talent.sabertooth->ok())
       {
-        td( s->target )
-            ->dots.rip->extend_duration(
-                timespan_t::from_seconds( p()->talent.sabertooth->effectN( 2 ).base_value() * combo_points ),
-                timespan_t::from_seconds( 32 ), 0 );
-      }
-      else if ( s->target->health_percentage() <= 25 || p()->talent.sabertooth->ok() )
-      {
-        td( s->target )->dots.rip->refresh_duration( 0 );
+        td(s->target)
+          ->dots.rip->extend_duration(
+            timespan_t::from_seconds(p()->talent.sabertooth->effectN(2).base_value() * combo_points),
+            timespan_t::from_seconds(32), 0);
       }
     }
   }
@@ -3579,22 +3575,11 @@ struct lunar_inspiration_t : public cat_attack_t
     return cat_attack_t::available_targets( tl );
   }
 
-  virtual double bonus_da(const action_state_t* s) const override
+  virtual double bonus_ta( const action_state_t* s ) const override
   {
-    double da = cat_attack_t::bonus_da(s);
+    double ta = cat_attack_t::bonus_ta( s );
 
-    if (!p()->dbc.ptr)
-      da += p()->azerite.power_of_the_moon.value(2);
-
-    return da;
-  }
-
-  virtual double bonus_ta(const action_state_t* s) const override
-  {
-    double ta = cat_attack_t::bonus_ta(s);
-
-    if (p()->dbc.ptr)
-      ta += p()->azerite.power_of_the_moon.value(2);
+    ta += p()->azerite.power_of_the_moon.value( 2 );
 
     return ta;
   }
@@ -3871,48 +3856,25 @@ struct rip_t : public cat_attack_t
   action_state_t* new_state() override
   { return new rip_state_t( p(), this, target ); }
 
-  timespan_t composite_dot_duration(const action_state_t* s) const
+  timespan_t composite_dot_duration( const action_state_t* s ) const
   {
-    timespan_t t = cat_attack_t::composite_dot_duration(s);
+    timespan_t t = cat_attack_t::composite_dot_duration( s );
 
-    if ( p()->dbc.ptr )
-      return t *= p()->resources.current[ RESOURCE_COMBO_POINT ];
+    return t *= p()->resources.current[ RESOURCE_COMBO_POINT ];
 
     return t;
   }
 
   double attack_tick_power_coefficient( const action_state_t* s ) const override
   {
-    if (p()->dbc.ptr)
-      return cat_attack_t::attack_tick_power_coefficient(s);
-
-    /* FIXME: Does this even work correctly for tick_damage expression?
-     probably just uses the CP of the Rip already on the target */
-    rip_state_t* rip_state = debug_cast<rip_state_t*>( td( s -> target ) -> dots.rip -> state );
-
-    if ( ! rip_state )
-      return 0;
-
-    return cat_attack_t::attack_tick_power_coefficient( s ) * rip_state -> combo_points;
+    return cat_attack_t::attack_tick_power_coefficient( s );
   }
 
   virtual double bonus_ta( const action_state_t* s ) const override
   {
-    rip_state_t* rip_state = (rip_state_t*)td( s->target )->dots.rip->state;
-
-    if ( !rip_state )
-      return cat_attack_t::bonus_ta( s );
-
     double ta = cat_attack_t::bonus_ta( s );
 
-    if ( p()->dbc.ptr )
-    {
-      ta += p()->azerite.gushing_lacerations.value( 2 );
-    }
-    else
-    {
-      ta += p()->azerite.gushing_lacerations.value( 2 ) * rip_state->combo_points;
-    }
+    ta += p()->azerite.gushing_lacerations.value( 2 );
 
     if ( p()->buff.berserk->up() || p()->buff.incarnation_cat->up() )
     {
@@ -8894,19 +8856,6 @@ double druid_t::composite_player_multiplier( school_e school ) const
 double druid_t::composite_rating_multiplier( rating_e rating ) const
 {
   double rm = player_t::composite_rating_multiplier( rating );
-
-  if (dbc.ptr) return rm;
-
-  switch( rating )
-  {
-    case RATING_SPELL_HASTE:
-    case RATING_MELEE_HASTE:
-    case RATING_RANGED_HASTE:
-      rm *= 1.0 + spec.feral -> effectN( 8 ).percent();
-      break;
-    default:
-      break;
-  }
 
   return rm;
 }
