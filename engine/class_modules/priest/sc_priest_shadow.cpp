@@ -1473,8 +1473,7 @@ priest_t::insanity_state_t::insanity_state_t( priest_t& a )
     last_drained( timespan_t::zero() ),
     actor( a ),
     base_drain_per_sec( a.find_spell( 194249 )->effectN( 3 ).base_value() / -500.0 ),
-    // 15% reduction as of 10/22/2018 on PTR
-    stack_drain_multiplier( 0.68 ),  // Hardcoded Patch 8.0 (2018-06-20)
+    stack_drain_multiplier( 0.68 ),  // Hardcoded Patch 8.1 (2018-12-09)
     base_drain_multiplier( 1.0 )
 {
 }

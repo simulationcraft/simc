@@ -985,30 +985,29 @@ public:
    */
   void init_affected_by()
   {
-    size_t effectNumber = 4;
     struct affect_init_t{
       const spelleffect_data_t& effect;
       bool& affects;
     } affects[] = {
-        {priest().buffs.voidform->data().effectN(1),      affected_by.voidform_da},
-        {priest().buffs.voidform->data().effectN(2),      affected_by.voidform_ta},
-        {priest().buffs.shadowform->data().effectN(1),    affected_by.shadowform_da},
-        {priest().buffs.shadowform->data().effectN(effectNumber),    affected_by.shadowform_ta},
-        {priest().buffs.twist_of_fate->data().effectN(1), affected_by.twist_of_fate_da},
-        {priest().buffs.twist_of_fate->data().effectN(2), affected_by.twist_of_fate_ta},
-        {priest().mastery_spells.madness->effectN(1),     affected_by.mastery_madness_da},
-        {priest().mastery_spells.madness->effectN(2),     affected_by.mastery_madness_ta},
-        {priest().specs.shadow_priest->effectN( 1 ),      affected_by.shadow_priest_da},
-        {priest().specs.shadow_priest->effectN( 2 ),      affected_by.shadow_priest_ta},
-        {priest().specs.holy_priest->effectN( 1 ),        affected_by.holy_priest_heal_da},
-        {priest().specs.holy_priest->effectN( 2 ),        affected_by.holy_priest_heal_ta},
-        {priest().specs.holy_priest->effectN( 3 ),        affected_by.holy_priest_damage_da},
-        {priest().specs.holy_priest->effectN( 4 ),        affected_by.holy_priest_damage_ta},
-        {priest().specs.discipline_priest->effectN( 1 ),  affected_by.discipline_priest_heal_da},
-        {priest().specs.discipline_priest->effectN( 2 ),  affected_by.discipline_priest_heal_ta},
-        {priest().specs.discipline_priest->effectN( 4 ),  affected_by.discipline_priest_damage_da},
-        {priest().specs.discipline_priest->effectN( 5 ),  affected_by.discipline_priest_damage_ta},
-        {priest().talents.sins_of_the_many->effectN( 1), affected_by.sins_of_the_many_da}, //Sins of the Many affects both direct damage and dot damage
+        {priest().buffs.voidform->data().effectN( 1 ),      affected_by.voidform_da},
+        {priest().buffs.voidform->data().effectN( 2 ),      affected_by.voidform_ta},
+        {priest().buffs.shadowform->data().effectN( 1 ),    affected_by.shadowform_da},
+        {priest().buffs.shadowform->data().effectN( 4 ),    affected_by.shadowform_ta},
+        {priest().buffs.twist_of_fate->data().effectN( 1 ), affected_by.twist_of_fate_da},
+        {priest().buffs.twist_of_fate->data().effectN( 2 ), affected_by.twist_of_fate_ta},
+        {priest().mastery_spells.madness->effectN( 1 ),     affected_by.mastery_madness_da},
+        {priest().mastery_spells.madness->effectN( 2 ),     affected_by.mastery_madness_ta},
+        {priest().specs.shadow_priest->effectN( 1 ),        affected_by.shadow_priest_da},
+        {priest().specs.shadow_priest->effectN( 2 ),        affected_by.shadow_priest_ta},
+        {priest().specs.holy_priest->effectN( 1 ),          affected_by.holy_priest_heal_da},
+        {priest().specs.holy_priest->effectN( 2 ),          affected_by.holy_priest_heal_ta},
+        {priest().specs.holy_priest->effectN( 3 ),          affected_by.holy_priest_damage_da},
+        {priest().specs.holy_priest->effectN( 4 ),          affected_by.holy_priest_damage_ta},
+        {priest().specs.discipline_priest->effectN( 1 ),    affected_by.discipline_priest_heal_da},
+        {priest().specs.discipline_priest->effectN( 2 ),    affected_by.discipline_priest_heal_ta},
+        {priest().specs.discipline_priest->effectN( 4 ),    affected_by.discipline_priest_damage_da},
+        {priest().specs.discipline_priest->effectN( 5 ),    affected_by.discipline_priest_damage_ta},
+        {priest().talents.sins_of_the_many->effectN( 1 ),   affected_by.sins_of_the_many_da}, //Sins of the Many affects both direct damage and dot damage
     };
 
     for (const auto& a : affects)
