@@ -389,7 +389,6 @@ struct death_knight_td_t : public actor_target_data_t {
 
     // Azerite Traits
     buff_t* deep_cuts;
-    buff_t* glacial_contagion;
   } debuff;
 
   death_knight_td_t( player_t* target, death_knight_t* death_knight );
@@ -459,14 +458,12 @@ public:
     // Azerite Traits
     buff_t* bloody_runeblade;
     buff_t* bones_of_the_damned;
-    buff_t* embrace_of_the_darkfallen;
     buff_t* eternal_rune_weapon;
 
     buff_t* frostwhelps_indignation;
     buff_t* icy_citadel_builder;
     buff_t* icy_citadel;
 
-    buff_t* festering_doom;
     buff_t* festermight;
   } buffs;
 
@@ -509,7 +506,6 @@ public:
     // Frost
     action_t* cold_heart;
     action_t* freezing_death; // T21 4P
-    action_t* glacial_contagion; // Azerite
     action_t* inexorable_assault;
 
     // Unholy
@@ -735,7 +731,6 @@ public:
   {
     real_ppm_t* bloodworms;
     real_ppm_t* freezing_death;
-    real_ppm_t* glacial_contagion;
     real_ppm_t* runic_attenuation;
     real_ppm_t* killing_machine;
   } rppm;
@@ -798,7 +793,6 @@ public:
     azerite_power_t bloody_runeblade;
     azerite_power_t bones_of_the_damned; // TODO : make sure the effectN( 2 ) is used for the % chance to proc. Check how it interacts with DRW
     azerite_power_t deep_cuts; // TODO : does it work with DRW ? both in application and damage amp
-    azerite_power_t embrace_of_the_darkfallen; // TODO: remove once 8.1 goes live
     azerite_power_t eternal_rune_weapon;
     azerite_power_t marrowblood; // TODO : how does it interact with blood shield ?
     
@@ -806,19 +800,16 @@ public:
     azerite_power_t echoing_howl; // TODO : I have no idea how that actually works ingame
     azerite_power_t frostwhelps_indignation; // TODO: Find the damaging spell's ID
     azerite_power_t frozen_tempest; // TODO : check if the damage is increased per tick or per cast
-    azerite_power_t glacial_contagion; // TODO : does the amp to obliterate affect both hits ? Does the trait interact with Frostscythe ? Need more info on the dot as well
-                                       // TODO: remove once 8.1 goes live
+
     azerite_power_t icy_citadel;
     azerite_power_t killer_frost; // TODO : check if it procs KM from both swings as well
     azerite_power_t latent_chill; // TODO : check that the wording actually means what it means
 
     // Unholy
     azerite_power_t cankerous_wounds; // Is it a separate roll or does it affect the 50/50 roll between 2-3 wounds ?
-    azerite_power_t festering_doom; // TODO: Remove once 8.1 goes live
     azerite_power_t festermight;
     azerite_power_t harrowing_decay; // TODO : How does it refresh on multiple DC casts in a row ?
     azerite_power_t helchains; // TODO: NYI
-    azerite_power_t horrid_experimentation;
     azerite_power_t last_surprise; 
     azerite_power_t magus_of_the_dead; // TODO: NYI
   }azerite;
@@ -996,8 +987,6 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
 
   debuff.deep_cuts         = make_buff( *this, "deep_cuts", p -> find_spell( 272685 ) )
                            -> set_trigger_spell( p -> azerite.deep_cuts );
-  debuff.glacial_contagion = make_buff( *this, "glacial_contagion", p -> azerite.glacial_contagion.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
-                           -> set_trigger_spell( p -> azerite.glacial_contagion );
 
   // On target death triggers
   if ( p -> specialization() == DEATH_KNIGHT_UNHOLY )
@@ -2061,26 +2050,6 @@ struct risen_skulker_pet_t : public death_knight_pet_t
       aoe = -1;
       base_aoe_multiplier = 0.5;
     }
-
-    timespan_t gcd() const override
-    {
-      // Risen Skulker has a 2.4s between each cast start, making its cast time scaling with haste nearly irrelevant
-      // After further investigation, Risen skulker seems to receive an order to attack if it's not currently casting every 1.2s.
-      // That means if the cast time is inferior to 1.2s, the interval between cast start will be 1.2s, and 2.4s otherwise.
-      // https://github.com/SimCMinMax/WoW-BugTracker/issues/345
-      
-      timespan_t interval = super::gcd();
-
-      // Can this be removed? commented out on 8.1 switch by Mystler
-      /*if ( p() -> o() -> bugs && !p() -> o() -> dbc.ptr )
-      {
-        interval = execute_time() <= timespan_t::from_seconds( 1.2 ) ?
-                            timespan_t::from_seconds( 1.2 ) :
-                            timespan_t::from_seconds( 2.4 );
-      }*/
-
-      return interval;
-    }
   };
 
   risen_skulker_pet_t( death_knight_t* owner ) : death_knight_pet_t( owner, "risen_skulker", true, false )
@@ -2996,27 +2965,6 @@ struct inexorable_assault_damage_t : public death_knight_spell_t
   }
 };
 
-struct glacial_contagion_t : public death_knight_spell_t
-{
-  glacial_contagion_t( death_knight_t* p ) : 
-    death_knight_spell_t( "glacial_contagion", p, p -> azerite.glacial_contagion.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
-  {
-    background = true;
-    base_td = p -> azerite.glacial_contagion.value( 1 );
-
-    // TODO : assumptions only for now, need to test more
-    hasted_ticks = tick_zero = false;
-    tick_may_crit = true;
-  }
-
-  void execute() override
-  {
-    death_knight_spell_t::execute();
-
-    td( execute_state -> target ) -> debuff.glacial_contagion -> trigger();
-  }
-};
-
 // ==========================================================================
 // Death Knight Attacks
 // ==========================================================================
@@ -3136,15 +3084,6 @@ struct melee_t : public death_knight_melee_attack_t
       if ( p() -> talent.bloodworms -> ok() )
       {
         trigger_bloodworm();
-      }
-
-      if ( p() -> azerite.glacial_contagion.enabled() )
-      {
-        if ( p() -> rppm.glacial_contagion -> trigger() )
-        {
-          p() -> active_spells.glacial_contagion -> set_target( s -> target );
-          p() -> active_spells.glacial_contagion -> execute();      
-        }
       }
     }
   }
@@ -3796,24 +3735,11 @@ struct dark_command_t: public death_knight_spell_t
 
 // Dark Transformation ======================================================
 
-struct horrid_experimentation_t : public death_knight_spell_t
-{
-  horrid_experimentation_t( death_knight_t* p ) :
-    death_knight_spell_t( "horrid_experimentation", p, p -> find_spell( 273096 ) )
-  {
-    aoe = -1;
-    background = true;
-    base_dd_min = base_dd_max = p -> azerite.horrid_experimentation.value();
-  }
-};
-
 struct dark_transformation_buff_t : public buff_t
 {
-  horrid_experimentation_t* horrid_experimentation;
 
   dark_transformation_buff_t( death_knight_t* p ):
-    buff_t( p, "dark_transformation", p -> spec.dark_transformation ),
-    horrid_experimentation( p -> azerite.horrid_experimentation.enabled() ? new horrid_experimentation_t( p ) : nullptr )
+    buff_t( p, "dark_transformation", p -> spec.dark_transformation )
   {
     set_cooldown( timespan_t::zero() );
   }
@@ -3823,11 +3749,6 @@ struct dark_transformation_buff_t : public buff_t
     buff_t::expire_override( s, t );
 
     death_knight_t* p = debug_cast<death_knight_t*>( player );
-
-    if ( p -> azerite.horrid_experimentation.enabled() )
-    {
-      horrid_experimentation -> execute();
-    }
   }
 };
 
@@ -4305,11 +4226,6 @@ struct death_coil_t : public death_knight_spell_t
 
     p() -> cooldown.army_of_the_dead -> adjust( -timespan_t::from_seconds( 
       p() -> talent.army_of_the_damned -> effectN( 2 ).base_value() / 10 ) );
-
-    if ( p() -> azerite.festering_doom.enabled() )
-    {
-      p() -> buffs.festering_doom -> trigger();
-    }
     
     p() -> buffs.sudden_doom -> decrement();
   }
@@ -4710,8 +4626,7 @@ struct bursting_sores_t : public death_knight_spell_t
     death_knight_spell_t( "bursting_sores", p, p -> spell.bursting_sores )
   {
     background = true;
-    // Adding one target because the main target is ignored when dealing damage
-    aoe = as<int> ( p -> talent.bursting_sores -> effectN( 2 ).base_value() + 1 );
+    aoe = -1;
   }
 
   // Bursting sores have a slight delay ingame, but nothing really significant
@@ -4784,24 +4699,12 @@ struct festering_strike_t : public death_knight_melee_attack_t
   {
     double da = death_knight_melee_attack_t::bonus_da( s );
 
-    if ( p() -> azerite.festering_doom.enabled() && p() -> buffs.festering_doom -> up() )
-    {
-      da += p() -> azerite.festering_doom.value();
-    }
-
     if ( p() -> azerite.cankerous_wounds.enabled() )
     {
       da += p() -> azerite.cankerous_wounds.value( 1 );
     }
 
     return da;
-  }
-
-  void execute() override
-  {
-    death_knight_melee_attack_t::execute();
-
-    p() -> buffs.festering_doom -> decrement();
   }
 
   void impact( action_state_t* s ) override
@@ -5505,17 +5408,6 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     cc += p() -> buffs.killing_machine -> value();
 
     return cc;
-  }
-
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double da = death_knight_melee_attack_t::bonus_da( s );
-
-    if ( p() -> azerite.glacial_contagion.enabled() && td( target ) -> debuff.glacial_contagion -> up() )
-    {
-      da += p() -> azerite.glacial_contagion.value( 2 );
-    }
-    return da;
   }
 
   void execute() override
@@ -6447,11 +6339,6 @@ struct vampiric_blood_buff_t : public buff_t
                                          this -> player -> resources.max[ RESOURCE_HEALTH ] );
       }
     }
-
-    if ( p -> azerite.embrace_of_the_darkfallen.enabled() )
-    {
-      p -> buffs.embrace_of_the_darkfallen -> trigger();
-    }
   }
 };
 
@@ -6817,8 +6704,8 @@ void death_knight_t::trigger_killing_machine( double chance, proc_t* proc, proc_
 {
   bool triggered = false;
   bool wasted = buffs.killing_machine -> up();
-  // If the chance is 0, use the rppm effect
-  if ( !chance )
+  // If the given chance is 0, use the rppm effect
+  if ( chance == 0 )
   {
     if ( rppm.killing_machine -> trigger() )
     {
@@ -6831,27 +6718,28 @@ void death_knight_t::trigger_killing_machine( double chance, proc_t* proc, proc_
     triggered = rng().roll( chance );
   }
 
-  // If the proc didn't happen, there's no waste and nothing else to do
-  if ( triggered )
+  // If Killing Machine didn't proc, there's no waste and nothing else to do
+  if ( !triggered )
   {
-    buffs.killing_machine -> trigger();
+    return;
+  }
 
-    // If the proc is guaranteed, allow the player to instantly react to it
-    if ( chance == 1.0 )
-    {
-      buffs.killing_machine -> predict();
-    }
+  buffs.killing_machine -> trigger();
+
+  // If the proc is guaranteed, allow the player to instantly react to it
+  if ( chance == 1.0 )
+  {
+    buffs.killing_machine -> predict();
+  }
   
-    // The given proc occurs only if there's no waste
-    // Wasted procs are handled in the source action
-    if ( !wasted )
-    {
-      proc -> occur();
-    }
-    else 
-    {
-      wasted_proc -> occur();
-    }
+  // Use procs to track sources and wastes
+  if ( !wasted )
+  {
+    proc -> occur();
+  }
+  else 
+  {
+    wasted_proc -> occur();
   }
 }
 
@@ -7103,11 +6991,6 @@ void death_knight_t::create_actions()
     active_spells.bone_spike_graveyard = new bone_spike_graveyard_t( this );
   }
 
-  if ( azerite.glacial_contagion.enabled() )
-  {
-    active_spells.glacial_contagion = new glacial_contagion_t( this );
-  }
-
   player_t::create_actions();
 }
 
@@ -7346,7 +7229,6 @@ void death_knight_t::init_rng()
   rppm.freezing_death = get_rppm( "freezing_death", sets -> set( DEATH_KNIGHT_FROST, T21, B4 ) );
   rppm.bloodworms = get_rppm( "bloodworms", talent.bloodworms );
   rppm.runic_attenuation = get_rppm( "runic_attenuation", talent.runic_attenuation );
-  rppm.glacial_contagion = get_rppm( "glacial_contagion", azerite.glacial_contagion.spell() -> effectN( 1 ).trigger() );
   rppm.killing_machine = get_rppm( "killing_machine", spec.killing_machine );
 }
 
@@ -7562,7 +7444,6 @@ void death_knight_t::init_spells()
   // Blood
   azerite.deep_cuts                 = find_azerite_spell( "Deep Cuts" );
   azerite.marrowblood               = find_azerite_spell( "Marrowblood" );
-  azerite.embrace_of_the_darkfallen = find_azerite_spell( "Embrace of the Darkfallen" );
   azerite.bones_of_the_damned       = find_azerite_spell( "Bones of the Damned" );
   azerite.eternal_rune_weapon       = find_azerite_spell( "Eternal Rune Weapon" );
   azerite.bloody_runeblade          = find_azerite_spell( "Bloody Runeblade" );
@@ -7572,14 +7453,11 @@ void death_knight_t::init_spells()
   azerite.killer_frost            = find_azerite_spell( "Killer Frost" );
   azerite.icy_citadel             = find_azerite_spell( "Icy Citadel" );
   azerite.latent_chill            = find_azerite_spell( "Latent Chill" );
-  azerite.glacial_contagion       = find_azerite_spell( "Glacial Contagion" );
   azerite.echoing_howl            = find_azerite_spell( "Echoing Howl" );
   azerite.frostwhelps_indignation = find_azerite_spell( "Frostwhelp's Indignation" );
 
   // Unholy
   azerite.last_surprise          = find_azerite_spell( "Last Surprise" );
-  azerite.festering_doom         = find_azerite_spell( "Festering Doom" );
-  azerite.horrid_experimentation = find_azerite_spell( "Horrid Experimentation" );
   azerite.festermight            = find_azerite_spell( "Festermight" );
   azerite.harrowing_decay        = find_azerite_spell( "Harrowing Decay" );
   azerite.cankerous_wounds       = find_azerite_spell( "Cankerous Wounds" );
@@ -8160,9 +8038,6 @@ void death_knight_t::create_buffs()
   buffs.bones_of_the_damned = make_buff<stat_buff_t>( this, "bones_of_the_damned",
                                 azerite.bones_of_the_damned.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
         -> add_stat( STAT_ARMOR, azerite.bones_of_the_damned.value( 1 ) );
-  
-  buffs.embrace_of_the_darkfallen = make_buff<stat_buff_t>( this, "embrace_of_the_darkfallen", find_spell( 275926 ) )
-        -> add_stat( STAT_LEECH_RATING, azerite.embrace_of_the_darkfallen.value( 2 ) );
 
   buffs.eternal_rune_weapon = make_buff<stat_buff_t>( this, "eternal_rune_weapon", 
                                 azerite.eternal_rune_weapon.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
@@ -8173,9 +8048,6 @@ void death_knight_t::create_buffs()
 
   buffs.icy_citadel_builder = make_buff( this, "icy_citadel_builder",
                                 azerite.icy_citadel.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() );
-  
-  buffs.festering_doom = make_buff( this, "festering_doom", 
-                          azerite.festering_doom.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() );
   
   buffs.festermight = make_buff<stat_buff_t>( this, "festermight", find_spell( 274373 ) )
         -> add_stat( STAT_STRENGTH, azerite.festermight.value() )
