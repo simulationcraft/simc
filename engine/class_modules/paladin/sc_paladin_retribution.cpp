@@ -72,6 +72,10 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
       base_dd_min = base_dd_max = p -> azerite.lights_decree.value() * parent_cost;
       aoe = -1;
       may_crit = true;
+
+      // TODO(mserrano): why is this not in spelldata?
+      school = SCHOOL_HOLY;
+      ret_crusade = avenging_wrath = ret_damage_increase = ret_mastery_direct = ret_execution_sentence = ret_inquisition = true;
     }
   };
 
