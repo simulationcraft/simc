@@ -912,7 +912,7 @@ public:
   double    rune_regen_coefficient() const;
   void      trigger_killing_machine( double chance, proc_t* proc, proc_t* wasted_proc );
   void      trigger_runic_empowerment( double rpcost );
-  bool      trigger_runic_corruption( double rpcost, double override_chance = -1.0 );
+  bool      trigger_runic_corruption( double rpcost, double override_chance = -1.0, proc_t* proc = nullptr );
   void      trigger_festering_wound( const action_state_t* state, unsigned n_stacks = 1, proc_t* proc = nullptr );
   void      burst_festering_wound( const action_state_t* state, unsigned n = 1 );
   void      default_apl_dps_precombat();
@@ -2483,10 +2483,13 @@ struct death_knight_action_t : public Base
   {
     auto ret = action_base_t::consume_cost_per_tick( dot );
 
-    if ( this -> last_resource_cost > 0 )
+    if ( this -> cost_per_tick( RESOURCE_RUNIC_POWER ) > 0 && this -> last_resource_cost > 0 )
     {
       p() -> buffs.icy_talons -> trigger();
+      
       p() -> trigger_t20_2pc_frost( this -> last_resource_cost );
+
+      p() -> trigger_runic_empowerment( this -> last_resource_cost );
     }
 
     return ret;
@@ -2545,6 +2548,16 @@ struct death_knight_action_t : public Base
 
     if ( this -> base_costs[ RESOURCE_RUNIC_POWER ] > 0 && this -> last_resource_cost > 0 )
     {
+      if ( p() -> spec.runic_empowerment -> ok() )
+      {
+        p() -> trigger_runic_empowerment( this -> last_resource_cost );
+      }
+
+      if ( p() -> spec.runic_corruption -> ok() )
+      {
+        p() -> trigger_runic_corruption( this -> last_resource_cost, -1.0, p() -> procs.rp_runic_corruption );
+      }
+
       if ( p() -> talent.summon_gargoyle -> ok() && p() -> pets.gargoyle )
       {
         p() -> pets.gargoyle -> increase_power( this -> last_resource_cost );
@@ -3581,15 +3594,6 @@ struct breath_of_sindragosa_t : public death_knight_spell_t
       d -> cancel();
   }
 
-  bool consume_cost_per_tick( const dot_t& dot ) override
-  {
-    bool ret = death_knight_spell_t::consume_cost_per_tick( dot );
-
-    p() -> trigger_runic_empowerment( last_resource_cost );
-
-    return ret;
-  }
-
   void execute() override
   {
     dot_t* d = get_dot( target );
@@ -4099,7 +4103,7 @@ struct t21_death_coil_t : public death_knight_spell_t
     if ( result_is_hit( execute_state -> result ) )
     {
       // 2017-12-23 : looks like the bonus coil can also proc runic corruption
-      p() -> trigger_runic_corruption( base_costs[ RESOURCE_RUNIC_POWER ] );
+      p() -> trigger_runic_corruption( base_costs[ RESOURCE_RUNIC_POWER ], -1.0, p() -> procs.rp_runic_corruption );
     }
 
     // Reduces the cooldown Dark Transformation by 1s
@@ -4203,15 +4207,11 @@ struct death_coil_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
     
-    // Sudden Doomed Death Coils buff Gargoyle
+    // Sudden Doomed Death Coils buff Gargoyle and trigger Runic Corruption
     if ( p() -> buffs.sudden_doom -> check() && p() -> pets.gargoyle )
     {
       p() -> pets.gargoyle -> increase_power( base_costs[ RESOURCE_RUNIC_POWER ] );
-    }
-
-    if ( result_is_hit( execute_state -> result ) )
-    {
-      p() -> trigger_runic_corruption( base_costs[ RESOURCE_RUNIC_POWER ] );
+      p() -> trigger_runic_corruption( base_costs[ RESOURCE_RUNIC_POWER ], -1.0, p() -> procs.rp_runic_corruption  );
     }
 
     // Reduces the cooldown Dark Transformation by 1s
@@ -4472,15 +4472,6 @@ struct death_strike_t : public death_knight_melee_attack_t
       {
         p() -> replenish_rune( 1, p() -> gains.t19_4pc_blood );
       }
-
-      if ( p() -> spec.runic_empowerment )
-      {
-        p() -> trigger_runic_empowerment( base_costs[ RESOURCE_RUNIC_POWER ] );
-      }
-      else if ( p() -> spec.runic_corruption )
-      {
-        p() -> trigger_runic_corruption( base_costs[ RESOURCE_RUNIC_POWER ] );
-      }
     }
 
     p() -> buffs.hemostasis -> expire();
@@ -4603,11 +4594,6 @@ struct epidemic_t : public death_knight_spell_t
           aoe -> execute();
         }
       }
-    }
-
-    if ( result_is_hit( execute_state -> result ) )
-    {
-      p() -> trigger_runic_corruption( base_costs[ RESOURCE_RUNIC_POWER ] );
     }
 
     p() -> cooldown.apocalypse -> adjust( -timespan_t::from_seconds( 
@@ -4905,8 +4891,6 @@ struct frost_strike_t : public death_knight_melee_attack_t
       mh -> execute();
       oh -> set_target( execute_state -> target );
       oh -> execute();
-
-      p() -> trigger_runic_empowerment( last_resource_cost );
     }
 
     if ( p() -> buffs.pillar_of_frost -> up() && p() -> talent.obliteration -> ok() )
@@ -4977,11 +4961,6 @@ struct glacial_advance_t : public death_knight_spell_t
         // WTB spelldata for the rune gain
         p() -> replenish_rune( 1, p() -> gains.obliteration );
       }
-    }
-
-    if ( result_is_hit( execute_state->result ) )
-    {
-      p() -> trigger_runic_empowerment( last_resource_cost );
     }
   }
 };
@@ -6599,6 +6578,7 @@ void death_knight_t::trigger_festering_wound_death( player_t* target )
   death_knight_td_t* td = get_target_data( target );
   int n_wounds = td -> debuff.festering_wound -> check();
 
+  // If the target wasn't affected by festering wound, return
   if ( n_wounds == 0 ) return;
 
   // Generate the RP you'd have gained if you popped the wounds manually
@@ -6608,10 +6588,7 @@ void death_knight_t::trigger_festering_wound_death( player_t* target )
 
   if ( talent.pestilent_pustules -> ok() )
   {
-    if ( trigger_runic_corruption( 0, talent.pestilent_pustules -> effectN( 1 ).percent() * n_wounds ) )
-    {
-      procs.pp_runic_corruption -> occur();
-    }
+    trigger_runic_corruption( 0, talent.pestilent_pustules -> effectN( 1 ).percent() * n_wounds, procs.pp_runic_corruption );
   }
 
   // Triggers a bursting sores explosion for each wound on the target
@@ -6762,26 +6739,33 @@ void death_knight_t::trigger_runic_empowerment( double rpcost )
   }
 }
 
-bool death_knight_t::trigger_runic_corruption( double rpcost, double override_chance )
+bool death_knight_t::trigger_runic_corruption( double rpcost, double override_chance, proc_t* proc )
 {
-  double actual_chance = override_chance != -1.0
-    ? override_chance
-    : ( spec.runic_corruption -> effectN( 1 ).percent() * rpcost / 100.0 );
-
-  if ( ! rng().roll( actual_chance ) )
-    return false;
-
-
-  if ( override_chance == -1.0 )
+  double proc_chance = 0.0;
+  // Check whether the proc is from a special effect, or from RP consumption
+  if ( rpcost == 0 && override_chance != -1.0 )
   {
-    procs.rp_runic_corruption -> occur();
+    proc_chance = override_chance;
+  }
+  else
+  {
+    proc_chance = spec.runic_corruption -> effectN( 1 ).percent() * rpcost / 100.0 ;
   }
 
+  // If the roll fails, return
+  if ( ! rng().roll( proc_chance ) )
+    return false;
+
+  // Runic Corruption duration is reduced by haste
+  // It always regenerates 0.9 (3 times 3/10) of a rune
   timespan_t duration = timespan_t::from_seconds( 3.0 * cache.attack_haste() );
+  // A refresh adds the full buff duration
   if ( buffs.runic_corruption -> check() == 0 )
     buffs.runic_corruption -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
   else
     buffs.runic_corruption -> extend_duration( this, duration );
+
+  proc -> occur();
 
   return true;
 }
@@ -6839,23 +6823,18 @@ void death_knight_t::burst_festering_wound( const action_state_t* state, unsigne
         // TODO: Is this per festering wound, or one try?
         if ( dk -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T19, B2 ) )
         {
-          if ( dk -> trigger_runic_corruption( 0,
-                dk -> sets -> set( DEATH_KNIGHT_UNHOLY, T19, B2 ) -> effectN( 1 ).percent() ) )
-          {
-            dk -> procs.t19_2pc_unholy -> occur();
-          }
+          dk -> trigger_runic_corruption( 0,
+            dk -> sets -> set( DEATH_KNIGHT_UNHOLY, T19, B2 ) -> effectN( 1 ).percent(), 
+            dk -> procs.t19_2pc_unholy );
         }
       }
 
-      // Triggers once for all the festering wound burst event on the same target
+      // Triggers once per target per player action:
       // Apocalypse is 10% * n wounds burst to proc
-      // Scourge strike in DnD is 1 - ( 0.9 ) ^ n targets to proc
+      // Scourge strike aoe is 1 - ( 0.9 ) ^ n targets to proc, or 10% for each target hit
       if ( dk -> talent.pestilent_pustules -> ok() )
       {
-        if ( dk -> trigger_runic_corruption( 0, dk -> talent.pestilent_pustules -> effectN( 1 ).percent() * n ) )
-        {
-          dk -> procs.pp_runic_corruption -> occur();
-        }
+        dk -> trigger_runic_corruption( 0, dk -> talent.pestilent_pustules -> effectN( 1 ).percent() * n, dk -> procs.pp_runic_corruption );
       }
 
       td -> debuff.festering_wound -> decrement( n_executes );
