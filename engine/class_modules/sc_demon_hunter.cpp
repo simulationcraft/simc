@@ -356,6 +356,7 @@ public:
   struct azerite_t
   {
     // Havoc
+    azerite_power_t chaotic_transformation;
     azerite_power_t eyes_of_rage;
     azerite_power_t furious_gaze;
     azerite_power_t revolving_blades;
@@ -2407,6 +2408,11 @@ struct metamorphosis_t : public demon_hunter_spell_t
       {
         p()->buff.metamorphosis->trigger();
       }
+
+      if ( p()->azerite.chaotic_transformation.ok() )
+      {
+        p()->cooldown.eye_beam->reset( false );
+      }
     }
     else // DEMON_HUNTER_VENGEANCE
     {
@@ -3313,6 +3319,15 @@ struct demons_bite_t : public demon_hunter_attack_t
     return ea;
   }
 
+  virtual double bonus_da( const action_state_t* s ) const override
+  {
+    double b = demon_hunter_attack_t::bonus_da( s );
+
+    b += p()->azerite.chaotic_transformation.value( 2 );
+
+    return b;
+  }
+
   void execute() override
   {
     demon_hunter_attack_t::execute();
@@ -3349,6 +3364,15 @@ struct demon_blades_t : public demon_hunter_attack_t
   {
     background = true;
     energize_delta = energize_amount * data().effectN( 2 ).m_delta();
+  }
+
+  virtual double bonus_da( const action_state_t* s ) const override
+  {
+    double b = demon_hunter_attack_t::bonus_da( s );
+
+    b += p()->azerite.chaotic_transformation.value( 2 );
+
+    return b;
   }
 
   void impact( action_state_t* s ) override
@@ -4771,11 +4795,12 @@ void demon_hunter_t::init_spells()
   // Azerite ================================================================
 
   // Havoc
-  azerite.eyes_of_rage        = find_azerite_spell( "Eyes of Rage" );
-  azerite.furious_gaze        = find_azerite_spell( "Furious Gaze" );
-  azerite.revolving_blades    = find_azerite_spell( "Revolving Blades" );
-  azerite.seething_power      = find_azerite_spell( "Seething Power" );
-  azerite.thirsting_blades    = find_azerite_spell( "Thirsting Blades" );
+  azerite.chaotic_transformation  = find_azerite_spell( "Chaotic Transformation" );
+  azerite.eyes_of_rage            = find_azerite_spell( "Eyes of Rage" );
+  azerite.furious_gaze            = find_azerite_spell( "Furious Gaze" );
+  azerite.revolving_blades        = find_azerite_spell( "Revolving Blades" );
+  azerite.seething_power          = find_azerite_spell( "Seething Power" );
+  azerite.thirsting_blades        = find_azerite_spell( "Thirsting Blades" );
 
   // Spell Initialization ===================================================
 
@@ -4924,7 +4949,7 @@ void demon_hunter_t::apl_precombat()
 
   if (specialization() == DEMON_HUNTER_HAVOC)
   {
-    pre->add_action( this, "Metamorphosis" );
+    pre->add_action( this, "Metamorphosis", "if=!azerite.chaotic_transformation.enabled" );
   }
 }
 
