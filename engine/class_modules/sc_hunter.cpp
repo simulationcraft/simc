@@ -2503,6 +2503,7 @@ struct aimed_shot_t : public aimed_shot_base_t
     // XXX [8.1]: Hardcode to what the bluepost said. Spell data has insane numbers.
     if ( p() -> buffs.trueshot -> check() )
       m /= 1.0 + .6; // p() -> specs.trueshot -> effectN( 3 ).percent();
+      // m /= 1.0 + 2.2.5; // The bugged value for Aimed Shot in case it goes live bugged. 
 
     return m;
   }
@@ -2823,6 +2824,7 @@ struct rapid_fire_t: public hunter_spell_t
     // XXX [8.1]: Hardcode to what the bluepost said. Spell data has insane numbers.
     if ( p() -> buffs.trueshot -> check() )
       m /= 1.0 + .6; // p() -> specs.trueshot -> effectN( 1 ).percent();
+      // m /= 1.0 + 2.4; // The bugged value for Rapid Fire in case it goes live bugged. 
 
     return m;
   }
