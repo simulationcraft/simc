@@ -6385,7 +6385,7 @@ void mage_t::apl_fire()
   bm_combustion_phase->add_talent( this, "Living Bomb", "if=buff.combustion.remains<gcd.max&active_enemies>1" );
   bm_combustion_phase->add_action( this, "Dragon's Breath", "if=buff.combustion.remains<gcd.max" );
   bm_combustion_phase->add_action( this, "Scorch" );
- 
+
   trinkets -> add_action( "use_items" );
 }
 
