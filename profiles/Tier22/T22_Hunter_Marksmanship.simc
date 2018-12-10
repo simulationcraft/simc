@@ -30,6 +30,7 @@ actions.precombat+=/potion
 actions.precombat+=/hunters_mark
 # Precast this as early as possible to potentially gain another cast during the fight.
 actions.precombat+=/double_tap,precast_time=10
+actions.precombat+=/trueshot,precast_time=1.5,if=active_enemies>2
 actions.precombat+=/aimed_shot,if=active_enemies<3
 
 # Executed every time the actor is available.
