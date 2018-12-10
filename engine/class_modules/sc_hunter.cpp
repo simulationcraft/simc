@@ -2501,9 +2501,9 @@ struct aimed_shot_t : public aimed_shot_base_t
     double m = aimed_shot_base_t::recharge_multiplier();
 
     // XXX [8.1]: Hardcode to what the bluepost said. Spell data has insane numbers.
+    // m /= 1.0 + 2.25; // The bugged values for Aimed Shot in case it goes live bugged. -- 12s (at 0% haste) CD becomes a 3.7s cd on PTR (12/3.25)
     if ( p() -> buffs.trueshot -> check() )
       m /= 1.0 + .6; // p() -> specs.trueshot -> effectN( 3 ).percent();
-      // m /= 1.0 + 2.2.5; // The bugged value for Aimed Shot in case it goes live bugged. 
 
     return m;
   }
@@ -2822,9 +2822,9 @@ struct rapid_fire_t: public hunter_spell_t
     double m = hunter_spell_t::recharge_multiplier();
 
     // XXX [8.1]: Hardcode to what the bluepost said. Spell data has insane numbers.
+    // m /= 1.0 + 2.4; // The bugged value for Rapid Fire in case it goes live bugged. -- 20s CD becomes a 5.88s cd on PTR (20/3.4)
     if ( p() -> buffs.trueshot -> check() )
       m /= 1.0 + .6; // p() -> specs.trueshot -> effectN( 1 ).percent();
-      // m /= 1.0 + 2.4; // The bugged value for Rapid Fire in case it goes live bugged. 
 
     return m;
   }
