@@ -28,59 +28,49 @@ actions.precombat+=/summon_pet,if=active_enemies<3
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
 actions.precombat+=/hunters_mark
-actions.precombat+=/double_tap,precast_time=5
+# Precast this as early as possible to potentially gain another cast during the fight.
+actions.precombat+=/double_tap,precast_time=10
 actions.precombat+=/aimed_shot,if=active_enemies<3
-actions.precombat+=/explosive_shot,if=active_enemies>2
 
 # Executed every time the actor is available.
 actions=auto_shot
 actions+=/use_items
 actions+=/call_action_list,name=cds
-# An alternate single target priority for 2 or more Steady Aim traits, Steady Focus, and Lethal Shots.
-actions+=/run_action_list,name=steady_st,if=active_enemies<2&talent.lethal_shots.enabled&talent.steady_focus.enabled&azerite.steady_aim.rank>1
-actions+=/run_action_list,name=st,if=active_enemies<3
-actions+=/run_action_list,name=trickshots
+actions+=/call_action_list,name=st,if=active_enemies<3
+actions+=/call_action_list,name=trickshots,if=active_enemies>2
 
 actions.cds=hunters_mark,if=debuff.hunters_mark.down
-actions.cds+=/double_tap,if=cooldown.rapid_fire.remains<gcd
-actions.cds+=/berserking,if=cooldown.trueshot.remains>30
+actions.cds+=/double_tap,if=target.time_to_die<15|cooldown.aimed_shot.remains<gcd&(buff.trueshot.up|!talent.calling_the_shots.enabled)&(!azerite.surging_shots.enabled&!talent.streamline.enabled&!azerite.focused_fire.enabled)
+actions.cds+=/double_tap,if=cooldown.rapid_fire.remains<gcd&(buff.trueshot.up|!talent.calling_the_shots.enabled)&(azerite.surging_shots.enabled|talent.streamline.enabled|azerite.focused_fire.enabled)
+actions.cds+=/berserking,if=cooldown.trueshot.remains>60
 actions.cds+=/blood_fury,if=cooldown.trueshot.remains>30
 actions.cds+=/ancestral_call,if=cooldown.trueshot.remains>30
 actions.cds+=/fireblood,if=cooldown.trueshot.remains>30
 actions.cds+=/lights_judgment
-actions.cds+=/potion,if=buff.trueshot.react&buff.bloodlust.react|buff.trueshot.react&target.health.pct<20&talent.careful_aim.enabled|target.time_to_die<25
-actions.cds+=/trueshot,if=(cooldown.aimed_shot.charges<1&!talent.lethal_shots.enabled&!talent.steady_focus.enabled)|buff.bloodlust.react|target.time_to_die>cooldown.trueshot.duration_guess+duration|((target.health.pct<20|!talent.careful_aim.enabled)&(buff.lethal_shots.up|!talent.lethal_shots.enabled))|target.time_to_die<15
+actions.cds+=/potion,if=buff.trueshot.react&buff.bloodlust.react|buff.trueshot.up&target.health.pct<20&talent.careful_aim.enabled|target.time_to_die<25
+actions.cds+=/trueshot,if=buff.bloodlust.up|target.time_to_die>cooldown.trueshot.duration_guess+duration|(target.health.pct<20|!talent.careful_aim.enabled)|target.time_to_die<15
 
 actions.st=explosive_shot
 actions.st+=/barrage,if=active_enemies>1
-actions.st+=/arcane_shot,if=buff.precise_shots.up&(cooldown.aimed_shot.full_recharge_time<gcd*buff.precise_shots.stack+action.aimed_shot.cast_time|buff.lethal_shots.react)
-actions.st+=/rapid_fire,if=(!talent.lethal_shots.enabled|buff.lethal_shots.react)&azerite.focused_fire.enabled|azerite.in_the_rhythm.rank>1
-actions.st+=/aimed_shot,if=buff.precise_shots.down&(buff.double_tap.down&full_recharge_time<cast_time+gcd|buff.lethal_shots.react)
-actions.st+=/rapid_fire,if=!talent.lethal_shots.enabled|buff.lethal_shots.up
-actions.st+=/piercing_shot
 actions.st+=/a_murder_of_crows
-actions.st+=/serpent_sting,if=refreshable
-actions.st+=/aimed_shot,if=buff.precise_shots.down&(!talent.steady_focus.enabled&focus>70|!talent.lethal_shots.enabled|buff.lethal_shots.up)
-actions.st+=/arcane_shot,if=buff.precise_shots.up|focus>60&(!talent.lethal_shots.enabled|buff.lethal_shots.up)
-actions.st+=/steady_shot,if=focus+cast_regen<focus.max|(talent.lethal_shots.enabled&buff.lethal_shots.down)
-actions.st+=/arcane_shot
-
-actions.steady_st=a_murder_of_crows,if=buff.steady_focus.down|target.time_to_die<16
-actions.steady_st+=/aimed_shot,if=buff.lethal_shots.react|target.time_to_die<3|debuff.steady_aim.stack=5&(buff.lock_and_load.react|full_recharge_time<cast_time)
-actions.steady_st+=/arcane_shot,if=buff.precise_shots.up&(buff.lethal_shots.react|target.health.pct>20&target.health.pct<80)
-actions.steady_st+=/serpent_sting,if=refreshable
-actions.steady_st+=/steady_shot
+actions.st+=/serpent_sting,if=refreshable&!action.serpent_sting.in_flight
+actions.st+=/arcane_shot,if=buff.precise_shots.up&cooldown.aimed_shot.full_recharge_time<gcd*buff.precise_shots.stack+action.aimed_shot.cast_time
+actions.st+=/aimed_shot,if=buff.precise_shots.down
+actions.st+=/rapid_fire,if=focus+cast_regen<focus.max|azerite.focused_fire.enabled|azerite.in_the_rhythm.rank>1|azerite.surging_shots.enabled|talent.streamline.enabled
+actions.st+=/piercing_shot
+actions.st+=/arcane_shot,if=focus>60|buff.precise_shots.up
+actions.st+=/steady_shot
 
 actions.trickshots=barrage
 actions.trickshots+=/explosive_shot
-actions.trickshots+=/rapid_fire,if=buff.trick_shots.up&!talent.barrage.enabled
-actions.trickshots+=/aimed_shot,if=buff.trick_shots.up&buff.precise_shots.down&buff.double_tap.down&(!talent.lethal_shots.enabled|buff.lethal_shots.up|focus>60)
+actions.trickshots+=/rapid_fire,if=buff.trick_shots.up&(azerite.focused_fire.enabled|azerite.in_the_rhythm.rank>1|azerite.surging_shots.enabled|talent.streamline.enabled)
+actions.trickshots+=/aimed_shot,if=buff.trick_shots.up&buff.precise_shots.down
 actions.trickshots+=/rapid_fire,if=buff.trick_shots.up
-actions.trickshots+=/multishot,if=buff.trick_shots.down|(buff.precise_shots.up|buff.lethal_shots.react)&(!talent.barrage.enabled&buff.steady_focus.down&focus>45|focus>70)
+actions.trickshots+=/multishot,if=buff.trick_shots.down|buff.precise_shots.up|focus>70
 actions.trickshots+=/piercing_shot
 actions.trickshots+=/a_murder_of_crows
-actions.trickshots+=/serpent_sting,if=refreshable
-actions.trickshots+=/steady_shot,if=focus+cast_regen<focus.max|(talent.lethal_shots.enabled&buff.lethal_shots.down)
+actions.trickshots+=/serpent_sting,if=refreshable&!action.serpent_sting.in_flight
+actions.trickshots+=/steady_shot
 
 head=hood_of_the_dark_reaper,id=159391,bonus_id=4779/1512/4786/4775,azerite_powers=192/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
@@ -105,4 +95,4 @@ main_hand=hallowed_ossein_longbow,id=158711,bonus_id=4779/1512/4786,enchant=ince
 # gear_crit_rating=456
 # gear_haste_rating=985
 # gear_mastery_rating=1036
-# gear_armor=2059
+# gear_armor=2063

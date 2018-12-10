@@ -107,5 +107,6 @@ engine/simulationcraft.hpp.cpp
 gui/*_resource*
 .vs/
 .vscode/
+.idea/
 .ycm_*
 dbc_extract3/cache/live/DBCache.bin
