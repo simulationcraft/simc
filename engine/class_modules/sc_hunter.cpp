@@ -343,12 +343,6 @@ public:
     buff_t* terms_of_engagement;
     buff_t* aspect_of_the_eagle;
 
-    // sets
-    buff_t* t20_4p_precision;
-    buff_t* t20_2p_critical_aimed_damage;
-    buff_t* pre_t20_2p_critical_aimed_damage;
-    buff_t* t20_4p_bestial_rage;
-
     // azerite
     buff_t* blur_of_talons;
     buff_t* dance_of_death;
@@ -514,10 +508,6 @@ public:
 
   player_t* current_hunters_mark_target;
   wildfire_infusion_e next_wi_bomb = WILDFIRE_INFUSION_SHRAPNEL;
-  struct {
-    bool enabled = false;
-    double cost_multiplier = 0;
-  } t19_mm_4pc;
 
   struct options_t {
     std::string summon_pet_str = "cat";
@@ -742,18 +732,6 @@ public:
     return g;
   }
 
-  void consume_resource() override
-  {
-    ab::consume_resource();
-
-    if ( ab::last_resource_cost > 0 && p() -> sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T19, B2 ) )
-    {
-      const double set_value = p() -> sets -> set( HUNTER_MARKSMANSHIP, T19, B2 ) -> effectN( 1 ).base_value();
-      p() -> cooldowns.trueshot
-        -> adjust( timespan_t::from_seconds( -1.0 * ab::last_resource_cost / set_value ) );
-    }
-  }
-
   double action_multiplier() const override
   {
     double am = ab::action_multiplier();
@@ -790,16 +768,6 @@ public:
       cc += p() -> buffs.thrill_of_the_hunt -> check_stack_value();
 
     return cc;
-  }
-
-  double cost() const override
-  {
-    double cost = ab::cost();
-
-    if ( p() -> t19_mm_4pc.enabled && p() -> buffs.trueshot -> check() )
-      cost += cost * p() -> t19_mm_4pc.cost_multiplier;
-
-    return cost;
   }
 
   void update_ready( timespan_t cd ) override
@@ -863,12 +831,6 @@ public:
       p() -> buffs.steady_focus -> expire();
   }
 
-  virtual void try_t20_2p_mm()
-  {
-    if ( !ab::background && p() -> sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T20, B2 ) )
-      p() -> buffs.pre_t20_2p_critical_aimed_damage -> expire();
-  }
-
   void add_pet_stats( pet_t* pet, std::initializer_list<std::string> names )
   {
     if ( ! pet )
@@ -915,7 +877,6 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
   {
     hunter_action_t::execute();
     try_steady_focus();
-    try_t20_2p_mm();
   }
 };
 
@@ -947,7 +908,6 @@ public:
   {
     hunter_action_t::execute();
     try_steady_focus();
-    try_t20_2p_mm();
   }
 };
 
@@ -1529,9 +1489,6 @@ struct kill_command_bm_t: public kill_command_base_t
     base_dd_min = data().effectN( 1 ).min( p );
     base_dd_max = data().effectN( 1 ).max( p );
 
-    if ( o() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T21, B2 ) )
-      base_multiplier *= 1.0 + o() -> sets -> set( HUNTER_BEAST_MASTERY, T21, B2 ) -> effectN( 1 ).percent();
-
     if ( o() -> talents.killer_instinct -> ok() )
     {
       killer_instinct.percent = o() -> talents.killer_instinct -> effectN( 2 ).base_value();
@@ -1548,15 +1505,6 @@ struct kill_command_bm_t: public kill_command_base_t
      */
     constexpr double owner_coeff_ = 3.0 / 4.0;
     return b + o() -> cache.attack_power() * o() -> composite_attack_power_multiplier() * owner_coeff_;
-  }
-
-  double action_multiplier() const override
-  {
-    double am = kill_command_base_t::action_multiplier();
-
-    am *= 1.0 + o() -> buffs.t20_4p_bestial_rage -> value();
-
-    return am;
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -1928,26 +1876,6 @@ void trigger_birds_of_prey( hunter_t* p, player_t* t )
     p -> buffs.coordinated_assault -> extend_duration( p, p -> talents.birds_of_prey -> effectN( 1 ).time_value() );
 }
 
-// T20 BM 2pc trigger
-void trigger_t20_2pc_bm( hunter_t* p )
-{
-  if ( p -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T20, B2 ) && p -> buffs.bestial_wrath -> check() )
-  {
-    const spell_data_t* driver = p -> sets -> set( HUNTER_BEAST_MASTERY, T20, B2 ) -> effectN( 1 ).trigger();
-    const double bonus = driver -> effectN( 1 ).percent() / 10.0;
-    p -> buffs.bestial_wrath -> current_value += bonus;
-    for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p -> pets.main, p -> pets.animal_companion ) )
-      pet -> buffs.bestial_wrath -> current_value += bonus;
-
-    if ( p -> sim -> debug )
-    {
-      p -> sim -> out_debug.print( "{} triggers t20 2pc: {} ( value={:.3f} )",
-                                   p -> name(), p -> buffs.bestial_wrath -> name(),
-                                   p -> buffs.bestial_wrath -> check_value() );
-    }
-  }
-}
-
 void trigger_bloodseeker_update( hunter_t* p )
 {
   if ( !p -> talents.bloodseeker -> ok() )
@@ -2181,8 +2109,6 @@ struct multi_shot_t: public hunter_ranged_attack_t
     parse_options( options_str );
     aoe = -1;
 
-    base_multiplier *= 1.0 + p -> sets -> set( HUNTER_BEAST_MASTERY, T19, B4 ) -> effectN( 1 ).percent();
-
     if ( p -> azerite.rapid_reload.ok() )
     {
       rapid_reload.action = p -> get_background_action<rapid_reload_t>( "multishot_rapid_reload" );
@@ -2205,7 +2131,6 @@ struct multi_shot_t: public hunter_ranged_attack_t
   {
     double am = hunter_ranged_attack_t::action_multiplier();
 
-    am *= 1.0 + p() -> buffs.t20_4p_bestial_rage -> value();
     am *= 1.0 + p() -> buffs.precise_shots -> value();
 
     return am;
@@ -2229,7 +2154,6 @@ struct multi_shot_t: public hunter_ranged_attack_t
     if ( p() -> talents.calling_the_shots -> ok() )
       p() -> cooldowns.trueshot -> adjust( - p() -> talents.calling_the_shots -> effectN( 1 ).time_value() );
 
-    trigger_t20_2pc_bm( p() );
     trigger_lethal_shots( p() );
 
     if ( rapid_reload.action && num_targets_hit > rapid_reload.min_targets )
@@ -2310,8 +2234,6 @@ struct cobra_shot_t: public hunter_ranged_attack_t
 
     base_multiplier *= 1.0 + p() -> find_spell( 262838 ) -> effectN( 1 ).percent(); // Cobra Shot (Rank 3)
     base_costs[ RESOURCE_FOCUS ] += player -> find_spell( 262837 ) -> effectN( 1 ).base_value(); // Cobra Shot (Rank 2)
-
-    base_multiplier *= 1.0 + p() -> sets -> set( HUNTER_BEAST_MASTERY, T19, B2 ) -> effectN( 1 ).percent();
   }
 
   void execute() override
@@ -2325,17 +2247,6 @@ struct cobra_shot_t: public hunter_ranged_attack_t
 
     if ( p() -> talents.killer_cobra -> ok() && p() -> buffs.bestial_wrath -> check() )
       p() -> cooldowns.kill_command -> reset( true );
-
-    trigger_t20_2pc_bm( p() );
-  }
-
-  double action_multiplier() const override
-  {
-    double am = hunter_ranged_attack_t::action_multiplier();
-
-    am *= 1.0 + p() -> buffs.t20_4p_bestial_rage -> value();
-
-    return am;
   }
 };
 
@@ -2435,7 +2346,6 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
     trick_shots_targets( static_cast<int>( p -> specs.trick_shots -> effectN( 1 ).base_value() ) )
   {
     radius = 8.0;
-    base_multiplier *= 1.0 + p -> sets -> set( HUNTER_MARKSMANSHIP, T21, B4 ) -> effectN( 1 ).percent();
     base_aoe_multiplier = p -> specs.trick_shots -> effectN( 4 ).percent();
 
     if ( p -> talents.careful_aim -> ok() )
@@ -2445,16 +2355,6 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
       careful_aim.high = p -> talents.careful_aim -> effectN( 1 ).base_value();
       careful_aim.low = p -> talents.careful_aim -> effectN( 2 ).base_value();
     }
-  }
-
-  timespan_t execute_time() const override
-  {
-    timespan_t t = hunter_ranged_attack_t::execute_time();
-
-    if ( p() -> buffs.t20_4p_precision -> check() )
-      t *= 1.0 + p() -> buffs.t20_4p_precision -> data().effectN( 1 ).percent();
-
-    return t;
   }
 
   int n_targets() const override
@@ -2515,7 +2415,6 @@ struct aimed_shot_t : public aimed_shot_base_t
     }
   };
 
-  benefit_t* aimed_in_critical_aimed;
   aimed_shot_secondary_t* double_tap = nullptr;
   bool lock_and_loaded = false;
   struct {
@@ -2527,8 +2426,7 @@ struct aimed_shot_t : public aimed_shot_base_t
   } surging_shots;
 
   aimed_shot_t( hunter_t* p, const std::string& options_str ) :
-    aimed_shot_base_t( "aimed_shot", p ),
-    aimed_in_critical_aimed( p -> get_benefit( "aimed_in_critical_aimed" ) )
+    aimed_shot_base_t( "aimed_shot", p )
   {
     parse_options( options_str );
 
@@ -2552,12 +2450,7 @@ struct aimed_shot_t : public aimed_shot_base_t
     if ( lock_and_loaded )
       return 0;
 
-    double cost = aimed_shot_base_t::cost();
-
-    if ( p() -> buffs.t20_4p_precision -> check() )
-      cost *= 1.0 + p() -> buffs.t20_4p_precision -> check_value();
-
-    return cost;
+    return aimed_shot_base_t::cost();
   }
 
   void schedule_execute( action_state_t* s ) override
@@ -2588,29 +2481,12 @@ struct aimed_shot_t : public aimed_shot_base_t
 
     p() -> buffs.precise_shots -> trigger( 1 + rng().range( p() -> buffs.precise_shots -> max_stack() ) );
     p() -> buffs.master_marksman -> trigger();
-    p() -> buffs.t20_4p_precision -> trigger();
 
     if ( rng().roll( surging_shots.chance ) )
     {
       surging_shots.proc -> occur();
       p() -> cooldowns.rapid_fire -> reset( true );
     }
-
-    if ( p() -> sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T20, B2 ) )
-    {
-      p() -> buffs.pre_t20_2p_critical_aimed_damage -> trigger();
-      if ( p() -> buffs.pre_t20_2p_critical_aimed_damage -> check() == 2 )
-      {
-        p() -> buffs.t20_2p_critical_aimed_damage -> trigger();
-        p() -> buffs.pre_t20_2p_critical_aimed_damage-> expire();
-      }
-    }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    aimed_shot_base_t::impact( s );
-    aimed_in_critical_aimed -> update( p() -> buffs.t20_2p_critical_aimed_damage -> check() != 0 );
   }
 
   timespan_t execute_time() const override
@@ -2641,8 +2517,6 @@ struct aimed_shot_t : public aimed_shot_base_t
   {
     return false;
   }
-
-  void try_t20_2p_mm() override { }
 };
 
 // Arcane Shot Attack ================================================================
@@ -3331,7 +3205,6 @@ struct raptor_strike_base_t: public melee_focus_spender_t
   {
     base_dd_adder += p -> azerite.wilderness_survival.value( 3 );
     base_multiplier *= 1.0 + p -> find_spell( 262839 ) -> effectN( 1 ).percent(); // Raptor Strike (Rank 2)
-    base_multiplier *= 1.0 + p -> sets -> set( HUNTER_SURVIVAL, T21, B4 ) -> effectN( 1 ).percent();
 
     background = p -> talents.mongoose_bite -> ok();
   }
@@ -3491,15 +3364,6 @@ struct serpent_sting_sv_t: public hunter_ranged_attack_t
     m *= 1.0 + p() -> buffs.vipers_venom -> check_value();
 
     return m;
-  }
-
-  double composite_crit_chance() const override
-  {
-    double cc = hunter_ranged_attack_t::composite_crit_chance();
-
-    cc += p() -> sets -> set( HUNTER_SURVIVAL, T19, B2 ) -> effectN( 1 ).percent();
-
-    return cc;
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -3794,14 +3658,6 @@ struct kill_command_t: public hunter_spell_t
         cooldown -> reset( true );
       }
     }
-
-    trigger_t20_2pc_bm( p() );
-
-    if ( p() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T21, B4 ) )
-    {
-      auto reduction = p() -> sets -> set( HUNTER_BEAST_MASTERY, T21, B4 ) -> effectN( 1 ).time_value();
-      p() -> cooldowns.aspect_of_the_wild -> adjust( - reduction );
-    }
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -3921,7 +3777,6 @@ struct bestial_wrath_t: public hunter_spell_t
     hunter_spell_t::execute();
 
     trigger_buff( p() -> buffs.bestial_wrath, precast_time );
-    trigger_buff( p() -> buffs.t20_4p_bestial_rage, precast_time );
     trigger_buff( p() -> buffs.haze_of_rage, precast_time );
 
     for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p() -> pets.main, p() -> pets.animal_companion ) )
@@ -4804,9 +4659,6 @@ void hunter_t::init_spells()
   azerite.venomous_fangs        = find_azerite_spell( "Venomous Fangs" );
   azerite.wilderness_survival   = find_azerite_spell( "Wilderness Survival" );
   azerite.wildfire_cluster      = find_azerite_spell( "Wildfire Cluster" );
-
-  t19_mm_4pc.enabled = sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T19, B4 );
-  t19_mm_4pc.cost_multiplier = find_spell( 211327 ) -> effectN( 1 ).percent();
 }
 
 // hunter_t::init_base ======================================================
@@ -4970,27 +4822,6 @@ void hunter_t::create_buffs()
   buffs.aspect_of_the_eagle =
     make_buff( this, "aspect_of_the_eagle", specs.aspect_of_the_eagle )
       -> set_cooldown( timespan_t::zero() );
-
-  // Sets
-
-  buffs.t20_4p_precision =
-    make_buff( this, "t20_4p_precision", find_spell( 246153 ) )
-      -> set_default_value( find_spell( 246153 ) -> effectN( 2 ).percent() )
-      -> set_trigger_spell( sets -> set( HUNTER_MARKSMANSHIP, T20, B4 ) );
-
-  buffs.pre_t20_2p_critical_aimed_damage =
-    make_buff( this, "pre_t20_2p_critical_aimed_damage" )
-    ->set_max_stack( 2 )
-    ->set_quiet( true );
-
-  buffs.t20_2p_critical_aimed_damage =
-    make_buff( this, "t20_2p_critical_aimed_damage", find_spell( 242243 ) )
-    ->set_default_value( find_spell( 242243 ) -> effectN( 1 ).percent() );
-
-  buffs.t20_4p_bestial_rage =
-    make_buff( this, "t20_4p_bestial_rage", find_spell( 246116 ) )
-      -> set_default_value( find_spell( 246116 ) -> effectN( 1 ).percent() )
-      -> set_trigger_spell( sets -> set( HUNTER_BEAST_MASTERY, T20, B4 ) );
 
   // Azerite
 
@@ -5575,9 +5406,6 @@ double hunter_t::composite_melee_haste() const
   if ( buffs.dire_beast -> check() )
     h *= 1.0 / ( 1.0 + buffs.dire_beast -> check_value() );
 
-  if ( sets -> has_set_bonus( HUNTER_SURVIVAL, T20, B2 ) )
-    h *= 1.0 / ( 1.0 + sets -> set( HUNTER_SURVIVAL, T20, B2 ) -> effectN( 1 ).percent() );
-
   return h;
 }
 
@@ -5602,9 +5430,6 @@ double hunter_t::composite_spell_haste() const
   if ( buffs.dire_beast -> check() )
     h *= 1.0 / ( 1.0 + buffs.dire_beast -> check_value() );
 
-  if ( sets -> has_set_bonus( HUNTER_SURVIVAL, T20, B2 ) )
-    h *= 1.0 / ( 1.0 + sets -> set( HUNTER_SURVIVAL, T20, B2 ) -> effectN( 1 ).percent() );
-
   return h;
 }
 
@@ -5614,8 +5439,6 @@ double hunter_t::composite_player_critical_damage_multiplier( const action_state
 {
   double cdm = player_t::composite_player_critical_damage_multiplier( s );
 
-  cdm *= 1.0 + buffs.t20_2p_critical_aimed_damage -> check_value();
-
   return cdm;
 }
 
@@ -5624,14 +5447,6 @@ double hunter_t::composite_player_critical_damage_multiplier( const action_state
 double hunter_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
-
-  if ( dbc::is_school( school, SCHOOL_PHYSICAL ) )
-  {
-    m *= 1.0 + sets -> set( HUNTER_SURVIVAL, T20, B4 ) -> effectN( 1 ).percent();
-    m *= 1.0 + sets -> set( HUNTER_MARKSMANSHIP, T21, B2 ) -> effectN( 1 ).percent();
-  }
-
-  m *= 1.0 + sets -> set( HUNTER_SURVIVAL, T21, B2 ) -> effectN( 1 ).percent();
 
   return m;
 }
