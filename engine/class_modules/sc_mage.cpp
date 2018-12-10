@@ -2504,12 +2504,13 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     // In particular, the first refresh never benefits from Clearcasting,
     // even if Clearcasting was consumed on the refresh. The second refresh
     // checks if the first refresh had Clearcasting and so on.
-    if ( !refresh )
+    if ( !refresh || !p()->bugs )
       handle_clearcasting( cc_active );
 
     arcane_mage_spell_t::execute();
 
-    handle_clearcasting( cc_active && refresh );
+    if ( p()->bugs )
+      handle_clearcasting( cc_active && refresh );
 
     if ( p()->sets->has_set_bonus( MAGE_ARCANE, T19, B4 ) )
     {
