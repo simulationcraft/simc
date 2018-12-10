@@ -1755,7 +1755,8 @@ public:
         dot_t* dot = action->get_dot();
         double remaining_ticks = 0;
         double potential_ticks = 0;
-        timespan_t duration = action->dot_duration;
+        action_state_t* state = action->get_state(dot->state);
+        timespan_t duration = action->composite_dot_duration(state);
         timespan_t ttd = action->target->time_to_percent(0);
         double pmult = 0;
 
@@ -1768,18 +1769,16 @@ public:
 
         if (pmult_adjusted)
         {
-          action_state_t* state = action->get_state();
-
           action->snapshot_state(state, RESULT_TYPE_NONE);
           state->target = action->target;
 
           pmult = action->composite_persistent_multiplier(state);
-
-          delete state;
         }
 
-        potential_ticks = std::min(duration, ttd) / (action->base_tick_time * action->composite_haste());
+        
+        potential_ticks = std::min(duration, ttd) / action->tick_time(state);
         potential_ticks *= pmult_adjusted ? pmult : 1.0;
+        delete state;
         return potential_ticks - remaining_ticks;
       });
       throw std::invalid_argument("invalid action");
@@ -9240,7 +9239,8 @@ expr_t* druid_t::create_expression( const std::string& name_str )
         dot_t* dot             = action->get_dot();
         double remaining_ticks = 0;
         double potential_ticks = 0;
-        timespan_t duration    = action->dot_duration;
+        action_state_t* state  = action->get_state( dot->state );
+        timespan_t duration    = action->composite_dot_duration( state );
         timespan_t ttd         = action->target->time_to_percent( 0 );
 
         if ( dot->is_ticking() )
@@ -9249,7 +9249,7 @@ expr_t* druid_t::create_expression( const std::string& name_str )
           duration        = action->calculate_dot_refresh_duration( dot, duration );
         }
 
-        potential_ticks = std::min( duration, ttd ) / ( action->base_tick_time * action->composite_haste() );
+        potential_ticks = std::min( duration, ttd ) / ( action->tick_time(state) );
         return potential_ticks - remaining_ticks;
       } );
     throw std::invalid_argument( "invalid action" );
