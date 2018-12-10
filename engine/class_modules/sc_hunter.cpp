@@ -707,7 +707,8 @@ public:
   {
     ab::init_finished();
 
-    precombat = ab::action_list -> name_str == "precombat";
+    if( ab::action_list )
+      precombat = ab::action_list -> name_str == "precombat";
   }
 
   timespan_t gcd() const override
@@ -849,7 +850,7 @@ public:
     const bool in_combat = ab::player -> in_combat;
     const bool triggered = buff -> trigger();
     if ( triggered && precombat && !in_combat && precast_time > timespan_t::zero() )
-      buff -> extend_duration( ab::player, -std::min( precast_time, buff -> data().duration() ) );
+      buff -> extend_duration( ab::player, -std::min( precast_time, buff -> buff_duration ) );
     return triggered;
   }
 
