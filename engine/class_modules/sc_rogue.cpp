@@ -5271,7 +5271,7 @@ void rogue_t::spend_combo_points( const action_state_t* state )
   }
 
   // Proc Replicating Shadows on the current target.
-  if ( replicating_shadows && rng().roll( max_spend * azerite.replicating_shadows.spell_ref().effectN( 2 ).percent() ) )
+  if ( specialization() == ROGUE_SUBTLETY && replicating_shadows && rng().roll( max_spend * azerite.replicating_shadows.spell_ref().effectN( 2 ).percent() ) )
   {
     replicating_shadows -> set_target( state -> target );
     replicating_shadows -> execute();
