@@ -2500,11 +2500,11 @@ struct aimed_shot_t : public aimed_shot_base_t
   {
     double m = aimed_shot_base_t::recharge_multiplier();
 
-    // XXX [8.1]: The insane numbers went live from spelldata, check up on this at a later date.
-    //m /= 1.0 + .6; -- The information from the bluepost
-    // m /= 1.0 + 2.25; // The bugged values for Aimed Shot in case it goes live bugged. -- 12s (at 0% haste) CD becomes a 3.7s cd on PTR (12/3.25)
+    // XXX [8.1]: Spell Data indicates that it's reducing Aimed Shot recharge rate by 225% (12s/3.25 = 3.69s)
+    // m /= 1.0 + .6;  // The information from the bluepost
+    // m /= 1.0 + 2.25; // The bugged (in spelldata) value for Aimed Shot.
     if ( p() -> buffs.trueshot -> check() )
-      p() -> specs.trueshot -> effectN( 3 ).percent();
+      m /= 1.0 + p() -> specs.trueshot -> effectN( 3 ).percent();
 
     return m;
   }
@@ -2822,11 +2822,11 @@ struct rapid_fire_t: public hunter_spell_t
   {
     double m = hunter_spell_t::recharge_multiplier();
 
-    // XXX [8.1]: The insane numbers went live from spelldata, check up on this at a later date.
-    //m /= 1.0 + .6; -- The information from the bluepost
-    // m /= 1.0 + 2.4; // The bugged value for Rapid Fire in case it goes live bugged. -- 20s CD becomes a 5.88s cd on PTR (20/3.4)
+    // XXX [8.1]: Spell Data indicates that it's reducing Rapid Fire by 240% (20s/3.4 = 5.88s)
+    // m /= 1.0 + .6;  // The information from the bluepost
+    // m /= 1.0 + 2.4; // The bugged (in spelldata) value for Rapid Fire.
     if ( p() -> buffs.trueshot -> check() )
-      p() -> specs.trueshot -> effectN( 1 ).percent();
+      m /= 1.0 + p() -> specs.trueshot -> effectN( 1 ).percent();
 
     return m;
   }
