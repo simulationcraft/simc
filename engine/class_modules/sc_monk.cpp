@@ -4544,7 +4544,7 @@ struct touch_of_death_t : public monk_spell_t
   {
     double amount = p()->resources.max[ RESOURCE_HEALTH ];
 
-    amount *= p()->spec.touch_of_death->effectN( 2 ).percent();  // 50% HP
+    amount *= p()->spec.touch_of_death->effectN( 2 ).percent();  // 35% HP
 
     // Bonus damage happens before any multipliers
     if ( p()->azerite.meridian_strikes.ok() )
@@ -4677,9 +4677,6 @@ struct touch_of_karma_t : public monk_melee_attack_t
 
     double max_pct = data().effectN( 3 ).percent();
 
-    if ( p->talent.good_karma->ok() )
-      max_pct += p->talent.good_karma->effectN( 1 ).percent();
-
     if ( pct_health > max_pct )  // Does a maximum of 50% of the monk's HP.
       pct_health = max_pct;
 
@@ -4721,6 +4718,9 @@ struct touch_of_karma_t : public monk_melee_attack_t
     if ( pct_health > 0 )
     {
       double damage_amount = pct_health * player->resources.max[ RESOURCE_HEALTH ];
+
+      damage_amount *=  data().effectN( 4 ).percent();
+
       if ( p()->legendary.cenedril_reflector_of_hatred )
         damage_amount *= 1 + p()->legendary.cenedril_reflector_of_hatred->effectN( 1 ).percent();
 
@@ -6575,10 +6575,6 @@ struct chi_burst_t : public monk_spell_t
 
   virtual void execute() override
   {
-    // Trigger Combo Strikes
-    // registers even on a miss
-    combo_strikes_trigger( CS_CHI_BURST );
-
     monk_spell_t::execute();
 
     heal->execute();
@@ -6880,22 +6876,9 @@ struct rushing_jade_wind_buff_t : public monk_buff_t<buff_t>
 {
   static void rjw_callback( buff_t* b, int, const timespan_t& )
   {
-    monk_t* p = debug_cast<monk_t*>( b->player );
+    monk_t* p = debug_cast<monk_t*>( b -> player );
 
-    if ( p->specialization() == MONK_WINDWALKER )
-    {
-      if ( p->resource_available( RESOURCE_ENERGY, p->talent.rushing_jade_wind->cost( POWER_ENERGY ) ) )
-      {
-        p->resource_loss( RESOURCE_ENERGY, p->talent.rushing_jade_wind->cost( POWER_ENERGY ),
-                          p->gain.rushing_jade_wind_tick );
-        p->active_actions.rushing_jade_wind->execute();
-      }
-      else
-        // Force a delay in the buff expire to make sure the callback finishes
-        b->expire( timespan_t::from_millis( 1 ) );
-    }
-    else
-      p->active_actions.rushing_jade_wind->execute();
+    p -> active_actions.rushing_jade_wind -> execute();
   }
 
   rushing_jade_wind_buff_t( monk_t& p, const std::string& n, const spell_data_t* s ) : monk_buff_t( p, n, s )
@@ -6909,9 +6892,9 @@ struct rushing_jade_wind_buff_t : public monk_buff_t<buff_t>
     set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
     if ( p.specialization() == MONK_BREWMASTER )
-      set_duration( s->duration() * ( 1 + p.spec.brewmaster_monk->effectN( 9 ).percent() ) );
+      set_duration( s -> duration() * ( 1 + p.spec.brewmaster_monk->effectN( 9 ).percent() ) );
     else
-      set_duration( sim->expected_iteration_time * 2 );
+      set_duration( sim -> expected_iteration_time * 2 );
 
     set_tick_callback( rjw_callback );
     set_tick_behavior( buff_tick_behavior::CLIP );
