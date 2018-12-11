@@ -8242,7 +8242,10 @@ void druid_t::apl_balance()
     default_list->add_action(racial_actions[i] + ",if=buff.ca_inc.up");
 
   // CDs
-  default_list->add_action("use_item,slot=trinket1,if=cooldown.ca_inc.remains>30","CDs");
+  default_list->add_action("use_item,name=balefire_branch,if=equipped.159630&cooldown.ca_inc.remains>30", "CDs");
+  default_list->add_action("use_item,name=dread_gladiators_badge,if=equipped.161902&cooldown.ca_inc.remains>30");
+  default_list->add_action("use_item,name=azurethos_singed_plumage,if=equipped.161377&cooldown.ca_inc.remains>30");
+  default_list->add_action("use_item,slot=trinket1,if=cooldown.ca_inc.remains>30");
   default_list->add_action("use_item,slot=trinket2,if=cooldown.ca_inc.remains>30");
   default_list->add_talent(this, "Warrior of Elune", "");
   default_list->add_action(this, "Innervate", "if=azerite.lively_spirit.enabled&(cooldown.incarnation.remains<2|cooldown.celestial_alignment.remains<12)");
