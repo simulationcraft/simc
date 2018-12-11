@@ -670,12 +670,15 @@ public:
   struct pets_t
   {
     pets::storm_earth_and_fire_pet_t* sef[ SEF_PET_MAX ];
+//    spawner::pet_spawner_t<pets::fury_of_xuen_pet_t, monk_t> fury_of_xuen;
+//    pets_t( monk_t* m );
   } pet;
 
-//  struct pets_t
-//  {
-//    spawner::pet_spawner_t<pets::xuen_pet_t, monk_t> force_of_xuen;
- // } pet_spawner;
+/*  struct pets_t
+  {
+    spawner::pet_spawner_t<pets::fury_of_xuen_pet_t, monk_t> fury_of_xuen;
+  } pet_spawner;
+  */
 
   // Options
   struct options_t
@@ -1963,6 +1966,145 @@ private:
 
 public:
   xuen_pet_t( sim_t* sim, monk_t* owner, std::string name ) : pet_t( sim, owner, name, true )
+  {
+    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.min_dmg    = dbc.spell_scaling( o()->type, level() );
+    main_hand_weapon.max_dmg    = dbc.spell_scaling( o()->type, level() );
+    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 1.0 );
+    owner_coeff.ap_from_ap      = 1.00;
+  }
+
+  monk_t* o()
+  {
+    return static_cast<monk_t*>( owner );
+  }
+
+  const monk_t* o() const
+  {
+    return static_cast<monk_t*>( owner );
+  }
+
+  virtual void init_action_list() override
+  {
+    action_list_str = "auto_attack";
+    action_list_str += "/crackling_tiger_lightning";
+
+    pet_t::init_action_list();
+  }
+
+  action_t* create_action( const std::string& name, const std::string& options_str ) override
+  {
+    if ( name == "crackling_tiger_lightning" )
+      return new crackling_tiger_lightning_t( this, options_str );
+
+    if ( name == "auto_attack" )
+      return new auto_attack_t( this, options_str );
+
+    return pet_t::create_action( name, options_str );
+  }
+};
+
+// ==========================================================================
+// Xuen Pet
+// ==========================================================================
+struct fury_of_xuen_pet_t : public pet_t
+{
+private:
+  struct melee_t : public melee_attack_t
+  {
+    melee_t( const std::string& n, fury_of_xuen_pet_t* player ) : melee_attack_t( n, player, spell_data_t::nil() )
+    {
+      background = repeating = may_crit = may_glance = true;
+      school                                         = SCHOOL_PHYSICAL;
+      weapon_multiplier                              = 1.0;
+      // Use damage numbers from the level-scaled weapon
+      weapon            = &( player->main_hand_weapon );
+      base_execute_time = weapon->swing_time;
+      trigger_gcd       = timespan_t::zero();
+      special           = false;
+    }
+
+    void execute() override
+    {
+      if ( time_to_execute > timespan_t::zero() && player->executing )
+      {
+        if ( sim->debug )
+          sim->out_debug.printf( "Executing '%s' during melee (%s).", player->executing->name(),
+                                 util::slot_type_string( weapon->slot ) );
+        schedule_execute();
+      }
+      else
+        attack_t::execute();
+    }
+  };
+
+  struct crackling_tiger_lightning_tick_t : public spell_t
+  {
+    crackling_tiger_lightning_tick_t( fury_of_xuen_pet_t* p )
+      : spell_t( "crackling_tiger_lightning_tick", p, p->o()->passives.crackling_tiger_lightning )
+    {
+      aoe  = 3;
+      dual = direct_tick = background = may_crit = may_miss = true;
+      //range                                                 = radius;
+      //radius                                                = 0;
+    }
+  };
+
+  struct crackling_tiger_lightning_t : public spell_t
+  {
+    crackling_tiger_lightning_t( fury_of_xuen_pet_t* p, const std::string& options_str )
+      : spell_t( "crackling_tiger_lightning", p, p->o()->passives.crackling_tiger_lightning )
+    {
+      parse_options( options_str );
+
+      // for future compatibility, we may want to grab Xuen and our tick spell and build this data from those (Xuen
+      // summon duration, for example)
+      dot_duration = p->o()->talent.invoke_xuen->duration() + timespan_t::from_seconds(1);
+      hasted_ticks = may_miss = false;
+      dynamic_tick_action = true;  // trigger tick when t == 0
+      base_tick_time =
+          p->o()->passives.crackling_tiger_lightning_driver->effectN( 1 ).period();  // trigger a tick every second
+      cooldown->duration      = p->o()->talent.invoke_xuen->cooldown();              // we're done after 45 seconds
+      attack_power_mod.direct = 0.0;
+      attack_power_mod.tick   = 0.0;
+
+      tick_action = new crackling_tiger_lightning_tick_t( p );
+    }
+  };
+
+  struct auto_attack_t : public attack_t
+  {
+    auto_attack_t( fury_of_xuen_pet_t* player, const std::string& options_str )
+      : attack_t( "auto_attack", player, spell_data_t::nil() )
+    {
+      parse_options( options_str );
+
+      player->main_hand_attack                    = new melee_t( "melee_main_hand", player );
+      player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
+
+      trigger_gcd = timespan_t::zero();
+    }
+
+    virtual bool ready() override
+    {
+      if ( player->is_moving() )
+        return false;
+
+      return ( player->main_hand_attack->execute_event == nullptr );  // not swinging
+    }
+
+    virtual void execute() override
+    {
+      player->main_hand_attack->schedule_execute();
+
+      if ( player->off_hand_attack )
+        player->off_hand_attack->schedule_execute();
+    }
+  };
+
+public:
+  fury_of_xuen_pet_t( sim_t* sim, monk_t* owner, std::string name ) : pet_t( sim, owner, name, true )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc.spell_scaling( o()->type, level() );
@@ -4135,7 +4277,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
       {
         p()->buff.fury_of_xuen_haste->trigger();
 //        xuen->execute();
-//        p()->pet_spawner.force_of_xuen.spawn( p()->passives.fury_of_xuen_haste_buff->duration() + timespan_t::from_seconds( 1 ), 1 );
+//        p()->pet_spawner.fury_of_xuen.spawn( p()->passives.fury_of_xuen_haste_buff->duration() + timespan_t::from_seconds( 1 ), 1 );
         p()->buff.fury_of_xuen_stacks->expire();
       }
     }
@@ -7666,7 +7808,7 @@ pet_t* monk_t::create_pet( const std::string& name, const std::string& /* pet_ty
   if ( name == "xuen_the_white_tiger" )
     return new xuen_pet_t( sim, this, name );
   if ( name == "fury_of_xuen" )
-    return new xuen_pet_t( sim, this, name );
+    return new fury_of_xuen_pet_t( sim, this, name );
   if ( name == "niuzao_the_black_ox" )
     return new niuzao_pet_t( sim, this );
 
