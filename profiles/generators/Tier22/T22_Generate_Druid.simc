@@ -31,7 +31,7 @@ race=night_elf
 spec=feral
 role=attack
 position=back
-talents=3000232
+talents=2000122
 
 timeofday=night
 head=hood_of_pestilent_ichor,id=160623,bonus_id=4824/1507,azerite_powers=359/459/467/13

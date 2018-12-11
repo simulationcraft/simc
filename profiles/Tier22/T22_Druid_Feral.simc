@@ -6,7 +6,7 @@ race=night_elf
 timeofday=night
 role=attack
 position=back
-talents=3000232
+talents=2000122
 
 # Default consumables
 potion=battle_potion_of_agility
@@ -26,8 +26,8 @@ actions.precombat+=/food
 actions.precombat+=/augmentation
 actions.precombat+=/regrowth,if=talent.bloodtalons.enabled
 # It is worth it for almost everyone to maintain thrash
-actions.precombat+=/variable,name=use_thrash,value=2
-actions.precombat+=/variable,name=use_thrash,value=1,if=azerite.power_of_the_moon.enabled
+actions.precombat+=/variable,name=use_thrash,value=0
+actions.precombat+=/variable,name=use_thrash,value=2,if=azerite.wild_fleshrending.enabled
 # Opener TF is delayed if we need to hardcast regrowth later on in the rotation
 actions.precombat+=/variable,name=delayed_tf_opener,value=0
 # This happens when Sabertooth, Bloodtalons but not LI is talented
@@ -93,6 +93,8 @@ actions.single_target+=/run_action_list,name=st_generators
 actions.st_finishers=pool_resource,for_next=1
 actions.st_finishers+=/savage_roar,if=buff.savage_roar.down
 actions.st_finishers+=/pool_resource,for_next=1
+actions.st_finishers+=/primal_wrath,target_if=spell_targets.primal_wrath>1&dot.rip.remains<4
+actions.st_finishers+=/pool_resource,for_next=1
 actions.st_finishers+=/rip,target_if=!ticking|(remains<=duration*0.3)&(target.health.pct>25&!talent.sabertooth.enabled)|(remains<=duration*0.8&persistent_multiplier>dot.rip.pmultiplier)&target.time_to_die>8
 actions.st_finishers+=/pool_resource,for_next=1
 actions.st_finishers+=/savage_roar,if=buff.savage_roar.remains<12
@@ -104,7 +106,11 @@ actions.st_generators=regrowth,if=talent.bloodtalons.enabled&buff.predatory_swif
 actions.st_generators+=/regrowth,if=talent.bloodtalons.enabled&buff.bloodtalons.down&buff.predatory_swiftness.up&talent.lunar_inspiration.enabled&dot.rake.remains<1
 actions.st_generators+=/brutal_slash,if=spell_targets.brutal_slash>desired_targets
 actions.st_generators+=/pool_resource,for_next=1
-actions.st_generators+=/thrash_cat,if=refreshable&(spell_targets.thrash_cat>2)
+actions.st_generators+=/thrash_cat,if=(refreshable)&(spell_targets.thrash_cat>2)
+actions.st_generators+=/pool_resource,for_next=1
+actions.st_generators+=/thrash_cat,if=(talent.scent_of_blood.enabled&buff.scent_of_blood.down)&spell_targets.thrash_cat>3
+actions.st_generators+=/pool_resource,for_next=1
+actions.st_generators+=/swipe_cat,if=buff.scent_of_blood.up
 actions.st_generators+=/pool_resource,for_next=1
 actions.st_generators+=/rake,target_if=!ticking|(!talent.bloodtalons.enabled&remains<duration*0.3)&target.time_to_die>4
 actions.st_generators+=/pool_resource,for_next=1
@@ -118,9 +124,6 @@ actions.st_generators+=/thrash_cat,if=refreshable&((variable.use_thrash=2&(!buff
 actions.st_generators+=/thrash_cat,if=refreshable&variable.use_thrash=1&buff.clearcasting.react&(!buff.incarnation.up|azerite.wild_fleshrending.enabled)
 actions.st_generators+=/pool_resource,for_next=1
 actions.st_generators+=/swipe_cat,if=spell_targets.swipe_cat>1
-actions.st_generators+=/shred,if=buff.clearcasting.react
-# With Power of the Moon traits, Moonfire becomes our primary builder outside of Clearcasting and Incarnation
-actions.st_generators+=/moonfire_cat,if=azerite.power_of_the_moon.enabled&!buff.incarnation.up
 actions.st_generators+=/shred,if=dot.rake.remains>(action.shred.cost+action.rake.cost-energy)%energy.regen|buff.clearcasting.react
 
 head=hood_of_pestilent_ichor,id=160623,bonus_id=4824/1507/4775,azerite_powers=359/459/467/13
