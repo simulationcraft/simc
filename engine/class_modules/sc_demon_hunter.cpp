@@ -2412,6 +2412,7 @@ struct metamorphosis_t : public demon_hunter_spell_t
       if ( p()->azerite.chaotic_transformation.ok() )
       {
         p()->cooldown.eye_beam->reset( false );
+        p()->cooldown.blade_dance->reset( false );
       }
     }
     else // DEMON_HUNTER_VENGEANCE
