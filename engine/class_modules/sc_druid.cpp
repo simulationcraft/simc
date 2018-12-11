@@ -7861,7 +7861,6 @@ void druid_t::apl_precombat()
   {
     // Azerite variables
     precombat->add_action("variable,name=az_ss,value=azerite.streaking_stars.rank", "Azerite variables");
-    precombat->add_action("variable,name=az_ds,value=azerite.dawning_sun.rank");
     precombat->add_action("variable,name=az_ap,value=azerite.arcanic_pulsar.rank");
     // Starfall v Starsurge target cutoff
     precombat->add_action("variable,name=sf_targets,value=5", "Starfall v Starsurge target cutoff");
@@ -8241,8 +8240,7 @@ void druid_t::apl_balance()
   default_list->add_action("use_item,name=balefire_branch,if=equipped.159630&cooldown.ca_inc.remains>30", "CDs");
   default_list->add_action("use_item,name=dread_gladiators_badge,if=equipped.161902&cooldown.ca_inc.remains>30");
   default_list->add_action("use_item,name=azurethos_singed_plumage,if=equipped.161377&cooldown.ca_inc.remains>30");
-  default_list->add_action("use_item,slot=trinket1,if=cooldown.ca_inc.remains>30");
-  default_list->add_action("use_item,slot=trinket2,if=cooldown.ca_inc.remains>30");
+  default_list->add_action("use_items,if=cooldown.ca_inc.remains>30");
   default_list->add_talent(this, "Warrior of Elune", "");
   default_list->add_action(this, "Innervate", "if=azerite.lively_spirit.enabled&(cooldown.incarnation.remains<2|cooldown.celestial_alignment.remains<12)");
   default_list->add_action("incarnation,if=astral_power>=40");
@@ -8285,7 +8283,7 @@ void druid_t::apl_balance()
   default_list->add_action(this, "Lunar Strike", "if="
                                     "buff.solar_empowerment.stack<3&"
                                     "(astral_power.deficit>=17|buff.lunar_empowerment.stack=3)&"
-                                      "((buff.warrior_of_elune.up|buff.lunar_empowerment.up|spell_targets>=2&!buff.solar_empowerment.up|variable.az_ds&!buff.dawning_sun.up)&"
+                                      "((buff.warrior_of_elune.up|buff.lunar_empowerment.up|spell_targets>=2&!buff.solar_empowerment.up)&"
                                       "(!variable.az_ss|!buff.ca_inc.up|(!prev.lunar_strike&!talent.incarnation.enabled|prev.solar_wrath))"
                                     "|variable.az_ss&buff.ca_inc.up&prev.solar_wrath)");
   default_list->add_action(this, "Solar Wrath", "if="
