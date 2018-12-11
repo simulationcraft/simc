@@ -9597,9 +9597,9 @@ void monk_t::apl_combat_windwalker()
   serenity->add_action( this, "Blackout Kick", "target_if=min:debuff.mark_of_the_crane.remains" );
 
   // Multiple Targets
-  aoe->add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=(talent.whirling_dragon_punch.enabled&cooldown.whirling_dragon_punch.remains<5)&cooldown.fists_of_fury.remains>3" );
-  aoe->add_talent( this, "Whirling Dragon Punch", "", 
+  aoe->add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=(talent.whirling_dragon_punch.enabled&cooldown.whirling_dragon_punch.remains<5)&cooldown.fists_of_fury.remains>3",
                    "Actions.AoE is intended for use with Hectic_Add_Cleave and currently needs to be optimized" );
+  aoe->add_talent( this, "Whirling Dragon Punch" );
   aoe->add_talent( this, "Energizing Elixir", "if=!prev_gcd.1.tiger_palm&chi<=1&energy<50" );
   aoe->add_action( this, "Fists of Fury", "if=energy.time_to_max>3" );
   aoe->add_talent( this, "Rushing Jade Wind", "if=buff.rushing_jade_wind.down" );
