@@ -5437,13 +5437,12 @@ struct full_moon_t : public druid_spell_t
   void impact(action_state_t* s) override
   {
     druid_spell_t::impact(s);
-    streaking_stars_trigger(SS_FULL_MOON, s); // double proc shenanigans
+    streaking_stars_trigger(SS_FULL_MOON, s); // proc munching shenanigans
   }
 
   void execute() override
   {
     druid_spell_t::execute();
-    streaking_stars_trigger(SS_FULL_MOON, execute_state); // double proc shenanigans
     
     if (p()->moon_stage == FULL_MOON && radiant_moonlight) {
       p()->moon_stage = FREE_FULL_MOON;
@@ -5485,13 +5484,12 @@ struct half_moon_t : public druid_spell_t
   void impact(action_state_t* s) override
   {
     druid_spell_t::impact(s);
-    streaking_stars_trigger(SS_HALF_MOON, s); // double proc shenanigans
+    streaking_stars_trigger(SS_HALF_MOON, s); // proc munching shenanigans
   }
 
   void execute() override
   {
     druid_spell_t::execute();
-    streaking_stars_trigger(SS_HALF_MOON, execute_state); // double proc shenanigans
     p() -> moon_stage++;
   }
 
@@ -6003,13 +6001,12 @@ struct new_moon_t : public druid_spell_t
   void impact (action_state_t* s) override
   {
     druid_spell_t::impact(s);
-    streaking_stars_trigger(SS_NEW_MOON, s); // double proc shenanigans
+    streaking_stars_trigger(SS_NEW_MOON, s); // proc munching shenanigans
   }
 
   void execute() override
   {
     druid_spell_t::execute();
-    streaking_stars_trigger(SS_NEW_MOON, execute_state); // double proc shenanigans
     p() -> moon_stage++;
   }
 
@@ -6351,7 +6348,7 @@ struct solar_wrath_t : public druid_spell_t
     {
       p ()->trigger_solar_empowerment (s);
     }
-    streaking_stars_trigger(SS_SOLAR_WRATH, execute_state); // double proc shenanigans
+    streaking_stars_trigger(SS_SOLAR_WRATH, execute_state); // proc munching shenanigans
   }
 
   timespan_t gcd() const override
@@ -6391,7 +6388,6 @@ struct solar_wrath_t : public druid_spell_t
             p()->buff.lunar_empowerment->trigger();
             expansion::bfa::trigger_leyshocks_grand_compilation( STAT_VERSATILITY_RATING, player );
         }
-        streaking_stars_trigger(SS_SOLAR_WRATH, execute_state); // double proc shenanigans
     }
 
     p() -> buff.power_of_elune -> trigger();
