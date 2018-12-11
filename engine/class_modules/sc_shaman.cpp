@@ -7731,10 +7731,10 @@ void shaman_t::init_action_list_elemental()
                          "if=talent.stormkeeper.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)",
                          "Use Stormkeeper precombat unless some adds will spawn soon." );
   precombat->add_action( this, "Fire Elemental", "if=!talent.storm_elemental.enabled" );
-  precombat->add_action( this, "Storm Elemental", "if=talent.storm_elemental.enabled" );
+  precombat->add_talent( this, "Storm Elemental", "if=talent.storm_elemental.enabled" );
   precombat->add_action( "potion" );
   precombat->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled" );
-  precombat->add_talent( this, "Lava Burst", "if=!talent.elemental_blast.enabled" );
+  precombat->add_action( this, "Lava Burst", "if=!talent.elemental_blast.enabled" );
 
   // All Shamans Bloodlust by default
   def->add_action( this, "Bloodlust", "if=azerite.ancestral_resonance.enabled",
@@ -7742,8 +7742,8 @@ void shaman_t::init_action_list_elemental()
 
   // In-combat potion
   def->add_action(
-      this, "potion",
-      "if=expected_combat_length-time<30|cooldown.fire_elemental.remains>120|cooldown.storm_elemental.remains>120",
+      "potion,if=expected_combat_length-time<30|cooldown.fire_elemental.remains>120|cooldown.storm_"
+      "elemental.remains>120",
       "In-combat potion is preferentially linked to your Elemental, unless combat will end shortly" );
 
   // "Default" APL controlling logic flow to specialized sub-APLs
@@ -7823,7 +7823,7 @@ void shaman_t::init_action_list_elemental()
       "Don't use Elemental Blast if you could cast a Master of the Elements empowered Earth Shock instead. Don't "
       "cast Elemental Blast during Storm Elemental unless you have 3x Natural Harmony in which case you stop using "
       "Elemental Blast once you reach 14 stacks of Wind Gust." );
-  single_target->add_action(
+  single_target->add_talent(
       this, "Stormkeeper",
       "if=talent.stormkeeper.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)&(!talent."
       "surge_of_power.enabled|buff.surge_of_power.up|maelstrom>=44)",

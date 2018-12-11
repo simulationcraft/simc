@@ -30,12 +30,16 @@ actions.precombat+=/earth_elemental,if=!talent.primal_elementalist.enabled
 # Use Stormkeeper precombat unless some adds will spawn soon.
 actions.precombat+=/stormkeeper,if=talent.stormkeeper.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)
 actions.precombat+=/fire_elemental,if=!talent.storm_elemental.enabled
+actions.precombat+=/storm_elemental,if=talent.storm_elemental.enabled
 actions.precombat+=/potion
 actions.precombat+=/elemental_blast,if=talent.elemental_blast.enabled
+actions.precombat+=/lava_burst,if=!talent.elemental_blast.enabled
 
 # Executed every time the actor is available.
 # Cast Bloodlust manually if the Azerite Trait Ancestral Resonance is present.
 actions=bloodlust,if=azerite.ancestral_resonance.enabled
+# In-combat potion is preferentially linked to your Elemental, unless combat will end shortly
+actions+=/potion,if=expected_combat_length-time<30|cooldown.fire_elemental.remains>120|cooldown.storm_elemental.remains>120
 # Interrupt of casts.
 actions+=/wind_shear
 actions+=/totem_mastery,if=talent.totem_mastery.enabled&buff.resonance_totem.remains<2
