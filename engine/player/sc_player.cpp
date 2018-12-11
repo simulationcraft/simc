@@ -11,8 +11,14 @@
 
 namespace
 {
-bool prune_specialized_execute_actions( std::vector<action_t*>& apl, execute_type e )
+bool prune_specialized_execute_actions_internal( std::vector<action_t*>& apl, execute_type e,
+  std::vector<std::vector<action_t*>*>& visited )
 {
+  if ( range::find( visited, &apl ) != visited.end() )
+    return true;
+  else
+    visited.push_back( &apl );
+
   auto it = apl.begin();
   // Prune out any call/run/swap_action list call from the list of actions, if the called apl has no
   // actions of the required type.
@@ -40,13 +46,13 @@ bool prune_specialized_execute_actions( std::vector<action_t*>& apl, execute_typ
           alist->player->sim->print_debug( "{} traversing APL {}, n_actions={} ({})",
             alist->player->name(), alist->name_str, alist->off_gcd_actions.size(),
             e == execute_type::OFF_GCD ? "off-gcd" : "cast-while-casting" );
-          state = prune_specialized_execute_actions( alist->off_gcd_actions, e );
+          state = prune_specialized_execute_actions_internal( alist->off_gcd_actions, e, visited );
           break;
         case execute_type::CAST_WHILE_CASTING:
           alist->player->sim->print_debug( "{} traversing APL {}, n_actions={} ({})",
             alist->player->name(), alist->name_str, alist->cast_while_casting_actions.size(),
             e == execute_type::OFF_GCD ? "off-gcd" : "cast-while-casting" );
-          state = prune_specialized_execute_actions( alist->cast_while_casting_actions, e );
+          state = prune_specialized_execute_actions_internal( alist->cast_while_casting_actions, e, visited );
           break;
         default:
           state = false;
@@ -72,6 +78,12 @@ bool prune_specialized_execute_actions( std::vector<action_t*>& apl, execute_typ
   }
 
   return apl.size() > 0;
+}
+
+bool prune_specialized_execute_actions( std::vector<action_t*>& apl, execute_type e )
+{
+  std::vector<std::vector<action_t*>*> visited;
+  return prune_specialized_execute_actions_internal( apl, e, visited );
 }
 
 // Specialized execute for off-gcd and cast-while-casting execution of abilities. Both cases need to
