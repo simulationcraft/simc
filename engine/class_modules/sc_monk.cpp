@@ -107,14 +107,13 @@ enum sef_ability_e
   // Attacks end here
 
   // Spells begin here
-  SEF_CHI_BURST,
   SEF_CHI_WAVE,
   SEF_CRACKLING_JADE_LIGHTNING,
   SEF_SPELL_MAX,
   // Spells end here
 
   // Misc
-  SEF_SPELL_MIN  = SEF_CHI_BURST,
+  SEF_SPELL_MIN  = SEF_CHI_WAVE,
   SEF_ATTACK_MIN = SEF_TIGER_PALM,
   SEF_MAX
 };
@@ -301,6 +300,7 @@ public:
     gain_t* tiger_palm;
 
     // Azerite Traits
+    gain_t* glory_ot_the_dawn;
     gain_t* open_palm_strikes;
   } gain;
 
@@ -604,6 +604,8 @@ public:
     azerite_power_t sweep_the_leg;
 
     // Multiple
+    // Rising Sun Kick has a 25% chance to trigger a second time, dealing 4950 Physical damage and restoring 1 Chi.
+    azerite_power_t glory_of_the_dawn;
     // While Fortifying Brew is active, heal for 92 every second.
     azerite_power_t strength_of_spirit;
     // Attacking a target with Rising Sun Kick causes your damaging melee abilities to deal 49 additional Physical
@@ -1657,33 +1659,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
     }
   };
 
-  struct sef_chi_burst_damage_t : public sef_spell_t
-  {
-    sef_chi_burst_damage_t( storm_earth_and_fire_pet_t* player )
-      : sef_spell_t( "chi_burst_damage", player, player->o()->passives.chi_burst_damage )
-    {
-      dual = true;
-      aoe  = -1;
-    }
-  };
-
-  struct sef_chi_burst_t : public sef_spell_t
-  {
-    sef_chi_burst_damage_t* damage;
-    sef_chi_burst_t( storm_earth_and_fire_pet_t* player )
-      : sef_spell_t( "chi_burst", player, player->o()->talent.chi_burst ),
-        damage( new sef_chi_burst_damage_t( player ) )
-    {
-    }
-
-    virtual void execute() override
-    {
-      sef_spell_t::execute();
-
-      damage->execute();
-    }
-  };
-
   struct sef_crackling_jade_lightning_t : public sef_spell_t
   {
     sef_crackling_jade_lightning_t( storm_earth_and_fire_pet_t* player )
@@ -1792,7 +1767,6 @@ public:
     attacks.at( SEF_FIST_OF_THE_WHITE_TIGER )    = new sef_fist_of_the_white_tiger_t( this );
     attacks.at( SEF_FIST_OF_THE_WHITE_TIGER_OH ) = new sef_fist_of_the_white_tiger_oh_t( this );
 
-    spells.at( sef_spell_idx( SEF_CHI_BURST ) )                = new sef_chi_burst_t( this );
     spells.at( sef_spell_idx( SEF_CHI_WAVE ) )                 = new sef_chi_wave_t( this );
     spells.at( sef_spell_idx( SEF_CRACKLING_JADE_LIGHTNING ) ) = new sef_crackling_jade_lightning_t( this );
   }
@@ -3327,7 +3301,34 @@ struct tiger_palm_t : public monk_melee_attack_t
 // Rising Sun Kick
 // ==========================================================================
 
+// Glory of the Dawn =================================================
+struct glory_of_the_dawn_t : public monk_melee_attack_t
+{
+  glory_of_the_dawn_t( monk_t* p, const std::string& name )
+    : monk_melee_attack_t( name, p, p -> find_spell( 288636 ) )
+  {
+    background = true;
+  }
+
+  virtual void execute() override
+  {
+    monk_melee_attack_t::execute();
+
+    switch ( p()->specialization() )
+    {
+    case MONK_WINDWALKER:
+    {
+      p()->gain.glory_ot_the_dawn->add( RESOURCE_CHI, data().effectN( 3 ).base_value() );
+      break;
+    }
+    default:
+      break;
+    }
+  }
+};
+
 // Rising Sun Kick Damage Trigger ===========================================
+
 struct rising_sun_kick_dmg_t : public monk_melee_attack_t
 {
   rising_sun_kick_dmg_t( monk_t* p, const std::string& name )
@@ -3335,8 +3336,8 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
   {
     ww_mastery = true;
 
-    background                    = true;
-    may_crit                      = true;
+    background = true;
+    may_crit = true;
     affected_by.sunrise_technique = true;
   }
 
@@ -3368,17 +3369,17 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     if ( p()->specialization() == MONK_WINDWALKER )
       ap_type = AP_WEAPON_BOTH;
   }
-
+  
   virtual void execute() override
   {
     monk_melee_attack_t::execute();
 
     switch ( p()->specialization() )
     {
-      case MONK_MISTWEAVER:
+      case MONK_WINDWALKER:
       {
         if ( p()->talent.rising_thunder->ok() )
-          p()->cooldown.thunder_focus_tea->reset( true );
+          p()->cooldown.thunder_focus_tea->reset(true);
         break;
       }
       default:
@@ -3386,7 +3387,7 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     }
   }
 
-  virtual void impact( action_state_t* s ) override
+    virtual void impact( action_state_t* s ) override
   {
     monk_melee_attack_t::impact( s );
 
@@ -3434,6 +3435,7 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
 struct rising_sun_kick_t : public monk_melee_attack_t
 {
   rising_sun_kick_dmg_t* trigger_attack;
+  glory_of_the_dawn_t* gotd;
 
   rising_sun_kick_t( monk_t* p, const std::string& options_str )
     : monk_melee_attack_t( "rising_sun_kick", p, p->spec.rising_sun_kick )
@@ -3452,6 +3454,9 @@ struct rising_sun_kick_t : public monk_melee_attack_t
 
     trigger_attack        = new rising_sun_kick_dmg_t( p, "rising_sun_kick_dmg" );
     trigger_attack->stats = stats;
+
+    gotd = new glory_of_the_dawn_t( p, "glory_of_the_dawn" );
+    gotd->stats = stats;
   }
 
   void init() override
@@ -3488,6 +3493,18 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     monk_melee_attack_t::execute();
 
     trigger_attack->execute();
+
+    if ( p()->azerite.glory_of_the_dawn.ok() )
+    {
+      if ( rng().roll( p()->azerite.glory_of_the_dawn.spell_ref().effectN( 3 ).percent() ) ) 
+      {
+        double raw = p()->azerite.glory_of_the_dawn.value();
+        gotd -> target = p() -> target;
+        gotd -> base_dd_max = raw;
+        gotd -> base_dd_min = raw;
+        gotd -> execute();
+      }
+    }
   }
 };
 
@@ -6550,8 +6567,6 @@ struct chi_burst_t : public monk_spell_t
   chi_burst_t( monk_t* player, const std::string& options_str )
     : monk_spell_t( "chi_burst", player, player->talent.chi_burst ), heal( nullptr )
   {
-    sef_ability = SEF_CHI_BURST;
-
     parse_options( options_str );
     heal          = new chi_burst_heal_t( *player );
     heal->stats   = stats;
@@ -6575,6 +6590,10 @@ struct chi_burst_t : public monk_spell_t
 
   virtual void execute() override
   {
+    // Trigger Combo Strikes
+    // registers even on a miss
+    combo_strikes_trigger( CS_CHI_BURST );
+
     monk_spell_t::execute();
 
     heal->execute();
@@ -7852,6 +7871,7 @@ void monk_t::init_spells()
   azerite.sweep_the_leg = find_azerite_spell( "Sweep the Leg" );
 
   // Multiple
+  azerite.glory_of_the_dawn  = find_azerite_spell( "Glory of the Dawn" );
   azerite.strength_of_spirit = find_azerite_spell( "Strength of Spirit" );
   azerite.sunrise_technique  = find_azerite_spell( "Sunrise Technique" );
 
@@ -8249,6 +8269,7 @@ void monk_t::init_gains()
   gain.fist_of_the_white_tiger  = get_gain( "fist_of_the_white_tiger" );
   gain.focus_of_xuen            = get_gain( "focus_of_xuen" );
   gain.gift_of_the_ox           = get_gain( "gift_of_the_ox" );
+  gain.glory_ot_the_dawn        = get_gain( "glory_of_the_dawn" );
   gain.rushing_jade_wind_tick   = get_gain( "rushing_jade_wind_tick" );
   gain.serenity                 = get_gain( "serenity" );
   gain.spirit_of_the_crane      = get_gain( "spirit_of_the_crane" );
@@ -9498,10 +9519,8 @@ void monk_t::apl_combat_windwalker()
   def->add_action( "auto_attack" );
   def->add_action( this, "Spear Hand Strike", "if=target.debuff.casting.react" );
   def->add_talent( this, "Rushing Jade Wind", "if=talent.serenity.enabled&cooldown.serenity.remains<3&energy.time_to_max>1&buff.rushing_jade_wind.down" );
-  def->add_action( this, "Touch of Karma",
-                   "interval=90,pct_health=0.5,if=!talent.good_karma.enabled,interval=90,pct_health=0.5",
+  def->add_action( this, "Touch of Karma", "interval=90,pct_health=0.5",
                    "Touch of Karma on cooldown, if Good Karma is enabled equal to 100% of maximum health" );
-  def->add_action( this, "Touch of Karma", "interval=90,pct_health=1,if=talent.good_karma.enabled,interval=90,pct_health=1" );
 
   if ( sim->allow_potions )
   {
