@@ -2602,6 +2602,11 @@ struct piercing_shot_t: public hunter_ranged_attack_t
     aoe = -1;
     base_aoe_multiplier = 1.0 / ( data().effectN( 1 ).base_value() / 10 ) ;
   }
+
+  double target_armor( player_t* ) const override
+  {
+    return 0.0;
+  }
 };
 
 // Steady Shot ========================================================================
