@@ -7857,11 +7857,17 @@ void druid_t::apl_precombat()
         "This happens when Sabertooth, Bloodtalons but not LI is talented" );
   }
 
-  // Balance: Azerite rank variables
+  // Balance
   if ( specialization() == DRUID_BALANCE )
   {
-    precombat->add_action( "variable,name=az_streak,value=azerite.streaking_stars.rank", "Azerite variables\n# Streaking Stars:\n# Cast sw after every non-sw spell unless capping, sw sf sw if forced" );
-    precombat->add_action( "variable,name=az_ds,value=azerite.dawning_sun.rank" );
+    // Azerite variables
+    precombat->add_action("variable,name=az_ss,value=azerite.streaking_stars.rank", "Azerite variables");
+    precombat->add_action("variable,name=az_ds,value=azerite.dawning_sun.rank");
+    precombat->add_action("variable,name=az_ap,value=azerite.arcanic_pulsar.rank");
+    // Starfall v Starsurge target cutoff
+    precombat->add_action("variable,name=sf_targets,value=5", "Starfall v Starsurge target cutoff");
+    precombat->add_action("variable,name=sf_targets,op=sub,value=1,if=talent.stellar_drift.enabled|(talent.incarnation.enabled&talent.twin_moons.enabled&!azerite.arcanic_pulsar.enabled)");
+    precombat->add_action("variable,name=sf_targets,op=sub,value=1,if=!azerite.arcanic_pulsar.enabled&!talent.starlord.enabled");
   }
   
   // Forms
@@ -7931,7 +7937,6 @@ void druid_t::apl_default()
 
   if ( primary_role() == ROLE_ATTACK )
   {
-    def -> add_action( this, "Faerie Fire", "if=debuff.weakened_armor.stack<3" );
     def -> add_action( extra_actions );
     def -> add_action( this, "Rake", "if=remains<=duration*0.3" );
     def -> add_action( this, "Shred" );
@@ -7942,7 +7947,7 @@ void druid_t::apl_default()
   {
     def -> add_action( extra_actions );
     def -> add_action( this, "Rejuvenation", "if=remains<=duration*0.3" );
-    def -> add_action( this, "Healing Touch", "if=mana.pct>=30" );
+    def -> add_action( this, "Regrowth", "if=mana.pct>=30" );
   }
 }
 
@@ -8219,60 +8224,68 @@ void druid_t::apl_feral()
 void druid_t::apl_balance()
 {
   std::vector<std::string> racial_actions = get_racial_actions();
-  std::vector<std::string> item_actions   = get_item_actions();
+  std::vector<std::string> item_actions = get_item_actions();
 
-  action_priority_list_t* default_list        = get_action_priority_list( "default" );
+  action_priority_list_t* default_list = get_action_priority_list("default");
 
-  if ( sim -> allow_potions && true_level >= 80 )
-    default_list -> add_action( "potion,if=buff.celestial_alignment.up|buff.incarnation.up" );
+  if (sim->allow_potions && true_level >= 80)
+    default_list->add_action("potion,if=buff.ca_inc.up");
 
-  for ( size_t i = 0; i < racial_actions.size(); i++ )
-    default_list -> add_action( racial_actions[i] + ",if=buff.celestial_alignment.up|buff.incarnation.up" );
+  for (size_t i = 0; i < racial_actions.size(); i++)
+    default_list->add_action(racial_actions[i] + ",if=buff.ca_inc.up");
 
-  default_list->add_action( "use_item,name=azurethos_singed_plumage,if=equipped.161377&(cooldown.incarnation.remains>30|cooldown.celestial_alignment.remains>30)");
-  default_list->add_action( "use_item,name=dread_gladiators_badge,if=equipped.161902&(cooldown.incarnation.remains>30|cooldown.celestial_alignment.remains>30)");
-  default_list->add_action( "use_item,name=balefire_branch,if=equipped.159630&(cooldown.incarnation.remains>30|cooldown.celestial_alignment.remains>30)");
-  default_list->add_action( "use_items" );
-  default_list->add_talent( this, "Warrior of Elune", "", "CDs");
-  default_list->add_action( this, "Innervate", "if=azerite.lively_spirit.enabled&(cooldown.incarnation.up|cooldown.celestial_alignment.remains<12)&(((raid_event.adds.duration%15)*(4)<(raid_event.adds.in%180))|(raid_event.adds.up))");
-  default_list->add_action( "incarnation,if=astral_power>=40&(((raid_event.adds.duration%30)*(4)<(raid_event.adds.in%180))|(raid_event.adds.up))" );
-  default_list->add_action( this, "Celestial Alignment", "if=astral_power>=40&(!azerite.lively_spirit.enabled|buff.lively_spirit.up)&(((raid_event.adds.duration%15)*(4)<(raid_event.adds.in%180))|(raid_event.adds.up))" );
-  default_list->add_talent( this, "Fury of Elune", "if=(((raid_event.adds.duration%8)*(4)<(raid_event.adds.in%60))|(raid_event.adds.up))&((buff.celestial_alignment.up|buff.incarnation.up)|(cooldown.celestial_alignment.remains>30|cooldown.incarnation.remains>30))");
-  default_list->add_talent( this, "Force of Nature", "if=(buff.celestial_alignment.up|buff.incarnation.up)|(cooldown.celestial_alignment.remains>30|cooldown.incarnation.remains>30)");
-  default_list->add_action( this, "Sunfire", "target_if=refreshable,"
-                                  "if=astral_power.deficit>=7&target.time_to_die>5.4"
-                                  "&(!buff.celestial_alignment.up&!buff.incarnation.up|!variable.az_streak|!prev_gcd.1.sunfire)" /*Streaking check*/
-                                  "&(movement.distance>0|raid_event.movement.in>remains|remains<=execute_time*2)" /*Movement*/
-                                 ,"DoTs");
-  default_list->add_action( this, "Moonfire", "target_if=refreshable,if=astral_power.deficit>=7&target.time_to_die>6.6"
-                                  "&(!buff.celestial_alignment.up&!buff.incarnation.up|!variable.az_streak|!prev_gcd.1.moonfire)" /*Streaking check*/
-                                  "&(movement.distance>0|raid_event.movement.in>remains|remains<=execute_time*2)" /*Movement*/
-                                 );
-  default_list->add_talent( this, "Stellar Flare", "target_if=refreshable,if=astral_power.deficit>=12&target.time_to_die>7.2"
-                                  "&(!buff.celestial_alignment.up&!buff.incarnation.up|!variable.az_streak|!prev_gcd.1.stellar_flare)" /*Streaking check*/
-                                 );
-  default_list->add_action( this, "Lunar Strike", "if=astral_power.deficit>=16&(buff.lunar_empowerment.stack=3|(spell_targets<3&astral_power>=40&(buff.lunar_empowerment.stack=2&buff.solar_empowerment.stack=2)))"
-                                ,"Empowerment cap check");
-  default_list->add_action( this, "Solar Wrath", "if=astral_power.deficit>=12&buff.solar_empowerment.stack=3"
-                                "|(variable.az_streak&(buff.celestial_alignment.up|buff.incarnation.up)&!prev_gcd.1.solar_wrath&astral_power.deficit>=12)" /*Streaking sw weave*/
-                                );
-  default_list->add_action( this, "Starsurge", "if=(spell_targets.starfall<3&(!buff.starlord.up|buff.starlord.remains>=4)|execute_time*(astral_power%40)>target.time_to_die)"
-                                  "&(!buff.celestial_alignment.up&!buff.incarnation.up|variable.az_streak<2|!prev_gcd.1.starsurge)" /*Streaking check*/
-                                  "&(raid_event.movement.in>(buff.lunar_empowerment.stack*action.lunar_strike.execute_time+buff.solar_empowerment.stack*action.solar_wrath.execute_time)|(astral_power+buff.lunar_empowerment.stack*12+buff.solar_empowerment.stack*8)>=96)" /*Movement*/
-                                 ,"Rotation");
-  default_list->add_action( this, "Starfall", "if=spell_targets.starfall>=3&(!buff.starlord.up|buff.starlord.remains>=4)");
-  default_list->add_action( this, "New Moon", "if=astral_power.deficit>10+execute_time%1.5");
-  default_list->add_action( this, "Half Moon", "if=astral_power.deficit>20+execute_time%1.5");
-  default_list->add_action( this, "Full Moon", "if=astral_power.deficit>40+execute_time%1.5");
-  default_list->add_action( this, "Lunar Strike", "if=(buff.warrior_of_elune.up|buff.lunar_empowerment.up|spell_targets>=3&!buff.solar_empowerment.up)"
-                                "&(!buff.celestial_alignment.up&!buff.incarnation.up|variable.az_streak<2|!prev_gcd.1.lunar_strike)" /*Streaking check*/
-                                "|(variable.az_ds&!buff.dawning_sun.up)" /*Dawning Sun check*/
-                                );
-  default_list->add_action( this, "Solar Wrath", "if=(!buff.celestial_alignment.up&!buff.incarnation.up|variable.az_streak<2|!prev_gcd.1.solar_wrath)" /*Streaking check*/
-                                );
-  default_list->add_action( this, "Sunfire", "if=(!buff.celestial_alignment.up&!buff.incarnation.up|!variable.az_streak|!prev_gcd.1.sunfire)" /*Streaking check*/
-                                );
-  default_list->add_action( this, "Moonfire");
+  // CDs
+  default_list->add_action("use_item,slot=trinket1,if=cooldown.ca_inc.remains>30","CDs");
+  default_list->add_action("use_item,slot=trinket2,if=cooldown.ca_inc.remains>30");
+  default_list->add_talent(this, "Warrior of Elune", "");
+  default_list->add_action(this, "Innervate", "if=azerite.lively_spirit.enabled&(cooldown.incarnation.remains<2|cooldown.celestial_alignment.remains<12)");
+  default_list->add_action("incarnation,if=astral_power>=40");
+  default_list->add_action(this, "Celestial Alignment", "if="
+                                    "astral_power>=40&"
+                                    "(!azerite.lively_spirit.enabled|buff.lively_spirit.up)&"
+                                    "(buff.starlord.stack>=2|!talent.starlord.enabled|!variable.az_ss)");
+  default_list->add_talent(this, "Fury of Elune", "if=(buff.ca_inc.up|cooldown.ca_inc.remains>30)&astral_power.deficit>=13");
+  default_list->add_talent(this, "Force of Nature", "if=(buff.ca_inc.up|cooldown.ca_inc.remains>30)&astral_power.deficit>=25");
+  // Spenders
+  default_list->add_action("cancel_buff,name=starlord,if=buff.starlord.remains<8&astral_power>87", "Spenders");
+  default_list->add_action(this, "Starfall", "if="
+                                    "(buff.starlord.stack<3|buff.starlord.remains>=8)&"
+                                    "spell_targets>=variable.sf_targets&"
+                                    "(target.time_to_die+1)*spell_targets>cost%2.5");
+  default_list->add_action(this, "Starsurge", "if="
+                                    "(buff.starlord.stack<3|buff.starlord.remains>=8)&"
+                                    "spell_targets.starfall<variable.sf_targets&"
+                                    "buff.lunar_empowerment.stack+buff.solar_empowerment.stack<4&buff.solar_empowerment.stack<3&buff.lunar_empowerment.stack<3&"
+                                    "(!variable.az_ss|!buff.ca_inc.up|!prev.starsurge)"
+                                  "|target.time_to_die<=execute_time*astral_power%40");
+  // DoTs
+  default_list->add_action(this, "Sunfire", "target_if=refreshable,if="
+                                    "astral_power.deficit>=8&"
+                                    "floor(target.time_to_die%tick_time)*spell_targets>=5&"
+                                    "(spell_targets>1+talent.twin_moons.enabled|dot.moonfire.ticking)&"
+                                    "(!variable.az_ss|!buff.ca_inc.up|!prev.sunfire)", "DoTs");
+  default_list->add_action(this, "Moonfire", "target_if=refreshable,if="
+                                    "astral_power.deficit>=8&"
+                                    "floor(target.time_to_die%tick_time)*spell_targets>=5&"
+                                    "(!variable.az_ss|!buff.ca_inc.up|!prev.moonfire)");
+  default_list->add_talent(this, "Stellar Flare", "target_if=refreshable,if="
+                                    "astral_power.deficit>=13&"
+                                    "floor(target.time_to_die%tick_time)>=5&"
+                                    "(!variable.az_ss|!buff.ca_inc.up|!prev.stellar_flare)");
+  // Generators
+  default_list->add_action(this, "New Moon", "if=astral_power.deficit>=15", "Generators");
+  default_list->add_action(this, "Half Moon", "if=astral_power.deficit>=25");
+  default_list->add_action(this, "Full Moon", "if=astral_power.deficit>=45");
+  default_list->add_action(this, "Lunar Strike", "if="
+                                    "buff.solar_empowerment.stack<3&"
+                                    "(astral_power.deficit>=17|buff.lunar_empowerment.stack=3)&"
+                                      "((buff.warrior_of_elune.up|buff.lunar_empowerment.up|spell_targets>=2&!buff.solar_empowerment.up|variable.az_ds&!buff.dawning_sun.up)&"
+                                      "(!variable.az_ss|!buff.ca_inc.up|(!prev.lunar_strike&!talent.incarnation.enabled|prev.solar_wrath))"
+                                    "|variable.az_ss&buff.ca_inc.up&prev.solar_wrath)");
+  default_list->add_action(this, "Solar Wrath", "if="
+                                    "variable.az_ss<3|!buff.ca_inc.up|!prev.solar_wrath");
+  // Fallthru for movement
+  default_list->add_action(this, "Sunfire", "", "Fallthru for movement");
 }
 
 // Guardian Combat Action Priority List =====================================
