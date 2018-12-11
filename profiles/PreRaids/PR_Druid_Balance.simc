@@ -25,7 +25,6 @@ actions.precombat+=/food
 actions.precombat+=/augmentation
 # Azerite variables
 actions.precombat+=/variable,name=az_ss,value=azerite.streaking_stars.rank
-actions.precombat+=/variable,name=az_ds,value=azerite.dawning_sun.rank
 actions.precombat+=/variable,name=az_ap,value=azerite.arcanic_pulsar.rank
 # Starfall v Starsurge target cutoff
 actions.precombat+=/variable,name=sf_targets,value=5
@@ -46,8 +45,10 @@ actions+=/lights_judgment,if=buff.ca_inc.up
 actions+=/fireblood,if=buff.ca_inc.up
 actions+=/ancestral_call,if=buff.ca_inc.up
 # CDs
-actions+=/use_item,slot=trinket1,if=cooldown.ca_inc.remains>30
-actions+=/use_item,slot=trinket2,if=cooldown.ca_inc.remains>30
+actions+=/use_item,name=balefire_branch,if=equipped.159630&cooldown.ca_inc.remains>30
+actions+=/use_item,name=dread_gladiators_badge,if=equipped.161902&cooldown.ca_inc.remains>30
+actions+=/use_item,name=azurethos_singed_plumage,if=equipped.161377&cooldown.ca_inc.remains>30
+actions+=/use_items,if=cooldown.ca_inc.remains>30
 actions+=/warrior_of_elune
 actions+=/innervate,if=azerite.lively_spirit.enabled&(cooldown.incarnation.remains<2|cooldown.celestial_alignment.remains<12)
 actions+=/incarnation,if=astral_power>=40
@@ -66,7 +67,7 @@ actions+=/stellar_flare,target_if=refreshable,if=astral_power.deficit>=13&floor(
 actions+=/new_moon,if=astral_power.deficit>=15
 actions+=/half_moon,if=astral_power.deficit>=25
 actions+=/full_moon,if=astral_power.deficit>=45
-actions+=/lunar_strike,if=buff.solar_empowerment.stack<3&(astral_power.deficit>=17|buff.lunar_empowerment.stack=3)&((buff.warrior_of_elune.up|buff.lunar_empowerment.up|spell_targets>=2&!buff.solar_empowerment.up|variable.az_ds&!buff.dawning_sun.up)&(!variable.az_ss|!buff.ca_inc.up|(!prev.lunar_strike&!talent.incarnation.enabled|prev.solar_wrath))|variable.az_ss&buff.ca_inc.up&prev.solar_wrath)
+actions+=/lunar_strike,if=buff.solar_empowerment.stack<3&(astral_power.deficit>=17|buff.lunar_empowerment.stack=3)&((buff.warrior_of_elune.up|buff.lunar_empowerment.up|spell_targets>=2&!buff.solar_empowerment.up)&(!variable.az_ss|!buff.ca_inc.up|(!prev.lunar_strike&!talent.incarnation.enabled|prev.solar_wrath))|variable.az_ss&buff.ca_inc.up&prev.solar_wrath)
 actions+=/solar_wrath,if=variable.az_ss<3|!buff.ca_inc.up|!prev.solar_wrath
 # Fallthru for movement
 actions+=/sunfire
