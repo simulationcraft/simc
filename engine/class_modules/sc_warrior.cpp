@@ -9,8 +9,8 @@ namespace
 {  // UNNAMED NAMESPACE
 // ==========================================================================
 // Warrior
-// To Do: Gathering Storm should stack after each tick, not before (tornados eye is the opposite because reasons)
-// Fury - 
+// To Do: Clean up green text
+// Fury - Gathering Storm tick behavior - Fury needs 2 more
 // Arms - Clean up Crushing Assault (Whirlwind Fervor)
 // ==========================================================================
 
@@ -19,6 +19,7 @@ struct warrior_t;
 struct warrior_td_t : public actor_target_data_t
 {
   dot_t* dots_deep_wounds;
+  dot_t* dots_gushing_wound;
   dot_t* dots_ravager;
   dot_t* dots_rend;
   buff_t* debuffs_colossus_smash;
@@ -134,6 +135,7 @@ public:
     buff_t* infinite_fury;
     buff_t* pulverizing_blows;
     buff_t* reinforced_plating;
+    buff_t* striking_the_anvil;
     buff_t* test_of_might_tracker;  // Used to track rage gain from test of might.
     stat_buff_t* test_of_might;
     buff_t* trample_the_weak;
@@ -199,6 +201,7 @@ public:
     gain_t* rage_from_damage_taken;
     gain_t* ravager;
     gain_t* ceannar_rage;
+    gain_t* cold_steel_hot_blood;
     gain_t* valarjar_berserking;
     gain_t* lord_of_war;
     gain_t* simmering_rage;
@@ -423,6 +426,7 @@ public:
     azerite_power_t callous_reprisal;
     azerite_power_t brace_for_impact;
     azerite_power_t bloodsport;
+    azerite_power_t bastion_of_might;
     // Arms
     azerite_power_t test_of_might;
     azerite_power_t seismic_wave;
@@ -430,6 +434,7 @@ public:
     azerite_power_t gathering_storm;
     azerite_power_t executioners_precision;
     azerite_power_t crushing_assault;
+    azerite_power_t striking_the_anvil;
     // fury
     azerite_power_t trample_the_weak;
     azerite_power_t simmering_rage;
@@ -437,6 +442,8 @@ public:
     azerite_power_t pulverizing_blows;
     azerite_power_t infinite_fury;
     azerite_power_t bloodcraze;
+    azerite_power_t cold_steel_hot_blood;
+    azerite_power_t unbridled_ferocity;
   } azerite;
 
   // Default consumables
@@ -932,6 +939,10 @@ public:
     {
       p()->cooldown.overpower->reset( true );
       p()->proc.tactician->occur();
+      if ( p()->azerite.striking_the_anvil.ok() )
+      {
+        p()->buff.striking_the_anvil->trigger();
+      }
     }
   }
 
@@ -1474,12 +1485,6 @@ struct bladestorm_tick_t : public warrior_attack_t
       impact_action = p->active.deep_wounds_ARMS;
     }
   }
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double b = warrior_attack_t::bonus_da( s );
-    b += p()->buff.gathering_storm->stack_value();
-    return b;
-  }
 };
 
 struct bladestorm_t : public warrior_attack_t
@@ -1599,16 +1604,31 @@ struct bloodthirst_heal_t : public warrior_heal_t
 
 // Bloodthirst ==============================================================
 
+struct gushing_wound_dot_t : public warrior_attack_t
+{
+  gushing_wound_dot_t( warrior_t* p ) : warrior_attack_t( "gushing_wound", p, p->find_spell( 288091 ) ) //288080 & 4 is CB
+  {
+    background = tick_may_crit = true;
+    hasted_ticks               = false;
+    base_td = p->azerite.cold_steel_hot_blood.value( 2 );
+  }
+};
+
 struct bloodthirst_t : public warrior_attack_t
 {
+  warrior_attack_t* gushing_wound;
   bloodthirst_heal_t* bloodthirst_heal;
   int aoe_targets;
   double enrage_chance;
+  double rage_from_cold_steel_hot_blood;
   bloodthirst_t( warrior_t* p, const std::string& options_str )
     : warrior_attack_t( "bloodthirst", p, p->spec.bloodthirst ),
       bloodthirst_heal( nullptr ),
+      gushing_wound( nullptr ),
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
-      enrage_chance( p->spec.enrage->effectN( 2 ).percent() )
+      enrage_chance( p->spec.enrage->effectN( 2 ).percent() ),
+      //rage_from_cold_steel_hot_blood( (p->azerite.cold_steel_hot_blood.spell()->effectN( 1 ).base_value() ) / 10.0 )
+      rage_from_cold_steel_hot_blood( p->find_spell( 288087 )->effectN( 1 ).base_value() / 10.0 )
   {
     parse_options( options_str );
 
@@ -1623,6 +1643,12 @@ struct bloodthirst_t : public warrior_attack_t
     if ( p->talents.fresh_meat->ok() )
     {
       enrage_chance += p->talents.fresh_meat->effectN( 1 ).percent();
+    }
+
+    if ( p->azerite.cold_steel_hot_blood.ok() )
+    {
+      gushing_wound = new gushing_wound_dot_t( p );
+      add_child( gushing_wound );
     }
   }
 
@@ -1650,6 +1676,21 @@ struct bloodthirst_t : public warrior_attack_t
     if ( p()->buff.bloodcraze->check() )
       c += p()->buff.bloodcraze->check_stack_value() / p()->current.rating.attack_crit;
     return c;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warrior_attack_t::impact( s );
+
+    if ( gushing_wound && execute_state->result == RESULT_CRIT )
+    {
+      gushing_wound->execute();
+    }
+
+    if ( p()->azerite.cold_steel_hot_blood.ok() )
+    {
+      p()->resource_gain( RESOURCE_RAGE, rage_from_cold_steel_hot_blood, p()->gain.cold_steel_hot_blood );
+    }
   }
 
   void execute() override
@@ -1875,7 +1916,8 @@ struct colossus_smash_t : public warrior_attack_t
     : warrior_attack_t( "colossus_smash", p, p->spec.colossus_smash ),
       lord_of_war( false ),
       rage_from_lord_of_war(
-          ( p->azerite.lord_of_war.spell()->effectN( 1 ).base_value() * p->azerite.lord_of_war.n_items() ) / 10.0 )
+        //( p->azerite.lord_of_war.spell()->effectN( 1 ).base_value() * p->azerite.lord_of_war.n_items() ) / 10.0 )
+          ( p->azerite.lord_of_war.spell()->effectN( 1 ).base_value() ) / 10.0 ) // 8.1 no extra rage with rank
   {
     if ( p->talents.warbreaker->ok() )
     {
@@ -2079,7 +2121,7 @@ struct execute_arms_t : public warrior_attack_t
 
     trigger_attack->cost_rage = last_resource_cost;
     trigger_attack->execute();
-    p()->resource_gain( RESOURCE_RAGE, last_resource_cost * 0.3,
+    p()->resource_gain( RESOURCE_RAGE, last_resource_cost * 0.2,
                         p()->gain.execute_refund );  // Not worth the trouble to check if the target died.
 
     p()->buff.ayalas_stone_heart->expire();
@@ -2778,6 +2820,16 @@ struct overpower_t : public warrior_attack_t
     }
   }
 
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = warrior_attack_t::bonus_da( s );
+    if ( p()->buff.striking_the_anvil->check() )
+    {
+      b += p()->buff.striking_the_anvil->value();
+    }
+    return b;
+  }
+
   void impact( action_state_t* s ) override
   {
     warrior_attack_t::impact( s );
@@ -2787,12 +2839,18 @@ struct overpower_t : public warrior_attack_t
       seismic_wave->set_target( s->target );
       seismic_wave->execute();
     }
+    if ( p()->buff.striking_the_anvil->check() )
+    {
+      p()->cooldown.mortal_strike->adjust( - timespan_t::from_millis( 
+      p()->azerite.striking_the_anvil.spell()->effectN( 2 ).base_value() ) );
+    }
   }
 
   void execute() override
   {
     warrior_attack_t::execute();
     p()->buff.overpower->trigger();
+    p()->buff.striking_the_anvil->expire();
   }
 
   bool ready() override
@@ -2815,7 +2873,8 @@ struct warbreaker_t : public warrior_attack_t
     : warrior_attack_t( "warbreaker", p, p->talents.warbreaker ),
       lord_of_war( false ),
       rage_from_lord_of_war(
-          ( p->azerite.lord_of_war.spell()->effectN( 1 ).base_value() * p->azerite.lord_of_war.n_items() ) / 10.0 )
+          //( p->azerite.lord_of_war.spell()->effectN( 1 ).base_value() * p->azerite.lord_of_war.n_items() ) / 10.0 )
+          ( p->azerite.lord_of_war.spell()->effectN( 1 ).base_value() ) / 10.0 ) // 8.1 no extra rage with rank
   {
     parse_options( options_str );
     weapon = &( p->main_hand_weapon );
@@ -2865,11 +2924,13 @@ struct rampage_attack_t : public warrior_attack_t
 {
   int aoe_targets;
   bool first_attack, first_attack_missed, valarjar_berserking, simmering_rage;
+//  double unbridled_chance; //unbridled ferocity azerite trait
   double rage_from_valarjar_berserking;
   double rage_from_simmering_rage;
   rampage_attack_t( warrior_t* p, const spell_data_t* rampage, const std::string& name )
     : warrior_attack_t( name, p, rampage ),
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
+//      unbridled_chance( p->azerite.unbridled_ferocity.spell()->effectN( 2 ).percent() ),
       first_attack( false ),
       first_attack_missed( false ),
       valarjar_berserking( false ),
@@ -2929,6 +2990,7 @@ struct rampage_attack_t : public warrior_attack_t
     double b = warrior_attack_t::bonus_da( s );
     b += p()->buff.pulverizing_blows->stack_value();
     b += p()->azerite.simmering_rage.value( 2 );
+    b += p()->azerite.unbridled_ferocity.value( 2 );
     return b;
   }
 
@@ -2994,13 +3056,16 @@ struct rampage_event_t : public event_t
       warrior->rampage_driver = nullptr;
       warrior->buff.meat_cleaver->decrement();
       warrior->buff.pulverizing_blows->expire();
+
     }
   }
 };
 
 struct rampage_parent_t : public warrior_attack_t
 {
-  rampage_parent_t( warrior_t* p, const std::string& options_str ) : warrior_attack_t( "rampage", p, p->spec.rampage )
+  double unbridled_chance;  // unbridled ferocity azerite trait
+  rampage_parent_t( warrior_t* p, const std::string& options_str ) : warrior_attack_t( "rampage", p, p->spec.rampage ),
+  unbridled_chance( p->find_spell( 288060 )->proc_chance() )
   {
     parse_options( options_str );
     for ( size_t i = 0; i < p->rampage_attacks.size(); i++ )
@@ -3022,6 +3087,17 @@ struct rampage_parent_t : public warrior_attack_t
     if ( p()->azerite.trample_the_weak.ok() )
     {
       p()->buff.trample_the_weak->trigger();
+    }
+    if ( p()->azerite.unbridled_ferocity.ok() && rng().roll( unbridled_chance ) )
+    {
+      if ( p()->buff.recklessness->check() )
+      {
+        p()->buff.recklessness->extend_duration( p(), timespan_t::from_seconds( 4 ) );
+      }
+      else
+      {
+      p()->buff.recklessness->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds( 4 ) );
+      }
     }
     p()->enrage();
     p()->rampage_driver = make_event<rampage_event_t>( *sim, p(), 0 );
@@ -3051,13 +3127,6 @@ struct ravager_tick_t : public warrior_attack_t
     // Protection's Ravager deals less damage
     attack_power_mod.direct *= 1.0 + p->spec.prot_warrior->effectN( 8 ).percent();
     rage_from_ravager = p->find_spell( 248439 )->effectN( 1 ).resource( RESOURCE_RAGE );
-  }
-
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double b = warrior_attack_t::bonus_da( s );
-    b += p()->buff.gathering_storm->stack_value();
-    return b;
   }
 
   void execute() override
@@ -4130,7 +4199,7 @@ struct recklessness_t : public warrior_spell_t
   {
     warrior_spell_t::execute();
 
-    p()->buff.recklessness->trigger( 1, bonus_crit );
+    p()->buff.recklessness->trigger();
   }
 };
 
@@ -4605,6 +4674,7 @@ void warrior_t::init_spells()
   azerite.callous_reprisal   = find_azerite_spell( "Callous Reprisal" );
   azerite.brace_for_impact   = find_azerite_spell( "Brace for Impact" );
   azerite.bloodsport         = find_azerite_spell( "Bloodsport" );
+  azerite.bastion_of_might   = find_azerite_spell( "Bastion of Might" );
   // Arms
   azerite.test_of_might          = find_azerite_spell( "Test of Might" );
   azerite.seismic_wave           = find_azerite_spell( "Seismic Wave" );
@@ -4612,6 +4682,7 @@ void warrior_t::init_spells()
   azerite.gathering_storm        = find_azerite_spell( "Gathering Storm" );
   azerite.executioners_precision = find_azerite_spell( "Executioner's Precision" );
   azerite.crushing_assault       = find_azerite_spell( "Crushing Assault" );
+  azerite.striking_the_anvil     = find_azerite_spell( "Striking the Anvil" );
   // Fury
   azerite.trample_the_weak  = find_azerite_spell( "Trample the Weak" );
   azerite.simmering_rage    = find_azerite_spell( "Simmering Rage" );
@@ -4619,6 +4690,8 @@ void warrior_t::init_spells()
   azerite.pulverizing_blows = find_azerite_spell( "Pulverizing Blows" );
   azerite.infinite_fury     = find_azerite_spell( "Infinite fury" );
   azerite.bloodcraze        = find_azerite_spell( "Bloodcraze" );
+  azerite.cold_steel_hot_blood   = find_azerite_spell( "Cold Steel, Hot Blood" );
+  azerite.unbridled_ferocity     = find_azerite_spell( "Unbridled Ferocity" );
 
   // Generic spells
   spell.battle_shout          = find_class_spell( "Battle Shout" );
@@ -5340,6 +5413,7 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
   dots_deep_wounds = target->get_dot( "deep_wounds", &p );
   dots_ravager     = target->get_dot( "ravager", &p );
   dots_rend        = target->get_dot( "rend", &p );
+  dots_gushing_wound = target->get_dot( "gushing_wound", &p );
 
   debuffs_colossus_smash = buff_creator_t( static_cast<actor_pair_t>( *this ), "colossus_smash" )
                                .default_value( p.spell.colossus_smash_debuff->effectN( 2 ).percent() )
@@ -5445,6 +5519,7 @@ void warrior_t::create_buffs()
     ->set_duration( spec.recklessness->duration() + talents.reckless_abandon->effectN( 1 ).time_value() )
     ->add_invalidate( CACHE_CRIT_CHANCE )
     ->set_cooldown( timespan_t::zero() )
+    ->set_default_value( spec.recklessness->effectN( 1 ).percent() )
     ->set_stack_change_callback( [ this ]( buff_t*, int, int after ) { if ( after == 0 ) buff.infinite_fury->trigger(); });
 
   buff.sudden_death = buff_creator_t( this, "sudden_death", talents.sudden_death );
@@ -5521,9 +5596,11 @@ void warrior_t::create_buffs()
           ->set_trigger_spell( azerite.executioners_precision.spell_ref().effectN( 1 ).trigger() )
           ->set_default_value( azerite.executioners_precision.value() );
 
-  buff.gathering_storm = make_buff( this, "gathering_storm", find_spell( 273415 ) )
-                             ->set_trigger_spell( azerite.gathering_storm.spell_ref().effectN( 1 ).trigger() )
-                             ->set_default_value( azerite.gathering_storm.value() );
+  const spell_data_t* gathering_storm_trigger = azerite.gathering_storm.spell()->effectN( 1 ).trigger();
+  const spell_data_t* gathering_storm_buff    = gathering_storm_trigger->effectN( 1 ).trigger();
+  buff.gathering_storm                        = make_buff<stat_buff_t>( this, "gathering_storm", find_spell( 273415 ) )
+                           ->add_stat( STAT_STRENGTH, azerite.gathering_storm.value( 1 ) )
+                           ->set_trigger_spell( gathering_storm_trigger );
 
   const spell_data_t* infinite_fury_trigger = azerite.infinite_fury.spell()->effectN( 1 ).trigger();
   const spell_data_t* infinite_fury_buff    = infinite_fury_trigger ->effectN( 1 ).trigger();
@@ -5554,6 +5631,9 @@ void warrior_t::create_buffs()
   buff.reinforced_plating = make_buff<stat_buff_t>( this, "reinforced_plating", 
                                                     azerite.reinforced_plating.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
                            -> add_stat( STAT_STRENGTH, azerite.reinforced_plating.value( 1 ) );
+  buff.striking_the_anvil = make_buff( this, "striking_the_anvil", find_spell( 288452 ) )
+                               ->set_trigger_spell( azerite.striking_the_anvil.spell_ref().effectN( 1 ).trigger() )
+                               ->set_default_value( azerite.striking_the_anvil.value() );
 
 }
 
@@ -5597,6 +5677,7 @@ void warrior_t::init_gains()
   gain.collateral_damage                = get_gain( "collateral_damage" );
 
   gain.ceannar_rage           = get_gain( "ceannar_rage" );
+  gain.cold_steel_hot_blood   = get_gain( "cold_steel_hot_blood" );
   gain.endless_rage           = get_gain( "endless_rage" );
   gain.lord_of_war            = get_gain( "lord_of_war" );
   gain.meat_cleaver           = get_gain( "meat_cleaver" );
