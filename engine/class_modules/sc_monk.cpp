@@ -3376,7 +3376,7 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
 
     switch ( p()->specialization() )
     {
-      case MONK_WINDWALKER:
+      case MONK_MISTWEAVER:
       {
         if ( p()->talent.rising_thunder->ok() )
           p()->cooldown.thunder_focus_tea->reset(true);
