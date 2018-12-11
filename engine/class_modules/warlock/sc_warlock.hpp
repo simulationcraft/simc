@@ -298,6 +298,7 @@ namespace warlock
 
         //affliction buffs
         propagate_const<buff_t*> active_uas;
+        propagate_const<buff_t*> drain_life;
         propagate_const<buff_t*> nightfall;
         propagate_const<buff_t*> dark_soul_misery;
         propagate_const<buff_t*> demonic_speed; // t20 4pc

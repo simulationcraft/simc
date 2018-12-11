@@ -348,7 +348,7 @@ namespace warlock
           p()->procs.affliction_t21_2pc->occur();
         }
 
-        if ( result_is_hit( d->state->result ) && p()->azerite.inevitable_demise.ok() )
+        if ( result_is_hit( d->state->result ) && p()->azerite.inevitable_demise.ok() && !p()->buffs.drain_life->check() )
         {
           p()->buffs.inevitable_demise->trigger();
         }
@@ -1123,14 +1123,20 @@ namespace warlock
     //spells
     buffs.active_uas = make_buff( this, "active_uas" )
       ->set_max_stack( 20 );
+    buffs.drain_life = make_buff( this, "drain_life" );
     //talents
     buffs.dark_soul_misery = make_buff(this, "dark_soul", talents.dark_soul_misery)
       ->set_default_value(talents.dark_soul_misery->effectN(1).percent())
       ->add_invalidate(CACHE_SPELL_HASTE);
-
     buffs.nightfall = make_buff( this, "nightfall", find_spell( 264571 ) )
       ->set_default_value( find_spell( 264571 )->effectN( 2 ).percent() )
       ->set_trigger_spell( talents.nightfall );
+    //tier
+    buffs.demonic_speed =
+      make_buff( this, "demonic_speed", sets->set( WARLOCK_AFFLICTION, T20, B4 )->effectN( 1 ).trigger() )
+      ->set_chance( sets->set( WARLOCK_AFFLICTION, T20, B4 )->proc_chance() )
+      ->set_default_value( sets->set( WARLOCK_AFFLICTION, T20, B4 )->effectN( 1 ).trigger()->effectN( 1 ).percent() )
+      ->add_invalidate( CACHE_HASTE );
     //azerite
     buffs.cascading_calamity = make_buff<stat_buff_t>(this, "cascading_calamity", azerite.cascading_calamity)
       ->add_stat(STAT_HASTE_RATING, azerite.cascading_calamity.value())
@@ -1140,12 +1146,6 @@ namespace warlock
       ->add_stat(STAT_INTELLECT, azerite.wracking_brilliance.value())
       ->set_duration(find_spell(272893)->duration())
       ->set_refresh_behavior(buff_refresh_behavior::DURATION);
-    //tier
-    buffs.demonic_speed =
-        make_buff( this, "demonic_speed", sets->set( WARLOCK_AFFLICTION, T20, B4 )->effectN( 1 ).trigger() )
-      ->set_chance( sets->set( WARLOCK_AFFLICTION, T20, B4 )->proc_chance() )
-      ->set_default_value( sets->set( WARLOCK_AFFLICTION, T20, B4 )->effectN( 1 ).trigger()->effectN( 1 ).percent() )
-      ->add_invalidate(CACHE_HASTE);
     buffs.inevitable_demise = make_buff(this, "inevitable_demise", azerite.inevitable_demise)
       ->set_max_stack( find_spell(273525)->max_stacks() )
       // Inevitable Demise has a built in 25% reduction to the value of ranks 2 and 3. This is applied as a flat multiplier to the total value.

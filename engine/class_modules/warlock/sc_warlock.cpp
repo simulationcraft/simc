@@ -18,15 +18,25 @@ namespace warlock
         may_crit = false;
       }
 
+      void execute() override
+      {
+        warlock_spell_t::execute();
+
+        p()->buffs.drain_life->trigger();
+      }
+
       double bonus_ta(const action_state_t* s) const override
       {
         double ta = warlock_spell_t::bonus_ta(s);
+
         ta += p()->buffs.inevitable_demise->check_stack_value();
+
         return ta;
       }
 
       void last_tick( dot_t* d ) override
       {
+        p()->buffs.drain_life->expire();
         p()->buffs.inevitable_demise->expire();
 
         warlock_spell_t::last_tick( d );
