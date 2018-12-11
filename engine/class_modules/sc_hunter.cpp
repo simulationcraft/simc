@@ -5210,8 +5210,8 @@ void hunter_t::apl_mm()
   default_list -> add_action( "call_action_list,name=trickshots,if=active_enemies>2" );
 
   cds -> add_talent( this, "Hunter's Mark", "if=debuff.hunters_mark.down" );
-  cds -> add_talent( this, "Double Tap", "if=target.time_to_die<15|cooldown.aimed_shot.remains<gcd&(buff.trueshot.up|!talent.calling_the_shots.enabled)&(!azerite.surging_shots.enabled&!talent.streamline.enabled&!azerite.focused_fire.enabled)");
-  cds -> add_talent( this, "Double Tap", "if=cooldown.rapid_fire.remains<gcd&(buff.trueshot.up|!talent.calling_the_shots.enabled)&(azerite.surging_shots.enabled|talent.streamline.enabled|azerite.focused_fire.enabled)");
+  cds -> add_talent( this, "Double Tap", "if=target.time_to_die<15|cooldown.aimed_shot.remains<gcd&(buff.trueshot.up&buff.unerring_vision.stack>7|!talent.calling_the_shots.enabled)&(!azerite.surging_shots.enabled&!talent.streamline.enabled&!azerite.focused_fire.enabled)");
+  cds -> add_talent( this, "Double Tap", "if=cooldown.rapid_fire.remains<gcd&(buff.trueshot.up&buff.unerring_vision.stack>7|!talent.calling_the_shots.enabled)&(azerite.surging_shots.enabled|talent.streamline.enabled|azerite.focused_fire.enabled)");
 
   // Racials
   cds -> add_action("berserking,if=cooldown.trueshot.remains>60");
@@ -5221,15 +5221,15 @@ void hunter_t::apl_mm()
 
   // In-combat potion
   cds -> add_action( "potion,if=buff.trueshot.react&buff.bloodlust.react|buff.trueshot.up&target.health.pct<20&talent.careful_aim.enabled|target.time_to_die<25" );
-  cds -> add_action( this, "Trueshot", "if=buff.bloodlust.up|target.time_to_die>cooldown.trueshot.duration_guess+duration|(target.health.pct<20|!talent.careful_aim.enabled)|target.time_to_die<15" );
+  cds -> add_action( this, "Trueshot", "if=cooldown.rapid_fire.remains&target.time_to_die>cooldown.trueshot.duration_guess+duration|(target.health.pct<20|!talent.careful_aim.enabled)|target.time_to_die<15" );
 
   st -> add_talent( this, "Explosive Shot" );
   st -> add_talent( this, "Barrage", "if=active_enemies>1" );
   st -> add_talent( this, "A Murder of Crows" );
   st -> add_talent( this, "Serpent Sting", "if=refreshable&!action.serpent_sting.in_flight" );
   st -> add_action( this, "Arcane Shot", "if=buff.precise_shots.up&cooldown.aimed_shot.full_recharge_time<gcd*buff.precise_shots.stack+action.aimed_shot.cast_time" );
-  st -> add_action( this, "Aimed Shot", "if=buff.precise_shots.down" );
-  st -> add_action( this, "Rapid Fire", "if=focus+cast_regen<focus.max|azerite.focused_fire.enabled|azerite.in_the_rhythm.rank>1|azerite.surging_shots.enabled|talent.streamline.enabled" );
+  st -> add_action( this, "Aimed Shot", "if=buff.precise_shots.down|cooldown.aimed_shot.full_recharge_time<action.aimed_shot.cast_time" );
+  st -> add_action( this, "Rapid Fire", "if=focus+cast_regen<focus.max|azerite.focused_fire.enabled|azerite.in_the_rhythm.rank>1|azerite.surging_shots.enabled|talent.streamline.enabled|buff.trueshot.up" );
   st -> add_talent( this, "Piercing Shot" );
   st -> add_action( this, "Arcane Shot", "if=focus>60|buff.precise_shots.up" );
   st -> add_action( this, "Steady Shot" );
@@ -5237,7 +5237,7 @@ void hunter_t::apl_mm()
   trickshots -> add_talent( this, "Barrage" );
   trickshots -> add_talent( this, "Explosive Shot" );
   trickshots -> add_action( this, "Rapid Fire", "if=buff.trick_shots.up&(azerite.focused_fire.enabled|azerite.in_the_rhythm.rank>1|azerite.surging_shots.enabled|talent.streamline.enabled)" );
-  trickshots -> add_action( this, "Aimed Shot", "if=buff.trick_shots.up&buff.precise_shots.down" );
+  trickshots -> add_action( this, "Aimed Shot", "if=buff.trick_shots.up&(buff.precise_shots.down|cooldown.aimed_shot.full_recharge_time<action.aimed_shot.cast_time)" );
   trickshots -> add_action( this, "Rapid Fire", "if=buff.trick_shots.up" );
   trickshots -> add_action( this, "Multi-Shot", "if=buff.trick_shots.down|buff.precise_shots.up|focus>70" );
   trickshots -> add_talent( this, "Piercing Shot" );
