@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
+#include "player/pet_spawner.hpp"
 
 namespace
 { // UNNAMED NAMESPACE
@@ -284,16 +285,20 @@ public:
 
   struct pets_t
   {
-    pets::hunter_main_pet_t* main;
-    pets::hunter_main_pet_base_t* animal_companion;
-    pets::dire_critter_t* dire_beast;
-    pet_t* spitting_cobra;
+    pets::hunter_main_pet_t* main = nullptr;
+    pets::hunter_main_pet_base_t* animal_companion = nullptr;
+    pets::dire_critter_t* dire_beast = nullptr;
+    pet_t* spitting_cobra = nullptr;
+    spawner::pet_spawner_t<pets::dire_critter_t, hunter_t> dc_dire_beast;
+
+    pets_t( hunter_t* p ) : dc_dire_beast( "dire_beast_(dc)", p ) {}
   } pets;
 
   struct azerite_t
   {
     // Beast Mastery
     azerite_power_t dance_of_death;
+    azerite_power_t dire_consequences;
     azerite_power_t feeding_frenzy;
     azerite_power_t haze_of_rage;
     azerite_power_t primal_instincts;
@@ -517,7 +522,7 @@ public:
 
   hunter_t( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) :
     player_t( sim, HUNTER, name, r ),
-    pets(),
+    pets( this ),
     buffs(),
     cooldowns(),
     gains(),
@@ -1288,8 +1293,8 @@ struct dire_critter_t: public hunter_pet_t
     action_t* stomp;
   } active;
 
-  dire_critter_t( hunter_t* owner ):
-    hunter_pet_t( owner, "dire_beast", PET_HUNTER, true /*GUARDIAN*/ )
+  dire_critter_t( hunter_t* owner, const std::string& n = "dire_beast" ):
+    hunter_pet_t( owner, n, PET_HUNTER, true /*GUARDIAN*/ )
   {
     owner_coeff.ap_from_ap = 0.15;
     regen_type = REGEN_DISABLED;
@@ -1301,6 +1306,8 @@ struct dire_critter_t: public hunter_pet_t
   {
     hunter_pet_t::summon( duration );
 
+    o() -> buffs.dire_beast -> trigger();
+
     if ( o() -> talents.stomp -> ok() )
       active.stomp -> execute();
 
@@ -1308,6 +1315,29 @@ struct dire_critter_t: public hunter_pet_t
       main_hand_attack -> execute();
   }
 };
+
+std::pair<timespan_t, int> dire_beast_duration( hunter_t* p )
+{
+  // Dire beast gets a chance for an extra attack based on haste
+  // rather than discrete plateaus.  At integer numbers of attacks,
+  // the beast actually has a 50% chance of n-1 attacks and 50%
+  // chance of n.  It (apparently) scales linearly between n-0.5
+  // attacks to n+0.5 attacks.  This uses beast duration to
+  // effectively alter the number of attacks as the duration itself
+  // isn't important and combat log testing shows some variation in
+  // attack speeds.  This is not quite perfect but more accurate
+  // than plateaus.
+  const timespan_t base_duration = p -> find_spell( 120679 ) -> duration();
+  const timespan_t swing_time = timespan_t::from_seconds( 2.0 ) * p -> cache.attack_speed();
+  double partial_attacks_per_summon = base_duration / swing_time;
+  int base_attacks_per_summon = static_cast<int>(partial_attacks_per_summon);
+  partial_attacks_per_summon -= static_cast<double>(base_attacks_per_summon );
+
+  if ( p -> rng().roll( partial_attacks_per_summon ) )
+    base_attacks_per_summon += 1;
+
+  return { base_attacks_per_summon * swing_time, base_attacks_per_summon };
+}
 
 // ==========================================================================
 // Spitting Cobra
@@ -1487,6 +1517,7 @@ struct kill_command_bm_t: public kill_command_base_t
     kill_command_base_t( p, p -> find_spell( 83381 ) )
   {
     attack_power_mod.direct = o() -> specs.kill_command -> effectN( 2 ).percent();
+    base_dd_adder += o() -> azerite.dire_consequences.value( 1 );
 
     if ( o() -> talents.killer_instinct -> ok() )
     {
@@ -1524,6 +1555,7 @@ struct kill_command_sv_t: public kill_command_base_t
   {
     attack_power_mod.direct = o() -> specs.kill_command -> effectN( 1 ).percent();
     attack_power_mod.tick = o() -> talents.bloodseeker -> effectN( 1 ).percent();
+    base_dd_adder += o() -> azerite.dire_consequences.value( 2 );
 
     hasted_ticks = true;
 
@@ -2260,11 +2292,9 @@ struct barbed_shot_t: public hunter_ranged_attack_t
 
   void init_finished() override
   {
-    for ( auto pet : p() -> pet_list )
-    {
-      if ( pet != p() -> pets.dire_beast )
-        add_pet_stats( pet, { "stomp" } );
-    }
+    pet_t* pets[] = { p() -> pets.main, p() -> pets.animal_companion };
+    for ( auto pet : pets )
+      add_pet_stats( pet, { "stomp" } );
 
     hunter_ranged_attack_t::init_finished();
   }
@@ -3613,6 +3643,13 @@ struct counter_shot_t: public interrupt_base_t
 struct kill_command_t: public hunter_spell_t
 {
   proc_t* flankers_advantage;
+  struct {
+    real_ppm_t* rppm = nullptr;
+    cooldown_t* icd;
+    proc_t* proc;
+    gain_t* gain;
+    double gain_amount;
+  } dire_consequences;
 
   kill_command_t( hunter_t* p, const std::string& options_str ):
     hunter_spell_t( "kill_command", p, p -> specs.kill_command ),
@@ -3621,6 +3658,18 @@ struct kill_command_t: public hunter_spell_t
     parse_options( options_str );
 
     cooldown -> charges += static_cast<int>( p -> talents.alpha_predator -> effectN( 1 ).base_value() );
+
+    if ( p -> azerite.dire_consequences.ok() )
+    {
+      auto driver = p -> find_spell( 287097 );
+      dire_consequences.rppm = p -> get_rppm( "dire_consequences", driver );
+      dire_consequences.icd = p -> get_cooldown( "dire_consequences" );
+      dire_consequences.icd -> duration = driver -> internal_cooldown();
+      dire_consequences.proc = p -> get_proc( "Dire Consequences" );
+      dire_consequences.gain = p -> get_gain( "dire_beast_(dc)" );
+      dire_consequences.gain_amount = p -> find_spell( 120694 ) -> effectN( 1 ).base_value() +
+                                      p -> talents.scent_of_blood -> effectN( 1 ).base_value();
+    }
   }
 
   void init_finished() override
@@ -3655,6 +3704,15 @@ struct kill_command_t: public hunter_spell_t
         flankers_advantage -> occur();
         cooldown -> reset( true );
       }
+    }
+
+    // XXX: Not sure if the trigger comes before the icd check or after. Typically it's the former afaik.
+    if ( dire_consequences.rppm && dire_consequences.rppm -> trigger() && dire_consequences.icd -> up() )
+    {
+      p() -> pets.dc_dire_beast.spawn( pets::dire_beast_duration( p() ).first );
+      p() -> resource_gain( RESOURCE_FOCUS, dire_consequences.gain_amount, dire_consequences.gain );
+      dire_consequences.icd -> start();
+      dire_consequences.proc -> occur();
     }
   }
 
@@ -3725,32 +3783,13 @@ struct dire_beast_t: public hunter_spell_t
   {
     hunter_spell_t::execute();
 
-    // Dire beast gets a chance for an extra attack based on haste
-    // rather than discrete plateaus.  At integer numbers of attacks,
-    // the beast actually has a 50% chance of n-1 attacks and 50%
-    // chance of n.  It (apparently) scales linearly between n-0.5
-    // attacks to n+0.5 attacks.  This uses beast duration to
-    // effectively alter the number of attacks as the duration itself
-    // isn't important and combat log testing shows some variation in
-    // attack speeds.  This is not quite perfect but more accurate
-    // than plateaus.
-    auto beast = p() -> pets.dire_beast;
-    const timespan_t base_duration = data().duration();
-    const timespan_t swing_time = beast -> main_hand_weapon.swing_time * beast -> composite_melee_speed();
-    double partial_attacks_per_summon = base_duration / swing_time;
-    int base_attacks_per_summon = static_cast<int>(partial_attacks_per_summon);
-    partial_attacks_per_summon -= static_cast<double>(base_attacks_per_summon );
-
-    if ( rng().roll( partial_attacks_per_summon ) )
-      base_attacks_per_summon += 1;
-
-    timespan_t summon_duration = base_attacks_per_summon * swing_time;
+    timespan_t summon_duration;
+    int base_attacks_per_summon;
+    std::tie( summon_duration, base_attacks_per_summon ) = pets::dire_beast_duration( p() );
 
     sim -> print_debug( "Dire Beast summoned with {:4.1f} autoattacks", base_attacks_per_summon );
 
-    beast -> summon( summon_duration );
-
-    p() -> buffs.dire_beast -> trigger();
+    p() -> pets.dire_beast -> summon( summon_duration );
   }
 };
 
@@ -4524,6 +4563,12 @@ void hunter_t::create_pets()
 
   if ( talents.spitting_cobra -> ok() )
     pets.spitting_cobra = new pets::spitting_cobra_t( this );
+
+  if ( azerite.dire_consequences.ok() )
+  {
+    pets.dc_dire_beast.set_creation_callback(
+      [] ( hunter_t* p ) { return new pets::dire_critter_t( p, "dire_beast_(dc)" ); });
+  }
 }
 
 // hunter_t::init_spells ====================================================
@@ -4645,6 +4690,7 @@ void hunter_t::init_spells()
   // Azerite
 
   azerite.dance_of_death        = find_azerite_spell( "Dance of Death" );
+  azerite.dire_consequences     = find_azerite_spell( "Dire Consequences" );
   azerite.feeding_frenzy        = find_azerite_spell( "Feeding Frenzy" );
   azerite.haze_of_rage          = find_azerite_spell( "Haze of Rage" );
   azerite.primal_instincts      = find_azerite_spell( "Primal Instincts" );
@@ -4735,9 +4781,9 @@ void hunter_t::create_buffs()
   }
 
   buffs.dire_beast =
-    make_buff( this, "dire_beast", talents.dire_beast -> effectN( 2 ).trigger() )
-      -> set_default_value( talents.dire_beast -> effectN( 2 ).trigger() -> effectN( 1 ).percent() )
-      ->add_invalidate(CACHE_HASTE);
+    make_buff( this, "dire_beast", find_spell( 120679 ) -> effectN( 2 ).trigger() )
+      -> set_default_value( find_spell( 120679 ) -> effectN( 2 ).trigger() -> effectN( 1 ).percent() )
+      -> add_invalidate( CACHE_HASTE );
 
   buffs.thrill_of_the_hunt =
     make_buff( this, "thrill_of_the_hunt", talents.thrill_of_the_hunt -> effectN( 1 ).trigger() )
