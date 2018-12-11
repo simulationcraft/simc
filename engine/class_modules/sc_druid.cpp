@@ -1284,7 +1284,7 @@ struct tigers_fury_buff_t : public druid_buff_t<buff_t>
 
   virtual void start(int stacks, double value, timespan_t duration) override
   {
-    if (p().azerite.jungle_fury.ok())
+    if (p().azerite.jungle_fury.enabled())
       p().buff.jungle_fury->trigger(1, DEFAULT_VALUE(), 1.0, duration);
 
     base_t::start(stacks, value, duration);
@@ -7511,7 +7511,8 @@ void druid_t::create_buffs()
       buff_creator_t( this, "shredding_fury", find_spell( 274426 ) ).default_value( azerite.shredding_fury.value() );
 
   buff.jungle_fury = make_buff<stat_buff_t>( this, "jungle_fury", find_spell( 274425 ) )
-                         ->add_stat( STAT_CRIT_RATING, azerite.jungle_fury.value( 1 ) );
+                         ->add_stat( STAT_CRIT_RATING, azerite.jungle_fury.value( 1 ) )
+                         ->set_chance( azerite.jungle_fury.ok() ? 1.0 : 0.0 );
 
   buff.iron_jaws = buff_creator_t( this, "iron_jaws", find_spell( 276026 ) );
 
@@ -7645,7 +7646,7 @@ void druid_t::create_buffs()
                                .default_value( spec.tigers_fury -> effectN( 1 ).percent() )
                                .cd( timespan_t::zero() );*/
 
-  buff.scent_of_blood = make_buff( this, "Scent of Blood", find_spell( 285646 ) )
+  buff.scent_of_blood = make_buff( this, "scent_of_blood", find_spell( 285646 ) )
                             ->set_max_stack( 10 )
                             ->set_default_value( talent.scent_of_blood->effectN( 1 ).base_value() )
                             ->set_chance( talent.scent_of_blood->ok() ? 1.0 : 0.0 );
@@ -7846,8 +7847,8 @@ void druid_t::apl_precombat()
   // Feral: Rotational control variables
   if ( specialization() == DRUID_FERAL )
   {
-    precombat->add_action( "variable,name=use_thrash,value=2", "It is worth it for almost everyone to maintain thrash" );
-    precombat->add_action( "variable,name=use_thrash,value=1,if=azerite.power_of_the_moon.enabled");
+    precombat->add_action( "variable,name=use_thrash,value=0", "It is worth it for almost everyone to maintain thrash" );
+    precombat->add_action( "variable,name=use_thrash,value=2,if=azerite.wild_fleshrending.enabled");
     //precombat->add_action( "variable,name=opener_done,value=0" );
     precombat->add_action( "variable,name=delayed_tf_opener,value=0",
                            "Opener TF is delayed if we need to hardcast regrowth later on in the rotation" );
@@ -8020,6 +8021,8 @@ void druid_t::apl_feral()
    finisher->add_action("pool_resource,for_next=1");
    finisher->add_action("savage_roar,if=buff.savage_roar.down");
    finisher->add_action("pool_resource,for_next=1");
+   finisher->add_action("primal_wrath,target_if=spell_targets.primal_wrath>1&dot.rip.remains<4");
+   finisher->add_action("pool_resource,for_next=1");
    finisher->add_action("rip,target_if=!ticking|(remains<=duration*0.3)&(target.health.pct>25&!talent.sabertooth.enabled)|(remains<=duration*0.8&persistent_multiplier>dot.rip.pmultiplier)&target.time_to_die>8");
    finisher->add_action("pool_resource,for_next=1");
    finisher->add_action("savage_roar,if=buff.savage_roar.remains<12");
@@ -8031,7 +8034,11 @@ void druid_t::apl_feral()
    generator->add_action("regrowth,if=talent.bloodtalons.enabled&buff.bloodtalons.down&buff.predatory_swiftness.up&talent.lunar_inspiration.enabled&dot.rake.remains<1");
    generator->add_action("brutal_slash,if=spell_targets.brutal_slash>desired_targets");
    generator->add_action("pool_resource,for_next=1");
-   generator->add_action("thrash_cat,if=refreshable&(spell_targets.thrash_cat>2)");
+   generator->add_action("thrash_cat,if=(refreshable)&(spell_targets.thrash_cat>2)");
+   generator->add_action("pool_resource,for_next=1");
+   generator->add_action("thrash_cat,if=(talent.scent_of_blood.enabled&buff.scent_of_blood.down)&spell_targets.thrash_cat>3");
+   generator->add_action("pool_resource,for_next=1");
+   generator->add_action("swipe_cat,if=buff.scent_of_blood.up");
    //generator->add_action("pool_resource,for_next=1");
    //generator->add_action("thrash_cat,if=spell_targets.thrash_cat>3&equipped.luffa_wrappings&talent.brutal_slash.enabled");
    generator->add_action("pool_resource,for_next=1");
@@ -9193,24 +9200,72 @@ expr_t* druid_t::create_expression( const std::string& name_str )
 
     action_t* action = find_action( splits[ 1 ] );
     if ( action )
-      return make_fn_expr( name_str, [action]() -> double {
+      return make_fn_expr( name_str, [action, pmult_adjusted]() -> double {
         dot_t* dot             = action->get_dot();
         double remaining_ticks = 0;
         double potential_ticks = 0;
         action_state_t* state  = action->get_state( dot->state );
         timespan_t duration    = action->composite_dot_duration( state );
+        state->target = action->target = action->player->target;
         timespan_t ttd         = action->target->time_to_percent( 0 );
+        double pmult = 0;
+        //action->snapshot_state(state, DMG_OVER_TIME);
 
         if ( dot->is_ticking() )
         {
           remaining_ticks = std::min( dot->remains(), ttd ) / dot->current_action->tick_time( dot->state );
           duration        = action->calculate_dot_refresh_duration( dot, duration );
+          remaining_ticks *= pmult_adjusted ? dot->state->persistent_multiplier : 1.0;
+        }
+
+        if (pmult_adjusted)
+        {
+          action->snapshot_state(state, RESULT_TYPE_NONE);
+          state->target = action->target;
+
+          pmult = action->composite_persistent_multiplier(state);
         }
 
         potential_ticks = std::min( duration, ttd ) / ( action->tick_time(state) );
+        potential_ticks *= pmult_adjusted ? pmult : 1.0;
         return potential_ticks - remaining_ticks;
       } );
     throw std::invalid_argument( "invalid action" );
+  }
+
+  if ( splits[ 0 ] == "action" && splits[ 1 ] == "ferocious_bite_max" && splits[ 2 ] == "damage" )
+  {
+    action_t* action = find_action( "ferocious_bite" );
+
+    return make_fn_expr( name_str, [action, this]() -> double {
+      action_state_t* state = action->get_state();
+      state->n_targets      = 1;
+      state->chain_target   = 0;
+      state->result         = RESULT_HIT;
+
+      action->snapshot_state( state, DMG_DIRECT );
+      state->target = action->target;
+    //  (p()->resources.current[RESOURCE_ENERGY] - cat_attack_t::cost()));
+
+    //combo_points = p()->resources.current[RESOURCE_COMBO_POINT];
+      double current_energy = this->resources.current[RESOURCE_ENERGY];
+      double current_cp = this->resources.current[RESOURCE_COMBO_POINT];
+      this->resources.current[RESOURCE_ENERGY] = 50;
+      this->resources.current[RESOURCE_COMBO_POINT] = 5;
+
+      double amount;
+      state->result_amount = action->calculate_direct_amount(state);
+      state->target->target_mitigation( action->get_school(), DMG_DIRECT, state );
+      amount = state->result_amount;
+      amount *= 1.0 + clamp( state->crit_chance + state->target_crit_chance, 0.0, 1.0 ) *
+                          action->composite_player_critical_multiplier( state );
+
+      this->resources.current[RESOURCE_ENERGY] = current_energy;
+      this->resources.current[RESOURCE_COMBO_POINT] = current_cp;
+
+      delete state;
+      return amount;
+    } );
   }
 
   if ( util::str_compare_ci( name_str, "astral_power" ) )
