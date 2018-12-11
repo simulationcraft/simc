@@ -3078,6 +3078,261 @@ struct monk_snapshot_stats_t : public snapshot_stats_t
   }
 };
 
+namespace pet_summon {
+  
+struct summon_pet_t : public monk_spell_t
+{
+  timespan_t summoning_duration;
+  std::string pet_name;
+  pet_t* pet;
+
+public:
+  summon_pet_t( const std::string& n, const std::string& pname, monk_t* p,
+                const spell_data_t* sd = spell_data_t::nil() )
+    : monk_spell_t( n, p, sd ), summoning_duration( timespan_t::zero() ), pet_name( pname ), pet( nullptr )
+  {
+    harmful = false;
+  }
+
+  void init_finished() override
+  {
+    pet = player->find_pet( pet_name );
+    if ( !pet )
+    {
+      background = true;
+    }
+
+    monk_spell_t::init_finished();
+  }
+
+  virtual void execute() override
+  {
+    pet->summon( summoning_duration );
+
+    monk_spell_t::execute();
+  }
+
+  bool ready() override
+  {
+    if ( !pet )
+    {
+      return false;
+    }
+    return monk_spell_t::ready();
+  }
+};
+
+// ==========================================================================
+// Invoke Xuen, the White Tiger
+// ==========================================================================
+
+struct xuen_spell_t : public summon_pet_t
+{
+  xuen_spell_t( monk_t* p, const std::string& options_str )
+    : summon_pet_t( "invoke_xuen_the_white_tiger", "xuen_the_white_tiger", p, p->talent.invoke_xuen )
+  {
+    parse_options( options_str );
+
+    harmful            = false;
+    summoning_duration = data().duration() + timespan_t::from_seconds( 1 );
+    // Forcing the minimum GCD to 750 milliseconds
+    min_gcd   = timespan_t::from_millis( 750 );
+    gcd_haste = HASTE_SPELL;
+  }
+};
+
+// ==========================================================================
+// Fury of Xuen
+// ==========================================================================
+
+struct fury_of_xuen_spell_t : public summon_pet_t
+{
+  fury_of_xuen_spell_t( monk_t* p )
+    : summon_pet_t( "fury_of_xuen", "fury_of_xuen", p, p->azerite.fury_of_xuen )
+  {
+    background = true;
+
+    harmful = false;
+    summoning_duration = p->passives.fury_of_xuen_haste_buff->duration() + timespan_t::from_seconds( 1 );
+    min_gcd = timespan_t::zero();
+  }
+};
+
+// ==========================================================================
+// Invoke Niuzao, the Black Ox
+// ==========================================================================
+
+struct niuzao_spell_t : public summon_pet_t
+{
+  niuzao_spell_t( monk_t* p, const std::string& options_str )
+    : summon_pet_t( "invoke_niuzao_the_black_ox", "niuzao_the_black_ox", p, p->talent.invoke_niuzao )
+  {
+    parse_options( options_str );
+
+    harmful            = false;
+    summoning_duration = data().duration();
+    // Forcing the minimum GCD to 750 milliseconds
+    min_gcd   = timespan_t::from_millis( 750 );
+    gcd_haste = HASTE_SPELL;
+  }
+};
+
+// ==========================================================================
+// Storm, Earth, and Fire
+// ==========================================================================
+
+struct storm_earth_and_fire_t;
+
+struct storm_earth_and_fire_t : public monk_spell_t
+{
+  storm_earth_and_fire_t( monk_t* p, const std::string& options_str )
+    : monk_spell_t( "storm_earth_and_fire", p, p->spec.storm_earth_and_fire )
+  {
+    parse_options( options_str );
+
+    trigger_gcd = timespan_t::from_seconds( 1 );
+    // Forcing the minimum GCD to 750 milliseconds
+    min_gcd   = timespan_t::from_millis( 750 );
+    gcd_haste = HASTE_ATTACK;
+    callbacks = harmful = may_miss = may_crit = may_dodge = may_parry = may_block = false;
+
+    cooldown->charges += (int)p->spec.storm_earth_and_fire_2->effectN( 1 ).base_value();
+  }
+
+  void update_ready( timespan_t cd_duration = timespan_t::min() ) override
+  {
+    // While pets are up, don't trigger cooldown since the sticky targeting does not consume charges
+    if ( p()->buff.storm_earth_and_fire->check() )
+    {
+      cd_duration = timespan_t::zero();
+    }
+
+    monk_spell_t::update_ready( cd_duration );
+  }
+
+  bool target_ready( player_t* candidate_target ) override
+  {
+    // Don't let user needlessly trigger SEF sticky targeting mode, if the user would just be
+    // triggering it on the same sticky target
+    if ( p()->buff.storm_earth_and_fire->check() &&
+         ( p()->pet.sef[ SEF_EARTH ]->sticky_target &&
+           candidate_target == p()->pet.sef[ SEF_EARTH ]->target ) )
+    {
+      return false;
+    }
+
+    return monk_spell_t::target_ready( candidate_target );
+  }
+
+  bool ready() override
+  {
+    if ( p()->talent.serenity->ok() )
+      return false;
+
+    return monk_spell_t::ready();
+  }
+
+  // Normal summon that summons the pets, they seek out proper targeets
+  void normal_summon()
+  {
+    auto targets   = p()->create_storm_earth_and_fire_target_list();
+    auto n_targets = targets.size();
+
+    // Start targeting logic from "owner" always
+    p()->pet.sef[ SEF_EARTH ]->reset_targeting();
+    p()->pet.sef[ SEF_EARTH ]->target = p()->target;
+    p()->retarget_storm_earth_and_fire( p()->pet.sef[ SEF_EARTH ], targets, n_targets );
+    p()->pet.sef[ SEF_EARTH ]->summon( data().duration() );
+
+    // Start targeting logic from "owner" always
+    p()->pet.sef[ SEF_FIRE ]->reset_targeting();
+    p()->pet.sef[ SEF_FIRE ]->target = p()->target;
+    p()->retarget_storm_earth_and_fire( p()->pet.sef[ SEF_FIRE ], targets, n_targets );
+    p()->pet.sef[ SEF_FIRE ]->summon( data().duration() );
+  }
+
+  // Monk used SEF while pets are up to sticky target them into an enemy
+  void sticky_targeting()
+  {
+    if ( sim->debug )
+    {
+      sim->out_debug.printf( "%s storm_earth_and_fire sticky target %s to %s (old=%s)", player->name(),
+                             p()->pet.sef[ SEF_EARTH ]->name(), target->name(),
+                             p()->pet.sef[ SEF_EARTH ]->target->name() );
+    }
+
+    p()->pet.sef[ SEF_EARTH ]->target        = target;
+    p()->pet.sef[ SEF_EARTH ]->sticky_target = true;
+
+    if ( sim->debug )
+    {
+      sim->out_debug.printf( "%s storm_earth_and_fire sticky target %s to %s (old=%s)", player->name(),
+                             p()->pet.sef[ SEF_FIRE ]->name(), target->name(),
+                             p()->pet.sef[ SEF_FIRE ]->target->name() );
+    }
+
+    p()->pet.sef[ SEF_FIRE ]->target        = target;
+    p()->pet.sef[ SEF_FIRE ]->sticky_target = true;
+  }
+
+  void execute() override
+  {
+    monk_spell_t::execute();
+
+    if ( !p()->buff.storm_earth_and_fire->check() )
+    {
+      normal_summon();
+    }
+    else
+    {
+      sticky_targeting();
+    }
+  }
+};
+
+// Callback to retarget Storm Earth and Fire pets when new target appear, or old targets depsawn
+// (i.e., die).
+struct sef_despawn_cb_t
+{
+  monk_t* monk;
+
+  sef_despawn_cb_t( monk_t* m ) : monk( m )
+  {
+  }
+
+  void operator()( player_t* )
+  {
+    // No pets up, don't do anything
+    if ( !monk->buff.storm_earth_and_fire->check() )
+    {
+      return;
+    }
+
+    auto targets   = monk->create_storm_earth_and_fire_target_list();
+    auto n_targets = targets.size();
+
+    // If the active clone's target is sleeping, reset it's targeting, and jump it to a new target.
+    // Note that if sticky targeting is used, both targets will jump (since both are going to be
+    // stickied to the dead target)
+    range::for_each( monk->pet.sef, [this, &targets, &n_targets]( pets::storm_earth_and_fire_pet_t* pet ) {
+      // Arise time went negative, so the target is sleeping. Can't check "is_sleeping" here, because
+      // the callback is called before the target goes to sleep.
+      if ( pet->target->arise_time < timespan_t::zero() )
+      {
+        pet->reset_targeting();
+        monk->retarget_storm_earth_and_fire( pet, targets, n_targets );
+      }
+      else
+      {
+        // Retarget pets otherwise (a new target has appeared). Note that if the pets are sticky
+        // targeted, this will do nothing.
+        monk->retarget_storm_earth_and_fire( pet, targets, n_targets );
+      }
+    } );
+  }
+};
+}
+
 namespace attacks
 {
 struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
@@ -4209,7 +4464,7 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
 
 struct fists_of_fury_t : public monk_melee_attack_t
 {
-//  fury_of_xuen_spell_t* xuen;
+  actions::pet_summon::fury_of_xuen_spell_t* xuen;
 
   fists_of_fury_t( monk_t* p, const std::string& options_str )
     : monk_melee_attack_t( "fists_of_fury", p, p->spec.fists_of_fury )
@@ -4231,7 +4486,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
     tick_action = new fists_of_fury_tick_t( p, "fists_of_fury_tick" );
 
-//    xuen = new fury_of_xuen_spell_t( p );
+    xuen = new actions::pet_summon::fury_of_xuen_spell_t( p );
   }
 
   virtual bool ready() override
@@ -4275,7 +4530,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
       if ( rng().roll( p()->buff.fury_of_xuen_stacks->stack_value() ) )
       {
         p()->buff.fury_of_xuen_haste->trigger();
-//        xuen->execute();
+        xuen->execute();
 //        p()->pet_spawner.fury_of_xuen.spawn( p()->passives.fury_of_xuen_haste_buff->duration() + timespan_t::from_seconds( 1 ), 1 );
         p()->buff.fury_of_xuen_stacks->expire();
       }
@@ -5178,257 +5433,6 @@ struct serenity_t : public monk_spell_t
     monk_spell_t::execute();
 
     p()->buff.serenity->trigger();
-  }
-};
-
-struct summon_pet_t : public monk_spell_t
-{
-  timespan_t summoning_duration;
-  std::string pet_name;
-  pet_t* pet;
-
-public:
-  summon_pet_t( const std::string& n, const std::string& pname, monk_t* p,
-                const spell_data_t* sd = spell_data_t::nil() )
-    : monk_spell_t( n, p, sd ), summoning_duration( timespan_t::zero() ), pet_name( pname ), pet( nullptr )
-  {
-    harmful = false;
-  }
-
-  void init_finished() override
-  {
-    pet = player->find_pet( pet_name );
-    if ( !pet )
-    {
-      background = true;
-    }
-
-    monk_spell_t::init_finished();
-  }
-
-  virtual void execute() override
-  {
-    pet->summon( summoning_duration );
-
-    monk_spell_t::execute();
-  }
-
-  bool ready() override
-  {
-    if ( !pet )
-    {
-      return false;
-    }
-    return monk_spell_t::ready();
-  }
-};
-
-// ==========================================================================
-// Invoke Xuen, the White Tiger
-// ==========================================================================
-
-struct xuen_spell_t : public summon_pet_t
-{
-  xuen_spell_t( monk_t* p, const std::string& options_str )
-    : summon_pet_t( "invoke_xuen_the_white_tiger", "xuen_the_white_tiger", p, p->talent.invoke_xuen )
-  {
-    parse_options( options_str );
-
-    harmful            = false;
-    summoning_duration = data().duration() + timespan_t::from_seconds( 1 );
-    // Forcing the minimum GCD to 750 milliseconds
-    min_gcd   = timespan_t::from_millis( 750 );
-    gcd_haste = HASTE_SPELL;
-  }
-};
-
-// ==========================================================================
-// Fury of Xuen
-// ==========================================================================
-
-struct fury_of_xuen_spell_t : public summon_pet_t
-{
-  fury_of_xuen_spell_t( monk_t* p )
-    : summon_pet_t( "fury_of_xuen", "fury_of_xuen", p, p->azerite.fury_of_xuen )
-  {
-
-    harmful = false;
-    summoning_duration = p->passives.fury_of_xuen_haste_buff->duration() + timespan_t::from_seconds( 1 );
-    min_gcd = timespan_t::zero();
-  }
-};
-
-// ==========================================================================
-// Invoke Niuzao, the Black Ox
-// ==========================================================================
-
-struct niuzao_spell_t : public summon_pet_t
-{
-  niuzao_spell_t( monk_t* p, const std::string& options_str )
-    : summon_pet_t( "invoke_niuzao_the_black_ox", "niuzao_the_black_ox", p, p->talent.invoke_niuzao )
-  {
-    parse_options( options_str );
-
-    harmful            = false;
-    summoning_duration = data().duration();
-    // Forcing the minimum GCD to 750 milliseconds
-    min_gcd   = timespan_t::from_millis( 750 );
-    gcd_haste = HASTE_SPELL;
-  }
-};
-
-// ==========================================================================
-// Storm, Earth, and Fire
-// ==========================================================================
-
-struct storm_earth_and_fire_t;
-
-struct storm_earth_and_fire_t : public monk_spell_t
-{
-  storm_earth_and_fire_t( monk_t* p, const std::string& options_str )
-    : monk_spell_t( "storm_earth_and_fire", p, p->spec.storm_earth_and_fire )
-  {
-    parse_options( options_str );
-
-    trigger_gcd = timespan_t::from_seconds( 1 );
-    // Forcing the minimum GCD to 750 milliseconds
-    min_gcd   = timespan_t::from_millis( 750 );
-    gcd_haste = HASTE_ATTACK;
-    callbacks = harmful = may_miss = may_crit = may_dodge = may_parry = may_block = false;
-
-    cooldown->charges += (int)p->spec.storm_earth_and_fire_2->effectN( 1 ).base_value();
-  }
-
-  void update_ready( timespan_t cd_duration = timespan_t::min() ) override
-  {
-    // While pets are up, don't trigger cooldown since the sticky targeting does not consume charges
-    if ( p()->buff.storm_earth_and_fire->check() )
-    {
-      cd_duration = timespan_t::zero();
-    }
-
-    monk_spell_t::update_ready( cd_duration );
-  }
-
-  bool target_ready( player_t* candidate_target ) override
-  {
-    // Don't let user needlessly trigger SEF sticky targeting mode, if the user would just be
-    // triggering it on the same sticky target
-    if ( p()->buff.storm_earth_and_fire->check() &&
-         ( p()->pet.sef[ SEF_EARTH ]->sticky_target &&
-           candidate_target == p()->pet.sef[ SEF_EARTH ]->target ) )
-    {
-      return false;
-    }
-
-    return monk_spell_t::target_ready( candidate_target );
-  }
-
-  bool ready() override
-  {
-    if ( p()->talent.serenity->ok() )
-      return false;
-
-    return monk_spell_t::ready();
-  }
-
-  // Normal summon that summons the pets, they seek out proper targeets
-  void normal_summon()
-  {
-    auto targets   = p()->create_storm_earth_and_fire_target_list();
-    auto n_targets = targets.size();
-
-    // Start targeting logic from "owner" always
-    p()->pet.sef[ SEF_EARTH ]->reset_targeting();
-    p()->pet.sef[ SEF_EARTH ]->target = p()->target;
-    p()->retarget_storm_earth_and_fire( p()->pet.sef[ SEF_EARTH ], targets, n_targets );
-    p()->pet.sef[ SEF_EARTH ]->summon( data().duration() );
-
-    // Start targeting logic from "owner" always
-    p()->pet.sef[ SEF_FIRE ]->reset_targeting();
-    p()->pet.sef[ SEF_FIRE ]->target = p()->target;
-    p()->retarget_storm_earth_and_fire( p()->pet.sef[ SEF_FIRE ], targets, n_targets );
-    p()->pet.sef[ SEF_FIRE ]->summon( data().duration() );
-  }
-
-  // Monk used SEF while pets are up to sticky target them into an enemy
-  void sticky_targeting()
-  {
-    if ( sim->debug )
-    {
-      sim->out_debug.printf( "%s storm_earth_and_fire sticky target %s to %s (old=%s)", player->name(),
-                             p()->pet.sef[ SEF_EARTH ]->name(), target->name(),
-                             p()->pet.sef[ SEF_EARTH ]->target->name() );
-    }
-
-    p()->pet.sef[ SEF_EARTH ]->target        = target;
-    p()->pet.sef[ SEF_EARTH ]->sticky_target = true;
-
-    if ( sim->debug )
-    {
-      sim->out_debug.printf( "%s storm_earth_and_fire sticky target %s to %s (old=%s)", player->name(),
-                             p()->pet.sef[ SEF_FIRE ]->name(), target->name(),
-                             p()->pet.sef[ SEF_FIRE ]->target->name() );
-    }
-
-    p()->pet.sef[ SEF_FIRE ]->target        = target;
-    p()->pet.sef[ SEF_FIRE ]->sticky_target = true;
-  }
-
-  void execute() override
-  {
-    monk_spell_t::execute();
-
-    if ( !p()->buff.storm_earth_and_fire->check() )
-    {
-      normal_summon();
-    }
-    else
-    {
-      sticky_targeting();
-    }
-  }
-};
-
-// Callback to retarget Storm Earth and Fire pets when new target appear, or old targets depsawn
-// (i.e., die).
-struct sef_despawn_cb_t
-{
-  monk_t* monk;
-
-  sef_despawn_cb_t( monk_t* m ) : monk( m )
-  {
-  }
-
-  void operator()( player_t* )
-  {
-    // No pets up, don't do anything
-    if ( !monk->buff.storm_earth_and_fire->check() )
-    {
-      return;
-    }
-
-    auto targets   = monk->create_storm_earth_and_fire_target_list();
-    auto n_targets = targets.size();
-
-    // If the active clone's target is sleeping, reset it's targeting, and jump it to a new target.
-    // Note that if sticky targeting is used, both targets will jump (since both are going to be
-    // stickied to the dead target)
-    range::for_each( monk->pet.sef, [this, &targets, &n_targets]( pets::storm_earth_and_fire_pet_t* pet ) {
-      // Arise time went negative, so the target is sleeping. Can't check "is_sleeping" here, because
-      // the callback is called before the target goes to sleep.
-      if ( pet->target->arise_time < timespan_t::zero() )
-      {
-        pet->reset_targeting();
-        monk->retarget_storm_earth_and_fire( pet, targets, n_targets );
-      }
-      else
-      {
-        // Retarget pets otherwise (a new target has appeared). Note that if the pets are sticky
-        // targeted, this will do nothing.
-        monk->retarget_storm_earth_and_fire( pet, targets, n_targets );
-      }
-    } );
   }
 };
 
@@ -6875,6 +6879,8 @@ struct life_cocoon_t : public monk_absorb_t
 };
 }  // end namespace absorbs
 
+using namespace pets;
+using namespace pet_summon;
 using namespace attacks;
 using namespace spells;
 using namespace heals;
@@ -8034,8 +8040,8 @@ void monk_t::init_spells()
   azerite.uplifting_spirits = find_azerite_spell( "Uplifted Spirits" );
 
   // Windwalker
-  azerite.dance_of_chiji    = find_azerite_spell( 286585 );
-  azerite.fury_of_xuen      = find_azerite_spell( 287055 );
+  azerite.dance_of_chiji    = find_azerite_spell( "Dance of Chi-Ji" );
+  azerite.fury_of_xuen      = find_azerite_spell( "Fury of Xuen" );
   azerite.iron_fists        = find_azerite_spell( "Iron Fists" );
   azerite.meridian_strikes  = find_azerite_spell( "Meridian Strikes" );
   azerite.open_palm_strikes = find_azerite_spell( "Open Palm Strikes" );
