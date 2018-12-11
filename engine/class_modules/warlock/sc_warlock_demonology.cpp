@@ -669,7 +669,6 @@ namespace warlock {
           energize_amount = 1;
 
           may_crit = true;
-          hasted_ticks = false;
       }
 
       void tick( dot_t* d ) override
