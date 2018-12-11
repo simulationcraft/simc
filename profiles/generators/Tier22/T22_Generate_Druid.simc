@@ -33,22 +33,22 @@ role=attack
 position=back
 talents=2000122
 
-timeofday=night
-head=hood_of_pestilent_ichor,id=160623,bonus_id=4824/1507,azerite_powers=359/459/467/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
-shoulder=usurpers_bloodcaked_spaulders,id=160620,bonus_id=4824/1507,azerite_powers=483/30/15/13
-back=cloak_of_rippling_whispers,id=160642,bonus_id=4800/1507
-chest=tunic_of_the_sanguine_deity,id=160728,bonus_id=4824/1507,azerite_powers=485/22/14/13
-wrists=wristwraps_of_coursing_miasma,id=160621,bonus_id=4800/1507
-hands=gloves_of_descending_madness,id=160618,bonus_id=4800/1507
-waist=replicated_chitin_cord,id=160717,bonus_id=4800/1507
-legs=emblazoned_tempest_leggings,id=162486,bonus_id=487
-feet=emblazoned_tempest_boots,id=162485,bonus_id=487 
-finger1=rotscour_ring,id=160645,bonus_id=4800/1507,enchant=pact_of_haste
-finger2=band_of_certain_annihilation,id=160646,bonus_id=4800/1507,enchant=pact_of_haste
-trinket1=galecallers_boon,id=159614,bonus_id=1542/4779
-trinket2=darkmoon_deck_fathoms,id=159125,reforge=13
-main_hand=voidbinder,id=160688,bonus_id=4800/1507,enchant=quick_navigation
+timeofday=day
+head=,id=160623,bonus_id=4824/1507,azerite_powers=359/459/15/13
+neck=,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
+shoulder=,id=160620,bonus_id=4824/1507,azerite_powers=483/30/219/13
+back=,id=160642,bonus_id=4800/1507
+chest=,id=160728,bonus_id=4824/1507,azerite_powers=209/22/14/13
+wrist=,id=161072,bonus_id=4800/1507
+hands=,id=161075,bonus_id=4800/1507
+waist=,id=160622,bonus_id=4800/1507
+legs=,id=160625,bonus_id=4800/1507
+feet=,id=160729,bonus_id=4800/1507
+finger1=,id=160647,bonus_id=4800/1507,enchant=pact_of_critical_strike
+finger2=,id=160645,bonus_id=4800/1507,enchant=pact_of_critical_strike
+trinket1=,id=159614,bonus_id=1542/4779
+trinket2=,id=159125
+main_hand=,id=160688,bonus_id=4800/1507,enchant=deadly_navigation
 
 save=T22_Druid_Feral.simc
 
