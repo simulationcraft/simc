@@ -3387,7 +3387,7 @@ struct ferocious_bite_t : public cat_attack_t
     max_excess_energy = 1 * data().effectN( 2 ).base_value();
 
     p()->buff.iron_jaws->trigger( 1,
-                                  p()->azerite.iron_jaws.value( 1 ) * ( 0.5 + 0.5 / p()->azerite.iron_jaws.n_items() ),
+                                  p()->azerite.iron_jaws.value( 1 ) ,
                                   p()->azerite.iron_jaws.spell()->effectN(2).percent() * combo_points );
 
     p()->buff.raking_ferocity->expire();
@@ -4221,12 +4221,13 @@ struct tigers_fury_t : public cat_attack_t
     if ( p->talent.predator->ok() )
       duration += p->talent.predator->effectN( 1 ).time_value();
 
-    if ( p->azerite.jungle_fury.ok() )
+    if ( p->azerite.jungle_fury.enabled() )
     {
-      if ( p->talent.predator->ok() )
+      /*if ( p->talent.predator->ok() )
         duration = p->azerite.jungle_fury.time_value( 1, azerite_power_t::S );
       else
-        duration = p->azerite.jungle_fury.time_value( 2, azerite_power_t::S );
+        duration = p->azerite.jungle_fury.time_value( 2, azerite_power_t::S );*/
+      duration += timespan_t::from_millis( 2000 );
     }
   }
 
@@ -4236,10 +4237,7 @@ struct tigers_fury_t : public cat_attack_t
 
     p()->buff.tigers_fury->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
 
-    p()->buff.jungle_fury->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
-
-    if ( p()->azerite.shredding_fury.ok() )
-      p()->buff.shredding_fury->trigger( p()->buff.shredding_fury->max_stack() );
+    //p()->buff.jungle_fury->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
   }
 };
 
@@ -7512,7 +7510,7 @@ void druid_t::create_buffs()
 
   buff.jungle_fury = make_buff<stat_buff_t>( this, "jungle_fury", find_spell( 274425 ) )
                          ->add_stat( STAT_CRIT_RATING, azerite.jungle_fury.value( 1 ) )
-                         ->set_chance( azerite.jungle_fury.ok() ? 1.0 : 0.0 );
+                         ->set_chance( azerite.jungle_fury.enabled() ? 1.0 : 0.0 );
 
   buff.iron_jaws = buff_creator_t( this, "iron_jaws", find_spell( 276026 ) );
 
@@ -8053,8 +8051,6 @@ void druid_t::apl_feral()
    generator->add_action("thrash_cat,if=refreshable&variable.use_thrash=1&buff.clearcasting.react&(!buff.incarnation.up|azerite.wild_fleshrending.enabled)");
    generator->add_action("pool_resource,for_next=1");
    generator->add_action("swipe_cat,if=spell_targets.swipe_cat>1");
-   generator->add_action("shred,if=buff.clearcasting.react");
-   generator->add_action("moonfire_cat,if=azerite.power_of_the_moon.enabled&!buff.incarnation.up", "With Power of the Moon traits, Moonfire becomes our primary builder outside of Clearcasting and Incarnation");
    generator->add_action("shred,if=dot.rake.remains>(action.shred.cost+action.rake.cost-energy)%energy.regen|buff.clearcasting.react");
 
  //  action_priority_list_t* def = get_action_priority_list("default");
