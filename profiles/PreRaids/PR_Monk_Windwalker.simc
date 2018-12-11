@@ -34,8 +34,7 @@ actions=auto_attack
 actions+=/spear_hand_strike,if=target.debuff.casting.react
 actions+=/rushing_jade_wind,if=talent.serenity.enabled&cooldown.serenity.remains<3&energy.time_to_max>1&buff.rushing_jade_wind.down
 # Touch of Karma on cooldown, if Good Karma is enabled equal to 100% of maximum health
-actions+=/touch_of_karma,interval=90,pct_health=0.5,if=!talent.good_karma.enabled,interval=90,pct_health=0.5
-actions+=/touch_of_karma,interval=90,pct_health=1,if=talent.good_karma.enabled,interval=90,pct_health=1
+actions+=/touch_of_karma,interval=90,pct_health=0.5
 # Potion if Serenity or Storm, Earth, and Fire are up or you are running serenity and a main stat trinket procs, or you are under the effect of bloodlust, or target time to die is greater or equal to 60
 actions+=/potion,if=buff.serenity.up|buff.storm_earth_and_fire.up|(!talent.serenity.enabled&trinket.proc.agility.react)|buff.bloodlust.react|target.time_to_die<=60
 actions+=/call_action_list,name=serenity,if=buff.serenity.up

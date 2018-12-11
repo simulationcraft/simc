@@ -24,10 +24,13 @@ actions.precombat=flask
 actions.precombat+=/food
 actions.precombat+=/augmentation
 # Azerite variables
-# Streaking Stars:
-# Cast sw after every non-sw spell unless capping, sw sf sw if forced
-actions.precombat+=/variable,name=az_streak,value=azerite.streaking_stars.rank
+actions.precombat+=/variable,name=az_ss,value=azerite.streaking_stars.rank
 actions.precombat+=/variable,name=az_ds,value=azerite.dawning_sun.rank
+actions.precombat+=/variable,name=az_ap,value=azerite.arcanic_pulsar.rank
+# Starfall v Starsurge target cutoff
+actions.precombat+=/variable,name=sf_targets,value=5
+actions.precombat+=/variable,name=sf_targets,op=sub,value=1,if=talent.stellar_drift.enabled|(talent.incarnation.enabled&talent.twin_moons.enabled&!azerite.arcanic_pulsar.enabled)
+actions.precombat+=/variable,name=sf_targets,op=sub,value=1,if=!azerite.arcanic_pulsar.enabled&!talent.starlord.enabled
 actions.precombat+=/moonkin_form
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
@@ -35,41 +38,38 @@ actions.precombat+=/potion
 actions.precombat+=/solar_wrath
 
 # Executed every time the actor is available.
-actions=potion,if=buff.celestial_alignment.up|buff.incarnation.up
-actions+=/blood_fury,if=buff.celestial_alignment.up|buff.incarnation.up
-actions+=/berserking,if=buff.celestial_alignment.up|buff.incarnation.up
-actions+=/arcane_torrent,if=buff.celestial_alignment.up|buff.incarnation.up
-actions+=/lights_judgment,if=buff.celestial_alignment.up|buff.incarnation.up
-actions+=/fireblood,if=buff.celestial_alignment.up|buff.incarnation.up
-actions+=/ancestral_call,if=buff.celestial_alignment.up|buff.incarnation.up
-actions+=/use_item,name=azurethos_singed_plumage,if=equipped.161377&(cooldown.incarnation.remains>30|cooldown.celestial_alignment.remains>30)
-actions+=/use_item,name=dread_gladiators_badge,if=equipped.161902&(cooldown.incarnation.remains>30|cooldown.celestial_alignment.remains>30)
-actions+=/use_item,name=balefire_branch,if=equipped.159630&(cooldown.incarnation.remains>30|cooldown.celestial_alignment.remains>30)
-actions+=/use_items
+actions=potion,if=buff.ca_inc.up
+actions+=/blood_fury,if=buff.ca_inc.up
+actions+=/berserking,if=buff.ca_inc.up
+actions+=/arcane_torrent,if=buff.ca_inc.up
+actions+=/lights_judgment,if=buff.ca_inc.up
+actions+=/fireblood,if=buff.ca_inc.up
+actions+=/ancestral_call,if=buff.ca_inc.up
 # CDs
+actions+=/use_item,slot=trinket1,if=cooldown.ca_inc.remains>30
+actions+=/use_item,slot=trinket2,if=cooldown.ca_inc.remains>30
 actions+=/warrior_of_elune
-actions+=/innervate,if=azerite.lively_spirit.enabled&(cooldown.incarnation.up|cooldown.celestial_alignment.remains<12)&(((raid_event.adds.duration%15)*(4)<(raid_event.adds.in%180))|(raid_event.adds.up))
-actions+=/incarnation,if=astral_power>=40&(((raid_event.adds.duration%30)*(4)<(raid_event.adds.in%180))|(raid_event.adds.up))
-actions+=/celestial_alignment,if=astral_power>=40&(!azerite.lively_spirit.enabled|buff.lively_spirit.up)&(((raid_event.adds.duration%15)*(4)<(raid_event.adds.in%180))|(raid_event.adds.up))
-actions+=/fury_of_elune,if=(((raid_event.adds.duration%8)*(4)<(raid_event.adds.in%60))|(raid_event.adds.up))&((buff.celestial_alignment.up|buff.incarnation.up)|(cooldown.celestial_alignment.remains>30|cooldown.incarnation.remains>30))
-actions+=/force_of_nature,if=(buff.celestial_alignment.up|buff.incarnation.up)|(cooldown.celestial_alignment.remains>30|cooldown.incarnation.remains>30)
+actions+=/innervate,if=azerite.lively_spirit.enabled&(cooldown.incarnation.remains<2|cooldown.celestial_alignment.remains<12)
+actions+=/incarnation,if=astral_power>=40
+actions+=/celestial_alignment,if=astral_power>=40&(!azerite.lively_spirit.enabled|buff.lively_spirit.up)&(buff.starlord.stack>=2|!talent.starlord.enabled|!variable.az_ss)
+actions+=/fury_of_elune,if=(buff.ca_inc.up|cooldown.ca_inc.remains>30)&astral_power.deficit>=13
+actions+=/force_of_nature,if=(buff.ca_inc.up|cooldown.ca_inc.remains>30)&astral_power.deficit>=25
+# Spenders
+actions+=/cancel_buff,name=starlord,if=buff.starlord.remains<8&astral_power>87
+actions+=/starfall,if=(buff.starlord.stack<3|buff.starlord.remains>=8)&spell_targets>=variable.sf_targets&(target.time_to_die+1)*spell_targets>cost%2.5
+actions+=/starsurge,if=(buff.starlord.stack<3|buff.starlord.remains>=8)&spell_targets.starfall<variable.sf_targets&buff.lunar_empowerment.stack+buff.solar_empowerment.stack<4&buff.solar_empowerment.stack<3&buff.lunar_empowerment.stack<3&(!variable.az_ss|!buff.ca_inc.up|!prev.starsurge)|target.time_to_die<=execute_time*astral_power%40
 # DoTs
-actions+=/sunfire,target_if=refreshable,if=astral_power.deficit>=7&target.time_to_die>5.4&(!buff.celestial_alignment.up&!buff.incarnation.up|!variable.az_streak|!prev_gcd.1.sunfire)&(movement.distance>0|raid_event.movement.in>remains|remains<=execute_time*2)
-actions+=/moonfire,target_if=refreshable,if=astral_power.deficit>=7&target.time_to_die>6.6&(!buff.celestial_alignment.up&!buff.incarnation.up|!variable.az_streak|!prev_gcd.1.moonfire)&(movement.distance>0|raid_event.movement.in>remains|remains<=execute_time*2)
-actions+=/stellar_flare,target_if=refreshable,if=astral_power.deficit>=12&target.time_to_die>7.2&(!buff.celestial_alignment.up&!buff.incarnation.up|!variable.az_streak|!prev_gcd.1.stellar_flare)
-# Empowerment cap check
-actions+=/lunar_strike,if=astral_power.deficit>=16&(buff.lunar_empowerment.stack=3|(spell_targets<3&astral_power>=40&(buff.lunar_empowerment.stack=2&buff.solar_empowerment.stack=2)))
-actions+=/solar_wrath,if=astral_power.deficit>=12&buff.solar_empowerment.stack=3|(variable.az_streak&(buff.celestial_alignment.up|buff.incarnation.up)&!prev_gcd.1.solar_wrath&astral_power.deficit>=12)
-# Rotation
-actions+=/starsurge,if=(spell_targets.starfall<3&(!buff.starlord.up|buff.starlord.remains>=4)|execute_time*(astral_power%40)>target.time_to_die)&(!buff.celestial_alignment.up&!buff.incarnation.up|variable.az_streak<2|!prev_gcd.1.starsurge)&(raid_event.movement.in>(buff.lunar_empowerment.stack*action.lunar_strike.execute_time+buff.solar_empowerment.stack*action.solar_wrath.execute_time)|(astral_power+buff.lunar_empowerment.stack*12+buff.solar_empowerment.stack*8)>=96)
-actions+=/starfall,if=spell_targets.starfall>=3&(!buff.starlord.up|buff.starlord.remains>=4)
-actions+=/new_moon,if=astral_power.deficit>10+execute_time%1.5
-actions+=/half_moon,if=astral_power.deficit>20+execute_time%1.5
-actions+=/full_moon,if=astral_power.deficit>40+execute_time%1.5
-actions+=/lunar_strike,if=(buff.warrior_of_elune.up|buff.lunar_empowerment.up|spell_targets>=3&!buff.solar_empowerment.up)&(!buff.celestial_alignment.up&!buff.incarnation.up|variable.az_streak<2|!prev_gcd.1.lunar_strike)|(variable.az_ds&!buff.dawning_sun.up)
-actions+=/solar_wrath,if=(!buff.celestial_alignment.up&!buff.incarnation.up|variable.az_streak<2|!prev_gcd.1.solar_wrath)
-actions+=/sunfire,if=(!buff.celestial_alignment.up&!buff.incarnation.up|!variable.az_streak|!prev_gcd.1.sunfire)
-actions+=/moonfire
+actions+=/sunfire,target_if=refreshable,if=astral_power.deficit>=8&floor(target.time_to_die%tick_time)*spell_targets>=5&(spell_targets>1+talent.twin_moons.enabled|dot.moonfire.ticking)&(!variable.az_ss|!buff.ca_inc.up|!prev.sunfire)
+actions+=/moonfire,target_if=refreshable,if=astral_power.deficit>=8&floor(target.time_to_die%tick_time)*spell_targets>=5&(!variable.az_ss|!buff.ca_inc.up|!prev.moonfire)
+actions+=/stellar_flare,target_if=refreshable,if=astral_power.deficit>=13&floor(target.time_to_die%tick_time)>=5&(!variable.az_ss|!buff.ca_inc.up|!prev.stellar_flare)
+# Generators
+actions+=/new_moon,if=astral_power.deficit>=15
+actions+=/half_moon,if=astral_power.deficit>=25
+actions+=/full_moon,if=astral_power.deficit>=45
+actions+=/lunar_strike,if=buff.solar_empowerment.stack<3&(astral_power.deficit>=17|buff.lunar_empowerment.stack=3)&((buff.warrior_of_elune.up|buff.lunar_empowerment.up|spell_targets>=2&!buff.solar_empowerment.up|variable.az_ds&!buff.dawning_sun.up)&(!variable.az_ss|!buff.ca_inc.up|(!prev.lunar_strike&!talent.incarnation.enabled|prev.solar_wrath))|variable.az_ss&buff.ca_inc.up&prev.solar_wrath)
+actions+=/solar_wrath,if=variable.az_ss<3|!buff.ca_inc.up|!prev.solar_wrath
+# Fallthru for movement
+actions+=/sunfire
 
 head=hood_of_pestilent_ichor,id=160623,bonus_id=4824/1507/4775,azerite_powers=483/459/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
