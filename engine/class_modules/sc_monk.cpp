@@ -3456,7 +3456,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     trigger_attack->stats = stats;
 
     gotd = new glory_of_the_dawn_t( p, "glory_of_the_dawn" );
-    gotd->stats = stats;
+    add_child( gotd );
   }
 
   void init() override
