@@ -2065,7 +2065,7 @@ private:
       dynamic_tick_action = true;  // trigger tick when t == 0
       base_tick_time =
           p->o()->passives.crackling_tiger_lightning_driver->effectN( 1 ).period();  // trigger a tick every second
-      cooldown->duration      = p->o()->talent.invoke_xuen->cooldown();              // we're done after 45 seconds
+      cooldown->duration      = p->o()->buff.fury_of_xuen_haste->buff_duration;      // we're done after 8 seconds
       attack_power_mod.direct = 0.0;
       attack_power_mod.tick   = 0.0;
 
@@ -4231,8 +4231,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
     tick_action = new fists_of_fury_tick_t( p, "fists_of_fury_tick" );
 
-//    if ( p->azerite.fury_of_xuen.ok() )
-//      xuen = new fury_of_xuen_spell_t( p );
+//    xuen = new fury_of_xuen_spell_t( p );
   }
 
   virtual bool ready() override
