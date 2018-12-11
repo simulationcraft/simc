@@ -671,6 +671,11 @@ namespace warlock {
           may_crit = true;
       }
 
+      timespan_t composite_dot_duration( const action_state_t* s ) const override
+      {
+        return s->action->tick_time( s );
+      }
+
       void tick( dot_t* d ) override
       {
         demonology_spell_t::tick( d );
