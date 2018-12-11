@@ -9410,7 +9410,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737533)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 7628.85 (coefficient=98.12026) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 7628.85 (coefficient=98.12026) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=737534)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
 #3 (id=738963)   : Apply Aura (6) | Skill (30)
@@ -9444,7 +9445,8 @@ Effects          :
 #2 (id=738958)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 2499 | Target: Self (1)
 #3 (id=742699)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 1065.175 (coefficient=13.7) | PvP Coefficient: 1.00000
+                   Base Value: 0 | Scaled Value: 722.6457 (coefficient=9.294479) | PvP Coefficient: 1.00000
+                   Hotfixed: Coefficient (13.7 -> 9.29448)
 Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $s1 yards of the Spark Coil take $280847s2 damage every 2 seconds and deal $280847s1% reduced damage to you.
 
 Increases your Kul Tiran or Zandalari Engineering by $s2.
@@ -9496,7 +9498,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737557)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 12828.75 (coefficient=165) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 12828.75 (coefficient=165) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=738962)   : Apply Aura (6) | Skill (30)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 2499 | Target: Self (1)
 Description      : Taking damage has a chance to call your Personal Absorb-o-Tron, absorbing the next $280660s1 damage you take over $280660d.
@@ -10044,9 +10047,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=749861)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 524.6932 (coefficient=6.748466) | PvP Coefficient: 1.00000 | Trigger Spell: 287097 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 524.6932 (coefficient=6.748466) | PvP Coefficient: 0.50000 | Trigger Spell: 287097 | Target: Self (1)
+                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=749869)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 352.9754 (coefficient=4.539877) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 352.9754 (coefficient=4.539877) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Kill Command deals $<damage> additional damage, and has a chance to summon a Dire Beast.
 Variables        : $damage=$?a137017[${$s2}][${$s1}]
 
@@ -10149,7 +10154,8 @@ Effects          :
 #1 (id=750851)   : Apply Aura (6) | Unknown(285)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Trigger Spell: 287711 | Target: Self (1)
 #2 (id=750852)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 134.5122 (coefficient=1.730061) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 134.5122 (coefficient=1.730061) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Rapid Fire damage is increased by up to ${$m2*1.5} per shot fired, this damage starts lower and increases per shot of Rapid Fire. Aimed Shot has a $s1% chance to reset the cooldown of Rapid Fire.
 
 Name             : Fight or Flight (id=287818) [Scaling Spell (-1), Passive] 

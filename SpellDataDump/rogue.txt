@@ -6810,7 +6810,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=729163)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 90.15182 (coefficient=1.159509) | PvP Coefficient: 1.00000 | Trigger Spell: 275858 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 90.15182 (coefficient=1.159509) | PvP Coefficient: 0.70000 | Trigger Spell: 275858 | Target: Self (1)
+                   Hotfixed: PvP Coefficient (1 -> 0.7)
 Description      : For each combo point spent on $?s5171[Slice and Dice][Roll the Bones], it causes your next $275863n Sinister Strikes to deal $s1 additional damage.
 
 Name             : Blade In The Shadows (id=275896) [Scaling Spell (-8), Passive] 
@@ -7300,7 +7301,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737533)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 7628.85 (coefficient=98.12026) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 7628.85 (coefficient=98.12026) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=737534)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
 #3 (id=738963)   : Apply Aura (6) | Skill (30)
@@ -7334,7 +7336,8 @@ Effects          :
 #2 (id=738958)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 2499 | Target: Self (1)
 #3 (id=742699)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 1065.175 (coefficient=13.7) | PvP Coefficient: 1.00000
+                   Base Value: 0 | Scaled Value: 722.6457 (coefficient=9.294479) | PvP Coefficient: 1.00000
+                   Hotfixed: Coefficient (13.7 -> 9.29448)
 Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $s1 yards of the Spark Coil take $280847s2 damage every 2 seconds and deal $280847s1% reduced damage to you.
 
 Increases your Kul Tiran or Zandalari Engineering by $s2.
@@ -7386,7 +7389,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737557)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 12828.75 (coefficient=165) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 12828.75 (coefficient=165) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=738962)   : Apply Aura (6) | Skill (30)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 2499 | Target: Self (1)
 Description      : Taking damage has a chance to call your Personal Absorb-o-Tron, absorbing the next $280660s1 damage you take over $280660d.
@@ -8041,8 +8045,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=749028)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 527.0782 (coefficient=6.779141) | PvP Coefficient: 1.00000 | Trigger Spell: 286579 | Target: Self (1)
-                   Hotfixed: Coefficient (11.0859 -> 6.77914)
+                   Base Value: 0 | Scaled Value: 527.0782 (coefficient=6.779141) | PvP Coefficient: 0.50000 | Trigger Spell: 286579 | Target: Self (1)
+                   Hotfixed: Coefficient (11.0859 -> 6.77914), PvP Coefficient (1 -> 0.5)
 #2 (id=749029)   : Dummy (3)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000
 Description      : Vendetta poisons the target, dealing ${$s1*10*$<assassinationMastery>} Nature damage over $286581d, and grants you $s2 energy over $286581d.
@@ -8205,9 +8209,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=751471)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 688.8893 (coefficient=2.215078) | PvP Coefficient: 1.00000 | Trigger Spell: 288202 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 688.8893 (coefficient=2.215078) | PvP Coefficient: 0.50000 | Trigger Spell: 288202 | Target: Self (1)
+                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=751472)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 173.2705 (coefficient=0.55714) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 173.2705 (coefficient=0.55714) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #3 (id=751473)   : Dummy (3)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000
 Description      : While no enemy is within $s3 yds, heal for $s1 every sec. While any enemy is within $s3 yds, gain $s2 Speed.

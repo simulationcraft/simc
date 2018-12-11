@@ -495,7 +495,7 @@ Name             : Fear (id=5782) [Spell Family (5)]
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
-Resource         : 10% Base Mana (0) (id=249)
+Resource         : 5% Base Mana (0) (id=249) [Hotfixed: Percent Cost (10 -> 5)]
 Spell Level      : 16
 Range            : 30 yards
 Cast Time        : 1.7 seconds
@@ -7469,9 +7469,10 @@ Effects          :
 #1 (id=734619)   : Apply Aura (6) | Unknown(285)
                    Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Trigger Spell: 279650 | Target: Self (1)
 #2 (id=734620)   : Apply Aura (6) | Add Flat Modifier (107): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 81.6375 (coefficient=1.05) | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 81.6375 (coefficient=1.05) | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Unstable Affliction (30108), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499)
                    Family Flags: 40
+                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Unstable Affliction deals ${$s2*($233490d/$233490t1)} additional damage, and casting Unstable Affliction reduce the cooldown of Summon Darkglare by ${$s1/1000} sec.
 
 Name             : Demonic Meteor (id=278737) [Scaling Spell (-1), Spell Family (5), Passive] 
@@ -7733,7 +7734,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737533)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 7628.85 (coefficient=98.12026) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 7628.85 (coefficient=98.12026) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=737534)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
 #3 (id=738963)   : Apply Aura (6) | Skill (30)
@@ -7767,7 +7769,8 @@ Effects          :
 #2 (id=738958)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 2499 | Target: Self (1)
 #3 (id=742699)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 1065.175 (coefficient=13.7) | PvP Coefficient: 1.00000
+                   Base Value: 0 | Scaled Value: 722.6457 (coefficient=9.294479) | PvP Coefficient: 1.00000
+                   Hotfixed: Coefficient (13.7 -> 9.29448)
 Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $s1 yards of the Spark Coil take $280847s2 damage every 2 seconds and deal $280847s1% reduced damage to you.
 
 Increases your Kul Tiran or Zandalari Engineering by $s2.
@@ -7819,7 +7822,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737557)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 12828.75 (coefficient=165) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 12828.75 (coefficient=165) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=738962)   : Apply Aura (6) | Skill (30)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 2499 | Target: Self (1)
 Description      : Taking damage has a chance to call your Personal Absorb-o-Tron, absorbing the next $280660s1 damage you take over $280660d.
@@ -8365,7 +8369,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=749801)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 375.0993 (coefficient=1.206107) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 375.0993 (coefficient=1.206107) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Your Demonic Tyrant's Demonfire deals $s1 additional damage, and summoning your Demonic Tyrant instantly generates ${$287060s1/10} Soul Shards.
 
 Name             : Shadow of Elune (id=287467) [Scaling Spell (-7), Passive] 

@@ -4423,7 +4423,8 @@ Effects          :
 #1 (id=311218)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Friend (21)
 #2 (id=315457)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 5.60000 | PvP Coefficient: 0.80000 | Radius: 0 - 30 yards | Target: Unknown(132) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 5.60000 | PvP Coefficient: 0.60000 | Radius: 0 - 30 yards | Target: Unknown(132) -> AOE friendly (31)
+                   Hotfixed: PvP Coefficient (0.8 -> 0.6)
 Description      : Heals a friendly target and the $s1 most injured targets within $A2 yards for $s2.
 
 Name             : Aura of Mercy (id=210291) [Spell Family (10)] 
@@ -5471,7 +5472,8 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : Periodic effect can crit (265)
 Effects          :
 #1 (id=478180)   : School Damage (2): holyfire
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.10000 | PvP Coefficient: 1.00000 | Radius: 12 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.10000 | PvP Coefficient: 0.75000 | Radius: 12 yards | Target: Cone Front (104)
+                   Hotfixed: PvP Coefficient (1 -> 0.75)
 #2 (id=478181)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Radius: 12 yards | Mechanic: Snare | Target: Cone Front (104)
 #3 (id=478182)   : Energize Power (30)
@@ -5904,7 +5906,8 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : Requires main-hand weapon (106)
 Effects          :
 #1 (id=714674)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.00000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.00000 | PvP Coefficient: 0.75000 | Target: Enemy (6)
+                   Hotfixed: PvP Coefficient (1 -> 0.75)
 #2 (id=714675)   : Trigger Spell (64): Execution Sentence
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 267799 | Target: Enemy (6)
 Description      : Calls down the Light's punishment upon an enemy target, dealing $s1 Holy damage and increasing the target's Holy damage taken from your attacks by $267799s1% for $267799d.
@@ -6451,7 +6454,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724096)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=1.782848) | PvP Coefficient: 1.00000 | Trigger Spell: 272904 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=1.782848) | PvP Coefficient: 0.50000 | Trigger Spell: 272904 | Target: Self (1)
+                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : While $?<s231895>[Crusade][Avenging Wrath] is active, your Mastery is increased by $s1.
 
 Name             : Holy Shock (rank=Rank 2) (id=272906) [Spell Family (10), Passive] 
@@ -7220,7 +7224,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737533)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 7628.85 (coefficient=98.12026) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 7628.85 (coefficient=98.12026) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=737534)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
 #3 (id=738963)   : Apply Aura (6) | Skill (30)
@@ -7254,7 +7259,8 @@ Effects          :
 #2 (id=738958)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 2499 | Target: Self (1)
 #3 (id=742699)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 1065.175 (coefficient=13.7) | PvP Coefficient: 1.00000
+                   Base Value: 0 | Scaled Value: 722.6457 (coefficient=9.294479) | PvP Coefficient: 1.00000
+                   Hotfixed: Coefficient (13.7 -> 9.29448)
 Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $s1 yards of the Spark Coil take $280847s2 damage every 2 seconds and deal $280847s1% reduced damage to you.
 
 Increases your Kul Tiran or Zandalari Engineering by $s2.
@@ -7306,7 +7312,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737557)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 12828.75 (coefficient=165) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 12828.75 (coefficient=165) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=738962)   : Apply Aura (6) | Skill (30)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 2499 | Target: Self (1)
 Description      : Taking damage has a chance to call your Personal Absorb-o-Tron, absorbing the next $280660s1 damage you take over $280660d.
@@ -7911,8 +7918,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=748526)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 563.8068 (coefficient=7.251534) | PvP Coefficient: 1.00000 | Trigger Spell: 286231 | Target: Self (1)
-                   Hotfixed: Coefficient (6.72393 -> 7.25153)
+                   Base Value: 0 | Scaled Value: 563.8068 (coefficient=7.251534) | PvP Coefficient: 0.50000 | Trigger Spell: 286231 | Target: Self (1)
+                   Hotfixed: Coefficient (6.72393 -> 7.25153), PvP Coefficient (1 -> 0.5)
 Description      : Spending Holy Power during $?<s231895>[Crusade][Avenging Wrath] causes you to explode with Holy light for $s1 damage per Holy Power spent to nearby enemies. $?<s231895>[Crusade][Avenging Wrath]'s duration is increased by ${$286231s2/1000} sec.
 
 Name             : Empyrean Power (id=286390) [Scaling Spell (-8), Passive] 
@@ -7950,9 +7957,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=749914)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 1432.413 (coefficient=18.42331) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1432.413 (coefficient=18.42331) | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Light of the Protector (184092), Hand of the Protector (213652)
                    Family Flags: 125
+                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Your Light of the Protector heals for $s1 additional healing, and is always increased by 200% during Avenging Wrath.
 
 Name             : Glimmer of Light (id=287268) [Scaling Spell (-8), Spell Family (10), Passive] 
@@ -7972,7 +7980,8 @@ Effects          :
 #1 (id=750129)   : Apply Aura (6) | Unknown(285)
                    Base Value: 6 | Scaled Value: 467.454 (coefficient=6.01227) | PvP Coefficient: 1.00000 | Trigger Spell: 287269 | Target: Self (1)
 #2 (id=750167)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 6 | Scaled Value: 810.8896 (coefficient=10.42945) | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 689.2561 (coefficient=8.86503) | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Hotfixed: Coefficient (10.4294 -> 8.86503)
 Description      : Holy Shock leaves a Glimmer of Light on the target for $287280d.  When you Holy Shock, all targets with Glimmer of Light are damaged for $s1 or healed for $s2.
 
 Name             : Shadow of Elune (id=287467) [Scaling Spell (-7), Passive] 
