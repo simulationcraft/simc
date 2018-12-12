@@ -614,11 +614,11 @@ void warlock_t::init_base_stats()
   if ( default_pet.empty() )
   {
     if ( specialization() == WARLOCK_AFFLICTION )
-      default_pet = "imp";
+      default_pet = "felhunter";
     else if ( specialization() == WARLOCK_DEMONOLOGY )
       default_pet = "felguard";
     else if ( specialization() == WARLOCK_DESTRUCTION )
-      default_pet = "imp";
+      default_pet = "felhunter";
   }
 }
 

@@ -146,7 +146,7 @@ double warlock_pet_t::composite_player_multiplier(school_e school) const
 
   m *= 1.0 + buffs.grimoire_of_service->check_value();
 
-  //TOCHECK random demons received a 25% buff on ptr.
+  //TOCHECK Increased by 25% in 8.1.
   if ( pet_type == PET_WARLOCK_RANDOM )
     m *= 1.25;
 
@@ -195,12 +195,6 @@ void felhunter_pet_t::init_base_stats()
 {
   warlock_pet_t::init_base_stats();
 
-  if ( o()->dbc.ptr )
-  {
-    owner_coeff.ap_from_sp *= 1.15;
-    owner_coeff.sp_from_sp *= 1.15;
-  }
-
   melee_attack = new warlock_pet_melee_t(this);
 }
 
@@ -224,8 +218,9 @@ imp_pet_t::imp_pet_t( warlock_t* owner, const std::string& name ) :
 {
   action_list_str = "firebolt";
 
-  owner_coeff.ap_from_sp *= 1.15;
-  owner_coeff.sp_from_sp *= 1.15;
+  //TOCHECK Increased by 25% in 8.1.
+  owner_coeff.ap_from_sp *= 1.25;
+  owner_coeff.sp_from_sp *= 1.25;
 }
 
 action_t* imp_pet_t::create_action( const std::string& name, const std::string& options_str )
@@ -281,6 +276,7 @@ void succubus_pet_t::init_base_stats()
 {
   warlock_pet_t::init_base_stats();
 
+  //TOCHECK Increased by 15% in 8.1.
   owner_coeff.ap_from_sp *= 1.15;
   owner_coeff.sp_from_sp *= 1.15;
 
@@ -314,6 +310,7 @@ void voidwalker_pet_t::init_base_stats()
 {
   warlock_pet_t::init_base_stats();
 
+  //TOCHECK Increased by 15% in 8.1.
   owner_coeff.ap_from_sp *= 1.15;
   owner_coeff.sp_from_sp *= 1.15;
 
@@ -547,6 +544,7 @@ void felguard_pet_t::init_base_stats()
   main_hand_weapon.type = WEAPON_AXE_2H;
   melee_attack = new warlock_pet_melee_t(this);
 
+  //TOCHECK Increased by 15% in 8.1.
   owner_coeff.ap_from_sp *= 1.15;
   owner_coeff.sp_from_sp *= 1.15;
 

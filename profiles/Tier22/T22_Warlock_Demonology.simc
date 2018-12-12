@@ -5,7 +5,7 @@ level=120
 race=troll
 role=spell
 position=ranged_back
-talents=2303031
+talents=2303033
 
 # Default consumables
 potion=battle_potion_of_intellect
@@ -90,7 +90,7 @@ actions.nether_portal_building+=/call_action_list,name=build_a_shard
 
 head=horrific_amalgams_hood,id=160616,bonus_id=4824/1507/4775,azerite_powers=458/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
-shoulders=amice_of_corrupting_horror,id=160726,bonus_id=4824/1507/4775,azerite_powers=483/22/13
+shoulders=,id=160613,bonus_id=4824/1507/4775,azerite_powers=429/31/13
 back=fetid_horrors_tanglecloak,id=160643,bonus_id=4800/1507
 chest=robes_of_the_unraveler,id=160614,bonus_id=4824/1507/4775,azerite_powers=483/30/13
 wrists=voidlashed_wristband,id=160617,bonus_id=4800/1507
