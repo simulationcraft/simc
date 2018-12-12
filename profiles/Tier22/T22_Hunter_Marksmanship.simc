@@ -5,7 +5,7 @@ level=120
 race=lightforged_draenei
 role=attack
 position=ranged_back
-talents=3101012
+talents=1103031
 
 # Default consumables
 potion=battle_potion_of_agility
@@ -41,23 +41,23 @@ actions+=/call_action_list,name=st,if=active_enemies<3
 actions+=/call_action_list,name=trickshots,if=active_enemies>2
 
 actions.cds=hunters_mark,if=debuff.hunters_mark.down
-actions.cds+=/double_tap,if=target.time_to_die<15|cooldown.aimed_shot.remains<gcd&(buff.trueshot.up|!talent.calling_the_shots.enabled)&(!azerite.surging_shots.enabled&!talent.streamline.enabled&!azerite.focused_fire.enabled)
-actions.cds+=/double_tap,if=cooldown.rapid_fire.remains<gcd&(buff.trueshot.up|!talent.calling_the_shots.enabled)&(azerite.surging_shots.enabled|talent.streamline.enabled|azerite.focused_fire.enabled)
+actions.cds+=/double_tap,if=target.time_to_die<15|cooldown.aimed_shot.remains<gcd&(buff.trueshot.up&buff.unerring_vision.stack>7|!talent.calling_the_shots.enabled)&(!azerite.surging_shots.enabled&!talent.streamline.enabled&!azerite.focused_fire.enabled)
+actions.cds+=/double_tap,if=cooldown.rapid_fire.remains<gcd&(buff.trueshot.up&buff.unerring_vision.stack>7|!talent.calling_the_shots.enabled)&(azerite.surging_shots.enabled|talent.streamline.enabled|azerite.focused_fire.enabled)
 actions.cds+=/berserking,if=cooldown.trueshot.remains>60
 actions.cds+=/blood_fury,if=cooldown.trueshot.remains>30
 actions.cds+=/ancestral_call,if=cooldown.trueshot.remains>30
 actions.cds+=/fireblood,if=cooldown.trueshot.remains>30
 actions.cds+=/lights_judgment
 actions.cds+=/potion,if=buff.trueshot.react&buff.bloodlust.react|buff.trueshot.up&target.health.pct<20&talent.careful_aim.enabled|target.time_to_die<25
-actions.cds+=/trueshot,if=buff.bloodlust.up|target.time_to_die>cooldown.trueshot.duration_guess+duration|(target.health.pct<20|!talent.careful_aim.enabled)|target.time_to_die<15
+actions.cds+=/trueshot,if=cooldown.rapid_fire.remains&target.time_to_die>cooldown.trueshot.duration_guess+duration|(target.health.pct<20|!talent.careful_aim.enabled)|target.time_to_die<15
 
 actions.st=explosive_shot
 actions.st+=/barrage,if=active_enemies>1
 actions.st+=/a_murder_of_crows
 actions.st+=/serpent_sting,if=refreshable&!action.serpent_sting.in_flight
 actions.st+=/arcane_shot,if=buff.precise_shots.up&cooldown.aimed_shot.full_recharge_time<gcd*buff.precise_shots.stack+action.aimed_shot.cast_time
-actions.st+=/aimed_shot,if=buff.precise_shots.down
-actions.st+=/rapid_fire,if=focus+cast_regen<focus.max|azerite.focused_fire.enabled|azerite.in_the_rhythm.rank>1|azerite.surging_shots.enabled|talent.streamline.enabled
+actions.st+=/aimed_shot,if=buff.precise_shots.down|cooldown.aimed_shot.full_recharge_time<action.aimed_shot.cast_time
+actions.st+=/rapid_fire,if=focus+cast_regen<focus.max|azerite.focused_fire.enabled|azerite.in_the_rhythm.rank>1|azerite.surging_shots.enabled|talent.streamline.enabled|buff.trueshot.up
 actions.st+=/piercing_shot
 actions.st+=/arcane_shot,if=focus>60|buff.precise_shots.up
 actions.st+=/steady_shot
@@ -65,7 +65,7 @@ actions.st+=/steady_shot
 actions.trickshots=barrage
 actions.trickshots+=/explosive_shot
 actions.trickshots+=/rapid_fire,if=buff.trick_shots.up&(azerite.focused_fire.enabled|azerite.in_the_rhythm.rank>1|azerite.surging_shots.enabled|talent.streamline.enabled)
-actions.trickshots+=/aimed_shot,if=buff.trick_shots.up&buff.precise_shots.down
+actions.trickshots+=/aimed_shot,if=buff.trick_shots.up&(buff.precise_shots.down|cooldown.aimed_shot.full_recharge_time<action.aimed_shot.cast_time)
 actions.trickshots+=/rapid_fire,if=buff.trick_shots.up
 actions.trickshots+=/multishot,if=buff.trick_shots.down|buff.precise_shots.up|focus>70
 actions.trickshots+=/piercing_shot
@@ -73,28 +73,28 @@ actions.trickshots+=/a_murder_of_crows
 actions.trickshots+=/serpent_sting,if=refreshable&!action.serpent_sting.in_flight
 actions.trickshots+=/steady_shot
 
-head=crest_of_the_undying_visionary,id=160630,bonus_id=4824/1507/4775,azerite_powers=483/30/203/13
+head=crest_of_the_undying_visionary,id=160630,bonus_id=4824/1507/4775,azerite_powers=483/30/44/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
 shoulders=spaulders_of_coagulated_viscera,id=160731,bonus_id=4824/1507/4775,azerite_powers=485/30/14/13
-back=fetid_horrors_tanglecloak,id=160643,bonus_id=4800/1507
-chest=chainvest_of_assured_quality,id=160627,bonus_id=4824/1507/4775,azerite_powers=368/22/15/13
+back=cloak_of_rippling_whispers,id=160642,bonus_id=4800/1507
+chest=cthraxxi_generals_hauberk,id=160725,bonus_id=4824/1507/4775,azerite_powers=212/21/85/13
 wrists=rubywrought_sparkguards,id=160629,bonus_id=4800/1507
 hands=gloves_of_involuntary_amputation,id=160626,bonus_id=4800/1507
-waist=cincture_of_profane_deeds,id=160724,bonus_id=4800/1507
+waist=titanspark_energy_girdle,id=160633,bonus_id=4800/1507
 legs=blighted_anima_greaves,id=160716,bonus_id=4800/1507
 feet=fused_monstrosity_stompers,id=160628,bonus_id=4800/1507
-finger1=band_of_certain_annihilation,id=160646,bonus_id=4800/1507,enchant=pact_of_haste
-finger2=ring_of_the_infinite_void,id=160647,bonus_id=4800/1507,enchant=pact_of_haste
+finger1=band_of_certain_annihilation,id=160646,bonus_id=4800/1507,enchant=pact_of_mastery
+finger2=rotscour_ring,id=160645,bonus_id=4800/1507,enchant=pact_of_mastery
 trinket1=darkmoon_deck_fathoms,id=159125
-trinket2=galecallers_boon,id=159614,bonus_id=1542/4780
-main_hand=reorigination_pulse_rifle,id=160694,bonus_id=4800/1507,enchant=galeforce_striking
+trinket2=frenetic_corpuscle,id=160648,bonus_id=4800/1507
+main_hand=reorigination_pulse_rifle,id=160694,bonus_id=4800/1507,enchant=incendiary_ammunition
 
 # Gear Summary
-# gear_ilvl=383.27
-# gear_agility=4269
+# gear_ilvl=384.27
+# gear_agility=4311
 # gear_stamina=7207
-# gear_crit_rating=510
-# gear_haste_rating=1025
-# gear_mastery_rating=973
-# gear_versatility_rating=497
+# gear_crit_rating=792
+# gear_haste_rating=1084
+# gear_mastery_rating=658
+# gear_versatility_rating=471
 # gear_armor=2757
