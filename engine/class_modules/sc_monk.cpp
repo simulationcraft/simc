@@ -300,7 +300,7 @@ public:
     gain_t* tiger_palm;
 
     // Azerite Traits
-    gain_t* glory_ot_the_dawn;
+    gain_t* glory_of_the_dawn;
     gain_t* open_palm_strikes;
   } gain;
 
@@ -545,6 +545,7 @@ public:
     // Azerite Traits
     const spell_data_t* fury_of_xuen_stacking_buff;
     const spell_data_t* fury_of_xuen_haste_buff;
+    const spell_data_t* glory_of_the_dawn_dmg;
   } passives;
 
   // RPPM objects
@@ -3705,25 +3706,9 @@ struct tiger_palm_t : public monk_melee_attack_t
 struct glory_of_the_dawn_t : public monk_melee_attack_t
 {
   glory_of_the_dawn_t( monk_t* p, const std::string& name )
-    : monk_melee_attack_t( name, p, p -> find_spell( 288636 ) )
+    : monk_melee_attack_t( name, p, p -> passives.glory_of_the_dawn_dmg )
   {
     background = true;
-  }
-
-  virtual void execute() override
-  {
-    monk_melee_attack_t::execute();
-
-    switch ( p()->specialization() )
-    {
-    case MONK_WINDWALKER:
-    {
-      p()->gain.glory_ot_the_dawn->add( RESOURCE_CHI, data().effectN( 3 ).base_value() );
-      break;
-    }
-    default:
-      break;
-    }
   }
 };
 
@@ -3903,6 +3888,9 @@ struct rising_sun_kick_t : public monk_melee_attack_t
         gotd -> base_dd_max = raw;
         gotd -> base_dd_min = raw;
         gotd -> execute();
+
+        if ( p()->specialization() == MONK_WINDWALKER )
+          p()->resource_gain( RESOURCE_CHI, p()->passives.glory_of_the_dawn_dmg->effectN( 3 ).base_value(), p()->gain.glory_of_the_dawn );
       }
     }
   }
@@ -8098,6 +8086,7 @@ void monk_t::init_spells()
   passives.whirling_dragon_punch_tick       = find_spell( 158221 );
 
   // Azerite
+  passives.glory_of_the_dawn_dmg            = find_spell( 288636 );
   passives.fury_of_xuen_stacking_buff       = find_spell( 287062 );
   passives.fury_of_xuen_haste_buff          = find_spell( 287063 );
 
@@ -8419,7 +8408,7 @@ void monk_t::init_gains()
   gain.fist_of_the_white_tiger  = get_gain( "fist_of_the_white_tiger" );
   gain.focus_of_xuen            = get_gain( "focus_of_xuen" );
   gain.gift_of_the_ox           = get_gain( "gift_of_the_ox" );
-  gain.glory_ot_the_dawn        = get_gain( "glory_of_the_dawn" );
+  gain.glory_of_the_dawn        = get_gain( "glory_of_the_dawn" );
   gain.rushing_jade_wind_tick   = get_gain( "rushing_jade_wind_tick" );
   gain.serenity                 = get_gain( "serenity" );
   gain.spirit_of_the_crane      = get_gain( "spirit_of_the_crane" );
