@@ -195,6 +195,10 @@ void felhunter_pet_t::init_base_stats()
 {
   warlock_pet_t::init_base_stats();
 
+  //TOCHECK Increased by 15% in 8.1.
+  owner_coeff.ap_from_sp *= 1.15;
+  owner_coeff.sp_from_sp *= 1.15;
+
   melee_attack = new warlock_pet_melee_t(this);
 }
 
