@@ -2416,8 +2416,13 @@ struct fan_of_knives_t: public rogue_attack_t
       aoe = -1;
       background  = true;
       may_miss = may_block = may_dodge = may_parry = false;
-      base_dd_min = p -> azerite.echoing_blades.value( 3 );
-      base_dd_max = p -> azerite.echoing_blades.value( 3 );
+      base_dd_min = p -> azerite.echoing_blades.value( 6 );
+      base_dd_max = p -> azerite.echoing_blades.value( 6 );
+    }
+
+    double composite_crit_chance() const override
+    {
+      return 1.0;
     }
   };
 
