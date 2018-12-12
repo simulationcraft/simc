@@ -1,4 +1,4 @@
-SimulationCraft 810-01 for World of Warcraft 8.1.0 Live (wow build 28710)
+SimulationCraft 810-01 for World of Warcraft 8.1.0 Live (wow build 28724)
 
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior

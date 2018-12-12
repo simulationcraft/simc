@@ -1,4 +1,4 @@
-SimulationCraft 810-01 for World of Warcraft 8.1.0 Live (wow build 28710)
+SimulationCraft 810-01 for World of Warcraft 8.1.0 Live (wow build 28724)
 
 Name             : Haste (id=65) [Scaling Spell (-1)] 
 Class            : Paladin
@@ -4886,7 +4886,8 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=335563)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.11400 | PvP Coefficient: 0.66667 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.11400 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Hotfixed: PvP Coefficient (0.666667 -> 1)
 Description      : $@spelldesc53385
 
 Name             : Templar's Verdict (id=224266) [Spell Family (10)] 
@@ -4907,7 +4908,8 @@ Attributes       : ........ ........ x.x..... ........   ....x... .x...... .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=335615)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.94000 | PvP Coefficient: 0.66667 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.94000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Hotfixed: PvP Coefficient (0.666667 -> 1)
 #2 (id=335616)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=335617)   : Dummy (3)

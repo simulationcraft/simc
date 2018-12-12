@@ -1,4 +1,4 @@
-SimulationCraft 810-01 for World of Warcraft 8.1.0 Live (wow build 28710)
+SimulationCraft 810-01 for World of Warcraft 8.1.0 Live (wow build 28724)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -997,6 +997,7 @@ Each strike has a $8679h% chance of poisoning the enemy, which instantly inflict
 Tooltip          : Healing effects reduced by $w2%.
 
 Name             : Vanish (id=11327) [Spell Family (8)] 
+Hotfixed         : Proc Flags (664232 -> 733884)
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -1005,8 +1006,8 @@ Duration         : 3 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Stance Mask      : 0x20000000
-Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
-                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
+Proc Flags       : ..xxxx.x .x..xx.. xx.x.... ........ 
+                 : White Melee, White Melee Taken, Yellow Melee, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell, Generic Hostile Spell Taken, Magic Hostile Spell, Magic Hostile Spell Taken, Periodic Taken
 Affecting spells : Nightstalker (14062 effect#1), Subterfuge (108208 effect#3), Item - Rogue T18 Subtlety 2P Bonus (186278 effect#1), Hit and Run (196922 effect#2), Acrobatic Strikes (196924 effect#2)
 Family Flags     : 11, 96
 Attributes       : ....x... ........ x.x.x... .x.x....   .....x.. ..x..... ........ ........ 
@@ -8142,12 +8143,15 @@ Effects          :
                    Family Flags: 50
                    Hotfixed: Coefficient (1.54601 -> 1.96932)
 #3 (id=750746)   : Dummy (3)
-                   Base Value: 15 | Scaled Value: 611.5062 (coefficient=7.865031) | PvP Coefficient: 1.00000
-                   Hotfixed: Coefficient (3.68098 -> 7.86503)
+                   Base Value: 15 | Scaled Value: 305.753 (coefficient=3.932515) | PvP Coefficient: 1.00000
+                   Hotfixed: Coefficient (3.68098 -> 3.93251)
 #4 (id=750747)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 #5 (id=753866)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000
+#6 (id=758748)   : Dummy (3)
+                   Base Value: 8 | Scaled Value: 153.115 (coefficient=1.969325) | PvP Coefficient: 1.00000
+                   Hotfixed: NEW EFFECT
 Description      : Fan of Knives damage is increased by ${$s2*$<assassinationNoMastery>}. For each of the first $s4 critical strikes, it will fire a second spray of knives at that location, dealing ${$s3*$<assassinationNoMastery>} damage to enemies within $s5 yards.
 Variables        : $spec=${1+$137037s1/100}.2
 $vers=${1+$@versadmg}.2

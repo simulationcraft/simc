@@ -1,4 +1,4 @@
-SimulationCraft 810-01 for World of Warcraft 8.1.0 Live (wow build 28710)
+SimulationCraft 810-01 for World of Warcraft 8.1.0 Live (wow build 28724)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest

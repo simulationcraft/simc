@@ -1,4 +1,4 @@
-SimulationCraft 810-01 for World of Warcraft 8.1.0 Live (wow build 28710)
+SimulationCraft 810-01 for World of Warcraft 8.1.0 Live (wow build 28724)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
