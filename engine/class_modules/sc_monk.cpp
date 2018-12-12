@@ -4282,6 +4282,8 @@ struct sck_tick_action_t : public monk_melee_attack_t
     : monk_melee_attack_t( name, p, data )
   {
     affected_by.sunrise_technique = true;
+    ww_mastery = true;
+
     dual = background = true;
     aoe               = -1;
     radius            = data->effectN( 1 ).radius();
@@ -4331,7 +4333,8 @@ struct sck_tick_action_t : public monk_melee_attack_t
     double b = monk_melee_attack_t::bonus_da( s );
 
     if ( p()->azerite.dance_of_chiji.ok() )
-      b += p()->azerite.dance_of_chiji.value();
+      // The amount return is the full amount. We need to divide this by 4 ticks to get the correct per-tick amount
+      b += p()->azerite.dance_of_chiji.value() / 4;
 
     return b;
   }
