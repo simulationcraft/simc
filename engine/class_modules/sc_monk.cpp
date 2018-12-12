@@ -9660,7 +9660,6 @@ void monk_t::apl_combat_windwalker()
 
   def->add_action( "auto_attack" );
   def->add_action( this, "Spear Hand Strike", "if=target.debuff.casting.react" );
-  def->add_talent( this, "Rushing Jade Wind", "if=talent.serenity.enabled&cooldown.serenity.remains<3&energy.time_to_max>1&buff.rushing_jade_wind.down" );
   def->add_action( this, "Touch of Karma", "interval=90,pct_health=0.5",
                    "Touch of Karma on cooldown, if Good Karma is enabled equal to 100% of maximum health" );
 
