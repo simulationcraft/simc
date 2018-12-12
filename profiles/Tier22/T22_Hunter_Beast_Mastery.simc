@@ -62,9 +62,9 @@ actions+=/arcane_torrent
 
 head=crest_of_the_undying_visionary,id=160630,bonus_id=4824/1507/4775,azerite_powers=366/30/44/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
-shoulders=flamesterilized_spaulders,id=160632,bonus_id=4824/1507/4775,azerite_powers=483/31/15/13
+shoulders=flamesterilized_spaulders,id=160632,bonus_id=4824/1507/4775,azerite_powers=365/31/15/13
 back=plasmaspattered_greatcloak,id=160644,bonus_id=4800/1507
-chest=cthraxxi_generals_hauberk,id=160725,bonus_id=4824/1507/4775,azerite_powers=161/21/85/13
+chest=cthraxxi_generals_hauberk,id=160725,bonus_id=4824/1507/4775,azerite_powers=485/21/85/13
 wrists=rubywrought_sparkguards,id=160629,bonus_id=4800/1507
 hands=oblivion_crushers,id=160721,bonus_id=4800/1507
 waist=titanspark_energy_girdle,id=160633,bonus_id=4800/1507

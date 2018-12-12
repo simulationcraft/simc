@@ -4,7 +4,9 @@ race=troll
 spec=shadow
 role=spell
 position=ranged_back
-talents=1111122
+talents=1111111
+
+initial_resource=insanity=25
 
 head=horrific_amalgams_hood,id=160616,bonus_id=4824/1507/4775,azerite_powers=483/22/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33

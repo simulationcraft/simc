@@ -5,13 +5,15 @@ level=120
 race=troll
 role=spell
 position=ranged_back
-talents=1111122
+talents=1111111
 
 # Default consumables
 potion=rising_death
 flask=endless_fathoms
 food=bountiful_captains_feast
 augmentation=battle_scarred
+
+initial_resource=insanity=25
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
