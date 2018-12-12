@@ -3112,12 +3112,14 @@ struct replicating_shadows_t : public rogue_attack_t
       }
 
       // If it exists, trigger a new nightblade with 0 CP duration. We also copy the persistent multiplier in nightblade_t.
-      if ( minDistTarget )
+      // Estimated 10 yd spread radius.
+      if ( minDistTarget && minDist < 10.0 )
       {
         if ( !nightblade_action )
           nightblade_action = p() -> find_action( "nightblade" );
         if ( nightblade_action )
-          make_event<actions::secondary_ability_trigger_t>( *sim, minDistTarget, nightblade_action, 0, TRIGGER_REPLICATING_SHADOWS );
+          make_event<actions::secondary_ability_trigger_t>( *sim, minDistTarget, nightblade_action,
+            cast_state( last_nb_tdata -> dots.nightblade -> state ) -> cp, TRIGGER_REPLICATING_SHADOWS );
       }
     }
   }
