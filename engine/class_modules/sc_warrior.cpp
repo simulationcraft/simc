@@ -1687,7 +1687,7 @@ struct bloodthirst_t : public warrior_attack_t
       gushing_wound->execute();
     }
 
-    if ( p()->azerite.cold_steel_hot_blood.ok() )
+    if ( p()->azerite.cold_steel_hot_blood.ok() && execute_state->result == RESULT_CRIT )
     {
       p()->resource_gain( RESOURCE_RAGE, rage_from_cold_steel_hot_blood, p()->gain.cold_steel_hot_blood );
     }
