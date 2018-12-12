@@ -8231,7 +8231,10 @@ void druid_t::apl_balance()
   action_priority_list_t* default_list = get_action_priority_list("default");
 
   if (sim->allow_potions && true_level >= 80)
-    default_list->add_action("potion,if=buff.ca_inc.up");
+  {
+    default_list->add_action("potion,if=buff.ca_inc.remains>6&active_enemies=1");
+    default_list->add_action("potion,name=battle_potion_of_intellect,if=buff.ca_inc.remains>6");
+  }
 
   for (size_t i = 0; i < racial_actions.size(); i++)
     default_list->add_action(racial_actions[i] + ",if=buff.ca_inc.up");
