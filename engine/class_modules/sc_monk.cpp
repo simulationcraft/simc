@@ -1921,8 +1921,9 @@ private:
 
       // for future compatibility, we may want to grab Xuen and our tick spell and build this data from those (Xuen
       // summon duration, for example)
-      dot_duration = p->o()->talent.invoke_xuen->duration() + timespan_t::from_seconds(1);
-      hasted_ticks = may_miss = false;
+      dot_duration = p->o()->talent.invoke_xuen->duration();
+      hasted_ticks = true;
+      may_miss = false;
       dynamic_tick_action = true;  // trigger tick when t == 0
       base_tick_time =
           p->o()->passives.crackling_tiger_lightning_driver->effectN( 1 ).period();  // trigger a tick every second
@@ -2006,7 +2007,7 @@ public:
 };
 
 // ==========================================================================
-// Xuen Pet
+// Fury of Xuen Pet
 // ==========================================================================
 struct fury_of_xuen_pet_t : public pet_t
 {
@@ -2060,12 +2061,13 @@ private:
 
       // for future compatibility, we may want to grab Xuen and our tick spell and build this data from those (Xuen
       // summon duration, for example)
-      dot_duration = p->o()->talent.invoke_xuen->duration() + timespan_t::from_seconds(1);
-      hasted_ticks = may_miss = false;
+      dot_duration = p->o()->buff.fury_of_xuen_haste->buff_duration;
+      hasted_ticks = true;
+      may_miss = false;
       dynamic_tick_action = true;  // trigger tick when t == 0
       base_tick_time =
           p->o()->passives.crackling_tiger_lightning_driver->effectN( 1 ).period();  // trigger a tick every second
-      cooldown->duration      = p->o()->buff.fury_of_xuen_haste->buff_duration;      // we're done after 8 seconds
+      cooldown->duration      = p->o()->buff.fury_of_xuen_haste->buff_duration + timespan_t::from_seconds( 2 );      // we're done after 9 seconds
       attack_power_mod.direct = 0.0;
       attack_power_mod.tick   = 0.0;
 
@@ -2290,9 +2292,10 @@ public:
 namespace actions
 {
 // ==========================================================================
-// Monk Abilities// ==========================================================================
-
+// Monk Abilities
+// ==========================================================================
 // Template for common monk action code. See priest_action_t.
+
 template <class Base>
 struct monk_action_t : public Base
 {
@@ -3134,7 +3137,7 @@ struct xuen_spell_t : public summon_pet_t
     parse_options( options_str );
 
     harmful            = false;
-    summoning_duration = data().duration() + timespan_t::from_seconds( 1 );
+    summoning_duration = data().duration();
     // Forcing the minimum GCD to 750 milliseconds
     min_gcd   = timespan_t::from_millis( 750 );
     gcd_haste = HASTE_SPELL;
@@ -3153,7 +3156,7 @@ struct fury_of_xuen_spell_t : public summon_pet_t
     background = true;
 
     harmful = false;
-    summoning_duration = p->passives.fury_of_xuen_haste_buff->duration() + timespan_t::from_seconds( 1 );
+    summoning_duration = p->passives.fury_of_xuen_haste_buff->duration();
     min_gcd = timespan_t::zero();
   }
 };
