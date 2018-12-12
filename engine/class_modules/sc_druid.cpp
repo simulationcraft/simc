@@ -3971,7 +3971,7 @@ struct primal_wrath_t : public cat_attack_t
   {
     cat_attack_t::impact( s );
 
-    rip_state_t* b_state = (rip_state_t*)rip->get_state();
+    auto b_state = rip->get_state();
     b_state->target      = s->target;
     rip->snapshot_state( b_state, DMG_OVER_TIME );
     // Copy persistent multipliers from the direct attack.
@@ -3979,12 +3979,14 @@ struct primal_wrath_t : public cat_attack_t
 
     if ( !td( s->target )->dots.rip->state )
     {
-      td( s->target )->dots.rip->state          = rip->new_state();
+      td( s->target )->dots.rip->state          = rip->get_state();
       td( s->target )->dots.rip->current_action = rip;
     }
 
     td( s->target )->dots.rip->state->copy_state( b_state );
     td( s->target )->dots.rip->trigger( rip->dot_duration * 0.5 * ( combo_points + 1 ) );  // this seems to be hardcoded
+
+    action_state_t::release( b_state );
   }
 
   void execute() override
