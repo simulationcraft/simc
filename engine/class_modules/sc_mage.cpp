@@ -165,10 +165,7 @@ struct cooldown_reduction_data_t
 
   void add( timespan_t reduction )
   {
-    assert( effective );
-    assert( wasted );
-
-    timespan_t remaining = timespan_t::zero();
+    timespan_t remaining;
 
     if ( cd->charges > 1 )
     {
