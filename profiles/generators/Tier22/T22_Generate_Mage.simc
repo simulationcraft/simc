@@ -35,7 +35,7 @@ talents=3031023
 
 head=visage_of_the_ascended_prophet,id=160719,bonus_id=4824/1507,azerite_powers=215/31/15/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
-shoulders=mantle_of_contained_corruption,id=160613,bonus_id=4824/1507,azerite_powers=378/22/15/13
+shoulders=amice_of_corrupting_horror,id=160726,bonus_id=4824/1507,azerite_powers=168/21/85/13
 back=fetid_horrors_tanglecloak,id=160643,bonus_id=4800/1507
 chest=robes_of_the_unraveler,id=160614,bonus_id=4824/1507,azerite_powers=483/30/44/13
 wrists=voidlashed_wristband,id=160617,bonus_id=4800/1507
@@ -60,7 +60,7 @@ role=spell
 position=ranged_back
 talents=1013033
 
-head=,id=160616,bonus_id=4824/1507/4775,azerite_powers=483/30/13
+head=,id=160719,bonus_id=4824/1507/4775,azerite_powers=170/31/13
 neck=,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
 shoulder=,id=160613,bonus_id=4824/1507/4775,azerite_powers=483/31/13
 back=,id=160642,bonus_id=4800/1507
