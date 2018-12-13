@@ -4332,7 +4332,7 @@ struct sck_tick_action_t : public monk_melee_attack_t
   {
     double b = monk_melee_attack_t::bonus_da( s );
 
-    if ( p()->azerite.dance_of_chiji.ok() )
+    if ( p()->buff.dance_of_chiji->up() )
       // The amount return is the full amount. We need to divide this by 4 ticks to get the correct per-tick amount
       b += p()->azerite.dance_of_chiji.value() / 4;
 
