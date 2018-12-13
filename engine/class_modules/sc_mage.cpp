@@ -263,27 +263,28 @@ struct cooldown_waste_data_t : private noncopyable
   }
 };
 
-struct shatter_source_t : private noncopyable
+template <size_t N>
+struct effect_source_t : private noncopyable
 {
   const std::string name_str;
-  std::vector<simple_sample_data_t> counts;
-  std::vector<int> iteration_counts;
+  std::array<simple_sample_data_t, N> counts;
+  std::array<int, N> iteration_counts;
 
-  shatter_source_t( const std::string& name ) :
+  effect_source_t( const std::string& name ) :
     name_str( name ),
-    counts( FROZEN_MAX ),
-    iteration_counts( FROZEN_MAX )
+    counts(),
+    iteration_counts()
   { }
 
-  void occur( frozen_type_e type )
+  void occur( size_t type )
   {
-    assert( type < FROZEN_MAX );
+    assert( type < N );
     iteration_counts[ type ]++;
   }
 
-  double count( frozen_type_e type ) const
+  double count( size_t type ) const
   {
-    assert( type < FROZEN_MAX );
+    assert( type < N );
     return counts[ type ].pretty_mean();
   }
 
@@ -300,7 +301,7 @@ struct shatter_source_t : private noncopyable
     return count_total() > 0.0;
   }
 
-  void merge( const shatter_source_t& other )
+  void merge( const effect_source_t& other )
   {
     for ( size_t i = 0; i < counts.size(); i++ )
     {
@@ -321,6 +322,8 @@ struct shatter_source_t : private noncopyable
     }
   }
 };
+
+typedef effect_source_t<FROZEN_MAX> shatter_source_t;
 
 struct mage_t : public player_t
 {
