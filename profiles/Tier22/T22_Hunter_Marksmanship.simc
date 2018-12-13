@@ -35,14 +35,15 @@ actions.precombat+=/aimed_shot,if=active_enemies<3
 
 # Executed every time the actor is available.
 actions=auto_shot
-actions+=/use_items
+# Try to line up activated trinkets with Trueshot
+actions+=/use_items,if=buff.trueshot.up|!talent.calling_the_shots.enabled|target.time_to_die<20
 actions+=/call_action_list,name=cds
 actions+=/call_action_list,name=st,if=active_enemies<3
 actions+=/call_action_list,name=trickshots,if=active_enemies>2
 
 actions.cds=hunters_mark,if=debuff.hunters_mark.down
-actions.cds+=/double_tap,if=target.time_to_die<15|cooldown.aimed_shot.remains<gcd&(buff.trueshot.up&buff.unerring_vision.stack>7|!talent.calling_the_shots.enabled)&(!azerite.surging_shots.enabled&!talent.streamline.enabled&!azerite.focused_fire.enabled)
-actions.cds+=/double_tap,if=cooldown.rapid_fire.remains<gcd&(buff.trueshot.up&buff.unerring_vision.stack>7|!talent.calling_the_shots.enabled)&(azerite.surging_shots.enabled|talent.streamline.enabled|azerite.focused_fire.enabled)
+actions.cds+=/double_tap,if=target.time_to_die<15|cooldown.aimed_shot.remains<gcd&(buff.trueshot.up&(buff.unerring_vision.stack>7|!azerite.unerring_vision.enabled)|!talent.calling_the_shots.enabled)&(!azerite.surging_shots.enabled&!talent.streamline.enabled&!azerite.focused_fire.enabled)
+actions.cds+=/double_tap,if=cooldown.rapid_fire.remains<gcd&(buff.trueshot.up&(buff.unerring_vision.stack>7|!azerite.unerring_vision.enabled)|!talent.calling_the_shots.enabled)&(azerite.surging_shots.enabled|talent.streamline.enabled|azerite.focused_fire.enabled)
 actions.cds+=/berserking,if=cooldown.trueshot.remains>60
 actions.cds+=/blood_fury,if=cooldown.trueshot.remains>30
 actions.cds+=/ancestral_call,if=cooldown.trueshot.remains>30
