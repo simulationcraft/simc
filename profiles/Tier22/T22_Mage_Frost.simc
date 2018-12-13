@@ -105,7 +105,7 @@ actions.talent_rop=rune_of_power,if=talent.glacial_spike.enabled&buff.icicles.st
 # Without Glacial Spike, Rune of Power should be used before any bigger cooldown (Ebonbolt, Comet Storm, Ray of Frost) or when Rune of Power is about to reach 2 charges.
 actions.talent_rop+=/rune_of_power,if=!talent.glacial_spike.enabled&(talent.ebonbolt.enabled&cooldown.ebonbolt.remains<cast_time|talent.comet_storm.enabled&cooldown.comet_storm.remains<cast_time|talent.ray_of_frost.enabled&cooldown.ray_of_frost.remains<cast_time|charges_fractional>1.9)
 
-head=horrific_amalgams_hood,id=160616,bonus_id=4824/1507/4775,azerite_powers=483/30/13
+head=visage_of_the_ascended_prophet,id=160719,bonus_id=4824/1507/4775,azerite_powers=170/31/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
 shoulders=mantle_of_contained_corruption,id=160613,bonus_id=4824/1507/4775,azerite_powers=483/31/13
 back=cloak_of_rippling_whispers,id=160642,bonus_id=4800/1507

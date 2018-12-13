@@ -32,7 +32,6 @@ actions.precombat+=/chi_wave
 # Executed every time the actor is available.
 actions=auto_attack
 actions+=/spear_hand_strike,if=target.debuff.casting.react
-actions+=/rushing_jade_wind,if=talent.serenity.enabled&cooldown.serenity.remains<3&energy.time_to_max>1&buff.rushing_jade_wind.down
 # Touch of Karma on cooldown, if Good Karma is enabled equal to 100% of maximum health
 actions+=/touch_of_karma,interval=90,pct_health=0.5
 # Potion if Serenity or Storm, Earth, and Fire are up or you are running serenity and a main stat trinket procs, or you are under the effect of bloodlust, or target time to die is greater or equal to 60
@@ -54,7 +53,7 @@ actions.aoe+=/fists_of_fury,if=energy.time_to_max>3
 actions.aoe+=/rushing_jade_wind,if=buff.rushing_jade_wind.down
 actions.aoe+=/spinning_crane_kick,if=!prev_gcd.1.spinning_crane_kick&(((chi>3|cooldown.fists_of_fury.remains>6)&(chi>=5|cooldown.fists_of_fury.remains>2))|energy.time_to_max<=3)
 actions.aoe+=/chi_burst,if=chi<=3
-actions.aoe+=/fist_of_the_white_tiger,if=chi.max-chi>=3&(energy>46|buff.rushing_jade_wind.down)
+actions.aoe+=/fist_of_the_white_tiger,if=chi.max-chi>=3
 actions.aoe+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=2&(!talent.hit_combo.enabled|!prev_gcd.1.tiger_palm)
 actions.aoe+=/chi_wave
 actions.aoe+=/flying_serpent_kick,if=buff.bok_proc.down,interrupt=1
@@ -84,8 +83,9 @@ actions.st=whirling_dragon_punch
 actions.st+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=chi>=5
 actions.st+=/fists_of_fury,if=energy.time_to_max>3
 actions.st+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains
+actions.st+=/spinning_crane_kick,if=!prev_gcd.1.spinning_crane_kick&buff.dance_of_chiji.up
 actions.st+=/rushing_jade_wind,if=buff.rushing_jade_wind.down&active_enemies>1
-actions.st+=/fist_of_the_white_tiger,if=chi<=2&(buff.rushing_jade_wind.down|energy>46)
+actions.st+=/fist_of_the_white_tiger,if=chi<=2
 actions.st+=/energizing_elixir,if=chi<=3&energy<50
 actions.st+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick&(cooldown.rising_sun_kick.remains>3|chi>=3)&(cooldown.fists_of_fury.remains>4|chi>=4|(chi=2&prev_gcd.1.tiger_palm))&buff.swift_roundhouse.stack<2
 actions.st+=/chi_wave

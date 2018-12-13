@@ -37,7 +37,8 @@ actions.precombat+=/potion
 actions.precombat+=/solar_wrath
 
 # Executed every time the actor is available.
-actions=potion,if=buff.ca_inc.up
+actions=potion,if=buff.ca_inc.remains>6&active_enemies=1
+actions+=/potion,name=battle_potion_of_intellect,if=buff.ca_inc.remains>6
 actions+=/blood_fury,if=buff.ca_inc.up
 actions+=/berserking,if=buff.ca_inc.up
 actions+=/arcane_torrent,if=buff.ca_inc.up

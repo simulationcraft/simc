@@ -55,7 +55,6 @@ actions.st=explosive_shot
 actions.st+=/barrage,if=active_enemies>1
 actions.st+=/a_murder_of_crows
 actions.st+=/serpent_sting,if=refreshable&!action.serpent_sting.in_flight
-actions.st+=/arcane_shot,if=buff.precise_shots.up&cooldown.aimed_shot.full_recharge_time<gcd*buff.precise_shots.stack+action.aimed_shot.cast_time
 actions.st+=/aimed_shot,if=buff.precise_shots.down|cooldown.aimed_shot.full_recharge_time<action.aimed_shot.cast_time
 actions.st+=/rapid_fire,if=focus+cast_regen<focus.max|azerite.focused_fire.enabled|azerite.in_the_rhythm.rank>1|azerite.surging_shots.enabled|talent.streamline.enabled|buff.trueshot.up
 actions.st+=/piercing_shot
