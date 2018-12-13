@@ -4997,7 +4997,7 @@ void demon_hunter_t::apl_havoc()
   
   action_priority_list_t* apl_cooldown = get_action_priority_list( "cooldown" );
   apl_cooldown->add_action( this, "Metamorphosis", "if=!(talent.demonic.enabled|variable.pooling_for_meta|variable.waiting_for_nemesis)|target.time_to_die<25" );
-  apl_cooldown->add_action( this, "Metamorphosis", "if=talent.demonic.enabled&buff.metamorphosis.up" );
+  apl_cooldown->add_action( this, "Metamorphosis", "if=talent.demonic.enabled&buff.metamorphosis.up&(!azerite.chaotic_transformation.enabled|!variable.blade_dance|!cooldown.blade_dance.ready)" );
   apl_cooldown->add_talent( this, "Nemesis", "target_if=min:target.time_to_die,if=raid_event.adds.exists&debuff.nemesis.down&(active_enemies>desired_targets|raid_event.adds.in>60)" );
   apl_cooldown->add_talent( this, "Nemesis", "if=!raid_event.adds.exists" );
   apl_cooldown->add_action( "potion,if=buff.metamorphosis.remains>25|target.time_to_die<60" );

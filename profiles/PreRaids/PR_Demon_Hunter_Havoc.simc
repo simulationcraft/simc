@@ -45,7 +45,7 @@ actions+=/run_action_list,name=demonic,if=talent.demonic.enabled
 actions+=/run_action_list,name=normal
 
 actions.cooldown=metamorphosis,if=!(talent.demonic.enabled|variable.pooling_for_meta|variable.waiting_for_nemesis)|target.time_to_die<25
-actions.cooldown+=/metamorphosis,if=talent.demonic.enabled&buff.metamorphosis.up
+actions.cooldown+=/metamorphosis,if=talent.demonic.enabled&buff.metamorphosis.up&(!azerite.chaotic_transformation.enabled|!variable.blade_dance|!cooldown.blade_dance.ready)
 actions.cooldown+=/nemesis,target_if=min:target.time_to_die,if=raid_event.adds.exists&debuff.nemesis.down&(active_enemies>desired_targets|raid_event.adds.in>60)
 actions.cooldown+=/nemesis,if=!raid_event.adds.exists
 actions.cooldown+=/potion,if=buff.metamorphosis.remains>25|target.time_to_die<60
