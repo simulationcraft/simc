@@ -300,14 +300,14 @@ void SC_OptionsTab::createGlobalsTab()
   globalsLayout_left -> addRow(        tr( "Version" ),        choice.version = createChoice( 1, "Live" ) );
 #endif
 #endif
-  globalsLayout_left -> addRow( tr(  "Target Error" ),    choice.target_error = createChoice( 9, "N/A", "Auto", "1%", "0.5%", "0.3%", "0.1%", "0.05%", "0.03%", "0.01%" ) );
-  globalsLayout_left -> addRow( tr(    "Iterations" ),      choice.iterations = addValidatorToComboBox( 1, INT_MAX, createChoice( 9, "1", "100", "1000", "10000", "25000", "50000", "100000", "250000", "500000" ) ) );
-  globalsLayout_left -> addRow( tr(  "Length (sec)" ),    choice.fight_length = addValidatorToComboBox( 1, 10000, createChoice( 10, "100", "150", "200", "250", "300", "350", "400", "450", "500", "600" ) ) );
-  globalsLayout_left -> addRow( tr(   "Vary Length %" ),  choice.fight_variance = addValidatorToComboBox( 0, 100, createChoice( 6, "0", "10", "20", "30", "40", "50" ) ) );
-  globalsLayout_left -> addRow( tr(   "Fight Style" ),     choice.fight_style = createChoice( 8, "Patchwerk", "HecticAddCleave", "HelterSkelter", "Ultraxion", "LightMovement", "HeavyMovement", "Beastlord", "CastingPatchwerk" ) );
-  globalsLayout_left -> addRow( tr( "Challenge Mode" ), choice.challenge_mode = createChoice( 2, "Disabled", "Enabled" ) );
-  globalsLayout_left -> addRow( tr( "Default Role" ),     choice.default_role = createChoice( 4, "Auto", "DPS", "Heal", "Tank" ) );
-  globalsLayout_left -> addRow( tr( "GUI Localization" ),     choice.gui_localization = createChoice( 5, "auto", "en", "de", "zh", "it" ) );
+  globalsLayout_left->addRow( tr( "Target Error" ),     choice.target_error     = createChoice( 9, "N/A", "Auto", "1%", "0.5%", "0.3%", "0.1%", "0.05%", "0.03%", "0.01%" ) );
+  globalsLayout_left->addRow( tr( "Iterations" ),       choice.iterations       = addValidatorToComboBox( 1, INT_MAX, createChoice( 9, "1", "100", "1000", "10000", "25000", "50000", "100000", "250000", "500000" ) ) );
+  globalsLayout_left->addRow( tr( "Length (sec)" ),     choice.fight_length     = addValidatorToComboBox( 1, 10000, createChoice( 10, "100", "150", "200", "250", "300", "350", "400", "450", "500", "600" ) ) );
+  globalsLayout_left->addRow( tr( "Vary Length %" ),    choice.fight_variance   = addValidatorToComboBox( 0, 100, createChoice( 6, "0", "10", "20", "30", "40", "50" ) ) );
+  globalsLayout_left->addRow( tr( "Fight Style" ),      choice.fight_style      = createChoice( 9, "Patchwerk", "HecticAddCleave", "HelterSkelter", "Ultraxion", "LightMovement", "HeavyMovement", "Beastlord", "CastingPatchwerk", "DungeonSlice" ) );
+  globalsLayout_left->addRow( tr( "Challenge Mode" ),   choice.challenge_mode   = createChoice( 2, "Disabled", "Enabled" ) );
+  globalsLayout_left->addRow( tr( "Default Role" ),     choice.default_role     = createChoice( 4, "Auto", "DPS", "Heal", "Tank" ) );
+  globalsLayout_left->addRow( tr( "GUI Localization" ), choice.gui_localization = createChoice( 5, "auto", "en", "de", "zh", "it" ) );
 
   QPushButton* resetb = new QPushButton( tr("Reset all Settings" ), this );
   QFont override_font = QFont();
@@ -857,7 +857,10 @@ void SC_OptionsTab::createToolTips()
                                         "    Frequent Single and Wave Add Spawns" ) + "\n" +
                                     tr( "CastingPatchwerk: Tank-n-Spank\n"
                                         "    Boss considered always casting\n"
-                                        "    (to test interrupt procs on cooldown)" ) );
+                                        "    (to test interrupt procs on cooldown)" ) + "\n" + 
+                                    tr( "DungeonSlice:\n"
+                                        "    Multi-segment simulation meant to\n"
+                                        "    approximate M+ dungeon and boss pulls" ) );
 
   choice.target_race -> setToolTip( tr( "Race of the target and any adds." ) );
 
