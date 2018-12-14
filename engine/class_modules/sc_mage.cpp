@@ -2706,8 +2706,7 @@ struct blizzard_t : public frost_mage_spell_t
     frost_mage_spell_t::execute();
 
     timespan_t ground_aoe_duration = data().duration() * player->cache.spell_speed();
-    p()->ground_aoe_expiration[ name_str ]
-      = sim->current_time() + ground_aoe_duration;
+    p()->ground_aoe_expiration[ name_str ] = sim->current_time() + ground_aoe_duration;
 
     make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
       .target( target )
@@ -2826,14 +2825,14 @@ struct comet_storm_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::impact( s );
 
-    timespan_t ground_aoe_duration = timespan_t::from_seconds( 1.4 );
-    p()->ground_aoe_expiration[ name_str ]
-      = sim->current_time() + ground_aoe_duration;
+    int pulse_count = 7;
+    timespan_t pulse_time = timespan_t::from_seconds( 0.2 );
+    p()->ground_aoe_expiration[ name_str ] = sim->current_time() + pulse_count * pulse_time;
 
     make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
-      .pulse_time( timespan_t::from_seconds( 0.2 ) )
+      .pulse_time( pulse_time )
       .target( s->target )
-      .duration( ground_aoe_duration )
+      .n_pulses( pulse_count )
       .action( projectile ) );
   }
 };
@@ -3169,8 +3168,7 @@ struct flamestrike_t : public fire_mage_spell_t
 
     if ( flame_patch )
     {
-      p()->ground_aoe_expiration[ flame_patch->name_str ]
-        = sim->current_time() + flame_patch_duration;
+      p()->ground_aoe_expiration[ flame_patch->name_str ] = sim->current_time() + flame_patch_duration;
 
       make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
         .target( target )
@@ -3360,10 +3358,10 @@ struct flurry_t : public frost_mage_spell_t
     frost_mage_spell_t::impact( s );
 
     // TODO: Remove hardcoded values once it exists in spell data for bolt impact timing.
-    timespan_t pulse_time = timespan_t::from_seconds( 0.4 );
+    timespan_t pulse_time = s->haste * timespan_t::from_seconds( 0.4 );
 
     make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
-      .pulse_time( pulse_time * s->haste )
+      .pulse_time( pulse_time )
       .target( s->target )
       .n_pulses( as<int>( data().effectN( 1 ).base_value() ) )
       .action( flurry_bolt ), true );
@@ -3551,17 +3549,17 @@ struct frozen_orb_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::impact( s );
 
-    timespan_t ground_aoe_duration = timespan_t::from_seconds( 9.5 );
-    p()->ground_aoe_expiration[ name_str ]
-      = sim->current_time() + ground_aoe_duration;
-
     if ( result_is_hit( s->result ) )
     {
+      int pulse_count = 20;
+      timespan_t pulse_time = timespan_t::from_seconds( 0.5 );
+      p()->ground_aoe_expiration[ name_str ] = sim->current_time() + ( pulse_count - 1 ) * pulse_time;
+
       trigger_fof( 1.0 );
       make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
-        .pulse_time( timespan_t::from_seconds( 0.5 ) )
+        .pulse_time( pulse_time )
         .target( s->target )
-        .duration( ground_aoe_duration )
+        .n_pulses( pulse_count )
         .action( frozen_orb_bolt ), true );
     }
   }
@@ -4155,8 +4153,7 @@ struct meteor_impact_t : public fire_mage_spell_t
     if ( s->chain_target > 0 )
       return;
 
-    p()->ground_aoe_expiration[ meteor_burn->name_str ]
-      = sim->current_time() + meteor_burn_duration;
+    p()->ground_aoe_expiration[ meteor_burn->name_str ] = sim->current_time() + meteor_burn_duration;
 
     make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
       .pulse_time( meteor_burn_pulse_time )
