@@ -1912,7 +1912,7 @@ struct frost_mage_spell_t : public mage_spell_t
     }
 
     p()->buffs.icicles->trigger();
-    p()->icicles.push_back( { p()->sim->current_time(), icicle_action } );
+    p()->icicles.push_back( { sim->current_time(), icicle_action } );
 
     assert( p()->icicles.size() <= max_icicles );
   }
@@ -1972,9 +1972,9 @@ struct frost_mage_spell_t : public mage_spell_t
   {
     if ( calculate_on_impact )
     {
-      // Re-call functions here, before the impact call to do the damage calculations as we impact.
+      // Spells that calculate damage on impact need to snapshot relevant values
+      // right before impact and then recalculate the result and total damage.
       snapshot_impact_state( s, amount_type( s ) );
-
       s->result = calculate_impact_result( s );
       s->result_amount = calculate_impact_direct_amount( s );
     }
@@ -2804,10 +2804,12 @@ struct comet_storm_projectile_t : public frost_mage_spell_t
 
 struct comet_storm_t : public frost_mage_spell_t
 {
+  timespan_t delay;
   comet_storm_projectile_t* projectile;
 
   comet_storm_t( mage_t* p, const std::string& options_str ) :
     frost_mage_spell_t( "comet_storm", p, p->find_talent_spell( "Comet Storm" ) ),
+    delay( timespan_t::from_seconds( p->find_spell( 228601 )->missile_speed() ) ),
     projectile( new comet_storm_projectile_t( p ) )
   {
     parse_options( options_str );
@@ -2817,7 +2819,7 @@ struct comet_storm_t : public frost_mage_spell_t
 
   virtual timespan_t travel_time() const override
   {
-    return timespan_t::from_seconds( 1.0 );
+    return delay;
   }
 
   virtual void impact( action_state_t* s ) override
