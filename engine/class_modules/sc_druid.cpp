@@ -8250,46 +8250,47 @@ void druid_t::apl_balance()
   default_list->add_action(this, "Innervate", "if=azerite.lively_spirit.enabled&(cooldown.incarnation.remains<2|cooldown.celestial_alignment.remains<12)");
   default_list->add_action("incarnation,if=astral_power>=40");
   default_list->add_action(this, "Celestial Alignment", "if="
-                                    "astral_power>=40&"
-                                    "(!azerite.lively_spirit.enabled|buff.lively_spirit.up)&"
-                                    "(buff.starlord.stack>=2|!talent.starlord.enabled|!variable.az_ss)");
+                                    "astral_power>=40"
+                                    "&(!azerite.lively_spirit.enabled|buff.lively_spirit.up)"
+                                    "&(buff.starlord.stack>=2|!talent.starlord.enabled|!variable.az_ss)");
   default_list->add_talent(this, "Fury of Elune", "if=(buff.ca_inc.up|cooldown.ca_inc.remains>30)&astral_power.deficit>=13");
   default_list->add_talent(this, "Force of Nature", "if=(buff.ca_inc.up|cooldown.ca_inc.remains>30)&astral_power.deficit>=25");
   // Spenders
   default_list->add_action("cancel_buff,name=starlord,if=buff.starlord.remains<8&astral_power>87", "Spenders");
   default_list->add_action(this, "Starfall", "if="
-                                    "(buff.starlord.stack<3|buff.starlord.remains>=8)&"
-                                    "spell_targets>=variable.sf_targets&"
-                                    "(target.time_to_die+1)*spell_targets>cost%2.5");
+                                    "(buff.starlord.stack<3|buff.starlord.remains>=8)"
+                                    "&spell_targets>=variable.sf_targets"
+                                    "&(target.time_to_die+1)*spell_targets>cost%2.5");
   default_list->add_action(this, "Starsurge", "if="
-                                    "(buff.starlord.stack<3|buff.starlord.remains>=8)&"
-                                    "spell_targets.starfall<variable.sf_targets&"
-                                    "buff.lunar_empowerment.stack+buff.solar_empowerment.stack<4&buff.solar_empowerment.stack<3&buff.lunar_empowerment.stack<3&"
-                                    "(!variable.az_ss|!buff.ca_inc.up|!prev.starsurge)"
-                                  "|target.time_to_die<=execute_time*astral_power%40");
+                                        "(talent.starlord.enabled&(buff.starlord.stack<3|buff.starlord.remains>=8&buff.arcanic_pulsar.stack<8)"
+                                        "|!talent.starlord.enabled&(buff.arcanic_pulsar.stack<8|buff.ca_inc.up))"
+                                      "&spell_targets.starfall<variable.sf_targets"
+                                      "&buff.lunar_empowerment.stack+buff.solar_empowerment.stack<4&buff.solar_empowerment.stack<3&buff.lunar_empowerment.stack<3"
+                                      "&(!variable.az_ss|!buff.ca_inc.up|!prev.starsurge)"
+                                    "|target.time_to_die<=execute_time*astral_power%40|astral_power.deficit<13");
   // DoTs
   default_list->add_action(this, "Sunfire", "target_if=refreshable,if="
-                                    "astral_power.deficit>=8&"
-                                    "floor(target.time_to_die%tick_time)*spell_targets>=5&"
-                                    "(spell_targets>1+talent.twin_moons.enabled|dot.moonfire.ticking)&"
-                                    "(!variable.az_ss|!buff.ca_inc.up|!prev.sunfire)", "DoTs");
+                                    "astral_power.deficit>=8"
+                                    "&floor(target.time_to_die%tick_time)*spell_targets>=4+spell_targets"
+                                    "&(spell_targets>1+talent.twin_moons.enabled|dot.moonfire.ticking)"
+                                    "&(!variable.az_ss|!buff.ca_inc.up|!prev.sunfire)", "DoTs");
   default_list->add_action(this, "Moonfire", "target_if=refreshable,if="
-                                    "astral_power.deficit>=8&"
-                                    "floor(target.time_to_die%tick_time)*spell_targets>=5&"
-                                    "(!variable.az_ss|!buff.ca_inc.up|!prev.moonfire)");
+                                    "astral_power.deficit>=8"
+                                    "&floor(target.time_to_die%tick_time)*spell_targets>=6"
+                                    "&(!variable.az_ss|!buff.ca_inc.up|!prev.moonfire)");
   default_list->add_talent(this, "Stellar Flare", "target_if=refreshable,if="
-                                    "astral_power.deficit>=13&"
-                                    "floor(target.time_to_die%tick_time)>=5&"
-                                    "(!variable.az_ss|!buff.ca_inc.up|!prev.stellar_flare)");
+                                    "astral_power.deficit>=13"
+                                    "&floor(target.time_to_die%tick_time)>=5"
+                                    "&(!variable.az_ss|!buff.ca_inc.up|!prev.stellar_flare)");
   // Generators
   default_list->add_action(this, "New Moon", "if=astral_power.deficit>=15", "Generators");
   default_list->add_action(this, "Half Moon", "if=astral_power.deficit>=25");
   default_list->add_action(this, "Full Moon", "if=astral_power.deficit>=45");
   default_list->add_action(this, "Lunar Strike", "if="
-                                    "buff.solar_empowerment.stack<3&"
-                                    "(astral_power.deficit>=17|buff.lunar_empowerment.stack=3)&"
-                                      "((buff.warrior_of_elune.up|buff.lunar_empowerment.up|spell_targets>=2&!buff.solar_empowerment.up)&"
-                                      "(!variable.az_ss|!buff.ca_inc.up|(!prev.lunar_strike&!talent.incarnation.enabled|prev.solar_wrath))"
+                                      "buff.solar_empowerment.stack<3"
+                                      "&(astral_power.deficit>=17|buff.lunar_empowerment.stack=3)"
+                                      "&((buff.warrior_of_elune.up|buff.lunar_empowerment.up|spell_targets>=2&!buff.solar_empowerment.up)"
+                                        "&(!variable.az_ss|!buff.ca_inc.up|(!prev.lunar_strike&!talent.incarnation.enabled|prev.solar_wrath))"
                                     "|variable.az_ss&buff.ca_inc.up&prev.solar_wrath)");
   default_list->add_action(this, "Solar Wrath", "if="
                                     "variable.az_ss<3|!buff.ca_inc.up|!prev.solar_wrath");
