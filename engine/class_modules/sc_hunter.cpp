@@ -3065,16 +3065,12 @@ struct mongoose_bite_base_t: melee_focus_spender_t
 
   void execute() override
   {
-    // 2018-09-23: Mongoose Bite does the initial Mongoose Fury buff with a slight
-    // delay after the execute but refreshes it always right before
-    if ( p() -> buffs.mongoose_fury -> check() )
-      p() -> buffs.mongoose_fury -> trigger();
-    else
-      make_event( sim, timespan_t::from_millis( 100 ), [this](){ p() -> buffs.mongoose_fury -> trigger(); } );
 
     melee_focus_spender_t::execute();
 
     stats_.at_fury[ p() -> buffs.mongoose_fury -> check() ] -> occur();
+
+    p() -> buffs.mongoose_fury -> trigger();
   }
 
   double action_multiplier() const override
