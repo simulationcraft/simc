@@ -12899,6 +12899,16 @@ void player_t::acquire_target( retarget_event_e event, player_t* context )
 
     trigger_ready();
   }
+
+  if ( candidate_target || first_invuln_target )
+  {
+    // Finally, re-acquire targeting for all dynamic targeting actions. This needs to be done
+    // separately, as their targeting is not strictly bound to player_t::target (i.e., "the players
+    // target")
+    range::for_each( dynamic_target_action_list, [event, context, candidate_target, first_invuln_target]( action_t* action ) {
+      action->acquire_target( event, context, candidate_target ? candidate_target : first_invuln_target );
+    } );
+  }
 }
 
 /**

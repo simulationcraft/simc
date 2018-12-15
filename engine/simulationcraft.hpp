@@ -36,6 +36,7 @@
 #include <limits>
 #include <list>
 #include <map>
+#include <set>
 #include <memory>
 #include <numeric>
 #include <queue>
@@ -3611,6 +3612,8 @@ struct player_t : public actor_t
 
   // Action Priority List
   auto_dispose< std::vector<action_t*> > action_list;
+  /// Actions that have an action-specific dynamic targeting
+  std::set<action_t*> dynamic_target_action_list;
   std::string action_list_str;
   std::string choose_action_list;
   std::string action_list_skip;

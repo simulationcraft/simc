@@ -2442,6 +2442,13 @@ void action_t::init_finished()
     }
   }
 
+  // Collect this object into a list of dynamic targeting actions so they can be managed separate of
+  // the total action object list
+  if ( option.cycle_targets || target_if_expr )
+  {
+    player->dynamic_target_action_list.insert( this );
+  }
+
   if ( !option.if_expr_str.empty() )
   {
     if_expr = expr_t::parse( this, option.if_expr_str, sim->optimize_expressions );
@@ -2508,6 +2515,8 @@ void action_t::reset()
         {
           action_list->foreground_action_list.erase( i );
         }
+
+        player->dynamic_target_action_list.erase( this );
       }
     }
     if ( target_if_expr )
