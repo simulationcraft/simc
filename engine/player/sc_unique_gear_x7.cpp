@@ -30,18 +30,39 @@ struct base_bfa_proc_t : public BASE
 template <typename BASE = proc_spell_t>
 struct base_bfa_aoe_proc_t : public base_bfa_proc_t<BASE>
 {
-  base_bfa_aoe_proc_t( const special_effect_t& effect, const std::string& name, unsigned spell_id ) :
-    base_bfa_proc_t<BASE>( effect, name, spell_id )
+  bool aoe_damage_increase;
+
+  base_bfa_aoe_proc_t( const special_effect_t& effect, const std::string& name,
+                       unsigned spell_id, bool aoe_damage_increase_ = false ) :
+    base_bfa_proc_t<BASE>( effect, name, spell_id ),
+    aoe_damage_increase( aoe_damage_increase_ )
   {
     this->aoe = -1;
     this->split_aoe_damage = true;
   }
 
-  base_bfa_aoe_proc_t( const special_effect_t& effect, const std::string& name, const spell_data_t* s ) :
-    base_bfa_proc_t<BASE>( effect, name, s )
+  base_bfa_aoe_proc_t( const special_effect_t& effect, const std::string& name,
+                       const spell_data_t* s, bool aoe_damage_increase_ = false ) :
+    base_bfa_proc_t<BASE>( effect, name, s ),
+    aoe_damage_increase( aoe_damage_increase_ )
   {
     this->aoe = -1;
     this->split_aoe_damage = true;
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = base_bfa_proc_t<BASE>::action_multiplier();
+
+    if ( aoe_damage_increase )
+    {
+      // 15% extra damage per target hit, up to 6 targets. Hidden somewhere on
+      // the server side.
+      // TODO: Check if the target limit is the same for all these trinkets.
+      am *= 1.0 + 0.15 * ( std::min( as<int>( this->target_list().size() ), 6 ) - 1 );
+    }
+
+    return am;
   }
 };
 
@@ -978,9 +999,8 @@ void items::kul_tiran_cannonball_runner( special_effect_t& effect )
 
 void items::vessel_of_skittering_shadows( special_effect_t& effect )
 {
-  // TODO 8.1: Now deals increased damage with more targets.
   effect.execute_action = create_proc_action<aoe_proc_t>( "webweavers_soul_gem", effect,
-      "webweavers_soul_gem", 270827 );
+      "webweavers_soul_gem", 270827, true );
   effect.execute_action->travel_speed = effect.trigger()->missile_speed();
 
   new dbc_proc_callback_t( effect.player, effect );
@@ -990,26 +1010,9 @@ void items::vessel_of_skittering_shadows( special_effect_t& effect )
 
 void items::vigilants_bloodshaper( special_effect_t& effect )
 {
-  struct volatile_blood_explosion_t : public aoe_proc_t
-  {
-    volatile_blood_explosion_t( const special_effect_t& effect ) :
-      aoe_proc_t( effect, "volatile_blood_explosion", 278057 )
-    {
-      travel_speed = effect.trigger() -> missile_speed();
-    }
-
-    virtual double action_multiplier() const override
-    {
-      double am = aoe_proc_t::action_multiplier();
-
-      // TODO: Server-side until a future patch
-      am *= 1.0 + 0.15 * ( std::min( as<int>( target_list().size() ), 6 ) - 1 );
-
-      return am;
-    }
-  };
-
-  effect.execute_action = create_proc_action<volatile_blood_explosion_t>( "volatile_blood_explosion", effect );
+  effect.execute_action = create_proc_action<aoe_proc_t>( "volatile_blood_explosion", effect,
+    "volatile_blood_explosion", 278057, true );
+  effect.execute_action->travel_speed = effect.trigger()->missile_speed();
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -1582,25 +1585,8 @@ void items::syringe_of_bloodborne_infirmity( special_effect_t& effect )
 
 void items::disc_of_systematic_regression( special_effect_t& effect )
 {
-  struct voided_sectors_t : public aoe_proc_t
-  {
-    voided_sectors_t( const special_effect_t& effect ) :
-      aoe_proc_t( effect, "voided_sectors", 278153 )
-    { }
-
-    virtual double action_multiplier() const override
-    {
-      double am = aoe_proc_t::action_multiplier();
-
-      // TODO: Server-side until a future patch
-      // +15% damage per enemy hit
-      am *= 1.0 + 0.15 * ( std::min( as<int>( target_list().size() ), 6 ) - 1 );
-
-      return am;
-    }
-  };
-
-  effect.execute_action = create_proc_action<voided_sectors_t>( "voided_sectors_t", effect );
+  effect.execute_action = create_proc_action<aoe_proc_t>( "voided_sectors", effect,
+    "voided_sectors", 278153, true );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
