@@ -669,6 +669,7 @@ void items::jes_howler( special_effect_t& effect )
 
 void items::razdunks_big_red_button( special_effect_t& effect )
 {
+  // TODO 8.1: Now deals increased damage with more targets.
   effect.execute_action = create_proc_action<aoe_proc_t>( "razdunks_big_red_button", effect,
       "razdunks_big_red_button", effect.trigger() );
 }
@@ -966,6 +967,7 @@ void items::kul_tiran_cannonball_runner( special_effect_t& effect )
     }
   };
 
+  // TODO 8.1: Now deals increased damage with more targets.
   effect.execute_action = create_proc_action<aoe_proc_t>( "kul_tiran_cannonball_runner", effect,
       "kul_tiran_cannonball_runner", 271197 );
 
@@ -976,6 +978,7 @@ void items::kul_tiran_cannonball_runner( special_effect_t& effect )
 
 void items::vessel_of_skittering_shadows( special_effect_t& effect )
 {
+  // TODO 8.1: Now deals increased damage with more targets.
   effect.execute_action = create_proc_action<aoe_proc_t>( "webweavers_soul_gem", effect,
       "webweavers_soul_gem", 270827 );
   effect.execute_action->travel_speed = effect.trigger()->missile_speed();
@@ -1215,6 +1218,7 @@ void items::hadals_nautilus( special_effect_t& effect )
     }
   };
 
+  // TODO 8.1: Now deals increased damage with more targets.
   effect.execute_action = create_proc_action<aoe_proc_t>( "waterspout", effect, "waterspout",
       270925 );
 
@@ -1228,6 +1232,7 @@ void items::lingering_sporepods( special_effect_t& effect )
   effect.custom_buff = buff_t::find( effect.player, "lingering_spore_pods" );
   if ( !effect.custom_buff )
   {
+    // TODO 8.1: Now deals increased damage with more targets.
     auto damage = create_proc_action<aoe_proc_t>( "lingering_spore_pods_damage", effect,
         "lingering_spore_pods_damage", 268068 );
 
