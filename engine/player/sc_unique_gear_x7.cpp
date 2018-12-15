@@ -692,7 +692,7 @@ void items::razdunks_big_red_button( special_effect_t& effect )
 {
   // TODO 8.1: Now deals increased damage with more targets.
   effect.execute_action = create_proc_action<aoe_proc_t>( "razdunks_big_red_button", effect,
-      "razdunks_big_red_button", effect.trigger() );
+      "razdunks_big_red_button", effect.trigger(), true );
 }
 
 // Merektha's Fang ==========================================================
