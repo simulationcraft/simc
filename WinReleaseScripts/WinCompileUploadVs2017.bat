@@ -8,8 +8,8 @@
 :: QT > 5.6 
 :: Inno Setup - http://www.jrsoftware.org/isinfo.php - Used to make the installer, optional if you just want a compressed file.
 
-set simcversion=801-02
-set SIMCAPPFULLVERSION=8.0.1.02
+set simcversion=810-01
+set SIMCAPPFULLVERSION=8.1.0.01
 :: For bumping the minor version, just change the above lines. 
 
 set qt_dir=C:\Qt\5.10.1\
