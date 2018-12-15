@@ -690,7 +690,6 @@ void items::jes_howler( special_effect_t& effect )
 
 void items::razdunks_big_red_button( special_effect_t& effect )
 {
-  // TODO 8.1: Now deals increased damage with more targets.
   effect.execute_action = create_proc_action<aoe_proc_t>( "razdunks_big_red_button", effect,
       "razdunks_big_red_button", effect.trigger(), true );
 }
@@ -988,9 +987,8 @@ void items::kul_tiran_cannonball_runner( special_effect_t& effect )
     }
   };
 
-  // TODO 8.1: Now deals increased damage with more targets.
   effect.execute_action = create_proc_action<aoe_proc_t>( "kul_tiran_cannonball_runner", effect,
-      "kul_tiran_cannonball_runner", 271197 );
+      "kul_tiran_cannonball_runner", 271197, true );
 
   new cannonball_cb_t( effect );
 }
