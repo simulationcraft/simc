@@ -1219,9 +1219,8 @@ void items::hadals_nautilus( special_effect_t& effect )
     }
   };
 
-  // TODO 8.1: Now deals increased damage with more targets.
   effect.execute_action = create_proc_action<aoe_proc_t>( "waterspout", effect, "waterspout",
-      270925 );
+      270925, true );
 
   new nautilus_cb_t( effect );
 }
