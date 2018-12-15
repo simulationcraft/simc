@@ -24,7 +24,7 @@ actions.precombat=flask
 actions.precombat+=/food
 actions.precombat+=/augmentation
 actions.precombat+=/arcane_intellect
-actions.precombat+=/summon_arcane_familiar
+actions.precombat+=/arcane_familiar
 # conserve_mana is the mana percentage we want to go down to during conserve. It needs to leave enough room to worst case scenario spam AB only during AP.
 actions.precombat+=/variable,name=conserve_mana,op=set,value=60
 actions.precombat+=/snapshot_stats
