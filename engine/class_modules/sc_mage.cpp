@@ -2330,6 +2330,42 @@ struct arcane_explosion_t : public arcane_mage_spell_t
   }
 };
 
+// Arcane Familiar Spell ====================================================
+
+struct arcane_assault_t : public arcane_mage_spell_t
+{
+  arcane_assault_t( mage_t* p ) :
+    arcane_mage_spell_t( "arcane_assault", p, p->find_spell( 225119 ) )
+  {
+    background = true;
+  }
+};
+
+struct arcane_familiar_t : public arcane_mage_spell_t
+{
+  arcane_familiar_t( mage_t* p, const std::string& options_str ) :
+    arcane_mage_spell_t( "arcane_familiar", p, p->talents.arcane_familiar )
+  {
+    parse_options( options_str );
+    harmful = track_cd_waste = false;
+    ignore_false_positive = true;
+  }
+
+  virtual void execute() override
+  {
+    arcane_mage_spell_t::execute();
+    p()->buffs.arcane_familiar->trigger();
+  }
+
+  virtual bool ready() override
+  {
+    if ( p()->buffs.arcane_familiar->check() )
+      return false;
+
+    return arcane_mage_spell_t::ready();
+  }
+};
+
 // Arcane Intellect Spell ===================================================
 
 struct arcane_intellect_t : public mage_spell_t
@@ -4696,7 +4732,7 @@ struct supernova_t : public arcane_mage_spell_t
 struct summon_water_elemental_t : public frost_mage_spell_t
 {
   summon_water_elemental_t( mage_t* p, const std::string& options_str ) :
-    frost_mage_spell_t( "water_elemental", p, p->find_specialization_spell( "Summon Water Elemental" ) )
+    frost_mage_spell_t( "summon_water_elemental", p, p->find_specialization_spell( "Summon Water Elemental" ) )
   {
     parse_options( options_str );
     harmful = track_cd_waste = false;
@@ -4721,42 +4757,6 @@ struct summon_water_elemental_t : public frost_mage_spell_t
       return false;
 
     return frost_mage_spell_t::ready();
-  }
-};
-
-// Summon Arcane Familiar Spell =============================================
-
-struct arcane_assault_t : public arcane_mage_spell_t
-{
-  arcane_assault_t( mage_t* p ) :
-    arcane_mage_spell_t( "arcane_assault", p, p->find_spell( 225119 ) )
-  {
-    background = true;
-  }
-};
-
-struct summon_arcane_familiar_t : public arcane_mage_spell_t
-{
-  summon_arcane_familiar_t( mage_t* p, const std::string& options_str ) :
-    arcane_mage_spell_t( "summon_arcane_familiar", p, p->talents.arcane_familiar )
-  {
-    parse_options( options_str );
-    harmful = track_cd_waste = false;
-    ignore_false_positive = true;
-  }
-
-  virtual void execute() override
-  {
-    arcane_mage_spell_t::execute();
-    p()->buffs.arcane_familiar->trigger();
-  }
-
-  virtual bool ready() override
-  {
-    if ( p()->buffs.arcane_familiar->check() )
-      return false;
-
-    return arcane_mage_spell_t::ready();
   }
 };
 
@@ -5370,7 +5370,7 @@ action_t* mage_t::create_action( const std::string& name, const std::string& opt
   if ( name == "nether_tempest"         ) return new         nether_tempest_t( this, options_str );
   if ( name == "presence_of_mind"       ) return new       presence_of_mind_t( this, options_str );
   if ( name == "slow"                   ) return new                   slow_t( this, options_str );
-  if ( name == "summon_arcane_familiar" ) return new summon_arcane_familiar_t( this, options_str );
+  if ( name == "arcane_familiar"        ) return new        arcane_familiar_t( this, options_str );
   if ( name == "supernova"              ) return new              supernova_t( this, options_str );
 
   if ( name == "start_burn_phase"       ) return new       start_burn_phase_t( this, options_str );
@@ -5404,7 +5404,7 @@ action_t* mage_t::create_action( const std::string& name, const std::string& opt
   if ( name == "ice_nova"               ) return new               ice_nova_t( this, options_str );
   if ( name == "icy_veins"              ) return new              icy_veins_t( this, options_str );
   if ( name == "ray_of_frost"           ) return new           ray_of_frost_t( this, options_str );
-  if ( name == "water_elemental"        ) return new summon_water_elemental_t( this, options_str );
+  if ( name == "summon_water_elemental" ) return new summon_water_elemental_t( this, options_str );
 
   if ( name == "freeze"                 ) return new                 freeze_t( this, options_str );
 
@@ -5622,7 +5622,7 @@ void mage_t::moving()
 
 void mage_t::create_pets()
 {
-  if ( specialization() == MAGE_FROST && !talents.lonely_winter->ok() && find_action( "water_elemental" ) )
+  if ( specialization() == MAGE_FROST && !talents.lonely_winter->ok() && find_action( "summon_water_elemental" ) )
   {
     pets.water_elemental = new pets::water_elemental::water_elemental_pet_t( sim, this );
   }
@@ -6118,7 +6118,7 @@ void mage_t::apl_precombat()
   switch ( specialization() )
   {
     case MAGE_ARCANE:
-      precombat->add_action( "summon_arcane_familiar" );
+      precombat->add_talent( this, "Arcane Familiar" );
       precombat->add_action( "variable,name=conserve_mana,op=set,value=60",
         "conserve_mana is the mana percentage we want to go down to during conserve. It needs to leave enough room to worst case scenario spam AB only during AP." );
       break;
@@ -6127,7 +6127,7 @@ void mage_t::apl_precombat()
         "This variable sets the time at which Rune of Power should start being saved for the next Combustion phase" );
       break;
     case MAGE_FROST:
-      precombat->add_action( "water_elemental" );
+      precombat->add_action( this, "Summon Water Elemental" );
       break;
     default:
       break;
