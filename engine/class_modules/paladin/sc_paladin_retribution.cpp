@@ -143,9 +143,11 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
     {
       if ( p() -> buffs.avenging_wrath -> up() || p() -> buffs.crusade -> up() )
       {
-        // TODO(mserrano): this is a hack - do we need this?
-        lights_decree -> set_target( p() -> target );
-        lights_decree -> execute();
+        if ( c > 0 ) {
+          // TODO(mserrano): this is a hack - do we need this?
+          lights_decree -> set_target( p() -> target );
+          lights_decree -> execute();
+        }
       }
     }
   }
