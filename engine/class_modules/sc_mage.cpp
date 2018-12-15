@@ -3719,7 +3719,7 @@ struct ice_lance_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::init_finished();
 
-    if ( sim->report_details != 0 )
+    if ( sim->report_details != 0 && p()->talents.splitting_ice->ok() )
     {
       cleave_source = p()->get_shatter_source( "Ice Lance cleave" );
     }
