@@ -7916,6 +7916,8 @@ void death_knight_t::create_buffs()
             resources.initial_multiplier[ RESOURCE_HEALTH ] *= 1.0 + new_buff;
             recalculate_resource_max( RESOURCE_HEALTH );
           } : buff_stack_change_callback_t() )
+        // The internal cd in spelldata is for stack loss, handled in bone_shield_handler
+        -> set_cooldown( timespan_t::zero() )
         -> set_max_stack( spell.bone_shield -> max_stacks() )
         -> add_invalidate( CACHE_BONUS_ARMOR )
         -> add_invalidate( CACHE_HASTE );
@@ -8165,14 +8167,15 @@ void death_knight_t::bone_shield_handler( const action_state_t* state ) const
   {
     sim -> out_debug.printf( "%s took a successful auto attack and lost a stack on bone shield", name() );
   }
+
   buffs.bone_shield -> decrement();
+  cooldown.bone_shield_icd -> start( spell.bone_shield -> internal_cooldown() );
 
   if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T21, B2 ) )
   {
     cooldown.dancing_rune_weapon -> adjust( timespan_t::from_millis( sets -> set( DEATH_KNIGHT_BLOOD, T21, B2) -> effectN( 1 ).base_value() ), false );
   }
-  cooldown.bone_shield_icd -> start( spell.bone_shield -> internal_cooldown() );
-
+  
   if ( ! buffs.bone_shield -> up() && buffs.bones_of_the_damned -> up() )
   {
     buffs.bones_of_the_damned -> expire();
