@@ -1168,8 +1168,10 @@ bool buff_t::trigger( int stacks, double value, double chance, timespan_t durati
   if ( _max_stack == 0 || chance == 0 )
     return false;
 
-  if ( cooldown->down() )
-    return false;
+  if ( cooldown->down() ) {
+    if (name_str != "bone_shield" || stacks <= 0)
+      return false;
+  }
 
   if ( player && player->is_sleeping() )
     return false;
