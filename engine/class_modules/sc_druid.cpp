@@ -2240,6 +2240,24 @@ public:
 
     return le;
   }
+
+  expr_t* create_expression(const std::string& name_str) override
+  {
+    if (util::str_compare_ci(name_str, "ap_check"))
+    {
+      return make_fn_expr(name_str, [this]() {
+        action_state_t* state = this->get_state();
+        double ap = p()->resources.current[RESOURCE_ASTRAL_POWER];
+        ap += composite_energize_amount(state);
+        ap += p()->talent.shooting_stars->ok() ? p()->spec.shooting_stars_dmg->effectN(2).base_value() / 10 : 0;
+        ap += p()->talent.natures_balance->ok() ? std::ceil(time_to_execute / timespan_t::from_seconds(1.5)) : 0;
+        delete state;
+        return ap <= p()->resources.base[RESOURCE_ASTRAL_POWER];
+      });
+    }
+
+    return ab::create_expression(name_str);
+  }
 }; // end druid_spell_t
 
 // Shooting Stars ===========================================================
@@ -8253,10 +8271,10 @@ void druid_t::apl_balance()
                                     "astral_power>=40"
                                     "&(!azerite.lively_spirit.enabled|buff.lively_spirit.up)"
                                     "&(buff.starlord.stack>=2|!talent.starlord.enabled|!variable.az_ss)");
-  default_list->add_talent(this, "Fury of Elune", "if=(buff.ca_inc.up|cooldown.ca_inc.remains>30)&astral_power.deficit>=13");
-  default_list->add_talent(this, "Force of Nature", "if=(buff.ca_inc.up|cooldown.ca_inc.remains>30)&astral_power.deficit>=25");
+  default_list->add_talent(this, "Fury of Elune", "if=(buff.ca_inc.up|cooldown.ca_inc.remains>30)&solar_wrath.ap_check");
+  default_list->add_talent(this, "Force of Nature", "if=(buff.ca_inc.up|cooldown.ca_inc.remains>30)&ap_check");
   // Spenders
-  default_list->add_action("cancel_buff,name=starlord,if=buff.starlord.remains<8&astral_power>87", "Spenders");
+  default_list->add_action("cancel_buff,name=starlord,if=buff.starlord.remains<8&!solar_wrath.ap_check", "Spenders");
   default_list->add_action(this, "Starfall", "if="
                                     "(buff.starlord.stack<3|buff.starlord.remains>=8)"
                                     "&spell_targets>=variable.sf_targets"
@@ -8267,28 +8285,25 @@ void druid_t::apl_balance()
                                       "&spell_targets.starfall<variable.sf_targets"
                                       "&buff.lunar_empowerment.stack+buff.solar_empowerment.stack<4&buff.solar_empowerment.stack<3&buff.lunar_empowerment.stack<3"
                                       "&(!variable.az_ss|!buff.ca_inc.up|!prev.starsurge)"
-                                    "|target.time_to_die<=execute_time*astral_power%40|astral_power.deficit<13");
+                                    "|target.time_to_die<=execute_time*astral_power%40|!solar_wrath.ap_check");
   // DoTs - for ttd calculations see https://docs.google.com/spreadsheets/d/16NyCGvWcXXwERuiSNlVhdD347jA5iWh-ELs33GtW1XQ/
-  default_list->add_action(this, "Sunfire", "target_if=refreshable,if="
-                                    "astral_power.deficit>=8"
+  default_list->add_action(this, "Sunfire", "target_if=refreshable,if=ap_check"
                                     "&floor(target.time_to_die%tick_time)*spell_targets>=4+spell_targets"
                                     "&(spell_targets>1+talent.twin_moons.enabled|dot.moonfire.ticking)"
                                     "&(!variable.az_ss|!buff.ca_inc.up|!prev.sunfire)", "DoTs");
-  default_list->add_action(this, "Moonfire", "target_if=refreshable,if="
-                                    "astral_power.deficit>=8"
+  default_list->add_action(this, "Moonfire", "target_if=refreshable,if=ap_check"
                                     "&floor(target.time_to_die%tick_time)*spell_targets>=6"
                                     "&(!variable.az_ss|!buff.ca_inc.up|!prev.moonfire)");
-  default_list->add_talent(this, "Stellar Flare", "target_if=refreshable,if="
-                                    "astral_power.deficit>=13"
+  default_list->add_talent(this, "Stellar Flare", "target_if=refreshable,if=ap_check"
                                     "&floor(target.time_to_die%tick_time)>=5"
                                     "&(!variable.az_ss|!buff.ca_inc.up|!prev.stellar_flare)");
   // Generators
-  default_list->add_action(this, "New Moon", "if=astral_power.deficit>=15", "Generators");
-  default_list->add_action(this, "Half Moon", "if=astral_power.deficit>=25");
-  default_list->add_action(this, "Full Moon", "if=astral_power.deficit>=45");
+  default_list->add_action(this, "New Moon", "if=ap_check", "Generators");
+  default_list->add_action(this, "Half Moon", "if=ap_check");
+  default_list->add_action(this, "Full Moon", "if=ap_check");
   default_list->add_action(this, "Lunar Strike", "if="
                                       "buff.solar_empowerment.stack<3"
-                                      "&(astral_power.deficit>=17|buff.lunar_empowerment.stack=3)"
+                                      "&(ap_check|buff.lunar_empowerment.stack=3)"
                                       "&((buff.warrior_of_elune.up|buff.lunar_empowerment.up|spell_targets>=2&!buff.solar_empowerment.up)"
                                         "&(!variable.az_ss|!buff.ca_inc.up|(!prev.lunar_strike&!talent.incarnation.enabled|prev.solar_wrath))"
                                     "|variable.az_ss&buff.ca_inc.up&prev.solar_wrath)");
@@ -9317,6 +9332,25 @@ expr_t* druid_t::create_expression( const std::string& name_str )
       splits[1] = talent.incarnation_moonkin->ok() ? ".incarnation_chosen_of_elune." : ".celestial_alignment.";
 
     return player_t::create_expression(splits[0] + splits[1] + splits[2]);
+  }
+
+  if (splits.size() == 2 && util::str_compare_ci(splits[1], "ap_check"))
+  {
+    action_t* action = find_action(splits[0]);
+    
+    if (action)
+    {
+      return make_fn_expr(name_str, [action, this]() {
+        action_state_t* state = action->get_state();
+        double ap = this->resources.current[RESOURCE_ASTRAL_POWER];
+        ap += action->composite_energize_amount(state);
+        ap += this->talent.shooting_stars->ok() ? this->spec.shooting_stars_dmg->effectN(2).base_value() / 10 : 0;
+        ap += this->talent.natures_balance->ok() ? std::ceil(action->time_to_execute / timespan_t::from_seconds(1.5)) : 0;
+        delete state;
+        return ap <= this->resources.base[RESOURCE_ASTRAL_POWER];
+      });
+    }
+    throw std::invalid_argument("invalid action");
   }
 
   // Convert talent.incarnation.* & buff.incarnation.* to spec-based incarnations. cooldown.incarnation.* doesn't need name conversion.
