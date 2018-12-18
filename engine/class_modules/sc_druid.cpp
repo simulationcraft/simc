@@ -8268,7 +8268,7 @@ void druid_t::apl_balance()
                                       "&buff.lunar_empowerment.stack+buff.solar_empowerment.stack<4&buff.solar_empowerment.stack<3&buff.lunar_empowerment.stack<3"
                                       "&(!variable.az_ss|!buff.ca_inc.up|!prev.starsurge)"
                                     "|target.time_to_die<=execute_time*astral_power%40|astral_power.deficit<13");
-  // DoTs
+  // DoTs - for ttd calculations see https://docs.google.com/spreadsheets/d/16NyCGvWcXXwERuiSNlVhdD347jA5iWh-ELs33GtW1XQ/
   default_list->add_action(this, "Sunfire", "target_if=refreshable,if="
                                     "astral_power.deficit>=8"
                                     "&floor(target.time_to_die%tick_time)*spell_targets>=4+spell_targets"
@@ -9309,41 +9309,37 @@ expr_t* druid_t::create_expression( const std::string& name_str )
     return new moon_stage_expr_t( *this, name_str );
   }
 
-  if (specialization() == DRUID_BALANCE && splits.size() > 1 && util::str_compare_ci(splits[1], "ca_inc"))
+  if (specialization() == DRUID_BALANCE && splits.size() == 3 && util::str_compare_ci(splits[1], "ca_inc"))
   {
-    std::string ca_inc_name_str = name_str;
-
     if (util::str_compare_ci(splits[0], "cooldown"))
-      util::replace_all(ca_inc_name_str, "ca_inc", talent.incarnation_moonkin->ok() ? "incarnation" : "celestial_alignment");
+      splits[1] = talent.incarnation_moonkin->ok() ? ".incarnation." : ".celestial_alignment.";
     else
-      util::replace_all(ca_inc_name_str, "ca_inc", talent.incarnation_moonkin->ok() ? "incarnation_chosen_of_elune" : "celestial_alignment");
+      splits[1] = talent.incarnation_moonkin->ok() ? ".incarnation_chosen_of_elune." : ".celestial_alignment.";
 
-    return player_t::create_expression(ca_inc_name_str);
+    return player_t::create_expression(splits[0] + splits[1] + splits[2]);
   }
 
   // Convert talent.incarnation.* & buff.incarnation.* to spec-based incarnations. cooldown.incarnation.* doesn't need name conversion.
-  if ((util::str_compare_ci(splits[0], "buff") || util::str_compare_ci(splits[0], "talent")) && splits.size() > 1 && util::str_compare_ci(splits[1], "incarnation"))
+  if (splits.size() == 3 && util::str_compare_ci(splits[1], "incarnation") && (util::str_compare_ci(splits[0], "buff") || util::str_compare_ci(splits[0], "talent")))
   {
-    std::string inc_name_str = name_str;
-    
     switch(specialization())
     {
       case DRUID_BALANCE: {
-        util::replace_all(inc_name_str, "incarnation", "incarnation_chosen_of_elune");
+        splits[1] = ".incarnation_chosen_of_elune.";
       } break;
       case DRUID_FERAL: {
-        util::replace_all(inc_name_str, "incarnation", "incarnation_king_of_the_jungle");
+        splits[1] = ".incarnation_king_of_the_jungle.";
       } break;
       case DRUID_GUARDIAN: {
-        util::replace_all(inc_name_str, "incarnation", "incarnation_guardian_of_ursoc");
+        splits[1] = ".incarnation_guardian_of_ursoc.";
       } break;
       case DRUID_RESTORATION: {
-        util::replace_all(inc_name_str, "incarnation", "incarnation_tree_of_life");
+        splits[1] = ".incarnation_tree_of_life.";
       } break;
       default: break;
     }
 
-    return player_t::create_expression(inc_name_str);
+    return player_t::create_expression(splits[0] + splits[1] + splits[2]);
   }
 
   return player_t::create_expression( name_str );
