@@ -1,4 +1,4 @@
-SimulationCraft 810-01 for World of Warcraft 8.1.0 Live (wow build 28724)
+SimulationCraft 810-01 for World of Warcraft 8.1.0 Live (wow build 28768)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -997,7 +997,7 @@ Each strike has a $8679h% chance of poisoning the enemy, which instantly inflict
 Tooltip          : Healing effects reduced by $w2%.
 
 Name             : Vanish (id=11327) [Spell Family (8)] 
-Hotfixed         : Proc Flags (664232 -> 733884)
+Hotfixed         : Proc Flags (664232 -> 69652)
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -1006,8 +1006,8 @@ Duration         : 3 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Stance Mask      : 0x20000000
-Proc Flags       : ..xxxx.x .x..xx.. xx.x.... ........ 
-                 : White Melee, White Melee Taken, Yellow Melee, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell, Generic Hostile Spell Taken, Magic Hostile Spell, Magic Hostile Spell Taken, Periodic Taken
+Proc Flags       : ..x.x... ....x... x....... ........ 
+                 : White Melee, Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Affecting spells : Nightstalker (14062 effect#1), Subterfuge (108208 effect#3), Item - Rogue T18 Subtlety 2P Bonus (186278 effect#1), Hit and Run (196922 effect#2), Acrobatic Strikes (196924 effect#2)
 Family Flags     : 11, 96
 Attributes       : ....x... ........ x.x.x... .x.x....   .....x.. ..x..... ........ ........ 

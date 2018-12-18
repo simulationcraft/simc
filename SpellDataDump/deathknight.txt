@@ -1,4 +1,4 @@
-SimulationCraft 810-01 for World of Warcraft 8.1.0 Live (wow build 28724)
+SimulationCraft 810-01 for World of Warcraft 8.1.0 Live (wow build 28768)
 
 Name             : Dual Wield (rank=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -2067,11 +2067,11 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68129)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Death Coil (47632), Death and Decay (52212), Scourge Strike (70890), Outbreak (77575), Unholy Blight (115989), Unholy Blight (115994), Soul Reaper (130736), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Bursting Sores (207267), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Horrid Experimentation (273096), Apocalypse (275699), Harrowing Decay (275931), Last Surprise (279606)
+                   Affected Spells: Death Coil (47632), Death and Decay (52212), Scourge Strike (70890), Outbreak (77575), Unholy Blight (115989), Unholy Blight (115994), Soul Reaper (130736), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Bursting Sores (207267), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Necrotic Strike (223829), Horrid Experimentation (273096), Apocalypse (275699), Harrowing Decay (275931), Last Surprise (279606)
                    Family Flags: 78
 #2 (id=90623)    : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Death Coil (47632), Death and Decay (52212), Scourge Strike (70890), Outbreak (77575), Unholy Blight (115989), Unholy Blight (115994), Soul Reaper (130736), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Bursting Sores (207267), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Horrid Experimentation (273096), Apocalypse (275699), Harrowing Decay (275931), Last Surprise (279606)
+                   Affected Spells: Death Coil (47632), Death and Decay (52212), Scourge Strike (70890), Outbreak (77575), Unholy Blight (115989), Unholy Blight (115994), Soul Reaper (130736), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Bursting Sores (207267), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Necrotic Strike (223829), Horrid Experimentation (273096), Apocalypse (275699), Harrowing Decay (275931), Last Surprise (279606)
                    Family Flags: 78
 Description      : Increases the damage of your Shadow damage abiilites by ${$s1}.1%.
 
@@ -5583,6 +5583,7 @@ Effects          :
 Description      : $@spelldesc49143
 
 Name             : Necrotic Strike (rank=PvP Talent) (id=223829) [Spell Family (15)] 
+Hotfixed         : Affecting Spells
 Class            : Death Knight
 School           : Shadowstorm
 Spell Type       : Melee
@@ -5593,8 +5594,8 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Proc Chance      : 101%
-Affecting spells : Death Knight (137005 effect#2)
-Family Flags     : 77, 127
+Affecting spells : Mastery: Dreadblade (77515 effect#1), Death Knight (137005 effect#2)
+Family Flags     : 77, 78, 127
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

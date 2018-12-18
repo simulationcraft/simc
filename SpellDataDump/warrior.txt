@@ -1,4 +1,4 @@
-SimulationCraft 810-01 for World of Warcraft 8.1.0 Live (wow build 28724)
+SimulationCraft 810-01 for World of Warcraft 8.1.0 Live (wow build 28768)
 
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
@@ -6936,7 +6936,8 @@ Effects          :
 #1 (id=734700)   : Apply Aura (6) | Unknown(285)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Trigger Spell: 279632 | Target: Self (1)
 #2 (id=734701)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 85.836 (coefficient=1.104) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 343.4356 (coefficient=4.417178) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Hotfixed: Coefficient (1.104 -> 4.41718)
 Description      : Auto attacks deal $s2 additional damage and reduce the cooldown of Recklessness by ${$s1/1000}.1 sec.
 
 Name             : Callous Reprisal (id=278760) [Scaling Spell (-8), Spell Family (4), Passive] 

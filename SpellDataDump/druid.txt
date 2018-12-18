@@ -1,4 +1,4 @@
-SimulationCraft 810-01 for World of Warcraft 8.1.0 Live (wow build 28724)
+SimulationCraft 810-01 for World of Warcraft 8.1.0 Live (wow build 28768)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -2805,10 +2805,11 @@ Tooltip          : Spell damage increased by $s1%.
 Haste increased by $s3%.
 
 Name             : Ursol's Vortex (id=102793) [Spell Family (7)] 
+Hotfixed         : Spell Level (63 -> 28)
 Class            : Restoration Druid
 School           : Nature
 Spell Type       : Magic
-Spell Level      : 63
+Spell Level      : 28
 Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
@@ -3650,13 +3651,15 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179694)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.66667 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.66667 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Brutal Slash (202028), Feral Frenzy (274838), Primal Wrath (285381)
                    Family Flags: 98
+                   Hotfixed: Base Value (8 -> 15)
 #2 (id=191154)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.66667 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.66667 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Brutal Slash (202028), Feral Frenzy (274838), Primal Wrath (285381)
                    Family Flags: 98
+                   Hotfixed: Base Value (8 -> 15)
 #3 (id=191155)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Shred (5221)
@@ -9373,7 +9376,7 @@ Description      : Lunar Strike has a $s1% chance to grant you Solar Empowerment
 Solar Wrath has a $s2% chance to grant you Lunar Empowerment.
 
 Name             : Twin Moons (id=279620) [Spell Family (7), Passive, Hidden] 
-Class            : Hunter, Druid
+Class            : Druid
 School           : Physical
 Spell Type       : None
 Internal Cooldown: 0.5 seconds
@@ -9402,7 +9405,7 @@ Effects          :
 Description      : Moonfire deals $s2% increased damage and also hits another nearby enemy within $279621A1 yds of the target.
 
 Name             : Twin Moons (id=279621) [Hidden] 
-Class            : Hunter, Druid
+Class            : Druid
 School           : Physical
 Spell Type       : None
 Range            : 100 yards

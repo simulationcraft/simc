@@ -1,4 +1,4 @@
-SimulationCraft 810-01 for World of Warcraft 8.1.0 Live (wow build 28724)
+SimulationCraft 810-01 for World of Warcraft 8.1.0 Live (wow build 28768)
 
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
@@ -5911,8 +5911,9 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=485307)   : Apply Aura (6) | Proc Trigger Spell (42): Twin Moons
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Trigger Spell: 281847 | Target: Self (1)
+#1 (id=485307)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Hotfixed: Sub Type (42 -> 4), Trigger Spell (281847 -> 0)
 #2 (id=485308)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Serpent Sting (259491)
@@ -9168,54 +9169,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 278530
 Description      : $@spelldesc278530
 
-Name             : Twin Moons (id=279620) [Spell Family (7), Passive, Hidden] 
-Class            : Hunter, Druid
-School           : Physical
-Spell Type       : None
-Internal Cooldown: 0.5 seconds
-Proc Chance      : 100%
-Proc Flags       : ........ ........ x....... ........ 
-                 : Magic Hostile Spell
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=736036)   : Apply Aura (6) | Proc Trigger Spell (42): Twin Moons
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 279621 | Target: Self (1)
-#2 (id=736037)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Moonfire (8921), Moonfire (164812)
-                   Family Flags: 103
-#3 (id=736038)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Moonfire (8921), Moonfire (164812)
-                   Family Flags: 103
-Description      : Moonfire deals $s2% increased damage and also hits another nearby enemy within $279621A1 yds of the target.
-
-Name             : Twin Moons (id=279621) [Hidden] 
-Class            : Hunter, Druid
-School           : Physical
-Spell Type       : None
-Range            : 100 yards
-Triggered by     : Twin Moons (279620)
-Attributes       : .......x ........ ........ ...x....   .....x.. ..x..... ........ ........ 
-                 : ........ ........ ........ ....x...   ........ .x...... .x...... ........ 
-                 : ........ ........ ...x.... ........   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : Hidden (7), Does not break stealth (37), Not a proc (105), Disable target procs (113)
-Effects          :
-#1 (id=736039)   : Server Side Script (77)
-                   Base Value: 8921 | Scaled Value: 8921 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-Description      : $@spelldesc279620
-
 Name             : Primal Instincts (id=279806) [Scaling Spell (-7), Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
@@ -10012,25 +9965,6 @@ Effects          :
 #2 (id=741005)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.501426) | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your spells and abilities have a chance to grant you $s1 Mastery for $281843d. When this effect expires it jumps once to a nearby ally, granting them $s2 Mastery for $281844d.
-
-Name             : Twin Moons (id=281847) [Hidden] 
-Class            : Hunter
-School           : Physical
-Spell Type       : None
-Range            : 100 yards
-Triggered by     : Hydra's Bite (260241)
-Attributes       : .......x ........ ........ ...x....   .....x.. ........ ........ ........ 
-                 : ........ ........ ........ ....x...   ........ .x...... .x...... ........ 
-                 : ........ ........ ...x.... ........   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : Hidden (7), Does not break stealth (37), Not a proc (105), Disable target procs (113)
-Effects          :
-#1 (id=741016)   : Server Side Script (77)
-                   Base Value: 8921 | Scaled Value: 8921 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-Description      : $@spelldesc279620
 
 Name             : Dire Consequences (id=287093) [Scaling Spell (-8), Spell Family (9), Passive] 
 Class            : Hunter
