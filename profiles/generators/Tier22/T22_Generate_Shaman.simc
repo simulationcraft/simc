@@ -32,13 +32,13 @@ race=troll
 spec=enhancement
 role=attack
 position=back
-talents=3201033
+talents=1101032
 
-head=crest_of_the_undying_visionary,id=160630,bonus_id=4824/1507/4775,azerite_powers=416/30/13
+head=crest_of_the_undying_visionary,id=160630,bonus_id=4824/1507/4775,azerite_powers=483/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
-shoulder=spaulders_of_coagulated_viscera,id=160731,bonus_id=4824/1507/4775,azerite_powers=485/22/13
+shoulder=spaulders_of_coagulated_viscera,id=160731,bonus_id=4824/1507/4775,azerite_powers=179/22/13
 back=fetid_horrors_tanglecloak,id=160643,bonus_id=4800/1507
-chest=cthraxxi_generals_hauberk,id=160725,bonus_id=4824/1507/4775,azerite_powers=485/461/13
+chest=chainvest_of_assured_quality,id=160627,bonus_id=4824/1507/4775,azerite_powers=447/31/13
 wrists=rubywrought_sparkguards,id=160629,bonus_id=4800/1507
 hands=oblivion_crushers,id=160721,bonus_id=4800/1507
 waist=titanspark_energy_girdle,id=160633,bonus_id=4800/1507
@@ -49,6 +49,6 @@ finger2=rotscour_ring,id=160645,bonus_id=4800/1507,enchant=pact_of_haste
 trinket1=construct_overcharger,id=160652,bonus_id=4800/1507
 trinket2=frenetic_corpuscle,id=160648,bonus_id=4800/1507
 main_hand=mothers_twin_gaze,id=160682,bonus_id=4800/1507,enchant=quick_navigation
-off_hand=mothers_twin_gaze,id=160682,bonus_id=4800/1507,enchant=deadly_navigation
+off_hand=mothers_twin_gaze,id=160682,bonus_id=4800/1507,enchant=masterful_navigation
 
 save=T22_Shaman_Enhancement.simc
