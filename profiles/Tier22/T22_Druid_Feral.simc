@@ -55,6 +55,44 @@ actions.cooldowns+=/potion,name=battle_potion_of_agility,if=target.time_to_die<6
 actions.cooldowns+=/shadowmeld,if=combo_points<5&energy>=action.rake.cost&dot.rake.pmultiplier<2.1&buff.tigers_fury.up&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>18)&!buff.incarnation.up
 actions.cooldowns+=/use_items
 
+actions.finishers=pool_resource,for_next=1
+actions.finishers+=/savage_roar,if=buff.savage_roar.down
+actions.finishers+=/pool_resource,for_next=1
+actions.finishers+=/primal_wrath,target_if=spell_targets.primal_wrath>1&dot.rip.remains<4
+actions.finishers+=/pool_resource,for_next=1
+actions.finishers+=/primal_wrath,target_if=spell_targets.primal_wrath>=2
+actions.finishers+=/pool_resource,for_next=1
+actions.finishers+=/rip,target_if=!ticking|(remains<=duration*0.3)&(target.health.pct>25&!talent.sabertooth.enabled)|(remains<=duration*0.8&persistent_multiplier>dot.rip.pmultiplier)&target.time_to_die>8
+actions.finishers+=/pool_resource,for_next=1
+actions.finishers+=/savage_roar,if=buff.savage_roar.remains<12
+actions.finishers+=/pool_resource,for_next=1
+actions.finishers+=/maim,if=buff.iron_jaws.up
+actions.finishers+=/ferocious_bite,max_energy=1
+
+actions.generators=regrowth,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&buff.bloodtalons.down&combo_points=4&dot.rake.remains<4
+actions.generators+=/regrowth,if=talent.bloodtalons.enabled&buff.bloodtalons.down&buff.predatory_swiftness.up&talent.lunar_inspiration.enabled&dot.rake.remains<1
+actions.generators+=/brutal_slash,if=spell_targets.brutal_slash>desired_targets
+actions.generators+=/pool_resource,for_next=1
+actions.generators+=/thrash_cat,if=(refreshable)&(spell_targets.thrash_cat>2)
+actions.generators+=/pool_resource,for_next=1
+actions.generators+=/thrash_cat,if=(talent.scent_of_blood.enabled&buff.scent_of_blood.down)&spell_targets.thrash_cat>3
+actions.generators+=/pool_resource,for_next=1
+actions.generators+=/swipe_cat,if=buff.scent_of_blood.up
+actions.generators+=/pool_resource,for_next=1
+actions.generators+=/rake,target_if=!ticking|(!talent.bloodtalons.enabled&remains<duration*0.3)&target.time_to_die>4
+actions.generators+=/pool_resource,for_next=1
+actions.generators+=/rake,target_if=talent.bloodtalons.enabled&buff.bloodtalons.up&((remains<=7)&persistent_multiplier>dot.rake.pmultiplier*0.85)&target.time_to_die>4
+# With LI & BT, we can use moonfire to save BT charges, allowing us to better refresh rake
+actions.generators+=/moonfire_cat,if=buff.bloodtalons.up&buff.predatory_swiftness.down&combo_points<5
+actions.generators+=/brutal_slash,if=(buff.tigers_fury.up&(raid_event.adds.in>(1+max_charges-charges_fractional)*recharge_time))
+actions.generators+=/moonfire_cat,target_if=refreshable
+actions.generators+=/pool_resource,for_next=1
+actions.generators+=/thrash_cat,if=refreshable&((variable.use_thrash=2&(!buff.incarnation.up|azerite.wild_fleshrending.enabled))|spell_targets.thrash_cat>1)
+actions.generators+=/thrash_cat,if=refreshable&variable.use_thrash=1&buff.clearcasting.react&(!buff.incarnation.up|azerite.wild_fleshrending.enabled)
+actions.generators+=/pool_resource,for_next=1
+actions.generators+=/swipe_cat,if=spell_targets.swipe_cat>1
+actions.generators+=/shred,if=dot.rake.remains>(action.shred.cost+action.rake.cost-energy)%energy.regen|buff.clearcasting.react
+
 # # The opener generally follow the logic of the rest of the apl, but is separated out here for logical clarity
 # Opening TF will be delayed if we need to hardcast later (which happens with sabertooth & bt but no li)
 # Otherwise we will open with TF, you can safely cast this from stealth without breaking it.
@@ -87,44 +125,8 @@ actions.single_target+=/auto_attack
 actions.single_target+=/call_action_list,name=cooldowns
 actions.single_target+=/ferocious_bite,target_if=dot.rip.ticking&dot.rip.remains<3&target.time_to_die>10&(target.health.pct<25|talent.sabertooth.enabled)
 actions.single_target+=/regrowth,if=combo_points=5&buff.predatory_swiftness.up&talent.bloodtalons.enabled&buff.bloodtalons.down&(!buff.incarnation.up|dot.rip.remains<8)
-actions.single_target+=/run_action_list,name=st_finishers,if=combo_points>4
-actions.single_target+=/run_action_list,name=st_generators
-
-actions.st_finishers=pool_resource,for_next=1
-actions.st_finishers+=/savage_roar,if=buff.savage_roar.down
-actions.st_finishers+=/pool_resource,for_next=1
-actions.st_finishers+=/primal_wrath,target_if=spell_targets.primal_wrath>1&dot.rip.remains<4
-actions.st_finishers+=/pool_resource,for_next=1
-actions.st_finishers+=/rip,target_if=!ticking|(remains<=duration*0.3)&(target.health.pct>25&!talent.sabertooth.enabled)|(remains<=duration*0.8&persistent_multiplier>dot.rip.pmultiplier)&target.time_to_die>8
-actions.st_finishers+=/pool_resource,for_next=1
-actions.st_finishers+=/savage_roar,if=buff.savage_roar.remains<12
-actions.st_finishers+=/pool_resource,for_next=1
-actions.st_finishers+=/maim,if=buff.iron_jaws.up
-actions.st_finishers+=/ferocious_bite,max_energy=1
-
-actions.st_generators=regrowth,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&buff.bloodtalons.down&combo_points=4&dot.rake.remains<4
-actions.st_generators+=/regrowth,if=talent.bloodtalons.enabled&buff.bloodtalons.down&buff.predatory_swiftness.up&talent.lunar_inspiration.enabled&dot.rake.remains<1
-actions.st_generators+=/brutal_slash,if=spell_targets.brutal_slash>desired_targets
-actions.st_generators+=/pool_resource,for_next=1
-actions.st_generators+=/thrash_cat,if=(refreshable)&(spell_targets.thrash_cat>2)
-actions.st_generators+=/pool_resource,for_next=1
-actions.st_generators+=/thrash_cat,if=(talent.scent_of_blood.enabled&buff.scent_of_blood.down)&spell_targets.thrash_cat>3
-actions.st_generators+=/pool_resource,for_next=1
-actions.st_generators+=/swipe_cat,if=buff.scent_of_blood.up
-actions.st_generators+=/pool_resource,for_next=1
-actions.st_generators+=/rake,target_if=!ticking|(!talent.bloodtalons.enabled&remains<duration*0.3)&target.time_to_die>4
-actions.st_generators+=/pool_resource,for_next=1
-actions.st_generators+=/rake,target_if=talent.bloodtalons.enabled&buff.bloodtalons.up&((remains<=7)&persistent_multiplier>dot.rake.pmultiplier*0.85)&target.time_to_die>4
-# With LI & BT, we can use moonfire to save BT charges, allowing us to better refresh rake
-actions.st_generators+=/moonfire_cat,if=buff.bloodtalons.up&buff.predatory_swiftness.down&combo_points<5
-actions.st_generators+=/brutal_slash,if=(buff.tigers_fury.up&(raid_event.adds.in>(1+max_charges-charges_fractional)*recharge_time))
-actions.st_generators+=/moonfire_cat,target_if=refreshable
-actions.st_generators+=/pool_resource,for_next=1
-actions.st_generators+=/thrash_cat,if=refreshable&((variable.use_thrash=2&(!buff.incarnation.up|azerite.wild_fleshrending.enabled))|spell_targets.thrash_cat>1)
-actions.st_generators+=/thrash_cat,if=refreshable&variable.use_thrash=1&buff.clearcasting.react&(!buff.incarnation.up|azerite.wild_fleshrending.enabled)
-actions.st_generators+=/pool_resource,for_next=1
-actions.st_generators+=/swipe_cat,if=spell_targets.swipe_cat>1
-actions.st_generators+=/shred,if=dot.rake.remains>(action.shred.cost+action.rake.cost-energy)%energy.regen|buff.clearcasting.react
+actions.single_target+=/run_action_list,name=finishers,if=combo_points>4
+actions.single_target+=/run_action_list,name=generators
 
 head=hood_of_pestilent_ichor,id=160623,bonus_id=4824/1507/4775,azerite_powers=359/459/15/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33

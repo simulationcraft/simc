@@ -44,7 +44,7 @@ actions.aoe=void_eruption
 actions.aoe+=/dark_ascension,if=buff.voidform.down
 actions.aoe+=/mind_sear,if=buff.harvested_thoughts.up
 actions.aoe+=/void_bolt,if=talent.dark_void.enabled&dot.shadow_word_pain.remains>travel_time
-actions.aoe+=/surrender_to_madness,if=buff.voidform.stack>=(15+buff.bloodlust.up)
+actions.aoe+=/surrender_to_madness,if=buff.voidform.stack>10+(10*buff.bloodlust.up)
 actions.aoe+=/dark_void,if=raid_event.adds.in>10
 actions.aoe+=/mindbender
 actions.aoe+=/shadow_crash,if=raid_event.adds.in>5&raid_event.adds.duration<20
@@ -58,7 +58,7 @@ actions.cleave+=/dark_ascension,if=buff.voidform.down
 actions.cleave+=/mind_sear,if=buff.harvested_thoughts.up
 actions.cleave+=/void_bolt
 actions.cleave+=/shadow_word_death,target_if=target.time_to_die<3|buff.voidform.down
-actions.cleave+=/surrender_to_madness
+actions.cleave+=/surrender_to_madness,if=buff.voidform.stack>10+(10*buff.bloodlust.up)
 actions.cleave+=/dark_void,if=raid_event.adds.in>10
 actions.cleave+=/mindbender
 actions.cleave+=/mind_blast
@@ -75,7 +75,7 @@ actions.single=void_eruption
 actions.single+=/dark_ascension,if=buff.voidform.down
 actions.single+=/void_bolt
 actions.single+=/shadow_word_death,if=target.time_to_die<3|cooldown.shadow_word_death.charges=2|(cooldown.shadow_word_death.charges=1&cooldown.shadow_word_death.remains<gcd.max)
-actions.single+=/surrender_to_madness,if=target.time_to_die>200|target.time_to_die<75
+actions.single+=/surrender_to_madness,if=buff.voidform.stack>10+(10*buff.bloodlust.up)
 actions.single+=/dark_void,if=raid_event.adds.in>10
 actions.single+=/mindbender
 actions.single+=/shadow_word_death,if=!buff.voidform.up|(cooldown.shadow_word_death.charges=2&buff.voidform.stack<15)

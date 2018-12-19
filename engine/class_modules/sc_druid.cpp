@@ -8016,8 +8016,8 @@ void druid_t::apl_feral()
    action_priority_list_t* def = get_action_priority_list("default");
    action_priority_list_t* cooldowns = get_action_priority_list("cooldowns");
    action_priority_list_t* st = get_action_priority_list("single_target");
-   action_priority_list_t* finisher = get_action_priority_list("st_finishers");
-   action_priority_list_t* generator = get_action_priority_list("st_generators");
+   action_priority_list_t* finisher = get_action_priority_list("finishers");
+   action_priority_list_t* generator = get_action_priority_list("generators");
    action_priority_list_t* opener = get_action_priority_list("opener");
 
    def->add_action("auto_attack,if=!buff.prowl.up&!buff.shadowmeld.up");
@@ -8072,13 +8072,15 @@ void druid_t::apl_feral()
    st->add_action("regrowth,if=combo_points=5&buff.predatory_swiftness.up&talent.bloodtalons.enabled&buff.bloodtalons.down&(!buff.incarnation.up|dot.rip.remains<8)");
    //st->add_action("regrowth,if=combo_points>3&talent.bloodtalons.enabled&buff.predatory_swiftness.up&buff.apex_predator.up&buff.incarnation.down");
    //st->add_action("ferocious_bite,if=buff.apex_predator.up&((combo_points>4&(buff.incarnation.up|talent.moment_of_clarity.enabled))|(talent.bloodtalons.enabled&buff.bloodtalons.up&combo_points>3))");
-   st->add_action("run_action_list,name=st_finishers,if=combo_points>4");
-   st->add_action("run_action_list,name=st_generators");
+   st->add_action("run_action_list,name=finishers,if=combo_points>4");
+   st->add_action("run_action_list,name=generators");
 
    finisher->add_action("pool_resource,for_next=1");
    finisher->add_action("savage_roar,if=buff.savage_roar.down");
    finisher->add_action("pool_resource,for_next=1");
    finisher->add_action("primal_wrath,target_if=spell_targets.primal_wrath>1&dot.rip.remains<4");
+   finisher->add_action("pool_resource,for_next=1");
+   finisher->add_action("primal_wrath,target_if=spell_targets.primal_wrath>=2");
    finisher->add_action("pool_resource,for_next=1");
    finisher->add_action("rip,target_if=!ticking|(remains<=duration*0.3)&(target.health.pct>25&!talent.sabertooth.enabled)|(remains<=duration*0.8&persistent_multiplier>dot.rip.pmultiplier)&target.time_to_die>8");
    finisher->add_action("pool_resource,for_next=1");
