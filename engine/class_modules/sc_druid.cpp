@@ -3974,6 +3974,7 @@ struct primal_wrath_t : public cat_attack_t
     consumes_bloodtalons  = true;
     consumes_clearcasting = false;
     special               = true;
+    aoe = -1;
 
     // rip = (rip_t*)p->find_action("rip");
 
