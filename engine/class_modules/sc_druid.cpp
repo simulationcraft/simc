@@ -246,6 +246,7 @@ public:
 
   //Azerite
   streaking_stars_e previous_streaking_stars;
+  streaking_stars_e previous_streaking_stars_cast;
 
   // RPPM objects
   struct rppms_t
@@ -533,6 +534,8 @@ public:
     // Balance
     proc_t* starshards;
     proc_t* power_of_the_moon;
+    proc_t* streaking_stars_gain; // extra proc from in-flight spells
+    proc_t* streaking_stars_loss; // munched proc from spell travel timing
 
     // Guardian
     proc_t* gore;
@@ -724,6 +727,7 @@ public:
     form( NO_FORM ),
     starshards( 0.0 ),
     previous_streaking_stars(SS_NONE),
+    previous_streaking_stars_cast(SS_NONE),
     predator_rppm_rate( 0.0 ),
     initial_astral_power( 8 ),
     initial_moon_stage( NEW_MOON ),
@@ -1593,32 +1597,50 @@ public:
     }
   }
 
-  virtual bool compare_previous_streaking_stars(streaking_stars_e new_ability)
+  virtual bool compare_previous_streaking_stars(streaking_stars_e new_ability, bool cast = false)
   {
-    return p()->previous_streaking_stars == new_ability || new_ability == SS_CELESTIAL_ALIGNMENT; // INC & CA themselves do not proc streaking
+    return (cast ? p()->previous_streaking_stars_cast : p()->previous_streaking_stars) == new_ability || new_ability == SS_CELESTIAL_ALIGNMENT; // INC & CA themselves do not proc streaking
   }
 
-  virtual void streaking_stars_trigger(streaking_stars_e new_ability, action_state_t* s)
+  // cast = true: only checked against previous_streaking_stars_cast, doesn't schedule damage
+  // damage = true: checked against previous_streaking_star, also schedules damage
+  virtual bool streaking_stars_trigger(streaking_stars_e new_ability, action_state_t* s, bool cast = true, bool damage = true)
   {
+    bool ret = false;
+
     if (p()->azerite.streaking_stars.ok())
     {
-      if (!compare_previous_streaking_stars(new_ability) && (p()->buff.celestial_alignment->check() || p()->buff.incarnation_moonkin->check()))
+      if (p()->buff.celestial_alignment->check() || p()->buff.incarnation_moonkin->check())
       {
-        action_state_t* ss_s = p()->active.streaking_stars->get_state();
-        //Check if the trigger has a target, otherwise use the actors target
-        if (s != nullptr)
+        if (cast && !compare_previous_streaking_stars(new_ability, true))
         {
-          ss_s->target = s->target;
+          ret = true;
         }
-        else
+
+        if (damage && !compare_previous_streaking_stars(new_ability))
         {
-          ss_s->target = ab::target;
+          action_state_t* ss_s = p()->active.streaking_stars->get_state();
+          //Check if the trigger has a target, otherwise use the actors target
+          if (s != nullptr)
+          {
+            ss_s->target = s->target;
+          }
+          else
+          {
+            ss_s->target = ab::target;
+          }
+          p()->active.streaking_stars->snapshot_state(ss_s, DMG_DIRECT);
+          p()->active.streaking_stars->schedule_execute(ss_s);
+          ret = true;
         }
-        p()->active.streaking_stars->snapshot_state(ss_s, DMG_DIRECT);
-        p()->active.streaking_stars->schedule_execute(ss_s);
       }
-      p()->previous_streaking_stars = new_ability;
+
+      if (cast) // only for dummy procs
+        p()->previous_streaking_stars_cast = new_ability;
+      if (damage) // actual proc
+        p()->previous_streaking_stars = new_ability;
     }
+    return ret;
   }
 
   bool verify_actor_spec() const override
@@ -5455,7 +5477,7 @@ struct full_moon_t : public druid_spell_t
   void impact(action_state_t* s) override
   {
     druid_spell_t::impact(s);
-    streaking_stars_trigger(SS_FULL_MOON, s); // proc munching shenanigans
+    streaking_stars_trigger(SS_FULL_MOON, s); // proc munching shenanigans, munch tracking NYI
   }
 
   void execute() override
@@ -5502,7 +5524,7 @@ struct half_moon_t : public druid_spell_t
   void impact(action_state_t* s) override
   {
     druid_spell_t::impact(s);
-    streaking_stars_trigger(SS_HALF_MOON, s); // proc munching shenanigans
+    streaking_stars_trigger(SS_HALF_MOON, s); // proc munching shenanigans, munch tracking NYI
   }
 
   void execute() override
@@ -6019,7 +6041,7 @@ struct new_moon_t : public druid_spell_t
   void impact (action_state_t* s) override
   {
     druid_spell_t::impact(s);
-    streaking_stars_trigger(SS_NEW_MOON, s); // proc munching shenanigans
+    streaking_stars_trigger(SS_NEW_MOON, s); // proc munching shenanigans, munch tracking NYI
   }
 
   void execute() override
@@ -6276,13 +6298,16 @@ struct skull_bash_t : public druid_spell_t
 struct solar_wrath_state_t :public action_state_t
 {
   bool empowered;
+  bool proc_streaking;
   solar_wrath_state_t (action_t* action, player_t* target) :
-    action_state_t (action, target), empowered (false)
+    action_state_t (action, target), empowered (false), proc_streaking(false)
   {}
 
   void initialize () override
   {
-    action_state_t::initialize (); empowered = false;
+    action_state_t::initialize();
+    empowered = false;
+    proc_streaking = false;
   }
 
   std::ostringstream& debug_str (std::ostringstream& s) override
@@ -6296,6 +6321,7 @@ struct solar_wrath_state_t :public action_state_t
     action_state_t::copy_state (o);
     const solar_wrath_state_t* st = debug_cast<const solar_wrath_state_t*>(o);
     empowered = st->empowered;
+    proc_streaking = st->proc_streaking;
   }
 };
 
@@ -6351,9 +6377,13 @@ struct solar_wrath_t : public druid_spell_t
   {
     druid_spell_t::snapshot_state (state, type);
 
-    if (p ()->buff.solar_empowerment->check ())
+    if (p()->buff.solar_empowerment->check())
     {
       debug_cast<solar_wrath_state_t*>(state)->empowered = true;
+    }
+    if (streaking_stars_trigger(SS_SOLAR_WRATH, state, true, false))
+    {
+      debug_cast<solar_wrath_state_t*>(state)->proc_streaking = true;
     }
   }
 
@@ -6366,7 +6396,16 @@ struct solar_wrath_t : public druid_spell_t
     {
       p ()->trigger_solar_empowerment (s);
     }
-    streaking_stars_trigger(SS_SOLAR_WRATH, execute_state); // proc munching shenanigans
+    if (streaking_stars_trigger(SS_SOLAR_WRATH, s, false)) // proc munching shenanigans
+    {
+      if (!st->proc_streaking)
+        p()->proc.streaking_stars_gain->occur();
+    }
+    else
+    {
+      if (st->proc_streaking)
+        p()->proc.streaking_stars_loss->occur();
+    }
   }
 
   timespan_t gcd() const override
@@ -8558,6 +8597,8 @@ void druid_t::init_procs()
   proc.starshards               = get_proc( "Starshards"             );
   proc.tier17_2pc_melee         = get_proc( "tier17_2pc_melee"       );
   proc.power_of_the_moon = get_proc("power_of_the_moon");
+  proc.streaking_stars_gain = get_proc("streaking_stars_gain");
+  proc.streaking_stars_loss = get_proc("streaking_stars_loss");
 }
 
 // druid_t::init_resources ==================================================
@@ -8643,6 +8684,7 @@ void druid_t::reset()
   form = NO_FORM;
   moon_stage = ( moon_stage_e ) initial_moon_stage;
   previous_streaking_stars = SS_NONE;
+  previous_streaking_stars_cast = SS_NONE;
 
   base_gcd = timespan_t::from_seconds( 1.5 );
 
