@@ -3543,7 +3543,7 @@ double player_t::composite_spell_hit() const
 
 double player_t::composite_mastery() const
 {
-  return util::round( current.mastery + composite_mastery_rating() / current.rating.mastery, 2 );
+  return current.mastery + composite_mastery_rating() / current.rating.mastery;
 }
 
 double player_t::composite_bonus_armor() const
