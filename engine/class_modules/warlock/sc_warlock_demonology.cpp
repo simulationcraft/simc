@@ -1121,16 +1121,16 @@ namespace warlock {
     def->add_action( "call_action_list,name=build_a_shard" );
 
     np->add_action("call_action_list,name=nether_portal_building,if=cooldown.nether_portal.remains<20");
-    np->add_action("call_action_list,name=nether_portal_active,if=cooldown.nether_portal.remains>160");
+    np->add_action("call_action_list,name=nether_portal_active,if=cooldown.nether_portal.remains>165");
 
+    npa->add_action( "bilescourge_bombers" );
     npa->add_action( "grimoire_felguard,if=cooldown.summon_demonic_tyrant.remains<13|!equipped.132369" );
     npa->add_action( "summon_vilefiend,if=cooldown.summon_demonic_tyrant.remains>40|cooldown.summon_demonic_tyrant.remains<12" );
     npa->add_action( "call_dreadstalkers,if=(cooldown.summon_demonic_tyrant.remains<9&buff.demonic_calling.remains)|(cooldown.summon_demonic_tyrant.remains<11&!buff.demonic_calling.remains)|cooldown.summon_demonic_tyrant.remains>14" );
-
     npa->add_action( "call_action_list,name=build_a_shard,if=soul_shard=1&(cooldown.call_dreadstalkers.remains<action.shadow_bolt.cast_time|(talent.bilescourge_bombers.enabled&cooldown.bilescourge_bombers.remains<action.shadow_bolt.cast_time))" );
-    npa->add_action( "hand_of_guldan,if=((cooldown.call_dreadstalkers.remains>action.demonbolt.cast_time)&(cooldown.call_dreadstalkers.remains>action.shadow_bolt.cast_time))&cooldown.nether_portal.remains>(160+action.hand_of_guldan.cast_time)" );
-    npa->add_action( "summon_demonic_tyrant,if=buff.nether_portal.remains<10&soul_shard=0" );
-    npa->add_action( "summon_demonic_tyrant,if=buff.nether_portal.remains<action.summon_demonic_tyrant.cast_time+5.5" );
+    npa->add_action( "hand_of_guldan,if=((cooldown.call_dreadstalkers.remains>action.demonbolt.cast_time)&(cooldown.call_dreadstalkers.remains>action.shadow_bolt.cast_time))&cooldown.nether_portal.remains>(165+action.hand_of_guldan.cast_time)" );
+    npa->add_action( "summon_demonic_tyrant,if=buff.nether_portal.remains<5&soul_shard=0" );
+    npa->add_action( "summon_demonic_tyrant,if=buff.nether_portal.remains<action.summon_demonic_tyrant.cast_time+0.5" );
     npa->add_action( "demonbolt,if=buff.demonic_core.up" );
     npa->add_action( "call_action_list,name=build_a_shard" );
 
