@@ -2265,16 +2265,18 @@ public:
 
   expr_t* create_expression(const std::string& name_str) override
   {
-    if (util::str_compare_ci(name_str, "ap_check"))
+    std::vector<std::string> splits = util::string_split(name_str, ".");
+
+    if (util::str_compare_ci(splits[0], "ap_check"))
     {
-      return make_fn_expr(name_str, [this]() {
+      return make_fn_expr(name_str, [this, splits]() {
         action_state_t* state = this->get_state();
         double ap = p()->resources.current[RESOURCE_ASTRAL_POWER];
         ap += composite_energize_amount(state);
         ap += p()->talent.shooting_stars->ok() ? p()->spec.shooting_stars_dmg->effectN(2).base_value() / 10 : 0;
         ap += p()->talent.natures_balance->ok() ? std::ceil(time_to_execute / timespan_t::from_seconds(1.5)) : 0;
         delete state;
-        return ap <= p()->resources.base[RESOURCE_ASTRAL_POWER];
+        return ap <= p()->resources.base[RESOURCE_ASTRAL_POWER] + (splits.size() >= 2 ? std::stoi(splits[1]) : 0);
       });
     }
 
@@ -8330,14 +8332,14 @@ void druid_t::apl_balance()
                                     "|target.time_to_die<=execute_time*astral_power%40|!solar_wrath.ap_check");
   // DoTs - for ttd calculations see https://docs.google.com/spreadsheets/d/16NyCGvWcXXwERuiSNlVhdD347jA5iWh-ELs33GtW1XQ/
   default_list->add_action(this, "Sunfire", "target_if=refreshable,if=ap_check"
-                                    "&floor(target.time_to_die%tick_time)*spell_targets>=4+spell_targets"
+                                    "&floor(target.time_to_die%(2*spell_haste))*spell_targets>=ceil(floor(2%spell_targets)*1.5)+2*spell_targets"
                                     "&(spell_targets>1+talent.twin_moons.enabled|dot.moonfire.ticking)"
                                     "&(!variable.az_ss|!buff.ca_inc.up|!prev.sunfire)", "DoTs");
   default_list->add_action(this, "Moonfire", "target_if=refreshable,if=ap_check"
-                                    "&floor(target.time_to_die%tick_time)*spell_targets>=6"
+                                    "&floor(target.time_to_die%(2*spell_haste))*spell_targets>=6"
                                     "&(!variable.az_ss|!buff.ca_inc.up|!prev.moonfire)");
   default_list->add_talent(this, "Stellar Flare", "target_if=refreshable,if=ap_check"
-                                    "&floor(target.time_to_die%tick_time)>=5"
+                                    "&floor(target.time_to_die%(2*spell_haste))>=5"
                                     "&(!variable.az_ss|!buff.ca_inc.up|!prev.stellar_flare)");
   // Generators
   default_list->add_action(this, "New Moon", "if=ap_check", "Generators");
@@ -9379,20 +9381,20 @@ expr_t* druid_t::create_expression( const std::string& name_str )
     return player_t::create_expression(splits[0] + splits[1] + splits[2]);
   }
 
-  if (splits.size() == 2 && util::str_compare_ci(splits[1], "ap_check"))
+  if (splits.size() >= 2 && util::str_compare_ci(splits[1], "ap_check"))
   {
     action_t* action = find_action(splits[0]);
     
     if (action)
     {
-      return make_fn_expr(name_str, [action, this]() {
+      return make_fn_expr(name_str, [action, this, splits]() {
         action_state_t* state = action->get_state();
         double ap = this->resources.current[RESOURCE_ASTRAL_POWER];
         ap += action->composite_energize_amount(state);
         ap += this->talent.shooting_stars->ok() ? this->spec.shooting_stars_dmg->effectN(2).base_value() / 10 : 0;
         ap += this->talent.natures_balance->ok() ? std::ceil(action->time_to_execute / timespan_t::from_seconds(1.5)) : 0;
         delete state;
-        return ap <= this->resources.base[RESOURCE_ASTRAL_POWER];
+        return ap <= this->resources.base[RESOURCE_ASTRAL_POWER] + (splits.size() >= 3 ? std::stoi(splits[2]) : 0);
       });
     }
     throw std::invalid_argument("invalid action");
