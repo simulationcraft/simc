@@ -5228,7 +5228,7 @@ void hunter_t::apl_mm()
   st -> add_action( this, "Aimed Shot", "if=buff.precise_shots.down|cooldown.aimed_shot.full_recharge_time<action.aimed_shot.cast_time|buff.bloodlust.up" );
   st -> add_action( this, "Rapid Fire", "if=focus+cast_regen<focus.max|azerite.focused_fire.enabled|azerite.in_the_rhythm.rank>1|azerite.surging_shots.enabled|talent.streamline.enabled|buff.trueshot.up" );
   st -> add_talent( this, "Piercing Shot" );
-  st -> add_action( this, "Arcane Shot", "if=focus>60|buff.precise_shots.up" );
+  st -> add_action( this, "Arcane Shot", "if=focus>60|buff.precise_shots.up&buff.trueshot.down" );
   st -> add_action( this, "Steady Shot" );
 
   trickshots -> add_talent( this, "Barrage" );
