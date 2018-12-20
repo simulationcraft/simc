@@ -621,6 +621,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 266937, special_effects::gutripper             );
   unique_gear::register_special_effect( 280582, special_effects::battlefield_focus_precision );
   unique_gear::register_special_effect( 280627, special_effects::battlefield_focus_precision );
+  unique_gear::register_special_effect( 287662, special_effects::endless_hunger );
 }
 
 void register_azerite_target_data_initializers( sim_t* sim )
@@ -2445,6 +2446,17 @@ void battlefield_focus_precision( special_effect_t& effect )
   effect.spell_id = effect.spell_id == 280627 ? 280854 : 280816;
 
   new bf_trigger_cb_t( effect, trigger_cb, power.spell_ref().effectN( 2 ).base_value() );
+}
+
+void endless_hunger( special_effect_t& effect )
+{
+  azerite_power_t power = effect.player->find_azerite_spell( effect.driver()->name_cstr() );
+  if ( !power.enabled() )
+  {
+    return;
+  }
+
+  effect.player->passive.versatility_rating += power.value( 2 );
 }
 
 } // Namespace special effects ends

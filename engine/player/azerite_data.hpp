@@ -171,8 +171,8 @@ namespace special_effects
 void resounding_protection( special_effect_t& effect );
 void elemental_whirl( special_effect_t& effect );
 void blood_siphon( special_effect_t& effect );
-void lifespeed(special_effect_t& effect);
-void on_my_way(special_effect_t& effect);
+void lifespeed( special_effect_t& effect );
+void on_my_way( special_effect_t& effect );
 void champion_of_azeroth( special_effect_t& effect );
 void unstable_flames( special_effect_t& );
 void thunderous_blast( special_effect_t& );
@@ -205,6 +205,7 @@ void synaptic_spark_capacitor( special_effect_t& );
 void ricocheting_inflatable_pyrosaw( special_effect_t& );
 void gutripper( special_effect_t& );
 void battlefield_focus_precision( special_effect_t& );
+void endless_hunger( special_effect_t& effect );
 } // Namespace special_effects ends
 
 } // Namespace azerite ends
