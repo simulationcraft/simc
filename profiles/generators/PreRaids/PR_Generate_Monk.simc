@@ -4,7 +4,7 @@ race=pandaren
 spec=brewmaster
 role=tank
 position=front
-talents=2020033
+talents=1030021
 
 head=irontide_captains_hat,id=155888,bonus_id=4779/1512/4786/4775,azerite_powers=479/30/85/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
