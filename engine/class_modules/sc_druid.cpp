@@ -1714,7 +1714,7 @@ public:
 
               pmult = pw->composite_persistent_multiplier(state);
 
-              delete state;
+              action_state_t::release(state);
             }
 
             potential_ticks = std::min( std::max( durrem, duration ), ttd ) / tick_time;
@@ -1760,7 +1760,7 @@ public:
 
               pmult = tc->composite_persistent_multiplier(state);
 
-              delete state;
+              action_state_t::release(state);
             }
 
             potential_ticks = std::min( std::max( durrem, duration ), ttd ) / tick_time;
@@ -1800,7 +1800,7 @@ public:
         
         potential_ticks = std::min(duration, ttd) / action->tick_time(state);
         potential_ticks *= pmult_adjusted ? pmult : 1.0;
-        delete state;
+        action_state_t::release(state);
         return potential_ticks - remaining_ticks;
       });
       throw std::invalid_argument("invalid action");
@@ -2275,7 +2275,7 @@ public:
         ap += composite_energize_amount(state);
         ap += p()->talent.shooting_stars->ok() ? p()->spec.shooting_stars_dmg->effectN(2).base_value() / 10 : 0;
         ap += p()->talent.natures_balance->ok() ? std::ceil(time_to_execute / timespan_t::from_seconds(1.5)) : 0;
-        delete state;
+        action_state_t::release(state);
         return ap <= p()->resources.base[RESOURCE_ASTRAL_POWER] + (splits.size() >= 2 ? std::stoi(splits[1]) : 0);
       });
     }
@@ -9328,7 +9328,7 @@ expr_t* druid_t::create_expression( const std::string& name_str )
       this->resources.current[RESOURCE_ENERGY] = current_energy;
       this->resources.current[RESOURCE_COMBO_POINT] = current_cp;
 
-      delete state;
+      action_state_t::release(state);
       return amount;
     } );
   }
@@ -9393,7 +9393,7 @@ expr_t* druid_t::create_expression( const std::string& name_str )
         ap += action->composite_energize_amount(state);
         ap += this->talent.shooting_stars->ok() ? this->spec.shooting_stars_dmg->effectN(2).base_value() / 10 : 0;
         ap += this->talent.natures_balance->ok() ? std::ceil(action->time_to_execute / timespan_t::from_seconds(1.5)) : 0;
-        delete state;
+        action_state_t::release(state);
         return ap <= this->resources.base[RESOURCE_ASTRAL_POWER] + (splits.size() >= 3 ? std::stoi(splits[2]) : 0);
       });
     }
