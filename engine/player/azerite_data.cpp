@@ -622,6 +622,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 280582, special_effects::battlefield_focus_precision );
   unique_gear::register_special_effect( 280627, special_effects::battlefield_focus_precision );
   unique_gear::register_special_effect( 287662, special_effects::endless_hunger );
+  unique_gear::register_special_effect( 287631, special_effects::apothecarys_concoctions );
 }
 
 void register_azerite_target_data_initializers( sim_t* sim )
@@ -2457,6 +2458,37 @@ void endless_hunger( special_effect_t& effect )
   }
 
   effect.player->passive.versatility_rating += power.value( 2 );
+}
+
+void apothecarys_concoctions( special_effect_t& effect )
+{
+  struct apothecarys_blight_t : public unique_gear::proc_spell_t
+  {
+    apothecarys_blight_t( const special_effect_t& e, const azerite_power_t& power ):
+      proc_spell_t( "apothecarys_blight", e.player, e.player -> find_spell( 287638 ) )
+    {
+      base_td = power.value( 1 );
+      tick_may_crit = true;
+    }
+
+    double action_multiplier() const override
+    {
+      double am = proc_spell_t::action_multiplier();
+
+      am *= 2.0 - this->target->health_percentage() / 100.0;
+
+      return am;
+    }
+  };
+
+  azerite_power_t power = effect.player -> find_azerite_spell( effect.driver() -> name_cstr() );
+  if ( !power.enabled() )
+    return;
+  
+  effect.execute_action = unique_gear::create_proc_action<apothecarys_blight_t>( "apothecarys_concoctions", effect, power );
+  effect.spell_id = effect.player -> find_spell( 287633 ) -> id();
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 } // Namespace special effects ends
