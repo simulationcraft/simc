@@ -989,7 +989,7 @@ void thunderous_blast( special_effect_t& effect )
     return;
 
   effect.execute_action = unique_gear::create_proc_action<thunderous_blast_t>( "thunderous_blast", effect, power );
-  effect.spell_id = effect.player -> find_spell( 280383 ) -> id();
+  effect.spell_id = 280383;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -1011,7 +1011,7 @@ void filthy_transfusion( special_effect_t& effect )
     return;
 
   effect.execute_action = unique_gear::create_proc_action<filthy_transfusion_t>( "filthy_transfusion", effect, power );
-  effect.spell_id = effect.player -> find_spell( 273835 ) -> id();
+  effect.spell_id = 273835;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -1536,7 +1536,7 @@ void tidal_surge( special_effect_t& effect )
     return;
 
   effect.execute_action = unique_gear::create_proc_action<tidal_surge_t>( "tidal_surge", effect, power );
-  effect.spell_id = effect.player -> find_spell( 280403 ) -> id();
+  effect.spell_id = 280403;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -1567,7 +1567,7 @@ void heed_my_call( special_effect_t& effect )
     return;
 
   effect.execute_action = unique_gear::create_proc_action<heed_my_call_t>( "heed_my_call", effect, power );
-  effect.spell_id = effect.player -> find_spell( 271681 ) -> id();
+  effect.spell_id = 271681;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -1612,7 +1612,7 @@ void azerite_globules( special_effect_t& effect )
     return;
 
   effect.execute_action = unique_gear::create_proc_action<azerite_globules_t>( "azerite_globules", effect, power );
-  effect.spell_id = effect.player -> find_spell( 279955 ) -> id();
+  effect.spell_id = 279955;
 
   new azerite_globules_proc_cb_t( effect );
 }
@@ -2486,7 +2486,7 @@ void apothecarys_concoctions( special_effect_t& effect )
     return;
   
   effect.execute_action = unique_gear::create_proc_action<apothecarys_blight_t>( "apothecarys_concoctions", effect, power );
-  effect.spell_id = effect.player -> find_spell( 287633 ) -> id();
+  effect.spell_id = 287633;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
