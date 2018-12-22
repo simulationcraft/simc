@@ -1,0 +1,118 @@
+shaman="T23_Shaman_Enhancement"
+source=default
+spec=enhancement
+level=120
+race=troll
+role=attack
+position=back
+talents=1102032
+
+# Default consumables
+potion=battle_potion_of_agility
+flask=currents
+food=bountiful_captains_feast
+augmentation=battle_scarred
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion
+actions.precombat+=/lightning_shield
+
+# Executed every time the actor is available.
+actions=wind_shear
+actions+=/variable,name=furyCheck45,value=(!talent.fury_of_air.enabled|(talent.fury_of_air.enabled&maelstrom>45))
+actions+=/variable,name=furyCheck35,value=(!talent.fury_of_air.enabled|(talent.fury_of_air.enabled&maelstrom>35))
+actions+=/variable,name=furyCheck25,value=(!talent.fury_of_air.enabled|(talent.fury_of_air.enabled&maelstrom>25))
+actions+=/variable,name=OCPool80,value=(!talent.overcharge.enabled|active_enemies>1|(talent.overcharge.enabled&active_enemies=1&(cooldown.lightning_bolt.remains>=2*gcd|maelstrom>80)))
+actions+=/variable,name=OCPool70,value=(!talent.overcharge.enabled|active_enemies>1|(talent.overcharge.enabled&active_enemies=1&(cooldown.lightning_bolt.remains>=2*gcd|maelstrom>70)))
+actions+=/variable,name=OCPool60,value=(!talent.overcharge.enabled|active_enemies>1|(talent.overcharge.enabled&active_enemies=1&(cooldown.lightning_bolt.remains>=2*gcd|maelstrom>60)))
+actions+=/auto_attack
+actions+=/use_items
+actions+=/call_action_list,name=opener
+actions+=/call_action_list,name=asc,if=buff.ascendance.up
+actions+=/call_action_list,name=buffs
+actions+=/call_action_list,name=cds
+actions+=/call_action_list,name=core
+actions+=/call_action_list,name=filler
+
+actions.asc=crash_lightning,if=!buff.crash_lightning.up&active_enemies>1&variable.furyCheck25
+actions.asc+=/rockbiter,if=talent.landslide.enabled&!buff.landslide.up&charges_fractional>1.7
+actions.asc+=/windstrike
+
+actions.buffs=crash_lightning,if=!buff.crash_lightning.up&active_enemies>1&variable.furyCheck25
+actions.buffs+=/rockbiter,if=talent.landslide.enabled&!buff.landslide.up&charges_fractional>1.7
+actions.buffs+=/fury_of_air,if=!ticking&maelstrom>=20
+actions.buffs+=/flametongue,if=!buff.flametongue.up
+actions.buffs+=/frostbrand,if=talent.hailstorm.enabled&!buff.frostbrand.up&variable.furyCheck25
+actions.buffs+=/flametongue,if=buff.flametongue.remains<4.8+gcd
+actions.buffs+=/frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8+gcd&variable.furyCheck25
+actions.buffs+=/totem_mastery,if=buff.resonance_totem.remains<2
+
+# Cast Bloodlust manually if the Azerite Trait Ancestral Resonance is present.
+actions.cds=bloodlust,if=azerite.ancestral_resonance.enabled
+actions.cds+=/berserking,if=(talent.ascendance.enabled&buff.ascendance.up)|(talent.elemental_spirits.enabled&feral_spirit.remains>5)|(!talent.ascendance.enabled&!talent.elemental_spirits.enabled)
+actions.cds+=/blood_fury,if=(talent.ascendance.enabled&(buff.ascendance.up|cooldown.ascendance.remains>50))|(!talent.ascendance.enabled&(feral_spirit.remains>5|cooldown.feral_spirit.remains>50))
+actions.cds+=/fireblood,if=(talent.ascendance.enabled&(buff.ascendance.up|cooldown.ascendance.remains>50))|(!talent.ascendance.enabled&(feral_spirit.remains>5|cooldown.feral_spirit.remains>50))
+actions.cds+=/ancestral_call,if=(talent.ascendance.enabled&(buff.ascendance.up|cooldown.ascendance.remains>50))|(!talent.ascendance.enabled&(feral_spirit.remains>5|cooldown.feral_spirit.remains>50))
+actions.cds+=/potion,if=buff.ascendance.up|!talent.ascendance.enabled&feral_spirit.remains>5|target.time_to_die<=60
+actions.cds+=/feral_spirit
+actions.cds+=/ascendance,if=cooldown.strike.remains>0
+actions.cds+=/earth_elemental
+
+actions.core=earthen_spike,if=variable.furyCheck25
+actions.core+=/sundering,if=active_enemies>=3
+actions.core+=/stormstrike,cycle_targets=1,if=azerite.lightning_conduit.enabled&!debuff.lightning_conduit.up&active_enemies>1&(buff.stormbringer.up|(variable.OCPool70&variable.furyCheck35))
+actions.core+=/stormstrike,if=buff.stormbringer.up|(buff.gathering_storms.up&variable.OCPool70&variable.furyCheck35)
+actions.core+=/crash_lightning,if=active_enemies>=3&variable.furyCheck25
+actions.core+=/lightning_bolt,if=talent.overcharge.enabled&active_enemies=1&variable.furyCheck45&maelstrom>=40
+actions.core+=/stormstrike,if=variable.OCPool70&variable.furyCheck35
+actions.core+=/sundering
+actions.core+=/crash_lightning,if=talent.forceful_winds.enabled&active_enemies>1&variable.furyCheck25
+actions.core+=/flametongue,if=talent.searing_assault.enabled
+actions.core+=/lava_lash,if=talent.hot_hand.enabled&buff.hot_hand.react
+actions.core+=/crash_lightning,if=active_enemies>1&variable.furyCheck25
+
+actions.filler=rockbiter,if=maelstrom<70&!buff.strength_of_earth.up
+actions.filler+=/crash_lightning,if=talent.crashing_storm.enabled&variable.OCPool60
+actions.filler+=/lava_lash,if=variable.OCPool80&variable.furyCheck45
+actions.filler+=/rockbiter
+actions.filler+=/flametongue
+
+actions.opener=rockbiter,if=maelstrom<15&time<gcd
+
+head=soulscarred_headgear,id=159398,bonus_id=5062/1587/4786/4775,azerite_powers=179/416/22/15/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+shoulders=mantle_of_the_soulbinders_caress,id=165537,bonus_id=4824/1537/4775,azerite_powers=416/179/30/15/13
+back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
+chest=loablessed_chestguard,id=158355,bonus_id=5062/1587/4786/4775,azerite_powers=416/179/21/15/13
+wrists=icebinders_bracers,id=165542,bonus_id=4800/1537
+hands=grips_of_harmonious_spirits,id=165531,bonus_id=4800/1537
+waist=goldenscale_girdle,id=165538,bonus_id=4800/1537
+legs=deathhunters_legguards,id=165536,bonus_id=4800/1537
+feet=boots_of_the_gilded_path,id=165541,bonus_id=4800/1537
+finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_haste
+finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_haste
+trinket1=kimbuls_razor_claw,id=165579,bonus_id=4800/1537
+trinket2=variable_intensity_gigavolt_oscillating_reactor,id=165572,bonus_id=4800/1537
+main_hand=bonelash_paw,id=165588,bonus_id=4800/1537,enchant=quick_navigation
+off_hand=bonelash_paw,id=165588,bonus_id=4800/1537,enchant=masterful_navigation
+
+# Gear Summary
+# gear_ilvl=416.19
+# gear_agility=5796
+# gear_stamina=9919
+# gear_crit_rating=596
+# gear_haste_rating=1365
+# gear_mastery_rating=995
+# gear_versatility_rating=407
+# gear_armor=3410
