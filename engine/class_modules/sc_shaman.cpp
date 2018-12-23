@@ -8020,11 +8020,11 @@ void shaman_t::init_action_list_enhancement()
   cds->add_action( this, "Earth Elemental" );
 
   core->add_talent( this, "Earthen Spike", "if=variable.furyCheck25" );
-  core->add_action( this, "Lava Lash", "if=azerite.primal_primer.rank=3&((talent.hot_hand.enabled&buff.hot_hand.react)|debuff.primal_primer.stack=10)" );
   core->add_talent( this, "Sundering", "if=active_enemies>=3" );
   core->add_action( this, "Stormstrike",
                     "cycle_targets=1,if=azerite.lightning_conduit.enabled&!debuff.lightning_conduit.up&active_enemies>"
                     "1&(buff.stormbringer.up|(variable.OCPool70&variable.furyCheck35))" );
+  core->add_action( this, "Lava Lash", "if=azerite.primal_primer.rank=3&debuff.primal_primer.stack=10" );
   core->add_action( this, "Stormstrike",
                     "if=buff.stormbringer.up|(buff.gathering_storms.up&variable.OCPool70&variable.furyCheck35)" );
   core->add_action( this, "Crash Lightning", "if=active_enemies>=3&variable.furyCheck25" );
