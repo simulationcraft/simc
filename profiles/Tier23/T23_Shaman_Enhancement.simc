@@ -5,7 +5,7 @@ level=120
 race=troll
 role=attack
 position=back
-talents=1102032
+talents=2302031
 
 # Default consumables
 potion=battle_potion_of_agility
@@ -70,11 +70,13 @@ actions.cds+=/ascendance,if=cooldown.strike.remains>0
 actions.cds+=/earth_elemental
 
 actions.core=earthen_spike,if=variable.furyCheck25
+actions.core+=/lava_lash,if=azerite.primal_primer.rank=3&((talent.hot_hand.enabled&buff.hot_hand.react)|debuff.primal_primer.stack=10)
 actions.core+=/sundering,if=active_enemies>=3
 actions.core+=/stormstrike,cycle_targets=1,if=azerite.lightning_conduit.enabled&!debuff.lightning_conduit.up&active_enemies>1&(buff.stormbringer.up|(variable.OCPool70&variable.furyCheck35))
 actions.core+=/stormstrike,if=buff.stormbringer.up|(buff.gathering_storms.up&variable.OCPool70&variable.furyCheck35)
 actions.core+=/crash_lightning,if=active_enemies>=3&variable.furyCheck25
 actions.core+=/lightning_bolt,if=talent.overcharge.enabled&active_enemies=1&variable.furyCheck45&maelstrom>=40
+actions.core+=/lava_lash,if=azerite.primal_primer.rank=3&debuff.primal_primer.stack>7
 actions.core+=/stormstrike,if=variable.OCPool70&variable.furyCheck35
 actions.core+=/sundering
 actions.core+=/crash_lightning,if=talent.forceful_winds.enabled&active_enemies>1&variable.furyCheck25
@@ -90,11 +92,11 @@ actions.filler+=/flametongue
 
 actions.opener=rockbiter,if=maelstrom<15&time<gcd
 
-head=soulscarred_headgear,id=159398,bonus_id=5062/1587/4786/4775,azerite_powers=179/416/22/15/13
+head=hood_of_the_dark_reaper,id=159391,bonus_id=5062/1587/4786/4775,azerite_powers=137/416/30/539/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
-shoulders=mantle_of_the_soulbinders_caress,id=165537,bonus_id=4824/1537/4775,azerite_powers=416/179/30/15/13
+shoulders=gaping_maw_shoulderguard,id=159352,bonus_id=5062/1587/4786/4775,azerite_powers=137/416/461/207/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
-chest=loablessed_chestguard,id=158355,bonus_id=5062/1587/4786/4775,azerite_powers=416/179/21/15/13
+chest=mistfire_raiment,id=165540,bonus_id=4824/1537/4775,azerite_powers=137/416/22/474/13
 wrists=icebinders_bracers,id=165542,bonus_id=4800/1537
 hands=grips_of_harmonious_spirits,id=165531,bonus_id=4800/1537
 waist=goldenscale_girdle,id=165538,bonus_id=4800/1537
