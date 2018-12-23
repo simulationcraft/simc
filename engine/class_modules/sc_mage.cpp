@@ -6760,78 +6760,40 @@ void mage_t::combat_end()
  */
 expr_t* mage_t::create_action_expression( action_t& action, const std::string& name )
 {
-  struct mage_action_expr_t : public expr_t
-  {
-    action_t& action;
-    mage_t& mage;
-
-    mage_action_expr_t( mage_t& mage, action_t& action, const std::string& n ) :
-      expr_t( n ),
-      action( action ),
-      mage( mage )
-    { }
-  };
-
   std::vector<std::string> splits = util::string_split( name, "." );
 
   // Firestarter expressions ==================================================
   if ( splits.size() == 2 && util::str_compare_ci( splits[ 0 ], "firestarter" ) )
   {
-    enum firestarter_expr_type_e
-    {
-      FIRESTARTER_ACTIVE,
-      FIRESTARTER_REMAINS
-    };
-
-    struct firestarter_expr_t : public mage_action_expr_t
-    {
-      firestarter_expr_type_e type;
-
-      firestarter_expr_t( mage_t& mage, action_t& action, const std::string& name, firestarter_expr_type_e type ) :
-        mage_action_expr_t( mage, action, name ),
-        type( type )
-      { }
-
-      virtual double evaluate() override
-      {
-        if ( !mage.talents.firestarter->ok() )
-          return 0.0;
-
-        timespan_t remains;
-
-        if ( mage.options.firestarter_time > timespan_t::zero() )
-        {
-          remains = std::max( timespan_t::zero(), mage.options.firestarter_time - mage.sim->current_time() );
-        }
-        else
-        {
-          remains = action.target->time_to_percent( mage.talents.firestarter->effectN( 1 ).base_value() );
-        }
-
-        switch ( type )
-        {
-          case FIRESTARTER_ACTIVE:
-            return static_cast<double>( remains > timespan_t::zero() );
-          case FIRESTARTER_REMAINS:
-            return remains.total_seconds();
-          default:
-            return 0.0;
-        }
-      }
-    };
-
     if ( util::str_compare_ci( splits[ 1 ], "active" ) )
     {
-      return new firestarter_expr_t( *this, action, name, FIRESTARTER_ACTIVE );
+      return make_fn_expr( name_str, [ this, &action ]
+      {
+        if ( !talents.firestarter->ok() )
+          return false;
+
+        if ( options.firestarter_time > timespan_t::zero() )
+          return sim->current_time() < options.firestarter_time;
+        else
+          return action.target->health_percentage() > talents.firestarter->effectN( 1 ).base_value();
+      } );
     }
-    else if ( util::str_compare_ci( splits[ 1 ], "remains" ) )
+
+    if ( util::str_compare_ci( splits[ 1 ], "remains" ) )
     {
-      return new firestarter_expr_t( *this, action, name, FIRESTARTER_REMAINS );
+      return make_fn_expr( name_str, [ this, &action ]
+      {
+        if ( !talents.firestarter->ok() )
+          return 0.0;
+
+        if ( options.firestarter_time > timespan_t::zero() )
+          return std::max( 0.0, ( options.firestarter_time - sim->current_time() ).total_seconds() );
+        else
+          return action.target->time_to_percent( talents.firestarter->effectN( 1 ).base_value() ).total_seconds();
+      } );
     }
-    else
-    {
-      throw std::invalid_argument( fmt::format( "Unknown firestarer operation '{}'", splits[ 1 ] ) );
-    }
+
+    throw std::invalid_argument( fmt::format( "Unknown firestarer operation '{}'", splits[ 1 ] ) );
   }
 
   return player_t::create_action_expression( action, name );
