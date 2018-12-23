@@ -7251,7 +7251,10 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
 
   double proc_chance = spec.windfury->proc_chance();
   proc_chance += cache.mastery() * mastery.enhanced_elements->effectN( 4 ).mastery_value();
-  proc_chance *= 1.0 + buff.tailwind_totem_enh->value();
+  if ( buff.tailwind_totem_enh )
+  {
+    proc_chance *= 1.0 + buff.tailwind_totem_enh->value();
+  }
 
   if ( buff.thunderaans_fury->up() )
   {
@@ -7431,7 +7434,10 @@ void shaman_t::create_buffs()
   //
   // Elemental
   //
-  buff.tailwind_totem_ele   = new tailwind_totem_buff_ele_t( this );
+  if ( specialization() == SHAMAN_ELEMENTAL )
+  {
+    buff.tailwind_totem_ele   = new tailwind_totem_buff_ele_t( this );
+  }
   buff.elemental_blast_crit = make_buff<stat_buff_t>( this, "elemental_blast_critical_strike", find_spell( 118522 ) );
   buff.elemental_blast_crit->set_max_stack( 1 );
   buff.elemental_blast_haste = make_buff<stat_buff_t>( this, "elemental_blast_haste", find_spell( 173183 ) );
@@ -7512,7 +7518,10 @@ void shaman_t::create_buffs()
   //
   // Enhancement
   //
-  buff.tailwind_totem_enh          = new tailwind_totem_buff_enh_t( this );
+  if ( specialization() == SHAMAN_ENHANCEMENT )
+  {
+    buff.tailwind_totem_enh          = new tailwind_totem_buff_enh_t( this );
+  }
   buff.lightning_shield            = new lightning_shield_buff_t( this );
   buff.lightning_shield_overcharge = new lightning_shield_overcharge_buff_t( this );
   buff.flametongue                 = new flametongue_buff_t( this );
@@ -8183,7 +8192,7 @@ double shaman_t::composite_spell_haste() const
 {
   double h = player_t::composite_spell_haste();
 
-  if ( buff.tailwind_totem_ele->up() )
+  if ( buff.tailwind_totem_ele && buff.tailwind_totem_ele->up() )
     h *= 1.0 / ( 1.0 + buff.tailwind_totem_ele->check_value() );
 
   if ( buff.unlimited_power->up() )
@@ -8249,7 +8258,7 @@ double shaman_t::composite_melee_haste() const
 {
   double h = player_t::composite_melee_haste();
 
-  if ( buff.tailwind_totem_ele->up() )
+  if ( buff.tailwind_totem_ele && buff.tailwind_totem_ele->up() )
   {
     h *= 1.0 / ( 1.0 + buff.tailwind_totem_ele->check_value() );
   }
