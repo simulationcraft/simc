@@ -6839,126 +6839,56 @@ expr_t* mage_t::create_action_expression( action_t& action, const std::string& n
 
 expr_t* mage_t::create_expression( const std::string& name_str )
 {
-  struct mage_expr_t : public expr_t
-  {
-    mage_t& mage;
-
-    mage_expr_t( const std::string& n, mage_t& m ) :
-      expr_t( n ),
-      mage( m )
-    { }
-  };
-
   // Incanters flow direction
   // Evaluates to:  0.0 if IF talent not chosen or IF stack unchanged
   //                1.0 if next IF stack increases
   //               -1.0 if IF stack decreases
   if ( util::str_compare_ci( name_str, "incanters_flow_dir" ) )
   {
-    struct incanters_flow_dir_expr_t : public mage_expr_t
+    return make_fn_expr( name_str, [ this ]
     {
-      incanters_flow_dir_expr_t( mage_t& m ) :
-        mage_expr_t( "incanters_flow_dir", m )
-      { }
+      if ( !talents.incanters_flow->ok() )
+        return 0.0;
 
-      virtual double evaluate() override
-      {
-        if ( !mage.talents.incanters_flow->ok() )
-          return 0.0;
-
-        buff_t* flow = mage.buffs.incanters_flow;
-        if ( flow->reverse )
-          return flow->check() == 1 ? 0.0 : -1.0;
-        else
-          return flow->check() == 5 ? 0.0 : 1.0;
-      }
-    };
-
-    return new incanters_flow_dir_expr_t( *this );
+      if ( buffs.incanters_flow->reverse )
+        return buffs.incanters_flow->check() == 1 ? 0.0 : -1.0;
+      else
+        return buffs.incanters_flow->check() == 5 ? 0.0 : 1.0;
+    } );
   }
 
   if ( util::str_compare_ci( name_str, "burn_phase" ) )
   {
-    struct burn_phase_expr_t : public mage_expr_t
-    {
-      burn_phase_expr_t( mage_t& m ) :
-        mage_expr_t( "burn_phase", m )
-      { }
-
-      virtual double evaluate() override
-      { return mage.burn_phase.on(); }
-    };
-
-    return new burn_phase_expr_t( *this );
+    return make_fn_expr( name_str, [ this ]
+    { return burn_phase.on(); } );
   }
 
   if ( util::str_compare_ci( name_str, "burn_phase_duration" ) )
   {
-    struct burn_phase_duration_expr_t : public mage_expr_t
-    {
-      burn_phase_duration_expr_t( mage_t& m ) :
-        mage_expr_t( "burn_phase_duration", m )
-      { }
-
-      virtual double evaluate() override
-      { return mage.burn_phase.duration( mage.sim->current_time() ).total_seconds(); }
-    };
-
-    return new burn_phase_duration_expr_t( *this );
+    return make_fn_expr( name_str, [ this ]
+    { return burn_phase.duration( sim->current_time() ).total_seconds(); } );
   }
 
   if ( util::str_compare_ci( name_str, "shooting_icicles" ) )
   {
-    struct sicicles_expr_t : public mage_expr_t
-    {
-      sicicles_expr_t( mage_t& m ) :
-        mage_expr_t( "shooting_icicles", m )
-      { }
-
-      virtual double evaluate() override
-      { return mage.icicle_event != nullptr; }
-    };
-
-    return new sicicles_expr_t( *this );
+    return make_fn_expr( name_str, [ this ]
+    { return icicle_event != nullptr; } );
   }
 
   std::vector<std::string> splits = util::string_split( name_str, "." );
 
   if ( splits.size() == 3 && util::str_compare_ci( splits[ 0 ], "ground_aoe" ) )
   {
-    struct ground_aoe_expr_t : public mage_expr_t
-    {
-      std::string aoe_type;
-
-      ground_aoe_expr_t( mage_t& m, const std::string& name_str, const std::string& aoe ) :
-        mage_expr_t( name_str, m ),
-        aoe_type( aoe )
-      {
-        util::tolower( aoe_type );
-      }
-
-      virtual double evaluate() override
-      {
-        timespan_t expiration;
-
-        auto it = mage.ground_aoe_expiration.find( aoe_type );
-        if ( it != mage.ground_aoe_expiration.end() )
-        {
-          expiration = it->second;
-        }
-
-        return std::max( 0.0, ( expiration - mage.sim->current_time() ).total_seconds() );
-      }
-    };
+    std::string type = splits[ 1 ];
+    util::tolower( type );
 
     if ( util::str_compare_ci( splits[ 2 ], "remains" ) )
     {
-      return new ground_aoe_expr_t( *this, name_str, splits[ 1 ] );
+      return make_fn_expr( name_str, [ this, type ]
+      { return std::max( 0.0, ( ground_aoe_expiration[ type ] - sim->current_time() ).total_seconds() ); } );
     }
-    else
-    {
-      throw std::invalid_argument( fmt::format( "Unknown ground_aoe operation '{}'", splits[ 2 ] ) );
-    }
+
+    throw std::invalid_argument( fmt::format( "Unknown ground_aoe operation '{}'", splits[ 2 ] ) );
   }
 
   return player_t::create_expression( name_str );
