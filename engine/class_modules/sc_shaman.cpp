@@ -8024,13 +8024,13 @@ void shaman_t::init_action_list_enhancement()
   core->add_action( this, "Stormstrike",
                     "cycle_targets=1,if=azerite.lightning_conduit.enabled&!debuff.lightning_conduit.up&active_enemies>"
                     "1&(buff.stormbringer.up|(variable.OCPool70&variable.furyCheck35))" );
-  core->add_action( this, "Lava Lash", "if=azerite.primal_primer.rank=3&debuff.primal_primer.stack=10" );
+  core->add_action( this, "Lava Lash", "if=azerite.primal_primer.rank>=2&debuff.primal_primer.stack=10" );
   core->add_action( this, "Stormstrike",
                     "if=buff.stormbringer.up|(buff.gathering_storms.up&variable.OCPool70&variable.furyCheck35)" );
   core->add_action( this, "Crash Lightning", "if=active_enemies>=3&variable.furyCheck25" );
   core->add_action( this, "Lightning Bolt",
                     "if=talent.overcharge.enabled&active_enemies=1&variable.furyCheck45&maelstrom>=40" );
-  core->add_action( this, "Lava Lash", "if=azerite.primal_primer.rank=3&debuff.primal_primer.stack>7" );
+  core->add_action( this, "Lava Lash", "if=azerite.primal_primer.rank>=2&debuff.primal_primer.stack>7" );
   core->add_action( this, "Stormstrike", "if=variable.OCPool70&variable.furyCheck35" );
   core->add_talent( this, "Sundering" );
   core->add_action( this, "Crash Lightning", "if=talent.forceful_winds.enabled&active_enemies>1&variable.furyCheck25" );
