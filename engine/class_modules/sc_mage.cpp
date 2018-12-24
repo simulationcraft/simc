@@ -97,8 +97,8 @@ public:
 /// Icicle container object, contains a timestamp and its corresponding icicle data!
 struct icicle_tuple_t
 {
-  timespan_t timestamp;
-  action_t*  icicle_action;
+  action_t* action;
+  event_t*  expiration;
 };
 
 struct mage_td_t : public actor_target_data_t
@@ -780,7 +780,7 @@ public:
   };
 
   void      update_rune_distance( double distance );
-  action_t* get_icicle( bool erase = true );
+  action_t* get_icicle();
   void      trigger_icicle( player_t* icicle_target, bool chain = false );
   void      trigger_evocation( timespan_t duration_override = timespan_t::min(), bool hasted = true );
   void      trigger_arcane_charge( int stacks = 1 );
@@ -1912,7 +1912,11 @@ struct frost_mage_spell_t : public mage_spell_t
     }
 
     p()->buffs.icicles->trigger();
-    p()->icicles.push_back( { sim->current_time(), icicle_action } );
+    p()->icicles.push_back( { icicle_action, make_event( sim, p()->buffs.icicles->buff_duration, [ this ]
+    {
+      p()->buffs.icicles->decrement();
+      p()->icicles.erase( p()->icicles.begin() );
+    } ) } );
 
     assert( p()->icicles.size() <= max_icicles );
   }
@@ -3658,8 +3662,9 @@ struct glacial_spike_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
 
-    p()->icicles.clear();
     p()->buffs.icicles->expire();
+    while ( !p()->icicles.empty() )
+      p()->get_icicle();
 
     double fof_proc_chance = p()->azerite.flash_freeze.spell_ref().effectN( 1 ).percent();
     for ( int i = 0; i < as<int>( p()->spec.icicles->effectN( 2 ).base_value() ); i++ )
@@ -5032,7 +5037,7 @@ struct icicle_event_t : public event_t
     icicle_action->execute();
     mage->buffs.icicles->decrement();
 
-    if ( mage->get_icicle( false ) )
+    if ( !mage->icicles.empty() )
     {
       mage->icicle_event = make_event<icicle_event_t>( sim(), *mage, target );
       sim().print_debug( "{} icicle use on {} (chained), total={}", mage->name(), target->name(), mage->icicles.size() );
@@ -6889,26 +6894,18 @@ void mage_t::update_rune_distance( double distance )
   }
 }
 
-action_t* mage_t::get_icicle( bool erase )
+action_t* mage_t::get_icicle()
 {
-  // All Icicles created before the treshold timed out.
-  timespan_t threshold = sim->current_time() - buffs.icicles->buff_duration;
+  action_t* a = nullptr;
 
-  // Find first icicle which did not time out
-  auto idx = range::find_if( icicles, [ threshold ] ( const icicle_tuple_t& t ) { return t.timestamp > threshold; } );
-
-  // Remove all timed out icicles
-  icicles.erase( icicles.begin(), idx );
-
-  if ( icicles.empty() )
-    return nullptr;
-
-  action_t* icicle_action = icicles.front().icicle_action;
-
-  if ( erase )
+  if ( !icicles.empty() )
+  {
+    event_t::cancel( icicles.front().expiration );
+    a = icicles.front().action;
     icicles.erase( icicles.begin() );
+  }
 
-  return icicle_action;
+  return a;
 }
 
 void mage_t::trigger_icicle( player_t* icicle_target, bool chain )
@@ -6918,7 +6915,7 @@ void mage_t::trigger_icicle( player_t* icicle_target, bool chain )
   if ( !spec.icicles->ok() )
     return;
 
-  if ( !get_icicle( false ) )
+  if ( icicles.empty() )
     return;
 
   if ( chain && !icicle_event )
