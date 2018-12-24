@@ -2267,7 +2267,9 @@ public:
   {
     std::vector<std::string> splits = util::string_split(name_str, ".");
 
-    if (util::str_compare_ci(splits[0], "ap_check"))
+    // check for AP overcap on current action. check for other action handled in druid_t::create_expression
+    // syntax: ap_check.<allowed overcap = 0>
+    if (p()->specialization() == DRUID_BALANCE && util::str_compare_ci(splits[0], "ap_check"))
     {
       return make_fn_expr(name_str, [this, splits]() {
         action_state_t* state = this->get_state();
@@ -9239,14 +9241,6 @@ double druid_t::composite_leech() const
 
 expr_t* druid_t::create_expression( const std::string& name_str )
 {
-  struct druid_expr_t : public expr_t
-  {
-    druid_t& druid;
-    druid_expr_t( const std::string& n, druid_t& p ) :
-      expr_t( n ), druid( p )
-    {}
-  };
-
   std::vector<std::string> splits = util::string_split( name_str, "." );
 
   if ( splits[ 0 ] == "druid" && (splits[ 2 ] == "ticks_gained_on_refresh" | splits[2] == "ticks_gained_on_refresh_pmultiplier" ))
@@ -9333,71 +9327,65 @@ expr_t* druid_t::create_expression( const std::string& name_str )
     } );
   }
 
-  if ( util::str_compare_ci( name_str, "astral_power" ) )
-  {
-    return make_ref_expr( name_str, resources.current[ RESOURCE_ASTRAL_POWER ] );
-  }
-  else if ( util::str_compare_ci( name_str, "combo_points" ) )
+  if ( util::str_compare_ci( name_str, "combo_points" ) )
   {
     return make_ref_expr( "combo_points", resources.current[ RESOURCE_COMBO_POINT ] );
   }
-  else if ( util::str_compare_ci( name_str, "new_moon" )
-            || util::str_compare_ci( name_str, "half_moon" )
-            || util::str_compare_ci( name_str, "full_moon" )  )
+
+  if (specialization() == DRUID_BALANCE)
   {
-    struct moon_stage_expr_t : public druid_expr_t
+    if (util::str_compare_ci( name_str, "astral_power"))
     {
-      int stage;
-
-      moon_stage_expr_t( druid_t& p, const std::string& name_str ) :
-        druid_expr_t( name_str, p )
-      {
-        if ( util::str_compare_ci( name_str, "new_moon" ) )
-          stage = 0;
-        else if ( util::str_compare_ci( name_str, "half_moon" ) )
-          stage = 1;
-        else if ( util::str_compare_ci( name_str, "full_moon" ) )
-          stage = 2;
-        else
-        {
-          assert( false && "Bad name_str passed to moon_stage_expr_t" );
-        }
-      }
-
-      virtual double evaluate() override
-      { return druid.moon_stage == stage; }
-    };
-
-    return new moon_stage_expr_t( *this, name_str );
-  }
-
-  if (specialization() == DRUID_BALANCE && splits.size() == 3 && util::str_compare_ci(splits[1], "ca_inc"))
-  {
-    if (util::str_compare_ci(splits[0], "cooldown"))
-      splits[1] = talent.incarnation_moonkin->ok() ? ".incarnation." : ".celestial_alignment.";
-    else
-      splits[1] = talent.incarnation_moonkin->ok() ? ".incarnation_chosen_of_elune." : ".celestial_alignment.";
-
-    return player_t::create_expression(splits[0] + splits[1] + splits[2]);
-  }
-
-  if (splits.size() >= 2 && util::str_compare_ci(splits[1], "ap_check"))
-  {
-    action_t* action = find_action(splits[0]);
-    
-    if (action)
-    {
-      return make_fn_expr(name_str, [action, this, splits]() {
-        action_state_t* state = action->get_state();
-        double ap = this->resources.current[RESOURCE_ASTRAL_POWER];
-        ap += action->composite_energize_amount(state);
-        ap += this->talent.shooting_stars->ok() ? this->spec.shooting_stars_dmg->effectN(2).base_value() / 10 : 0;
-        ap += this->talent.natures_balance->ok() ? std::ceil(action->time_to_execute / timespan_t::from_seconds(1.5)) : 0;
-        action_state_t::release(state);
-        return ap <= this->resources.base[RESOURCE_ASTRAL_POWER] + (splits.size() >= 3 ? std::stoi(splits[2]) : 0);
-      });
+      return make_ref_expr(name_str, resources.current[RESOURCE_ASTRAL_POWER]);
     }
-    throw std::invalid_argument("invalid action");
+    
+    // New Moon stage related expressions
+    else if (util::str_compare_ci(name_str, "new_moon"))
+    {
+      return make_fn_expr(name_str, [this]() { return moon_stage == NEW_MOON; });
+    }
+    else if (util::str_compare_ci(name_str, "half_moon"))
+    {
+      return make_fn_expr(name_str, [this]() { return moon_stage == HALF_MOON; });
+    }
+    else if (util::str_compare_ci(name_str, "full_moon"))
+    {
+      return make_fn_expr(name_str, [this]() { return moon_stage == FULL_MOON || moon_stage == FREE_FULL_MOON; });
+    }
+    else if (util::str_compare_ci(name_str, "free_full_moon"))
+    {
+      return make_fn_expr(name_str, [this]() { return moon_stage == FREE_FULL_MOON; });
+    }
+
+    // automatic resolution of Celestial Alignment vs talented Incarnation
+    else if (splits.size() == 3 && util::str_compare_ci(splits[1], "ca_inc"))
+    {
+      if (util::str_compare_ci(splits[0], "cooldown"))
+        splits[1] = talent.incarnation_moonkin->ok() ? ".incarnation." : ".celestial_alignment.";
+      else
+        splits[1] = talent.incarnation_moonkin->ok() ? ".incarnation_chosen_of_elune." : ".celestial_alignment.";
+      return player_t::create_expression(splits[0] + splits[1] + splits[2]);
+    }
+
+    // check for AP overcap on action other than current action. check for current action handled in druid_spell_t::create_expression
+    // syntax: <action>.ap_check.<allowed overcap = 0>
+    else if (splits.size() >= 2 && util::str_compare_ci(splits[1], "ap_check"))
+    {
+      action_t* action = find_action(splits[0]);
+      if (action)
+      {
+        return make_fn_expr(name_str, [action, this, splits]() {
+          action_state_t* state = action->get_state();
+          double ap = this->resources.current[RESOURCE_ASTRAL_POWER];
+          ap += action->composite_energize_amount(state);
+          ap += this->talent.shooting_stars->ok() ? this->spec.shooting_stars_dmg->effectN(2).base_value() / 10 : 0;
+          ap += this->talent.natures_balance->ok() ? std::ceil(action->time_to_execute / timespan_t::from_seconds(1.5)) : 0;
+          action_state_t::release(state);
+          return ap <= this->resources.base[RESOURCE_ASTRAL_POWER] + (splits.size() >= 3 ? std::stoi(splits[2]) : 0);
+        });
+      }
+      throw std::invalid_argument("invalid action");
+    }
   }
 
   // Convert talent.incarnation.* & buff.incarnation.* to spec-based incarnations. cooldown.incarnation.* doesn't need name conversion.
