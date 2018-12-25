@@ -621,9 +621,10 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 266937, special_effects::gutripper             );
   unique_gear::register_special_effect( 280582, special_effects::battlefield_focus_precision );
   unique_gear::register_special_effect( 280627, special_effects::battlefield_focus_precision );
-  unique_gear::register_special_effect( 287662, special_effects::endless_hunger ); // Endless Hunger
-  unique_gear::register_special_effect( 287604, special_effects::endless_hunger ); // Ancient's Bulwark
+  unique_gear::register_special_effect( 287662, special_effects::endless_hunger        ); // Endless Hunger
+  unique_gear::register_special_effect( 287604, special_effects::endless_hunger        ); // Ancient's Bulwark
   unique_gear::register_special_effect( 287631, special_effects::apothecarys_concoctions );
+  unique_gear::register_special_effect( 287467, special_effects::shadow_of_elune       );
 }
 
 void register_azerite_target_data_initializers( sim_t* sim )
@@ -2488,6 +2489,28 @@ void apothecarys_concoctions( special_effect_t& effect )
   
   effect.execute_action = unique_gear::create_proc_action<apothecarys_blight_t>( "apothecarys_concoctions", effect, power );
   effect.spell_id = 287633;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+void shadow_of_elune( special_effect_t& effect )
+{
+  azerite_power_t power = effect.player->find_azerite_spell( effect.driver()->name_cstr() );
+  if ( !power.enabled() )
+    return;
+
+  const spell_data_t* driver = effect.driver()->effectN( 1 ).trigger();
+  const spell_data_t* buff_data = driver->effectN( 1 ).trigger();
+
+  buff_t* buff = buff_t::find( effect.player, "shadow_of_elune" );
+  if ( !buff )
+  {
+    buff = make_buff<stat_buff_t>( effect.player, "shadow_of_elune", buff_data )
+      ->add_stat( STAT_HASTE_RATING, power.value( 1 ) );
+  }
+
+  effect.custom_buff = buff;
+  effect.spell_id = driver->id();
 
   new dbc_proc_callback_t( effect.player, effect );
 }
