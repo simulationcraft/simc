@@ -1037,9 +1037,9 @@ void retaliatory_fury( special_effect_t& effect )
   if ( !power.enabled() )
     return;
 
-  const spell_data_t* driver = power.spell_ref().effectN( 1 ).trigger();
+  const spell_data_t* driver = power.spell_ref().effectN( 2 ).trigger();
   const spell_data_t* mastery_spell = effect.player -> find_spell( power.spell_ref().id() == 280624 ? 280861 : 280787 );
-  const spell_data_t* absorb_spell = driver -> effectN( 1 ).trigger();
+  const spell_data_t* absorb_spell = effect.player -> find_spell( power.spell_ref().id() == 280624 ? 280862 : 280788 );
 
   buff_t* mastery = buff_t::find( effect.player, tokenized_name( mastery_spell ) );
   if ( !mastery )
