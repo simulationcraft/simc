@@ -621,7 +621,8 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 266937, special_effects::gutripper             );
   unique_gear::register_special_effect( 280582, special_effects::battlefield_focus_precision );
   unique_gear::register_special_effect( 280627, special_effects::battlefield_focus_precision );
-  unique_gear::register_special_effect( 287662, special_effects::endless_hunger );
+  unique_gear::register_special_effect( 287662, special_effects::endless_hunger ); // Endless Hunger
+  unique_gear::register_special_effect( 287604, special_effects::endless_hunger ); // Ancient's Bulwark
   unique_gear::register_special_effect( 287631, special_effects::apothecarys_concoctions );
 }
 
