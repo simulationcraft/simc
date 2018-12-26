@@ -5090,8 +5090,7 @@ struct ignite_spread_event_t : public event_t
 
     sim().print_log( "{} ignite spread event occurs", mage->name() );
 
-    const std::vector<player_t*>& tl = mage->ignite->target_list();
-
+    const auto& tl = sim().target_non_sleeping_list;
     if ( tl.size() == 1 )
       return;
 
@@ -5100,6 +5099,9 @@ struct ignite_spread_event_t : public event_t
     // Split ignite targets by whether ignite is ticking
     for ( auto t : tl )
     {
+      if ( !t->is_enemy() )
+        continue;
+
       dot_t* ignite = t->get_dot( "ignite", mage );
       if ( ignite->is_ticking() )
       {
@@ -5213,7 +5215,6 @@ struct time_anomaly_tick_event_t : public event_t
 
     if ( mage->shuffled_rng.time_anomaly->trigger() )
     {
-      // Proc was successful, figure out which effect to apply.
       sim().print_log( "{} Time Anomaly proc successful, triggering effects.", mage->name() );
 
       std::vector<ta_proc_type_e> possible_procs;
@@ -6079,34 +6080,29 @@ void mage_t::init_assessors()
 
 void mage_t::init_action_list()
 {
-  if ( !action_list_str.empty() )
+  if ( action_list_str.empty() )
   {
-    player_t::init_action_list();
-    return;
+    clear_action_priority_lists();
+
+    apl_precombat();
+    switch ( specialization() )
+    {
+      case MAGE_ARCANE:
+        apl_arcane();
+        break;
+      case MAGE_FROST:
+        apl_frost();
+        break;
+      case MAGE_FIRE:
+        apl_fire();
+        break;
+      default:
+        apl_default();
+        break;
+    }
+
+    use_default_action_list = true;
   }
-
-  clear_action_priority_lists();
-
-  apl_precombat();
-
-  switch ( specialization() )
-  {
-    case MAGE_ARCANE:
-      apl_arcane();
-      break;
-    case MAGE_FROST:
-      apl_frost();
-      break;
-    case MAGE_FIRE:
-      apl_fire();
-      break;
-    default:
-      apl_default();
-      break;
-  }
-
-  // Default
-  use_default_action_list = true;
 
   player_t::init_action_list();
 }
