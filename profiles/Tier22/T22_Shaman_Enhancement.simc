@@ -40,23 +40,16 @@ actions+=/auto_attack
 actions+=/use_items
 actions+=/call_action_list,name=opener
 actions+=/call_action_list,name=asc,if=buff.ascendance.up
-actions+=/call_action_list,name=buffs
+actions+=/call_action_list,name=priority_buffs
+actions+=/call_action_list,name=maintenance,if=active_enemies<3
 actions+=/call_action_list,name=cds
 actions+=/call_action_list,name=core
+actions+=/call_action_list,name=maintenance,if=active_enemies>=3
 actions+=/call_action_list,name=filler
 
 actions.asc=crash_lightning,if=!buff.crash_lightning.up&active_enemies>1&variable.furyCheck25
 actions.asc+=/rockbiter,if=talent.landslide.enabled&!buff.landslide.up&charges_fractional>1.7
 actions.asc+=/windstrike
-
-actions.buffs=crash_lightning,if=!buff.crash_lightning.up&active_enemies>1&variable.furyCheck25
-actions.buffs+=/rockbiter,if=talent.landslide.enabled&!buff.landslide.up&charges_fractional>1.7
-actions.buffs+=/fury_of_air,if=!ticking&maelstrom>=20
-actions.buffs+=/flametongue,if=!buff.flametongue.up
-actions.buffs+=/frostbrand,if=talent.hailstorm.enabled&!buff.frostbrand.up&variable.furyCheck25
-actions.buffs+=/flametongue,if=buff.flametongue.remains<4.8+gcd
-actions.buffs+=/frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8+gcd&variable.furyCheck25
-actions.buffs+=/totem_mastery,if=buff.resonance_totem.remains<2
 
 # Cast Bloodlust manually if the Azerite Trait Ancestral Resonance is present.
 actions.cds=bloodlust,if=azerite.ancestral_resonance.enabled
@@ -90,7 +83,21 @@ actions.filler+=/lava_lash,if=variable.OCPool80&variable.furyCheck45
 actions.filler+=/rockbiter
 actions.filler+=/flametongue
 
+actions.maintenance=flametongue,if=!buff.flametongue.up
+actions.maintenance+=/frostbrand,if=talent.hailstorm.enabled&!buff.frostbrand.up&variable.furyCheck25
+actions.maintenance+=/flametongue,if=buff.flametongue.remains<4.8+gcd
+actions.maintenance+=/frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8+gcd&variable.furyCheck25
+
 actions.opener=rockbiter,if=maelstrom<15&time<gcd
+
+actions.priority_buffs=crash_lightning,if=!buff.crash_lightning.up&active_enemies>1&variable.furyCheck25
+actions.priority_buffs+=/rockbiter,if=talent.landslide.enabled&!buff.landslide.up&charges_fractional>1.7
+actions.priority_buffs+=/fury_of_air,if=!ticking&maelstrom>=20
+actions.priority_buffs+=/flametongue,if=talent.hot_hand.enabled&!buff.flametongue.up
+actions.priority_buffs+=/frostbrand,if=talent.hailstorm.enabled&!buff.frostbrand.up&variable.furyCheck25&(active_enemies<3|(azerite.natural_harmony.enabled&buff.natural_harmony_frost.remains<=2*gcd))
+actions.priority_buffs+=/flametongue,if=talent.hot_hand.enabled&buff.flametongue.remains<4.8+gcd
+actions.priority_buffs+=/frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8+gcd&variable.furyCheck25&(active_enemies<3|(azerite.natural_harmony.enabled&buff.natural_harmony_frost.remains<=2*gcd))
+actions.priority_buffs+=/totem_mastery,if=buff.resonance_totem.remains<=2*gcd
 
 head=crest_of_the_undying_visionary,id=160630,bonus_id=4824/1507/4775,azerite_powers=483/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33

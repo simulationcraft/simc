@@ -7932,14 +7932,15 @@ void shaman_t::init_action_list_enhancement()
     return;
   }
 
-  action_priority_list_t* precombat = get_action_priority_list( "precombat" );
-  action_priority_list_t* def       = get_action_priority_list( "default" );
-  action_priority_list_t* cds       = get_action_priority_list( "cds" );
-  action_priority_list_t* buffs     = get_action_priority_list( "buffs" );
-  action_priority_list_t* core      = get_action_priority_list( "core" );
-  action_priority_list_t* filler    = get_action_priority_list( "filler" );
-  action_priority_list_t* opener    = get_action_priority_list( "opener" );
-  action_priority_list_t* asc       = get_action_priority_list( "asc" );
+  action_priority_list_t* precombat         = get_action_priority_list( "precombat" );
+  action_priority_list_t* def               = get_action_priority_list( "default" );
+  action_priority_list_t* cds               = get_action_priority_list( "cds" );
+  action_priority_list_t* priority_buffs    = get_action_priority_list( "priority_buffs" );
+  action_priority_list_t* maintenance       = get_action_priority_list( "maintenance" );
+  action_priority_list_t* core              = get_action_priority_list( "core" );
+  action_priority_list_t* filler            = get_action_priority_list( "filler" );
+  action_priority_list_t* opener            = get_action_priority_list( "opener" );
+  action_priority_list_t* asc               = get_action_priority_list( "asc" );
 
   // Flask
   precombat->add_action( "flask" );
@@ -7978,9 +7979,11 @@ void shaman_t::init_action_list_enhancement()
 
   def->add_action( "call_action_list,name=opener" );
   def->add_action( "call_action_list,name=asc,if=buff.ascendance.up" );
-  def->add_action( "call_action_list,name=buffs" );
+  def->add_action( "call_action_list,name=priority_buffs" );
+  def->add_action( "call_action_list,name=maintenance,if=active_enemies<3" );
   def->add_action( "call_action_list,name=cds" );
   def->add_action( "call_action_list,name=core" );
+  def->add_action( "call_action_list,name=maintenance,if=active_enemies>=3" );
   def->add_action( "call_action_list,name=filler" );
 
   opener->add_action( this, "Rockbiter", "if=maelstrom<15&time<gcd" );
@@ -7989,15 +7992,21 @@ void shaman_t::init_action_list_enhancement()
   asc->add_action( this, "Rockbiter", "if=talent.landslide.enabled&!buff.landslide.up&charges_fractional>1.7" );
   asc->add_action( this, "Windstrike" );
 
-  buffs->add_action( this, "Crash Lightning", "if=!buff.crash_lightning.up&active_enemies>1&variable.furyCheck25" );
-  buffs->add_action( this, "Rockbiter", "if=talent.landslide.enabled&!buff.landslide.up&charges_fractional>1.7" );
-  buffs->add_talent( this, "Fury of Air", "if=!ticking&maelstrom>=20" );
-  buffs->add_action( this, "Flametongue", "if=!buff.flametongue.up" );
-  buffs->add_action( this, "Frostbrand", "if=talent.hailstorm.enabled&!buff.frostbrand.up&variable.furyCheck25" );
-  buffs->add_action( this, "Flametongue", "if=buff.flametongue.remains<4.8+gcd" );
-  buffs->add_action( this, "Frostbrand",
-                     "if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8+gcd&variable.furyCheck25" );
-  buffs->add_talent( this, "Totem Mastery", "if=buff.resonance_totem.remains<2" );
+  priority_buffs->add_action( this, "Crash Lightning", "if=!buff.crash_lightning.up&active_enemies>1&variable.furyCheck25" );
+  priority_buffs->add_action( this, "Rockbiter", "if=talent.landslide.enabled&!buff.landslide.up&charges_fractional>1.7" );
+  priority_buffs->add_talent( this, "Fury of Air", "if=!ticking&maelstrom>=20" );
+  priority_buffs->add_action( this, "Flametongue", "if=talent.hot_hand.enabled&!buff.flametongue.up" );
+  priority_buffs->add_action( this, "Frostbrand", "if=talent.hailstorm.enabled&!buff.frostbrand.up&variable.furyCheck25"
+      "&(active_enemies<3|(azerite.natural_harmony.enabled&buff.natural_harmony_frost.remains<=2*gcd))" );
+  priority_buffs->add_action( this, "Flametongue", "if=talent.hot_hand.enabled&buff.flametongue.remains<4.8+gcd" );
+  priority_buffs->add_action( this, "Frostbrand", "if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8+gcd&variable."
+      "furyCheck25&(active_enemies<3|(azerite.natural_harmony.enabled&buff.natural_harmony_frost.remains<=2*gcd))" );
+  priority_buffs->add_talent( this, "Totem Mastery", "if=buff.resonance_totem.remains<=2*gcd" );
+
+  maintenance->add_action( this, "Flametongue", "if=!buff.flametongue.up" );
+  maintenance->add_action( this, "Frostbrand", "if=talent.hailstorm.enabled&!buff.frostbrand.up&variable.furyCheck25" );
+  maintenance->add_action( this, "Flametongue", "if=buff.flametongue.remains<4.8+gcd" );
+  maintenance->add_action( this, "Frostbrand", "if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8+gcd&variable.furyCheck25" );
 
   cds->add_action( this, "Bloodlust", "if=azerite.ancestral_resonance.enabled",
                    "Cast Bloodlust manually if the Azerite Trait Ancestral Resonance is present." );
