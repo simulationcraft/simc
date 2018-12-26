@@ -5982,8 +5982,8 @@ void mage_t::init_resources( bool force )
 
   // This is the call needed to set max mana at the beginning of the sim.
   // If this is called without recalculating max mana afterwards, it will
-  // overwrite the recalculating done earlier in reset() and cache_invalidate()
-  // back to default max mana.
+  // overwrite the recalculating done earlier in cache_invalidate() back
+  // to default max mana.
   if ( spec.savant->ok() )
   {
     recalculate_resource_max( RESOURCE_MANA );
@@ -6545,40 +6545,21 @@ void mage_t::invalidate_cache( cache_e c )
 
 void mage_t::recalculate_resource_max( resource_e rt )
 {
-  if ( rt != RESOURCE_MANA )
-  {
-    return player_t::recalculate_resource_max( rt );
-  }
-
-  double current_mana = resources.current[ rt ];
-  double current_mana_max = resources.max[ rt ];
-  double mana_percent = resources.pct( rt );
+  double max = resources.max[ rt ];
+  double pct = resources.pct( rt );
 
   player_t::recalculate_resource_max( rt );
 
-  if ( spec.savant->ok() )
+  if ( specialization() == MAGE_ARCANE && rt == RESOURCE_MANA )
   {
-    resources.max[ rt ] *= 1.0 + cache.mastery() * spec.savant->effectN( 1 ).mastery_value();
-    resources.current[ rt ] = resources.max[ rt ] * mana_percent;
+    if ( spec.savant->ok() )
+      resources.max[ rt ] *= 1.0 + cache.mastery() * spec.savant->effectN( 1 ).mastery_value();
 
-    sim->print_debug(
-      "{} Savant adjusts mana from {}/{} to {}/{}",
-      name(), current_mana, current_mana_max,
-      resources.current[ rt ], resources.max[ rt ] );
+    if ( buffs.arcane_familiar->check() )
+      resources.max[ rt ] *= 1.0 + buffs.arcane_familiar->check_value();
 
-    current_mana = resources.current[ rt ];
-    current_mana_max = resources.max[ rt ];
-  }
-
-  if ( talents.arcane_familiar->ok() && buffs.arcane_familiar->check() )
-  {
-    resources.max[ rt ] *= 1.0 + buffs.arcane_familiar->check_value();
-    resources.current[ rt ] = resources.max[ rt ] * mana_percent;
-
-    sim->print_debug(
-      "{} Arcane Familiar adjusts mana from {}/{} to {}/{}",
-      name(), current_mana, current_mana_max,
-      resources.current[ rt ], resources.max[ rt ] );
+    resources.current[ rt ] = resources.max[ rt ] * pct;
+    sim->print_debug( "{} adjusts maximum mana from {} to {} ({}%)", name(), max, resources.max[ rt ], 100 * pct );
   }
 }
 
@@ -6673,11 +6654,6 @@ void mage_t::reset()
   time_anomaly_tick_event = nullptr;
 
   state = state_t();
-
-  if ( spec.savant->ok() )
-  {
-    recalculate_resource_max( RESOURCE_MANA );
-  }
 
   last_bomb_target = nullptr;
   last_frostbolt_target = nullptr;
