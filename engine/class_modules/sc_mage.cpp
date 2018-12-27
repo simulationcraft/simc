@@ -1486,11 +1486,7 @@ public:
       trigger_delayed_buff( p()->buffs.clearcasting, proc_chance );
     }
 
-    if ( !background
-      && affected_by.ice_floes
-      && p()->talents.ice_floes->ok()
-      && time_to_execute > timespan_t::zero()
-      && p()->buffs.ice_floes->up() )
+    if ( !background && affected_by.ice_floes && time_to_execute > timespan_t::zero() )
     {
       p()->buffs.ice_floes->decrement();
     }
@@ -1500,6 +1496,16 @@ public:
   {
     spell_t::tick( d );
     p()->trigger_leyshock( id, d->state, mage_t::LEYSHOCK_TICK );
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    spell_t::last_tick( d );
+
+    if ( channeled && affected_by.ice_floes )
+    {
+      p()->buffs.ice_floes->decrement();
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -4589,7 +4595,6 @@ struct ray_of_frost_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::last_tick( d );
     p()->buffs.ray_of_frost->expire();
-    p()->buffs.ice_floes->decrement();
   }
 
   double action_multiplier() const override
