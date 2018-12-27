@@ -2039,9 +2039,10 @@ struct frost_mage_spell_t : public mage_spell_t
 
   void record_shatter_source( const action_state_t* s, shatter_source_t* source )
   {
-    unsigned frozen = debug_cast<const mage_spell_state_t*>( s )->frozen;
+    if ( !source )
+      return;
 
-    assert( source );
+    unsigned frozen = debug_cast<const mage_spell_state_t*>( s )->frozen;
 
     if ( frozen & FF_WINTERS_CHILL )
       source->occur( FROZEN_WINTERS_CHILL );
@@ -2066,7 +2067,7 @@ struct frost_mage_spell_t : public mage_spell_t
 
     mage_spell_t::impact( s );
 
-    if ( result_is_hit( s->result ) && shatter_source && s->chain_target == 0 )
+    if ( result_is_hit( s->result ) && s->chain_target == 0 )
     {
       record_shatter_source( s, shatter_source );
     }
@@ -3867,10 +3868,7 @@ struct ice_lance_t : public frost_mage_spell_t
         p()->buffs.icy_veins
            ->extend_duration( p(), 1000 * p()->talents.thermal_void->effectN( 1 ).time_value() );
 
-        if ( extension_source )
-        {
-          record_shatter_source( s, extension_source );
-        }
+        record_shatter_source( s, extension_source );
       }
 
       if ( p()->talents.chain_reaction->ok() )
@@ -3886,10 +3884,7 @@ struct ice_lance_t : public frost_mage_spell_t
     }
     else if ( !primary )
     {
-      if ( cleave_source )
-      {
-        record_shatter_source( s, cleave_source );
-      }
+      record_shatter_source( s, cleave_source );
     }
 
     p()->buffs.arctic_blast->expire( timespan_t::from_seconds( 0.5 ) );
