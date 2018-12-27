@@ -1805,7 +1805,8 @@ struct hot_streak_spell_t : public fire_mage_spell_t
   bool last_hot_streak;
 
   hot_streak_spell_t( const std::string& n, mage_t* p, const spell_data_t* s = spell_data_t::nil() ) :
-    fire_mage_spell_t( n, p, s )
+    fire_mage_spell_t( n, p, s ),
+    last_hot_streak()
   { }
 
   action_state_t* new_state() override
