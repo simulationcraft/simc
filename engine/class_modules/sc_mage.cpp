@@ -1600,34 +1600,6 @@ struct arcane_mage_spell_t : public mage_spell_t
 // Fire Mage Spell
 // ==========================================================================
 
-struct ignite_spell_state_t : public mage_spell_state_t
-{
-  bool hot_streak;
-
-  ignite_spell_state_t( action_t* action, player_t* target ) :
-    mage_spell_state_t( action, target ),
-    hot_streak()
-  { }
-
-  void initialize() override
-  {
-    mage_spell_state_t::initialize();
-    hot_streak = false;
-  }
-
-  std::ostringstream& debug_str( std::ostringstream& s ) override
-  {
-    mage_spell_state_t::debug_str( s ) << " hot_streak=" << hot_streak;
-    return s;
-  }
-
-  void copy_state( const action_state_t* s ) override
-  {
-    mage_spell_state_t::copy_state( s );
-    hot_streak = debug_cast<const ignite_spell_state_t*>( s )->hot_streak;
-  }
-};
-
 struct fire_mage_spell_t : public mage_spell_t
 {
   bool triggers_hot_streak;
@@ -1640,15 +1612,6 @@ struct fire_mage_spell_t : public mage_spell_t
     triggers_ignite(),
     triggers_kindling()
   { }
-
-  // Use only after schedule_execute, which sets time_to_execute.
-  bool benefits_from_hot_streak( bool benefit_tracking = false ) const
-  {
-    // In-game, only instant cast Pyroblast and Flamestrike benefit from (and
-    // consume) Hot Streak.
-    int stack = benefit_tracking ? p()->buffs.hot_streak->stack() : p()->buffs.hot_streak->check();
-    return stack > 0 && time_to_execute == timespan_t::zero();
-  }
 
   void impact( action_state_t* s ) override
   {
@@ -1728,12 +1691,6 @@ struct fire_mage_spell_t : public mage_spell_t
             // adjust GCD. action_t::schedule_execute should handle all these.
             p->executing->schedule_execute();
           }
-
-          if ( p->sets->has_set_bonus( MAGE_FIRE, T19, B4 )
-            && rng().roll( p->sets->set( MAGE_FIRE, T19, B4 )->effectN( 1 ).percent() ) )
-          {
-            p->buffs.streaking->trigger();
-          }
         }
         // Crit without HU => generate HU
         else
@@ -1811,6 +1768,124 @@ struct fire_mage_spell_t : public mage_spell_t
     {
       return target->health_percentage() > p()->talents.firestarter->effectN( 1 ).base_value();
     }
+  }
+};
+
+struct hot_streak_state_t : public mage_spell_state_t
+{
+  bool hot_streak;
+
+  hot_streak_state_t( action_t* action, player_t* target ) :
+    mage_spell_state_t( action, target ),
+    hot_streak()
+  { }
+
+  void initialize() override
+  {
+    mage_spell_state_t::initialize();
+    hot_streak = false;
+  }
+
+  std::ostringstream& debug_str( std::ostringstream& s ) override
+  {
+    mage_spell_state_t::debug_str( s ) << " hot_streak=" << hot_streak;
+    return s;
+  }
+
+  void copy_state( const action_state_t* s ) override
+  {
+    mage_spell_state_t::copy_state( s );
+    hot_streak = debug_cast<const hot_streak_state_t*>( s )->hot_streak;
+  }
+};
+
+struct hot_streak_spell_t : public fire_mage_spell_t
+{
+  // Last available Hot Streak state.
+  bool last_hot_streak;
+
+  hot_streak_spell_t( const std::string& n, mage_t* p, const spell_data_t* s = spell_data_t::nil() ) :
+    fire_mage_spell_t( n, p, s )
+  { }
+
+  action_state_t* new_state() override
+  { return new hot_streak_state_t( this, target ); }
+
+  timespan_t execute_time() const override
+  {
+    if ( p()->buffs.hot_streak->check() )
+      return timespan_t::zero();
+
+    return fire_mage_spell_t::execute_time();
+  }
+
+  void snapshot_state( action_state_t* s, dmg_e rt ) override
+  {
+    fire_mage_spell_t::snapshot_state( s, rt );
+    debug_cast<hot_streak_state_t*>( s )->hot_streak = last_hot_streak;
+  }
+
+  double composite_ignite_multiplier( const action_state_t* s ) const override
+  {
+    return debug_cast<const hot_streak_state_t*>( s )->hot_streak ? 2.0 : 1.0;
+  }
+
+  void execute() override
+  {
+    last_hot_streak = p()->buffs.hot_streak->up() && time_to_execute == timespan_t::zero();
+    fire_mage_spell_t::execute();
+
+    // Ignition/Critical Massive buffs are removed shortly after Flamestrike/Pyroblast cast.
+    // In a situation where you're hardcasting FS/PB followed by a Hot Streak FS/FB, both
+    // spells actually benefit. As of build 25881, 2018-01-22.
+    p()->buffs.ignition->expire( p()->bugs ? timespan_t::from_millis( 15 ) : timespan_t::zero() );
+    p()->buffs.critical_massive->expire( p()->bugs ? timespan_t::from_millis( 15 ) : timespan_t::zero() );
+
+    if ( last_hot_streak )
+    {
+      p()->buffs.hot_streak->expire();
+
+      p()->buffs.pyroclasm->trigger();
+      p()->buffs.firemind->trigger();
+
+      if ( rng().roll( p()->talents.pyromaniac->effectN( 1 ).percent() ) )
+      {
+        p()->procs.hot_streak->occur();
+        p()->procs.hot_streak_pyromaniac->occur();
+        p()->buffs.hot_streak->trigger();
+      }
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    fire_mage_spell_t::impact( s );
+
+    if ( p()->sets->has_set_bonus( MAGE_FIRE, T20, B4 ) && s->result == RESULT_CRIT )
+    {
+      p()->buffs.critical_massive->trigger();
+    }
+  }
+
+  double action_multiplier() const override
+  {
+    double am = fire_mage_spell_t::action_multiplier();
+
+    am *= 1.0 + p()->buffs.critical_massive->value();
+
+    return am;
+  }
+
+  double composite_crit_chance() const override
+  {
+    double c = fire_mage_spell_t::composite_crit_chance();
+
+    if ( p()->buffs.ignition->up() )
+    {
+      c += 1.0;
+    }
+
+    return c;
   }
 };
 
@@ -3151,13 +3226,13 @@ struct flame_patch_t : public fire_mage_spell_t
 
 // Flamestrike Spell ========================================================
 
-struct flamestrike_t : public fire_mage_spell_t
+struct flamestrike_t : public hot_streak_spell_t
 {
   flame_patch_t* flame_patch;
   timespan_t flame_patch_duration;
 
   flamestrike_t( mage_t* p, const std::string& options_str ) :
-    fire_mage_spell_t( "flamestrike", p, p->find_specialization_spell( "Flamestrike" ) ),
+    hot_streak_spell_t( "flamestrike", p, p->find_specialization_spell( "Flamestrike" ) ),
     flame_patch()
   {
     parse_options( options_str );
@@ -3173,44 +3248,9 @@ struct flamestrike_t : public fire_mage_spell_t
     }
   }
 
-  action_state_t* new_state() override
-  { return new ignite_spell_state_t( this, target ); }
-
-  timespan_t execute_time() const override
-  {
-    if ( p()->buffs.hot_streak->check() )
-      return timespan_t::zero();
-
-    return fire_mage_spell_t::execute_time();
-  }
-
   void execute() override
   {
-    bool hot_streak = benefits_from_hot_streak( true );
-
-    fire_mage_spell_t::execute();
-
-    // Ignition/Critical Massive buffs are removed shortly after Flamestrike/Pyroblast cast.
-    // In a situation where you're hardcasting FS/PB followed by a Hot Streak FS/FB, both
-    // spells actually benefit. As of build 25881, 2018-01-22.
-    p()->buffs.ignition->expire( p()->bugs ? timespan_t::from_millis( 15 ) : timespan_t::zero() );
-    p()->buffs.critical_massive->expire( p()->bugs ? timespan_t::from_millis( 15 ) : timespan_t::zero() );
-
-    if ( hot_streak )
-    {
-      p()->buffs.hot_streak->expire();
-
-      p()->buffs.pyroclasm->trigger();
-      p()->buffs.firemind->trigger();
-
-      if ( p()->talents.pyromaniac->ok()
-        && rng().roll( p()->talents.pyromaniac->effectN( 1 ).percent() ) )
-      {
-        p()->procs.hot_streak->occur();
-        p()->procs.hot_streak_pyromaniac->occur();
-        p()->buffs.hot_streak->trigger();
-      }
-    }
+    hot_streak_spell_t::execute();
 
     if ( flame_patch )
     {
@@ -3222,48 +3262,6 @@ struct flamestrike_t : public fire_mage_spell_t
         .action( flame_patch )
         .hasted( ground_aoe_params_t::SPELL_SPEED ) );
     }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    fire_mage_spell_t::impact( s );
-
-    if ( p()->sets->has_set_bonus( MAGE_FIRE, T20, B4 ) && s->result == RESULT_CRIT )
-    {
-      p()->buffs.critical_massive->trigger();
-    }
-  }
-
-  void snapshot_state( action_state_t* s, dmg_e rt ) override
-  {
-    fire_mage_spell_t::snapshot_state( s, rt );
-    debug_cast<ignite_spell_state_t*>( s )->hot_streak = benefits_from_hot_streak();
-  }
-
-  double composite_ignite_multiplier( const action_state_t* s ) const override
-  {
-    return debug_cast<const ignite_spell_state_t*>( s )->hot_streak ? 2.0 : 1.0;
-  }
-
-  double action_multiplier() const override
-  {
-    double am = fire_mage_spell_t::action_multiplier();
-
-    am *= 1.0 + p()->buffs.critical_massive->value();
-
-    return am;
-  }
-
-  double composite_crit_chance() const override
-  {
-    double c = fire_mage_spell_t::composite_crit_chance();
-
-    if ( p()->buffs.ignition->up() )
-    {
-      c += 1.0;
-    }
-
-    return c;
   }
 };
 
@@ -4411,12 +4409,12 @@ struct trailing_embers_t : public fire_mage_spell_t
   }
 };
 
-struct pyroblast_t : public fire_mage_spell_t
+struct pyroblast_t : public hot_streak_spell_t
 {
   trailing_embers_t* trailing_embers;
 
   pyroblast_t( mage_t* p, const std::string& options_str ) :
-    fire_mage_spell_t( "pyroblast", p, p->find_specialization_spell( "Pyroblast" ) ),
+    hot_streak_spell_t( "pyroblast", p, p->find_specialization_spell( "Pyroblast" ) ),
     trailing_embers()
   {
     parse_options( options_str );
@@ -4436,85 +4434,35 @@ struct pyroblast_t : public fire_mage_spell_t
 
   double action_multiplier() const override
   {
-    double am = fire_mage_spell_t::action_multiplier();
+    double am = hot_streak_spell_t::action_multiplier();
 
-    if ( !benefits_from_hot_streak() )
+    if ( !last_hot_streak )
     {
       am *= 1.0 + p()->buffs.pyroclasm->check_value();
     }
 
-    am *= 1.0 + p()->buffs.critical_massive->value();
-
     return am;
-  }
-
-  action_state_t* new_state() override
-  { return new ignite_spell_state_t( this, target ); }
-
-  timespan_t execute_time() const override
-  {
-    if ( p()->buffs.hot_streak->check() )
-      return timespan_t::zero();
-
-    return fire_mage_spell_t::execute_time();
   }
 
   void execute() override
   {
-    bool hot_streak = benefits_from_hot_streak( true );
+    hot_streak_spell_t::execute();
 
-    fire_mage_spell_t::execute();
-
-    // Ignition/Critical Massive buffs are removed shortly after Flamestrike/Pyroblast cast.
-    // In a situation where you're hardcasting FS/PB followed by a Hot Streak FS/FB, both
-    // spells actually benefit. As of build 25881, 2018-01-22.
-    p()->buffs.ignition->expire( p()->bugs ? timespan_t::from_millis( 15 ) : timespan_t::zero() );
-    p()->buffs.critical_massive->expire( p()->bugs ? timespan_t::from_millis( 15 ) : timespan_t::zero() );
-
-    if ( hot_streak )
-    {
-      p()->buffs.hot_streak->expire();
-
-      p()->buffs.pyroclasm->trigger();
-      p()->buffs.firemind->trigger();
-
-      if ( p()->talents.pyromaniac->ok()
-        && rng().roll( p()->talents.pyromaniac->effectN( 1 ).percent() ) )
-      {
-        p()->procs.hot_streak->occur();
-        p()->procs.hot_streak_pyromaniac->occur();
-        p()->buffs.hot_streak->trigger();
-      }
-    }
-    else
+    if ( !last_hot_streak )
     {
       p()->buffs.pyroclasm->decrement();
     }
   }
 
-  void snapshot_state( action_state_t* s, dmg_e rt ) override
-  {
-    fire_mage_spell_t::snapshot_state( s, rt );
-    debug_cast<ignite_spell_state_t*>( s )->hot_streak = benefits_from_hot_streak();
-  }
-
   timespan_t travel_time() const override
   {
-    timespan_t t = fire_mage_spell_t::travel_time();
+    timespan_t t = hot_streak_spell_t::travel_time();
     return std::min( t, timespan_t::from_seconds( 0.75 ) );
   }
 
   void impact( action_state_t* s ) override
   {
-    fire_mage_spell_t::impact( s );
-
-    if ( result_is_hit( s->result ) )
-    {
-      if ( p()->sets->has_set_bonus( MAGE_FIRE, T20, B4 ) && s->result == RESULT_CRIT )
-      {
-        p()->buffs.critical_massive->trigger();
-      }
-    }
+    hot_streak_spell_t::impact( s );
 
     if ( trailing_embers )
     {
@@ -4526,26 +4474,9 @@ struct pyroblast_t : public fire_mage_spell_t
     }
   }
 
-  double composite_crit_chance() const override
-  {
-    double c = fire_mage_spell_t::composite_crit_chance();
-
-    if ( p()->buffs.ignition->up() )
-    {
-      c += 1.0;
-    }
-
-    return c;
-  }
-
-  double composite_ignite_multiplier( const action_state_t* s ) const override
-  {
-    return debug_cast<const ignite_spell_state_t*>( s )->hot_streak ? 2.0 : 1.0;
-  }
-
   double composite_target_crit_chance( player_t* target ) const override
   {
-    double c = fire_mage_spell_t::composite_target_crit_chance( target );
+    double c = hot_streak_spell_t::composite_target_crit_chance( target );
 
     if ( firestarter_active( target ) )
     {
@@ -5854,7 +5785,9 @@ void mage_t::create_buffs()
                                          buffs.flames_of_alacrity->decrement( prev - cur );
                                      } );
   buffs.heating_up             = make_buff( this, "heating_up",  find_spell( 48107 ) );
-  buffs.hot_streak             = make_buff( this, "hot_streak",  find_spell( 48108 ) );
+  buffs.hot_streak             = make_buff( this, "hot_streak",  find_spell( 48108 ) )
+                                   ->set_stack_change_callback( [ this ] ( buff_t*, int prev, int )
+                                     { if ( prev == 0 ) buffs.streaking->trigger(); } );
 
   buffs.frenetic_speed         = make_buff( this, "frenetic_speed", find_spell( 236060 ) )
                                    ->set_default_value( find_spell( 236060 )->effectN( 1 ).percent() )
@@ -5864,6 +5797,7 @@ void mage_t::create_buffs()
                                    ->set_chance( talents.pyroclasm->effectN( 1 ).percent() );
 
   buffs.streaking              = make_buff( this, "streaking", find_spell( 211399 ) )
+                                   ->set_chance( sets->set( MAGE_FIRE, T19, B4 )->effectN( 1 ).percent() )
                                    ->set_default_value( find_spell( 211399 )->effectN( 1 ).percent() )
                                    ->add_invalidate( CACHE_SPELL_HASTE );
   buffs.ignition               = make_buff( this, "ignition", find_spell( 246261 ) )
