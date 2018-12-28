@@ -1,4 +1,4 @@
-SimulationCraft 810-01 for World of Warcraft 8.1.0 Live (wow build 28768)
+SimulationCraft 810-02 for World of Warcraft 8.1.0 Live (wow build 28768)
 
 Name             : Block (rank=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -4268,9 +4268,10 @@ Effects          :
                    Affected Spells: Lightning Bolt (403), Chain Lightning (421), Lava Beam (114074), Lightning Bolt (187837), Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt Overload (214816)
                    Family Flags: 0, 1, 34
 #2 (id=747303)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 0.83333 | Target: Self (1)
                    Affected Spells: Lightning Bolt (403), Lightning Bolt (187837), Lightning Bolt (188196), Lightning Bolt Overload (214816)
                    Family Flags: 0
+                   Hotfixed: PvP Coefficient (1 -> 0.833333)
 Description      : Charge yourself with lightning, causing your next $n Lightning Bolts to deal $s2% more damage, and also causes your next $n Lightning Bolts or Chain Lightnings to be instant cast and trigger an Elemental Overload on every target.
 Tooltip          : Your next Lightning Bolt will deal $s2% increased damage, and your next Lightning Bolt or Chain Lightning will be instant cast and cause an Elemental Overload to trigger on every target hit.
 
@@ -8732,8 +8733,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=725090)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 190.7976 (coefficient=2.453988) | PvP Coefficient: 0.50000 | Trigger Spell: 273449 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
+                   Base Value: 0 | Scaled Value: 190.7976 (coefficient=2.453988) | PvP Coefficient: 0.40000 | Trigger Spell: 273449 | Target: Self (1)
+                   Hotfixed: PvP Coefficient (1 -> 0.4)
 Description      : Flame Shock damage increases the damage of your next Earth Shock by $s1, stacking up to $273453u times.
 
 Name             : Strength of Earth (id=273461) [Scaling Spell (-8), Spell Family (11), Passive] 

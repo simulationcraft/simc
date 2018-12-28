@@ -1,4 +1,4 @@
-SimulationCraft 810-01 for World of Warcraft 8.1.0 Live (wow build 28768)
+SimulationCraft 810-02 for World of Warcraft 8.1.0 Live (wow build 28768)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -2069,7 +2069,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=68268)    : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.30000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.30000 | PvP Coefficient: 0.90000 | Target: Enemy (6)
+                   Hotfixed: PvP Coefficient (1 -> 0.9)
 Description      : Launch a surge of stellar energies at the target, dealing $78674s1 Astral damage.
 
 Also grants you Lunar and Solar Empowerment.
@@ -10456,12 +10457,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=750968)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 287784 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 287784 | Target: Self (1)
+                   Hotfixed: PvP Coefficient (0 -> 1)
 #2 (id=750969)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 715.4909 (coefficient=9.202455) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 715.4909 (coefficient=9.202455) | PvP Coefficient: 0.40000 | Target: Self (1)
                    Affected Spells: Starsurge (78674), Starsurge (197626)
                    Family Flags: 89
-                   Hotfixed: Coefficient (6.13497 -> 9.20246), PvP Coefficient (1 -> 0.5)
+                   Hotfixed: Coefficient (6.13497 -> 9.20246), PvP Coefficient (1 -> 0.4)
 #3 (id=750970)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000
 #4 (id=750971)   : Dummy (3)

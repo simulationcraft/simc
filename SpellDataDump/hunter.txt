@@ -1,4 +1,4 @@
-SimulationCraft 810-01 for World of Warcraft 8.1.0 Live (wow build 28768)
+SimulationCraft 810-02 for World of Warcraft 8.1.0 Live (wow build 28768)
 
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
@@ -8807,7 +8807,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=724792)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.58333 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Hotfixed: PvP Coefficient (0.583333 -> 1)
 Description      : $@spelldesc273283
 
 Name             : Meticulous Scheming (id=273682) [Scaling Spell (-7), Passive] 

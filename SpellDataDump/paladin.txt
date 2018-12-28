@@ -1,4 +1,4 @@
-SimulationCraft 810-01 for World of Warcraft 8.1.0 Live (wow build 28768)
+SimulationCraft 810-02 for World of Warcraft 8.1.0 Live (wow build 28768)
 
 Name             : Haste (id=65) [Scaling Spell (-1)] 
 Class            : Paladin
@@ -3086,8 +3086,9 @@ Effects          :
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 6770 | Target: Self (1) -> Self (1)
 #2 (id=311433)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1) -> Self (1)
-#3 (id=724358)   : Apply Aura (6) | Unknown(395)
+#3 (id=724358)   : Apply Aura (6) | Dummy (4)
                    Base Value: -20 | Scaled Value: -20 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 6770 | Target: Self (1) -> Self (1)
+                   Hotfixed: Sub Type (395 -> 4)
 Description      : Damage dealt to allies within $s2 yards is reduced by up to $s1%, diminishing as more allies enter the aura.
 
 While Aura Mastery is active, all affected allies gain $s3% damage reduction.
