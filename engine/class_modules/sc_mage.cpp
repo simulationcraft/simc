@@ -2671,7 +2671,6 @@ struct arcane_orb_bolt_t : public arcane_mage_spell_t
   arcane_orb_bolt_t( mage_t* p ) :
     arcane_mage_spell_t( "arcane_orb_bolt", p, p->find_spell( 153640 ) )
   {
-    aoe = -1;
     background = true;
   }
 
@@ -2694,6 +2693,7 @@ struct arcane_orb_t : public arcane_mage_spell_t
   {
     parse_options( options_str );
     may_miss = may_crit = false;
+    aoe = -1;
 
     impact_action = new arcane_orb_bolt_t( p );
     add_child( impact_action );
@@ -2703,12 +2703,6 @@ struct arcane_orb_t : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::execute();
     p()->trigger_arcane_charge();
-  }
-
-  timespan_t travel_time() const override
-  {
-    return timespan_t::from_seconds(
-      std::max( 0.1, ( player->get_player_distance( *target ) - 10.0 ) / 16.0 ) );
   }
 };
 
@@ -7380,6 +7374,12 @@ public:
       .operation( hotfix::HOTFIX_SET )
       .modifier( 47.0 )
       .verification_value( 50.0 );
+
+    hotfix::register_spell( "Mage", "2018-12-28", "Manually set Arcane Orb's travel speed.", 153626 )
+      .field( "prj_speed" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 20.0 )
+      .verification_value( 0.0 );
   }
 
   bool valid() const override { return true; }
