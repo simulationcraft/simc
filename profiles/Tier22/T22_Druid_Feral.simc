@@ -94,30 +94,19 @@ actions.generators+=/swipe_cat,if=spell_targets.swipe_cat>1
 actions.generators+=/shred,if=dot.rake.remains>(action.shred.cost+action.rake.cost-energy)%energy.regen|buff.clearcasting.react
 
 # # The opener generally follow the logic of the rest of the apl, but is separated out here for logical clarity
-# Opening TF will be delayed if we need to hardcast later (which happens with sabertooth & bt but no li)
-# Otherwise we will open with TF, you can safely cast this from stealth without breaking it.
+# We will open with TF, you can safely cast this from stealth without breaking it.
 actions.opener=tigers_fury,if=variable.delayed_tf_opener=0
 # Always open with rake, consuming stealth and one BT charge (if talented)
 actions.opener+=/rake,if=!ticking|buff.prowl.up
 # Lets make sure we end the opener "sequence" when our first rip is ticking
 actions.opener+=/variable,name=opener_done,value=dot.rip.ticking
 # Break out of the action list
-actions.opener+=/wait,sec=0.001,if=dot.rip.ticking
+actions.opener+=/wait,sec=0.001,if=variable.opener_done
 # If we have LI, and haven't applied it yet use moonfire.
 # OR, if we only have one BT charge active spam moonfire until we can apply rip with it
 actions.opener+=/moonfire_cat,if=!ticking|buff.bloodtalons.stack=1&combo_points<5
-# Given current tuning it is always worth maintaining thrash, so lets apply it here.
-actions.opener+=/thrash,if=!ticking&combo_points<5
-# And if none of the above apply, we simply shred until 5
-actions.opener+=/shred,if=combo_points<5
-# Regrowth, when we have 5 combo points and bloodtalons and either:
-# We have Sabertooth and no active bloodtalons stack (via MF spam) even if it requires a hard cast
-# We have a predatory swiftness proc available (via SR fishing)
-actions.opener+=/regrowth,if=combo_points=5&talent.bloodtalons.enabled&(talent.sabertooth.enabled&buff.bloodtalons.down|buff.predatory_swiftness.up)
-# If we ended up hardcasting Regrowth, use TF to re-enter cat form
-actions.opener+=/tigers_fury
-# And once we get here at 5 combo_points, just rip and we are up and running
-actions.opener+=/rip,if=combo_points=5
+# And once we get here at 5 combo_points or after your rake if we don't have LI, just rip and we are up and running
+actions.opener+=/rip
 
 actions.single_target=cat_form,if=!buff.cat_form.up
 actions.single_target+=/rake,if=buff.prowl.up|buff.shadowmeld.up
