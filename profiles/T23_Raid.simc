@@ -14,7 +14,7 @@ default_actions=1
 
 # T23_Hunter_Beast_Mastery.simc
 # T23_Hunter_Marksmanship.simc
-# T23_Hunter_Survival.simc
+T23_Hunter_Survival.simc
 
 # T23_Mage_Fire.simc
 # T23_Mage_Frost.simc
@@ -33,7 +33,7 @@ default_actions=1
 # T23_Rogue_Outlaw.simc
 # T23_Rogue_Subtlety.simc
 
-# T23_Shaman_Elemental.simc
+T23_Shaman_Elemental.simc
 T23_Shaman_Enhancement.simc
 
 # T23_Warlock_Affliction.simc
