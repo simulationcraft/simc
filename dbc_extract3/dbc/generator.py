@@ -1382,8 +1382,9 @@ class SpellDataGenerator(DataGenerator):
           ( 279606, 0 ),    # Last Surprise azerite trait
           ( 273096, 0 ),    # Horrid Experimentation azerite trait
           ( 49088, 0 ),     # Anti-magic Shell RP generation
-          ( 288548, 5 ),    # Magus of the Dead's (azerite trait) Frostbolt
-          ( 288546, 5 ),    # Magus of the Dead's (azerite trait) Shadow Bolt
+          ( 288548, 5 ), ( 288546, 5 ),   # Magus of the Dead's (azerite trait) Frostbolt and Shadow Bolt spells
+          ( 286836, 0 ), ( 286954, 0 ), ( 290814, 0 ) # Helchains damage (azerite trait)
+
         ),
 
         # Shaman:
