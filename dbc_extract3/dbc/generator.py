@@ -1373,7 +1373,6 @@ class SpellDataGenerator(DataGenerator):
           ( 211947, 0 ),    # Shadow Empowerment for Gargoyle
           ( 81141, 0 ),     # Crimson Scourge buff
           ( 212423, 5 ),    # Skulker Shot for All Will Serve
-          ( 207260, 5 ),    # Arrow Spray for All Will Serve
           ( 45470, 0 ),     # Death Strike heal
           ( 196545, 0 ),    # Bonestorm heal
           ( 253590, 0 ),    # T21 4P frost damage component
@@ -1383,7 +1382,8 @@ class SpellDataGenerator(DataGenerator):
           ( 279606, 0 ),    # Last Surprise azerite trait
           ( 273096, 0 ),    # Horrid Experimentation azerite trait
           ( 49088, 0 ),     # Anti-magic Shell RP generation
-
+          ( 288548, 5 ),    # Magus of the Dead's (azerite trait) Frostbolt
+          ( 288546, 5 ),    # Magus of the Dead's (azerite trait) Shadow Bolt
         ),
 
         # Shaman:
