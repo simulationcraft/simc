@@ -62,7 +62,7 @@ actions.finishers+=/primal_wrath,target_if=spell_targets.primal_wrath>1&dot.rip.
 actions.finishers+=/pool_resource,for_next=1
 actions.finishers+=/primal_wrath,target_if=spell_targets.primal_wrath>=2
 actions.finishers+=/pool_resource,for_next=1
-actions.finishers+=/rip,target_if=!ticking|(remains<=duration*0.3)&(target.health.pct>25&!talent.sabertooth.enabled)|(remains<=duration*0.8&persistent_multiplier>dot.rip.pmultiplier)&target.time_to_die>8
+actions.finishers+=/rip,target_if=!ticking|(remains<=duration*0.3)&(remains<=duration*0.8&persistent_multiplier>dot.rip.pmultiplier)&target.time_to_die>8
 actions.finishers+=/pool_resource,for_next=1
 actions.finishers+=/savage_roar,if=buff.savage_roar.remains<12
 actions.finishers+=/pool_resource,for_next=1
@@ -112,7 +112,7 @@ actions.single_target=cat_form,if=!buff.cat_form.up
 actions.single_target+=/rake,if=buff.prowl.up|buff.shadowmeld.up
 actions.single_target+=/auto_attack
 actions.single_target+=/call_action_list,name=cooldowns
-actions.single_target+=/ferocious_bite,target_if=dot.rip.ticking&dot.rip.remains<3&target.time_to_die>10&(target.health.pct<25|talent.sabertooth.enabled)
+actions.single_target+=/ferocious_bite,target_if=dot.rip.ticking&dot.rip.remains<3&target.time_to_die>10&talent.sabertooth.enabled
 actions.single_target+=/regrowth,if=combo_points=5&buff.predatory_swiftness.up&talent.bloodtalons.enabled&buff.bloodtalons.down&(!buff.incarnation.up|dot.rip.remains<8)
 actions.single_target+=/run_action_list,name=finishers,if=combo_points>4
 actions.single_target+=/run_action_list,name=generators
