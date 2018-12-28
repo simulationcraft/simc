@@ -12,8 +12,8 @@ default_actions=1
 # T23_Druid_Feral.simc
 # T23_Druid_Guardian.simc
 
-# T23_Hunter_Beast_Mastery.simc
-# T23_Hunter_Marksmanship.simc
+T23_Hunter_Beast_Mastery.simc
+T23_Hunter_Marksmanship.simc
 T23_Hunter_Survival.simc
 
 # T23_Mage_Fire.simc
@@ -24,7 +24,7 @@ T23_Hunter_Survival.simc
 # T23_Monk_Windwalker.simc
 
 # T23_Paladin_Protection.simc
-# T23_Paladin_Retribution.simc
+T23_Paladin_Retribution.simc
 
 # T23_Priest_Holy.simc
 # T23_Priest_Shadow.simc

@@ -1,0 +1,87 @@
+hunter="T23_Hunter_Beast_Mastery"
+source=default
+spec=beast_mastery
+level=120
+race=orc
+role=attack
+position=ranged_back
+talents=1303011
+
+# Default consumables
+potion=battle_potion_of_agility
+flask=currents
+food=bountiful_captains_feast
+augmentation=battle_scarred
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/augmentation
+actions.precombat+=/food
+actions.precombat+=/summon_pet
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion
+# Adjusts the duration and cooldown of Aspect of the Wild and Primal Instincts by the duration of an unhasted GCD when they're used precombat. As AotW has a 1.3s GCD and affects itself this is 1.1s.
+actions.precombat+=/aspect_of_the_wild,precast_time=1.1,if=!azerite.primal_instincts.enabled
+# Adjusts the duration and cooldown of Bestial Wrath and Haze of Rage by the duration of an unhasted GCD when they're used precombat.
+actions.precombat+=/bestial_wrath,precast_time=1.5,if=azerite.primal_instincts.enabled
+
+# Executed every time the actor is available.
+actions=auto_shot
+actions+=/use_items
+actions+=/berserking,if=cooldown.bestial_wrath.remains>30
+actions+=/blood_fury,if=cooldown.bestial_wrath.remains>30
+actions+=/ancestral_call,if=cooldown.bestial_wrath.remains>30
+actions+=/fireblood,if=cooldown.bestial_wrath.remains>30
+actions+=/potion,if=buff.bestial_wrath.up&buff.aspect_of_the_wild.up&(target.health.pct<35|!talent.killer_instinct.enabled)|target.time_to_die<25
+actions+=/barbed_shot,if=pet.cat.buff.frenzy.up&pet.cat.buff.frenzy.remains<=gcd.max|full_recharge_time<gcd.max&cooldown.bestial_wrath.remains
+actions+=/lights_judgment
+actions+=/spitting_cobra
+actions+=/aspect_of_the_wild
+actions+=/a_murder_of_crows,if=active_enemies=1
+actions+=/stampede,if=buff.aspect_of_the_wild.up&buff.bestial_wrath.up|target.time_to_die<15
+actions+=/multishot,if=spell_targets>2&gcd.max-pet.cat.buff.beast_cleave.remains>0.25
+actions+=/bestial_wrath,if=cooldown.aspect_of_the_wild.remains>20|target.time_to_die<15
+actions+=/barrage,if=active_enemies>1
+actions+=/chimaera_shot,if=spell_targets>1
+actions+=/multishot,if=spell_targets>1&gcd.max-pet.cat.buff.beast_cleave.remains>0.25
+actions+=/kill_command
+actions+=/chimaera_shot
+actions+=/a_murder_of_crows
+actions+=/dire_beast
+actions+=/barbed_shot,if=pet.cat.buff.frenzy.down&(charges_fractional>1.8|buff.bestial_wrath.up)|cooldown.aspect_of_the_wild.remains<6&azerite.primal_instincts.enabled|target.time_to_die<9
+actions+=/barrage
+actions+=/cobra_shot,if=(active_enemies<2|cooldown.kill_command.remains>focus.time_to_max)&(focus-cost+focus.regen*(cooldown.kill_command.remains-1)>action.kill_command.cost|cooldown.kill_command.remains>1+gcd)&cooldown.kill_command.remains>1
+actions+=/arcane_torrent
+
+head=soulscarred_headgear,id=159398,bonus_id=5062/1587/4786/4775,azerite_powers=161/193/22/15/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+shoulders=mantle_of_the_soulbinders_caress,id=165537,bonus_id=4824/1537/4775,azerite_powers=366/161/30/15/13
+back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
+chest=shrapneldampening_chestguard,id=158307,bonus_id=5062/1587/4786/4775,azerite_powers=366/504/22/469/13
+wrists=icebinders_bracers,id=165542,bonus_id=4800/1537
+hands=grips_of_harmonious_spirits,id=165531,bonus_id=4800/1537
+waist=goldenscale_girdle,id=165538,bonus_id=4800/1537
+legs=deathhunters_legguards,id=165536,bonus_id=4800/1537
+feet=boots_of_the_gilded_path,id=165541,bonus_id=4800/1537
+finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_haste
+finger2=band_of_multisided_strikes,id=165565,bonus_id=4800/1537,enchant=pact_of_haste
+trinket1=kimbuls_razor_claw,id=165579,bonus_id=4800/1537
+trinket2=variable_intensity_gigavolt_oscillating_reactor,id=165572,bonus_id=4800/1537
+main_hand=pterrorwing_longbow,id=165599,bonus_id=4800/1537,enchant=incendiary_ammunition
+
+# Gear Summary
+# gear_ilvl=416.27
+# gear_agility=5796
+# gear_stamina=9920
+# gear_crit_rating=741
+# gear_haste_rating=1187
+# gear_mastery_rating=689
+# gear_versatility_rating=747
+# gear_armor=3410

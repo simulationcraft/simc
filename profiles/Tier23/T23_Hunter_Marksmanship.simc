@@ -1,0 +1,102 @@
+hunter="T23_Hunter_Marksmanship"
+source=default
+spec=marksmanship
+level=120
+race=lightforged_draenei
+role=attack
+position=ranged_back
+talents=1103031
+
+# Default consumables
+potion=battle_potion_of_agility
+flask=currents
+food=bountiful_captains_feast
+augmentation=battle_scarred
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/augmentation
+actions.precombat+=/food
+actions.precombat+=/summon_pet,if=active_enemies<3
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion
+actions.precombat+=/hunters_mark
+# Precast this as early as possible to potentially gain another cast during the fight.
+actions.precombat+=/double_tap,precast_time=10
+actions.precombat+=/trueshot,precast_time=1.5,if=active_enemies>2
+actions.precombat+=/aimed_shot,if=active_enemies<3
+
+# Executed every time the actor is available.
+actions=auto_shot
+# Try to line up activated trinkets with Trueshot
+actions+=/use_items,if=buff.trueshot.up|!talent.calling_the_shots.enabled|target.time_to_die<20
+actions+=/call_action_list,name=cds
+actions+=/call_action_list,name=st,if=active_enemies<3
+actions+=/call_action_list,name=trickshots,if=active_enemies>2
+
+actions.cds=hunters_mark,if=debuff.hunters_mark.down
+actions.cds+=/double_tap,if=target.time_to_die<15|cooldown.aimed_shot.remains<gcd&(buff.trueshot.up&(buff.unerring_vision.stack>7|!azerite.unerring_vision.enabled)|!talent.calling_the_shots.enabled)&(!azerite.surging_shots.enabled&!talent.streamline.enabled&!azerite.focused_fire.enabled)
+actions.cds+=/double_tap,if=cooldown.rapid_fire.remains<gcd&(buff.trueshot.up&(buff.unerring_vision.stack>7|!azerite.unerring_vision.enabled)|!talent.calling_the_shots.enabled)&(azerite.surging_shots.enabled|talent.streamline.enabled|azerite.focused_fire.enabled)
+actions.cds+=/berserking,if=cooldown.trueshot.remains>60
+actions.cds+=/blood_fury,if=cooldown.trueshot.remains>30
+actions.cds+=/ancestral_call,if=cooldown.trueshot.remains>30
+actions.cds+=/fireblood,if=cooldown.trueshot.remains>30
+actions.cds+=/lights_judgment
+actions.cds+=/potion,if=buff.trueshot.react&buff.bloodlust.react|buff.trueshot.up&target.health.pct<20&talent.careful_aim.enabled|target.time_to_die<25
+actions.cds+=/trueshot,if=cooldown.rapid_fire.remains&target.time_to_die>cooldown.trueshot.duration_guess+duration|(target.health.pct<20|!talent.careful_aim.enabled)|target.time_to_die<15
+
+actions.st=explosive_shot
+actions.st+=/barrage,if=active_enemies>1
+actions.st+=/a_murder_of_crows
+actions.st+=/serpent_sting,if=refreshable&!action.serpent_sting.in_flight
+actions.st+=/rapid_fire,if=focus<50&(buff.bloodlust.up&buff.trueshot.up|buff.trueshot.down)
+actions.st+=/arcane_shot,if=buff.master_marksman.up&buff.trueshot.up&focus+cast_regen<focus.max
+actions.st+=/aimed_shot,if=buff.precise_shots.down|cooldown.aimed_shot.full_recharge_time<action.aimed_shot.cast_time|buff.trueshot.up
+actions.st+=/rapid_fire,if=focus+cast_regen<focus.max|azerite.focused_fire.enabled|azerite.in_the_rhythm.rank>1|azerite.surging_shots.enabled|talent.streamline.enabled
+actions.st+=/piercing_shot
+actions.st+=/arcane_shot,if=focus>60|buff.precise_shots.up&buff.trueshot.down
+actions.st+=/steady_shot
+
+actions.trickshots=barrage
+actions.trickshots+=/explosive_shot
+actions.trickshots+=/rapid_fire,if=buff.trick_shots.up&(azerite.focused_fire.enabled|azerite.in_the_rhythm.rank>1|azerite.surging_shots.enabled|talent.streamline.enabled)
+actions.trickshots+=/aimed_shot,if=buff.trick_shots.up&(buff.precise_shots.down|cooldown.aimed_shot.full_recharge_time<action.aimed_shot.cast_time)
+actions.trickshots+=/rapid_fire,if=buff.trick_shots.up
+actions.trickshots+=/multishot,if=buff.trick_shots.down|buff.precise_shots.up|focus>70
+actions.trickshots+=/piercing_shot
+actions.trickshots+=/a_murder_of_crows
+actions.trickshots+=/serpent_sting,if=refreshable&!action.serpent_sting.in_flight
+actions.trickshots+=/steady_shot
+
+head=targettracking_headgear,id=165543,bonus_id=4824/1537/4775,azerite_powers=212/36/22/14/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+shoulders=pauldrons_of_ancestral_vengeance,id=165921,bonus_id=4824/1537/4775,azerite_powers=36/212/30/203/13
+back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
+chest=shrapneldampening_chestguard,id=158307,bonus_id=5062/1587/4786/4775,azerite_powers=212/504/22/469/13
+wrists=icebinders_bracers,id=165542,bonus_id=4800/1537
+hands=grips_of_harmonious_spirits,id=165531,bonus_id=4800/1537
+waist=goldenscale_girdle,id=165538,bonus_id=4800/1537
+legs=deathhunters_legguards,id=165536,bonus_id=4800/1537
+feet=boots_of_the_gilded_path,id=165541,bonus_id=4800/1537
+finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_haste
+finger2=band_of_multisided_strikes,id=165565,bonus_id=4800/1537,enchant=pact_of_haste
+trinket1=kimbuls_razor_claw,id=165579,bonus_id=4800/1537
+trinket2=variable_intensity_gigavolt_oscillating_reactor,id=165572,bonus_id=4800/1537
+main_hand=pterrorwing_longbow,id=165599,bonus_id=4800/1537,enchant=incendiary_ammunition
+
+# Gear Summary
+# gear_ilvl=416.27
+# gear_agility=5796
+# gear_stamina=9920
+# gear_crit_rating=741
+# gear_haste_rating=1187
+# gear_mastery_rating=689
+# gear_versatility_rating=747
+# gear_armor=3410

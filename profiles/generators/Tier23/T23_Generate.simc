@@ -23,7 +23,7 @@
 # T23_Generate_Druid.simc
 
 # Hunter
-# T23_Generate_Hunter.simc
+T23_Generate_Hunter.simc
 
 # Mage
 # T23_Generate_Mage.simc
@@ -32,7 +32,7 @@
 # T23_Generate_Monk.simc
 
 # Paladin
-# T23_Generate_Paladin.simc
+T23_Generate_Paladin.simc
 
 # Priest
 # T23_Generate_Priest.simc
