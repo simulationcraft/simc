@@ -2636,7 +2636,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     if ( p()->sets->has_set_bonus( MAGE_ARCANE, T19, B4 ) )
     {
       p()->cooldowns.evocation
-         ->adjust( -1000 * p()->sets->set( MAGE_ARCANE, T19, B4 )->effectN( 1 ).time_value()  );
+         ->adjust( -1000 * p()->sets->set( MAGE_ARCANE, T19, B4 )->effectN( 1 ).time_value() );
     }
     if ( p()->sets->has_set_bonus( MAGE_ARCANE, T20, B4 ) )
     {
@@ -5647,12 +5647,12 @@ void mage_t::init_spells()
   spec.fire_mage             = find_specialization_spell( 137019 );
   spec.hot_streak            = find_specialization_spell( 195283 );
 
-  spec.brain_freeze          = find_specialization_spell( "Brain Freeze"     );
+  spec.brain_freeze          = find_specialization_spell( "Brain Freeze" );
   spec.brain_freeze_2        = find_specialization_spell( 231584 );
   spec.blizzard_2            = find_specialization_spell( 236662 );
   spec.fingers_of_frost      = find_specialization_spell( "Fingers of Frost" );
   spec.frost_mage            = find_specialization_spell( 137020 );
-  spec.shatter               = find_specialization_spell( "Shatter"          );
+  spec.shatter               = find_specialization_spell( "Shatter" );
   spec.shatter_2             = find_specialization_spell( 231582 );
 
 
@@ -5769,8 +5769,8 @@ void mage_t::create_buffs()
                                        else
                                          buffs.flames_of_alacrity->decrement( prev - cur );
                                      } );
-  buffs.heating_up             = make_buff( this, "heating_up",  find_spell( 48107 ) );
-  buffs.hot_streak             = make_buff( this, "hot_streak",  find_spell( 48108 ) )
+  buffs.heating_up             = make_buff( this, "heating_up", find_spell( 48107 ) );
+  buffs.hot_streak             = make_buff( this, "hot_streak", find_spell( 48108 ) )
                                    ->set_stack_change_callback( [ this ] ( buff_t*, int prev, int )
                                      { if ( prev == 0 ) buffs.streaking->trigger(); } );
 
