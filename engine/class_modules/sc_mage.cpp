@@ -2314,8 +2314,6 @@ struct arcane_blast_t : public arcane_mage_spell_t
     p()->benefits.arcane_charge.arcane_blast->update();
     arcane_mage_spell_t::execute();
 
-    p()->buffs.arcane_charge->up();
-
     if ( hit_any_target )
     {
       p()->trigger_arcane_charge();
