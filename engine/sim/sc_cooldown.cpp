@@ -185,13 +185,13 @@ void cooldown_t::adjust_recharge_multiplier()
     remains = recharge_event -> remains();
     new_remains = remains * delta;
     // Shortened, reschedule the event
-    if ( delta < 1 )
+    if ( new_remains < remains )
     {
       timespan_t duration_ = recharge_event_t::cast( recharge_event ) -> duration_;
       event_t::cancel( recharge_event );
       recharge_event = make_event<recharge_event_t>( sim, this, new_remains, duration_ );
     }
-    else
+    else if ( new_remains > remains )
     {
       recharge_event -> reschedule( new_remains );
     }
