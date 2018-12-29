@@ -745,6 +745,9 @@ public:
     pets::gargoyle_pet_t* gargoyle;
     pets::dt_pet_t* ghoul_pet;
     pet_t* risen_skulker;
+
+    std::array< pets::death_knight_pet_t*, 2 > magus_pet;
+    // Note: magus_pet[0] is summoned by apocalypse and [1] by army of the dead
   } pets;
 
   // Procs
@@ -811,7 +814,7 @@ public:
     azerite_power_t harrowing_decay; // TODO : How does it refresh on multiple DC casts in a row ?
     azerite_power_t helchains; // TODO: NYI
     azerite_power_t last_surprise; 
-    azerite_power_t magus_of_the_dead; // TODO: NYI
+    azerite_power_t magus_of_the_dead; // Trait is a buggy mess, the pet can melee in the middle of casting (not implemented because not reliable) and sometimes doesn't cast at all
   }azerite;
 
   // Runes
@@ -2333,7 +2336,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
 struct bloodworm_pet_t : public death_knight_pet_t
 {
   bloodworm_pet_t( death_knight_t* owner ) :
-    death_knight_pet_t( owner, "bloodworm", true, true)
+    death_knight_pet_t( owner, "bloodworm", true, true )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.4 );
@@ -2346,6 +2349,129 @@ struct bloodworm_pet_t : public death_knight_pet_t
   { return new auto_attack_melee_t<bloodworm_pet_t>( this ); }
 };
 
+// ==========================================================================
+// Magus of the Dead (azerite)
+// ==========================================================================
+
+struct magus_pet_t : public death_knight_pet_t
+{
+  // The magus is coded weirdly: it will alternate between casting frostbolt and shadow bolt on a 2.4s interval
+  // It receives an order to cast by its AI every 1.2s, much like the Risen Skulker used to
+  // https://github.com/SimCMinMax/WoW-BugTracker/issues/385
+
+  bool last_used_frostbolt;
+  bool second_shadow_bolt;
+
+  struct magus_spell_t : public pet_action_t<magus_pet_t, spell_t>
+  {
+    magus_pet_t* magus;
+    bool is_frostbolt;
+
+    magus_spell_t( magus_pet_t* player, const std::string& name , const spell_data_t* spell, const std::string& options_str ) :
+      super( player, name, spell, options_str ),
+      magus( player )
+    {
+      base_dd_min = base_dd_max = player -> o() -> azerite.magus_of_the_dead.value();
+    }
+
+    void execute() override
+    {
+      super::execute();
+
+      magus -> last_used_frostbolt = this -> is_frostbolt;
+    }
+
+    // There's a 1 energy cost in spelldata but it might as well be ignored
+    double cost() const override
+    { return 0; }
+
+    timespan_t gcd() const override
+    {
+      // Risen Skulker had a 2.4s between each cast start, making its cast time scaling with haste nearly irrelevant
+      // This was fixed in 8.1 and seems to be back for Magus of the Dead
+      // https://github.com/SimCMinMax/WoW-BugTracker/issues/385
+
+      timespan_t interval = super::gcd();
+
+      if ( p() -> o() -> bugs )
+      {
+        interval = execute_time() <= timespan_t::from_seconds( 1.2 ) ?
+          timespan_t::from_seconds( 1.2 ) :
+          timespan_t::from_seconds( 2.4 );
+      }
+
+      return interval;
+    }
+
+    bool ready() override
+    {
+      if ( magus -> last_used_frostbolt == this -> is_frostbolt )
+      {
+        return false;
+      }
+      return super::ready();
+    }
+  };
+
+  struct frostbolt_magus_t : public magus_spell_t
+  {
+    frostbolt_magus_t( magus_pet_t* player, const std::string& options_str ) :
+      magus_spell_t( player, "frostbolt", player -> o() -> find_spell( 288548 ), options_str )
+    {
+      is_frostbolt = true;
+    }
+  };
+
+  struct shadow_bolt_magus_t : public magus_spell_t
+  {
+    shadow_bolt_magus_t( magus_pet_t* player, const std::string& options_str ) :
+      magus_spell_t( player, "shadow_bolt", player -> o() -> find_spell( 288546 ), options_str )
+    {
+      is_frostbolt = false;
+    }
+
+    // Remove the execute override completely once the bug is fixed
+    void execute() override
+    {
+      magus_spell_t::super::execute();
+
+      // If a shadow bolt cast ends in less than 1.2s, the magus will cast it again, this isn't true for Frostbolt
+      // https://github.com/SimCMinMax/WoW-BugTracker/issues/392
+      if ( p() -> bugs && execute_time() <= timespan_t::from_seconds( 1.2 ) && ! magus -> second_shadow_bolt )
+      {
+        magus -> second_shadow_bolt = true;
+      }
+      else 
+      {
+        magus -> second_shadow_bolt = false;
+        magus -> last_used_frostbolt = false;
+      }
+    }
+  };
+
+  magus_pet_t( death_knight_t* owner ) :
+    death_knight_pet_t( owner, "magus_of_the_dead", true, false ),
+    last_used_frostbolt( false ), second_shadow_bolt( false )
+  {
+  }
+
+  void init_action_list() override
+  {
+    death_knight_pet_t::init_action_list();
+
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def -> add_action( "frostbolt" );
+    def -> add_action( "shadow_bolt" );
+  }
+
+  action_t* create_action( const std::string& name, const std::string& options_str ) override
+  {
+    if ( name == "frostbolt" ) return new frostbolt_magus_t( this, options_str );
+    if ( name == "shadow_bolt" ) return new shadow_bolt_magus_t( this, options_str );
+
+    return death_knight_pet_t::create_action( name, options_str );
+  }
+};
 
 } // namespace pets
 
@@ -3178,10 +3304,12 @@ struct auto_attack_t : public death_knight_melee_attack_t
 struct apocalypse_t : public death_knight_melee_attack_t
 {
   timespan_t summon_duration;
+  timespan_t magus_duration;
 
   apocalypse_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_melee_attack_t( "apocalypse", p, p -> spec.apocalypse ),
-    summon_duration( p -> find_spell( 221180 ) -> duration() )
+    summon_duration( p -> find_spell( 221180 ) -> duration() ),
+    magus_duration( p -> find_spell( 288544 ) -> duration() )
   {
     parse_options( options_str );
   }
@@ -3201,6 +3329,11 @@ struct apocalypse_t : public death_knight_melee_attack_t
         p() -> pets.apoc_ghoul[ i ] -> summon( summon_duration );
         p() -> buffs.t20_2pc_unholy -> trigger();
       }
+    }
+
+    if ( p() -> azerite.magus_of_the_dead.enabled() )
+    {
+      p() -> pets.magus_pet[0] -> summon( magus_duration );
     }
   }
 
@@ -3222,6 +3355,7 @@ struct army_of_the_dead_t : public death_knight_spell_t
 {
   int precombat_delay;
   timespan_t summon_duration;
+  timespan_t magus_duration;
 
   struct summon_army_event_t : public event_t
   {
@@ -3251,7 +3385,8 @@ struct army_of_the_dead_t : public death_knight_spell_t
   army_of_the_dead_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "army_of_the_dead", p, p -> spec.army_of_the_dead ),
     precombat_delay( 6 ),
-    summon_duration( p -> spec.army_of_the_dead -> effectN( 1 ).trigger() -> duration() )
+    summon_duration( p -> spec.army_of_the_dead -> effectN( 1 ).trigger() -> duration() ),
+    magus_duration( p -> find_spell( 288544 ) -> duration() )
   {
     // If used during precombat, army is casted around X seconds before the fight begins
     // This is done to save rune regeneration time once the fight starts
@@ -3290,9 +3425,11 @@ struct army_of_the_dead_t : public death_knight_spell_t
     // There's a 0.5s interval between each ghoul's spawn
     double const summon_interval = 0.5;
 
+    timespan_t precombat_time = timespan_t::zero();
+
     if ( ! p() -> in_combat )
     {      
-      timespan_t precombat_time = timespan_t::from_seconds( precombat_delay );
+      precombat_time = timespan_t::from_seconds( precombat_delay );
 
       double duration_penalty = precombat_delay - ( n_ghoul + 1 ) * summon_interval;
       while ( duration_penalty >= 0 && n_ghoul < 8 )
@@ -3318,6 +3455,11 @@ struct army_of_the_dead_t : public death_knight_spell_t
     // Or if the cast isn't during precombat
     // Summon the rest
     make_event<summon_army_event_t>( *sim, p(), n_ghoul, timespan_t::from_seconds( summon_interval ), summon_duration );
+
+    if ( p() -> azerite.magus_of_the_dead.enabled() )
+    {
+      p() -> pets.magus_pet[1] -> summon( magus_duration - precombat_time );
+    }
   }
 
   virtual bool ready() override
@@ -7139,6 +7281,12 @@ void death_knight_t::create_pets()
       {
         pets.apoc_ghoul[ i ] = new pets::army_pet_t( this, "apoc_ghoul" );
       }
+    }
+
+    if ( azerite.magus_of_the_dead.enabled() )
+    {
+      pets.magus_pet[0] = new pets::magus_pet_t( this );
+      pets.magus_pet[1] = new pets::magus_pet_t( this );
     }
   }
   
