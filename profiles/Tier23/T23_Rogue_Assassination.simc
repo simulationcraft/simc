@@ -1,0 +1,140 @@
+rogue="T23_Rogue_Assassination"
+source=default
+spec=assassination
+level=120
+race=troll
+role=attack
+position=back
+talents=2310021
+
+# Default consumables
+potion=battle_potion_of_agility
+flask=currents
+food=bountiful_captains_feast
+augmentation=battle_scarred
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/augmentation
+actions.precombat+=/food
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/apply_poison
+actions.precombat+=/stealth
+actions.precombat+=/potion
+actions.precombat+=/marked_for_death,precombat_seconds=5,if=raid_event.adds.in>40
+
+# Executed every time the actor is available.
+# Restealth if possible (no vulnerable enemies in combat)
+actions=stealth
+actions+=/variable,name=energy_regen_combined,value=energy.regen+poisoned_bleeds*7%(2*spell_haste)
+actions+=/variable,name=single_target,value=spell_targets.fan_of_knives<2
+actions+=/call_action_list,name=stealthed,if=stealthed.rogue
+actions+=/call_action_list,name=cds
+actions+=/call_action_list,name=dot
+actions+=/call_action_list,name=direct
+actions+=/arcane_torrent,if=energy.deficit>=15+variable.energy_regen_combined
+actions+=/arcane_pulse
+actions+=/lights_judgment
+
+# Cooldowns
+actions.cds=potion,if=buff.bloodlust.react|debuff.vendetta.up
+actions.cds+=/blood_fury,if=debuff.vendetta.up
+actions.cds+=/berserking,if=debuff.vendetta.up
+actions.cds+=/fireblood,if=debuff.vendetta.up
+actions.cds+=/ancestral_call,if=debuff.vendetta.up
+# If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or without any CP.
+actions.cds+=/marked_for_death,target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit*1.5|combo_points.deficit>=cp_max_spend)
+# If no adds will die within the next 30s, use MfD on boss without any CP.
+actions.cds+=/marked_for_death,if=raid_event.adds.in>30-raid_event.adds.duration&combo_points.deficit>=cp_max_spend
+# Vendetta outside stealth with Rupture up. With Subterfuge talent and Shrouded Suffocation power always use with buffed Garrote. With Nightstalker and Exsanguinate use up to 5s (3s with DS) before Vanish combo.
+actions.cds+=/vendetta,if=!stealthed.rogue&dot.rupture.ticking&(!talent.subterfuge.enabled|!azerite.shrouded_suffocation.enabled|dot.garrote.pmultiplier>1)&(!talent.nightstalker.enabled|!talent.exsanguinate.enabled|cooldown.exsanguinate.remains<5-2*talent.deeper_stratagem.enabled)
+# Extra Subterfuge Vanish condition: Use when Garrote dropped on Single Target
+actions.cds+=/vanish,if=talent.subterfuge.enabled&!dot.garrote.ticking&variable.single_target
+# Vanish with Exsg + (Nightstalker, or Subterfuge only on 1T): Maximum CP and Exsg ready for next GCD
+actions.cds+=/vanish,if=talent.exsanguinate.enabled&(talent.nightstalker.enabled|talent.subterfuge.enabled&variable.single_target)&combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1&(!talent.subterfuge.enabled|!azerite.shrouded_suffocation.enabled|dot.garrote.pmultiplier<=1)
+# Vanish with Nightstalker + No Exsg: Maximum CP and Vendetta up
+actions.cds+=/vanish,if=talent.nightstalker.enabled&!talent.exsanguinate.enabled&combo_points>=cp_max_spend&debuff.vendetta.up
+# Vanish with Subterfuge + (No Exsg or 2T+): No stealth/subterfuge, Garrote Refreshable, enough space for incoming Garrote CP
+actions.cds+=/vanish,if=talent.subterfuge.enabled&(!talent.exsanguinate.enabled|!variable.single_target)&!stealthed.rogue&cooldown.garrote.up&dot.garrote.refreshable&(spell_targets.fan_of_knives<=3&combo_points.deficit>=1+spell_targets.fan_of_knives|spell_targets.fan_of_knives>=4&combo_points.deficit>=4)
+# Vanish with Master Assasin: No stealth and no active MA buff, Rupture not in refresh range
+actions.cds+=/vanish,if=talent.master_assassin.enabled&!stealthed.all&master_assassin_remains<=0&!dot.rupture.refreshable
+# Shadowmeld for Shrouded Suffocation
+actions.cds+=/shadowmeld,if=!stealthed.all&azerite.shrouded_suffocation.enabled&dot.garrote.refreshable&dot.garrote.pmultiplier<=1&combo_points.deficit>=1
+# Exsanguinate when both Rupture and Garrote are up for long enough
+actions.cds+=/exsanguinate,if=dot.rupture.remains>4+4*cp_max_spend&!dot.garrote.refreshable
+actions.cds+=/toxic_blade,if=dot.rupture.ticking
+
+# Direct damage abilities
+# Envenom at 4+ (5+ with DS) CP. Immediately on 2+ targets, with Vendetta, or with TB; otherwise wait for some energy. Also wait if Exsg combo is coming up.
+actions.direct=envenom,if=combo_points>=4+talent.deeper_stratagem.enabled&(debuff.vendetta.up|debuff.toxic_blade.up|energy.deficit<=25+variable.energy_regen_combined|!variable.single_target)&(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)
+actions.direct+=/variable,name=use_filler,value=combo_points.deficit>1|energy.deficit<=25+variable.energy_regen_combined|!variable.single_target
+# With Echoing Blades, Fan of Knives at 2+ targets.
+actions.direct+=/fan_of_knives,if=variable.use_filler&azerite.echoing_blades.enabled&spell_targets.fan_of_knives>=2
+# Fan of Knives at 19+ stacks of Hidden Blades or against 4+ (5+ with Double Dose) targets.
+actions.direct+=/fan_of_knives,if=variable.use_filler&(buff.hidden_blades.stack>=19|spell_targets.fan_of_knives>=4+(azerite.double_dose.rank>2)+stealthed.rogue)
+# Fan of Knives to apply Deadly Poison if inactive on any target at 3 targets.
+actions.direct+=/fan_of_knives,target_if=!dot.deadly_poison_dot.ticking,if=variable.use_filler&spell_targets.fan_of_knives>=3
+actions.direct+=/blindside,if=variable.use_filler&(buff.blindside.up|!talent.venom_rush.enabled&!azerite.double_dose.enabled)
+# Tab-Mutilate to apply Deadly Poison at 2 targets
+actions.direct+=/mutilate,target_if=!dot.deadly_poison_dot.ticking,if=variable.use_filler&spell_targets.fan_of_knives=2
+actions.direct+=/mutilate,if=variable.use_filler
+
+# Damage over time abilities
+# Special Rupture setup for Exsg
+actions.dot=rupture,if=talent.exsanguinate.enabled&((combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1)|(!ticking&(time>10|combo_points>=2)))
+# Garrote upkeep, also tries to use it as a special generator for the last CP before a finisher
+actions.dot+=/pool_resource,for_next=1
+actions.dot+=/garrote,cycle_targets=1,if=(!talent.subterfuge.enabled|!(cooldown.vanish.up&cooldown.vendetta.remains<=4))&combo_points.deficit>=1&refreshable&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&!ss_buffed&(target.time_to_die-remains>4&spell_targets.fan_of_knives<=1|target.time_to_die-remains>12)
+# Crimson Tempest only on multiple targets at 4+ CP when running out in 2s (up to 4 targets) or 3s (5+ targets)
+actions.dot+=/crimson_tempest,if=spell_targets>=2&remains<2+(spell_targets>=5)&combo_points>=4
+# Keep up Rupture at 4+ on all targets (when living long enough and not snapshot)
+actions.dot+=/rupture,cycle_targets=1,if=combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&target.time_to_die-remains>4
+
+# Stealthed Actions
+# Nighstalker, or Subt+Exsg on 1T: Snapshot Rupture
+actions.stealthed=rupture,if=combo_points>=4&(talent.nightstalker.enabled|talent.subterfuge.enabled&(talent.exsanguinate.enabled&cooldown.exsanguinate.remains<=2|!ticking)&variable.single_target)&target.time_to_die-remains>6
+# Subterfuge: Apply or Refresh with buffed Garrotes
+actions.stealthed+=/garrote,cycle_targets=1,if=talent.subterfuge.enabled&refreshable&target.time_to_die-remains>2
+# Subterfuge: Override normal Garrotes with snapshot versions
+actions.stealthed+=/garrote,cycle_targets=1,if=talent.subterfuge.enabled&remains<=10&pmultiplier<=1&target.time_to_die-remains>2
+# Subterfuge + Shrouded Suffocation: Apply early Rupture that will be refreshed for pandemic.
+actions.stealthed+=/rupture,if=talent.subterfuge.enabled&azerite.shrouded_suffocation.enabled&!dot.rupture.ticking
+# Subterfuge w/ Shrouded Suffocation: Reapply for bonus CP and extended snapshot duration
+actions.stealthed+=/garrote,cycle_targets=1,if=talent.subterfuge.enabled&azerite.shrouded_suffocation.enabled&target.time_to_die>remains&combo_points.deficit>1
+# Subterfuge + Exsg: Even override a snapshot Garrote right after Rupture before Exsanguination
+actions.stealthed+=/pool_resource,for_next=1
+actions.stealthed+=/garrote,if=talent.subterfuge.enabled&talent.exsanguinate.enabled&cooldown.exsanguinate.remains<1&prev_gcd.1.rupture&dot.rupture.remains>5+4*cp_max_spend
+
+head=cowl_of_righteous_resolve,id=165519,bonus_id=4824/1537/4775,azerite_powers=136/249/30/217/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+shoulders=gorak_tuls_mantle,id=159339,bonus_id=5062/1587/4786/4775,azerite_powers=136/249/30/217/13
+back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
+chest=mekkatorques_bomber_jacket,id=165830,bonus_id=4824/1537/4775,azerite_powers=249/136/22/14/13
+wrists=amethyststudded_bindings,id=165524,bonus_id=4800/1537
+hands=gloves_of_spiritual_grace,id=165514,bonus_id=4800/1537
+waist=stretched_sinew_waistcord,id=165525,bonus_id=4800/1537
+legs=kelplaced_greaves,id=165528,bonus_id=4800/1537
+feet=embossed_deckwalkers,id=165527,bonus_id=4800/1537
+finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_haste
+finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_haste
+trinket1=kimbuls_razor_claw,id=165579,bonus_id=4800/1537
+trinket2=variable_intensity_gigavolt_oscillating_reactor,id=165572,bonus_id=4800/1537
+main_hand=greeds_folly,id=165593,bonus_id=4800/1537,enchant=masterful_navigation
+off_hand=greeds_folly,id=165593,bonus_id=4800/1537,enchant=quick_navigation
+
+# Gear Summary
+# gear_ilvl=416.19
+# gear_agility=5796
+# gear_stamina=9919
+# gear_crit_rating=698
+# gear_haste_rating=1388
+# gear_mastery_rating=1067
+# gear_versatility_rating=214
+# gear_armor=2363

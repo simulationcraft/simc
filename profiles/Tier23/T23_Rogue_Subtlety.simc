@@ -1,0 +1,156 @@
+rogue="T23_Rogue_Subtlety"
+source=default
+spec=subtlety
+level=120
+race=night_elf
+timeofday=day
+role=attack
+position=back
+talents=2130031
+
+# Default consumables
+potion=battle_potion_of_agility
+flask=currents
+food=bountiful_captains_feast
+augmentation=battle_scarred
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/augmentation
+actions.precombat+=/food
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/stealth
+actions.precombat+=/marked_for_death,precombat_seconds=15
+actions.precombat+=/shadow_blades,precombat_seconds=1
+actions.precombat+=/potion
+
+# Executed every time the actor is available.
+# Restealth if possible (no vulnerable enemies in combat)
+actions=stealth
+# Check CDs at first
+actions+=/call_action_list,name=cds
+# Run fully switches to the Stealthed Rotation (by doing so, it forces pooling if nothing is available).
+actions+=/run_action_list,name=stealthed,if=stealthed.all
+# Apply Nightblade at 2+ CP during the first 10 seconds, after that 4+ CP if it expires within the next GCD or is not up
+actions+=/nightblade,if=target.time_to_die>6&remains<gcd.max&combo_points>=4-(time<10)*2
+# Only change rotation if we have priority_rotation set and multiple targets up.
+actions+=/variable,name=use_priority_rotation,value=priority_rotation&spell_targets.shuriken_storm>=2
+# Priority Rotation? Let's give a crap about energy for the stealth CDs (builder still respect it). Yup, it can be that simple.
+actions+=/call_action_list,name=stealth_cds,if=variable.use_priority_rotation
+# Used to define when to use stealth CDs or builders
+actions+=/variable,name=stealth_threshold,value=25+talent.vigor.enabled*35+talent.master_of_shadows.enabled*25+talent.shadow_focus.enabled*20+talent.alacrity.enabled*10+15*(spell_targets.shuriken_storm>=3)
+# Consider using a Stealth CD when reaching the energy threshold and having space for at least 4 CP
+actions+=/call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold&combo_points.deficit>=4
+# With Dark Shadow, also use a Stealth CD when reaching the energy threshold and Secret Technique is ready. Only a gain up to 4 targets.
+actions+=/call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold&talent.dark_shadow.enabled&talent.secret_technique.enabled&cooldown.secret_technique.up&spell_targets.shuriken_storm<=4
+# Finish at 4+ without DS, 5+ with DS (outside stealth)
+actions+=/call_action_list,name=finish,if=combo_points.deficit<=1|target.time_to_die<=1&combo_points>=3
+# With DS also finish at 4+ against exactly 4 targets (outside stealth)
+actions+=/call_action_list,name=finish,if=spell_targets.shuriken_storm=4&combo_points>=4
+# Use a builder when reaching the energy threshold
+actions+=/call_action_list,name=build,if=energy.deficit<=variable.stealth_threshold
+# Lowest priority in all of the APL because it causes a GCD
+actions+=/arcane_torrent,if=energy.deficit>=15+energy.regen
+actions+=/arcane_pulse
+actions+=/lights_judgment
+
+# Builders
+actions.build=shuriken_storm,if=spell_targets>=2
+actions.build+=/gloomblade
+actions.build+=/backstab
+
+# Cooldowns
+actions.cds=potion,if=buff.bloodlust.react|buff.symbols_of_death.up&(buff.shadow_blades.up|cooldown.shadow_blades.remains<=10)
+actions.cds+=/blood_fury,if=buff.symbols_of_death.up
+actions.cds+=/berserking,if=buff.symbols_of_death.up
+actions.cds+=/fireblood,if=buff.symbols_of_death.up
+actions.cds+=/ancestral_call,if=buff.symbols_of_death.up
+# Use Dance off-gcd before the first Shuriken Storm from Tornado comes in.
+actions.cds+=/shadow_dance,use_off_gcd=1,if=!buff.shadow_dance.up&buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5
+# (Unless already up because we took Shadow Focus) use Symbols off-gcd before the first Shuriken Storm from Tornado comes in.
+actions.cds+=/symbols_of_death,use_off_gcd=1,if=buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5
+# Use Symbols on cooldown (after first Nightblade) unless we are going to pop Tornado and do not have Shadow Focus.
+actions.cds+=/symbols_of_death,if=dot.nightblade.ticking&(!talent.shuriken_tornado.enabled|talent.shadow_focus.enabled|spell_targets.shuriken_storm<3|!cooldown.shuriken_tornado.up)
+# If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or not stealthed without any CP.
+actions.cds+=/marked_for_death,target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.all&combo_points.deficit>=cp_max_spend)
+# If no adds will die within the next 30s, use MfD on boss without any CP and no stealth.
+actions.cds+=/marked_for_death,if=raid_event.adds.in>30-raid_event.adds.duration&!stealthed.all&combo_points.deficit>=cp_max_spend
+actions.cds+=/shadow_blades,if=combo_points.deficit>=2+stealthed.all
+# At 3+ without Shadow Focus use Tornado with SoD and Dance ready. We will pop those before the first storm comes in.
+actions.cds+=/shuriken_tornado,if=spell_targets>=3&!talent.shadow_focus.enabled&dot.nightblade.ticking&!stealthed.all&cooldown.symbols_of_death.up&cooldown.shadow_dance.charges>=1
+# At 3+ with Shadow Focus use Tornado with SoD already up.
+actions.cds+=/shuriken_tornado,if=spell_targets>=3&talent.shadow_focus.enabled&dot.nightblade.ticking&buff.symbols_of_death.up
+actions.cds+=/shadow_dance,if=!buff.shadow_dance.up&target.time_to_die<=5+talent.subterfuge.enabled&!raid_event.adds.up
+
+# Finishers
+# Eviscerate highest priority at 2+ targets with Shadow Focus (5+ with Secret Technique in addition) and Night's Vengeance up.
+actions.finish=eviscerate,if=talent.shadow_focus.enabled&buff.nights_vengeance.up&spell_targets.shuriken_storm>=2+3*talent.secret_technique.enabled
+# Keep up Nightblade if it is about to run out. Do not use NB during Dance, if talented into Dark Shadow.
+actions.finish+=/nightblade,if=(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>6&remains<tick_time*2
+# Multidotting outside Dance on targets that will live for the duration of Nightblade, refresh during pandemic. Multidot as long as 2+ targets do not have Nightblade up with Replicating Shadows (unless you have Night's Vengeance too).
+actions.finish+=/nightblade,cycle_targets=1,if=!variable.use_priority_rotation&spell_targets.shuriken_storm>=2&(azerite.nights_vengeance.enabled|!azerite.replicating_shadows.enabled|spell_targets.shuriken_storm-active_dot.nightblade>=2)&!buff.shadow_dance.up&target.time_to_die>=(5+(2*combo_points))&refreshable
+# Refresh Nightblade early if it will expire during Symbols. Do that refresh if SoD gets ready in the next 5s.
+actions.finish+=/nightblade,if=remains<cooldown.symbols_of_death.remains+10&cooldown.symbols_of_death.remains<=5&target.time_to_die-remains>cooldown.symbols_of_death.remains+5
+# Secret Technique during Symbols. With Dark Shadow only during Shadow Dance (until threshold in next line).
+actions.finish+=/secret_technique,if=buff.symbols_of_death.up&(!talent.dark_shadow.enabled|buff.shadow_dance.up)
+# With enough targets always use SecTec on CD.
+actions.finish+=/secret_technique,if=spell_targets.shuriken_storm>=2+talent.dark_shadow.enabled+talent.nightstalker.enabled
+actions.finish+=/eviscerate
+
+# Stealth Cooldowns
+# Helper Variable
+actions.stealth_cds=variable,name=shd_threshold,value=cooldown.shadow_dance.charges_fractional>=1.75
+# Vanish unless we are about to cap on Dance charges. Only when Find Weakness is about to run out.
+actions.stealth_cds+=/vanish,if=!variable.shd_threshold&debuff.find_weakness.remains<1&combo_points.deficit>1
+# Pool for Shadowmeld + Shadowstrike unless we are about to cap on Dance charges. Only when Find Weakness is about to run out.
+actions.stealth_cds+=/pool_resource,for_next=1,extra_amount=40
+actions.stealth_cds+=/shadowmeld,if=energy>=40&energy.deficit>=10&!variable.shd_threshold&debuff.find_weakness.remains<1&combo_points.deficit>1
+# With Dark Shadow only Dance when Nightblade will stay up. Use during Symbols or above threshold. Only before finishers if we have amp talents and priority rotation.
+actions.stealth_cds+=/shadow_dance,if=(!talent.dark_shadow.enabled|dot.nightblade.remains>=5+talent.subterfuge.enabled)&(!talent.nightstalker.enabled&!talent.dark_shadow.enabled|!variable.use_priority_rotation|combo_points.deficit<=1+2*azerite.the_first_dance.enabled)&(variable.shd_threshold|buff.symbols_of_death.remains>=1.2|spell_targets.shuriken_storm>=4&cooldown.symbols_of_death.remains>10)
+actions.stealth_cds+=/shadow_dance,if=target.time_to_die<cooldown.symbols_of_death.remains&!raid_event.adds.up
+
+# Stealthed Rotation
+# If stealth is up, we really want to use Shadowstrike to benefits from the passive bonus, even if we are at max cp (from the precombat MfD).
+actions.stealthed=shadowstrike,if=buff.stealth.up
+# Finish at 4+ CP without DS, 5+ with DS, and 6 with DS after Vanish
+actions.stealthed+=/call_action_list,name=finish,if=combo_points.deficit<=1-(talent.deeper_stratagem.enabled&buff.vanish.up)
+# At 2 targets with Secret Technique keep up Find Weakness by cycling Shadowstrike.
+actions.stealthed+=/shadowstrike,cycle_targets=1,if=talent.secret_technique.enabled&talent.find_weakness.enabled&debuff.find_weakness.remains<1&spell_targets.shuriken_storm=2&target.time_to_die-remains>6
+# Without Deeper Stratagem and 3 Ranks of Blade in the Shadows it is worth using Shadowstrike on 3 targets.
+actions.stealthed+=/shadowstrike,if=!talent.deeper_stratagem.enabled&azerite.blade_in_the_shadows.rank=3&spell_targets.shuriken_storm=3
+actions.stealthed+=/shuriken_storm,if=spell_targets>=3
+actions.stealthed+=/shadowstrike
+
+head=cowl_of_fluid_machinations,id=159302,bonus_id=5062/1587/4786/4775,azerite_powers=413/445/22/217/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+shoulders=maras_boneblade_mantle,id=165777,bonus_id=4824/1537/4775,azerite_powers=240/413/31/473/13
+back=high_tinkers_cape,id=165924,bonus_id=4800/1537
+chest=vestments_of_indomitable_will,id=165833,bonus_id=4824/1537/4775,azerite_powers=413/414/22/44/13
+wrists=bracers_of_regal_devotion,id=165517,bonus_id=4800/1537
+hands=mechjockey_grips,id=165522,bonus_id=4800/1537
+waist=stretched_sinew_waistcord,id=165525,bonus_id=4800/1537
+legs=cranedancer_leggings,id=165521,bonus_id=4800/1537
+feet=embossed_deckwalkers,id=165527,bonus_id=4800/1537
+finger1=band_of_multisided_strikes,id=165565,bonus_id=4800/1537,enchant=pact_of_critical_strike
+finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_critical_strike
+trinket1=kimbuls_razor_claw,id=165579,bonus_id=4800/1537
+trinket2=variable_intensity_gigavolt_oscillating_reactor,id=165572,bonus_id=4800/1537
+main_hand=last_fang_of_rezan,id=165596,bonus_id=4800/1537,enchant=deadly_navigation
+off_hand=last_fang_of_rezan,id=165596,bonus_id=4800/1537,enchant=versatile_navigation
+
+# Gear Summary
+# gear_ilvl=416.19
+# gear_agility=5796
+# gear_stamina=9919
+# gear_crit_rating=869
+# gear_haste_rating=675
+# gear_mastery_rating=934
+# gear_versatility_rating=888
+# gear_armor=2363

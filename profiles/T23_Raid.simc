@@ -2,8 +2,8 @@ optimal_raid=1
 default_actions=1
 
 # T23_Death_Knight_Blood.simc
-# T23_Death_Knight_Frost.simc
-# T23_Death_Knight_Unholy.simc
+T23_Death_Knight_Frost.simc
+T23_Death_Knight_Unholy.simc
 
 # T23_Demon_Hunter_Havoc.simc
 # T23_Demon_Hunter_Vengeance.simc
@@ -29,9 +29,9 @@ T23_Paladin_Retribution.simc
 # T23_Priest_Holy.simc
 # T23_Priest_Shadow.simc
 
-# T23_Rogue_Assassination.simc
-# T23_Rogue_Outlaw.simc
-# T23_Rogue_Subtlety.simc
+T23_Rogue_Assassination.simc
+T23_Rogue_Outlaw.simc
+T23_Rogue_Subtlety.simc
 
 T23_Shaman_Elemental.simc
 T23_Shaman_Enhancement.simc
@@ -40,5 +40,5 @@ T23_Shaman_Enhancement.simc
 # T23_Warlock_Demonology.simc
 # T23_Warlock_Destruction.simc
 
-# T23_Warrior_Arms.simc
-# T23_Warrior_Fury.simc
+T23_Warrior_Arms.simc
+T23_Warrior_Fury.simc
