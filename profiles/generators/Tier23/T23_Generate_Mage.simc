@@ -43,8 +43,8 @@ hands=manceroys_flamefists,id=165503,bonus_id=4800/1537
 waist=waistcord_of_flowing_silk,id=165504,bonus_id=4800/1537
 legs=wavecaller_leggings,id=165506,bonus_id=4800/1537
 feet=lightfeather_footpads,id=165502,bonus_id=4800/1537
-finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_versatility
-finger2=band_of_multisided_strikes,id=165565,bonus_id=4800/1537,enchant=pact_of_versatility
+finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_haste
+finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_haste
 trinket1=incandescent_sliver,id=165571,bonus_id=4800/1537
 trinket2=tidestorm_codex,id=165576,bonus_id=4800/1537
 main_hand=deathspeaker_spire,id=165597,bonus_id=4800/1537,enchant=torrent_of_elements
@@ -65,15 +65,16 @@ neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
 shoulder=mantle_of_voidtouched_waters,id=159238,bonus_id=5062/1587/4786/4775,azerite_powers=170/225/22/44/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
 chest=inmates_straight_robe,id=159268,bonus_id=5062/1587/4786/4775,azerite_powers=170/479/22/83/13
-wrists=bracers_of_zealous_calling,bonus_id=4800/1537
+wrists=bracers_of_zealous_calling,id=165501,bonus_id=4800/1537
 hands=manceroys_flamefists,id=165503,bonus_id=4800/1537
 waist=waistcord_of_flowing_silk,id=165504,bonus_id=4800/1537
 legs=leggings_of_dire_research,id=165499,bonus_id=4800/1537
 feet=lightfeather_footpads,id=165502,bonus_id=4800/1537
-finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_versatility
-finger2=band_of_multisided_strikes,id=165565,bonus_id=4800/1537,enchant=pact_of_versatility
+finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_critical_strike
+finger2=band_of_multisided_strikes,id=165565,bonus_id=4800/1537,enchant=pact_of_critical_strike
 trinket1=incandescent_sliver,id=165571,bonus_id=4800/1537
 trinket2=tidestorm_codex,id=165576,bonus_id=4800/1537
-main_hand=deathspeaker_spire,id=165597,bonus_id=4800/1537,enchant=torrent_of_elements
+main_hand=desecrated_blade_of_the_disciples,id=165919,bonus_id=4800/1537,enchant=torrent_of_elements
+off_hand=cursed_monkey_palm,id=165582,bonus_id=4800/1537
 
 save=T23_Mage_Frost.simc

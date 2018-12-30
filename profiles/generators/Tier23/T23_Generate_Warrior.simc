@@ -44,11 +44,11 @@ waist=hullplate_girdle,id=165559,bonus_id=4800/1537
 legs=arcing_thunderlizard_legplates,id=165560,bonus_id=4800/1537
 feet=coinage_stampers,id=165561,bonus_id=4800/1537
 finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_haste
-finger2=band_of_multisided_strikes,id=165565,bonus_id=4800/1537,enchant=pact_of_haste
+finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_haste
 trinket1=ramping_amplitude_gigavolt_engine,id=165580,bonus_id=4800/1537
 trinket2=everchill_anchor,id=165570,bonus_id=4800/1537
 main_hand=dawnbreaker,id=165586,bonus_id=4800/1537,enchant=masterful_navigation
-off_hand=khor_hammer_of_the_corrupted,id=160679,bonus_id=4800/1507,enchant=quick_navigation
+off_hand=crash_of_tides,id=165602,bonus_id=4800/1537,enchant=quick_navigation
 
 save=T23_Warrior_Fury.simc
 
