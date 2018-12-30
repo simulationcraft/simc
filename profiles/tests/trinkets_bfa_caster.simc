@@ -103,8 +103,8 @@ trinket1=,id=161119,ilevel=400
 copy="Crawg Gnawed Femur"
 trinket1=,id=163703,ilevel=400
 
-copy="Dread Aspirant's Badge"
-trinket1=,id=162966,ilevel=400
+copy="Dread Gladiator's Badge"
+trinket1=,id=161902,ilevel=400
 
 copy="Lion's Grace"
 trinket1=,id=161472,ilevel=400
@@ -115,9 +115,21 @@ trinket1=,id=161461,ilevel=400
 copy="Dread Gladiator's Insignia"
 trinket1=,id=161676,ilevel=400
 
-copy="Dread Aspirant's Medallion"
-trinket1=,id=162897,ilevel=400
+copy="Dread Gladiator's Medallion"
+trinket1=,id=161674,ilevel=400
 
 copy="Berserker's Juju"
 trinket1=,id=161117,ilevel=400
+
+copy="Emblazoned Alchemist Stone"
+trinket1=,id=166976,ilevel=415
+
+copy="Ancient Knot of Wisdom"
+trinket1=,id=161417,ilevel=400
+
+copy="Moonstone of Zin-Azshari"
+trinket1=,id=165666,ilevel=400
+
+copy="Sea Giant's Tidestone"
+trinket1=,id=165664,ilevel=400
 

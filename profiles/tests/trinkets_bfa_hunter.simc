@@ -109,8 +109,8 @@ trinket1=,id=161119,ilevel=400
 copy="Crawg Gnawed Femur"
 trinket1=,id=163703,ilevel=400
 
-copy="Dread Aspirant's Badge"
-trinket1=,id=162966,ilevel=400
+copy="Dread Gladiator's Badge"
+trinket1=,id=161902,ilevel=400
 
 copy="Lion's Guile"
 trinket1=,id=161473,ilevel=400
@@ -121,9 +121,24 @@ trinket1=,id=161462,ilevel=400
 copy="Dread Gladiator's Insignia"
 trinket1=,id=161676,ilevel=400
 
-copy="Dread Aspirant's Medallion"
-trinket1=,id=162897,ilevel=400
+copy="Dread Gladiator's Medallion"
+trinket1=,id=161674,ilevel=400
 
 copy="Berserker's Juju"
 trinket1=,id=161117,ilevel=400
+
+copy="Emblazoned Alchemist Stone"
+trinket1=,id=166976,ilevel=415
+
+copy="Forest Lord's Razorleaf"
+trinket1=,id=166794,ilevel=400
+
+copy="Razzashi Tooth Medallion"
+trinket1=,id=165667,ilevel=400
+
+copy="Kezan Stamped Bijou"
+trinket1=,id=165662,ilevel=400
+
+copy="Chargestone of the Thunder King's Court"
+trinket1=,id=165660,ilevel=400
 
