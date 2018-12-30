@@ -42,7 +42,7 @@ actions.cooldowns+=/shield_of_vengeance
 actions.cooldowns+=/avenging_wrath,if=buff.inquisition.up|!talent.inquisition.enabled
 actions.cooldowns+=/crusade,if=holy_power>=4
 
-actions.finishers=variable,name=ds_castable,value=spell_targets.divine_storm>=2
+actions.finishers=variable,name=ds_castable,value=spell_targets.divine_storm>=2&!talent.righteous_verdict.enabled|spell_targets.divine_storm>=3&talent.righteous_verdict.enabled
 actions.finishers+=/inquisition,if=buff.inquisition.down|buff.inquisition.remains<5&holy_power>=3|talent.execution_sentence.enabled&cooldown.execution_sentence.remains<10&buff.inquisition.remains<15|cooldown.avenging_wrath.remains<15&buff.inquisition.remains<20&holy_power>=3
 actions.finishers+=/execution_sentence,if=spell_targets.divine_storm<=2&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*2)
 actions.finishers+=/divine_storm,if=variable.ds_castable&buff.divine_purpose.react
