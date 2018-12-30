@@ -60,7 +60,6 @@ race=night_elf
 spec=subtlety
 role=attack
 position=back
-
 talents=2130031
 
 head=cowl_of_fluid_machinations,id=159302,bonus_id=5062/1587/4786/4775,azerite_powers=413/445/22/217/13

@@ -1,0 +1,117 @@
+warlock="T23_Warlock_Demonology"
+source=default
+spec=demonology
+level=120
+race=troll
+role=spell
+position=ranged_back
+talents=2303033
+
+# Default consumables
+potion=battle_potion_of_intellect
+flask=endless_fathoms
+food=bountiful_captains_feast
+augmentation=battle_scarred
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+actions.precombat+=/summon_pet
+actions.precombat+=/inner_demons,if=talent.inner_demons.enabled
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion
+actions.precombat+=/demonbolt
+
+# Executed every time the actor is available.
+actions=potion,if=pet.demonic_tyrant.active|target.time_to_die<30
+actions+=/use_items,if=pet.demonic_tyrant.active|target.time_to_die<=15
+actions+=/berserking,if=pet.demonic_tyrant.active|target.time_to_die<=15
+actions+=/blood_fury,if=pet.demonic_tyrant.active|target.time_to_die<=15
+actions+=/fireblood,if=pet.demonic_tyrant.active|target.time_to_die<=15
+actions+=/doom,if=!ticking&time_to_die>30&spell_targets.implosion<2
+actions+=/demonic_strength,if=(buff.wild_imps.stack<6|buff.demonic_power.up)|spell_targets.implosion<2
+actions+=/call_action_list,name=nether_portal,if=talent.nether_portal.enabled&spell_targets.implosion<=2
+actions+=/call_action_list,name=implosion,if=spell_targets.implosion>1
+actions+=/grimoire_felguard,if=cooldown.summon_demonic_tyrant.remains<13|!equipped.132369
+actions+=/summon_vilefiend,if=equipped.132369|cooldown.summon_demonic_tyrant.remains>40|cooldown.summon_demonic_tyrant.remains<12
+actions+=/call_dreadstalkers,if=equipped.132369|(cooldown.summon_demonic_tyrant.remains<9&buff.demonic_calling.remains)|(cooldown.summon_demonic_tyrant.remains<11&!buff.demonic_calling.remains)|cooldown.summon_demonic_tyrant.remains>14
+actions+=/summon_demonic_tyrant,if=equipped.132369|(buff.dreadstalkers.remains>cast_time&(buff.wild_imps.stack>=3+talent.inner_demons.enabled+talent.demonic_consumption.enabled*3|prev_gcd.1.hand_of_guldan&(!talent.demonic_consumption.enabled|buff.wild_imps.stack>=3+talent.inner_demons.enabled))&(soul_shard<3|buff.dreadstalkers.remains<gcd*2.7|buff.grimoire_felguard.remains<gcd*2.7))
+actions+=/power_siphon,if=buff.wild_imps.stack>=2&buff.demonic_core.stack<=2&buff.demonic_power.down&spell_targets.implosion<2
+actions+=/doom,if=talent.doom.enabled&refreshable&time_to_die>(dot.doom.remains+30)
+actions+=/hand_of_guldan,if=soul_shard>=5|(soul_shard>=3&cooldown.call_dreadstalkers.remains>4&(!talent.summon_vilefiend.enabled|cooldown.summon_vilefiend.remains>3))
+actions+=/soul_strike,if=soul_shard<5&buff.demonic_core.stack<=2
+actions+=/demonbolt,if=soul_shard<=3&buff.demonic_core.up&((cooldown.summon_demonic_tyrant.remains<10|cooldown.summon_demonic_tyrant.remains>22)|buff.demonic_core.stack>=3|buff.demonic_core.remains<5|time_to_die<25)
+actions+=/bilescourge_bombers
+actions+=/call_action_list,name=build_a_shard
+
+actions.build_a_shard=soul_strike
+actions.build_a_shard+=/shadow_bolt
+
+actions.implosion=implosion,if=(buff.wild_imps.stack>=6&(soul_shard<3|prev_gcd.1.call_dreadstalkers|buff.wild_imps.stack>=9|prev_gcd.1.bilescourge_bombers|(!prev_gcd.1.hand_of_guldan&!prev_gcd.2.hand_of_guldan))&!prev_gcd.1.hand_of_guldan&!prev_gcd.2.hand_of_guldan&buff.demonic_power.down)|(time_to_die<3&buff.wild_imps.stack>0)|(prev_gcd.2.call_dreadstalkers&buff.wild_imps.stack>2&!talent.demonic_calling.enabled)
+actions.implosion+=/grimoire_felguard,if=cooldown.summon_demonic_tyrant.remains<13|!equipped.132369
+actions.implosion+=/call_dreadstalkers,if=(cooldown.summon_demonic_tyrant.remains<9&buff.demonic_calling.remains)|(cooldown.summon_demonic_tyrant.remains<11&!buff.demonic_calling.remains)|cooldown.summon_demonic_tyrant.remains>14
+actions.implosion+=/summon_demonic_tyrant
+actions.implosion+=/hand_of_guldan,if=soul_shard>=5
+actions.implosion+=/hand_of_guldan,if=soul_shard>=3&(((prev_gcd.2.hand_of_guldan|buff.wild_imps.stack>=3)&buff.wild_imps.stack<9)|cooldown.summon_demonic_tyrant.remains<=gcd*2|buff.demonic_power.remains>gcd*2)
+actions.implosion+=/demonbolt,if=prev_gcd.1.hand_of_guldan&soul_shard>=1&(buff.wild_imps.stack<=3|prev_gcd.3.hand_of_guldan)&soul_shard<4&buff.demonic_core.up
+actions.implosion+=/summon_vilefiend,if=(cooldown.summon_demonic_tyrant.remains>40&spell_targets.implosion<=2)|cooldown.summon_demonic_tyrant.remains<12
+actions.implosion+=/bilescourge_bombers,if=cooldown.summon_demonic_tyrant.remains>9
+actions.implosion+=/soul_strike,if=soul_shard<5&buff.demonic_core.stack<=2
+actions.implosion+=/demonbolt,if=soul_shard<=3&buff.demonic_core.up&(buff.demonic_core.stack>=3|buff.demonic_core.remains<=gcd*5.7)
+actions.implosion+=/doom,cycle_targets=1,max_cycle_targets=7,if=refreshable
+actions.implosion+=/call_action_list,name=build_a_shard
+
+actions.nether_portal=call_action_list,name=nether_portal_building,if=cooldown.nether_portal.remains<20
+actions.nether_portal+=/call_action_list,name=nether_portal_active,if=cooldown.nether_portal.remains>165
+
+actions.nether_portal_active=bilescourge_bombers
+actions.nether_portal_active+=/grimoire_felguard,if=cooldown.summon_demonic_tyrant.remains<13|!equipped.132369
+actions.nether_portal_active+=/summon_vilefiend,if=cooldown.summon_demonic_tyrant.remains>40|cooldown.summon_demonic_tyrant.remains<12
+actions.nether_portal_active+=/call_dreadstalkers,if=(cooldown.summon_demonic_tyrant.remains<9&buff.demonic_calling.remains)|(cooldown.summon_demonic_tyrant.remains<11&!buff.demonic_calling.remains)|cooldown.summon_demonic_tyrant.remains>14
+actions.nether_portal_active+=/call_action_list,name=build_a_shard,if=soul_shard=1&(cooldown.call_dreadstalkers.remains<action.shadow_bolt.cast_time|(talent.bilescourge_bombers.enabled&cooldown.bilescourge_bombers.remains<action.shadow_bolt.cast_time))
+actions.nether_portal_active+=/hand_of_guldan,if=((cooldown.call_dreadstalkers.remains>action.demonbolt.cast_time)&(cooldown.call_dreadstalkers.remains>action.shadow_bolt.cast_time))&cooldown.nether_portal.remains>(165+action.hand_of_guldan.cast_time)
+actions.nether_portal_active+=/summon_demonic_tyrant,if=buff.nether_portal.remains<5&soul_shard=0
+actions.nether_portal_active+=/summon_demonic_tyrant,if=buff.nether_portal.remains<action.summon_demonic_tyrant.cast_time+0.5
+actions.nether_portal_active+=/demonbolt,if=buff.demonic_core.up
+actions.nether_portal_active+=/call_action_list,name=build_a_shard
+
+actions.nether_portal_building=nether_portal,if=soul_shard>=5&(!talent.power_siphon.enabled|buff.demonic_core.up)
+actions.nether_portal_building+=/call_dreadstalkers
+actions.nether_portal_building+=/hand_of_guldan,if=cooldown.call_dreadstalkers.remains>18&soul_shard>=3
+actions.nether_portal_building+=/power_siphon,if=buff.wild_imps.stack>=2&buff.demonic_core.stack<=2&buff.demonic_power.down&soul_shard>=3
+actions.nether_portal_building+=/hand_of_guldan,if=soul_shard>=5
+actions.nether_portal_building+=/call_action_list,name=build_a_shard
+
+head=grasping_crown_of_the_deep,id=159252,bonus_id=5062/1587/4786/4775,azerite_powers=458/479/22/15/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+shoulders=brood_cleansers_amice,id=159254,bonus_id=5062/1587/4786/4775,azerite_powers=458/196/459/84/13
+back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
+chest=inmates_straight_robe,id=159268,bonus_id=5062/1587/4786/4775,azerite_powers=458/479/22/83/13
+wrists=bracers_of_zealous_calling,id=165501,bonus_id=4800/1537
+hands=manceroys_flamefists,id=165503,bonus_id=4800/1537
+waist=waistcord_of_flowing_silk,id=165504,bonus_id=4800/1537
+legs=wavecaller_leggings,id=165506,bonus_id=4800/1537
+feet=lightfeather_footpads,id=165502,bonus_id=4800/1537
+finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_haste
+finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_haste
+trinket1=incandescent_sliver,id=165571,bonus_id=4800/1537
+trinket2=tidestorm_codex,id=165576,bonus_id=4800/1537
+main_hand=deathspeaker_spire,id=165597,bonus_id=4800/1537,enchant=quick_navigation
+
+# Gear Summary
+# gear_ilvl=416.27
+# gear_stamina=9920
+# gear_intellect=7293
+# gear_crit_rating=546
+# gear_haste_rating=1495
+# gear_mastery_rating=879
+# gear_versatility_rating=445
+# gear_armor=1442
+default_pet=felguard

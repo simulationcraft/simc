@@ -17,25 +17,25 @@
 T23_Generate_Death_Knight.simc
 
 # Demon Hunter
-# T23_Generate_Demon_Hunter.simc
+T23_Generate_Demon_Hunter.simc
 
 # Druid
-# T23_Generate_Druid.simc
+T23_Generate_Druid.simc
 
 # Hunter
 T23_Generate_Hunter.simc
 
 # Mage
-# T23_Generate_Mage.simc
+T23_Generate_Mage.simc
 
 # Monk
-# T23_Generate_Monk.simc
+T23_Generate_Monk.simc
 
 # Paladin
 T23_Generate_Paladin.simc
 
 # Priest
-# T23_Generate_Priest.simc
+T23_Generate_Priest.simc
 
 # Rogue
 T23_Generate_Rogue.simc
@@ -44,7 +44,7 @@ T23_Generate_Rogue.simc
 T23_Generate_Shaman.simc
 
 # Warlock
-# T23_Generate_Warlock.simc
+T23_Generate_Warlock.simc
 
 # Warrior
 T23_Generate_Warrior.simc
