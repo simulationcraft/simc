@@ -1181,7 +1181,7 @@ void paladin_t::create_buffs()
 
 std::string paladin_t::default_potion() const
 {
-  std::string retribution_pot = (true_level > 110) ? "bursting_blood" :
+  std::string retribution_pot = (true_level > 110) ? "battle_potion_of_strength" :
                                 (true_level > 100) ? "old_war" :
                                 (true_level >= 90) ? "draenic_strength" :
                                 (true_level >= 85) ? "mogu_power" :

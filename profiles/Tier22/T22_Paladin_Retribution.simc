@@ -8,7 +8,7 @@ position=back
 talents=2303003
 
 # Default consumables
-potion=bursting_blood
+potion=battle_potion_of_strength
 flask=flask_of_the_undertow
 food=bountiful_captains_feast
 augmentation=battle_scarred

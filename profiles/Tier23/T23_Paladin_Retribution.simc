@@ -5,10 +5,10 @@ level=120
 race=human
 role=attack
 position=back
-talents=2303002
+talents=2302103
 
 # Default consumables
-potion=bursting_blood
+potion=battle_potion_of_strength
 flask=flask_of_the_undertow
 food=bountiful_captains_feast
 augmentation=battle_scarred
@@ -35,15 +35,14 @@ actions+=/call_action_list,name=opener
 actions+=/call_action_list,name=cooldowns
 actions+=/call_action_list,name=generators
 
-actions.cooldowns=use_item,name=ramping_amplitude_gigavolt_engine,if=(buff.avenging_wrath.up|buff.crusade.up)
-actions.cooldowns+=/potion,if=(buff.bloodlust.react|buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<25|target.time_to_die<=40)
+actions.cooldowns=potion,if=(buff.bloodlust.react|buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<25|target.time_to_die<=40)
 actions.cooldowns+=/lights_judgment,if=spell_targets.lights_judgment>=2|(!raid_event.adds.exists|raid_event.adds.in>75)
 actions.cooldowns+=/fireblood,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10
 actions.cooldowns+=/shield_of_vengeance
 actions.cooldowns+=/avenging_wrath,if=buff.inquisition.up|!talent.inquisition.enabled
 actions.cooldowns+=/crusade,if=holy_power>=4
 
-actions.finishers=variable,name=ds_castable,value=spell_targets.divine_storm>=2
+actions.finishers=variable,name=ds_castable,value=spell_targets.divine_storm>=2&!talent.righteous_verdict.enabled|spell_targets.divine_storm>=3&talent.righteous_verdict.enabled
 actions.finishers+=/inquisition,if=buff.inquisition.down|buff.inquisition.remains<5&holy_power>=3|talent.execution_sentence.enabled&cooldown.execution_sentence.remains<10&buff.inquisition.remains<15|cooldown.avenging_wrath.remains<15&buff.inquisition.remains<20&holy_power>=3
 actions.finishers+=/execution_sentence,if=spell_targets.divine_storm<=2&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*2)
 actions.finishers+=/divine_storm,if=variable.ds_castable&buff.divine_purpose.react
@@ -70,28 +69,28 @@ actions.opener+=/sequence,if=talent.wake_of_ashes.enabled&talent.crusade.enabled
 actions.opener+=/sequence,if=talent.wake_of_ashes.enabled&talent.crusade.enabled&!talent.execution_sentence.enabled&talent.hammer_of_wrath.enabled,name=wake_opener_HoW:shield_of_vengeance:blade_of_justice:judgment:crusade:templars_verdict:wake_of_ashes:templars_verdict:hammer_of_wrath:templars_verdict
 actions.opener+=/sequence,if=talent.wake_of_ashes.enabled&talent.inquisition.enabled,name=wake_opener_Inq:shield_of_vengeance:blade_of_justice:judgment:inquisition:avenging_wrath:wake_of_ashes
 
-head=glaciercrest_helm,id=165823,bonus_id=4824/1537/4775,azerite_powers=396/453/459/471/13
+head=overseers_riot_helmet,id=159414,bonus_id=5062/1587/4786/4775,azerite_powers=396/154/18/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
-shoulders=ridgeplate_pauldrons,id=165562,bonus_id=4824/1537/4775,azerite_powers=154/396/20/206/13
+shoulders=skyscorcher_pauldrons,id=159415,bonus_id=5062/1587/4786/4775,azerite_powers=396/154/459/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
-chest=chestguard_of_the_deep_denizen,id=159408,bonus_id=5062/1587/4786/4775,azerite_powers=154/396/22/15/13
+chest=chestguard_of_the_deep_denizen,id=159408,bonus_id=5062/1587/4786/4775,azerite_powers=453/396/22/13
 wrists=splinterbone_vambraces,id=165551,bonus_id=4800/1537
 hands=crusade_pummelers,id=165549,bonus_id=4800/1537
 waist=hullplate_girdle,id=165559,bonus_id=4800/1537
 legs=arcing_thunderlizard_legplates,id=165560,bonus_id=4800/1537
 feet=coinage_stampers,id=165561,bonus_id=4800/1537
-finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_haste
-finger2=band_of_multisided_strikes,id=165565,bonus_id=4800/1537,enchant=pact_of_haste
-trinket1=ramping_amplitude_gigavolt_engine,id=165580,bonus_id=4800/1537
+finger1=band_of_multisided_strikes,id=165565,bonus_id=4800/1537,enchant_id=5943
+finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant_id=5943
+trinket1=eternal_alchemist_stone,id=165928
 trinket2=everchill_anchor,id=165570,bonus_id=4800/1537
-main_hand=dawnbreaker,id=165586,bonus_id=4800/1537,enchant=quick_navigation
+main_hand=dawnbreaker,id=165586,bonus_id=4800/1537,enchant_id=5964
 
 # Gear Summary
 # gear_ilvl=416.27
-# gear_strength=5796
+# gear_strength=5383
 # gear_stamina=9920
 # gear_crit_rating=912
-# gear_haste_rating=1186
-# gear_mastery_rating=712
-# gear_versatility_rating=554
+# gear_haste_rating=1082
+# gear_mastery_rating=1031
+# gear_versatility_rating=537
 # gear_armor=5052
