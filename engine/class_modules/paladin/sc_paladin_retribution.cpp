@@ -921,11 +921,18 @@ void paladin_t::generate_action_prio_list_ret()
   def -> add_action( "call_action_list,name=generators" );
 
   // Items
+  bool has_knot = false;
   int num_items = ( int ) items.size();
   for ( int i = 0; i < num_items; i++ )
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
+      if ( items[i].name_str == "knot_of_ancient_fury" )
+      {
+        has_knot = true;
+        continue;
+      }
+
       std::string item_str;
       if ( items[i].name_str == "razdunks_big_red_button" )
       {
@@ -999,6 +1006,11 @@ void paladin_t::generate_action_prio_list_ret()
     }
   }
 
+  if ( has_knot )
+  {
+    cds -> add_action( "use_item,name=knot_of_ancient_fury,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10|cooldown.avenging_wrath.remains>30|!buff.crusade.up&cooldown.crusade.remains>30" );
+  }
+
   if ( sim -> allow_potions )
   {
     if ( true_level > 100 )
@@ -1039,7 +1051,7 @@ void paladin_t::generate_action_prio_list_ret()
   opener -> add_action( "sequence,if=talent.wake_of_ashes.enabled&talent.crusade.enabled&!talent.execution_sentence.enabled&talent.hammer_of_wrath.enabled,name=wake_opener_HoW:shield_of_vengeance:blade_of_justice:judgment:crusade:templars_verdict:wake_of_ashes:templars_verdict:hammer_of_wrath:templars_verdict" );
   opener -> add_action( "sequence,if=talent.wake_of_ashes.enabled&talent.inquisition.enabled,name=wake_opener_Inq:shield_of_vengeance:blade_of_justice:judgment:inquisition:avenging_wrath:wake_of_ashes" );
 
-  finishers -> add_action( "variable,name=ds_castable,value=spell_targets.divine_storm>=2" );
+  finishers -> add_action( "actions.finishers=variable,name=ds_castable,value=spell_targets.divine_storm>=2&!talent.righteous_verdict.enabled|spell_targets.divine_storm>=3&talent.righteous_verdict.enabled" );
   finishers -> add_talent( this, "Inquisition", "if=buff.inquisition.down|buff.inquisition.remains<5&holy_power>=3|talent.execution_sentence.enabled&cooldown.execution_sentence.remains<10&buff.inquisition.remains<15|cooldown.avenging_wrath.remains<15&buff.inquisition.remains<20&holy_power>=3" );
   finishers -> add_talent( this, "Execution Sentence", "if=spell_targets.divine_storm<=2&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*2)" );
   finishers -> add_action( this, "Divine Storm", "if=variable.ds_castable&buff.divine_purpose.react" );

@@ -4,7 +4,7 @@ race=human
 spec=retribution
 role=attack
 position=back
-talents=2303002
+talents=2302103
 
 head=glaciercrest_helm,id=165823,bonus_id=4824/1537/4775,azerite_powers=396/453/459/471/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48

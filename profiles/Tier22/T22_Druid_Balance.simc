@@ -61,9 +61,9 @@ actions+=/cancel_buff,name=starlord,if=buff.starlord.remains<8&!solar_wrath.ap_c
 actions+=/starfall,if=(buff.starlord.stack<3|buff.starlord.remains>=8)&spell_targets>=variable.sf_targets&(target.time_to_die+1)*spell_targets>cost%2.5
 actions+=/starsurge,if=(talent.starlord.enabled&(buff.starlord.stack<3|buff.starlord.remains>=8&buff.arcanic_pulsar.stack<8)|!talent.starlord.enabled&(buff.arcanic_pulsar.stack<8|buff.ca_inc.up))&spell_targets.starfall<variable.sf_targets&buff.lunar_empowerment.stack+buff.solar_empowerment.stack<4&buff.solar_empowerment.stack<3&buff.lunar_empowerment.stack<3&(!variable.az_ss|!buff.ca_inc.up|!prev.starsurge)|target.time_to_die<=execute_time*astral_power%40|!solar_wrath.ap_check
 # DoTs
-actions+=/sunfire,target_if=refreshable,if=ap_check&floor(target.time_to_die%tick_time)*spell_targets>=4+spell_targets&(spell_targets>1+talent.twin_moons.enabled|dot.moonfire.ticking)&(!variable.az_ss|!buff.ca_inc.up|!prev.sunfire)
-actions+=/moonfire,target_if=refreshable,if=ap_check&floor(target.time_to_die%tick_time)*spell_targets>=6&(!variable.az_ss|!buff.ca_inc.up|!prev.moonfire)
-actions+=/stellar_flare,target_if=refreshable,if=ap_check&floor(target.time_to_die%tick_time)>=5&(!variable.az_ss|!buff.ca_inc.up|!prev.stellar_flare)
+actions+=/sunfire,target_if=refreshable,if=ap_check&floor(target.time_to_die%(2*spell_haste))*spell_targets>=ceil(floor(2%spell_targets)*1.5)+2*spell_targets&(spell_targets>1+talent.twin_moons.enabled|dot.moonfire.ticking)&(!variable.az_ss|!buff.ca_inc.up|!prev.sunfire)
+actions+=/moonfire,target_if=refreshable,if=ap_check&floor(target.time_to_die%(2*spell_haste))*spell_targets>=6&(!variable.az_ss|!buff.ca_inc.up|!prev.moonfire)
+actions+=/stellar_flare,target_if=refreshable,if=ap_check&floor(target.time_to_die%(2*spell_haste))>=5&(!variable.az_ss|!buff.ca_inc.up|!prev.stellar_flare)
 # Generators
 actions+=/new_moon,if=ap_check
 actions+=/half_moon,if=ap_check
