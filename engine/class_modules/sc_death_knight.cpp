@@ -465,6 +465,7 @@ public:
     buff_t* icy_citadel;
 
     buff_t* festermight;
+    buff_t* helchains;
   } buffs;
 
   struct runeforge_t {
@@ -812,7 +813,7 @@ public:
     azerite_power_t cankerous_wounds; // Is it a separate roll or does it affect the 50/50 roll between 2-3 wounds ?
     azerite_power_t festermight;
     azerite_power_t harrowing_decay; // TODO : How does it refresh on multiple DC casts in a row ?
-    azerite_power_t helchains; // TODO: NYI
+    azerite_power_t helchains; // The ingame implementation is a mess with multiple helchains buffs on the player and multiple helchains damage spells. The simc version is simplified
     azerite_power_t last_surprise; 
     azerite_power_t magus_of_the_dead; // Trait is a buggy mess, the pet can melee in the middle of casting (not implemented because not reliable) and sometimes doesn't cast at all
   }azerite;
@@ -3881,10 +3882,58 @@ struct dark_command_t: public death_knight_spell_t
 
 // Dark Transformation ======================================================
 
+struct helchains_damage_t : public death_knight_spell_t
+{
+  helchains_damage_t( death_knight_t* p ) :
+    death_knight_spell_t( "helchains", p, p -> find_spell( 290814 ) )
+  {
+    background = true;
+
+    base_dd_min = base_dd_max = p -> azerite.helchains.value( 1 );
+    // TODO: the aoe is a line between the player and its pet, find a better way to translate that into # of targets hit
+    // limited target threshold?
+    // User inputted value?
+    // 2018-12-30 hitting everything is good enough for now
+    aoe = -1;
+  }
+};
+
+struct helchains_buff_t : public buff_t
+{
+  helchains_damage_t* damage;
+
+  helchains_buff_t( death_knight_t* p ) :
+    buff_t( p, "helchains", 
+            p -> azerite.helchains.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() ),
+    damage( new helchains_damage_t( p ) )
+  {
+    tick_zero = true;
+    buff_period = timespan_t::from_seconds( 1.0 );
+    set_tick_behavior( buff_tick_behavior::CLIP );
+    set_tick_callback( [ this ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ ) 
+    {
+      damage -> execute();
+    } ); 
+  }
+
+  // Helchains ticks twice on buff application and buff expiration, hence the following overrides
+  // https://github.com/SimCMinMax/WoW-BugTracker/issues/390
+  void execute( int stacks, double value, timespan_t duration ) override
+  {
+    buff_t::execute( stacks, value, duration );
+    damage -> execute();
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    damage -> execute();
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+  }
+};
+
 struct dark_transformation_buff_t : public buff_t
 {
-
-  dark_transformation_buff_t( death_knight_t* p ):
+  dark_transformation_buff_t( death_knight_t* p ) :
     buff_t( p, "dark_transformation", p -> spec.dark_transformation )
   {
     set_cooldown( timespan_t::zero() );
@@ -3913,6 +3962,11 @@ struct dark_transformation_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p() -> buffs.dark_transformation -> trigger();
+
+    if ( p() -> azerite.helchains.enabled() )
+    {
+      p() -> buffs.helchains -> trigger();
+    }
   }
 
   bool ready() override
@@ -7589,7 +7643,7 @@ void death_knight_t::init_spells()
   azerite.harrowing_decay        = find_azerite_spell( "Harrowing Decay" );
   azerite.cankerous_wounds       = find_azerite_spell( "Cankerous Wounds" );
   azerite.magus_of_the_dead      = find_azerite_spell( "Magus of the Dead" ); // TODO: NYI
-  azerite.helchains              = find_azerite_spell( "Helchains" ); // TODO: NYI
+  azerite.helchains              = find_azerite_spell( "Helchains" );
 }
 
 // death_knight_t::default_apl_dps_precombat ================================
@@ -8187,6 +8241,9 @@ void death_knight_t::create_buffs()
 
   buffs.frostwhelps_indignation = make_buff<stat_buff_t>( this, "frostwhelps_indignation", find_spell( 287338 ) )
     -> add_stat( STAT_MASTERY_RATING, azerite.frostwhelps_indignation.value( 2 ) );
+
+  buffs.helchains = new helchains_buff_t( this );
+    
 }
 
 // death_knight_t::init_gains ===============================================
