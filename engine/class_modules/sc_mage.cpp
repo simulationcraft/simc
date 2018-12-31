@@ -81,7 +81,7 @@ public:
   {
     if ( !state )
     {
-      return timespan_t::zero();
+      return 0_ms;
     }
     return now - last_enable;
   }
@@ -208,11 +208,11 @@ struct cooldown_waste_data_t : private noncopyable
 
   bool may_add( timespan_t cd_override = timespan_t::min() ) const
   {
-    return ( cd->duration > timespan_t::zero() || cd_override > timespan_t::zero() )
+    return ( cd->duration > 0_ms || cd_override > 0_ms )
         && ( ( cd->charges == 1 && cd->up() ) || ( cd->charges > 1 && cd->current_charge == cd->charges ) );
   }
 
-  void add( timespan_t cd_override = timespan_t::min(), timespan_t time_to_execute = timespan_t::zero() )
+  void add( timespan_t cd_override = timespan_t::min(), timespan_t time_to_execute = 0_ms )
   {
     if ( may_add( cd_override ) )
     {
@@ -477,9 +477,9 @@ public:
   // Options
   struct options_t
   {
-    timespan_t firestarter_time = timespan_t::zero();
-    timespan_t frozen_duration  = timespan_t::from_seconds( 1.0 );
-    timespan_t scorch_delay     = timespan_t::from_millis( 15 );
+    timespan_t firestarter_time = 0_ms;
+    timespan_t frozen_duration  = 1.0_s;
+    timespan_t scorch_delay     = 15_ms;
 
     int blessing_of_wisdom_count = 0;
 
@@ -855,7 +855,7 @@ struct waterbolt_t : public mage_pet_spell_t
     mage_pet_spell_t( "waterbolt", p, p->find_pet_spell( "Waterbolt" ) )
   {
     parse_options( options_str );
-    trigger_gcd = timespan_t::zero();
+    trigger_gcd = 0_ms;
   }
 
   timespan_t execute_time() const override
@@ -863,7 +863,7 @@ struct waterbolt_t : public mage_pet_spell_t
     timespan_t cast_time = mage_pet_spell_t::execute_time();
 
     // Waterbolt has 1 s GCD, here we model it as min cast time.
-    return std::max( cast_time, timespan_t::from_seconds( 1.0 ) );
+    return std::max( cast_time, 1.0_s );
   }
 };
 
@@ -1111,7 +1111,7 @@ struct combustion_buff_t : public buff_t
     current_amount(),
     multiplier( data().effectN( 3 ).percent() )
   {
-    set_cooldown( timespan_t::zero() );
+    set_cooldown( 0_ms );
     set_default_value( data().effectN( 1 ).percent() );
     set_tick_zero( true );
     buff_duration += p->sets->set( MAGE_FIRE, T21, B2 )->effectN( 1 ).time_value();
@@ -1149,7 +1149,7 @@ struct incanters_flow_t : public buff_t
   incanters_flow_t( mage_t* p ) :
     buff_t( p, "incanters_flow", p->find_spell( 116267 ) )
   {
-    set_duration( timespan_t::zero() );
+    set_duration( 0_ms );
     set_period( p->talents.incanters_flow->effectN( 1 ).period() );
     set_default_value( data().effectN( 1 ).percent() );
 
@@ -1192,7 +1192,7 @@ struct icy_veins_buff_t : public buff_t
     buff_t( p, "icy_veins", p->find_spell( 12472 ) )
   {
     set_default_value( data().effectN( 1 ).percent() );
-    set_cooldown( timespan_t::zero() );
+    set_cooldown( 0_ms );
     add_invalidate( CACHE_SPELL_HASTE );
     buff_duration += p->talents.thermal_void->effectN( 2 ).time_value();
   }
@@ -1202,7 +1202,7 @@ struct icy_veins_buff_t : public buff_t
     buff_t::expire_override( stacks, duration );
 
     auto mage = debug_cast<mage_t*>( player );
-    if ( mage->talents.thermal_void->ok() && duration == timespan_t::zero() )
+    if ( mage->talents.thermal_void->ok() && duration == 0_ms )
     {
       mage->sample_data.icy_veins_duration->add( elapsed( sim->current_time() ).total_seconds() );
     }
@@ -1312,7 +1312,7 @@ public:
     may_crit = tick_may_crit = true;
     weapon_multiplier = 0.0;
     affected_by.ice_floes = data().affected_by( p->talents.ice_floes->effectN( 1 ) );
-    track_cd_waste = data().cooldown() > timespan_t::zero() || data().charge_cooldown() > timespan_t::zero();
+    track_cd_waste = data().cooldown() > 0_ms || data().charge_cooldown() > 0_ms;
   }
 
   mage_t* p()
@@ -1449,7 +1449,7 @@ public:
     return spell_t::usable_moving();
   }
 
-  bool trigger_delayed_buff( buff_t* buff, double chance, timespan_t delay = timespan_t::from_seconds( 0.15 ) )
+  bool trigger_delayed_buff( buff_t* buff, double chance, timespan_t delay = 0.15_s )
   {
     bool success = rng().roll( chance );
     if ( success )
@@ -1486,7 +1486,7 @@ public:
       trigger_delayed_buff( p()->buffs.clearcasting, proc_chance );
     }
 
-    if ( !background && affected_by.ice_floes && time_to_execute > timespan_t::zero() )
+    if ( !background && affected_by.ice_floes && time_to_execute > 0_ms )
     {
       p()->buffs.ice_floes->decrement();
     }
@@ -1710,7 +1710,7 @@ struct fire_mage_spell_t : public mage_spell_t
       // Non-crit with HU => remove HU
       if ( p->buffs.heating_up->check() )
       {
-        if ( p->buffs.heating_up->elapsed( sim->current_time() ) > timespan_t::from_millis( 200 ) )
+        if ( p->buffs.heating_up->elapsed( sim->current_time() ) > 0.2_s )
         {
           p->procs.heating_up_removed->occur();
           p->buffs.heating_up->expire();
@@ -1760,7 +1760,7 @@ struct fire_mage_spell_t : public mage_spell_t
       return false;
 
     // Check for user-specified override.
-    if ( p()->options.firestarter_time > timespan_t::zero() )
+    if ( p()->options.firestarter_time > 0_ms )
     {
       return sim->current_time() < p()->options.firestarter_time;
     }
@@ -1815,7 +1815,7 @@ struct hot_streak_spell_t : public fire_mage_spell_t
   timespan_t execute_time() const override
   {
     if ( p()->buffs.hot_streak->check() )
-      return timespan_t::zero();
+      return 0_ms;
 
     return fire_mage_spell_t::execute_time();
   }
@@ -1833,14 +1833,14 @@ struct hot_streak_spell_t : public fire_mage_spell_t
 
   void execute() override
   {
-    last_hot_streak = p()->buffs.hot_streak->up() && time_to_execute == timespan_t::zero();
+    last_hot_streak = p()->buffs.hot_streak->up() && time_to_execute == 0_ms;
     fire_mage_spell_t::execute();
 
     // Ignition/Critical Massive buffs are removed shortly after Flamestrike/Pyroblast cast.
     // In a situation where you're hardcasting FS/PB followed by a Hot Streak FS/FB, both
     // spells actually benefit. As of build 25881, 2018-01-22.
-    p()->buffs.ignition->expire( p()->bugs ? timespan_t::from_millis( 15 ) : timespan_t::zero() );
-    p()->buffs.critical_massive->expire( p()->bugs ? timespan_t::from_millis( 15 ) : timespan_t::zero() );
+    p()->buffs.ignition->expire( p()->bugs ? 15_ms : 0_ms );
+    p()->buffs.critical_massive->expire( p()->bugs ? 15_ms : 0_ms );
 
     if ( last_hot_streak )
     {
@@ -2296,7 +2296,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
     c *= 1.0 + p()->buffs.arcane_charge->check()
              * p()->spec.arcane_charge->effectN( 5 ).percent();
 
-    return std::max( 0.0, c );
+    return std::max( c, 0.0 );
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -2346,7 +2346,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
   timespan_t execute_time() const override
   {
     if ( p()->buffs.presence_of_mind->check() )
-      return timespan_t::zero();
+      return 0_ms;
 
     timespan_t t = arcane_mage_spell_t::execute_time();
 
@@ -2811,7 +2811,7 @@ struct blizzard_t : public frost_mage_spell_t
   timespan_t execute_time() const override
   {
     if ( p()->buffs.freezing_rain->check() )
-      return timespan_t::zero();
+      return 0_ms;
 
     return frost_mage_spell_t::execute_time();
   }
@@ -2882,7 +2882,7 @@ struct combustion_t : public fire_mage_spell_t
     fire_mage_spell_t( "combustion", p, p->find_specialization_spell( "Combustion" ) )
   {
     parse_options( options_str );
-    dot_duration = timespan_t::zero();
+    dot_duration = 0_ms;
     harmful = false;
     usable_while_casting = true;
   }
@@ -2941,7 +2941,7 @@ struct comet_storm_t : public frost_mage_spell_t
     frost_mage_spell_t::impact( s );
 
     int pulse_count = 7;
-    timespan_t pulse_time = timespan_t::from_seconds( 0.2 );
+    timespan_t pulse_time = 0.2_s;
     p()->ground_aoe_expiration[ name_str ] = sim->current_time() + pulse_count * pulse_time;
 
     make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
@@ -3054,7 +3054,7 @@ struct evocation_t : public arcane_mage_spell_t
   {
     parse_options( options_str );
 
-    base_tick_time = timespan_t::from_seconds( 1.0 );
+    base_tick_time = 1.0_s;
     dot_duration = data().duration();
     channeled = ignore_false_positive = tick_zero = true;
     harmful = false;
@@ -3145,7 +3145,7 @@ struct fireball_t : public fire_mage_spell_t
   timespan_t travel_time() const override
   {
     timespan_t t = fire_mage_spell_t::travel_time();
-    return std::min( timespan_t::from_seconds( 0.75 ), t );
+    return std::min( t, 0.75_s );
   }
 
   void execute() override
@@ -3308,7 +3308,7 @@ struct flurry_bolt_t : public frost_mage_spell_t
       // the Winter's Chill window. So here we just subtract 1 ms to make
       // sure it hits while the debuff is up.
       make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
-        .pulse_time( timespan_t::from_millis( 999 ) )
+        .pulse_time( 999_ms )
         .target( s->target )
         .n_pulses( 1 )
         .action( p()->action.glacial_assault ) );
@@ -3371,7 +3371,7 @@ struct flurry_t : public frost_mage_spell_t
   timespan_t execute_time() const override
   {
     if ( p()->buffs.brain_freeze->check() )
-      return timespan_t::zero();
+      return 0_ms;
 
     return frost_mage_spell_t::execute_time();
   }
@@ -3396,7 +3396,7 @@ struct flurry_t : public frost_mage_spell_t
     frost_mage_spell_t::impact( s );
 
     // TODO: Remove hardcoded values once it exists in spell data for bolt impact timing.
-    timespan_t pulse_time = s->haste * timespan_t::from_seconds( 0.4 );
+    timespan_t pulse_time = s->haste * 0.4_s;
 
     make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
       .pulse_time( pulse_time )
@@ -3564,7 +3564,7 @@ struct frozen_orb_t : public frost_mage_spell_t
     timespan_t t = frost_mage_spell_t::travel_time();
 
     // Frozen Orb activates after about 0.5 s, even in melee range.
-    t = std::max( t, timespan_t::from_seconds( 0.5 ) );
+    t = std::max( t, 0.5_s );
 
     return t;
   }
@@ -3590,7 +3590,7 @@ struct frozen_orb_t : public frost_mage_spell_t
     if ( result_is_hit( s->result ) )
     {
       int pulse_count = 20;
-      timespan_t pulse_time = timespan_t::from_seconds( 0.5 );
+      timespan_t pulse_time = 0.5_s;
       p()->ground_aoe_expiration[ name_str ] = sim->current_time() + ( pulse_count - 1 ) * pulse_time;
 
       trigger_fof( 1.0 );
@@ -3838,7 +3838,7 @@ struct ice_lance_t : public frost_mage_spell_t
     if ( p()->options.allow_shimmer_lance && p()->buffs.shimmer->check() )
     {
       double shimmer_distance = p()->talents.shimmer->effectN( 1 ).radius_max();
-      t = std::max( t - timespan_t::from_seconds( shimmer_distance / travel_speed ), timespan_t::from_millis( 1 ) );
+      t = std::max( t - timespan_t::from_seconds( shimmer_distance / travel_speed ), 1_ms );
     }
 
     return t;
@@ -3880,7 +3880,7 @@ struct ice_lance_t : public frost_mage_spell_t
       record_shatter_source( s, cleave_source );
     }
 
-    p()->buffs.arctic_blast->expire( timespan_t::from_seconds( 0.5 ) );
+    p()->buffs.arctic_blast->expire( 0.5_s );
   }
 
   double action_multiplier() const override
@@ -4143,7 +4143,7 @@ struct meteor_burn_t : public fire_mage_spell_t
     aoe = targets;
     spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
     spell_power_mod.tick = 0;
-    dot_duration = timespan_t::zero();
+    dot_duration = 0_ms;
     radius = p->find_spell( 153564 )->effectN( 1 ).radius_max();
   }
 
@@ -4217,7 +4217,7 @@ struct meteor_t : public fire_mage_spell_t
   {
     timespan_t impact_time = meteor_delay * p()->cache.spell_speed();
     timespan_t meteor_spawn = impact_time - impact_action->travel_time();
-    return std::max( timespan_t::zero(), meteor_spawn );
+    return std::max( meteor_spawn, 0_ms );
   }
 };
 
@@ -4376,7 +4376,7 @@ struct phoenix_flames_t : public fire_mage_spell_t
   timespan_t travel_time() const override
   {
     timespan_t t = fire_mage_spell_t::travel_time();
-    return std::min( t, timespan_t::from_seconds( 0.75 ) );
+    return std::min( t, 0.75_s );
   }
 };
 
@@ -4442,7 +4442,7 @@ struct pyroblast_t : public hot_streak_spell_t
   timespan_t travel_time() const override
   {
     timespan_t t = hot_streak_spell_t::travel_time();
-    return std::min( t, timespan_t::from_seconds( 0.75 ) );
+    return std::min( t, 0.75_s );
   }
 
   void impact( action_state_t* s ) override
@@ -4784,7 +4784,7 @@ struct start_burn_phase_t : public action_t
     action_t( ACTION_OTHER, "start_burn_phase", p )
   {
     parse_options( options_str );
-    trigger_gcd = timespan_t::zero();
+    trigger_gcd = 0_ms;
     harmful = false;
     ignore_false_positive = true;
     action_skill = 1;
@@ -4821,7 +4821,7 @@ struct stop_burn_phase_t : public action_t
     action_t( ACTION_OTHER, "stop_burn_phase", p )
   {
     parse_options( options_str );
-    trigger_gcd = timespan_t::zero();
+    trigger_gcd = 0_ms;
     harmful = false;
     ignore_false_positive = true;
     action_skill = 1;
@@ -4867,7 +4867,7 @@ struct freeze_t : public action_t
 
     may_miss = may_crit = callbacks = false;
     dual = usable_while_casting = ignore_false_positive = true;
-    trigger_gcd = timespan_t::zero();
+    trigger_gcd = 0_ms;
     action_skill = 1;
 
     if ( p->talents.lonely_winter->ok() )
@@ -4932,8 +4932,8 @@ struct icicle_event_t : public event_t
     mage( &m ),
     target( t )
   {
-    double cast_time = first ? 0.25 : 0.4 * mage->cache.spell_speed();
-    schedule( timespan_t::from_seconds( cast_time ) );
+    auto cast_time = first ? 0.25_s : 0.4_s * mage->cache.spell_speed();
+    schedule( cast_time );
   }
 
   const char* name() const override
@@ -5405,7 +5405,7 @@ std::string mage_t::create_profile( save_e save_type )
 
   if ( save_type & SAVE_PLAYER )
   {
-    if ( options.firestarter_time > timespan_t::zero() )
+    if ( options.firestarter_time > 0_ms )
     {
       profile += "firestarter_time=" + util::to_string( options.firestarter_time.total_seconds() ) + "\n";
     }
@@ -5696,7 +5696,7 @@ void mage_t::create_buffs()
   // Arcane
   buffs.arcane_charge        = make_buff( this, "arcane_charge", spec.arcane_charge );
   buffs.arcane_power         = make_buff( this, "arcane_power", find_spell( 12042 ) )
-                                 ->set_cooldown( timespan_t::zero() )
+                                 ->set_cooldown( 0_ms )
                                  ->set_default_value( find_spell( 12042 )->effectN( 1 ).percent()
                                                     + talents.overpowered->effectN( 1 ).percent() );
   buffs.clearcasting         = make_buff( this, "clearcasting", find_spell( 263725 ) )
@@ -5705,16 +5705,16 @@ void mage_t::create_buffs()
                                  ->set_quiet( true );
   buffs.evocation            = make_buff( this, "evocation", find_spell( 12051 ) )
                                  ->set_default_value( find_spell( 12051 )->effectN( 1 ).percent() )
-                                 ->set_cooldown( timespan_t::zero() )
+                                 ->set_cooldown( 0_ms )
                                  ->set_affects_regen( true );
   buffs.presence_of_mind     = make_buff( this, "presence_of_mind", find_spell( 205025 ) )
-                                 ->set_cooldown( timespan_t::zero() )
+                                 ->set_cooldown( 0_ms )
                                  ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
                                    { if ( cur == 0 ) cooldowns.presence_of_mind->start(); } );
 
   buffs.arcane_familiar      = make_buff( this, "arcane_familiar", find_spell( 210126 ) )
                                  ->set_default_value( find_spell( 210126 )->effectN( 1 ).percent() )
-                                 ->set_period( timespan_t::from_seconds( 3.0 ) )
+                                 ->set_period( 3.0_s )
                                  ->set_tick_time_behavior( buff_tick_time_behavior::HASTED )
                                  ->set_tick_callback( [ this ] ( buff_t*, int, const timespan_t& )
                                    {
@@ -6657,7 +6657,7 @@ expr_t* mage_t::create_action_expression( action_t& action, const std::string& n
         if ( !talents.firestarter->ok() )
           return false;
 
-        if ( options.firestarter_time > timespan_t::zero() )
+        if ( options.firestarter_time > 0_ms )
           return sim->current_time() < options.firestarter_time;
         else
           return action.target->health_percentage() > talents.firestarter->effectN( 1 ).base_value();
@@ -6671,8 +6671,8 @@ expr_t* mage_t::create_action_expression( action_t& action, const std::string& n
         if ( !talents.firestarter->ok() )
           return 0.0;
 
-        if ( options.firestarter_time > timespan_t::zero() )
-          return std::max( 0.0, ( options.firestarter_time - sim->current_time() ).total_seconds() );
+        if ( options.firestarter_time > 0_ms )
+          return std::max( options.firestarter_time - sim->current_time(), 0.0_s ).total_seconds();
         else
           return action.target->time_to_percent( talents.firestarter->effectN( 1 ).base_value() ).total_seconds();
       } );
@@ -6732,7 +6732,7 @@ expr_t* mage_t::create_expression( const std::string& name_str )
     if ( util::str_compare_ci( splits[ 2 ], "remains" ) )
     {
       return make_fn_expr( name_str, [ this, type ]
-      { return std::max( 0.0, ( ground_aoe_expiration[ type ] - sim->current_time() ).total_seconds() ); } );
+      { return std::max( ground_aoe_expiration[ type ] - sim->current_time(), 0.0_s ).total_seconds(); } );
     }
 
     throw std::invalid_argument( fmt::format( "Unknown ground_aoe operation '{}'", splits[ 2 ] ) );
@@ -6818,7 +6818,7 @@ void mage_t::trigger_evocation( timespan_t duration_override, bool hasted )
   double mana_regen_multiplier = 1.0 + buffs.evocation->default_value;
 
   timespan_t duration = duration_override;
-  if ( duration <= timespan_t::zero() )
+  if ( duration <= 0_ms )
   {
     duration = buffs.evocation->buff_duration;
   }
