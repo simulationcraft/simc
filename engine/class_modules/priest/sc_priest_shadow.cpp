@@ -1895,7 +1895,6 @@ expr_t* priest_t::create_expression_shadow( const std::string& name_str )
 void priest_t::generate_apl_shadow()
 {
   action_priority_list_t* default_list = get_action_priority_list( "default" );
-  action_priority_list_t* aoe          = get_action_priority_list( "aoe" );
   action_priority_list_t* cleave       = get_action_priority_list( "cleave" );
   action_priority_list_t* single       = get_action_priority_list( "single" );
 
@@ -1935,9 +1934,6 @@ void priest_t::generate_apl_shadow()
 
   // Choose which APL to use based on talents and fight conditions.
 
-  default_list->add_action(
-      "run_action_list,name=aoe,"
-      "if=spell_targets.mind_sear>(5+1*talent.misery.enabled)" );
   default_list->add_action( "run_action_list,name=cleave,if=active_enemies>1" );
   default_list->add_action( "run_action_list,name=single,if=active_enemies=1" );
 
@@ -1983,26 +1979,40 @@ void priest_t::generate_apl_shadow()
   // cleave APL
   cleave->add_action( this, "Void Eruption" );
   cleave->add_talent( this, "Dark Ascension", "if=buff.voidform.down" );
+  cleave->add_action( this, "Vampiric Touch", "if=!ticking&azerite.thought_harvester.rank>=1" );
   cleave->add_action( this, "Mind Sear", "if=buff.harvested_thoughts.up" );
   cleave->add_action( this, "Void Bolt" );
   cleave->add_talent( this, "Shadow Word: Death", "target_if=target.time_to_die<3|buff.voidform.down" );
   cleave->add_talent( this, "Surrender to Madness", "if=buff.voidform.stack>10+(10*buff.bloodlust.up)" );
-  cleave->add_talent( this, "Dark Void", "if=raid_event.adds.in>10" );
+  cleave->add_talent( this, "Dark Void",
+                      "if=raid_event.adds.in>10"
+                      "&(dot.shadow_word_pain.refreshable|target.time_to_die>30)" );
   cleave->add_talent( this, "Mindbender" );
   cleave->add_action( this, "Mind Blast",
-                      "target_if=(spell_targets.mind_sear<4&azerite.searing_dialogue.rank=0)|"
-                      "(spell_targets.mind_sear<3&azerite.searing_dialogue.rank=1)|"
-                      "(spell_targets.mind_sear<2&azerite.searing_dialogue.rank>=2)" );
+                      "target_if=spell_targets.mind_sear<floor"
+                      "((4.5+azerite.whispers_of_the_damned.rank)%(1+0.4*azerite.searing_dialogue.rank))" );
   cleave->add_talent( this, "Shadow Crash",
                       "if=(raid_event.adds.in>5&raid_event.adds.duration<2)|"
                       "raid_event.adds.duration>2" );
   cleave->add_action( this, "Shadow Word: Pain",
-                      "target_if=refreshable&target.time_to_die>4,"
-                      "if=!talent.misery.enabled&!talent.dark_void.enabled" );
-  cleave->add_action( this, "Vampiric Touch", "target_if=refreshable,if=(target.time_to_die>6)" );
+                      "target_if=refreshable&target.time_to_die>((-1.2+3.3*spell_targets.mind_sear)*"
+                      "(1-0.07*azerite.death_throes.rank+0.2*azerite.thought_harvester.rank)*"
+                      "(1-0.018*azerite.searing_dialogue.rank*spell_targets.mind_sear)*"
+                      "(1-0.14*azerite.thought_harvester.rank*azerite.searing_dialogue.rank)),"
+                      "if=!talent.misery.enabled" );
+  cleave->add_action( this, "Vampiric Touch",
+                      "target_if=refreshable,if=(target.time_to_die>((1+3.3*spell_targets.mind_sear)*"
+                      "(1-0.04*azerite.thought_harvester.rank-0.05*azerite.spiteful_apparitions.rank)*"
+                      "(1+0.15*azerite.searing_dialogue.rank*spell_targets.mind_sear)))" );
   cleave->add_action( this, "Vampiric Touch",
                       "target_if=dot.shadow_word_pain.refreshable,"
-                      "if=(talent.misery.enabled&target.time_to_die>4)" );
+                      "if=(talent.misery.enabled&target.time_to_die>"
+                      "((1.0+2.0*spell_targets.mind_sear)*"
+                      "(1-0.07*azerite.death_throes.rank-0.03*"
+                      "azerite.thought_harvester.rank-0.055*"
+                      "azerite.spiteful_apparitions.rank)*"
+                      "(1-0.014*azerite.searing_dialogue.rank*spell_targets.mind_sear)*"
+                      "(1-0.04*azerite.thought_harvester.rank*azerite.searing_dialogue.rank)))" );
   cleave->add_talent( this, "Void Torrent", "if=buff.voidform.up" );
   cleave->add_action( this, "Mind Sear",
                       "target_if=spell_targets.mind_sear>1,"
@@ -2011,28 +2021,5 @@ void priest_t::generate_apl_shadow()
                       "chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&"
                       "(cooldown.void_bolt.up|cooldown.mind_blast.up)" );
   cleave->add_action( this, "Shadow Word: Pain" );
-
-  // aoe APL
-  aoe->add_action( this, "Void Eruption" );
-  aoe->add_talent( this, "Dark Ascension", "if=buff.voidform.down" );
-  aoe->add_action( this, "Mind Sear", "if=buff.harvested_thoughts.up" );
-  aoe->add_action( this, "Void Bolt",
-                   "if=talent.dark_void.enabled&"
-                   "dot.shadow_word_pain.remains>travel_time" );
-  aoe->add_talent( this, "Surrender to Madness", "if=buff.voidform.stack>10+(10*buff.bloodlust.up)" );
-  aoe->add_talent( this, "Dark Void", "if=raid_event.adds.in>10" );
-  aoe->add_talent( this, "Mindbender" );
-  aoe->add_talent( this, "Shadow Crash", "if=raid_event.adds.in>5&raid_event.adds.duration<20" );
-  aoe->add_action( this, "Vampiric Touch",
-                    "target_if=refreshable,if=(target.time_to_die>6)&"
-                    "azerite.thought_harvester.rank>0" );
-  aoe->add_action( this, "Vampiric Touch",
-                    "target_if=dot.shadow_word_pain.refreshable,"
-                    "if=(talent.misery.enabled&target.time_to_die>4)&"
-                    "azerite.thought_harvester.rank>0" );
-  aoe->add_action( this, "Mind Sear",
-                   "chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&"
-                   "(cooldown.void_bolt.up|cooldown.mind_blast.up)" );
-  aoe->add_action( this, "Shadow Word: Pain" );
 }
 }  // namespace priestspace
