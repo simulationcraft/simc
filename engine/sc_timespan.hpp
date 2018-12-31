@@ -274,4 +274,29 @@ namespace timespan_adl_barrier
 
 using timespan_adl_barrier::timespan_t;
 
+constexpr timespan_t operator"" _ms( unsigned long long time )
+{
+  return timespan_t::from_millis( time );
+}
+
+constexpr timespan_t operator"" _s( unsigned long long time )
+{
+  return timespan_t::from_seconds( time );
+}
+
+constexpr timespan_t operator"" _s( long double time )
+{
+  return timespan_t::from_seconds( time );
+}
+
+constexpr timespan_t operator"" _min( unsigned long long time )
+{
+  return timespan_t::from_minutes( time );
+}
+
+constexpr timespan_t operator"" _min( long double time )
+{
+  return timespan_t::from_minutes( time );
+}
+
 #endif // SC_TIMESPAN_HPP
