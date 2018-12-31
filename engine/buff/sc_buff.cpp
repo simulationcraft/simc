@@ -979,6 +979,16 @@ void buff_t::datacollection_begin()
 
 void buff_t::datacollection_end()
 {
+  // Debuffs need to ensure that the source is active (when single_actor_batch=1) to ensure that
+  // reporting stays correct.
+  if ( sim->single_actor_batch && source != player )
+  {
+    if ( !source->is_enemy() && source != sim->player_no_pet_list[ sim->current_index ] )
+    {
+      return;
+    }
+  }
+
   timespan_t time = player ? player->iteration_fight_length : sim->current_time();
 
   uptime_pct.add( time != timespan_t::zero() ? 100.0 * iteration_uptime_sum / time : 0 );
