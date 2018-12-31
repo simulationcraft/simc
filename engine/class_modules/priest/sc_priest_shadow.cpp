@@ -1989,30 +1989,22 @@ void priest_t::generate_apl_shadow()
                       "&(dot.shadow_word_pain.refreshable|target.time_to_die>30)" );
   cleave->add_talent( this, "Mindbender" );
   cleave->add_action( this, "Mind Blast",
-                      "target_if=spell_targets.mind_sear<floor"
-                      "((4.5+azerite.whispers_of_the_damned.rank)%(1+0.4*azerite.searing_dialogue.rank))" );
+                      "target_if=spell_targets.mind_sear<variable.mind_blast_targets" );
   cleave->add_talent( this, "Shadow Crash",
                       "if=(raid_event.adds.in>5&raid_event.adds.duration<2)|"
                       "raid_event.adds.duration>2" );
   cleave->add_action( this, "Shadow Word: Pain",
-                      "target_if=refreshable&target.time_to_die>((-1.2+3.3*spell_targets.mind_sear)*"
-                      "(1-0.07*azerite.death_throes.rank+0.2*azerite.thought_harvester.rank)*"
-                      "(1-0.018*azerite.searing_dialogue.rank*spell_targets.mind_sear)*"
-                      "(1-0.14*azerite.thought_harvester.rank*azerite.searing_dialogue.rank)),"
-                      "if=!talent.misery.enabled" );
+                      "target_if=refreshable&target.time_to_die>"
+                      "((-1.2+3.3*spell_targets.mind_sear)*variable.swp_trait_ranks_check)"
+                      ",if=!talent.misery.enabled" );
   cleave->add_action( this, "Vampiric Touch",
-                      "target_if=refreshable,if=(target.time_to_die>((1+3.3*spell_targets.mind_sear)*"
-                      "(1-0.04*azerite.thought_harvester.rank-0.05*azerite.spiteful_apparitions.rank)*"
-                      "(1+0.15*azerite.searing_dialogue.rank*spell_targets.mind_sear)))" );
+                      "target_if=refreshable,if=target.time_to_die>"
+                      "((1+3.3*spell_targets.mind_sear)*variable.vt_trait_ranks_check)" );
   cleave->add_action( this, "Vampiric Touch",
-                      "target_if=dot.shadow_word_pain.refreshable,"
-                      "if=(talent.misery.enabled&target.time_to_die>"
-                      "((1.0+2.0*spell_targets.mind_sear)*"
-                      "(1-0.07*azerite.death_throes.rank-0.03*"
-                      "azerite.thought_harvester.rank-0.055*"
-                      "azerite.spiteful_apparitions.rank)*"
-                      "(1-0.014*azerite.searing_dialogue.rank*spell_targets.mind_sear)*"
-                      "(1-0.04*azerite.thought_harvester.rank*azerite.searing_dialogue.rank)))" );
+                      "target_if=dot.shadow_word_pain.refreshable"
+                      ",if=(talent.misery.enabled&target.time_to_die>"
+                      "((1.0+2.0*spell_targets.mind_sear)*variable.vt_mis_trait_ranks_check*"
+                      "(variable.vt_mis_sd_check*spell_targets.mind_sear)))" );
   cleave->add_talent( this, "Void Torrent", "if=buff.voidform.up" );
   cleave->add_action( this, "Mind Sear",
                       "target_if=spell_targets.mind_sear>1,"
