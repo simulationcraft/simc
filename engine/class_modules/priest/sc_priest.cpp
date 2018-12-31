@@ -1073,8 +1073,8 @@ void priest_t::create_apl_precombat()
     case PRIEST_SHADOW:
     default:
       precombat->add_action( this, "Shadowform", "if=!buff.shadowform.up" );
-      precombat->add_action( "mind_blast" );
-      precombat->add_action( "shadow_word_void" );
+      precombat->add_action( this, "Mind Blast", "if=spell_targets.mind_sear<2|azerite.thought_harvester.rank=0" );
+      precombat->add_action( this, "Vampiric Touch" );
       break;
   }
 }
