@@ -6701,7 +6701,7 @@ expr_t* mage_t::create_action_expression( action_t& action, const std::string& n
           return 0.0;
 
         if ( options.firestarter_time > 0_ms )
-          return std::max( options.firestarter_time - sim->current_time(), 0.0_s ).total_seconds();
+          return std::max( options.firestarter_time - sim->current_time(), 0_ms ).total_seconds();
         else
           return action.target->time_to_percent( talents.firestarter->effectN( 1 ).base_value() ).total_seconds();
       } );
@@ -6761,7 +6761,7 @@ expr_t* mage_t::create_expression( const std::string& name_str )
     if ( util::str_compare_ci( splits[ 2 ], "remains" ) )
     {
       return make_fn_expr( name_str, [ this, type ]
-      { return std::max( ground_aoe_expiration[ type ] - sim->current_time(), 0.0_s ).total_seconds(); } );
+      { return std::max( ground_aoe_expiration[ type ] - sim->current_time(), 0_ms ).total_seconds(); } );
     }
 
     throw std::invalid_argument( fmt::format( "Unknown ground_aoe operation '{}'", splits[ 2 ] ) );
