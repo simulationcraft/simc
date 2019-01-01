@@ -3557,6 +3557,8 @@ void sim_t::create_options()
         bfa_opts.reorigination_array_stacks, 0, 10 ) );
   add_option( opt_bool( "bfa.reorigination_array_ignore_scale_factors",
         bfa_opts.reorigination_array_ignore_scale_factors ) );
+  add_option( opt_float( "bfa.seductive_power_pickup_chance",
+        bfa_opts.seductive_power_pickup_chance, 0.0, 1.0 ) );
 
 
   // applies to: "lavish_suramar_feast", battle for azeroth feasts

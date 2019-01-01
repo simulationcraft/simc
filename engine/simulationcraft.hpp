@@ -1122,6 +1122,8 @@ struct sim_t : private sc_thread_t
     int                 reorigination_array_stacks = 0;
     /// Allow Reorigination Array to ignore scale factor stat changes (default false)
     bool                reorigination_array_ignore_scale_factors = false;
+    /// Chance to pick up visage spawned by Seductive Power
+    double              seductive_power_pickup_chance = 1.0;
   } bfa_opts;
 
   // Expansion specific data

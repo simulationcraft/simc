@@ -626,6 +626,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 287631, special_effects::apothecarys_concoctions );
   unique_gear::register_special_effect( 287467, special_effects::shadow_of_elune       );
   unique_gear::register_special_effect( 288953, special_effects::treacherous_covenant  );
+  unique_gear::register_special_effect( 288749, special_effects::seductive_power       );
 }
 
 void register_azerite_target_data_initializers( sim_t* sim )
@@ -2535,6 +2536,46 @@ void treacherous_covenant( special_effect_t& effect )
 
   // TODO: Model losing the buff when droping below 50%.
   effect.player->register_combat_begin( [ buff ] ( player_t* ) { buff->trigger(); } );
+}
+
+void seductive_power( special_effect_t& effect )
+{
+  azerite_power_t power = effect.player->find_azerite_spell( effect.driver()->name_cstr() );
+  if ( !power.enabled() )
+    return;
+
+  const spell_data_t* driver = effect.driver()->effectN( 1 ).trigger();
+
+  buff_t* buff = buff_t::find( effect.player, "seductive_power" );
+  if ( !buff )
+  {
+    // Doesn't look like we can get from the driver to this buff, hardcode the spell id.
+    buff = make_buff<stat_buff_t>( effect.player, "seductive_power", effect.player->find_spell( 288777 ) )
+      ->add_stat( STAT_ALL, power.value( 1 ) );
+  }
+
+  struct seductive_power_cb_t : public dbc_proc_callback_t
+  {
+    seductive_power_cb_t( special_effect_t& effect ) :
+      dbc_proc_callback_t( effect.player, effect )
+    { }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      if ( rng().roll( listener->sim->bfa_opts.seductive_power_pickup_chance ) )
+        proc_buff->trigger();
+      else
+        proc_buff->decrement();
+    }
+  };
+
+  // Spell data is missing proc flags, just pick something that's gonna be close to what the
+  // tooltip says.
+  effect.proc_flags_ = PF_ALL_DAMAGE | PF_ALL_HEAL;
+  effect.spell_id = driver->id();
+  effect.custom_buff = buff;
+
+  new seductive_power_cb_t( effect );
 }
 
 } // Namespace special effects ends
