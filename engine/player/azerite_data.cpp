@@ -2529,12 +2529,8 @@ void treacherous_covenant( special_effect_t& effect )
   buff_t* buff = buff_t::find( effect.player, "treacherous_covenant" );
   if ( !buff )
   {
-    // Tooltip wording doesn't seem to indicate it gives stamina as well, but it does seem
-    // to give stamina on PTR.
-    // TODO: Double check later.
     buff = make_buff<stat_buff_t>( effect.player, "treacherous_covenant", buff_data )
-      ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), power.value( 1 ) )
-      ->add_stat( STAT_STAMINA, power.value( 1 ) );
+      ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), power.value( 1 ) );
   }
 
   // TODO: Model losing the buff when droping below 50%.
