@@ -1438,7 +1438,7 @@ public:
     return source;
   }
 
-  virtual double frozen_multiplier( const action_state_t* s ) const
+  virtual double frozen_multiplier( const action_state_t* ) const
   { return 1.0; }
 
   void snapshot_internal( action_state_t* s, unsigned flags, dmg_e rt ) override
