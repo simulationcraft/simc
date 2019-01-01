@@ -1223,20 +1223,28 @@ struct mage_spell_state_t : public action_state_t
   // Simple bitfield for tracking sources of the Frozen effect.
   unsigned frozen;
 
+  // Damage multiplier that is in efffect only for frozen targets.
+  double frozen_multiplier;
+
   mage_spell_state_t( action_t* action, player_t* target ) :
     action_state_t( action, target ),
-    frozen()
+    frozen(),
+    frozen_multiplier( 1.0 )
   { }
 
   void initialize() override
   {
     action_state_t::initialize();
     frozen = 0u;
+    frozen_multiplier = 1.0;
   }
 
   std::ostringstream& debug_str( std::ostringstream& s ) override
   {
     action_state_t::debug_str( s ) << " frozen=";
+
+    std::streamsize ss = s.precision();
+    s.precision( 4 );
 
     if ( frozen )
     {
@@ -1263,16 +1271,29 @@ struct mage_spell_state_t : public action_state_t
       s << "0";
     }
 
+    s << " frozen_mul=" << frozen_multiplier;
+
+    s.precision( ss );
+
     return s;
   }
 
   void copy_state( const action_state_t* s ) override
   {
     action_state_t::copy_state( s );
-    frozen = debug_cast<const mage_spell_state_t*>( s )->frozen;
+
+    auto mss = debug_cast<const mage_spell_state_t*>( s );
+    frozen            = mss->frozen;
+    frozen_multiplier = mss->frozen_multiplier;
   }
 
   double composite_crit_chance() const override;
+
+  double composite_da_multiplier() const override
+  { return action_state_t::composite_da_multiplier() * frozen_multiplier; }
+
+  double composite_ta_multiplier() const override
+  { return action_state_t::composite_ta_multiplier() * frozen_multiplier; }
 };
 
 struct mage_spell_t : public spell_t
@@ -1297,7 +1318,8 @@ struct mage_spell_t : public spell_t
     bool shatter = false;
   } affected_by;
 
-  static const snapshot_state_e STATE_FROZEN = STATE_TGT_USER_1;
+  static const snapshot_state_e STATE_FROZEN     = STATE_TGT_USER_1;
+  static const snapshot_state_e STATE_FROZEN_MUL = STATE_TGT_USER_2;
 
   bool track_cd_waste;
   cooldown_waste_data_t* cd_waste;
@@ -1320,6 +1342,12 @@ public:
 
   const mage_t* p() const
   { return static_cast<mage_t*>( player ); }
+
+  mage_spell_state_t* cast_state( action_state_t* s )
+  { return debug_cast<mage_spell_state_t*>( s ); }
+
+  const mage_spell_state_t* cast_state( const action_state_t* s ) const
+  { return debug_cast<const mage_spell_state_t*>( s ); }
 
   mage_td_t* td( player_t* t ) const
   { return p()->get_target_data( t ); }
@@ -1345,8 +1373,8 @@ public:
 
     if ( harmful && affected_by.shatter )
     {
-      snapshot_flags |= STATE_FROZEN;
-      update_flags   |= STATE_FROZEN;
+      snapshot_flags |= STATE_FROZEN | STATE_FROZEN_MUL;
+      update_flags   |= STATE_FROZEN | STATE_FROZEN_MUL;
     }
   }
 
@@ -1410,14 +1438,18 @@ public:
     return source;
   }
 
+  virtual double frozen_multiplier( const action_state_t* s ) const
+  { return 1.0; }
+
   void snapshot_internal( action_state_t* s, unsigned flags, dmg_e rt ) override
   {
-    if ( flags & STATE_FROZEN )
-    {
-      debug_cast<mage_spell_state_t*>( s )->frozen = frozen( s );
-    }
-
     spell_t::snapshot_internal( s, flags, rt );
+
+    if ( flags & STATE_FROZEN )
+      cast_state( s )->frozen = frozen( s );
+
+    if ( flags & STATE_FROZEN_MUL )
+      cast_state( s )->frozen_multiplier = cast_state( s )->frozen ? frozen_multiplier( s ) : 1.0;
   }
 
   double cost() const override
@@ -2043,7 +2075,7 @@ struct frost_mage_spell_t : public mage_spell_t
     if ( !source )
       return;
 
-    unsigned frozen = debug_cast<const mage_spell_state_t*>( s )->frozen;
+    unsigned frozen = cast_state( s )->frozen;
 
     if ( frozen & FF_WINTERS_CHILL )
       source->occur( FROZEN_WINTERS_CHILL );
@@ -3852,7 +3884,7 @@ struct ice_lance_t : public frost_mage_spell_t
       return;
 
     bool primary = s->chain_target == 0;
-    unsigned frozen = debug_cast<mage_spell_state_t*>( s )->frozen;
+    unsigned frozen = cast_state( s )->frozen;
 
     if ( primary && frozen )
     {
@@ -3893,14 +3925,11 @@ struct ice_lance_t : public frost_mage_spell_t
     return am;
   }
 
-  double composite_da_multiplier( const action_state_t* s ) const override
+  double frozen_multiplier( const action_state_t* s ) const override
   {
-    double m = frost_mage_spell_t::composite_da_multiplier( s );
+    double m = frost_mage_spell_t::frozen_multiplier( s );
 
-    if ( debug_cast<const mage_spell_state_t*>( s )->frozen )
-    {
-      m *= 3.0;
-    }
+    m *= 3.0;
 
     return m;
   }
