@@ -625,6 +625,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 287604, special_effects::endless_hunger        ); // Ancient's Bulwark
   unique_gear::register_special_effect( 287631, special_effects::apothecarys_concoctions );
   unique_gear::register_special_effect( 287467, special_effects::shadow_of_elune       );
+  unique_gear::register_special_effect( 288953, special_effects::treacherous_covenant  );
 }
 
 void register_azerite_target_data_initializers( sim_t* sim )
@@ -2513,6 +2514,31 @@ void shadow_of_elune( special_effect_t& effect )
   effect.spell_id = driver->id();
 
   new dbc_proc_callback_t( effect.player, effect );
+}
+
+void treacherous_covenant( special_effect_t& effect )
+{
+  azerite_power_t power = effect.player->find_azerite_spell( effect.driver()->name_cstr() );
+  if ( !power.enabled() )
+    return;
+
+  // This spell selects which buff to trigger depending on player health %.
+  const spell_data_t* driver = effect.driver()->effectN( 1 ).trigger();
+  const spell_data_t* buff_data = driver->effectN( 1 ).trigger();
+
+  buff_t* buff = buff_t::find( effect.player, "treacherous_covenant" );
+  if ( !buff )
+  {
+    // Tooltip wording doesn't seem to indicate it gives stamina as well, but it does seem
+    // to give stamina on PTR.
+    // TODO: Double check later.
+    buff = make_buff<stat_buff_t>( effect.player, "treacherous_covenant", buff_data )
+      ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), power.value( 1 ) )
+      ->add_stat( STAT_STAMINA, power.value( 1 ) );
+  }
+
+  // TODO: Model losing the buff when droping below 50%.
+  effect.player->register_combat_begin( [ buff ] ( player_t* ) { buff->trigger(); } );
 }
 
 } // Namespace special effects ends
