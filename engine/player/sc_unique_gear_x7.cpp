@@ -129,6 +129,8 @@ namespace items
   void vanquished_tendril_of_ghuun( special_effect_t& );
   void syringe_of_bloodborne_infirmity( special_effect_t& );
   void disc_of_systematic_regression( special_effect_t& );
+  // 8.1.0 - Battle of Dazar'alor Trinkets
+  void incandescent_sliver( special_effect_t& );
 }
 
 namespace util
@@ -1637,6 +1639,43 @@ void items::berserkers_juju( special_effect_t& effect )
   effect.execute_action = create_proc_action <berserkers_juju_t>( "berserkers_juju", effect );
 }
 
+// Incandescent Sliver ===================================================
+
+void items::incandescent_sliver( special_effect_t& effect )
+{
+  player_t* p = effect.player;
+
+  buff_t* mastery_buff = buff_t::find( p, "incandescent_brilliance" );
+  if ( !mastery_buff )
+  {
+    mastery_buff = make_buff<stat_buff_t>( p, "incandescent_brilliance", p->find_spell( 289524 ), effect.item );
+  }
+
+  buff_t* crit_buff = buff_t::find( p, "incandescent_luster" );
+  if ( !crit_buff )
+  {
+    crit_buff = make_buff<stat_buff_t>( p, "incandescent_luster", p->find_spell( 289523 ), effect.item )
+      ->set_stack_change_callback( [ mastery_buff ] ( buff_t* b, int, int cur )
+        {
+          if ( cur == b->max_stack() )
+            mastery_buff->trigger();
+          else
+            mastery_buff->expire();
+        } );
+  }
+
+  timespan_t period = effect.driver()->effectN( 1 ).period();
+  p->register_combat_begin( [ crit_buff, period ] ( player_t* )
+  {
+    // Couldn't test whether raid combat resets this buff, so just assuming it stays up
+    // as you can stack it out of combat (compared to say Archive of the Titans).
+    // TODO: Double check.
+    crit_buff->trigger( crit_buff->max_stack() );
+    // TODO: Losing stacks?
+    make_repeating_event( crit_buff->sim, period, [ crit_buff ] { crit_buff->trigger(); } );
+  } );
+}
+
 //Waycrest's Legacy Set Bonus ============================================
 
 void set_bonus::waycrest_legacy( special_effect_t& effect )
@@ -1719,6 +1758,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 278152, items::disc_of_systematic_regression );
   register_special_effect( 274472, items::berserkers_juju );
   register_special_effect( 285495, "285496Trigger" ); // Moonstone of Zin-Azshari
+  register_special_effect( 289522, items::incandescent_sliver );
 
   // Misc
   register_special_effect( 276123, items::darkmoon_deck_squalls );
