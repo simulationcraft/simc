@@ -161,7 +161,7 @@ void register_azerite_target_data_initializers( sim_t* );
 
 /// Compute the <min, avg, max> value of the spell effect given, based on the azerite power
 std::tuple<int, int, int> compute_value( const azerite_power_t& power,
-    const spelleffect_data_t* effect );
+    const spelleffect_data_t& effect );
 
 /// Parse azerite item information from the Blizzard Community API JSON output
 void parse_blizzard_azerite_information( item_t& item, const rapidjson::Value& data );
