@@ -210,6 +210,7 @@ void apothecarys_concoctions( special_effect_t& effect );
 void shadow_of_elune( special_effect_t& effect );
 void treacherous_covenant( special_effect_t& effect );
 void seductive_power( special_effect_t& effect );
+void bonded_souls( special_effect_t& effect );
 } // Namespace special_effects ends
 
 } // Namespace azerite ends

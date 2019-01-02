@@ -627,6 +627,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 287467, special_effects::shadow_of_elune       );
   unique_gear::register_special_effect( 288953, special_effects::treacherous_covenant  );
   unique_gear::register_special_effect( 288749, special_effects::seductive_power       );
+  unique_gear::register_special_effect( 288802, special_effects::bonded_souls          );
 }
 
 void register_azerite_target_data_initializers( sim_t* sim )
@@ -2576,6 +2577,45 @@ void seductive_power( special_effect_t& effect )
   effect.custom_buff = buff;
 
   new seductive_power_cb_t( effect );
+}
+
+void bonded_souls( special_effect_t& effect )
+{
+  azerite_power_t power = effect.player->find_azerite_spell( effect.driver()->name_cstr() );
+  if ( !power.enabled() )
+    return;
+
+  const spell_data_t* driver = effect.driver()->effectN( 2 ).trigger();
+  const spell_data_t* driver_buff_data = driver->effectN( 1 ).trigger();
+  const spell_data_t* haste_buff_data = driver_buff_data->effectN( 1 ).trigger();
+
+  buff_t* haste_buff = buff_t::find( effect.player, "bonded_souls" );
+  if ( !haste_buff )
+  {
+    haste_buff = make_buff<stat_buff_t>( effect.player, "bonded_souls", haste_buff_data )
+      ->add_stat( STAT_HASTE_RATING, power.value( 1 ) )
+      ->set_refresh_behavior( buff_refresh_behavior::DURATION );
+  }
+
+  buff_t* driver_buff = buff_t::find( effect.player, "bonded_souls_driver" );
+  if ( !driver_buff )
+  {
+    // TODO: Healing portion of the trait?
+    driver_buff = make_buff( effect.player, "bonded_souls_driver", driver_buff_data )
+      ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+      ->set_tick_behavior( buff_tick_behavior::CLIP )
+      ->set_tick_zero( true )
+      ->set_tick_callback( [ haste_buff ] ( buff_t*, int, const timespan_t& )
+        { haste_buff->trigger(); } );
+  }
+
+  // Spell data is missing proc flags, just pick something that's gonna be close to what the
+  // tooltip says.
+  effect.proc_flags_ = PF_ALL_DAMAGE | PF_ALL_HEAL;
+  effect.spell_id = driver->id();
+  effect.custom_buff = driver_buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 } // Namespace special effects ends
