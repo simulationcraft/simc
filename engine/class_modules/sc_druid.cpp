@@ -8019,65 +8019,46 @@ void druid_t::apl_feral()
 {
    action_priority_list_t* def = get_action_priority_list("default");
    action_priority_list_t* cooldowns = get_action_priority_list("cooldowns");
-   action_priority_list_t* st = get_action_priority_list("single_target");
+   //action_priority_list_t* st = get_action_priority_list("single_target");
    action_priority_list_t* finisher = get_action_priority_list("finishers");
    action_priority_list_t* generator = get_action_priority_list("generators");
    action_priority_list_t* opener = get_action_priority_list("opener");
 
    def->add_action("auto_attack,if=!buff.prowl.up&!buff.shadowmeld.up");
    def->add_action("run_action_list,name=opener,if=variable.opener_done=0");
-   def->add_action("run_action_list,name=single_target");
+   def->add_action("cat_form,if=!buff.cat_form.up");
+   def->add_action("rake,if=buff.prowl.up|buff.shadowmeld.up");
+   def->add_action("call_action_list,name=cooldowns");
+   def->add_action("ferocious_bite,target_if=dot.rip.ticking&dot.rip.remains<3&target.time_to_die>10&(talent.sabertooth.enabled)");
+   def->add_action("regrowth,if=combo_points=5&buff.predatory_swiftness.up&talent.bloodtalons.enabled&buff.bloodtalons.down&(!buff.incarnation.up|dot.rip.remains<8)");
+   def->add_action("run_action_list,name=finishers,if=combo_points>4");
+   def->add_action("run_action_list,name=generators");
 
    opener->add_action(
        "tigers_fury,if=variable.delayed_tf_opener=0",
        "# The opener generally follow the logic of the rest of the apl, but is separated out here for logical clarity\n"
-       "# Opening TF will be delayed if we need to hardcast later (which happens with sabertooth & bt but no li)\n"
-       "# Otherwise we will open with TF, you can safely cast this from stealth without breaking it." );
+       "# We will open with TF, you can safely cast this from stealth without breaking it." );
 
    opener->add_action( "rake,if=!ticking|buff.prowl.up",
                        "Always open with rake, consuming stealth and one BT charge (if talented)" );
    opener->add_action( "variable,name=opener_done,value=dot.rip.ticking",
                        "Lets make sure we end the opener \"sequence\" when our first rip is ticking" );
    opener->add_action( "wait,sec=0.001,if=dot.rip.ticking", "Break out of the action list" );
-   opener->add_action( "moonfire_cat,if=!ticking|buff.bloodtalons.stack=1&combo_points<5",
-                       "If we have LI, and haven't applied it yet use moonfire.\n"
-                       "# OR, if we only have one BT charge active spam moonfire until we can apply rip with it" );
-   opener->add_action( "thrash,if=!ticking&combo_points<5",
-                       "Given current tuning it is always worth maintaining thrash, so lets apply it here." );
-   opener->add_action( "shred,if=combo_points<5", "And if none of the above apply, we simply shred until 5" );
-   opener->add_action(
-       "regrowth,if=combo_points=5&talent.bloodtalons.enabled&(talent.sabertooth.enabled&buff.bloodtalons.down|buff."
-       "predatory_swiftness.up)",
-       "Regrowth, when we have 5 combo points and bloodtalons and either:\n"
-       "# We have Sabertooth and no active bloodtalons stack (via MF spam) even if it requires a hard cast\n"
-       "# We have a predatory swiftness proc available (via SR fishing)" );
-   opener->add_action( "tigers_fury", "If we ended up hardcasting Regrowth, use TF to re-enter cat form" );
+   opener->add_action( "moonfire_cat,if=!ticking",
+                       "If we have LI, and haven't applied it yet use moonfire.\n" );
    opener->add_action( "rip,if=combo_points=5",
-                       "And once we get here at 5 combo_points, just rip and we are up and running" );
+                       "no need to wait for 5 CPs anymore, just rip and we are up and running" );
 
    cooldowns->add_action( "dash,if=!buff.cat_form.up" );
-   //cooldowns->add_action("rake,if=buff.prowl.up|buff.shadowmeld.up");
    cooldowns->add_action("prowl,if=buff.incarnation.remains<0.5&buff.jungle_stalker.up");
    cooldowns->add_action("berserk,if=energy>=30&(cooldown.tigers_fury.remains>5|buff.tigers_fury.up)");
    cooldowns->add_action("tigers_fury,if=energy.deficit>=60");
    cooldowns->add_action("berserking");
    cooldowns->add_action("feral_frenzy,if=combo_points=0");
-   //cooldowns->add_action("elunes_guidance,if=combo_points=0&energy>=50");
    cooldowns->add_action("incarnation,if=energy>=30&(cooldown.tigers_fury.remains>15|buff.tigers_fury.up)");
    cooldowns->add_action("potion,name=battle_potion_of_agility,if=target.time_to_die<65|(time_to_die<180&(buff.berserk.up|buff.incarnation.up))");
    cooldowns->add_action("shadowmeld,if=combo_points<5&energy>=action.rake.cost&dot.rake.pmultiplier<2.1&buff.tigers_fury.up&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>18)&!buff.incarnation.up");
    cooldowns->add_action("use_items");
-
-   st->add_action("cat_form,if=!buff.cat_form.up");
-   st->add_action("rake,if=buff.prowl.up|buff.shadowmeld.up");
-   st->add_action("auto_attack");
-   st->add_action("call_action_list,name=cooldowns");
-   st->add_action("ferocious_bite,target_if=dot.rip.ticking&dot.rip.remains<3&target.time_to_die>10&(target.health.pct<25|talent.sabertooth.enabled)");
-   st->add_action("regrowth,if=combo_points=5&buff.predatory_swiftness.up&talent.bloodtalons.enabled&buff.bloodtalons.down&(!buff.incarnation.up|dot.rip.remains<8)");
-   //st->add_action("regrowth,if=combo_points>3&talent.bloodtalons.enabled&buff.predatory_swiftness.up&buff.apex_predator.up&buff.incarnation.down");
-   //st->add_action("ferocious_bite,if=buff.apex_predator.up&((combo_points>4&(buff.incarnation.up|talent.moment_of_clarity.enabled))|(talent.bloodtalons.enabled&buff.bloodtalons.up&combo_points>3))");
-   st->add_action("run_action_list,name=finishers,if=combo_points>4");
-   st->add_action("run_action_list,name=generators");
 
    finisher->add_action("pool_resource,for_next=1");
    finisher->add_action("savage_roar,if=buff.savage_roar.down");
@@ -8086,7 +8067,7 @@ void druid_t::apl_feral()
    finisher->add_action("pool_resource,for_next=1");
    finisher->add_action("primal_wrath,target_if=spell_targets.primal_wrath>=2");
    finisher->add_action("pool_resource,for_next=1");
-   finisher->add_action("rip,target_if=!ticking|(remains<=duration*0.3)&(target.health.pct>25&!talent.sabertooth.enabled)|(remains<=duration*0.8&persistent_multiplier>dot.rip.pmultiplier)&target.time_to_die>8");
+   finisher->add_action("rip,target_if=!ticking|(remains<=duration*0.3)&(!talent.sabertooth.enabled)|(remains<=duration*0.8&persistent_multiplier>dot.rip.pmultiplier)&target.time_to_die>8");
    finisher->add_action("pool_resource,for_next=1");
    finisher->add_action("savage_roar,if=buff.savage_roar.remains<12");
    finisher->add_action("pool_resource,for_next=1");
@@ -8102,8 +8083,6 @@ void druid_t::apl_feral()
    generator->add_action("thrash_cat,if=(talent.scent_of_blood.enabled&buff.scent_of_blood.down)&spell_targets.thrash_cat>3");
    generator->add_action("pool_resource,for_next=1");
    generator->add_action("swipe_cat,if=buff.scent_of_blood.up");
-   //generator->add_action("pool_resource,for_next=1");
-   //generator->add_action("thrash_cat,if=spell_targets.thrash_cat>3&equipped.luffa_wrappings&talent.brutal_slash.enabled");
    generator->add_action("pool_resource,for_next=1");
    generator->add_action("rake,target_if=!ticking|(!talent.bloodtalons.enabled&remains<duration*0.3)&target.time_to_die>4");
    generator->add_action("pool_resource,for_next=1");
