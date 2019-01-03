@@ -42,7 +42,13 @@ actions.precombat+=/berserk
 # Executed every time the actor is available.
 actions=auto_attack,if=!buff.prowl.up&!buff.shadowmeld.up
 actions+=/run_action_list,name=opener,if=variable.opener_done=0
-actions+=/run_action_list,name=single_target
+actions+=/cat_form,if=!buff.cat_form.up
+actions+=/rake,if=buff.prowl.up|buff.shadowmeld.up
+actions+=/call_action_list,name=cooldowns
+actions+=/ferocious_bite,target_if=dot.rip.ticking&dot.rip.remains<3&target.time_to_die>10&(talent.sabertooth.enabled)
+actions+=/regrowth,if=combo_points=5&buff.predatory_swiftness.up&talent.bloodtalons.enabled&buff.bloodtalons.down&(!buff.incarnation.up|dot.rip.remains<8)
+actions+=/run_action_list,name=finishers,if=combo_points>4
+actions+=/run_action_list,name=generators
 
 actions.cooldowns=dash,if=!buff.cat_form.up
 actions.cooldowns+=/prowl,if=buff.incarnation.remains<0.5&buff.jungle_stalker.up
@@ -62,7 +68,7 @@ actions.finishers+=/primal_wrath,target_if=spell_targets.primal_wrath>1&dot.rip.
 actions.finishers+=/pool_resource,for_next=1
 actions.finishers+=/primal_wrath,target_if=spell_targets.primal_wrath>=2
 actions.finishers+=/pool_resource,for_next=1
-actions.finishers+=/rip,target_if=!ticking|(remains<=duration*0.3)&(target.health.pct>25&!talent.sabertooth.enabled)|(remains<=duration*0.8&persistent_multiplier>dot.rip.pmultiplier)&target.time_to_die>8
+actions.finishers+=/rip,target_if=!ticking|(remains<=duration*0.3)&(!talent.sabertooth.enabled)|(remains<=duration*0.8&persistent_multiplier>dot.rip.pmultiplier)&target.time_to_die>8
 actions.finishers+=/pool_resource,for_next=1
 actions.finishers+=/savage_roar,if=buff.savage_roar.remains<12
 actions.finishers+=/pool_resource,for_next=1
@@ -94,8 +100,7 @@ actions.generators+=/swipe_cat,if=spell_targets.swipe_cat>1
 actions.generators+=/shred,if=dot.rake.remains>(action.shred.cost+action.rake.cost-energy)%energy.regen|buff.clearcasting.react
 
 # # The opener generally follow the logic of the rest of the apl, but is separated out here for logical clarity
-# Opening TF will be delayed if we need to hardcast later (which happens with sabertooth & bt but no li)
-# Otherwise we will open with TF, you can safely cast this from stealth without breaking it.
+# We will open with TF, you can safely cast this from stealth without breaking it.
 actions.opener=tigers_fury,if=variable.delayed_tf_opener=0
 # Always open with rake, consuming stealth and one BT charge (if talented)
 actions.opener+=/rake,if=!ticking|buff.prowl.up
@@ -104,29 +109,10 @@ actions.opener+=/variable,name=opener_done,value=dot.rip.ticking
 # Break out of the action list
 actions.opener+=/wait,sec=0.001,if=dot.rip.ticking
 # If we have LI, and haven't applied it yet use moonfire.
-# OR, if we only have one BT charge active spam moonfire until we can apply rip with it
-actions.opener+=/moonfire_cat,if=!ticking|buff.bloodtalons.stack=1&combo_points<5
-# Given current tuning it is always worth maintaining thrash, so lets apply it here.
-actions.opener+=/thrash,if=!ticking&combo_points<5
-# And if none of the above apply, we simply shred until 5
-actions.opener+=/shred,if=combo_points<5
-# Regrowth, when we have 5 combo points and bloodtalons and either:
-# We have Sabertooth and no active bloodtalons stack (via MF spam) even if it requires a hard cast
-# We have a predatory swiftness proc available (via SR fishing)
-actions.opener+=/regrowth,if=combo_points=5&talent.bloodtalons.enabled&(talent.sabertooth.enabled&buff.bloodtalons.down|buff.predatory_swiftness.up)
-# If we ended up hardcasting Regrowth, use TF to re-enter cat form
-actions.opener+=/tigers_fury
-# And once we get here at 5 combo_points, just rip and we are up and running
-actions.opener+=/rip,if=combo_points=5
 
-actions.single_target=cat_form,if=!buff.cat_form.up
-actions.single_target+=/rake,if=buff.prowl.up|buff.shadowmeld.up
-actions.single_target+=/auto_attack
-actions.single_target+=/call_action_list,name=cooldowns
-actions.single_target+=/ferocious_bite,target_if=dot.rip.ticking&dot.rip.remains<3&target.time_to_die>10&(target.health.pct<25|talent.sabertooth.enabled)
-actions.single_target+=/regrowth,if=combo_points=5&buff.predatory_swiftness.up&talent.bloodtalons.enabled&buff.bloodtalons.down&(!buff.incarnation.up|dot.rip.remains<8)
-actions.single_target+=/run_action_list,name=finishers,if=combo_points>4
-actions.single_target+=/run_action_list,name=generators
+actions.opener+=/moonfire_cat,if=!ticking
+# no need to wait for 5 CPs anymore, just rip and we are up and running
+actions.opener+=/rip,if=combo_points=5
 
 head=irontide_captains_hat,id=155888,bonus_id=4779/1512/4786/4775,azerite_powers=111/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
