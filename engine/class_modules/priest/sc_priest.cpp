@@ -1119,7 +1119,7 @@ std::string priest_t::default_flask() const
 
 std::string priest_t::default_food() const
 {
-  return ( true_level > 110 ) ? "bountiful_captains_feast" :
+  return ( true_level > 110 ) ? "honeyglazed_haunches" :
          ( true_level > 100 ) ? "azshari_salad" :
          ( true_level >  90 ) ? "buttered_sturgeon" :
          ( true_level >= 90 ) ? "mogu_fish_stew" :
