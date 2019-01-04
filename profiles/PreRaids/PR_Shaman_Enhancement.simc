@@ -39,7 +39,7 @@ actions+=/variable,name=furyCheck_CL,value=maelstrom>=(talent.fury_of_air.enable
 actions+=/variable,name=furyCheck_FB,value=maelstrom>=(talent.fury_of_air.enabled*(6+action.frostbrand.cost))
 actions+=/variable,name=furyCheck_ES,value=maelstrom>=(talent.fury_of_air.enabled*(6+action.earthen_spike.cost))
 actions+=/variable,name=furyCheck_LB,value=maelstrom>=(talent.fury_of_air.enabled*(6+40))
-# Attempt to pool maelstrom so you'll be able to cast a fully-powered lightning bolt as soon as it's available.
+# Attempt to pool maelstrom so you'll be able to cast a fully-powered lightning bolt as soon as it's available when fighting one target.
 actions+=/variable,name=OCPool,value=(active_enemies>1|(cooldown.lightning_bolt.remains>=2*gcd))
 actions+=/variable,name=OCPool_SS,value=(variable.OCPool|maelstrom>=(talent.overcharge.enabled*(40+action.stormstrike.cost)))
 actions+=/variable,name=OCPool_LL,value=(variable.OCPool|maelstrom>=(talent.overcharge.enabled*(40+action.lava_lash.cost)))
@@ -76,11 +76,12 @@ actions.cds+=/ascendance,if=cooldown.strike.remains>0
 actions.cds+=/earth_elemental
 
 actions.default_core=earthen_spike,if=variable.furyCheck_ES
-actions.default_core+=/stormstrike,cycle_targets=1,if=azerite.lightning_conduit.enabled&!debuff.lightning_conduit.up&active_enemies>1&(buff.stormbringer.up|(variable.OCPool_SS&variable.furyCheck_SS))
-actions.default_core+=/stormstrike,if=buff.stormbringer.up|(buff.gathering_storms.up&variable.OCPool_SS&variable.furyCheck_SS)
+actions.default_core+=/stormstrike,cycle_targets=1,if=active_enemies>1&azerite.lightning_conduit.enabled&!debuff.lightning_conduit.up&variable.furyCheck_SS
+actions.default_core+=/stormstrike,if=buff.stormbringer.up|(active_enemies>1&buff.gathering_storms.up&variable.furyCheck_SS)
 actions.default_core+=/crash_lightning,if=active_enemies>=3&variable.furyCheck_CL
 actions.default_core+=/lightning_bolt,if=talent.overcharge.enabled&active_enemies=1&variable.furyCheck_LB&maelstrom>=40
 actions.default_core+=/stormstrike,if=variable.OCPool_SS&variable.furyCheck_SS
+actions.default_core+=/lava_lash,if=talent.hot_hand.enabled&buff.hot_hand.react
 
 actions.filler=sundering
 actions.filler+=/crash_lightning,if=talent.forceful_winds.enabled&active_enemies>1&variable.furyCheck_CL
@@ -94,12 +95,10 @@ actions.filler+=/rockbiter
 actions.filler+=/frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8+gcd&variable.furyCheck_FB
 actions.filler+=/flametongue
 
-actions.freezerburn_core=lava_lash,if=azerite.primal_primer.rank>=2&debuff.primal_primer.stack=10&active_enemies=1&variable.furyCheck_LL
-actions.freezerburn_core+=/flametongue,if=talent.hot_hand.enabled&buff.flametongue.remains<4.8+gcd
+actions.freezerburn_core=lava_lash,if=azerite.primal_primer.rank>=2&debuff.primal_primer.stack=10&variable.furyCheck_LL
 actions.freezerburn_core+=/earthen_spike,if=variable.furyCheck_ES
-actions.freezerburn_core+=/stormstrike,cycle_targets=1,if=azerite.lightning_conduit.enabled&!debuff.lightning_conduit.up&active_enemies>1&(buff.stormbringer.up|(variable.OCPool_SS&variable.furyCheck_SS))
-actions.freezerburn_core+=/lava_lash,if=azerite.primal_primer.rank>=2&debuff.primal_primer.stack=10&active_enemies>1&variable.furyCheck_LL
-actions.freezerburn_core+=/stormstrike,if=buff.stormbringer.up|(buff.gathering_storms.up&variable.OCPool_SS&variable.furyCheck_SS)
+actions.freezerburn_core+=/stormstrike,cycle_targets=1,if=active_enemies>1&azerite.lightning_conduit.enabled&!debuff.lightning_conduit.up&variable.furyCheck_SS
+actions.freezerburn_core+=/stormstrike,if=buff.stormbringer.up|(active_enemies>1&buff.gathering_storms.up&variable.furyCheck_SS)
 actions.freezerburn_core+=/crash_lightning,if=active_enemies>=3&variable.furyCheck_CL
 actions.freezerburn_core+=/lightning_bolt,if=talent.overcharge.enabled&active_enemies=1&variable.furyCheck_LB&maelstrom>=40
 actions.freezerburn_core+=/lava_lash,if=azerite.primal_primer.rank>=2&debuff.primal_primer.stack>7&active_enemies=1&variable.furyCheck_LL
@@ -112,13 +111,14 @@ actions.maintenance+=/frostbrand,if=talent.hailstorm.enabled&!buff.frostbrand.up
 actions.opener=rockbiter,if=maelstrom<15&time<gcd
 
 actions.priority=crash_lightning,if=active_enemies>=(8-(talent.forceful_winds.enabled*3))&variable.freezerburn_enabled&variable.furyCheck_CL
+actions.priority+=/lava_lash,if=azerite.primal_primer.rank>=2&debuff.primal_primer.stack=10&active_enemies=1&variable.freezerburn_enabled&variable.furyCheck_LL
 actions.priority+=/crash_lightning,if=!buff.crash_lightning.up&active_enemies>1&variable.furyCheck_CL
 actions.priority+=/fury_of_air,if=!ticking&maelstrom>=20&active_enemies>=(1+variable.freezerburn_enabled)
 actions.priority+=/totem_mastery,if=buff.resonance_totem.remains<=2*gcd
 actions.priority+=/sundering,if=active_enemies>=3
 actions.priority+=/rockbiter,if=talent.landslide.enabled&!buff.landslide.up&charges_fractional>1.7
 # With Natural Harmony, elevate the priority of elemental attacks in order to maintain the buffs when they're about to expire.
-actions.priority+=/frostbrand,if=(azerite.natural_harmony.enabled&buff.natural_harmony_frost.remains<=2*gcd)&talent.hailstorm.enabled&!buff.frostbrand.up&variable.furyCheck_FB
+actions.priority+=/frostbrand,if=(azerite.natural_harmony.enabled&buff.natural_harmony_frost.remains<=2*gcd)&talent.hailstorm.enabled&variable.furyCheck_FB
 actions.priority+=/flametongue,if=(azerite.natural_harmony.enabled&buff.natural_harmony_fire.remains<=2*gcd)
 actions.priority+=/rockbiter,if=(azerite.natural_harmony.enabled&buff.natural_harmony_nature.remains<=2*gcd)&maelstrom<70
 
