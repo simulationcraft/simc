@@ -7912,12 +7912,12 @@ void druid_t::apl_precombat()
     precombat->add_action( "variable,name=use_thrash,value=0", "It is worth it for almost everyone to maintain thrash" );
     precombat->add_action( "variable,name=use_thrash,value=2,if=azerite.wild_fleshrending.enabled");
     //precombat->add_action( "variable,name=opener_done,value=0" );
-    precombat->add_action( "variable,name=delayed_tf_opener,value=0",
+    /*precombat->add_action( "variable,name=delayed_tf_opener,value=0",
                            "Opener TF is delayed if we need to hardcast regrowth later on in the rotation" );
     precombat->add_action(
         "variable,name=delayed_tf_opener,value=1,if=talent.sabertooth.enabled&talent.bloodtalons.enabled&!talent.lunar_"
         "inspiration.enabled",
-        "This happens when Sabertooth, Bloodtalons but not LI is talented" );
+        "This happens when Sabertooth, Bloodtalons but not LI is talented" );*/
   }
 
   // Balance
@@ -8018,11 +8018,11 @@ void druid_t::apl_default()
 void druid_t::apl_feral()
 {
    action_priority_list_t* def = get_action_priority_list("default");
+   action_priority_list_t* opener = get_action_priority_list("opener");
    action_priority_list_t* cooldowns = get_action_priority_list("cooldowns");
    //action_priority_list_t* st = get_action_priority_list("single_target");
    action_priority_list_t* finisher = get_action_priority_list("finishers");
    action_priority_list_t* generator = get_action_priority_list("generators");
-   action_priority_list_t* opener = get_action_priority_list("opener");
 
    def->add_action("auto_attack,if=!buff.prowl.up&!buff.shadowmeld.up");
    def->add_action("run_action_list,name=opener,if=variable.opener_done=0");
@@ -8035,8 +8035,8 @@ void druid_t::apl_feral()
    def->add_action("run_action_list,name=generators");
 
    opener->add_action(
-       "tigers_fury,if=variable.delayed_tf_opener=0",
-       "# The opener generally follow the logic of the rest of the apl, but is separated out here for logical clarity\n"
+       "tigers_fury",
+       "The opener generally follow the logic of the rest of the apl, but is separated out here for logical clarity\n"
        "# We will open with TF, you can safely cast this from stealth without breaking it." );
 
    opener->add_action( "rake,if=!ticking|buff.prowl.up",
@@ -8045,12 +8045,12 @@ void druid_t::apl_feral()
                        "Lets make sure we end the opener \"sequence\" when our first rip is ticking" );
    opener->add_action( "wait,sec=0.001,if=dot.rip.ticking", "Break out of the action list" );
    opener->add_action( "moonfire_cat,if=!ticking",
-                       "If we have LI, and haven't applied it yet use moonfire.\n" );
-   opener->add_action( "rip,if=combo_points=5",
+                       "If we have LI, and haven't applied it yet use moonfire." );
+   opener->add_action( "rip,if=!ticking",
                        "no need to wait for 5 CPs anymore, just rip and we are up and running" );
 
-   cooldowns->add_action( "dash,if=!buff.cat_form.up" );
-   cooldowns->add_action("prowl,if=buff.incarnation.remains<0.5&buff.jungle_stalker.up");
+   //cooldowns->add_action( "dash,if=!buff.cat_form.up" );
+   //cooldowns->add_action("prowl,if=buff.incarnation.remains<0.5&buff.jungle_stalker.up");
    cooldowns->add_action("berserk,if=energy>=30&(cooldown.tigers_fury.remains>5|buff.tigers_fury.up)");
    cooldowns->add_action("tigers_fury,if=energy.deficit>=60");
    cooldowns->add_action("berserking");

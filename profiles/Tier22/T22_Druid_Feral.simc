@@ -28,10 +28,6 @@ actions.precombat+=/regrowth,if=talent.bloodtalons.enabled
 # It is worth it for almost everyone to maintain thrash
 actions.precombat+=/variable,name=use_thrash,value=0
 actions.precombat+=/variable,name=use_thrash,value=2,if=azerite.wild_fleshrending.enabled
-# Opener TF is delayed if we need to hardcast regrowth later on in the rotation
-actions.precombat+=/variable,name=delayed_tf_opener,value=0
-# This happens when Sabertooth, Bloodtalons but not LI is talented
-actions.precombat+=/variable,name=delayed_tf_opener,value=1,if=talent.sabertooth.enabled&talent.bloodtalons.enabled&!talent.lunar_inspiration.enabled
 actions.precombat+=/cat_form
 actions.precombat+=/prowl
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
@@ -50,9 +46,7 @@ actions+=/regrowth,if=combo_points=5&buff.predatory_swiftness.up&talent.bloodtal
 actions+=/run_action_list,name=finishers,if=combo_points>4
 actions+=/run_action_list,name=generators
 
-actions.cooldowns=dash,if=!buff.cat_form.up
-actions.cooldowns+=/prowl,if=buff.incarnation.remains<0.5&buff.jungle_stalker.up
-actions.cooldowns+=/berserk,if=energy>=30&(cooldown.tigers_fury.remains>5|buff.tigers_fury.up)
+actions.cooldowns=berserk,if=energy>=30&(cooldown.tigers_fury.remains>5|buff.tigers_fury.up)
 actions.cooldowns+=/tigers_fury,if=energy.deficit>=60
 actions.cooldowns+=/berserking
 actions.cooldowns+=/feral_frenzy,if=combo_points=0
@@ -99,9 +93,9 @@ actions.generators+=/pool_resource,for_next=1
 actions.generators+=/swipe_cat,if=spell_targets.swipe_cat>1
 actions.generators+=/shred,if=dot.rake.remains>(action.shred.cost+action.rake.cost-energy)%energy.regen|buff.clearcasting.react
 
-# # The opener generally follow the logic of the rest of the apl, but is separated out here for logical clarity
+# The opener generally follow the logic of the rest of the apl, but is separated out here for logical clarity
 # We will open with TF, you can safely cast this from stealth without breaking it.
-actions.opener=tigers_fury,if=variable.delayed_tf_opener=0
+actions.opener=tigers_fury
 # Always open with rake, consuming stealth and one BT charge (if talented)
 actions.opener+=/rake,if=!ticking|buff.prowl.up
 # Lets make sure we end the opener "sequence" when our first rip is ticking
@@ -109,10 +103,9 @@ actions.opener+=/variable,name=opener_done,value=dot.rip.ticking
 # Break out of the action list
 actions.opener+=/wait,sec=0.001,if=dot.rip.ticking
 # If we have LI, and haven't applied it yet use moonfire.
-
 actions.opener+=/moonfire_cat,if=!ticking
 # no need to wait for 5 CPs anymore, just rip and we are up and running
-actions.opener+=/rip,if=combo_points=5
+actions.opener+=/rip,if=!ticking
 
 head=hood_of_pestilent_ichor,id=160623,bonus_id=4824/1507/4775,azerite_powers=359/459/15/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
