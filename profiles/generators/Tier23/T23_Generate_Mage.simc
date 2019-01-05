@@ -1,4 +1,4 @@
-hunter="T23_Mage_Frost"
+mage="T23_Mage_Frost"
 level=120
 race=dwarf
 spec=frost
@@ -25,7 +25,7 @@ main_hand=deathspeaker_spire,id=165597,bonus_id=4800/1537,enchant=torrent_of_ele
 save=T23_Mage_Frost.simc
 
 
-hunter="T23_Mage_Fire"
+mage="T23_Mage_Fire"
 level=120
 race=troll
 spec=fire
@@ -53,7 +53,7 @@ off_hand=cursed_monkey_palm,id=165582,bonus_id=4800/1537
 save=T23_Mage_Fire.simc
 
 
-hunter="T23_Mage_Arcane"
+mage="T23_Mage_Arcane"
 level=120
 race=troll
 spec=arcane
