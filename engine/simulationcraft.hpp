@@ -1124,6 +1124,8 @@ struct sim_t : private sc_thread_t
     bool                reorigination_array_ignore_scale_factors = false;
     /// Chance to pick up visage spawned by Seductive Power
     double              seductive_power_pickup_chance = 1.0;
+    /// Initial stacks for Seductive Power buff
+    int                 initial_seductive_power_stacks = 0;
   } bfa_opts;
 
   // Expansion specific data

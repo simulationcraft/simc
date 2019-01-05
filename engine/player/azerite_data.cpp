@@ -2577,6 +2577,12 @@ void seductive_power( special_effect_t& effect )
   effect.custom_buff = buff;
 
   new seductive_power_cb_t( effect );
+
+  int initial_stacks = effect.player->sim->bfa_opts.initial_seductive_power_stacks;
+  if ( initial_stacks > 0 )
+  {
+    effect.player->register_combat_begin( [ = ] ( player_t* ) { buff->trigger( initial_stacks ); } );
+  }
 }
 
 void bonded_souls( special_effect_t& effect )
