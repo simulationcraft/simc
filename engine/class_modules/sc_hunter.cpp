@@ -3664,6 +3664,11 @@ struct kill_command_t: public hunter_spell_t
     {
       auto driver = p -> find_spell( 287097 );
       dire_consequences.rppm = p -> get_rppm( "dire_consequences", driver );
+      //Dire Consequences is currently bugged and has reduced procrate compared to what the spell data indicates.
+      //This is still the case as of 05/01/2019
+      //TODO: Follow up on this prior to raid release on 22/01/2019
+      dire_consequences.rppm -> set_modifier(
+        dire_consequences.rppm -> get_modifier() * 0.55); 
       dire_consequences.icd = p -> get_cooldown( "dire_consequences" );
       dire_consequences.icd -> duration = driver -> internal_cooldown();
       dire_consequences.proc = p -> get_proc( "Dire Consequences" );
