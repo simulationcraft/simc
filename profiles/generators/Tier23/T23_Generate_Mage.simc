@@ -27,7 +27,7 @@ save=T23_Mage_Frost.simc
 
 mage="T23_Mage_Fire"
 level=120
-race=troll
+race=dwarf
 spec=fire
 role=spell
 position=ranged_back
