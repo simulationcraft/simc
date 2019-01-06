@@ -833,20 +833,6 @@ expr_t* dot_t::create_expression( dot_t* dot, action_t* action, action_t* source
     };
     return new dot_pmultiplier_expr_t( dot, action, source_action, dynamic );
   }
-
-#if 0
-  else if ( name_str == "mastery" )
-  {
-    struct dot_mastery_expr_t : public dot_expr_t
-    {
-      dot_mastery_expr_t( dot_t* d, action_t* a, bool dynamic ) :
-        dot_expr_t( "dot_mastery", d, a, dynamic ) {}
-      virtual double evaluate() { return dot() -> state ? dot() -> state -> total_mastery() : 0; }
-    };
-    return new dot_mastery_expr_t( dot, current_action, dynamic );
-  }
-#endif
-
   else if ( name_str == "haste_pct" )
   {
     struct dot_haste_pct_expr_t : public dot_expr_t
