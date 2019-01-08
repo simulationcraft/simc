@@ -4,24 +4,24 @@ race=troll
 spec=balance
 role=spell
 position=ranged_back
-talents=3000231
+talents=1000231
 
-head=cowl_of_fluid_machinations,id=159302,bonus_id=5062/1587/4786/4775,azerite_powers=200/478/22/219/13
+head=tidemothers_cover,id=165819,bonus_id=4824/1537,azerite_powers=200/122/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
-shoulder=shoulders_of_the_sanguine_monstrosity,id=159323,bonus_id=5062/1587/4786/4775,azerite_powers=200/250/18/15/13
-back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
-chest=venture_co._plenipotentiary_vest,id=159298,bonus_id=5062/1587/4786/4775,azerite_powers=200/504/459/14/13
-wrists=amethyststudded_bindings,id=165524,bonus_id=4800/1537
+shoulder=mestrahs_singing_spaulders,id=165516,bonus_id=4824/1537,azerite_powers=/122/562/31/13
+back=Loa_exultants_shroud,id=165512,ilevel=415
+chest=grongpelt_vest,id=165515,bonus_id=4824/1537,azerite_powers=/122/250/462/13
+wrist=amethyststudded_bindings,id=165524,bonus_id=4800/1537
 hands=gloves_of_spiritual_grace,id=165514,bonus_id=4800/1537
 waist=stretched_sinew_waistcord,id=165525,bonus_id=4800/1537
 legs=kelplaced_greaves,id=165528,bonus_id=4800/1537
 feet=embossed_deckwalkers,id=165527,bonus_id=4800/1537
-finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_haste
-finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_haste
-trinket1=incandescent_sliver,id=165571,bonus_id=4800/1537
-trinket2=tidestorm_codex,id=165576,bonus_id=4800/1537
-main_hand=goblet_of_glittering_favor,id=165592,bonus_id=4800/1537,enchant=quick_navigation
-off_hand=cursed_monkey_palm,id=165582,bonus_id=4800/1537
+finger1=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_haste
+finger2=seal_of_the_zandalari_empire,id=165567,,bonus_id=4800/1537,enchant=pact_of_haste
+trinket1=incandescent_sliver,id=165571,,bonus_id=4800/1537
+trinket2=crest_of_paku,id=165581,,bonus_id=4800/1537
+main_hand=goblet_of_glittering_favor,id=165592,bonus_id=4800/1537,enchant=torrent_of_elements
+off_hand=fogbreaker_light_of_the_sea,id=165583,bonus_id=4800/1537
 
 save=T23_Druid_Balance.simc
 
