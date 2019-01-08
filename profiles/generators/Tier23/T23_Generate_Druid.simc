@@ -17,9 +17,9 @@ waist=stretched_sinew_waistcord,id=165525,bonus_id=4800/1537
 legs=kelplaced_greaves,id=165528,bonus_id=4800/1537
 feet=embossed_deckwalkers,id=165527,bonus_id=4800/1537
 finger1=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_haste
-finger2=seal_of_the_zandalari_empire,id=165567,,bonus_id=4800/1537,enchant=pact_of_haste
-trinket1=incandescent_sliver,id=165571,,bonus_id=4800/1537
-trinket2=crest_of_paku,id=165581,,bonus_id=4800/1537
+finger2=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_haste
+trinket1=incandescent_sliver,id=165571,bonus_id=4800/1537
+trinket2=crest_of_paku,id=165581,bonus_id=4800/1537
 main_hand=goblet_of_glittering_favor,id=165592,bonus_id=4800/1537,enchant=torrent_of_elements
 off_hand=fogbreaker_light_of_the_sea,id=165583,bonus_id=4800/1537
 
