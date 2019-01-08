@@ -63,7 +63,7 @@ talents=2032021
 
 head=headdress_of_the_first_empire,id=159236,bonus_id=1587/4819,azerite_powers=374/157/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
-shoulders=giga_charged_shoulderpads,id=165497,bonus_id=4824/1537,azerite_powers=88/562/459/13
+shoulders=gigacharged_shoulderpads,id=165497,bonus_id=4824/1537,azerite_powers=88/562/459/13
 back=high_tinkers_cape,id=165924,bonus_id=4800/1537
 chest=divine_fury_raiment,id=165834,bonus_id=4824/1537,azerite_powers=127/562/30/13
 wrists=lever_stabilizing_wristwraps,id=165508,bonus_id=4800/1537
