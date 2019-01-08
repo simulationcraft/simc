@@ -75,20 +75,20 @@ actions.trickshots+=/a_murder_of_crows
 actions.trickshots+=/serpent_sting,if=refreshable&!action.serpent_sting.in_flight
 actions.trickshots+=/steady_shot
 
-head=targettracking_headgear,id=165543,bonus_id=4824/1537/4775,azerite_powers=212/36/22/14/13
+head=target_tracking_headgear,id=165543,bonus_id=4824/1537,azerite_powers=212/36/22/14/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
-shoulders=pauldrons_of_ancestral_vengeance,id=165921,bonus_id=4824/1537/4775,azerite_powers=36/212/30/203/13
-back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
-chest=shrapneldampening_chestguard,id=158307,bonus_id=5062/1587/4786/4775,azerite_powers=212/504/22/469/13
-wrists=icebinders_bracers,id=165542,bonus_id=4800/1537
-hands=grips_of_harmonious_spirits,id=165531,bonus_id=4800/1537
+shoulders=pauldrons_of_ancestral_vengeance,id=165921,bonus_id=4824/1537,azerite_powers=36/212/30/203/13
+back=silverback_cloak,id=165513,bonus_id=4800/1537
+chest=mistfire_raiment,id=165540,bonus_id=4824/1537,azerite_powers=212/562/31/469/13
+wrists=ape_wranglers_wristguards,id=165534,bonus_id=4800/1537
+hands=slimy_kelpweavers,id=165546,bonus_id=4800/1537
 waist=goldenscale_girdle,id=165538,bonus_id=4800/1537
 legs=deathhunters_legguards,id=165536,bonus_id=4800/1537
-feet=boots_of_the_gilded_path,id=165541,bonus_id=4800/1537
-finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_haste
-finger2=band_of_multisided_strikes,id=165565,bonus_id=4800/1537,enchant=pact_of_haste
-trinket1=kimbuls_razor_claw,id=165579,bonus_id=4800/1537
-trinket2=variable_intensity_gigavolt_oscillating_reactor,id=165572,bonus_id=4800/1537
+feet=lightgrace_sabatons,id=165533,bonus_id=4800/1537
+finger1=jade_ophidian_band,id=162544,bonus_id=1572/4780,enchant=pact_of_mastery
+finger1=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_mastery
+trinket1=harlans_loaded_dice,id=155881,bonus_id=1572/4780
+trinket2=galecallers_boon,id=159614,bonus_id=1572/4780
 main_hand=pterrorwing_longbow,id=165599,bonus_id=4800/1537,enchant=incendiary_ammunition
 
 # Gear Summary
