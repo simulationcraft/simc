@@ -64,7 +64,7 @@ head=targettracking_headgear,id=165543,bonus_id=4824/1537,azerite_powers=366/562
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
 shoulder=pauldrons_of_ancestral_vengeance,id=165921,bonus_id=4824/1537,azerite_powers=367/562/30/203/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
-chest=corrupted_hexxers_vestments,id=159370,bonus_id=1592/5440,azerite_powers=161/366/30/14/13
+chest=corrupted_hexxers_vestments,id=159370,bonus_id=1587/5440/4775,azerite_powers=161/366/30/14/13
 wrists=icebinders_bracers,id=165542,bonus_id=4800/1537
 hands=grips_of_harmonious_spirits,id=165531,bonus_id=4800/1537
 waist=goldenscale_girdle,id=165538,bonus_id=4800/1537
