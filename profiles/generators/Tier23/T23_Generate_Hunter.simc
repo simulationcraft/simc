@@ -6,7 +6,7 @@ role=attack
 position=ranged_back
 talents=1303011
 
-head=target_tracking_headgear,id=165543,bonus_id=4824/1537,azerite_powers=366/562/459/14/13
+head=targettracking_headgear,id=165543,bonus_id=4824/1537,azerite_powers=366/562/459/14/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
 shoulder=pauldrons_of_ancestral_vengeance,id=165921,bonus_id=4824/1537,azerite_powers=367/562/30/203/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
@@ -27,15 +27,16 @@ save=T23_Hunter_Beast_Mastery.simc
 
 hunter="T23_Hunter_Marksmanship"
 level=120
-race=lightforged_draenei
+race=troll
 spec=marksmanship
 role=attack
 position=ranged_back
 talents=1103031
+summon_pet=disabled
 
-head=target_tracking_headgear,id=165543,bonus_id=4824/1537,azerite_powers=212/36/22/14/13
+head=targettracking_headgear,id=165543,bonus_id=4824/1537,azerite_powers=212/36/22/14/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
-shoulders=pauldrons_of_ancestral_vengeance,id=165921,bonus_id=4824/1537,azerite_powers=36/212/30/203/13
+shoulders=pauldrons_of_ancestral_vengeance,id=165921,bonus_id=4824/1537,azerite_powers=36/562/30/203/13
 back=silverback_cloak,id=165513,bonus_id=4800/1537
 chest=mistfire_raiment,id=165540,bonus_id=4824/1537,azerite_powers=212/562/31/469/13
 wrists=ape_wranglers_wristguards,id=165534,bonus_id=4800/1537
@@ -44,7 +45,7 @@ waist=goldenscale_girdle,id=165538,bonus_id=4800/1537
 legs=deathhunters_legguards,id=165536,bonus_id=4800/1537
 feet=lightgrace_sabatons,id=165533,bonus_id=4800/1537
 finger1=jade_ophidian_band,id=162544,bonus_id=1572/4780,enchant=pact_of_mastery
-finger1=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_mastery
+finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_mastery
 trinket1=harlans_loaded_dice,id=155881,bonus_id=1572/4780
 trinket2=galecallers_boon,id=159614,bonus_id=1572/4780
 main_hand=pterrorwing_longbow,id=165599,bonus_id=4800/1537,enchant=incendiary_ammunition
@@ -60,7 +61,7 @@ role=attack
 position=back
 talents=1101021
 
-head=visage_of_bloody_horrors,id=159381,bonus_id=1587/5440,azerite_powers=371/373/31/83/13
+head=visage_of_bloody_horrors,id=159381,bonus_id=1587/5440,azerite_powers=371/372/30/83/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
 shoulders=mantle_of_the_soulbinders_caress,id=165537,bonus_id=4824/1537,azerite_powers=371/163/30/15/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
