@@ -71,6 +71,7 @@ void SC_SimulateThread::run()
     {
       sim -> scaling -> analyze();
       sim -> plot -> analyze();
+<<<<<<< HEAD
       sim -> reforge_plot -> analyze();
       report::print_suite( sim.get() );
     }
@@ -85,6 +86,10 @@ void SC_SimulateThread::run()
 
         error_str += QString::fromStdString( str );
       } );
+=======
+      sim -> reforge_plot -> start();
+      report::print_suite( sim );
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
     }
   }
   catch ( const std::exception& e )

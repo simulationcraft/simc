@@ -32,7 +32,11 @@ template <typename Range>
 typename Range::value_type calculate_mean( Range r )
 {
   auto length = std::distance( std::begin( r ), std::end( r ) );
+<<<<<<< HEAD
   auto tmp    = calculate_sum( r );
+=======
+  auto tmp = calculate_sum( r );
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
   tmp /= length;
   return tmp;
 }
@@ -111,6 +115,7 @@ std::vector<size_t> create_histogram( Range r, size_t num_buckets,
 {
   std::vector<size_t> result;
   if ( std::begin( r ) == std::end( r ) )
+<<<<<<< HEAD
     return result;
 
   if ( std::isnan(min) || std::isnan(max) )
@@ -122,6 +127,16 @@ std::vector<size_t> create_histogram( Range r, size_t num_buckets,
   if ( max <= min )
     return result;
 
+=======
+    return result;
+
+  assert( min <= *range::min_element( r ) );
+  assert( max >= *range::max_element( r ) );
+
+  if ( max <= min )
+    return result;
+
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
   auto range = max - min;
 
   result.assign( num_buckets, size_t{} );
@@ -145,7 +160,11 @@ std::vector<size_t> create_histogram( Range r, size_t num_buckets )
   if ( std::begin( r ) == std::end( r ) )
     return std::vector<size_t>();
 
+<<<<<<< HEAD
   auto mm  = std::minmax_element( std::begin( r ), std::end( r ) );
+=======
+  auto mm = std::minmax_element( std::begin( r ), std::end( r ) );
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
   auto min = *mm.first;
   auto max = *mm.second;
 
@@ -276,7 +295,11 @@ private:
 protected:
   bool _found  = false;
   value_t _min = std::numeric_limits<value_t>::max();
+<<<<<<< HEAD
   value_t _max = std::numeric_limits<value_t>::lowest();
+=======
+  value_t _max = std::numeric_limits<value_t>::min();
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
   void set_min( double x )
   {
     _min   = x;
@@ -354,7 +377,10 @@ private:
   std::vector<value_t> _sorted_data;  // extra sequence so we can keep the
                                       // original, unsorted order ( for example
                                       // to do regression on it )
+<<<<<<< HEAD
   bool is_sorted;
+=======
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 
 public:
   extended_sample_data_t( const std::string& n, bool s = true )
@@ -365,8 +391,12 @@ public:
       std_dev(),
       mean_variance(),
       mean_std_dev(),
+<<<<<<< HEAD
       simple( s ),
       is_sorted( false )
+=======
+      simple( s )
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
   {
   }
 
@@ -399,15 +429,17 @@ public:
     else
     {
       _data.push_back( x );
-      is_sorted = false;
     }
   }
 
+<<<<<<< HEAD
   bool sorted() const
   {
     return is_sorted;
   }
 
+=======
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
   size_t size() const
   {
     if ( simple )
@@ -438,6 +470,7 @@ public:
     if ( data().empty() )
       return;
 
+<<<<<<< HEAD
     if ( sorted() )
     {  // If we have sorted data, we can just take the front/back as min/max
       base_t::set_min( _sorted_data.front() );
@@ -452,6 +485,14 @@ public:
 
     base_t::_sum = statistics::calculate_sum( data() );
     _mean        = base_t::_sum / data().size();
+=======
+    auto minmax = std::minmax_element( data().begin(), data().end() );
+    base_t::set_min( *minmax.first );
+    base_t::set_max( *minmax.second );
+
+    base_t::_sum = statistics::calculate_sum( data() );
+    _mean = base_t::_sum / data().size();
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
   }
 
   value_t mean() const
@@ -479,7 +520,11 @@ public:
       return;
 
     variance = statistics::calculate_variance( data(), mean() );
+<<<<<<< HEAD
     std_dev  = std::sqrt( variance );
+=======
+    std_dev = std::sqrt( variance );
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 
     // Calculate Standard Deviation of the Mean ( Central Limit Theorem )
     if ( data().size() > 1 )
@@ -493,6 +538,7 @@ public:
   // sort data
   void sort()
   {
+<<<<<<< HEAD
     if ( is_sorted )
     {
       return;
@@ -504,6 +550,14 @@ public:
     _sorted_data = _data;
     range::sort( _sorted_data );
     is_sorted = true;
+=======
+    if ( simple )
+    {
+      return;
+    }
+    _sorted_data = _data;
+    range::sort( _sorted_data );
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
   }
 
   /* Create histogram ( not normalized ) of the data
@@ -543,9 +597,6 @@ public:
 
     if ( data().empty() )
       return 0;
-
-    if ( !is_sorted )
-      return base_t::nan();
 
     // Should be improved to use linear interpolation
     return ( sorted_data()[ (int)( x * ( sorted_data().size() - 1 ) ) ] );

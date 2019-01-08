@@ -331,7 +331,11 @@ void SC_OptionsTab::createGlobalsTab()
   globalsLayout_middle -> addRow( tr( "Target Race" ),   choice.target_race = createChoice( 7, "Humanoid", "Beast", "Demon", "Dragonkin", "Elemental", "Giant", "Undead" ) );
   globalsLayout_middle -> addRow( tr( "Target Type" ),       choice.boss_type = createChoice( 4, "Custom", "Fluffy Pillow", "Tank Dummy", "TMI Standard Boss" ) );
   globalsLayout_middle -> addRow( tr( "Tank Dummy" ),       choice.tank_dummy = createChoice( 5, "None", "Weak", "Dungeon", "Raid", "Mythic" ) );
+<<<<<<< HEAD
   globalsLayout_middle -> addRow( tr( "TMI Standard Boss" ),  choice.tmi_boss = createChoice( 5, "None", "T19M", "T19H", "T19N", "T19L" ) );
+=======
+  globalsLayout_middle -> addRow( tr( "TMI Standard Boss" ),  choice.tmi_boss = createChoice( 8, "None", "T17M", "T17H", "T17N", "T17L", "T18N", "T18H", "T18M" ) );
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
   globalsLayout_middle -> addRow( tr( "TMI Window (sec)" ), choice.tmi_window = createChoice( 10, "0", "2", "3", "4", "5", "6", "7", "8", "9", "10" ) );
   globalsLayout_middle -> addRow( tr( "Show ETMI" ),         choice.show_etmi = createChoice( 2, "Only when in group", "Always" ) );
 

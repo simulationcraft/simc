@@ -1026,6 +1026,7 @@ public:
 // Base class for main pet & Animal Companion
 struct hunter_main_pet_base_t : public hunter_pet_t
 {
+<<<<<<< HEAD
   struct actives_t
   {
     action_t* basic_attack = nullptr;
@@ -1034,6 +1035,16 @@ struct hunter_main_pet_base_t : public hunter_pet_t
     action_t* stomp = nullptr;
     action_t* flanking_strike = nullptr;
   } active;
+=======
+  felstorm_t( pet_t* p, const std::string& opts ) :
+    melee_attack_t( "felstorm", p, p -> find_spell( 184279 ) )
+  {
+    parse_options( opts );
+
+    callbacks = may_miss = may_block = may_parry = false;
+    dynamic_tick_action = hasted_ticks = true;
+    trigger_gcd = timespan_t::from_seconds( 1.0 );
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 
   struct buffs_t
   {
@@ -1043,18 +1054,36 @@ struct hunter_main_pet_base_t : public hunter_pet_t
     buff_t* predator = nullptr;
   } buffs;
 
+<<<<<<< HEAD
   hunter_main_pet_base_t( hunter_t* owner, const std::string& pet_name, pet_e pt ):
     hunter_pet_t( owner, pet_name, pt )
+=======
+  // Make dot long enough to last for the duration of the summon
+  timespan_t composite_dot_duration( const action_state_t* ) const override
+  { return sim -> expected_iteration_time; }
+
+  bool init_finished() override
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
   {
     stamina_per_owner = 0.7;
     owner_coeff.ap_from_ap = 0.6;
 
     initial.armor_multiplier *= 1.05;
 
+<<<<<<< HEAD
     main_hand_weapon.swing_time = owner -> options.pet_attack_speed;
   }
 
   void create_buffs() override
+=======
+struct blademaster_pet_t : public hunter_pet_t
+{
+  action_t* felstorm;
+
+  blademaster_pet_t( player_t* owner ) :
+    hunter_pet_t( *(owner -> sim), *static_cast<hunter_t*>(owner), BLADEMASTER_PET_NAME, PET_NONE, true, true ),
+    felstorm( nullptr )
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
   {
     hunter_pet_t::create_buffs();
 
@@ -1077,6 +1106,7 @@ struct hunter_main_pet_base_t : public hunter_pet_t
       buffs.frenzy -> set_duration( o() -> azerite.feeding_frenzy.spell() -> effectN( 1 ).time_value() );
   }
 
+<<<<<<< HEAD
   double composite_melee_speed() const override
   {
     double ah = hunter_pet_t::composite_melee_speed();
@@ -1086,15 +1116,44 @@ struct hunter_main_pet_base_t : public hunter_pet_t
 
     if ( buffs.predator && buffs.predator -> check() )
       ah *= 1.0 / ( 1.0 + buffs.predator -> check_stack_value() );
+=======
+  timespan_t available() const override
+  { return timespan_t::from_seconds( 20.0 ); }
+
+  void init_action_list() override
+  {
+    action_list_str = "felstorm,if=!ticking";
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 
     return ah;
   }
 
+<<<<<<< HEAD
   double composite_player_multiplier( school_e school ) const override
   {
     double m = hunter_pet_t::composite_player_multiplier( school );
 
     m *= 1.0 + buffs.bestial_wrath -> check_value();
+=======
+  void dismiss( bool expired = false ) override
+  {
+    hunter_pet_t::dismiss( expired );
+
+    if ( dot_t* d = felstorm -> find_dot( felstorm -> target ) )
+    {
+      d -> cancel();
+    }
+  }
+
+  action_t* create_action( const std::string& name,
+                           const std::string& options_str ) override
+  {
+    if ( name == "felstorm" )
+    {
+      felstorm = new felstorm_t( this, options_str );
+      return felstorm;
+    }
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 
     return m;
   }
@@ -5090,9 +5149,24 @@ void hunter_t::init_action_list()
       precombat -> add_action( "summon_pet" );
 
     precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+<<<<<<< HEAD
 
     // Pre-pot
     precombat -> add_action( "potion" );
+=======
+    precombat -> add_action( "exotic_munitions,ammo_type=incendiary" );
+
+    //Pre-pot
+    add_potion_action( precombat, "draenic_agility", "virmens_bite" );
+
+    precombat -> add_action( "glaive_toss" );
+    if ( specialization() == HUNTER_SURVIVAL )
+    {
+      precombat -> add_action( "explosive_shot" );
+    }
+    precombat -> add_action( "focusing_shot" );
+    precombat -> add_action( "powershot" );
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 
     switch ( specialization() )
     {
@@ -5120,11 +5194,40 @@ void hunter_t::init_action_list()
 
 std::string hunter_t::special_use_item_action( const std::string& item_name, const std::string& condition ) const
 {
+<<<<<<< HEAD
   auto item = range::find_if( items, [ &item_name ]( const item_t& item ) {
     return item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) && item.name_str == item_name;
   });
   if ( item == items.end() )
     return std::string();
+=======
+  int num_items = (int)items.size();
+  for ( int i = 0; i < num_items; i++ )
+  {
+    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+      list -> add_action( "use_item,name=" + items[i].name_str );
+  }
+}
+
+// Racial Actions =======================================================================
+
+void hunter_t::add_racial_actions( action_priority_list_t* list )
+{
+    switch ( specialization() )
+    {
+    case HUNTER_MARKSMANSHIP:
+      list -> add_action( "arcane_torrent,if=focus.deficit>=30&buff.rapid_fire.up");
+      break;
+    default:
+      list -> add_action( "arcane_torrent,if=focus.deficit>=30");
+      break;
+    }
+    list -> add_action( "blood_fury" );
+    list -> add_action( "berserking" );
+}
+
+// Potions Actions =======================================================================
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 
   std::string action = "use_item,name=" + item -> name_str;
   if ( !condition.empty() )
@@ -5200,6 +5303,7 @@ void hunter_t::apl_mm()
 
   // Generic APL
   default_list -> add_action( "auto_shot" );
+<<<<<<< HEAD
   default_list -> add_action( "use_items,if=buff.trueshot.up|!talent.calling_the_shots.enabled|target.time_to_die<20", 
 	  "Try to line up activated trinkets with Trueshot" );
   default_list -> add_action( "call_action_list,name=cds" );
@@ -5240,6 +5344,50 @@ void hunter_t::apl_mm()
   trickshots -> add_talent( this, "A Murder of Crows" );
   trickshots -> add_talent( this, "Serpent Sting", "if=refreshable&!action.serpent_sting.in_flight" );
   trickshots -> add_action( this, "Steady Shot" );
+=======
+
+  add_item_actions( default_list );
+  add_racial_actions( default_list );
+
+  add_potion_action( default_list, "draenic_agility", "virmens_bite",
+    "if=((buff.rapid_fire.up|buff.bloodlust.up)&(cooldown.stampede.remains<1))|target.time_to_die<=45" );
+
+  default_list -> add_action( this, "Chimaera Shot" );
+  // "if=cast_regen+action.aimed_shot.cast_regen<focus.deficit"
+  default_list -> add_action( this, "Kill Shot" );
+
+  default_list -> add_action( this, "Rapid Fire");
+  default_list -> add_talent( this, "Stampede", "if=buff.rapid_fire.up|buff.bloodlust.up|target.time_to_die<=25" );
+  default_list -> add_action( "call_action_list,name=careful_aim,if=buff.careful_aim.up" );
+  {
+    careful_aim -> add_talent( this, "Glaive Toss", "if=active_enemies>2" );
+    careful_aim -> add_talent( this, "Powershot", "if=spell_targets.powershot>1&cast_regen<focus.deficit" );
+    careful_aim -> add_talent( this, "Barrage", "if=spell_targets.barrage>2" );
+    // careful_aim -> add_action( this, "Steady Shot", "if=buff.pre_steady_focus.up&if=buff.pre_steady_focus.up&(14+cast_regen+action.aimed_shot.cast_regen)<=focus.deficit)" );
+    careful_aim -> add_action( this, "Aimed Shot" );
+    careful_aim -> add_talent( this, "Focusing Shot", "if=50+cast_regen<focus.deficit" );
+    careful_aim -> add_action( this, "Steady Shot" );
+  }
+  default_list -> add_action( this, "Explosive Trap", "if=spell_targets.explosive_trap_tick>1" );
+
+  default_list -> add_talent( this, "A Murder of Crows" );
+  default_list -> add_talent( this, "Dire Beast", "if=cast_regen+action.aimed_shot.cast_regen<focus.deficit" );
+
+  default_list -> add_talent( this, "Glaive Toss" );
+  default_list -> add_talent( this, "Powershot", "if=cast_regen<focus.deficit" );
+  default_list -> add_talent( this, "Barrage", "if=spell_targets.barrage>1" );
+  default_list -> add_action( this, "Steady Shot", "if=focus.deficit*cast_time%(14+cast_regen)>cooldown.rapid_fire.remains", "Pool max focus for rapid fire so we can spam AimedShot with Careful Aim buff" );
+  default_list -> add_action( this, "Steady Shot", "if=focus.deficit*cast_time%(14+cast_regen)>cooldown.rapid_fire.remains", "Pool max focus for rapid fire so we can spam AimedShot with Careful Aim buff" );
+  default_list -> add_talent( this, "Focusing Shot", "if=focus.deficit*cast_time%(50+cast_regen)>cooldown.rapid_fire.remains&focus<100" );
+  default_list -> add_action( this, "Steady Shot", "if=buff.pre_steady_focus.up&(14+cast_regen+action.aimed_shot.cast_regen)<=focus.deficit", "Cast a second shot for steady focus if that won't cap us." );
+  default_list -> add_action( this, "Steady Shot", "if=cooldown.chimaera_shot.remains<4&(14+cast_regen+action.aimed_shot.cast_regen)<=focus.deficit" );
+  default_list -> add_action( this, "Multi-Shot", "if=spell_targets.multi_shot>=8" );
+  default_list -> add_action( this, "Aimed Shot", "if=talent.focusing_shot.enabled" );
+  default_list -> add_action( this, "Aimed Shot", "if=focus+cast_regen>=90" );
+  default_list -> add_action( this, "Aimed Shot", "if=buff.thrill_of_the_hunt.react&focus+cast_regen>=65" );
+  default_list -> add_talent( this, "Focusing Shot", "if=50+cast_regen-10<focus.deficit", "Allow FS to over-cap by 10 if we have nothing else to do" );
+  default_list -> add_action( this, "Steady Shot" );
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 }
 
 // Survival Action List ===================================================================

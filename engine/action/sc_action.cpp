@@ -1625,6 +1625,17 @@ void action_t::tick( dot_t* d )
   // update the driver's state per tick (for example due to haste changes -> tick time).
   update_state( d->state, amount_type( d->state, true ) );
 
+<<<<<<< HEAD
+=======
+void action_t::tick( dot_t* d )
+{
+  assert( ! d -> target -> is_sleeping() );
+
+  // Always update the state of the base dot. This is required to allow tick action-based dots to
+  // update the driver's state per tick (for example due to haste changes -> tick time).
+  update_state( d -> state, amount_type( d -> state, true ) );
+
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
   if ( tick_action )
   {
     // 6/22/2018 -- Update logic to use the state of the tick_action rather than the base DoT
@@ -1641,6 +1652,7 @@ void action_t::tick( dot_t* d )
     tick_action->set_target( d->target );
 
     if ( dynamic_tick_action )
+<<<<<<< HEAD
     {
       tick_action->update_state( tick_state, amount_type( tick_state, tick_action->direct_tick ) );
     }
@@ -1651,6 +1663,19 @@ void action_t::tick( dot_t* d )
     tick_state->ta_multiplier *= d->get_last_tick_factor();
 
     tick_action->schedule_execute( tick_state );
+=======
+      snapshot_state( state, amount_type( state, true ) );
+    else
+      update_state( state, amount_type( state, true ) );
+    state -> da_multiplier = state -> ta_multiplier * d -> get_last_tick_factor();
+    state -> target_da_multiplier = state -> target_ta_multiplier;
+    tick_action -> target = d -> target;
+    tick_action -> schedule_execute( state );
+  }
+  else
+  {
+    d -> state -> result = RESULT_HIT;
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 
     sim->print_log("{} {} ticks ({} of {}) {}",
         player->name(), name(), d->current_tick, d->num_ticks, d->target->name() );
@@ -1757,7 +1782,12 @@ void action_t::queue_execute( execute_type type )
     {
       schedule_execute();
     }
+<<<<<<< HEAD
     else
+=======
+
+    if ( s -> target -> is_enemy() )
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
     {
       // If the charge cooldown is recharging on the same timestamp, we need to create a zero-time
       // event to execute the (queued) action, so that the charge cooldown can regenerate.

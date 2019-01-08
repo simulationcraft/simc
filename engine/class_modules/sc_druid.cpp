@@ -3621,7 +3621,19 @@ struct maim_t : public cat_attack_t
 
   double action_multiplier() const override
   {
+<<<<<<< HEAD
     double am = cat_attack_t::action_multiplier();
+=======
+    rip_state_t* rip_state = debug_cast<rip_state_t*>( td( s -> target ) -> dots.rip -> state );
+    if ( ! rip_state )
+    {
+      return 0;
+    }
+
+    return ap_per_point * rip_state -> combo_points;
+  }
+};
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 
     am *= p() -> resources.current[ RESOURCE_COMBO_POINT ];
 
@@ -7955,6 +7967,7 @@ void druid_t::apl_default()
 
 void druid_t::apl_feral()
 {
+<<<<<<< HEAD
    action_priority_list_t* def = get_action_priority_list("default");
    action_priority_list_t* cooldowns = get_action_priority_list("cooldowns");
    action_priority_list_t* st = get_action_priority_list("single_target");
@@ -8221,6 +8234,100 @@ void druid_t::apl_feral()
  //   "Hard-cast a Healing Touch for Bloodtalons buff. Use Dash to re-enter Cat Form." );
  // sbt -> add_action( this, "Tiger's Fury", "if=!dot.rip.ticking&combo_points=5",
  //   "Force use of Tiger's Fury before applying Rip." );
+=======
+  action_priority_list_t* def      = get_action_priority_list( "default"   );
+  action_priority_list_t* finish   = get_action_priority_list( "finisher"  );
+  action_priority_list_t* maintain = get_action_priority_list( "maintain"  );
+  action_priority_list_t* generate = get_action_priority_list( "generator" );
+
+  std::vector<std::string> racial_actions = get_racial_actions();
+  std::string              potion_action  = "potion,name=";
+  if ( true_level > 90 )
+    potion_action += "draenic_agility";
+  else if ( true_level > 85 )
+    potion_action += "tolvir";
+  else
+    potion_action += "tolvir";
+
+  // Main List =============================================================
+
+  def -> add_action( this, "Cat Form" );
+  if ( find_item( "maalus_the_blood_drinker") && find_item( "soul_capacitor" ) )
+    def -> add_action( "cancel_buff,name=spirit_shift,if=buff.maalus.remains<1&buff.maalus.up&buff.spirit_shift.remains-buff.maalus.remains<5", "Explode Spirit Shift at the end of Maalus if it has significant damage stored up." );
+  def -> add_talent( this, "Wild Charge" );
+  def -> add_talent( this, "Displacer Beast", "if=movement.distance>10" );
+  def -> add_action( this, "Dash", "if=movement.distance&buff.displacer_beast.down&buff.wild_charge_movement.down" );
+  if ( race == RACE_NIGHT_ELF )
+    def -> add_action( this, "Rake", "if=buff.prowl.up|buff.shadowmeld.up" );
+  else
+    def -> add_action( this, "Rake", "if=buff.prowl.up" );
+  def -> add_action( "auto_attack" );
+  def -> add_action( this, "Skull Bash" );
+  def -> add_talent( this, "Force of Nature", "if=charges=3|trinket.proc.all.react|target.time_to_die<20");
+  def -> add_action( this, "Berserk", "if=buff.tigers_fury.up&(buff.incarnation.up|!talent.incarnation_king_of_the_jungle.enabled)" );
+
+  // On-Use Items
+  for ( size_t i = 0; i < items.size(); i++ )
+  {
+    if ( items[ i ].has_use_special_effect() )
+    {
+      std::string line = std::string( "use_item,slot=" ) + items[ i ].slot_name();
+      if ( items[ i ].name_str == "mirror_of_the_blademaster" )
+        line += ",if=raid_event.adds.in>60|!raid_event.adds.exists|spell_targets.swipe>desired_targets";
+      else if ( items[ i ].name_str != "maalus_the_blood_drinker" )
+        line += ",if=(prev.tigers_fury&(target.time_to_die>trinket.stat.any.cooldown|target.time_to_die<45))|prev.berserk|(buff.incarnation.up&time<10)";
+
+      def -> add_action( line );
+    }
+  }
+
+  if ( sim -> allow_potions && true_level >= 80 )
+    def -> add_action( potion_action + ",if=(buff.berserk.remains>10&(target.time_to_die<180|(trinket.proc.all.react&target.health.pct<25)))|target.time_to_die<=40" );
+
+  // Racials
+  for ( size_t i = 0; i < racial_actions.size(); i++ )
+  {
+    def -> add_action( racial_actions[ i ] + ",sync=tigers_fury" );
+  }
+
+  def -> add_action( this, "Tiger's Fury", "if=(!buff.omen_of_clarity.react&energy.deficit>=60)|energy.deficit>=80|(t18_class_trinket&buff.berserk.up&buff.tigers_fury.down)" );
+  def -> add_action( "incarnation,if=cooldown.berserk.remains<10&energy.time_to_max>1" );
+  def -> add_action( this, "Ferocious Bite", "cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<3&target.health.pct<25",
+                     "Keep Rip from falling off during execute range." );
+  def -> add_action( this, "Healing Touch", "if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&((combo_points>=4&!set_bonus.tier18_4pc)|combo_points=5|buff.predatory_swiftness.remains<1.5)" );
+  def -> add_action( this, "Savage Roar", "if=buff.savage_roar.down" );
+  def -> add_action( "thrash_cat,if=set_bonus.tier18_4pc&buff.omen_of_clarity.react&remains<4.5&combo_points+buff.bloodtalons.stack!=6" );
+  def -> add_action( "pool_resource,for_next=1" );
+  def -> add_action( "thrash_cat,cycle_targets=1,if=remains<4.5&(spell_targets.thrash_cat>=2&set_bonus.tier17_2pc|spell_targets.thrash_cat>=4)" );
+  def -> add_action( "call_action_list,name=finisher,if=combo_points=5" );
+  def -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<gcd" );
+  def -> add_action( "call_action_list,name=maintain,if=combo_points<5" );
+  def -> add_action( "pool_resource,for_next=1" );
+  def -> add_action( "thrash_cat,cycle_targets=1,if=remains<4.5&spell_targets.thrash_cat>=2" );
+  def -> add_action( "call_action_list,name=generator,if=combo_points<5" );
+
+  // Finishers  
+  finish -> add_action( this, "Rip", "cycle_targets=1,if=remains<2&target.time_to_die-remains>18&(target.health.pct>25|!dot.rip.ticking)" );
+  finish -> add_action( this, "Ferocious Bite", "cycle_targets=1,max_energy=1,if=target.health.pct<25&dot.rip.ticking" );
+  finish -> add_action( this, "Rip", "cycle_targets=1,if=remains<7.2&persistent_multiplier>dot.rip.pmultiplier&target.time_to_die-remains>18" );
+  finish -> add_action( this, "Rip", "cycle_targets=1,if=remains<7.2&persistent_multiplier=dot.rip.pmultiplier&(energy.time_to_max<=1|(set_bonus.tier18_4pc&energy>50)|(set_bonus.tier18_2pc&buff.omen_of_clarity.react)|!talent.bloodtalons.enabled)&target.time_to_die-remains>18" );
+  finish -> add_action( this, "Savage Roar", "if=((set_bonus.tier18_4pc&energy>50)|(set_bonus.tier18_2pc&buff.omen_of_clarity.react)|energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)&buff.savage_roar.remains<12.6" );
+  finish -> add_action( this, "Ferocious Bite", "max_energy=1,if=(set_bonus.tier18_4pc&energy>50)|(set_bonus.tier18_2pc&buff.omen_of_clarity.react)|energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3" );
+
+  // DoT Maintenance
+  if ( race == RACE_NIGHT_ELF )
+  {
+    maintain -> add_action( "shadowmeld,if=energy>=35&dot.rake.pmultiplier<2.1&buff.tigers_fury.up&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>18)&!buff.incarnation.up" );
+  }
+  maintain -> add_action( this, "Rake", "cycle_targets=1,if=remains<3&((target.time_to_die-remains>3&spell_targets.swipe<3)|target.time_to_die-remains>6)" );
+  maintain -> add_action( this, "Rake", "cycle_targets=1,if=remains<4.5&(persistent_multiplier>=dot.rake.pmultiplier|(talent.bloodtalons.enabled&(buff.bloodtalons.up|!buff.predatory_swiftness.up)))&((target.time_to_die-remains>3&spell_targets.swipe<3)|target.time_to_die-remains>6)" );
+  maintain -> add_action( "moonfire_cat,cycle_targets=1,if=remains<4.2&spell_targets.swipe<=5&target.time_to_die-remains>tick_time*5" );
+  maintain -> add_action( this, "Rake", "cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&spell_targets.swipe=1&((target.time_to_die-remains>3&spell_targets.swipe<3)|target.time_to_die-remains>6)" );
+
+  // Generators
+  generate -> add_action( this, "Swipe", "if=spell_targets.swipe>=4|(spell_targets.swipe>=3&buff.incarnation.down)" );
+  generate -> add_action( this, "Shred", "if=spell_targets.swipe<3|(spell_targets.swipe=3&buff.incarnation.up)" );
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 }
 
 // Balance Combat Action Priority List ======================================

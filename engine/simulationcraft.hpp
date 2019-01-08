@@ -5,8 +5,13 @@
 #ifndef SIMULATIONCRAFT_H
 #define SIMULATIONCRAFT_H
 
+<<<<<<< HEAD
 #define SC_MAJOR_VERSION "810"
 #define SC_MINOR_VERSION "01"
+=======
+#define SC_MAJOR_VERSION "623"
+#define SC_MINOR_VERSION "03"
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 #define SC_VERSION ( SC_MAJOR_VERSION "-" SC_MINOR_VERSION )
 #define SC_BETA 0
 #if SC_BETA
@@ -1621,7 +1626,7 @@ struct scaling_t
   void normalize();
   double progress( std::string& phase, std::string* detailed = nullptr );
   void create_options();
-  bool has_scale_factors();
+  bool has_scale_factors() const;
 };
 
 // Plot =====================================================================
@@ -1650,13 +1655,18 @@ private:
 };
 
 // Reforge Plot =============================================================
-
+class reforge_plot_run_t
+{
+public:
+  std::vector<stat_e> reforge_plot_stat_indices;
+};
 struct reforge_plot_t
 {
+
   sim_t* sim;
   sim_t* current_reforge_sim;
   std::string reforge_plot_stat_str;
-  std::vector<stat_e> reforge_plot_stat_indices;
+  std::vector<reforge_plot_run_t> reforge_plots;
   int    reforge_plot_step;
   int    reforge_plot_amount;
   int    reforge_plot_iterations;
@@ -1667,16 +1677,18 @@ struct reforge_plot_t
 
   reforge_plot_t( sim_t* s );
 
+  void start();
+  void run_plots();
+  double progress( std::string& phase, std::string* detailed = nullptr );
+private:
   void generate_stat_mods( std::vector<std::vector<int> > &stat_mods,
                            const std::vector<stat_e> &stat_indices,
                            int cur_mod_stat,
                            std::vector<int> cur_stat_mods );
-  void analyze();
-  void analyze_stats();
-  double progress( std::string& phase, std::string* detailed = nullptr );
-private:
   void write_output_file();
   void create_options();
+  void run_reforge_plot( const reforge_plot_run_t& );
+  void debug_plot(  const reforge_plot_run_t&, const std::vector<std::vector<int>>& stat_mods);
 };
 
 struct plot_data_t
@@ -2321,11 +2333,14 @@ struct item_t
   std::string option_gem_id_str;
   std::string option_bonus_id_str;
   std::string option_initial_cd_str;
+<<<<<<< HEAD
   std::string option_drop_level_str;
   std::string option_relic_id_str;
   std::string option_relic_ilevel_str;
   std::string option_azerite_powers_str;
   std::string option_azerite_level_str;
+=======
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
   double option_initial_cd;
 
   // Extracted data
@@ -2363,6 +2378,10 @@ struct item_t
   bool has_item_stat( stat_e stat ) const;
 
   std::string encoded_item() const;
+<<<<<<< HEAD
+=======
+  void encoded_item( xml_writer_t& writer ) const;
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
   std::string encoded_comment();
 
   std::string encoded_stats() const;
@@ -2982,9 +3001,23 @@ public:
 
 struct player_processed_report_information_t
 {
+<<<<<<< HEAD
   bool generated = false;
   bool buff_lists_generated = false;
   std::array<std::string, SCALE_METRIC_MAX> gear_weights_wowhead_std_link, gear_weights_pawn_string, gear_weights_askmrrobot_link;
+=======
+  bool charts_generated, buff_lists_generated;
+  std::string action_dpet_chart, action_dmg_chart, time_spent_chart;
+  std::array<std::string, RESOURCE_MAX> timeline_resource_chart, gains_chart;
+  std::array<std::string, STAT_MAX> timeline_stat_chart;
+  std::string timeline_dps_chart, timeline_dps_error_chart, timeline_resource_health_chart;
+  std::string distribution_dps_chart, scaling_dps_chart, scale_factors_chart;
+  std::vector<std::pair<unsigned,std::string>> reforge_dps_charts;
+  std::string dps_error_chart;
+  std::string distribution_deaths_chart;
+  std::string health_change_chart, health_change_sliding_chart;
+  std::array<std::string, SCALE_METRIC_MAX> gear_weights_lootrank_link, gear_weights_wowhead_std_link, gear_weights_pawn_string, gear_weights_askmrrobot_link;
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
   std::string save_str;
   std::string save_gear_str;
   std::string save_talents_str;
@@ -4815,8 +4848,21 @@ struct action_state_t : private noncopyable
   double          target_mitigation_ta_multiplier;
   double          target_armor;
 
+<<<<<<< HEAD
   static void release( action_state_t*& s );
   static std::string flags_to_str( unsigned flags );
+=======
+  auto_dispose< std::vector<buff_t*> > buff_list;
+  auto_dispose< std::vector<proc_t*> > proc_list;
+  auto_dispose< std::vector<gain_t*> > gain_list;
+  auto_dispose< std::vector<stats_t*> > stats_list;
+  auto_dispose< std::vector<benefit_t*> > benefit_list;
+  auto_dispose< std::vector<uptime_t*> > uptime_list;
+  auto_dispose< std::vector<cooldown_t*> > cooldown_list;
+  std::array< std::vector<plot_data_t>, STAT_MAX > dps_plot_data;
+  std::unordered_map<const reforge_plot_run_t*, std::vector<std::vector<plot_data_t>>> reforge_plot_data;
+  auto_dispose< std::vector<luxurious_sample_data_t*> > sample_data_list;
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 
   action_state_t( action_t*, player_t* );
   virtual ~action_state_t() {}
@@ -7522,7 +7568,22 @@ bool get( std::string& result, const std::string& url, const std::string& cleanu
 // XML ======================================================================
 #include "util/xml.hpp"
 
+<<<<<<< HEAD
 // Handy Actions ============================================================
+=======
+struct real_ppm_t
+{
+private:
+  player_t*    player;
+  double       freq;
+  double       modifier;
+  double       rppm;
+  bool         first_proc_occurred;
+  timespan_t   last_trigger_attempt;
+  timespan_t   last_successful_trigger;
+  timespan_t   initial_precombat_time;
+  rppm_scale_e scales_with;
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 
 struct wait_action_base_t : public action_t
 {
@@ -7558,6 +7619,7 @@ struct residual_periodic_state_t : public action_state_t
 {
   double tick_amount;
 
+<<<<<<< HEAD
   residual_periodic_state_t( action_t* a, player_t* t ) :
     action_state_t( a, t ),
     tick_amount( 0 )
@@ -7565,6 +7627,28 @@ struct residual_periodic_state_t : public action_state_t
 
   std::ostringstream& debug_str( std::ostringstream& s ) override
   { action_state_t::debug_str( s ) << " tick_amount=" << tick_amount; return s; }
+=======
+  real_ppm_t() :
+    player( nullptr ), freq( 0 ), modifier( 0 ), rppm( 0 ),
+    first_proc_occurred( false ),
+    last_trigger_attempt( timespan_t::from_seconds( -10.0 ) ),
+    last_successful_trigger( timespan_t::from_seconds( -120.0 ) ),
+    initial_precombat_time( timespan_t::from_seconds( -120.0 ) ),
+    scales_with( RPPM_NONE )
+  { }
+
+  real_ppm_t( player_t& p, double frequency = 0, double mod = 1.0, rppm_scale_e s = RPPM_NONE ) :
+    player( &p ),
+    freq( frequency ),
+    modifier( mod ),
+    rppm( freq * mod ),
+    first_proc_occurred( false ),
+    last_trigger_attempt( timespan_t::from_seconds( -10.0 ) ),
+    last_successful_trigger( timespan_t::from_seconds( -120.0 ) ),
+    initial_precombat_time( timespan_t::from_seconds( -120.0 ) ),
+    scales_with( s )
+  { }
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 
   void initialize() override
   { action_state_t::initialize(); tick_amount = 0; }
@@ -7616,11 +7700,20 @@ public:
   virtual action_state_t* new_state() override
   { return new residual_periodic_state_t( this, ab::target ); }
 
+<<<<<<< HEAD
   // Residual periodic actions will not be extendeed by the pandemic mechanism,
   // thus the new maximum length of the dot is the ongoing tick plus the
   // duration of the dot.
   virtual timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
   { return dot -> time_to_next_tick() + triggered_duration; }
+=======
+  void reset()
+  {
+    last_trigger_attempt = timespan_t::from_seconds( -10.0 );
+    last_successful_trigger = initial_precombat_time;
+    first_proc_occurred = false;
+  }
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 
   virtual void impact( action_state_t* s ) override
   {
@@ -7632,6 +7725,7 @@ public:
     int ticks_left = 0;
     residual_periodic_state_t* dot_state = debug_cast<residual_periodic_state_t*>( dot -> state );
 
+<<<<<<< HEAD
     // If dot is ticking get current residual pool before we overwrite it
     if ( dot -> is_ticking() )
     {
@@ -7645,6 +7739,24 @@ public:
 
     // Trigger the dot, refreshing it's duration or starting it
     ab::trigger_dot( s );
+=======
+    double chance = proc_chance( player, rppm, last_trigger_attempt,
+                                 last_successful_trigger, scales_with );
+    bool success = player -> rng().roll( chance );
+
+    if ( success )
+    {
+      first_proc_occurred = true;
+      last_successful_trigger = player -> sim -> current_time();
+    }
+    // Due to a bug, last attempt to trigger is fixed until first proc
+    if ( first_proc_occurred )
+      last_trigger_attempt = player -> sim -> current_time();
+
+    return success;
+  }
+};
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 
     // If the dot is not ticking, dot_state will be nullptr, so get the
     // residual_periodic_state_t object from the dot again (since it will exist

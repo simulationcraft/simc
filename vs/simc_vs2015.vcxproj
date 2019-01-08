@@ -5,6 +5,13 @@
       <Configuration>Debug-WebEngine</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+<<<<<<< HEAD
+=======
+    <ProjectConfiguration Include="Debug-WebKit|x64">
+      <Configuration>Debug-WebKit</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
     <ProjectConfiguration Include="WebEngine-PGO|x64">
       <Configuration>WebEngine-PGO</Configuration>
       <Platform>x64</Platform>
@@ -13,6 +20,17 @@
       <Configuration>WebEngine</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+<<<<<<< HEAD
+=======
+    <ProjectConfiguration Include="WebKit-PGO|x64">
+      <Configuration>WebKit-PGO</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="WebKit|x64">
+      <Configuration>WebKit</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D963926C-4A85-4600-8626-51FA12FDF5C1}</ProjectGuid>
@@ -34,6 +52,15 @@
     <WholeProgramOptimization>PGUpdate</WholeProgramOptimization>
     <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
+<<<<<<< HEAD
+=======
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WebKit|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-WebEngine|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
@@ -54,6 +81,15 @@
     <Import Project="PrecompiledHeaders.props" />
     <Import Project="CommonIncludeDirectories.props" />
   </ImportGroup>
+<<<<<<< HEAD
+=======
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='WebKit|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="OutputDirectories.props" />
+    <Import Project="PrecompiledHeaders.props" />
+    <Import Project="CommonIncludeDirectories.props" />
+  </ImportGroup>
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug-WebEngine|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="OutputDirectories.props" />
@@ -64,15 +100,37 @@
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug-WebEngine|x64'">true</LinkIncremental>
+<<<<<<< HEAD
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug-WebEngine|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug-WebEngine|x64'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug-WebEngine|x64'" />
+=======
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug-WebKit|x64'">true</LinkIncremental>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug-WebEngine|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug-WebKit|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug-WebEngine|x64'" />
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug-WebKit|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug-WebEngine|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug-WebKit|x64'" />
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='WebEngine|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='WebEngine-PGO|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+<<<<<<< HEAD
+=======
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='WebKit|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='WebEngine|x64'" />
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='WebEngine-PGO|x64'" />
+<<<<<<< HEAD
+=======
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='WebKit|x64'" />
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='WebEngine|x64'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='WebEngine-PGO|x64'" />
+<<<<<<< HEAD
+=======
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='WebKit|x64'" />
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-WebEngine|x64'">
     <RunCodeAnalysis>false</RunCodeAnalysis>
@@ -121,6 +179,37 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
+<<<<<<< HEAD
+=======
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug-WebKit|x64'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>SC_DEFAULT_APIKEY="$(SC_DEFAULT_APIKEY)";WIN32;_DEBUG;_CONSOLE;WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <Debug-WebEngineInformationFormat>ProgramDatabase</Debug-WebEngineInformationFormat>
+      <DisableSpecificWarnings>4005;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>$(SolutionDir)engine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <EnablePREfast>false</EnablePREfast>
+      <StringPooling>false</StringPooling>
+      <SmallerTypeCheck>false</SmallerTypeCheck>
+      <FloatingPointModel>Precise</FloatingPointModel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <FloatingPointExceptions>true</FloatingPointExceptions>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>wininet.lib %(AdditionalOptions)</AdditionalOptions>
+      <GenerateDebug-WebEngineInformation>true</GenerateDebug-WebEngineInformation>
+      <SubSystem>Console</SubSystem>
+      <Profile>false</Profile>
+      <LargeAddressAware>true</LargeAddressAware>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='WebEngine|x64'">
     <ClCompile>
       <AdditionalOptions> /w34263 /w34264 /w34265 /w34266  %(AdditionalOptions)</AdditionalOptions>

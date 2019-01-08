@@ -8097,6 +8097,7 @@ void shaman_t::init_action_list()
 
   switch ( specialization() )
   {
+<<<<<<< HEAD
     case SHAMAN_ENHANCEMENT:
       init_action_list_enhancement();
       break;
@@ -8105,6 +8106,237 @@ void shaman_t::init_action_list()
       break;
     default:
       break;
+=======
+    if ( primary_role() == ROLE_ATTACK )
+    {
+      if ( true_level > 90 )
+        potion_name = "draenic_agility";
+      else if ( true_level > 85 )
+        potion_name = "virmens_bite";
+      else
+        potion_name = "tolvir";
+    }
+    else
+    {
+      if ( true_level > 90 )
+        potion_name = "draenic_intellect";
+      else if ( true_level > 85 )
+        potion_name = "jade_serpent";
+      else
+        potion_name = "volcanic";
+    }
+
+    precombat -> add_action( "potion,name=" + potion_name );
+  }
+
+  // All Shamans Bloodlust and Wind Shear by default
+  def -> add_action( this, "Wind Shear" );
+
+  std::string bloodlust_options = "if=";
+
+  if ( sim -> bloodlust_percent > 0 )
+    bloodlust_options += "target.health.pct<" + util::to_string( sim -> bloodlust_percent ) + "|";
+
+  if ( sim -> bloodlust_time < timespan_t::zero() )
+    bloodlust_options += "target.time_to_die<" + util::to_string( - sim -> bloodlust_time.total_seconds() ) + "|";
+
+  if ( sim -> bloodlust_time > timespan_t::zero() )
+    bloodlust_options += "time>" + util::to_string( sim -> bloodlust_time.total_seconds() ) + "|";
+  bloodlust_options.erase( bloodlust_options.end() - 1 );
+
+  if ( action_priority_t* a = def -> add_action( this, "Bloodlust", bloodlust_options ) )
+    a -> comment( "Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. " );
+
+  // Melee turns on auto attack
+  if ( primary_role() == ROLE_ATTACK )
+    def -> add_action( "auto_attack" );
+
+  int num_items = (int)items.size();
+  for ( int i = 0; i < num_items; i++ )
+  {
+    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    {
+      def -> add_action( "use_item,name=" + items[i].name_str );
+    }
+  }
+
+  if ( specialization() == SHAMAN_ENHANCEMENT && primary_role() == ROLE_ATTACK )
+  {
+    // In-combat potion
+    if ( sim -> allow_potions && true_level >= 80  )
+    {
+      std::string potion_action = "potion,name=" + potion_name + ",if=(talent.storm_elemental_totem.enabled&(pet.storm_elemental_totem.remains>=25|(cooldown.storm_elemental_totem.remains>target.time_to_die&pet.fire_elemental_totem.remains>=25)))|(!talent.storm_elemental_totem.enabled&pet.fire_elemental_totem.remains>=25)|target.time_to_die<=30";
+
+      def -> add_action( potion_action, "In-combat potion is preferentially linked to the Fire or Storm Elemental, depending on talents, unless combat will end shortly" );
+    }
+
+    def -> add_action( "blood_fury" );
+    def -> add_action( "arcane_torrent" );
+    def -> add_action( "berserking" );
+    def -> add_talent( this, "Elemental Mastery" );
+    def -> add_talent( this, "Storm Elemental Totem" );
+    def -> add_action( this, "Fire Elemental Totem" );
+    def -> add_action( this, "Feral Spirit" );
+    def -> add_talent( this, "Liquid Magma", "if=pet.searing_totem.remains>10|pet.magma_totem.remains>10|pet.fire_elemental_totem.remains>10" );
+    def -> add_talent( this, "Ancestral Swiftness" );
+    def -> add_action( this, "Ascendance" );
+
+    // Need to remove the "/" in front of the profession action(s) for the new default action priority list stuff :/
+    def -> add_action( init_use_profession_actions( ",if=(glyph.fire_elemental_totem.enabled&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active))|!glyph.fire_elemental_totem.enabled" ).erase( 0, 1 ) );
+
+    def -> add_action( "call_action_list,name=aoe,if=spell_targets.chain_lightning>1", "On multiple enemies, the priority follows the 'aoe' action list." );
+    def -> add_action( "call_action_list,name=single", "If only one enemy, priority follows the 'single' action list." );
+
+    single -> add_action( this, "Searing Totem", "if=!totem.fire.active" );
+    single -> add_action( this, "Unleash Elements", "if=talent.unleashed_fury.enabled" );
+    single -> add_talent( this, "Elemental Blast", "if=buff.maelstrom_weapon.react>=5+3*set_bonus.tier18_4pc" );
+    single -> add_action( this, find_specialization_spell( "Ascendance" ), "windstrike", "if=!talent.echo_of_the_elements.enabled|(talent.echo_of_the_elements.enabled&(charges=2|(action.windstrike.charges_fractional>1.75)|(charges=1&buff.ascendance.remains<1.5)))" );
+    single -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=buff.maelstrom_weapon.react>=5+3*set_bonus.tier18_4pc" );
+    single -> add_action( this, "Stormstrike", "if=!talent.echo_of_the_elements.enabled|(talent.echo_of_the_elements.enabled&(charges=2|(action.stormstrike.charges_fractional>1.75)|target.time_to_die<6))" );
+    single -> add_action( this, "Primal Strike" );
+    single -> add_action( this, "Lava Lash", "if=!talent.echo_of_the_elements.enabled|(talent.echo_of_the_elements.enabled&(charges=2|(action.lava_lash.charges_fractional>1.8)|target.time_to_die<8))" );
+    single -> add_action( this, "Flame Shock", "if=(talent.elemental_fusion.enabled&buff.elemental_fusion.stack=2&buff.unleash_flame.up&dot.flame_shock.remains<16)|(!talent.elemental_fusion.enabled&buff.unleash_flame.up&dot.flame_shock.remains<=9)|!ticking" );
+    single -> add_action( this, "Unleash Elements" );
+    single -> add_action( this, find_specialization_spell( "Ascendance" ), "windstrike", "if=talent.echo_of_the_elements.enabled" );
+    single -> add_talent( this, "Elemental Blast", "if=(!set_bonus.tier18_4pc&buff.maelstrom_weapon.react>=3)|buff.ancestral_swiftness.up" );
+    single -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=(!set_bonus.tier18_4pc&(buff.maelstrom_weapon.react>=3&!buff.ascendance.up))|buff.ancestral_swiftness.up" );
+    single -> add_action( this, "Lava Lash", "if=talent.echo_of_the_elements.enabled" );
+    single -> add_action( this, "Frost Shock", "if=(talent.elemental_fusion.enabled&dot.flame_shock.remains>=16)|!talent.elemental_fusion.enabled" );
+    single -> add_talent( this, "Elemental Blast", "if=buff.maelstrom_weapon.react>=1+2*set_bonus.tier18_4pc" );
+    single -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=talent.echo_of_the_elements.enabled&((!set_bonus.tier18_4pc&(buff.maelstrom_weapon.react>=2&!buff.ascendance.up))|buff.ancestral_swiftness.up)" );
+    single -> add_action( this, "Stormstrike", "if=talent.echo_of_the_elements.enabled" );
+    single -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=(!set_bonus.tier18_4pc&(buff.maelstrom_weapon.react>=1&!buff.ascendance.up))|(set_bonus.tier18_4pc&((talent.unleashed_fury.enabled&buff.unleashed_fury.up)|!talent.unleashed_fury.enabled)&(buff.maelstrom_weapon.react>=5|(buff.maelstrom_weapon.react>=3&!buff.ascendance.up)))|buff.ancestral_swiftness.up" );
+    single -> add_action( this, "Searing Totem", "if=pet.searing_totem.remains<=20&!pet.fire_elemental_totem.active&!buff.liquid_magma.up" );
+
+    // AoE
+    aoe -> add_action( this, "Unleash Elements", "if=spell_targets.fire_nova_explosion>=4&dot.flame_shock.ticking&(cooldown.shock.remains>cooldown.fire_nova.remains|cooldown.fire_nova.remains=0)" );
+    aoe -> add_action( this, "Fire Nova", "if=active_dot.flame_shock>=3&spell_targets.fire_nova_explosion>=3" );
+    aoe -> add_action( "wait,sec=cooldown.fire_nova.remains,if=!talent.echo_of_the_elements.enabled&active_dot.flame_shock>=4&cooldown.fire_nova.remains<=action.fire_nova.gcd%2" );
+    aoe -> add_action( this, "Magma Totem", "if=!totem.fire.active" );
+    aoe -> add_action( this, "Lava Lash", "if=dot.flame_shock.ticking&active_dot.flame_shock<spell_targets.fire_nova_explosion" );
+    aoe -> add_talent( this, "Elemental Blast", "if=!buff.unleash_flame.up&(buff.maelstrom_weapon.react>=4|buff.ancestral_swiftness.up)" );
+    aoe -> add_action( this, spec.maelstrom_weapon, "chain_lightning", "if=buff.maelstrom_weapon.react=5&((glyph.chain_lightning.enabled&spell_targets.chain_lightning>=3)|(!glyph.chain_lightning.enabled&spell_targets.chain_lightning>=2))" );
+    aoe -> add_action( this, "Unleash Elements", "if=spell_targets.fire_nova_explosion<4" );
+    aoe -> add_action( this, "Flame Shock", "if=dot.flame_shock.remains<=9|!ticking" );
+    aoe -> add_action( this, find_specialization_spell( "Ascendance" ), "windstrike", "target=1,if=!debuff.stormstrike.up" );
+    aoe -> add_action( this, find_specialization_spell( "Ascendance" ), "windstrike", "target=2,if=!debuff.stormstrike.up" );
+    aoe -> add_action( this, find_specialization_spell( "Ascendance" ), "windstrike", "target=3,if=!debuff.stormstrike.up" );
+    aoe -> add_action( this, find_specialization_spell( "Ascendance" ), "windstrike" );
+    aoe -> add_talent( this, "Elemental Blast", "if=!buff.unleash_flame.up&buff.maelstrom_weapon.react>=3" );
+    aoe -> add_action( this, spec.maelstrom_weapon, "chain_lightning", "if=(buff.maelstrom_weapon.react>=3|buff.ancestral_swiftness.up)&((glyph.chain_lightning.enabled&spell_targets.chain_lightning>=4)|(!glyph.chain_lightning.enabled&spell_targets.chain_lightning>=3))" );
+    aoe -> add_action( this, "Magma Totem", "if=pet.magma_totem.remains<=20&!pet.fire_elemental_totem.active&!buff.liquid_magma.up" );
+    aoe -> add_action( this, "Lightning Bolt", "if=buff.maelstrom_weapon.react=5&glyph.chain_lightning.enabled&spell_targets.chain_lightning<3" );
+    aoe -> add_action( this, "Stormstrike", "target=1,if=!debuff.stormstrike.up" );
+    aoe -> add_action( this, "Stormstrike", "target=2,if=!debuff.stormstrike.up" );
+    aoe -> add_action( this, "Stormstrike", "target=3,if=!debuff.stormstrike.up" );
+    aoe -> add_action( this, "Stormstrike" );
+    aoe -> add_action( this, "Lava Lash" );
+    aoe -> add_action( this, "Fire Nova", "if=active_dot.flame_shock>=2&spell_targets.fire_nova_explosion>=2" );
+    aoe -> add_action( this, "Primal Strike" );
+    aoe -> add_talent( this, "Elemental Blast", "if=!buff.unleash_flame.up&buff.maelstrom_weapon.react>=1" );
+    aoe -> add_action( this, spec.maelstrom_weapon, "chain_lightning", "if=(buff.maelstrom_weapon.react>=1|buff.ancestral_swiftness.up)&((glyph.chain_lightning.enabled&spell_targets.chain_lightning>=3)|(!glyph.chain_lightning.enabled&spell_targets.chain_lightning>=2))" );
+    aoe -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=(buff.maelstrom_weapon.react>=1|buff.ancestral_swiftness.up)&glyph.chain_lightning.enabled&spell_targets.chain_lightning<3" );
+    aoe -> add_action( this, "Fire Nova", "if=active_dot.flame_shock>=1&spell_targets.fire_nova_explosion>=1" );
+  }
+  else if ( specialization() == SHAMAN_ELEMENTAL && ( primary_role() == ROLE_SPELL || primary_role() == ROLE_DPS ) )
+  {
+    // In-combat potion
+    if ( sim -> allow_potions && true_level >= 80  )
+    {
+      std::string potion_action = "potion,name=" + potion_name + ",if=buff.ascendance.up|target.time_to_die<=30";
+
+      def -> add_action( potion_action, "In-combat potion is preferentially linked to Ascendance, unless combat will end shortly" );
+    }
+    // Sync berserking with ascendance as they share a cooldown, but making sure
+    // that no two haste cooldowns overlap, within reason
+    def -> add_action( "berserking,if=!buff.bloodlust.up&!buff.elemental_mastery.up&buff.ascendance.cooldown_remains=0&(dot.flame_shock.remains>buff.ascendance.duration|level<87)" );
+    // Sync blood fury with ascendance or fire elemental as long as one is ready
+    // soon after blood fury is.
+    def -> add_action( "blood_fury,if=buff.bloodlust.up|buff.ascendance.up|((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)" );
+    def -> add_action( "arcane_torrent" );
+
+    // Use Elemental Mastery on cooldown so long as it won't send you significantly under
+    // the GCD cap.
+    def -> add_talent( this, "Elemental Mastery", "if=action.lava_burst.cast_time>=1.2" );
+
+    def -> add_talent( this, "Ancestral Swiftness", "if=!buff.ascendance.up" );
+    def -> add_talent( this, "Storm Elemental Totem" );
+    def -> add_action( this, "Fire Elemental Totem", "if=!active" );
+
+    // Use Ascendance preferably with a haste CD up, but dont overdo the
+    // delaying. Make absolutely sure that Ascendance can be used so that
+    // only Lava Bursts need to be cast during it's duration
+    std::string ascendance_opts = "if=spell_targets.chain_lightning>1|(dot.flame_shock.remains>buff.ascendance.duration&(target.time_to_die<20|buff.bloodlust.up|buff.berserking.up|time>=60)&cooldown.lava_burst.remains>0)";
+
+    def -> add_action( this, "Ascendance", ascendance_opts );
+
+    def -> add_talent( this, "Liquid Magma", "if=pet.searing_totem.remains>=15|pet.fire_elemental_totem.remains>=15" );
+
+    // Need to remove the "/" in front of the profession action(s) for the new default action priority list stuff :/
+    def -> add_action( init_use_profession_actions().erase( 0, 1 ) );
+
+    def -> add_action( "call_action_list,name=aoe,if=spell_targets.chain_lightning>(2+t18_class_trinket)", "On multiple enemies, the priority follows the 'aoe' action list." );
+    def -> add_action( "call_action_list,name=single", "If one or two enemies, priority follows the 'single' action list." );
+
+    single -> add_action( this, "Unleash Flame", "moving=1" );
+    single -> add_action( this, "Spiritwalker's Grace", "moving=1,if=buff.ascendance.up" );
+    if ( find_item( "unerring_vision_of_lei_shen" ) )
+      single -> add_action( this, "Flame Shock", "if=buff.perfect_aim.react&crit_pct<100" );
+    single -> add_action( this, spec.fulmination, "earth_shock", "if=buff.lightning_shield.react=buff.lightning_shield.max_stack" );
+    single -> add_action( this, "Flame Shock", "cycle_targets=1,if=(talent.elemental_fusion.enabled&buff.elemental_fusion.stack=2&buff.unleash_flame.up&dot.flame_shock.remains<(dot.flame_shock.duration*(0.3+t18_class_trinket*(0.48+talent.unleashed_fury.enabled*0.22))))" );
+    single -> add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time&(buff.ascendance.up|cooldown_react)" );
+    single -> add_action( this, spec.fulmination, "earth_shock", "if=(set_bonus.tier17_4pc&buff.lightning_shield.react>=12&!buff.lava_surge.up)|(!set_bonus.tier17_4pc&buff.lightning_shield.react>15)" );
+    single -> add_action( this, "Flame Shock", "cycle_targets=1,if=dot.flame_shock.remains<=(dot.flame_shock.duration*0.3)" );
+    single -> add_talent( this, "Elemental Blast" );
+    single -> add_action( this, "Flame Shock", "if=time>60&remains<=buff.ascendance.duration&cooldown.ascendance.remains+buff.ascendance.duration<duration",
+                          "After the initial Ascendance, use Flame Shock pre-emptively just before Ascendance to guarantee Flame Shock staying up for the full duration of the Ascendance buff" );
+    single -> add_action( this, "Searing Totem", "if=(!talent.liquid_magma.enabled&(!totem.fire.active|(pet.searing_totem.remains<=10&!pet.fire_elemental_totem.active&talent.unleashed_fury.enabled)))|(talent.liquid_magma.enabled&pet.searing_totem.remains<=20&!pet.fire_elemental_totem.active&!buff.liquid_magma.up)",
+                          "Keep Searing Totem up, unless Fire Elemental Totem is coming off cooldown in the next 20 seconds" );
+    single -> add_action( this, "Unleash Flame", "if=talent.unleashed_fury.enabled&!buff.ascendance.up|(talent.elemental_fusion.enabled&buff.elemental_fusion.stack=2&(dot.flame_shock.remains)<(dot.flame_shock.duration*(0.3+t18_class_trinket*(0.48+talent.unleashed_fury.enabled*0.22)))&cooldown.flame_shock.remains<gcd)" );
+    single -> add_action( this, "Spiritwalker's Grace", "moving=1,if=((talent.elemental_blast.enabled&cooldown.elemental_blast.remains=0)|(cooldown.lava_burst.remains=0&!buff.lava_surge.react))&cooldown.ascendance.remains>cooldown.spiritwalkers_grace.remains" );
+
+    single -> add_action( this, "Earthquake", "cycle_targets=1,if=buff.enhanced_chain_lightning.up" );
+    single -> add_action( this, "Chain Lightning", "if=spell_targets.chain_lightning>=2" );
+    single -> add_action( this, "Lightning Bolt" );
+    single -> add_action( this, "Earth Shock", "moving=1" );
+    single -> add_action( this, "Searing Totem", "if=(!totem.fire.active|(pet.searing_totem.remains<=40&!pet.fire_elemental_totem.active))" );
+
+    // AoE
+    aoe -> add_action( this, "Earthquake", "cycle_targets=1,if=buff.enhanced_chain_lightning.up" );
+    aoe -> add_action( this, find_specialization_spell( "Ascendance" ), "lava_beam" );
+    aoe -> add_action( this, spec.fulmination, "earth_shock", "if=buff.lightning_shield.react=buff.lightning_shield.max_stack" );
+    aoe -> add_action( this, "Searing Totem", "if=(!talent.liquid_magma.enabled&!totem.fire.active)|(talent.liquid_magma.enabled&pet.searing_totem.remains<=20&!pet.fire_elemental_totem.active&!buff.liquid_magma.up)" );
+    aoe -> add_action( this, "Chain Lightning", "if=spell_targets.chain_lightning>=2" );
+    aoe -> add_action( this, "Lightning Bolt" );
+  }
+  else if ( primary_role() == ROLE_SPELL )
+  {
+    def -> add_action( this, "Fire Elemental Totem", "if=!active" );
+    def -> add_action( this, "Searing Totem", "if=!totem.fire.active" );
+    def -> add_action( this, "Earth Elemental Totem", "if=!active&cooldown.fire_elemental_totem.remains>=50" );
+    def -> add_action( this, "Spiritwalker's Grace", "moving=1" );
+    def -> add_talent( this, "Elemental Mastery" );
+    def -> add_talent( this, "Elemental Blast" );
+    def -> add_talent( this, "Ancestral Swiftness" );
+    def -> add_action( this, "Flame Shock", "if=!ticking|ticks_remain<2|((buff.bloodlust.react|buff.elemental_mastery.up)&ticks_remain<3)" );
+    def -> add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time" );
+    def -> add_action( this, "Chain Lightning", "if=target.adds>2&mana.pct>25" );
+    def -> add_action( this, "Lightning Bolt" );
+  }
+  else if ( primary_role() == ROLE_ATTACK )
+  {
+    def -> add_action( this, "Fire Elemental Totem", "if=!active" );
+    def -> add_action( this, "Searing Totem", "if=!totem.fire.active" );
+    def -> add_action( this, "Earth Elemental Totem", "if=!active&cooldown.fire_elemental_totem.remains>=50" );
+    def -> add_action( this, "Spiritwalker's Grace", "moving=1" );
+    def -> add_talent( this, "Elemental Mastery" );
+    def -> add_talent( this, "Elemental Blast" );
+    def -> add_talent( this, "Ancestral Swiftness" );
+    def -> add_talent( this, "Primal Strike" );
+    def -> add_action( this, "Flame Shock", "if=!ticking|ticks_remain<2|((buff.bloodlust.react|buff.elemental_mastery.up)&ticks_remain<3)" );
+    def -> add_action( this, "Earth Shock" );
+    def -> add_action( this, "Lightning Bolt", "moving=1" );
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
   }
 
   use_default_action_list = true;

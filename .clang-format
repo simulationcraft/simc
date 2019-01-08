@@ -67,7 +67,7 @@ AlwaysBreakTemplateDeclarations: true
 BinPackArguments: true
 
 # If false, a function declarations or function definitions parameters will either all be on the same line or will have one line each.
-BinPackParameters: true
+BinPackParameters: false
 
 # Control of individual brace wrapping cases.
 # If BreakBeforeBraces is set to custom, use this to specify how each individual brace case should be handled. Otherwise, this is ignored.

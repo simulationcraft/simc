@@ -288,6 +288,7 @@ int sim_t::main( const std::vector<std::string>& args )
 
     if ( spell_query )
     {
+<<<<<<< HEAD
       try
       {
         spell_query -> evaluate();
@@ -308,6 +309,12 @@ int sim_t::main( const std::vector<std::string>& args )
       catch( const std::exception& e ){
         std::throw_with_nested(std::runtime_error("Generating profiles"));
       }
+=======
+      scaling      -> analyze();
+      plot         -> analyze();
+      reforge_plot -> start();
+      report::print_suite( this );
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
     }
     else
     {

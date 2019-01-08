@@ -1,0 +1,120 @@
+rogue="Rogue_Subtlety_T18H"
+level=100
+race=night_elf
+timeofday=night
+role=attack
+position=back
+talents=2000032
+glyphs=energy/hemorrhaging_veins/vanish
+spec=subtlety
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=greater_draenic_agility_flask
+actions.precombat+=/food,type=salty_squid_roll
+actions.precombat+=/apply_poison,lethal=deadly
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion,name=draenic_agility
+actions.precombat+=/stealth
+actions.precombat+=/marked_for_death
+actions.precombat+=/premeditation,if=!talent.marked_for_death.enabled
+actions.precombat+=/slice_and_dice
+actions.precombat+=/premeditation
+# Proxy Honor Among Thieves action. Generates Combo Points at a mean rate of 2.2 seconds. Comment out to disable (and use the real Honor Among Thieves).
+actions.precombat+=/honor_among_thieves,cooldown=2.2,cooldown_stddev=0.1
+
+# Executed every time the actor is available.
+
+actions=potion,name=draenic_agility,if=buff.bloodlust.react|target.time_to_die<40|(buff.shadow_reflection.up|(!talent.shadow_reflection.enabled&buff.shadow_dance.up))&(trinket.stat.agi.react|trinket.stat.multistrike.react|buff.archmages_greater_incandescence_agi.react)|((buff.shadow_reflection.up|(!talent.shadow_reflection.enabled&buff.shadow_dance.up))&target.time_to_die<136)
+actions+=/kick
+actions+=/shadow_reflection,if=buff.shadow_dance.up|(time<2&set_bonus.tier18_2pc=1)
+actions+=/blood_fury,if=buff.shadow_dance.up
+actions+=/berserking,if=buff.shadow_dance.up
+actions+=/arcane_torrent,if=buff.shadow_dance.up&energy<80
+actions+=/premeditation,if=combo_points<4
+actions+=/vanish,if=time<1&set_bonus.tier18_2pc=1
+actions+=/hemorrhage,if=time<1&set_bonus.tier18_2pc=0&glyph.hemorrhaging_veins.enabled&!ticking&!dot.rupture.ticking&!dot.crimson_tempest.ticking&!dot.garrote.ticking
+actions+=/garrote,if=time<1&set_bonus.tier18_2pc=0&!ticking&!dot.rupture.ticking&!dot.crimson_tempest.ticking&!dot.hemorrhage.ticking
+actions+=/wait,sec=buff.subterfuge.remains-0.1,if=buff.subterfuge.remains>0.5&buff.subterfuge.remains<1.6&time>6
+actions+=/pool_resource,if=energy<energy.max-10&(energy.time_to_max+0.5>cooldown.shadow_dance.remains|cooldown.shadow_dance.up)
+actions+=/shadow_dance,if=(energy>=energy.max-10&buff.stealth.down&buff.vanish.down&debuff.find_weakness.down)|(buff.bloodlust.up&(dot.hemorrhage.ticking|dot.garrote.ticking|dot.rupture.ticking))
+actions+=/pool_resource,for_next=1,extra_amount=50
+actions+=/shadowmeld,if=talent.shadow_focus.enabled&energy>=45&energy<=75&combo_points<4-talent.anticipation.enabled&buff.stealth.down&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down
+actions+=/pool_resource,for_next=1,extra_amount=50
+actions+=/vanish,if=talent.shadow_focus.enabled&energy>=45&energy<=75&combo_points<4-talent.anticipation.enabled&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down
+actions+=/pool_resource,for_next=1,extra_amount=energy.max-5
+actions+=/shadowmeld,if=talent.subterfuge.enabled&energy>=energy.max-5&combo_points<4-talent.anticipation.enabled&buff.stealth.down&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down
+actions+=/pool_resource,for_next=1,extra_amount=energy.max-5
+actions+=/vanish,if=talent.subterfuge.enabled&energy>=energy.max-5&combo_points<4-talent.anticipation.enabled&buff.shadow_dance.down&(cooldown.shadow_dance.remains>2|(set_bonus.tier18_2pc=1&target.time_to_die<=23))
+actions+=/marked_for_death,if=combo_points=0
+actions+=/run_action_list,name=finisher,if=combo_points=5&debuff.find_weakness.remains&buff.shadow_reflection.remains&buff.shadowmeld.down
+actions+=/pool_resource,for_next=1
+actions+=/ambush,if=talent.anticipation.enabled&combo_points+anticipation_charges<8&time>2
+actions+=/run_action_list,name=finisher,if=combo_points=5
+actions+=/run_action_list,name=generator,if=combo_points<4|(talent.anticipation.enabled&anticipation_charges<3&debuff.find_weakness.down)
+actions+=/run_action_list,name=pool
+
+# Combo point generators
+
+actions.generator=run_action_list,name=pool,if=buff.master_of_subtlety.down&buff.shadow_dance.down&debuff.find_weakness.down&(energy+set_bonus.tier17_2pc*50+cooldown.shadow_dance.remains*energy.regen<=energy.max|energy+15+cooldown.vanish.remains*energy.regen<=energy.max)
+actions.generator+=/pool_resource,for_next=1
+actions.generator+=/ambush
+# If simulating AoE, it is recommended to use Anticipation as the level 90 talent.
+actions.generator+=/fan_of_knives,if=spell_targets.fan_of_knives>2
+actions.generator+=/backstab,if=time>18&(debuff.find_weakness.up|buff.archmages_greater_incandescence_agi.up|trinket.stat.any.up)
+actions.generator+=/shuriken_toss,if=energy<65&energy.regen<16
+actions.generator+=/hemorrhage,if=glyph.hemorrhaging_veins.enabled&((talent.anticipation.enabled&combo_points+anticipation_charges<=2)|combo_points<=2|target.time_to_die<=6)&!ticking&!dot.rupture.ticking&!dot.crimson_tempest.ticking&!dot.garrote.ticking
+actions.generator+=/backstab,if=energy.time_to_max<=gcd*2.5&cooldown.shadow_dance.remains>1.5
+actions.generator+=/hemorrhage,if=energy.time_to_max<=gcd*2&position_front&cooldown.shadow_dance.remains>1.5
+actions.generator+=/run_action_list,name=pool
+
+# Combo point finishers
+
+actions.finisher=rupture,if=(!ticking|remains<duration*0.3|(buff.shadow_reflection.remains>8&dot.rupture.remains<12&time>20))&(!glyph.hemorrhaging_veins.enabled|target.time_to_die>6)
+actions.finisher+=/rupture,cycle_targets=1,target_if=max:target.time_to_die,if=spell_targets.crimson_tempest<8&active_dot.rupture<6&target.time_to_die>6&(!ticking|remains<duration*0.3|(buff.shadow_reflection.remains>8&dot.rupture.remains<12&time>20))
+actions.finisher+=/slice_and_dice,if=((buff.slice_and_dice.remains<10.8&debuff.find_weakness.down)|buff.slice_and_dice.remains<6)&buff.slice_and_dice.remains<target.time_to_die
+actions.finisher+=/death_from_above
+actions.finisher+=/crimson_tempest,if=spell_targets.crimson_tempest>=3&(cooldown.death_from_above.remains>0|!talent.death_from_above.enabled)
+actions.finisher+=/eviscerate,if=(energy.time_to_max<=cooldown.death_from_above.remains+action.death_from_above.execute_time)|!talent.death_from_above.enabled
+actions.finisher+=/run_action_list,name=pool
+
+# Resource pooling
+
+actions.pool=preparation,if=!buff.vanish.up&!buff.shadow_dance.up&(time<20|cooldown.vanish.remains>45)
+
+head=felblade_hood,id=124263,bonus_id=566
+neck=choker_of_the_great_betrayer,id=124210,bonus_id=566,enchant_id=5320
+shoulders=felblade_spaulders,id=124274,bonus_id=566
+back=cloak_of_desperate_temerity,id=124134,bonus_id=566,enchant_id=5313
+chest=felblade_chestguard,id=124248,bonus_id=566
+wrists=bloodcult_bracers,id=124279,bonus_id=566
+hands=felblade_gloves,id=124257,bonus_id=566
+waist=waistwrap_of_banishment,id=124276,bonus_id=566
+legs=empowered_demonskin_kilt,id=124266,bonus_id=566
+feet=jungle_assassins_footpads,id=124252,bonus_id=566
+finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant_id=gift_of_multistrike
+finger2=portal_key_signet,id=124189,bonus_id=566,enchant=gift_of_multistrike
+trinket1=soul_capacitor,id=124225,bonus_id=566
+trinket2=bleeding_hollow_toxin_vessel,id=124520,bonus_id=566
+main_hand=fang_of_the_pit,id=124367,bonus_id=566,enchant_id=5334
+off_hand=hammer_of_wicked_infusion,id=124371,bonus_id=566,enchant_id=5334
+
+# Gear Summary
+# gear_ilvl=713.44
+# gear_agility=3934
+# gear_stamina=5248
+# gear_crit_rating=1449
+# gear_haste_rating=626
+# gear_mastery_rating=462
+# gear_multistrike_rating=2212
+# gear_versatility_rating=128
+# gear_armor=1258
+# set_bonus=tier18_2pc=1
+# set_bonus=tier18_4pc=1

@@ -2654,8 +2654,11 @@ void sim_t::init()
 
 void sim_t::analyze()
 {
+<<<<<<< HEAD
   auto start = std::chrono::high_resolution_clock::now();
 
+=======
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
   simulation_length.analyze();
   if ( simulation_length.mean() == 0 ) return;
 

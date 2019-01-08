@@ -29,7 +29,11 @@ item_t::item_t( player_t* p, const std::string& o ) :
   is_ptr( p -> dbc.ptr ),
   parsed(),
   xml(),
+<<<<<<< HEAD
   options_str( o ), option_initial_cd(0),
+=======
+  options_str( o ),
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
   cached_upgrade_item_level( -1 )
 {
   parsed.data.name = name_str.c_str();
@@ -694,12 +698,15 @@ void item_t::parse_options()
   options.push_back(opt_string("addon_id", option_addon_id_str));
   options.push_back(opt_string("bonus_id", option_bonus_id_str));
   options.push_back(opt_string("initial_cd", option_initial_cd_str));
+<<<<<<< HEAD
   options.push_back(opt_string("drop_level", option_drop_level_str));
   options.push_back(opt_string("relic_id", option_relic_id_str));
   options.push_back(opt_string("relic_ilevel", option_relic_ilevel_str));
   options.push_back(opt_string("azerite_powers", option_azerite_powers_str));
   options.push_back(opt_string("azerite_level", option_azerite_level_str));
   options.push_back(opt_string("context", DUMMY_CONTEXT));
+=======
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 
   try
   {
@@ -761,6 +768,7 @@ void item_t::parse_options()
 
   }
 
+<<<<<<< HEAD
   if ( ! option_relic_ilevel_str.empty() )
   {
     auto split = util::string_split( option_relic_ilevel_str, "/:" );
@@ -772,6 +780,10 @@ void item_t::parse_options()
       {
         parsed.relic_ilevel[ relic_idx ] = ilevel;
       }
+=======
+  if ( ! option_initial_cd_str.empty() )
+    parsed.initial_cd = timespan_t::from_seconds( std::stod( option_initial_cd_str ) );
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 
       ++relic_idx;
     }
@@ -799,8 +811,15 @@ void item_t::parse_options()
     }
   }
 
+<<<<<<< HEAD
   if ( ! option_enchant_id_str.empty() )
     parsed.enchant_id = util::to_unsigned( option_enchant_id_str );
+=======
+void item_t::encoded_item( xml_writer_t& writer ) const
+{
+  writer.begin_tag( "item" );
+  writer.print_attribute( "name", name_str );
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 
   if ( ! option_addon_id_str.empty() )
     parsed.addon_id = util::to_unsigned( option_addon_id_str );
@@ -857,7 +876,14 @@ bool item_t::initialize_data()
   else
     name_str = option_name_str;
 
+<<<<<<< HEAD
   return true;
+=======
+  if ( parsed.initial_cd > timespan_t::zero() )
+    writer.print_attribute( "initial_cd", std::to_string( parsed.initial_cd.total_seconds() ) );
+
+  writer.end_tag( "item" );
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 }
 
 std::string item_t::encoded_item() const
@@ -1013,9 +1039,12 @@ std::string item_t::encoded_item() const
   if ( ! option_initial_cd_str.empty() )
     s << ",initial_cd=" << option_initial_cd_str;
 
+<<<<<<< HEAD
   if ( ! option_drop_level_str.empty() )
     s << ",drop_level=" << option_drop_level_str;
 
+=======
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
   return s.str();
 }
 

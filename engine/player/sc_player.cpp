@@ -8197,10 +8197,25 @@ struct use_items_t : public action_t
 
     trigger_gcd = timespan_t::zero();
 
+<<<<<<< HEAD
     add_option( opt_func( "slots", std::bind( &use_items_t::parse_slots, this, std::placeholders::_1,
                                               std::placeholders::_2, std::placeholders::_3 ) ) );
 
     parse_options( options_str );
+=======
+    if ( ! buff )
+    {
+      sim -> errorf( "Player %s uses cancel_buff with unknown buff %s\n", player -> name(), buff_name.c_str() );
+      sim -> cancel();
+    }
+    else if ( !buff -> can_cancel )
+    {
+      sim -> errorf( "Player %s uses cancel_buff on %s, which cannot be cancelled in game\n", player -> name(), buff_name.c_str() );
+      sim -> cancel();
+    }
+
+    trigger_gcd = timespan_t::zero();
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
   }
 
   result_e calculate_result( action_state_t* ) const override
@@ -8484,8 +8499,12 @@ struct pool_resource_t : public action_t
     resource( r != RESOURCE_NONE ? r : p->primary_resource() ),
     wait( timespan_t::from_seconds( 0.251 ) ),
     for_next( 0 ),
+<<<<<<< HEAD
     next_action( 0 ),
     amount_expr( nullptr )
+=======
+    next_action( 0 ), amount_expr( nullptr )
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
   {
     quiet = true;
     add_option( opt_timespan( "wait", wait ) );
@@ -8502,6 +8521,7 @@ struct pool_resource_t : public action_t
     }
   }
 
+<<<<<<< HEAD
   ~pool_resource_t()
   {
     delete amount_expr;
@@ -8520,6 +8540,21 @@ struct pool_resource_t : public action_t
       }
 
     }
+=======
+  bool init_finished() override
+  {
+    if ( ! action_t::init_finished() )
+    {
+      return false;
+    }
+
+    if ( ! amount_str.empty() )
+    {
+      return ( amount_expr = expr_t::parse( this, amount_str, sim -> optimize_expressions ) ) != 0;
+    }
+
+    return true;
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
   }
 
   virtual void reset() override
@@ -8578,8 +8613,13 @@ struct pool_resource_t : public action_t
       // If the next action in the list would be "ready" if it was not constrained by energy,
       // then this command will pool energy until we have enough.
 
+<<<<<<< HEAD
       double theoretical_cost = next_action->cost() + ( amount_expr ? amount_expr->eval() : 0 );
       player->resources.current[ resource ] += theoretical_cost;
+=======
+      double theoretical_cost = next_action -> cost() + ( amount_expr ? amount_expr -> eval() : 0 );
+      player -> resources.current[ resource ] += theoretical_cost;
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 
       bool resource_limited = next_action->action_ready();
 
@@ -10858,7 +10898,11 @@ void player_t::analyze( sim_t& s )
   if ( collected_data.fight_length.mean() == 0 )
     return;
 
+<<<<<<< HEAD
   range::for_each( sample_data_list, []( luxurious_sample_data_t* sd ) { sd->analyze(); } );
+=======
+  range::for_each( sample_data_list, std::mem_fn(&luxurious_sample_data_t::analyze ) );
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 
   // Pet Chart Adjustment ===================================================
   size_t max_buckets = static_cast<size_t>( collected_data.fight_length.max() );
@@ -12093,6 +12137,10 @@ void player_collected_data_t::analyze( const player_t& p )
   dpse.analyze();
   dmg_taken.analyze();
   dtps.analyze();
+<<<<<<< HEAD
+=======
+  timeline_dmg_taken.adjust( *p.sim );
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
   // Heal
   heal.analyze();
   compound_heal.analyze();
@@ -12100,6 +12148,10 @@ void player_collected_data_t::analyze( const player_t& p )
   hpse.analyze();
   heal_taken.analyze();
   htps.analyze();
+<<<<<<< HEAD
+=======
+  timeline_healing_taken.adjust( *p.sim );
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
   // Absorb
   absorb.analyze();
   compound_absorb.analyze();

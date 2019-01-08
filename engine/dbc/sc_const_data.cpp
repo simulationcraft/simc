@@ -221,7 +221,11 @@ const std::vector<class_passives_entry_t> _class_passives {
 
 int dbc::build_level( bool ptr )
 {
+<<<<<<< HEAD
   return maybe_ptr( ptr ) ? 28724 : 28724;
+=======
+  return maybe_ptr( ptr ) ? 20886 : 20886;
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 }
 
 const char* dbc::wow_version( bool ptr )

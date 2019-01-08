@@ -539,7 +539,7 @@ void scaling_t::create_options()
 
 // scaling_t::has_scale_factors =============================================
 
-bool scaling_t::has_scale_factors()
+bool scaling_t::has_scale_factors() const
 {
   if ( ! calculate_scale_factors ) return false;
 

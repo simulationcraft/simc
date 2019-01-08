@@ -1,7 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
+<<<<<<< HEAD
 VisualStudioVersion = 14.0.25420.1
+=======
+VisualStudioVersion = 14.0.24720.0
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimcGUI_qt5.7.0", "vs\simcqt_vs2015.vcxproj", "{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}"
 EndProject
@@ -10,17 +14,50 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug-WebEngine|x64 = Debug-WebEngine|x64
+<<<<<<< HEAD
 		WebEngine|x64 = WebEngine|x64
+=======
+		Debug-WebKit|x64 = Debug-WebKit|x64
+		WebEngine|x64 = WebEngine|x64
+		WebEngine-PGO|x64 = WebEngine-PGO|x64
+		WebKit|x64 = WebKit|x64
+		WebKit-PGO|x64 = WebKit-PGO|x64
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Debug-WebEngine|x64.ActiveCfg = Debug-WebEngine|x64
 		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Debug-WebEngine|x64.Build.0 = Debug-WebEngine|x64
+<<<<<<< HEAD
 		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.WebEngine|x64.ActiveCfg = WebEngine|x64
 		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.WebEngine|x64.Build.0 = WebEngine|x64
 		{D963926C-4A85-4600-8626-51FA12FDF5C1}.Debug-WebEngine|x64.ActiveCfg = Debug-WebEngine|x64
 		{D963926C-4A85-4600-8626-51FA12FDF5C1}.Debug-WebEngine|x64.Build.0 = Debug-WebEngine|x64
 		{D963926C-4A85-4600-8626-51FA12FDF5C1}.WebEngine|x64.ActiveCfg = WebEngine|x64
 		{D963926C-4A85-4600-8626-51FA12FDF5C1}.WebEngine|x64.Build.0 = WebEngine|x64
+=======
+		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Debug-WebKit|x64.ActiveCfg = Debug-WebKit|x64
+		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Debug-WebKit|x64.Build.0 = Debug-WebKit|x64
+		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.WebEngine|x64.ActiveCfg = WebEngine|x64
+		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.WebEngine|x64.Build.0 = WebEngine|x64
+		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.WebEngine-PGO|x64.ActiveCfg = WebEngine-PGO|x64
+		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.WebEngine-PGO|x64.Build.0 = WebEngine-PGO|x64
+		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.WebKit|x64.ActiveCfg = WebKit|x64
+		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.WebKit|x64.Build.0 = WebKit|x64
+		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.WebKit-PGO|x64.ActiveCfg = WebKit-PGO|x64
+		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.WebKit-PGO|x64.Build.0 = WebKit-PGO|x64
+		{D963926C-4A85-4600-8626-51FA12FDF5C1}.Debug-WebEngine|x64.ActiveCfg = Debug-WebEngine|x64
+		{D963926C-4A85-4600-8626-51FA12FDF5C1}.Debug-WebEngine|x64.Build.0 = Debug-WebEngine|x64
+		{D963926C-4A85-4600-8626-51FA12FDF5C1}.Debug-WebKit|x64.ActiveCfg = Debug-WebKit|x64
+		{D963926C-4A85-4600-8626-51FA12FDF5C1}.Debug-WebKit|x64.Build.0 = Debug-WebKit|x64
+		{D963926C-4A85-4600-8626-51FA12FDF5C1}.WebEngine|x64.ActiveCfg = WebEngine|x64
+		{D963926C-4A85-4600-8626-51FA12FDF5C1}.WebEngine|x64.Build.0 = WebEngine|x64
+		{D963926C-4A85-4600-8626-51FA12FDF5C1}.WebEngine-PGO|x64.ActiveCfg = WebEngine-PGO|x64
+		{D963926C-4A85-4600-8626-51FA12FDF5C1}.WebEngine-PGO|x64.Build.0 = WebEngine-PGO|x64
+		{D963926C-4A85-4600-8626-51FA12FDF5C1}.WebKit|x64.ActiveCfg = WebKit|x64
+		{D963926C-4A85-4600-8626-51FA12FDF5C1}.WebKit|x64.Build.0 = WebKit|x64
+		{D963926C-4A85-4600-8626-51FA12FDF5C1}.WebKit-PGO|x64.ActiveCfg = WebEngine-PGO|x64
+		{D963926C-4A85-4600-8626-51FA12FDF5C1}.WebKit-PGO|x64.Build.0 = WebEngine-PGO|x64
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

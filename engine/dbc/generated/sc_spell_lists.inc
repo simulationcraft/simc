@@ -4,7 +4,11 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (13)
 #endif
+<<<<<<< HEAD
 // Class based active abilities, wow build 8.1.0.28724
+=======
+// Class based active abilities, wow build 20886
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -1192,7 +1196,17 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
            0,
     },
   },
+<<<<<<< HEAD
   // Class active abilities for Demon Hunter
+=======
+};
+
+#define TREE_SPECIALIZATION_SIZE (28)
+
+// Talent tree specialization abilities, wow build 20886
+static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
+  // Specialization abilities for Hunter pets
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
   {
     // General tree, 18 abilities
     {
@@ -2380,7 +2394,11 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 };
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
+<<<<<<< HEAD
 // Class mastery abilities, wow build 8.1.0.28724
+=======
+// Class mastery abilities, wow build 20886
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2619,7 +2637,11 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (31)
 #endif
 
+<<<<<<< HEAD
 // Racial abilities, wow build 8.1.0.28724
+=======
+// Racial abilities, wow build 20886
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3398,7 +3420,806 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
     {     0, },
     {     0, },
   },
+<<<<<<< HEAD
   // Racial abilities for Highmountain Tauren
+=======
+};
+
+#define GLYPH_ABILITIES_SIZE (41)
+
+// Glyph spells for classes, wow build 20886
+static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
+  {
+    {
+           0,
+    },
+    {
+           0,
+    },
+    {
+           0,
+    },
+  },
+  // Glyph spells for Warrior
+  {
+    // Major Glyphs (31 spells)
+    {
+       58377, // Glyph of Blitz
+       58367, // Glyph of Bloodthirst
+       94372, // Glyph of Bull Rush
+      159701, // Glyph of Cleave
+       63325, // Glyph of Death from Above
+       58386, // Glyph of Die by the Sword
+       58355, // Glyph of Enraged Speed
+      159761, // Glyph of Flawless Defense
+       58357, // Glyph of Gag Order
+      159708, // Glyph of Heroic Leap
+       58366, // Glyph of Hindering Strikes
+       58097, // Glyph of Long Charge
+      159738, // Glyph of Mocking Banner
+       58368, // Glyph of Mortal Strike
+      159740, // Glyph of Raging Blow
+       58370, // Glyph of Raging Wind
+      159754, // Glyph of Rallying Cry
+       94374, // Glyph of Recklessness
+       58356, // Glyph of Resonating Power
+       58372, // Glyph of Rude Interruption
+      159759, // Glyph of Shattering Throw
+       58375, // Glyph of Shield Slam
+       63329, // Glyph of Shield Wall
+       63328, // Glyph of Spell Reflection
+       58384, // Glyph of Sweeping Strikes
+       58098, // Glyph of Unending Rage
+      146965, // Glyph of Victorious Throw
+       58382, // Glyph of Victory Rush
+       63324, // Glyph of Wind and Thunder
+      159703, // Glyph of the Drawn Sword
+      146971, // Glyph of the Executor
+           0,
+    },
+    // Minor Glyphs (14 spells)
+    {
+       58096, // Glyph of Bloodcurdling Shout
+       58369, // Glyph of Bloody Healing
+      115946, // Glyph of Burning Anger
+      115943, // Glyph of Crow Feast
+       58099, // Glyph of Gushing Wound
+       63327, // Glyph of Intimidating Shout
+       58104, // Glyph of Mighty Victory
+       58095, // Glyph of Mystic Shout
+       68164, // Glyph of Thunder Strike
+      123779, // Glyph of the Blazing Trail
+      146968, // Glyph of the Raging Whirlwind
+      146969, // Glyph of the Subtle Defender
+      146973, // Glyph of the Watchful Eye
+      146974, // Glyph of the Weaponmaster
+           0,
+    },
+    {
+           0,
+    },
+  },
+  // Glyph spells for Paladin
+  {
+    // Major Glyphs (35 spells)
+    {
+      159548, // Glyph of Ardent Defender
+       54927, // Glyph of Avenging Wrath
+       63218, // Glyph of Beacon of Light
+       54943, // Glyph of Blessed Life
+       54931, // Glyph of Burden of Guilt
+      171929, // Glyph of Cleanse
+       54928, // Glyph of Consecration
+       56414, // Glyph of Dazing Shield
+       56420, // Glyph of Denounce
+      146955, // Glyph of Devotion Aura
+       54924, // Glyph of Divine Protection
+      146956, // Glyph of Divine Shield
+       63220, // Glyph of Divine Storm
+      159572, // Glyph of Divine Wrath
+       54939, // Glyph of Divinity
+       54922, // Glyph of Double Jeopardy
+       54935, // Glyph of Final Wrath
+       57955, // Glyph of Flash of Light
+       54930, // Glyph of Focused Shield
+      159579, // Glyph of Hand of Freedom
+      146957, // Glyph of Hand of Sacrifice
+       54938, // Glyph of Harsh Words
+       63224, // Glyph of Holy Shock
+       54923, // Glyph of Holy Wrath
+       56416, // Glyph of Immediate Truth
+      159592, // Glyph of Judgment
+       54940, // Glyph of Light of Dawn
+      122028, // Glyph of Mass Exorcism
+      162604, // Glyph of Merciful Wrath
+       93466, // Glyph of Protector of the Innocent
+       54926, // Glyph of Templar's Verdict
+       54936, // Glyph of Word of Glory
+      119477, // Glyph of the Battle Healer
+      159557, // Glyph of the Consecrator
+      159573, // Glyph of the Liberator
+           0,
+    },
+    // Minor Glyphs (12 spells)
+    {
+      115934, // Glyph of Bladed Judgment
+      125043, // Glyph of Contemplation
+       57954, // Glyph of Fire From the Heavens
+      115738, // Glyph of Focused Wrath
+      146959, // Glyph of Pillar of Light
+      115933, // Glyph of Righteous Retreat
+       57947, // Glyph of Seal of Blood
+       57979, // Glyph of Winged Vengeance
+      146958, // Glyph of the Exorcist
+      115931, // Glyph of the Falling Avenger
+       89401, // Glyph of the Luminous Charger
+       57958, // Glyph of the Mounted King
+           0,
+    },
+    {
+           0,
+    },
+  },
+  // Glyph spells for Hunter
+  {
+    // Major Glyphs (25 spells)
+    {
+       20895, // Glyph of Animal Bond
+      109263, // Glyph of Black Ice
+      119449, // Glyph of Camouflage
+      119447, // Glyph of Chimaera Shot
+       56850, // Glyph of Deterrence
+       56844, // Glyph of Disengage
+      123632, // Glyph of Distracting Shot
+      119410, // Glyph of Endless Wrath
+      148475, // Glyph of Enduring Deceit
+      119403, // Glyph of Explosive Trap
+       56845, // Glyph of Freezing Trap
+       56847, // Glyph of Ice Trap
+      132106, // Glyph of Liberation
+       63068, // Glyph of Master's Call
+       19573, // Glyph of Mend Pet
+       56833, // Glyph of Mending
+       83495, // Glyph of Mirrored Blades
+       56829, // Glyph of Misdirection
+       53299, // Glyph of No Escape
+       19560, // Glyph of Pathfinding
+      159469, // Glyph of Quick Revival
+      159470, // Glyph of Snake Trap
+      119407, // Glyph of Solace
+      119384, // Glyph of Tranquilizing Shot
+      146657, // Glyph of the Lean Pack
+           0,
+    },
+    // Minor Glyphs (11 spells)
+    {
+      125042, // Glyph of Aspect of the Beast
+      119462, // Glyph of Aspect of the Cheetah
+       57904, // Glyph of Aspect of the Pack
+      122492, // Glyph of Aspects
+      126746, // Glyph of Fetch
+       57903, // Glyph of Fireworks
+       57870, // Glyph of Lesser Proportion
+      159459, // Glyph of Play Dead
+       57866, // Glyph of Revive Pet
+       57902, // Glyph of Stampede
+      119464, // Glyph of Tame Beast
+           0,
+    },
+    {
+           0,
+    },
+  },
+  // Glyph spells for Rogue
+  {
+    // Major Glyphs (24 spells)
+    {
+       56813, // Glyph of Ambush
+       56818, // Glyph of Blade Flurry
+       91299, // Glyph of Blind
+       56801, // Glyph of Cheap Shot
+       63269, // Glyph of Cloak of Shadows
+       63254, // Glyph of Deadly Momentum
+      159638, // Glyph of Disappearance
+      159635, // Glyph of Elusiveness
+      159634, // Glyph of Energy
+      159636, // Glyph of Energy Flows
+       56799, // Glyph of Evasion
+       56804, // Glyph of Feint
+       56812, // Glyph of Garrote
+       56809, // Glyph of Gouge
+      146631, // Glyph of Hemorrhaging Veins
+       56805, // Glyph of Kick
+      146625, // Glyph of Recovery
+       56806, // Glyph of Recuperate
+       56810, // Glyph of Shiv
+       56819, // Glyph of Smoke Bomb
+       56811, // Glyph of Sprint
+       63253, // Glyph of Stealth
+       89758, // Glyph of Vanish
+       63249, // Glyph of Vendetta
+           0,
+    },
+    // Minor Glyphs (13 spells)
+    {
+       58039, // Glyph of Blurred Speed
+       56800, // Glyph of Decoy
+      125044, // Glyph of Detection
+       63268, // Glyph of Disguise
+       58032, // Glyph of Distract
+       56807, // Glyph of Hemorrhage
+      146961, // Glyph of Improved Distraction
+       63252, // Glyph of Killing Spree
+       58027, // Glyph of Pick Lock
+       58017, // Glyph of Pick Pocket
+       58038, // Glyph of Poisons
+       58033, // Glyph of Safe Fall
+      146960, // Glyph of the Headhunter
+           0,
+    },
+    {
+           0,
+    },
+  },
+  // Glyph spells for Priest
+  {
+    // Major Glyphs (41 spells)
+    {
+       63248, // Glyph of Binding Heal
+       55675, // Glyph of Circle of Healing
+       55673, // Glyph of Deep Wells
+      159598, // Glyph of Delayed Coalescence
+      119864, // Glyph of Dispel Magic
+       63229, // Glyph of Dispersion
+       55684, // Glyph of Fade
+       55678, // Glyph of Fear Ward
+      147778, // Glyph of Focused Mending
+      159596, // Glyph of Free Action
+      159599, // Glyph of Guardian Spirit
+      119853, // Glyph of Holy Fire
+      119850, // Glyph of Leap of Faith
+      108939, // Glyph of Levitate
+      126133, // Glyph of Lightwell
+       55691, // Glyph of Mass Dispel
+       87195, // Glyph of Mind Blast
+      120585, // Glyph of Mind Flay
+      162532, // Glyph of Mind Harvest
+       33371, // Glyph of Mind Spike
+      159608, // Glyph of Miraculous Dispelling
+      119866, // Glyph of Penance
+       55672, // Glyph of Power Word: Shield
+       55685, // Glyph of Prayer of Mending
+       55688, // Glyph of Psychic Horror
+       55676, // Glyph of Psychic Scream
+      171921, // Glyph of Purification
+       55677, // Glyph of Purify
+       33202, // Glyph of Reflective Shield
+      119872, // Glyph of Renew
+      159606, // Glyph of Restored Faith
+       55690, // Glyph of Scourge Imprisonment
+      159628, // Glyph of Shadow Magic
+      120583, // Glyph of Shadow Word: Death
+      159626, // Glyph of Silence
+       55692, // Glyph of Smite
+      119873, // Glyph of Spirit of Redemption
+      120584, // Glyph of Vampiric Embrace
+       89489, // Glyph of Weakened Soul
+      159624, // Glyph of the Inquisitor
+      159627, // Glyph of the Redeemer
+    },
+    // Minor Glyphs (13 spells)
+    {
+      145722, // Glyph of Angels
+       58009, // Glyph of Borrowed Time
+      126152, // Glyph of Confession
+       58228, // Glyph of Dark Archangel
+      126174, // Glyph of Holy Resurrection
+      147072, // Glyph of Inspired Hymns
+       57986, // Glyph of Shackle Undead
+      107906, // Glyph of Shadow
+       57985, // Glyph of Shadow Ravens
+      126745, // Glyph of Shadowy Friends
+      120581, // Glyph of the Heavens
+      147776, // Glyph of the Sha
+      126094, // Glyph of the Val'kyr
+           0,
+    },
+    {
+           0,
+    },
+  },
+  // Glyph spells for Death Knight
+  {
+    // Major Glyphs (26 spells)
+    {
+      159415, // Glyph of Absorb Magic
+       58623, // Glyph of Anti-Magic Shell
+       58657, // Glyph of Blood Boil
+       58620, // Glyph of Chains of Ice
+       63330, // Glyph of Dancing Rune Weapon
+       63331, // Glyph of Dark Simulacrum
+       63333, // Glyph of Death Coil
+       62259, // Glyph of Death Grip
+       58629, // Glyph of Death and Decay
+      159421, // Glyph of Empowerment
+       58671, // Glyph of Enduring Infection
+       58673, // Glyph of Icebound Fortitude
+       58631, // Glyph of Icy Touch
+       58686, // Glyph of Mind Freeze
+       59332, // Glyph of Outbreak
+       58635, // Glyph of Pillar of Frost
+      159427, // Glyph of Raise Ally
+      146648, // Glyph of Regenerative Magic
+      159428, // Glyph of Rune Tap
+      159429, // Glyph of Runic Power
+       58647, // Glyph of Shifting Presences
+       58618, // Glyph of Strangulate
+      146645, // Glyph of Swift Death
+       59327, // Glyph of Unholy Command
+       58676, // Glyph of Vampiric Blood
+      159416, // Glyph of the Ice Reaper
+           0,
+    },
+    // Minor Glyphs (11 spells)
+    {
+       58669, // Glyph of Army of the Dead
+       59336, // Glyph of Corpse Explosion
+       60200, // Glyph of Death Gate
+       58677, // Glyph of Death's Embrace
+       58642, // Glyph of Foul Menagerie
+       58680, // Glyph of Horn of Winter
+       59307, // Glyph of Path of Frost
+       59309, // Glyph of Resilient Grip
+       63335, // Glyph of Tranquil Grip
+       58640, // Glyph of the Geist
+      146652, // Glyph of the Skeleton
+           0,
+    },
+    {
+           0,
+    },
+  },
+  // Glyph spells for Shaman
+  {
+    // Major Glyphs (38 spells)
+    {
+       55442, // Glyph of Capacitor Totem
+       55449, // Glyph of Chain Lightning
+       55452, // Glyph of Chaining
+       55445, // Glyph of Cleansing Waters
+      159640, // Glyph of Ephemeral Spirits
+      147781, // Glyph of Eternal Earth
+       63271, // Glyph of Feral Spirit
+       55455, // Glyph of Fire Elemental Totem
+       55450, // Glyph of Fire Nova
+       55447, // Glyph of Flame Shock
+       55443, // Glyph of Frost Shock
+      161654, // Glyph of Frostbrand Weapon
+       59289, // Glyph of Ghost Wolf
+      159643, // Glyph of Grounding
+       55441, // Glyph of Grounding Totem
+       55456, // Glyph of Healing Stream Totem
+       55440, // Glyph of Healing Wave
+       63291, // Glyph of Hex
+      159644, // Glyph of Lava Spread
+      101052, // Glyph of Lightning Shield
+       55439, // Glyph of Purge
+      147762, // Glyph of Purging
+      171933, // Glyph of Purify Spirit
+      159647, // Glyph of Reactive Shielding
+       63273, // Glyph of Riptide
+       63280, // Glyph of Shamanistic Rage
+      159648, // Glyph of Shamanistic Resolve
+      159649, // Glyph of Shocks
+       55454, // Glyph of Spirit Walk
+      159651, // Glyph of Spiritwalker's Aegis
+      159650, // Glyph of Spiritwalker's Focus
+       55446, // Glyph of Spiritwalker's Grace
+       63270, // Glyph of Thunder
+       55438, // Glyph of Totemic Recall
+       63298, // Glyph of Totemic Vigor
+       55437, // Glyph of Unstable Earth
+       55436, // Glyph of Water Shield
+       55451, // Glyph of Wind Shear
+           0,
+    },
+    // Minor Glyphs (18 spells)
+    {
+      186198, // Glyph of Ascendance
+      147787, // Glyph of Astral Fixation
+       58058, // Glyph of Astral Recall
+       63279, // Glyph of Deluge
+      147788, // Glyph of Elemental Familiars
+       58059, // Glyph of Far Sight
+      159642, // Glyph of Ghostly Speed
+       55444, // Glyph of Lava Lash
+      147784, // Glyph of Lingering Ancestors
+      147707, // Glyph of Rain of Frogs
+      147783, // Glyph of Spirit Raptors
+      147770, // Glyph of Spirit Wolf
+       62132, // Glyph of Thunderstorm
+       58057, // Glyph of Totemic Encirclement
+      147785, // Glyph of the Compy
+      147772, // Glyph of the Flaming Serpent
+       55448, // Glyph of the Lakestrider
+       58135, // Glyph of the Spectral Wolf
+           0,
+    },
+    {
+           0,
+    },
+  },
+  // Glyph spells for Mage
+  {
+    // Major Glyphs (21 spells)
+    {
+      115718, // Glyph of Arcane Explosion
+       62210, // Glyph of Arcane Power
+       56365, // Glyph of Blink
+       56368, // Glyph of Combustion
+      115705, // Glyph of Cone of Cold
+      115703, // Glyph of Counterspell
+      115710, // Glyph of Deep Freeze
+      159485, // Glyph of Dragon's Breath
+       56376, // Glyph of Frost Nova
+      115723, // Glyph of Ice Block
+       56364, // Glyph of Icy Veins
+       61205, // Glyph of Ignite
+       89926, // Glyph of Inferno Blast
+       56375, // Glyph of Polymorph
+      146659, // Glyph of Rapid Displacement
+      159486, // Glyph of Regenerative Ice
+      115700, // Glyph of Remove Curse
+       86209, // Glyph of Slow
+      115713, // Glyph of Spellsteal
+       56377, // Glyph of Splitting Ice
+       63090, // Glyph of Water Elemental
+           0,
+    },
+    // Minor Glyphs (9 spells)
+    {
+       57925, // Glyph of Arcane Language
+      147353, // Glyph of Condensation
+      126748, // Glyph of Conjure Familiar
+       56382, // Glyph of Crittermorph
+      146662, // Glyph of Evaporation
+       63092, // Glyph of Illusion
+       56384, // Glyph of Momentum
+       89749, // Glyph of Rapid Teleportation
+      146976, // Glyph of the Unbound Elemental
+           0,
+    },
+    {
+           0,
+    },
+  },
+  // Glyph spells for Warlock
+  {
+    // Major Glyphs (21 spells)
+    {
+       56235, // Glyph of Conflagrate
+      159665, // Glyph of Dark Soul
+       56249, // Glyph of Demon Training
+       63309, // Glyph of Demonic Circle
+       63302, // Glyph of Drain Life
+       63304, // Glyph of Ember Tap
+      148683, // Glyph of Eternal Resolve
+       56244, // Glyph of Fear
+      146962, // Glyph of Havoc
+       56224, // Glyph of Healthstone
+       56242, // Glyph of Imp Swarm
+      159669, // Glyph of Life Pact
+       63320, // Glyph of Life Tap
+      159688, // Glyph of Shadowflame
+       56218, // Glyph of Siphon Life
+       58070, // Glyph of Soul Consumption
+      159691, // Glyph of Soul Swap
+       56231, // Glyph of Soulstone
+      159697, // Glyph of Strengthened Resolve
+      146964, // Glyph of Unending Resolve
+       56233, // Glyph of Unstable Affliction
+           0,
+    },
+    // Minor Glyphs (15 spells)
+    {
+       63312, // Glyph of Crimson Banish
+       58107, // Glyph of Enslave Demon
+       58081, // Glyph of Eye of Kilrogg
+       56247, // Glyph of Falling Meteor
+       56246, // Glyph of Felguard
+      135557, // Glyph of Gateway Attunement
+       56248, // Glyph of Hand of Gul'dan
+       56238, // Glyph of Health Funnel
+      159680, // Glyph of Metamorphosis
+       56232, // Glyph of Nightmares
+       56240, // Glyph of Shadow Bolt
+       58094, // Glyph of Soulwell
+       56217, // Glyph of Subtlety
+       58079, // Glyph of Unending Breath
+       56241, // Glyph of Verdant Spheres
+           0,
+    },
+    {
+           0,
+    },
+  },
+  // Glyph spells for Monk
+  {
+    // Major Glyphs (30 spells)
+    {
+      123394, // Glyph of Breath of Fire
+      146954, // Glyph of Detox
+      171926, // Glyph of Detoxing
+      159487, // Glyph of Expel Harm
+      125671, // Glyph of Fists of Fury
+      173182, // Glyph of Flying Fists
+      124997, // Glyph of Fortifying Brew
+      146953, // Glyph of Fortuitous Spheres
+      159534, // Glyph of Freedom Roll
+      123401, // Glyph of Guard
+      159495, // Glyph of Keg Smash
+      125967, // Glyph of Leer of the Ox
+      124989, // Glyph of Life Cocoon
+      123763, // Glyph of Mana Tea
+      146952, // Glyph of Nimble Brew
+      125755, // Glyph of Paralysis
+      146951, // Glyph of Rapid Rolling
+      159496, // Glyph of Renewed Tea
+      123334, // Glyph of Renewing Mist
+      159536, // Glyph of Soothing Mist
+      120483, // Glyph of Surging Mist
+      146950, // Glyph of Targeted Expulsion
+      123391, // Glyph of Touch of Death
+      125678, // Glyph of Touch of Karma
+      123023, // Glyph of Transcendence
+      159497, // Glyph of Victory Roll
+      159545, // Glyph of Zen Focus
+      120477, // Glyph of Zen Meditation
+      159490, // Glyph of the Floating Butterfly
+      159492, // Glyph of the Flying Serpent
+           0,
+    },
+    // Minor Glyphs (10 spells)
+    {
+      132005, // Glyph of Blackout Kick
+      125931, // Glyph of Crackling Tiger Lightning
+      125872, // Glyph of Fighting Pose
+      123403, // Glyph of Flying Serpent Kick
+      125732, // Glyph of Honor
+      125660, // Glyph of Jab
+      125151, // Glyph of Rising Tiger Kick
+      125154, // Glyph of Spirit Roll
+      125901, // Glyph of Water Roll
+      125893, // Glyph of Zen Flight
+           0,
+    },
+    {
+           0,
+    },
+  },
+  // Glyph spells for Druid
+  {
+    // Major Glyphs (33 spells)
+    {
+      159432, // Glyph of Astral Communion
+       63057, // Glyph of Barkskin
+      121840, // Glyph of Blooming
+       47180, // Glyph of Cat Form
+      159445, // Glyph of Celestial Alignment
+       48514, // Glyph of Cyclone
+       59219, // Glyph of Dash
+      159436, // Glyph of Enchanted Bark
+       54812, // Glyph of Entangling Energy
+       54760, // Glyph of Entangling Roots
+      114237, // Glyph of Fae Silence
+       94386, // Glyph of Faerie Fire
+       67598, // Glyph of Ferocious Bite
+       54825, // Glyph of Healing Touch
+       54831, // Glyph of Hurricane
+      159434, // Glyph of Imbued Bark
+      159450, // Glyph of Maim
+       54811, // Glyph of Maul
+      159455, // Glyph of Moonwarding
+      171924, // Glyph of Nature's Cure
+       54821, // Glyph of Rake
+       54733, // Glyph of Rebirth
+      116218, // Glyph of Regrowth
+       17076, // Glyph of Rejuvenation
+      127540, // Glyph of Savage Roar
+      116216, // Glyph of Skull Bash
+      114222, // Glyph of Stampeding Roar
+      114223, // Glyph of Survival Instincts
+       62970, // Glyph of Wild Growth
+      116172, // Glyph of the Master Shapeshifter
+      159444, // Glyph of the Ninth Life
+      159453, // Glyph of the Shapemender
+      171752, // Savagery
+           0,
+    },
+    // Minor Glyphs (16 spells)
+    {
+       57856, // Glyph of Aquatic Form
+       57855, // Glyph of Charm Woodland Creature
+      114295, // Glyph of Grace
+      146656, // Glyph of One With Nature
+      114301, // Glyph of Stars
+      159456, // Glyph of Travel
+      146655, // Glyph of Untamed Stars
+      107059, // Glyph of the Chameleon
+      131113, // Glyph of the Cheetah
+      164997, // Glyph of the Flapping Owl
+      114333, // Glyph of the Orca
+      114280, // Glyph of the Predator
+      171803, // Glyph of the Solstice
+      146654, // Glyph of the Sprouting Mushroom
+      114338, // Glyph of the Stag
+      125047, // Glyph of the Treant
+           0,
+    },
+    {
+           0,
+    },
+  },
+};
+
+#define TIER_BONUSES_SIZE (8)
+#define TIER_BONUSES_MAX_TIER (5)
+
+#define TIER_BONUSES_TIER_BASE (13)
+
+// Tier item set bonuses for class, wow build 20886
+static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] = {
+  {
+    {
+          0,
+    },
+  },
+  // Tier bonuses for Warrior
+  {
+    // Tier 13 bonuses (4 spells)
+    {
+      105797, // Colossal Dragonplate Battlegear - 2 Piece Bonus (Item - Warrior T13 Arms and Fury 2P Bonus (Inner Rage))
+      105907, // Colossal Dragonplate Battlegear - 4 Piece Bonus (Item - Warrior T13 Arms and Fury 4P Bonus (Colossus Smash))
+      105908, // Colossal Dragonplate Armor - 2 Piece Bonus (Item - Warrior T13 Protection 2P Bonus (Revenge))
+      105911, // Colossal Dragonplate Armor - 4 Piece Bonus (Item - Warrior T13 Protection 4P Bonus (Shield Wall))
+          0,
+    },
+    // Tier 14 bonuses (4 spells)
+    {
+      123142, // Battleplate of Resounding Rings - 2 Piece Bonus (Item - Warrior T14 DPS 2P Bonus)
+      123144, // Battleplate of Resounding Rings - 4 Piece Bonus (Item - Warrior T14 DPS 4P Bonus)
+      123146, // Plate of Resounding Rings - 2 Piece Bonus (Item - Warrior T14 Protection 2P Bonus)
+      123147, // Plate of Resounding Rings - 4 Piece Bonus (Item - Warrior T14 Protection 4P Bonus)
+          0,
+    },
+    // Tier 15 bonuses (4 spells)
+    {
+      138120, // Battleplate of the Last Mogu - 2 Piece Bonus (Item - Warrior T15 DPS 2P Bonus)
+      138126, // Battleplate of the Last Mogu - 4 Piece Bonus (Item - Warrior T15 DPS 4P Bonus)
+      138280, // Plate of the Last Mogu - 2 Piece Bonus (Item - Warrior T15 Protection 2P Bonus)
+      138281, // Plate of the Last Mogu - 4 Piece Bonus (Item - Warrior T15 Protection 4P Bonus)
+          0,
+    },
+    // Tier 16 bonuses (4 spells)
+    {
+      60174, // Battleplate of the Prehistoric Marauder - 2 Piece Bonus (Mortal Strike and Bloodthirst Damage Up)
+      144441, // Battleplate of the Prehistoric Marauder - 4 Piece Bonus (Item - Warrior T16 DPS 4P Bonus)
+      144502, // Plate of the Prehistoric Marauder - 4 Piece Bonus (Item - Warrior T16 Protection 4P Bonus)
+      144503, // Plate of the Prehistoric Marauder - 2 Piece Bonus (Item - Warrior T16 Protection 2P Bonus)
+          0,
+    },
+    {
+          0,
+    },
+  },
+  // Tier bonuses for Paladin
+  {
+    // Tier 13 bonuses (6 spells)
+    {
+      105743, // Regalia of Radiant Glory - 2 Piece Bonus (Item - Paladin T13 Holy 2P Bonus (Avenging Wrath))
+      105744, // Armor of Radiant Glory - 4 Piece Bonus (Item - Paladin T13 Protection 4P Bonus (Divine Guardian))
+      105765, // Battleplate of Radiant Glory - 2 Piece Bonus (Item - Paladin T13 Retribution 2P Bonus (Judgment))
+      105798, // Regalia of Radiant Glory - 4 Piece Bonus (Item - Paladin T13 Holy 4P Bonus (Holy Radiance))
+      105800, // Armor of Radiant Glory - 2 Piece Bonus (Item - Paladin T13 Protection 2P Bonus (Judgment))
+      105820, // Battleplate of Radiant Glory - 4 Piece Bonus (Item - Paladin T13 Retribution 4P Bonus (Zealotry))
+          0,
+    },
+    // Tier 14 bonuses (6 spells)
+    {
+      70762, // White Tiger Battlegear - 4 Piece Bonus (Item - Paladin T10 Retribution 4P Bonus)
+      123102, // White Tiger Vestments - 2 Piece Bonus (Item - Paladin T14 Holy 2P Bonus)
+      123103, // White Tiger Vestments - 4 Piece Bonus (Item - Paladin T14 Holy 4P Bonus)
+      123104, // White Tiger Plate - 2 Piece Bonus (Item - Paladin T14 Protection 2P Bonus)
+      123107, // White Tiger Plate - 4 Piece Bonus (Item - Paladin T14 Protection 4P Bonus)
+      123108, // White Tiger Battlegear - 2 Piece Bonus (Item - Paladin T14 Retribution 2P Bonus)
+          0,
+    },
+    // Tier 15 bonuses (6 spells)
+    {
+      138159, // Battlegear of the Lightning Emperor - 2 Piece Bonus (Item - Paladin T15 Retribution 2P Bonus)
+      138164, // Battlegear of the Lightning Emperor - 4 Piece Bonus (Item - Paladin T15 Retribution 4P Bonus)
+      138238, // Plate of the Lightning Emperor - 2 Piece Bonus (Item - Paladin T15 Protection 2P Bonus)
+      138244, // Plate of the Lightning Emperor - 4 Piece Bonus (Item - Paladin T15 Protection 4P Bonus)
+      138291, // Vestments of the Lightning Emperor - 2 Piece Bonus (Item - Paladin T15 Holy 2P Bonus)
+      138292, // Vestments of the Lightning Emperor - 4 Piece Bonus (Item - Paladin T15 Holy 4P Bonus)
+          0,
+    },
+    // Tier 16 bonuses (6 spells)
+    {
+      144566, // Plate of Winged Triumph - 4 Piece Bonus (Item - Paladin T16 Protection 4P Bonus)
+      144580, // Plate of Winged Triumph - 2 Piece Bonus (Item - Paladin T16 Protection 2P Bonus)
+      144586, // Battlegear of Winged Triumph - 2 Piece Bonus (Item - Paladin T16 Retribution 2P Bonus)
+      144593, // Battlegear of Winged Triumph - 4 Piece Bonus (Item - Paladin T16 Retribution 4P Bonus)
+      144613, // Vestments of Winged Triumph - 4 Piece Bonus (Item - Paladin T16 Holy 4P Bonus)
+      144625, // Vestments of Winged Triumph - 2 Piece Bonus (Item - Paladin T16 Holy 2P Bonus)
+          0,
+    },
+    {
+          0,
+    },
+  },
+  // Tier bonuses for Hunter
+  {
+    // Tier 13 bonuses (2 spells)
+    {
+      105732, // Wyrmstalker Battlegear - 2 Piece Bonus (Item - Hunter T13 2P Bonus (Steady Shot and Cobra Shot))
+      105921, // Wyrmstalker Battlegear - 4 Piece Bonus (Item - Hunter T13 4P Bonus (Arcane Shot))
+          0,
+    },
+    // Tier 14 bonuses (2 spells)
+    {
+      123090, // Yaungol Slayer Battlegear - 2 Piece Bonus (Item - Hunter T14 2P Bonus)
+      123091, // Yaungol Slayer Battlegear - 4 Piece Bonus (Item - Hunter T14 4P Bonus)
+          0,
+    },
+    // Tier 15 bonuses (2 spells)
+    {
+      138365, // Battlegear of the Saurok Stalker - 2 Piece Bonus (Item - Hunter T15 2P Bonus)
+      138367, // Battlegear of the Saurok Stalker - 4 Piece Bonus (Item - Hunter T15 4P Bonus)
+          0,
+    },
+    // Tier 16 bonuses (2 spells)
+    {
+      144637, // Battlegear of the Unblinking Vigil - 2 Piece Bonus (Item - Hunter T16 2P Bonus)
+      144641, // Battlegear of the Unblinking Vigil - 4 Piece Bonus (Item - Hunter T16 4P Bonus)
+          0,
+    },
+    {
+          0,
+    },
+  },
+  // Tier bonuses for Rogue
+  {
+    // Tier 13 bonuses (2 spells)
+    {
+      105849, // Blackfang Battleweave - 2 Piece Bonus (Item - Rogue T13 2P Bonus (Tricks of the Trade))
+      105865, // Blackfang Battleweave - 4 Piece Bonus (Item - Rogue T13 4P Bonus (Shadow Dance, Adrenaline Rush, and Vendetta))
+          0,
+    },
+    // Tier 14 bonuses (2 spells)
+    {
+      123116, // Battlegear of the Thousandfold Blades - 2 Piece Bonus (Item - Rogue T14 2P Bonus)
+      123122, // Battlegear of the Thousandfold Blades - 4 Piece Bonus (Item - Rogue T14 4P Bonus)
+          0,
+    },
+    // Tier 15 bonuses (2 spells)
+    {
+      138148, // Nine-Tail Battlegear - 2 Piece Bonus (Item - Rogue T15 2P Bonus)
+      138150, // Nine-Tail Battlegear - 4 Piece Bonus (Item - Rogue T15 4P Bonus)
+          0,
+    },
+    // Tier 16 bonuses (2 spells)
+    {
+      145185, // Barbed Assassin Battlegear - 2 Piece Bonus (Item - Rogue T16 2P Bonus)
+      145210, // Barbed Assassin Battlegear - 4 Piece Bonus (Item - Rogue T16 4P Bonus)
+          0,
+    },
+    {
+          0,
+    },
+  },
+  // Tier bonuses for Priest
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
   {
     // Generic racial abilities
     {
@@ -3547,7 +4368,13 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 };
 #define SET_BONUS_DATA_SIZE (700)
 
+<<<<<<< HEAD
 // Set bonus data, wow build 8.1.0.28724
+=======
+#define SET_BONUS_DATA_SIZE (518)
+
+// Set bonus data, wow build 20886
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -4280,6 +5107,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
 };
 #define RPPMMOD_SIZE (933)
 
+<<<<<<< HEAD
 // 933 RPPM Modifiers, wow build level 8.1.0.28724
 static struct rppm_modifier_t __rppmmodifier_data[] = {
   {  17495,    4,  1,  1.0000 },
@@ -5217,3 +6045,804 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 289391,    4,  1,  1.0000 },
   {      0,    0,  0,  0.0000 },
 };
+=======
+#define PERK_SIZE (4)
+
+// Perk specialization abilities, wow build 20886
+static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
+  {
+    {
+           0,
+    },
+    {
+           0,
+    },
+    {
+           0,
+    },
+    {
+           0,
+    },
+  },
+  {
+    // Arms
+    {
+      176051, // 0: Improved Recklessness
+      157452, // 1: Improved Die by the Sword
+      157461, // 2: Enhanced Sweeping Strikes
+      174737, // 3: Enhanced Rend
+    },
+    // Fury
+    {
+      157452, // 0: Improved Die by the Sword
+      157454, // 1: Empowered Execute
+      157473, // 2: Enhanced Whirlwind
+      176051, // 3: Improved Recklessness
+    },
+    // Protection
+    {
+      157449, // 0: Improved Heroic Leap
+      157497, // 1: Improved Block
+      157479, // 2: Improved Heroic Throw
+      157494, // 3: Improved Defensive Stance
+    },
+    {
+           0,
+    },
+  },
+  {
+    // Holy
+    {
+      157453, // 0: Empowered Beacon of Light
+      157478, // 1: Enhanced Holy Shock
+      157455, // 2: Improved Daybreak
+      157482, // 3: Improved Forbearance
+    },
+    // Protection
+    {
+      157482, // 0: Improved Forbearance
+      157485, // 1: Empowered Avenger's Shield
+      157488, // 2: Improved Block
+      157486, // 3: Improved Consecration
+    },
+    // Retribution
+    {
+      157482, // 0: Improved Forbearance
+      157493, // 1: Enhanced Hand of Sacrifice
+      157496, // 2: Empowered Hammer of Wrath
+      174718, // 3: Empowered Divine Storm
+    },
+    {
+           0,
+    },
+  },
+  {
+    // Beast Mastery
+    {
+      157715, // 0: Enhanced Basic Attacks
+      157714, // 1: Improved Beast Cleave
+      157705, // 2: Improved Focus Fire
+      157718, // 3: Enhanced Camouflage
+    },
+    // Marksmanship
+    {
+      157707, // 0: Enhanced Kill Shot
+      157718, // 1: Enhanced Camouflage
+      157724, // 2: Enhanced Aimed Shot
+      157726, // 3: Improved Focus
+    },
+    // Survival
+    {
+      157718, // 0: Enhanced Camouflage
+      157748, // 1: Empowered Explosive Shot
+      157752, // 2: Enhanced Entrapment
+      157751, // 3: Enhanced Traps
+    },
+    {
+           0,
+    },
+  },
+  {
+    // Assassination
+    {
+      157513, // 0: Improved Slice and Dice
+      157514, // 1: Enhanced Vendetta
+      157561, // 2: Enhanced Crimson Tempest
+      157569, // 3: Empowered Envenom
+    },
+    // Combat
+    {
+      157581, // 0: Empowered Bandit's Guile
+      157605, // 1: Swift Poison
+      157615, // 2: Enhanced Blade Flurry
+      157660, // 3: Improved Dual Wield
+    },
+    // Subtlety
+    {
+      157666, // 0: Enhanced Vanish
+      157669, // 1: Enhanced Shadow Dance
+      157671, // 2: Empowered Fan of Knives
+      157704, // 3: Enhanced Stealth
+    },
+    {
+           0,
+    },
+  },
+  {
+    // Discipline
+    {
+      157197, // 0: Empowered Archangel
+      157193, // 1: Enhanced Focused Will
+      157145, // 2: Enhanced Leap of Faith
+      157129, // 3: Enhanced Power Word: Shield
+    },
+    // Holy
+    {
+      157193, // 0: Enhanced Focused Will
+      157145, // 1: Enhanced Leap of Faith
+      157206, // 2: Enhanced Chakras
+      157207, // 3: Enhanced Renew
+    },
+    // Shadow
+    {
+      157129, // 0: Enhanced Power Word: Shield
+      157223, // 1: Enhanced Mind Flay
+      157217, // 2: Enhanced Shadow Orbs
+      157218, // 3: Enhanced Shadow Word: Death
+    },
+    {
+           0,
+    },
+  },
+  {
+    // Blood
+    {
+      157338, // 0: Enhanced Bone Shield
+      157337, // 1: Enhanced Death Grip
+      157343, // 2: Enhanced Death Coil
+      157336, // 3: Enhanced Rune Tap
+    },
+    // Frost
+    {
+      157389, // 0: Empowered Pillar of Frost
+      157409, // 1: Empowered Obliterate
+      157376, // 2: Improved Runeforges
+      157367, // 3: Improved Death Grip
+    },
+    // Unholy
+    {
+      157342, // 0: Improved Soul Reaper
+      157441, // 1: Empowered Gargoyle
+      157412, // 2: Enhanced Dark Transformation
+      157437, // 3: Enhanced Fallen Crusader
+    },
+    {
+           0,
+    },
+  },
+  {
+    // Elemental
+    {
+      157765, // 0: Enhanced Chain Lightning
+      157774, // 1: Improved Lightning Shield
+      157764, // 2: Improved Reincarnation
+      157784, // 3: Enhanced Unleash
+    },
+    // Enhancement
+    {
+      157764, // 0: Improved Reincarnation
+      157784, // 1: Enhanced Unleash
+      157804, // 2: Improved Flame Shock
+      157807, // 3: Improved Maelstrom Weapon
+    },
+    // Restoration
+    {
+      157764, // 0: Improved Reincarnation
+      157812, // 1: Improved Riptide
+      157813, // 2: Improved Chain Heal
+      157784, // 3: Enhanced Unleash
+    },
+    {
+           0,
+    },
+  },
+  {
+    // Arcane
+    {
+      157604, // 0: Improved Arcane Power
+      157606, // 1: Improved Blink
+      157595, // 2: Enhanced Arcane Blast
+      157614, // 3: Improved Evocation
+    },
+    // Fire
+    {
+      157642, // 0: Enhanced Pyrotechnics
+      157621, // 1: Improved Flamestrike
+      157629, // 2: Improved Inferno Blast
+      157632, // 3: Improved Scorch
+    },
+    // Frost
+    {
+      157727, // 0: Improved Blizzard
+      157646, // 1: Enhanced Frostbolt
+      157721, // 2: Improved Icy Veins
+      157738, // 3: Improved Water Elemental
+    },
+    {
+           0,
+    },
+  },
+  {
+    // Affliction
+    {
+      157072, // 0: Enhanced Haunt
+      157077, // 1: Improved Drain Soul
+      157078, // 2: Empowered Corruption
+      157069, // 3: Empowered Drain Life
+    },
+    // Demonology
+    {
+      157069, // 0: Empowered Drain Life
+      157096, // 1: Empowered Demons
+      157098, // 2: Enhanced Corruption
+      157100, // 3: Empowered Doom
+    },
+    // Destruction
+    {
+      157103, // 0: Enhanced Chaos Bolt
+      157114, // 1: Empowered Immolate
+      157121, // 2: Enhanced Ember Tap
+      157126, // 3: Enhanced Havoc
+    },
+    {
+           0,
+    },
+  },
+  {
+    // Brewmaster
+    {
+      157362, // 0: Improved Breath of Fire
+      157363, // 1: Improved Guard
+      157361, // 2: Enhanced Roll
+      157366, // 3: Enhanced Transcendence
+    },
+    // Mistweaver
+    {
+      157401, // 0: Improved Life Cocoon
+      157398, // 1: Improved Renewing Mist
+      157361, // 2: Enhanced Roll
+      157366, // 3: Enhanced Transcendence
+    },
+    // Windwalker
+    {
+      157411, // 0: Empowered Chi
+      157415, // 1: Empowered Spinning Crane Kick
+      157361, // 2: Enhanced Roll
+      157366, // 3: Enhanced Transcendence
+    },
+    {
+           0,
+    },
+  },
+  {
+    // Balance
+    {
+      157229, // 0: Empowered Moonkin
+      157227, // 1: Enhanced Moonkin Form
+      157301, // 2: Enhanced Rebirth
+      157232, // 3: Enhanced Starsurge
+    },
+    // Feral
+    {
+      157269, // 0: Enhanced Berserk
+      157274, // 1: Enhanced Prowl
+      157280, // 2: Enhanced Rejuvenation
+      157276, // 3: Improved Rake
+    },
+    // Guardian
+    {
+      157292, // 0: Empowered Bear Form
+      157284, // 1: Empowered Berserk
+      157286, // 2: Enhanced Faerie Fire
+      157283, // 3: Enhanced Tooth and Claw
+    },
+    // Restoration
+    {
+      157305, // 0: Empowered Ironbark
+      157300, // 1: Empowered Rejuvenation
+      157312, // 2: Enhanced Lifebloom
+      157301, // 3: Enhanced Rebirth
+    },
+  },
+};
+
+// Glyph properties, wow build 20886
+static glyph_property_data_t __glyph_property_data[485] = {
+  {   162,  54811 },
+  {   163,  54812 },
+  {   164, 114338 },
+  {   167,  54821 },
+  {   170,  54733 },
+  {   171, 116218 },
+  {   172,  17076 },
+  {   173,  54825 },
+  {   175, 146655 },
+  {   176, 114333 },
+  {   177,  54831 },
+  {   178, 116216 },
+  {   180, 127540 },
+  {   181,  54760 },
+  {   183,  54922 },
+  {   184, 146955 },
+  {   185,  54923 },
+  {   186,  54924 },
+  {   187,  54926 },
+  {   188,  54927 },
+  {   189,  54928 },
+  {   190,  89401 },
+  {   191,  54930 },
+  {   192,  54931 },
+  {   194,  54935 },
+  {   195,  54936 },
+  {   196,  54937 },
+  {   197,  54938 },
+  {   198,  54939 },
+  {   199,  54940 },
+  {   200,  54943 },
+  {   211,  55436 },
+  {   212,  55437 },
+  {   213,  55449 },
+  {   214,  55454 },
+  {   215,  55442 },
+  {   216,  55439 },
+  {   217,  55455 },
+  {   218,  55450 },
+  {   219,  55447 },
+  {   220,  55451 },
+  {   221,  55443 },
+  {   222,  55456 },
+  {   223,  55440 },
+  {   224,  55438 },
+  {   225,  55448 },
+  {   226,  55453 },
+  {   227,  55441 },
+  {   228,  55446 },
+  {   229,  55444 },
+  {   230,  55452 },
+  {   231,  55445 },
+  {   251,  55675 },
+  {   252,  55677 },
+  {   253,  55684 },
+  {   254,  55678 },
+  {   255,  14771 },
+  {   256, 125045 },
+  {   257,  55686 },
+  {   258,  55673 },
+  {   259,  55691 },
+  {   260,  55688 },
+  {   261, 119853 },
+  {   262,  89489 },
+  {   263,  55672 },
+  {   264, 119873 },
+  {   265,  55676 },
+  {   266, 119872 },
+  {   267,  55690 },
+  {   268,  87195 },
+  {   269, 119864 },
+  {   270,  55692 },
+  {   271,  55685 },
+  {   272,  56248 },
+  {   273,  56235 },
+  {   274,  56218 },
+  {   275,  56241 },
+  {   276,  56232 },
+  {   277,  56244 },
+  {   278,  56246 },
+  {   279,  56249 },
+  {   280,  56238 },
+  {   281,  56224 },
+  {   282,  56217 },
+  {   284,  56242 },
+  {   285,  56226 },
+  {   286,  56240 },
+  {   289,  56231 },
+  {   291,  56233 },
+  {   292,  56247 },
+  {   313, 115718 },
+  {   314,  56365 },
+  {   316,  56368 },
+  {   318,  56376 },
+  {   320,  56384 },
+  {   321, 115723 },
+  {   322,  56377 },
+  {   323, 115705 },
+  {   325, 146659 },
+  {   328,  56382 },
+  {   329,  56375 },
+  {   330,  56364 },
+  {   331, 115713 },
+  {   351, 122492 },
+  {   352, 119449 },
+  {   353, 132106 },
+  {   354,  56833 },
+  {   355, 123632 },
+  {   356, 119410 },
+  {   357,  56850 },
+  {   358,  56844 },
+  {   359,  56845 },
+  {   360,  56847 },
+  {   361,  56829 },
+  {   362, 119403 },
+  {   363,  20895 },
+  {   364,  53299 },
+  {   365,  19560 },
+  {   366, 119464 },
+  {   369,  19573 },
+  {   371, 119407 },
+  {   392,  56813 },
+  {   393,  56800 },
+  {   394,  56818 },
+  {   396,  56806 },
+  {   397,  56799 },
+  {   398, 146625 },
+  {   400,  56804 },
+  {   401,  56812 },
+  {   402, 125044 },
+  {   403,  56809 },
+  {   404,  56807 },
+  {   405,  56819 },
+  {   406,  56801 },
+  {   407, 146631 },
+  {   410,  56810 },
+  {   411,  56811 },
+  {   431,  57856 },
+  {   432, 107059 },
+  {   433,  57855 },
+  {   434, 121840 },
+  {   435, 114295 },
+  {   439,  57866 },
+  {   440,  57870 },
+  {   441,  57903 },
+  {   442,  57902 },
+  {   443,  57904 },
+  {   448, 126748 },
+  {   451,  57925 },
+  {   452, 125043 },
+  {   453,  57958 },
+  {   454,  57979 },
+  {   455,  57955 },
+  {   456,  57947 },
+  {   457,  57954 },
+  {   458,  57985 },
+  {   459, 108939 },
+  {   460,  58009 },
+  {   461,  57986 },
+  {   462,  33202 },
+  {   463,  58228 },
+  {   464,  58032 },
+  {   465,  58027 },
+  {   466,  58017 },
+  {   467,  58033 },
+  {   468,  58039 },
+  {   469,  58038 },
+  {   470,  58058 },
+  {   471,  58135 },
+  {   473,  58059 },
+  {   476,  58057 },
+  {   477,  58079 },
+  {   478,  58070 },
+  {   479,  58081 },
+  {   481,  58107 },
+  {   482,  58094 },
+  {   483,  58095 },
+  {   484,  58096 },
+  {   485,  58097 },
+  {   486,  58099 },
+  {   487,  58098 },
+  {   488,  58104 },
+  {   489,  58368 },
+  {   490,  58369 },
+  {   491,  58355 },
+  {   492,  58366 },
+  {   494,  58367 },
+  {   495,  58372 },
+  {   496,  58357 },
+  {   497,  58377 },
+  {   499,  58386 },
+  {   502,  58375 },
+  {   505,  58384 },
+  {   507,  58356 },
+  {   508,  58382 },
+  {   509,  58370 },
+  {   512,  58623 },
+  {   513,  58616 },
+  {   514,  58640 },
+  {   515,  58673 },
+  {   516,  58620 },
+  {   518,  58677 },
+  {   519,  62259 },
+  {   520,  58629 },
+  {   521,  58647 },
+  {   522,  58680 },
+  {   524,  58631 },
+  {   525,  58671 },
+  {   526,  58657 },
+  {   527,  58686 },
+  {   529,  58642 },
+  {   530,  58618 },
+  {   531,  58635 },
+  {   532,  58676 },
+  {   551,  59219 },
+  {   552,  59289 },
+  {   553,  59309 },
+  {   554,  59307 },
+  {   555,  60200 },
+  {   556,  59327 },
+  {   557,  59332 },
+  {   558,  59336 },
+  {   559,  56420 },
+  {   560,  56414 },
+  {   561,  56416 },
+  {   591,  61205 },
+  {   611, 115700 },
+  {   612,  62132 },
+  {   613, 114301 },
+  {   631, 116172 },
+  {   651,  62210 },
+  {   671, 114223 },
+  {   672,  62970 },
+  {   674, 114222 },
+  {   675,  48514 },
+  {   676,  63057 },
+  {   677, 119447 },
+  {   691, 119384 },
+  {   692, 119462 },
+  {   693,  63068 },
+  {   695,  83495 },
+  {   696,  63090 },
+  {   697,  86209 },
+  {   698,  63092 },
+  {   700, 115710 },
+  {   701,  63218 },
+  {   702,  63219 },
+  {   703,  63220 },
+  {   706,  63224 },
+  {   708,  63229 },
+  {   709, 119850 },
+  {   710, 119866 },
+  {   711, 147778 },
+  {   712,  33371 },
+  {   713,  63248 },
+  {   714,  63249 },
+  {   715,  63252 },
+  {   716,  63253 },
+  {   731,  63254 },
+  {   733,  63268 },
+  {   734,  63269 },
+  {   735,  63270 },
+  {   736,  63271 },
+  {   737,  63273 },
+  {   751,  63279 },
+  {   752,  63280 },
+  {   753,  63291 },
+  {   754,  63298 },
+  {   755,  63302 },
+  {   757,  63304 },
+  {   758,  63309 },
+  {   759, 146964 },
+  {   760,  63320 },
+  {   761,  63312 },
+  {   762,  63324 },
+  {   763,  63325 },
+  {   764, 146965 },
+  {   765,  63327 },
+  {   766,  63328 },
+  {   767,  63329 },
+  {   768,  63330 },
+  {   769,  63331 },
+  {   771,  63333 },
+  {   773,  63335 },
+  {   831,  67598 },
+  {   851,  68164 },
+  {   871, 115703 },
+  {   911, 148683 },
+  {   923,  89749 },
+  {   924,  89758 },
+  {   926,  56805 },
+  {   928,  89926 },
+  {   929,  91299 },
+  {   930,  93466 },
+  {   931,  94372 },
+  {   932,  94374 },
+  {   933, 114237 },
+  {   934,  94386 },
+  {   935, 114280 },
+  {   936,  47180 },
+  {   937, 125047 },
+  {   950, 101052 },
+  {   961, 107906 },
+  {   967, 111546 },
+  {   970, 112104 },
+  {   986, 115738 },
+  {   987, 115931 },
+  {   988, 115933 },
+  {   989, 115934 },
+  {   990, 115943 },
+  {   991, 115946 },
+  {   996, 119477 },
+  {   997, 146951 },
+  {   998, 123401 },
+  {   999, 120477 },
+  {  1001, 120483 },
+  {  1003, 120585 },
+  {  1004, 120581 },
+  {  1005, 120583 },
+  {  1006, 120584 },
+  {  1007, 120581 },
+  {  1009, 122028 },
+  {  1011, 123023 },
+  {  1013, 123334 },
+  {  1014, 123391 },
+  {  1015, 123394 },
+  {  1017, 123403 },
+  {  1019, 123763 },
+  {  1020, 123779 },
+  {  1021, 125967 },
+  {  1022, 125042 },
+  {  1023, 109263 },
+  {  1025, 146953 },
+  {  1026, 124989 },
+  {  1028, 125151 },
+  {  1029, 125154 },
+  {  1030, 124997 },
+  {  1031, 146954 },
+  {  1032, 146952 },
+  {  1033, 125660 },
+  {  1034, 146950 },
+  {  1035, 125671 },
+  {  1038, 125678 },
+  {  1039, 125732 },
+  {  1040, 125755 },
+  {  1041, 125872 },
+  {  1042, 125893 },
+  {  1043, 125872 },
+  {  1044, 125901 },
+  {  1045, 125931 },
+  {  1046, 126133 },
+  {  1047, 126152 },
+  {  1048, 126174 },
+  {  1049, 126094 },
+  {  1052, 126745 },
+  {  1053, 126746 },
+  {  1054, 131113 },
+  {  1055, 132005 },
+  {  1058, 135557 },
+  {  1060, 145722 },
+  {  1061, 147707 },
+  {  1063, 146645 },
+  {  1065, 146648 },
+  {  1067, 146956 },
+  {  1068, 146957 },
+  {  1069, 147762 },
+  {  1070, 147781 },
+  {  1071, 146962 },
+  {  1072, 146970 },
+  {  1073, 146971 },
+  {  1074, 146652 },
+  {  1076, 146654 },
+  {  1077, 146656 },
+  {  1078, 146656 },
+  {  1079, 146976 },
+  {  1080, 146662 },
+  {  1081, 147353 },
+  {  1082, 146958 },
+  {  1083, 146959 },
+  {  1084, 145722 },
+  {  1085, 147776 },
+  {  1087, 147072 },
+  {  1088, 146960 },
+  {  1089, 146961 },
+  {  1090, 147783 },
+  {  1091, 147784 },
+  {  1092, 147770 },
+  {  1093, 147772 },
+  {  1094, 147785 },
+  {  1095, 147788 },
+  {  1096, 147787 },
+  {  1097, 147707 },
+  {  1098, 146968 },
+  {  1099, 146969 },
+  {  1100, 146973 },
+  {  1101, 146974 },
+  {  1102, 146657 },
+  {  1104, 148475 },
+  {  1109, 159415 },
+  {  1110, 159416 },
+  {  1112, 159421 },
+  {  1114, 159427 },
+  {  1115, 159428 },
+  {  1116, 159429 },
+  {  1117, 159432 },
+  {  1118, 159434 },
+  {  1119, 159436 },
+  {  1121, 159444 },
+  {  1122, 159445 },
+  {  1124, 159450 },
+  {  1125, 159453 },
+  {  1126, 159455 },
+  {  1127, 159456 },
+  {  1128, 159459 },
+  {  1130, 159469 },
+  {  1131, 159470 },
+  {  1133, 159485 },
+  {  1134, 159486 },
+  {  1135, 159487 },
+  {  1136, 159490 },
+  {  1137, 159492 },
+  {  1138, 159495 },
+  {  1139, 159496 },
+  {  1140, 159497 },
+  {  1141, 159534 },
+  {  1142, 159536 },
+  {  1143, 159545 },
+  {  1144, 159548 },
+  {  1145, 159557 },
+  {  1146, 159572 },
+  {  1147, 159573 },
+  {  1148, 159579 },
+  {  1149, 159592 },
+  {  1150, 159596 },
+  {  1151, 159598 },
+  {  1152, 159599 },
+  {  1153, 159606 },
+  {  1154, 159608 },
+  {  1155, 159624 },
+  {  1156, 159626 },
+  {  1157, 159627 },
+  {  1158, 159628 },
+  {  1159, 159634 },
+  {  1160, 159635 },
+  {  1161, 159636 },
+  {  1162, 159638 },
+  {  1163, 159640 },
+  {  1164, 159642 },
+  {  1165, 159643 },
+  {  1166, 159644 },
+  {  1167, 159647 },
+  {  1168, 159648 },
+  {  1169, 159649 },
+  {  1170, 159650 },
+  {  1171, 159651 },
+  {  1173, 159665 },
+  {  1175, 159669 },
+  {  1176, 159680 },
+  {  1177, 159688 },
+  {  1178, 159691 },
+  {  1179, 159693 },
+  {  1180, 159697 },
+  {  1181, 159701 },
+  {  1182, 159703 },
+  {  1183, 159708 },
+  {  1184, 159738 },
+  {  1185, 159740 },
+  {  1186, 159754 },
+  {  1187, 159759 },
+  {  1188, 159761 },
+  {  1201, 161654 },
+  {  1202, 162532 },
+  {  1203, 162604 },
+  {  1204,  58669 },
+  {  1205, 171752 },
+  {  1206, 171803 },
+  {  1207, 171933 },
+  {  1208, 171929 },
+  {  1209, 171926 },
+  {  1210, 171924 },
+  {  1211, 171921 },
+  {  1212, 173182 },
+  {  1213, 164997 },
+  {  1215, 186198 },
+  {     0,      0 }
+};
+
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c

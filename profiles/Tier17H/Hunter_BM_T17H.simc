@@ -1,0 +1,92 @@
+hunter="Hunter_BM_T17H"
+level=100
+race=orc
+role=attack
+position=ranged_back
+talents=0001333
+talent_override=steady_focus,if=raid_event.adds.count>=1|enemies>1
+spec=beast_mastery
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=greater_draenic_agility_flask
+actions.precombat+=/food,type=sleeper_sushi
+actions.precombat+=/summon_pet
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/exotic_munitions,ammo_type=incendiary
+actions.precombat+=/potion,name=draenic_agility
+actions.precombat+=/glaive_toss
+actions.precombat+=/focusing_shot
+actions.precombat+=/powershot
+
+# Executed every time the actor is available.
+
+actions=auto_shot
+actions+=/use_item,name=beating_heart_of_the_mountain
+actions+=/arcane_torrent,if=focus.deficit>=30
+actions+=/blood_fury
+actions+=/berserking
+actions+=/potion,name=draenic_agility,if=!talent.stampede.enabled&((buff.bestial_wrath.up&(legendary_ring.up|!legendary_ring.has_cooldown)&target.health.pct<=20)|target.time_to_die<=20)
+actions+=/potion,name=draenic_agility,if=talent.stampede.enabled&((buff.stampede.remains&(legendary_ring.up|!legendary_ring.has_cooldown)&(buff.bloodlust.up|buff.focus_fire.up))|target.time_to_die<=40)
+actions+=/stampede,if=((buff.bloodlust.up|buff.focus_fire.up)&(legendary_ring.up|!legendary_ring.has_cooldown))|target.time_to_die<=25
+actions+=/dire_beast
+actions+=/focus_fire,if=buff.focus_fire.down&((cooldown.bestial_wrath.remains<1&buff.bestial_wrath.down)|(talent.stampede.enabled&buff.stampede.remains)|pet.cat.buff.frenzy.remains<1)
+actions+=/bestial_wrath,if=focus>30&!buff.bestial_wrath.up
+actions+=/multishot,if=spell_targets.multi_shot>1&pet.cat.buff.beast_cleave.remains<0.5
+actions+=/focus_fire,min_frenzy=5
+actions+=/barrage,if=spell_targets.barrage>1
+actions+=/explosive_trap,if=spell_targets.explosive_trap_tick>5
+actions+=/multishot,if=spell_targets.multi_shot>5
+actions+=/kill_command
+actions+=/a_murder_of_crows
+actions+=/kill_shot,if=focus.time_to_max>gcd
+actions+=/focusing_shot,if=focus<50
+# Cast a second shot for steady focus if that won't cap us.
+actions+=/cobra_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<7&(14+cast_regen)<focus.deficit
+actions+=/explosive_trap,if=spell_targets.explosive_trap_tick>1
+# Prepare for steady focus refresh if it is running out.
+actions+=/cobra_shot,if=talent.steady_focus.enabled&buff.steady_focus.remains<4&focus<50
+actions+=/glaive_toss
+actions+=/barrage
+actions+=/powershot,if=focus.time_to_max>cast_time
+actions+=/cobra_shot,if=spell_targets.multi_shot>5
+actions+=/arcane_shot,if=(buff.thrill_of_the_hunt.react&focus>35)|buff.bestial_wrath.up
+actions+=/arcane_shot,if=focus>=75
+actions+=/cobra_shot
+
+head=rylakstalkers_headguard,id=115545,bonus_id=566
+neck=engineers_grounded_gorget,id=113892,bonus_id=566,enchant_id=5319
+shoulders=rylakstalkers_spaulders,id=115547,bonus_id=566
+back=cloak_of_delving_secrets,id=113929,bonus_id=566,enchant_id=5312
+chest=chestguard_of_the_siegemaker,id=113982,bonus_id=566
+wrists=bloodwhirl_bracers,id=113968,bonus_id=566
+hands=rylakstalkers_gloves,id=115549,bonus_id=566
+waist=grenadiers_belt,id=113955,bonus_id=566
+legs=rylakstalkers_legguards,id=115546,bonus_id=566
+feet=railwalkers_ratcheted_boots,id=113954,bonus_id=566
+finger1=unexploded_explosive_shard,id=113877,bonus_id=566,enchant_id=5326
+finger2=spellbound_solium_band_of_fatal_strikes,id=118302,enchant_id=5326
+trinket1=beating_heart_of_the_mountain,id=113931,bonus_id=566
+trinket2=meaty_dragonspine_trophy,id=118114,bonus_id=566
+main_hand=garans_brutal_spearlauncher,id=113966,bonus_id=566,enchant_id=5383
+
+# Gear Summary
+# gear_ilvl=685.33
+# gear_agility=3409
+# gear_stamina=4114
+# gear_crit_rating=709
+# gear_haste_rating=290
+# gear_mastery_rating=1556
+# gear_multistrike_rating=1224
+# gear_versatility_rating=101
+# gear_armor=1401
+# set_bonus=tier17_2pc=1
+# set_bonus=tier17_4pc=1
+summon_pet=cat

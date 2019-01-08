@@ -1,0 +1,119 @@
+druid="Druid_Balance_T18H"
+level=100
+race=troll
+role=spell
+position=back
+talents=0001001
+spec=balance
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=greater_draenic_intellect_flask
+actions.precombat+=/food,type=sleeper_sushi
+actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
+actions.precombat+=/moonkin_form
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion,name=draenic_intellect
+actions.precombat+=/incarnation
+actions.precombat+=/starfire
+
+# Executed every time the actor is available.
+
+actions=force_of_nature,if=trinket.stat.intellect.up|charges=3|target.time_to_die<21
+actions+=/call_action_list,name=cooldowns,if=cooldown.celestial_alignment.up&(eclipse_energy>=0|target.time_to_die<=30+gcd)
+actions+=/call_action_list,name=ca_aoe,if=buff.celestial_alignment.up&spell_targets.starfall_pulse>1&!t18_class_trinket
+actions+=/call_action_list,name=ca,if=buff.celestial_alignment.up&(spell_targets.starfall_pulse=1|t18_class_trinket)
+actions+=/call_action_list,name=aoe_t18_trinket,if=buff.celestial_alignment.down&spell_targets.starfall.pulse>1&t18_class_trinket
+actions+=/call_action_list,name=aoe,if=spell_targets.starfall_pulse>1&buff.celestial_alignment.down&!t18_class_trinket
+actions+=/call_action_list,name=single_target,if=spell_targets.starfall_pulse=1&buff.celestial_alignment.down
+
+actions.single_target=starsurge,if=charges=3
+actions.single_target+=/starsurge,if=buff.lunar_empowerment.down&eclipse_energy>40
+actions.single_target+=/starsurge,if=buff.solar_empowerment.down&eclipse_energy<-40
+actions.single_target+=/sunfire,if=!talent.balance_of_power.enabled&((remains<solar_max&eclipse_dir.solar)|(buff.solar_peak.up&buff.solar_peak.remains<action.wrath.cast_time))
+actions.single_target+=/sunfire,if=talent.balance_of_power.enabled&(remains<lunar_max+10|remains<action.wrath.cast_time)
+actions.single_target+=/stellar_flare,if=remains<7
+actions.single_target+=/moonfire,if=!talent.euphoria.enabled&!talent.balance_of_power.enabled&((remains<lunar_max&eclipse_dir.lunar)|(buff.lunar_peak.up&buff.lunar_peak.remains<action.starfire.cast_time&remains<eclipse_change+20))
+actions.single_target+=/moonfire,if=talent.euphoria.enabled&((remains<lunar_max&eclipse_dir.lunar)|(buff.lunar_peak.up&buff.lunar_peak.remains<action.starfire.cast_time&remains<eclipse_change+10))
+actions.single_target+=/moonfire,if=talent.balance_of_power.enabled&(remains<solar_max+10|remains<action.starfire.cast_time)
+actions.single_target+=/wrath,if=(eclipse_energy<0&eclipse_change>action.starfire.cast_time)|(eclipse_energy>0&cast_time>eclipse_change)
+actions.single_target+=/starfire
+
+actions.aoe=sunfire,cycle_targets=1,if=remains<8
+actions.aoe+=/starfall,if=spell_targets.starfall_pulse>2&buff.starfall.remains<3
+actions.aoe+=/starfall,if=@eclipse_energy<20&eclipse_dir.lunar&buff.starfall.remains<3&talent.euphoria.enabled
+actions.aoe+=/starfall,if=@eclipse_energy<10&eclipse_dir.lunar&buff.starfall.remains<3&!talent.euphoria.enabled
+actions.aoe+=/moonfire,cycle_targets=1,if=remains<12
+actions.aoe+=/stellar_flare,cycle_targets=1,if=remains<7
+actions.aoe+=/starsurge,if=(buff.lunar_empowerment.down&eclipse_energy>40&charges>1)|charges=3
+actions.aoe+=/starsurge,if=(buff.solar_empowerment.down&eclipse_energy<-40&charges>1)|charges=3
+actions.aoe+=/wrath,if=(eclipse_energy<=0&eclipse_change>action.starfire.cast_time)|(eclipse_energy>0&cast_time>eclipse_change)
+actions.aoe+=/starfire
+
+actions.ca=starsurge,if=(buff.lunar_empowerment.down&eclipse_energy>=0)|(buff.solar_empowerment.down&eclipse_energy<0)
+actions.ca+=/moonfire,cycle_targets=1,if=!dot.moonfire.remains|!dot.sunfire.remains
+actions.ca+=/sunfire,cycle_targets=1,if=!dot.moonfire.remains|!dot.sunfire.remains
+actions.ca+=/starfire,if=eclipse_energy>=0&buff.celestial_alignment.remains>cast_time
+actions.ca+=/wrath,if=buff.celestial_alignment.remains>cast_time
+actions.ca+=/moonfire,cycle_targets=1
+actions.ca+=/sunfire,cycle_targets=1
+
+actions.ca_aoe=starfall,if=buff.starfall.remains<3
+actions.ca_aoe+=/moonfire,cycle_targets=1,if=!dot.moonfire.ticking|!dot.sunfire.ticking
+actions.ca_aoe+=/sunfire,cycle_targets=1,if=!dot.moonfire.ticking|!dot.sunfire.ticking
+actions.ca_aoe+=/starsurge,if=buff.lunar_empowerment.down&eclipse_energy>=0&charges>1
+actions.ca_aoe+=/starsurge,if=buff.solar_empowerment.down&eclipse_energy<0&charges>1
+actions.ca_aoe+=/starfire,if=eclipse_energy>=0&buff.celestial_alignment.remains>cast_time
+actions.ca_aoe+=/wrath,if=buff.celestial_alignment.remains>cast_time
+actions.ca_aoe+=/moonfire,cycle_targets=1
+actions.ca_aoe+=/sunfire,cycle_targets=1
+
+actions.aoe_t18_trinket=starsurge,if=charges=3
+actions.aoe_t18_trinket+=/sunfire,cycle_targets=1,if=remains<8
+actions.aoe_t18_trinket+=/moonfire,cycle_targets=1,if=remains<12
+actions.aoe_t18_trinket+=/starsurge,if=eclipse_energy>40&buff.lunar_empowerment.down
+actions.aoe_t18_trinket+=/starsurge,if=eclipse_energy<-40&buff.solar_empowerment.down
+actions.aoe_t18_trinket+=/wrath,if=(eclipse_energy<0&action.starfire.cast_time<eclipse_change)|(eclipse_energy>0&cast_time>eclipse_change)
+actions.aoe_t18_trinket+=/starfire
+
+actions.cooldowns=incarnation
+actions.cooldowns+=/potion,name=draenic_intellect
+actions.cooldowns+=/Berserking
+actions.cooldowns+=/celestial_alignment
+
+head=oathclaw_helm,id=124261,bonus_id=566
+neck=vial_of_immiscible_liquid,id=124212,bonus_id=566,enchant=75haste
+shoulders=oathclaw_mantle,id=124272,bonus_id=566
+back=shawl_of_sanguinary_ritual,id=124137,bonus_id=566,enchant=100haste
+chest=oathclaw_vestment,id=124246,bonus_id=566
+wrists=manacles_of_the_multitudes,id=124280,bonus_id=566
+hands=felfinger_runegloves,id=124254,bonus_id=566
+waist=waistwrap_of_banishment,id=124276,bonus_id=566
+legs=oathclaw_leggings,id=124267,bonus_id=566
+feet=oppressors_merciless_treads,id=124251,bonus_id=566
+finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=50haste
+finger2=loathful_encrusted_band,id=124192,bonus_id=566,enchant=50haste
+trinket1=iron_reaver_piston,id=124227,bonus_id=566
+trinket2=desecrated_shadowmoon_insignia,id=124228,bonus_id=566
+main_hand=edict_of_argus,id=124382,bonus_id=566,enchant_id=5384
+
+# Gear Summary
+# gear_ilvl=713.00
+# gear_stamina=5386
+# gear_intellect=3902
+# gear_spell_power=2214
+# gear_crit_rating=909
+# gear_haste_rating=1856
+# gear_mastery_rating=2405
+# gear_multistrike_rating=801
+# gear_versatility_rating=108
+# gear_armor=1266
+# set_bonus=tier18_2pc=1
+# set_bonus=tier18_4pc=1

@@ -1,0 +1,104 @@
+druid="Druid_Feral_T18N"
+level=100
+race=night_elf
+timeofday=night
+role=attack
+position=back
+talents=3002002
+glyphs=savage_roar
+spec=feral
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=greater_draenic_agility_flask
+actions.precombat+=/food,type=pickled_eel
+actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
+actions.precombat+=/healing_touch,if=talent.bloodtalons.enabled
+actions.precombat+=/cat_form
+actions.precombat+=/prowl
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion,name=draenic_agility
+actions.precombat+=/incarnation
+
+# Executed every time the actor is available.
+
+actions=cat_form
+actions+=/wild_charge
+actions+=/displacer_beast,if=movement.distance>10
+actions+=/dash,if=movement.distance&buff.displacer_beast.down&buff.wild_charge_movement.down
+actions+=/rake,if=buff.prowl.up|buff.shadowmeld.up
+actions+=/auto_attack
+actions+=/skull_bash
+actions+=/force_of_nature,if=charges=3|trinket.proc.all.react|target.time_to_die<20
+actions+=/berserk,if=buff.tigers_fury.up&(buff.incarnation.up|!talent.incarnation_king_of_the_jungle.enabled)
+actions+=/potion,name=draenic_agility,if=(buff.berserk.remains>10&(target.time_to_die<180|(trinket.proc.all.react&target.health.pct<25)))|target.time_to_die<=40
+actions+=/blood_fury,sync=tigers_fury
+actions+=/berserking,sync=tigers_fury
+actions+=/arcane_torrent,sync=tigers_fury
+actions+=/tigers_fury,if=(!buff.omen_of_clarity.react&energy.deficit>=60)|energy.deficit>=80|(t18_class_trinket&buff.berserk.up&buff.tigers_fury.down)
+actions+=/incarnation,if=cooldown.berserk.remains<10&energy.time_to_max>1
+# Keep Rip from falling off during execute range.
+actions+=/ferocious_bite,cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<3&target.health.pct<25
+actions+=/healing_touch,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&((combo_points>=4&!set_bonus.tier18_4pc)|combo_points=5|buff.predatory_swiftness.remains<1.5)
+actions+=/savage_roar,if=buff.savage_roar.down
+actions+=/thrash_cat,if=set_bonus.tier18_4pc&buff.omen_of_clarity.react&remains<4.5&combo_points+buff.bloodtalons.stack!=6
+actions+=/pool_resource,for_next=1
+actions+=/thrash_cat,cycle_targets=1,if=remains<4.5&(spell_targets.thrash_cat>=2&set_bonus.tier17_2pc|spell_targets.thrash_cat>=4)
+actions+=/call_action_list,name=finisher,if=combo_points=5
+actions+=/savage_roar,if=buff.savage_roar.remains<gcd
+actions+=/call_action_list,name=maintain,if=combo_points<5
+actions+=/pool_resource,for_next=1
+actions+=/thrash_cat,cycle_targets=1,if=remains<4.5&spell_targets.thrash_cat>=2
+actions+=/call_action_list,name=generator,if=combo_points<5
+
+actions.finisher=rip,cycle_targets=1,if=remains<2&target.time_to_die-remains>18&(target.health.pct>25|!dot.rip.ticking)
+actions.finisher+=/ferocious_bite,cycle_targets=1,max_energy=1,if=target.health.pct<25&dot.rip.ticking
+actions.finisher+=/rip,cycle_targets=1,if=remains<7.2&persistent_multiplier>dot.rip.pmultiplier&target.time_to_die-remains>18
+actions.finisher+=/rip,cycle_targets=1,if=remains<7.2&persistent_multiplier=dot.rip.pmultiplier&(energy.time_to_max<=1|(set_bonus.tier18_4pc&energy>50)|(set_bonus.tier18_2pc&buff.omen_of_clarity.react)|!talent.bloodtalons.enabled)&target.time_to_die-remains>18
+actions.finisher+=/savage_roar,if=((set_bonus.tier18_4pc&energy>50)|(set_bonus.tier18_2pc&buff.omen_of_clarity.react)|energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)&buff.savage_roar.remains<12.6
+actions.finisher+=/ferocious_bite,max_energy=1,if=(set_bonus.tier18_4pc&energy>50)|(set_bonus.tier18_2pc&buff.omen_of_clarity.react)|energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3
+
+actions.maintain=shadowmeld,if=energy>=35&dot.rake.pmultiplier<2.1&buff.tigers_fury.up&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>18)&!buff.incarnation.up
+actions.maintain+=/rake,cycle_targets=1,if=remains<3&((target.time_to_die-remains>3&spell_targets.swipe<3)|target.time_to_die-remains>6)
+actions.maintain+=/rake,cycle_targets=1,if=remains<4.5&(persistent_multiplier>=dot.rake.pmultiplier|(talent.bloodtalons.enabled&(buff.bloodtalons.up|!buff.predatory_swiftness.up)))&((target.time_to_die-remains>3&spell_targets.swipe<3)|target.time_to_die-remains>6)
+actions.maintain+=/moonfire_cat,cycle_targets=1,if=remains<4.2&spell_targets.swipe<=5&target.time_to_die-remains>tick_time*5
+actions.maintain+=/rake,cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&spell_targets.swipe=1&((target.time_to_die-remains>3&spell_targets.swipe<3)|target.time_to_die-remains>6)
+
+actions.generator=swipe,if=spell_targets.swipe>=4|(spell_targets.swipe>=3&buff.incarnation.down)
+actions.generator+=/shred,if=spell_targets.swipe<3|(spell_targets.swipe=3&buff.incarnation.up)
+
+head=oathclaw_helm,id=124261
+neck=choker_of_the_great_betrayer,id=124210,enchant_id=5317
+shoulders=oathclaw_mantle,id=124272
+back=cloak_of_desperate_temerity,id=124134,enchant_id=5310
+chest=tunic_of_the_soulbinder,id=124245
+wrists=manacles_of_the_multitudes,id=124280
+hands=oathclaw_gauntlets,id=124255
+waist=waistwrap_of_banishment,id=124276
+legs=oathclaw_leggings,id=124267
+feet=spiked_irontoe_slippers,id=124249
+finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant_id=5324
+finger2=portal_key_signet,id=124189,enchant_id=5324
+trinket1=seed_of_creation,id=124514
+trinket2=soul_capacitor,id=124225,initial_cd=4.5
+main_hand=xutenash_glaive_of_ruin,id=124378,enchant_id=5330
+
+# Gear Summary
+# gear_ilvl=699.00
+# gear_agility=3477
+# gear_stamina=4648
+# gear_crit_rating=1569
+# gear_haste_rating=107
+# gear_mastery_rating=926
+# gear_multistrike_rating=1666
+# gear_versatility_rating=128
+# gear_armor=1151
+# set_bonus=tier18_2pc=1
+# set_bonus=tier18_4pc=1
