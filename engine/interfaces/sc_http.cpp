@@ -40,7 +40,7 @@ namespace { // UNNAMED NAMESPACE ==========================================
 
 http::proxy_t proxy;
 
-const bool HTTP_CACHE_DEBUG = true;
+const bool HTTP_CACHE_DEBUG = false;
 const std::string UA_STR = "Simulationcraft/" + std::string( SC_VERSION );
 
 mutex_t cache_mutex;
