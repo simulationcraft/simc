@@ -29,7 +29,7 @@ addons:
       - valgrind
       - g++-5
       - bats
-      - libcurl4
+      - libcurl3
       - libcurl4-openssl-dev
 
 #env:
