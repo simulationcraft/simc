@@ -3904,7 +3904,7 @@ struct rip_t : public cat_attack_t
   {
     timespan_t t = cat_attack_t::composite_dot_duration( s );
 
-    return t *= p()->resources.current[ RESOURCE_COMBO_POINT ];
+    return t *= ( p()->resources.current[ RESOURCE_COMBO_POINT ] + 1 );
 
     return t;
   }
