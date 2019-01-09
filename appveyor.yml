@@ -3,8 +3,8 @@
 # Syntax for this file:
 # http://www.appveyor.com/docs/appveyor-yml
 
-environment:
-  matrix:
+#environment:
+#  matrix:
 #  - image: Visual Studio 2015
 #    varProject: vs/simc_vs2015.vcxproj
 
