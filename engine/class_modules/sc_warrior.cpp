@@ -5215,12 +5215,12 @@ void warrior_t::apl_prot()
     prot->add_action( "potion,if=target.time_to_die<25" );
   }
 
-  prot->add_action( this, "Battle Cry", "if=cooldown.shield_slam.remains=0" );
   prot->add_action( this, "Avatar" );
   prot->add_action( this, "Demoralizing Shout" );
   prot->add_action( this, "Ravager", "if=talent.ravager.enabled" );
   prot->add_action( this, "Shield Block", "if=cooldown.shield_slam.remains=0" );
   prot->add_action( this, "Ignore Pain" );
+  prot->add_action( this, "Thunder Clap", "if=(debuff.demoralizing_shout_debuff.up&azerite.deafening_crash.enabled)" );
   prot->add_action( this, "Shield Slam" );
   prot->add_action( this, "Revenge",
                     "if=(!talent.vengeance.enabled)|(talent.vengeance.enabled&buff.revenge.react&!buff.vengeance_"
@@ -5739,11 +5739,13 @@ std::string warrior_t::default_potion() const
                       : ( true_level >= 85 ) ? "mogu_power" : ( true_level >= 80 ) ? "golemblood_potion" : "disabled";
 
   std::string protection_pot =
-      ( true_level > 100 )
-          ? "old_war"
-          : ( true_level >= 90 )
-                ? "draenic_strength"
-                : ( true_level >= 85 ) ? "mogu_power" : ( true_level >= 80 ) ? "golemblood_potion" : "disabled";
+      ( true_level > 110 )
+          ? "battle_potion_of_strength"
+          : ( true_level > 100 )
+                ? "old_war"
+                : ( true_level >= 90 )
+                      ? "draenic_strength"
+                      : ( true_level >= 85 ) ? "mogu_power" : ( true_level >= 80 ) ? "golemblood_potion" : "disabled";
 
   switch ( specialization() )
   {
@@ -5796,12 +5798,15 @@ std::string warrior_t::default_food() const
                                                 ? "sea_mist_rice_noodles"
                                                 : ( true_level >= 80 ) ? "seafood_magnifique_feast" : "disabled";
 
-  std::string protection_food =
-      ( true_level > 100 )
-          ? "lavish_suramar_feast"
-          : ( true_level > 90 ) ? "buttered_sturgeon"
-                                : ( true_level >= 85 ) ? "sea_mist_rice_noodles"
-                                                       : ( true_level >= 80 ) ? "seafood_magnifique_feast" : "disabled";
+  std::string protection_food = ( true_level > 110 )
+                              ? "bountiful_captains_feast"
+                              : ( true_level > 100 )
+                                    ? "the_hungry_magister"
+                                    : ( true_level > 90 )
+                                          ? "buttered_sturgeon"
+                                          : ( true_level >= 85 )
+                                                ? "sea_mist_rice_noodles"
+                                                : ( true_level >= 80 ) ? "seafood_magnifique_feast" : "disabled";
 
   switch ( specialization() )
   {
@@ -5832,11 +5837,9 @@ void warrior_t::init_action_list()
   {
     if ( !quiet )
     {
-      sim->error( "Player {}'s role ({}) or spec({}) is currently not supported.", name(),
+      sim->error( "Player {}'s role ({}) or spec({}) is currently not well supported.", name(),
                   util::role_type_string( primary_role() ), util::specialization_string( specialization() ) );
     }
-    quiet = true;
-    return;
   }
 
   if ( !action_list_str.empty() )
