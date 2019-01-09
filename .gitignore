@@ -110,3 +110,4 @@ gui/*_resource*
 .idea/
 .ycm_*
 dbc_extract3/cache/live/DBCache.bin
+engine/.vimrc
