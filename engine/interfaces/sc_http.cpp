@@ -22,21 +22,28 @@ void cache_load( const std::string&) {}
 void cache_save( const std::string&) {}
 bool clear_cache( sim_t*, const std::string&, const std::string&) { return true;}
 
-bool get( std::string&, const std::string&, const std::string&, cache::behavior_e,
-          const std::string&) { return false; };
+int get( std::string& /*result */,
+         const std::string& /* url */,
+         cache::behavior_e /* caching */,
+         const std::string& /* confirmation */,
+         const std::vector<std::string>& /* headers */ )
+{
+  return 503;
+}
 }
 
 #else
+
+#include <curl/curl.h>
 
 namespace { // UNNAMED NAMESPACE ==========================================
 
 http::proxy_t proxy;
 
-const bool HTTP_CACHE_DEBUG = false;
+const bool HTTP_CACHE_DEBUG = true;
+const std::string UA_STR = "Simulationcraft/" + std::string( SC_VERSION );
 
 mutex_t cache_mutex;
-
-const unsigned int NETBUFSIZE = 1 << 15;
 
 struct url_cache_entry_t
 {
@@ -50,8 +57,208 @@ struct url_cache_entry_t
   {}
 };
 
+class curl_handle_cache_t;
+
+class curl_handle_t
+{
+  CURL*                m_handle;
+  curl_slist*          m_header_opts;
+
+  std::string          m_buffer;
+  std::unordered_map<std::string, std::string> m_headers;
+  char                 m_error[ CURL_ERROR_SIZE ];
+
+  size_t read_data( const char* data_in, size_t total_bytes )
+  {
+    m_buffer.append( data_in, total_bytes );
+    return total_bytes;
+  }
+
+  size_t add_response_header( const char* header_str, size_t total_bytes )
+  {
+    std::string header = std::string( header_str, total_bytes );
+    // Find first ':'
+    auto pos = header.find( ':' );
+    // Don't support foldable headers since they are deprecated anyhow
+    if ( pos == std::string::npos || header[ 0 ] == ' ' )
+    {
+      return total_bytes;
+    }
+
+    std::string key = header.substr( 0, pos );
+    std::string value = header.substr( pos + 1 );
+
+    // Transform all header keys to lowercase to sanitize the input
+    std::transform( key.begin(), key.end(), key.begin(), tolower );
+
+    // Prune whitespaces from values
+    while ( value.back() == ' ' || value.back() == '\n' ||
+            value.back() == '\t' || value.back() == '\r' )
+    {
+      value.pop_back();
+    }
+
+    while ( value.front() == ' ' )
+    {
+      value.erase( value.begin() );
+    }
+
+    m_headers[ key ] = value;
+
+    return total_bytes;
+  }
+public:
+  static size_t data_cb( void* contents, size_t size, size_t nmemb, void* usr )
+  {
+    curl_handle_t* obj = reinterpret_cast<curl_handle_t*>( usr );
+    return obj->read_data( reinterpret_cast<const char*>( contents ), size * nmemb );
+  }
+
+  static size_t header_cb( char* contents, size_t size, size_t nmemb, void* usr )
+  {
+    curl_handle_t* obj = reinterpret_cast<curl_handle_t*>( usr );
+    return obj->add_response_header( contents, size * nmemb );
+  }
+
+  curl_handle_t() : m_handle( nullptr ), m_header_opts( nullptr )
+  {
+    m_error[ 0 ] = '\0';
+  }
+
+  curl_handle_t( CURL* handle ) : m_handle( handle ), m_header_opts( nullptr )
+  {
+    m_error[ 0 ] = '\0';
+
+    curl_easy_setopt( handle, CURLOPT_HEADERFUNCTION, header_cb );
+    curl_easy_setopt( handle, CURLOPT_WRITEFUNCTION, data_cb );
+    curl_easy_setopt( handle, CURLOPT_HEADERDATA, reinterpret_cast<void*>( this ) );
+    curl_easy_setopt( handle, CURLOPT_WRITEDATA, reinterpret_cast<void*>( this ) );
+    curl_easy_setopt( handle, CURLOPT_ERRORBUFFER, m_error );
+  }
+
+  // Curl handle object
+  CURL* handle() const
+  { return m_handle; }
+
+  // Curl descriptive error (when fetch() returns != CURLE_OK)
+  std::string error() const
+  { return { m_error }; }
+
+  // Response body
+  const std::string& result() const
+  { return m_buffer; }
+
+  // Response headers
+  const std::unordered_map<std::string, std::string>& headers() const
+  { return m_headers; }
+
+  void add_request_headers( const std::vector<std::string>& headers )
+  {
+    range::for_each( headers, [ this ]( const std::string& header ) {
+      m_header_opts = curl_slist_append( m_header_opts, header.c_str() );
+    } );
+
+    curl_easy_setopt( m_handle, CURLOPT_HTTPHEADER, m_header_opts );
+  }
+
+  void add_request_header( const std::string& header )
+  {
+    m_header_opts = curl_slist_append( m_header_opts, header.c_str() );
+    curl_easy_setopt( m_handle, CURLOPT_HTTPHEADER, m_header_opts );
+  }
+
+  // Fetch an url
+  CURLcode fetch( const std::string& url ) const
+  {
+    curl_easy_setopt( m_handle, CURLOPT_URL, url.c_str() );
+    return curl_easy_perform( m_handle );
+  }
+
+  int response_code() const
+  {
+    long response_code = 0;
+    curl_easy_getinfo( m_handle, CURLINFO_RESPONSE_CODE, &response_code );
+    return as<int>( response_code );
+  }
+
+  ~curl_handle_t();
+};
+
+class curl_handle_cache_t
+{
+  CURL* m_handle = nullptr;
+
+public:
+  curl_handle_cache_t()
+  {
+    curl_global_init( CURL_GLOBAL_ALL );
+  }
+
+  curl_handle_t get()
+  {
+    if ( !m_handle )
+    {
+      bool ssl_proxy = ( proxy.type == "https" );
+      bool use_proxy = ( ssl_proxy || proxy.type == "http" );
+
+      m_handle = curl_easy_init();
+      if ( !m_handle )
+      {
+        return {};
+      }
+
+      if ( HTTP_CACHE_DEBUG )
+      {
+        curl_easy_setopt( m_handle, CURLOPT_VERBOSE, 1L);
+      }
+
+      curl_easy_setopt( m_handle, CURLOPT_TIMEOUT, 15L );
+      curl_easy_setopt( m_handle, CURLOPT_FOLLOWLOCATION, 1L );
+      curl_easy_setopt( m_handle, CURLOPT_MAXREDIRS, 5L );
+      curl_easy_setopt( m_handle, CURLOPT_ACCEPT_ENCODING, "");
+      curl_easy_setopt( m_handle, CURLOPT_USERAGENT, UA_STR.c_str() );
+
+      if ( use_proxy )
+      {
+        char error_buffer[ CURL_ERROR_SIZE ];
+        error_buffer[ 0 ] = '\0';
+        auto ret = curl_easy_setopt( m_handle, CURLOPT_PROXYTYPE,
+            ssl_proxy ? CURLPROXY_HTTPS : CURLPROXY_HTTP );
+        if ( ret != CURLE_OK )
+        {
+          std::cerr << "Unable setup proxy (" << error_buffer << ")" << std::endl;
+          curl_easy_cleanup( m_handle );
+          m_handle = nullptr;
+          return {};
+        }
+
+        curl_easy_setopt( m_handle, CURLOPT_PROXY, proxy.host.c_str() );
+        curl_easy_setopt( m_handle, CURLOPT_PROXYPORT, proxy.port );
+      }
+    }
+
+    return { m_handle };
+  }
+
+  ~curl_handle_cache_t()
+  {
+    curl_easy_cleanup( m_handle );
+    curl_global_cleanup();
+  }
+};
+
+curl_handle_t::~curl_handle_t()
+{
+  // Reset headers before giving the handle to the user
+  curl_easy_setopt( m_handle, CURLOPT_HTTPHEADER, nullptr );
+  // Free headers
+  curl_slist_free_all( m_header_opts );
+}
+
 typedef std::unordered_map<std::string, url_cache_entry_t> url_db_t;
 url_db_t url_db;
+
+curl_handle_cache_t curl_db;
 
 // cache_clear ==============================================================
 
@@ -62,18 +269,6 @@ void cache_clear()
   url_db.clear();
 }
 
-const char* const cookies =
-  "Cookie: loginChecked=1\r\n"
-  "Cookie: cookieLangId=en_US\r\n"
-  // Skip arenapass 2011 advertisement .. can we please have a sensible
-  // API soon?
-  "Cookie: int-WOW=1\r\n"
-  "Cookie: int-WOW-arenapass2011=1\r\n"
-  "Cookie: int-WOW-epic-savings-promo=1\r\n"
-  "Cookie: int-WOW-anniversary=1\r\n"
-  "Cookie: int-EuropeanInvitational2011=1\r\n"
-  "Cookie: int-dec=1\r\n";
-
 #if defined( NO_HTTP )
 
 // ==========================================================================
@@ -82,686 +277,78 @@ const char* const cookies =
 
 // download =================================================================
 
-bool download( url_cache_entry_t&,
-                      const std::string& )
+bool download( url_cache_entry_t&, std::string&, const std::string&,
+               const std::vector<std::string>& = {} )
 {
   return false;
 }
 
-#elif defined( SC_WINDOWS )
-
-// ==========================================================================
-// HTTP-DOWNLOAD FOR WINDOWS
-// ==========================================================================
-#include <windows.h>
-#include <wininet.h>
+#else
 
 // download =================================================================
 
-bool download( url_cache_entry_t& entry,
-                      const std::string& url )
+int download( url_cache_entry_t&              entry,
+              std::string&                    result,
+              const std::string&              url,
+              const std::vector<std::string>& headers = {} )
 {
-  // Requires cache_mutex to be held.
-
-  class InetWrapper : private noncopyable
+  auto handle = curl_db.get();
+  // Curl was not able to initialize, get out instantly
+  if ( !handle.handle() )
   {
-  public:
-    HINTERNET handle;
-
-    explicit InetWrapper( HINTERNET handle_ ) : handle( handle_ ) {}
-    ~InetWrapper() { if ( handle ) InternetCloseHandle( handle ); }
-    operator HINTERNET () const { return handle; }
-  };
-
-  static HINTERNET hINet;
-  if ( !hINet )
-  {
-    // hINet = InternetOpen( L"simulationcraft", INTERNET_OPEN_TYPE_PROXY, "proxy-server", NULL, 0 );
-    hINet = InternetOpenW( L"simulationcraft", INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0 );
-    if ( ! hINet )
-      return false;
+    std::cerr << "Unable to initialize CURL" << std::endl;
+    return 500;
   }
 
-  std::wstring headers = io::widen( cookies );
+  handle.add_request_headers( headers );
 
-  if ( ! entry.last_modified_header.empty() )
+  // Add If-Modified-Since
+  if ( !entry.last_modified_header.empty() )
   {
-    headers += L"If-Modified-Since: ";
-    headers += io::widen( entry.last_modified_header );
-    headers += L"\r\n";
+    handle.add_request_header( ( "If-Modified-Since: " + entry.last_modified_header ).c_str() );
   }
 
-  InetWrapper hFile( InternetOpenUrlW( hINet, io::widen( url ).c_str(), headers.data(), static_cast<DWORD>( headers.length() ),
-                                       INTERNET_FLAG_RELOAD | INTERNET_FLAG_NO_CACHE_WRITE, 0 ) );
-  if ( ! hFile )
-    return false;
+  auto res = handle.fetch( url );
+  int response_code = handle.response_code();
 
-  union
+  if ( res != CURLE_OK )
   {
-    char *chars;
-    wchar_t *wchars;
-  } buffer;
-  buffer.chars = ( char * ) malloc( NETBUFSIZE );
-  buffer.wchars = ( wchar_t * ) malloc( ( NETBUFSIZE + 1 ) / 2 );
-  if ( buffer.chars != NULL )
+    std::cerr << "Unable to fetch result (" << handle.error() << ")" << std::endl;
+    return handle.response_code();
+  }
+
+  // Unconditionally return response body
+  result.assign( handle.result() );
+
+  // Cache results on successful fetch
+  if ( response_code == 200 )
   {
-    buffer.chars[0] = '\0';
-    DWORD amount = sizeof( buffer );
-    if ( !HttpQueryInfoA( hFile, HTTP_QUERY_STATUS_CODE, buffer.chars, &amount, 0 ) )
-      return false;
-
-    if ( !std::strcmp( buffer.chars, "304" ) )
-    {
-      entry.validated = cache::era();
-      return true;
-    }
-
-    entry.result.clear();
-    while ( InternetReadFile( hFile, buffer.chars, sizeof( buffer ), &amount ) )
-    {
-      if ( amount == 0 )
-        break;
-      entry.result.append( buffer.chars, buffer.chars + amount );
-    }
-
-    entry.modified = entry.validated = cache::era();
-
     entry.last_modified_header.clear();
-    amount = sizeof( buffer );
-    DWORD index = 0;
-    if ( buffer.wchars != NULL )
-    {
-      if ( HttpQueryInfoW( hFile, HTTP_QUERY_LAST_MODIFIED, buffer.wchars, &amount, &index ) )
-        entry.last_modified_header = io::narrow( buffer.wchars );
-    }
 
-    free( buffer.chars );
+    entry.result.assign( handle.result() );
+
+    auto response_headers = handle.headers();
+    if ( response_headers.find( "last-modified" ) != response_headers.end() )
+    {
+      entry.last_modified_header = response_headers[ "last-modified" ];
+    }
+    entry.validated = cache::era();
+    entry.modified = cache::era();
   }
-  return true;
+  // Re-use cached copy, validate the cache
+  else if ( response_code == 304 )
+  {
+    entry.validated = cache::era();
+
+    result.assign( entry.result );
+    // Everything is ok so return 200 instead of 304
+    response_code = 200;
+  }
+
+  return response_code;
 }
 
-#else
-
-// ==========================================================================
-// HTTP-DOWNLOAD FOR POSIX COMPLIANT PLATFORMS
-// ==========================================================================
-
-#if defined( SC_MINGW )
-// Keep this code compiling on MinGW just for the hell of it.
-#include <windows.h>
-#include <wininet.h>
-#include <Winsock2.h>
-#include <io.h> // for POSIX ::close
-
-#else
-
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netdb.h>
-#include <unistd.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-
-#endif
-
-struct SocketWrapper
-{
-  int fd;
-
-  SocketWrapper() : fd( -1 ) {}
-  ~SocketWrapper() { if ( fd >= 0 ) ::close( fd ); }
-
-  operator int () const { return fd; }
-
-  int connect( const std::string& host, unsigned short port );
-
-  int send( const char* buf, std::size_t size )
-  { return ::send( fd, buf, size, 0 ); }
-
-  int recv( char* buf, std::size_t size )
-  { return ::recv( fd, buf, size, 0 ); }
-
-  void close()
-  { ::close( fd ); fd = -1; }
-};
-
-int SocketWrapper::connect( const std::string& host, unsigned short port )
-{
-  struct hostent* h;
-  sockaddr_in a;
-
-  a.sin_family = AF_INET;
-
-  if ( proxy.type == "http" || proxy.type == "https" )
-  {
-    h = gethostbyname( proxy.host.c_str() );
-    a.sin_port = htons( proxy.port );
-  }
-  else
-  {
-    h = gethostbyname( host.c_str() );
-    a.sin_port = htons( port );
-  }
-  if ( ! h ) return -1;
-
-  if ( ( fd = ::socket( PF_INET, SOCK_STREAM, IPPROTO_TCP ) ) < 0 )
-    return -1;
-
-  std::memcpy( &a.sin_addr, h -> h_addr_list[ 0 ], sizeof( a.sin_addr ) );
-
-  return ::connect( fd, reinterpret_cast<const sockaddr*>( &a ), sizeof( a ) );
-}
-
-#if defined( SC_USE_OPENSSL )
-#include <openssl/ssl.h>
-
-struct SSLWrapper
-{
-  static SSL_CTX* ctx;
-
-  static void init()
-  {
-    if ( ! ctx )
-    {
-      SSL_library_init();
-      ctx = SSL_CTX_new( SSLv23_client_method() );
-      SSL_CTX_set_mode( ctx, SSL_MODE_AUTO_RETRY );
-    }
-  }
-
-  SSL* s;
-  SSLWrapper() : s( SSL_new( ctx ) ) {}
-
-  ~SSLWrapper() { if ( s ) close(); }
-
-  int open( int fd, const char* /* peer_name */, size_t /* peer_name_len */ )
-  { return ( ! SSL_set_fd( s, fd ) || SSL_connect( s ) <= 0 ) ? -1 : 0; }
-
-  int read( char* buffer, std::size_t size )
-  { return SSL_read( s, buffer, size ); }
-
-  int write( const char* buffer, std::size_t size )
-  { return SSL_write( s, buffer, size ); }
-
-  void close()
-  { SSL_shutdown( s ); SSL_free( s ); s = 0; }
-};
-
-SSL_CTX* SSLWrapper::ctx = 0;
-#elif defined( SC_OSX )
-#include <Security/Security.h>
-
-struct SSLWrapper
-{
-  static OSStatus do_read( SSLConnectionRef connection, void* data, size_t* data_len )
-  {
-    OSStatus rval = noErr;
-
-    assert( reinterpret_cast<int64_t>( connection ) <= std::numeric_limits<int>::max() );
-    int socket = ( int64_t ) connection;
-    if ( socket == -1 )
-    {
-      return errSSLProtocol;
-    }
-
-    fd_set read_set;
-    struct timeval tv;
-    size_t bytes_read = 0;
-    int n_timeout = 0;
-
-    do
-    {
-      // Timeout after 5 seconds
-      if ( n_timeout == 50 )
-      {
-        rval = errSSLProtocol;
-        break;
-      }
-
-      FD_ZERO( &( read_set ) );
-      FD_SET( socket, &read_set );
-
-      memset( &tv, 0, sizeof( tv ) );
-      tv.tv_usec = 100000;
-
-      int select_rval = select( socket + 1, &( read_set ), NULL, NULL, &( tv ) );
-      // Timeout
-      if ( select_rval == 0 )
-      {
-        ++n_timeout;
-        continue;
-      }
-      // Error, except EAGAIN
-      else if ( select_rval == -1 )
-      {
-        if ( errno == EAGAIN )
-        {
-          ++n_timeout;
-          continue;
-        }
-        else
-        {
-          rval = errSSLProtocol;
-          break;
-        }
-      }
-
-      int n_recv_eagain = 0;
-      do
-      {
-        // Pathological problem, give up
-        if ( n_recv_eagain == 50 )
-        {
-          rval = errSSLProtocol;
-          break;
-        }
-
-        ssize_t recv_rval = recv( socket, static_cast<char*>( data ) + bytes_read, *data_len - bytes_read, 0 );
-        // EOF
-        if ( recv_rval == 0 )
-        {
-          rval = errSSLClosedGraceful;
-        }
-        else if ( recv_rval == -1 )
-        {
-          if ( errno == EAGAIN )
-          {
-            n_recv_eagain++;
-            continue;
-          }
-          else
-          {
-            rval = errSSLProtocol;
-            break;
-          }
-        }
-
-        bytes_read += recv_rval;
-        break;
-      } while ( true );
-
-    } while ( rval == noErr && bytes_read < *data_len );
-
-    *data_len = bytes_read;
-
-    return rval;
-  }
-
-  static OSStatus do_write( SSLConnectionRef connection, const void* data, size_t* data_len )
-  {
-    assert( reinterpret_cast<int64_t>( connection ) <= std::numeric_limits<int>::max() );
-    int socket = ( int64_t ) connection;
-    if ( socket == -1 )
-    {
-      return errSSLProtocol;
-    }
-
-    size_t bytes_sent = 0;
-    int n_eagain = 0;
-    do
-    {
-      if ( n_eagain == 50 )
-      {
-        return errSSLProtocol;
-      }
-
-      ssize_t ret = send( socket, data, *data_len, 0 );
-      if ( ret == -1 )
-      {
-        if ( errno == EAGAIN )
-        {
-          ++n_eagain;
-          continue;
-        }
-        else
-        {
-          return errSSLProtocol;
-        }
-      }
-
-      bytes_sent = ret;
-    } while ( bytes_sent < *data_len );
-
-    *data_len = static_cast<size_t>( bytes_sent );
-
-    return noErr;
-  }
-
-  SSLContextRef ctx;
-  int socket;
-
-  SSLWrapper() : socket( -1 )
-  {
-#if __MAC_OS_X_VERSION_MIN_REQUIRED < 1080
-    if ( SSLNewContext( false, &ctx ) < 0 )
-    {
-      return;
-    }
-#else
-    ctx = SSLCreateContext( NULL, kSSLClientSide, kSSLStreamType );
-#endif
-    assert( ctx );
-
-    OSStatus ret = SSLSetIOFuncs( ctx, &SSLWrapper::do_read, &SSLWrapper::do_write );
-    if ( ret != noErr )
-    {
-      std::cerr << "SSLSetIOFuncs error: " << ret << std::endl;
-    }
-  }
-
-  ~SSLWrapper()
-  {
-    close();
-  }
-
-  int open( int fd, const char* peer_name, size_t peer_name_len )
-  {
-    OSStatus ret = SSLSetConnection( ctx, reinterpret_cast<SSLConnectionRef>( fd ) );
-    if ( ret != noErr )
-    {
-      std::cerr << "SSLSetConnection error: " << ret << std::endl;
-      return ret;
-    }
-
-    ret = SSLSetPeerDomainName( ctx, peer_name, peer_name_len );
-    if ( ret != noErr )
-    {
-      std::cerr << "SSLSetPeerDomainName error: " << ret << std::endl;
-      return ret;
-    }
-
-    ret = SSLHandshake( ctx );
-    if ( ret != noErr )
-    {
-      std::cerr << "SSLHandshake error: " << ret << std::endl;
-      return ret;
-    }
-
-    socket = fd;
-
-    return 0;
-  }
-
-
-  int read( char* buffer, std::size_t size )
-  {
-    size_t read_bytes = 0;
-
-    OSStatus ret = SSLRead( ctx, buffer, size, &read_bytes );
-    if ( ret != noErr && ret != errSSLClosedGraceful )
-    {
-      std::cerr << "SSLRead error: " << ret << std::endl;
-      return ret;
-    }
-
-    return static_cast<int>( read_bytes );
-  }
-
-  int write( const char* buffer, std::size_t size )
-  {
-    size_t written_bytes = 0;
-
-    OSStatus ret = SSLWrite( ctx, buffer, size, &written_bytes );
-    if ( ret != noErr && ret != errSSLClosedGraceful )
-    {
-      std::cerr << "SSLWrite error: " << ret << std::endl;
-      return ret;
-    }
-
-    return static_cast<int>( written_bytes );
-  }
-
-  void close()
-  {
-    SSLClose( ctx );
-#if __MAC_OS_X_VERSION_MIN_REQUIRED < 1080
-    SSLDisposeContext( ctx );
-#else
-    CFRelease( ctx );
-#endif
-  }
-};
-#endif
-
-// parse_url ================================================================
-
-struct url_t
-{
-  std::string protocol;
-  std::string host;
-  unsigned short port;
-  std::string path;
-
-  static bool split( url_t& split, const std::string& url );
-};
-
-bool url_t::split( url_t&             split,
-                   const std::string& url )
-{
-  typedef std::string::size_type pos_t;
-
-  pos_t pos = url.find_first_of( ':' );
-  if ( pos == url.npos || pos + 2 > url.length() ||
-       url[ pos + 1 ] != '/' || url[ pos + 2 ] != '/' )
-    return false;
-  split.protocol.assign( url, 0, pos );
-
-  pos += 3;
-  pos_t end = url.find_first_of( ":/", pos );
-  split.host.assign( url, pos, end - pos );
-  pos = end;
-
-  if ( split.protocol == "https" )
-    split.port = 443;
-  else
-    split.port = 80;
-
-  split.path = '/';
-  if ( pos >= url.length() )
-    return true;
-
-  if ( url[ pos ] == ':' )
-  {
-    ++pos;
-    split.port = static_cast<unsigned short>( strtol( &url[ pos ], nullptr, 10 ) );
-    pos = url.find_first_of( '/', pos );
-    if ( pos == url.npos )
-      return true;
-  }
-
-  ++pos;
-  split.path.append( url, pos, url.npos );
-  return true;
-}
-
-// build_request ============================================================
-
-std::string build_request( const url_t&       url,
-                                  const std::string& last_modified )
-{
-  // reference : http://tools.ietf.org/html/rfc2616#page-36
-  std::stringstream request;
-  bool use_proxy = ( proxy.type == "http" || proxy.type == "https" );
-
-  request << "GET ";
-
-  if ( use_proxy )
-  {
-    request << url.protocol << "://" << url.host;
-
-    // append port info only if not the standard port
-    if ( url.port != 80 )
-      request << ':' << url.port;
-  }
-
-  request << url.path << " HTTP/1.0\r\n"
-          "User-Agent: Firefox/3.0\r\n"
-          "Accept: */*\r\n";
-
-  if ( ! use_proxy )
-    request << "Host: " << url.host << "\r\n";
-
-  request << cookies;
-
-  if ( ! last_modified.empty() )
-    request << "If-Modified-Since: " << last_modified << "\r\n";
-
-  request << "Connection: close\r\n"
-          "\r\n";
-
-  return request.str();
-}
-
-// download =================================================================
-
-bool download( url_cache_entry_t& entry,
-                      const std::string& url )
-{
-#if defined( SC_MINGW )
-
-  static bool initialized = false;
-  if ( ! initialized )
-  {
-    WSADATA wsa_data;
-    WSAStartup( MAKEWORD( 2, 2 ), &wsa_data );
-    initialized = true;
-  }
-
-#endif
-
-#if defined( SC_USE_OPENSSL )
-  SSLWrapper::init();
-#endif
-
-  std::string current_url = url;
-  unsigned int redirect = 0;
-  static const unsigned int redirect_max = 8;
-  bool ssl_proxy = ( proxy.type == "https" );
-  const bool use_proxy = ( ssl_proxy || proxy.type == "http" );
-
-  url_t split_url;
-  if ( ! url_t::split( split_url, current_url ) )
-    return false;
-
-  // get a page and if we find a redirect update current_url and loop
-  while ( true )
-  {
-    bool use_ssl = ssl_proxy || ( ! use_proxy && ( split_url.protocol == "https" ) );
-#if ! defined( SC_USE_OPENSSL ) && ! defined( SC_OSX )
-    if ( use_ssl )
-    {
-      // FIXME: report unable to use SSL
-      return false;
-    }
-#endif
-
-    SocketWrapper s;
-    if ( s.connect( split_url.host, split_url.port ) < 0 )
-      return false;
-
-    std::string request = build_request( split_url, entry.last_modified_header );
-
-    std::string result;
-    char buffer[ NETBUFSIZE ];
-
-#if defined( SC_USE_OPENSSL ) || defined( SC_OSX )
-    if ( use_ssl )
-    {
-      SSLWrapper ssl;
-
-      if ( ssl.open( s, split_url.host.c_str(), split_url.host.size() ) < 0 )
-      {
-        return false;
-      }
-
-      if ( ssl.write( request.data(), request.size() ) != static_cast<int>( request.size() ) )
-        return false;
-
-      while ( true )
-      {
-        int r = ssl.read( buffer, sizeof( buffer ) );
-        if ( r <= 0 )
-          break;
-        result.append( &buffer[ 0 ], &buffer[ r ] );
-      }
-    }
-    else
-#endif
-    {
-      if ( s.send( request.data(), request.size() ) != static_cast<int>( request.size() ) )
-        return false;
-
-      while ( true )
-      {
-        int r = s.recv( buffer, sizeof( buffer ) );
-        if ( r <= 0 )
-          break;
-        result.append( &buffer[ 0 ], &buffer[ r ] );
-      }
-    }
-
-    s.close();
-
-    std::string::size_type pos = result.find( "\r\n\r\n" );
-    if ( pos == result.npos )
-      return false;
-
-    // reference : http://tools.ietf.org/html/rfc2616#section-14.30
-    // Checking for redirects via "Location:" in headers, which applies at least
-    // to 301 Moved Permanently, 302 Found, 303 See Other, 307 Temporary Redirect
-    std::string::size_type pos_location = result.find( "\r\nLocation: " );
-    if ( pos_location < pos )
-    {
-      if ( ++redirect > redirect_max )
-        return false;
-
-      pos_location += 12;
-      std::string::size_type pos_line_end = result.find( "\r\n", pos_location );
-
-      std::string redirect_url = result.substr( pos_location, pos_line_end - pos_location );
-      url_t tmp_split_url;
-      if ( url_t::split( tmp_split_url, redirect_url ) )
-      {
-        // Absolute url, move tmp_split_url to split_url
-        split_url = tmp_split_url;
-
-      }
-      else
-      {
-        // Assume Relative URL, just write it into the path part of the already splitted url
-        split_url.path = redirect_url;
-      }
-    }
-    else
-    {
-      entry.validated = cache::era();
-      {
-        std::string::size_type pos_304 = result.find( "304" );
-        std::string::size_type line_end = result.find( "\r\n" );
-        if ( pos_304 < line_end )
-        {
-          // Item is not modified
-          return true;
-        }
-      }
-
-      entry.modified = cache::era();
-      entry.last_modified_header.clear();
-      std::string::size_type pos_l_m = result.find( "\r\nLast-Modified: " );
-      if ( pos_l_m < pos )
-      {
-        pos_l_m += 17;
-        std::string::size_type pos_l_m_end = result.find( "\r\n", pos_l_m );
-        if ( pos_l_m_end < pos )
-          entry.last_modified_header.assign( result, pos_l_m, pos_l_m_end - pos_l_m );
-      }
-      entry.result.assign( result, pos + 4, result.npos );
-      return true;
-    }
-  }
-}
-
-#endif
+#endif /* defined( NO_HTTP ) */
 
 } // UNNAMED NAMESPACE ====================================================
 
@@ -886,22 +473,21 @@ void http::cache_save( const std::string& file_name )
 
 // http::get ================================================================
 
-bool http::get( std::string&       result,
+int http::get( std::string&       result,
                 const std::string& url,
-                const std::string& cleanurl,
                 cache::behavior_e  caching,
-                const std::string& confirmation )
+                const std::string& confirmation,
+                const std::vector<std::string>& headers )
 {
   result.clear();
 
   std::string encoded_url = url;
-  std::string encoded_clean_url = cleanurl;
   util::urlencode( encoded_url );
-  util::urlencode( encoded_clean_url );
+  int response_code = 200;
 
   auto_lock_t lock( cache_mutex );
 
-  url_cache_entry_t& entry = url_db[ encoded_clean_url ];
+  url_cache_entry_t& entry = url_db[ encoded_url ];
 
   if ( HTTP_CACHE_DEBUG )
   {
@@ -910,7 +496,7 @@ bool http::get( std::string&       result,
     std::ostream::sentry s( http_log );
     if ( s )
     {
-      http_log << cache::era() << ": get(\"" << cleanurl << "\") [";
+      http_log << cache::era() << ": get(\"" << url << "\") [";
 
       if ( entry.validated != cache::era_t::INVALID_ERA )
       {
@@ -935,12 +521,11 @@ bool http::get( std::string&       result,
   if ( entry.validated < cache::era() && ( caching == cache::CURRENT || entry.validated == cache::era_t::INVALID_ERA ) )
   {
     if ( caching == cache::ONLY )
-      return false;
+      return 404;
 
     util::printf( "@" ); fflush( stdout );
 
-    if ( ! download( entry, encoded_url ) )
-      return false;
+    response_code = download( entry, result, encoded_url, headers );
 
     if ( HTTP_CACHE_DEBUG && entry.modified < entry.validated )
     {
@@ -954,13 +539,20 @@ bool http::get( std::string&       result,
       //util::printf( "\nsimulationcraft: HTTP failed on '%s'\n", url.c_str() );
       //util::printf( "%s\n", ( result.empty() ? "empty" : result.c_str() ) );
       //fflush( stdout );
-      return false;
+      return 409; // "Conflict"
     }
   }
 
-  result = entry.result;
-  return true;
+  // No result from the download process, grab it from the cache
+  if ( result.empty() )
+  {
+    result = entry.result;
+  }
+
+  return response_code;
 }
+
+#endif /* NO_SC_NETWORKING */
 
 #ifdef UNIT_TEST
 
@@ -1015,6 +607,4 @@ int main( int argc, char* argv[] )
   return 0;
 }
 
-#endif
-
-#endif
+#endif /* UNIT_TEST */

@@ -203,6 +203,17 @@ private:
   std::string _file_name;
 };
 
+#if !defined( SC_NO_NETWORKING )
+struct apitoken_initializer_t
+{
+  apitoken_initializer_t()
+  { bcp_api::token_load(); }
+
+  ~apitoken_initializer_t()
+  { bcp_api::token_save(); }
+};
+#endif
+
 struct special_effect_initializer_t
 {
   special_effect_initializer_t()
@@ -237,6 +248,9 @@ int sim_t::main( const std::vector<std::string>& args )
   try
   {
     cache_initializer_t cache_init( get_cache_directory() + "/simc_cache.dat" );
+#if !defined( SC_NO_NETWORKING )
+    apitoken_initializer_t apitoken_init;
+#endif
     dbc_initializer_t dbc_init;
     module_t::init();
     unique_gear::register_hotfixes();

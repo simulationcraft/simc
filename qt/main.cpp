@@ -57,6 +57,7 @@ int main( int argc, char *argv[] )
   unique_gear::register_hotfixes();
   unique_gear::register_special_effects();
   unique_gear::sort_special_effects();
+  bcp_api::token_load();
 
   hotfix::apply();
 
@@ -127,5 +128,10 @@ int main( int argc, char *argv[] )
 
   parse_additional_args( w, a.arguments() );
 
-  return a.exec();
+  auto ret = a.exec();
+
+  dbc::de_init();
+  bcp_api::token_save();
+
+  return ret;
 }
