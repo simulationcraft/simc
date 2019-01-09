@@ -222,8 +222,17 @@ public:
       {
         char error_buffer[ CURL_ERROR_SIZE ];
         error_buffer[ 0 ] = '\0';
+// Note, won't cover the case where curl is compiled without USE_SSL
+#ifdef CURL_VERSION_HTTPS_PROXY
         auto ret = curl_easy_setopt( m_handle, CURLOPT_PROXYTYPE,
             ssl_proxy ? CURLPROXY_HTTPS : CURLPROXY_HTTP );
+#else
+        if ( ssl_proxy )
+        {
+          std::cerr << "Libcurl does not support HTTPS proxies, aborting." << std::endl;
+        }
+        auto ret = curl_easy_setopt( m_handle, CURLOPT_PROXYTYPE, CURLPROXY_HTTP );
+#endif /* CURL_VERSION_HTTPS_PROXY */
         if ( ret != CURLE_OK )
         {
           std::cerr << "Unable setup proxy (" << error_buffer << ")" << std::endl;

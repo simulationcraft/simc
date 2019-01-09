@@ -30,7 +30,7 @@ addons:
       - g++-5
       - bats
       - libcurl3
-      - libcurl4-openssl-dev
+      - libcurl4-gnutls-dev
 
 #env:
   # Each line is a separate build in the build matrix. A build in the build
