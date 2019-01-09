@@ -230,6 +230,7 @@ public:
         if ( ssl_proxy )
         {
           std::cerr << "Libcurl does not support HTTPS proxies, aborting." << std::endl;
+          return {};
         }
         auto ret = curl_easy_setopt( m_handle, CURLOPT_PROXYTYPE, CURLPROXY_HTTP );
 #endif /* CURL_VERSION_HTTPS_PROXY */
