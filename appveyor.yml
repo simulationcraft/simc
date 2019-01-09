@@ -24,7 +24,7 @@ configuration: WebEngine
 
 # Custom build Configuration, i.e. Debug, Release, etc.
 build_script:
-  - MSBuild.exe %varProject% /maxcpucount
+#  - MSBuild.exe %varProject% /maxcpucount
 
 test_script:
   ## pass
