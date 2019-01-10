@@ -1189,7 +1189,7 @@ std::string paladin_t::default_potion() const
                                 "disabled";
 
   bool dps = (primary_role() == ROLE_ATTACK) || (talents.seraphim -> ok());
-  std::string protection_pot = (true_level > 110) ? "bursting_blood" :
+  std::string protection_pot = (true_level > 110) ? "battle_potion_of_strength" :
                                (true_level > 100) ? ( dps ? "prolonged_power" : "unbending_potion" ) :
                                (true_level >= 90) ? "draenic_strength" :
                                (true_level >= 85) ? "mogu_power" :
