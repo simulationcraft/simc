@@ -279,22 +279,6 @@ void cache_clear()
   url_db.clear();
 }
 
-#if defined( NO_HTTP )
-
-// ==========================================================================
-// NO HTTP-DOWNLOAD SUPPORT
-// ==========================================================================
-
-// download =================================================================
-
-bool download( url_cache_entry_t&, std::string&, const std::string&,
-               const std::vector<std::string>& = {} )
-{
-  return false;
-}
-
-#else
-
 // download =================================================================
 
 int download( url_cache_entry_t&              entry,
@@ -357,8 +341,6 @@ int download( url_cache_entry_t&              entry,
 
   return response_code;
 }
-
-#endif /* defined( NO_HTTP ) */
 
 } // UNNAMED NAMESPACE ====================================================
 
