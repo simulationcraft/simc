@@ -19,7 +19,7 @@ shallow_clone: true
 platform: x64
 
 # build Configuration, i.e. Debug, Release, etc.
-configuration: WebEngine
+configuration: WebEngine-NoNetworking
 
 
 # Custom build Configuration, i.e. Debug, Release, etc.

@@ -49,7 +49,7 @@ std::shared_ptr<xml_node_t> download_id( sim_t*             sim,
   std::string url_www = "https://" + source_str( source ) + ".wowhead.com/item="
                         + util::to_string( id ) + "&xml";
 
-  std::shared_ptr<xml_node_t> node = xml_node_t::get( sim, url_www, url_www, caching, "</json>" );
+  std::shared_ptr<xml_node_t> node = xml_node_t::get( sim, url_www, caching, "</json>" );
   if ( sim -> debug && node ) node -> print();
   return node;
 }

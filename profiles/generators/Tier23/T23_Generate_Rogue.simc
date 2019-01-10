@@ -6,11 +6,11 @@ role=attack
 position=back
 talents=2310021
 
-head=cowl_of_righteous_resolve,id=165519,bonus_id=4824/1537/4775,azerite_powers=136/249/30/217/13
+head=cowl_of_righteous_resolve,id=165519,bonus_id=4824/1537,azerite_powers=136/562/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
-shoulder=gorak_tuls_mantle,id=159339,bonus_id=5062/1587/4786/4775,azerite_powers=136/249/30/217/13
+shoulder=mestrahs_singing_spaulders,id=165516,bonus_id=4824/1537,azerite_powers=136/562/31/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
-chest=mekkatorques_bomber_jacket,id=165830,bonus_id=4824/1537/4775,azerite_powers=249/136/22/14/13
+chest=mekkatorques_bomber_jacket,id=165830,bonus_id=4824/1537,azerite_powers=249/562/22/13
 wrists=amethyststudded_bindings,id=165524,bonus_id=4800/1537
 hands=gloves_of_spiritual_grace,id=165514,bonus_id=4800/1537
 waist=stretched_sinew_waistcord,id=165525,bonus_id=4800/1537
@@ -20,7 +20,7 @@ finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_o
 finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_haste
 trinket1=kimbuls_razor_claw,id=165579,bonus_id=4800/1537
 trinket2=variable_intensity_gigavolt_oscillating_reactor,id=165572,bonus_id=4800/1537
-main_hand=greeds_folly,id=165593,bonus_id=4800/1537,enchant=masterful_navigation
+main_hand=greeds_folly,id=165593,bonus_id=4800/1537,enchant=galeforce_striking
 off_hand=greeds_folly,id=165593,bonus_id=4800/1537,enchant=quick_navigation
 
 save=T23_Rogue_Assassination.simc
@@ -34,22 +34,22 @@ role=attack
 position=back
 talents=2010022
 
-head=irontide_captains_hat,id=155888,bonus_id=5062/1587/4786/4775,azerite_powers=411/129/31/44/13
+head=cowl_of_righteous_resolve,id=165519,bonus_id=4824/1537,azerite_powers=129/562/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
-shoulder=mantle_of_fastidious_machinations,id=158304,bonus_id=5062/1587/4786/4775,azerite_powers=411/157/22/83/13
+shoulder=mestrahs_singing_spaulders,id=165516,bonus_id=4824/1537,azerite_powers=129/562/31/13
 back=high_tinkers_cape,id=165924,bonus_id=4800/1537
-chest=vest_of_reverent_adoration,id=159303,bonus_id=5062/1587/4786/4775,azerite_powers=411/129/31/14/13
+chest=mekkatorques_bomber_jacket,id=165830,bonus_id=4824/1537,azerite_powers=446/129/22/13
 wrists=bracers_of_regal_devotion,id=165517,bonus_id=4800/1537
 hands=mechjockey_grips,id=165522,bonus_id=4800/1537
 waist=stretched_sinew_waistcord,id=165525,bonus_id=4800/1537
 legs=cranedancer_leggings,id=165521,bonus_id=4800/1537
 feet=embossed_deckwalkers,id=165527,bonus_id=4800/1537
-finger1=band_of_multisided_strikes,id=165565,bonus_id=4800/1537,enchant=pact_of_versatility
-finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_versatility
+finger1=band_of_multisided_strikes,id=165565,bonus_id=4800/1537,enchant=pact_of_critical_strike
+finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_critical_strike
 trinket1=kimbuls_razor_claw,id=165579,bonus_id=4800/1537
 trinket2=variable_intensity_gigavolt_oscillating_reactor,id=165572,bonus_id=4800/1537
 main_hand=stormtoothed_kasuyu,id=165601,bonus_id=4800/1537,enchant=deadly_navigation
-off_hand=daelin_proudmoores_saber,id=165604,bonus_id=4800/1537,enchant=quick_navigation
+off_hand=daelin_proudmoores_saber,id=165604,bonus_id=4800/1537,enchant=galeforce_striking
 
 save=T23_Rogue_Outlaw.simc
 
@@ -60,23 +60,23 @@ race=night_elf
 spec=subtlety
 role=attack
 position=back
-talents=2130031
+talents=2320031
 
-head=cowl_of_fluid_machinations,id=159302,bonus_id=5062/1587/4786/4775,azerite_powers=413/445/22/217/13
+head=cowl_of_righteous_resolve,id=165519,bonus_id=4824/1537,azerite_powers=414/562/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
-shoulder=maras_boneblade_mantle,id=165777,bonus_id=4824/1537/4775,azerite_powers=240/413/31/473/13
+shoulder=phantom_stalker_shoulders,id=165523,bonus_id=4824/1537,azerite_powers=413/175/30/13
 back=high_tinkers_cape,id=165924,bonus_id=4800/1537
-chest=vestments_of_indomitable_will,id=165833,bonus_id=4824/1537/4775,azerite_powers=413/414/22/44/13
+chest=mekkatorques_bomber_jacket,id=165830,bonus_id=4824/1537,azerite_powers=240/562/22/13
 wrists=bracers_of_regal_devotion,id=165517,bonus_id=4800/1537
 hands=mechjockey_grips,id=165522,bonus_id=4800/1537
 waist=stretched_sinew_waistcord,id=165525,bonus_id=4800/1537
 legs=cranedancer_leggings,id=165521,bonus_id=4800/1537
 feet=embossed_deckwalkers,id=165527,bonus_id=4800/1537
-finger1=band_of_multisided_strikes,id=165565,bonus_id=4800/1537,enchant=pact_of_critical_strike
-finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_critical_strike
+finger1=band_of_multisided_strikes,id=165565,bonus_id=4800/1537,enchant=pact_of_mastery
+finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_mastery
 trinket1=kimbuls_razor_claw,id=165579,bonus_id=4800/1537
 trinket2=variable_intensity_gigavolt_oscillating_reactor,id=165572,bonus_id=4800/1537
 main_hand=last_fang_of_rezan,id=165596,bonus_id=4800/1537,enchant=deadly_navigation
-off_hand=last_fang_of_rezan,id=165596,bonus_id=4800/1537,enchant=versatile_navigation
+off_hand=last_fang_of_rezan,id=165596,bonus_id=4800/1537,enchant=masterful_navigation
 
 save=T23_Rogue_Subtlety.simc

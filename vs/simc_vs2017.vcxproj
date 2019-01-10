@@ -5,6 +5,10 @@
       <Configuration>Debug-WebEngine</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="WebEngine-NoNetworking|x64">
+      <Configuration>WebEngine-NoNetworking</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="WebEngine-PGO|x64">
       <Configuration>WebEngine-PGO</Configuration>
       <Platform>x64</Platform>
@@ -23,6 +27,12 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WebEngine|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WebEngine-NoNetworking|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -48,6 +58,12 @@
     <Import Project="PrecompiledHeaders.props" />
     <Import Project="CommonIncludeDirectories.props" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='WebEngine-NoNetworking|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="OutputDirectories.props" />
+    <Import Project="PrecompiledHeaders.props" />
+    <Import Project="CommonIncludeDirectories.props" />
+  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='WebEngine-PGO|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="OutputDirectories.props" />
@@ -68,10 +84,13 @@
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug-WebEngine|x64'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug-WebEngine|x64'" />
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='WebEngine|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='WebEngine-NoNetworking|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='WebEngine-PGO|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='WebEngine|x64'" />
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='WebEngine-NoNetworking|x64'" />
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='WebEngine-PGO|x64'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='WebEngine|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='WebEngine-NoNetworking|x64'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='WebEngine-PGO|x64'" />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-WebEngine|x64'">
@@ -80,6 +99,12 @@
     <OutDir>$(SolutionDir)\$(PlatformShortName)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WebEngine|x64'">
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <TargetName>$(ProjectName)</TargetName>
+    <EnableManagedIncrementalBuild>false</EnableManagedIncrementalBuild>
+    <OutDir>$(SolutionDir)\$(PlatformShortName)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WebEngine-NoNetworking|x64'">
     <RunCodeAnalysis>false</RunCodeAnalysis>
     <TargetName>$(ProjectName)</TargetName>
     <EnableManagedIncrementalBuild>false</EnableManagedIncrementalBuild>
@@ -100,7 +125,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Debug-WebEngineInformationFormat>ProgramDatabase</Debug-WebEngineInformationFormat>
       <DisableSpecificWarnings>4005;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\engine;$(ProjectDir)..\engine/util;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\engine;$(ProjectDir)..\engine/util;$(CURL_ROOT)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <EnablePREfast>false</EnablePREfast>
       <StringPooling>false</StringPooling>
@@ -119,6 +144,7 @@
       <Profile>false</Profile>
       <LargeAddressAware>true</LargeAddressAware>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(CURL_ROOT)\lib\libcurl.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='WebEngine|x64'">
@@ -128,6 +154,43 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <PreprocessorDefinitions>SC_DEFAULT_APIKEY="$(SC_DEFAULT_APIKEY)";WIN32;NDEBUG;_NO_DEBUG;_CONSOLE;WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <WarningLevel>Level3</WarningLevel>
+      <Debug-WebEngineInformationFormat>ProgramDatabase</Debug-WebEngineInformationFormat>
+      <DisableSpecificWarnings>5030;2429;4005;4996;6011;6386;6246;6313;6102;6330;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <OmitFramePointers>true</OmitFramePointers>
+      <EnablePREfast>false</EnablePREfast>
+      <StringPooling>true</StringPooling>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\engine;$(ProjectDir)..\engine/util;$(CURL_ROOT)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BrowseInformation>false</BrowseInformation>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>wininet.lib %(AdditionalOptions)</AdditionalOptions>
+      <GenerateDebug-WebEngineInformation>false</GenerateDebug-WebEngineInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <Profile>false</Profile>
+      <LargeAddressAware>true</LargeAddressAware>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <ProfileGuidedDatabase>$(SolutionDir)\$(PlatformShortName)\$(Configuration)\Simulationcraft.pgd</ProfileGuidedDatabase>
+      <AdditionalDependencies>$(CURL_ROOT)\lib\libcurl.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='WebEngine-NoNetworking|x64'">
+    <ClCompile>
+      <AdditionalOptions> /w34263 /w34264 /w34265 /w34266  %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Full</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <PreprocessorDefinitions>SC_DEFAULT_APIKEY="$(SC_DEFAULT_APIKEY)";SC_NO_NETWORKING;WIN32;NDEBUG;_NO_DEBUG;_CONSOLE;WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -155,6 +218,7 @@
       <LargeAddressAware>true</LargeAddressAware>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <ProfileGuidedDatabase>$(SolutionDir)\$(PlatformShortName)\$(Configuration)\Simulationcraft.pgd</ProfileGuidedDatabase>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='WebEngine-PGO|x64'">
@@ -174,7 +238,7 @@
       <OmitFramePointers>true</OmitFramePointers>
       <EnablePREfast>false</EnablePREfast>
       <StringPooling>true</StringPooling>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\engine;$(ProjectDir)..\engine/util;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\engine;$(ProjectDir)..\engine/util;$(CURL_ROOT)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <FloatingPointModel>Fast</FloatingPointModel>
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
@@ -192,6 +256,7 @@
       <LinkTimeCodeGeneration>PGUpdate</LinkTimeCodeGeneration>
       <ProfileGuidedDatabase>$(SolutionDir)\Simulationcraft.pgd</ProfileGuidedDatabase>
       <GenerateDebugInformation>No</GenerateDebugInformation>
+      <AdditionalDependencies>$(CURL_ROOT)\lib\libcurl.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command />

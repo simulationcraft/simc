@@ -65,6 +65,12 @@ GIT        = $(shell [ -d ../.git ] && which git)
 
 LINK_LIBS  =
 
+ifeq (${SC_NO_NETWORKING},)
+  LINK_LIBS += -lcurl
+else
+  OPTS += -DSC_NO_NETWORKING
+endif
+
 # Include build setting from user configuration file
 -include ../build.conf
 

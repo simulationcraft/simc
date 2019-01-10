@@ -1208,7 +1208,7 @@ struct sim_t : private sc_thread_t
   int solo_raid;
   int global_item_upgrade_level;
   bool maximize_reporting;
-  std::string apikey;
+  std::string apikey, user_apitoken;
   bool distance_targeting_enabled;
   bool ignore_invulnerable_targets;
   bool enable_dps_healing;
@@ -7503,6 +7503,8 @@ player_t* from_local_json( sim_t*,
                          );
 
 bool download_item( item_t&, cache::behavior_e b = cache::items() );
+void token_load();
+void token_save();
 }
 
 // HTTP Download  ===========================================================
@@ -7521,8 +7523,9 @@ void cache_load( const std::string& file_name );
 void cache_save( const std::string& file_name );
 bool clear_cache( sim_t*, const std::string& name, const std::string& value );
 
-bool get( std::string& result, const std::string& url, const std::string& cleanurl, cache::behavior_e b,
-          const std::string& confirmation = std::string() );
+int get( std::string& result, const std::string& url,
+          cache::behavior_e caching, const std::string& confirmation = "",
+          const std::vector<std::string>& headers = {} );
 }
 
 // XML ======================================================================
