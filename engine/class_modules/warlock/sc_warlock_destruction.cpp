@@ -66,7 +66,7 @@ namespace warlock {
 
 		if (can_havoc)
 		{
-          base_aoe_multiplier *= ()->spec.havoc->effectN( 1 ).percent();
+          base_aoe_multiplier *= p()->spec.havoc->effectN( 1 ).percent();
 		  //available_targets() will handle Havoc target selection
 		  aoe = -1;
 		}
