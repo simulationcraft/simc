@@ -11,11 +11,7 @@ namespace warlock {
       gain_t * gain;
 
       bool can_havoc;
-      bool havocd;
-      bool affected_by_destruction_t20_4pc;
-      bool affected_by_flamelicked;
       bool destro_mastery;
-      bool can_feretory;
 
       destruction_spell_t(warlock_t* p, const std::string& n) :
         destruction_spell_t(n, p, p -> find_class_spell(n))
@@ -34,34 +30,39 @@ namespace warlock {
         tick_may_crit = true;
         weapon_multiplier = 0.0;
         gain = player->get_gain(name_str);
-
         can_havoc = false;
-        havocd = false;
-        affected_by_destruction_t20_4pc = false;
         destro_mastery = true;
-        can_feretory = true;
       }
 
       bool use_havoc() const
       {
-        if (!p()->havoc_target || target == p()->havoc_target || !can_havoc)
-          return false;
-
-        return true;
+		return can_havoc && target != p()->havoc_target && p()->havoc_target != nullptr && p()->buffs.active_havoc->check();
       }
+
+	  size_t available_targets(std::vector<player_t*>& tl) const override
+	  {
+		if (use_havoc())
+		{
+		  tl.clear();
+		  tl.push_back( target );
+		  tl.push_back(p()->havoc_target);
+		}
+		else
+		{
+		  warlock_spell_t::available_targets( tl );
+		}
+
+		return tl.size();
+	  }
 
       void reset() override
       {
-        havocd = false;
         warlock_spell_t::reset();
       }
 
       void init() override
       {
         warlock_spell_t::init();
-
-        affected_by_flamelicked = false;
-        havocd = false;
       }
 
       double cost() const override
@@ -72,16 +73,17 @@ namespace warlock {
 
       void execute() override
       {
-        warlock_spell_t::execute();
-        if (use_havoc() && execute_state->target == this->target && !havocd)
-        {
-          this->set_target(p()->havoc_target);
-          this->havocd = true;
-          spell_t::execute();
-          if (p()->azerite.rolling_havoc.ok())
-            p()->buffs.rolling_havoc->trigger();
-          this->havocd = false;
-        }
+		if ( use_havoc() )
+		{
+			aoe = 2;
+			base_aoe_multiplier = p()->spec.havoc->effectN( 1 ).percent();
+			warlock_spell_t::execute();
+			aoe = 0;
+		}
+		else
+		{
+		  warlock_spell_t::execute();
+		}
       }
 
       void consume_resource() override
@@ -124,9 +126,6 @@ namespace warlock {
 
       virtual void update_ready(timespan_t cd_duration) override
       {
-        if (havocd)
-          return;
-
         warlock_spell_t::update_ready(cd_duration);
       }
 
@@ -141,6 +140,7 @@ namespace warlock {
         return m;
       }
 
+	  //TODO: Check order of multipliers on Havoc'd spells
       double action_multiplier() const override
       {
         double pm = warlock_spell_t::action_multiplier();
@@ -150,16 +150,10 @@ namespace warlock {
           double destro_mastery_value = p()->cache.mastery_value() / 2.0;
           double chaotic_energies_rng;
 
-          if (p()->sets->has_set_bonus(WARLOCK_DESTRUCTION, T20, B4) && affected_by_destruction_t20_4pc)
-            chaotic_energies_rng = destro_mastery_value;
-          else
-            chaotic_energies_rng = rng().range(0, destro_mastery_value);
+          chaotic_energies_rng = rng().range(0, destro_mastery_value);
 
           pm *= 1.0 + chaotic_energies_rng + (destro_mastery_value);
         }
-
-        if (havocd)
-          pm *= p()->spec.havoc->effectN(1).percent();
 
         if (p()->buffs.grimoire_of_supremacy->check() && this->data().affected_by(p()->find_spell(266091)->effectN(1)))
         {
@@ -170,17 +164,6 @@ namespace warlock {
       }
     };
 
-    //Tier
-    struct flames_of_argus_t : public residual_action_t
-    {
-      flames_of_argus_t(warlock_t* player) :
-        residual_action_t("flames_of_argus", player, player -> find_spell(253097))
-      {
-        background = true;
-        may_miss = may_crit = false;
-        school = SCHOOL_CHROMATIC;
-      }
-    };
     //Talents
     struct soul_fire_t : public destruction_spell_t
     {
@@ -188,9 +171,9 @@ namespace warlock {
         destruction_spell_t("soul_fire", p, p -> talents.soul_fire)
       {
         parse_options(options_str);
-        energize_type = ENERGIZE_ON_CAST;
+        energize_type = ENERGIZE_PER_HIT;
         energize_resource = RESOURCE_SOUL_SHARD;
-        energize_amount = (std::double_t(p->find_spell(281490)->effectN(1).base_value()) / 10);
+        energize_amount = (std::double_t(p->find_spell( 281490 )->effectN( 1 ).base_value()) / 10);
 
         can_havoc = true;
       }
@@ -248,7 +231,9 @@ namespace warlock {
         destruction_spell_t("shadowburn", p, p -> talents.shadowburn)
       {
         parse_options(options_str);
-
+		energize_type = ENERGIZE_PER_HIT;
+		energize_resource = RESOURCE_SOUL_SHARD;
+		energize_amount = ( std::double_t( p->find_spell( 245731 )->effectN( 1 ).base_value() ) ) / 10;
         can_havoc = true;
       }
 
@@ -259,19 +244,16 @@ namespace warlock {
         if (result_is_hit(s->result))
         {
           td(s->target)->debuffs_shadowburn->trigger();
-          p()->resource_gain(RESOURCE_SOUL_SHARD, (std::double_t(p()->find_spell(245731)->effectN(1).base_value()) / 10), p()->gains.shadowburn);
         }
       }
     };
 
+	//TODO: Check the status of the comment below
     struct roaring_blaze_t : public destruction_spell_t {
       roaring_blaze_t(warlock_t* p) :
         destruction_spell_t("roaring_blaze", p, p -> find_spell(265931))
       {
         background = true;
-        base_tick_time = timespan_t::from_seconds(2.0);
-        dot_duration = data().duration();
-        spell_power_mod.tick = data().effectN(1).sp_coeff();
         destro_mastery = false;
         hasted_ticks = true;
       }
@@ -322,6 +304,7 @@ namespace warlock {
       }
     };
 
+	//TODO: Check if initial damage of Immolate is reduced on Havoc'd target
     struct immolate_t : public destruction_spell_t
     {
       immolate_t(warlock_t* p, const std::string& options_str) :
@@ -332,10 +315,10 @@ namespace warlock {
 
         can_havoc = true;
 
+		//All of the DoT data for Immolate is in spell 157736
         base_tick_time = dmg_spell->effectN(1).period();
         dot_duration = dmg_spell->duration();
         spell_power_mod.tick = dmg_spell->effectN(1).sp_coeff();
-        spell_power_mod.direct = data().effectN(1).sp_coeff();
         hasted_ticks = true;
         tick_may_crit = true;
       }
@@ -372,12 +355,11 @@ namespace warlock {
         parse_options(options_str);
         can_havoc = true;
 
-        energize_type = ENERGIZE_NONE;
+        energize_type = ENERGIZE_PER_HIT;
+		energize_resource = RESOURCE_SOUL_SHARD;
+		energize_amount = ( std::double_t( p->find_spell( 245330 )->effectN( 1 ).base_value() ) ) / 10;
 
         cooldown->charges += p->spec.conflagrate_2->effectN(1).base_value();
-
-        cooldown->charges += p->sets->set(WARLOCK_DESTRUCTION, T19, B4)->effectN(1).base_value();
-        cooldown->duration += p->sets->set(WARLOCK_DESTRUCTION, T19, B4)->effectN(2).time_value();
 
         add_child(roaring_blaze);
       }
@@ -393,24 +375,19 @@ namespace warlock {
       {
         destruction_spell_t::impact(s);
 
-        if ( s->target == p()->havoc_target )
-          havocd = true;
-
-        if ( !havocd )
-          p()->buffs.backdraft->trigger( 1 + ( p()->talents.flashover->ok() ? p()->talents.flashover->effectN(1).base_value() : 0 ) );
-
         if (result_is_hit(s->result))
         {
           if ( p()->talents.roaring_blaze->ok() )
             roaring_blaze->execute();
-
-          p()->resource_gain(RESOURCE_SOUL_SHARD, (std::double_t(p()->find_spell(245330)->effectN(1).base_value()) / 10), p()->gains.conflagrate);
         }
       }
 
       void execute() override
       {
         destruction_spell_t::execute();
+
+		//This used to be in impact() but in game it occurs on cast and does not generate a second stack when copied with Havoc
+		p()->buffs.backdraft->trigger( 1 + (p()->talents.flashover->ok() ? p()->talents.flashover->effectN( 1 ).base_value() : 0) );
 
         auto td = this->td(target);
         if (p()->azerite.bursting_flare.ok() && td->dots_immolate->is_ticking())
@@ -487,9 +464,6 @@ namespace warlock {
       void execute() override
       {
         destruction_spell_t::execute();
-
-        if (p()->sets->has_set_bonus(WARLOCK_DESTRUCTION, T20, B2))
-          p()->resource_gain(RESOURCE_SOUL_SHARD, 0.1, p()->gains.destruction_t20_2pc);
       }
 
       void impact(action_state_t* s) override
@@ -530,7 +504,7 @@ namespace warlock {
         backdraft_cast_time = 1.0 + p->buffs.backdraft->data().effectN(1).percent();
         backdraft_gcd = 1.0 + p->buffs.backdraft->data().effectN(2).percent();
 
-        energize_type = ENERGIZE_ON_CAST;
+        energize_type = ENERGIZE_PER_HIT;
         energize_resource = RESOURCE_SOUL_SHARD;
         energize_amount = std::double_t(p->find_spell(244670)->effectN(1).base_value()) / 10;
       }
@@ -577,23 +551,16 @@ namespace warlock {
       {
         destruction_spell_t::execute();
 
-        if ( execute_state->target == p()->havoc_target )
-          havocd = true;
-
-        if ( !havocd && !p()->buffs.chaotic_inferno->check() )
+        if ( !p()->buffs.chaotic_inferno->check() )
           p()->buffs.backdraft->decrement();
 
         p()->buffs.chaotic_inferno->decrement();
 
-        if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T20, B2 ) )
-          p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.destruction_t20_2pc );
-
-        if ( !havocd && p()->talents.fire_and_brimstone->ok() )
+        if ( p()->talents.fire_and_brimstone->ok() )
         {
           fnb_action->set_target( execute_state->target );
           fnb_action->execute();
         }
-        havocd = false;
       }
 
       void impact(action_state_t* s) override
@@ -621,29 +588,20 @@ namespace warlock {
       double backdraft_gcd;
       double backdraft_cast_time;
       double refund;
-      flames_of_argus_t* flames_of_argus;
       internal_combustion_t* internal_combustion;
 
       chaos_bolt_t(warlock_t* p, const std::string& options_str) :
         destruction_spell_t(p, "Chaos Bolt"),
         refund(0),
-        flames_of_argus(nullptr),
         internal_combustion(new internal_combustion_t(p))
       {
         parse_options(options_str);
         can_havoc = true;
-        affected_by_destruction_t20_4pc = true;
 
         backdraft_cast_time = 1.0 + p->buffs.backdraft->data().effectN(1).percent();
         backdraft_gcd = 1.0 + p->buffs.backdraft->data().effectN(2).percent();
 
         add_child(internal_combustion);
-
-        if (p->sets->has_set_bonus(WARLOCK_DESTRUCTION, T21, B4))
-        {
-          flames_of_argus = new flames_of_argus_t(p);
-          add_child(flames_of_argus);
-        }
       }
 
       virtual void schedule_execute(action_state_t* state = nullptr) override
@@ -683,16 +641,8 @@ namespace warlock {
 
         trigger_internal_combustion( s );
 
-        if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T21, B2 ) )
-          td( s->target )->debuffs_chaotic_flames->trigger();
-
         if (p()->talents.eradication->ok() && result_is_hit(s->result))
           td(s->target)->debuffs_eradication->trigger();
-
-        if (p()->sets->has_set_bonus(WARLOCK_DESTRUCTION, T21, B4))
-        {
-          residual_action::trigger(flames_of_argus, s->target, s->result_amount * p()->sets->set(WARLOCK_DESTRUCTION, T21, B4)->effectN(1).percent());
-        }
       }
 
       void trigger_internal_combustion(action_state_t* s)
@@ -718,9 +668,6 @@ namespace warlock {
         if(p()->azerite.chaotic_inferno.ok())
           p()->buffs.chaotic_inferno->trigger();
         p()->buffs.crashing_chaos->decrement();
-
-        if(!havocd)
-          p()->buffs.backdraft->decrement();
       }
 
       // Force spell to always crit
@@ -758,8 +705,6 @@ namespace warlock {
         background = true;
         may_miss = false;
         dual = true;
-
-        can_feretory = false;
 
         spell_power_mod.direct = data().effectN(1).sp_coeff();
 
@@ -807,6 +752,7 @@ namespace warlock {
         immolate_action_id = p()->find_action_id("immolate");
       }
 
+	  //TODO: This is suboptimal, can this be changed to available_targets() in some way?
       std::vector< player_t* >& target_list() const override
       {
         target_cache.list = destruction_spell_t::target_list();
