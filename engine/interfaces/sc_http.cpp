@@ -92,13 +92,13 @@ class curl_handle_t
     std::transform( key.begin(), key.end(), key.begin(), tolower );
 
     // Prune whitespaces from values
-    while ( value.back() == ' ' || value.back() == '\n' ||
-            value.back() == '\t' || value.back() == '\r' )
+    while ( !value.empty() && ( value.back() == ' ' || value.back() == '\n' ||
+            value.back() == '\t' || value.back() == '\r' ) )
     {
       value.pop_back();
     }
 
-    while ( value.front() == ' ' )
+    while ( !value.empty() && ( value.front() == ' ' || value.front() == '\t' ) )
     {
       value.erase( value.begin() );
     }
