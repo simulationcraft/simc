@@ -13,11 +13,7 @@ public:
   gain_t* gain;
 
   bool can_havoc;
-  // bool havocd;
-  // bool affected_by_destruction_t20_4pc;
-  // bool affected_by_flamelicked;
   bool destro_mastery;
-  // bool can_feretory;
 
   destruction_spell_t( warlock_t* p, const std::string& n ) : destruction_spell_t( n, p, p->find_class_spell( n ) )
   {
@@ -37,26 +33,12 @@ public:
     gain              = player->get_gain( name_str );
 
     can_havoc = false;
-    // havocd = false;
-    // This is probably not needed any more
-    // affected_by_destruction_t20_4pc = false;
 
     destro_mastery = true;
-
-    // Same for this
-    // can_feretory = true;
   }
 
   bool use_havoc() const
   {
-    // Was there a reason to use an if statement here??
-    /*
-if (!p()->havoc_target || target == p()->havoc_target || !can_havoc)
-return false;
-
-return true;
-    */
-
     return can_havoc && target != p()->havoc_target && p()->havoc_target != nullptr &&
            p()->buffs.active_havoc->check();
   }
@@ -79,16 +61,12 @@ return true;
 
   void reset() override
   {
-    // havocd = false;
     warlock_spell_t::reset();
   }
 
   void init() override
   {
     warlock_spell_t::init();
-
-    // affected_by_flamelicked = false;
-    // havocd                  = false;
   }
 
   double cost() const override
@@ -110,17 +88,6 @@ return true;
     {
       warlock_spell_t::execute();
     }
-    /*
-if (use_havoc() && execute_state->target == this->target && !havocd)
-{
-this->set_target(p()->havoc_target);
-this->havocd = true;
-spell_t::execute();
-if (p()->azerite.rolling_havoc.ok())
-p()->buffs.rolling_havoc->trigger();
-this->havocd = false;
-}
-    */
   }
 
   void consume_resource() override
@@ -164,9 +131,6 @@ this->havocd = false;
 
   virtual void update_ready( timespan_t cd_duration ) override
   {
-    //if ( havocd )
-    //  return;
-
     warlock_spell_t::update_ready( cd_duration );
   }
 
@@ -181,6 +145,7 @@ this->havocd = false;
     return m;
   }
 
+  //TODO: Check order of multipliers on Havoc'd spells
   double action_multiplier() const override
   {
     double pm = warlock_spell_t::action_multiplier();
@@ -190,16 +155,10 @@ this->havocd = false;
       double destro_mastery_value = p()->cache.mastery_value() / 2.0;
       double chaotic_energies_rng;
 
-      // if (p()->sets->has_set_bonus(WARLOCK_DESTRUCTION, T20, B4) && affected_by_destruction_t20_4pc)
-      //  chaotic_energies_rng = destro_mastery_value;
-      // else
       chaotic_energies_rng = rng().range( 0, destro_mastery_value );
 
       pm *= 1.0 + chaotic_energies_rng + ( destro_mastery_value );
     }
-
-    // if (havocd)
-    //  pm *= p()->spec.havoc->effectN(1).percent();
 
     if ( p()->buffs.grimoire_of_supremacy->check() &&
          this->data().affected_by( p()->find_spell( 266091 )->effectN( 1 ) ) )
@@ -211,16 +170,6 @@ this->havocd = false;
   }
 };
 
-//// Tier
-//struct flames_of_argus_t : public residual_action_t
-//{
-//  flames_of_argus_t( warlock_t* player ) : residual_action_t( "flames_of_argus", player, player->find_spell( 253097 ) )
-//  {
-//    background = true;
-//    may_miss = may_crit = false;
-//    school              = SCHOOL_CHROMATIC;
-//  }
-//};
 // Talents
 struct soul_fire_t : public destruction_spell_t
 {
@@ -418,10 +367,6 @@ struct conflagrate_t : public destruction_spell_t
 
     cooldown->charges += p->spec.conflagrate_2->effectN( 1 ).base_value();
 
-    // Probably can be removed
-    // cooldown->charges += p->sets->set(WARLOCK_DESTRUCTION, T19, B4)->effectN(1).base_value();
-    // cooldown->duration += p->sets->set(WARLOCK_DESTRUCTION, T19, B4)->effectN(2).time_value();
-
     add_child( roaring_blaze );
   }
 
@@ -526,10 +471,6 @@ struct incinerate_fnb_t : public destruction_spell_t
   void execute() override
   {
     destruction_spell_t::execute();
-
-    // Probably can remove
-    // if (p()->sets->has_set_bonus(WARLOCK_DESTRUCTION, T20, B2))
-    //  p()->resource_gain(RESOURCE_SOUL_SHARD, 0.1, p()->gains.destruction_t20_2pc);
   }
 
   void impact( action_state_t* s ) override
@@ -622,10 +563,6 @@ struct incinerate_t : public destruction_spell_t
 
     p()->buffs.chaotic_inferno->decrement();
 
-    // Can probably remove
-    // if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T20, B2 ) )
-    //  p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.destruction_t20_2pc );
-
     if ( p()->talents.fire_and_brimstone->ok() )
     {
       fnb_action->set_target( execute_state->target );
@@ -658,32 +595,20 @@ struct chaos_bolt_t : public destruction_spell_t
   double backdraft_gcd;
   double backdraft_cast_time;
   double refund;
-  // flames_of_argus_t* flames_of_argus;
   internal_combustion_t* internal_combustion;
 
   chaos_bolt_t( warlock_t* p, const std::string& options_str )
     : destruction_spell_t( p, "Chaos Bolt" ),
       refund( 0 ),
-      // flames_of_argus(nullptr),
       internal_combustion( new internal_combustion_t( p ) )
   {
     parse_options( options_str );
     can_havoc = true;
-    // affected_by_destruction_t20_4pc = true;
 
     backdraft_cast_time = 1.0 + p->buffs.backdraft->data().effectN( 1 ).percent();
     backdraft_gcd       = 1.0 + p->buffs.backdraft->data().effectN( 2 ).percent();
 
     add_child( internal_combustion );
-
-    // Can probably remove
-    /*
-    if (p->sets->has_set_bonus(WARLOCK_DESTRUCTION, T21, B4))
-    {
-      flames_of_argus = new flames_of_argus_t(p);
-      add_child(flames_of_argus);
-    }
-            */
   }
 
   virtual void schedule_execute( action_state_t* state = nullptr ) override
@@ -723,19 +648,8 @@ struct chaos_bolt_t : public destruction_spell_t
 
     trigger_internal_combustion( s );
 
-    // if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T21, B2 ) )
-    //   td( s->target )->debuffs_chaotic_flames->trigger();
-
     if ( p()->talents.eradication->ok() && result_is_hit( s->result ) )
       td( s->target )->debuffs_eradication->trigger();
-
-    /*
-    if (p()->sets->has_set_bonus(WARLOCK_DESTRUCTION, T21, B4))
-    {
-      residual_action::trigger(flames_of_argus, s->target, s->result_amount * p()->sets->set(WARLOCK_DESTRUCTION, T21,
-    B4)->effectN(1).percent());
-    }
-            */
   }
 
   void trigger_internal_combustion( action_state_t* s )
@@ -799,8 +713,6 @@ struct channel_demonfire_tick_t : public destruction_spell_t
     background = true;
     may_miss   = false;
     dual       = true;
-
-    // can_feretory = false;
 
     spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
 
