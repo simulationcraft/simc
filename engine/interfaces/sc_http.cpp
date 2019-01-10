@@ -535,8 +535,9 @@ int http::get( std::string&       result,
     }
   }
 
-  // No result from the download process, grab it from the cache
-  if ( result.empty() )
+  // No result from the download process, grab it from the cache, only if the download process was
+  // returned OK status.
+  if ( result.empty() && response_code == 200 )
   {
     result = entry.result;
   }
