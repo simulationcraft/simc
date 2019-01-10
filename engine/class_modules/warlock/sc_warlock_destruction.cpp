@@ -63,6 +63,13 @@ namespace warlock {
       void init() override
       {
         warlock_spell_t::init();
+
+		if (can_havoc)
+		{
+          base_aoe_multiplier *= ()->spec.havoc->effectN( 1 ).percent();
+		  //available_targets() will handle Havoc target selection
+		  aoe = -1;
+		}
       }
 
       double cost() const override
@@ -73,17 +80,7 @@ namespace warlock {
 
       void execute() override
       {
-		if ( use_havoc() )
-		{
-			aoe = 2;
-			base_aoe_multiplier = p()->spec.havoc->effectN( 1 ).percent();
-			warlock_spell_t::execute();
-			aoe = 0;
-		}
-		else
-		{
-		  warlock_spell_t::execute();
-		}
+        warlock_spell_t::execute();
       }
 
       void consume_resource() override
@@ -173,7 +170,7 @@ namespace warlock {
         parse_options(options_str);
         energize_type = ENERGIZE_PER_HIT;
         energize_resource = RESOURCE_SOUL_SHARD;
-        energize_amount = (std::double_t(p->find_spell( 281490 )->effectN( 1 ).base_value()) / 10);
+        energize_amount = (p->find_spell( 281490 )->effectN( 1 ).base_value()) / 10.0;
 
         can_havoc = true;
       }
@@ -233,7 +230,7 @@ namespace warlock {
         parse_options(options_str);
 		energize_type = ENERGIZE_PER_HIT;
 		energize_resource = RESOURCE_SOUL_SHARD;
-		energize_amount = ( std::double_t( p->find_spell( 245731 )->effectN( 1 ).base_value() ) ) / 10;
+		energize_amount = ( p->find_spell( 245731 )->effectN( 1 ).base_value() ) / 10.0;
         can_havoc = true;
       }
 
@@ -357,7 +354,7 @@ namespace warlock {
 
         energize_type = ENERGIZE_PER_HIT;
 		energize_resource = RESOURCE_SOUL_SHARD;
-		energize_amount = ( std::double_t( p->find_spell( 245330 )->effectN( 1 ).base_value() ) ) / 10;
+		energize_amount = ( p->find_spell( 245330 )->effectN( 1 ).base_value() ) / 10.0;
 
         cooldown->charges += p->spec.conflagrate_2->effectN(1).base_value();
 
@@ -421,7 +418,7 @@ namespace warlock {
           base_multiplier *= p->talents.fire_and_brimstone->effectN(1).percent();
           energize_type = ENERGIZE_PER_HIT;
           energize_resource = RESOURCE_SOUL_SHARD;
-          energize_amount = std::double_t(p->talents.fire_and_brimstone->effectN(2).base_value()) / 10;
+          energize_amount = (p->talents.fire_and_brimstone->effectN(2).base_value()) / 10.0;
           gain = p->gains.incinerate_fnb;
         }
       }
@@ -506,7 +503,7 @@ namespace warlock {
 
         energize_type = ENERGIZE_PER_HIT;
         energize_resource = RESOURCE_SOUL_SHARD;
-        energize_amount = std::double_t(p->find_spell(244670)->effectN(1).base_value()) / 10;
+        energize_amount = (p->find_spell(244670)->effectN(1).base_value()) / 10.0;
       }
 
       double bonus_da( const action_state_t* s ) const override
@@ -535,7 +532,7 @@ namespace warlock {
       {
         timespan_t t = action_t::gcd();
 
-        if (t == timespan_t::zero())
+        if (t == 0_ms)
           return t;
 
         if (p()->buffs.backdraft->check() && !p()->buffs.chaotic_inferno->check() )
@@ -623,7 +620,7 @@ namespace warlock {
       {
         timespan_t t = warlock_spell_t::gcd();
 
-        if (t == timespan_t::zero())
+        if (t == 0_ms)
           return t;
 
         if (p()->buffs.backdraft->check())
@@ -811,7 +808,7 @@ namespace warlock {
         aoe = -1;
         background = true;
         dual = true;
-        trigger_gcd = timespan_t::zero();
+        trigger_gcd = 0_ms;
       }
     };
 
@@ -827,7 +824,7 @@ namespace warlock {
         parse_options(options_str);
 
         harmful = may_crit = false;
-        infernal_duration = p->find_spell(111685)->duration() + timespan_t::from_millis(1);
+        infernal_duration = p->find_spell(111685)->duration() + 1_ms;
         infernal_awakening = new infernal_awakening_t(p);
         infernal_awakening->stats = stats;
         radius = infernal_awakening->radius;
@@ -891,10 +888,10 @@ namespace warlock {
       {
         parse_options(options_str);
         aoe = -1;
-        dot_duration = timespan_t::zero();
+        dot_duration = 0_ms;
         may_miss = may_crit = false;
         base_tick_time = data().duration() / 8.0; // ticks 8 times (missing from spell data)
-        base_execute_time = timespan_t::zero(); // HOTFIX
+        base_execute_time = 0_ms; // HOTFIX
 
         if (!p->active.rain_of_fire)
         {
@@ -984,7 +981,7 @@ namespace warlock {
     buffs.active_havoc = make_buff( this, "active_havoc" )
       ->set_tick_behavior( buff_tick_behavior::NONE )
       ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-      ->set_duration( timespan_t::from_seconds( 10 ) );
+      ->set_duration( 10_s );
 
     buffs.reverse_entropy = make_buff( this, "reverse_entropy", talents.reverse_entropy )
       ->set_default_value( find_spell( 266030 )->effectN( 1 ).percent() )
