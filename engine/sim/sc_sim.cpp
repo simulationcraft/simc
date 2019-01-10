@@ -344,7 +344,10 @@ class names_and_options_t
 {
 private:
   static bool is_valid_region( const std::string& s )
-  { return s.size() == 2; }
+  {
+    static const std::vector<std::string> REGIONS { "us", "eu", "kr", "tw", "cn" };
+    return s.size() == 2 && range::find( REGIONS, s ) != REGIONS.end();
+  }
 
 public:
   typedef std::runtime_error error;
@@ -401,6 +404,8 @@ public:
       if ( names.size() > 2 )
       {
         region = names[ 0 ];
+        // Lowercase regions, always
+        std::transform( region.begin(), region.end(), region.begin(), tolower );
         server = names[ 1 ];
         names.erase( names.begin(), names.begin() + 2 );
       }
@@ -411,7 +416,8 @@ public:
     }
     if (!is_valid_region( region ))
     {
-      throw std::invalid_argument(fmt::format("Invalid region '{}'.", region));
+      throw std::invalid_argument(
+          fmt::format( "Invalid region '{}', available regions are: us, eu, kr, tw, cn.", region ) );
     }
 
     if ( server.empty() )
@@ -1050,7 +1056,7 @@ std::vector<std::string> get_api_key_locations()
 bool validate_api_key( const std::string& key )
 {
   // no better check for now than to measure its length.
-  return key.size() == 32;
+  return key.size() == 65;
 }
 
 /**
@@ -1083,7 +1089,7 @@ std::string get_api_key()
     }
     else
     {
-      std::cerr << "Blizzard API Key from file '" << filename << "' was not properly entered. (Size != 32)" << std::endl;
+      std::cerr << "Blizzard API credentials from file '" << filename << "' were not properly entered. (Size != 65)" << std::endl;
     }
   }
 
@@ -3478,6 +3484,7 @@ void sim_t::create_options()
   add_option( opt_bool( "monitor_cpu", event_mgr.monitor_cpu ) );
   add_option( opt_func( "maximize_reporting", parse_maximize_reporting ) );
   add_option( opt_string( "apikey", apikey ) );
+  add_option( opt_string( "apitoken", user_apitoken ) );
   add_option( opt_bool( "distance_targeting_enabled", distance_targeting_enabled ) );
   add_option( opt_bool( "ignore_invulnerable_targets", ignore_invulnerable_targets ) );
   add_option( opt_bool( "enable_dps_healing", enable_dps_healing ) );

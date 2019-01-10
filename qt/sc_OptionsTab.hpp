@@ -87,7 +87,7 @@ public:
   QButtonGroup* scalingButtonGroup;
   QButtonGroup* plotsButtonGroup;
   SC_ReforgeButtonGroup* reforgeplotsButtonGroup;
-  QLineEdit* apikey;
+  QLineEdit* api_client_id, * api_client_secret;
 public slots:
   void _resetallSettings();
   void _savefilelocation();

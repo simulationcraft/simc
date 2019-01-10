@@ -63,7 +63,6 @@ macx {
   contains(QMAKE_CXX, .+/clang\+\+) {
     QMAKE_CXXFLAGS += -Wno-inconsistent-missing-override
   }
-  LIBS += -framework Security
 
   CONFIG(sanitize) {
     QMAKE_CXXFLAGS += -fsanitize=address
@@ -72,7 +71,7 @@ macx {
 }
 
 win32 {
-  LIBS += -lwininet -lshell32
+  LIBS += -lshell32
   win32-msvc2013|win32-msvc2015 {
     QMAKE_CXXFLAGS_RELEASE += /Ot /MP
     QMAKE_CXXFLAGS_WARN_ON += /w44800 /w44100 /w44065
@@ -100,4 +99,28 @@ win32 {
   }
 }
 
+# Curl is now required for everything, on unixy systems use pkg-config to find it, on Windows,
+# require CURL_ROOT to be defined (in an environment variable or compilation definition) and
+# pointing to the base curl directory (dll found in CURL_ROOT/bin, includes in CURL_ROOT/include)
+!win32 {
+  isEmpty(SC_NO_NETWORKING) {
+    CONFIG += link_pkgconfig
+    PKGCONFIG += libcurl
+  }
+}
+
+win32 {
+  isEmpty(SC_NO_NETWORKING) {
+    isEmpty(CURL_ROOT) {
+      CURL_ROOT = $$(CURL_ROOT)
+    }
+
+    isEmpty(CURL_ROOT) {
+      error(Libcurl (https://curl.haxx.se) windows libraries must be built and output base directory set in CURL_ROOT)
+    }
+
+    INCLUDEPATH += "$$CURL_ROOT/include"
+    LIBS += "$$CURL_ROOT/lib/libcurl.lib"
+  }
+}
 
