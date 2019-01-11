@@ -41,17 +41,19 @@ namespace warlock {
 
       size_t available_targets(std::vector<player_t*>& tl) const override
       {
-        if (use_havoc())
+        if (can_havoc)
         {
           tl.clear();
           if ( !target->is_sleeping() )
+          {
             tl.push_back( target );
-          if ( !p()->havoc_target->is_sleeping())
-            tl.push_back(p()->havoc_target);
+            if ( !p()->havoc_target->is_sleeping() && use_havoc() )
+              tl.push_back(p()->havoc_target);
+          }
         }
         else
         {
-           warlock_spell_t::available_targets( tl );
+          warlock_spell_t::available_targets( tl );
         }
 
         return tl.size();
@@ -67,6 +69,15 @@ namespace warlock {
           //available_targets() will handle Havoc target selection
           aoe = -1;
         }
+      }
+
+      //TODO: Implement triggering on Havoc buff trigger/expiration instead of invalidating on every possible call
+      std::vector<player_t*>& target_list() const override
+      {
+        if(can_havoc)
+          target_cache.is_valid = false;
+
+        return warlock_spell_t::target_list();
       }
 
       void consume_resource() override
@@ -643,7 +654,9 @@ namespace warlock {
 
         if(p()->azerite.chaotic_inferno.ok())
           p()->buffs.chaotic_inferno->trigger();
+
         p()->buffs.crashing_chaos->decrement();
+        p()->buffs.backdraft->decrement();
       }
 
       // Force spell to always crit
