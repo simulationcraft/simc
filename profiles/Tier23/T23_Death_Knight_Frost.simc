@@ -145,8 +145,8 @@ hands=stormwrought_gauntlets,id=165556,bonus_id=4800/1537
 waist=hullplate_girdle,id=165559,bonus_id=4800/1537
 legs=arcing_thunderlizard_legplates,id=165560,bonus_id=4800/1537
 feet=coinage_stampers,id=165561,bonus_id=4800/1537
-finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_haste
-finger2=band_of_multisided_strikes,id=165565,bonus_id=4800/1537,enchant=pact_of_haste
+finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_mastery
+finger2=band_of_multisided_strikes,id=165565,bonus_id=4800/1537,enchant=pact_of_mastery
 trinket1=vial_of_animated_blood,id=159625,bonus_id=4779/1572
 trinket2=everchill_anchor,id=165570,bonus_id=4800/1537
 main_hand=apetagonizers_claw,id=165920,bonus_id=4800/1537,enchant=rune_of_razorice
