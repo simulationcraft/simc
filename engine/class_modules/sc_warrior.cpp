@@ -5215,18 +5215,19 @@ void warrior_t::apl_prot()
     prot->add_action( "potion,if=target.time_to_die<25" );
   }
 
-  prot->add_action( this, "Avatar" );
+  prot->add_action( this, "Avatar,if=(cooldown.demoralizing_shout.remains>5)" );
   prot->add_action( this, "Demoralizing Shout" );
   prot->add_action( this, "Ravager", "if=talent.ravager.enabled" );
+  prot->add_action( this, "Dragon Roar", "if=talent.dragon_roar.enabled" );
+  prot->add_action( this, "Thunder Clap", "if=(talent.unstoppable_force.enabled&buff.avatar.up&debuff.demoralizing_shout_debuff.up)" );
   prot->add_action( this, "Shield Block", "if=cooldown.shield_slam.remains=0" );
-  prot->add_action( this, "Ignore Pain" );
-  prot->add_action( this, "Thunder Clap", "if=(debuff.demoralizing_shout_debuff.up&azerite.deafening_crash.enabled)" );
   prot->add_action( this, "Shield Slam" );
+  prot->add_action( this, "Thunder Clap" );
   prot->add_action( this, "Revenge",
                     "if=(!talent.vengeance.enabled)|(talent.vengeance.enabled&buff.revenge.react&!buff.vengeance_"
                     "ignore_pain.up)|(buff.vengeance_revenge.up)|(talent.vengeance.enabled&!buff.vengeance_ignore_pain."
                     "up&!buff.vengeance_revenge.up&rage>=30)" );
-  prot->add_action( this, "Thunder Clap" );
+  prot->add_action( this, "Ignore Pain", "use_off_gcd=1,if=rage>90" );
   prot->add_action( this, "Devastate" );
 }
 
