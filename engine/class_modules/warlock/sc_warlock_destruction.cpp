@@ -44,8 +44,10 @@ namespace warlock {
 		if (use_havoc())
 		{
 		  tl.clear();
-		  tl.push_back( target );
-		  tl.push_back(p()->havoc_target);
+		  if ( !target->is_sleeping() )
+            tl.push_back( target );
+		  if ( !p()->havoc_target->is_sleeping())
+		    tl.push_back(p()->havoc_target);
 		}
 		else
 		{
@@ -124,9 +126,7 @@ namespace warlock {
         if (p()->mastery_spells.chaotic_energies->ok() && destro_mastery)
         {
           double destro_mastery_value = p()->cache.mastery_value() / 2.0;
-          double chaotic_energies_rng;
-
-          chaotic_energies_rng = rng().range(0, destro_mastery_value);
+          double chaotic_energies_rng = rng().range(0, destro_mastery_value);
 
           pm *= 1.0 + chaotic_energies_rng + (destro_mastery_value);
         }
