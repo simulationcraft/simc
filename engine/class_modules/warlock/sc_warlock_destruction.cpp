@@ -376,7 +376,6 @@ namespace warlock {
       {
         destruction_spell_t::execute();
 
-        //This used to be in impact() but in game it occurs on cast and does not generate a second stack when copied with Havoc
         p()->buffs.backdraft->trigger( 1 + (p()->talents.flashover->ok() ? p()->talents.flashover->effectN( 1 ).base_value() : 0) );
 
         auto td = this->td(target);
