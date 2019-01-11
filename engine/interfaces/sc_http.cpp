@@ -92,13 +92,13 @@ class curl_handle_t
     std::transform( key.begin(), key.end(), key.begin(), tolower );
 
     // Prune whitespaces from values
-    while ( value.back() == ' ' || value.back() == '\n' ||
-            value.back() == '\t' || value.back() == '\r' )
+    while ( !value.empty() && ( value.back() == ' ' || value.back() == '\n' ||
+            value.back() == '\t' || value.back() == '\r' ) )
     {
       value.pop_back();
     }
 
-    while ( value.front() == ' ' )
+    while ( !value.empty() && ( value.front() == ' ' || value.front() == '\t' ) )
     {
       value.erase( value.begin() );
     }
@@ -279,22 +279,6 @@ void cache_clear()
   url_db.clear();
 }
 
-#if defined( NO_HTTP )
-
-// ==========================================================================
-// NO HTTP-DOWNLOAD SUPPORT
-// ==========================================================================
-
-// download =================================================================
-
-bool download( url_cache_entry_t&, std::string&, const std::string&,
-               const std::vector<std::string>& = {} )
-{
-  return false;
-}
-
-#else
-
 // download =================================================================
 
 int download( url_cache_entry_t&              entry,
@@ -357,8 +341,6 @@ int download( url_cache_entry_t&              entry,
 
   return response_code;
 }
-
-#endif /* defined( NO_HTTP ) */
 
 } // UNNAMED NAMESPACE ====================================================
 
@@ -553,8 +535,9 @@ int http::get( std::string&       result,
     }
   }
 
-  // No result from the download process, grab it from the cache
-  if ( result.empty() )
+  // No result from the download process, grab it from the cache, only if the download process was
+  // returned OK status.
+  if ( result.empty() && response_code == 200 )
   {
     result = entry.result;
   }

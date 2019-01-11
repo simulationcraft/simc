@@ -1023,6 +1023,7 @@ struct regen_event_t : public event_t
   }
 };
 
+#ifndef SC_NO_NETWORKING
 /// List of files from which to look for Blizzard API key
 std::vector<std::string> get_api_key_locations()
 {
@@ -1093,11 +1094,12 @@ std::string get_api_key()
     }
   }
 
-#if defined(SC_DEFAULT_APIKEY)
+#if defined( SC_DEFAULT_APIKEY )
   return std::string(SC_DEFAULT_APIKEY);
-#endif
+#endif /* SC_DEFAULT_APIKEY */
   return std::string();
 }
+#endif /* SC_NO_NETWORKING */
 
 /// Setup a periodic check for Bloodlust
 struct bloodlust_check_t : public event_t
@@ -1399,7 +1401,9 @@ sim_t::sim_t() :
   solo_raid( false ),
   global_item_upgrade_level( 0 ),
   maximize_reporting( false ),
+#ifndef SC_NO_NETWORKING
   apikey( get_api_key() ),
+#endif
   distance_targeting_enabled( false ),
   ignore_invulnerable_targets( false ),
   enable_dps_healing( false ),

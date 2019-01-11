@@ -231,6 +231,7 @@ bool download( sim_t*               sim,
       // our bearer token successfully, there's no point in trying again
       if ( !sim->user_apitoken.empty() )
       {
+        sim->error( "Invalid user 'apitoken' option value '{}'", sim->user_apitoken );
         return false;
       }
 
