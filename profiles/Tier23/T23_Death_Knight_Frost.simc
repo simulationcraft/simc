@@ -7,7 +7,6 @@ role=attack
 position=back
 talents=3302013
 
-
 # Default consumables
 potion=battle_potion_of_strength
 flask=flask_of_the_undertow
@@ -136,11 +135,11 @@ actions.standard+=/frost_strike
 actions.standard+=/horn_of_winter
 actions.standard+=/arcane_torrent
 
-head=helm_of_tempered_jade,id=165548,bonus_id=1542/4824,azerite_powers=108/562/31/465/13
+head=helm_of_tempered_jade,id=165548,bonus_id=1537/4824,azerite_powers=108/562/31/465/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
-shoulders=dyno_sprocket_spaulders,id=165825,bonus_id=1542/4824,azerite_powers=242/562/459/14/13
+shoulders=dyno_sprocket_spaulders,id=165825,bonus_id=1537/4824,azerite_powers=242/562/459/14/13
 back=high_tinkers_cape,id=165924,bonus_id=4800/1537
-chest=breastplate_of_divine_purification,id=165550,bonus_id=1542/4824,azerite_powers=108/562/461/13
+chest=breastplate_of_divine_purification,id=165550,bonus_id=1537/4824,azerite_powers=108/562/461/13
 wrists=splinterbone_vambraces,id=165551,bonus_id=4800/1537
 hands=stormwrought_gauntlets,id=165556,bonus_id=4800/1537
 waist=hullplate_girdle,id=165559,bonus_id=4800/1537
@@ -154,11 +153,11 @@ main_hand=apetagonizers_claw,id=165920,bonus_id=4800/1537,enchant=rune_of_razori
 off_hand=apetagonizers_claw,id=165920,bonus_id=4800/1537,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=416.19
-# gear_strength=5796
-# gear_stamina=9919
-# gear_crit_rating=1037
-# gear_haste_rating=633
-# gear_mastery_rating=1226
-# gear_versatility_rating=470
-# gear_armor=5052
+# gear_ilvl=416.00
+# gear_strength=5814
+# gear_stamina=10077
+# gear_crit_rating=846
+# gear_haste_rating=1186
+# gear_mastery_rating=644
+# gear_versatility_rating=688
+# gear_armor=5104
