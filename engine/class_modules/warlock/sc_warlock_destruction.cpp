@@ -47,7 +47,7 @@ namespace warlock {
           if ( !target->is_sleeping() )
           {
             tl.push_back( target );
-            if ( !p()->havoc_target->is_sleeping() && use_havoc() )
+            if ( use_havoc() && !p()->havoc_target->is_sleeping() )
               tl.push_back(p()->havoc_target);
           }
         }
