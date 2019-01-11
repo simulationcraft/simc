@@ -1,11 +1,12 @@
-deathknight="T23_Death_Knight_Frost"
+deathknight="Frost_Death_Knight"
 source=default
 spec=frost
 level=120
-race=orc
+race=blood_elf
 role=attack
 position=back
-talents=3102033
+talents=3302013
+
 
 # Default consumables
 potion=battle_potion_of_strength
@@ -135,19 +136,19 @@ actions.standard+=/frost_strike
 actions.standard+=/horn_of_winter
 actions.standard+=/arcane_torrent
 
-head=helm_of_abyssal_malevolence,id=159430,bonus_id=5062/1587/4786/4775,azerite_powers=108/478/462/549/13
+head=helm_of_tempered_jade,id=165548,bonus_id=1542/4824,azerite_powers=108/562/31/465/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
-shoulders=skyscorcher_pauldrons,id=159415,bonus_id=5062/1587/4786/4775,azerite_powers=198/504/31/85/13
+shoulders=dyno_sprocket_spaulders,id=165825,bonus_id=1542/4824,azerite_powers=242/562/459/14/13
 back=high_tinkers_cape,id=165924,bonus_id=4800/1537
-chest=chestguard_of_the_deep_denizen,id=159408,bonus_id=5062/1587/4786/4775,azerite_powers=242/193/31/549/13
+chest=breastplate_of_divine_purification,id=165550,bonus_id=1542/4824,azerite_powers=108/562/461/13
 wrists=splinterbone_vambraces,id=165551,bonus_id=4800/1537
 hands=stormwrought_gauntlets,id=165556,bonus_id=4800/1537
 waist=hullplate_girdle,id=165559,bonus_id=4800/1537
 legs=arcing_thunderlizard_legplates,id=165560,bonus_id=4800/1537
 feet=coinage_stampers,id=165561,bonus_id=4800/1537
-finger1=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_mastery
-finger2=band_of_multisided_strikes,id=165565,bonus_id=4800/1537,enchant=pact_of_mastery
-trinket1=ramping_amplitude_gigavolt_engine,id=165580,bonus_id=4800/1537
+finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_haste
+finger2=band_of_multisided_strikes,id=165565,bonus_id=4800/1537,enchant=pact_of_haste
+trinket1=vial_of_animated_blood,id=159625,bonus_id=4779/1572
 trinket2=everchill_anchor,id=165570,bonus_id=4800/1537
 main_hand=apetagonizers_claw,id=165920,bonus_id=4800/1537,enchant=rune_of_razorice
 off_hand=apetagonizers_claw,id=165920,bonus_id=4800/1537,enchant=rune_of_the_fallen_crusader
