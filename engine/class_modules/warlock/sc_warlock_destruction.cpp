@@ -36,37 +36,37 @@ namespace warlock {
 
       bool use_havoc() const
       {
-		return can_havoc && target != p()->havoc_target && p()->havoc_target != nullptr && p()->buffs.active_havoc->check();
+        return can_havoc && target != p()->havoc_target && p()->havoc_target != nullptr && p()->buffs.active_havoc->check();
       }
 
-	  size_t available_targets(std::vector<player_t*>& tl) const override
-	  {
-		if (use_havoc())
-		{
-		  tl.clear();
-		  if ( !target->is_sleeping() )
+      size_t available_targets(std::vector<player_t*>& tl) const override
+      {
+        if (use_havoc())
+        {
+          tl.clear();
+          if ( !target->is_sleeping() )
             tl.push_back( target );
-		  if ( !p()->havoc_target->is_sleeping())
-		    tl.push_back(p()->havoc_target);
-		}
-		else
-		{
-		  warlock_spell_t::available_targets( tl );
-		}
+          if ( !p()->havoc_target->is_sleeping())
+            tl.push_back(p()->havoc_target);
+        }
+        else
+        {
+           warlock_spell_t::available_targets( tl );
+        }
 
-		return tl.size();
-	  }
+        return tl.size();
+      }
 
       void init() override
       {
         warlock_spell_t::init();
 
-		if (can_havoc)
-		{
+        if (can_havoc)
+        {
           base_aoe_multiplier *= p()->spec.havoc->effectN( 1 ).percent();
-		  //available_targets() will handle Havoc target selection
-		  aoe = -1;
-		}
+          //available_targets() will handle Havoc target selection
+          aoe = -1;
+        }
       }
 
       void consume_resource() override
@@ -118,7 +118,7 @@ namespace warlock {
         return m;
       }
 
-	  //TODO: Check order of multipliers on Havoc'd spells
+      //TODO: Check order of multipliers on Havoc'd spells
       double action_multiplier() const override
       {
         double pm = warlock_spell_t::action_multiplier();
@@ -207,9 +207,9 @@ namespace warlock {
         destruction_spell_t("shadowburn", p, p -> talents.shadowburn)
       {
         parse_options(options_str);
-		energize_type = ENERGIZE_PER_HIT;
-		energize_resource = RESOURCE_SOUL_SHARD;
-		energize_amount = ( p->find_spell( 245731 )->effectN( 1 ).base_value() ) / 10.0;
+        energize_type = ENERGIZE_PER_HIT;
+        energize_resource = RESOURCE_SOUL_SHARD;
+        energize_amount = ( p->find_spell( 245731 )->effectN( 1 ).base_value() ) / 10.0;
         can_havoc = true;
       }
 
@@ -224,7 +224,7 @@ namespace warlock {
       }
     };
 
-	//TODO: Check the status of the comment below
+    //TODO: Check the status of the comment below
     struct roaring_blaze_t : public destruction_spell_t {
       roaring_blaze_t(warlock_t* p) :
         destruction_spell_t("roaring_blaze", p, p -> find_spell(265931))
@@ -280,7 +280,7 @@ namespace warlock {
       }
     };
 
-	//TODO: Check if initial damage of Immolate is reduced on Havoc'd target
+    //TODO: Check if initial damage of Immolate is reduced on Havoc'd target
     struct immolate_t : public destruction_spell_t
     {
       immolate_t(warlock_t* p, const std::string& options_str) :
@@ -291,7 +291,7 @@ namespace warlock {
 
         can_havoc = true;
 
-		//All of the DoT data for Immolate is in spell 157736
+        //All of the DoT data for Immolate is in spell 157736
         base_tick_time = dmg_spell->effectN(1).period();
         dot_duration = dmg_spell->duration();
         spell_power_mod.tick = dmg_spell->effectN(1).sp_coeff();
@@ -332,8 +332,8 @@ namespace warlock {
         can_havoc = true;
 
         energize_type = ENERGIZE_PER_HIT;
-		energize_resource = RESOURCE_SOUL_SHARD;
-		energize_amount = ( p->find_spell( 245330 )->effectN( 1 ).base_value() ) / 10.0;
+        energize_resource = RESOURCE_SOUL_SHARD;
+        energize_amount = ( p->find_spell( 245330 )->effectN( 1 ).base_value() ) / 10.0;
 
         cooldown->charges += p->spec.conflagrate_2->effectN(1).base_value();
 
@@ -354,10 +354,10 @@ namespace warlock {
         if (result_is_hit(s->result))
         {
           if ( p()->talents.roaring_blaze->ok() )
-		  {
+          {
             roaring_blaze->set_target( s->target );
             roaring_blaze->execute();
-		  }
+          }
         }
       }
 
@@ -365,8 +365,8 @@ namespace warlock {
       {
         destruction_spell_t::execute();
 
-		//This used to be in impact() but in game it occurs on cast and does not generate a second stack when copied with Havoc
-		p()->buffs.backdraft->trigger( 1 + (p()->talents.flashover->ok() ? p()->talents.flashover->effectN( 1 ).base_value() : 0) );
+        //This used to be in impact() but in game it occurs on cast and does not generate a second stack when copied with Havoc
+        p()->buffs.backdraft->trigger( 1 + (p()->talents.flashover->ok() ? p()->talents.flashover->effectN( 1 ).base_value() : 0) );
 
         auto td = this->td(target);
         if (p()->azerite.bursting_flare.ok() && td->dots_immolate->is_ticking())
@@ -431,14 +431,14 @@ namespace warlock {
         }
 
         // nor the havoced target if applicable
-		if (use_havoc() )
-		{
+        if (use_havoc() )
+        {
           it = range::find(tl, p()->havoc_target);
           if (it != tl.end())
           {
             tl.erase(it);
           }
-		}
+        }
         return tl.size();
       }
 
@@ -728,7 +728,7 @@ namespace warlock {
         immolate_action_id = p()->find_action_id("immolate");
       }
 
-	  //TODO: This is suboptimal, can this be changed to available_targets() in some way?
+      //TODO: This is suboptimal, can this be changed to available_targets() in some way?
       std::vector< player_t* >& target_list() const override
       {
         target_cache.list = destruction_spell_t::target_list();
