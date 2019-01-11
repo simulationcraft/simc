@@ -55,11 +55,6 @@ namespace warlock {
 		return tl.size();
 	  }
 
-      void reset() override
-      {
-        warlock_spell_t::reset();
-      }
-
       void init() override
       {
         warlock_spell_t::init();
@@ -70,17 +65,6 @@ namespace warlock {
 		  //available_targets() will handle Havoc target selection
 		  aoe = -1;
 		}
-      }
-
-      double cost() const override
-      {
-        double c = warlock_spell_t::cost();
-        return c;
-      }
-
-      void execute() override
-      {
-        warlock_spell_t::execute();
       }
 
       void consume_resource() override
@@ -119,11 +103,6 @@ namespace warlock {
             p()->procs.reverse_entropy->occur();
           }
         }
-      }
-
-      virtual void update_ready(timespan_t cd_duration) override
-      {
-        warlock_spell_t::update_ready(cd_duration);
       }
 
       double composite_target_multiplier(player_t* t) const override
@@ -375,7 +354,10 @@ namespace warlock {
         if (result_is_hit(s->result))
         {
           if ( p()->talents.roaring_blaze->ok() )
+		  {
+            roaring_blaze->set_target( s->target );
             roaring_blaze->execute();
+		  }
         }
       }
 
@@ -448,19 +430,16 @@ namespace warlock {
           tl.erase(it);
         }
 
-        // nor the havoced target
-        it = range::find(tl, p()->havoc_target);
-        if (it != tl.end())
-        {
-          tl.erase(it);
-        }
-
+        // nor the havoced target if applicable
+		if (use_havoc() )
+		{
+          it = range::find(tl, p()->havoc_target);
+          if (it != tl.end())
+          {
+            tl.erase(it);
+          }
+		}
         return tl.size();
-      }
-
-      void execute() override
-      {
-        destruction_spell_t::execute();
       }
 
       void impact(action_state_t* s) override
