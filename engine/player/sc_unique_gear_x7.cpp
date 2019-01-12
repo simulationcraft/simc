@@ -133,6 +133,7 @@ namespace items
   void incandescent_sliver( special_effect_t& );
   void invocation_of_yulon( special_effect_t& );
   void variable_intensity_gigavolt_oscillating_reactor( special_effect_t& );
+  void variable_intensity_gigavolt_oscillating_reactor_onuse( special_effect_t& );
 }
 
 namespace util
@@ -1757,7 +1758,14 @@ struct vigor_engaged_t : public special_effect_t
 
   void extend_oscillation( const timespan_t& by_seconds )
   {
-    tick_event->reschedule( player->sim->current_time() + by_seconds );
+    if ( player->sim->debug )
+    {
+      player->sim->out_debug.print( "{} {} oscillation overload, remains={}, new_remains={}",
+        player->name(), name(), tick_event->remains(),
+        tick_event->remains() + by_seconds );
+    }
+
+    tick_event->reschedule( tick_event->remains() + by_seconds );
   }
 
   void oscillate()
@@ -1888,6 +1896,40 @@ void items::variable_intensity_gigavolt_oscillating_reactor( special_effect_t& e
   }
 }
 
+void items::variable_intensity_gigavolt_oscillating_reactor_onuse( special_effect_t& effect )
+{
+  struct oscillating_overload_t : public buff_t
+  {
+    vigor_engaged_t* driver;
+
+    oscillating_overload_t( player_t* p, const std::string& name, const spell_data_t* spell, const item_t* item ) :
+      buff_t( p, name, spell, item ), driver( nullptr )
+    { }
+
+    void execute( int stacks, double value, timespan_t duration ) override
+    {
+      buff_t::execute( stacks, value, duration );
+
+      // Find the special effect for the on-equip on first execute of the on-use effect. Otherwise
+      // we run into init issues.
+      if ( !driver )
+      {
+        auto it = range::find_if( player->special_effects, []( special_effect_t* effect ) {
+          return effect->spell_id == 287915;
+        } );
+
+        assert( it != player->special_effects.end() );
+        driver = static_cast<vigor_engaged_t*>( *it );
+      }
+
+      driver->extend_oscillation( data().duration() );
+    }
+  };
+
+  effect.custom_buff = create_buff<oscillating_overload_t>( effect.player, "oscillating_overload",
+      effect.driver(), effect.item );
+}
+
 //Waycrest's Legacy Set Bonus ============================================
 
 void set_bonus::waycrest_legacy( special_effect_t& effect )
@@ -1974,6 +2016,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 289521, items::invocation_of_yulon );
   register_special_effect( 288328, "288330Trigger" ); // Kimbul's Razor Claw
   register_special_effect( 287915, items::variable_intensity_gigavolt_oscillating_reactor );
+  register_special_effect( 287917, items::variable_intensity_gigavolt_oscillating_reactor_onuse );
 
   // Misc
   register_special_effect( 276123, items::darkmoon_deck_squalls );
