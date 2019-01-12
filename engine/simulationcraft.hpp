@@ -1126,6 +1126,8 @@ struct sim_t : private sc_thread_t
     double              seductive_power_pickup_chance = 1.0;
     /// Initial stacks for Seductive Power buff
     int                 initial_seductive_power_stacks = 0;
+    /// Randomize Variable Intensity Gigavolt Oscillating Reactor start-of-combat oscillation
+    bool                randomize_oscillation = true;
   } bfa_opts;
 
   // Expansion specific data

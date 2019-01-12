@@ -3572,7 +3572,8 @@ void sim_t::create_options()
         bfa_opts.seductive_power_pickup_chance, 0.0, 1.0 ) );
   add_option( opt_int( "bfa.initial_seductive_power_stacks",
         bfa_opts.initial_seductive_power_stacks, 0, 5 ) );
-
+  add_option( opt_bool( "bfa.randomize_oscillation",
+        bfa_opts.randomize_oscillation ) );
 
   // applies to: "lavish_suramar_feast", battle for azeroth feasts
   add_option( opt_bool( "feast_as_dps", feast_as_dps ) );

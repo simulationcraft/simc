@@ -132,6 +132,7 @@ namespace items
   // 8.1.0 - Battle of Dazar'alor Trinkets
   void incandescent_sliver( special_effect_t& );
   void invocation_of_yulon( special_effect_t& );
+  void variable_intensity_gigavolt_oscillating_reactor( special_effect_t& );
 }
 
 namespace util
@@ -1686,6 +1687,207 @@ void items::invocation_of_yulon( special_effect_t& effect )
   effect.execute_action->travel_speed = effect.driver()->missile_speed();
 }
 
+// Variable Intensity Gigavolt Oscillating Reactor =======================
+
+struct vigor_engaged_t : public special_effect_t
+{
+  // Phases of the buff
+  enum oscillation : unsigned
+  {
+    ASCENDING = 0u,     // Ascending towards max stack
+    MAX_STACK,          // Coasting at max stack
+    DESCENDING,         // Descending towards zero stack
+    INACTIVE,           // Hibernating at zero stack
+    MAX_STATES
+  };
+
+  oscillation current_oscillation = oscillation::ASCENDING;
+  unsigned ticks_at_oscillation = 0u;
+  std::array<unsigned, oscillation::MAX_STATES> max_ticks;
+  std::array<oscillation, oscillation::MAX_STATES> transition_map = {
+    MAX_STACK, DESCENDING, INACTIVE, ASCENDING
+  };
+
+  event_t* tick_event     = nullptr;
+  stat_buff_t* vigor_buff = nullptr;
+  buff_t* cooldown_buff   = nullptr;
+
+  static std::string oscillation_str( oscillation s )
+  {
+    switch ( s )
+    {
+      case oscillation::ASCENDING:  return "ascending";
+      case oscillation::DESCENDING: return "descending";
+      case oscillation::MAX_STACK:  return "max_stack";
+      case oscillation::INACTIVE:   return "inactive";
+      default:                      return "unknown";
+    }
+  }
+
+  vigor_engaged_t( const special_effect_t& effect ) : special_effect_t( effect )
+  {
+    // Initialize max oscillations from spell data, buff-adjusting phases are -1 ticks, since the
+    // transition event itself adjusts the buff stack count by one (up or down)
+    max_ticks[ ASCENDING ] = max_ticks[ DESCENDING ] = driver()->effectN( 2 ).base_value() - 1;
+    max_ticks[ MAX_STACK ] = max_ticks[ INACTIVE ] = driver()->effectN( 3 ).base_value();
+
+    vigor_buff = ::create_buff<stat_buff_t>( effect.player, "vigor_engaged",
+        effect.player->find_spell( 287916 ), effect.item );
+    vigor_buff->add_stat( STAT_CRIT_RATING, driver()->effectN( 1 ).average( effect.item ) );
+
+    cooldown_buff = ::create_buff<buff_t>( effect.player, "vigor_cooldown",
+        effect.player->find_spell( 287967 ), effect.item );
+
+    effect.player->callbacks_on_arise.push_back( [ this ]() {
+      reset_oscillation();
+
+      if ( !player->sim->bfa_opts.randomize_oscillation )
+      {
+        do_oscillation_transition();
+        tick_event = make_event( player->sim, driver()->effectN( 1 ).period(),
+          [ this ]() { oscillate(); } );
+      }
+      // If we are randomizing the initial oscillation, don't do any oscillation transition on arise
+      else
+      {
+        randomize_oscillation();
+      }
+    } );
+  }
+
+  void extend_oscillation( const timespan_t& by_seconds )
+  {
+    tick_event->reschedule( player->sim->current_time() + by_seconds );
+  }
+
+  void oscillate()
+  {
+    ticks_at_oscillation++;
+    do_oscillation_transition();
+
+    tick_event = make_event( player->sim, driver()->effectN( 1 ).period(),
+      [ this ]() { oscillate(); } );
+  }
+
+  void transition_to( oscillation new_oscillation )
+  {
+    if ( player->sim->debug )
+    {
+      player->sim->out_debug.print( "{} {} transition from {} to {}",
+        player->name(), name(), oscillation_str( current_oscillation ),
+        oscillation_str( new_oscillation ) );
+    }
+
+    current_oscillation = new_oscillation;
+    ticks_at_oscillation = 0u;
+  }
+
+  void do_oscillation_transition()
+  {
+    if ( player->sim->debug )
+    {
+      player->sim->out_debug.print( "{} {} oscillation at {}, ticks={}, max_ticks={}",
+        player->name(), name(), oscillation_str( current_oscillation ), ticks_at_oscillation,
+        max_ticks[ current_oscillation ] );
+    }
+
+    auto at_max_stack = ticks_at_oscillation == max_ticks[ current_oscillation ];
+    switch ( current_oscillation )
+    {
+      case oscillation::ASCENDING:
+      case oscillation::DESCENDING:
+        vigor_buff->trigger();
+        if ( !vigor_buff->check() )
+        {
+          cooldown_buff->trigger();
+        }
+        break;
+      case oscillation::INACTIVE:
+      case oscillation::MAX_STACK:
+        if ( at_max_stack )
+        {
+          vigor_buff->reverse = !vigor_buff->reverse;
+          vigor_buff->trigger();
+        }
+        break;
+      default:
+        break;
+    }
+
+    if ( at_max_stack )
+    {
+      transition_to( transition_map[ current_oscillation ] );
+    }
+  }
+
+  // Randomize oscillation state to any of the four states, and any time inside the phase
+  void randomize_oscillation()
+  {
+    oscillation phase = static_cast<oscillation>( player->rng().range( oscillation::ASCENDING,
+      oscillation::MAX_STATES ) );
+    double used_time = player->rng().range( 0, max_ticks[ phase ] *
+        driver()->effectN( 1 ).period().total_seconds() );
+    int ticks = used_time / driver()->effectN( 1 ).period().total_seconds();
+    double elapsed_tick_time = used_time - ticks * driver()->effectN( 1 ).period().total_seconds();
+    double time_to_next_tick = driver()->effectN( 1 ).period().total_seconds() - elapsed_tick_time;
+
+    if ( player->sim->debug )
+    {
+      player->sim->out_debug.print( "{} {} randomized oscillation, oscillation={}, used_time={}, "
+                                    "ticks={}, next_tick_in={}, phase_left={}",
+        player->name(), name(), oscillation_str( phase ), used_time, ticks, time_to_next_tick,
+        max_ticks[ phase ] * driver()->effectN( 1 ).period() - timespan_t::from_seconds( used_time ) );
+    }
+
+    switch ( phase )
+    {
+      case oscillation::ASCENDING:
+        vigor_buff->trigger( 1 + ticks );
+        break;
+      case oscillation::DESCENDING:
+        vigor_buff->trigger( vigor_buff->max_stack() - ( 1 + ticks ) );
+        vigor_buff->reverse = true;
+        break;
+      case oscillation::MAX_STACK:
+        vigor_buff->trigger( vigor_buff->max_stack() );
+        break;
+      case oscillation::INACTIVE:
+        vigor_buff->reverse = true;
+        cooldown_buff->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0,
+          max_ticks[ phase ] * driver()->effectN( 1 ).period() - timespan_t::from_seconds( used_time ) );
+        break;
+      default:
+        break;
+    }
+
+    current_oscillation = phase;
+    ticks_at_oscillation = as<unsigned>( ticks );
+    tick_event = make_event( player->sim, timespan_t::from_seconds( time_to_next_tick ),
+      [ this ]() { oscillate(); } );
+  }
+
+  void reset_oscillation()
+  {
+    transition_to( oscillation::ASCENDING );
+    vigor_buff->reverse = false;
+  }
+};
+
+void items::variable_intensity_gigavolt_oscillating_reactor( special_effect_t& e )
+{
+  // Ensure the sim don't do stupid things if someone thinks it wise to try initializing 2 of these
+  // trinkets on a single actor
+  auto it = range::find_if( e.player->special_effects, [&e]( const special_effect_t* effect ) {
+    return e.spell_id == effect->spell_id;
+  } );
+
+  if ( it == e.player->special_effects.end() )
+  {
+    e.player->special_effects.push_back( new vigor_engaged_t( e ) );
+    e.type = SPECIAL_EFFECT_NONE;
+  }
+}
+
 //Waycrest's Legacy Set Bonus ============================================
 
 void set_bonus::waycrest_legacy( special_effect_t& effect )
@@ -1771,6 +1973,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 289522, items::incandescent_sliver );
   register_special_effect( 289521, items::invocation_of_yulon );
   register_special_effect( 288328, "288330Trigger" ); // Kimbul's Razor Claw
+  register_special_effect( 287915, items::variable_intensity_gigavolt_oscillating_reactor );
 
   // Misc
   register_special_effect( 276123, items::darkmoon_deck_squalls );
