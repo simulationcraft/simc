@@ -288,6 +288,7 @@ public:
     spell_t* searing_assault;
     spell_t* molten_weapon;
     action_t* molten_weapon_dot;
+    action_t* fury_of_air;
 
     // Azerite
     spell_t* lightning_conduit;
@@ -348,6 +349,7 @@ public:
     buff_t* feral_spirit;
     buff_t* flametongue;
     buff_t* frostbrand;
+    buff_t* fury_of_air;
     buff_t* hot_hand;
     buff_t* lightning_shield;
     buff_t* lightning_shield_overcharge;
@@ -409,6 +411,7 @@ public:
     gain_t* resurgence;
     gain_t* feral_spirit;
     gain_t* fire_elemental;
+    gain_t* fury_of_air;
     gain_t* spirit_of_the_maelstrom;
     gain_t* resonance_totem;
     gain_t* forceful_winds;
@@ -4114,15 +4117,68 @@ struct fury_of_air_t : public shaman_spell_t
   fury_of_air_t( shaman_t* player, const std::string& options_str )
     : shaman_spell_t( "fury_of_air", player, player->talent.fury_of_air, options_str )
   {
-    hasted_ticks = callbacks = false;
+    callbacks = false;
 
-    tick_action = new fury_of_air_aoe_t( player );
+    // Handled by the buff
+    base_tick_time = timespan_t::zero();
+
+    if ( player->action.fury_of_air )
+    {
+      add_child( player->action.fury_of_air );
+    }
   }
 
-  // Infinite duration, so lets go for twice expected time gimmick.
-  timespan_t composite_dot_duration( const action_state_t* ) const override
+  void init() override
   {
-    return sim->expected_iteration_time * 2;
+    shaman_spell_t::init();
+
+    // Set up correct gain object to collect resource spending information on the ticking buff
+    p()->gain.fury_of_air = &( stats->resource_gain );
+  }
+
+  timespan_t gcd() const override
+  {
+    // Disabling Fury of Air does not incur a global cooldown
+    if ( p()->buff.fury_of_air->check() )
+    {
+      return timespan_t::zero();
+    }
+
+    return shaman_spell_t::gcd();
+  }
+
+  double cost() const override
+  {
+    // Disabling Fury of Air costs an amount of maelstrom relative to the elapsed tick time of the
+    // on-going tick .. probably
+    if ( p()->buff.fury_of_air->check() )
+    {
+      return base_costs[ RESOURCE_MAELSTROM ] *
+        ( 1 - p()->buff.fury_of_air->tick_event->remains() / data().effectN( 1 ).period() );
+    }
+
+    return shaman_spell_t::cost();
+  }
+
+  void execute() override
+  {
+    // Don't record disables by setting dual = true before executing
+    if ( p()->buff.fury_of_air->check() )
+    {
+      dual = true;
+    }
+
+    shaman_spell_t::execute();
+
+    if ( p()->buff.fury_of_air->check() )
+    {
+      p()->buff.fury_of_air->expire();
+      dual = false;
+    }
+    else
+    {
+      p()->buff.fury_of_air->trigger();
+    }
   }
 };
 
@@ -4477,13 +4533,13 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
     snapshot_internal( s, impact_flags, rt );
   }
 
-  virtual double calculate_direct_amount( action_state_t* s ) const override
+  double calculate_direct_amount( action_state_t* /* s */ ) const override
   {
     // Don't do any extra work, this result won't be used.
     return 0.0;
   }
 
-  result_e calculate_result( action_state_t* s ) const override
+  result_e calculate_result( action_state_t* /* s */ ) const override
   {
     // Don't do any extra work, this result won't be used.
     return RESULT_NONE;
@@ -4709,13 +4765,13 @@ struct lava_burst_t : public shaman_spell_t
     snapshot_internal( s, impact_flags, rt );
   }
 
-  virtual double calculate_direct_amount( action_state_t* s ) const override
+  double calculate_direct_amount( action_state_t* /* s */ ) const override
   {
     // Don't do any extra work, this result won't be used.
     return 0.0;
   }
 
-  result_e calculate_result( action_state_t* s ) const override
+  result_e calculate_result( action_state_t* /* s */ ) const override
   {
     // Don't do any extra work, this result won't be used.
     return RESULT_NONE;
@@ -6817,6 +6873,10 @@ void shaman_t::create_actions()
     action.searing_assault = new searing_assault_t( this );
   }
 
+  // Always create the Fury of Air damage action so spell_targets.fury_of_air works with or without
+  // the talent
+  action.fury_of_air = new fury_of_air_aoe_t( this );
+
   player_t::create_actions();
 }
 
@@ -7548,6 +7608,25 @@ void shaman_t::create_buffs()
   buff.stormbringer = make_buff( this, "stormbringer", find_spell( 201846 ) )
                           ->set_activated( false )
                           ->set_max_stack( find_spell( 201846 )->initial_stacks() );
+  buff.fury_of_air = make_buff( this, "fury_of_air", talent.fury_of_air )
+    ->set_tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
+      action.fury_of_air->set_target( target );
+      action.fury_of_air->execute();
+
+      double actual_amount = resource_loss( RESOURCE_MAELSTROM, talent.fury_of_air->powerN( 1 ).cost() );
+      gain.fury_of_air->add( RESOURCE_MAELSTROM, actual_amount );
+
+      // If the actor reaches 0 maelstrom after the tick cost, cancel the buff. Otherwise, keep
+      // going. This allows "one extra tick" with less than 3 maelstrom, which seems to mirror in
+      // game behavior. In game, the buff only fades after the next tick (i.e., it has a one second
+      // delay), but modeling that seems pointless. Gaining maelstrom during that delay will not
+      // change the outcome of the fading.
+      if ( resources.current[ RESOURCE_MAELSTROM ] == 0 )
+      {
+        // Separate the expiration event to happen immediately after tick processing
+        make_event( *sim, timespan_t::zero(), [b]() { b->expire(); } );
+      }
+    } );
 
   //
   // Restoration
@@ -7573,6 +7652,7 @@ void shaman_t::init_gains()
   gain.resonance_totem             = get_gain( "Resonance Totem" );
   gain.lightning_shield_overcharge = get_gain( "Lightning Shield Overcharge" );
   gain.forceful_winds              = get_gain( "Forceful Winds" );
+  // Note, Fury of Air gain pointer is initialized in the base action
 }
 
 // shaman_t::init_procs =====================================================
@@ -8036,8 +8116,10 @@ void shaman_t::init_action_list_enhancement()
                         "if=!buff.crash_lightning.up&active_enemies>1"
                         "&variable.furyCheck_CL" );
   priority->add_talent( this, "Fury of Air",
-                        "if=!ticking&maelstrom>=20"
-                        "&active_enemies>=(1+variable.freezerburn_enabled)" );
+                        "if=!buff.fury_of_air.up&maelstrom>=20"
+                        "&spell_targets.fury_of_air_damage>=(1+variable.freezerburn_enabled)" );
+  priority->add_talent( this, "Fury of Air",
+                        "if=buff.fury_of_air.up&&spell_targets.fury_of_air_damage<(1+variable.freezerburn_enabled)" );
   priority->add_talent( this, "Totem Mastery", "if=buff.resonance_totem.remains<=2*gcd" );
   priority->add_talent( this, "Sundering", "if=active_enemies>=3" );
   priority->add_action( this, "Rockbiter", "if=talent.landslide.enabled&!buff.landslide.up&charges_fractional>1.7" );
