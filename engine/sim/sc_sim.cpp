@@ -3574,6 +3574,8 @@ void sim_t::create_options()
         bfa_opts.initial_seductive_power_stacks, 0, 5 ) );
   add_option( opt_bool( "bfa.randomize_oscillation",
         bfa_opts.randomize_oscillation ) );
+  add_option( opt_bool( "bfa.auto_oscillating_overload",
+        bfa_opts.auto_oscillating_overload ) );
 
   // applies to: "lavish_suramar_feast", battle for azeroth feasts
   add_option( opt_bool( "feast_as_dps", feast_as_dps ) );

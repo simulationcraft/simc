@@ -1128,6 +1128,8 @@ struct sim_t : private sc_thread_t
     int                 initial_seductive_power_stacks = 0;
     /// Randomize Variable Intensity Gigavolt Oscillating Reactor start-of-combat oscillation
     bool                randomize_oscillation = true;
+    /// Automatically use Oscillating Overload on max stack, true = yes if no use_item, 0 = no
+    bool                auto_oscillating_overload = true;
   } bfa_opts;
 
   // Expansion specific data
