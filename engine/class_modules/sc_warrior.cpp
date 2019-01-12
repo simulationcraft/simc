@@ -6232,9 +6232,9 @@ double warrior_t::composite_attack_power_multiplier() const
 {
   double ap = player_t::composite_attack_power_multiplier();
 
-  if ( mastery.critical_block->ok() )
+  if ( mastery.critical_block -> ok() )
   {
-    ap += cache.mastery() * mastery.critical_block->effectN( 5 ).mastery_value();
+    ap *= 1.0 + mastery.critical_block -> effectN( 5 ).mastery_value() * cache.mastery();
   }
   return ap;
 }
