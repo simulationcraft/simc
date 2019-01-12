@@ -1823,8 +1823,8 @@ struct vigor_engaged_t : public special_effect_t
   // Randomize oscillation state to any of the four states, and any time inside the phase
   void randomize_oscillation()
   {
-    oscillation phase = static_cast<oscillation>( player->rng().range( oscillation::ASCENDING,
-      oscillation::MAX_STATES ) );
+    oscillation phase = static_cast<oscillation>( static_cast<unsigned>( player->rng().range(
+        oscillation::ASCENDING, oscillation::MAX_STATES ) ) );
     double used_time = player->rng().range( 0, max_ticks[ phase ] *
         driver()->effectN( 1 ).period().total_seconds() );
     int ticks = used_time / driver()->effectN( 1 ).period().total_seconds();
