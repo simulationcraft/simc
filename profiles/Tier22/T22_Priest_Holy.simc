@@ -10,7 +10,7 @@ talents=1300031
 # Default consumables
 potion=battle_potion_of_intellect
 flask=endless_fathoms
-food=bountiful_captains_feast
+food=honeyglazed_haunches
 augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
