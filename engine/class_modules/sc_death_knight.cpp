@@ -8620,7 +8620,10 @@ double death_knight_t::composite_attack_power_multiplier() const
 {
   double m = player_t::composite_attack_power_multiplier();
 
-  m *= 1.0 + mastery.blood_shield -> effectN( 2 ).mastery_value() * composite_mastery();
+  if ( mastery.blood_shield -> ok() )
+  {
+    m *= 1.0 + mastery.blood_shield -> effectN( 2 ).mastery_value() * cache.mastery();
+  }
 
   return m;
 }
