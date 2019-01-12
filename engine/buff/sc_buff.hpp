@@ -359,7 +359,6 @@ public:
   virtual void analyze();
   virtual void datacollection_begin();
   virtual void datacollection_end();
-  virtual void init();
 
   virtual timespan_t refresh_duration( const timespan_t& new_duration ) const;
   virtual timespan_t tick_time() const;
