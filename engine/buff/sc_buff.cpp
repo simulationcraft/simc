@@ -1013,10 +1013,6 @@ void buff_t::datacollection_end()
   avg_overflow_total.add( overflow_total );
 }
 
-void buff_t::init()
-{
-}
-
 timespan_t buff_t::refresh_duration( const timespan_t& new_duration ) const
 {
   switch ( refresh_behavior )
