@@ -8,7 +8,7 @@ position=front
 talents=1200003
 
 # Default consumables
-potion=bursting_blood
+potion=battle_potion_of_strength
 flask=flask_of_the_undertow
 food=bountiful_captains_feast
 augmentation=battle_scarred
@@ -41,7 +41,7 @@ actions+=/judgment,if=(cooldown.judgment.remains<gcd&cooldown.judgment.charges_f
 actions+=/avengers_shield,if=cooldown_react
 actions+=/judgment,if=cooldown_react|!talent.crusaders_judgment.enabled
 actions+=/lights_judgment,if=!talent.seraphim.enabled|buff.seraphim.up
-actions+=/blessed_hammer,strikes=2
+actions+=/blessed_hammer,strikes=3
 actions+=/hammer_of_the_righteous
 actions+=/consecration
 

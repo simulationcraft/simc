@@ -61,7 +61,7 @@ actions.st+=/arcane_shot,if=buff.master_marksman.up&buff.trueshot.up&focus+cast_
 actions.st+=/aimed_shot,if=buff.precise_shots.down|cooldown.aimed_shot.full_recharge_time<action.aimed_shot.cast_time|buff.trueshot.up
 actions.st+=/rapid_fire,if=focus+cast_regen<focus.max|azerite.focused_fire.enabled|azerite.in_the_rhythm.rank>1|azerite.surging_shots.enabled|talent.streamline.enabled
 actions.st+=/piercing_shot
-actions.st+=/arcane_shot,if=focus>60|buff.precise_shots.up&buff.trueshot.down
+actions.st+=/arcane_shot,if=focus>60&!talent.steady_focus.enabled|buff.precise_shots.up&buff.trueshot.down|focus>85
 actions.st+=/steady_shot
 
 actions.trickshots=barrage

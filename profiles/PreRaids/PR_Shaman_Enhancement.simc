@@ -115,7 +115,8 @@ actions.opener=rockbiter,if=maelstrom<15&time<gcd
 actions.priority=crash_lightning,if=active_enemies>=(8-(talent.forceful_winds.enabled*3))&variable.freezerburn_enabled&variable.furyCheck_CL
 actions.priority+=/lava_lash,if=azerite.primal_primer.rank>=2&debuff.primal_primer.stack=10&active_enemies=1&variable.freezerburn_enabled&variable.furyCheck_LL
 actions.priority+=/crash_lightning,if=!buff.crash_lightning.up&active_enemies>1&variable.furyCheck_CL
-actions.priority+=/fury_of_air,if=!ticking&maelstrom>=20&active_enemies>=(1+variable.freezerburn_enabled)
+actions.priority+=/fury_of_air,if=!buff.fury_of_air.up&maelstrom>=20&spell_targets.fury_of_air_damage>=(1+variable.freezerburn_enabled)
+actions.priority+=/fury_of_air,if=buff.fury_of_air.up&&spell_targets.fury_of_air_damage<(1+variable.freezerburn_enabled)
 actions.priority+=/totem_mastery,if=buff.resonance_totem.remains<=2*gcd
 actions.priority+=/sundering,if=active_enemies>=3
 actions.priority+=/rockbiter,if=talent.landslide.enabled&!buff.landslide.up&charges_fractional>1.7
