@@ -1770,6 +1770,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 285495, "285496Trigger" ); // Moonstone of Zin-Azshari
   register_special_effect( 289522, items::incandescent_sliver );
   register_special_effect( 289521, items::invocation_of_yulon );
+  register_special_effect( 288328, "288330Trigger" ); // Kimbul's Razor Claw
 
   // Misc
   register_special_effect( 276123, items::darkmoon_deck_squalls );
