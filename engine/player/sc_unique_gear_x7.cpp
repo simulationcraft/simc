@@ -1713,6 +1713,11 @@ struct vigor_engaged_t : public special_effect_t
   stat_buff_t* vigor_buff = nullptr;
   buff_t* cooldown_buff   = nullptr;
 
+  // Oscillation overload stuff
+  const spell_data_t* overload_spell = nullptr;
+  cooldown_t*         overload_cd    = nullptr;
+  buff_t*             overload_buff  = nullptr;
+
   static std::string oscillation_str( oscillation s )
   {
     switch ( s )
@@ -1739,14 +1744,16 @@ struct vigor_engaged_t : public special_effect_t
     cooldown_buff = ::create_buff<buff_t>( effect.player, "vigor_cooldown",
         effect.player->find_spell( 287967 ), effect.item );
 
+    // Overload
+    overload_spell = effect.player->find_spell( 287917 );
+    overload_cd = effect.player->get_cooldown( "oscillating_overload_" + ::util::to_string( overload_spell->id() ) );
+
     effect.player->callbacks_on_arise.push_back( [ this ]() {
       reset_oscillation();
 
       if ( !player->sim->bfa_opts.randomize_oscillation )
       {
         do_oscillation_transition();
-        tick_event = make_event( player->sim, driver()->effectN( 1 ).period(),
-          [ this ]() { oscillate(); } );
       }
       // If we are randomizing the initial oscillation, don't do any oscillation transition on arise
       else
@@ -1768,13 +1775,41 @@ struct vigor_engaged_t : public special_effect_t
     tick_event->reschedule( tick_event->remains() + by_seconds );
   }
 
+  // Perform automatic overload at MAX_STACK transition
+  void auto_overload( oscillation new_state )
+  {
+    if ( !player->sim->bfa_opts.auto_oscillating_overload )
+    {
+      return;
+    }
+
+    if ( new_state != oscillation::MAX_STACK )
+    {
+      return;
+    }
+
+    if ( !overload_cd->up() )
+    {
+      return;
+    }
+
+    // The overload buff is going to be created by the special effect code, so find and cache
+    // the pointer here to avoid init issues
+    if ( !overload_buff )
+    {
+      overload_buff = buff_t::find( player, "oscillating_overload" );
+      assert( overload_buff );
+    }
+
+    // Put on-use effects on cooldown
+    overload_cd->start( overload_spell->cooldown() );
+    overload_buff->trigger();
+  }
+
   void oscillate()
   {
     ticks_at_oscillation++;
     do_oscillation_transition();
-
-    tick_event = make_event( player->sim, driver()->effectN( 1 ).period(),
-      [ this ]() { oscillate(); } );
   }
 
   void transition_to( oscillation new_oscillation )
@@ -1822,8 +1857,12 @@ struct vigor_engaged_t : public special_effect_t
         break;
     }
 
+    tick_event = make_event( player->sim, driver()->effectN( 1 ).period(),
+      [ this ]() { oscillate(); } );
+
     if ( at_max_stack )
     {
+      auto_overload( transition_map[ current_oscillation ] );
       transition_to( transition_map[ current_oscillation ] );
     }
   }
@@ -1926,8 +1965,54 @@ void items::variable_intensity_gigavolt_oscillating_reactor_onuse( special_effec
     }
   };
 
-  effect.custom_buff = create_buff<oscillating_overload_t>( effect.player, "oscillating_overload",
-      effect.driver(), effect.item );
+  // Implement an additional level of indirection so we can control when the overload use-item can
+  // be triggered. This is necessary for a few reasons:
+  // 1) The on-use will not work if the actor is cooling down (has the Vigor Cooldown buff)
+  // 2) The on-use can not be used, if bfa.auto_oscillating_overload option is used
+  struct oscillating_overload_action_t : public action_t
+  {
+    oscillating_overload_t* buff;
+    buff_t* cooldown_buff;
+
+    oscillating_overload_action_t( const special_effect_t& effect ) :
+      action_t( ACTION_OTHER, "oscillating_overload_driver", effect.player, effect.driver() ),
+      buff( create_buff<oscillating_overload_t>( effect.player, "oscillating_overload",
+            effect.driver(), effect.item ) ),
+      cooldown_buff( create_buff<buff_t>( effect.player, "vigor_cooldown",
+        effect.player->find_spell( 287967 ), effect.item ) )
+    {
+      background = quiet = true;
+      callbacks = false;
+    }
+
+    result_e calculate_result( action_state_t* /* state */ ) const override
+    { return RESULT_HIT; }
+
+    void execute() override
+    {
+      action_t::execute();
+
+      buff->trigger();
+    }
+
+    bool ready() override
+    {
+      if ( sim->bfa_opts.auto_oscillating_overload )
+      {
+        return false;
+      }
+
+      // Overload on-use is not available if the cooldown buff is up
+      if ( cooldown_buff->check() )
+      {
+        return false;
+      }
+
+      return action_t::ready();
+    }
+  };
+
+  effect.execute_action = new oscillating_overload_action_t( effect );
 }
 
 //Waycrest's Legacy Set Bonus ============================================
