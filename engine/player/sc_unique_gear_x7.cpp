@@ -1705,7 +1705,7 @@ struct vigor_engaged_t : public special_effect_t
   unsigned ticks_at_oscillation = 0u;
   std::array<unsigned, oscillation::MAX_STATES> max_ticks;
   std::array<oscillation, oscillation::MAX_STATES> transition_map = {
-    MAX_STACK, DESCENDING, INACTIVE, ASCENDING
+    { MAX_STACK, DESCENDING, INACTIVE, ASCENDING }
   };
 
   event_t* tick_event     = nullptr;
