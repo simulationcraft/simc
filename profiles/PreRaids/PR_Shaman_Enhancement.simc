@@ -45,6 +45,9 @@ actions+=/variable,name=OCPool_SS,value=(variable.OCPool|maelstrom>=(talent.over
 actions+=/variable,name=OCPool_LL,value=(variable.OCPool|maelstrom>=(talent.overcharge.enabled*(40+action.lava_lash.cost)))
 actions+=/variable,name=OCPool_CL,value=(variable.OCPool|maelstrom>=(talent.overcharge.enabled*(40+action.crash_lightning.cost)))
 actions+=/variable,name=OCPool_FB,value=(variable.OCPool|maelstrom>=(talent.overcharge.enabled*(40+action.frostbrand.cost)))
+# Attempt to pool maelstrom for Crash Lightning if multiple targets are present.
+actions+=/variable,name=CLPool_LL,value=active_enemies=1|maelstrom>=(action.crash_lightning.cost+action.lava_lash.cost)
+actions+=/variable,name=CLPool_SS,value=active_enemies=1|maelstrom>=(action.crash_lightning.cost+action.stormstrike.cost)
 actions+=/variable,name=freezerburn_enabled,value=(talent.hot_hand.enabled&talent.hailstorm.enabled&azerite.primal_primer.enabled)
 actions+=/variable,name=rockslide_enabled,value=(!variable.freezerburn_enabled&(talent.boulderfist.enabled&talent.landslide.enabled&azerite.strength_of_earth.enabled))
 actions+=/auto_attack
@@ -81,7 +84,6 @@ actions.default_core+=/stormstrike,if=buff.stormbringer.up|(active_enemies>1&buf
 actions.default_core+=/crash_lightning,if=active_enemies>=3&variable.furyCheck_CL
 actions.default_core+=/lightning_bolt,if=talent.overcharge.enabled&active_enemies=1&variable.furyCheck_LB&maelstrom>=40
 actions.default_core+=/stormstrike,if=variable.OCPool_SS&variable.furyCheck_SS
-actions.default_core+=/lava_lash,if=talent.hot_hand.enabled&buff.hot_hand.react
 
 actions.filler=sundering
 actions.filler+=/crash_lightning,if=talent.forceful_winds.enabled&active_enemies>1&variable.furyCheck_CL
@@ -95,14 +97,14 @@ actions.filler+=/rockbiter
 actions.filler+=/frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8+gcd&variable.furyCheck_FB
 actions.filler+=/flametongue
 
-actions.freezerburn_core=lava_lash,if=azerite.primal_primer.rank>=2&debuff.primal_primer.stack=10&variable.furyCheck_LL
+actions.freezerburn_core=lava_lash,target_if=max:debuff.primal_primer.stack,if=azerite.primal_primer.rank>=2&debuff.primal_primer.stack=10&variable.furyCheck_LL&variable.CLPool_LL
 actions.freezerburn_core+=/earthen_spike,if=variable.furyCheck_ES
 actions.freezerburn_core+=/stormstrike,cycle_targets=1,if=active_enemies>1&azerite.lightning_conduit.enabled&!debuff.lightning_conduit.up&variable.furyCheck_SS
 actions.freezerburn_core+=/stormstrike,if=buff.stormbringer.up|(active_enemies>1&buff.gathering_storms.up&variable.furyCheck_SS)
 actions.freezerburn_core+=/crash_lightning,if=active_enemies>=3&variable.furyCheck_CL
 actions.freezerburn_core+=/lightning_bolt,if=talent.overcharge.enabled&active_enemies=1&variable.furyCheck_LB&maelstrom>=40
-actions.freezerburn_core+=/lava_lash,if=azerite.primal_primer.rank>=2&debuff.primal_primer.stack>7&active_enemies=1&variable.furyCheck_LL
-actions.freezerburn_core+=/stormstrike,if=variable.OCPool_SS&variable.furyCheck_SS
+actions.freezerburn_core+=/lava_lash,if=azerite.primal_primer.rank>=2&debuff.primal_primer.stack>7&variable.furyCheck_LL&variable.CLPool_LL
+actions.freezerburn_core+=/stormstrike,if=variable.OCPool_SS&variable.furyCheck_SS&variable.CLPool_SS
 actions.freezerburn_core+=/lava_lash,if=debuff.primal_primer.stack=10&variable.furyCheck_LL
 
 actions.maintenance=flametongue,if=!buff.flametongue.up

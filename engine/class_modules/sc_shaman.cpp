@@ -7993,6 +7993,11 @@ void shaman_t::init_action_list_enhancement()
       "variable,name=OCPool_FB,value=(variable.OCPool|maelstrom>=(talent.overcharge.enabled*(40+action.frostbrand.cost)"
       "))" );
   def->add_action(
+      "variable,name=CLPool_LL,value=active_enemies=1|maelstrom>=(action.crash_lightning.cost+action.lava_lash.cost)",
+      "Attempt to pool maelstrom for Crash Lightning if multiple targets are present." );
+  def->add_action(
+      "variable,name=CLPool_SS,value=active_enemies=1|maelstrom>=(action.crash_lightning.cost+action.stormstrike.cost)" );
+  def->add_action(
       "variable,name=freezerburn_enabled,value=(talent.hot_hand.enabled&talent.hailstorm.enabled&azerite.primal_primer."
       "enabled)" );
   def->add_action(
@@ -8066,8 +8071,8 @@ void shaman_t::init_action_list_enhancement()
   cds->add_action( this, "Earth Elemental" );
 
   freezerburn_core->add_action( this, "Lava Lash",
-                                "if=azerite.primal_primer.rank>=2&debuff.primal_primer.stack=10"
-                                "&variable.furyCheck_LL" );
+                                "target_if=max:debuff.primal_primer.stack,if=azerite.primal_primer.rank>=2"
+                                "&debuff.primal_primer.stack=10&variable.furyCheck_LL&variable.CLPool_LL" );
   freezerburn_core->add_talent( this, "Earthen Spike", "if=variable.furyCheck_ES" );
   freezerburn_core->add_action( this, "Stormstrike",
                                 "cycle_targets=1,if=active_enemies>1&azerite.lightning_conduit.enabled"
@@ -8081,8 +8086,8 @@ void shaman_t::init_action_list_enhancement()
                                 "&variable.furyCheck_LB&maelstrom>=40" );
   freezerburn_core->add_action( this, "Lava Lash",
                                 "if=azerite.primal_primer.rank>=2&debuff.primal_primer.stack>7"
-                                "&active_enemies=1&variable.furyCheck_LL" );
-  freezerburn_core->add_action( this, "Stormstrike", "if=variable.OCPool_SS&variable.furyCheck_SS" );
+                                "&variable.furyCheck_LL&variable.CLPool_LL" );
+  freezerburn_core->add_action( this, "Stormstrike", "if=variable.OCPool_SS&variable.furyCheck_SS&variable.CLPool_SS" );
   freezerburn_core->add_action( this, "Lava Lash", "if=debuff.primal_primer.stack=10&variable.furyCheck_LL" );
 
   default_core->add_talent( this, "Earthen Spike", "if=variable.furyCheck_ES" );
@@ -8097,7 +8102,6 @@ void shaman_t::init_action_list_enhancement()
                             "if=talent.overcharge.enabled&active_enemies=1"
                             "&variable.furyCheck_LB&maelstrom>=40" );
   default_core->add_action( this, "Stormstrike", "if=variable.OCPool_SS&variable.furyCheck_SS" );
-  default_core->add_action( this, "Lava Lash", "if=talent.hot_hand.enabled&buff.hot_hand.react" );
 
   filler->add_talent( this, "Sundering" );
   filler->add_action( this, "Crash Lightning",
