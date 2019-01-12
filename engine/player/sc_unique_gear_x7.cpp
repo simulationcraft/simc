@@ -131,6 +131,7 @@ namespace items
   void disc_of_systematic_regression( special_effect_t& );
   // 8.1.0 - Battle of Dazar'alor Trinkets
   void incandescent_sliver( special_effect_t& );
+  void invocation_of_yulon( special_effect_t& );
 }
 
 namespace util
@@ -1676,6 +1677,15 @@ void items::incandescent_sliver( special_effect_t& effect )
   } );
 }
 
+// Invocation of Yu'lon ==================================================
+
+void items::invocation_of_yulon( special_effect_t& effect )
+{
+  effect.execute_action = create_proc_action<aoe_proc_t>( "yulons_fury", effect,
+    "yulons_fury", 288282, true );
+  effect.execute_action->travel_speed = effect.driver()->missile_speed();
+}
+
 //Waycrest's Legacy Set Bonus ============================================
 
 void set_bonus::waycrest_legacy( special_effect_t& effect )
@@ -1759,6 +1769,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 274472, items::berserkers_juju );
   register_special_effect( 285495, "285496Trigger" ); // Moonstone of Zin-Azshari
   register_special_effect( 289522, items::incandescent_sliver );
+  register_special_effect( 289521, items::invocation_of_yulon );
 
   // Misc
   register_special_effect( 276123, items::darkmoon_deck_squalls );
