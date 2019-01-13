@@ -691,7 +691,12 @@ public:
     affected_by.deadly_calm         = ab::data().affected_by( p()->talents.deadly_calm->effectN( 1 ) );
     affected_by.fury_mastery_direct = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 1 ) );
     affected_by.fury_mastery_dot    = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 2 ) );
-    affected_by.avatar              = ab::data().affected_by( p()->talents.avatar->effectN( 1 ) );
+
+		if ( p()->specialization() == WARRIOR_PROTECTION )
+			affected_by.avatar              = ab::data().affected_by( p()->spec.avatar->effectN( 1 ) );
+		else
+			affected_by.avatar              = ab::data().affected_by( p()->talents.avatar->effectN( 1 ) );
+
     affected_by.sweeping_strikes    = ab::data().affected_by( p()->spec.sweeping_strikes->effectN( 1 ) );
 
     affected_by.frothing_direct =
@@ -1162,6 +1167,10 @@ struct melee_t : public warrior_attack_t
     warrior_attack_t::init();
     affected_by.fury_mastery_direct = p()->mastery.unshackled_fury->ok();
     affected_by.avatar              = p()->talents.avatar->ok();
+		if ( p()->specialization() == WARRIOR_PROTECTION )
+			affected_by.avatar              = p()->spec.avatar->ok();
+		else
+			affected_by.avatar              = p()->talents.avatar->ok();
     affected_by.frothing_direct     = p()->talents.frothing_berserker->ok();
   }
 
