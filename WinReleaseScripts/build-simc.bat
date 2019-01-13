@@ -39,8 +39,10 @@ if ERRORLEVEL 1 goto :enderror
 if not exist %CURL_ROOT% call :error CURL_ROOT environment variable points to missing directory
 if ERRORLEVEL 1 goto :enderror
 
-if defined RELEASE if not defined SC_DEFAULT_APIKEY call :error RELEASE builds must set SC_DEFAULT_APIKEY
+if defined RELEASE if not defined RELEASE_CREDENTIALS call :error RELEASE builds must set RELEASE_CREDENTIALS
 if ERRORLEVEL 1 goto :enderror
+
+set SC_DEFAULT_APIKEY=%RELEASE_CREDENTIALS%
 
 :: Setup GIT HEAD commithash for the package name if GIT is found
 where /q git.exe
@@ -167,7 +169,7 @@ echo SZIP       : Directory containing 7-Zip compressor (optional, if omitted no
 echo ISCC       : Diretory containing Inno Setup (optional, if omitted no setup will be built)
 echo INSTALL    : Directory to make an installation package in
 echo RELEASE    : Set to build a "release version" (no git commit hash suffix)
-echo            : If set, set SC_DEFAULT_APIKEY to the Battle.net key for the release
+echo            : If set, set RELEASE_CREDENTIALS to the Battle.net key for the release
 goto :end
 
 :end
