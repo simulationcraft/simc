@@ -3545,7 +3545,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
     },
   },
 };
-#define SET_BONUS_DATA_SIZE (700)
+#define SET_BONUS_DATA_SIZE (712)
 
 // Set bonus data, wow build 8.1.0.28833
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
@@ -4277,6 +4277,19 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Waycrest Legacy"                            , "waycrests_legacy",     15,  1439,   21,   2,  10,   -1, 277522, { 158362, 159631,  0 } },
   { "Waycrest Legacy"                            , "waycrests_legacy",     15,  1439,   21,   2,  11,   -1, 277522, { 158362, 159631,  0 } },
   { "Waycrest Legacy"                            , "waycrests_legacy",     15,  1439,   21,   2,  12,   -1, 277522, { 158362, 159631,  0 } },
+  // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
+  { "Keepsakes of the Resolute Commandant"       ,  "keepsakes",     16,  1443,   23,   2,   1,   -1, 290362, { 165604, 165566,  0 } },
+  { "Keepsakes of the Resolute Commandant"       ,  "keepsakes",     16,  1443,   23,   2,   2,   -1, 290362, { 165604, 165566,  0 } },
+  { "Keepsakes of the Resolute Commandant"       ,  "keepsakes",     16,  1443,   23,   2,   3,   -1, 290362, { 165604, 165566,  0 } },
+  { "Keepsakes of the Resolute Commandant"       ,  "keepsakes",     16,  1443,   23,   2,   4,   -1, 290362, { 165604, 165566,  0 } },
+  { "Keepsakes of the Resolute Commandant"       ,  "keepsakes",     16,  1443,   23,   2,   5,   -1, 290362, { 165604, 165566,  0 } },
+  { "Keepsakes of the Resolute Commandant"       ,  "keepsakes",     16,  1443,   23,   2,   6,   -1, 290362, { 165604, 165566,  0 } },
+  { "Keepsakes of the Resolute Commandant"       ,  "keepsakes",     16,  1443,   23,   2,   7,   -1, 290362, { 165604, 165566,  0 } },
+  { "Keepsakes of the Resolute Commandant"       ,  "keepsakes",     16,  1443,   23,   2,   8,   -1, 290362, { 165604, 165566,  0 } },
+  { "Keepsakes of the Resolute Commandant"       ,  "keepsakes",     16,  1443,   23,   2,   9,   -1, 290362, { 165604, 165566,  0 } },
+  { "Keepsakes of the Resolute Commandant"       ,  "keepsakes",     16,  1443,   23,   2,  10,   -1, 290362, { 165604, 165566,  0 } },
+  { "Keepsakes of the Resolute Commandant"       ,  "keepsakes",     16,  1443,   23,   2,  11,   -1, 290362, { 165604, 165566,  0 } },
+  { "Keepsakes of the Resolute Commandant"       ,  "keepsakes",     16,  1443,   23,   2,  12,   -1, 290362, { 165604, 165566,  0 } },
 };
 #define RPPMMOD_SIZE (933)
 

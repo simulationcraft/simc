@@ -179,6 +179,8 @@ namespace set_bonus
 {
   // 8.0 Dungeon
   void waycrest_legacy( special_effect_t& );
+  // 8.1.0 Raid
+  void keepsakes_of_the_resolute_commandant( special_effect_t& );
 }
 
 // Galley Banquet ===========================================================
@@ -2015,7 +2017,7 @@ void items::variable_intensity_gigavolt_oscillating_reactor_onuse( special_effec
   effect.execute_action = new oscillating_overload_action_t( effect );
 }
 
-//Waycrest's Legacy Set Bonus ============================================
+// Waycrest's Legacy Set Bonus ============================================
 
 void set_bonus::waycrest_legacy( special_effect_t& effect )
 {
@@ -2030,6 +2032,13 @@ void set_bonus::waycrest_legacy( special_effect_t& effect )
   {
     effect_damage -> execute_action->add_child( new waycrest_legacy_damage_t( effect ) );
   }
+}
+
+// Keepsakes of the Resolute Commandant Set Bonus =========================
+
+void set_bonus::keepsakes_of_the_resolute_commandant( special_effect_t& effect )
+{
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 } // namespace bfa
@@ -2110,6 +2119,9 @@ void unique_gear::register_special_effects_bfa()
 
   /* 8.0 Dungeon Set Bonuses*/
   register_special_effect( 277522, set_bonus::waycrest_legacy );
+
+  /* 8.1.0 Raid Set Bonuses */
+  register_special_effect( 290362, set_bonus::keepsakes_of_the_resolute_commandant );
 }
 
 void unique_gear::register_target_data_initializers_bfa( sim_t* sim )

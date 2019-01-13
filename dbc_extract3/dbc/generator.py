@@ -3746,6 +3746,11 @@ class SetBonusListGenerator(DataGenerator):
             'name'   : 'waycrests_legacy',
             'bonuses': [ 1439 ],
             'tier'   : 21
+        },
+        {
+            'name'   : 'keepsakes',
+            'bonuses': [ 1443 ],
+            'tier'   : 23
         }
     ]
 
