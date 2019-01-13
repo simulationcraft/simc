@@ -61,6 +61,8 @@ actions.build+=/sinister_strike
 
 # Cooldowns
 actions.cds=potion,if=buff.bloodlust.react|buff.adrenaline_rush.up
+# Falling back to default item usage
+actions.cds+=/use_item,name=variable_intensity_gigavolt_oscillating_reactor,if=buff.bloodlust.react|target.time_to_die<=20|combo_points.deficit<=2
 actions.cds+=/blood_fury
 actions.cds+=/berserking
 actions.cds+=/fireblood
@@ -91,29 +93,29 @@ actions.finish+=/dispatch
 # Stealth
 actions.stealth=ambush
 
-head=irontide_captains_hat,id=155888,bonus_id=5062/1587/4786/4775,azerite_powers=411/129/31/44/13
+head=cowl_of_righteous_resolve,id=165519,bonus_id=4824/1537/4775,azerite_powers=129/562/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
-shoulders=mantle_of_fastidious_machinations,id=158304,bonus_id=5062/1587/4786/4775,azerite_powers=411/157/22/83/13
+shoulders=mestrahs_singing_spaulders,id=165516,bonus_id=4824/1537/4775,azerite_powers=129/562/31/13
 back=high_tinkers_cape,id=165924,bonus_id=4800/1537
-chest=vest_of_reverent_adoration,id=159303,bonus_id=5062/1587/4786/4775,azerite_powers=411/129/31/14/13
+chest=mekkatorques_bomber_jacket,id=165830,bonus_id=4824/1537/4775,azerite_powers=446/129/22/13
 wrists=bracers_of_regal_devotion,id=165517,bonus_id=4800/1537
 hands=mechjockey_grips,id=165522,bonus_id=4800/1537
 waist=stretched_sinew_waistcord,id=165525,bonus_id=4800/1537
 legs=cranedancer_leggings,id=165521,bonus_id=4800/1537
 feet=embossed_deckwalkers,id=165527,bonus_id=4800/1537
-finger1=band_of_multisided_strikes,id=165565,bonus_id=4800/1537,enchant=pact_of_versatility
-finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_versatility
+finger1=band_of_multisided_strikes,id=165565,bonus_id=4800/1537,enchant=pact_of_critical_strike
+finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_critical_strike
 trinket1=kimbuls_razor_claw,id=165579,bonus_id=4800/1537
 trinket2=variable_intensity_gigavolt_oscillating_reactor,id=165572,bonus_id=4800/1537
 main_hand=stormtoothed_kasuyu,id=165601,bonus_id=4800/1537,enchant=deadly_navigation
-off_hand=daelin_proudmoores_saber,id=165604,bonus_id=4800/1537,enchant=quick_navigation
+off_hand=daelin_proudmoores_saber,id=165604,bonus_id=4800/1537,enchant=galeforce_striking
 
 # Gear Summary
 # gear_ilvl=416.19
 # gear_agility=5796
 # gear_stamina=9919
-# gear_crit_rating=822
+# gear_crit_rating=896
 # gear_haste_rating=675
 # gear_mastery_rating=988
-# gear_versatility_rating=882
+# gear_versatility_rating=808
 # gear_armor=2363

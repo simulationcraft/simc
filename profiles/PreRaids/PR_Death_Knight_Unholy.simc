@@ -69,7 +69,7 @@ actions.aoe+=/death_coil,if=!variable.pooling_for_gargoyle
 
 actions.cooldowns=army_of_the_dead
 actions.cooldowns+=/apocalypse,if=debuff.festering_wound.stack>=4
-actions.cooldowns+=/dark_transformation
+actions.cooldowns+=/dark_transformation,if=!raid_event.adds.exists|raid_event.adds.in>15
 actions.cooldowns+=/summon_gargoyle,if=runic_power.deficit<14
 actions.cooldowns+=/unholy_frenzy,if=debuff.festering_wound.stack<4
 actions.cooldowns+=/unholy_frenzy,if=active_enemies>=2&((cooldown.death_and_decay.remains<=gcd&!talent.defile.enabled)|(cooldown.defile.remains<=gcd&talent.defile.enabled))

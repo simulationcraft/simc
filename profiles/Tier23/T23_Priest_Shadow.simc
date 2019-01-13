@@ -81,11 +81,11 @@ actions.single+=/mind_sear,if=azerite.searing_dialogue.rank>=3,chain=1,interrupt
 actions.single+=/mind_flay,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(cooldown.void_bolt.up|cooldown.mind_blast.up)
 actions.single+=/shadow_word_pain
 
-head=blazewing_hood,id=165500,bonus_id=1542/4824,azerite_powers=405/562/31/13
+head=blazewing_hood,id=165500,bonus_id=1542/4824/4775,azerite_powers=405/562/31/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
-shoulder=bristling_furlined_amice,id=165922,bonus_id=1542/4824,azerite_powers=405/403/462/13
+shoulders=bristling_furlined_amice,id=165922,bonus_id=1542/4824/4775,azerite_powers=405/403/462/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
-chest=divine_fury_raiment,id=165834,bonus_id=1542/4824,azerite_powers=405/562/38/13
+chest=divine_fury_raiment,id=165834,bonus_id=1542/4824/4775,azerite_powers=405/562/38/13
 wrists=lever_stabilizing_wristwraps,id=165508,bonus_id=4800/1537
 hands=manceroys_flamefists,id=165503,bonus_id=4800/1537
 waist=waistcord_of_flowing_silk,id=165504,bonus_id=4800/1537

@@ -60,9 +60,9 @@ actions+=/barrage
 actions+=/cobra_shot,if=(active_enemies<2|cooldown.kill_command.remains>focus.time_to_max)&(focus-cost+focus.regen*(cooldown.kill_command.remains-1)>action.kill_command.cost|cooldown.kill_command.remains>1+gcd)&cooldown.kill_command.remains>1
 actions+=/arcane_torrent
 
-head=targettracking_headgear,id=165543,bonus_id=4824/1537,azerite_powers=366/562/459/14/13
+head=targettracking_headgear,id=165543,bonus_id=4824/1537/4775,azerite_powers=366/562/459/14/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
-shoulder=pauldrons_of_ancestral_vengeance,id=165921,bonus_id=4824/1537,azerite_powers=367/562/30/203/13
+shoulders=pauldrons_of_ancestral_vengeance,id=165921,bonus_id=4824/1537/4775,azerite_powers=367/562/30/203/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
 chest=corrupted_hexxers_vestments,id=159370,bonus_id=1587/5440/4775,azerite_powers=161/366/30/14/13
 wrists=icebinders_bracers,id=165542,bonus_id=4800/1537
@@ -72,16 +72,16 @@ legs=deathhunters_legguards,id=165536,bonus_id=4800/1537
 feet=lightgrace_sabatons,id=165533,bonus_id=4800/1537
 finger1=jade_ophidian_band,id=162544,bonus_id=1572/4779,enchant=pact_of_critical_strike
 finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_critical_strike
-trinket1=harlans_loaded_dice,id=155881,bonus_id=1572/4779
-trinket2=galecallers_boon,id=159614,bonus_id=1572/4779
+trinket1=variable_intensity_gigavolt_oscillating_reactor,id=165572,bonus_id=4800/1537
+trinket2=kimbuls_razor_claw,id=165579,bonus_id=4800/1537
 main_hand=pterrorwing_longbow,id=165599,bonus_id=4800/1537,enchant=incendiary_ammunition
 
 # Gear Summary
-# gear_ilvl=416.27
+# gear_ilvl=415.27
 # gear_agility=5796
-# gear_stamina=9920
-# gear_crit_rating=741
-# gear_haste_rating=1187
-# gear_mastery_rating=689
-# gear_versatility_rating=747
+# gear_stamina=9857
+# gear_crit_rating=720
+# gear_haste_rating=879
+# gear_mastery_rating=1377
+# gear_versatility_rating=363
 # gear_armor=3410

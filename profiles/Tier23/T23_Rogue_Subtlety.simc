@@ -6,7 +6,7 @@ race=night_elf
 timeofday=day
 role=attack
 position=back
-talents=2130031
+talents=2320031
 
 # Default consumables
 potion=battle_potion_of_agility
@@ -68,6 +68,8 @@ actions.build+=/backstab
 
 # Cooldowns
 actions.cds=potion,if=buff.bloodlust.react|buff.symbols_of_death.up&(buff.shadow_blades.up|cooldown.shadow_blades.remains<=10)
+# Falling back to default item usage: Use with Symbols of Death.
+actions.cds+=/use_item,name=variable_intensity_gigavolt_oscillating_reactor,if=buff.symbols_of_death.up|target.time_to_die<20
 actions.cds+=/blood_fury,if=buff.symbols_of_death.up
 actions.cds+=/berserking,if=buff.symbols_of_death.up
 actions.cds+=/fireblood,if=buff.symbols_of_death.up
@@ -128,29 +130,29 @@ actions.stealthed+=/shadowstrike,if=!talent.deeper_stratagem.enabled&azerite.bla
 actions.stealthed+=/shuriken_storm,if=spell_targets>=3
 actions.stealthed+=/shadowstrike
 
-head=cowl_of_fluid_machinations,id=159302,bonus_id=5062/1587/4786/4775,azerite_powers=413/445/22/217/13
+head=cowl_of_righteous_resolve,id=165519,bonus_id=4824/1537/4775,azerite_powers=414/562/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
-shoulders=maras_boneblade_mantle,id=165777,bonus_id=4824/1537/4775,azerite_powers=240/413/31/473/13
+shoulders=phantom_stalker_shoulders,id=165523,bonus_id=4824/1537/4775,azerite_powers=413/175/30/13
 back=high_tinkers_cape,id=165924,bonus_id=4800/1537
-chest=vestments_of_indomitable_will,id=165833,bonus_id=4824/1537/4775,azerite_powers=413/414/22/44/13
+chest=mekkatorques_bomber_jacket,id=165830,bonus_id=4824/1537/4775,azerite_powers=240/562/22/13
 wrists=bracers_of_regal_devotion,id=165517,bonus_id=4800/1537
 hands=mechjockey_grips,id=165522,bonus_id=4800/1537
 waist=stretched_sinew_waistcord,id=165525,bonus_id=4800/1537
 legs=cranedancer_leggings,id=165521,bonus_id=4800/1537
 feet=embossed_deckwalkers,id=165527,bonus_id=4800/1537
-finger1=band_of_multisided_strikes,id=165565,bonus_id=4800/1537,enchant=pact_of_critical_strike
-finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_critical_strike
+finger1=band_of_multisided_strikes,id=165565,bonus_id=4800/1537,enchant=pact_of_mastery
+finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_mastery
 trinket1=kimbuls_razor_claw,id=165579,bonus_id=4800/1537
 trinket2=variable_intensity_gigavolt_oscillating_reactor,id=165572,bonus_id=4800/1537
 main_hand=last_fang_of_rezan,id=165596,bonus_id=4800/1537,enchant=deadly_navigation
-off_hand=last_fang_of_rezan,id=165596,bonus_id=4800/1537,enchant=versatile_navigation
+off_hand=last_fang_of_rezan,id=165596,bonus_id=4800/1537,enchant=masterful_navigation
 
 # Gear Summary
 # gear_ilvl=416.19
 # gear_agility=5796
 # gear_stamina=9919
-# gear_crit_rating=869
+# gear_crit_rating=795
 # gear_haste_rating=675
-# gear_mastery_rating=934
+# gear_mastery_rating=1008
 # gear_versatility_rating=888
 # gear_armor=2363
