@@ -545,6 +545,7 @@ namespace warlock {
         if ( p()->talents.fire_and_brimstone->ok() )
         {
           fnb_action->set_target( execute_state->target );
+          target_cache.is_valid = false;
           fnb_action->execute();
         }
       }
