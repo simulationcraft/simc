@@ -122,7 +122,7 @@ feet=lightfeather_footpads,id=165502,bonus_id=4800/1537
 finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_haste
 finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_haste
 trinket1=incandescent_sliver,id=165571,bonus_id=4800/1537
-trinket2=tidestorm_codex,id=165576,bonus_id=4800/1537
+trinket2=crest_of_paku,id=165581,bonus_id=4800/1537
 main_hand=phoenixfire_staff,id=165587,bonus_id=4800/1537,enchant=quick_navigation
 
 # Gear Summary
