@@ -139,7 +139,7 @@ actions.standard+=/arcane_torrent
 
 head=helm_of_tempered_jade,id=165548,bonus_id=1537/4824/4775,azerite_powers=108/562/31/465/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
-shoulders=dyno_sprocket_spaulders,id=165825,bonus_id=1537/4824/4775,azerite_powers=242/562/459/14/13
+shoulders=dynosprocket_spaulders,id=165825,bonus_id=1537/4824/4775,azerite_powers=242/562/459/14/13
 back=high_tinkers_cape,id=165924,bonus_id=4800/1537
 chest=breastplate_of_divine_purification,id=165550,bonus_id=1537/4824/4775,azerite_powers=108/562/461/13
 wrists=splinterbone_vambraces,id=165551,bonus_id=4800/1537

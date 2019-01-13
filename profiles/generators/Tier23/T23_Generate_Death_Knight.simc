@@ -62,7 +62,7 @@ talents=2203032
 
 head=helm_of_tempered_jade,id=165548,bonus_id=1537/4824,azerite_powers=199/562/31/465/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
-shoulders=dyno_sprocket_spaulders,id=165825,bonus_id=1537/4824,azerite_powers=199/562/459/14/13
+shoulders=dynosprocket_spaulders,id=165825,bonus_id=1537/4824,azerite_powers=199/562/459/14/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
 chest=ashvane_wardens_cuirass,id=159440,bonus_id=5062/1587/4786/4775,azerite_powers=199/244/30/14/13
 wrists=splinterbone_vambraces,id=165551,bonus_id=4800/1537
