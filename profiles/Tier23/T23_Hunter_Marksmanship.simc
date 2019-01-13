@@ -6,7 +6,6 @@ race=troll
 role=attack
 position=ranged_back
 talents=1103031
-summon_pet=disabled
 
 # Default consumables
 potion=battle_potion_of_agility
@@ -62,7 +61,7 @@ actions.st+=/arcane_shot,if=buff.master_marksman.up&buff.trueshot.up&focus+cast_
 actions.st+=/aimed_shot,if=buff.precise_shots.down|cooldown.aimed_shot.full_recharge_time<action.aimed_shot.cast_time|buff.trueshot.up
 actions.st+=/rapid_fire,if=focus+cast_regen<focus.max|azerite.focused_fire.enabled|azerite.in_the_rhythm.rank>1|azerite.surging_shots.enabled|talent.streamline.enabled
 actions.st+=/piercing_shot
-actions.st+=/arcane_shot,if=focus>60|buff.precise_shots.up&buff.trueshot.down
+actions.st+=/arcane_shot,if=focus>60&!talent.steady_focus.enabled|buff.precise_shots.up&buff.trueshot.down|focus>85
 actions.st+=/steady_shot
 
 actions.trickshots=barrage
@@ -76,11 +75,11 @@ actions.trickshots+=/a_murder_of_crows
 actions.trickshots+=/serpent_sting,if=refreshable&!action.serpent_sting.in_flight
 actions.trickshots+=/steady_shot
 
-head=targettracking_headgear,id=165543,bonus_id=4824/1537,azerite_powers=212/36/22/14/13
+head=targettracking_headgear,id=165543,bonus_id=4824/1537/4775,azerite_powers=212/36/22/14/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
-shoulders=pauldrons_of_ancestral_vengeance,id=165921,bonus_id=4824/1537,azerite_powers=36/562/30/203/13
+shoulders=pauldrons_of_ancestral_vengeance,id=165921,bonus_id=4824/1537/4775,azerite_powers=36/562/30/203/13
 back=silverback_cloak,id=165513,bonus_id=4800/1537
-chest=mistfire_raiment,id=165540,bonus_id=4824/1537,azerite_powers=212/562/31/469/13
+chest=mistfire_raiment,id=165540,bonus_id=4824/1537/4775,azerite_powers=212/562/31/469/13
 wrists=ape_wranglers_wristguards,id=165534,bonus_id=4800/1537
 hands=slimy_kelpweavers,id=165546,bonus_id=4800/1537
 waist=goldenscale_girdle,id=165538,bonus_id=4800/1537
@@ -88,16 +87,17 @@ legs=deathhunters_legguards,id=165536,bonus_id=4800/1537
 feet=lightgrace_sabatons,id=165533,bonus_id=4800/1537
 finger1=jade_ophidian_band,id=162544,bonus_id=1572/4780,enchant=pact_of_mastery
 finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_mastery
-trinket1=harlans_loaded_dice,id=155881,bonus_id=1572/4780
-trinket2=galecallers_boon,id=159614,bonus_id=1572/4780
+trinket1=variable_intensity_gigavolt_oscillating_reactor,id=165572,bonus_id=4800/1537
+trinket2=kimbuls_razor_claw,id=165579,bonus_id=4800/1537
 main_hand=pterrorwing_longbow,id=165599,bonus_id=4800/1537,enchant=incendiary_ammunition
 
 # Gear Summary
-# gear_ilvl=416.27
+# gear_ilvl=415.27
 # gear_agility=5796
-# gear_stamina=9920
-# gear_crit_rating=741
-# gear_haste_rating=1187
-# gear_mastery_rating=689
-# gear_versatility_rating=747
+# gear_stamina=9857
+# gear_crit_rating=514
+# gear_haste_rating=657
+# gear_mastery_rating=1663
+# gear_versatility_rating=504
 # gear_armor=3410
+summon_pet=disabled

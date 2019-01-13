@@ -61,6 +61,7 @@ actions.aoe+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=!p
 
 # Cooldowns
 actions.cd=invoke_xuen_the_white_tiger
+actions.cd+=/use_item,name=variable_intensity_gigavolt_oscillating_reactor
 actions.cd+=/blood_fury
 actions.cd+=/berserking
 # Use Arcane Torrent if you are missing at least 1 Chi and won't cap energy within 0.5 seconds
