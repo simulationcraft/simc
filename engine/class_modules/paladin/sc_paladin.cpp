@@ -54,6 +54,7 @@ paladin_t::paladin_t( sim_t* sim, const std::string& name, race_e r ) :
   cooldowns.divine_hammer             = get_cooldown( "divine_hammer" );
   cooldowns.holy_shock                = get_cooldown( "holy_shock");
   cooldowns.light_of_dawn             = get_cooldown( "light_of_dawn");
+  cooldowns.consecration              = get_cooldown( "consecration" );
 
   cooldowns.inner_light               = get_cooldown( "inner_light" );
 
@@ -236,6 +237,8 @@ struct consecration_tick_t: public paladin_spell_t {
 struct consecration_t : public paladin_spell_t
 {
   consecration_tick_t* damage_tick;
+  ground_aoe_params_t cons_params;
+  bool precombat;
 
   consecration_t( paladin_t* p, const std::string& options_str )
     : paladin_spell_t( "consecration", p, p -> specialization() == PALADIN_RETRIBUTION ? p -> talents.consecration : p -> find_specialization_spell( "Consecration" ) ),
@@ -245,13 +248,44 @@ struct consecration_t : public paladin_spell_t
 
     dot_duration = timespan_t::zero(); // the periodic event is handled by ground_aoe_event_t
     may_miss       = false;
+    harmful = false;
 
     add_child( damage_tick );
   }
 
+  void init_finished() override
+  {
+    paladin_spell_t::init_finished();
+
+    precombat = action_list -> name_str == "precombat";
+
+    timespan_t cons_duration = data().duration();
+    if ( precombat )
+    {
+      cons_duration -= timespan_t::from_seconds( 3.0 );
+    }
+
+    cons_params = ground_aoe_params_t()
+      // Lasts 3 less seconds if used during precombat, see execute()
+      .duration( cons_duration )
+      .hasted( ground_aoe_params_t::SPELL_HASTE )
+      .action( damage_tick )
+      .state_callback( [ this ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
+      switch ( type )
+      {
+      case ground_aoe_params_t::EVENT_CREATED:
+        p() -> active_consecration = event;
+        break;
+      case ground_aoe_params_t::EVENT_DESTRUCTED:
+        p() -> active_consecration = nullptr;
+        break;
+      default:
+        break;
+      } } ) ;
+  }
+
   void execute() override
   {
-
     // Cancel the current consecration if it exists
     if ( p() -> active_consecration != nullptr )
     {
@@ -260,30 +294,35 @@ struct consecration_t : public paladin_spell_t
 
     paladin_spell_t::execute();
 
-    // create a new ground aoe event
-    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
-      .target( execute_state -> target )
-      // spawn at feet of player
-      .x( execute_state -> action -> player -> x_position )
-      .y( execute_state -> action -> player -> y_position )
-      .duration( data().duration() )
-      .start_time( sim -> current_time() )
-      .hasted( ground_aoe_params_t::SPELL_HASTE )
-      .action( damage_tick )
-      .state_callback( [ this ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
-        switch ( type )
-        {
-          case ground_aoe_params_t::EVENT_CREATED:
-            p() -> active_consecration = event;
-            break;
-          case ground_aoe_params_t::EVENT_DESTRUCTED:
-            p() -> active_consecration = nullptr;
-            break;
-          default:
-            break;
-        }
-      } ), true /* Immediate pulse */ );
+    // Some parameters need to be updated on each cast
+    cons_params.target( execute_state -> target )
+               .start_time( sim -> current_time() );
+
+    if ( sim -> distance_targeting_enabled )
+    {
+      cons_params.x( p() -> x_position )
+                 .y( p() -> y_position );
     }
+
+    // Consecration's duration is reduced by 3s if it is used during precombat
+    // Emulates the player putting down consecration in a distance 2s before combat starts
+    // And pulling the boss into it roughly 1s after combat starts
+    if ( precombat )
+    {
+      p() -> cooldowns.consecration -> adjust( timespan_t::from_seconds( -2.0 ) );
+
+      // Create an event that starts consecration's aoe one second after combat starts
+      make_event( *sim, timespan_t::from_seconds( 1.0 ), [ this ]( ) 
+      {
+        make_event<ground_aoe_event_t>( *sim, p(), cons_params, true /* Immediate pulse */ );
+      });
+    }
+
+    else 
+    {
+      make_event<ground_aoe_event_t>( *sim, p(), cons_params, true /* Immediate pulse */ );
+    }
+  }
 };
 
 // Divine Shield ==============================================================

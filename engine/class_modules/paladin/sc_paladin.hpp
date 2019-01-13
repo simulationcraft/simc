@@ -233,6 +233,7 @@ public:
 
     cooldown_t* blade_of_justice;
     cooldown_t* divine_hammer;
+    cooldown_t* consecration;
   } cooldowns;
 
   // Passives
