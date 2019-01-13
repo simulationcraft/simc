@@ -691,7 +691,12 @@ public:
     affected_by.deadly_calm         = ab::data().affected_by( p()->talents.deadly_calm->effectN( 1 ) );
     affected_by.fury_mastery_direct = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 1 ) );
     affected_by.fury_mastery_dot    = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 2 ) );
-    affected_by.avatar              = ab::data().affected_by( p()->talents.avatar->effectN( 1 ) );
+
+		if ( p()->specialization() == WARRIOR_PROTECTION )
+			affected_by.avatar              = ab::data().affected_by( p()->spec.avatar->effectN( 1 ) );
+		else
+			affected_by.avatar              = ab::data().affected_by( p()->talents.avatar->effectN( 1 ) );
+
     affected_by.sweeping_strikes    = ab::data().affected_by( p()->spec.sweeping_strikes->effectN( 1 ) );
 
     affected_by.frothing_direct =
@@ -1162,6 +1167,10 @@ struct melee_t : public warrior_attack_t
     warrior_attack_t::init();
     affected_by.fury_mastery_direct = p()->mastery.unshackled_fury->ok();
     affected_by.avatar              = p()->talents.avatar->ok();
+		if ( p()->specialization() == WARRIOR_PROTECTION )
+			affected_by.avatar              = p()->spec.avatar->ok();
+		else
+			affected_by.avatar              = p()->talents.avatar->ok();
     affected_by.frothing_direct     = p()->talents.frothing_berserker->ok();
   }
 
@@ -5215,18 +5224,19 @@ void warrior_t::apl_prot()
     prot->add_action( "potion,if=target.time_to_die<25" );
   }
 
-  prot->add_action( this, "Battle Cry", "if=cooldown.shield_slam.remains=0" );
-  prot->add_action( this, "Avatar" );
+  prot->add_action( this, "Avatar", "if=cooldown.demoralizing_shout.remains>5" );
   prot->add_action( this, "Demoralizing Shout" );
   prot->add_action( this, "Ravager", "if=talent.ravager.enabled" );
+  prot->add_action( this, "Dragon Roar", "if=talent.dragon_roar.enabled" );
+  prot->add_action( this, "Thunder Clap", "if=(talent.unstoppable_force.enabled&buff.avatar.up&debuff.demoralizing_shout_debuff.up)" );
   prot->add_action( this, "Shield Block", "if=cooldown.shield_slam.remains=0" );
-  prot->add_action( this, "Ignore Pain" );
   prot->add_action( this, "Shield Slam" );
+  prot->add_action( this, "Thunder Clap" );
   prot->add_action( this, "Revenge",
                     "if=(!talent.vengeance.enabled)|(talent.vengeance.enabled&buff.revenge.react&!buff.vengeance_"
                     "ignore_pain.up)|(buff.vengeance_revenge.up)|(talent.vengeance.enabled&!buff.vengeance_ignore_pain."
                     "up&!buff.vengeance_revenge.up&rage>=30)" );
-  prot->add_action( this, "Thunder Clap" );
+  prot->add_action( this, "Ignore Pain", "use_off_gcd=1,if=rage>90" );
   prot->add_action( this, "Devastate" );
 }
 
@@ -5739,11 +5749,13 @@ std::string warrior_t::default_potion() const
                       : ( true_level >= 85 ) ? "mogu_power" : ( true_level >= 80 ) ? "golemblood_potion" : "disabled";
 
   std::string protection_pot =
-      ( true_level > 100 )
-          ? "old_war"
-          : ( true_level >= 90 )
-                ? "draenic_strength"
-                : ( true_level >= 85 ) ? "mogu_power" : ( true_level >= 80 ) ? "golemblood_potion" : "disabled";
+      ( true_level > 110 )
+          ? "battle_potion_of_strength"
+          : ( true_level > 100 )
+                ? "old_war"
+                : ( true_level >= 90 )
+                      ? "draenic_strength"
+                      : ( true_level >= 85 ) ? "mogu_power" : ( true_level >= 80 ) ? "golemblood_potion" : "disabled";
 
   switch ( specialization() )
   {
@@ -5796,12 +5808,15 @@ std::string warrior_t::default_food() const
                                                 ? "sea_mist_rice_noodles"
                                                 : ( true_level >= 80 ) ? "seafood_magnifique_feast" : "disabled";
 
-  std::string protection_food =
-      ( true_level > 100 )
-          ? "lavish_suramar_feast"
-          : ( true_level > 90 ) ? "buttered_sturgeon"
-                                : ( true_level >= 85 ) ? "sea_mist_rice_noodles"
-                                                       : ( true_level >= 80 ) ? "seafood_magnifique_feast" : "disabled";
+  std::string protection_food = ( true_level > 110 )
+                              ? "bountiful_captains_feast"
+                              : ( true_level > 100 )
+                                    ? "the_hungry_magister"
+                                    : ( true_level > 90 )
+                                          ? "buttered_sturgeon"
+                                          : ( true_level >= 85 )
+                                                ? "sea_mist_rice_noodles"
+                                                : ( true_level >= 80 ) ? "seafood_magnifique_feast" : "disabled";
 
   switch ( specialization() )
   {
@@ -5832,11 +5847,9 @@ void warrior_t::init_action_list()
   {
     if ( !quiet )
     {
-      sim->error( "Player {}'s role ({}) or spec({}) is currently not supported.", name(),
+      sim->error( "Player {}'s role ({}) or spec({}) is currently not well supported.", name(),
                   util::role_type_string( primary_role() ), util::specialization_string( specialization() ) );
     }
-    quiet = true;
-    return;
   }
 
   if ( !action_list_str.empty() )
