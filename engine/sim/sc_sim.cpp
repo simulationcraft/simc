@@ -2646,7 +2646,12 @@ void sim_t::init()
     }
   }
 
-  profilesets.initialize( this );
+  // If save= option is used, don't bother initializing profilesets as the main thread is going to
+  // exit in any case
+  if ( active_player && active_player->report_information.save_str.empty() )
+  {
+    profilesets.initialize( this );
+  }
 
   initialized = true;
 
