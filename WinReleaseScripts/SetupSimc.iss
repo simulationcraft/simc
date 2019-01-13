@@ -5,7 +5,7 @@
 ;#define SimcAppVersion "701-01"
 ;#define RealAppVersion "7.0.1.01"
 #define MyAppPublisher "Simulationcraft"
-#define MyAppURL "http://www.simulationcraft.org"
+#define MyAppURL "https://www.simulationcraft.org"
 ;#define SimcAppExeName "SimulationCraft64.exe"
 
 [Setup]

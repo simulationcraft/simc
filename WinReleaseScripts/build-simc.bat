@@ -7,13 +7,12 @@ set ARGS=%*
 :: Ensure msbuild.exe is in path
 where /q msbuild.exe || call :error Cannot find msbuild.exe from PATH
 if ERRORLEVEL 1 exit /b 1
-if "%2" == "" call :usage
+if "%1" == "" call :usage
 if ERRORLEVEL 1 exit /b 1
 
 :: Setup platform and default Visual Studio version
 set PLATFORM=%2
-if "%PLATFORM%" == "x64" set SUFFIX=64
-if "%VSVERSION%" == "" set VSVERSION=2017
+if not defined PLATFORM set PLATFORM=%VSCMD_ARG_TGT_ARCH%
 
 :: Determine current Simulationcraft version
 if not defined SIMCVERSION for /F "tokens=3 delims= " %%i in ('findstr /C:"#define SC_MAJOR_VERSION" %SIMCDIR%\engine\simulationcraft.hpp') do set SC_MAJOR_VERSION=%%~i
@@ -29,7 +28,7 @@ if not defined SIMCDIR call :error SIMCDIR environment variable not defined
 if ERRORLEVEL 1 goto :enderror
 if not defined QTDIR call :error QTDIR environment variable not defined
 if ERRORLEVEL 1 goto :enderror
-if not defined REDIST call :error REDIST environment variable not defined
+if not defined CURL_ROOT call :error CURL_ROOT environment variable not defined
 if ERRORLEVEL 1 goto :enderror
 if not exist %INSTALL% call :error INSTALL environment variable points to missing directory
 if ERRORLEVEL 1 goto :enderror
@@ -37,7 +36,7 @@ if not exist %SIMCDIR% call :error SIMCDIR environment variable points to missin
 if ERRORLEVEL 1 goto :enderror
 if not exist %QTDIR% call :error QTDIR environment variable points to missing directory
 if ERRORLEVEL 1 goto :enderror
-if not exist %REDIST% call :error REDIST environment variable points to missing directory
+if not exist %CURL_ROOT% call :error CURL_ROOT environment variable points to missing directory
 if ERRORLEVEL 1 goto :enderror
 
 if defined RELEASE if not defined SC_DEFAULT_APIKEY call :error RELEASE builds must set SC_DEFAULT_APIKEY
@@ -49,10 +48,14 @@ if ERRORLEVEL 0 for /F "delims=" %%i IN ('git --git-dir=%SIMCDIR%\.git\ rev-pars
 if defined RELEASE set GITREV=
 
 :: Setup archive name and installation directory
-set PACKAGENAME=%INSTALL%\simulationcraft-%SIMCVERSION%-%PLATFORM%%GITREV%
-set INSTALLDIR=%INSTALL%\simulationcraft-%SIMCVERSION%-%PLATFORM%
-set PLATFORMQTDIR=%QTDIR%\msvc%VSVERSION%
-if "%PLATFORM%" neq "win32" set PLATFORMQTDIR=%PLATFORMQTDIR%_64
+if "%PLATFORM%" == "x64" set PACKAGESUFFIX=win64
+if "%PLATFORM%" == "x86" set PACKAGESUFFIX=win32
+
+if not defined PACKAGESUFFIX call :error Unable to determine target architecture
+if ERRORLEVEL 1 goto :enderror
+
+set PACKAGENAME=%INSTALL%\simc-%SIMCVERSION%-%PACKAGESUFFIX%%GITREV%
+set INSTALLDIR=%INSTALL%\simc-%SIMCVERSION%-%PACKAGESUFFIX%
 
 :: Begin the build process
 call :build_release %ARGS%
@@ -61,14 +64,19 @@ if ERRORLEVEL 1 goto :enderror
 
 :build_release
 
-:: Setup the target if given, otherwise default is to build all targets in the solution
+:: Setup the target if given, otherwise default is to clean and build all targets in the solution
 if "%3" neq "" set TARGET=/t:%3
 if "%3" == "" set TARGET=/t:Clean,Build
 
 :: Generate solution before building
-%PLATFORMQTDIR%\bin\qmake.exe -r -tp vc -spec win32-msvc "%SIMCDIR%\simulationcraft.pro"
+del /Q "%SIMCDIR%\.qmake.stash"
+%QTDIR%\bin\qmake.exe CURL_ROOT=%CURL_ROOT% -r -tp vc -spec win32-msvc -o "%SIMCDIR%\simulationcraft.sln" "%SIMCDIR%\simulationcraft.pro"
 
-msbuild.exe "%SIMCDIR%\simulationcraft.sln" /p:configuration=%1 /p:platform=%2 /nr:true /m /p:QTDIR=%PLATFORMQTDIR% %TARGET%
+:: Figure out the platform target, Qt creates "Win32" for x86, x64 is intact
+set VSPLATFORM=%PLATFORM%
+if "%PLATFORM%" == "x86" set VSPLATFORM=Win32
+
+msbuild.exe "%SIMCDIR%\simulationcraft.sln" /p:configuration=%1 /p:platform=%VSPLATFORM% /nr:true /m /p:QTDIR=%QTDIR% %TARGET%
 if ERRORLEVEL 1 exit /b 1
 :: Start release copying process
 md %INSTALLDIR%
@@ -86,7 +94,7 @@ exit /b 0
 
 :copy_base
 robocopy %SIMCDIR%\Profiles\ %INSTALLDIR%\profiles\ *.* /S /NJH /NJS
-robocopy %SIMCDIR% %INSTALLDIR%\ README.md COPYING LICENSE.BOOST LICENSE.BSD LICENSE.BSD2 LICENSE.LGPL LICENSE.MIT /NJH /NJS
+robocopy %SIMCDIR% %INSTALLDIR%\ README.md COPYING LICENSE LICENSE.BOOST LICENSE.BSD LICENSE.BSD2 LICENSE.LGPL LICENSE.MIT /NJH /NJS
 exit /b 0
 
 :copy_simc
@@ -94,13 +102,7 @@ robocopy %SIMCDIR% %INSTALLDIR%\ simc.exe /NJH /NJS
 exit /b 0
 
 :copy_simcgui
-if "%PLATFORM%" == "win32" (
-	set REDISTPLATFORM=x86
-) else (
-	set REDISTPLATFORM=%PLATFORM%
-)
-
-if "%2" == "Release" (
+if "%1" == "Release" (
   set WINDEPLOYQTARGS="--release"
 ) else (
   set WINDDEPLOYQTARGS="--debug"
@@ -109,26 +111,26 @@ if "%2" == "Release" (
 robocopy %SIMCDIR%\ %INSTALLDIR%\ Error.html Welcome.html Welcome.png  /NJH /NJS
 robocopy %SIMCDIR%\locale\ %INSTALLDIR%\locale sc_de.qm sc_zh.qm sc_it.qm  /NJH /NJS
 robocopy %SIMCDIR%\winreleasescripts\ %INSTALLDIR%\ qt.conf  /NJH /NJS
+robocopy %CURL_ROOT%\bin\ %INSTALLDIR%\ libcurl.dll /NJH /NJS
 robocopy %SIMCDIR%\ %INSTALLDIR%\ Simulationcraft.exe  /NJH /NJS
-%PLATFORMQTDIR%\bin\windeployqt.exe --force --no-translations --compiler-runtime %WINDEPLOYQTARGS% %INSTALLDIR%\Simulationcraft.exe
+%QTDIR%\bin\windeployqt.exe --force --no-translations --compiler-runtime %WINDEPLOYQTARGS% %INSTALLDIR%\Simulationcraft.exe
 exit /b 0
 
 :build_installer
 if not defined ISCC exit /b 0
 
 :: Setup additional variables for installer package
-if "%PLATFORM%" == "win32" (
-	set SIMCSUFFIX=%PLATFORM%
-	set SIMCAPPNAME=Simulationcraft
+set SIMCAPPNAME="Simulationcraft(%PLATFORM%)"
+if "%PLATFORM%" == "x86" (
+	set SIMCSUFFIX=Win32
 ) else (
-	set SIMCSUFFIX=win64
-	set SIMCAPPNAME=Simulationcraft (x64)
+	set SIMCSUFFIX=Win64
 )
 set SIMCAPPFULLVERSION=%SC_MAJOR_VERSION:~0,1%.%SC_MAJOR_VERSION:~1,1%.%SC_MAJOR_VERSION:~2,2%.%SC_MINOR_VERSION%
 if "%GITREV%" neq "" set SIMCSUFFIX=%SIMCSUFFIX%%GITREV%
 
 %ISCC%\iscc.exe /DSimcAppFullVersion=%SIMCAPPFULLVERSION% ^
-				/DSimcAppName="%SIMCAPPNAME%" ^
+				/DSimcAppName=%SIMCAPPNAME% ^
 				/DSimcReleaseSuffix="%SIMCSUFFIX%" ^
 				/DSimcReleaseDir="%INSTALLDIR%" ^
 				/DSimcAppVersion="%SIMCVERSION%" ^
@@ -144,7 +146,7 @@ if not defined SZIP exit /b 0
 exit /b 0
 
 :usage
-echo Usage: build-simc.bat VS-Configuration Platform [Target]
+echo Usage: build-simc.bat VS-Configuration [Architecture] [Target]
 call :help
 goto :enderror
 
@@ -159,12 +161,11 @@ echo To build, set the following environment variables:
 echo ============================================================
 echo SIMCVERSION: Simulationcraft release version (default from %SIMCDIR%\engine\simulationcraft.hpp)
 echo SIMCDIR    : Simulationcraft source directory root
-echo QTDIR      : Root directory of the Qt (5) release
-echo REDIST     : Directory containing Windows Runtime Environment redistributables
+echo QTDIR      : Root directory of the Qt (5) release, including the platform path (e.g., msvc2017_64)
+echo CURL_ROOT  : Root directory for the CURL build output (contains include, bin, lib directories)
 echo SZIP       : Directory containing 7-Zip compressor (optional, if omitted no compressed file)
 echo ISCC       : Diretory containing Inno Setup (optional, if omitted no setup will be built)
 echo INSTALL    : Directory to make an installation package in
-echo VSVERSION  : Visual studio version (default 2017)
 echo RELEASE    : Set to build a "release version" (no git commit hash suffix)
 echo            : If set, set SC_DEFAULT_APIKEY to the Battle.net key for the release
 goto :end
