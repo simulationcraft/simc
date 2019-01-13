@@ -947,6 +947,7 @@ void paladin_t::generate_action_prio_list_prot()
   precombat -> add_action( "snapshot_stats",  "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   precombat -> add_action( "potion" );
+  precombat -> add_action( this, "Consecration" );
   precombat -> add_action( "lights_judgment" );
 
   ///////////////////////
