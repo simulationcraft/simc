@@ -54,29 +54,29 @@ actions.cooldowns+=/use_items,if=buff.seraphim.up|!talent.seraphim.enabled
 actions.cooldowns+=/use_item,name=merekthas_fang,if=!buff.avenging_wrath.up&(buff.seraphim.up|!talent.seraphim.enabled)
 actions.cooldowns+=/use_item,name=razdunks_big_red_button
 
-head=glaciercrest_helm,id=165823,bonus_id=4824/1537/477/4775,azerite_powers=235/562/31/13
+head=glaciercrest_helm,id=165823,bonus_id=4824/1537/4775,azerite_powers=235/562/31/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
 shoulders=dynosprocket_spaulders,id=165825,bonus_id=4824/1537/4775,azerite_powers=235/562/22/13
-back=loa_exultants_shroud,id=165512,bonus_id=4824/1537/4775
+back=loa_exultants_shroud,id=165512,bonus_id=4824/1537
 chest=breastplate_of_divine_purification,id=165550,bonus_id=4824/1537/4775,azerite_powers=395/562/461/13
-wrists=splinterbone_vambraces,id=165551,bonus_id=4824/1537/4775
-hands=crusade_pummelers,id=165549,bonus_id=4824/1537/4775
-waist=hullplate_girdle,id=165559,bonus_id=4824/1537/4775
-legs=arcing_thunderlizard_legplates,id=165560,bonus_id=4824/1537/4775
-feet=coinage_stampers,id=165561,bonus_id=4824/1537/4775
-finger1=lord_admirals_signet,id=165566,bonus_id=4824/1537/4775,enchant=pact_of_haste
-finger2=seal_of_the_zandalari_empire,id=165567,bonus_id=4824/1537/4775,enchant=pact_of_haste
-trinket1=ramping_amplitude_gigavolt_engine,id=165580,bonus_id=4824/1537/4775
-trinket2=everchill_anchor,id=165570,bonus_id=4824/1537/4775
-main_hand=servoclaw_smasher,id=165598,bonus_id=4824/1537/4775,enchant=quick_navigation
-off_hand=sunburst_crest,id=165584,bonus_id=4824/1537/4775
+wrists=splinterbone_vambraces,id=165551,bonus_id=4824/1537
+hands=crusade_pummelers,id=165549,bonus_id=4824/1537
+waist=hullplate_girdle,id=165559,bonus_id=4824/1537
+legs=arcing_thunderlizard_legplates,id=165560,bonus_id=4824/1537
+feet=coinage_stampers,id=165561,bonus_id=4824/1537
+finger1=lord_admirals_signet,id=165566,bonus_id=4824/1537,enchant=pact_of_haste
+finger2=seal_of_the_zandalari_empire,id=165567,bonus_id=4824/1537,enchant=pact_of_haste
+trinket1=ramping_amplitude_gigavolt_engine,id=165580,bonus_id=4824/1537
+trinket2=everchill_anchor,id=165570,bonus_id=4824/1537
+main_hand=servoclaw_smasher,id=165598,bonus_id=4824/1537,enchant=quick_navigation
+off_hand=sunburst_crest,id=165584,bonus_id=4824/1537
 
 # Gear Summary
-# gear_ilvl=419.94
-# gear_strength=5946
-# gear_stamina=10190
-# gear_crit_rating=922
-# gear_haste_rating=1339
-# gear_mastery_rating=928
-# gear_versatility_rating=218
-# gear_armor=7786
+# gear_ilvl=416.19
+# gear_strength=5796
+# gear_stamina=9919
+# gear_crit_rating=911
+# gear_haste_rating=1322
+# gear_mastery_rating=917
+# gear_versatility_rating=214
+# gear_armor=7588
