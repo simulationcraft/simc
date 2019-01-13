@@ -42,7 +42,7 @@ if ERRORLEVEL 1 goto :enderror
 if defined RELEASE if not defined RELEASE_CREDENTIALS call :error RELEASE builds must set RELEASE_CREDENTIALS
 if ERRORLEVEL 1 goto :enderror
 
-set SC_DEFAULT_APIKEY=%RELEASE_CREDENTIALS%
+if defined RELEASE set SC_DEFAULT_APIKEY=%RELEASE_CREDENTIALS%
 
 :: Setup GIT HEAD commithash for the package name if GIT is found
 where /q git.exe
