@@ -6,7 +6,7 @@ role=attack
 position=ranged_back
 talents=1303011
 
-head=targettracking_headgear,id=165543,bonus_id=4824/1537,azerite_powers=366/562/459/14/13
+head=targettracking_headgear,id=165543,bonus_id=4824/1537,azerite_powers=366/562/22/14/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
 shoulder=pauldrons_of_ancestral_vengeance,id=165921,bonus_id=4824/1537,azerite_powers=367/562/30/203/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
@@ -16,8 +16,8 @@ hands=grips_of_harmonious_spirits,id=165531,bonus_id=4800/1537
 waist=goldenscale_girdle,id=165538,bonus_id=4800/1537
 legs=deathhunters_legguards,id=165536,bonus_id=4800/1537
 feet=lightgrace_sabatons,id=165533,bonus_id=4800/1537
-finger1=jade_ophidian_band,id=162544,bonus_id=1572/4779,enchant=pact_of_critical_strike
-finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_critical_strike
+finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_haste
+finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_haste
 trinket1=variable_intensity_gigavolt_oscillating_reactor,id=165572,bonus_id=4800/1537
 trinket2=kimbuls_razor_claw,id=165579,bonus_id=4800/1537
 main_hand=pterrorwing_longbow,id=165599,bonus_id=4800/1537,enchant=incendiary_ammunition
@@ -44,7 +44,7 @@ hands=slimy_kelpweavers,id=165546,bonus_id=4800/1537
 waist=goldenscale_girdle,id=165538,bonus_id=4800/1537
 legs=deathhunters_legguards,id=165536,bonus_id=4800/1537
 feet=lightgrace_sabatons,id=165533,bonus_id=4800/1537
-finger1=jade_ophidian_band,id=162544,bonus_id=1572/4780,enchant=pact_of_mastery
+finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_mastery
 finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_mastery
 trinket1=variable_intensity_gigavolt_oscillating_reactor,id=165572,bonus_id=4800/1537
 trinket2=kimbuls_razor_claw,id=165579,bonus_id=4800/1537
