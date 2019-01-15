@@ -4154,7 +4154,7 @@ struct fury_of_air_t : public shaman_spell_t
     if ( p()->buff.fury_of_air->check() )
     {
       return base_costs[ RESOURCE_MAELSTROM ] *
-        ( 1 - p()->buff.fury_of_air->tick_event->remains() / data().effectN( 1 ).period() );
+             ( 1 - p()->buff.fury_of_air->tick_event->remains() / data().effectN( 1 ).period() );
     }
 
     return shaman_spell_t::cost();
@@ -7609,24 +7609,25 @@ void shaman_t::create_buffs()
                           ->set_activated( false )
                           ->set_max_stack( find_spell( 201846 )->initial_stacks() );
   buff.fury_of_air = make_buff( this, "fury_of_air", talent.fury_of_air )
-    ->set_tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
-      action.fury_of_air->set_target( target );
-      action.fury_of_air->execute();
+                         ->set_tick_callback( [this]( buff_t* b, int, const timespan_t& ) {
+                           action.fury_of_air->set_target( target );
+                           action.fury_of_air->execute();
 
-      double actual_amount = resource_loss( RESOURCE_MAELSTROM, talent.fury_of_air->powerN( 1 ).cost() );
-      gain.fury_of_air->add( RESOURCE_MAELSTROM, actual_amount );
+                           double actual_amount =
+                               resource_loss( RESOURCE_MAELSTROM, talent.fury_of_air->powerN( 1 ).cost() );
+                           gain.fury_of_air->add( RESOURCE_MAELSTROM, actual_amount );
 
-      // If the actor reaches 0 maelstrom after the tick cost, cancel the buff. Otherwise, keep
-      // going. This allows "one extra tick" with less than 3 maelstrom, which seems to mirror in
-      // game behavior. In game, the buff only fades after the next tick (i.e., it has a one second
-      // delay), but modeling that seems pointless. Gaining maelstrom during that delay will not
-      // change the outcome of the fading.
-      if ( resources.current[ RESOURCE_MAELSTROM ] == 0 )
-      {
-        // Separate the expiration event to happen immediately after tick processing
-        make_event( *sim, timespan_t::zero(), [b]() { b->expire(); } );
-      }
-    } );
+                           // If the actor reaches 0 maelstrom after the tick cost, cancel the buff. Otherwise, keep
+                           // going. This allows "one extra tick" with less than 3 maelstrom, which seems to mirror in
+                           // game behavior. In game, the buff only fades after the next tick (i.e., it has a one second
+                           // delay), but modeling that seems pointless. Gaining maelstrom during that delay will not
+                           // change the outcome of the fading.
+                           if ( resources.current[ RESOURCE_MAELSTROM ] == 0 )
+                           {
+                             // Separate the expiration event to happen immediately after tick processing
+                             make_event( *sim, timespan_t::zero(), [b]() { b->expire(); } );
+                           }
+                         } );
 
   //
   // Restoration
@@ -7822,8 +7823,9 @@ void shaman_t::init_action_list_elemental()
   precombat->add_action( this, "Fire Elemental", "if=!talent.storm_elemental.enabled" );
   precombat->add_talent( this, "Storm Elemental", "if=talent.storm_elemental.enabled" );
   precombat->add_action( "potion" );
-  precombat->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled" );
-  precombat->add_action( this, "Lava Burst", "if=!talent.elemental_blast.enabled" );
+  precombat->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled&spell_targets.chain_lightning<3" );
+  precombat->add_action( this, "Lava Burst", "if=!talent.elemental_blast.enabled&spell_targets.chain_lightning<3" );
+  precombat->add_action( this, "Chain Lightning", "if=spell_targets.chain_lightning>2" );
 
   // All Shamans Bloodlust by default
   def->add_action( this, "Bloodlust", "if=azerite.ancestral_resonance.enabled",
@@ -7860,25 +7862,32 @@ void shaman_t::init_action_list_elemental()
   def->add_action( "run_action_list,name=single_target" );
 
   // Aoe APL
-  aoe->add_action( this, "Stormkeeper", "if=talent.stormkeeper.enabled" );
+  aoe->add_talent( this, "Stormkeeper", "if=talent.stormkeeper.enabled" );
+  aoe->add_action( this, "Flame Shock",
+                   "target_if=refreshable&(spell_targets.chain_lightning<(5-!talent.totem_mastery.enabled)|!talent."
+                   "storm_elemental.enabled&(cooldown.fire_elemental.remains>(120+14*spell_haste)|cooldown.fire_"
+                   "elemental.remains<(24-14*spell_haste)))&(!talent.storm_elemental.enabled|cooldown.storm_elemental."
+                   "remains<120|spell_targets.chain_lightning=3&buff.wind_gust.stack<14)",
+                   "Spread Flame Shock in <= 4 target fights, but not during SE uptime,"
+                   "unless you're fighting 3 targets and have less than 14 Wind Gust stacks." );
   aoe->add_talent( this, "Ascendance",
                    "if=talent.ascendance.enabled&(talent.storm_elemental.enabled&cooldown.storm_elemental.remains<120&"
-                   "cooldown.storm_elemental.remains>15|!talent.storm_elemental.enabled)" );
+                   "cooldown.storm_elemental.remains>15|!talent.storm_elemental.enabled)&(!talent.icefury.enabled|!"
+                   "buff.icefury.up&!cooldown.icefury.up)" );
   aoe->add_talent( this, "Liquid Magma Totem", "if=talent.liquid_magma_totem.enabled" );
-  aoe->add_action( this, "Flame Shock",
-                   "target_if=refreshable&spell_targets.chain_lightning<5&(!talent.storm_elemental.enabled|cooldown."
-                   "storm_elemental.remains<120|spell_targets.chain_lightning=3&buff.wind_gust.stack<14)",
-                   "Spread Flame Shock in <=4 target fights, but not during SE uptime, unless you're fighting 3 "
-                   "targets and have less than 14 Wind Gust stacks." );
   aoe->add_action(
       this, "Earthquake",
-      "if=!talent.master_of_the_elements.enabled|buff.stormkeeper.up|maelstrom>=(100-4*spell_targets."
-      "chain_lightning)|buff.master_of_the_elements.up|spell_targets.chain_lightning>3",
+      "if=!talent.master_of_the_elements.enabled|buff.stormkeeper.up|maelstrom>=(100-4*spell_targets.chain_lightning)|"
+      "buff.master_of_the_elements.up|spell_targets.chain_lightning>3",
       "Try to game Earthquake with Master of the Elements buff when fighting 3 targets. Don't overcap Maelstrom!" );
+  aoe->add_action( this, "Chain Lightning", "if=buff.stormkeeper.remains<3*gcd*buff.stormkeeper.stack",
+                   "Make sure you don't lose a Stormkeeper." );
   aoe->add_action( this, "Lava Burst",
-                   "if=(buff.lava_surge.up|buff.ascendance.up)&spell_targets.chain_lightning<4&(!talent.storm_"
-                   "elemental.enabled|cooldown.storm_elemental.remains<120)",
+                   "if=buff.lava_surge.up&spell_targets.chain_lightning<4&(!talent.storm_elemental.enabled|cooldown."
+                   "storm_elemental.remains<120)&dot.flame_shock.ticking",
                    "Only cast Lava Burst on three targets if it is an instant and Storm Elemental is NOT active." );
+  aoe->add_talent( this, "Icefury", "if=spell_targets.chain_lightning<4&!buff.ascendance.up" );
+  aoe->add_action( this, "Frost Shock", "if=spell_targets.chain_lightning<4&buff.icefury.up&!buff.ascendance.up" );
   aoe->add_talent( this, "Elemental Blast",
                    "if=talent.elemental_blast.enabled&spell_targets.chain_lightning<4&(!talent.storm_elemental."
                    "enabled|cooldown.storm_elemental.remains<120)",
@@ -8076,7 +8085,8 @@ void shaman_t::init_action_list_enhancement()
       "variable,name=CLPool_LL,value=active_enemies=1|maelstrom>=(action.crash_lightning.cost+action.lava_lash.cost)",
       "Attempt to pool maelstrom for Crash Lightning if multiple targets are present." );
   def->add_action(
-      "variable,name=CLPool_SS,value=active_enemies=1|maelstrom>=(action.crash_lightning.cost+action.stormstrike.cost)" );
+      "variable,name=CLPool_SS,value=active_enemies=1|maelstrom>=(action.crash_lightning.cost+action.stormstrike."
+      "cost)" );
   def->add_action(
       "variable,name=freezerburn_enabled,value=(talent.hot_hand.enabled&talent.hailstorm.enabled&azerite.primal_primer."
       "enabled)" );
