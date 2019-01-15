@@ -1,6 +1,6 @@
 hunter="T23_Hunter_Beast_Mastery"
 level=120
-race=orc
+race=lightforged_draenei
 spec=beast_mastery
 role=attack
 position=ranged_back
@@ -27,7 +27,7 @@ save=T23_Hunter_Beast_Mastery.simc
 
 hunter="T23_Hunter_Marksmanship"
 level=120
-race=troll
+race=human
 spec=marksmanship
 role=attack
 position=ranged_back
@@ -55,7 +55,7 @@ save=T23_Hunter_Marksmanship.simc
 
 hunter="T23_Hunter_Survival"
 level=120
-race=troll
+race=gnome
 spec=survival
 role=attack
 position=back
