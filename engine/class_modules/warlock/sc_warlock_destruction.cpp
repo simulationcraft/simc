@@ -36,24 +36,37 @@ namespace warlock {
 
       bool use_havoc() const
       {
-        return can_havoc && target != p()->havoc_target && p()->havoc_target != nullptr && p()->buffs.active_havoc->check();
+        // Ensure we do not try to hit the same target twice.
+        return can_havoc && p()->havoc_target && p()->havoc_target != target;
+      }
+
+      int n_targets() const override
+      {
+        if ( use_havoc() )
+        {
+          assert( warlock_spell_t::n_targets() == 0 );
+          return 2;
+        }
+        else
+          return warlock_spell_t::n_targets();
       }
 
       size_t available_targets(std::vector<player_t*>& tl) const override
       {
-        if (can_havoc)
+        warlock_spell_t::available_targets( tl );
+
+        // Check target list size to prevent some silly scenarios where Havoc target
+        // is the only target in the list.
+        if ( tl.size() > 1 && use_havoc() )
         {
-          tl.clear();
-          if ( !target->is_sleeping() )
+          // We need to make sure that the Havoc target ends up second in the target list,
+          // so that Havoc spells can pick it up correctly.
+          auto it = range::find( tl, p()->havoc_target );
+          if ( it != tl.end() )
           {
-            tl.push_back( target );
-            if ( use_havoc() && !p()->havoc_target->is_sleeping() )
-              tl.push_back(p()->havoc_target);
+            tl.erase( it );
+            tl.insert( tl.begin() + 1, p()->havoc_target );
           }
-        }
-        else
-        {
-          warlock_spell_t::available_targets( tl );
         }
 
         return tl.size();
@@ -63,21 +76,11 @@ namespace warlock {
       {
         warlock_spell_t::init();
 
-        if (can_havoc)
+        if ( can_havoc )
         {
           base_aoe_multiplier *= p()->spec.havoc->effectN( 1 ).percent();
-          //available_targets() will handle Havoc target selection
-          aoe = -1;
+          p()->havoc_spells.push_back( this );
         }
-      }
-
-      //TODO: Implement triggering on Havoc buff trigger/expiration instead of invalidating on every possible call
-      std::vector<player_t*>& target_list() const override
-      {
-        if(can_havoc)
-          target_cache.is_valid = false;
-
-        return warlock_spell_t::target_list();
       }
 
       void consume_resource() override
@@ -266,28 +269,16 @@ namespace warlock {
     //Spells
     struct havoc_t : public destruction_spell_t
     {
-      timespan_t havoc_duration;
-
       havoc_t(warlock_t* p, const std::string& options_str) : destruction_spell_t(p, "Havoc")
       {
         parse_options(options_str);
         may_crit = false;
-        havoc_duration = p->find_spell(80240)->duration();
-      }
-
-      void execute() override
-      {
-        destruction_spell_t::execute();
-
-        p()->havoc_target = execute_state->target;
-        p()->buffs.active_havoc->trigger();
       }
 
       void impact(action_state_t* s) override
       {
         destruction_spell_t::impact(s);
-
-        td(s->target)->debuffs_havoc->trigger(1, buff_t::DEFAULT_VALUE(), -1.0, havoc_duration);
+        td(s->target)->debuffs_havoc->trigger();
       }
     };
 
@@ -415,6 +406,15 @@ namespace warlock {
         }
       }
 
+      void init() override
+      {
+        destruction_spell_t::init();
+
+        // F&B Incinerate's target list depends on the current Havoc target, so it
+        // needs to invalidate its target list with the rest of the Havoc spells.
+        p()->havoc_spells.push_back( this );
+      }
+
       double bonus_da( const action_state_t* s ) const override
       {
         double da = destruction_spell_t::bonus_da( s );
@@ -440,15 +440,13 @@ namespace warlock {
           tl.erase(it);
         }
 
-        // nor the havoced target if applicable
-        if (use_havoc() )
+        // nor the havoced target
+        it = range::find(tl, p()->havoc_target);
+        if (it != tl.end())
         {
-          it = range::find(tl, p()->havoc_target);
-          if (it != tl.end())
-          {
-            tl.erase(it);
-          }
+          tl.erase(it);
         }
+
         return tl.size();
       }
 
@@ -544,8 +542,7 @@ namespace warlock {
 
         if ( p()->talents.fire_and_brimstone->ok() )
         {
-          fnb_action->set_target( execute_state->target );
-          fnb_action->target_cache.is_valid = false;
+          fnb_action->set_target( target );
           fnb_action->execute();
         }
       }
@@ -968,12 +965,6 @@ namespace warlock {
     buffs.backdraft = make_buff( this, "backdraft", find_spell( 117828 ) )
       ->set_refresh_behavior( buff_refresh_behavior::DURATION )
       ->set_max_stack( find_spell( 117828 )->max_stacks() + ( talents.flashover ? talents.flashover->effectN( 2 ).base_value() : 0 ) );
-
-
-    buffs.active_havoc = make_buff( this, "active_havoc" )
-      ->set_tick_behavior( buff_tick_behavior::NONE )
-      ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-      ->set_duration( 10_s );
 
     buffs.reverse_entropy = make_buff( this, "reverse_entropy", talents.reverse_entropy )
       ->set_default_value( find_spell( 266030 )->effectN( 1 ).percent() )

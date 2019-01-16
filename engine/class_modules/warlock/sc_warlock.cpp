@@ -84,22 +84,6 @@ namespace warlock
     };
   } // end actions namespace
 
-  namespace buffs
-  {
-    struct debuff_havoc_t : public warlock_buff_t<buff_t>
-    {
-      debuff_havoc_t( warlock_td_t& p ) :
-        base_t( p, "havoc", p.source -> find_spell( 80240 ) ) { }
-
-      void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-      {
-        base_t::expire_override( expiration_stacks, remaining_duration );
-
-        p()->havoc_target = nullptr;
-      }
-    };
-  }
-
   warlock_td_t::warlock_td_t( player_t* target, warlock_t& p ) :
     actor_target_data_t( target, &p ),
     soc_threshold( 0.0 ),
@@ -136,7 +120,16 @@ namespace warlock
     debuffs_roaring_blaze = make_buff( *this, "roaring_blaze", source->find_spell( 205690 ) )
       ->set_max_stack( 100 );
     debuffs_shadowburn = make_buff(*this, "shadowburn", source->find_spell(17877));
-    debuffs_havoc = new buffs::debuff_havoc_t(*this);
+    debuffs_havoc = make_buff( *this, "havoc", source->find_spell( 80240 ) )
+      ->set_stack_change_callback( [ &p ] ( buff_t* b, int, int cur )
+      {
+        if ( cur == 0 )
+          p.havoc_target = nullptr;
+        else
+          p.havoc_target = b->player;
+
+        range::for_each( p.havoc_spells, [] ( action_t* a ) { a->target_cache.is_valid = false; } );
+      } );
     debuffs_chaotic_flames = make_buff(*this, "chaotic_flames", source->find_spell(253092));
 
     //Demo
@@ -197,6 +190,7 @@ namespace warlock
 warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
   player_t( sim, WARLOCK, name, r ),
     havoc_target( nullptr ),
+    havoc_spells(),
     wracking_brilliance(false),
     agony_accumulator( 0.0 ),
     active_pets( 0 ),
@@ -939,6 +933,20 @@ expr_t* warlock_t::create_expression( const std::string& name_str )
   }
   else if (name_str == "deathbolt_setup") {
     return create_aff_expression(name_str);
+  }
+  // TODO: Remove the deprecated buff expressions once the APL is adjusted for
+  // havoc_active/havoc_remains.
+  else if ( name_str == "havoc_active" || name_str == "buff.active_havoc.up" ) {
+    return make_fn_expr( name_str, [ this ]
+    {
+      return havoc_target != nullptr;
+    } );
+  }
+  else if ( name_str == "havoc_remains" || name_str == "buff.active_havoc.remains" ) {
+    return make_fn_expr( name_str, [ this ]
+    {
+      return havoc_target ? get_target_data( havoc_target )->debuffs_havoc->remains().total_seconds() : 0.0;
+    } );
   }
 
   return player_t::create_expression( name_str );

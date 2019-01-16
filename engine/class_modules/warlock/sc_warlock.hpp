@@ -62,7 +62,8 @@ namespace warlock
     struct warlock_t : public player_t
     {
     public:
-      player_t * havoc_target;
+      player_t* havoc_target;
+      std::vector<action_t*> havoc_spells;  // Used for smarter target cache invalidation.
       bool wracking_brilliance;
       double agony_accumulator;
 
@@ -330,7 +331,6 @@ namespace warlock
 
         //destruction_buffs
         propagate_const<buff_t*> backdraft;
-        propagate_const<buff_t*> active_havoc;
         propagate_const<buff_t*> reverse_entropy;
         propagate_const<buff_t*> grimoire_of_supremacy;
         propagate_const<buff_t*> dark_soul_instability;
