@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug-WebEngine|x64">
@@ -211,7 +211,7 @@
     <ClCompile>
       <Optimization>Full</Optimization>
       <AdditionalIncludeDirectories>$(QTDIR)\include\QtWebEngineCore;$(QTDIR)\include\QtWebEngineCore;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtWebEngineWidgets;$(QTDIR)\include\QtWebEngine;$(QTDIR)\include;$(QTDIR)\include\ActiveQt;$(QTDIR)\include\QtANGLE;$(QTDIR)\mkspecs\default;$(SolutionDir);$(SolutionDir)vs;$(SolutionDir)engine;$(SolutionDir)engine/util;%(AdditionalIncludeDirectories);$(QTDIR)\include\QtWebEngineCore</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>SC_DEFAULT_APIKEY="$(SC_DEFAULT_APIKEY)";SC_USE_WEBENGINE;QT_NO_DEBUG_OUTPUT;QT_NO_DEBUG;NDEBUG;_WINDOWS;UNICODE;WIN32;Q_OS_WIN;QT_LARGEFILE_SUPPORT;QT_VERSION_5;QT_DLL;QT_WEBENGINE_LIB;QT_GUI_LIB;QT_CORE_LIB;QT_THREAD_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SC_DEFAULT_APIKEY="$(SC_DEFAULT_APIKEY)";SC_USE_WEBENGINE;SC_NO_NETWORKING;QT_NO_DEBUG_OUTPUT;QT_NO_DEBUG;NDEBUG;_WINDOWS;UNICODE;WIN32;Q_OS_WIN;QT_LARGEFILE_SUPPORT;QT_VERSION_5;QT_DLL;QT_WEBENGINE_LIB;QT_GUI_LIB;QT_CORE_LIB;QT_THREAD_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <FunctionLevelLinking>true</FunctionLevelLinking>

@@ -57,7 +57,10 @@ int main( int argc, char *argv[] )
   unique_gear::register_hotfixes();
   unique_gear::register_special_effects();
   unique_gear::sort_special_effects();
+  
+  #ifndef SC_NO_NETWORKING
   bcp_api::token_load();
+  #endif
 
   hotfix::apply();
 
@@ -131,7 +134,10 @@ int main( int argc, char *argv[] )
   auto ret = a.exec();
 
   dbc::de_init();
+
+  #ifndef SC_NO_NETWORKING
   bcp_api::token_save();
+  #endif
 
   return ret;
 }
