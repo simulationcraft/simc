@@ -382,12 +382,8 @@ double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t
 
     if ( specialization() == WARLOCK_DESTRUCTION && azerite.chaos_shards.ok() )
     {
-      if ( // check if we fill a shard.
-        ( resources.current[RESOURCE_SOUL_SHARD] < 1.0 && resources.current[RESOURCE_SOUL_SHARD] + amount >= 1.0 ) ||
-        ( resources.current[RESOURCE_SOUL_SHARD] < 2.0 && resources.current[RESOURCE_SOUL_SHARD] + amount >= 2.0 ) ||
-        ( resources.current[RESOURCE_SOUL_SHARD] < 3.0 && resources.current[RESOURCE_SOUL_SHARD] + amount >= 3.0 ) ||
-        ( resources.current[RESOURCE_SOUL_SHARD] < 4.0 && resources.current[RESOURCE_SOUL_SHARD] + amount >= 4.0 ) ||
-        ( resources.current[RESOURCE_SOUL_SHARD] < 5.0 && resources.current[RESOURCE_SOUL_SHARD] + amount >= 5.0 ) )
+      // Check if soul shard was filled
+      if ( std::floor(resources.current[RESOURCE_SOUL_SHARD]) < std::floor(std::min(resources.current[RESOURCE_SOUL_SHARD] + amount, 5.0)) )
       {
         if ( rng().roll( azerite.chaos_shards.spell_ref().effectN( 1 ).percent() / 10.0 ) )
           buffs.chaos_shards->trigger();
