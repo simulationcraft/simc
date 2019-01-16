@@ -96,6 +96,7 @@ lib/*.vcxproj*
 gui/build
 gui/release
 gui/debug
+gui/moc
 gui/*.vcxproj*
 cli/build
 cli/release
