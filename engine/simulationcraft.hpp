@@ -509,6 +509,7 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     buff_t* dead_ahead;
     buff_t* battlefield_debuff;
     buff_t* wasting_infection;
+    buff_t* everchill;
   } debuff;
 
   struct atd_dot_t

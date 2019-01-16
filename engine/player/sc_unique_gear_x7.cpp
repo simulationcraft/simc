@@ -134,6 +134,7 @@ namespace items
   void invocation_of_yulon( special_effect_t& );
   void variable_intensity_gigavolt_oscillating_reactor( special_effect_t& );
   void variable_intensity_gigavolt_oscillating_reactor_onuse( special_effect_t& );
+  void everchill_anchor( special_effect_t& );
 }
 
 namespace util
@@ -2017,6 +2018,70 @@ void items::variable_intensity_gigavolt_oscillating_reactor_onuse( special_effec
   effect.execute_action = new oscillating_overload_action_t( effect );
 }
 
+// Everchill Anchor
+
+struct everchill_anchor_constructor_t : public item_targetdata_initializer_t
+{
+  everchill_anchor_constructor_t( unsigned iid, const std::vector< slot_e >& s ) :
+    item_targetdata_initializer_t( iid, s )
+  {}
+
+  // Create the everchill debuff to handle trinket icd
+  void operator()( actor_target_data_t* td ) const override
+  {
+    const special_effect_t* effect = find_effect( td -> source );
+    if ( !effect )
+    {
+      td -> debuff.everchill = make_buff( *td, "everchill" );
+      return;
+    }
+    assert( !td -> debuff.everchill );
+
+    td -> debuff.everchill =
+      make_buff( *td, "everchill_debuff", effect -> trigger() )
+      -> set_activated( false );
+    td -> debuff.everchill -> reset();
+  }
+};
+
+void items::everchill_anchor( special_effect_t& effect )
+{
+  struct everchill_t : public proc_spell_t
+  {
+    everchill_t( const special_effect_t& effect ):
+      proc_spell_t( "everchill", effect.player, effect.player -> find_spell( 289526 ), effect.item )
+    { }
+  };
+
+  struct everchill_anchor_cb_t : public dbc_proc_callback_t
+  {
+    everchill_t* damage;
+    everchill_anchor_cb_t( const special_effect_t& effect ) :
+      dbc_proc_callback_t( effect.item, effect ),
+      damage( new everchill_t( effect ) )
+    {}
+
+    void execute( action_t* /* a */, action_state_t* state ) override
+    {
+      actor_target_data_t* td = listener -> get_target_data( state -> target );
+      assert( td );
+
+      if ( td -> debuff.everchill -> trigger() )
+      {
+        damage -> set_target( state -> target );
+        damage -> execute();
+      }
+    }
+  };
+
+  // An aoe ability will apply the dot on every target hit
+  effect.proc_flags2_ = PF2_ALL_HIT;
+  // Internal cd is handled on the debuff
+  effect.cooldown_ = timespan_t::zero();
+
+  new everchill_anchor_cb_t( effect );
+}
+
 // Waycrest's Legacy Set Bonus ============================================
 
 void set_bonus::waycrest_legacy( special_effect_t& effect )
@@ -2111,6 +2176,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 288328, "288330Trigger" ); // Kimbul's Razor Claw
   register_special_effect( 287915, items::variable_intensity_gigavolt_oscillating_reactor );
   register_special_effect( 287917, items::variable_intensity_gigavolt_oscillating_reactor_onuse );
+  register_special_effect( 289525, items::everchill_anchor );
 
   // Misc
   register_special_effect( 276123, items::darkmoon_deck_squalls );
@@ -2131,6 +2197,7 @@ void unique_gear::register_target_data_initializers_bfa( sim_t* sim )
 
   sim -> register_target_data_initializer( deadeye_spyglass_constructor_t( 159623, items ) );
   sim -> register_target_data_initializer( syringe_of_bloodborne_infirmity_constructor_t( 160655, items ) );
+  sim -> register_target_data_initializer( everchill_anchor_constructor_t( 165570, items ) );
 }
 
 namespace expansion
