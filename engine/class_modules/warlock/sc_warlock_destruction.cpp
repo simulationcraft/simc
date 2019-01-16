@@ -107,6 +107,14 @@ namespace warlock {
         }
       }
 
+      void execute() override
+      {
+        warlock_spell_t::execute();
+
+        if ( can_havoc && num_targets_hit > 1 && p()->azerite.rolling_havoc.enabled() )
+          p()->buffs.rolling_havoc->trigger();
+      }
+
       void impact(action_state_t* s) override
       {
         warlock_spell_t::impact(s);
