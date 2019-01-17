@@ -4105,9 +4105,7 @@ struct shred_t : public cat_attack_t
     energize_amount +=
         p->query_aura_effect( p->spec.feral, E_APPLY_AURA, A_ADD_FLAT_MODIFIER, 12, p->find_class_spell( "Shred" ) )
             ->base_value() +
-        p->query_aura_effect( p->talent.feral_affinity, E_APPLY_AURA, A_ADD_FLAT_MODIFIER, 12,
-                              p->find_class_spell( "Shred" ) )
-            ->base_value();
+        p -> talent.feral_affinity -> effectN( 8 ).base_value();
   }
 
   virtual void impact( action_state_t* s ) override
