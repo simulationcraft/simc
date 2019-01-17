@@ -32,8 +32,9 @@ actions.precombat+=/stormkeeper,if=talent.stormkeeper.enabled&(raid_event.adds.c
 actions.precombat+=/fire_elemental,if=!talent.storm_elemental.enabled
 actions.precombat+=/storm_elemental,if=talent.storm_elemental.enabled
 actions.precombat+=/potion
-actions.precombat+=/elemental_blast,if=talent.elemental_blast.enabled
-actions.precombat+=/lava_burst,if=!talent.elemental_blast.enabled
+actions.precombat+=/elemental_blast,if=talent.elemental_blast.enabled&spell_targets.chain_lightning<3
+actions.precombat+=/lava_burst,if=!talent.elemental_blast.enabled&spell_targets.chain_lightning<3
+actions.precombat+=/chain_lightning,if=spell_targets.chain_lightning>2
 
 # Executed every time the actor is available.
 # Cast Bloodlust manually if the Azerite Trait Ancestral Resonance is present.
@@ -56,14 +57,18 @@ actions+=/run_action_list,name=single_target
 
 # Multi target action priority list
 actions.aoe=stormkeeper,if=talent.stormkeeper.enabled
-actions.aoe+=/ascendance,if=talent.ascendance.enabled&(talent.storm_elemental.enabled&cooldown.storm_elemental.remains<120&cooldown.storm_elemental.remains>15|!talent.storm_elemental.enabled)
+# Spread Flame Shock in <= 4 target fights, but not during SE uptime,unless you're fighting 3 targets and have less than 14 Wind Gust stacks.
+actions.aoe+=/flame_shock,target_if=refreshable&(spell_targets.chain_lightning<(5-!talent.totem_mastery.enabled)|!talent.storm_elemental.enabled&(cooldown.fire_elemental.remains>(120+14*spell_haste)|cooldown.fire_elemental.remains<(24-14*spell_haste)))&(!talent.storm_elemental.enabled|cooldown.storm_elemental.remains<120|spell_targets.chain_lightning=3&buff.wind_gust.stack<14)
+actions.aoe+=/ascendance,if=talent.ascendance.enabled&(talent.storm_elemental.enabled&cooldown.storm_elemental.remains<120&cooldown.storm_elemental.remains>15|!talent.storm_elemental.enabled)&(!talent.icefury.enabled|!buff.icefury.up&!cooldown.icefury.up)
 actions.aoe+=/liquid_magma_totem,if=talent.liquid_magma_totem.enabled
-# Spread Flame Shock in <=4 target fights, but not during SE uptime, unless you're fighting 3 targets and have less than 14 Wind Gust stacks.
-actions.aoe+=/flame_shock,target_if=refreshable&spell_targets.chain_lightning<5&(!talent.storm_elemental.enabled|cooldown.storm_elemental.remains<120|spell_targets.chain_lightning=3&buff.wind_gust.stack<14)
 # Try to game Earthquake with Master of the Elements buff when fighting 3 targets. Don't overcap Maelstrom!
 actions.aoe+=/earthquake,if=!talent.master_of_the_elements.enabled|buff.stormkeeper.up|maelstrom>=(100-4*spell_targets.chain_lightning)|buff.master_of_the_elements.up|spell_targets.chain_lightning>3
+# Make sure you don't lose a Stormkeeper.
+actions.aoe+=/chain_lightning,if=buff.stormkeeper.remains<3*gcd*buff.stormkeeper.stack
 # Only cast Lava Burst on three targets if it is an instant and Storm Elemental is NOT active.
-actions.aoe+=/lava_burst,if=(buff.lava_surge.up|buff.ascendance.up)&spell_targets.chain_lightning<4&(!talent.storm_elemental.enabled|cooldown.storm_elemental.remains<120)
+actions.aoe+=/lava_burst,if=buff.lava_surge.up&spell_targets.chain_lightning<4&(!talent.storm_elemental.enabled|cooldown.storm_elemental.remains<120)&dot.flame_shock.ticking
+actions.aoe+=/icefury,if=spell_targets.chain_lightning<4&!buff.ascendance.up
+actions.aoe+=/frost_shock,if=spell_targets.chain_lightning<4&buff.icefury.up&!buff.ascendance.up
 # Use Elemental Blast against up to 3 targets as long as Storm Elemental is not active.
 actions.aoe+=/elemental_blast,if=talent.elemental_blast.enabled&spell_targets.chain_lightning<4&(!talent.storm_elemental.enabled|cooldown.storm_elemental.remains<120)
 actions.aoe+=/lava_beam,if=talent.ascendance.enabled

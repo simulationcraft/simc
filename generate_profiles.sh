@@ -14,7 +14,7 @@ else
   echo 'Skipped PreRaids, directory not found.'
 fi
 # TierXX profiles generation
-for tier in 22
+for tier in 22 23
 do
   PROFDIR="Tier$tier"
   echo "---$PROFDIR---"
