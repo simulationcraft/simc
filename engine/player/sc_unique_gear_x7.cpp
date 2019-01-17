@@ -131,6 +131,7 @@ namespace items
   void disc_of_systematic_regression( special_effect_t& );
   // 8.1.0 - Battle of Dazar'alor Trinkets
   void incandescent_sliver( special_effect_t& );
+  void tidestorm_codex( special_effect_t& );
   void invocation_of_yulon( special_effect_t& );
   void variable_intensity_gigavolt_oscillating_reactor( special_effect_t& );
   void variable_intensity_gigavolt_oscillating_reactor_onuse( special_effect_t& );
@@ -1682,6 +1683,98 @@ void items::incandescent_sliver( special_effect_t& effect )
   } );
 }
 
+// Tidestorm Codex =======================================================
+
+void items::tidestorm_codex( special_effect_t& effect )
+{
+  struct surging_burst_t : public aoe_proc_t
+  {
+    surging_burst_t( const special_effect_t& effect ) :
+      aoe_proc_t( effect, "surging_burst", 288086, true )
+    {
+      // Damage values are in a different spell, which isn't linked from the driver.
+      base_dd_min = base_dd_max = player->find_spell( 288046 )->effectN( 1 ).average( effect.item );
+
+      // Travel speed is around 10 yd/s, doesn't seem to be in spell data.
+      travel_speed = 10.0;
+    }
+  };
+
+  struct surging_waters_t : public proc_t
+  {
+    action_t* damage;
+
+    surging_waters_t( const special_effect_t& effect ) :
+      proc_t( effect, "surging_waters", effect.driver() )
+    {
+      channeled = true;
+
+      if ( player->bugs )
+      {
+        // The channel can actually be cancelled early while still getting all six elementals.
+        // Here we model that by reducing the channel to 1.5 sec if bugs are enabled.
+        dot_duration = 1.5_s;
+      }
+
+      damage = create_proc_action<surging_burst_t>( "surging_burst", effect );
+      add_child( damage );
+    }
+
+    double composite_haste() const override
+    {
+      // Does not benefit from haste.
+      return 1.0;
+    }
+
+    void execute() override
+    {
+      proc_t::execute();
+
+      // This action is a background channel. use_item_t has already scheduled player ready event,
+      // so we need to remove it to prevent the player from channeling and doing something else at
+      // the same time.
+      event_t::cancel( player->readying );
+    }
+
+    void tick( dot_t* d ) override
+    {
+      proc_t::tick( d );
+      // Spawn up to six elementals, see the bug note above.
+      if ( d->current_tick <= as<int>( data().effectN( 3 ).base_value() ) )
+      {
+        damage->set_target( d->target );
+        damage->execute();
+      }
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      bool was_channeling = player->channeling == this;
+      proc_t::last_tick( d );
+
+      if ( was_channeling && !player->readying )
+      {
+        // Since this is a background channel, we need to manually wake
+        // the player up.
+
+        timespan_t wait = 0_ms;
+        if ( !player->bugs )
+        {
+          // Without bugs, we assume that the full channel needs to happen to get
+          // all six elementals. This means we need take into account channel lag.
+          wait = rng().gauss( sim->channel_lag, sim->channel_lag_stddev );
+        }
+        // With bugs, the interrupt window is huge and the interrupt can even be
+        // done with the help of spellqueueing, so no delay is added.
+
+        player->schedule_ready( wait );
+      }
+    }
+  };
+
+  effect.execute_action = create_proc_action<surging_waters_t>( "surging_waters", effect );
+}
+
 // Invocation of Yu'lon ==================================================
 
 void items::invocation_of_yulon( special_effect_t& effect )
@@ -2172,6 +2265,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 274472, items::berserkers_juju );
   register_special_effect( 285495, "285496Trigger" ); // Moonstone of Zin-Azshari
   register_special_effect( 289522, items::incandescent_sliver );
+  register_special_effect( 289885, items::tidestorm_codex );
   register_special_effect( 289521, items::invocation_of_yulon );
   register_special_effect( 288328, "288330Trigger" ); // Kimbul's Razor Claw
   register_special_effect( 287915, items::variable_intensity_gigavolt_oscillating_reactor );
