@@ -247,7 +247,6 @@ public:
   {
     const spell_data_t* spell_reflection;
     const spell_data_t* recklessness;
-    const spell_data_t* bastion_of_might;
     const spell_data_t* bladestorm;
     const spell_data_t* bloodthirst;
     const spell_data_t* colossus_smash;
