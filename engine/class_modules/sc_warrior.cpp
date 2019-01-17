@@ -4333,6 +4333,12 @@ struct ignore_pain_bom_t : public ignore_pain_t
     target       = player;
   }
 
+  void execute() override
+  {
+    warrior_spell_t::execute();
+    p()->buff.vengeance_revenge->trigger(); // this IP does trigger vengeance but doesnt consume it
+  }
+
   double cost( ) const override
   {
     return 0.0;
