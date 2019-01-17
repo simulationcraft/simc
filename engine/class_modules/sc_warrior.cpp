@@ -3941,7 +3941,6 @@ struct avatar_t : public warrior_spell_t
     {
       p()->buff.bastion_of_might->trigger();
 
-      action_t* bastion_of_might_ip_active = p()->active.bastion_of_might_ip;
       bastion_of_might_ip_active->execute( );
     }
   }
