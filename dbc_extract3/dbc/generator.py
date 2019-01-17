@@ -1236,7 +1236,9 @@ class SpellDataGenerator(DataGenerator):
          # Boralus Blood Sausage Feast
          290469, 290468, 290467, 288075, 288074,
          # Buffs for Variable Intensity Gigavolt Oscillating Reactor
-         287916, 290052, 290051, 290042, 287967
+         287916, 290052, 290051, 290042, 287967,
+         # Tidestorm Codex
+         288086,
         ),
 
         # Warrior:
