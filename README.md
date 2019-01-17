@@ -3,7 +3,7 @@
 
 SimulationCraft is a tool to explore combat mechanics in the popular MMO RPG World of Warcraft (tm).
 
-It is a multi-player event driven simulator written in C++ that models player character damage-per-second in various raiding scenarios.
+It is a multi-player event driven simulator written in C++ that models player character damage-per-second in various raiding and dungeon scenarios.
 
 Increasing class synergy and the prevalence of proc-based combat modifiers have eroded the accuracy of traditional calculators that rely upon closed-form approximations to model very complex mechanics. The goal of this simulator is to close the accuracy gap while maintaining a performance level high enough to calculate relative stat weights to aid gear selection.
 
@@ -13,7 +13,7 @@ A simple graphical interface is included with the tool, allowing players to down
 
 ## How Can I Use It?
 
-Go to the [downloads page](https://www.simulationcraft.org/download.html) and get the package for your particular platform. 
+Go to the [downloads page](https://www.simulationcraft.org/download.html) and get the package for your particular platform.
 The Windows package offers both a formal install and a archive that can be extracted on to your desktop. There is no Linux release since it is so ridiculously easy to build it yourself on that platform. Releases occur quite frequently so be sure to check the release notes.
 
 Two executables are shipped: *SimulationCraft* sports a simple graphical user interface whereas *simc* uses a command-line interface.
@@ -27,9 +27,9 @@ There is also an excellent [starters guide](../../wiki/StartersGuide) on our wik
 
 For a simple overview, thoroughly read the Welcome page that is presented upon launching SimulationCraft. In addition, detailed documentation material can be found on our [wiki pages](../../wiki/). Here you will find a list of features, a starters guide, as well as answers to frequently asked questions.
 
-If your question is not answered there, then see the [Community](#community) section below on how to reach other users via IRC. We periodically scan the WoW, MMO, and Wowhead forums as well, but we cannot promise swift responses in those arenas.
+If your question is not answered there, then see the [Community](#community) section below on how to reach other users via Discord. We periodically scan the WoW, MMO, and Wowhead forums as well, but we cannot promise swift responses in those arenas.
 
-If you have detailed questions that need to be answered in real time then I recommend you visit the IRC channel detailed in the [Community](#community) section below. There are active SimulationCraft developers on that channel 24hrs a day.
+If you have detailed questions that need to be answered in real time then I recommend you visit the Discord server detailed in the [Community](#community) section below. There are active SimulationCraft developers on the server 24hrs a day.
 
 If you believe that the reported analysis is incorrect please open an [issue](../../issues). If you are unable to download your character, please open an [issue](../../issues). If you feel that the tool is missing features/directives necessary for analysis, please open an [issue](../../issues). Opening an [issue](../../issues) (as opposed to an email, forum post, chat msg, etc) is by far the most effective method of getting a swift resolution to your problem.
 
@@ -45,7 +45,7 @@ Discord: [SimCMinMax](https://discord.gg/tFR2uvK) (#simulationcraft)
 
 ## Important Notice
 
-SimulationCraft is different from SimCraft. Please use the full name SimulationCraft (or SimC) to refer to this project. Visit SimCraft if you are looking for full-motion simulators for SimRacing and FlightSim. 
+SimulationCraft is different from SimCraft. Please use the full name SimulationCraft (or SimC) to refer to this project. Visit SimCraft if you are looking for full-motion simulators for SimRacing and FlightSim.
 
 ## External Libraries
 
