@@ -4584,7 +4584,6 @@ void warrior_t::init_spells()
   mastery.unshackled_fury  = find_mastery_spell( WARRIOR_FURY );
 
   // Spec Passives
-  spec.bastion_of_might     = find_spell( 287378 );
   spec.berserker_rage       = find_specialization_spell( "Berserker Rage" );
   spec.bladestorm           = find_specialization_spell( "Bladestorm" );
   spec.bloodthirst          = find_specialization_spell( "Bloodthirst" );
