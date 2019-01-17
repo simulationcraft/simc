@@ -395,7 +395,8 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=3248)     : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.10000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.10000 | PvP Coefficient: 0.90000 | Target: Enemy (6)
+                   Hotfixed: PvP Coefficient (1 -> 0.9)
 Description      : Instantly shocks the target with concussive force, causing $s1 Nature damage.
 
 Name             : Tremor Totem (rank=Earth Totem) (id=8143) [Spell Family (11)] 
@@ -4167,7 +4168,7 @@ Effects          :
                    Affected Spells: Lava Burst Overload (77451)
                    Family Flags: 86
 #6 (id=723964)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 #7 (id=723965)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Icefury (210714)
@@ -4268,10 +4269,10 @@ Effects          :
                    Affected Spells: Lightning Bolt (403), Chain Lightning (421), Lava Beam (114074), Lightning Bolt (187837), Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt Overload (214816)
                    Family Flags: 0, 1, 34
 #2 (id=747303)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 0.83333 | Target: Self (1)
+                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 0.76667 | Target: Self (1)
                    Affected Spells: Lightning Bolt (403), Lightning Bolt (187837), Lightning Bolt (188196), Lightning Bolt Overload (214816)
                    Family Flags: 0
-                   Hotfixed: PvP Coefficient (1 -> 0.833333)
+                   Hotfixed: PvP Coefficient (1 -> 0.766667)
 Description      : Charge yourself with lightning, causing your next $n Lightning Bolts to deal $s2% more damage, and also causes your next $n Lightning Bolts or Chain Lightnings to be instant cast and trigger an Elemental Overload on every target.
 Tooltip          : Your next Lightning Bolt will deal $s2% increased damage, and your next Lightning Bolt or Chain Lightning will be instant cast and cause an Elemental Overload to trigger on every target hit.
 
@@ -5006,6 +5007,7 @@ Tooltip          : Dealing $197385s1 Nature damage every $t1 sec to enemies caug
 Variables        : $CAP=${($AP+$OAP)*2/3}
 
 Name             : Sundering (id=197214) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Flamestrike
 Spell Type       : Melee
@@ -5016,7 +5018,7 @@ Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed M
 Cooldown         : 40 seconds
 Affecting spells : Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#3), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
 Family Flags     : 16, 39, 56, 107
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7449,6 +7451,7 @@ Effects          :
 Tooltip          : Increases haste by $s1.
 
 Name             : Surge of Power (id=262303) [Spell Family (11), Passive, Hidden] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -7461,7 +7464,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ....x... ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)

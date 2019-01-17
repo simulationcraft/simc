@@ -4998,7 +4998,7 @@ Spell Level      : 1
 Range            : 100 yards
 Duration         : 6 seconds
 Proc Chance      : 100%
-Mechanic         : Disorient
+Mechanic         : Flee
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Attributes       : ........ ........ x......x x..x....   ...x.x.x ........ .x...... ........ 

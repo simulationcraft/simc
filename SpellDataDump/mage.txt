@@ -3155,6 +3155,7 @@ Spell Type       : None
 Resource         : 1% Base Mana (0) (id=9139)
 Range            : 40 yards
 GCD              : 1.5 seconds
+Velocity         : 20 yards/sec
 Duration         : 2.5 seconds
 Cooldown         : 20 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
