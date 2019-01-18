@@ -3234,6 +3234,14 @@ struct revenge_t : public warrior_attack_t
     impact_action = p->active.deep_wounds_PROT;
   }
 
+  double cost() const override
+  {
+    double cost = warrior_attack_t::cost();
+    cost *= 1.0 + p()->buff.revenge->check_value();
+    cost *= 1.0 + p()->buff.vengeance_revenge->check_value();
+    return cost;
+  }
+
   void execute() override
   {
     warrior_attack_t::execute();
@@ -3272,14 +3280,6 @@ struct revenge_t : public warrior_attack_t
                             static_cast<size_t>( p()->talents.best_served_cold->effectN( 2 ).base_value() ) ) );
 
     return am;
-  }
-
-  double cost() const override
-  {
-    double cost = warrior_attack_t::cost();
-    cost *= 1.0 + p()->buff.revenge->check_value();
-    cost *= 1.0 + p()->buff.vengeance_revenge->check_value();
-    return cost;
   }
 };
 
@@ -4268,6 +4268,15 @@ struct ignore_pain_t : public warrior_spell_t
     }
 
     return da;
+  }
+
+  double cost() const override
+  {
+    double c = warrior_spell_t::cost();
+
+    c *= 1.0 + p() -> buff.vengeance_ignore_pain -> value();
+
+    return c;
   }
 
   void execute() override
