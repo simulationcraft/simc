@@ -2164,7 +2164,8 @@ void items::everchill_anchor( special_effect_t& effect )
         // The dot doesn't tick when it's refreshed but ticks when it's applied
         // So we set tick_zero to false if it's a refresh, execute the dot, then set it back to true
         // Hacky but at least it works
-        bool already_ticking = damage -> find_dot( state -> target ) -> is_ticking();
+        dot_t* current_dot = damage -> find_dot( state -> target );
+        bool already_ticking = current_dot ? current_dot -> is_ticking() : false;
         if ( already_ticking )
         {
           damage -> tick_zero = false;
