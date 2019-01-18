@@ -136,7 +136,6 @@ public:
     buff_t* gathering_storm;
     buff_t* infinite_fury;
     buff_t* pulverizing_blows;
-    buff_t* reinforced_plating;
     buff_t* striking_the_anvil;
     buff_t* test_of_might_tracker;  // Used to track rage gain from test of might.
     stat_buff_t* test_of_might;
@@ -422,7 +421,6 @@ public:
     azerite_power_t moment_of_glory;
     azerite_power_t bury_the_hatchet;
     // Prot
-    azerite_power_t reinforced_plating;
     azerite_power_t iron_fortress;
     azerite_power_t deafening_crash; // TODO: Add duration cap from 8.1
     azerite_power_t callous_reprisal;
@@ -4731,7 +4729,6 @@ void warrior_t::init_spells()
   azerite.moment_of_glory  = find_azerite_spell( "Moment of Glory" );
   azerite.bury_the_hatchet = find_azerite_spell( "Bury the Hatchet" );
   // Prot
-  azerite.reinforced_plating = find_azerite_spell( "Reinforced Plating" );
   azerite.iron_fortress      = find_azerite_spell( "Iron Fortress" );
   azerite.deafening_crash    = find_azerite_spell( "Deafening Crash" );
   azerite.callous_reprisal   = find_azerite_spell( "Callous Reprisal" );
@@ -5697,9 +5694,6 @@ void warrior_t::create_buffs()
                    -> add_stat( STAT_LEECH_RATING, azerite.bloodsport.value( 2 ) );
   buff.brace_for_impact = make_buff( this, "brace_for_impact", azerite.brace_for_impact.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
                          -> set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
-  buff.reinforced_plating = make_buff<stat_buff_t>( this, "reinforced_plating", 
-                                                    azerite.reinforced_plating.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
-                           -> add_stat( STAT_STRENGTH, azerite.reinforced_plating.value( 1 ) );
   buff.striking_the_anvil = make_buff( this, "striking_the_anvil", find_spell( 288452 ) )
                                ->set_trigger_spell( azerite.striking_the_anvil.spell_ref().effectN( 1 ).trigger() )
                                ->set_default_value( azerite.striking_the_anvil.value() );
@@ -6566,11 +6560,6 @@ void warrior_t::assess_damage( school_e school, dmg_e type, action_state_t* s )
         iron_fortress_active -> target = s -> action -> player;
         iron_fortress_active -> do_execute( s -> block_result );
       }
-    }
-
-    if ( azerite.reinforced_plating.enabled() )
-    {
-      buff.reinforced_plating -> trigger();
     }
   }
 }
