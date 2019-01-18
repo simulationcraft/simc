@@ -3381,6 +3381,18 @@ struct shield_slam_t : public warrior_attack_t
     }
   }
 
+  void impact( action_state_t* state ) override
+  {
+    warrior_attack_t::impact( state );
+
+    warrior_td_t* td = p() -> get_target_data( state -> target );
+
+    if ( p() -> talents.punish -> ok() )
+    {
+      td -> debuffs_punish -> trigger();
+    }
+  }
+
   bool ready() override
   {
     if ( !p()->has_shield_equipped() )
