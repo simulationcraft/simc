@@ -3352,7 +3352,7 @@ struct shield_slam_t : public warrior_attack_t
   {
     double da = warrior_attack_t::bonus_da( state );
 
-    da += p() -> buff.brace_for_impact -> stack_value();
+    da += p() -> buff.brace_for_impact->current_stack * p()->azerite.brace_for_impact.value(2);
 
     return da;
   }
@@ -6248,7 +6248,7 @@ double warrior_t::composite_block_reduction( action_state_t* s ) const
 
   if ( buff.brace_for_impact -> up() )
   {
-    br += azerite.brace_for_impact.value( 1 );
+    br += buff.brace_for_impact->current_stack * azerite.brace_for_impact.value( 1 );
   }
 
   if ( azerite.iron_fortress.enabled() )
