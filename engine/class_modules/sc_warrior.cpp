@@ -677,9 +677,9 @@ public:
       ab::base_td_multiplier *= 1.0 + p()->spec.arms_warrior->effectN( 3 ).percent();
 
     if ( ab::data().affected_by( p()->spec.prot_warrior->effectN( 1 ) ) )
-      ab::attack_power_mod.direct *= 1.0 + p()->spec.prot_warrior->effectN( 1 ).percent();
+      ab::base_dd_multiplier.direct *= 1.0 + p()->spec.prot_warrior->effectN( 1 ).percent();
     if ( ab::data().affected_by( p()->spec.prot_warrior->effectN( 2 ) ) )
-      ab::attack_power_mod.tick *= 1.0 + p()->spec.prot_warrior->effectN( 2 ).percent();
+      ab::base_td_multiplier.tick *= 1.0 + p()->spec.prot_warrior->effectN( 2 ).percent();
 
     ab::cooldown->hasted = ab::data().affected_by( p()->spell.headlong_rush->effectN( 1 ) );
     if ( ab::cooldown->hasted == false )  // Shield block is on a different effect for some reason.
