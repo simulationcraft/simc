@@ -136,6 +136,7 @@ namespace items
   void variable_intensity_gigavolt_oscillating_reactor( special_effect_t& );
   void variable_intensity_gigavolt_oscillating_reactor_onuse( special_effect_t& );
   void everchill_anchor( special_effect_t& );
+  void ramping_amplitude_gigavolt_engine( special_effect_t& );
 }
 
 namespace util
@@ -2188,6 +2189,53 @@ void items::everchill_anchor( special_effect_t& effect )
   new everchill_anchor_cb_t( effect );
 }
 
+// Ramping Amplitude Gigavolt Engine ======================================
+
+void items::ramping_amplitude_gigavolt_engine( special_effect_t& effect )
+{
+  struct ramping_amplitude_event_t : event_t
+  {
+    buff_t* rage_buff;
+    player_t* p;
+    timespan_t prev_interval;
+
+    ramping_amplitude_event_t( player_t* player, buff_t* buff, timespan_t interval ) :
+      event_t( *player, interval ), rage_buff( buff ), p( player ), prev_interval( interval )
+    { }
+
+    void execute() override
+    {
+      if ( rage_buff -> check() < rage_buff -> max_stack() )
+      {
+        rage_buff -> increment();
+        make_event<ramping_amplitude_event_t>( sim(), p, rage_buff, prev_interval * 0.8 );
+      }
+    }
+  };
+
+  struct ramping_amplitude_gigavolt_engine_active_t : proc_spell_t
+  {
+    buff_t* rage_buff;
+
+    ramping_amplitude_gigavolt_engine_active_t( special_effect_t& effect ) :
+      proc_spell_t( "ramping_amplitude_gigavolt_engine_active", effect.player, effect.driver(), effect.item )
+    {
+      rage_buff = make_buff<stat_buff_t>( effect.player, "r.a.g.e.", effect.player -> find_spell( 288156 ), effect.item );
+      rage_buff -> set_refresh_behavior( buff_refresh_behavior::DISABLED );
+    }
+
+    void execute() override
+    {
+      rage_buff -> trigger();
+      make_event<ramping_amplitude_event_t>( *sim, player, rage_buff, timespan_t::from_seconds( 2.0 ) );
+    }
+  };
+
+  effect.disable_buff();
+  
+  effect.execute_action = new ramping_amplitude_gigavolt_engine_active_t( effect );
+}
+
 // Waycrest's Legacy Set Bonus ============================================
 
 void set_bonus::waycrest_legacy( special_effect_t& effect )
@@ -2284,6 +2332,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 287915, items::variable_intensity_gigavolt_oscillating_reactor );
   register_special_effect( 287917, items::variable_intensity_gigavolt_oscillating_reactor_onuse );
   register_special_effect( 289525, items::everchill_anchor );
+  register_special_effect( 288173, items::ramping_amplitude_gigavolt_engine );
 
   // Misc
   register_special_effect( 276123, items::darkmoon_deck_squalls );
