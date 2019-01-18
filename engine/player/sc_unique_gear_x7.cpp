@@ -2205,7 +2205,7 @@ void items::ramping_amplitude_gigavolt_engine( special_effect_t& effect )
 
     void execute() override
     {
-      if ( rage_buff -> check() < rage_buff -> max_stack() )
+      if ( rage_buff -> check() && rage_buff -> check() < rage_buff -> max_stack() )
       {
         rage_buff -> increment();
         make_event<ramping_amplitude_event_t>( sim(), p, rage_buff, prev_interval * 0.8 );
@@ -2222,6 +2222,7 @@ void items::ramping_amplitude_gigavolt_engine( special_effect_t& effect )
     {
       rage_buff = make_buff<stat_buff_t>( effect.player, "r.a.g.e.", effect.player -> find_spell( 288156 ), effect.item );
       rage_buff -> set_refresh_behavior( buff_refresh_behavior::DISABLED );
+      rage_buff -> cooldown = this -> cooldown;
     }
 
     void execute() override
