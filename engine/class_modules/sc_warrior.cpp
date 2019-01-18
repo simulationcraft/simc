@@ -72,6 +72,7 @@ public:
     action_t* charge;
     action_t* slaughter;  // Fury T21 2PC
     action_t* iron_fortress; // Prot azerite trait                             
+    action_t* bastion_of_might_ip; // 0 rage IP from Bastion of Might azerite trait
   } active;
 
   // Buffs
@@ -80,6 +81,7 @@ public:
     buff_t* avatar;
     buff_t* ayalas_stone_heart;
     buff_t* deadly_calm;
+    buff_t* bastion_of_might;     // the mastery buff
     buff_t* berserker_rage;
     buff_t* bladestorm;
     buff_t* bounding_stride;
@@ -692,10 +694,10 @@ public:
     affected_by.fury_mastery_direct = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 1 ) );
     affected_by.fury_mastery_dot    = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 2 ) );
 
-		if ( p()->specialization() == WARRIOR_PROTECTION )
-			affected_by.avatar              = ab::data().affected_by( p()->spec.avatar->effectN( 1 ) );
-		else
-			affected_by.avatar              = ab::data().affected_by( p()->talents.avatar->effectN( 1 ) );
+    if ( p()->specialization() == WARRIOR_PROTECTION )
+      affected_by.avatar              = ab::data().affected_by( p()->spec.avatar->effectN( 1 ) );
+    else
+      affected_by.avatar              = ab::data().affected_by( p()->talents.avatar->effectN( 1 ) );
 
     affected_by.sweeping_strikes    = ab::data().affected_by( p()->spec.sweeping_strikes->effectN( 1 ) );
 
@@ -1167,10 +1169,10 @@ struct melee_t : public warrior_attack_t
     warrior_attack_t::init();
     affected_by.fury_mastery_direct = p()->mastery.unshackled_fury->ok();
     affected_by.avatar              = p()->talents.avatar->ok();
-		if ( p()->specialization() == WARRIOR_PROTECTION )
-			affected_by.avatar              = p()->spec.avatar->ok();
-		else
-			affected_by.avatar              = p()->talents.avatar->ok();
+    if ( p()->specialization() == WARRIOR_PROTECTION )
+      affected_by.avatar              = p()->spec.avatar->ok();
+    else
+      affected_by.avatar              = p()->talents.avatar->ok();
     affected_by.frothing_direct     = p()->talents.frothing_berserker->ok();
   }
 
@@ -3946,6 +3948,13 @@ struct avatar_t : public warrior_spell_t
     warrior_spell_t::execute();
 
     p()->buff.avatar->trigger();
+
+    if ( p()->azerite.bastion_of_might.enabled() )
+    {
+      p()->buff.bastion_of_might->trigger();
+
+      p() -> active.bastion_of_might_ip -> execute( );
+    }
   }
 
   bool verify_actor_spec() const override
@@ -4332,6 +4341,30 @@ struct ignore_pain_t : public warrior_spell_t
 
     return warrior_spell_t::ready();
   }
+};
+
+// A free Ignore Pain from Bastion of Might when Avatar is cast
+struct ignore_pain_bom_t : public ignore_pain_t
+{
+  ignore_pain_bom_t( warrior_t* p )
+    : ignore_pain_t( p, "" )
+  {
+    may_crit     = false;
+    range        = -1;
+    target       = player;
+  }
+
+  void execute() override
+  {
+    warrior_spell_t::execute();
+    p()->buff.vengeance_revenge->trigger(); // this IP does trigger vengeance but doesnt consume it
+  }
+
+  double cost( ) const override
+  {
+    return 0.0;
+  }
+
 };
 
 // Shield Block =============================================================
@@ -4771,6 +4804,10 @@ void warrior_t::init_spells()
   if ( azerite.iron_fortress.enabled() )
   {
     active.iron_fortress = new iron_fortress_t( this );
+  }
+  if ( azerite.bastion_of_might.enabled() )
+  {
+    active.bastion_of_might_ip = new ignore_pain_bom_t( this );
   }
 
   // Cooldowns
@@ -5247,8 +5284,8 @@ void warrior_t::apl_prot()
 
   prot->add_action( this, "Avatar", "if=cooldown.demoralizing_shout.remains>5" );
   prot->add_action( this, "Demoralizing Shout" );
-  prot->add_action( this, "Ravager", "if=talent.ravager.enabled" );
-  prot->add_action( this, "Dragon Roar", "if=talent.dragon_roar.enabled" );
+  prot->add_talent( this, "Ravager" );
+  prot->add_talent( this, "Dragon Roar" );
   prot->add_action( this, "Thunder Clap", "if=(talent.unstoppable_force.enabled&buff.avatar.up&debuff.demoralizing_shout_debuff.up)" );
   prot->add_action( this, "Shield Block", "if=cooldown.shield_slam.remains=0" );
   prot->add_action( this, "Shield Slam" );
@@ -5482,6 +5519,7 @@ void warrior_t::create_buffs()
 
   buff.avatar = buff_creator_t( this, "avatar", specialization() == WARRIOR_PROTECTION ? spec.avatar : talents.avatar ).cd( timespan_t::zero() );
 
+
   buff.berserker_rage = buff_creator_t( this, "berserker_rage", spec.berserker_rage ).cd( timespan_t::zero() );
 
   buff.frothing_berserker = make_buff( this, "frothing_berserker", find_spell( 215572 ) )
@@ -5665,6 +5703,12 @@ void warrior_t::create_buffs()
   buff.striking_the_anvil = make_buff( this, "striking_the_anvil", find_spell( 288452 ) )
                                ->set_trigger_spell( azerite.striking_the_anvil.spell_ref().effectN( 1 ).trigger() )
                                ->set_default_value( azerite.striking_the_anvil.value() );
+
+  const spell_data_t* bastion_of_might_trigger = azerite.bastion_of_might.spell()->effectN( 1 ).trigger();
+  const spell_data_t* bastion_of_might_buff = bastion_of_might_trigger->effectN( 1 ).trigger();
+  buff.bastion_of_might = make_buff<stat_buff_t>( this, "bastion_of_might", bastion_of_might_buff)
+                               ->add_stat( STAT_MASTERY_RATING, azerite.bastion_of_might.value( 1 ) )
+                               ->set_trigger_spell( bastion_of_might_trigger );
 
 }
 
