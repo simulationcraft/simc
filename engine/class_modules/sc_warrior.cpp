@@ -422,7 +422,7 @@ public:
     azerite_power_t bury_the_hatchet;
     // Prot
     azerite_power_t iron_fortress;
-    azerite_power_t deafening_crash; // TODO: Add duration cap from 8.1
+    azerite_power_t deafening_crash;
     azerite_power_t callous_reprisal;
     azerite_power_t brace_for_impact;
     azerite_power_t bloodsport;
@@ -1625,8 +1625,8 @@ struct gushing_wound_dot_t : public warrior_attack_t
 
 struct bloodthirst_t : public warrior_attack_t
 {
-  warrior_attack_t* gushing_wound;
   bloodthirst_heal_t* bloodthirst_heal;
+  warrior_attack_t* gushing_wound;
   int aoe_targets;
   double enrage_chance;
   double rage_from_cold_steel_hot_blood;
@@ -5396,10 +5396,28 @@ struct last_stand_buff_t : public warrior_buff_t<buff_t>
 
 struct debuff_demo_shout_t : public warrior_buff_t<buff_t>
 {
+  int extended;
   debuff_demo_shout_t( warrior_td_t& p )
-    : base_t( p, "demoralizing_shout_debuff", p.source->find_specialization_spell( "Demoralizing Shout" ) )
+    : base_t( p, "demoralizing_shout_debuff", p.source->find_specialization_spell( "Demoralizing Shout" ) ),
+      extended( 0 )
   {
     default_value = data().effectN( 1 ).percent();
+  }
+
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  {
+    extended = 0; // set number of deafening_crash extensions on first application
+    return base_t::trigger( stacks, value, chance, duration );
+  }
+ 
+  // currently only know of extension by deafening crash so this only works with that proviso
+  void extend_duration( player_t* p, timespan_t extra_seconds )
+  {
+    if ( extended < 3 )
+    {
+      base_t::extend_duration( p, extra_seconds );
+      extended++;
+    }
   }
 };
 
@@ -5663,7 +5681,7 @@ void warrior_t::create_buffs()
           ->set_default_value( azerite.executioners_precision.value() );
 
   const spell_data_t* gathering_storm_trigger = azerite.gathering_storm.spell()->effectN( 1 ).trigger();
-  const spell_data_t* gathering_storm_buff    = gathering_storm_trigger->effectN( 1 ).trigger();
+  //const spell_data_t* gathering_storm_buff    = gathering_storm_trigger->effectN( 1 ).trigger();
   buff.gathering_storm                        = make_buff<stat_buff_t>( this, "gathering_storm", find_spell( 273415 ) )
                            ->add_stat( STAT_STRENGTH, azerite.gathering_storm.value( 1 ) )
                            ->set_trigger_spell( gathering_storm_trigger );
