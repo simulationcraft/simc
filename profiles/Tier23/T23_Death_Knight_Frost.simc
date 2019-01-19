@@ -5,7 +5,7 @@ level=120
 race=blood_elf
 role=attack
 position=back
-talents=3302013
+talents=3102013
 
 # Default consumables
 potion=battle_potion_of_strength
