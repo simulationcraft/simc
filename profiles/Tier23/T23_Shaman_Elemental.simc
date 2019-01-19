@@ -131,7 +131,7 @@ waist=goldenscale_girdle,id=165538,bonus_id=4800/1537
 legs=tempered_mistscale_greaves,id=165396,bonus_id=1690
 feet=tempered_mistscale_boots,id=165420,bonus_id=1690
 finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_critical_strike
-finger2=band_of_multi_sided_strikes,id=165565,bonus_id=4800/1537,enchant=pact_of_critical_strike
+finger2=band_of_multisided_strikes,id=165565,bonus_id=4800/1537,enchant=pact_of_critical_strike
 trinket1=incandescent_sliver,id=165571,bonus_id=4800/1537
 trinket2=ignition_mages_fuse,id=159615,bonus_id=1572/4779/1674
 main_hand=akundas_shocksplitter,id=165594,bonus_id=4800/1537,enchant=deadly_navigation
