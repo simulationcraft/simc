@@ -120,30 +120,30 @@ actions.single_target+=/flame_shock,moving=1,if=movement.distance>6
 # Frost Shock is our movement filler.
 actions.single_target+=/frost_shock,moving=1
 
-head=soulscarred_headgear,id=159398,bonus_id=5062/1587/4786/4775,azerite_powers=222/193/22/15/13
+head=targettracking_headgear,id=165543,bonus_id=4824/1537/4775,azerite_powers=222/562/459/539/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
-shoulders=hookbarbed_spaulders,id=159376,bonus_id=5062/1587/4786/4775,azerite_powers=222/479/21/84/13
+shoulders=cannoneers_mantle,id=159393,bonus_id=1587/4819/4775,azerite_powers=222/479/31/87/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
-chest=shrapneldampening_chestguard,id=158307,bonus_id=5062/1587/4786/4775,azerite_powers=222/504/22/474/13
+chest=mistfire_raiment,id=165540,bonus_id=4824/1537/4775,azerite_powers=222/562/31/474/13
 wrists=icebinders_bracers,id=165542,bonus_id=4800/1537
 hands=grips_of_harmonious_spirits,id=165531,bonus_id=4800/1537
 waist=goldenscale_girdle,id=165538,bonus_id=4800/1537
-legs=deathhunters_legguards,id=165536,bonus_id=4800/1537
-feet=boots_of_the_gilded_path,id=165541,bonus_id=4800/1537
-finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_critical_strike
-finger2=band_of_multisided_strikes,id=165565,bonus_id=4800/1537,enchant=pact_of_critical_strike
+legs=tempered_mistscale_greaves,id=165396,bonus_id=1690
+feet=tempered_mistscale_boots,id=165420,bonus_id=1690
+finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant_id=5943
+finger2=eternal_krakens_eye_loop,id=166524,bonus_id=1756,gem_id=154126,enchant_id=5943
 trinket1=incandescent_sliver,id=165571,bonus_id=4800/1537
-trinket2=tidestorm_codex,id=165576,bonus_id=4800/1537
-main_hand=akundas_shocksplitter,id=165594,bonus_id=4800/1537,enchant=deadly_navigation
+trinket2=ignition_mages_fuse,id=159615,bonus_id=1572/4779
+main_hand=akundas_shocksplitter,id=165594,bonus_id=4800/1537,enchant_id=5963
 off_hand=sunburst_crest,id=165584,bonus_id=4800/1537
 
 # Gear Summary
-# gear_ilvl=416.19
+# gear_ilvl=415.25
 # gear_strength=217
 # gear_stamina=9919
-# gear_intellect=7293
-# gear_crit_rating=976
-# gear_haste_rating=1053
-# gear_mastery_rating=528
-# gear_versatility_rating=807
+# gear_intellect=7239
+# gear_crit_rating=1412
+# gear_haste_rating=1177
+# gear_mastery_rating=349
+# gear_versatility_rating=467
 # gear_armor=5946
