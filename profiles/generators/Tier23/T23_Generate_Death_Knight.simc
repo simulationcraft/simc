@@ -30,7 +30,7 @@ level=120
 race=blood_elf
 role=attack
 position=back
-talents=3302013
+talents=3102013
 
 head=helm_of_tempered_jade,id=165548,bonus_id=1537/4824,azerite_powers=108/562/31/465/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
