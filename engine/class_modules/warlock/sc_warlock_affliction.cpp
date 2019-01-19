@@ -221,26 +221,7 @@ namespace warlock
     // Dots
     struct agony_t : public affliction_spell_t
     {
-      struct wracking_brilliance_t
-      {
-        wracking_brilliance_t()
-        {
-
-        }
-
-        void run(warlock_t* p) {
-          if (p->wracking_brilliance) {
-            p->wracking_brilliance = false;
-            p->buffs.wracking_brilliance->trigger();
-          }
-          else {
-            p->wracking_brilliance = true;
-          }
-        }
-      };
-
       double chance;
-      wracking_brilliance_t* wb;
       bool pandemic_invocation_usable;
 
       agony_t( warlock_t* p, const std::string& options_str ) :
@@ -248,7 +229,6 @@ namespace warlock
       {
         parse_options( options_str );
         may_crit = false;
-        wb = new wracking_brilliance_t();
         pandemic_invocation_usable = false;
 
         dot_max_stack = data().max_stacks() + p->spec.agony_2->effectN(1).base_value();
@@ -329,7 +309,13 @@ namespace warlock
         {
           if ( p()->azerite.wracking_brilliance.ok() )
           {
-            wb->run( p() );
+            if ( p()->wracking_brilliance ) {
+              p()->wracking_brilliance = false;
+              p()->buffs.wracking_brilliance->trigger();
+            }
+            else {
+              p()->wracking_brilliance = true;
+            }
           }
 
           p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.agony );
