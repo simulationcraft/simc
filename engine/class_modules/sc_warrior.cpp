@@ -3352,7 +3352,7 @@ struct shield_slam_t : public warrior_attack_t
   {
     double da = warrior_attack_t::bonus_da( state );
 
-    da += p() -> buff.brace_for_impact->current_stack * p()->azerite.brace_for_impact.value(2);
+    da += p() -> buff.brace_for_impact -> stack() * p()->azerite.brace_for_impact.value(2);
 
     return da;
   }
@@ -5397,26 +5397,28 @@ struct last_stand_buff_t : public warrior_buff_t<buff_t>
 struct debuff_demo_shout_t : public warrior_buff_t<buff_t>
 {
   int extended;
-  debuff_demo_shout_t( warrior_td_t& p )
-    : base_t( p, "demoralizing_shout_debuff", p.source->find_specialization_spell( "Demoralizing Shout" ) ),
-      extended( 0 )
+  const int deafening_crash_cap;
+  debuff_demo_shout_t( warrior_td_t& p, warrior_t* w )
+    : base_t( p, "demoralizing_shout_debuff", w -> find_specialization_spell( "Demoralizing Shout" ) ),
+      extended( 0 ), deafening_crash_cap( as<int>( w -> azerite.deafening_crash.spell() -> effectN( 3 ).base_value() ) )
   {
     default_value = data().effectN( 1 ).percent();
   }
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
-    extended = 0; // set number of deafening_crash extensions on first application
+    extended = 0; // counts extra seconds gained on each debuff past the initial trigger
     return base_t::trigger( stacks, value, chance, duration );
   }
  
-  // currently only know of extension by deafening crash so this only works with that proviso
-  void extend_duration( player_t* p, timespan_t extra_seconds )
+  // TODO? Change how the extension is coded with deafening crash cap
+  // if another mechanic extends demo shout duration after the initial trigger
+  void extend_duration( player_t* p, timespan_t extra_seconds ) override
   {
-    if ( extended < 3 )
+    if ( extended < deafening_crash_cap )
     {
       base_t::extend_duration( p, extra_seconds );
-      extended++;
+      extended += as<int>(extra_seconds.total_seconds() );
     }
   }
 };
@@ -5508,7 +5510,7 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
                              .duration( p.spell.siegebreaker_debuff->duration() )
                              .cd( timespan_t::zero() );
 
-  debuffs_demoralizing_shout = new buffs::debuff_demo_shout_t( *this );
+  debuffs_demoralizing_shout = new buffs::debuff_demo_shout_t( *this, &p );
   debuffs_punish = buff_creator_t( static_cast<actor_pair_t>( *this ), "punish", p.talents.punish -> effectN( 2 ).trigger() )
                    .default_value( p.talents.punish -> effectN( 2 ).trigger() -> effectN( 1 ).percent() );
   debuffs_callous_reprisal = buff_creator_t( static_cast<actor_pair_t>( *this ), "callous_reprisal", 
@@ -5711,7 +5713,8 @@ void warrior_t::create_buffs()
   buff.bloodsport = make_buff<stat_buff_t>( this, "bloodsport", azerite.bloodsport.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
                    -> add_stat( STAT_LEECH_RATING, azerite.bloodsport.value( 2 ) );
   buff.brace_for_impact = make_buff( this, "brace_for_impact", azerite.brace_for_impact.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
-                         -> set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+                         -> set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+                         -> set_default_value( azerite.brace_for_impact.value( 1 ) );
   buff.striking_the_anvil = make_buff( this, "striking_the_anvil", find_spell( 288452 ) )
                                ->set_trigger_spell( azerite.striking_the_anvil.spell_ref().effectN( 1 ).trigger() )
                                ->set_default_value( azerite.striking_the_anvil.value() );
@@ -6266,7 +6269,7 @@ double warrior_t::composite_block_reduction( action_state_t* s ) const
 
   if ( buff.brace_for_impact -> up() )
   {
-    br += buff.brace_for_impact->current_stack * azerite.brace_for_impact.value( 1 );
+    br += buff.brace_for_impact -> stack_value();
   }
 
   if ( azerite.iron_fortress.enabled() )
@@ -6276,15 +6279,6 @@ double warrior_t::composite_block_reduction( action_state_t* s ) const
   
   return br;
 }
-
-// warrior_t::composite_melee_attack_power ==================================
-/*
-double warrior_t::composite_melee_attack_power() const
-{
-  double ap = player_t::composite_melee_attack_power();
-  return ap;
-}
-*/
 
 // warrior_t::composite_parry_rating() ========================================
 
