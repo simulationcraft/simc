@@ -5,7 +5,7 @@ level=120
 race=troll
 role=spell
 position=ranged_back
-talents=2303033
+talents=3303033
 
 # Default consumables
 potion=battle_potion_of_intellect
@@ -89,11 +89,11 @@ actions.nether_portal_building+=/power_siphon,if=buff.wild_imps.stack>=2&buff.de
 actions.nether_portal_building+=/hand_of_guldan,if=soul_shard>=5
 actions.nether_portal_building+=/call_action_list,name=build_a_shard
 
-head=grasping_crown_of_the_deep,id=159252,bonus_id=5062/1587/4786/4775,azerite_powers=458/479/22/15/13
+head=blazewing_hood,id=165500,bonus_id=4824/1537/4775,azerite_powers=130/562/31/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
-shoulders=brood_cleansers_amice,id=159254,bonus_id=5062/1587/4786/4775,azerite_powers=458/196/459/84/13
+shoulders=gigacharged_shoulderpads,id=165497,bonus_id=4824/1537/4775,azerite_powers=458/562/459/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
-chest=inmates_straight_robe,id=159268,bonus_id=5062/1587/4786/4775,azerite_powers=458/479/22/83/13
+chest=divine_fury_raiment,id=165834,bonus_id=4824/1537/4775,azerite_powers=429/562/30/13
 wrists=bracers_of_zealous_calling,id=165501,bonus_id=4800/1537
 hands=manceroys_flamefists,id=165503,bonus_id=4800/1537
 waist=waistcord_of_flowing_silk,id=165504,bonus_id=4800/1537
@@ -102,16 +102,17 @@ feet=lightfeather_footpads,id=165502,bonus_id=4800/1537
 finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_haste
 finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_haste
 trinket1=incandescent_sliver,id=165571,bonus_id=4800/1537
-trinket2=crest_of_paku,id=165581,bonus_id=4800/1537
-main_hand=deathspeaker_spire,id=165597,bonus_id=4800/1537,enchant=quick_navigation
+trinket2=ignition_mages_fuse,id=159615,bonus_id=1542/4779
+main_hand=sirens_song,id=165603,bonus_id=4800/1537,enchant=quick_navigation
+off_hand=fogbreaker_light_of_the_sea,id=165583,bonus_id=4800/1537
 
 # Gear Summary
-# gear_ilvl=416.27
-# gear_stamina=9920
-# gear_intellect=7293
-# gear_crit_rating=546
-# gear_haste_rating=1495
-# gear_mastery_rating=879
-# gear_versatility_rating=445
+# gear_ilvl=413.38
+# gear_stamina=9919
+# gear_intellect=7151
+# gear_crit_rating=603
+# gear_haste_rating=1444
+# gear_mastery_rating=1039
+# gear_versatility_rating=278
 # gear_armor=1442
 default_pet=felguard
