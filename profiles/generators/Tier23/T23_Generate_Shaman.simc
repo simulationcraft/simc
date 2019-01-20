@@ -14,8 +14,8 @@ chest=mistfire_raiment,id=165540,bonus_id=4824/1537,azerite_powers=222/562/31/47
 wrist=icebinders_bracers,id=165542,bonus_id=4800/1537
 hands=grips_of_harmonious_spirits,id=165531,bonus_id=4800/1537
 waist=goldenscale_girdle,id=165538,bonus_id=4800/1537
-legs=tempered_mistscale_greaves,id=165396,bonus_id=1690
-feet=tempered_mistscale_boots,id=165420,bonus_id=1690
+legs=deathhunters_legguards,id=165536,bonus_id=4800/1537
+feet=boots_of_the_gilded_path,id=165541,bonus_id=4800/1537
 finger1=seal_of_the_zandalari_empire,id=165567,enchant=pact_of_critical_strike,bonus_id=4800/1537
 finger2=band_of_multisided_strikes,id=165565,enchant=pact_of_critical_strike,bonus_id=4800/1537
 trinket1=incandescent_sliver,id=165571,bonus_id=4800/1537
