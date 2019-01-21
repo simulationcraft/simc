@@ -49,6 +49,7 @@ actions+=/ancestral_call,if=buff.ca_inc.up
 actions+=/use_item,name=balefire_branch,if=equipped.159630&cooldown.ca_inc.remains>30
 actions+=/use_item,name=dread_gladiators_badge,if=equipped.161902&cooldown.ca_inc.remains>30
 actions+=/use_item,name=azurethos_singed_plumage,if=equipped.161377&cooldown.ca_inc.remains>30
+actions+=/use_item,name=tidestorm_codex,if=equipped.165576
 actions+=/use_items,if=cooldown.ca_inc.remains>30
 actions+=/warrior_of_elune
 actions+=/innervate,if=azerite.lively_spirit.enabled&(cooldown.incarnation.remains<2|cooldown.celestial_alignment.remains<12)
