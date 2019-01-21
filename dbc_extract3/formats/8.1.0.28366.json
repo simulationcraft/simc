@@ -352,6 +352,35 @@
     { "data_type": "I", "field": "id_spell" },
     { "data_type": "B", "field": "n_req_items" }
   ],
+  "ItemSpec": [
+    { "data_type": "B", "field": "min_level" },
+    { "data_type": "B", "field": "max_level" },
+    { "data_type": "B", "field": "item_type" },
+    { "data_type": "B", "field": "primary_stat" },
+    { "data_type": "B", "field": "secondary_stat" },
+    { "data_type": "H", "field": "id_spec" }
+  ],
+  "ItemSpecOverride": [
+    { "data_type": "H", "field": "id_spec" }
+  ],
+  "ItemClass": [
+    { "data_type": "S", "field": "name" },
+    { "data_type": "b", "field": "id_class" },
+    { "data_type": "f", "field": "price_modifier" },
+    { "data_type": "B", "field": "flags" }
+  ],
+  "ItemSubClass": [
+    { "data_type": "S", "field": "display_name" },
+    { "data_type": "S", "field": "verbose_name" },
+    { "data_type": "b", "field": "id_class" },
+    { "data_type": "b", "field": "id_sub_class" },
+    { "data_type": "B", "field": "auction_house_sort_order" },
+    { "data_type": "b", "field": "prerequisite_proficiency" },
+    { "data_type": "H", "field": "flags" },
+    { "data_type": "b", "field": "display_flags" },
+    { "data_type": "B", "field": "weapon_swing_size" },
+    { "data_type": "b", "field": "postrequisite_proficiency" }
+  ],
   "ItemUpgrade": [
     { "data_type": "B", "field": "upgrade_group",   "formats": { "cpp": "%3u" } },
     { "data_type": "B", "field": "upgrade_ilevel",  "formats": { "cpp": "%2u" } },
@@ -362,6 +391,28 @@
   "ItemXBonusTree": [
     { "data_type": "H", "field": "id_tree", "formats": { "cpp": "%4u" } }
   ],
+  "JournalEncounter": [
+    { "data_type": "S", "field": "name" },
+    { "data_type": "S", "field": "desc" },
+    { "data_type": "f", "field": "coord", "elements": 2 },
+    { "data_type": "H", "field": "id_journal_instance" },
+    { "data_type": "I", "field": "order_index" },
+    { "data_type": "H", "field": "first_section_id" },
+    { "data_type": "H", "field": "ui_map_id" },
+    { "data_type": "I", "field": "map_display_condition_id" },
+    { "data_type": "B", "field": "flags" },
+    { "data_type": "B", "field": "difficulty_mask" }
+  ],
+  "JournalEncounterCreature": [
+    { "data_type": "S", "field": "name" },
+    { "data_type": "S", "field": "desc" },
+    { "data_type": "i", "field": "id" },
+    { "data_type": "I", "field": "id_journal_encounter" },
+    { "data_type": "I", "field": "id_creature_display_info" },
+    { "data_type": "i", "field": "id_data_file" },
+    { "data_type": "I", "field": "order_index" },
+    { "data_type": "I", "field": "id_ui_model_scene" }
+  ],
   "JournalEncounterItem": [
     { "data_type": "I", "field": "id" },
     { "data_type": "H", "field": "id_encounter" },
@@ -370,9 +421,76 @@
     { "data_type": "B", "field": "unk_1" },
     { "data_type": "B", "field": "flags_1" }
   ],
+  "JournalEncounterSection": [
+    { "data_type": "S", "field": "title" },
+    { "data_type": "S", "field": "body_text" },
+    { "data_type": "H", "field": "id_journal_encounter" },
+    { "data_type": "B", "field": "order_index" },
+    { "data_type": "H", "field": "id_parent_section" },
+    { "data_type": "H", "field": "id_first_child_section" },
+    { "data_type": "H", "field": "id_next_sibling_section" },
+    { "data_type": "B", "field": "type" },
+    { "data_type": "I", "field": "id_icon_creature_display_info" },
+    { "data_type": "i", "field": "id_ui_model_scene" },
+    { "data_type": "i", "field": "id_spell" },
+    { "data_type": "i", "field": "id_icon_file_data" },
+    { "data_type": "H", "field": "flags" },
+    { "data_type": "H", "field": "icon_flags" },
+    { "data_type": "b", "field": "difficulty_mask" }
+  ],
+  "JournalEncounterXDifficulty": [
+    { "data_type": "B", "field": "id_difficulty" }
+  ],
+  "JournalInstance": [
+    { "data_type": "S", "field": "name" },
+    { "data_type": "S", "field": "desc" },
+    { "data_type": "i", "field": "id" },
+    { "data_type": "H", "field": "map" },
+    { "data_type": "i", "field": "id_background_file_data" },
+    { "data_type": "i", "field": "id_button_file_data" },
+    { "data_type": "i", "field": "id_button_small_file_data" },
+    { "data_type": "i", "field": "id_lore_file_data" },
+    { "data_type": "b", "field": "order_index" },
+    { "data_type": "b", "field": "flags" },
+    { "data_type": "H", "field": "area_id" }
+  ],
+  "JournalItemXDifficulty": [
+    { "data_type": "B", "field": "id_difficulty" }
+  ],
+  "JournalTier": [
+    { "data_type": "S", "field": "name" }
+  ],
+  "JournalTierXInstance": [
+    { "data_type": "H", "field": "id_journal_tier" },
+    { "data_type": "H", "field": "id_journal_instance" }
+  ],
   "ManifestInterfaceData": [
     { "data_type": "S", "field": "unk" },
     { "data_type": "S", "field": "name" }
+  ],
+  "Map": [
+    { "data_type": "S", "field": "directory" },
+    { "data_type": "S", "field": "name" },
+    { "data_type": "S", "field": "description_1" },
+    { "data_type": "S", "field": "description_2" },
+    { "data_type": "S", "field": "pvp_short_description" },
+    { "data_type": "S", "field": "pvp_long_description" },
+    { "data_type": "f", "field": "corpse", "elements": 2 },
+    { "data_type": "B", "field": "map_type" },
+    { "data_type": "b", "field": "instance_type" },
+    { "data_type": "B", "field": "id_expansion" },
+    { "data_type": "H", "field": "id_area_table" },
+    { "data_type": "h", "field": "id_loading_screen" },
+    { "data_type": "h", "field": "time_of_day_override" },
+    { "data_type": "h", "field": "id_parent_map" },
+    { "data_type": "H", "field": "id_cosmetic_parent_map" },
+    { "data_type": "B", "field": "time_offset" },
+    { "data_type": "f", "field": "minimap_icon_scale" },
+    { "data_type": "h", "field": "id_corpse_map" },
+    { "data_type": "B", "field": "max_players" },
+    { "data_type": "h", "field": "id_wind_settings" },
+    { "data_type": "i", "field": "id_zmp_file_data" },
+    { "data_type": "I", "field": "flags", "elements": 2 }
   ],
   "MinorTalent": [
     { "data_type": "i", "field": "id_spell" },
