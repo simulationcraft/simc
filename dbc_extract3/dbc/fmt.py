@@ -22,18 +22,18 @@ class Field:
             return 'uint64'
         elif self.data_type == 'q':
             return 'int64'
-        elif self.data_type == 'i':
-            return 'int32'
         elif self.data_type == 'I':
             return 'uint32'
+        elif self.data_type == 'i':
+            return 'int32'
         elif self.data_type == 'H':
             return 'uint16'
         elif self.data_type == 'h':
             return 'int16'
         elif self.data_type == 'B':
-            return 'int8'
-        elif self.data_type == 'b':
             return 'uint8'
+        elif self.data_type == 'b':
+            return 'int8'
         elif self.data_type == 'f':
             return 'float'
         elif self.data_type == 'S':
