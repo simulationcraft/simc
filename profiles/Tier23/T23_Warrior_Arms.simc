@@ -5,7 +5,7 @@ level=120
 race=pandaren
 role=attack
 position=back
-talents=3322231
+talents=3322211
 
 # Default consumables
 potion=bursting_blood
