@@ -2220,7 +2220,7 @@ void items::ramping_amplitude_gigavolt_engine( special_effect_t& effect )
     ramping_amplitude_gigavolt_engine_active_t( special_effect_t& effect ) :
       proc_spell_t( "ramping_amplitude_gigavolt_engine_active", effect.player, effect.driver(), effect.item )
     {
-      rage_buff = make_buff<stat_buff_t>( effect.player, "r.a.g.e.", effect.player -> find_spell( 288156 ), effect.item );
+      rage_buff = make_buff<stat_buff_t>( effect.player, "r_a_g_e", effect.player -> find_spell( 288156 ), effect.item );
       rage_buff -> set_refresh_behavior( buff_refresh_behavior::DISABLED );
       rage_buff -> cooldown = this -> cooldown;
     }
