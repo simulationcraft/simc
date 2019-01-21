@@ -54,7 +54,7 @@ endif
 
 
 MKDIR      = mkdir
-CXX        = g++
+CXX        = c++
 CPP_FLAGS  = -Wall -Wextra -W -I. -I./util -DSC_SHARED_DATA=\"$(SHARED_DATA)\" --std=c++14 -O3 -MMD -MP \
 -Wpedantic \
 -Wcast-qual \
@@ -158,6 +158,12 @@ ifeq (UNIX,${OS})
   COPY       = cp
   REMOVE     = rm -f
   PATHSEP    = /
+endif
+
+# Additional include paths for FreeBSD
+ifeq (FreeBSD,${FLAVOR})
+  CPP_FLAGS += -I/usr/local/include
+  LINK_FLAGS += -L/usr/local/lib
 endif
 
 # Windows platform with MinGW32

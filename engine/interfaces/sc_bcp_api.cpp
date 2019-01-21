@@ -9,6 +9,10 @@
 #include "util/rapidjson/stringbuffer.h"
 #include "util/rapidjson/prettywriter.h"
 
+#ifndef SC_NO_NETWORKING
+#include <curl/curl.h>
+#endif
+
 // ==========================================================================
 // Blizzard Community Platform API
 // ==========================================================================
@@ -48,8 +52,6 @@ static bool authorization_failed = false;
 mutex_t token_mutex;
 
 #ifndef SC_NO_NETWORKING
-
-#include <curl/curl.h>
 
 size_t data_cb( void* contents, size_t size, size_t nmemb, void* usr )
 {
