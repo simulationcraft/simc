@@ -53,8 +53,6 @@ namespace warlock {
 
         if (resource_current == RESOURCE_SOUL_SHARD && p()->in_combat)
         {
-          p()->buffs.demonic_speed->trigger();
-
           if (p()->buffs.nether_portal->up())
           {
             p()->active.summon_random_demon->execute();
@@ -103,12 +101,6 @@ namespace warlock {
 
         if ( p()->talents.demonic_calling->ok() )
           p()->buffs.demonic_calling->trigger();
-
-        if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T20, B2 ) && p()->rng().roll( p()->sets->set( WARLOCK_DEMONOLOGY, T20, B2 )->proc_chance() ) )
-        {
-          p()->cooldowns.call_dreadstalkers->reset( true );
-          p()->procs.demonology_t20_2pc->occur();
-        }
       }
 
       double action_multiplier() const override
@@ -170,8 +162,6 @@ namespace warlock {
           add_child( blaze );
         }
         parse_effect_data( p->find_spell( 86040 )->effectN( 1 ) );
-        if ( p->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T21, B4 ) )
-          base_multiplier *= 1.1;
 
         // TOCHECK Because of how we structure HoG spelldata we have to manually apply spec aura.
         base_multiplier *= 1.0 + p->spec.demonology->effectN( 3 ).percent();
@@ -244,13 +234,6 @@ namespace warlock {
             blaze->set_target( target );
             blaze->execute();
           }
-          for ( int i = 0;
-            p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T21, B2 ) && i < shards_used;
-            i++ )
-          {
-            p()->buffs.rage_of_guldan->trigger();
-          }
-
         }
       }
     };
@@ -293,12 +276,6 @@ namespace warlock {
 
         if ( p()->talents.demonic_calling->ok() )
           p()->buffs.demonic_calling->trigger();
-
-        if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T20, B2 ) && p()->rng().roll( p()->sets->set( WARLOCK_DEMONOLOGY, T20, B2 )->proc_chance() ) )
-        {
-          p()->cooldowns.call_dreadstalkers->reset( true );
-          p()->procs.demonology_t20_2pc->occur();
-        }
       }
 
       double action_multiplier() const override
@@ -349,25 +326,8 @@ namespace warlock {
       {
         demonology_spell_t::execute();
 
-        auto spawned = p()->warlock_pet_list.dreadstalkers.spawn( as<unsigned>( dreadstalker_count ) );
-        for ( auto dreadstalker : spawned )
-        {
-            if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T21, B2 ) )
-            {
-              dreadstalker->buffs.rage_of_guldan->trigger( 1,
-                p()->buffs.rage_of_guldan->stack_value(), 1.0,
-                p()->warlock_pet_list.dreadstalkers.duration() );
-            }
-        }
-
         p()->buffs.demonic_calling->up(); // benefit tracking
         p()->buffs.demonic_calling->decrement();
-        p()->buffs.rage_of_guldan->expire();
-
-        if (p()->sets->has_set_bonus(WARLOCK_DEMONOLOGY, T20, B4))
-        {
-          p()->buffs.dreaded_haste->trigger();
-        }
 
         if (p()->talents.from_the_shadows->ok())
         {
@@ -680,11 +640,6 @@ namespace warlock {
       {
         demonology_spell_t::tick( d );
 
-        if ( d->state->result == RESULT_HIT || result_is_hit( d->state->result ) )
-        {
-          if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T19, B2 ) && rng().roll( p()->sets->set( WARLOCK_DEMONOLOGY, T19, B2 )->effectN( 1 ).percent() ) )
-            p()->resource_gain( RESOURCE_SOUL_SHARD, 1, p()->gains.t19_2pc_demonology );
-        }
         expansion::bfa::trigger_leyshocks_grand_compilation( STAT_CRIT_RATING, p() );
       }
     };
@@ -978,18 +933,6 @@ namespace warlock {
     buffs.nether_portal = make_buff(this, "nether_portal", talents.nether_portal)
       ->set_duration(talents.nether_portal->duration());
 
-    //Tier
-    buffs.rage_of_guldan = make_buff(this, "rage_of_guldan", sets->set(WARLOCK_DEMONOLOGY, T21, B2)->effectN(1).trigger())
-      ->set_duration(find_spell(257926)->duration())
-      ->set_max_stack(find_spell(257926)->max_stacks())
-      ->set_default_value(find_spell(257926)->effectN(1).base_value())
-      ->set_refresh_behavior(buff_refresh_behavior::DURATION);
-
-    buffs.dreaded_haste =
-        make_buff(this, "dreaded_haste", sets->set(WARLOCK_DEMONOLOGY, T20, B4)->effectN(1).trigger())
-        ->set_default_value(sets->set(WARLOCK_DEMONOLOGY, T20, B4)->effectN(1).trigger()->effectN(1).percent())
-        ->add_invalidate(CACHE_HASTE);
-
     // Azerite
     buffs.forbidden_knowledge = make_buff( this, "forbidden_knowledge", azerite.forbidden_knowledge.spell_ref().effectN( 1 ).trigger() )
       ->set_refresh_behavior( buff_refresh_behavior::DURATION )
@@ -1069,13 +1012,11 @@ namespace warlock {
     warlock_pet_list.wild_imps.set_default_duration( imp_summon_spell->duration() );
 
     auto dreadstalker_spell = find_spell( 193332 );
-    warlock_pet_list.dreadstalkers.set_default_duration( dreadstalker_spell->duration() +
-                                                         sets->set( WARLOCK_DEMONOLOGY, T19, B4 )->effectN( 1 ).time_value() );
+    warlock_pet_list.dreadstalkers.set_default_duration( dreadstalker_spell->duration() );
   }
 
   void warlock_t::init_gains_demonology()
   {
-    gains.t19_2pc_demonology = get_gain( "t19_2pc_demonology" );
     gains.demonic_meteor = get_gain( "demonic_meteor" );
     gains.baleful_invocation = get_gain( "baleful_invocation" );
   }

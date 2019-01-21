@@ -63,16 +63,6 @@ namespace warlock
         return pm;
       }
 
-      void consume_resource() override
-      {
-        warlock_spell_t::consume_resource();
-
-        if (resource_current == RESOURCE_SOUL_SHARD && p()->in_combat)
-        {
-          p()->buffs.demonic_speed->trigger();
-        }
-      }
-
       void tick(dot_t* d) override
       {
         warlock_spell_t::tick(d);
@@ -293,11 +283,6 @@ namespace warlock
         double active_agonies = p()->get_active_dots( internal_id );
         increment_max *= std::pow(active_agonies, -2.0 / 3.0);
 
-        if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T19, B4 ) )
-        {
-          increment_max *= 1.0 + p()->sets->set( WARLOCK_AFFLICTION, T19, B4 )->effectN( 1 ).percent();
-        }
-
         if ( p()->talents.creeping_death->ok() )
         {
           increment_max *= 1.0 + p()->talents.creeping_death->effectN( 1 ).percent();
@@ -320,18 +305,6 @@ namespace warlock
 
           p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.agony );
           p()->agony_accumulator -= 1.0;
-        }
-
-        if ( rng().roll( p()->sets->set( WARLOCK_AFFLICTION, T21, B2 )->proc_chance() ) )
-        {
-          warlock_td_t* target_data = td( d->state->target );
-          for ( auto& current_ua : target_data->dots_unstable_affliction )
-          {
-            if ( current_ua->is_ticking() )
-              current_ua->extend_duration( p()->sets->set( WARLOCK_AFFLICTION, T21, B2 )->effectN( 1 ).time_value(), true );
-          }
-
-          p()->procs.affliction_t21_2pc->occur();
         }
 
         if ( result_is_hit( d->state->result ) && p()->azerite.inevitable_demise.ok() && !p()->buffs.drain_life->check() )
@@ -395,14 +368,6 @@ namespace warlock
           }
         }
 
-        if (result_is_hit(d->state->result) && p()->sets->has_set_bonus(WARLOCK_AFFLICTION, T20, B2))
-        {
-          bool procced = p()->affliction_t20_2pc_rppm->trigger(); //check for RPPM
-
-          if (procced)
-            p()->resource_gain(RESOURCE_SOUL_SHARD, 1.0, p()->gains.affliction_t20_2pc); //trigger the buff
-        }
-
         affliction_spell_t::tick( d );
       }
 
@@ -437,8 +402,6 @@ namespace warlock
           tick_may_crit = true;
           hasted_ticks = false;
           tick_zero = true;
-          if ( p->sets->has_set_bonus( WARLOCK_AFFLICTION, T19, B2 ) )
-            base_multiplier *= 1.0 + p->sets->set( WARLOCK_AFFLICTION, T19, B2 )->effectN( 1 ).percent();
           db_max_contribution = data().duration();
         }
 
@@ -537,9 +500,6 @@ namespace warlock
       void execute() override
       {
         affliction_spell_t::execute();
-
-        if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T21, B4 ) )
-          p()->active.tormented_agony->schedule_execute();
 
         if (p()->azerite.dreadful_calling.ok())
         {
@@ -679,9 +639,6 @@ namespace warlock
 
       void execute() override
       {
-        if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T21, B4 ) )
-          p()->active.tormented_agony->schedule_execute();
-
         if (td(target)->dots_seed_of_corruption->is_ticking() || has_travel_events_for(target))
         {
           for (auto& possible : target_list())
@@ -781,18 +738,6 @@ namespace warlock
         may_crit = false;
         db_max_contribution = data().duration();
         pandemic_invocation_usable = false;
-      }
-
-      double composite_target_multiplier(player_t* target) const override
-      {
-        double m = affliction_spell_t::composite_target_multiplier(target);
-
-        auto td = this->td(target);
-
-        if (td->debuffs_tormented_agony->check())
-          m *= 1.0 + td->debuffs_tormented_agony->data().effectN(1).percent();
-
-        return m;
       }
 
       void execute() override
@@ -1019,59 +964,6 @@ namespace warlock
         p()->buffs.dark_soul_misery->trigger();
       }
     };
-
-    // Tier
-    struct tormented_agony_t : public affliction_spell_t
-    {
-      struct tormented_agony_debuff_engine_t : public affliction_spell_t
-      {
-        tormented_agony_debuff_engine_t( warlock_t* p ) :
-          affliction_spell_t( "tormented agony", p, p -> find_spell( 256807 ) )
-        {
-          harmful = may_crit = callbacks = false;
-          background = proc = true;
-          aoe = 0;
-          trigger_gcd = timespan_t::zero();
-        }
-
-        void impact( action_state_t* s ) override
-        {
-          affliction_spell_t::impact( s );
-
-          td( s->target )->debuffs_tormented_agony->trigger();
-        }
-      };
-
-      propagate_const<player_t*> source_target;
-      tormented_agony_debuff_engine_t* tormented_agony;
-
-      tormented_agony_t( warlock_t* p ) :
-        affliction_spell_t( "tormented agony", p, p -> find_spell( 256807 ) ),
-        source_target( nullptr ),
-        tormented_agony( new tormented_agony_debuff_engine_t( p ) )
-      {
-        harmful = may_crit = callbacks = false;
-        background = proc = true;
-        aoe = -1;
-        radius = data().effectN( 1 ).radius();
-        trigger_gcd = timespan_t::zero();
-      }
-
-      void execute() override
-      {
-        affliction_spell_t::execute();
-
-        for ( const auto target : sim->target_non_sleeping_list )
-        {
-          auto td = this->td(target);
-          if ( td->dots_agony->is_ticking() )
-          {
-            tormented_agony->set_target( target );
-            tormented_agony->execute();
-          }
-        }
-      }
-    };
   } // end actions namespace
 
   namespace buffs_affliction
@@ -1117,12 +1009,6 @@ namespace warlock
     buffs.nightfall = make_buff( this, "nightfall", find_spell( 264571 ) )
       ->set_default_value( find_spell( 264571 )->effectN( 2 ).percent() )
       ->set_trigger_spell( talents.nightfall );
-    //tier
-    buffs.demonic_speed =
-      make_buff( this, "demonic_speed", sets->set( WARLOCK_AFFLICTION, T20, B4 )->effectN( 1 ).trigger() )
-      ->set_chance( sets->set( WARLOCK_AFFLICTION, T20, B4 )->proc_chance() )
-      ->set_default_value( sets->set( WARLOCK_AFFLICTION, T20, B4 )->effectN( 1 ).trigger()->effectN( 1 ).percent() )
-      ->add_invalidate( CACHE_HASTE );
     //azerite
     buffs.cascading_calamity = make_buff<stat_buff_t>(this, "cascading_calamity", azerite.cascading_calamity)
       ->add_stat(STAT_HASTE_RATING, azerite.cascading_calamity.value())
@@ -1172,7 +1058,6 @@ namespace warlock
     azerite.deathbloom                  = find_azerite_spell("Deathbloom");
     azerite.pandemic_invocation         = find_azerite_spell( "Pandemic Invocation" );
     // Actives
-    active.tormented_agony              = new tormented_agony_t( this );
     active.pandemic_invocation          = new pandemic_invocation_t( this );
   }
 
@@ -1181,19 +1066,16 @@ namespace warlock
     gains.agony                         = get_gain( "agony" );
     gains.seed_of_corruption            = get_gain( "seed_of_corruption" );
     gains.unstable_affliction_refund    = get_gain( "unstable_affliction_refund" );
-    gains.affliction_t20_2pc            = get_gain( "affliction_t20_2pc" );
     gains.drain_soul                    = get_gain( "drain_soul" );
     gains.pandemic_invocation           = get_gain( "pandemic_invocation" );
   }
 
   void warlock_t::init_rng_affliction()
   {
-    affliction_t20_2pc_rppm             = get_rppm( "affliction_t20_2pc", sets->set( WARLOCK_AFFLICTION, T20, B2 ) );
   }
 
   void warlock_t::init_procs_affliction()
   {
-    procs.affliction_t21_2pc            = get_proc( "affliction_t21_2pc" );
     procs.nightfall                     = get_proc( "nightfall" );
   }
 

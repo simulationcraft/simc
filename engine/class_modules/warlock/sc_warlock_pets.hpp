@@ -41,9 +41,7 @@ struct warlock_pet_t : public pet_t
 
   bool is_demonbolt_enabled = true;
   bool is_lord_of_flames = false;
-  bool t21_4pc_reset = false;
   bool is_warlock_pet = true;
-  int bites_executed = 0;
   int dreadbite_executes = 0;
 
   warlock_pet_t( warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian = false );

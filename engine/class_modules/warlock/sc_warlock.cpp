@@ -108,7 +108,6 @@ namespace warlock
     debuffs_shadow_embrace = make_buff( *this, "shadow_embrace", source->find_spell( 32390 ) )
       ->set_refresh_behavior( buff_refresh_behavior::DURATION )
       ->set_max_stack( 3 );
-    debuffs_tormented_agony = make_buff(*this, "tormented_agony", source->find_spell(252938));
 
     //Destro
     dots_immolate = target->get_dot("immolate", &p);
@@ -307,20 +306,11 @@ double warlock_t::composite_spell_haste() const
 {
   double h = player_t::composite_spell_haste();
 
-  if ( buffs.demonic_speed->check() )
-    h *= 1.0 / ( 1.0 + buffs.demonic_speed->check_value() );
-
   if (buffs.dark_soul_misery->check())
     h *= 1.0 / (1.0 + buffs.dark_soul_misery->check_value());
 
   if (buffs.reverse_entropy->check())
     h *= 1.0 / (1.0 + buffs.reverse_entropy->check_value());
-
-  if (specialization() == WARLOCK_DEMONOLOGY)
-  {
-    if (buffs.dreaded_haste->check())
-      h *= 1.0 / (1.0 + buffs.dreaded_haste->check_value());
-  }
 
   return h;
 }
@@ -329,17 +319,8 @@ double warlock_t::composite_melee_haste() const
 {
   double h = player_t::composite_melee_haste();
 
-  if ( buffs.demonic_speed->check() )
-    h *= 1.0 / ( 1.0 + buffs.demonic_speed->check_value() );
-
   if (buffs.reverse_entropy->check())
     h *= 1.0 / (1.0 + buffs.reverse_entropy->check_value());
-
-  if (specialization() == WARLOCK_DEMONOLOGY)
-  {
-    if (buffs.dreaded_haste->check())
-      h *= 1.0 / (1.0 + buffs.dreaded_haste->check_value());
-  }
 
   return h;
 }
@@ -587,7 +568,6 @@ void warlock_t::init_procs()
   procs.portal_summon                   = get_proc( "portal_summon" );
   procs.demonic_calling                 = get_proc( "demonic_calling" );
   procs.soul_conduit                    = get_proc( "soul_conduit" );
-  procs.demonology_t20_2pc              = get_proc( "demonology_t20_2pc" );
 }
 
 void warlock_t::init_base_stats()

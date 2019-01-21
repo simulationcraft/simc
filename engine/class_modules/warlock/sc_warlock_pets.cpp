@@ -744,8 +744,6 @@ void wild_imp_pet_t::demise()
 
 struct dreadbite_t : public warlock_pet_melee_attack_t
 {
-  double t21_4pc_increase;
-
   dreadbite_t(warlock_pet_t* p) :
     warlock_pet_melee_attack_t("Dreadbite", p, p -> find_spell(205196))
   {
@@ -755,7 +753,6 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
       aoe = -1;
       radius = 8;
     }
-    t21_4pc_increase = p->o()->sets->set(WARLOCK_DEMONOLOGY, T21, B4)->effectN(1).percent();
   }
 
   bool ready() override
@@ -770,9 +767,6 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
   {
     double m = warlock_pet_melee_attack_t::action_multiplier();
 
-    if (p()->o()->sets->has_set_bonus(WARLOCK_DEMONOLOGY, T21, B4) && p()->bites_executed == 1)
-      m *= 1.0 + t21_4pc_increase;
-
     if (p()->o()->talents.dreadlash->ok())
     {
       m *= 1.0 + p()->o()->talents.dreadlash->effectN(1).percent();
@@ -786,13 +780,6 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
     warlock_pet_melee_attack_t::execute();
 
     p()->dreadbite_executes--;
-  }
-
-  void impact(action_state_t* s) override
-  {
-    warlock_pet_melee_attack_t::impact(s);
-
-    p()->bites_executed++;
   }
 };
 
@@ -822,10 +809,6 @@ void dreadstalker_t::arise()
   o()->buffs.dreadstalkers->trigger();
 
   dreadbite_executes = 1;
-  bites_executed = 0;
-
-  if (o()->sets->has_set_bonus(WARLOCK_DEMONOLOGY, T21, B4))
-    t21_4pc_reset = false;
 }
 
 void dreadstalker_t::demise() {

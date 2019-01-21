@@ -89,8 +89,6 @@ namespace warlock {
 
         if (resource_current == RESOURCE_SOUL_SHARD && p()->in_combat)
         {
-          p()->buffs.demonic_speed->trigger();
-
           if (p()->talents.grimoire_of_supremacy->ok())
           {
             for (auto& infernal : p()->warlock_pet_list.infernals)
@@ -1065,7 +1063,6 @@ namespace warlock {
     gains.infernal                      = get_gain( "infernal" );
     gains.shadowburn_shard              = get_gain( "shadowburn_shard" );
     gains.inferno                       = get_gain( "inferno" );
-    gains.destruction_t20_2pc           = get_gain( "destruction_t20_2pc" );
     gains.chaos_shards                  = get_gain( "chaos_shards" );
   }
 
