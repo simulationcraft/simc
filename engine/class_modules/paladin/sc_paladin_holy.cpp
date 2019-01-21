@@ -580,14 +580,6 @@ struct light_of_dawn_t : public paladin_heal_t
 
       cooldown = p -> cooldowns.light_of_dawn;
   }
-
-  virtual void execute() override
-  {
-    if ( p() -> sets -> has_set_bonus( PALADIN_HOLY, T20, B2 ) )
-    {
-      p() -> cooldowns.light_of_dawn -> adjust( timespan_t::from_seconds( -2.0 ) );
-    }
-  }
 };
 
 

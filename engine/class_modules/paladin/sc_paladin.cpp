@@ -101,16 +101,6 @@ paladin_td_t* paladin_t::get_target_data( player_t* target ) const
 // anywhere are also put here. There's a second buffs section near the end
 // containing ones that require action_t definitions to function properly.
 namespace buffs {
-  liadrins_fury_unleashed_t::liadrins_fury_unleashed_t( player_t* p ) :
-      buff_t( p, "liadrins_fury_unleashed", p -> find_spell( 208410 ) )
-  {
-    set_tick_zero( true );
-    set_tick_callback( [ this, p ]( buff_t*, int, const timespan_t& ) {
-      paladin_t* paladin = debug_cast<paladin_t*>( p );
-      paladin -> resource_gain( RESOURCE_HOLY_POWER, data().effectN( 1 ).base_value(), paladin -> gains.hp_liadrins_fury_unleashed );
-    } );
-  }
-
   avenging_wrath_buff_t::avenging_wrath_buff_t( player_t* p ) :
       buff_t( p, "avenging_wrath", p -> find_spell( 31884 ) ),
       damage_modifier( 0.0 ),
@@ -1146,11 +1136,7 @@ void paladin_t::init_gains()
 
   // Holy Power
   gains.hp_templars_verdict_refund  = get_gain( "templars_verdict_refund" );
-  gains.hp_liadrins_fury_unleashed  = get_gain( "liadrins_fury_unleashed" );
   gains.judgment                    = get_gain( "judgment" );
-  gains.hp_t19_4p                   = get_gain( "t19_4p" );
-  gains.hp_t20_2p                   = get_gain( "t20_2p" );
-  gains.hp_justice_gaze             = get_gain( "justice_gaze" );
   gains.hp_cs                       = get_gain( "crusader_strike" );
 }
 
@@ -1164,7 +1150,6 @@ void paladin_t::init_procs()
   procs.focus_of_vengeance_reset  = get_proc( "focus_of_vengeance_reset"       );
   procs.divine_purpose            = get_proc( "divine_purpose"                 );
   procs.the_fires_of_justice      = get_proc( "the_fires_of_justice"           );
-  procs.tfoj_set_bonus            = get_proc( "t19_4p"                         );
   procs.art_of_war                = get_proc( "art_of_war"                     );
   procs.topless_tower             = get_proc( "topless_tower"                  );
   procs.grand_crusader            = get_proc( "grand_crusader"                 );

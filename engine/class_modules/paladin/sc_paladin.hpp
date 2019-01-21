@@ -165,10 +165,6 @@ public:
     stat_buff_t* seraphim;
     buff_t* redoubt;
 
-    // Set Bonuses
-    buff_t* sacred_judgment;
-    buff_t* ret_t21_4p;
-
     // azerite
     // Ret
     buff_t* avengers_might;
@@ -195,11 +191,7 @@ public:
 
     // Holy Power
     gain_t* hp_templars_verdict_refund;
-    gain_t* hp_liadrins_fury_unleashed;
     gain_t* judgment;
-    gain_t* hp_t19_4p;
-    gain_t* hp_t20_2p;
-    gain_t* hp_justice_gaze;
     gain_t* hp_cs;
   } gains;
 
@@ -264,7 +256,6 @@ public:
 
     proc_t* divine_purpose;
     proc_t* the_fires_of_justice;
-    proc_t* tfoj_set_bonus;
     proc_t* art_of_war;
     proc_t* topless_tower;
     proc_t* grand_crusader;
@@ -530,11 +521,6 @@ public:
 };
 
 namespace buffs {
-  struct liadrins_fury_unleashed_t : public buff_t
-  {
-    liadrins_fury_unleashed_t( player_t* p );
-  };
-
   struct avenging_wrath_buff_t : public buff_t
   {
     avenging_wrath_buff_t( player_t* p );
@@ -986,8 +972,6 @@ struct holy_power_generator_t : public paladin_melee_attack_t
                           const spell_data_t* s = spell_data_t::nil() ):
                           paladin_melee_attack_t( n, p, s )
   {}
-
-  virtual void execute() override;
 };
 
 struct judgment_t : public paladin_melee_attack_t

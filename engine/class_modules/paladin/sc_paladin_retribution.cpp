@@ -170,27 +170,9 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
     int discounts = 0;
     if ( p() -> buffs.the_fires_of_justice -> up() && base_cost > discounts )
       discounts++;
-    if ( p() -> buffs.ret_t21_4p -> up() && base_cost > discounts )
-      discounts++;
     return base_cost - discounts;
   }
 };
-
-void holy_power_generator_t::execute()
-{
-  paladin_melee_attack_t::execute();
-
-  if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T19, B4 ) )
-  {
-    // for some reason this is the same spell as the talent
-    // leftover nonsense from when this was Conviction?
-    if ( p() -> rng().roll( p() -> sets -> set( PALADIN_RETRIBUTION, T19, B4 ) -> proc_chance() ) )
-    {
-      p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_t19_4p );
-      p() -> procs.tfoj_set_bonus -> occur();
-    }
-  }
-}
 
 // Crusade
 struct crusade_t : public paladin_heal_t
@@ -251,10 +233,6 @@ struct execution_sentence_t : public holy_power_consumer_t
 
     // Spelldata doesn't seem to have this
     hasted_gcd = true;
-    if ( p -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T19, B2 ) )
-    {
-      base_multiplier *= 1.0 + p -> sets -> set( PALADIN_RETRIBUTION, T19, B2 ) -> effectN( 2 ).percent();
-    }
   }
 
   virtual void impact( action_state_t* s) override
@@ -298,9 +276,6 @@ struct blade_of_justice_t : public holy_power_generator_t
   virtual double action_multiplier() const override
   {
     double am = holy_power_generator_t::action_multiplier();
-    if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T20, B2 ) )
-      if ( p() -> buffs.sacred_judgment -> up() )
-        am *= 1.0 + p() -> buffs.sacred_judgment -> data().effectN( 1 ).percent();
     if ( p() -> buffs.blade_of_wrath -> up() )
       am *= 1.0 + p() -> buffs.blade_of_wrath -> data().effectN( 1 ).percent();
     return am;
@@ -309,8 +284,6 @@ struct blade_of_justice_t : public holy_power_generator_t
   virtual void execute() override
   {
     holy_power_generator_t::execute();
-    if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T20, B4 ) )
-      p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_t20_2p );
     if ( p() -> buffs.blade_of_wrath -> up() )
       p() -> buffs.blade_of_wrath -> expire();
   }
@@ -336,11 +309,6 @@ struct holy_power_consumer_impact_t : public paladin_melee_attack_t
     : paladin_melee_attack_t( n, p, s ) {
     dual = background = true;
     may_miss = may_dodge = may_parry = false;
-
-    if ( p -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T19, B2 ) )
-    {
-      base_multiplier *= 1.0 + p -> sets -> set( PALADIN_RETRIBUTION, T19, B2 ) -> effectN( 1 ).percent();
-    }
   }
 
   virtual double action_multiplier() const override
@@ -413,8 +381,6 @@ struct divine_storm_t: public holy_power_consumer_t
     skip_dp = false;
     if ( p() -> buffs.the_fires_of_justice -> up() && c > 0 )
       p() -> buffs.the_fires_of_justice -> expire();
-    if ( p() -> buffs.ret_t21_4p -> up() && c > 0 )
-      p() -> buffs.ret_t21_4p -> expire();
     if ( p() -> buffs.empyrean_power -> up() )
       p() -> buffs.empyrean_power -> expire();
   }
@@ -487,8 +453,6 @@ struct templars_verdict_t : public holy_power_consumer_t
     // TODO: do misses consume fires of justice?
     if ( p() -> buffs.the_fires_of_justice -> up() && c > 0 )
       p() -> buffs.the_fires_of_justice -> expire();
-    if ( p() -> buffs.ret_t21_4p -> up() && c > 0 )
-      p() -> buffs.ret_t21_4p -> expire();
 
     // missed/dodged/parried TVs do not consume Holy Power
     // check for a miss, and refund the appropriate amount of HP if we spent any
@@ -512,11 +476,7 @@ struct judgment_ret_t : public judgment_t
 {
   judgment_ret_t( paladin_t* p, const std::string& options_str )
     : judgment_t( p, options_str )
-  {
-    // TODO: this is a hack; figure out what's really going on here.
-    if ( p -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T21, B2 ) )
-      base_multiplier *= 1.0 + p -> sets -> set( PALADIN_RETRIBUTION, T21, B2 ) -> effectN( 1 ).percent();
-  }
+  {}
 
   virtual void execute() override
   {
@@ -530,10 +490,6 @@ struct judgment_ret_t : public judgment_t
     {
       p() -> buffs.divine_judgment -> expire();
     }
-    if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T20, B2 ) )
-      p() -> buffs.sacred_judgment -> trigger();
-    if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T21, B4 ) )
-      p() -> buffs.ret_t21_4p -> trigger();
   }
 
   virtual double action_multiplier() const override
@@ -582,9 +538,6 @@ struct justicars_vengeance_t : public holy_power_consumer_t
     // TODO: do misses consume fires of justice?
     if ( p() -> buffs.the_fires_of_justice -> up() && c > 0 )
       p() -> buffs.the_fires_of_justice -> expire();
-
-    if ( p() -> buffs.ret_t21_4p -> up() && c > 0 )
-      p() -> buffs.ret_t21_4p -> expire();
 
     // missed/dodged/parried TVs do not consume Holy Power
     // check for a miss, and refund the appropriate amount of HP if we spent any
@@ -776,11 +729,7 @@ void paladin_t::create_buffs_retribution()
   buffs.the_fires_of_justice           = make_buff( this, "fires_of_justice", find_spell( 209785 ) );
   buffs.blade_of_wrath                 = make_buff( this, "blade_of_wrath", find_spell( 281178 ) );
   buffs.shield_of_vengeance            = new buffs::shield_of_vengeance_buff_t( this );
-  buffs.sacred_judgment                = make_buff( this, "sacred_judgment", find_spell( 246973 ) );
   buffs.divine_judgment                = make_buff( this, "divine_judgment", find_spell( 271581 ) );
-
-  // Tier Bonuses
-  buffs.ret_t21_4p             = make_buff( this, "hidden_retribution_t21_4p", find_spell( 253806 ) );
 
   // Azerite
   buffs.avengers_might = make_buff<stat_buff_t>(this, "avengers_might", find_spell( 272903 ))
