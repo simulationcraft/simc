@@ -1834,9 +1834,14 @@ void paladin_t::invalidate_cache( cache_e c )
     player_t::invalidate_cache( CACHE_SPELL_POWER );
   }
 
-  if ( c == CACHE_ATTACK_CRIT_CHANCE && specialization() == PALADIN_PROTECTION )
-    player_t::invalidate_cache( CACHE_PARRY );
+  if ( specialization() == PALADIN_HOLY && 
+    ( c == CACHE_INTELLECT || CACHE_SPELL_POWER ) )
+  {
+    player_t::invalidate_cache( CACHE_ATTACK_POWER );
+  }
 
+  if ( c == CACHE_ATTACK_CRIT_CHANCE && passives.riposte -> ok() )
+    player_t::invalidate_cache( CACHE_PARRY );
 
   if ( c == CACHE_MASTERY && passives.divine_bulwark -> ok() )
   {
