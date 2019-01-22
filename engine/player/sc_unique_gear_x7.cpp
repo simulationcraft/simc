@@ -137,6 +137,7 @@ namespace items
   void variable_intensity_gigavolt_oscillating_reactor_onuse( special_effect_t& );
   void everchill_anchor( special_effect_t& );
   void ramping_amplitude_gigavolt_engine( special_effect_t& );
+  void grongs_primal_rage( special_effect_t& );
 }
 
 namespace util
@@ -2237,6 +2238,68 @@ void items::ramping_amplitude_gigavolt_engine( special_effect_t& effect )
   effect.execute_action = new ramping_amplitude_gigavolt_engine_active_t( effect );
 }
 
+// Grong's Primal Rage 
+
+void items::grongs_primal_rage( special_effect_t& effect )
+{
+  struct primal_rage_channel : public proc_spell_t
+  {
+    action_t* damage;
+
+    primal_rage_channel( const special_effect_t& effect ) :
+      proc_spell_t( "primal_rage", effect.player, effect.player -> find_spell( 288267 ), effect.item )
+    { 
+      channeled = hasted_ticks = true;
+      interrupt_auto_attack = tick_zero = false;
+
+      damage = create_proc_action<aoe_proc_t>( "primal_rage_damage", effect,
+                                               "primal_rage_damage", effect.player -> find_spell( 288269 ), true );
+      tick_action = damage;
+    }
+
+    // Even though ticks are hasted, the duration is a fixed 4s
+    timespan_t composite_dot_duration( const action_state_t* state ) const override
+    {
+      return dot_duration;
+    }
+
+    // Copied from draught of souls
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      // Use_item_t (that executes this action) will trigger a player-ready event after execution.
+      // Since this action is a "background channel", we'll need to cancel the player ready event to
+      // prevent the player from picking something to do while channeling.
+      event_t::cancel( player -> readying );
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      // Last_tick() will zero player_t::channeling if this action is being channeled, so check it
+      // before calling the parent.
+      auto was_channeling = player -> channeling == this;
+
+      proc_spell_t::last_tick( d );
+
+      // Since Draught of Souls must be modeled as a channel (player cannot be allowed to perform
+      // any actions for 3 seconds), we need to manually restart the player-ready event immediately
+      // after the channel ends. This is because the channel is flagged as a background action,
+      // which by default prohibits player-ready generation.
+      if ( was_channeling && player -> readying == nullptr )
+      {
+        // Due to the client not allowing the ability queue here, we have to wait
+        // the amount of lag + how often the key is spammed until the next ability is used.
+        // Modeling this as 2 * lag for now. Might increase to 3 * lag after looking at logs of people using the trinket.
+        timespan_t time = ( player -> world_lag_override ? player -> world_lag : sim -> world_lag ) * 2.0;
+        player -> schedule_ready( time );
+      }
+    }
+  };
+
+  effect.execute_action = new primal_rage_channel( effect );
+}
+
 // Waycrest's Legacy Set Bonus ============================================
 
 void set_bonus::waycrest_legacy( special_effect_t& effect )
@@ -2334,6 +2397,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 287917, items::variable_intensity_gigavolt_oscillating_reactor_onuse );
   register_special_effect( 289525, items::everchill_anchor );
   register_special_effect( 288173, items::ramping_amplitude_gigavolt_engine );
+  register_special_effect( 289520, items::grongs_primal_rage );
 
   // Misc
   register_special_effect( 276123, items::darkmoon_deck_squalls );
