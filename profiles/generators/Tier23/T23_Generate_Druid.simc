@@ -9,7 +9,7 @@ talents=1000231
 head=tidemothers_cover,id=165819,bonus_id=4824/1537,azerite_powers=200/122/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
 shoulder=mestrahs_singing_spaulders,id=165516,bonus_id=4824/1537,azerite_powers=/122/562/31/13
-back=Loa_exultants_shroud,id=165512,ilevel=415
+back=Loa_exultants_shroud,id=165512,bonus_id=4800/1537
 chest=grongpelt_vest,id=165515,bonus_id=4824/1537,azerite_powers=/122/250/462/13
 wrist=amethyststudded_bindings,id=165524,bonus_id=4800/1537
 hands=gloves_of_spiritual_grace,id=165514,bonus_id=4800/1537
