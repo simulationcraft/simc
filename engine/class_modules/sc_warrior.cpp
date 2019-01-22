@@ -221,6 +221,7 @@ public:
     const spell_data_t* whirlwind_buff;
     const spell_data_t* ravager_protection;
     const spell_data_t* shield_block_buff;
+    const spell_data_t* riposte;
   } spell;
 
   // Mastery
@@ -269,7 +270,6 @@ public:
     const spell_data_t* rallying_cry;
     const spell_data_t* rampage;
     const spell_data_t* revenge;
-    const spell_data_t* riposte;
     const spell_data_t* seasoned_soldier;
     const spell_data_t* shield_block;
     const spell_data_t* shield_block_2;
@@ -4642,7 +4642,6 @@ void warrior_t::init_spells()
   spec.recklessness     = find_specialization_spell( "Recklessness" );
   spec.revenge          = find_specialization_spell( "Revenge" );
   spec.revenge_trigger  = find_specialization_spell( "Revenge Trigger" );
-  spec.riposte          = find_specialization_spell( "Riposte" );
   spec.seasoned_soldier = find_specialization_spell( "Seasoned Soldier" );
   spec.shield_block     = find_specialization_spell( "Shield Block" );
   spec.shield_block_2   = find_specialization_spell( 231847 );
@@ -4764,6 +4763,8 @@ void warrior_t::init_spells()
   spell.whirlwind_buff        = find_spell( 85739, WARRIOR_FURY );  // Used to be called Meat Cleaver
   spell.ravager_protection    = find_spell( 227744 );
   spell.shield_block_buff     = find_spell( 132404 );
+  spell.riposte               = find_class_spell( "Riposte" );
+
 
   // Active spells
   active.deep_wounds_ARMS = nullptr;
@@ -6286,7 +6287,8 @@ double warrior_t::composite_parry_rating() const
 {
   double p = player_t::composite_parry_rating();
 
-  if ( spec.riposte->ok() )
+  // TODO: remove the spec check once riposte is pulled from spelldata
+  if ( spell.riposte -> ok() || specialization() == WARRIOR_PROTECTION )
   {
     p += composite_melee_crit_rating();
   }
