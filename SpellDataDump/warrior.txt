@@ -3108,6 +3108,24 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.44226 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc152277
 
+Name             : Riposte (id=161798) [Spell Family (4), Passive] 
+Class            : Warrior
+School           : Physical
+Spell Type       : None
+Spell Level      : 65
+Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ......x. ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=227073)   : Apply Aura (6) | Unknown(463)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : You gain Parry equal to $s1% of your Critical Strike from gear.
+
 Name             : Stat Negation Aura - Strength DPS (id=162698) [Passive, Hidden] 
 Class            : Arms Fury Retribution Frost Unholy Warrior, Paladin, Death Knight
 Race             : Dark Iron Dwarf (0x800)
