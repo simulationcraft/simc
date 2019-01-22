@@ -590,7 +590,7 @@ void shield_of_the_righteous_buff_t::sotr_custom_trigger()
 struct shield_of_the_righteous_t : public paladin_melee_attack_t
 {
   shield_of_the_righteous_t( paladin_t* p, const std::string& options_str ) :
-    paladin_melee_attack_t( "shield_of_the_righteous", p, p -> find_specialization_spell( "Shield of the Righteous" ) )
+    paladin_melee_attack_t( "shield_of_the_righteous", p, p -> spec.shield_of_the_righteous )
   {
     parse_options( options_str );
 
@@ -916,10 +916,8 @@ void paladin_t::init_spells_protection()
   passives.sanctuary              = find_specialization_spell( "Sanctuary" );
   passives.riposte                = find_specialization_spell( "Riposte" );
 
-  if ( specialization() == PALADIN_PROTECTION )
-  {
-    spec.judgment_2 = find_specialization_spell( 231657 );
-  }
+  spec.judgment_2              = find_specialization_spell( 231657 );
+  spec.shield_of_the_righteous = find_specialization_spell( "Shield of the Righteous" );
 
   // Azerite traits
   azerite.inspiring_vanguard = find_azerite_spell( "Inspiring Vanguard" );

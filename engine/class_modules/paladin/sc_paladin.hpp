@@ -199,6 +199,7 @@ public:
   struct spec_t
   {
     const spell_data_t* judgment_2;
+    const spell_data_t* shield_of_the_righteous;
     const spell_data_t* holy_paladin;
     const spell_data_t* protection_paladin;
     const spell_data_t* retribution_paladin;

@@ -1835,7 +1835,7 @@ void paladin_t::invalidate_cache( cache_e c )
   }
 
   if ( specialization() == PALADIN_HOLY && 
-    ( c == CACHE_INTELLECT || CACHE_SPELL_POWER ) )
+    ( c == CACHE_INTELLECT || c == CACHE_SPELL_POWER ) )
   {
     player_t::invalidate_cache( CACHE_ATTACK_POWER );
   }
@@ -1850,7 +1850,7 @@ void paladin_t::invalidate_cache( cache_e c )
     player_t::invalidate_cache( CACHE_SPELL_POWER );
   }
 
-  if ( c == CACHE_STRENGTH && spells.shield_of_the_righteous -> ok() )
+  if ( c == CACHE_STRENGTH && spec.shield_of_the_righteous -> ok() )
   {
     player_t::invalidate_cache( CACHE_BONUS_ARMOR );
   }
