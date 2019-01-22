@@ -3751,6 +3751,11 @@ class SetBonusListGenerator(DataGenerator):
             'tier'   : 21
         },
         {
+            'name'   : 'gift_of_the_loa',
+            'bonuses': [ 1442 ],
+            'tier'   : 23
+        },
+        {
             'name'   : 'keepsakes',
             'bonuses': [ 1443 ],
             'tier'   : 23
