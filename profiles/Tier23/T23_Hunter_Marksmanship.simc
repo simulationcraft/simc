@@ -44,10 +44,10 @@ actions+=/call_action_list,name=trickshots,if=active_enemies>2
 actions.cds=hunters_mark,if=debuff.hunters_mark.down
 actions.cds+=/double_tap,if=target.time_to_die<15|cooldown.aimed_shot.remains<gcd&(buff.trueshot.up&(buff.unerring_vision.stack>6|!azerite.unerring_vision.enabled)|!talent.calling_the_shots.enabled)&(!azerite.surging_shots.enabled&!talent.streamline.enabled&!azerite.focused_fire.enabled)
 actions.cds+=/double_tap,if=cooldown.rapid_fire.remains<gcd&(buff.trueshot.up&(buff.unerring_vision.stack>6|!azerite.unerring_vision.enabled)|!talent.calling_the_shots.enabled)&(azerite.surging_shots.enabled|talent.streamline.enabled|azerite.focused_fire.enabled)
-actions.cds+=/berserking,if=cooldown.trueshot.remains>60
-actions.cds+=/blood_fury,if=cooldown.trueshot.remains>30
-actions.cds+=/ancestral_call,if=cooldown.trueshot.remains>30
-actions.cds+=/fireblood,if=cooldown.trueshot.remains>30
+actions.cds+=/berserking,if=buff.trueshot.up&(target.time_to_die>cooldown.berserking.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<13
+actions.cds+=/blood_fury,if=buff.trueshot.up&(target.time_to_die>cooldown.blood_fury.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<16
+actions.cds+=/ancestral_call,if=buff.trueshot.up&(target.time_to_die>cooldown.ancestral_call.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<16
+actions.cds+=/fireblood,if=buff.trueshot.up&(target.time_to_die>cooldown.fireblood.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<9
 actions.cds+=/lights_judgment
 actions.cds+=/potion,if=buff.trueshot.react&buff.bloodlust.react|buff.trueshot.up&target.health.pct<20&talent.careful_aim.enabled|target.time_to_die<25
 actions.cds+=/trueshot,if=cooldown.rapid_fire.remains&target.time_to_die>cooldown.trueshot.duration_guess+duration|(target.health.pct<20|!talent.careful_aim.enabled)|target.time_to_die<15
@@ -87,13 +87,13 @@ legs=deathhunters_legguards,id=165536,bonus_id=4800/1537
 feet=lightgrace_sabatons,id=165533,bonus_id=4800/1537
 finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_mastery
 finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_mastery
-trinket1=variable_intensity_gigavolt_oscillating_reactor,id=165572,bonus_id=4800/1537
+trinket1=galecallers_boon,id=159614,bonus_id=1572/4780
 trinket2=kimbuls_razor_claw,id=165579,bonus_id=4800/1537
 main_hand=pterrorwing_longbow,id=165599,bonus_id=4800/1537,enchant=incendiary_ammunition
 
 # Gear Summary
-# gear_ilvl=416.27
-# gear_agility=5796
+# gear_ilvl=415.27
+# gear_agility=5742
 # gear_stamina=9920
 # gear_crit_rating=514
 # gear_haste_rating=927

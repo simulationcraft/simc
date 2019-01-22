@@ -132,8 +132,8 @@ legs=deathhunters_legguards,id=165536,bonus_id=4800/1537
 feet=boots_of_the_gilded_path,id=165541,bonus_id=4800/1537
 finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_haste
 finger2=seal_of_questionable_loyalties,id=158314,bonus_id=1572/4780,enchant=pact_of_haste
-trinket1=variable_intensity_gigavolt_oscillating_reactor,id=165572,bonus_id=4800/1537
-trinket2=galecallers_boon,id=159614,bonus_id=1572/4780
+trinket1=galecallers_boon,id=159614,bonus_id=1572/4780
+trinket2=kimbuls_razor_claw,id=165579,bonus_id=4800/1537
 main_hand=hornridged_crusher,id=165589,bonus_id=4800/1537,enchant=quick_navigation
 
 # Gear Summary

@@ -53,8 +53,8 @@ actions+=/use_item,name=tidestorm_codex,if=equipped.165576
 actions+=/use_items,if=cooldown.ca_inc.remains>30
 actions+=/warrior_of_elune
 actions+=/innervate,if=azerite.lively_spirit.enabled&(cooldown.incarnation.remains<2|cooldown.celestial_alignment.remains<12)
-actions+=/incarnation,if=astral_power>=40
-actions+=/celestial_alignment,if=astral_power>=40&(!azerite.lively_spirit.enabled|buff.lively_spirit.up)&(buff.starlord.stack>=2|!talent.starlord.enabled|!variable.az_ss)
+actions+=/incarnation,if=astral_power>=40&dot.sunfire.remains>8&dot.moonfire.remains>12&(dot.stellar_flare.remains>6|!talent.stellar_flare.enabled)
+actions+=/celestial_alignment,if=astral_power>=40&(!azerite.lively_spirit.enabled|buff.lively_spirit.up)&(buff.starlord.stack>=2|((!talent.starlord.enabled|!variable.az_ss)&dot.sunfire.remains>2&dot.moonfire.ticking&(dot.stellar_flare.ticking|!talent.stellar_flare.enabled)))
 actions+=/fury_of_elune,if=(buff.ca_inc.up|cooldown.ca_inc.remains>30)&solar_wrath.ap_check
 actions+=/force_of_nature,if=(buff.ca_inc.up|cooldown.ca_inc.remains>30)&ap_check
 # Spenders
