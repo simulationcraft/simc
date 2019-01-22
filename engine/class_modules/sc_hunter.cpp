@@ -5156,32 +5156,30 @@ void hunter_t::apl_bm()
   default_list -> add_action( "use_items" );
 
   // Racials
-  for ( std::string racial : { "berserking", "blood_fury", "ancestral_call", "fireblood" } )
-    default_list -> add_action( racial + ",if=cooldown.bestial_wrath.remains>30" );
+  for ( std::string racial : { "ancestral_call", "fireblood" } )
+    default_list -> add_action( racial + ",if=cooldown.bestial_wrath.remains>30");
+
+  default_list -> add_action("berserking,if=buff.aspect_of_the_wild.up&(target.time_to_die>cooldown.berserking.duration+duration|(target.health.pct<35|!talent.killer_instinct.enabled))|target.time_to_die<13"); 
+  default_list -> add_action("blood_fury,if=buff.aspect_of_the_wild.up&(target.time_to_die>cooldown.blood_fury.duration+duration|(target.health.pct<35|!talent.killer_instinct.enabled))|target.time_to_die<16");
+  default_list -> add_action("lights_judgment,if=pet.cat.buff.frenzy.up&pet.cat.buff.frenzy.remains>gcd.max|!pet.cat.buff.frenzy.up");
 
   // In-combat potion
   default_list -> add_action( "potion,if=buff.bestial_wrath.up&buff.aspect_of_the_wild.up&(target.health.pct<35|!talent.killer_instinct.enabled)|target.time_to_die<25" );
 
   // Generic APL
   default_list -> add_action( this, "Barbed Shot", "if=pet.cat.buff.frenzy.up&pet.cat.buff.frenzy.remains<=gcd.max|full_recharge_time<gcd.max&cooldown.bestial_wrath.remains" );
-  //Lightforged racial
-  default_list -> add_action( "lights_judgment" );
-  default_list -> add_talent( this, "Spitting Cobra" );
-  default_list -> add_action( this, "Aspect of the Wild" );
-  default_list -> add_talent( this, "A Murder of Crows", "if=active_enemies=1" );
-  default_list -> add_talent( this, "Stampede", "if=buff.aspect_of_the_wild.up&buff.bestial_wrath.up|target.time_to_die<15" );
-  default_list -> add_action( this, "Multi-Shot", "if=spell_targets>2&gcd.max-pet.cat.buff.beast_cleave.remains>0.25" );
-  default_list -> add_action( this, "Bestial Wrath", "if=cooldown.aspect_of_the_wild.remains>20|target.time_to_die<15" );
-  default_list -> add_talent( this, "Barrage", "if=active_enemies>1" );
-  default_list -> add_talent( this, "Chimaera Shot", "if=spell_targets>1");
   default_list -> add_action( this, "Multi-Shot", "if=spell_targets>1&gcd.max-pet.cat.buff.beast_cleave.remains>0.25" );
+  default_list -> add_action( this, "Aspect of the Wild" );
+  default_list -> add_talent( this, "A Murder of Crows" );
+  default_list -> add_talent( this, "Stampede", "if=buff.aspect_of_the_wild.up&buff.bestial_wrath.up|target.time_to_die<15" );
+  default_list -> add_action( this, "Bestial Wrath", "if=cooldown.aspect_of_the_wild.remains>20|target.time_to_die<15" );
   default_list -> add_action( this, "Kill Command" );
   default_list -> add_talent( this, "Chimaera Shot" );
-  default_list -> add_talent( this, "A Murder of Crows" );
   default_list -> add_talent( this, "Dire Beast" );
   default_list -> add_action( this, "Barbed Shot", "if=pet.cat.buff.frenzy.down&(charges_fractional>1.8|buff.bestial_wrath.up)|(cooldown.aspect_of_the_wild.remains<6&!azerite.feeding_frenzy.enabled|cooldown.aspect_of_the_wild.remains<7&azerite.feeding_frenzy.enabled)&azerite.primal_instincts.enabled|target.time_to_die<9" );
   default_list -> add_talent( this, "Barrage" );
   default_list -> add_action( this, "Cobra Shot", "if=(active_enemies<2|cooldown.kill_command.remains>focus.time_to_max)&(focus-cost+focus.regen*(cooldown.kill_command.remains-1)>action.kill_command.cost|cooldown.kill_command.remains>1+gcd)&cooldown.kill_command.remains>1" );
+  default_list -> add_talent( this, "Spitting Cobra" );
   // Arcane torrent if nothing else is available
   default_list -> add_action( "arcane_torrent" );
 }
@@ -5216,9 +5214,10 @@ void hunter_t::apl_mm()
   cds -> add_talent( this, "Double Tap", "if=cooldown.rapid_fire.remains<gcd&(buff.trueshot.up&(buff.unerring_vision.stack>6|!azerite.unerring_vision.enabled)|!talent.calling_the_shots.enabled)&(azerite.surging_shots.enabled|talent.streamline.enabled|azerite.focused_fire.enabled)");
 
   // Racials
-  cds -> add_action("berserking,if=cooldown.trueshot.remains>60");
-  for ( std::string racial : { "blood_fury", "ancestral_call", "fireblood" } )
-    cds -> add_action( racial + ",if=cooldown.trueshot.remains>30" );
+  cds -> add_action("berserking,if=buff.trueshot.up&(target.time_to_die>cooldown.berserking.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<13");
+  cds -> add_action("blood_fury,if=buff.trueshot.up&(target.time_to_die>cooldown.blood_fury.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<16");
+  cds -> add_action("ancestral_call,if=buff.trueshot.up&(target.time_to_die>cooldown.ancestral_call.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<16");
+  cds -> add_action("fireblood,if=buff.trueshot.up&(target.time_to_die>cooldown.fireblood.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<9");
   cds -> add_action( "lights_judgment" );
 
   // In-combat potion
@@ -5280,7 +5279,7 @@ void hunter_t::apl_surv()
   for ( std::string racial : { "blood_fury", "ancestral_call", "fireblood" } )
     cds -> add_action( racial + ",if=cooldown.coordinated_assault.remains>30" );
   cds -> add_action( "lights_judgment" );
-  cds -> add_action( "berserking,if=cooldown.coordinated_assault.remains>60|time_to_die<11");
+  cds -> add_action( "berserking,if=cooldown.coordinated_assault.remains>60|time_to_die<13");
 
   // In-combat potion
   cds -> add_action( "potion,if=buff.coordinated_assault.up&(buff.berserking.up|buff.blood_fury.up|!race.troll&!race.orc)|time_to_die<26" );
