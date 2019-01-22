@@ -2244,17 +2244,14 @@ void items::grongs_primal_rage( special_effect_t& effect )
 {
   struct primal_rage_channel : public proc_spell_t
   {
-    action_t* damage;
-
     primal_rage_channel( const special_effect_t& effect ) :
       proc_spell_t( "primal_rage", effect.player, effect.player -> find_spell( 288267 ), effect.item )
     { 
       channeled = hasted_ticks = true;
       interrupt_auto_attack = tick_zero = false;
 
-      damage = create_proc_action<aoe_proc_t>( "primal_rage_damage", effect,
+      tick_action = create_proc_action<aoe_proc_t>( "primal_rage_damage", effect,
                                                "primal_rage_damage", effect.player -> find_spell( 288269 ), true );
-      tick_action = damage;
     }
 
     // Even though ticks are hasted, the duration is a fixed 4s
