@@ -326,6 +326,8 @@ namespace warlock {
       {
         demonology_spell_t::execute();
 
+        p()->warlock_pet_list.dreadstalkers.spawn( as<unsigned>( dreadstalker_count ) );
+
         p()->buffs.demonic_calling->up(); // benefit tracking
         p()->buffs.demonic_calling->decrement();
 
