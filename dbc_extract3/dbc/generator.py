@@ -1259,6 +1259,7 @@ class SpellDataGenerator(DataGenerator):
             ( 242953, 0 ),          # Bloody Rage
             ( 278497, 0 ),          # Seismic Wave (Azerite)
             ( 195707, 0 ),          # Rage gain from taking hits
+            ( 161798, 0 ),          # Riposte passive (turns crit rating into parry)
         ),
 
         # Paladin:
