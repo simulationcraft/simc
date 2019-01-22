@@ -184,6 +184,7 @@ namespace set_bonus
   // 8.0 Dungeon
   void waycrest_legacy( special_effect_t& );
   // 8.1.0 Raid
+  void gift_of_the_loa( special_effect_t& );
   void keepsakes_of_the_resolute_commandant( special_effect_t& );
 }
 
@@ -2314,6 +2315,21 @@ void set_bonus::waycrest_legacy( special_effect_t& effect )
   }
 }
 
+// Gift of the Loa Set Bonus ==============================================
+
+void set_bonus::gift_of_the_loa( special_effect_t& effect )
+{
+  auto p = effect.player;
+
+  // Set bonus is only active in Zuldazar
+  if ( p->sim->bfa_opts.zuldazar )
+  {
+    // The values are stored in a different spell.
+    double value = p->find_spell( 290264 )->effectN( 1 ).average( p );
+    p->passive.add_stat( p->convert_hybrid_stat( STAT_STR_AGI_INT ), value );
+  }
+}
+
 // Keepsakes of the Resolute Commandant Set Bonus =========================
 
 void set_bonus::keepsakes_of_the_resolute_commandant( special_effect_t& effect )
@@ -2405,6 +2421,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 277522, set_bonus::waycrest_legacy );
 
   /* 8.1.0 Raid Set Bonuses */
+  register_special_effect( 290263, set_bonus::gift_of_the_loa );
   register_special_effect( 290362, set_bonus::keepsakes_of_the_resolute_commandant );
 }
 

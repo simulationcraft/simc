@@ -3581,6 +3581,8 @@ void sim_t::create_options()
         bfa_opts.randomize_oscillation ) );
   add_option( opt_bool( "bfa.auto_oscillating_overload",
         bfa_opts.auto_oscillating_overload ) );
+  add_option( opt_bool( "bfa.zuldazar",
+        bfa_opts.zuldazar ) );
 
   // applies to: "lavish_suramar_feast", battle for azeroth feasts
   add_option( opt_bool( "feast_as_dps", feast_as_dps ) );

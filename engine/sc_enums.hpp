@@ -810,6 +810,7 @@ enum set_bonus_type_e
   T20,
   T21,
   T21P_G1,
+  T23_GIFT_OF_THE_LOA,
   T23_KEEPSAKES,
 
   SET_BONUS_MAX

@@ -1131,6 +1131,8 @@ struct sim_t : private sc_thread_t
     bool                randomize_oscillation = true;
     /// Automatically use Oscillating Overload on max stack, true = yes if no use_item, 0 = no
     bool                auto_oscillating_overload = true;
+    /// Is the actor in Zuldazar? Relevant for one of the set bonuses.
+    bool                zuldazar = false;
   } bfa_opts;
 
   // Expansion specific data
