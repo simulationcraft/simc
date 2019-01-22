@@ -87,11 +87,11 @@ actions.generic+=/death_coil,if=runic_power.deficit<20&!variable.pooling_for_gar
 actions.generic+=/festering_strike,if=((((debuff.festering_wound.stack<4&!buff.unholy_frenzy.up)|debuff.festering_wound.stack<3)&cooldown.apocalypse.remains<3)|debuff.festering_wound.stack<1)&cooldown.army_of_the_dead.remains>5
 actions.generic+=/death_coil,if=!variable.pooling_for_gargoyle
 
-head=helm_of_tempered_jade,id=165548,bonus_id=1537/4824/4775,azerite_powers=199/562/31/465/13
+head=helm_of_tempered_jade,id=165548,bonus_id=1537/4824,azerite_powers=199/562/31/465/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
-shoulders=dynosprocket_spaulders,id=165825,bonus_id=1537/4824/4775,azerite_powers=199/562/459/14/13
+shoulders=dynosprocket_spaulders,id=165825,bonus_id=1537/4824,azerite_powers=199/562/459/14/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
-chest=ashvane_wardens_cuirass,id=159440,bonus_id=5062/1587/4786/4775,azerite_powers=199/244/30/14/13
+chest=sea_swell_chestplate,id=165557,bonus_id=5062/1587/4786/4775,azerite_powers=199/109/30/15/13
 wrists=splinterbone_vambraces,id=165551,bonus_id=4800/1537
 hands=crusade_pummelers,id=165549,bonus_id=4800/1537
 waist=embersear_waistguard,id=165552,bonus_id=4800/1537
@@ -100,7 +100,7 @@ feet=coinage_stampers,id=165561,bonus_id=4800/1537
 finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_haste
 finger2=band_of_multisided_strikes,id=165565,bonus_id=4800/1537,enchant=pact_of_haste
 trinket1=ramping_amplitude_gigavolt_engine,id=165580,bonus_id=4800/1537
-trinket2=everchill_anchor,id=165570,bonus_id=4800/1537
+trinket2=grongs_primal_rage,id=165574,bonus_id=4800/1537
 main_hand=dawnbreaker,id=165586,bonus_id=4800/1537,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
