@@ -5270,8 +5270,8 @@ void hunter_t::apl_surv()
   default_list -> add_action( "call_action_list,name=cds" );
   default_list -> add_action( "call_action_list,name=mb_ap_wfi_st,if=active_enemies<3&talent.wildfire_infusion.enabled&talent.alpha_predator.enabled&talent.mongoose_bite.enabled" );
   default_list -> add_action( "call_action_list,name=wfi_st,if=active_enemies<3&talent.wildfire_infusion.enabled");
-  default_list -> add_action( "call_action_list,name=st,if=active_enemies<2|azerite.blur_of_talons.rank>2&talent.birds_of_prey.enabled" );
-  default_list -> add_action( "call_action_list,name=cleave,if=active_enemies>1&(!azerite.blur_of_talons.rank>2&!talent.birds_of_prey.enabled)" );
+  default_list -> add_action( "call_action_list,name=st,if=active_enemies<2|azerite.blur_of_talons.enabled&talent.birds_of_prey.enabled&buff.coordinated_assault.up" );
+  default_list -> add_action( "call_action_list,name=cleave,if=active_enemies>1" );
   // Arcane torrent if nothing else is available
   default_list -> add_action( "arcane_torrent" );
 
