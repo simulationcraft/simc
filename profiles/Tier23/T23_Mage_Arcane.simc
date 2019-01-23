@@ -99,18 +99,18 @@ actions.movement+=/arcane_missiles
 actions.movement+=/arcane_orb
 actions.movement+=/supernova
 
-head=headdress_of_the_first_empire,id=159236,bonus_id=1587/4819/4775,azerite_powers=374/157/30/13
+head=headdress_of_the_first_empire,id=159236,bonus_id=1587/4819,azerite_powers=374/157/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
-shoulders=gigacharged_shoulderpads,id=165497,bonus_id=4824/1537/4775,azerite_powers=88/562/459/13
-back=high_tinkers_cape,id=165924,bonus_id=4800/1537
-chest=divine_fury_raiment,id=165834,bonus_id=4824/1537/4775,azerite_powers=127/562/30/13
+shoulders=gigacharged_shoulderpads,id=165497,bonus_id=4824/1537,azerite_powers=88/562/459/13
+back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
+chest=divine_fury_raiment,id=165834,bonus_id=4824/1537,azerite_powers=127/562/30/13
 wrists=lever_stabilizing_wristwraps,id=165508,bonus_id=4800/1537
 hands=firecallers_handwraps,id=165764,bonus_id=4800/1537
 waist=waistcord_of_flowing_silk,id=165504,bonus_id=4800/1537
 legs=leggings_of_dire_research,id=165499,bonus_id=4800/1537
 feet=lightfeather_footpads,id=165502,bonus_id=4800/1537
 finger1=band_of_multisided_strikes,id=165565,bonus_id=4800/1537,enchant=pact_of_versatility
-finger2=lord_waycrests_signet,id=158362,bonus_id=1572/4780,enchant=pact_of_versatility
+finger2=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_versatility
 trinket1=balefire_branch,id=159630,bonus_id=1572/4780
 trinket2=incandescent_sliver,id=165571,bonus_id=4800/1537
 main_hand=phoenixfire_staff,id=165587,bonus_id=4800/1537,enchant=torrent_of_elements
