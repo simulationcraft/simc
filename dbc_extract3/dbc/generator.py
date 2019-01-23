@@ -4421,6 +4421,10 @@ class AzeriteDataGenerator(DataGenerator):
             fields = entry.field('id', 'id_spell', 'id_bonus')
             fields += self._spellname_db[entry.id_spell].field('name')
             for id, data in self._azeritepowersetmember_db.items():
+                # Skip power set 1, it seems some sort of a debug set and contains no proper data
+                if data.id_parent == 1:
+                    continue
+
                 if entry.id != data.id_power:
                     continue
                 fields += data.field('tier')

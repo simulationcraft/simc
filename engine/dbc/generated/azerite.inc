@@ -268,7 +268,7 @@ static constexpr std::array<azerite_power_entry_t, 366> __azerite_power_data { {
   { 458, 279878,     0, "Supreme Commander"                 , 3 },
   { 459, 279899,     0, "Unstable Flames"                   , 2 },
   { 460, 279909,     0, "Bursting Flare"                    , 3 },
-  { 461, 279926,     0, "Earthlink"                         , 3 },
+  { 461, 279926,     0, "Earthlink"                         , 2 },
   { 462, 266936,     0, "Azerite Globules"                  , 2 },
   { 463, 267889,     0, "Blessed Portents"                  , 2 },
   { 465, 280011,     0, "March of the Damned"               , 1 },
