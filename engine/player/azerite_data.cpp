@@ -2536,7 +2536,22 @@ void treacherous_covenant( special_effect_t& effect )
   }
 
   // TODO: Model losing the buff when droping below 50%.
-  effect.player->register_combat_begin( [ buff ] ( player_t* ) { buff->trigger(); } );
+  effect.player->register_combat_begin( [ buff ] ( player_t* )
+  {
+    buff->trigger();
+
+    // Simple system to allow for some manipulation of the buff uptime.
+    if ( buff->sim->bfa_opts.covenant_chance < 1.0 )
+    {
+      make_repeating_event( buff->sim, buff->sim->bfa_opts.covenant_period, [ buff ]
+      {
+        if ( buff->rng().roll( buff->sim->bfa_opts.covenant_chance ) )
+          buff->trigger();
+        else
+          buff->expire();
+      } );
+    }
+  } );
 }
 
 void seductive_power( special_effect_t& effect )

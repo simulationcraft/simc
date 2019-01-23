@@ -1133,6 +1133,10 @@ struct sim_t : private sc_thread_t
     bool                auto_oscillating_overload = true;
     /// Is the actor in Zuldazar? Relevant for one of the set bonuses.
     bool                zuldazar = false;
+    /// Treacherous Covenant update period.
+    timespan_t          covenant_period = 1.0_s;
+    /// Chance to gain the buff on each Treacherous Covenant update.
+    double              covenant_chance = 1.0;
   } bfa_opts;
 
   // Expansion specific data
