@@ -35,11 +35,11 @@ actions+=/charge
 actions+=/run_action_list,name=movement,if=movement.distance>5
 actions+=/heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in>45)|!raid_event.movement.exists
 actions+=/potion
-actions+=/whirlwind,if=spell_targets.whirlwind>1&!buff.meat_cleaver.up
 actions+=/furious_slash,if=talent.furious_slash.enabled&(buff.furious_slash.stack<3|buff.furious_slash.remains<3|(cooldown.recklessness.remains<3&buff.furious_slash.remains<9))
 actions+=/bloodthirst,if=equipped.kazzalax_fujiedas_fury&(buff.fujiedas_fury.down|remains<2)
 actions+=/rampage,if=cooldown.recklessness.remains<3
 actions+=/recklessness
+actions+=/whirlwind,if=spell_targets.whirlwind>1&!buff.meat_cleaver.up
 actions+=/blood_fury,if=buff.recklessness.up
 actions+=/berserking,if=buff.recklessness.up
 actions+=/lights_judgment,if=buff.recklessness.down
