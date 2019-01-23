@@ -5280,7 +5280,7 @@ void warrior_t::apl_prot()
     prot->add_action( "potion,if=target.time_to_die<25" );
   }
 
-  prot->add_action( this, "Avatar", "if=cooldown.demoralizing_shout.remains<2" );
+  prot->add_action( this, "Avatar", "if=(cooldown.demoralizing_shout.ready|cooldown.demoralizing_shout.remains>2)" );
   prot->add_action( this, "Demoralizing Shout" );
   prot->add_talent( this, "Ravager" );
   prot->add_talent( this, "Dragon Roar" );
