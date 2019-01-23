@@ -36,7 +36,7 @@ actions+=/use_items
 actions+=/call_action_list,name=cds
 actions+=/call_action_list,name=mb_ap_wfi_st,if=active_enemies<3&talent.wildfire_infusion.enabled&talent.alpha_predator.enabled&talent.mongoose_bite.enabled
 actions+=/call_action_list,name=wfi_st,if=active_enemies<3&talent.wildfire_infusion.enabled
-actions+=/call_action_list,name=st,if=active_enemies<2
+actions+=/call_action_list,name=st,if=active_enemies<2|azerite.blur_of_talons.enabled&talent.birds_of_prey.enabled&buff.coordinated_assault.up
 actions+=/call_action_list,name=cleave,if=active_enemies>1
 actions+=/arcane_torrent
 
@@ -44,7 +44,7 @@ actions.cds=blood_fury,if=cooldown.coordinated_assault.remains>30
 actions.cds+=/ancestral_call,if=cooldown.coordinated_assault.remains>30
 actions.cds+=/fireblood,if=cooldown.coordinated_assault.remains>30
 actions.cds+=/lights_judgment
-actions.cds+=/berserking,if=cooldown.coordinated_assault.remains>60|time_to_die<11
+actions.cds+=/berserking,if=cooldown.coordinated_assault.remains>60|time_to_die<13
 actions.cds+=/potion,if=buff.coordinated_assault.up&(buff.berserking.up|buff.blood_fury.up|!race.troll&!race.orc)|time_to_die<26
 actions.cds+=/aspect_of_the_eagle,if=target.distance>=6
 
@@ -145,3 +145,4 @@ main_hand=hornridged_crusher,id=165589,bonus_id=4800/1537,enchant=quick_navigati
 # gear_mastery_rating=528
 # gear_versatility_rating=407
 # gear_armor=3410
+# set_bonus=gift_of_the_loa_2pc=1

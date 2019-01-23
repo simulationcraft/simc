@@ -1,0 +1,85 @@
+deathknight="T23_Death_Knight_Blood"
+source=default
+spec=blood
+level=120
+race=undead
+role=tank
+position=front
+talents=2220022
+
+# Default consumables
+potion=battle_potion_of_strength
+flask=flask_of_the_undertow
+food=swamp_fish_n_chips
+augmentation=battle_scarred
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/blood_fury,if=cooldown.dancing_rune_weapon.ready&(!cooldown.blooddrinker.ready|!talent.blooddrinker.enabled)
+actions+=/berserking
+actions+=/use_items,if=cooldown.dancing_rune_weapon.remains>90
+actions+=/use_item,name=razdunks_big_red_button
+actions+=/use_item,name=merekthas_fang
+actions+=/potion,if=buff.dancing_rune_weapon.up
+actions+=/dancing_rune_weapon,if=!talent.blooddrinker.enabled|!cooldown.blooddrinker.ready
+actions+=/tombstone,if=buff.bone_shield.stack>=7
+actions+=/call_action_list,name=standard
+
+actions.standard=death_strike,if=runic_power.deficit<=10
+actions.standard+=/blooddrinker,if=!buff.dancing_rune_weapon.up
+actions.standard+=/marrowrend,if=(buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*2)|buff.bone_shield.stack<3)&runic_power.deficit>=20
+actions.standard+=/blood_boil,if=charges_fractional>=1.8&(buff.hemostasis.stack<=(5-spell_targets.blood_boil)|spell_targets.blood_boil>2)
+actions.standard+=/marrowrend,if=buff.bone_shield.stack<5&talent.ossuary.enabled&runic_power.deficit>=15
+actions.standard+=/bonestorm,if=runic_power>=100&!buff.dancing_rune_weapon.up
+actions.standard+=/death_strike,if=runic_power.deficit<=(15+buff.dancing_rune_weapon.up*5+spell_targets.heart_strike*talent.heartbreaker.enabled*2)|target.time_to_die<10
+actions.standard+=/death_and_decay,if=spell_targets.death_and_decay>=3
+actions.standard+=/rune_strike,if=(charges_fractional>=1.8|buff.dancing_rune_weapon.up)&rune.time_to_3>=gcd
+actions.standard+=/heart_strike,if=buff.dancing_rune_weapon.up|rune.time_to_4<gcd
+actions.standard+=/blood_boil,if=buff.dancing_rune_weapon.up
+actions.standard+=/death_and_decay,if=buff.crimson_scourge.up|talent.rapid_decomposition.enabled|spell_targets.death_and_decay>=2
+actions.standard+=/consumption
+actions.standard+=/blood_boil
+actions.standard+=/heart_strike,if=rune.time_to_3<gcd|buff.bone_shield.stack>6
+actions.standard+=/rune_strike
+actions.standard+=/arcane_torrent,if=runic_power.deficit>20
+
+head=glaciercrest_helm,id=165823,bonus_id=4824/1537/4775,azerite_powers=348/561/31/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+shoulders=ridgeplate_pauldrons,id=165562,bonus_id=4824/1537/4775,azerite_powers=348/561/22/13
+back=loa_exultants_shroud,id=165512,bonus_id=4824/1537
+chest=breastplate_of_the_deathbound,id=165832,bonus_id=4824/1537/4775,azerite_powers=348/560/30/13
+wrists=splinterbone_vambraces,id=165551,bonus_id=4824/1537
+hands=crusade_pummelers,id=165549,bonus_id=4824/1537
+waist=hullplate_girdle,id=165559,bonus_id=4824/1537
+legs=arcing_thunderlizard_legplates,id=165560,bonus_id=4824/1537
+feet=coinage_stampers,id=165561,bonus_id=4824/1537
+finger1=lord_admirals_signet,id=165566,bonus_id=4824/1537,enchant=pact_of_haste
+finger2=seal_of_the_zandalari_empire,id=165567,bonus_id=4824/1537,enchant=pact_of_haste
+trinket1=ramping_amplitude_gigavolt_engine,id=165580,bonus_id=4824/1537
+trinket2=everchill_anchor,id=165570,bonus_id=4824/1537
+main_hand=dawnbreaker,id=165586,bonus_id=4800/1537,enchant=rune_of_the_fallen_crusader
+
+# Gear Summary
+# gear_ilvl=416.27
+# gear_strength=5796
+# gear_stamina=9920
+# gear_crit_rating=767
+# gear_haste_rating=1352
+# gear_mastery_rating=1031
+# gear_versatility_rating=214
+# gear_armor=5052
+# set_bonus=gift_of_the_loa_2pc=1
