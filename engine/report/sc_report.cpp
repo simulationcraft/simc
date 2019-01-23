@@ -368,6 +368,7 @@ bool report::check_gear( player_t& p, sim_t& sim )
   int hoa_ilevel                 = 0;
   unsigned hoa_level             = 0;
   std::string tier_name          = "";
+  int third_ring_traits          = 2;
 
   if ( p.report_information.save_str.find( "PR" ) != std::string::npos )
   {
@@ -376,6 +377,7 @@ bool report::check_gear( player_t& p, sim_t& sim )
     hoa_ilevel                 = 347;
     hoa_level                  = 27;
     tier_name                  = "PR";
+    third_ring_traits          = 1;
   }
   else if ( p.report_information.save_str.find( "T22" ) != std::string::npos )
   {
@@ -384,6 +386,7 @@ bool report::check_gear( player_t& p, sim_t& sim )
     hoa_ilevel                 = 389;
     hoa_level                  = 33;
     tier_name                  = "T22";
+    third_ring_traits          = 1;
   }
   else if (p.report_information.save_str.find( "T23" ) != std::string::npos )
   {
@@ -464,9 +467,9 @@ bool report::check_gear( player_t& p, sim_t& sim )
         if ( i != 3 && powers > 1 )
           sim.errorf( "Player %s has %s with %s azerite powers of tier %s, should have 1.", p.name(), util::slot_type_string( slot ),
                       util::to_string( powers ).c_str(), util::to_string( i ).c_str() );
-        if ( i == 3 && powers > 2 )
-          sim.errorf( "Player %s has %s with %s azerite powers of tier %s, should have at most 2.", p.name(), util::slot_type_string( slot ),
-                      util::to_string( powers ).c_str(), util::to_string( i ).c_str() );
+        if ( i == 3 && powers > third_ring_traits )
+          sim.errorf( "Player %s has %s with %s azerite powers of tier %s, should have %s.", p.name(), util::slot_type_string( slot ),
+                      util::to_string( powers ).c_str(), util::to_string( i ).c_str(), util::to_string( third_ring_traits ) );
         if ( i != 1 && powers == 0 )
           sim.errorf( "Player %s has %s with 0 azerite power of tier %s, should have 1.", p.name(), util::slot_type_string( slot ),
                       util::to_string( i ).c_str() );
