@@ -5280,19 +5280,20 @@ void warrior_t::apl_prot()
     prot->add_action( "potion,if=target.time_to_die<25" );
   }
 
-  prot->add_action( this, "Avatar", "if=cooldown.demoralizing_shout.remains>5" );
+  prot->add_action( this, "Avatar", "if=cooldown.demoralizing_shout.remains<2" );
   prot->add_action( this, "Demoralizing Shout" );
   prot->add_talent( this, "Ravager" );
   prot->add_talent( this, "Dragon Roar" );
   prot->add_action( this, "Thunder Clap", "if=(talent.unstoppable_force.enabled&buff.avatar.up&debuff.demoralizing_shout_debuff.up)" );
-  prot->add_action( this, "Shield Block", "if=cooldown.shield_slam.remains=0" );
+  prot->add_action( this, "Shield Block", "if=(cooldown.shield_slam.ready&buff.shield_block.down&buff.last_stand.down)" );
+  prot->add_action( this, "Last Stand", "if=buff.shield_block.down" );
   prot->add_action( this, "Shield Slam" );
   prot->add_action( this, "Thunder Clap" );
   prot->add_action( this, "Revenge",
                     "if=(!talent.vengeance.enabled)|(talent.vengeance.enabled&buff.revenge.react&!buff.vengeance_"
                     "ignore_pain.up)|(buff.vengeance_revenge.up)|(talent.vengeance.enabled&!buff.vengeance_ignore_pain."
                     "up&!buff.vengeance_revenge.up&rage>=30)" );
-  prot->add_action( this, "Ignore Pain", "use_off_gcd=1,if=rage>90" );
+  prot->add_action( this, "Ignore Pain", "use_off_gcd=1,if=rage>70" );
   prot->add_action( this, "Devastate" );
 }
 
@@ -5924,15 +5925,6 @@ std::string warrior_t::default_rune() const
 
 void warrior_t::init_action_list()
 {
-  if ( specialization() == WARRIOR_PROTECTION )
-  {
-    if ( !quiet )
-    {
-      sim->error( "Player {}'s role ({}) or spec({}) is currently not well supported.", name(),
-                  util::role_type_string( primary_role() ), util::specialization_string( specialization() ) );
-    }
-  }
-
   if ( !action_list_str.empty() )
   {
     player_t::init_action_list();
