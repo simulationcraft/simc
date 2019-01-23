@@ -451,7 +451,7 @@ bool report::check_gear( player_t& p, sim_t& sim )
           sim.errorf( "Player %s has %s with azerite power id %s which does not exists.", p.name(),
                       util::slot_type_string( slot ), util::to_string( azerite_id ).c_str() );
       }
-      // Check if there is more than one azerite power per tier and less than one for all tiers but tier 1
+      // Check if there is more than one azerite power per tier (two for tier 3) and less than one for all tiers but tier 1
       for ( unsigned i = 0; i < azerite_tiers; i++ )
       {
         int powers = 0;
@@ -461,8 +461,11 @@ bool report::check_gear( player_t& p, sim_t& sim )
           if ( power.tier == i )
             powers++;
         }
-        if ( powers > 1 )
+        if ( i != 3 && powers > 1 )
           sim.errorf( "Player %s has %s with %s azerite powers of tier %s, should have 1.", p.name(), util::slot_type_string( slot ),
+                      util::to_string( powers ).c_str(), util::to_string( i ).c_str() );
+        if ( i == 3 && powers > 2 )
+          sim.errorf( "Player %s has %s with %s azerite powers of tier %s, should have at most 2.", p.name(), util::slot_type_string( slot ),
                       util::to_string( powers ).c_str(), util::to_string( i ).c_str() );
         if ( i != 1 && powers == 0 )
           sim.errorf( "Player %s has %s with 0 azerite power of tier %s, should have 1.", p.name(), util::slot_type_string( slot ),
