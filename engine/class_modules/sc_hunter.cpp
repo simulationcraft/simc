@@ -5176,7 +5176,7 @@ void hunter_t::apl_bm()
   default_list -> add_action( this, "Kill Command" );
   default_list -> add_talent( this, "Chimaera Shot" );
   default_list -> add_talent( this, "Dire Beast" );
-  default_list -> add_action( this, "Barbed Shot", "if=pet.cat.buff.frenzy.down&(charges_fractional>1.8|buff.bestial_wrath.up)|(cooldown.aspect_of_the_wild.remains<6&!azerite.feeding_frenzy.enabled|cooldown.aspect_of_the_wild.remains<7&azerite.feeding_frenzy.enabled)&azerite.primal_instincts.enabled|target.time_to_die<9" );
+  default_list -> add_action( this, "Barbed Shot", "if=pet.cat.buff.frenzy.down&(charges_fractional>1.8|buff.bestial_wrath.up)|cooldown.aspect_of_the_wild.remains<pet.cat.buff.frenzy.duration-gcd&azerite.primal_instincts.enabled|target.time_to_die<9" );
   default_list -> add_talent( this, "Barrage" );
   default_list -> add_action( this, "Cobra Shot", "if=(active_enemies<2|cooldown.kill_command.remains>focus.time_to_max)&(focus-cost+focus.regen*(cooldown.kill_command.remains-1)>action.kill_command.cost|cooldown.kill_command.remains>1+gcd)&cooldown.kill_command.remains>1" );
   default_list -> add_talent( this, "Spitting Cobra" );
