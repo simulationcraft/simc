@@ -117,6 +117,7 @@ actions.standard_rotation+=/pyroblast,if=prev_gcd.1.scorch&buff.heating_up.up&ta
 actions.standard_rotation+=/phoenix_flames,if=(buff.heating_up.react|(!buff.hot_streak.react&(action.fire_blast.charges>0|talent.searing_touch.enabled&target.health.pct<=30)))&!variable.phoenix_pooling
 actions.standard_rotation+=/call_action_list,name=active_talents
 actions.standard_rotation+=/dragons_breath,if=active_enemies>1
+actions.standard_rotation+=/use_item,name=tidestorm_codex,if=cooldown.combustion.remains>20|talent.firestarter.enabled&firestarter.remains>20
 actions.standard_rotation+=/scorch,if=target.health.pct<=30&talent.searing_touch.enabled
 actions.standard_rotation+=/fireball
 actions.standard_rotation+=/scorch
