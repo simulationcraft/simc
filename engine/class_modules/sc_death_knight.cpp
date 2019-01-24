@@ -7843,6 +7843,7 @@ void death_knight_t::default_apl_frost()
 
   // On-use itemos
   cooldowns -> add_action( "use_items,if=(cooldown.pillar_of_frost.ready|cooldown.pillar_of_frost.remains>20)&(!talent.breath_of_sindragosa.enabled|cooldown.empower_rune_weapon.remains>95)" );
+  cooldowns -> add_action( "use_item,name=grongs_primal_rage,if=rune<=3&!buff.pillar_of_frost.up&(!dot.breath_of_sindragosa.ticking|!talent.breath_of_sindragosa.enabled)" );
   cooldowns -> add_action( "use_item,name=razdunks_big_red_button" );
   cooldowns -> add_action( "use_item,name=merekthas_fang,if=!dot.breath_of_sindragosa.ticking&!buff.pillar_of_frost.up" );
 
