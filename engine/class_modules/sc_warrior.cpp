@@ -5026,10 +5026,10 @@ void warrior_t::apl_fury()
 
   for ( size_t i = 0; i < items.size(); i++ )
   {
-    if ( items[ i ].name_str == "ring_of_collapsing_futures" )
+    if ( items[ i ].name_str == "grongs_primal_rage" )
     {
       default_list->add_action( "use_item,name=" + items[ i ].name_str +
-                                ",if=equipped.ring_of_collapsing_futures&!buff.temptation.up" );
+                                ",if=equipped.grongs_primal_rage&buff.enrage.up&!buff.recklessness.up" );
     }
     else if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
@@ -5118,10 +5118,10 @@ void warrior_t::apl_arms()
 
   for ( size_t i = 0; i < items.size(); i++ )
   {
-    if ( items[ i ].name_str == "ring_of_collapsing_futures" )
+    if ( items[ i ].name_str == "grongs_primal_rage" )
     {
       default_list->add_action( "use_item,name=" + items[ i ].name_str +
-                                ",if=equipped.ring_of_collapsing_futures&!buff.temptation.up" );
+                                ",if=equipped.grongs_primal_rage&!debuff.colossus_smash.up&!buff.test_of_might.up" );
     }
     else if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
