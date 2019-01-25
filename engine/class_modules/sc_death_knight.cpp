@@ -55,6 +55,10 @@ const size_t MAX_RUNES = 6;
 const size_t MAX_REGENERATING_RUNES = 3;
 const double MAX_START_OF_COMBAT_RP = 20;
 
+// Values found from testing
+const int PESTILENCE_CAP_PER_TICK = 2;
+const int PESTILENCE_CAP_PER_CAST = 10;
+
 template <typename T>
 struct dynamic_event_t : public event_t
 {
@@ -3997,7 +4001,7 @@ struct death_and_decay_damage_base_t : public death_knight_spell_t
     // Combine results to parent
     stats            = parent -> stats;
   }
-
+  
   void impact( action_state_t* s ) override
   {
     if ( s -> target -> debuffs.flying && s -> target -> debuffs.flying -> check() )
@@ -4011,20 +4015,44 @@ struct death_and_decay_damage_base_t : public death_knight_spell_t
     else
     {
       death_knight_spell_t::impact( s );
-
-      if ( p() -> talent.pestilence -> ok() && rng().roll( p() -> talent.pestilence -> effectN( 1 ).percent() ) )
-      {
-        p() -> trigger_festering_wound( s, 1, p() -> procs.fw_pestilence );
-      }
     }
   }
 };
 
 struct death_and_decay_damage_t : public death_and_decay_damage_base_t
 {
+  int pestilence_hits_per_tick;
+  int pestilence_hits_per_cast;
+
   death_and_decay_damage_t( death_knight_spell_t* parent ) :
-    death_and_decay_damage_base_t( parent, "death_and_decay_damage", parent -> p() -> find_spell( 52212 ) )
+    death_and_decay_damage_base_t( parent, "death_and_decay_damage", parent -> p() -> find_spell( 52212 ) ),
+    pestilence_hits_per_tick( 0 ),
+    pestilence_hits_per_cast( 0 )
   { }
+
+  void execute() override
+  {
+    pestilence_hits_per_tick = 0;
+
+    death_and_decay_damage_base_t::execute();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    death_and_decay_damage_base_t::impact( s );
+
+    if ( p() -> talent.pestilence -> ok() && 
+         pestilence_hits_per_tick < PESTILENCE_CAP_PER_TICK &&
+         pestilence_hits_per_cast < PESTILENCE_CAP_PER_CAST )
+    {
+      if ( rng().roll( p() -> talent.pestilence -> effectN( 1 ).percent() ) )
+      {
+        p() -> trigger_festering_wound( s, 1, p() -> procs.fw_pestilence );
+        pestilence_hits_per_tick++;
+        pestilence_hits_per_cast++;
+      }
+    }
+  }
 };
 
 struct defile_damage_t : public death_and_decay_damage_base_t
@@ -4172,6 +4200,8 @@ struct death_and_decay_t : public death_and_decay_base_t
 
   void execute() override
   {
+    debug_cast<death_and_decay_damage_t*>( damage ) -> pestilence_hits_per_cast = 0;
+
     death_and_decay_base_t::execute();
   }
 
