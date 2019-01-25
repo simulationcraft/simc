@@ -1,0 +1,85 @@
+druid="T23_Druid_Guardian"
+source=default
+spec=guardian
+level=120
+race=troll
+role=tank
+position=front
+talents=1000131
+
+# Default consumables
+potion=potion_of_bursting_blood
+flask=flask_of_the_currents
+food=bountiful_captains_feast
+augmentation=battle_scarred
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+actions.precombat+=/bear_form
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/call_action_list,name=cooldowns
+actions+=/maul,if=rage.deficit<10&active_enemies<4
+actions+=/ironfur,if=cost=0|(rage>cost&azerite.layered_mane.enabled&active_enemies>2)
+actions+=/pulverize,target_if=dot.thrash_bear.stack=dot.thrash_bear.max_stacks
+actions+=/moonfire,target_if=dot.moonfire.refreshable&active_enemies<2
+actions+=/incarnation
+actions+=/thrash,if=(buff.incarnation.down&active_enemies>1)|(buff.incarnation.up&active_enemies>4)
+actions+=/swipe,if=buff.incarnation.down&active_enemies>4
+actions+=/mangle,if=dot.thrash_bear.ticking
+actions+=/moonfire,target_if=buff.galactic_guardian.up&active_enemies<2
+actions+=/thrash
+actions+=/maul
+# Fill with Moonfire with PotMx2
+actions+=/moonfire,if=azerite.power_of_the_moon.rank>1&active_enemies=1
+actions+=/swipe
+
+actions.cooldowns=potion
+actions.cooldowns+=/blood_fury
+actions.cooldowns+=/berserking
+actions.cooldowns+=/arcane_torrent
+actions.cooldowns+=/lights_judgment
+actions.cooldowns+=/fireblood
+actions.cooldowns+=/ancestral_call
+actions.cooldowns+=/barkskin,if=buff.bear_form.up
+actions.cooldowns+=/lunar_beam,if=buff.bear_form.up
+actions.cooldowns+=/bristling_fur,if=buff.bear_form.up
+actions.cooldowns+=/use_items
+
+head=cowl_of_righteous_resolve,id=165519,bonus_id=4824/1537/4775,azerite_powers=359/241/461/87/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+shoulders=maras_boneblade_mantle,id=165777,bonus_id=4824/1537/4775,azerite_powers=241/562/31/85/13
+back=silverback_cloak,id=165513,bonus_id=4800/1537
+chest=mekkatorques_bomber_jacket,id=165830,bonus_id=4824/1537/4775,azerite_powers=241/562/22/14/13
+wrists=amethyststudded_bindings,id=165524,bonus_id=4800/1537
+hands=mechjockey_grips,id=165522,bonus_id=4800/1537
+waist=stretched_sinew_waistcord,id=165525,bonus_id=4800/1537
+legs=cranedancer_leggings,id=165521,bonus_id=4800/1537
+feet=embossed_deckwalkers,id=165527,bonus_id=4800/1537
+finger1=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_haste
+finger2=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_haste
+trinket1=kimbuls_razor_claw,id=165579,bonus_id=4800/1537
+trinket2=variable_intensity_gigavolt_oscillating_reactor,id=165572,bonus_id=4800/1537
+main_hand=hornridged_crusher,id=165589,bonus_id=4800/1537,enchant=quick_navigation
+
+# Gear Summary
+# gear_ilvl=416.27
+# gear_agility=5796
+# gear_stamina=9920
+# gear_crit_rating=538
+# gear_haste_rating=1181
+# gear_mastery_rating=1071
+# gear_versatility_rating=575
+# gear_armor=2363
