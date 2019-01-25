@@ -144,7 +144,7 @@ namespace warlock
 
     if ( debuffs_shadowburn->check() )
     {
-      warlock.sim->print_log( "Player {} demised. Warlock {} reset haunt's cooldown.", target->name(), warlock.name() );
+      warlock.sim->print_log( "Player {} demised. Warlock {} reset shadowburn's cooldown.", target->name(), warlock.name() );
 
       warlock.cooldowns.shadowburn->reset( true );
     }
@@ -168,7 +168,6 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     procs(),
     spells(),
     initial_soul_shards( 3 ),
-    allow_sephuz( false ),
     default_pet()
   {
     cooldowns.haunt = get_cooldown( "haunt" );
@@ -327,12 +326,8 @@ double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t
 
     if ( specialization() == WARLOCK_DESTRUCTION && azerite.chaos_shards.ok() )
     {
-      if ( // check if we fill a shard.
-        ( resources.current[RESOURCE_SOUL_SHARD] < 1.0 && resources.current[RESOURCE_SOUL_SHARD] + amount >= 1.0 ) ||
-        ( resources.current[RESOURCE_SOUL_SHARD] < 2.0 && resources.current[RESOURCE_SOUL_SHARD] + amount >= 2.0 ) ||
-        ( resources.current[RESOURCE_SOUL_SHARD] < 3.0 && resources.current[RESOURCE_SOUL_SHARD] + amount >= 3.0 ) ||
-        ( resources.current[RESOURCE_SOUL_SHARD] < 4.0 && resources.current[RESOURCE_SOUL_SHARD] + amount >= 4.0 ) ||
-        ( resources.current[RESOURCE_SOUL_SHARD] < 5.0 && resources.current[RESOURCE_SOUL_SHARD] + amount >= 5.0 ) )
+      // Check if soul shard was filled
+      if ( std::floor(resources.current[RESOURCE_SOUL_SHARD]) < std::floor(std::min(resources.current[RESOURCE_SOUL_SHARD] + amount, 5.0)) )
       {
         if ( rng().roll( azerite.chaos_shards.spell_ref().effectN( 1 ).percent() / 10.0 ) )
           buffs.chaos_shards->trigger();
@@ -718,7 +713,6 @@ void warlock_t::create_options()
 
   add_option( opt_int( "soul_shards", initial_soul_shards ) );
   add_option( opt_string( "default_pet", default_pet ) );
-  add_option( opt_bool( "allow_sephuz", allow_sephuz ) );
 }
 
 std::string warlock_t::create_profile( save_e stype )
@@ -729,7 +723,6 @@ std::string warlock_t::create_profile( save_e stype )
   {
     if ( initial_soul_shards != 3 )    profile_str += "soul_shards=" + util::to_string( initial_soul_shards ) + "\n";
     if ( !default_pet.empty() )        profile_str += "default_pet=" + default_pet + "\n";
-    if ( allow_sephuz != 0 )           profile_str += "allow_sephuz=" + util::to_string( allow_sephuz ) + "\n";
   }
 
   return profile_str;
@@ -742,7 +735,6 @@ void warlock_t::copy_from( player_t* source )
   warlock_t* p = debug_cast< warlock_t* >( source );
 
   initial_soul_shards = p->initial_soul_shards;
-  allow_sephuz = p->allow_sephuz;
   default_pet = p->default_pet;
 }
 
