@@ -7,6 +7,7 @@ namespace warlock
 // Spells
   namespace actions
   {
+    //TOCHECK: Does the damage proc affect Seed of Corruption? If so, this needs to be split into specs as well
     struct grimoire_of_sacrifice_t : public warlock_spell_t
     {
       grimoire_of_sacrifice_t( warlock_t* p, const std::string& options_str ) :

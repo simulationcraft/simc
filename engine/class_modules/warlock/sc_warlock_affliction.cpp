@@ -720,6 +720,7 @@ namespace warlock
 
       void impact( action_state_t* s ) override
       {
+        //TOCHECK: Does the threshold reset if the duration is refreshed before explosion?
         if ( result_is_hit( s->result ) )
         {
           td( s->target )->soc_threshold = s->composite_spell_power();
@@ -728,12 +729,17 @@ namespace warlock
         affliction_spell_t::impact( s );
       }
 
-      void last_tick( dot_t* d ) override
+      //Seed of Corruption is currently bugged on pure single target, extending the duration
+      //but still exploding at the original time, wiping the debuff. tick() should be used instead
+      //of last_tick() for now to model this more appropriately. TOCHECK regularly
+      void tick( dot_t* d ) override
       {
-        affliction_spell_t::last_tick( d );
+        affliction_spell_t::tick( d );
 
         explosion->set_target( d->target );
         explosion->schedule_execute();
+
+        d->cancel();
       }
     };
 
@@ -987,11 +993,12 @@ namespace warlock
       {
         s->result_total = base_dd_min; // we already calculated how much the hit should be
 
-        warlock_spell_t::impact( s );
+        affliction_spell_t::impact( s );
       }
     };
 
     // Azerite
+    //TOCHECK: Does this damage proc affect Seed of Corruption?
     struct pandemic_invocation_t : public affliction_spell_t
     {
       pandemic_invocation_t( warlock_t* p ):
