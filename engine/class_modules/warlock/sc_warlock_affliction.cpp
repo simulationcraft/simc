@@ -155,6 +155,8 @@ namespace warlock
 
     struct drain_life_t : public affliction_spell_t
     {
+      int id_tick;
+
       drain_life_t( warlock_t* p, const std::string& options_str ) :
         affliction_spell_t( p, "Drain Life" )
       {
@@ -162,6 +164,13 @@ namespace warlock
         channeled = true;
         hasted_ticks = false;
         may_crit = false;
+      }
+
+      void init() override
+      {
+        id_tick = -1;
+        
+        affliction_spell_t::init();
       }
 
       void execute() override
@@ -178,6 +187,25 @@ namespace warlock
         ta += p()->buffs.inevitable_demise->check_stack_value();
 
         return ta;
+      }
+
+      void tick(dot_t* d) override
+      {
+        //TOCHECK: Will id_tick reset with last_tick() on a cancelled channel?
+        if (p()->azerite.inevitable_demise.ok() && p()->buffs.inevitable_demise->stack() > 0)
+        {
+          if (d->current_tick <= id_tick)
+          {
+            p()->buffs.inevitable_demise->expire();
+            id_tick = -1;
+          }
+          else
+          {
+            id_tick = d->current_tick;
+          }
+        }
+
+        affliction_spell_t::tick(d);
       }
 
       void last_tick( dot_t* d ) override
