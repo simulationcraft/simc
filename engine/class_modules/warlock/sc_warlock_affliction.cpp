@@ -153,6 +153,42 @@ namespace warlock
 
     const std::array<int, MAX_UAS> ua_spells = { { 233490, 233496, 233497, 233498, 233499 } };
 
+    struct drain_life_t : public affliction_spell_t
+    {
+      drain_life_t( warlock_t* p, const std::string& options_str ) :
+        affliction_spell_t( p, "Drain Life" )
+      {
+        parse_options( options_str );
+        channeled = true;
+        hasted_ticks = false;
+        may_crit = false;
+      }
+
+      void execute() override
+      {
+        affliction_spell_t::execute();
+
+        p()->buffs.drain_life->trigger();
+      }
+
+      double bonus_ta(const action_state_t* s) const override
+      {
+        double ta = affliction_spell_t::bonus_ta(s);
+
+        ta += p()->buffs.inevitable_demise->check_stack_value();
+
+        return ta;
+      }
+
+      void last_tick( dot_t* d ) override
+      {
+        p()->buffs.drain_life->expire();
+        p()->buffs.inevitable_demise->expire();
+
+        affliction_spell_t::last_tick( d );
+      }
+    };
+
     struct shadow_bolt_t : public affliction_spell_t
     {
       shadow_bolt_t(warlock_t* p, const std::string& options_str) :
@@ -982,6 +1018,7 @@ namespace warlock
     if ( action_name == "agony" ) return new                          agony_t( this, options_str );
     if ( action_name == "unstable_affliction" ) return new            unstable_affliction_t( this, options_str );
     if ( action_name == "summon_darkglare") return new                summon_darkglare_t(this, options_str);
+    if ( action_name == "drain_life" ) return new                     drain_life_t( this, options_str );
     // aoe
     if ( action_name == "seed_of_corruption" ) return new             seed_of_corruption_t( this, options_str );
     // talents
