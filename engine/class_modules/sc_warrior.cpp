@@ -5015,6 +5015,7 @@ void warrior_t::apl_fury()
     default_list->add_action( "potion" );
   }
 
+  default_list->add_action( this, "Whirlwind", "if=spell_targets.whirlwind>1&!buff.meat_cleaver.up" );
   default_list->add_talent( this, "Furious Slash",
                             "if=talent.furious_slash.enabled&(buff.furious_slash.stack<3|buff.furious_slash.remains<3|("
                             "cooldown.recklessness.remains<3&buff.furious_slash.remains<9))" );
@@ -5022,7 +5023,6 @@ void warrior_t::apl_fury()
                             "if=equipped.kazzalax_fujiedas_fury&(buff.fujiedas_fury.down|remains<2)" );
   default_list->add_action( this, "Rampage", "if=cooldown.recklessness.remains<3" );
   default_list->add_action( this, "Recklessness" );
-  default_list->add_action( this, "Whirlwind", "if=spell_targets.whirlwind>1&!buff.meat_cleaver.up" );
 
   for ( size_t i = 0; i < items.size(); i++ )
   {
