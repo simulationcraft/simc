@@ -40,7 +40,7 @@ actions+=/ancestral_call
 actions+=/call_action_list,name=prot
 
 actions.prot=potion,if=target.time_to_die<25
-actions.prot+=/avatar,if=cooldown.demoralizing_shout.remains<2
+actions.prot+=/avatar,if=(cooldown.demoralizing_shout.ready|cooldown.demoralizing_shout.remains>2)
 actions.prot+=/demoralizing_shout
 actions.prot+=/ravager
 actions.prot+=/dragon_roar
