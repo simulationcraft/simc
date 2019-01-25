@@ -6,7 +6,7 @@ race=night_elf
 timeofday=night
 role=attack
 position=back
-talents=3210222
+talents=1310222
 
 # Default consumables
 potion=battle_potion_of_agility
@@ -35,6 +35,7 @@ actions+=/variable,name=blade_dance,value=talent.first_blood.enabled|spell_targe
 actions+=/variable,name=waiting_for_nemesis,value=!(!talent.nemesis.enabled|cooldown.nemesis.ready|cooldown.nemesis.remains>target.time_to_die|cooldown.nemesis.remains>60)
 actions+=/variable,name=pooling_for_meta,value=!talent.demonic.enabled&cooldown.metamorphosis.remains<6&fury.deficit>30&(!variable.waiting_for_nemesis|cooldown.nemesis.remains<10)
 actions+=/variable,name=pooling_for_blade_dance,value=variable.blade_dance&(fury<75-talent.first_blood.enabled*20)
+actions+=/variable,name=pooling_for_eye_beam,value=talent.demonic.enabled&!talent.blind_fury.enabled&cooldown.eye_beam.remains<(gcd.max*2)&fury.deficit>20
 actions+=/variable,name=waiting_for_dark_slash,value=talent.dark_slash.enabled&!variable.pooling_for_blade_dance&!variable.pooling_for_meta&cooldown.dark_slash.up
 actions+=/variable,name=waiting_for_momentum,value=talent.momentum.enabled&!buff.momentum.up
 actions+=/disrupt
@@ -45,7 +46,7 @@ actions+=/run_action_list,name=demonic,if=talent.demonic.enabled
 actions+=/run_action_list,name=normal
 
 actions.cooldown=metamorphosis,if=!(talent.demonic.enabled|variable.pooling_for_meta|variable.waiting_for_nemesis)|target.time_to_die<25
-actions.cooldown+=/metamorphosis,if=talent.demonic.enabled&buff.metamorphosis.up&(!azerite.chaotic_transformation.enabled|!variable.blade_dance|!cooldown.blade_dance.ready)
+actions.cooldown+=/metamorphosis,if=talent.demonic.enabled&(!azerite.chaotic_transformation.enabled|(cooldown.eye_beam.remains>20&cooldown.blade_dance.remains>gcd.max))
 actions.cooldown+=/nemesis,target_if=min:target.time_to_die,if=raid_event.adds.exists&debuff.nemesis.down&(active_enemies>desired_targets|raid_event.adds.in>60)
 actions.cooldown+=/nemesis,if=!raid_event.adds.exists
 actions.cooldown+=/potion,if=buff.metamorphosis.remains>25|target.time_to_die<60
@@ -57,12 +58,12 @@ actions.dark_slash+=/chaos_strike,if=debuff.dark_slash.up
 
 actions.demonic=fel_barrage,if=active_enemies>desired_targets|raid_event.adds.in>30
 actions.demonic+=/death_sweep,if=variable.blade_dance
-actions.demonic+=/eye_beam,if=!buff.metamorphosis.extended_by_demonic&(raid_event.adds.up|raid_event.adds.in>25)
+actions.demonic+=/eye_beam,if=raid_event.adds.up|raid_event.adds.in>25
 actions.demonic+=/blade_dance,if=variable.blade_dance&!cooldown.metamorphosis.ready&(cooldown.eye_beam.remains>(5-azerite.revolving_blades.rank*3)|(raid_event.adds.in>cooldown&raid_event.adds.in<25))
 actions.demonic+=/immolation_aura
-actions.demonic+=/felblade,if=fury<40|(buff.metamorphosis.down&fury.deficit>=40)
-actions.demonic+=/annihilation,if=(talent.blind_fury.enabled|fury.deficit<30|buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance
-actions.demonic+=/chaos_strike,if=(talent.blind_fury.enabled|fury.deficit<30)&!variable.pooling_for_meta&!variable.pooling_for_blade_dance
+actions.demonic+=/annihilation,if=!variable.pooling_for_blade_dance
+actions.demonic+=/felblade,if=fury.deficit>=40
+actions.demonic+=/chaos_strike,if=!variable.pooling_for_blade_dance&!variable.pooling_for_eye_beam
 actions.demonic+=/fel_rush,if=talent.demon_blades.enabled&!cooldown.eye_beam.ready&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))
 actions.demonic+=/demons_bite
 actions.demonic+=/throw_glaive,if=buff.out_of_range.up
@@ -89,30 +90,31 @@ actions.normal+=/fel_rush,if=movement.distance>15|(buff.out_of_range.up&!talent.
 actions.normal+=/vengeful_retreat,if=movement.distance>15
 actions.normal+=/throw_glaive,if=talent.demon_blades.enabled
 
-head=irontide_captains_hat,id=155888,bonus_id=5062/1587/4786/4775,azerite_powers=352/479/30/44/13
+head=tidemothers_cover,id=165819,bonus_id=4824/1537/4775,azerite_powers=13/159/126/30/15
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
-shoulders=phantom_stalker_shoulders,id=165523,bonus_id=4824/1537/4775,azerite_powers=352/159/30/15/13
-back=high_tinkers_cape,id=165924,bonus_id=4800/1537
-chest=cephalohide_jacket,id=159314,bonus_id=5062/1587/4786/4775,azerite_powers=352/479/459/44/13
+shoulders=phantom_stalker_shoulders,id=165523,bonus_id=4824/1537/4775,azerite_powers=13/352/159/30/15
+back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
+chest=mekkatorques_bomber_jacket,id=165830,bonus_id=4824/1537/4775,azerite_powers=13/220/562/22/564
 wrists=bracers_of_regal_devotion,id=165517,bonus_id=4800/1537
-hands=mechjockey_grips,id=165522,bonus_id=4800/1537
+hands=gloves_of_spiritual_grace,id=165514,bonus_id=4800/1537
 waist=stretched_sinew_waistcord,id=165525,bonus_id=4800/1537
 legs=cranedancer_leggings,id=165521,bonus_id=4800/1537
 feet=embossed_deckwalkers,id=165527,bonus_id=4800/1537
-finger1=band_of_multisided_strikes,id=165565,bonus_id=4800/1537,enchant=pact_of_haste
+finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_haste
 finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_haste
 trinket1=kimbuls_razor_claw,id=165579,bonus_id=4800/1537
 trinket2=variable_intensity_gigavolt_oscillating_reactor,id=165572,bonus_id=4800/1537
-main_hand=stormtoothed_kasuyu,id=165601,bonus_id=4800/1537,enchant=versatile_navigation
-off_hand=daelin_proudmoores_saber,id=165604,bonus_id=4800/1537,enchant=quick_navigation
+main_hand=daelin_proudmoores_saber,id=165604,bonus_id=4800/1537,enchant=versatile_navigation
+off_hand=bloodtooth_the_soulfeaster,id=165591,bonus_id=4800/1537,enchant=deadly_navigation
 
 # Gear Summary
 # gear_ilvl=416.19
 # gear_agility=5796
 # gear_stamina=9919
-# gear_crit_rating=822
-# gear_haste_rating=749
-# gear_mastery_rating=988
-# gear_versatility_rating=808
+# gear_crit_rating=717
+# gear_haste_rating=1263
+# gear_mastery_rating=852
+# gear_versatility_rating=535
 # gear_armor=2363
+# set_bonus=gift_of_the_loa_2pc=1
 # set_bonus=keepsakes_2pc=1
