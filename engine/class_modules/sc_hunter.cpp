@@ -4463,6 +4463,24 @@ expr_t* hunter_t::create_expression( const std::string& expression_str )
     if ( splits[ 1 ] == "volatile" )
       return make_fn_expr( expression_str, [ this ]() { return next_wi_bomb == WILDFIRE_INFUSION_VOLATILE; } );
   }
+  else if ( splits.size() == 2 && splits[ 0 ] == "ca_execute" )
+  {
+    if ( util::str_compare_ci( splits [ 1 ], "active" ) )
+    {
+      return make_fn_expr( expression_str, [ this, &action ]
+      {
+        if ( !talents.careful_aim->ok() )
+          return false;
+          
+        if action.target->health_percentage() > talents.careful_aim->effectN( 1 ).base_value()
+          return true;
+       else if action.target->health_percentage() < talents.careful_aim->effectN( 2 ).base_value()
+         return true;
+        else
+         return false;
+      } );
+    }
+  }
 
   return player_t::create_expression( expression_str );
 }
@@ -5089,7 +5107,7 @@ void hunter_t::init_action_list()
     precombat -> add_action( "augmentation" );
     precombat -> add_action( "food" );
 
-    if ( ! specialization() == HUNTER_MARKSMANSHIP )
+    if ( specialization() != HUNTER_MARKSMANSHIP )
       precombat -> add_action( "summon_pet" );
 
     precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
@@ -5174,7 +5192,7 @@ void hunter_t::apl_bm()
   default_list -> add_action( this, "Kill Command" );
   default_list -> add_talent( this, "Chimaera Shot" );
   default_list -> add_talent( this, "Dire Beast" );
-  default_list -> add_action( this, "Barbed Shot", "if=pet.cat.buff.frenzy.down&(charges_fractional>1.8|buff.bestial_wrath.up)|cooldown.aspect_of_the_wild.remains<pet.cat.buff.frenzy.duration-gcd&azerite.primal_instincts.enabled|target.time_to_die<9" );
+  default_list -> add_action( this, "Barbed Shot", "if=pet.cat.buff.frenzy.down&(charges_fractional>1.8|buff.bestial_wrath.up)|(cooldown.aspect_of_the_wild.remains<6&!azerite.feeding_frenzy.enabled|cooldown.aspect_of_the_wild.remains<7&azerite.feeding_frenzy.enabled)&azerite.primal_instincts.enabled|target.time_to_die<9" );
   default_list -> add_talent( this, "Barrage" );
   default_list -> add_action( this, "Cobra Shot", "if=(active_enemies<2|cooldown.kill_command.remains>focus.time_to_max)&(focus-cost+focus.regen*(cooldown.kill_command.remains-1)>action.kill_command.cost|cooldown.kill_command.remains>1+gcd)&cooldown.kill_command.remains>1" );
   default_list -> add_talent( this, "Spitting Cobra" );

@@ -23,7 +23,6 @@ augmentation=battle_scarred
 actions.precombat=flask
 actions.precombat+=/augmentation
 actions.precombat+=/food
-actions.precombat+=/summon_pet,if=active_enemies<3
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
@@ -100,4 +99,3 @@ main_hand=pterrorwing_longbow,id=165599,bonus_id=4800/1537,enchant=incendiary_am
 # gear_mastery_rating=1375
 # gear_versatility_rating=548
 # gear_armor=3410
-summon_pet=disabled
