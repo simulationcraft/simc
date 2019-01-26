@@ -4,7 +4,7 @@ race=night_elf
 spec=havoc
 role=attack
 position=back
-talents=1310222
+talents=1310221
 timeofday=night
 
 head=tidemothers_cover,id=165819,bonus_id=4824/1537/4775,azerite_powers=13/159/126/30/15

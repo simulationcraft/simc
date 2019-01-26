@@ -6,7 +6,7 @@ race=night_elf
 timeofday=night
 role=attack
 position=back
-talents=1310222
+talents=1310221
 
 # Default consumables
 potion=battle_potion_of_agility
