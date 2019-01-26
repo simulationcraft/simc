@@ -2222,6 +2222,8 @@ void stat_buff_t::decrement( int stacks, double /* value */ )
   }
   else
   {
+    int old_stack = current_stack;
+
     if ( as<std::size_t>( current_stack ) < stack_uptime.size() )
       stack_uptime[ current_stack ].update( false, sim->current_time() );
 
@@ -2248,6 +2250,11 @@ void stat_buff_t::decrement( int stacks, double /* value */ )
       stack_uptime[ current_stack ].update( true, sim->current_time() );
 
     sim->print_debug( "{} decremented by {} to {} stacks.", *this, stacks, current_stack );
+
+    if ( old_stack != current_stack && stack_change_callback )
+    {
+      stack_change_callback( this, old_stack, current_stack );
+    }
 
     if ( player )
       player->trigger_ready();
