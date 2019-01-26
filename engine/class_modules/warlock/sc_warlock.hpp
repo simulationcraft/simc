@@ -445,6 +445,7 @@ namespace warlock
       double    composite_armor() const override;
       void      halt() override;
       void      combat_begin() override;
+      void      init_assessors() override;
       expr_t*   create_expression( const std::string& name_str ) override;
       std::string       default_potion() const override;
       std::string       default_flask() const override;

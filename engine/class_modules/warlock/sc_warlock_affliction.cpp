@@ -63,36 +63,6 @@ namespace warlock
         return pm;
       }
 
-      void tick(dot_t* d) override
-      {
-        warlock_spell_t::tick(d);
-
-        if (d->state->result > 0 && result_is_hit(d->state->result))
-        {
-          auto target_data = td(d->target);
-          if (target_data->dots_seed_of_corruption->is_ticking() && id != p()->spells.seed_of_corruption_aoe->id)
-          {
-            accumulate_seed_of_corruption(target_data, d->state->result_amount);
-          }
-        }
-      }
-
-      void impact(action_state_t* s) override
-      {
-        warlock_spell_t::impact(s);
-
-        if (s->result_amount > 0 && result_is_hit(s->result))
-        {
-          auto td = this->td(s->target);
-          if (td->dots_seed_of_corruption->is_ticking() && id != p()->spells.seed_of_corruption_aoe->id)
-          {
-            accumulate_seed_of_corruption(td, s->result_amount);
-            if (sim->log)
-              sim->out_log.printf("remaining damage to explode seed %f", td->soc_threshold);
-          }
-        }
-      }
-
       virtual timespan_t get_db_dot_duration( dot_t* dot ) const
       {
         timespan_t base_dur = db_max_contribution;
@@ -139,16 +109,6 @@ namespace warlock
 
         return s;
       }
-
-      static void accumulate_seed_of_corruption(warlock_td_t* td, double amount)
-      {
-        td->soc_threshold -= amount;
-
-        if (td->soc_threshold <= 0)
-        {
-          td->dots_seed_of_corruption->cancel();
-        }
-      }
     };
 
     const std::array<int, MAX_UAS> ua_spells = { { 233490, 233496, 233497, 233498, 233499 } };
@@ -192,7 +152,7 @@ namespace warlock
       void tick(dot_t* d) override
       {
         //TOCHECK: Will id_tick reset with last_tick() on a cancelled channel?
-        if (p()->azerite.inevitable_demise.ok() && p()->buffs.inevitable_demise->stack() > 0)
+        if (p()->azerite.inevitable_demise.ok() && p()->buffs.inevitable_demise->check() > 0)
         {
           if (d->current_tick <= id_tick)
           {
@@ -734,12 +694,16 @@ namespace warlock
       //of last_tick() for now to model this more appropriately. TOCHECK regularly
       void tick( dot_t* d ) override
       {
-        affliction_spell_t::tick( d );
+        affliction_spell_t::tick(d);
+        make_event( sim, 0_ms, [ d ] { d->cancel(); } );
+      }
 
+      void last_tick(dot_t* d) override
+      {
         explosion->set_target( d->target );
         explosion->schedule_execute();
 
-        d->cancel();
+        affliction_spell_t::last_tick(d);
       }
     };
 

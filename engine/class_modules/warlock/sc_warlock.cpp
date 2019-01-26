@@ -151,6 +151,21 @@ namespace warlock
     }
   }
 
+  static void accumulate_seed_of_corruption(warlock_td_t* td, double amount)
+  {
+    td->soc_threshold -= amount;
+
+    if (td->soc_threshold <= 0)
+    {
+      td->dots_seed_of_corruption->cancel();
+    }
+    else
+    {
+      if( td->source->sim->log )
+        td->source->sim->out_log.printf("remaining damage to explode seed %f", td->soc_threshold);
+    }
+  }
+
 warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
   player_t( sim, WARLOCK, name, r ),
     havoc_target( nullptr ),
@@ -559,6 +574,28 @@ void warlock_t::init_base_stats()
 void warlock_t::init_scaling()
 {
   player_t::init_scaling();
+}
+
+void warlock_t::init_assessors()
+{
+  player_t::init_assessors();
+
+  auto assessor_fn = [ this ] ( dmg_e, action_state_t* s )
+  {
+    if ( get_target_data(s->target)->dots_seed_of_corruption->is_ticking() )
+    {
+      accumulate_seed_of_corruption(get_target_data(s->target),s->result_total);
+    }
+
+    return assessor::CONTINUE;
+  };
+
+  assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_fn );
+
+  for ( auto pet : pet_list )
+  {
+    pet->assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_fn );
+  }
 }
 
 void warlock_t::apl_precombat()
