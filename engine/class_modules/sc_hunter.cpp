@@ -4395,6 +4395,39 @@ void hunter_td_t::target_demise()
   damaged = false;
 }
 
+/**
+ * Hunter specific action expression
+ * 
+ * Use this function for expressions which are bound to an action property such as target, cast_time etc.
+ * If you need an expression tied to the player itself use the normal hunter_t::create_expression override. 
+ */
+expr_t* hunter_t::create_action_expression ( action_t& action, const std::string& expression_str )
+{
+  std::vector<std::string> splits = util::string_split( expression_str, "." );
+
+  //Careful Aim expression
+  if ( splits.size() == 2 && splits[ 0 ] == "ca_execute" )
+  {
+    if ( util::str_compare_ci( splits [ 1 ], "active" ) )
+    {
+      return make_fn_expr( expression_str, [ this, &action ]
+      {
+        if ( !talents.careful_aim->ok() )
+          return false;
+          
+        if action.target->health_percentage() > talents.careful_aim->effectN( 1 ).base_value()
+          return true;
+        else if action.target->health_percentage() < talents.careful_aim->effectN( 2 ).base_value()
+          return true;
+        else
+         return false;
+      } );
+    }
+  }
+
+  return player_t::create_action_expression( action, expression_str );
+}
+
 expr_t* hunter_t::create_expression( const std::string& expression_str )
 {
   std::vector<std::string> splits = util::string_split( expression_str, "." );
@@ -4462,24 +4495,6 @@ expr_t* hunter_t::create_expression( const std::string& expression_str )
       return make_fn_expr( expression_str, [ this ]() { return next_wi_bomb == WILDFIRE_INFUSION_PHEROMONE; } );
     if ( splits[ 1 ] == "volatile" )
       return make_fn_expr( expression_str, [ this ]() { return next_wi_bomb == WILDFIRE_INFUSION_VOLATILE; } );
-  }
-  else if ( splits.size() == 2 && splits[ 0 ] == "ca_execute" )
-  {
-    if ( util::str_compare_ci( splits [ 1 ], "active" ) )
-    {
-      return make_fn_expr( expression_str, [ this, &action ]
-      {
-        if ( !talents.careful_aim->ok() )
-          return false;
-          
-        if action.target->health_percentage() > talents.careful_aim->effectN( 1 ).base_value()
-          return true;
-       else if action.target->health_percentage() < talents.careful_aim->effectN( 2 ).base_value()
-         return true;
-        else
-         return false;
-      } );
-    }
   }
 
   return player_t::create_expression( expression_str );
