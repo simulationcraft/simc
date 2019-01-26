@@ -695,7 +695,9 @@ namespace warlock
       void tick( dot_t* d ) override
       {
         affliction_spell_t::tick(d);
-        make_event( sim, 0_ms, [ d ] { d->cancel(); } );
+        
+        if(d->remains() > 0_ms)
+          d->cancel();
       }
 
       void last_tick(dot_t* d) override
