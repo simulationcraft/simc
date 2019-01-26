@@ -50,7 +50,7 @@ actions+=/bestial_wrath,if=cooldown.aspect_of_the_wild.remains>20|target.time_to
 actions+=/kill_command
 actions+=/chimaera_shot
 actions+=/dire_beast
-actions+=/barbed_shot,if=pet.cat.buff.frenzy.down&(charges_fractional>1.8|buff.bestial_wrath.up)|(cooldown.aspect_of_the_wild.remains<6&!azerite.feeding_frenzy.enabled|cooldown.aspect_of_the_wild.remains<7&azerite.feeding_frenzy.enabled)&azerite.primal_instincts.enabled|target.time_to_die<9
+actions+=/barbed_shot,if=pet.cat.buff.frenzy.down&(charges_fractional>1.8|buff.bestial_wrath.up)|cooldown.aspect_of_the_wild.remains<pet.cat.buff.frenzy.duration-gcd&azerite.primal_instincts.enabled|target.time_to_die<9
 actions+=/barrage
 actions+=/cobra_shot,if=(active_enemies<2|cooldown.kill_command.remains>focus.time_to_max)&(focus-cost+focus.regen*(cooldown.kill_command.remains-1)>action.kill_command.cost|cooldown.kill_command.remains>1+gcd)&cooldown.kill_command.remains>1
 actions+=/spitting_cobra

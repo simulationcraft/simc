@@ -585,6 +585,7 @@ public:
   void      regen( timespan_t periodicity ) override;
   void      create_options() override;
   expr_t*   create_expression( const std::string& name ) override;
+  expr_t*     create_action_expression( action_t&, const std::string& name ) override;
   action_t* create_action( const std::string& name, const std::string& options ) override;
   pet_t*    create_pet( const std::string& name, const std::string& type = std::string() ) override;
   void      create_pets() override;
@@ -4406,21 +4407,18 @@ expr_t* hunter_t::create_action_expression ( action_t& action, const std::string
   std::vector<std::string> splits = util::string_split( expression_str, "." );
 
   //Careful Aim expression
-  if ( splits.size() == 2 && splits[ 0 ] == "ca_execute" )
+  if ( splits.size() == 1 && splits[ 0 ] == "ca_execute" )
   {
-    if ( util::str_compare_ci( splits [ 1 ], "active" ) )
-    {
       return make_fn_expr( expression_str, [ this, &action ]
       {
         if ( !talents.careful_aim->ok() )
           return false;
           
-        if action.target->health_percentage() > talents.careful_aim->effectN( 1 ).base_value() || action.target->health_percentage() < talents.careful_aim->effectN( 2 ).base_value()
+        if (action.target->health_percentage() > talents.careful_aim->effectN( 1 ).base_value() || action.target->health_percentage() < talents.careful_aim->effectN( 2 ).base_value())
           return true;
         else
          return false;
       } );
-    }
   }
 
   return player_t::create_action_expression( action, expression_str );
@@ -5250,7 +5248,7 @@ void hunter_t::apl_mm()
   cds -> add_action( "lights_judgment" );
 
   // In-combat potion
-  cds -> add_action( "potion,if=buff.trueshot.react&buff.bloodlust.react|buff.trueshot.up&ca_execute.active|target.time_to_die<25" );
+  cds -> add_action( "potion,if=buff.trueshot.react&buff.bloodlust.react|buff.trueshot.up&ca_execute|target.time_to_die<25" );
   cds -> add_action( this, "Trueshot", "if=cooldown.rapid_fire.remains&target.time_to_die>cooldown.trueshot.duration_guess+duration|(target.health.pct<20|!talent.careful_aim.enabled)|target.time_to_die<15" );
 
   st -> add_talent( this, "Explosive Shot" );
