@@ -5089,9 +5089,7 @@ void hunter_t::init_action_list()
     precombat -> add_action( "augmentation" );
     precombat -> add_action( "food" );
 
-    if ( specialization() == HUNTER_MARKSMANSHIP )
-      precombat -> add_action( "summon_pet,if=active_enemies<3" );
-    else
+    if ( ! specialization() == HUNTER_MARKSMANSHIP )
       precombat -> add_action( "summon_pet" );
 
     precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
