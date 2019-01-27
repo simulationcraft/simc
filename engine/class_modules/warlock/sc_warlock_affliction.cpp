@@ -65,9 +65,7 @@ namespace warlock
 
       virtual timespan_t get_db_dot_duration( dot_t* dot ) const
       {
-        timespan_t base_dur = db_max_contribution;
-
-        return dot->remains() > base_dur ? base_dur : dot->remains();
+        return std::min(db_max_contribution,dot->remains());
       }
 
       virtual std::tuple<double, double> get_db_dot_state( dot_t* dot )
@@ -75,24 +73,42 @@ namespace warlock
         action_state_t* state = dot->current_action->get_state( dot->state );
         dot->current_action->calculate_tick_amount( state, 1.0 );
 
-        timespan_t remaining = get_db_dot_duration( dot );
-        
-        bool max = ( remaining == db_max_contribution ? true : false );
-
+        timespan_t db_duration = get_db_dot_duration(dot);
         timespan_t dot_tick_time = dot->current_action->tick_time( state );
 
-        double ticks_left = ( remaining - dot->time_to_next_tick() ) / dot_tick_time;
+        double ticks_left = 1.0;
 
-        if ( ticks_left == 0.0 )
+        if (db_duration <= dot->remains())
         {
-          ticks_left += dot->time_to_next_tick() / dot_tick_time;
+          //If using the full duration, time divided by tick time always gives proper results
+          ticks_left = db_duration/dot_tick_time;
         }
         else
         {
-          ticks_left += 1;
-        }
+          if (dot->time_to_next_tick() <= dot_tick_time)
+          {
+            //All that's left is a partial tick
+            ticks_left = dot->time_to_next_tick()/dot_tick_time;
+          }
+          else
+          {
+            //Make sure calculations are always done relative to a tick time
+            timespan_t shifted_duration = db_duration - dot->time_to_next_tick();
 
-        ticks_left = max ? remaining / dot_tick_time : ticks_left;
+            //Number of full value ticks remaining
+            ticks_left = std::ceil(shifted_duration/dot_tick_time);
+
+            //If a tick is about to happen but we haven't ticked it yet, update this
+            //This is a small edge case that should only happen when Deathbolt is executed at the 
+            //exact same time as a tick event and comes earlier in the stack
+            if(dot->time_to_next_tick() == 0_ms)
+              ticks_left += 1;
+
+            //Add value of partial tick in terms of percent of tick time
+            //An extra tick is added to duration before modulo to ensure positive values
+            ticks_left += ((shifted_duration + dot_tick_time)%dot_tick_time)/dot_tick_time;
+          }
+        }
 
         if ( sim->debug )
         {
