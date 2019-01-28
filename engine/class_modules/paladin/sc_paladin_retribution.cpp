@@ -94,16 +94,6 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
     double c = cost();
     paladin_melee_attack_t::execute();
 
-    bool dp_success = false;
-
-    // Bug: Divine Purpose procs are instantly consumed when proccing off themselves
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/359
-    // First, check if dp proc was successful
-    if ( p() -> talents.divine_purpose -> ok() )
-    {
-      dp_success = rng().roll( p() -> spells.divine_purpose_ret -> effectN( 1 ).percent() );
-    }
-
     if ( c <= 0.0 )
     {
       if ( !skip_dp )
@@ -120,8 +110,8 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
         p() -> buffs.the_fires_of_justice -> expire();
     }
 
-    // If the dp proc was successful, but DP wasn't active or bugs were disabled, activate DP.
-    if ( dp_success )
+    if ( p() -> talents.divine_purpose -> ok() &&
+         rng().roll( p() -> spells.divine_purpose_ret -> effectN( 1 ).percent() ) )
     {
       p() -> buffs.divine_purpose -> trigger();
       p() -> procs.divine_purpose -> occur();
