@@ -37,7 +37,7 @@ namespace warlock
         weapon_multiplier = 0.0;
         gain = player->get_gain(name_str);
 
-        db_max_contribution = timespan_t::zero();
+        db_max_contribution = 0_ms;
       }
 
       void init() override
@@ -131,17 +131,26 @@ namespace warlock
 
     struct shadow_bolt_t : public affliction_spell_t
     {
+      bool dusk;
+
       shadow_bolt_t(warlock_t* p, const std::string& options_str) :
         affliction_spell_t(p, "Shadow Bolt", p->specialization())
       {
         parse_options(options_str);
+        dusk = false;
+      }
+
+      void init() override
+      {
+        dusk = false;
+        affliction_spell_t::init();
       }
 
       timespan_t execute_time() const override
       {
         if (p()->buffs.nightfall->check())
         {
-          return timespan_t::zero();
+          return 0_ms;
         }
 
         return affliction_spell_t::execute_time();
@@ -169,7 +178,7 @@ namespace warlock
       {
         double m = affliction_spell_t::action_multiplier();
 
-        if (p()->buffs.nightfall->check())
+        if (dusk)
         {
           m *= 1.0 + p()->buffs.nightfall->default_value;
         }
@@ -177,10 +186,18 @@ namespace warlock
         return m;
       }
 
+      void schedule_execute(action_state_t* s) override
+      {
+        dusk = p()->buffs.nightfall->up();
+        affliction_spell_t::schedule_execute(s);
+      }
+
       void execute() override
       {
         affliction_spell_t::execute();
-        p()->buffs.nightfall->expire();
+        if(dusk)
+          p()->buffs.nightfall->expire();
+        dusk = false;
       }
     };
 
