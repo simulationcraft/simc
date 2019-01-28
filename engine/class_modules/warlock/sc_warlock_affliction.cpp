@@ -85,10 +85,10 @@ namespace warlock
         }
         else
         {
-          if (db_duration <= dot_tick_time)
+          if (db_duration <= dot_tick_time && dot->time_to_next_tick() >= db_duration)
           {
             //All that's left is a partial tick
-            ticks_left = dot->time_to_next_tick()/dot_tick_time;
+            ticks_left = db_duration/dot_tick_time;
           }
           else
           {
