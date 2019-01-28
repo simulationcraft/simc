@@ -3278,6 +3278,13 @@ struct revenge_t : public warrior_attack_t
     return warrior_attack_t::ready();
   }
 
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = warrior_attack_t::bonus_da( s );
+    b += p()->azerite.callous_reprisal.value( 2 );
+    return b;
+  }
+
   double action_multiplier() const override
   {
     double am = warrior_attack_t::action_multiplier();
