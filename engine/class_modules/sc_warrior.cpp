@@ -513,7 +513,7 @@ public:
   double composite_attribute_multiplier( attribute_e attr ) const override;
   double composite_rating_multiplier( rating_e rating ) const override;
   double composite_player_multiplier( school_e school ) const override;
-  double composite_player_target_multiplier( player_t* target, school_e school ) const override;
+  // double composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   double composite_melee_haste() const override;
   // double composite_armor_multiplier() const override;
@@ -611,7 +611,7 @@ struct warrior_action_t : public Base
     // mastery/buff damage increase.
     bool fury_mastery_direct, fury_mastery_dot;
     // talents
-    bool avatar, frothing_direct, frothing_dot, sweeping_strikes, deadly_calm;
+    bool avatar, frothing_direct, frothing_dot, sweeping_strikes, deadly_calm, booming_voice;
     // azerite
     bool crushing_assault;
 
@@ -623,7 +623,8 @@ struct warrior_action_t : public Base
         frothing_dot( false ),
         sweeping_strikes( false ),
         deadly_calm( false ),
-        crushing_assault( false )
+        crushing_assault( false ),
+        booming_voice( false )
     {
     }
   } affected_by;
@@ -691,13 +692,12 @@ public:
     affected_by.deadly_calm         = ab::data().affected_by( p()->talents.deadly_calm->effectN( 1 ) );
     affected_by.fury_mastery_direct = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 1 ) );
     affected_by.fury_mastery_dot    = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 2 ) );
+    affected_by.booming_voice       = ab::data().affected_by( p()->spec.demoralizing_shout->effectN( 3 ) );
 
     if ( p()->specialization() == WARRIOR_PROTECTION )
       affected_by.avatar              = ab::data().affected_by( p()->spec.avatar->effectN( 1 ) );
     else
       affected_by.avatar              = ab::data().affected_by( p()->talents.avatar->effectN( 1 ) );
-
-    affected_by.sweeping_strikes    = ab::data().affected_by( p()->spec.sweeping_strikes->effectN( 1 ) );
 
     affected_by.frothing_direct =
         ab::data().affected_by( p()->talents.frothing_berserker->effectN( 1 ).trigger()->effectN( 1 ) );
@@ -772,6 +772,13 @@ public:
     if ( td->debuffs_siegebreaker->check() )
     {
       m *= 1.0 + ( td->debuffs_siegebreaker->value() );
+    }
+
+    if ( td -> debuffs_demoralizing_shout -> up() &&
+         p() -> talents.booming_voice -> ok() && 
+         affected_by.booming_voice )
+    {
+      m *= 1.0 + p() -> talents.booming_voice->effectN( 2 ).percent();
     }
 
     return m;
@@ -6121,21 +6128,6 @@ double warrior_t::composite_player_multiplier( school_e school ) const
   }
 
   m *= 1.0 + buff.fujiedas_fury->check_stack_value();
-
-  return m;
-}
-
-// warrior_t::composite_player_target_multiplier ==============================
-double warrior_t::composite_player_target_multiplier( player_t* target, school_e school ) const
-{
-  double m = player_t::composite_player_target_multiplier( target, school );
-
-  warrior_td_t* td = get_target_data( target );
-
-  if ( td -> debuffs_demoralizing_shout && talents.booming_voice -> ok() )
-  {
-    m *= 1.0 + talents.booming_voice->effectN( 2 ).percent();
-  }
 
   return m;
 }
