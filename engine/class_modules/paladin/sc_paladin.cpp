@@ -574,7 +574,10 @@ struct melee_t : public paladin_melee_attack_t
     paladin_melee_attack_t::init();
 
     // These whitelisted effects also increase auto attack damage
-    last_defender_increase = avenging_wrath = ret_crusade = ret_inquisition = true;
+    last_defender_increase = avenging_wrath = ret_crusade = true;
+    
+    // Bug? Inquisition doesn't increase aa damage
+    ret_inquisition = false;
   }
 
   virtual timespan_t execute_time() const override
@@ -1207,6 +1210,7 @@ void paladin_t::create_buffs()
                                  ->set_cooldown( timespan_t::zero() ) // Let the ability handle the CD
                                  ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.divine_purpose                 = make_buff( this, "divine_purpose", specialization() == PALADIN_HOLY ? find_spell( 197646 ) : find_spell( 223819 ) );
+  // Avenger's Might's duration is affected by Light's Decree increasing AW's duration by 5s
   buffs.avengers_might = make_buff<stat_buff_t>( this, "avengers_might", azerite.avengers_might.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
     -> add_stat( STAT_MASTERY_RATING, azerite.avengers_might.value() )
     -> set_duration( azerite.avengers_might.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() -> duration() + 
