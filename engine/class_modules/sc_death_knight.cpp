@@ -3152,7 +3152,7 @@ struct melee_t : public death_knight_melee_attack_t
   {
     double am = death_knight_melee_attack_t::action_multiplier();
 
-    // T20 2P bonus also a
+    // T20 2P bonus also affects melee attacks
     if ( p() -> buffs.t20_2pc_unholy -> up() )
     {
       am *= 1.0 + p() -> buffs.t20_2pc_unholy -> stack_value();

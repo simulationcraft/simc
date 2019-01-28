@@ -569,6 +569,14 @@ struct melee_t : public paladin_melee_attack_t
     weapon_multiplier     = 1.0;
   }
 
+  void init() override
+  {
+    paladin_melee_attack_t::init();
+
+    // These whitelisted effects also increase auto attack damage
+    last_defender_increase = avenging_wrath = ret_crusade = ret_inquisition = true;
+  }
+
   virtual timespan_t execute_time() const override
   {
     if ( ! player -> in_combat ) return timespan_t::from_seconds( 0.01 );

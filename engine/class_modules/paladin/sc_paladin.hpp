@@ -459,7 +459,6 @@ public:
   bool    get_how_availability( player_t* t ) const;
   void    trigger_grand_crusader();
   void    trigger_holy_shield( action_state_t* s );
-  void    trigger_inner_light( action_state_t* s );
   void    trigger_forbearance( player_t* target );
   int     get_local_enemies( double distance ) const;
   bool    standing_in_consecration() const;
