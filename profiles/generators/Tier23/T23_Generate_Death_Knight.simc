@@ -43,7 +43,7 @@ hands=stormwrought_gauntlets,id=165556,bonus_id=4800/1537
 waist=hullplate_girdle,id=165559,bonus_id=4800/1537
 legs=arcing_thunderlizard_legplates,id=165560,bonus_id=4800/1537
 feet=coinage_stampers,id=165561,bonus_id=4800/1537
-finger1=lord_admirals_signet,id=165566,bonus_id=4824/1537,enchant=pact_of_
+finger1=lord_admirals_signet,id=165566,bonus_id=4824/1537,enchant=pact_of_mastery
 finger2=seal_of_the_zandalari_empire,id=165567,bonus_id=4824/1537,enchant=pact_of_mastery
 trinket1=grongs_primal_rage,id=165574,bonus_id=4800/1537
 trinket2=everchill_anchor,id=165570,bonus_id=4800/1537
