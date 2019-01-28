@@ -1179,6 +1179,7 @@ struct melee_t : public warrior_attack_t
     else
       affected_by.avatar              = p()->talents.avatar->ok();
     affected_by.frothing_direct     = p()->talents.frothing_berserker->ok();
+    affected_by.booming_voice       = p() -> talents.booming_voice -> ok();
   }
 
   void reset() override
