@@ -160,33 +160,6 @@ namespace warlock {
       }
     };
 
-    struct drain_life_t : public destruction_spell_t
-    {
-      drain_life_t( warlock_t* p, const std::string& options_str ) :
-        destruction_spell_t( p, "Drain Life" )
-      {
-        parse_options( options_str );
-        channeled = true;
-        hasted_ticks = false;
-        may_crit = false;
-        can_havoc = false;
-      }
-
-      void execute() override
-      {
-        destruction_spell_t::execute();
-
-        p()->buffs.drain_life->trigger();
-      }
-
-      void last_tick( dot_t* d ) override
-      {
-        p()->buffs.drain_life->expire();
-
-        destruction_spell_t::last_tick( d );
-      }
-    };
-
     //Talents
     struct soul_fire_t : public destruction_spell_t
     {
@@ -982,7 +955,6 @@ namespace warlock {
       if (action_name == "rain_of_fire") return new                     rain_of_fire_t(this, options_str);
       if (action_name == "havoc") return new                            havoc_t(this, options_str);
       if (action_name == "summon_infernal") return new                  summon_infernal_t(this, options_str);
-      if (action_name == "drain_life") return new                       drain_life_t( this, options_str );
 
       //Talents
       if (action_name == "soul_fire") return new                        soul_fire_t(this, options_str);

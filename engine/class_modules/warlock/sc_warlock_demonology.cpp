@@ -84,32 +84,6 @@ namespace warlock {
       }
     };
 
-    struct drain_life_t : public demonology_spell_t
-    {
-      drain_life_t( warlock_t* p, const std::string& options_str ) :
-        demonology_spell_t( p, "Drain Life" )
-      {
-        parse_options( options_str );
-        channeled = true;
-        hasted_ticks = false;
-        may_crit = false;
-      }
-
-      void execute() override
-      {
-        demonology_spell_t::execute();
-
-        p()->buffs.drain_life->trigger();
-      }
-
-      void last_tick( dot_t* d ) override
-      {
-        p()->buffs.drain_life->expire();
-
-        demonology_spell_t::last_tick( d );
-      }
-    };
-
     struct shadow_bolt_t : public demonology_spell_t
     {
       shadow_bolt_t(warlock_t* p, const std::string& options_str) :
@@ -916,7 +890,6 @@ namespace warlock {
     if (action_name == "demonbolt") return new              demonbolt_t(this, options_str);
     if (action_name == "hand_of_guldan") return new         hand_of_guldan_t(this, options_str);
     if (action_name == "implosion") return new              implosion_t(this, options_str);
-    if (action_name == "drain_life") return new             drain_life_t( this, options_str );
 
     if (action_name == "demonic_strength") return new       demonic_strength_t(this, options_str);
     if (action_name == "bilescourge_bombers") return new    bilescourge_bombers_t(this, options_str);

@@ -7,6 +7,50 @@ namespace warlock
 // Spells
   namespace actions
   {
+    struct drain_life_t : public warlock_spell_t
+    {
+
+      drain_life_t( warlock_t* p, const std::string& options_str ) :
+        warlock_spell_t( p, "Drain Life" )
+      {
+        parse_options( options_str );
+        channeled = true;
+        hasted_ticks = false;
+        may_crit = false;
+      }
+
+      void execute() override
+      {
+
+        if (p()->azerite.inevitable_demise.ok() && p()->buffs.inevitable_demise->check() > 0)
+        {
+          if (p()->buffs.drain_life->check())
+            p()->buffs.inevitable_demise->expire();
+        }
+
+        warlock_spell_t::execute();
+
+        p()->buffs.drain_life->trigger();
+      }
+
+      double bonus_ta(const action_state_t* s) const override
+      {
+        double ta = warlock_spell_t::bonus_ta(s);
+
+        ta += p()->buffs.inevitable_demise->check_stack_value();
+
+        return ta;
+      }
+
+      void last_tick( dot_t* d ) override
+      {
+        p()->buffs.drain_life->expire();
+        p()->buffs.inevitable_demise->expire();
+
+        warlock_spell_t::last_tick( d );
+      }
+    };
+
     //TOCHECK: Does the damage proc affect Seed of Corruption? If so, this needs to be split into specs as well
     struct grimoire_of_sacrifice_t : public warlock_spell_t
     {
@@ -396,7 +440,7 @@ action_t* warlock_t::create_action( const std::string& action_name, const std::s
   if ( action_name == "summon_imp"            ) return new                summon_main_pet_t( "imp", this );
   if ( action_name == "summon_pet"            ) return new          summon_main_pet_t( default_pet, this );
   // Base Spells
-  //if ( action_name == "drain_life"            ) return new               drain_life_t( this, options_str );
+  if ( action_name == "drain_life"            ) return new               drain_life_t( this, options_str );
   if ( action_name == "grimoire_of_sacrifice" ) return new    grimoire_of_sacrifice_t( this, options_str ); //aff and destro
 
   if ( specialization() == WARLOCK_AFFLICTION )
