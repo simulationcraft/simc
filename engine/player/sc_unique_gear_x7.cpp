@@ -1677,12 +1677,14 @@ void items::incandescent_sliver( special_effect_t& effect )
   timespan_t period = effect.driver()->effectN( 1 ).period();
   p->register_combat_begin( [ crit_buff, period ] ( player_t* )
   {
-    // Couldn't test whether raid combat resets this buff, so just assuming it stays up
-    // as you can stack it out of combat (compared to say Archive of the Titans).
-    // TODO: Double check.
     crit_buff->trigger( crit_buff->max_stack() );
-    // TODO: Losing stacks?
-    make_repeating_event( crit_buff->sim, period, [ crit_buff ] { crit_buff->trigger(); } );
+    make_repeating_event( crit_buff->sim, period, [ crit_buff ]
+    {
+      if ( crit_buff->rng().roll( crit_buff->sim->bfa_opts.incandescent_sliver_chance ) )
+        crit_buff->trigger();
+      else
+        crit_buff->decrement();
+    } );
   } );
 }
 
