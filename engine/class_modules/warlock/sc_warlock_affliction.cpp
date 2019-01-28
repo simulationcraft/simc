@@ -131,7 +131,7 @@ namespace warlock
 
     struct shadow_bolt_t : public affliction_spell_t
     {
-      bool dusk;
+      bool dusk; //Boolean for tracking whether to use Nightfall proc
 
       shadow_bolt_t(warlock_t* p, const std::string& options_str) :
         affliction_spell_t(p, "Shadow Bolt", p->specialization())
@@ -258,6 +258,7 @@ namespace warlock
       double bonus_ta(const action_state_t* s) const override
       {
         double ta = affliction_spell_t::bonus_ta(s);
+        //TOCHECK: How does Sudden Onset behave with Writhe in Agony's increased stack cap?
         ta += p()->azerite.sudden_onset.value();
         return ta;
       }
@@ -338,16 +339,11 @@ namespace warlock
 
         if ( p->talents.absolute_corruption->ok() )
         {
-          dot_duration = sim->expected_iteration_time > timespan_t::zero() ?
+          dot_duration = sim->expected_iteration_time > 0_ms ?
             2 * sim->expected_iteration_time :
             2 * sim->max_time * ( 1.0 + sim->vary_combat_length ); // "infinite" duration
           base_multiplier *= 1.0 + p->talents.absolute_corruption->effectN( 2 ).percent();
         }
-      }
-
-      void init() override
-      {
-        affliction_spell_t::init();
       }
 
       void tick( dot_t* d ) override
@@ -438,7 +434,7 @@ namespace warlock
         }
         const spell_data_t* ptr_spell = p->find_spell( 233490 );
         spell_power_mod.direct = ptr_spell->effectN( 1 ).sp_coeff();
-        dot_duration = timespan_t::zero(); // DoT managed by ignite action.
+        dot_duration = 0_ms; // DoT managed by ignite action.
       }
 
       void init() override
@@ -452,7 +448,7 @@ namespace warlock
         if ( result_is_hit( s->result ) )
         {
           real_ua_t* real_ua = nullptr;
-          timespan_t min_duration = timespan_t::from_seconds( 100 );
+          timespan_t min_duration = 100_s;
 
           warlock_td_t* target_data = td( s->target );
           for ( int i = 0; i < MAX_UAS; i++ )
@@ -529,30 +525,15 @@ namespace warlock
           {
             continue;
           }
-          if (td->dots_agony->is_ticking())
-          {
-            td->dots_agony->extend_duration(timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value()));
-          }
-          if (td->dots_corruption->is_ticking())
-          {
-            td->dots_corruption->extend_duration(timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value()));
-          }
-          if (td->dots_siphon_life->is_ticking())
-          {
-            td->dots_siphon_life->extend_duration(timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value()));
-          }
-          if (td->dots_phantom_singularity->is_ticking())
-          {
-            td->dots_phantom_singularity->extend_duration(timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value()));
-          }
-          if (td->dots_vile_taint->is_ticking())
-          {
-            td->dots_vile_taint->extend_duration(timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value()));
-          }
+          timespan_t darkglare_extension = timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value());
+          td->dots_agony->extend_duration(darkglare_extension);
+          td->dots_corruption->extend_duration(darkglare_extension);
+          td->dots_siphon_life->extend_duration(darkglare_extension);
+          td->dots_phantom_singularity->extend_duration(darkglare_extension);
+          td->dots_vile_taint->extend_duration(darkglare_extension);
           for (auto& current_ua : td->dots_unstable_affliction)
           {
-            if (current_ua->is_ticking())
-              current_ua->extend_duration(timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value()));
+            current_ua->extend_duration(darkglare_extension);
           }
         }
       }
@@ -891,29 +872,24 @@ namespace warlock
       {
         warlock_td_t* td = this->td(target);
 
-        double total_damage_agony = get_contribution_from_dot(td->dots_agony);
-        double total_damage_corruption = get_contribution_from_dot(td->dots_corruption);
+        double total_dot_dmg = 0.0;
 
-        double total_damage_siphon_life = 0.0;
+        total_dot_dmg += get_contribution_from_dot(td->dots_agony);
+        total_dot_dmg += get_contribution_from_dot(td->dots_corruption);
+
         if (p()->talents.siphon_life->ok())
-          total_damage_siphon_life = get_contribution_from_dot(td->dots_siphon_life);
+          total_dot_dmg += get_contribution_from_dot(td->dots_siphon_life);
 
-        double total_damage_phantom_singularity = 0.0;
         if ( p()->talents.phantom_singularity->ok() )
-          total_damage_phantom_singularity = get_contribution_from_dot( td->dots_phantom_singularity );
+          total_dot_dmg += get_contribution_from_dot( td->dots_phantom_singularity );
 
-        double total_damage_vile_taint = 0.0;
         if ( p()->talents.vile_taint->ok() )
-          total_damage_vile_taint = get_contribution_from_dot( td->dots_vile_taint );
+          total_dot_dmg += get_contribution_from_dot( td->dots_vile_taint );
 
-        double total_damage_unstable_afflictions = 0.0;
         for (auto& current_ua : td->dots_unstable_affliction)
         {
-          total_damage_unstable_afflictions += get_contribution_from_dot(current_ua);
+          total_dot_dmg += get_contribution_from_dot(current_ua);
         }
-
-        const double total_dot_dmg = total_damage_agony + total_damage_corruption + total_damage_siphon_life +
-                     total_damage_unstable_afflictions + total_damage_phantom_singularity + total_damage_vile_taint;
 
         this->base_dd_min = this->base_dd_max = (total_dot_dmg * data().effectN(2).percent());
 
