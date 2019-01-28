@@ -732,8 +732,6 @@ void paladin_t::create_buffs_retribution()
   buffs.divine_judgment                = make_buff( this, "divine_judgment", find_spell( 271581 ) );
 
   // Azerite
-  buffs.avengers_might = make_buff<stat_buff_t>(this, "avengers_might", find_spell( 272903 ))
-                            -> add_stat( STAT_MASTERY_RATING, azerite.avengers_might.value() );
   buffs.relentless_inquisitor = make_buff<stat_buff_t>(this, "relentless_inquisitor", find_spell( 279204 ))
                                   -> add_stat( STAT_HASTE_RATING, azerite.relentless_inquisitor.value() );
   buffs.empyrean_power = make_buff( this, "empyrean_power", find_spell( 286393 ))

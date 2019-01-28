@@ -1207,6 +1207,10 @@ void paladin_t::create_buffs()
                                  ->set_cooldown( timespan_t::zero() ) // Let the ability handle the CD
                                  ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.divine_purpose                 = make_buff( this, "divine_purpose", specialization() == PALADIN_HOLY ? find_spell( 197646 ) : find_spell( 223819 ) );
+  buffs.avengers_might = make_buff<stat_buff_t>( this, "avengers_might", azerite.avengers_might.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
+    -> add_stat( STAT_MASTERY_RATING, azerite.avengers_might.value() )
+    -> set_duration( azerite.avengers_might.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() -> duration() + 
+                     timespan_t::from_millis( azerite.lights_decree.enabled() ? azerite.lights_decree.spell() -> effectN( 1 ).trigger() -> effectN( 2 ).base_value() : 0 ) );
 }
 
 // paladin_t::default_potion ================================================
