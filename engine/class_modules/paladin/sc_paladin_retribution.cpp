@@ -133,11 +133,9 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
     {
       if ( p() -> buffs.avenging_wrath -> up() || p() -> buffs.crusade -> up() )
       {
-        if ( c > 0 ) {
-          // TODO(mserrano): this is a hack - do we need this?
-          lights_decree -> set_target( p() -> target );
-          lights_decree -> execute();
-        }
+        // TODO(mserrano): this is a hack - do we need this?
+        lights_decree -> set_target( p() -> target );
+        lights_decree -> execute();
       }
     }
   }
@@ -196,7 +194,7 @@ struct crusade_t : public paladin_heal_t
     p() -> buffs.crusade -> trigger();
 
     if ( p() -> azerite.avengers_might.ok() )
-      p() -> buffs.avengers_might -> trigger();
+      p() -> buffs.avengers_might -> trigger( 1, p() -> buffs.avengers_might -> default_value, -1.0, p() -> buffs.crusade -> buff_duration );
   }
 
   bool ready() override

@@ -196,7 +196,7 @@ struct avenging_wrath_t : public paladin_spell_t
     p() -> buffs.avenging_wrath -> trigger();
 
     if ( p() -> azerite.avengers_might.ok() )
-      p() -> buffs.avengers_might -> trigger();
+      p() -> buffs.avengers_might -> trigger( 1, p() -> buffs.avengers_might -> default_value, -1.0, p() -> buffs.avenging_wrath -> buff_duration );
   }
 
   // TODO: is this needed? Question for Ret dev, since I don't think it is for Prot/Holy
