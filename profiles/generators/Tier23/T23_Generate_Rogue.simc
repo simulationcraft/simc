@@ -10,7 +10,7 @@ head=cowl_of_righteous_resolve,id=165519,bonus_id=4824/1537,azerite_powers=136/5
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
 shoulder=mestrahs_singing_spaulders,id=165516,bonus_id=4824/1537,azerite_powers=136/562/31/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
-chest=mekkatorques_bomber_jacket,id=165830,bonus_id=4824/1537,azerite_powers=249/562/22/13
+chest=mekkatorques_bomber_jacket,id=165830,bonus_id=4824/1537,azerite_powers=249/136/22/13
 wrists=amethyststudded_bindings,id=165524,bonus_id=4800/1537
 hands=gloves_of_spiritual_grace,id=165514,bonus_id=4800/1537
 waist=stretched_sinew_waistcord,id=165525,bonus_id=4800/1537
@@ -36,9 +36,9 @@ talents=2010022
 
 head=cowl_of_righteous_resolve,id=165519,bonus_id=4824/1537,azerite_powers=129/562/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
-shoulder=mestrahs_singing_spaulders,id=165516,bonus_id=4824/1537,azerite_powers=129/562/31/13
+shoulder=gorak_tuls_mantle,id=159339,bonus_id=1587/4819,azerite_powers=129/446/30/13
 back=high_tinkers_cape,id=165924,bonus_id=4800/1537
-chest=mekkatorques_bomber_jacket,id=165830,bonus_id=4824/1537,azerite_powers=446/129/22/13
+chest=vest_of_reverent_adoration,id=159303,bonus_id=1587/4819,azerite_powers=411/129/31/13
 wrists=bracers_of_regal_devotion,id=165517,bonus_id=4800/1537
 hands=mechjockey_grips,id=165522,bonus_id=4800/1537
 waist=stretched_sinew_waistcord,id=165525,bonus_id=4800/1537
