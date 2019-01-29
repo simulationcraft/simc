@@ -1428,7 +1428,7 @@ public:
 
     if ( p()->azerite.thunderaans_fury.ok() )
     {
-      tf_proc_chance = p()->find_spell( 287801 )->effectN( 1 ).percent();
+      tf_proc_chance = p()->find_spell( 287801 )->proc_chance();
     }
   }
 
