@@ -2786,15 +2786,18 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179699)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -9 | Scaled Value: -9 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565)
                    Family Flags: 106
+                   Hotfixed: Base Value (-9 -> -6)
 #2 (id=191134)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: -9 | Scaled Value: -9 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565)
                    Family Flags: 106
+                   Hotfixed: Base Value (-9 -> -6)
 #3 (id=191135)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: -9 | Scaled Value: -9 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Hotfixed: Base Value (-9 -> -6)
 #4 (id=191136)   : Apply Aura (6) | Dummy (4)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
 #5 (id=191137)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
@@ -9006,8 +9009,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=726776)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 327.6183 (coefficient=1.053435) | PvP Coefficient: 0.50000 | Trigger Spell: 274442 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
+                   Base Value: 0 | Scaled Value: 393.1419 (coefficient=1.264122) | PvP Coefficient: 0.50000 | Trigger Spell: 274442 | Target: Self (1)
+                   Hotfixed: Coefficient (1.05343 -> 1.26412), PvP Coefficient (1 -> 0.5)
 Description      : Barbed Shot has a chance equal to your critical strike chance to grant you $s1 Agility for $274443d.
 
 Name             : Unerring Vision (id=274444) [Scaling Spell (-7), Spell Family (9), Passive] 
@@ -9026,8 +9029,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=726781)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.598925) | PvP Coefficient: 0.50000 | Trigger Spell: 274445 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.401141) | PvP Coefficient: 0.50000 | Trigger Spell: 274445 | Target: Self (1)
+                   Hotfixed: Coefficient (0.598925 -> 0.401141), PvP Coefficient (1 -> 0.5)
 Description      : While Trueshot is active you gain $s1 Critical Strike rating every sec, stacking up to 10 times.
 
 Name             : Venomous Fangs (id=274590) [Scaling Spell (-8), Spell Family (9), Passive] 
@@ -9084,14 +9087,15 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732952)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 94.01219 (coefficient=0.30229) | PvP Coefficient: 0.50000 | Trigger Spell: 277966 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
+                   Base Value: 0 | Scaled Value: 62.6749 (coefficient=0.201527) | PvP Coefficient: 0.50000 | Trigger Spell: 277966 | Target: Self (1)
+                   Hotfixed: Coefficient (0.30229 -> 0.201527), PvP Coefficient (1 -> 0.5)
 #2 (id=733430)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 51.98116 (coefficient=0.167142) | PvP Coefficient: 0.50000 | Target: Self (1)
                    Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : During Coordinated Assault, $?s259387[Mongoose Bite][Raptor Strike] increases your Agility by $s1 and your Speed by $s2 for $277969d. Stacks up to $277969u times.
 
-Name             : Feeding Frenzy (id=278529) [Scaling Spell (-1), Spell Family (9), Passive] 
+Name             : Feeding Frenzy (id=278529) [Scaling Spell (-8), Spell Family (9), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -9108,10 +9112,10 @@ Effects          :
 #1 (id=734283)   : Apply Aura (6) | Unknown(285)
                    Base Value: 9000 | Scaled Value: 9000 | PvP Coefficient: 1.00000 | Trigger Spell: 279607 | Target: Self (1)
 #2 (id=734284)   : Apply Aura (6) | Add Flat Modifier (107): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 373.2 (coefficient=1.2) | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 487.4878 (coefficient=6.269939) | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Barbed Shot (217200), Frenzy (272790)
                    Family Flags: 78
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
+                   Hotfixed: Coefficient (1.2 -> 6.26994), PvP Coefficient (1 -> 0.5)
 Description      : Barbed Shot deals ${$s2*($217200d/$217200t1)} additional damage over its duration, and Frenzy's duration is increased to ${$s1/1000}.1 sec.
 
 Name             : Rapid Reload (id=278530) [Scaling Spell (-8), Spell Family (9), Passive] 
@@ -9130,8 +9134,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734285)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 298.1212 (coefficient=3.834356) | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
+                   Base Value: 0 | Scaled Value: 596.2424 (coefficient=7.668712) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Hotfixed: Coefficient (3.83436 -> 7.66871), PvP Coefficient (1 -> 0.5)
 #2 (id=734286)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000
 #3 (id=734287)   : None (0)
@@ -9155,10 +9159,10 @@ Effects          :
 #1 (id=734288)   : Apply Aura (6) | Unknown(285)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Trigger Spell: 279636 | Target: Self (1)
 #2 (id=734289)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 192.2286 (coefficient=2.472393) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 220.8482 (coefficient=2.840491) | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Rapid Fire (257045)
                    Family Flags: 3
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
+                   Hotfixed: Coefficient (2.47239 -> 2.84049), PvP Coefficient (1 -> 0.5)
 Description      : Rapid Fire deals an additional $<damage> damage over its duration, and each shot has a $279636h% chance to generate $s1 additional Focus.
 Variables        : $damage=${$s2*(1+($257044d/$257044t2))}
 
@@ -9526,8 +9530,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737714)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 195.5675 (coefficient=2.515337) | PvP Coefficient: 0.50000 | Trigger Spell: 280285 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
+                   Base Value: 0 | Scaled Value: 176.0108 (coefficient=2.263804) | PvP Coefficient: 0.50000 | Trigger Spell: 280285 | Target: Self (1)
+                   Hotfixed: Coefficient (2.51534 -> 2.2638), PvP Coefficient (1 -> 0.5)
 #2 (id=737715)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000
 Description      : Your damaging spells and abilities have a chance to fling a dagger at your target, causing them to bleed for ${$s1*$280286d/$280286t1} Physical damage over $280286d, stacking up to $280286u times. Stabbing them in the back applies $s2 stacks.
@@ -9983,8 +9987,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=738417)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.061285) | PvP Coefficient: 0.50000 | Trigger Spell: 280712 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.055714) | PvP Coefficient: 0.50000 | Trigger Spell: 280712 | Target: Self (1)
+                   Hotfixed: Coefficient (0.061285 -> 0.055714), PvP Coefficient (1 -> 0.5)
 Description      : Your spells and abilities have a chance to increase all secondary stats by $s1 for $280713d, stacking up to $280713u times.
 
 Name             : Dire Beast (id=281036) [Spell Family (9)] 
@@ -10337,8 +10341,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=752982)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 166.1832 (coefficient=0.534351) | PvP Coefficient: 0.50000 | Trigger Spell: 288964 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
+                   Base Value: 0 | Scaled Value: 149.5649 (coefficient=0.480916) | PvP Coefficient: 0.50000 | Trigger Spell: 288964 | Target: Self (1)
+                   Hotfixed: Coefficient (0.534351 -> 0.480916), PvP Coefficient (1 -> 0.5)
 #2 (id=752991)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
 #3 (id=752992)   : Dummy (3)

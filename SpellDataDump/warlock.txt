@@ -7208,8 +7208,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=725221)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 1213.678 (coefficient=15.61) | PvP Coefficient: 0.50000 | Trigger Spell: 273524 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
+                   Base Value: 0 | Scaled Value: 1820.208 (coefficient=23.41104) | PvP Coefficient: 0.50000 | Trigger Spell: 273524 | Target: Self (1)
+                   Hotfixed: Coefficient (15.61 -> 23.411), PvP Coefficient (1 -> 0.5)
 #2 (id=725222)   : Dummy (3)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000
 Description      : Your Hand of Guldan has a $s2% chance to burn its target for $s1 additional Shadowflame damage every $273526t1 sec for $273526d.
@@ -7380,8 +7380,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=728411)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=1.011209) | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=2.022418) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Hotfixed: Coefficient (1.01121 -> 2.02242), PvP Coefficient (1 -> 0.5)
 Description      : When your Implosion consumes 3 or more Imps, gain $s1 Haste for $275398d.
 
 Name             : Flashpoint (id=275425) [Scaling Spell (-7), Passive] 
@@ -7882,8 +7882,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737714)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 195.5675 (coefficient=2.515337) | PvP Coefficient: 0.50000 | Trigger Spell: 280285 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
+                   Base Value: 0 | Scaled Value: 176.0108 (coefficient=2.263804) | PvP Coefficient: 0.50000 | Trigger Spell: 280285 | Target: Self (1)
+                   Hotfixed: Coefficient (2.51534 -> 2.2638), PvP Coefficient (1 -> 0.5)
 #2 (id=737715)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000
 Description      : Your damaging spells and abilities have a chance to fling a dagger at your target, causing them to bleed for ${$s1*$280286d/$280286t1} Physical damage over $280286d, stacking up to $280286u times. Stabbing them in the back applies $s2 stacks.
@@ -8361,8 +8361,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=738417)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.061285) | PvP Coefficient: 0.50000 | Trigger Spell: 280712 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.055714) | PvP Coefficient: 0.50000 | Trigger Spell: 280712 | Target: Self (1)
+                   Hotfixed: Coefficient (0.061285 -> 0.055714), PvP Coefficient (1 -> 0.5)
 Description      : Your spells and abilities have a chance to increase all secondary stats by $s1 for $280713d, stacking up to $280713u times.
 
 Name             : Soul Fire (id=281490) [Spell Family (5)] 
@@ -8673,8 +8673,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=752982)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 166.1832 (coefficient=0.534351) | PvP Coefficient: 0.50000 | Trigger Spell: 288964 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
+                   Base Value: 0 | Scaled Value: 149.5649 (coefficient=0.480916) | PvP Coefficient: 0.50000 | Trigger Spell: 288964 | Target: Self (1)
+                   Hotfixed: Coefficient (0.534351 -> 0.480916), PvP Coefficient (1 -> 0.5)
 #2 (id=752991)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
 #3 (id=752992)   : Dummy (3)
@@ -8699,8 +8699,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=753682)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 484.1488 (coefficient=6.226994) | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Hotfixed: Coefficient (8.8957 -> 6.22699), PvP Coefficient (1 -> 0.5)
+                   Base Value: 0 | Scaled Value: 556.6518 (coefficient=7.159509) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Hotfixed: Coefficient (8.8957 -> 7.15951), PvP Coefficient (1 -> 0.5)
 #2 (id=753683)   : Dummy (3)
                    Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 1.00000
 #3 (id=753684)   : Dummy (3)

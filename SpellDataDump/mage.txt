@@ -7043,7 +7043,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 270232 | Target: Self (1)
 Description      : Frozen Orb makes Blizzard instant cast and increases its damage done by $270232s2% for $270232d.
 
-Name             : Arcane Pummeling (id=270669) [Scaling Spell (-1), Spell Family (3), Passive] 
+Name             : Arcane Pummeling (id=270669) [Scaling Spell (-8), Spell Family (3), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -7059,8 +7060,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=720338)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 121.5512 (coefficient=0.39084) | PvP Coefficient: 0.50000 | Trigger Spell: 270671 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
+                   Base Value: 0 | Scaled Value: 183.1656 (coefficient=2.355828) | PvP Coefficient: 0.50000 | Trigger Spell: 270671 | Target: Self (1)
+                   Hotfixed: Coefficient (0.39084 -> 2.35583), PvP Coefficient (1 -> 0.5)
 #2 (id=748104)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Clearcasting procs $s2% more often, and each wave of a Clearcast Arcane Missiles deals $s1 more damage than the previous.
@@ -7944,8 +7945,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737714)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 195.5675 (coefficient=2.515337) | PvP Coefficient: 0.50000 | Trigger Spell: 280285 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
+                   Base Value: 0 | Scaled Value: 176.0108 (coefficient=2.263804) | PvP Coefficient: 0.50000 | Trigger Spell: 280285 | Target: Self (1)
+                   Hotfixed: Coefficient (2.51534 -> 2.2638), PvP Coefficient (1 -> 0.5)
 #2 (id=737715)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000
 Description      : Your damaging spells and abilities have a chance to fling a dagger at your target, causing them to bleed for ${$s1*$280286d/$280286t1} Physical damage over $280286d, stacking up to $280286u times. Stabbing them in the back applies $s2 stacks.
@@ -8401,8 +8402,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=738417)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0.061285) | PvP Coefficient: 0.50000 | Trigger Spell: 280712 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.055714) | PvP Coefficient: 0.50000 | Trigger Spell: 280712 | Target: Self (1)
+                   Hotfixed: Coefficient (0.061285 -> 0.055714), PvP Coefficient (1 -> 0.5)
 Description      : Your spells and abilities have a chance to increase all secondary stats by $s1 for $280713d, stacking up to $280713u times.
 
 Name             : Reverberate (id=281482) [Spell Family (3), Passive] 
@@ -8483,8 +8484,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=748188)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 71.54905 (coefficient=0.920245) | PvP Coefficient: 0.50000 | Trigger Spell: 264351 | Target: Self (1)
-                   Hotfixed: Coefficient (0.736196 -> 0.920245), PvP Coefficient (1 -> 0.5)
+                   Base Value: 0 | Scaled Value: 214.6472 (coefficient=2.760736) | PvP Coefficient: 0.50000 | Trigger Spell: 264351 | Target: Self (1)
+                   Hotfixed: Coefficient (0.736196 -> 2.76074), PvP Coefficient (1 -> 0.5)
 Description      : While you are above $264351s1% mana, Arcane Blast deals $s1 additional damage.
 
 While you are below $264351s1% mana, Arcane Blast's cost is reduced by $264353s1.
@@ -8684,10 +8685,10 @@ Effects          :
 #1 (id=752674)   : Apply Aura (6) | Unknown(285)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Trigger Spell: 288795 | Target: Self (1)
 #2 (id=752737)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 446.9432 (coefficient=5.748466) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 312.908 (coefficient=4.02454) | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Pyroblast (11366)
                    Family Flags: 22
-                   Hotfixed: Coefficient (7.36196 -> 5.74847), PvP Coefficient (1 -> 0.5)
+                   Hotfixed: Coefficient (7.36196 -> 4.02454), PvP Coefficient (1 -> 0.5)
 Description      : Pyroblast deals $s2 additional damage. When you activate Combustion, you gain $288800s1 Critical Strike, and up to $288803I nearby allies gain $288803s1 Critical Strike for $288800d.
 
 Name             : Bonded Souls (id=288802) [Scaling Spell (-1), Passive] 
@@ -8728,8 +8729,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=752982)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 166.1832 (coefficient=0.534351) | PvP Coefficient: 0.50000 | Trigger Spell: 288964 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
+                   Base Value: 0 | Scaled Value: 149.5649 (coefficient=0.480916) | PvP Coefficient: 0.50000 | Trigger Spell: 288964 | Target: Self (1)
+                   Hotfixed: Coefficient (0.534351 -> 0.480916), PvP Coefficient (1 -> 0.5)
 #2 (id=752991)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
 #3 (id=752992)   : Dummy (3)
