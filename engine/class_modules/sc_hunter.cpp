@@ -2121,13 +2121,13 @@ struct multi_shot_t: public hunter_ranged_attack_t
     {
       aoe = -1;
       base_dd_min = base_dd_max = p -> azerite.rapid_reload.value( 1 );
-      // TODO: check if it reduces aotw cd
     }
   };
 
   struct {
     rapid_reload_t* action = nullptr;
     int min_targets = std::numeric_limits<int>::max();
+    timespan_t reduction;
   } rapid_reload;
 
   multi_shot_t( hunter_t* p, const std::string& options_str ):
@@ -2140,6 +2140,7 @@ struct multi_shot_t: public hunter_ranged_attack_t
     {
       rapid_reload.action = p -> get_background_action<rapid_reload_t>( "multishot_rapid_reload" );
       rapid_reload.min_targets = as<int>(p -> azerite.rapid_reload.spell() -> effectN( 2 ).base_value());
+      rapid_reload.reduction = ( timespan_t::from_seconds( p -> azerite.rapid_reload.spell() -> effectN ( 3 ).base_value() ) );
       add_child( rapid_reload.action );
     }
   }
@@ -2186,6 +2187,7 @@ struct multi_shot_t: public hunter_ranged_attack_t
     if ( rapid_reload.action && num_targets_hit > rapid_reload.min_targets )
     {
       rapid_reload.action -> set_target( target );
+      p() -> cooldowns.aspect_of_the_wild -> adjust( -(rapid_reload.reduction * num_targets_hit ) );
       rapid_reload.action -> execute();
     }
   }
@@ -3666,8 +3668,8 @@ struct kill_command_t: public hunter_spell_t
       auto driver = p -> find_spell( 287097 );
       dire_consequences.rppm = p -> get_rppm( "dire_consequences", driver );
       //Dire Consequences is currently bugged and has reduced procrate compared to what the spell data indicates.
-      //This is still the case as of 05/01/2019
-      //TODO: Follow up on this prior to raid release on 22/01/2019
+      //This is still the case as of 29/01/2019
+      //TODO: Follow up on this
       dire_consequences.rppm -> set_modifier(
         dire_consequences.rppm -> get_modifier() * 0.55); 
       dire_consequences.icd = p -> get_cooldown( "dire_consequences" );
