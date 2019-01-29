@@ -1,4 +1,4 @@
-SimulationCraft 810-02 for World of Warcraft 8.1.0 Live (wow build 28768)
+SimulationCraft 810-02 for World of Warcraft 8.1.0 Live (wow build 29088)
 
 Name             : Block (rank=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman

@@ -1,4 +1,4 @@
-SimulationCraft 810-02 for World of Warcraft 8.1.0 Live (wow build 28768)
+SimulationCraft 810-02 for World of Warcraft 8.1.0 Live (wow build 29088)
 
 Name             : Dual Wield (rank=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -553,7 +553,8 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : Not a proc (105), Always hits (114)
 Effects          :
 #1 (id=39872)    : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.36462 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.43750 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Hotfixed: AP Coefficient (0.364619 -> 0.4375)
 Description      : Fire a blast of unholy energy, causing Shadow damage to an enemy target or healing a friendly Undead target.
 
 Name             : Veteran of the Third War (id=48263) [Spell Family (15), Passive] 
@@ -8634,7 +8635,8 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 Description      : Your primary stat is increased by $s1 while you are above $s2% health. You take $s3% increased damage while below $s4% health.
 
-Name             : Bloody Runeblade (id=289339) [Scaling Spell (-8), Spell Family (15), Passive] 
+Name             : Bloody Runeblade (id=289339) [Scaling Spell (-7), Spell Family (15), Passive] 
+Hotfixed         : Scaling Spell (-8 -> -7)
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -8651,8 +8653,8 @@ Effects          :
 #1 (id=753644)   : Apply Aura (6) | Unknown(285)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Trigger Spell: 289347 | Target: Self (1)
 #2 (id=753654)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 259.4846 (coefficient=3.337423) | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=1.51542) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Hotfixed: Coefficient (3.33742 -> 1.51542), PvP Coefficient (1 -> 0.5)
 Description      : When Crimson Scourge activates, you gain $s2 Haste for $289349d, and immediately gain ${$289348m3/10} Runic Power.
 
 Name             : Helchains (id=290814) [Scaling Spell (-1), Spell Family (15)] 

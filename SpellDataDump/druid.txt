@@ -1,4 +1,4 @@
-SimulationCraft 810-02 for World of Warcraft 8.1.0 Live (wow build 28768)
+SimulationCraft 810-02 for World of Warcraft 8.1.0 Live (wow build 29088)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -1344,7 +1344,7 @@ Name             : Lifebloom (id=33763) [Spell Family (7)]
 Class            : Restoration Druid
 School           : Nature
 Spell Type       : Magic
-Resource         : 12% Base Mana (0) (id=1447)
+Resource         : 11.2% Base Mana (0) (id=1447) [Hotfixed: Percent Cost (12 -> 11.2)]
 Spell Level      : 20
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -1545,7 +1545,7 @@ Name             : Wild Growth (id=48438) [Spell Family (7)]
 Class            : Restoration Druid
 School           : Nature
 Spell Type       : Magic
-Resource         : 30% Base Mana (0) (id=2220)
+Resource         : 28% Base Mana (0) (id=2220) [Hotfixed: Percent Cost (30 -> 28)]
 Spell Level      : 40
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -2226,7 +2226,8 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=68693)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.14111 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(87) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.16200 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(87) -> AOE friendly (31)
+                   Hotfixed: SP Coefficient (0.141113 -> 0.162)
 Description      : Restores $s1 health to three injured allies within $A1 yards of the initial target every $81262t1 sec for $81262d.
 
 Name             : Leather Specialization (id=86093) [Spell Family (7), Passive] 
@@ -3709,13 +3710,15 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179695)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 44 | Scaled Value: 44 | PvP Coefficient: 0.70000 | Target: Self (1)
+                   Base Value: 44 | Scaled Value: 44 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Germination (155675), Tranquility (157982), Cultivation (200389), Spring Blossoms (207386), Grove Tending (279793)
                    Family Flags: 118
+                   Hotfixed: PvP Coefficient (0.7 -> 1)
 #2 (id=191150)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 44 | Scaled Value: 44 | PvP Coefficient: 0.70000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 44 | Scaled Value: 44 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Germination (155675), Tranquility (157982), Cultivation (200389), Spring Blossoms (207386), Grove Tending (279793)
                    Family Flags: 118
+                   Hotfixed: PvP Coefficient (0.7 -> 1)
 #3 (id=191151)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=191152)   : Apply Aura (6) | Modify Max Mana% (178)

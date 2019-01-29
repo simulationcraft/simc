@@ -1,4 +1,4 @@
-SimulationCraft 810-02 for World of Warcraft 8.1.0 Live (wow build 28768)
+SimulationCraft 810-02 for World of Warcraft 8.1.0 Live (wow build 29088)
 
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
@@ -572,7 +572,8 @@ Attributes       : .x..x... ........ x....... ........   ........ ........ .....
                  : Ranged Ability (1)
 Effects          :
 #1 (id=10651)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.48400 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.48400 | PvP Coefficient: 1.10000 | Target: Enemy (6)
+                   Hotfixed: PvP Coefficient (1 -> 1.1)
 #2 (id=101526)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.30000
 Description      : A powerful aimed shot that deals ${$s1*$<mult>} Physical damage. $?!s19434&c1[
@@ -1402,7 +1403,8 @@ Attributes       : .x..x... ........ x....... ........   ........ ........ .....
                  : Ranged Ability (1)
 Effects          :
 #1 (id=49735)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.60000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.60000 | PvP Coefficient: 1.10000 | Target: Enemy (6)
+                   Hotfixed: PvP Coefficient (1 -> 1.1)
 #2 (id=101525)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000
 #3 (id=752564)   : Dummy (3)
@@ -3501,7 +3503,8 @@ Attributes       : .x...... ........ x....... ........   ........ .x...... .....
                  : Ranged Ability (1)
 Effects          :
 #1 (id=269119)   : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.60000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.60000 | PvP Coefficient: 1.10000 | Target: Enemy (6)
+                   Hotfixed: PvP Coefficient (1 -> 1.1)
 Description      : A quick shot that causes ${$sw2*$<mult>} Arcane damage.
 Variables        : $mult=${($max(0,$min($pl-10,10))*5+80)/130}
 
