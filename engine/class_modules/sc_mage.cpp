@@ -6057,7 +6057,7 @@ void mage_t::apl_precombat()
   {
     case MAGE_ARCANE:
       precombat->add_talent( this, "Arcane Familiar" );
-      precombat->add_action( "variable,name=conserve_mana,op=set,value=60",
+      precombat->add_action( "variable,name=conserve_mana,op=set,value=60+20*azerite.equipoise.enabled",
         "conserve_mana is the mana percentage we want to go down to during conserve. It needs to leave enough room to worst case scenario spam AB only during AP." );
       break;
     case MAGE_FIRE:
