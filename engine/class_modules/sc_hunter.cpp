@@ -2127,7 +2127,7 @@ struct multi_shot_t: public hunter_ranged_attack_t
   struct {
     rapid_reload_t* action = nullptr;
     int min_targets = std::numeric_limits<int>::max();
-    timespan_t reduction;
+    timespan_t reduction = 0_ms;
   } rapid_reload;
 
   multi_shot_t( hunter_t* p, const std::string& options_str ):
@@ -2187,7 +2187,7 @@ struct multi_shot_t: public hunter_ranged_attack_t
     if ( rapid_reload.action && num_targets_hit > rapid_reload.min_targets )
     {
       rapid_reload.action -> set_target( target );
-      p() -> cooldowns.aspect_of_the_wild -> adjust( -(rapid_reload.reduction * num_targets_hit ) );
+      p() -> cooldowns.aspect_of_the_wild -> adjust( - ( rapid_reload.reduction * num_targets_hit ) );
       rapid_reload.action -> execute();
     }
   }
