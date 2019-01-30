@@ -8381,7 +8381,7 @@ void monk_t::create_buffs()
   buff.dance_of_chiji = make_buff( this, "dance_of_chiji", find_spell(286587) );
 
   buff.fury_of_xuen_stacks = make_buff( this, "fury_of_xuen_stacks", passives.fury_of_xuen_stacking_buff )
-                            ->set_default_value( ( passives.fury_of_xuen_stacking_buff->effectN( 3 ).percent() / 100 ) * 0.01 );
+                            ->set_default_value( ( passives.fury_of_xuen_stacking_buff->effectN( 3 ).base_value() / 100 ) * 0.01 );
 
   buff.fury_of_xuen_haste = make_buff<stat_buff_t>( this, "fury_of_xuen_haste", passives.fury_of_xuen_haste_buff )
                             ->add_stat( STAT_HASTE_RATING, azerite.fury_of_xuen.value() );
