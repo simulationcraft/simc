@@ -5,7 +5,7 @@ level=120
 race=tauren
 role=spell
 position=ranged_back
-talents=1302012
+talents=2301032
 
 # Default consumables
 potion=battle_potion_of_intellect
