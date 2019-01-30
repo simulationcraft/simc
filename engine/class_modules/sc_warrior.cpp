@@ -5035,8 +5035,6 @@ void warrior_t::apl_fury()
   default_list->add_talent( this, "Furious Slash",
                             "if=talent.furious_slash.enabled&(buff.furious_slash.stack<3|buff.furious_slash.remains<3|("
                             "cooldown.recklessness.remains<3&buff.furious_slash.remains<9))" );
-  default_list->add_action( this, "Bloodthirst",
-                            "if=equipped.kazzalax_fujiedas_fury&(buff.fujiedas_fury.down|remains<2)" );
   default_list->add_action( this, "Rampage", "if=cooldown.recklessness.remains<3" );
   default_list->add_action( this, "Recklessness" );
   default_list->add_action( this, "Whirlwind", "if=spell_targets.whirlwind>1&!buff.meat_cleaver.up" );
@@ -5080,8 +5078,8 @@ void warrior_t::apl_fury()
   single_target->add_action( this, "Rampage",
                              "if=buff.recklessness.up|(talent.frothing_berserker.enabled|talent.carnage.enabled&(buff."
                              "enrage.remains<gcd|rage>90)|talent.massacre.enabled&(buff.enrage.remains<gcd|rage>90))" );
-  single_target->add_action( this, "Execute", "if=buff.enrage.up" );
-  single_target->add_action( this, "Bloodthirst", "if=buff.enrage.down" );
+  single_target->add_action( this, "Execute" );
+  single_target->add_action( this, "Bloodthirst", "if=buff.enrage.down|azerite.cold_steel_hot_blood.rank>1" );
   single_target->add_action( this, "Raging Blow", "if=charges=2" );
   single_target->add_action( this, "Bloodthirst" );
   single_target->add_talent( this, "Bladestorm",

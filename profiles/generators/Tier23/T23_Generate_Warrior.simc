@@ -31,13 +31,13 @@ race=gnome
 spec=fury
 role=attack
 position=back
-talents=2332123
+talents=2123123
 
-head=crown_of_bloody_succession,id=165821,bonus_id=4824/1537/4775,azerite_powers=176/438/21/83/13
+head=helm_of_the_raptor_king,id=159422,bonus_id=5062/1587/4786/4775,azerite_powers=119/438/30/476/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
 shoulders=ridgeplate_pauldrons,id=165562,bonus_id=4824/1537/4775,azerite_powers=176/438/22/476/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
-chest=harpooners_plate_cuirass,id=159416,bonus_id=5062/1587/4786/4775,azerite_powers=438/441/31/14/13
+chest=breastplate_of_the_deathbound,id=165832,bonus_id=4824/1537/4775,azerite_powers=437/176/30/15/13
 wrists=splinterbone_vambraces,id=165551,bonus_id=4800/1537
 hands=crusade_pummelers,id=165549,bonus_id=4800/1537
 waist=hullplate_girdle,id=165559,bonus_id=4800/1537
