@@ -120,11 +120,11 @@ actions.single_target+=/flame_shock,moving=1,if=movement.distance>6
 # Frost Shock is our movement filler.
 actions.single_target+=/frost_shock,moving=1
 
-head=targettracking_headgear,id=165543,bonus_id=4824/1537/4775,azerite_powers=222/562/459/539/13
+head=targettracking_headgear,id=165543,bonus_id=4824/1537/4775,azerite_powers=447/562/459/539/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
-shoulders=cannoneers_mantle,id=159393,bonus_id=1587/4819/1674/4775,azerite_powers=222/479/31/87/13
+shoulders=pauldrons_of_ancestral_vengeance,id=165921,bonus_id=4824/1537/4775,azerite_powers=457/562/461/87/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
-chest=mistfire_raiment,id=165540,bonus_id=4824/1537/4775,azerite_powers=222/562/31/474/13
+chest=mistfire_raiment,id=165540,bonus_id=4824/1537/4775,azerite_powers=457/562/31/474/13
 wrists=icebinders_bracers,id=165542,bonus_id=4800/1537
 hands=grips_of_harmonious_spirits,id=165531,bonus_id=4800/1537
 waist=goldenscale_girdle,id=165538,bonus_id=4800/1537
