@@ -93,8 +93,7 @@ actions.conserve+=/arcane_explosion,if=active_enemies>=3&(mana.pct>=variable.con
 actions.conserve+=/arcane_blast
 actions.conserve+=/arcane_barrage
 
-actions.movement=shimmer,if=movement.distance>=10
-actions.movement+=/blink,if=movement.distance>=10
+actions.movement=blink,if=movement.distance>=10
 actions.movement+=/presence_of_mind
 actions.movement+=/arcane_missiles
 actions.movement+=/arcane_orb

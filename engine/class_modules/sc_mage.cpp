@@ -6208,7 +6208,6 @@ void mage_t::apl_arcane()
   conserve->add_action( this, "Arcane Barrage" );
 
 
-  movement->add_talent( this, "Shimmer", "if=movement.distance>=10" );
   movement->add_action( this, "Blink", "if=movement.distance>=10" );
   movement->add_action( this, "Presence of Mind" );
   movement->add_action( this, "Arcane Missiles" );
