@@ -100,11 +100,11 @@ actions.movement+=/arcane_missiles
 actions.movement+=/arcane_orb
 actions.movement+=/supernova
 
-head=blazewing_hood,id=165500,bonus_id=4824/1537/4775,azerite_powers=127/374/459/13
+head=blazewing_hood,id=165500,bonus_id=4824/1537/4775,azerite_powers=127/562/459/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
 shoulders=gigacharged_shoulderpads,id=165497,bonus_id=4824/1537/4775,azerite_powers=127/88/459/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
-chest=blooddrenched_robes,id=159241,bonus_id=1587/4819/4775,azerite_powers=127/374/31/13
+chest=blooddrenched_robes,id=159241,bonus_id=1587/4819/4775,azerite_powers=127/562/30/13
 wrists=lever_stabilizing_wristwraps,id=165508,bonus_id=4800/1537
 hands=firecallers_handwraps,id=165764,bonus_id=4800/1537
 waist=waistcord_of_flowing_silk,id=165504,bonus_id=4800/1537
