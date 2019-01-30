@@ -3966,7 +3966,9 @@ struct avatar_t : public warrior_spell_t
     {
       p()->buff.bastion_of_might->trigger();
 
-      p() -> active.bastion_of_might_ip -> execute( );
+      // TODO: check if Arms warriors get an ignore pain too
+      if ( p() -> specialization() == WARRIOR_PROTECTION )
+        p() -> active.bastion_of_might_ip -> execute( );
     }
   }
 
@@ -4818,7 +4820,7 @@ void warrior_t::init_spells()
   {
     active.iron_fortress = new iron_fortress_t( this );
   }
-  if ( azerite.bastion_of_might.enabled() )
+  if ( azerite.bastion_of_might.enabled() && specialization() == WARRIOR_PROTECTION )
   {
     active.bastion_of_might_ip = new ignore_pain_bom_t( this );
   }
