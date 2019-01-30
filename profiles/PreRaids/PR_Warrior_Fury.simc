@@ -36,7 +36,6 @@ actions+=/run_action_list,name=movement,if=movement.distance>5
 actions+=/heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in>45)|!raid_event.movement.exists
 actions+=/potion
 actions+=/furious_slash,if=talent.furious_slash.enabled&(buff.furious_slash.stack<3|buff.furious_slash.remains<3|(cooldown.recklessness.remains<3&buff.furious_slash.remains<9))
-actions+=/bloodthirst,if=equipped.kazzalax_fujiedas_fury&(buff.fujiedas_fury.down|remains<2)
 actions+=/rampage,if=cooldown.recklessness.remains<3
 actions+=/recklessness
 actions+=/whirlwind,if=spell_targets.whirlwind>1&!buff.meat_cleaver.up
@@ -51,8 +50,8 @@ actions.movement=heroic_leap
 
 actions.single_target=siegebreaker
 actions.single_target+=/rampage,if=buff.recklessness.up|(talent.frothing_berserker.enabled|talent.carnage.enabled&(buff.enrage.remains<gcd|rage>90)|talent.massacre.enabled&(buff.enrage.remains<gcd|rage>90))
-actions.single_target+=/execute,if=buff.enrage.up
-actions.single_target+=/bloodthirst,if=buff.enrage.down
+actions.single_target+=/execute
+actions.single_target+=/bloodthirst,if=buff.enrage.down|azerite.cold_steel_hot_blood.rank>1
 actions.single_target+=/raging_blow,if=charges=2
 actions.single_target+=/bloodthirst
 actions.single_target+=/bladestorm,if=prev_gcd.1.rampage&(debuff.siegebreaker.up|!talent.siegebreaker.enabled)
