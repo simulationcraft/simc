@@ -2453,6 +2453,23 @@ struct ember_elemental_t : public primal_elemental_t
     {
       return true;
     }
+
+    timespan_t execute_time() const override
+    {
+      timespan_t t = pet_spell_t<ember_elemental_t>::execute_time();
+
+      // server seems to tick every 2.4something seconds and allows pets to start actions at that moment
+      // see syncing up casts here:
+      // https://cdn.discordapp.com/attachments/271021613938376704/539995302090768395/unknown.png
+      timespan_t server_tick = timespan_t::from_seconds( 2.416f );
+
+      if ( t < server_tick )
+      {
+        return server_tick;
+      }
+
+      return t;
+    }
   };
 
   void create_default_apl() override
@@ -2634,6 +2651,23 @@ struct spark_elemental_t : public primal_elemental_t
     bool usable_moving() const override
     {
       return true;
+    }
+
+    timespan_t execute_time() const override
+    {
+      timespan_t t = pet_spell_t<spark_elemental_t>::execute_time();
+
+      // server seems to tick every 2.4something seconds and allows pets to start actions at that moment
+      // see syncing up casts here:
+      // https://cdn.discordapp.com/attachments/271021613938376704/539995302090768395/unknown.png
+      timespan_t server_tick = timespan_t::from_seconds( 2.416f );
+
+      if ( t < server_tick )
+      {
+        return server_tick;
+      }
+
+      return t;
     }
   };
 
@@ -8199,7 +8233,8 @@ void shaman_t::init_action_list_enhancement()
   filler->add_action( this, "Crash Lightning",
                       "if=talent.forceful_winds.enabled&active_enemies>1&variable.furyCheck_CL" );
   filler->add_action( this, "Flametongue", "if=talent.searing_assault.enabled" );
-  filler->add_action( this, "Lava Lash", "if=!azerite.primal_primer.enabled&talent.hot_hand.enabled&buff.hot_hand.react" );
+  filler->add_action( this, "Lava Lash",
+                      "if=!azerite.primal_primer.enabled&talent.hot_hand.enabled&buff.hot_hand.react" );
   filler->add_action( this, "Crash Lightning", "if=active_enemies>1&variable.furyCheck_CL" );
   filler->add_action( this, "Rockbiter", "if=maelstrom<70&!buff.strength_of_earth.up" );
   filler->add_action( this, "Crash Lightning", "if=talent.crashing_storm.enabled&variable.OCPool_CL" );
