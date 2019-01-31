@@ -579,6 +579,7 @@ bool profilesets_t::parse( sim_t* sim )
                 << e.what() << std::endl;
       set_state( DONE );
       m_control.notify_one();
+      delete control;
       return false;
     }
 
