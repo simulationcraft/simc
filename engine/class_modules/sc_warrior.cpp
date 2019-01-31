@@ -623,8 +623,8 @@ struct warrior_action_t : public Base
         frothing_dot( false ),
         sweeping_strikes( false ),
         deadly_calm( false ),
-        crushing_assault( false ),
-        booming_voice( false )
+        booming_voice( false ),
+        crushing_assault( false )
     {
     }
   } affected_by;
@@ -5268,7 +5268,6 @@ void warrior_t::apl_prot()
   action_priority_list_t* prot         = get_action_priority_list( "prot" );
 
   default_list->add_action( "auto_attack" );
-  default_list->add_action( this, "intercept" );
 
   size_t num_items = items.size();
   for ( size_t i = 0; i < num_items; i++ )
@@ -5292,23 +5291,24 @@ void warrior_t::apl_prot()
 
   if ( sim->allow_potions && true_level >= 80 )
   {
-    prot->add_action( "potion,if=target.time_to_die<25" );
+    prot->add_action( "potion,if=buff.avatar.up|target.time_to_die<25" );
   }
 
-  prot->add_action( this, "Avatar", "if=(cooldown.demoralizing_shout.ready|cooldown.demoralizing_shout.remains>2)" );
+  prot->add_action( this, "Avatar", "if=(debuff.demoralizing_shout_debuff.up|cooldown.demoralizing_shout.remains>5)" );
+  prot->add_action( this, "Shield Block", "if=(cooldown.shield_slam.ready&buff.shield_block.down&buff.last_stand.down&talent.bolster.enabled)" );
+  prot->add_action( this, "Last Stand", "if=(cooldown.shield_slam.ready&cooldown.shield_block.charges_fractional<1&buff.shield_block.down&talent.bolster.enabled)" );
+  prot->add_action( this, "Shield Slam" );
   prot->add_action( this, "Demoralizing Shout" );
+  prot->add_action( this, "Thunder Clap", "if=(talent.unstoppable_force.enabled&buff.avatar.up&debuff.demoralizing_shout_debuff.up)" );
   prot->add_talent( this, "Ravager" );
   prot->add_talent( this, "Dragon Roar" );
-  prot->add_action( this, "Thunder Clap", "if=(talent.unstoppable_force.enabled&buff.avatar.up&debuff.demoralizing_shout_debuff.up)" );
-  prot->add_action( this, "Shield Block", "if=(cooldown.shield_slam.ready&buff.shield_block.down&buff.last_stand.down)" );
-  prot->add_action( this, "Last Stand", "if=buff.shield_block.down" );
-  prot->add_action( this, "Shield Slam" );
   prot->add_action( this, "Thunder Clap" );
   prot->add_action( this, "Revenge",
                     "if=(!talent.vengeance.enabled)|(talent.vengeance.enabled&buff.revenge.react&!buff.vengeance_"
                     "ignore_pain.up)|(buff.vengeance_revenge.up)|(talent.vengeance.enabled&!buff.vengeance_ignore_pain."
                     "up&!buff.vengeance_revenge.up&rage>=30)" );
-  prot->add_action( this, "Ignore Pain", "use_off_gcd=1,if=rage>70" );
+  prot->add_action( this, "Intercept", "use_off_gcd=1,if=rage<30&cooldown.shield_slam.remains" );
+  prot->add_action( this, "Ignore Pain", "use_off_gcd=1,if=rage>=75" );
   prot->add_action( this, "Devastate" );
 }
 

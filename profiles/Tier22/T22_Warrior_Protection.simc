@@ -29,7 +29,6 @@ actions.precombat+=/potion
 
 # Executed every time the actor is available.
 actions=auto_attack
-actions+=/intercept
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
@@ -38,18 +37,19 @@ actions+=/fireblood
 actions+=/ancestral_call
 actions+=/call_action_list,name=prot
 
-actions.prot=potion,if=target.time_to_die<25
-actions.prot+=/avatar,if=(cooldown.demoralizing_shout.ready|cooldown.demoralizing_shout.remains>2)
+actions.prot=potion,if=buff.avatar.up|target.time_to_die<25
+actions.prot+=/avatar,if=(debuff.demoralizing_shout_debuff.up|cooldown.demoralizing_shout.remains>5)
+actions.prot+=/shield_block,if=(cooldown.shield_slam.ready&buff.shield_block.down&buff.last_stand.down&talent.bolster.enabled)
+actions.prot+=/last_stand,if=(cooldown.shield_slam.ready&cooldown.shield_block.charges_fractional<1&buff.shield_block.down&talent.bolster.enabled)
+actions.prot+=/shield_slam
 actions.prot+=/demoralizing_shout
+actions.prot+=/thunder_clap,if=(talent.unstoppable_force.enabled&buff.avatar.up&debuff.demoralizing_shout_debuff.up)
 actions.prot+=/ravager
 actions.prot+=/dragon_roar
-actions.prot+=/thunder_clap,if=(talent.unstoppable_force.enabled&buff.avatar.up&debuff.demoralizing_shout_debuff.up)
-actions.prot+=/shield_block,if=(cooldown.shield_slam.ready&buff.shield_block.down&buff.last_stand.down)
-actions.prot+=/last_stand,if=buff.shield_block.down
-actions.prot+=/shield_slam
 actions.prot+=/thunder_clap
 actions.prot+=/revenge,if=(!talent.vengeance.enabled)|(talent.vengeance.enabled&buff.revenge.react&!buff.vengeance_ignore_pain.up)|(buff.vengeance_revenge.up)|(talent.vengeance.enabled&!buff.vengeance_ignore_pain.up&!buff.vengeance_revenge.up&rage>=30)
-actions.prot+=/ignore_pain,use_off_gcd=1,if=rage>70
+actions.prot+=/intercept,use_off_gcd=1,if=rage<30&cooldown.shield_slam.remains
+actions.prot+=/ignore_pain,use_off_gcd=1,if=rage>=75
 actions.prot+=/devastate
 
 head=gridrunner_galea,id=160634,bonus_id=4800/1507/4775,azerite_powers=13/15/89/483
