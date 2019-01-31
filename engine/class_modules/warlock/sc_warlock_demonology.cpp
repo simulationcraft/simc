@@ -1047,6 +1047,8 @@ namespace warlock {
     def->add_action( "berserking,if=pet.demonic_tyrant.active|target.time_to_die<=15" );
     def->add_action( "blood_fury,if=pet.demonic_tyrant.active|target.time_to_die<=15" );
     def->add_action( "fireblood,if=pet.demonic_tyrant.active|target.time_to_die<=15" );
+    def->add_action( "hand_of_guldan,if=azerite.explosive_potential.rank&time<5&soul_shard>2&buff.explosive_potential.down&buff.wild_imps.stack<3&!prev_gcd.1.hand_of_guldan&&!prev_gcd.2.hand_of_guldan" );
+    def->add_action( "implosion,if=azerite.explosive_potential.rank&buff.wild_imps.stack>2&buff.explosive_potential.down" );
     def->add_action( "doom,if=!ticking&time_to_die>30&spell_targets.implosion<2" );
     def->add_action( "demonic_strength,if=(buff.wild_imps.stack<6|buff.demonic_power.up)|spell_targets.implosion<2");
     def->add_action( "call_action_list,name=nether_portal,if=talent.nether_portal.enabled&spell_targets.implosion<=2");
