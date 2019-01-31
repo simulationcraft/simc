@@ -73,15 +73,15 @@ actions.opener+=/sequence,if=talent.wake_of_ashes.enabled&talent.inquisition.ena
 head=helm_of_tempered_jade,id=165548,bonus_id=4824/1537/4775,azerite_powers=125/562/31/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
 shoulders=dynosprocket_spaulders,id=165825,bonus_id=4824/1537/4775,azerite_powers=453/562/22/13
-back=high_tinkers_cape,id=165924,bonus_id=4800/1537
+back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
 chest=breastplate_of_divine_purification,id=165550,bonus_id=4824/1537/4775,azerite_powers=396/562/461/13
 wrists=splinterbone_vambraces,id=165551,bonus_id=4800/1537
 hands=crusade_pummelers,id=165549,bonus_id=4800/1537
 waist=embersear_waistguard,id=165552,bonus_id=4800/1537
 legs=arcing_thunderlizard_legplates,id=165560,bonus_id=4800/1537
 feet=coinage_stampers,id=165561,bonus_id=4800/1537
-finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_mastery
-finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_mastery
+finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_haste
+finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_haste
 trinket1=ramping_amplitude_gigavolt_engine,id=165580,bonus_id=4800/1537
 trinket2=everchill_anchor,id=165570,bonus_id=4800/1537
 main_hand=dawnbreaker,id=165586,bonus_id=4800/1537,enchant=masterful_navigation
@@ -90,8 +90,9 @@ main_hand=dawnbreaker,id=165586,bonus_id=4800/1537,enchant=masterful_navigation
 # gear_ilvl=416.27
 # gear_strength=5796
 # gear_stamina=9920
-# gear_crit_rating=734
-# gear_haste_rating=1194
-# gear_mastery_rating=1088
+# gear_crit_rating=701
+# gear_haste_rating=1352
+# gear_mastery_rating=963
 # gear_versatility_rating=348
 # gear_armor=5052
+# set_bonus=gift_of_the_loa_2pc=1
