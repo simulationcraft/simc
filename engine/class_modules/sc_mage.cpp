@@ -6418,7 +6418,7 @@ void mage_t::apl_frost()
     "cooldown.rune_of_power.full_recharge_time<cooldown.frozen_orb.remains",
     "On single target fights, the cooldown of Rune of Power is lower than the cooldown of Frozen Orb, this gives "
     "extra Rune of Power charges that should be used with active talents, if possible." );
-  cooldowns->add_action( "potion,if=prev_gcd.1.icy_veins|target.time_to_die<70" );
+  cooldowns->add_action( "potion,if=prev_gcd.1.icy_veins|target.time_to_die<30" );
   cooldowns->add_action( "use_items" );
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
