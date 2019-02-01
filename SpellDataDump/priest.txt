@@ -3309,7 +3309,8 @@ Attributes       : ........ ........ x....... .......x   ........ ........ .....
                  : Cannot cancel aura (31)
 Effects          :
 #1 (id=271185)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | SP Coefficient: 1.80000 | PvP Coefficient: 1.25000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | SP Coefficient: 1.80000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Hotfixed: PvP Coefficient (1.25 -> 1)
 Description      : Wraps an ally in shadows which heal for $m1, but at a price.
 
 The ally will take ${$m1/20} damage every $187464t1 sec, until they have taken ${$m1/2} total damage from all sources, or leave combat.

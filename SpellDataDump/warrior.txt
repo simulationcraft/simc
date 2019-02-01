@@ -3657,9 +3657,10 @@ Effects          :
 #1 (id=292876)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=344340)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
-                   Base Value: -30000 | Scaled Value: -30000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+                   Base Value: -15000 | Scaled Value: -15000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Demoralizing Shout (1160)
                    Family Flags: 17
+                   Hotfixed: Base Value (-30000 -> -15000)
 Description      : Reduces the cooldown of Demoralizing Shout by ${($m2/1000)*-1} sec, and Demoralizing Shout now reduces the damage enemies deal to all targets, not just you.
 
 Name             : Thunderstruck (rank=PvP Talent) (id=199042) [Spell Family (4)] 
@@ -6738,9 +6739,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=728325)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
-                   Base Value: 4000 | Scaled Value: 4000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 4000 | Scaled Value: 4000 | PvP Coefficient: 0.50000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Intimidating Shout (5246)
                    Family Flags: 27
+                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Intimidating Shout disorients enemies for an additional ${$s1/1000} sec, and it causes all enemies to cower in fear instead of fleeing.
 
 Name             : Rumbling Earth (id=275339) [Spell Family (4), Passive] 

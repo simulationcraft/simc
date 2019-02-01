@@ -8560,13 +8560,13 @@ Effects          :
 Description      : Your Combo Strikes grant a stacking ${$287062s3/100}.1% chance for your next Fists of Fury to grant $s1 Haste and invoke Xuen, The White Tiger for $287063d.
 
 Name             : Fury of Xuen (id=287062) [Scaling Spell (-1), Spell Family (53)] 
-Hotfixed         : Max stacks (33 -> 67), Tooltip
+Hotfixed         : Max stacks (33 -> 100), Tooltip
 Class            : Monk
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 20 seconds
-Stacks           : 67 maximum
+Stacks           : 100 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
