@@ -77,6 +77,7 @@ namespace consumables
 {
   void galley_banquet( special_effect_t& );
   void bountiful_captains_feast( special_effect_t& );
+  void boralus_blood_sausage( special_effect_t& );
   void potion_of_rising_death( special_effect_t& );
   void potion_of_bursting_blood( special_effect_t& );
 }
@@ -208,6 +209,16 @@ void consumables::bountiful_captains_feast( special_effect_t& effect )
       { STAT_AGILITY,   259454 },
       { STAT_INTELLECT, 259455 },
       { STAT_STAMINA,   259457 } } );
+}
+
+// Boralus Blood Sausage ================================================
+
+void consumables::boralus_blood_sausage( special_effect_t& effect )
+{
+  util::init_feast( effect,
+    { { STAT_STRENGTH,  290469 },
+      { STAT_AGILITY,   290467 },
+      { STAT_INTELLECT, 290468 } } );
 }
 
 // Potion of Rising Death ===================================================
@@ -2349,6 +2360,7 @@ void unique_gear::register_special_effects_bfa()
   // Consumables
   register_special_effect( 259409, consumables::galley_banquet );
   register_special_effect( 259410, consumables::bountiful_captains_feast );
+  register_special_effect( 290464, consumables::boralus_blood_sausage );
   register_special_effect( 269853, consumables::potion_of_rising_death );
   register_special_effect( 251316, consumables::potion_of_bursting_blood );
 

@@ -6,6 +6,8 @@ CONSUMABLE_ITEM_WHITELIST = {
      133579,                            # Lavish Suramar Feast (7.0)
      156525,                            # Galley Banquet (8.0)
      156526,                            # Bountiful Captain's Feast (8.0)
+     166804,                            # Boralus Blood Sausage (8.1)
+     166240,                            # Sanguinated Feast (8.1)
    ],
    # "Other"
    8: [
