@@ -695,10 +695,14 @@ void items::leyshocks_grand_compilation( special_effect_t& effect )
 
 void items::jes_howler( special_effect_t& effect )
 {
+  // The first versatility gain component is divided among the player and up to 4 allies in the game
+  // This will not buff other actors in the sim
+  // Default behavior is buffing 4 allies
   auto main_amount = effect.driver()->effectN( 1 ).average( effect.item );
   main_amount = item_database::apply_combat_rating_multiplier( *effect.item, main_amount );
   main_amount /= ( 1 + effect.player->sim->bfa_opts.jes_howler_allies );
 
+  // The player gains additional versatility for every ally buffed
   auto ally_amount = effect.player->sim->bfa_opts.jes_howler_allies *
     effect.driver()->effectN( 2 ).average( effect.item );
   ally_amount = item_database::apply_combat_rating_multiplier( *effect.item, ally_amount );

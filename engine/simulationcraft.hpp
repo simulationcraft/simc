@@ -1110,7 +1110,7 @@ struct sim_t : private sc_thread_t
   struct bfa_opt_t
   {
     /// Number of allies affected by Jes' Howler buff
-    unsigned            jes_howler_allies = 0;
+    unsigned            jes_howler_allies = 4;
     /// Chance to spawn the rare droplet
     double              secrets_of_the_deep_chance = 0.1; // TODO: Guessed, needs validation
     /// Chance that the player collects the droplet, defaults to always
