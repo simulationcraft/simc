@@ -122,14 +122,14 @@ feet=lightfeather_footpads,id=165502,bonus_id=4800/1537
 finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_mastery
 finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_mastery
 trinket1=incandescent_sliver,id=165571,bonus_id=4800/1537
-trinket2=ignition_mages_fuse,id=159615,bonus_id=1542/4779
+trinket2=ignition_mages_fuse,id=159615,bonus_id=1572/4780
 main_hand=sirens_song,id=165603,bonus_id=4800/1537,enchant=masterful_navigation
 off_hand=fogbreaker_light_of_the_sea,id=165583,bonus_id=4800/1537
 
 # Gear Summary
-# gear_ilvl=413.38
+# gear_ilvl=415.25
 # gear_stamina=9919
-# gear_intellect=7151
+# gear_intellect=7239
 # gear_crit_rating=657
 # gear_haste_rating=1279
 # gear_mastery_rating=1214
