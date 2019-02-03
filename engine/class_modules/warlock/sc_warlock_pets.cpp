@@ -47,7 +47,7 @@ void warlock_pet_t::create_buffs()
 
   buffs.demonic_consumption = make_buff(this, "demonic_consumption", find_spell(267972))
     ->set_default_value(find_spell(267972)->effectN(1).percent())
-    ->set_max_stack(200);
+    ->set_max_stack(999);
 
   // destro
   buffs.embers = make_buff(this, "embers", find_spell(264364))
