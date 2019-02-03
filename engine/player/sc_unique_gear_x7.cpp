@@ -1731,13 +1731,26 @@ void items::tidestorm_codex( special_effect_t& effect )
 
       if ( player->bugs )
       {
-        // The channel can actually be cancelled early while still getting all six elementals.
-        // Here we model that by reducing the channel to 1.5 sec if bugs are enabled.
-        dot_duration = 1.5_s;
+        // For some reason, the elementals keep spawning if you interrupt the channel
+        // by casting another cast time spell (but not if you interrupt by moving or
+        // /stopcasting). This is really annoying to model properly in simc, so here
+        // we just increase elemental spawn frequency and set channel time to match
+        // current GCD.
+        base_tick_time *= 0.5;
       }
 
       damage = create_proc_action<surging_burst_t>( "surging_burst", effect );
       add_child( damage );
+    }
+
+    timespan_t composite_dot_duration( const action_state_t* ) const override
+    {
+      if ( player->bugs )
+        // Assume we're queueing another spell as soon as possible, i.e.
+        // after the GCD has elapsed.
+        return std::max( player->cache.spell_speed() * trigger_gcd, player->min_gcd );
+      else
+        return dot_duration;
     }
 
     double composite_haste() const override
@@ -1784,8 +1797,6 @@ void items::tidestorm_codex( special_effect_t& effect )
           // all six elementals. This means we need take into account channel lag.
           wait = rng().gauss( sim->channel_lag, sim->channel_lag_stddev );
         }
-        // With bugs, the interrupt window is huge and the interrupt can even be
-        // done with the help of spellqueueing, so no delay is added.
 
         player->schedule_ready( wait );
       }
