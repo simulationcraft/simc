@@ -53,9 +53,8 @@ public:
   bool enable( timespan_t now )
   {
     if ( last_enable == now )
-    {
       return false;
-    }
+
     state = true;
     last_enable = now;
     return true;
@@ -64,9 +63,8 @@ public:
   bool disable( timespan_t now )
   {
     if ( last_disable == now )
-    {
       return false;
-    }
+
     state = false;
     last_disable = now;
     return true;
@@ -79,11 +77,7 @@ public:
 
   timespan_t duration( timespan_t now ) const
   {
-    if ( !state )
-    {
-      return 0_ms;
-    }
-    return now - last_enable;
+    return state ? now - last_enable : 0_ms;
   }
 
   void reset()
@@ -157,23 +151,18 @@ struct cooldown_reduction_data_t
   cooldown_reduction_data_t( const cooldown_t* cooldown, const std::string& name ) :
     cd( cooldown )
   {
-    player_t* p = cd->player;
-
-    effective = p->get_sample_data( name + " effective cooldown reduction" );
-    wasted    = p->get_sample_data( name + " wasted cooldown reduction" );
+    effective = cd->player->get_sample_data( name + " effective cooldown reduction" );
+    wasted    = cd->player->get_sample_data( name + " wasted cooldown reduction" );
   }
 
   void add( timespan_t reduction )
   {
     timespan_t remaining;
 
-    if ( cd->charges > 1 )
+    if ( cd->recharge_event )
     {
-      if ( cd->recharge_event )
-      {
-        remaining = cd->current_charge_remains()
-          + ( cd->charges - cd->current_charge - 1 ) * cooldown_t::cooldown_duration( cd );
-      }
+      auto duration = cooldown_t::cooldown_duration( cd );
+      remaining = cd->current_charge_remains() + ( cd->charges - cd->current_charge - 1 ) * duration;
     }
     else
     {
@@ -855,15 +844,12 @@ struct waterbolt_t : public mage_pet_spell_t
     mage_pet_spell_t( "waterbolt", p, p->find_pet_spell( "Waterbolt" ) )
   {
     parse_options( options_str );
-    trigger_gcd = 0_ms;
   }
 
-  timespan_t execute_time() const override
+  timespan_t gcd() const override
   {
-    timespan_t cast_time = mage_pet_spell_t::execute_time();
-
-    // Waterbolt has 1 s GCD, here we model it as min cast time.
-    return std::max( cast_time, 1.0_s );
+    // Waterbolt's GCD is fixed and does not scale with haste.
+    return 1.0_s;
   }
 };
 
@@ -1605,7 +1591,7 @@ struct arcane_mage_spell_t : public mage_spell_t
       c *= 1.0 + cr->check_value();
     }
 
-    return c;
+    return std::max( c, 0.0 );
   }
 
   double arcane_charge_damage_bonus( bool arcane_barrage = false ) const
