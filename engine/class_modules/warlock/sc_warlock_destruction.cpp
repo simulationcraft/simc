@@ -288,7 +288,6 @@ namespace warlock {
       }
     };
 
-    //TODO: Check if initial damage of Immolate is reduced on Havoc'd target
     struct immolate_t : public destruction_spell_t
     {
       immolate_t(warlock_t* p, const std::string& options_str) :

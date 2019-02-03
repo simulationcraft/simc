@@ -37,7 +37,7 @@ namespace warlock
         weapon_multiplier = 0.0;
         gain = player->get_gain(name_str);
 
-        db_max_contribution = timespan_t::zero();
+        db_max_contribution = 0_ms;
       }
 
       void init() override
@@ -63,41 +63,9 @@ namespace warlock
         return pm;
       }
 
-      void tick(dot_t* d) override
-      {
-        warlock_spell_t::tick(d);
-
-        if (d->state->result > 0 && result_is_hit(d->state->result))
-        {
-          auto target_data = td(d->target);
-          if (target_data->dots_seed_of_corruption->is_ticking() && id != p()->spells.seed_of_corruption_aoe->id)
-          {
-            accumulate_seed_of_corruption(target_data, d->state->result_amount);
-          }
-        }
-      }
-
-      void impact(action_state_t* s) override
-      {
-        warlock_spell_t::impact(s);
-
-        if (s->result_amount > 0 && result_is_hit(s->result))
-        {
-          auto td = this->td(s->target);
-          if (td->dots_seed_of_corruption->is_ticking() && id != p()->spells.seed_of_corruption_aoe->id)
-          {
-            accumulate_seed_of_corruption(td, s->result_amount);
-            if (sim->log)
-              sim->out_log.printf("remaining damage to explode seed %f", td->soc_threshold);
-          }
-        }
-      }
-
       virtual timespan_t get_db_dot_duration( dot_t* dot ) const
       {
-        timespan_t base_dur = db_max_contribution;
-
-        return dot->remains() > base_dur ? base_dur : dot->remains();
+        return std::min(db_max_contribution,dot->remains());
       }
 
       virtual std::tuple<double, double> get_db_dot_state( dot_t* dot )
@@ -105,24 +73,38 @@ namespace warlock
         action_state_t* state = dot->current_action->get_state( dot->state );
         dot->current_action->calculate_tick_amount( state, 1.0 );
 
-        timespan_t remaining = get_db_dot_duration( dot );
-        
-        bool max = ( remaining == db_max_contribution ? true : false );
-
+        timespan_t db_duration = get_db_dot_duration(dot);
         timespan_t dot_tick_time = dot->current_action->tick_time( state );
 
-        double ticks_left = ( remaining - dot->time_to_next_tick() ) / dot_tick_time;
+        double ticks_left = 1.0;
 
-        if ( ticks_left == 0.0 )
+        if (db_duration < dot->remains())
         {
-          ticks_left += dot->time_to_next_tick() / dot_tick_time;
+          //If using the full duration, time divided by tick time always gives proper results
+          ticks_left = db_duration/dot_tick_time;
         }
         else
         {
-          ticks_left += 1;
-        }
+          if (db_duration <= dot_tick_time && dot->time_to_next_tick() >= db_duration)
+          {
+            //All that's left is a partial tick
+            ticks_left = db_duration/dot_tick_time;
+          }
+          else
+          {
+            //Make sure calculations are always done relative to a tick time
+            timespan_t shifted_duration = db_duration - dot->time_to_next_tick();
 
-        ticks_left = max ? remaining / dot_tick_time : ticks_left;
+            //Number of ticks remaining, including the tick we just "removed"
+            ticks_left = 1+shifted_duration/dot_tick_time;
+
+            //If a tick is about to happen but we haven't ticked it yet, update this
+            //This is a small edge case that should only happen when Deathbolt is executed at the 
+            //exact same time as a tick event and comes earlier in the stack
+            if(dot->time_to_next_tick() == 0_ms)
+              ticks_left += 1;
+          }
+        }
 
         if ( sim->debug )
         {
@@ -139,22 +121,13 @@ namespace warlock
 
         return s;
       }
-
-      static void accumulate_seed_of_corruption(warlock_td_t* td, double amount)
-      {
-        td->soc_threshold -= amount;
-
-        if (td->soc_threshold <= 0)
-        {
-          td->dots_seed_of_corruption->cancel();
-        }
-      }
     };
 
     const std::array<int, MAX_UAS> ua_spells = { { 233490, 233496, 233497, 233498, 233499 } };
 
     struct shadow_bolt_t : public affliction_spell_t
     {
+
       shadow_bolt_t(warlock_t* p, const std::string& options_str) :
         affliction_spell_t(p, "Shadow Bolt", p->specialization())
       {
@@ -165,7 +138,7 @@ namespace warlock
       {
         if (p()->buffs.nightfall->check())
         {
-          return timespan_t::zero();
+          return 0_ms;
         }
 
         return affliction_spell_t::execute_time();
@@ -193,18 +166,22 @@ namespace warlock
       {
         double m = affliction_spell_t::action_multiplier();
 
-        if (p()->buffs.nightfall->check())
-        {
+        if (time_to_execute == 0_ms && p()->buffs.nightfall->check())
           m *= 1.0 + p()->buffs.nightfall->default_value;
-        }
 
         return m;
+      }
+
+      void schedule_execute(action_state_t* s) override
+      {
+        affliction_spell_t::schedule_execute(s);
       }
 
       void execute() override
       {
         affliction_spell_t::execute();
-        p()->buffs.nightfall->expire();
+        if(time_to_execute == 0_ms)
+          p()->buffs.nightfall->expire();
       }
     };
 
@@ -265,6 +242,7 @@ namespace warlock
       double bonus_ta(const action_state_t* s) const override
       {
         double ta = affliction_spell_t::bonus_ta(s);
+        //TOCHECK: How does Sudden Onset behave with Writhe in Agony's increased stack cap?
         ta += p()->azerite.sudden_onset.value();
         return ta;
       }
@@ -345,16 +323,11 @@ namespace warlock
 
         if ( p->talents.absolute_corruption->ok() )
         {
-          dot_duration = sim->expected_iteration_time > timespan_t::zero() ?
+          dot_duration = sim->expected_iteration_time > 0_ms ?
             2 * sim->expected_iteration_time :
             2 * sim->max_time * ( 1.0 + sim->vary_combat_length ); // "infinite" duration
           base_multiplier *= 1.0 + p->talents.absolute_corruption->effectN( 2 ).percent();
         }
-      }
-
-      void init() override
-      {
-        affliction_spell_t::init();
       }
 
       void tick( dot_t* d ) override
@@ -445,7 +418,7 @@ namespace warlock
         }
         const spell_data_t* ptr_spell = p->find_spell( 233490 );
         spell_power_mod.direct = ptr_spell->effectN( 1 ).sp_coeff();
-        dot_duration = timespan_t::zero(); // DoT managed by ignite action.
+        dot_duration = 0_ms; // DoT managed by ignite action.
       }
 
       void init() override
@@ -459,7 +432,7 @@ namespace warlock
         if ( result_is_hit( s->result ) )
         {
           real_ua_t* real_ua = nullptr;
-          timespan_t min_duration = timespan_t::from_seconds( 100 );
+          timespan_t min_duration = 100_s;
 
           warlock_td_t* target_data = td( s->target );
           for ( int i = 0; i < MAX_UAS; i++ )
@@ -536,30 +509,15 @@ namespace warlock
           {
             continue;
           }
-          if (td->dots_agony->is_ticking())
-          {
-            td->dots_agony->extend_duration(timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value()));
-          }
-          if (td->dots_corruption->is_ticking())
-          {
-            td->dots_corruption->extend_duration(timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value()));
-          }
-          if (td->dots_siphon_life->is_ticking())
-          {
-            td->dots_siphon_life->extend_duration(timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value()));
-          }
-          if (td->dots_phantom_singularity->is_ticking())
-          {
-            td->dots_phantom_singularity->extend_duration(timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value()));
-          }
-          if (td->dots_vile_taint->is_ticking())
-          {
-            td->dots_vile_taint->extend_duration(timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value()));
-          }
+          timespan_t darkglare_extension = timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value());
+          td->dots_agony->extend_duration(darkglare_extension);
+          td->dots_corruption->extend_duration(darkglare_extension);
+          td->dots_siphon_life->extend_duration(darkglare_extension);
+          td->dots_phantom_singularity->extend_duration(darkglare_extension);
+          td->dots_vile_taint->extend_duration(darkglare_extension);
           for (auto& current_ua : td->dots_unstable_affliction)
           {
-            if (current_ua->is_ticking())
-              current_ua->extend_duration(timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value()));
+            current_ua->extend_duration(darkglare_extension);
           }
         }
       }
@@ -656,6 +614,7 @@ namespace warlock
 
       void impact( action_state_t* s ) override
       {
+        //TOCHECK: Does the threshold reset if the duration is refreshed before explosion?
         if ( result_is_hit( s->result ) )
         {
           td( s->target )->soc_threshold = s->composite_spell_power();
@@ -664,12 +623,23 @@ namespace warlock
         affliction_spell_t::impact( s );
       }
 
-      void last_tick( dot_t* d ) override
+      //Seed of Corruption is currently bugged on pure single target, extending the duration
+      //but still exploding at the original time, wiping the debuff. tick() should be used instead
+      //of last_tick() for now to model this more appropriately. TOCHECK regularly
+      void tick( dot_t* d ) override
       {
-        affliction_spell_t::last_tick( d );
+        affliction_spell_t::tick(d);
+        
+        if(d->remains() > 0_ms)
+          d->cancel();
+      }
 
+      void last_tick(dot_t* d) override
+      {
         explosion->set_target( d->target );
         explosion->schedule_execute();
+
+        affliction_spell_t::last_tick(d);
       }
     };
 
@@ -886,29 +856,24 @@ namespace warlock
       {
         warlock_td_t* td = this->td(target);
 
-        double total_damage_agony = get_contribution_from_dot(td->dots_agony);
-        double total_damage_corruption = get_contribution_from_dot(td->dots_corruption);
+        double total_dot_dmg = 0.0;
 
-        double total_damage_siphon_life = 0.0;
+        total_dot_dmg += get_contribution_from_dot(td->dots_agony);
+        total_dot_dmg += get_contribution_from_dot(td->dots_corruption);
+
         if (p()->talents.siphon_life->ok())
-          total_damage_siphon_life = get_contribution_from_dot(td->dots_siphon_life);
+          total_dot_dmg += get_contribution_from_dot(td->dots_siphon_life);
 
-        double total_damage_phantom_singularity = 0.0;
         if ( p()->talents.phantom_singularity->ok() )
-          total_damage_phantom_singularity = get_contribution_from_dot( td->dots_phantom_singularity );
+          total_dot_dmg += get_contribution_from_dot( td->dots_phantom_singularity );
 
-        double total_damage_vile_taint = 0.0;
         if ( p()->talents.vile_taint->ok() )
-          total_damage_vile_taint = get_contribution_from_dot( td->dots_vile_taint );
+          total_dot_dmg += get_contribution_from_dot( td->dots_vile_taint );
 
-        double total_damage_unstable_afflictions = 0.0;
         for (auto& current_ua : td->dots_unstable_affliction)
         {
-          total_damage_unstable_afflictions += get_contribution_from_dot(current_ua);
+          total_dot_dmg += get_contribution_from_dot(current_ua);
         }
-
-        const double total_dot_dmg = total_damage_agony + total_damage_corruption + total_damage_siphon_life +
-                     total_damage_unstable_afflictions + total_damage_phantom_singularity + total_damage_vile_taint;
 
         this->base_dd_min = this->base_dd_max = (total_dot_dmg * data().effectN(2).percent());
 
@@ -923,11 +888,12 @@ namespace warlock
       {
         s->result_total = base_dd_min; // we already calculated how much the hit should be
 
-        warlock_spell_t::impact( s );
+        affliction_spell_t::impact( s );
       }
     };
 
     // Azerite
+    //TOCHECK: Does this damage proc affect Seed of Corruption?
     struct pandemic_invocation_t : public affliction_spell_t
     {
       pandemic_invocation_t( warlock_t* p ):

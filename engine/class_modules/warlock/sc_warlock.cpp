@@ -9,6 +9,7 @@ namespace warlock
   {
     struct drain_life_t : public warlock_spell_t
     {
+
       drain_life_t( warlock_t* p, const std::string& options_str ) :
         warlock_spell_t( p, "Drain Life" )
       {
@@ -20,6 +21,13 @@ namespace warlock
 
       void execute() override
       {
+
+        if (p()->azerite.inevitable_demise.ok() && p()->buffs.inevitable_demise->check() > 0)
+        {
+          if (p()->buffs.drain_life->check())
+            p()->buffs.inevitable_demise->expire();
+        }
+
         warlock_spell_t::execute();
 
         p()->buffs.drain_life->trigger();
@@ -43,6 +51,7 @@ namespace warlock
       }
     };
 
+    //TOCHECK: Does the damage proc affect Seed of Corruption? If so, this needs to be split into specs as well
     struct grimoire_of_sacrifice_t : public warlock_spell_t
     {
       grimoire_of_sacrifice_t( warlock_t* p, const std::string& options_str ) :
@@ -180,9 +189,24 @@ namespace warlock
 
     if ( debuffs_shadowburn->check() )
     {
-      warlock.sim->print_log( "Player {} demised. Warlock {} reset haunt's cooldown.", target->name(), warlock.name() );
+      warlock.sim->print_log( "Player {} demised. Warlock {} reset shadowburn's cooldown.", target->name(), warlock.name() );
 
       warlock.cooldowns.shadowburn->reset( true );
+    }
+  }
+
+  static void accumulate_seed_of_corruption(warlock_td_t* td, double amount)
+  {
+    td->soc_threshold -= amount;
+
+    if (td->soc_threshold <= 0)
+    {
+      td->dots_seed_of_corruption->cancel();
+    }
+    else
+    {
+      if( td->source->sim->log )
+        td->source->sim->out_log.printf("remaining damage to explode seed %f", td->soc_threshold);
     }
   }
 
@@ -204,7 +228,6 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     procs(),
     spells(),
     initial_soul_shards( 3 ),
-    allow_sephuz( false ),
     default_pet()
   {
     cooldowns.haunt = get_cooldown( "haunt" );
@@ -363,12 +386,8 @@ double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t
 
     if ( specialization() == WARLOCK_DESTRUCTION && azerite.chaos_shards.ok() )
     {
-      if ( // check if we fill a shard.
-        ( resources.current[RESOURCE_SOUL_SHARD] < 1.0 && resources.current[RESOURCE_SOUL_SHARD] + amount >= 1.0 ) ||
-        ( resources.current[RESOURCE_SOUL_SHARD] < 2.0 && resources.current[RESOURCE_SOUL_SHARD] + amount >= 2.0 ) ||
-        ( resources.current[RESOURCE_SOUL_SHARD] < 3.0 && resources.current[RESOURCE_SOUL_SHARD] + amount >= 3.0 ) ||
-        ( resources.current[RESOURCE_SOUL_SHARD] < 4.0 && resources.current[RESOURCE_SOUL_SHARD] + amount >= 4.0 ) ||
-        ( resources.current[RESOURCE_SOUL_SHARD] < 5.0 && resources.current[RESOURCE_SOUL_SHARD] + amount >= 5.0 ) )
+      // Check if soul shard was filled
+      if ( std::floor(resources.current[RESOURCE_SOUL_SHARD]) < std::floor(std::min(resources.current[RESOURCE_SOUL_SHARD] + amount, 5.0)) )
       {
         if ( rng().roll( azerite.chaos_shards.spell_ref().effectN( 1 ).percent() / 10.0 ) )
           buffs.chaos_shards->trigger();
@@ -601,6 +620,28 @@ void warlock_t::init_scaling()
   player_t::init_scaling();
 }
 
+void warlock_t::init_assessors()
+{
+  player_t::init_assessors();
+
+  auto assessor_fn = [ this ] ( dmg_e, action_state_t* s )
+  {
+    if ( get_target_data(s->target)->dots_seed_of_corruption->is_ticking() )
+    {
+      accumulate_seed_of_corruption(get_target_data(s->target),s->result_total);
+    }
+
+    return assessor::CONTINUE;
+  };
+
+  assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_fn );
+
+  for ( auto pet : pet_list )
+  {
+    pet->assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_fn );
+  }
+}
+
 void warlock_t::apl_precombat()
 {
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
@@ -754,7 +795,6 @@ void warlock_t::create_options()
 
   add_option( opt_int( "soul_shards", initial_soul_shards ) );
   add_option( opt_string( "default_pet", default_pet ) );
-  add_option( opt_bool( "allow_sephuz", allow_sephuz ) );
 }
 
 std::string warlock_t::create_profile( save_e stype )
@@ -765,7 +805,6 @@ std::string warlock_t::create_profile( save_e stype )
   {
     if ( initial_soul_shards != 3 )    profile_str += "soul_shards=" + util::to_string( initial_soul_shards ) + "\n";
     if ( !default_pet.empty() )        profile_str += "default_pet=" + default_pet + "\n";
-    if ( allow_sephuz != 0 )           profile_str += "allow_sephuz=" + util::to_string( allow_sephuz ) + "\n";
   }
 
   return profile_str;
@@ -778,7 +817,6 @@ void warlock_t::copy_from( player_t* source )
   warlock_t* p = debug_cast< warlock_t* >( source );
 
   initial_soul_shards = p->initial_soul_shards;
-  allow_sephuz = p->allow_sephuz;
   default_pet = p->default_pet;
 }
 
