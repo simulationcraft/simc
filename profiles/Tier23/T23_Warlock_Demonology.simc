@@ -92,7 +92,7 @@ actions.nether_portal_building+=/power_siphon,if=buff.wild_imps.stack>=2&buff.de
 actions.nether_portal_building+=/hand_of_guldan,if=soul_shard>=5
 actions.nether_portal_building+=/call_action_list,name=build_a_shard
 
-head=blazewing_hood,id=165500,bonus_id=4824/1537/4775,azerite_powers=231/562/31/13
+head=blazewing_hood,id=165500,bonus_id=4824/1537/4775,azerite_powers=231/562/459/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
 shoulders=gigacharged_shoulderpads,id=165497,bonus_id=4824/1537/4775,azerite_powers=231/562/459/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537

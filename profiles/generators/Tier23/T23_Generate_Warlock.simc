@@ -35,7 +35,7 @@ position=ranged_back
 talents=3303033
 default_pet=felguard
 
-head=blazewing_hood,id=165500,bonus_id=4824/1537/4775,azerite_powers=231/562/31/13
+head=blazewing_hood,id=165500,bonus_id=4824/1537/4775,azerite_powers=231/562/459/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
 shoulders=gigacharged_shoulderpads,id=165497,bonus_id=4824/1537/4775,azerite_powers=231/562/459/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
