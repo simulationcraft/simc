@@ -5231,7 +5231,8 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   spec(),
   state(),
   talents(),
-  azerite()
+  azerite(),
+  uptime()
 {
   // Cooldowns
   cooldowns.combustion       = get_cooldown( "combustion"       );
