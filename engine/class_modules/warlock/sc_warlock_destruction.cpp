@@ -173,13 +173,6 @@ namespace warlock {
 
         can_havoc = true;
       }
-
-      void execute() override
-      {
-        destruction_spell_t::execute();
-
-        p()->buffs.backdraft->decrement();
-      }
     };
 
     struct internal_combustion_t : public destruction_spell_t
