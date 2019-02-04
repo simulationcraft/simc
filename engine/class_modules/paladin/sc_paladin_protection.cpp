@@ -397,31 +397,40 @@ struct judgment_prot_t : public judgment_t
 
 // Light of the Protector ===================================================
 
-struct light_of_the_protector_t : public paladin_heal_t
+struct light_of_the_protector_base_t : public paladin_heal_t
 {
-  light_of_the_protector_t( paladin_t* p, const std::string& options_str )
-    : paladin_heal_t( "light_of_the_protector", p, p -> find_specialization_spell( "Light of the Protector" ) )
+  light_of_the_protector_base_t( paladin_t* p, const std::string& name, const spell_data_t* spell, const std::string& options_str )
+    : paladin_heal_t( name, p, spell )
   {
     parse_options( options_str );
-
     may_crit = true;
-    target = p;
-
-    // link needed for Righteous Protector / SotR cooldown reduction
-    cooldown = p -> cooldowns.light_of_the_protector;
   }
 
-  double action_multiplier() const override
+  double composite_target_multiplier( player_t* t ) const override
   {
-    double m = paladin_heal_t::action_multiplier();
+    double m = paladin_heal_t::composite_target_multiplier( t );
 
     // heals for a base amount, increased by your missing health up to +200% (linear increase, each missing health % increase the healing by 2%)
 
-    double missing_health_percent = ( p() -> resources.max[ RESOURCE_HEALTH ] -  std::max( p() -> resources.current[ RESOURCE_HEALTH ], 0.0 ) ) / p() -> resources.max[ RESOURCE_HEALTH ];
+    double missing_health_percent = ( t -> resources.max[ RESOURCE_HEALTH ] -  std::max( t -> resources.current[ RESOURCE_HEALTH ], 0.0 ) ) / t -> resources.max[ RESOURCE_HEALTH ];
 
     m *= 1 + missing_health_percent * data().effectN( 2 ).percent();
 
+    sim -> print_log( "Player {} missing {:.2f}% health, healing increased by {:.2f}%",
+                      t -> name(), missing_health_percent * 100,
+                      missing_health_percent * data().effectN( 2 ).percent() * 100 );
     return m;
+  }
+};
+
+struct light_of_the_protector_t : public light_of_the_protector_base_t
+{
+  light_of_the_protector_t( paladin_t* p, const std::string& options_str ) :
+    light_of_the_protector_base_t( p, "light_of_the_protector", p -> find_specialization_spell( "Light of the Protector" ), options_str )
+  {
+    target = p;
+    // link needed for Righteous Protector / SotR cooldown reduction
+    cooldown = p -> cooldowns.light_of_the_protector;
   }
 
   bool ready() override
@@ -431,35 +440,17 @@ struct light_of_the_protector_t : public paladin_heal_t
 
     return paladin_heal_t::ready();
   }
-
 };
 
 // Hand of the Protector (Protection) =========================================
 
-struct hand_of_the_protector_t : public paladin_heal_t
+struct hand_of_the_protector_t : public light_of_the_protector_base_t
 {
-  hand_of_the_protector_t( paladin_t* p, const std::string& options_str )
-    : paladin_heal_t( "hand_of_the_protector", p, p -> find_talent_spell( "Hand of the Protector" ) )
+  hand_of_the_protector_t( paladin_t* p, const std::string& options_str ) :
+    light_of_the_protector_base_t( p, "hand_of_the_protector", p -> find_talent_spell( "Hand of the Protector" ), options_str )
   {
-    parse_options( options_str );
-
-    may_crit = true;
-
     // link needed for Righteous Protector / SotR cooldown reduction
     cooldown = p -> cooldowns.hand_of_the_protector;
-  }
-
-  double action_multiplier() const override
-  {
-    double m = paladin_heal_t::action_multiplier();
-
-    // heals for a base amount, increased by your missing health up to +200% (linear increase, each missing health % increase the healing by 2%)
-
-    double missing_health_percent = ( p() -> resources.max[ RESOURCE_HEALTH ] -  std::max( p() -> resources.current[ RESOURCE_HEALTH ], 0.0 ) ) / p() -> resources.max[ RESOURCE_HEALTH ];
-
-    m *= 1 + missing_health_percent * data().effectN( 2 ).percent();
-
-    return m;
   }
 
   bool ready() override
@@ -469,7 +460,6 @@ struct hand_of_the_protector_t : public paladin_heal_t
 
     return paladin_heal_t::ready();
   }
-
 };
 
 
