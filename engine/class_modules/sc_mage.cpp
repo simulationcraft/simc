@@ -1638,19 +1638,13 @@ struct fire_mage_spell_t : public mage_spell_t
     if ( result_is_hit( s->result ) )
     {
       if ( triggers_ignite )
-      {
         trigger_ignite( s );
-      }
 
       if ( triggers_hot_streak )
-      {
         handle_hot_streak( s );
-      }
 
       if ( triggers_kindling && p()->talents.kindling->ok() && s->result == RESULT_CRIT )
-      {
         p()->cooldowns.combustion->adjust( -p()->talents.kindling->effectN( 1 ).time_value() );
-      }
     }
   }
 
@@ -1749,9 +1743,6 @@ struct fire_mage_spell_t : public mage_spell_t
   void trigger_ignite( action_state_t* state )
   {
     if ( !p()->spec.ignite->ok() )
-      return;
-
-    if ( !result_is_hit( state->result ) )
       return;
 
     double m = state->target_da_multiplier;
@@ -1881,9 +1872,7 @@ struct hot_streak_spell_t : public fire_mage_spell_t
     fire_mage_spell_t::impact( s );
 
     if ( p()->sets->has_set_bonus( MAGE_FIRE, T20, B4 ) && s->result == RESULT_CRIT )
-    {
       p()->buffs.critical_massive->trigger();
-    }
   }
 
   double action_multiplier() const override
@@ -1900,9 +1889,7 @@ struct hot_streak_spell_t : public fire_mage_spell_t
     double c = fire_mage_spell_t::composite_crit_chance();
 
     if ( p()->buffs.ignition->up() )
-    {
       c += 1.0;
-    }
 
     return c;
   }
@@ -2087,14 +2074,10 @@ struct frost_mage_spell_t : public mage_spell_t
     mage_spell_t::impact( s );
 
     if ( result_is_hit( s->result ) && s->chain_target == 0 )
-    {
       record_shatter_source( s, shatter_source );
-    }
 
     if ( result_is_hit( s->result ) && chills && p()->talents.bone_chilling->ok() )
-    {
       p()->buffs.bone_chilling->trigger();
-    }
   }
 };
 
@@ -2129,7 +2112,9 @@ struct icicle_t : public frost_mage_spell_t
   void impact( action_state_t* s ) override
   {
     frost_mage_spell_t::impact( s );
-    trigger_fof( p()->azerite.flash_freeze.spell_ref().effectN( 1 ).percent() );
+
+    if ( result_is_hit( s->result ) )
+      trigger_fof( p()->azerite.flash_freeze.spell_ref().effectN( 1 ).percent() );
   }
 
   double spell_direct_power_coefficient( const action_state_t* s ) const override
@@ -2237,10 +2222,8 @@ struct arcane_barrage_t : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::impact( s );
 
-    if ( p()->talents.chrono_shift->ok() )
-    {
+    if ( result_is_hit( s->result ) && p()->talents.chrono_shift->ok() )
       p()->buffs.chrono_shift->trigger();
-    }
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -2379,9 +2362,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
     arcane_mage_spell_t::impact( s );
 
     if ( result_is_hit( s->result ) && p()->talents.touch_of_the_magi->ok() )
-    {
       td( s->target )->debuffs.touch_of_the_magi->trigger();
-    }
   }
 };
 
@@ -3051,10 +3032,8 @@ struct dragons_breath_t : public fire_mage_spell_t
   {
     fire_mage_spell_t::impact( s );
 
-    if ( p()->talents.alexstraszas_fury->ok() && s->chain_target == 0 )
-    {
+    if ( result_is_hit( s->result ) && p()->talents.alexstraszas_fury->ok() && s->chain_target == 0 )
       handle_hot_streak( s );
-    }
 
     p()->apply_crowd_control( s, MECHANIC_DISORIENT );
   }
@@ -3184,16 +3163,13 @@ struct fireball_t : public fire_mage_spell_t
   void impact( action_state_t* s ) override
   {
     fire_mage_spell_t::impact( s );
+
     if ( result_is_hit( s->result ) )
     {
       if ( s->result == RESULT_CRIT )
-      {
         p()->buffs.enhanced_pyrotechnics->expire();
-      }
       else
-      {
         p()->buffs.enhanced_pyrotechnics->trigger();
-      }
     }
   }
 
@@ -3313,12 +3289,13 @@ struct flurry_bolt_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::impact( s );
 
+    if ( !result_is_hit( s->result ) )
+      return;
+
     p()->state.flurry_bolt_count++;
 
     if ( p()->state.brain_freeze_active )
-    {
       td( s->target )->debuffs.winters_chill->trigger();
-    }
 
     if ( rng().roll( glacial_assault_chance ) )
     {
@@ -3474,7 +3451,9 @@ struct frostbolt_t : public frost_mage_spell_t
   void impact( action_state_t* s ) override
   {
     frost_mage_spell_t::impact( s );
-    p()->buffs.tunnel_of_ice->trigger();
+
+    if ( result_is_hit( s->result ) )
+      p()->buffs.tunnel_of_ice->trigger();
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -3551,7 +3530,7 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::impact( s );
 
-    if ( p()->azerite.packed_ice.enabled() )
+    if ( result_is_hit( s->result ) && p()->azerite.packed_ice.enabled() )
     {
       td( s->target )->debuffs.packed_ice->trigger();
     }
@@ -3592,32 +3571,26 @@ struct frozen_orb_t : public frost_mage_spell_t
     frost_mage_spell_t::execute();
 
     if ( p()->sets->has_set_bonus( MAGE_FROST, T20, B2 ) )
-    {
       p()->buffs.frozen_mass->trigger();
-    }
+
     if ( p()->talents.freezing_rain->ok() )
-    {
       p()->buffs.freezing_rain->trigger();
-    }
   }
 
   void impact( action_state_t* s ) override
   {
     frost_mage_spell_t::impact( s );
 
-    if ( result_is_hit( s->result ) )
-    {
-      int pulse_count = 20;
-      timespan_t pulse_time = 0.5_s;
-      p()->ground_aoe_expiration[ name_str ] = sim->current_time() + ( pulse_count - 1 ) * pulse_time;
+    int pulse_count = 20;
+    timespan_t pulse_time = 0.5_s;
+    p()->ground_aoe_expiration[ name_str ] = sim->current_time() + ( pulse_count - 1 ) * pulse_time;
 
-      trigger_fof( 1.0 );
-      make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
-        .pulse_time( pulse_time )
-        .target( s->target )
-        .n_pulses( pulse_count )
-        .action( frozen_orb_bolt ), true );
-    }
+    trigger_fof( 1.0 );
+    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+      .pulse_time( pulse_time )
+      .target( s->target )
+      .n_pulses( pulse_count )
+      .action( frozen_orb_bolt ), true );
   }
 };
 
@@ -3883,9 +3856,7 @@ struct ice_lance_t : public frost_mage_spell_t
       }
 
       if ( p()->talents.chain_reaction->ok() )
-      {
         p()->buffs.chain_reaction->trigger();
-      }
 
       if ( frozen &  FF_FINGERS_OF_FROST
         && frozen & ~FF_FINGERS_OF_FROST )
@@ -4601,10 +4572,8 @@ struct scorch_t : public fire_mage_spell_t
   {
     fire_mage_spell_t::impact( s );
 
-    if ( p()->talents.frenetic_speed->ok() )
-    {
+    if ( result_is_hit( s->result ) && p()->talents.frenetic_speed->ok() )
       p()->buffs.frenetic_speed->trigger();
-    }
   }
 
   timespan_t travel_time() const override
