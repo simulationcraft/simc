@@ -692,7 +692,7 @@ public:
   void        reset() override;
   expr_t*     create_expression( const std::string& name ) override;
   expr_t*     create_action_expression( action_t&, const std::string& name ) override;
-  action_t*   create_action( const std::string& name, const std::string& options ) override;
+  action_t*   create_action( const std::string& name, const std::string& options_str ) override;
   void        create_actions() override;
   void        create_pets() override;
   resource_e  primary_resource() const override { return RESOURCE_MANA; }
@@ -6703,15 +6703,15 @@ expr_t* mage_t::create_action_expression( action_t& action, const std::string& n
   return player_t::create_action_expression( action, name );
 }
 
-expr_t* mage_t::create_expression( const std::string& name_str )
+expr_t* mage_t::create_expression( const std::string& name )
 {
   // Incanters flow direction
   // Evaluates to:  0.0 if IF talent not chosen or IF stack unchanged
   //                1.0 if next IF stack increases
   //               -1.0 if IF stack decreases
-  if ( util::str_compare_ci( name_str, "incanters_flow_dir" ) )
+  if ( util::str_compare_ci( name, "incanters_flow_dir" ) )
   {
-    return make_fn_expr( name_str, [ this ]
+    return make_fn_expr( name, [ this ]
     {
       if ( !talents.incanters_flow->ok() )
         return 0.0;
@@ -6723,25 +6723,25 @@ expr_t* mage_t::create_expression( const std::string& name_str )
     } );
   }
 
-  if ( util::str_compare_ci( name_str, "burn_phase" ) )
+  if ( util::str_compare_ci( name, "burn_phase" ) )
   {
-    return make_fn_expr( name_str, [ this ]
+    return make_fn_expr( name, [ this ]
     { return burn_phase.on(); } );
   }
 
-  if ( util::str_compare_ci( name_str, "burn_phase_duration" ) )
+  if ( util::str_compare_ci( name, "burn_phase_duration" ) )
   {
-    return make_fn_expr( name_str, [ this ]
+    return make_fn_expr( name, [ this ]
     { return burn_phase.duration( sim->current_time() ).total_seconds(); } );
   }
 
-  if ( util::str_compare_ci( name_str, "shooting_icicles" ) )
+  if ( util::str_compare_ci( name, "shooting_icicles" ) )
   {
-    return make_fn_expr( name_str, [ this ]
+    return make_fn_expr( name, [ this ]
     { return icicle_event != nullptr; } );
   }
 
-  std::vector<std::string> splits = util::string_split( name_str, "." );
+  std::vector<std::string> splits = util::string_split( name, "." );
 
   if ( splits.size() == 3 && util::str_compare_ci( splits[ 0 ], "ground_aoe" ) )
   {
@@ -6750,14 +6750,14 @@ expr_t* mage_t::create_expression( const std::string& name_str )
 
     if ( util::str_compare_ci( splits[ 2 ], "remains" ) )
     {
-      return make_fn_expr( name_str, [ this, type ]
+      return make_fn_expr( name, [ this, type ]
       { return std::max( ground_aoe_expiration[ type ] - sim->current_time(), 0_ms ).total_seconds(); } );
     }
 
     throw std::invalid_argument( fmt::format( "Unknown ground_aoe operation '{}'", splits[ 2 ] ) );
   }
 
-  return player_t::create_expression( name_str );
+  return player_t::create_expression( name );
 }
 
 stat_e mage_t::convert_hybrid_stat( stat_e s ) const
