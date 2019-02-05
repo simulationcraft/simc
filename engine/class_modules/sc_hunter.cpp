@@ -106,8 +106,8 @@ struct action_data_t
   {
     const cooldown_t* cooldown = action -> cooldown;
     sim_t* sim = action -> sim;
-    if ( ( cd > timespan_t::zero() || ( cd <= timespan_t::zero() && cooldown -> duration > timespan_t::zero() ) ) &&
-         cooldown -> current_charge == cooldown -> charges && cooldown -> last_charged > timespan_t::zero() &&
+    if ( ( cd > 0_ms || ( cd <= 0_ms && cooldown -> duration > 0_ms ) ) &&
+         cooldown -> current_charge == cooldown -> charges && cooldown -> last_charged > 0_ms &&
          cooldown -> last_charged < sim -> current_time() )
     {
       timespan_t time_ = sim -> current_time() - cooldown -> last_charged;
@@ -119,7 +119,7 @@ struct action_data_t
       }
       time_ -= action -> time_to_execute;
 
-      if ( time_ > timespan_t::zero() )
+      if ( time_ > 0_ms )
       {
         exec.add( time_.total_seconds() );
         iter_sum += time_;
@@ -155,7 +155,7 @@ struct player_data_t
   void datacollection_begin()
   {
     for ( auto& rec : data_ )
-      rec.second -> iter_sum = timespan_t::zero();
+      rec.second -> iter_sum = 0_ms;
   }
 
   void datacollection_end()
@@ -516,8 +516,8 @@ public:
 
   struct options_t {
     std::string summon_pet_str = "cat";
-    timespan_t pet_attack_speed = timespan_t::from_seconds( 2.0 );
-    timespan_t pet_basic_attack_delay = timespan_t::from_seconds( .15 );
+    timespan_t pet_attack_speed = 2.0_s;
+    timespan_t pet_basic_attack_delay = 0.15_s;
   } options;
 
   hunter_t( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) :
@@ -533,18 +533,18 @@ public:
     current_hunters_mark_target( nullptr )
   {
     // Cooldowns
-    cooldowns.bestial_wrath   = get_cooldown( "bestial_wrath" );
-    cooldowns.trueshot        = get_cooldown( "trueshot" );
-    cooldowns.barbed_shot     = get_cooldown( "barbed_shot" );
-    cooldowns.kill_command    = get_cooldown( "kill_command" );
-    cooldowns.harpoon         = get_cooldown( "harpoon" );
+    cooldowns.bestial_wrath       = get_cooldown( "bestial_wrath" );
+    cooldowns.trueshot            = get_cooldown( "trueshot" );
+    cooldowns.barbed_shot         = get_cooldown( "barbed_shot" );
+    cooldowns.kill_command        = get_cooldown( "kill_command" );
+    cooldowns.harpoon             = get_cooldown( "harpoon" );
     cooldowns.aspect_of_the_wild  = get_cooldown( "aspect_of_the_wild" );
     cooldowns.a_murder_of_crows   = get_cooldown( "a_murder_of_crows" );
-    cooldowns.aimed_shot      = get_cooldown( "aimed_shot" );
-    cooldowns.rapid_fire      = get_cooldown( "rapid_fire" );
-    cooldowns.wildfire_bomb   = get_cooldown( "wildfire_bomb" );
+    cooldowns.aimed_shot          = get_cooldown( "aimed_shot" );
+    cooldowns.rapid_fire          = get_cooldown( "rapid_fire" );
+    cooldowns.wildfire_bomb       = get_cooldown( "wildfire_bomb" );
 
-    base_gcd = timespan_t::from_seconds( 1.5 );
+    base_gcd = 1.5_s;
 
     regen_type = REGEN_DYNAMIC;
     regen_caches[ CACHE_HASTE ] = true;
@@ -667,7 +667,7 @@ public:
 
   hunter_action_t( const std::string& n, hunter_t* player, const spell_data_t* s = spell_data_t::nil() ):
     ab( n, player, s ),
-    track_cd_waste( s -> cooldown() > timespan_t::zero() || s -> charge_cooldown() > timespan_t::zero() ),
+    track_cd_waste( s -> cooldown() > 0_ms || s -> charge_cooldown() > 0_ms ),
     cd_waste( nullptr ),
     affected_by()
   {
@@ -721,7 +721,7 @@ public:
   {
     timespan_t g = ab::gcd();
 
-    if ( g == timespan_t::zero() )
+    if ( g == 0_ms )
       return g;
 
     // recalculate the gcd while under the effect of AotW as it applies before haste reduction
@@ -855,18 +855,15 @@ public:
   {
     const bool in_combat = ab::player -> in_combat;
     const bool triggered = buff -> trigger();
-    if ( triggered && precombat && !in_combat && precast_time > timespan_t::zero() )
-    {
+    if ( triggered && precombat && !in_combat && precast_time > 0_ms )
       buff -> extend_duration( ab::player, -std::min( precast_time, buff -> buff_duration ) );
-      buff -> cooldown -> adjust( -precast_time );
-    }
     return triggered;
   }
 
   void adjust_precast_cooldown( timespan_t precast_time ) const
   {
     const bool in_combat = ab::player -> in_combat;
-    if ( precombat && !in_combat && precast_time > timespan_t::zero() )
+    if ( precombat && !in_combat && precast_time > 0_ms )
       ab::cooldown -> adjust( -precast_time );
   }
 };
@@ -935,7 +932,7 @@ struct hunter_pet_t: public pet_t
     owner_coeff.ap_from_ap = 0.15;
 
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
+    main_hand_weapon.swing_time = 2.0_s;
   }
 
   hunter_t* o()             { return static_cast<hunter_t*>( owner ); }
@@ -1017,8 +1014,8 @@ public:
   {
     // there is a cap of ~.25s for pet auto attacks
     timespan_t t = ab::execute_time();
-    if ( t < timespan_t::from_seconds( .25 ) )
-      t = timespan_t::from_seconds( .25 );
+    if ( t < 0.25_s )
+      t = 0.25_s;
     return t;
   }
 };
@@ -1065,7 +1062,7 @@ struct hunter_main_pet_base_t : public hunter_pet_t
     buffs.bestial_wrath =
       make_buff( this, "bestial_wrath", find_spell( 186254 ) )
         -> set_default_value( find_spell( 186254 ) -> effectN( 1 ).percent() )
-        -> set_cooldown( timespan_t::zero() )
+        -> set_cooldown( 0_ms )
         -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
     buffs.beast_cleave =
@@ -1150,7 +1147,7 @@ struct hunter_main_pet_t : public hunter_main_pet_base_t
     resources.base[RESOURCE_HEALTH] = 6373;
     resources.base[RESOURCE_FOCUS] = 100 + o() -> specs.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS );
 
-    base_gcd = timespan_t::from_seconds( 1.50 );
+    base_gcd = 1.5_s;
 
     resources.infinite_resource[RESOURCE_FOCUS] = o() -> resources.infinite_resource[RESOURCE_FOCUS];
   }
@@ -1202,7 +1199,7 @@ struct hunter_main_pet_t : public hunter_main_pet_base_t
     return hunter_main_pet_base_t::resource_regen_per_second( r );
   }
 
-  void summon( timespan_t duration = timespan_t::zero() ) override
+  void summon( timespan_t duration = 0_ms ) override
   {
     hunter_main_pet_base_t::summon( duration );
 
@@ -1246,9 +1243,9 @@ struct hunter_main_pet_t : public hunter_main_pet_base_t
     const auto remains = std::max( time_to_cd, time_to_fc );
     // 23/07/2018 - hunter pets seem to have a "generic" lag of about .6s on basic attack usage
     const auto delay_mean = o() -> options.pet_basic_attack_delay;
-    const auto delay_stddev = timespan_t::from_millis( 100 );
-    const auto lag = o() -> bugs ? rng().gauss( delay_mean, delay_stddev ) : timespan_t::zero();
-    return std::max( remains + lag, timespan_t::from_millis( 100 ) );
+    const auto delay_stddev = 100_ms;
+    const auto lag = o() -> bugs ? rng().gauss( delay_mean, delay_stddev ) : 0_ms;
+    return std::max( remains + lag, 100_ms );
   }
 
   action_t* create_action( const std::string& name, const std::string& options_str ) override;
@@ -1270,7 +1267,7 @@ struct animal_companion_t : public hunter_main_pet_base_t
 
   void init_spells() override;
 
-  void summon( timespan_t duration = timespan_t::zero() ) override
+  void summon( timespan_t duration = 0_ms ) override
   {
     hunter_main_pet_base_t::summon( duration );
 
@@ -1306,7 +1303,7 @@ struct dire_critter_t: public hunter_pet_t
 
   void init_spells() override;
 
-  void summon( timespan_t duration = timespan_t::zero() ) override
+  void summon( timespan_t duration = 0_ms ) override
   {
     hunter_pet_t::summon( duration );
 
@@ -1332,7 +1329,7 @@ std::pair<timespan_t, int> dire_beast_duration( hunter_t* p )
   // attack speeds.  This is not quite perfect but more accurate
   // than plateaus.
   const timespan_t base_duration = p -> find_spell( 120679 ) -> duration();
-  const timespan_t swing_time = timespan_t::from_seconds( 2.0 ) * p -> cache.attack_speed();
+  const timespan_t swing_time = 2.0_s * p -> cache.attack_speed();
   double partial_attacks_per_summon = base_duration / swing_time;
   int base_attacks_per_summon = static_cast<int>(partial_attacks_per_summon);
   partial_attacks_per_summon -= static_cast<double>(base_attacks_per_summon );
@@ -1564,7 +1561,7 @@ struct kill_command_sv_t: public kill_command_base_t
     hasted_ticks = true;
 
     if ( ! o() -> talents.bloodseeker -> ok() )
-      dot_duration = timespan_t::zero();
+      dot_duration = 0_ms;
 
     base_dd_multiplier *= 1.0 + o() -> talents.alpha_predator -> effectN( 2 ).percent();
   }
@@ -1675,7 +1672,7 @@ struct pet_auto_attack_t: public action_t
     school = SCHOOL_PHYSICAL;
     ignore_false_positive = true;
     range = 5;
-    trigger_gcd = timespan_t::zero();
+    trigger_gcd = 0_ms;
   }
 
   void execute() override
@@ -1965,7 +1962,7 @@ public:
     ab::background = ab::repeating = true;
     ab::interrupt_auto_attack = false;
     ab::special = false;
-    ab::trigger_gcd = timespan_t::zero();
+    ab::trigger_gcd = 0_ms;
 
     ab::weapon = &( p -> main_hand_weapon );
     ab::base_execute_time = ab::weapon -> swing_time;
@@ -1980,9 +1977,9 @@ public:
   timespan_t execute_time() const override
   {
     if ( !ab::player -> in_combat )
-      return timespan_t::from_millis( 10 );
+      return 10_ms;
     if ( first )
-      return timespan_t::from_millis( 100 );
+      return 100_ms;
     return ab::execute_time();
   }
 
@@ -2109,7 +2106,7 @@ struct barrage_t: public hunter_spell_t
 
     // Delay auto shot, add 500ms to simulate "wind up"
     if ( p() -> main_hand_attack && p() -> main_hand_attack -> execute_event )
-      p() -> main_hand_attack -> reschedule_execute( dot_duration * composite_haste() + timespan_t::from_millis( 500 ) );
+      p() -> main_hand_attack -> reschedule_execute( dot_duration * composite_haste() + 500_ms );
   }
 };
 
@@ -2522,7 +2519,7 @@ struct aimed_shot_t : public aimed_shot_base_t
   timespan_t execute_time() const override
   {
     if ( p() -> buffs.lock_and_load -> check() )
-      return timespan_t::zero();
+      return 0_ms;
 
     auto et = aimed_shot_base_t::execute_time();
 
@@ -3029,7 +3026,7 @@ struct melee_focus_spender_t: hunter_melee_attack_t
     p() -> buffs.primeval_intuition -> trigger();
 
     trigger_birds_of_prey( p(), target );
-    if ( wilderness_survival_reduction != timespan_t::zero() )
+    if ( wilderness_survival_reduction != 0_ms )
       p() -> cooldowns.wildfire_bomb -> adjust( -wilderness_survival_reduction );
   }
 
@@ -3757,7 +3754,7 @@ struct kill_command_t: public hunter_spell_t
       return make_fn_expr( expression_str, [ this ] () {
           if ( auto pet = p() -> pets.main )
             return pet -> get_target_data( target ) -> dots.bloodseeker -> remains();
-          return timespan_t::zero();
+          return 0_ms;
         } );
     }
 
@@ -3809,7 +3806,7 @@ struct dire_beast_t: public hunter_spell_t
 
 struct bestial_wrath_t: public hunter_spell_t
 {
-  timespan_t precast_time = timespan_t::zero();
+  timespan_t precast_time = 0_ms;
 
   bestial_wrath_t( hunter_t* player, const std::string& options_str ):
     hunter_spell_t( "bestial_wrath", player, player -> specs.bestial_wrath )
@@ -3818,7 +3815,7 @@ struct bestial_wrath_t: public hunter_spell_t
     parse_options( options_str );
     harmful = may_hit = false;
 
-    precast_time = clamp( precast_time, timespan_t::zero(), data().duration() );
+    precast_time = clamp( precast_time, 0_ms, data().duration() );
   }
 
   void execute() override
@@ -3847,7 +3844,7 @@ struct bestial_wrath_t: public hunter_spell_t
 
 struct aspect_of_the_wild_t: public hunter_spell_t
 {
-  timespan_t precast_time = timespan_t::zero();
+  timespan_t precast_time = 0_ms;
 
   aspect_of_the_wild_t( hunter_t* p, const std::string& options_str ):
     hunter_spell_t( "aspect_of_the_wild", p, p -> specs.aspect_of_the_wild )
@@ -3856,9 +3853,9 @@ struct aspect_of_the_wild_t: public hunter_spell_t
     parse_options( options_str );
 
     harmful = may_hit = false;
-    dot_duration = timespan_t::zero();
+    dot_duration = 0_ms;
 
-    precast_time = clamp( precast_time, timespan_t::zero(), data().duration() );
+    precast_time = clamp( precast_time, 0_ms, data().duration() );
   }
 
   void schedule_execute( action_state_t* s ) override
@@ -3907,7 +3904,7 @@ struct stampede_t: public hunter_spell_t
   {
     parse_options( options_str );
 
-    base_tick_time = timespan_t::from_millis( 667 );
+    base_tick_time = 667_ms;
     dot_duration = data().duration();
     hasted_ticks = false;
     radius = 8;
@@ -3927,7 +3924,7 @@ struct spitting_cobra_t: public hunter_spell_t
     parse_options( options_str );
 
     harmful = may_hit = false;
-    dot_duration = timespan_t::zero();
+    dot_duration = 0_ms;
   }
 
   void init_finished() override
@@ -3955,7 +3952,7 @@ struct spitting_cobra_t: public hunter_spell_t
 
 struct trueshot_t: public hunter_spell_t
 {
-  timespan_t precast_time = timespan_t::zero();
+  timespan_t precast_time = 0_ms;
 
   trueshot_t( hunter_t* p, const std::string& options_str ):
     hunter_spell_t( "trueshot", p, p -> specs.trueshot )
@@ -3964,7 +3961,7 @@ struct trueshot_t: public hunter_spell_t
     parse_options( options_str );
     harmful = may_hit = false;
 
-    precast_time = clamp( precast_time, timespan_t::zero(), data().duration() );
+    precast_time = clamp( precast_time, 0_ms, data().duration() );
   }
 
   void execute() override
@@ -4006,7 +4003,7 @@ struct hunters_mark_t: public hunter_spell_t
 
 struct double_tap_t: public hunter_spell_t
 {
-  timespan_t precast_time = timespan_t::zero();
+  timespan_t precast_time = 0_ms;
 
   double_tap_t( hunter_t* p, const std::string& options_str ):
     hunter_spell_t( "double_tap", p, p -> talents.double_tap )
@@ -4015,9 +4012,9 @@ struct double_tap_t: public hunter_spell_t
     parse_options( options_str );
 
     harmful = may_hit = false;
-    dot_duration = timespan_t::zero();
+    dot_duration = 0_ms;
 
-    precast_time = clamp( precast_time, timespan_t::zero(), data().duration() );
+    precast_time = clamp( precast_time, 0_ms, data().duration() );
   }
 
   void execute() override
@@ -4312,7 +4309,7 @@ struct auto_attack_t: public action_t
     parse_options( options_str );
 
     ignore_false_positive = true;
-    trigger_gcd = timespan_t::zero();
+    trigger_gcd = 0_ms;
 
     if ( p -> main_hand_weapon.type == WEAPON_NONE )
     {
@@ -4453,7 +4450,7 @@ expr_t* hunter_t::create_expression( const std::string& expression_str )
             return trueshot_cd -> duration.total_seconds();
 
           if ( trueshot_cd -> up() )
-            return timespan_t::zero().total_seconds();
+            return 0_ms.total_seconds();
 
           double reduction = (hunter -> sim -> current_time() - trueshot_cd -> last_start) / (trueshot_cd -> duration - trueshot_cd -> remains());
           return trueshot_cd -> remains().total_seconds() * reduction;
@@ -4475,7 +4472,7 @@ expr_t* hunter_t::create_expression( const std::string& expression_str )
         {
           cooldown_t* trueshot_cd = hunter -> cooldowns.trueshot;
 
-          if ( trueshot_cd -> last_charged == timespan_t::zero() || trueshot_cd -> remains() == trueshot_cd -> duration )
+          if ( trueshot_cd -> last_charged == 0_ms || trueshot_cd -> remains() == trueshot_cd -> duration )
             return trueshot_cd -> duration.total_seconds();
 
           if ( trueshot_cd -> up() )
@@ -4793,7 +4790,7 @@ void hunter_t::create_buffs()
 
   buffs.aspect_of_the_wild =
     make_buff( this, "aspect_of_the_wild", specs.aspect_of_the_wild )
-      -> set_cooldown( timespan_t::zero() )
+      -> set_cooldown( 0_ms )
       -> set_activated( true )
       -> set_default_value( specs.aspect_of_the_wild -> effectN( 1 ).percent() )
       -> set_tick_callback( [ this ]( buff_t *b, int, const timespan_t& ){
@@ -4804,7 +4801,7 @@ void hunter_t::create_buffs()
 
   buffs.bestial_wrath =
     make_buff( this, "bestial_wrath", specs.bestial_wrath )
-      -> set_cooldown( timespan_t::zero() )
+      -> set_cooldown( 0_ms )
       -> set_activated( true )
       -> set_default_value( specs.bestial_wrath -> effectN( 1 ).percent() );
 
@@ -4849,7 +4846,7 @@ void hunter_t::create_buffs()
 
   buffs.trueshot =
     make_buff( this, "trueshot", specs.trueshot )
-      -> set_cooldown( timespan_t::zero() )
+      -> set_cooldown( 0_ms )
       -> set_activated( true );
   buffs.trueshot -> set_default_value( specs.trueshot -> effectN( 4 ).percent() );
   buffs.trueshot -> set_stack_change_callback( [this]( buff_t*, int, int ) {
@@ -4873,6 +4870,7 @@ void hunter_t::create_buffs()
 
   buffs.double_tap =
     make_buff( this, "double_tap", talents.double_tap )
+      -> set_cooldown( 0_ms )
       -> set_activated( true )
       -> set_default_value( talents.double_tap -> effectN( 1 ).percent() );
 
@@ -4880,7 +4878,7 @@ void hunter_t::create_buffs()
 
   buffs.coordinated_assault =
     make_buff( this, "coordinated_assault", specs.coordinated_assault )
-      -> set_cooldown( timespan_t::zero() )
+      -> set_cooldown( 0_ms )
       -> set_activated( true )
       -> set_default_value( specs.coordinated_assault -> effectN( 1 ).percent() );
 
@@ -4911,7 +4909,7 @@ void hunter_t::create_buffs()
 
   buffs.aspect_of_the_eagle =
     make_buff( this, "aspect_of_the_eagle", specs.aspect_of_the_eagle )
-      -> set_cooldown( timespan_t::zero() );
+      -> set_cooldown( 0_ms );
 
   // Azerite
 
@@ -5445,7 +5443,7 @@ void hunter_t::combat_begin()
 {
   if ( talents.bloodseeker -> ok() && ( talents.wildfire_infusion -> ok() || sim -> player_no_pet_list.size() > 1 ) )
   {
-    make_repeating_event( *sim, timespan_t::from_seconds( 1 ),
+    make_repeating_event( *sim, 1_s,
       [ this ]() {
         trigger_bloodseeker_update( this );
       } );
@@ -5647,9 +5645,9 @@ void hunter_t::create_options()
 
   add_option( opt_string( "summon_pet", options.summon_pet_str ) );
   add_option( opt_timespan( "hunter.pet_attack_speed", options.pet_attack_speed,
-                            timespan_t::from_seconds( .5 ), timespan_t::from_seconds( 4 ) ) );
+                            0.5_s, 4_s ) );
   add_option( opt_timespan( "hunter.pet_basic_attack_delay", options.pet_basic_attack_delay,
-                            timespan_t::zero(), timespan_t::from_seconds( .6 ) ) );
+                            0_ms, 0.6_s ) );
   add_option( opt_obsoleted( "hunter_fixed_time" ) );
 }
 
