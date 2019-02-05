@@ -4453,7 +4453,7 @@ expr_t* hunter_t::create_expression( const std::string& expression_str )
             return trueshot_cd -> duration.total_seconds();
 
           if ( trueshot_cd -> up() )
-            return 0_ms.total_seconds();
+            return 0.0;
 
           double reduction = (hunter -> sim -> current_time() - trueshot_cd -> last_start) / (trueshot_cd -> duration - trueshot_cd -> remains());
           return trueshot_cd -> remains().total_seconds() * reduction;
