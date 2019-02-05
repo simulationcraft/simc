@@ -856,7 +856,10 @@ public:
     const bool in_combat = ab::player -> in_combat;
     const bool triggered = buff -> trigger();
     if ( triggered && precombat && !in_combat && precast_time > 0_ms )
+    {
       buff -> extend_duration( ab::player, -std::min( precast_time, buff -> buff_duration ) );
+      buff -> cooldown -> adjust( -precast_time );
+    }
     return triggered;
   }
 
