@@ -2564,6 +2564,11 @@ public:
 
   resource_e current_resource() const override
   {
+    if ( p()->specialization() == SPEC_NONE )
+    {
+      return ab::current_resource();
+    }
+
     resource_e resource_by_stance = _resource_by_stance[ specdata::spec_idx( p()->specialization() ) ];
 
     if ( resource_by_stance == RESOURCE_MAX )
