@@ -2714,7 +2714,14 @@ struct gloomblade_t : public rogue_attack_t
     rogue_attack_t::execute();
 
     if ( p() -> position() == POSITION_BACK )
+    {
       p() -> buffs.perforate -> trigger();
+      if ( p() -> azerite.perforate.ok() )
+      {
+        timespan_t v = - p() -> azerite.perforate.spell_ref().effectN( 2 ).time_value();
+        p() -> cooldowns.shadow_blades -> adjust( v, false );
+      }
+    }
   }
 
   void impact( action_state_t* state ) override
