@@ -6,7 +6,6 @@
 // TODO:
 // All : 
 // Check that all those azerite traits work as expected
-// Use pet spawner for army of the dead ghouls, apoc ghouls, and bloodworms
 // Unholy
 // - Fix Unholy Blight reporting : currently the uptime contains both the dot uptime (24.2s every 45s)
 //   and the driver uptime (6s every 45s)
@@ -17,6 +16,7 @@
 //
 
 #include "simulationcraft.hpp"
+#include "player/pet_spawner.hpp"
 
 namespace { // UNNAMED NAMESPACE
 
@@ -402,7 +402,6 @@ struct death_knight_t : public player_t {
 public:
   // Active
   double runic_power_decay_rate;
-  double antimagic_shell_remaining_absorb;
   std::vector<ground_aoe_event_t*> dnds;
   bool deprecated_dnd_expression;
 
@@ -745,14 +744,17 @@ public:
   {
     std::array< pets::death_knight_pet_t*, 4 > apoc_ghoul;
     std::array< pets::death_knight_pet_t*, 8 > army_ghoul;
-    std::array< pets::bloodworm_pet_t*, 6 > bloodworms;
     pets::dancing_rune_weapon_pet_t* dancing_rune_weapon_pet;
     pets::gargoyle_pet_t* gargoyle;
     pets::dt_pet_t* ghoul_pet;
     pet_t* risen_skulker;
 
+    spawner::pet_spawner_t<pets::bloodworm_pet_t, death_knight_t> bloodworms;
+
+    pets_t( death_knight_t* p ) : bloodworms( "bloodworm", p ) {}
+
+    // Note: 2 pets, one for each ability trigger (apoc and aotd)
     std::array< pets::death_knight_pet_t*, 2 > magus_pet;
-    // Note: magus_pet[0] is summoned by apocalypse and [1] by army of the dead
   } pets;
 
   // Procs
@@ -794,33 +796,33 @@ public:
   {
     // Shared
     azerite_power_t bone_spike_graveyard;
-    azerite_power_t runic_barrier; // TODO : interaction with talents for overall duration also shield amount
-    azerite_power_t cold_hearted; // NYI
+    azerite_power_t runic_barrier; // TODO: check interactions with AMB and Spell Eater
+    azerite_power_t cold_hearted; // TODO: Implement the health regen mechanic
 
     // Blood
     azerite_power_t bloody_runeblade;
-    azerite_power_t bones_of_the_damned; // TODO : make sure the effectN( 2 ) is used for the % chance to proc. Check how it interacts with DRW
-    azerite_power_t deep_cuts; // TODO : does it work with DRW ? both in application and damage amp
+    azerite_power_t bones_of_the_damned; // TODO: check interactions with DRW, check if proc rate is anywhere in spelldata
+    azerite_power_t deep_cuts; // TODO: check interactions (applications and bonus) with DRW
     azerite_power_t eternal_rune_weapon;
-    azerite_power_t marrowblood; // TODO : how does it interact with blood shield ?
+    azerite_power_t marrowblood; // TODO: check interaction with blood shield
     
     // Frost
-    azerite_power_t echoing_howl; // TODO : I have no idea how that actually works ingame
-    azerite_power_t frostwhelps_indignation; // TODO: Find the damaging spell's ID
-    azerite_power_t frozen_tempest; // TODO : check if the damage is increased per tick or per cast
+    azerite_power_t echoing_howl;
+    azerite_power_t frostwhelps_indignation; // TODO: check if it's missing the damage increase from mastery and spec aura as spelldata hints
+    azerite_power_t frozen_tempest; // TODO: check whether the damage is increased per tick or per cast
 
     azerite_power_t icy_citadel;
-    azerite_power_t killer_frost; // TODO : check if it procs KM from both swings as well
-    azerite_power_t latent_chill; // TODO : check that the wording actually means what it means
+    azerite_power_t killer_frost; // TODO: check if it procs KM from both swings as well
+    azerite_power_t latent_chill; // TODO: check that the damage amp is on both attacks (expected 1/2 effect on OH hit)
 
     // Unholy
-    azerite_power_t cankerous_wounds; // Is it a separate roll or does it affect the 50/50 roll between 2-3 wounds ?
+    azerite_power_t cankerous_wounds; // TODO: check whether it is a separate roll or if it affects the 50/50 roll between 2-3 wounds
     azerite_power_t festermight;
-    azerite_power_t harrowing_decay; // TODO : How does it refresh on multiple DC casts in a row ?
+    azerite_power_t harrowing_decay; // TODO: check how it refreshes on multiple DC casts in a row
     azerite_power_t helchains; // The ingame implementation is a mess with multiple helchains buffs on the player and multiple helchains damage spells. The simc version is simplified
     azerite_power_t last_surprise; 
     azerite_power_t magus_of_the_dead; // Trait is a buggy mess, the pet can melee in the middle of casting (not implemented because not reliable) and sometimes doesn't cast at all
-  }azerite;
+  } azerite;
 
   // Runes
   runes_t _runes;
@@ -828,7 +830,6 @@ public:
   death_knight_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, DEATH_KNIGHT, name, r ),
     runic_power_decay_rate(),
-    antimagic_shell_remaining_absorb( 0.0 ),
     deprecated_dnd_expression( false ),
     t20_2pc_frost( 0 ),
     t20_4pc_frost( 0 ),
@@ -843,13 +844,12 @@ public:
     mastery( mastery_t() ),
     talent( talents_t() ),
     spell( spells_t() ),
-    pets( pets_t() ),
+    pets( pets_t( this ) ),
     procs( procs_t() ),
     _runes( this )
   {
     range::fill( pets.army_ghoul, nullptr );
     range::fill( pets.apoc_ghoul, nullptr );
-    range::fill( pets.bloodworms, nullptr );
     
     cooldown.apocalypse          = get_cooldown( "apocalypse" );
     cooldown.army_of_the_dead    = get_cooldown( "army_of_the_dead" );
@@ -3218,9 +3218,11 @@ struct melee_t : public death_knight_melee_attack_t
           p() -> cooldown.death_and_decay -> reset( true );
           if ( p() -> azerite.bloody_runeblade.enabled() )
           {
-            // TODO: check if it's always 5 RP or if it scales with number of traits
-            p() -> resource_gain( RESOURCE_RUNIC_POWER, bloody_runeblade_gen, p() -> gains.bloody_runeblade );
-            p() -> buffs.bloody_runeblade -> trigger();
+            // Bloody Runeblade's trigger spell has a 10s icd, this icd is applied to the buff in simc and we use it to affect the RP gen
+            if ( p() -> buffs.bloody_runeblade -> trigger() )
+            {
+              p() -> resource_gain( RESOURCE_RUNIC_POWER, bloody_runeblade_gen, p() -> gains.bloody_runeblade );
+            }
           }
         }
       }
@@ -3238,17 +3240,13 @@ struct melee_t : public death_knight_melee_attack_t
     {
       return;
     }
-
     p() -> procs.bloodworms -> occur();
 
-    for ( size_t i = 0 ; i < p() -> pets.bloodworms.size() ; i++ )
-    {
-      if ( ! p() -> pets.bloodworms[ i ] || p() -> pets.bloodworms[ i ] -> is_sleeping() )
-      {
-        p() -> pets.bloodworms[ i ] -> summon( timespan_t::from_seconds( p() -> talent.bloodworms -> effectN( 3 ).base_value() ) ); 
-        return;
-      }
-    }
+    // TODO: check whether spelldata is wrong or tooltip is using the wrong spelldata
+    // Spelldata used in the tooltip: 15s
+    p() -> pets.bloodworms.spawn( p() -> talent.bloodworms -> effectN( 2 ).trigger() -> effectN( 1 ).trigger() -> duration(), 1 );
+    // Pet spawn spelldata: 16s
+    // p() -> pets.bloodworms.spawn( p() -> talent.bloodworms -> effectN( 1 ).trigger() -> duration(), 1 );
   }
 };
 
@@ -5835,7 +5833,8 @@ struct pillar_of_frost_bonus_buff_t : public buff_t
   pillar_of_frost_bonus_buff_t( death_knight_t* p ) :
     buff_t( p, "pillar_of_frost_bonus" )
   {
-    set_max_stack( 100 );
+    // PoF lasts 15s, which is at most 20 gcds, which is at most 40 runes
+    set_max_stack( 40 );
     set_duration( p -> spec.pillar_of_frost -> duration() );
     set_default_value( p -> spec.pillar_of_frost -> effectN( 2 ).percent() );
 
@@ -6295,37 +6294,69 @@ struct unholy_frenzy_t : public death_knight_spell_t
 
 struct antimagic_shell_buff_t : public buff_t
 {
-  double runic_barrier_duration;
+  double remaining_absorb;
 
   antimagic_shell_buff_t( death_knight_t* p ) :
-    buff_t( p, "antimagic_shell", p -> spell.antimagic_shell )
+    buff_t( p, "antimagic_shell", p -> spell.antimagic_shell ),
+    remaining_absorb( 0.0 )
   {
     set_cooldown( timespan_t::zero() );
+
     if ( p -> azerite.runic_barrier.enabled() )
     {
-      runic_barrier_duration = p -> azerite.runic_barrier.spell() -> effectN( 2 ).base_value();
+      buff_duration = timespan_t::from_seconds( p -> azerite.runic_barrier.spell() -> effectN( 2 ).base_value() );
     }
+
+   buff_duration += p -> talent.spell_eater -> effectN( 2 ).time_value();
+
+   // Assuming AMB's 30% increase is applied after Runic Barrier
+   buff_duration *= 1.0 + p -> talent.antimagic_barrier -> effectN( 2 ).percent();
   }
 
   void execute( int stacks, double value, timespan_t duration ) override
   {
-    death_knight_t* p = debug_cast< death_knight_t* >( player );
-    double max_absorb = p -> resources.max[RESOURCE_HEALTH] * p -> spell.antimagic_shell -> effectN( 2 ).percent();
-    
-    max_absorb *= 1.0 + p -> talent.antimagic_barrier -> effectN( 2 ).percent();
-    max_absorb *= 1.0 + p -> talent.spell_eater -> effectN( 1 ).percent();
+    remaining_absorb = calc_absorb();
 
-    if ( p -> azerite.runic_barrier.enabled() )
+    buff_t::execute( stacks, value, duration );
+  }
+
+  void expire_override( int stacks, timespan_t duration ) override
+  {
+    buff_t::expire_override( stacks, duration );
+    
+    remaining_absorb = 0;
+  }
+
+  double calc_absorb()
+  {
+    death_knight_t* dk = debug_cast< death_knight_t* >( player );
+    double max_absorb = dk -> resources.max[ RESOURCE_HEALTH ] * dk -> spell.antimagic_shell -> effectN( 2 ).percent();
+
+    max_absorb *= 1.0 + dk -> talent.antimagic_barrier -> effectN( 2 ).percent();
+    max_absorb *= 1.0 + dk -> talent.spell_eater -> effectN( 1 ).percent();
+
+    if ( dk -> azerite.runic_barrier.enabled() )
     {
-      max_absorb += p -> azerite.runic_barrier.value( 3 );
-      duration = timespan_t::from_seconds( runic_barrier_duration );
+      max_absorb += dk -> azerite.runic_barrier.value( 3 );
     }
 
-    max_absorb *= 1.0 + p -> cache.heal_versatility();
-    p -> antimagic_shell_remaining_absorb = max_absorb;
+    max_absorb *= 1.0 + dk -> cache.heal_versatility();
 
-    duration *= 1.0 + p -> talent.antimagic_barrier -> effectN( 2 ).percent();
-    buff_t::execute( stacks, value, duration );
+    return max_absorb;
+  }
+
+  double absorb_damage( double incoming_damage )
+  {
+    if ( incoming_damage >= remaining_absorb )
+    {
+      this -> expire();
+
+      return remaining_absorb;
+    }
+
+    remaining_absorb -= incoming_damage;
+
+    return incoming_damage;
   }
 };
 
@@ -6341,7 +6372,7 @@ struct antimagic_shell_t : public death_knight_spell_t
     death_knight_spell_t( "antimagic_shell", p, p -> spell.antimagic_shell ),
     min_interval( 60 ), interval( 60 ), interval_stddev( 0.05 ), interval_stddev_opt( 0 ), damage( 0 )
   {
-    cooldown -> duration += timespan_t::from_millis( p -> talent.antimagic_barrier -> effectN( 1 ).base_value() );
+    cooldown -> duration += p -> talent.antimagic_barrier -> effectN( 1 ).time_value();
     harmful = may_crit = may_miss = false;
     base_dd_min = base_dd_max = 0;
     target = player;
@@ -6368,11 +6399,6 @@ struct antimagic_shell_t : public death_knight_spell_t
     else
       interval_stddev = interval_stddev_opt;
 
-    /*
-    if ( damage > 0 )
-      cooldown -> set_recharge_multiplier( 1.0 );
-    */
-
     // Setup an Absorb stats tracker for AMS if it's used "for reals"
     if ( damage == 0 )
     {
@@ -6386,11 +6412,9 @@ struct antimagic_shell_t : public death_knight_spell_t
   {
     if ( damage > 0 )
     {
-      timespan_t new_cd = timespan_t::from_seconds( rng().gauss( interval, interval_stddev ) );
-      if ( new_cd < timespan_t::from_seconds( min_interval ) )
-        new_cd = timespan_t::from_seconds( min_interval );
+     timespan_t new_cd = timespan_t::from_seconds( std::max( min_interval, rng().gauss( interval, interval_stddev ) ) );
 
-      cooldown -> duration = new_cd;
+     cooldown -> duration = new_cd;
     }
 
     death_knight_spell_t::execute();
@@ -6398,18 +6422,8 @@ struct antimagic_shell_t : public death_knight_spell_t
     // If using the fake soaking, immediately grant the RP in one go
     if ( damage > 0 )
     {
-      double max_absorb =  p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 2 ).percent();
-      max_absorb *= 1.0 + p() -> talent.antimagic_barrier -> effectN( 2 ).percent();
-      max_absorb *= 1.0 + p() -> talent.spell_eater -> effectN( 1 ).percent();
-
-      if ( p() -> azerite.runic_barrier.enabled() )
-      {
-        max_absorb += p() -> azerite.runic_barrier.value( 3 );
-      }
-
-      max_absorb *= 1.0 + p() -> cache.heal_versatility();
-
-      double absorbed = std::min( damage, max_absorb );
+      double absorbed = std::min( damage, 
+                                  debug_cast< antimagic_shell_buff_t* >( p() -> buffs.antimagic_shell ) -> calc_absorb() );
 
       // AMS generates 1 runic power per percentage max health absorbed.
       double rp_generated = absorbed / p() -> resources.max[ RESOURCE_HEALTH ] * 100;
@@ -6430,6 +6444,10 @@ struct icebound_fortitude_t : public death_knight_spell_t
   {
     parse_options( options_str );
 
+    if ( p -> azerite.cold_hearted.enabled() )
+    {
+      cooldown -> duration += p -> azerite.cold_hearted.spell() -> effectN( 1 ).trigger() -> effectN( 2 ).time_value();
+    }
     harmful = false;
   }
 
@@ -7383,10 +7401,8 @@ void death_knight_t::create_pets()
 
     if ( talent.bloodworms -> ok() )
     {
-      for ( size_t i = 0; i < pets.bloodworms.size(); i++ )
-      {
-        pets.bloodworms[ i ] = new pets::bloodworm_pet_t( this );
-      }
+      pets.bloodworms.set_creation_callback(
+        [] ( death_knight_t* p ) { return new pets::bloodworm_pet_t( p ); } );
     }
   }
 }
@@ -7672,7 +7688,7 @@ void death_knight_t::init_spells()
   azerite.festermight            = find_azerite_spell( "Festermight" );
   azerite.harrowing_decay        = find_azerite_spell( "Harrowing Decay" );
   azerite.cankerous_wounds       = find_azerite_spell( "Cankerous Wounds" );
-  azerite.magus_of_the_dead      = find_azerite_spell( "Magus of the Dead" ); // TODO: NYI
+  azerite.magus_of_the_dead      = find_azerite_spell( "Magus of the Dead" );
   azerite.helchains              = find_azerite_spell( "Helchains" );
 }
 
@@ -8273,7 +8289,8 @@ void death_knight_t::create_buffs()
         -> set_refresh_behavior( buff_refresh_behavior::DISABLED );
 
   buffs.bloody_runeblade = make_buff<stat_buff_t>( this, "bloody_runeblade", find_spell( 289349 ) )
-    -> add_stat( STAT_HASTE_RATING, azerite.bloody_runeblade.value( 2 ) );
+    -> add_stat( STAT_HASTE_RATING, azerite.bloody_runeblade.value( 2 ) )
+    -> set_cooldown( azerite.bloody_runeblade.spell() -> effectN( 1 ).trigger() -> internal_cooldown() );
 
   buffs.frostwhelps_indignation = make_buff<stat_buff_t>( this, "frostwhelps_indignation", find_spell( 287338 ) )
     -> add_stat( STAT_MASTERY_RATING, azerite.frostwhelps_indignation.value( 2 ) );
@@ -8377,7 +8394,6 @@ void death_knight_t::reset()
   player_t::reset();
 
   runic_power_decay_rate = 1; // 1 RP per second decay
-  antimagic_shell_remaining_absorb = 0.0;
   _runes.reset();
   dnds.clear();
   t20_2pc_frost = 0;
@@ -8426,21 +8442,12 @@ void death_knight_t::bone_shield_handler( const action_state_t* state ) const
 void death_knight_t::assess_damage_imminent( school_e school, dmg_e, action_state_t* s )
 {
   bone_shield_handler( s );
-
+  
   if ( school != SCHOOL_PHYSICAL )
   {
     if ( buffs.antimagic_shell -> up() )
     {
-      double damage_absorbed = s -> result_amount;
-
-      if ( damage_absorbed > antimagic_shell_remaining_absorb )
-      {
-        damage_absorbed = antimagic_shell_remaining_absorb;
-        buffs.antimagic_shell -> expire();
-      }
-
-      // Generates 1 RP for every 1% max hp absorbed
-      double rp_generated = damage_absorbed / resources.max[RESOURCE_HEALTH] * 100;
+      double damage_absorbed = debug_cast< antimagic_shell_buff_t* >( buffs.antimagic_shell ) -> absorb_damage( s -> result_amount );
 
       s -> result_amount -= damage_absorbed;
       s -> result_absorbed -= damage_absorbed;
@@ -8449,6 +8456,9 @@ void death_knight_t::assess_damage_imminent( school_e school, dmg_e, action_stat
 
       if ( antimagic_shell )
         antimagic_shell -> add_result( damage_absorbed, damage_absorbed, ABSORB, RESULT_HIT, BLOCK_RESULT_UNBLOCKED, this );
+
+      // Generates 1 RP for every 1% max hp absorbed
+      double rp_generated = damage_absorbed / resources.max[ RESOURCE_HEALTH ] * 100;
 
       resource_gain( RESOURCE_RUNIC_POWER, util::round( rp_generated ), gains.antimagic_shell, s -> action );
     }
