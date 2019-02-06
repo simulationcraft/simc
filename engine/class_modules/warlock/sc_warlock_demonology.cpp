@@ -416,8 +416,10 @@ namespace warlock {
 
     struct summon_demonic_tyrant_t : public demonology_spell_t
     {
+      double demonic_consumption_multiplier;
+
       summon_demonic_tyrant_t(warlock_t* p, const std::string& options_str) :
-        demonology_spell_t("summon_demonic_tyrant", p, p -> find_spell(265187))
+        demonology_spell_t("summon_demonic_tyrant", p, p -> find_spell(265187)), demonic_consumption_multiplier( 0 )
       {
         parse_options(options_str);
         harmful = may_crit = false;
@@ -436,20 +438,23 @@ namespace warlock {
 
         if (p()->talents.demonic_consumption->ok())
         {
+          demonic_consumption_multiplier = 0;
+
           for ( auto imp : p() -> warlock_pet_list.wild_imps )
           {
             double available = imp->resources.current[RESOURCE_ENERGY];
 
+            // Spelldata unknown. In-game testing shows Demonic Consumption provides 10% damage per 20 energy an imp has.
+            demonic_consumption_multiplier += available / 10 * 5;
             imp->demonic_consumption = true;
             imp->dismiss();
+          }
 
-            for (auto dt : p()->warlock_pet_list.demonic_tyrants)
+          for ( auto dt : p()->warlock_pet_list.demonic_tyrants )
+          {
+            if ( !dt->is_sleeping() )
             {
-              if (!dt->is_sleeping())
-              {
-                //Demonic Consumption's effect has been doubled on ptr.
-                dt->buffs.demonic_consumption->trigger(available / 10 * 5); // TODO: check if hardcoded value can be replaced.
-              }
+              dt->buffs.demonic_consumption->trigger( 1, demonic_consumption_multiplier / 100.0 );
             }
           }
         }
@@ -1051,7 +1056,7 @@ namespace warlock {
     def->add_action( "call_action_list,name=dcon_ep_opener,if=azerite.explosive_potential.rank&talent.demonic_consumption.enabled&time<30&!cooldown.summon_demonic_tyrant.remains" );
     def->add_action( "hand_of_guldan,if=azerite.explosive_potential.rank&time<5&soul_shard>2&buff.explosive_potential.down&buff.wild_imps.stack<3&!prev_gcd.1.hand_of_guldan&&!prev_gcd.2.hand_of_guldan" );
     def->add_action( "demonbolt,if=soul_shard<=3&buff.demonic_core.up&buff.demonic_core.stack=4" );
-    def->add_action( "implosion,if=azerite.explosive_potential.rank&buff.wild_imps.stack>2&buff.explosive_potential.remains<1.34" );
+    def->add_action( "implosion,if=azerite.explosive_potential.rank&buff.wild_imps.stack>2&buff.explosive_potential.remains<action.shadow_bolt.execute_time" );
     def->add_action( "implosion,if=azerite.explosive_potential.rank&buff.wild_imps.stack>2&buff.explosive_potential.remains<cooldown.summon_demonic_tyrant.remains&cooldown.summon_demonic_tyrant.remains<11&talent.demonic_consumption.enabled" );
     def->add_action( "doom,if=!ticking&time_to_die>30&spell_targets.implosion<2" );
     def->add_action( "bilescourge_bombers,if=azerite.explosive_potential.rank>0&time<10&spell_targets.implosion<2&buff.dreadstalkers.remains&talent.nether_portal.enabled" );

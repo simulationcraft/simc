@@ -47,7 +47,7 @@ void warlock_pet_t::create_buffs()
 
   buffs.demonic_consumption = make_buff(this, "demonic_consumption", find_spell(267972))
     ->set_default_value(find_spell(267972)->effectN(1).percent())
-    ->set_max_stack(999);
+    ->set_max_stack(1);
 
   // destro
   buffs.embers = make_buff(this, "embers", find_spell(264364))
@@ -904,7 +904,7 @@ struct demonfire_t : public warlock_pet_spell_t
 
     if (p()->buffs.demonic_consumption->check())
     {
-      m *= 1.0 + p()->buffs.demonic_consumption->check_stack_value();
+      m *= 1.0 + p()->buffs.demonic_consumption->check_value();
     }
 
     return m;
