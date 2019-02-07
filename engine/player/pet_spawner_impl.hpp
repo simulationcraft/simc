@@ -523,7 +523,7 @@ void pet_spawner_t<T, O>::merge( base_actor_spawner_t* other )
   }
 
   auto n_shared = std::min( n_pets(), o -> n_pets() );
-  int n_extra = as<int>( o -> n_pets() ) - n_pets();
+  int n_extra = as<int>( o -> n_pets() ) - as<int>( n_pets() );
 
   // Merge shared pets .. note that the pet indeices may not be the same, but the dynamic pets
   // don't really care about that. We can presume that between the threads, the "natural order" of
