@@ -84,7 +84,7 @@ struct dynamic_event_t : public event_t
     {
       execute();
       event_t::cancel( this_ );
-      return timespan_t::zero();
+      return 0_ms;
     }
 
     auto new_remains = remains() - by_time;
@@ -256,7 +256,7 @@ struct rune_t
   void reset()
   {
     regen_start = timespan_t::min();
-    regenerated = timespan_t::zero();
+    regenerated = 0_ms;
     event = nullptr;
     state = STATE_FULL;
   }
@@ -285,12 +285,12 @@ struct runes_t
   {
     range::for_each( slot, []( rune_t& r ) { r.reset(); } );
 
-    waste_start = timespan_t::zero();
-    if ( iteration_waste_sum > timespan_t::zero() )
+    waste_start = 0_ms;
+    if ( iteration_waste_sum > 0_ms )
     {
       cumulative_waste.add( iteration_waste_sum.total_seconds() );
     }
-    iteration_waste_sum = timespan_t::zero();
+    iteration_waste_sum = 0_ms;
   }
 
   std::string string_representation() const
@@ -986,12 +986,12 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
   dot.soul_reaper          = target -> get_dot( "soul_reaper",          p );
 
   debuff.mark_of_blood     = make_buff( *this, "mark_of_blood", p -> talent.mark_of_blood )
-                           -> set_cooldown( timespan_t::zero() ); // Handled by the action
+                           -> set_cooldown( 0_ms ); // Handled by the action
   debuff.razorice          = make_buff( *this, "razorice", p -> find_spell( 51714 ) )
-                           -> set_period( timespan_t::zero() );
+                           -> set_period( 0_ms );
   debuff.festering_wound   = make_buff( *this, "festering_wound", p -> spell.festering_wound_debuff )
                            -> set_trigger_spell( p -> spec.festering_wound )
-                           -> set_cooldown( timespan_t::zero() ); // Handled by trigger_festering_wound
+                           -> set_cooldown( 0_ms ); // Handled by trigger_festering_wound
 
   debuff.deep_cuts         = make_buff( *this, "deep_cuts", p -> find_spell( 272685 ) )
                            -> set_trigger_spell( p -> azerite.deep_cuts );
@@ -1032,7 +1032,7 @@ static void log_rune_status( const death_knight_t* p, bool debug = false ) {
 inline runes_t::runes_t( death_knight_t* p ) : dk( p ),
   cumulative_waste( dk -> name_str + "_Iteration_Rune_Waste", false ),
   rune_waste( dk -> name_str + "_Rune_Waste", false ),
-  iteration_waste_sum( timespan_t::zero() )
+  iteration_waste_sum( 0_ms )
 {
   for ( auto& rune: slot )
   {
@@ -1062,9 +1062,9 @@ inline void runes_t::consume( unsigned runes )
       // regenerating runesa (waste_start), or if later in time, the time this specific rune
       // replenished (rune -> regenerated).
       auto wasted_time = dk -> sim -> current_time() - std::max( rune -> regenerated, waste_start );
-      if ( wasted_time > timespan_t::zero() )
+      if ( wasted_time > 0_ms )
       {
-        assert( wasted_time > timespan_t::zero() );
+        assert( wasted_time > 0_ms );
         iteration_waste_sum += wasted_time;
         rune_waste.add( wasted_time.total_seconds() );
 
@@ -1086,7 +1086,7 @@ inline void runes_t::consume( unsigned runes )
 
   // Full runes will be going below the maximum number of regenerating runes, so there's no longer
   // going to be any waste time.
-  if ( disable_waste && waste_start >= timespan_t::zero() )
+  if ( disable_waste && waste_start >= 0_ms )
   {
     if ( dk -> sim -> debug )
     {
@@ -1111,7 +1111,7 @@ inline void runes_t::consume( unsigned runes )
 
 inline void runes_t::regenerate_immediate( const timespan_t& seconds )
 {
-  if ( seconds <= timespan_t::zero() )
+  if ( seconds <= 0_ms )
   {
     dk -> sim -> errorf( "%s warning, regenerating runes with an invalid immediate value (%.3f)",
       dk -> name(), seconds.total_seconds() );
@@ -1152,7 +1152,7 @@ inline void runes_t::regenerate_immediate( const timespan_t& seconds )
 
   timespan_t seconds_left = seconds;
   // Regenerate runes in time chunks, until all immediate regeneration time is consumed
-  while ( seconds_left > timespan_t::zero() )
+  while ( seconds_left > 0_ms )
   {
     // Pop out all full runes from regenerating runes. Can happen if below the call to
     // adjust_regen_event causes the rune to actually fill up.
@@ -1213,7 +1213,7 @@ timespan_t runes_t::time_to_regen( unsigned n_runes )
 {
   if ( n_runes == 0 )
   {
-    return timespan_t::zero();
+    return 0_ms;
   }
 
   if ( n_runes > MAX_RUNES )
@@ -1224,7 +1224,7 @@ timespan_t runes_t::time_to_regen( unsigned n_runes )
   // If we have the runes, no need to check anything.
   if ( dk -> resources.current[ RESOURCE_RUNE ] >= as<double>( n_runes ) )
   {
-    return timespan_t::zero();
+    return 0_ms;
   }
 
   // First, collect regenerating runes into an array
@@ -1353,7 +1353,7 @@ inline rune_t* rune_t::fill_rune( gain_t* gain )
   assert( runes -> runes_depleted() == MAX_RUNES - runes -> runes_full() - runes -> runes_regenerating() );
 
   // If the actor goes past the maximum number of regenerating runes, mark the waste start
-  if ( runes -> waste_start < timespan_t::zero() && runes -> runes_full() > MAX_REGENERATING_RUNES )
+  if ( runes -> waste_start < 0_ms && runes -> runes_full() > MAX_REGENERATING_RUNES )
   {
     if ( runes -> dk -> sim -> debug )
     {
@@ -1400,10 +1400,10 @@ inline void rune_t::adjust_regen_event( const timespan_t& adjustment )
   auto new_remains = event -> remains() + adjustment;
 
   // Reduce remaining rune regeneration time by adjustment seconds.
-  if ( adjustment < timespan_t::zero() )
+  if ( adjustment < 0_ms )
   {
     // Filled the rune through the adjustment
-    if ( new_remains <= timespan_t::zero() )
+    if ( new_remains <= 0_ms )
     {
       fill_rune();
     }
@@ -1420,14 +1420,14 @@ inline void rune_t::adjust_regen_event( const timespan_t& adjustment )
 
       event_t::cancel( e );
 
-      if ( adjustment < timespan_t::zero() )
+      if ( adjustment < 0_ms )
       {
         regen_start += adjustment;
       }
     }
   }
   // Adjustment is positive, reschedule the regeneration event to the new remaining time.
-  else if ( adjustment > timespan_t::zero() )
+  else if ( adjustment > 0_ms )
   {
     event -> reschedule( new_remains );
   }
@@ -1540,9 +1540,9 @@ struct pet_melee_attack_t : public pet_action_t<T_PET, melee_attack_t>
   {
     pet_action_t<T_PET, melee_attack_t>::init();
 
-    if ( ! this -> background && this -> trigger_gcd == timespan_t::zero() )
+    if ( ! this -> background && this -> trigger_gcd == 0_ms )
     {
-      this -> trigger_gcd = timespan_t::from_seconds( 1.5 );
+      this -> trigger_gcd = 1.5_s;
     }
   }
 };
@@ -1557,7 +1557,7 @@ struct auto_attack_t : public melee_attack_t
   {
     assert( player -> main_hand_weapon.type != WEAPON_NONE );
     player -> main_hand_attack = player -> create_auto_attack();
-    trigger_gcd = timespan_t::zero();
+    trigger_gcd = 0_ms;
   }
 
   void execute() override
@@ -1692,7 +1692,7 @@ struct base_ghoul_pet_t : public death_knight_pet_t
   base_ghoul_pet_t( death_knight_t* owner, const std::string& name, bool guardian = false ) :
     death_knight_pet_t( owner, name, guardian, true )
   {
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
+    main_hand_weapon.swing_time = 2.0_s;
   }
 
   attack_t* create_auto_attack() override
@@ -1715,11 +1715,11 @@ struct base_ghoul_pet_t : public death_knight_pet_t
 
     // Cheapest Ability need 40 Energy
     if ( energy > 40 )
-      return timespan_t::from_seconds( 0.1 );
+      return 0.1_s;
 
     return std::max(
              timespan_t::from_seconds( ( 40 - energy ) / resource_regen_per_second( RESOURCE_ENERGY ) ),
-             timespan_t::from_seconds( 0.1 )
+             0.1_s
            );
   }
 
@@ -2064,7 +2064,7 @@ struct risen_skulker_pet_t : public death_knight_pet_t
   {
     regen_type = REGEN_DISABLED;
     main_hand_weapon.type = WEAPON_BEAST_RANGED;
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.7 );
+    main_hand_weapon.swing_time = 2.7_s;
   }
 
   void init_base_stats() override
@@ -2172,7 +2172,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       drw_spell_t( p, "blood_boil", p -> o() -> spec.blood_boil )
     {
       aoe = -1;
-      cooldown -> duration = timespan_t::zero();
+      cooldown -> duration = 0_ms;
       cooldown -> charges = 0;
 
       base_multiplier *= 1.0 + p -> o() -> spec.blood_death_knight -> effectN( 1 ).percent();
@@ -2281,7 +2281,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       weapon = &( p -> main_hand_weapon );
       base_multiplier *= 1.0 + p -> o() -> spec.blood_death_knight -> effectN( 1 ).percent();
 
-      cooldown -> duration = timespan_t::zero();
+      cooldown -> duration = 0_ms;
       cooldown -> charges = 0;
     }
   };
@@ -2303,7 +2303,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
   {
     // The pet wields the same weapon type as its owner for spells with weapon requirements
     main_hand_weapon.type       = owner -> main_hand_weapon.type;
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 3.5 );
+    main_hand_weapon.swing_time = 3.5_s;
 
     owner_coeff.ap_from_ap = 1 / 3.0;
     regen_type = REGEN_DISABLED;
@@ -2344,7 +2344,7 @@ struct bloodworm_pet_t : public death_knight_pet_t
     death_knight_pet_t( owner, "bloodworm", true, true )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 1.4 );
+    main_hand_weapon.swing_time = 1.4_s;
 
     owner_coeff.ap_from_ap = 0.25;
     regen_type = REGEN_DISABLED;
@@ -2400,9 +2400,7 @@ struct magus_pet_t : public death_knight_pet_t
 
       if ( p() -> o() -> bugs )
       {
-        interval = execute_time() <= timespan_t::from_seconds( 1.2 ) ?
-          timespan_t::from_seconds( 1.2 ) :
-          timespan_t::from_seconds( 2.4 );
+        interval = execute_time() <= 1.2_s ? 1.2_s : 2.4_s;
       }
 
       return interval;
@@ -2442,7 +2440,7 @@ struct magus_pet_t : public death_knight_pet_t
 
       // If a shadow bolt cast ends in less than 1.2s, the magus will cast it again, this isn't true for Frostbolt
       // https://github.com/SimCMinMax/WoW-BugTracker/issues/392
-      if ( p() -> bugs && execute_time() <= timespan_t::from_seconds( 1.2 ) && ! magus -> second_shadow_bolt )
+      if ( p() -> bugs && execute_time() <= 1.2_s && ! magus -> second_shadow_bolt )
       {
         magus -> second_shadow_bolt = true;
       }
@@ -2730,9 +2728,9 @@ struct death_knight_action_t : public Base
   timespan_t gcd() const override
   {
     timespan_t base_gcd = action_base_t::gcd();
-    if ( base_gcd == timespan_t::zero() )
+    if ( base_gcd == 0_ms )
     {
-      return timespan_t::zero();
+      return 0_ms;
     }
 
     if ( hasted_gcd )
@@ -3130,7 +3128,7 @@ struct melee_t : public death_knight_melee_attack_t
     may_glance        = true;
     background        = true;
     repeating         = true;
-    trigger_gcd       = timespan_t::zero();
+    trigger_gcd       = 0_ms;
     special           = false;
     weapon_multiplier = 1.0;
 
@@ -3165,7 +3163,7 @@ struct melee_t : public death_knight_melee_attack_t
     timespan_t t = death_knight_melee_attack_t::execute_time();
 
     if ( first )
-      return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t / 2, timespan_t::zero() ) : t / 2 ) : timespan_t::zero();
+      return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t / 2, 0_ms ) : t / 2 ) : 0_ms;
     else
       return t;
   }
@@ -3277,7 +3275,7 @@ struct auto_attack_t : public death_knight_melee_attack_t
       p -> off_hand_attack -> id = 1;
     }
 
-    trigger_gcd = timespan_t::zero();
+    trigger_gcd = 0_ms;
   }
 
   virtual void execute() override
@@ -3428,7 +3426,7 @@ struct army_of_the_dead_t : public death_knight_spell_t
     // There's a 0.5s interval between each ghoul's spawn
     double const summon_interval = 0.5;
 
-    timespan_t precombat_time = timespan_t::zero();
+    timespan_t precombat_time = 0_ms;
 
     if ( ! p() -> in_combat )
     {      
@@ -3484,8 +3482,9 @@ struct blood_plague_heal_t : public death_knight_heal_t
     background = true;
     callbacks = may_crit = may_miss = false;
     target = p;
+    // Tick time, duration and healing amount handled by the damage
     attack_power_mod.direct = attack_power_mod.tick = 0;
-    dot_duration = base_tick_time = timespan_t::zero();
+    dot_duration = base_tick_time = 0_ms;
   }
 };
 
@@ -3581,10 +3580,10 @@ struct blooddrinker_heal_t : public death_knight_heal_t
     callbacks = may_crit = may_miss = false;
     base_costs[ RESOURCE_RUNE ] = 0;
     energize_type = ENERGIZE_NONE;
-    cooldown -> duration = timespan_t::zero();
+    cooldown -> duration = 0_ms;
     target = p;
     attack_power_mod.direct = attack_power_mod.tick = 0;
-    dot_duration = base_tick_time = timespan_t::zero();
+    dot_duration = base_tick_time = 0_ms;
   }
 };
 
@@ -3600,7 +3599,7 @@ struct blooddrinker_t : public death_knight_spell_t
     parse_options( options_str );
     tick_may_crit = channeled = hasted_ticks = tick_zero = true;
    
-    base_tick_time = timespan_t::from_seconds( 1.0 );
+    base_tick_time = 1.0_s;
   }
 
   void tick( dot_t* d ) override
@@ -3821,7 +3820,7 @@ struct dancing_rune_weapon_buff_t : public buff_t
   dancing_rune_weapon_buff_t( death_knight_t* p ) :
     buff_t( p, "dancing_rune_weapon", p -> find_spell( 81256 ) )
   {
-    set_cooldown( timespan_t::zero() );
+    cooldown -> duration = 0_ms; // Handled by the ability
     add_invalidate( CACHE_PARRY );
   }
 
@@ -3910,7 +3909,7 @@ struct helchains_buff_t : public buff_t
     damage( new helchains_damage_t( p ) )
   {
     tick_zero = true;
-    buff_period = timespan_t::from_seconds( 1.0 );
+    buff_period = 1.0_s;
     set_tick_behavior( buff_tick_behavior::CLIP );
     set_tick_callback( [ this ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ ) 
     {
@@ -3938,7 +3937,7 @@ struct dark_transformation_buff_t : public buff_t
   dark_transformation_buff_t( death_knight_t* p ) :
     buff_t( p, "dark_transformation", p -> spec.dark_transformation )
   {
-    set_cooldown( timespan_t::zero() );
+    cooldown -> duration = 0_ms; // Handled by the ability
   }
 
   void expire_override( int s, timespan_t t ) override
@@ -4102,7 +4101,7 @@ struct death_and_decay_base_t : public death_knight_spell_t
     death_knight_spell_t( name, p, spell ),
     damage( nullptr )
   {
-    base_tick_time = dot_duration = timespan_t::zero(); // Handled by event
+    base_tick_time = dot_duration = 0_ms; // Handled by event
     ignore_false_positive = true;
     may_crit              = false;
     // Note, radius and ground_aoe flag needs to be set in base so spell_targets expression works
@@ -4150,7 +4149,7 @@ struct death_and_decay_base_t : public death_knight_spell_t
     make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
       .target( execute_state -> target )
       // Dnd is supposed to last 10s, but a total of 11 ticks (13 with rapid decomposition) are observed so we're adding a duration of 0.5s to make it work properly
-      .duration( data().duration() + timespan_t::from_millis( 500 ) )
+      .duration( data().duration() + 500_ms )
       .pulse_time( compute_tick_time() )
       .action( damage )
       // Keep track of on-going dnd events
@@ -4711,7 +4710,7 @@ struct empower_rune_weapon_buff_t : public buff_t
     buff_t( p, "empower_rune_weapon", p -> spec.empower_rune_weapon )
   {
     tick_zero = true;
-    set_cooldown( timespan_t::zero() ); // Handled in the action
+    cooldown -> duration = 0_ms; // Handled in the action
     set_period( p -> spec.empower_rune_weapon -> effectN( 1 ).period() );
     set_trigger_spell( p -> spec.empower_rune_weapon );
     set_default_value( p -> spec.empower_rune_weapon -> effectN( 3 ).percent() );
@@ -4740,7 +4739,7 @@ struct empower_rune_weapon_t : public death_knight_spell_t
     energize_type = ENERGIZE_NONE;
 
     // Buff handles the ticking, this one just triggers the buff
-    dot_duration = base_tick_time = timespan_t::zero();
+    dot_duration = base_tick_time = 0_ms;
   }
 
   void execute() override
@@ -4843,7 +4842,7 @@ struct bursting_sores_t : public death_knight_spell_t
   // The travel time is overriden to zero to make it trigger properly on enemy death
   timespan_t travel_time() const override
   {
-    return timespan_t::zero();
+    return 0_ms;
   }
 
   size_t available_targets( std::vector< player_t* >& tl ) const override
@@ -5844,19 +5843,12 @@ struct pillar_of_frost_bonus_buff_t : public buff_t
 
 struct pillar_of_frost_buff_t : public buff_t
 {
-  double icy_citadel_duration;
-
   pillar_of_frost_buff_t( death_knight_t* p ) :
     buff_t( p, "pillar_of_frost", p -> spec.pillar_of_frost )
   {
-    set_cooldown( timespan_t::zero() );
+    cooldown -> duration = 0_ms;
     set_default_value( p -> spec.pillar_of_frost -> effectN( 1 ).percent() );
     add_invalidate( CACHE_STRENGTH );
-
-    if ( p -> azerite.icy_citadel.enabled() )
-    {
-      icy_citadel_duration = p -> azerite.icy_citadel.spell() -> effectN( 2 ).base_value();
-    }
   }
 
   void expire_override( int s, timespan_t t ) override
@@ -5870,7 +5862,8 @@ struct pillar_of_frost_buff_t : public buff_t
     if ( p -> azerite.icy_citadel.enabled() )
     {
       p -> buffs.icy_citadel -> trigger();
-      p -> buffs.icy_citadel -> extend_duration( p, timespan_t::from_millis( icy_citadel_duration * p -> buffs.icy_citadel_builder -> stack() ) );
+      p -> buffs.icy_citadel -> extend_duration( p, p -> azerite.icy_citadel.spell() -> effectN( 2 ).time_value() *
+                                                    p -> buffs.icy_citadel_builder -> stack() );
       p -> buffs.icy_citadel_builder -> expire();
     }
   }
@@ -5928,10 +5921,10 @@ struct raise_dead_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    p() -> pets.ghoul_pet -> summon( timespan_t::zero() );
+    p() -> pets.ghoul_pet -> summon( 0_ms );
     if ( p() -> talent.all_will_serve -> ok() )
     {
-      p() -> pets.risen_skulker -> summon( timespan_t::zero() );
+      p() -> pets.risen_skulker -> summon( 0_ms );
     }
   }
 
@@ -6004,7 +5997,7 @@ struct remorseless_winter_buff_t : public buff_t
     buff_t( p, "remorseless_winter", p -> spec.remorseless_winter ),
     damage( new remorseless_winter_damage_t( p ) )
   {
-    set_cooldown( timespan_t::zero() ); // Controlled by the action
+    cooldown -> duration = 0_ms; // Controlled by the action
     set_refresh_behavior( buff_refresh_behavior::DURATION );
     set_tick_callback( [ this ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ ) 
     {
@@ -6030,8 +6023,7 @@ struct remorseless_winter_t : public death_knight_spell_t
     parse_options( options_str );
 
     // Periodic behavior handled by the buff
-    dot_duration = timespan_t::zero();
-    base_tick_time = timespan_t::zero();
+    dot_duration = base_tick_time = 0_ms;
 
     ap_type = AP_WEAPON_BOTH;
 
@@ -6300,7 +6292,7 @@ struct antimagic_shell_buff_t : public buff_t
     buff_t( p, "antimagic_shell", p -> spell.antimagic_shell ),
     remaining_absorb( 0.0 )
   {
-    set_cooldown( timespan_t::zero() );
+    cooldown -> duration = 0_ms;
 
     if ( p -> azerite.runic_barrier.enabled() )
     {
@@ -6520,7 +6512,8 @@ struct vampiric_blood_buff_t : public buff_t
     buff_t( player, "vampiric_blood", player -> spec.vampiric_blood ),
     p( player )
   {
-    set_cooldown( timespan_t::zero() );
+    // Cooldown handled by the action
+    cooldown -> duration = 0_ms;
     delta = data().effectN( 4 ).percent();
   }
 
@@ -7039,7 +7032,7 @@ void death_knight_t::burst_festering_wound( const action_state_t* state, unsigne
     death_knight_t* dk;
 
     fs_burst_t( death_knight_t* dk, player_t* target, unsigned n ) :
-      event_t( *dk, timespan_t::zero() ), n( n ), target( target ), dk( dk )
+      event_t( *dk, 0_ms ), n( n ), target( target ), dk( dk )
     {
     }
 
@@ -7480,7 +7473,7 @@ void death_knight_t::init_base_stats()
 
   resources.base[ RESOURCE_RUNE        ] = MAX_RUNES;
 
-  base_gcd = timespan_t::from_seconds( 1.0 );
+  base_gcd = 1.0_s;
 
   // Avoidance diminishing Returns constants/conversions now handled in player_t::init_base_stats().
   // Base miss, dodge, parry, and block are set in player_t::init_base_stats().
@@ -8146,7 +8139,7 @@ void death_knight_t::create_buffs()
 
   buffs.icebound_fortitude = make_buff( this, "icebound_fortitude", spec.icebound_fortitude )
         -> set_duration( spec.icebound_fortitude -> duration() )
-        -> set_cooldown( timespan_t::zero() );
+        -> set_cooldown( 0_ms ); // Handled by the action
 
   runeforge.rune_of_the_fallen_crusader = make_buff( this, "unholy_strength", spell.fallen_crusader -> effectN( 1 ).trigger() )
             -> add_invalidate( CACHE_STRENGTH );
@@ -8171,7 +8164,7 @@ void death_knight_t::create_buffs()
             recalculate_resource_max( RESOURCE_HEALTH );
           } : buff_stack_change_callback_t() )
         // The internal cd in spelldata is for stack loss, handled in bone_shield_handler
-        -> set_cooldown( timespan_t::zero() )
+        -> set_cooldown( 0_ms )
         -> set_max_stack( spell.bone_shield -> max_stacks() )
         -> add_invalidate( CACHE_BONUS_ARMOR )
         -> add_invalidate( CACHE_HASTE );
@@ -8186,10 +8179,10 @@ void death_knight_t::create_buffs()
         -> set_default_value( talent.hemostasis -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 
   buffs.rune_tap = make_buff( this, "rune_tap", talent.rune_tap )
-        -> set_cooldown( timespan_t::zero() );
+        -> set_cooldown( 0_ms ); // Handled by the action
 
   buffs.tombstone = make_buff<absorb_buff_t>( this, "tombstone", talent.tombstone )
-        -> set_cooldown( timespan_t::zero() ); // Handled by the action
+        -> set_cooldown( 0_ms ); // Handled by the action
 
   buffs.vampiric_blood = new vampiric_blood_buff_t( this );
 
