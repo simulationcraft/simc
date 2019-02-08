@@ -818,7 +818,7 @@ public:
     // Unholy
     azerite_power_t cankerous_wounds; // TODO: check whether it is a separate roll or if it affects the 50/50 roll between 2-3 wounds
     azerite_power_t festermight;
-    azerite_power_t harrowing_decay; // TODO: check how it refreshes on multiple DC casts in a row
+    azerite_power_t harrowing_decay;
     azerite_power_t helchains; // The ingame implementation is a mess with multiple helchains buffs on the player and multiple helchains damage spells. The simc version is simplified
     azerite_power_t last_surprise; 
     azerite_power_t magus_of_the_dead; // Trait is a buggy mess, the pet can melee in the middle of casting (not implemented because not reliable) and sometimes doesn't cast at all
@@ -4272,17 +4272,42 @@ struct coils_of_devastation_t
   } 
 };
 
-struct harrowing_decay_t : public death_knight_spell_t
+// Bastard struct because this is a spell that adds up like a residual action, but is also able to critically hit and pandemics
+struct harrowing_decay_t 
+  : public residual_action::residual_periodic_action_t<death_knight_spell_t>
 {
   harrowing_decay_t( death_knight_t* p ) :
-    death_knight_spell_t( "harrowing_decay", p, p -> azerite.harrowing_decay.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
+    residual_action::residual_periodic_action_t<death_knight_spell_t>
+    ( "harrowing_decay", p, p -> azerite.harrowing_decay.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
   {
     background = true;
-    base_td = p -> azerite.harrowing_decay.value( 1 );
-
-    // TODO : assumptions only for now, need to test more
     hasted_ticks = tick_zero = false;
+  }
+
+  void init() override
+  {
+    residual_periodic_action_t<death_knight_spell_t>::init();
+
     tick_may_crit = true;
+
+    // Re-apply crit and vers scaling because they're disabled for residual actions
+    update_flags |= STATE_CRIT | STATE_VERSATILITY | STATE_MUL_TA;
+    snapshot_flags |= STATE_CRIT | STATE_VERSATILITY | STATE_MUL_TA;
+  }
+
+  void tick( dot_t* d ) override
+  {
+    // The last tick doesn't happen if it's partial 
+    if ( d -> current_tick == d -> num_ticks && d -> last_tick_factor < 1 )
+      return;
+
+    residual_periodic_action_t<death_knight_spell_t>::tick( d );
+  }
+
+  // Skip the residual_action's function to keep the pandemic duration
+  timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
+  { 
+    return death_knight_spell_t::calculate_dot_refresh_duration( dot, triggered_duration );
   }
 };
 
@@ -4375,12 +4400,13 @@ struct death_coil_t : public death_knight_spell_t
   coils_of_devastation_t* coils_of_devastation;
   t21_death_coil_t* t21_death_coil;
   harrowing_decay_t* harrowing_decay;
-  
+  double hd_damage;
+   
   death_coil_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "death_coil", p, p -> spec.death_coil ),
     coils_of_devastation( nullptr ),
     t21_death_coil( nullptr ),
-    harrowing_decay( nullptr ) 
+    harrowing_decay( nullptr ), hd_damage( 0 )
   {
     parse_options( options_str );
 
@@ -4405,6 +4431,9 @@ struct death_coil_t : public death_knight_spell_t
     {
       harrowing_decay = new harrowing_decay_t( p );
       add_child( harrowing_decay );
+      
+      const spell_data_t* hd_spell = p -> azerite.harrowing_decay.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger();
+      hd_damage = p -> azerite.harrowing_decay.value( 1 ) * ( hd_spell -> duration() / hd_spell -> effectN( 1 ).period() );
     }
   }
 
@@ -4481,8 +4510,7 @@ struct death_coil_t : public death_knight_spell_t
 
     if ( p() -> azerite.harrowing_decay.enabled() )
     {
-      harrowing_decay -> set_target( state -> target );
-      harrowing_decay -> execute();
+      residual_action::trigger( harrowing_decay, state -> target, hd_damage );
     }
   }
 };
