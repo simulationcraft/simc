@@ -1125,6 +1125,8 @@ struct devastator_t : warrior_attack_t
 
   void execute() override
   {
+    warrior_attack_t::execute();
+
     if ( rng().roll( shield_slam_reset ) )
     {
       p() -> cooldown.shield_slam -> reset( true );
