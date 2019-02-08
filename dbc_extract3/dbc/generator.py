@@ -1391,6 +1391,7 @@ class SpellDataGenerator(DataGenerator):
           ( 49088, 0 ),     # Anti-magic Shell RP generation
           ( 288548, 5 ), ( 288546, 5 ),   # Magus of the Dead's (azerite trait) Frostbolt and Shadow Bolt spells
           ( 286836, 0 ), ( 286954, 0 ), ( 290814, 0 ) # Helchains damage (azerite trait)
+          ( 287320, 0 ),    # Frostwhelp's Indignation (azerite)
 
         ),
 
