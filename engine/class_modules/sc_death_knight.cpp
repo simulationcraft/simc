@@ -4291,8 +4291,8 @@ struct harrowing_decay_t
     tick_may_crit = true;
 
     // Re-apply crit and vers scaling because they're disabled for residual actions
-    update_flags |= STATE_CRIT | STATE_VERSATILITY | STATE_MUL_TA;
-    snapshot_flags |= STATE_CRIT | STATE_VERSATILITY | STATE_MUL_TA;
+    update_flags |= STATE_CRIT | STATE_VERSATILITY | STATE_MUL_TA | STATE_TGT_MUL_TA;
+    snapshot_flags |= STATE_CRIT | STATE_VERSATILITY | STATE_MUL_TA | STATE_TGT_MUL_TA;
   }
 
   void tick( dot_t* d ) override
