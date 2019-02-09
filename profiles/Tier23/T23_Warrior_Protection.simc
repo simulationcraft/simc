@@ -29,8 +29,8 @@ actions.precombat+=/potion
 
 # Executed every time the actor is available.
 actions=auto_attack
-actions+=/intercept
-actions+=/use_item,name=ramping_amplitude_gigavolt_engine
+actions+=/intercept,if=time=0
+actions+=/use_items
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
@@ -39,18 +39,18 @@ actions+=/fireblood
 actions+=/ancestral_call
 actions+=/call_action_list,name=prot
 
-actions.prot=potion,if=target.time_to_die<25
-actions.prot+=/avatar,if=(cooldown.demoralizing_shout.ready|cooldown.demoralizing_shout.remains>2)
-actions.prot+=/demoralizing_shout
-actions.prot+=/ravager
-actions.prot+=/dragon_roar
-actions.prot+=/thunder_clap,if=(talent.unstoppable_force.enabled&buff.avatar.up&debuff.demoralizing_shout_debuff.up)
-actions.prot+=/shield_block,if=(cooldown.shield_slam.ready&buff.shield_block.down&buff.last_stand.down)
-actions.prot+=/last_stand,if=buff.shield_block.down
+actions.prot=potion,if=buff.avatar.up|target.time_to_die<25
+actions.prot+=/avatar
+actions.prot+=/thunder_clap,if=(talent.unstoppable_force.enabled&buff.avatar.up)
+actions.prot+=/shield_block,if=cooldown.shield_slam.ready&buff.shield_block.down&buff.last_stand.down&talent.bolster.enabled
+actions.prot+=/last_stand,if=cooldown.shield_slam.ready&cooldown.shield_block.charges_fractional<1&buff.shield_block.down&talent.bolster.enabled
+actions.prot+=/ignore_pain,if=rage.deficit<25+20*talent.booming_voice.enabled*cooldown.demoralizing_shout.ready
 actions.prot+=/shield_slam
 actions.prot+=/thunder_clap
-actions.prot+=/revenge,if=(!talent.vengeance.enabled)|(talent.vengeance.enabled&buff.revenge.react&!buff.vengeance_ignore_pain.up)|(buff.vengeance_revenge.up)|(talent.vengeance.enabled&!buff.vengeance_ignore_pain.up&!buff.vengeance_revenge.up&rage>=30)
-actions.prot+=/ignore_pain,use_off_gcd=1,if=rage>70
+actions.prot+=/demoralizing_shout,if=talent.booming_voice.enabled
+actions.prot+=/ravager
+actions.prot+=/dragon_roar
+actions.prot+=/revenge
 actions.prot+=/devastate
 
 head=helm_of_tempered_jade,id=165548,bonus_id=4824/1537/5481/4775,azerite_powers=237/440/21/83/13

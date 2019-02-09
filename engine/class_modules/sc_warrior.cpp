@@ -4392,7 +4392,6 @@ struct shield_block_t : public warrior_spell_t
     : warrior_spell_t( "shield_block", p, p->spec.shield_block )
   {
     parse_options( options_str );
-    use_off_gcd      = true;
     cooldown->hasted = true;
     cooldown->charges += as<int>( p->spec.shield_block_2->effectN( 1 ).base_value() );
   }
@@ -5269,49 +5268,28 @@ void warrior_t::apl_prot()
   action_priority_list_t* default_list = get_action_priority_list( "default" );
   action_priority_list_t* prot         = get_action_priority_list( "prot" );
 
-  default_list->add_action( "auto_attack" );
-  default_list->add_action( this, "intercept" );
-
-  size_t num_items = items.size();
-  for ( size_t i = 0; i < num_items; i++ )
-  {
-    if ( items[ i ].name_str == "archimondes_hatred_reborn" )
-    {
-      default_list->add_action( this, "Last Stand", "if=cooldown.archimondes_hatred_reborn.remains=0" );
-      default_list->add_action( "use_item,name=" + items[ i ].name_str + ",if=buff.last_stand.up" );
-    }
-    else if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-    {
-      if ( items[ i ].slot != SLOT_WAIST )
-        default_list->add_action( "use_item,name=" + items[ i ].name_str );
-    }
-  }
-
+  default_list -> add_action( "auto_attack" );
+  default_list -> add_action( this, "Intercept", "if=time=0" );
+  default_list -> add_action( "use_items" );
+  
   for ( size_t i = 0; i < racial_actions.size(); i++ )
-    default_list->add_action( racial_actions[ i ] );
+    default_list -> add_action( racial_actions[ i ] );
 
-  default_list->add_action( "call_action_list,name=prot" );
+  default_list -> add_action( "call_action_list,name=prot" );
 
-  if ( sim->allow_potions && true_level >= 80 )
-  {
-    prot->add_action( "potion,if=target.time_to_die<25" );
-  }
-
-  prot->add_action( this, "Avatar", "if=(cooldown.demoralizing_shout.ready|cooldown.demoralizing_shout.remains>2)" );
-  prot->add_action( this, "Demoralizing Shout" );
-  prot->add_talent( this, "Ravager" );
-  prot->add_talent( this, "Dragon Roar" );
-  prot->add_action( this, "Thunder Clap", "if=(talent.unstoppable_force.enabled&buff.avatar.up&debuff.demoralizing_shout_debuff.up)" );
-  prot->add_action( this, "Shield Block", "if=(cooldown.shield_slam.ready&buff.shield_block.down&buff.last_stand.down)" );
-  prot->add_action( this, "Last Stand", "if=buff.shield_block.down" );
-  prot->add_action( this, "Shield Slam" );
-  prot->add_action( this, "Thunder Clap" );
-  prot->add_action( this, "Revenge",
-                    "if=(!talent.vengeance.enabled)|(talent.vengeance.enabled&buff.revenge.react&!buff.vengeance_"
-                    "ignore_pain.up)|(buff.vengeance_revenge.up)|(talent.vengeance.enabled&!buff.vengeance_ignore_pain."
-                    "up&!buff.vengeance_revenge.up&rage>=30)" );
-  prot->add_action( this, "Ignore Pain", "use_off_gcd=1,if=rage>70" );
-  prot->add_action( this, "Devastate" );
+  prot -> add_action( "potion,if=buff.avatar.up|target.time_to_die<25" );
+  prot -> add_action( this, "Avatar" );
+  prot -> add_action( this, "Thunder Clap", "if=(talent.unstoppable_force.enabled&buff.avatar.up)" );
+  prot -> add_action( this, "Shield Block", "if=cooldown.shield_slam.ready&buff.shield_block.down&buff.last_stand.down&talent.bolster.enabled" );
+  prot -> add_action( this, "Last Stand", "if=cooldown.shield_slam.ready&cooldown.shield_block.charges_fractional<1&buff.shield_block.down&talent.bolster.enabled" );
+  prot -> add_action( this, "Ignore Pain", "if=rage.deficit<25+20*talent.booming_voice.enabled*cooldown.demoralizing_shout.ready" );
+  prot -> add_action( this, "Shield Slam" );
+  prot -> add_action( this, "Thunder Clap" );
+  prot -> add_action( this, "Demoralizing Shout", "if=talent.booming_voice.enabled" );
+  prot -> add_talent( this, "Ravager" );
+  prot -> add_talent( this, "Dragon Roar" );
+  prot -> add_action( this, "Revenge" );
+  prot -> add_action( this, "Devastate" );
 }
 
 // NO Spec Combat Action Priority List
