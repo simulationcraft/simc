@@ -824,6 +824,12 @@ public:
     azerite_power_t magus_of_the_dead; // Trait is a buggy mess, the pet can melee in the middle of casting (not implemented because not reliable) and sometimes doesn't cast at all
   } azerite;
 
+  // Death Knight Options
+  struct options_t
+  {
+    double magus_of_the_dead_melee_uptime = 0.0;
+  } options;
+
   // Runes
   runes_t _runes;
 
@@ -903,12 +909,14 @@ public:
   void      create_actions() override;
   action_t* create_action( const std::string& name, const std::string& options ) override;
   expr_t*   create_expression( const std::string& name ) override;
+  void      create_options() override;
   void      create_pets() override;
   resource_e primary_resource() const override { return RESOURCE_RUNIC_POWER; }
   role_e    primary_role() const override;
   stat_e    convert_hybrid_stat( stat_e s ) const override;
   void      invalidate_cache( cache_e ) override;
   double    resource_loss( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr ) override;
+  void      copy_from( player_t* other ) override;
   void      merge( player_t& other ) override;
   void      analyze( sim_t& sim ) override;
   std::string default_potion() const override;
@@ -1722,13 +1730,6 @@ struct base_ghoul_pet_t : public death_knight_pet_t
              0.1_s
            );
   }
-
-  double resource_regen_per_second( resource_e r ) const override
-  {
-    double reg = pet_t::resource_regen_per_second( r );
-
-    return reg;
-  }
 };
 
 // ==========================================================================
@@ -2377,6 +2378,7 @@ struct magus_pet_t : public death_knight_pet_t
       magus( player )
     {
       base_dd_min = base_dd_max = player -> o() -> azerite.magus_of_the_dead.value();
+      interrupt_auto_attack = false;
     }
 
     void execute() override
@@ -2452,10 +2454,52 @@ struct magus_pet_t : public death_knight_pet_t
     }
   };
 
+  // Not mentionned in the tooltip (potential bug?) 
+  // The magus of the dead can auto attack while casting as long as it's in melee range of its target
+  // This requires (most of the time) a special action from the player to position the pet in melee range
+  // This is reproduced in simc with an option (defaults at 0) to specify the pet's melee uptime
+  // https://github.com/SimCMinMax/WoW-BugTracker/issues/391
+  struct magus_auto_attack_t : public auto_attack_melee_t<magus_pet_t>
+  {
+    magus_auto_attack_t( magus_pet_t* p ) :
+      auto_attack_melee_t<magus_pet_t>( p )
+    { }
+
+    // Force the auto attacks that fail the roll for melee uptime to miss
+    result_e calculate_result( action_state_t* s ) const override
+    {
+      if ( rng().roll( p() -> o() -> options.magus_of_the_dead_melee_uptime ) )
+      {
+        return auto_attack_melee_t<magus_pet_t>::calculate_result( s );
+      }
+
+      else return RESULT_MISS;
+    }
+
+    // Skip the reschedule auto attack if the pet is casting from auto_attack_melee_t<T> 
+    void execute() override
+    {
+      pet_melee_attack_t<magus_pet_t>::execute();
+    }
+  };
+
   magus_pet_t( death_knight_t* owner ) :
     death_knight_pet_t( owner, "magus_of_the_dead", true, false ),
     last_used_frostbolt( false ), second_shadow_bolt( false )
   {
+    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.swing_time = 1.4_s;
+    regen_type = REGEN_DISABLED;
+
+    // Don't try to melee attack at all if the pet's melee uptime is disabled
+    use_auto_attack = owner -> options.magus_of_the_dead_melee_uptime;
+  }
+
+  void init_base_stats() override
+  {
+    death_knight_pet_t::init_base_stats();
+
+    owner_coeff.ap_from_ap = 0.4;
   }
 
   void init_action_list() override
@@ -2466,6 +2510,9 @@ struct magus_pet_t : public death_knight_pet_t
     def -> add_action( "frostbolt" );
     def -> add_action( "shadow_bolt" );
   }
+
+  attack_t* create_auto_attack() override
+  { return new magus_auto_attack_t( this ); }
 
   action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
@@ -3399,12 +3446,12 @@ struct army_of_the_dead_t : public death_knight_spell_t
     // Limit Army of the dead precast option between 10s before pull (because rune regeneration time is 10s at 0 haste) and on pull
     if ( precombat_delay > 10 )
     {
-      precombat_delay = 10 ;
+      precombat_delay = 10;
       sim -> out_debug.printf( "%s tried to precast army of the dead more than 10s before combat begins", p -> name() );
     }
     else if ( precombat_delay < 1 )
     { 
-      precombat_delay = 1; 
+      precombat_delay = 1;
       sim -> out_debug.printf( "%s tried to precast army of the dead too late (delay has to be >= 1s", p -> name() );
     }
 
@@ -6707,6 +6754,21 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
   }
 
   return actual_amount;
+}
+
+// death_knight_t::create_options ===========================================
+
+void death_knight_t::create_options()
+{
+  add_option( opt_float( "magus_of_the_dead_melee_uptime", options.magus_of_the_dead_melee_uptime, 0.0, 1.0 ) );
+
+  player_t::create_options();
+}
+
+void death_knight_t::copy_from( player_t* source )
+{
+  player_t::copy_from( source );
+  options = debug_cast<death_knight_t*>( source ) -> options;
 }
 
 void death_knight_t::merge( player_t& other )
