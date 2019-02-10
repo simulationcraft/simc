@@ -9614,6 +9614,9 @@ expr_t* player_t::create_expression( const std::string& expression_str )
   if ( expression_str == "self" )
     return expr_t::create_constant( "self", actor_index );
 
+  if ( expression_str == "current_target" )
+    return expr_t::create_constant( "current_target", target->actor_index );
+
   if ( expression_str == "in_combat" )
     return make_ref_expr( "in_combat", in_combat );
 
