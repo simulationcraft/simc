@@ -1,0 +1,102 @@
+hunter="DS_Hunter_Beast_Mastery"
+source=default
+spec=beast_mastery
+level=120
+race=lightforged_draenei
+role=attack
+position=ranged_back
+talents=1303011
+
+# Default consumables
+potion=battle_potion_of_agility
+flask=currents
+food=bountiful_captains_feast
+augmentation=battle_scarred
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/augmentation
+actions.precombat+=/food
+actions.precombat+=/summon_pet
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion
+# Adjusts the duration and cooldown of Aspect of the Wild and Primal Instincts by the duration of an unhasted GCD when they're used precombat. As AotW has a 1.3s GCD and affects itself this is 1.1s.
+actions.precombat+=/aspect_of_the_wild,precast_time=1.1,if=!azerite.primal_instincts.enabled
+# Adjusts the duration and cooldown of Bestial Wrath and Haze of Rage by the duration of an unhasted GCD when they're used precombat.
+actions.precombat+=/bestial_wrath,precast_time=1.5,if=azerite.primal_instincts.enabled
+
+# Executed every time the actor is available.
+actions=auto_shot
+actions+=/use_items
+actions+=/call_action_list,name=cds
+actions+=/call_action_list,name=st,if=active_enemies<2
+actions+=/call_action_list,name=cleave,if=active_enemies>1
+
+actions.cds=ancestral_call,if=cooldown.bestial_wrath.remains>30
+actions.cds+=/fireblood,if=cooldown.bestial_wrath.remains>30
+actions.cds+=/berserking,if=buff.aspect_of_the_wild.up&(target.time_to_die>cooldown.berserking.duration+duration|(target.health.pct<35|!talent.killer_instinct.enabled))|target.time_to_die<13
+actions.cds+=/blood_fury,if=buff.aspect_of_the_wild.up&(target.time_to_die>cooldown.blood_fury.duration+duration|(target.health.pct<35|!talent.killer_instinct.enabled))|target.time_to_die<16
+actions.cds+=/lights_judgment,if=pet.cat.buff.frenzy.up&pet.cat.buff.frenzy.remains>gcd.max|!pet.cat.buff.frenzy.up
+actions.cds+=/potion,if=buff.bestial_wrath.up&buff.aspect_of_the_wild.up&(target.health.pct<35|!talent.killer_instinct.enabled)|target.time_to_die<25
+
+actions.cleave=barbed_shot,if=pet.cat.buff.frenzy.up&pet.cat.buff.frenzy.remains<=gcd.max
+actions.cleave+=/multishot,if=gcd.max-pet.cat.buff.beast_cleave.remains>0.25
+actions.cleave+=/barbed_shot,if=full_recharge_time<gcd.max&cooldown.bestial_wrath.remains
+actions.cleave+=/aspect_of_the_wild
+actions.cleave+=/stampede,if=buff.aspect_of_the_wild.up&buff.bestial_wrath.up|target.time_to_die<15
+actions.cleave+=/bestial_wrath,if=cooldown.aspect_of_the_wild.remains>20|target.time_to_die<15
+actions.cleave+=/chimaera_shot
+actions.cleave+=/a_murder_of_crows
+actions.cleave+=/barrage
+actions.cleave+=/kill_command
+actions.cleave+=/dire_beast
+actions.cleave+=/barbed_shot,if=pet.cat.buff.frenzy.down&(charges_fractional>1.8|buff.bestial_wrath.up)|cooldown.aspect_of_the_wild.remains<pet.cat.buff.frenzy.duration-gcd&azerite.primal_instincts.enabled|target.time_to_die<9
+actions.cleave+=/cobra_shot,if=cooldown.kill_command.remains>focus.time_to_max
+actions.cleave+=/spitting_cobra
+
+actions.st=barbed_shot,if=pet.cat.buff.frenzy.up&pet.cat.buff.frenzy.remains<=gcd.max|full_recharge_time<gcd.max&cooldown.bestial_wrath.remains|azerite.primal_instincts.enabled&cooldown.aspect_of_the_wild.remains<gcd
+actions.st+=/aspect_of_the_wild
+actions.st+=/a_murder_of_crows
+actions.st+=/stampede,if=buff.aspect_of_the_wild.up&buff.bestial_wrath.up|target.time_to_die<15
+actions.st+=/bestial_wrath,if=cooldown.aspect_of_the_wild.remains>20|target.time_to_die<15
+actions.st+=/kill_command
+actions.st+=/chimaera_shot
+actions.st+=/dire_beast
+actions.st+=/barbed_shot,if=pet.cat.buff.frenzy.down&(charges_fractional>1.8|buff.bestial_wrath.up)|cooldown.aspect_of_the_wild.remains<pet.cat.buff.frenzy.duration-gcd&azerite.primal_instincts.enabled|target.time_to_die<9
+actions.st+=/barrage
+actions.st+=/cobra_shot,if=(focus-cost+focus.regen*(cooldown.kill_command.remains-1)>action.kill_command.cost|cooldown.kill_command.remains>1+gcd)&cooldown.kill_command.remains>1
+actions.st+=/spitting_cobra
+
+head=targettracking_headgear,id=165543,bonus_id=4824/1537/4775,azerite_powers=366/562/22/14/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+shoulders=pauldrons_of_ancestral_vengeance,id=165921,bonus_id=4824/1537/4775,azerite_powers=367/562/30/203/13
+back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
+chest=corrupted_hexxers_vestments,id=159370,bonus_id=1587/5440/4775,azerite_powers=161/366/30/14/13
+wrists=icebinders_bracers,id=165542,bonus_id=4800/1537
+hands=grips_of_harmonious_spirits,id=165531,bonus_id=4800/1537
+waist=goldenscale_girdle,id=165538,bonus_id=4800/1537
+legs=deathhunters_legguards,id=165536,bonus_id=4800/1537
+feet=lightgrace_sabatons,id=165533,bonus_id=4800/1537
+finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_haste
+finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_haste
+trinket1=galecallers_boon,id=159614,bonus_id=1572/4780
+trinket2=variable_intensity_gigavolt_oscillating_reactor,id=165572,bonus_id=4800/1537
+main_hand=pterrorwing_longbow,id=165599,bonus_id=4800/1537,enchant=incendiary_ammunition
+
+# Gear Summary
+# gear_ilvl=415.27
+# gear_agility=5742
+# gear_stamina=9920
+# gear_crit_rating=646
+# gear_haste_rating=1223
+# gear_mastery_rating=1089
+# gear_versatility_rating=407
+# gear_armor=3410
+# set_bonus=gift_of_the_loa_2pc=1
