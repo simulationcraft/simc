@@ -45,7 +45,7 @@ actions+=/immolate,if=talent.internal_combustion.enabled&action.chaos_bolt.in_fl
 actions+=/call_action_list,name=cds
 actions+=/channel_demonfire
 # The if condition here always applies Havoc to something other than the primary target
-actions+=/havoc,cycle_targets=1,if=!(target=sim.target)&(dot.immolate.remains>dot.immolate.duration*0.5|!talent.internal_combustion.enabled)&(!cooldown.summon_infernal.ready|!talent.grimoire_of_supremacy.enabled|talent.grimoire_of_supremacy.enabled&pet.infernal.remains<=10)
+actions+=/havoc,cycle_targets=1,if=!(target=self.target)&(dot.immolate.remains>dot.immolate.duration*0.5|!talent.internal_combustion.enabled)&(!cooldown.summon_infernal.ready|!talent.grimoire_of_supremacy.enabled|talent.grimoire_of_supremacy.enabled&pet.infernal.remains<=10)
 # Soul Fire should be used on cooldown, it does not appear worth saving for generating Soul Shards during cooldowns
 actions+=/soul_fire
 # Conflagrate should only be used to set up Chaos Bolts. Flashover lets Conflagrate be used earlier to set up an Incinerate before CB. If a major cooldown is coming up, save charges for it
@@ -75,7 +75,7 @@ actions.aoe+=/immolate,cycle_targets=1,if=remains<5&(!talent.cataclysm.enabled|c
 # Rules for cooldowns do not change for AoE, so call the same list as on single target
 actions.aoe+=/call_action_list,name=cds
 # Three targets is an in-between case that gives a slight benefit to higher priority Havoc
-actions.aoe+=/havoc,cycle_targets=1,if=!(target=sim.target)&active_enemies<4
+actions.aoe+=/havoc,cycle_targets=1,if=!(target=self.target)&active_enemies<4
 # Rain of Fire will start to dominate on heavy AoE, but some significant Chaos Bolt buffs will still give higher damage output on occasion
 actions.aoe+=/chaos_bolt,if=talent.grimoire_of_supremacy.enabled&pet.infernal.active&(havoc_active|talent.cataclysm.enabled|talent.inferno.enabled&active_enemies<4)
 # Barring any exceptions, Rain of Fire will be used as much as possible, since multiple copies of it can stack
