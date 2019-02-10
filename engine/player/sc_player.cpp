@@ -9931,6 +9931,15 @@ expr_t* player_t::create_expression( const std::string& expression_str )
 
       throw std::invalid_argument(fmt::format("Unsupported movement expression '{}'.", splits[ 1 ]));
     }
+
+    // Player expressions hidden behind "self." to prevent clash with action/sim expressions.
+    if ( splits[ 0 ] == "self" )
+    {
+      if ( splits[ 1 ] == "target" )
+        return make_fn_expr( expression_str, [ this ] { target->actor_index; } );
+
+      throw std::invalid_argument( fmt::format( "Unsupported player expression '{}'.", expression_str ) );
+    }
   } // splits.size() == 2
 
 
