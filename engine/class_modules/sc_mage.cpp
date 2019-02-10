@@ -1123,6 +1123,45 @@ struct combustion_buff_t : public buff_t
   }
 };
 
+struct ice_floes_buff_t : public buff_t
+{
+  ice_floes_buff_t( mage_t* p ) :
+    buff_t( p, "ice_floes", p->talents.ice_floes )
+  { }
+
+  void decrement( int stacks = 1, double value = DEFAULT_VALUE() ) override
+  {
+    if ( check() == 0 )
+      return;
+
+    if ( sim->current_time() - last_trigger > 0.5_s )
+      buff_t::decrement( stacks, value );
+    else
+      sim->print_debug( "Ice Floes removal ignored due to 500 ms protection" );
+  }
+};
+
+struct icy_veins_buff_t : public buff_t
+{
+  icy_veins_buff_t( mage_t* p ) :
+    buff_t( p, "icy_veins", p->find_spell( 12472 ) )
+  {
+    set_default_value( data().effectN( 1 ).percent() );
+    set_cooldown( 0_ms );
+    add_invalidate( CACHE_SPELL_HASTE );
+    buff_duration += p->talents.thermal_void->effectN( 2 ).time_value();
+  }
+
+  void expire_override( int stacks, timespan_t duration ) override
+  {
+    buff_t::expire_override( stacks, duration );
+
+    auto mage = debug_cast<mage_t*>( player );
+    if ( mage->talents.thermal_void->ok() && duration == 0_ms )
+      mage->sample_data.icy_veins_duration->add( elapsed( sim->current_time() ).total_seconds() );
+  }
+};
+
 struct incanters_flow_t : public buff_t
 {
   incanters_flow_t( mage_t* p ) :
@@ -1160,27 +1199,6 @@ struct incanters_flow_t : public buff_t
       reverse = false;
     else
       buff_t::decrement( stacks, value );
-  }
-};
-
-struct icy_veins_buff_t : public buff_t
-{
-  icy_veins_buff_t( mage_t* p ) :
-    buff_t( p, "icy_veins", p->find_spell( 12472 ) )
-  {
-    set_default_value( data().effectN( 1 ).percent() );
-    set_cooldown( 0_ms );
-    add_invalidate( CACHE_SPELL_HASTE );
-    buff_duration += p->talents.thermal_void->effectN( 2 ).time_value();
-  }
-
-  void expire_override( int stacks, timespan_t duration ) override
-  {
-    buff_t::expire_override( stacks, duration );
-
-    auto mage = debug_cast<mage_t*>( player );
-    if ( mage->talents.thermal_void->ok() && duration == 0_ms )
-      mage->sample_data.icy_veins_duration->add( elapsed( sim->current_time() ).total_seconds() );
   }
 };
 
@@ -1706,11 +1724,11 @@ struct fire_mage_spell_t : public mage_spell_t
           p->procs.heating_up_removed->occur();
           p->buffs.heating_up->expire();
 
-          sim->print_debug( "Heating up removed by non-crit" );
+          sim->print_debug( "Heating Up removed by non-crit" );
         }
         else
         {
-          sim->print_debug( "Heating up removal ignored due to 200 ms protection" );
+          sim->print_debug( "Heating Up removal ignored due to 200 ms protection" );
         }
       }
     }
@@ -5653,7 +5671,7 @@ void mage_t::create_buffs()
                                    ->set_default_value( find_spell( 278310 )->effectN( 1 ).percent() );
   buffs.freezing_rain          = make_buff( this, "freezing_rain", find_spell( 270232 ) )
                                    ->set_default_value( find_spell( 270232 )->effectN( 2 ).percent() );
-  buffs.ice_floes              = make_buff( this, "ice_floes", talents.ice_floes );
+  buffs.ice_floes              = make_buff<buffs::ice_floes_buff_t>( this );
   buffs.ray_of_frost           = make_buff( this, "ray_of_frost", find_spell( 208141 ) )
                                    ->set_default_value( find_spell( 208141 )->effectN( 1 ).percent() );
 
