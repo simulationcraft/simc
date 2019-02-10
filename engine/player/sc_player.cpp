@@ -9614,6 +9614,9 @@ expr_t* player_t::create_expression( const std::string& expression_str )
   if ( expression_str == "self" )
     return expr_t::create_constant( "self", actor_index );
 
+  if ( expression_str == "target" )
+    return make_fn_expr( expression_str, [ this ] { return target->actor_index; } );
+
   if ( expression_str == "in_combat" )
     return make_ref_expr( "in_combat", in_combat );
 
@@ -9930,15 +9933,6 @@ expr_t* player_t::create_expression( const std::string& expression_str )
         return make_mem_fn_expr( splits[ 1 ], *this, &player_t::composite_movement_speed );
 
       throw std::invalid_argument(fmt::format("Unsupported movement expression '{}'.", splits[ 1 ]));
-    }
-
-    // Player expressions hidden behind "self." to prevent clash with action/sim expressions.
-    if ( splits[ 0 ] == "self" )
-    {
-      if ( splits[ 1 ] == "target" )
-        return make_fn_expr( expression_str, [ this ] { return target->actor_index; } );
-
-      throw std::invalid_argument( fmt::format( "Unsupported player expression '{}'.", expression_str ) );
     }
   } // splits.size() == 2
 
