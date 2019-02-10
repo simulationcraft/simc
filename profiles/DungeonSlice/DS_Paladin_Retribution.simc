@@ -5,7 +5,7 @@ level=120
 race=blood_elf
 role=attack
 position=back
-talents=2303103
+talents=1303103
 
 # Default consumables
 potion=battle_potion_of_strength
@@ -70,11 +70,11 @@ actions.opener+=/sequence,if=talent.wake_of_ashes.enabled&talent.crusade.enabled
 actions.opener+=/sequence,if=talent.wake_of_ashes.enabled&talent.crusade.enabled&!talent.execution_sentence.enabled&talent.hammer_of_wrath.enabled,name=wake_opener_HoW:shield_of_vengeance:blade_of_justice:judgment:crusade:templars_verdict:wake_of_ashes:templars_verdict:hammer_of_wrath:templars_verdict
 actions.opener+=/sequence,if=talent.wake_of_ashes.enabled&talent.inquisition.enabled,name=wake_opener_Inq:shield_of_vengeance:blade_of_justice:judgment:inquisition:avenging_wrath:wake_of_ashes
 
-head=helm_of_tempered_jade,id=165548,bonus_id=4824/1537/4775,azerite_powers=125/562/31/13
+head=glaciercrest_helm,id=165823,bonus_id=4824/1537/4775,azerite_powers=396/453/459/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
-shoulders=dynosprocket_spaulders,id=165825,bonus_id=4824/1537/4775,azerite_powers=453/562/22/13
+shoulders=lockjaw_shoulderplate,id=159407,bonus_id=1587/4819/4775,azerite_powers=125/396/21/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
-chest=breastplate_of_divine_purification,id=165550,bonus_id=4824/1537/4775,azerite_powers=396/562/461/13
+chest=chestguard_of_the_deep_denizen,id=159408,bonus_id=1587/4819/4775,azerite_powers=154/396/22/13
 wrists=splinterbone_vambraces,id=165551,bonus_id=4800/1537
 hands=crusade_pummelers,id=165549,bonus_id=4800/1537
 waist=embersear_waistguard,id=165552,bonus_id=4800/1537
