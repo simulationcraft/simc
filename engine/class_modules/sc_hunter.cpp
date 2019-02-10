@@ -3652,7 +3652,6 @@ struct kill_command_t: public hunter_spell_t
   proc_t* flankers_advantage;
   struct {
     real_ppm_t* rppm = nullptr;
-    cooldown_t* icd;
     proc_t* proc;
     gain_t* gain;
     double gain_amount;
@@ -3670,8 +3669,7 @@ struct kill_command_t: public hunter_spell_t
     {
       auto driver = p -> find_spell( 287097 );
       dire_consequences.rppm = p -> get_rppm( "dire_consequences", driver );
-      dire_consequences.icd = p -> get_cooldown( "dire_consequences" );
-      dire_consequences.icd -> duration = driver -> internal_cooldown();
+      dire_consequences.rppm -> set_scaling( RPPM_ATTACK_SPEED );
       dire_consequences.proc = p -> get_proc( "Dire Consequences" );
       dire_consequences.gain = p -> get_gain( "dire_beast_(dc)" );
       dire_consequences.gain_amount = p -> find_spell( 120694 ) -> effectN( 1 ).base_value() +
@@ -3714,11 +3712,10 @@ struct kill_command_t: public hunter_spell_t
     }
 
     // XXX: Not sure if the trigger comes before the icd check or after. Typically it's the former afaik.
-    if ( dire_consequences.rppm && dire_consequences.rppm -> trigger() && dire_consequences.icd -> up() )
+    if ( dire_consequences.rppm && dire_consequences.rppm -> trigger() )
     {
       p() -> pets.dc_dire_beast.spawn( pets::dire_beast_duration( p() ).first );
       p() -> resource_gain( RESOURCE_FOCUS, dire_consequences.gain_amount, dire_consequences.gain );
-      dire_consequences.icd -> start();
       dire_consequences.proc -> occur();
     }
   }
