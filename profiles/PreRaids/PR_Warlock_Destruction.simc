@@ -31,83 +31,92 @@ actions.precombat+=/soul_fire
 actions.precombat+=/incinerate,if=!talent.soul_fire.enabled
 
 # Executed every time the actor is available.
-actions=run_action_list,name=cata,if=spell_targets.infernal_awakening>=3+raid_event.invulnerable.up&talent.cataclysm.enabled
-actions+=/run_action_list,name=fnb,if=spell_targets.infernal_awakening>=3+raid_event.invulnerable.up&talent.fire_and_brimstone.enabled
-actions+=/run_action_list,name=inf,if=spell_targets.infernal_awakening>=3+raid_event.invulnerable.up&talent.inferno.enabled
+# Havoc uses a special priority list on most multitarget scenarios, but the target threshold can vary depending on talents
+actions=call_action_list,name=havoc,if=havoc_active&active_enemies<5-talent.inferno.enabled+(talent.inferno.enabled&talent.internal_combustion.enabled)
+# Cataclysm should be used on cooldown as soon as possible
 actions+=/cataclysm
-actions+=/immolate,cycle_targets=1,if=!debuff.havoc.remains&(refreshable|talent.internal_combustion.enabled&action.chaos_bolt.in_flight&remains-action.chaos_bolt.travel_time-5<duration*0.3)
+# Two target scenarios are handled like single target with Havoc weaved in. Starting with three targets, a specialized AoE priority is required
+actions+=/call_action_list,name=aoe,if=active_enemies>2
+# Immolate should never fall off the primary target. If Cataclysm will refresh Immolate before it expires, there's no reason to waste time casting it
+actions+=/immolate,cycle_targets=1,if=refreshable&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>remains)
+# #With Internal Combustion talented, it's possible Immolate will need to be refreshed sooner than the remaining duration says, if there's already a Chaos Bolt on the way to the target.
+actions+=/immolate,if=talent.internal_combustion.enabled&action.chaos_bolt.in_flight&remains<duration*0.5
+# The general rule of thumb for talents is to maximize the number of uses of each
 actions+=/call_action_list,name=cds
-actions+=/channel_demonfire,if=!buff.active_havoc.remains
-actions+=/havoc,cycle_targets=1,if=!(target=sim.target)&target.time_to_die>10&active_enemies>1+raid_event.invulnerable.up
-actions+=/havoc,if=active_enemies>1+raid_event.invulnerable.up
-actions+=/soul_fire,cycle_targets=1,if=!debuff.havoc.remains
-actions+=/chaos_bolt,cycle_targets=1,if=!debuff.havoc.remains&execute_time+travel_time<target.time_to_die&(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time|trinket.proc.mastery.react&trinket.proc.mastery.remains>cast_time|trinket.proc.versatility.react&trinket.proc.versatility.remains>cast_time|trinket.proc.crit.react&trinket.proc.crit.remains>cast_time|trinket.proc.spell_power.react&trinket.proc.spell_power.remains>cast_time)
-actions+=/chaos_bolt,cycle_targets=1,if=!debuff.havoc.remains&execute_time+travel_time<target.time_to_die&(trinket.stacking_proc.intellect.react&trinket.stacking_proc.intellect.remains>cast_time|trinket.stacking_proc.mastery.react&trinket.stacking_proc.mastery.remains>cast_time|trinket.stacking_proc.versatility.react&trinket.stacking_proc.versatility.remains>cast_time|trinket.stacking_proc.crit.react&trinket.stacking_proc.crit.remains>cast_time|trinket.stacking_proc.spell_power.react&trinket.stacking_proc.spell_power.remains>cast_time)
-actions+=/chaos_bolt,cycle_targets=1,if=!debuff.havoc.remains&execute_time+travel_time<target.time_to_die&(cooldown.summon_infernal.remains>=20|!talent.grimoire_of_supremacy.enabled)&(cooldown.dark_soul_instability.remains>=20|!talent.dark_soul_instability.enabled)&(talent.eradication.enabled&debuff.eradication.remains<=cast_time|buff.backdraft.remains|talent.internal_combustion.enabled)
-actions+=/chaos_bolt,cycle_targets=1,if=!debuff.havoc.remains&execute_time+travel_time<target.time_to_die&(soul_shard>=4|buff.dark_soul_instability.remains>cast_time|pet.infernal.active|buff.active_havoc.remains>cast_time)
-actions+=/conflagrate,cycle_targets=1,if=!debuff.havoc.remains&((talent.flashover.enabled&buff.backdraft.stack<=2)|(!talent.flashover.enabled&buff.backdraft.stack<2))
-actions+=/shadowburn,cycle_targets=1,if=!debuff.havoc.remains&((charges=2|!buff.backdraft.remains|buff.backdraft.remains>buff.backdraft.stack*action.incinerate.execute_time))
-actions+=/incinerate,cycle_targets=1,if=!debuff.havoc.remains
+actions+=/channel_demonfire
+# The if condition here always applies Havoc to something other than the primary target
+actions+=/havoc,cycle_targets=1,if=!(target=self.target)&(dot.immolate.remains>dot.immolate.duration*0.5|!talent.internal_combustion.enabled)&(!cooldown.summon_infernal.ready|!talent.grimoire_of_supremacy.enabled|talent.grimoire_of_supremacy.enabled&pet.infernal.remains<=10)
+# Soul Fire should be used on cooldown, it does not appear worth saving for generating Soul Shards during cooldowns
+actions+=/soul_fire
+# Conflagrate should only be used to set up Chaos Bolts. Flashover lets Conflagrate be used earlier to set up an Incinerate before CB. If a major cooldown is coming up, save charges for it
+actions+=/conflagrate,if=buff.backdraft.down&soul_shard>=1.5-0.3*talent.flashover.enabled&!variable.pool_soul_shards
+# Shadowburn is used as a discount Conflagrate to generate shards if you don't have enough for a Chaos Bolt. The same rules about saving it for major cooldowns applies
+actions+=/shadowburn,if=soul_shard<2&(!variable.pool_soul_shards|charges>1)
+# It's worth stocking up on Soul Shards before a major cooldown usage
+actions+=/variable,name=pool_soul_shards,value=active_enemies>1&cooldown.havoc.remains<=10|cooldown.summon_infernal.remains<=20&(talent.grimoire_of_supremacy.enabled|talent.dark_soul_instability.enabled&cooldown.dark_soul_instability.remains<=20)|talent.dark_soul_instability.enabled&cooldown.dark_soul_instability.remains<=20&(cooldown.summon_infernal.remains>target.time_to_die|cooldown.summon_infernal.remains+cooldown.summon_infernal.duration>target.time_to_die)
+# Chaos Bolt has several possible use conditions. Crashing Chaos, Grimoire of Supremacy, and Dark Soul: Instability all favor casting as many CBs as possible when any of them are active
+actions+=/chaos_bolt,if=(talent.grimoire_of_supremacy.enabled|azerite.crashing_chaos.enabled)&pet.infernal.active|buff.dark_soul_instability.up
+# If Soul Shards are not being pooled and Eradication is not talented, just spend CBs as they become available
+actions+=/chaos_bolt,if=!variable.pool_soul_shards&!talent.eradication.enabled
+# With Eradication, it's beneficial to maximize the uptime on the debuff. However, it's still better to use Chaos Bolt immediately if Backdraft is up
+actions+=/chaos_bolt,if=!variable.pool_soul_shards&talent.eradication.enabled&(debuff.eradication.remains<cast_time|buff.backdraft.up)
+# Even when saving, do not overcap on Soul Shards
+actions+=/chaos_bolt,if=(soul_shard>=4.5-0.2*active_enemies)
+# Don't overcap on charges of Conflagrate
+actions+=/conflagrate,if=charges>1
+actions+=/incinerate
 
-actions.cata=call_action_list,name=cds
-actions.cata+=/rain_of_fire,if=soul_shard>=4.5
-actions.cata+=/cataclysm
-actions.cata+=/immolate,if=talent.channel_demonfire.enabled&!remains&cooldown.channel_demonfire.remains<=action.chaos_bolt.execute_time
-actions.cata+=/channel_demonfire,if=!buff.active_havoc.remains
-actions.cata+=/havoc,cycle_targets=1,if=!(target=sim.target)&target.time_to_die>10&spell_targets.rain_of_fire<=8+raid_event.invulnerable.up&talent.grimoire_of_supremacy.enabled&pet.infernal.active&pet.infernal.remains<=10
-actions.cata+=/havoc,if=spell_targets.rain_of_fire<=8+raid_event.invulnerable.up&talent.grimoire_of_supremacy.enabled&pet.infernal.active&pet.infernal.remains<=10
-actions.cata+=/chaos_bolt,cycle_targets=1,if=!debuff.havoc.remains&talent.grimoire_of_supremacy.enabled&pet.infernal.remains>execute_time&active_enemies<=8+raid_event.invulnerable.up&((108*(spell_targets.rain_of_fire+raid_event.invulnerable.up)%3)<(240*(1+0.08*buff.grimoire_of_supremacy.stack)%2*(1+buff.active_havoc.remains>execute_time)))
-actions.cata+=/havoc,cycle_targets=1,if=!(target=sim.target)&target.time_to_die>10&spell_targets.rain_of_fire<=4+raid_event.invulnerable.up
-actions.cata+=/havoc,if=spell_targets.rain_of_fire<=4+raid_event.invulnerable.up
-actions.cata+=/chaos_bolt,cycle_targets=1,if=!debuff.havoc.remains&buff.active_havoc.remains>execute_time&spell_targets.rain_of_fire<=4+raid_event.invulnerable.up
-actions.cata+=/immolate,cycle_targets=1,if=!debuff.havoc.remains&refreshable&remains<=cooldown.cataclysm.remains
-actions.cata+=/rain_of_fire
-actions.cata+=/soul_fire,cycle_targets=1,if=!debuff.havoc.remains
-actions.cata+=/conflagrate,cycle_targets=1,if=!debuff.havoc.remains
-actions.cata+=/shadowburn,cycle_targets=1,if=!debuff.havoc.remains&((charges=2|!buff.backdraft.remains|buff.backdraft.remains>buff.backdraft.stack*action.incinerate.execute_time))
-actions.cata+=/incinerate,cycle_targets=1,if=!debuff.havoc.remains
+# Rain of Fire is typically the highest priority action, but certain situations favor using Chaos Bolt instead
+actions.aoe=rain_of_fire,if=pet.infernal.active&(buff.crashing_chaos.down|!talent.grimoire_of_supremacy.enabled)&(!cooldown.havoc.ready|active_enemies>3)
+# Channel Demonfire only needs one Immolate active during its cast for AoE. Primary target is used here for simplicity
+actions.aoe+=/channel_demonfire,if=dot.immolate.remains>cast_time
+# Similar to single target, there is no need to refresh Immolates if Cataclysm can do it instead
+actions.aoe+=/immolate,cycle_targets=1,if=remains<5&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>remains)
+# Rules for cooldowns do not change for AoE, so call the same list as on single target
+actions.aoe+=/call_action_list,name=cds
+# Three targets is an in-between case that gives a slight benefit to higher priority Havoc
+actions.aoe+=/havoc,cycle_targets=1,if=!(target=self.target)&active_enemies<4
+# Rain of Fire will start to dominate on heavy AoE, but some significant Chaos Bolt buffs will still give higher damage output on occasion
+actions.aoe+=/chaos_bolt,if=talent.grimoire_of_supremacy.enabled&pet.infernal.active&(havoc_active|talent.cataclysm.enabled|talent.inferno.enabled&active_enemies<4)
+# Barring any exceptions, Rain of Fire will be used as much as possible, since multiple copies of it can stack
+actions.aoe+=/rain_of_fire
+# Even if the Havoc priority list won't be used, Havoc is pretty much free damage and resources and should be used almost on cooldown
+actions.aoe+=/havoc,cycle_targets=1,if=!(target=self.target)&(!talent.grimoire_of_supremacy.enabled|!talent.inferno.enabled|talent.grimoire_of_supremacy.enabled&pet.infernal.remains<=10)
+# Use Fire and Brimstone if Backdraft is active, as long as it will not overcap on Soul Shards
+actions.aoe+=/incinerate,if=talent.fire_and_brimstone.enabled&buff.backdraft.up&soul_shard<5-0.2*active_enemies
+# Other Soul Shard generating abilities are good filler if not using Fire and Brimstone
+actions.aoe+=/soul_fire
+actions.aoe+=/conflagrate,if=buff.backdraft.down
+actions.aoe+=/shadowburn,if=!talent.fire_and_brimstone.enabled
+# With Fire and Brimstone, Incinerate will be a strong filler. It's placed here for all talents to prevent accidentally using the single target rotation list
+actions.aoe+=/incinerate
 
-actions.cds=summon_infernal,if=target.time_to_die>=210|!cooldown.dark_soul_instability.remains|target.time_to_die<=30+gcd|!talent.dark_soul_instability.enabled
-actions.cds+=/dark_soul_instability,if=target.time_to_die>=140|pet.infernal.active|target.time_to_die<=20+gcd
-actions.cds+=/potion,if=pet.infernal.active|target.time_to_die<65
+# If both cooldowns are ready, summon the Infernal then activate DSI. If not using DSI, use this on CD
+actions.cds=summon_infernal,if=cooldown.dark_soul_instability.ready|!talent.dark_soul_instability.enabled
+actions.cds+=/dark_soul_instability,if=pet.infernal.active
+# If DSI is not ready but you can get more than one infernal in before the end of the fight, summon the Infernal now
+actions.cds+=/summon_infernal,if=target.time_to_die>cooldown.summon_infernal.duration
+# If you can get in more than one more DSI before the end of the fight, use that now
+actions.cds+=/dark_soul_instability,if=target.time_to_die>cooldown.dark_soul_instability.duration+20
+# If the fight will end before DSI is back up, summon the Infernal
+actions.cds+=/summon_infernal,if=talent.dark_soul_instability.enabled&cooldown.dark_soul_instability.remains>target.time_to_die
+# If the fight will end before infernal is back up, use DSI
+actions.cds+=/dark_soul_instability,if=cooldown.summon_infernal.remains>target.time_to_die
+# If the fight is about to end, use CDs such that they get as much time up as possible
+actions.cds+=/summon_infernal,if=target.time_to_die<30
+actions.cds+=/dark_soul_instability,if=target.time_to_die<20
+actions.cds+=/potion,if=pet.infernal.active|target.time_to_die<30
 actions.cds+=/berserking
 actions.cds+=/blood_fury
 actions.cds+=/fireblood
 actions.cds+=/use_items
 
-actions.fnb=call_action_list,name=cds
-actions.fnb+=/rain_of_fire,if=soul_shard>=4.5
-actions.fnb+=/immolate,if=talent.channel_demonfire.enabled&!remains&cooldown.channel_demonfire.remains<=action.chaos_bolt.execute_time
-actions.fnb+=/channel_demonfire,if=!buff.active_havoc.remains
-actions.fnb+=/havoc,cycle_targets=1,if=!(target=sim.target)&target.time_to_die>10&spell_targets.rain_of_fire<=4+raid_event.invulnerable.up&talent.grimoire_of_supremacy.enabled&pet.infernal.active&pet.infernal.remains<=10
-actions.fnb+=/havoc,if=spell_targets.rain_of_fire<=4+raid_event.invulnerable.up&talent.grimoire_of_supremacy.enabled&pet.infernal.active&pet.infernal.remains<=10
-actions.fnb+=/chaos_bolt,cycle_targets=1,if=!debuff.havoc.remains&talent.grimoire_of_supremacy.enabled&pet.infernal.remains>execute_time&active_enemies<=4+raid_event.invulnerable.up&((108*(spell_targets.rain_of_fire+raid_event.invulnerable.up)%3)<(240*(1+0.08*buff.grimoire_of_supremacy.stack)%2*(1+buff.active_havoc.remains>execute_time)))
-actions.fnb+=/havoc,cycle_targets=1,if=!(target=sim.target)&target.time_to_die>10&spell_targets.rain_of_fire<=4+raid_event.invulnerable.up
-actions.fnb+=/havoc,if=spell_targets.rain_of_fire<=4+raid_event.invulnerable.up
-actions.fnb+=/chaos_bolt,cycle_targets=1,if=!debuff.havoc.remains&buff.active_havoc.remains>execute_time&spell_targets.rain_of_fire<=4+raid_event.invulnerable.up
-actions.fnb+=/immolate,cycle_targets=1,if=!debuff.havoc.remains&refreshable&spell_targets.incinerate<=8+raid_event.invulnerable.up
-actions.fnb+=/rain_of_fire
-actions.fnb+=/soul_fire,cycle_targets=1,if=!debuff.havoc.remains&spell_targets.incinerate<=3+raid_event.invulnerable.up
-actions.fnb+=/conflagrate,cycle_targets=1,if=!debuff.havoc.remains&(talent.flashover.enabled&buff.backdraft.stack<=2|spell_targets.incinerate<=7+raid_event.invulnerable.up|talent.roaring_blaze.enabled&spell_targets.incinerate<=9+raid_event.invulnerable.up)
-actions.fnb+=/incinerate,cycle_targets=1,if=!debuff.havoc.remains
-
-actions.inf=call_action_list,name=cds
-actions.inf+=/rain_of_fire,if=soul_shard>=4.5
-actions.inf+=/cataclysm
-actions.inf+=/immolate,if=talent.channel_demonfire.enabled&!remains&cooldown.channel_demonfire.remains<=action.chaos_bolt.execute_time
-actions.inf+=/channel_demonfire,if=!buff.active_havoc.remains
-actions.inf+=/havoc,cycle_targets=1,if=!(target=sim.target)&target.time_to_die>10&spell_targets.rain_of_fire<=4+raid_event.invulnerable.up+talent.internal_combustion.enabled&talent.grimoire_of_supremacy.enabled&pet.infernal.active&pet.infernal.remains<=10
-actions.inf+=/havoc,if=spell_targets.rain_of_fire<=4+raid_event.invulnerable.up+talent.internal_combustion.enabled&talent.grimoire_of_supremacy.enabled&pet.infernal.active&pet.infernal.remains<=10
-actions.inf+=/chaos_bolt,cycle_targets=1,if=!debuff.havoc.remains&talent.grimoire_of_supremacy.enabled&pet.infernal.remains>execute_time&spell_targets.rain_of_fire<=4+raid_event.invulnerable.up+talent.internal_combustion.enabled&((108*(spell_targets.rain_of_fire+raid_event.invulnerable.up)%(3-0.16*(spell_targets.rain_of_fire+raid_event.invulnerable.up)))<(240*(1+0.08*buff.grimoire_of_supremacy.stack)%2*(1+buff.active_havoc.remains>execute_time)))
-actions.inf+=/havoc,cycle_targets=1,if=!(target=sim.target)&target.time_to_die>10&spell_targets.rain_of_fire<=3+raid_event.invulnerable.up&(talent.eradication.enabled|talent.internal_combustion.enabled)
-actions.inf+=/havoc,if=spell_targets.rain_of_fire<=3+raid_event.invulnerable.up&(talent.eradication.enabled|talent.internal_combustion.enabled)
-actions.inf+=/chaos_bolt,cycle_targets=1,if=!debuff.havoc.remains&buff.active_havoc.remains>execute_time&spell_targets.rain_of_fire<=3+raid_event.invulnerable.up&(talent.eradication.enabled|talent.internal_combustion.enabled)
-actions.inf+=/immolate,cycle_targets=1,if=!debuff.havoc.remains&refreshable
-actions.inf+=/rain_of_fire
-actions.inf+=/soul_fire,cycle_targets=1,if=!debuff.havoc.remains
-actions.inf+=/conflagrate,cycle_targets=1,if=!debuff.havoc.remains
-actions.inf+=/shadowburn,cycle_targets=1,if=!debuff.havoc.remains&((charges=2|!buff.backdraft.remains|buff.backdraft.remains>buff.backdraft.stack*action.incinerate.execute_time))
-actions.inf+=/incinerate,cycle_targets=1,if=!debuff.havoc.remains
+actions.havoc=conflagrate,if=buff.backdraft.down&soul_shard>=1&soul_shard<=4
+actions.havoc+=/immolate,if=talent.internal_combustion.enabled&remains<duration*0.5|!talent.internal_combustion.enabled&refreshable
+actions.havoc+=/chaos_bolt,if=cast_time<havoc_remains
+actions.havoc+=/soul_fire
+actions.havoc+=/shadowburn,if=active_enemies<3|!talent.fire_and_brimstone.enabled
+actions.havoc+=/incinerate,if=cast_time<havoc_remains
 
 head=soulfuel_headdress,id=159279,bonus_id=4779/1512/4786/4775,azerite_powers=432/22/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
