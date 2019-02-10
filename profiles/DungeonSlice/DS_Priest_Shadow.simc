@@ -5,7 +5,7 @@ level=120
 race=human
 role=spell
 position=ranged_back
-talents=1111112
+talents=3131111
 
 # Default consumables
 potion=rising_death
@@ -38,8 +38,7 @@ actions.precombat+=/mind_blast,if=spell_targets.mind_sear<2|azerite.thought_harv
 actions.precombat+=/vampiric_touch
 
 # Executed every time the actor is available.
-actions=use_item,slot=trinket2
-actions+=/potion,if=buff.bloodlust.react|target.time_to_die<=80|target.health.pct<35
+actions=potion,if=buff.bloodlust.react|target.time_to_die<=80|target.health.pct<35
 actions+=/variable,name=dots_up,op=set,value=dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking
 actions+=/run_action_list,name=cleave,if=active_enemies>1
 actions+=/run_action_list,name=single,if=active_enemies=1
@@ -81,12 +80,12 @@ actions.single+=/mind_sear,if=azerite.searing_dialogue.rank>=3,chain=1,interrupt
 actions.single+=/mind_flay,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(cooldown.void_bolt.up|cooldown.mind_blast.up)
 actions.single+=/shadow_word_pain
 
-head=crown_of_the_seducer,id=165818,bonus_id=4824/1537/4775,azerite_powers=403/405/18/13
+head=cowl_of_tideborne_omens,id=165822,bonus_id=4824/1537/4775,azerite_powers=166/115/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
-shoulders=bristling_furlined_amice,id=165922,bonus_id=4824/1537/4775,azerite_powers=405/403/462/13
+shoulders=mantle_of_ceremonial_ascension,id=158344,bonus_id=1587/4819/4775,azerite_powers=115/405/21/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
-chest=robes_of_biting_cold,id=165505,bonus_id=4824/1537/4775,azerite_powers=405/403/459/13
-wrists=lever_stabilizing_wristwraps,id=165508,bonus_id=4800/1537
+chest=divine_fury_raiment,id=165834,bonus_id=4824/1537/4775,azerite_powers=115/562/38/13
+wrists=bracers_of_zealous_calling,id=165501,bonus_id=4800/1537
 hands=manceroys_flamefists,id=165503,bonus_id=4800/1537
 waist=waistcord_of_flowing_silk,id=165504,bonus_id=4800/1537
 legs=wavecaller_leggings,id=165506,bonus_id=4800/1537
@@ -94,16 +93,17 @@ feet=lightfeather_footpads,id=165502,bonus_id=4800/1537
 finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_haste
 finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_haste
 trinket1=incandescent_sliver,id=165571,bonus_id=4800/1537
-trinket2=ignition_mages_fuse,id=159615,bonus_id=1572/4780
-main_hand=phoenixfire_staff,id=165587,bonus_id=4800/1537,enchant=quick_navigation
+trinket2=crest_of_paku,id=165581,bonus_id=4800/1537
+main_hand=goblet_of_glittering_favor,id=165592,bonus_id=4800/1537,enchant=quick_navigation
+off_hand=cursed_monkey_palm,id=165582,bonus_id=4800/1537
 
 # Gear Summary
-# gear_ilvl=415.27
-# gear_stamina=9920
-# gear_intellect=7239
-# gear_crit_rating=755
-# gear_haste_rating=1296
-# gear_mastery_rating=1100
-# gear_versatility_rating=214
+# gear_ilvl=416.19
+# gear_stamina=9919
+# gear_intellect=7293
+# gear_crit_rating=546
+# gear_haste_rating=1521
+# gear_mastery_rating=942
+# gear_versatility_rating=355
 # gear_armor=1442
 # set_bonus=gift_of_the_loa_2pc=1

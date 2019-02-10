@@ -4,16 +4,16 @@ race=human
 spec=shadow
 role=spell
 position=ranged_back
-talents=1111112
+talents=3131111
 
 initial_resource=insanity=25
 
-head=crown_of_the_seducer,id=165818,bonus_id=4824/1537,azerite_powers=403/405/18/13
+head=cowl_of_tideborne_omens,id=165822,bonus_id=4824/1537,azerite_powers=166/115/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
-shoulder=bristling_furlined_amice,id=165922,bonus_id=4824/1537,azerite_powers=405/403/462/13
+shoulder=mantle_of_ceremonial_ascension,id=158344,bonus_id=1587/4819,azerite_powers=115/405/21/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
-chest=robes_of_biting_cold,id=165505,bonus_id=4824/1537,azerite_powers=405/403/459/13
-wrists=lever_stabilizing_wristwraps,id=165508,bonus_id=4800/1537
+chest=divine_fury_raiment,id=165834,bonus_id=4824/1537,azerite_powers=115/562/38/13
+wrists=bracers_of_zealous_calling,id=165501,bonus_id=4800/1537
 hands=manceroys_flamefists,id=165503,bonus_id=4800/1537
 waist=waistcord_of_flowing_silk,id=165504,bonus_id=4800/1537
 legs=wavecaller_leggings,id=165506,bonus_id=4800/1537
@@ -21,7 +21,8 @@ feet=lightfeather_footpads,id=165502,bonus_id=4800/1537
 finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_haste
 finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_haste
 trinket1=incandescent_sliver,id=165571,bonus_id=4800/1537
-trinket2=ignition_mages_fuse,id=159615,bonus_id=1572/4780
-main_hand=phoenixfire_staff,id=165587,bonus_id=4800/1537,enchant=quick_navigation
+trinket2=crest_of_paku,id=165581,bonus_id=4800/1537
+main_hand=goblet_of_glittering_favor,id=165592,bonus_id=4800/1537,enchant=quick_navigation
+off_hand=cursed_monkey_palm,id=165582,bonus_id=4800/1537
 
 save=DS_Priest_Shadow.simc
