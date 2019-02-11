@@ -152,6 +152,18 @@ struct shadow_word_pain_disc_t final : public priest_spell_t
     return casted ? priest_spell_t::spell_direct_power_coefficient( s ) : 0.0;
   }
 
+  double bonus_ta( const action_state_t* state ) const override
+  {
+    double d = priest_spell_t::bonus_ta( state );
+
+    if ( priest().azerite.death_throes.enabled() )
+    {
+      d += priest().azerite.death_throes.value( 1 );
+    }
+
+    return d;
+  }
+
   void tick( dot_t* d ) override
   {
     priest_spell_t::tick( d );
@@ -356,6 +368,9 @@ void priest_t::init_spells_discipline()
   specs.enlightenment          = find_specialization_spell( "Enlightenment" );
   specs.discipline_priest      = find_specialization_spell( "Discipline Priest" );
   specs.power_of_the_dark_side = find_spell( 198069 );  // Damage ID of Power of the Dark Side
+
+  // Azerite
+  azerite.death_throes = find_azerite_spell( "Death Throes" );
 
   // Range Based on Talents
   if ( base.distance != 5 )
