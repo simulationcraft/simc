@@ -3817,7 +3817,7 @@ struct vendetta_t : public rogue_attack_t
       tick_may_crit = true;
       background = true;
       harmful = true;
-      hasted_ticks = false;
+      hasted_ticks = true;
       base_td = p -> azerite.nothing_personal.value();
     }
   };
