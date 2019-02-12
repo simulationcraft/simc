@@ -3670,6 +3670,8 @@ struct kill_command_t: public hunter_spell_t
       auto driver = p -> find_spell( 287097 );
       dire_consequences.rppm = p -> get_rppm( "dire_consequences", driver );
       dire_consequences.rppm -> set_scaling( RPPM_ATTACK_SPEED );
+      if ( p -> specialization() == HUNTER_BEAST_MASTERY )
+        dire_consequences.rppm -> set_modifier( .65 );
       dire_consequences.proc = p -> get_proc( "Dire Consequences" );
       dire_consequences.gain = p -> get_gain( "dire_beast_(dc)" );
       dire_consequences.gain_amount = p -> find_spell( 120694 ) -> effectN( 1 ).base_value() +
