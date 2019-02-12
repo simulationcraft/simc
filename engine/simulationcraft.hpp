@@ -1139,6 +1139,10 @@ struct sim_t : private sc_thread_t
     double              covenant_chance = 1.0;
     /// Chance to gain a stack of Incandescent Sliver each time it ticks.
     double              incandescent_sliver_chance = 1.0;
+    /// Fight or Flight proc attempt period
+    timespan_t          fight_or_flight_period = 1.0_s;
+    /// Chance to gain the buff on each Fight or Flight attempt
+    double              fight_or_flight_chance = 0.0;
   } bfa_opts;
 
   // Expansion specific data

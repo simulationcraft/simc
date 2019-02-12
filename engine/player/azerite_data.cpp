@@ -628,6 +628,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 288953, special_effects::treacherous_covenant  );
   unique_gear::register_special_effect( 288749, special_effects::seductive_power       );
   unique_gear::register_special_effect( 288802, special_effects::bonded_souls          );
+  unique_gear::register_special_effect( 287818, special_effects::fight_or_flight       );
 }
 
 void register_azerite_target_data_initializers( sim_t* sim )
@@ -2637,6 +2638,63 @@ void bonded_souls( special_effect_t& effect )
   effect.custom_buff = driver_buff;
 
   new dbc_proc_callback_t( effect.player, effect );
+}
+
+void fight_or_flight( special_effect_t& effect )
+{
+  // Callback that attempts to trigger buff if target below 35%
+  struct fof_cb_t : public dbc_proc_callback_t
+  {
+    buff_t* fof_buff;
+    double threshold;
+
+    fof_cb_t( const special_effect_t& effect, buff_t* buff, const azerite_power_t& power ) :
+      dbc_proc_callback_t( effect.player, effect ),
+      fof_buff( buff ),
+      threshold( power.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() )
+    {}
+
+    void execute( action_t* /* a */, action_state_t* state ) override
+    {
+      if ( state -> target -> health_percentage() < threshold )
+      {
+        fof_buff -> trigger();
+      }
+    }
+  };
+
+  effect.proc_flags_ = PF_ALL_DAMAGE;
+
+  azerite_power_t power = effect.player -> find_azerite_spell( effect.driver() -> name_cstr() );
+  if ( !power.enabled() )
+    return;
+
+  buff_t* fof_buff = buff_t::find( effect.player, "fight_or_flight" );
+  if ( !fof_buff )
+  {
+    fof_buff = make_buff<stat_buff_t>( effect.player, "fight_or_flight", effect.player -> find_spell( 287827 ) )
+      -> add_stat( effect.player -> convert_hybrid_stat( STAT_STR_AGI_INT ), power.value( 1 ) )
+      // The buff's icd is handled by a debuff on the player ingame, we skip that and just use the debuff's duration as cooldown for the buff
+      -> set_cooldown( effect.player -> find_spell( 287825 ) -> duration() );
+  }
+
+  // TODO: Model gaining the buff when droping below 35%.
+  effect.player -> register_combat_begin( [ fof_buff ] ( player_t* )
+  {
+    // Simple system to allow for some manipulation of the buff uptime.
+    if ( fof_buff -> sim -> bfa_opts.fight_or_flight_chance > 0.0 )
+    {
+      make_repeating_event( fof_buff -> sim, fof_buff -> sim -> bfa_opts.fight_or_flight_period, [ fof_buff ]
+      {
+        if ( fof_buff -> rng().roll( fof_buff -> sim -> bfa_opts.fight_or_flight_chance ) )
+          fof_buff -> trigger();
+      } );
+    }
+  } );
+
+  effect.spell_id = power.spell() -> effectN( 1 ).trigger() -> id();
+
+  new fof_cb_t( effect, fof_buff, power );
 }
 
 } // Namespace special effects ends
