@@ -3723,6 +3723,18 @@ struct bonestorm_t : public death_knight_spell_t
 
   timespan_t composite_dot_duration( const action_state_t* ) const override
   { return base_tick_time * last_resource_cost / 10; }
+
+  timespan_t gcd() const override
+  {
+    timespan_t t = death_knight_spell_t::gcd();
+    // Bonestorm's gcd is affected by haste twice
+    if ( p() -> bugs )
+    {
+      t *= this -> composite_haste();
+    }
+    return t;
+  }
+
 };
 
 // Breath of Sindragosa =====================================================
