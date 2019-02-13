@@ -837,12 +837,7 @@ struct waterbolt_t : public mage_pet_spell_t
     mage_pet_spell_t( "waterbolt", p, p->find_pet_spell( "Waterbolt" ) )
   {
     parse_options( options_str );
-  }
-
-  timespan_t gcd() const override
-  {
-    // Waterbolt's GCD is fixed and does not scale with haste.
-    return 1.0_s;
+    gcd_haste = HASTE_NONE;
   }
 };
 
