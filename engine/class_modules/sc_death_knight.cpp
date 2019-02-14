@@ -928,7 +928,7 @@ public:
   double    rune_regen_coefficient() const;
   void      trigger_killing_machine( double chance, proc_t* proc, proc_t* wasted_proc );
   void      trigger_runic_empowerment( double rpcost );
-  bool      trigger_runic_corruption( double rpcost, double override_chance = -1.0, proc_t* proc = nullptr );
+  void      trigger_runic_corruption( double rpcost, double override_chance = -1.0, proc_t* proc = nullptr );
   void      trigger_festering_wound( const action_state_t* state, unsigned n_stacks = 1, proc_t* proc = nullptr );
   void      burst_festering_wound( const action_state_t* state, unsigned n = 1 );
   void      default_apl_dps_precombat();
@@ -2675,80 +2675,94 @@ struct death_knight_action_t : public Base
   {
     action_base_t::consume_resource();
 
-    if ( this -> base_costs[ RESOURCE_RUNE ] > 0 && p() -> talent.gathering_storm -> ok() )
+    // Procs from runes spent
+    if ( this -> base_costs[ RESOURCE_RUNE ] > 0 )
     {
-      // Gathering storm always benefits from the "base rune cost", even if something would adjust
-      // it
-      unsigned consumed = static_cast<unsigned>( this -> base_costs[ RESOURCE_RUNE ] );
-      // Don't allow Relentless Winter itself to trigger Gathering Storm
-      if ( p() -> buffs.remorseless_winter -> check() &&
+      // Gathering Storm triggers a stack and extends RW duration by 0.5s
+      // for each spell cast that normally consumes a rune (even if it ended up free)
+      // But it doesn't count the original Relentless Winter cast
+      if ( p() -> talent.gathering_storm -> ok() && 
+           p() -> buffs.remorseless_winter -> check() &&
            this -> data().id() != p() -> spec.remorseless_winter -> id() )
       {
+        unsigned consumed = static_cast<unsigned>( this -> base_costs[ RESOURCE_RUNE ] );
         p() -> buffs.gathering_storm -> trigger( consumed );
         timespan_t base_extension = timespan_t::from_seconds( p() -> talent.gathering_storm -> effectN( 1 ).base_value() / 10.0 );
         p() -> buffs.remorseless_winter -> extend_duration( p(), base_extension * consumed );
       }
-    }
 
-    if ( this -> base_costs[ RESOURCE_RUNE ] > 0 && this -> last_resource_cost > 0 )
-    {
-      p() -> trigger_t20_4pc_frost( this -> last_resource_cost );
-    }
+      // Effects that require the player to actually spend runes
+      if ( this -> last_resource_cost > 0 )
+      {
+        p() -> trigger_t20_4pc_frost( this -> last_resource_cost );
 
-    if ( this -> base_costs[ RESOURCE_RUNE ] > 0 && this -> last_resource_cost > 0 )
-    {
-      p() -> cooldown.rune_strike -> adjust( timespan_t::from_seconds( -1.0 * p() -> talent.rune_strike -> effectN( 3 ).base_value() ), false );
-    }
+        p() -> cooldown.rune_strike -> adjust( timespan_t::from_seconds( -1.0 * p() -> talent.rune_strike -> effectN( 3 ).base_value() ), false );
 
-    if ( this -> base_costs[ RESOURCE_RUNE] > 0 && this -> last_resource_cost > 0 && p() -> buffs.pillar_of_frost -> up() )
-    {
-      p() -> buffs.pillar_of_frost_bonus -> trigger( as<int>( this -> last_resource_cost ) );
-    }
+        if ( p() -> buffs.pillar_of_frost -> up() )
+        {
+          p() -> buffs.pillar_of_frost_bonus -> trigger( as<int>( this -> last_resource_cost ) );
+        }
 
-    if ( this -> base_costs[ RESOURCE_RUNE] > 0 && this -> last_resource_cost > 0 && p() -> buffs.dancing_rune_weapon -> up()
-         && p() -> azerite.eternal_rune_weapon.enabled() && p() -> eternal_rune_weapon_counter <= p() -> azerite.eternal_rune_weapon.spell() -> effectN( 3 ).base_value() )
-    {
-      double duration_increase = p() -> azerite.eternal_rune_weapon.spell() -> effectN( 2 ).base_value() / 10 * this -> last_resource_cost;
+        // ERW increases DRW duration, up to a cap
+        if ( p() -> buffs.dancing_rune_weapon -> up() && p() -> azerite.eternal_rune_weapon.enabled() &&
+             p() -> eternal_rune_weapon_counter <= p() -> azerite.eternal_rune_weapon.spell() -> effectN( 3 ).base_value() )
+        {
+          double duration_increase = p() -> azerite.eternal_rune_weapon.spell() -> effectN( 2 ).base_value() / 10 * this -> last_resource_cost;
       
-      p() -> buffs.eternal_rune_weapon -> extend_duration( p(), timespan_t::from_seconds( duration_increase ) );
-      p() -> buffs.dancing_rune_weapon -> extend_duration( p(), timespan_t::from_seconds( duration_increase ) );
+          // Extend both DRW and ERW buffs
+          p() -> buffs.eternal_rune_weapon -> extend_duration( p(), timespan_t::from_seconds( duration_increase ) );
+          p() -> buffs.dancing_rune_weapon -> extend_duration( p(), timespan_t::from_seconds( duration_increase ) );
 
-      if ( p() -> pets.dancing_rune_weapon_pet && ! p() -> pets.dancing_rune_weapon_pet -> is_sleeping() )
-      {
-        timespan_t previous_expiration = p() -> pets.dancing_rune_weapon_pet -> expiration -> time;
-        p() -> pets.dancing_rune_weapon_pet -> expiration -> reschedule_time = previous_expiration + timespan_t::from_seconds( duration_increase );
+          // Reschedule pet expiration
+          // TODO: Tie pet expiration to buff expiration?
+          if ( p() -> pets.dancing_rune_weapon_pet && ! p() -> pets.dancing_rune_weapon_pet -> is_sleeping() )
+          {
+            timespan_t previous_expiration = p() -> pets.dancing_rune_weapon_pet -> expiration -> time;
+            p() -> pets.dancing_rune_weapon_pet -> expiration -> reschedule_time = previous_expiration + timespan_t::from_seconds( duration_increase );
+          }
+
+          p() -> eternal_rune_weapon_counter += duration_increase;
+        }
       }
-
-      p() -> eternal_rune_weapon_counter += duration_increase;
     }
 
-    if ( this -> base_costs[ RESOURCE_RUNIC_POWER ] > 0 && this -> last_resource_cost > 0 )
+    // Procs from RP spent
+    if ( this -> base_costs[ RESOURCE_RUNIC_POWER ] > 0 ) 
     {
-      if ( p() -> spec.runic_empowerment -> ok() )
-      {
-        p() -> trigger_runic_empowerment( this -> last_resource_cost );
-      }
+      // 2019-02-12: Runic Empowerment, Runic Corruption, Red Thirst and gargoyle's shadow empowerment
+      // seem to be using the base cost of the ability rather than the last resource cost
+      // Bug? Intended? 
+      // https://github.com/SimCMinMax/WoW-BugTracker/issues/396
+      // https://github.com/SimCMinMax/WoW-BugTracker/issues/397
 
-      if ( p() -> spec.runic_corruption -> ok() )
-      {
-        p() -> trigger_runic_corruption( this -> last_resource_cost, -1.0, p() -> procs.rp_runic_corruption );
-      }
+      p() -> trigger_runic_empowerment( this -> base_costs[ RESOURCE_RUNIC_POWER ] );
+      
+      p() -> trigger_runic_corruption( this -> base_costs[ RESOURCE_RUNIC_POWER ], -1.0, p() -> procs.rp_runic_corruption );
 
       if ( p() -> talent.summon_gargoyle -> ok() && p() -> pets.gargoyle )
       {
-        p() -> pets.gargoyle -> increase_power( this -> last_resource_cost );
+        // 2019-02-12 Death Strike buffs gargoyle as if it had its full cost, even though it received a -10rp cost in 8.1
+        // Assuming it's a bug for now, using base_costs instead of last_resource_cost won't affect free spells here
+        // Free Death Coils are still handled in the action
+        p() -> pets.gargoyle -> increase_power( this -> base_costs[ RESOURCE_RUNIC_POWER ] );
       }
       
-      if ( p() -> talent.red_thirst -> ok() )
-      {
-        timespan_t sec = timespan_t::from_seconds( p() -> talent.red_thirst -> effectN( 1 ).base_value() ) *
-          this -> last_resource_cost / p() -> talent.red_thirst -> effectN( 2 ).base_value();
-        p() -> cooldown.vampiric_blood -> adjust( -sec );
-      }
-
       p() -> buffs.icy_talons -> trigger();
 
-      p() -> trigger_t20_2pc_frost( this -> last_resource_cost );
+      // Effects that only trigger if resources were spent
+      if ( this -> last_resource_cost > 0 )
+      {
+        // TODO: vampiric blood cooldown reduction on death strike cast doesn't seem to follow the tooltip
+        // https://github.com/SimCMinMax/WoW-BugTracker/issues/398
+        if ( p() -> talent.red_thirst -> ok() )
+        {
+          timespan_t sec = timespan_t::from_seconds( p() -> talent.red_thirst -> effectN( 1 ).base_value() ) *
+            this -> last_resource_cost / p() -> talent.red_thirst -> effectN( 2 ).base_value();
+          p() -> cooldown.vampiric_blood -> adjust( -sec );
+        }
+
+        p() -> trigger_t20_2pc_frost( this -> last_resource_cost );
+      }
     }
   }
 
@@ -4407,12 +4421,6 @@ struct t21_death_coil_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) )
-    {
-      // 2017-12-23 : looks like the bonus coil can also proc runic corruption
-      p() -> trigger_runic_corruption( base_costs[ RESOURCE_RUNIC_POWER ], -1.0, p() -> procs.rp_runic_corruption );
-    }
-
     // Reduces the cooldown Dark Transformation by 1s
     p() -> cooldown.dark_transformation -> adjust( - timespan_t::from_seconds(
         p() -> spec.death_coil -> effectN( 2 ).base_value() ) );
@@ -4517,13 +4525,6 @@ struct death_coil_t : public death_knight_spell_t
   void execute() override
   {
     death_knight_spell_t::execute();
-    
-    // Sudden Doomed Death Coils buff Gargoyle and trigger Runic Corruption
-    if ( p() -> buffs.sudden_doom -> check() && p() -> pets.gargoyle )
-    {
-      p() -> pets.gargoyle -> increase_power( base_costs[ RESOURCE_RUNIC_POWER ] );
-      p() -> trigger_runic_corruption( base_costs[ RESOURCE_RUNIC_POWER ], -1.0, p() -> procs.rp_runic_corruption  );
-    }
 
     // Reduces the cooldown Dark Transformation by 1s
 
@@ -7072,6 +7073,9 @@ void death_knight_t::trigger_killing_machine( double chance, proc_t* proc, proc_
 
 void death_knight_t::trigger_runic_empowerment( double rpcost )
 {
+  if ( ! spec.runic_empowerment -> ok() )
+    return;
+
   double base_chance = spec.runic_empowerment -> effectN( 1 ).percent() / 10.0;
 
   if ( ! rng().roll( base_chance * rpcost ) )
@@ -7089,8 +7093,11 @@ void death_knight_t::trigger_runic_empowerment( double rpcost )
   }
 }
 
-bool death_knight_t::trigger_runic_corruption( double rpcost, double override_chance, proc_t* proc )
+void death_knight_t::trigger_runic_corruption( double rpcost, double override_chance, proc_t* proc )
 {
+  if ( ! spec.runic_corruption -> ok() )
+    return;
+
   double proc_chance = 0.0;
   // Check whether the proc is from a special effect, or from RP consumption
   if ( rpcost == 0 && override_chance != -1.0 )
@@ -7104,7 +7111,7 @@ bool death_knight_t::trigger_runic_corruption( double rpcost, double override_ch
 
   // If the roll fails, return
   if ( ! rng().roll( proc_chance ) )
-    return false;
+    return;
 
   // Runic Corruption duration is reduced by haste
   // It always regenerates 0.9 (3 times 3/10) of a rune
@@ -7117,7 +7124,7 @@ bool death_knight_t::trigger_runic_corruption( double rpcost, double override_ch
 
   proc -> occur();
 
-  return true;
+  return;
 }
 
 void death_knight_t::trigger_festering_wound( const action_state_t* state, unsigned n, proc_t* proc )
