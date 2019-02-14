@@ -3602,6 +3602,13 @@ struct breath_of_sindragosa_tick_t: public death_knight_spell_t
   }
 };
 
+// Dots that drain resource over their duration consume their cost after ticking in simc
+// This is not the case for Breath of Sindragosa, most likely because it ticks on cast for "free"
+// It works the following way: 
+// Tick if there's enough resources available -> wait tick timer -> consume ticking cost -> repeat
+
+// And yes, this means you can game the dot by staying between 25 and 39 RP
+// and use Frost Strike between the tick and its cost to basically get a tick for free and end BoS
 struct breath_of_sindragosa_t : public death_knight_spell_t
 {
   breath_of_sindragosa_t( death_knight_t* p, const std::string& options_str ) :
@@ -3610,22 +3617,13 @@ struct breath_of_sindragosa_t : public death_knight_spell_t
     parse_options( options_str );
 
     may_miss = may_crit = hasted_ticks = false;
-    tick_zero = dynamic_tick_action = use_off_gcd = callbacks = true;
+    tick_zero = dynamic_tick_action = callbacks = true;
         
     tick_action = new breath_of_sindragosa_tick_t( p, this );
     school = tick_action -> school;
 
     // Add the spec's aura damage modifier because it's not taken into account when applied to the ticking damage
     base_multiplier *= 1.0 + p -> spec.frost_death_knight -> effectN( 1 ).percent();
-
-    for ( size_t idx = 1; idx <= data().power_count(); idx++ )
-    {
-      const spellpower_data_t& power = data().powerN( idx );
-      if ( power.aura_id() == 0 || p -> dbc.spec_by_spell( power.aura_id() ) == p -> specialization() )
-      {
-        base_costs_per_tick[ power.resource() ] = power.cost_per_tick();
-      }
-    }
   }
 
   // Breath of Sindragosa very likely counts as direct damage, as it procs certain trinkets that are
@@ -3656,6 +3654,62 @@ struct breath_of_sindragosa_t : public death_knight_spell_t
       death_knight_spell_t::execute();
     }
   }
+
+  // Skip this because the cost is consumed before the tick, not after
+  bool consume_cost_per_tick( const dot_t& dot ) override
+  {
+    return true;
+  }
+
+  bool consume_cost_before_tick( const dot_t& dot )
+  {
+    // If the player doesn't have enough RP to fuel this tick, BoS is cancelled and no RP is consumed
+    // This happens if you cast Frost Strike between two ticks and are left with < 15 RP
+    if ( p() -> resources.current[ RESOURCE_RUNIC_POWER ] < this -> cost_per_tick( RESOURCE_RUNIC_POWER ) )
+    {
+      sim -> print_log( "Player {} doesn't have the {} Runic Power required for next tick. Breath of Sindragosa was cancelled.", 
+                        player -> name_str, this -> cost_per_tick( RESOURCE_RUNIC_POWER ) );
+      if ( dot_t* d = get_dot( target ) )
+        d -> cancel(); 
+
+      return false;
+    }
+
+    // If the player doesn't have enough RP to fuel the next tick, RP is consumed and then BoS is cancelled
+    // This is the normal BoS expiration scenario
+    if ( p() -> resources.current[ RESOURCE_RUNIC_POWER ] < this -> cost_per_tick( RESOURCE_RUNIC_POWER ) * 2)
+    {
+      sim -> print_log( "Player {} doesn't have the {} Runic Power required for next tick. Breath of Sindragosa was cancelled.", 
+                        player -> name_str, this -> cost_per_tick( RESOURCE_RUNIC_POWER ) );
+      
+      death_knight_spell_t::consume_cost_per_tick( dot );
+      
+      if ( dot_t* d = get_dot( target ) )
+        d -> cancel(); 
+      return false;
+    }
+
+    // Consume the resources that are normally consumed **after** the tick
+    // And keep ticking
+    return death_knight_spell_t::consume_cost_per_tick( dot );
+  }
+
+  void tick( dot_t* dot ) override
+  {
+    bool do_tick = true;
+
+    // Tick_zero is free
+    if ( dot -> current_tick != 0 )
+    {
+      do_tick = consume_cost_before_tick( *dot );
+    }
+
+    if ( do_tick )
+    {
+      death_knight_spell_t::tick( dot );
+    }
+  }
+
 
   void init() override
   {
@@ -7556,7 +7610,7 @@ void death_knight_t::default_apl_frost()
 
   // Pillar of Frost
   cooldowns -> add_action( this, "Pillar of Frost", "if=cooldown.empower_rune_weapon.remains", "Frost cooldowns" );
-  cooldowns -> add_talent( this, "Breath of Sindragosa", "if=cooldown.empower_rune_weapon.remains&cooldown.pillar_of_frost.remains" );
+  cooldowns -> add_talent( this, "Breath of Sindragosa", "use_off_gcd=1,if=cooldown.empower_rune_weapon.remains&cooldown.pillar_of_frost.remains" );
   cooldowns -> add_action( this, "Empower Rune Weapon", "if=cooldown.pillar_of_frost.ready&!talent.breath_of_sindragosa.enabled&rune.time_to_5>gcd&runic_power.deficit>=10|target.time_to_die<20" );
   cooldowns -> add_action( this, "Empower Rune Weapon", "if=(cooldown.pillar_of_frost.ready|target.time_to_die<20)&talent.breath_of_sindragosa.enabled&rune>=3&runic_power>60" );
 
