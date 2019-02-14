@@ -967,6 +967,7 @@ void paladin_t::generate_action_prio_list_prot()
   cds -> add_action( "potion,if=buff.avenging_wrath.up" );
 
   cds -> add_action( "use_items,if=buff.seraphim.up|!talent.seraphim.enabled" );
+  cds -> add_action( "use_item,name=grongs_primal_rage,if=((cooldown.judgment.full_recharge_time>4|(!talent.crusaders_judgment.enabled&prev_gcd.1.judgment))&cooldown.avengers_shield.remains>4&buff.seraphim.remains>4)|(buff.seraphim.remains<4)" );
   cds -> add_action( "use_item,name=merekthas_fang,if=!buff.avenging_wrath.up&(buff.seraphim.up|!talent.seraphim.enabled)" );
   cds -> add_action( "use_item,name=razdunks_big_red_button" );
 
