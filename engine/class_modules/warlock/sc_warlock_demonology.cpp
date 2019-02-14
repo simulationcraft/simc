@@ -374,7 +374,7 @@ namespace warlock {
         double casts_left = 5.0;
         pets::warlock_pet_t* next_imp;
 
-        implosion_aoe_t(warlock_t* p, std::vector<pets::warlock_pet_t*> imps = {}) :
+        implosion_aoe_t(warlock_t* p) :
           demonology_spell_t("implosion_aoe", p, p -> find_spell(196278))
         {
           aoe = -1;
@@ -506,7 +506,9 @@ namespace warlock {
             // Spelldata unknown. In-game testing shows Demonic Consumption provides 10% damage per 20 energy an imp has.
             demonic_consumption_multiplier += available / 10 * 5;
             imp->demonic_consumption = true;
-            imp->dismiss();
+            //Demonic Consumption does not appear to immediately despawn imps.
+            //This bug allows spells like Implosion to trigger partially.
+            make_event(sim, p()->bugs ? 15_ms : 0_ms, [imp] {imp->dismiss();});
           }
 
           for ( auto dt : p()->warlock_pet_list.demonic_tyrants )
