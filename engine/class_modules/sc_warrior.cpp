@@ -2020,6 +2020,7 @@ struct demoralizing_shout : public warrior_attack_t
   {
     parse_options( options_str );
     rage_gain += p->talents.booming_voice->effectN( 1 ).resource( RESOURCE_RAGE );
+    aoe = -1;
   }
 
   void execute() override
