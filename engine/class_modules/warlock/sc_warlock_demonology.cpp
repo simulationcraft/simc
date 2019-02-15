@@ -381,8 +381,7 @@ namespace warlock {
           dual = true;
           background = true;
           callbacks = false;
-          //Travel speed is not in spell data, in game test appears to be 40 yds/sec
-          travel_speed = 40;
+
           p->spells.implosion_aoe = this;
         }
 
@@ -424,6 +423,8 @@ namespace warlock {
       {
         parse_options(options_str);
         add_child(explosion);
+        //Travel speed is not in spell data, in game test appears to be 40 yds/sec
+        travel_speed = 40;
       }
 
       bool ready() override
@@ -452,13 +453,14 @@ namespace warlock {
             player_t* tar = this->target;
             double dist = p()->get_player_distance(*tar);
 
-            //Imps launched with Implosion appear to be staggered and snapshot when they start flying
-            make_event( sim, 100_ms*launch_counter, [ ex, tar, imp, dist ] {
+            imp->trigger_movement(dist, MOVEMENT_TOWARDS);
+            imp->interrupt();
+
+            //Imps launched with Implosion appear to be staggered and snapshot when they impact
+            make_event( sim, 100_ms*launch_counter+this->travel_time(), [ ex, tar, imp, dist ] {
               if (imp && !imp->is_sleeping()){
                 ex->casts_left = ( imp->resources.current[RESOURCE_ENERGY] / 20 );
                 ex->set_target(tar);
-                imp->trigger_movement(dist, MOVEMENT_TOWARDS);
-                imp->interrupt();
                 ex->next_imp = imp;
                 ex->execute();
               }
