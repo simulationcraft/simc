@@ -2179,22 +2179,48 @@ struct execute_arms_t : public warrior_attack_t
 // Fury Execute ======================================================================
 struct execute_main_hand_t : public warrior_attack_t
 {
-  execute_main_hand_t( warrior_t* p, const char* name, const spell_data_t* s ) : warrior_attack_t( name, p, s )
+  int aoe_targets;
+  execute_main_hand_t( warrior_t* p, const char* name, const spell_data_t* s )
+    : warrior_attack_t( name, p, s ),
+      aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) )
   {
     dual   = true;
     weapon = &( p->main_hand_weapon );
     base_multiplier *= 1.0 + p->spec.execute_2->effectN( 1 ).percent();
+    base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
+  }
+
+  int n_targets() const override
+  {
+    if ( p()->buff.meat_cleaver->check() )
+    {
+      return aoe_targets + 1;
+    }
+    return warrior_attack_t::n_targets();
   }
 };
 
 struct execute_off_hand_t : public warrior_attack_t
 {
-  execute_off_hand_t( warrior_t* p, const char* name, const spell_data_t* s ) : warrior_attack_t( name, p, s )
+  int aoe_targets;
+  execute_off_hand_t( warrior_t* p, const char* name, const spell_data_t* s ) 
+    : warrior_attack_t( name, p, s ),
+      aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) )
   {
     dual     = true;
     may_miss = may_dodge = may_parry = may_block = false;
     weapon                                       = &( p->off_hand_weapon );
     base_multiplier *= 1.0 + p->spec.execute_2->effectN( 1 ).percent();
+    base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
+  }
+
+  int n_targets() const override
+  {
+    if ( p()->buff.meat_cleaver->check() )
+    {
+      return aoe_targets + 1;
+    }
+    return warrior_attack_t::n_targets();
   }
 };
 
@@ -2229,6 +2255,7 @@ struct fury_execute_parent_t : public warrior_attack_t
       // If MH fails to land, or if there is no OH weapon for Fury, oh attack does not execute.
       oh_attack->execute();
 
+    p()->buff.meat_cleaver->decrement();
     p()->buff.sudden_death->expire();
     p()->buff.ayalas_stone_heart->expire();
   }
@@ -5037,7 +5064,8 @@ void warrior_t::apl_fury()
                             "if=talent.furious_slash.enabled&(buff.furious_slash.stack<3|buff.furious_slash.remains<3|("
                             "cooldown.recklessness.remains<3&buff.furious_slash.remains<9))" );
   default_list->add_action( this, "Rampage", "if=cooldown.recklessness.remains<3" );
-  default_list->add_action( this, "Recklessness" );
+  default_list->add_action( this, "Recklessness", "if=!talent.siegebreaker.enabled|(cooldown.siegebreaker.remains<1|"
+                            "cooldown.siegebreaker.remains>5)" );
   default_list->add_action( this, "Whirlwind", "if=spell_targets.whirlwind>1&!buff.meat_cleaver.up" );
 
   for ( size_t i = 0; i < items.size(); i++ )
@@ -5068,7 +5096,7 @@ void warrior_t::apl_fury()
     }
     else
     {
-      default_list->add_action( racial_actions[ i ] + ",if=buff.recklessness.up" );
+      default_list->add_action( racial_actions[ i ] );
     }
   }
   default_list->add_action( "run_action_list,name=single_target" );
@@ -5080,11 +5108,10 @@ void warrior_t::apl_fury()
                              "if=buff.recklessness.up|(talent.frothing_berserker.enabled|talent.carnage.enabled&(buff."
                              "enrage.remains<gcd|rage>90)|talent.massacre.enabled&(buff.enrage.remains<gcd|rage>90))" );
   single_target->add_action( this, "Execute" );
+  single_target->add_talent( this, "Bladestorm",  "if=prev_gcd.1.rampage" );
   single_target->add_action( this, "Bloodthirst", "if=buff.enrage.down|azerite.cold_steel_hot_blood.rank>1" );
   single_target->add_action( this, "Raging Blow", "if=charges=2" );
   single_target->add_action( this, "Bloodthirst" );
-  single_target->add_talent( this, "Bladestorm",
-                             "if=prev_gcd.1.rampage&(debuff.siegebreaker.up|!talent.siegebreaker.enabled)" );
   single_target->add_talent( this, "Dragon Roar", "if=buff.enrage.up" );
   single_target->add_action(
       this, "Raging Blow",
