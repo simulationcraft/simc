@@ -27,11 +27,12 @@ struct runes_t;
 struct rune_t;
 
 namespace pets {
-  struct death_knight_pet_t;
+//  struct death_knight_pet_t;
   struct dancing_rune_weapon_pet_t;
   struct bloodworm_pet_t;
-  struct dt_pet_t;
+//  struct ghoul_pet_t;
   struct gargoyle_pet_t;
+  struct magus_pet_t;
 }
 
 namespace runeforge {
@@ -720,11 +721,11 @@ public:
   // Pets and Guardians
   struct pets_t
   {
-    std::array< pets::death_knight_pet_t*, 4 > apoc_ghoul;
-    std::array< pets::death_knight_pet_t*, 8 > army_ghoul;
+    std::array< pet_t*, 4 > apoc_ghoul;
+    std::array< pet_t*, 8 > army_ghoul;
     pets::dancing_rune_weapon_pet_t* dancing_rune_weapon_pet;
     pets::gargoyle_pet_t* gargoyle;
-    pets::dt_pet_t* ghoul_pet;
+    pet_t* ghoul_pet;
     pet_t* risen_skulker;
 
     spawner::pet_spawner_t<pets::bloodworm_pet_t, death_knight_t> bloodworms;
@@ -732,7 +733,8 @@ public:
     pets_t( death_knight_t* p ) : bloodworms( "bloodworm", p ) {}
 
     // Note: 2 pets, one for each ability trigger (apoc and aotd)
-    std::array< pets::death_knight_pet_t*, 2 > magus_pet;
+    pets::magus_pet_t* apocalype_magus;
+    pets::magus_pet_t* army_magus;
   } pets;
 
   // Procs
@@ -803,7 +805,7 @@ public:
   // Death Knight Options
   struct options_t
   {
-    double magus_of_the_dead_melee_uptime = 0.0;
+    double magus_of_the_dead_melee_uptime = -1.0;
   } options;
 
   // Runes
@@ -1691,56 +1693,20 @@ struct base_ghoul_pet_t : public death_knight_pet_t
 };
 
 // ==========================================================================
-// Unholy Dark Transformable pet
-// ==========================================================================
-
-// Dark Transformable pet auto attack
-template <typename T>
-struct dt_pet_auto_attack_t : public auto_attack_melee_t<T>
-{
-  dt_pet_auto_attack_t( T* player, const std::string& name = "main_hand" ) :
-    auto_attack_melee_t<T>( player, name )
-  { }
-};
-
-struct dt_pet_t : public base_ghoul_pet_t
-{
-  cooldown_t* gnaw_cd; // shared cd between gnaw/smash and their DT'd counterparts
-
-  dt_pet_t( death_knight_t* owner, const std::string& name ) :
-    base_ghoul_pet_t( owner, name, false )
-  {
-    gnaw_cd = get_cooldown( "gnaw" );
-    gnaw_cd-> duration = owner -> spell.pet_gnaw -> cooldown();
-  }
-
-  attack_t* create_auto_attack() override
-  { return new dt_pet_auto_attack_t< dt_pet_t >( this ); }
-
-  double composite_player_multiplier( school_e school ) const override
-  {
-    double m = base_ghoul_pet_t::composite_player_multiplier( school );
-
-    if ( o() -> buffs.dark_transformation -> up() )
-    {
-      m *= 1.0 + o() -> buffs.dark_transformation -> data().effectN( 1 ).percent();
-    }
-
-    return m;
-  }
-};
-
-// ==========================================================================
 // Unholy basic ghoul pet
 // ==========================================================================
 
-struct ghoul_pet_t : public dt_pet_t
+struct ghoul_pet_t : public base_ghoul_pet_t
 {
+  cooldown_t* gnaw_cd; // shared cd between gnaw/monstrous_blow
+
   struct claw_t : public dt_melee_ability_t<ghoul_pet_t>
   {
     claw_t( ghoul_pet_t* player, const std::string& options_str ) :
       super( player, "claw", player -> o() -> spell.pet_ghoul_claw, options_str, false )
-    { triggers_infected_claws = true; }
+    { 
+      triggers_infected_claws = true;
+    }
   };
 
   struct sweeping_claws_t : public dt_melee_ability_t<ghoul_pet_t>
@@ -1771,25 +1737,44 @@ struct ghoul_pet_t : public dt_pet_t
     }
   };
 
-  ghoul_pet_t( death_knight_t* owner ) : dt_pet_t( owner, "ghoul" )
-  { }
+  ghoul_pet_t( death_knight_t* owner ) :
+    base_ghoul_pet_t( owner, "ghoul" , false )
+  {
+    gnaw_cd = get_cooldown( "gnaw" );
+    gnaw_cd -> duration = owner -> spell.pet_gnaw -> cooldown();
+  }
+
+  attack_t* create_auto_attack() override
+  { return new auto_attack_melee_t< ghoul_pet_t >( this, "main_hand" ); }
+
+  double composite_player_multiplier( school_e school ) const override
+  {
+    double m = base_ghoul_pet_t::composite_player_multiplier( school );
+
+    if ( o() -> buffs.dark_transformation -> up() )
+    {
+      m *= 1.0 + o() -> buffs.dark_transformation -> data().effectN( 1 ).percent();
+    }
+
+    return m;
+  }
 
   void init_base_stats() override
   {
-    dt_pet_t::init_base_stats();
+    base_ghoul_pet_t::init_base_stats();
 
     owner_coeff.ap_from_ap = .6;
   }
 
   void init_action_list() override
   {
-    dt_pet_t::init_action_list();
+    base_ghoul_pet_t::init_action_list();
 
     action_priority_list_t* def = get_action_priority_list( "default" );
     def -> add_action( "Sweeping Claws" );
     def -> add_action( "Claw" );
     def -> add_action( "Monstrous Blow" );
-    // def -> add_action( "Gnaw" ); Unused because a dps loss compared to waiting for DT and casting Monstrous Blow
+    // def -> add_action( "Gnaw" ); Unused because it's a dps loss compared to waiting for DT and casting Monstrous Blow
   }
 
   action_t* create_action( const std::string& name, const std::string& options_str ) override
@@ -1799,7 +1784,7 @@ struct ghoul_pet_t : public dt_pet_t
     if ( name == "sweeping_claws" ) return new sweeping_claws_t( this, options_str );
     if ( name == "monstrous_blow" ) return new monstrous_blow_t( this, options_str );
 
-    return dt_pet_t::create_action( name, options_str );
+    return base_ghoul_pet_t::create_action( name, options_str );
   }
 };
 
@@ -1807,20 +1792,20 @@ struct ghoul_pet_t : public dt_pet_t
 // Army of the Dead Ghoul
 // ==========================================================================
 
-struct army_pet_t : public base_ghoul_pet_t
+struct army_ghoul_pet_t : public base_ghoul_pet_t
 {
-  pet_spell_t<army_pet_t>* last_surprise;
+  pet_spell_t<army_ghoul_pet_t>* last_surprise;
 
-  struct army_claw_t : public pet_melee_attack_t<army_pet_t>
+  struct army_claw_t : public pet_melee_attack_t<army_ghoul_pet_t>
   {
-    army_claw_t( army_pet_t* player, const std::string& options_str ) :
+    army_claw_t( army_ghoul_pet_t* player, const std::string& options_str ) :
       super( player, "claw", player -> o() -> spell.pet_army_claw, options_str )
     { }
   };
 
-  struct last_surprise_t : public pet_spell_t<army_pet_t>
+  struct last_surprise_t : public pet_spell_t<army_ghoul_pet_t>
   {
-    last_surprise_t( army_pet_t* p ) :
+    last_surprise_t( army_ghoul_pet_t* p ) :
       super( p, "last_surprise", p -> o() -> find_spell( 279606 ) )
     {
       aoe = -1;
@@ -1829,7 +1814,7 @@ struct army_pet_t : public base_ghoul_pet_t
     }
   };
 
-  army_pet_t( death_knight_t* owner, const std::string& name ) :
+  army_ghoul_pet_t( death_knight_t* owner, const std::string& name ) :
     base_ghoul_pet_t( owner, name, true )
   { }
 
@@ -2325,6 +2310,7 @@ struct magus_pet_t : public death_knight_pet_t
 
   bool last_used_frostbolt;
   bool second_shadow_bolt;
+  double melee_uptime;
 
   struct magus_spell_t : public pet_action_t<magus_pet_t, spell_t>
   {
@@ -2414,8 +2400,8 @@ struct magus_pet_t : public death_knight_pet_t
 
   // Not mentionned in the tooltip (potential bug?) 
   // The magus of the dead can auto attack while casting as long as it's in melee range of its target
-  // This requires (most of the time) a special action from the player to position the pet in melee range
-  // This is reproduced in simc with an option (defaults at 0) to specify the pet's melee uptime
+  // This may require a special action from the player to position the pet in melee range
+  // This is reproduced in simc with an option to specify the pet's melee uptime
   // https://github.com/SimCMinMax/WoW-BugTracker/issues/391
   struct magus_auto_attack_t : public auto_attack_melee_t<magus_pet_t>
   {
@@ -2426,7 +2412,7 @@ struct magus_pet_t : public death_knight_pet_t
     // Force the auto attacks that fail the roll for melee uptime to miss
     result_e calculate_result( action_state_t* s ) const override
     {
-      if ( rng().roll( p() -> o() -> options.magus_of_the_dead_melee_uptime ) )
+      if ( rng().roll( p() -> melee_uptime ) )
       {
         return auto_attack_melee_t<magus_pet_t>::calculate_result( s );
       }
@@ -2443,14 +2429,15 @@ struct magus_pet_t : public death_knight_pet_t
 
   magus_pet_t( death_knight_t* owner ) :
     death_knight_pet_t( owner, "magus_of_the_dead", true, false ),
-    last_used_frostbolt( false ), second_shadow_bolt( false )
+    last_used_frostbolt( false ), second_shadow_bolt( false ),
+    melee_uptime( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.swing_time = 1.4_s;
     regen_type = REGEN_DISABLED;
 
     // Don't try to melee attack at all if the pet's melee uptime is disabled
-    use_auto_attack = owner -> options.magus_of_the_dead_melee_uptime;
+    use_auto_attack = owner -> options.magus_of_the_dead_melee_uptime != 0;
   }
 
   void init_base_stats() override
@@ -2467,6 +2454,12 @@ struct magus_pet_t : public death_knight_pet_t
     action_priority_list_t* def = get_action_priority_list( "default" );
     def -> add_action( "frostbolt" );
     def -> add_action( "shadow_bolt" );
+  }
+
+  void summon( timespan_t duration, double uptime )
+  {
+    this -> melee_uptime = uptime;
+    death_knight_pet_t::summon( duration );
   }
 
   attack_t* create_auto_attack() override
@@ -3224,7 +3217,15 @@ struct apocalypse_t : public death_knight_melee_attack_t
 
     if ( p() -> azerite.magus_of_the_dead.enabled() )
     {
-      p() -> pets.magus_pet[0] -> summon( magus_duration );
+      // Magus of the dead can spawn anywhere around the player and sometimes moves into melee range on its own
+      // Assume a 0.6 melee uptime if no amount is specified by the user
+      double magus_uptime = 0.6;
+      if ( p() -> options.magus_of_the_dead_melee_uptime != -1 )
+      {
+        magus_uptime = p() -> options.magus_of_the_dead_melee_uptime;
+      }
+
+      p() -> pets.apocalype_magus -> summon( magus_duration, magus_uptime );
     }
   }
 
@@ -3346,7 +3347,15 @@ struct army_of_the_dead_t : public death_knight_spell_t
 
     if ( p() -> azerite.magus_of_the_dead.enabled() )
     {
-      p() -> pets.magus_pet[1] -> summon( magus_duration - precombat_time );
+      // Magus of the dead can spawn anywhere around the player and sometimes moves into melee range on its own
+      // Assume a 0.6 melee uptime if no amount is specified by the user, or 0 if the player isn't in combat
+      double magus_uptime = 0.6 * p() -> in_combat;
+      if ( p() -> options.magus_of_the_dead_melee_uptime != -1 )
+      {
+        magus_uptime = p() -> options.magus_of_the_dead_melee_uptime;
+      }
+
+      p() -> pets.army_magus -> summon( magus_duration, magus_uptime );
     }
   }
 
@@ -5975,7 +5984,7 @@ struct summon_gargoyle_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    p() -> pets.gargoyle -> summon( data().effectN( 3 ).trigger() -> duration() );
+    p() -> pets.gargoyle -> summon( data().duration() );
   }
 };
 
@@ -7060,7 +7069,7 @@ void death_knight_t::create_pets()
     {
       for ( int i = 0; i < 8; i++ )
       {
-        pets.army_ghoul[ i ] = new pets::army_pet_t( this, "army_ghoul" );
+        pets.army_ghoul[ i ] = new pets::army_ghoul_pet_t( this, "army_ghoul" );
       }
     }
 
@@ -7068,14 +7077,14 @@ void death_knight_t::create_pets()
     {
       for ( int i = 0; i < 4; i++ )
       {
-        pets.apoc_ghoul[ i ] = new pets::army_pet_t( this, "apoc_ghoul" );
+        pets.apoc_ghoul[ i ] = new pets::army_ghoul_pet_t( this, "apoc_ghoul" );
       }
     }
 
     if ( azerite.magus_of_the_dead.enabled() )
     {
-      pets.magus_pet[0] = new pets::magus_pet_t( this );
-      pets.magus_pet[1] = new pets::magus_pet_t( this );
+      pets.apocalype_magus = new pets::magus_pet_t( this );
+      pets.army_magus = new pets::magus_pet_t( this );
     }
   }
   
