@@ -1600,28 +1600,15 @@ struct dt_melee_ability_t : public pet_melee_attack_t<T>
     triggers_infected_claws( false )
   { }
 
-  void trigger_infected_claws( const action_state_t* state ) const
+  void impact( action_state_t* state ) override
   {
-    if ( ! this -> p() -> o() -> talent.infected_claws -> ok() )
+    pet_melee_attack_t<T>::impact( state );
+
+    if ( triggers_infected_claws && 
+         this -> p() -> o() -> talent.infected_claws -> ok() &&
+         this -> rng().roll( this -> p() -> o() -> talent.infected_claws -> effectN( 1 ).percent() ) )
     {
-      return;
-    }
-
-    if ( ! this -> rng().roll( this -> p() -> o() -> talent.infected_claws -> effectN( 1 ).percent() ) )
-    {
-      return;
-    }
-
-    this -> p() -> o() -> trigger_festering_wound( state, 1, this -> p() -> o() -> procs.fw_infected_claws );
-  }
-
-  void execute() override
-  {
-    pet_melee_attack_t<T>::execute();
-
-    if ( triggers_infected_claws )
-    {
-      trigger_infected_claws( this -> execute_state );
+      this -> p() -> o() -> trigger_festering_wound( state, 1, this -> p() -> o() -> procs.fw_infected_claws );
     }
   }
 
