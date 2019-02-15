@@ -944,6 +944,15 @@ void paladin_t::generate_action_prio_list_ret()
       {
         item_str = "use_item,name=" + items[i].name_str + ",if=!buff.avenging_wrath.up&!buff.crusade.up";
       }
+      else if ( items[i].name_str == "sinister_gladiators_badge" )
+      {
+        item_str = "use_item,name=" + items[i].name_str + ",if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<=15";
+      }
+      else if ( items[i].name_str == "sinister_gladiators_medallion" )
+      {
+        item_str = "use_item,name=" + items[i].name_str + ",if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<=20";
+      }
+
       else if ( items[i].slot != SLOT_WAIST )
       {
         item_str = "use_item,name=" + items[i].name_str + ",if=(buff.avenging_wrath.up|buff.crusade.up)";
