@@ -1704,7 +1704,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
   {
     claw_t( ghoul_pet_t* player, const std::string& options_str ) :
       super( player, "claw", player -> o() -> spell.pet_ghoul_claw, options_str, false )
-    { 
+    {
       triggers_infected_claws = true;
     }
   };
@@ -2456,7 +2456,7 @@ struct magus_pet_t : public death_knight_pet_t
     def -> add_action( "shadow_bolt" );
   }
 
-  void summon( timespan_t duration, double uptime )
+  void summon_magus( timespan_t duration, double uptime )
   {
     this -> melee_uptime = uptime;
     death_knight_pet_t::summon( duration );
@@ -3225,7 +3225,7 @@ struct apocalypse_t : public death_knight_melee_attack_t
         magus_uptime = p() -> options.magus_of_the_dead_melee_uptime;
       }
 
-      p() -> pets.apocalype_magus -> summon( magus_duration, magus_uptime );
+      p() -> pets.apocalype_magus -> summon_magus( magus_duration, magus_uptime );
     }
   }
 
@@ -3355,7 +3355,7 @@ struct army_of_the_dead_t : public death_knight_spell_t
         magus_uptime = p() -> options.magus_of_the_dead_melee_uptime;
       }
 
-      p() -> pets.army_magus -> summon( magus_duration, magus_uptime );
+      p() -> pets.army_magus -> summon_magus( magus_duration, magus_uptime );
     }
   }
 
@@ -4237,7 +4237,7 @@ struct death_coil_t : public death_knight_spell_t
 {
   harrowing_decay_t* harrowing_decay;
   double hd_damage;
-   
+
   death_coil_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "death_coil", p, p -> spec.death_coil ),
     harrowing_decay( nullptr ), hd_damage( 0 )
@@ -4253,7 +4253,7 @@ struct death_coil_t : public death_knight_spell_t
     {
       harrowing_decay = new harrowing_decay_t( p );
       add_child( harrowing_decay );
-      
+
       const spell_data_t* hd_spell = p -> azerite.harrowing_decay.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger();
       hd_damage = p -> azerite.harrowing_decay.value( 1 ) * ( hd_spell -> duration() / hd_spell -> effectN( 1 ).period() );
     }
