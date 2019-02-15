@@ -3887,22 +3887,6 @@ struct helchains_buff_t : public buff_t
   }
 };
 
-struct dark_transformation_buff_t : public buff_t
-{
-  dark_transformation_buff_t( death_knight_t* p ) :
-    buff_t( p, "dark_transformation", p -> spec.dark_transformation )
-  {
-    cooldown -> duration = 0_ms; // Handled by the ability
-  }
-
-  void expire_override( int s, timespan_t t ) override
-  {
-    buff_t::expire_override( s, t );
-
-    death_knight_t* p = debug_cast<death_knight_t*>( player );
-  }
-};
-
 struct dark_transformation_t : public death_knight_spell_t
 {
   dark_transformation_t( death_knight_t* p, const std::string& options_str ) :
@@ -7076,7 +7060,7 @@ void death_knight_t::create_pets()
     // Initialized even if the talent isn't picked for APL purpose
     pets.gargoyle = new pets::gargoyle_pet_t( this );
 
-    if ( find_action( "raise_dead" ) )
+    if ( find_action( "raise_dead" ) || find_action( "dark_transformation" ) )
     {
       pets.ghoul_pet = new pets::ghoul_pet_t( this );
       if ( talent.all_will_serve -> ok() )
@@ -7939,8 +7923,9 @@ void death_knight_t::create_buffs()
         -> set_chance( spec.rime -> effectN( 2 ).percent() );
 
   // Unholy
-  buffs.dark_transformation = new dark_transformation_buff_t( this );
-  
+  buffs.dark_transformation = make_buff( this, "dark_transformation", spec.dark_transformation )
+        -> set_cooldown( 0_ms ); // Handled by the ability
+    
   buffs.runic_corruption = new runic_corruption_buff_t( this );
   
   buffs.soul_reaper = make_buff( this, "soul_reaper", spell.soul_reaper )
