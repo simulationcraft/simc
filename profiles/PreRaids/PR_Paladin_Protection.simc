@@ -52,6 +52,7 @@ actions.cooldowns+=/avenging_wrath,if=buff.seraphim.up|cooldown.seraphim.remains
 actions.cooldowns+=/bastion_of_light,if=cooldown.shield_of_the_righteous.charges_fractional<=0.5
 actions.cooldowns+=/potion,if=buff.avenging_wrath.up
 actions.cooldowns+=/use_items,if=buff.seraphim.up|!talent.seraphim.enabled
+actions.cooldowns+=/use_item,name=grongs_primal_rage,if=((cooldown.judgment.full_recharge_time>4|(!talent.crusaders_judgment.enabled&prev_gcd.1.judgment))&cooldown.avengers_shield.remains>4&buff.seraphim.remains>4)|(buff.seraphim.remains<4)
 actions.cooldowns+=/use_item,name=merekthas_fang,if=!buff.avenging_wrath.up&(buff.seraphim.up|!talent.seraphim.enabled)
 actions.cooldowns+=/use_item,name=razdunks_big_red_button
 

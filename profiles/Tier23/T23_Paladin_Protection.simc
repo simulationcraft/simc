@@ -2,7 +2,7 @@ paladin="T23_Paladin_Protection"
 source=default
 spec=protection
 level=120
-race=blood_elf
+race=lightforged_draenei
 role=tank
 position=front
 talents=3200003
@@ -52,6 +52,7 @@ actions.cooldowns+=/avenging_wrath,if=buff.seraphim.up|cooldown.seraphim.remains
 actions.cooldowns+=/bastion_of_light,if=cooldown.shield_of_the_righteous.charges_fractional<=0.5
 actions.cooldowns+=/potion,if=buff.avenging_wrath.up
 actions.cooldowns+=/use_items,if=buff.seraphim.up|!talent.seraphim.enabled
+actions.cooldowns+=/use_item,name=grongs_primal_rage,if=((cooldown.judgment.full_recharge_time>4|(!talent.crusaders_judgment.enabled&prev_gcd.1.judgment))&cooldown.avengers_shield.remains>4&buff.seraphim.remains>4)|(buff.seraphim.remains<4)
 actions.cooldowns+=/use_item,name=merekthas_fang,if=!buff.avenging_wrath.up&(buff.seraphim.up|!talent.seraphim.enabled)
 actions.cooldowns+=/use_item,name=razdunks_big_red_button
 
@@ -67,7 +68,7 @@ legs=arcing_thunderlizard_legplates,id=165560,bonus_id=4824/1537
 feet=coinage_stampers,id=165561,bonus_id=4824/1537
 finger1=lord_admirals_signet,id=165566,bonus_id=4824/1537,enchant=pact_of_haste
 finger2=seal_of_the_zandalari_empire,id=165567,bonus_id=4824/1537,enchant=pact_of_haste
-trinket1=ramping_amplitude_gigavolt_engine,id=165580,bonus_id=4824/1537
+trinket1=grongs_primal_rage,id=165574,bonus_id=4824/1537
 trinket2=everchill_anchor,id=165570,bonus_id=4824/1537
 main_hand=servoclaw_smasher,id=165598,bonus_id=4824/1537,enchant=quick_navigation
 off_hand=sunburst_crest,id=165584,bonus_id=4824/1537

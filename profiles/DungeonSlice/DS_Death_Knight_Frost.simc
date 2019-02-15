@@ -105,7 +105,7 @@ actions.cooldowns+=/blood_fury,if=buff.pillar_of_frost.up&buff.empower_rune_weap
 actions.cooldowns+=/berserking,if=buff.pillar_of_frost.up
 # Frost cooldowns
 actions.cooldowns+=/pillar_of_frost,if=cooldown.empower_rune_weapon.remains
-actions.cooldowns+=/breath_of_sindragosa,if=cooldown.empower_rune_weapon.remains&cooldown.pillar_of_frost.remains
+actions.cooldowns+=/breath_of_sindragosa,use_off_gcd=1,if=cooldown.empower_rune_weapon.remains&cooldown.pillar_of_frost.remains
 actions.cooldowns+=/empower_rune_weapon,if=cooldown.pillar_of_frost.ready&!talent.breath_of_sindragosa.enabled&rune.time_to_5>gcd&runic_power.deficit>=10|target.time_to_die<20
 actions.cooldowns+=/empower_rune_weapon,if=(cooldown.pillar_of_frost.ready|target.time_to_die<20)&talent.breath_of_sindragosa.enabled&rune>=3&runic_power>60
 actions.cooldowns+=/call_action_list,name=cold_heart,if=talent.cold_heart.enabled&((buff.cold_heart.stack>=10&debuff.razorice.stack=5)|target.time_to_die<=gcd)
