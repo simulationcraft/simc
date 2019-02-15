@@ -2627,7 +2627,8 @@ struct death_knight_action_t : public Base
       // Effects that require the player to actually spend runes
       if ( this -> last_resource_cost > 0 )
       {
-        p() -> cooldown.rune_strike -> adjust( timespan_t::from_seconds( -1.0 * p() -> talent.rune_strike -> effectN( 3 ).base_value() ), false );
+        p() -> cooldown.rune_strike -> adjust( timespan_t::from_seconds(
+          -1.0 * p() -> talent.rune_strike -> effectN( 3 ).base_value() * this -> last_resource_cost ), false );
 
         if ( p() -> buffs.pillar_of_frost -> up() )
         {
@@ -3355,7 +3356,7 @@ struct army_of_the_dead_t : public death_knight_spell_t
         magus_uptime = p() -> options.magus_of_the_dead_melee_uptime;
       }
 
-      p() -> pets.army_magus -> summon_magus( magus_duration, magus_uptime );
+      p() -> pets.army_magus -> summon_magus( magus_duration - precombat_time, magus_uptime );
     }
   }
 
