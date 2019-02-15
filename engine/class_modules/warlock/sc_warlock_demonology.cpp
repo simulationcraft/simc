@@ -345,30 +345,6 @@ namespace warlock {
 
     struct implosion_t : public demonology_spell_t
     {
-      struct implosion_state_t : public action_state_t
-      {
-        pets::warlock_pet_t* source_imp;
-
-        implosion_state_t(action_t* a, player_t* t) :
-          action_state_t(a, t)
-        {
-          source_imp = nullptr;
-        }
-
-        void copy_state(const action_state_t* s) override
-        {
-          action_state_t::copy_state(s);
-          auto is = debug_cast<const implosion_state_t*>(s);
-          source_imp = is->source_imp;
-        }
-
-        void initialize() override
-        {
-          action_state_t::initialize();
-          source_imp = nullptr;
-        }
-      };
-
       struct implosion_aoe_t : public demonology_spell_t
       {
         double casts_left = 5.0;
@@ -385,22 +361,6 @@ namespace warlock {
           p->spells.implosion_aoe = this;
         }
 
-        void impact(action_state_t* s) override
-        {
-          pets::warlock_pet_t* imp = debug_cast<implosion_state_t*>(s)->source_imp;
-          if(!imp || imp->is_sleeping())
-            return;
-
-          demonology_spell_t::impact(s);
-          imp->dismiss();
-        }
-
-        void snapshot_state(action_state_t* s, dmg_e rt) override
-        {
-          debug_cast<implosion_state_t*>(s)->source_imp = next_imp;
-          action_t::snapshot_state(s, rt);
-        }
-
         double composite_target_multiplier(player_t* t) const override
         {
           double m = demonology_spell_t::composite_target_multiplier(t);
@@ -413,8 +373,11 @@ namespace warlock {
           return m;
         }
 
-        action_state_t* new_state() override
-        { return new implosion_state_t(this, target); }
+        void execute() override
+        {
+          demonology_spell_t::execute();
+          next_imp->dismiss();
+        }
       };
 
       implosion_aoe_t* explosion;
