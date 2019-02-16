@@ -146,7 +146,7 @@ std::string chart_t::to_target_div() const
 std::string chart_t::to_data() const
 {
   rapidjson::StringBuffer b;
-  sc_json_writer_t<rapidjson::StringBuffer> writer( b, sim_ );
+  rapidjson::Writer<rapidjson::StringBuffer> writer( b );
 
   js_.Accept( writer );
   std::string str_ = "{ \"target\": \"" + id_str_ + "\", \"data\": ";
@@ -159,7 +159,7 @@ std::string chart_t::to_data() const
 std::string chart_t::to_aggregate_string( bool on_click ) const
 {
   rapidjson::StringBuffer b;
-  sc_json_writer_t<rapidjson::StringBuffer> writer( b, sim_ );
+  rapidjson::Writer<rapidjson::StringBuffer> writer( b );
 
   js_.Accept( writer );
   std::string javascript = b.GetString();
@@ -186,7 +186,7 @@ std::string chart_t::to_aggregate_string( bool on_click ) const
 std::string chart_t::to_string() const
 {
   rapidjson::StringBuffer b;
-  sc_json_writer_t<rapidjson::StringBuffer> writer( b, sim_ );
+  rapidjson::Writer<rapidjson::StringBuffer> writer( b );
 
   js_.Accept( writer );
   std::string javascript = b.GetString();
@@ -496,23 +496,4 @@ histogram_chart_t::histogram_chart_t( const std::string& id_str,
 
   set( "xAxis.tickLength", 0 );
   set( "xAxis.type", "category" );
-}
-
-template <typename Stream>
-sc_json_writer_t<Stream>::sc_json_writer_t( Stream& stream, const sim_t& s )
-  : rapidjson::Writer<Stream>( stream ), sim( s )
-{
-}
-
-template <typename Stream>
-bool sc_json_writer_t<Stream>::Double( double d )
-{
-  this->Prefix( rapidjson::kNumberType );
-  fmt::memory_buffer buffer;
-  fmt::format_to(buffer, "{:.{}f}", d, sim.report_precision );
-  for ( unsigned i = 0; i < buffer.size(); ++i )
-  {
-    this->os_->Put( buffer.data()[ i ] );
-  }
-  return true;
 }

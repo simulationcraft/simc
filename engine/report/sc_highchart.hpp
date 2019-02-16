@@ -122,17 +122,6 @@ struct histogram_chart_t : public chart_t
 {
   histogram_chart_t( const std::string& id_str, const sim_t& sim );
 };
-
-// Custom data formatter, we need to output doubles in a different way to save
-// some room.
-template <typename Stream>
-struct sc_json_writer_t : public rapidjson::Writer<Stream>
-{
-  const sim_t& sim;
-
-  sc_json_writer_t( Stream& stream, const sim_t& s );
-  bool Double( double d );
-};
 }
 
 #endif
