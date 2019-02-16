@@ -5222,11 +5222,13 @@ void hunter_t::apl_bm()
   cleave -> add_talent( this, "Chimaera Shot" );
   cleave -> add_talent( this, "A Murder of Crows" );
   cleave -> add_talent( this, "Barrage" );
-  cleave -> add_action( this, "Kill Command" );
+  cleave -> add_action( this, "Kill Command", "if=active_enemies<4|!azerite.rapid_reload.enabled" );
   cleave -> add_talent( this, "Dire Beast" );
   cleave -> add_action( this, "Barbed Shot", "if=pet.cat.buff.frenzy.down&(charges_fractional>1.8|buff.bestial_wrath.up)|cooldown.aspect_of_the_wild.remains<pet.cat.buff.frenzy.duration-gcd&azerite.primal_instincts.enabled|target.time_to_die<9" );
-  cleave -> add_action( this, "Cobra Shot", "if=cooldown.kill_command.remains>focus.time_to_max" );
+  cleave -> add_action( this, "Multi-Shot", "if=azerite.rapid_reload.enabled&active_enemies>2")
+  cleave -> add_action( this, "Cobra Shot", "if=cooldown.kill_command.remains>focus.time_to_max&(active_enemies<3|!azerite.rapid_reload.enabled)" );
   cleave -> add_talent( this, "Spitting Cobra" );
+  cleave -> add_action ( this, "Multi-Shot", "if=azerite.rapid_reload.enabled&active_enemies>2" );
 }
 
 // Marksman Action List ======================================================================
