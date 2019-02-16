@@ -55,10 +55,11 @@ actions.cleave+=/bestial_wrath,if=cooldown.aspect_of_the_wild.remains>20|target.
 actions.cleave+=/chimaera_shot
 actions.cleave+=/a_murder_of_crows
 actions.cleave+=/barrage
-actions.cleave+=/kill_command
+actions.cleave+=/kill_command,if=active_enemies<4|!azerite.rapid_reload.enabled
 actions.cleave+=/dire_beast
 actions.cleave+=/barbed_shot,if=pet.cat.buff.frenzy.down&(charges_fractional>1.8|buff.bestial_wrath.up)|cooldown.aspect_of_the_wild.remains<pet.cat.buff.frenzy.duration-gcd&azerite.primal_instincts.enabled|target.time_to_die<9
-actions.cleave+=/cobra_shot,if=cooldown.kill_command.remains>focus.time_to_max
+actions.cleave+=/multishot,if=azerite.rapid_reload.enabled&active_enemies>2
+actions.cleave+=/cobra_shot,if=cooldown.kill_command.remains>focus.time_to_max&(active_enemies<3|!azerite.rapid_reload.enabled)
 actions.cleave+=/spitting_cobra
 
 actions.st=barbed_shot,if=pet.cat.buff.frenzy.up&pet.cat.buff.frenzy.remains<=gcd.max|full_recharge_time<gcd.max&cooldown.bestial_wrath.remains|azerite.primal_instincts.enabled&cooldown.aspect_of_the_wild.remains<gcd

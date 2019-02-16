@@ -37,13 +37,13 @@ actions+=/heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in
 actions+=/potion
 actions+=/furious_slash,if=talent.furious_slash.enabled&(buff.furious_slash.stack<3|buff.furious_slash.remains<3|(cooldown.recklessness.remains<3&buff.furious_slash.remains<9))
 actions+=/rampage,if=cooldown.recklessness.remains<3
-actions+=/recklessness
+actions+=/recklessness,if=!talent.siegebreaker.enabled|(cooldown.siegebreaker.remains<1|cooldown.siegebreaker.remains>5)
 actions+=/whirlwind,if=spell_targets.whirlwind>1&!buff.meat_cleaver.up
-actions+=/blood_fury,if=buff.recklessness.up
-actions+=/berserking,if=buff.recklessness.up
+actions+=/blood_fury
+actions+=/berserking
 actions+=/lights_judgment,if=buff.recklessness.down
-actions+=/fireblood,if=buff.recklessness.up
-actions+=/ancestral_call,if=buff.recklessness.up
+actions+=/fireblood
+actions+=/ancestral_call
 actions+=/run_action_list,name=single_target
 
 actions.movement=heroic_leap
@@ -51,10 +51,10 @@ actions.movement=heroic_leap
 actions.single_target=siegebreaker
 actions.single_target+=/rampage,if=buff.recklessness.up|(talent.frothing_berserker.enabled|talent.carnage.enabled&(buff.enrage.remains<gcd|rage>90)|talent.massacre.enabled&(buff.enrage.remains<gcd|rage>90))
 actions.single_target+=/execute
+actions.single_target+=/bladestorm,if=prev_gcd.1.rampage
 actions.single_target+=/bloodthirst,if=buff.enrage.down|azerite.cold_steel_hot_blood.rank>1
 actions.single_target+=/raging_blow,if=charges=2
 actions.single_target+=/bloodthirst
-actions.single_target+=/bladestorm,if=prev_gcd.1.rampage&(debuff.siegebreaker.up|!talent.siegebreaker.enabled)
 actions.single_target+=/dragon_roar,if=buff.enrage.up
 actions.single_target+=/raging_blow,if=talent.carnage.enabled|(talent.massacre.enabled&rage<80)|(talent.frothing_berserker.enabled&rage<90)
 actions.single_target+=/furious_slash,if=talent.furious_slash.enabled

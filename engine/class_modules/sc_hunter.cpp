@@ -5225,10 +5225,9 @@ void hunter_t::apl_bm()
   cleave -> add_action( this, "Kill Command", "if=active_enemies<4|!azerite.rapid_reload.enabled" );
   cleave -> add_talent( this, "Dire Beast" );
   cleave -> add_action( this, "Barbed Shot", "if=pet.cat.buff.frenzy.down&(charges_fractional>1.8|buff.bestial_wrath.up)|cooldown.aspect_of_the_wild.remains<pet.cat.buff.frenzy.duration-gcd&azerite.primal_instincts.enabled|target.time_to_die<9" );
-  cleave -> add_action( this, "Multi-Shot", "if=azerite.rapid_reload.enabled&active_enemies>2")
+  cleave -> add_action( this, "Multi-Shot", "if=azerite.rapid_reload.enabled&active_enemies>2");
   cleave -> add_action( this, "Cobra Shot", "if=cooldown.kill_command.remains>focus.time_to_max&(active_enemies<3|!azerite.rapid_reload.enabled)" );
   cleave -> add_talent( this, "Spitting Cobra" );
-  cleave -> add_action ( this, "Multi-Shot", "if=azerite.rapid_reload.enabled&active_enemies>2" );
 }
 
 // Marksman Action List ======================================================================
@@ -5379,7 +5378,7 @@ void hunter_t::apl_surv()
   st -> add_talent( this, "Chakrams" );
   st -> add_talent( this, "Flanking Strike", "if=focus+cast_regen<focus.max" );
   st -> add_action( this, "Kill Command", "if=focus+cast_regen<focus.max&(buff.mongoose_fury.stack<4|focus<action.mongoose_bite.cost)" );
-  st -> add_talent( this, "Mongoose Bite", "if=buff.mongoose_fury.up|(azerite.primeval_intuition.enabled&(focus+cast_regen>110|talent.vipers_venom.enabled&focus>100))|(!azerite.primeval_intuition.enabled&(focus+cast_regen>90|talent.vipers_venom.enabled&focus+cast_regen>80)|buff.coordinated_assault.up" );
+  st -> add_talent( this, "Mongoose Bite", "if=buff.mongoose_fury.up|(azerite.primeval_intuition.enabled&(focus+cast_regen>110|talent.vipers_venom.enabled&focus>100))|(!azerite.primeval_intuition.enabled&(focus+cast_regen>90|talent.vipers_venom.enabled&focus+cast_regen>80))|buff.coordinated_assault.up" );
   st -> add_action( this, "Raptor Strike" );
   st -> add_action( this, "Serpent Sting", "if=dot.serpent_sting.refreshable&!buff.coordinated_assault.up" );
   st -> add_action( this, "Wildfire Bomb", "if=dot.wildfire_bomb.refreshable" );

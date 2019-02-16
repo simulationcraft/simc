@@ -40,7 +40,7 @@ actions+=/call_action_list,name=cds
 actions+=/call_action_list,name=st,if=active_enemies<3
 actions+=/call_action_list,name=trickshots,if=active_enemies>2
 
-actions.cds=hunters_mark,if=debuff.hunters_mark.down
+actions.cds=hunters_mark,if=debuff.hunters_mark.down&!buff.trueshot.up
 actions.cds+=/double_tap,if=cooldown.rapid_fire.remains<gcd.max|target.time_to_die<20
 actions.cds+=/berserking,if=buff.trueshot.up&(target.time_to_die>cooldown.berserking.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<13
 actions.cds+=/blood_fury,if=buff.trueshot.up&(target.time_to_die>cooldown.blood_fury.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<16
