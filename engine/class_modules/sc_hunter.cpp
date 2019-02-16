@@ -5254,7 +5254,7 @@ void hunter_t::apl_mm()
   default_list -> add_action( "call_action_list,name=st,if=active_enemies<3" );
   default_list -> add_action( "call_action_list,name=trickshots,if=active_enemies>2" );
 
-  cds -> add_talent( this, "Hunter's Mark", "if=debuff.hunters_mark.down" );
+  cds -> add_talent( this, "Hunter's Mark", "if=debuff.hunters_mark.down&!buff.trueshot.up" );
   cds -> add_talent( this, "Double Tap", "if=cooldown.rapid_fire.remains<gcd.max|target.time_to_die<20" );
 
   // Racials
