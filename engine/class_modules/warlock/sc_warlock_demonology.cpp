@@ -348,6 +348,7 @@ namespace warlock {
       struct implosion_aoe_t : public demonology_spell_t
       {
         double casts_left = 5.0;
+        pets::warlock_pet_t* next_imp;
 
         implosion_aoe_t(warlock_t* p) :
           demonology_spell_t("implosion_aoe", p, p -> find_spell(196278))
@@ -371,6 +372,12 @@ namespace warlock {
 
           return m;
         }
+
+        void execute() override
+        {
+          demonology_spell_t::execute();
+          next_imp->dismiss();
+        }
       };
 
       implosion_aoe_t* explosion;
@@ -379,6 +386,8 @@ namespace warlock {
       {
         parse_options(options_str);
         add_child(explosion);
+        //Travel speed is not in spell data, in game test appears to be 40 yds/sec
+        travel_speed = 40;
       }
 
       bool ready() override
@@ -398,14 +407,29 @@ namespace warlock {
 
         auto imps_consumed = p() -> warlock_pet_list.wild_imps.n_active_pets();
 
+        int launch_counter = 0;
         for ( auto imp : p() -> warlock_pet_list.wild_imps )
         {
           if ( !imp->is_sleeping() )
           {
-            explosion->casts_left = ( imp->resources.current[RESOURCE_ENERGY] / 20 );
-            explosion->set_target( this->target );
-            explosion->execute();
-            imp->dismiss();
+            implosion_aoe_t* ex = explosion;
+            player_t* tar = this->target;
+            double dist = p()->get_player_distance(*tar);
+
+            imp->trigger_movement(dist, MOVEMENT_TOWARDS);
+            imp->interrupt();
+
+            //Imps launched with Implosion appear to be staggered and snapshot when they impact
+            make_event( sim, 100_ms*launch_counter+this->travel_time(), [ ex, tar, imp, dist ] {
+              if (imp && !imp->is_sleeping()){
+                ex->casts_left = ( imp->resources.current[RESOURCE_ENERGY] / 20 );
+                ex->set_target(tar);
+                ex->next_imp = imp;
+                ex->execute();
+              }
+            } );
+
+            launch_counter++;
           }
         }
 
@@ -447,7 +471,9 @@ namespace warlock {
             // Spelldata unknown. In-game testing shows Demonic Consumption provides 10% damage per 20 energy an imp has.
             demonic_consumption_multiplier += available / 10 * 5;
             imp->demonic_consumption = true;
-            imp->dismiss();
+            //Demonic Consumption does not appear to immediately despawn imps.
+            //This bug allows spells like Implosion to trigger partially.
+            make_event(sim, p()->bugs ? 15_ms : 0_ms, [imp] {imp->dismiss();});
           }
 
           for ( auto dt : p()->warlock_pet_list.demonic_tyrants )
