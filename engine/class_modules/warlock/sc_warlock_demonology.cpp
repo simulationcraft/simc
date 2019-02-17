@@ -1074,6 +1074,7 @@ namespace warlock {
     action_priority_list_t* imp = get_action_priority_list( "implosion" );
     action_priority_list_t* opener = get_action_priority_list( "dcon_ep_opener" );
 
+    def->add_action( "implosion,if=azerite.explosive_potential.enabled&talent.demonic_consumption.enabled&prev_gcd.1.summon_demonic_tyrant" );
     def->add_action( "potion,if=pet.demonic_tyrant.active&(!talent.nether_portal.enabled|cooldown.nether_portal.remains>160)|target.time_to_die<30" );
     def->add_action( "use_items,if=pet.demonic_tyrant.active|target.time_to_die<=15" );
     def->add_action( "berserking,if=pet.demonic_tyrant.active|target.time_to_die<=15" );
@@ -1082,8 +1083,7 @@ namespace warlock {
     def->add_action( "call_action_list,name=dcon_ep_opener,if=azerite.explosive_potential.rank&talent.demonic_consumption.enabled&time<30&!cooldown.summon_demonic_tyrant.remains" );
     def->add_action( "hand_of_guldan,if=azerite.explosive_potential.rank&time<5&soul_shard>2&buff.explosive_potential.down&buff.wild_imps.stack<3&!prev_gcd.1.hand_of_guldan&&!prev_gcd.2.hand_of_guldan" );
     def->add_action( "demonbolt,if=soul_shard<=3&buff.demonic_core.up&buff.demonic_core.stack=4" );
-    def->add_action( "implosion,if=azerite.explosive_potential.rank&buff.wild_imps.stack>2&buff.explosive_potential.remains<action.shadow_bolt.execute_time" );
-    def->add_action( "implosion,if=azerite.explosive_potential.rank&buff.wild_imps.stack>2&buff.explosive_potential.remains<cooldown.summon_demonic_tyrant.remains&cooldown.summon_demonic_tyrant.remains<11&talent.demonic_consumption.enabled" );
+    def->add_action( "implosion,if=azerite.explosive_potential.rank&buff.wild_imps.stack>2&buff.explosive_potential.remains<action.shadow_bolt.execute_time&(!talent.demonic_consumption.enabled|cooldown.summon_demonic_tyrant.remains>12)" );
     def->add_action( "doom,if=!ticking&time_to_die>30&spell_targets.implosion<2" );
     def->add_action( "bilescourge_bombers,if=azerite.explosive_potential.rank>0&time<10&spell_targets.implosion<2&buff.dreadstalkers.remains&talent.nether_portal.enabled" );
     def->add_action( "demonic_strength,if=(buff.wild_imps.stack<6|buff.demonic_power.up)|spell_targets.implosion<2");
