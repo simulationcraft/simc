@@ -35,7 +35,7 @@ actions+=/glacial_advance,if=buff.icy_talons.remains<=gcd&buff.icy_talons.up&spe
 actions+=/frost_strike,if=buff.icy_talons.remains<=gcd&buff.icy_talons.up&(!talent.breath_of_sindragosa.enabled|cooldown.breath_of_sindragosa.remains>15)
 actions+=/call_action_list,name=cooldowns
 actions+=/run_action_list,name=bos_pooling,if=talent.breath_of_sindragosa.enabled&(cooldown.breath_of_sindragosa.remains<5|(cooldown.breath_of_sindragosa.remains<20&target.time_to_die<35))
-actions+=/run_action_list,name=bos_ticking,if=dot.breath_of_sindragosa.ticking
+actions+=/run_action_list,name=bos_ticking,if=buff.breath_of_sindragosa.up
 actions+=/run_action_list,name=obliteration,if=buff.pillar_of_frost.up&talent.obliteration.enabled
 actions+=/run_action_list,name=aoe,if=active_enemies>=2
 actions+=/call_action_list,name=standard
@@ -97,9 +97,9 @@ actions.cold_heart+=/chains_of_ice,if=buff.icy_citadel.remains<8&buff.unholy_str
 
 actions.cooldowns=use_items,if=(cooldown.pillar_of_frost.ready|cooldown.pillar_of_frost.remains>20)&(!talent.breath_of_sindragosa.enabled|cooldown.empower_rune_weapon.remains>95)
 actions.cooldowns+=/use_item,name=knot_of_ancient_fury,if=cooldown.empower_rune_weapon.remains>40
-actions.cooldowns+=/use_item,name=grongs_primal_rage,if=rune<=3&!buff.pillar_of_frost.up&(!dot.breath_of_sindragosa.ticking|!talent.breath_of_sindragosa.enabled)
+actions.cooldowns+=/use_item,name=grongs_primal_rage,if=rune<=3&!buff.pillar_of_frost.up&(!buff.breath_of_sindragosa.up|!talent.breath_of_sindragosa.enabled)
 actions.cooldowns+=/use_item,name=razdunks_big_red_button
-actions.cooldowns+=/use_item,name=merekthas_fang,if=!dot.breath_of_sindragosa.ticking&!buff.pillar_of_frost.up
+actions.cooldowns+=/use_item,name=merekthas_fang,if=!buff.breath_of_sindragosa.up&!buff.pillar_of_frost.up
 actions.cooldowns+=/potion,if=buff.pillar_of_frost.up&buff.empower_rune_weapon.up
 actions.cooldowns+=/blood_fury,if=buff.pillar_of_frost.up&buff.empower_rune_weapon.up
 actions.cooldowns+=/berserking,if=buff.pillar_of_frost.up
