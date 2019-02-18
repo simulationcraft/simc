@@ -50,7 +50,8 @@ actions.cooldown+=/metamorphosis,if=talent.demonic.enabled&(!azerite.chaotic_tra
 actions.cooldown+=/nemesis,target_if=min:target.time_to_die,if=raid_event.adds.exists&debuff.nemesis.down&(active_enemies>desired_targets|raid_event.adds.in>60)
 actions.cooldown+=/nemesis,if=!raid_event.adds.exists
 actions.cooldown+=/potion,if=buff.metamorphosis.remains>25|target.time_to_die<60
-actions.cooldown+=/use_item,name=galecallers_boon
+actions.cooldown+=/use_item,name=galecallers_boon,sync=fel_barrage
+actions.cooldown+=/use_item,name=galecallers_boon,if=!talent.fel_barrage.enabled
 actions.cooldown+=/use_item,name=lustrous_golden_plumage
 
 actions.dark_slash=dark_slash,if=fury>=80&(!variable.blade_dance|!cooldown.blade_dance.ready)

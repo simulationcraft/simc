@@ -4972,9 +4972,20 @@ void add_havoc_use_items( demon_hunter_t* p, action_priority_list_t* apl )
     auto effect = item.special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
     if ( effect && effect->source != SPECIAL_EFFECT_SOURCE_ADDON )
     {
-      std::string line = std::string( "use_item,name=" ) + item.name_str;
+      if ( util::str_compare_ci( item.name_str, "galecallers_boon" ) )
+      {
+        std::string line1 = std::string( "use_item,name=" ) + item.name_str + std::string( ",sync=fel_barrage" );
+        std::string line2 =
+            std::string( "use_item,name=" ) + item.name_str + std::string( ",if=!talent.fel_barrage.enabled" );
 
-      apl->add_action( line );
+        apl->add_action( line1 );
+        apl->add_action( line2 );
+      }
+      else 
+      {
+        std::string line = std::string( "use_item,name=" ) + item.name_str;
+        apl->add_action( line );
+      }
     }
   }
 }
