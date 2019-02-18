@@ -5,7 +5,7 @@ level=120
 race=troll
 role=attack
 position=back
-talents=2310021
+talents=2210022
 
 # Default consumables
 potion=battle_potion_of_agility
@@ -114,11 +114,11 @@ actions.stealthed+=/garrote,cycle_targets=1,if=talent.subterfuge.enabled&azerite
 actions.stealthed+=/pool_resource,for_next=1
 actions.stealthed+=/garrote,if=talent.subterfuge.enabled&talent.exsanguinate.enabled&cooldown.exsanguinate.remains<1&prev_gcd.1.rupture&dot.rupture.remains>5+4*cp_max_spend
 
-head=cowl_of_righteous_resolve,id=165519,bonus_id=4824/1537/4775,azerite_powers=136/562/30/13
+head=cowl_of_fluid_machinations,id=159302,bonus_id=1587/4819/4775,azerite_powers=407/408/22/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
-shoulders=mestrahs_singing_spaulders,id=165516,bonus_id=4824/1537/4775,azerite_powers=136/562/31/13
+shoulders=goldtasseled_epaulets,id=159299,bonus_id=1587/4819/4775,azerite_powers=407/408/22/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
-chest=mekkatorques_bomber_jacket,id=165830,bonus_id=4824/1537/4775,azerite_powers=249/136/22/13
+chest=raiment_of_the_blighted_tribe,id=159335,bonus_id=1587/4819/4775,azerite_powers=408/407/31/13
 wrists=amethyststudded_bindings,id=165524,bonus_id=4800/1537
 hands=gloves_of_spiritual_grace,id=165514,bonus_id=4800/1537
 waist=stretched_sinew_waistcord,id=165525,bonus_id=4800/1537

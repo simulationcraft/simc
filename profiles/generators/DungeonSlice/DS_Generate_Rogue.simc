@@ -4,13 +4,13 @@ race=troll
 spec=assassination
 role=attack
 position=back
-talents=2310021
+talents=2210022
 
-head=cowl_of_righteous_resolve,id=165519,bonus_id=4824/1537,azerite_powers=136/562/30/13
+head=cowl_of_fluid_machinations,id=159302,bonus_id=1587/4819,azerite_powers=407/408/22/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
-shoulder=mestrahs_singing_spaulders,id=165516,bonus_id=4824/1537,azerite_powers=136/562/31/13
+shoulder=goldtasseled_epaulets,id=159299,bonus_id=1587/4819,azerite_powers=407/408/22/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
-chest=mekkatorques_bomber_jacket,id=165830,bonus_id=4824/1537,azerite_powers=249/136/22/13
+chest=raiment_of_the_blighted_tribe,id=159335,bonus_id=1587/4819,azerite_powers=408/407/31/13
 wrists=amethyststudded_bindings,id=165524,bonus_id=4800/1537
 hands=gloves_of_spiritual_grace,id=165514,bonus_id=4800/1537
 waist=stretched_sinew_waistcord,id=165525,bonus_id=4800/1537
@@ -32,13 +32,13 @@ race=pandaren
 spec=outlaw
 role=attack
 position=back
-talents=2010022
+talents=2010021
 
 head=cowl_of_righteous_resolve,id=165519,bonus_id=4824/1537,azerite_powers=129/562/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
-shoulder=gorak_tuls_mantle,id=159339,bonus_id=1587/4819,azerite_powers=129/446/30/13
+shoulder=mestrahs_singing_spaulders,id=165516,bonus_id=4824/1537,azerite_powers=129/562/31/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
-chest=vest_of_reverent_adoration,id=159303,bonus_id=1587/4819,azerite_powers=411/129/31/13
+chest=vest_of_reverent_adoration,id=159303,bonus_id=1587/4819,azerite_powers=180/129/31/13
 wrists=bracers_of_regal_devotion,id=165517,bonus_id=4800/1537
 hands=mechjockey_grips,id=165522,bonus_id=4800/1537
 waist=stretched_sinew_waistcord,id=165525,bonus_id=4800/1537
@@ -60,13 +60,13 @@ race=night_elf
 spec=subtlety
 role=attack
 position=back
-talents=2320031
+talents=2320012
 
 head=cowl_of_righteous_resolve,id=165519,bonus_id=4824/1537,azerite_powers=414/562/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
-shoulder=phantom_stalker_shoulders,id=165523,bonus_id=4824/1537,azerite_powers=413/175/30/13
+shoulder=mestrahs_singing_spaulders,id=165516,bonus_id=4824/1537,azerite_powers=124/562/31/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
-chest=mekkatorques_bomber_jacket,id=165830,bonus_id=4824/1537,azerite_powers=240/562/22/13
+chest=spymasters_wrap,id=155860,bonus_id=1587/4819,azerite_powers=413/481/21/13
 wrists=bracers_of_regal_devotion,id=165517,bonus_id=4800/1537
 hands=mechjockey_grips,id=165522,bonus_id=4800/1537
 waist=stretched_sinew_waistcord,id=165525,bonus_id=4800/1537

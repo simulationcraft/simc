@@ -6,7 +6,7 @@ race=night_elf
 timeofday=day
 role=attack
 position=back
-talents=2320031
+talents=2320012
 
 # Default consumables
 potion=battle_potion_of_agility
@@ -132,9 +132,9 @@ actions.stealthed+=/shadowstrike
 
 head=cowl_of_righteous_resolve,id=165519,bonus_id=4824/1537/4775,azerite_powers=414/562/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
-shoulders=phantom_stalker_shoulders,id=165523,bonus_id=4824/1537/4775,azerite_powers=413/175/30/13
+shoulders=mestrahs_singing_spaulders,id=165516,bonus_id=4824/1537/4775,azerite_powers=124/562/31/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
-chest=mekkatorques_bomber_jacket,id=165830,bonus_id=4824/1537/4775,azerite_powers=240/562/22/13
+chest=spymasters_wrap,id=155860,bonus_id=1587/4819/4775,azerite_powers=413/481/21/13
 wrists=bracers_of_regal_devotion,id=165517,bonus_id=4800/1537
 hands=mechjockey_grips,id=165522,bonus_id=4800/1537
 waist=stretched_sinew_waistcord,id=165525,bonus_id=4800/1537
