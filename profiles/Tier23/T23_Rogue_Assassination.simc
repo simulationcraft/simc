@@ -28,7 +28,7 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/apply_poison
 actions.precombat+=/stealth
 actions.precombat+=/potion
-actions.precombat+=/marked_for_death,precombat_seconds=5,if=raid_event.adds.in>40
+actions.precombat+=/marked_for_death,precombat_seconds=5,if=raid_event.adds.in>15
 
 # Executed every time the actor is available.
 # Restealth if possible (no vulnerable enemies in combat)
@@ -104,8 +104,8 @@ actions.dot+=/rupture,cycle_targets=1,if=combo_points>=4&refreshable&(pmultiplie
 actions.stealthed=rupture,if=combo_points>=4&(talent.nightstalker.enabled|talent.subterfuge.enabled&(talent.exsanguinate.enabled&cooldown.exsanguinate.remains<=2|!ticking)&variable.single_target)&target.time_to_die-remains>6
 # Subterfuge: Apply or Refresh with buffed Garrotes
 actions.stealthed+=/garrote,cycle_targets=1,if=talent.subterfuge.enabled&refreshable&target.time_to_die-remains>2
-# Subterfuge: Override normal Garrotes with snapshot versions
-actions.stealthed+=/garrote,cycle_targets=1,if=talent.subterfuge.enabled&remains<=10&pmultiplier<=1&target.time_to_die-remains>2
+# Subterfuge: Override older non-pandemic Garrotes as second prio
+actions.stealthed+=/garrote,cycle_targets=1,if=talent.subterfuge.enabled&remains<=10&target.time_to_die-remains>2
 # Subterfuge + Shrouded Suffocation: Apply early Rupture that will be refreshed for pandemic.
 actions.stealthed+=/rupture,if=talent.subterfuge.enabled&azerite.shrouded_suffocation.enabled&!dot.rupture.ticking
 # Subterfuge w/ Shrouded Suffocation: Reapply for bonus CP and extended snapshot duration

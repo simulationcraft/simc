@@ -5563,7 +5563,9 @@ void rogue_t::init_action_list()
   else if ( specialization() == ROGUE_SUBTLETY )
     potion_action += "|buff.symbols_of_death.up&(buff.shadow_blades.up|cooldown.shadow_blades.remains<=10)";
 
-  if ( specialization() != ROGUE_SUBTLETY )
+  if ( specialization() == ROGUE_ASSASSINATION )
+    precombat -> add_talent( this, "Marked for Death", "precombat_seconds=5,if=raid_event.adds.in>15" );
+  if ( specialization() == ROGUE_OUTLAW )
     precombat -> add_talent( this, "Marked for Death", "precombat_seconds=5,if=raid_event.adds.in>40" );
 
   // Make restealth first action in the default list.
@@ -5617,7 +5619,7 @@ void rogue_t::init_action_list()
     action_priority_list_t* stealthed = get_action_priority_list( "stealthed", "Stealthed Actions" );
     stealthed -> add_action( this, "Rupture", "if=combo_points>=4&(talent.nightstalker.enabled|talent.subterfuge.enabled&(talent.exsanguinate.enabled&cooldown.exsanguinate.remains<=2|!ticking)&variable.single_target)&target.time_to_die-remains>6", "Nighstalker, or Subt+Exsg on 1T: Snapshot Rupture" );
     stealthed -> add_action( this, "Garrote", "cycle_targets=1,if=talent.subterfuge.enabled&refreshable&target.time_to_die-remains>2", "Subterfuge: Apply or Refresh with buffed Garrotes" );
-    stealthed -> add_action( this, "Garrote", "cycle_targets=1,if=talent.subterfuge.enabled&remains<=10&pmultiplier<=1&target.time_to_die-remains>2", "Subterfuge: Override normal Garrotes with snapshot versions" );
+    stealthed -> add_action( this, "Garrote", "cycle_targets=1,if=talent.subterfuge.enabled&remains<=10&target.time_to_die-remains>2", "Subterfuge: Override older non-pandemic Garrotes as second prio" );
     stealthed -> add_action( this, "Rupture", "if=talent.subterfuge.enabled&azerite.shrouded_suffocation.enabled&!dot.rupture.ticking", "Subterfuge + Shrouded Suffocation: Apply early Rupture that will be refreshed for pandemic." );
     stealthed -> add_action( this, "Garrote", "cycle_targets=1,if=talent.subterfuge.enabled&azerite.shrouded_suffocation.enabled&target.time_to_die>remains&combo_points.deficit>1", "Subterfuge w/ Shrouded Suffocation: Reapply for bonus CP and extended snapshot duration" );
     stealthed -> add_action( "pool_resource,for_next=1", "Subterfuge + Exsg: Even override a snapshot Garrote right after Rupture before Exsanguination" );
