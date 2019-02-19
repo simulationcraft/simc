@@ -32,7 +32,7 @@ race=troll
 spec=demonology
 role=spell
 position=ranged_back
-talents=3303033
+talents=3303032
 default_pet=felguard
 
 head=blazewing_hood,id=165500,bonus_id=4824/1537/4775,azerite_powers=231/562/459/13
