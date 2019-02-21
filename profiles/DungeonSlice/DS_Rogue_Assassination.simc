@@ -5,7 +5,7 @@ level=120
 race=troll
 role=attack
 position=back
-talents=2210022
+talents=2210032
 
 # Default consumables
 potion=battle_potion_of_agility
@@ -45,6 +45,7 @@ actions+=/lights_judgment
 
 # Cooldowns
 actions.cds=potion,if=buff.bloodlust.react|debuff.vendetta.up
+actions.cds+=/use_item,name=galecallers_boon,if=cooldown.vendetta.remains<=1&(!talent.subterfuge.enabled|dot.garrote.pmultiplier>1)|cooldown.vendetta.remains>45
 # Default Trinket usage: Use on cooldown.
 actions.cds+=/use_item,name=variable_intensity_gigavolt_oscillating_reactor
 actions.cds+=/blood_fury,if=debuff.vendetta.up
@@ -126,14 +127,14 @@ legs=kelplaced_greaves,id=165528,bonus_id=4800/1537
 feet=embossed_deckwalkers,id=165527,bonus_id=4800/1537
 finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_haste
 finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_haste
-trinket1=kimbuls_razor_claw,id=165579,bonus_id=4800/1537
+trinket1=galecallers_boon,id=159614,bonus_id=1572/4780
 trinket2=variable_intensity_gigavolt_oscillating_reactor,id=165572,bonus_id=4800/1537
 main_hand=greeds_folly,id=165593,bonus_id=4800/1537,enchant=galeforce_striking
 off_hand=greeds_folly,id=165593,bonus_id=4800/1537,enchant=quick_navigation
 
 # Gear Summary
-# gear_ilvl=416.19
-# gear_agility=5796
+# gear_ilvl=415.25
+# gear_agility=5742
 # gear_stamina=9919
 # gear_crit_rating=698
 # gear_haste_rating=1388

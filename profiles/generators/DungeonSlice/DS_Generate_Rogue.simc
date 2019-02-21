@@ -4,7 +4,7 @@ race=troll
 spec=assassination
 role=attack
 position=back
-talents=2210022
+talents=2210032
 
 head=cowl_of_fluid_machinations,id=159302,bonus_id=1587/4819,azerite_powers=407/408/22/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
@@ -18,7 +18,7 @@ legs=kelplaced_greaves,id=165528,bonus_id=4800/1537
 feet=embossed_deckwalkers,id=165527,bonus_id=4800/1537
 finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_haste
 finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_haste
-trinket1=kimbuls_razor_claw,id=165579,bonus_id=4800/1537
+trinket1=galecallers_boon,id=159614,bonus_id=1572/4780
 trinket2=variable_intensity_gigavolt_oscillating_reactor,id=165572,bonus_id=4800/1537
 main_hand=greeds_folly,id=165593,bonus_id=4800/1537,enchant=galeforce_striking
 off_hand=greeds_folly,id=165593,bonus_id=4800/1537,enchant=quick_navigation

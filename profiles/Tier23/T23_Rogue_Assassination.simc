@@ -45,6 +45,7 @@ actions+=/lights_judgment
 
 # Cooldowns
 actions.cds=potion,if=buff.bloodlust.react|debuff.vendetta.up
+actions.cds+=/use_item,name=lustrous_golden_plumage,if=debuff.vendetta.up
 # Default Trinket usage: Use on cooldown.
 actions.cds+=/use_item,name=variable_intensity_gigavolt_oscillating_reactor
 actions.cds+=/blood_fury,if=debuff.vendetta.up
@@ -114,11 +115,11 @@ actions.stealthed+=/garrote,cycle_targets=1,if=talent.subterfuge.enabled&azerite
 actions.stealthed+=/pool_resource,for_next=1
 actions.stealthed+=/garrote,if=talent.subterfuge.enabled&talent.exsanguinate.enabled&cooldown.exsanguinate.remains<1&prev_gcd.1.rupture&dot.rupture.remains>5+4*cp_max_spend
 
-head=cowl_of_righteous_resolve,id=165519,bonus_id=4824/1537/4775,azerite_powers=136/562/30/13
+head=cowl_of_righteous_resolve,id=165519,bonus_id=4824/1537/4775,azerite_powers=136/249/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
-shoulders=mestrahs_singing_spaulders,id=165516,bonus_id=4824/1537/4775,azerite_powers=136/562/31/13
+shoulders=gorak_tuls_mantle,id=159339,bonus_id=1587/4819/4775,azerite_powers=136/193/30/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
-chest=mekkatorques_bomber_jacket,id=165830,bonus_id=4824/1537/4775,azerite_powers=249/136/22/13
+chest=cephalohide_jacket,id=159314,bonus_id=1587/4819/4775,azerite_powers=136/181/30/13
 wrists=amethyststudded_bindings,id=165524,bonus_id=4800/1537
 hands=gloves_of_spiritual_grace,id=165514,bonus_id=4800/1537
 waist=stretched_sinew_waistcord,id=165525,bonus_id=4800/1537
@@ -126,14 +127,14 @@ legs=kelplaced_greaves,id=165528,bonus_id=4800/1537
 feet=embossed_deckwalkers,id=165527,bonus_id=4800/1537
 finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_haste
 finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_haste
-trinket1=kimbuls_razor_claw,id=165579,bonus_id=4800/1537
+trinket1=lustrous_golden_plumage,id=159617,bonus_id=1572/4780
 trinket2=variable_intensity_gigavolt_oscillating_reactor,id=165572,bonus_id=4800/1537
 main_hand=greeds_folly,id=165593,bonus_id=4800/1537,enchant=galeforce_striking
 off_hand=greeds_folly,id=165593,bonus_id=4800/1537,enchant=quick_navigation
 
 # Gear Summary
-# gear_ilvl=416.19
-# gear_agility=5796
+# gear_ilvl=415.25
+# gear_agility=5742
 # gear_stamina=9919
 # gear_crit_rating=698
 # gear_haste_rating=1388
