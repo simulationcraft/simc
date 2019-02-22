@@ -1418,8 +1418,10 @@ struct deadly_poison_t : public rogue_poison_t
       rogue_poison_t( "deadly_poison_dot", p, p -> find_specialization_spell( "Deadly Poison" ) -> effectN( 1 ).trigger() )
     {
       may_crit       = false;
+      proc           = false;
       harmful        = true;
       hasted_ticks   = true;
+      callbacks      = true;
     }
 
     timespan_t calculate_dot_refresh_duration(const dot_t* dot, timespan_t /* triggered_duration */) const override
@@ -4471,8 +4473,12 @@ struct stealth_like_buff_t : public buff_t
 
     if ( rogue->talent.master_assassin->ok() )
     {
-      rogue->buffs.master_assassin_aura->expire();
-      rogue->buffs.master_assassin->trigger();
+      // Don't swap these buffs around if we are still in stealth due to Vanish expiring
+      if ( !rogue->buffs.stealth->check() )
+      {
+        rogue->buffs.master_assassin_aura->expire();
+        rogue->buffs.master_assassin->trigger();
+      }
     }
   }
 };
