@@ -797,6 +797,56 @@ void warlock_t::create_options()
   add_option( opt_string( "default_pet", default_pet ) );
 }
 
+//Used to determine how many Wild Imps are waiting to be spawned from Hand of Guldan
+int warlock_t::get_spawning_imp_count()
+{
+  return as<int>(wild_imp_spawns.size());
+}
+
+//Function for returning the time until a certain number of imps will have spawned
+//In the case where count is equal to or greater than number of incoming imps, time to last imp is returned
+//Otherwise, time to the Nth imp spawn will be returned
+//All other cases will return 0. A negative (or zero) count value will behave as "all" 
+timespan_t warlock_t::time_to_imps(int count)
+{
+  timespan_t max = 0_ms;
+  if (count >= as<int>(wild_imp_spawns.size()) || count <= 0){
+    for (auto ev : wild_imp_spawns)
+    {
+      timespan_t ex = debug_cast<actions::imp_delay_event_t*>(ev)->expected_time();
+      if(ex > max)
+        max = ex;
+    }
+    return max;
+  }
+  else
+  {
+    std::priority_queue<timespan_t> shortest;
+    for (auto ev : wild_imp_spawns)
+    {
+      timespan_t ex = debug_cast<actions::imp_delay_event_t*>(ev)->expected_time();
+      if (shortest.size() >= count && ex < shortest.top())
+      {
+        shortest.pop();
+        shortest.push(ex);
+      }
+      else if (shortest.size() < count)
+      {
+        shortest.push(ex);
+      }
+    }
+
+    if (shortest.size() > 0)
+    {
+      return shortest.top();
+    }
+    else
+    {
+      return 0_ms;
+    }
+  }
+}
+
 std::string warlock_t::create_profile( save_e stype )
 {
   std::string profile_str = player_t::create_profile( stype );
@@ -965,6 +1015,29 @@ expr_t* warlock_t::create_expression( const std::string& name_str )
     {
       return havoc_target ? get_target_data( havoc_target )->debuffs_havoc->remains().total_seconds() : 0.0;
     } );
+  }
+  else if (name_str == "incoming_imps") {
+    return make_fn_expr(name_str, [this]{
+      return this->get_spawning_imp_count();
+    });
+  }
+
+  std::vector<std::string> splits = util::string_split( name_str, "." );
+
+  if (splits.size() == 3 && splits[0] == "time_to_imps" && splits[2] == "remains")
+  {
+    std::string amt = splits[1];
+
+    return make_fn_expr(name_str, [this, amt](){
+      if(amt == "all")
+      {
+        return this->time_to_imps(-1);
+      }
+      else
+      {
+        return this->time_to_imps(std::stoi(amt));
+      }
+    });
   }
 
   return player_t::create_expression( name_str );
