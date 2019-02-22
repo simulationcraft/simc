@@ -33,9 +33,9 @@ actions.precombat+=/army_of_the_dead,delay=2
 actions=auto_attack
 actions+=/variable,name=pooling_for_gargoyle,value=cooldown.summon_gargoyle.remains<5&talent.summon_gargoyle.enabled
 # Racials, Items, and other ogcds
-actions+=/arcane_torrent,if=runic_power.deficit>65&(cooldown.summon_gargoyle.remains|!talent.summon_gargoyle.enabled)&rune.deficit>=5
+actions+=/arcane_torrent,if=runic_power.deficit>65&(pet.gargoyle.active|!talent.summon_gargoyle.enabled)&rune.deficit>=5
 actions+=/blood_fury,if=pet.gargoyle.active|!talent.summon_gargoyle.enabled
-actions+=/berserking,if=pet.gargoyle.active|!talent.summon_gargoyle.enabled
+actions+=/berserking,if=buff.unholy_frenzy.up|pet.gargoyle.active|!talent.summon_gargoyle.enabled
 # Custom trinkets usage
 actions+=/use_items
 actions+=/use_item,name=bygone_bee_almanac,if=cooldown.summon_gargoyle.remains>60|!talent.summon_gargoyle.enabled
