@@ -2638,10 +2638,13 @@ struct death_knight_action_t : public Base
 
         // ERW increases DRW duration, up to a cap
         if ( p() -> buffs.dancing_rune_weapon -> up() && p() -> azerite.eternal_rune_weapon.enabled() &&
-             p() -> eternal_rune_weapon_counter <= p() -> azerite.eternal_rune_weapon.spell() -> effectN( 3 ).base_value() )
+             p() -> eternal_rune_weapon_counter < p() -> azerite.eternal_rune_weapon.spell() -> effectN( 3 ).base_value() )
         {
+          double max_increase = p() -> azerite.eternal_rune_weapon.spell() -> effectN( 3 ).base_value() - p() -> eternal_rune_weapon_counter;
           double duration_increase = p() -> azerite.eternal_rune_weapon.spell() -> effectN( 2 ).base_value() / 10 * this -> last_resource_cost;
-      
+          // Required because marrowrend spends two runes and may go over the cap
+          duration_increase = std::min( duration_increase, max_increase );
+
           // Extend both DRW and ERW buffs
           p() -> buffs.eternal_rune_weapon -> extend_duration( p(), timespan_t::from_seconds( duration_increase ) );
           p() -> buffs.dancing_rune_weapon -> extend_duration( p(), timespan_t::from_seconds( duration_increase ) );
@@ -3626,9 +3629,14 @@ struct breath_of_sindragosa_buff_t : public buff_t
     {
       death_knight_t* p = debug_cast< death_knight_t* >( this -> player );
 
+      // TODO: Target the last enemy targeted by the player's foreground abilities
+      // Currently use the player's target which is the first non invulnerable, active enemy found.
+      player_t* bos_target = p -> target;
+
       // Damage is executed on cast for no cost
       if ( this -> current_tick == 0 )
       {
+        this -> damage -> set_target( bos_target );
         this -> damage -> execute();
         return;
       }
@@ -3666,7 +3674,7 @@ struct breath_of_sindragosa_buff_t : public buff_t
       }
 
       // If there's enough resources for another tick, deal damage
-      this -> damage -> set_target( p -> target );
+      this -> damage -> set_target( bos_target );
       this -> damage -> execute();
     } );
   }
@@ -4553,7 +4561,7 @@ struct empower_rune_weapon_t : public death_knight_spell_t
 
 struct epidemic_damage_main_t : public death_knight_spell_t
 {
-  epidemic_damage_main_t( death_knight_t* p, death_knight_spell_t* /* parent */ ) :
+  epidemic_damage_main_t( death_knight_t* p ) :
     death_knight_spell_t( "epidemic_main", p, p -> find_spell( 212739 ) )
   {
     background = true;
@@ -4566,7 +4574,8 @@ struct epidemic_damage_aoe_t : public death_knight_spell_t
     death_knight_spell_t( "epidemic_aoe", p, p -> find_spell( 215969 ) )
   {
     background = true;
-    aoe = -1;
+    // Epidemic's aoe component is hard-capped at 6 targets (not in spelldata)
+    aoe = 6;
   }
 
   size_t available_targets( std::vector< player_t* >& tl ) const override
@@ -4590,7 +4599,7 @@ struct epidemic_t : public death_knight_spell_t
 
   epidemic_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "epidemic", p, p -> talent.epidemic ),
-    main( new epidemic_damage_main_t( p, this ) ),
+    main( new epidemic_damage_main_t( p ) ),
     aoe( new epidemic_damage_aoe_t( p ) )
   {
     parse_options( options_str );
@@ -4603,13 +4612,15 @@ struct epidemic_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
+    int hit_count = 0;
     for ( const auto target : sim -> target_non_sleeping_list )
     {
-      if ( td( target ) -> dot.virulent_plague -> is_ticking() )
+      // Epidemic can't hit more than 20 targets at once (not in spelldata)
+      if ( td( target ) -> dot.virulent_plague -> is_ticking() && hit_count < 20 )
       {
+        hit_count++;
         main -> set_target( target );
         main -> execute();
-
         if ( sim -> target_non_sleeping_list.size() > 1 )
         {
           aoe -> set_target( target );
@@ -7591,8 +7602,8 @@ void death_knight_t::default_apl_frost()
   cold_heart -> add_action( this, "Chains of Ice", "if=buff.cold_heart.stack>5&target.time_to_die<gcd", "Cold heart conditions" );
   cold_heart -> add_action( this, "Chains of Ice", "if=(buff.pillar_of_frost.remains<=gcd*(1+cooldown.frostwyrms_fury.ready)|buff.pillar_of_frost.remains<rune.time_to_3)&buff.pillar_of_frost.up&azerite.icy_citadel.rank<=2" );
   cold_heart -> add_action( this, "Chains of Ice", "if=buff.pillar_of_frost.remains<8&buff.unholy_strength.remains<gcd*(1+cooldown.frostwyrms_fury.ready)&buff.unholy_strength.remains&buff.pillar_of_frost.up&azerite.icy_citadel.rank<=2" );
-  cold_heart -> add_action( this, "Chains of Ice", "if=(buff.icy_citadel.remains<=gcd*(1+cooldown.frostwyrms_fury.ready)|buff.icy_citadel.remains<rune.time_to_3)&buff.icy_citadel.up&azerite.icy_citadel.enabled&azerite.icy_citadel.rank>2" );
-  cold_heart -> add_action( this, "Chains of Ice", "if=buff.icy_citadel.remains<8&buff.unholy_strength.remains<gcd*(1+cooldown.frostwyrms_fury.ready)&buff.unholy_strength.remains&buff.icy_citadel.up&!azerite.icy_citadel.enabled&azerite.icy_citadel.rank>2" );
+  cold_heart -> add_action( this, "Chains of Ice", "if=(buff.icy_citadel.remains<4|buff.icy_citadel.remains<rune.time_to_3)&buff.icy_citadel.up&azerite.icy_citadel.rank>2" );
+  cold_heart -> add_action( this, "Chains of Ice", "if=buff.icy_citadel.up&buff.unholy_strength.up&azerite.icy_citadel.rank>2" );
   
 
   // "Breath of Sindragosa pooling rotation : starts 15s before the cd becomes available"
@@ -7695,9 +7706,9 @@ void death_knight_t::default_apl_unholy()
   def -> add_action( "variable,name=pooling_for_gargoyle,value=cooldown.summon_gargoyle.remains<5&talent.summon_gargoyle.enabled" );
 
   // Ogcd cooldowns
-  def -> add_action( "arcane_torrent,if=runic_power.deficit>65&(cooldown.summon_gargoyle.remains|!talent.summon_gargoyle.enabled)&rune.deficit>=5", "Racials, Items, and other ogcds" );
+  def -> add_action( "arcane_torrent,if=runic_power.deficit>65&(pet.gargoyle.active|!talent.summon_gargoyle.enabled)&rune.deficit>=5", "Racials, Items, and other ogcds" );
   def -> add_action( "blood_fury,if=pet.gargoyle.active|!talent.summon_gargoyle.enabled" );
-  def -> add_action( "berserking,if=pet.gargoyle.active|!talent.summon_gargoyle.enabled" );
+  def -> add_action( "berserking,if=buff.unholy_frenzy.up|pet.gargoyle.active|!talent.summon_gargoyle.enabled" );
   def -> add_action( "use_items", "Custom trinkets usage" );
   def -> add_action( "use_item,name=bygone_bee_almanac,if=cooldown.summon_gargoyle.remains>60|!talent.summon_gargoyle.enabled" );
   def -> add_action( "use_item,name=jes_howler,if=pet.gargoyle.active|!talent.summon_gargoyle.enabled" );
