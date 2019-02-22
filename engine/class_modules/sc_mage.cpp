@@ -4271,13 +4271,13 @@ struct phoenix_flames_splash_t : public fire_mage_spell_t
     base_crit = 1.0;
   }
 
-  void impact( action_state_t* s ) override
+  size_t available_targets( std::vector<player_t*>& tl ) const override
   {
-    // PF cleave does not impact main target
-    if ( s->chain_target == 0 )
-      return;
+    fire_mage_spell_t::available_targets( tl );
 
-    fire_mage_spell_t::impact( s );
+    tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
+
+    return tl.size();
   }
 };
 
