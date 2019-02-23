@@ -128,25 +128,6 @@ namespace warlock {
         }
       };
 
-      struct imp_delay_event_t : public player_event_t
-      {
-        imp_delay_event_t( warlock_t* p, double delay ) :
-          player_event_t( *p, timespan_t::from_millis( delay ) ) {}
-
-        virtual const char* name() const override
-        {
-          return  "imp_delay";
-        }
-
-        virtual void execute() override
-        {
-          warlock_t* p = static_cast< warlock_t* >( player() );
-
-          p->warlock_pet_list.wild_imps.spawn();
-          expansion::bfa::trigger_leyshocks_grand_compilation( STAT_HASTE_RATING, p );
-        }
-      };
-
       int shards_used;
       umbral_blaze_t* blaze;
       const spell_data_t* summon_spell;
@@ -222,12 +203,11 @@ namespace warlock {
         {
           expansion::bfa::trigger_leyshocks_grand_compilation( STAT_HASTE_RATING, p() );
 
-          if ( shards_used >= 1 )
-            make_event<imp_delay_event_t>( *sim, p(), rng().gauss( 400.0, 50.0 ) );
-          if ( shards_used >= 2 )
-            make_event<imp_delay_event_t>( *sim, p(), rng().gauss( 800.0, 50.0 ) );
-          if ( shards_used >= 3 )
-            make_event<imp_delay_event_t>( *sim, p(), rng().gauss( 1200.0, 50.0 ) );
+          for (int i = 1; i <= shards_used; i++)
+          {
+            auto ev = make_event<imp_delay_event_t>( *sim, p(), rng().gauss( 400.0*i, 50.0 ), 400.0*i);
+            this->p()->wild_imp_spawns.push_back(ev);
+          }
 
           if ( p()->azerite.umbral_blaze.ok() && rng().roll( p()->find_spell( 273524 )->proc_chance() ) )
           {

@@ -65,6 +65,7 @@ namespace warlock
       std::vector<action_t*> havoc_spells;  // Used for smarter target cache invalidation.
       bool wracking_brilliance;
       double agony_accumulator;
+      std::vector<event_t*> wild_imp_spawns; // Used for tracking incoming imps from HoG 
 
       unsigned active_pets;
 
@@ -421,6 +422,8 @@ namespace warlock
       void      init_resources( bool force ) override;
       void      reset() override;
       void      create_options() override;
+      int       get_spawning_imp_count();
+      timespan_t time_to_imps(int count);
       action_t* create_action( const std::string& name, const std::string& options ) override;
       pet_t*    create_pet( const std::string& name, const std::string& type = std::string() ) override;
       void      create_pets() override;
@@ -717,7 +720,7 @@ namespace warlock
           {
             return make_fn_expr(name_str, [this]()
             {
-              timespan_t con = timespan_t::from_millis(0.0);
+              timespan_t con = 0_ms;
 
               for (int i = 0; i < MAX_UAS; i++)
               {
@@ -844,6 +847,43 @@ namespace warlock
 
           if ( p()->buffs.grimoire_of_sacrifice->check() )
             p()->buffs.grimoire_of_sacrifice->expire();
+        }
+      };
+
+      //Event for spawning wild imps for Demonology
+      //Placed in warlock.cpp for expression purposes
+      struct imp_delay_event_t : public player_event_t
+      {
+        timespan_t diff;
+
+        imp_delay_event_t( warlock_t* p, double delay, double exp ) :
+          player_event_t( *p, timespan_t::from_millis( delay ) ) 
+        {
+          diff = timespan_t::from_millis(exp - delay);
+        }
+
+        virtual const char* name() const override
+        {
+          return  "imp_delay";
+        }
+
+        virtual void execute() override
+        {
+          warlock_t* p = static_cast< warlock_t* >( player() );
+
+          p->warlock_pet_list.wild_imps.spawn();
+          expansion::bfa::trigger_leyshocks_grand_compilation( STAT_HASTE_RATING, p );
+
+          //Remove this event from the vector
+          auto it = std::find(p->wild_imp_spawns.begin(), p->wild_imp_spawns.end(), this);
+          if(it != p->wild_imp_spawns.end())
+            p->wild_imp_spawns.erase(it);
+        }
+
+        //Used for APL expressions to estimate when imp is "supposed" to spawn
+        timespan_t expected_time()
+        {
+          return std::max(0_ms, this->remains()+diff);
         }
       };
     }
