@@ -6244,7 +6244,7 @@ void mage_t::apl_frost()
 
   cooldowns->add_action( this, "Icy Veins" );
   cooldowns->add_talent( this, "Mirror Image" );
-  cooldowns->add_talent( this, "Rune of Power", "if=prev_gcd.1.frozen_orb|time_to_die>10+cast_time&time_to_die<20",
+  cooldowns->add_talent( this, "Rune of Power", "if=prev_gcd.1.frozen_orb|target.time_to_die>10+cast_time&target.time_to_die<20",
     "Rune of Power is always used with Frozen Orb. Any leftover charges at the end of the fight should be used, ideally "
     "if the boss doesn't die in the middle of the Rune buff." );
   cooldowns->add_action( "call_action_list,name=talent_rop,if=talent.rune_of_power.enabled&active_enemies=1&"
