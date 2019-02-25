@@ -6603,6 +6603,61 @@ expr_t* mage_t::create_expression( const std::string& name )
     throw std::invalid_argument( fmt::format( "Unknown ground_aoe operation '{}'", splits[ 2 ] ) );
   }
 
+  if ( splits.size() == 3 && util::str_compare_ci( splits[ 0 ], "incanters_flow_time_to" ) )
+  {
+    int expr_stack = std::stoi( splits[ 1 ] );
+    if ( expr_stack < 1 || expr_stack > buffs.incanters_flow->max_stack() )
+      throw std::invalid_argument( fmt::format( "Invalid incanters_flow_time_to stack number '{}'", splits[ 1 ] ) );
+
+    // Number of ticks in one full cycle.
+    int tick_cycle = buffs.incanters_flow->max_stack() * 2;
+    int expr_pos_lo;
+    int expr_pos_hi;
+
+    if ( util::str_compare_ci( splits[ 2 ], "up" ) )
+    {
+      expr_pos_lo = expr_pos_hi = expr_stack;
+    }
+    else if ( util::str_compare_ci( splits[ 2 ], "down" ) )
+    {
+      expr_pos_lo = expr_pos_hi = tick_cycle - expr_stack + 1;
+    }
+    else if ( util::str_compare_ci( splits[ 2 ], "any" ) )
+    {
+      expr_pos_lo = expr_stack;
+      expr_pos_hi = tick_cycle - expr_stack + 1;
+    }
+    else
+    {
+      throw std::invalid_argument( fmt::format( "Unknown incanters_flow_time_to stack type '{}'", splits[ 2 ] ) );
+    }
+
+    return make_fn_expr( name, [ this, tick_cycle, expr_pos_lo, expr_pos_hi ]
+    {
+      if ( !talents.incanters_flow->ok() || !buffs.incanters_flow->tick_event )
+        return 0.0;
+
+      int buff_stack = buffs.incanters_flow->check();
+      int buff_pos = buffs.incanters_flow->reverse ? tick_cycle - buff_stack + 1 : buff_stack;
+
+      if ( expr_pos_lo == buff_pos || expr_pos_hi == buff_pos )
+        return 0.0;
+
+      // Number of ticks required to reach the desired position.
+      int ticks_lo = ( tick_cycle + expr_pos_lo - buff_pos ) % tick_cycle;
+      int ticks_hi = ( tick_cycle + expr_pos_hi - buff_pos ) % tick_cycle;
+
+      double tick_time = buffs.incanters_flow->tick_time().total_seconds();
+      double tick_rem = buffs.incanters_flow->tick_event->remains().total_seconds();
+      double value = tick_rem + tick_time * ( std::min( ticks_lo, ticks_hi ) - 1 );
+
+      sim->print_debug( "incanters_flow_time_to: buff_position={} ticks_low={} ticks_high={} value={}",
+                        buff_pos, ticks_lo, ticks_hi, value );
+
+      return value;
+    } );
+  }
+
   return player_t::create_expression( name );
 }
 
