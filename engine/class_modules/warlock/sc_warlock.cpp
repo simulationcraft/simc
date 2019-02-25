@@ -787,6 +787,7 @@ void warlock_t::reset()
   warlock_pet_list.active = nullptr;
   havoc_target = nullptr;
   agony_accumulator = rng().range( 0.0, 0.99 );
+  wild_imp_spawns.clear();
 }
 
 void warlock_t::create_options()
