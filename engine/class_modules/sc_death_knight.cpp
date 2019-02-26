@@ -7695,7 +7695,7 @@ void death_knight_t::default_apl_unholy()
   def -> add_action( "use_item,name=galecallers_beak,if=pet.gargoyle.active|!talent.summon_gargoyle.enabled" );
   def -> add_action( "potion,if=cooldown.army_of_the_dead.ready|pet.gargoyle.active|buff.unholy_frenzy.up" );
   // Maintain Virulent Plague
-  def -> add_action( this, "Outbreak", "target_if=(dot.virulent_plague.tick_time_remains+tick_time<=dot.virulent_plague.remains)&dot.virulent_plague.remains<=gcd", "Maintain Virulent Plague" );
+  def -> add_action( this, "Outbreak", "target_if=dot.virulent_plague.remains<=gcd", "Maintaining Virulent Plague is a priority" );
   // Action Lists
   def -> add_action( "call_action_list,name=cooldowns" );
   def -> add_action( "run_action_list,name=aoe,if=active_enemies>=2" );

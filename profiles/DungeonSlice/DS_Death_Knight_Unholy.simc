@@ -42,8 +42,8 @@ actions+=/use_item,name=bygone_bee_almanac,if=cooldown.summon_gargoyle.remains>6
 actions+=/use_item,name=jes_howler,if=pet.gargoyle.active|!talent.summon_gargoyle.enabled
 actions+=/use_item,name=galecallers_beak,if=pet.gargoyle.active|!talent.summon_gargoyle.enabled
 actions+=/potion,if=cooldown.army_of_the_dead.ready|pet.gargoyle.active|buff.unholy_frenzy.up
-# Maintain Virulent Plague
-actions+=/outbreak,target_if=(dot.virulent_plague.tick_time_remains+tick_time<=dot.virulent_plague.remains)&dot.virulent_plague.remains<=gcd
+# Maintaining Virulent Plague is a priority
+actions+=/outbreak,target_if=dot.virulent_plague.remains<=gcd
 actions+=/call_action_list,name=cooldowns
 actions+=/run_action_list,name=aoe,if=active_enemies>=2
 actions+=/call_action_list,name=generic
