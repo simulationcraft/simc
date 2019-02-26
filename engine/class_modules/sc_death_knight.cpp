@@ -1968,7 +1968,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
       return;
     }
 
-    double increase = rp_spent * dark_empowerment -> data().effectN( 1 ).percent() / 2.0;
+    double increase = rp_spent * dark_empowerment -> data().effectN( 1 ).percent() / o() -> talent.summon_gargoyle -> effectN( 4 ).base_value();
 
     if ( ! dark_empowerment -> check() )
     {
@@ -2589,115 +2589,6 @@ struct death_knight_action_t : public Base
     }
 
     return amount;
-  }
-
-  bool consume_cost_per_tick( const dot_t& dot ) override
-  {
-    auto ret = action_base_t::consume_cost_per_tick( dot );
-
-    if ( this -> cost_per_tick( RESOURCE_RUNIC_POWER ) > 0 && this -> last_resource_cost > 0 )
-    {
-      p() -> buffs.icy_talons -> trigger();
-      
-      p() -> trigger_runic_empowerment( this -> last_resource_cost );
-    }
-
-    return ret;
-  }
-
-  void consume_resource() override
-  {
-    action_base_t::consume_resource();
-
-    // Procs from runes spent
-    if ( this -> base_costs[ RESOURCE_RUNE ] > 0 )
-    {
-      // Gathering Storm triggers a stack and extends RW duration by 0.5s
-      // for each spell cast that normally consumes a rune (even if it ended up free)
-      // But it doesn't count the original Relentless Winter cast
-      if ( p() -> talent.gathering_storm -> ok() && 
-           p() -> buffs.remorseless_winter -> check() &&
-           this -> data().id() != p() -> spec.remorseless_winter -> id() )
-      {
-        unsigned consumed = static_cast<unsigned>( this -> base_costs[ RESOURCE_RUNE ] );
-        p() -> buffs.gathering_storm -> trigger( consumed );
-        timespan_t base_extension = timespan_t::from_seconds( p() -> talent.gathering_storm -> effectN( 1 ).base_value() / 10.0 );
-        p() -> buffs.remorseless_winter -> extend_duration( p(), base_extension * consumed );
-      }
-
-      // Effects that require the player to actually spend runes
-      if ( this -> last_resource_cost > 0 )
-      {
-        p() -> cooldown.rune_strike -> adjust( timespan_t::from_seconds(
-          -1.0 * p() -> talent.rune_strike -> effectN( 3 ).base_value() * this -> last_resource_cost ), false );
-
-        if ( p() -> buffs.pillar_of_frost -> up() )
-        {
-          p() -> buffs.pillar_of_frost_bonus -> trigger( as<int>( this -> last_resource_cost ) );
-        }
-
-        // ERW increases DRW duration, up to a cap
-        if ( p() -> buffs.dancing_rune_weapon -> up() && p() -> azerite.eternal_rune_weapon.enabled() &&
-             p() -> eternal_rune_weapon_counter < p() -> azerite.eternal_rune_weapon.spell() -> effectN( 3 ).base_value() )
-        {
-          double max_increase = p() -> azerite.eternal_rune_weapon.spell() -> effectN( 3 ).base_value() - p() -> eternal_rune_weapon_counter;
-          double duration_increase = p() -> azerite.eternal_rune_weapon.spell() -> effectN( 2 ).base_value() / 10 * this -> last_resource_cost;
-          // Required because marrowrend spends two runes and may go over the cap
-          duration_increase = std::min( duration_increase, max_increase );
-
-          // Extend both DRW and ERW buffs
-          p() -> buffs.eternal_rune_weapon -> extend_duration( p(), timespan_t::from_seconds( duration_increase ) );
-          p() -> buffs.dancing_rune_weapon -> extend_duration( p(), timespan_t::from_seconds( duration_increase ) );
-
-          // Reschedule pet expiration
-          // TODO: Tie pet expiration to buff expiration?
-          if ( p() -> pets.dancing_rune_weapon_pet && ! p() -> pets.dancing_rune_weapon_pet -> is_sleeping() )
-          {
-            timespan_t previous_expiration = p() -> pets.dancing_rune_weapon_pet -> expiration -> time;
-            p() -> pets.dancing_rune_weapon_pet -> expiration -> reschedule_time = previous_expiration + timespan_t::from_seconds( duration_increase );
-          }
-
-          p() -> eternal_rune_weapon_counter += duration_increase;
-        }
-      }
-    }
-
-    // Procs from RP spent
-    if ( this -> base_costs[ RESOURCE_RUNIC_POWER ] > 0 ) 
-    {
-      // 2019-02-12: Runic Empowerment, Runic Corruption, Red Thirst and gargoyle's shadow empowerment
-      // seem to be using the base cost of the ability rather than the last resource cost
-      // Bug? Intended? 
-      // https://github.com/SimCMinMax/WoW-BugTracker/issues/396
-      // https://github.com/SimCMinMax/WoW-BugTracker/issues/397
-
-      p() -> trigger_runic_empowerment( this -> base_costs[ RESOURCE_RUNIC_POWER ] );
-      
-      p() -> trigger_runic_corruption( this -> base_costs[ RESOURCE_RUNIC_POWER ], -1.0, p() -> procs.rp_runic_corruption );
-
-      if ( p() -> talent.summon_gargoyle -> ok() && p() -> pets.gargoyle )
-      {
-        // 2019-02-12 Death Strike buffs gargoyle as if it had its full cost, even though it received a -10rp cost in 8.1
-        // Assuming it's a bug for now, using base_costs instead of last_resource_cost won't affect free spells here
-        // Free Death Coils are still handled in the action
-        p() -> pets.gargoyle -> increase_power( this -> base_costs[ RESOURCE_RUNIC_POWER ] );
-      }
-      
-      p() -> buffs.icy_talons -> trigger();
-
-      // Effects that only trigger if resources were spent
-      if ( this -> last_resource_cost > 0 )
-      {
-        // TODO: vampiric blood cooldown reduction on death strike cast doesn't seem to follow the tooltip
-        // https://github.com/SimCMinMax/WoW-BugTracker/issues/398
-        if ( p() -> talent.red_thirst -> ok() )
-        {
-          timespan_t sec = timespan_t::from_seconds( p() -> talent.red_thirst -> effectN( 1 ).base_value() ) *
-            this -> last_resource_cost / p() -> talent.red_thirst -> effectN( 2 ).base_value();
-          p() -> cooldown.vampiric_blood -> adjust( -sec );
-        }
-      }
-    }
   }
 
   void init_finished() override
@@ -3656,9 +3547,7 @@ struct breath_of_sindragosa_buff_t : public buff_t
       // Else, consume the resource and manually trigger IT and RE
       // TODO: create a method that would be commonly used by custom functions such as this one
       // as well as normal ways to consume resources
-      p -> resource_loss( RESOURCE_RUNIC_POWER, this -> ticking_cost );
-      p -> trigger_runic_empowerment( ticking_cost );
-      p -> buffs.icy_talons -> trigger();
+      p -> resource_loss( RESOURCE_RUNIC_POWER, this -> ticking_cost, nullptr, nullptr );
 
       // If the player doesn't have enough RP to fuel the next tick, BoS is cancelled
       // after the RP consumption and before the damage event
@@ -6435,14 +6324,105 @@ void runeforge::stoneskin_gargoyle( special_effect_t& effect )
   p -> runeforge.rune_of_the_stoneskin_gargoyle -> default_chance = 1.0;
 }
 
-double death_knight_t::resource_loss( resource_e resource_type, double amount, gain_t* g, action_t* a )
+double death_knight_t::resource_loss( resource_e resource_type, double amount, gain_t* g, action_t* action )
 {
-  double actual_amount = player_t::resource_loss( resource_type, amount, g, a );
+  double actual_amount = player_t::resource_loss( resource_type, amount, g, action );
   if ( resource_type == RESOURCE_RUNE )
   {
     _runes.consume(as<int>(amount) );
     // Ensure rune state is consistent with the actor resource state for runes
     assert( _runes.runes_full() == resources.current[ RESOURCE_RUNE ] );
+  }
+
+  // Procs from runes spent
+  if ( resource_type == RESOURCE_RUNE && action )
+  {
+    // Gathering Storm triggers a stack and extends RW duration by 0.5s
+    // for each spell cast that normally consumes a rune (even if it ended up free)
+    // But it doesn't count the original Relentless Winter cast
+    if ( talent.gathering_storm -> ok() && buffs.remorseless_winter -> check() &&
+         action -> data().id() != spec.remorseless_winter -> id() )
+    {
+      unsigned consumed = static_cast<unsigned>( action -> base_costs[ RESOURCE_RUNE ] );
+      buffs.gathering_storm -> trigger( consumed );
+      timespan_t base_extension = timespan_t::from_seconds( talent.gathering_storm -> effectN( 1 ).base_value() / 10.0 );
+      buffs.remorseless_winter -> extend_duration( this, base_extension * consumed );
+    }
+
+    // Effects that require the player to actually spend runes
+    if ( actual_amount > 0 )
+    {
+      cooldown.rune_strike -> adjust( timespan_t::from_seconds(
+        -1.0 * talent.rune_strike -> effectN( 3 ).base_value() * actual_amount ), false );
+
+      if ( buffs.pillar_of_frost -> up() )
+      {
+        buffs.pillar_of_frost_bonus -> trigger( as<int>( actual_amount ) );
+      }
+
+      // ERW increases DRW duration, up to a cap
+      if ( buffs.dancing_rune_weapon -> up() && azerite.eternal_rune_weapon.enabled() &&
+           eternal_rune_weapon_counter < azerite.eternal_rune_weapon.spell() -> effectN( 3 ).base_value() )
+      {
+        double max_increase = azerite.eternal_rune_weapon.spell() -> effectN( 3 ).base_value() - eternal_rune_weapon_counter;
+        double duration_increase = azerite.eternal_rune_weapon.spell() -> effectN( 2 ).base_value() / 10 * actual_amount;
+        // Required because marrowrend spends two runes and may go over the cap
+        duration_increase = std::min( duration_increase, max_increase );
+
+        // Extend both DRW and ERW buffs
+        buffs.eternal_rune_weapon -> extend_duration( this, timespan_t::from_seconds( duration_increase ) );
+        buffs.dancing_rune_weapon -> extend_duration( this, timespan_t::from_seconds( duration_increase ) );
+
+        // Reschedule pet expiration
+        // TODO: Tie pet expiration to buff expiration?
+        if ( pets.dancing_rune_weapon_pet && ! pets.dancing_rune_weapon_pet -> is_sleeping() )
+        {
+          timespan_t previous_expiration = pets.dancing_rune_weapon_pet -> expiration -> time;
+          pets.dancing_rune_weapon_pet -> expiration -> reschedule_time = previous_expiration + timespan_t::from_seconds( duration_increase );
+        }
+
+        eternal_rune_weapon_counter += duration_increase;
+      }
+    }
+  }
+
+  // Procs from RP spent
+  if ( resource_type == RESOURCE_RUNIC_POWER )
+  {
+    // 2019-02-12: Runic Empowerment, Runic Corruption, Red Thirst and gargoyle's shadow empowerment
+    // seem to be using the base cost of the ability rather than the last resource cost
+    // Bug? Intended? 
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/396
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/397
+
+    // BoS is manually consumed in the buff, this is required here so it still triggers Runic Empowerment at the correct proc chance
+    double base_rp_cost = action ? action -> base_costs[ RESOURCE_RUNIC_POWER ] : actual_amount;
+    
+    trigger_runic_empowerment( base_rp_cost );
+    trigger_runic_corruption( base_rp_cost, -1.0, procs.rp_runic_corruption );
+
+    if ( talent.summon_gargoyle -> ok() && pets.gargoyle )
+    {
+      // 2019-02-12 Death Strike buffs gargoyle as if it had its full cost, even though it received a -10rp cost in 8.1
+      // Assuming it's a bug for now, using base_costs instead of last_resource_cost won't affect free spells here
+      // Free Death Coils are still handled in the action
+      pets.gargoyle -> increase_power( base_rp_cost );
+    }
+
+    buffs.icy_talons -> trigger();
+
+    // Effects that only trigger if resources were spent
+    if ( actual_amount > 0 )
+    {
+      // TODO: vampiric blood cooldown reduction on death strike cast doesn't seem to follow the tooltip
+      // https://github.com/SimCMinMax/WoW-BugTracker/issues/398
+      if ( talent.red_thirst -> ok() )
+      {
+        timespan_t sec = timespan_t::from_seconds( talent.red_thirst -> effectN( 1 ).base_value() ) *
+          actual_amount / talent.red_thirst -> effectN( 2 ).base_value();
+        cooldown.vampiric_blood -> adjust( -sec );
+      }
+    }
   }
 
   return actual_amount;
