@@ -1,28 +1,28 @@
-# monk="T23_Monk_Brewmaster"
-# level=120
-# race=undead
-# spec=brewmaster
-# role=tank
-# position=front
-# talents=1030021
+monk="T23_Monk_Brewmaster"
+level=120
+race=undead
+spec=brewmaster
+role=tank
+position=front
+talents=1030021
+ 
+head=cowl_of_fluid_machinations,id=159302,bonus_id=1587/4786/5481/4775,azerite_powers=383/478/22/85/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+shoulder=pistoleers_spaulders,id=159331,bonus_id=1587/4786/5480/4775,azerite_powers=384/383/31/85/13
+back=loa_exultants_shroud,id=165512,bonus_id=4800/1537/4786,
+chest=raiment_of_the_blighted_tribe,id=159335,bonus_id=1587/4786/5482/4775,context=57,azerite_powers=384/383/31/44/13
+wrist=bracers_of_regal_devotion,id=165517,bonus_id=1537/4786
+hands=gloves_of_spiritual_grace,id=165514,bonus_id=1537/4786
+waist=stretched_sinew_waistcord,id=165525,bonus_id=4800/1537
+legs=cranedancer_leggings,id=165521,bonus_id=1537/4786
+feet=embossed_deckwalkers,id=165527,bonus_id=4800/1537
+finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=1537/4786,enchant=pact_of_versatility
+finger2=band_of_multi-sided_strikes,id=165565,bonus_id=1537/4786,enchant=pact_of_critical_strike
+trinket1=invocation_of_yulon,id=165568,bonus_id=4800/1537
+trinket2=kimbuls_razor_claw,id=165579,bonus_id=4800/1537
+main_hand=hornridged_crusher,id=165589,bonus_id=1537/4786,enchant=deadly_navigation
 
-# head=irontide_captains_hat,id=155888,bonus_id=1557/4819/4775/4786,azerite_powers=479/31/85/13
-# neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
-# shoulder=mantle_of_fastidious_machinations,id=158304,bonus_id=1557/4819/4775/4786,azerite_powers=157/461/84/13
-# back=fetid_horrors_tanglecloak,id=160643,bonus_id=4800/1507
-# chest=cephalohide_jacket,id=159314,bonus_id=1557/4819/4775/4786,azerite_powers=479/18/85/13
-# wrists=wristwraps_of_coursing_miasma,id=160621,bonus_id=4800/1507
-# hands=gloves_of_descending_madness,id=160618,bonus_id=4800/1507
-# waist=replicated_chitin_cord,id=160717,bonus_id=4800/1507
-# legs=pathogenic_legwraps,id=160625,bonus_id=4800/1507
-# feet=quarantine_protocol_treads,id=160624,bonus_id=4800/1507
-# finger1=rotscour_ring,id=160645,bonus_id=4800/1507,enchant=pact_of_haste
-# finger2=band_of_certain_annihilation,id=160646,bonus_id=4800/1507,enchant=pact_of_haste
-# trinket1=kul_tiran_cannonball_runner,id=159628,bonus_id=1542/4779
-# trinket2=frenetic_corpuscle,id=160648,bonus_id=4800/1507
-# main_hand=voidbinder,id=160688,bonus_id=4800/1507,enchant=quick_navigation
-
-# save=T23_Monk_Brewmaster.simc
+save=T23_Monk_Brewmaster.simc
 
 
 monk="T23_Monk_Windwalker"

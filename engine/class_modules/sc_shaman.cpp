@@ -860,14 +860,16 @@ struct roiling_storm_buff_driver_t : public buff_t
     set_period( s_data->effectN( 1 ).period() );
     set_quiet( true );
 
-    set_tick_callback( [p]( buff_t*, int, const timespan_t& ) { p->buff.roiling_storm->trigger(); } );
+    if ( !p->dbc.ptr )
+    {
+      set_tick_callback( [p]( buff_t*, int, const timespan_t& ) { p->buff.roiling_storm->trigger(); } );
+    }
 
-    // buffs.the_dreadlords_deceit_driver =
-    //     make_buff( this, "the_dreadlords_deceit_driver", find_spell( 208692 ) )
-    //         ->set_period( find_spell( 208692 )->effectN( 1 ).period() )
-    //         ->set_quiet( true )
-    //         ->set_tick_callback( [this]( buff_t*, int, const timespan_t& ) { buffs.the_dreadlords_deceit->trigger();
-    //         } )
+    // New Roiling Storm triggers Stormbringer.
+    if ( p->dbc.ptr )
+    {
+      set_tick_callback( [p]( buff_t*, int, const timespan_t& ) { p->buff.stormbringer->trigger(); } );
+    }
   }
 };
 
@@ -2991,19 +2993,37 @@ struct stormstrike_attack_t : public shaman_attack_t
   {
     double b = shaman_attack_t::bonus_da( s );
 
-    if ( p()->buff.roiling_storm->check() && p()->buff.stormbringer->check() == 0 )
-    {
-      // Roiling Storm divides its bonus between each hand of the Stormstrike/Windstrike attacks
-      double rs_bonus = 0.5 * p()->buff.roiling_storm->stack_value();
-      b += rs_bonus;
-    }
-
     if ( p()->azerite.thunderaans_fury.ok() )
     {
       // currently buggy on ptr, is applying 2/3 to each hit instead of 1/3 on oh
       // double tf_bonus = 0.5 * p()->azerite.thunderaans_fury.value( 2 );
       double tf_bonus = ( 2 / 3.0 ) * p()->azerite.thunderaans_fury.value( 2 );
       b += tf_bonus;
+    }
+
+    if ( !p()->dbc.ptr )
+    {
+      if ( p()->buff.roiling_storm->check() && p()->buff.stormbringer->check() == 0 )
+      {
+        // Roiling Storm divides its bonus between each hand of the Stormstrike/Windstrike attacks
+        double rs_bonus = 0.5 * p()->buff.roiling_storm->stack_value();
+        b += rs_bonus;
+      }
+    }
+
+    if ( p()->dbc.ptr )
+    {
+      if ( p()->buff.stormbringer->check() )
+      {
+        double rs_bonus = p()->buff.roiling_storm->stack_value();
+        // New Roiling Storm has 50% penalty from the tooltip applied to offhand but not main hand
+        if ( weapon && weapon->slot == SLOT_OFF_HAND )
+        {
+          rs_bonus *= 0.5;
+        }
+
+        b += rs_bonus;
+      }
     }
 
     return b;
@@ -3033,24 +3053,42 @@ struct windstrike_attack_t : public stormstrike_attack_t
   {
     double b = shaman_attack_t::bonus_da( s );
 
-    if ( p()->buff.roiling_storm->check() && p()->buff.stormbringer->check() == 0 )
-    {
-      double rs_bonus = 0.5 * p()->buff.roiling_storm->stack_value();
-      // Apparently Roiling Storm is bugged on Windstrike, suffering from the off-hand damage
-      // penalty (50%), where Stormstrike offhand attacks are not.
-      if ( player->bugs && weapon && weapon->slot == SLOT_OFF_HAND )
-      {
-        rs_bonus *= 0.5;
-      }
-      b += rs_bonus;
-    }
-
     if ( p()->azerite.thunderaans_fury.ok() )
     {
       // currently buggy on ptr, is applying 2/3 to each hit instead of 1/3 on oh
       // double tf_bonus = 0.5 * p()->azerite.thunderaans_fury.value( 2 );
       double tf_bonus = ( 2 / 3.0 ) * p()->azerite.thunderaans_fury.value( 2 );
       b += tf_bonus;
+    }
+
+    if ( !p()->dbc.ptr )
+    {
+      if ( p()->buff.roiling_storm->check() && p()->buff.stormbringer->check() == 0 )
+      {
+        double rs_bonus = 0.5 * p()->buff.roiling_storm->stack_value();
+        // Apparently Roiling Storm is bugged on Windstrike, suffering from the off-hand damage
+        // penalty (50%), where Stormstrike offhand attacks are not.
+        if ( player->bugs && weapon && weapon->slot == SLOT_OFF_HAND )
+        {
+          rs_bonus *= 0.5;
+        }
+        b += rs_bonus;
+      }
+    }
+
+    if ( p()->dbc.ptr )
+    {
+      if ( p()->buff.stormbringer->check() )
+      {
+        double rs_bonus = p()->buff.roiling_storm->stack_value();
+        // New Roiling Storm has 50% penalty from the tooltip applied to offhand but not main hand
+        if ( weapon && weapon->slot == SLOT_OFF_HAND )
+        {
+          rs_bonus *= 0.5;
+        }
+
+        b += rs_bonus;
+      }
     }
 
     return b;
@@ -3566,18 +3604,21 @@ struct stormstrike_base_t : public shaman_attack_t
       c *= 1.0 + p()->buff.stormbringer->data().effectN( 3 ).percent();
     }
 
-    if ( p()->buff.roiling_storm->check() && p()->buff.stormbringer->check() == 0 )
+    if ( !p()->dbc.ptr )
     {
-      double cost_reduction =
-          ( p()->buff.roiling_storm->stack() * p()->buff.roiling_storm->data().effectN( 3 ).base_value() );
+      if ( p()->buff.roiling_storm->check() && p()->buff.stormbringer->check() == 0 )
+      {
+        double cost_reduction =
+            ( p()->buff.roiling_storm->stack() * p()->buff.roiling_storm->data().effectN( 3 ).base_value() );
 
-      if ( c + cost_reduction <= 0 )
-      {
-        c = 0;
-      }
-      else
-      {
-        c += cost_reduction;
+        if ( c + cost_reduction <= 0 )
+        {
+          c = 0;
+        }
+        else
+        {
+          c += cost_reduction;
+        }
       }
     }
 
@@ -3613,9 +3654,12 @@ struct stormstrike_base_t : public shaman_attack_t
 
     p()->buff.gathering_storms->decrement();
 
-    if ( p()->buff.stormbringer->check() == 0 )
+    if ( !p()->dbc.ptr )
     {
-      p()->buff.roiling_storm->expire();
+      if ( p()->buff.stormbringer->check() == 0 )
+      {
+        p()->buff.roiling_storm->expire();
+      }
     }
 
     p()->buff.stormbringer->decrement();
@@ -7604,6 +7648,7 @@ void shaman_t::create_buffs()
   buff.tectonic_thunder = make_buff( this, "tectonic_thunder", find_spell( 286976 ) );
 
   // Azerite Traits - Enh
+  // Nuke Roiling Storm buff after 8.1.5.
   buff.roiling_storm             = new roiling_storm_buff_t( this );
   buff.roiling_storm_buff_driver = new roiling_storm_buff_driver_t( this );
   buff.strength_of_earth         = new strength_of_earth_buff_t( this );
@@ -8638,8 +8683,24 @@ void shaman_t::combat_begin()
 
   if ( azerite.roiling_storm.ok() )
   {
-    buff.roiling_storm->trigger( buff.roiling_storm->data().max_stacks() );
-    buff.roiling_storm_buff_driver->trigger();
+    if ( !dbc.ptr )
+    {
+      buff.roiling_storm->trigger( buff.roiling_storm->data().max_stacks() );
+      buff.roiling_storm_buff_driver->trigger();
+    }
+
+    if (dbc.ptr)
+    {
+      //Divide the frequency of Roiling Storm by the duration of Stormbringer to get the average chance to have
+      //a free stormbringer proc on pull, assuming pull timers are not being done around the shaman's RS timer.
+      double rs_freq = buff.roiling_storm_buff_driver->buff_period.total_seconds();
+      double sb_duration = buff.stormbringer->buff_duration.total_seconds();
+
+      if (rng().roll(rs_freq / sb_duration))
+      {
+        buff.stormbringer->trigger();
+      }
+    }
   }
 }
 
