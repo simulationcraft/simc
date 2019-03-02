@@ -787,7 +787,7 @@ public:
     
     // Frost
     azerite_power_t echoing_howl;
-    azerite_power_t frostwhelps_indignation; // TODO: update spellID once spelldata is regenerated
+    azerite_power_t frostwhelps_indignation;
     azerite_power_t frozen_tempest;
 
     azerite_power_t icy_citadel;
@@ -5484,26 +5484,12 @@ struct outbreak_t : public death_knight_spell_t
 struct frostwhelps_indignation_t : public death_knight_spell_t
 {
   frostwhelps_indignation_t( death_knight_t* p ) :
-    death_knight_spell_t( "frostwhelps_indignation", p , // p -> find_spell( 287320 ) TODO: uncomment after regenerate
-                          p -> azerite.frostwhelps_indignation.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
+    death_knight_spell_t( "frostwhelps_indignation", p , p -> find_spell( 287320 ) )
   {
     aoe = -1;
     background = true;
 
     base_dd_min = base_dd_max = p -> azerite.frostwhelps_indignation.value( 1 );
-
-    // TODO: Remove after regenerate
-    base_dd_multiplier *= 1.0 + p -> spec.frost_death_knight -> effectN( 1 ).percent();
-  }
-
-  virtual double composite_da_multiplier( const action_state_t* state ) const override
-  {
-    double m = death_knight_spell_t::composite_da_multiplier( state );
-
-    // TODO: Remove once spelldata is regenerated
-    m *= 1.0 + p() -> cache.mastery_value();
-
-    return m;
   }
 
   void impact( action_state_t* s ) override
