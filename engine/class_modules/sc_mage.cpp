@@ -2258,7 +2258,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
     {
       // Equipoise data is stored across 4 different spells.
       equipoise_threshold = p->find_spell( 264351 )->effectN( 1 ).percent();
-      equipoise_reduction = p->find_spell( 264353 )->effectN( 1 ).base_value();
+      equipoise_reduction = p->find_spell( 264353 )->effectN( 1 ).average( p );
     }
   }
 
