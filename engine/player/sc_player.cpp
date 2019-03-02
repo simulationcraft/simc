@@ -2214,6 +2214,7 @@ void player_t::init_spells()
   racials.viciousness           = find_racial_spell( "Viciousness" );
   racials.magical_affinity      = find_racial_spell( "Magical Affinity" );
   racials.mountaineer           = find_racial_spell( "Mountaineer" );
+  racials.brush_it_off          = find_racial_spell( "Brush It Off" );
 
   if ( !is_enemy() )
   {
@@ -3567,6 +3568,7 @@ double player_t::composite_damage_versatility() const
   }
 
   cdv += racials.mountaineer->effectN( 1 ).percent();
+  cdv += racials.brush_it_off->effectN( 1 ).percent();
 
   return cdv;
 }
@@ -3587,6 +3589,7 @@ double player_t::composite_heal_versatility() const
   }
 
   chv += racials.mountaineer->effectN( 1 ).percent();
+  chv += racials.brush_it_off->effectN( 1 ).percent();
 
   return chv;
 }
@@ -3607,6 +3610,7 @@ double player_t::composite_mitigation_versatility() const
   }
 
   cmv += racials.mountaineer->effectN( 1 ).percent() / 2;
+  cmv += racials.brush_it_off->effectN( 1 ).percent() / 2;
 
   return cmv;
 }
