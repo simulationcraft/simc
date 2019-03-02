@@ -676,6 +676,7 @@ public:
     const spell_data_t* death_strike;
     const spell_data_t* dnd_buff;
     const spell_data_t* fallen_crusader;
+    const spell_data_t* razorice_debuff;
 
     // Blood
     const spell_data_t* blood_plague;
@@ -969,7 +970,8 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
 
   debuff.mark_of_blood     = make_buff( *this, "mark_of_blood", p -> talent.mark_of_blood )
                            -> set_cooldown( 0_ms ); // Handled by the action
-  debuff.razorice          = make_buff( *this, "razorice", p -> find_spell( 51714 ) )
+  debuff.razorice          = make_buff( *this, "razorice", p -> spell.razorice_debuff )
+                           -> set_default_value( p -> spell.razorice_debuff -> effectN( 1 ).percent() )
                            -> set_period( 0_ms );
   debuff.festering_wound   = make_buff( *this, "festering_wound", p -> spell.festering_wound_debuff )
                            -> set_trigger_spell( p -> spec.festering_wound )
@@ -2491,6 +2493,11 @@ struct death_knight_action_t : public Base
   bool hasted_gcd;
   weapon_e weapon_req;
 
+  struct affected_by_t
+  {
+    bool razorice, frozen_heart, dreadblade = false;
+  } affected_by;
+
   death_knight_action_t( const std::string& n, death_knight_t* p, const spell_data_t* s = spell_data_t::nil() ) :
     action_base_t( n, p, s ), gain( nullptr ), hasted_gcd( false ), weapon_req( WEAPON_NONE )
   {
@@ -2540,6 +2547,14 @@ struct death_knight_action_t : public Base
     {
       this -> base_td_multiplier *= 1.0 + p -> spec.blood_death_knight -> effectN( 2 ).percent();
     }
+
+    this -> affected_by.frozen_heart = this -> data().affected_by( p -> mastery.frozen_heart -> effectN( 1 ) );
+    this -> affected_by.dreadblade = this -> data().affected_by( p -> mastery.dreadblade -> effectN( 1 ) );
+
+    if ( p -> dbc.ptr )
+    {
+      this -> affected_by.razorice = this ->  data().affected_by( p -> spell.razorice_debuff -> effectN( 1 ) );
+    }
   }
 
   death_knight_t* p() const
@@ -2557,8 +2572,7 @@ struct death_knight_action_t : public Base
   {
     double m = Base::composite_da_multiplier( state );
 
-    if ( ( this -> data().affected_by( p() -> mastery.frozen_heart -> effectN( 1 ) ) && p() -> mastery.frozen_heart -> ok() ) ||
-         ( this -> data().affected_by( p() -> mastery.dreadblade   -> effectN( 1 ) ) && p() -> mastery.dreadblade   -> ok() ) )
+    if ( this -> affected_by.frozen_heart || this -> affected_by.dreadblade ) 
     {
       m *= 1.0 + p() -> cache.mastery_value();
     }
@@ -2570,10 +2584,23 @@ struct death_knight_action_t : public Base
   {
     double m = Base::composite_ta_multiplier( state );
 
-    if ( ( this -> data().affected_by( p() -> mastery.frozen_heart -> effectN( 2 ) ) && p() -> mastery.frozen_heart -> ok() ) ||
-         ( this -> data().affected_by( p() -> mastery.dreadblade   -> effectN( 2 ) ) && p() -> mastery.dreadblade   -> ok() ) )
+    if ( this -> affected_by.frozen_heart || this -> affected_by.dreadblade ) 
     {
       m *= 1.0 + p() -> cache.mastery_value();
+    }
+
+    return m;
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = action_base_t::composite_target_multiplier( target );
+
+    if ( p() -> dbc.ptr && this -> affected_by.razorice )
+    {
+      death_knight_td_t* td = p() -> get_target_data( target );
+
+      m *= 1.0 + td -> debuff.razorice -> check_stack_value();
     }
 
     return m;
@@ -7292,6 +7319,7 @@ void death_knight_t::init_spells()
   spell.death_strike    = find_class_spell( "Death Strike" );
   spell.dnd_buff        = find_spell( 188290 );
   spell.fallen_crusader = find_spell( 166441 );
+  spell.razorice_debuff = find_spell( 51714 );
   
   // Blood
   spell.blood_shield        = find_spell( 77535 );
@@ -8277,13 +8305,12 @@ double death_knight_t::composite_player_pet_damage_multiplier( const action_stat
 double death_knight_t::composite_player_target_multiplier( player_t* target, school_e school ) const
 {
   double m = player_t::composite_player_target_multiplier( target, school );
-  
+
   death_knight_td_t* td = get_target_data( target );
 
-  if ( dbc::is_school( school, SCHOOL_FROST ) )
+  if ( dbc::is_school( school, SCHOOL_FROST ) && ! dbc.ptr )
   {
-    double debuff = td -> debuff.razorice -> data().effectN( 1 ).percent();
-    m *= 1.0 + td -> debuff.razorice -> check() * debuff;
+    m *= 1.0 + td -> debuff.razorice -> check_stack_value();
   }
 
   return m;
