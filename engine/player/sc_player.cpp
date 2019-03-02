@@ -7731,6 +7731,42 @@ struct fireblood_t : public racial_spell_t
   }
 };
 
+// Haymaker =================================================================
+
+struct haymaker_t : public racial_spell_t
+{
+  haymaker_t( player_t* p, const std::string& options_str ) :
+    racial_spell_t( p, "haymaker", p->find_racial_spell( "Haymaker" ), options_str )
+  {
+    may_crit = true;
+    // Hardcoded in the tooltip.
+    attack_power_mod.direct = 0.75;
+    spell_power_mod.direct = 0.75;
+  }
+
+  double attack_direct_power_coefficient( const action_state_t* s ) const override
+  {
+    auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
+    auto sp = composite_spell_power() * player->composite_spell_power_multiplier();
+
+    if ( ap <= sp )
+      return 0;
+
+    return racial_spell_t::attack_direct_power_coefficient( s );
+  }
+
+  double spell_direct_power_coefficient( const action_state_t* s ) const override
+  {
+    auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
+    auto sp = composite_spell_power() * player->composite_spell_power_multiplier();
+
+    if ( ap > sp )
+      return 0;
+
+    return racial_spell_t::spell_direct_power_coefficient( s );
+  }
+};
+
 // Restart Sequence Action ==================================================
 
 struct restart_sequence_t : public action_t
@@ -8615,6 +8651,8 @@ action_t* player_t::create_action( const std::string& name, const std::string& o
     return new darkflight_t( this, options_str );
   if ( name == "fireblood" )
     return new fireblood_t( this, options_str );
+  if ( name == "haymaker" )
+    return new haymaker_t( this, options_str );
   if ( name == "lights_judgment" )
     return new lights_judgment_t( this, options_str );
   if ( name == "rocket_barrage" )
