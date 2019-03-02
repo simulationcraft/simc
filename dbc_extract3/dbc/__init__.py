@@ -99,7 +99,8 @@ KEY_FIELD_HOTFIX_RECORD = {
     'ItemBonus'             : 'id_node',
     'SkillLineAbility'      : 'id_skill',
     'SpecializationSpells'  : 'spec_id',
-    'ItemModifiedAppearance': 'id_item'
+    'ItemModifiedAppearance': 'id_item',
+    'JournalEncounterItem'  : 'id_encounter'
 }
 
 def use_hotfix_key_field(wdb_name):
