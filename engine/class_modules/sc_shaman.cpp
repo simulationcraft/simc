@@ -858,6 +858,7 @@ struct roiling_storm_buff_driver_t : public buff_t
   roiling_storm_buff_driver_t( shaman_t* p ) : buff_t( p, "roiling_storm_driver", p->find_spell( 279513 ) )
   {
     set_period( s_data->effectN( 1 ).period() );
+
     set_quiet( true );
 
     if ( !p->dbc.ptr )
@@ -868,7 +869,12 @@ struct roiling_storm_buff_driver_t : public buff_t
     // New Roiling Storm triggers Stormbringer.
     if ( p->dbc.ptr )
     {
-      set_tick_callback( [p]( buff_t*, int, const timespan_t& ) { p->buff.stormbringer->trigger(); } );
+      if ( p->azerite.roiling_storm.ok() )
+      {
+        set_tick_callback( [p]( buff_t*, int, const timespan_t& ) {
+          p->buff.stormbringer->trigger( p->buff.stormbringer->max_stack() );
+        } );
+      }
     }
   }
 };
@@ -3015,7 +3021,7 @@ struct stormstrike_attack_t : public shaman_attack_t
     {
       if ( p()->buff.stormbringer->check() )
       {
-        double rs_bonus = p()->buff.roiling_storm->stack_value();
+        double rs_bonus = p()->azerite.roiling_storm.value( 1 );
         // New Roiling Storm has 50% penalty from the tooltip applied to offhand but not main hand
         if ( weapon && weapon->slot == SLOT_OFF_HAND )
         {
@@ -3080,7 +3086,7 @@ struct windstrike_attack_t : public stormstrike_attack_t
     {
       if ( p()->buff.stormbringer->check() )
       {
-        double rs_bonus = p()->buff.roiling_storm->stack_value();
+        double rs_bonus = p()->azerite.roiling_storm.value( 1 );
         // New Roiling Storm has 50% penalty from the tooltip applied to offhand but not main hand
         if ( weapon && weapon->slot == SLOT_OFF_HAND )
         {
@@ -8689,16 +8695,16 @@ void shaman_t::combat_begin()
       buff.roiling_storm_buff_driver->trigger();
     }
 
-    if (dbc.ptr)
+    if ( dbc.ptr )
     {
-      //Divide the frequency of Roiling Storm by the duration of Stormbringer to get the average chance to have
-      //a free stormbringer proc on pull, assuming pull timers are not being done around the shaman's RS timer.
-      double rs_freq = buff.roiling_storm_buff_driver->buff_period.total_seconds();
+      // Divide the frequency of Roiling Storm by the duration of Stormbringer to get the average chance to have
+      // a free stormbringer proc on pull, assuming pull timers are not being done around the shaman's RS timer.
+      double rs_freq     = buff.roiling_storm_buff_driver->buff_period.total_seconds();
       double sb_duration = buff.stormbringer->buff_duration.total_seconds();
 
-      if (rng().roll(rs_freq / sb_duration))
+      if ( rng().roll( sb_duration / rs_freq ) )
       {
-        buff.stormbringer->trigger();
+        buff.stormbringer->trigger( buff.stormbringer->max_stack() );
       }
     }
   }
