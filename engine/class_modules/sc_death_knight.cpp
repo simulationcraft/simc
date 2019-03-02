@@ -4344,6 +4344,14 @@ struct death_strike_t : public death_knight_melee_attack_t
       oh_attack = new death_strike_offhand_t( p );
       add_child( oh_attack );
     }
+
+    // 2019-03-01: On 8.1.5 PTR, Death Strike is fixed with regards to procs on RP spent
+    // RE/RC/Gargoyle now behave as if Death Strike costed 35RP for dps specs.
+    // We model that by directly changing the base RP cost from spelldata, rather than manipulating cost()
+    if ( p -> dbc.ptr )
+    {
+      base_costs[ RESOURCE_RUNIC_POWER ] += p -> spec.death_strike_2 -> effectN( 3 ).resource( RESOURCE_RUNIC_POWER );
+    }
   }
 
   double action_multiplier() const override
@@ -4364,8 +4372,9 @@ struct death_strike_t : public death_knight_melee_attack_t
     {
       c += ossuary_cost_reduction;
     }
-    
-    if ( p() -> spec.death_strike_2 -> ok() )
+
+    // 2019-03-02: The cost is dynamically changed and procs on RP spent use the base cost (45 RP)
+    if ( p() -> spec.death_strike_2 -> ok() && ! p() -> dbc.ptr )
     {
       c += p() -> spec.death_strike_2 -> effectN( 3 ).resource( RESOURCE_RUNIC_POWER );
     }
@@ -6395,9 +6404,10 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/396
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/397
 
-    // BoS is manually consumed in the buff, this is required here so it still triggers Runic Empowerment at the correct proc chance
+    // Some abilities use the actual RP spent by the ability, others use the base RP cost
+    // The action check is required because Breath of Sindragosa spends RP through a buff rather than an action
     double base_rp_cost = action ? action -> base_costs[ RESOURCE_RUNIC_POWER ] : actual_amount;
-    
+
     trigger_runic_empowerment( base_rp_cost );
     trigger_runic_corruption( base_rp_cost, -1.0, procs.rp_runic_corruption );
 
