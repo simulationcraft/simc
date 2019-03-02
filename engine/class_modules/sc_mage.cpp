@@ -550,7 +550,6 @@ public:
   struct state_t
   {
     bool brain_freeze_active;
-    bool clearcasting_active;
     bool fingers_of_frost_active;
 
     int flurry_bolt_count;
@@ -2462,7 +2461,7 @@ struct arcane_missiles_tick_t : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::execute();
 
-    if ( p()->state.clearcasting_active )
+    if ( p()->buffs.clearcasting_channel->check() )
       p()->buffs.arcane_pummeling->trigger();
   }
 
@@ -2577,29 +2576,9 @@ struct arcane_missiles_t : public arcane_mage_spell_t
   void execute() override
   {
     p()->buffs.arcane_pummeling->expire();
-
-    bool cc_active = p()->buffs.clearcasting->check() != 0;
-    bool refresh = get_dot( target )->is_ticking();
-
-    // Arcane Pummeling only checks if Clearcasting was consumed when
-    // the last Arcane Missiles was cast. It doesn't care about the state
-    // of the current channel.
-    p()->state.clearcasting_active = cc_active;
-
-    // The channel time and tick time reduction, however, don't check
-    // if last Arcane Missiles consumed Clearcasting or not. They work in
-    // a different, not very clear way.
-    //
-    // In particular, the first refresh never benefits from Clearcasting,
-    // even if Clearcasting was consumed on the refresh. The second refresh
-    // checks if the first refresh had Clearcasting and so on.
-    if ( !refresh || !p()->bugs )
-      handle_clearcasting( cc_active );
+    handle_clearcasting( p()->buffs.clearcasting->check() != 0 );
 
     arcane_mage_spell_t::execute();
-
-    if ( p()->bugs )
-      handle_clearcasting( cc_active && refresh );
 
     if ( p()->sets->has_set_bonus( MAGE_ARCANE, T19, B4 ) )
     {
