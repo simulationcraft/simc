@@ -1,4 +1,4 @@
-SimulationCraft 810-02 for World of Warcraft 8.1.0 Live (wow build 29088)
+SimulationCraft 810-02 for World of Warcraft 8.1.0 Live (wow build 29482)
 
 Name             : Haste (id=65) [Scaling Spell (-1)] 
 Class            : Paladin
@@ -3250,7 +3250,8 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=266740)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.80000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.80000 | PvP Coefficient: 0.60000 | Target: Self (1)
+                   Hotfixed: PvP Coefficient (1 -> 0.6)
 #2 (id=303002)   : Dummy (3)
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Calls down the Light to heal you for $s1, increased by up to $s2% based on your missing health.
@@ -4570,7 +4571,8 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=316999)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.80000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.80000 | PvP Coefficient: 0.60000 | Target: Friend (21)
+                   Hotfixed: PvP Coefficient (1 -> 0.6)
 #2 (id=317000)   : Dummy (3)
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Calls down the Light to heal a friendly target for $s1, increased by up to $s2% based on their missing health.
@@ -8252,8 +8254,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 191.348 (coefficient=0.615267) | PvP Coefficient: 0.50000 | Target: Self (1)
                    Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=752815)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 3798.473 (coefficient=12.21374) | PvP Coefficient: 0.50000 | Trigger Spell: 288804 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
+                   Base Value: 0 | Scaled Value: 3798.473 (coefficient=12.21374) | PvP Coefficient: 0.15000 | Trigger Spell: 288804 | Target: Self (1)
+                   Hotfixed: PvP Coefficient (1 -> 0.15)
 Description      : Your spells and abilities have a chance to trigger a Soulbond for $288841d. During Soulbond, every $288841t1 sec you and your nearest ally are both healed for $s2 and gain $s1 Haste for $288839d.
 
 Name             : Treacherous Covenant (id=288953) [Scaling Spell (-1), Passive] 

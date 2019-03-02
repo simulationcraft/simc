@@ -1,4 +1,4 @@
-SimulationCraft 810-02 for World of Warcraft 8.1.0 Live (wow build 29088)
+SimulationCraft 810-02 for World of Warcraft 8.1.0 Live (wow build 29482)
 
 Name             : Dual Wield (rank=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -6602,8 +6602,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 191.348 (coefficient=0.615267) | PvP Coefficient: 0.50000 | Target: Self (1)
                    Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=752815)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 3798.473 (coefficient=12.21374) | PvP Coefficient: 0.50000 | Trigger Spell: 288804 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
+                   Base Value: 0 | Scaled Value: 3798.473 (coefficient=12.21374) | PvP Coefficient: 0.15000 | Trigger Spell: 288804 | Target: Self (1)
+                   Hotfixed: PvP Coefficient (1 -> 0.15)
 Description      : Your spells and abilities have a chance to trigger a Soulbond for $288841d. During Soulbond, every $288841t1 sec you and your nearest ally are both healed for $s2 and gain $s1 Haste for $288839d.
 
 Name             : Hour of Reaping (id=288878) [Scaling Spell (-8), Spell Family (107), Passive] 
