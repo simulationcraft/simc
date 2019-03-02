@@ -314,6 +314,8 @@ const char* util::race_type_string( race_e type )
     case RACE_NIGHTBORNE:          return "nightborne";
     case RACE_DARK_IRON_DWARF:     return "dark_iron_dwarf";
     case RACE_MAGHAR_ORC:          return "maghar_orc";
+    case RACE_ZANDALARI_TROLL:     return "zandalari_troll";
+    case RACE_KUL_TIRAN:           return "kul_tiran";
     case RACE_MAX:                 return "unknown";
     case RACE_UNKNOWN:             return "unknown";
     // no default statement so we get warnings if something is missing.
@@ -1727,6 +1729,8 @@ unsigned util::race_id( race_e race )
     case RACE_LIGHTFORGED_DRAENEI: return 30;
     case RACE_DARK_IRON_DWARF: return 12;
     case RACE_MAGHAR_ORC: return 14;
+    case RACE_ZANDALARI_TROLL: return 31;
+    case RACE_KUL_TIRAN: return 32;
     default: return 0;
   }
 }

@@ -225,7 +225,7 @@ Less hindered by effects that reduce movement speed.][]
 
 Name             : Bloodlust (id=2825) [Spell Family (11)] 
 Class            : Shaman
-Race             : Orc, Tauren, Troll, Goblin, Mag'har Orc, Highmountain Tauren (0x4a0021a2)
+Race             : Orc, Tauren, Troll, Goblin, Mag'har Orc, Highmountain Tauren, Zandalari Troll (0x4a0021a2)
 School           : Nature
 Spell Type       : None
 Resource         : 21.5% Base Mana (0) (id=12194)
@@ -783,7 +783,7 @@ Description      : $@spelldesc17364
 
 Name             : Heroism (id=32182) [Spell Family (11)] 
 Class            : Shaman
-Race             : Human, Dwarf, Night Elf, Gnome, Draenei, Dark Iron Dwarf, Worgen, Pandaren, Void Elf, Lightforged Draenei (0x55155555b1354c4d)
+Race             : Human, Dwarf, Night Elf, Gnome, Draenei, Dark Iron Dwarf, Worgen, Pandaren, Void Elf, Lightforged Draenei, Kul Tiran (0x55155555b1354c4d)
 School           : Nature
 Spell Type       : None
 Resource         : 21.5% Base Mana (0) (id=1324)
@@ -1217,7 +1217,7 @@ Description      : Increases your Versatility by $s1.
 
 Name             : Exhaustion (id=57723) 
 Class            : Shaman
-Race             : Human, Dwarf, Night Elf, Gnome, Draenei, Dark Iron Dwarf, Worgen, Pandaren, Void Elf, Lightforged Draenei (0x55155555b1354c4d)
+Race             : Human, Dwarf, Night Elf, Gnome, Draenei, Dark Iron Dwarf, Worgen, Pandaren, Void Elf, Lightforged Draenei, Kul Tiran (0x55155555b1354c4d)
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
@@ -1238,7 +1238,7 @@ Tooltip          : Cannot benefit from Heroism or other similar effects.
 
 Name             : Sated (id=57724) 
 Class            : Hunter, Shaman, Mage
-Race             : Orc, Tauren, Troll, Goblin, Mag'har Orc, Highmountain Tauren (0x4a0021a2)
+Race             : Orc, Tauren, Troll, Goblin, Mag'har Orc, Highmountain Tauren, Zandalari Troll (0x4a0021a2)
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
@@ -5568,7 +5568,7 @@ Description      : Chain Heal heals for an additional $s1% on targets within you
 
 Name             : Activating Specialization (id=200749) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
@@ -7095,7 +7095,7 @@ Variables        : $ilvl= ${5}
 
 Name             : Vindicaar Matrix Crystal (id=251463) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 GCD              : 1.5 seconds
@@ -7152,7 +7152,7 @@ Description      : $@spelldesc251758
 
 Name             : Vindicaar Matrix Crystal (id=255529) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Triggered by     : Activating Specialization (200749)
