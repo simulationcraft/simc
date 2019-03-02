@@ -522,14 +522,14 @@
     { "data_type": "S", "field": "unk_3" },
     { "data_type": "S", "field": "unk_4" },
     { "data_type": "S", "field": "unk_5" },
-    { "data_type": "h", "field": "id" },
+    { "data_type": "i", "field": "id" },
     { "data_type": "b", "field": "unk_8" },
     { "data_type": "i", "field": "unk_9" },
     { "data_type": "b", "field": "unk_10" },
     { "data_type": "I", "field": "unk_11" },
     { "data_type": "I", "field": "unk_12" },
     { "data_type": "H", "field": "unk_7" },
-    { "data_type": "H", "field": "unk_13" }
+    { "data_type": "i", "field": "unk_13" }
 
   ],
   "SkillLineAbility": [
