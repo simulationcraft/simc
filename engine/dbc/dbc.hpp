@@ -1558,7 +1558,6 @@ public:
   { return find_by_id<talent_data_t>( talent_id ); }
 
   const item_data_t*             item( unsigned item_id ) const;
-  const random_suffix_data_t&    random_suffix( unsigned suffix_id ) const;
   const item_enchantment_data_t& item_enchantment( unsigned enchant_id ) const;
   const gem_property_data_t&     gem_property( unsigned gem_id ) const;
 

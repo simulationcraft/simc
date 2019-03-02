@@ -941,7 +941,7 @@ class ItemDataGenerator(DataGenerator):
             fields += [ '{ %s }' % ', '.join(cooldown_group_duration) ]
 
             fields += [ '{ %s }' % ', '.join(item.field('socket_color_1', 'socket_color_2', 'socket_color_3')) ]
-            fields += item.field('gem_props', 'socket_bonus', 'item_set', 'rand_suffix', 'scale_stat_dist', 'id_artifact' )
+            fields += item.field('gem_props', 'socket_bonus', 'item_set', 'scale_stat_dist', 'id_artifact' )
 
             self._out.write('  { %s },\n' % (', '.join(fields)))
 
@@ -1053,7 +1053,6 @@ class ItemDataGenerator(DataGenerator):
             item_entry['gem_props'] = int(item.field('gem_props')[0])
             item_entry['socket_bonus'] = int(item.field('socket_bonus')[0])
             item_entry['item_set'] = int(item.field('item_set')[0])
-            item_entry['rand_suffix'] = int(item.field('rand_suffix')[0])
             item_entry['scale_stat_dist'] = int(item.field('scale_stat_dist')[0])
 
             s2['items'].append(item_entry)
