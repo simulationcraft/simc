@@ -1,4 +1,4 @@
-import os, struct, logging, io
+import os, struct, logging, io, codecs
 
 import dbc
 
@@ -90,13 +90,20 @@ class XFTHParser(DBCParserBase):
         return len(self.data)
 
     def parse_blocks(self):
-        entry_unpacker = struct.Struct('<4sIiIIIBBBB')
+        if self.options.build < dbc.WowVersion(8, 1, 5, 0):
+            entry_unpacker = struct.Struct('<4sIiIIIB3s')
+        else:
+            entry_unpacker = struct.Struct('<4sIIIIB3s')
 
         n_entries = 0
         all_entries = []
         while self.parse_offset < len(self.data):
-            magic, game_type, unk_2, length, sig, record_id, enabled, unk_4, unk_5, unk_6 = \
-                    entry_unpacker.unpack_from(self.data, self.parse_offset)
+            if self.options.build < dbc.WowVersion(8, 1, 5, 0):
+                magic, game_type, unk_2, length, sig, record_id, enabled, pad = \
+                        entry_unpacker.unpack_from(self.data, self.parse_offset)
+            else:
+                magic, unk_2, sig, record_id, length, enabled, pad = \
+                        entry_unpacker.unpack_from(self.data, self.parse_offset)
 
             if magic != b'XFTH':
                 logging.error('Invalid hotfix magic %s', magic.decode('utf-8'))
@@ -106,16 +113,16 @@ class XFTHParser(DBCParserBase):
 
             entry = {
                 'record_id': record_id,
-                'game_type': game_type,
                 'unk_2': unk_2,
                 'enabled': enabled,
-                'unk_4': unk_4,
-                'unk_5': unk_5,
-                'unk_6': unk_6,
                 'length': length,
                 'offset': self.parse_offset,
                 'sig': sig,
+                'pad': codecs.encode(pad, 'hex').decode('utf-8')
             }
+
+            if self.options.build < dbc.WowVersion(8, 1, 5, 0):
+                entry['game_type'] = game_type
 
             if sig not in self.entries:
                 self.entries[sig] = []
@@ -129,11 +136,18 @@ class XFTHParser(DBCParserBase):
             n_entries += 1
 
         if self.options.debug:
-            for entry in sorted(all_entries, key = lambda e: (e['unk_2'], e['sig'], e['record_id'])):
-                logging.debug('entry: { %s }',
-                    ('record_id=%(record_id)-6u game_type=%(game_type)u table_hash=%(sig)#.8x ' +
-                     'unk_2=%(unk_2)-5u enabled=%(enabled)u, unk_4=%(unk_4)-3u unk_5=%(unk_5)-3u ' +
-                     'unk_6=%(unk_6)-3u length=%(length)-3u offset=%(offset)-7u') % entry)
+            if self.options.build < dbc.WowVersion(8, 1, 5, 0):
+                for entry in sorted(all_entries, key = lambda e: (e['unk_2'], e['sig'], e['record_id'])):
+                    logging.debug('entry: { %s }',
+                        ('record_id=%(record_id)-6u game_type=%(game_type)u table_hash=%(sig)#.8x ' +
+                         'unk_2=%(unk_2)-5u enabled=%(enabled)u, unk_4=%(unk_4)-3u unk_5=%(unk_5)-3u ' +
+                         'unk_6=%(unk_6)-3u length=%(length)-3u offset=%(offset)-7u') % entry)
+            else:
+                for entry in sorted(all_entries, key = lambda e: (e['sig'], e['record_id'])):
+                    logging.debug('entry: { %s }',
+                            ('record_id=%(record_id)-6u table_hash=%(sig)#.8x ' +
+                             'unk_2=%(unk_2)#.8x enabled=%(enabled)u ' +
+                             'length=%(length)-3u pad=%(pad)-6s offset=%(offset)-7u') % entry)
 
         logging.debug('Parsed %d hotfix entries', n_entries)
 
