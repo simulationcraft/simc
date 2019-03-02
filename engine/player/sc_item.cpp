@@ -144,10 +144,6 @@ gear_stats_t item_t::total_stats() const
     range::for_each( parsed.addon_stats, [ stat, to, &total_stats ]( const stat_pair_t& s ) {
       if ( stat == s.stat ) total_stats.add_stat( to, s.value );
     });
-
-    range::for_each( parsed.suffix_stats, [ stat, to, &total_stats ]( const stat_pair_t& s ) {
-      if ( stat == s.stat ) total_stats.add_stat( to, s.value );
-    });
   }
 
   return total_stats;
@@ -207,27 +203,6 @@ std::string item_t::weapon_stats_str() const
   s << w -> swing_time.total_seconds();
 
   return s.str();
-}
-
-std::string item_t::suffix_stats_str() const
-{
-  if ( parsed.suffix_stats.size() == 0 )
-  {
-    return std::string();
-  }
-
-  std::ostringstream s;
-
-  for ( size_t i = 0; i < parsed.suffix_stats.size(); i++ )
-  {
-    s << "+" << parsed.suffix_stats[ i ].value
-      << " " << util::stat_type_abbrev( parsed.suffix_stats[ i ].stat ) << ", ";
-  }
-
-  std::string str = s.str();
-  str.erase( str.end() - 2, str.end() );
-
-  return str;
 }
 
 std::string item_t::gem_stats_str() const
@@ -359,13 +334,6 @@ std::ostream& operator<<(std::ostream& s, const item_t& item )
   {
     s << " stats={ ";
     s << item.item_stats_str();
-    s << " }";
-  }
-
-  if ( item.parsed.suffix_stats.size() > 0 )
-  {
-    s << " suffix_stats={ ";
-    s << item.suffix_stats_str();
     s << " }";
   }
 
@@ -685,7 +653,7 @@ void item_t::parse_options()
   options.push_back(opt_string("mythic", option_mythic_str));
   options.push_back(opt_string("type", option_armor_type_str));
   options.push_back(opt_string("reforge", DUMMY_REFORGE));
-  options.push_back(opt_int("suffix", parsed.suffix_id));
+  options.push_back(opt_deprecated("suffix", "bonus_id"));
   options.push_back(opt_string("ilevel", option_ilevel_str));
   options.push_back(opt_string("quality", option_quality_str));
   options.push_back(opt_string("source", option_data_source_str));
@@ -908,9 +876,6 @@ std::string item_t::encoded_item() const
 
   if ( parsed.upgrade_level > 0 )
     s << ",upgrade=" << encoded_upgrade_level();
-
-  if ( parsed.suffix_id != 0 )
-    s << ",suffix=" << encoded_random_suffix_id();
 
   if ( ! option_stats_str.empty() )
     s << ",stats=" << encoded_stats();
@@ -1160,18 +1125,6 @@ std::string item_t::encoded_upgrade_level() const
   return upgrade_level_str;
 }
 
-// item_t::encoded_random_suffix_id =========================================
-
-std::string item_t::encoded_random_suffix_id() const
-{
-  std::string str;
-
-  if ( parsed.suffix_id != 0 )
-    str += util::to_string( parsed.suffix_id );
-
-  return str;
-}
-
 // item_t::encoded_stats ====================================================
 
 std::string item_t::encoded_stats() const
@@ -1316,7 +1269,6 @@ void item_t::init()
   decode_gems();
   decode_stats();
   decode_weapon();
-  decode_random_suffix();
   decode_equip_effect();
   decode_use_effect();
   decode_enchant();
@@ -1502,125 +1454,6 @@ void item_t::decode_stats()
   {
     base_stats.add_stat( STAT_ARMOR, item_database::armor_value( *this ) );
     stats.add_stat( STAT_ARMOR, item_database::armor_value( *this ) );
-  }
-}
-
-// item_t::decode_random_suffix =============================================
-
-void item_t::decode_random_suffix()
-{
-  // Ignore all old style random suffixes (negative suffix id)
-  if ( parsed.suffix_id <= 0 )
-    return;
-
-  // We need the ilevel/quality data, otherwise we cannot figure out
-  // the random suffix point allocation.
-  if ( item_level() == 0 || parsed.data.quality == 0 )
-  {
-    throw std::invalid_argument("Random suffix requires both ilevel= and quality= information.");
-  }
-
-  // These stats will be automatically at the correct upgrade level, as the
-  // item budget is selected by the total ilevel of the item.
-  const random_prop_data_t& ilevel_data   = player -> dbc.random_property( item_level() );
-  const random_suffix_data_t& suffix_data = player -> dbc.random_suffix( abs( parsed.suffix_id ) );
-
-  if ( ! suffix_data.id )
-  {
-    throw std::invalid_argument(fmt::format("Unknown random suffix id {}.", parsed.suffix_id ));
-  }
-
-  int f = item_database::random_suffix_type( *this );
-
-  if ( sim -> debug )
-  {
-    sim -> out_debug.printf( "random_suffix: item=%s parsed.suffix_id=%d ilevel=%d quality=%d random_point_pool=%d",
-                   name(), parsed.suffix_id, item_level(), parsed.data.quality, f );
-  }
-
-  for ( size_t i = 0; i < sizeof_array( suffix_data.enchant_id ); i++ )
-  {
-    unsigned enchant_id;
-    if ( ! ( enchant_id = suffix_data.enchant_id[ i ] ) )
-      continue;
-
-    const item_enchantment_data_t& enchant_data = player -> dbc.item_enchantment( enchant_id );
-
-    if ( ! enchant_data.id )
-      continue;
-
-    // Calculate amount of points
-    double stat_amount;
-    if ( parsed.data.quality == 4 ) // Epic
-      stat_amount = ilevel_data.p_epic[ f ] * suffix_data.enchant_alloc[ i ] / 10000.0;
-    else if ( parsed.data.quality == 3 ) // Rare
-      stat_amount = ilevel_data.p_rare[ f ] * suffix_data.enchant_alloc[ i ] / 10000.0;
-    else if ( parsed.data.quality == 2 ) // Uncommon
-      stat_amount = ilevel_data.p_uncommon[ f ] * suffix_data.enchant_alloc[ i ] / 10000.0;
-    else // Impossible choices, so bogus data, skip
-      continue;
-
-    // Loop through enchantment stats, adding valid ones to the stats of the item.
-    // Typically (and for cata random suffixes), there seems to be only one stat per enchantment
-    for ( size_t j = 0; j < sizeof_array( enchant_data.ench_type ); j++ )
-    {
-      stat_pair_t stat( STAT_NONE, -1 );
-
-      if ( enchant_data.ench_type[ j ] == ITEM_ENCHANTMENT_STAT )
-      {
-        stat = item_database::item_enchantment_effect_stats( enchant_data, as<int>( j ) );
-      }
-      else if ( enchant_data.ench_type[ j ] == ITEM_ENCHANTMENT_RESISTANCE )
-      {
-        stat = stat_pair_t( STAT_BONUS_ARMOR, static_cast<int>( j ) );
-      }
-
-      if ( stat.stat == STAT_NONE )
-        continue;
-
-      bool has_stat = false;
-      size_t free_idx = 0;
-
-      for ( size_t k = 0; k < sizeof_array( parsed.data.stat_type_e ); k++ )
-      {
-        if ( parsed.data.stat_type_e[ k ] == ( int ) enchant_data.ench_prop[ j ] )
-          has_stat = true;
-
-        if ( parsed.data.stat_type_e[ k ] <= 0 )
-        {
-          free_idx = k;
-          break;
-        }
-      }
-
-      if ( has_stat == true )
-      {
-        if ( sim -> debug )
-          sim -> out_debug.printf( "random_suffix: Player %s item %s attempted to add base stat %u %s (%d) twice, due to random suffix.",
-                         player -> name(), name(), as<unsigned>( j ), util::stat_type_abbrev( stat.stat ), enchant_data.ench_type[ j ] );
-        continue;
-      }
-
-      if ( sim -> debug )
-        sim -> out_debug.printf( "random_suffix: stat=%d (%s) stat_amount=%f", stat.stat, util::stat_type_abbrev( stat.stat ), stat_amount );
-
-      stat.value = static_cast<int>( stat_amount );
-      parsed.suffix_stats.push_back( stat );
-      base_stats.add_stat( stat.stat, static_cast< int >( stat_amount ) );
-      stats.add_stat( stat.stat, static_cast< int >( stat_amount ) );
-      free_idx++;
-    }
-  }
-
-  if ( suffix_data.suffix )
-  {
-    std::string str = suffix_data.suffix;
-    util::tokenize( str );
-
-    if ( name_str.find( str ) == std::string::npos )
-    {
-      name_str += '_' + str;
-    }
   }
 }
 

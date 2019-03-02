@@ -945,11 +945,6 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
     {
       item_sim_desc += ", stats: { ";
       item_sim_desc += item.item_stats_str();
-      if ( item.parsed.suffix_stats.size() > 0 )
-      {
-        item_sim_desc += ", " + item.suffix_stats_str();
-      }
-
       item_sim_desc += " }";
     }
 

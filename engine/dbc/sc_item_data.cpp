@@ -37,7 +37,6 @@ namespace {
   };
 
   item_data_t nil_item_data;
-  random_suffix_data_t nil_rsd;
   item_enchantment_data_t nil_ied;
   gem_property_data_t nil_gpd;
   dbc_index_t<item_enchantment_data_t, id_member_policy> item_enchantment_data_index;
@@ -333,24 +332,6 @@ std::vector<const item_upgrade_t*> dbc_t::item_upgrades( unsigned item_id ) cons
       { return l -> previous_upgrade_id < r -> previous_upgrade_id; } );
 
   return data;
-}
-
-const random_suffix_data_t& dbc_t::random_suffix( unsigned suffix_id ) const
-{
-#if SC_USE_PTR
-  const random_suffix_data_t* p = ptr ? __ptr_rand_suffix_data : __rand_suffix_data;
-#else
-  const random_suffix_data_t* p = __rand_suffix_data;
-#endif
-
-  do
-  {
-    if ( p -> id == suffix_id )
-      return *p;
-  }
-  while ( ( p++ ) -> id );
-
-  return nil_rsd;
 }
 
 const item_enchantment_data_t& dbc_t::item_enchantment( unsigned enchant_id ) const
