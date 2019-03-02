@@ -849,7 +849,7 @@ bool action_t::verify_actor_spec() const
 
 bool action_t::verify_actor_weapon() const
 {
-  if ( !data().ok() || data().equipped_class() != ITEM_CLASS_WEAPON )
+  if ( !data().ok() || data().equipped_class() != ITEM_CLASS_WEAPON || player -> is_pet() || player -> is_enemy() )
   {
     return true;
   }
