@@ -1903,12 +1903,26 @@ struct melee_t : public rogue_attack_t
     double m = rogue_attack_t::composite_target_multiplier( target );
 
     rogue_td_t* tdata = td( target );
-    if ( tdata->debuffs.vendetta->check() )
+    if ( tdata->debuffs.vendetta->up() )
     {
       m *= 1.0 + tdata->debuffs.vendetta->data().effectN( 2 ).percent();
     }
 
     return m;
+  }
+
+  double composite_crit_chance() const override
+  {
+    double c = rogue_attack_t::composite_crit_chance();
+
+    // 3/3/2019 - Logs show that Master Assassin also affects melee auto attacks
+    if ( p()->talent.master_assassin->ok() )
+    {
+      c += p()->buffs.master_assassin->stack_value();
+      c += p()->buffs.master_assassin_aura->stack_value();
+    }
+
+    return c;
   }
 
   double action_multiplier() const override
