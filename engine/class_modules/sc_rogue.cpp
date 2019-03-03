@@ -391,10 +391,6 @@ struct rogue_t : public player_t
     const spell_data_t* ruthlessness_cp;
     const spell_data_t* shadow_focus;
     const spell_data_t* subterfuge;
-    const spell_data_t* insignia_of_ravenholdt;
-    const spell_data_t* master_assassins_initiative;
-    const spell_data_t* master_assassins_initiative_2;
-    const spell_data_t* expose_armor;
   } spell;
 
   // Talents
@@ -2143,11 +2139,9 @@ struct backstab_t : public rogue_attack_t
 
 struct between_the_eyes_t : public rogue_attack_t
 {
-  const spell_data_t* greenskins_waterlogged_wristcuffs; // 7.0 legendary Greenskin's Waterlogged Wristcuffs
-
   between_the_eyes_t( rogue_t* p, const std::string& options_str ):
     rogue_attack_t( "between_the_eyes", p, p -> find_specialization_spell( "Between the Eyes" ),
-                    options_str ), greenskins_waterlogged_wristcuffs( nullptr )
+                    options_str )
   {
     ap_type = AP_WEAPON_BOTH;
     crit_bonus_multiplier *= 1.0 + p -> find_specialization_spell( 235484 ) -> effectN( 1 ).percent();
@@ -2196,11 +2190,8 @@ struct between_the_eyes_t : public rogue_attack_t
 
 struct blade_flurry_t : public rogue_attack_t
 {
-  const spell_data_t* shivarran_symmetry; // 7.0 legendary Shivarran Symmetry
-
   blade_flurry_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "blade_flurry", p, p -> find_specialization_spell( "Blade Flurry" ), options_str ),
-    shivarran_symmetry( nullptr )
+    rogue_attack_t( "blade_flurry", p, p -> find_specialization_spell( "Blade Flurry" ), options_str )
   {
     harmful = may_miss = may_crit = false;
     ignore_false_positive = true;
@@ -3728,9 +3719,7 @@ struct sprint_t : public rogue_attack_t
     harmful = callbacks = false;
     cooldown = p -> cooldowns.sprint;
     ignore_false_positive = true;
-
-    cooldown -> duration = data().cooldown()
-                            + p -> spell.sprint_2 -> effectN( 1 ).time_value();
+    cooldown->duration = data().cooldown() + p->spell.sprint_2->effectN( 1 ).time_value();
   }
 
   void execute() override
@@ -4548,8 +4537,7 @@ struct vanish_t : public stealth_like_buff_t
   }
 };
 
-// Shadow dance acts like "stealth like abilities" except for Mantle of the Master
-// Assassin legendary.
+// Shadow dance acts like "stealth like abilities"
 struct shadow_dance_t : public stealth_like_buff_t
 {
   shadow_dance_t( rogue_t* p ) :
@@ -5081,15 +5069,13 @@ void rogue_t::trigger_deepening_shadows( const action_state_t* state )
     return;
   }
 
-  timespan_t adjustment;
-
-    // Note: this changed to be 10 * seconds as of 2017-04-19
+  // Note: this changed to be 10 * seconds as of 2017-04-19
   int cdr = spec.deepening_shadows -> effectN( 1 ).base_value();
   if ( talent.enveloping_shadows -> ok() )
   {
     cdr += talent.enveloping_shadows -> effectN( 1 ).base_value();
   }
-  adjustment = timespan_t::from_seconds( -0.1 * cdr * s -> cp );
+  timespan_t adjustment = timespan_t::from_seconds( -0.1 * cdr * s -> cp );
 
   cooldowns.shadow_dance -> adjust( adjustment, s -> cp >= 5 );
 }
@@ -6276,7 +6262,6 @@ void rogue_t::init_spells()
   spell.shadow_focus                  = find_spell( 112942 );
   spell.subterfuge                    = find_spell( 115192 );
   spell.relentless_strikes_energize   = find_spell( 98440 );
-  spell.expose_armor                  = find_spell( 8647 );
 
   // Talents
   // Shared
