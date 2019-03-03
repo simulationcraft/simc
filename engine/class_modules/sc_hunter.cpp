@@ -3667,9 +3667,7 @@ struct kill_command_t: public hunter_spell_t
 
     if ( p -> azerite.dire_consequences.ok() )
     {
-      auto driver = p -> find_spell( 287097 );
-      dire_consequences.rppm = p -> get_rppm( "dire_consequences", driver );
-      dire_consequences.rppm -> set_scaling( RPPM_ATTACK_SPEED );
+      dire_consequences.rppm = p -> get_rppm( "dire_consequences", 1.0, 1.0, RPPM_ATTACK_SPEED );
       if ( p -> specialization() == HUNTER_BEAST_MASTERY )
         dire_consequences.rppm -> set_modifier( .65 );
       dire_consequences.proc = p -> get_proc( "Dire Consequences" );
