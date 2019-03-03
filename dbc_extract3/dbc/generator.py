@@ -225,8 +225,8 @@ class CSVDataGenerator(object):
 class DataGenerator(object):
     _class_names = [ None, 'Warrior', 'Paladin', 'Hunter', 'Rogue',     'Priest', 'Death Knight', 'Shaman', 'Mage',  'Warlock', 'Monk',       'Druid', 'Demon Hunter'  ]
     _class_masks = [ None, 0x1,       0x2,       0x4,      0x8,         0x10,     0x20, 0x40,     0x80,    0x100,     0x200,        0x400, 0x800   ]
-    _race_names  = [ None, 'Human',   'Orc',     'Dwarf',  'Night Elf', 'Undead', 'Tauren',       'Gnome',  'Troll', 'Goblin',  'Blood Elf', 'Draenei', 'Dark Iron Dwarf', None, 'Mag\'har Orc' ] + [ None ] * 7 + [ 'Worgen', None, None, 'Pandaren', None, 'Nightborne', 'Highmountain Tauren', 'Void Elf', 'Lightforged Draenei' ]
-    _race_masks  = [ None, 0x1,       0x2,       0x4,      0x8,         0x10,     0x20,           0x40,     0x80,    0x100,     0x200,       0x400,     0x800,             None, 0x2000,        ] + [ None ] * 7 + [ 0x200000, None, None, 0x1000000, None, 0x4000000, 0x8000000, 0x10000000, 0x20000000 ]
+    _race_names  = [ None, 'Human',   'Orc',     'Dwarf',  'Night Elf', 'Undead', 'Tauren',       'Gnome',  'Troll', 'Goblin',  'Blood Elf', 'Draenei', 'Dark Iron Dwarf', None, 'Mag\'har Orc' ] + [ None ] * 7 + [ 'Worgen', None, None, 'Pandaren', None, 'Nightborne', 'Highmountain Tauren', 'Void Elf', 'Lightforged Draenei', 'Zandalari Troll', 'Kul Tiran' ]
+    _race_masks  = [ None, 0x1,       0x2,       0x4,      0x8,         0x10,     0x20,           0x40,     0x80,    0x100,     0x200,       0x400,     0x800,             None, 0x2000,        ] + [ None ] * 7 + [ 0x200000, None, None, 0x1000000,  None, 0x4000000,    0x8000000,             0x10000000, 0x20000000,            0x40000000,        0x80000000 ]
     _pet_names   = [ None, 'Ferocity', 'Tenacity', None, 'Cunning' ]
     _pet_masks   = [ None, 0x1,        0x2,        None, 0x4       ]
 
@@ -941,7 +941,7 @@ class ItemDataGenerator(DataGenerator):
             fields += [ '{ %s }' % ', '.join(cooldown_group_duration) ]
 
             fields += [ '{ %s }' % ', '.join(item.field('socket_color_1', 'socket_color_2', 'socket_color_3')) ]
-            fields += item.field('gem_props', 'socket_bonus', 'item_set', 'rand_suffix', 'scale_stat_dist', 'id_artifact' )
+            fields += item.field('gem_props', 'socket_bonus', 'item_set', 'scale_stat_dist', 'id_artifact' )
 
             self._out.write('  { %s },\n' % (', '.join(fields)))
 
@@ -1053,7 +1053,6 @@ class ItemDataGenerator(DataGenerator):
             item_entry['gem_props'] = int(item.field('gem_props')[0])
             item_entry['socket_bonus'] = int(item.field('socket_bonus')[0])
             item_entry['item_set'] = int(item.field('item_set')[0])
-            item_entry['rand_suffix'] = int(item.field('rand_suffix')[0])
             item_entry['scale_stat_dist'] = int(item.field('scale_stat_dist')[0])
 
             s2['items'].append(item_entry)
@@ -1760,6 +1759,8 @@ class SpellDataGenerator(DataGenerator):
         ( 2420, ),               # Highmountain Tauren 0x8000000
         ( 2423, ),               # Void Elf 0x10000000
         ( 2421, ),               # Lightforged Draenei 0x20000000
+        ( 2721, ),               # Zandalari Troll 0x40000000
+        ( 2723, ),               # Kul Tiran 0x80000000
     ]
 
     _skill_category_blacklist = [
@@ -3894,75 +3895,12 @@ class SetBonusListGenerator(DataGenerator):
 
         self._out.write('};\n')
 
-class RandomSuffixGenerator(DataGenerator):
+class SpellItemEnchantmentGenerator(DataGenerator):
     def __init__(self, options, data_store):
-        self._dbc = [ 'ItemRandomSuffix', 'SpellItemEnchantment' ]
-
         super().__init__(options, data_store)
 
-    def filter(self):
-        ids = set()
-        # Let's do some modest filtering here, take only "stat" enchants,
-        # and take out the test items as well
-        for id, data in self._itemrandomsuffix_db.items():
-            # of the Test, of the Paladin Testing
-            if id == 46 or id == 48:
-                continue
+        self._dbc = ['SpellName', 'SpellEffect', 'GemProperties', 'SpellItemEnchantment']
 
-            has_non_stat_enchant = False
-            # For now, naively presume type_1 of SpellItemEnchantment will tell us
-            # if it's a relevant enchantment for us (ie. a stat one )
-            for i in range(1,5):
-                item_ench = self._spellitemenchantment_db.get( getattr(data, 'id_property_%d' % i) )
-                if not item_ench:
-                    logging.debug("No item enchantment found for %s", data.name)
-                    continue
-
-                if item_ench.type_1 not in [4, 5]:
-                    has_non_stat_enchant = True
-                    break
-
-            if has_non_stat_enchant:
-                continue
-
-            ids.add( id )
-
-        return list(ids)
-
-    def generate(self, ids = None):
-        # Sort keys
-        ids.sort()
-
-        self._out.write('#define %sRAND_SUFFIX%s_SIZE (%d)\n\n' % (
-            (self._options.prefix and ('%s_' % self._options.prefix) or '').upper(),
-            (self._options.suffix and ('_%s' % self._options.suffix) or '').upper(),
-            len(ids)
-        ))
-        self._out.write('// Random new-style item suffixes, wow build %s\n' % self._options.build)
-        self._out.write('static struct random_suffix_data_t __%srand_suffix%s_data[] = {\n' % (
-            self._options.prefix and ('%s_' % self._options.prefix) or '',
-            self._options.suffix and ('_%s' % self._options.suffix) or '' ))
-
-        for id in ids + [ 0 ]:
-            rs = self._itemrandomsuffix_db[id]
-
-            fields  = rs.field('id', 'name')
-            fields += [ '{ %s }' % ', '.join(rs.field('id_property_1', 'id_property_2', 'id_property_3', 'id_property_4', 'id_property_5')) ]
-            fields += [ '{ %s }' % ', '.join(rs.field('property_pct_1', 'property_pct_2', 'property_pct_3', 'property_pct_4', 'property_pct_5')) ]
-            try:
-                self._out.write('  { %s },' % (', '.join(fields)))
-            except:
-                print(fields)
-                sys.exit(1)
-            self._out.write('\n')
-
-        self._out.write('};\n')
-
-class SpellItemEnchantmentGenerator(RandomSuffixGenerator):
-    def __init__(self, options, data_store):
-        RandomSuffixGenerator.__init__(self, options, data_store)
-
-        self._dbc += ['SpellName', 'SpellEffect', 'GemProperties']
         if options.build < 23436:
             self._dbc.append('Item-sparse')
         else:
@@ -3978,7 +3916,7 @@ class SpellItemEnchantmentGenerator(RandomSuffixGenerator):
         return 0
 
     def initialize(self):
-        if not RandomSuffixGenerator.initialize(self):
+        if not super().initialize():
             return False
 
         self._data_store.link('SpellEffect', self._options.build < 25600 and 'id_spell' or 'id_parent', 'SpellName', 'add_effect' )

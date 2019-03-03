@@ -197,6 +197,11 @@ struct avenging_wrath_t : public paladin_spell_t
 
     if ( p() -> azerite.avengers_might.ok() )
       p() -> buffs.avengers_might -> trigger( 1, p() -> buffs.avengers_might -> default_value, -1.0, p() -> buffs.avenging_wrath -> buff_duration );
+
+    if ( p() -> dbc.ptr )
+    {
+      p() -> buffs.avenging_wrath_crit -> trigger();
+    }
   }
 
   // TODO: is this needed? Question for Ret dev, since I don't think it is for Prot/Holy
@@ -1206,6 +1211,7 @@ void paladin_t::create_buffs()
 
   // General
   buffs.avenging_wrath         = new buffs::avenging_wrath_buff_t( this );
+  buffs.avenging_wrath_crit    = make_buff( this, "avenging_wrath_crit", spells.avenging_wrath_crit );
   buffs.divine_shield          = make_buff( this, "divine_shield", find_class_spell( "Divine Shield" ) )
                                  ->set_cooldown( timespan_t::zero() ) // Let the ability handle the CD
                                  ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -1448,6 +1454,7 @@ void paladin_t::init_spells()
   passives.judgment             = find_spell( 231663 );
 
   spells.avenging_wrath = find_spell( 31884 );
+  spells.avenging_wrath_crit = find_spell( 294027 );
 
   if ( talents.holy_shield -> ok() )
     active_holy_shield_proc = new holy_shield_proc_t( this );

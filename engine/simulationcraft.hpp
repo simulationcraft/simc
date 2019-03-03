@@ -2273,7 +2273,6 @@ struct item_t
   {
     int                                              item_level;
     int                                              upgrade_level;
-    int                                              suffix_id;
     unsigned                                         enchant_id;
     unsigned                                         addon_id;
     int                                              armor;
@@ -2287,7 +2286,6 @@ struct item_t
     std::vector<stat_pair_t>                         enchant_stats;
     std::string                                      encoded_addon;
     std::vector<stat_pair_t>                         addon_stats;
-    std::vector<stat_pair_t>                         suffix_stats;
     item_data_t                                      data;
     auto_dispose< std::vector<special_effect_t*> >   special_effects;
     std::vector<std::string>                         source_list;
@@ -2299,7 +2297,7 @@ struct item_t
     std::vector<unsigned>                            azerite_ids;
 
     parsed_input_t() :
-      item_level( 0 ), upgrade_level( 0 ), suffix_id( 0 ), enchant_id( 0 ), addon_id( 0 ),
+      item_level( 0 ), upgrade_level( 0 ), enchant_id( 0 ), addon_id( 0 ),
       armor( 0 ), azerite_level( 0 ), data(), initial_cd( timespan_t::zero() ), drop_level( 0 )
     {
       range::fill( data.stat_type_e, -1 );
@@ -2393,7 +2391,6 @@ struct item_t
   std::string encoded_enchant() const;
   std::string encoded_addon() const;
   std::string encoded_upgrade_level() const;
-  std::string encoded_random_suffix_id() const;
 
   void decode_stats();
   void decode_gems();
@@ -2405,7 +2402,6 @@ struct item_t
   void decode_heroic();
   void decode_mythic();
   void decode_armor_type();
-  void decode_random_suffix();
   void decode_ilevel();
   void decode_quality();
   void decode_data_source();
@@ -2425,7 +2421,6 @@ struct item_t
   std::string to_string() const;
   std::string item_stats_str() const;
   std::string weapon_stats_str() const;
-  std::string suffix_stats_str() const;
   std::string gem_stats_str() const;
   std::string socket_bonus_stats_str() const;
   std::string enchant_stats_str() const;
@@ -3903,6 +3898,7 @@ struct player_t : public actor_t
     const spell_data_t* viciousness;
     const spell_data_t* magical_affinity;
     const spell_data_t* mountaineer;
+    const spell_data_t* brush_it_off;
   } racials;
 
   struct passives_t

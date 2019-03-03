@@ -4486,9 +4486,6 @@ pet_t* demon_hunter_t::create_pet( const std::string& pet_name,
 
   // Add pets here
 
-  sim->errorf( "No demon hunter pet with name '%s' available.",
-               pet_name.c_str() );
-
   return nullptr;
 }
 
