@@ -453,7 +453,11 @@ namespace warlock {
             imp->demonic_consumption = true;
             //Demonic Consumption does not appear to immediately despawn imps.
             //This bug allows spells like Implosion to trigger partially.
-            make_event(sim, p()->bugs ? 15_ms : 0_ms, [imp] {imp->dismiss();});
+            //Fixed as of 8.1.5 PTR.
+            if ( !p()->dbc.ptr )
+              make_event(sim, p()->bugs ? 15_ms : 0_ms, [imp] {imp->dismiss();});
+            else
+              imp->dismiss();
           }
 
           for ( auto dt : p()->warlock_pet_list.demonic_tyrants )
