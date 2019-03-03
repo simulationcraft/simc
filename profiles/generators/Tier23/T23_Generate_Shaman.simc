@@ -6,7 +6,7 @@ role=spell
 position=ranged_back
 talents=2301032
 
-head=targettracking_headgear,id=165543,bonus_id=4824/1537,azerite_powers=447/562/459/539/13
+head=hood_of_the_dark_reaper,id=159391,bonus_id=1587/4819,azerite_powers=457/416/30/83/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
 shoulder=pauldrons_of_ancestral_vengeance,id=165921,bonus_id=4824/1537,azerite_powers=457/562/461/87/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
@@ -19,8 +19,8 @@ feet=boots_of_the_gilded_path,id=165541,bonus_id=4800/1537
 finger1=seal_of_the_zandalari_empire,id=165567,enchant=pact_of_critical_strike,bonus_id=4800/1537
 finger2=band_of_multisided_strikes,id=165565,enchant=pact_of_critical_strike,bonus_id=4800/1537
 trinket1=incandescent_sliver,id=165571,bonus_id=4800/1537
-trinket2=ignition_mages_fuse,id=159615,bonus_id=1572/4779/1674
-main_hand=akundas_shocksplitter,id=165594,enchant=deadly_navigation,bonus_id=4800/1537
+trinket2=crest_of_paku,id=166418,bonus_id=4800/1537
+main_hand=akundas_shocksplitter,id=165594,enchant=torrent_of_elements,bonus_id=4800/1537
 off_hand=sunburst_crest,id=165584,bonus_id=4800/1537
 
 save=T23_Shaman_Elemental.simc
