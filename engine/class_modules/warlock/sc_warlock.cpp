@@ -1063,7 +1063,8 @@ expr_t* warlock_t::create_expression( const std::string& name_str )
 
     return make_fn_expr( name_str, [this, period]()
     {
-        return this->imps_spawned_during( timespan_t::from_millis( std::stod( period ) ) );
+      // Add a custom split .summon_demonic_tyrant which returns its cast time.
+      return this->imps_spawned_during( timespan_t::from_millis( std::stod( period ) ) );
     } );
   }
 
