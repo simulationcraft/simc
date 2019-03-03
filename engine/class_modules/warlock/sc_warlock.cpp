@@ -848,6 +848,23 @@ timespan_t warlock_t::time_to_imps(int count)
   }
 }
 
+
+//Function for returning the the number of imps that will spawn in a specified time period.
+int warlock_t::imps_spawned_during( timespan_t period )
+{
+  int count = 0;
+
+  for ( auto ev : wild_imp_spawns )
+  {
+    timespan_t ex = debug_cast<actions::imp_delay_event_t*>( ev )->expected_time();
+
+    if ( ex < period )
+      count++;
+  }
+
+  return count;
+}
+
 std::string warlock_t::create_profile( save_e stype )
 {
   std::string profile_str = player_t::create_profile( stype );
@@ -1039,6 +1056,15 @@ expr_t* warlock_t::create_expression( const std::string& name_str )
         return this->time_to_imps(std::stoi(amt));
       }
     });
+  }
+  else if ( splits.size() == 2 && util::str_compare_ci( splits[0], "imps_spawned_during" ) )
+  {
+    std::string period = splits[1];
+
+    return make_fn_expr( name_str, [this, period]()
+    {
+        return this->imps_spawned_during( timespan_t::from_millis( std::stod( period ) ) );
+    } );
   }
 
   return player_t::create_expression( name_str );

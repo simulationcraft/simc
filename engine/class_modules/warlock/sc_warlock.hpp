@@ -424,6 +424,7 @@ namespace warlock
       void      create_options() override;
       int       get_spawning_imp_count();
       timespan_t time_to_imps(int count);
+      int       imps_spawned_during( timespan_t period );
       action_t* create_action( const std::string& name, const std::string& options ) override;
       pet_t*    create_pet( const std::string& name, const std::string& type = std::string() ) override;
       void      create_pets() override;
