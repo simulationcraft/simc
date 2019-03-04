@@ -384,13 +384,13 @@ double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t
       expansion::bfa::trigger_leyshocks_grand_compilation( STAT_VERSATILITY_RATING, this );
     }
 
-	// Chaos Shards triggers for all specializations
+    // Chaos Shards triggers for all specializations
     if ( azerite.chaos_shards.ok() )
     {
       // Check if soul shard was filled
       if ( std::floor( resources.current[ RESOURCE_SOUL_SHARD ] ) < std::floor( std::min( resources.current[ RESOURCE_SOUL_SHARD ] + amount, 5.0 ) ) )
       {
-		if ( rng().roll( azerite.chaos_shards.spell_ref().effectN( 1 ).percent() / 10.0 ) )
+        if ( rng().roll( azerite.chaos_shards.spell_ref().effectN( 1 ).percent() / 10.0 ) )
           buffs.chaos_shards->trigger();
       }
     }
@@ -568,8 +568,8 @@ void warlock_t::init_gains()
   gains.shadow_bolt                     = get_gain( "shadow_bolt" );
   gains.soul_conduit                    = get_gain( "soul_conduit" );
 
-  gains.soulsnatcher					= get_gain( "soulsnatcher" );
-  gains.chaos_shards					= get_gain( "chaos_shards" );
+  gains.soulsnatcher					          = get_gain( "soulsnatcher" );
+  gains.chaos_shards					          = get_gain( "chaos_shards" );
 }
 
 void warlock_t::init_procs()
