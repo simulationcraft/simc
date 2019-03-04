@@ -568,8 +568,8 @@ void warlock_t::init_gains()
   gains.shadow_bolt                     = get_gain( "shadow_bolt" );
   gains.soul_conduit                    = get_gain( "soul_conduit" );
 
-  gains.soulsnatcher					          = get_gain( "soulsnatcher" );
-  gains.chaos_shards					          = get_gain( "chaos_shards" );
+  gains.soulsnatcher                    = get_gain( "soulsnatcher" );
+  gains.chaos_shards                    = get_gain( "chaos_shards" );
 }
 
 void warlock_t::init_procs()
