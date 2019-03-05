@@ -314,6 +314,8 @@ const char* util::race_type_string( race_e type )
     case RACE_NIGHTBORNE:          return "nightborne";
     case RACE_DARK_IRON_DWARF:     return "dark_iron_dwarf";
     case RACE_MAGHAR_ORC:          return "maghar_orc";
+    case RACE_ZANDALARI_TROLL:     return "zandalari_troll";
+    case RACE_KUL_TIRAN:           return "kul_tiran";
     case RACE_MAX:                 return "unknown";
     case RACE_UNKNOWN:             return "unknown";
     // no default statement so we get warnings if something is missing.
@@ -1048,7 +1050,7 @@ const char* util::armor_type_string( item_subclass_armor type )
 
 item_subclass_armor util::parse_armor_type( const std::string& name )
 {
-  return parse_enum<item_subclass_armor, ITEM_SUBCLASS_ARMOR_MISC, ITEM_SUBCLASS_ARMOR_PLATE, armor_type_string>( name );
+  return parse_enum<item_subclass_armor, ITEM_SUBCLASS_ARMOR_MISC, ITEM_SUBCLASS_ARMOR_COSMETIC, armor_type_string>( name );
 }
 
 // parse_slot_type ==========================================================
@@ -1727,6 +1729,8 @@ unsigned util::race_id( race_e race )
     case RACE_LIGHTFORGED_DRAENEI: return 30;
     case RACE_DARK_IRON_DWARF: return 12;
     case RACE_MAGHAR_ORC: return 14;
+    case RACE_ZANDALARI_TROLL: return 31;
+    case RACE_KUL_TIRAN: return 32;
     default: return 0;
   }
 }

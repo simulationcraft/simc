@@ -137,6 +137,7 @@ public:
   {
     // core
     buffs::avenging_wrath_buff_t* avenging_wrath;
+    buff_t* avenging_wrath_crit;
     buffs::crusade_buff_t* crusade;
     buff_t* holy_avenger;
     buffs::shield_of_vengeance_buff_t* shield_of_vengeance;
@@ -281,6 +282,7 @@ public:
     const spell_data_t* blade_of_wrath;
     const spell_data_t* inspiring_vanguard;
     const spell_data_t* lights_decree;
+    const spell_data_t* avenging_wrath_crit;
   } spells;
 
   // Talents
@@ -639,6 +641,7 @@ public:
   bool ret_crusade;
   bool avenging_wrath;
   bool last_defender_increase;
+  bool avenging_wrath_crit;
 
   paladin_action_t( const std::string& n, paladin_t* player,
                     const spell_data_t* s = spell_data_t::nil() ) :
@@ -674,6 +677,7 @@ public:
       ret_crusade = false;
     }
     avenging_wrath = ab::data().affected_by( player -> spells.avenging_wrath -> effectN( 1 ) );
+    avenging_wrath_crit = p() -> dbc.ptr ? ab::data().affected_by( player -> spells.avenging_wrath_crit -> effectN( 1 ) ) : false;
 
     hasted_cd = hasted_gcd = false;
     auto update_hasted_cooldowns_by_passive = [&](const spell_data_t* passive) {
@@ -772,6 +776,11 @@ public:
     {
       p() -> buffs.avenging_wrath -> up();
     }
+
+    if ( avenging_wrath_crit )
+    {
+      p() -> buffs.avenging_wrath_crit -> expire();
+    }
   }
 
   void trigger_judgment_of_light( action_state_t* s )
@@ -827,6 +836,11 @@ public:
   double composite_crit_chance() const override
   {
     double cc = ab::composite_crit_chance();
+
+    if ( avenging_wrath_crit && p() -> buffs.avenging_wrath_crit -> up() )
+    {
+      return 1.0;
+    }
 
     if ( avenging_wrath && p() -> buffs.avenging_wrath -> check() )
     {

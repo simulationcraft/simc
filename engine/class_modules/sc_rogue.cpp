@@ -391,10 +391,6 @@ struct rogue_t : public player_t
     const spell_data_t* ruthlessness_cp;
     const spell_data_t* shadow_focus;
     const spell_data_t* subterfuge;
-    const spell_data_t* insignia_of_ravenholdt;
-    const spell_data_t* master_assassins_initiative;
-    const spell_data_t* master_assassins_initiative_2;
-    const spell_data_t* expose_armor;
   } spell;
 
   // Talents
@@ -1903,12 +1899,26 @@ struct melee_t : public rogue_attack_t
     double m = rogue_attack_t::composite_target_multiplier( target );
 
     rogue_td_t* tdata = td( target );
-    if ( tdata->debuffs.vendetta->check() )
+    if ( tdata->debuffs.vendetta->up() )
     {
       m *= 1.0 + tdata->debuffs.vendetta->data().effectN( 2 ).percent();
     }
 
     return m;
+  }
+
+  double composite_crit_chance() const override
+  {
+    double c = rogue_attack_t::composite_crit_chance();
+
+    // 3/3/2019 - Logs show that Master Assassin also affects melee auto attacks
+    if ( p()->talent.master_assassin->ok() )
+    {
+      c += p()->buffs.master_assassin->stack_value();
+      c += p()->buffs.master_assassin_aura->stack_value();
+    }
+
+    return c;
   }
 
   double action_multiplier() const override
@@ -2129,11 +2139,9 @@ struct backstab_t : public rogue_attack_t
 
 struct between_the_eyes_t : public rogue_attack_t
 {
-  const spell_data_t* greenskins_waterlogged_wristcuffs; // 7.0 legendary Greenskin's Waterlogged Wristcuffs
-
   between_the_eyes_t( rogue_t* p, const std::string& options_str ):
     rogue_attack_t( "between_the_eyes", p, p -> find_specialization_spell( "Between the Eyes" ),
-                    options_str ), greenskins_waterlogged_wristcuffs( nullptr )
+                    options_str )
   {
     ap_type = AP_WEAPON_BOTH;
     crit_bonus_multiplier *= 1.0 + p -> find_specialization_spell( 235484 ) -> effectN( 1 ).percent();
@@ -2182,11 +2190,8 @@ struct between_the_eyes_t : public rogue_attack_t
 
 struct blade_flurry_t : public rogue_attack_t
 {
-  const spell_data_t* shivarran_symmetry; // 7.0 legendary Shivarran Symmetry
-
   blade_flurry_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "blade_flurry", p, p -> find_specialization_spell( "Blade Flurry" ), options_str ),
-    shivarran_symmetry( nullptr )
+    rogue_attack_t( "blade_flurry", p, p -> find_specialization_spell( "Blade Flurry" ), options_str )
   {
     harmful = may_miss = may_crit = false;
     ignore_false_positive = true;
@@ -3714,9 +3719,7 @@ struct sprint_t : public rogue_attack_t
     harmful = callbacks = false;
     cooldown = p -> cooldowns.sprint;
     ignore_false_positive = true;
-
-    cooldown -> duration = data().cooldown()
-                            + p -> spell.sprint_2 -> effectN( 1 ).time_value();
+    cooldown->duration = data().cooldown() + p->spell.sprint_2->effectN( 1 ).time_value();
   }
 
   void execute() override
@@ -4534,8 +4537,7 @@ struct vanish_t : public stealth_like_buff_t
   }
 };
 
-// Shadow dance acts like "stealth like abilities" except for Mantle of the Master
-// Assassin legendary.
+// Shadow dance acts like "stealth like abilities"
 struct shadow_dance_t : public stealth_like_buff_t
 {
   shadow_dance_t( rogue_t* p ) :
@@ -5067,15 +5069,13 @@ void rogue_t::trigger_deepening_shadows( const action_state_t* state )
     return;
   }
 
-  timespan_t adjustment;
-
-    // Note: this changed to be 10 * seconds as of 2017-04-19
+  // Note: this changed to be 10 * seconds as of 2017-04-19
   int cdr = spec.deepening_shadows -> effectN( 1 ).base_value();
   if ( talent.enveloping_shadows -> ok() )
   {
     cdr += talent.enveloping_shadows -> effectN( 1 ).base_value();
   }
-  adjustment = timespan_t::from_seconds( -0.1 * cdr * s -> cp );
+  timespan_t adjustment = timespan_t::from_seconds( -0.1 * cdr * s -> cp );
 
   cooldowns.shadow_dance -> adjust( adjustment, s -> cp >= 5 );
 }
@@ -5619,7 +5619,7 @@ void rogue_t::init_action_list()
     cds -> add_action( this, "Vanish", "if=talent.exsanguinate.enabled&(talent.nightstalker.enabled|talent.subterfuge.enabled&variable.single_target)&combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1&(!talent.subterfuge.enabled|!azerite.shrouded_suffocation.enabled|dot.garrote.pmultiplier<=1)", "Vanish with Exsg + (Nightstalker, or Subterfuge only on 1T): Maximum CP and Exsg ready for next GCD" );
     cds -> add_action( this, "Vanish", "if=talent.nightstalker.enabled&!talent.exsanguinate.enabled&combo_points>=cp_max_spend&debuff.vendetta.up", "Vanish with Nightstalker + No Exsg: Maximum CP and Vendetta up" );
     cds -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&(!talent.exsanguinate.enabled|!variable.single_target)&!stealthed.rogue&cooldown.garrote.up&dot.garrote.refreshable&(spell_targets.fan_of_knives<=3&combo_points.deficit>=1+spell_targets.fan_of_knives|spell_targets.fan_of_knives>=4&combo_points.deficit>=4)", "Vanish with Subterfuge + (No Exsg or 2T+): No stealth/subterfuge, Garrote Refreshable, enough space for incoming Garrote CP" );
-    cds -> add_action( this, "Vanish", "if=talent.master_assassin.enabled&!stealthed.all&master_assassin_remains<=0&!dot.rupture.refreshable", "Vanish with Master Assasin: No stealth and no active MA buff, Rupture not in refresh range" );
+    cds -> add_action( this, "Vanish", "if=talent.master_assassin.enabled&!stealthed.all&master_assassin_remains<=0&!dot.rupture.refreshable&dot.garrote.remains>3", "Vanish with Master Assasin: No stealth and no active MA buff, Rupture not in refresh range" );
     cds -> add_action( "shadowmeld,if=!stealthed.all&azerite.shrouded_suffocation.enabled&dot.garrote.refreshable&dot.garrote.pmultiplier<=1&combo_points.deficit>=1", "Shadowmeld for Shrouded Suffocation" );
     cds -> add_talent( this, "Exsanguinate", "if=dot.rupture.remains>4+4*cp_max_spend&!dot.garrote.refreshable", "Exsanguinate when both Rupture and Garrote are up for long enough" );
     cds -> add_talent( this, "Toxic Blade", "if=dot.rupture.ticking" );
@@ -5638,7 +5638,7 @@ void rogue_t::init_action_list()
     action_priority_list_t* dot = get_action_priority_list( "dot", "Damage over time abilities" );
     dot -> add_action( this, "Rupture", "if=talent.exsanguinate.enabled&((combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1)|(!ticking&(time>10|combo_points>=2)))", "Special Rupture setup for Exsg" );
     dot -> add_action( "pool_resource,for_next=1", "Garrote upkeep, also tries to use it as a special generator for the last CP before a finisher" );
-    dot -> add_action( this, "Garrote", "cycle_targets=1,if=(!talent.subterfuge.enabled|!(cooldown.vanish.up&cooldown.vendetta.remains<=4))&combo_points.deficit>=1&refreshable&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&!ss_buffed&(target.time_to_die-remains>4&spell_targets.fan_of_knives<=1|target.time_to_die-remains>12)" );
+    dot -> add_action( this, "Garrote", "cycle_targets=1,if=(!talent.subterfuge.enabled|!(cooldown.vanish.up&cooldown.vendetta.remains<=4))&combo_points.deficit>=1&refreshable&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&!ss_buffed&(target.time_to_die-remains>4&spell_targets.fan_of_knives<=1|target.time_to_die-remains>12)&(master_assassin_remains=0|!ticking)" );
     dot -> add_talent( this, "Crimson Tempest", "if=spell_targets>=2&remains<2+(spell_targets>=5)&combo_points>=4", "Crimson Tempest only on multiple targets at 4+ CP when running out in 2s (up to 4 targets) or 3s (5+ targets)" );
     dot -> add_action( this, "Rupture", "cycle_targets=1,if=combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&target.time_to_die-remains>4", "Keep up Rupture at 4+ on all targets (when living long enough and not snapshot)" );
 
@@ -5789,6 +5789,7 @@ void rogue_t::init_action_list()
     stealthed -> add_action( "call_action_list,name=finish,if=combo_points.deficit<=1-(talent.deeper_stratagem.enabled&(buff.vanish.up|azerite.the_first_dance.enabled&!talent.dark_shadow.enabled&!talent.subterfuge.enabled&spell_targets.shuriken_storm<3))", "Finish at 4+ CP without DS, 5+ with DS, and 6 with DS after Vanish or The First Dance and no Dark Shadow + no Subterfuge" );
     stealthed -> add_action( this, "Shadowstrike", "cycle_targets=1,if=talent.secret_technique.enabled&talent.find_weakness.enabled&debuff.find_weakness.remains<1&spell_targets.shuriken_storm=2&target.time_to_die-remains>6", "At 2 targets with Secret Technique keep up Find Weakness by cycling Shadowstrike.");
     stealthed -> add_action( this, "Shadowstrike", "if=!talent.deeper_stratagem.enabled&azerite.blade_in_the_shadows.rank=3&spell_targets.shuriken_storm=3", "Without Deeper Stratagem and 3 Ranks of Blade in the Shadows it is worth using Shadowstrike on 3 targets." );
+    stealthed -> add_action( this, "Shadowstrike", "if=variable.use_priority_rotation&(talent.find_weakness.enabled&debuff.find_weakness.remains<1|talent.weaponmaster.enabled&spell_targets.shuriken_storm<=4|azerite.inevitability.enabled&buff.symbols_of_death.up&spell_targets.shuriken_storm<=3+azerite.blade_in_the_shadows.enabled)", "For priority rotation, use Shadowstrike over Storm 1) with WM against up to 4 targets, 2) if FW is running off (on any amount of targets), or 3) to maximize SoD extension with Inevitability on 3 targets (4 with BitS)." );
     stealthed -> add_action( this, "Shuriken Storm", "if=spell_targets>=3" );
     stealthed -> add_action( this, "Shadowstrike" );
 
@@ -6262,7 +6263,6 @@ void rogue_t::init_spells()
   spell.shadow_focus                  = find_spell( 112942 );
   spell.subterfuge                    = find_spell( 115192 );
   spell.relentless_strikes_energize   = find_spell( 98440 );
-  spell.expose_armor                  = find_spell( 8647 );
 
   // Talents
   // Shared

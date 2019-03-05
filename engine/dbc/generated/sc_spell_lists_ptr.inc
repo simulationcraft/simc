@@ -2617,7 +2617,7 @@ static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS]
 #define PTR_RACE_ABILITY_SIZE (5)
 
 #ifndef ptr_MAX_RACE
-#define ptr_MAX_RACE (31)
+#define ptr_MAX_RACE (33)
 #endif
 
 // Racial abilities, wow build 8.1.5.29558
@@ -3544,6 +3544,52 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
       255652, // Light's Reckoning
           0,
     },
+  },
+  // Racial abilities for Zandalari Troll
+  {
+    // Generic racial abilities
+    {
+      291619, // City of Gold
+      292752, // Embrace of the Loa
+      292751, // Embrace of the Loa
+      281954, // Pterrordax Swoop
+      291944, // Regeneratin'
+    },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+  },
+  // Racial abilities for Kul Tiran
+  {
+    // Generic racial abilities
+    {
+      291628, // Brush It Off
+      291622, // Child of the Sea
+      287712, // Haymaker
+      291417, // Rime of the Ancient Mariner
+          0,
+    },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
   },
 };
 #define PTR_SET_BONUS_DATA_SIZE (724)

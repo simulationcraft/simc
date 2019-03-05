@@ -1055,7 +1055,6 @@ namespace warlock {
     gains.infernal                      = get_gain( "infernal" );
     gains.shadowburn_shard              = get_gain( "shadowburn_shard" );
     gains.inferno                       = get_gain( "inferno" );
-    gains.chaos_shards                  = get_gain( "chaos_shards" );
   }
 
   void warlock_t::init_rng_destruction() {
