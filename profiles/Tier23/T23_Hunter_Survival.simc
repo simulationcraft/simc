@@ -6,6 +6,7 @@ race=gnome
 role=attack
 position=back
 talents=1101021
+iterations=50000
 
 # Default consumables
 potion=battle_potion_of_agility
