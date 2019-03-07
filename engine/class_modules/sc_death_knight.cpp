@@ -676,6 +676,7 @@ public:
     const spell_data_t* death_strike;
     const spell_data_t* dnd_buff;
     const spell_data_t* fallen_crusader;
+    const spell_data_t* razorice_debuff;
 
     // Blood
     const spell_data_t* blood_plague;
@@ -787,7 +788,7 @@ public:
     
     // Frost
     azerite_power_t echoing_howl;
-    azerite_power_t frostwhelps_indignation; // TODO: update spellID once spelldata is regenerated
+    azerite_power_t frostwhelps_indignation;
     azerite_power_t frozen_tempest;
 
     azerite_power_t icy_citadel;
@@ -969,7 +970,8 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
 
   debuff.mark_of_blood     = make_buff( *this, "mark_of_blood", p -> talent.mark_of_blood )
                            -> set_cooldown( 0_ms ); // Handled by the action
-  debuff.razorice          = make_buff( *this, "razorice", p -> find_spell( 51714 ) )
+  debuff.razorice          = make_buff( *this, "razorice", p -> spell.razorice_debuff )
+                           -> set_default_value( p -> spell.razorice_debuff -> effectN( 1 ).percent() )
                            -> set_period( 0_ms );
   debuff.festering_wound   = make_buff( *this, "festering_wound", p -> spell.festering_wound_debuff )
                            -> set_trigger_spell( p -> spec.festering_wound )
@@ -2491,8 +2493,19 @@ struct death_knight_action_t : public Base
   bool hasted_gcd;
   weapon_e weapon_req;
 
+  struct affected_by_t
+  {
+    // Masteries
+    bool frozen_heart, dreadblade;
+    // Runeforge
+    bool razorice;
+  } affected_by;
+
   death_knight_action_t( const std::string& n, death_knight_t* p, const spell_data_t* s = spell_data_t::nil() ) :
-    action_base_t( n, p, s ), gain( nullptr ), hasted_gcd( false ), weapon_req( WEAPON_NONE )
+    action_base_t( n, p, s ), gain( nullptr ), 
+    hasted_gcd( false ), 
+    weapon_req( WEAPON_NONE ),
+    affected_by()
   {
     this -> may_crit   = true;
     this -> may_glance = false;
@@ -2540,6 +2553,14 @@ struct death_knight_action_t : public Base
     {
       this -> base_td_multiplier *= 1.0 + p -> spec.blood_death_knight -> effectN( 2 ).percent();
     }
+
+    this -> affected_by.frozen_heart = this -> data().affected_by( p -> mastery.frozen_heart -> effectN( 1 ) );
+    this -> affected_by.dreadblade = this -> data().affected_by( p -> mastery.dreadblade -> effectN( 1 ) );
+
+    if ( p -> dbc.ptr )
+    {
+      this -> affected_by.razorice = this ->  data().affected_by( p -> spell.razorice_debuff -> effectN( 1 ) );
+    }
   }
 
   death_knight_t* p() const
@@ -2557,8 +2578,7 @@ struct death_knight_action_t : public Base
   {
     double m = Base::composite_da_multiplier( state );
 
-    if ( ( this -> data().affected_by( p() -> mastery.frozen_heart -> effectN( 1 ) ) && p() -> mastery.frozen_heart -> ok() ) ||
-         ( this -> data().affected_by( p() -> mastery.dreadblade   -> effectN( 1 ) ) && p() -> mastery.dreadblade   -> ok() ) )
+    if ( this -> affected_by.frozen_heart || this -> affected_by.dreadblade ) 
     {
       m *= 1.0 + p() -> cache.mastery_value();
     }
@@ -2570,10 +2590,23 @@ struct death_knight_action_t : public Base
   {
     double m = Base::composite_ta_multiplier( state );
 
-    if ( ( this -> data().affected_by( p() -> mastery.frozen_heart -> effectN( 2 ) ) && p() -> mastery.frozen_heart -> ok() ) ||
-         ( this -> data().affected_by( p() -> mastery.dreadblade   -> effectN( 2 ) ) && p() -> mastery.dreadblade   -> ok() ) )
+    if ( this -> affected_by.frozen_heart || this -> affected_by.dreadblade ) 
     {
       m *= 1.0 + p() -> cache.mastery_value();
+    }
+
+    return m;
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = action_base_t::composite_target_multiplier( target );
+
+    if ( p() -> dbc.ptr && this -> affected_by.razorice )
+    {
+      death_knight_td_t* td = p() -> get_target_data( target );
+
+      m *= 1.0 + td -> debuff.razorice -> check_stack_value();
     }
 
     return m;
@@ -4344,6 +4377,14 @@ struct death_strike_t : public death_knight_melee_attack_t
       oh_attack = new death_strike_offhand_t( p );
       add_child( oh_attack );
     }
+
+    // 2019-03-01: On 8.1.5 PTR, Death Strike is fixed with regards to procs on RP spent
+    // RE/RC/Gargoyle now behave as if Death Strike costed 35RP for dps specs.
+    // We model that by directly changing the base RP cost from spelldata, rather than manipulating cost()
+    if ( p -> dbc.ptr )
+    {
+      base_costs[ RESOURCE_RUNIC_POWER ] += p -> spec.death_strike_2 -> effectN( 3 ).resource( RESOURCE_RUNIC_POWER );
+    }
   }
 
   double action_multiplier() const override
@@ -4364,8 +4405,9 @@ struct death_strike_t : public death_knight_melee_attack_t
     {
       c += ossuary_cost_reduction;
     }
-    
-    if ( p() -> spec.death_strike_2 -> ok() )
+
+    // 2019-03-02: The cost is dynamically changed and procs on RP spent use the base cost (45 RP)
+    if ( p() -> spec.death_strike_2 -> ok() && ! p() -> dbc.ptr )
     {
       c += p() -> spec.death_strike_2 -> effectN( 3 ).resource( RESOURCE_RUNIC_POWER );
     }
@@ -5475,26 +5517,12 @@ struct outbreak_t : public death_knight_spell_t
 struct frostwhelps_indignation_t : public death_knight_spell_t
 {
   frostwhelps_indignation_t( death_knight_t* p ) :
-    death_knight_spell_t( "frostwhelps_indignation", p , // p -> find_spell( 287320 ) TODO: uncomment after regenerate
-                          p -> azerite.frostwhelps_indignation.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
+    death_knight_spell_t( "frostwhelps_indignation", p , p -> find_spell( 287320 ) )
   {
     aoe = -1;
     background = true;
 
     base_dd_min = base_dd_max = p -> azerite.frostwhelps_indignation.value( 1 );
-
-    // TODO: Remove after regenerate
-    base_dd_multiplier *= 1.0 + p -> spec.frost_death_knight -> effectN( 1 ).percent();
-  }
-
-  virtual double composite_da_multiplier( const action_state_t* state ) const override
-  {
-    double m = death_knight_spell_t::composite_da_multiplier( state );
-
-    // TODO: Remove once spelldata is regenerated
-    m *= 1.0 + p() -> cache.mastery_value();
-
-    return m;
   }
 
   void impact( action_state_t* s ) override
@@ -6395,9 +6423,10 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/396
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/397
 
-    // BoS is manually consumed in the buff, this is required here so it still triggers Runic Empowerment at the correct proc chance
+    // Some abilities use the actual RP spent by the ability, others use the base RP cost
+    // The action check is required because Breath of Sindragosa spends RP through a buff rather than an action
     double base_rp_cost = action ? action -> base_costs[ RESOURCE_RUNIC_POWER ] : actual_amount;
-    
+
     trigger_runic_empowerment( base_rp_cost );
     trigger_runic_corruption( base_rp_cost, -1.0, procs.rp_runic_corruption );
 
@@ -7296,6 +7325,7 @@ void death_knight_t::init_spells()
   spell.death_strike    = find_class_spell( "Death Strike" );
   spell.dnd_buff        = find_spell( 188290 );
   spell.fallen_crusader = find_spell( 166441 );
+  spell.razorice_debuff = find_spell( 51714 );
   
   // Blood
   spell.blood_shield        = find_spell( 77535 );
@@ -8281,13 +8311,12 @@ double death_knight_t::composite_player_pet_damage_multiplier( const action_stat
 double death_knight_t::composite_player_target_multiplier( player_t* target, school_e school ) const
 {
   double m = player_t::composite_player_target_multiplier( target, school );
-  
+
   death_knight_td_t* td = get_target_data( target );
 
-  if ( dbc::is_school( school, SCHOOL_FROST ) )
+  if ( dbc::is_school( school, SCHOOL_FROST ) && ! dbc.ptr )
   {
-    double debuff = td -> debuff.razorice -> data().effectN( 1 ).percent();
-    m *= 1.0 + td -> debuff.razorice -> check() * debuff;
+    m *= 1.0 + td -> debuff.razorice -> check_stack_value();
   }
 
   return m;

@@ -49,7 +49,7 @@ actions+=/variable,name=blade_flurry_sync,value=spell_targets.blade_flurry<2&rai
 actions+=/call_action_list,name=stealth,if=stealthed.all
 actions+=/call_action_list,name=cds
 # Finish at maximum CP. Substract one for each Broadside and Opportunity when Quick Draw is selected and MfD is not ready after the next second.
-actions+=/call_action_list,name=finish,if=combo_points>=cp_max_spend-(buff.broadside.up+buff.opportunity.up)*(talent.quick_draw.enabled&(!talent.marked_for_death.enabled|cooldown.marked_for_death.remains>1))
+actions+=/run_action_list,name=finish,if=combo_points>=cp_max_spend-(buff.broadside.up+buff.opportunity.up)*(talent.quick_draw.enabled&(!talent.marked_for_death.enabled|cooldown.marked_for_death.remains>1))
 actions+=/call_action_list,name=build
 actions+=/arcane_torrent,if=energy.deficit>=15+energy.regen
 actions+=/arcane_pulse
@@ -57,7 +57,7 @@ actions+=/lights_judgment
 
 # Builders
 # Use Pistol Shot if it won't cap combo points and the Oppotunity buff is up. Avoid using when Keep Your Wits stacks are high unless the Deadshot buff is also up.
-actions.build=pistol_shot,if=combo_points.deficit>=1+buff.broadside.up+talent.quick_draw.enabled&buff.opportunity.up&(buff.keep_your_wits_about_you.stack<25|buff.deadshot.up)
+actions.build=pistol_shot,if=buff.opportunity.up&(buff.keep_your_wits_about_you.stack<25|buff.deadshot.up)
 actions.build+=/sinister_strike
 
 # Cooldowns
