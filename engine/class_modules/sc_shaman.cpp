@@ -665,6 +665,7 @@ public:
   void trigger_natural_harmony( const action_state_t* );
   void trigger_strength_of_earth( const action_state_t* );
   void trigger_primal_primer( const action_state_t* );
+  void trigger_ancestral_resonance( const action_state_t* );
 
   // Legendary
   // empty - for now
@@ -1228,6 +1229,9 @@ public:
   void impact( action_state_t* state ) override
   {
     ab::impact( state );
+
+    p()->trigger_stormbringer( state );
+    p()->trigger_ancestral_resonance( state );
   }
 
   void schedule_execute( action_state_t* execute_state = nullptr ) override
@@ -1372,6 +1376,8 @@ public:
   bool may_proc_icy_edge;
   bool may_proc_strength_of_earth;
   bool may_proc_primal_primer;
+  bool may_proc_ability_procs;  // For things that explicitly state they proc from "abilities" (like Ancestral
+                                // Resonance)
   double tf_proc_chance;
 
   proc_t *proc_wf, *proc_ft, *proc_fb, *proc_mw, *proc_sb, *proc_ls, *proc_hh, *proc_pp;
@@ -1388,6 +1394,7 @@ public:
       may_proc_icy_edge( false ),
       may_proc_strength_of_earth( true ),
       may_proc_primal_primer( true ),
+      may_proc_ability_procs( true ),
       tf_proc_chance( 0 ),
       proc_wf( nullptr ),
       proc_ft( nullptr ),
@@ -1500,7 +1507,7 @@ public:
 
     trigger_maelstrom_weapon( state );
     p()->trigger_windfury_weapon( state );
-    p()->trigger_stormbringer( state );
+    // p()->trigger_stormbringer( state );
     p()->trigger_flametongue_weapon( state );
     p()->trigger_hailstorm( state );
     p()->trigger_lightning_shield( state );
@@ -1675,12 +1682,6 @@ public:
     {
       p()->buff.master_of_the_elements->decrement();
     }
-
-    // BfA Azerite Trait - Ancestral Resonance
-    if ( !background && p()->azerite.ancestral_resonance.ok() )
-    {
-      p()->buff.ancestral_resonance->trigger();  // chance is handled in the buff (rppm)
-    }
   }
 
   void schedule_travel( action_state_t* s ) override
@@ -1778,7 +1779,7 @@ public:
   {
     base_t::impact( state );
 
-    p()->trigger_stormbringer( state );
+    // p()->trigger_stormbringer( state );
 
     // Azerite
     p()->trigger_strength_of_earth( state );
@@ -2825,6 +2826,7 @@ struct crash_lightning_attack_t : public shaman_attack_t
     callbacks  = false;
     aoe        = -1;
     base_multiplier *= 1.0;
+    may_proc_ability_procs = false;
   }
 
   void init() override
@@ -2881,9 +2883,10 @@ struct hailstorm_attack_t : public shaman_attack_t
   hailstorm_attack_t( const std::string& n, shaman_t* p, weapon_t* w )
     : shaman_attack_t( n, p, p->find_spell( 210854 ) )
   {
-    weapon     = w;
-    background = true;
-    callbacks  = false;
+    weapon                 = w;
+    background             = true;
+    callbacks              = false;
+    may_proc_ability_procs = false;
   }
 
   void init() override
@@ -2899,9 +2902,10 @@ struct icy_edge_attack_t : public shaman_attack_t
 {
   icy_edge_attack_t( const std::string& n, shaman_t* p, weapon_t* w ) : shaman_attack_t( n, p, p->find_spell( 271920 ) )
   {
-    weapon     = w;
-    background = true;
-    callbacks  = false;
+    weapon                 = w;
+    background             = true;
+    callbacks              = false;
+    may_proc_ability_procs = false;
   }
 
   void init() override
@@ -3114,6 +3118,7 @@ struct windlash_t : public shaman_attack_t
     : shaman_attack_t( n, player, s ), swing_timer_variance( stv )
   {
     background = repeating = may_miss = may_dodge = may_parry = true;
+    may_proc_ability_procs;
     may_glance = special = false;
     weapon               = w;
     weapon_multiplier    = 1.0;
@@ -3377,7 +3382,8 @@ struct auto_attack_t : public shaman_attack_t
     add_option( opt_bool( "sync_weapons", sync_weapons ) );
     add_option( opt_float( "swing_timer_variance", swing_timer_variance ) );
     parse_options( options_str );
-    ignore_false_positive = true;
+    ignore_false_positive  = true;
+    may_proc_ability_procs = false;
 
     assert( p()->main_hand_weapon.type != WEAPON_NONE );
 
@@ -7225,21 +7231,25 @@ void shaman_t::trigger_stormbringer( const action_state_t* state, double overrid
   {
     if ( attack->may_proc_stormbringer )
     {
-      if ( override_proc_chance < 0 )
+      result_e r = state->result;
+      if ( r == RESULT_HIT || r == RESULT_CRIT || r == RESULT_GLANCE || r == RESULT_NONE )
       {
-        override_proc_chance = attack->stormbringer_proc_chance();
-      }
+        if ( override_proc_chance < 0 )
+        {
+          override_proc_chance = attack->stormbringer_proc_chance();
+        }
 
-      if ( override_proc_obj == nullptr )
-      {
-        override_proc_obj = attack->proc_sb;
-      }
+        if ( override_proc_obj == nullptr )
+        {
+          override_proc_obj = attack->proc_sb;
+        }
 
-      if ( rng().roll( override_proc_chance ) )
-      {
-        buff.stormbringer->trigger( buff.stormbringer->max_stack() );
-        cooldown.strike->reset( true );
-        override_proc_obj->occur();
+        if ( rng().roll( override_proc_chance ) )
+        {
+          buff.stormbringer->trigger( buff.stormbringer->max_stack() );
+          cooldown.strike->reset( true );
+          override_proc_obj->occur();
+        }
       }
     }
   }
@@ -7264,6 +7274,40 @@ void shaman_t::trigger_stormbringer( const action_state_t* state, double overrid
         cooldown.strike->reset( true );
         override_proc_obj->occur();
       }
+    }
+  }
+}
+
+void shaman_t::trigger_ancestral_resonance( const action_state_t* state )
+{
+  if ( !azerite.ancestral_resonance.ok() )
+    return;
+
+  shaman_attack_t* attack = nullptr;
+  shaman_spell_t* spell   = nullptr;
+
+  if ( state->action->type == ACTION_ATTACK )
+  {
+    attack = debug_cast<shaman_attack_t*>( state->action );
+  }
+  else if ( state->action->type == ACTION_SPELL )
+  {
+    spell = debug_cast<shaman_spell_t*>( state->action );
+  }
+
+  if ( attack )
+  {
+    if ( attack->may_proc_ability_procs )
+    {
+      buff.ancestral_resonance->trigger();
+    }
+  }
+
+  if ( spell )
+  {
+    if ( !spell->background )
+    {
+      buff.ancestral_resonance->trigger();
     }
   }
 }
@@ -8697,14 +8741,22 @@ void shaman_t::combat_begin()
 
     if ( dbc.ptr )
     {
-      // Divide the frequency of Roiling Storm by the duration of Stormbringer to get the average chance to have
-      // a free stormbringer proc on pull, assuming pull timers are not being done around the shaman's RS timer.
-      double rs_freq     = buff.roiling_storm_buff_driver->buff_period.total_seconds();
-      double sb_duration = buff.stormbringer->buff_duration.total_seconds();
+      buff.roiling_storm_buff_driver->trigger();
 
-      if ( rng().roll( sb_duration / rs_freq ) )
+      // Roll a range between 0 and the roiling storm frequency to simulate a random point in time, then use that
+      // randomized point to determine how much time is left on a stormbringer (if any is up at all).
+      double rs_freq            = buff.roiling_storm_buff_driver->buff_period.total_seconds();
+      double rs_start_point     = rng().range( 0, rs_freq );
+      double remain_sb_duration = buff.stormbringer->buff_duration.total_seconds() - ( rs_freq - rs_start_point );
+
+      // attempt to also randomized the start time of the driver... will have to ask navv for advice later.
+      // buff.roiling_storm_buff_driver->trigger( buff.roiling_storm_buff_driver->max_stack(), 0, -1,
+      //                                        timespan_t::from_seconds( rs_start_point ) );
+
+      if ( remain_sb_duration > 0 )
       {
-        buff.stormbringer->trigger( buff.stormbringer->max_stack() );
+        buff.stormbringer->trigger( buff.stormbringer->max_stack(), 0, -1,
+                                    timespan_t::from_seconds( remain_sb_duration ) );
       }
     }
   }
