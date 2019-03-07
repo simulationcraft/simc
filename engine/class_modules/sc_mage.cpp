@@ -662,8 +662,6 @@ public:
 public:
   mage_t( sim_t* sim, const std::string& name, race_e r = RACE_NONE );
 
-  ~mage_t();
-
   // Character Definition
   void        init_spells() override;
   void        init_base_stats() override;
@@ -5139,9 +5137,6 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   // Options
   regen_type = REGEN_DYNAMIC;
 }
-
-mage_t::~mage_t()
-{ }
 
 bool mage_t::apply_crowd_control( const action_state_t* state, spell_mechanic type )
 {
