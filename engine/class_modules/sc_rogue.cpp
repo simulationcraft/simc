@@ -4407,6 +4407,28 @@ struct adrenaline_rush_t : public buff_t
     set_affects_regen( true );
     add_invalidate( CACHE_ATTACK_SPEED );
   }
+
+  void start( int stacks, double value, timespan_t duration ) override
+  {
+    buff_t::start( stacks, value, duration );
+
+    rogue_t* rogue = debug_cast<rogue_t*>( source );
+    if ( maybe_ptr( rogue ->dbc.ptr ) ) {
+      rogue -> resources.temporary[ RESOURCE_ENERGY ] += data().effectN( 4 ).base_value();
+      rogue -> recalculate_resource_max( RESOURCE_ENERGY );
+    }
+  }
+
+  void expire_override(int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    rogue_t* rogue = debug_cast<rogue_t*>( source );
+    if ( maybe_ptr( rogue ->dbc.ptr ) ) {
+      rogue -> resources.temporary[ RESOURCE_ENERGY ] -= data().effectN( 4 ).base_value();
+      rogue -> recalculate_resource_max( RESOURCE_ENERGY );
+    }
+  }
 };
 
 struct blade_flurry_t : public buff_t
