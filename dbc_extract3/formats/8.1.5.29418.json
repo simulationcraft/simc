@@ -399,7 +399,8 @@
     { "data_type": "H", "field": "ui_map_id" },
     { "data_type": "I", "field": "map_display_condition_id" },
     { "data_type": "B", "field": "flags" },
-    { "data_type": "B", "field": "difficulty_mask" }
+    { "data_type": "B", "field": "difficulty_mask" },
+    { "data_type": "i", "field": "unk_1" }
   ],
   "JournalEncounterCreature": [
     { "data_type": "S", "field": "name" },
@@ -488,7 +489,8 @@
     { "data_type": "B", "field": "max_players" },
     { "data_type": "h", "field": "id_wind_settings" },
     { "data_type": "i", "field": "id_zmp_file_data" },
-    { "data_type": "I", "field": "flags", "elements": 2 }
+    { "data_type": "I", "field": "flags", "elements": 2 },
+    { "data_type": "i", "field": "unk_1" }
   ],
   "MinorTalent": [
     { "data_type": "i", "field": "id_spell" },
