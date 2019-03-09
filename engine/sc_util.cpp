@@ -1050,7 +1050,7 @@ const char* util::armor_type_string( item_subclass_armor type )
 
 item_subclass_armor util::parse_armor_type( const std::string& name )
 {
-  return parse_enum<item_subclass_armor, ITEM_SUBCLASS_ARMOR_MISC, ITEM_SUBCLASS_ARMOR_COSMETIC, armor_type_string>( name );
+  return parse_enum<item_subclass_armor, ITEM_SUBCLASS_ARMOR_MISC, ITEM_SUBCLASS_ARMOR_LIBRAM, armor_type_string>( name );
 }
 
 // parse_slot_type ==========================================================
