@@ -41,25 +41,24 @@ actions+=/call_action_list,name=st,if=active_enemies<3
 actions+=/call_action_list,name=trickshots,if=active_enemies>2
 
 actions.cds=hunters_mark,if=debuff.hunters_mark.down&!buff.trueshot.up
-actions.cds+=/double_tap,if=cooldown.rapid_fire.remains<gcd.max|target.time_to_die<20
+actions.cds+=/double_tap,if=cooldown.rapid_fire.remains<gcd|cooldown.rapid_fire.remains<cooldown.aimed_shot.remains|target.time_to_die<20
 actions.cds+=/berserking,if=buff.trueshot.up&(target.time_to_die>cooldown.berserking.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<13
 actions.cds+=/blood_fury,if=buff.trueshot.up&(target.time_to_die>cooldown.blood_fury.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<16
 actions.cds+=/ancestral_call,if=buff.trueshot.up&(target.time_to_die>cooldown.ancestral_call.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<16
 actions.cds+=/fireblood,if=buff.trueshot.up&(target.time_to_die>cooldown.fireblood.duration+duration|(target.health.pct<20|!talent.careful_aim.enabled))|target.time_to_die<9
 actions.cds+=/lights_judgment
 actions.cds+=/potion,if=buff.trueshot.react&buff.bloodlust.react|buff.trueshot.up&ca_execute|target.time_to_die<25
-actions.cds+=/trueshot,if=cooldown.rapid_fire.remains&target.time_to_die>cooldown.trueshot.duration_guess+duration|(target.health.pct<20|!talent.careful_aim.enabled)|target.time_to_die<15
+actions.cds+=/trueshot,if=focus>60&(buff.precise_shots.down&cooldown.rapid_fire.remains&target.time_to_die>cooldown.trueshot.duration_guess+duration|target.health.pct<20|!talent.careful_aim.enabled)|target.time_to_die<15
 
 actions.st=explosive_shot
 actions.st+=/barrage,if=active_enemies>1
 actions.st+=/a_murder_of_crows
 actions.st+=/serpent_sting,if=refreshable&!action.serpent_sting.in_flight
-actions.st+=/rapid_fire,if=focus<50|buff.in_the_rhythm.remains<action.rapid_fire.cast_time
-actions.st+=/arcane_shot,if=buff.master_marksman.up&buff.trueshot.up&focus+cast_regen<focus.max
-actions.st+=/aimed_shot,if=(!buff.double_tap.up|ca_execute|(!azerite.focused_fire.enabled&!azerite.surging_shots.enabled&!talent.streamline.enabled))&buff.precise_shots.down|cooldown.aimed_shot.full_recharge_time<action.aimed_shot.cast_time|buff.trueshot.up
-actions.st+=/rapid_fire,if=focus+cast_regen<focus.max|azerite.focused_fire.enabled|azerite.in_the_rhythm.rank>1|azerite.surging_shots.enabled|talent.streamline.enabled
+actions.st+=/rapid_fire,if=buff.trueshot.down|focus<70
+actions.st+=/arcane_shot,if=buff.trueshot.up&buff.master_marksman.up
+actions.st+=/aimed_shot,if=buff.trueshot.up|(buff.double_tap.down|ca_execute)&buff.precise_shots.down|full_recharge_time<cast_time
 actions.st+=/piercing_shot
-actions.st+=/arcane_shot,if=focus>75|(buff.precise_shots.up|focus>45&cooldown.trueshot.remains&target.time_to_die<25)&buff.trueshot.down|target.time_to_die<5
+actions.st+=/arcane_shot,if=buff.trueshot.down&(buff.precise_shots.up&(focus>41|buff.master_marksman.up)|(focus>50&azerite.focused_fire.enabled|focus>75)&(cooldown.trueshot.remains>5|focus>80)|target.time_to_die<5)
 actions.st+=/steady_shot
 
 actions.trickshots=barrage

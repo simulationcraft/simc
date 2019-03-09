@@ -126,7 +126,7 @@ double warlock_pet_t::resource_regen_per_second( resource_e r ) const
   double reg = base_t::resource_regen_per_second( r );
 
   //TOCHECK Felguard seemingly once again has the quadratic Haste scaling energy bug. Live as of 02-23-2019.
-  if ( pet_type == PET_FELGUARD || pet_type == PET_SERVICE_FELGUARD )
+  if ( !o()->dbc.ptr && ( pet_type == PET_FELGUARD || pet_type == PET_SERVICE_FELGUARD ) )
     reg /= cache.spell_haste();
 
   return reg;

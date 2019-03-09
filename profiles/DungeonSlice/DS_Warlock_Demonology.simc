@@ -45,11 +45,13 @@ actions+=/bilescourge_bombers,if=azerite.explosive_potential.rank>0&time<10&spel
 actions+=/demonic_strength,if=(buff.wild_imps.stack<6|buff.demonic_power.up)|spell_targets.implosion<2
 actions+=/call_action_list,name=nether_portal,if=talent.nether_portal.enabled&spell_targets.implosion<=2
 actions+=/call_action_list,name=implosion,if=spell_targets.implosion>1
-actions+=/grimoire_felguard,if=cooldown.summon_demonic_tyrant.remains<13
+actions+=/grimoire_felguard,if=(target.time_to_die>120|target.time_to_die<cooldown.summon_demonic_tyrant.remains+15|cooldown.summon_demonic_tyrant.remains<13)
 actions+=/summon_vilefiend,if=cooldown.summon_demonic_tyrant.remains>40|cooldown.summon_demonic_tyrant.remains<12
 actions+=/call_dreadstalkers,if=(cooldown.summon_demonic_tyrant.remains<9&buff.demonic_calling.remains)|(cooldown.summon_demonic_tyrant.remains<11&!buff.demonic_calling.remains)|cooldown.summon_demonic_tyrant.remains>14
 actions+=/bilescourge_bombers
-actions+=/summon_demonic_tyrant,if=soul_shard<3&(!talent.demonic_consumption.enabled|buff.wild_imps.stack>0)
+actions+=/hand_of_guldan,if=(azerite.baleful_invocation.enabled|talent.demonic_consumption.enabled)&prev_gcd.1.hand_of_guldan&cooldown.summon_demonic_tyrant.remains<2
+# 2000%spell_haste is shorthand for the cast time of Demonic Tyrant. The intent is to only begin casting if a certain number of imps will be out by the end of the cast.
+actions+=/summon_demonic_tyrant,if=soul_shard<3&(!talent.demonic_consumption.enabled|buff.wild_imps.stack+imps_spawned_during.2000%spell_haste>=6&time_to_imps.all.remains<cast_time)|target.time_to_die<20
 actions+=/power_siphon,if=buff.wild_imps.stack>=2&buff.demonic_core.stack<=2&buff.demonic_power.down&spell_targets.implosion<2
 actions+=/doom,if=talent.doom.enabled&refreshable&time_to_die>(dot.doom.remains+30)
 actions+=/hand_of_guldan,if=soul_shard>=5|(soul_shard>=3&cooldown.call_dreadstalkers.remains>4&(cooldown.summon_demonic_tyrant.remains>20|(cooldown.summon_demonic_tyrant.remains<gcd*2&talent.demonic_consumption.enabled|cooldown.summon_demonic_tyrant.remains<gcd*4&!talent.demonic_consumption.enabled))&(!talent.summon_vilefiend.enabled|cooldown.summon_vilefiend.remains>3))
@@ -57,20 +59,23 @@ actions+=/soul_strike,if=soul_shard<5&buff.demonic_core.stack<=2
 actions+=/demonbolt,if=soul_shard<=3&buff.demonic_core.up&((cooldown.summon_demonic_tyrant.remains<6|cooldown.summon_demonic_tyrant.remains>22)|buff.demonic_core.stack>=3|buff.demonic_core.remains<5|time_to_die<25)
 actions+=/call_action_list,name=build_a_shard
 
-actions.build_a_shard=soul_strike
+actions.build_a_shard=soul_strike,if=!talent.demonic_consumption.enabled|time>15|prev_gcd.1.hand_of_guldan&!buff.bloodlust.remains
 actions.build_a_shard+=/shadow_bolt
 
 actions.dcon_ep_opener=hand_of_guldan,line_cd=30
 actions.dcon_ep_opener+=/implosion,if=buff.wild_imps.stack>2&buff.explosive_potential.down
 actions.dcon_ep_opener+=/doom,line_cd=30
-actions.dcon_ep_opener+=/demonic_strength
+actions.dcon_ep_opener+=/hand_of_guldan,if=prev_gcd.1.hand_of_guldan&soul_shard>0&prev_gcd.2.soul_strike
+actions.dcon_ep_opener+=/demonic_strength,if=prev_gcd.1.hand_of_guldan&!prev_gcd.2.hand_of_guldan&(buff.wild_imps.stack>1&action.hand_of_guldan.in_flight)
 actions.dcon_ep_opener+=/bilescourge_bombers
-actions.dcon_ep_opener+=/summon_vilefiend
-actions.dcon_ep_opener+=/grimoire_felguard
-actions.dcon_ep_opener+=/hand_of_guldan,if=soul_shard=5|soul_shard=4&buff.demonic_calling.remains
-actions.dcon_ep_opener+=/call_dreadstalkers,if=prev_gcd.1.hand_of_guldan
-actions.dcon_ep_opener+=/summon_demonic_tyrant,if=prev_gcd.1.call_dreadstalkers
-actions.dcon_ep_opener+=/soul_strike,if=(soul_shard<3|soul_shard=4&buff.demonic_core.stack<=3)|buff.demonic_core.down&soul_shard<5
+actions.dcon_ep_opener+=/soul_strike,line_cd=30,if=!buff.bloodlust.remains|time>5&prev_gcd.1.hand_of_guldan
+actions.dcon_ep_opener+=/summon_vilefiend,if=soul_shard=5
+actions.dcon_ep_opener+=/grimoire_felguard,if=soul_shard=5
+actions.dcon_ep_opener+=/call_dreadstalkers,if=soul_shard=5
+actions.dcon_ep_opener+=/hand_of_guldan,if=soul_shard=5
+actions.dcon_ep_opener+=/hand_of_guldan,if=soul_shard>=3&prev_gcd.2.hand_of_guldan&time>5&(prev_gcd.1.soul_strike|!talent.soul_strike.enabled&prev_gcd.1.shadow_bolt)
+# 2000%spell_haste is shorthand for the cast time of Demonic Tyrant. The intent is to only begin casting if a certain number of imps will be out by the end of the cast.
+actions.dcon_ep_opener+=/summon_demonic_tyrant,if=prev_gcd.1.demonic_strength|prev_gcd.1.hand_of_guldan&prev_gcd.2.hand_of_guldan|!talent.demonic_strength.enabled&buff.wild_imps.stack+imps_spawned_during.2000%spell_haste>=6
 actions.dcon_ep_opener+=/demonbolt,if=soul_shard<=3&buff.demonic_core.remains
 actions.dcon_ep_opener+=/call_action_list,name=build_a_shard
 

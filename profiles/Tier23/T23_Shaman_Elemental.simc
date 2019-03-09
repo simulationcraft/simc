@@ -32,7 +32,7 @@ actions.precombat+=/stormkeeper,if=talent.stormkeeper.enabled&(raid_event.adds.c
 actions.precombat+=/fire_elemental,if=!talent.storm_elemental.enabled
 actions.precombat+=/storm_elemental,if=talent.storm_elemental.enabled
 actions.precombat+=/potion
-actions.precombat+=/elemental_blast,if=talent.elemental_blast.enabled&spell_targets.chain_lightning<3
+actions.precombat+=/elemental_blast,if=talent.elemental_blast.enabled
 actions.precombat+=/lava_burst,if=!talent.elemental_blast.enabled&spell_targets.chain_lightning<3
 actions.precombat+=/chain_lightning,if=spell_targets.chain_lightning>2
 
@@ -45,7 +45,7 @@ actions+=/potion,if=expected_combat_length-time<30|cooldown.fire_elemental.remai
 actions+=/wind_shear
 actions+=/totem_mastery,if=talent.totem_mastery.enabled&buff.resonance_totem.remains<2
 actions+=/fire_elemental,if=!talent.storm_elemental.enabled
-actions+=/storm_elemental,if=talent.storm_elemental.enabled&(!talent.icefury.enabled|!buff.icefury.up&!cooldown.icefury.up)
+actions+=/storm_elemental,if=talent.storm_elemental.enabled&(!talent.icefury.enabled|!buff.icefury.up&!cooldown.icefury.up)&(!talent.ascendance.enabled|!cooldown.ascendance.up&!buff.ascendance.up)
 actions+=/earth_elemental,if=!talent.primal_elementalist.enabled|talent.primal_elementalist.enabled&(cooldown.fire_elemental.remains<120&!talent.storm_elemental.enabled|cooldown.storm_elemental.remains<120&talent.storm_elemental.enabled)
 actions+=/use_items
 actions+=/blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
@@ -79,48 +79,53 @@ actions.aoe+=/frost_shock,moving=1
 
 # Single Target Action Priority List
 # Ensure FS is active unless you have 14 or more stacks of Wind Gust from Storm Elemental. (Edge case: upcoming Asc but active SE; don't )
-actions.single_target=flame_shock,if=(!ticking|talent.storm_elemental.enabled&cooldown.storm_elemental.remains<2*gcd|dot.flame_shock.remains<=gcd|talent.ascendance.enabled&dot.flame_shock.remains<(cooldown.ascendance.remains+buff.ascendance.duration)&cooldown.ascendance.remains<4&(!talent.storm_elemental.enabled|talent.storm_elemental.enabled&cooldown.storm_elemental.remains<120))&buff.wind_gust.stack<14&!buff.surge_of_power.up
+actions.single_target=flame_shock,if=(!ticking|talent.storm_elemental.enabled&cooldown.storm_elemental.remains<2*gcd|dot.flame_shock.remains<=gcd|talent.ascendance.enabled&dot.flame_shock.remains<(cooldown.ascendance.remains+buff.ascendance.duration)&cooldown.ascendance.remains<4&(!talent.storm_elemental.enabled|talent.storm_elemental.enabled&cooldown.storm_elemental.remains<120))&(buff.wind_gust.stack<14|azerite.igneous_potential.rank>=2|buff.lava_surge.up|!buff.bloodlust.up)&!buff.surge_of_power.up
 # Use Ascendance after you've spent all Lava Burst charges and only if neither Storm Elemental nor Icefury are currently active.
-actions.single_target+=/ascendance,if=talent.ascendance.enabled&(time>=60|buff.bloodlust.up)&cooldown.lava_burst.remains>0&(!talent.storm_elemental.enabled|cooldown.storm_elemental.remains>120)&(!talent.icefury.enabled|!buff.icefury.up&!cooldown.icefury.up)
-# Don't use Elemental Blast if you could cast a Master of the Elements empowered Earth Shock instead. Don't cast Elemental Blast during Storm Elemental unless you have 3x Natural Harmony in which case you stop using Elemental Blast once you reach 14 stacks of Wind Gust.
+actions.single_target+=/ascendance,if=talent.ascendance.enabled&(time>=60|buff.bloodlust.up)&cooldown.lava_burst.remains>0&(cooldown.storm_elemental.remains<120|!talent.storm_elemental.enabled)&(!talent.icefury.enabled|!buff.icefury.up&!cooldown.icefury.up)
+# Don't use Elemental Blast if you could cast a Master of the Elements empowered Earth Shock instead. Don't cast Elemental Blast during Storm Elemental unless you have 3x Natural Harmony. But in this case stop using Elemental Blast once you reach 14 stacks of Wind Gust.
 actions.single_target+=/elemental_blast,if=talent.elemental_blast.enabled&(talent.master_of_the_elements.enabled&buff.master_of_the_elements.up&maelstrom<60|!talent.master_of_the_elements.enabled)&(!(cooldown.storm_elemental.remains>120&talent.storm_elemental.enabled)|azerite.natural_harmony.rank=3&buff.wind_gust.stack<14)
 # Keep SK for large or soon add waves. Unless you have Surge of Power, in which case you want to double buff Lightning Bolt by pooling Maelstrom beforehand. Example sequence: 100MS, ES, SK, LB, LvB, ES, LB
 actions.single_target+=/stormkeeper,if=talent.stormkeeper.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)&(!talent.surge_of_power.enabled|buff.surge_of_power.up|maelstrom>=44)
 actions.single_target+=/liquid_magma_totem,if=talent.liquid_magma_totem.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)
 # Combine Stormkeeper with Master of the Elements or Surge of Power.
 actions.single_target+=/lightning_bolt,if=buff.stormkeeper.up&spell_targets.chain_lightning<2&(buff.master_of_the_elements.up&!talent.surge_of_power.enabled|buff.surge_of_power.up)
-# There might come an update for this line with some SoP logic.
-actions.single_target+=/earthquake,if=active_enemies>1&spell_targets.chain_lightning>1&(!talent.surge_of_power.enabled|!dot.flame_shock.refreshable|cooldown.storm_elemental.remains>120)&(!talent.master_of_the_elements.enabled|buff.master_of_the_elements.up|maelstrom>=92)
-# Boy...what a condition. With Master of the Elements pool Maelstrom up to 8 Maelstrom below the cap to ensure it's used with Earth Shock. Without Master of the Elements, use Earth Shock either if Stormkeeper is up, Maelstrom is 10 Maelstrom below the cap or less, or either Storm Elemental isn't talented or it's not active and your last Storm Elemental of the fight will have only a partial duration.
-actions.single_target+=/earth_shock,if=!buff.surge_of_power.up&talent.master_of_the_elements.enabled&(buff.master_of_the_elements.up|maelstrom>=92+30*talent.call_the_thunder.enabled|buff.stormkeeper.up&active_enemies<2)|!talent.master_of_the_elements.enabled&(buff.stormkeeper.up|maelstrom>=90+30*talent.call_the_thunder.enabled|!(cooldown.storm_elemental.remains>120&talent.storm_elemental.enabled)&expected_combat_length-time-cooldown.storm_elemental.remains-150*floor((expected_combat_length-time-cooldown.storm_elemental.remains)%150)>=30*(1+(azerite.echo_of_the_elementals.rank>=2)))
-# Use Earth Shock if Surge of Power is talented, but neither it nor a DPS Elemental is active at the moment, and Lava Burst is ready or will be within the next GCD.
+actions.single_target+=/earthquake,if=spell_targets.chain_lightning>1&(!talent.surge_of_power.enabled|!dot.flame_shock.refreshable|cooldown.storm_elemental.remains>120)&(!talent.master_of_the_elements.enabled|buff.master_of_the_elements.up|maelstrom>=92)
+# With Master of the Elements you can pool Maelstrom up to 8 Maelstrom below the cap to ensure its use with Earth Shock. Don't overwrite Surge of Power buffs. I'm looking at you Aftershock!
+actions.single_target+=/earth_shock,if=!buff.surge_of_power.up&talent.master_of_the_elements.enabled&(buff.master_of_the_elements.up|cooldown.lava_burst.remains>0&maelstrom>=92+30*talent.call_the_thunder.enabled|buff.stormkeeper.up&cooldown.lava_burst.remains<=gcd)
+# Without Master of the Elements, use Earth Shock either if Stormkeeper is up, Maelstrom is within 10 Maelstrom of the cap, or either Storm Elemental isn't talented or it's not active and your last Storm Elemental of the fight will have only a partial duration (plus the Echo of the Elementals duration). If you have Igneous Potential 3 times, don't use Earthshock during Ascendance.
+actions.single_target+=/earth_shock,if=!talent.master_of_the_elements.enabled&!(azerite.igneous_potential.rank>2&buff.ascendance.up)&(buff.stormkeeper.up|maelstrom>=90+30*talent.call_the_thunder.enabled|!(cooldown.storm_elemental.remains>120&talent.storm_elemental.enabled)&expected_combat_length-time-cooldown.storm_elemental.remains-150*floor((expected_combat_length-time-cooldown.storm_elemental.remains)%150)>=30*(1+(azerite.echo_of_the_elementals.rank>=2)))
+# Use Earth Shock if Surge of Power is talented, but neither it nor a DPS Elemental is active at the moment, and Lava Burst is ready or will be ready within the next GCD.
 actions.single_target+=/earth_shock,if=talent.surge_of_power.enabled&!buff.surge_of_power.up&cooldown.lava_burst.remains<=gcd&(!talent.storm_elemental.enabled&!(cooldown.fire_elemental.remains>120)|talent.storm_elemental.enabled&!(cooldown.storm_elemental.remains>120))
-# Cast Lightning Bolts during Storm Elemental duration.
-actions.single_target+=/lightning_bolt,if=cooldown.storm_elemental.remains>120&talent.storm_elemental.enabled
+# Spam Lightning Bolts during Storm Elemental duration if you don't have Igneous Potential or have it only once, and don't use Lightning Bolt during Bloodlust if you have a Lava Surge Proc.
+actions.single_target+=/lightning_bolt,if=cooldown.storm_elemental.remains>120&talent.storm_elemental.enabled&(azerite.igneous_potential.rank<2|!buff.lava_surge.up&buff.bloodlust.up)
 # Use Frost Shock with Icefury and Master of the Elements.
 actions.single_target+=/frost_shock,if=talent.icefury.enabled&talent.master_of_the_elements.enabled&buff.icefury.up&buff.master_of_the_elements.up
 actions.single_target+=/lava_burst,if=buff.ascendance.up
 # Utilize Surge of Power to spread Flame Shock if multiple enemies are present.
 actions.single_target+=/flame_shock,target_if=refreshable&active_enemies>1&buff.surge_of_power.up
-# Use Lava Burst with Surge of Power if the last potential usage of a DPS Elemental hasn't a full duration OR if you could get another usage of the DPS Elemental if the remaining fight was 16% longer.
+# Use Lava Burst with Surge of Power if the last potential usage of Storm Elemental hasn't a full duration OR if you could get another usage of the DPS Elemental if the remaining fight was 16% longer.
 actions.single_target+=/lava_burst,if=talent.storm_elemental.enabled&cooldown_react&buff.surge_of_power.up&(expected_combat_length-time-cooldown.storm_elemental.remains-150*floor((expected_combat_length-time-cooldown.storm_elemental.remains)%150)<30*(1+(azerite.echo_of_the_elementals.rank>=2))|(1.16*(expected_combat_length-time)-cooldown.storm_elemental.remains-150*floor((1.16*(expected_combat_length-time)-cooldown.storm_elemental.remains)%150))<(expected_combat_length-time-cooldown.storm_elemental.remains-150*floor((expected_combat_length-time-cooldown.storm_elemental.remains)%150)))
-# Use Lava Burst with Surge of Power if the last potential usage of a DPS Elemental hasn't a full duration OR if you could get another usage of the DPS Elemental if the remaining fight was 16% longer.
+# Use Lava Burst with Surge of Power if the last potential usage of Fire Elemental hasn't a full duration OR if you could get another usage of the DPS Elemental if the remaining fight was 16% longer.
 actions.single_target+=/lava_burst,if=!talent.storm_elemental.enabled&cooldown_react&buff.surge_of_power.up&(expected_combat_length-time-cooldown.fire_elemental.remains-150*floor((expected_combat_length-time-cooldown.fire_elemental.remains)%150)<30*(1+(azerite.echo_of_the_elementals.rank>=2))|(1.16*(expected_combat_length-time)-cooldown.fire_elemental.remains-150*floor((1.16*(expected_combat_length-time)-cooldown.fire_elemental.remains)%150))<(expected_combat_length-time-cooldown.fire_elemental.remains-150*floor((expected_combat_length-time-cooldown.fire_elemental.remains)%150)))
 actions.single_target+=/lightning_bolt,if=buff.surge_of_power.up
+actions.single_target+=/lava_burst,if=cooldown_react&!talent.master_of_the_elements.enabled
+# Slightly game Icefury buff to hopefully buff some empowered Frost Shocks with Master of the Elements.
+actions.single_target+=/icefury,if=talent.icefury.enabled&!(maelstrom>75&cooldown.lava_burst.remains<=0)&(!talent.storm_elemental.enabled|cooldown.storm_elemental.remains<120)
+actions.single_target+=/lava_burst,if=cooldown_react&charges>talent.echo_of_the_elements.enabled
+# Slightly delay using Icefury empowered Frost Shocks to empower them with Master of the Elements too.
+actions.single_target+=/frost_shock,if=talent.icefury.enabled&buff.icefury.up&buff.icefury.remains<1.1*gcd*buff.icefury.stack
 actions.single_target+=/lava_burst,if=cooldown_react
 # Don't accidentally use Surge of Power with Flame Shock during single target.
 actions.single_target+=/flame_shock,target_if=refreshable&!buff.surge_of_power.up
 actions.single_target+=/totem_mastery,if=talent.totem_mastery.enabled&(buff.resonance_totem.remains<6|(buff.resonance_totem.remains<(buff.ascendance.duration+cooldown.ascendance.remains)&cooldown.ascendance.remains<15))
-# Slightly game Icefury buff to hopefully buff some with Master of the Elements.
 actions.single_target+=/frost_shock,if=talent.icefury.enabled&buff.icefury.up&(buff.icefury.remains<gcd*4*buff.icefury.stack|buff.stormkeeper.up|!talent.master_of_the_elements.enabled)
-actions.single_target+=/icefury,if=talent.icefury.enabled
 actions.single_target+=/lightning_bolt
 actions.single_target+=/flame_shock,moving=1,target_if=refreshable
 actions.single_target+=/flame_shock,moving=1,if=movement.distance>6
 # Frost Shock is our movement filler.
 actions.single_target+=/frost_shock,moving=1
 
-head=targettracking_headgear,id=165543,bonus_id=4824/1537/4775,azerite_powers=447/562/459/539/13
+head=hood_of_the_dark_reaper,id=159391,bonus_id=1587/4819/4775,azerite_powers=457/416/30/83/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
 shoulders=pauldrons_of_ancestral_vengeance,id=165921,bonus_id=4824/1537/4775,azerite_powers=457/562/461/87/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
@@ -133,15 +138,15 @@ feet=boots_of_the_gilded_path,id=165541,bonus_id=4800/1537
 finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_critical_strike
 finger2=band_of_multisided_strikes,id=165565,bonus_id=4800/1537,enchant=pact_of_critical_strike
 trinket1=incandescent_sliver,id=165571,bonus_id=4800/1537
-trinket2=ignition_mages_fuse,id=159615,bonus_id=1572/4779/1674
-main_hand=akundas_shocksplitter,id=165594,bonus_id=4800/1537,enchant=deadly_navigation
+trinket2=crest_of_paku,id=166418,bonus_id=4800/1537
+main_hand=akundas_shocksplitter,id=165594,bonus_id=4800/1537,enchant=torrent_of_elements
 off_hand=sunburst_crest,id=165584,bonus_id=4800/1537
 
 # Gear Summary
-# gear_ilvl=415.25
+# gear_ilvl=416.19
 # gear_strength=217
 # gear_stamina=9919
-# gear_intellect=7239
+# gear_intellect=7293
 # gear_crit_rating=976
 # gear_haste_rating=1053
 # gear_mastery_rating=528
