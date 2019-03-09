@@ -45,7 +45,7 @@ actions+=/lights_judgment
 
 # Cooldowns
 actions.cds=potion,if=buff.bloodlust.react|debuff.vendetta.up
-actions.cds+=/use_item,name=galecallers_boon,if=cooldown.vendetta.remains<=1&(!talent.subterfuge.enabled|dot.garrote.pmultiplier>1)|cooldown.vendetta.remains>45
+actions.cds+=/use_item,name=galecallers_boon,if=cooldown.vendetta.remains>45
 # Default Trinket usage: Use on cooldown.
 actions.cds+=/use_item,name=variable_intensity_gigavolt_oscillating_reactor
 actions.cds+=/blood_fury,if=debuff.vendetta.up
