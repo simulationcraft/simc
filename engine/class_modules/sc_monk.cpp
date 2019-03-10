@@ -3715,6 +3715,24 @@ struct glory_of_the_dawn_t : public monk_melee_attack_t
   {
     background = true;
   }
+
+  double action_multiplier() const override
+  {
+    double am = monk_melee_attack_t::action_multiplier();
+
+    // Feb-14-2019
+    // In 8.1.5, the Glory of the Dawn artifact trait will now deal 35% increased damage while Storm, Earth, and Fire is active.
+    // https://www.wowhead.com/bluetracker?topic=95585&region=us
+    // https://us.forums.blizzard.com/en/wow/t/ww-sef-bugs-and-more/95585/10
+    // The 35% cannot be located in any effect (whether it's Windwalker aura, SEF's spell, or in either of GotD's spells)
+    // Using SEF' damage reduction times 3 for future proofing
+    // (1 - 55%) = 45%; 45% * 3 = 135%
+    if ( p()->buff.storm_earth_and_fire->up() && maybe_ptr( p()->dbc.ptr ) ) {
+      am *= ( 1 - p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent() ) * 3;
+    }
+
+    return am;
+  }
 };
 
 // Rising Sun Kick Damage Trigger ===========================================
@@ -7135,6 +7153,7 @@ struct windwalking_driver_t : public monk_buff_t<buff_t>
     movement_increase = p.buffs.windwalking_movement_aura->data().effectN( 1 ).percent();
   }
 };
+
 }  // namespace buffs
 
 namespace items
