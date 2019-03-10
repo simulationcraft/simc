@@ -365,8 +365,6 @@ namespace warlock
         gain_t* doom;
         gain_t* demonic_meteor;
         gain_t* baleful_invocation;
-
-        gain_t* soulsnatcher;
       } gains;
 
       // Procs
