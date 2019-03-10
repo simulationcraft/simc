@@ -202,7 +202,6 @@ namespace warlock
 
         //Demo
         azerite_power_t demonic_meteor;
-        azerite_power_t forbidden_knowledge;
         azerite_power_t shadows_bite;
         azerite_power_t supreme_commander;
         azerite_power_t umbral_blaze;
@@ -319,7 +318,6 @@ namespace warlock
         propagate_const<buff_t*> prince_malchezaar;
         propagate_const<buff_t*> eyes_of_guldan;
 
-        propagate_const<buff_t*> forbidden_knowledge;
         propagate_const<buff_t*> shadows_bite;
         propagate_const<buff_t*> supreme_commander;
         propagate_const<buff_t*> explosive_potential;

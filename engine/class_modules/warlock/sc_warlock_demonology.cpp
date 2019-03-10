@@ -315,11 +315,6 @@ namespace warlock {
         {
           td(target)->debuffs_from_the_shadows->trigger();
         }
-
-        if (p()->azerite.forbidden_knowledge.ok())
-        {
-          p()->buffs.forbidden_knowledge->trigger();
-        }
       }
     };
 
@@ -951,10 +946,6 @@ namespace warlock {
       ->set_duration(talents.nether_portal->duration());
 
     // Azerite
-    buffs.forbidden_knowledge = make_buff( this, "forbidden_knowledge", azerite.forbidden_knowledge.spell_ref().effectN( 1 ).trigger() )
-      ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-      // Forbidden Knowledge has a built in 30% reduction to the value of ranks 2 and 3. This is applied as a flat multiplier to the total value.
-      ->set_default_value( azerite.forbidden_knowledge.value() * ( ( 1.0 + 0.70 * ( azerite.forbidden_knowledge.n_items() - 1 ) ) / azerite.forbidden_knowledge.n_items() ) );
     buffs.shadows_bite = make_buff(this, "shadows_bite", azerite.shadows_bite)
       ->set_duration(find_spell(272945)->duration())
       ->set_default_value(azerite.shadows_bite.value());
@@ -1015,7 +1006,6 @@ namespace warlock {
 
     // Azerite
     azerite.demonic_meteor                  = find_azerite_spell( "Demonic Meteor" );
-    azerite.forbidden_knowledge             = find_azerite_spell( "Forbidden Knowledge" );
     azerite.shadows_bite                    = find_azerite_spell( "Shadow's Bite" );
     azerite.supreme_commander               = find_azerite_spell( "Supreme Commander" );
     azerite.umbral_blaze                    = find_azerite_spell( "Umbral Blaze" );
