@@ -1021,7 +1021,6 @@ namespace warlock
     azerite.inevitable_demise           = find_azerite_spell("Inevitable Demise");
     azerite.sudden_onset                = find_azerite_spell("Sudden Onset");
     azerite.wracking_brilliance         = find_azerite_spell("Wracking Brilliance");
-    azerite.deathbloom                  = find_azerite_spell("Deathbloom");
     azerite.pandemic_invocation         = find_azerite_spell( "Pandemic Invocation" );
     // Actives
     active.pandemic_invocation          = new pandemic_invocation_t( this );

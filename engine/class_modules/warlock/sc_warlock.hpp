@@ -214,7 +214,6 @@ namespace warlock
         azerite_power_t inevitable_demise;
         azerite_power_t sudden_onset;
         azerite_power_t wracking_brilliance;
-        azerite_power_t deathbloom;
         azerite_power_t pandemic_invocation;
 
         //Destro
