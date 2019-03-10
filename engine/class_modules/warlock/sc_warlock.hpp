@@ -217,7 +217,6 @@ namespace warlock
         azerite_power_t pandemic_invocation;
 
         //Destro
-        azerite_power_t accelerant;
         azerite_power_t bursting_flare;
         azerite_power_t chaotic_inferno;
         azerite_power_t crashing_chaos;
@@ -327,7 +326,6 @@ namespace warlock
         propagate_const<buff_t*> grimoire_of_supremacy;
         propagate_const<buff_t*> dark_soul_instability;
 
-        propagate_const<buff_t*> accelerant;
         propagate_const<buff_t*> bursting_flare;
         propagate_const<buff_t*> chaotic_inferno;
         propagate_const<buff_t*> crashing_chaos;
