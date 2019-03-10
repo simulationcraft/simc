@@ -523,7 +523,6 @@ void warlock_t::init_spells()
   spec.shadow_bite                      = find_specialization_spell( "Shadow Bite" );
   spec.unending_resolve                 = find_specialization_spell( "Unending Resolve" );
   spec.firebolt                         = find_specialization_spell( "Firebolt" );
-  spec.firebolt_2                       = find_specialization_spell( 231795 );
 
   // Talents
   talents.demon_skin                    = find_talent_spell( "Fire and Brimstone" );

@@ -280,7 +280,6 @@ namespace warlock
         const spell_data_t* havoc;
         const spell_data_t* unending_resolve;
         const spell_data_t* firebolt;
-        const spell_data_t* firebolt_2; // 50% damage increase to Firebolt for targets w/ Immolate
       } spec;
 
       // Buffs
