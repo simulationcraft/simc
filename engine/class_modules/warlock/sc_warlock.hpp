@@ -260,11 +260,9 @@ namespace warlock
         const spell_data_t* affliction;
         const spell_data_t* nightfall;
         const spell_data_t* unstable_affliction;
-        const spell_data_t* unstable_affliction_2;
         const spell_data_t* agony;
         const spell_data_t* agony_2;
         const spell_data_t* shadow_bite;
-        const spell_data_t* shadow_bite_2;
         const spell_data_t* shadow_bolt; // also demo
         const spell_data_t* summon_darkglare;
 
@@ -278,12 +276,11 @@ namespace warlock
         const spell_data_t* destruction;
         const spell_data_t* immolate;
         const spell_data_t* conflagrate;
-        const spell_data_t* conflagrate_2;
+        const spell_data_t* conflagrate_2; // Conflagrate has 2 charges
         const spell_data_t* havoc;
         const spell_data_t* unending_resolve;
-        const spell_data_t* unending_resolve_2;
         const spell_data_t* firebolt;
-        const spell_data_t* firebolt_2;
+        const spell_data_t* firebolt_2; // 50% damage increase to Firebolt for targets w/ Immolate
       } spec;
 
       // Buffs
