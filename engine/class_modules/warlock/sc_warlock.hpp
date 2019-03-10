@@ -396,7 +396,6 @@ namespace warlock
       } spells;
 
       int initial_soul_shards;
-      bool allow_sephuz;
       std::string default_pet;
       timespan_t shard_react;
 

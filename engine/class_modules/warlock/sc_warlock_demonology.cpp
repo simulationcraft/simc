@@ -9,7 +9,6 @@ namespace warlock {
     {
     public:
       gain_t * gain;
-      bool can_feretory;
 
       demonology_spell_t(warlock_t* p, const std::string& n) :
         demonology_spell_t(n, p, p -> find_class_spell(n))
@@ -28,8 +27,6 @@ namespace warlock {
         tick_may_crit = true;
         weapon_multiplier = 0.0;
         gain = player->get_gain(name_str);
-
-        can_feretory = true;
       }
 
       void reset() override
