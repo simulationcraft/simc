@@ -6450,7 +6450,8 @@ struct solar_wrath_t : public druid_spell_t
 
     druid_spell_t::execute();
 
-    streaking_stars_trigger( SS_SOLAR_WRATH, execute_state );
+    if ( p()->dbc.ptr )
+      streaking_stars_trigger( SS_SOLAR_WRATH, execute_state );
 
     p() -> buff.solar_empowerment -> decrement();
 
