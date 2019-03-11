@@ -5306,8 +5306,6 @@ struct celestial_alignment_t : public druid_spell_t
     precombat()
   {
     harmful = false;
-    if ( player->dbc.ptr )
-      energize_amount = player->spec.celestial_alignment->effectN( 5 ).resource( RESOURCE_ASTRAL_POWER );
   }
 
   void init_finished() override
