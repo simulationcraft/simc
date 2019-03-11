@@ -141,6 +141,7 @@ namespace racial
 {
   void touch_of_the_grave( special_effect_t& );
   void entropic_embrace( special_effect_t& );
+  void zandalari_loa( special_effect_t& );
 }
 
 /**
@@ -3715,6 +3716,36 @@ void racial::entropic_embrace( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+void racial::zandalari_loa( special_effect_t& effect )
+{
+  //only handle the proc loas here. 
+  //Gonk is handled in player_t::passive_movement_modifier() when chosen (TODO: Should we add a constant buff for report feedback when Gonk is chosen?)
+  if ( effect.player->zandalari_loa == player_t::AKUNDA )
+  {
+    //Akunda
+  }
+  else if ( effect.player->zandalari_loa == player_t::BWONSAMDI )
+  {
+    //Bwonsamdi
+  }
+  else if ( effect.player->zandalari_loa == player_t::KIMBUL )
+  {
+    //Kimbul
+  }
+  else if ( effect.player->zandalari_loa == player_t::KRAGWA )
+  {
+    //Kragwa
+  }
+  else if ( effect.player->zandalari_loa == player_t::PAKU )
+  {
+    //Paku
+  }
+  else
+  {
+    //Gonk so do nothing. Maybe want to add constant buff later?
+  }
+}
+
 // Figure out if a given generic buff (associated with a trinket/item) is a
 // stat buff of the correct type
 bool buff_has_stat( const buff_t* buff, stat_e stat )
@@ -4660,6 +4691,7 @@ void unique_gear::register_special_effects()
   /* Racial special effects */
   register_special_effect( 5227,   racial::touch_of_the_grave );
   register_special_effect( 255669, racial::entropic_embrace );
+  register_special_effect( 292752, racial::zandalari_loa);
 }
 
 void unique_gear::unregister_special_effects()

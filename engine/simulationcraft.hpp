@@ -3495,6 +3495,7 @@ struct player_t : public actor_t
   std::string region_str, server_str, origin_str;
   std::string race_str, professions_str, position_str;
   enum timeofday_e { NIGHT_TIME, DAY_TIME, } timeofday; // Specify InGame time of day to determine Night Elf racial
+  enum zandalari_loa_e {AKUNDA, BWONSAMDI, GONK, KIMBUL, KRAGWA, PAKU} zandalari_loa; //Specify which loa zandalari has chosen to determine racial
 
   // GCD Related attributes
   timespan_t  gcd_ready, base_gcd, min_gcd; // When is GCD ready, default base and minimum GCD times.
@@ -3862,6 +3863,7 @@ struct player_t : public actor_t
     gain_t* touch_of_the_grave;
     gain_t* vampiric_embrace;
     gain_t* warlords_unseeing_eye;
+    gain_t* embrace_of_bwonsamdi;
 
     gain_t* leech;
   } gains;
