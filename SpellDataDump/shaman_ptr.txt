@@ -5161,6 +5161,7 @@ Description      : Calls forth a Greater Fire Elemental to rain destruction on y
 While the Greater Fire Elemental is active, Flame Shock generates $263819s1 Maelstrom when it deals damage over time.
 
 Name             : Earth Elemental (id=198103) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Elemental Enhancement Restoration Shaman
 School           : Nature
 Spell Type       : Magic
@@ -5174,7 +5175,7 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : Disable target procs (113)
 Effects          :
@@ -9389,7 +9390,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734600)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 485.5798 (coefficient=6.245399) | PvP Coefficient: 0.50000 | Trigger Spell: 279513 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 728.3696 (coefficient=9.368098) | PvP Coefficient: 0.50000 | Trigger Spell: 279513 | Target: Self (1)
+                   Hotfixed: Coefficient (6.2454 -> 9.3681)
 #2 (id=734601)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 #3 (id=734602)   : Dummy (3)
