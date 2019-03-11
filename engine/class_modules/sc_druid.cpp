@@ -472,6 +472,8 @@ public:
     gain_t* shooting_stars;
     gain_t* solar_wrath;
     gain_t* sunfire;
+    gain_t* celestial_alignment;
+    gain_t* incarnation;
 
     // Feral (Cat)
     gain_t* brutal_slash;
@@ -5781,6 +5783,12 @@ struct incarnation_t : public druid_spell_t
     if (p()->buff.incarnation_moonkin->check())
     {
       streaking_stars_trigger(SS_CELESTIAL_ALIGNMENT, nullptr);
+
+      if ( p()->dbc.ptr && p()->spec.astral_power->ok() )
+        // TODO: Get proper source of value once ptr is updated
+        p()->resource_gain( RESOURCE_ASTRAL_POWER,
+                            p()->spec.celestial_alignment->effectN( 5 ).resource( RESOURCE_ASTRAL_POWER ),
+                            p()->gain.incarnation );
     }
 
     if ( ! p() -> in_combat )
@@ -6399,15 +6407,18 @@ struct solar_wrath_t : public druid_spell_t
     {
       p ()->trigger_solar_empowerment (s);
     }
-    if (streaking_stars_trigger(SS_SOLAR_WRATH, s, false)) // proc munching shenanigans
+    if ( !p()->dbc.ptr )
     {
-      if (!st->proc_streaking)
-        p()->proc.streaking_stars_gain->occur();
-    }
-    else
-    {
-      if (st->proc_streaking)
-        p()->proc.streaking_stars_loss->occur();
+      if ( streaking_stars_trigger( SS_SOLAR_WRATH, s, false ) )  // proc munching shenanigans
+      {
+        if ( !st->proc_streaking )
+          p()->proc.streaking_stars_gain->occur();
+      }
+      else
+      {
+        if ( st->proc_streaking )
+          p()->proc.streaking_stars_loss->occur();
+      }
     }
   }
 
@@ -6438,6 +6449,8 @@ struct solar_wrath_t : public druid_spell_t
     p() -> buff.solar_empowerment -> up();
 
     druid_spell_t::execute();
+
+    streaking_stars_trigger( SS_SOLAR_WRATH, execute_state );
 
     p() -> buff.solar_empowerment -> decrement();
 
@@ -8529,7 +8542,9 @@ void druid_t::init_gains()
   gain.moonfire              = get_gain( "moonfire"              );
   gain.shooting_stars        = get_gain( "shooting_stars"        );
   gain.solar_wrath           = get_gain( "solar_wrath"           );
-  gain.sunfire               = get_gain( "sunfire"               );
+  gain.sunfire               = get_gain( "sunfire" );
+  gain.celestial_alignment   = get_gain( "celestial_alignment" );
+  gain.incarnation           = get_gain( "incarnation" );
 
 
   // Feral 
