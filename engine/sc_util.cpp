@@ -1852,6 +1852,8 @@ race_e util::translate_race_id( int rid )
     case 28: return RACE_HIGHMOUNTAIN_TAUREN;
     case 29: return RACE_VOID_ELF;
     case 30: return RACE_LIGHTFORGED_DRAENEI;
+    case 31: return RACE_ZANDALARI_TROLL;
+    case 32: return RACE_KUL_TIRAN;
     case 34: return RACE_DARK_IRON_DWARF;
     case 36: return RACE_MAGHAR_ORC;
   }
@@ -3046,6 +3048,7 @@ bool is_alliance( race_e race )
     case RACE_VOID_ELF:
     case RACE_LIGHTFORGED_DRAENEI:
     case RACE_DARK_IRON_DWARF:
+    case RACE_KUL_TIRAN:
       return true;
     default:
       return false;
@@ -3066,6 +3069,7 @@ bool is_horde( race_e race )
     case RACE_HIGHMOUNTAIN_TAUREN:
     case RACE_NIGHTBORNE:
     case RACE_MAGHAR_ORC:
+    case RACE_ZANDALARI_TROLL:
       return true;
     default:
       return false;
