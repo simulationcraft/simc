@@ -474,6 +474,7 @@ public:
     gain_t* sunfire;
     gain_t* celestial_alignment;
     gain_t* incarnation;
+    gain_t* arcanic_pulsar;
 
     // Feral (Cat)
     gain_t* brutal_slash;
@@ -6401,19 +6402,6 @@ struct solar_wrath_t : public druid_spell_t
     {
       p ()->trigger_solar_empowerment (s);
     }
-    if ( !p()->dbc.ptr )
-    {
-      if ( streaking_stars_trigger( SS_SOLAR_WRATH, s, false ) )  // proc munching shenanigans
-      {
-        if ( !st->proc_streaking )
-          p()->proc.streaking_stars_gain->occur();
-      }
-      else
-      {
-        if ( st->proc_streaking )
-          p()->proc.streaking_stars_loss->occur();
-      }
-    }
   }
 
   timespan_t gcd() const override
@@ -6444,8 +6432,7 @@ struct solar_wrath_t : public druid_spell_t
 
     druid_spell_t::execute();
 
-    if ( p()->dbc.ptr )
-      streaking_stars_trigger( SS_SOLAR_WRATH, execute_state );
+    streaking_stars_trigger( SS_SOLAR_WRATH, execute_state );
 
     p() -> buff.solar_empowerment -> decrement();
 
@@ -6769,7 +6756,11 @@ struct starsurge_t : public druid_spell_t
         if (proc_buff->check())
           proc_buff->extend_duration(p(), pulsar_dur);
         else
-          proc_buff->trigger(1, buff_t::DEFAULT_VALUE(), 1.0, pulsar_dur);
+        {
+          proc_buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, pulsar_dur );
+          //this number is nowhere to be found in the spell data
+          p()->resource_gain( RESOURCE_ASTRAL_POWER, 12, p()->gain.arcanic_pulsar );
+        }
 
         p()->buff.arcanic_pulsar->expire();
         streaking_stars_trigger(SS_CELESTIAL_ALIGNMENT, nullptr);
