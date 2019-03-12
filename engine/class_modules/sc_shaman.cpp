@@ -849,13 +849,13 @@ struct roiling_storm_buff_driver_t : public buff_t
     set_period( s_data->effectN( 1 ).period() );
 
     set_quiet( true );
-  
+
     if ( p->azerite.roiling_storm.ok() )
     {
       set_tick_callback( [p]( buff_t*, int, const timespan_t& ) {
         p->buff.stormbringer->trigger( p->buff.stormbringer->max_stack() );
       } );
-    } 
+    }
   }
 };
 
@@ -3048,7 +3048,7 @@ struct windstrike_attack_t : public stormstrike_attack_t
 
       b += rs_bonus;
     }
-    
+
     return b;
   }
 
@@ -8669,22 +8669,7 @@ void shaman_t::combat_begin()
   if ( azerite.roiling_storm.ok() )
   {
     buff.roiling_storm_buff_driver->trigger();
-
-    // Roll a range between 0 and the roiling storm frequency to simulate a random point in time, then use that
-    // randomized point to determine how much time is left on a stormbringer (if any is up at all).
-    double rs_freq            = buff.roiling_storm_buff_driver->buff_period.total_seconds();
-    double rs_start_point     = rng().range( 0, rs_freq );
-    double remain_sb_duration = buff.stormbringer->buff_duration.total_seconds() - ( rs_freq - rs_start_point );
-
-    // attempt to also randomized the start time of the driver... will have to ask navv for advice later.
-    // buff.roiling_storm_buff_driver->trigger( buff.roiling_storm_buff_driver->max_stack(), 0, -1,
-    //                                        timespan_t::from_seconds( rs_start_point ) );
-
-    if ( remain_sb_duration > 0 )
-    {
-      buff.stormbringer->trigger( buff.stormbringer->max_stack(), 0, -1,
-                                  timespan_t::from_seconds( remain_sb_duration ) );
-    }
+    buff.stormbringer->trigger( buff.stormbringer->max_stack() );
   }
 }
 
