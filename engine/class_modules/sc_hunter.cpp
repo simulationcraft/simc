@@ -2337,12 +2337,6 @@ struct barbed_shot_t: public hunter_ranged_attack_t
   {
     return dot -> time_to_next_tick() + triggered_duration;
   }
-
-  // hack to force defender to mitigate the damage with armor.
-  void assess_damage( dmg_e, action_state_t* s ) override
-  {
-    hunter_ranged_attack_t::assess_damage( DMG_DIRECT, s );
-  }
 };
 
 //==============================
