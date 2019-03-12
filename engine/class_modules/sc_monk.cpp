@@ -1,4 +1,4 @@
-
+﻿
 // ==========================================================================
 // Dedmonwakeen's DPS-DPM Simulator.
 // Send questions to natehieter@gmail.com
@@ -1096,7 +1096,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
         {
           state -> da_multiplier /= ( 1 + o() -> buff.hit_combo -> stack_value() );
           state -> da_multiplier *= 1 + p() -> buff.hit_combo_sef -> stack_value();
-        }0
+        }
 
         if ( rt == DMG_OVER_TIME && ( flags & STATE_MUL_TA ) )
         {
