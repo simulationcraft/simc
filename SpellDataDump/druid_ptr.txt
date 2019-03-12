@@ -2797,6 +2797,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Solar Wrath (5176), Solar Wrath (190984), Lunar Strike (194153), Lunar Strike (197628), Solar Wrath (197629)
                    Family Flags: 0, 2
+#6 (id=769001)   : Energize Power (30)
+                   Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
+                   Hotfixed: NEW EFFECT
 Description      : An improved Moonkin Form that increases the damage of all your spells by $s1% and grants you $s3% Haste.
 
 Lasts $d. You may shapeshift in and out of this improved Moonkin Form for its duration.

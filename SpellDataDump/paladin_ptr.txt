@@ -734,7 +734,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Flash of Light (19750), Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Holy Shock (25914), Avenger's Shield (31935), Crusader Strike (35395), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Holy Light (82326), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Arcing Light (119952), Holy Shield (157122), Judgment of Light (183811), Light of the Martyr (183998), Light of the Protector (184092), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Retribution Aura (204011), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Word of Glory (210191), Aura of Mercy (210291), Hand of the Protector (213652), Justicar's Vengeance (215661), Bestow Faith (223306), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Judgment (228288), Wake of Ashes (255937), Execution Sentence (267798), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Radiant Incandescence (278147), Grace of the Justicar (278785), Glimmer of Light (287280)
                    Family Flags: 46, 65
-#4 (id=714298)   : Apply Aura (6) | Unknown(334)
+#4 (id=714298)   : Apply Aura (6) | Modify Auto Attack Critical Chance (334)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=723594)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -1486,8 +1486,12 @@ Effects          :
                    Family Flags: 65
 #3 (id=180853)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Target: Self (1)
-#4 (id=714745)   : Apply Aura (6) | Periodic Dummy (226): every 15 seconds
+#4 (id=714745)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
+                   Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Hotfixed: Sub Type (226 -> 344), Period (15000 -> 0), Base Value (0 -> 7)
+#5 (id=769058)   : Apply Aura (6) | Periodic Dummy (226): every 15 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Hotfixed: NEW EFFECT
 Description      : Consumes up to 3 Holy Power to increase your damage done and Haste by $s1%.
 
 Lasts $d per Holy Power consumed.

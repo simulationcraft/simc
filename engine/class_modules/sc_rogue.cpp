@@ -4413,10 +4413,8 @@ struct adrenaline_rush_t : public buff_t
     buff_t::start( stacks, value, duration );
 
     rogue_t* rogue = debug_cast<rogue_t*>( source );
-    if ( maybe_ptr( rogue ->dbc.ptr ) ) {
-      rogue -> resources.temporary[ RESOURCE_ENERGY ] += data().effectN( 4 ).base_value();
-      rogue -> recalculate_resource_max( RESOURCE_ENERGY );
-    }
+    rogue -> resources.temporary[ RESOURCE_ENERGY ] += data().effectN( 4 ).base_value();
+    rogue -> recalculate_resource_max( RESOURCE_ENERGY );
   }
 
   void expire_override(int expiration_stacks, timespan_t remaining_duration ) override
@@ -4424,10 +4422,8 @@ struct adrenaline_rush_t : public buff_t
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
     rogue_t* rogue = debug_cast<rogue_t*>( source );
-    if ( maybe_ptr( rogue ->dbc.ptr ) ) {
-      rogue -> resources.temporary[ RESOURCE_ENERGY ] -= data().effectN( 4 ).base_value();
-      rogue -> recalculate_resource_max( RESOURCE_ENERGY );
-    }
+    rogue -> resources.temporary[ RESOURCE_ENERGY ] -= data().effectN( 4 ).base_value();
+    rogue -> recalculate_resource_max( RESOURCE_ENERGY );
   }
 };
 

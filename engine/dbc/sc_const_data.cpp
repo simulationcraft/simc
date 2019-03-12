@@ -221,11 +221,11 @@ const std::vector<class_passives_entry_t> _class_passives {
 
 int dbc::build_level( bool ptr )
 {
-  return maybe_ptr( ptr ) ? 29558 : 29482;
+  return maybe_ptr( ptr ) ? 29558 : 29683;
 }
 
 const char* dbc::wow_version( bool ptr )
-{ return maybe_ptr( ptr ) ? "8.1.5" : "8.1.0"; }
+{ return maybe_ptr( ptr ) ? "8.1.5" : "8.1.5"; }
 
 const char* dbc::wow_ptr_status( bool ptr )
 #if SC_BETA
