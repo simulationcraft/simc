@@ -5783,12 +5783,6 @@ struct incarnation_t : public druid_spell_t
     if (p()->buff.incarnation_moonkin->check())
     {
       streaking_stars_trigger(SS_CELESTIAL_ALIGNMENT, nullptr);
-
-      if ( p()->dbc.ptr && p()->spec.astral_power->ok() )
-        // TODO: Get proper source of value once ptr is updated
-        p()->resource_gain( RESOURCE_ASTRAL_POWER,
-                            p()->spec.celestial_alignment->effectN( 5 ).resource( RESOURCE_ASTRAL_POWER ),
-                            p()->gain.incarnation );
     }
 
     if ( ! p() -> in_combat )
