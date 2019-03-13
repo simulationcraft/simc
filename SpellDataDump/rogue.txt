@@ -1,4 +1,4 @@
-SimulationCraft 810-02 for World of Warcraft 8.1.0 Live (wow build 29482)
+SimulationCraft 810-02 for World of Warcraft 8.1.5 Live (wow build 29683)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -7922,7 +7922,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=748343)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 2787.075 (coefficient=35.84663) | PvP Coefficient: 0.50000 | Trigger Spell: 286130 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 3623.245 (coefficient=46.60123) | PvP Coefficient: 0.50000 | Trigger Spell: 286130 | Target: Self (1)
+                   Hotfixed: Coefficient (35.8466 -> 46.6012)
 #2 (id=748344)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Each combo point spent has a $s2% chance to cause your Nightblade to deal $s1 Shadow damage and replicate to a nearby enemy.

@@ -1,4 +1,4 @@
-SimulationCraft 810-02 for World of Warcraft 8.1.0 Live (wow build 29482)
+SimulationCraft 810-02 for World of Warcraft 8.1.5 Live (wow build 29683)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Arcane Fire Frost Paladin, Mage
@@ -8370,7 +8370,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=748188)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 71.54905 (coefficient=0.920245) | PvP Coefficient: 0.50000 | Trigger Spell: 264351 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 214.6472 (coefficient=2.760736) | PvP Coefficient: 0.50000 | Trigger Spell: 264351 | Target: Self (1)
+                   Hotfixed: Coefficient (0.920245 -> 2.76074)
 Description      : While you are above $264351s1% mana, Arcane Blast deals $s1 additional damage.
 
 While you are below $264351s1% mana, Arcane Blast's cost is reduced by $264353s1.
