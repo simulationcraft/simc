@@ -1,4 +1,4 @@
-SimulationCraft 810-02 for World of Warcraft 8.1.0 Live (wow build 29482)
+SimulationCraft 810-02 for World of Warcraft 8.1.5 Live (wow build 29683)
 
 Name             : Block (rank=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -9401,10 +9401,15 @@ Effects          :
 Description      : Your Stormbringer-empowered Stormstrikes deal $s1 additional damage. Every $s2 seconds, gain Stormbringer.
 
 Name             : Roiling Storm (id=279513) [Scaling Spell (-1), Hidden] 
+Hotfixed         : Max stacks, Proc Chance, Proc Stacks, Proc Flags, Internal Cooldown
 Class            : Shaman
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
+Internal Cooldown: 20 seconds
+Proc Chance      : 101%
+Proc Flags       : ........ ........ ........ ...x.... 
+                 
 Triggered by     : Roiling Storm (278719)
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
@@ -9415,8 +9420,9 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ .......x   ........ ........ ........ ......x. 
                  : Hidden (7), Scales with item level (354)
 Effects          :
-#1 (id=735828)   : Apply Aura (6) | Periodic Dummy (226): every 20 seconds
+#1 (id=735828)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Hotfixed: Period (20000 -> 1000)
 Description      : $@spelldesc278719
 
 Name             : Roiling Storm (id=279515) [Scaling Spell (-1), Spell Family (11)] 

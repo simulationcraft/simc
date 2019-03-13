@@ -198,10 +198,7 @@ struct avenging_wrath_t : public paladin_spell_t
     if ( p() -> azerite.avengers_might.ok() )
       p() -> buffs.avengers_might -> trigger( 1, p() -> buffs.avengers_might -> default_value, -1.0, p() -> buffs.avenging_wrath -> buff_duration );
 
-    if ( p() -> dbc.ptr )
-    {
-      p() -> buffs.avenging_wrath_crit -> trigger();
-    }
+    p() -> buffs.avenging_wrath_crit -> trigger();
   }
 
   // TODO: is this needed? Question for Ret dev, since I don't think it is for Prot/Holy
@@ -579,10 +576,7 @@ struct melee_t : public paladin_melee_attack_t
     paladin_melee_attack_t::init();
 
     // These whitelisted effects also increase auto attack damage
-    last_defender_increase = avenging_wrath = ret_crusade = true;
-    
-    // Bug? Inquisition doesn't increase aa damage
-    ret_inquisition = false;
+    last_defender_increase = avenging_wrath = ret_crusade = ret_inquisition = true;
   }
 
   virtual timespan_t execute_time() const override
@@ -592,18 +586,6 @@ struct melee_t : public paladin_melee_attack_t
       return timespan_t::zero();
     else
       return paladin_melee_attack_t::execute_time();
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = paladin_melee_attack_t::action_multiplier();
-
-    // Last Defender affects a whilelist of spells but also melee attacks
-    if ( p() -> talents.last_defender -> ok() )
-    {
-      am *= p() -> last_defender_damage();
-    }
-    return am;
   }
 
   virtual void execute() override
