@@ -3301,6 +3301,8 @@ double player_t::composite_melee_crit_chance() const
 
   ac += racials.viciousness->effectN( 1 ).percent();
   ac += racials.arcane_acuity->effectN( 1 ).percent();
+  if(buffs.embrace_of_paku)
+    ac += buffs.embrace_of_paku->check_value();
 
   if ( timeofday == DAY_TIME )
     ac += racials.touch_of_elune->effectN( 1 ).percent();
@@ -3566,6 +3568,8 @@ double player_t::composite_spell_crit_chance() const
 
   sc += racials.viciousness->effectN( 1 ).percent();
   sc += racials.arcane_acuity->effectN( 1 ).percent();
+  if(buffs.embrace_of_paku)
+    sc += buffs.embrace_of_paku->check_value();
 
   if ( timeofday == DAY_TIME )
   {
