@@ -3758,7 +3758,8 @@ struct embrace_of_kimbul_t : public spell_t
     tick_may_crit = false; //TOCHECK: Longer test needed with max level character for these values
     background = true;
     hasted_ticks = false;
-    dot_behavior = DOT_REFRESH;
+    dot_max_stack = sd->max_stacks();
+    dot_behavior = DOT_REFRESH; //TOCHECK: Does the dot pandemic or should it be clipped?
     ap_type = AP_NO_WEAPON;
     attack_power_mod.tick = 0.075; //Hardcoded in tooltip
     spell_power_mod.tick = 0.075;
