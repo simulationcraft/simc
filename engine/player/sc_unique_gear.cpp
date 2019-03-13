@@ -3760,8 +3760,8 @@ struct embrace_of_kimbul_t : public spell_t
     hasted_ticks = false;
     dot_behavior = DOT_REFRESH;
     ap_type = AP_NO_WEAPON;
-    attack_power_mod.tick = 0.75 / 3 / dot_duration.total_seconds() * base_tick_time.total_seconds(); //Hardcoded in tooltip
-    spell_power_mod.tick = 0.75 / 3 / dot_duration.total_seconds() * base_tick_time.total_seconds(); //Tooltip says damage*3 over duration, correcting for that here
+    attack_power_mod.tick = 0.075; //Hardcoded in tooltip
+    spell_power_mod.tick = 0.075;
   }
 
   double attack_tick_power_coefficient( const action_state_t* s ) const override
