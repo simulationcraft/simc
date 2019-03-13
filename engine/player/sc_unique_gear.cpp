@@ -3718,11 +3718,6 @@ void racial::entropic_embrace( special_effect_t& effect )
 
 void racial::zandalari_loa( special_effect_t& effect )
 {
-  //effect.player->sim->out_log.printf("entered loa init");
-
-  special_effect_t* driver = new special_effect_t(effect.player);
-  driver->source = SPECIAL_EFFECT_SOURCE_RACE;
-
   //only handle the proc loas here. 
   //Gonk is handled in player_t::passive_movement_modifier() when chosen (TODO: Should we add a constant buff for report feedback when Gonk is chosen?)
   if ( effect.player->zandalari_loa == player_t::AKUNDA )
@@ -3743,9 +3738,9 @@ void racial::zandalari_loa( special_effect_t& effect )
   }
   else if ( effect.player->zandalari_loa == player_t::PAKU )
   {    
-    driver->spell_id = 292361; //Permanent buff spell id, contains proc data
-
-    unique_gear::initialize_special_effect(*driver, driver->spell_id);
+    special_effect_t* driver = new special_effect_t(effect.player);
+    driver->source = SPECIAL_EFFECT_SOURCE_RACE;
+    unique_gear::initialize_special_effect(*driver, 292361); //Permanent buff spell id, contains proc data
 
     //Paku - Grants crit chance
     buff_t* paku = buff_t::find(effect.player, "embrace_of_paku");
@@ -3754,10 +3749,11 @@ void racial::zandalari_loa( special_effect_t& effect )
       //Buff spell data contains duration and amount
       paku = buff_creator_t( effect.player, "embrace_of_paku", effect.player->find_spell(292463) );
       paku->add_invalidate(CACHE_CRIT_CHANCE);
+      paku->set_default_value(effect.player->find_spell(292463)->effectN(1).percent());
     }
 
     driver->custom_buff = paku;
-    //effect.player->sim->out_log.printf("Hey we made it - racial");
+    effect.player->buffs.embrace_of_paku = paku;
 
     effect.player->special_effects.push_back(driver);
 
