@@ -521,11 +521,8 @@ void warlock_t::init_spells()
   spec.wild_imps                        = find_specialization_spell( "Wild Imps" );
   spec.demonic_core                     = find_specialization_spell( "Demonic Core" );
   spec.shadow_bite                      = find_specialization_spell( "Shadow Bite" );
-  spec.shadow_bite_2                    = find_specialization_spell( 231799 );
   spec.unending_resolve                 = find_specialization_spell( "Unending Resolve" );
-  spec.unending_resolve_2               = find_specialization_spell( 231794 );
   spec.firebolt                         = find_specialization_spell( "Firebolt" );
-  spec.firebolt_2                       = find_specialization_spell( 231795 );
 
   // Talents
   talents.demon_skin                    = find_talent_spell( "Fire and Brimstone" );
@@ -568,7 +565,6 @@ void warlock_t::init_gains()
   gains.shadow_bolt                     = get_gain( "shadow_bolt" );
   gains.soul_conduit                    = get_gain( "soul_conduit" );
 
-  gains.soulsnatcher                    = get_gain( "soulsnatcher" );
   gains.chaos_shards                    = get_gain( "chaos_shards" );
 }
 

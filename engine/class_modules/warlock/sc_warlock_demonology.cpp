@@ -9,7 +9,6 @@ namespace warlock {
     {
     public:
       gain_t * gain;
-      bool can_feretory;
 
       demonology_spell_t(warlock_t* p, const std::string& n) :
         demonology_spell_t(n, p, p -> find_class_spell(n))
@@ -28,8 +27,6 @@ namespace warlock {
         tick_may_crit = true;
         weapon_multiplier = 0.0;
         gain = player->get_gain(name_str);
-
-        can_feretory = true;
       }
 
       void reset() override
@@ -315,11 +312,6 @@ namespace warlock {
         {
           td(target)->debuffs_from_the_shadows->trigger();
         }
-
-        if (p()->azerite.forbidden_knowledge.ok())
-        {
-          p()->buffs.forbidden_knowledge->trigger();
-        }
       }
     };
 
@@ -451,13 +443,7 @@ namespace warlock {
             // Spelldata unknown. In-game testing shows Demonic Consumption provides 10% damage per 20 energy an imp has.
             demonic_consumption_multiplier += available / 10 * 5;
             imp->demonic_consumption = true;
-            //Demonic Consumption does not appear to immediately despawn imps.
-            //This bug allows spells like Implosion to trigger partially.
-            //Fixed as of 8.1.5 PTR.
-            if ( !p()->dbc.ptr )
-              make_event(sim, p()->bugs ? 15_ms : 0_ms, [imp] {imp->dismiss();});
-            else
-              imp->dismiss();
+            imp->dismiss();
           }
 
           for ( auto dt : p()->warlock_pet_list.demonic_tyrants )
@@ -951,10 +937,6 @@ namespace warlock {
       ->set_duration(talents.nether_portal->duration());
 
     // Azerite
-    buffs.forbidden_knowledge = make_buff( this, "forbidden_knowledge", azerite.forbidden_knowledge.spell_ref().effectN( 1 ).trigger() )
-      ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-      // Forbidden Knowledge has a built in 30% reduction to the value of ranks 2 and 3. This is applied as a flat multiplier to the total value.
-      ->set_default_value( azerite.forbidden_knowledge.value() * ( ( 1.0 + 0.70 * ( azerite.forbidden_knowledge.n_items() - 1 ) ) / azerite.forbidden_knowledge.n_items() ) );
     buffs.shadows_bite = make_buff(this, "shadows_bite", azerite.shadows_bite)
       ->set_duration(find_spell(272945)->duration())
       ->set_default_value(azerite.shadows_bite.value());
@@ -1015,7 +997,6 @@ namespace warlock {
 
     // Azerite
     azerite.demonic_meteor                  = find_azerite_spell( "Demonic Meteor" );
-    azerite.forbidden_knowledge             = find_azerite_spell( "Forbidden Knowledge" );
     azerite.shadows_bite                    = find_azerite_spell( "Shadow's Bite" );
     azerite.supreme_commander               = find_azerite_spell( "Supreme Commander" );
     azerite.umbral_blaze                    = find_azerite_spell( "Umbral Blaze" );
@@ -1058,7 +1039,6 @@ namespace warlock {
     action_priority_list_t* imp = get_action_priority_list( "implosion" );
     action_priority_list_t* opener = get_action_priority_list( "dcon_ep_opener" );
 
-    def->add_action( "implosion,if=azerite.explosive_potential.enabled&talent.demonic_consumption.enabled&prev_gcd.1.summon_demonic_tyrant" );
     def->add_action( "potion,if=pet.demonic_tyrant.active&(!talent.nether_portal.enabled|cooldown.nether_portal.remains>160)|target.time_to_die<30" );
     def->add_action( "use_items,if=pet.demonic_tyrant.active|target.time_to_die<=15" );
     def->add_action( "berserking,if=pet.demonic_tyrant.active|target.time_to_die<=15" );

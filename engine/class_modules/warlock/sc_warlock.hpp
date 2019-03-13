@@ -202,7 +202,6 @@ namespace warlock
 
         //Demo
         azerite_power_t demonic_meteor;
-        azerite_power_t forbidden_knowledge;
         azerite_power_t shadows_bite;
         azerite_power_t supreme_commander;
         azerite_power_t umbral_blaze;
@@ -215,11 +214,9 @@ namespace warlock
         azerite_power_t inevitable_demise;
         azerite_power_t sudden_onset;
         azerite_power_t wracking_brilliance;
-        azerite_power_t deathbloom;
         azerite_power_t pandemic_invocation;
 
         //Destro
-        azerite_power_t accelerant;
         azerite_power_t bursting_flare;
         azerite_power_t chaotic_inferno;
         azerite_power_t crashing_chaos;
@@ -263,11 +260,9 @@ namespace warlock
         const spell_data_t* affliction;
         const spell_data_t* nightfall;
         const spell_data_t* unstable_affliction;
-        const spell_data_t* unstable_affliction_2;
         const spell_data_t* agony;
         const spell_data_t* agony_2;
         const spell_data_t* shadow_bite;
-        const spell_data_t* shadow_bite_2;
         const spell_data_t* shadow_bolt; // also demo
         const spell_data_t* summon_darkglare;
 
@@ -281,12 +276,10 @@ namespace warlock
         const spell_data_t* destruction;
         const spell_data_t* immolate;
         const spell_data_t* conflagrate;
-        const spell_data_t* conflagrate_2;
+        const spell_data_t* conflagrate_2; // Conflagrate has 2 charges
         const spell_data_t* havoc;
         const spell_data_t* unending_resolve;
-        const spell_data_t* unending_resolve_2;
         const spell_data_t* firebolt;
-        const spell_data_t* firebolt_2;
       } spec;
 
       // Buffs
@@ -319,7 +312,6 @@ namespace warlock
         propagate_const<buff_t*> prince_malchezaar;
         propagate_const<buff_t*> eyes_of_guldan;
 
-        propagate_const<buff_t*> forbidden_knowledge;
         propagate_const<buff_t*> shadows_bite;
         propagate_const<buff_t*> supreme_commander;
         propagate_const<buff_t*> explosive_potential;
@@ -330,7 +322,6 @@ namespace warlock
         propagate_const<buff_t*> grimoire_of_supremacy;
         propagate_const<buff_t*> dark_soul_instability;
 
-        propagate_const<buff_t*> accelerant;
         propagate_const<buff_t*> bursting_flare;
         propagate_const<buff_t*> chaotic_inferno;
         propagate_const<buff_t*> crashing_chaos;
@@ -370,8 +361,6 @@ namespace warlock
         gain_t* doom;
         gain_t* demonic_meteor;
         gain_t* baleful_invocation;
-
-        gain_t* soulsnatcher;
       } gains;
 
       // Procs
@@ -403,7 +392,6 @@ namespace warlock
       } spells;
 
       int initial_soul_shards;
-      bool allow_sephuz;
       std::string default_pet;
       timespan_t shard_react;
 

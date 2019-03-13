@@ -383,7 +383,6 @@ public:
     stat_buff_t* natural_harmony_fire;    // crit
     stat_buff_t* natural_harmony_frost;   // mastery
     stat_buff_t* natural_harmony_nature;  // haste
-    buff_t* roiling_storm;
     buff_t* roiling_storm_buff_driver;
     buff_t* strength_of_earth;
     buff_t* tectonic_thunder;
@@ -843,17 +842,6 @@ struct tailwind_totem_buff_enh_t : public buff_t
   }
 };
 
-struct roiling_storm_buff_t : public buff_t
-{
-  double default_value;
-  roiling_storm_buff_t( shaman_t* p )
-    : buff_t( p, "roiling_storm", p->find_spell( 279515 ) ), default_value( p->azerite.roiling_storm.value() )
-  {
-    set_default_value( default_value );
-    set_max_stack( s_data->max_stacks() );
-  }
-};
-
 struct roiling_storm_buff_driver_t : public buff_t
 {
   roiling_storm_buff_driver_t( shaman_t* p ) : buff_t( p, "roiling_storm_driver", p->find_spell( 279513 ) )
@@ -862,20 +850,11 @@ struct roiling_storm_buff_driver_t : public buff_t
 
     set_quiet( true );
 
-    if ( !p->dbc.ptr )
+    if ( p->azerite.roiling_storm.ok() )
     {
-      set_tick_callback( [p]( buff_t*, int, const timespan_t& ) { p->buff.roiling_storm->trigger(); } );
-    }
-
-    // New Roiling Storm triggers Stormbringer.
-    if ( p->dbc.ptr )
-    {
-      if ( p->azerite.roiling_storm.ok() )
-      {
-        set_tick_callback( [p]( buff_t*, int, const timespan_t& ) {
-          p->buff.stormbringer->trigger( p->buff.stormbringer->max_stack() );
-        } );
-      }
+      set_tick_callback( [p]( buff_t*, int, const timespan_t& ) {
+        p->buff.stormbringer->trigger( p->buff.stormbringer->max_stack() );
+      } );
     }
   }
 };
@@ -3011,29 +2990,16 @@ struct stormstrike_attack_t : public shaman_attack_t
       b += tf_bonus;
     }
 
-    if ( !p()->dbc.ptr )
+    if ( p()->buff.stormbringer->check() )
     {
-      if ( p()->buff.roiling_storm->check() && p()->buff.stormbringer->check() == 0 )
+      double rs_bonus = p()->azerite.roiling_storm.value( 1 );
+      // New Roiling Storm has 50% penalty from the tooltip applied to offhand but not main hand
+      if ( weapon && weapon->slot == SLOT_OFF_HAND )
       {
-        // Roiling Storm divides its bonus between each hand of the Stormstrike/Windstrike attacks
-        double rs_bonus = 0.5 * p()->buff.roiling_storm->stack_value();
-        b += rs_bonus;
+        rs_bonus *= 0.5;
       }
-    }
 
-    if ( p()->dbc.ptr )
-    {
-      if ( p()->buff.stormbringer->check() )
-      {
-        double rs_bonus = p()->azerite.roiling_storm.value( 1 );
-        // New Roiling Storm has 50% penalty from the tooltip applied to offhand but not main hand
-        if ( weapon && weapon->slot == SLOT_OFF_HAND )
-        {
-          rs_bonus *= 0.5;
-        }
-
-        b += rs_bonus;
-      }
+      b += rs_bonus;
     }
 
     return b;
@@ -3071,34 +3037,16 @@ struct windstrike_attack_t : public stormstrike_attack_t
       b += tf_bonus;
     }
 
-    if ( !p()->dbc.ptr )
+    if ( p()->buff.stormbringer->check() )
     {
-      if ( p()->buff.roiling_storm->check() && p()->buff.stormbringer->check() == 0 )
+      double rs_bonus = p()->azerite.roiling_storm.value( 1 );
+      // New Roiling Storm has 50% penalty from the tooltip applied to offhand but not main hand
+      if ( weapon && weapon->slot == SLOT_OFF_HAND )
       {
-        double rs_bonus = 0.5 * p()->buff.roiling_storm->stack_value();
-        // Apparently Roiling Storm is bugged on Windstrike, suffering from the off-hand damage
-        // penalty (50%), where Stormstrike offhand attacks are not.
-        if ( player->bugs && weapon && weapon->slot == SLOT_OFF_HAND )
-        {
-          rs_bonus *= 0.5;
-        }
-        b += rs_bonus;
+        rs_bonus *= 0.5;
       }
-    }
 
-    if ( p()->dbc.ptr )
-    {
-      if ( p()->buff.stormbringer->check() )
-      {
-        double rs_bonus = p()->azerite.roiling_storm.value( 1 );
-        // New Roiling Storm has 50% penalty from the tooltip applied to offhand but not main hand
-        if ( weapon && weapon->slot == SLOT_OFF_HAND )
-        {
-          rs_bonus *= 0.5;
-        }
-
-        b += rs_bonus;
-      }
+      b += rs_bonus;
     }
 
     return b;
@@ -3616,24 +3564,6 @@ struct stormstrike_base_t : public shaman_attack_t
       c *= 1.0 + p()->buff.stormbringer->data().effectN( 3 ).percent();
     }
 
-    if ( !p()->dbc.ptr )
-    {
-      if ( p()->buff.roiling_storm->check() && p()->buff.stormbringer->check() == 0 )
-      {
-        double cost_reduction =
-            ( p()->buff.roiling_storm->stack() * p()->buff.roiling_storm->data().effectN( 3 ).base_value() );
-
-        if ( c + cost_reduction <= 0 )
-        {
-          c = 0;
-        }
-        else
-        {
-          c += cost_reduction;
-        }
-      }
-    }
-
     return c;
   }
 
@@ -3665,15 +3595,6 @@ struct stormstrike_base_t : public shaman_attack_t
     }
 
     p()->buff.gathering_storms->decrement();
-
-    if ( !p()->dbc.ptr )
-    {
-      if ( p()->buff.stormbringer->check() == 0 )
-      {
-        p()->buff.roiling_storm->expire();
-      }
-    }
-
     p()->buff.stormbringer->decrement();
   }
 
@@ -7698,8 +7619,6 @@ void shaman_t::create_buffs()
   buff.tectonic_thunder = make_buff( this, "tectonic_thunder", find_spell( 286976 ) );
 
   // Azerite Traits - Enh
-  // Nuke Roiling Storm buff after 8.1.5.
-  buff.roiling_storm             = new roiling_storm_buff_t( this );
   buff.roiling_storm_buff_driver = new roiling_storm_buff_driver_t( this );
   buff.strength_of_earth         = new strength_of_earth_buff_t( this );
   buff.thunderaans_fury          = new thunderaans_fury_buff_t( this );
@@ -8749,32 +8668,8 @@ void shaman_t::combat_begin()
 
   if ( azerite.roiling_storm.ok() )
   {
-    if ( !dbc.ptr )
-    {
-      buff.roiling_storm->trigger( buff.roiling_storm->data().max_stacks() );
-      buff.roiling_storm_buff_driver->trigger();
-    }
-
-    if ( dbc.ptr )
-    {
-      buff.roiling_storm_buff_driver->trigger();
-
-      // Roll a range between 0 and the roiling storm frequency to simulate a random point in time, then use that
-      // randomized point to determine how much time is left on a stormbringer (if any is up at all).
-      double rs_freq            = buff.roiling_storm_buff_driver->buff_period.total_seconds();
-      double rs_start_point     = rng().range( 0, rs_freq );
-      double remain_sb_duration = buff.stormbringer->buff_duration.total_seconds() - ( rs_freq - rs_start_point );
-
-      // attempt to also randomized the start time of the driver... will have to ask navv for advice later.
-      // buff.roiling_storm_buff_driver->trigger( buff.roiling_storm_buff_driver->max_stack(), 0, -1,
-      //                                        timespan_t::from_seconds( rs_start_point ) );
-
-      if ( remain_sb_duration > 0 )
-      {
-        buff.stormbringer->trigger( buff.stormbringer->max_stack(), 0, -1,
-                                    timespan_t::from_seconds( remain_sb_duration ) );
-      }
-    }
+    buff.roiling_storm_buff_driver->trigger();
+    buff.stormbringer->trigger( buff.stormbringer->max_stack() );
   }
 }
 

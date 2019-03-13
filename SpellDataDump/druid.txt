@@ -31,7 +31,7 @@ Name             : Entangling Roots (id=339) [Spell Family (7)]
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
-Resource         : 18% Base Mana (0) (id=42)
+Resource         : 6% Base Mana (0) (id=42) [Hotfixed: Percent Cost (18 -> 6)]
 Spell Level      : 24
 Range            : 35 yards
 Cast Time        : 1.7 seconds
@@ -323,7 +323,7 @@ Name             : Hibernate (id=2637) [Spell Family (7)]
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
-Resource         : 15% Base Mana (0) (id=173)
+Resource         : 6% Base Mana (0) (id=173) [Hotfixed: Percent Cost (15 -> 6)]
 Spell Level      : 66
 Range            : 30 yards
 Cast Time        : 1.5 seconds
@@ -824,14 +824,13 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=3728)     : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.20000 | PvP Coefficient: 1.00000 | Target: Friend (21)
-                   Hotfixed: PvP Coefficient (1.15 -> 1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.20000 | PvP Coefficient: 1.15000 | Target: Friend (21)
 #2 (id=3729)     : Apply Aura (6) | Periodic Heal (8): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.05000 | PvP Coefficient: 1.00000 | Target: Friend (21)
 Description      : Heals a friendly target for $s1 and another ${$o2*$<mult>} over $d.$?s231032[ Regrowth's initial heal has a $231032s1% increased chance for a critical effect.][]$?s24858|s197625[ Usable while in Moonkin Form.][]$?s33891[
 
 |C0033AA11Tree of Life: Instant cast.|R][]
-Tooltip          : Heals $w2 every $t2 seconds.
+Tooltip          : Heals $w2 every $t2 sec.
 Variables        : $mult=${1}
 $mstrshape=$?s48411[${1+0.01*$48411m1}][${1}]
 $gotem1=$?s51179[${1+0.01*$51179m1}][${1}]
@@ -1152,7 +1151,6 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=12790)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.98280 | PvP Coefficient: 0.80000 | Target: Enemy (6)
-                   Hotfixed: PvP Coefficient (1 -> 0.8)
 #2 (id=12791)    : Power Burn (62)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
 Description      : Finishing move that causes Physical damage per combo point and consumes up to $?a106951[${25*$106951s1/-100}.1]?a102543[${25*$102543s1/-100}.1][25] additional Energy to increase damage by up to 100%.
@@ -1336,8 +1334,8 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .....
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
-#1 (id=18680)    : Apply Aura (6) | Modify Power Cost% (72)
-                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 127 | Misc Value 2: 0x1 | Target: Friend (21)
+#1 (id=18680)    : Apply Aura (6) | Unknown(423)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Target: Friend (21)
 Description      : Infuse a friendly healer with energy, allowing them to cast spells without spending mana for $d.
 Tooltip          : Your spells cost no mana.
 
@@ -1345,7 +1343,7 @@ Name             : Lifebloom (id=33763) [Spell Family (7)]
 Class            : Restoration Druid
 School           : Nature
 Spell Type       : Magic
-Resource         : 11.2% Base Mana (0) (id=1447) [Hotfixed: Percent Cost (12 -> 11.2)]
+Resource         : 11.2% Base Mana (0) (id=1447)
 Spell Level      : 20
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -1369,7 +1367,7 @@ Effects          :
 #1 (id=23639)    : Apply Aura (6) | Periodic Heal (8): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.09000 | PvP Coefficient: 1.00000 | Target: Friend (21)
 Description      : Heals the target for $o1 over $d. When Lifebloom expires or is dispelled, the target is instantly healed for $33778s1. Limit 1.
-Tooltip          : Healing $w1 every second.
+Tooltip          : Healing $w1 every $t1 sec.
 Blooms for additional healing when effect expires or is dispelled.
 
 Name             : Lifebloom (id=33778) [Spell Family (7)] 
@@ -1546,7 +1544,7 @@ Name             : Wild Growth (id=48438) [Spell Family (7)]
 Class            : Restoration Druid
 School           : Nature
 Spell Type       : Magic
-Resource         : 28% Base Mana (0) (id=2220) [Hotfixed: Percent Cost (30 -> 28)]
+Resource         : 28% Base Mana (0) (id=2220)
 Spell Level      : 40
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -1575,7 +1573,7 @@ Effects          :
 Description      : Heals up to $s3 injured allies within $A1 yards of the target for $o1 over $d. Healing starts high and declines over the duration.$?s33891[
 
 |C0033AA11Tree of Life: Affects an additional 2 targets.|R][]
-Tooltip          : Heals $w1 damage every $t1 second.
+Tooltip          : Heals $w1 damage every $t1 sec.
 
 Name             : Infected Wounds (id=48484) [Spell Family (7), Passive] 
 Class            : Feral Druid
@@ -2071,7 +2069,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=68268)    : School Damage (2): astral
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.30000 | PvP Coefficient: 0.90000 | Target: Enemy (6)
-                   Hotfixed: PvP Coefficient (1 -> 0.9)
 Description      : Launch a surge of stellar energies at the target, dealing $78674s1 Astral damage.
 
 Also grants you Lunar and Solar Empowerment.
@@ -2228,7 +2225,6 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=68693)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.16200 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(87) -> AOE friendly (31)
-                   Hotfixed: SP Coefficient (0.141113 -> 0.162)
 Description      : Restores $s1 health to three injured allies within $A1 yards of the initial target every $81262t1 sec for $81262d.
 
 Name             : Leather Specialization (id=86093) [Spell Family (7), Passive] 
@@ -2789,12 +2785,10 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.80000 | Target: Self (1)
                    Affected Spells: Starsurge (78674), Moonfire (164812), Sunfire (164815), Solar Wrath (190984), Starfall (191037), Lunar Strike (194153), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (211545), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641)
                    Family Flags: 18
-                   Hotfixed: PvP Coefficient (1 -> 0.8)
 #2 (id=310508)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.80000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Starsurge (78674), Moonfire (164812), Sunfire (164815), Solar Wrath (190984), Starfall (191037), Lunar Strike (194153), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (211545), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641)
                    Family Flags: 18
-                   Hotfixed: PvP Coefficient (1 -> 0.8)
 #3 (id=310509)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=479761)   : Dummy (3)
@@ -2803,6 +2797,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Solar Wrath (5176), Solar Wrath (190984), Lunar Strike (194153), Lunar Strike (197628), Solar Wrath (197629)
                    Family Flags: 0, 2
+#6 (id=769001)   : Energize Power (30)
+                   Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
+                   Hotfixed: NEW EFFECT
 Description      : An improved Moonkin Form that increases the damage of all your spells by $s1% and grants you $s3% Haste.
 
 Lasts $d. You may shapeshift in and out of this improved Moonkin Form for its duration.
@@ -2810,7 +2807,6 @@ Tooltip          : Spell damage increased by $s1%.
 Haste increased by $s3%.
 
 Name             : Ursol's Vortex (id=102793) [Spell Family (7)] 
-Hotfixed         : Spell Level (63 -> 28)
 Class            : Restoration Druid
 School           : Nature
 Spell Type       : Magic
@@ -3659,12 +3655,10 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.66667 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Brutal Slash (202028), Feral Frenzy (274838), Primal Wrath (285381)
                    Family Flags: 98
-                   Hotfixed: Base Value (8 -> 15)
 #2 (id=191154)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.66667 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Brutal Slash (202028), Feral Frenzy (274838), Primal Wrath (285381)
                    Family Flags: 98
-                   Hotfixed: Base Value (8 -> 15)
 #3 (id=191155)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Shred (5221)
@@ -3714,12 +3708,10 @@ Effects          :
                    Base Value: 44 | Scaled Value: 44 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Germination (155675), Tranquility (157982), Cultivation (200389), Spring Blossoms (207386), Grove Tending (279793)
                    Family Flags: 118
-                   Hotfixed: PvP Coefficient (0.7 -> 1)
 #2 (id=191150)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 44 | Scaled Value: 44 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Germination (155675), Tranquility (157982), Cultivation (200389), Spring Blossoms (207386), Grove Tending (279793)
                    Family Flags: 118
-                   Hotfixed: PvP Coefficient (0.7 -> 1)
 #3 (id=191151)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=191152)   : Apply Aura (6) | Modify Max Mana% (178)
@@ -4248,7 +4240,7 @@ Effects          :
 #2 (id=709927)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.01200 | PvP Coefficient: 1.00000 | Radius: 0 - 40 yards | Target: At Caster (22) -> AOE friendly (30)
 Description      : $@spelldesc740
-Tooltip          : Heals $w2 damage every $t2 seconds.
+Tooltip          : Heals $w2 damage every $t2 sec.
 
 Name             : Soul of the Forest (id=158476) [Spell Family (7), Passive] 
 Class            : Druid
@@ -4527,7 +4519,6 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=231955)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Hotfixed: Base Value (10 -> 20)
 #2 (id=232253)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Solar Wrath (5176), Solar Wrath (190984), Solar Wrath (197629)
@@ -4987,15 +4978,16 @@ Resource         : 0.1% Base Mana (0) (id=10461)
 Spell Level      : 14
 Cast Time        : 10 seconds
 GCD              : 1.5 seconds
+Duration         : Aura (infinite)
 Cooldown         : 60 seconds
 Category         : 511
 Affecting spells : Stellar Drift (202461 effect#1)
 Family Flags     : 112
-Attributes       : ........ ........ x....... ....x...   ........ ........ .x...... ........ 
+Attributes       : ........ ........ x....... ....x...   ........ ........ .x...... ....x... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .....x.. ........ ....x...   ........ ........ ........ ........ 
+                 : ........ ....xx.. ........ ....x...   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : Cannot be used in combat (28)
@@ -5004,7 +4996,13 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 98305 | Target: Self (1)
 #4 (id=350992)   : Unknown(90)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 104608 | Target: Self (1)
-Description      : Teleports the caster to the Emerald Dreamway.
+#5 (id=761960)   : Apply Aura (6) | Unknown(71)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#6 (id=761961)   : Apply Aura (6) | Unknown(332)
+                   Base Value: 293887 | Scaled Value: 293887 | PvP Coefficient: 1.00000 | Misc Value: 193753 | Target: Self (1)
+Description      : Teleports the caster to the Emerald Dreamway.
+
+Casting Dreamwalk again while in the Emerald Dreamway will return you back to near your departure point.
 
 Name             : Lunar Strike (rank=Lunar) (id=194153) [Spell Family (7)] 
 Class            : Balance Druid
@@ -5060,19 +5058,19 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.66667 | Target: Self (1)
                    Affected Spells: Starsurge (78674), Moonfire (164812), Sunfire (164815), Solar Wrath (190984), Starfall (191037), Lunar Strike (194153), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (211545), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641)
                    Family Flags: 18
-                   Hotfixed: PvP Coefficient (1 -> 0.666667)
 #2 (id=285083)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.66667 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Starsurge (78674), Moonfire (164812), Sunfire (164815), Solar Wrath (190984), Starfall (191037), Lunar Strike (194153), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (211545), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641)
                    Family Flags: 18
-                   Hotfixed: PvP Coefficient (1 -> 0.666667)
 #3 (id=285088)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=479762)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Solar Wrath (5176), Solar Wrath (190984), Lunar Strike (194153), Lunar Strike (197628), Solar Wrath (197629)
                    Family Flags: 0, 2
-Description      : Celestial bodies align, increasing the damage of all your spells by $s1% and granting you $s3% Haste for $d.
+#5 (id=762251)   : Energize Power (30)
+                   Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
+Description      : Celestial bodies align, granting ${$s5/10} Astral Power, and increasing spell damage by $s1% and Haste by $s3% for $d.
 Tooltip          : Spell damage increased by $s1%.
 Haste increased by $s3%.
 
@@ -6033,7 +6031,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.36000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=298537)   : Energize Power (30)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.50000 | Misc Value: astral_power | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : $@spelldesc202342
 
 Name             : New Moon (rank=Artifact) (id=202767) [Spell Family (7)] 
@@ -7702,12 +7699,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
 
-Name             : Light's Judgment (rank=Racial) (id=255647) [Scaling Spell (-6)] 
+Name             : Light's Judgment (rank=Racial) (id=255647) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
 Spell Type       : Magic
-Max Scaling Level: 120
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 3 yards/sec
@@ -7779,12 +7775,11 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 4 | Target: Self (1)
 Description      : Experience gains from killing Demons increased by $s1%.
 
-Name             : Light's Judgment (rank=Racial) (id=256893) [Scaling Spell (-6)] 
+Name             : Light's Judgment (rank=Racial) (id=256893) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
 Spell Type       : Magic
-Max Scaling Level: 120
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 150 seconds
@@ -7802,7 +7797,7 @@ Effects          :
 Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards.
 Variables        : $damage=${$cond($gt($SP,$AP),$SP*3,$AP*3)*$pctD*(1+$@versadmg)}
 
-Name             : Light's Reckoning (rank=Racial Passive) (id=256896) [Scaling Spell (-6)] 
+Name             : Light's Reckoning (rank=Racial Passive) (id=256896) [Scaling Spell (-8)] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -7820,9 +7815,9 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : Disable player multipliers (221)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 33337.43 (coefficient=0.4) | PvP Coefficient: 0.50000 | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 27409.11 (coefficient=352.5287) | PvP Coefficient: 0.50000 | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=479677)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 33337.43 (coefficient=0.4) | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 27409.11 (coefficient=352.5287) | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
@@ -7899,7 +7894,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=707066)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.735425) | PvP Coefficient: 0.50000 | Trigger Spell: 270667 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Your damaging abilities have a chance to grant you Elemental Whirl, increasing your Critical Strike, Haste, Mastery, or Versatility by $s1 for $268956d.
 
 Name             : Heed My Call (id=263987) [Scaling Spell (-8), Passive] 
@@ -7919,10 +7913,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=707069)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 2203.712 (coefficient=28.34356) | PvP Coefficient: 0.50000 | Trigger Spell: 271681 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=713642)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 944.4478 (coefficient=12.14724) | PvP Coefficient: 0.50000
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Your damaging abilities have a chance to deal $s1 Nature damage to your target, and $s2 Nature damage to enemies within 3 yards of that target.
 Tooltip          : Your damaging abilities have a chance to deal $s1 Nature damage to your target, and $s2 Nature damage to enemies within 3 yards of that target.
 
@@ -7942,10 +7934,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=707293)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 69.30822 (coefficient=0.222856) | PvP Coefficient: 0.50000 | Misc Value: 33554432 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=709390)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 34.65411 (coefficient=0.111428) | PvP Coefficient: 0.50000 | Misc Value: 65536 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Increases your Mastery by $s1 and your Leech by $s2.
 Tooltip          : Increases Mastery by $s1 and Leech by $s2.
 
@@ -7966,7 +7956,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=711012)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.069642) | PvP Coefficient: 0.50000 | Trigger Spell: 271705 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Your damaging abilities have a chance to grant you 25 applications of Overwhelming Power. Each stack of Overwhelming Power grants $s1 Haste. An application of Overwhelming Power is removed every 1 sec or whenever you take damage.
 Tooltip          : Your damaging abilities have a chance to grant you 25 applications of Overwhelming Power. Each stack of Overwhelming Power grants $s1 Haste. An application of Overwhelming Power is removed every 3 sec or whenever you take damage.
 
@@ -7987,7 +7976,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=713207)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 1049.387 (coefficient=13.49693) | PvP Coefficient: 0.50000 | Trigger Spell: 279955 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=739251)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000
 Description      : Your damaging abilities have a chance to implant an Azerite Globule on your enemies. When an enemy collects $s2 Azerite Globules, they explode, dealing $s1 Fire damage to nearby enemies.
@@ -8010,7 +7998,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=713208)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 1111.825 (coefficient=14.3) | PvP Coefficient: 0.50000 | Trigger Spell: 270668 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=720336)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
 Description      : Your damaging abilities have a chance to deal $s1 Physical damage to the target. Gutripper occurs much more often against targets below $s2% health. 
@@ -8031,10 +8018,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=714501)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 69.30822 (coefficient=0.222856) | PvP Coefficient: 0.50000 | Misc Value: 917504 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=714502)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 34.65411 (coefficient=0.111428) | PvP Coefficient: 0.50000 | Misc Value: 1048576 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Increases your Haste by $s1 and your Avoidance by $s2.
 Tooltip          : Increases your Haste by $s1 and your Avoidance by $s2.
 
@@ -8058,7 +8043,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=714511)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.111428) | PvP Coefficient: 0.50000 | Trigger Spell: 270675 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Taking damage grants you $s1 Dodge for $269214d, stacking up to $269214u times.
 
 Name             : Azerite Veins (id=267683) [Scaling Spell (-8), Passive] 
@@ -8078,7 +8062,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=714531)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 3887.5 (coefficient=50) | PvP Coefficient: 0.50000 | Trigger Spell: 270673 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Taking damage has a chance to grant you Azerite Veins, healing you for $s1 every $270674t1 sec. Lasts $270674d or until you are fully healed.
 
 Name             : On My Way (id=267879) [Scaling Spell (-1), Passive] 
@@ -8097,10 +8080,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=714790)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 69.30822 (coefficient=0.222856) | PvP Coefficient: 0.50000 | Misc Value: 1879048192 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=714791)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 34.65411 (coefficient=0.111428) | PvP Coefficient: 0.50000 | Misc Value: 8192 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Increases your Versatility by $s1 and your Speed by $s2.
 Tooltip          : Increases your Versatility by $s1 and your Speed by $s2.
 
@@ -8120,7 +8101,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=714792)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 (coefficient=1.894276) | PvP Coefficient: 0.50000 | Trigger Spell: 270677 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Your healing effects have a chance to increase your Haste by up to $s1 for $269085d. Healing lower health targets will grant you more Haste.
 
 Name             : Concentrated Mending (id=267882) [Scaling Spell (-8), Passive] 
@@ -8140,7 +8120,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=714798)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 23.325 (coefficient=0.3) | PvP Coefficient: 0.50000 | Trigger Spell: 272258 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Your healing effects have a chance to grant the target ${$s1*2} additional healing every $272260t1 sec for $272260d. This effect doubles every $272260t1 sec. 
 
 Name             : Savior (id=267883) [Scaling Spell (-8), Passive] 
@@ -8160,7 +8139,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=714801)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 2332.5 (coefficient=30) | PvP Coefficient: 0.50000 | Trigger Spell: 270679 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=720348)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
 Description      : Your heals on targets below $s2% health have a chance to heal for an additional $s1.
@@ -8181,7 +8159,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=714803)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 1283.113 (coefficient=16.50307) | PvP Coefficient: 0.50000 | Trigger Spell: 272275 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Your heals have a chance to apply Bracing Chill. Healing a target with Bracing Chill will heal for an additional $s1 and move Bracing Chill to a nearby ally (up to $272276u times).
 
 Name             : Ephemeral Recovery (id=267886) [Scaling Spell (-7), Passive] 
@@ -8200,7 +8177,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=714807)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 (coefficient=22) | PvP Coefficient: 0.50000 | Trigger Spell: 272570 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : When you go below $272570s1% mana, you gain $s1 mana. Can occur once every $289362d.
 
 Name             : Blessed Portents (id=267889) [Scaling Spell (-1), Passive] 
@@ -8219,7 +8195,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=714812)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 3421 (coefficient=11) | PvP Coefficient: 0.50000 | Trigger Spell: 271818 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=737331)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
 Description      : Your healing spells have a chance to apply Blessed Portents for $271843d. When the ally falls below $s2% health, Blessed Portents is consumed and instantly restores $s1 health.
@@ -8241,7 +8216,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=714818)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.72) | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Casting $?a137009[Wild Growth]?a137022[Essence Font]?a137030[Prayer of Healing or Power Word: Radiance]?a137026[Light of Dawn]?a137038[Chain Heal][your multi-target healing spell] grants you $s1 Mastery for $272090d. This cannot occur more than once every $272089proccooldown sec.
 
 Name             : Azerite Fortification (id=268435) [Scaling Spell (-8), Passive] 
@@ -8418,7 +8392,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=717596)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.280374) | PvP Coefficient: 0.50000 | Trigger Spell: 270611 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=717597)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Moonfire (8921), Moonfire (164812)
@@ -8463,10 +8436,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=721833)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 71.22149 (coefficient=0.229008) | PvP Coefficient: 0.50000 | Trigger Spell: 271537 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=721834)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 61.7251 (coefficient=0.198473) | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #3 (id=721835)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000
 Description      : When dealt damage greater than $s3% of your maximum health, gain $s2 Armor and cause melee attackers to suffer $s1 Physical damage. Lasts $271538d.
@@ -8488,7 +8459,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=721842)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 622 (coefficient=2) | PvP Coefficient: 0.50000 | Trigger Spell: 271542 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Falling below $271542s1% health grants you $s1 Armor for $271543d. Taking further Physical damage reduces the Armor granted. May only occur every $271544d.
 
 Name             : Strength in Numbers (id=271546) [Scaling Spell (-8), Passive] 
@@ -8507,7 +8477,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=721853)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 4415.532 (coefficient=56.79141) | PvP Coefficient: 0.50000 | Trigger Spell: 271547 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Taking damage has a chance to increase your maximum health by $s1 for each enemy within $271548A1 yds, up to $271550u enemies. Lasts $271550d.
 
 Name             : Shimmering Haven (id=271557) [Scaling Spell (-1), Passive] 
@@ -8526,10 +8495,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=721867)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 7692.414 (coefficient=24.73445) | PvP Coefficient: 0.50000 | Trigger Spell: 271558 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=721868)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 217.7 (coefficient=0.7) | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Taking damage has a chance to create an upwelling of Azerite beneath your feet, increasing your Health by $s1 and your Armor by $s2 while you stand within it. Lasts $271560d.
 
 Name             : Streaking Stars (id=272871) [Scaling Spell (-8), Spell Family (7), Passive] 
@@ -8549,12 +8516,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=724053)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 1271.666 (coefficient=16.35583) | PvP Coefficient: 0.50000 | Trigger Spell: 272872 | Target: Self (1)
-                   Hotfixed: Coefficient (14.2209 -> 16.3558), PvP Coefficient (1 -> 0.5)
 Description      : While Celestial Alignment is active, your damaging spells call a Streaking Star, dealing an additional $s1 damage when they are not a repeat of the previous ability.
 Tooltip          : While Celestial Alignment is active, your damaging spells cause an additional $s1 damage when they are not a repeat of the previous ability.
 
 Name             : Streaking Stars (id=272872) [Scaling Spell (-7), Spell Family (7), Hidden] 
-Hotfixed         : Proc Flags (2442240 -> 327680)
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -8574,7 +8539,6 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=724054)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Hotfixed: Trigger Spell (272873 -> 0)
 Description      : $@spelldesc272871
 
 Name             : Streaking Star (id=272873) [Scaling Spell (-1), Spell Family (7)] 
@@ -8634,7 +8598,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=724558)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 883.8695 (coefficient=11.3681) | PvP Coefficient: 0.50000 | Trigger Spell: 273825 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Your spells and abilities have a chance to draw a Wandering Soul from Thros to serve you for $280204d. The Soul blasts a nearby enemy every $280204t2 sec, dealing $s1 Shadow damage.
 
 Name             : Untamed Ferocity (id=273338) [Scaling Spell (-8), Spell Family (7), Passive] 
@@ -8659,7 +8622,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 143.0982 (coefficient=1.840491) | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Rake (1822), Shred (5221), Swipe (106785), Thrash (106830), Rake (155722), Brutal Slash (202028), Feral Frenzy (274837), Feral Frenzy (274838)
                    Family Flags: 12, 15, 74, 94, 99, 126
-                   Hotfixed: Coefficient (1.22699 -> 1.84049), PvP Coefficient (1 -> 0.5)
 #3 (id=753656)   : Apply Aura (6) | Dummy (4)
                    Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=753659)   : Apply Aura (6) | Dummy (4)
@@ -8682,10 +8644,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=724883)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 581.57 (coefficient=1.87) | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=725191)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 342.1 (coefficient=1.1) | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Increases your Mastery by $s1 and Armor by $s2 for $273349d after Survival Instincts expires.
 
 Name             : Power of the Moon (id=273367) [Scaling Spell (-8), Spell Family (7), Passive] 
@@ -8709,7 +8669,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 81.08897 (coefficient=1.042945) | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Moonfire (155625), Moonfire (164812)
                    Family Flags: 92, 120
-                   Hotfixed: Coefficient (0.920245 -> 1.04295)
 Description      : Moonfire deals $s2 additional periodic damage, and has a chance to grant Lunar Empowerment.
 
 Name             : Meticulous Scheming (id=273682) [Scaling Spell (-7), Passive] 
@@ -8735,7 +8694,6 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=725610)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=2.11156) | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Your spells and abilities have a chance to grant you Meticulous Scheming for $273685d, which transforms into Seize the Moment! after you cast $s3 different spells, granting you $s4 Haste for $273714d.
 
 Name             : Rezan's Fury (id=273790) [Scaling Spell (-8), Passive] 
@@ -8754,10 +8712,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=725706)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 1502.531 (coefficient=19.32515) | PvP Coefficient: 0.50000 | Trigger Spell: 273153 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=725707)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 751.2654 (coefficient=9.662577) | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Your damaging abilities have a chance to call a Child of Rezan to viciously rend your target, dealing $s1 Physical damage and causing them to bleed for ${($273794d/$273794t2)*$s2} damage over $273794d.
 
 Name             : Blightborne Infusion (id=273823) [Scaling Spell (-7), Passive] 
@@ -8776,7 +8732,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=725757)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 (coefficient=3.342839) | PvP Coefficient: 0.50000 | Trigger Spell: 273825 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Your spells and abilities have a chance to draw a Wandering Soul from Thros to serve you for $280204d. The Soul increases your Critical Strike by $s1.
 
 Name             : Secrets of the Deep (id=273829) [Scaling Spell (-1), Passive] 
@@ -8795,10 +8750,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=725766)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 144.8168 (coefficient=0.465649) | PvP Coefficient: 0.50000 | Trigger Spell: 273830 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=725767)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 284.8856 (coefficient=0.916031) | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Your spells and abilities have a chance to create a Surging Droplet nearby. Collecting it increases your primary stat by $s1 for $273842d.
 
 Rarely, a Void Droplet will be created, increasing your primary stat by $s2 for $273843d instead.
@@ -8820,7 +8773,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=725772)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 676.3773 (coefficient=8.699387) | PvP Coefficient: 0.50000 | Trigger Spell: 273835 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Your damaging abilities have a chance to invoke a tainted swamp beneath the target, siphoning ${$s1*6} health from them over $273836d.
 
 Name             : New Moon (id=274281) [Spell Family (7)] 
@@ -8934,12 +8886,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=726746)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 (coefficient=1.476421) | PvP Coefficient: 0.50000 | Trigger Spell: 274425 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=753578)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=753579)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Tiger's Fury increases your critical strike by $s1 and lasts $?s202021[${$s3+$274425s2/1000}][${$s2+$274425s2/1000}] sec.
+Description      : Tiger's Fury increases your Critical Strike by $s1 and lasts $?s202021[${$s3+$274425s2/1000}][${$s2+$274425s2/1000}] sec.
 
 Name             : Autumn Leaves (id=274432) [Scaling Spell (-8), Spell Family (7), Passive] 
 Class            : Druid
@@ -8957,7 +8908,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=726761)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 90.62882 (coefficient=1.165644) | PvP Coefficient: 0.50000 | Trigger Spell: 287247 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Rejuvenation's duration is increased by ${$287247s1/1000} sec, and it heals for an additional $s1 when it is your only heal over time on the target.
 
 Name             : Reawakening (id=274813) [Scaling Spell (-8), Passive] 
@@ -9072,7 +9022,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=729255)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 50.86436 (coefficient=0.163551) | PvP Coefficient: 0.50000 | Trigger Spell: 275908 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Thrash's direct damage has a $275908h% chance to grant you $s1 Agility for $275909d, stacking up to $275909u times.
 
 Name             : Aquatic Form (id=276012) [Spell Family (7), Passive] 
@@ -9113,7 +9062,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=729398)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 1446.722 (coefficient=18.60736) | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Hotfixed: Coefficient (34.7853 -> 18.6074), PvP Coefficient (0.43 -> 0.5)
 #2 (id=729399)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000
 Description      : Ferocious Bite has a $s2% chance per combo point to increase the damage of your next Maim by $s1 per combo point.
@@ -9182,7 +9130,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=730125)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 437.4215 (coefficient=5.626) | PvP Coefficient: 0.50000 | Trigger Spell: 276153 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Lunar Strike increases the damage of your Solar Wrath by $s1 for $276154d.
 
 Name             : High Noon (id=278505) [Scaling Spell (-8), Spell Family (7), Passive] 
@@ -9206,7 +9153,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 93.0138 (coefficient=1.196319) | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Sunfire (93402), Sunfire (164815), Sunfire (197630)
                    Family Flags: 102
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Sunfire's radius is increased to $<radius> yds, and it deals $s2 additional periodic damage.
 Variables        : $radius=${11}
 
@@ -9228,7 +9174,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=734247)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 26.71163 (coefficient=0.343558) | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Starfall's stars deal an additional $s1 damage to nearby enemies when they damage an enemy afflicted by Moonfire.
 
 Name             : Gushing Lacerations (id=278509) [Scaling Spell (-8), Spell Family (7), Passive] 
@@ -9252,7 +9197,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 69.16415 (coefficient=0.889571) | PvP Coefficient: 0.50000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Rip (1079)
                    Family Flags: 85
-                   Hotfixed: Coefficient (0.675 -> 0.889571), PvP Coefficient (1 -> 0.5)
 Description      : Rip deals $s2 additional periodic damage, and has a $279468h% chance to award a combo point each time it deals damage.
 
 Name             : Gory Regeneration (id=278510) [Scaling Spell (-8), Spell Family (7), Passive] 
@@ -9271,7 +9215,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=734253)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 1042.232 (coefficient=13.40491) | PvP Coefficient: 0.50000 | Trigger Spell: 279536 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=734254)   : Dummy (3)
                    Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000
 #3 (id=752811)   : Dummy (3)
@@ -9298,7 +9241,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 599.9999 (coefficient=1.92926) | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Maul (6807), Enraged Maul (236716)
                    Family Flags: 11
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Maul deals $s2 additional damage, and Maul reduces the cost of your next Ironfur by ${$279541s1/-10} Rage stacking up to $279541u times.
 
 Name             : Waking Dream (id=278513) [Scaling Spell (-8), Spell Family (7), Passive] 
@@ -9317,7 +9259,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=734259)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 178.825 (coefficient=2.3) | PvP Coefficient: 0.50000 | Trigger Spell: 278958 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=734260)   : Dummy (3)
                    Base Value: 4000 | Scaled Value: 4000 | PvP Coefficient: 1.00000
 Description      : Ysera's Gift now heals every ${$s2/1000} sec, and heals for an additional $s1 for each of your active Rejuvenations.
@@ -9340,7 +9281,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 128.7884 (coefficient=1.656442) | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
                    Family Flags: 6
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Regrowth heals for ${$s1*($8936d/$8936t2)} more over its duration, and its healing over time effect also applies to the target of your Lifebloom.
 
 Name             : Blood Mist (id=279524) [Scaling Spell (-8), Spell Family (7), Passive] 
@@ -9364,7 +9304,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 75.4175 (coefficient=0.97) | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rake (1822), Rake (155722)
                    Family Flags: 12
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Rake deals ${$s2*5} additional damage over its duration, and has a chance to grant you Berserk for $279526d. Cannot occur while $?s102543[Incarnation: King of the Jungle][Berserk] is active.
 
 Name             : Wild Fleshrending (id=279527) [Scaling Spell (-8), Spell Family (7), Passive] 
@@ -9383,10 +9322,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=735850)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 705.951 (coefficient=9.079755) | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=735851)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 228.957 (coefficient=2.944785) | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Shred deals $s1 additional damage, and $?s202028[Brutal Slash][Swipe] deals $s2 additional damage, to enemies suffering from your Thrash.
 
 Name             : Layered Mane (id=279552) [Scaling Spell (-1), Spell Family (7), Passive] 
@@ -9405,7 +9342,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=735909)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 69.99988 (coefficient=0.22508) | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=735910)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=735914)   : Apply Aura (6) | Dummy (4)
@@ -9524,7 +9460,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=736071)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 59.09 (coefficient=0.19) | PvP Coefficient: 0.50000 | Trigger Spell: 279646 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : When Innervate expires, for each spell the target cast using Innervate, you gain $s1 Intellect for $279648d and ${$289335s1/100}.1% mana.
 
 Name             : Empowerments (id=279708) [Spell Family (7), Passive] 
@@ -9613,7 +9548,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=736321)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 1026.3 (coefficient=13.2) | PvP Coefficient: 0.50000 | Trigger Spell: 279779 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (0.75 -> 0.5)
 Description      : Swiftmend heals the target for ${$s1*($279793d/$279793t1)} over $279793d.
 
 Name             : Unstable Flames (id=279899) [Scaling Spell (-7), Passive] 
@@ -9633,7 +9567,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=736523)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.194999) | PvP Coefficient: 0.50000 | Trigger Spell: 279900 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Your damaging abilities have a chance to grant $s1 critical strike rating for $279902d. This effect stacks up to $279902u times.
 
 Name             : Earthlink (id=279926) [Scaling Spell (-1), Passive] 
@@ -9653,7 +9586,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=736562)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 9.496074 (coefficient=0.030534) | PvP Coefficient: 0.50000 | Trigger Spell: 279927 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Azerite energy courses through you, reaching ${$s1*6} $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] and then diminishing down to $s1 $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat], cycling every 12 sec.
 
 Name             : Ursoc's Endurance (id=280013) [Scaling Spell (-8), Passive] 
@@ -9695,7 +9627,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=737505)   : Apply Aura (6) | Proc Trigger Spell (42): Barrage Of Many Bombs
                    Base Value: 0 | Scaled Value: 555.9125 (coefficient=7.15) | PvP Coefficient: 0.50000 | Trigger Spell: 280662 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=737506)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 #3 (id=737507)   : Dummy (3)
@@ -9757,7 +9688,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=737533)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 7628.85 (coefficient=98.12026) | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=737534)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
 #3 (id=738963)   : Apply Aura (6) | Skill (30)
@@ -9792,8 +9722,7 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 2499 | Target: Self (1)
 #3 (id=742699)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 722.6457 (coefficient=9.294479) | PvP Coefficient: 0.50000
-                   Hotfixed: Coefficient (13.7 -> 9.29448), PvP Coefficient (1 -> 0.5)
-Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $s1 yards of the Spark Coil take $280847s2 damage every 2 seconds and deal $280847s1% reduced damage to you.
+Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $280847s2 yards of the Spark Coil take $s3 damage every 2 seconds and deal $280847s1% reduced damage to you.
 
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
@@ -9818,7 +9747,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=737551)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 311 (coefficient=1) | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=738959)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 2499 | Target: Self (1)
 Description      : Your spells and abilities have a chance to grow or shrink the world. Shrinking the world grants you $280654s4 primary stat and $280654s6 maximum health for $280654d. Growing the world grants you $280653s1 Haste and $280653s3% movement speed for $280653d.
@@ -9846,10 +9774,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=737557)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 12828.75 (coefficient=165) | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=738962)   : Apply Aura (6) | Skill (30)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 2499 | Target: Self (1)
-Description      : Taking damage has a chance to call your Personal Absorb-o-Tron, absorbing the next $280660s1 damage you take over $280660d.
+Description      : Taking damage has a chance to call your Personal Absorb-o-Tron, absorbing $280661s1% of damage taken over $280660d, up to $280660s1.
 
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
@@ -9870,7 +9797,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=737714)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 176.0108 (coefficient=2.263804) | PvP Coefficient: 0.50000 | Trigger Spell: 280285 | Target: Self (1)
-                   Hotfixed: Coefficient (2.51534 -> 2.2638), PvP Coefficient (1 -> 0.5)
 #2 (id=737715)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000
 Description      : Your damaging spells and abilities have a chance to fling a dagger at your target, causing them to bleed for ${$s1*$280286d/$280286t1} Physical damage over $280286d, stacking up to $280286u times. Stabbing them in the back applies $s2 stacks.
@@ -9892,7 +9818,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=737878)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 586.235 (coefficient=7.54) | PvP Coefficient: 0.50000 | Trigger Spell: 280383 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=738006)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 Description      : Dealing damage has a chance to call down a Thunderous Blast, dealing $s1 Nature damage to the enemy and increasing the damage of Thunderous Blast by $280385s1%. At ${$s2*$280385s1}% increased damage, Thunderous Blast will critically hit and reset this effect.
@@ -9913,7 +9838,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=737915)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 1803.037 (coefficient=23.19018) | PvP Coefficient: 0.50000 | Trigger Spell: 280403 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Your damaging spells and abilities have a chance to release a tidal surge, dealing $s1 Frost damage to your target and slowing their movement speed by $280404s2% for $280404d.
 
 Name             : Blood Rite (id=280407) [Scaling Spell (-7), Passive] 
@@ -9933,7 +9857,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=737922)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 (coefficient=2.025204) | PvP Coefficient: 0.50000 | Trigger Spell: 280408 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Your spells and abilities have a chance to increase your Haste by $s1 for $280409d. Killing an enemy refreshes the duration of this effect.
 
 Name             : Incite the Pack (id=280410) [Scaling Spell (-7), Passive] 
@@ -9953,10 +9876,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=737926)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 (coefficient=1.855276) | PvP Coefficient: 0.50000 | Trigger Spell: 280411 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=737927)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.300856) | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #3 (id=737931)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
 Description      : You occasionally loose a tremendous roar, increasing your Mastery by $s1 and granting $s2 Mastery to up to $280413i nearby allies. Lasts $280412d.
@@ -9977,7 +9898,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=737972)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 (coefficient=2.50713) | PvP Coefficient: 0.50000 | Trigger Spell: 280432 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=737973)   : Dummy (3)
                    Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000
 #3 (id=737974)   : Dummy (3)
@@ -10000,7 +9920,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738151)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 6.8109 (coefficient=0.0219) | PvP Coefficient: 0.50000 | Trigger Spell: 280708 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Your armor gathers and analyzes combat data every $280708t1 sec, increasing your primary stat by $s1, stacking up to $280709u times. The data decays while out of combat.
 
 Enables $@spellname280573 within Uldir.
@@ -10021,10 +9940,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738156)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 3148.875 (coefficient=40.5) | PvP Coefficient: 0.50000 | Trigger Spell: 280702 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=738401)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 5634.728 (coefficient=72.47239) | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Your spells and abilities have a chance to release a barrage of lasers, dealing $s1 Arcane damage split among all enemies and restoring $s2 health split among injured allies.
 
 Enables $@spellname280573 within Uldir.
@@ -10045,10 +9962,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738189)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.913709) | PvP Coefficient: 0.50000 | Trigger Spell: 280778 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=738555)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.55714) | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280780d. 
 Attacking a member of the opposite faction significantly increases this chance.
 
@@ -10069,10 +9984,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738191)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 320.5505 (coefficient=1.030709) | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=738573)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 1121.974 (coefficient=3.607634) | PvP Coefficient: 0.50000 | Trigger Spell: 280785 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280788d. 
 Attacking a member of the opposite faction is more likely to activate this effect.
 
@@ -10093,12 +10006,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738192)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 277.2329 (coefficient=0.891424) | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=738695)   : Apply Aura (6) | Unknown(285)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Trigger Spell: 280848 | Target: Self (1)
 #3 (id=744340)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 131.9971 (coefficient=0.424428) | PvP Coefficient: 0.50000
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Your abilities have a chance to plant a banner representing a Horde race for $280841d, granting you and up to $s2 allies $s3 of their primary stat or $s1 of a secondary stat.
 
 Name             : Collective Will (id=280581) [Scaling Spell (-1), Passive] 
@@ -10118,10 +10029,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738193)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 144.8168 (coefficient=0.465649) | PvP Coefficient: 0.50000 | Trigger Spell: 280837 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=738669)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 2848.855 (coefficient=9.160305) | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Your abilities have a chance to drop a Horde Banner for $280830d, increasing $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stats] by $s1 and maximum health by $s2 for yourself and up to 4 allies.
 
 Name             : Battlefield Focus (id=280582) [Scaling Spell (-8), Passive] 
@@ -10141,7 +10050,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738194)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 566.6687 (coefficient=7.288343) | PvP Coefficient: 0.50000 | Trigger Spell: 280816 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=738645)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 #3 (id=738646)   : Dummy (3)
@@ -10165,7 +10073,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738213)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 395.0412 (coefficient=1.270229) | PvP Coefficient: 0.50000 | Trigger Spell: 280806 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=738618)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 280810 | Target: Self (1)
 Description      : Your abilities have a chance to increase your $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1 for $280809d. If an ally dies nearby, you gain this effect.
@@ -10186,10 +10093,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738283)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.913709) | PvP Coefficient: 0.50000 | Trigger Spell: 280851 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=738699)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.55714) | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280852d. 
 Attacking a member of the opposite faction significantly increases this chance.
 
@@ -10210,10 +10115,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738284)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 320.5505 (coefficient=1.030709) | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=738721)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 1121.974 (coefficient=3.607634) | PvP Coefficient: 0.50000 | Trigger Spell: 280860 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280862d. 
 Taking damage from a member of the opposite faction has a chance to activate this effect. 
 
@@ -10234,12 +10137,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738285)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 277.2329 (coefficient=0.891424) | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=738730)   : Apply Aura (6) | Unknown(285)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Trigger Spell: 280865 | Target: Self (1)
 #3 (id=744329)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 131.9971 (coefficient=0.424428) | PvP Coefficient: 0.50000
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Your abilities have a chance to plant a banner representing an Alliance race for $280866d, granting you and up to $s2 allies $s3 of their primary stat or $s1 of a secondary stat.
 
 Name             : Stand As One (id=280626) [Scaling Spell (-1), Passive] 
@@ -10259,10 +10160,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738286)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 144.8168 (coefficient=0.465649) | PvP Coefficient: 0.50000 | Trigger Spell: 280856 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=738712)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 2848.855 (coefficient=9.160305) | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Your abilities have a chance to drop an Alliance Banner for $280858d, increasing $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stats] by $s1 and maximum health by $s2 for yourself and up to 4 allies.
 
 Name             : Battlefield Precision (id=280627) [Scaling Spell (-8), Passive] 
@@ -10282,7 +10181,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738287)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 566.6687 (coefficient=7.288343) | PvP Coefficient: 0.50000 | Trigger Spell: 280854 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=738705)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 #3 (id=738706)   : Dummy (3)
@@ -10306,7 +10204,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738288)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 395.0412 (coefficient=1.270229) | PvP Coefficient: 0.50000 | Trigger Spell: 280872 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=738747)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 280874 | Target: Self (1)
 Description      : Your abilities have a chance to increase your $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1 for $280876d. If an ally dies nearby, you gain this effect.
@@ -10327,7 +10224,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738417)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.055714) | PvP Coefficient: 0.50000 | Trigger Spell: 280712 | Target: Self (1)
-                   Hotfixed: Coefficient (0.061285 -> 0.055714), PvP Coefficient (1 -> 0.5)
 Description      : Your spells and abilities have a chance to increase all secondary stats by $s1 for $280713d, stacking up to $280713u times.
 
 Name             : Unstable Catalyst (id=281514) [Scaling Spell (-1), Passive] 
@@ -10346,7 +10242,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=740102)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 194.6717 (coefficient=0.625954) | PvP Coefficient: 0.50000 | Trigger Spell: 281515 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Your spells and abilities have a chance to leak Azerite on the ground around you. Standing in the Azerite increases your primary stat by $s1 for $281516d.
 
 Name             : Tradewinds (id=281841) [Scaling Spell (-7), Passive] 
@@ -10366,10 +10261,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=741004)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 (coefficient=2.540558) | PvP Coefficient: 0.50000 | Trigger Spell: 281842 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=741005)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.501426) | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Your spells and abilities have a chance to grant you $s1 Mastery for $281843d. When this effect expires it jumps once to a nearby ally, granting them $s2 Mastery for $281844d.
 
 Name             : Primal Wrath (id=285381) [Spell Family (7)] 
@@ -10456,7 +10349,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=750107)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 548.5429 (coefficient=7.055214) | PvP Coefficient: 0.50000 | Trigger Spell: 287253 | Target: Self (1)
-                   Hotfixed: Coefficient (5.8 -> 7.05521), PvP Coefficient (1 -> 0.5)
 Description      : When Wild Growth expires, it heals the target for $s1 if they are injured, or it reduces the cooldown of Innervate by $<reduction> sec if they are not.
 Variables        : $reduction=${$287253s2/1000}
 
@@ -10476,7 +10368,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=750457)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 (coefficient=2.025204) | PvP Coefficient: 0.50000 | Trigger Spell: 287468 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Your spells and abilities have a chance to increase your Haste by $s1 for $287471d. At night, you also gain $287471s2% movement speed for the duration.
 
 Name             : Ancients' Bulwark (id=287604) [Scaling Spell (-1), Passive] 
@@ -10495,10 +10386,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=750674)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 284.8856 (coefficient=0.916031) | PvP Coefficient: 0.50000 | Trigger Spell: 287605 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=750675)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 242.5788 (coefficient=0.779996) | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Standing still grants you Deep Roots, increasing your Versatility by $s2. Moving instead grants you Uprooted, healing you for $s1 every $287608t1 sec.
 
 Name             : Apothecary's Concoctions (id=287631) [Scaling Spell (-8), Passive] 
@@ -10517,10 +10406,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=750714)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 467.454 (coefficient=6.01227) | PvP Coefficient: 0.50000 | Trigger Spell: 287633 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=750715)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 894.3635 (coefficient=11.50307) | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #3 (id=750716)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
 Description      : Your damaging abilities have a chance to deal $<dmg> Plague damage over $287638d, and your healing abilities have a chance to restore $<heal> health over $287639d. These effects are increased by up to $s3% based on the target's missing health.
@@ -10543,10 +10430,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=750767)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 1994.198 (coefficient=6.412213) | PvP Coefficient: 0.50000 | Trigger Spell: 287664 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=750768)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 242.6276 (coefficient=0.780153) | PvP Coefficient: 0.50000 | Misc Value: 1879048192 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : Your Versatility is increased by $s2. Moving near an enemy's corpse consumes their essence, restoring $s1 health.
 
 Name             : Arcanic Pulsar (id=287773) [Scaling Spell (-8), Spell Family (7), Passive] 
@@ -10565,12 +10450,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=750968)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 287784 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (0 -> 1)
 #2 (id=750969)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 715.4909 (coefficient=9.202455) | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Starsurge (78674), Starsurge (197626)
                    Family Flags: 89
-                   Hotfixed: Coefficient (6.13497 -> 9.20246), PvP Coefficient (1 -> 0.5)
 #3 (id=750970)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000
 #4 (id=750971)   : Dummy (3)
@@ -10621,7 +10504,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=751037)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 370.3512 (coefficient=1.19084) | PvP Coefficient: 0.50000 | Trigger Spell: 287821 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 Description      : When you damage an enemy who is below $287821s1% health, or fall below $287821s1% health yourself, gain $s1 primary stat and $287827s5% movement speed for $287827d. Can only occur once every $287825d.
 
 Name             : Seductive Power (id=288749) [Scaling Spell (-1), Passive] 
@@ -10641,7 +10523,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=752664)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 28.48853 (coefficient=0.091603) | PvP Coefficient: 0.50000 | Trigger Spell: 288757 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=752673)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000
 Description      : Your spells and abilities have a chance to conjure Bwonsamdi's spectral visage, beckoning you closer. If you approach him, gain $s1 to all stats for $288777d, stacking up to $288777u times. If you fail to heed his call, lose $s2 $Lstack:stacks;.
@@ -10663,10 +10544,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=752745)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 191.348 (coefficient=0.615267) | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=752815)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 3798.473 (coefficient=12.21374) | PvP Coefficient: 0.15000 | Trigger Spell: 288804 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.15)
+                   Base Value: 0 | Scaled Value: 2278.79 (coefficient=7.327298) | PvP Coefficient: 0.25000 | Trigger Spell: 288804 | Target: Self (1)
 Description      : Your spells and abilities have a chance to trigger a Soulbond for $288841d. During Soulbond, every $288841t1 sec you and your nearest ally are both healed for $s2 and gain $s1 Haste for $288839d.
 
 Name             : Stampeding Roar (rank=Rank 2) (id=288826) [Spell Family (7), Passive] 
@@ -10705,7 +10584,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=752982)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 149.5649 (coefficient=0.480916) | PvP Coefficient: 0.50000 | Trigger Spell: 288964 | Target: Self (1)
-                   Hotfixed: Coefficient (0.534351 -> 0.480916), PvP Coefficient (1 -> 0.5)
 #2 (id=752991)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
 #3 (id=752992)   : Dummy (3)
@@ -10731,7 +10609,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=753603)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (coefficient=1.337136) | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Hotfixed: PvP Coefficient (1 -> 0.5)
 #2 (id=753606)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Consuming Gore grants you $s1 mastery for $289315d and has a $s2% chance to activate Gore.
