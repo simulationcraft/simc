@@ -9,7 +9,6 @@ namespace warlock {
     {
     public:
       gain_t * gain;
-      bool can_feretory;
 
       demonology_spell_t(warlock_t* p, const std::string& n) :
         demonology_spell_t(n, p, p -> find_class_spell(n))
@@ -28,8 +27,6 @@ namespace warlock {
         tick_may_crit = true;
         weapon_multiplier = 0.0;
         gain = player->get_gain(name_str);
-
-        can_feretory = true;
       }
 
       void reset() override
@@ -315,11 +312,6 @@ namespace warlock {
         {
           td(target)->debuffs_from_the_shadows->trigger();
         }
-
-        if (p()->azerite.forbidden_knowledge.ok())
-        {
-          p()->buffs.forbidden_knowledge->trigger();
-        }
       }
     };
 
@@ -451,9 +443,7 @@ namespace warlock {
             // Spelldata unknown. In-game testing shows Demonic Consumption provides 10% damage per 20 energy an imp has.
             demonic_consumption_multiplier += available / 10 * 5;
             imp->demonic_consumption = true;
-            //Demonic Consumption does not appear to immediately despawn imps.
-            //This bug allows spells like Implosion to trigger partially.
-            make_event(sim, p()->bugs ? 15_ms : 0_ms, [imp] {imp->dismiss();});
+            imp->dismiss();
           }
 
           for ( auto dt : p()->warlock_pet_list.demonic_tyrants )
@@ -947,10 +937,6 @@ namespace warlock {
       ->set_duration(talents.nether_portal->duration());
 
     // Azerite
-    buffs.forbidden_knowledge = make_buff( this, "forbidden_knowledge", azerite.forbidden_knowledge.spell_ref().effectN( 1 ).trigger() )
-      ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-      // Forbidden Knowledge has a built in 30% reduction to the value of ranks 2 and 3. This is applied as a flat multiplier to the total value.
-      ->set_default_value( azerite.forbidden_knowledge.value() * ( ( 1.0 + 0.70 * ( azerite.forbidden_knowledge.n_items() - 1 ) ) / azerite.forbidden_knowledge.n_items() ) );
     buffs.shadows_bite = make_buff(this, "shadows_bite", azerite.shadows_bite)
       ->set_duration(find_spell(272945)->duration())
       ->set_default_value(azerite.shadows_bite.value());
@@ -1011,7 +997,6 @@ namespace warlock {
 
     // Azerite
     azerite.demonic_meteor                  = find_azerite_spell( "Demonic Meteor" );
-    azerite.forbidden_knowledge             = find_azerite_spell( "Forbidden Knowledge" );
     azerite.shadows_bite                    = find_azerite_spell( "Shadow's Bite" );
     azerite.supreme_commander               = find_azerite_spell( "Supreme Commander" );
     azerite.umbral_blaze                    = find_azerite_spell( "Umbral Blaze" );
@@ -1054,7 +1039,6 @@ namespace warlock {
     action_priority_list_t* imp = get_action_priority_list( "implosion" );
     action_priority_list_t* opener = get_action_priority_list( "dcon_ep_opener" );
 
-    def->add_action( "implosion,if=azerite.explosive_potential.enabled&talent.demonic_consumption.enabled&prev_gcd.1.summon_demonic_tyrant" );
     def->add_action( "potion,if=pet.demonic_tyrant.active&(!talent.nether_portal.enabled|cooldown.nether_portal.remains>160)|target.time_to_die<30" );
     def->add_action( "use_items,if=pet.demonic_tyrant.active|target.time_to_die<=15" );
     def->add_action( "berserking,if=pet.demonic_tyrant.active|target.time_to_die<=15" );
@@ -1069,11 +1053,12 @@ namespace warlock {
     def->add_action( "demonic_strength,if=(buff.wild_imps.stack<6|buff.demonic_power.up)|spell_targets.implosion<2");
     def->add_action( "call_action_list,name=nether_portal,if=talent.nether_portal.enabled&spell_targets.implosion<=2");
     def->add_action( "call_action_list,name=implosion,if=spell_targets.implosion>1" );
-    def->add_action( "grimoire_felguard,if=cooldown.summon_demonic_tyrant.remains<13" );
+    def->add_action( "grimoire_felguard,if=(target.time_to_die>120|target.time_to_die<cooldown.summon_demonic_tyrant.remains+15|cooldown.summon_demonic_tyrant.remains<13)" );
     def->add_action( "summon_vilefiend,if=cooldown.summon_demonic_tyrant.remains>40|cooldown.summon_demonic_tyrant.remains<12" );
     def->add_action( "call_dreadstalkers,if=(cooldown.summon_demonic_tyrant.remains<9&buff.demonic_calling.remains)|(cooldown.summon_demonic_tyrant.remains<11&!buff.demonic_calling.remains)|cooldown.summon_demonic_tyrant.remains>14" );
     def->add_action( "bilescourge_bombers" );
-    def->add_action( "summon_demonic_tyrant,if=soul_shard<3&(!talent.demonic_consumption.enabled|buff.wild_imps.stack>0)" );
+    def->add_action( "hand_of_guldan,if=(azerite.baleful_invocation.enabled|talent.demonic_consumption.enabled)&prev_gcd.1.hand_of_guldan&cooldown.summon_demonic_tyrant.remains<2" );
+    def->add_action( this, "Summon Demonic Tyrant", "if=soul_shard<3&(!talent.demonic_consumption.enabled|buff.wild_imps.stack+imps_spawned_during.2000%spell_haste>=6&time_to_imps.all.remains<cast_time)|target.time_to_die<20", "2000%spell_haste is shorthand for the cast time of Demonic Tyrant. The intent is to only begin casting if a certain number of imps will be out by the end of the cast." );
     def->add_action( "power_siphon,if=buff.wild_imps.stack>=2&buff.demonic_core.stack<=2&buff.demonic_power.down&spell_targets.implosion<2" );
     def->add_action( "doom,if=talent.doom.enabled&refreshable&time_to_die>(dot.doom.remains+30)" );
     def->add_action( "hand_of_guldan,if=soul_shard>=5|(soul_shard>=3&cooldown.call_dreadstalkers.remains>4&(cooldown.summon_demonic_tyrant.remains>20|(cooldown.summon_demonic_tyrant.remains<gcd*2&talent.demonic_consumption.enabled|cooldown.summon_demonic_tyrant.remains<gcd*4&!talent.demonic_consumption.enabled))&(!talent.summon_vilefiend.enabled|cooldown.summon_vilefiend.remains>3))" );
@@ -1105,14 +1090,16 @@ namespace warlock {
     opener->add_action( "hand_of_guldan,line_cd=30" );
     opener->add_action( "implosion,if=buff.wild_imps.stack>2&buff.explosive_potential.down" );
     opener->add_action( "doom,line_cd=30" );
-    opener->add_action( "demonic_strength" );
+    opener->add_action( "hand_of_guldan,if=prev_gcd.1.hand_of_guldan&soul_shard>0&prev_gcd.2.soul_strike" );
+    opener->add_action( "demonic_strength,if=prev_gcd.1.hand_of_guldan&!prev_gcd.2.hand_of_guldan&(buff.wild_imps.stack>1&action.hand_of_guldan.in_flight)" );
     opener->add_action( "bilescourge_bombers" );
-    opener->add_action( "summon_vilefiend" );
-    opener->add_action( "grimoire_felguard" );
-    opener->add_action( "hand_of_guldan,if=soul_shard=5|soul_shard=4&buff.demonic_calling.remains" );
-    opener->add_action( "call_dreadstalkers,if=prev_gcd.1.hand_of_guldan" );
-    opener->add_action( "summon_demonic_tyrant,if=prev_gcd.1.call_dreadstalkers" );
-    opener->add_action( "soul_strike,if=(soul_shard<3|soul_shard=4&buff.demonic_core.stack<=3)|buff.demonic_core.down&soul_shard<5" );
+    opener->add_action( "soul_strike,line_cd=30,if=!buff.bloodlust.remains|time>5&prev_gcd.1.hand_of_guldan" );
+    opener->add_action( "summon_vilefiend,if=soul_shard=5" );
+    opener->add_action( "grimoire_felguard,if=soul_shard=5" );
+    opener->add_action( "call_dreadstalkers,if=soul_shard=5" );
+    opener->add_action( "hand_of_guldan,if=soul_shard=5" );
+    opener->add_action( "hand_of_guldan,if=soul_shard>=3&prev_gcd.2.hand_of_guldan&time>5&(prev_gcd.1.soul_strike|!talent.soul_strike.enabled&prev_gcd.1.shadow_bolt)" );
+    opener->add_action( this, "Summon Demonic Tyrant", "if=prev_gcd.1.demonic_strength|prev_gcd.1.hand_of_guldan&prev_gcd.2.hand_of_guldan|!talent.demonic_strength.enabled&buff.wild_imps.stack+imps_spawned_during.2000%spell_haste>=6", "2000%spell_haste is shorthand for the cast time of Demonic Tyrant. The intent is to only begin casting if a certain number of imps will be out by the end of the cast." );
     opener->add_action( "demonbolt,if=soul_shard<=3&buff.demonic_core.remains" );
     opener->add_action( "call_action_list,name=build_a_shard" );
 
@@ -1130,7 +1117,7 @@ namespace warlock {
     imp->add_action( "doom,cycle_targets=1,max_cycle_targets=7,if=refreshable" );
     imp->add_action( "call_action_list,name=build_a_shard" );
 
-    bas->add_action("soul_strike");
+    bas->add_action("soul_strike,if=!talent.demonic_consumption.enabled|time>15|prev_gcd.1.hand_of_guldan&!buff.bloodlust.remains");
     bas->add_action("shadow_bolt");
   }
 }

@@ -980,9 +980,6 @@ namespace warlock {
       ->set_default_value( talents.dark_soul_instability->effectN( 1 ).percent() );
 
     // Azerite
-    buffs.accelerant = make_buff<stat_buff_t>( this, "accelerant", azerite.accelerant )
-      ->add_stat( STAT_HASTE_RATING, azerite.accelerant.value() )
-      ->set_duration( find_spell( 272957 )->duration() );
     buffs.bursting_flare = make_buff<stat_buff_t>( this, "bursting_flare", find_spell( 279913 ) )
       ->add_stat( STAT_MASTERY_RATING, azerite.bursting_flare.value() );
     buffs.chaotic_inferno = make_buff( this, "chaotic_inferno", find_spell( 279673 ) )
@@ -1032,7 +1029,6 @@ namespace warlock {
     talents.dark_soul_instability       = find_talent_spell( "Dark Soul: Instability" );
 
     // Azerite
-    azerite.accelerant                  = find_azerite_spell( "Accelerant" );
     azerite.bursting_flare              = find_azerite_spell( "Bursting Flare" );
     azerite.chaotic_inferno             = find_azerite_spell( "Chaotic Inferno" );
     azerite.crashing_chaos              = find_azerite_spell( "Crashing Chaos" );
@@ -1055,7 +1051,6 @@ namespace warlock {
     gains.infernal                      = get_gain( "infernal" );
     gains.shadowburn_shard              = get_gain( "shadowburn_shard" );
     gains.inferno                       = get_gain( "inferno" );
-    gains.chaos_shards                  = get_gain( "chaos_shards" );
   }
 
   void warlock_t::init_rng_destruction() {

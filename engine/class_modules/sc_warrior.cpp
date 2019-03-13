@@ -367,7 +367,7 @@ public:
 
     const spell_data_t* indomitable;
     const spell_data_t* never_surrender;  // SORTA NYI
-    const spell_data_t* bolster; // NYI
+    const spell_data_t* bolster;
 
     const spell_data_t* menace; // NYI
     const spell_data_t* rumbling_earth;
@@ -5294,7 +5294,8 @@ void warrior_t::apl_prot()
   default_apl_dps_precombat();
 
   action_priority_list_t* default_list = get_action_priority_list( "default" );
-  action_priority_list_t* prot         = get_action_priority_list( "prot" );
+  action_priority_list_t* st           = get_action_priority_list( "st" );
+  action_priority_list_t* aoe          = get_action_priority_list( "aoe" );
 
   default_list -> add_action( "auto_attack" );
   default_list -> add_action( this, "Intercept", "if=time=0" );
@@ -5303,21 +5304,33 @@ void warrior_t::apl_prot()
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[ i ] );
 
-  default_list -> add_action( "call_action_list,name=prot" );
+  default_list -> add_action( "potion,if=buff.avatar.up|target.time_to_die<25" );
+  default_list -> add_action( this, "Ignore Pain", "if=rage.deficit<25+20*talent.booming_voice.enabled*cooldown.demoralizing_shout.ready", "use Ignore Pain to avoid rage capping" );
+  default_list -> add_action( this, "Avatar" );
+  default_list -> add_action( "run_action_list,name=aoe,if=spell_targets.thunder_clap>=3" );
+  default_list -> add_action( "call_action_list,name=st" );
 
-  prot -> add_action( "potion,if=buff.avatar.up|target.time_to_die<25" );
-  prot -> add_action( this, "Avatar" );
-  prot -> add_action( this, "Thunder Clap", "if=(talent.unstoppable_force.enabled&buff.avatar.up)" );
-  prot -> add_action( this, "Shield Block", "if=cooldown.shield_slam.ready&buff.shield_block.down&buff.last_stand.down&talent.bolster.enabled" );
-  prot -> add_action( this, "Last Stand", "if=cooldown.shield_slam.ready&cooldown.shield_block.charges_fractional<1&buff.shield_block.down&talent.bolster.enabled" );
-  prot -> add_action( this, "Ignore Pain", "if=rage.deficit<25+20*talent.booming_voice.enabled*cooldown.demoralizing_shout.ready" );
-  prot -> add_action( this, "Shield Slam" );
-  prot -> add_action( this, "Thunder Clap" );
-  prot -> add_action( this, "Demoralizing Shout", "if=talent.booming_voice.enabled" );
-  prot -> add_talent( this, "Ravager" );
-  prot -> add_talent( this, "Dragon Roar" );
-  prot -> add_action( this, "Revenge" );
-  prot -> add_action( this, "Devastate" );
+  st -> add_action( this, "Thunder Clap", "if=spell_targets.thunder_clap=2&talent.unstoppable_force.enabled&buff.avatar.up" );
+  st -> add_action( this, "Shield Block", "if=cooldown.shield_slam.ready&buff.shield_block.down&azerite.brace_for_impact.rank>azerite.deafening_crash.rank&buff.avatar.up" );
+  st -> add_action( this, "Shield Slam", "if=azerite.brace_for_impact.rank>azerite.deafening_crash.rank&buff.avatar.up&buff.shield_block.up" );
+  st -> add_action( this, "Thunder Clap", "if=(talent.unstoppable_force.enabled&buff.avatar.up)" );
+  st -> add_action( this, "Demoralizing Shout", "if=talent.booming_voice.enabled" );
+  st -> add_action( this, "Shield Block", "if=cooldown.shield_slam.ready&buff.shield_block.down" );
+  st -> add_action( this, "Shield Slam" );
+  st -> add_talent( this, "Dragon Roar" );
+  st -> add_action( this, "Thunder Clap" );
+  st -> add_action( this, "Revenge" );
+  st -> add_talent( this, "Ravager" );
+  st -> add_action( this, "Devastate" );
+
+  aoe -> add_action( this, "Thunder Clap" );
+  aoe -> add_action( this, "Demoralizing Shout", "if=talent.booming_voice.enabled" );
+  aoe -> add_talent( this, "Dragon Roar" );
+  aoe -> add_action( this, "Revenge" );
+  aoe -> add_talent( this, "Ravager" );
+  aoe -> add_action( this, "Shield Block", "if=cooldown.shield_slam.ready&buff.shield_block.down" );
+  aoe -> add_action( this, "Shield Slam" );
+
 }
 
 // NO Spec Combat Action Priority List

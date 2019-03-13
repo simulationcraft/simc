@@ -2495,11 +2495,17 @@ struct death_knight_action_t : public Base
 
   struct affected_by_t
   {
-    bool razorice, frozen_heart, dreadblade = false;
+    // Masteries
+    bool frozen_heart, dreadblade;
+    // Runeforge
+    bool razorice;
   } affected_by;
 
   death_knight_action_t( const std::string& n, death_knight_t* p, const spell_data_t* s = spell_data_t::nil() ) :
-    action_base_t( n, p, s ), gain( nullptr ), hasted_gcd( false ), weapon_req( WEAPON_NONE )
+    action_base_t( n, p, s ), gain( nullptr ), 
+    hasted_gcd( false ), 
+    weapon_req( WEAPON_NONE ),
+    affected_by()
   {
     this -> may_crit   = true;
     this -> may_glance = false;

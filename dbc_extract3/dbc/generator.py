@@ -1240,6 +1240,10 @@ class SpellDataGenerator(DataGenerator):
          287916, 290052, 290051, 290042, 287967,
          # Tidestorm Codex
          288086,
+         #Zandalari Racials - Permanent Buffs
+         292359, 292360, 292361, 292362, 292363, 292364,
+         #Zandalari Racials - Spell Procs
+         292380, 292463, 292473, 292474, 292486,
         ),
 
         # Warrior:

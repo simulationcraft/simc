@@ -384,10 +384,11 @@ double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t
       expansion::bfa::trigger_leyshocks_grand_compilation( STAT_VERSATILITY_RATING, this );
     }
 
-    if ( specialization() == WARLOCK_DESTRUCTION && azerite.chaos_shards.ok() )
+    // Chaos Shards triggers for all specializations
+    if ( azerite.chaos_shards.ok() )
     {
       // Check if soul shard was filled
-      if ( std::floor(resources.current[RESOURCE_SOUL_SHARD]) < std::floor(std::min(resources.current[RESOURCE_SOUL_SHARD] + amount, 5.0)) )
+      if ( std::floor( resources.current[ RESOURCE_SOUL_SHARD ] ) < std::floor( std::min( resources.current[ RESOURCE_SOUL_SHARD ] + amount, 5.0 ) ) )
       {
         if ( rng().roll( azerite.chaos_shards.spell_ref().effectN( 1 ).percent() / 10.0 ) )
           buffs.chaos_shards->trigger();
@@ -520,11 +521,8 @@ void warlock_t::init_spells()
   spec.wild_imps                        = find_specialization_spell( "Wild Imps" );
   spec.demonic_core                     = find_specialization_spell( "Demonic Core" );
   spec.shadow_bite                      = find_specialization_spell( "Shadow Bite" );
-  spec.shadow_bite_2                    = find_specialization_spell( 231799 );
   spec.unending_resolve                 = find_specialization_spell( "Unending Resolve" );
-  spec.unending_resolve_2               = find_specialization_spell( 231794 );
   spec.firebolt                         = find_specialization_spell( "Firebolt" );
-  spec.firebolt_2                       = find_specialization_spell( 231795 );
 
   // Talents
   talents.demon_skin                    = find_talent_spell( "Fire and Brimstone" );
@@ -567,7 +565,7 @@ void warlock_t::init_gains()
   gains.shadow_bolt                     = get_gain( "shadow_bolt" );
   gains.soul_conduit                    = get_gain( "soul_conduit" );
 
-  gains.soulsnatcher                    = get_gain( "soulsnatcher" );
+  gains.chaos_shards                    = get_gain( "chaos_shards" );
 }
 
 void warlock_t::init_procs()
@@ -848,6 +846,23 @@ timespan_t warlock_t::time_to_imps(int count)
   }
 }
 
+
+//Function for returning the the number of imps that will spawn in a specified time period.
+int warlock_t::imps_spawned_during( timespan_t period )
+{
+  int count = 0;
+
+  for ( auto ev : wild_imp_spawns )
+  {
+    timespan_t ex = debug_cast<actions::imp_delay_event_t*>( ev )->expected_time();
+
+    if ( ex < period )
+      count++;
+  }
+
+  return count;
+}
+
 std::string warlock_t::create_profile( save_e stype )
 {
   std::string profile_str = player_t::create_profile( stype );
@@ -1039,6 +1054,16 @@ expr_t* warlock_t::create_expression( const std::string& name_str )
         return this->time_to_imps(std::stoi(amt));
       }
     });
+  }
+  else if ( splits.size() == 2 && util::str_compare_ci( splits[0], "imps_spawned_during" ) )
+  {
+    std::string period = splits[1];
+
+    return make_fn_expr( name_str, [this, period]()
+    {
+      // Add a custom split .summon_demonic_tyrant which returns its cast time.
+      return this->imps_spawned_during( timespan_t::from_millis( std::stod( period ) ) );
+    } );
   }
 
   return player_t::create_expression( name_str );

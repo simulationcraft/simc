@@ -1692,7 +1692,6 @@ void items::incandescent_sliver( special_effect_t& effect )
   timespan_t period = effect.driver()->effectN( 1 ).period();
   p->register_combat_begin( [ crit_buff, period ] ( player_t* )
   {
-    crit_buff->trigger( crit_buff->max_stack() );
     make_repeating_event( crit_buff->sim, period, [ crit_buff ]
     {
       if ( crit_buff->rng().roll( crit_buff->sim->bfa_opts.incandescent_sliver_chance ) )

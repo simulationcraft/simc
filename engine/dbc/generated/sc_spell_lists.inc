@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 8.1.0.29482
+// Class based active abilities, wow build 8.1.5.29683
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -1263,7 +1263,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 };
 #define TREE_SPECIALIZATION_SIZE (34)
 
-// Talent tree specialization abilities, wow build 8.1.0.29482
+// Talent tree specialization abilities, wow build 8.1.5.29683
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1565,6 +1565,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        19577, // Intimidation
       231549, // Disengage (Rank 2)
       187708, // Carve
+      294029, // Carve (Rank 2)
            0,
     },
     {
@@ -2380,7 +2381,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 };
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 8.1.0.29482
+// Class mastery abilities, wow build 8.1.5.29683
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2616,10 +2617,10 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define RACE_ABILITY_SIZE (5)
 
 #ifndef MAX_RACE
-#define MAX_RACE (31)
+#define MAX_RACE (33)
 #endif
 
-// Racial abilities, wow build 8.1.0.29482
+// Racial abilities, wow build 8.1.5.29683
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3544,10 +3545,56 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
           0,
     },
   },
+  // Racial abilities for Zandalari Troll
+  {
+    // Generic racial abilities
+    {
+      291619, // City of Gold
+      292752, // Embrace of the Loa
+      292751, // Embrace of the Loa
+      281954, // Pterrordax Swoop
+      291944, // Regeneratin'
+    },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+  },
+  // Racial abilities for Kul Tiran
+  {
+    // Generic racial abilities
+    {
+      291628, // Brush It Off
+      291622, // Child of the Sea
+      287712, // Haymaker
+      291417, // Rime of the Ancient Mariner
+          0,
+    },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+  },
 };
 #define SET_BONUS_DATA_SIZE (724)
 
-// Set bonus data, wow build 8.1.0.29482
+// Set bonus data, wow build 8.1.5.29683
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -4303,9 +4350,9 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Keepsakes of the Resolute Commandant"       ,  "keepsakes",     17,  1443,   23,   2,  11,   -1, 290362, { 165604, 165566,  0 } },
   { "Keepsakes of the Resolute Commandant"       ,  "keepsakes",     17,  1443,   23,   2,  12,   -1, 290362, { 165604, 165566,  0 } },
 };
-#define RPPMMOD_SIZE (933)
+#define RPPMMOD_SIZE (947)
 
-// 933 RPPM Modifiers, wow build level 8.1.0.29482
+// 947 RPPM Modifiers, wow build level 8.1.5.29683
 static struct rppm_modifier_t __rppmmodifier_data[] = {
   {  17495,    4,  1,  1.0000 },
   {  27656,    4,  1,  1.0000 },
@@ -5240,5 +5287,19 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 289287,    4,  1,  1.0000 },
   { 289289,    4,  1,  1.0000 },
   { 289391,    4,  1,  1.0000 },
+  { 292359,    4,  1,  1.0000 },
+  { 292360,    4,  1,  1.0000 },
+  { 292361,    4,  1,  1.0000 },
+  { 292363,    4,  1,  1.0000 },
+  { 292364,    4,  1,  1.0000 },
+  { 292824,    4,  1,  1.0000 },
+  { 292975,    4,  1,  1.0000 },
+  { 292991,    4,  1,  1.0000 },
+  { 295157,    4,  1,  1.0000 },
+  { 295254,    4,  1,  1.0000 },
+  { 295280,    4,  1,  1.0000 },
+  { 295391,    4,  1,  1.0000 },
+  { 295427,    4,  1,  1.0000 },
+  { 295812,    4,  1,  1.0000 },
   {      0,    0,  0,  0.0000 },
 };

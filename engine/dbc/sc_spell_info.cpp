@@ -698,6 +698,7 @@ static const std::unordered_map<unsigned, const std::string> _effect_subtype_str
   { 320, "Modify Ranged Attack Speed%"                  },
   { 329, "Modify Resource Generation%"                  },
   { 330, "Cast while Moving (Whitelist)"                },
+  { 334, "Modify Auto Attack Critical Chance"           },
   { 342, "Modify Ranged and Melee Attack Speed%"        },
   { 343, "Modify Auto Attack Damage Taken% from Caster" },
   { 344, "Modify Auto Attack Damage Done%"              },

@@ -359,9 +359,9 @@ public:
   {
     struct arcane_charge_benefits_t
     {
-      buff_stack_benefit_t* arcane_barrage;
-      buff_stack_benefit_t* arcane_blast;
-      buff_stack_benefit_t* nether_tempest;
+      std::unique_ptr<buff_stack_benefit_t> arcane_barrage;
+      std::unique_ptr<buff_stack_benefit_t> arcane_blast;
+      std::unique_ptr<buff_stack_benefit_t> nether_tempest;
     } arcane_charge;
   } benefits;
 
@@ -505,13 +505,13 @@ public:
   // Sample data
   struct sample_data_t
   {
-    cooldown_reduction_data_t* blizzard;
-    cooldown_reduction_data_t* t20_4pc;
+    std::unique_ptr<cooldown_reduction_data_t> blizzard;
+    std::unique_ptr<cooldown_reduction_data_t> t20_4pc;
 
-    extended_sample_data_t* icy_veins_duration;
+    std::unique_ptr<extended_sample_data_t> icy_veins_duration;
 
-    extended_sample_data_t* burn_duration_history;
-    extended_sample_data_t* burn_initial_mana;
+    std::unique_ptr<extended_sample_data_t> burn_duration_history;
+    std::unique_ptr<extended_sample_data_t> burn_initial_mana;
   } sample_data;
 
   // Specializations
@@ -550,7 +550,6 @@ public:
   struct state_t
   {
     bool brain_freeze_active;
-    bool clearcasting_active;
     bool fingers_of_frost_active;
 
     int flurry_bolt_count;
@@ -661,8 +660,6 @@ public:
 
 public:
   mage_t( sim_t* sim, const std::string& name, race_e r = RACE_NONE );
-
-  ~mage_t();
 
   // Character Definition
   void        init_spells() override;
@@ -2259,7 +2256,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
     {
       // Equipoise data is stored across 4 different spells.
       equipoise_threshold = p->find_spell( 264351 )->effectN( 1 ).percent();
-      equipoise_reduction = p->find_spell( 264353 )->effectN( 1 ).base_value();
+      equipoise_reduction = p->find_spell( 264353 )->effectN( 1 ).average( p );
     }
   }
 
@@ -2462,7 +2459,7 @@ struct arcane_missiles_tick_t : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::execute();
 
-    if ( p()->state.clearcasting_active )
+    if ( p()->buffs.clearcasting_channel->check() )
       p()->buffs.arcane_pummeling->trigger();
   }
 
@@ -2577,29 +2574,9 @@ struct arcane_missiles_t : public arcane_mage_spell_t
   void execute() override
   {
     p()->buffs.arcane_pummeling->expire();
-
-    bool cc_active = p()->buffs.clearcasting->check() != 0;
-    bool refresh = get_dot( target )->is_ticking();
-
-    // Arcane Pummeling only checks if Clearcasting was consumed when
-    // the last Arcane Missiles was cast. It doesn't care about the state
-    // of the current channel.
-    p()->state.clearcasting_active = cc_active;
-
-    // The channel time and tick time reduction, however, don't check
-    // if last Arcane Missiles consumed Clearcasting or not. They work in
-    // a different, not very clear way.
-    //
-    // In particular, the first refresh never benefits from Clearcasting,
-    // even if Clearcasting was consumed on the refresh. The second refresh
-    // checks if the first refresh had Clearcasting and so on.
-    if ( !refresh || !p()->bugs )
-      handle_clearcasting( cc_active );
+    handle_clearcasting( p()->buffs.clearcasting->check() != 0 );
 
     arcane_mage_spell_t::execute();
-
-    if ( p()->bugs )
-      handle_clearcasting( cc_active && refresh );
 
     if ( p()->sets->has_set_bonus( MAGE_ARCANE, T19, B4 ) )
     {
@@ -5140,20 +5117,6 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   regen_type = REGEN_DYNAMIC;
 }
 
-mage_t::~mage_t()
-{
-  delete benefits.arcane_charge.arcane_barrage;
-  delete benefits.arcane_charge.arcane_blast;
-  delete benefits.arcane_charge.nether_tempest;
-
-  delete sample_data.burn_duration_history;
-  delete sample_data.burn_initial_mana;
-
-  delete sample_data.blizzard;
-  delete sample_data.t20_4pc;
-  delete sample_data.icy_veins_duration;
-}
-
 bool mage_t::apply_crowd_control( const action_state_t* state, spell_mechanic type )
 {
   if ( type == MECHANIC_INTERRUPT )
@@ -5779,10 +5742,10 @@ void mage_t::init_benefits()
 
   if ( specialization() == MAGE_ARCANE )
   {
-    benefits.arcane_charge.arcane_barrage = new buff_stack_benefit_t( buffs.arcane_charge, "Arcane Barrage" );
-    benefits.arcane_charge.arcane_blast   = new buff_stack_benefit_t( buffs.arcane_charge, "Arcane Blast" );
+    benefits.arcane_charge.arcane_barrage = std::make_unique<buff_stack_benefit_t>( buffs.arcane_charge, "Arcane Barrage" );
+    benefits.arcane_charge.arcane_blast   = std::make_unique<buff_stack_benefit_t>( buffs.arcane_charge, "Arcane Blast" );
     if ( talents.nether_tempest->ok() )
-      benefits.arcane_charge.nether_tempest = new buff_stack_benefit_t( buffs.arcane_charge, "Nether Tempest" );
+      benefits.arcane_charge.nether_tempest = std::make_unique<buff_stack_benefit_t>( buffs.arcane_charge, "Nether Tempest" );
   }
 }
 
@@ -5796,18 +5759,18 @@ void mage_t::init_uptimes()
       uptime.burn_phase     = get_uptime( "Burn Phase" );
       uptime.conserve_phase = get_uptime( "Conserve Phase" );
 
-      sample_data.burn_duration_history = new extended_sample_data_t( "Burn duration history", false );
-      sample_data.burn_initial_mana     = new extended_sample_data_t( "Burn initial mana", false );
+      sample_data.burn_duration_history = std::make_unique<extended_sample_data_t>( "Burn duration history", false );
+      sample_data.burn_initial_mana     = std::make_unique<extended_sample_data_t>( "Burn initial mana", false );
       break;
 
     case MAGE_FROST:
-      sample_data.blizzard = new cooldown_reduction_data_t( cooldowns.frozen_orb, "Blizzard" );
-
-      if ( talents.thermal_void->ok() )
-        sample_data.icy_veins_duration = new extended_sample_data_t( "Icy Veins duration", false );
+      sample_data.blizzard = std::make_unique<cooldown_reduction_data_t>( cooldowns.frozen_orb, "Blizzard" );
 
       if ( sets->has_set_bonus( MAGE_FROST, T20, B4 ) )
-        sample_data.t20_4pc = new cooldown_reduction_data_t( cooldowns.frozen_orb, "T20 4pc" );
+        sample_data.t20_4pc = std::make_unique<cooldown_reduction_data_t>( cooldowns.frozen_orb, "T20 4pc" );
+
+      if ( talents.thermal_void->ok() )
+        sample_data.icy_veins_duration = std::make_unique<extended_sample_data_t>( "Icy Veins duration", false );
       break;
 
     case MAGE_FIRE:
@@ -7223,7 +7186,7 @@ public:
   player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
   {
     auto p = new mage_t( sim, name, r );
-    p->report_extension = std::unique_ptr<player_report_extension_t>( new mage_report_t( *p ) );
+    p->report_extension = std::make_unique<mage_report_t>( *p );
     return p;
   }
 
