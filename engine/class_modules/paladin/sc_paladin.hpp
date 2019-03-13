@@ -677,7 +677,7 @@ public:
       ret_crusade = false;
     }
     avenging_wrath = ab::data().affected_by( player -> spells.avenging_wrath -> effectN( 1 ) );
-    avenging_wrath_crit = p() -> dbc.ptr ? ab::data().affected_by( player -> spells.avenging_wrath_crit -> effectN( 1 ) ) : false;
+    avenging_wrath_crit = ab::data().affected_by( player -> spells.avenging_wrath_crit -> effectN( 1 ) );
 
     hasted_cd = hasted_gcd = false;
     auto update_hasted_cooldowns_by_passive = [&](const spell_data_t* passive) {
