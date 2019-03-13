@@ -145,7 +145,16 @@ const std::string _race_strings[] =
   "goblin",
   "blood_elf",
   "draenei",
-  "", "", "", "", "", "", "", "", "", "",
+  "dark_iron_dwarf",
+  "",
+  "maghar_orc",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
   "worgen",
   "",
   "",
@@ -154,7 +163,9 @@ const std::string _race_strings[] =
   "nightborne",
   "highmountain_tauren",
   "void_elf",
-  "lightforged_tauren"
+  "lightforged_draenei",
+  "zandalari_troll",
+  "kul_tiran"
 };
 
 const std::string _pet_class_strings[] =

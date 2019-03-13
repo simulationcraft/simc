@@ -1,4 +1,4 @@
-
+﻿
 // ==========================================================================
 // Dedmonwakeen's DPS-DPM Simulator.
 // Send questions to natehieter@gmail.com
@@ -3727,7 +3727,7 @@ struct glory_of_the_dawn_t : public monk_melee_attack_t
     // The 35% cannot be located in any effect (whether it's Windwalker aura, SEF's spell, or in either of GotD's spells)
     // Using SEF' damage reduction times 3 for future proofing
     // (1 + -55%) = 45%; 45% * 3 = 135%
-    if ( p()->buff.storm_earth_and_fire->up() && maybe_ptr( p()->dbc.ptr ) ) {
+    if ( p()->buff.storm_earth_and_fire->up() ) {
       am *= ( 1 + p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent() ) * 3;
     }
 
