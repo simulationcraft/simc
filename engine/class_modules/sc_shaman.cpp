@@ -2985,14 +2985,14 @@ struct stormstrike_attack_t : public shaman_attack_t
     {
       // currently buggy on ptr, is applying 2/3 to each hit instead of 1/3 on oh
       // double tf_bonus = 0.5 * p()->azerite.thunderaans_fury.value( 2 );
-      double tf_bonus = ( 2 / 3.0 ) * p()->azerite.thunderaans_fury.value( 2 );
+      double tf_bonus = ( 2.0 / 3.0 ) * p()->azerite.thunderaans_fury.value( 2 );
       b += tf_bonus;
     }
 
     if ( p()->buff.stormbringer->check() )
     {
-      double rs_bonus = p()->azerite.roiling_storm.value( 1 );
-      // New Roiling Storm has 50% penalty from the tooltip applied to offhand but not main hand
+      double rs_bonus = ( 2.0 / 3.0 ) * p()->azerite.roiling_storm.value( 1 );
+      // New Roiling Storm has 66% penalty from the tooltip applied to MH and 33% to OH.
       if ( weapon && weapon->slot == SLOT_OFF_HAND )
       {
         rs_bonus *= 0.5;
@@ -3038,8 +3038,8 @@ struct windstrike_attack_t : public stormstrike_attack_t
 
     if ( p()->buff.stormbringer->check() )
     {
-      double rs_bonus = p()->azerite.roiling_storm.value( 1 );
-      // New Roiling Storm has 50% penalty from the tooltip applied to offhand but not main hand
+      double rs_bonus = ( 2.0 / 3.0 ) * p()->azerite.roiling_storm.value( 1 );
+      // New Roiling Storm has 66% penalty from the tooltip applied to MH and 33% to OH.
       if ( weapon && weapon->slot == SLOT_OFF_HAND )
       {
         rs_bonus *= 0.5;
