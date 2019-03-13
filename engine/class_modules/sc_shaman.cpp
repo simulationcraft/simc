@@ -846,8 +846,7 @@ struct roiling_storm_buff_driver_t : public buff_t
 {
   roiling_storm_buff_driver_t( shaman_t* p ) : buff_t( p, "roiling_storm_driver", p->find_spell( 279513 ) )
   {
-    set_period( s_data->effectN( 1 ).period() );
-
+    set_period( s_data->internal_cooldown() );
     set_quiet( true );
 
     if ( p->azerite.roiling_storm.ok() )
