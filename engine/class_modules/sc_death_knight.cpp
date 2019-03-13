@@ -394,6 +394,8 @@ struct death_knight_td_t : public actor_target_data_t {
 
     // Azerite Traits
     buff_t* deep_cuts;
+    buff_t* frostbolt_apocalypse_magus;
+    buff_t* frostbolt_army_magus;
   } debuff;
 
   death_knight_td_t( player_t* target, death_knight_t* death_knight );
@@ -873,7 +875,7 @@ public:
   double    composite_parry() const override;
   double    composite_leech() const override;
   double    composite_melee_expertise( const weapon_t* ) const override;
-  double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
+  // double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double    composite_player_pet_damage_multiplier( const action_state_t* /* state */ ) const override;
   double    composite_crit_avoidance() const override;
   void      combat_begin() override;
@@ -977,8 +979,10 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
                            -> set_trigger_spell( p -> spec.festering_wound )
                            -> set_cooldown( 0_ms ); // Handled by trigger_festering_wound
 
-  debuff.deep_cuts         = make_buff( *this, "deep_cuts", p -> find_spell( 272685 ) )
-                           -> set_trigger_spell( p -> azerite.deep_cuts );
+  debuff.deep_cuts         = make_buff( *this, "deep_cuts", p -> find_spell( 272685 ) );
+
+  debuff.frostbolt_apocalypse_magus = make_buff( *this, "frostbolt_apocalypse_magus", p -> find_spell( 288548 ) );
+  debuff.frostbolt_army_magus = make_buff( *this, "frostbolt_army_magus", p -> find_spell( 288548 ) );
 
   // On target death triggers
   if ( p -> specialization() == DEATH_KNIGHT_UNHOLY )
@@ -2307,62 +2311,26 @@ struct bloodworm_pet_t : public death_knight_pet_t
 
 struct magus_pet_t : public death_knight_pet_t
 {
-  // The magus is coded weirdly: it will alternate between casting frostbolt and shadow bolt on a 2.4s interval
-  // It receives an order to cast by its AI every 1.2s, much like the Risen Skulker used to
-  // https://github.com/SimCMinMax/WoW-BugTracker/issues/385
-
-  bool last_used_frostbolt;
-  bool second_shadow_bolt;
+  // Magus of the dead has a special AI:
+  // Frostbolt has a 3s cooldown that doesn't seeem to be in spelldata
+  // It also applies a 4s snare on non-boss targets hit, and can't target an enemy affected by said snare
+  // The snare isn't shared between the magus spawned by army and apoc.
+  // Frostbolt is used on cooldown, and shadow bolt is used the rest of the time
   double melee_uptime;
+  bool is_apoc_magus;
 
   struct magus_spell_t : public pet_action_t<magus_pet_t, spell_t>
   {
-    magus_pet_t* magus;
-    bool is_frostbolt;
-
     magus_spell_t( magus_pet_t* player, const std::string& name , const spell_data_t* spell, const std::string& options_str ) :
-      super( player, name, spell, options_str ),
-      magus( player )
+      super( player, name, spell, options_str )
     {
       base_dd_min = base_dd_max = player -> o() -> azerite.magus_of_the_dead.value();
       interrupt_auto_attack = false;
     }
 
-    void execute() override
-    {
-      super::execute();
-
-      magus -> last_used_frostbolt = this -> is_frostbolt;
-    }
-
     // There's a 1 energy cost in spelldata but it might as well be ignored
     double cost() const override
     { return 0; }
-
-    timespan_t gcd() const override
-    {
-      // Risen Skulker had a 2.4s between each cast start, making its cast time scaling with haste nearly irrelevant
-      // This was fixed in 8.1 and seems to be back for Magus of the Dead
-      // https://github.com/SimCMinMax/WoW-BugTracker/issues/385
-
-      timespan_t interval = super::gcd();
-
-      if ( p() -> o() -> bugs )
-      {
-        interval = execute_time() <= 1.2_s ? 1.2_s : 2.4_s;
-      }
-
-      return interval;
-    }
-
-    bool ready() override
-    {
-      if ( magus -> last_used_frostbolt == this -> is_frostbolt )
-      {
-        return false;
-      }
-      return super::ready();
-    }
   };
 
   struct frostbolt_magus_t : public magus_spell_t
@@ -2370,7 +2338,40 @@ struct magus_pet_t : public death_knight_pet_t
     frostbolt_magus_t( magus_pet_t* player, const std::string& options_str ) :
       magus_spell_t( player, "frostbolt", player -> o() -> find_spell( 288548 ), options_str )
     {
-      is_frostbolt = true;
+      // TODO: Frostbolt has a 3s cooldown, set in a manual hotfix
+      // cooldown -> duration = 3_s;
+    }
+
+    // Frostbolt applies a slowing debuff on non-boss targets
+    // This is needed because Frostbolt won't ever target an enemy affected by the debuff
+    void impact( action_state_t* state ) override
+    {
+      magus_spell_t::impact( state );
+
+      magus_pet_t* magus = debug_cast< magus_pet_t* >( p() );
+      death_knight_td_t* td = p() -> o() -> get_target_data( state -> target );
+
+      if ( result_is_hit( state -> result )
+            && ( state -> target -> is_add() || state -> target -> level() < sim -> max_player_level + 3 ) )
+      {
+        if ( magus -> is_apoc_magus )
+          td -> debuff.frostbolt_apocalypse_magus -> trigger();
+        else
+          td -> debuff.frostbolt_army_magus -> trigger();
+      }
+    }
+
+    bool target_ready( player_t* candidate_target ) override
+    {
+      death_knight_td_t* td = p() -> o() -> get_target_data( candidate_target );
+      magus_pet_t* magus = debug_cast< magus_pet_t* >( p() );
+
+      // Frostbolt can't target an enemy already affected by its slowing debuff
+      if ( ( td -> debuff.frostbolt_apocalypse_magus -> check() && magus -> is_apoc_magus ) || 
+           ( td -> debuff.frostbolt_army_magus -> check() && ! magus -> is_apoc_magus ) )
+        return false;
+
+      return magus_spell_t::target_ready( candidate_target );
     }
   };
 
@@ -2378,27 +2379,7 @@ struct magus_pet_t : public death_knight_pet_t
   {
     shadow_bolt_magus_t( magus_pet_t* player, const std::string& options_str ) :
       magus_spell_t( player, "shadow_bolt", player -> o() -> find_spell( 288546 ), options_str )
-    {
-      is_frostbolt = false;
-    }
-
-    // Remove the execute override completely once the bug is fixed
-    void execute() override
-    {
-      magus_spell_t::super::execute();
-
-      // If a shadow bolt cast ends in less than 1.2s, the magus will cast it again, this isn't true for Frostbolt
-      // https://github.com/SimCMinMax/WoW-BugTracker/issues/392
-      if ( p() -> bugs && execute_time() <= 1.2_s && ! magus -> second_shadow_bolt )
-      {
-        magus -> second_shadow_bolt = true;
-      }
-      else 
-      {
-        magus -> second_shadow_bolt = false;
-        magus -> last_used_frostbolt = false;
-      }
-    }
+    { }
   };
 
   // Not mentionned in the tooltip (potential bug?) 
@@ -2430,10 +2411,9 @@ struct magus_pet_t : public death_knight_pet_t
     }
   };
 
-  magus_pet_t( death_knight_t* owner ) :
+  magus_pet_t( death_knight_t* owner, bool apoc_magus ) :
     death_knight_pet_t( owner, "magus_of_the_dead", true, false ),
-    last_used_frostbolt( false ), second_shadow_bolt( false ),
-    melee_uptime( 0 )
+    is_apoc_magus( apoc_magus ), melee_uptime( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.swing_time = 1.4_s;
@@ -2557,10 +2537,7 @@ struct death_knight_action_t : public Base
     this -> affected_by.frozen_heart = this -> data().affected_by( p -> mastery.frozen_heart -> effectN( 1 ) );
     this -> affected_by.dreadblade = this -> data().affected_by( p -> mastery.dreadblade -> effectN( 1 ) );
 
-    if ( p -> dbc.ptr )
-    {
-      this -> affected_by.razorice = this ->  data().affected_by( p -> spell.razorice_debuff -> effectN( 1 ) );
-    }
+    this -> affected_by.razorice = this ->  data().affected_by( p -> spell.razorice_debuff -> effectN( 1 ) );
   }
 
   death_knight_t* p() const
@@ -2602,7 +2579,7 @@ struct death_knight_action_t : public Base
   {
     double m = action_base_t::composite_target_multiplier( target );
 
-    if ( p() -> dbc.ptr && this -> affected_by.razorice )
+    if ( this -> affected_by.razorice )
     {
       death_knight_td_t* td = p() -> get_target_data( target );
 
@@ -3147,8 +3124,8 @@ struct apocalypse_t : public death_knight_melee_attack_t
     if ( p() -> azerite.magus_of_the_dead.enabled() )
     {
       // Magus of the dead can spawn anywhere around the player and sometimes moves into melee range on its own
-      // Assume a 0.6 melee uptime if no amount is specified by the user
-      double magus_uptime = 0.6;
+      // Assume a 0.3 melee uptime if no amount is specified by the user
+      double magus_uptime = 0.3;
       if ( p() -> options.magus_of_the_dead_melee_uptime != -1 )
       {
         magus_uptime = p() -> options.magus_of_the_dead_melee_uptime;
@@ -4381,10 +4358,7 @@ struct death_strike_t : public death_knight_melee_attack_t
     // 2019-03-01: On 8.1.5 PTR, Death Strike is fixed with regards to procs on RP spent
     // RE/RC/Gargoyle now behave as if Death Strike costed 35RP for dps specs.
     // We model that by directly changing the base RP cost from spelldata, rather than manipulating cost()
-    if ( p -> dbc.ptr )
-    {
-      base_costs[ RESOURCE_RUNIC_POWER ] += p -> spec.death_strike_2 -> effectN( 3 ).resource( RESOURCE_RUNIC_POWER );
-    }
+    base_costs[ RESOURCE_RUNIC_POWER ] += p -> spec.death_strike_2 -> effectN( 3 ).resource( RESOURCE_RUNIC_POWER );
   }
 
   double action_multiplier() const override
@@ -4404,12 +4378,6 @@ struct death_strike_t : public death_knight_melee_attack_t
          p() -> buffs.bone_shield -> stack() >= p() -> talent.ossuary -> effectN( 1 ).base_value() )
     {
       c += ossuary_cost_reduction;
-    }
-
-    // 2019-03-02: The cost is dynamically changed and procs on RP spent use the base cost (45 RP)
-    if ( p() -> spec.death_strike_2 -> ok() && ! p() -> dbc.ptr )
-    {
-      c += p() -> spec.death_strike_2 -> effectN( 3 ).resource( RESOURCE_RUNIC_POWER );
     }
 
     return c;
@@ -7090,8 +7058,8 @@ void death_knight_t::create_pets()
 
     if ( azerite.magus_of_the_dead.enabled() )
     {
-      pets.apocalype_magus = new pets::magus_pet_t( this );
-      pets.army_magus = new pets::magus_pet_t( this );
+      pets.apocalype_magus = new pets::magus_pet_t( this, true );
+      pets.army_magus = new pets::magus_pet_t( this, false );
     }
   }
   
@@ -8311,20 +8279,6 @@ double death_knight_t::composite_player_pet_damage_multiplier( const action_stat
   return m;
 }
 
-double death_knight_t::composite_player_target_multiplier( player_t* target, school_e school ) const
-{
-  double m = player_t::composite_player_target_multiplier( target, school );
-
-  death_knight_td_t* td = get_target_data( target );
-
-  if ( dbc::is_school( school, SCHOOL_FROST ) && ! dbc.ptr )
-  {
-    m *= 1.0 + td -> debuff.razorice -> check_stack_value();
-  }
-
-  return m;
-}
-
 // death_knight_t::composite_attack_power_multiplier ==================================
 
 double death_knight_t::composite_attack_power_multiplier() const
@@ -8612,6 +8566,12 @@ struct death_knight_module_t : public module_t {
 
   void register_hotfixes() const override
   {
+    hotfix::register_spell( "Death Knight", "2019-03-12", "Incorrect cooldown for Magus of the Dead's Frostbolt.", 288548 )
+      .field( "cooldown" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 3000 )
+      .verification_value( 0 );
+
   }
 
   void init( player_t* ) const override {}
