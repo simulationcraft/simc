@@ -556,6 +556,48 @@ bool parse_timeofday( sim_t* sim, const std::string& name, const std::string& ov
   return true;
 }
 
+// parse_loa ====================================================
+
+bool parse_loa( sim_t* sim, const std::string& name, const std::string& override_str )
+{
+  assert( name == "zandalari_loa" );
+  ( void )name;
+
+  player_t* p = sim->active_player;
+
+  if ( util::str_compare_ci( override_str, "akunda" ) || util::str_compare_ci( override_str, "embrace_of_akunda" ) )
+  {
+    p->zandalari_loa = player_t::AKUNDA;
+  }
+  else if ( util::str_compare_ci( override_str, "bwonsamdi" ) || util::str_compare_ci( override_str, "embrace_of_bwonsamdi" ) )
+  {
+    p->zandalari_loa = player_t::BWONSAMDI;
+  }
+  else if ( util::str_compare_ci( override_str, "gonk" ) || util::str_compare_ci( override_str, "embrace_of_gonk" ) )
+  {
+    p->zandalari_loa = player_t::GONK;
+  }
+  else if ( util::str_compare_ci( override_str, "kimbul" ) || util::str_compare_ci( override_str, "embrace_of_kimbul" ) )
+  {
+    p->zandalari_loa = player_t::KIMBUL;
+  }
+  else if ( util::str_compare_ci( override_str, "kragwa" ) || util::str_compare_ci( override_str, "embrace_of_kragwa" ) )
+  {
+    p->zandalari_loa = player_t::KRAGWA;
+  }
+  else if ( util::str_compare_ci( override_str, "paku" ) || util::str_compare_ci( override_str, "embrace_of_paku" ) )
+  {
+    p->zandalari_loa = player_t::PAKU;
+  }
+  else
+  {
+    sim->errorf( "\n%s zandalari_loa string \"%s\" not valid.\n", sim->active_player->name(), override_str.c_str() );
+    return false;
+  }
+
+  return true;
+}
+
 // parse_role_string ========================================================
 
 bool parse_role_string( sim_t* sim, const std::string& name, const std::string& value )
@@ -861,7 +903,7 @@ void residual_action::trigger( action_t* residual_action, player_t* t, double am
   make_event<delay_event_t>( *residual_action->sim, t, residual_action, amount );
 }
 
-player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r ) :
+player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r ):
   actor_t( s, n ),
   type( t ),
   parent( nullptr ),
@@ -889,6 +931,7 @@ player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r ) :
   server_str( s->default_server_str ),
   origin_str(),
   timeofday( DAY_TIME ),  // Set to Day by Default since in raid it always switches to Day, user can override.
+  zandalari_loa( PAKU ), //Set loa to paku by default (as it has some gain for any role if not optimal), user can override
   gcd_ready( timespan_t::zero() ),
   base_gcd( timespan_t::from_seconds( 1.5 ) ),
   min_gcd( timespan_t::from_millis( 750 ) ),
@@ -2247,6 +2290,7 @@ void player_t::init_gains()
   gains.touch_of_the_grave = get_gain( "touch_of_the_grave" );
   gains.vampiric_embrace   = get_gain( "vampiric_embrace" );
   gains.leech              = get_gain( "leech" );
+  gains.embrace_of_bwonsamdi = get_gain( "embrace_of_bwonsamdi" );
 }
 
 void player_t::init_procs()
@@ -3257,6 +3301,8 @@ double player_t::composite_melee_crit_chance() const
 
   ac += racials.viciousness->effectN( 1 ).percent();
   ac += racials.arcane_acuity->effectN( 1 ).percent();
+  if(buffs.embrace_of_paku)
+    ac += buffs.embrace_of_paku->check_value();
 
   if ( timeofday == DAY_TIME )
     ac += racials.touch_of_elune->effectN( 1 ).percent();
@@ -3522,6 +3568,8 @@ double player_t::composite_spell_crit_chance() const
 
   sc += racials.viciousness->effectN( 1 ).percent();
   sc += racials.arcane_acuity->effectN( 1 ).percent();
+  if(buffs.embrace_of_paku)
+    sc += buffs.embrace_of_paku->check_value();
 
   if ( timeofday == DAY_TIME )
   {
@@ -3791,6 +3839,10 @@ double player_t::passive_movement_modifier() const
 {
   double passive = passive_modifier;
 
+  if ( race == RACE_ZANDALARI_TROLL && zandalari_loa == GONK )
+  {
+    passive += find_spell( 292362 )->effectN( 1 ).percent();
+  }
   passive += racials.quickness->effectN( 2 ).percent();
   if ( buffs.aggramars_stride )
   {
@@ -10398,6 +10450,11 @@ std::string player_t::create_profile( save_e stype )
     {
       profile_str += "timeofday=" + util::to_string( timeofday == player_t::NIGHT_TIME ? "night" : "day" ) + term;
     }
+    if ( race == RACE_ZANDALARI_TROLL )
+    {
+      profile_str += "zandalari_loa=" + util::to_string(zandalari_loa == player_t::AKUNDA ? "akunda" : zandalari_loa == player_t::BWONSAMDI ? "bwonsamdi"
+        : zandalari_loa == player_t::GONK ? "gonk" : zandalari_loa == player_t::KIMBUL ? "kimbul" : zandalari_loa == player_t::KRAGWA ? "kragwa" : "paku") + term;
+    }
     profile_str += "role=";
     profile_str += util::role_type_string( primary_role() ) + term;
     profile_str += "position=" + position_str + term;
@@ -10653,6 +10710,7 @@ void player_t::copy_from( player_t* source )
   true_level      = source->true_level;
   race_str        = source->race_str;
   timeofday       = source->timeofday;
+  zandalari_loa   = source->zandalari_loa;
   race            = source->race;
   role            = source->role;
   _spec           = source->_spec;
@@ -10708,6 +10766,7 @@ void player_t::create_options()
   add_option( opt_func( "talent_override", parse_talent_override ) );
   add_option( opt_string( "race", race_str ) );
   add_option( opt_func( "timeofday", parse_timeofday ) );
+  add_option( opt_func( "zandalari_loa", parse_loa ) );
   add_option( opt_int( "level", true_level, 1, MAX_LEVEL ) );
   add_option( opt_bool( "ready_trigger", ready_type ) );
   add_option( opt_func( "role", parse_role_string ) );

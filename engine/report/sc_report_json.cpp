@@ -659,6 +659,8 @@ void to_json( JsonOutput& arr, const player_t& p )
   root[ "scale_player" ] = p.scale_player;
   root[ "potion_used" ] = p.potion_used;
   root[ "timeofday" ] = p.timeofday == player_t::NIGHT_TIME ? "NIGHT_TIME" : "DAY_TIME";
+  root[ "zandalari_loa" ] = p.zandalari_loa == player_t::AKUNDA ? "akunda" : p.zandalari_loa == player_t::BWONSAMDI ? "bwonsamdi"
+    : p.zandalari_loa == player_t::GONK ? "gonk" : p.zandalari_loa == player_t::KIMBUL ? "kimbul" : p.zandalari_loa == player_t::KRAGWA ? "kragwa" : "paku";
 
   if ( p.is_enemy() )
   {
