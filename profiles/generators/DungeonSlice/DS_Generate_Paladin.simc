@@ -7,7 +7,7 @@ position=back
 talents=1303103
 
 head=glaciercrest_helm,id=165823,bonus_id=4824/1537,azerite_powers=396/453/459/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
 shoulder=lockjaw_shoulderplate,id=159407,bonus_id=1587/4819,azerite_powers=125/396/21/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
 chest=chestguard_of_the_deep_denizen,id=159408,bonus_id=1587/4819,azerite_powers=154/396/22/13
@@ -35,7 +35,7 @@ talents=3200003
 spec=protection
 
 head=glaciercrest_helm,id=165823,bonus_id=4824/1537/4775,azerite_powers=235/562/31/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
 shoulder=dynosprocket_spaulders,id=165825,bonus_id=4824/1537/4775,azerite_powers=235/562/22/13
 back=loa_exultants_shroud,id=165512,bonus_id=4824/1537
 chest=breastplate_of_divine_purification,id=165550,bonus_id=4824/1537/4775,azerite_powers=395/562/461/13

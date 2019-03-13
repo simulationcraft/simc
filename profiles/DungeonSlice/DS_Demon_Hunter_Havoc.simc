@@ -91,7 +91,7 @@ actions.normal+=/vengeful_retreat,if=movement.distance>15
 actions.normal+=/throw_glaive,if=talent.demon_blades.enabled
 
 head=tidemothers_cover,id=165819,bonus_id=4824/1537/4775,azerite_powers=13/159/126/30/15
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
 shoulders=phantom_stalker_shoulders,id=165523,bonus_id=4824/1537/4775,azerite_powers=13/352/159/30/15
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
 chest=mekkatorques_bomber_jacket,id=165830,bonus_id=4824/1537/4775,azerite_powers=13/220/562/22/564
@@ -108,12 +108,12 @@ main_hand=daelin_proudmoores_saber,id=165604,bonus_id=4800/1537,enchant=versatil
 off_hand=bloodtooth_the_soulfeaster,id=165591,bonus_id=4800/1537,enchant=deadly_navigation
 
 # Gear Summary
-# gear_ilvl=416.19
-# gear_agility=5796
-# gear_stamina=9919
-# gear_crit_rating=717
-# gear_haste_rating=1263
-# gear_mastery_rating=852
+# gear_ilvl=416.81
+# gear_agility=5821
+# gear_stamina=9969
+# gear_crit_rating=727
+# gear_haste_rating=1273
+# gear_mastery_rating=862
 # gear_versatility_rating=535
 # gear_armor=2363
 # set_bonus=gift_of_the_loa_2pc=1

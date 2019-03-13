@@ -95,7 +95,7 @@ actions.finish+=/dispatch
 actions.stealth=ambush
 
 head=cowl_of_righteous_resolve,id=165519,bonus_id=4824/1537/4775,azerite_powers=129/562/30/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
 shoulders=gorak_tuls_mantle,id=159339,bonus_id=1587/4819/4775,azerite_powers=129/446/30/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
 chest=vest_of_reverent_adoration,id=159303,bonus_id=1587/4819/4775,azerite_powers=411/129/31/13
@@ -112,12 +112,12 @@ main_hand=daelin_proudmoores_saber,id=165604,bonus_id=4800/1537,enchant=deadly_n
 off_hand=last_fang_of_rezan,id=165596,bonus_id=4800/1537,enchant=galeforce_striking
 
 # Gear Summary
-# gear_ilvl=416.19
-# gear_agility=5796
-# gear_stamina=9919
-# gear_crit_rating=718
-# gear_haste_rating=1029
-# gear_mastery_rating=937
+# gear_ilvl=416.81
+# gear_agility=5821
+# gear_stamina=9969
+# gear_crit_rating=728
+# gear_haste_rating=1039
+# gear_mastery_rating=947
 # gear_versatility_rating=682
 # gear_armor=2363
 # set_bonus=gift_of_the_loa_2pc=1

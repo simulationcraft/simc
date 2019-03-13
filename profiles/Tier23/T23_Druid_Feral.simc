@@ -108,7 +108,7 @@ actions.opener+=/moonfire_cat,if=!ticking
 actions.opener+=/rip,if=!ticking
 
 head=crown_of_aakuls_dark_reign,id=165526,bonus_id=4824/1537/4775,azerite_powers=247/359/18/83/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
 shoulders=admiraltys_ceremonial_epaulets,id=165824,bonus_id=4824/1537/4775,azerite_powers=359/247/459/467/13
 back=high_tinkers_cape,id=165924,bonus_id=4800/1537
 chest=raiment_of_the_blighted_tribe,id=159335,bonus_id=5062/1587/4786/4775,azerite_powers=247/209/31/44/13
@@ -124,11 +124,11 @@ trinket2=variable_intensity_gigavolt_oscillating_reactor,id=165572,bonus_id=4800
 main_hand=hornridged_crusher,id=165589,bonus_id=4800/1537,enchant=deadly_navigation
 
 # Gear Summary
-# gear_ilvl=416.27
-# gear_agility=5796
-# gear_stamina=9920
-# gear_crit_rating=922
-# gear_haste_rating=783
-# gear_mastery_rating=934
+# gear_ilvl=416.93
+# gear_agility=5821
+# gear_stamina=9970
+# gear_crit_rating=932
+# gear_haste_rating=793
+# gear_mastery_rating=944
 # gear_versatility_rating=728
 # gear_armor=2363

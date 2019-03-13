@@ -8,7 +8,7 @@ talents=1310221
 timeofday=night
 
 head=tidemothers_cover,id=165819,bonus_id=4824/1537/4775,azerite_powers=13/159/126/30/15
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
 shoulders=phantom_stalker_shoulders,id=165523,bonus_id=4824/1537/4775,azerite_powers=13/352/159/30/15
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
 chest=mekkatorques_bomber_jacket,id=165830,bonus_id=4824/1537/4775,azerite_powers=13/220/562/22/564
@@ -37,7 +37,7 @@ talents=1213121
 timeofday=night
 
 head=cowl_of_fluid_machinations,id=159302,bonus_id=1587/4820,azerite_powers=13/85/101/160/221
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
 shoulders=pistoleers_spaulders,id=159331,bonus_id=1587/5440,azerite_powers=13/85/20/246/160
 back=silverback_cloak,id=165513,bonus_id=4800/1537
 chest=spymasters_wrap,id=155860,bonus_id=1587/5440,azerite_powers=13/202/20/160/221

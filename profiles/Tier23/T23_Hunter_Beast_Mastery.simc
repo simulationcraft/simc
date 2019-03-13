@@ -76,7 +76,7 @@ actions.st+=/cobra_shot,if=(focus-cost+focus.regen*(cooldown.kill_command.remain
 actions.st+=/spitting_cobra
 
 head=targettracking_headgear,id=165543,bonus_id=4824/1537/4775,azerite_powers=366/562/22/14/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
 shoulders=pauldrons_of_ancestral_vengeance,id=165921,bonus_id=4824/1537/4775,azerite_powers=367/562/30/203/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
 chest=corrupted_hexxers_vestments,id=159370,bonus_id=1587/5440/4775,azerite_powers=161/366/30/14/13
@@ -92,12 +92,12 @@ trinket2=variable_intensity_gigavolt_oscillating_reactor,id=165572,bonus_id=4800
 main_hand=pterrorwing_longbow,id=165599,bonus_id=4800/1537,enchant=incendiary_ammunition
 
 # Gear Summary
-# gear_ilvl=415.27
-# gear_agility=5742
-# gear_stamina=9920
-# gear_crit_rating=646
-# gear_haste_rating=1223
-# gear_mastery_rating=1089
+# gear_ilvl=415.93
+# gear_agility=5767
+# gear_stamina=9970
+# gear_crit_rating=656
+# gear_haste_rating=1233
+# gear_mastery_rating=1099
 # gear_versatility_rating=407
 # gear_armor=3410
 # set_bonus=gift_of_the_loa_2pc=1

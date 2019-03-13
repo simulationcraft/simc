@@ -7,7 +7,7 @@ position=ranged_back
 talents=1000231
 
 head=tidemothers_cover,id=165819,bonus_id=4824/1537,azerite_powers=200/122/30/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
 shoulder=mestrahs_singing_spaulders,id=165516,bonus_id=4824/1537,azerite_powers=/122/562/31/13
 back=Loa_exultants_shroud,id=165512,bonus_id=4800/1537
 chest=grongpelt_vest,id=165515,bonus_id=4824/1537,azerite_powers=/122/250/462/13
@@ -36,7 +36,7 @@ talents=2000122
 timeofday=day
 
 head=crown_of_aakuls_dark_reign,id=165526,bonus_id=4824/1537/4775,azerite_powers=247/359/18/83/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
 shoulder=admiraltys_ceremonial_epaulets,id=165824,bonus_id=4824/1537/4775,azerite_powers=359/247/459/467/13
 back=high_tinkers_cape,id=165924,bonus_id=4800/1537
 chest=raiment_of_the_blighted_tribe,id=159335,bonus_id=5062/1587/4786/4775,azerite_powers=247/209/31/44/13
@@ -62,7 +62,7 @@ position=front
 talents=1000131
 
 head=cowl_of_righteous_resolve,id=165519,bonus_id=4824/1537,azerite_powers=359/241/461/87/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
 shoulder=maras_boneblade_mantle,id=165777,bonus_id=4824/1537,azerite_powers=241/562/31/85/13
 back=silverback_cloak,id=165513,bonus_id=4800/1537
 chest=mekkatorques_bomber_jacket,id=165830,bonus_id=4824/1537,azerite_powers=241/562/22/14/13

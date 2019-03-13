@@ -94,7 +94,7 @@ actions.st+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_
 actions.st+=/flying_serpent_kick,if=prev_gcd.1.blackout_kick&chi>3&buff.swift_roundhouse.stack<2,interrupt=1
 
 head=cowl_of_fluid_machinations,id=159302,bonus_id=5062/1587/4786/4775,azerite_powers=390/389/22/218/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
 shoulders=mantle_of_fastidious_machinations,id=158304,bonus_id=5062/1587/4786/4775,azerite_powers=389/388/461/83/13
 back=high_tinkers_cape,id=165924,bonus_id=4800/1537
 chest=mekkatorques_bomber_jacket,id=165830,bonus_id=4824/1537/4775,azerite_powers=389/117/22/14/13
@@ -111,12 +111,12 @@ main_hand=stormtoothed_kasuyu,id=165601,bonus_id=4800/1537,enchant=deadly_naviga
 off_hand=daelin_proudmoores_saber,id=165604,bonus_id=4800/1537,enchant=versatile_navigation
 
 # Gear Summary
-# gear_ilvl=416.19
-# gear_agility=5796
-# gear_stamina=9919
-# gear_crit_rating=822
-# gear_haste_rating=675
-# gear_mastery_rating=988
+# gear_ilvl=416.81
+# gear_agility=5821
+# gear_stamina=9969
+# gear_crit_rating=832
+# gear_haste_rating=685
+# gear_mastery_rating=998
 # gear_versatility_rating=882
 # gear_armor=2363
 # set_bonus=keepsakes_2pc=1

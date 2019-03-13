@@ -8,7 +8,7 @@ talents=3302023
 default_pet=imp
 
 head=grasping_crown_of_the_deep,id=159252,bonus_id=5062/1587/4786/4775,azerite_powers=183/123/30/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
 shoulders=amice_of_the_returned,id=159273,bonus_id=5062/1587/4786/4775,azerite_powers=123/230/30/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
 chest=divine_fury_raiment,id=165834,bonus_id=4824/1537/4775,azerite_powers=123/230/30/13
@@ -36,7 +36,7 @@ talents=3303032
 default_pet=felguard
 
 head=blazewing_hood,id=165500,bonus_id=4824/1537/4775,azerite_powers=231/562/459/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
 shoulders=gigacharged_shoulderpads,id=165497,bonus_id=4824/1537/4775,azerite_powers=231/562/459/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
 chest=divine_fury_raiment,id=165834,bonus_id=4824/1537/4775,azerite_powers=429/231/30/13
@@ -63,7 +63,7 @@ talents=2203023
 default_pet=imp
 
 head=blazewing_hood,id=165500,bonus_id=4824/1537/4775,azerite_powers=131/562/31/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
 shoulders=gigacharged_shoulderpads,id=165497,bonus_id=4824/1537/4775,azerite_powers=444/562/459/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
 chest=divine_fury_raiment,id=165834,bonus_id=4824/1537/4775,azerite_powers=432/562/30/13

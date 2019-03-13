@@ -1,7 +1,7 @@
 # DungeonSlice
 # * Ilvl Cap: 415
-# * Heart of Azeroth Level needed to unlock the 5th ring is Level 48, we also add the 3/3 neck ilvl rep tokens (+45ilvl)
-# *   neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+# * Heart of Azeroth Level needed to unlock the 5th ring is Level 48, we also add the 3/3 neck ilvl rep tokens and the 8.1.5 bonus (+55ilvl)
+# *   neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
 # * Mythic+ gear is permitted up to the Mythic+ item level cap (400)
 # * Dungeon azerite gear from the residuum vendor (up to ilvl 415) is allowed
 # * No items from World Bosses / World Quests / BoEs

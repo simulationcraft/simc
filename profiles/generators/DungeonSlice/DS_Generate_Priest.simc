@@ -9,7 +9,7 @@ talents=3131111
 initial_resource=insanity=25
 
 head=cowl_of_tideborne_omens,id=165822,bonus_id=4824/1537,azerite_powers=166/115/30/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
 shoulder=mantle_of_ceremonial_ascension,id=158344,bonus_id=1587/4819,azerite_powers=115/405/21/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
 chest=divine_fury_raiment,id=165834,bonus_id=4824/1537,azerite_powers=115/562/38/13

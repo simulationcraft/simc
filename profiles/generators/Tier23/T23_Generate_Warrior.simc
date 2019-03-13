@@ -7,7 +7,7 @@ position=back
 talents=3322211
 
 head=helm_of_tempered_jade,id=165548,bonus_id=4824/1537/4775,azerite_powers=226/434/31/85/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
 shoulders=pauldrons_of_the_horned_horror,id=159455,bonus_id=5062/1587/4786/4775,azerite_powers=435/226/459/83/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
 chest=harpooners_plate_cuirass,id=159416,bonus_id=5062/1587/4786/4775,azerite_powers=434/226/31/14/13
@@ -34,7 +34,7 @@ position=back
 talents=2123123
 
 head=helm_of_the_raptor_king,id=159422,bonus_id=5062/1587/4786/4775,azerite_powers=119/438/30/476/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
 shoulders=ridgeplate_pauldrons,id=165562,bonus_id=4824/1537/4775,azerite_powers=176/438/22/476/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
 chest=breastplate_of_the_deathbound,id=165832,bonus_id=4824/1537/4775,azerite_powers=437/176/30/15/13
@@ -62,7 +62,7 @@ position=front
 talents=1223211
 
 head=helm_of_tempered_jade,id=165548,bonus_id=4824/1537/5481,azerite_powers=237/440/21/83/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
 shoulders=dyno-sprocket_spaulders,id=165825,bonus_id=4824/1537/5480,azerite_powers=118/450/22/476/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
 chest=breastplate_of_divine_purification,id=165550,bonus_id=1537/5482/4824,azerite_powers=441/450/31/14/13

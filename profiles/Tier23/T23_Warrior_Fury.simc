@@ -62,7 +62,7 @@ actions.single_target+=/furious_slash,if=talent.furious_slash.enabled
 actions.single_target+=/whirlwind
 
 head=helm_of_the_raptor_king,id=159422,bonus_id=5062/1587/4786/4775,azerite_powers=119/438/30/476/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
 shoulders=ridgeplate_pauldrons,id=165562,bonus_id=4824/1537/4775,azerite_powers=176/438/22/476/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
 chest=breastplate_of_the_deathbound,id=165832,bonus_id=4824/1537/4775,azerite_powers=437/176/30/15/13
@@ -79,12 +79,12 @@ main_hand=dawnbreaker,id=165586,bonus_id=4800/1537,enchant=masterful_navigation
 off_hand=crash_of_tides,id=165602,bonus_id=4800/1537,enchant=quick_navigation
 
 # Gear Summary
-# gear_ilvl=416.19
-# gear_strength=6230
-# gear_stamina=10685
-# gear_crit_rating=916
-# gear_haste_rating=1352
-# gear_mastery_rating=1031
+# gear_ilvl=416.81
+# gear_strength=6255
+# gear_stamina=10735
+# gear_crit_rating=926
+# gear_haste_rating=1362
+# gear_mastery_rating=1041
 # gear_versatility_rating=340
 # gear_armor=5052
 # set_bonus=gift_of_the_loa_2pc=1

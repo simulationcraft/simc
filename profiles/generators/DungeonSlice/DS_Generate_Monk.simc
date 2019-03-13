@@ -7,7 +7,7 @@ position=front
 talents=1030021
  
 head=cowl_of_fluid_machinations,id=159302,bonus_id=1587/4786/5481/4775,azerite_powers=383/478/22/85/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
 shoulder=pistoleers_spaulders,id=159331,bonus_id=1587/4786/5480/4775,azerite_powers=384/383/31/85/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537/4786,
 chest=raiment_of_the_blighted_tribe,id=159335,bonus_id=1587/4786/5482/4775,context=57,azerite_powers=384/383/31/44/13
@@ -34,7 +34,7 @@ position=back
 talents=2022032
 
 head=cowl_of_fluid_machinations,id=159302,bonus_id=5062/1587/4786/4775,azerite_powers=390/389/22/218/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
 shoulder=mantle_of_fastidious_machinations,id=158304,bonus_id=5062/1587/4786/4775,azerite_powers=389/388/461/83/13
 back=high_tinkers_cape,id=165924,bonus_id=4800/1537
 chest=mekkatorques_bomber_jacket,id=165830,bonus_id=4824/1537/4775,azerite_powers=389/117/22/14/13
@@ -61,7 +61,7 @@ position=back
 talents=2022033
 
 head=cowl_of_fluid_machinations,id=159302,bonus_id=5062/1587/4786/4775,azerite_powers=390/389/22/218/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
 shoulder=mantle_of_fastidious_machinations,id=158304,bonus_id=5062/1587/4786/4775,azerite_powers=389/388/461/83/13
 back=high_tinkers_cape,id=165924,bonus_id=4800/1537
 chest=mekkatorques_bomber_jacket,id=165830,bonus_id=4824/1537/4775,azerite_powers=389/117/22/14/13

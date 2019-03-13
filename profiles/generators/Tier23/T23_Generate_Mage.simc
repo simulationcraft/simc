@@ -7,7 +7,7 @@ position=ranged_back
 talents=1013033
 
 head=grasping_crown_of_the_deep,id=159252,bonus_id=1587/4819,azerite_powers=170/479/30/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
 shoulders=brood_cleansers_amice,id=159254,bonus_id=1587/4819,azerite_powers=170/196/31/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
 chest=vestments_of_the_afterlife,id=165498,bonus_id=4824/1537,azerite_powers=379/170/30/13
@@ -34,7 +34,7 @@ position=ranged_back
 talents=3031022
 
 head=soulfuel_headdress,id=159279,bonus_id=1587/4819,azerite_powers=168/193/459/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
 shoulders=brood_cleansers_amice,id=159254,bonus_id=1587/4819,azerite_powers=168/196/31/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
 chest=inmates_straight_robe,id=159268,bonus_id=1587/4819,azerite_powers=168/479/22/13
@@ -62,7 +62,7 @@ position=ranged_back
 talents=2032021
 
 head=blazewing_hood,id=165500,bonus_id=4824/1537/4775,azerite_powers=127/562/459/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
 shoulders=gigacharged_shoulderpads,id=165497,bonus_id=4824/1537/4775,azerite_powers=127/88/459/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
 chest=blooddrenched_robes,id=159241,bonus_id=1587/4819/4775,azerite_powers=127/562/30/13
