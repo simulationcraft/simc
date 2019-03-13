@@ -77,7 +77,7 @@ actions+=/solar_wrath,if=variable.az_ss<3|!buff.ca_inc.up|!prev.solar_wrath
 actions+=/sunfire
 
 head=tidemothers_cover,id=165819,bonus_id=4824/1537/4775,azerite_powers=200/122/30/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
 shoulders=mestrahs_singing_spaulders,id=165516,bonus_id=4824/1537/4775,azerite_powers=/122/562/31/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
 chest=grongpelt_vest,id=165515,bonus_id=4824/1537/4775,azerite_powers=/122/250/462/13
@@ -94,12 +94,12 @@ main_hand=goblet_of_glittering_favor,id=165592,bonus_id=4800/1537,enchant=torren
 off_hand=fogbreaker_light_of_the_sea,id=165583,bonus_id=4800/1537
 
 # Gear Summary
-# gear_ilvl=416.19
-# gear_stamina=9919
-# gear_intellect=7293
-# gear_crit_rating=755
-# gear_haste_rating=1354
-# gear_mastery_rating=1042
+# gear_ilvl=416.81
+# gear_stamina=9969
+# gear_intellect=7318
+# gear_crit_rating=765
+# gear_haste_rating=1364
+# gear_mastery_rating=1052
 # gear_versatility_rating=214
 # gear_armor=2363
 # set_bonus=gift_of_the_loa_2pc=1

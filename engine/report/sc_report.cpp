@@ -392,7 +392,7 @@ bool report::check_gear( player_t& p, sim_t& sim )
   {
     max_ilevel_allowed         = 415;
     max_azerite_ilevel_allowed = max_ilevel_allowed + 5;
-    hoa_ilevel                 = 419;
+    hoa_ilevel                 = 429;
     hoa_level                  = 48;
     tier_name                  = "T23";
   }

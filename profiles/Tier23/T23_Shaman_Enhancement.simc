@@ -126,7 +126,7 @@ actions.priority+=/flametongue,if=(azerite.natural_harmony.enabled&buff.natural_
 actions.priority+=/rockbiter,if=(azerite.natural_harmony.enabled&buff.natural_harmony_nature.remains<=2*gcd)&maelstrom<70
 
 head=hood_of_the_dark_reaper,id=159391,bonus_id=4786/1587/5481/4775,azerite_powers=137/416/30/539/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
 shoulders=gaping_maw_shoulderguard,id=159352,bonus_id=4786/1587/5480/4775,azerite_powers=137/416/461/207/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
 chest=mistfire_raiment,id=165540,bonus_id=4800/1537/5482/4775,azerite_powers=137/416/22/474/13
@@ -143,12 +143,12 @@ main_hand=bonelash_paw,id=165588,bonus_id=4800/1537,enchant=quick_navigation
 off_hand=bonelash_paw,id=165588,bonus_id=4800/1537,enchant=masterful_navigation
 
 # Gear Summary
-# gear_ilvl=415.25
-# gear_agility=5742
-# gear_stamina=10847
-# gear_crit_rating=535
-# gear_haste_rating=1291
-# gear_mastery_rating=1136
+# gear_ilvl=415.88
+# gear_agility=5767
+# gear_stamina=10897
+# gear_crit_rating=545
+# gear_haste_rating=1301
+# gear_mastery_rating=1146
 # gear_versatility_rating=400
 # gear_armor=3410
 # set_bonus=gift_of_the_loa_2pc=1

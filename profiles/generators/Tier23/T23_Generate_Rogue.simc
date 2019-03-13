@@ -7,7 +7,7 @@ position=back
 talents=2310021
 
 head=cowl_of_righteous_resolve,id=165519,bonus_id=4824/1537,azerite_powers=136/249/30/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
 shoulder=gorak_tuls_mantle,id=159339,bonus_id=1587/4819,azerite_powers=136/193/30/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
 chest=cephalohide_jacket,id=159314,bonus_id=1587/4819,azerite_powers=136/181/30/13
@@ -35,7 +35,7 @@ position=back
 talents=2010022
 
 head=cowl_of_righteous_resolve,id=165519,bonus_id=4824/1537,azerite_powers=129/562/30/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
 shoulder=gorak_tuls_mantle,id=159339,bonus_id=1587/4819,azerite_powers=129/446/30/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
 chest=vest_of_reverent_adoration,id=159303,bonus_id=1587/4819,azerite_powers=411/129/31/13
@@ -63,7 +63,7 @@ position=back
 talents=2320031
 
 head=cowl_of_righteous_resolve,id=165519,bonus_id=4824/1537,azerite_powers=414/562/30/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
 shoulder=phantom_stalker_shoulders,id=165523,bonus_id=4824/1537,azerite_powers=413/175/30/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
 chest=mekkatorques_bomber_jacket,id=165830,bonus_id=4824/1537,azerite_powers=240/562/22/13

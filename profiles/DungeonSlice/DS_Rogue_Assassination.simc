@@ -116,7 +116,7 @@ actions.stealthed+=/pool_resource,for_next=1
 actions.stealthed+=/garrote,if=talent.subterfuge.enabled&talent.exsanguinate.enabled&cooldown.exsanguinate.remains<1&prev_gcd.1.rupture&dot.rupture.remains>5+4*cp_max_spend
 
 head=cowl_of_fluid_machinations,id=159302,bonus_id=1587/4819/4775,azerite_powers=407/408/22/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
 shoulders=goldtasseled_epaulets,id=159299,bonus_id=1587/4819/4775,azerite_powers=407/408/22/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
 chest=raiment_of_the_blighted_tribe,id=159335,bonus_id=1587/4819/4775,azerite_powers=408/407/31/13
@@ -133,12 +133,12 @@ main_hand=greeds_folly,id=165593,bonus_id=4800/1537,enchant=galeforce_striking
 off_hand=greeds_folly,id=165593,bonus_id=4800/1537,enchant=quick_navigation
 
 # Gear Summary
-# gear_ilvl=415.25
-# gear_agility=5742
-# gear_stamina=9919
-# gear_crit_rating=698
-# gear_haste_rating=1388
-# gear_mastery_rating=1067
+# gear_ilvl=415.88
+# gear_agility=5767
+# gear_stamina=9969
+# gear_crit_rating=708
+# gear_haste_rating=1398
+# gear_mastery_rating=1077
 # gear_versatility_rating=214
 # gear_armor=2363
 # set_bonus=gift_of_the_loa_2pc=1

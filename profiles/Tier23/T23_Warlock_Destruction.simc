@@ -119,7 +119,7 @@ actions.havoc+=/shadowburn,if=active_enemies<3|!talent.fire_and_brimstone.enable
 actions.havoc+=/incinerate,if=cast_time<havoc_remains
 
 head=blazewing_hood,id=165500,bonus_id=4824/1537/4775,azerite_powers=131/562/31/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
 shoulders=gigacharged_shoulderpads,id=165497,bonus_id=4824/1537/4775,azerite_powers=444/562/459/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
 chest=divine_fury_raiment,id=165834,bonus_id=4824/1537/4775,azerite_powers=432/562/30/13
@@ -136,12 +136,12 @@ main_hand=sirens_song,id=165603,bonus_id=4800/1537,enchant=masterful_navigation
 off_hand=fogbreaker_light_of_the_sea,id=165583,bonus_id=4800/1537
 
 # Gear Summary
-# gear_ilvl=415.25
-# gear_stamina=9919
-# gear_intellect=7239
-# gear_crit_rating=657
-# gear_haste_rating=1279
-# gear_mastery_rating=1214
+# gear_ilvl=415.88
+# gear_stamina=9969
+# gear_intellect=7264
+# gear_crit_rating=667
+# gear_haste_rating=1289
+# gear_mastery_rating=1224
 # gear_versatility_rating=214
 # gear_armor=1442
 # set_bonus=gift_of_the_loa_2pc=1

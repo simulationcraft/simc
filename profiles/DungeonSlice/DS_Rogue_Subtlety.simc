@@ -136,7 +136,7 @@ actions.stealthed+=/shuriken_storm,if=spell_targets>=3
 actions.stealthed+=/shadowstrike
 
 head=cowl_of_righteous_resolve,id=165519,bonus_id=4824/1537/4775,azerite_powers=414/562/30/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
 shoulders=mestrahs_singing_spaulders,id=165516,bonus_id=4824/1537/4775,azerite_powers=124/562/31/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
 chest=spymasters_wrap,id=155860,bonus_id=1587/4819/4775,azerite_powers=413/481/21/13
@@ -153,12 +153,12 @@ main_hand=last_fang_of_rezan,id=165596,bonus_id=4800/1537,enchant=deadly_navigat
 off_hand=last_fang_of_rezan,id=165596,bonus_id=4800/1537,enchant=masterful_navigation
 
 # Gear Summary
-# gear_ilvl=416.19
-# gear_agility=5796
-# gear_stamina=9919
-# gear_crit_rating=762
-# gear_haste_rating=863
-# gear_mastery_rating=638
+# gear_ilvl=416.81
+# gear_agility=5821
+# gear_stamina=9969
+# gear_crit_rating=772
+# gear_haste_rating=873
+# gear_mastery_rating=648
 # gear_versatility_rating=1102
 # gear_armor=2363
 # set_bonus=gift_of_the_loa_2pc=1

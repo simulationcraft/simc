@@ -59,7 +59,7 @@ actions.cooldowns+=/bristling_fur,if=buff.bear_form.up
 actions.cooldowns+=/use_items
 
 head=cowl_of_righteous_resolve,id=165519,bonus_id=4824/1537/4775,azerite_powers=359/241/461/87/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1566,azerite_level=48
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
 shoulders=maras_boneblade_mantle,id=165777,bonus_id=4824/1537/4775,azerite_powers=241/562/31/85/13
 back=silverback_cloak,id=165513,bonus_id=4800/1537
 chest=mekkatorques_bomber_jacket,id=165830,bonus_id=4824/1537/4775,azerite_powers=241/562/22/14/13
@@ -75,11 +75,11 @@ trinket2=variable_intensity_gigavolt_oscillating_reactor,id=165572,bonus_id=4800
 main_hand=hornridged_crusher,id=165589,bonus_id=4800/1537,enchant=quick_navigation
 
 # Gear Summary
-# gear_ilvl=416.27
-# gear_agility=5796
-# gear_stamina=9920
-# gear_crit_rating=538
-# gear_haste_rating=1181
-# gear_mastery_rating=1071
+# gear_ilvl=416.93
+# gear_agility=5821
+# gear_stamina=9970
+# gear_crit_rating=548
+# gear_haste_rating=1191
+# gear_mastery_rating=1081
 # gear_versatility_rating=575
 # gear_armor=2363
