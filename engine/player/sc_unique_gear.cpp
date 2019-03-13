@@ -3716,6 +3716,75 @@ void racial::entropic_embrace( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+struct embrace_of_bwonsamdi_t : public spell_t
+{
+  embrace_of_bwonsamdi_t(player_t* p, const spell_data_t* sd) :
+    spell_t("embrace_of_bwonsamdi", p, sd)
+  {
+    background = true;
+    ap_type = AP_NO_WEAPON; //TOCHECK: Is this true? Based off of Touch of the Grave right now.
+    base_dd_min = base_dd_max = 0;
+    //Hardcoded tooltip values
+    attack_power_mod.direct = 0.22;
+    spell_power_mod.direct = 0.22;
+  }
+
+  double attack_direct_power_coefficient( const action_state_t* s ) const override
+  {
+    const double ap = attack_power_mod.direct * s -> composite_attack_power();
+    const double sp = spell_power_mod.direct * s -> composite_spell_power();
+
+    if ( ap <= sp )
+      return 0;
+    return spell_t::attack_direct_power_coefficient( s );
+  }
+
+  double spell_direct_power_coefficient( const action_state_t* s ) const override
+  {
+    const double ap = attack_power_mod.direct * s -> composite_attack_power();
+    const double sp = spell_power_mod.direct * s -> composite_spell_power();
+
+    if ( ap > sp )
+      return 0;
+    return spell_t::spell_direct_power_coefficient( s );
+  }
+};
+
+struct embrace_of_kimbul_t : public spell_t
+{
+  embrace_of_kimbul_t(player_t* p, const spell_data_t* sd) :
+    spell_t("embrace_of_kimbul", p, sd)
+  {
+    may_crit = false; //TOCHECK: Longer test needed with max level character for these values
+    background = true;
+    hasted_ticks = false;
+    dot_behavior = DOT_REFRESH;
+    ap_type = AP_NO_WEAPON;
+    attack_power_mod.tick = 0.75 / 3 / dot_duration.total_seconds() * base_tick_time.total_seconds(); //Hardcoded in tooltip
+    spell_power_mod.tick = 0.75 / 3 / dot_duration.total_seconds() * base_tick_time.total_seconds(); //Tooltip says damage*3 over duration, correcting for that here
+  }
+
+  double attack_tick_power_coefficient( const action_state_t* s ) const override
+  {
+    const double ap = attack_power_mod.tick * s -> composite_attack_power();
+    const double sp = spell_power_mod.tick * s -> composite_spell_power();
+
+    if ( ap <= sp )
+      return 0;
+    return spell_t::attack_tick_power_coefficient( s );
+  }
+
+  double spell_tick_power_coefficient( const action_state_t* s ) const override
+  {
+    const double ap = attack_power_mod.tick * s -> composite_attack_power();
+    const double sp = spell_power_mod.tick * s -> composite_spell_power();
+
+    if ( ap > sp )
+      return 0;
+    return spell_t::spell_tick_power_coefficient( s );
+  }
+};
+
 void racial::zandalari_loa( special_effect_t& effect )
 {
   //only handle the proc loas here. 
@@ -3726,11 +3795,27 @@ void racial::zandalari_loa( special_effect_t& effect )
   }
   else if ( effect.player->zandalari_loa == player_t::BWONSAMDI )
   {
-    //Bwonsamdi - 100% of damage done is returned as healing (not implemented)
+    //Bwonsamdi - 100% of damage done is returned as healing (healing not implemented)
+    special_effect_t* driver = new special_effect_t(effect.player);
+    driver->source = SPECIAL_EFFECT_SOURCE_RACE;
+    unique_gear::initialize_special_effect(*driver, 292360);
+    driver->execute_action = new embrace_of_bwonsamdi_t(effect.player, effect.player->find_spell(292380));
+
+    effect.player->special_effects.push_back(driver);
+
+    new dbc_proc_callback_t(effect.player, *driver);
   }
   else if ( effect.player->zandalari_loa == player_t::KIMBUL )
   {
     //Kimbul - Chance to apply bleed dot, max stack of 3
+    special_effect_t* driver = new special_effect_t(effect.player);
+    driver->source = SPECIAL_EFFECT_SOURCE_RACE;
+    unique_gear::initialize_special_effect(*driver, 292363);
+    driver->execute_action = new embrace_of_kimbul_t(effect.player, effect.player->find_spell(292473));
+
+    effect.player->special_effects.push_back(driver);
+    
+    new dbc_proc_callback_t(effect.player, *driver);
   }
   else if ( effect.player->zandalari_loa == player_t::KRAGWA )
   {
