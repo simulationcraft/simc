@@ -63,10 +63,11 @@ actions.st+=/steady_shot
 
 actions.trickshots=barrage
 actions.trickshots+=/explosive_shot
+actions.trickshots+=/aimed_shot,if=buff.trick_shots.up&ca_execute&buff.double_tap.up
 actions.trickshots+=/rapid_fire,if=buff.trick_shots.up&(azerite.focused_fire.enabled|azerite.in_the_rhythm.rank>1|azerite.surging_shots.enabled|talent.streamline.enabled)
 actions.trickshots+=/aimed_shot,if=buff.trick_shots.up&(buff.precise_shots.down|cooldown.aimed_shot.full_recharge_time<action.aimed_shot.cast_time)
 actions.trickshots+=/rapid_fire,if=buff.trick_shots.up
-actions.trickshots+=/multishot,if=buff.trick_shots.down|buff.precise_shots.up|focus>70
+actions.trickshots+=/multishot,if=buff.trick_shots.down|buff.precise_shots.up&!buff.trueshot.up|focus>70
 actions.trickshots+=/piercing_shot
 actions.trickshots+=/a_murder_of_crows
 actions.trickshots+=/serpent_sting,if=refreshable&!action.serpent_sting.in_flight
@@ -74,9 +75,9 @@ actions.trickshots+=/steady_shot
 
 head=targettracking_headgear,id=165543,bonus_id=4824/1537/4775,azerite_powers=212/36/22/14/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
-shoulders=pauldrons_of_ancestral_vengeance,id=165921,bonus_id=4824/1537/4775,azerite_powers=36/562/30/203/13
-back=silverback_cloak,id=165513,bonus_id=4800/1537
-chest=mistfire_raiment,id=165540,bonus_id=4824/1537/4775,azerite_powers=212/562/31/469/13
+shoulders=tidal_shroud_spaulders,id=165923,bonus_id=4824/1537/4775,azerite_powers=212/36/30/15/13
+back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
+chest=corrupted_hexxers_vestments,id=159370,bonus_id=1587/5440/4775,azerite_powers=36/370/30/14/13
 wrists=ape_wranglers_wristguards,id=165534,bonus_id=4800/1537
 hands=slimy_kelpweavers,id=165546,bonus_id=4800/1537
 waist=goldenscale_girdle,id=165538,bonus_id=4800/1537
@@ -86,14 +87,15 @@ finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_o
 finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_mastery
 trinket1=galecallers_boon,id=159614,bonus_id=1572/4780
 trinket2=kimbuls_razor_claw,id=165579,bonus_id=4800/1537
-main_hand=pterrorwing_longbow,id=165599,bonus_id=4800/1537,enchant=incendiary_ammunition
+main_hand=pterrorwing_longbow,id=165599,bonus_id=4800/1537,enchant=masterful_navigation
 
 # Gear Summary
 # gear_ilvl=415.93
 # gear_agility=5767
 # gear_stamina=9970
-# gear_crit_rating=524
-# gear_haste_rating=937
-# gear_mastery_rating=1385
-# gear_versatility_rating=548
+# gear_crit_rating=595
+# gear_haste_rating=1021
+# gear_mastery_rating=1298
+# gear_versatility_rating=481
 # gear_armor=3410
+# set_bonus=gift_of_the_loa_2pc=1

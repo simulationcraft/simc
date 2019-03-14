@@ -2,7 +2,7 @@ hunter="T23_Hunter_Beast_Mastery"
 source=default
 spec=beast_mastery
 level=120
-race=lightforged_draenei
+race=orc
 role=attack
 position=ranged_back
 talents=1303011
@@ -81,7 +81,7 @@ shoulders=pauldrons_of_ancestral_vengeance,id=165921,bonus_id=4824/1537/4775,aze
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
 chest=corrupted_hexxers_vestments,id=159370,bonus_id=1587/5440/4775,azerite_powers=161/366/30/14/13
 wrists=icebinders_bracers,id=165542,bonus_id=4800/1537
-hands=grips_of_harmonious_spirits,id=165531,bonus_id=4800/1537
+hands=slimy_kelpweavers,id=165546,bonus_id=4800/1537
 waist=goldenscale_girdle,id=165538,bonus_id=4800/1537
 legs=deathhunters_legguards,id=165536,bonus_id=4800/1537
 feet=lightgrace_sabatons,id=165533,bonus_id=4800/1537
@@ -96,8 +96,8 @@ main_hand=pterrorwing_longbow,id=165599,bonus_id=4800/1537,enchant=incendiary_am
 # gear_agility=5767
 # gear_stamina=9970
 # gear_crit_rating=656
-# gear_haste_rating=1233
-# gear_mastery_rating=1099
-# gear_versatility_rating=407
+# gear_haste_rating=1095
+# gear_mastery_rating=1157
+# gear_versatility_rating=488
 # gear_armor=3410
 # set_bonus=gift_of_the_loa_2pc=1
