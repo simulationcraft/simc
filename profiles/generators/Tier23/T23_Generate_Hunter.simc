@@ -1,6 +1,6 @@
 hunter="T23_Hunter_Beast_Mastery"
 level=120
-race=lightforged_draenei
+race=orc
 spec=beast_mastery
 role=attack
 position=ranged_back
@@ -12,7 +12,7 @@ shoulder=pauldrons_of_ancestral_vengeance,id=165921,bonus_id=4824/1537,azerite_p
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
 chest=corrupted_hexxers_vestments,id=159370,bonus_id=1587/5440/4775,azerite_powers=161/366/30/14/13
 wrists=icebinders_bracers,id=165542,bonus_id=4800/1537
-hands=grips_of_harmonious_spirits,id=165531,bonus_id=4800/1537
+hands=slimy_kelpweavers,id=165546,bonus_id=4800/1537
 waist=goldenscale_girdle,id=165538,bonus_id=4800/1537
 legs=deathhunters_legguards,id=165536,bonus_id=4800/1537
 feet=lightgrace_sabatons,id=165533,bonus_id=4800/1537
@@ -35,9 +35,9 @@ talents=1103031
 
 head=targettracking_headgear,id=165543,bonus_id=4824/1537,azerite_powers=212/36/22/14/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
-shoulders=pauldrons_of_ancestral_vengeance,id=165921,bonus_id=4824/1537,azerite_powers=36/562/30/203/13
-back=silverback_cloak,id=165513,bonus_id=4800/1537
-chest=mistfire_raiment,id=165540,bonus_id=4824/1537,azerite_powers=212/562/31/469/13
+shoulders=tidal_shroud_spaulders,id=165923,bonus_id=4824/1537,azerite_powers=212/36/30/15/13
+back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
+chest=corrupted_hexxers_vestments,id=159370,bonus_id=1587/5440,azerite_powers=36/370/30/14/13
 wrists=ape_wranglers_wristguards,id=165534,bonus_id=4800/1537
 hands=slimy_kelpweavers,id=165546,bonus_id=4800/1537
 waist=goldenscale_girdle,id=165538,bonus_id=4800/1537
@@ -47,7 +47,7 @@ finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_o
 finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_mastery
 trinket1=galecallers_boon,id=159614,bonus_id=1572/4780
 trinket2=kimbuls_razor_claw,id=165579,bonus_id=4800/1537
-main_hand=pterrorwing_longbow,id=165599,bonus_id=4800/1537,enchant=incendiary_ammunition
+main_hand=pterrorwing_longbow,id=165599,bonus_id=4800/1537,enchant=masterful_navigation
 
 save=T23_Hunter_Marksmanship.simc
 
