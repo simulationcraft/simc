@@ -1293,6 +1293,7 @@ class SpellDataGenerator(DataGenerator):
             ( 246973, 0 ),          # Sacred Judgment (Ret T20 4p)
             ( 275483, 0 ),          # Inner Light azerite trait damge
             ( 184689, 0 ),          # Shield of Vengeance damage proc
+            ( 286232, 0 ),          # Light's Decree damage proc
         ),
 
         # Hunter:
