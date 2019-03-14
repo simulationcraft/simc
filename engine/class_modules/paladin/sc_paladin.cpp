@@ -1473,8 +1473,11 @@ role_e paladin_t::primary_role() const
 
 resource_e paladin_t::primary_resource() const
 {
-  if ( specialization() == PALADIN_HOLY )
+  if ( specialization() == PALADIN_HOLY || specialization() == PALADIN_PROTECTION )
     return RESOURCE_MANA;
+
+  if ( specialization() == PALADIN_RETRIBUTION )
+    return RESOURCE_HOLY_POWER;
 
   return RESOURCE_NONE;
 }
