@@ -5299,7 +5299,8 @@ void warrior_t::apl_prot()
 
   default_list -> add_action( "auto_attack" );
   default_list -> add_action( this, "Intercept", "if=time=0" );
-  default_list -> add_action( "use_items" );
+  default_list -> add_action( "use_items,if=cooldown.avatar.remains>20" );
+  default_list -> add_action( "use_item,name=grongs_primal_rage,if=buff.avatar.down" );
   
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[ i ] );

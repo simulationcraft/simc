@@ -30,7 +30,8 @@ actions.precombat+=/potion
 # Executed every time the actor is available.
 actions=auto_attack
 actions+=/intercept,if=time=0
-actions+=/use_items
+actions+=/use_items,if=cooldown.avatar.remains>20
+actions+=/use_item,name=grongs_primal_rage,if=buff.avatar.down
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
