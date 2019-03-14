@@ -65,7 +65,7 @@ actions.trickshots=barrage
 actions.trickshots+=/explosive_shot
 actions.trickshots+=/aimed_shot,if=buff.trick_shots.up&ca_execute&buff.double_tap.up
 actions.trickshots+=/rapid_fire,if=buff.trick_shots.up&(azerite.focused_fire.enabled|azerite.in_the_rhythm.rank>1|azerite.surging_shots.enabled|talent.streamline.enabled)
-actions.trickshots+=/aimed_shot,if=buff.trick_shots.up&(buff.precise_shots.down|cooldown.aimed_shot.full_recharge_time<action.aimed_shot.cast_time)
+actions.trickshots+=/aimed_shot,if=buff.trick_shots.up&(buff.precise_shots.down|cooldown.aimed_shot.full_recharge_time<action.aimed_shot.cast_time|buff.trueshot.up)
 actions.trickshots+=/rapid_fire,if=buff.trick_shots.up
 actions.trickshots+=/multishot,if=buff.trick_shots.down|buff.precise_shots.up&!buff.trueshot.up|focus>70
 actions.trickshots+=/piercing_shot
@@ -87,15 +87,15 @@ finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_o
 finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_mastery
 trinket1=galecallers_boon,id=159614,bonus_id=1572/4780
 trinket2=kimbuls_razor_claw,id=165579,bonus_id=4800/1537
-main_hand=pterrorwing_longbow,id=165599,bonus_id=4800/1537,enchant=masterful_navigation
+main_hand=twinpipe_buster_cannon,id=165600,bonus_id=4800/1537,enchant=masterful_navigation
 
 # Gear Summary
 # gear_ilvl=415.93
 # gear_agility=5767
 # gear_stamina=9970
 # gear_crit_rating=595
-# gear_haste_rating=1021
-# gear_mastery_rating=1298
+# gear_haste_rating=907
+# gear_mastery_rating=1137
 # gear_versatility_rating=481
 # gear_armor=3410
 # set_bonus=gift_of_the_loa_2pc=1

@@ -75,7 +75,7 @@ actions.st+=/barrage
 actions.st+=/cobra_shot,if=(focus-cost+focus.regen*(cooldown.kill_command.remains-1)>action.kill_command.cost|cooldown.kill_command.remains>1+gcd)&cooldown.kill_command.remains>1
 actions.st+=/spitting_cobra
 
-head=targettracking_headgear,id=165543,bonus_id=4824/1537/4775,azerite_powers=366/562/22/14/13
+head=targettracking_headgear,id=165543,bonus_id=4824/1537/4775,azerite_powers=366/562/459/14/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
 shoulders=pauldrons_of_ancestral_vengeance,id=165921,bonus_id=4824/1537/4775,azerite_powers=367/562/30/203/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
@@ -85,19 +85,19 @@ hands=slimy_kelpweavers,id=165546,bonus_id=4800/1537
 waist=goldenscale_girdle,id=165538,bonus_id=4800/1537
 legs=deathhunters_legguards,id=165536,bonus_id=4800/1537
 feet=lightgrace_sabatons,id=165533,bonus_id=4800/1537
-finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_haste
-finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_haste
+finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_critical_strike
+finger2=band_of_multisided_strikes,id=165565,bonus_id=4800/1537,enchant=pact_of_critical_strike
 trinket1=galecallers_boon,id=159614,bonus_id=1572/4780
 trinket2=variable_intensity_gigavolt_oscillating_reactor,id=165572,bonus_id=4800/1537
-main_hand=pterrorwing_longbow,id=165599,bonus_id=4800/1537,enchant=incendiary_ammunition
+main_hand=twinpipe_buster_cannon,id=165600,bonus_id=4800/1537,enchant=crows_nest_scope
 
 # Gear Summary
 # gear_ilvl=415.93
 # gear_agility=5767
 # gear_stamina=9970
-# gear_crit_rating=656
-# gear_haste_rating=1095
-# gear_mastery_rating=1157
-# gear_versatility_rating=488
+# gear_crit_rating=875
+# gear_haste_rating=741
+# gear_mastery_rating=677
+# gear_versatility_rating=828
 # gear_armor=3410
 # set_bonus=gift_of_the_loa_2pc=1
