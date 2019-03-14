@@ -54,7 +54,6 @@ actions.standard+=/death_and_decay,if=buff.crimson_scourge.up|talent.rapid_decom
 actions.standard+=/consumption
 actions.standard+=/blood_boil
 actions.standard+=/heart_strike,if=rune.time_to_3<gcd|buff.bone_shield.stack>6
-actions.standard+=/use_item,name=grongs_primal_rage
 actions.standard+=/rune_strike
 actions.standard+=/arcane_torrent,if=runic_power.deficit>20
 
