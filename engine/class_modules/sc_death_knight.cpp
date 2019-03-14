@@ -7512,6 +7512,7 @@ void death_knight_t::default_apl_blood()
   standard -> add_talent( this, "Consumption" );
   standard -> add_action( this, "Blood Boil" );
   standard -> add_action( this, "Heart Strike", "if=rune.time_to_3<gcd|buff.bone_shield.stack>6" );
+  standard -> add_action( "use_item,name=grongs_primal_rage" ); // Because this prevents all casting it should be used during downtime
   standard -> add_talent( this, "Rune Strike" );
   standard -> add_action( "arcane_torrent,if=runic_power.deficit>20" );
 }
