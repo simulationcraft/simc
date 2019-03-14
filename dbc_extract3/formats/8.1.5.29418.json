@@ -437,13 +437,13 @@
     { "data_type": "S", "field": "desc" },
     { "data_type": "f", "field": "coord", "elements": 2 },
     { "data_type": "H", "field": "id_journal_instance" },
+    { "data_type": "h", "field": "unk_1" },
     { "data_type": "I", "field": "order_index" },
     { "data_type": "H", "field": "first_section_id" },
     { "data_type": "H", "field": "ui_map_id" },
     { "data_type": "I", "field": "map_display_condition_id" },
     { "data_type": "B", "field": "flags" },
-    { "data_type": "B", "field": "difficulty_mask" },
-    { "data_type": "i", "field": "unk_1" }
+    { "data_type": "B", "field": "difficulty_mask" }
   ],
   "JournalEncounterCreature": [
     { "data_type": "S", "field": "name" },
