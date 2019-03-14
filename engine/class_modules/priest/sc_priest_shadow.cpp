@@ -1968,9 +1968,6 @@ void priest_t::generate_apl_shadow()
                       "if=refreshable&target.time_to_die>6|"
                       "(talent.misery.enabled&"
                       "dot.shadow_word_pain.refreshable)" );
-  single->add_action( this, "Mind Sear",
-                      "if=azerite.searing_dialogue.rank>=3,chain=1,"
-                      "interrupt_immediate=1,interrupt_if=ticks>=2" );
   single->add_action( this, "Mind Flay",
                       "chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&"
                       "(cooldown.void_bolt.up|cooldown.mind_blast.up)" );
@@ -1995,11 +1992,13 @@ void priest_t::generate_apl_shadow()
                       "raid_event.adds.duration>2" );
   cleave->add_action( this, "Shadow Word: Pain",
                       "target_if=refreshable&target.time_to_die>"
-                      "((-1.2+3.3*spell_targets.mind_sear)*variable.swp_trait_ranks_check)"
+                      "((-1.2+3.3*spell_targets.mind_sear)*variable.swp_trait_ranks_check*"
+                      "(1-0.012*azerite.searing_dialogue.rank*spell_targets.mind_sear))"
                       ",if=!talent.misery.enabled" );
   cleave->add_action( this, "Vampiric Touch",
                       "target_if=refreshable,if=target.time_to_die>"
-                      "((1+3.3*spell_targets.mind_sear)*variable.vt_trait_ranks_check)" );
+                      "((1+3.3*spell_targets.mind_sear)*variable.vt_trait_ranks_check*"
+                      "(1+0.10*azerite.searing_dialogue.rank*spell_targets.mind_sear))" );
   cleave->add_action( this, "Vampiric Touch",
                       "target_if=dot.shadow_word_pain.refreshable"
                       ",if=(talent.misery.enabled&target.time_to_die>"
