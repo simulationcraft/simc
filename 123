@@ -1,0 +1,149 @@
+# SimC Addon 1.10.11
+druid="Изаргиль"
+level=120
+race=worgen
+region=eu
+server=azuregos
+role=attack
+professions=leatherworking=150/skinning=165
+talents=2232122
+spec=feral
+
+head=,id=165519,bonus_id=4824/1537/4786/5420,context=6,azerite_powers=359/562/38/219
+neck=,id=158075,bonus_id=4936/4929/5814/1556,context=11,azerite_level=43
+shoulder=,id=159307,bonus_id=5448/1587/4786/5421,context=35,azerite_powers=209/195/21/467
+back=,id=165924,gem_id=154126,bonus_id=4799/1808/1522/4786,context=5
+chest=,id=159303,bonus_id=5448/1587/4786/5419,context=35,azerite_powers=359/111/21/14
+tabard=,id=45577,context=14
+wrist=,id=165517,bonus_id=4799/43/1527/4783,context=5
+hands=,id=159346,gem_id=154129,bonus_id=5010/4802/1572/4786,context=16
+waist=,id=159317,bonus_id=5010/1582/4783,context=35
+legs=,id=165399,bonus_id=1685,context=13
+feet=,id=165424,bonus_id=1687,context=13
+finger1=,id=158318,enchant_id=5942,bonus_id=5009/1567/4786,context=16
+finger2=,id=162541,enchant_id=5942,gem_id=154126,bonus_id=5009/4802/1567/4786,context=16
+trinket1=,id=159623,gem_id=154126,bonus_id=5010/4802/40/1572/4786,context=16
+trinket2=,id=155881,bonus_id=5010/1572/4786,context=16
+main_hand=,id=159656,enchant_id=5965,bonus_id=5010/1582/4783,context=35
+
+### Gear from Bags
+#
+# Костяное оплечье Ма'ры (400)
+# shoulder=,id=165777,bonus_id=4823/1522/4786/5418,context=5,azerite_powers=209/562/19/467
+#
+# Плащ из шкуры седоспина (400)
+# back=,id=165513,gem_id=154126,bonus_id=4799/1808/1522/4786,context=5
+#
+# Плащ перебежчика (400)
+# back=,id=159293,bonus_id=5010/1572/4786,context=16
+#
+# Пелерина преданного вассала (400)
+# back=,id=158375,bonus_id=5010/1572/4786,context=16
+#
+# Плащ из перьев попугая (400)
+# back=,id=155884,bonus_id=5010/42/1572/4786,context=16
+#
+# Мантия координации (58)
+# back=,id=65360,context=14
+#
+# Запятнанный плазмой теплый плащ (395)
+# back=,id=160644,bonus_id=4799/42/1517/4784,context=5
+#
+# Гербовая накидка Тушуй (1)
+# tabard=,id=83079,context=14
+#
+# Нарукавники песчаного пловца (405)
+# wrist=,id=159332,bonus_id=5010/1577/4783,context=16
+#
+# Боевые наручи часового темного леса (400)
+# wrist=,id=165447,bonus_id=5126/1517/4786,context=6
+#
+# Обмотки с сервоприводом (400)
+# wrist=,id=158353,bonus_id=5006/1572/4784,context=35
+#
+# Наручи из шкуры почитаемого ящера (400)
+# wrist=,id=160214,bonus_id=5010/1572/4786,context=16
+#
+# Рукавицы механожокея (410)
+# hands=,id=165522,bonus_id=4799/1532/4783,context=5
+#
+# Благословленные перчатки иссушителя (400)
+# hands=,id=159312,bonus_id=5010/1572/4786,context=16
+#
+# Перчатки оскверненных вод (395)
+# hands=,id=159321,bonus_id=5009/1567/4786,context=16
+#
+# Ремень из растянутых жил (400)
+# waist=,id=165525,bonus_id=4799/1522/4786,context=5
+#
+# Пояс сияющей решимости (400)
+# waist=,id=158306,bonus_id=5010/1572/4786,context=16
+#
+# Штаны с серебряной отделкой (400)
+# legs=,id=159297,bonus_id=5010/43/1572/4786,context=16
+#
+# Поножи шаркающего берсерка (400)
+# legs=,id=155869,bonus_id=5008/1572/4783,context=16
+#
+# Штаны из кожи чумных жаб (405)
+# legs=,id=159345,bonus_id=4946/1577/4784,context=35
+#
+# Поножи танцующего журавля (400)
+# legs=,id=165521,bonus_id=4799/1522/4786,context=5
+#
+# Печать изменчивой лояльности (400)
+# finger1=,id=158314,enchant_id=5942,bonus_id=5008/1572/4783,context=16
+#
+# Потерянная печать надзирателя (400)
+# finger1=,id=159460,bonus_id=5010/1572/4786,context=16
+#
+# Кольцо ритуалиста (410)
+# finger1=,id=159459,bonus_id=5010/1582/4783,context=35
+#
+# Кольцо гноящегося ожога (385)
+# finger1=,id=160645,enchant_id=5942,bonus_id=4800/1507/4786,context=6
+#
+# Потерянная печать надзирателя (395)
+# finger1=,id=159460,enchant_id=5942,bonus_id=5009/1567/4786,context=16
+#
+# Кольцо всех сторон света (405)
+# finger1=,id=165565,enchant_id=5942,bonus_id=4799/1527/4783,context=5
+#
+# Кул-тирасская мобильная пушка (410)
+# trinket1=,id=159628,bonus_id=5010/1582/4783,context=35
+#
+# Острый коготь Кимбула (410)
+# trinket1=,id=165579,bonus_id=4799/40/1532/4783,context=5
+#
+# Нестабильная частица (380)
+# trinket1=,id=160648,bonus_id=4799/1502/4783,context=5
+#
+# Музыкальная шкатулка леди Уэйкрест (400)
+# trinket1=,id=159631,bonus_id=5010/1572/4786,context=16
+#
+# Медальон зловещего гладиатора (395)
+# trinket1=,id=165055,bonus_id=5173/41/5141/1507/4783,context=56
+#
+# Шулерские кости Харлана (380)
+# trinket1=,id=155881,bonus_id=4779/1552/4783,context=23
+#
+# Молитва к Юй-лун (370)
+# trinket1=,id=165568,bonus_id=4801/1492/4786,context=4
+#
+# Талисман Ми'даса (405)
+# trinket1=,id=158319,bonus_id=5010/1577/4783,context=16
+#
+# Рогатый крушитель (405)
+# main_hand=,id=165589,enchant_id=5965,bonus_id=4799/1527/4783,context=5
+#
+# Бесплотный жнец (405)
+# main_hand=,id=159662,enchant_id=5964,bonus_id=5009/1577/4783,context=35
+#
+# Алебарда бойца 7-го легиона (375)
+# main_hand=,id=163885,enchant_id=5964,bonus_id=5125/1567/4783,context=29
+#
+# Удочка (1)
+# main_hand=,id=6256,context=14
+
+# Stacks of reorigination array based on hidden quest completion
+# bfa.reorigination_array_stacks=10
