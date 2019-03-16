@@ -5635,8 +5635,9 @@ void rogue_t::init_action_list()
     cds -> add_action( this, "Vendetta", "if=!stealthed.rogue&dot.rupture.ticking&(!talent.subterfuge.enabled|!azerite.shrouded_suffocation.enabled|dot.garrote.pmultiplier>1&(spell_targets.fan_of_knives<6|!cooldown.vanish.up))&(!talent.nightstalker.enabled|!talent.exsanguinate.enabled|cooldown.exsanguinate.remains<5-2*talent.deeper_stratagem.enabled)" );
     cds -> add_action( this, "Vanish", "if=talent.exsanguinate.enabled&(talent.nightstalker.enabled|talent.subterfuge.enabled&variable.single_target)&combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1&(!talent.subterfuge.enabled|!azerite.shrouded_suffocation.enabled|dot.garrote.pmultiplier<=1)", "Vanish with Exsg + (Nightstalker, or Subterfuge only on 1T): Maximum CP and Exsg ready for next GCD" );
     cds -> add_action( this, "Vanish", "if=talent.nightstalker.enabled&!talent.exsanguinate.enabled&combo_points>=cp_max_spend&debuff.vendetta.up", "Vanish with Nightstalker + No Exsg: Maximum CP and Vendetta up" );
-    cds -> add_action( "variable,name=eb_exception,value=azerite.echoing_blades.enabled&spell_targets.fan_of_knives=2" );
-    cds -> add_action( this, "Vanish", "target_if=max:ss_buffed*(dot.garrote.remains-5.4-100*(spell_targets.fan_of_knives>=6)),if=talent.subterfuge.enabled&!stealthed.rogue&cooldown.garrote.up&(dot.garrote.refreshable|azerite.shrouded_suffocation.enabled&!variable.eb_exception&raid_event.adds.in>12)&(!ss_buffed|variable.eb_exception)&combo_points.deficit>=((1+2*azerite.shrouded_suffocation.enabled)*spell_targets.fan_of_knives)>?4", "See full comment on https://github.com/Ravenholdt-TC/Rogue/wiki/Assassination-APL-Research." );
+    cds -> add_action( "variable,name=ss_vanish_condition,value=azerite.shrouded_suffocation.enabled&(non_ss_buffed_targets>=1|spell_targets.fan_of_knives=3)&(ss_buffed_targets_above_pandemic=0|spell_targets.fan_of_knives>=6)", "See full comment on https://github.com/Ravenholdt-TC/Rogue/wiki/Assassination-APL-Research." );
+    cds -> add_action( "pool_resource,for_next=1,extra_amount=45" );
+    cds -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&!stealthed.rogue&cooldown.garrote.up&(variable.ss_vanish_condition|!azerite.shrouded_suffocation.enabled&dot.garrote.refreshable)&combo_points.deficit>=((1+2*azerite.shrouded_suffocation.enabled)*spell_targets.fan_of_knives)>?4&raid_event.adds.in>12" );
     cds -> add_action( this, "Vanish", "if=talent.master_assassin.enabled&!stealthed.all&master_assassin_remains<=0&!dot.rupture.refreshable&dot.garrote.remains>3", "Vanish with Master Assasin: No stealth and no active MA buff, Rupture not in refresh range" );
     cds -> add_action( "shadowmeld,if=!stealthed.all&azerite.shrouded_suffocation.enabled&dot.garrote.refreshable&dot.garrote.pmultiplier<=1&combo_points.deficit>=1", "Shadowmeld for Shrouded Suffocation" );
     cds -> add_talent( this, "Exsanguinate", "if=dot.rupture.remains>4+4*cp_max_spend&!dot.garrote.refreshable", "Exsanguinate when both Rupture and Garrote are up for long enough" );
@@ -5645,10 +5646,13 @@ void rogue_t::init_action_list()
     // Stealth
     action_priority_list_t* stealthed = get_action_priority_list( "stealthed", "Stealthed Actions" );
     stealthed -> add_action( this, "Rupture", "if=combo_points>=4&(talent.nightstalker.enabled|talent.subterfuge.enabled&(talent.exsanguinate.enabled&cooldown.exsanguinate.remains<=2|!ticking)&variable.single_target)&target.time_to_die-remains>6", "Nighstalker, or Subt+Exsg on 1T: Snapshot Rupture" );
-    stealthed -> add_action( this, "Garrote", "if=azerite.shrouded_suffocation.enabled&buff.subterfuge.up&buff.subterfuge.remains<1.3&!ss_buffed", "Subterfuge + Shrouded Suffocation: Ensure we use one global to apply Garrote to the main target if it is not snapshot yet, so all other main target abilities profit." );
-    stealthed -> add_action( this, "Garrote", "target_if=min:remains,if=talent.subterfuge.enabled&remains<12&target.time_to_die-remains>2", "Subterfuge: Apply or Refresh with buffed Garrotes" );
+    stealthed -> add_action( "pool_resource,for_next=1", "Subterfuge + Shrouded Suffocation: Ensure we use one global to apply Garrote to the main target if it is not snapshot yet, so all other main target abilities profit." );
+    stealthed -> add_action( this, "Garrote", "if=azerite.shrouded_suffocation.enabled&buff.subterfuge.up&buff.subterfuge.remains<1.3&!ss_buffed" );
+    stealthed -> add_action( "pool_resource,for_next=1", "Subterfuge: Apply or Refresh with buffed Garrotes" );
+    stealthed -> add_action( this, "Garrote", "target_if=min:remains,if=talent.subterfuge.enabled&(remains<12|pmultiplier<=1)&target.time_to_die-remains>2" );
     stealthed -> add_action( this, "Rupture", "if=talent.subterfuge.enabled&azerite.shrouded_suffocation.enabled&!dot.rupture.ticking&variable.single_target", "Subterfuge + Shrouded Suffocation in ST: Apply early Rupture that will be refreshed for pandemic" );
-    stealthed -> add_action( this, "Garrote", "target_if=min:remains,if=talent.subterfuge.enabled&azerite.shrouded_suffocation.enabled&(!azerite.echoing_blades.enabled|spell_targets.fan_of_knives!=2)&target.time_to_die>remains&(remains<18|!ss_buffed)", "Subterfuge w/ Shrouded Suffocation: Reapply for bonus CP and/or extended snapshot duration, excepton with EB on 2T." );
+    stealthed -> add_action( "pool_resource,for_next=1", "Subterfuge w/ Shrouded Suffocation: Reapply for bonus CP and/or extended snapshot duration, excepton with EB on 2T." );
+    stealthed -> add_action( this, "Garrote", "target_if=min:remains,if=talent.subterfuge.enabled&azerite.shrouded_suffocation.enabled&target.time_to_die>remains&(remains<18|!ss_buffed)" );
     stealthed -> add_action( "pool_resource,for_next=1", "Subterfuge + Exsg: Even override a snapshot Garrote right after Rupture before Exsanguination" );
     stealthed -> add_action( this, "Garrote", "if=talent.subterfuge.enabled&talent.exsanguinate.enabled&cooldown.exsanguinate.remains<1&prev_gcd.1.rupture&dot.rupture.remains>5+4*cp_max_spend" );
 
@@ -5957,6 +5961,38 @@ expr_t* rogue_t::create_expression( const std::string& name_str )
         }
       }
       return poisoned_bleeds;
+    } );
+  }
+  else if ( util::str_compare_ci( name_str, "non_ss_buffed_targets" ) )
+  {
+    return make_fn_expr( name_str, [ this ]() {
+      int non_ss_buffed_targets = 0;
+      for ( size_t i = 0, actors = sim -> target_non_sleeping_list.size(); i < actors; i++ )
+      {
+        player_t* t = sim -> target_non_sleeping_list[i];
+        rogue_td_t* tdata = get_target_data( t );
+        if ( ! tdata -> dots.garrote -> is_ticking() || ! debug_cast<const actions::garrote_state_t*>( tdata -> dots.garrote -> state ) -> shrouded_suffocation )
+        {
+          non_ss_buffed_targets++;
+        }
+      }
+      return non_ss_buffed_targets;
+    } );
+  }
+  else if ( util::str_compare_ci( name_str, "ss_buffed_targets_above_pandemic" ) )
+  {
+    return make_fn_expr( name_str, [ this ]() {
+      int ss_buffed_targets_above_pandemic = 0;
+      for ( size_t i = 0, actors = sim -> target_non_sleeping_list.size(); i < actors; i++ )
+      {
+        player_t* t = sim -> target_non_sleeping_list[i];
+        rogue_td_t* tdata = get_target_data( t );
+        if ( tdata -> dots.garrote -> remains() > timespan_t::from_seconds( 5.4 ) && debug_cast<const actions::garrote_state_t*>( tdata -> dots.garrote -> state ) -> shrouded_suffocation )
+        {
+          ss_buffed_targets_above_pandemic++;
+        }
+      }
+      return ss_buffed_targets_above_pandemic;
     } );
   }
   else if ( util::str_compare_ci( name_str, "rtb_buffs" ) )
