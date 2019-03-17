@@ -19,6 +19,7 @@
  HEADERS += qt/sc_SimulateTab.hpp
  HEADERS += qt/sc_SampleProfilesTab.hpp
  HEADERS += qt/sc_OptionsTab.hpp
+ HEADERS += qt/sc_UpdateCheck.hpp
  HEADERS += qt/sc_AddonImportTab.hpp
  SOURCES += qt/util/sc_textedit.cpp
  SOURCES += qt/util/sc_tabbar.cpp
@@ -36,6 +37,7 @@
  SOURCES += qt/sc_SimulateTab.cpp
  SOURCES += qt/sc_SampleProfilesTab.cpp
  SOURCES += qt/sc_OptionsTab.cpp
+ SOURCES += qt/sc_UpdateCheck.cpp
  SOURCES += qt/sc_ImportThread.cpp
  SOURCES += qt/sc_ImportTab.cpp
  SOURCES += qt/sc_AddonImportTab.cpp
