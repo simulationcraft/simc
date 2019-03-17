@@ -3434,7 +3434,7 @@ struct ferocious_bite_t : public cat_attack_t
     max_excess_energy = 1 * data().effectN( 2 ).base_value();
 
     p()->buff.iron_jaws->trigger( 1,
-                                  p()->azerite.iron_jaws.value( 1 ) ,
+                                  p()->azerite.iron_jaws.value( 1 ) * ( 0.5 + 0.5 / p()->azerite.iron_jaws.n_items()) ,
                                   p()->azerite.iron_jaws.spell()->effectN(2).percent() * combo_points );
 
     p()->buff.raking_ferocity->expire();
