@@ -8289,9 +8289,9 @@ void druid_t::apl_balance()
   default_list->add_action("use_items,if=cooldown.ca_inc.remains>30");
   default_list->add_talent(this, "Warrior of Elune", "");
   default_list->add_action(this, "Innervate", "if=azerite.lively_spirit.enabled&(cooldown.incarnation.remains<2|cooldown.celestial_alignment.remains<12)");
-  default_list->add_action("incarnation,if=dot.sunfire.remains>8&dot.moonfire.remains>12&(dot.stellar_flare.remains>6|!talent.stellar_flare.enabled)");
+  default_list->add_action("incarnation,if=dot.sunfire.remains>8&dot.moonfire.remains>12&(dot.stellar_flare.remains>6|!talent.stellar_flare.enabled)&&ap_check&!buff.ca_inc.up");
   default_list->add_action(this, "Celestial Alignment",
-                            "if=astral_power>=40&ap_check&(!azerite.lively_spirit.enabled|buff.lively_spirit.up)&(dot."
+                            "if=astral_power>=40&!buff.ca_inc.up&ap_check&(!azerite.lively_spirit.enabled|buff.lively_spirit.up)&(dot."
                             "sunfire.remains>2&dot.moonfire.ticking&(dot.stellar_flare.ticking|!talent.stellar_flare."
                             "enabled))" );
   default_list->add_talent(this, "Fury of Elune", "if=(buff.ca_inc.up|cooldown.ca_inc.remains>30)&solar_wrath.ap_check");
