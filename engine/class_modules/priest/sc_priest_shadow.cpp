@@ -1960,7 +1960,8 @@ void priest_t::generate_apl_shadow()
   // Bank the Shadow Word: Void charges for a bit to try and avoid overcapping on Insanity.
   single->add_action( this, "Mind Blast",
                       "if=variable.dots_up&"
-                      "(!talent.shadow_word_void.enabled|buff.voidform.down|"
+                      "((raid_event.movement.in>cast_time+0.5&raid_event.movement.in<4)|"
+                      "!talent.shadow_word_void.enabled|buff.voidform.down|"
                       "buff.voidform.stack>14&(insanity<70|charges_fractional>1.33)|"
                       "buff.voidform.stack<=14&(insanity<60|charges_fractional>1.33))" );
   single->add_talent( this, "Void Torrent",
