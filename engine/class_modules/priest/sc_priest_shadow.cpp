@@ -1951,13 +1951,19 @@ void priest_t::generate_apl_shadow()
                       "cooldown.shadow_word_death.remains<gcd.max)" );
   single->add_talent( this, "Surrender to Madness", "if=buff.voidform.stack>10+(10*buff.bloodlust.up)" );
   single->add_talent( this, "Dark Void", "if=raid_event.adds.in>10" );
-  single->add_talent( this, "Mindbender" );
+  single->add_talent( this, "Mindbender", "if=talent.mindbender.enabled|(buff.voidform.stack>18|target.time_to_die<15)" );
   single->add_talent( this, "Shadow Word: Death",
                       "if=!buff.voidform.up|"
                       "(cooldown.shadow_word_death.charges=2&"
                       "buff.voidform.stack<15)" );
   single->add_talent( this, "Shadow Crash", "if=raid_event.adds.in>5&raid_event.adds.duration<20" );
-  single->add_action( this, "Mind Blast", "if=variable.dots_up" );
+  // Bank the Shadow Word: Void charges for a bit to try and avoid overcapping on Insanity.
+  single->add_action( this, "Mind Blast",
+                      "if=variable.dots_up&"
+                      "((raid_event.movement.in>cast_time+0.5&raid_event.movement.in<4)|"
+                      "!talent.shadow_word_void.enabled|buff.voidform.down|"
+                      "buff.voidform.stack>14&(insanity<70|charges_fractional>1.33)|"
+                      "buff.voidform.stack<=14&(insanity<60|charges_fractional>1.33))" );
   single->add_talent( this, "Void Torrent",
                       "if=dot.shadow_word_pain.remains>4&"
                       "dot.vampiric_touch.remains>4&buff.voidform.up" );
