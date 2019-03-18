@@ -8027,7 +8027,7 @@ void druid_t::apl_feral()
    def->add_action("rake,if=buff.prowl.up|buff.shadowmeld.up");
    def->add_action("call_action_list,name=cooldowns");
    def->add_action("ferocious_bite,target_if=dot.rip.ticking&dot.rip.remains<3&target.time_to_die>10&(talent.sabertooth.enabled)");
-   def->add_action("regrowth,if=combo_points=5&buff.predatory_swiftness.up&talent.bloodtalons.enabled&buff.bloodtalons.down&(!buff.incarnation.up|dot.rip.remains<8)");
+   def->add_action("regrowth,if=combo_points=5&buff.predatory_swiftness.up&talent.bloodtalons.enabled&buff.bloodtalons.down");
    def->add_action("run_action_list,name=finishers,if=combo_points>4");
    def->add_action("run_action_list,name=generators");
 
