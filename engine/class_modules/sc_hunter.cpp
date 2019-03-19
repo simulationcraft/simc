@@ -2292,6 +2292,7 @@ struct barbed_shot_t: public hunter_ranged_attack_t
     parse_options(options_str);
 
     tick_may_crit = false;
+    tick_zero = true;
 
     base_ta_adder += p -> azerite.feeding_frenzy.value( 2 );
   }
