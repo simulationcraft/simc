@@ -89,11 +89,9 @@ struct dynamic_event_t : public event_t
     }
 
     auto new_remains = remains() - by_time;
-    if ( sim().debug )
-    {
-      sim().out_debug.printf( "%s adjust time by %.3f, remains=%.3f new_remains=%f",
-        name(), by_time.total_seconds(), remains().total_seconds(), new_remains.total_seconds() );
-    }
+    
+    sim().print_debug( "{} adjust time by {}, remains= {}, new_remains={}", 
+                        name(), by_time.total_seconds(), remains().total_seconds(), new_remains.total_seconds() );
 
     // Otherwise, just clone this event and schedule it with the new time, bypassing the coefficient
     // adjustment
@@ -130,11 +128,9 @@ struct dynamic_event_t : public event_t
 
     auto ratio = new_coefficient / m_coefficient;
     auto remains = this -> remains(), new_duration = remains * ratio;
-    if ( sim().debug )
-    {
-      sim().out_debug.printf( "%s coefficient change, remains=%.3f old_coeff=%f new_coeff=%f ratio=%f new_remains=%f",
-        name(), remains.total_seconds(), m_coefficient, new_coefficient, ratio, new_duration.total_seconds() );
-    }
+    
+    sim().print_debug( "{} coefficient change, remains={} old_coeff={} new_coeff={} ratio={} new_remains={}",
+      name(), remains.total_seconds(), m_coefficient, new_coefficient, ratio, new_duration.total_seconds() );
 
     // Duration increases, so reschedule the event
     if ( ratio > 1 )
@@ -949,13 +945,10 @@ inline rune_event_t::rune_event_t( sim_t* sim ) :
 
 inline void rune_event_t::execute_event()
 {
-  if ( sim().debug )
-  {
-    sim().out_debug.printf( "%s regenerates a rune, start_time=%.3f, regen_time=%.3f current_coeff=%f",
-      m_rune -> runes -> dk -> name(), m_rune -> regen_start.total_seconds(),
-      ( sim().current_time() - m_rune -> regen_start ).total_seconds(),
-      m_coefficient );
-  }
+  sim().print_debug( "{} regenerates a rune, start_time={}, regen_time={} current_coeff={}",
+    m_rune -> runes -> dk -> name(), m_rune -> regen_start.total_seconds(),
+    ( sim().current_time() - m_rune -> regen_start ).total_seconds(),
+    m_coefficient );
 
   m_rune -> fill_rune();
 }
@@ -1011,10 +1004,7 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
 static void log_rune_status( const death_knight_t* p, bool debug = false ) {
   std::string rune_string = p -> _runes.string_representation();
 
-  if ( ! debug )
-    p -> sim -> out_log.printf( "%s runes: %s", p -> name(), rune_string.c_str() );
-  else
-    p -> sim -> out_debug.printf( "%s runes: %s", p -> name(), rune_string.c_str() );
+  p -> sim -> print_debug( "{} runes: {}", p -> name(), rune_string.c_str() );
 }
 
 inline runes_t::runes_t( death_knight_t* p ) : dk( p ),
@@ -1056,11 +1046,9 @@ inline void runes_t::consume( unsigned runes )
         iteration_waste_sum += wasted_time;
         rune_waste.add( wasted_time.total_seconds() );
 
-        if ( dk -> sim -> debug )
-        {
-          dk -> sim -> out_debug.printf( "%s rune waste, n_full_runes=%u rune_regened=%.3f waste_started=%.3f wasted_time=%.3f",
-              dk -> name(), n_full_runes, rune -> regenerated.total_seconds(), waste_start.total_seconds(), wasted_time.total_seconds() );
-        }
+        dk -> sim -> print_debug( "{} rune waste, n_full_runes={} rune_regened={} waste_started={} wasted_time={}",
+          dk -> name(), n_full_runes, rune -> regenerated.total_seconds(), waste_start.total_seconds(), wasted_time.total_seconds() );
+    
         n_wasting_runes--;
       }
     }
@@ -1076,11 +1064,8 @@ inline void runes_t::consume( unsigned runes )
   // going to be any waste time.
   if ( disable_waste && waste_start >= 0_ms )
   {
-    if ( dk -> sim -> debug )
-    {
-      dk -> sim -> out_debug.printf( "%s rune waste, waste ended, n_full_runes=%u",
-          dk -> name(), runes_full() );
-    }
+    dk -> sim -> print_debug( "{} rune waste, waste ended, n_full_runes={}",
+        dk -> name(), runes_full() );
 
     waste_start = timespan_t::min();
   }
@@ -1106,12 +1091,9 @@ inline void runes_t::regenerate_immediate( const timespan_t& seconds )
     return;
   }
 
-  if ( dk -> sim -> debug )
-  {
-    dk -> sim -> out_debug.printf( "%s regenerating runes with an immediate value of %.3f",
-        dk -> name(), seconds.total_seconds() );
-    log_rune_status( dk );
-  }
+  dk -> sim -> print_debug( "{} regenerating runes with an immediate value of {}",
+    dk -> name(), seconds.total_seconds() );
+  log_rune_status( dk );
 
   // Collect regenerating and depleted runes
   std::vector<rune_t*> regenerating_runes, depleted_runes;
@@ -1343,11 +1325,8 @@ inline rune_t* rune_t::fill_rune( gain_t* gain )
   // If the actor goes past the maximum number of regenerating runes, mark the waste start
   if ( runes -> waste_start < 0_ms && runes -> runes_full() > MAX_REGENERATING_RUNES )
   {
-    if ( runes -> dk -> sim -> debug )
-    {
-      runes -> dk -> sim -> out_debug.printf( "%s rune waste, waste started, n_full_runes=%u",
-          runes -> dk -> name(), runes -> runes_full() );
-    }
+    runes -> dk -> sim -> print_debug( "{} rune waste, waste started, n_full_runes={}",
+        runes -> dk -> name(), runes -> runes_full() );
     runes -> waste_start = runes -> dk -> sim -> current_time();
   }
 
@@ -1982,10 +1961,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
     }
     else
     {
-      if ( sim -> debug )
-      {
-        sim -> out_debug.printf( "%s increasing shadow_empowerment power by %f", name(), increase );
-      }
+      sim -> print_debug( "{} increasing shadow_empowerment power by {}", name(), increase );
       dark_empowerment -> current_value += increase;
     }
   }
@@ -3197,12 +3173,12 @@ struct army_of_the_dead_t : public death_knight_spell_t
     if ( precombat_delay > 10 )
     {
       precombat_delay = 10;
-      sim -> out_debug.printf( "%s tried to precast army of the dead more than 10s before combat begins", p -> name() );
+      sim -> print_debug( "{} tried to precast army of the dead more than 10s before combat begins", p -> name() );
     }
     else if ( precombat_delay < 1 )
     { 
       precombat_delay = 1;
-      sim -> out_debug.printf( "%s tried to precast army of the dead too late (delay has to be >= 1s", p -> name() );
+      sim -> print_debug( "{} tried to precast army of the dead too late (delay has to be >= 1s", p -> name() );
     }
 
     harmful = false;
@@ -3304,11 +3280,11 @@ struct blood_plague_t : public death_knight_spell_t
     base_tick_time *= 1.0 + p -> talent.rapid_decomposition -> effectN( 1 ).percent();
   }
 
-  virtual double bonus_ta( const action_state_t* s ) const override
+  virtual double bonus_ta( const action_state_t* state ) const override
   {
-    double ta = death_knight_spell_t::bonus_ta( s );
+    double ta = death_knight_spell_t::bonus_ta( state );
 
-    if ( p() -> azerite.deep_cuts.enabled() &&  td( target ) -> debuff.deep_cuts -> up() )
+    if ( td( state -> target ) -> debuff.deep_cuts -> up() )
     {
       ta += p() -> azerite.deep_cuts.value();
     }
@@ -3832,11 +3808,8 @@ struct death_and_decay_damage_base_t : public death_knight_spell_t
   {
     if ( s -> target -> debuffs.flying && s -> target -> debuffs.flying -> check() )
     {
-      if ( sim -> debug )
-      {
-        sim -> out_debug.printf( "Ground effect %s can not hit flying target %s",
-          name(), s -> target -> name() );
-      }
+      sim -> print_debug( "Ground effect {} can not hit flying target {}",
+        name(), s -> target -> name() );
     }
     else
     {
@@ -4310,8 +4283,7 @@ struct death_strike_heal_t : public death_knight_heal_t
     if ( p() -> mastery.blood_shield -> ok() )
       amount += state -> result_total * p() -> cache.mastery_value();
 
-    if ( sim -> debug )
-      sim -> out_debug.printf( "%s Blood Shield buff trigger, old_value=%f added_value=%f new_value=%f",
+    sim -> print_debug( "{} Blood Shield buff trigger, old_value={} added_value={} new_value={}",
                      player -> name(), current_value,
                      state -> result_amount * p() -> cache.mastery_value(),
                      amount );
@@ -4917,18 +4889,18 @@ struct heart_strike_t : public death_knight_melee_attack_t
       p() -> pets.dancing_rune_weapon_pet -> ability.heart_strike -> set_target( execute_state -> target );
       p() -> pets.dancing_rune_weapon_pet -> ability.heart_strike -> execute();
     }
+
+    // Deep cuts is applied to the primary target
+    if ( p() -> azerite.deep_cuts.enabled() && result_is_hit( execute_state -> result ) )
+    {
+      td( execute_state -> target ) -> debuff.deep_cuts -> trigger();
+    }
   }
 
   void impact ( action_state_t* state ) override
   {
     death_knight_melee_attack_t::impact( state );
-
-    // Deep cuts is only applied to the primary target
-    if ( p() -> azerite.deep_cuts.enabled() && state -> target == target )
-    {
-      td( state -> target ) -> debuff.deep_cuts -> trigger();
-    }
-    
+        
     if ( p() -> talent.heartbreaker -> ok() && result_is_hit( state -> result ) )
     {
       p() -> resource_gain( RESOURCE_RUNIC_POWER, heartbreaker_rp_gen, p() -> gains.heartbreaker, this );
@@ -6192,12 +6164,9 @@ struct vampiric_blood_buff_t : public buff_t
       player -> resources.initial_multiplier[ RESOURCE_HEALTH ] *= 1.0 + delta;
       player -> recalculate_resource_max( RESOURCE_HEALTH );
 
-      if ( this -> sim -> debug )
-      {
-        this -> sim -> out_debug.printf( "%s %s stacking health pct change %.2f%%, %.1f -> %.1f",
-                                         this -> player -> name(), this -> name(), delta * 100.0, old_health,
-                                         this -> player -> resources.max[ RESOURCE_HEALTH ] );
-      }
+      this -> sim -> print_debug( "{} {} stacking health pct change {}%, {} -> {}",
+                                  this -> player -> name(), this -> name(), delta * 100.0, old_health,
+                                  this -> player -> resources.max[ RESOURCE_HEALTH ] );
     }
   }
 
@@ -6213,12 +6182,9 @@ struct vampiric_blood_buff_t : public buff_t
       p -> resources.initial_multiplier[ RESOURCE_HEALTH ] /= 1.0 + delta;
       p -> recalculate_resource_max( RESOURCE_HEALTH );
 
-      if ( this -> sim -> debug )
-      {
-        this -> sim -> out_debug.printf( "%s %s stacking health pct change %.2f%%, %.1f -> %.1f",
-                                         this -> player -> name(), this -> name(), delta * 100.0, old_health,
-                                         this -> player -> resources.max[ RESOURCE_HEALTH ] );
-      }
+      this -> sim -> print_debug( "{} {} stacking health pct change {}%, {} -> {}",
+                                  this -> player -> name(), this -> name(), delta * 100.0, old_health,
+                                  this -> player -> resources.max[ RESOURCE_HEALTH ] );
     }
   }
 };
@@ -6475,10 +6441,8 @@ void death_knight_t::trigger_soul_reaper_death( player_t* target )
 
   if ( td -> dot.soul_reaper -> is_ticking() )
   {
-    if ( sim -> log )
-    {
-      sim -> out_debug.printf( "Target died while affected by Soul Reaper debuff :  Death Knight %s gain the Soul Reaper buff.", name() );
-    }
+    sim -> print_log( "Target {} died while affected by Soul Reaper, player {} gains Soul Reaper buff.",
+                      target -> name(), name() );
 
     buffs.soul_reaper -> trigger();
   }
@@ -6659,7 +6623,7 @@ void death_knight_t::trigger_runic_empowerment( double rpcost )
 
   if ( replenish_rune( 1, gains.runic_empowerment ) && sim -> debug )
   {
-    sim -> out_debug.printf( "%s Runic Empowerment regenerated rune", name() );
+    sim -> print_debug( "{} Runic Empowerment regenerated rune", name() );
     log_rune_status( this );
   }
 }
@@ -8064,10 +8028,7 @@ void death_knight_t::bone_shield_handler( const action_state_t* state ) const
     return;
   }
 
-  if ( sim -> log )
-  {
-    sim -> out_debug.printf( "%s took a successful auto attack and lost a stack on bone shield", name() );
-  }
+  sim -> print_log( "{} took a successful auto attack and lost a bone shield charge", name() );
 
   buffs.bone_shield -> decrement();
   cooldown.bone_shield_icd -> start( spell.bone_shield -> internal_cooldown() );
@@ -8202,16 +8163,17 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
 
 double death_knight_t::matching_gear_multiplier( attribute_e attr ) const
 {
-  int tree = specialization();
-
-  if ( tree == DEATH_KNIGHT_UNHOLY || tree == DEATH_KNIGHT_FROST )
-    if ( attr == ATTR_STRENGTH )
-      return spec.plate_specialization -> effectN( 1 ).percent();
-
-  if ( tree == DEATH_KNIGHT_BLOOD )
-    if ( attr == ATTR_STAMINA )
-      return spec.plate_specialization -> effectN( 1 ).percent();
-
+  switch ( specialization() )
+  {
+    case DEATH_KNIGHT_FROST:
+    case DEATH_KNIGHT_UNHOLY:
+      if ( attr == ATTR_STRENGTH )
+        return spec.plate_specialization -> effectN( 1 ).percent();
+    case DEATH_KNIGHT_BLOOD:
+      if ( attr == ATTR_STAMINA )
+        return spec.plate_specialization -> effectN( 1 ).percent();
+  }
+  
   return 0.0;
 }
 
