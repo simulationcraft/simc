@@ -7927,7 +7927,7 @@ void druid_t::apl_precombat()
     precombat->add_action("variable,name=sf_targets,value=4", "Starfall v Starsurge target cutoff");
     precombat->add_action("variable,name=sf_targets,op=add,value=1,if=azerite.arcanic_pulsar.enabled)");
     precombat->add_action("variable,name=sf_targets,op=add,value=1,if=talent.starlord.enabled)");
-    precombat->add_action("variable,name=sf_targets,op=add,value=1,if=azerite.arcanic_pulsar.rank>2&azerite.arcanic_pulsar.enabled)");
+    precombat->add_action("variable,name=sf_targets,op=add,value=1,if=azerite.streaking_stars.rank>2&azerite.arcanic_pulsar.enabled)");
     precombat->add_action("variable,name=sf_targets,op=sub,value=1,if=!talent.twin_moons.enabled");
   }
   
