@@ -3434,7 +3434,7 @@ struct ferocious_bite_t : public cat_attack_t
     max_excess_energy = 1 * data().effectN( 2 ).base_value();
 
     p()->buff.iron_jaws->trigger( 1,
-                                  p()->azerite.iron_jaws.value( 1 ) ,
+                                  p()->azerite.iron_jaws.value( 1 ) * ( 0.5 + 0.5 / p()->azerite.iron_jaws.n_items()) ,
                                   p()->azerite.iron_jaws.spell()->effectN(2).percent() * combo_points );
 
     p()->buff.raking_ferocity->expire();
@@ -7925,8 +7925,10 @@ void druid_t::apl_precombat()
     precombat->add_action("variable,name=az_ap,value=azerite.arcanic_pulsar.rank");
     // Starfall v Starsurge target cutoff
     precombat->add_action("variable,name=sf_targets,value=4", "Starfall v Starsurge target cutoff");
-    precombat->add_action("variable,name=sf_targets,op=add,value=1,if=talent.twin_moons.enabled&(azerite.arcanic_pulsar.enabled|talent.starlord.enabled)");
-    precombat->add_action("variable,name=sf_targets,op=sub,value=1,if=!azerite.arcanic_pulsar.enabled&!talent.starlord.enabled&talent.stellar_drift.enabled");
+    precombat->add_action("variable,name=sf_targets,op=add,value=1,if=azerite.arcanic_pulsar.enabled");
+    precombat->add_action("variable,name=sf_targets,op=add,value=1,if=talent.starlord.enabled");
+    precombat->add_action("variable,name=sf_targets,op=add,value=1,if=azerite.streaking_stars.rank>2&azerite.arcanic_pulsar.enabled");
+    precombat->add_action("variable,name=sf_targets,op=sub,value=1,if=!talent.twin_moons.enabled");
   }
   
   // Forms
@@ -8027,7 +8029,7 @@ void druid_t::apl_feral()
    def->add_action("rake,if=buff.prowl.up|buff.shadowmeld.up");
    def->add_action("call_action_list,name=cooldowns");
    def->add_action("ferocious_bite,target_if=dot.rip.ticking&dot.rip.remains<3&target.time_to_die>10&(talent.sabertooth.enabled)");
-   def->add_action("regrowth,if=combo_points=5&buff.predatory_swiftness.up&talent.bloodtalons.enabled&buff.bloodtalons.down&(!buff.incarnation.up|dot.rip.remains<8)");
+   def->add_action("regrowth,if=combo_points=5&buff.predatory_swiftness.up&talent.bloodtalons.enabled&buff.bloodtalons.down");
    def->add_action("run_action_list,name=finishers,if=combo_points>4");
    def->add_action("run_action_list,name=generators");
 
@@ -8289,9 +8291,9 @@ void druid_t::apl_balance()
   default_list->add_action("use_items,if=cooldown.ca_inc.remains>30");
   default_list->add_talent(this, "Warrior of Elune", "");
   default_list->add_action(this, "Innervate", "if=azerite.lively_spirit.enabled&(cooldown.incarnation.remains<2|cooldown.celestial_alignment.remains<12)");
-  default_list->add_action("incarnation,if=dot.sunfire.remains>8&dot.moonfire.remains>12&(dot.stellar_flare.remains>6|!talent.stellar_flare.enabled)");
+  default_list->add_action("incarnation,if=dot.sunfire.remains>8&dot.moonfire.remains>12&(dot.stellar_flare.remains>6|!talent.stellar_flare.enabled)&ap_check&!buff.ca_inc.up");
   default_list->add_action(this, "Celestial Alignment",
-                            "if=astral_power>=40&ap_check&(!azerite.lively_spirit.enabled|buff.lively_spirit.up)&(dot."
+                            "if=astral_power>=40&!buff.ca_inc.up&ap_check&(!azerite.lively_spirit.enabled|buff.lively_spirit.up)&(dot."
                             "sunfire.remains>2&dot.moonfire.ticking&(dot.stellar_flare.ticking|!talent.stellar_flare."
                             "enabled))" );
   default_list->add_talent(this, "Fury of Elune", "if=(buff.ca_inc.up|cooldown.ca_inc.remains>30)&solar_wrath.ap_check");

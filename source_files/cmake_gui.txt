@@ -16,6 +16,7 @@ sc_SimulationThread.hpp
 sc_SimulateTab.hpp
 sc_SampleProfilesTab.hpp
 sc_OptionsTab.hpp
+sc_UpdateCheck.hpp
 sc_AddonImportTab.hpp
 util/sc_textedit.cpp
 util/sc_tabbar.cpp
@@ -33,6 +34,7 @@ sc_SimulationThread.cpp
 sc_SimulateTab.cpp
 sc_SampleProfilesTab.cpp
 sc_OptionsTab.cpp
+sc_UpdateCheck.cpp
 sc_ImportThread.cpp
 sc_ImportTab.cpp
 sc_AddonImportTab.cpp

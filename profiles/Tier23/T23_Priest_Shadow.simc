@@ -70,10 +70,10 @@ actions.single+=/mind_sear,if=buff.harvested_thoughts.up&cooldown.void_bolt.rema
 actions.single+=/shadow_word_death,if=target.time_to_die<3|cooldown.shadow_word_death.charges=2|(cooldown.shadow_word_death.charges=1&cooldown.shadow_word_death.remains<gcd.max)
 actions.single+=/surrender_to_madness,if=buff.voidform.stack>10+(10*buff.bloodlust.up)
 actions.single+=/dark_void,if=raid_event.adds.in>10
-actions.single+=/mindbender
+actions.single+=/mindbender,if=talent.mindbender.enabled|(buff.voidform.stack>18|target.time_to_die<15)
 actions.single+=/shadow_word_death,if=!buff.voidform.up|(cooldown.shadow_word_death.charges=2&buff.voidform.stack<15)
 actions.single+=/shadow_crash,if=raid_event.adds.in>5&raid_event.adds.duration<20
-actions.single+=/mind_blast,if=variable.dots_up
+actions.single+=/mind_blast,if=variable.dots_up&((raid_event.movement.in>cast_time+0.5&raid_event.movement.in<4)|!talent.shadow_word_void.enabled|buff.voidform.down|buff.voidform.stack>14&(insanity<70|charges_fractional>1.33)|buff.voidform.stack<=14&(insanity<60|charges_fractional>1.33))
 actions.single+=/void_torrent,if=dot.shadow_word_pain.remains>4&dot.vampiric_touch.remains>4&buff.voidform.up
 actions.single+=/shadow_word_pain,if=refreshable&target.time_to_die>4&!talent.misery.enabled&!talent.dark_void.enabled
 actions.single+=/vampiric_touch,if=refreshable&target.time_to_die>6|(talent.misery.enabled&dot.shadow_word_pain.refreshable)

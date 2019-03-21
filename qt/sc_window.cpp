@@ -12,6 +12,7 @@
 #include "sc_SimulateTab.hpp"
 #include "sc_WelcomeTab.hpp"
 #include "sc_AddonImportTab.hpp"
+#include "sc_UpdateCheck.hpp"
 #include "util/sc_mainwindowcommandline.hpp"
 #include "util/git_info.hpp"
 #if defined( Q_OS_MAC )
@@ -210,6 +211,13 @@ void SC_MainWindow::loadHistory()
         "</ul>" ) );
 
     deprecated_apikey->show();
+  }
+
+  if ( settings.value( "options/update_check" ).toString() == "Yes" ||
+       !settings.contains( "options/update_check" ) )
+  {
+    auto updateCheck = new UpdateCheckWidget( this );
+    updateCheck->start();
   }
 }
 
@@ -1099,6 +1107,7 @@ void SC_MainWindow::cmdLineTextEdited( const QString& s )
   case TAB_HELP:      cmdLineText = s; break;
   case TAB_LOG:       logFileText = s; break;
   case TAB_RESULTS:   resultsFileText = s; break;
+  default: break;
   }
 }
 
@@ -1120,12 +1129,14 @@ void SC_MainWindow::mainButtonClicked( bool /* checked */ )
 		switch ( importTab -> currentTab() )
 		{
 			case TAB_RECENT:     recentlyClosedTabImport -> restoreCurrentlySelected(); break;
+                        default: break;
 		}
 		break;
 	  case TAB_LOG: saveLog(); break;
 	  case TAB_RESULTS: saveResults(); break;
 	  case TAB_SPELLQUERY: spellQueryTab -> run_spell_query(); break;
 	  case TAB_COUNT: break;
+          default: break;
   }
 }
 
@@ -1161,6 +1172,7 @@ void SC_MainWindow::importButtonClicked()
 		  mainTab -> setCurrentTab( TAB_SIMULATE );
 	  }
 	  break;
+          default: break;
   }
 }
 
@@ -1200,6 +1212,7 @@ void SC_MainWindow::backButtonClicked( bool /* checked */ )
     {
     case TAB_OPTIONS:   break;
     case TAB_OVERRIDES: break;
+    default: break;
     }
   }
 }
@@ -1395,6 +1408,7 @@ void SC_MainWindow::currentlyViewedTabCloseRequest()
     resultsTab -> TabCloseRequest( resultsTab -> currentIndex() );
   }
   break;
+  default: break;
   }
 }
 
