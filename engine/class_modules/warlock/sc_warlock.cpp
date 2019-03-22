@@ -139,7 +139,6 @@ namespace warlock
         range::for_each( p.havoc_spells, [] ( action_t* a ) { a->target_cache.is_valid = false; } );
       } );
     debuffs_chaotic_flames = make_buff(*this, "chaotic_flames", source->find_spell(253092));
-    p.flashpoint_threshold = 0.8;
 
     //Demo
     dots_doom = target->get_dot("doom", &p);
@@ -243,6 +242,8 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     regen_type = REGEN_DYNAMIC;
     regen_caches[CACHE_HASTE] = true;
     regen_caches[CACHE_SPELL_HASTE] = true;
+
+    flashpoint_threshold = 0.8;
   }
 
 void warlock_t::invalidate_cache( cache_e c )

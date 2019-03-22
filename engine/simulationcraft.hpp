@@ -1144,7 +1144,6 @@ struct sim_t : private sc_thread_t
     timespan_t          fight_or_flight_period = 1.0_s;
     /// Chance to gain the buff on each Fight or Flight attempt
     double              fight_or_flight_chance = 0.0;
-
   } bfa_opts;
 
   // Expansion specific data
