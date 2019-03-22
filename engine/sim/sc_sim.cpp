@@ -3595,8 +3595,6 @@ void sim_t::create_options()
         bfa_opts.fight_or_flight_period, 1_ms, timespan_t::max() ) );
   add_option( opt_float( "bfa.fight_or_flight_chance", 
         bfa_opts.fight_or_flight_chance, 0.0, 1.0 ) );
-  add_option( opt_float( "bfa.flashpoint_threshold",
-        bfa_opts.flashpoint_threshold ) );
 
   // applies to: "lavish_suramar_feast", battle for azeroth feasts
   add_option( opt_bool( "feast_as_dps", feast_as_dps ) );

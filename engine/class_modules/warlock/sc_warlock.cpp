@@ -139,6 +139,7 @@ namespace warlock
         range::for_each( p.havoc_spells, [] ( action_t* a ) { a->target_cache.is_valid = false; } );
       } );
     debuffs_chaotic_flames = make_buff(*this, "chaotic_flames", source->find_spell(253092));
+    p.flashpoint_threshold = 0.8;
 
     //Demo
     dots_doom = target->get_dot("doom", &p);
@@ -794,6 +795,7 @@ void warlock_t::create_options()
 
   add_option( opt_int( "soul_shards", initial_soul_shards ) );
   add_option( opt_string( "default_pet", default_pet ) );
+  add_option( opt_float( "flashpoint_threshold", flashpoint_threshold, 0.0, 1.0) );
 }
 
 //Used to determine how many Wild Imps are waiting to be spawned from Hand of Guldan
@@ -884,6 +886,7 @@ void warlock_t::copy_from( player_t* source )
 
   initial_soul_shards = p->initial_soul_shards;
   default_pet = p->default_pet;
+  flashpoint_threshold = p->flashpoint_threshold;
 }
 
 stat_e warlock_t::convert_hybrid_stat( stat_e s ) const

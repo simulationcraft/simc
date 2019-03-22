@@ -66,6 +66,7 @@ namespace warlock
       bool wracking_brilliance;
       double agony_accumulator;
       std::vector<event_t*> wild_imp_spawns; // Used for tracking incoming imps from HoG 
+      double flashpoint_threshold; //Flashpoint (Destruction Azerite trait) does not have the 80% in spell data
 
       unsigned active_pets;
 
