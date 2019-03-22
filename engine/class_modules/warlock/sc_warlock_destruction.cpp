@@ -308,7 +308,7 @@ namespace warlock {
 
         p()->resource_gain(RESOURCE_SOUL_SHARD, 0.1, p()->gains.immolate);
 
-        if (d->state->result_amount > 0.0 && p()->azerite.flashpoint.ok() && d->target->health_percentage() > 80 )
+        if (d->state->result_amount > 0.0 && p()->azerite.flashpoint.ok() && d->target->health_percentage() > p()->sim->bfa_opts.flashpoint_threshold * 100 )
           p()->buffs.flashpoint->trigger();
 
         // For some reason this triggers on every tick
