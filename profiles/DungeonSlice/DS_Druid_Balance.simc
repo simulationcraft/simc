@@ -28,8 +28,10 @@ actions.precombat+=/variable,name=az_ss,value=azerite.streaking_stars.rank
 actions.precombat+=/variable,name=az_ap,value=azerite.arcanic_pulsar.rank
 # Starfall v Starsurge target cutoff
 actions.precombat+=/variable,name=sf_targets,value=4
-actions.precombat+=/variable,name=sf_targets,op=add,value=1,if=talent.twin_moons.enabled&(azerite.arcanic_pulsar.enabled|talent.starlord.enabled)
-actions.precombat+=/variable,name=sf_targets,op=sub,value=1,if=!azerite.arcanic_pulsar.enabled&!talent.starlord.enabled&talent.stellar_drift.enabled
+actions.precombat+=/variable,name=sf_targets,op=add,value=1,if=azerite.arcanic_pulsar.enabled
+actions.precombat+=/variable,name=sf_targets,op=add,value=1,if=talent.starlord.enabled
+actions.precombat+=/variable,name=sf_targets,op=add,value=1,if=azerite.streaking_stars.rank>2&azerite.arcanic_pulsar.enabled
+actions.precombat+=/variable,name=sf_targets,op=sub,value=1,if=!talent.twin_moons.enabled
 actions.precombat+=/moonkin_form
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
@@ -53,8 +55,8 @@ actions+=/use_item,name=tidestorm_codex,if=equipped.165576
 actions+=/use_items,if=cooldown.ca_inc.remains>30
 actions+=/warrior_of_elune
 actions+=/innervate,if=azerite.lively_spirit.enabled&(cooldown.incarnation.remains<2|cooldown.celestial_alignment.remains<12)
-actions+=/incarnation,if=dot.sunfire.remains>8&dot.moonfire.remains>12&(dot.stellar_flare.remains>6|!talent.stellar_flare.enabled)
-actions+=/celestial_alignment,if=astral_power>=40&ap_check&(!azerite.lively_spirit.enabled|buff.lively_spirit.up)&(dot.sunfire.remains>2&dot.moonfire.ticking&(dot.stellar_flare.ticking|!talent.stellar_flare.enabled))
+actions+=/incarnation,if=dot.sunfire.remains>8&dot.moonfire.remains>12&(dot.stellar_flare.remains>6|!talent.stellar_flare.enabled)&ap_check&!buff.ca_inc.up
+actions+=/celestial_alignment,if=astral_power>=40&!buff.ca_inc.up&ap_check&(!azerite.lively_spirit.enabled|buff.lively_spirit.up)&(dot.sunfire.remains>2&dot.moonfire.ticking&(dot.stellar_flare.ticking|!talent.stellar_flare.enabled))
 actions+=/fury_of_elune,if=(buff.ca_inc.up|cooldown.ca_inc.remains>30)&solar_wrath.ap_check
 actions+=/force_of_nature,if=(buff.ca_inc.up|cooldown.ca_inc.remains>30)&ap_check
 # Spenders
