@@ -7,7 +7,6 @@ namespace buffs {
   crusade_buff_t::crusade_buff_t( player_t* p ) :
       buff_t( p, "crusade", p -> find_spell( 231895 ) ),
       damage_modifier( 0.0 ),
-      healing_modifier( 0.0 ),
       haste_bonus( 0.0 )
   {
     set_refresh_behavior( buff_refresh_behavior::DISABLED );
@@ -15,7 +14,6 @@ namespace buffs {
     //  values
     damage_modifier = data().effectN( 1 ).percent() / 10.0;
     haste_bonus = data().effectN( 3 ).percent() / 10.0;
-    healing_modifier = 0;
 
     // increase duration if we have Light's Decree
     paladin_t* paladin = static_cast<paladin_t*>( p );
@@ -26,8 +24,7 @@ namespace buffs {
     // let the ability handle the cooldown
     cooldown -> duration = timespan_t::zero();
 
-    // invalidate Damage and Healing for both specs
-    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    // invalidate haste
     add_invalidate( CACHE_HASTE );
   }
 
@@ -67,7 +64,7 @@ namespace buffs {
 struct holy_power_consumer_t : public paladin_melee_attack_t
 {
   struct lights_decree_t : public paladin_spell_t {
-    lights_decree_t( paladin_t* p, float parent_cost ) : paladin_spell_t( "lights_decree", p, p -> find_spell( 286229 ) )
+    lights_decree_t( paladin_t* p, double parent_cost ) : paladin_spell_t( "lights_decree", p, p -> find_spell( 286229 ) )
     {
       base_dd_min = base_dd_max = p -> azerite.lights_decree.value() * parent_cost;
       aoe = -1;
@@ -170,7 +167,7 @@ struct crusade_t : public paladin_heal_t
   {
     parse_options( options_str );
 
-    if ( ! ( p -> talents.crusade_talent -> ok() ) )
+    if ( ! ( p -> talents.crusade -> ok() ) )
       background = true;
 
     cooldown -> charges += as<int>( p -> sets -> set( PALADIN_RETRIBUTION, T18, B2 ) -> effectN( 1 ).base_value() );
@@ -656,7 +653,6 @@ struct inquisition_t : public paladin_heal_t
 
 struct hammer_of_wrath_t : public holy_power_generator_t
 {
-  bool last_ready_was_ineligible = false;
   hammer_of_wrath_t( paladin_t* p, const std::string& options_str )
     : holy_power_generator_t( "hammer_of_wrath", p, p -> find_talent_spell( "Hammer of Wrath" ) )
   {
@@ -665,26 +661,15 @@ struct hammer_of_wrath_t : public holy_power_generator_t
     ret_crusade = avenging_wrath = ret_inquisition = true;
   }
 
-  void init() override
-  {
-    holy_power_generator_t::init();
-    last_ready_was_ineligible = false;
-  }
-
   virtual bool target_ready( player_t* candidate_target ) override
   {
     // TODO(mserrano): this is also probably incorrect
-    if ( p() -> get_how_availability( candidate_target ) )
+    if ( ! p() -> get_how_availability( candidate_target ) )
     {
-      if ( last_ready_was_ineligible && holy_power_generator_t::ready() )
-      {
-        last_ready_was_ineligible = false;
-        cooldown -> last_charged = sim -> current_time();
-      }
-      return true;
+      return false;
     }
-    last_ready_was_ineligible = true;
-    return false;
+
+    return holy_power_generator_t::target_ready( candidate_target );
   }
 };
 
@@ -735,10 +720,6 @@ void paladin_t::create_buffs_retribution()
                                   -> add_stat( STAT_HASTE_RATING, azerite.relentless_inquisitor.value() );
   buffs.empyrean_power = make_buff( this, "empyrean_power", find_spell( 286393 ))
                             -> set_default_value( azerite.empyrean_power.value() );
-  buffs.divine_right = make_buff<stat_buff_t>(this, "divine_right", find_spell( 278523 ))
-                            -> add_stat( STAT_STRENGTH, azerite.divine_right.value() );
-  buffs.zealotry = make_buff( this, "zealotry", find_spell( 278989 ))
-                      -> set_default_value( azerite.zealotry.value() );
 }
 
 void paladin_t::init_rng_retribution()
@@ -770,8 +751,7 @@ void paladin_t::init_spells_retribution()
   talents.eye_for_an_eye             = find_talent_spell( "Eye for an Eye" );
   talents.word_of_glory              = find_talent_spell( "Word of Glory" );
   talents.divine_purpose             = find_talent_spell( "Divine Purpose" ); // TODO: fix this
-  talents.crusade                    = find_spell( 231895 );
-  talents.crusade_talent             = find_talent_spell( "Crusade" );
+  talents.crusade                    = find_talent_spell( "Crusade" );
   talents.inquisition                = find_talent_spell( "Inquisition" );
 
   // misc spells
@@ -789,7 +769,6 @@ void paladin_t::init_spells_retribution()
 
   // azerite stuff
   azerite.avengers_might        = find_azerite_spell( 125 );
-  azerite.deferred_sentence     = find_azerite_spell( 253 );
   azerite.expurgation           = find_azerite_spell( 187 );
   azerite.grace_of_the_justicar = find_azerite_spell( 393 );
   azerite.relentless_inquisitor = find_azerite_spell( 154 );
@@ -813,24 +792,18 @@ void empyrean_power( special_effect_t& effect )
 
   struct empyrean_power_cb_t : public dbc_proc_callback_t
   {
-    paladin_t* pala;
     empyrean_power_cb_t( const special_effect_t& effect ) :
       dbc_proc_callback_t( effect.player, effect )
-    {
-      pala = static_cast<paladin_t*>(effect.player);
-    }
+    { }
 
     void execute( action_t*, action_state_t* ) override
     {
-      proc_buff -> trigger( pala -> azerite.empyrean_power.value() );
+      proc_buff -> trigger();
     }
   };
 
   new empyrean_power_cb_t( effect );
 }
-
-void paladin_t::init_assessors_retribution()
-{ }
 
 // Action Priority List Generation
 void paladin_t::generate_action_prio_list_ret()

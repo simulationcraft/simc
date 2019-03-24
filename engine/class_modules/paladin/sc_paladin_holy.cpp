@@ -2,39 +2,6 @@
 #include "sc_paladin.hpp"
 
 namespace paladin {
-
-namespace buffs {
-// Divine Protection buff
-struct divine_protection_t : public buff_t
-{
-
-  divine_protection_t( paladin_t* p ) :
-    buff_t( p, "divine_protection", p -> find_class_spell( "Divine Protection" ) )
-  {
-    cooldown -> duration = timespan_t::zero();
-  }
-
-  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-  }
-
-};
-
-
-struct holy_avenger_buff_t : public buff_t
-{
-  holy_avenger_buff_t( player_t* p ):
-    buff_t( p, "holy_avenger", p -> find_spell( 105809 ) )
-
-  {
-    set_default_value(1.0 / (1.0 + p -> find_spell(105809) -> effectN(1).percent()));
-    add_invalidate(CACHE_HASTE);
-  }
-};
-
-} // end buffs
-
 // Beacon of Light ==========================================================
 
 struct beacon_of_light_t : public paladin_heal_t
@@ -111,7 +78,7 @@ struct divine_protection_t : public paladin_spell_t
 struct holy_light_t : public paladin_heal_t
 {
   holy_light_t( paladin_t* p, const std::string& options_str ) :
-    paladin_heal_t( "holy_light", p, p -> find_class_spell( "Holy Light" ) )
+    paladin_heal_t( "holy_light", p, p -> find_specialization_spell( "Holy Light" ) )
   {
     parse_options( options_str );
   }
@@ -139,18 +106,6 @@ struct holy_light_t : public paladin_heal_t
 
     p() -> buffs.infusion_of_light -> up(); // Buff uptime tracking
   }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    paladin_heal_t::impact( s );
-
-    // Grant Mana if healing the beacon target
-    if ( s -> target == p() -> beacon_target ){
-      int g = static_cast<int>( tower_of_radiance -> effectN(1).percent() * cost() );
-      p() -> resource_gain( RESOURCE_MANA, g, p() -> gains.mana_beacon_of_light );
-    }
-  }
-
 };
 
 // Holy Prism ===============================================================
@@ -245,6 +200,8 @@ struct holy_prism_t : public paladin_spell_t
 
   virtual void execute() override
   {
+    paladin_spell_t::execute();
+
     if ( target -> is_enemy() )
     {
       // damage enemy
@@ -257,9 +214,6 @@ struct holy_prism_t : public paladin_spell_t
       heal -> target = target;
       heal -> schedule_execute();
     }
-
-    paladin_spell_t::consume_resource();
-    paladin_spell_t::update_ready();
   }
 };
 
@@ -352,24 +306,16 @@ struct holy_shock_t : public paladin_spell_t
 {
   holy_shock_damage_t* damage;
   holy_shock_heal_t* heal;
-  timespan_t cd_duration;
-  double cooldown_mult;
   bool dmg;
 
-  holy_shock_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "holy_shock", p, p -> find_specialization_spell( 20473 ) ),
-    cooldown_mult( 1.0 ), dmg( false )
+  holy_shock_t( paladin_t* p, const std::string& options_str ) :
+    paladin_spell_t( "holy_shock", p, p -> find_specialization_spell( 20473 ) ),
+    dmg( false )
   {
     add_option( opt_bool( "damage", dmg ) );
-    check_spec( PALADIN_HOLY );
     parse_options( options_str );
 
     cooldown = p -> cooldowns.holy_shock;
-    cd_duration = cooldown -> duration;
-
-    // Bonuses from Sanctified Wrath need to be stored for future use
-    if ( ( p -> specialization() == PALADIN_HOLY ) && p -> talents.sanctified_wrath -> ok()  )
-      cooldown_mult = p -> talents.sanctified_wrath -> effectN( 2 ).percent();
 
     // create the damage and healing spell effects, designate them as children for reporting
     damage = new holy_shock_damage_t( p );
@@ -383,47 +329,45 @@ struct holy_shock_t : public paladin_spell_t
     if ( dmg )
     {
       // damage enemy
-      damage -> target = target;
+      damage -> set_target( execute_state -> target );
       damage -> schedule_execute();
     }
     else
     {
       // heal friendly
-      heal -> target = target;
+      heal -> set_target( execute_state -> target );
       heal -> schedule_execute();
     }
 
-      cooldown -> duration = cd_duration;
-//      cooldown -> duration = timespan_t::from_seconds( 9.0 );
-
     paladin_spell_t::execute();
 
-      if ( p() -> buffs.divine_purpose -> check() )
-      {
-          p() -> buffs.divine_purpose -> expire();
-      }
+    if ( p() -> buffs.divine_purpose -> check() )
+    {
+       p() -> buffs.divine_purpose -> expire();
+    }
 
-      if ( p() -> talents.divine_purpose -> ok() )
+    if ( p() -> talents.divine_purpose -> ok() )
+    {
+      bool success = p() -> buffs.divine_purpose -> trigger( 1,
+                                                            p() -> buffs.divine_purpose -> default_value,
+                                                            p() -> spells.divine_purpose_holy -> proc_chance() );
+      if ( success ) 
       {
-          bool success = p() -> buffs.divine_purpose -> trigger( 1,
-                                                                p() -> buffs.divine_purpose -> default_value,
-                                                                p() -> spells.divine_purpose_holy -> proc_chance() );
-          if ( success ) {
-              p() -> procs.divine_purpose -> occur();
-              p() -> cooldowns.holy_shock -> reset (true);
-          }
+        p() -> procs.divine_purpose -> occur();
+        p() -> cooldowns.holy_shock -> reset (true);
       }
+    }
 
   }
 
-  double cooldown_multiplier() override
+  double recharge_multiplier() const override
   {
-    double cdm = paladin_spell_t::cooldown_multiplier();
+    double rm = paladin_spell_t::recharge_multiplier();
 
-    if ( p() -> buffs.avenging_wrath -> check() )
-      cdm += cooldown_mult;
+    if ( p() -> buffs.avenging_wrath -> check() && p() -> talents.sanctified_wrath -> ok() )
+      rm *= 1.0 + p() -> talents.sanctified_wrath -> effectN( 2 ).percent();
 
-    return cdm;
+    return rm;
   }
 };
 
@@ -431,22 +375,18 @@ struct holy_shock_t : public paladin_spell_t
 // Holy Avenger
 struct holy_avenger_t : public paladin_heal_t
 {
-    holy_avenger_t( paladin_t* p, const std::string& options_str )
-    : paladin_heal_t( "holy_avenger", p, p -> talents.holy_avenger )
-    {
-        parse_options( options_str );
+  holy_avenger_t( paladin_t* p, const std::string& options_str ) :
+    paladin_heal_t( "holy_avenger", p, p -> talents.holy_avenger )
+  {
+    parse_options( options_str );
+  }
 
-        if ( ! ( p -> talents.holy_avenger -> ok() ) )
-            background = true;
+  void execute() override
+  {
+    paladin_heal_t::execute();
 
-    }
-
-    void execute() override
-    {
-        paladin_heal_t::execute();
-
-        p() -> buffs.holy_avenger -> trigger();
-    }
+    p() -> buffs.holy_avenger -> trigger();
+  }
 };
 
 // Judgment - Holy =================================================================
@@ -466,7 +406,7 @@ struct judgment_holy_t : public judgment_t
     if ( p() -> talents.fist_of_justice -> ok() )
     {
       double reduction = p() -> talents.fist_of_justice -> effectN( 1 ).base_value();
-      p() -> cooldowns.hammer_of_justice -> ready -= timespan_t::from_seconds( reduction );
+      p() -> cooldowns.hammer_of_justice -> adjust( timespan_t::from_seconds( - reduction ) );
     }
   }
 
@@ -537,13 +477,11 @@ struct lights_hammer_t : public paladin_spell_t
 
     base_tick_time = p -> find_spell( 114918 ) -> effectN( 1 ).period();
     dot_duration      = p -> find_spell( 122773 ) -> duration() - travel_time_;
-    cooldown -> duration = p -> find_spell( 114158 ) -> cooldown();
     hasted_ticks   = false;
     tick_zero = true;
     ignore_false_positive = true;
 
     dynamic_tick_action = true;
-    //tick_action = new lights_hammer_tick_t( p, p -> find_spell( 114919 ) );
     lh_heal_tick = new lights_hammer_heal_tick_t( p );
     add_child( lh_heal_tick );
     lh_damage_tick = new lights_hammer_damage_tick_t( p );
@@ -559,11 +497,11 @@ struct lights_hammer_t : public paladin_spell_t
 
   virtual void tick( dot_t* d ) override
   {
+    paladin_spell_t::tick( d );
+
     // trigger healing and damage ticks
     lh_heal_tick -> schedule_execute();
     lh_damage_tick -> schedule_execute();
-
-    paladin_spell_t::tick( d );
   }
 };
 
@@ -578,7 +516,7 @@ struct light_of_dawn_t : public paladin_heal_t
 
     aoe = 6;
 
-      cooldown = p -> cooldowns.light_of_dawn;
+    cooldown = p -> cooldowns.light_of_dawn;
   }
 };
 
@@ -605,8 +543,11 @@ action_t* paladin_t::create_action_holy( const std::string& name, const std::str
 
 void paladin_t::create_buffs_holy()
 {
-  buffs.divine_protection      = new buffs::divine_protection_t( this );
-  buffs.holy_avenger           = new buffs::holy_avenger_buff_t( this );
+  buffs.divine_protection      = make_buff( this, "divine_protection", find_class_spell( "Divine Protection" ) )
+                               -> set_cooldown( 0_ms ); // Handled by the action
+  buffs.holy_avenger           = make_buff( this, "holy_avenger", talents.holy_avenger )
+                               -> set_default_value( talents.holy_avenger -> effectN( 1 ).percent() )
+                               -> add_invalidate( CACHE_HASTE );
   buffs.infusion_of_light      = make_buff( this, "infusion_of_light", find_spell( 54149 ) );
 }
 
@@ -632,7 +573,6 @@ void paladin_t::init_spells_holy()
   talents.beacon_of_virtue           = find_talent_spell( "Beacon of Virtue" );
 
   // Spells
-  spells.holy_light                    = find_specialization_spell( "Holy Light" );
   spells.divine_purpose_holy           = find_spell( 197646 );
 
   // Mastery
