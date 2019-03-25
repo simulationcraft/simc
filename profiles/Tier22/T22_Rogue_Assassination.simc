@@ -108,7 +108,7 @@ actions.stealthed+=/pool_resource,for_next=1
 actions.stealthed+=/garrote,target_if=min:remains,if=talent.subterfuge.enabled&(remains<12|pmultiplier<=1)&target.time_to_die-remains>2
 # Subterfuge + Shrouded Suffocation in ST: Apply early Rupture that will be refreshed for pandemic
 actions.stealthed+=/rupture,if=talent.subterfuge.enabled&azerite.shrouded_suffocation.enabled&!dot.rupture.ticking&variable.single_target
-# Subterfuge w/ Shrouded Suffocation: Reapply for bonus CP and/or extended snapshot duration, excepton with EB on 2T.
+# Subterfuge w/ Shrouded Suffocation: Reapply for bonus CP and/or extended snapshot duration.
 actions.stealthed+=/pool_resource,for_next=1
 actions.stealthed+=/garrote,target_if=min:remains,if=talent.subterfuge.enabled&azerite.shrouded_suffocation.enabled&target.time_to_die>remains&(remains<18|!ss_buffed)
 # Subterfuge + Exsg: Even override a snapshot Garrote right after Rupture before Exsanguination
