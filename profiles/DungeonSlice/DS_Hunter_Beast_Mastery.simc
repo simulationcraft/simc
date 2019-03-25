@@ -70,10 +70,11 @@ actions.st+=/bestial_wrath,if=cooldown.aspect_of_the_wild.remains>20|target.time
 actions.st+=/kill_command
 actions.st+=/chimaera_shot
 actions.st+=/dire_beast
-actions.st+=/barbed_shot,if=pet.cat.buff.frenzy.down&(charges_fractional>1.8|buff.bestial_wrath.up)|cooldown.aspect_of_the_wild.remains<pet.cat.buff.frenzy.duration-gcd&azerite.primal_instincts.enabled|target.time_to_die<9
+actions.st+=/barbed_shot,if=pet.cat.buff.frenzy.down&(charges_fractional>1.8|buff.bestial_wrath.up)|cooldown.aspect_of_the_wild.remains<pet.cat.buff.frenzy.duration-gcd&azerite.primal_instincts.enabled|azerite.dance_of_death.rank>1&buff.dance_of_death.down&crit_pct_current>40|target.time_to_die<9
 actions.st+=/barrage
 actions.st+=/cobra_shot,if=(focus-cost+focus.regen*(cooldown.kill_command.remains-1)>action.kill_command.cost|cooldown.kill_command.remains>1+gcd)&cooldown.kill_command.remains>1
 actions.st+=/spitting_cobra
+actions.st+=/barbed_shot,if=charges_fractional>1.4
 
 head=targettracking_headgear,id=165543,bonus_id=4824/1537/4775,azerite_powers=366/562/22/14/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
