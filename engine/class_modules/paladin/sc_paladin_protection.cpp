@@ -394,17 +394,6 @@ struct light_of_the_protector_base_t : public paladin_heal_t
                       missing_health_percent * data().effectN( 2 ).percent() * 100 );
     return m;
   }
-
-  timespan_t gcd() const override
-  {
-    timespan_t t = paladin_heal_t::gcd();
-    // Both LotP and HotP have their gcd affected by haste twice
-    if ( p() -> bugs )
-    {
-      t *= this -> composite_haste();
-    }
-    return t;
-  }
 };
 
 struct light_of_the_protector_t : public light_of_the_protector_base_t

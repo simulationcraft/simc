@@ -605,17 +605,6 @@ struct wake_of_ashes_t : public paladin_spell_t
     may_crit = true;
     aoe = -1;
   }
-
-  timespan_t gcd() const override
-  {
-    timespan_t t = paladin_spell_t::gcd();
-    // Wake of Ashes' gcd is affected by haste twice
-    if ( p() -> bugs )
-    {
-      t *= this -> composite_haste();
-    }
-    return t;
-  }
 };
 
 struct inquisition_t : public paladin_heal_t
