@@ -4,23 +4,23 @@ race=undead
 spec=blood
 role=tank
 position=front
-talents=2220022
+talents=2220023
 
-head=glaciercrest_helm,id=165823,bonus_id=4824/1537,azerite_powers=348/561/31/13
+head=az3r1t3_orthogonal_optic,id=160491,bonus_id=4824/1537,azerite_powers=140/498/459/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
-shoulder=ridgeplate_pauldrons,id=165562,bonus_id=4824/1537,azerite_powers=348/561/22/13
+shoulder=pauldrons_of_the_great_unifier,id=159423,bonus_id=4824/1537,azerite_powers=140/157/22/13
 back=loa_exultants_shroud,id=165512,bonus_id=4824/1537
-chest=breastplate_of_the_deathbound,id=165832,bonus_id=4824/1537,azerite_powers=348/560/30/13
+chest=breastplate_of_the_vengeful,id=159448,bonus_id=4824/1537,azerite_powers=140/193/31/13
 wrist=splinterbone_vambraces,id=165551,bonus_id=4824/1537
 hands=crusade_pummelers,id=165549,bonus_id=4824/1537
-waist=hullplate_girdle,id=165559,bonus_id=4824/1537
+waist=embersear_waistguard,id=165552,bonus_id=4824/1537
 legs=arcing_thunderlizard_legplates,id=165560,bonus_id=4824/1537
-feet=coinage_stampers,id=165561,bonus_id=4824/1537
-finger1=lord_admirals_signet,id=165566,bonus_id=4824/1537,enchant=pact_of_haste
-finger2=seal_of_the_zandalari_empire,id=165567,bonus_id=4824/1537,enchant=pact_of_haste
-trinket1=ramping_amplitude_gigavolt_engine,id=165580,bonus_id=4824/1537
+feet=auric_puddle_stampers,id=159412,bonus_id=4824/1537
+finger1=band_of_multisided_strikes,id=165565,bonus_id=4824/1537,enchant=pact_of_critical_strike
+finger2=seal_of_the_zandalari_empire,id=165567,bonus_id=4824/1537,enchant=pact_of_critical_strike
+trinket1=grongs_primal_rage,id=165574,bonus_id=4824/1537
 trinket2=everchill_anchor,id=165570,bonus_id=4824/1537
-main_hand=dawnbreaker,id=165586,bonus_id=4800/1537,enchant=rune_of_the_fallen_crusader
+main_hand=crash_of_tides,id=165602,bonus_id=4800/1537,enchant=rune_of_the_fallen_crusader
 
 save=DS_Death_Knight_Blood.simc
 
