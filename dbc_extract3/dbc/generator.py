@@ -1265,6 +1265,7 @@ class SpellDataGenerator(DataGenerator):
             ( 278497, 0 ),          # Seismic Wave (Azerite)
             ( 195707, 0 ),          # Rage gain from taking hits
             ( 161798, 0 ),          # Riposte passive (turns crit rating into parry)
+            ( 279142, 0 ),          # Iron Fortress damage (azerite)
         ),
 
         # Paladin:

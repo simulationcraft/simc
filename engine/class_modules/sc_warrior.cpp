@@ -2495,7 +2495,7 @@ struct iron_fortress_t : public warrior_attack_t
   bool crit_blocked;
 
   iron_fortress_t( warrior_t* p ) :
-    warrior_attack_t( "iron_fortress", p, p -> azerite.iron_fortress.spell() -> effectN( 1 ).trigger() ),
+    warrior_attack_t( "iron_fortress", p, p -> azerite.iron_fortress.spell() -> effectN( 1 ).trigger() ), // TODO: change to 279142 once it's pulled
     internal_cd( p -> azerite.iron_fortress.spell() -> effectN( 1 ).trigger() -> internal_cooldown() ),
     crit_blocked( false )
   {
