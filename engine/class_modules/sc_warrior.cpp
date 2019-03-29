@@ -5320,7 +5320,6 @@ void warrior_t::apl_prot()
   st -> add_talent( this, "Dragon Roar" );
   st -> add_action( this, "Thunder Clap" );
   st -> add_action( this, "Revenge" );
-  st -> add_action( this, "Revenge" );
   st -> add_action( "use_item,name=grongs_primal_rage,if=buff.avatar.down|cooldown.shield_slam.remains>=4" );
   st -> add_talent( this, "Ravager" );
   st -> add_action( this, "Devastate" );
