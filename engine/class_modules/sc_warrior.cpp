@@ -5299,8 +5299,7 @@ void warrior_t::apl_prot()
 
   default_list -> add_action( "auto_attack" );
   default_list -> add_action( this, "Intercept", "if=time=0" );
-  default_list -> add_action( "use_items,if=cooldown.avatar.remains>20" );
-  default_list -> add_action( "use_item,name=grongs_primal_rage,if=buff.avatar.down" );
+  default_list -> add_action( "use_items,if=cooldown.avatar.remains<=gcd|buff.avatar.up" );
   
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[ i ] );
@@ -5321,6 +5320,8 @@ void warrior_t::apl_prot()
   st -> add_talent( this, "Dragon Roar" );
   st -> add_action( this, "Thunder Clap" );
   st -> add_action( this, "Revenge" );
+  st -> add_action( this, "Revenge" );
+  st -> add_action( "use_item,name=grongs_primal_rage,if=buff.avatar.down|cooldown.shield_slam.remains>=4" );
   st -> add_talent( this, "Ravager" );
   st -> add_action( this, "Devastate" );
 
@@ -5328,6 +5329,7 @@ void warrior_t::apl_prot()
   aoe -> add_action( this, "Demoralizing Shout", "if=talent.booming_voice.enabled" );
   aoe -> add_talent( this, "Dragon Roar" );
   aoe -> add_action( this, "Revenge" );
+  aoe -> add_action( "use_item,name=grongs_primal_rage,if=buff.avatar.down|cooldown.thunder_clap.remains>=4" );
   aoe -> add_talent( this, "Ravager" );
   aoe -> add_action( this, "Shield Block", "if=cooldown.shield_slam.ready&buff.shield_block.down" );
   aoe -> add_action( this, "Shield Slam" );
