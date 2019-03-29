@@ -8653,6 +8653,15 @@ void shaman_t::combat_begin()
     buff.roiling_storm_buff_driver->trigger();
     buff.stormbringer->trigger( buff.stormbringer->max_stack() );
   }
+
+  if (talent.lightning_shield->ok())
+  {
+    for (size_t i = 0, end = rng().range(0, 10); i < end; i++) 
+    {
+      buff.lightning_shield->trigger();
+      buff.lightning_shield->trigger();
+    }
+  }
 }
 
 // shaman_t::reset ==========================================================
