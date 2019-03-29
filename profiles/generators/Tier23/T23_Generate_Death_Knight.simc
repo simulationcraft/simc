@@ -8,7 +8,7 @@ talents=2220022
 
 head=glaciercrest_helm,id=165823,bonus_id=4824/1537,azerite_powers=348/561/31/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
-shoulders=dynosprocket_spaulders,id=165825,bonus_id=824/1537,,azerite_powers=243/562/459/22/13
+shoulders=dynosprocket_spaulders,id=165825,bonus_id=4824/1537,,azerite_powers=243/562/459/22/13
 back=loa_exultants_shroud,id=165512,bonus_id=4824/1537
 chest=breastplate_of_divine_purification,id=165550,bonus_id=4824/1537,,azerite_powers=106/562/462/13
 wrists=splinterbone_vambraces,id=165551,bonus_id=4824/1537
