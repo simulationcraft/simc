@@ -1923,7 +1923,7 @@ private:
       // for future compatibility, we may want to grab Xuen and our tick spell and build this data from those (Xuen
       // summon duration, for example)
       dot_duration = p->o()->talent.invoke_xuen->duration();
-      hasted_ticks = true;
+      hasted_ticks = false;
       may_miss = false;
       dynamic_tick_action = true;  // trigger tick when t == 0
       base_tick_time =
@@ -2063,7 +2063,7 @@ private:
       // for future compatibility, we may want to grab Xuen and our tick spell and build this data from those (Xuen
       // summon duration, for example)
       dot_duration = p->o()->buff.fury_of_xuen_haste->buff_duration;
-      hasted_ticks = true;
+      hasted_ticks = false;
       may_miss = false;
       dynamic_tick_action = true;  // trigger tick when t == 0
       base_tick_time =
