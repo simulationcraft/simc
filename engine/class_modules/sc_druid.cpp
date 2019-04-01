@@ -8305,8 +8305,8 @@ void druid_t::apl_balance()
                                     "&spell_targets>=variable.sf_targets"
                                     "&(target.time_to_die+1)*spell_targets>cost%2.5");
   default_list->add_action(this, "Starsurge",
-                            "if=(talent.starlord.enabled&(buff.starlord.stack<3|buff.starlord.remains>=8&buff.arcanic_"
-                            "pulsar.stack<5)|!talent.starlord.enabled&(buff.arcanic_pulsar.stack<8|buff.ca_inc.up))&"
+                            "if=(talent.starlord.enabled&(buff.starlord.stack<3|buff.starlord.remains>=5&buff.arcanic_"
+                            "pulsar.stack<8)|!talent.starlord.enabled&(buff.arcanic_pulsar.stack<8|buff.ca_inc.up))&"
                             "spell_targets.starfall<variable.sf_targets&buff.lunar_empowerment.stack+buff.solar_"
                             "empowerment.stack<4&buff.solar_empowerment.stack<3&buff.lunar_empowerment.stack<3&(!"
                             "variable.az_ss|!buff.ca_inc.up|!prev.starsurge)|target.time_to_die<=execute_time*astral_"
