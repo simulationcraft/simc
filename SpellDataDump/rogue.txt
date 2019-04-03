@@ -1,4 +1,4 @@
-SimulationCraft 810-02 for World of Warcraft 8.1.5 Live (wow build 29683)
+SimulationCraft 815-02 for World of Warcraft 8.1.5 Live (wow build 29683)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
