@@ -139,6 +139,8 @@ namespace items
   void everchill_anchor( special_effect_t& );
   void ramping_amplitude_gigavolt_engine( special_effect_t& );
   void grongs_primal_rage( special_effect_t& );
+  // 8.1.5 - Crucible of Storms Trinkets and Special Items
+  void harbingers_inscrutable_will( special_effect_t& );
 }
 
 namespace util
@@ -2325,6 +2327,31 @@ void items::grongs_primal_rage( special_effect_t& effect )
   effect.execute_action = new primal_rage_channel( effect );
 }
 
+// Harbinger's Inscrutable Will ===========================================
+
+void items::harbingers_inscrutable_will( special_effect_t& effect )
+{
+  struct oblivion_spear_t : public proc_t
+  {
+    oblivion_spear_t( const special_effect_t& effect ) :
+      proc_t( effect, "oblivion_spear", 295393 )
+    { }
+
+    void impact( action_state_t* s ) override
+    {
+      proc_t::impact( s );
+
+      // TODO: This might work better as a stun.
+      if ( rng().roll( sim->bfa_opts.harbingers_inscrutable_will_silence_chance ) )
+        player->interrupt();
+    }
+  };
+
+  effect.execute_action = create_proc_action<oblivion_spear_t>( "oblivion_spear", effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Waycrest's Legacy Set Bonus ============================================
 
 void set_bonus::waycrest_legacy( special_effect_t& effect )
@@ -2439,6 +2466,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 289525, items::everchill_anchor );
   register_special_effect( 288173, items::ramping_amplitude_gigavolt_engine );
   register_special_effect( 289520, items::grongs_primal_rage );
+  register_special_effect( 295391, items::harbingers_inscrutable_will );
 
   // Misc
   register_special_effect( 276123, items::darkmoon_deck_squalls );
