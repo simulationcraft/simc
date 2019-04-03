@@ -1242,17 +1242,16 @@ std::string paladin_t::default_rune() const
 
 void paladin_t::init_action_list()
 {
-#ifdef NDEBUG // Only restrict on release builds.
-  // Holy isn't fully supported atm
-//  if ( specialization() == PALADIN_HOLY )
-//  {
-//    if ( ! quiet )
-//      sim -> errorf( "Paladin holy healing for player %s is not currently supported.", name() );
-//
-//    quiet = true;
-//    return;
-//  }
-#endif
+  // 2019-04-03: The Holy module is outdated and not supported (both for dps and healing)
+  if ( specialization() == PALADIN_HOLY )
+  {
+    if ( ! quiet )
+      sim -> errorf( "Paladin holy for player %s is not currently supported.", name() );
+
+    quiet = true;
+    return;
+  }
+
   // sanity check - Prot/Ret can't do anything w/o main hand weapon equipped
   if ( main_hand_weapon.type == WEAPON_NONE && ( specialization() == PALADIN_RETRIBUTION || specialization() == PALADIN_PROTECTION ) )
   {
