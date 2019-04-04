@@ -4420,59 +4420,61 @@ expr_t* hunter_t::create_expression( const std::string& expression_str )
 {
   std::vector<std::string> splits = util::string_split( expression_str, "." );
 
-  if ( splits.size() == 3 && splits[ 0 ] == "cooldown" && splits[ 1 ] == "trueshot" )
+  if ( splits.size() == 3 && splits[ 0 ] == "cooldown")
   {
     if ( splits[ 2 ] == "remains_guess" )
     {
-      struct trueshot_remains_guess_t : public expr_t
+      struct cooldown_remains_guess_t : public expr_t
       {
         hunter_t* hunter;
+        cooldown_t* cooldown;
 
-        trueshot_remains_guess_t( hunter_t* h, const std::string& str ) :
-          expr_t( str ), hunter( h )
+        cooldown_remains_guess_t( hunter_t* h, const std::string& str, cooldown_t* cd ) :
+          expr_t( str ), hunter( h ), cooldown( cd )
         { }
 
         double evaluate() override
         {
-          cooldown_t* trueshot_cd = hunter -> cooldowns.trueshot;
 
-          if ( trueshot_cd -> remains() == trueshot_cd -> duration )
-            return trueshot_cd -> duration.total_seconds();
+          if ( cooldown -> remains() == cooldown -> duration )
+            return cooldown -> duration.total_seconds();
 
-          if ( trueshot_cd -> up() )
+          if ( cooldown -> up() )
             return 0.0;
 
-          double reduction = (hunter -> sim -> current_time() - trueshot_cd -> last_start) / (trueshot_cd -> duration - trueshot_cd -> remains());
-          return trueshot_cd -> remains().total_seconds() * reduction;
+          double reduction = ( hunter -> sim -> current_time() - cooldown -> last_start ) / ( cooldown -> duration - cooldown -> remains() );
+          return cooldown -> remains().total_seconds() * reduction;
         }
       };
-      return new trueshot_remains_guess_t( this, expression_str );
+      if ( cooldown_t* cooldown = get_cooldown( splits[ 1 ] ) )
+        return new cooldown_remains_guess_t( this, expression_str, cooldown );
     }
     else if ( splits[ 2 ] == "duration_guess" )
     {
-      struct trueshot_duration_guess_t : public expr_t
+      struct cooldown_duration_guess_t : public expr_t
       {
         hunter_t* hunter;
+        cooldown_t* cooldown;
 
-        trueshot_duration_guess_t( hunter_t* h, const std::string& str ) :
-          expr_t( str ), hunter( h )
+        cooldown_duration_guess_t( hunter_t* h, const std::string& str, cooldown_t* cd ) :
+          expr_t( str ), hunter( h ), cooldown( cd )
         { }
 
         double evaluate() override
         {
-          cooldown_t* trueshot_cd = hunter -> cooldowns.trueshot;
+          if ( cooldown -> last_charged == 0_ms || cooldown -> remains() == cooldown -> duration )
+            return cooldown -> duration.total_seconds();
 
-          if ( trueshot_cd -> last_charged == 0_ms || trueshot_cd -> remains() == trueshot_cd -> duration )
-            return trueshot_cd -> duration.total_seconds();
+          if ( cooldown -> up() )
+            return ( cooldown -> last_charged - cooldown -> last_start ).total_seconds();
 
-          if ( trueshot_cd -> up() )
-            return ( trueshot_cd -> last_charged - trueshot_cd -> last_start ).total_seconds();
-
-          double reduction = ( hunter -> sim -> current_time() - trueshot_cd -> last_start ) / ( trueshot_cd -> duration - trueshot_cd -> remains() );
-          return trueshot_cd -> duration.total_seconds() * reduction;
+          double reduction = ( hunter -> sim -> current_time() - cooldown -> last_start ) / ( cooldown -> duration - cooldown -> remains() );
+          return cooldown -> duration.total_seconds() * reduction;
         }
       };
-      return new trueshot_duration_guess_t( this, expression_str );
+
+      if ( cooldown_t* cooldown = get_cooldown( splits[ 1 ] ) )
+        return new cooldown_duration_guess_t( this, expression_str, cooldown );
     }
   }
   else if ( splits.size() == 2 && splits[ 0 ] == "next_wi_bomb" )
@@ -5207,18 +5209,18 @@ void hunter_t::apl_bm()
   st -> add_talent( this, "Spitting Cobra" );
   st -> add_action( this, "Barbed Shot", "if=charges_fractional>1.4" );
 
-  cleave -> add_action( this, "Barbed Shot", "if=pet.cat.buff.frenzy.up&pet.cat.buff.frenzy.remains<=gcd.max" );
+  cleave -> add_action( this, "Barbed Shot", "target_if=min:dot.barbed_shot.remains,if=pet.cat.buff.frenzy.up&pet.cat.buff.frenzy.remains<=gcd.max" );
   cleave -> add_action( this, "Multi-Shot", "if=gcd.max-pet.cat.buff.beast_cleave.remains>0.25" );
-  cleave -> add_action( this, "Barbed Shot", "if=full_recharge_time<gcd.max&cooldown.bestial_wrath.remains" );
+  cleave -> add_action( this, "Barbed Shot", "target_if=min:dot.barbed_shot.remains,if=full_recharge_time<gcd.max&cooldown.bestial_wrath.remains" );
   cleave -> add_action( this, "Aspect of the Wild" );
   cleave -> add_talent( this, "Stampede", "if=buff.aspect_of_the_wild.up&buff.bestial_wrath.up|target.time_to_die<15" );
-  cleave -> add_action( this, "Bestial Wrath", "if=cooldown.aspect_of_the_wild.remains>20|target.time_to_die<15" );
+  cleave -> add_action( this, "Bestial Wrath", "if=cooldown.aspect_of_the_wild.remains_guess>20|talent.one_with_the_pack.enabled|target.time_to_die<15" );
   cleave -> add_talent( this, "Chimaera Shot" );
   cleave -> add_talent( this, "A Murder of Crows" );
   cleave -> add_talent( this, "Barrage" );
   cleave -> add_action( this, "Kill Command", "if=active_enemies<4|!azerite.rapid_reload.enabled" );
   cleave -> add_talent( this, "Dire Beast" );
-  cleave -> add_action( this, "Barbed Shot", "if=pet.cat.buff.frenzy.down&(charges_fractional>1.8|buff.bestial_wrath.up)|cooldown.aspect_of_the_wild.remains<pet.cat.buff.frenzy.duration-gcd&azerite.primal_instincts.enabled|target.time_to_die<9" );
+  cleave -> add_action( this, "Barbed Shot", "target_if=min:dot.barbed_shot.remains,if=pet.cat.buff.frenzy.down&(charges_fractional>1.8|buff.bestial_wrath.up)|cooldown.aspect_of_the_wild.remains<pet.cat.buff.frenzy.duration-gcd&azerite.primal_instincts.enabled|charges_fractional>1.4|target.time_to_die<9" );
   cleave -> add_action( this, "Multi-Shot", "if=azerite.rapid_reload.enabled&active_enemies>2");
   cleave -> add_action( this, "Cobra Shot", "if=cooldown.kill_command.remains>focus.time_to_max&(active_enemies<3|!azerite.rapid_reload.enabled)" );
   cleave -> add_talent( this, "Spitting Cobra" );
