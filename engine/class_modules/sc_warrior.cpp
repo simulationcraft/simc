@@ -2491,15 +2491,15 @@ struct intervene_t : public warrior_attack_t
 
 struct iron_fortress_t : public warrior_attack_t
 {
-  timespan_t internal_cd;
   bool crit_blocked;
 
   iron_fortress_t( warrior_t* p ) :
-    warrior_attack_t( "iron_fortress", p, p -> azerite.iron_fortress.spell() -> effectN( 1 ).trigger() ), // TODO: change to 279142 once it's pulled
-    internal_cd( p -> azerite.iron_fortress.spell() -> effectN( 1 ).trigger() -> internal_cooldown() ),
+    warrior_attack_t( "iron_fortress", p, p -> find_spell( 279142 ) ),
     crit_blocked( false )
   {
     base_dd_min = base_dd_max = p -> azerite.iron_fortress.value( 1 );
+
+    background = true;
   }
 
   double action_multiplier() const override
@@ -2515,12 +2515,11 @@ struct iron_fortress_t : public warrior_attack_t
     return am;
   }
 
-  void do_execute( block_result_e b )
+  void execute() override
   {
-    crit_blocked = b == BLOCK_RESULT_CRIT_BLOCKED;
-
     warrior_attack_t::execute();
-    p() -> cooldown.iron_fortress_icd -> start( internal_cd );
+
+    p() -> cooldown.iron_fortress_icd -> start();
   }
 };
 
@@ -4870,6 +4869,7 @@ void warrior_t::init_spells()
   cooldown.execute                          = get_cooldown( "execute" );
   cooldown.heroic_leap                      = get_cooldown( "heroic_leap" );
   cooldown.iron_fortress_icd                = get_cooldown( "iron_fortress" );
+  cooldown.iron_fortress_icd -> duration    = azerite.iron_fortress.spell() -> effectN( 1 ).trigger() -> internal_cooldown();
   cooldown.last_stand                       = get_cooldown( "last_stand" );
   cooldown.mortal_strike                    = get_cooldown( "mortal_strike" );
   cooldown.overpower                        = get_cooldown( "overpower" );
@@ -6265,12 +6265,12 @@ double warrior_t::composite_block() const
   b += spec.prot_warrior -> effectN( 13 ).percent();
 
   // shield block adds 100% block chance
-  if ( buff.shield_block -> check() )
+  if ( buff.shield_block -> up() )
   {
     b += spell.shield_block_buff -> effectN( 1 ).percent();
   }
 
-  if ( buff.last_stand && talents.bolster -> ok() )
+  if ( buff.last_stand -> up() && talents.bolster -> ok() )
   {
     b+= talents.bolster -> effectN( 2 ).percent();
   }
@@ -6578,19 +6578,15 @@ void warrior_t::assess_damage( school_e school, dmg_e type, action_state_t* s )
     cooldown.rage_from_auto_attack->start( cooldown.rage_from_auto_attack->duration );
   }
 
-  if ( s -> block_result == BLOCK_RESULT_BLOCKED || s -> block_result == BLOCK_RESULT_CRIT_BLOCKED )
+  if ( azerite.iron_fortress.enabled() && cooldown.iron_fortress_icd -> up() &&
+     ( s -> block_result == BLOCK_RESULT_BLOCKED || s -> block_result == BLOCK_RESULT_CRIT_BLOCKED ) &&
+       s -> action -> player -> is_enemy() ) // sanity check - no friendly-fire
   {
-    if ( azerite.iron_fortress.enabled() && cooldown.iron_fortress_icd -> up() )
-    {
-      // sanity check - no friendly-fire
-      if ( s -> action -> player -> is_enemy() )
-      {
-        iron_fortress_t* iron_fortress_active = debug_cast<iron_fortress_t*>( active.iron_fortress );
+    iron_fortress_t* iron_fortress_active = debug_cast<iron_fortress_t*>( active.iron_fortress );
 
-        iron_fortress_active -> target = s -> action -> player;
-        iron_fortress_active -> do_execute( s -> block_result );
-      }
-    }
+    iron_fortress_active -> crit_blocked = s -> block_result == BLOCK_RESULT_CRIT_BLOCKED;
+    iron_fortress_active -> target = s -> action -> player;
+    iron_fortress_active -> execute();
   }
 }
 
