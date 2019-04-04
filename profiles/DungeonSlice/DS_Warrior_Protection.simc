@@ -30,8 +30,7 @@ actions.precombat+=/potion
 # Executed every time the actor is available.
 actions=auto_attack
 actions+=/intercept,if=time=0
-actions+=/use_items,if=cooldown.avatar.remains>20
-actions+=/use_item,name=grongs_primal_rage,if=buff.avatar.down
+actions+=/use_items,if=cooldown.avatar.remains<=gcd|buff.avatar.up
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
@@ -49,6 +48,7 @@ actions.aoe=thunder_clap
 actions.aoe+=/demoralizing_shout,if=talent.booming_voice.enabled
 actions.aoe+=/dragon_roar
 actions.aoe+=/revenge
+actions.aoe+=/use_item,name=grongs_primal_rage,if=buff.avatar.down|cooldown.thunder_clap.remains>=4
 actions.aoe+=/ravager
 actions.aoe+=/shield_block,if=cooldown.shield_slam.ready&buff.shield_block.down
 actions.aoe+=/shield_slam
@@ -63,6 +63,7 @@ actions.st+=/shield_slam
 actions.st+=/dragon_roar
 actions.st+=/thunder_clap
 actions.st+=/revenge
+actions.st+=/use_item,name=grongs_primal_rage,if=buff.avatar.down|cooldown.shield_slam.remains>=4
 actions.st+=/ravager
 actions.st+=/devastate
 
