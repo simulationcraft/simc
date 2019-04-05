@@ -1244,6 +1244,8 @@ class SpellDataGenerator(DataGenerator):
          292359, 292360, 292361, 292362, 292363, 292364,
          #Zandalari Racials - Spell Procs
          292380, 292463, 292473, 292474, 292486,
+         #Leggings of the Aberrant Tidesage damage proc
+         295811,
         ),
 
         # Warrior:
