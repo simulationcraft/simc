@@ -941,17 +941,17 @@ Time Warp</source>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="401"/>
         <source>Arcane Intellect</source>
-        <translation type="unfinished"></translation>
+        <translation>奥术智慧</translation>
     </message>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="402"/>
         <source>Power Word: Fortitude</source>
-        <translation type="unfinished"></translation>
+        <translation>真言术：韧</translation>
     </message>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="403"/>
         <source>Battle Shout</source>
-        <translation type="unfinished"></translation>
+        <translation>战斗怒吼</translation>
     </message>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="406"/>
@@ -993,24 +993,24 @@ Rupture</source>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="417"/>
         <source>Chaos Brand</source>
-        <translation type="unfinished"></translation>
+        <translation>混乱烙印</translation>
     </message>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="417"/>
         <source>Chaos Brand
 Magic damage debuff</source>
-        <translation type="unfinished"></translation>
+        <translation>混乱烙印（魔法伤害）</translation>
     </message>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="418"/>
         <source>Mystic Touch</source>
-        <translation type="unfinished"></translation>
+        <translation>玄秘掌</translation>
     </message>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="418"/>
         <source>Mystic Touch
 Physical damage debuff</source>
-        <translation type="unfinished"></translation>
+        <translation>玄秘掌（物理伤害）</translation>
     </message>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="421"/>
@@ -1188,12 +1188,13 @@ In other words, Agility and Intellect would be skipped for a Warrior even if the
         <location filename="../qt/sc_OptionsTab.cpp" line="882"/>
         <source>In PVP, critical strikes deal 150% damage instead of 200%.
 Enabling this option will set target level to max player level.</source>
-        <translation type="unfinished"></translation>
+        <translation>PvP战斗中，爆击伤害从200%降低到150%。
+        启用这个选项会将敌人等级设为最高玩家等级。</translation>
     </message>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="1440"/>
         <source>Default Save Location</source>
-        <translation type="unfinished"></translation>
+        <translation>默认保存为</translation>
     </message>
     <message>
         <source>Multistrike Rating</source>
