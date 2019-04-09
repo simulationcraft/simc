@@ -1657,6 +1657,7 @@ static stat_data_t __gt_race_stats[] =
   {   1, -2,  2, -1,  0 }, // Highmountain Tauren
   {  -3,  1,  0,  2,  0 }, // Void Elf
   {  -2,  1, -1,  2,  0 }, // Lightforged Draenei
+  {   1,  2,  0, -3,  0 }, // Zandalari Troll
 };
 
 // Avoidance diminishing returns information
