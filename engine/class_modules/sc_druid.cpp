@@ -6390,7 +6390,7 @@ struct solar_wrath_t : public druid_spell_t
   {
     druid_spell_t::snapshot_state (state, type);
 
-    if (p()->buff.solar_empowerment->check())
+    if ( p()->buff.solar_empowerment->check() && player->specialization() == DRUID_BALANCE )
     {
       debug_cast<solar_wrath_state_t*>(state)->empowered = true;
     }
@@ -7948,8 +7948,13 @@ void druid_t::apl_precombat()
   }
   else if ( specialization() == DRUID_RESTORATION && role == ROLE_ATTACK )
   {
-    precombat -> add_action( this, "Cat Form" );
-    precombat -> add_action( this, "Prowl" );
+    if ( talent.feral_affinity->ok() )
+    {
+      precombat->add_action( this, "Cat Form" );
+      precombat->add_action( this, "Prowl" );
+    }
+    if ( talent.balance_affinity->ok() )
+      precombat->add_action( this, "Moonkin Form" );
   }
   else if ( primary_role() == ROLE_TANK )
   {
@@ -7959,10 +7964,6 @@ void druid_t::apl_precombat()
   {
     precombat -> add_action( this, "Moonkin Form" );
   }
-  //else if (specialization() == DRUID_RESTORATION && (primary_role() == ROLE_DPS || primary_role() == ROLE_SPELL))
-  //{
-  //  precombat->add_action(this, "moonkin_form_affinity");
-  //}
 
   // Snapshot stats
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
@@ -8420,34 +8421,43 @@ void druid_t::apl_guardian()
 
 void druid_t::apl_restoration()
 {
-  action_priority_list_t* default_list    = get_action_priority_list( "default" );
+  action_priority_list_t* default_list = get_action_priority_list( "default" );
+  action_priority_list_t* feral        = get_action_priority_list( "feral" );
+  action_priority_list_t* balance      = get_action_priority_list( "balance" );
   //action_priority_list_t* heal = get_action_priority_list("heal");
   //action_priority_list_t* dps = get_action_priority_list("dps"); //Base DPS APL - Guardian affinity
-  // action_priority_list_t* BAFF = get_action_priority_list("baff"); //Balance affinity
-  // action_priority_list_t* FAFF = get_action_priority_list("faff"); //Feral affinity
-
-  std::vector<std::string> item_actions       = get_item_actions();
   std::vector<std::string> racial_actions     = get_racial_actions();
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] );
-  for ( size_t i = 0; i < item_actions.size(); i++ )
-    default_list -> add_action( item_actions[i] );
+  default_list->add_action("use_items");
+  default_list->add_action( "run_action_list,name=feral,if=talent.feral_affinity.enabled" );
+  default_list->add_action( "run_action_list,name=balance,if=talent.balance_affinity.enabled" );
+  default_list->add_action( "moonfire,if=refreshable" );
+  default_list->add_action( "sunfire,if=refreshable" );
+  default_list->add_action( "solar_wrath" );
 
-  default_list->add_action("rake,if=buff.shadowmeld.up|buff.prowl.up");
-  default_list->add_action("auto_attack");
-  default_list->add_action("moonfire,if=refreshable|(prev_gcd.1.sunfire&remains<duration*0.5)");
-  default_list->add_action("sunfire,if=refreshable|(prev_gcd.1.moonfire&remains<duration*0.5)");
-  default_list->add_action("cat_form,if=!buff.cat_form.up&energy>50");
-  default_list->add_action("ferocious_bite,if=(combo_points>3&target.time_to_die<3)|(combo_points=5&energy>=50&dot.rip.remains>14)");
-  default_list->add_action("swipe_cat,if=spell_targets.swipe_cat>=6");
-  default_list->add_action("rip,if=refreshable&combo_points=5");
-  default_list->add_action("ferocious_bite,max_energy=1,if=combo_points=5&energy.time_to_max<2");
-  default_list->add_action("rake,if=refreshable");
-  default_list->add_action("swipe_cat,if=spell_targets.swipe_cat>=2");
-  default_list->add_action("shred");
-  default_list->add_action("solar_wrath");
+  
+  feral->add_action( "rake,if=buff.shadowmeld.up|buff.prowl.up" );
+  feral->add_action( "auto_attack" );
+  feral->add_action( "moonfire,if=refreshable|(prev_gcd.1.sunfire&remains<duration*0.8)" );
+  feral->add_action( "sunfire,if=refreshable|(prev_gcd.1.moonfire&remains<duration*0.8)" );
+  feral->add_action( "solar_wrath,if=energy<=50&!buff.cat_form.up" );
+  feral->add_action( "cat_form,if=!buff.cat_form.up&energy>50" );
+  feral->add_action(
+      "ferocious_bite,if=(combo_points>3&target.time_to_die<3)|(combo_points=5&energy>=50&dot.rip.remains>14)" );
+  feral->add_action( "swipe_cat,if=spell_targets.swipe_cat>=6" );
+  feral->add_action( "rip,if=refreshable&combo_points=5" );
+  feral->add_action( "ferocious_bite,max_energy=1,if=combo_points=5&energy.time_to_max<2" );
+  feral->add_action( "rake,if=refreshable" );
+  feral->add_action( "swipe_cat,if=spell_targets.swipe_cat>=2" );
+  feral->add_action( "shred" );
 
+  balance->add_action( "moonfire,if=refreshable" );
+  balance->add_action( "sunfire,if=refreshable" );
+  balance->add_action( "starsurge" );
+  balance->add_action( "lunar_strike,if=buff.lunar_empowerment.up|spell_targets>1" );
+  balance->add_action( "solar_wrath" );
   //default_list -> add_action("swap_action_list,name=dps,if=role.attack");
   //default_list->add_action("call_action_list,name=dps");
   //default_list -> add_action("call_action_list,name=heal,if=role.heal");
