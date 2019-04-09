@@ -5,7 +5,7 @@ level=120
 race=human
 role=spell
 position=ranged_back
-talents=1111112
+talents=3111111
 
 # Default consumables
 potion=rising_death
