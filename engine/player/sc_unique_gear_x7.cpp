@@ -2347,7 +2347,12 @@ void items::harbingers_inscrutable_will( special_effect_t& effect )
       proc_t::impact( s );
 
       make_event( player->sim, time_to_travel, [ this ] {
-        if ( rng().roll( sim->bfa_opts.harbingers_inscrutable_will_silence_chance ) )
+        double roll = rng().real();
+        double silence = sim->bfa_opts.harbingers_inscrutable_will_silence_chance;
+        double move = sim->bfa_opts.harbingers_inscrutable_will_move_chance;
+
+        // The actor didn't avoid the projectile and got silenced.
+        if ( roll < silence )
         {
           // Copied from the stun raid event.
           player->buffs.stunned->increment();
@@ -2365,6 +2370,11 @@ void items::harbingers_inscrutable_will( special_effect_t& effect )
               player->schedule_ready();
             }
           } );
+        }
+        // The actor avoided the projectile by moving.
+        else if ( roll < silence + move )
+        {
+          player->moving();
         }
       } );
     }

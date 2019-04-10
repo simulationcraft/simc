@@ -1144,8 +1144,10 @@ struct sim_t : private sc_thread_t
     timespan_t          fight_or_flight_period = 1.0_s;
     /// Chance to gain the buff on each Fight or Flight attempt
     double              fight_or_flight_chance = 0.0;
-    /// Chance to be silenced by Harbinger's Inscrutable Will
+    /// Chance of being silenced by Harbinger's Inscrutable Will projectile
     double              harbingers_inscrutable_will_silence_chance = 0.0;
+    /// Chance avoiding Harbinger's Inscrutable Will projectile by moving
+    double              harbingers_inscrutable_will_move_chance = 0.0;
   } bfa_opts;
 
   // Expansion specific data
