@@ -2333,21 +2333,48 @@ void items::harbingers_inscrutable_will( special_effect_t& effect )
 {
   struct oblivion_spear_t : public proc_t
   {
+    timespan_t silence_duration;
+
     oblivion_spear_t( const special_effect_t& effect ) :
-      proc_t( effect, "oblivion_spear", 295393 )
-    { }
+      proc_t( effect, "oblivion_spear", 295393 ),
+      silence_duration( effect.player->find_spell( 295395 )->duration() )
+    {
+      travel_speed = effect.player->find_spell( 295392 )->missile_speed();
+    }
 
     void impact( action_state_t* s ) override
     {
       proc_t::impact( s );
 
-      // TODO: This might work better as a stun.
-      if ( rng().roll( sim->bfa_opts.harbingers_inscrutable_will_silence_chance ) )
-        player->interrupt();
+      make_event( player->sim, time_to_travel, [ this ] {
+        if ( rng().roll( sim->bfa_opts.harbingers_inscrutable_will_silence_chance ) )
+        {
+          // Copied from the stun raid event.
+          player->buffs.stunned->increment();
+          player->in_combat = true;
+          player->stun();
+
+          make_event( player->sim, silence_duration, [ this ]
+          {
+            player->buffs.stunned->decrement();
+            if ( !player->buffs.stunned->check()
+              && !player->channeling
+              && !player->executing
+              && !player->readying )
+            {
+              player->schedule_ready();
+            }
+          } );
+        }
+      } );
     }
   };
 
   effect.execute_action = create_proc_action<oblivion_spear_t>( "oblivion_spear", effect );
+  // Stuns can now come from another source. Add an extra max stack to prevent trinket procs
+  // from cancelling stun raid events and vice versa.
+  // TODO: Is there a better way to solve this?
+  effect.player->buffs.stunned->set_max_stack( 1 + effect.player->buffs.stunned->max_stack() );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
