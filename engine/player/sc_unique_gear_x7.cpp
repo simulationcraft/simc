@@ -143,6 +143,7 @@ namespace items
   void harbingers_inscrutable_will( special_effect_t& );
   void leggings_of_the_aberrant_tidesage( special_effect_t& );
   void fathuuls_floodguards( special_effect_t& );
+  void grips_of_forsaken_sanity( special_effect_t& );
 }
 
 namespace util
@@ -2476,6 +2477,33 @@ void items::fathuuls_floodguards( special_effect_t& effect )
   new drowning_tide_proc_callback_t( effect );
 }
 
+// Grips of Forsaken Sanity ==============================================
+
+// Not tested against PTR - results _look_ maybe reasonable
+// Somebody more experienced should take it for a spin
+
+void items::grips_of_forsaken_sanity( special_effect_t& effect )
+{
+  struct spiteful_binding_proc_callback_t : public dbc_proc_callback_t
+  {
+    action_t* damage;
+
+    spiteful_binding_proc_callback_t( const special_effect_t& effect ) :
+      dbc_proc_callback_t( effect.item, effect )
+    { }
+
+    void execute( action_t* action, action_state_t* state ) override
+    {
+      if ( rng().roll( action->player->sim->bfa_opts.grips_of_forsaken_sanity_damage_chance ) )
+      {
+        dbc_proc_callback_t::execute(action, state);
+      }
+    }
+  };
+
+  new spiteful_binding_proc_callback_t( effect );
+}
+
 // Waycrest's Legacy Set Bonus ============================================
 
 void set_bonus::waycrest_legacy( special_effect_t& effect )
@@ -2593,6 +2621,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 295391, items::harbingers_inscrutable_will );
   register_special_effect( 295812, items::leggings_of_the_aberrant_tidesage );
   register_special_effect( 295254, items::fathuuls_floodguards );
+  register_special_effect( 295175, items::grips_of_forsaken_sanity );
 
   // Misc
   register_special_effect( 276123, items::darkmoon_deck_squalls );

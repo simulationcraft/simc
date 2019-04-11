@@ -1152,6 +1152,8 @@ struct sim_t : private sc_thread_t
     double              aberrant_tidesage_damage_chance = 1.0;
     /// Chance player is above 90% HP for Fa'thuul's Floodguards damage proc
     double              fathuuls_floodguards_damage_chance = 1.0;
+    /// Chance player is above 90% HP for Grips of Forgotten Sanity damage proc
+    double              grips_of_forsaken_sanity_damage_chance = 1.0;
   } bfa_opts;
 
   // Expansion specific data
