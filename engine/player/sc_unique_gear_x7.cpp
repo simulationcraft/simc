@@ -2404,19 +2404,31 @@ void items::leggings_of_the_aberrant_tidesage( special_effect_t& effect )
       base_dd_min = effect.driver()->effectN( 1 ).min( effect.item );
       base_dd_max = effect.driver()->effectN( 1 ).max( effect.item );
     }
-    void execute() override
+  };
+
+  struct storm_nimbus_proc_callback_t : public dbc_proc_callback_t
+  {
+    action_t* damage;
+
+    storm_nimbus_proc_callback_t( const special_effect_t& effect ) :
+      dbc_proc_callback_t( effect.item, effect ),
+      damage( create_proc_action<nimbus_bolt_t>( "storm_nimbus", effect ) )
+    { }
+
+    void execute( action_t*, action_state_t* state ) override
     {
-      // health check
-      if ( rng().roll( player->sim->bfa_opts.aberrant_tidesage_chance ) )
+      if ( rng().roll( damage->player->sim->bfa_opts.aberrant_tidesage_chance ) )
       {
-        proc_t::execute();
+        // damage proc
+        damage->set_target( state->target );
+        damage->execute();
+      } else {
+        // heal
       }
     }
   };
 
-  effect.execute_action = create_proc_action<nimbus_bolt_t>( "storm_nimbus", effect );
-
-  new dbc_proc_callback_t( effect.player, effect );
+  new storm_nimbus_proc_callback_t( effect );
 }
 
 // Waycrest's Legacy Set Bonus ============================================
