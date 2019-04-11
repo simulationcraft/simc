@@ -2407,7 +2407,7 @@ void items::leggings_of_the_aberrant_tidesage( special_effect_t& effect )
     void execute() override
     {
       // health check
-      if ( rng().roll( effect->player->sim->bfa_opts.aberrant_tidesage_chance ) )
+      if ( rng().roll( player->sim->bfa_opts.aberrant_tidesage_chance ) )
       {
         proc_t::execute();
       }
