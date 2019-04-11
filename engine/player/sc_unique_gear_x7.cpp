@@ -2417,7 +2417,7 @@ void items::leggings_of_the_aberrant_tidesage( special_effect_t& effect )
 
     void execute( action_t*, action_state_t* state ) override
     {
-      if ( rng().roll( damage->player->sim->bfa_opts.aberrant_tidesage_chance ) )
+      if ( rng().roll( damage->player->sim->bfa_opts.aberrant_tidesage_damage_chance ) )
       {
         // damage proc
         damage->set_target( state->target );
