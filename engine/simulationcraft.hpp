@@ -1150,6 +1150,8 @@ struct sim_t : private sc_thread_t
     double              harbingers_inscrutable_will_move_chance = 0.0;
     /// Chance player is above 60% HP for Leggings of the Aberrant Tidesage damage proc
     double              aberrant_tidesage_damage_chance = 1.0;
+    /// Chance player is above 90% HP for Fa'thuul's Floodguards damage proc
+    double              fathuuls_floodguards_damage_chance = 1.0;
   } bfa_opts;
 
   // Expansion specific data

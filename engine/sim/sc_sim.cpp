@@ -3601,6 +3601,8 @@ void sim_t::create_options()
         bfa_opts.harbingers_inscrutable_will_move_chance, 0.0, 1.0 ) );
   add_option( opt_float( "bfa.aberrant_tidesage_damage_chance",
         bfa_opts.aberrant_tidesage_damage_chance, 0.0, 1.0 ) );
+  add_option( opt_float( "bfa.fathuuls_floodguards_damage_chance",
+        bfa_opts.fathuuls_floodguards_damage_chance, 0.0, 1.0 ) );
 
   // applies to: "lavish_suramar_feast", battle for azeroth feasts
   add_option( opt_bool( "feast_as_dps", feast_as_dps ) );

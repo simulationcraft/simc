@@ -142,6 +142,7 @@ namespace items
   // 8.1.5 - Crucible of Storms Trinkets and Special Items
   void harbingers_inscrutable_will( special_effect_t& );
   void leggings_of_the_aberrant_tidesage( special_effect_t& );
+  void fathuuls_floodguards( special_effect_t& );
 }
 
 namespace util
@@ -2423,12 +2424,56 @@ void items::leggings_of_the_aberrant_tidesage( special_effect_t& effect )
         damage->set_target( state->target );
         damage->execute();
       } else {
-        // heal
+        // heal - not implemented
       }
     }
   };
 
   new storm_nimbus_proc_callback_t( effect );
+}
+
+// Fa'thuul's Floodguards ==============================================
+
+// Not tested against PTR - results _look_ maybe reasonable
+// Somebody more experienced should take it for a spin
+
+void items::fathuuls_floodguards( special_effect_t& effect )
+{
+  // damage spell is same as driver unlike aberrant leggings above
+  struct drowning_tide_damage_t : public proc_t
+  {
+    drowning_tide_damage_t( const special_effect_t& effect ):
+      proc_t( effect, "drowning_tide", effect.driver() )
+    {
+      // damage data comes from the driver
+      base_dd_min = effect.driver()->effectN( 1 ).min( effect.item );
+      base_dd_max = effect.driver()->effectN( 1 ).max( effect.item );
+    }
+  };
+
+  struct drowning_tide_proc_callback_t : public dbc_proc_callback_t
+  {
+    action_t* damage;
+
+    drowning_tide_proc_callback_t( const special_effect_t& effect ) :
+      dbc_proc_callback_t( effect.item, effect ),
+      damage( create_proc_action<drowning_tide_damage_t>( "drowning_tide", effect ) )
+    { }
+
+    void execute( action_t*, action_state_t* state ) override
+    {
+      if ( rng().roll( damage->player->sim->bfa_opts.fathuuls_floodguards_damage_chance ) )
+      {
+        // damage proc
+        damage->set_target( state->target );
+        damage->execute();
+      } else {
+        // heal - not implemented
+      }
+    }
+  };
+
+  new drowning_tide_proc_callback_t( effect );
 }
 
 // Waycrest's Legacy Set Bonus ============================================
@@ -2547,6 +2592,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 289520, items::grongs_primal_rage );
   register_special_effect( 295391, items::harbingers_inscrutable_will );
   register_special_effect( 295812, items::leggings_of_the_aberrant_tidesage );
+  register_special_effect( 295254, items::fathuuls_floodguards );
 
   // Misc
   register_special_effect( 276123, items::darkmoon_deck_squalls );
