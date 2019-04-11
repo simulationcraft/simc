@@ -141,6 +141,7 @@ namespace items
   void grongs_primal_rage( special_effect_t& );
   // 8.1.5 - Crucible of Storms Trinkets and Special Items
   void harbingers_inscrutable_will( special_effect_t& );
+  void leggings_of_the_aberrant_tidesage( special_effect_t& );
 }
 
 namespace util
@@ -2389,6 +2390,35 @@ void items::harbingers_inscrutable_will( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Leggings of the Aberrant Tidesage ======================================
+
+void items::leggings_of_the_aberrant_tidesage( special_effect_t& effect )
+{
+  // actual damage spell
+  struct nimbus_bolt_t : public proc_t
+  {
+    nimbus_bolt_t( const special_effect_t& effect ):
+      proc_t( effect, "nimbus_bolt", 295811 )
+    {
+      // damage data comes from the driver
+      base_dd_min = effect.driver()->effectN( 1 ).min( effect.item );
+      base_dd_max = effect.driver()->effectN( 1 ).max( effect.item );
+    }
+    void execute() override
+    {
+      // health check
+      if ( rng().roll( effect.player->sim->bfa_opts.aberrant_tidesage_chance ) )
+      {
+        proc_t::execute();
+      }
+    }
+  };
+
+  effect.execute_action = create_proc_action<nimbus_bolt_t>( "storm_nimbus", effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Waycrest's Legacy Set Bonus ============================================
 
 void set_bonus::waycrest_legacy( special_effect_t& effect )
@@ -2504,6 +2534,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 288173, items::ramping_amplitude_gigavolt_engine );
   register_special_effect( 289520, items::grongs_primal_rage );
   register_special_effect( 295391, items::harbingers_inscrutable_will );
+  register_special_effect( 295812, items::leggings_of_the_aberrant_tidesage );
 
   // Misc
   register_special_effect( 276123, items::darkmoon_deck_squalls );
