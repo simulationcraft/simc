@@ -82,7 +82,7 @@ actions.single+=/shadow_word_pain
 
 head=crown_of_the_seducer,id=165818,bonus_id=4824/1537/4775,azerite_powers=403/405/18/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
-shoulders=pauldrons_of_vile_corruption,id=159267,bonus_id=1572/4819/4775,azerite_powers=236/403/459/13
+shoulders=pauldrons_of_vile_corruption,id=159267,bonus_id=1587/4819/4775,azerite_powers=236/403/459/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
 chest=robes_of_biting_cold,id=165505,bonus_id=4824/1537/4775,azerite_powers=405/403/459/13
 wrists=bracers_of_zealous_calling,id=165501,bonus_id=4800/1537
@@ -97,12 +97,12 @@ trinket2=ignition_mages_fuse,id=159615,bonus_id=1572/4780
 main_hand=phoenixfire_staff,id=165587,bonus_id=4800/1537,enchant=quick_navigation
 
 # Gear Summary
-# gear_ilvl=414.93
-# gear_stamina=9791
-# gear_intellect=7180
+# gear_ilvl=415.93
+# gear_stamina=9970
+# gear_intellect=7264
 # gear_crit_rating=711
 # gear_haste_rating=1397
 # gear_mastery_rating=1009
 # gear_versatility_rating=278
-# gear_armor=1424
+# gear_armor=1442
 # set_bonus=gift_of_the_loa_2pc=1
