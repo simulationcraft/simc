@@ -58,8 +58,8 @@ struct ardent_defender_t : public paladin_spell_t
 
 struct avengers_shield_t : public paladin_spell_t
 {
-  avengers_shield_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "avengers_shield", p, p -> find_specialization_spell( "Avenger's Shield" ) )
+  avengers_shield_t( paladin_t* p, const std::string& options_str ) :
+    paladin_spell_t( "avengers_shield", p, p -> find_specialization_spell( "Avenger's Shield" ) )
   {
     parse_options( options_str );
 
@@ -85,7 +85,6 @@ struct avengers_shield_t : public paladin_spell_t
 
     // link needed for trigger_grand_crusader
     cooldown = p -> cooldowns.avengers_shield;
-    cooldown -> duration = data().cooldown();
   }
 
   void execute() override
@@ -114,8 +113,8 @@ struct avengers_shield_t : public paladin_spell_t
 
 struct bastion_of_light_t : public paladin_spell_t
 {
-  bastion_of_light_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "bastion_of_light", p, p -> find_talent_spell( "Bastion of Light" ) )
+  bastion_of_light_t( paladin_t* p, const std::string& options_str ) :
+    paladin_spell_t( "bastion_of_light", p, p -> talents.bastion_of_light )
   {
     parse_options( options_str );
 
@@ -151,9 +150,8 @@ struct blessed_hammer_tick_t : public paladin_spell_t
     paladin_spell_t::impact( s );
 
     // apply BH debuff to target_data structure
-    td( s -> target ) -> buffs.blessed_hammer_debuff -> trigger();
+    td( s -> target ) -> debuff.blessed_hammer -> trigger();
   }
-
 };
 
 struct blessed_hammer_t : public paladin_spell_t
@@ -162,7 +160,7 @@ struct blessed_hammer_t : public paladin_spell_t
   int num_strikes;
 
   blessed_hammer_t( paladin_t* p, const std::string& options_str ) :
-    paladin_spell_t( "blessed_hammer", p, p -> find_talent_spell( "Blessed Hammer" ) ),
+    paladin_spell_t( "blessed_hammer", p, p -> talents.blessed_hammer ),
     hammer( new blessed_hammer_tick_t( p ) ), num_strikes( 2 )
   {
     add_option( opt_int( "strikes", num_strikes ) );
@@ -210,8 +208,8 @@ struct blessed_hammer_t : public paladin_spell_t
 
 struct blessing_of_spellwarding_t : public paladin_spell_t
 {
-  blessing_of_spellwarding_t(paladin_t* p, const std::string& options_str)
-    : paladin_spell_t("blessing_of_spellwarding", p, p -> find_talent_spell("Blessing of Spellwarding"))
+  blessing_of_spellwarding_t( paladin_t* p, const std::string& options_str ) :
+    paladin_spell_t( "blessing_of_spellwarding", p, p -> talents.blessing_of_spellwarding )
   {
     parse_options(options_str);
   }
@@ -226,7 +224,7 @@ struct blessing_of_spellwarding_t : public paladin_spell_t
 
   virtual bool target_ready( player_t* candidate_target ) override
   {
-    if (candidate_target->debuffs.forbearance->check())
+    if ( candidate_target -> debuffs.forbearance -> check() )
       return false;
 
     return paladin_spell_t::target_ready( candidate_target );
@@ -237,8 +235,8 @@ struct blessing_of_spellwarding_t : public paladin_spell_t
 
 struct guardian_of_ancient_kings_t : public paladin_spell_t
 {
-  guardian_of_ancient_kings_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "guardian_of_ancient_kings", p, p -> find_specialization_spell( "Guardian of Ancient Kings" ) )
+  guardian_of_ancient_kings_t( paladin_t* p, const std::string& options_str ) :
+    paladin_spell_t( "guardian_of_ancient_kings", p, p -> find_specialization_spell( "Guardian of Ancient Kings" ) )
   {
     parse_options( options_str );
     use_off_gcd = true;
@@ -256,8 +254,8 @@ struct guardian_of_ancient_kings_t : public paladin_spell_t
 
 struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
 {
-  hammer_of_the_righteous_aoe_t( paladin_t* p )
-    : paladin_melee_attack_t( "hammer_of_the_righteous_aoe", p, p -> find_spell( 88263 ) )
+  hammer_of_the_righteous_aoe_t( paladin_t* p ) :
+    paladin_melee_attack_t( "hammer_of_the_righteous_aoe", p, p -> find_spell( 88263 ) )
   {
     // AoE effect always hits if single-target attack succeeds
     // Doesn't proc Grand Crusader
@@ -286,8 +284,8 @@ struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
 struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 {
   hammer_of_the_righteous_aoe_t* hotr_aoe;
-  hammer_of_the_righteous_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "hammer_of_the_righteous", p, p -> find_class_spell( "Hammer of the Righteous" ) )
+  hammer_of_the_righteous_t( paladin_t* p, const std::string& options_str ) :
+    paladin_melee_attack_t( "hammer_of_the_righteous", p, p -> find_class_spell( "Hammer of the Righteous" ) )
   {
     parse_options( options_str );
 
@@ -327,8 +325,8 @@ struct judgment_prot_t : public judgment_t
 {
   timespan_t sotr_cdr; // needed for sotr interaction for protection
 
-  judgment_prot_t( paladin_t* p, const std::string& options_str )
-    : judgment_t( p, options_str )
+  judgment_prot_t( paladin_t* p, const std::string& options_str ) :
+    judgment_t( p, options_str )
   {
     cooldown -> charges += as<int>( p -> talents.crusaders_judgment -> effectN( 1 ).base_value() );
     cooldown -> duration *= 1.0 + p -> spec.protection_paladin -> effectN( 4 ).percent();
@@ -368,12 +366,12 @@ struct judgment_prot_t : public judgment_t
   }
 };
 
-// Light of the Protector ===================================================
+// Light / Hand of the Protector ============================================
 
 struct light_of_the_protector_base_t : public paladin_heal_t
 {
-  light_of_the_protector_base_t( paladin_t* p, const std::string& name, const spell_data_t* spell, const std::string& options_str )
-    : paladin_heal_t( name, p, spell )
+  light_of_the_protector_base_t( paladin_t* p, const std::string& name, const spell_data_t* spell, const std::string& options_str ) :
+    paladin_heal_t( name, p, spell )
   {
     parse_options( options_str );
     may_crit = true;
@@ -415,12 +413,10 @@ struct light_of_the_protector_t : public light_of_the_protector_base_t
   }
 };
 
-// Hand of the Protector (Protection) =========================================
-
 struct hand_of_the_protector_t : public light_of_the_protector_base_t
 {
   hand_of_the_protector_t( paladin_t* p, const std::string& options_str ) :
-    light_of_the_protector_base_t( p, "hand_of_the_protector", p -> find_talent_spell( "Hand of the Protector" ), options_str )
+    light_of_the_protector_base_t( p, "hand_of_the_protector", p -> talents.hand_of_the_protector, options_str )
   {
     // link needed for Righteous Protector / SotR cooldown reduction
     cooldown = p -> cooldowns.hand_of_the_protector;
@@ -435,20 +431,19 @@ struct hand_of_the_protector_t : public light_of_the_protector_base_t
   }
 };
 
-
-// Seraphim ( Protection ) ====================================================
+// Seraphim ===================================================================
 
 struct seraphim_t : public paladin_spell_t
 {
-  seraphim_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "seraphim", p, p -> find_talent_spell( "Seraphim" ) )
+  seraphim_t( paladin_t* p, const std::string& options_str ) :
+    paladin_spell_t( "seraphim", p, p -> talents.seraphim )
   {
     parse_options( options_str );
 
     harmful = false;
     may_miss = false;
 
-    // ugly hack for if SotR hasn't been put in the APL yet
+    // ugly hack needed if SotR isn't in the APL
     if ( p -> cooldowns.shield_of_the_righteous -> charges < 3 )
     {
       const spell_data_t* sotr = p -> find_class_spell( "Shield of the Righteous" );
@@ -472,7 +467,7 @@ struct seraphim_t : public paladin_spell_t
       full_charges_used = std::min( available_charges, 2 );
       duration = full_charges_used * p() -> talents.seraphim -> duration();
       for ( int i = 0; i < full_charges_used; i++ )
-        p() -> cooldowns.shield_of_the_righteous -> start( p() -> active_sotr  );
+        p() -> cooldowns.shield_of_the_righteous -> start( p() -> active.sotr );
     }
     if ( full_charges_used < 2 )
     {
@@ -487,16 +482,15 @@ struct seraphim_t : public paladin_spell_t
   }
 };
 
-
 // Shield of the Righteous ==================================================
 
 shield_of_the_righteous_buff_t::shield_of_the_righteous_buff_t( paladin_t* p ) :
-  buff_t( p, "shield_of_the_righteous", p -> spells.shield_of_the_righteous ),
+  buff_t( p, "shield_of_the_righteous", p -> spells.sotr_buff ),
   default_av_increase( p -> passives.avengers_valor -> effectN( 2 ).percent() )
 {
   avengers_valor_increase = 0;
   add_invalidate( CACHE_BONUS_ARMOR );
-  set_default_value( p -> spells.shield_of_the_righteous -> effectN( 1 ).percent() );
+  set_default_value( p -> spells.sotr_buff -> effectN( 1 ).percent() );
   set_refresh_behavior( buff_refresh_behavior::EXTEND );
 }
 
@@ -532,7 +526,7 @@ bool shield_of_the_righteous_buff_t::trigger( int stacks, double value, double c
     avengers_valor_increase = new_avengers_valor;
   }
 
-  sim -> print_debug( "Shield of the Righetous buff triggered with a {} increase from Avenger's Valor", avengers_valor_increase );
+  sim -> print_debug( "Shield of the Righteous buff triggered with a {} increase from Avenger's Valor", avengers_valor_increase );
 
   return buff_t::trigger( stacks, value, chance, duration );
 }    
@@ -559,9 +553,12 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
     // no weapon multiplier
     weapon_multiplier = 0.0;
 
-    // link needed for Judgment cooldown reduction
+    // links needed for Judgment cooldown reduction and seraphim respectively
     cooldown = p -> cooldowns.shield_of_the_righteous;
-    p -> active_sotr = this;
+    if ( ! p -> active.sotr )
+    {
+      p -> active.sotr = this;
+    }
   }
 
   double action_multiplier() const override
@@ -650,7 +647,7 @@ void paladin_t::target_mitigation( school_e school,
   // Blessed Hammer
   if ( talents.blessed_hammer -> ok() && s -> action )
   {
-    buff_t* b = get_target_data( s -> action -> player ) -> buffs.blessed_hammer_debuff;
+    buff_t* b = get_target_data( s -> action -> player ) -> debuff.blessed_hammer;
 
     // BH only reduces auto-attack damage
     if ( b -> up() && !s -> action -> special )
@@ -672,7 +669,7 @@ void paladin_t::target_mitigation( school_e school,
 
   if ( standing_in_consecration() )
   {
-    s -> result_amount *= 1.0 + ( cache.mastery() * passives.divine_bulwark -> effectN( 2 ).mastery_value() );
+    s -> result_amount *= 1.0 + ( cache.mastery() * mastery.divine_bulwark -> effectN( 2 ).mastery_value() );
   }
 
   // Ardent Defender
@@ -697,7 +694,7 @@ void paladin_t::target_mitigation( school_e school,
       {
         // Ardent Defender, like most cheat death effects, is capped at a 200% max health overkill
         resource_gain( RESOURCE_HEALTH,
-                       std::min( AD_health_threshold - resources.current[ RESOURCE_HEALTH ], 3 * resources.max[ RESOURCE_HEALTH ] ),
+                       std::min( AD_health_threshold - resources.current[ RESOURCE_HEALTH ], 2 * resources.max[ RESOURCE_HEALTH ] ),
                        nullptr,
                        s -> action );
       }
@@ -731,7 +728,7 @@ void paladin_t::trigger_grand_crusader()
 
   if ( talents.crusaders_judgment -> ok() && cooldowns.judgment -> current_charge < cooldowns.judgment -> charges )
   {
-    cooldowns.judgment -> adjust( -( cooldowns.judgment -> duration) ); //decrease remaining time by the duration of one charge, i.e., add one charge
+    cooldowns.judgment -> adjust( -( cooldowns.judgment -> duration ), true ); //decrease remaining time by the duration of one charge, i.e., add one charge
   }
 
   if ( azerite.inspiring_vanguard.enabled() )
@@ -752,8 +749,8 @@ void paladin_t::trigger_holy_shield( action_state_t* s )
   if ( ! s -> action -> player -> is_enemy() )
     return;
 
-  active_holy_shield_proc -> set_target( s -> action -> player );
-  active_holy_shield_proc -> schedule_execute();
+  active.holy_shield_damage -> set_target( s -> action -> player );
+  active.holy_shield_damage -> schedule_execute();
 }
 
 bool paladin_t::standing_in_consecration() const
@@ -780,6 +777,9 @@ bool paladin_t::standing_in_consecration() const
 }
 
 // Initialization
+void paladin_t::create_prot_actions()
+{ }
+
 action_t* paladin_t::create_action_protection( const std::string& name, const std::string& options_str )
 {
   if ( name == "aegis_of_light"            ) return new aegis_of_light_t           ( this, options_str );
@@ -805,77 +805,90 @@ action_t* paladin_t::create_action_protection( const std::string& name, const st
 
 void paladin_t::create_buffs_protection()
 {
+  buffs.aegis_of_light = make_buff( this, "aegis_of_light", talents.aegis_of_light );
+  buffs.ardent_defender = make_buff( this, "ardent_defender", find_specialization_spell( "Ardent Defender" ) );
+  buffs.avengers_valor = make_buff( this, "avengers_valor", passives.avengers_valor )
+                       -> set_default_value( passives.avengers_valor -> effectN( 1 ).percent() );
+
   buffs.guardian_of_ancient_kings = make_buff( this, "guardian_of_ancient_kings", find_specialization_spell( "Guardian of Ancient Kings" ) )
                                   -> set_cooldown( 0_ms );
-  buffs.shield_of_the_righteous = new shield_of_the_righteous_buff_t( this );
-  buffs.aegis_of_light = make_buff( this, "aegis_of_light", talents.aegis_of_light );
-  buffs.seraphim = make_buff<stat_buff_t>( this, "seraphim", talents.seraphim )
-                  -> add_stat( STAT_HASTE_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
-                  -> add_stat( STAT_CRIT_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
-                  -> add_stat( STAT_MASTERY_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
-                  -> add_stat( STAT_VERSATILITY_RATING, talents.seraphim -> effectN( 1 ).average( this ) );
-  buffs.seraphim -> set_cooldown( timespan_t::zero() ); // let the ability handle the cooldown
 
-  // Talents
   buffs.holy_shield_absorb = make_buff<absorb_buff_t>( this, "holy_shield", talents.holy_shield );
   buffs.holy_shield_absorb -> set_absorb_school( SCHOOL_MAGIC )
                            -> set_absorb_source( get_stats( "holy_shield_absorb" ) )
                            -> set_absorb_gain( get_gain( "holy_shield_absorb" ) );
-  buffs.avengers_valor = make_buff( this, "avengers_valor", passives.avengers_valor );
-  buffs.avengers_valor -> set_default_value( passives.avengers_valor -> effectN( 1 ).percent() );
-  buffs.ardent_defender = make_buff( this, "ardent_defender", find_specialization_spell( "Ardent Defender" ) );
   buffs.redoubt = make_buff( this, "redoubt", talents.redoubt -> effectN( 1 ).trigger() );
 
+  buffs.seraphim = make_buff<stat_buff_t>( this, "seraphim", talents.seraphim )
+                 -> add_stat( STAT_HASTE_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
+                 -> add_stat( STAT_CRIT_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
+                 -> add_stat( STAT_MASTERY_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
+                 -> add_stat( STAT_VERSATILITY_RATING, talents.seraphim -> effectN( 1 ).average( this ) );
+  buffs.seraphim -> set_cooldown( timespan_t::zero() ); // let the ability handle the cooldown
+
+  buffs.shield_of_the_righteous = new shield_of_the_righteous_buff_t( this );
+  
   // Azerite traits
-  buffs.inspiring_vanguard = make_buff<stat_buff_t>( this, "inspiring_vanguard", azerite.inspiring_vanguard.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
-    -> add_stat( STAT_STRENGTH, azerite.inspiring_vanguard.value( 1 ) );
   buffs.inner_light = make_buff( this, "inner_light", find_spell( 275481 ) )
-    -> set_default_value( azerite.inner_light.value( 1 ) );
+                    -> set_default_value( azerite.inner_light.value( 1 ) );
+  buffs.inspiring_vanguard = make_buff<stat_buff_t>( this, "inspiring_vanguard", azerite.inspiring_vanguard.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
+                           -> add_stat( STAT_STRENGTH, azerite.inspiring_vanguard.value( 1 ) );
   buffs.soaring_shield = make_buff<stat_buff_t>( this, "soaring_shield", azerite.soaring_shield.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
-    -> add_stat( STAT_MASTERY_RATING, azerite.soaring_shield.value( 1 ) );
+                       -> add_stat( STAT_MASTERY_RATING, azerite.soaring_shield.value( 1 ) );
 }
 
 void paladin_t::init_spells_protection()
 {
   // Talents
-  talents.first_avenger              = find_talent_spell( "First Avenger" );
-  talents.bastion_of_light           = find_talent_spell( "Bastion of Light" );
-  talents.crusaders_judgment         = find_talent_spell( "Crusader's Judgment" );
   talents.holy_shield                = find_talent_spell( "Holy Shield" );
-  talents.blessed_hammer             = find_talent_spell( "Blessed Hammer" );
   talents.redoubt                    = find_talent_spell( "Redoubt" );
-  talents.blessing_of_spellwarding   = find_talent_spell( "Blessing of Spellwarding" );
+  talents.blessed_hammer             = find_talent_spell( "Blessed Hammer" );
+  
+  talents.first_avenger              = find_talent_spell( "First Avenger" );
+  talents.crusaders_judgment         = find_talent_spell( "Crusader's Judgment" );
+  talents.bastion_of_light           = find_talent_spell( "Bastion of Light" );
+  
   talents.retribution_aura           = find_talent_spell( "Retribution Aura" );
-  talents.hand_of_the_protector      = find_talent_spell( "Hand of the Protector" );
-  talents.unbreakable_spirit         = find_talent_spell( "Unbreakable Spirit" );
+  //talents.cavalier                   = find_talent_spell( "Cavalier" );
+  talents.blessing_of_spellwarding   = find_talent_spell( "Blessing of Spellwarding" );
+
+  //talents.unbreakable_spirit         = find_talent_spell( "Unbreakable Spirit" );
   talents.final_stand                = find_talent_spell( "Final Stand" );
-  talents.aegis_of_light             = find_talent_spell( "Aegis of Light" );
+  talents.hand_of_the_protector      = find_talent_spell( "Hand of the Protector" );
+  
   //talents.judgment_of_light          = find_talent_spell( "Judgment of Light" );
   talents.consecrated_ground         = find_talent_spell( "Consecrated Ground" );
+  talents.aegis_of_light             = find_talent_spell( "Aegis of Light" );
+   
+  talents.last_defender              = find_talent_spell( "Last Defender" );
   talents.righteous_protector        = find_talent_spell( "Righteous Protector" );
   talents.seraphim                   = find_talent_spell( "Seraphim" );
-  talents.last_defender              = find_talent_spell( "Last Defender" );
 
-  // Spells
-  spells.shield_of_the_righteous       = find_spell( 132403 );
+  // Spec passives and useful spells
+  spec.protection_paladin = find_specialization_spell( "Protection Paladin" );
+  mastery.divine_bulwark = find_mastery_spell( PALADIN_PROTECTION );
 
-  // mastery
-  passives.divine_bulwark         = find_mastery_spell( PALADIN_PROTECTION );
+  if ( specialization() == PALADIN_PROTECTION )
+  {
+    spec.judgment_2 = find_specialization_spell( 231657 );
 
-  // Prot Passives
-  passives.grand_crusader         = find_specialization_spell( "Grand Crusader" );
-  passives.avengers_valor         = find_specialization_spell( "Avenger's Shield" ) -> effectN( 4 ).trigger();
-  passives.sanctuary              = find_specialization_spell( "Sanctuary" );
-  passives.riposte                = find_specialization_spell( "Riposte" );
+    // Prot doesn't have a version of judgment debuff or Divine Purpose
+    spells.divine_purpose_buff = spell_data_t::not_found();
+    spells.judgment_debuff = spell_data_t::not_found();
+  }
 
-  spec.judgment_2              = find_specialization_spell( 231657 );
   spec.shield_of_the_righteous = find_specialization_spell( "Shield of the Righteous" );
+  spells.sotr_buff = find_spell( 132403 );
+
+  passives.avengers_valor      = find_specialization_spell( "Avenger's Shield" ) -> effectN( 4 ).trigger();
+  passives.grand_crusader      = find_specialization_spell( "Grand Crusader" );
+  passives.riposte             = find_specialization_spell( "Riposte" );
+  passives.sanctuary           = find_specialization_spell( "Sanctuary" );
 
   // Azerite traits
   azerite.inspiring_vanguard = find_azerite_spell( "Inspiring Vanguard" );
   azerite.inner_light        = find_azerite_spell( "Inner Light"        );
   azerite.soaring_shield     = find_azerite_spell( "Soaring Shield"     );
-
 }
 
 void paladin_t::generate_action_prio_list_prot()
@@ -906,7 +919,7 @@ void paladin_t::generate_action_prio_list_prot()
   action_priority_list_t* cds = get_action_priority_list( "cooldowns" );
 
   def -> add_action( "auto_attack" );
-
+  
   def -> add_action( "call_action_list,name=cooldowns" );
 
   cds -> add_action( "fireblood,if=buff.avenging_wrath.up" );
@@ -934,6 +947,6 @@ void paladin_t::generate_action_prio_list_prot()
   def -> add_talent( this, "Blessed Hammer", "strikes=3" );
   def -> add_action( this, "Hammer of the Righteous" );
   def -> add_action( this, "Consecration" );
-
+  
 }
 }

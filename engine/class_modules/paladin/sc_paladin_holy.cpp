@@ -114,8 +114,8 @@ struct holy_light_t : public paladin_heal_t
 
 struct holy_prism_aoe_damage_t : public paladin_spell_t
 {
-  holy_prism_aoe_damage_t( paladin_t* p )
-    : paladin_spell_t( "holy_prism_aoe_damage", p, p->find_spell( 114871 ) )
+  holy_prism_aoe_damage_t( paladin_t* p ) :
+    paladin_spell_t( "holy_prism_aoe_damage", p, p->find_spell( 114871 ) )
   {
     background = true;
     may_crit = true;
@@ -129,8 +129,8 @@ struct holy_prism_aoe_damage_t : public paladin_spell_t
 
 struct holy_prism_aoe_heal_t : public paladin_heal_t
 {
-  holy_prism_aoe_heal_t( paladin_t* p )
-    : paladin_heal_t( "holy_prism_aoe_heal", p, p->find_spell( 114871 ) )
+  holy_prism_aoe_heal_t( paladin_t* p ) :
+    paladin_heal_t( "holy_prism_aoe_heal", p, p->find_spell( 114871 ) )
   {
     background = true;
     aoe = 5;
@@ -142,8 +142,8 @@ struct holy_prism_aoe_heal_t : public paladin_heal_t
 
 struct holy_prism_damage_t : public paladin_spell_t
 {
-  holy_prism_damage_t( paladin_t* p )
-    : paladin_spell_t( "holy_prism_damage", p, p->find_spell( 114852 ) )
+  holy_prism_damage_t( paladin_t* p ) :
+    paladin_spell_t( "holy_prism_damage", p, p->find_spell( 114852 ) )
   {
     background = true;
     may_crit = true;
@@ -182,8 +182,8 @@ struct holy_prism_t : public paladin_spell_t
   holy_prism_damage_t* damage;
   holy_prism_heal_t* heal;
 
-  holy_prism_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "holy_prism", p, p->find_spell( 114165 ) )
+  holy_prism_t( paladin_t* p, const std::string& options_str ) :
+    paladin_spell_t( "holy_prism", p, p -> talents.holy_prism )
   {
     parse_options( options_str );
 
@@ -229,8 +229,8 @@ struct holy_shock_damage_t : public paladin_spell_t
 {
   double crit_chance_multiplier;
 
-  holy_shock_damage_t( paladin_t* p )
-    : paladin_spell_t( "holy_shock_damage", p, p -> find_spell( 25912 ) )
+  holy_shock_damage_t( paladin_t* p ) :
+    paladin_spell_t( "holy_shock_damage", p, p -> find_spell( 25912 ) )
   {
     background = may_crit = true;
     trigger_gcd = timespan_t::zero();
@@ -247,22 +247,6 @@ struct holy_shock_damage_t : public paladin_spell_t
     cc *= crit_chance_multiplier;
 
     return cc;
-  }
-
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double m = paladin_spell_t::composite_target_multiplier( t );
-
-    paladin_td_t* td = this -> td( t );
-
-    if ( td -> buffs.debuffs_judgment -> up() )
-    {
-      double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent();
-      judgment_multiplier += p() -> passives.judgment -> effectN( 1 ).percent();
-      m *= judgment_multiplier;
-    }
-
-    return m;
   }
 };
 
@@ -350,7 +334,7 @@ struct holy_shock_t : public paladin_spell_t
     {
       bool success = p() -> buffs.divine_purpose -> trigger( 1,
                                                             p() -> buffs.divine_purpose -> default_value,
-                                                            p() -> spells.divine_purpose_holy -> proc_chance() );
+                                                            p() -> talents.divine_purpose -> effectN( 1 ).percent() );
       if ( success ) 
       {
         p() -> procs.divine_purpose -> occur();
@@ -393,8 +377,8 @@ struct holy_avenger_t : public paladin_heal_t
 
 struct judgment_holy_t : public judgment_t
 {
-  judgment_holy_t( paladin_t* p, const std::string& options_str )
-    : judgment_t( p, options_str )
+  judgment_holy_t( paladin_t* p, const std::string& options_str ) :
+    judgment_t( p, options_str )
   {
     base_multiplier *= 1.0 + p -> spec.holy_paladin -> effectN( 11 ).percent();
   }
@@ -405,20 +389,20 @@ struct judgment_holy_t : public judgment_t
 
     if ( p() -> talents.fist_of_justice -> ok() )
     {
-      double reduction = p() -> talents.fist_of_justice -> effectN( 1 ).base_value();
-      p() -> cooldowns.hammer_of_justice -> adjust( timespan_t::from_seconds( - reduction ) );
+      double cdr = -1.0 * p() -> talents.fist_of_justice -> effectN( 1 ).base_value();
+      p() -> cooldowns.hammer_of_justice -> adjust( timespan_t::from_seconds( cdr ) );
     }
   }
 
   // Special things that happen when Judgment damages target
   void impact( action_state_t* s ) override
   {
+    judgment_t::impact( s );
+
     if ( result_is_hit( s -> result ) )
     {
-      td( s -> target ) -> buffs.debuffs_judgment -> trigger();
+      td( s -> target ) -> debuff.judgment -> trigger();
     }
-
-    judgment_t::impact( s );
   }
 };
 
@@ -426,8 +410,8 @@ struct judgment_holy_t : public judgment_t
 
 struct lights_hammer_damage_tick_t : public paladin_spell_t
 {
-  lights_hammer_damage_tick_t( paladin_t* p )
-    : paladin_spell_t( "lights_hammer_damage_tick", p, p -> find_spell( 114919 ) )
+  lights_hammer_damage_tick_t( paladin_t* p ) :
+    paladin_spell_t( "lights_hammer_damage_tick", p, p -> find_spell( 114919 ) )
   {
     //dual = true;
     background = true;
@@ -439,8 +423,8 @@ struct lights_hammer_damage_tick_t : public paladin_spell_t
 
 struct lights_hammer_heal_tick_t : public paladin_heal_t
 {
-  lights_hammer_heal_tick_t( paladin_t* p )
-    : paladin_heal_t( "lights_hammer_heal_tick", p, p -> find_spell( 114919 ) )
+  lights_hammer_heal_tick_t( paladin_t* p ) :
+    paladin_heal_t( "lights_hammer_heal_tick", p, p -> find_spell( 114919 ) )
   {
     dual = true;
     background = true;
@@ -462,9 +446,9 @@ struct lights_hammer_t : public paladin_spell_t
   lights_hammer_heal_tick_t* lh_heal_tick;
   lights_hammer_damage_tick_t* lh_damage_tick;
 
-  lights_hammer_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "lights_hammer", p, p -> find_talent_spell( "Light's Hammer" ) ),
-      travel_time_( timespan_t::from_seconds( 1.5 ) )
+  lights_hammer_t( paladin_t* p, const std::string& options_str ) :
+    paladin_spell_t( "lights_hammer", p, p -> talents.lights_hammer ),
+    travel_time_( timespan_t::from_seconds( 1.5 ) )
   {
     // 114158: Talent spell, cooldown
     // 114918: Periodic 2s dummy, no duration!
@@ -522,6 +506,12 @@ struct light_of_dawn_t : public paladin_heal_t
 
 
 // Initialization
+void paladin_t::create_holy_actions()
+{
+  if ( find_specialization_spell( "Beacon of Light" ) -> ok() )
+    active.beacon_of_light = new beacon_of_light_heal_t( this );
+}
+
 action_t* paladin_t::create_action_holy( const std::string& name, const std::string& options_str )
 {
   if ( name == "beacon_of_light"           ) return new beacon_of_light_t          ( this, options_str );
@@ -554,38 +544,43 @@ void paladin_t::create_buffs_holy()
 void paladin_t::init_spells_holy()
 {
   // Talents
-  talents.bestow_faith               = find_talent_spell( "Bestow Faith" );
-  talents.lights_hammer              = find_talent_spell( "Light's Hammer" );
-  talents.crusaders_might            = find_talent_spell( "Crusader's Might" );
-  talents.cavalier                   = find_talent_spell( "Cavalier" );
-  talents.unbreakable_spirit         = find_talent_spell( "Unbreakable Spirit" );
-  talents.rule_of_law                = find_talent_spell( "Rule of Law" );
-  talents.devotion_aura              = find_talent_spell( "Devotion Aura" );
-  talents.aura_of_sacrifice          = find_talent_spell( "Aura of Sacrifice" );
-  talents.aura_of_mercy              = find_talent_spell( "Aura of Mercy" );
-  talents.holy_avenger               = find_talent_spell( "Holy Avenger" );
-  talents.holy_prism                 = find_talent_spell( "Holy Prism" );
-  talents.fervent_martyr             = find_talent_spell( "Fervent Martyr" );
-  talents.sanctified_wrath           = find_talent_spell( "Sanctified Wrath" );
-  talents.judgment_of_light          = find_talent_spell( "Judgment of Light" );
-  talents.beacon_of_faith            = find_talent_spell( "Beacon of Faith" );
-  talents.beacon_of_the_lightbringer = find_talent_spell( "Beacon of the Lightbringer" );
-  talents.beacon_of_virtue           = find_talent_spell( "Beacon of Virtue" );
+  talents.crusaders_might    = find_talent_spell( "Crusader's Might" );
+  talents.bestow_faith       = find_talent_spell( "Bestow Faith" );
+  talents.lights_hammer      = find_talent_spell( "Light's Hammer" );
+  
+  talents.unbreakable_spirit = find_talent_spell( "Unbreakable Spirit" );
+  talents.cavalier           = find_talent_spell( "Cavalier" );
+  talents.rule_of_law        = find_talent_spell( "Rule of Law" );
+  
+  talents.devotion_aura      = find_talent_spell( "Devotion Aura" );
+  talents.aura_of_sacrifice  = find_talent_spell( "Aura of Sacrifice" );
+  talents.aura_of_mercy      = find_talent_spell( "Aura of Mercy" );
+  
+  talents.judgment_of_light  = find_talent_spell( "Judgment of Light" );
+  talents.holy_prism         = find_talent_spell( "Holy Prism" );
+  talents.holy_avenger       = find_talent_spell( "Holy Avenger" );
+  
+  talents.sanctified_wrath   = find_talent_spell( "Sanctified Wrath" );
+  talents.avenging_crusader  = find_talent_spell( "Avenging Crusader" );
+  talents.awakening          = find_talent_spell( "Awakening" );
 
-  // Spells
-  spells.divine_purpose_holy           = find_spell( 197646 );
+  talents.divine_purpose     = find_talent_spell( "Divine Purpose" );
+  talents.beacon_of_faith    = find_talent_spell( "Beacon of Faith" );
+  talents.beacon_of_virtue   = find_talent_spell( "Beacon of Virtue" );
 
-  // Mastery
-  passives.lightbringer           = find_mastery_spell( PALADIN_HOLY );
-
-  // Holy Passives
-  passives.infusion_of_light      = find_specialization_spell( "Infusion of Light" );
+  // Spec passives and useful spells
+  spec.holy_paladin = find_specialization_spell( "Holy Paladin" );
+  mastery.lightbringer = find_mastery_spell( PALADIN_HOLY );
 
   if ( specialization() == PALADIN_HOLY )
+  {
     spec.judgment_2 = find_specialization_spell( 231644 );
 
-  if ( find_class_spell( "Beacon of Light" ) -> ok() )
-    active_beacon_of_light = new beacon_of_light_heal_t( this );
+    spells.judgment_debuff = find_spell( 214222 );
+    spells.divine_purpose_buff = find_spell( 216411 ); // Not whitelisted
+  }
+
+  passives.infusion_of_light = find_specialization_spell( "Infusion of Light" );
 }
 
 // ==========================================================================
