@@ -2536,10 +2536,10 @@ void items::idol_of_indiscriminate_consumption( special_effect_t& effect )
       proc_t( effect, "indiscriminate_consumption", 295962 )
     {
       aoe = 7;
-    }    
+    }
   };
 
-  effect.execute_action = create_proc_action<indiscriminate_consumption_t>( "oblivion_spear", effect );
+  effect.execute_action = create_proc_action<indiscriminate_consumption_t>( "indiscriminate_consumption", effect );
 }
 
 // Waycrest's Legacy Set Bonus ============================================
