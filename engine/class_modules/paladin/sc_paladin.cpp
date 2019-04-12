@@ -414,9 +414,8 @@ struct judgment_of_light_proc_t : public paladin_heal_t
 
 struct lay_on_hands_t : public paladin_heal_t
 {
-  double mana_return_pct;
   lay_on_hands_t( paladin_t* p, const std::string& options_str ) :
-    paladin_heal_t( "lay_on_hands", p, p -> find_class_spell( "Lay on Hands" ) ), mana_return_pct( 0 )
+    paladin_heal_t( "lay_on_hands", p, p -> find_class_spell( "Lay on Hands" ) )
   {
     parse_options( options_str );
     // unbreakable spirit reduces cooldown

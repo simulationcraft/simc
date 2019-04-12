@@ -294,7 +294,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     paladin_melee_attack_t( "hammer_of_the_righteous", p, p -> find_class_spell( "Hammer of the Righteous" ) )
   {
     parse_options( options_str );
-    
+
     if ( p -> talents.blessed_hammer -> ok() )
       background = true;
 
@@ -885,9 +885,9 @@ void paladin_t::init_spells_protection()
   {
     spec.judgment_2 = find_specialization_spell( 231657 );
 
-    // Prot doesn't have a version of judgment debuff or Divine Purpose
-    spells.divine_purpose_buff = spell_data_t::not_found();
-    spells.judgment_debuff = spell_data_t::not_found();
+    // Prot doesn't have a version of Judgment debuff or Divine Purpose
+    spells.divine_purpose_buff = spell_data_t::nil();
+    spells.judgment_debuff = spell_data_t::nil();
   }
 
   spec.shield_of_the_righteous = find_specialization_spell( "Shield of the Righteous" );
