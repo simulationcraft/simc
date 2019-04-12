@@ -19,12 +19,10 @@ namespace buffs {
     paladin_t* paladin = static_cast<paladin_t*>( p );
     if ( paladin -> azerite.lights_decree.ok() )
       buff_duration += paladin -> spells.lights_decree -> effectN( 2 ).time_value();
-
-
+    
     // let the ability handle the cooldown
-    cooldown -> duration = timespan_t::zero();
+    cooldown -> duration = 0_ms;
 
-    // invalidate haste
     add_invalidate( CACHE_HASTE );
   }
 
@@ -33,7 +31,7 @@ namespace buffs {
     shield_of_vengeance_buff_t( player_t* p ):
       absorb_buff_t( p, "shield_of_vengeance", p -> find_spell( 184662 ) )
     {
-      cooldown -> duration = timespan_t::zero();
+      cooldown -> duration = 0_ms;
     }
 
     void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -58,13 +56,13 @@ struct lights_decree_t : public paladin_spell_t
 {
   int last_holy_power_cost;
 
-  lights_decree_t( paladin_t* p ) :
+  lights_decree_t( paladin_t* p ) : 
     paladin_spell_t( "lights_decree", p, p -> find_spell( 286232 ) ),
     last_holy_power_cost( 0 )
   {
     base_dd_min = base_dd_max = p -> azerite.lights_decree.value();
     aoe = -1;
-    may_crit = true;
+    background = may_crit = true;
   }
 
   double action_multiplier() const override
@@ -76,7 +74,6 @@ struct lights_decree_t : public paladin_spell_t
 struct holy_power_consumer_t : public paladin_melee_attack_t
 {
   bool is_divine_storm;
-
   holy_power_consumer_t( const std::string& n, paladin_t* p, const spell_data_t* s ) :
     paladin_melee_attack_t( n, p, s ),
     is_divine_storm ( false )
@@ -99,18 +96,18 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
 
     return c;
   }
-  
+
   virtual void execute() override
   {
     paladin_melee_attack_t::execute();
-    
+
     // Crusade and Relentless Inquisitor gain full stacks from free spells, but reduced stacks with FoJ
     if ( p() -> buffs.crusade -> check() )
     {
       int num_stacks = as<int>( cost() == 0 ? base_costs[ RESOURCE_HOLY_POWER ] : cost() );
       p() -> buffs.crusade -> trigger( num_stacks );
     }
-    
+
     if ( p() -> azerite.relentless_inquisitor.ok() )
     {
       int num_stacks = as<int>( cost() == 0 ? base_costs[ RESOURCE_HOLY_POWER ] : cost() );
@@ -215,7 +212,7 @@ struct execution_sentence_t : public holy_power_consumer_t
   virtual void impact( action_state_t* s) override
   {
     holy_power_consumer_t::impact( s );
-    
+
     if ( result_is_hit( s -> result ) )
     {
       td( s -> target ) -> debuff.execution_sentence -> trigger();
@@ -301,7 +298,7 @@ struct divine_storm_t: public holy_power_consumer_t
       {
         b += p() -> azerite.empyrean_power.value();
       }
-      
+
       return b;
     }
   };
@@ -420,21 +417,22 @@ struct judgment_ret_t : public judgment_t
   // Special things that happen when Judgment damages target
   void impact( action_state_t* s ) override
   {
+    judgment_t::impact( s );
+
     if ( result_is_hit( s -> result ) && p() -> spec.judgment_2 -> ok() )
     {
       td( s -> target ) -> debuff.judgment -> trigger();
 
       p() -> resource_gain( RESOURCE_HOLY_POWER, holy_power_generation, p() -> gains.judgment );
     }
-    judgment_t::impact( s );
   }
 };
 
 // Justicar's Vengeance
 struct justicars_vengeance_t : public holy_power_consumer_t
 {
-  justicars_vengeance_t( paladin_t* p, const std::string& options_str )
-    : holy_power_consumer_t( "justicars_vengeance", p, p -> talents.justicars_vengeance )
+  justicars_vengeance_t( paladin_t* p, const std::string& options_str ) :
+    holy_power_consumer_t( "justicars_vengeance", p, p -> talents.justicars_vengeance )
   {
     parse_options( options_str );
 
@@ -448,6 +446,7 @@ struct justicars_vengeance_t : public holy_power_consumer_t
 };
 
 // SoV
+
 struct shield_of_vengeance_proc_t : public paladin_spell_t
 {
   shield_of_vengeance_proc_t( paladin_t* p ) :
@@ -525,18 +524,21 @@ struct inquisition_t : public holy_power_consumer_t
     // spelldata doesn't have this
     hasted_gcd = true;
     harmful = false;
+
   }
 
   virtual double cost() const override
   {
-    double c = std::max( base_costs[ RESOURCE_HOLY_POWER ], std::min( p() -> resources.current[ RESOURCE_HOLY_POWER ], 3.0 ) );
-    
+    double max_cost = base_costs[ RESOURCE_HOLY_POWER ] + secondary_costs[ RESOURCE_HOLY_POWER ];
+
     if ( p() -> buffs.fires_of_justice -> check() )
     {
-      c += p() -> buffs.fires_of_justice -> data().effectN( 1 ).base_value();
+      // FoJ essentially reduces the max cost by 1.
+      max_cost += p() -> buffs.fires_of_justice -> data().effectN( 1 ).base_value();
     }
 
-    return c;
+    // Return the available holy power of the player, if it's between 1 and 3 (minus 1 with FoJ up)
+    return clamp<double>( p() -> resources.current[ RESOURCE_HOLY_POWER ], base_costs[ RESOURCE_HOLY_POWER ], max_cost );
   }
 
   virtual void execute() override
@@ -544,16 +546,16 @@ struct inquisition_t : public holy_power_consumer_t
     // Fires of Justice reduces the cost by 1 but maintains the overall duration
     // This needs to be computed before FoJ is consumed in holy_power_consumer_t::execute();
     double hp_spent = cost();
+
     if ( p() -> buffs.fires_of_justice -> up() )
     {
-      // Add the holy power reduced by 
-      hp_spent -= p() -> buffs.fires_of_justice -> data().effectN( 1 ).base_value();
+      // Re-add the fires of justice cost reduction
+      hp_spent += -1.0 * p() -> buffs.fires_of_justice -> data().effectN( 1 ).base_value();
     }
-    timespan_t inq_duration = hp_spent * p() -> talents.inquisition -> duration();
 
     holy_power_consumer_t::execute();
-    
-    p() -> buffs.inquisition -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, hp_spent * ( p() -> buffs.inquisition -> data().duration() ) );
+
+    p() -> buffs.inquisition -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, hp_spent * p() -> talents.inquisition -> duration() );
   }
 };
 
@@ -671,15 +673,15 @@ void paladin_t::init_spells_retribution()
   talents.divine_judgment     = find_talent_spell( "Divine Judgment" );
   talents.consecration        = find_talent_spell( "Consecration" );
   talents.wake_of_ashes       = find_talent_spell( "Wake of Ashes" );
-  
+
   //talents.unbreakable_spirit   = find_talent_spell( "Unbreakable Spirit" );
   //talents.cavalier             = find_talent_spell( "Cavalier" );
   talents.eye_for_an_eye      = find_talent_spell( "Eye for an Eye" );
-  
+
   talents.selfless_healer     = find_talent_spell( "Selfless Healer" ); // Healing, NYI
   talents.justicars_vengeance = find_talent_spell( "Justicar's Vengeance" );
   talents.word_of_glory       = find_talent_spell( "Word of Glory" );
-  
+
   talents.divine_purpose      = find_talent_spell( "Divine Purpose" );
   talents.crusade             = find_talent_spell( "Crusade" );
   talents.inquisition         = find_talent_spell( "Inquisition" );

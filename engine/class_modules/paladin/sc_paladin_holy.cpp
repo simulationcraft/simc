@@ -20,7 +20,7 @@ struct beacon_of_light_t : public paladin_heal_t
     }
 
     // Remove the 'dot'
-    dot_duration = timespan_t::zero();
+    dot_duration = 0_ms;
   }
 
   virtual void execute() override
@@ -40,7 +40,7 @@ struct beacon_of_light_heal_t : public heal_t
     background = true;
     may_crit = false;
     proc = true;
-    trigger_gcd = timespan_t::zero();
+    trigger_gcd = 0_ms;
 
     target = p -> beacon_target;
   }
@@ -57,7 +57,7 @@ struct divine_protection_t : public paladin_spell_t
 
     harmful = false;
     use_off_gcd = true;
-    trigger_gcd = timespan_t::zero();
+    trigger_gcd = 0_ms;
 
     // unbreakable spirit reduces cooldown
     if ( p -> talents.unbreakable_spirit -> ok() )
@@ -121,7 +121,6 @@ struct holy_prism_aoe_damage_t : public paladin_spell_t
     may_crit = true;
     may_miss = false;
     aoe = 5;
-
   }
 };
 
@@ -233,7 +232,7 @@ struct holy_shock_damage_t : public paladin_spell_t
     paladin_spell_t( "holy_shock_damage", p, p -> find_spell( 25912 ) )
   {
     background = may_crit = true;
-    trigger_gcd = timespan_t::zero();
+    trigger_gcd = 0_ms;
 
     // this grabs the 100% base crit bonus from 20473
     crit_chance_multiplier = p -> find_class_spell( "Holy Shock" ) -> effectN( 1 ).base_value() / 10.0;
@@ -260,7 +259,7 @@ struct holy_shock_heal_t : public paladin_heal_t
     paladin_heal_t( "holy_shock_heal", p, p -> find_spell( 25914 ) )
   {
     background = true;
-    trigger_gcd = timespan_t::zero();
+    trigger_gcd = 0_ms;
 
     // this grabs the crit multiplier bonus from 20473
     crit_chance_multiplier = p -> find_class_spell( "Holy Shock" ) -> effectN( 1 ).base_value() / 10.0;
@@ -310,38 +309,37 @@ struct holy_shock_t : public paladin_spell_t
 
   virtual void execute() override
   {
+    paladin_spell_t::execute();
+
     if ( dmg )
     {
       // damage enemy
       damage -> set_target( execute_state -> target );
-      damage -> schedule_execute();
+      damage -> execute();
     }
     else
     {
       // heal friendly
       heal -> set_target( execute_state -> target );
-      heal -> schedule_execute();
+      heal -> execute();
     }
-
-    paladin_spell_t::execute();
 
     if ( p() -> buffs.divine_purpose -> check() )
     {
-       p() -> buffs.divine_purpose -> expire();
+        p() -> buffs.divine_purpose -> expire();
     }
 
     if ( p() -> talents.divine_purpose -> ok() )
     {
       bool success = p() -> buffs.divine_purpose -> trigger( 1,
-                                                            p() -> buffs.divine_purpose -> default_value,
-                                                            p() -> talents.divine_purpose -> effectN( 1 ).percent() );
+                                                             p() -> buffs.divine_purpose -> default_value,
+                                                             p() -> talents.divine_purpose -> effectN( 1 ).percent() );
       if ( success ) 
       {
         p() -> procs.divine_purpose -> occur();
         p() -> cooldowns.holy_shock -> reset (true);
       }
     }
-
   }
 
   double recharge_multiplier() const override
@@ -350,11 +348,10 @@ struct holy_shock_t : public paladin_spell_t
 
     if ( p() -> buffs.avenging_wrath -> check() && p() -> talents.sanctified_wrath -> ok() )
       rm *= 1.0 + p() -> talents.sanctified_wrath -> effectN( 2 ).percent();
-
+    
     return rm;
   }
 };
-
 
 // Holy Avenger
 struct holy_avenger_t : public paladin_heal_t
@@ -399,7 +396,7 @@ struct judgment_holy_t : public judgment_t
   {
     judgment_t::impact( s );
 
-    if ( result_is_hit( s -> result ) )
+    if ( result_is_hit( s -> result ) && p() -> spec.judgment_2 -> ok() )
     {
       td( s -> target ) -> debuff.judgment -> trigger();
     }
@@ -448,7 +445,7 @@ struct lights_hammer_t : public paladin_spell_t
 
   lights_hammer_t( paladin_t* p, const std::string& options_str ) :
     paladin_spell_t( "lights_hammer", p, p -> talents.lights_hammer ),
-    travel_time_( timespan_t::from_seconds( 1.5 ) )
+    travel_time_( 1.5_s )
   {
     // 114158: Talent spell, cooldown
     // 114918: Periodic 2s dummy, no duration!
@@ -460,8 +457,8 @@ struct lights_hammer_t : public paladin_spell_t
     school = SCHOOL_HOLY; // Setting this allows the tick_action to benefit from Inquistion
 
     base_tick_time = p -> find_spell( 114918 ) -> effectN( 1 ).period();
-    dot_duration      = p -> find_spell( 122773 ) -> duration() - travel_time_;
-    hasted_ticks   = false;
+    dot_duration = p -> find_spell( 122773 ) -> duration() - travel_time_;
+    hasted_ticks = false;
     tick_zero = true;
     ignore_false_positive = true;
 
@@ -482,7 +479,6 @@ struct lights_hammer_t : public paladin_spell_t
   virtual void tick( dot_t* d ) override
   {
     paladin_spell_t::tick( d );
-
     // trigger healing and damage ticks
     lh_heal_tick -> schedule_execute();
     lh_damage_tick -> schedule_execute();
@@ -504,8 +500,8 @@ struct light_of_dawn_t : public paladin_heal_t
   }
 };
 
-
 // Initialization
+
 void paladin_t::create_holy_actions()
 {
   if ( find_specialization_spell( "Beacon of Light" ) -> ok() )
@@ -649,10 +645,7 @@ void paladin_t::generate_action_prio_list_holy()
 
   // Augmentation
   precombat -> add_action( "augmentation" );
-
-
-
-  precombat -> add_action( this, "Seal of Insight" );
+  
   precombat -> add_action( this, "Beacon of Light" , "target=healing_target");
   // Beacon probably goes somewhere here?
   // Damn right it does, Theckie-poo.
