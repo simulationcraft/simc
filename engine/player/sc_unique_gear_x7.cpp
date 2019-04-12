@@ -144,6 +144,7 @@ namespace items
   void leggings_of_the_aberrant_tidesage( special_effect_t& );
   void fathuuls_floodguards( special_effect_t& );
   void grips_of_forsaken_sanity( special_effect_t& );
+  void stormglide_steps( special_effect_t& );
 }
 
 namespace util
@@ -2504,6 +2505,27 @@ void items::grips_of_forsaken_sanity( special_effect_t& effect )
   new spiteful_binding_proc_callback_t( effect );
 }
 
+// Stormglide Steps ==============================================
+
+void items::stormglide_steps( special_effect_t& effect )
+{
+  player_t* p = effect.player;
+
+  buff_t* untouchable_buff = effect.create_buff();
+
+  timespan_t period = timespan_t::from_seconds( 1.0 );
+  p->register_combat_begin( [ untouchable_buff, period ] ( player_t* )
+  {
+    make_repeating_event( untouchable_buff->sim, period, [ untouchable_buff ]
+    {
+      if ( untouchable_buff->rng().roll( untouchable_buff->sim->bfa_opts.stormglide_steps_take_damage_chance ) )
+        untouchable_buff->expire();
+    } );
+  } );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Waycrest's Legacy Set Bonus ============================================
 
 void set_bonus::waycrest_legacy( special_effect_t& effect )
@@ -2622,6 +2644,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 295812, items::leggings_of_the_aberrant_tidesage );
   register_special_effect( 295254, items::fathuuls_floodguards );
   register_special_effect( 295175, items::grips_of_forsaken_sanity );
+  register_special_effect( 295277, items::stormglide_steps );
 
   // Misc
   register_special_effect( 276123, items::darkmoon_deck_squalls );
