@@ -123,18 +123,18 @@ hands=manceroys_flamefists,id=165503,bonus_id=4800/1537
 waist=waistcord_of_flowing_silk,id=165504,bonus_id=4800/1537
 legs=wavecaller_leggings,id=165506,bonus_id=4800/1537
 feet=lightfeather_footpads,id=165502,bonus_id=4800/1537
-finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_critical_strike
-finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_critical_strike
+finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_haste
+finger2=lord_admirals_signet,id=165566,bonus_id=4800/1537,enchant=pact_of_haste
 trinket1=incandescent_sliver,id=165571,bonus_id=4800/1537
 trinket2=balefire_branch,id=159630,bonus_id=1572/4780
-main_hand=phoenixfire_staff,id=165587,bonus_id=4800/1537,enchant=masterful_navigation
+main_hand=phoenixfire_staff,id=165587,bonus_id=4800/1537,enchant=quick_navigation
 
 # Gear Summary
 # gear_ilvl=415.93
 # gear_stamina=9970
 # gear_intellect=6905
-# gear_crit_rating=839
-# gear_haste_rating=1232
+# gear_crit_rating=765
+# gear_haste_rating=1306
 # gear_mastery_rating=1296
 # gear_versatility_rating=214
 # gear_armor=1442
