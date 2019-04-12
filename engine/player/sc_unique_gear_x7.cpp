@@ -2445,7 +2445,7 @@ void items::fathuuls_floodguards( special_effect_t& effect )
   struct drowning_tide_damage_t : public proc_t
   {
     drowning_tide_damage_t( const special_effect_t& effect ):
-      proc_t( effect, "drowning_tide", effect.driver() )
+      proc_t( effect, "drowning_tide", 295257 )
     {
       // damage data comes from the driver
       base_dd_min = effect.driver()->effectN( 1 ).min( effect.item );
@@ -2487,8 +2487,6 @@ void items::grips_of_forsaken_sanity( special_effect_t& effect )
 {
   struct spiteful_binding_proc_callback_t : public dbc_proc_callback_t
   {
-    action_t* damage;
-
     spiteful_binding_proc_callback_t( const special_effect_t& effect ) :
       dbc_proc_callback_t( effect.item, effect )
     { }
