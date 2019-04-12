@@ -1156,6 +1156,8 @@ struct sim_t : private sc_thread_t
     double              grips_of_forsaken_sanity_damage_chance = 1.0;
     /// Chance player takes damage and loses Untouchable from Stormglide Steps
     double              stormglide_steps_take_damage_chance = 0.0;
+    /// Duration of the Lurker's Insidious Gift buff if the player wants to cancel it early to avoid unnecessary damage
+    double              lurkers_insidious_gift_duration = 0.0;
   } bfa_opts;
 
   // Expansion specific data

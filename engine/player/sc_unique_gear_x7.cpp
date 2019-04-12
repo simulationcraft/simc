@@ -146,6 +146,7 @@ namespace items
   void grips_of_forsaken_sanity( special_effect_t& );
   void stormglide_steps( special_effect_t& );
   void idol_of_indiscriminate_consumption( special_effect_t& );
+  void lurkers_insidious_gift( special_effect_t& );
 }
 
 namespace util
@@ -2542,6 +2543,21 @@ void items::idol_of_indiscriminate_consumption( special_effect_t& effect )
   effect.execute_action = create_proc_action<indiscriminate_consumption_t>( "indiscriminate_consumption", effect );
 }
 
+// Lurker's Insidious Gift ================================================
+
+void items::lurkers_insidious_gift( special_effect_t& effect )
+{
+  double duration_override = effect.player -> sim -> bfa_opts.lurkers_insidious_gift_duration;
+
+  timespan_t gift_duration = duration_override != 0.0 ? timespan_t::from_seconds( duration_override ) :
+                                                        effect.player -> find_spell( 295408 ) -> duration();
+
+  effect.custom_buff = create_buff<stat_buff_t>( effect.player, "insidious_gift", effect.player -> find_spell( 295408 ), effect.item )
+  // For some reason, the mastery gain linked in the tooltip is not the one from the buff's data, although they share the same value
+    -> add_stat( STAT_MASTERY_RATING, effect.player -> find_spell( 295508 ) -> effectN( 1 ).average( effect.item ) )
+    -> set_duration( gift_duration );
+}
+
 // Waycrest's Legacy Set Bonus ============================================
 
 void set_bonus::waycrest_legacy( special_effect_t& effect )
@@ -2662,6 +2678,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 295175, items::grips_of_forsaken_sanity );
   register_special_effect( 295277, items::stormglide_steps );
   register_special_effect( 295962, items::idol_of_indiscriminate_consumption );
+  register_special_effect( 295501, items::lurkers_insidious_gift );
 
   // Misc
   register_special_effect( 276123, items::darkmoon_deck_squalls );

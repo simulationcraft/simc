@@ -3607,6 +3607,8 @@ void sim_t::create_options()
         bfa_opts.grips_of_forsaken_sanity_damage_chance, 0.0, 1.0 ) );
   add_option( opt_float( "bfa.stormglide_steps_take_damage_chance",
         bfa_opts.stormglide_steps_take_damage_chance, 0.0, 1.0 ) );
+  add_option( opt_float( "bfa.lurkers_insidious_gift_duration",
+        bfa_opts.lurkers_insidious_gift_duration, 0.0, 30.0 ) );
 
   // applies to: "lavish_suramar_feast", battle for azeroth feasts
   add_option( opt_bool( "feast_as_dps", feast_as_dps ) );
