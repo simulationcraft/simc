@@ -145,6 +145,7 @@ namespace items
   void fathuuls_floodguards( special_effect_t& );
   void grips_of_forsaken_sanity( special_effect_t& );
   void stormglide_steps( special_effect_t& );
+  void idol_of_indiscriminate_consumption( special_effect_t& );
 }
 
 namespace util
@@ -2524,6 +2525,23 @@ void items::stormglide_steps( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Idol of Indiscriminate Consumption =====================================
+
+void items::idol_of_indiscriminate_consumption( special_effect_t& effect )
+{
+  // Healing isn't implemented
+  struct indiscriminate_consumption_t : public proc_t
+  {
+    indiscriminate_consumption_t( const special_effect_t& effect ) :
+      proc_t( effect, "indiscriminate_consumption", 295962 )
+    {
+      aoe = 7;
+    }    
+  };
+
+  effect.execute_action = create_proc_action<indiscriminate_consumption_t>( "oblivion_spear", effect );
+}
+
 // Waycrest's Legacy Set Bonus ============================================
 
 void set_bonus::waycrest_legacy( special_effect_t& effect )
@@ -2643,6 +2661,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 295254, items::fathuuls_floodguards );
   register_special_effect( 295175, items::grips_of_forsaken_sanity );
   register_special_effect( 295277, items::stormglide_steps );
+  register_special_effect( 295962, items::idol_of_indiscriminate_consumption );
 
   // Misc
   register_special_effect( 276123, items::darkmoon_deck_squalls );
