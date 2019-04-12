@@ -1246,6 +1246,8 @@ class SpellDataGenerator(DataGenerator):
          292380, 292463, 292473, 292474, 292486,
          #Leggings of the Aberrant Tidesage damage proc
          295811,
+         # Fa'thuul's Floodguards
+         295257,
         ),
 
         # Warrior:
