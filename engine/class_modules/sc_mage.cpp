@@ -815,8 +815,14 @@ namespace water_elemental {
 
 struct water_elemental_pet_t : public mage_pet_t
 {
+  struct actions_t
+  {
+    action_t* freeze;
+  } action;
+
   water_elemental_pet_t( sim_t* sim, mage_t* owner ) :
-    mage_pet_t( sim, owner, "water_elemental" )
+    mage_pet_t( sim, owner, "water_elemental" ),
+    action()
   {
     owner_coeff.sp_from_sp = 0.75;
   }
@@ -828,6 +834,7 @@ struct water_elemental_pet_t : public mage_pet_t
   }
 
   action_t* create_action( const std::string& name, const std::string& options_str ) override;
+  void      create_actions() override;
 };
 
 struct waterbolt_t : public mage_pet_spell_t
@@ -861,6 +868,11 @@ action_t* water_elemental_pet_t::create_action( const std::string& name, const s
   if ( name == "waterbolt" ) return new waterbolt_t( this, options_str );
 
   return mage_pet_t::create_action( name, options_str );
+}
+
+void water_elemental_pet_t::create_actions()
+{
+  action.freeze = new freeze_t( this );
 }
 
 }  // water_elemental
@@ -4674,7 +4686,6 @@ struct start_burn_phase_t : public action_t
     trigger_gcd = 0_ms;
     harmful = false;
     ignore_false_positive = true;
-    action_skill = 1;
   }
 
   void execute() override
@@ -4711,7 +4722,6 @@ struct stop_burn_phase_t : public action_t
     trigger_gcd = 0_ms;
     harmful = false;
     ignore_false_positive = true;
-    action_skill = 1;
   }
 
   void execute() override
@@ -4744,45 +4754,24 @@ struct stop_burn_phase_t : public action_t
 
 struct freeze_t : public action_t
 {
-  action_t* pet_freeze;
-
   freeze_t( mage_t* p, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "freeze", p ),
-    pet_freeze()
+    action_t( ACTION_OTHER, "freeze", p, p->find_specialization_spell( "Freeze" ) )
   {
     parse_options( options_str );
 
     may_miss = may_crit = callbacks = false;
     dual = usable_while_casting = ignore_false_positive = true;
-    trigger_gcd = 0_ms;
-    action_skill = 1;
 
     if ( p->talents.lonely_winter->ok() )
       background = true;
   }
 
-  void init_finished() override
-  {
-    action_t::init_finished();
-
-    mage_t* m = debug_cast<mage_t*>( player );
-    if ( !m->pets.water_elemental )
-      return;
-
-    pet_freeze = m->pets.water_elemental->find_action( "freeze" );
-    if ( !pet_freeze )
-    {
-      pet_freeze = new pets::water_elemental::freeze_t( m->pets.water_elemental );
-      pet_freeze->init();
-    }
-  }
-
   void execute() override
   {
-    assert( pet_freeze );
+    mage_t* m = debug_cast<mage_t*>( player );
 
-    pet_freeze->set_target( target );
-    pet_freeze->execute();
+    m->pets.water_elemental->action.freeze->set_target( target );
+    m->pets.water_elemental->action.freeze->execute();
   }
 
   bool ready() override
@@ -4795,10 +4784,7 @@ struct freeze_t : public action_t
     if ( m->pets.water_elemental->is_sleeping() )
       return false;
 
-    if ( !pet_freeze )
-      return false;
-
-    if ( !pet_freeze->ready() )
+    if ( !m->pets.water_elemental->action.freeze->ready() )
       return false;
 
     return action_t::ready();
