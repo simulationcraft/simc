@@ -2547,15 +2547,25 @@ void items::idol_of_indiscriminate_consumption( special_effect_t& effect )
 
 void items::lurkers_insidious_gift( special_effect_t& effect )
 {
-  double duration_override = effect.player -> sim -> bfa_opts.lurkers_insidious_gift_duration;
+  // Damage to the player isn't implemented
 
-  timespan_t gift_duration = duration_override != 0.0 ? timespan_t::from_seconds( duration_override ) :
-                                                        effect.player -> find_spell( 295408 ) -> duration();
+  timespan_t duration_override = effect.player -> sim -> bfa_opts.lurkers_insidious_gift_duration;
+  timespan_t default_duration = effect.player -> find_spell( 295408 ) -> duration();
 
-  effect.custom_buff = create_buff<stat_buff_t>( effect.player, "insidious_gift", effect.player -> find_spell( 295408 ), effect.item )
+  // If the overriden duration is out of bounds, 
+  if ( duration_override > default_duration )
+  {   
+    effect.player -> sim -> error( "{} Lurker's Insidious duration set higher than the buff's maximum duration, setting to {} seconds", 
+                                   effect.player -> name(), default_duration.total_seconds() );
+    duration_override = default_duration;
+  }
+  // An override of 0s (default value) uses the buff's maximum duration
+  else if ( duration_override == 0_ms )
+    duration_override = default_duration;
+  
+  effect.custom_buff = make_buff<stat_buff_t>( effect.player, "insidious_gift", effect.player -> find_spell( 295408 ), effect.item )
   // For some reason, the mastery gain linked in the tooltip is not the one from the buff's data, although they share the same value
-    -> add_stat( STAT_MASTERY_RATING, effect.player -> find_spell( 295508 ) -> effectN( 1 ).average( effect.item ) )
-    -> set_duration( gift_duration );
+    -> set_duration( duration_override );
 }
 
 // Waycrest's Legacy Set Bonus ============================================
