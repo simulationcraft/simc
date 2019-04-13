@@ -1134,6 +1134,30 @@ struct tank_dummy_enemy_t : public enemy_t
       tank_dummy_enum = static_cast<tank_dummy_e>( TANK_DUMMY_MAX - 1 );
   }
 
+  void init_defense() override
+  {
+    enemy_t::init_defense();
+
+    double dummy_armor_coeff = dbc.armor_mitigation_constant( level() );
+
+    // Max level enemies have different K values based on difficulty, changes when new tier is released and not provided in spelldata
+    // 8.1 and 8.1.5 (BoD + Crucible) K values here
+    switch ( tank_dummy_enum )
+    {
+      case TANK_DUMMY_DUNGEON:
+        dummy_armor_coeff = 8467.2;
+        break;
+      case TANK_DUMMY_RAID:
+        dummy_armor_coeff = 9355.5;
+        break;
+      case TANK_DUMMY_MYTHIC:
+        dummy_armor_coeff = 11478.6;
+        break;
+    }
+    
+    initial.armor_coeff = dummy_armor_coeff;
+  }
+
   void init_base_stats() override
   {
     enemy_t::init_base_stats();
@@ -1142,11 +1166,13 @@ struct tank_dummy_enemy_t : public enemy_t
     switch ( tank_dummy_enum )
     {
       case TANK_DUMMY_DUNGEON:
-        true_level = 102; break;
+        true_level = sim -> max_player_level + 2;
+        break;
       case TANK_DUMMY_WEAK:
-        true_level = 100; break;
+        true_level = sim -> max_player_level;
+        break;
       default:
-        true_level = 103;
+        true_level = sim -> max_player_level + 3;
     }
 
     // override race
@@ -1156,20 +1182,15 @@ struct tank_dummy_enemy_t : public enemy_t
   std::string generate_action_list() override
   {
     std::string als = "";
-    int aa_damage[ 5 ] = { 0, 200, 1500, 5000, 7000 };
-    int aa_damage_var[ 5 ] = { 0, 0, 300, 1000, 1400 };
-    int dummy_strike_damage[ 5 ] = { 0, 0, 50, 50, 50 }; // % weapon damage multipliers for dummy_strike
-    int uber_strike_damage[ 5 ] = { 0, 0, 0, 0, 50 }; // % weapon damage multipliers for uber_strike
+    int aa_damage[ 5 ] = { 0, 48000, 90000, 120000, 240000 }; // NONE, WEAK, DUNGEON, RAID, MYTHIC
+    int aa_damage_var[ 5 ] = { 0, 4800, 9000, 12000, 24000 };
+    int dummy_strike_damage[ 5 ] = { 0, 80000, 150000, 200000, 400000 }; // Base melee nuke damage
 
     als += "/auto_attack,damage=" + util::to_string( aa_damage[ tank_dummy_enum ] ) + ",range=" + util::to_string( aa_damage_var[ tank_dummy_enum ] ) + ",attack_speed=1.5,aoe_tanks=1";
-    if ( tank_dummy_enum > TANK_DUMMY_WEAK )
-      als += "/melee_nuke,damage=" + util::to_string( aa_damage[ tank_dummy_enum ] * dummy_strike_damage[ tank_dummy_enum ] / 100 ) + ",range=" + util::to_string( aa_damage_var[ tank_dummy_enum ] * dummy_strike_damage[ tank_dummy_enum ] / 100 ) + "attack_speed=0,cooldown=6,aoe_tanks=1";
-    if ( tank_dummy_enum > TANK_DUMMY_RAID )
-      als += "/spell_nuke,damage=" + util::to_string( aa_damage[ tank_dummy_enum ] * uber_strike_damage[ tank_dummy_enum ] / 100 ) + ",range=" + util::to_string( aa_damage_var[ tank_dummy_enum ] * uber_strike_damage[ tank_dummy_enum ] / 100 ) + "attack_speed=1,cooldown=10,aoe_tanks=1,apply_debuff=5";
+    als += "/melee_nuke,damage=" + util::to_string( dummy_strike_damage[ tank_dummy_enum ] ) + ",range=0,attack_speed=2,cooldown=30,aoe_tanks=1";
 
     return als;
   }
-
 };
 
 // enemy_t::create_action ===================================================
@@ -1265,120 +1286,8 @@ void enemy_t::init_defense()
   {
     double& a = initial.stats.armor;
 
-    // a wild equation appears. It's super effective.
-    /*
-    switch ( level() )
-    {
-      case 1: a = 36; break;
-      case 2: a = 46; break;
-      case 3: a = 51; break;
-      case 4: a = 54; break;
-      case 5: a = 57; break;
-      case 6: a = 64; break;
-      case 7: a = 71; break;
-      case 8: a = 84; break;
-      case 9: a = 90; break;
-      case 10: a = 93; break;
-      case 11: a = 97; break;
-      case 12: a = 104; break;
-      case 13: a = 117; break;
-      case 14: a = 129; break;
-      case 15: a = 131; break;
-      case 16: a = 138; break;
-      case 17: a = 141; break;
-      case 18: a = 144; break;
-      case 19: a = 145; break;
-      case 20: a = 146; break;
-      case 21: a = 160; break;
-      case 22: a = 173; break;
-      case 23: a = 185; break;
-      case 24: a = 191; break;
-      case 25: a = 201; break;
-      case 26: a = 208; break;
-      case 27: a = 214; break;
-      case 28: a = 219; break;
-      case 29: a = 220; break;
-      case 30: a = 234; break;
-      case 31: a = 240; break;
-      case 32: a = 252; break;
-      case 33: a = 258; break;
-      case 34: a = 267; break;
-      case 35: a = 276; break;
-      case 36: a = 279; break;
-      case 37: a = 284; break;
-      case 38: a = 295; break;
-      case 39: a = 304; break;
-      case 40: a = 309; break;
-      case 41: a = 313; break;
-      case 42: a = 318; break;
-      case 43: a = 325; break;
-      case 90: a = 794; break; // checked
-      case 91: a = 504; break;
-      case 92: a = 571; break;
-      case 93: a = 646; break;
-      case 94: a = 731; break;
-      case 95: a = 827; break;
-      case 96: a = 936; break;
-      case 97: a = 1059; break;
-      case 98: a = 1199; break;
-      case 99: a = 1357; break;
-      case 100: a = 925; break; //checked
-      case 101: a = 958; break;
-      case 102: a = 990; break; // checked
-      case 103: a = 1025; break; // checked
-      case 104: a = 1027; break;
-      case 105: a = 1029; break;
-      case 106: a = 1031; break;
-      case 107: a = 1032; break;
-      case 108: a = 1033; break; // checked
-      case 109: a = 1053; break; // checked
-      case 110: a = 1076; break; // checked
-      case 111: a = 1364; break; // checked
-      case 112: a = 1434; break; // checked
-      case 113: a = 1515; break; // checked
-      case 114: a = 1605; break; // checked
-      case 115: a = 1693; break; // checked
-      case 116: a = 1780; break; // checked
-      case 117: a = 1885; break; // checked
-      case 118: a = 2008; break; // checked
-      case 119: a = 2121; break; // checked
-      case 120: a = 3336; break; // checked
-      case 121: a = 3336; break; // checked
-      case 122: a = 3336; break; // checked
-      case 123: a = 3336; break; // checked
-      default: a = std::floor(0.006464588162215 * std::exp(0.123782410252464 * level()) + 0.5); break;
-    }
-    */
     a = dbc.npc_armor_value( level() );
   }
-
-  // for future reference, the equations above fit the given values
-  // in the first colum table below. These numbers are magically accurate.
-  // Level  P/W/R   Mage
-  //   90     445    403
-  //   91     504    457
-  //   92     571    517
-  //   93     646    585
-  //   94     731    662
-  //   95     827    749
-  //   96     936    847
-  //   97    1059    959
-  //   98    1199   1086
-  //   99    1357   1129
-  //  100    1536   1229    
-  //  101    2313   1850
-  //  102    2388   1911
-  //  103    2467   1974
-  //  104    2550   2041
-  //  105    2638   2110
-  //  106    2729   2184
-  //  107    2826   2261
-  //  108    2927   2342
-  //  109    3035   2428
-  //  110    3144   2516
-  //  111    3254   2604
-  //  112    3364   2692
-  //  113    3474   2779
 }
 
 // enemy_t::init_buffs ======================================================
@@ -1445,14 +1354,10 @@ void enemy_t::init_target()
 std::string enemy_t::generate_action_list()
 {
   std::string als = "";
-  double level_mult = sim -> dbc.combat_rating( RATING_MELEE_CRIT, sim -> max_player_level ) / sim -> dbc.combat_rating( RATING_MELEE_CRIT, 100 );
-  level_mult = std::pow( level_mult, 0.16 );
 
   // this is the standard Fluffy Pillow action list
-  als += "/auto_attack,damage=" + util::to_string( 80 * level_mult ) + ",attack_speed=2,aoe_tanks=1";
-  als += "/spell_dot,damage=" + util::to_string( 320 * level_mult ) + ",tick_time=2,dot_duration=20,cooldown=40,aoe_tanks=1,if=!ticking";
-  als += "/spell_nuke,damage=" + util::to_string( 120 * level_mult ) + ",cooldown=35,attack_speed=2,aoe_tanks=1";
-  als += "/melee_nuke,damage=" + util::to_string( 240 * level_mult ) + ",cooldown=27,attack_speed=2,aoe_tanks=1";
+  als += "/auto_attack,damage=24000,attack_speed=1.5,aoe_tanks=1,range=" + util::to_string( 2400 );
+  als += "/melee_nuke,damage=40000,cooldown=30,attack_speed=2.0,aoe_tanks=1";
 
   return als;
 }
