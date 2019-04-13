@@ -147,6 +147,7 @@ namespace items
   void stormglide_steps( special_effect_t& );
   void idol_of_indiscriminate_consumption( special_effect_t& );
   void lurkers_insidious_gift( special_effect_t& );
+  void abyssal_speakers_gauntlets( special_effect_t& );
 }
 
 namespace util
@@ -2568,6 +2569,36 @@ void items::lurkers_insidious_gift( special_effect_t& effect )
     -> set_duration( duration_override );
 }
 
+// Abyssal Speaker's Gauntlets ==============================================
+
+// Primarily implements an override to control how long the shield proc is expected to last
+
+void items::abyssal_speakers_gauntlets( special_effect_t& effect )
+{
+  struct ephemeral_vigor_proc_callback_t : public dbc_proc_callback_t
+  {
+    buff_t* ephemeral_vigor_buff;
+
+    ephemeral_vigor_proc_callback_t( const special_effect_t& effect ) :
+      dbc_proc_callback_t( effect.item, effect )
+    { }
+
+    void execute( action_t* action, action_state_t* ) override
+    {
+      int override_duration = action->player->sim->bfa_opts.abyssal_speakers_gauntlets_shield_duration;
+
+      proc_buff->trigger();
+
+      if (override_duration > 0) {
+        // looks like expire only gets scheduled once so calling this multiple times _should_ be fine????
+        proc_buff->expire( timespan_t::from_seconds( override_duration ));
+      }
+    }
+  };
+
+  new ephemeral_vigor_proc_callback_t( effect );
+}
+
 // Waycrest's Legacy Set Bonus ============================================
 
 void set_bonus::waycrest_legacy( special_effect_t& effect )
@@ -2689,6 +2720,8 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 295277, items::stormglide_steps );
   register_special_effect( 295962, items::idol_of_indiscriminate_consumption );
   register_special_effect( 295501, items::lurkers_insidious_gift );
+  register_special_effect( 295430, items::abyssal_speakers_gauntlets );
+
 
   // Misc
   register_special_effect( 276123, items::darkmoon_deck_squalls );
