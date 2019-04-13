@@ -351,6 +351,8 @@ public:
     action_t* living_bomb_dot;
     action_t* living_bomb_dot_spread;
     action_t* living_bomb_explosion;
+    action_t* meteor_burn;
+    action_t* meteor_impact;
     action_t* touch_of_the_magi_explosion;
   } action;
 
@@ -2633,7 +2635,7 @@ struct arcane_orb_bolt_t : public arcane_mage_spell_t
 struct arcane_orb_t : public arcane_mage_spell_t
 {
   arcane_orb_t( mage_t* p, const std::string& options_str ) :
-    arcane_mage_spell_t( "arcane_orb", p, p->find_talent_spell( "Arcane Orb" ) )
+    arcane_mage_spell_t( "arcane_orb", p, p->talents.arcane_orb )
   {
     parse_options( options_str );
     may_miss = may_crit = false;
@@ -2865,7 +2867,7 @@ struct comet_storm_t : public frost_mage_spell_t
   comet_storm_projectile_t* projectile;
 
   comet_storm_t( mage_t* p, const std::string& options_str ) :
-    frost_mage_spell_t( "comet_storm", p, p->find_talent_spell( "Comet Storm" ) ),
+    frost_mage_spell_t( "comet_storm", p, p->talents.comet_storm ),
     delay( timespan_t::from_seconds( p->find_spell( 228601 )->missile_speed() ) ),
     projectile( new comet_storm_projectile_t( p ) )
   {
@@ -4020,7 +4022,7 @@ struct living_bomb_t : public fire_mage_spell_t
     may_miss = may_crit = false;
     impact_action = p->action.living_bomb_dot;
 
-    if ( p->talents.living_bomb->ok() )
+    if ( data().ok() )
     {
       add_child( p->action.living_bomb_dot );
       add_child( p->action.living_bomb_dot_spread );
@@ -4041,13 +4043,12 @@ struct living_bomb_t : public fire_mage_spell_t
 // - Meteor (id=177345) contains the time between cast and impact
 struct meteor_burn_t : public fire_mage_spell_t
 {
-  meteor_burn_t( mage_t* p, int targets ) :
+  meteor_burn_t( mage_t* p ) :
     fire_mage_spell_t( "meteor_burn", p, p->find_spell( 155158 ) )
   {
     background = ground_aoe = true;
-    aoe = targets;
-    spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
-    spell_power_mod.tick = 0;
+    aoe = -1;
+    std::swap( spell_power_mod.direct, spell_power_mod.tick );
     dot_duration = 0_ms;
     radius = p->find_spell( 153564 )->effectN( 1 ).radius_max();
   }
@@ -4060,18 +4061,16 @@ struct meteor_burn_t : public fire_mage_spell_t
 
 struct meteor_impact_t : public fire_mage_spell_t
 {
-  meteor_burn_t* meteor_burn;
   timespan_t meteor_burn_duration;
   timespan_t meteor_burn_pulse_time;
 
-  meteor_impact_t( mage_t* p, meteor_burn_t* meteor_burn, int targets ) :
+  meteor_impact_t( mage_t* p ) :
     fire_mage_spell_t( "meteor_impact", p, p->find_spell( 153564 ) ),
-    meteor_burn( meteor_burn ),
     meteor_burn_duration( p->find_spell( 175396 )->duration() ),
-    meteor_burn_pulse_time( meteor_burn->data().effectN( 1 ).period() )
+    meteor_burn_pulse_time( p->find_spell( 155158 )->effectN( 1 ).period() )
   {
     background = split_aoe_damage = true;
-    aoe = targets;
+    aoe = -1;
 
     triggers_ignite = true;
   }
@@ -4085,37 +4084,35 @@ struct meteor_impact_t : public fire_mage_spell_t
   {
     fire_mage_spell_t::impact( s );
 
-    if ( s->chain_target > 0 )
-      return;
+    if ( s->chain_target == 0 )
+    {
+      p()->ground_aoe_expiration[ p()->action.meteor_burn->name_str ] = sim->current_time() + meteor_burn_duration;
 
-    p()->ground_aoe_expiration[ meteor_burn->name_str ] = sim->current_time() + meteor_burn_duration;
-
-    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
-      .pulse_time( meteor_burn_pulse_time )
-      .target( s->target )
-      .duration( meteor_burn_duration )
-      .action( meteor_burn ) );
+      make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+        .pulse_time( meteor_burn_pulse_time )
+        .target( s->target )
+        .duration( meteor_burn_duration )
+        .action( p()->action.meteor_burn ) );
+    }
   }
 };
 
 struct meteor_t : public fire_mage_spell_t
 {
-  int targets;
   timespan_t meteor_delay;
 
   meteor_t( mage_t* p, const std::string& options_str ) :
-    fire_mage_spell_t( "meteor", p, p->find_talent_spell( "Meteor" ) ),
-    targets( -1 ),
+    fire_mage_spell_t( "meteor", p, p->talents.meteor ),
     meteor_delay( p->find_spell( 177345 )->duration() )
   {
-    add_option( opt_int( "targets", targets ) );
     parse_options( options_str );
+    impact_action = p->action.meteor_impact;
 
-    meteor_burn_t* meteor_burn = new meteor_burn_t( p, targets );
-    impact_action = new meteor_impact_t( p, meteor_burn, targets );
-
-    add_child( impact_action );
-    add_child( meteor_burn );
+    if ( data().ok() )
+    {
+      add_child( p->action.meteor_burn );
+      add_child( p->action.meteor_impact );
+    }
   }
 
   timespan_t travel_time() const override
@@ -4131,7 +4128,7 @@ struct meteor_t : public fire_mage_spell_t
 struct mirror_image_t : public mage_spell_t
 {
   mirror_image_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "mirror_image", p, p->find_talent_spell( "Mirror Image" ) )
+    mage_spell_t( "mirror_image", p, p->talents.mirror_image )
   {
     parse_options( options_str );
     harmful = false;
@@ -5233,6 +5230,12 @@ void mage_t::create_actions()
     action.living_bomb_dot        = new living_bomb_dot_t( this, true );
     action.living_bomb_dot_spread = new living_bomb_dot_t( this, false );
     action.living_bomb_explosion  = new living_bomb_explosion_t( this );
+  }
+
+  if ( talents.meteor->ok() )
+  {
+    action.meteor_burn   = new meteor_burn_t( this );
+    action.meteor_impact = new meteor_impact_t( this );
   }
 
   if ( talents.touch_of_the_magi->ok() )
