@@ -2572,31 +2572,31 @@ void items::lurkers_insidious_gift( special_effect_t& effect )
 // Abyssal Speaker's Gauntlets ==============================================
 
 // Primarily implements an override to control how long the shield proc is expected to last
+// Mostly copied from lurkers insidious gift above
 
 void items::abyssal_speakers_gauntlets( special_effect_t& effect )
 {
-  struct ephemeral_vigor_proc_callback_t : public dbc_proc_callback_t
+  buff_t* ephemeral_power_buff = effect.create_buff();
+
+  timespan_t duration_override = effect.player -> sim -> bfa_opts.abyssal_speakers_gauntlets_shield_duration;
+  timespan_t default_duration = ephemeral_power_buff -> buff_duration;
+
+  // If the overriden duration is out of bounds, 
+  if ( duration_override > default_duration )
   {
-    buff_t* ephemeral_vigor_buff;
+    effect.player -> sim -> error( "{} Abyssal Speaker's Gauntlets duration set higher than the buff's maximum duration, setting to {} seconds", 
+                                   effect.player -> name(), default_duration.total_seconds() );
+    duration_override = default_duration;
+  }
+  // An override of 0s (default value) uses the buff's maximum duration
+  else if ( duration_override == 0_ms )
+    duration_override = default_duration;
 
-    ephemeral_vigor_proc_callback_t( const special_effect_t& effect ) :
-      dbc_proc_callback_t( effect.item, effect )
-    { }
+  ephemeral_power_buff->set_duration( duration_override );
 
-    void execute( action_t* action, action_state_t* ) override
-    {
-      int override_duration = action->player->sim->bfa_opts.abyssal_speakers_gauntlets_shield_duration;
+  effect.custom_buff = ephemeral_power_buff;
 
-      proc_buff->trigger();
-
-      if (override_duration > 0) {
-        // looks like expire only gets scheduled once so calling this multiple times _should_ be fine????
-        proc_buff->expire( timespan_t::from_seconds( override_duration ));
-      }
-    }
-  };
-
-  new ephemeral_vigor_proc_callback_t( effect );
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 // Waycrest's Legacy Set Bonus ============================================

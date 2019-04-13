@@ -1159,7 +1159,7 @@ struct sim_t : private sc_thread_t
     /// Duration of the Lurker's Insidious Gift buff, the player can cancel it early to avoid unnecessary damage
     timespan_t          lurkers_insidious_gift_duration = 0_ms;
     /// Expected duration (in seconds) of shield from Abyssal Speaker's Gauntlets. 0 = full duration
-    int              abyssal_speakers_gauntlets_shield_duration = 0;
+    timespan_t              abyssal_speakers_gauntlets_shield_duration = 0_ms;
   } bfa_opts;
 
   // Expansion specific data

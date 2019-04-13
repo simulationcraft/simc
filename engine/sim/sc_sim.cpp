@@ -3609,8 +3609,8 @@ void sim_t::create_options()
         bfa_opts.stormglide_steps_take_damage_chance, 0.0, 1.0 ) );
   add_option( opt_timespan( "bfa.lurkers_insidious_gift_duration",
         bfa_opts.lurkers_insidious_gift_duration, 0_ms, timespan_t::max() ) );
-  add_option( opt_int( "bfa.abyssal_speakers_gauntlets_shield_duration",
-        bfa_opts.abyssal_speakers_gauntlets_shield_duration, 0, 60 ) );
+  add_option( opt_timespan( "bfa.abyssal_speakers_gauntlets_shield_duration",
+        bfa_opts.abyssal_speakers_gauntlets_shield_duration, 0_ms, timespan_t::max() ) );
 
   // applies to: "lavish_suramar_feast", battle for azeroth feasts
   add_option( opt_bool( "feast_as_dps", feast_as_dps ) );
