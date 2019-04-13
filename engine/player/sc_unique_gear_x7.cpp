@@ -2578,14 +2578,14 @@ void items::abyssal_speakers_gauntlets( special_effect_t& effect )
 {
   buff_t* ephemeral_power_buff = effect.create_buff();
 
-  timespan_t duration_override = effect.player -> sim -> bfa_opts.abyssal_speakers_gauntlets_shield_duration;
-  timespan_t default_duration = ephemeral_power_buff -> buff_duration;
+  timespan_t duration_override = effect.player->sim->bfa_opts.abyssal_speakers_gauntlets_shield_duration;
+  timespan_t default_duration = ephemeral_power_buff->buff_duration;
 
   // If the overriden duration is out of bounds, 
   if ( duration_override > default_duration )
   {
-    effect.player -> sim -> error( "{} Abyssal Speaker's Gauntlets duration set higher than the buff's maximum duration, setting to {} seconds", 
-                                   effect.player -> name(), default_duration.total_seconds() );
+    effect.player->sim->error( "{} Abyssal Speaker's Gauntlets duration set higher than the buff's maximum duration, setting to {} seconds", 
+                                   effect.player->name(), default_duration.total_seconds() );
     duration_override = default_duration;
   }
   // An override of 0s (default value) uses the buff's maximum duration
