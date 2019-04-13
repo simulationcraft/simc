@@ -7045,8 +7045,6 @@ void death_knight_t::init_base_stats()
   // Avoidance diminishing Returns constants/conversions now handled in player_t::init_base_stats().
   // Base miss, dodge, parry, and block are set in player_t::init_base_stats().
   // Just need to add class- or spec-based modifiers here.
-
-  base.dodge += 0.030;
 }
 
 // death_knight_t::init_spells ==============================================
