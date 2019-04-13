@@ -5738,7 +5738,7 @@ void rogue_t::init_action_list()
 
     // Builders
     action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
-    build -> add_action( this, "Pistol Shot", "if=buff.opportunity.up&(buff.keep_your_wits_about_you.stack<25|buff.deadshot.up)", "Use Pistol Shot if it won't cap combo points and the Oppotunity buff is up. Avoid using when Keep Your Wits stacks are high unless the Deadshot buff is also up." );
+    build -> add_action( this, "Pistol Shot", "if=buff.opportunity.up&(buff.keep_your_wits_about_you.stack<25|buff.deadshot.up|energy<45)", "Use Pistol Shot if it won't cap combo points and the Oppotunity buff is up. Avoid using when Keep Your Wits stacks are high unless the Deadshot buff is also up." );
     build -> add_action( this, "Sinister Strike" );
   }
   else if ( specialization() == ROGUE_SUBTLETY )
