@@ -148,6 +148,7 @@ namespace items
   void idol_of_indiscriminate_consumption( special_effect_t& );
   void lurkers_insidious_gift( special_effect_t& );
   void abyssal_speakers_gauntlets( special_effect_t& );
+  void trident_of_the_deep_ocean( special_effect_t& );
 }
 
 namespace util
@@ -2599,6 +2600,56 @@ void items::abyssal_speakers_gauntlets( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Trident of the Deep Ocean ==============================================
+
+void items::trident_of_the_deep_ocean( special_effect_t& effect )
+{
+  struct custody_of_the_deep_absorb_t : absorb_buff_t
+  {
+    stat_buff_t* stat_buff;
+
+    custody_of_the_deep_absorb_t( special_effect_t& effect ) :
+      absorb_buff_t( effect.player, "custody_of_the_deep_absorb", effect.driver() -> effectN( 1 ).trigger(), effect.item )
+    {
+      stat_buff = make_buff<stat_buff_t>( effect.player, "custody_of_the_deep", effect.player -> find_spell( 292653 ), effect.item );
+
+      // Set the absorb value
+      default_value = effect.driver() -> effectN( 1 ).trigger() -> effectN( 1 ).average( effect.item );
+
+      timespan_t duration_override = effect.player -> sim -> bfa_opts.trident_of_deep_ocean_duration;
+
+      // If the overriden duration is out of bounds, yell at the user
+      if ( duration_override > buff_duration )
+      {   
+        effect.player -> sim -> error( "{} Trident of deep ocan duration set higher than the buff's maximum duration, setting to {} seconds", 
+                                       effect.player -> name(), buff_duration.total_seconds() );
+      }
+      else if ( duration_override != 0_ms )
+      {
+        buff_duration = duration_override;
+      }
+
+      // TODO 2019-04-03(melekus): have the effect only absorb up to 25% of the incoming damage
+      // I don't think such an option currently exists in simc, and it's pretty minor considering the low size of the absorb in this case
+      // Also TODO: have the absorb scale with versatility
+
+      // Another TODO: Have an option to let DPS players proc the effect if they want.
+      // Need testing to see if the effect can reliably proc for non-tanks in the first place.
+    }
+
+    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+    {
+      absorb_buff_t::expire_override( expiration_stacks, remaining_duration );
+
+      stat_buff -> trigger();
+    }
+  };
+
+  effect.custom_buff = new custody_of_the_deep_absorb_t( effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Waycrest's Legacy Set Bonus ============================================
 
 void set_bonus::waycrest_legacy( special_effect_t& effect )
@@ -2721,7 +2772,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 295962, items::idol_of_indiscriminate_consumption );
   register_special_effect( 295501, items::lurkers_insidious_gift );
   register_special_effect( 295430, items::abyssal_speakers_gauntlets );
-
+  register_special_effect( 292650, items::trident_of_the_deep_ocean );
 
   // Misc
   register_special_effect( 276123, items::darkmoon_deck_squalls );
