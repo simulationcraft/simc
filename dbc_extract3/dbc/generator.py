@@ -1248,6 +1248,8 @@ class SpellDataGenerator(DataGenerator):
          295811,
          # Fa'thuul's Floodguards
          295257,
+         # Legplates of Unbound Anguish damage proc
+         295428,
         ),
 
         # Warrior:
