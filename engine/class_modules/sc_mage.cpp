@@ -873,6 +873,8 @@ action_t* water_elemental_pet_t::create_action( const std::string& name, const s
 void water_elemental_pet_t::create_actions()
 {
   action.freeze = new freeze_t( this );
+
+  mage_pet_t::create_actions();
 }
 
 }  // water_elemental
