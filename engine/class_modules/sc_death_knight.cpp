@@ -8096,6 +8096,8 @@ double death_knight_t::matching_gear_multiplier( attribute_e attr ) const
     case DEATH_KNIGHT_BLOOD:
       if ( attr == ATTR_STAMINA )
         return spec.plate_specialization -> effectN( 1 ).percent();
+    default:
+      break;
   }
   
   return 0.0;

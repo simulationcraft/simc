@@ -1051,6 +1051,8 @@ void paladin_t::init_scaling()
     case PALADIN_PROTECTION:
       scaling -> enable( STAT_BONUS_ARMOR );
       break;
+    default:
+      break;
   }
   
   scaling -> disable( STAT_AGILITY );
@@ -1359,6 +1361,8 @@ stat_e paladin_t::convert_hybrid_stat( stat_e s ) const
       case STAT_STRENGTH:
       case STAT_AGILITY:
         return STAT_NONE;
+      default:
+        break;
     }
   }
   // Protection and Retribution use strength
@@ -1366,14 +1370,16 @@ stat_e paladin_t::convert_hybrid_stat( stat_e s ) const
   {
     switch ( s )
     {
-    case STAT_STR_AGI_INT:
-    case STAT_STR_INT:
-    case STAT_STR_AGI:
-      return STAT_STRENGTH;
-    case STAT_AGI_INT:
-    case STAT_INTELLECT:
-    case STAT_AGILITY:
-      return STAT_NONE;
+      case STAT_STR_AGI_INT:
+      case STAT_STR_INT:
+      case STAT_STR_AGI:
+        return STAT_STRENGTH;
+      case STAT_AGI_INT:
+      case STAT_INTELLECT:
+      case STAT_AGILITY:
+        return STAT_NONE;
+      default:
+        break;
     }
   }
 
@@ -1387,6 +1393,8 @@ stat_e paladin_t::convert_hybrid_stat( stat_e s ) const
     case STAT_BONUS_ARMOR:
       if ( specialization() != PALADIN_PROTECTION )
         return STAT_NONE;
+      break;
+    default:
       break;
   }
 

@@ -1153,6 +1153,8 @@ struct tank_dummy_enemy_t : public enemy_t
       case TANK_DUMMY_MYTHIC:
         dummy_armor_coeff = 11478.6;
         break;
+      default:
+        break;
     }
     
     initial.armor_coeff = dummy_armor_coeff;
