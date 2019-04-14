@@ -148,7 +148,7 @@ namespace items
   void idol_of_indiscriminate_consumption( special_effect_t& );
   void lurkers_insidious_gift( special_effect_t& );
   void abyssal_speakers_gauntlets( special_effect_t& );
-  void trident_of_the_deep_ocean( special_effect_t& );
+  void trident_of_deep_ocean( special_effect_t& );
 }
 
 namespace util
@@ -2551,67 +2551,94 @@ void items::lurkers_insidious_gift( special_effect_t& effect )
 {
   // Damage to the player isn't implemented
 
-  timespan_t duration_override = effect.player -> sim -> bfa_opts.lurkers_insidious_gift_duration;
-  timespan_t default_duration = effect.player -> find_spell( 295408 ) -> duration();
+  buff_t* insidious_gift_buff = make_buff<stat_buff_t>( effect.player, "insidious_gift", effect.player -> find_spell( 295408 ), effect.item );
 
-  // If the overriden duration is out of bounds, 
-  if ( duration_override > default_duration )
+  timespan_t duration_override = effect.player -> sim -> bfa_opts.lurkers_insidious_gift_duration;
+
+  // If the overriden duration is out of bounds, yell at the user
+  if ( duration_override > insidious_gift_buff -> buff_duration )
   {   
     effect.player -> sim -> error( "{} Lurker's Insidious duration set higher than the buff's maximum duration, setting to {} seconds", 
-                                   effect.player -> name(), default_duration.total_seconds() );
-    duration_override = default_duration;
+                                   effect.player -> name(), insidious_gift_buff -> buff_duration.total_seconds() );
   }
-  // An override of 0s (default value) uses the buff's maximum duration
-  else if ( duration_override == 0_ms )
-    duration_override = default_duration;
-  
-  effect.custom_buff = make_buff<stat_buff_t>( effect.player, "insidious_gift", effect.player -> find_spell( 295408 ), effect.item )
-  // For some reason, the mastery gain linked in the tooltip is not the one from the buff's data, although they share the same value
-    -> set_duration( duration_override );
+  // If the override is valid and different from 0, replace the buff's duration
+  else if ( duration_override > 0_ms )
+  {
+    insidious_gift_buff -> set_duration( duration_override );
+  }
+
+  effect.custom_buff = insidious_gift_buff;
 }
 
 // Abyssal Speaker's Gauntlets ==============================================
 
 // Primarily implements an override to control how long the shield proc is expected to last
-// Mostly copied from lurkers insidious gift above
 
 void items::abyssal_speakers_gauntlets( special_effect_t& effect )
 {
-  buff_t* ephemeral_power_buff = effect.create_buff();
-
-  timespan_t duration_override = effect.player->sim->bfa_opts.abyssal_speakers_gauntlets_shield_duration;
-  timespan_t default_duration = ephemeral_power_buff->buff_duration;
-
-  // If the overriden duration is out of bounds, 
-  if ( duration_override > default_duration )
+  struct ephemeral_vigor_absorb_buff_t : absorb_buff_t
   {
-    effect.player->sim->error( "{} Abyssal Speaker's Gauntlets duration set higher than the buff's maximum duration, setting to {} seconds", 
-                                   effect.player->name(), default_duration.total_seconds() );
-    duration_override = default_duration;
-  }
-  // An override of 0s (default value) uses the buff's maximum duration
-  else if ( duration_override == 0_ms )
-    duration_override = default_duration;
+    stat_buff_t* ephemeral_vigor_stat_buff;
 
-  ephemeral_power_buff->set_duration( duration_override );
+    ephemeral_vigor_absorb_buff_t( const special_effect_t& effect ) :
+      absorb_buff_t( effect.player, "ephemeral_vigor_absorb", effect.driver() -> effectN( 1 ).trigger(), effect.item )
+    {
+      ephemeral_vigor_stat_buff = make_buff<stat_buff_t>( effect.player, "ephemeral_vigor", effect.driver() -> effectN( 1 ).trigger(), effect.item );
 
-  effect.custom_buff = ephemeral_power_buff;
+      // Set the absorb value
+      default_value = effect.driver() -> effectN( 1 ).trigger() -> effectN( 1 ).average( effect.item );
+
+      timespan_t duration_override = effect.player -> sim -> bfa_opts.abyssal_speakers_gauntlets_shield_duration;
+
+      // If the overriden duration is out of bounds, yell at the user
+      if ( duration_override > buff_duration )
+      {
+        effect.player -> sim -> error( "{} Abyssal Speaker's Gauntlets duration set higher than the buff's maximum duration, setting to {} seconds", 
+                                   effect.player -> name(), buff_duration.total_seconds() );
+      }
+      // If the override is valid and different from 0, replace the buff's duration
+      else if ( duration_override > 0_ms )
+      {
+        set_duration( duration_override );
+      }
+      // Manually set absorb school to chaos because autogeneration doesn't seem to catch it
+      absorb_school = SCHOOL_CHAOS;
+    }
+
+    bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+    {
+      bool success = absorb_buff_t::trigger( stacks, value, chance, duration );
+      
+      ephemeral_vigor_stat_buff -> trigger();
+      
+      return success;
+    }
+
+    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+    {
+      absorb_buff_t::expire_override( expiration_stacks, remaining_duration );
+
+      ephemeral_vigor_stat_buff -> expire();
+    }
+  };
+  
+  effect.custom_buff = new ephemeral_vigor_absorb_buff_t( effect );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
 
 // Trident of the Deep Ocean ==============================================
 
-void items::trident_of_the_deep_ocean( special_effect_t& effect )
+void items::trident_of_deep_ocean( special_effect_t& effect )
 {
-  struct custody_of_the_deep_absorb_t : absorb_buff_t
+  struct custody_of_the_deep_absorb_buff_t : absorb_buff_t
   {
-    stat_buff_t* stat_buff;
+    stat_buff_t* custody_of_the_deep_stat_buff;
 
-    custody_of_the_deep_absorb_t( special_effect_t& effect ) :
+    custody_of_the_deep_absorb_buff_t( special_effect_t& effect ) :
       absorb_buff_t( effect.player, "custody_of_the_deep_absorb", effect.driver() -> effectN( 1 ).trigger(), effect.item )
     {
-      stat_buff = make_buff<stat_buff_t>( effect.player, "custody_of_the_deep", effect.player -> find_spell( 292653 ), effect.item );
+      custody_of_the_deep_stat_buff = make_buff<stat_buff_t>( effect.player, "custody_of_the_deep", effect.player -> find_spell( 292653 ), effect.item );
 
       // Set the absorb value
       default_value = effect.driver() -> effectN( 1 ).trigger() -> effectN( 1 ).average( effect.item );
@@ -2624,9 +2651,10 @@ void items::trident_of_the_deep_ocean( special_effect_t& effect )
         effect.player -> sim -> error( "{} Trident of deep ocan duration set higher than the buff's maximum duration, setting to {} seconds", 
                                        effect.player -> name(), buff_duration.total_seconds() );
       }
-      else if ( duration_override != 0_ms )
+      // If the override is valid and different from 0, replace the buff's duration
+      else if ( duration_override > 0_ms )
       {
-        buff_duration = duration_override;
+        set_duration( duration_override );
       }
 
       // TODO 2019-04-03(melekus): have the effect only absorb up to 25% of the incoming damage
@@ -2641,11 +2669,11 @@ void items::trident_of_the_deep_ocean( special_effect_t& effect )
     {
       absorb_buff_t::expire_override( expiration_stacks, remaining_duration );
 
-      stat_buff -> trigger();
+      custody_of_the_deep_stat_buff -> trigger();
     }
   };
 
-  effect.custom_buff = new custody_of_the_deep_absorb_t( effect );
+  effect.custom_buff = new custody_of_the_deep_absorb_buff_t( effect );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -2772,7 +2800,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 295962, items::idol_of_indiscriminate_consumption );
   register_special_effect( 295501, items::lurkers_insidious_gift );
   register_special_effect( 295430, items::abyssal_speakers_gauntlets );
-  register_special_effect( 292650, items::trident_of_the_deep_ocean );
+  register_special_effect( 292650, items::trident_of_deep_ocean );
 
   // Misc
   register_special_effect( 276123, items::darkmoon_deck_squalls );
