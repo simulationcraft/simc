@@ -210,6 +210,18 @@ struct purge_the_wicked_t final : public priest_spell_t
       background    = true;
     }
 
+    double bonus_ta( const action_state_t* state ) const override
+    {
+      double d = priest_spell_t::bonus_ta( state );
+
+      if ( priest().azerite.death_throes.enabled() )
+      {
+        d += priest().azerite.death_throes.value( 1 );
+      }
+
+      return d;
+    }
+
     void tick( dot_t* d ) override
     {
       priest_spell_t::tick( d );
