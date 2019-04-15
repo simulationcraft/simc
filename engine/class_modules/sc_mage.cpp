@@ -1137,7 +1137,7 @@ struct ice_floes_buff_t : public buff_t
     buff_t( p, "ice_floes", p->talents.ice_floes )
   { }
 
-  void decrement( int stacks = 1, double value = DEFAULT_VALUE() ) override
+  void decrement( int stacks, double value ) override
   {
     if ( check() == 0 )
       return;
@@ -2544,7 +2544,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
       p()->buffs.clearcasting_channel->expire();
   }
 
-  dmg_e amount_type( const action_state_t*, bool = false ) const override
+  dmg_e amount_type( const action_state_t*, bool ) const override
   {
     return DMG_DIRECT;
   }
@@ -2727,7 +2727,7 @@ struct blizzard_shard_t : public frost_mage_spell_t
     background = ground_aoe = chills = true;
   }
 
-  dmg_e amount_type( const action_state_t*, bool = false ) const override
+  dmg_e amount_type( const action_state_t*, bool ) const override
   {
     return DMG_OVER_TIME;
   }
@@ -2756,7 +2756,7 @@ struct blizzard_shard_t : public frost_mage_spell_t
 
 struct blizzard_t : public frost_mage_spell_t
 {
-  blizzard_shard_t* blizzard_shard;
+  action_t* blizzard_shard;
 
   blizzard_t( mage_t* p, const std::string& options_str ) :
     frost_mage_spell_t( "blizzard", p, p->find_specialization_spell( "Blizzard" ) ),
@@ -2878,7 +2878,7 @@ struct comet_storm_projectile_t : public frost_mage_spell_t
 struct comet_storm_t : public frost_mage_spell_t
 {
   timespan_t delay;
-  comet_storm_projectile_t* projectile;
+  action_t* projectile;
 
   comet_storm_t( mage_t* p, const std::string& options_str ) :
     frost_mage_spell_t( "comet_storm", p, p->talents.comet_storm ),
@@ -3158,7 +3158,7 @@ struct flame_patch_t : public fire_mage_spell_t
     ground_aoe = background = true;
   }
 
-  dmg_e amount_type( const action_state_t*, bool = false ) const override
+  dmg_e amount_type( const action_state_t*, bool ) const override
   {
     return DMG_OVER_TIME;
   }
@@ -3168,7 +3168,7 @@ struct flame_patch_t : public fire_mage_spell_t
 
 struct flamestrike_t : public hot_streak_spell_t
 {
-  flame_patch_t* flame_patch;
+  action_t* flame_patch;
   timespan_t flame_patch_duration;
 
   flamestrike_t( mage_t* p, const std::string& options_str ) :
@@ -3284,7 +3284,7 @@ struct flurry_bolt_t : public frost_mage_spell_t
 
 struct flurry_t : public frost_mage_spell_t
 {
-  flurry_bolt_t* flurry_bolt;
+  action_t* flurry_bolt;
 
   flurry_t( mage_t* p, const std::string& options_str ) :
     frost_mage_spell_t( "flurry", p, p->find_specialization_spell( "Flurry" ) ),
@@ -3480,7 +3480,7 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
 
 struct frozen_orb_t : public frost_mage_spell_t
 {
-  frozen_orb_bolt_t* frozen_orb_bolt;
+  action_t* frozen_orb_bolt;
 
   frozen_orb_t( mage_t* p, const std::string& options_str ) :
     frost_mage_spell_t( "frozen_orb", p, p->find_specialization_spell( "Frozen Orb" ) ),
@@ -4067,7 +4067,7 @@ struct meteor_burn_t : public fire_mage_spell_t
     radius = p->find_spell( 153564 )->effectN( 1 ).radius_max();
   }
 
-  dmg_e amount_type( const action_state_t*, bool = false ) const override
+  dmg_e amount_type( const action_state_t*, bool ) const override
   {
     return DMG_OVER_TIME;
   }
@@ -4180,7 +4180,7 @@ struct nether_tempest_aoe_t : public arcane_mage_spell_t
     background = true;
   }
 
-  dmg_e amount_type( const action_state_t*, bool = false ) const override
+  dmg_e amount_type( const action_state_t*, bool ) const override
   {
     return DMG_OVER_TIME;
   }
@@ -4193,7 +4193,7 @@ struct nether_tempest_aoe_t : public arcane_mage_spell_t
 
 struct nether_tempest_t : public arcane_mage_spell_t
 {
-  nether_tempest_aoe_t* nether_tempest_aoe;
+  action_t* nether_tempest_aoe;
 
   nether_tempest_t( mage_t* p, const std::string& options_str ) :
     arcane_mage_spell_t( "nether_tempest", p, p->talents.nether_tempest ),
@@ -4309,7 +4309,7 @@ struct trailing_embers_t : public fire_mage_spell_t
 
 struct pyroblast_t : public hot_streak_spell_t
 {
-  trailing_embers_t* trailing_embers;
+  action_t* trailing_embers;
 
   pyroblast_t( mage_t* p, const std::string& options_str ) :
     hot_streak_spell_t( "pyroblast", p, p->find_specialization_spell( "Pyroblast" ) ),
