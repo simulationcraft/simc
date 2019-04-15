@@ -5617,7 +5617,8 @@ void rogue_t::init_action_list()
         auto use_effect_id = items[i].special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) -> spell_id;
         if ( items[i].name_str == "galecallers_boon" )
           cds -> add_action( "use_item,name=" + items[i].name_str + ",if=cooldown.vendetta.remains>45" );
-        else if ( use_effect_id == 271107 || use_effect_id == 277179 || use_effect_id == 277185 ) // Golden Luster, Gladiator's Medallion Gladiator's Badge
+        else if ( use_effect_id == 271107 || use_effect_id == 277179 || use_effect_id == 277185 || // Golden Luster, Gladiator's Medallion, Gladiator's Badge
+                  items[i].name_str == "lurkers_insidious_gift" )
           cds -> add_action( "use_item,name=" + items[i].name_str + ",if=debuff.vendetta.up" );
         else // Default: Use on CD
           cds -> add_action( "use_item,name=" + items[i].name_str, "Default Trinket usage: Use on cooldown." );
