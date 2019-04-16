@@ -149,6 +149,7 @@ namespace items
   void lurkers_insidious_gift( special_effect_t& );
   void abyssal_speakers_gauntlets( special_effect_t& );
   void trident_of_deep_ocean( special_effect_t& );
+  void legplates_of_unbound_anguish( special_effect_t& );
 }
 
 namespace util
@@ -2678,6 +2679,40 @@ void items::trident_of_deep_ocean( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Legplates of Unbound Anguish ===========================================
+
+void items::legplates_of_unbound_anguish( special_effect_t& effect )
+{
+  struct unbound_anguish_cb_t : public dbc_proc_callback_t
+  {
+    unbound_anguish_cb_t( const special_effect_t& effect ) :
+      dbc_proc_callback_t( effect.player, effect )
+    { }
+
+    // Re-used some of the Gutripper code for the pre-trigger health percentage check
+    void trigger( action_t* a, void* call_data ) override
+    {
+      auto state = static_cast<action_state_t*>( call_data );
+
+      if ( state -> target -> health_percentage() < state -> action -> player -> health_percentage() )
+      {
+        dbc_proc_callback_t::trigger( a, call_data );
+      }
+    }
+  };
+
+  //TODO: wait for spelldata regen and change ID to 295428
+
+  action_t* unbound_anguish_damage = create_proc_action<proc_t>( "unbound_anguish", effect, "unbound_anguish", 295427 );
+
+  unbound_anguish_damage -> base_dd_min = unbound_anguish_damage -> base_dd_max = unbound_anguish_damage -> data().effectN( 1 ).average( effect.item );
+
+  //effect.execute_action = create_proc_action<proc_t>( "unbound_anguish", effect, "unbound_anguish", 295428 );
+  effect.execute_action = unbound_anguish_damage;
+    
+  new unbound_anguish_cb_t( effect );
+}
+
 // Waycrest's Legacy Set Bonus ============================================
 
 void set_bonus::waycrest_legacy( special_effect_t& effect )
@@ -2801,6 +2836,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 295501, items::lurkers_insidious_gift );
   register_special_effect( 295430, items::abyssal_speakers_gauntlets );
   register_special_effect( 292650, items::trident_of_deep_ocean );
+  register_special_effect( 295427, items::legplates_of_unbound_anguish );
 
   // Misc
   register_special_effect( 276123, items::darkmoon_deck_squalls );
