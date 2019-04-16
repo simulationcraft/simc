@@ -892,7 +892,7 @@ void gem::capacitive_primal( special_effect_t& effect )
   player_t* p = effect.item -> player;
 
   // Stacking Buff
-  effect.custom_buff = buff_creator_t( p, "capacitance", p -> find_spell( 137596 ) );
+  effect.custom_buff = make_buff( p, "capacitance", p -> find_spell( 137596 ) );
 
   // Execute Action
   action_t* ls = p -> create_proc_action( "lightning_strike", effect );
@@ -1000,8 +1000,8 @@ void set_bonus::t17_lfr_4pc_agimelee( special_effect_t& effect )
 
 void set_bonus::t17_lfr_4pc_leamelee( special_effect_t& effect )
 {
-  effect.player -> buffs.surge_of_energy = buff_creator_t( effect.player, "surge_of_energy", effect.player -> find_spell( 179116 ) )
-                                           .affects_regen( true );
+  effect.player -> buffs.surge_of_energy = make_buff( effect.player, "surge_of_energy", effect.player -> find_spell( 179116 ) )
+                                           ->set_affects_regen( true );
   effect.custom_buff = effect.player -> buffs.surge_of_energy;
 
   new dbc_proc_callback_t( effect.player, effect );
@@ -1051,7 +1051,7 @@ void set_bonus::t17_lfr_4pc_leacaster( special_effect_t& effect )
     natures_fury_cb_t* callback;
 
     natures_fury_buff_t( player_t* player, natures_fury_cb_t* cb ) :
-      buff_t( buff_creator_t( player, "natures_fury", player -> find_spell( 179119 ) ) ),
+      buff_t(  player, "natures_fury", player -> find_spell( 179119 ) ),
       callback( cb )
     { }
 
@@ -1147,8 +1147,8 @@ void set_bonus::t17_lfr_4pc_mailcaster( special_effect_t& effect )
 void set_bonus::t17_lfr_4pc_platemelee( special_effect_t& effect )
 {
   const spell_data_t* driver = effect.player -> find_spell( effect.spell_id );
-  effect.player -> buffs.brute_strength = buff_creator_t( effect.player, "brute_strength", driver -> effectN( 1 ).trigger() )
-                                          .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  effect.player -> buffs.brute_strength = make_buff( effect.player, "brute_strength", driver -> effectN( 1 ).trigger() )
+                                          ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   effect.custom_buff = effect.player -> buffs.brute_strength;
 
   new dbc_proc_callback_t( effect.player, effect );
@@ -1464,8 +1464,8 @@ void item::spark_of_zandalar( special_effect_t& effect )
       dbc_proc_callback_t( *data.item, data ), buff(nullptr)
     {
       const spell_data_t* spell = listener -> find_spell( 138958 );
-      sparks = buff_creator_t( listener, "zandalari_spark_driver", spell, data.item )
-               .quiet( true );
+      sparks = make_buff( listener, "zandalari_spark_driver", spell, data.item )
+               ->set_quiet( true );
     }
 
     void execute( action_t* /* action */, action_state_t* /* state */ ) override
@@ -1488,8 +1488,10 @@ void item::unerring_vision_of_leishen( special_effect_t& effect )
   struct perfect_aim_buff_t : public buff_t
   {
     perfect_aim_buff_t( player_t* p ) :
-      buff_t( buff_creator_t( p, "perfect_aim", p -> find_spell( 138963 ) ).activated( false ) )
-    { }
+      buff_t( p, "perfect_aim", p -> find_spell( 138963 ) )
+    {
+      set_activated( false );
+    }
 
     void execute( int stacks, double value, timespan_t duration ) override
     {
@@ -2021,11 +2023,11 @@ void item::legendary_ring( special_effect_t& effect )
       player_t* p;
 
       legendary_ring_buff_t( special_effect_t& originaleffect, std::string name, const spell_data_t* buff, const spell_data_t* damagespell ):
-        buff_t( buff_creator_t( originaleffect.player, name, buff, originaleffect.item )
-        .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-        .default_value( originaleffect.player -> find_spell( originaleffect.spell_id ) -> effectN( 1 ).average( originaleffect.item ) / 10000.0 ) ),
+        buff_t( originaleffect.player, name, buff, originaleffect.item ),
         boom( 0 ), p( originaleffect.player )
       {
+        add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+        set_default_value( originaleffect.player -> find_spell( originaleffect.spell_id ) -> effectN( 1 ).average( originaleffect.item ) / 10000.0 );
         boom = p -> find_action( damagespell -> name_cstr() );
 
         if ( !boom )
@@ -2139,9 +2141,9 @@ void item::legendary_ring( special_effect_t& effect )
     {
       const spell_data_t* driver_spell = p -> find_spell( effect.spell_id );
       const spell_data_t* spell = p -> find_spell( 187617 );
-      buff = buff_creator_t( p, "sanctus", spell )
-        .add_invalidate( CACHE_VERSATILITY )
-        .default_value( driver_spell -> effectN( 1 ).average( effect.item ) / 10000.0 );
+      buff = make_buff( p, "sanctus", spell )
+        ->add_invalidate( CACHE_VERSATILITY )
+        ->set_default_value( driver_spell -> effectN( 1 ).average( effect.item ) / 10000.0 );
       p -> buffs.legendary_tank_buff = buff;
     }
   }
@@ -2162,7 +2164,7 @@ void item::gronntooth_war_horn( special_effect_t& effect )
 
 void item::infallible_tracking_charm( special_effect_t& effect )
 {
-  effect.custom_buff = buff_creator_t( effect.player, "cleansing_flame", effect.driver() -> effectN( 1 ).trigger(), effect.item );
+  effect.custom_buff = make_buff( effect.player, "cleansing_flame", effect.driver() -> effectN( 1 ).trigger(), effect.item );
   effect.execute_action = new spell_t( "cleansing_flame", effect.player, effect.driver() -> effectN( 1 ).trigger() );
 
   effect.execute_action -> background = true;
@@ -2422,7 +2424,7 @@ void item::readiness( special_effect_t& effect )
 
   if ( p -> buffs.cooldown_reduction == nullptr )
   {
-    p -> buffs.cooldown_reduction = buff_creator_t( p, "readiness", effect.driver(), effect.item );
+    p -> buffs.cooldown_reduction = make_buff( p, "readiness", effect.driver(), effect.item );
   }
 
   p -> buffs.cooldown_reduction -> s_data = cdr_spell;
@@ -2801,12 +2803,14 @@ void item::felmouth_frenzy( special_effect_t& effect )
 struct fel_burn_t : public buff_t
 {
   fel_burn_t( const actor_pair_t& p, const special_effect_t& source_effect ) :
-    buff_t( buff_creator_t( p, "fel_burn", p.source -> find_spell( 184256 ), source_effect.item )
-    .refresh_behavior( buff_refresh_behavior::DISABLED )
+    buff_t( p, "fel_burn", p.source -> find_spell( 184256 ), source_effect.item )
+  {
+
+    set_refresh_behavior( buff_refresh_behavior::DISABLED );
     // Add a millisecond of duration to the debuff so we ensure that the last tick (at 15 seconds)
     // will always have the correct number of stacks.
-    .duration( timespan_t::from_seconds( 15.001 ) ) )
-  { }
+    set_duration( timespan_t::from_seconds( 15.001 ) );
+  }
 };
 
 struct empty_drinking_horn_damage_t : public melee_attack_t
@@ -2879,7 +2883,7 @@ struct empty_drinking_horn_constructor_t : public item_targetdata_initializer_t
     const special_effect_t* effect = find_effect( td -> source );
     if ( ! effect )
     {
-      td -> debuff.fel_burn = buff_creator_t( *td, "fel_burn" );
+      td -> debuff.fel_burn = make_buff( *td, "fel_burn" );
     }
     else
     {
@@ -3096,9 +3100,11 @@ struct mark_of_doom_t : public buff_t
   special_effect_t* effect;
 
   mark_of_doom_t( const actor_pair_t& p, const special_effect_t& source_effect ) :
-    buff_t( buff_creator_t( p, "mark_of_doom", source_effect.driver() -> effectN( 1 ).trigger(), source_effect.item ).activated( false ) ),
+    buff_t( p, "mark_of_doom", source_effect.driver() -> effectN( 1 ).trigger(), source_effect.item ),
     damage_spell( p.source -> find_action( "doom_nova" ) )
   {
+    set_activated( false );
+
     // Special effect to drive the AOE damage callback
     effect = new special_effect_t( p.source );
     effect -> name_str = "mark_of_doom_damage_driver";
@@ -3177,7 +3183,7 @@ struct prophecy_of_fear_constructor_t : public item_targetdata_initializer_t
     const special_effect_t* effect = find_effect( td -> source );
     if ( effect == 0 )
     {
-      td -> debuff.mark_of_doom = buff_creator_t( *td, "mark_of_doom" );
+      td -> debuff.mark_of_doom = make_buff( *td, "mark_of_doom" );
     }
     else
     {
@@ -3277,7 +3283,7 @@ struct soul_capacitor_buff_t : public buff_t
   spell_t* explosion;
 
   soul_capacitor_buff_t( player_t* player, special_effect_t& effect ) :
-    buff_t( buff_creator_t( player, "spirit_shift", player -> find_spell( 184293 ), effect.item ) ),
+    buff_t( player, "spirit_shift", player -> find_spell( 184293 ), effect.item ),
     explosion( new soul_capacitor_explosion_t( player, effect ) )
   {
     player -> sim -> target_non_sleeping_list.register_callback( spirit_shift_explode_callback_t( this ) );
@@ -3548,11 +3554,11 @@ void item::tyrants_decree( special_effect_t& effect )
     }
   };
   
-  buff_t* driver  = buff_creator_t( effect.player, "tyrants_decree_driver", effect.driver() )
-                    .period( effect.driver() -> effectN( 1 ).period() )
-                    .tick_behavior( buff_tick_behavior::REFRESH )
-                    .tick_callback( tyrants_decree_driver_callback )
-                    .quiet( true );
+  buff_t* driver  = make_buff( effect.player, "tyrants_decree_driver", effect.driver() )
+                    ->set_period( effect.driver() -> effectN( 1 ).period() )
+                    ->set_tick_behavior( buff_tick_behavior::REFRESH )
+                    ->set_tick_callback( tyrants_decree_driver_callback )
+                    ->set_quiet( true );
   stat_buff_t* trigger = make_buff<stat_buff_t>( effect.player, "tyrants_immortality", effect.player -> find_spell( 184770 ) );
   trigger->add_stat( STAT_STAMINA, effect.player -> find_spell( 184770 ) -> effectN( 1 ).average( effect.item ) )
       ->set_duration( timespan_t::zero() ); // indefinite, this will never expire naturally so might as well save some CPU cycles
@@ -3704,8 +3710,8 @@ void racial::entropic_embrace( special_effect_t& effect )
   buff_t* base_buff = buff_t::find( effect.player, "entropic_embrace" );
   if ( base_buff == nullptr )
   {
-    base_buff = buff_creator_t( effect.player, "entropic_embrace", effect.trigger() )
-                .stack_change_callback( [ proc ]( buff_t*, int, int new_ ) {
+    base_buff = make_buff( effect.player, "entropic_embrace", effect.trigger() )
+                ->set_stack_change_callback( [ proc ]( buff_t*, int, int new_ ) {
                   if ( new_ > 0 ) proc -> activate();
                   else            proc -> deactivate();
                 } );
@@ -3833,7 +3839,7 @@ void racial::zandalari_loa( special_effect_t& effect )
     if (paku == nullptr)
     {
       //Buff spell data contains duration and amount
-      paku = buff_creator_t( effect.player, "embrace_of_paku", effect.player->find_spell(292463) );
+      paku = make_buff( effect.player, "embrace_of_paku", effect.player->find_spell(292463) );
       paku->add_invalidate(CACHE_CRIT_CHANCE);
       paku->set_default_value(effect.player->find_spell(292463)->effectN(1).percent());
     }

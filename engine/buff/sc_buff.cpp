@@ -38,7 +38,7 @@ struct buff_expr_t : public expr_t
           action->name(), buff_name, action->player->name() );
       action->sim->cancel();
       // Prevent segfault
-      buff = buff_creator_t( action->player, "dummy" );
+      buff = make_buff( action->player, "dummy" );
     }
 
     return buff;

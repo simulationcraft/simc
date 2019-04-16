@@ -251,13 +251,13 @@ void consumables::potion_of_rising_death( special_effect_t& effect )
   proc->deactivate();
   proc->initialize();
 
-  effect.custom_buff = buff_creator_t( effect.player, effect.name(), effect.driver() )
-    .stack_change_callback( [ proc ]( buff_t*, int, int new_ ) {
+  effect.custom_buff = make_buff( effect.player, effect.name(), effect.driver() )
+    ->set_stack_change_callback( [ proc ]( buff_t*, int, int new_ ) {
       if ( new_ == 1 ) proc->activate();
       else             proc->deactivate();
     } )
-    .cd( timespan_t::zero() ) // Handled by the action
-    .chance( 1.0 ); // Override chance so the buff actually triggers
+    ->set_cooldown( timespan_t::zero() ) // Handled by the action
+    ->set_chance( 1.0 ); // Override chance so the buff actually triggers
 }
 
 // Potion of Bursting Blood =================================================
@@ -279,13 +279,13 @@ void consumables::potion_of_bursting_blood( special_effect_t& effect )
   proc->deactivate();
   proc->initialize();
 
-  effect.custom_buff = buff_creator_t( effect.player, effect.name(), effect.driver() )
-    .stack_change_callback( [ proc ]( buff_t*, int, int new_ ) {
+  effect.custom_buff = make_buff( effect.player, effect.name(), effect.driver() )
+    ->set_stack_change_callback( [ proc ]( buff_t*, int, int new_ ) {
       if ( new_ == 1 ) proc->activate();
       else             proc->deactivate();
     } )
-    .cd( timespan_t::zero() ) // Handled by the action
-    .chance( 1.0 ); // Override chance so the buff actually triggers
+    ->set_cooldown( timespan_t::zero() ) // Handled by the action
+    ->set_chance( 1.0 ); // Override chance so the buff actually triggers
 }
 
 // Gale-Force Striking ======================================================
