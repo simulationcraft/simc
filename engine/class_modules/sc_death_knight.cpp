@@ -1810,6 +1810,24 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
     owner_coeff.ap_from_ap = 0.4;
   }
 
+  // There is currently a bug affecting apoc/army ghouls
+  // Their energy regeneration rate double dips on haste
+  // https://github.com/SimCMinMax/WoW-BugTracker/issues/108
+  double resource_regen_per_second( resource_e r ) const override
+  {
+    double reg = player_t::resource_regen_per_second( r );
+
+    if ( r == RESOURCE_ENERGY && o() -> bugs )
+    {
+      if ( reg )
+      {
+        reg *= ( 1.0 / cache.attack_haste() );
+      }
+    }
+
+    return reg;
+  }
+
   void init_action_list() override
   {
     base_ghoul_pet_t::init_action_list();
