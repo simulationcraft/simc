@@ -2694,7 +2694,7 @@ void items::legplates_of_unbound_anguish( special_effect_t& effect )
     {
       auto state = static_cast<action_state_t*>( call_data );
 
-      if ( state -> target -> health_percentage() < state -> action -> player -> health_percentage() )
+      if ( rng().roll( a -> sim -> bfa_opts.legplates_of_unbound_anguish_chance ) )
       {
         dbc_proc_callback_t::trigger( a, call_data );
       }
