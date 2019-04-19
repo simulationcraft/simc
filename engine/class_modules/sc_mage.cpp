@@ -4698,19 +4698,12 @@ struct ignite_spread_event_t : public event_t
         {
           // Skip candidates that have equal ignite bank size to the source
           int index = as<int>( candidates.size() ) - 1;
-          while ( index >= 0 )
-          {
-            if ( ignite_bank( candidates[ index ] ) < source_bank )
-              break;
-
+          while ( index >= 0 && ignite_bank( candidates[ index ] ) == source_bank )
             index--;
-          }
 
+          // No valid spread targets
           if ( index < 0 )
-          {
-            // No valid spread targets
             continue;
-          }
 
           // TODO: Filter valid candidates by ignite spread range
 
@@ -4719,21 +4712,15 @@ struct ignite_spread_event_t : public event_t
           dot_t* destination = candidates[ index ];
 
           if ( destination->is_ticking() )
-          {
-            // TODO: Use benefits to keep track of lost ignite banks
-            destination->cancel();
             mage->procs.ignite_overwrite->occur();
-            sim().print_log( "{} ignite spreads from {} to {} (overwrite)",
-                             mage->name(), source->target->name(),
-                             destination->target->name() );
-          }
           else
-          {
             mage->procs.ignite_new_spread->occur();
-            sim().print_log( "{} ignite spreads from {} to {} (new)",
-                             mage->name(), source->target->name(),
-                             destination->target->name() );
-          }
+
+          sim().print_log( "{} ignite spreads from {} to {} ({})",
+                           mage->name(), source->target->name(), destination->target->name(),
+                           destination->is_ticking() ? "overwrite" : "new" );
+
+          destination->cancel();
           source->copy( destination->target, DOT_COPY_CLONE );
 
           // Remove spread destination from candidates
