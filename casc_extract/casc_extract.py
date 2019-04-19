@@ -77,10 +77,10 @@ if __name__ == '__main__':
 			if not root.open():
 				sys.exit(1)
 
-			for file_hash, file_name in fname_db.items():
+			for file_data_id, file_name in fname_db.items():
 				extract_data = None
 
-				file_md5s = root.GetFileHashMD5(file_hash)
+				file_md5s = root.GetFileDataIdMD5(file_data_id)
 				file_keys = []
 				for md5s in file_md5s:
 					file_keys = encoding.GetFileKeys(md5s)
@@ -95,7 +95,7 @@ if __name__ == '__main__':
 				if not extract_data:
 					continue
 
-				print('Extracting %s ...' % file_name)
+				print('Extracting %s (id=%d) ...' % (file_name, file_data_id))
 
 				if not blte.extract_file(*extract_data):
 					sys.exit(1)
@@ -113,8 +113,8 @@ if __name__ == '__main__':
 				sys.exit(1)
 
 			output_path = os.path.join(opts.output, cdn.build())
-			for file_hash, file_name in fname_db.items():
-				file_md5s = root.GetFileHashMD5(file_hash)
+			for file_data_id, file_name in fname_db.items():
+				file_md5s = root.GetFileDataIdMD5(file_data_id)
 				if not file_md5s:
 					continue
 
@@ -129,7 +129,7 @@ if __name__ == '__main__':
 				if len(file_keys) > 1:
 					print('More than one key found for %s, selecting first one ...' % file_name)
 
-				print('Extracting %s ...' % file_name)
+				print('Extracting %s (id=%d) ...' % (file_name, file_data_id))
 
 				data = cdn.fetch_file(file_keys[0])
 				if not data:
