@@ -997,6 +997,11 @@ class CASCRootFile(CASCObject):
 
 		if self.options.ptr:
 			magic, unk_h1, unk_h2 = _ROOT_HEADER.unpack_from(data, offset)
+
+			if magic != _ROOT_MAGIC:
+				print('Invalid magic in file, expected "{:s}", got "{:s}"'.format(
+					_ROOT_MAGIC.decode('ascii'), magic.decode('ascii')))
+				return False
 			offset += _ROOT_HEADER.size
 			#print(magic, unk_h1, unk_h2)
 
