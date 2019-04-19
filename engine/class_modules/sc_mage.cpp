@@ -4961,13 +4961,7 @@ action_t* mage_t::create_action( const std::string& name, const std::string& opt
 
   // Shared spells
   if ( name == "arcane_intellect"       ) return new       arcane_intellect_t( name, this, options_str );
-  if ( name == "blink" )
-  {
-    if ( talents.shimmer->ok() )
-      return new shimmer_t( name, this, options_str );
-    else
-      return new blink_t( name, this, options_str );
-  }
+  if ( name == "blink"                  ) return new                  blink_t( name, this, options_str );
   if ( name == "counterspell"           ) return new           counterspell_t( name, this, options_str );
   if ( name == "frost_nova"             ) return new             frost_nova_t( name, this, options_str );
   if ( name == "time_warp"              ) return new              time_warp_t( name, this, options_str );
@@ -4976,6 +4970,13 @@ action_t* mage_t::create_action( const std::string& name, const std::string& opt
   if ( name == "mirror_image"           ) return new           mirror_image_t( name, this, options_str );
   if ( name == "rune_of_power"          ) return new          rune_of_power_t( name, this, options_str );
   if ( name == "shimmer"                ) return new                shimmer_t( name, this, options_str );
+
+  // Special
+  if ( name == "blink_any" )
+  {
+    if ( talents.shimmer->ok() )          return new           shimmer_t( "shimmer", this, options_str );
+    else                                  return new               blink_t( "blink", this, options_str );
+  }
 
   return player_t::create_action( name, options_str );
 }
@@ -5746,7 +5747,7 @@ void mage_t::apl_arcane()
   conserve->add_action( this, "Arcane Blast" );
   conserve->add_action( this, "Arcane Barrage" );
 
-  movement->add_action( this, "Blink", "if=movement.distance>=10" );
+  movement->add_action( "blink_any,if=movement.distance>=10" );
   movement->add_action( this, "Presence of Mind" );
   movement->add_action( this, "Arcane Missiles" );
   movement->add_talent( this, "Arcane Orb" );
@@ -5978,7 +5979,7 @@ void mage_t::apl_frost()
     "Without Glacial Spike, Rune of Power should be used before any bigger cooldown (Ebonbolt, Comet Storm, Ray of Frost) or "
     "when Rune of Power is about to reach 2 charges." );
 
-  movement->add_action( this, "Blink", "if=movement.distance>10" );
+  movement->add_action( "blink_any,if=movement.distance>10" );
   movement->add_talent( this, "Ice Floes", "if=buff.ice_floes.down" );
 }
 
