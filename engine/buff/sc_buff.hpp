@@ -396,14 +396,3 @@ struct movement_buff_t : public buff_t
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
 };
 
-struct invulnerable_debuff_t : public buff_t
-{
-  invulnerable_debuff_t( player_t* p ) :
-    buff_t( p, "invulnerable" )
-  {
-    set_max_stack( 1 );
-  }
-
-  void start( int stacks, double value, timespan_t duration ) override;
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
-};
