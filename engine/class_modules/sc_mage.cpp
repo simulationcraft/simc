@@ -6830,55 +6830,6 @@ private:
   mage_t& p;
 };
 
-// Custom Gear ==============================================================
-
-struct sorcerous_spell_t : public unique_gear::proc_spell_t
-{
-  sorcerous_spell_t( const std::string& name, const special_effect_t& effect, const spell_data_t* spell ) :
-    proc_spell_t( name, effect.player, spell, effect.item )
-  { }
-
-  double composite_crit_chance() const override
-  { return 0.1; }
-
-  double composite_crit_chance_multiplier() const override
-  { return 1.0; }
-};
-
-struct sorcerous_shadowruby_pendant_driver_t : public spell_t
-{
-  std::vector<action_t*> sorcerous_spells;
-
-  sorcerous_shadowruby_pendant_driver_t( const special_effect_t& effect ) :
-    spell_t( "wanton_sorcery", effect.player, effect.driver() )
-  {
-    callbacks = harmful = false;
-    background = quiet = true;
-
-    for ( auto id : { 222305, 222320, 222321 } )
-    {
-      auto spell = effect.player->find_spell( id );
-      auto name = std::string( "Sorcerous " ) + spell->name_cstr();
-      util::tokenize( name );
-      sorcerous_spells.push_back( new sorcerous_spell_t( name, effect, spell ) );
-    }
-  }
-
-  void execute() override
-  {
-    spell_t::execute();
-
-    auto spell = sorcerous_spells[ rng().range( sorcerous_spells.size() ) ];
-    spell->set_target( target );
-    spell->execute();
-  }
-};
-
-void sorcerous_shadowruby_pendant( special_effect_t& effect )
-{
-  effect.execute_action = new sorcerous_shadowruby_pendant_driver_t( effect );
-}
-
 // MAGE MODULE INTERFACE ====================================================
 
 struct mage_module_t : public module_t
@@ -6893,11 +6844,6 @@ public:
     auto p = new mage_t( sim, name, r );
     p->report_extension = std::make_unique<mage_report_t>( *p );
     return p;
-  }
-
-  void static_init() const override
-  {
-    unique_gear::register_special_effect( 222276, sorcerous_shadowruby_pendant );
   }
 
   void register_hotfixes() const override
