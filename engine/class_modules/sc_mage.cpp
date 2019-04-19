@@ -4657,92 +4657,92 @@ struct ignite_spread_event_t : public event_t
     sim().print_log( "{} ignite spread event occurs", mage->name() );
 
     const auto& tl = sim().target_non_sleeping_list;
-    if ( tl.size() == 1 )
-      return;
-
-    std::vector<dot_t*> active_ignites;
-    std::vector<dot_t*> candidates;
-    // Split ignite targets by whether ignite is ticking
-    for ( auto t : tl )
+    if ( tl.size() > 1 )
     {
-      if ( !t->is_enemy() )
-        continue;
-
-      dot_t* ignite = t->get_dot( "ignite", mage );
-      if ( ignite->is_ticking() )
-        active_ignites.push_back( ignite );
-      else
-        candidates.push_back( ignite );
-    }
-
-    // Sort active ignites by descending bank size
-    std::stable_sort( active_ignites.begin(), active_ignites.end(), [] ( dot_t* a, dot_t* b )
-    { return ignite_bank( a ) > ignite_bank( b ); } );
-
-    // Loop over active ignites:
-    // - Pop smallest ignite for spreading
-    // - Remove equal sized ignites from tail of spread candidate list
-    // - Choose random target and execute spread
-    // - Remove spread destination from candidate list
-    // - Add spreaded ignite source to candidate list
-    // This algorithm provides random selection of the spread target, while
-    // guaranteeing that every source will have a larger ignite bank than the
-    // destination. It also guarantees that each ignite will spread to a unique
-    // target. This allows us to avoid N^2 spread validity checks.
-    while ( !active_ignites.empty() )
-    {
-      dot_t* source = active_ignites.back();
-      active_ignites.pop_back();
-      double source_bank = ignite_bank( source );
-
-      if ( !candidates.empty() )
+      std::vector<dot_t*> active_ignites;
+      std::vector<dot_t*> candidates;
+      // Split ignite targets by whether ignite is ticking
+      for ( auto t : tl )
       {
-        // Skip candidates that have equal ignite bank size to the source
-        int index = as<int>( candidates.size() ) - 1;
-        while ( index >= 0 )
-        {
-          if ( ignite_bank( candidates[ index ] ) < source_bank )
-            break;
-
-          index--;
-        }
-
-        if ( index < 0 )
-        {
-          // No valid spread targets
+        if ( !t->is_enemy() )
           continue;
-        }
 
-        // TODO: Filter valid candidates by ignite spread range
-
-        // Randomly select spread target from remaining candidates
-        index = rng().range( index );
-        dot_t* destination = candidates[ index ];
-
-        if ( destination->is_ticking() )
-        {
-          // TODO: Use benefits to keep track of lost ignite banks
-          destination->cancel();
-          mage->procs.ignite_overwrite->occur();
-          sim().print_log( "{} ignite spreads from {} to {} (overwrite)",
-                           mage->name(), source->target->name(),
-                           destination->target->name() );
-        }
+        dot_t* ignite = t->get_dot( "ignite", mage );
+        if ( ignite->is_ticking() )
+          active_ignites.push_back( ignite );
         else
-        {
-          mage->procs.ignite_new_spread->occur();
-          sim().print_log( "{} ignite spreads from {} to {} (new)",
-                           mage->name(), source->target->name(),
-                           destination->target->name() );
-        }
-        source->copy( destination->target, DOT_COPY_CLONE );
-
-        // Remove spread destination from candidates
-        candidates.erase( candidates.begin() + index );
+          candidates.push_back( ignite );
       }
 
-      // Add spread source to candidates
-      candidates.push_back( source );
+      // Sort active ignites by descending bank size
+      std::stable_sort( active_ignites.begin(), active_ignites.end(), [] ( dot_t* a, dot_t* b )
+      { return ignite_bank( a ) > ignite_bank( b ); } );
+
+      // Loop over active ignites:
+      // - Pop smallest ignite for spreading
+      // - Remove equal sized ignites from tail of spread candidate list
+      // - Choose random target and execute spread
+      // - Remove spread destination from candidate list
+      // - Add spreaded ignite source to candidate list
+      // This algorithm provides random selection of the spread target, while
+      // guaranteeing that every source will have a larger ignite bank than the
+      // destination. It also guarantees that each ignite will spread to a unique
+      // target. This allows us to avoid N^2 spread validity checks.
+      while ( !active_ignites.empty() )
+      {
+        dot_t* source = active_ignites.back();
+        active_ignites.pop_back();
+        double source_bank = ignite_bank( source );
+
+        if ( !candidates.empty() )
+        {
+          // Skip candidates that have equal ignite bank size to the source
+          int index = as<int>( candidates.size() ) - 1;
+          while ( index >= 0 )
+          {
+            if ( ignite_bank( candidates[ index ] ) < source_bank )
+              break;
+
+            index--;
+          }
+
+          if ( index < 0 )
+          {
+            // No valid spread targets
+            continue;
+          }
+
+          // TODO: Filter valid candidates by ignite spread range
+
+          // Randomly select spread target from remaining candidates
+          index = rng().range( index );
+          dot_t* destination = candidates[ index ];
+
+          if ( destination->is_ticking() )
+          {
+            // TODO: Use benefits to keep track of lost ignite banks
+            destination->cancel();
+            mage->procs.ignite_overwrite->occur();
+            sim().print_log( "{} ignite spreads from {} to {} (overwrite)",
+                             mage->name(), source->target->name(),
+                             destination->target->name() );
+          }
+          else
+          {
+            mage->procs.ignite_new_spread->occur();
+            sim().print_log( "{} ignite spreads from {} to {} (new)",
+                             mage->name(), source->target->name(),
+                             destination->target->name() );
+          }
+          source->copy( destination->target, DOT_COPY_CLONE );
+
+          // Remove spread destination from candidates
+          candidates.erase( candidates.begin() + index );
+        }
+
+        // Add spread source to candidates
+        candidates.push_back( source );
+      }
     }
 
     // Schedule next spread for 2 seconds later
