@@ -827,12 +827,12 @@ timespan_t warlock_t::time_to_imps(int count)
     for (auto ev : wild_imp_spawns)
     {
       timespan_t ex = debug_cast<actions::imp_delay_event_t*>(ev)->expected_time();
-      if (shortest.size() >= count && ex < shortest.top())
+      if (as<int>(shortest.size()) >= count && ex < shortest.top())
       {
         shortest.pop();
         shortest.push(ex);
       }
-      else if (shortest.size() < count)
+      else if (as<int>(shortest.size()) < count)
       {
         shortest.push(ex);
       }

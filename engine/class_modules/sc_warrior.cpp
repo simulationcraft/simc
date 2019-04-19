@@ -623,8 +623,8 @@ struct warrior_action_t : public Base
         frothing_dot( false ),
         sweeping_strikes( false ),
         deadly_calm( false ),
-        crushing_assault( false ),
-        booming_voice( false )
+        booming_voice( false ),
+        crushing_assault( false )
     {
     }
   } affected_by;

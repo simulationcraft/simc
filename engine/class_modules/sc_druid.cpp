@@ -1313,7 +1313,7 @@ struct tiger_dash_buff_t : public druid_buff_t<buff_t>
   {
     set_default_value(p.talent.tiger_dash->effectN(1).percent());
     set_cooldown(timespan_t::zero());
-    set_tick_callback([this] (buff_t* b, int, const timespan_t&)
+    set_tick_callback([] (buff_t* b, int, const timespan_t&)
     {
       b->current_value -= b->data().effectN(2).percent();
     } );
@@ -2755,9 +2755,9 @@ public:
       consumes_clearcasting( data().affected_by( p->spec.omen_of_clarity->effectN( 1 ).trigger()->effectN( 1 ) ) ),
       trigger_tier17_2pc( false ),
       snapshots_tf( true ),
+      trigger_untamed_ferocity( data().affected_by( p->azerite.untamed_ferocity.spell()->effectN( 2 ) ) ),
       moment_of_clarity( data().affected_by( p->spec.omen_of_clarity->effectN( 1 ).trigger()->effectN( 3 ) ) ),
-      tigers_fury( data().affected_by( p->spec.tigers_fury->effectN( 1 ) ) ),
-      trigger_untamed_ferocity( data().affected_by( p->azerite.untamed_ferocity.spell()->effectN( 2 ) ) )
+      tigers_fury( data().affected_by( p->spec.tigers_fury->effectN( 1 ) ) )
   {
     parse_options( options );
 
@@ -3909,7 +3909,7 @@ struct rip_t : public cat_attack_t
   action_state_t* new_state() override
   { return new rip_state_t( p(), this, target ); }
 
-  timespan_t composite_dot_duration( const action_state_t* s ) const
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     timespan_t t = cat_attack_t::composite_dot_duration( s );
 
@@ -6007,7 +6007,7 @@ struct lunar_strike_t : public druid_spell_t
     return et;
   }
 
-  void impact(action_state_t* s)
+  void impact(action_state_t* s) override
   {
     druid_spell_t::impact(s);
     streaking_stars_trigger(SS_LUNAR_STRIKE, s);

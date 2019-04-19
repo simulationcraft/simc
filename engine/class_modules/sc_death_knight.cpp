@@ -1002,7 +1002,7 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
 
 static void log_rune_status( const death_knight_t* p, bool debug = false ) {
   std::string rune_string = p -> _runes.string_representation();
-
+  (void) debug;
   p -> sim -> print_debug( "{} runes: {}", p -> name(), rune_string.c_str() );
 }
 
