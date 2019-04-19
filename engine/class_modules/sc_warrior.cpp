@@ -5541,23 +5541,26 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
   dots_rend        = target->get_dot( "rend", &p );
   dots_gushing_wound = target->get_dot( "gushing_wound", &p );
 
-  debuffs_colossus_smash = buff_creator_t( static_cast<actor_pair_t>( *this ), "colossus_smash" )
-                               .default_value( p.spell.colossus_smash_debuff->effectN( 2 ).percent() )
-                               .duration( p.spell.colossus_smash_debuff->duration() )
-                               .cd( timespan_t::zero() );
+  debuffs_colossus_smash = make_buff( *this , "colossus_smash" )
+                               ->set_default_value( p.spell.colossus_smash_debuff->effectN( 2 ).percent() )
+                               ->set_duration( p.spell.colossus_smash_debuff->duration() )
+                               ->set_cooldown( timespan_t::zero() );
 
-  debuffs_siegebreaker = buff_creator_t( static_cast<actor_pair_t>( *this ), "siegebreaker" )
-                             .default_value( p.spell.siegebreaker_debuff->effectN( 2 ).percent() )
-                             .duration( p.spell.siegebreaker_debuff->duration() )
-                             .cd( timespan_t::zero() );
+  debuffs_siegebreaker = make_buff( *this , "siegebreaker" )
+    ->set_default_value( p.spell.siegebreaker_debuff->effectN( 2 ).percent() )
+    ->set_duration( p.spell.siegebreaker_debuff->duration() )
+    ->set_cooldown( timespan_t::zero() );
 
   debuffs_demoralizing_shout = new buffs::debuff_demo_shout_t( *this, &p );
-  debuffs_punish = buff_creator_t( static_cast<actor_pair_t>( *this ), "punish", p.talents.punish -> effectN( 2 ).trigger() )
-                   .default_value( p.talents.punish -> effectN( 2 ).trigger() -> effectN( 1 ).percent() );
-  debuffs_callous_reprisal = buff_creator_t( static_cast<actor_pair_t>( *this ), "callous_reprisal", 
+
+  debuffs_punish = make_buff( *this, "punish", p.talents.punish -> effectN( 2 ).trigger() )
+    ->set_default_value( p.talents.punish -> effectN( 2 ).trigger() -> effectN( 1 ).percent() );
+
+  debuffs_callous_reprisal = make_buff( *this, "callous_reprisal",
                                              p.azerite.callous_reprisal.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
-                              .default_value( p.azerite.callous_reprisal.spell() -> effectN( 1 ).percent() );
-  debuffs_taunt = buff_creator_t( static_cast<actor_pair_t>( *this ), "taunt", p.find_class_spell( "Taunt" ) );
+    ->set_default_value( p.azerite.callous_reprisal.spell() -> effectN( 1 ).percent() );
+
+  debuffs_taunt = make_buff( *this, "taunt", p.find_class_spell( "Taunt" ) );
 }
 
 // warrior_t::init_buffs ====================================================
@@ -5568,39 +5571,42 @@ void warrior_t::create_buffs()
 
   using namespace buffs;
 
-  buff.furious_charge = buff_creator_t( this, "furious_charge", find_spell( 202225 ) )
-                            .chance( talents.furious_charge->ok() )
-                            .default_value( find_spell( 202225 )->effectN( 1 ).percent() );
+  buff.furious_charge = make_buff( this, "furious_charge", find_spell( 202225 ) )
+    ->set_chance( talents.furious_charge->ok() )
+    ->set_default_value( find_spell( 202225 )->effectN( 1 ).percent() );
 
   buff.revenge =
-      buff_creator_t( this, "revenge", find_spell( 5302 ) ).default_value( find_spell( 5302 )->effectN( 1 ).percent() );
+      make_buff( this, "revenge", find_spell( 5302 ) )
+      ->set_default_value( find_spell( 5302 )->effectN( 1 ).percent() );
 
-  buff.avatar = buff_creator_t( this, "avatar", specialization() == WARRIOR_PROTECTION ? spec.avatar : talents.avatar ).cd( timespan_t::zero() );
+  buff.avatar = make_buff( this, "avatar", specialization() == WARRIOR_PROTECTION ? spec.avatar : talents.avatar )
+      ->set_cooldown( timespan_t::zero() );
 
 
-  buff.berserker_rage = buff_creator_t( this, "berserker_rage", spec.berserker_rage ).cd( timespan_t::zero() );
+  buff.berserker_rage = make_buff( this, "berserker_rage", spec.berserker_rage )
+      ->set_cooldown( timespan_t::zero() );
 
   buff.frothing_berserker = make_buff( this, "frothing_berserker", find_spell( 215572 ) )
                                 ->set_default_value( find_spell( 215572 )->effectN( 2 ).percent() )
                                 ->add_invalidate( CACHE_ATTACK_HASTE );
 
-  buff.bounding_stride = buff_creator_t( this, "bounding_stride", find_spell( 202164 ) )
-                             .chance( talents.bounding_stride->ok() )
-                             .default_value( find_spell( 202164 )->effectN( 1 ).percent() );
+  buff.bounding_stride = make_buff( this, "bounding_stride", find_spell( 202164 ) )
+    ->set_chance( talents.bounding_stride->ok() )
+    ->set_default_value( find_spell( 202164 )->effectN( 1 ).percent() );
 
   buff.bladestorm =
-      buff_creator_t( this, "bladestorm", talents.bladestorm->ok() ? talents.bladestorm : spec.bladestorm )
-          .period( timespan_t::zero() )
-          .cd( timespan_t::zero() );
+      make_buff( this, "bladestorm", talents.bladestorm->ok() ? talents.bladestorm : spec.bladestorm )
+      ->set_period( timespan_t::zero() )
+      ->set_cooldown( timespan_t::zero() );
 
-  buff.defensive_stance = buff_creator_t( this, "defensive_stance", talents.defensive_stance )
-                              .activated( true )
-                              .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buff.defensive_stance = make_buff( this, "defensive_stance", talents.defensive_stance )
+    ->set_activated( true )
+    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   
-  buff.die_by_the_sword = buff_creator_t( this, "die_by_the_sword", spec.die_by_the_sword )
-                              .default_value( spec.die_by_the_sword->effectN( 2 ).percent() )
-                              .cd( timespan_t::zero() )
-                              .add_invalidate( CACHE_PARRY );
+  buff.die_by_the_sword = make_buff( this, "die_by_the_sword", spec.die_by_the_sword )
+    ->set_default_value( spec.die_by_the_sword->effectN( 2 ).percent() )
+    ->set_cooldown( timespan_t::zero() )
+    ->add_invalidate( CACHE_PARRY );
 
   buff.enrage = make_buff( this, "enrage", find_spell( 184362 ) )
                     ->add_invalidate( CACHE_ATTACK_HASTE )
@@ -5611,34 +5617,35 @@ void warrior_t::create_buffs()
                            ->set_default_value( find_spell( 202539 )->effectN( 1 ).percent() )
                            ->add_invalidate( CACHE_ATTACK_HASTE );
 
-  buff.heroic_leap_movement = buff_creator_t( this, "heroic_leap_movement" );
-  buff.charge_movement      = buff_creator_t( this, "charge_movement" );
-  buff.intervene_movement   = buff_creator_t( this, "intervene_movement" );
-  buff.intercept_movement   = buff_creator_t( this, "intercept_movement" );
+  buff.heroic_leap_movement = make_buff( this, "heroic_leap_movement" );
+  buff.charge_movement      = make_buff( this, "charge_movement" );
+  buff.intervene_movement   = make_buff( this, "intervene_movement" );
+  buff.intercept_movement   = make_buff( this, "intercept_movement" );
 
-  buff.into_the_fray = buff_creator_t( this, "into_the_fray", find_spell( 202602 ) )
-                           .chance( talents.into_the_fray->ok() )
-                           .default_value( find_spell( 202602 )->effectN( 1 ).percent() )
-                           .add_invalidate( CACHE_HASTE );
+  buff.into_the_fray = make_buff( this, "into_the_fray", find_spell( 202602 ) )
+    ->set_chance( talents.into_the_fray->ok() )
+    ->set_default_value( find_spell( 202602 )->effectN( 1 ).percent() )
+    ->add_invalidate( CACHE_HASTE );
 
   buff.last_stand = new buffs::last_stand_buff_t( *this, "last_stand", spec.last_stand );
 
-  buff.meat_cleaver = buff_creator_t( this, "meat_cleaver", spell.whirlwind_buff );
+  buff.meat_cleaver = make_buff( this, "meat_cleaver", spell.whirlwind_buff );
 
   buff.rallying_cry = new buffs::rallying_cry_t( *this, "rallying_cry", find_spell( 97463 ) );
 
   buff.overpower =
-      buff_creator_t( this, "overpower", spec.overpower )
-          .default_value( spec.overpower->effectN( 2 ).percent() + talents.dreadnaught->effectN( 2 ).percent() );
+      make_buff( this, "overpower", spec.overpower )
+      ->set_default_value( spec.overpower->effectN( 2 ).percent() + talents.dreadnaught->effectN( 2 ).percent() );
 
-  buff.ravager = buff_creator_t( this, "ravager", talents.ravager );
+  buff.ravager = make_buff( this, "ravager", talents.ravager );
 
-  buff.ravager_protection = buff_creator_t( this, "ravager_protection", spell.ravager_protection )
-                            .add_invalidate( CACHE_PARRY );
+  buff.ravager_protection = make_buff( this, "ravager_protection", spell.ravager_protection )
+    ->add_invalidate( CACHE_PARRY );
 
-  buff.spell_reflection = buff_creator_t( this, "spell_reflection", spec.spell_reflection );
+  buff.spell_reflection = make_buff( this, "spell_reflection", spec.spell_reflection );
 
-  buff.sweeping_strikes = buff_creator_t( this, "sweeping_strikes", spec.sweeping_strikes ).cd( timespan_t::zero() );
+  buff.sweeping_strikes = make_buff( this, "sweeping_strikes", spec.sweeping_strikes )
+      ->set_cooldown( timespan_t::zero() );
 
   buff.ignore_pain = new ignore_pain_buff_t( this );
 
@@ -5649,72 +5656,73 @@ void warrior_t::create_buffs()
     ->set_default_value( spec.recklessness->effectN( 1 ).percent() )
     ->set_stack_change_callback( [ this ]( buff_t*, int, int after ) { if ( after == 0 ) buff.infinite_fury->trigger(); });
 
-  buff.sudden_death = buff_creator_t( this, "sudden_death", talents.sudden_death );
+  buff.sudden_death = make_buff( this, "sudden_death", talents.sudden_death );
 
-  buff.deadly_calm = buff_creator_t( this, "deadly_calm", talents.deadly_calm ).cd( timespan_t::zero() );
+  buff.deadly_calm = make_buff( this, "deadly_calm", talents.deadly_calm )
+      ->set_cooldown( timespan_t::zero() );
 
-  buff.shield_block = buff_creator_t( this, "shield_block", spell.shield_block_buff )
-                          .cd( timespan_t::zero() )
-                          .add_invalidate( CACHE_BLOCK );
+  buff.shield_block = make_buff( this, "shield_block", spell.shield_block_buff )
+    ->set_cooldown( timespan_t::zero() )
+    ->add_invalidate( CACHE_BLOCK );
 
-  buff.shield_wall = buff_creator_t( this, "shield_wall", spec.shield_wall )
-                         .default_value( spec.shield_wall->effectN( 1 ).percent() )
-                         .cd( timespan_t::zero() );
+  buff.shield_wall = make_buff( this, "shield_wall", spec.shield_wall )
+    ->set_default_value( spec.shield_wall->effectN( 1 ).percent() )
+    ->set_cooldown( timespan_t::zero() );
 
-  buff.vengeance_ignore_pain = buff_creator_t( this, "vengeance_ignore_pain", find_spell( 202574 ) )
-                                   .chance( talents.vengeance->ok() )
-                                   .default_value( find_spell( 202574 )->effectN( 1 ).percent() );
+  buff.vengeance_ignore_pain = make_buff( this, "vengeance_ignore_pain", find_spell( 202574 ) )
+    ->set_chance( talents.vengeance->ok() )
+    ->set_default_value( find_spell( 202574 )->effectN( 1 ).percent() );
 
-  buff.vengeance_revenge = buff_creator_t( this, "vengeance_revenge", find_spell( 202573 ) )
-                               .chance( talents.vengeance->ok() )
-                               .default_value( find_spell( 202573 )->effectN( 1 ).percent() );
+  buff.vengeance_revenge = make_buff( this, "vengeance_revenge", find_spell( 202573 ) )
+    ->set_chance( talents.vengeance->ok() )
+    ->set_default_value( find_spell( 202573 )->effectN( 1 ).percent() );
 
   buff.raging_thirst =
-      buff_creator_t( this, "raging_thirst", sets->set( WARRIOR_FURY, T20, B2 )->effectN( 1 ).trigger() )
-          .default_value( sets->set( WARRIOR_FURY, T20, B2 )->effectN( 1 ).trigger()->effectN( 1 ).percent() )
-          .chance( sets->set( WARRIOR_FURY, T20, B2 )->proc_chance() );
+      make_buff( this, "raging_thirst", sets->set( WARRIOR_FURY, T20, B2 )->effectN( 1 ).trigger() )
+      ->set_default_value( sets->set( WARRIOR_FURY, T20, B2 )->effectN( 1 ).trigger()->effectN( 1 ).percent() )
+      ->set_chance( sets->set( WARRIOR_FURY, T20, B2 )->proc_chance() );
 
   buff.t20_fury_4p =
-      buff_creator_t( this, "t20_fury_4p", talents.inner_rage->ok() ? find_spell( 242953 ) : find_spell( 242952 ) )
-          .default_value( talents.inner_rage->ok() ? find_spell( 242953 )->effectN( 1 ).percent()
+      make_buff( this, "t20_fury_4p", talents.inner_rage->ok() ? find_spell( 242953 ) : find_spell( 242952 ) )
+      ->set_default_value( talents.inner_rage->ok() ? find_spell( 242953 )->effectN( 1 ).percent()
                                                    : find_spell( 242952 )->effectN( 1 ).percent() )
-          .chance( sets->has_set_bonus( WARRIOR_FURY, T20, B4 ) );
+                                                     ->set_chance( sets->has_set_bonus( WARRIOR_FURY, T20, B4 ) );
 
   buff.sephuzs_secret = new buffs::sephuzs_secret_buff_t( this );
 
   buff.in_for_the_kill = new in_for_the_kill_t( *this, "in_for_the_kill", find_spell( 248622 ) );
 
   buff.war_veteran =
-      buff_creator_t( this, "war_veteran", sets->set( WARRIOR_ARMS, T21, B2 )->effectN( 1 ).trigger() )
-          .default_value( sets->set( WARRIOR_ARMS, T21, B2 )->effectN( 1 ).trigger()->effectN( 1 ).percent() )
-          .chance( sets->has_set_bonus( WARRIOR_ARMS, T21, B2 ) );
+      make_buff( this, "war_veteran", sets->set( WARRIOR_ARMS, T21, B2 )->effectN( 1 ).trigger() )
+      ->set_default_value( sets->set( WARRIOR_ARMS, T21, B2 )->effectN( 1 ).trigger()->effectN( 1 ).percent() )
+      ->set_chance( sets->has_set_bonus( WARRIOR_ARMS, T21, B2 ) );
 
   buff.weighted_blade =
-      buff_creator_t( this, "weighted_blade", sets->set( WARRIOR_ARMS, T21, B4 )->effectN( 1 ).trigger() )
-          .default_value( sets->set( WARRIOR_ARMS, T21, B4 )->effectN( 1 ).trigger()->effectN( 1 ).percent() )
-          .chance( sets->has_set_bonus( WARRIOR_ARMS, T21, B4 ) );
+      make_buff( this, "weighted_blade", sets->set( WARRIOR_ARMS, T21, B4 )->effectN( 1 ).trigger() )
+      ->set_default_value( sets->set( WARRIOR_ARMS, T21, B4 )->effectN( 1 ).trigger()->effectN( 1 ).percent() )
+      ->set_chance( sets->has_set_bonus( WARRIOR_ARMS, T21, B4 ) );
 
   buff.protection_rage = new protection_rage_t( *this, "protection_rage", find_spell( 242303 ) );
 
-  buff.whirlwind = buff_creator_t( this, "whirlwind", find_spell( 85739 ) );
+  buff.whirlwind = make_buff( this, "whirlwind", find_spell( 85739 ) );
 
   // Azerite
   const spell_data_t* bloodcraze_trigger = azerite.bloodcraze.spell()->effectN( 1 ).trigger();
   const spell_data_t* bloodcraze_buff    = bloodcraze_trigger->effectN( 1 ).trigger();
   buff.bloodcraze_driver =
-      make_buff<buff_t>( this, "bloodcraze_driver", bloodcraze_trigger )
+      make_buff( this, "bloodcraze_driver", bloodcraze_trigger )
           ->set_trigger_spell( azerite.bloodcraze )
           ->set_quiet( true )
           ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
           ->set_tick_callback( [this]( buff_t*, int, const timespan_t& ) { buff.bloodcraze->trigger(); } );
 
-  buff.bloodcraze = make_buff<buff_t>( this, "bloodcraze", bloodcraze_buff )
+  buff.bloodcraze = make_buff( this, "bloodcraze", bloodcraze_buff )
                         ->set_trigger_spell( bloodcraze_trigger )
                         ->set_default_value( azerite.bloodcraze.value( 1 ) );
 
   const spell_data_t* crushing_assault_trigger = azerite.crushing_assault.spell()->effectN( 1 ).trigger();
   const spell_data_t* crushing_assault_buff    = crushing_assault_trigger->effectN( 1 ).trigger();
-  buff.crushing_assault                        = make_buff<buff_t>( this, "crushing_assault", crushing_assault_buff )
+  buff.crushing_assault                        = make_buff( this, "crushing_assault", crushing_assault_buff )
                               ->set_default_value( azerite.crushing_assault.value( 1 ) )
                               ->set_trigger_spell( crushing_assault_trigger );
 

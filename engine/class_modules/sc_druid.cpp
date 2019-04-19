@@ -7556,33 +7556,33 @@ void druid_t::create_buffs()
 
   buff.cat_form              = new buffs::cat_form_t( *this );
 
-  buff.clearcasting          = buff_creator_t( this, "clearcasting", spec.omen_of_clarity -> effectN( 1 ).trigger() )
-                               .cd( spec.omen_of_clarity -> internal_cooldown() )
-                               .chance( spec.omen_of_clarity -> proc_chance() )
-                               .max_stack( (unsigned) ( 1 + talent.moment_of_clarity->effectN(1).base_value() ) )
-                               .default_value( specialization() != DRUID_RESTORATION
+  buff.clearcasting          = make_buff( this, "clearcasting", spec.omen_of_clarity -> effectN( 1 ).trigger() )
+    ->set_cooldown( spec.omen_of_clarity -> internal_cooldown() )
+    ->set_chance( spec.omen_of_clarity -> proc_chance() )
+    ->set_max_stack( (unsigned) ( 1 + talent.moment_of_clarity->effectN(1).base_value() ) )
+    ->set_default_value( specialization() != DRUID_RESTORATION
                                                ? talent.moment_of_clarity -> effectN( 4 ).percent()
                                                : 0.0 );
 
-  buff.dash = buff_creator_t( this, "dash", find_class_spell( "Dash" ) )
-                  .cd( timespan_t::zero() )
-                  .default_value( find_class_spell( "Dash" )->effectN( 1 ).percent() );
+  buff.dash = make_buff( this, "dash", find_class_spell( "Dash" ) )
+    ->set_cooldown( timespan_t::zero() )
+    ->set_default_value( find_class_spell( "Dash" )->effectN( 1 ).percent() );
 
-  buff.prowl = buff_creator_t( this, "prowl", find_class_spell( "Prowl" ) );
+  buff.prowl = make_buff( this, "prowl", find_class_spell( "Prowl" ) );
 
   buff.innervate = new innervate_buff_t(*this);
 
   // Azerite
-  buff.shredding_fury =
-      buff_creator_t( this, "shredding_fury", find_spell( 274426 ) ).default_value( azerite.shredding_fury.value() );
+  buff.shredding_fury = make_buff( this, "shredding_fury", find_spell( 274426 ) )
+      ->set_default_value( azerite.shredding_fury.value() );
 
   buff.jungle_fury = make_buff<stat_buff_t>( this, "jungle_fury", find_spell( 274425 ) )
                          ->add_stat( STAT_CRIT_RATING, azerite.jungle_fury.value( 1 ) )
                          ->set_chance( azerite.jungle_fury.enabled() ? 1.0 : 0.0 );
 
-  buff.iron_jaws = buff_creator_t( this, "iron_jaws", find_spell( 276026 ) );
+  buff.iron_jaws = make_buff( this, "iron_jaws", find_spell( 276026 ) );
 
-  buff.raking_ferocity = buff_creator_t( this, "raking_ferocity", find_spell( 273340 ) );
+  buff.raking_ferocity = make_buff( this, "raking_ferocity", find_spell( 273340 ) );
 
   buff.dawning_sun = make_buff(this, "dawning_sun", azerite.dawning_sun.spell()->effectN(1).trigger()->effectN(1).trigger());
 
@@ -7594,38 +7594,38 @@ void druid_t::create_buffs()
   // Talent buffs
   buff.tiger_dash = new tiger_dash_buff_t(*this);
   
-  buff.wild_charge_movement  = buff_creator_t( this, "wild_charge_movement" );
+  buff.wild_charge_movement  = make_buff( this, "wild_charge_movement" );
 
-  buff.cenarion_ward         = buff_creator_t( this, "cenarion_ward", find_talent_spell( "Cenarion Ward" ) );
+  buff.cenarion_ward         = make_buff( this, "cenarion_ward", find_talent_spell( "Cenarion Ward" ) );
 
   buff.incarnation_cat       = new incarnation_cat_buff_t( *this );
 
-  buff.jungle_stalker        = buff_creator_t( this, "jungle_stalker", find_spell( 252071 ) );
+  buff.jungle_stalker        = make_buff( this, "jungle_stalker", find_spell( 252071 ) );
 
-  buff.incarnation_bear      = buff_creator_t( this, "incarnation_guardian_of_ursoc", talent.incarnation_bear )
-                               .add_invalidate( CACHE_ARMOR )
-                               .cd( timespan_t::zero() );
+  buff.incarnation_bear      = make_buff( this, "incarnation_guardian_of_ursoc", talent.incarnation_bear )
+    ->add_invalidate( CACHE_ARMOR )
+    ->set_cooldown( timespan_t::zero() );
 
-  buff.incarnation_tree      = buff_creator_t( this, "incarnation_tree_of_life", talent.incarnation_tree )
-                               .duration( timespan_t::from_seconds( 30 ) )
-                               .default_value( find_spell( 5420 ) -> effectN( 1 ).percent() )
-                               .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER )
-                               .cd( timespan_t::zero() );
+  buff.incarnation_tree      = make_buff( this, "incarnation_tree_of_life", talent.incarnation_tree )
+    ->set_duration( timespan_t::from_seconds( 30 ) )
+    ->set_default_value( find_spell( 5420 ) -> effectN( 1 ).percent() )
+    ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER )
+    ->set_cooldown( timespan_t::zero() );
 
-  buff.bloodtalons           = buff_creator_t( this, "bloodtalons", talent.bloodtalons -> ok() ? find_spell( 145152 ) : spell_data_t::not_found() )
-                               .default_value( find_spell( 145152 ) -> effectN( 1 ).percent() )
-                               .max_stack( 2 ); 
+  buff.bloodtalons           = make_buff( this, "bloodtalons", talent.bloodtalons -> ok() ? find_spell( 145152 ) : spell_data_t::not_found() )
+    ->set_default_value( find_spell( 145152 ) -> effectN( 1 ).percent() )
+    ->set_max_stack( 2 );
 
-  buff.galactic_guardian     = buff_creator_t( this, "galactic_guardian", find_spell( 213708 ) )
-                               .chance( talent.galactic_guardian -> ok() )
-                               .default_value( find_spell( 213708 ) -> effectN( 1 ).resource( RESOURCE_RAGE ) );
+  buff.galactic_guardian     = make_buff( this, "galactic_guardian", find_spell( 213708 ) )
+    ->set_chance( talent.galactic_guardian -> ok() )
+    ->set_default_value( find_spell( 213708 ) -> effectN( 1 ).resource( RESOURCE_RAGE ) );
 
-  buff.gore                  = buff_creator_t( this, "mangle", find_spell( 93622 ) )
-                               .default_value( find_spell( 93622 ) -> effectN( 1 ).resource( RESOURCE_RAGE ) );
+  buff.gore                  = make_buff( this, "mangle", find_spell( 93622 ) )
+    ->set_default_value( find_spell( 93622 ) -> effectN( 1 ).resource( RESOURCE_RAGE ) );
 
-  buff.guardian_of_elune     = buff_creator_t( this, "guardian_of_elune", talent.guardian_of_elune -> effectN( 1 ).trigger() )
-                               .chance( talent.guardian_of_elune -> ok() )
-                               .default_value( talent.guardian_of_elune -> effectN( 1 ).trigger() -> effectN( 1 ).time_value().total_seconds() );
+  buff.guardian_of_elune     = make_buff( this, "guardian_of_elune", talent.guardian_of_elune -> effectN( 1 ).trigger() )
+    ->set_chance( talent.guardian_of_elune -> ok() )
+    ->set_default_value( talent.guardian_of_elune -> effectN( 1 ).trigger() -> effectN( 1 ).time_value().total_seconds() );
 
   // Balance
 
@@ -7694,18 +7694,18 @@ void druid_t::create_buffs()
 
   // Feral
 
-  buff.apex_predator        = buff_creator_t(this, "apex_predator", find_spell(252752))
-                               .chance(  sets -> has_set_bonus( DRUID_FERAL, T21, B4 ) ? find_spell( 251790 ) -> proc_chance() : 0 /*: 0 )*/ );
+  buff.apex_predator        = make_buff(this, "apex_predator", find_spell(252752))
+    ->set_chance(  sets -> has_set_bonus( DRUID_FERAL, T21, B4 ) ? find_spell( 251790 ) -> proc_chance() : 0 /*: 0 )*/ );
 
   buff.berserk               = new berserk_buff_t( *this );
 
-  buff.predatory_swiftness   = buff_creator_t( this, "predatory_swiftness", find_spell( 69369 ) )
-                               .chance( spec.predatory_swiftness -> ok() );
+  buff.predatory_swiftness   = make_buff( this, "predatory_swiftness", find_spell( 69369 ) )
+    ->set_chance( spec.predatory_swiftness -> ok() );
 
-  buff.savage_roar           = buff_creator_t( this, "savage_roar", talent.savage_roar )
-                               .default_value( spec.savage_roar -> effectN( 1 ).percent() )
-                               .refresh_behavior( buff_refresh_behavior::DURATION ) // Pandemic refresh is done by the action
-                               .tick_behavior( buff_tick_behavior::NONE );
+  buff.savage_roar           = make_buff( this, "savage_roar", talent.savage_roar )
+    ->set_default_value( spec.savage_roar -> effectN( 1 ).percent() )
+    ->set_refresh_behavior( buff_refresh_behavior::DURATION ) // Pandemic refresh is done by the action
+    ->set_tick_behavior( buff_tick_behavior::NONE );
 
   buff.tigers_fury           = new tigers_fury_buff_t( *this );
     /*= buff_creator_t( this, "tigers_fury", spec.tigers_fury )
@@ -7718,47 +7718,47 @@ void druid_t::create_buffs()
                             ->set_chance( talent.scent_of_blood->ok() ? 1.0 : 0.0 );
 
   // Guardian
-  buff.barkskin              = buff_creator_t( this, "barkskin", find_specialization_spell( "Barkskin" ) )
-                               .cd( timespan_t::zero() )
-                               .default_value( find_specialization_spell( "Barkskin" ) -> effectN( 2 ).percent() )
-                               .duration( find_specialization_spell( "Barkskin" ) -> duration() )
-                               .tick_behavior( talent.brambles -> ok() ? buff_tick_behavior::REFRESH : buff_tick_behavior::NONE )
-                               .tick_callback( [ this ] ( buff_t*, int, const timespan_t& ) {
+  buff.barkskin              = make_buff( this, "barkskin", find_specialization_spell( "Barkskin" ) )
+    ->set_cooldown( timespan_t::zero() )
+    ->set_default_value( find_specialization_spell( "Barkskin" ) -> effectN( 2 ).percent() )
+    ->set_duration( find_specialization_spell( "Barkskin" ) -> duration() )
+    ->set_tick_behavior( talent.brambles -> ok() ? buff_tick_behavior::REFRESH : buff_tick_behavior::NONE )
+    ->set_tick_callback( [ this ] ( buff_t*, int, const timespan_t& ) {
                                  if ( talent.brambles -> ok() )
                                    active.brambles_pulse -> execute();
                                } );
 
-  buff.bristling_fur         = buff_creator_t( this, "bristling_fur", talent.bristling_fur )
-                               .cd( timespan_t::zero() );
+  buff.bristling_fur         = make_buff( this, "bristling_fur", talent.bristling_fur )
+    ->set_cooldown( timespan_t::zero() );
 
-  buff.earthwarden           = buff_creator_t( this, "earthwarden", find_spell( 203975 ) )
-                               .default_value( talent.earthwarden -> effectN( 1 ).percent() );
+  buff.earthwarden           = make_buff( this, "earthwarden", find_spell( 203975 ) )
+    ->set_default_value( talent.earthwarden -> effectN( 1 ).percent() );
 
-  buff.earthwarden_driver    = buff_creator_t( this, "earthwarden_driver", talent.earthwarden )
-                               .quiet( true )
-                               .tick_callback( [ this ] ( buff_t*, int, const timespan_t& ) { buff.earthwarden -> trigger(); } )
-                               .tick_zero( true );
+  buff.earthwarden_driver    = make_buff( this, "earthwarden_driver", talent.earthwarden )
+    ->set_quiet( true )
+    ->set_tick_callback( [ this ] ( buff_t*, int, const timespan_t& ) { buff.earthwarden -> trigger(); } )
+    ->set_tick_zero( true );
 
-  buff.guardians_wrath       = buff_creator_t( this, "guardians_wrath", find_spell( 279541 ) )
-                               .default_value( find_spell( 279541 ) -> effectN( 1 ).resource( RESOURCE_RAGE ) );
+  buff.guardians_wrath       = make_buff( this, "guardians_wrath", find_spell( 279541 ) )
+    ->set_default_value( find_spell( 279541 ) -> effectN( 1 ).resource( RESOURCE_RAGE ) );
 
-  buff.ironfur               = buff_creator_t( this, "ironfur", spec.ironfur )
-                               .duration( spec.ironfur -> duration() )
-                               .default_value( spec.ironfur -> effectN( 1 ).percent() )
-                               .add_invalidate( CACHE_ARMOR )
-                               .add_invalidate( CACHE_AGILITY )
-                               .max_stack( (unsigned) ( specialization() == DRUID_GUARDIAN ? spec.ironfur_2 -> effectN( 1 ).base_value() :
+  buff.ironfur               = make_buff( this, "ironfur", spec.ironfur )
+    ->set_duration( spec.ironfur -> duration() )
+    ->set_default_value( spec.ironfur -> effectN( 1 ).percent() )
+    ->add_invalidate( CACHE_ARMOR )
+    ->add_invalidate( CACHE_AGILITY )
+    ->set_max_stack( (unsigned) ( specialization() == DRUID_GUARDIAN ? spec.ironfur_2 -> effectN( 1 ).base_value() :
                                            1 ) )
-                               .stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-                               .cd( timespan_t::zero() );
+                                           ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+                                           ->set_cooldown( timespan_t::zero() );
 
   buff.masterful_instincts   = make_buff<stat_buff_t>( this, "masterful_instincts", find_spell( 273349 ) )
                                -> add_stat( STAT_MASTERY_RATING, azerite.masterful_instincts.value( 1 ) )
                                -> add_stat( STAT_ARMOR, azerite.masterful_instincts.value( 2 ) );
 
-  buff.pulverize             = buff_creator_t( this, "pulverize", find_spell( 158792 ) )
-                               .default_value( find_spell( 158792 ) -> effectN( 1 ).percent() )
-                               .refresh_behavior( buff_refresh_behavior::PANDEMIC );
+  buff.pulverize             = make_buff( this, "pulverize", find_spell( 158792 ) )
+    ->set_default_value( find_spell( 158792 ) -> effectN( 1 ).percent() )
+    ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
   buff.survival_instincts    = new survival_instincts_buff_t( *this );
 
@@ -7770,33 +7770,33 @@ void druid_t::create_buffs()
                                -> add_stat( STAT_MASTERY_RATING, azerite.burst_of_savagery.value( 1 ) );
 
   // Restoration
-  buff.harmony               = buff_creator_t( this, "harmony", mastery.harmony -> ok() ? find_spell( 100977 ) : spell_data_t::not_found() );
+  buff.harmony               = make_buff( this, "harmony", mastery.harmony -> ok() ? find_spell( 100977 ) : spell_data_t::not_found() );
 
-  buff.soul_of_the_forest    = buff_creator_t( this, "soul_of_the_forest",
+  buff.soul_of_the_forest    = make_buff( this, "soul_of_the_forest",
                                talent.soul_of_the_forest -> ok() ? find_spell( 114108 ) : spell_data_t::not_found() )
-                               .default_value( find_spell( 114108 ) -> effectN( 1 ).percent() );
+    ->set_default_value( find_spell( 114108 ) -> effectN( 1 ).percent() );
 
   if ( specialization() == DRUID_RESTORATION || talent.restoration_affinity -> ok() )
   {
-    buff.yseras_gift         = buff_creator_t( this, "yseras_gift_driver", spec.yseras_gift )
-                               .quiet( true )
-                               .tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
+    buff.yseras_gift         = make_buff( this, "yseras_gift_driver", spec.yseras_gift )
+    ->set_quiet( true )
+    ->set_tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
                                  active.yseras_gift -> schedule_execute(); } )
-                               .tick_zero( true );
+                                 ->set_tick_zero( true );
   }
 
   // Set Bonuses
 
-  buff.feral_tier17_4pc      = buff_creator_t( this, "feral_tier17_4pc", find_spell( 166639 ) )
-                               .quiet( true );
+  buff.feral_tier17_4pc      = make_buff( this, "feral_tier17_4pc", find_spell( 166639 ) )
+    ->set_quiet( true );
 
-  buff.guardian_tier17_4pc   = buff_creator_t( this, "guardian_tier17_4pc", find_spell( 177969 ) )
-                               .default_value( find_spell( 177969 ) -> effectN( 1 ).percent() );
+  buff.guardian_tier17_4pc   = make_buff( this, "guardian_tier17_4pc", find_spell( 177969 ) )
+    ->set_default_value( find_spell( 177969 ) -> effectN( 1 ).percent() );
 
-  buff.guardian_tier19_4pc   = buff_creator_t( this, "natural_defenses",
+  buff.guardian_tier19_4pc   = make_buff( this, "natural_defenses",
                                  sets -> set( DRUID_GUARDIAN, T19, B4 ) -> effectN( 1 ).trigger() )
-                               .trigger_spell( sets -> set( DRUID_GUARDIAN, T19, B4 ) )
-                               .default_value( sets -> set( DRUID_GUARDIAN, T19, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() / 1000.0 );
+    ->set_trigger_spell( sets -> set( DRUID_GUARDIAN, T19, B4 ) )
+    ->set_default_value( sets -> set( DRUID_GUARDIAN, T19, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() / 1000.0 );
 }
 
 // ALL Spec Pre-Combat Action Priority List =================================
@@ -9892,10 +9892,10 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   dots.thrash_cat       = target.get_dot( "thrash_cat",       &source );
   dots.wild_growth      = target.get_dot( "wild_growth",      &source );
 
-  buff.lifebloom = buff_creator_t( *this, "lifebloom", source.find_class_spell( "Lifebloom" ) );
+  buff.lifebloom = make_buff( *this, "lifebloom", source.find_class_spell( "Lifebloom" ) );
 
-  debuff.bloodletting        = buff_creator_t( *this, "bloodletting", source.find_spell( 165699 ) )
-                               .default_value( source.find_spell( 165699 ) -> effectN( 1 ).percent() );
+  debuff.bloodletting        = make_buff( *this, "bloodletting", source.find_spell( 165699 ) )
+    ->set_default_value( source.find_spell( 165699 ) -> effectN( 1 ).percent() );
 }
 
 // Copypasta for reporting
@@ -10668,9 +10668,9 @@ struct druid_module_t : public module_t
   virtual bool valid() const override { return true; }
   virtual void init( player_t* p ) const override
   {
-    p -> buffs.stampeding_roar = buff_creator_t( p, "stampeding_roar", p -> find_spell( 77764 ) )
-                                 .max_stack( 1 )
-                                 .duration( timespan_t::from_seconds( 8.0 ) );
+    p -> buffs.stampeding_roar = make_buff( p, "stampeding_roar", p -> find_spell( 77764 ) )
+    ->set_max_stack( 1 )
+    ->set_duration( timespan_t::from_seconds( 8.0 ) );
   }
 
   virtual void static_init() const override
