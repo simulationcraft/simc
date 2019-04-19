@@ -5436,17 +5436,17 @@ void mage_t::init_procs()
     case MAGE_FIRE:
       procs.heating_up_generated         = get_proc( "Heating Up generated" );
       procs.heating_up_removed           = get_proc( "Heating Up removed" );
-      procs.heating_up_ib_converted      = get_proc( "IB conversions of HU" );
-      procs.hot_streak                   = get_proc( "Total Hot Streak procs" );
-      procs.hot_streak_pyromaniac        = get_proc( "Total Hot Streak procs from Pyromaniac" );
+      procs.heating_up_ib_converted      = get_proc( "Heating Up converted with Fire Blast" );
+      procs.hot_streak                   = get_proc( "Hot Streak procs" );
+      procs.hot_streak_pyromaniac        = get_proc( "Hot Streak procs from Pyromaniac" );
       procs.hot_streak_spell             = get_proc( "Hot Streak spells used" );
       procs.hot_streak_spell_crit        = get_proc( "Hot Streak spell crits" );
-      procs.hot_streak_spell_crit_wasted = get_proc( "Wasted Hot Streak spell crits" );
+      procs.hot_streak_spell_crit_wasted = get_proc( "Hot Streak spell crits wasted" );
 
       procs.ignite_applied    = get_proc( "Direct Ignite applications" );
       procs.ignite_spread     = get_proc( "Ignites spread" );
       procs.ignite_new_spread = get_proc( "Ignites spread to new targets" );
-      procs.ignite_overwrite  = get_proc( "Ignites spread to target with existing ignite" );
+      procs.ignite_overwrite  = get_proc( "Ignites spread to targets with existing Ignite" );
       break;
     default:
       // This shouldn't happen
