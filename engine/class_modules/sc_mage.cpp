@@ -4973,10 +4973,7 @@ action_t* mage_t::create_action( const std::string& name, const std::string& opt
 
   // Special
   if ( name == "blink_any" )
-  {
-    if ( talents.shimmer->ok() )          return new           shimmer_t( "shimmer", this, options_str );
-    else                                  return new               blink_t( "blink", this, options_str );
-  }
+    return create_action( talents.shimmer->ok() ? "shimmer" : "blink", options_str );
 
   return player_t::create_action( name, options_str );
 }
