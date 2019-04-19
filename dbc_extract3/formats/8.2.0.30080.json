@@ -44,10 +44,20 @@
     { "data_type": "I", "field": "id_power_set" }
   ],
   "AzeriteEssence": [
-    { "data_type": "S", "field": "name"  },
-    { "data_type": "S", "field": "desc"  },
-    { "data_type": "i", "field": "id"    },
-    { "data_type": "i", "field": "unk_4" }
+    { "data_type": "S", "field": "name"    },
+    { "data_type": "S", "field": "desc"    },
+    { "data_type": "i", "field": "id"      },
+    { "data_type": "i", "field": "category"}
+  ],
+  "AzeriteEssencePower": [
+    { "data_type": "S", "field": "desc_alliance"          },
+    { "data_type": "S", "field": "desc_horde"             },
+    { "data_type": "i", "field": "id_power"               },
+    { "data_type": "B", "field": "rank"                   },
+    { "data_type": "i", "field": "id_spell_major_alliance"},
+    { "data_type": "i", "field": "id_spell_minor_alliance"},
+    { "data_type": "i", "field": "id_spell_major_horde"   },
+    { "data_type": "i", "field": "id_spell_minor_horde"   }
   ],
   "AzeriteItem": [
     { "data_type": "i", "field": "id_item", "formats": { "cpp": "%6u" } }
