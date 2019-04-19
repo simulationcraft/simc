@@ -2294,7 +2294,7 @@ void items::grongs_primal_rage( special_effect_t& effect )
     }
 
     // Even though ticks are hasted, the duration is a fixed 4s
-    timespan_t composite_dot_duration( const action_state_t* state ) const override
+    timespan_t composite_dot_duration( const action_state_t* ) const override
     {
       return dot_duration;
     }
@@ -2692,8 +2692,6 @@ void items::legplates_of_unbound_anguish( special_effect_t& effect )
     // Re-used some of the Gutripper code for the pre-trigger health percentage check
     void trigger( action_t* a, void* call_data ) override
     {
-      auto state = static_cast<action_state_t*>( call_data );
-
       if ( rng().roll( a -> sim -> bfa_opts.legplates_of_unbound_anguish_chance ) )
       {
         dbc_proc_callback_t::trigger( a, call_data );
