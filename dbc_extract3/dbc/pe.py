@@ -14,7 +14,7 @@ _DB_STRUCT = struct.Struct('QIIIIIIQQQQQQQIIIII')
 
 _DB_STRUCT_HEADER_FIELDS = [
     'va_name',
-    'unk_2',
+    'file_data_id',
     'fields',
     'size',
     'unk_5',
@@ -64,6 +64,10 @@ _DB_FIELD_FORMATS = {
     4: ('int8', 'b', 1),
     5: ('int16', 'h', 2)
 }
+
+_DB_FLAG_STRING   = 0x8 # All strings have this set
+_DB_FLAG_UNSIGNED = 0x4 # Possibly ...
+_DB_FLAG_UNK      = 0x2 # Numbered fields have this, but not always
 
 # Calculate the negative offset from table_hash to the start, based on the struct info
 def compute_field_offset(field):
@@ -131,13 +135,22 @@ class DBStructureHeader(collections.namedtuple('DBStructureHeader', _DB_STRUCT_H
         if raw:
             return formats
 
+        flags = unpacker.unpack_from(parser.handle, self.file_offset(parser, 'va_flags'))
+
         struct_formats = []
-        for format_value in formats:
+        for i in range(0, len(formats)):
+            format_value = formats[i]
+            flag_value = flags[i]
+
             if format_value not in _DB_FIELD_FORMATS:
-                logging.warn('Format value type {} not known', format_value)
+                logging.warn('Format value type %s not known', format_value)
                 struct_formats.append(('unknown', 'z'))
             else:
-                struct_formats.append(_DB_FIELD_FORMATS[format_value])
+                fmt = _DB_FIELD_FORMATS[format_value]
+                if flag_value & _DB_FLAG_UNSIGNED:
+                    fmt = ('u' + fmt[0], fmt[1], fmt[2])
+
+                struct_formats.append(fmt)
 
         return struct_formats
 
@@ -162,6 +175,32 @@ class DBStructureHeader(collections.namedtuple('DBStructureHeader', _DB_STRUCT_H
 
         return unpacker.unpack_from(parser.handle, byte_offset)
 
+    def valid(self):
+        # Ensure fields even have valid values
+        fields_non_zero = 0 not in [self.fields, self.size, self.file_data_id,
+                self.va_byte_offset, self.va_elements, self.va_field_format,
+                self.va_flags, self.va_elements_file,
+                self.va_field_format_file, self.va_flags_file, self.table_hash,
+                self.layout_hash]
+
+        # Then, some sensible bounds checking for selected fields
+        if self.size > 65536:
+            return False
+
+        if self.fields > 512:
+            return False
+
+        if self.layout_hash < 0xff:
+            return False
+
+        if self.table_hash < 0xff:
+            return False
+
+        if self.file_data_id > 10000000:
+            return False
+
+        return fields_non_zero
+
     def __str__(self):
         s = []
 
@@ -174,7 +213,7 @@ class DBStructureHeader(collections.namedtuple('DBStructureHeader', _DB_STRUCT_H
         return ', '.join(s)
 
 class PeStructParser:
-    def __init__(self, options, wow_binary, files):
+    def __init__(self, options, wow_binary, files = None):
         self.dbfiles = files
         self.options = options
         self.wow_binary = wow_binary
@@ -200,6 +239,47 @@ class PeStructParser:
                     self.wow_binary, self.rdata_start, self.rdata_voffset))
 
         return True
+
+    def find_db_header_by_name(self, name):
+        name_bytes = name.encode('utf-8')
+        # Find the absolute offset to the file name in .rdata
+        ofs_name = self.handle.find(name_bytes, self.rdata_start, self.rdata_end)
+        while ofs_name < self.rdata_end:
+            if ofs_name == -1:
+                return None
+
+            logging.debug('{} found at {:#08x}, looking for db2 meta structure ...'.format(name, ofs_name))
+
+            # Compute relative offset inside .rdata
+            relative_offset = ofs_name
+            relative_offset -= self.rdata_start
+            relative_offset += self.rdata_voffset
+            relative_offset += self.image_base
+
+            # Look for the relative offset value in the .rdata section, could be before or past the name (cstring) offset
+            rofs_bytes = relative_offset.to_bytes(8, byteorder = 'little')
+            ofs_db2_meta = self.handle.find(rofs_bytes, self.rdata_start, ofs_name)
+            # Nothing on [.rdata_start, ofs_name]
+            if ofs_db2_meta == -1:
+                ofs_db2_meta = self.handle.find(rofs_bytes, ofs_name + len(name_bytes), self.rdata_end)
+
+            # Nothing on [ofs_name + len(name), .rdata_end], cannot find DB2 meta struct so bail out
+            if ofs_db2_meta == -1:
+                ofs_name = self.handle.find(name_bytes, ofs_name + len(name_bytes), self.rdata_end)
+                logging.debug('Relative offset {:#016x} not found in .rdata, continuing ...'.format(relative_offset))
+                continue
+
+            # DB2 meta structure found, unpack and return
+            unpack = _DB_STRUCT.unpack_from(self.handle, ofs_db2_meta)
+            db2meta = DBStructureHeader(*unpack)
+            if not db2meta.valid():
+                logging.debug('DB2 meta structure contains invalid information, continuing...')
+                ofs_name = self.handle.find(name_bytes, ofs_name + len(name_bytes), self.rdata_end)
+                continue
+
+            return db2meta
+
+        return None
 
     def find_db_header(self, dbcfile):
         table_hash = struct.pack('I', dbcfile.parser.table_hash)
@@ -239,6 +319,44 @@ class PeStructParser:
 
         return DBStructureHeader(*unpack)
 
+    def find_by_name(self, name):
+        header = self.find_db_header_by_name(name)
+        if not header:
+            return False
+
+        logging.debug('{:s} ({:d}): {:s}'.format(header.name(self), header.file_offset(self, 'va_name'), str(header)))
+        logging.debug('Offsets   {}'.format(header.offsets(self)))
+        logging.debug('Types     {}'.format(header.formats(self, True)))
+        logging.debug('Types2    {}'.format(header.data(self, 'va_field_format_file')))
+        logging.debug('Elements  {}'.format(header.elements(self)))
+        logging.debug('Elements2 {}'.format(header.data(self, 'va_elements_file')))
+        logging.debug('Flags     {}'.format(header.flags(self)))
+        logging.debug('Flags2    {} ({})'.format(header.data(self, 'va_flags_file'), header.file_offset(self, 'va_flags_file')))
+
+        offsets = header.offsets(self)
+        formats = header.formats(self)
+        elements = header.elements(self)
+
+        logging.info('{}.db2: fields={}, record_size={}, table_hash={:#08x}, layout_hash={:#08x}'.format(
+            name, header.fields, header.size, header.table_hash, header.layout_hash))
+
+        fields_str = []
+        offsets_str = []
+        for i in range(0, len(offsets)):
+            if elements[i] > 1:
+                fields_str.append('{}[{}]'.format(formats[i][0], elements[i]))
+            else:
+                fields_str.append('{}'.format(formats[i][0]))
+
+            chars = len(fields_str[-1])
+            offset_fmt = '{: <%dd}' % chars
+            offsets_str.append(offset_fmt.format(offsets[i]))
+
+        logging.info('Offsets: %s', ' '.join(offsets_str))
+        logging.info('Fields : %s', ' '.join(fields_str))
+
+        return True
+
     def validate_file(self, file_):
         dbfile = DBCFile(self.options, file_)
         try:
@@ -259,14 +377,14 @@ class PeStructParser:
             logging.debug('No DB structure header found for {}'.format(dbfile.class_name()))
             return True
 
-        logging.debug(header)
+        logging.debug('{:s} ({:d}): {:s}'.format(header.name(self), header.file_offset(self, 'va_name'), str(header)))
         logging.debug('Offsets   {}'.format(header.offsets(self)))
         logging.debug('Types     {}'.format(header.formats(self, True)))
         logging.debug('Types2    {}'.format(header.data(self, 'va_field_format_file')))
         logging.debug('Elements  {}'.format(header.elements(self)))
         logging.debug('Elements2 {}'.format(header.data(self, 'va_elements_file')))
         logging.debug('Flags     {}'.format(header.flags(self)))
-        logging.debug('Flags2    {}'.format(header.data(self, 'va_flags_file')))
+        logging.debug('Flags2    {} ({})'.format(header.data(self, 'va_flags_file'), header.file_offset(self, 'va_flags_file')))
 
         formats = header.formats(self)
         elements = header.elements(self)
@@ -327,56 +445,23 @@ class PeStructParser:
 
         return True
 
-    def generate_format(self, file_):
-        dbfile = DBCFile(self.options, file_)
-        if not dbfile.open():
-            return True
-
-        # Dun care, nothing to check
-        if dbfile.parser.records == 0:
-            return True
-
-        key = dbfile.class_name()
-        header = self.find_db_header(dbfile)
+    def generate_format(self, name):
+        header = self.find_db_header_by_name(name)
         if not header:
-            logging.debug('No DB structure header found for {}'.format(dbfile.class_name()))
-            return True
+            logging.error('No DB structure header found for {}'.format(name))
+            return False
 
-        formats = header.formats(self, True)
+        formats = header.formats(self)
         elements = header.elements(self)
-        output_formats = []
-        for field_idx in range(0, len(formats)):
-            col = dbfile.parser.column(field_idx)
 
-            type_ = 'bytes'
-            if col.field_ext_type() == wdc1.COLUMN_TYPE_BIT:
-                type_ = 'bits'
-            elif col.field_ext_type() == wdc1.COLUMN_TYPE_BIT_S:
-                type_ = 'sbits'
-            elif col.field_ext_type() == wdc1.COLUMN_TYPE_INDEXED:
-                type_ = 'index'
-            elif col.field_ext_type() == wdc1.COLUMN_TYPE_SPARSE:
-                type_ = 'sparse'
-            elif col.field_ext_type() == wdc1.COLUMN_TYPE_ARRAY:
-                type_ = 'array'
+        fields = []
+        for i in range(0, len(formats)):
+            if elements[i] > 1:
+                fields.append({'data_type': formats[i][1], 'field': 'f_{}'.format(i + 1), 'elements': elements[i]})
+            else:
+                fields.append({'data_type': formats[i][1], 'field': 'f_{}'.format(i + 1)})
 
-            value_type = _DB_FIELD_FORMATS.get(formats[field_idx], 'unknown')[1]
-            if value_type != 'f' and not col.is_signed():
-                value_type = value_type.upper()
-
-            field_name = 'f{}'.format(field_idx + 1)
-            if not dbfile.parser.has_id_block() and dbfile.parser.id_index == field_idx:
-                field_name = 'id'
-
-            entry = {'data_type': value_type, 'field': field_name, 'column_type': type_}
-            if elements[field_idx] > 1:
-                entry['elements'] = elements[field_idx]
-
-            output_formats.append(entry)
-
-        self.generated_formats[key] = output_formats
-
-        return True
+        return fields
 
     # Generate should not require knowing any formats
     def generate(self):
@@ -385,7 +470,10 @@ class PeStructParser:
         self.generated_formats = {}
 
         for dbfile in self.dbfiles:
-            if not self.generate_format(dbfile):
-                return False
+            f = self.generate_format(dbfile)
+            if not f:
+                continue
+
+            self.generated_formats[dbfile] = f
 
         return self.generated_formats
