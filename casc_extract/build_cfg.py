@@ -38,7 +38,7 @@ class DBFileList(collections.Mapping):
 				if len(cleaned_file) == 0:
 					continue
 
-				split_line = cleaned_file.split(',')
+				split_line = cleaned_file.split(',', 1)
 				if len(split_line) != 2:
 					self.options.parser.error('Invalid dbfile line "%s", lines require a file data id and a file name, separated by commas' %
 							cleaned_file)
