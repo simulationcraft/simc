@@ -116,6 +116,7 @@ if __name__ == '__main__':
 			for file_data_id, file_name in fname_db.items():
 				file_md5s = root.GetFileDataIdMD5(file_data_id)
 				if not file_md5s:
+					print('No entry found for %s (id=%s)' % (file_name, file_data_id))
 					continue
 
 				if len(file_md5s) > 1:

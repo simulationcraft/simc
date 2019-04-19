@@ -370,9 +370,9 @@ class CASCObject(object):
 
 	def get_url(self, url, headers = None):
 		try:
+			print('Fetching %s ...' % url)
 			r = _S.get(url, headers = headers)
 
-			print('Fetching %s ...' % url)
 			if r.status_code not in [200, 206]:
 				self.options.parser.error('HTTP request for %s returns %u' % (url, r.status_code))
 		except Exception as e:
