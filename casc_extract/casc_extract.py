@@ -19,6 +19,8 @@ parser.add_option( '-d', '--datadir', dest = 'data_dir', type = 'string',
 		help = 'World of Warcraft install directory [only needed if --cdn is not set]' )
 parser.add_option( '-o', '--output', type = 'string', dest = 'output',
 		help = "Output directory for dbc mode, output file name for unpack mode" )
+parser.add_option( '-z', '--region', type = 'string', dest = 'region', default = 'us',
+		help = "Region for CDN downloads [default us]")
 parser.add_option( '-x', '--cache', type = 'string', dest = 'cache', default = 'cache', help = 'Cache directory [default cache]' )
 parser.add_option( '--ptr', action = 'store_true', dest = 'ptr', default = False, help = 'Download PTR files [default no, only used for --cdn]' )
 parser.add_option( '--beta', action = 'store_true', dest = 'beta', default = False, help = 'Download Beta files [default no, only used for --cdn]' )
@@ -125,6 +127,7 @@ if __name__ == '__main__':
 				file_keys = encoding.GetFileKeys(file_md5s[0])
 
 				if len(file_keys) == 0:
+					print('No keys found for %s (%s)' % (file_name, binascii.hexlify(file_md5s[0]).decode('utf-8')))
 					continue
 
 				if len(file_keys) > 1:

@@ -11,7 +11,7 @@ except Exception as error:
     sys.exit(1)
 
 _S = requests.Session()
-_S.mount('http://', requests.adapters.HTTPAdapter(pool_connections = 1, pool_maxsize = 1))
+_S.mount('http://', requests.adapters.HTTPAdapter(pool_connections = 5))
 
 _BLTE_MAGIC = b'BLTE'
 _CHUNK_DATA_OFFSET_LEN = 4
@@ -370,9 +370,9 @@ class CASCObject(object):
 
 	def get_url(self, url, headers = None):
 		try:
-			print('Fetching %s ...' % url)
 			r = _S.get(url, headers = headers)
 
+			print('Fetching %s ...' % url)
 			if r.status_code not in [200, 206]:
 				self.options.parser.error('HTTP request for %s returns %u' % (url, r.status_code))
 		except Exception as e:
@@ -448,6 +448,7 @@ class CDNIndex(CASCObject):
 		self.version = None
 		self.build_number = 0
 		self.build_version = 0
+		self.cdn_idx = 0
 
 	# TODO: (More) Option based selectors
 	def get_build_cfg(self):
@@ -484,19 +485,26 @@ class CDNIndex(CASCObject):
 		data = handle.text.strip().split('\n')
 		for line in data:
 			split = line.split('|')
-			if split[0] != 'us':
+			if split[0] != self.options.region:
 				continue
 
 			self.cdn_path = split[1]
-			cdns = [urllib.parse.urlparse(x).netloc for x in split[3].split(' ')]
-			self.cdn_host = cdns[0]
+			#cdns = [urllib.parse.urlparse(x).netloc for x in split[3].split(' ')]
+			#self.cdn_host = cdns[-1]
+			self.cdn_host = split[2].split(' ')
 
 		if not self.cdn_path or not self.cdn_host:
 			sys.stderr.write('Unable to extract CDN information\n')
 			sys.exit(1)
 
 	def cdn_base_url(self):
-		return 'http://%s/%s' % (self.cdn_host, self.cdn_path)
+		s = 'http://%s/%s' % (self.cdn_host[self.cdn_idx], self.cdn_path)
+
+		self.cdn_idx += 1
+		if self.cdn_idx == len(self.cdn_host):
+			self.cdn_idx = 0
+
+		return s
 
 	def cdn_url(self, type, file):
 		return '%s/%s/%s/%s/%s' % (self.cdn_base_url(), type, file[:2], file[2:4], file)
@@ -757,7 +765,9 @@ class CASCEncodingFile(CASCObject):
 		if not os.access(self.cache_dir(), os.W_OK):
 			self.options.parser.error('Error bootstrapping CASCEncodingFile, "%s" is not writable' % self.cache_dir())
 
-		handle = self.get_url(self.build.encoding_blte_url())
+		encoding_file_path = os.path.join(self.cache_dir('data'), self.build.encoding_file())
+		handle = self.cached_open(encoding_file_path, self.build.encoding_blte_url())
+		#handle = self.get_url(self.build.encoding_blte_url())
 
 		blte = BLTEFile(handle.content)
 		if not blte.extract():
@@ -819,7 +829,6 @@ class CASCEncodingFile(CASCObject):
 			while n_keys != 0:
 				keys = []
 				file_size = struct.unpack('>I', data[offset:offset + 4])[0]; offset += 4
-
 				file_md5 = data[offset:offset + 16]; offset += 16
 				for key_idx in range(0, n_keys):
 					keys.append(data[offset:offset + 16]); offset += 16
@@ -950,7 +959,9 @@ class CASCRootFile(CASCObject):
 			if len(keys) > 1:
 				print('Duplicate root key found for %s, using first one ...' % self.build.root_file())
 
-			handle = self.get_url(self.build.cdn_url('data', codecs.encode(keys[0], 'hex').decode('utf-8')))
+			handle = self.cached_open(self.build.root_file(),
+				self.build.cdn_url('data', codecs.encode(keys[0], 'hex').decode('utf-8')))
+			#handle = self.get_url(self.build.cdn_url('data', codecs.encode(keys[0], 'hex').decode('utf-8')))
 
 			blte = BLTEFile(handle.content)
 			if not blte.extract():
@@ -1030,7 +1041,7 @@ class CASCRootFile(CASCObject):
 				csum_file_id = file_data_id
 
 				# Skip file name hashes on live, and on PTR most of the time
-				if not self.options.ptr or (self.options.ptr and (unk_1 & 0x10000000) == 0):
+				if not self.options.ptr:
 					offset += 8
 
 				if flags != CASCRootFile.LOCALE_ALL and not (flags & self.GetLocale()):
@@ -1042,6 +1053,11 @@ class CASCRootFile(CASCObject):
 				self.hash_map[file_data_id].append(md5s)
 
 				n_md5s += 1
+
+			# Skip 8 * n_entries amount of bytes if the PTR root file contains
+			# the "contains name hashes" flag
+			if not self.options.ptr or (self.options.ptr and (unk_1 & 0x10000000) == 0):
+				offset += 8 * n_entries
 
 		sys.stdout.write('%u entries\n' % n_md5s)
 		return True
