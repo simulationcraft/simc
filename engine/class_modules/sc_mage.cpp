@@ -6681,16 +6681,15 @@ public:
   void html_customsection_icy_veins( report::sc_html_stream& os )
   {
     os << "<div class=\"player-section custom_section\">\n"
-       << "<h3 class=\"toggle open\">Icy Veins</h3>\n"
-       << "<div class=\"toggle-content\">\n";
+          "<h3 class=\"toggle open\">Icy Veins</h3>\n"
+          "<div class=\"toggle-content\">\n";
 
-    int num_buckets = as<int>( p.sample_data.icy_veins_duration->max() - p.sample_data.icy_veins_duration->min() ) + 1;
-    highchart::histogram_chart_t chart( highchart::build_id( p, "iv_dist" ), *p.sim );
-    p.sample_data.icy_veins_duration->create_histogram( num_buckets );
-    if ( chart::generate_distribution(
-      chart, &p, p.sample_data.icy_veins_duration->distribution, "Icy Veins Duration",
-      p.sample_data.icy_veins_duration->mean(), p.sample_data.icy_veins_duration->min(),
-      p.sample_data.icy_veins_duration->max() ) )
+    auto& d = *p.sample_data.icy_veins_duration;
+    int num_buckets = as<int>( d.max() - d.min() ) + 1;
+    d.create_histogram( num_buckets );
+
+    highchart::histogram_chart_t chart( highchart::build_id( p, "icy_veins_duration" ), *p.sim );
+    if ( chart::generate_distribution( chart, &p, d.distribution, "Icy Veins Duration", d.mean(), d.min(), d.max() ) )
     {
       chart.set( "tooltip.headerFormat", "<b>{point.key}</b> s<br/>" );
       chart.set( "chart.width", std::to_string( 80 + num_buckets * 13 ) );
@@ -6699,7 +6698,7 @@ public:
     }
 
     os << "</div>\n"
-       << "</div>\n";
+          "</div>\n";
   }
 
   void html_customsection_shatter( report::sc_html_stream& os )
