@@ -25,7 +25,7 @@ action_t* get_action( const std::string& name, Actor* actor, Args&&... args )
 {
   action_t* a = actor->find_action( name );
   if ( !a )
-    a = new Action( name, actor, std::move( args )... );
+    a = new Action( name, actor, std::forward( args )... );
 
   assert( dynamic_cast<Action*>( a ) && a->name_str == name && a->background );
   return a;
