@@ -215,12 +215,11 @@ struct cooldown_waste_data_t : private noncopyable
     if ( may_add( cd_override ) )
     {
       double wasted = ( cd->sim.current_time() - cd->last_charged ).total_seconds();
+
+      // Waste caused by execute time is unavoidable for single charge spells, don't count it.
       if ( cd->charges == 1 )
-      {
-        // Waste caused by execute time is unavoidable for single charge spells,
-        // don't count it.
         wasted -= time_to_execute.total_seconds();
-      }
+
       normal.add( wasted );
       buffer += wasted;
     }
@@ -254,7 +253,6 @@ struct cooldown_waste_data_t : private noncopyable
       buffer += ( cd->sim.current_time() - cd->last_charged ).total_seconds();
 
     cumulative.add( buffer );
-    buffer = 0.0;
   }
 };
 
@@ -436,7 +434,7 @@ public:
 
 
     // Miscellaneous Buffs
-    buff_t* greater_blessing_of_widsom;
+    buff_t* gbow;
     buff_t* shimmer;
   } buffs;
 
@@ -453,7 +451,7 @@ public:
   // Gains
   struct gains_t
   {
-    gain_t* greater_blessing_of_wisdom;
+    gain_t* gbow;
     gain_t* evocation;
   } gains;
 
@@ -461,11 +459,9 @@ public:
   struct options_t
   {
     timespan_t firestarter_time = 0_ms;
-    timespan_t frozen_duration  = 1.0_s;
-    timespan_t scorch_delay     = 15_ms;
-
-    int blessing_of_wisdom_count = 0;
-
+    timespan_t frozen_duration = 1.0_s;
+    timespan_t scorch_delay = 15_ms;
+    int gbow_count = 0;
     bool allow_shimmer_lance = false;
   } options;
 
@@ -2432,14 +2428,6 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     cc_tick_time_reduction = cc_data.effectN( 2 ).percent() + p->talents.amplification->effectN( 1 ).percent();
   }
 
-  void handle_clearcasting( bool apply )
-  {
-    if ( apply )
-      p()->buffs.clearcasting_channel->trigger();
-    else
-      p()->buffs.clearcasting_channel->expire();
-  }
-
   dmg_e amount_type( const action_state_t*, bool ) const override
   {
     return DMG_DIRECT;
@@ -2484,7 +2472,11 @@ struct arcane_missiles_t : public arcane_mage_spell_t
   void execute() override
   {
     p()->buffs.arcane_pummeling->expire();
-    handle_clearcasting( p()->buffs.clearcasting->check() != 0 );
+
+    if ( p()->buffs.clearcasting->check() )
+      p()->buffs.clearcasting_channel->trigger();
+    else
+      p()->buffs.clearcasting_channel->expire();
 
     arcane_mage_spell_t::execute();
   }
@@ -2988,7 +2980,7 @@ struct fireball_t : public fire_mage_spell_t
     double c = fire_mage_spell_t::composite_target_crit_chance( target );
 
     if ( firestarter_active( target ) )
-      c = 1.0;
+      c += 1.0;
 
     return c;
   }
@@ -3225,7 +3217,6 @@ struct frostbolt_t : public frost_mage_spell_t
 
     if ( target != p()->last_frostbolt_target )
       p()->buffs.tunnel_of_ice->expire();
-
     p()->last_frostbolt_target = target;
   }
 
@@ -3659,12 +3650,11 @@ struct ice_lance_t : public frost_mage_spell_t
     if ( auto td = p()->target_data[ s->target ] )
     {
       double pi_bonus = td->debuffs.packed_ice->check_value();
+
+      // Splitting Ice nerfs this trait by 33%, see:
+      // https://us.battle.net/forums/en/wow/topic/20769009293#post-1
       if ( num_targets_hit > 1 )
-      {
-        // Splitting Ice nerfs this trait by 33%, see:
-        // https://us.battle.net/forums/en/wow/topic/20769009293#post-1
         pi_bonus *= 0.666;
-      }
 
       da += pi_bonus;
     }
@@ -4025,7 +4015,6 @@ struct nether_tempest_t : public arcane_mage_spell_t
     {
       if ( p()->last_bomb_target && p()->last_bomb_target != target )
         td( p()->last_bomb_target )->dots.nether_tempest->cancel();
-
       p()->last_bomb_target = target;
     }
   }
@@ -4175,7 +4164,7 @@ struct pyroblast_t : public hot_streak_spell_t
     double c = hot_streak_spell_t::composite_target_crit_chance( target );
 
     if ( firestarter_active( target ) )
-      c = 1.0;
+      c += 1.0;
 
     return c;
   }
@@ -4259,17 +4248,17 @@ struct scorch_t : public fire_mage_spell_t
     triggers_hot_streak = triggers_ignite = true;
   }
 
-  double action_multiplier() const override
+  double composite_da_multiplier( const action_state_t* s ) const override
   {
-    double am = fire_mage_spell_t::action_multiplier();
+    double m = fire_mage_spell_t::composite_da_multiplier( s );
 
     if ( p()->talents.searing_touch->ok()
-      && target->health_percentage() <= p()->talents.searing_touch->effectN( 1 ).base_value() )
+      && s->target->health_percentage() <= p()->talents.searing_touch->effectN( 1 ).base_value() )
     {
-      am *= 1.0 + p()->talents.searing_touch->effectN( 2 ).percent();
+      m *= 1.0 + p()->talents.searing_touch->effectN( 2 ).percent();
     }
 
-    return am;
+    return m;
   }
 
   double composite_target_crit_chance( player_t* target ) const override
@@ -4279,7 +4268,7 @@ struct scorch_t : public fire_mage_spell_t
     if ( p()->talents.searing_touch->ok()
       && target->health_percentage() <= p()->talents.searing_touch->effectN( 1 ).base_value() )
     {
-      c = 1.0;
+      c += 1.0;
     }
 
     return c;
@@ -4760,7 +4749,6 @@ struct time_anomaly_tick_event_t : public event_t
   void execute() override
   {
     mage->time_anomaly_tick_event = nullptr;
-
     sim().print_log( "{} Time Anomaly tick event occurs.", mage->name() );
 
     if ( mage->shuffled_rng.time_anomaly->trigger() )
@@ -4900,6 +4888,7 @@ action_t* mage_t::create_action( const std::string& name, const std::string& opt
   if ( name == "arcane_barrage"         ) return new         arcane_barrage_t( name, this, options_str );
   if ( name == "arcane_blast"           ) return new           arcane_blast_t( name, this, options_str );
   if ( name == "arcane_explosion"       ) return new       arcane_explosion_t( name, this, options_str );
+  if ( name == "arcane_familiar"        ) return new        arcane_familiar_t( name, this, options_str );
   if ( name == "arcane_missiles"        ) return new        arcane_missiles_t( name, this, options_str );
   if ( name == "arcane_orb"             ) return new             arcane_orb_t( name, this, options_str );
   if ( name == "arcane_power"           ) return new           arcane_power_t( name, this, options_str );
@@ -4908,7 +4897,6 @@ action_t* mage_t::create_action( const std::string& name, const std::string& opt
   if ( name == "nether_tempest"         ) return new         nether_tempest_t( name, this, options_str );
   if ( name == "presence_of_mind"       ) return new       presence_of_mind_t( name, this, options_str );
   if ( name == "slow"                   ) return new                   slow_t( name, this, options_str );
-  if ( name == "arcane_familiar"        ) return new        arcane_familiar_t( name, this, options_str );
   if ( name == "supernova"              ) return new              supernova_t( name, this, options_str );
 
   if ( name == "start_burn_phase"       ) return new       start_burn_phase_t( name, this, options_str );
@@ -4918,9 +4906,9 @@ action_t* mage_t::create_action( const std::string& name, const std::string& opt
   if ( name == "blast_wave"             ) return new             blast_wave_t( name, this, options_str );
   if ( name == "combustion"             ) return new             combustion_t( name, this, options_str );
   if ( name == "dragons_breath"         ) return new         dragons_breath_t( name, this, options_str );
+  if ( name == "fire_blast"             ) return new             fire_blast_t( name, this, options_str );
   if ( name == "fireball"               ) return new               fireball_t( name, this, options_str );
   if ( name == "flamestrike"            ) return new            flamestrike_t( name, this, options_str );
-  if ( name == "fire_blast"             ) return new             fire_blast_t( name, this, options_str );
   if ( name == "living_bomb"            ) return new            living_bomb_t( name, this, options_str );
   if ( name == "meteor"                 ) return new                 meteor_t( name, this, options_str );
   if ( name == "phoenix_flames"         ) return new         phoenix_flames_t( name, this, options_str );
@@ -5011,7 +4999,7 @@ void mage_t::create_options()
   add_option( opt_timespan( "firestarter_time", options.firestarter_time ) );
   add_option( opt_timespan( "frozen_duration", options.frozen_duration ) );
   add_option( opt_timespan( "scorch_delay", options.scorch_delay ) );
-  add_option( opt_int( "blessing_of_wisdom_count", options.blessing_of_wisdom_count ) );
+  add_option( opt_int( "greater_blessing_of_wisdom_count", options.gbow_count ) );
   add_option( opt_bool( "allow_shimmer_lance", options.allow_shimmer_lance ) );
   player_t::create_options();
 }
@@ -5330,43 +5318,43 @@ void mage_t::create_buffs()
 
 
   // Fire
-  buffs.combustion             = make_buff<buffs::combustion_buff_t>( this );
-  buffs.enhanced_pyrotechnics  = make_buff( this, "enhanced_pyrotechnics", find_spell( 157644 ) )
-                                   ->set_chance( spec.enhanced_pyrotechnics->ok() )
-                                   ->set_default_value( find_spell( 157644 )->effectN( 1 ).percent() )
-                                   ->set_stack_change_callback( [ this ] ( buff_t*, int prev, int cur )
-                                     {
-                                       if ( cur > prev )
-                                         buffs.flames_of_alacrity->trigger( cur - prev );
-                                       else
-                                         buffs.flames_of_alacrity->decrement( prev - cur );
-                                     } );
-  buffs.heating_up             = make_buff( this, "heating_up", find_spell( 48107 ) );
-  buffs.hot_streak             = make_buff( this, "hot_streak", find_spell( 48108 ) );
+  buffs.combustion            = make_buff<buffs::combustion_buff_t>( this );
+  buffs.enhanced_pyrotechnics = make_buff( this, "enhanced_pyrotechnics", find_spell( 157644 ) )
+                                  ->set_chance( spec.enhanced_pyrotechnics->ok() )
+                                  ->set_default_value( find_spell( 157644 )->effectN( 1 ).percent() )
+                                  ->set_stack_change_callback( [ this ] ( buff_t*, int prev, int cur )
+                                    {
+                                      if ( cur > prev )
+                                        buffs.flames_of_alacrity->trigger( cur - prev );
+                                      else
+                                        buffs.flames_of_alacrity->decrement( prev - cur );
+                                    } );
+  buffs.heating_up            = make_buff( this, "heating_up", find_spell( 48107 ) );
+  buffs.hot_streak            = make_buff( this, "hot_streak", find_spell( 48108 ) );
 
-  buffs.frenetic_speed         = make_buff( this, "frenetic_speed", find_spell( 236060 ) )
-                                   ->set_default_value( find_spell( 236060 )->effectN( 1 ).percent() )
-                                   ->add_invalidate( CACHE_RUN_SPEED );
-  buffs.pyroclasm              = make_buff( this, "pyroclasm", find_spell( 269651 ) )
-                                   ->set_default_value( find_spell( 269651 )->effectN( 1 ).percent() )
-                                   ->set_chance( talents.pyroclasm->effectN( 1 ).percent() );
+  buffs.frenetic_speed        = make_buff( this, "frenetic_speed", find_spell( 236060 ) )
+                                  ->set_default_value( find_spell( 236060 )->effectN( 1 ).percent() )
+                                  ->add_invalidate( CACHE_RUN_SPEED );
+  buffs.pyroclasm             = make_buff( this, "pyroclasm", find_spell( 269651 ) )
+                                  ->set_default_value( find_spell( 269651 )->effectN( 1 ).percent() )
+                                  ->set_chance( talents.pyroclasm->effectN( 1 ).percent() );
 
 
   // Frost
-  buffs.brain_freeze           = make_buff( this, "brain_freeze", find_spell( 190446 ) );
-  buffs.fingers_of_frost       = make_buff( this, "fingers_of_frost", find_spell( 44544 ) );
-  buffs.icicles                = make_buff( this, "icicles", find_spell( 205473 ) );
-  buffs.icy_veins              = make_buff<buffs::icy_veins_buff_t>( this );
+  buffs.brain_freeze     = make_buff( this, "brain_freeze", find_spell( 190446 ) );
+  buffs.fingers_of_frost = make_buff( this, "fingers_of_frost", find_spell( 44544 ) );
+  buffs.icicles          = make_buff( this, "icicles", find_spell( 205473 ) );
+  buffs.icy_veins        = make_buff<buffs::icy_veins_buff_t>( this );
 
-  buffs.bone_chilling          = make_buff( this, "bone_chilling", find_spell( 205766 ) )
-                                   ->set_default_value( 0.1 * talents.bone_chilling->effectN( 1 ).percent() );
-  buffs.chain_reaction         = make_buff( this, "chain_reaction", find_spell( 278310 ) )
-                                   ->set_default_value( find_spell( 278310 )->effectN( 1 ).percent() );
-  buffs.freezing_rain          = make_buff( this, "freezing_rain", find_spell( 270232 ) )
-                                   ->set_default_value( find_spell( 270232 )->effectN( 2 ).percent() );
-  buffs.ice_floes              = make_buff<buffs::ice_floes_buff_t>( this );
-  buffs.ray_of_frost           = make_buff( this, "ray_of_frost", find_spell( 208141 ) )
-                                   ->set_default_value( find_spell( 208141 )->effectN( 1 ).percent() );
+  buffs.bone_chilling    = make_buff( this, "bone_chilling", find_spell( 205766 ) )
+                             ->set_default_value( 0.1 * talents.bone_chilling->effectN( 1 ).percent() );
+  buffs.chain_reaction   = make_buff( this, "chain_reaction", find_spell( 278310 ) )
+                             ->set_default_value( find_spell( 278310 )->effectN( 1 ).percent() );
+  buffs.freezing_rain    = make_buff( this, "freezing_rain", find_spell( 270232 ) )
+                             ->set_default_value( find_spell( 270232 )->effectN( 2 ).percent() );
+  buffs.ice_floes        = make_buff<buffs::ice_floes_buff_t>( this );
+  buffs.ray_of_frost     = make_buff( this, "ray_of_frost", find_spell( 208141 ) )
+                             ->set_default_value( find_spell( 208141 )->effectN( 1 ).percent() );
 
 
   // Shared
@@ -5403,13 +5391,10 @@ void mage_t::create_buffs()
 
   // Misc
   // N active GBoWs are modeled by a single buff that gives N times as much mana.
-  buffs.greater_blessing_of_widsom = make_buff( this, "greater_blessing_of_wisdom", find_spell( 203539 ) )
+  buffs.gbow    = make_buff( this, "greater_blessing_of_wisdom", find_spell( 203539 ) )
     ->set_tick_callback( [ this ] ( buff_t*, int, const timespan_t& )
-      { resource_gain( RESOURCE_MANA,
-                       resources.max[ RESOURCE_MANA ] * 0.002 * options.blessing_of_wisdom_count,
-                       gains.greater_blessing_of_wisdom ); } )
-    ->set_period( find_spell( 203539 )->effectN( 2 ).period() )
-    ->set_tick_behavior( buff_tick_behavior::CLIP );
+      { resource_gain( RESOURCE_MANA, resources.max[ RESOURCE_MANA ] * 0.002 * options.gbow_count, gains.gbow ); } )
+    ->set_period( 2.0_s );
   buffs.shimmer = make_buff( this, "shimmer", find_spell( 212653 ) );
 }
 
@@ -5417,8 +5402,8 @@ void mage_t::init_gains()
 {
   player_t::init_gains();
 
-  gains.evocation                  = get_gain( "Evocation"                  );
-  gains.greater_blessing_of_wisdom = get_gain( "Greater Blessing of Wisdom" );
+  gains.evocation = get_gain( "Evocation"                  );
+  gains.gbow      = get_gain( "Greater Blessing of Wisdom" );
 }
 
 void mage_t::init_procs()
@@ -5848,7 +5833,7 @@ void mage_t::apl_fire()
   bm_combustion_phase->add_action( this, "Dragon's Breath", "if=buff.combustion.remains<gcd.max" );
   bm_combustion_phase->add_action( this, "Scorch" );
 
-  trinkets -> add_action( "use_items" );
+  trinkets->add_action( "use_items" );
 }
 
 void mage_t::apl_frost()
@@ -6127,8 +6112,8 @@ void mage_t::arise()
   if ( talents.incanters_flow->ok() )
     buffs.incanters_flow->trigger();
 
-  if ( options.blessing_of_wisdom_count > 0 )
-    buffs.greater_blessing_of_widsom->trigger();
+  if ( options.gbow_count > 0 )
+    buffs.gbow->trigger();
 
   if ( spec.ignite->ok() )
   {
@@ -6623,20 +6608,25 @@ public:
           "</tr>\n"
           "<tbody>\n";
 
-    auto& h = *p.sample_data.burn_duration_history;
-    fmt::print( os, "<tr><td class=\"left\">Count</td><td>{}</td></tr>\n", h.count() );
-    fmt::print( os, "<tr><td class=\"left\">Minimum</td><td>{:.3f}</td></tr>\n", h.min() );
-    fmt::print( os, "<tr><td class=\"left\">5<sup>th</sup> percentile</td><td>{:.3f}</td></tr>\n", h.percentile( 0.05 ) );
-    fmt::print( os, "<tr><td class=\"left\">Mean</td><td>{:.3f}</td></tr>\n", h.mean() );
-    fmt::print( os, "<tr><td class=\"left\">95<sup>th</sup> percentile</td><td>{:.3f}</td></tr>\n", h.percentile( 0.95 ) );
-    fmt::print( os, "<tr><td class=\"left\">Max</td><td>{:.3f}</td></tr>\n", h.max() );
-    fmt::print( os, "<tr><td class=\"left\">Variance</td><td>{:.3f}</td></tr>\n", h.variance );
-    fmt::print( os, "<tr><td class=\"left\">Mean Variance</td><td>{:.3f}</td></tr>\n", h.mean_variance );
-    fmt::print( os, "<tr><td class=\"left\">Mean Std. Dev</td><td>{:.3f}</td></tr>\n", h.mean_std_dev );
+    auto print_sample_data = [ &os ] ( extended_sample_data_t& s )
+    {
+      fmt::print( os, "<tr><td class=\"left\">Count</td><td>{}</td></tr>\n", s.count() );
+      fmt::print( os, "<tr><td class=\"left\">Minimum</td><td>{:.3f}</td></tr>\n", s.min() );
+      fmt::print( os, "<tr><td class=\"left\">5<sup>th</sup> percentile</td><td>{:.3f}</td></tr>\n", s.percentile( 0.05 ) );
+      fmt::print( os, "<tr><td class=\"left\">Mean</td><td>{:.3f}</td></tr>\n", s.mean() );
+      fmt::print( os, "<tr><td class=\"left\">95<sup>th</sup> percentile</td><td>{:.3f}</td></tr>\n", s.percentile( 0.95 ) );
+      fmt::print( os, "<tr><td class=\"left\">Max</td><td>{:.3f}</td></tr>\n", s.max() );
+      fmt::print( os, "<tr><td class=\"left\">Variance</td><td>{:.3f}</td></tr>\n", s.variance );
+      fmt::print( os, "<tr><td class=\"left\">Mean Variance</td><td>{:.3f}</td></tr>\n", s.mean_variance );
+      fmt::print( os, "<tr><td class=\"left\">Mean Std. Dev</td><td>{:.3f}</td></tr>\n", s.mean_std_dev );
+    };
+
+    print_sample_data( *p.sample_data.burn_duration_history );
 
     os << "</tbody>\n"
           "</table>\n";
 
+    auto& h = *p.sample_data.burn_duration_history;
     highchart::histogram_chart_t chart( highchart::build_id( p, "burn_duration" ), *p.sim );
     if ( chart::generate_distribution( chart, &p, h.distribution, "Burn Duration", h.mean(), h.min(), h.max() ) )
     {
@@ -6655,16 +6645,7 @@ public:
           "</tr>\n"
           "<tbody>\n";
 
-    auto& m = *p.sample_data.burn_initial_mana;
-    fmt::print( os, "<tr><td class=\"left\">Count</td><td>{}</td></tr>\n", m.count() );
-    fmt::print( os, "<tr><td class=\"left\">Minimum</td><td>{:.3f}</td></tr>\n", m.min() );
-    fmt::print( os, "<tr><td class=\"left\">5<sup>th</sup> percentile</td><td>{:.3f}</td></tr>\n", m.percentile( 0.05 ) );
-    fmt::print( os, "<tr><td class=\"left\">Mean</td><td>{:.3f}</td></tr>\n", m.mean() );
-    fmt::print( os, "<tr><td class=\"left\">95<sup>th</sup> percentile</td><td>{:.3f}</td></tr>\n", m.percentile( 0.95 ) );
-    fmt::print( os, "<tr><td class=\"left\">Max</td><td>{:.3f}</td></tr>\n", m.max() );
-    fmt::print( os, "<tr><td class=\"left\">Variance</td><td>{:.3f}</td></tr>\n", m.variance );
-    fmt::print( os, "<tr><td class=\"left\">Mean Variance</td><td>{:.3f}</td></tr>\n", m.mean_variance );
-    fmt::print( os, "<tr><td class=\"left\">Mean Std. Dev</td><td>{:.3f}</td></tr>\n", m.mean_std_dev );
+    print_sample_data( *p.sample_data.burn_initial_mana );
 
     os << "</tbody>\n"
           "</table>\n"
@@ -6730,15 +6711,8 @@ public:
       if ( !data->active() )
         continue;
 
-      std::string name = data->name_str;
-      if ( action_t* a = p.find_action( name ) )
-        name = report::action_decorator_t( a ).decorate();
-
-      fmt::print( os, "<tr{}>", ++row & 1 ? " class=\"odd\"" : "" );
-
-      double total = data->count_total();
       auto nonzero = [] ( std::string fmt, double d ) { return d != 0.0 ? fmt::format( fmt, d ) : ""; };
-      auto cells = [ & ] ( double mean, bool util )
+      auto cells = [ &, total = data->count_total() ] ( double mean, bool util = false )
       {
         std::string format_str = "<td class=\"right\">{}</td><td class=\"right\">{}</td>";
         if ( util )
@@ -6750,11 +6724,16 @@ public:
           nonzero( "{:.1f}%", bff > 0.0 ? 100.0 * mean / bff : 0.0 ) );
       };
 
+      std::string name = data->name_str;
+      if ( action_t* a = p.find_action( name ) )
+        name = report::action_decorator_t( a ).decorate();
+
+      fmt::print( os, "<tr{}>", ++row & 1 ? " class=\"odd\"" : "" );
       fmt::print( os, "<td class=\"left\">{}</td>", name );
-      cells( data->count( FROZEN_NONE ), false );
+      cells( data->count( FROZEN_NONE ) );
       cells( data->count( FROZEN_WINTERS_CHILL ), true );
-      cells( data->count( FROZEN_FINGERS_OF_FROST ), false );
-      cells( data->count( FROZEN_ROOT ), false );
+      cells( data->count( FROZEN_FINGERS_OF_FROST ) );
+      cells( data->count( FROZEN_ROOT ) );
       os << "</tr>\n";
     }
 
