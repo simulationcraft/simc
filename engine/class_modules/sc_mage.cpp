@@ -6715,28 +6715,26 @@ public:
       return;
 
     os << "<div class=\"player-section custom_section\">\n"
-       << "<h3 class=\"toggle open\">Shatter</h3>\n"
-       << "<div class=\"toggle-content\">\n";
-
-    os << "<table class=\"sc\" style=\"margin-top: 5px;\">\n"
-       << "<tr>\n"
-       << "<th>Ability</th>\n"
-       << "<th colspan=\"2\">None</th>\n"
-       << "<th colspan=\"3\">Winter's Chill</th>\n"
-       << "<th colspan=\"2\">Fingers of Frost</th>\n"
-       << "<th colspan=\"2\">Other effects</th>\n"
-       << "</tr>\n";
-
-    os << "<th></th>"
-       << "<th>Count</th>"
-       << "<th>Percent</th>"
-       << "<th>Count</th>"
-       << "<th>Percent</th>"
-       << "<th>Utilization</th>"
-       << "<th>Count</th>"
-       << "<th>Percent</th>"
-       << "<th>Count</th>"
-       << "<th>Percent</th>";
+          "<h3 class=\"toggle open\">Shatter</h3>\n"
+          "<div class=\"toggle-content\">\n"
+          "<table class=\"sc\" style=\"margin-top: 5px;\">\n"
+          "<tr>\n"
+          "<th>Ability</th>\n"
+          "<th colspan=\"2\">None</th>\n"
+          "<th colspan=\"3\">Winter's Chill</th>\n"
+          "<th colspan=\"2\">Fingers of Frost</th>\n"
+          "<th colspan=\"2\">Other effects</th>\n"
+          "</tr>\n"
+          "<th></th>\n"
+          "<th>Count</th>\n"
+          "<th>Percent</th>\n"
+          "<th>Count</th>\n"
+          "<th>Percent</th>\n"
+          "<th>Utilization</th>\n"
+          "<th>Count</th>\n"
+          "<th>Percent</th>\n"
+          "<th>Count</th>\n"
+          "<th>Percent</th>\n";
 
     double bff = p.procs.brain_freeze_flurry->count.pretty_mean();
 
@@ -6750,46 +6748,33 @@ public:
       if ( action_t* a = p.find_action( name ) )
         name = report::action_decorator_t( a ).decorate();
 
-      std::string row_class;
-      if ( ++row & 1 )
-        row_class = " class=\"odd\"";
-
-      os.printf( "<tr%s>", row_class.c_str() );
+      fmt::print( os, "<tr{}>", ++row & 1 ? " class=\"odd\"" : "" );
 
       double total = data->count_total();
-      auto format_cells = [ bff, &os, total ] ( double mean, bool util )
+      auto nonzero = [] ( std::string fmt, double d ) { return d != 0.0 ? fmt::format( fmt, d ) : ""; };
+      auto cells = [ & ] ( double mean, bool util )
       {
-        std::string format_str;
-        format_str += "<td class=\"right\">";
-        if ( mean > 0.0 )
-          format_str += "%.1f";
-        format_str += "</td><td class=\"right\">";
-        if ( mean > 0.0 )
-          format_str += "%.1f%%";
-        format_str += "</td>";
+        std::string format_str = "<td class=\"right\">{}</td><td class=\"right\">{}</td>";
         if ( util )
-        {
-          format_str += "<td class=\"right\">";
-          if ( bff > 0.0 && mean > 0.0 )
-            format_str += "%.1f%%";
-          format_str += "</td>";
-        }
+          format_str += "<td class=\"right\">{}</td>";
 
-        os.printf( format_str.c_str(), mean, 100.0 * mean / total, 100.0 * mean / bff );
+        fmt::print( os, format_str,
+          nonzero( "{:.1f}", mean ),
+          nonzero( "{:.1f}%", 100.0 * mean / total ),
+          nonzero( "{:.1f}%", bff > 0.0 ? 100.0 * mean / bff : 0.0 ) );
       };
 
-      os << "<td class=\"left\">" << name << "</td>";
-      format_cells( data->count( FROZEN_NONE ), false );
-      format_cells( data->count( FROZEN_WINTERS_CHILL ), true );
-      format_cells( data->count( FROZEN_FINGERS_OF_FROST ), false );
-      format_cells( data->count( FROZEN_ROOT ), false );
+      fmt::print( os, "<td class=\"left\">{}</td>", name );
+      cells( data->count( FROZEN_NONE ), false );
+      cells( data->count( FROZEN_WINTERS_CHILL ), true );
+      cells( data->count( FROZEN_FINGERS_OF_FROST ), false );
+      cells( data->count( FROZEN_ROOT ), false );
       os << "</tr>\n";
     }
 
-    os << "</table>\n";
-
-    os << "</div>\n"
-       << "</div>\n";
+    os << "</table>\n"
+          "</div>\n"
+          "</div>\n";
   }
 
   void html_customsection( report::sc_html_stream& os ) override
