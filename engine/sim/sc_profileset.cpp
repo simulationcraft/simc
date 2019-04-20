@@ -575,8 +575,9 @@ bool profilesets_t::parse( sim_t* sim )
     }
     catch ( const std::exception& e )
     {
-      std::cerr <<  "ERROR! Profileset '" << profileset_name << "' Setup failure: "
-                << e.what() << std::endl;
+      std::cerr << "ERROR! Profileset '" << profileset_name << "' Setup failure: ";
+      util::print_chained_exception( e );
+      std::cerr << std::endl;
       set_state( DONE );
       m_control.notify_one();
       delete control;
