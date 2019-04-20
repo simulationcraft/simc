@@ -8513,7 +8513,7 @@ struct cancel_buff_t : public action_t
     else if ( !buff->can_cancel )
     {
       throw std::invalid_argument( fmt::format(
-        "Player {} uses cancel_buff on {}, which cannot be cancelled in game\n", player->name(), buff_name ) );
+        "Player {} uses cancel_buff on {}, which cannot be cancelled in game", player->name(), buff_name ) );
     }
   }
 
