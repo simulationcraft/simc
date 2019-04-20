@@ -462,7 +462,6 @@ public:
     const spell_data_t* resurgence;
     const spell_data_t* riptide;
     const spell_data_t* tidal_waves;
-    const spell_data_t* chain_lightning;
     const spell_data_t* spiritwalkers_grace;
     const spell_data_t* restoration_shaman;  // general spec multiplier
   } spec;
@@ -644,7 +643,10 @@ public:
     // Azerite Effects
     lightning_conduit = nullptr;
 
-    regen_type = REGEN_DISABLED;
+    if ( specialization() == SHAMAN_ELEMENTAL || specialization() == SHAMAN_ENHANCEMENT )
+      regen_type = REGEN_DISABLED;
+    else
+      regen_type = REGEN_STATIC;
   }
 
   virtual ~shaman_t();
@@ -1629,16 +1631,6 @@ public:
 
     may_proc_stormbringer      = false;
     may_proc_strength_of_earth = false;
-  }
-
-  double cost() const override
-  {
-    // Mana cost is based on base mana which is 5x smaller than the Restoration mana pool
-    if ( p()->specialization() == SHAMAN_RESTORATION )
-    {
-      return shaman_spell_base_t::cost() / 5;
-    }
-    return shaman_spell_base_t::cost();
   }
 
   void init_finished() override
@@ -4713,6 +4705,9 @@ struct lava_burst_t : public shaman_spell_t
       add_child( overload );
     }
 
+    if ( p()->specialization() == SHAMAN_RESTORATION )
+      resource_current = RESOURCE_MANA;
+
     spell_power_mod.direct = player->find_spell( 285452 )->effectN( 1 ).sp_coeff();
   }
 
@@ -6917,7 +6912,6 @@ void shaman_t::init_spells()
   spec.resurgence         = find_specialization_spell( "Resurgence" );
   spec.riptide            = find_specialization_spell( "Riptide" );
   spec.tidal_waves        = find_specialization_spell( "Tidal Waves" );
-  spec.chain_lightning    = find_specialization_spell( "Chain Lightning" );
   spec.restoration_shaman = find_specialization_spell( "Restoration Shaman" );
 
   //
@@ -7027,6 +7021,13 @@ void shaman_t::init_base_stats()
 
   if ( specialization() == SHAMAN_ELEMENTAL || specialization() == SHAMAN_ENHANCEMENT )
     resources.base[ RESOURCE_MAELSTROM ] = 100;
+
+  if ( specialization() == SHAMAN_RESTORATION )
+  {
+    resources.base[ RESOURCE_MANA ]                  = 20000;
+    resources.initial_multiplier[ RESOURCE_MANA ]    = 5;
+    resources.base_regen_per_second[ RESOURCE_MANA ] = resources.base[ RESOURCE_MANA ] * 0.04;
+  }
 
   if ( specialization() == SHAMAN_ELEMENTAL && talent.call_the_thunder->ok() )
   {
