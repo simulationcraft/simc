@@ -5900,6 +5900,8 @@ public:
   }
 };
 
+std::ostream& operator<<(std::ostream &os, const action_t& p);
+
 struct call_action_list_t : public action_t
 {
   action_priority_list_t* alist;

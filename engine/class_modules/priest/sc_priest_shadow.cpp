@@ -172,13 +172,8 @@ public:
       cd_duration            = timespan_t::zero();
       cooldown->last_charged = sim->current_time();
 
-      if ( sim->debug )
-      {
-        sim->out_debug.printf(
-            "%s shadowy insight proc occured during %s cast. Deferring "
-            "cooldown reset.",
-            priest().name(), name() );
-      }
+      sim->print_debug( "{} shadowy insight proc occured during {} cast. Deferring cooldown reset.",
+          priest(), *this );
     }
 
     priest_spell_t::update_ready( cd_duration );
@@ -271,13 +266,16 @@ struct mind_sear_t final : public priest_spell_t
   {
     priest_spell_t::execute();
 
+    auto mind_sear_tick_action = debug_cast<mind_sear_tick_t*>(tick_action);
+
     if ( priest().buffs.harvested_thoughts->check() )
     {
-      ( (mind_sear_tick_t*)tick_action )->thought_harvester_empowered = true;
+      mind_sear_tick_action->thought_harvester_empowered = true;
       priest().buffs.harvested_thoughts->expire();
     }
-    else {
-      ( (mind_sear_tick_t*)tick_action )->thought_harvester_empowered = false;
+    else
+    {
+      mind_sear_tick_action->thought_harvester_empowered = false;
     }
   }
 };
@@ -637,14 +635,12 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
 
     priest().procs.shadowy_apparition->occur();
     schedule_execute();
+
     // TODO: Determine if this is dependent on talenting into Auspicious Spirits
     expansion::bfa::trigger_leyshocks_grand_compilation( STAT_HASTE_RATING, player );
   }
 };
 
-// ==========================================================================
-// Shadow Word: Pain
-// ==========================================================================
 struct shadow_word_pain_t final : public priest_spell_t
 {
   double insanity_gain;
@@ -1017,10 +1013,7 @@ struct void_eruption_t final : public priest_spell_t
     impact_action = new void_eruption_damage_t( p );
     add_child( impact_action );
 
-    if ( sim->debug )
-    {
-      sim->print_debug( "Void Eruption requires {} insanity", insanity_required );
-    }
+    sim->print_debug( "Void Eruption requires {} insanity", insanity_required );
 
     // We don't want to lose insanity when casting it!
     base_costs[ RESOURCE_INSANITY ] = 0;
@@ -1198,10 +1191,8 @@ struct mental_fortitude_t final : public priest_absorb_t
     }
     double limit   = priest().resources.max[ RESOURCE_HEALTH ] * 0.08;
     stacked_amount = std::min( stacked_amount, limit );
-    if ( sim->log )
-    {
-      sim->out_log.printf( "%s %s stacked amount: %.2f", player->name(), name(), stacked_amount );
-    }
+
+    sim->print_log( "{} {} stacked amount: {}", *player, *this, stacked_amount );
 
     // Trigger Absorb Buff
     if ( buff == nullptr )
@@ -1212,12 +1203,10 @@ struct mental_fortitude_t final : public priest_absorb_t
     if ( result_is_hit( s->result ) )
     {
       buff->trigger( 1, stacked_amount );
-      if ( sim->log )
-      {
-        sim->out_log.printf( "%s %s applies absorb on %s for %.0f (%.0f) (%s)", player->name(), name(),
-                             s->target->name(), s->result_amount, stacked_amount,
+
+      sim->print_log( "{} {} applies absorb on {} for {} ({}) ({})", *player, *this,
+                             *s->target, s->result_amount, stacked_amount,
                              util::result_type_string( s->result ) );
-      }
     }
 
     stats->add_result( 0.0, s->result_total, ABSORB, s->result, s->block_result, s->target );
@@ -1554,10 +1543,7 @@ struct priest_t::insanity_end_event_t : public event_t
 
   void execute() override
   {
-    if ( actor.sim->debug )
-    {
-      actor.sim->out_debug.printf( "%s insanity-track insanity-loss", actor.name() );
-    }
+    actor.sim->print_debug( "{} insanity-track insanity-loss", actor );
 
     actor.buffs.voidform->expire();
     actor.insanity.end = nullptr;
@@ -1644,10 +1630,8 @@ void priest_t::insanity_state_t::gain( double value, gain_t* gain_obj, action_t*
     auto current = actor.resources.current[ RESOURCE_INSANITY ];
     auto max     = actor.resources.max[ RESOURCE_INSANITY ];
 
-    actor.sim->out_debug.printf(
-        "%s insanity-track gain, value=%f, current=%.1f/%.1f, "
-        "new=%.1f/%.1f",
-        actor.name(), value, current, max, clamp( current + value, 0.0, max ), max );
+    actor.sim->print_debug( "{} insanity-track gain, value={}, current={}/{}, new={}/{}",
+        actor, value, current, max, clamp( current + value, 0.0, max ), max );
   }
 
   actor.resource_gain( RESOURCE_INSANITY, value, gain_obj, source_action );
@@ -1666,21 +1650,21 @@ void priest_t::insanity_state_t::gain( double value, gain_t* gain_obj, action_t*
 void priest_t::insanity_state_t::drain()
 {
   double drain_per_second = insanity_drain_per_second();
-  double drain_interval   = ( actor.sim->current_time() - last_drained ).total_seconds();
+  timespan_t drain_interval   = ( actor.sim->current_time() - last_drained );
 
   // Don't drain if draining is disabled, or if we have already drained on this timestamp
-  if ( drain_per_second == 0 || drain_interval == 0 )
+  if ( drain_per_second == 0 || drain_interval == timespan_t::zero() )
   {
     return;
   }
 
-  double drained = drain_per_second * drain_interval;
+  double drained = drain_per_second * drain_interval.total_seconds();
   // Ensure we always have enough to drain. This should always be true, since the drain is
   // always kept track of in relation to time.
 #ifndef NDEBUG
   if ( actor.resources.current[ RESOURCE_INSANITY ] < drained )
   {
-    actor.sim->errorf( "%s warning, insanity-track overdrain, current=%f drained=%f total=%f", actor.name(),
+    actor.sim->error( "{} warning, insanity-track overdrain, current={} drained={} total={}", actor,
                        actor.resources.current[ RESOURCE_INSANITY ], drained,
                        actor.resources.current[ RESOURCE_INSANITY ] - drained );
     drained = actor.resources.current[ RESOURCE_INSANITY ];
@@ -1694,11 +1678,11 @@ void priest_t::insanity_state_t::drain()
     auto current = actor.resources.current[ RESOURCE_INSANITY ];
     auto max     = actor.resources.max[ RESOURCE_INSANITY ];
 
-    actor.sim->out_debug.printf(
-        "%s insanity-track drain, "
-        "drain_per_second=%f, last_drained=%.3f, drain_interval=%.3f, "
-        "current=%.1f/%.1f, new=%.1f/%.1f",
-        actor.name(), drain_per_second, last_drained.total_seconds(), drain_interval, current, max,
+    actor.sim->print_debug(
+        "{} insanity-track drain, "
+        "drain_per_second={}, last_drained={}, drain_interval={}, "
+        "current={}/{}, new={}/{}",
+        actor, drain_per_second, last_drained, drain_interval, current, max,
         ( current - drained ), max );
   }
 
@@ -1747,11 +1731,11 @@ void priest_t::insanity_state_t::adjust_end_event()
     auto current = actor.resources.current[ RESOURCE_INSANITY ];
     auto max     = actor.resources.max[ RESOURCE_INSANITY ];
 
-    actor.sim->out_debug.printf(
-        "%s insanity-track adjust-end-event, "
-        "drain_per_second=%f, insanity=%.1f/%.1f, seconds_left=%.3f, "
-        "old_left=%.3f",
-        actor.name(), drain_per_second, current, max, seconds_left.total_seconds(),
+    actor.sim->print_debug(
+        "{} insanity-track adjust-end-event, "
+        "drain_per_second={}, insanity={}/{}, seconds_left={}, "
+        "old_left={}",
+        actor, drain_per_second, current, max, seconds_left,
         end ? end->remains().total_seconds() : -1.0 );
   }
 
