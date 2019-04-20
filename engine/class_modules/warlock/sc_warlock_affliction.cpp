@@ -198,7 +198,7 @@ namespace warlock
         may_crit = false;
         pandemic_invocation_usable = false;
 
-        dot_max_stack = data().max_stacks() + p->spec.agony_2->effectN(1).base_value();
+        dot_max_stack = as<int>( data().max_stacks() + p->spec.agony_2->effectN(1).base_value() );
         db_max_contribution = data().duration();
       }
 
@@ -214,7 +214,7 @@ namespace warlock
 
       void init() override
       {
-        dot_max_stack += p()->talents.writhe_in_agony->ok() ? p()->talents.writhe_in_agony->effectN(1).base_value() : 0;
+        dot_max_stack += as<int>( p()->talents.writhe_in_agony->ok() ? p()->talents.writhe_in_agony->effectN(1).base_value() : 0 );
 
         affliction_spell_t::init();
       }

@@ -1401,7 +1401,7 @@ expr_t* expr_t::parse( action_t* action, const std::string& expr_str,
 
     throw std::invalid_argument("Unable to build expression tree.");
   }
-  catch (const std::exception& e)
+  catch (const std::exception& )
   {
     std::throw_with_nested(std::runtime_error(fmt::format("Cannot parse expression from '{}'",
         expr_str)));

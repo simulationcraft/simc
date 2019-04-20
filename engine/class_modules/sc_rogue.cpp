@@ -2038,7 +2038,7 @@ struct adrenaline_rush_t : public rogue_attack_t
       p() -> buffs.loaded_dice -> extend_duration( p(), precombat_lost_seconds );
       p() -> buffs.brigands_blitz_driver -> extend_duration( p(), precombat_lost_seconds );
       if ( p() -> azerite.brigands_blitz.ok() )
-        p() -> buffs.brigands_blitz -> trigger( floor( -precombat_lost_seconds / p() -> buffs.brigands_blitz_driver -> buff_period ) );
+        p() -> buffs.brigands_blitz -> trigger( as<int>(floor( -precombat_lost_seconds / p() -> buffs.brigands_blitz_driver -> buff_period ) ) );
     }
   }
 };
@@ -2062,7 +2062,7 @@ struct ambush_t : public rogue_attack_t
     rogue_attack_t::execute();
     if ( p() -> buffs.broadside -> up() )
     {
-      p() -> trigger_combo_point_gain( p() -> buffs.broadside -> data().effectN( 2 ).base_value(),
+      p() -> trigger_combo_point_gain( as<int>( p() -> buffs.broadside -> data().effectN( 2 ).base_value() ),
           p() -> gains.broadside, this );
     }
   }
@@ -2181,7 +2181,7 @@ struct between_the_eyes_t : public rogue_attack_t
       p() -> buffs.deadshot -> trigger();
 
       if ( p() -> azerite.ace_up_your_sleeve.ok() && rng().roll( rs -> cp * p() -> azerite.ace_up_your_sleeve.spell_ref().effectN( 2 ).percent() ) )
-        p() -> trigger_combo_point_gain( p() -> azerite.ace_up_your_sleeve.spell_ref().effectN( 3 ).base_value() , p() -> gains.ace_up_your_sleeve, this );
+        p() -> trigger_combo_point_gain( as<int>( p() -> azerite.ace_up_your_sleeve.spell_ref().effectN( 3 ).base_value() ) , p() -> gains.ace_up_your_sleeve, this );
     }
   }
 };
@@ -2624,7 +2624,7 @@ struct garrote_t : public rogue_attack_t
     {
       // Note: Looks like Shadowmeld works for the CP gain.
       if ( castFromStealth )
-        p() -> trigger_combo_point_gain( p() -> azerite.shrouded_suffocation.spell_ref().effectN( 2 ).base_value(), p() -> gains.shrouded_suffocation, this );
+        p() -> trigger_combo_point_gain( as<int>( p() -> azerite.shrouded_suffocation.spell_ref().effectN( 2 ).base_value() ), p() -> gains.shrouded_suffocation, this );
     }
   }
 
@@ -2654,7 +2654,7 @@ struct gouge_t : public rogue_attack_t
 
     if ( result_is_hit (execute_state -> result ) && p() -> buffs.broadside -> up() )
     {
-      p() -> trigger_combo_point_gain( p() -> buffs.broadside -> data().effectN( 2 ).base_value(),
+      p() -> trigger_combo_point_gain( as<int>( p() -> buffs.broadside -> data().effectN( 2 ).base_value() ),
           p() -> gains.broadside, this );
     }
   }
@@ -2678,7 +2678,7 @@ struct ghostly_strike_t : public rogue_attack_t
 
     if ( result_is_hit( execute_state -> result ) && p() -> buffs.broadside -> up() )
     {
-      p() -> trigger_combo_point_gain( p() -> buffs.broadside -> data().effectN( 2 ).base_value(),
+      p() -> trigger_combo_point_gain( as<int>( p() -> buffs.broadside -> data().effectN( 2 ).base_value() ),
           p() -> gains.broadside, this );
     }
   }
@@ -2893,7 +2893,7 @@ struct pistol_shot_t : public rogue_attack_t
     {
       if ( result_is_hit( execute_state -> result ) && p() -> buffs.broadside -> up() )
       {
-        p() -> trigger_combo_point_gain( p() -> buffs.broadside -> data().effectN( 2 ).base_value(),
+        p() -> trigger_combo_point_gain( as<int>( p() -> buffs.broadside -> data().effectN( 2 ).base_value() ),
             p() -> gains.broadside, this );
       }
 
@@ -3393,7 +3393,7 @@ struct shadow_dance_t : public rogue_attack_t
     icd -> duration = data().cooldown();
     if ( p -> talent.enveloping_shadows -> ok() )
     {
-      cooldown -> charges += p -> talent.enveloping_shadows -> effectN( 2 ).base_value();
+      cooldown -> charges += as<int>( p -> talent.enveloping_shadows -> effectN( 2 ).base_value() );
     }
   }
 
@@ -3406,7 +3406,7 @@ struct shadow_dance_t : public rogue_attack_t
     if ( p()->azerite.the_first_dance.ok() )
     {
       p()->buffs.the_first_dance->trigger();
-      p() -> trigger_combo_point_gain( p()->buffs.the_first_dance->data().effectN( 3 ).resource( RESOURCE_COMBO_POINT ),
+      p() -> trigger_combo_point_gain( as<int>( p()->buffs.the_first_dance->data().effectN( 3 ).resource( RESOURCE_COMBO_POINT ) ),
         p() -> gains.the_first_dance, this );
     }
 
@@ -3663,7 +3663,7 @@ struct sinister_strike_t : public rogue_attack_t
     // secondary_trigger != TRIGGER_SINISTER_STRIKE &&
     if ( p() -> buffs.broadside -> up() )
     {
-      p() -> trigger_combo_point_gain( p() -> buffs.broadside -> data().effectN( 2 ).base_value(),
+      p() -> trigger_combo_point_gain( as<int>( p() -> buffs.broadside -> data().effectN( 2 ).base_value() ),
           p() -> gains.broadside, this );
     }
   }
@@ -4978,7 +4978,7 @@ void rogue_t::trigger_venomous_wounds_death( player_t* target )
 
   // TODO: Exact formula?
   unsigned full_ticks_remaining = (unsigned)(td -> dots.rupture -> remains() / td -> dots.rupture -> current_action -> base_tick_time);
-  int replenish = spec.venomous_wounds -> effectN( 2 ).base_value();
+  int replenish = as<int>( spec.venomous_wounds -> effectN( 2 ).base_value() );
 
   if ( sim -> debug )
   {
@@ -5088,10 +5088,10 @@ void rogue_t::trigger_deepening_shadows( const action_state_t* state )
   }
 
   // Note: this changed to be 10 * seconds as of 2017-04-19
-  int cdr = spec.deepening_shadows -> effectN( 1 ).base_value();
+  int cdr = as<int>( spec.deepening_shadows -> effectN( 1 ).base_value() );
   if ( talent.enveloping_shadows -> ok() )
   {
-    cdr += talent.enveloping_shadows -> effectN( 1 ).base_value();
+    cdr += as<int>( talent.enveloping_shadows -> effectN( 1 ).base_value() );
   }
   timespan_t adjustment = timespan_t::from_seconds( -0.1 * cdr * s -> cp );
 
@@ -5119,7 +5119,7 @@ void rogue_t::trigger_shadow_techniques( const action_state_t* state )
   if ( ++shadow_techniques == 5 || ( shadow_techniques == 4 && rng().roll( 0.5 ) ) )
   {
     if (sim -> debug) sim -> out_debug.printf( "Shadow techniques proc'd at %d", shadow_techniques);
-    trigger_combo_point_gain( spec.shadow_techniques_effect -> effectN( 1 ).base_value(), gains.shadow_techniques, state -> action );
+    trigger_combo_point_gain( as<int>( spec.shadow_techniques_effect -> effectN( 1 ).base_value() ), gains.shadow_techniques, state -> action );
     resource_gain( RESOURCE_ENERGY, spec.shadow_techniques_effect -> effectN( 2 ).base_value(), gains.shadow_techniques, state -> action );
     if (sim -> debug) sim -> out_debug.printf( "Resetting shadow_techniques counter to zero.");
     shadow_techniques = 0;

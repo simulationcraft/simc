@@ -1594,7 +1594,7 @@ void raid_event_t::init( sim_t* sim )
       sim->print_debug( "Successfully created '{}'.", *( raid_event.get() ) );
       sim->raid_events.push_back( std::move( raid_event ) );
     }
-    catch ( const std::exception& ex )
+    catch ( const std::exception& )
     {
       std::throw_with_nested(std::invalid_argument(fmt::format("Error creating raid event from '{}'", split)));
     }

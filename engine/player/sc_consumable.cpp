@@ -336,7 +336,7 @@ struct dbc_consumable_base_t : public action_t
       {
         initialize_consumable();
       }
-      catch (const std::exception& e)
+      catch (const std::exception&)
       {
         std::throw_with_nested( std::invalid_argument(fmt::format("Unable to initialize consumable '{}' from '{}'",
             signature_str, consumable_name)));

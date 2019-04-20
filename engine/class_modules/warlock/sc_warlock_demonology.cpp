@@ -274,7 +274,7 @@ namespace warlock {
       call_dreadstalkers_t(warlock_t* p, const std::string& options_str) : demonology_spell_t(p, "Call Dreadstalkers") {
         parse_options(options_str);
         may_crit = false;
-        dreadstalker_count = data().effectN(1).base_value();
+        dreadstalker_count = as<int>( data().effectN(1).base_value() );
       }
 
       double cost() const override
@@ -604,7 +604,7 @@ namespace warlock {
             return lv < rv;
         } );
 
-        unsigned max_imps = p()->talents.power_siphon->effectN(1).base_value();
+        unsigned max_imps = as<int>( p()->talents.power_siphon->effectN(1).base_value() );
         if(imps.size() > max_imps)
           imps.resize(max_imps);
 

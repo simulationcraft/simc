@@ -335,7 +335,7 @@ namespace warlock {
         energize_resource = RESOURCE_SOUL_SHARD;
         energize_amount = ( p->find_spell( 245330 )->effectN( 1 ).base_value() ) / 10.0;
 
-        cooldown->charges += p->spec.conflagrate_2->effectN(1).base_value();
+        cooldown->charges += as<int>( p->spec.conflagrate_2->effectN(1).base_value() );
 
         add_child(roaring_blaze);
       }
@@ -365,7 +365,7 @@ namespace warlock {
       {
         destruction_spell_t::execute();
 
-        p()->buffs.backdraft->trigger( 1 + (p()->talents.flashover->ok() ? p()->talents.flashover->effectN( 1 ).base_value() : 0) );
+        p()->buffs.backdraft->trigger( as<int>( 1 + (p()->talents.flashover->ok() ? p()->talents.flashover->effectN( 1 ).base_value() : 0) ) );
 
         auto td = this->td(target);
         if (p()->azerite.bursting_flare.ok() && td->dots_immolate->is_ticking())
@@ -962,7 +962,7 @@ namespace warlock {
     //destruction buffs
     buffs.backdraft = make_buff( this, "backdraft", find_spell( 117828 ) )
       ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-      ->set_max_stack( find_spell( 117828 )->max_stacks() + ( talents.flashover ? talents.flashover->effectN( 2 ).base_value() : 0 ) );
+      ->set_max_stack( as<int>( find_spell( 117828 )->max_stacks() + ( talents.flashover ? talents.flashover->effectN( 2 ).base_value() : 0 ) ) );
 
     buffs.reverse_entropy = make_buff( this, "reverse_entropy", talents.reverse_entropy )
       ->set_default_value( find_spell( 266030 )->effectN( 1 ).percent() )

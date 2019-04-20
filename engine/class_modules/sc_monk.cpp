@@ -4222,7 +4222,7 @@ struct blackout_strike_t : public monk_melee_attack_t
         p()->buff.elusive_brawler->trigger();
 
         if ( p()->azerite.elusive_footwork.ok() && s->result == RESULT_CRIT )
-          p()->buff.elusive_brawler->trigger( p()->azerite.elusive_footwork.spell_ref().effectN( 2 ).base_value() );
+          p()->buff.elusive_brawler->trigger( as<int>(p()->azerite.elusive_footwork.spell_ref().effectN( 2 ).base_value()) );
 
         if ( p()->azerite.staggering_strikes.ok() )
           p()->partial_clear_stagger_amount( p()->azerite.staggering_strikes.value() );
@@ -9961,7 +9961,7 @@ double monk_t::stagger_pct( int target_level )
   double stagger_base = stagger_base_value();
 
   double k_value     = 0;
-  double lvl         = level();
+  int lvl         = level();
   double level_check = target_level - lvl;
 
   // End game raiding of each expansion uses the player's level for +1, +2, and +3 level targets

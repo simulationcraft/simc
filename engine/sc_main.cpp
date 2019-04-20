@@ -265,7 +265,7 @@ int sim_t::main( const std::vector<std::string>& args )
     {
       control.options.parse_args(args);
     }
-    catch (const std::exception& e) {
+    catch (const std::exception&) {
 
       std::throw_with_nested(std::invalid_argument("Incorrect option format"));
     }
@@ -278,7 +278,7 @@ int sim_t::main( const std::vector<std::string>& args )
     {
       setup( &control );
     }
-    catch( const std::exception& e ){
+    catch( const std::exception& ){
       std::throw_with_nested(std::runtime_error("Setup failure"));
     }
 
@@ -307,7 +307,7 @@ int sim_t::main( const std::vector<std::string>& args )
         spell_query -> evaluate();
         print_spell_query();
       }
-      catch( const std::exception& e ){
+      catch( const std::exception& ){
         std::throw_with_nested(std::runtime_error("Spell Query Error"));
       }
     }
@@ -319,7 +319,7 @@ int sim_t::main( const std::vector<std::string>& args )
         std::cout << "\nGenerating profiles... \n";
         report::print_profiles( this );
       }
-      catch( const std::exception& e ){
+      catch( const std::exception& ){
         std::throw_with_nested(std::runtime_error("Generating profiles"));
       }
     }

@@ -54,7 +54,7 @@ struct holy_fire_t final : public holy_fire_base_t
     auto rank2 = priest().find_specialization_spell( 231687 );
     if ( rank2->ok() )
     {
-      dot_max_stack += rank2->effectN( 2 ).base_value();
+      dot_max_stack += as<int>( rank2->effectN( 2 ).base_value() );
     }
   }
   double bonus_da( const action_state_t* state ) const override

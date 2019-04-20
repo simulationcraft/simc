@@ -159,7 +159,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <WarningLevel>Level3</WarningLevel>
       <Debug-WebEngineInformationFormat>ProgramDatabase</Debug-WebEngineInformationFormat>
-      <DisableSpecificWarnings>5030;2429;4005;4996;6011;6386;6246;6313;6102;6330;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings>5030;4005;4996;6011;6386;6246;6313;6102;6330;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <OmitFramePointers>true</OmitFramePointers>
       <EnablePREfast>false</EnablePREfast>
@@ -196,7 +196,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <WarningLevel>Level3</WarningLevel>
       <Debug-WebEngineInformationFormat>ProgramDatabase</Debug-WebEngineInformationFormat>
-      <DisableSpecificWarnings>5030;2429;4005;4996;6011;6386;6246;6313;6102;6330;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings>5030;4005;4996;6011;6386;6246;6313;6102;6330;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <OmitFramePointers>true</OmitFramePointers>
       <EnablePREfast>false</EnablePREfast>

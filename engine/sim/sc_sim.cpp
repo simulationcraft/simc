@@ -482,7 +482,7 @@ bool parse_armory( sim_t*             sim,
         if ( ! p )
           throw std::runtime_error("Could not download player.");
         }
-      catch (const std::exception& e )
+      catch (const std::exception& )
       {
         std::throw_with_nested(std::runtime_error("BCP API"));
       }
@@ -2417,7 +2417,7 @@ void sim_t::init_actor( player_t* p )
     p -> init_absorb_priority();
     p -> init_assessors();
   }
-  catch (const std::exception& e)
+  catch (const std::exception&)
   {
     std::throw_with_nested(std::runtime_error(fmt::format("Actor '{}'", p->name())));
   }
@@ -2625,7 +2625,7 @@ void sim_t::init()
       {
         actor -> init_finished();
       }
-      catch (const std::exception& e)
+      catch (const std::exception&)
       {
         std::throw_with_nested(std::runtime_error(fmt::format("Actor '{}'", actor->name())));
       }
