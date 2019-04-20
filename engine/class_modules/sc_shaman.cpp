@@ -462,6 +462,7 @@ public:
     const spell_data_t* resurgence;
     const spell_data_t* riptide;
     const spell_data_t* tidal_waves;
+    const spell_data_t* spiritwalkers_grace;
     const spell_data_t* restoration_shaman;  // general spec multiplier
   } spec;
 
@@ -529,6 +530,7 @@ public:
     // const spell_data_t* ascendance;
 
     // Restoration
+    const spell_data_t* graceful_spirit;
   } talent;
 
   // Artifact
@@ -5289,6 +5291,13 @@ struct spiritwalkers_grace_t : public shaman_spell_t
                       options_str )
   {
     may_miss = may_crit = harmful = callbacks = false;
+    // Reduces the cooldown of Spiritwalker's Grace by ${$m1/-1000} sec
+    if ( p()->talent.graceful_spirit->ok() )
+    {
+      timespan_t reduction = timespan_t::from_seconds( p()->talent.graceful_spirit->effectN( 1 ).base_value() / -1000 );
+      cooldown->duration -= reduction;
+      p()->buff.spiritwalkers_grace->cooldown->duration -= reduction;
+    }
   }
 
   virtual void execute() override
@@ -6965,6 +6974,7 @@ void shaman_t::init_spells()
   talent.earthen_spike     = find_talent_spell( "Earthen Spike" );
 
   // Restoration
+  talent.graceful_spirit = find_talent_spell( "Graceful Spirit" );
 
   //
   // Azerite traits
@@ -8342,12 +8352,10 @@ void shaman_t::moving()
     if ( swg && executing && swg->ready() )
     {
       // Shaman executes SWG mid-cast during a movement event, if
-      // 1) The profile does not have Glyph of Unleashed Lightning and is
-      //    casting a Lightning Bolt (non-instant cast)
-      // 2) The profile is casting Lava Burst (without Lava Surge)
-      // 3) The profile is casting Chain Lightning
-      // 4) The profile is casting Elemental Blast
-      if ( ( executing->id == 51505 ) || ( executing->id == 421 ) || ( executing->id == 117014 ) )
+      // 1) The profile is casting Lava Burst (without Lava Surge)
+      // 2) The profile is casting Chain Lightning
+      // 3) The profile is casting Lightning Bolt
+      if ( ( executing->id == 51505 ) || ( executing->id == 421 ) || ( executing->id == 403 ) )
       {
         if ( sim->log )
           sim->out_log.printf( "%s spiritwalkers_grace during spell cast, next cast (%s) should finish", name(),
