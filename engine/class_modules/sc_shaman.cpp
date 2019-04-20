@@ -1613,6 +1613,16 @@ public:
     may_proc_strength_of_earth = false;
   }
 
+  double cost() const override
+  {
+    // Mana cost is based on base mana which is 5x smaller than the Restoration mana pool
+    if ( p()->specialization() == SHAMAN_RESTORATION )
+    {
+      return shaman_spell_base_t::cost() / 5;
+    }
+    return shaman_spell_base_t::cost();
+  }
+
   void init_finished() override
   {
     if ( may_proc_stormbringer )
