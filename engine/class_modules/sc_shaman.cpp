@@ -4301,8 +4301,11 @@ struct chained_base_t : public shaman_spell_t
     }
     radius = 10.0;
 
-    maelstrom_gain = mg;
-    energize_type  = ENERGIZE_NONE;  // disable resource generation from spell data.
+    if ( p()->specialization() == SHAMAN_ELEMENTAL )
+    {
+      maelstrom_gain = mg;
+      energize_type  = ENERGIZE_NONE;  // disable resource generation from spell data.
+    }
 
     if ( data().affected_by( player->spec.chain_lightning_2->effectN( 1 ) ) )
     {
