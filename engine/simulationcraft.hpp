@@ -1162,6 +1162,8 @@ struct sim_t : private sc_thread_t
     timespan_t          abyssal_speakers_gauntlets_shield_duration = 0_ms;
     /// Expected duration of the absorb provided by Trident of Deep Ocean. 0 = full duration
     timespan_t          trident_of_deep_ocean_duration = 0_ms;
+    /// Chance that the player has a higher health percentage than the target for Legplates of Unbound Anguish proc
+    double              legplates_of_unbound_anguish_chance = 1.0;
   } bfa_opts;
 
   // Expansion specific data

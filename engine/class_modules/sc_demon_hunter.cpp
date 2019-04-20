@@ -113,10 +113,7 @@ struct movement_buff_t : public buff_t
   double distance_moved;
   demon_hunter_t* dh;
 
-  movement_buff_t( demon_hunter_t* p, const buff_creator_basics_t& b )
-    : buff_t( b ), yards_from_melee( 0.0 ), distance_moved( 0.0 ), dh( p )
-  {
-  }
+  movement_buff_t( demon_hunter_t* p, const std::string& name, const spell_data_t* spell_data = spell_data_t::nil(), const item_t* item = nullptr );
 
   bool trigger( int s = 1, double v = DEFAULT_VALUE(), double c = -1.0,
                 timespan_t d = timespan_t::min() ) override;
@@ -3989,6 +3986,11 @@ struct spirit_bomb_event_t : public event_t
   }
 };
 
+movement_buff_t::movement_buff_t( demon_hunter_t* p, const std::string& name, const spell_data_t* spell_data, const item_t* item )
+  : buff_t( p, name, spell_data, item ), yards_from_melee( 0.0 ), distance_moved( 0.0 ), dh( p )
+{
+}
+
 // ==========================================================================
 // Targetdata Definitions
 // ==========================================================================
@@ -4225,68 +4227,69 @@ void demon_hunter_t::create_buffs()
   // Havoc ==================================================================
 
   buff.blade_dance =
-    buff_creator_t( this, "blade_dance", spec.blade_dance )
-    .default_value( spec.blade_dance->effectN( 2 ).percent() )
-    .add_invalidate( CACHE_DODGE )
-    .cd( timespan_t::zero() );
+    make_buff( this, "blade_dance", spec.blade_dance )
+    ->set_default_value( spec.blade_dance->effectN( 2 ).percent() )
+    ->add_invalidate( CACHE_DODGE )
+    ->set_cooldown( timespan_t::zero() );
 
   buff.blur =
-    buff_creator_t(this, "blur", spec.blur->effectN(1).trigger())
-    .default_value(spec.blur->effectN(1).trigger()->effectN(3).percent()
+    make_buff(this, "blur", spec.blur->effectN(1).trigger())
+    ->set_default_value(spec.blur->effectN(1).trigger()->effectN(3).percent()
       + (talent.desperate_instincts->ok() ? talent.desperate_instincts->effectN(3).percent() : 0))
-    .cd(timespan_t::zero())
-    .add_invalidate(CACHE_LEECH)
-    .add_invalidate(CACHE_DODGE);
+      ->set_cooldown(timespan_t::zero())
+      ->add_invalidate(CACHE_LEECH)
+      ->add_invalidate(CACHE_DODGE);
 
   buff.death_sweep =
-    buff_creator_t( this, "death_sweep", spec.death_sweep )
-    .default_value( spec.death_sweep->effectN( 2 ).percent() )
-    .add_invalidate( CACHE_DODGE )
-    .cd( timespan_t::zero() );
+    make_buff( this, "death_sweep", spec.death_sweep )
+    ->set_default_value( spec.death_sweep->effectN( 2 ).percent() )
+    ->add_invalidate( CACHE_DODGE )
+    ->set_cooldown( timespan_t::zero() );
 
   buff.fel_rush_move = new movement_buff_t(
-    this, buff_creator_t( this, "fel_rush_movement", spell_data_t::nil() )
-    .chance( 1.0 )
-    .duration( find_class_spell( "Fel Rush" )->gcd() ) );
+    this, "fel_rush_movement", spell_data_t::nil() );
+  buff.fel_rush_move->set_chance( 1.0 )
+  ->set_duration( find_class_spell( "Fel Rush" )->gcd() );
 
   buff.momentum =
-    buff_creator_t( this, "momentum", spec.momentum_buff )
-    .default_value( spec.momentum_buff->effectN( 1 ).percent() )
-    .trigger_spell( talent.momentum )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    make_buff( this, "momentum", spec.momentum_buff )
+    ->set_default_value( spec.momentum_buff->effectN( 1 ).percent() )
+    ->set_trigger_spell( talent.momentum )
+    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.out_of_range =
-    buff_creator_t( this, "out_of_range", spell_data_t::nil() ).chance( 1.0 );
+    make_buff( this, "out_of_range", spell_data_t::nil() )
+    ->set_chance( 1.0 );
 
   // TODO: Buffs for each race?
-  buff.nemesis = buff_creator_t( this, "nemesis_buff", find_spell( 208605, DEMON_HUNTER_HAVOC ) )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buff.nemesis = make_buff( this, "nemesis_buff", find_spell( 208605, DEMON_HUNTER_HAVOC ) )
+    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   const double prepared_value = ( find_spell( 203650 )->effectN( 1 ).resource( RESOURCE_FURY ) / 50 );
   buff.prepared =
-    buff_creator_t( this, "prepared", find_spell( 203650, DEMON_HUNTER_HAVOC ) )
-    .default_value( prepared_value )
-    .trigger_spell( talent.momentum )
-    .period( timespan_t::from_millis( 100 ) )
-    .tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
+    make_buff( this, "prepared", find_spell( 203650, DEMON_HUNTER_HAVOC ) )
+    ->set_default_value( prepared_value )
+    ->set_trigger_spell( talent.momentum )
+    ->set_period( timespan_t::from_millis( 100 ) )
+    ->set_tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
       resource_gain( RESOURCE_FURY, b->check_value(), gain.prepared );
     } );
 
   buff.blind_fury =
-    buff_creator_t( this, "blind_fury", spec.eye_beam )
-    .cd( timespan_t::zero() )
-    .default_value( talent.blind_fury->effectN( 3 ).resource( RESOURCE_FURY ) / 50 )
-    .duration( spec.eye_beam->duration() * ( 1.0 + talent.blind_fury->effectN( 1 ).percent() ) )
-    .period( timespan_t::from_millis( 100 ) )
-    .tick_zero( true )
-    .tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
+    make_buff( this, "blind_fury", spec.eye_beam )
+    ->set_cooldown( timespan_t::zero() )
+    ->set_default_value( talent.blind_fury->effectN( 3 ).resource( RESOURCE_FURY ) / 50 )
+    ->set_duration( spec.eye_beam->duration() * ( 1.0 + talent.blind_fury->effectN( 1 ).percent() ) )
+    ->set_period( timespan_t::from_millis( 100 ) )
+    ->set_tick_zero( true )
+    ->set_tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
       resource_gain( RESOURCE_FURY, b->check_value(), gain.blind_fury );
     } );
 
-  buff.vengeful_retreat_move = new movement_buff_t(this,
-    buff_creator_t( this, "vengeful_retreat_movement", spell_data_t::nil() )
-    .chance( 1.0 )
-    .duration( spec.vengeful_retreat->duration() ) );
+  buff.vengeful_retreat_move = new movement_buff_t(this, "vengeful_retreat_movement", spell_data_t::nil() );
+  buff.vengeful_retreat_move
+    ->set_chance( 1.0 )
+    ->set_duration( spec.vengeful_retreat->duration() );
 
   // Vengeance ==============================================================
 

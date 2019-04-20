@@ -19,6 +19,8 @@ parser.add_option( '-d', '--datadir', dest = 'data_dir', type = 'string',
 		help = 'World of Warcraft install directory [only needed if --cdn is not set]' )
 parser.add_option( '-o', '--output', type = 'string', dest = 'output',
 		help = "Output directory for dbc mode, output file name for unpack mode" )
+parser.add_option( '-z', '--region', type = 'string', dest = 'region', default = 'us',
+		help = "Region for CDN downloads [default us]")
 parser.add_option( '-x', '--cache', type = 'string', dest = 'cache', default = 'cache', help = 'Cache directory [default cache]' )
 parser.add_option( '--ptr', action = 'store_true', dest = 'ptr', default = False, help = 'Download PTR files [default no, only used for --cdn]' )
 parser.add_option( '--beta', action = 'store_true', dest = 'beta', default = False, help = 'Download Beta files [default no, only used for --cdn]' )
@@ -77,10 +79,10 @@ if __name__ == '__main__':
 			if not root.open():
 				sys.exit(1)
 
-			for file_hash, file_name in fname_db.items():
+			for file_data_id, file_name in fname_db.items():
 				extract_data = None
 
-				file_md5s = root.GetFileHashMD5(file_hash)
+				file_md5s = root.GetFileDataIdMD5(file_data_id)
 				file_keys = []
 				for md5s in file_md5s:
 					file_keys = encoding.GetFileKeys(md5s)
@@ -95,7 +97,7 @@ if __name__ == '__main__':
 				if not extract_data:
 					continue
 
-				print('Extracting %s ...' % file_name)
+				print('Extracting %s (id=%d) ...' % (file_name, file_data_id))
 
 				if not blte.extract_file(*extract_data):
 					sys.exit(1)
@@ -113,9 +115,10 @@ if __name__ == '__main__':
 				sys.exit(1)
 
 			output_path = os.path.join(opts.output, cdn.build())
-			for file_hash, file_name in fname_db.items():
-				file_md5s = root.GetFileHashMD5(file_hash)
+			for file_data_id, file_name in fname_db.items():
+				file_md5s = root.GetFileDataIdMD5(file_data_id)
 				if not file_md5s:
+					print('No entry found for %s (id=%s)' % (file_name, file_data_id))
 					continue
 
 				if len(file_md5s) > 1:
@@ -124,12 +127,13 @@ if __name__ == '__main__':
 				file_keys = encoding.GetFileKeys(file_md5s[0])
 
 				if len(file_keys) == 0:
+					print('No keys found for %s (%s)' % (file_name, binascii.hexlify(file_md5s[0]).decode('utf-8')))
 					continue
 
 				if len(file_keys) > 1:
 					print('More than one key found for %s, selecting first one ...' % file_name)
 
-				print('Extracting %s ...' % file_name)
+				print('Extracting %s (id=%d) ...' % (file_name, file_data_id))
 
 				data = cdn.fetch_file(file_keys[0])
 				if not data:

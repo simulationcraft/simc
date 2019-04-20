@@ -790,7 +790,7 @@ struct vampiric_touch_t final : public priest_spell_t
     energize_type = ENERGIZE_NONE;  // disable resource generation from spell data
   }
 
-  void trigger_heal( action_state_t* s )
+  void trigger_heal( action_state_t* )
   {
     if ( ignore_healing )
     {

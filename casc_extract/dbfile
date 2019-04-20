@@ -1,789 +1,730 @@
-DBFilesClient\Achievement.db2
-DBFilesClient\Achievement_Category.db2
-DBFilesClient\AdventureJournal.db2
-DBFilesClient\AdventureMapPOI.db2
-DBFilesClient\AlliedRace.db2
-DBFilesClient\AlliedRaceRacialAbility.db2
-DBFilesClient\AnimKit.db2
-DBFilesClient\AnimKitBoneSet.db2
-DBFilesClient\AnimKitBoneSetAlias.db2
-DBFilesClient\AnimKitConfig.db2
-DBFilesClient\AnimKitConfigBoneSet.db2
-DBFilesClient\AnimKitPriority.db2
-DBFilesClient\AnimKitReplacement.db2
-DBFilesClient\AnimKitSegment.db2
-DBFilesClient\AnimReplacement.db2
-DBFilesClient\AnimReplacementSet.db2
-DBFilesClient\AnimationData.db2
-DBFilesClient\AoiBox.db2
-DBFilesClient\AreaConditionalData.db2
-DBFilesClient\AreaFarClipOverride.db2
-DBFilesClient\AreaGroupMember.db2
-DBFilesClient\AreaPOI.db2
-DBFilesClient\AreaPOIState.db2
-DBFilesClient\AreaTable.db2
-DBFilesClient\AreaTrigger.db2
-DBFilesClient\AreaTriggerActionSet.db2
-DBFilesClient\AreaTriggerBox.db2
-DBFilesClient\AreaTriggerCreateProperties.db2
-DBFilesClient\AreaTriggerCylinder.db2
-DBFilesClient\AreaTriggerSphere.db2
-DBFilesClient\ArmorLocation.db2
-DBFilesClient\Artifact.db2
-DBFilesClient\ArtifactAppearance.db2
-DBFilesClient\ArtifactAppearanceSet.db2
-DBFilesClient\ArtifactCategory.db2
-DBFilesClient\ArtifactItemToTransmog.db2
-DBFilesClient\ArtifactPower.db2
-DBFilesClient\ArtifactPowerLink.db2
-DBFilesClient\ArtifactPowerPicker.db2
-DBFilesClient\ArtifactPowerRank.db2
-DBFilesClient\ArtifactQuestXP.db2
-DBFilesClient\ArtifactTier.db2
-DBFilesClient\ArtifactUnlock.db2
-DBFilesClient\AuctionHouse.db2
-DBFilesClient\AzeriteEmpoweredItem.db2
-DBFilesClient\AzeriteItem.db2
-DBFilesClient\AzeriteItemMilestonePower.db2
-DBFilesClient\AzeritePower.db2
-DBFilesClient\AzeritePowerSetMember.db2
-DBFilesClient\AzeriteTierUnlock.db2
-DBFilesClient\AzeriteTierUnlockSet.db2
-DBFilesClient\BackgroundColor.db2
-DBFilesClient\BankBagSlotPrices.db2
-DBFilesClient\BannedAddOns.db2
-DBFilesClient\BannedAddons.db2
-DBFilesClient\BarberShopStyle.db2
-DBFilesClient\BattlePetAbility.db2
-DBFilesClient\BattlePetAbilityEffect.db2
-DBFilesClient\BattlePetAbilityState.db2
-DBFilesClient\BattlePetAbilityTurn.db2
-DBFilesClient\BattlePetBreedQuality.db2
-DBFilesClient\BattlePetBreedState.db2
-DBFilesClient\BattlePetDisplayOverride.db2
-DBFilesClient\BattlePetEffectProperties.db2
-DBFilesClient\BattlePetNPCTeamMember.db2
-DBFilesClient\BattlePetSpecies.db2
-DBFilesClient\BattlePetSpeciesState.db2
-DBFilesClient\BattlePetSpeciesXAbility.db2
-DBFilesClient\BattlePetState.db2
-DBFilesClient\BattlePetVisual.db2
-DBFilesClient\BattlemasterList.db2
-DBFilesClient\BeamEffect.db2
-DBFilesClient\BoneWindModifierModel.db2
-DBFilesClient\BoneWindModifiers.db2
-DBFilesClient\BonusRoll.db2
-DBFilesClient\Bounty.db2
-DBFilesClient\BountySet.db2
-DBFilesClient\BroadcastText.db2
-DBFilesClient\BroadcastTextDuration.db2
-DBFilesClient\CameraEffect.db2
-DBFilesClient\CameraEffectEntry.db2
-DBFilesClient\CameraMode.db2
-DBFilesClient\Campaign.db2
-DBFilesClient\CampaignXCondition.db2
-DBFilesClient\CampaignXQuestLine.db2
-DBFilesClient\CastableRaidBuffs.db2
-DBFilesClient\CelestialBody.db2
-DBFilesClient\Cfg_Categories.db2
-DBFilesClient\Cfg_Configs.db2
-DBFilesClient\Cfg_Regions.db2
-DBFilesClient\CharBaseInfo.db2
-DBFilesClient\CharBaseSection.db2
-DBFilesClient\CharComponentTextureLayouts.db2
-DBFilesClient\CharComponentTextureSections.db2
-DBFilesClient\CharHairGeosets.db2
-DBFilesClient\CharSectionCondition.db2
-DBFilesClient\CharSections.db2
-DBFilesClient\CharShipment.db2
-DBFilesClient\CharShipmentContainer.db2
-DBFilesClient\CharStartOutfit.db2
-DBFilesClient\CharTitles.db2
-DBFilesClient\CharacterFaceBoneSet.db2
-DBFilesClient\CharacterFacialHairStyles.db2
-DBFilesClient\CharacterLoadout.db2
-DBFilesClient\CharacterLoadoutItem.db2
-DBFilesClient\CharacterServiceInfo.db2
-DBFilesClient\Chat.db2
-DBFilesClient\ChatChannels.db2
-DBFilesClient\ChatProfanity.db2
-DBFilesClient\ChestProperties.db2
-DBFilesClient\ChrClassRaceSex.db2
-DBFilesClient\ChrClassTitle.db2
-DBFilesClient\ChrClassUIDisplay.db2
-DBFilesClient\ChrClassVillain.db2
-DBFilesClient\ChrClasses.db2
-DBFilesClient\ChrClassesXPowerTypes.db2
-DBFilesClient\ChrCustomization.db2
-DBFilesClient\ChrRaces.db2
-DBFilesClient\ChrSpecialization.db2
-DBFilesClient\ChrUpgradeBucket.db2
-DBFilesClient\ChrUpgradeBucketSpell.db2
-DBFilesClient\ChrUpgradeTier.db2
-DBFilesClient\CinematicCamera.db2
-DBFilesClient\CinematicSequences.db2
-DBFilesClient\ClickbufferColor.db2
-DBFilesClient\ClientSceneEffect.db2
-DBFilesClient\CloakDampening.db2
-DBFilesClient\CloneEffect.db2
-DBFilesClient\CombatCondition.db2
-DBFilesClient\CommentatorStartLocation.db2
-DBFilesClient\CommentatorTrackedCooldown.db2
-DBFilesClient\CommunityIcon.db2
-DBFilesClient\ComponentModelFileData.db2
-DBFilesClient\ComponentTextureFileData.db2
-DBFilesClient\ConfigurationWarning.db2
-DBFilesClient\ContentTuning.db2
-DBFilesClient\ContentTuningDescription.db2
-DBFilesClient\Contribution.db2
-DBFilesClient\ContributionStyle.db2
-DBFilesClient\ContributionStyleContainer.db2
-DBFilesClient\ConversationLine.db2
-DBFilesClient\Creature.db2
-DBFilesClient\CreatureDifficulty.db2
-DBFilesClient\CreatureDispXUiCamera.db2
-DBFilesClient\CreatureDisplayInfo.db2
-DBFilesClient\CreatureDisplayInfoCond.db2
-DBFilesClient\CreatureDisplayInfoEvt.db2
-DBFilesClient\CreatureDisplayInfoExtra.db2
-DBFilesClient\CreatureDisplayInfoGeosetData.db2
-DBFilesClient\CreatureDisplayInfoTrn.db2
-DBFilesClient\CreatureFamily.db2
-DBFilesClient\CreatureImmunities.db2
-DBFilesClient\CreatureModelData.db2
-DBFilesClient\CreatureMovementInfo.db2
-DBFilesClient\CreatureSoundData.db2
-DBFilesClient\CreatureType.db2
-DBFilesClient\CreatureXContribution.db2
-DBFilesClient\CreatureXDisplayInfo.db2
-DBFilesClient\Criteria.db2
-DBFilesClient\CriteriaTree.db2
-DBFilesClient\CriteriaTreeXEffect.db2
-DBFilesClient\CurrencyCategory.db2
-DBFilesClient\CurrencyContainer.db2
-DBFilesClient\CurrencyTypes.db2
-DBFilesClient\Curve.db2
-DBFilesClient\CurvePoint.db2
-DBFilesClient\DeathThudLookups.db2
-DBFilesClient\DecalProperties.db2
-DBFilesClient\DeclinedWord.db2
-DBFilesClient\DeclinedWordCases.db2
-DBFilesClient\DestructibleHitpoint.db2
-DBFilesClient\DestructibleModelData.db2
-DBFilesClient\DeviceBlacklist.db2
-DBFilesClient\DeviceDefaultSettings.db2
-DBFilesClient\Difficulty.db2
-DBFilesClient\DissolveEffect.db2
-DBFilesClient\DriverBlacklist.db2
-DBFilesClient\DumpSoundKits.db2
-DBFilesClient\DungeonEncounter.db2
-DBFilesClient\DungeonMap.db2
-DBFilesClient\DungeonMapChunk.db2
-DBFilesClient\DurabilityCosts.db2
-DBFilesClient\DurabilityQuality.db2
-DBFilesClient\EdgeGlowEffect.db2
-DBFilesClient\Emotes.db2
-DBFilesClient\EmotesText.db2
-DBFilesClient\EmotesTextData.db2
-DBFilesClient\EmotesTextSound.db2
-DBFilesClient\EnvironmentalDamage.db2
-DBFilesClient\Exhaustion.db2
-DBFilesClient\ExpectedStat.db2
-DBFilesClient\ExpectedStatMod.db2
-DBFilesClient\Faction.db2
-DBFilesClient\FactionGroup.db2
-DBFilesClient\FactionTemplate.db2
-DBFilesClient\FootprintTextures.db2
-DBFilesClient\FootstepTerrainLookup.db2
-DBFilesClient\FriendshipRepReaction.db2
-DBFilesClient\FriendshipReputation.db2
-DBFilesClient\FullScreenEffect.db2
-DBFilesClient\GMSurveyAnswers.db2
-DBFilesClient\GMSurveyCurrentSurvey.db2
-DBFilesClient\GMSurveyQuestions.db2
-DBFilesClient\GMSurveySurveys.db2
-DBFilesClient\GameEvents.db2
-DBFilesClient\GameObjectArtKit.db2
-DBFilesClient\GameObjectDiffAnim.db2
-DBFilesClient\GameObjectDiffAnimMap.db2
-DBFilesClient\GameObjectDisplayInfo.db2
-DBFilesClient\GameObjectDisplayInfoXSoundKit.db2
-DBFilesClient\GameObjects.db2
-DBFilesClient\GameTips.db2
-DBFilesClient\GarrAbility.db2
-DBFilesClient\GarrAbilityCategory.db2
-DBFilesClient\GarrAbilityEffect.db2
-DBFilesClient\GarrBuilding.db2
-DBFilesClient\GarrBuildingDoodadSet.db2
-DBFilesClient\GarrBuildingPlotInst.db2
-DBFilesClient\GarrClassSpec.db2
-DBFilesClient\GarrClassSpecPlayerCond.db2
-DBFilesClient\GarrEncounter.db2
-DBFilesClient\GarrEncounterSetXEncounter.db2
-DBFilesClient\GarrEncounterXMechanic.db2
-DBFilesClient\GarrFollItemSetMember.db2
-DBFilesClient\GarrFollSupportSpell.db2
-DBFilesClient\GarrFollower.db2
-DBFilesClient\GarrFollowerLevelXP.db2
-DBFilesClient\GarrFollowerQuality.db2
-DBFilesClient\GarrFollowerSetXFollower.db2
-DBFilesClient\GarrFollowerType.db2
-DBFilesClient\GarrFollowerUICreature.db2
-DBFilesClient\GarrFollowerXAbility.db2
-DBFilesClient\GarrItemLevelUpgradeData.db2
-DBFilesClient\GarrMechanic.db2
-DBFilesClient\GarrMechanicSetXMechanic.db2
-DBFilesClient\GarrMechanicType.db2
-DBFilesClient\GarrMission.db2
-DBFilesClient\GarrMissionTexture.db2
-DBFilesClient\GarrMissionType.db2
-DBFilesClient\GarrMissionXEncounter.db2
-DBFilesClient\GarrMissionXFollower.db2
-DBFilesClient\GarrMssnBonusAbility.db2
-DBFilesClient\GarrPlot.db2
-DBFilesClient\GarrPlotBuilding.db2
-DBFilesClient\GarrPlotInstance.db2
-DBFilesClient\GarrPlotUICategory.db2
-DBFilesClient\GarrSiteLevel.db2
-DBFilesClient\GarrSiteLevelPlotInst.db2
-DBFilesClient\GarrSpecialization.db2
-DBFilesClient\GarrString.db2
-DBFilesClient\GarrTalent.db2
-DBFilesClient\GarrTalentTree.db2
-DBFilesClient\GarrType.db2
-DBFilesClient\GarrUiAnimClassInfo.db2
-DBFilesClient\GarrUiAnimRaceInfo.db2
-DBFilesClient\GemProperties.db2
-DBFilesClient\GlobalStrings.db2
-DBFilesClient\GlyphBindableSpell.db2
-DBFilesClient\GlyphExclusiveCategory.db2
-DBFilesClient\GlyphProperties.db2
-DBFilesClient\GlyphRequiredSpec.db2
-DBFilesClient\GradientEffect.db2
-DBFilesClient\GroundEffectDoodad.db2
-DBFilesClient\GroundEffectTexture.db2
-DBFilesClient\GroupFinderActivity.db2
-DBFilesClient\GroupFinderActivityGrp.db2
-DBFilesClient\GroupFinderCategory.db2
-DBFilesClient\GuildColorBackground.db2
-DBFilesClient\GuildColorBorder.db2
-DBFilesClient\GuildColorEmblem.db2
-DBFilesClient\GuildPerkSpells.db2
-DBFilesClient\Heirloom.db2
-DBFilesClient\HelmetAnimScaling.db2
-DBFilesClient\HelmetGeosetVisData.db2
-DBFilesClient\HighlightColor.db2
-DBFilesClient\HolidayDescriptions.db2
-DBFilesClient\HolidayNames.db2
-DBFilesClient\Holidays.db2
-DBFilesClient\Hotfix.db2
-DBFilesClient\Hotfixes.db2
-DBFilesClient\ImportPriceArmor.db2
-DBFilesClient\ImportPriceQuality.db2
-DBFilesClient\ImportPriceShield.db2
-DBFilesClient\ImportPriceWeapon.db2
-DBFilesClient\InvasionClientData.db2
-DBFilesClient\Item-sparse.db2
-DBFilesClient\Item.db2
-DBFilesClient\ItemAppearance.db2
-DBFilesClient\ItemAppearanceXUiCamera.db2
-DBFilesClient\ItemArmorQuality.db2
-DBFilesClient\ItemArmorShield.db2
-DBFilesClient\ItemArmorTotal.db2
-DBFilesClient\ItemBagFamily.db2
-DBFilesClient\ItemBonus.db2
-DBFilesClient\ItemBonusListLevelDelta.db2
-DBFilesClient\ItemBonusTreeNode.db2
-DBFilesClient\ItemChildEquipment.db2
-DBFilesClient\ItemClass.db2
-DBFilesClient\ItemContextPickerEntry.db2
-DBFilesClient\ItemCurrencyCost.db2
-DBFilesClient\ItemDamageAmmo.db2
-DBFilesClient\ItemDamageOneHand.db2
-DBFilesClient\ItemDamageOneHandCaster.db2
-DBFilesClient\ItemDamageTwoHand.db2
-DBFilesClient\ItemDamageTwoHandCaster.db2
-DBFilesClient\ItemDisenchantLoot.db2
-DBFilesClient\ItemDisplayInfo.db2
-DBFilesClient\ItemDisplayInfoMaterialRes.db2
-DBFilesClient\ItemDisplayXUiCamera.db2
-DBFilesClient\ItemEffect.db2
-DBFilesClient\ItemExtendedCost.db2
-DBFilesClient\ItemFallbackVisual.db2
-DBFilesClient\ItemGroupSounds.db2
-DBFilesClient\ItemLevelSelector.db2
-DBFilesClient\ItemLevelSelectorQuality.db2
-DBFilesClient\ItemLevelSelectorQualitySet.db2
-DBFilesClient\ItemLimitCategory.db2
-DBFilesClient\ItemLimitCategoryCondition.db2
-DBFilesClient\ItemModifiedAppearance.db2
-DBFilesClient\ItemModifiedAppearanceExtra.db2
-DBFilesClient\ItemNameDescription.db2
-DBFilesClient\ItemPetFood.db2
-DBFilesClient\ItemPriceBase.db2
-DBFilesClient\ItemRandomProperties.db2
-DBFilesClient\ItemRandomSuffix.db2
-DBFilesClient\ItemRangedDisplayInfo.db2
-DBFilesClient\ItemSearchName.db2
-DBFilesClient\ItemSet.db2
-DBFilesClient\ItemSetSpell.db2
-DBFilesClient\ItemSparse.db2
-DBFilesClient\ItemSpec.db2
-DBFilesClient\ItemSpecOverride.db2
-DBFilesClient\ItemSubClass.db2
-DBFilesClient\ItemSubClassMask.db2
-DBFilesClient\ItemUpgrade.db2
-DBFilesClient\ItemVisualEffects.db2
-DBFilesClient\ItemVisuals.db2
-DBFilesClient\ItemXBonusTree.db2
-DBFilesClient\JournalEncounter.db2
-DBFilesClient\JournalEncounterCreature.db2
-DBFilesClient\JournalEncounterItem.db2
-DBFilesClient\JournalEncounterSection.db2
-DBFilesClient\JournalEncounterXDifficulty.db2
-DBFilesClient\JournalEncounterXMapLoc.db2
-DBFilesClient\JournalInstance.db2
-DBFilesClient\JournalItemXDifficulty.db2
-DBFilesClient\JournalSectionXDifficulty.db2
-DBFilesClient\JournalTier.db2
-DBFilesClient\JournalTierXInstance.db2
-DBFilesClient\KeyChain.db2
-DBFilesClient\Keychain.db2
-DBFilesClient\KeystoneAffix.db2
-DBFilesClient\LFGDungeonExpansion.db2
-DBFilesClient\LFGDungeonGroup.db2
-DBFilesClient\LFGDungeons.db2
-DBFilesClient\LFGRoleRequirement.db2
-DBFilesClient\LanguageWords.db2
-DBFilesClient\Languages.db2
-DBFilesClient\LfgDungeonExpansion.db2
-DBFilesClient\LfgDungeonGroup.db2
-DBFilesClient\LfgDungeons.db2
-DBFilesClient\LfgDungeonsGroupingMap.db2
-DBFilesClient\LfgRoleRequirement.db2
-DBFilesClient\Light.db2
-DBFilesClient\LightData.db2
-DBFilesClient\LightParams.db2
-DBFilesClient\LightSkybox.db2
-DBFilesClient\Lightning.db2
-DBFilesClient\LiquidMaterial.db2
-DBFilesClient\LiquidObject.db2
-DBFilesClient\LiquidType.db2
-DBFilesClient\LiquidTypeXTexture.db2
-DBFilesClient\LoadingScreenTaxiSplines.db2
-DBFilesClient\LoadingScreens.db2
-DBFilesClient\Locale.db2
-DBFilesClient\Location.db2
-DBFilesClient\Lock.db2
-DBFilesClient\LockType.db2
-DBFilesClient\LookAtController.db2
-DBFilesClient\MailTemplate.db2
-DBFilesClient\ManagedWorldState.db2
-DBFilesClient\ManagedWorldStateBuff.db2
-DBFilesClient\ManagedWorldStateInput.db2
-DBFilesClient\ManifestInterfaceActionIcon.db2
-DBFilesClient\ManifestInterfaceData.db2
-DBFilesClient\ManifestInterfaceItemIcon.db2
-DBFilesClient\ManifestInterfaceTOCData.db2
-DBFilesClient\ManifestMP3.db2
-DBFilesClient\Map.db2
-DBFilesClient\MapCelestialBody.db2
-DBFilesClient\MapChallengeMode.db2
-DBFilesClient\MapDifficulty.db2
-DBFilesClient\MapDifficultyXCondition.db2
-DBFilesClient\MapLoadingScreen.db2
-DBFilesClient\MarketingPromotionsXLocale.db2
-DBFilesClient\Material.db2
-DBFilesClient\MinorTalent.db2
-DBFilesClient\MissileTargeting.db2
-DBFilesClient\ModelAnimCloakDampening.db2
-DBFilesClient\ModelFileData.db2
-DBFilesClient\ModelRibbonQuality.db2
-DBFilesClient\ModifierTree.db2
-DBFilesClient\Mount.db2
-DBFilesClient\MountCapability.db2
-DBFilesClient\MountTypeXCapability.db2
-DBFilesClient\MountXDisplay.db2
-DBFilesClient\Movement.db2
-DBFilesClient\Movie.db2
-DBFilesClient\MovieFileData.db2
-DBFilesClient\MovieVariation.db2
-DBFilesClient\MultiStateProperties.db2
-DBFilesClient\MultiTransitionProperties.db2
-DBFilesClient\MythicPlusSeason.db2
-DBFilesClient\MythicPlusSeasonRewardLevels.db2
-DBFilesClient\NPCModelItemSlotDisplayInfo.db2
-DBFilesClient\NPCSounds.db2
-DBFilesClient\NameGen.db2
-DBFilesClient\NamesProfanity.db2
-DBFilesClient\NamesReserved.db2
-DBFilesClient\NamesReservedLocale.db2
-DBFilesClient\NpcModelItemSlotDisplayInfo.db2
-DBFilesClient\NumTalentsAtLevel.db2
-DBFilesClient\ObjectEffect.db2
-DBFilesClient\ObjectEffectGroup.db2
-DBFilesClient\ObjectEffectModifier.db2
-DBFilesClient\ObjectEffectPackage.db2
-DBFilesClient\ObjectEffectPackageElem.db2
-DBFilesClient\Occluder.db2
-DBFilesClient\OccluderLocation.db2
-DBFilesClient\OccluderNode.db2
-DBFilesClient\OutlineEffect.db2
-DBFilesClient\OverrideSpellData.db2
-DBFilesClient\PVPBracketTypes.db2
-DBFilesClient\PVPDifficulty.db2
-DBFilesClient\PVPItem.db2
-DBFilesClient\PageText.db2
-DBFilesClient\PageTextMaterial.db2
-DBFilesClient\PaperDollItemFrame.db2
-DBFilesClient\ParagonReputation.db2
-DBFilesClient\ParticleColor.db2
-DBFilesClient\ParticulateSound.db2
-DBFilesClient\Path.db2
-DBFilesClient\PathEdge.db2
-DBFilesClient\PathNode.db2
-DBFilesClient\PathNodeProperty.db2
-DBFilesClient\PathProperty.db2
-DBFilesClient\Phase.db2
-DBFilesClient\PhaseShiftZoneSounds.db2
-DBFilesClient\PhaseXPhaseGroup.db2
-DBFilesClient\PlayerCondition.db2
-DBFilesClient\Positioner.db2
-DBFilesClient\PositionerState.db2
-DBFilesClient\PositionerStateEntry.db2
-DBFilesClient\PowerDisplay.db2
-DBFilesClient\PowerType.db2
-DBFilesClient\PrestigeLevelInfo.db2
-DBFilesClient\PrivateColor.db2
-DBFilesClient\PvpBracketTypes.db2
-DBFilesClient\PvpDifficulty.db2
-DBFilesClient\PvpItem.db2
-DBFilesClient\PvpReward.db2
-DBFilesClient\PvpScalingEffect.db2
-DBFilesClient\PvpScalingEffectType.db2
-DBFilesClient\PvpSeasonRewardLevels.db2
-DBFilesClient\PvpTalent.db2
-DBFilesClient\PvpTalentCategory.db2
-DBFilesClient\PvpTalentSlotUnlock.db2
-DBFilesClient\PvpTalentUnlock.db2
-DBFilesClient\PvpTier.db2
-DBFilesClient\QuestFactionReward.db2
-DBFilesClient\QuestFeedbackEffect.db2
-DBFilesClient\QuestGiver.db2
-DBFilesClient\QuestInfo.db2
-DBFilesClient\QuestLine.db2
-DBFilesClient\QuestLineXQuest.db2
-DBFilesClient\QuestMoneyReward.db2
-DBFilesClient\QuestObjective.db2
-DBFilesClient\QuestPOIBlob.db2
-DBFilesClient\QuestPOIPoint.db2
-DBFilesClient\QuestPackageItem.db2
-DBFilesClient\QuestSort.db2
-DBFilesClient\QuestV2.db2
-DBFilesClient\QuestV2CliTask.db2
-DBFilesClient\QuestXGroupActivity.db2
-DBFilesClient\QuestXP.db2
-DBFilesClient\RacialMounts.db2
-DBFilesClient\RandPropPoints.db2
-DBFilesClient\RelicSlotTierRequirement.db2
-DBFilesClient\RelicTalent.db2
-DBFilesClient\ResearchBranch.db2
-DBFilesClient\ResearchField.db2
-DBFilesClient\ResearchProject.db2
-DBFilesClient\ResearchSite.db2
-DBFilesClient\Resistances.db2
-DBFilesClient\RewardPack.db2
-DBFilesClient\RewardPackXCurrencyType.db2
-DBFilesClient\RewardPackXItem.db2
-DBFilesClient\RibbonQuality.db2
-DBFilesClient\RulesetItemUpgrade.db2
-DBFilesClient\SDReplacementModel.db2
-DBFilesClient\ScalingStatDistribution.db2
-DBFilesClient\Scenario.db2
-DBFilesClient\ScenarioEventEntry.db2
-DBFilesClient\ScenarioStep.db2
-DBFilesClient\SceneScript.db2
-DBFilesClient\SceneScriptGlobalText.db2
-DBFilesClient\SceneScriptPackage.db2
-DBFilesClient\SceneScriptPackageMember.db2
-DBFilesClient\SceneScriptText.db2
-DBFilesClient\ScheduledInterval.db2
-DBFilesClient\ScheduledWorldState.db2
-DBFilesClient\ScheduledWorldStateGroup.db2
-DBFilesClient\ScheduledWorldStateXUniqCat.db2
-DBFilesClient\ScreenEffect.db2
-DBFilesClient\ScreenLocation.db2
-DBFilesClient\SeamlessSite.db2
-DBFilesClient\ServerMessages.db2
-DBFilesClient\ShadowyEffect.db2
-DBFilesClient\SiegeableProperties.db2
-DBFilesClient\SkillLine.db2
-DBFilesClient\SkillLineAbility.db2
-DBFilesClient\SkillRaceClassInfo.db2
-DBFilesClient\SoundAmbience.db2
-DBFilesClient\SoundAmbienceFlavor.db2
-DBFilesClient\SoundBus.db2
-DBFilesClient\SoundBusOverride.db2
-DBFilesClient\SoundEmitterPillPoints.db2
-DBFilesClient\SoundEmitters.db2
-DBFilesClient\SoundEnvelope.db2
-DBFilesClient\SoundFilter.db2
-DBFilesClient\SoundFilterElem.db2
-DBFilesClient\SoundKit.db2
-DBFilesClient\SoundKitAdvanced.db2
-DBFilesClient\SoundKitChild.db2
-DBFilesClient\SoundKitEntry.db2
-DBFilesClient\SoundKitFallback.db2
-DBFilesClient\SoundKitName.db2
-DBFilesClient\SoundOverride.db2
-DBFilesClient\SoundProviderPreferences.db2
-DBFilesClient\SourceInfo.db2
-DBFilesClient\SpamMessages.db2
-DBFilesClient\SpecSetMember.db2
-DBFilesClient\SpecializationSpells.db2
-DBFilesClient\SpecializationSpellsDisplay.db2
-DBFilesClient\Spell.db2
-DBFilesClient\SpellActionBarPref.db2
-DBFilesClient\SpellActivationOverlay.db2
-DBFilesClient\SpellAuraOptions.db2
-DBFilesClient\SpellAuraRestrictions.db2
-DBFilesClient\SpellAuraVisXChrSpec.db2
-DBFilesClient\SpellAuraVisibility.db2
-DBFilesClient\SpellCastTimes.db2
-DBFilesClient\SpellCastingRequirements.db2
-DBFilesClient\SpellCategories.db2
-DBFilesClient\SpellCategory.db2
-DBFilesClient\SpellChainEffects.db2
-DBFilesClient\SpellClassOptions.db2
-DBFilesClient\SpellClutterAreaEffectCounts.db2
-DBFilesClient\SpellClutterFrameRates.db2
-DBFilesClient\SpellClutterImpactModelCounts.db2
-DBFilesClient\SpellClutterKitDistances.db2
-DBFilesClient\SpellClutterMissileDist.db2
-DBFilesClient\SpellClutterWeaponTrailDist.db2
-DBFilesClient\SpellCooldowns.db2
-DBFilesClient\SpellDescriptionVariables.db2
-DBFilesClient\SpellDispelType.db2
-DBFilesClient\SpellDuration.db2
-DBFilesClient\SpellEffect.db2
-DBFilesClient\SpellEffectAutoDescription.db2
-DBFilesClient\SpellEffectEmission.db2
-DBFilesClient\SpellEffectGroupSize.db2
-DBFilesClient\SpellEffectScaling.db2
-DBFilesClient\SpellEquippedItems.db2
-DBFilesClient\SpellFlyout.db2
-DBFilesClient\SpellFlyoutItem.db2
-DBFilesClient\SpellFocusObject.db2
-DBFilesClient\SpellInterrupts.db2
-DBFilesClient\SpellItemEnchantment.db2
-DBFilesClient\SpellItemEnchantmentCondition.db2
-DBFilesClient\SpellKeyboundOverride.db2
-DBFilesClient\SpellLabel.db2
-DBFilesClient\SpellLearnSpell.db2
-DBFilesClient\SpellLevels.db2
-DBFilesClient\SpellMechanic.db2
-DBFilesClient\SpellMisc.db2
-DBFilesClient\SpellMiscDifficulty.db2
-DBFilesClient\SpellMissile.db2
-DBFilesClient\SpellMissileMotion.db2
-DBFilesClient\SpellName.db2
-DBFilesClient\SpellPower.db2
-DBFilesClient\SpellPowerDifficulty.db2
-DBFilesClient\SpellProceduralEffect.db2
-DBFilesClient\SpellProcsPerMinute.db2
-DBFilesClient\SpellProcsPerMinuteMod.db2
-DBFilesClient\SpellRadius.db2
-DBFilesClient\SpellRange.db2
-DBFilesClient\SpellReagents.db2
-DBFilesClient\SpellReagentsCurrency.db2
-DBFilesClient\SpellScaling.db2
-DBFilesClient\SpellShapeshift.db2
-DBFilesClient\SpellShapeshiftForm.db2
-DBFilesClient\SpellSpecialUnitEffect.db2
-DBFilesClient\SpellTargetRestrictions.db2
-DBFilesClient\SpellTotems.db2
-DBFilesClient\SpellVisual.db2
-DBFilesClient\SpellVisualAnim.db2
-DBFilesClient\SpellVisualColorEffect.db2
-DBFilesClient\SpellVisualEffectName.db2
-DBFilesClient\SpellVisualEvent.db2
-DBFilesClient\SpellVisualKit.db2
-DBFilesClient\SpellVisualKitAreaModel.db2
-DBFilesClient\SpellVisualKitEffect.db2
-DBFilesClient\SpellVisualKitModelAttach.db2
-DBFilesClient\SpellVisualMissile.db2
-DBFilesClient\SpellXDescriptionVariables.db2
-DBFilesClient\SpellXSpellVisual.db2
-DBFilesClient\StartupFiles.db2
-DBFilesClient\Startup_Strings.db2
-DBFilesClient\Stationery.db2
-DBFilesClient\StringLookups.db2
-DBFilesClient\SummonProperties.db2
-DBFilesClient\TactKey.db2
-DBFilesClient\TactKeyLookup.db2
-DBFilesClient\Talent.db2
-DBFilesClient\TaxiNodes.db2
-DBFilesClient\TaxiPath.db2
-DBFilesClient\TaxiPathNode.db2
-DBFilesClient\TerrainMaterial.db2
-DBFilesClient\TerrainType.db2
-DBFilesClient\TerrainTypeSounds.db2
-DBFilesClient\TextureBlendSet.db2
-DBFilesClient\TextureFileData.db2
-DBFilesClient\TotemCategory.db2
-DBFilesClient\Toy.db2
-DBFilesClient\TradeSkillCategory.db2
-DBFilesClient\TradeSkillItem.db2
-DBFilesClient\TransformMatrix.db2
-DBFilesClient\TransmogDefaultLevel.db2
-DBFilesClient\TransmogHoliday.db2
-DBFilesClient\TransmogSet.db2
-DBFilesClient\TransmogSetGroup.db2
-DBFilesClient\TransmogSetItem.db2
-DBFilesClient\TransportAnimation.db2
-DBFilesClient\TransportPhysics.db2
-DBFilesClient\TransportRotation.db2
-DBFilesClient\Treasure.db2
-DBFilesClient\Trophy.db2
-DBFilesClient\TrophyInstance.db2
-DBFilesClient\TrophyType.db2
-DBFilesClient\UIExpansionDisplayInfo.db2
-DBFilesClient\UIExpansionDisplayInfoIcon.db2
-DBFilesClient\UiCamFbackTransmogChrRace.db2
-DBFilesClient\UiCamFbackTransmogWeapon.db2
-DBFilesClient\UiCamera.db2
-DBFilesClient\UiCameraType.db2
-DBFilesClient\UiCanvas.db2
-DBFilesClient\UiMap.db2
-DBFilesClient\UiMapArt.db2
-DBFilesClient\UiMapArtStyleLayer.db2
-DBFilesClient\UiMapArtTile.db2
-DBFilesClient\UiMapAssignment.db2
-DBFilesClient\UiMapFogOfWar.db2
-DBFilesClient\UiMapFogOfWarVisualization.db2
-DBFilesClient\UiMapGroupMember.db2
-DBFilesClient\UiMapLink.db2
-DBFilesClient\UiMapPOI.db2
-DBFilesClient\UiMapXMapArt.db2
-DBFilesClient\UiModelScene.db2
-DBFilesClient\UiModelSceneActor.db2
-DBFilesClient\UiModelSceneActorDisplay.db2
-DBFilesClient\UiModelSceneCamera.db2
-DBFilesClient\UiPartyPose.db2
-DBFilesClient\UiTextureAtlas.db2
-DBFilesClient\UiTextureAtlasElement.db2
-DBFilesClient\UiTextureAtlasMember.db2
-DBFilesClient\UiTextureKit.db2
-DBFilesClient\UiWidget.db2
-DBFilesClient\UiWidgetConstantSource.db2
-DBFilesClient\UiWidgetDataSource.db2
-DBFilesClient\UiWidgetMap.db2
-DBFilesClient\UiWidgetStringSource.db2
-DBFilesClient\UiWidgetVisualization.db2
-DBFilesClient\UnitBlood.db2
-DBFilesClient\UnitBloodLevels.db2
-DBFilesClient\UnitCondition.db2
-DBFilesClient\UnitPowerBar.db2
-DBFilesClient\UnitTest.db2
-DBFilesClient\Vehicle.db2
-DBFilesClient\VehicleSeat.db2
-DBFilesClient\VehicleUIIndSeat.db2
-DBFilesClient\VehicleUIIndicator.db2
-DBFilesClient\VideoHardware.db2
-DBFilesClient\Vignette.db2
-DBFilesClient\VirtualAttachment.db2
-DBFilesClient\VirtualAttachmentCustomization.db2
-DBFilesClient\VocalUISounds.db2
-DBFilesClient\WMOAreaTable.db2
-DBFilesClient\WMOMinimapTexture.db2
-DBFilesClient\WbAccessControlList.db2
-DBFilesClient\WbCertWhitelist.db2
-DBFilesClient\WeaponImpactSounds.db2
-DBFilesClient\WeaponSwingSounds2.db2
-DBFilesClient\WeaponTrail.db2
-DBFilesClient\WeaponTrailModelDef.db2
-DBFilesClient\WeaponTrailParam.db2
-DBFilesClient\Weather.db2
-DBFilesClient\WeatherXParticulate.db2
-DBFilesClient\WindSettings.db2
-DBFilesClient\WmoMinimapTexture.db2
-DBFilesClient\WorldBossLockout.db2
-DBFilesClient\WorldChunkSounds.db2
-DBFilesClient\WorldEffect.db2
-DBFilesClient\WorldElapsedTimer.db2
-DBFilesClient\WorldMapArea.db2
-DBFilesClient\WorldMapContinent.db2
-DBFilesClient\WorldMapOverlay.db2
-DBFilesClient\WorldMapOverlayTile.db2
-DBFilesClient\WorldMapTransforms.db2
-DBFilesClient\WorldState.db2
-DBFilesClient\WorldStateExpression.db2
-DBFilesClient\WorldStateUI.db2
-DBFilesClient\WorldStateZoneSounds.db2
-DBFilesClient\World_PVP_Area.db2
-DBFilesClient\ZoneIntroMusicTable.db2
-DBFilesClient\ZoneLight.db2
-DBFilesClient\ZoneLightPoint.db2
-DBFilesClient\ZoneMusic.db2
-DBFilesClient\ZoneStory.db2
-GameTablesServer\AvoidanceDiminishing.txt
-GameTablesServer\ChanceToDodge.txt
-GameTablesServer\ChanceToDodgeBase.txt
-GameTablesServer\ChanceToParry.txt
-GameTablesServer\ChanceToParryBase.txt
-GameTablesServer\ItemLevelByPlayerLevel.txt
-GameTablesServer\NpcGuildExperience.txt
-GameTablesServer\NpcTotalMp.txt
-GameTablesServer\NpcTotalResistancePhysical.txt
-GameTablesServer\NpcTotalResistancePhysicalExp1.txt
-GameTablesServer\NpcTotalResistancePhysicalExp2.txt
-GameTablesServer\NpcTotalResistancePhysicalExp3.txt
-GameTablesServer\NpcTotalResistancePhysicalExp4.txt
-GameTablesServer\NpcTotalResistancePhysicalExp5.txt
-GameTablesServer\NpcTotalResistancePhysicalExp6.txt
-GameTablesServer\PVPRanks.txt
-GameTablesServer\PcBaseAgi.txt
-GameTablesServer\PcBaseInt.txt
-GameTablesServer\PcBaseSta.txt
-GameTablesServer\PcBaseStr.txt
-GameTablesServer\PcTotalInt.txt
-GameTablesServer\RaceStats.txt
-GameTablesServer\RageGenScaler.txt
-GameTablesServer\XPBonus.txt
-GameTables\ArmorMitigationByLvl.txt
-GameTables\AzeriteBaseExperiencePerLevel.txt
-GameTables\AzeriteKnowledgeMultiplier.txt
-GameTables\AzeriteLevelToItemLevel.txt
-GameTables\BarberShopCostBase.txt
-GameTables\BaseMp.txt
-GameTables\BattlePetTypeDamageMod.txt
-GameTables\ChallengeModeDamage.txt
-GameTables\ChallengeModeHealth.txt
-GameTables\CombatRatings.txt
-GameTables\CombatRatingsMultByILvl.txt
-GameTables\HonorLevel.txt
-GameTables\HpPerSta.txt
-GameTables\ItemLevelByLevel.txt
-GameTables\ItemLevelSquish.txt
-GameTables\ItemSocketCostPerLevel.txt
-GameTables\NpcDamageByClass.txt
-GameTables\NpcDamageByClassExp1.txt
-GameTables\NpcDamageByClassExp2.txt
-GameTables\NpcDamageByClassExp3.txt
-GameTables\NpcDamageByClassExp4.txt
-GameTables\NpcDamageByClassExp5.txt
-GameTables\NpcDamageByClassExp6.txt
-GameTables\NpcManaCostScaler.txt
-GameTables\NpcTotalHp.txt
-GameTables\NpcTotalHpExp1.txt
-GameTables\NpcTotalHpExp2.txt
-GameTables\NpcTotalHpExp3.txt
-GameTables\NpcTotalHpExp4.txt
-GameTables\NpcTotalHpExp5.txt
-GameTables\NpcTotalHpExp6.txt
-GameTables\SandboxScaling.txt
-GameTables\SpellScaling.txt
-GameTables\StaminaMultByILvl.txt
-GameTables\artifactLevelXP.txt
-GameTables\battlePetXP.txt
-GameTables\xp.txt
+801575, DBFilesClient\BattlePetAbilityEffect.db2
+801576, DBFilesClient\BattlePetAbilityState.db2
+801577, DBFilesClient\BattlePetAbilityTurn.db2
+801578, DBFilesClient\BattlePetBreedQuality.db2
+801579, DBFilesClient\BattlePetBreedState.db2
+801580, DBFilesClient\BattlePetEffectProperties.db2
+801581, DBFilesClient\BattlePetSpeciesState.db2
+801582, DBFilesClient\BattlePetSpeciesXAbility.db2
+801583, DBFilesClient\BattlePetState.db2
+801584, DBFilesClient\BattlePetVisual.db2
+801670, DBFilesClient\ItemCurrencyCost.db2
+801681, DBFilesClient\ItemExtendedCost.db2
+801687, DBFilesClient\ItemUpgrade.db2
+801693, DBFilesClient\Keychain.db2
+801706, DBFilesClient\Locale.db2
+801707, DBFilesClient\Location.db2
+801709, DBFilesClient\MapChallengeMode.db2
+801710, DBFilesClient\MarketingPromotionsXLocale.db2
+801732, DBFilesClient\Path.db2
+801733, DBFilesClient\PathNode.db2
+801734, DBFilesClient\PathNodeProperty.db2
+801735, DBFilesClient\PathProperty.db2
+801743, DBFilesClient\QuestPackageItem.db2
+801749, DBFilesClient\RulesetItemUpgrade.db2
+801754, DBFilesClient\SceneScript.db2
+801755, DBFilesClient\SceneScriptPackage.db2
+801756, DBFilesClient\SceneScriptPackageMember.db2
+841604, DBFilesClient\BroadcastText.db2
+841610, DBFilesClient\BattlePetAbility.db2
+841620, DBFilesClient\GameObjects.db2
+841622, DBFilesClient\BattlePetSpecies.db2
+841626, DBFilesClient\Item.db2
+841631, DBFilesClient\Creature.db2
+841648, DBFilesClient\BattlePetNPCTeamMember.db2
+841946, DBFilesClient\SpellReagents.db2
+879282, DBFilesClient\CreatureDifficulty.db2
+879591, DBFilesClient\WbCertWhitelist.db2
+879634, DBFilesClient\WbAccessControlList.db2
+892585, DBFilesClient\Curve.db2
+892586, DBFilesClient\CurvePoint.db2
+892861, DBFilesClient\Vignette.db2
+897470, DBFilesClient\UiTextureAtlas.db2
+897532, DBFilesClient\UiTextureAtlasMember.db2
+897948, DBFilesClient\SpellVisualEffectName.db2
+897949, DBFilesClient\SpellVisualKit.db2
+897951, DBFilesClient\SpellVisualKitAreaModel.db2
+897952, DBFilesClient\SpellVisual.db2
+897953, DBFilesClient\SpellVisualKitModelAttach.db2
+897954, DBFilesClient\SpellVisualMissile.db2
+897955, DBFilesClient\SpellMissileMotion.db2
+897956, DBFilesClient\SpellMissile.db2
+921760, DBFilesClient\Mount.db2
+922720, DBFilesClient\DriverBlacklist.db2
+922722, DBFilesClient\DeviceBlacklist.db2
+925422, DBFilesClient\DeviceDefaultSettings.db2
+929742, DBFilesClient\GarrPlotInstance.db2
+929743, DBFilesClient\GarrPlotBuilding.db2
+929747, DBFilesClient\GarrBuilding.db2
+937634, DBFilesClient\GarrPlot.db2
+937635, DBFilesClient\GarrPlotUICategory.db2
+937647, DBFilesClient\GarrSpecialization.db2
+939159, DBFilesClient\UiTextureKit.db2
+939295, DBFilesClient\GarrSiteLevel.db2
+940404, DBFilesClient\GarrSiteLevelPlotInst.db2
+943871, DBFilesClient\WindSettings.db2
+943937, DBFilesClient\GarrBuildingDoodadSet.db2
+948496, DBFilesClient\GlyphRequiredSpec.db2
+948546, DBFilesClient\GlyphExclusiveCategory.db2
+949906, DBFilesClient\GarrFollower.db2
+959070, DBFilesClient\ItemBonus.db2
+966238, DBFilesClient\GarrAbility.db2
+966241, DBFilesClient\GarrAbilityEffect.db2
+967960, DBFilesClient\GarrMissionXEncounter.db2
+967961, DBFilesClient\GarrEncounterXMechanic.db2
+967962, DBFilesClient\GarrMission.db2
+967963, DBFilesClient\GarrMechanic.db2
+967964, DBFilesClient\GarrMechanicType.db2
+968468, DBFilesClient\GarrFollowerXAbility.db2
+969941, DBFilesClient\ItemEffect.db2
+970979, DBFilesClient\GarrFollowerLevelXP.db2
+972287, DBFilesClient\PvpItem.db2
+972405, DBFilesClient\CharShipmentContainer.db2
+972425, DBFilesClient\CharShipment.db2
+973430, DBFilesClient\QuestLine.db2
+973441, DBFilesClient\QuestLineXQuest.db2
+974812, DBFilesClient\GroupFinderCategory.db2
+974813, DBFilesClient\GroupFinderActivity.db2
+974814, DBFilesClient\GroupFinderActivityGrp.db2
+975024, DBFilesClient\Trophy.db2
+975279, DBFilesClient\WorldBossLockout.db2
+975304, DBFilesClient\GarrEncounter.db2
+976035, DBFilesClient\GarrUiAnimRaceInfo.db2
+976037, DBFilesClient\GarrUiAnimClassInfo.db2
+979663, DBFilesClient\SpellClassOptions.db2
+981566, DBFilesClient\SpellAuraRestrictions.db2
+981569, DBFilesClient\GarrFollItemSetMember.db2
+981570, DBFilesClient\GarrClassSpec.db2
+982457, DBFilesClient\ItemModifiedAppearance.db2
+982459, DBFilesClient\TextureFileData.db2
+982461, DBFilesClient\WeaponTrail.db2
+982462, DBFilesClient\ItemAppearance.db2
+982804, DBFilesClient\SpellPowerDifficulty.db2
+982805, DBFilesClient\LfgRoleRequirement.db2
+982806, DBFilesClient\SpellPower.db2
+983298, DBFilesClient\GarrBuildingPlotInst.db2
+984174, DBFilesClient\GarrMissionType.db2
+984528, DBFilesClient\ChrUpgradeBucketSpell.db2
+984529, DBFilesClient\ChrUpgradeBucket.db2
+984530, DBFilesClient\ChrUpgradeTier.db2
+984702, DBFilesClient\LanguageWords.db2
+987133, DBFilesClient\ItemXBonusTree.db2
+987134, DBFilesClient\ItemBonusTreeNode.db2
+987581, DBFilesClient\PhaseXPhaseGroup.db2
+988200, DBFilesClient\Toy.db2
+996357, DBFilesClient\Holidays.db2
+996358, DBFilesClient\HighlightColor.db2
+996359, DBFilesClient\HolidayNames.db2
+996360, DBFilesClient\HolidayDescriptions.db2
+1000437, DBFilesClient\TaxiPathNode.db2
+1000630, DBFilesClient\AreaPOI.db2
+1000631, DBFilesClient\AreaPOIState.db2
+1001907, DBFilesClient\SpellLearnSpell.db2
+1002162, DBFilesClient\SpellTotems.db2
+1002166, DBFilesClient\SpellCastingRequirements.db2
+1002186, DBFilesClient\OverrideSpellData.db2
+1003144, DBFilesClient\SpellMisc.db2
+1007934, DBFilesClient\Artifact.db2
+1007937, DBFilesClient\ArtifactPower.db2
+1014438, DBFilesClient\SpellMechanic.db2
+1019373, DBFilesClient\SpellActionBarPref.db2
+1020248, DBFilesClient\GarrAbilityCategory.db2
+1027793, DBFilesClient\GarrFollowerQuality.db2
+1028733, DBFilesClient\CharacterFaceBoneSet.db2
+1028735, DBFilesClient\QuestV2CliTask.db2
+1036203, DBFilesClient\ArtifactQuestXP.db2
+1045411, DBFilesClient\PlayerCondition.db2
+1067802, DBFilesClient\TaxiPath.db2
+1068100, DBFilesClient\TaxiNodes.db2
+1068162, DBFilesClient\Cfg_Categories.db2
+1080949, DBFilesClient\Cfg_Configs.db2
+1082876, DBFilesClient\Cfg_Regions.db2
+1090575, DBFilesClient\ObjectEffectModifier.db2
+1090577, DBFilesClient\ObjectEffect.db2
+1090578, DBFilesClient\ObjectEffectPackageElem.db2
+1092316, DBFilesClient\SoundEmitters.db2
+1092317, DBFilesClient\SoundEmitterPillPoints.db2
+1093406, DBFilesClient\AreaGroupMember.db2
+1094006, DBFilesClient\SpellVisualColorEffect.db2
+1094540, DBFilesClient\ArtifactUnlock.db2
+1095531, DBFilesClient\CurrencyTypes.db2
+1097696, DBFilesClient\Heirloom.db2
+1098785, DBFilesClient\LookAtController.db2
+1101657, DBFilesClient\SpellXSpellVisual.db2
+1108759, DBFilesClient\CreatureDisplayInfo.db2
+1114709, DBFilesClient\MountCapability.db2
+1114715, DBFilesClient\MountTypeXCapability.db2
+1115949, DBFilesClient\AdventureJournal.db2
+1116407, DBFilesClient\ArtifactAppearance.db2
+1116408, DBFilesClient\ArtifactAppearanceSet.db2
+1117084, DBFilesClient\ChatProfanity.db2
+1117085, DBFilesClient\NamesReserved.db2
+1117086, DBFilesClient\NamesProfanity.db2
+1117087, DBFilesClient\NamesReservedLocale.db2
+1117088, DBFilesClient\SpamMessages.db2
+1117695, DBFilesClient\CameraEffect.db2
+1117696, DBFilesClient\CameraEffectEntry.db2
+1118784, DBFilesClient\GarrFollowerType.db2
+1120287, DBFilesClient\UiCamera.db2
+1120288, DBFilesClient\UiCameraType.db2
+1120958, DBFilesClient\CombatCondition.db2
+1120959, DBFilesClient\UnitCondition.db2
+1120960, DBFilesClient\QuestInfo.db2
+1121227, DBFilesClient\ImportPriceShield.db2
+1121228, DBFilesClient\ImportPriceQuality.db2
+1121229, DBFilesClient\ImportPriceArmor.db2
+1121230, DBFilesClient\ImportPriceWeapon.db2
+1121231, DBFilesClient\ItemPriceBase.db2
+1121420, DBFilesClient\ChrClassesXPowerTypes.db2
+1121834, DBFilesClient\SpellItemEnchantmentCondition.db2
+1121900, DBFilesClient\JournalSectionXDifficulty.db2
+1121901, DBFilesClient\JournalEncounterXDifficulty.db2
+1121943, DBFilesClient\AreaTriggerCylinder.db2
+1121973, DBFilesClient\TransportPhysics.db2
+1122116, DBFilesClient\DestructibleModelData.db2
+1122117, DBFilesClient\NameGen.db2
+1125220, DBFilesClient\GarrMissionTexture.db2
+1125666, DBFilesClient\CreatureMovementInfo.db2
+1125667, DBFilesClient\CurrencyCategory.db2
+1127327, DBFilesClient\SpellKeyboundOverride.db2
+1130268, DBFilesClient\DurabilityQuality.db2
+1131315, DBFilesClient\CreatureType.db2
+1131322, DBFilesClient\CreatureImmunities.db2
+1132538, DBFilesClient\LiquidMaterial.db2
+1132761, DBFilesClient\ScenarioStep.db2
+1133525, DBFilesClient\SpellProcsPerMinuteMod.db2
+1133526, DBFilesClient\SpellProcsPerMinute.db2
+1133711, DBFilesClient\ResearchField.db2
+1133729, DBFilesClient\ResearchBranch.db2
+1133731, DBFilesClient\ArtifactPowerLink.db2
+1134085, DBFilesClient\SpellFlyoutItem.db2
+1134087, DBFilesClient\ItemDisenchantLoot.db2
+1134089, DBFilesClient\SpellCastTimes.db2
+1134090, DBFilesClient\ResearchProject.db2
+1134091, DBFilesClient\ResearchSite.db2
+1134413, DBFilesClient\JournalEncounterSection.db2
+1134576, DBFilesClient\ItemSpecOverride.db2
+1134579, DBFilesClient\WorldMapOverlay.db2
+1134583, DBFilesClient\CinematicSequences.db2
+1134584, DBFilesClient\SpellRadius.db2
+1134585, DBFilesClient\QuestSort.db2
+1134586, DBFilesClient\TotemCategory.db2
+1135058, DBFilesClient\LfgDungeonGroup.db2
+1135072, DBFilesClient\Resistances.db2
+1135120, DBFilesClient\ItemSpec.db2
+1135238, DBFilesClient\GuildPerkSpells.db2
+1135239, DBFilesClient\SpellReagentsCurrency.db2
+1135240, DBFilesClient\WorldElapsedTimer.db2
+1135325, DBFilesClient\Languages.db2
+1137828, DBFilesClient\SpellDuration.db2
+1137829, DBFilesClient\SpellDispelType.db2
+1138458, DBFilesClient\GarrMssnBonusAbility.db2
+1139047, DBFilesClient\QuestMoneyReward.db2
+1139062, DBFilesClient\Scenario.db2
+1139378, DBFilesClient\QuestXP.db2
+1139443, DBFilesClient\QuestV2.db2
+1139906, DBFilesClient\SpellInterrupts.db2
+1139924, DBFilesClient\SpellCooldowns.db2
+1139929, DBFilesClient\SpellShapeshift.db2
+1139939, DBFilesClient\SpellCategories.db2
+1139940, DBFilesClient\SpellScaling.db2
+1139952, DBFilesClient\SpellAuraOptions.db2
+1139993, DBFilesClient\SpellTargetRestrictions.db2
+1140004, DBFilesClient\SpellDescriptionVariables.db2
+1140011, DBFilesClient\SpellEquippedItems.db2
+1140079, DBFilesClient\SpellLevels.db2
+1140088, DBFilesClient\SpellEffect.db2
+1140089, DBFilesClient\Spell.db2
+1140189, DBFilesClient\ItemClass.db2
+1140477, DBFilesClient\SpellProceduralEffect.db2
+1140479, DBFilesClient\SpellVisualAnim.db2
+1140480, DBFilesClient\SpellVisualKitEffect.db2
+1140686, DBFilesClient\TransportAnimation.db2
+1140687, DBFilesClient\TransportRotation.db2
+1140758, DBFilesClient\Stationery.db2
+1141065, DBFilesClient\ScenarioEventEntry.db2
+1141728, DBFilesClient\ScalingStatDistribution.db2
+1146690, DBFilesClient\ItemDisplayXUiCamera.db2
+1146692, DBFilesClient\CreatureDispXUiCamera.db2
+1146698, DBFilesClient\CreatureDisplayInfoTrn.db2
+1146819, DBFilesClient\SpellFlyout.db2
+1146820, DBFilesClient\SpellRange.db2
+1237434, DBFilesClient\SoundKit.db2
+1237435, DBFilesClient\SoundKitEntry.db2
+1237436, DBFilesClient\SoundKitAdvanced.db2
+1237437, DBFilesClient\BarberShopStyle.db2
+1237438, DBFilesClient\JournalInstance.db2
+1237439, DBFilesClient\AuctionHouse.db2
+1237440, DBFilesClient\ItemLimitCategory.db2
+1237591, DBFilesClient\CharStartOutfit.db2
+1237638, DBFilesClient\FriendshipRepReaction.db2
+1237639, DBFilesClient\FriendshipReputation.db2
+1237753, DBFilesClient\UnitPowerBar.db2
+1239842, DBFilesClient\WeaponTrailParam.db2
+1239843, DBFilesClient\WeaponTrailModelDef.db2
+1239844, DBFilesClient\ShadowyEffect.db2
+1240335, DBFilesClient\SpecializationSpells.db2
+1240336, DBFilesClient\JournalEncounter.db2
+1240344, DBFilesClient\MailTemplate.db2
+1240406, DBFilesClient\SkillRaceClassInfo.db2
+1240935, DBFilesClient\SkillLine.db2
+1247926, DBFilesClient\ItemChildEquipment.db2
+1248126, DBFilesClient\ItemAppearanceXUiCamera.db2
+1251506, DBFilesClient\PositionerState.db2
+1251523, DBFilesClient\Positioner.db2
+1251533, DBFilesClient\PositionerStateEntry.db2
+1251882, DBFilesClient\QuestPOIBlob.db2
+1251883, DBFilesClient\QuestPOIPoint.db2
+1251960, DBFilesClient\QuestObjective.db2
+1252503, DBFilesClient\PaperDollItemFrame.db2
+1256914, DBFilesClient\CharHairGeosets.db2
+1260179, DBFilesClient\Achievement.db2
+1260801, DBFilesClient\ConversationLine.db2
+1261405, DBFilesClient\ArtifactPowerRank.db2
+1261406, DBFilesClient\UiCamFbackTransmogChrRace.db2
+1261407, DBFilesClient\UiCamFbackTransmogWeapon.db2
+1261603, DBFilesClient\SpellActivationOverlay.db2
+1261604, DBFilesClient\ItemSubClass.db2
+1263817, DBFilesClient\Criteria.db2
+1263818, DBFilesClient\CriteriaTree.db2
+1264997, DBFilesClient\CreatureDisplayInfoExtra.db2
+1266022, DBFilesClient\PowerType.db2
+1266277, DBFilesClient\GameObjectDisplayInfo.db2
+1266278, DBFilesClient\SkillLineAbility.db2
+1266429, DBFilesClient\ItemDisplayInfo.db2
+1266540, DBFilesClient\AnimKitPriority.db2
+1266541, DBFilesClient\LoadingScreens.db2
+1266542, DBFilesClient\SoundOverride.db2
+1266737, DBFilesClient\GameObjectArtKit.db2
+1266937, DBFilesClient\AnimKitBoneSetAlias.db2
+1266941, DBFilesClient\WorldStateZoneSounds.db2
+1267065, DBFilesClient\SoundAmbienceFlavor.db2
+1267066, DBFilesClient\SoundFilterElem.db2
+1267067, DBFilesClient\VocalUISounds.db2
+1267068, DBFilesClient\WeaponSwingSounds2.db2
+1267069, DBFilesClient\WorldChunkSounds.db2
+1267070, DBFilesClient\AdventureMapPOI.db2
+1267335, DBFilesClient\ManifestInterfaceTOCData.db2
+1267336, DBFilesClient\PhaseShiftZoneSounds.db2
+1267497, DBFilesClient\ChrClassTitle.db2
+1267498, DBFilesClient\ChrClassVillain.db2
+1267645, DBFilesClient\ModifierTree.db2
+1267647, DBFilesClient\FootstepTerrainLookup.db2
+1267648, DBFilesClient\WeaponImpactSounds.db2
+1268903, DBFilesClient\SpellSpecialUnitEffect.db2
+1268904, DBFilesClient\UnitBloodLevels.db2
+1270147, DBFilesClient\GlyphBindableSpell.db2
+1270315, DBFilesClient\ItemRangedDisplayInfo.db2
+1271600, DBFilesClient\PageTextMaterial.db2
+1271601, DBFilesClient\SoundFilter.db2
+1273408, DBFilesClient\ItemSearchName.db2
+1275869, DBFilesClient\PrestigeLevelInfo.db2
+1277738, DBFilesClient\ItemDamageTwoHand.db2
+1277739, DBFilesClient\ItemDamageOneHandCaster.db2
+1277740, DBFilesClient\ItemDamageAmmo.db2
+1277741, DBFilesClient\ItemArmorShield.db2
+1277742, DBFilesClient\ItemDamageTwoHandCaster.db2
+1277743, DBFilesClient\ItemDamageOneHand.db2
+1277744, DBFilesClient\JournalItemXDifficulty.db2
+1278176, DBFilesClient\DecalProperties.db2
+1278177, DBFilesClient\GMSurveyCurrentSurvey.db2
+1278178, DBFilesClient\GMSurveyQuestions.db2
+1278179, DBFilesClient\ItemBagFamily.db2
+1278239, DBFilesClient\ComponentTextureFileData.db2
+1278398, DBFilesClient\EnvironmentalDamage.db2
+1278399, DBFilesClient\ItemModifiedAppearanceExtra.db2
+1279099, DBFilesClient\DeclinedWordCases.db2
+1279100, DBFilesClient\DeclinedWord.db2
+1279415, DBFilesClient\DeathThudLookups.db2
+1279416, DBFilesClient\ScreenLocation.db2
+1279417, DBFilesClient\SoundProviderPreferences.db2
+1279739, DBFilesClient\OutlineEffect.db2
+1279740, DBFilesClient\VehicleUIIndicator.db2
+1279741, DBFilesClient\VehicleUIIndSeat.db2
+1280614, DBFilesClient\ItemDisplayInfoMaterialRes.db2
+1280615, DBFilesClient\SpellAuraVisXChrSpec.db2
+1280616, DBFilesClient\SpellAuraVisibility.db2
+1280618, DBFilesClient\SpellShapeshiftForm.db2
+1280619, DBFilesClient\SpellCategory.db2
+1280620, DBFilesClient\SpellFocusObject.db2
+1282621, DBFilesClient\NPCSounds.db2
+1282622, DBFilesClient\QuestFactionReward.db2
+1283018, DBFilesClient\CastableRaidBuffs.db2
+1283019, DBFilesClient\DurabilityCosts.db2
+1283020, DBFilesClient\GMSurveySurveys.db2
+1283021, DBFilesClient\ItemArmorQuality.db2
+1283022, DBFilesClient\ItemArmorTotal.db2
+1283023, DBFilesClient\ItemGroupSounds.db2
+1283024, DBFilesClient\EmotesTextData.db2
+1283025, DBFilesClient\GMSurveyAnswers.db2
+1284817, DBFilesClient\AnimReplacementSet.db2
+1284818, DBFilesClient\ArmorLocation.db2
+1284819, DBFilesClient\BankBagSlotPrices.db2
+1284820, DBFilesClient\ParticleColor.db2
+1284821, DBFilesClient\UnitBlood.db2
+1284822, DBFilesClient\TerrainTypeSounds.db2
+1284823, DBFilesClient\LockType.db2
+1285009, DBFilesClient\JournalTierXInstance.db2
+1286524, DBFilesClient\EmotesTextSound.db2
+1286525, DBFilesClient\GuildColorEmblem.db2
+1286526, DBFilesClient\GuildColorBackground.db2
+1286527, DBFilesClient\GuildColorBorder.db2
+1294214, DBFilesClient\CinematicCamera.db2
+1294217, DBFilesClient\Material.db2
+1300872, DBFilesClient\AnimKitConfig.db2
+1300873, DBFilesClient\AnimKitConfigBoneSet.db2
+1301100, DBFilesClient\AnimReplacement.db2
+1301101, DBFilesClient\TradeSkillCategory.db2
+1301141, DBFilesClient\ServerMessages.db2
+1301154, DBFilesClient\MovieFileData.db2
+1301155, DBFilesClient\JournalEncounterCreature.db2
+1302239, DBFilesClient\LoadingScreenTaxiSplines.db2
+1302240, DBFilesClient\ItemPetFood.db2
+1302846, DBFilesClient\CharacterLoadoutItem.db2
+1302847, DBFilesClient\GameObjectDiffAnimMap.db2
+1302849, DBFilesClient\ScreenEffect.db2
+1302850, DBFilesClient\TactKey.db2
+1302851, DBFilesClient\TactKeyLookup.db2
+1302852, DBFilesClient\ItemSubClassMask.db2
+1302853, DBFilesClient\PvpTalent.db2
+1304323, DBFilesClient\AnimKit.db2
+1304324, DBFilesClient\AnimKitSegment.db2
+1304325, DBFilesClient\DissolveEffect.db2
+1305311, DBFilesClient\ChrRaces.db2
+1306188, DBFilesClient\ChrClassRaceSex.db2
+1307153, DBFilesClient\RewardPackXCurrencyType.db2
+1307155, DBFilesClient\RewardPackXItem.db2
+1307156, DBFilesClient\RewardPack.db2
+1307288, DBFilesClient\SoundKitFallback.db2
+1307289, DBFilesClient\SoundKitChild.db2
+1307290, DBFilesClient\TerrainMaterial.db2
+1308056, DBFilesClient\FootprintTextures.db2
+1308057, DBFilesClient\GroundEffectDoodad.db2
+1308058, DBFilesClient\LiquidObject.db2
+1308499, DBFilesClient\GroundEffectTexture.db2
+1308501, DBFilesClient\LightSkybox.db2
+1310245, DBFilesClient\RandPropPoints.db2
+1310246, DBFilesClient\SoundBus.db2
+1310248, DBFilesClient\SpellEffectEmission.db2
+1310249, DBFilesClient\TerrainType.db2
+1310251, DBFilesClient\ZoneIntroMusicTable.db2
+1310253, DBFilesClient\ZoneLight.db2
+1310254, DBFilesClient\ZoneMusic.db2
+1310255, DBFilesClient\World_PVP_Area.db2
+1310256, DBFilesClient\ZoneLightPoint.db2
+1310628, DBFilesClient\SoundAmbience.db2
+1313612, DBFilesClient\SourceInfo.db2
+1314689, DBFilesClient\ItemSetSpell.db2
+1315630, DBFilesClient\AreaTriggerSphere.db2
+1316515, DBFilesClient\ChrClassUIDisplay.db2
+1320358, DBFilesClient\ItemBonusListLevelDelta.db2
+1323241, DBFilesClient\WmoMinimapTexture.db2
+1324299, DBFilesClient\Achievement_Category.db2
+1327082, DBFilesClient\ScheduledInterval.db2
+1327083, DBFilesClient\ScheduledWorldState.db2
+1327084, DBFilesClient\ScheduledWorldStateGroup.db2
+1328719, DBFilesClient\SeamlessSite.db2
+1328721, DBFilesClient\TextureBlendSet.db2
+1329070, DBFilesClient\TradeSkillItem.db2
+1332554, DBFilesClient\AreaTriggerBox.db2
+1332556, DBFilesClient\Movie.db2
+1332557, DBFilesClient\PowerDisplay.db2
+1332558, DBFilesClient\WorldStateExpression.db2
+1332559, DBFilesClient\ItemNameDescription.db2
+1332686, DBFilesClient\CreatureDisplayInfoCond.db2
+1333161, DBFilesClient\GarrType.db2
+1334669, DBFilesClient\LightParams.db2
+1336651, DBFilesClient\InvasionClientData.db2
+1337833, DBFilesClient\ModelFileData.db2
+1338702, DBFilesClient\TransformMatrix.db2
+1339818, DBFilesClient\LfgDungeonsGroupingMap.db2
+1339819, DBFilesClient\MovieVariation.db2
+1339820, DBFilesClient\PvpDifficulty.db2
+1340661, DBFilesClient\NpcModelItemSlotDisplayInfo.db2
+1343308, DBFilesClient\CameraMode.db2
+1343310, DBFilesClient\SpellChainEffects.db2
+1343311, DBFilesClient\Weather.db2
+1343312, DBFilesClient\WorldEffect.db2
+1343313, DBFilesClient\Exhaustion.db2
+1343386, DBFilesClient\CharBaseInfo.db2
+1343388, DBFilesClient\QuestFeedbackEffect.db2
+1343390, DBFilesClient\ChrSpecialization.db2
+1343595, DBFilesClient\FactionGroup.db2
+1343596, DBFilesClient\WorldStateUI.db2
+1343602, DBFilesClient\Emotes.db2
+1343604, DBFilesClient\GemProperties.db2
+1343605, DBFilesClient\ItemVisuals.db2
+1343606, DBFilesClient\LfgDungeonExpansion.db2
+1343608, DBFilesClient\Lock.db2
+1343609, DBFilesClient\ItemSet.db2
+1344281, DBFilesClient\CharacterLoadout.db2
+1344466, DBFilesClient\CreatureSoundData.db2
+1344467, DBFilesClient\JournalEncounterItem.db2
+1344761, DBFilesClient\KeystoneAffix.db2
+1345272, DBFilesClient\GameObjectDisplayInfoXSoundKit.db2
+1345274, DBFilesClient\GlyphProperties.db2
+1345276, DBFilesClient\SummonProperties.db2
+1345278, DBFilesClient\ChatChannels.db2
+1345447, DBFilesClient\VehicleSeat.db2
+1345969, DBFilesClient\CriteriaTreeXEffect.db2
+1345970, DBFilesClient\GarrFollSupportSpell.db2
+1347273, DBFilesClient\EmotesText.db2
+1347274, DBFilesClient\MinorTalent.db2
+1347275, DBFilesClient\SpellLabel.db2
+1347279, DBFilesClient\DungeonEncounter.db2
+1348282, DBFilesClient\FullScreenEffect.db2
+1348283, DBFilesClient\HelmetAnimScaling.db2
+1348558, DBFilesClient\Phase.db2
+1349053, DBFilesClient\ComponentModelFileData.db2
+1349054, DBFilesClient\CharTitles.db2
+1349056, DBFilesClient\JournalTier.db2
+1349477, DBFilesClient\Map.db2
+1351351, DBFilesClient\CreatureFamily.db2
+1352127, DBFilesClient\Difficulty.db2
+1352378, DBFilesClient\AreaTriggerActionSet.db2
+1353545, DBFilesClient\AreaTable.db2
+1354401, DBFilesClient\AreaTrigger.db2
+1354772, DBFilesClient\GarrEncounterSetXEncounter.db2
+1355528, DBFilesClient\WMOAreaTable.db2
+1359096, DBFilesClient\GarrMissionXFollower.db2
+1360262, DBFilesClient\CharComponentTextureLayouts.db2
+1360263, DBFilesClient\CharComponentTextureSections.db2
+1360265, DBFilesClient\BattlemasterList.db2
+1361029, DBFilesClient\GarrFollowerSetXFollower.db2
+1361030, DBFilesClient\GarrTalentTree.db2
+1361031, DBFilesClient\ChrClasses.db2
+1361032, DBFilesClient\GarrTalent.db2
+1361033, DBFilesClient\LfgDungeons.db2
+1361579, DBFilesClient\FactionTemplate.db2
+1361972, DBFilesClient\Faction.db2
+1362771, DBFilesClient\SpellItemEnchantment.db2
+1365366, DBFilesClient\CharSections.db2
+1365368, DBFilesClient\CreatureModelData.db2
+1367865, DBFilesClient\BountySet.db2
+1367866, DBFilesClient\Bounty.db2
+1367868, DBFilesClient\MapDifficulty.db2
+1368021, DBFilesClient\GameTips.db2
+1368621, DBFilesClient\Vehicle.db2
+1369062, DBFilesClient\Talent.db2
+1369752, DBFilesClient\CharacterFacialHairStyles.db2
+1371380, DBFilesClient\LiquidType.db2
+1373459, DBFilesClient\BannedAddons.db2
+1375431, DBFilesClient\AnimationData.db2
+1375433, DBFilesClient\AnimKitBoneSet.db2
+1375435, DBFilesClient\MapDifficultyXCondition.db2
+1375579, DBFilesClient\Light.db2
+1375580, DBFilesClient\LightData.db2
+1375798, DBFilesClient\CharBaseSection.db2
+1375801, DBFilesClient\ManifestInterfaceData.db2
+1375802, DBFilesClient\ManifestMP3.db2
+1375803, DBFilesClient\ManifestInterfaceActionIcon.db2
+1375804, DBFilesClient\ManifestInterfaceItemIcon.db2
+1375805, DBFilesClient\Startup_Strings.db2
+1376210, DBFilesClient\ArtifactCategory.db2
+1376212, DBFilesClient\TransmogSetItem.db2
+1376213, DBFilesClient\TransmogSet.db2
+1378590, DBFilesClient\ItemLimitCategoryCondition.db2
+1380674, DBFilesClient\GarrClassSpecPlayerCond.db2
+1385707, GameTables\ArmorMitigationByLvl.txt
+1387381, DBFilesClient\EdgeGlowEffect.db2
+1388724, DBFilesClient\ScheduledWorldStateXUniqCat.db2
+1391531, DBFilesClient\GarrMechanicSetXMechanic.db2
+1391642, GameTables\HpPerSta.txt
+1391643, GameTables\ItemSocketCostPerLevel.txt
+1391644, GameTables\NpcDamageByClass.txt
+1391645, GameTables\NpcDamageByClassExp1.txt
+1391646, GameTables\NpcDamageByClassExp2.txt
+1391647, GameTables\NpcDamageByClassExp3.txt
+1391648, GameTables\NpcDamageByClassExp4.txt
+1391649, GameTables\NpcDamageByClassExp5.txt
+1391650, GameTables\NpcDamageByClassExp6.txt
+1391651, GameTables\NpcManaCostScaler.txt
+1391652, GameTables\NpcTotalHp.txt
+1391653, GameTables\NpcTotalHpExp1.txt
+1391654, GameTables\NpcTotalHpExp2.txt
+1391655, GameTables\NpcTotalHpExp3.txt
+1391656, GameTables\NpcTotalHpExp4.txt
+1391657, GameTables\NpcTotalHpExp5.txt
+1391658, GameTables\NpcTotalHpExp6.txt
+1391659, GameTables\SandboxScaling.txt
+1391660, GameTables\SpellScaling.txt
+1391661, GameTables\xp.txt
+1391662, GameTables\artifactLevelXP.txt
+1391663, GameTables\BarberShopCostBase.txt
+1391664, GameTables\BaseMp.txt
+1391665, GameTables\BattlePetTypeDamageMod.txt
+1391666, GameTables\battlePetXP.txt
+1391667, GameTables\ChallengeModeDamage.txt
+1391668, GameTables\ChallengeModeHealth.txt
+1391669, GameTables\CombatRatings.txt
+1391670, GameTables\CombatRatingsMultByILvl.txt
+1391671, GameTables\HonorLevel.txt
+1394275, DBFilesClient\PvpBracketTypes.db2
+1394440, DBFilesClient\GlobalStrings.db2
+1398908, DBFilesClient\RibbonQuality.db2
+1399953, DBFilesClient\ModelRibbonQuality.db2
+1405665, DBFilesClient\ItemContextPickerEntry.db2
+1412636, DBFilesClient\GarrFollowerUICreature.db2
+1416756, DBFilesClient\BoneWindModifiers.db2
+1416758, DBFilesClient\GarrString.db2
+1465903, DBFilesClient\CloakDampening.db2
+1465904, DBFilesClient\ModelAnimCloakDampening.db2
+1467254, DBFilesClient\BoneWindModifierModel.db2
+1525607, DBFilesClient\BeamEffect.db2
+1537162, DBFilesClient\AreaFarClipOverride.db2
+1548213, DBFilesClient\UiModelSceneCamera.db2
+1548214, DBFilesClient\UiModelSceneActor.db2
+1548215, DBFilesClient\UiModelScene.db2
+1548216, DBFilesClient\UiModelSceneActorDisplay.db2
+1559807, DBFilesClient\AnimKitReplacement.db2
+1572314, DBFilesClient\GarrItemLevelUpgradeData.db2
+1572924, DBFilesClient\ItemSparse.db2
+1573634, DBFilesClient\QuestXGroupActivity.db2
+1576116, DBFilesClient\TransmogSetGroup.db2
+1576117, DBFilesClient\MountXDisplay.db2
+1581183, DBFilesClient\ParagonReputation.db2
+1586882, DBFilesClient\CreatureDisplayInfoEvt.db2
+1587151, DBFilesClient\ManagedWorldStateInput.db2
+1587153, DBFilesClient\Contribution.db2
+1587155, DBFilesClient\ManagedWorldStateBuff.db2
+1587158, DBFilesClient\CreatureXContribution.db2
+1587159, DBFilesClient\ManagedWorldState.db2
+1588911, DBFilesClient\ItemLevelSelector.db2
+1589454, DBFilesClient\TransmogHoliday.db2
+1591098, DBFilesClient\PvpScalingEffectType.db2
+1591100, DBFilesClient\PvpScalingEffect.db2
+1592470, DBFilesClient\CelestialBody.db2
+1597466, DBFilesClient\MapCelestialBody.db2
+1597467, DBFilesClient\ArtifactPowerPicker.db2
+1598732, DBFilesClient\SoundBusOverride.db2
+1600114, DBFilesClient\ArtifactTier.db2
+1604265, DBFilesClient\StartupFiles.db2
+1611874, DBFilesClient\ChrCustomization.db2
+1624933, DBFilesClient\ItemLevelSelectorQualitySet.db2
+1624937, DBFilesClient\ItemLevelSelectorQuality.db2
+1634480, DBFilesClient\VirtualAttachmentCustomization.db2
+1634482, DBFilesClient\VirtualAttachment.db2
+1661584, DBFilesClient\CommentatorTrackedCooldown.db2
+1664251, DBFilesClient\CommentatorStartLocation.db2
+1665033, DBFilesClient\SoundKitName.db2
+1671256, DBFilesClient\RelicTalent.db2
+1685317, DBFilesClient\SpellVisualEvent.db2
+1693131, DBFilesClient\SoundEnvelope.db2
+1709409, DBFilesClient\ConfigurationWarning.db2
+1710117, DBFilesClient\MissileTargeting.db2
+1710672, DBFilesClient\AlliedRace.db2
+1712172, DBFilesClient\SDReplacementModel.db2
+1716803, DBFilesClient\RelicSlotTierRequirement.db2
+1719707, DBFilesClient\MapLoadingScreen.db2
+1720141, DBFilesClient\CreatureDisplayInfoGeosetData.db2
+1720145, DBFilesClient\AlliedRaceRacialAbility.db2
+1722928, DBFilesClient\JournalEncounterXMapLoc.db2
+1724949, DBFilesClient\SpellXDescriptionVariables.db2
+1726830, GameTables\ItemLevelSquish.txt
+1729546, DBFilesClient\UIExpansionDisplayInfoIcon.db2
+1729547, DBFilesClient\UIExpansionDisplayInfo.db2
+1758036, DBFilesClient\SceneScriptGlobalText.db2
+1758037, DBFilesClient\SceneScriptText.db2
+1797864, DBFilesClient\ZoneStory.db2
+1802988, DBFilesClient\BattlePetDisplayOverride.db2
+1815417, DBFilesClient\CharacterServiceInfo.db2
+1846040, DBFilesClient\AzeritePowerSetMember.db2
+1846043, DBFilesClient\AzeriteTierUnlock.db2
+1846044, DBFilesClient\AzeritePower.db2
+1846046, DBFilesClient\AzeriteEmpoweredItem.db2
+1846048, DBFilesClient\AzeriteItem.db2
+1859377, GameTables\AzeriteLevelToItemLevel.txt
+1864302, DBFilesClient\CreatureXDisplayInfo.db2
+1888495, DBFilesClient\SpellEffectAutoDescription.db2
+1891534, DBFilesClient\PvpTalentCategory.db2
+1892815, GameTables\AzeriteBaseExperiencePerLevel.txt
+1892816, GameTables\AzeriteKnowledgeMultiplier.txt
+1915395, DBFilesClient\AzeriteItemMilestonePower.db2
+1934603, DBFilesClient\CurrencyContainer.db2
+1937227, DBFilesClient\AreaTriggerCreateProperties.db2
+1937326, DBFilesClient\ExpectedStat.db2
+1939843, DBFilesClient\ClientSceneEffect.db2
+1950197, DBFilesClient\PvpTalentSlotUnlock.db2
+1953326, DBFilesClient\NumTalentsAtLevel.db2
+1954391, DBFilesClient\SiegeableProperties.db2
+1957202, DBFilesClient\UiMapArt.db2
+1957204, DBFilesClient\UiMapGroupMember.db2
+1957206, DBFilesClient\UiMap.db2
+1957208, DBFilesClient\UiMapArtStyleLayer.db2
+1957210, DBFilesClient\UiMapArtTile.db2
+1957212, DBFilesClient\WorldMapOverlayTile.db2
+1957217, DBFilesClient\UiMapXMapArt.db2
+1957219, DBFilesClient\UiMapAssignment.db2
+1962930, DBFilesClient\ContentTuning.db2
+1965589, DBFilesClient\MultiTransitionProperties.db2
+1965591, DBFilesClient\WeatherXParticulate.db2
+1965592, DBFilesClient\MultiStateProperties.db2
+1969773, DBFilesClient\ExpectedStatMod.db2
+1980632, GameTables\StaminaMultByILvl.txt
+1983274, DBFilesClient\BonusRoll.db2
+1983276, DBFilesClient\UiWidgetVisualization.db2
+1983278, DBFilesClient\UiWidget.db2
+1983639, DBFilesClient\UiWidgetConstantSource.db2
+1983640, DBFilesClient\UiWidgetDataSource.db2
+1983641, DBFilesClient\UiWidgetStringSource.db2
+1989276, DBFilesClient\UiTextureAtlasElement.db2
+1989363, DBFilesClient\UiCanvas.db2
+1990283, DBFilesClient\SpellName.db2
+1993323, DBFilesClient\UiPartyPose.db2
+1995523, DBFilesClient\Hotfixes.db2
+2003383, DBFilesClient\Lightning.db2
+2006972, DBFilesClient\UiMapFogOfWar.db2
+2006973, DBFilesClient\UiMapFogOfWarVisualization.db2
+2012881, GameTables\ItemLevelByLevel.txt
+2029780, DBFilesClient\ArtifactItemToTransmog.db2
+2030690, DBFilesClient\UiMapLink.db2
+2031607, DBFilesClient\Campaign.db2
+2031611, DBFilesClient\CampaignXCondition.db2
+2036722, DBFilesClient\CampaignXQuestLine.db2
+2053913, DBFilesClient\ParticulateSound.db2
+2056369, DBFilesClient\SSAOSettings.db2
+2057624, DBFilesClient\SpecSetMember.db2
+2066871, DBFilesClient\PvpTier.db2
+2066958, DBFilesClient\Occluder.db2
+2066959, DBFilesClient\OccluderNode.db2
+2067238, DBFilesClient\SpecializationSpellsDisplay.db2
+2098645, DBFilesClient\CommunityIcon.db2
+2115224, DBFilesClient\OccluderLocation.db2
+2123730, DBFilesClient\AreaConditionalData.db2
+2123783, DBFilesClient\MythicPlusSeasonRewardLevels.db2
+2140223, DBFilesClient\AoiBox.db2
+2143633, DBFilesClient\ContributionStyle.db2
+2143634, DBFilesClient\ContributionStyleContainer.db2
+2166900, DBFilesClient\BroadcastTextDuration.db2
+2175218, DBFilesClient\CloneEffect.db2
+2261065, DBFilesClient\LiquidTypeXTexture.db2
+2322531, DBFilesClient\UiWidgetMap.db2
+2358574, DBFilesClient\ItemFallbackVisual.db2
+2388725, DBFilesClient\CharSectionCondition.db2
+2399695, DBFilesClient\TransmogDefaultLevel.db2
+2400282, DBFilesClient\MythicPlusSeason.db2
+2428696, DBFilesClient\SpellClutterAreaEffectCounts.db2
+2428697, DBFilesClient\SpellClutterKitDistances.db2
+2428698, DBFilesClient\SpellClutterWeaponTrailDist.db2
+2428705, DBFilesClient\PathEdge.db2
+2428707, DBFilesClient\SpellClutterFrameRates.db2
+2428708, DBFilesClient\SpellClutterImpactModelCounts.db2
+2428733, DBFilesClient\SpellClutterMissileDist.db2
+2433582, DBFilesClient\GradientEffect.db2
+2446322, DBFilesClient\AzeriteTierUnlockSet.db2
+2470695, DBFilesClient\PvpSeasonRewardLevels.db2
+2478235, DBFilesClient\LoadingScreenSkin.db2
+2564314, DBFilesClient\AzeriteUnlockMapping.db2
+2829665, DBFilesClient\AzeriteEssence.db2
+2829666, DBFilesClient\AzeriteEssencePower.db2
+2909769, DBFilesClient\GuildTabardBackground.db2
+2910470, DBFilesClient\GuildTabardEmblem.db2
+2920485, DBFilesClient\GuildTabardBorder.db2
+2921008, DBFilesClient\GuildShirtBackground.db2
+2921475, DBFilesClient\GuildShirtBorder.db2
+2923510, DBFilesClient\MountEquipment.db2
+2924997, DBFilesClient\ItemBonusListWarforgeLevelDelta.db2
+2960257, DBFilesClient\ContentTuningXExpectedStatMod.db2
+2965645, DBFilesClient\ChallengeModeItemBonusOverride.db2
+2966426, DBFilesClient\PvpSeason.db2
+

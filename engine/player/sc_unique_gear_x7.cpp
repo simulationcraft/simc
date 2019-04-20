@@ -251,13 +251,13 @@ void consumables::potion_of_rising_death( special_effect_t& effect )
   proc->deactivate();
   proc->initialize();
 
-  effect.custom_buff = buff_creator_t( effect.player, effect.name(), effect.driver() )
-    .stack_change_callback( [ proc ]( buff_t*, int, int new_ ) {
+  effect.custom_buff = make_buff( effect.player, effect.name(), effect.driver() )
+    ->set_stack_change_callback( [ proc ]( buff_t*, int, int new_ ) {
       if ( new_ == 1 ) proc->activate();
       else             proc->deactivate();
     } )
-    .cd( timespan_t::zero() ) // Handled by the action
-    .chance( 1.0 ); // Override chance so the buff actually triggers
+    ->set_cooldown( timespan_t::zero() ) // Handled by the action
+    ->set_chance( 1.0 ); // Override chance so the buff actually triggers
 }
 
 // Potion of Bursting Blood =================================================
@@ -279,13 +279,13 @@ void consumables::potion_of_bursting_blood( special_effect_t& effect )
   proc->deactivate();
   proc->initialize();
 
-  effect.custom_buff = buff_creator_t( effect.player, effect.name(), effect.driver() )
-    .stack_change_callback( [ proc ]( buff_t*, int, int new_ ) {
+  effect.custom_buff = make_buff( effect.player, effect.name(), effect.driver() )
+    ->set_stack_change_callback( [ proc ]( buff_t*, int, int new_ ) {
       if ( new_ == 1 ) proc->activate();
       else             proc->deactivate();
     } )
-    .cd( timespan_t::zero() ) // Handled by the action
-    .chance( 1.0 ); // Override chance so the buff actually triggers
+    ->set_cooldown( timespan_t::zero() ) // Handled by the action
+    ->set_chance( 1.0 ); // Override chance so the buff actually triggers
 }
 
 // Gale-Force Striking ======================================================
@@ -2294,7 +2294,7 @@ void items::grongs_primal_rage( special_effect_t& effect )
     }
 
     // Even though ticks are hasted, the duration is a fixed 4s
-    timespan_t composite_dot_duration( const action_state_t* state ) const override
+    timespan_t composite_dot_duration( const action_state_t* ) const override
     {
       return dot_duration;
     }
@@ -2692,9 +2692,7 @@ void items::legplates_of_unbound_anguish( special_effect_t& effect )
     // Re-used some of the Gutripper code for the pre-trigger health percentage check
     void trigger( action_t* a, void* call_data ) override
     {
-      auto state = static_cast<action_state_t*>( call_data );
-
-      if ( state -> target -> health_percentage() < state -> action -> player -> health_percentage() )
+      if ( rng().roll( a -> sim -> bfa_opts.legplates_of_unbound_anguish_chance ) )
       {
         dbc_proc_callback_t::trigger( a, call_data );
       }

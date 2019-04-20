@@ -35,16 +35,28 @@ class DBFileList(collections.Mapping):
 		with open(self.options.dbfile, 'r') as f:
 			for line in f:
 				cleaned_file = line.strip().replace('/', '\\')
-				base_fname = os.path.splitext(cleaned_file)[0]
+				if len(cleaned_file) == 0:
+					continue
 
-				hash_value = jenkins.hashlittle2(cleaned_file.upper())
-				self.files[(hash_value[0] << 32) | hash_value[1]] = cleaned_file
+				split_line = cleaned_file.split(',', 1)
+				if len(split_line) != 2:
+					self.options.parser.error('Invalid dbfile line "%s", lines require a file data id and a file name, separated by commas' %
+							cleaned_file)
+					continue
+				
+				file_data_id = int(split_line[0].strip())
+				file_name = split_line[1].strip()
 
-				for ext in [ '.db2', '.dbc' ]:
-					final_file = base_fname + ext
-					hash_value = jenkins.hashlittle2(final_file.upper())
+				#hash_value = jenkins.hashlittle2(file_name.upper())
+				#self.files[(hash_value[0] << 32) | hash_value[1]] = (file_name, file_data_id)
+				self.files[file_data_id] = file_name
 
-					self.files[(hash_value[0] << 32) | hash_value[1]] = final_file
+				#base_fname = os.path.splitext(file_name)[0]
+				#for ext in [ '.db2', '.dbc' ]:
+				#	final_file = base_fname + ext
+				#	hash_value = jenkins.hashlittle2(final_file.upper())
+
+				#	self.files[(hash_value[0] << 32) | hash_value[1]] = (final_file, file_data_id)
 
 		return True
 

@@ -72,7 +72,7 @@ actions.cooldowns+=/lights_judgment
 actions.cooldowns+=/fireblood
 actions.cooldowns+=/ancestral_call
 
-actions.movement=blink,if=movement.distance>10
+actions.movement=blink_any,if=movement.distance>10
 actions.movement+=/ice_floes,if=buff.ice_floes.down
 
 # In some situations, you can shatter Ice Nova even after already casting Flurry and Ice Lance. Otherwise this action is used when the mage has FoF after casting Flurry, see above.

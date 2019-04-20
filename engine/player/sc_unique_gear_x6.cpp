@@ -2962,7 +2962,7 @@ struct spiked_counterweight_constructor_t : public item_targetdata_initializer_t
     const special_effect_t* effect = find_effect( td -> source );
     if ( effect == 0 )
     {
-      td -> debuff.brutal_haymaker = buff_creator_t( *td, "brutal_haymaker" );
+      td -> debuff.brutal_haymaker = make_buff( *td, "brutal_haymaker" );
     }
     else
     {
@@ -2986,8 +2986,8 @@ struct spiked_counterweight_constructor_t : public item_targetdata_initializer_t
       callback -> deactivate();
 
       // Create debuff with stack callback.
-      td -> debuff.brutal_haymaker = buff_creator_t( *td, "brutal_haymaker", effect -> trigger() )
-        .stack_change_callback( [ callback ]( buff_t*, int old, int new_ )
+      td -> debuff.brutal_haymaker = make_buff( *td, "brutal_haymaker", effect -> trigger() )
+        ->set_stack_change_callback( [ callback ]( buff_t*, int old, int new_ )
         {
           if ( old == 0 ) {
             assert( ! callback -> active );
@@ -2995,7 +2995,7 @@ struct spiked_counterweight_constructor_t : public item_targetdata_initializer_t
           } else if ( new_ == 0 )
             callback -> deactivate();
         } )
-        .default_value( effect -> driver() -> effectN( 1 ).trigger() -> effectN( 3 ).average( effect -> item ) );
+        ->set_default_value( effect -> driver() -> effectN( 1 ).trigger() -> effectN( 3 ).average( effect -> item ) );
       td -> debuff.brutal_haymaker -> reset();
 
       // Set pointer to debuff so the callback can do its thing.
@@ -3297,9 +3297,9 @@ void item::windscar_whetstone( special_effect_t& effect )
   action_t* maelstrom = effect.create_action();
   maelstrom -> cooldown -> duration = timespan_t::zero(); // damage spell has erroneous cooldown
 
-  effect.custom_buff = buff_creator_t( effect.player, "slicing_maelstrom", effect.driver(), effect.item )
-    .tick_zero( true )
-    .tick_callback( [ maelstrom ]( buff_t*, int, const timespan_t& ) {
+  effect.custom_buff = make_buff( effect.player, "slicing_maelstrom", effect.driver(), effect.item )
+    ->set_tick_zero( true )
+    ->set_tick_callback( [ maelstrom ]( buff_t*, int, const timespan_t& ) {
       maelstrom -> schedule_execute();
     } );
 
@@ -3412,9 +3412,9 @@ void item::nightblooming_frond( special_effect_t& effect )
   buff_t* b = buff_t::find( effect.player, "recursive_strikes" );
   if ( b == nullptr )
   {
-    b = buff_creator_t( effect.player, "recursive_strikes", effect.trigger() )
-      .refresh_behavior( buff_refresh_behavior::DISABLED ) // Don't refresh duration when the buff gains stacks
-      .stack_change_callback( [ cb ]( buff_t*, int old_, int new_ ) {
+    b = make_buff( effect.player, "recursive_strikes", effect.trigger() )
+      ->set_refresh_behavior( buff_refresh_behavior::DISABLED ) // Don't refresh duration when the buff gains stacks
+      ->set_stack_change_callback( [ cb ]( buff_t*, int old_, int new_ ) {
         if ( old_ == 0 ) // Buff goes up the first time
         {
           cb -> activate();
@@ -3827,11 +3827,11 @@ void item::tirathons_betrayal( special_effect_t& effect )
   callback -> initialize();
   callback -> deactivate();
 
-  effect.custom_buff = buff_creator_t( effect.player, "darkstrikes", effect.driver(), effect.item )
-    .chance( 1 ) // overrride RPPM
-    .activated( false )
-    .cd( timespan_t::zero() )
-    .stack_change_callback( [ callback ]( buff_t*, int old, int new_ )
+  effect.custom_buff = make_buff( effect.player, "darkstrikes", effect.driver(), effect.item )
+    ->set_chance( 1 ) // overrride RPPM
+    ->set_activated( false )
+    ->set_cooldown( timespan_t::zero() )
+    ->set_stack_change_callback( [ callback ]( buff_t*, int old, int new_ )
     {
       if ( old == 0 ) {
         assert( ! callback -> active );
@@ -3927,11 +3927,13 @@ struct poisoned_dreams_t : public buff_t
   special_effect_t* effect;
 
   poisoned_dreams_t( const actor_pair_t& p, const special_effect_t& source_effect ) :
-    buff_t( buff_creator_t( p, "poisoned_dreams", source_effect.driver() -> effectN( 1 ).trigger(), source_effect.item )
-                              .activated( false )
-                              .period( timespan_t::from_seconds( 2.0 ) ) ),
+    buff_t( p, "poisoned_dreams", source_effect.driver() -> effectN( 1 ).trigger(), source_effect.item ),
                               damage_spell( p.source -> find_action( "poisoned_dreams_damage" ) )
   {
+
+    set_activated( false );
+    set_period( timespan_t::from_seconds( 2.0 ) );
+
     effect = new special_effect_t( p.source );
     effect -> name_str = "poisoned_dreams_damage_driver";
     effect -> proc_chance_ = 1.0;
@@ -4011,7 +4013,7 @@ struct bough_of_corruption_constructor_t : public item_targetdata_initializer_t
     const special_effect_t* effect = find_effect( td -> source );
     if( effect == 0 )
     {
-      td -> debuff.poisoned_dreams = buff_creator_t( *td, "poisoned_dreams" );
+      td -> debuff.poisoned_dreams = make_buff( *td, "poisoned_dreams" );
     }
     else
     {
@@ -4334,7 +4336,7 @@ void item::tiny_oozeling_in_a_jar( special_effect_t& effect )
     }
   };
 
-  buff_t* charges = buff_creator_t( effect.player, "congealing_goo", effect.player -> find_spell( 215126 ), effect.item );
+  buff_t* charges = make_buff( effect.player, "congealing_goo", effect.player -> find_spell( 215126 ), effect.item );
 
   special_effect_t* goo_effect = new special_effect_t( effect.item );
   goo_effect -> source = SPECIAL_EFFECT_SOURCE_ITEM;
@@ -4351,13 +4353,15 @@ void item::tiny_oozeling_in_a_jar( special_effect_t& effect )
     action_t* damage;
 
     fetid_regurgitation_buff_t( special_effect_t& effect, buff_t* cg ) :
-      buff_t( buff_creator_t( effect.player, "fetid_regurgitation", effect.driver(), effect.item )
-        .activated( false )
-        .tick_zero( true )
-        .tick_callback( [ this ] ( buff_t*, int, const timespan_t& ) {
-          damage -> schedule_execute();
-        } ) ), congealing_goo( cg )
+      buff_t( effect.player, "fetid_regurgitation", effect.driver(), effect.item ), congealing_goo( cg )
     {
+
+      set_activated( false );
+      set_tick_zero( true );
+      set_tick_callback( [ this ] ( buff_t*, int, const timespan_t& ) {
+        damage -> schedule_execute();
+      } );
+
       damage = effect.player -> find_action( "fetid_regurgitation" );
       if ( ! damage )
       {
@@ -4471,7 +4475,7 @@ struct figurehead_of_the_naglfar_constructor_t : public item_targetdata_initiali
     const special_effect_t* effect = find_effect( td -> source );
     if ( effect == 0 )
     {
-      td -> debuff.taint_of_the_sea = buff_creator_t( *td, "taint_of_the_sea" );
+      td -> debuff.taint_of_the_sea = make_buff( *td, "taint_of_the_sea" );
     }
     else
     {
@@ -4491,9 +4495,9 @@ struct figurehead_of_the_naglfar_constructor_t : public item_targetdata_initiali
       callback -> initialize();
       callback -> deactivate();
 
-      td -> debuff.taint_of_the_sea = buff_creator_t( *td, "taint_of_the_sea", effect -> driver() )
-      .default_value( effect -> driver() -> effectN( 2 ).trigger() -> effectN( 2 ).average( effect -> item ) )
-      .stack_change_callback( [ callback ]( buff_t* b, int old, int new_ )
+      td -> debuff.taint_of_the_sea = make_buff( *td, "taint_of_the_sea", effect -> driver() )
+      ->set_default_value( effect -> driver() -> effectN( 2 ).trigger() -> effectN( 2 ).average( effect -> item ) )
+      ->set_stack_change_callback( [ callback ]( buff_t* b, int old, int new_ )
       {
         if ( old == 0 )
         {
@@ -4930,11 +4934,11 @@ void item::faulty_countermeasures( special_effect_t& effect )
   callback -> initialize();
   callback -> deactivate();
 
-  effect.custom_buff = buff_creator_t( effect.player, "sheathed_in_frost", effect.driver(), effect.item )
-    .cd( timespan_t::zero() )
-    .activated( false )
-    .chance( 1 )
-    .stack_change_callback( [ callback ]( buff_t*, int old, int new_ )
+  effect.custom_buff = make_buff( effect.player, "sheathed_in_frost", effect.driver(), effect.item )
+    ->set_cooldown( timespan_t::zero() )
+    ->set_activated( false )
+    ->set_chance( 1 )
+    ->set_stack_change_callback( [ callback ]( buff_t*, int old, int new_ )
     {
       if ( old == 0 ) {
         assert( ! callback -> active );
@@ -5123,7 +5127,7 @@ struct volatile_magic_debuff_t : public buff_t
   action_t* damage;
 
   volatile_magic_debuff_t( const special_effect_t& effect, actor_target_data_t& td ) :
-    buff_t( buff_creator_t( td, "volatile_magic", effect.trigger() ) ),
+    buff_t( td, "volatile_magic", effect.trigger() ),
     damage( effect.player -> find_action( "withering_consumption" ) )
   {}
 

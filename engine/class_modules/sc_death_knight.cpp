@@ -1002,7 +1002,7 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
 
 static void log_rune_status( const death_knight_t* p, bool debug = false ) {
   std::string rune_string = p -> _runes.string_representation();
-
+  (void) debug;
   p -> sim -> print_debug( "{} runes: {}", p -> name(), rune_string.c_str() );
 }
 
@@ -1808,6 +1808,24 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
     base_ghoul_pet_t::init_base_stats();
 
     owner_coeff.ap_from_ap = 0.4;
+  }
+
+  // There is currently a bug affecting apoc/army ghouls
+  // Their energy regeneration rate double dips on haste
+  // https://github.com/SimCMinMax/WoW-BugTracker/issues/108
+  double resource_regen_per_second( resource_e r ) const override
+  {
+    double reg = player_t::resource_regen_per_second( r );
+
+    if ( r == RESOURCE_ENERGY && o() -> bugs )
+    {
+      if ( reg )
+      {
+        reg *= ( 1.0 / cache.attack_haste() );
+      }
+    }
+
+    return reg;
   }
 
   void init_action_list() override

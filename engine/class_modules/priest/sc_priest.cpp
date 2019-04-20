@@ -1274,7 +1274,7 @@ void priest_t::target_mitigation( school_e school, dmg_e dt, action_state_t* s )
   }
 }
 
-action_t* priest_t::create_proc_action( const std::string& /*name*/, const special_effect_t& effect )
+action_t* priest_t::create_proc_action( const std::string& /*name*/, const special_effect_t& /*effect*/ )
 {
   return nullptr;
 }

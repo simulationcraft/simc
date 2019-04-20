@@ -392,7 +392,7 @@ namespace warlock {
             imp->interrupt();
 
             //Imps launched with Implosion appear to be staggered and snapshot when they impact
-            make_event( sim, 100_ms*launch_counter+this->travel_time(), [ ex, tar, imp, dist ] {
+            make_event( sim, 100_ms*launch_counter+this->travel_time(), [ ex, tar, imp ] {
               if (imp && !imp->is_sleeping()){
                 ex->casts_left = ( imp->resources.current[RESOURCE_ENERGY] / 20 );
                 ex->set_target(tar);

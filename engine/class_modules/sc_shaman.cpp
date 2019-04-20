@@ -1017,22 +1017,22 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t(
   // Enhancement
   dot.searing_assault  = target->get_dot( "searing_assault", p );
   dot.molten_weapon    = target->get_dot( "molten_weapon", p );
-  debuff.earthen_spike = buff_creator_t( *this, "earthen_spike", p->talent.earthen_spike )
-                             .cd( timespan_t::zero() )  // Handled by the action
+  debuff.earthen_spike = make_buff( *this, "earthen_spike", p->talent.earthen_spike )
+                             ->set_cooldown( timespan_t::zero() )  // Handled by the action
                              // -10% resistance in spell data, treat it as a multiplier instead
-                             .default_value( 1.0 + p->talent.earthen_spike->effectN( 2 ).percent() );
+                             ->set_default_value( 1.0 + p->talent.earthen_spike->effectN( 2 ).percent() );
 
   // Azerite Traits
-  debuff.lightning_conduit = buff_creator_t( *this, "lightning_conduit", p->azerite.lightning_conduit )
-                                 .trigger_spell( p->find_spell( 275391 ) )
-                                 .duration( p->find_spell( 275391 )->duration() )
-                                 .default_value( p->azerite.primal_primer.value() );
-  debuff.primal_primer = buff_creator_t( *this, "primal_primer", p->azerite.primal_primer )
-                             .trigger_spell( p->find_spell( 273006 ) )
-                             .duration( p->find_spell( 273006 )->duration() )
-                             .max_stack( p->find_spell( 273006 )->max_stacks() )
+  debuff.lightning_conduit = make_buff( *this, "lightning_conduit", p->azerite.lightning_conduit )
+                                 ->set_trigger_spell( p->find_spell( 275391 ) )
+                                 ->set_duration( p->find_spell( 275391 )->duration() )
+                                 ->set_default_value( p->azerite.primal_primer.value() );
+  debuff.primal_primer = make_buff( *this, "primal_primer", p->azerite.primal_primer )
+                             ->set_trigger_spell( p->find_spell( 273006 ) )
+                             ->set_duration( p->find_spell( 273006 )->duration() )
+                             ->set_max_stack( p->find_spell( 273006 )->max_stacks() )
                              // Primal Primer has a hardcoded /2 in its tooltip
-                             .default_value( 0.5 * p->azerite.primal_primer.value() );
+                             ->set_default_value( 0.5 * p->azerite.primal_primer.value() );
 }
 
 // ==========================================================================
@@ -2589,7 +2589,7 @@ struct storm_elemental_t : public primal_elemental_t
   {
     primal_elemental_t::create_buffs();
 
-    call_lightning = buff_creator_t( this, "call_lightning", find_spell( 157348 ) ).cd( timespan_t::zero() );
+    call_lightning = make_buff( this, "call_lightning", find_spell( 157348 ) )->set_cooldown( timespan_t::zero() );
   }
 
   double composite_player_multiplier( school_e school ) const override
@@ -9155,7 +9155,7 @@ struct shaman_module_t : public module_t
     p->buffs.bloodlust =
         make_buff( p, "bloodlust", p->find_spell( 2825 ) )->set_max_stack( 1 )->add_invalidate( CACHE_HASTE );
 
-    p->buffs.exhaustion = buff_creator_t( p, "exhaustion", p->find_spell( 57723 ) ).max_stack( 1 ).quiet( true );
+    p->buffs.exhaustion = make_buff( p, "exhaustion", p->find_spell( 57723 ) )->set_max_stack( 1 )->set_quiet( true );
   }
 
   void static_init() const override

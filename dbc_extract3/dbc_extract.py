@@ -38,7 +38,7 @@ parser.add_argument("-t", "--type", dest = "type",
                   help    = "Processing type [output]", metavar = "TYPE", 
                   default = "output", action = "store",
                   choices = [ 'output', 'scale', 'view', 'csv', 'header', 'json',
-                              'class_flags', 'generator', 'validate', 'generate_format' ])
+                              'class_flags', 'generator', 'validate', 'db2meta', 'generate_format' ])
 parser.add_argument("-o",            dest = "output")
 parser.add_argument("-a",            dest = "append")
 parser.add_argument("--raw",         dest = "raw",          default = False, action = "store_true")
@@ -93,7 +93,7 @@ if options.type == 'parse' and len(options.args) < 2:
 if options.debug:
     logging.getLogger().setLevel(logging.DEBUG)
 
-if options.type in ['validate', 'generate_format']:
+if options.type in ['validate', 'generate_format', 'db2meta']:
     from dbc.pe import PeStructParser
 
 # Initialize the base model for dbc.data, creating the relevant classes for all patch levels
@@ -106,6 +106,15 @@ if options.type == 'validate':
         sys.exit(1)
 
     p.validate()
+
+elif options.type == 'db2meta':
+    p = PeStructParser(options, options.args[0])
+    if not p.initialize():
+        sys.exit(1)
+
+    if not p.find_by_name(options.args[1]):
+        logging.error('Unable to find DB2 meta structure for "{}"'.format(options.args[1]))
+        sys.exit(1)
 
 elif options.type == 'generate_format':
     p = PeStructParser(options, options.args[0], options.args[1:])

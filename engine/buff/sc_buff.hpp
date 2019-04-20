@@ -41,133 +41,6 @@ using buff_tick_time_callback_t = std::function<timespan_t(const buff_t*, unsign
 using buff_refresh_duration_callback_t = std::function<timespan_t(const buff_t*, const timespan_t&)>;
 using buff_stack_change_callback_t = std::function<void(buff_t*, int, int)>;
 
-// Buff Creation ====================================================================
-namespace buff_creation {
-
-// This is the base buff creator class containing data to create a buff_t
-struct buff_creator_basics_t
-{
-protected:
-  actor_pair_t _player;
-  sim_t* _sim;
-  std::string _name;
-  const spell_data_t* s_data;
-  const item_t* item;
-  double _chance;
-  double _default_value;
-  int _max_stack;
-  timespan_t _duration, _cooldown, _period;
-  int _quiet, _reverse, _activated, _can_cancel;
-  int _affects_regen;
-  buff_tick_time_callback_t _tick_time_callback;
-  buff_tick_behavior _tick_behavior;
-  bool _initial_tick;
-  buff_tick_time_behavior _tick_time_behavior;
-  buff_refresh_behavior _refresh_behavior;
-  buff_stack_behavior _stack_behavior;
-  buff_tick_callback_t _tick_callback;
-  buff_refresh_duration_callback_t _refresh_duration_callback;
-  buff_stack_change_callback_t _stack_change_callback;
-  double _rppm_freq, _rppm_mod;
-  rppm_scale_e _rppm_scale;
-  const spell_data_t* _trigger_data;
-  std::vector<cache_e> _invalidate_list;
-  friend struct ::buff_t;
-private:
-  void init();
-public:
-  buff_creator_basics_t( actor_pair_t, const std::string& name, const spell_data_t* = spell_data_t::nil(), const item_t* item = nullptr );
-  buff_creator_basics_t( actor_pair_t, uint32_t id, const std::string& name, const item_t* item = nullptr );
-  buff_creator_basics_t( sim_t*, const std::string& name, const spell_data_t* = spell_data_t::nil(), const item_t* item = nullptr );
-};
-
-// This helper template is necessary so that reference functions of the classes inheriting from it return the type of the derived class.
-// eg. buff_creator_helper_t<stat_buff_creator_t>::chance() will return a reference of type stat_buff_creator_t
-template <typename T>
-struct buff_creator_helper_t : public buff_creator_basics_t
-{
-  typedef T bufftype;
-  typedef buff_creator_helper_t base_t;
-
-public:
-  buff_creator_helper_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = nullptr ) :
-    buff_creator_basics_t( q, name, s, item ) {}
-  buff_creator_helper_t( actor_pair_t q, uint32_t id, const std::string& name, const item_t* item = nullptr ) :
-    buff_creator_basics_t( q, id, name, item ) {}
-  buff_creator_helper_t( sim_t* sim, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = nullptr ) :
-    buff_creator_basics_t( sim, name, s, item ) {}
-
-  bufftype& actors( actor_pair_t q )
-  { _player = q; return *( static_cast<bufftype*>( this ) ); }
-  bufftype& duration( timespan_t d )
-  { _duration = d; return *( static_cast<bufftype*>( this ) ); }
-  bufftype& period( timespan_t d )
-  { _period = d; return *( static_cast<bufftype*>( this ) ); }
-  bufftype& default_value( double v )
-  { _default_value = v; return *( static_cast<bufftype*>( this ) ); }
-  bufftype& chance( double c )
-  { _chance = c; return *( static_cast<bufftype*>( this ) ); }
-  bufftype& can_cancel( bool cc )
-  { _can_cancel = cc; return *( static_cast<bufftype*>( this ) );  }
-  bufftype& max_stack( unsigned ms )
-  { _max_stack = ms; return *( static_cast<bufftype*>( this ) ); }
-  bufftype& cd( timespan_t t )
-  { _cooldown = t; return *( static_cast<bufftype*>( this ) ); }
-  bufftype& reverse( bool r )
-  { _reverse = r; return *( static_cast<bufftype*>( this ) ); }
-  bufftype& quiet( bool q )
-  { _quiet = q; return *( static_cast<bufftype*>( this ) ); }
-  bufftype& activated( bool a )
-  { _activated = a; return *( static_cast<bufftype*>( this ) ); }
-  bufftype& spell( const spell_data_t* s )
-  { s_data = s; return *( static_cast<bufftype*>( this ) ); }
-  bufftype& add_invalidate( cache_e c )
-  { _invalidate_list.push_back( c ); return *( static_cast<bufftype*>( this ) ); }
-  bufftype& tick_behavior( buff_tick_behavior b )
-  { _tick_behavior = b; return *( static_cast<bufftype*>( this ) ); }
-  bufftype& tick_zero( bool v )
-  { _initial_tick = v; return *( static_cast<bufftype*>( this ) ); }
-  bufftype& tick_time_behavior( buff_tick_time_behavior b )
-  { _tick_time_behavior = b; return *( static_cast<bufftype*>( this ) ); }
-  bufftype& tick_time_callback( const buff_tick_time_callback_t& cb )
-  { _tick_time_behavior = buff_tick_time_behavior::CUSTOM; _tick_time_callback = cb; return *( static_cast<bufftype*>( this ) ); }
-  bufftype& tick_callback( const buff_tick_callback_t& cb )
-  { _tick_callback = cb; return *( static_cast<bufftype*>( this ) ); }
-  bufftype& affects_regen( bool state )
-  { _affects_regen = state; return *( static_cast<bufftype*>( this ) ); }
-  bufftype& refresh_behavior( buff_refresh_behavior b )
-  { _refresh_behavior = b; return *( static_cast<bufftype*>( this ) ); }
-  bufftype& refresh_duration_callback( const buff_refresh_duration_callback_t& cb )
-  { _refresh_behavior = buff_refresh_behavior::CUSTOM; _refresh_duration_callback = cb; return *( static_cast<bufftype*>( this ) ); }
-  bufftype& stack_behavior( buff_stack_behavior b )
-  { _stack_behavior = b; return *( static_cast<bufftype*>( this ) ); }
-  bufftype& rppm_freq( double f )
-  { _rppm_freq = f; return *( static_cast<bufftype*>( this ) ); }
-  bufftype& rppm_mod( double m )
-  { _rppm_mod = m; return *( static_cast<bufftype*>( this ) ); }
-  bufftype& rppm_scale( rppm_scale_e s )
-  { _rppm_scale = s; return *( static_cast<bufftype*>( this ) ); }
-  bufftype& trigger_spell( const spell_data_t* s )
-  { _trigger_data = s; return *( static_cast<bufftype*>( this ) ); }
-  bufftype& stack_change_callback( const buff_stack_change_callback_t& cb )
-  { _stack_change_callback = cb; return *( static_cast<bufftype*>( this ) ); }
-};
-
-struct buff_creator_t : public buff_creator_helper_t<buff_creator_t>
-{
-public:
-  buff_creator_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = nullptr ) :
-    base_t( q, name, s, item ) {}
-  buff_creator_t( sim_t* sim, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = nullptr ) :
-    base_t( sim, name, s, item ) {}
-
-  operator buff_t* () const;
-};
-
-} // END NAMESPACE buff_creation
-
-using namespace buff_creation;
-
 // Buffs ====================================================================
 
 struct buff_t : private noncopyable
@@ -254,8 +127,7 @@ public:
   buff_t( actor_pair_t q, const std::string& name, const spell_data_t* = spell_data_t::nil(), const item_t* item = nullptr );
   buff_t( sim_t* sim, const std::string& name, const spell_data_t* = spell_data_t::nil(), const item_t* item = nullptr );
 protected:
-  buff_t( const buff_creator_basics_t& params );
-  friend struct buff_creation::buff_creator_t;
+  buff_t( sim_t* sim, player_t* target, player_t* source, const std::string& name, const spell_data_t* = spell_data_t::nil(), const item_t* item = nullptr );
 public:
   const spell_data_t& data() const { return *s_data; }
 
@@ -515,8 +387,10 @@ inline Buff* make_buff( Args&&... args )
 
 struct movement_buff_t : public buff_t
 {
-  movement_buff_t( player_t* p ) : buff_t( buff_creator_t( p, "movement" ).max_stack( 1 ) )
-  { }
+  movement_buff_t( player_t* p ) : buff_t( p, "movement" )
+  {
+    set_max_stack( 1 );
+  }
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override;
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;

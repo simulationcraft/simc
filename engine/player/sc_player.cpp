@@ -8472,20 +8472,29 @@ struct use_items_t : public action_t
 
 struct cancel_buff_t : public action_t
 {
+  std::string buff_name;
   buff_t* buff;
 
   cancel_buff_t( player_t* player, const std::string& options_str ) :
     action_t( ACTION_OTHER, "cancel_buff", player ),
+    buff_name(),
     buff( 0 )
   {
-    std::string buff_name;
     add_option( opt_string( "name", buff_name ) );
     parse_options( options_str );
     ignore_false_positive = true;
+
+    trigger_gcd = timespan_t::zero();
+  }
+
+  void init_finished() override
+  {
+    action_t::init_finished();
+
     if ( buff_name.empty() )
     {
-      sim->errorf( "Player %s uses cancel_buff without specifying the name of the buff\n", player->name() );
-      sim->cancel();
+      throw std::invalid_argument( fmt::format(
+        "Player {} uses cancel_buff without specifying the name of the buff", player->name() ) );
     }
 
     buff = buff_t::find( player, buff_name );
@@ -8498,17 +8507,14 @@ struct cancel_buff_t : public action_t
 
     if ( !buff )
     {
-      sim->errorf( "Player %s uses cancel_buff with unknown buff %s\n", player->name(), buff_name.c_str() );
-      sim->cancel();
+      throw std::invalid_argument( fmt::format(
+        "Player {} uses cancel_buff with unknown buff {}", player->name(), buff_name ) );
     }
     else if ( !buff->can_cancel )
     {
-      sim->errorf( "Player %s uses cancel_buff on %s, which cannot be cancelled in game\n", player->name(),
-                   buff_name.c_str() );
-      sim->cancel();
+      throw std::invalid_argument( fmt::format(
+        "Player {} uses cancel_buff on {}, which cannot be cancelled in game", player->name(), buff_name ) );
     }
-
-    trigger_gcd = timespan_t::zero();
   }
 
   virtual void execute() override

@@ -38,7 +38,7 @@ struct buff_expr_t : public expr_t
           action->name(), buff_name, action->player->name() );
       action->sim->cancel();
       // Prevent segfault
-      buff = buff_creator_t( action->player, "dummy" );
+      buff = make_buff( action->player, "dummy" );
     }
 
     return buff;
@@ -434,27 +434,28 @@ expr_t* create_buff_expression( std::string buff_name, const std::string& type, 
 }  // namespace
 
 buff_t::buff_t( actor_pair_t q, const std::string& name, const spell_data_t* spell_data, const item_t* item )
-  : buff_t( buff_creation::buff_creator_basics_t( q, name, spell_data, item ) )
-{
-}
-buff_t::buff_t( sim_t* sim, const std::string& name, const spell_data_t* spell_data, const item_t* item )
-  : buff_t( buff_creation::buff_creator_basics_t( sim, name, spell_data, item ) )
+  : buff_t( q.source->sim, q.target, q.source, name, spell_data, item )
 {
 }
 
-buff_t::buff_t( const buff_creation::buff_creator_basics_t& params )
-  : sim( params._sim ),
-    player( params._player.target ),
-    item( params.item ),
-    name_str( params._name ),
-    s_data( params.s_data ),
-    source( params._player.source ),
+buff_t::buff_t( sim_t* sim, const std::string& name, const spell_data_t* spell_data, const item_t* item )
+  : buff_t( sim, nullptr, nullptr, name, spell_data, item )
+{
+}
+
+buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, const std::string& name, const spell_data_t* spell_data, const item_t* item )
+  : sim( sim ),
+    player( target ),
+    item( item ),
+    name_str( name ),
+    s_data( spell_data ),
+    source( source ),
     expiration(),
     delay(),
     expiration_delay(),
     cooldown(),
     rppm( nullptr ),
-    _max_stack( params._max_stack ),
+    _max_stack( -1 ),
     trigger_data( s_data ),
     default_value( DEFAULT_VALUE() ),
     activated( true ),
@@ -468,9 +469,9 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params )
     reverse_stack_reduction( 1 ),
     current_value(),
     current_stack(),
-    buff_duration( params._duration ),
+    buff_duration( timespan_t::min() ),
     default_chance( 1.0 ),
-    manual_chance( params._chance ),
+    manual_chance( -1.0 ),
     current_tick( 0 ),
     buff_period( timespan_t::min() ),
     tick_time_behavior( buff_tick_time_behavior::UNHASTED ),
@@ -520,77 +521,28 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params )
   set_duration( buff_duration );
 
   // Set Buff Cooldown
-  set_cooldown( params._cooldown );
+  set_cooldown( timespan_t::min() );
 
-  set_trigger_spell( params._trigger_data );
+  set_trigger_spell( spell_data_t::nil() );
 
   // If there's no overridden proc chance (%), setup any potential custom RPPM-affecting attribute
-  if ( params._chance == -1 )
-  {
-    set_rppm( params._rppm_scale, params._rppm_freq, params._rppm_mod );
-  }
+  set_rppm( RPPM_NONE, -1, -1 );
 
-  set_default_value( params._default_value );
+  set_period( timespan_t::min() );
 
-  // Set Reverse flag
-  if ( params._reverse != -1 )
-    set_reverse( params._reverse );
+  set_tick_behavior( buff_tick_behavior::NONE );
 
-  // Set Quiet flag
-  if ( params._quiet != -1 )
-    set_quiet( params._quiet );
+  set_refresh_behavior( buff_refresh_behavior::NONE );
 
-  // Set Activated flag
-  if ( params._activated != -1 )
-    set_activated( params._activated );
-
-  if ( params._can_cancel != -1 )
-    set_can_cancel( params._can_cancel );
-
-  set_period( params._period );
-
-  set_tick_behavior( params._tick_behavior );
-
-  if ( params._tick_callback )
-    set_tick_callback( std::move( params._tick_callback ) );
-
-  set_tick_zero( params._initial_tick );
-  set_tick_time_behavior( params._tick_time_behavior );
-  if ( tick_time_behavior == buff_tick_time_behavior::CUSTOM )
-  {
-    assert( params._tick_time_callback );
-    set_tick_time_callback( params._tick_time_callback );
-  }
-
-  if ( params._affects_regen == -1 && player && player->regen_type == REGEN_DYNAMIC )
-  {
-    for ( auto& elem : params._invalidate_list )
-    {
-      if ( player->regen_caches[ elem ] )
-        change_regen_rate = true;
-    }
-  }
-  else
-  {
-    set_affects_regen( params._affects_regen );
-  }
-
-  if ( params._refresh_duration_callback )
-    set_refresh_duration_callback( params._refresh_duration_callback );
-  set_refresh_behavior( params._refresh_behavior );
-
-  set_stack_behavior( params._stack_behavior );
+  set_stack_behavior( buff_stack_behavior::DEFAULT );
 
   assert( refresh_behavior != buff_refresh_behavior::CUSTOM || refresh_duration_callback );
 
-  invalidate_list       = params._invalidate_list;
   requires_invalidation = !invalidate_list.empty();
   init_haste_type();
 
   if ( player && !player->cache.active )
     requires_invalidation = false;
-
-  set_stack_change_callback( params._stack_change_callback );
 
   set_max_stack( _max_stack );
 
@@ -2470,59 +2422,6 @@ absorb_buff_t* absorb_buff_t::set_absorb_eligibility( absorb_eligibility e )
   // TODO: check if player absorb_priority and instant_absorb_list could be automatically
   // populated from here somehow.
   return this;
-}
-
-void buff_creator_basics_t::init()
-{
-  _chance             = -1.0;
-  _max_stack          = -1;
-  _duration           = timespan_t::min();
-  _cooldown           = timespan_t::min();
-  _period             = timespan_t::min();
-  _quiet              = -1;
-  _reverse            = -1;
-  _activated          = -1;
-  _can_cancel         = -1;
-  _tick_time_behavior = buff_tick_time_behavior::UNHASTED;
-  _tick_behavior      = buff_tick_behavior::NONE;
-  _refresh_behavior   = buff_refresh_behavior::NONE;
-  _stack_behavior     = buff_stack_behavior::DEFAULT;
-  _default_value      = buff_t::DEFAULT_VALUE();
-  _affects_regen      = -1;
-  _initial_tick       = false;
-  _rppm_freq          = -1;
-  _rppm_mod           = -1;
-  _rppm_scale         = RPPM_NONE;
-  _trigger_data       = spell_data_t::nil();
-}
-
-buff_creator_basics_t::buff_creator_basics_t( actor_pair_t p, const std::string& n, const spell_data_t* sp,
-                                              const item_t* item )
-  : _player( p ), _sim( p.source->sim ), _name( n ), s_data( sp ), item( item )
-{
-  init();
-}
-
-buff_creator_basics_t::buff_creator_basics_t( actor_pair_t p, uint32_t id, const std::string& n, const item_t* item )
-  : _player( p ),
-    _sim( p.source->sim ),
-    _name( n ),
-    s_data( _player.source ? _player.source->find_spell( id ) : spell_data_t::nil() ),
-    item( item )
-{
-  init();
-}
-
-buff_creator_basics_t::buff_creator_basics_t( sim_t* s, const std::string& n, const spell_data_t* sp,
-                                              const item_t* item )
-  : _player( actor_pair_t() ), _sim( s ), _name( n ), s_data( sp ), item( item )
-{
-  init();
-}
-
-buff_creator_t::operator buff_t*() const
-{
-  return new buff_t( *this );
 }
 
 bool movement_buff_t::trigger( int stacks, double value, double chance, timespan_t duration )

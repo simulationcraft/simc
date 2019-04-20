@@ -11,7 +11,7 @@ except Exception as error:
     sys.exit(1)
 
 _S = requests.Session()
-_S.mount('http://', requests.adapters.HTTPAdapter(pool_connections = 1, pool_maxsize = 1))
+_S.mount('http://', requests.adapters.HTTPAdapter(pool_connections = 5))
 
 _BLTE_MAGIC = b'BLTE'
 _CHUNK_DATA_OFFSET_LEN = 4
@@ -25,6 +25,9 @@ _NULL_CHUNK = 0x00
 _COMPRESSED_CHUNK = 0x5A
 _UNCOMPRESSED_CHUNK = 0x4E
 _ENCRYPTED_CHUNK = 0x45
+
+_ROOT_MAGIC = b'TSFM'
+_ROOT_HEADER = struct.Struct('<4sII')
 
 _ENCRYPTION_HEADER = struct.Struct('<B8sBIc')
 
@@ -445,6 +448,7 @@ class CDNIndex(CASCObject):
 		self.version = None
 		self.build_number = 0
 		self.build_version = 0
+		self.cdn_idx = 0
 
 	# TODO: (More) Option based selectors
 	def get_build_cfg(self):
@@ -481,19 +485,26 @@ class CDNIndex(CASCObject):
 		data = handle.text.strip().split('\n')
 		for line in data:
 			split = line.split('|')
-			if split[0] != 'us':
+			if split[0] != self.options.region:
 				continue
 
 			self.cdn_path = split[1]
-			cdns = [urllib.parse.urlparse(x).netloc for x in split[3].split(' ')]
-			self.cdn_host = cdns[0]
+			#cdns = [urllib.parse.urlparse(x).netloc for x in split[3].split(' ')]
+			#self.cdn_host = cdns[-1]
+			self.cdn_host = split[2].split(' ')
 
 		if not self.cdn_path or not self.cdn_host:
 			sys.stderr.write('Unable to extract CDN information\n')
 			sys.exit(1)
 
 	def cdn_base_url(self):
-		return 'http://%s/%s' % (self.cdn_host, self.cdn_path)
+		s = 'http://%s/%s' % (self.cdn_host[self.cdn_idx], self.cdn_path)
+
+		self.cdn_idx += 1
+		if self.cdn_idx == len(self.cdn_host):
+			self.cdn_idx = 0
+
+		return s
 
 	def cdn_url(self, type, file):
 		return '%s/%s/%s/%s/%s' % (self.cdn_base_url(), type, file[:2], file[2:4], file)
@@ -754,7 +765,9 @@ class CASCEncodingFile(CASCObject):
 		if not os.access(self.cache_dir(), os.W_OK):
 			self.options.parser.error('Error bootstrapping CASCEncodingFile, "%s" is not writable' % self.cache_dir())
 
-		handle = self.get_url(self.build.encoding_blte_url())
+		encoding_file_path = os.path.join(self.cache_dir('data'), self.build.encoding_file())
+		handle = self.cached_open(encoding_file_path, self.build.encoding_blte_url())
+		#handle = self.get_url(self.build.encoding_blte_url())
 
 		blte = BLTEFile(handle.content)
 		if not blte.extract():
@@ -816,7 +829,6 @@ class CASCEncodingFile(CASCObject):
 			while n_keys != 0:
 				keys = []
 				file_size = struct.unpack('>I', data[offset:offset + 4])[0]; offset += 4
-
 				file_md5 = data[offset:offset + 16]; offset += 16
 				for key_idx in range(0, n_keys):
 					keys.append(data[offset:offset + 16]); offset += 16
@@ -947,7 +959,9 @@ class CASCRootFile(CASCObject):
 			if len(keys) > 1:
 				print('Duplicate root key found for %s, using first one ...' % self.build.root_file())
 
-			handle = self.get_url(self.build.cdn_url('data', codecs.encode(keys[0], 'hex').decode('utf-8')))
+			handle = self.cached_open(self.build.root_file(),
+				self.build.cdn_url('data', codecs.encode(keys[0], 'hex').decode('utf-8')))
+			#handle = self.get_url(self.build.cdn_url('data', codecs.encode(keys[0], 'hex').decode('utf-8')))
 
 			blte = BLTEFile(handle.content)
 			if not blte.extract():
@@ -964,14 +978,8 @@ class CASCRootFile(CASCObject):
 
 		return data
 
-	def GetFileMD5(self, file):
-		hash_name = file.strip().upper().replace('/', '\\')
-		hash = jenkins.hashlittle2(hash_name)
-		v = (hash[0] << 32) | hash[1]
-		return self.hash_map.get(v, [])
-
-	def GetFileHashMD5(self, file_hash):
-		return self.hash_map.get(file_hash, [])
+	def GetFileDataIdMD5(self, file_data_id):
+		return self.hash_map.get(file_data_id, [])
 
 	def GetLocale(self):
 		if self.options.locale not in CASCRootFile._locale:
@@ -997,33 +1005,59 @@ class CASCRootFile(CASCObject):
 		sys.stdout.write('Parsing root file %s ... ' % self.build.root_file())
 		offset = 0
 		n_md5s = 0
+
+		if self.options.ptr:
+			magic, unk_h1, unk_h2 = _ROOT_HEADER.unpack_from(data, offset)
+
+			if magic != _ROOT_MAGIC:
+				print('Invalid magic in file, expected "{:s}", got "{:s}"'.format(
+					_ROOT_MAGIC.decode('ascii'), magic.decode('ascii')))
+				return False
+			offset += _ROOT_HEADER.size
+			#print(magic, unk_h1, unk_h2)
+
 		while offset < len(data):
-			n_entries, unk_1, flags = struct.unpack('<iII', data[offset:offset + 12])
+			n_entries, unk_1, flags = struct.unpack_from('<iII', data, offset)
+			#print('offset', offset, 'n-entries', n_entries, 'content_flags', '{:#8x}'.format(unk_1), 'flags', '{:#8x}'.format(flags))
 			#if flags == 0xFFFFFFFF or flags & 0x2:
 			#	print('%u %d, unk_1=%#.8x, flags=%#.8x' % (offset, n_entries, unk_1, flags))
 			offset += 12
 			if n_entries == 0:
 				continue
 
+			findex = struct.unpack_from('<{}I'.format(n_entries), data, offset)
 			offset += 4 * n_entries
 
+			csum_file_id = 0
 			for entry_idx in range(0, n_entries):
 				md5s = data[offset:offset + 16]
 				offset += 16
-				file_name_hash = data[offset:offset + 8]
-				offset += 8
-				val = struct.unpack('Q', file_name_hash)[0]
 
-				# Only grab enUS and "all" locales
+				file_data_id = 0
+				if entry_idx == 0:
+					file_data_id = findex[entry_idx]
+				else:
+					file_data_id = csum_file_id + 1 + findex[entry_idx]
+				csum_file_id = file_data_id
+
+				# Skip file name hashes on live, and on PTR most of the time
+				if not self.options.ptr:
+					offset += 8
+
 				if flags != CASCRootFile.LOCALE_ALL and not (flags & self.GetLocale()):
 					continue
 
-				if not val in self.hash_map:
-					self.hash_map[val] = []
+				if not file_data_id in self.hash_map:
+					self.hash_map[file_data_id] = []
 
-				#print(unk_data[entry_idx], file_name_hash.encode('hex'), md5s.encode('hex'))
-				self.hash_map[val].append(md5s)
+				self.hash_map[file_data_id].append(md5s)
+
 				n_md5s += 1
+
+			# Skip 8 * n_entries amount of bytes if the PTR root file contains
+			# the "contains name hashes" flag
+			if not self.options.ptr or (self.options.ptr and (unk_1 & 0x10000000) == 0):
+				offset += 8 * n_entries
 
 		sys.stdout.write('%u entries\n' % n_md5s)
 		return True
