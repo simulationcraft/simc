@@ -281,7 +281,6 @@ public:
   // Cached actions
   struct actions_t
   {
-    action_t* ancestral_awakening;
     spell_t* lightning_shield;
     spell_t* earthen_rage;
     spell_t* crashing_storm;
@@ -459,8 +458,6 @@ public:
     const spell_data_t* windfury;
 
     // Restoration
-    const spell_data_t* ancestral_awakening;
-    const spell_data_t* ancestral_focus;
     const spell_data_t* purification;
     const spell_data_t* resurgence;
     const spell_data_t* riptide;
@@ -531,7 +528,6 @@ public:
     // const spell_data_t* ascendance;
 
     // Restoration
-    const spell_data_t* gust_of_wind;
   } talent;
 
   // Artifact
@@ -3136,28 +3132,6 @@ struct elemental_overload_spell_t : public shaman_spell_t
   }
 };
 
-struct ancestral_awakening_t : public shaman_heal_t
-{
-  ancestral_awakening_t( shaman_t* player )
-    : shaman_heal_t( "ancestral_awakening", player, player->find_spell( 52752 ) )
-  {
-    background = proc = true;
-  }
-
-  double composite_da_multiplier( const action_state_t* state ) const override
-  {
-    double m = shaman_heal_t::composite_da_multiplier( state );
-    m *= p()->spec.ancestral_awakening->effectN( 1 ).percent();
-    return m;
-  }
-
-  void execute() override
-  {
-    target = find_lowest_player();
-    shaman_heal_t::execute();
-  }
-};
-
 // shaman_heal_t::impact ====================================================
 
 void shaman_heal_t::impact( action_state_t* s )
@@ -3181,18 +3155,6 @@ void shaman_heal_t::impact( action_state_t* s )
   {
     if ( resurgence_gain > 0 )
       p()->resource_gain( RESOURCE_MANA, resurgence_gain, p()->gain.resurgence );
-
-    if ( p()->spec.ancestral_awakening->ok() )
-    {
-      if ( !p()->action.ancestral_awakening )
-      {
-        p()->action.ancestral_awakening = new ancestral_awakening_t( p() );
-        p()->action.ancestral_awakening->init();
-      }
-
-      p()->action.ancestral_awakening->base_dd_min = s->result_total;
-      p()->action.ancestral_awakening->base_dd_max = s->result_total;
-    }
   }
 
   if ( p()->main_hand_weapon.buff_type == EARTHLIVING_IMBUE )
@@ -6909,12 +6871,10 @@ void shaman_t::init_spells()
   spec.windfury           = find_specialization_spell( "Windfury" );
 
   // Restoration
-  spec.ancestral_awakening = find_specialization_spell( "Ancestral Awakening" );
-  spec.ancestral_focus     = find_specialization_spell( "Ancestral Focus" );
-  spec.purification        = find_specialization_spell( "Purification" );
-  spec.resurgence          = find_specialization_spell( "Resurgence" );
-  spec.riptide             = find_specialization_spell( "Riptide" );
-  spec.tidal_waves         = find_specialization_spell( "Tidal Waves" );
+  spec.purification       = find_specialization_spell( "Purification" );
+  spec.resurgence         = find_specialization_spell( "Resurgence" );
+  spec.riptide            = find_specialization_spell( "Riptide" );
+  spec.tidal_waves        = find_specialization_spell( "Tidal Waves" );
 
   //
   // Masteries
@@ -6976,7 +6936,6 @@ void shaman_t::init_spells()
   talent.earthen_spike     = find_talent_spell( "Earthen Spike" );
 
   // Restoration
-  talent.gust_of_wind = find_talent_spell( "Gust of Wind" );
 
   //
   // Azerite traits
