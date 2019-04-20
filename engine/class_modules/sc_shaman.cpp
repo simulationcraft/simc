@@ -462,6 +462,7 @@ public:
     const spell_data_t* resurgence;
     const spell_data_t* riptide;
     const spell_data_t* tidal_waves;
+    const spell_data_t* restoration_shaman;  // general spec multiplier
   } spec;
 
   // Masteries
@@ -1097,6 +1098,19 @@ public:
     if ( ab::data().affected_by( player->spec.enhancement_shaman->effectN( 1 ) ) )
     {
       ab::base_multiplier *= 1.0 + player->spec.enhancement_shaman->effectN( 1 ).percent();
+    }
+
+    if ( ab::data().affected_by( player->spec.restoration_shaman->effectN( 3 ) ) )
+    {
+      ab::base_dd_multiplier *= 1.0 + player->spec.restoration_shaman->effectN( 3 ).percent();
+    }
+    if ( ab::data().affected_by( player->spec.restoration_shaman->effectN( 4 ) ) )
+    {
+      ab::base_td_multiplier *= 1.0 + player->spec.restoration_shaman->effectN( 4 ).percent();
+    }
+    if ( ab::data().affected_by( player->spec.restoration_shaman->effectN( 7 ) ) )
+    {
+      ab::base_multiplier *= 1.0 + player->spec.restoration_shaman->effectN( 7 ).percent();
     }
   }
 
@@ -5645,6 +5659,10 @@ struct flame_shock_t : public shaman_spell_t
     {
       proc_chance = p()->azerite.igneous_potential.spell_ref().effectN( 3 ).percent();
     }
+    if ( p()->spec.restoration_shaman->ok() )
+    {
+      proc_chance += p()->spec.restoration_shaman->effectN( 8 ).percent();
+    }
 
     if ( rng().roll( proc_chance ) )
     {
@@ -6885,6 +6903,7 @@ void shaman_t::init_spells()
   spec.resurgence         = find_specialization_spell( "Resurgence" );
   spec.riptide            = find_specialization_spell( "Riptide" );
   spec.tidal_waves        = find_specialization_spell( "Tidal Waves" );
+  spec.restoration_shaman = find_specialization_spell( "Restoration Shaman" );
 
   //
   // Masteries
