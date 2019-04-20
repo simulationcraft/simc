@@ -417,6 +417,35 @@ struct leech_t : public heal_t
   }
 };
 
+struct invulnerable_debuff_t : public buff_t
+{
+  invulnerable_debuff_t( player_t* p ) :
+    buff_t( p, "invulnerable" )
+  {
+    set_max_stack( 1 );
+  }
+
+  void start( int stacks, double value, timespan_t duration ) override
+  {
+    buff_t::start( stacks, value, duration );
+    if ( sim->ignore_invulnerable_targets && range::contains_value( sim->target_non_sleeping_list, player ) )
+    {
+      sim->target_non_sleeping_list.find_and_erase_unordered( player );
+      sim->active_enemies--;
+    }
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+    if ( sim->ignore_invulnerable_targets && !range::contains_value( sim->target_non_sleeping_list, player ) )
+    {
+      sim->target_non_sleeping_list.push_back( player );
+      sim->active_enemies++;
+    }
+  }
+};
+
 /**
  * Get sorted list of action priorirty lists
  *

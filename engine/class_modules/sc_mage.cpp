@@ -25,7 +25,7 @@ action_t* get_action( const std::string& name, Actor* actor, Args&&... args )
 {
   action_t* a = actor->find_action( name );
   if ( !a )
-    a = new Action( name, actor, std::move( args )... );
+    a = new Action( name, actor, std::forward<Args>( args )... );
 
   assert( dynamic_cast<Action*>( a ) && a->name_str == name && a->background );
   return a;
@@ -6563,24 +6563,23 @@ public:
       return;
 
     os << "<div class=\"player-section custom_section\">\n"
-       << "<h3 class=\"toggle open\">Cooldown waste</h3>\n"
-       << "<div class=\"toggle-content\">\n";
-
-    os << "<table class=\"sc\" style=\"margin-top: 5px;\">\n"
-       << "<tr>\n"
-       << "<th></th>\n"
-       << "<th colspan=\"3\">Seconds per Execute</th>\n"
-       << "<th colspan=\"3\">Seconds per Iteration</th>\n"
-       << "</tr>\n"
-       << "<tr>\n"
-       << "<th>Ability</th>\n"
-       << "<th>Average</th>\n"
-       << "<th>Minimum</th>\n"
-       << "<th>Maximum</th>\n"
-       << "<th>Average</th>\n"
-       << "<th>Minimum</th>\n"
-       << "<th>Maximum</th>\n"
-       << "</tr>\n";
+          "<h3 class=\"toggle open\">Cooldown waste</h3>\n"
+          "<div class=\"toggle-content\">\n"
+          "<table class=\"sc\" style=\"margin-top: 5px;\">\n"
+          "<tr>\n"
+          "<th></th>\n"
+          "<th colspan=\"3\">Seconds per Execute</th>\n"
+          "<th colspan=\"3\">Seconds per Iteration</th>\n"
+          "</tr>\n"
+          "<tr>\n"
+          "<th>Ability</th>\n"
+          "<th>Average</th>\n"
+          "<th>Minimum</th>\n"
+          "<th>Maximum</th>\n"
+          "<th>Average</th>\n"
+          "<th>Minimum</th>\n"
+          "<th>Maximum</th>\n"
+          "</tr>\n";
 
     size_t row = 0;
     for ( const cooldown_waste_data_t* data : p.cooldown_waste_data_list )
@@ -6592,112 +6591,99 @@ public:
       if ( action_t* a = p.find_action( name ) )
         name = report::action_decorator_t( a ).decorate();
 
-      std::string row_class;
-      if ( ++row & 1 )
-        row_class = " class=\"odd\"";
-
-      os.printf( "<tr%s>", row_class.c_str() );
-      os << "<td class=\"left\">" << name << "</td>";
-      os.printf( "<td class=\"right\">%.3f</td>", data->normal.mean() );
-      os.printf( "<td class=\"right\">%.3f</td>", data->normal.min() );
-      os.printf( "<td class=\"right\">%.3f</td>", data->normal.max() );
-      os.printf( "<td class=\"right\">%.3f</td>", data->cumulative.mean() );
-      os.printf( "<td class=\"right\">%.3f</td>", data->cumulative.min() );
-      os.printf( "<td class=\"right\">%.3f</td>", data->cumulative.max() );
+      fmt::print( os, "<tr{}>", ++row & 1 ? " class=\"odd\"" : "" );
+      fmt::print( os, "<td class=\"left\">{}</td>", name );
+      fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->normal.mean() );
+      fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->normal.min() );
+      fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->normal.max() );
+      fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->cumulative.mean() );
+      fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->cumulative.min() );
+      fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->cumulative.max() );
       os << "</tr>\n";
     }
 
-    os << "</table>\n";
-
-    os << "</div>\n"
-       << "</div>\n";
+    os << "</table>\n"
+          "</div>\n"
+          "</div>\n";
   }
 
   void html_customsection_burn_phases( report::sc_html_stream& os )
   {
     os << "<div class=\"player-section custom_section\">\n"
-       << "<h3 class=\"toggle open\">Burn Phases</h3>\n"
-       << "<div class=\"toggle-content\">\n";
+          "<h3 class=\"toggle open\">Burn Phases</h3>\n"
+          "<div class=\"toggle-content\">\n"
+          "<p>Burn phase duration tracks the amount of time spent in each burn phase. This is defined as the time between a "
+          "start_burn_phase and stop_burn_phase action being executed. Note that \"execute\" burn phases, i.e., the "
+          "final burn of a fight, is also included.</p>\n"
+          "<div style=\"display: flex;\">\n"
+          "<table class=\"sc\" style=\"margin-top: 5px;\">\n"
+          "<thead>\n"
+          "<tr>\n"
+          "<th>Burn Phase Duration</th>\n"
+          "</tr>\n"
+          "<tbody>\n";
 
-    os << "<p>Burn phase duration tracks the amount of time spent in each burn phase. This is defined as the time between a "
-       << "start_burn_phase and stop_burn_phase action being executed. Note that \"execute\" burn phases, i.e., the "
-       << "final burn of a fight, is also included.</p>\n";
-
-    os << "<div style=\"display: flex;\">\n"
-       << "<table class=\"sc\" style=\"margin-top: 5px;\">\n"
-       << "<thead>\n"
-       << "<tr>\n"
-       << "<th>Burn Phase Duration</th>\n"
-       << "</tr>\n"
-       << "<tbody>\n";
-
-    os.printf( "<tr><td class=\"left\">Count</td><td>%d</td></tr>\n", p.sample_data.burn_duration_history->count() );
-    os.printf( "<tr><td class=\"left\">Minimum</td><td>%.3f</td></tr>\n", p.sample_data.burn_duration_history->min() );
-    os.printf( "<tr><td class=\"left\">5<sup>th</sup> percentile</td><td>%.3f</td></tr>\n", p.sample_data.burn_duration_history->percentile( 0.05 ) );
-    os.printf( "<tr><td class=\"left\">Mean</td><td>%.3f</td></tr>\n", p.sample_data.burn_duration_history->mean() );
-    os.printf( "<tr><td class=\"left\">95<sup>th</sup> percentile</td><td>%.3f</td></tr>\n", p.sample_data.burn_duration_history->percentile( 0.95 ) );
-    os.printf( "<tr><td class=\"left\">Max</td><td>%.3f</td></tr>\n", p.sample_data.burn_duration_history->max() );
-    os.printf( "<tr><td class=\"left\">Variance</td><td>%.3f</td></tr>\n", p.sample_data.burn_duration_history->variance );
-    os.printf( "<tr><td class=\"left\">Mean Variance</td><td>%.3f</td></tr>\n", p.sample_data.burn_duration_history->mean_variance );
-    os.printf( "<tr><td class=\"left\">Mean Std. Dev</td><td>%.3f</td></tr>\n", p.sample_data.burn_duration_history->mean_std_dev );
+    auto& h = *p.sample_data.burn_duration_history;
+    fmt::print( os, "<tr><td class=\"left\">Count</td><td>{}</td></tr>\n", h.count() );
+    fmt::print( os, "<tr><td class=\"left\">Minimum</td><td>{:.3f}</td></tr>\n", h.min() );
+    fmt::print( os, "<tr><td class=\"left\">5<sup>th</sup> percentile</td><td>{:.3f}</td></tr>\n", h.percentile( 0.05 ) );
+    fmt::print( os, "<tr><td class=\"left\">Mean</td><td>{:.3f}</td></tr>\n", h.mean() );
+    fmt::print( os, "<tr><td class=\"left\">95<sup>th</sup> percentile</td><td>{:.3f}</td></tr>\n", h.percentile( 0.95 ) );
+    fmt::print( os, "<tr><td class=\"left\">Max</td><td>{:.3f}</td></tr>\n", h.max() );
+    fmt::print( os, "<tr><td class=\"left\">Variance</td><td>{:.3f}</td></tr>\n", h.variance );
+    fmt::print( os, "<tr><td class=\"left\">Mean Variance</td><td>{:.3f}</td></tr>\n", h.mean_variance );
+    fmt::print( os, "<tr><td class=\"left\">Mean Std. Dev</td><td>{:.3f}</td></tr>\n", h.mean_std_dev );
 
     os << "</tbody>\n"
-       << "</table>\n";
+          "</table>\n";
 
-    highchart::histogram_chart_t burn_duration_history_chart( highchart::build_id( p, "burn_duration_history" ), *p.sim );
-    if ( chart::generate_distribution(
-      burn_duration_history_chart, &p, p.sample_data.burn_duration_history->distribution, "Burn Duration",
-      p.sample_data.burn_duration_history->mean(),
-      p.sample_data.burn_duration_history->min(),
-      p.sample_data.burn_duration_history->max() ) )
+    highchart::histogram_chart_t chart( highchart::build_id( p, "burn_duration" ), *p.sim );
+    if ( chart::generate_distribution( chart, &p, h.distribution, "Burn Duration", h.mean(), h.min(), h.max() ) )
     {
-      burn_duration_history_chart.set( "tooltip.headerFormat", "<b>{point.key}</b> s<br/>" );
-      burn_duration_history_chart.set( "chart.width", "575" );
-      os << burn_duration_history_chart.to_target_div();
-      p.sim->add_chart_data( burn_duration_history_chart );
+      chart.set( "tooltip.headerFormat", "<b>{point.key}</b> s<br/>" );
+      chart.set( "chart.width", "575" );
+      os << chart.to_target_div();
+      p.sim->add_chart_data( chart );
     }
 
-    os << "</div>\n";
+    os << "</div>\n"
+          "<p>Mana at burn start is the mana level recorded (in percentage of total mana) when a start_burn_phase command is executed.</p>\n"
+          "<table class=\"sc\">\n"
+          "<thead>\n"
+          "<tr>\n"
+          "<th>Mana at Burn Start</th>\n"
+          "</tr>\n"
+          "<tbody>\n";
 
-    os << "<p>Mana at burn start is the mana level recorded (in percentage of total mana) when a start_burn_phase command is executed.</p>\n";
-
-    os << "<table class=\"sc\">\n"
-       << "<thead>\n"
-       << "<tr>\n"
-       << "<th>Mana at Burn Start</th>\n"
-       << "</tr>\n"
-       << "<tbody>\n";
-
-    os.printf( "<tr><td class=\"left\">Count</td><td>%d</td></tr>\n", p.sample_data.burn_initial_mana->count() );
-    os.printf( "<tr><td class=\"left\">Minimum</td><td>%.3f</td></tr>\n", p.sample_data.burn_initial_mana->min() );
-    os.printf( "<tr><td class=\"left\">5<sup>th</sup> percentile</td><td>%.3f</td></tr>\n", p.sample_data.burn_initial_mana->percentile( 0.05 ) );
-    os.printf( "<tr><td class=\"left\">Mean</td><td>%.3f</td></tr>\n", p.sample_data.burn_initial_mana->mean() );
-    os.printf( "<tr><td class=\"left\">95<sup>th</sup> percentile</td><td>%.3f</td></tr>\n", p.sample_data.burn_initial_mana->percentile( 0.95 ) );
-    os.printf( "<tr><td class=\"left\">Max</td><td>%.3f</td></tr>\n", p.sample_data.burn_initial_mana->max() );
-    os.printf( "<tr><td class=\"left\">Variance</td><td>%.3f</td></tr>\n", p.sample_data.burn_initial_mana->variance );
-    os.printf( "<tr><td class=\"left\">Mean Variance</td><td>%.3f</td></tr>\n", p.sample_data.burn_initial_mana->mean_variance );
-    os.printf( "<tr><td class=\"left\">Mean Std. Dev</td><td>%.3f</td></tr>\n", p.sample_data.burn_initial_mana->mean_std_dev );
+    auto& m = *p.sample_data.burn_initial_mana;
+    fmt::print( os, "<tr><td class=\"left\">Count</td><td>{}</td></tr>\n", m.count() );
+    fmt::print( os, "<tr><td class=\"left\">Minimum</td><td>{:.3f}</td></tr>\n", m.min() );
+    fmt::print( os, "<tr><td class=\"left\">5<sup>th</sup> percentile</td><td>{:.3f}</td></tr>\n", m.percentile( 0.05 ) );
+    fmt::print( os, "<tr><td class=\"left\">Mean</td><td>{:.3f}</td></tr>\n", m.mean() );
+    fmt::print( os, "<tr><td class=\"left\">95<sup>th</sup> percentile</td><td>{:.3f}</td></tr>\n", m.percentile( 0.95 ) );
+    fmt::print( os, "<tr><td class=\"left\">Max</td><td>{:.3f}</td></tr>\n", m.max() );
+    fmt::print( os, "<tr><td class=\"left\">Variance</td><td>{:.3f}</td></tr>\n", m.variance );
+    fmt::print( os, "<tr><td class=\"left\">Mean Variance</td><td>{:.3f}</td></tr>\n", m.mean_variance );
+    fmt::print( os, "<tr><td class=\"left\">Mean Std. Dev</td><td>{:.3f}</td></tr>\n", m.mean_std_dev );
 
     os << "</tbody>\n"
-       << "</table>\n";
-
-    os << "</div>\n"
-       << "</div>\n";
+          "</table>\n"
+          "</div>\n"
+          "</div>\n";
   }
 
   void html_customsection_icy_veins( report::sc_html_stream& os )
   {
     os << "<div class=\"player-section custom_section\">\n"
-       << "<h3 class=\"toggle open\">Icy Veins</h3>\n"
-       << "<div class=\"toggle-content\">\n";
+          "<h3 class=\"toggle open\">Icy Veins</h3>\n"
+          "<div class=\"toggle-content\">\n";
 
-    int num_buckets = as<int>( p.sample_data.icy_veins_duration->max() - p.sample_data.icy_veins_duration->min() ) + 1;
-    highchart::histogram_chart_t chart( highchart::build_id( p, "iv_dist" ), *p.sim );
-    p.sample_data.icy_veins_duration->create_histogram( num_buckets );
-    if ( chart::generate_distribution(
-      chart, &p, p.sample_data.icy_veins_duration->distribution, "Icy Veins Duration",
-      p.sample_data.icy_veins_duration->mean(), p.sample_data.icy_veins_duration->min(),
-      p.sample_data.icy_veins_duration->max() ) )
+    auto& d = *p.sample_data.icy_veins_duration;
+    int num_buckets = as<int>( d.max() - d.min() ) + 1;
+    d.create_histogram( num_buckets );
+
+    highchart::histogram_chart_t chart( highchart::build_id( p, "icy_veins_duration" ), *p.sim );
+    if ( chart::generate_distribution( chart, &p, d.distribution, "Icy Veins Duration", d.mean(), d.min(), d.max() ) )
     {
       chart.set( "tooltip.headerFormat", "<b>{point.key}</b> s<br/>" );
       chart.set( "chart.width", std::to_string( 80 + num_buckets * 13 ) );
@@ -6706,7 +6692,7 @@ public:
     }
 
     os << "</div>\n"
-       << "</div>\n";
+          "</div>\n";
   }
 
   void html_customsection_shatter( report::sc_html_stream& os )
@@ -6715,28 +6701,26 @@ public:
       return;
 
     os << "<div class=\"player-section custom_section\">\n"
-       << "<h3 class=\"toggle open\">Shatter</h3>\n"
-       << "<div class=\"toggle-content\">\n";
-
-    os << "<table class=\"sc\" style=\"margin-top: 5px;\">\n"
-       << "<tr>\n"
-       << "<th>Ability</th>\n"
-       << "<th colspan=\"2\">None</th>\n"
-       << "<th colspan=\"3\">Winter's Chill</th>\n"
-       << "<th colspan=\"2\">Fingers of Frost</th>\n"
-       << "<th colspan=\"2\">Other effects</th>\n"
-       << "</tr>\n";
-
-    os << "<th></th>"
-       << "<th>Count</th>"
-       << "<th>Percent</th>"
-       << "<th>Count</th>"
-       << "<th>Percent</th>"
-       << "<th>Utilization</th>"
-       << "<th>Count</th>"
-       << "<th>Percent</th>"
-       << "<th>Count</th>"
-       << "<th>Percent</th>";
+          "<h3 class=\"toggle open\">Shatter</h3>\n"
+          "<div class=\"toggle-content\">\n"
+          "<table class=\"sc\" style=\"margin-top: 5px;\">\n"
+          "<tr>\n"
+          "<th>Ability</th>\n"
+          "<th colspan=\"2\">None</th>\n"
+          "<th colspan=\"3\">Winter's Chill</th>\n"
+          "<th colspan=\"2\">Fingers of Frost</th>\n"
+          "<th colspan=\"2\">Other effects</th>\n"
+          "</tr>\n"
+          "<th></th>\n"
+          "<th>Count</th>\n"
+          "<th>Percent</th>\n"
+          "<th>Count</th>\n"
+          "<th>Percent</th>\n"
+          "<th>Utilization</th>\n"
+          "<th>Count</th>\n"
+          "<th>Percent</th>\n"
+          "<th>Count</th>\n"
+          "<th>Percent</th>\n";
 
     double bff = p.procs.brain_freeze_flurry->count.pretty_mean();
 
@@ -6750,46 +6734,33 @@ public:
       if ( action_t* a = p.find_action( name ) )
         name = report::action_decorator_t( a ).decorate();
 
-      std::string row_class;
-      if ( ++row & 1 )
-        row_class = " class=\"odd\"";
-
-      os.printf( "<tr%s>", row_class.c_str() );
+      fmt::print( os, "<tr{}>", ++row & 1 ? " class=\"odd\"" : "" );
 
       double total = data->count_total();
-      auto format_cells = [ bff, &os, total ] ( double mean, bool util )
+      auto nonzero = [] ( std::string fmt, double d ) { return d != 0.0 ? fmt::format( fmt, d ) : ""; };
+      auto cells = [ & ] ( double mean, bool util )
       {
-        std::string format_str;
-        format_str += "<td class=\"right\">";
-        if ( mean > 0.0 )
-          format_str += "%.1f";
-        format_str += "</td><td class=\"right\">";
-        if ( mean > 0.0 )
-          format_str += "%.1f%%";
-        format_str += "</td>";
+        std::string format_str = "<td class=\"right\">{}</td><td class=\"right\">{}</td>";
         if ( util )
-        {
-          format_str += "<td class=\"right\">";
-          if ( bff > 0.0 && mean > 0.0 )
-            format_str += "%.1f%%";
-          format_str += "</td>";
-        }
+          format_str += "<td class=\"right\">{}</td>";
 
-        os.printf( format_str.c_str(), mean, 100.0 * mean / total, 100.0 * mean / bff );
+        fmt::print( os, format_str,
+          nonzero( "{:.1f}", mean ),
+          nonzero( "{:.1f}%", 100.0 * mean / total ),
+          nonzero( "{:.1f}%", bff > 0.0 ? 100.0 * mean / bff : 0.0 ) );
       };
 
-      os << "<td class=\"left\">" << name << "</td>";
-      format_cells( data->count( FROZEN_NONE ), false );
-      format_cells( data->count( FROZEN_WINTERS_CHILL ), true );
-      format_cells( data->count( FROZEN_FINGERS_OF_FROST ), false );
-      format_cells( data->count( FROZEN_ROOT ), false );
+      fmt::print( os, "<td class=\"left\">{}</td>", name );
+      cells( data->count( FROZEN_NONE ), false );
+      cells( data->count( FROZEN_WINTERS_CHILL ), true );
+      cells( data->count( FROZEN_FINGERS_OF_FROST ), false );
+      cells( data->count( FROZEN_ROOT ), false );
       os << "</tr>\n";
     }
 
-    os << "</table>\n";
-
-    os << "</div>\n"
-       << "</div>\n";
+    os << "</table>\n"
+          "</div>\n"
+          "</div>\n";
   }
 
   void html_customsection( report::sc_html_stream& os ) override

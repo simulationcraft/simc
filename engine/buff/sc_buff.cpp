@@ -478,10 +478,10 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, const std::strin
     tick_behavior( buff_tick_behavior::NONE ),
     tick_event( nullptr ),
     tick_zero( false ),
-    last_start( timespan_t() ),
-    last_trigger( timespan_t() ),
-    iteration_uptime_sum( timespan_t() ),
-    last_benefite_update( timespan_t() ),
+    last_start(),
+    last_trigger(),
+    iteration_uptime_sum(),
+    last_benefite_update(),
     up_count(),
     down_count(),
     start_count(),
@@ -2440,22 +2440,3 @@ void movement_buff_t::expire_override( int expiration_stacks, timespan_t remaini
   source->finish_moving();
 }
 
-void invulnerable_debuff_t::start( int stacks, double value, timespan_t duration )
-{
-  buff_t::start( stacks, value, duration );
-  if ( sim->ignore_invulnerable_targets && range::contains_value( sim->target_non_sleeping_list, player ) )
-  {
-    sim->target_non_sleeping_list.find_and_erase_unordered( player );
-    sim->active_enemies--;
-  }
-}
-
-void invulnerable_debuff_t::expire_override( int expiration_stacks, timespan_t remaining_duration )
-{
-  buff_t::expire_override( expiration_stacks, remaining_duration );
-  if ( sim->ignore_invulnerable_targets && !range::contains_value( sim->target_non_sleeping_list, player ) )
-  {
-    sim->target_non_sleeping_list.push_back( player );
-    sim->active_enemies++;
-  }
-}
