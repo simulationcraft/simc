@@ -462,6 +462,7 @@ public:
     const spell_data_t* resurgence;
     const spell_data_t* riptide;
     const spell_data_t* tidal_waves;
+    const spell_data_t* chain_lightning;
     const spell_data_t* spiritwalkers_grace;
     const spell_data_t* restoration_shaman;  // general spec multiplier
   } spec;
@@ -682,6 +683,7 @@ public:
   void init_action_list() override;
   void init_action_list_enhancement();
   void init_action_list_elemental();
+  void init_action_list_restoration_dps();
   std::string generate_bloodlust_options();
   std::string default_potion() const override;
   std::string default_flask() const override;
@@ -6915,6 +6917,7 @@ void shaman_t::init_spells()
   spec.resurgence         = find_specialization_spell( "Resurgence" );
   spec.riptide            = find_specialization_spell( "Riptide" );
   spec.tidal_waves        = find_specialization_spell( "Tidal Waves" );
+  spec.chain_lightning    = find_specialization_spell( "Chain Lightning" );
   spec.restoration_shaman = find_specialization_spell( "Restoration Shaman" );
 
   //
@@ -8258,13 +8261,52 @@ void shaman_t::init_action_list_enhancement()
                       "&variable.furyCheck_FB" );
   filler->add_action( this, "Flametongue" );
 }
+// shaman_t::init_action_list_restoration ===================================
+
+void shaman_t::init_action_list_restoration_dps()
+{
+  action_priority_list_t* precombat = get_action_priority_list( "precombat" );
+  action_priority_list_t* def       = get_action_priority_list( "default" );
+
+  // Grabs whatever Elemental is using
+  precombat->add_action( "flask" );
+  precombat->add_action( "food" );
+  precombat->add_action( "augmentation" );
+  // Snapshot stats
+  precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+  // Actual precombat
+  precombat->add_action( "potion" );
+  precombat->add_action( this, "Lava Burst" );
+
+  // In-combat potion
+  def->add_action( "potion" );
+
+  // "Default"
+  def->add_action( this, "Wind Shear" );
+  def->add_action( this, "Spiritwalker's Grace", "moving=1,if=movement.distance>6" );
+  // On-use items
+  def->add_action( "use_items" );
+  // Racials
+  def->add_action( "blood_fury" );
+  def->add_action( "berserking" );
+  def->add_action( "fireblood" );
+  def->add_action( "ancestral_call" );
+
+  def->add_action( this, "Flame Shock", "if=!ticking|dot.flame_shock.remains<=gcd,target_if=refreshable" );
+  def->add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time&cooldown_react" );
+  def->add_action( this, "Earth Elemental" );
+  def->add_action( this, "Lightning Bolt", "if=spell_targets.chain_lightning<2" );
+  def->add_action( this, "Chain Lightning", "if=active_enemies>1&spell_targets.chain_lightning>1" );
+  def->add_action( this, "Flame Shock", "moving=1" );
+}
 
 // shaman_t::init_actions ===================================================
 
 void shaman_t::init_action_list()
 {
   if ( !( primary_role() == ROLE_ATTACK && specialization() == SHAMAN_ENHANCEMENT ) &&
-       !( primary_role() == ROLE_SPELL && specialization() == SHAMAN_ELEMENTAL ) )
+       !( primary_role() == ROLE_SPELL && specialization() == SHAMAN_ELEMENTAL ) &&
+       !( primary_role() == ROLE_SPELL && specialization() == SHAMAN_RESTORATION ) )
   {
     if ( !quiet )
       sim->errorf( "Player %s's role (%s) or spec(%s) isn't supported yet.", name(),
@@ -8328,6 +8370,8 @@ void shaman_t::init_action_list()
     case SHAMAN_ELEMENTAL:
       init_action_list_elemental();
       break;
+    case SHAMAN_RESTORATION:
+      init_action_list_restoration_dps();
     default:
       break;
   }
@@ -8391,6 +8435,7 @@ double shaman_t::matching_gear_multiplier( attribute_e attr ) const
     case SHAMAN_ENHANCEMENT:
       return attr == ATTR_AGILITY ? constant.matching_gear_multiplier : 0;
     case SHAMAN_RESTORATION:
+      return attr == ATTR_INTELLECT ? constant.matching_gear_multiplier : 0;
     case SHAMAN_ELEMENTAL:
       return attr == ATTR_INTELLECT ? constant.matching_gear_multiplier : 0;
     default:
