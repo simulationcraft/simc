@@ -744,9 +744,8 @@ struct shadow_word_pain_t final : public priest_spell_t
 
     if ( d->state->result_amount > 0 )
     {
-      if ( priest().rppm.shadowy_insight->trigger() )
+      if ( trigger_shadowy_insight() )
       {
-        trigger_shadowy_insight();
         expansion::bfa::trigger_leyshocks_grand_compilation( STAT_MASTERY_RATING, player );
       }
     }
@@ -1813,7 +1812,6 @@ void priest_t::create_buffs_shadow()
 
 void priest_t::init_rng_shadow()
 {
-  rppm.shadowy_insight    = get_rppm( "shadowy_insighty", talents.shadowy_insight );
 }
 
 void priest_t::init_spells_shadow()

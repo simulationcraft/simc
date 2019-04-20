@@ -351,7 +351,6 @@ public:
 
   struct realppm_t
   {
-    propagate_const<real_ppm_t*> shadowy_insight;
     propagate_const<real_ppm_t*> power_of_the_dark_side;
   } rppm;
 
