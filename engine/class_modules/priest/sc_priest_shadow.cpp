@@ -841,10 +841,7 @@ struct vampiric_touch_t final : public priest_spell_t
 
     if ( d->state->result_amount > 0 && priest().azerite.thought_harvester.enabled() )
     {
-      if ( priest().rppm.harvested_thoughts->trigger() )
-      {
-        priest().buffs.harvested_thoughts->trigger();
-      }
+      priest().buffs.harvested_thoughts->trigger();
     }
   }
 };
@@ -1234,9 +1231,10 @@ struct mental_fortitude_t final : public priest_absorb_t
 
 namespace buffs
 {
-// ==========================================================================
-// Custom insanity_drain_stacks buff
-// ==========================================================================
+
+/**
+ * Custom insanity_drain_stacks buff
+ */
 struct insanity_drain_stacks_t final : public priest_buff_t<buff_t>
 {
   struct stack_increase_event_t final : public player_event_t
@@ -1394,6 +1392,111 @@ struct lingering_insanity_t final : public priest_buff_t<buff_t>
     {
       expire();
     }
+  }
+};
+
+struct chorus_of_insanity_t final : public priest_buff_t<stat_buff_t>
+{
+  chorus_of_insanity_t(priest_t& p) :
+      base_t(p, "chorus_of_insanity", p.find_spell( 279572 ) )
+  {
+    add_stat( STAT_CRIT_RATING, p.azerite.chorus_of_insanity.value( 1 ) );
+    set_reverse( true );
+    set_tick_behavior( buff_tick_behavior::REFRESH );
+  }
+};
+
+struct harvested_thoughts_t final : public priest_buff_t<buff_t>
+{
+  harvested_thoughts_t(priest_t& p) :
+      base_t(p, "harvested_thoughts", p.azerite.thought_harvester.spell()->effectN( 1 ).trigger()->effectN( 1 ).trigger())
+  {
+    set_trigger_spell(p.azerite.thought_harvester.spell()->effectN( 1 ).trigger());
+  }
+};
+
+struct surrender_to_madness_t final : public priest_buff_t<buff_t>
+{
+  surrender_to_madness_t(priest_t& p) :
+      base_t(p, "surrender_to_madness", p.talents.surrender_to_madness)
+  {
+    set_stack_change_callback([this]( buff_t*, int, int after ) {
+      if ( after == 0 )
+        priest().buffs.surrendered_to_madness->trigger();
+    });
+  }
+};
+
+struct surrendered_to_madness_t final : public priest_buff_t<buff_t>
+{
+  surrendered_to_madness_t(priest_t& p) :
+      base_t(p, "surrendered_to_madness", p.find_spell( 263406 ))
+  {
+  }
+};
+
+struct dispersion_t final : public priest_buff_t<buff_t>
+{
+  dispersion_t(priest_t& p) :
+      base_t(p, "dispersion", p.find_class_spell( "Dispersion" ) )
+  {
+  }
+};
+
+struct shadowform_t final : public priest_buff_t<buff_t>
+{
+  shadowform_t(priest_t& p) :
+      base_t(p, "shadowform", p.find_class_spell( "Shadowform" ) )
+  {
+    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  }
+};
+
+/**
+ * Hidden shadowform state tracking buff, so we can decide whether to bring back the shadowform buff after leaving
+ * voidform or not.
+ */
+struct shadowform_state_t final : public priest_buff_t<buff_t>
+{
+  shadowform_state_t(priest_t& p) :
+      base_t(p, "shadowform_state" )
+  {
+    set_chance( 1.0 );
+    set_quiet( true );
+  }
+};
+
+struct shadowy_insight_t final : public priest_buff_t<buff_t>
+{
+  shadowy_insight_t(priest_t& p) :
+      base_t(p, "shadowy_insight", p.talents.shadowy_insight->effectN( 1 ).trigger() )
+  {
+    set_trigger_spell( p.talents.shadowy_insight );
+  }
+};
+
+struct vampiric_embrace_t final : public priest_buff_t<buff_t>
+{
+  vampiric_embrace_t(priest_t& p) :
+      base_t(p, "vampiric_embrace", p.find_class_spell( "Vampiric Embrace" ) )
+  {
+  }
+};
+
+struct void_torrent_t final : public priest_buff_t<buff_t>
+{
+  void_torrent_t(priest_t& p) :
+      base_t(p, "void_torrent", p.talents.void_torrent )
+  {
+  }
+};
+
+struct whispers_of_the_damned_t final : public priest_buff_t<buff_t>
+{
+  whispers_of_the_damned_t(priest_t& p) :
+      base_t(p, "whispers_of_the_damned", p.azerite.whispers_of_the_damned.spell()->effectN( 1 ).trigger() )
+  {
+    set_trigger_spell(p.azerite.whispers_of_the_damned.spell());
   }
 };
 }  // namespace buffs
@@ -1685,50 +1788,32 @@ void priest_t::create_buffs_shadow()
 {
   // Baseline
 
-  buffs.shadowform = make_buff( this, "shadowform", find_class_spell( "Shadowform" ) )
-                         ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buffs.shadowform_state = make_buff( this, "shadowform_state" )->set_chance( 1.0 )->set_quiet( true );
-  buffs.shadowy_insight  = make_buff( this, "shadowy_insight", talents.shadowy_insight->effectN( 1 ).trigger() )
-                              ->set_trigger_spell( talents.shadowy_insight );
-  buffs.voidform              = new buffs::voidform_t( *this );
-  buffs.insanity_drain_stacks = new buffs::insanity_drain_stacks_t( *this );
-  buffs.vampiric_embrace      = make_buff( this, "vampiric_embrace", find_class_spell( "Vampiric Embrace" ) );
-  buffs.dispersion            = make_buff( this, "dispersion", find_class_spell( "Dispersion" ) );
+  buffs.shadowform = make_buff<buffs::shadowform_t>( *this );
+  buffs.shadowform_state = make_buff<buffs::shadowform_state_t>( *this );
+  buffs.shadowy_insight  = make_buff<buffs::shadowy_insight_t>( *this );
+  buffs.voidform              = make_buff<buffs::voidform_t>( *this );
+  buffs.insanity_drain_stacks = make_buff<buffs::insanity_drain_stacks_t>( *this );
+  buffs.vampiric_embrace      = make_buff<buffs::vampiric_embrace_t>( *this );
+  buffs.dispersion            = make_buff<buffs::dispersion_t>( *this );
 
   // Talents
-  buffs.void_torrent         = make_buff( this, "void_torrent", talents.void_torrent );
-  buffs.surrender_to_madness = make_buff( this, "surrender_to_madness", talents.surrender_to_madness )
-                                   ->set_stack_change_callback( [this]( buff_t*, int, int after ) {
-                                     if ( after == 0 )
-                                       buffs.surrendered_to_madness->trigger();
-                                   } );
-  buffs.surrendered_to_madness = make_buff( this, "surrendered_to_madness", find_spell( 263406 ) );
-  buffs.lingering_insanity     = new buffs::lingering_insanity_t( *this );
+  buffs.void_torrent         = make_buff<buffs::void_torrent_t>( *this );
+  buffs.surrender_to_madness = make_buff<buffs::surrender_to_madness_t>( *this );
+  buffs.surrendered_to_madness = make_buff<buffs::surrendered_to_madness_t>( *this );
+  buffs.lingering_insanity     = make_buff<buffs::lingering_insanity_t>( *this );
 
   // Azerite Powers
-  buffs.chorus_of_insanity =
-      make_buff<stat_buff_t>( this, "chorus_of_insanity", azerite.chorus_of_insanity.spell()->effectN( 1 ).trigger() )
-          ->add_stat( STAT_CRIT_RATING, azerite.chorus_of_insanity.value( 1 ) )
-          ->set_reverse( true )
-          ->set_tick_behavior( buff_tick_behavior::REFRESH )
-          ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
-          ->set_period( timespan_t::from_seconds( 1 ) )
-          ->add_invalidate( CACHE_CRIT_CHANCE )
-          ->set_max_stack( 100 );
+  buffs.chorus_of_insanity = make_buff<buffs::chorus_of_insanity_t>( *this );
 
-  buffs.harvested_thoughts = make_buff(
-      this, "harvested_thoughts", azerite.thought_harvester.spell()->effectN( 1 ).trigger()->effectN( 1 ).trigger() );
 
-  buffs.whispers_of_the_damned =
-      make_buff( this, "whispers_of_the_damned", azerite.whispers_of_the_damned.spell()->effectN( 1 ).trigger() )
-          ->set_duration( find_spell( 275726 )->duration() )
-          ->set_max_stack( find_spell( 275726 )->max_stacks() );
+  buffs.harvested_thoughts = make_buff<buffs::harvested_thoughts_t>( *this );
+  buffs.whispers_of_the_damned = make_buff<buffs::whispers_of_the_damned_t>( *this );
+
 }
 
 void priest_t::init_rng_shadow()
 {
   rppm.shadowy_insight    = get_rppm( "shadowy_insighty", talents.shadowy_insight );
-  rppm.harvested_thoughts = get_rppm( "harvested_thoughts", azerite.thought_harvester.spell()->effectN( 1 ).trigger() );
 }
 
 void priest_t::init_spells_shadow()

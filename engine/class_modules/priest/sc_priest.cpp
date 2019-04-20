@@ -1319,6 +1319,13 @@ void priest_t::copy_from( player_t* source )
   options = source_p->options;
 }
 
+void priest_t::arise()
+{
+  base_t::arise();
+
+  buffs.whispers_of_the_damned->trigger();
+}
+
 }  // namespace priestspace
 
 const module_t* module_t::priest()

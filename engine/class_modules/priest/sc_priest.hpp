@@ -353,7 +353,6 @@ public:
   {
     propagate_const<real_ppm_t*> shadowy_insight;
     propagate_const<real_ppm_t*> power_of_the_dark_side;
-    propagate_const<real_ppm_t*> harvested_thoughts;
   } rppm;
 
   // Special
@@ -443,6 +442,7 @@ public:
   void init_rng() override;
   priest_td_t* get_target_data( player_t* target ) const override;
   expr_t* create_expression( const std::string& name_str ) override;
+  void arise() override;
 
   void do_dynamic_regen() override
   {
@@ -1287,7 +1287,7 @@ namespace buffs
  * class,
  * don't skip it and call buff_t/absorb_buff_t/etc. directly.
  */
-template <typename Base>
+template <typename Base = buff_t>
 struct priest_buff_t : public Base
 {
 public:

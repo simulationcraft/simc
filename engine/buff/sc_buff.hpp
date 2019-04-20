@@ -382,7 +382,7 @@ inline Buff* make_buff( Args&&... args )
 {
   static_assert( std::is_base_of<buff_t, Buff>::value,
                  "Buff must be derived from buff_t" );
-  return new Buff( args... );
+  return new Buff( std::forward<Args>(args)... );
 }
 
 struct movement_buff_t : public buff_t
