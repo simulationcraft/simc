@@ -6563,24 +6563,23 @@ public:
       return;
 
     os << "<div class=\"player-section custom_section\">\n"
-       << "<h3 class=\"toggle open\">Cooldown waste</h3>\n"
-       << "<div class=\"toggle-content\">\n";
-
-    os << "<table class=\"sc\" style=\"margin-top: 5px;\">\n"
-       << "<tr>\n"
-       << "<th></th>\n"
-       << "<th colspan=\"3\">Seconds per Execute</th>\n"
-       << "<th colspan=\"3\">Seconds per Iteration</th>\n"
-       << "</tr>\n"
-       << "<tr>\n"
-       << "<th>Ability</th>\n"
-       << "<th>Average</th>\n"
-       << "<th>Minimum</th>\n"
-       << "<th>Maximum</th>\n"
-       << "<th>Average</th>\n"
-       << "<th>Minimum</th>\n"
-       << "<th>Maximum</th>\n"
-       << "</tr>\n";
+          "<h3 class=\"toggle open\">Cooldown waste</h3>\n"
+          "<div class=\"toggle-content\">\n"
+          "<table class=\"sc\" style=\"margin-top: 5px;\">\n"
+          "<tr>\n"
+          "<th></th>\n"
+          "<th colspan=\"3\">Seconds per Execute</th>\n"
+          "<th colspan=\"3\">Seconds per Iteration</th>\n"
+          "</tr>\n"
+          "<tr>\n"
+          "<th>Ability</th>\n"
+          "<th>Average</th>\n"
+          "<th>Minimum</th>\n"
+          "<th>Maximum</th>\n"
+          "<th>Average</th>\n"
+          "<th>Minimum</th>\n"
+          "<th>Maximum</th>\n"
+          "</tr>\n";
 
     size_t row = 0;
     for ( const cooldown_waste_data_t* data : p.cooldown_waste_data_list )
@@ -6592,25 +6591,20 @@ public:
       if ( action_t* a = p.find_action( name ) )
         name = report::action_decorator_t( a ).decorate();
 
-      std::string row_class;
-      if ( ++row & 1 )
-        row_class = " class=\"odd\"";
-
-      os.printf( "<tr%s>", row_class.c_str() );
-      os << "<td class=\"left\">" << name << "</td>";
-      os.printf( "<td class=\"right\">%.3f</td>", data->normal.mean() );
-      os.printf( "<td class=\"right\">%.3f</td>", data->normal.min() );
-      os.printf( "<td class=\"right\">%.3f</td>", data->normal.max() );
-      os.printf( "<td class=\"right\">%.3f</td>", data->cumulative.mean() );
-      os.printf( "<td class=\"right\">%.3f</td>", data->cumulative.min() );
-      os.printf( "<td class=\"right\">%.3f</td>", data->cumulative.max() );
+      fmt::print( os, "<tr{}>", ++row & 1 ? " class=\"odd\"" : "" );
+      fmt::print( os, "<td class=\"left\">{}</td>", name );
+      fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->normal.mean() );
+      fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->normal.min() );
+      fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->normal.max() );
+      fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->cumulative.mean() );
+      fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->cumulative.min() );
+      fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->cumulative.max() );
       os << "</tr>\n";
     }
 
-    os << "</table>\n";
-
-    os << "</div>\n"
-       << "</div>\n";
+    os << "</table>\n"
+          "</div>\n"
+          "</div>\n";
   }
 
   void html_customsection_burn_phases( report::sc_html_stream& os )
