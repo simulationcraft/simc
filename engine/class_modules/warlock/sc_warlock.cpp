@@ -1101,22 +1101,6 @@ private:
   warlock_t& p;
 };
 
-static void do_trinket_init( warlock_t*                player,
-  specialization_e         spec,
-  const special_effect_t*& ptr,
-  const special_effect_t&  effect )
-{
-  // Ensure we have the spell data. This will prevent the trinket effect from working on live
-  // Simulationcraft. Also ensure correct specialization.
-  if ( !player->find_spell( effect.spell_id )->ok() ||
-    player->specialization() != spec )
-  {
-    return;
-  }
-  // Set pointer, module considers non-null pointer to mean the effect is "enabled"
-  ptr = &( effect );
-}
-
 struct warlock_module_t : public module_t
 {
   warlock_module_t() : module_t( WARLOCK ) { }

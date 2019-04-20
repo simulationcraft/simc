@@ -1667,7 +1667,7 @@ public:
   {
     std::vector<std::string> splits = util::string_split(name_str, ".");
 
-    if (splits[0] == "dot" && splits[2] == "ticks_gained_on_refresh" | splits[2] == "ticks_gained_on_refresh_pmultiplier")
+    if (splits[0] == "dot" && (splits[2] == "ticks_gained_on_refresh" || splits[2] == "ticks_gained_on_refresh_pmultiplier"))
     {
       // Since we know some action names don't map to the actual dot portion, lets add some exceptions
       // this may have to be made more robust if other specs are interested in using it, but for now lets
@@ -2805,7 +2805,7 @@ public:
     }
 
     if ( p-> specialization() == DRUID_FERAL &&  p -> talent.soul_of_the_forest -> ok() &&
-      ( data().affected_by( p -> talent.soul_of_the_forest -> effectN(2)) | data().affected_by( p -> talent.soul_of_the_forest -> effectN(3) )))
+      ( data().affected_by( p -> talent.soul_of_the_forest -> effectN(2)) || data().affected_by( p -> talent.soul_of_the_forest -> effectN(3) )))
     {
        base_td_multiplier *= 1.0 + p->talent.soul_of_the_forest->effectN(3).percent();
        base_dd_multiplier *= 1.0 + p->talent.soul_of_the_forest->effectN(2).percent();
@@ -9240,7 +9240,7 @@ expr_t* druid_t::create_expression( const std::string& name_str )
 {
   std::vector<std::string> splits = util::string_split( name_str, "." );
 
-  if ( splits[ 0 ] == "druid" && (splits[ 2 ] == "ticks_gained_on_refresh" | splits[2] == "ticks_gained_on_refresh_pmultiplier" ))
+  if ( splits[ 0 ] == "druid" && (splits[ 2 ] == "ticks_gained_on_refresh" || splits[2] == "ticks_gained_on_refresh_pmultiplier" ))
   {
     // Since we know some action names don't map to the actual dot portion, lets add some exceptions
     // this may have to be made more robust if other specs are interested in using it, but for now lets
