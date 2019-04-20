@@ -6616,73 +6616,66 @@ public:
   void html_customsection_burn_phases( report::sc_html_stream& os )
   {
     os << "<div class=\"player-section custom_section\">\n"
-       << "<h3 class=\"toggle open\">Burn Phases</h3>\n"
-       << "<div class=\"toggle-content\">\n";
+          "<h3 class=\"toggle open\">Burn Phases</h3>\n"
+          "<div class=\"toggle-content\">\n"
+          "<p>Burn phase duration tracks the amount of time spent in each burn phase. This is defined as the time between a "
+          "start_burn_phase and stop_burn_phase action being executed. Note that \"execute\" burn phases, i.e., the "
+          "final burn of a fight, is also included.</p>\n"
+          "<div style=\"display: flex;\">\n"
+          "<table class=\"sc\" style=\"margin-top: 5px;\">\n"
+          "<thead>\n"
+          "<tr>\n"
+          "<th>Burn Phase Duration</th>\n"
+          "</tr>\n"
+          "<tbody>\n";
 
-    os << "<p>Burn phase duration tracks the amount of time spent in each burn phase. This is defined as the time between a "
-       << "start_burn_phase and stop_burn_phase action being executed. Note that \"execute\" burn phases, i.e., the "
-       << "final burn of a fight, is also included.</p>\n";
-
-    os << "<div style=\"display: flex;\">\n"
-       << "<table class=\"sc\" style=\"margin-top: 5px;\">\n"
-       << "<thead>\n"
-       << "<tr>\n"
-       << "<th>Burn Phase Duration</th>\n"
-       << "</tr>\n"
-       << "<tbody>\n";
-
-    os.printf( "<tr><td class=\"left\">Count</td><td>%d</td></tr>\n", p.sample_data.burn_duration_history->count() );
-    os.printf( "<tr><td class=\"left\">Minimum</td><td>%.3f</td></tr>\n", p.sample_data.burn_duration_history->min() );
-    os.printf( "<tr><td class=\"left\">5<sup>th</sup> percentile</td><td>%.3f</td></tr>\n", p.sample_data.burn_duration_history->percentile( 0.05 ) );
-    os.printf( "<tr><td class=\"left\">Mean</td><td>%.3f</td></tr>\n", p.sample_data.burn_duration_history->mean() );
-    os.printf( "<tr><td class=\"left\">95<sup>th</sup> percentile</td><td>%.3f</td></tr>\n", p.sample_data.burn_duration_history->percentile( 0.95 ) );
-    os.printf( "<tr><td class=\"left\">Max</td><td>%.3f</td></tr>\n", p.sample_data.burn_duration_history->max() );
-    os.printf( "<tr><td class=\"left\">Variance</td><td>%.3f</td></tr>\n", p.sample_data.burn_duration_history->variance );
-    os.printf( "<tr><td class=\"left\">Mean Variance</td><td>%.3f</td></tr>\n", p.sample_data.burn_duration_history->mean_variance );
-    os.printf( "<tr><td class=\"left\">Mean Std. Dev</td><td>%.3f</td></tr>\n", p.sample_data.burn_duration_history->mean_std_dev );
+    auto& h = *p.sample_data.burn_duration_history;
+    fmt::print( os, "<tr><td class=\"left\">Count</td><td>{}</td></tr>\n", h.count() );
+    fmt::print( os, "<tr><td class=\"left\">Minimum</td><td>{:.3f}</td></tr>\n", h.min() );
+    fmt::print( os, "<tr><td class=\"left\">5<sup>th</sup> percentile</td><td>{:.3f}</td></tr>\n", h.percentile( 0.05 ) );
+    fmt::print( os, "<tr><td class=\"left\">Mean</td><td>{:.3f}</td></tr>\n", h.mean() );
+    fmt::print( os, "<tr><td class=\"left\">95<sup>th</sup> percentile</td><td>{:.3f}</td></tr>\n", h.percentile( 0.95 ) );
+    fmt::print( os, "<tr><td class=\"left\">Max</td><td>{:.3f}</td></tr>\n", h.max() );
+    fmt::print( os, "<tr><td class=\"left\">Variance</td><td>{:.3f}</td></tr>\n", h.variance );
+    fmt::print( os, "<tr><td class=\"left\">Mean Variance</td><td>{:.3f}</td></tr>\n", h.mean_variance );
+    fmt::print( os, "<tr><td class=\"left\">Mean Std. Dev</td><td>{:.3f}</td></tr>\n", h.mean_std_dev );
 
     os << "</tbody>\n"
-       << "</table>\n";
+          "</table>\n";
 
-    highchart::histogram_chart_t burn_duration_history_chart( highchart::build_id( p, "burn_duration_history" ), *p.sim );
-    if ( chart::generate_distribution(
-      burn_duration_history_chart, &p, p.sample_data.burn_duration_history->distribution, "Burn Duration",
-      p.sample_data.burn_duration_history->mean(),
-      p.sample_data.burn_duration_history->min(),
-      p.sample_data.burn_duration_history->max() ) )
+    highchart::histogram_chart_t chart( highchart::build_id( p, "burn_duration" ), *p.sim );
+    if ( chart::generate_distribution( chart, &p, h.distribution, "Burn Duration", h.mean(), h.min(), h.max() ) )
     {
-      burn_duration_history_chart.set( "tooltip.headerFormat", "<b>{point.key}</b> s<br/>" );
-      burn_duration_history_chart.set( "chart.width", "575" );
-      os << burn_duration_history_chart.to_target_div();
-      p.sim->add_chart_data( burn_duration_history_chart );
+      chart.set( "tooltip.headerFormat", "<b>{point.key}</b> s<br/>" );
+      chart.set( "chart.width", "575" );
+      os << chart.to_target_div();
+      p.sim->add_chart_data( chart );
     }
 
-    os << "</div>\n";
+    os << "</div>\n"
+          "<p>Mana at burn start is the mana level recorded (in percentage of total mana) when a start_burn_phase command is executed.</p>\n"
+          "<table class=\"sc\">\n"
+          "<thead>\n"
+          "<tr>\n"
+          "<th>Mana at Burn Start</th>\n"
+          "</tr>\n"
+          "<tbody>\n";
 
-    os << "<p>Mana at burn start is the mana level recorded (in percentage of total mana) when a start_burn_phase command is executed.</p>\n";
-
-    os << "<table class=\"sc\">\n"
-       << "<thead>\n"
-       << "<tr>\n"
-       << "<th>Mana at Burn Start</th>\n"
-       << "</tr>\n"
-       << "<tbody>\n";
-
-    os.printf( "<tr><td class=\"left\">Count</td><td>%d</td></tr>\n", p.sample_data.burn_initial_mana->count() );
-    os.printf( "<tr><td class=\"left\">Minimum</td><td>%.3f</td></tr>\n", p.sample_data.burn_initial_mana->min() );
-    os.printf( "<tr><td class=\"left\">5<sup>th</sup> percentile</td><td>%.3f</td></tr>\n", p.sample_data.burn_initial_mana->percentile( 0.05 ) );
-    os.printf( "<tr><td class=\"left\">Mean</td><td>%.3f</td></tr>\n", p.sample_data.burn_initial_mana->mean() );
-    os.printf( "<tr><td class=\"left\">95<sup>th</sup> percentile</td><td>%.3f</td></tr>\n", p.sample_data.burn_initial_mana->percentile( 0.95 ) );
-    os.printf( "<tr><td class=\"left\">Max</td><td>%.3f</td></tr>\n", p.sample_data.burn_initial_mana->max() );
-    os.printf( "<tr><td class=\"left\">Variance</td><td>%.3f</td></tr>\n", p.sample_data.burn_initial_mana->variance );
-    os.printf( "<tr><td class=\"left\">Mean Variance</td><td>%.3f</td></tr>\n", p.sample_data.burn_initial_mana->mean_variance );
-    os.printf( "<tr><td class=\"left\">Mean Std. Dev</td><td>%.3f</td></tr>\n", p.sample_data.burn_initial_mana->mean_std_dev );
+    auto& m = *p.sample_data.burn_initial_mana;
+    fmt::print( os, "<tr><td class=\"left\">Count</td><td>{}</td></tr>\n", m.count() );
+    fmt::print( os, "<tr><td class=\"left\">Minimum</td><td>{:.3f}</td></tr>\n", m.min() );
+    fmt::print( os, "<tr><td class=\"left\">5<sup>th</sup> percentile</td><td>{:.3f}</td></tr>\n", m.percentile( 0.05 ) );
+    fmt::print( os, "<tr><td class=\"left\">Mean</td><td>{:.3f}</td></tr>\n", m.mean() );
+    fmt::print( os, "<tr><td class=\"left\">95<sup>th</sup> percentile</td><td>{:.3f}</td></tr>\n", m.percentile( 0.95 ) );
+    fmt::print( os, "<tr><td class=\"left\">Max</td><td>{:.3f}</td></tr>\n", m.max() );
+    fmt::print( os, "<tr><td class=\"left\">Variance</td><td>{:.3f}</td></tr>\n", m.variance );
+    fmt::print( os, "<tr><td class=\"left\">Mean Variance</td><td>{:.3f}</td></tr>\n", m.mean_variance );
+    fmt::print( os, "<tr><td class=\"left\">Mean Std. Dev</td><td>{:.3f}</td></tr>\n", m.mean_std_dev );
 
     os << "</tbody>\n"
-       << "</table>\n";
-
-    os << "</div>\n"
-       << "</div>\n";
+          "</table>\n"
+          "</div>\n"
+          "</div>\n";
   }
 
   void html_customsection_icy_veins( report::sc_html_stream& os )
