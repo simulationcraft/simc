@@ -626,7 +626,7 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
   }
 
   /** Trigger a shadowy apparition */
-  void trigger()
+  void trigger( player_t* target )
   {
     if ( priest().sim->debug )
     {
@@ -634,7 +634,8 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
     }
 
     priest().procs.shadowy_apparition->occur();
-    schedule_execute();
+    set_target( target );
+    execute();
 
     // TODO: Determine if this is dependent on talenting into Auspicious Spirits
     expansion::bfa::trigger_leyshocks_grand_compilation( STAT_HASTE_RATING, player );
@@ -734,7 +735,7 @@ struct shadow_word_pain_t final : public priest_spell_t
     {
       if ( d->state->result == RESULT_CRIT )
       {
-        priest().active_spells.shadowy_apparitions->trigger();
+        priest().active_spells.shadowy_apparitions->trigger( d->target );
       }
     }
 
