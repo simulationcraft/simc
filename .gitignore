@@ -29,29 +29,41 @@ moc_*.cpp
 Win32OpenSSL_Light-*
 Win64OpenSSL_Light-*
 
-/CMakeFiles/
+# simc executables
+/simc
+engine/simc
+engine/sc_rng
+cli/simc
+
+#SimulationCraft executables
+/SimulationCraft
+/gui/SimulationCraft
+
+# Cast extract
 casc_extract/cache/
 casc_extract/wow/
 casc_extract/__pycache__/
-vs/int_gui/
-x64/
-x86/
-simc-*/
+
+# Documentation
 doc/build/
 doc/doxygen/
 doc/ext/breathe/
 
-/simc
-/SimulationCraft
-engine/simc
-engine/sc_rng
-/build
+# Reports
 results.html
 simc_gui.simc
 simc_log.txt
 simc_report.html
 simc_report.json
 simc_report.xml
+
+/CMakeFiles/
+vs/int_gui/
+x64/
+x86/
+simc-*/
+
+/build
 .DS_Store
 [Dd]ebug
 simcqt.app
@@ -111,3 +123,10 @@ gui/*_resource*
 .idea/
 .ycm_*
 dbc_extract3/cache/live/DBCache.bin
+
+apikey.txt
+
+# Hide some commong build folders
+Debug/
+Build/
+Release/
