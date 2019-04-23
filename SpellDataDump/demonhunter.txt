@@ -458,7 +458,7 @@ Effects          :
 #2 (id=267052)   : School Damage (2): chromatic
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20475 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #3 (id=738282)   : Dummy (3)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Mechanic: Stun | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : Unleash an eruption of fel energy, dealing $s2 Chaos damage and stunning all nearby enemies for $d.
 
 Each enemy stunned by Chaos Nova has a $s3% chance to generate a Lesser Soul Fragment.
@@ -1191,6 +1191,7 @@ Effects          :
 Description      : $@spelldesc188499
 
 Name             : Metamorphosis (id=200166) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Chromatic
 Spell Type       : Magic
@@ -1203,7 +1204,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ......x. ........ ........   x....... ..x..... ........ ........ 
+                 : ...x.... ......x. ........ ........   x....... ..x..... ........ ........ 
 Effects          :
 #1 (id=294655)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Mechanic: Stun | Target: At Caster (22) -> AOE enemy (15)
