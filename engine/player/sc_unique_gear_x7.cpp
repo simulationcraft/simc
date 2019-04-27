@@ -121,6 +121,7 @@ namespace items
   void lady_waycrests_music_box_heal( special_effect_t& );
   void balefire_branch( special_effect_t& );
   void vial_of_animated_blood( special_effect_t& );
+  void briny_barnacle( special_effect_t& );
   // 8.0.1 - World Boss Trinkets
   void sandscoured_idol( special_effect_t& );
   // 8.0.1 - Uldir Trinkets
@@ -1198,6 +1199,103 @@ void items::vial_of_animated_blood( special_effect_t& effect )
     effect.reverse = true;
     effect.tick = effect.driver() -> effectN( 2 ).period();
     effect.reverse_stack_reduction = 1;
+}
+
+// Briny Barnacle ===========================================================
+
+struct briny_barnacle_constructor_t : public item_targetdata_initializer_t
+{
+  briny_barnacle_constructor_t( unsigned iid, const std::vector< slot_e >& s ) :
+    item_targetdata_initializer_t( iid, s )
+  {}
+
+  // Create the choking brine debuff that is checked on enemy demise
+  void operator()( actor_target_data_t* td ) const override
+  {
+    const special_effect_t* effect = find_effect( td -> source );
+    if ( !effect )
+    {
+      td -> debuff.choking_brine = make_buff( *td, "choking_brine" );
+      return;
+    }
+    assert( !td -> debuff.choking_brine );
+
+    td -> debuff.choking_brine =
+      make_buff( *td, "choking_brine_debuff", effect -> trigger() )
+      -> set_activated( false );
+    td -> debuff.choking_brine -> reset();
+  }
+};
+
+void items::briny_barnacle( special_effect_t& effect )
+{
+  struct choking_brine_damage_t : public proc_t
+  {
+    choking_brine_damage_t( const special_effect_t& effect ) :
+      proc_t( effect, "choking_brine", effect.driver() -> effectN( 1 ).trigger() )
+    { }
+
+    void execute() override
+    {
+      proc_t::execute();
+
+      auto td = player -> get_target_data( execute_state -> target );
+      assert( td );
+      assert( td -> debuff.choking_brine );
+      td -> debuff.choking_brine -> trigger();
+    }
+  };
+
+  struct choking_brine_spreader_t : public proc_t
+  {
+    action_t* damage;
+    
+    choking_brine_spreader_t( const special_effect_t& effect, action_t* damage_action ) : 
+      proc_t( effect, "choking_brine_explosion", effect.driver() ),
+      damage( damage_action )
+    {
+      aoe = -1;
+    }
+
+    void impact( action_state_t* s )
+    {
+      proc_t::impact( s );
+      damage -> set_target( s -> target );
+      damage -> execute();
+    }
+  };
+
+  action_t* choking_brine_damage = create_proc_action<choking_brine_damage_t>( "choking_brine", effect ); 
+  action_t* explosion = new choking_brine_spreader_t( effect, choking_brine_damage );
+
+  // Add a callback on demise to each enemy in the simulation
+  range::for_each( effect.player -> sim -> actor_list, [effect, explosion]( player_t* target ) {
+    // Don't do anything on players
+    if ( !target -> is_enemy() )
+    {
+      return;
+    }
+
+    target -> callbacks_on_demise.push_back( [effect, explosion] ( player_t* target ) {
+      // Don't do anything if the sim is ending
+      if ( target -> sim -> event_mgr.canceled )
+      {
+        return;
+      }
+
+      auto td = effect.player -> get_target_data( target );
+      
+      if ( td -> debuff.choking_brine -> up() )
+      {
+        target -> sim -> print_log( "Enemy {} dies while afflicted by Choking Brine, applying debuff on all neaby enemies", target -> name_str );
+        explosion -> schedule_execute();
+      }
+    } );
+  } );
+
+  effect.execute_action = choking_brine_damage;
+  
+  new dbc_proc_callback_t( effect.item, effect );
 }
 
 // Rotcrusted Voodoo Doll ===================================================
@@ -2689,7 +2787,6 @@ void items::legplates_of_unbound_anguish( special_effect_t& effect )
       dbc_proc_callback_t( effect.player, effect )
     { }
 
-    // Re-used some of the Gutripper code for the pre-trigger health percentage check
     void trigger( action_t* a, void* call_data ) override
     {
       if ( rng().roll( a -> sim -> bfa_opts.legplates_of_unbound_anguish_chance ) )
@@ -2810,6 +2907,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 278154, items::twitching_tentacle_of_xalzaix );
   register_special_effect( 278161, items::vanquished_tendril_of_ghuun );
   register_special_effect( 268828, items::vial_of_animated_blood );
+  register_special_effect( 268191, items::briny_barnacle );
   register_special_effect( 278267, items::sandscoured_idol );
   register_special_effect( 278109, items::syringe_of_bloodborne_infirmity );
   register_special_effect( 278112, items::syringe_of_bloodborne_infirmity );
@@ -2857,6 +2955,7 @@ void unique_gear::register_target_data_initializers_bfa( sim_t* sim )
   sim -> register_target_data_initializer( deadeye_spyglass_constructor_t( 159623, items ) );
   sim -> register_target_data_initializer( syringe_of_bloodborne_infirmity_constructor_t( 160655, items ) );
   sim -> register_target_data_initializer( everchill_anchor_constructor_t( 165570, items ) );
+  sim -> register_target_data_initializer( briny_barnacle_constructor_t( 159619, items ) );
 }
 
 namespace expansion
