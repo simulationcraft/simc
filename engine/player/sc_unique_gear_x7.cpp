@@ -1249,8 +1249,8 @@ void items::briny_barnacle( special_effect_t& effect )
   struct choking_brine_spreader_t : public proc_t
   {
     action_t* damage;
-    
-    choking_brine_spreader_t( const special_effect_t& effect, action_t* damage_action ) : 
+
+    choking_brine_spreader_t( const special_effect_t& effect, action_t* damage_action ) :
       proc_t( effect, "choking_brine_explosion", effect.driver() ),
       damage( damage_action )
     {
@@ -1265,18 +1265,20 @@ void items::briny_barnacle( special_effect_t& effect )
     }
   };
 
-  action_t* choking_brine_damage = create_proc_action<choking_brine_damage_t>( "choking_brine", effect ); 
+  action_t* choking_brine_damage = create_proc_action<choking_brine_damage_t>( "choking_brine", effect );
   action_t* explosion = new choking_brine_spreader_t( effect, choking_brine_damage );
 
   // Add a callback on demise to each enemy in the simulation
-  range::for_each( effect.player -> sim -> actor_list, [effect, explosion]( player_t* target ) {
+  range::for_each( effect.player -> sim -> actor_list, [ effect, explosion ]( player_t* target )
+  {
     // Don't do anything on players
     if ( !target -> is_enemy() )
     {
       return;
     }
 
-    target -> callbacks_on_demise.push_back( [effect, explosion] ( player_t* target ) {
+    target -> callbacks_on_demise.push_back( [ effect, explosion ] ( player_t* target ) 
+    {
       // Don't do anything if the sim is ending
       if ( target -> sim -> event_mgr.canceled )
       {
@@ -1284,7 +1286,7 @@ void items::briny_barnacle( special_effect_t& effect )
       }
 
       auto td = effect.player -> get_target_data( target );
-      
+
       if ( td -> debuff.choking_brine -> up() )
       {
         target -> sim -> print_log( "Enemy {} dies while afflicted by Choking Brine, applying debuff on all neaby enemies", target -> name_str );
@@ -1294,7 +1296,7 @@ void items::briny_barnacle( special_effect_t& effect )
   } );
 
   effect.execute_action = choking_brine_damage;
-  
+
   new dbc_proc_callback_t( effect.item, effect );
 }
 
