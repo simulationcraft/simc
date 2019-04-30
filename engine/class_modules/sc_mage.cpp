@@ -1135,6 +1135,7 @@ struct incanters_flow_t : public buff_t
   {
     set_duration( 0_ms );
     set_period( p->talents.incanters_flow->effectN( 1 ).period() );
+    set_chance( p->talents.incanters_flow->ok() );
     set_default_value( data().effectN( 1 ).percent() );
 
     // Leyshock
@@ -1989,7 +1990,7 @@ struct frost_mage_spell_t : public mage_spell_t
     if ( result_is_hit( s->result ) && s->chain_target == 0 )
       record_shatter_source( s, shatter_source );
 
-    if ( result_is_hit( s->result ) && chills && p()->talents.bone_chilling->ok() )
+    if ( result_is_hit( s->result ) && chills )
       p()->buffs.bone_chilling->trigger();
   }
 };
@@ -2121,7 +2122,7 @@ struct arcane_barrage_t : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::impact( s );
 
-    if ( result_is_hit( s->result ) && p()->talents.chrono_shift->ok() )
+    if ( result_is_hit( s->result ) )
       p()->buffs.chrono_shift->trigger();
   }
 
@@ -2254,7 +2255,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::impact( s );
 
-    if ( result_is_hit( s->result ) && p()->talents.touch_of_the_magi->ok() )
+    if ( result_is_hit( s->result ) )
       td( s->target )->debuffs.touch_of_the_magi->trigger();
   }
 };
@@ -2722,9 +2723,7 @@ struct combustion_t : public fire_mage_spell_t
     fire_mage_spell_t::execute();
 
     p()->buffs.combustion->trigger();
-
-    if ( p()->azerite.wildfire.enabled() )
-      p()->buffs.wildfire->trigger();
+    p()->buffs.wildfire->trigger();
   }
 };
 
@@ -3307,7 +3306,7 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::impact( s );
 
-    if ( result_is_hit( s->result ) && p()->azerite.packed_ice.enabled() )
+    if ( result_is_hit( s->result ) )
       td( s->target )->debuffs.packed_ice->trigger();
   }
 };
@@ -3344,9 +3343,7 @@ struct frozen_orb_t : public frost_mage_spell_t
   void execute() override
   {
     frost_mage_spell_t::execute();
-
-    if ( p()->talents.freezing_rain->ok() )
-      p()->buffs.freezing_rain->trigger();
+    p()->buffs.freezing_rain->trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -3619,14 +3616,13 @@ struct ice_lance_t : public frost_mage_spell_t
         record_shatter_source( s, extension_source );
       }
 
-      if ( p()->talents.chain_reaction->ok() )
-        p()->buffs.chain_reaction->trigger();
-
       if ( frozen &  FF_FINGERS_OF_FROST
         && frozen & ~FF_FINGERS_OF_FROST )
       {
         p()->procs.fingers_of_frost_wasted->occur();
       }
+
+      p()->buffs.chain_reaction->trigger();
     }
 
     if ( !primary )
@@ -4201,8 +4197,7 @@ struct ray_of_frost_t : public frost_mage_spell_t
     p()->buffs.ray_of_frost->trigger();
 
     // Ray of Frost triggers Bone Chilling on each tick, as well as on execute.
-    if ( p()->talents.bone_chilling->ok() )
-      p()->buffs.bone_chilling->trigger();
+    p()->buffs.bone_chilling->trigger();
 
     // TODO: Now happens at 2.5 and 5.
     if ( d->current_tick == 3 || d->current_tick == 5 )
@@ -4286,7 +4281,7 @@ struct scorch_t : public fire_mage_spell_t
   {
     fire_mage_spell_t::impact( s );
 
-    if ( result_is_hit( s->result ) && p()->talents.frenetic_speed->ok() )
+    if ( result_is_hit( s->result ) )
       p()->buffs.frenetic_speed->trigger();
   }
 
@@ -5336,9 +5331,11 @@ void mage_t::create_buffs()
                                    { recalculate_resource_max( RESOURCE_MANA ); } );
   buffs.chrono_shift         = make_buff( this, "chrono_shift", find_spell( 236298 ) )
                                  ->set_default_value( find_spell( 236298 )->effectN( 1 ).percent() )
-                                 ->add_invalidate( CACHE_RUN_SPEED );
+                                 ->add_invalidate( CACHE_RUN_SPEED )
+                                 ->set_chance( talents.chrono_shift->ok() );
   buffs.rule_of_threes       = make_buff( this, "rule_of_threes", find_spell( 264774 ) )
-                                 ->set_default_value( find_spell( 264774 )->effectN( 1 ).percent() );
+                                 ->set_default_value( find_spell( 264774 )->effectN( 1 ).percent() )
+                                 ->set_chance( talents.rule_of_threes->ok() );
 
 
   // Fire
@@ -5358,7 +5355,8 @@ void mage_t::create_buffs()
 
   buffs.frenetic_speed        = make_buff( this, "frenetic_speed", find_spell( 236060 ) )
                                   ->set_default_value( find_spell( 236060 )->effectN( 1 ).percent() )
-                                  ->add_invalidate( CACHE_RUN_SPEED );
+                                  ->add_invalidate( CACHE_RUN_SPEED )
+                                  ->set_chance( talents.frenetic_speed->ok() );
   buffs.pyroclasm             = make_buff( this, "pyroclasm", find_spell( 269651 ) )
                                   ->set_default_value( find_spell( 269651 )->effectN( 1 ).percent() )
                                   ->set_chance( talents.pyroclasm->effectN( 1 ).percent() );
@@ -5371,11 +5369,14 @@ void mage_t::create_buffs()
   buffs.icy_veins        = make_buff<buffs::icy_veins_buff_t>( this );
 
   buffs.bone_chilling    = make_buff( this, "bone_chilling", find_spell( 205766 ) )
-                             ->set_default_value( 0.1 * talents.bone_chilling->effectN( 1 ).percent() );
+                             ->set_default_value( 0.1 * talents.bone_chilling->effectN( 1 ).percent() )
+                             ->set_chance( talents.bone_chilling->ok() );
   buffs.chain_reaction   = make_buff( this, "chain_reaction", find_spell( 278310 ) )
-                             ->set_default_value( find_spell( 278310 )->effectN( 1 ).percent() );
+                             ->set_default_value( find_spell( 278310 )->effectN( 1 ).percent() )
+                             ->set_chance( talents.chain_reaction->ok() );
   buffs.freezing_rain    = make_buff( this, "freezing_rain", find_spell( 270232 ) )
-                             ->set_default_value( find_spell( 270232 )->effectN( 2 ).percent() );
+                             ->set_default_value( find_spell( 270232 )->effectN( 2 ).percent() )
+                             ->set_chance( talents.freezing_rain->ok() );
   buffs.ice_floes        = make_buff<buffs::ice_floes_buff_t>( this );
   buffs.ray_of_frost     = make_buff( this, "ray_of_frost", find_spell( 208141 ) )
                              ->set_default_value( find_spell( 208141 )->effectN( 1 ).percent() );
@@ -5418,7 +5419,8 @@ void mage_t::create_buffs()
   buffs.gbow    = make_buff( this, "greater_blessing_of_wisdom", find_spell( 203539 ) )
     ->set_tick_callback( [ this ] ( buff_t*, int, const timespan_t& )
       { resource_gain( RESOURCE_MANA, resources.max[ RESOURCE_MANA ] * 0.002 * options.gbow_count, gains.gbow ); } )
-    ->set_period( 2.0_s );
+    ->set_period( 2.0_s )
+    ->set_chance( options.gbow_count > 0 );
   buffs.shimmer = make_buff( this, "shimmer", find_spell( 212653 ) );
 }
 
@@ -6167,11 +6169,8 @@ void mage_t::arise()
 {
   player_t::arise();
 
-  if ( talents.incanters_flow->ok() )
-    buffs.incanters_flow->trigger();
-
-  if ( options.gbow_count > 0 )
-    buffs.gbow->trigger();
+  buffs.incanters_flow->trigger();
+  buffs.gbow->trigger();
 
   if ( spec.ignite->ok() )
   {
@@ -6469,7 +6468,7 @@ void mage_t::trigger_arcane_charge( int stacks )
   ac->trigger( stacks );
   int after = ac->check();
 
-  if ( talents.rule_of_threes->ok() && before < 3 && after >= 3 )
+  if ( before < 3 && after >= 3 )
     buffs.rule_of_threes->trigger();
 }
 
