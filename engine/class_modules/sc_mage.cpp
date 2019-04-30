@@ -48,6 +48,13 @@ enum frozen_flag_e
   FF_ROOT             = 1 << FROZEN_ROOT
 };
 
+enum rotation_type_e
+{
+  ROTATION_STANDARD,
+  ROTATION_NO_ICE_LANCE,
+  ROTATION_FROZEN_ORB
+};
+
 struct state_switch_t
 {
 private:
@@ -463,6 +470,7 @@ public:
     timespan_t scorch_delay = 15_ms;
     int gbow_count = 0;
     bool allow_shimmer_lance = false;
+    rotation_type_e rotation = ROTATION_STANDARD;
   } options;
 
   // Pets
@@ -5001,6 +5009,18 @@ void mage_t::create_options()
   add_option( opt_timespan( "scorch_delay", options.scorch_delay ) );
   add_option( opt_int( "greater_blessing_of_wisdom_count", options.gbow_count ) );
   add_option( opt_bool( "allow_shimmer_lance", options.allow_shimmer_lance ) );
+  add_option( opt_func( "rotation", [ this ] ( sim_t*, const std::string&, const std::string& val )
+  {
+    if ( util::str_compare_ci( val, "standard" ) )
+      options.rotation = ROTATION_STANDARD;
+    else if ( util::str_compare_ci( val, "no_ice_lance" ) )
+      options.rotation = ROTATION_NO_ICE_LANCE;
+    else if ( util::str_compare_ci( val, "frozen_orb" ) )
+      options.rotation = ROTATION_FROZEN_ORB;
+    else
+      return false;
+    return true;
+  } ) );
   player_t::create_options();
 }
 
@@ -5012,6 +5032,10 @@ std::string mage_t::create_profile( save_e save_type )
   {
     if ( options.firestarter_time > 0_ms )
       profile += "firestarter_time=" + util::to_string( options.firestarter_time.total_seconds() ) + "\n";
+    if ( options.rotation == ROTATION_NO_ICE_LANCE )
+      profile += "rotation=no_ice_lance\n";
+    if ( options.rotation == ROTATION_FROZEN_ORB )
+      profile += "rotation=frozen_orb\n";
   }
 
   return profile;
@@ -5848,8 +5872,11 @@ void mage_t::apl_frost()
   action_priority_list_t* talent_rop   = get_action_priority_list( "talent_rop" );
 
   default_list->add_action( this, "Counterspell" );
-  default_list->add_action( this, "Ice Lance", "if=prev_gcd.1.flurry&!buff.fingers_of_frost.react",
-    "If the mage has FoF after casting instant Flurry, we can delay the Ice Lance and use other high priority action, if available." );
+  if ( options.rotation != ROTATION_NO_ICE_LANCE )
+  {
+    default_list->add_action( this, "Ice Lance", "if=prev_gcd.1.flurry&!buff.fingers_of_frost.react",
+      "If the mage has FoF after casting instant Flurry, we can delay the Ice Lance and use other high priority action, if available." );
+  }
   default_list->add_action( "call_action_list,name=cooldowns" );
   default_list->add_action( "call_action_list,name=aoe,if=active_enemies>3&talent.freezing_rain.enabled|active_enemies>4",
     "The target threshold isn't exact. Between 3-5 targets, the differences between the ST and AoE action lists are rather small. "
@@ -5859,36 +5886,67 @@ void mage_t::apl_frost()
   single->add_talent( this, "Ice Nova", "if=cooldown.ice_nova.ready&debuff.winters_chill.up",
     "In some situations, you can shatter Ice Nova even after already casting Flurry and Ice Lance. "
     "Otherwise this action is used when the mage has FoF after casting Flurry, see above." );
-  single->add_action( this, "Flurry", "if=talent.ebonbolt.enabled&prev_gcd.1.ebonbolt&(!talent.glacial_spike.enabled|buff.icicles.stack<4|buff.brain_freeze.react)",
-    "Without GS, Ebonbolt is always shattered. With GS, Ebonbolt is shattered if it would waste Brain Freeze charge (i.e. when the "
-    "mage starts casting Ebonbolt with Brain Freeze active) or when below 4 Icicles (if Ebonbolt is cast when the mage has 4-5 Icicles, "
-    "it's better to use the Brain Freeze from it on Glacial Spike)." );
-  single->add_action( this, "Flurry", "if=talent.glacial_spike.enabled&prev_gcd.1.glacial_spike&buff.brain_freeze.react",
-    "Glacial Spike is always shattered." );
-  single->add_action( this, "Flurry", "if=prev_gcd.1.frostbolt&buff.brain_freeze.react&(!talent.glacial_spike.enabled|buff.icicles.stack<4)",
-    "Without GS, the mage just tries to shatter as many Frostbolts as possible. With GS, the mage only shatters Frostbolt that would "
-    "put them at 1-3 Icicle stacks. Difference between shattering Frostbolt with 1-3 Icicles and 1-4 Icicles is small, but 1-3 tends "
-    "to be better in more situations (the higher GS damage is, the more it leans towards 1-3). Forcing shatter on Frostbolt is still "
-    "a small gain, so is not caring about FoF. Ice Lance is too weak to warrant delaying Brain Freeze Flurry." );
-  single->add_action( this, "Frozen Orb" );
-  single->add_action( this, "Blizzard", "if=active_enemies>2|active_enemies>1&cast_time=0&buff.fingers_of_frost.react<2",
-    "With Freezing Rain and at least 2 targets, Blizzard needs to be used with higher priority to make sure you can fit both instant Blizzards "
-    "into a single Freezing Rain. Starting with three targets, Blizzard leaves the low priority filler role and is used on cooldown (and just making "
-    "sure not to waste Brain Freeze charges) with or without Freezing Rain." );
-  single->add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react",
-    "Trying to pool charges of FoF for anything isn't worth it. Use them as they come." );
-  single->add_talent( this, "Comet Storm" );
-  single->add_talent( this, "Ebonbolt" );
-  single->add_talent( this, "Ray of Frost", "if=!action.frozen_orb.in_flight&ground_aoe.frozen_orb.remains=0",
-    "Ray of Frost is used after all Fingers of Frost charges have been used and there isn't active Frozen Orb that could generate more. "
-    "This is only a small gain against multiple targets, as Ray of Frost isn't too impactful." );
-  single->add_action( this, "Blizzard", "if=cast_time=0|active_enemies>1",
-    "Blizzard is used as low priority filler against 2 targets. When using Freezing Rain, it's a medium gain to use the instant Blizzard even "
-    "against a single target, especially with low mastery." );
-  single->add_talent( this, "Glacial Spike", "if=buff.brain_freeze.react|prev_gcd.1.ebonbolt|active_enemies>1&talent.splitting_ice.enabled",
-    "Glacial Spike is used when there's a Brain Freeze proc active (i.e. only when it can be shattered). This is a small to medium gain "
-    "in most situations. Low mastery leans towards using it when available. When using Splitting Ice and having another target nearby, "
-    "it's slightly better to use GS when available, as the second target doesn't benefit from shattering the main target." );
+  switch ( options.rotation )
+  {
+    case ROTATION_STANDARD:
+      single->add_action( this, "Flurry", "if=talent.ebonbolt.enabled&prev_gcd.1.ebonbolt&(!talent.glacial_spike.enabled|buff.icicles.stack<4|buff.brain_freeze.react)",
+        "Without GS, Ebonbolt is always shattered. With GS, Ebonbolt is shattered if it would waste Brain Freeze charge (i.e. when the "
+        "mage starts casting Ebonbolt with Brain Freeze active) or when below 4 Icicles (if Ebonbolt is cast when the mage has 4-5 Icicles, "
+        "it's better to use the Brain Freeze from it on Glacial Spike)." );
+      single->add_action( this, "Flurry", "if=talent.glacial_spike.enabled&prev_gcd.1.glacial_spike&buff.brain_freeze.react",
+        "Glacial Spike is always shattered." );
+      single->add_action( this, "Flurry", "if=prev_gcd.1.frostbolt&buff.brain_freeze.react&(!talent.glacial_spike.enabled|buff.icicles.stack<4)",
+        "Without GS, the mage just tries to shatter as many Frostbolts as possible. With GS, the mage only shatters Frostbolt that would "
+        "put them at 1-3 Icicle stacks. Difference between shattering Frostbolt with 1-3 Icicles and 1-4 Icicles is small, but 1-3 tends "
+        "to be better in more situations (the higher GS damage is, the more it leans towards 1-3). Forcing shatter on Frostbolt is still "
+        "a small gain, so is not caring about FoF. Ice Lance is too weak to warrant delaying Brain Freeze Flurry." );
+      single->add_action( this, "Frozen Orb" );
+      single->add_action( this, "Blizzard", "if=active_enemies>2|active_enemies>1&cast_time=0&buff.fingers_of_frost.react<2",
+        "With Freezing Rain and at least 2 targets, Blizzard needs to be used with higher priority to make sure you can fit both instant Blizzards "
+        "into a single Freezing Rain. Starting with three targets, Blizzard leaves the low priority filler role and is used on cooldown (and just making "
+        "sure not to waste Brain Freeze charges) with or without Freezing Rain." );
+      single->add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react",
+        "Trying to pool charges of FoF for anything isn't worth it. Use them as they come." );
+      single->add_talent( this, "Comet Storm" );
+      single->add_talent( this, "Ebonbolt" );
+      single->add_talent( this, "Ray of Frost", "if=!action.frozen_orb.in_flight&ground_aoe.frozen_orb.remains=0",
+        "Ray of Frost is used after all Fingers of Frost charges have been used and there isn't active Frozen Orb that could generate more. "
+        "This is only a small gain against multiple targets, as Ray of Frost isn't too impactful." );
+      single->add_action( this, "Blizzard", "if=cast_time=0|active_enemies>1",
+        "Blizzard is used as low priority filler against 2 targets. When using Freezing Rain, it's a medium gain to use the instant Blizzard even "
+        "against a single target, especially with low mastery." );
+      single->add_talent( this, "Glacial Spike", "if=buff.brain_freeze.react|prev_gcd.1.ebonbolt|active_enemies>1&talent.splitting_ice.enabled",
+        "Glacial Spike is used when there's a Brain Freeze proc active (i.e. only when it can be shattered). This is a small to medium gain "
+        "in most situations. Low mastery leans towards using it when available. When using Splitting Ice and having another target nearby, "
+        "it's slightly better to use GS when available, as the second target doesn't benefit from shattering the main target." );
+      break;
+    case ROTATION_NO_ICE_LANCE:
+      single->add_action( this, "Flurry", "if=talent.ebonbolt.enabled&prev_gcd.1.ebonbolt&buff.brain_freeze.react" );
+      single->add_action( this, "Flurry", "if=prev_gcd.1.glacial_spike&buff.brain_freeze.react" );
+      single->add_action( this, "Frozen Orb" );
+      single->add_action( this, "Blizzard", "if=active_enemies>2|active_enemies>1&cast_time=0" );
+      single->add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react&talent.splitting_ice.enabled&active_enemies>1" );
+      single->add_talent( this, "Comet Storm" );
+      single->add_talent( this, "Ebonbolt", "if=buff.icicles.stack=5&!buff.brain_freeze.react" );
+      single->add_talent( this, "Glacial Spike", "if=buff.brain_freeze.react|prev_gcd.1.ebonbolt" );
+      break;
+    case ROTATION_FROZEN_ORB:
+      single->add_action( this, "Frozen Orb" );
+      single->add_action( this, "Flurry", "if=prev_gcd.1.ebonbolt&buff.brain_freeze.react" );
+      single->add_action( this, "Blizzard", "if=active_enemies>2|active_enemies>1&cast_time=0" );
+      single->add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react&cooldown.frozen_orb.remains>5|buff.fingers_of_frost.react=2" );
+      single->add_action( this, "Blizzard", "if=cast_time=0" );
+      single->add_action( this, "Flurry", "if=prev_gcd.1.ebonbolt" );
+      single->add_action( this, "Flurry", "if=buff.brain_freeze.react&(prev_gcd.1.frostbolt|debuff.packed_ice.remains>execute_time+"
+        "action.ice_lance.travel_time)" );
+      single->add_talent( this, "Comet Storm" );
+      single->add_talent( this, "Ebonbolt" );
+      single->add_talent( this, "Ray of Frost", "if=debuff.packed_ice.up,interrupt_if=buff.fingers_of_frost.react=2,interrupt_immediate=1" );
+      single->add_action( this, "Blizzard" );
+      break;
+    default:
+      break;
+  }
   single->add_talent( this, "Ice Nova" );
   single->add_action( "use_item,name=tidestorm_codex,if=buff.icy_veins.down&buff.rune_of_power.down" );
   single->add_action( this, "Frostbolt" );
@@ -5917,7 +5975,7 @@ void mage_t::apl_frost()
   aoe->add_action( "call_action_list,name=movement" );
   aoe->add_action( this, "Ice Lance" );
 
-  cooldowns->add_action( this, "Icy Veins" );
+  cooldowns->add_action( this, "Icy Veins", options.rotation == ROTATION_FROZEN_ORB ? "if=cooldown.frozen_orb.remains<5" : "" );
   cooldowns->add_talent( this, "Mirror Image" );
   cooldowns->add_talent( this, "Rune of Power", "if=prev_gcd.1.frozen_orb|target.time_to_die>10+cast_time&target.time_to_die<20",
     "Rune of Power is always used with Frozen Orb. Any leftover charges at the end of the fight should be used, ideally "
