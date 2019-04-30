@@ -676,26 +676,26 @@ public:
   void        init_benefits() override;
   void        init_uptimes() override;
   void        init_rng() override;
-  void        invalidate_cache( cache_e c ) override;
-  void        init_resources( bool force ) override;
-  void        recalculate_resource_max( resource_e rt ) override;
+  void        invalidate_cache( cache_e ) override;
+  void        init_resources( bool ) override;
+  void        recalculate_resource_max( resource_e ) override;
   void        reset() override;
-  expr_t*     create_expression( const std::string& name ) override;
-  expr_t*     create_action_expression( action_t&, const std::string& name ) override;
-  action_t*   create_action( const std::string& name, const std::string& options_str ) override;
+  expr_t*     create_expression( const std::string& ) override;
+  expr_t*     create_action_expression( action_t&, const std::string& ) override;
+  action_t*   create_action( const std::string&, const std::string& ) override;
   void        create_actions() override;
   void        create_pets() override;
   resource_e  primary_resource() const override { return RESOURCE_MANA; }
   role_e      primary_role() const override { return ROLE_SPELL; }
-  stat_e      convert_hybrid_stat( stat_e s ) const override;
+  stat_e      convert_hybrid_stat( stat_e ) const override;
   double      resource_regen_per_second( resource_e ) const override;
   double      composite_player_pet_damage_multiplier( const action_state_t* ) const override;
   double      composite_spell_crit_chance() const override;
-  double      composite_rating_multiplier( rating_e r ) const override;
+  double      composite_rating_multiplier( rating_e ) const override;
   double      composite_spell_haste() const override;
-  double      matching_gear_multiplier( attribute_e attr ) const override;
-  void        update_movement( timespan_t duration ) override;
-  void        teleport( double distance, timespan_t duration ) override;
+  double      matching_gear_multiplier( attribute_e ) const override;
+  void        update_movement( timespan_t ) override;
+  void        teleport( double, timespan_t ) override;
   double      passive_movement_modifier() const override;
   void        arise() override;
   void        combat_begin() override;
@@ -2082,8 +2082,7 @@ struct ignite_t : public residual_action_t
   {
     residual_action_t::tick( d );
 
-    if ( p()->talents.conflagration->ok()
-      && rng().roll( p()->talents.conflagration->effectN( 1 ).percent() ) )
+    if ( rng().roll( p()->talents.conflagration->effectN( 1 ).percent() ) )
     {
       p()->action.conflagration_flare_up->set_target( d->target );
       p()->action.conflagration_flare_up->execute();
@@ -2130,11 +2129,8 @@ struct arcane_barrage_t : public arcane_mage_spell_t
   {
     double da = arcane_mage_spell_t::bonus_da( s );
 
-    if ( p()->azerite.arcane_pressure.enabled()
-      && s->target->health_percentage() < p()->azerite.arcane_pressure.spell_ref().effectN( 2 ).base_value() )
-    {
+    if ( s->target->health_percentage() < p()->azerite.arcane_pressure.spell_ref().effectN( 2 ).base_value() )
       da += p()->azerite.arcane_pressure.value() * p()->buffs.arcane_charge->check() / arcane_charge_damage_bonus( true );
-    }
 
     return da;
   }
@@ -2143,8 +2139,7 @@ struct arcane_barrage_t : public arcane_mage_spell_t
   {
     double m = arcane_mage_spell_t::composite_da_multiplier( s );
 
-    if ( p()->talents.resonance->ok() )
-      m *= 1.0 + s->n_targets * p()->talents.resonance->effectN( 1 ).percent();
+    m *= 1.0 + s->n_targets * p()->talents.resonance->effectN( 1 ).percent();
 
     return m;
   }
@@ -2218,11 +2213,8 @@ struct arcane_blast_t : public arcane_mage_spell_t
       p()->trigger_arcane_charge();
 
       // TODO: Benefit tracking
-      if ( p()->azerite.galvanizing_spark.enabled()
-        && rng().roll( p()->azerite.galvanizing_spark.spell_ref().effectN( 1 ).percent() ) )
-      {
+      if ( rng().roll( p()->azerite.galvanizing_spark.spell_ref().effectN( 1 ).percent() ) )
         p()->trigger_arcane_charge();
-      }
     }
 
     if ( p()->buffs.presence_of_mind->up() )
@@ -2280,8 +2272,7 @@ struct arcane_explosion_t : public arcane_mage_spell_t
     if ( hit_any_target )
       p()->trigger_arcane_charge();
 
-    if ( p()->talents.reverberate->ok()
-      && num_targets_hit >= as<int>( p()->talents.reverberate->effectN( 2 ).base_value() )
+    if ( num_targets_hit >= as<int>( p()->talents.reverberate->effectN( 2 ).base_value() )
       && rng().roll( p()->talents.reverberate->effectN( 1 ).percent() ) )
     {
       p()->trigger_arcane_charge();
@@ -2292,8 +2283,7 @@ struct arcane_explosion_t : public arcane_mage_spell_t
   {
     double da = arcane_mage_spell_t::bonus_da( s );
 
-    if ( p()->azerite.explosive_echo.enabled()
-      && target_list().size() >= as<size_t>( p()->azerite.explosive_echo.spell_ref().effectN( 1 ).base_value() )
+    if ( target_list().size() >= as<size_t>( p()->azerite.explosive_echo.spell_ref().effectN( 1 ).base_value() )
       && rng().roll( p()->azerite.explosive_echo.spell_ref().effectN( 3 ).percent() ) )
     {
       da += p()->azerite.explosive_echo.value( 4 );
@@ -3083,9 +3073,7 @@ struct flurry_bolt_t : public frost_mage_spell_t
     background = true;
     chills = true;
     base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
-
-    if ( p->azerite.glacial_assault.enabled() )
-      glacial_assault_chance = p->azerite.glacial_assault.spell_ref().effectN( 1 ).trigger()->proc_chance();
+    glacial_assault_chance = p->azerite.glacial_assault.spell_ref().effectN( 1 ).trigger()->proc_chance();
   }
 
   void impact( action_state_t* s ) override
@@ -4255,11 +4243,8 @@ struct scorch_t : public fire_mage_spell_t
   {
     double m = fire_mage_spell_t::composite_da_multiplier( s );
 
-    if ( p()->talents.searing_touch->ok()
-      && s->target->health_percentage() <= p()->talents.searing_touch->effectN( 1 ).base_value() )
-    {
+    if ( s->target->health_percentage() < p()->talents.searing_touch->effectN( 1 ).base_value() )
       m *= 1.0 + p()->talents.searing_touch->effectN( 2 ).percent();
-    }
 
     return m;
   }
@@ -4268,11 +4253,8 @@ struct scorch_t : public fire_mage_spell_t
   {
     double c = fire_mage_spell_t::composite_target_crit_chance( target );
 
-    if ( p()->talents.searing_touch->ok()
-      && target->health_percentage() <= p()->talents.searing_touch->effectN( 1 ).base_value() )
-    {
+    if ( target->health_percentage() < p()->talents.searing_touch->effectN( 1 ).base_value() )
       c += 1.0;
-    }
 
     return c;
   }
@@ -6018,14 +6000,13 @@ void mage_t::apl_default()
   default_list->add_action( "Frostbolt" );
 }
 
-double mage_t::resource_regen_per_second( resource_e r ) const
+double mage_t::resource_regen_per_second( resource_e rt ) const
 {
-  double reg = player_t::resource_regen_per_second( r );
+  double reg = player_t::resource_regen_per_second( rt );
 
-  if ( r == RESOURCE_MANA )
+  if ( specialization() == MAGE_ARCANE && rt == RESOURCE_MANA )
   {
-    if ( spec.savant->ok() )
-      reg *= 1.0 + cache.mastery() * spec.savant->effectN( 1 ).mastery_value();
+    reg *= 1.0 + cache.mastery() * spec.savant->effectN( 1 ).mastery_value();
   }
 
   return reg;
@@ -6055,11 +6036,8 @@ void mage_t::recalculate_resource_max( resource_e rt )
 
   if ( specialization() == MAGE_ARCANE && rt == RESOURCE_MANA )
   {
-    if ( spec.savant->ok() )
-      resources.max[ rt ] *= 1.0 + cache.mastery() * spec.savant->effectN( 1 ).mastery_value();
-
-    if ( buffs.arcane_familiar->check() )
-      resources.max[ rt ] *= 1.0 + buffs.arcane_familiar->check_value();
+    resources.max[ rt ] *= 1.0 + cache.mastery() * spec.savant->effectN( 1 ).mastery_value();
+    resources.max[ rt ] *= 1.0 + buffs.arcane_familiar->check_value();
 
     resources.current[ rt ] = resources.max[ rt ] * pct;
     sim->print_debug( "{} adjusts maximum mana from {} to {} ({}%)", name(), max, resources.max[ rt ], 100 * pct );
