@@ -1371,14 +1371,14 @@ bool report::spell_data_decorator_t::can_decorate() const
 
 std::string report::spell_data_decorator_t::url_name() const
 {
-  return m_spell->name_cstr();
+  return util::encode_html( m_spell->name_cstr() );
 }
 
 std::string report::spell_data_decorator_t::token() const
 {
   std::string token = m_spell->name_cstr();
   util::tokenize( token );
-  return token;
+  return util::encode_html( token );
 }
 
 std::vector<std::string> report::spell_data_decorator_t::parms() const
@@ -1430,12 +1430,12 @@ std::string report::item_decorator_t::base_url() const
 
 std::string report::item_decorator_t::token() const
 {
-  return m_item->name();
+  return util::encode_html( m_item->name() );
 }
 
 std::string report::item_decorator_t::url_name() const
 {
-  return m_item->full_name();
+  return util::encode_html( m_item->full_name() );
 }
 
 std::vector<std::string> report::item_decorator_t::parms() const
