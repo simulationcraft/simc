@@ -416,10 +416,10 @@ public:
   }
 
   std::string url_name() const override
-  { return m_obj -> data().id() ? m_obj -> data().name_cstr() : m_obj -> name(); }
+  { return util::encode_html( m_obj -> data().id() ? m_obj -> data().name_cstr() : m_obj -> name() ); }
 
   std::string token() const override
-  { return m_obj -> name(); }
+  { return util::encode_html( m_obj -> name() ); }
 
   std::vector<std::string> parms() const override
   {
