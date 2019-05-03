@@ -2766,7 +2766,7 @@ void print_html_player_charts( report::sc_html_stream& os, const player_t& p,
   highchart::histogram_chart_t chart( highchart::build_id( p, "dps_dist" ),
                                       *p.sim );
   if ( chart::generate_distribution(
-           chart, &p, p.collected_data.dps.distribution, p.name_str + " DPS",
+           chart, &p, p.collected_data.dps.distribution, util::encode_html( p.name_str ) + " DPS",
            p.collected_data.dps.mean(), p.collected_data.dps.min(),
            p.collected_data.dps.max() ) )
   {
@@ -2780,7 +2780,7 @@ void print_html_player_charts( report::sc_html_stream& os, const player_t& p,
     highchart::histogram_chart_t chart( highchart::build_id( p, "hps_dist" ),
                                         *p.sim );
     if ( chart::generate_distribution(
-             chart, &p, p.collected_data.hps.distribution, p.name_str + " HPS",
+             chart, &p, p.collected_data.hps.distribution, util::encode_html( p.name_str ) + " HPS",
              p.collected_data.hps.mean(), p.collected_data.hps.min(),
              p.collected_data.hps.max() ) )
     {
@@ -4214,7 +4214,7 @@ void print_html_player_deaths( report::sc_html_stream& os, const player_t& p,
                                         *p.sim );
     if ( chart::generate_distribution(
              chart, &p, p.collected_data.deaths.distribution,
-             p.name_str + " Death", p.collected_data.deaths.mean(),
+             util::encode_html( p.name_str ) + " Death", p.collected_data.deaths.mean(),
              p.collected_data.deaths.min(), p.collected_data.deaths.max() ) )
     {
       os << chart.to_target_div();
