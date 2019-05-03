@@ -368,8 +368,10 @@ void to_json( JsonOutput root,
     json[ "time" ] = entry.time;
     if ( entry.action )
     {
+      json[ "id" ] = entry.action -> id;
       json[ "name" ] = entry.action -> name();
-      json[ "target" ] = entry.action -> target -> name();
+      json[ "target" ] = entry.action->harmful ? entry.target -> name() : "none";
+      json[ "spell_name" ] = entry.action->data().name_cstr();
     }
     else
     {
@@ -383,6 +385,7 @@ void to_json( JsonOutput root,
       range::for_each( entry.buff_list, [ &buffs, &sim ]( const std::pair< buff_t*, std::vector<double> > data ) {
         auto entry = buffs.add();
 
+        entry[ "id" ] = data.first -> data().id();
         entry[ "name" ] = data.first -> name();
         entry[ "stacks" ] = data.second[0];
         if ( sim.json_full_states )
@@ -428,9 +431,9 @@ void to_json( JsonOutput root,
     auto resources = json[ "resources" ];
     auto resources_max = json[ "resources_max" ];
     range::for_each( relevant_resources, [ &resources, &resources_max, &entry ]( resource_e r ) {
-      resources[ util::resource_type_string( r ) ] = entry.resource_snapshot[ r ];
+      resources[ util::resource_type_string( r ) ] = util::round(entry.resource_snapshot[ r ], 2);
       // TODO: Why do we have this instead of using some static one?
-      resources_max[ util::resource_type_string( r ) ] = entry.resource_max_snapshot[ r ];
+      resources_max[ util::resource_type_string( r ) ] = util::round(entry.resource_max_snapshot[ r ], 2);
     } );
   } );
 }
