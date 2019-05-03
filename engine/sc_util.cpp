@@ -2628,6 +2628,15 @@ std::string util::decode_html( const std::string& input )
   return output;
 }
 
+std::string util::remove_special_chars( const std::string& s )
+{
+  std::string r = s;
+  // Allow alphanumeric characters, underscore and non-ASCII characters.
+  auto pred = [] ( char c ) { return std::isalnum( c ) || c == '_' || c >= 128; };
+  r.erase( std::remove_if( r.begin(), r.end(), pred ), r.end() );
+  return r;
+}
+
 bool util::is_combat_rating( item_mod_type t )
 {
   switch ( t )
