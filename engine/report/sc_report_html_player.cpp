@@ -3589,7 +3589,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os,
           std::string name = "none";
           if ( t && t->name_cstr() )
           {
-            name = util::encode_html( t->name_cstr() ).c_str();
+            name = util::encode_html( t->name_cstr() );
             if ( t->specialization() != SPEC_NONE )
             {
               name += " (";
