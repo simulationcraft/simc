@@ -5668,11 +5668,6 @@ struct flame_shock_t : public shaman_spell_t
 
     if ( p()->azerite.igneous_potential.ok() )
     {
-      proc_chance = p()->azerite.igneous_potential.spell_ref().effectN( 3 ).percent();
-    }
-
-    if ( p()->azerite.igneous_potential.ok() )
-    {
       if ( p()->spec.elemental_shaman->ok() )
       {
         proc_chance = p()->azerite.igneous_potential.spell_ref().effectN( 3 ).percent();
