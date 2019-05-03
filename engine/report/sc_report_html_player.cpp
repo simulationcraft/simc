@@ -139,7 +139,7 @@ std::string output_action_name( const stats_t& s, const player_t* actor )
   if ( s.player->sim->report_details )
   {
     class_attr = " id=\"actor" + util::to_string( s.player->index ) + "_" +
-                 s.name_str + "_" + stats_type +
+                 util::remove_special_chars( s.name_str ) + "_" + stats_type +
                  "_toggle\" class=\"toggle-details\"";
   }
 
@@ -156,13 +156,13 @@ std::string output_action_name( const stats_t& s, const player_t* actor )
   }
   else
   {
-    name = s.name_str;
+    name = util::encode_html( s.name_str );
   }
 
   // If we are printing a stats object that belongs to a pet, for an actual
   // actor, print out the pet name too
   if ( actor && !actor->is_pet() && s.player->is_pet() )
-    name += " (" + s.player->name_str + ")";
+    name += " (" + util::encode_html( s.player->name_str ) + ")";
 
   return "<span " + class_attr + ">" + name + "</span>";
 }
@@ -437,7 +437,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask,
        << "\" class=\"filler\">\n";
 
     // Stat Details
-    os.printf( "<h4>Stats details: %s </h4>\n", s.name_str.c_str() );
+    os.printf( "<h4>Stats details: %s </h4>\n", util::encode_html( s.name_str ).c_str() );
 
     os << "<table class=\"details\">\n"
        << "<tr>\n";
@@ -725,7 +725,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask,
         continue;
       processed_actions.push_back( a->name() );
 
-      os.printf( "<h4>Action details: %s </h4>\n", a->name() );
+      os.printf( "<h4>Action details: %s </h4>\n", util::encode_html( a->name() ).c_str() );
 
       os.printf(
           "<div class=\"float\">\n"
@@ -757,7 +757,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask,
           a->cooldown->duration.total_seconds(),
           a->cooldown->hasted ? "true" : "false",
           a->base_execute_time.total_seconds(), a->base_crit,
-          a->target ? a->target->name() : "", a->harmful ? "true" : "false",
+          a->target ? util::encode_html( a->target->name() ).c_str() : "", a->harmful ? "true" : "false",
           util::encode_html( a->option.if_expr_str ).c_str() );
 
       // Spelldata
@@ -776,9 +776,10 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask,
             "class=\"tooltip\">%s</span></li>\n"
             "</ul>\n"
             "</div>\n",
-            a->data().id(), a->data().name_cstr(),
+            a->data().id(), util::encode_html( a->data().name_cstr() ).c_str(),
             util::school_type_string( a->data().get_school_type() ),
-            report::pretty_spell_text( a->data(), a->data().tooltip(), p )
+            util::encode_html(
+                report::pretty_spell_text( a->data(), a->data().tooltip(), p ) )
                 .c_str(),
             util::encode_html(
                 report::pretty_spell_text( a->data(), a->data().desc(), p ) )
@@ -882,7 +883,7 @@ int print_html_action_resource( report::sc_html_stream& os, const stats_t& s,
           "<td class=\"right\">%.1f</td>\n"
           "<td class=\"right\">%.1f</td>\n"
           "<td class=\"right\">%.1f</td>\n",
-          s.resource_gain.name(),
+          util::encode_html( s.resource_gain.name() ).c_str(),
           util::inverse_tokenize( util::resource_type_string( i ) ).c_str(),
           s.resource_gain.count[ i ], s.resource_gain.actual[ i ],
           s.resource_gain.actual[ i ] / s.resource_gain.count[ i ] );
@@ -929,7 +930,7 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
         "<th class=\"left\">%s</th>\n"
         "<td class=\"left\">%s</td>\n"
         "</tr>\n",
-        item.source_str.c_str(),
+        util::encode_html( item.source_str ).c_str(),
         util::inverse_tokenize( item.slot_name() ).c_str(),
         report::item_decorator_t( item ).decorate().c_str() );
 
@@ -1599,7 +1600,7 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
         std::string name = "none";
         if ( t && t->name_cstr() )
         {
-          name = t->name_cstr();
+          name = util::encode_html( t->name_cstr() );
           if ( t->specialization() != SPEC_NONE )
           {
             name += " (";
@@ -1639,7 +1640,7 @@ void print_html_player_scale_factor_table(
   os << "<tr>\n"
      << "<th colspan=\"" << util::to_string( 1 + colspan )
      << "\"><a href=\"#help-scale-factors\" class=\"help\">Scale Factors for "
-     << p.scaling_for_metric( sm ).name << "</a></th>\n"
+     << util::encode_html( p.scaling_for_metric( sm ).name ) << "</a></th>\n"
      << "</tr>\n";
 
   os << "<tr>\n"
@@ -1896,7 +1897,7 @@ void print_html_sample_sequence_string_entry(
   if ( !data.action )
     return;
 
-  std::string targetname = data.action->harmful ? data.target->name() : "none";
+  std::string targetname = data.action->harmful ? util::remove_special_chars( data.target->name_str ) : "none";
   std::string time_str;
   if ( precombat )
   {
@@ -1909,8 +1910,8 @@ void print_html_sample_sequence_string_entry(
                                                      (int)data.time.total_millis() % 1000 );
   }
 
-  os.printf( "<span class=\"%s_seq_target_%s\" title=\"[%s] %s%s\n|", p.name(),
-             targetname.c_str(), time_str, data.action->name(),
+  os.printf( "<span class=\"%s_seq_target_%s\" title=\"[%s] %s%s\n|", util::remove_special_chars( p.name_str ).c_str(),
+             targetname.c_str(), time_str, util::remove_special_chars( data.action->name_str ).c_str(),
              ( targetname == "none" ? "" : " @ " + targetname ).c_str() );
 
   resource_e pr = p.primary_resource();
@@ -1946,7 +1947,7 @@ void print_html_sample_sequence_string_entry(
     int stacks   = gsl::narrow_cast<int>(data.buff_list[ b ].second[0]);
     if ( !buff->constant )
     {
-      os.printf( "\n%s", buff->name() );
+      os.printf( "\n%s", util::encode_html( buff->name() ).c_str() );
       if ( stacks > 1 )
         os.printf( "(%d)", stacks );
     }
@@ -1978,10 +1979,10 @@ void print_html_sample_sequence_table_entry(
         "<td class=\"left\">%c</td>\n"
         "<td class=\"left\">%s</td>\n"
         "<td class=\"left\">%s</td>\n",
-        data.action->action_list ? data.action->action_list->name_str.c_str() : "default",
+        data.action->action_list ? util::encode_html( data.action->action_list->name_str ).c_str() : "default",
         data.action->marker != 0 ? data.action->marker : ' ',
-        data.action->name(),
-        data.target->name() );
+        util::encode_html( data.action->name() ).c_str(),
+        util::encode_html( data.target->name() ).c_str() );
   }
   else
   {
@@ -2042,7 +2043,7 @@ void print_html_sample_sequence_table_entry(
       else
         os.printf( ", " );
 
-      os.printf( "%s", buff->name() );
+      os.printf( "%s", util::encode_html( buff->name() ).c_str() );
       if ( stacks > 1 )
         os.printf( "(%d)", stacks );
     }
@@ -2187,8 +2188,8 @@ void print_html_player_action_priority_list( report::sc_html_stream& os,
     {
       if ( j == 12 )
         j = 2;
-      os.printf( ".%s_seq_target_%s { color: #%s; }\n", p.name(),
-                 targets[ i ].c_str(), colors[ j ] );
+      os.printf( ".%s_seq_target_%s { color: #%s; }\n", util::remove_special_chars( p.name_str ).c_str(),
+                 util::remove_special_chars( targets[ i ] ).c_str(), colors[ j ] );
       j++;
     }
 
@@ -2320,7 +2321,7 @@ void print_html_gain( report::sc_html_stream& os, const gain_t& g,
       }
       ++j;
       os << ">\n";
-      os << "<td class=\"left\">" << g.name() << "</td>\n";
+      os << "<td class=\"left\">" << util::encode_html( g.name() ) << "</td>\n";
       os << "<td class=\"left\">"
          << util::inverse_tokenize( util::resource_type_string( i ) )
          << "</td>\n";
@@ -2719,7 +2720,7 @@ void print_html_player_charts( report::sc_html_stream& os, const player_t& p,
     p.collected_data.timeline_dmg_taken.build_derivative_timeline(
         timeline_dps_taken );
     dps_taken.set_yaxis_title( "Damage taken per second" );
-    dps_taken.set_title( p.name_str + " Damage taken per second" );
+    dps_taken.set_title( util::encode_html( p.name_str ) + " Damage taken per second" );
     dps_taken.add_simple_series( "area", "#FDD017", "DPS taken",
                                  timeline_dps_taken.data() );
     dps_taken.set_mean( timeline_dps_taken.mean() );
@@ -2841,19 +2842,19 @@ void print_html_player_buff_spelldata( report::sc_html_stream& os, const buff_t&
          "<li><span class=\"label\">default_chance:</span>%.2f%%</li>\n"
          "</ul>\n"
          "</td>\n",
-         data_name.c_str(),
-         data.id(), data.name_cstr(),
+         util::encode_html( data_name ).c_str(),
+         data.id(), util::encode_html( data.name_cstr() ).c_str(),
          b.player
              ? util::encode_html(
                    report::pretty_spell_text( data, data.tooltip(),
                                               *b.player ) )
                    .c_str()
-             : data.tooltip(),
+             : util::encode_html( data.tooltip() ).c_str(),
          b.player
              ? util::encode_html( report::pretty_spell_text(
                                       data, data.desc(), *b.player ) )
                    .c_str()
-             : data.desc(),
+             : util::encode_html( data.desc() ).c_str(),
          data.max_stacks(), data.duration().total_seconds(),
          data.cooldown().total_seconds(), data.proc_chance() * 100 );
    }
@@ -2870,6 +2871,7 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b,
     buff_name += b.player->name_str + '-';
   }
   buff_name += b.name_str.c_str();
+  buff_name = util::encode_html( buff_name );
 
   os << "<tr";
   if ( i & 1 )
@@ -2933,7 +2935,7 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b,
         "<li><span class=\"label\">tick_time behavior:</span>%s</li>\n"
         "<li><span class=\"label\">period:</span>%.2f</li>\n",
         b.source ? util::encode_html( b.source->name() ).c_str() : "",
-        b.cooldown->name_str.c_str(), b.max_stack(),
+        util::encode_html( b.cooldown->name_str ).c_str(), b.max_stack(),
         b.buff_duration.total_seconds(), b.cooldown->duration.total_seconds(),
         b.default_chance * 100, b.default_value,
         b.activated ? "true" : "false",
@@ -2948,7 +2950,7 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b,
     {
       os.printf(
           "<li><span class=\"label\">associated item:</span>%s</li>\n",
-          b.item->full_name().c_str());
+          util::encode_html( b.item->full_name() ).c_str());
 
     }
     os.printf(
@@ -2993,7 +2995,7 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b,
       if ( uptime > 0 )
       {
         os.printf( "<li><span class=\"label\">%s_%d:</span>%.2f%%</li>\n",
-                   b.name_str.c_str(), j, uptime * 100.0 );
+                   util::encode_html( b.name_str ).c_str(), j, uptime * 100.0 );
       }
     }
     os << "</ul>\n";
@@ -3023,7 +3025,7 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b,
       highchart::time_series_t buff_uptime( highchart::build_id( b, "uptime" ),
                                             *b.sim );
       buff_uptime.set_yaxis_title( "Average uptime" );
-      buff_uptime.set_title( b.name_str + " Uptime" );
+      buff_uptime.set_title( util::encode_html( b.name_str ) + " Uptime" );
       buff_uptime.add_simple_series( "area", "#FF0000", "Uptime",
                                      b.uptime_array.data() );
       buff_uptime.set_mean( b.uptime_array.mean() );
@@ -3139,7 +3141,7 @@ void print_html_player_description( report::sc_html_stream& os,
         "<class=\"toggle-thumbnail ext%s\"><img src=\"%s\" "
         "alt=\"%s\" class=\"player-thumbnail\"/>\n",
         ( num_players == 1 ) ? "" : " hide",
-        p.report_information.thumbnail_url.c_str(), p.name_str.c_str() );
+        p.report_information.thumbnail_url.c_str(), util::remove_special_chars( p.name_str ).c_str() );
   }
 
   os << "<h2 id=\""
@@ -3259,7 +3261,7 @@ void print_html_player_description( report::sc_html_stream& os,
       p.level(), sim.timewalk > 0 && !p.is_enemy() ? timewalk_str.c_str() : "",
       util::inverse_tokenize( util::role_type_string( p.primary_role() ) )
           .c_str(),
-      p.position_str.c_str(),
+      util::encode_html( p.position_str ).c_str(),
       util::profile_source_string( p.profile_source_ ) );
 }
 
@@ -3587,7 +3589,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os,
           std::string name = "none";
           if ( t && t->name_cstr() )
           {
-            name = t->name_cstr();
+            name = util::encode_html( t->name_cstr() ).c_str();
             if ( t->specialization() != SPEC_NONE )
             {
               name += " (";
@@ -3798,7 +3800,7 @@ void output_player_damage_summary( report::sc_html_stream& os,
             "<th class=\"right small\">%.0f / %.0f</th>\n"
             "<td colspan=\"%d\" class=\"filler\"></td>\n"
             "</tr>\n",
-            pet->name_str.c_str(), pet->collected_data.dps.mean(),
+            util::encode_html( pet->name_str ).c_str(), pet->collected_data.dps.mean(),
             pet->collected_data.dpse.mean(),
             static_columns + n_optional_columns );
       }
@@ -3902,7 +3904,7 @@ void output_player_heal_summary( report::sc_html_stream& os,
             "<th class=\"right small\">%.0f / %.0f</th>\n"
             "<td colspan=\"%d\" class=\"filler\"></td>\n"
             "</tr>\n",
-            pet->name_str.c_str(), pet->collected_data.dps.mean(),
+            util::encode_html( pet->name_str ).c_str(), pet->collected_data.dps.mean(),
             pet->collected_data.dpse.mean(),
             static_columns + n_optional_columns );
       }
@@ -3968,7 +3970,7 @@ void output_player_simple_ability_summary( report::sc_html_stream& os,
             "<th class=\"left small\">pet - %s</th>\n"
             "<th colspan=\"%d\" class=\"filler\"></th>\n"
             "</tr>\n",
-            pet->name_str.c_str(), 2 );
+            util::encode_html( pet->name_str ).c_str(), 2 );
       }
 
       output_player_action( os, n_row, 0, MASK_DMG | MASK_HEAL | MASK_ABSORB,
@@ -4025,7 +4027,7 @@ void print_html_player_benefits_uptimes( report::sc_html_stream& os,
           "<td class=\"left\">%s</td>\n"
           "<td class=\"right\">%.1f%%</td>\n"
           "</tr>\n",
-          benefit->name(), benefit->ratio.mean() );
+          util::encode_html( benefit->name() ).c_str(), benefit->ratio.mean() );
       i++;
     }
   }
@@ -4039,6 +4041,7 @@ void print_html_player_benefits_uptimes( report::sc_html_stream& os,
         std::string benefit_name;
         benefit_name += pet->name_str + '-';
         benefit_name += benefit->name();
+        benefit_name = util::encode_html( benefit_name );
 
         os << "<tr";
         if ( !( i & 1 ) )
@@ -4075,7 +4078,7 @@ void print_html_player_benefits_uptimes( report::sc_html_stream& os,
           "<td class=\"left\">%s</td>\n"
           "<td class=\"right\">%.1f%%</td>\n"
           "</tr>\n",
-          uptime->name(), uptime->uptime_sum.mean() * 100.0 );
+          util::encode_html( uptime->name() ).c_str(), uptime->uptime_sum.mean() * 100.0 );
       i++;
     }
   }
@@ -4089,6 +4092,7 @@ void print_html_player_benefits_uptimes( report::sc_html_stream& os,
         std::string uptime_name;
         uptime_name += pet->name_str + '-';
         uptime_name += uptime->name();
+        uptime_name = util::encode_html( uptime_name );
 
         os << "<tr";
         if ( !( i & 1 ) )
@@ -4144,7 +4148,7 @@ void print_html_player_procs( report::sc_html_stream& os,
             "<td class=\"right\">%.1f</td>\n"
             "<td class=\"right\">%.1fsec</td>\n"
             "</tr>\n",
-            proc->name(), proc->count.mean(), proc->interval_sum.mean() );
+            util::encode_html( proc->name() ).c_str(), proc->count.mean(), proc->interval_sum.mean() );
         i++;
       }
     }
