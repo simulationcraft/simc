@@ -1109,7 +1109,7 @@ void report::print_html_sample_data( report::sc_html_stream& os, const player_t&
 
     highchart::histogram_chart_t chart( tokenized_div_name, *p.sim );
     chart.set_toggle_id( "actor" + util::to_string( p.index ) + "_" + tokenized_div_name + "_stats_toggle" );
-    if ( chart::generate_distribution( chart, nullptr, data.distribution, name, data.mean(), data.min(), data.max() ) )
+    if ( chart::generate_distribution( chart, nullptr, data.distribution, util::encode_html( name ), data.mean(), data.min(), data.max() ) )
     {
       os << chart.to_target_div();
       p.sim->add_chart_data( chart );
