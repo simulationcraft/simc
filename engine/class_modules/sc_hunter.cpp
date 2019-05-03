@@ -202,6 +202,8 @@ void print_html_report( const player_t& player, const player_data_t& data, repor
     std::string name_str = rec.first;
     if ( a )
       name_str = report::action_decorator_t( a ).decorate();
+    else
+      name_str = util::encode_html( name_str );
 
     std::string row_class_str = "";
     if ( ++n & 1 )

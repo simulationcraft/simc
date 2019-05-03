@@ -1998,6 +1998,8 @@ public:
       std::string name = data -> cd -> name_str;
       if ( action_t* a = p.find_action( name ) )
         name = report::action_decorator_t( a ).decorate();
+      else
+        name = util::encode_html( name );
 
       std::string row_class;
       if ( ++row & 1 ) row_class = " class=\"odd\"";
