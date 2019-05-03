@@ -83,7 +83,7 @@ void print_raw_action_damage( report::sc_html_stream& os, const stats_t& s,
 
     os.printf( format, util::encode_html( p.name() ).c_str(),
                util::encode_html( s.player->name() ).c_str(),
-               s.name_str.c_str(), "", id, direct_total,
+               util::encode_html( s.name_str ).c_str(), "", id, direct_total,
                direct_total / s.player->collected_data.fight_length.mean(),
                s.num_direct_results.mean() /
                    ( s.player->collected_data.fight_length.mean() / 60.0 ),
@@ -116,7 +116,7 @@ void print_raw_action_damage( report::sc_html_stream& os, const stats_t& s,
         format,
         util::encode_html( p.name() ).c_str(),
         util::encode_html( s.player->name() ).c_str(),
-        s.name_str.c_str(),
+        util::encode_html( s.name_str ).c_str(),
         " ticks",
         -id,
         tick_total,
@@ -326,10 +326,8 @@ void print_html_contents( report::sc_html_stream& os, const sim_t& sim )
     {
       if ( pi < static_cast<int>( sim.players_by_name.size() ) )
       {
-        player_t* p           = sim.players_by_name[ pi ];
-        std::string html_name = p->name();
-        util::encode_html( html_name );
-        os << "<li><a href=\"#player" << p->index << "\">" << html_name
+        player_t* p = sim.players_by_name[ pi ];
+        os << "<li><a href=\"#player" << p->index << "\">" << util::encode_html( p->name() )
            << "</a>";
         ci++;
         if ( sim.report_pets_separately )
@@ -341,9 +339,7 @@ void print_html_contents( report::sc_html_stream& os, const sim_t& sim )
             pet_t* pet = sim.players_by_name[ pi ]->pet_list[ k ];
             if ( pet->summoned )
             {
-              html_name = pet->name();
-              util::encode_html( html_name );
-              os << "<li><a href=\"#player" << pet->index << "\">" << html_name
+              os << "<li><a href=\"#player" << pet->index << "\">" << util::encode_html( pet->name() )
                  << "</a></li>\n";
               ci++;
             }
@@ -641,7 +637,7 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim )
           "<th class=\"right\">%d</th>\n"
           "<td class=\"left\">%s</td>\n"
           "</tr>\n",
-          (int)i, raid_event_names[ i ].c_str() );
+          (int)i, util::encode_html( raid_event_names[ i ] ).c_str() );
     }
     os << "</table>\n";
   }
@@ -808,7 +804,7 @@ void print_html_scale_factors( report::sc_html_stream& os, const sim_t& sim )
       os << " class=\"odd\"";
     }
     os << ">\n";
-    os.printf( "<td class=\"left small\">%s</td>\n", p->name() );
+    os.printf( "<td class=\"left small\">%s</td>\n", util::encode_html( p->name() ).c_str() );
     for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
     {
       if ( sim.scaling->stats.get_stat( j ) != 0 &&
@@ -1103,7 +1099,7 @@ void print_html_masthead( report::sc_html_stream& os, const sim_t& sim )
     os.printf( "<li><b>Fight Length:</b> %.0f</li>\n",
                sim.max_time.total_seconds() );
   }
-  os.printf( "<li><b>Fight Style:</b> %s</li>\n", sim.fight_style.c_str() );
+  os.printf( "<li><b>Fight Style:</b> %s</li>\n", util::encode_html( sim.fight_style ).c_str() );
   os << "</ul>\n"
      << "<div class=\"clear\"></div>\n\n"
      << "</div>\n\n";
@@ -1118,7 +1114,7 @@ void print_html_errors( report::sc_html_stream& os, const sim_t& sim )
           "background-color: white; font-weight: bold;\">\n";
 
     for ( const auto& error : sim.error_list )
-      os << error << "\n";
+      os << util::encode_html( error ) << "\n";
 
     os << "</pre>\n\n";
   }
@@ -1180,7 +1176,7 @@ void print_html_hotfixes( report::sc_html_stream& os, const sim_t& sim )
         os << "</table>\n";
       }
 
-      os << "<h3>" << entry->group_ << "</h3>\n";
+      os << "<h3>" << util::encode_html( entry->group_ ) << "</h3>\n";
       os << "<table class=\"sc\" style=\"max-width:75%\">\n";
       os << "<tr>\n";
       os << "<th>Tag</th>\n";
@@ -1197,8 +1193,8 @@ void print_html_hotfixes( report::sc_html_stream& os, const sim_t& sim )
     {
       os << "<tr>\n";
       os << "<td class=\"left\" style=\"white-space:nowrap;\"><strong>"
-         << entry->tag_.substr( 0, 10 ) << "</strong></td>\n";
-      os << "<td class=\"left\" colspan=\"5\"><strong>" << entry->note_
+         << util::encode_html( entry->tag_.substr( 0, 10 ) ) << "</strong></td>\n";
+      os << "<td class=\"left\" colspan=\"5\"><strong>" << util::encode_html( entry->note_ )
          << "</strong></td>\n";
       os << "</tr>\n";
     }
@@ -1226,7 +1222,7 @@ void print_html_hotfixes( report::sc_html_stream& os, const sim_t& sim )
     if ( const hotfix::dbc_hotfix_entry_t* e =
              dynamic_cast<const hotfix::dbc_hotfix_entry_t*>( entry ) )
     {
-      os << "<td class=\"left\">" << e->field_name_ << "</td>\n";
+      os << "<td class=\"left\">" << util::encode_html( e->field_name_ ) << "</td>\n";
       os << "<td class=\"left\">" << e->hotfix_value_ << "</td>\n";
       if ( e->orig_value_ != -std::numeric_limits<double>::max() &&
            util::round( e->orig_value_, 6 ) != util::round( e->dbc_value_, 6 ) )
@@ -1275,7 +1271,7 @@ void print_html_overrides( report::sc_html_stream& os, const sim_t& sim )
           hotfix::find_spell( sim.dbc.spell( entry.id_ ), sim.dbc.ptr );
       std::string name = report::decorated_spell_name( sim, *spell );
       os << "<td class=\"left\">" << name << "</td>\n";
-      os << "<td class=\"left\">" << entry.field_ << "</td>\n";
+      os << "<td class=\"left\">" << util::encode_html( entry.field_ ) << "</td>\n";
       os << "<td class=\"left\">" << entry.value_ << "</td>\n";
       os << "<td class=\"left\">" << spell->get_field( entry.field_ )
          << "</td>\n";
@@ -1288,7 +1284,7 @@ void print_html_overrides( report::sc_html_stream& os, const sim_t& sim )
       std::string name          = report::decorated_spell_name( sim, *spell );
       name += " (effect#" + util::to_string( effect->index() + 1 ) + ")";
       os << "<td class=\"left\">" << name << "</td>\n";
-      os << "<td class=\"left\">" << entry.field_ << "</td>\n";
+      os << "<td class=\"left\">" << util::encode_html( entry.field_ ) << "</td>\n";
       os << "<td class=\"left\">" << entry.value_ << "</td>\n";
       os << "<td class=\"left\">" << effect->get_field( entry.field_ )
          << "</td>\n";

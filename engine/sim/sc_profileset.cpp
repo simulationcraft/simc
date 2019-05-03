@@ -1026,8 +1026,14 @@ bool profilesets_t::generate_chart( const sim_t& sim, std::ostream& out ) const
     profileset.set( "xAxis.lineColor", c.str() );
 
     // Custom formatter for X axis so we can get baseline colored different
+
+    // All attempts to escape the apostrophe failed, the JSON library gets
+    // in our way. Just remove them.
+    std::string name = util::encode_html( baseline->name_str );
+    util::replace_all( name, "'", "" );
+
     std::string functor = "function () {";
-    functor += "  if (this.value === '" + baseline -> name_str + "') {";
+    functor += "  if (this.value === '" + name + "') {";
     functor += "    return '<span style=\"color:#AA0000;font-weight:bold;\">' + this.value + '</span>';";
     functor += "  }";
     functor += "  else {";
@@ -1048,16 +1054,16 @@ bool profilesets_t::generate_chart( const sim_t& sim, std::ostream& out ) const
 
       if ( ! inserted && data.median() <= baseline_data.median )
       {
-        insert_data( profileset, sim.player_no_pet_list.data().front() -> name(), c, baseline_data, true, baseline_data.median );
+        insert_data( profileset, util::encode_html( sim.player_no_pet_list.data().front() -> name() ), c, baseline_data, true, baseline_data.median );
         inserted = true;
       }
 
-      insert_data( profileset, set -> name(), c, set -> result().statistical_data(), false, baseline_data.median );
+      insert_data( profileset, util::encode_html( set -> name() ), c, set -> result().statistical_data(), false, baseline_data.median );
     }
 
     if ( inserted == false )
     {
-      insert_data( profileset, sim.player_no_pet_list.data().front() -> name(), c, baseline_data, true, baseline_data.median );
+      insert_data( profileset, util::encode_html( sim.player_no_pet_list.data().front() -> name() ), c, baseline_data, true, baseline_data.median );
     }
 
     out << profileset.to_string();
