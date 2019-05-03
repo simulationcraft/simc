@@ -799,8 +799,9 @@ void report::print_html_sample_data( report::sc_html_stream& os, const player_t&
   os << ">\n";
   os << "\t\t\t\t\t\t\t\t<td class=\"left small\" colspan=\"" << columns << "\">";
 
-  std::string tokenized_name = util::encode_html( name );
+  std::string tokenized_name = name;
   util::tokenize( tokenized_name );
+  tokenized_name = util::remove_special_chars( tokenized_name );
   os.printf(
       "<a id=\"actor%d_%s_stats_toggle\" "
       "class=\"toggle-details\">%s</a></td>\n",
@@ -1104,8 +1105,9 @@ void report::print_html_sample_data( report::sc_html_stream& os, const player_t&
 
   if ( !data.simple )
   {
-    std::string tokenized_div_name = util::encode_html( data.name_str ) + "_dist";
+    std::string tokenized_div_name = data.name_str + "_dist";
     util::tokenize( tokenized_div_name );
+    tokenized_div_name = util::remove_special_chars( tokenized_div_name );
 
     highchart::histogram_chart_t chart( tokenized_div_name, *p.sim );
     chart.set_toggle_id( "actor" + util::to_string( p.index ) + "_" + tokenized_div_name + "_stats_toggle" );

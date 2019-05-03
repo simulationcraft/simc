@@ -164,6 +164,7 @@ int fprintf(std::FILE* stream, Format&& format, Args&& ... args)
 
 std::string encode_html( const std::string& );
 std::string decode_html( const std::string& );
+std::string remove_special_chars( const std::string& );
 void urlencode( std::string& str );
 void urldecode( std::string& str );
 std::string uchar_to_hex( unsigned char );
