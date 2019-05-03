@@ -8372,6 +8372,7 @@ void shaman_t::init_action_list()
       break;
     case SHAMAN_RESTORATION:
       init_action_list_restoration_dps();
+      break;
     default:
       break;
   }
