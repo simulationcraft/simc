@@ -4171,3 +4171,9 @@ bool action_t::usable_during_current_gcd() const
 
   return player->readying && cooldown->queueable() < player->readying->occurs();
 }
+
+std::ostream& operator<<(std::ostream &os, const action_t& p)
+{
+  fmt::print(os, "action {}", p.name() );
+  return os;
+}

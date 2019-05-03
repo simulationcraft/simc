@@ -673,7 +673,7 @@ void item_t::parse_options()
   {
     opts::parse( sim, option_name_str, options, remainder );
   }
-  catch ( const std::exception& e )
+  catch ( const std::exception& )
   {
     std::throw_with_nested(std::invalid_argument(fmt::format("Cannot parse option from '{}'", options_str)));
   }
@@ -789,7 +789,7 @@ void item_t::parse_options()
         parsed.bonus_id.push_back( bonus_id );
       }
     }
-    catch (const std::exception& e)
+    catch (const std::exception&)
     {
       std::throw_with_nested(std::runtime_error("Bonus ID"));
     }
@@ -1527,7 +1527,7 @@ void item_t::decode_gems()
       parsed.gem_stats.push_back( stat_pair_t( s, static_cast<int>( t.value ) ) );
     }
   }
-  catch (const std::exception& e)
+  catch (const std::exception&)
   {
     std::throw_with_nested( std::invalid_argument(
           fmt::format( "Error decoding gems from '{}'", option_gems_str ) ) ) ;
@@ -1567,7 +1567,7 @@ void item_t::decode_equip_effect()
 
     parsed.special_effects.push_back( new special_effect_t( effect ) );
   }
-  catch (const std::exception& e)
+  catch (const std::exception&)
   {
     std::throw_with_nested(std::invalid_argument(fmt::format("Error decoding equip='{}'", option_equip_str )));
   }

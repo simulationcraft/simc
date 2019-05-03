@@ -1312,6 +1312,10 @@ void print_html_head( report::sc_html_stream& os, const sim_t& sim )
   os << "<meta http-equiv=\"Content-Type\" content=\"text/html; "
         "charset=UTF-8\" />\n";
 
+  // Default target for links. Lets links to wowhead/armory escape iframes (wowhead does not display in iframes at all)
+  // Should have no effect on GUI reports or directly viewing the HTML report in a browser
+  os << "<base target=\"_top\">\n";
+
   os << "<script type=\"text/javascript\">" << std::endl;
   print_text_array( os, __jquery_include );
   os << "</script>" << std::endl

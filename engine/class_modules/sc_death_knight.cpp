@@ -506,6 +506,7 @@ public:
     action_t* bursting_sores;
     action_t* festering_wound;
     action_t* last_surprise; // Azerite
+    action_t* virulent_eruption;
   } active_spells;
 
   // Gains
@@ -805,6 +806,7 @@ public:
   // Death Knight Options
   struct options_t
   {
+    bool bos_increases_re_chance;
   } options;
 
   // Runes
@@ -827,6 +829,7 @@ public:
     spell( spells_t() ),
     pets( pets_t( this ) ),
     procs( procs_t() ),
+    options( options_t() ),
     _runes( this )
   {
     range::fill( pets.army_ghoul, nullptr );
@@ -884,7 +887,7 @@ public:
   void      create_actions() override;
   action_t* create_action( const std::string& name, const std::string& options ) override;
   expr_t*   create_expression( const std::string& name ) override;
-  // void      create_options() override;
+  void      create_options() override;
   void      create_pets() override;
   resource_e primary_resource() const override { return RESOURCE_RUNIC_POWER; }
   role_e    primary_role() const override;
@@ -902,7 +905,7 @@ public:
   double    runes_per_second() const;
   double    rune_regen_coefficient() const;
   void      trigger_killing_machine( double chance, proc_t* proc, proc_t* wasted_proc );
-  void      trigger_runic_empowerment( double rpcost );
+  void      trigger_runic_empowerment( double rpcost, action_t* a );
   void      trigger_runic_corruption( double rpcost, double override_chance = -1.0, proc_t* proc = nullptr );
   void      trigger_festering_wound( const action_state_t* state, unsigned n_stacks = 1, proc_t* proc = nullptr );
   void      burst_festering_wound( const action_state_t* state, unsigned n = 1 );
@@ -3434,8 +3437,6 @@ struct breath_of_sindragosa_buff_t : public buff_t
     damage( new breath_of_sindragosa_tick_t( player ) ),
     tick_period( player -> talent.breath_of_sindragosa -> effectN( 1 ).period() )
   {
-    buff_duration = player -> sim -> expected_iteration_time * 2; // Expiration done on tick callback
-
     tick_zero = true;
 
     // Extract the cost per tick from spelldata
@@ -3450,11 +3451,11 @@ struct breath_of_sindragosa_buff_t : public buff_t
 
     set_tick_callback( [ this ] ( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ )
     {
-      death_knight_t* p = debug_cast< death_knight_t* >( this -> player );
+      death_knight_t* player = debug_cast< death_knight_t* >( this -> player );
 
       // TODO: Target the last enemy targeted by the player's foreground abilities
       // Currently use the player's target which is the first non invulnerable, active enemy found.
-      player_t* bos_target = p -> target;
+      player_t* bos_target = player -> target;
 
       // Damage is executed on cast for no cost
       if ( this -> current_tick == 0 )
@@ -3466,28 +3467,27 @@ struct breath_of_sindragosa_buff_t : public buff_t
 
       // If the player doesn't have enough RP to fuel this tick, BoS is cancelled and no RP is consumed
       // This happens if you cast Frost Strike between two ticks and are left with < 15 RP
-      if ( ! p -> resource_available( RESOURCE_RUNIC_POWER, this -> ticking_cost ) )
+      if ( ! player -> resource_available( RESOURCE_RUNIC_POWER, this -> ticking_cost ) )
       {
         sim -> print_log( "Player {} doesn't have the {} Runic Power required for next tick. Breath of Sindragosa was cancelled.", 
-                          p -> name_str, this -> ticking_cost );
+                          player -> name_str, this -> ticking_cost );
 
         // Separate the expiration event to happen immediately after tick processing
         make_event( *sim, 0_ms, [ this ]() { this -> expire(); } );
         return;
       }
 
-      // Else, consume the resource and manually trigger IT and RE
-      // TODO: create a method that would be commonly used by custom functions such as this one
-      // as well as normal ways to consume resources
-      p -> resource_loss( RESOURCE_RUNIC_POWER, this -> ticking_cost, nullptr, nullptr );
+      // Else, consume the resource and update the damage tick's resource stats
+      player -> resource_loss( RESOURCE_RUNIC_POWER, this -> ticking_cost, nullptr, this -> damage );
+      this -> damage -> stats -> consume_resource( RESOURCE_RUNIC_POWER, this -> ticking_cost );
 
       // If the player doesn't have enough RP to fuel the next tick, BoS is cancelled
       // after the RP consumption and before the damage event
       // This is the normal BoS expiration scenario
-      if ( ! p -> resource_available( RESOURCE_RUNIC_POWER, this -> ticking_cost  ) )
+      if ( ! player -> resource_available( RESOURCE_RUNIC_POWER, this -> ticking_cost  ) )
       {
         sim -> print_log( "Player {} doesn't have the {} Runic Power required for next tick. Breath of Sindragosa was cancelled.", 
-                          p -> name_str, this -> ticking_cost );
+                          player -> name_str, this -> ticking_cost );
 
         // Separate the expiration event to happen immediately after tick processing
         make_event( *sim, 0_ms, [ this ]() { this -> expire(); } );
@@ -5290,11 +5290,8 @@ struct virulent_eruption_t : public death_knight_spell_t
 
 struct virulent_plague_t : public death_knight_spell_t
 {
-  virulent_eruption_t* eruption;
-
   virulent_plague_t( death_knight_t* p ) :
-    death_knight_spell_t( "virulent_plague", p, p -> spell.virulent_plague ),
-    eruption( new virulent_eruption_t( p ) )
+    death_knight_spell_t( "virulent_plague", p, p -> spell.virulent_plague )
   {
     base_tick_time *= 1.0 + p -> talent.ebon_fever -> effectN( 1 ).percent();
     dot_duration *= 1.0 + p -> talent.ebon_fever -> effectN( 2 ).percent();
@@ -5302,23 +5299,15 @@ struct virulent_plague_t : public death_knight_spell_t
 
     tick_may_crit = background = true;
     may_miss = may_crit = hasted_ticks = false;
-
-    add_child( eruption );
   }
 
   void tick( dot_t* dot ) override
   {
     death_knight_spell_t::tick( dot );
 
-    trigger_virulent_eruption( data().effectN( 2 ).percent(), dot -> target );
-  }
-
-  void trigger_virulent_eruption( double chance, player_t* t )
-  {
-    if ( rng().roll( chance ) )
+    if ( rng().roll( data().effectN( 2 ).percent() ) )
     {
-      eruption -> set_target( t );
-      eruption -> execute();
+      p() -> active_spells.virulent_eruption -> execute();
     }
   }
 };
@@ -6304,10 +6293,13 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/397
 
     // Some abilities use the actual RP spent by the ability, others use the base RP cost
-    // The action check is required because Breath of Sindragosa spends RP through a buff rather than an action
-    double base_rp_cost = action ? action -> base_costs[ RESOURCE_RUNIC_POWER ] : actual_amount;
+    double base_rp_cost = actual_amount;
 
-    trigger_runic_empowerment( base_rp_cost );
+    // BoS cost is handled in the buff, not in the action
+    if ( action && action -> name_str != "breath_of_sindragosa_tick" )
+      base_rp_cost = action -> base_costs[ RESOURCE_RUNIC_POWER ];
+
+    trigger_runic_empowerment( base_rp_cost, action );
     trigger_runic_corruption( base_rp_cost, -1.0, procs.rp_runic_corruption );
 
     if ( talent.summon_gargoyle -> ok() && pets.gargoyle )
@@ -6338,11 +6330,13 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
 }
 
 // death_knight_t::create_options ===========================================
-/*
+
 void death_knight_t::create_options()
 {
   player_t::create_options();
-}*/
+
+  add_option( opt_bool( "bos_increases_re_chance", options.bos_increases_re_chance ) );
+}
 
 void death_knight_t::copy_from( player_t* source )
 {
@@ -6458,7 +6452,8 @@ void death_knight_t::trigger_virulent_plague_death( player_t* target )
     return;
   }
 
-  debug_cast<virulent_plague_t*>( td -> dot.virulent_plague -> current_action ) -> trigger_virulent_eruption( 1, target );
+  // Schedule an execute for Virulent Eruption
+  active_spells.virulent_eruption -> schedule_execute();
 }
 
 bool death_knight_t::in_death_and_decay() const
@@ -6550,12 +6545,18 @@ void death_knight_t::trigger_killing_machine( double chance, proc_t* proc, proc_
   }
 }
 
-void death_knight_t::trigger_runic_empowerment( double rpcost )
+void death_knight_t::trigger_runic_empowerment( double rpcost, action_t* action )
 {
   if ( ! spec.runic_empowerment -> ok() )
     return;
 
   double base_chance = spec.runic_empowerment -> effectN( 1 ).percent() / 10.0;
+
+  // TODO: change to use spelldata if available once ptr data is pulled
+  if ( options.bos_increases_re_chance && action -> name_str == "breath_of_sindragosa_tick" )
+  {
+    base_chance *= 1.5;
+  }
 
   if ( ! rng().roll( base_chance * rpcost ) )
     return;
@@ -6785,6 +6786,11 @@ void death_knight_t::create_actions()
     if ( talent.bursting_sores -> ok() )
     {
       active_spells.bursting_sores = new bursting_sores_t( this );
+    }
+
+    if ( spec.outbreak -> ok() )
+    {
+      active_spells.virulent_eruption = new virulent_eruption_t( this );
     }
   }
 

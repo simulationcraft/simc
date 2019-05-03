@@ -1667,7 +1667,7 @@ public:
   {
     std::vector<std::string> splits = util::string_split(name_str, ".");
 
-    if (splits[0] == "dot" && splits[2] == "ticks_gained_on_refresh" | splits[2] == "ticks_gained_on_refresh_pmultiplier")
+    if (splits[0] == "dot" && (splits[2] == "ticks_gained_on_refresh" || splits[2] == "ticks_gained_on_refresh_pmultiplier"))
     {
       // Since we know some action names don't map to the actual dot portion, lets add some exceptions
       // this may have to be made more robust if other specs are interested in using it, but for now lets
@@ -2805,7 +2805,7 @@ public:
     }
 
     if ( p-> specialization() == DRUID_FERAL &&  p -> talent.soul_of_the_forest -> ok() &&
-      ( data().affected_by( p -> talent.soul_of_the_forest -> effectN(2)) | data().affected_by( p -> talent.soul_of_the_forest -> effectN(3) )))
+      ( data().affected_by( p -> talent.soul_of_the_forest -> effectN(2)) || data().affected_by( p -> talent.soul_of_the_forest -> effectN(3) )))
     {
        base_td_multiplier *= 1.0 + p->talent.soul_of_the_forest->effectN(3).percent();
        base_dd_multiplier *= 1.0 + p->talent.soul_of_the_forest->effectN(2).percent();
@@ -4744,7 +4744,6 @@ struct cenarion_ward_t : public druid_heal_t
   {
     if ( candidate_target != p() )
     {
-      assert( false && "Cenarion Ward will not trigger on other players!" );
       return false;
     }
 
@@ -8425,7 +8424,6 @@ void druid_t::apl_restoration()
   action_priority_list_t* feral        = get_action_priority_list( "feral" );
   action_priority_list_t* balance      = get_action_priority_list( "balance" );
   //action_priority_list_t* heal = get_action_priority_list("heal");
-  //action_priority_list_t* dps = get_action_priority_list("dps"); //Base DPS APL - Guardian affinity
   std::vector<std::string> racial_actions     = get_racial_actions();
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
@@ -8433,50 +8431,31 @@ void druid_t::apl_restoration()
   default_list->add_action("use_items");
   default_list->add_action( "run_action_list,name=feral,if=talent.feral_affinity.enabled" );
   default_list->add_action( "run_action_list,name=balance,if=talent.balance_affinity.enabled" );
-  default_list->add_action( "moonfire,if=refreshable" );
-  default_list->add_action( "sunfire,if=refreshable" );
+  default_list->add_action( "sunfire,target_if=refreshable" );
+  default_list->add_action( "moonfire,target_if=refreshable" );
   default_list->add_action( "solar_wrath" );
 
   
   feral->add_action( "rake,if=buff.shadowmeld.up|buff.prowl.up" );
   feral->add_action( "auto_attack" );
-  feral->add_action( "moonfire,if=refreshable|(prev_gcd.1.sunfire&remains<duration*0.8)" );
-  feral->add_action( "sunfire,if=refreshable|(prev_gcd.1.moonfire&remains<duration*0.8)" );
+  feral->add_action( "moonfire,target_if=refreshable|(prev_gcd.1.sunfire&remains<duration*0.8&spell_targets.sunfire=1)" );
+  feral->add_action( "sunfire,target_if=refreshable|(prev_gcd.1.moonfire&remains<duration*0.8)" );
   feral->add_action( "solar_wrath,if=energy<=50&!buff.cat_form.up" );
   feral->add_action( "cat_form,if=!buff.cat_form.up&energy>50" );
   feral->add_action(
-      "ferocious_bite,if=(combo_points>3&target.time_to_die<3)|(combo_points=5&energy>=50&dot.rip.remains>14)" );
+      "ferocious_bite,if=(combo_points>3&target.time_to_die<3)|(combo_points=5&energy>=50&dot.rip.remains>14)&spell_"
+      "targets.swipe_cat<5" );
   feral->add_action( "swipe_cat,if=spell_targets.swipe_cat>=6" );
-  feral->add_action( "rip,if=refreshable&combo_points=5" );
-  feral->add_action( "ferocious_bite,max_energy=1,if=combo_points=5&energy.time_to_max<2" );
-  feral->add_action( "rake,if=refreshable" );
+  feral->add_action( "rip,target_if=refreshable&combo_points=5" );
+  feral->add_action( "rake,target_if=refreshable" );
   feral->add_action( "swipe_cat,if=spell_targets.swipe_cat>=2" );
   feral->add_action( "shred" );
 
-  balance->add_action( "moonfire,if=refreshable" );
-  balance->add_action( "sunfire,if=refreshable" );
+  balance->add_action( "sunfire,target_if=refreshable" );
+  balance->add_action( "moonfire,target_if=refreshable&spell_targets.lunar_strike<7" );
   balance->add_action( "starsurge" );
   balance->add_action( "lunar_strike,if=buff.lunar_empowerment.up|spell_targets>1" );
   balance->add_action( "solar_wrath" );
-  //default_list -> add_action("swap_action_list,name=dps,if=role.attack");
-  //default_list->add_action("call_action_list,name=dps");
-  //default_list -> add_action("call_action_list,name=heal,if=role.heal");
-
-  //heal -> add_action( this, "Healing Touch", "if=buff.clearcasting.up" );
-  //heal -> add_action( this, "Rejuvenation", "if=remains<=duration*0.3" );
-  //heal -> add_action( this, "Lifebloom", "if=debuff.lifebloom.down" );
-  //heal -> add_action( this, "Swiftmend" );
-  //heal -> add_action( this, "Healing Touch" );
-
-  //dps -> add_action(this, "Moonfire", "if=refreshable");
-  //dps -> add_action(this, "Sunfire", "if=refreshable");
-  //dps -> add_action(this, "Cat Form");
-  //dps -> add_action(this, "Rip", "if=refreshable");
-  //dps -> add_action(this, "Rake", "if=refreshable");
-  //dps -> add_action(this, "Shred");
-  //dps -> add_action(this, "Bear Form");
-  //dps -> add_action ("swipe_bear");
-
 }
 
 // druid_t::init_scaling ====================================================
@@ -9240,7 +9219,7 @@ expr_t* druid_t::create_expression( const std::string& name_str )
 {
   std::vector<std::string> splits = util::string_split( name_str, "." );
 
-  if ( splits[ 0 ] == "druid" && (splits[ 2 ] == "ticks_gained_on_refresh" | splits[2] == "ticks_gained_on_refresh_pmultiplier" ))
+  if ( splits[ 0 ] == "druid" && (splits[ 2 ] == "ticks_gained_on_refresh" || splits[2] == "ticks_gained_on_refresh_pmultiplier" ))
   {
     // Since we know some action names don't map to the actual dot portion, lets add some exceptions
     // this may have to be made more robust if other specs are interested in using it, but for now lets

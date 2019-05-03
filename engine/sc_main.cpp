@@ -265,7 +265,7 @@ int sim_t::main( const std::vector<std::string>& args )
     {
       control.options.parse_args(args);
     }
-    catch (const std::exception& e) {
+    catch (const std::exception&) {
 
       std::throw_with_nested(std::invalid_argument("Incorrect option format"));
     }
@@ -278,7 +278,7 @@ int sim_t::main( const std::vector<std::string>& args )
     {
       setup( &control );
     }
-    catch( const std::exception& e ){
+    catch( const std::exception& ){
       std::throw_with_nested(std::runtime_error("Setup failure"));
     }
 
@@ -307,7 +307,7 @@ int sim_t::main( const std::vector<std::string>& args )
         spell_query -> evaluate();
         print_spell_query();
       }
-      catch( const std::exception& e ){
+      catch( const std::exception& ){
         std::throw_with_nested(std::runtime_error("Spell Query Error"));
       }
     }
@@ -319,13 +319,13 @@ int sim_t::main( const std::vector<std::string>& args )
         std::cout << "\nGenerating profiles... \n";
         report::print_profiles( this );
       }
-      catch( const std::exception& e ){
+      catch( const std::exception& ){
         std::throw_with_nested(std::runtime_error("Generating profiles"));
       }
     }
     else
     {
-      util::printf( "\nSimulating... ( iterations=%d, threads=%d, target_error=%.3f,  max_time=%.0f, vary_combat_length=%0.2f, optimal_raid=%d, fight_style=%s )\n\n",
+      util::printf( "\nSimulating... ( iterations=%d, threads=%d, target_error=%.3f, max_time=%.0f, vary_combat_length=%0.2f, optimal_raid=%d, fight_style=%s )\n\n",
         iterations, threads, target_error, max_time.total_seconds(), vary_combat_length, optimal_raid, fight_style.c_str() );
 
       progress_bar.set_base( "Baseline" );

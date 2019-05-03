@@ -803,7 +803,7 @@ void elemental_whirl( special_effect_t& effect )
 
     void execute( action_t* /* a */, action_state_t* /* state */ ) override
     {
-      size_t buff_index = rng().range( 0.0, as<double>( buffs.size() ) );
+      size_t buff_index = rng().range( buffs.size() );
       buffs[ buff_index ] -> trigger();
     }
   };
@@ -1981,7 +1981,7 @@ void combined_might( special_effect_t& effect )
 
     void execute( action_t*, action_state_t* ) override
     {
-      size_t index = static_cast<size_t>( rng().range( 0, buffs.size() ) );
+      size_t index =  rng().range( buffs.size() );
       buffs[ index ]->trigger();
     }
   };
@@ -2126,7 +2126,7 @@ void barrage_of_many_bombs( special_effect_t& effect )
       dbc_proc_callback_t( effect.player, effect ),
       damage( unique_gear::create_proc_action<barrage_damage_t>( "barrage_of_many_bombs", effect,
               power ) ),
-      n_bombs( power.spell_ref().effectN( 3 ).base_value() )
+      n_bombs( as<int>( power.spell_ref().effectN( 3 ).base_value() ) )
     { }
 
     void execute( action_t*, action_state_t* state ) override
@@ -2452,7 +2452,7 @@ void battlefield_focus_precision( special_effect_t& effect )
   // Fix the driver to point to the RPPM base spell
   effect.spell_id = effect.spell_id == 280627 ? 280854 : 280816;
 
-  new bf_trigger_cb_t( effect, trigger_cb, power.spell_ref().effectN( 2 ).base_value() );
+  new bf_trigger_cb_t( effect, trigger_cb, as<int>( power.spell_ref().effectN( 2 ).base_value() ) );
 }
 
 void endless_hunger( special_effect_t& effect )

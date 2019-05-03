@@ -856,6 +856,7 @@ struct roiling_storm_buff_driver_t : public buff_t
     {
       set_tick_callback( [p]( buff_t*, int, const timespan_t& ) {
         p->buff.stormbringer->trigger( p->buff.stormbringer->max_stack() );
+        p->cooldown.strike->reset(true);
       } );
     }
   }
@@ -3047,12 +3048,11 @@ struct windlash_t : public shaman_attack_t
     : shaman_attack_t( n, player, s ), swing_timer_variance( stv )
   {
     background = repeating = may_miss = may_dodge = may_parry = true;
-    may_proc_ability_procs;
-    may_glance = special = false;
-    weapon               = w;
-    weapon_multiplier    = 1.0;
-    base_execute_time    = w->swing_time;
-    trigger_gcd          = timespan_t::zero();
+    may_proc_ability_procs = may_glance = special = false;
+    weapon                 = w;
+    weapon_multiplier      = 1.0;
+    base_execute_time      = w->swing_time;
+    trigger_gcd            = timespan_t::zero();
 
     may_proc_maelstrom_weapon = true;  // Presumption, but should be safe
   }

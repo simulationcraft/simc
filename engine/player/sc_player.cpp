@@ -1590,7 +1590,7 @@ void player_t::init_items()
         throw std::invalid_argument("Cannot initialize data");
       }
     }
-    catch (const std::exception& e)
+    catch (const std::exception&)
     {
       std::throw_with_nested(std::runtime_error(fmt::format("Item '{}' Slot '{}'", item.name(), item.slot_name() )));
     }
@@ -1640,7 +1640,7 @@ void player_t::init_items()
         throw std::invalid_argument("Invalid type");
       }
     }
-    catch (const std::exception& e)
+    catch (const std::exception& )
     {
       std::throw_with_nested(std::runtime_error(fmt::format("Item '{}' Slot '{}'", item.name(), item.slot_name() )));
     }
@@ -1966,7 +1966,7 @@ void player_t::init_professions()
       {
         prof_value = std::stoi( subsplit[ 1 ] );
       }
-      catch ( const std::exception& e )
+      catch ( const std::exception& )
       {
         std::throw_with_nested(std::runtime_error(fmt::format("Could not parse profession level '{}' for profession '{}'",
             subsplit[ 1 ], prof_name)));
@@ -2696,7 +2696,7 @@ void player_t::init_actions()
     {
       action -> init();
     }
-    catch (const std::exception& e)
+    catch (const std::exception&)
     {
       std::throw_with_nested(std::runtime_error(fmt::format("Action '{}'", action->name())));
     }
@@ -2870,7 +2870,7 @@ void player_t::init_finished()
     {
       action->init_finished();
     }
-    catch (const std::exception& e)
+    catch (const std::exception&)
     {
       std::throw_with_nested(std::runtime_error(fmt::format("Action '{}'", action->name())));
     }
@@ -13098,7 +13098,7 @@ void player_t::register_combat_begin( double amount, resource_e resource, gain_t
 
 std::ostream& operator<<(std::ostream &os, const player_t& p)
 {
-  fmt::print(os, "Player '{}'", p.name() );
+  fmt::print(os, "player '{}'", p.name() );
   return os;
 }
 

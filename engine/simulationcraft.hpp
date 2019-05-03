@@ -510,6 +510,7 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     buff_t* battlefield_debuff;
     buff_t* wasting_infection;
     buff_t* everchill;
+    buff_t* choking_brine;
   } debuff;
 
   struct atd_dot_t
@@ -5899,6 +5900,8 @@ public:
     return( r == BLOCK_RESULT_BLOCKED || r == BLOCK_RESULT_CRIT_BLOCKED );
   }
 };
+
+std::ostream& operator<<(std::ostream &os, const action_t& p);
 
 struct call_action_list_t : public action_t
 {

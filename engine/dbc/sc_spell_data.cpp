@@ -999,7 +999,7 @@ struct spell_flag_expr_t : public spell_list_expr_t
       if ( ! spell )
         continue;
 
-      if ( spell -> class_flag( other.result_num ) )
+      if ( spell -> class_flag( as<unsigned>( other.result_num ) ) )
         res.push_back( result_spell );
     }
 

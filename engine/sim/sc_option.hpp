@@ -34,7 +34,7 @@ public:
     try {
       return parse( sim, n, value );
     }
-    catch ( const std::exception& e) {
+    catch ( const std::exception& ) {
       std::throw_with_nested(std::runtime_error(fmt::format("Option '{}' with value '{}'", n, value)));
     }
   }

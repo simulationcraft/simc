@@ -2211,7 +2211,7 @@ struct shadow_blades_buff_t : public buff_t
   shadow_blades_buff_t( const special_effect_t& effect ) :
     buff_t( effect.player, "shadow_blades", effect.player -> find_spell( 253264 ), effect.item ),
     shadow_blade( create_proc_action<shadow_blade_t>( "shadow_blade", effect ) ),
-    blade_count( effect.driver() -> effectN( 3 ).base_value() )
+    blade_count( as<int>(effect.driver() -> effectN( 3 ).base_value()) )
   { }
 
   virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -2314,7 +2314,7 @@ struct shadow_strike_t: public proc_spell_t
   shadow_strike_t( const special_effect_t& effect ) :
     proc_spell_t( "shadow_strike", effect.player, effect.trigger(), effect.item ),
     isolated_strike( create_proc_action<isolated_strike_t>( "isolated_strike", effect ) ),
-    target_radius( effect.driver() -> effectN( 1 ).base_value() )
+    target_radius( as<int>(effect.driver() -> effectN( 1 ).base_value()) )
   {
     add_child( isolated_strike );
   }

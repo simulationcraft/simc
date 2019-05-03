@@ -51,13 +51,13 @@ struct darkmoon_buff_deck_t : public darkmoon_deck_t
     } );
 
     // Pick a card during init so top_card is always initialized.
-    size_t index = static_cast<size_t>( player->rng().range( 0u, cards.size() ) );
+    size_t index = player->rng().range( cards.size() );
     top_card = cards[ index ];
   }
 
   void shuffle() override
   {
-    size_t index = static_cast<size_t>( player->rng().range( 0u, cards.size() ) );
+    size_t index = player->rng().range( cards.size() );
 
     if ( top_card )
     {
@@ -105,7 +105,7 @@ struct darkmoon_action_deck_t : public darkmoon_deck_t
     } );
 
     // Pick a card during init so top_card is always initialized.
-    size_t index = static_cast<size_t>( player->rng().range( 0u, cards.size() ) );
+    size_t index = player->rng().range( cards.size() );
     top_card = cards[ index ];
   }
 
@@ -113,7 +113,7 @@ struct darkmoon_action_deck_t : public darkmoon_deck_t
   // set
   void shuffle() override
   {
-    size_t index = static_cast<size_t>( player->rng().range( 0u, cards.size() ) );
+    size_t index = player->rng().range( cards.size() );
     top_card = cards[ index ];
 
     if ( top_card->sim->debug )
