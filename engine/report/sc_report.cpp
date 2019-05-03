@@ -805,7 +805,7 @@ void report::print_html_sample_data( report::sc_html_stream& os, const player_t&
   os.printf(
       "<a id=\"actor%d_%s_stats_toggle\" "
       "class=\"toggle-details\">%s</a></td>\n",
-      p.index, tokenized_name.c_str(), util::encode_html( name.c_str() ) );
+      p.index, tokenized_name.c_str(), util::encode_html( name ).c_str() );
 
   os << "\t\t\t\t\t\t\t\t</tr>\n";
 
