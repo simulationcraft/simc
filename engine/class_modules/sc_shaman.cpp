@@ -646,7 +646,7 @@ public:
     if ( specialization() == SHAMAN_ELEMENTAL || specialization() == SHAMAN_ENHANCEMENT )
       regen_type = REGEN_DISABLED;
     else
-      regen_type = REGEN_STATIC;
+      regen_type = REGEN_DYNAMIC;
   }
 
   virtual ~shaman_t();
@@ -5291,12 +5291,9 @@ struct spiritwalkers_grace_t : public shaman_spell_t
                       options_str )
   {
     may_miss = may_crit = harmful = callbacks = false;
-    // Reduces the cooldown of Spiritwalker's Grace by ${$m1/-1000} sec
     if ( p()->talent.graceful_spirit->ok() )
     {
-      timespan_t reduction = timespan_t::from_seconds( p()->talent.graceful_spirit->effectN( 1 ).base_value() / -1000 );
-      cooldown->duration -= reduction;
-      p()->buff.spiritwalkers_grace->cooldown->duration -= reduction;
+      cooldown->duration += p()->talent.graceful_spirit->effectN( 1 ).time_value();
     }
   }
 
@@ -5664,13 +5661,26 @@ struct flame_shock_t : public shaman_spell_t
     // proc chance suddenly bacame 100% and the actual chance became effectN 1
     proc_chance = p()->spec.lava_surge->effectN( 1 ).percent();
 
+    if ( p()->spec.restoration_shaman->ok() )
+    {
+      proc_chance += p()->spec.restoration_shaman->effectN( 8 ).percent();
+    }
+
     if ( p()->azerite.igneous_potential.ok() )
     {
       proc_chance = p()->azerite.igneous_potential.spell_ref().effectN( 3 ).percent();
     }
-    if ( p()->spec.restoration_shaman->ok() )
+
+    if ( p()->azerite.igneous_potential.ok() )
     {
-      proc_chance += p()->spec.restoration_shaman->effectN( 8 ).percent();
+      if ( p()->spec.elemental_shaman->ok() )
+      {
+        proc_chance = p()->azerite.igneous_potential.spell_ref().effectN( 3 ).percent();
+      }
+      else if ( p()->spec.restoration_shaman->ok() )
+      {
+        proc_chance = p()->azerite.igneous_potential.spell_ref().effectN( 4 ).percent();
+      }
     }
 
     if ( rng().roll( proc_chance ) )
@@ -7024,8 +7034,8 @@ void shaman_t::init_base_stats()
 
   if ( specialization() == SHAMAN_RESTORATION )
   {
-    resources.base[ RESOURCE_MANA ]                  = 20000;
-    resources.initial_multiplier[ RESOURCE_MANA ]    = 5;
+    resources.base[ RESOURCE_MANA ]               = 20000;
+    resources.initial_multiplier[ RESOURCE_MANA ] = 1.0 + spec.restoration_shaman->effectN( 5 ).percent();
   }
 
   if ( specialization() == SHAMAN_ELEMENTAL && talent.call_the_thunder->ok() )
@@ -7651,7 +7661,8 @@ void shaman_t::create_buffs()
   // Restoration
   //
   buff.spiritwalkers_grace =
-      make_buff( this, "spiritwalkers_grace", find_specialization_spell( "Spiritwalker's Grace" ) );
+      make_buff( this, "spiritwalkers_grace", find_specialization_spell( "Spiritwalker's Grace" ) )
+          ->set_cooldown( timespan_t::zero() );
   buff.tidal_waves =
       make_buff( this, "tidal_waves", spec.tidal_waves->ok() ? find_spell( 53390 ) : spell_data_t::not_found() );
 }
