@@ -799,7 +799,7 @@ void report::print_html_sample_data( report::sc_html_stream& os, const player_t&
   os << ">\n";
   os << "\t\t\t\t\t\t\t\t<td class=\"left small\" colspan=\"" << columns << "\">";
 
-  std::string tokenized_name = name;
+  std::string tokenized_name = data.name_str;
   util::tokenize( tokenized_name );
   tokenized_name = util::remove_special_chars( tokenized_name );
   os.printf(
@@ -1105,12 +1105,8 @@ void report::print_html_sample_data( report::sc_html_stream& os, const player_t&
 
   if ( !data.simple )
   {
-    std::string tokenized_div_name = data.name_str + "_dist";
-    util::tokenize( tokenized_div_name );
-    tokenized_div_name = util::remove_special_chars( tokenized_div_name );
-
-    highchart::histogram_chart_t chart( tokenized_div_name, *p.sim );
-    chart.set_toggle_id( "actor" + util::to_string( p.index ) + "_" + tokenized_div_name + "_stats_toggle" );
+    highchart::histogram_chart_t chart( tokenized_name + "_dist", *p.sim );
+    chart.set_toggle_id( "actor" + util::to_string( p.index ) + "_" + tokenized_name + "_stats_toggle" );
     if ( chart::generate_distribution( chart, nullptr, data.distribution, name, data.mean(), data.min(), data.max() ) )
     {
       os << chart.to_target_div();
