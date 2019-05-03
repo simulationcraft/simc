@@ -5654,7 +5654,7 @@ struct swipe_proxy_t : public druid_spell_t
   action_t* swipe_cat;
   action_t* swipe_bear;
 
-  swipe_proxy_t(druid_t* p, const std::string& options_str) : druid_spell_t("swipe", p, spell_data_t::nil(), options_str)
+  swipe_proxy_t(druid_t* p, const std::string& options_str) : druid_spell_t("swipe", p, p->find_spell(213764), options_str)
   {
     swipe_cat = new cat_attacks::swipe_cat_t(p, options_str);
     swipe_bear = new bear_attacks::swipe_bear_t(p, options_str);
