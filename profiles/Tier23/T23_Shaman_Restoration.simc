@@ -37,7 +37,7 @@ actions+=/blood_fury
 actions+=/berserking
 actions+=/fireblood
 actions+=/ancestral_call
-actions+=/flame_shock,if=!ticking|dot.flame_shock.remains<=gcd,target_if=refreshable
+actions+=/flame_shock,target_if=(!ticking|dot.flame_shock.remains<=gcd)|refreshable
 actions+=/lava_burst,if=dot.flame_shock.remains>cast_time&cooldown_react
 actions+=/earth_elemental
 actions+=/lightning_bolt,if=spell_targets.chain_lightning<2

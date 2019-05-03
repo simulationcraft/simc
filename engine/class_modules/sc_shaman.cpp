@@ -7026,7 +7026,6 @@ void shaman_t::init_base_stats()
   {
     resources.base[ RESOURCE_MANA ]                  = 20000;
     resources.initial_multiplier[ RESOURCE_MANA ]    = 5;
-    resources.base_regen_per_second[ RESOURCE_MANA ] = resources.base[ RESOURCE_MANA ] * 0.04;
   }
 
   if ( specialization() == SHAMAN_ELEMENTAL && talent.call_the_thunder->ok() )
@@ -8293,7 +8292,7 @@ void shaman_t::init_action_list_restoration_dps()
   def->add_action( "fireblood" );
   def->add_action( "ancestral_call" );
 
-  def->add_action( this, "Flame Shock", "if=!ticking|dot.flame_shock.remains<=gcd,target_if=refreshable" );
+  def->add_action( this, "Flame Shock", "target_if=(!ticking|dot.flame_shock.remains<=gcd)|refreshable" );
   def->add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time&cooldown_react" );
   def->add_action( this, "Earth Elemental" );
   def->add_action( this, "Lightning Bolt", "if=spell_targets.chain_lightning<2" );
