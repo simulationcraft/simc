@@ -2295,7 +2295,7 @@ void print_html_player_statistics(
 
   for ( const auto& sample_data : p.sample_data_list )
   {
-    report::print_html_sample_data( os, p, *sample_data, sample_data->name_str,
+    report::print_html_sample_data( os, p, *sample_data, util::encode_html( sample_data->name_str ),
                                     sd_counter );
   }
 
