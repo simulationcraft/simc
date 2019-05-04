@@ -6610,6 +6610,8 @@ public:
       std::string name = data->cd->name_str;
       if ( action_t* a = p.find_action( name ) )
         name = report::action_decorator_t( a ).decorate();
+      else
+        name = util::encode_html( name );
 
       fmt::print( os, "<tr{}>", ++row & 1 ? " class=\"odd\"" : "" );
       fmt::print( os, "<td class=\"left\">{}</td>", name );
@@ -6762,6 +6764,8 @@ public:
       std::string name = data->name_str;
       if ( action_t* a = p.find_action( name ) )
         name = report::action_decorator_t( a ).decorate();
+      else
+        name = util::encode_html( name );
 
       fmt::print( os, "<tr{}>", ++row & 1 ? " class=\"odd\"" : "" );
       fmt::print( os, "<td class=\"left\">{}</td>", name );

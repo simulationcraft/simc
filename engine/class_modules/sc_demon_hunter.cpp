@@ -6019,6 +6019,10 @@ public:
       {
         name_str = report::action_decorator_t( a ).decorate();
       }
+      else
+      {
+        name_str = util::encode_html( name_str );
+      }
 
       std::string row_class_str = "";
       if ( ++n & 1 )

@@ -91,7 +91,7 @@ void add_color_data( sc_js_t& data,
 {
   for ( auto p : player_list )
   {
-    std::string sanitized_name = p -> name_str;
+    std::string sanitized_name = util::encode_html( p -> name_str );
     util::replace_all( sanitized_name, ".", "_" );
     data.set( "__colors.C_" + sanitized_name, color::class_color( p->type ).str() );
   }
@@ -479,7 +479,7 @@ bool chart::generate_raid_downtime( highchart::bar_chart_t& bc,
     double waiting_pct = ( 100.0 * p->collected_data.waiting_time.mean() /
                            p->collected_data.fight_length.mean() );
     sc_js_t e;
-    e.set( "name", report::decorate_html_string( p->name_str, c ) );
+    e.set( "name", report::decorate_html_string( util::encode_html( p->name_str ), c ) );
     e.set( "color", c.str() );
     e.set( "y", waiting_pct );
 
@@ -526,7 +526,7 @@ bool chart::generate_raid_gear( highchart::bar_chart_t& bc, const sim_t& sim )
       data_points[ i ].push_back( total * gear_stats_t::stat_mod( i ) );
       bc.add( "xAxis.categories",
               report::decorate_html_string(
-                  player->name_str, color::class_color( player->type ) ) );
+                  util::encode_html( player->name_str ), color::class_color( player->type ) ) );
     }
   }
 
@@ -602,7 +602,7 @@ bool chart::generate_reforge_plot( highchart::chart_t& ac, const player_t& p )
     ac.set_toggle_id( "player" + util::to_string( p.index ) + "toggle" );
   }
 
-  ac.set_title( p.name_str + " Reforge Plot" );
+  ac.set_title( util::encode_html( p.name_str ) + " Reforge Plot" );
   ac.set_yaxis_title( "Damage Per Second" );
   std::string from_stat, to_stat, from_color, to_color;
   from_stat = util::stat_type_abbrev(
@@ -776,7 +776,7 @@ bool chart::generate_gains( highchart::pie_chart_t& pc, const player_t& p,
     return false;
   }
 
-  pc.set_title( p.name_str + " " + resource_name + " Gains" );
+  pc.set_title( util::encode_html( p.name_str ) + " " + resource_name + " Gains" );
   pc.set( "plotOptions.pie.dataLabels.format",
           "<b>{point.name}</b>: {point.y:.1f}" );
   if ( p.sim->player_no_pet_list.size() > 1 )
@@ -794,7 +794,7 @@ bool chart::generate_gains( highchart::pie_chart_t& pc, const player_t& p,
                         .dark( i * ( 0.75 / gains_list.size() ) )
                         .str() );
     e.set( "y", util::round( gain->actual[ type ], p.sim->report_precision ) );
-    e.set( "name", gain->name_str );
+    e.set( "name", util::encode_html( gain->name_str ) );
 
     pc.add( "series.0.data", e );
   }
@@ -804,7 +804,7 @@ bool chart::generate_gains( highchart::pie_chart_t& pc, const player_t& p,
 
 bool chart::generate_spent_time( highchart::pie_chart_t& pc, const player_t& p )
 {
-  pc.set_title( p.name_str + " Spent Time" );
+  pc.set_title( util::encode_html( p.name_str ) + " Spent Time" );
   pc.set( "plotOptions.pie.dataLabels.format",
           "<b>{point.name}</b>: {point.y:.1f}s" );
   if ( p.sim->player_no_pet_list.size() > 1 )
@@ -852,7 +852,7 @@ bool chart::generate_spent_time( highchart::pie_chart_t& pc, const player_t& p )
       e.set( "color", color );
       e.set( "y", util::round( stats->total_time.total_seconds(),
                                p.sim->report_precision ) );
-      e.set( "name", report::decorate_html_string( stats->name_str, color ) );
+      e.set( "name", report::decorate_html_string( util::encode_html( stats->name_str ), color ) );
 
       pc.add( "series.0.data", e );
     }
@@ -908,10 +908,10 @@ bool chart::generate_stats_sources( highchart::pie_chart_t& pc,
     std::string name_str;
     if ( stats->player->is_pet() )
     {
-      name_str += stats->player->name_str;
+      name_str += util::encode_html( stats->player->name_str );
       name_str += "<br/>";
     }
-    name_str += report::decorate_html_string( stats->name_str, c );
+    name_str += report::decorate_html_string( util::encode_html( stats->name_str ), c );
 
     e.set( "name", name_str );
     pc.add( "series.0.data", e );
@@ -949,7 +949,7 @@ bool chart::generate_damage_stats_sources( highchart::pie_chart_t& chart,
   if ( stats_list.empty() )
     return false;
 
-  generate_stats_sources( chart, p, p.name_str + " Damage Sources",
+  generate_stats_sources( chart, p, util::encode_html( p.name_str ) + " Damage Sources",
                           stats_list );
   chart.set( "series.0.name", "Damage" );
   chart.set( "plotOptions.pie.tooltip.pointFormat",
@@ -987,7 +987,7 @@ bool chart::generate_heal_stats_sources( highchart::pie_chart_t& chart,
 
   range::sort( stats_list, compare_stats_by_mean );
 
-  generate_stats_sources( chart, p, p.name_str + " Healing Sources",
+  generate_stats_sources( chart, p, util::encode_html( p.name_str ) + " Healing Sources",
                           stats_list );
 
   return true;
@@ -1001,8 +1001,8 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s,
   std::string chart_name;
 
   // Fetch player data
-  metric_e chart_metric =
-      populate_player_list( type, s, player_list, chart_name );
+  metric_e chart_metric = populate_player_list( type, s, player_list, chart_name );
+  chart_name = util::encode_html( chart_name );
 
   // Nothing to visualize
   if ( chart_metric == METRIC_NONE )
@@ -1058,7 +1058,7 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s,
 
       sc_js_t e;
       e.set( "color", c.str() );
-      e.set( "name", p->name_str );
+      e.set( "name", util::encode_html( p->name_str ) );
       e.set( "y",
              util::round( value, static_cast<unsigned int>( precision ) ) );
       e.set( "id", "#player" + util::to_string( p->index ) + "toggle" );
@@ -1080,7 +1080,7 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s,
         {
           candlebars = true;
           sc_js_t v;
-          v.set( "name", p->name_str );
+          v.set( "name", util::encode_html( p->name_str ) );
           v.set( "low", boxplot_data[ 0 ] );
           v.set( "q1", boxplot_data[ 1 ] );
           v.set( "median", boxplot_data[ 5 ] );
@@ -1375,11 +1375,11 @@ bool chart::generate_apet( highchart::bar_chart_t& bc,
 
     sc_js_t e;
     e.set( "color", c.str() );
-    std::string name_str = report::decorate_html_string( stats->name_str, c );
+    std::string name_str = report::decorate_html_string( util::encode_html( stats->name_str ), c );
     if ( players.size() > 1 )
     {
       name_str += "<br/>(";
-      name_str += stats->player->name();
+      name_str += util::encode_html( stats->player->name() );
       name_str += ")";
     }
     e.set( "name", name_str );
@@ -1428,7 +1428,7 @@ bool chart::generate_action_dpet( highchart::bar_chart_t& bc,
     bc.set_yaxis_title( "Damage per Execute Time" );
   }
 
-  bc.set_title( p.name_str + " Damage per Execute Time" );
+  bc.set_title( util::encode_html( p.name_str ) + " Damage per Execute Time" );
   if ( p.sim->player_no_pet_list.size() > 1 )
   {
     bc.set_toggle_id( "player" + util::to_string( p.index ) + "toggle" );
@@ -1462,7 +1462,7 @@ bool chart::generate_scaling_plot( highchart::chart_t& ac, const player_t& p,
 
   scaling_metric_data_t scaling_data = p.scaling_for_metric( metric );
 
-  ac.set_title( scaling_data.name + " Scaling Plot" );
+  ac.set_title( util::encode_html( scaling_data.name ) + " Scaling Plot" );
   ac.set_yaxis_title( util::scale_metric_type_string( metric ) );
   ac.set_xaxis_title( "Stat delta" );
   ac.set( "chart.type", "line" );
@@ -1532,7 +1532,7 @@ bool chart::generate_scale_factors( highchart::bar_chart_t& bc,
     bc.set_toggle_id( "player" + util::to_string( p.index ) + "toggle" );
   }
 
-  bc.set_title( scaling_data.name + " Scale Factors" );
+  bc.set_title( util::encode_html( scaling_data.name ) + " Scale Factors" );
   bc.height_ = 92 + scaling_stats.size() * 24;
 
   bc.set_yaxis_title( util::scale_metric_type_string( metric ) +
@@ -1588,7 +1588,7 @@ highchart::time_series_t& chart::generate_stats_timeline(
   s.timeline_amount -> build_derivative_timeline( timeline_aps );
   std::string stats_type = util::stats_type_string( s.type );
   ts.set_toggle_id( "actor" + util::to_string( s.player->index ) + "_" +
-                    s.name_str + "_" + stats_type + "_toggle" );
+                    util::remove_special_chars( s.name_str ) + "_" + stats_type + "_toggle" );
 
   ts.height_ = 200;
   ts.set( "yAxis.min", 0 );
@@ -1596,10 +1596,10 @@ highchart::time_series_t& chart::generate_stats_timeline(
   {
     ts.set_yaxis_title( "Damage per second" );
     if ( s.action_list.size() > 0 && s.action_list[ 0 ]->data().id() != 0 )
-      ts.set_title( std::string( s.action_list[ 0 ]->data().name_cstr() ) +
+      ts.set_title( util::encode_html( s.action_list[ 0 ]->data().name_cstr() ) +
                     " Damage per second" );
     else
-      ts.set_title( s.name_str + " Damage per second" );
+      ts.set_title( util::encode_html( s.name_str ) + " Damage per second" );
   }
   else
     ts.set_yaxis_title( "Healing per second" );
@@ -1633,7 +1633,7 @@ bool chart::generate_actor_dps_series( highchart::time_series_t& ts,
 
   ts.set( "yAxis.min", 0 );
   ts.set_yaxis_title( "Damage per second" );
-  ts.set_title( p.name_str + " Damage per second" );
+  ts.set_title( util::encode_html( p.name_str ) + " Damage per second" );
   ts.add_simple_series( "area", color::class_color( p.type ), "DPS",
                         timeline_dps.data() );
   ts.set_mean(
@@ -1653,7 +1653,7 @@ highchart::time_series_t& chart::generate_actor_timeline(
   {
     ts.set_toggle_id( "player" + util::to_string( p.index ) + "toggle" );
   }
-  ts.set_title( p.name_str + " " + attr_str );
+  ts.set_title( util::encode_html( p.name_str ) + " " + attr_str );
   ts.set_yaxis_title( "Average " + attr_str );
   ts.add_simple_series( "area", series_color, attr_str, data.data() );
   if ( !p.sim->single_actor_batch )

@@ -799,8 +799,9 @@ void report::print_html_sample_data( report::sc_html_stream& os, const player_t&
   os << ">\n";
   os << "\t\t\t\t\t\t\t\t<td class=\"left small\" colspan=\"" << columns << "\">";
 
-  std::string tokenized_name = name;
+  std::string tokenized_name = data.name_str;
   util::tokenize( tokenized_name );
+  tokenized_name = util::remove_special_chars( tokenized_name );
   os.printf(
       "<a id=\"actor%d_%s_stats_toggle\" "
       "class=\"toggle-details\">%s</a></td>\n",
@@ -822,7 +823,7 @@ void report::print_html_sample_data( report::sc_html_stream& os, const player_t&
   }
   os << ">\n";
   os << "\t\t\t\t\t\t\t\t\t<th class=\"left\"><b>Sample Data</b></th>\n"
-     << "\t\t\t\t\t\t\t\t\t<th class=\"right\">" << data.name_str << "</th>\n"
+     << "\t\t\t\t\t\t\t\t\t<th class=\"right\">" << util::encode_html( data.name_str ) << "</th>\n"
      << "\t\t\t\t\t\t\t\t</tr>\n";
 
   ++i;
@@ -1104,11 +1105,8 @@ void report::print_html_sample_data( report::sc_html_stream& os, const player_t&
 
   if ( !data.simple )
   {
-    std::string tokenized_div_name = data.name_str + "_dist";
-    util::tokenize( tokenized_div_name );
-
-    highchart::histogram_chart_t chart( tokenized_div_name, *p.sim );
-    chart.set_toggle_id( "actor" + util::to_string( p.index ) + "_" + tokenized_div_name + "_stats_toggle" );
+    highchart::histogram_chart_t chart( tokenized_name + "_dist", *p.sim );
+    chart.set_toggle_id( "actor" + util::to_string( p.index ) + "_" + tokenized_name + "_stats_toggle" );
     if ( chart::generate_distribution( chart, nullptr, data.distribution, name, data.mean(), data.min(), data.max() ) )
     {
       os << chart.to_target_div();
@@ -1214,12 +1212,12 @@ std::string report::decorated_spell_name( const sim_t& sim, const spell_data_t& 
 
   if ( sim.decorated_tooltips == false )
   {
-    s << "<a href=\"#\">" << spell.name_cstr() << "</a>";
+    s << "<a href=\"#\">" << util::encode_html( spell.name_cstr() ) << "</a>";
   }
   else
   {
     s << "<a href=\"https://" << decoration_domain( sim ) << ".wowhead.com/spell=" << spell.id()
-      << ( !parms_str.empty() ? "?" + parms_str : "" ) << "\">" << spell.name_cstr() << "</a>";
+      << ( !parms_str.empty() ? "?" + parms_str : "" ) << "\">" << util::encode_html( spell.name_cstr() ) << "</a>";
   }
 
   return s.str();
@@ -1231,7 +1229,7 @@ std::string report::decorated_item_name( const item_t* item )
 
   if ( item->sim->decorated_tooltips == false || item->parsed.data.id == 0 )
   {
-    s << "<a style=\"color:" << item_quality_color( *item ) << ";\" href=\"#\">" << item->full_name() << "</a>";
+    s << "<a style=\"color:" << item_quality_color( *item ) << ";\" href=\"#\">" << util::encode_html( item->full_name() ) << "</a>";
   }
   else
   {
@@ -1299,7 +1297,7 @@ std::string report::decorated_item_name( const item_t* item )
       }
     }
 
-    s << "\">" << item->full_name() << "</a>";
+    s << "\">" << util::encode_html( item->full_name() ) << "</a>";
   }
 
   return s.str();
@@ -1323,7 +1321,7 @@ std::string report::buff_decorator_t::url_name_prefix() const
 {
   if ( m_obj->source && m_obj->source->is_pet() )
   {
-    return m_obj->source->name_str + ":&#160;";
+    return util::encode_html( m_obj->source->name_str ) + ":&#160;";
   }
 
   return std::string();
@@ -1371,14 +1369,14 @@ bool report::spell_data_decorator_t::can_decorate() const
 
 std::string report::spell_data_decorator_t::url_name() const
 {
-  return m_spell->name_cstr();
+  return util::encode_html( m_spell->name_cstr() );
 }
 
 std::string report::spell_data_decorator_t::token() const
 {
   std::string token = m_spell->name_cstr();
   util::tokenize( token );
-  return token;
+  return util::encode_html( token );
 }
 
 std::vector<std::string> report::spell_data_decorator_t::parms() const
@@ -1430,12 +1428,12 @@ std::string report::item_decorator_t::base_url() const
 
 std::string report::item_decorator_t::token() const
 {
-  return m_item->name();
+  return util::encode_html( m_item->name() );
 }
 
 std::string report::item_decorator_t::url_name() const
 {
-  return m_item->full_name();
+  return util::encode_html( m_item->full_name() );
 }
 
 std::vector<std::string> report::item_decorator_t::parms() const

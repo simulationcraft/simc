@@ -99,7 +99,7 @@ std::string highchart::build_id( const stats_t& stats,
   std::string s;
 
   s += "actor" + util::to_string( stats.player->index );
-  s += "_" + stats.name_str;
+  s += "_" + util::remove_special_chars( stats.name_str );
   s += "_";
   s += util::stats_type_string( stats.type );
   s += suffix;
@@ -117,7 +117,7 @@ std::string highchart::build_id( const player_t& actor,
 
 std::string highchart::build_id( const buff_t& buff, const std::string& suffix )
 {
-  std::string s = "buff_" + buff.name_str;
+  std::string s = "buff_" + util::remove_special_chars( buff.name_str );
   if ( buff.player )
     s += "_actor" + util::to_string( buff.player->index );
 
