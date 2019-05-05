@@ -8,6 +8,7 @@
 #include "data/report_data.inc"
 #include "interfaces/sc_js.hpp"
 #include "util/git_info.hpp"
+#include "fmt/time.h"
 
 namespace
 {  // UNNAMED NAMESPACE ==========================================
@@ -1078,11 +1079,11 @@ void print_html_masthead( report::sc_html_stream& os, const sim_t& sim )
         sim.dbc.wow_version(), type, sim.dbc.build_level(), commit_link.c_str(), git_info::revision());
   }
 
-  time_t rawtime;
-  time( &rawtime );
+  std::time_t rawtime = std::time(nullptr);
+  const tm localtime  = fmt::localtime( rawtime );
 
   os << "<ul class=\"params\">\n";
-  os.printf( "<li><b>Timestamp:</b> %s</li>\n", ctime( &rawtime ) );
+  os.format( "<li><b>Timestamp:</b> {:%c}</li>\n", localtime);
   os.printf( "<li><b>Iterations:</b> %d</li>\n", sim.iterations );
 
   if ( sim.vary_combat_length > 0.0 )

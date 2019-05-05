@@ -169,16 +169,20 @@ std::string get_cache_directory()
 }
 #endif
 #ifdef _WIN32
-  env = getenv( "TMP" );
+#pragma warning( push )
+  // Disable security warning
+#pragma warning( disable : 4996 )
+  env = std::getenv( "TMP" );
   if ( !env )
   {
-    env = getenv( "TEMP" );
+    env = std::getenv( "TEMP" );
     if ( ! env )
     {
-      env = getenv( "HOME" );
+      env = std::getenv( "HOME" );
     }
   }
   s = std::string( env );
+#pragma warning( pop )
 #endif
 
   return s;

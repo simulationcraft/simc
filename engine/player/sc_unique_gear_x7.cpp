@@ -1971,8 +1971,8 @@ struct vigor_engaged_t : public special_effect_t
   {
     // Initialize max oscillations from spell data, buff-adjusting phases are -1 ticks, since the
     // transition event itself adjusts the buff stack count by one (up or down)
-    max_ticks[ ASCENDING ] = max_ticks[ DESCENDING ] = driver()->effectN( 2 ).base_value() - 1;
-    max_ticks[ MAX_STACK ] = max_ticks[ INACTIVE ] = driver()->effectN( 3 ).base_value();
+    max_ticks[ ASCENDING ] = max_ticks[ DESCENDING ] = as<int>(driver()->effectN( 2 ).base_value() - 1);
+    max_ticks[ MAX_STACK ] = max_ticks[ INACTIVE ] = as<int>(driver()->effectN( 3 ).base_value());
 
     vigor_buff = ::create_buff<stat_buff_t>( effect.player, "vigor_engaged",
         effect.player->find_spell( 287916 ), effect.item );

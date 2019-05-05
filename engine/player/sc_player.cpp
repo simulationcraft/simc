@@ -5000,7 +5000,7 @@ void player_t::schedule_ready( timespan_t delta_time, bool waiting )
 {
   if ( readying )
   {
-    std::runtime_error(fmt::format("{} scheduled ready while already ready.", *this ));
+    throw std::runtime_error(fmt::format("{} scheduled ready while already ready.", *this ));
   }
   action_t* was_executing = ( channeling ? channeling : executing );
 
@@ -6459,7 +6459,7 @@ void player_t::target_mitigation( school_e school, dmg_e dmg_type, action_state_
     double pre_block_amount = s->result_amount;
 
     // In BfA, Block and Crit Block work in the same manner as armor and are affected by the same cap
-    if ( s -> block_result == BLOCK_RESULT_BLOCKED || s -> block_result == BLOCK_RESULT_CRIT_BLOCKED )
+    if ( s ->action && (s -> block_result == BLOCK_RESULT_BLOCKED || s -> block_result == BLOCK_RESULT_CRIT_BLOCKED ))
     {
       double block_reduction = composite_block_reduction( s );
 
@@ -8800,7 +8800,7 @@ void player_t::parse_talents_numbers( const std::string& talent_string )
     char c = talent_string[ i ];
     if ( c < '0' || c > ( '0' + MAX_TALENT_COLS ) )
     {
-      std::runtime_error(fmt::format("Illegal character '{}' in talent encoding.", c ));
+      throw std::runtime_error(fmt::format("Illegal character '{}' in talent encoding.", c ));
     }
     if ( c > '0' )
       talent_points.select_row_col( i, c - '1' );

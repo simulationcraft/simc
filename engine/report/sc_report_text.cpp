@@ -752,7 +752,7 @@ void print_iteration_data( std::ostream& os, const sim_t& sim )
 void sim_summary_performance( std::ostream& os, sim_t* sim )
 {
   std::time_t cur_time = std::time( nullptr );
-  auto date_str = fmt::format("{:%Y-%m-%d %H:%M:%S%z}", *std::localtime(&cur_time) );
+  auto date_str = fmt::format("{:%Y-%m-%d %H:%M:%S%z}", fmt::localtime(cur_time) );
 
   std::stringstream iterations_str;
   if ( sim -> threads > 1 )
