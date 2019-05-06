@@ -116,6 +116,8 @@ void gains_to_json( JsonOutput root, const player_t& p )
 void to_json( JsonOutput root, const buff_t* b )
 {
   root[ "name" ] = b -> name();
+  root[ "spell_name" ] = b->data().name_cstr();
+  root[ "spell_school" ] = util::school_type_string( b->data().get_school_type());
   add_non_zero( root, "spell", b -> data().id() );
   if ( b -> item )
   {
@@ -155,6 +157,18 @@ void buffs_to_json( JsonOutput root, const player_t& p )
 {
   root.make_array();
   range::for_each( p.buff_list, [ &root]( const buff_t* b ) {
+    if ( b -> avg_start.sum() == 0 )
+    {
+      return;
+    }
+    to_json( root.add(), b );
+  } );
+}
+void constant_buffs_to_json( JsonOutput root, const player_t& p )
+{
+  root.make_array();
+  // constant buffs
+  range::for_each( p.report_information.constant_buffs, [ &root]( const buff_t* b ) {
     if ( b -> avg_start.sum() == 0 )
     {
       return;
@@ -776,6 +790,7 @@ void to_json( JsonOutput& arr, const player_t& p )
   if ( p.sim -> report_details != 0 )
   {
     buffs_to_json( root[ "buffs" ], p );
+    constant_buffs_to_json( root[ "buffs_constant" ], p );
 
     if ( p.proc_list.size() > 0 )
     {
