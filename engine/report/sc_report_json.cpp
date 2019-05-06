@@ -246,6 +246,11 @@ void stats_to_json( JsonOutput root, const std::vector<stats_t*> stats_list, int
     if (a != nullptr) {
       node[ "id" ] = a -> id;
       node[ "spell_name" ] = a -> data().name_cstr();
+      if (a->item)
+      {
+        // grab item ID if available, can link trinket pets back to the item
+        node[ "item_id" ] = a->item->parsed.data.id;
+      }
     }
     node[ "name" ] = s -> name();
     if ( s -> school != SCHOOL_NONE )
@@ -258,6 +263,7 @@ void stats_to_json( JsonOutput root, const std::vector<stats_t*> stats_list, int
     {
       gain_to_json( node[ "resource_gain" ], s -> resource_gain );
     }
+
 
     node[ "num_executes" ] = s -> num_executes;
     node[ "compound_amount" ] = s -> compound_amount;
