@@ -7433,6 +7433,7 @@ void death_knight_t::default_apl_blood()
 
 void death_knight_t::default_apl_frost()
 {
+  action_priority_list_t* precombat    = get_action_priority_list( "precombat" );
   action_priority_list_t* def          = get_action_priority_list( "default" );
   action_priority_list_t* cooldowns    = get_action_priority_list( "cooldowns" );
   action_priority_list_t* cold_heart   = get_action_priority_list( "cold_heart" );
@@ -7444,6 +7445,8 @@ void death_knight_t::default_apl_frost()
 
   // Setup precombat APL for DPS spec
   default_apl_dps_precombat();
+  
+  precombat -> add_action( this, "variable,name=other_on_use_equipped,value=(equipped.dread_gladiators_badge|equipped.vial_of_animated_blood|equipped.first_mates_spyglass|equipped.jes_howler|equipped.dread_aspirants_medallion)&talent.breath_of_sindragosa.enabled" );
 
   def -> add_action( "auto_attack" );
 
@@ -7463,8 +7466,14 @@ void death_knight_t::default_apl_frost()
   def -> add_action( "run_action_list,name=aoe,if=active_enemies>=2" );
   def -> add_action( "call_action_list,name=standard" );
 
-  // On-use itemos
+  // On-use items
+  cooldowns -> add_action( "use_item,name=lurkers_insidious_gift,if=((cooldown.pillar_of_frost.remains<=10|cooldown.pillar_of_frost.ready)&variable.other_on_use_equipped&talent.breath_of_sindragosa.enabled)|(buff.pillar_of_frost.remains&buff.pillar_of_frost.up&!variable.other_on_use_equipped&talent.breath_of_sindragosa.enabled)|(buff.pillar_of_frost.remains&!talent.breath_of_sindragosa.enabled)" );
   cooldowns -> add_action( "use_items,if=(cooldown.pillar_of_frost.ready|cooldown.pillar_of_frost.remains>20)&(!talent.breath_of_sindragosa.enabled|cooldown.empower_rune_weapon.remains>95)" );
+  cooldowns -> add_action( "use_item,name=dread_gladiators_badge,if=(equipped.lurkers_insidious_gift&buff.pillar_of_frost.remains&talent.breath_of_sindragosa.enabled)|(!equipped.lurkers_insidious_gift&buff.pillar_of_frost.remains&buff.pillar_of_frost.up&talent.breath_of_sindragosa.enabled)|(buff.pillar_of_frost.remains&!talent.breath_of_sindragosa.enabled)" );
+  cooldowns -> add_action( "use_item,name=dread_aspirants_medallion,if=(equipped.lurkers_insidious_gift&buff.pillar_of_frost.remains&talent.breath_of_sindragosa.enabled)|(!equipped.lurkers_insidious_gift&buff.pillar_of_frost.remains&buff.pillar_of_frost.up&talent.breath_of_sindragosa.enabled)|(buff.pillar_of_frost.remains&!talent.breath_of_sindragosa.enabled)" );
+  cooldowns -> add_action( "use_item,name=vial_of_animated_blood,if=(equipped.lurkers_insidious_gift&buff.pillar_of_frost.remains&talent.breath_of_sindragosa.enabled)|(!equipped.lurkers_insidious_gift&buff.pillar_of_frost.remains&buff.pillar_of_frost.up&talent.breath_of_sindragosa.enabled)|(buff.pillar_of_frost.remains&!talent.breath_of_sindragosa.enabled)" );
+  cooldowns -> add_action( "use_item,name=first_mates_spyglass,if=(equipped.lurkers_insidious_gift&buff.pillar_of_frost.remains&talent.breath_of_sindragosa.enabled)|(!equipped.lurkers_insidious_gift&buff.pillar_of_frost.remains&buff.pillar_of_frost.up&talent.breath_of_sindragosa.enabled)|(buff.pillar_of_frost.remains&!talent.breath_of_sindragosa.enabled)" );
+  cooldowns -> add_action( "use_item,name=jes_howler,if=(equipped.lurkers_insidious_gift&buff.pillar_of_frost.remains&talent.breath_of_sindragosa.enabled)|(!equipped.lurkers_insidious_gift&buff.pillar_of_frost.remains<12&buff.pillar_of_frost.up&talent.breath_of_sindragosa.enabled)|(buff.pillar_of_frost.remains&!talent.breath_of_sindragosa.enabled)" );
   cooldowns -> add_action( "use_item,name=knot_of_ancient_fury,if=cooldown.empower_rune_weapon.remains>40");
   cooldowns -> add_action( "use_item,name=grongs_primal_rage,if=rune<=3&!buff.pillar_of_frost.up&(!buff.breath_of_sindragosa.up|!talent.breath_of_sindragosa.enabled)" );
   cooldowns -> add_action( "use_item,name=razdunks_big_red_button" );
