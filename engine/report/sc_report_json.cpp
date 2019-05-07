@@ -116,6 +116,8 @@ void gains_to_json( JsonOutput root, const player_t& p )
 void to_json( JsonOutput root, const buff_t* b )
 {
   root[ "name" ] = b -> name();
+  root[ "spell_name" ] = b->data().name_cstr();
+  root[ "spell_school" ] = util::school_type_string( b->data().get_school_type());
   add_non_zero( root, "spell", b -> data().id() );
   if ( b -> item )
   {
@@ -162,6 +164,18 @@ void buffs_to_json( JsonOutput root, const player_t& p )
     to_json( root.add(), b );
   } );
 }
+void constant_buffs_to_json( JsonOutput root, const player_t& p )
+{
+  root.make_array();
+  // constant buffs
+  range::for_each( p.report_information.constant_buffs, [ &root]( const buff_t* b ) {
+    if ( b -> avg_start.sum() == 0 )
+    {
+      return;
+    }
+    to_json( root.add(), b );
+  } );
+}
 
 void to_json( JsonOutput root, const stats_t::stats_results_t& sr )
 {
@@ -191,18 +205,53 @@ void procs_to_json( JsonOutput root, const player_t& p )
   } );
 }
 
-void stats_to_json( JsonOutput root, const player_t& p )
+void stats_to_json( JsonOutput root, const std::vector<stats_t*> stats_list, int level = 0 )
 {
   root.make_array();
 
-  range::for_each( p.stats_list, [ & ]( const stats_t* s ) {
-    if ( s -> quiet || s -> num_executes.mean() == 0 )
+  range::for_each( stats_list, [ & ]( const stats_t* s ) {
+    if ( s -> quiet )
     {
       return;
+    }
+    if (level == 0)
+    {
+      // top-level is just abilities that were executed
+      if (s -> num_executes.mean() == 0)
+      {
+        return;
+      }
+      // probably a pet ability that matchs a player ability, e.g. Kill Command
+      if ( s -> parent ) {
+        return;
+      }
+    } else {
+      // children show anything with an amount to catch dots and effects of spells
+      if (s -> compound_amount == 0)
+      {
+        return;
+      }
     }
 
     auto node = root.add();
 
+    // find action for this stat
+    action_t* a            = nullptr;
+    for ( const auto& action : s->action_list )
+    {
+      if ( ( a = action )->id > 1 )
+        break;
+    }
+
+    if (a != nullptr) {
+      node[ "id" ] = a -> id;
+      node[ "spell_name" ] = a -> data().name_cstr();
+      if (a->item)
+      {
+        // grab item ID if available, can link trinket pets back to the item
+        node[ "item_id" ] = a->item->parsed.data.id;
+      }
+    }
     node[ "name" ] = s -> name();
     if ( s -> school != SCHOOL_NONE )
     {
@@ -215,7 +264,9 @@ void stats_to_json( JsonOutput root, const player_t& p )
       gain_to_json( node[ "resource_gain" ], s -> resource_gain );
     }
 
+
     node[ "num_executes" ] = s -> num_executes;
+    node[ "compound_amount" ] = s -> compound_amount;
 
     add_non_zero( node, "total_execute_time", s -> total_execute_time );
     add_non_zero( node, "portion_aps", s -> portion_aps );
@@ -253,6 +304,9 @@ void stats_to_json( JsonOutput root, const player_t& p )
                  s -> tick_results[ r ] );
       }
     }
+
+    // add children stats
+    stats_to_json( node[ "children" ], s->children, level + 1 );
   } );
 }
 
@@ -372,11 +426,15 @@ void to_json( JsonOutput root,
       json[ "name" ] = entry.action -> name();
       json[ "target" ] = entry.action->harmful ? entry.target -> name() : "none";
       json[ "spell_name" ] = entry.action->data().name_cstr();
+      if (entry.action->item) {
+        json[ "item_name" ] = entry.action->item->name_str;
+      }
     }
     else
     {
       json[ "wait" ] = entry.wait_time;
     }
+
 
     if ( entry.buff_list.size() > 0 )
     {
@@ -738,6 +796,7 @@ void to_json( JsonOutput& arr, const player_t& p )
   if ( p.sim -> report_details != 0 )
   {
     buffs_to_json( root[ "buffs" ], p );
+    constant_buffs_to_json( root[ "buffs_constant" ], p );
 
     if ( p.proc_list.size() > 0 )
     {
@@ -749,7 +808,14 @@ void to_json( JsonOutput& arr, const player_t& p )
       gains_to_json( root[ "gains" ], p );
     }
 
-    stats_to_json( root[ "stats" ], p );
+    stats_to_json( root[ "stats" ], p.stats_list );
+
+    // add pet stats as a separate property
+    JsonOutput stats_pets = root[ "stats_pets" ];
+    for ( const auto& pet : p.pet_list )
+    {
+      stats_to_json( stats_pets[ pet->name_str ], pet->stats_list );
+    }
   }
 
   gear_to_json( root[ "gear" ], p );

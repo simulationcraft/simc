@@ -390,6 +390,10 @@ struct dbc_consumable_base_t : public action_t
       throw std::invalid_argument("Unable to find consumable.");
     }
 
+    // populate ID and spell data for better reporting
+    id = driver() -> id();
+    s_data = driver();
+
     auto effect = unique_gear::find_special_effect( player, driver() -> id(), SPECIAL_EFFECT_USE );
     // No special effect for this consumable found, so create one
     if ( ! effect )
