@@ -392,7 +392,7 @@ struct dbc_consumable_base_t : public action_t
 
     // populate ID and spell data for better reporting
     id = driver() -> id();
-    s_data = driver();
+    s_data_reporting = driver();
 
     auto effect = unique_gear::find_special_effect( player, driver() -> id(), SPECIAL_EFFECT_USE );
     // No special effect for this consumable found, so create one

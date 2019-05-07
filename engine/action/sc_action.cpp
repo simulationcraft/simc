@@ -311,6 +311,7 @@ action_t::options_t::options_t()
 
 action_t::action_t( action_e ty, const std::string& token, player_t* p, const spell_data_t* s )
   : s_data( s ? s : spell_data_t::nil() ),
+    s_data_reporting(spell_data_t::nil()),
     sim( p->sim ),
     type( ty ),
     name_str( util::tokenize_fn( token ) ),

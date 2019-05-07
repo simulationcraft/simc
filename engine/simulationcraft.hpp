@@ -4932,6 +4932,7 @@ struct action_t : private noncopyable
 {
 public:
   const spell_data_t* s_data;
+  const spell_data_t* s_data_reporting;
   sim_t* sim;
   const action_e type;
   std::string name_str;
@@ -5419,6 +5420,16 @@ public:
    */
   const spell_data_t& data() const
   { return ( *s_data ); }
+
+  // return s_data_reporting if available, otherwise fallback to s_data
+  const spell_data_t& data_reporting() const
+  {
+    if (s_data_reporting == spell_data_t::nil()) {
+      return ( *s_data );
+    } else {
+      return ( *s_data_reporting );
+    }
+  }
 
   dot_t* find_dot( player_t* target ) const;
 

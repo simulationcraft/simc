@@ -245,7 +245,7 @@ void stats_to_json( JsonOutput root, const std::vector<stats_t*> stats_list, int
 
     if (a != nullptr) {
       node[ "id" ] = a -> id;
-      node[ "spell_name" ] = a -> data().name_cstr();
+      node[ "spell_name" ] = a -> data_reporting().name_cstr();
       if (a->item)
       {
         // grab item ID if available, can link trinket pets back to the item
@@ -425,7 +425,7 @@ void to_json( JsonOutput root,
       json[ "id" ] = entry.action -> id;
       json[ "name" ] = entry.action -> name();
       json[ "target" ] = entry.action->harmful ? entry.target -> name() : "none";
-      json[ "spell_name" ] = entry.action->data().name_cstr();
+      json[ "spell_name" ] = entry.action->data_reporting().name_cstr();
       if (entry.action->item) {
         json[ "item_name" ] = entry.action->item->name_str;
       }
