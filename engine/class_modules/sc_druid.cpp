@@ -1611,10 +1611,13 @@ public:
            ( p()->buff.celestial_alignment->check() || p()->buff.incarnation_moonkin->check() ) )
       {
         if ( s != nullptr )
+        {
           ss_s->target = s->target;
-
+        }
         else
+        {
           ss_s->target = ab::target;
+        }
         p()->active.streaking_stars->snapshot_state( ss_s, DMG_DIRECT );
         p()->active.streaking_stars->schedule_execute( ss_s );
       }
