@@ -3900,6 +3900,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
 
     monk_melee_attack_t::execute();
 
+    trigger_attack->set_target( target );
     trigger_attack->execute();
 
     if ( p()->azerite.glory_of_the_dawn.ok() )
