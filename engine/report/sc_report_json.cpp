@@ -116,9 +116,9 @@ void gains_to_json( JsonOutput root, const player_t& p )
 void to_json( JsonOutput root, const buff_t* b )
 {
   root[ "name" ] = b -> name();
-  root[ "spell_name" ] = b->data().name_cstr();
-  root[ "spell_school" ] = util::school_type_string( b->data().get_school_type());
-  add_non_zero( root, "spell", b -> data().id() );
+  root[ "spell_name" ] = b->data_reporting().name_cstr();
+  root[ "spell_school" ] = util::school_type_string( b->data_reporting().get_school_type());
+  add_non_zero( root, "spell", b -> data_reporting().id() );
   if ( b -> item )
   {
     root[ "item" ][ "id" ] = b -> item -> parsed.data.id;
@@ -443,7 +443,7 @@ void to_json( JsonOutput root,
       range::for_each( entry.buff_list, [ &buffs, &sim ]( const std::pair< buff_t*, std::vector<double> > data ) {
         auto entry = buffs.add();
 
-        entry[ "id" ] = data.first -> data().id();
+        entry[ "id" ] = data.first -> data_reporting().id();
         entry[ "name" ] = data.first -> name();
         entry[ "stacks" ] = data.second[0];
         if ( sim.json_full_states )
