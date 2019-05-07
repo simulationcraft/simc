@@ -5424,9 +5424,12 @@ public:
   // return s_data_reporting if available, otherwise fallback to s_data
   const spell_data_t& data_reporting() const
   {
-    if (s_data_reporting == spell_data_t::nil()) {
+    if (s_data_reporting == spell_data_t::nil())
+    {
       return ( *s_data );
-    } else {
+    }
+    else
+    {
       return ( *s_data_reporting );
     }
   }
