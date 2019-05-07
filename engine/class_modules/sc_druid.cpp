@@ -7837,7 +7837,7 @@ std::string druid_t::default_flask() const
 }
 std::string druid_t::default_potion() const
 {
-   std::string balance_pot =  (true_level > 110) ? "potion_of_rising_death" :
+   std::string balance_pot =  (true_level > 110) ? "battle_potion_of_intellect" :
                               (true_level > 100) ? "deadly_grace" :
                               (true_level >= 90) ? "draenic_intellect" :
                               (true_level >= 85) ? "jade_serpent" :
