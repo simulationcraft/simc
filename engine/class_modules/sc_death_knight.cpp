@@ -7446,7 +7446,7 @@ void death_knight_t::default_apl_frost()
   // Setup precombat APL for DPS spec
   default_apl_dps_precombat();
   
-  precombat -> add_action( this, "variable,name=other_on_use_equipped,value=(equipped.dread_gladiators_badge|equipped.vial_of_animated_blood|equipped.first_mates_spyglass|equipped.jes_howler|equipped.dread_aspirants_medallion)&talent.breath_of_sindragosa.enabled" );
+  precombat -> add_action( "variable,name=other_on_use_equipped,value=(equipped.dread_gladiators_badge|equipped.vial_of_animated_blood|equipped.first_mates_spyglass|equipped.jes_howler|equipped.dread_aspirants_medallion)&talent.breath_of_sindragosa.enabled" );
 
   def -> add_action( "auto_attack" );
 
