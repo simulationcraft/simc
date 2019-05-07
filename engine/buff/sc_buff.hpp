@@ -51,6 +51,7 @@ public:
   const item_t* const item;
   const std::string name_str;
   const spell_data_t* s_data;
+  const spell_data_t* s_data_reporting;
   player_t* const source;
   std::vector<event_t*> expiration;
   event_t* delay;
@@ -130,6 +131,13 @@ protected:
   buff_t( sim_t* sim, player_t* target, player_t* source, const std::string& name, const spell_data_t* = spell_data_t::nil(), const item_t* item = nullptr );
 public:
   const spell_data_t& data() const { return *s_data; }
+  const spell_data_t& data_reporting() const
+  {
+    if ( s_data_reporting == spell_data_t::nil() )
+      return *s_data;
+    else
+      return *s_data_reporting;
+  }
 
   /**
    * Get current number of stacks, no benefit tracking.

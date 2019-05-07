@@ -404,7 +404,7 @@ public:
     std::stringstream s;
 
     s << "<a href=\"https://" << decoration_domain( *this -> m_obj -> sim )
-      << ".wowhead.com/spell=" << this -> m_obj -> data().id();
+      << ".wowhead.com/spell=" << this -> m_obj -> data_reporting().id();
 
     return s.str();
   }
@@ -412,11 +412,11 @@ public:
   bool can_decorate() const override
   {
     return this -> m_obj -> sim -> decorated_tooltips &&
-           this -> m_obj -> data().id() > 0;
+           this -> m_obj -> data_reporting().id() > 0;
   }
 
   std::string url_name() const override
-  { return util::encode_html( m_obj -> data().id() ? m_obj -> data().name_cstr() : m_obj -> name() ); }
+  { return util::encode_html( m_obj -> data_reporting().id() ? m_obj -> data_reporting().name_cstr() : m_obj -> name() ); }
 
   std::string token() const override
   { return util::encode_html( m_obj -> name() ); }

@@ -449,6 +449,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, const std::strin
     item( item ),
     name_str( name ),
     s_data( spell_data ),
+    s_data_reporting( spell_data_t::nil() ),
     source( source ),
     expiration(),
     delay(),
