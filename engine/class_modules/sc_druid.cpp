@@ -1610,6 +1610,7 @@ public:
       if ( !compare_previous_streaking_stars( new_ability ) &&
            ( p()->buff.celestial_alignment->check() || p()->buff.incarnation_moonkin->check() ) )
       {
+        action_state_t* ss_s = p()->active.streaking_stars->get_state();
         if ( s != nullptr )
         {
           ss_s->target = s->target;
