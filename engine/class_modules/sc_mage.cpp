@@ -5586,8 +5586,8 @@ std::string mage_t::default_food() const
     ( specialization() == MAGE_FIRE   ) ? "pickled_eel" :
                                           "salty_squid_roll";
 
-  return ( true_level > 110 ) ? "bountiful_captains_feast" :
-         ( true_level > 100 ) ? "lemon_herb_filet" :
+  return ( true_level > 110 ) ? "fancy_darkmoon_feast" :
+         ( true_level > 100 ) ? "fancy_darkmoon_feast" :
          ( true_level >  90 ) ? lvl100_food :
          ( true_level >  89 ) ? "mogu_fish_stew" :
          ( true_level >  80 ) ? "severed_sagefish_head" :
