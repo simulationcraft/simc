@@ -840,6 +840,7 @@ const std::map<std::string, unsigned> food_t::__map = {
   { "felmouth_frenzy",          188534 },
   { "lemon_herb_filet",         185736 },
   { "sugarcrusted_fish_feast",  185736 },
+  { "fancy_darkmoon_feast",     185786 },
 };
 
 } // END UNNAMED NAMESPACE

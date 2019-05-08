@@ -6847,7 +6847,7 @@ void unique_gear::register_special_effects_legion()
   register_special_effect( 225606, consumables::pepper_breath );
   register_special_effect( 225601, consumables::pepper_breath );
   register_special_effect( 201336, consumables::pepper_breath );
-  register_special_effect( 185736, consumables::darkmoon_faire_food );
+  register_special_effect( 185786, consumables::darkmoon_faire_food );
 
   /* Artifact powers */
   register_special_effect( 252906, artifact_power::torment_the_weak );
