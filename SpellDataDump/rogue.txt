@@ -2089,13 +2089,15 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=68029)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.45000 | PvP Coefficient: 0.66667 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.45000 | PvP Coefficient: 0.80000 | Target: Self (1)
                    Affected Spells: Rupture (1943), Envenom (32645), Weaponmaster (193536), Nightblade (195452), Eviscerate (196819), Secret Technique (280719), Secret Technique (280720)
                    Family Flags: 17, 20, 32, 35, 92, 100
+                   Hotfixed: PvP Coefficient (0.666667 -> 0.8)
 #2 (id=87762)    : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.76000 | PvP Coefficient: 0.66667 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.76000 | PvP Coefficient: 0.80000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rupture (1943), Envenom (32645), Restless Blades (79096), Weaponmaster (193536), Nightblade (195452), Eviscerate (196819), Secret Technique (280719), Secret Technique (280720)
                    Family Flags: 17, 20, 32, 35, 77, 100
+                   Hotfixed: PvP Coefficient (0.666667 -> 0.8)
 Description      : Increases the damage done by your finishing moves by ${$76808m1}.1%.
 
 Name             : Elusiveness (rank=Passive Talent) (id=79008) [Spell Family (8), Passive] 
@@ -3364,7 +3366,8 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... .....
                  : Cannot dodge/parry/block (21), Requires main-hand weapon (106)
 Effects          :
 #1 (id=269259)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.69880 | PvP Coefficient: 0.90000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.69880 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Hotfixed: PvP Coefficient (0.9 -> 1)
 #2 (id=269260)   : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
 Description      : Strike the target, dealing $s1 Physical damage.$?a231718[
@@ -4052,7 +4055,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105), Requires main-hand weapon (106)
 Effects          :
 #1 (id=288959)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.17600 | PvP Coefficient: 0.85000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.17600 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Hotfixed: PvP Coefficient (0.85 -> 1)
 Description      : Finishing move that disembowels the target, causing damage per combo point.
    1 point  : ${$m1*1} damage
    2 points: ${$m1*2} damage
@@ -7069,7 +7073,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Cannot crit (93), Disable player multipliers (221)
 Effects          :
 #1 (id=735178)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.10000 | PvP Coefficient: 0.50000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.10000 | PvP Coefficient: 0.80000 | Target: Enemy (6)
+                   Hotfixed: PvP Coefficient (0.5 -> 0.8)
 Description      : $@spelldesc121471
 
 Name             : Sinister Strike (rank=Rank 2) (id=279876) [Spell Family (8), Passive] 
