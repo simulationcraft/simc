@@ -1250,6 +1250,8 @@ class SpellDataGenerator(DataGenerator):
          295257,
          # Legplates of Unbound Anguish damage proc
          295428,
+         # Darkmoon Faire food buff
+         185786,
         ),
 
         # Warrior:
