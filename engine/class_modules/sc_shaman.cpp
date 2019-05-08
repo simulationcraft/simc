@@ -281,7 +281,6 @@ public:
   // Cached actions
   struct actions_t
   {
-    action_t* ancestral_awakening;
     spell_t* lightning_shield;
     spell_t* earthen_rage;
     spell_t* crashing_storm;
@@ -459,12 +458,12 @@ public:
     const spell_data_t* windfury;
 
     // Restoration
-    const spell_data_t* ancestral_awakening;
-    const spell_data_t* ancestral_focus;
     const spell_data_t* purification;
     const spell_data_t* resurgence;
     const spell_data_t* riptide;
     const spell_data_t* tidal_waves;
+    const spell_data_t* spiritwalkers_grace;
+    const spell_data_t* restoration_shaman;  // general spec multiplier
   } spec;
 
   // Masteries
@@ -531,7 +530,7 @@ public:
     // const spell_data_t* ascendance;
 
     // Restoration
-    const spell_data_t* gust_of_wind;
+    const spell_data_t* graceful_spirit;
   } talent;
 
   // Artifact
@@ -644,7 +643,10 @@ public:
     // Azerite Effects
     lightning_conduit = nullptr;
 
-    regen_type = REGEN_DISABLED;
+    if ( specialization() == SHAMAN_ELEMENTAL || specialization() == SHAMAN_ENHANCEMENT )
+      regen_type = REGEN_DISABLED;
+    else
+      regen_type = REGEN_DYNAMIC;
   }
 
   virtual ~shaman_t();
@@ -683,6 +685,7 @@ public:
   void init_action_list() override;
   void init_action_list_enhancement();
   void init_action_list_elemental();
+  void init_action_list_restoration_dps();
   std::string generate_bloodlust_options();
   std::string default_potion() const override;
   std::string default_flask() const override;
@@ -1102,6 +1105,19 @@ public:
     if ( ab::data().affected_by( player->spec.enhancement_shaman->effectN( 1 ) ) )
     {
       ab::base_multiplier *= 1.0 + player->spec.enhancement_shaman->effectN( 1 ).percent();
+    }
+
+    if ( ab::data().affected_by( player->spec.restoration_shaman->effectN( 3 ) ) )
+    {
+      ab::base_dd_multiplier *= 1.0 + player->spec.restoration_shaman->effectN( 3 ).percent();
+    }
+    if ( ab::data().affected_by( player->spec.restoration_shaman->effectN( 4 ) ) )
+    {
+      ab::base_td_multiplier *= 1.0 + player->spec.restoration_shaman->effectN( 4 ).percent();
+    }
+    if ( ab::data().affected_by( player->spec.restoration_shaman->effectN( 7 ) ) )
+    {
+      ab::base_multiplier *= 1.0 + player->spec.restoration_shaman->effectN( 7 ).percent();
     }
   }
 
@@ -3136,28 +3152,6 @@ struct elemental_overload_spell_t : public shaman_spell_t
   }
 };
 
-struct ancestral_awakening_t : public shaman_heal_t
-{
-  ancestral_awakening_t( shaman_t* player )
-    : shaman_heal_t( "ancestral_awakening", player, player->find_spell( 52752 ) )
-  {
-    background = proc = true;
-  }
-
-  double composite_da_multiplier( const action_state_t* state ) const override
-  {
-    double m = shaman_heal_t::composite_da_multiplier( state );
-    m *= p()->spec.ancestral_awakening->effectN( 1 ).percent();
-    return m;
-  }
-
-  void execute() override
-  {
-    target = find_lowest_player();
-    shaman_heal_t::execute();
-  }
-};
-
 // shaman_heal_t::impact ====================================================
 
 void shaman_heal_t::impact( action_state_t* s )
@@ -3181,18 +3175,6 @@ void shaman_heal_t::impact( action_state_t* s )
   {
     if ( resurgence_gain > 0 )
       p()->resource_gain( RESOURCE_MANA, resurgence_gain, p()->gain.resurgence );
-
-    if ( p()->spec.ancestral_awakening->ok() )
-    {
-      if ( !p()->action.ancestral_awakening )
-      {
-        p()->action.ancestral_awakening = new ancestral_awakening_t( p() );
-        p()->action.ancestral_awakening->init();
-      }
-
-      p()->action.ancestral_awakening->base_dd_min = s->result_total;
-      p()->action.ancestral_awakening->base_dd_max = s->result_total;
-    }
   }
 
   if ( p()->main_hand_weapon.buff_type == EARTHLIVING_IMBUE )
@@ -4313,8 +4295,11 @@ struct chained_base_t : public shaman_spell_t
     }
     radius = 10.0;
 
-    maelstrom_gain = mg;
-    energize_type  = ENERGIZE_NONE;  // disable resource generation from spell data.
+    if ( p()->specialization() == SHAMAN_ELEMENTAL )
+    {
+      maelstrom_gain = mg;
+      energize_type  = ENERGIZE_NONE;  // disable resource generation from spell data.
+    }
 
     if ( data().affected_by( player->spec.chain_lightning_2->effectN( 1 ) ) )
     {
@@ -4719,6 +4704,9 @@ struct lava_burst_t : public shaman_spell_t
       overload = new lava_burst_overload_t( player );
       add_child( overload );
     }
+
+    if ( p()->specialization() == SHAMAN_RESTORATION )
+      resource_current = RESOURCE_MANA;
 
     spell_power_mod.direct = player->find_spell( 285452 )->effectN( 1 ).sp_coeff();
   }
@@ -5303,6 +5291,10 @@ struct spiritwalkers_grace_t : public shaman_spell_t
                       options_str )
   {
     may_miss = may_crit = harmful = callbacks = false;
+    if ( p()->talent.graceful_spirit->ok() )
+    {
+      cooldown->duration += p()->talent.graceful_spirit->effectN( 1 ).time_value();
+    }
   }
 
   virtual void execute() override
@@ -5669,9 +5661,21 @@ struct flame_shock_t : public shaman_spell_t
     // proc chance suddenly bacame 100% and the actual chance became effectN 1
     proc_chance = p()->spec.lava_surge->effectN( 1 ).percent();
 
+    if ( p()->spec.restoration_shaman->ok() )
+    {
+      proc_chance += p()->spec.restoration_shaman->effectN( 8 ).percent();
+    }
+
     if ( p()->azerite.igneous_potential.ok() )
     {
-      proc_chance = p()->azerite.igneous_potential.spell_ref().effectN( 3 ).percent();
+      if ( p()->spec.elemental_shaman->ok() )
+      {
+        proc_chance = p()->azerite.igneous_potential.spell_ref().effectN( 3 ).percent();
+      }
+      else if ( p()->spec.restoration_shaman->ok() )
+      {
+        proc_chance = p()->azerite.igneous_potential.spell_ref().effectN( 4 ).percent();
+      }
     }
 
     if ( rng().roll( proc_chance ) )
@@ -6909,12 +6913,11 @@ void shaman_t::init_spells()
   spec.windfury           = find_specialization_spell( "Windfury" );
 
   // Restoration
-  spec.ancestral_awakening = find_specialization_spell( "Ancestral Awakening" );
-  spec.ancestral_focus     = find_specialization_spell( "Ancestral Focus" );
-  spec.purification        = find_specialization_spell( "Purification" );
-  spec.resurgence          = find_specialization_spell( "Resurgence" );
-  spec.riptide             = find_specialization_spell( "Riptide" );
-  spec.tidal_waves         = find_specialization_spell( "Tidal Waves" );
+  spec.purification       = find_specialization_spell( "Purification" );
+  spec.resurgence         = find_specialization_spell( "Resurgence" );
+  spec.riptide            = find_specialization_spell( "Riptide" );
+  spec.tidal_waves        = find_specialization_spell( "Tidal Waves" );
+  spec.restoration_shaman = find_specialization_spell( "Restoration Shaman" );
 
   //
   // Masteries
@@ -6976,7 +6979,7 @@ void shaman_t::init_spells()
   talent.earthen_spike     = find_talent_spell( "Earthen Spike" );
 
   // Restoration
-  talent.gust_of_wind = find_talent_spell( "Gust of Wind" );
+  talent.graceful_spirit = find_talent_spell( "Graceful Spirit" );
 
   //
   // Azerite traits
@@ -7023,6 +7026,12 @@ void shaman_t::init_base_stats()
 
   if ( specialization() == SHAMAN_ELEMENTAL || specialization() == SHAMAN_ENHANCEMENT )
     resources.base[ RESOURCE_MAELSTROM ] = 100;
+
+  if ( specialization() == SHAMAN_RESTORATION )
+  {
+    resources.base[ RESOURCE_MANA ]               = 20000;
+    resources.initial_multiplier[ RESOURCE_MANA ] = 1.0 + spec.restoration_shaman->effectN( 5 ).percent();
+  }
 
   if ( specialization() == SHAMAN_ELEMENTAL && talent.call_the_thunder->ok() )
   {
@@ -7647,7 +7656,8 @@ void shaman_t::create_buffs()
   // Restoration
   //
   buff.spiritwalkers_grace =
-      make_buff( this, "spiritwalkers_grace", find_specialization_spell( "Spiritwalker's Grace" ) );
+      make_buff( this, "spiritwalkers_grace", find_specialization_spell( "Spiritwalker's Grace" ) )
+          ->set_cooldown( timespan_t::zero() );
   buff.tidal_waves =
       make_buff( this, "tidal_waves", spec.tidal_waves->ok() ? find_spell( 53390 ) : spell_data_t::not_found() );
 }
@@ -8257,13 +8267,52 @@ void shaman_t::init_action_list_enhancement()
                       "&variable.furyCheck_FB" );
   filler->add_action( this, "Flametongue" );
 }
+// shaman_t::init_action_list_restoration ===================================
+
+void shaman_t::init_action_list_restoration_dps()
+{
+  action_priority_list_t* precombat = get_action_priority_list( "precombat" );
+  action_priority_list_t* def       = get_action_priority_list( "default" );
+
+  // Grabs whatever Elemental is using
+  precombat->add_action( "flask" );
+  precombat->add_action( "food" );
+  precombat->add_action( "augmentation" );
+  // Snapshot stats
+  precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+  // Actual precombat
+  precombat->add_action( "potion" );
+  precombat->add_action( this, "Lava Burst" );
+
+  // In-combat potion
+  def->add_action( "potion" );
+
+  // "Default"
+  def->add_action( this, "Wind Shear" );
+  def->add_action( this, "Spiritwalker's Grace", "moving=1,if=movement.distance>6" );
+  // On-use items
+  def->add_action( "use_items" );
+  // Racials
+  def->add_action( "blood_fury" );
+  def->add_action( "berserking" );
+  def->add_action( "fireblood" );
+  def->add_action( "ancestral_call" );
+
+  def->add_action( this, "Flame Shock", "target_if=(!ticking|dot.flame_shock.remains<=gcd)|refreshable" );
+  def->add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time&cooldown_react" );
+  def->add_action( this, "Earth Elemental" );
+  def->add_action( this, "Lightning Bolt", "if=spell_targets.chain_lightning<2" );
+  def->add_action( this, "Chain Lightning", "if=active_enemies>1&spell_targets.chain_lightning>1" );
+  def->add_action( this, "Flame Shock", "moving=1" );
+}
 
 // shaman_t::init_actions ===================================================
 
 void shaman_t::init_action_list()
 {
   if ( !( primary_role() == ROLE_ATTACK && specialization() == SHAMAN_ENHANCEMENT ) &&
-       !( primary_role() == ROLE_SPELL && specialization() == SHAMAN_ELEMENTAL ) )
+       !( primary_role() == ROLE_SPELL && specialization() == SHAMAN_ELEMENTAL ) &&
+       !( primary_role() == ROLE_SPELL && specialization() == SHAMAN_RESTORATION ) )
   {
     if ( !quiet )
       sim->errorf( "Player %s's role (%s) or spec(%s) isn't supported yet.", name(),
@@ -8327,6 +8376,9 @@ void shaman_t::init_action_list()
     case SHAMAN_ELEMENTAL:
       init_action_list_elemental();
       break;
+    case SHAMAN_RESTORATION:
+      init_action_list_restoration_dps();
+      break;
     default:
       break;
   }
@@ -8354,12 +8406,10 @@ void shaman_t::moving()
     if ( swg && executing && swg->ready() )
     {
       // Shaman executes SWG mid-cast during a movement event, if
-      // 1) The profile does not have Glyph of Unleashed Lightning and is
-      //    casting a Lightning Bolt (non-instant cast)
-      // 2) The profile is casting Lava Burst (without Lava Surge)
-      // 3) The profile is casting Chain Lightning
-      // 4) The profile is casting Elemental Blast
-      if ( ( executing->id == 51505 ) || ( executing->id == 421 ) || ( executing->id == 117014 ) )
+      // 1) The profile is casting Lava Burst (without Lava Surge)
+      // 2) The profile is casting Chain Lightning
+      // 3) The profile is casting Lightning Bolt
+      if ( ( executing->id == 51505 ) || ( executing->id == 421 ) || ( executing->id == 403 ) )
       {
         if ( sim->log )
           sim->out_log.printf( "%s spiritwalkers_grace during spell cast, next cast (%s) should finish", name(),
@@ -8392,6 +8442,7 @@ double shaman_t::matching_gear_multiplier( attribute_e attr ) const
     case SHAMAN_ENHANCEMENT:
       return attr == ATTR_AGILITY ? constant.matching_gear_multiplier : 0;
     case SHAMAN_RESTORATION:
+      return attr == ATTR_INTELLECT ? constant.matching_gear_multiplier : 0;
     case SHAMAN_ELEMENTAL:
       return attr == ATTR_INTELLECT ? constant.matching_gear_multiplier : 0;
     default:
