@@ -4362,11 +4362,11 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
     }
   }
 
-  virtual void execute() override
+  virtual void impact( action_state_t* s ) override
   {
-    base_t::execute();
+    base_t::impact( s );
 
-    if ( hit_any_target && gore )
+    if ( result_is_hit( s -> result ) && gore )
       trigger_gore();
   }
 }; // end bear_attack_t
