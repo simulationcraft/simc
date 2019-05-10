@@ -3157,6 +3157,16 @@ struct cat_melee_t : public cat_attack_t
 
     return cm;
   }
+
+  virtual double composite_target_multiplier( player_t* t ) const override
+  {
+    double tm = cat_attack_t::composite_target_multiplier( t );
+
+    if ( p() -> talent.rend_and_tear -> ok() )
+      tm *= 1.0 + p() -> talent.rend_and_tear -> effectN( 3 ).percent() * td( t ) -> dots.thrash_bear -> current_stack();
+
+    return tm;
+  }
 };
 
 // Rip State ================================================================
@@ -4397,6 +4407,16 @@ struct bear_melee_t : public bear_attack_t
       return timespan_t::from_seconds( 0.01 );
 
     return bear_attack_t::execute_time();
+  }
+
+  virtual double composite_target_multiplier( player_t* t ) const override
+  {
+    double tm = bear_attack_t::composite_target_multiplier( t );
+
+    if ( p() -> talent.rend_and_tear -> ok() )
+      tm *= 1.0 + p() -> talent.rend_and_tear -> effectN( 3 ).percent() * td( t ) -> dots.thrash_bear -> current_stack();
+
+    return tm;
   }
 };
 
