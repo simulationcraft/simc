@@ -1,4 +1,4 @@
-SimulationCraft 810-02 for World of Warcraft 8.1.0 Live (wow build 29482)
+SimulationCraft 815-02 for World of Warcraft 8.1.5 Live (wow build 29981)
 
 Name             : Dual Wield (rank=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -372,10 +372,11 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=39690)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Description      : Claw the enemy, dealing $91776s1 Physical damage.$?s63560[
+Description      : Claw the enemy, dealing $<damage> Physical damage.$?s63560[
 
 |CFFE55BB0Dark Transformation: Rakes with deformed claws, dealing $<sweepingclaw> Shadow damage to all enemies nearby the monstrosity.|R][]
-Variables        : $sweepingclaw= ${$91778s2*1.99}
+Variables        : $sweepingclaw= ${$91778s2*1.99}
+$damage=${0.6*($AP*0.3)}
 
 Name             : Gnaw (id=47481) [Spell Family (15)] 
 Class            : Death Knight
@@ -1071,8 +1072,7 @@ Class            : Frost Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 56
-Proc Chance      : 101%
-Real PPM         : 4.5 (Haste multiplier, Crit multiplier)
+Proc Chance      : 100%
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
 Family Flags     : 98
@@ -1087,7 +1087,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=43434)    : Apply Aura (6) | Proc Trigger Spell (42): Killing Machine
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 51124 | Target: Self (1)
-Description      : Your auto attack critical strikes have a chance to make your next Obliterate automatically critically strike.
+Description      : Your auto attack critical strikes have a chance to make your next Obliterate critically strike.
 
 Name             : Pillar of Frost (id=51271) [Spell Family (15)] 
 Class            : Frost Death Knight
@@ -1295,7 +1295,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 3370 | Misc Value 2: 0xb
 #2 (id=45980)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Affixes your weapon with a rune that causes $50401s1% extra weapon damage as Frost damage and increases enemies' vulnerability to your Frost attacks by $51714s1%, stacking up to $51714u times. Modifying your rune weapon requires a Rune Forge in Ebon Hold.
+Description      : Affixes your weapon with a rune that causes $50401s1% extra weapon damage as Frost damage and increases enemies' vulnerability to your Frost attacks by $51714s1%, stacking up to $51714u times. Modifying your rune weapon requires a Runeforge in Ebon Hold.
 
 Name             : Rune of the Fallen Crusader (id=53344) [Hidden] 
 Class            : Death Knight
@@ -1316,7 +1316,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 3368 | Misc Value 2: 0xb
 #2 (id=133696)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Affixes your rune weapon with a rune that has a chance to heal you for $53365s2% and increase total Strength by $53365s1% for $53365d.  Modifying your rune weapon requires a Rune Forge in Ebon Hold.
+Description      : Affixes your rune weapon with a rune that has a chance to heal you for $53365s2% and increase total Strength by $53365s1% for $53365d.  Modifying your rune weapon requires a Runeforge in Ebon Hold.
 
 Name             : Unholy Strength (id=53365) [Spell Family (15)] 
 Class            : Death Knight
@@ -1805,7 +1805,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 3847 | Misc Value 2: 0xb
 #2 (id=56131)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Affixes your two-handed rune weapon with a rune that increases Armor by $62157s1% and all stats by $62157s2%.  Modifying your rune weapon requires a Rune Forge in Ebon Hold.
+Description      : Affixes your two-handed rune weapon with a rune that increases Armor by $62157s1% and all stats by $62157s2%.  Modifying your rune weapon requires a Runeforge in Ebon Hold.
 
 Name             : Basic Attack Focus Cost Modifier (id=62762) [Spell Family (17), Passive, Hidden] 
 Class            : Hunter, Death Knight
@@ -2185,7 +2185,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=68676)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Each Runic Power you spend has a ${$m1/10}.1% chance to instantly grant you a Rune.
 
 Name             : Dancing Rune Weapon (id=81256) [Spell Family (15)] 
@@ -2397,7 +2397,8 @@ Effects          :
 #2 (id=341774)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.15000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Enemy (6) -> AOE enemy (15)
 Description      : Rakes an enemy with deformed claws, dealing $<sweepingclaw> Shadow damage to the target and nearby enemies.
-Variables        : $sweepingclaw= ${$91778s2*1.99}
+Variables        : $sweepingclaw= ${$91778s2*1.99}
+$damage=${0.6*($AP*0.3)}
 
 Name             : Monstrous Blow (id=91797) [Spell Family (15)] 
 Class            : Death Knight
@@ -2743,7 +2744,7 @@ Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ......x. ........   ........ ........ ........ ........ 
+                 : ........ ........ ......x. ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
@@ -2975,6 +2976,8 @@ Effects          :
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Frostscythe (207230)
                    Family Flags: 15
+#6 (id=777112)   : Apply Aura (6) | Modify Ranged Attack Speed% (320)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 640 | Target: Self (1)
 
 Name             : Frost Death Knight (id=137006) [Spell Family (15), Passive, Hidden] 
 Class            : Frost Death Knight
@@ -3143,7 +3146,7 @@ Name             : Breath of Sindragosa (id=152279) [Spell Family (15)]
 Class            : Death Knight
 School           : Frost
 Spell Type       : None
-Resource         : 0 Runic Power (6) and 15 Runic Power (6) per tick (id=9067)
+Resource         : 0 Runic Power (6) and 18 Runic Power (6) per tick (id=9067)
 Duration         : Aura (infinite)
 Cooldown         : 120 seconds
 Family Flags     : 113
@@ -3166,7 +3169,9 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000
 #5 (id=293861)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
-Description      : Continuously deal ${$155166s2*$<CAP>/$AP} Frost damage every $t1 sec to enemies in a cone in front of you. Deals reduced damage to secondary targets. You will continue breathing until your Runic Power is exhausted or you cancel the effect.
+Description      : Continuously deal ${$155166s2*$<CAP>/$AP} Frost damage every $t1 sec to enemies in a cone in front of you, until your Runic Power is exhausted. Deals reduced damage to secondary targets.
+
+Has an increased chance to trigger Runic Empowerment.
 Tooltip          : Continuously dealing Frost damage every $t1 sec to enemies in a cone in front of you.
 Variables        : $CAP=${($AP+$OAP)*2/3}
 
@@ -3920,8 +3925,7 @@ School           : Frost
 Spell Type       : Melee
 Spell Level      : 55
 Range            : 50000 yards
-Internal Cooldown: 1 seconds
-Proc Chance      : 20%
+Proc Chance      : 100%
 Proc Flags       : ........ ........ ..x..... ........ 
                  : Periodic
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -8072,7 +8076,6 @@ Effects          :
 Description      : $@spelldesc286832
 
 Name             : Helchains (id=286836) [Scaling Spell (-1), Spell Family (15)] 
-Hotfixed         : Attributes
 Class            : Death Knight
 School           : Fire
 Spell Type       : Magic
@@ -8096,7 +8099,6 @@ Description      : $@spelldesc286832
 Tooltip          : Deals $s1 Fire damage.
 
 Name             : Helchains (id=286954) [Scaling Spell (-1), Spell Family (15)] 
-Hotfixed         : Attributes
 Class            : Death Knight
 School           : Fire
 Spell Type       : Magic
@@ -8448,7 +8450,6 @@ Effects          :
 Description      : Deals $s1 Shadow damage.
 
 Name             : Frostbolt (id=288548) 
-Hotfixed         : Attributes
 Class            : Death Knight
 School           : Frost
 Spell Type       : Magic
@@ -8458,6 +8459,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 Velocity         : 35 yards/sec
 Duration         : 4 seconds
+Cooldown         : 3 seconds
 Stance Mask      : 0x00000040
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -8561,7 +8563,6 @@ Effects          :
 Description      : When Crimson Scourge activates, you gain $s2 Haste for $289349d, and immediately gain ${$289348m3/10} Runic Power.
 
 Name             : Helchains (id=290814) [Scaling Spell (-1), Spell Family (15)] 
-Hotfixed         : Attributes
 Class            : Death Knight
 School           : Fire
 Spell Type       : Magic
@@ -8583,5 +8584,43 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 286832
 Description      : $@spelldesc286832
 Tooltip          : Deals $s1 Fire damage.
+
+Name             : Person-Computer Interface (id=300168) [Scaling Spell (-1), Passive, Hidden] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 568
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ......x. 
+                 : Passive (6), Hidden (7), Scales with item level (354)
+Effects          :
+#1 (id=773466)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value 2: 725 (Label) | Target: Self (1)
+                   Affected Spells (Label): 
+Description      : Increases the effectiveness of Red Punchcards and Yellow Punchcards in your equipped Pocket-Sized Computation Device by $s1%.
+
+Name             : Clockwork Heart (id=300170) [Scaling Spell (-7), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 569
+Triggered by     : Clockwork Heart (300174)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=773468)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.83571) | PvP Coefficient: 1.00000 | Trigger Spell: 300173 | Target: Self (1)
+Description      : Once per minute while in combat, gain $s1 Haste, Critical Strike, Mastery, and Versatility for $300174d.
 
 

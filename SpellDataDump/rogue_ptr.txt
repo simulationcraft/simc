@@ -1,4 +1,4 @@
-SimulationCraft 810-02 for World of Warcraft 8.1.0 Live (wow build 29482)
+SimulationCraft 815-02 for World of Warcraft 8.1.5 Live (wow build 29981)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -1452,7 +1452,7 @@ Family Flags     : 42
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ...x.... ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ......x. ........   ........ ........ ........ ........ 
+                 : ........ ........ ......x. ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
@@ -2088,11 +2088,11 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=68029)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.45000 | PvP Coefficient: 0.66667 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.45000 | PvP Coefficient: 0.80000 | Target: Self (1)
                    Affected Spells: Rupture (1943), Envenom (32645), Weaponmaster (193536), Nightblade (195452), Eviscerate (196819), Secret Technique (280719), Secret Technique (280720)
                    Family Flags: 17, 20, 32, 35, 92, 100
 #2 (id=87762)    : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.76000 | PvP Coefficient: 0.66667 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.76000 | PvP Coefficient: 0.80000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rupture (1943), Envenom (32645), Restless Blades (79096), Weaponmaster (193536), Nightblade (195452), Eviscerate (196819), Secret Technique (280719), Secret Technique (280720)
                    Family Flags: 17, 20, 32, 35, 77, 100
 Description      : Increases the damage done by your finishing moves by ${$76808m1}.1%.
@@ -2298,7 +2298,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Always hits (114)
 Effects          :
 #1 (id=94449)    : Apply Aura (6) | Ignore Armor% (345)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.50000 | Target: Enemy (6)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.66667 | Target: Enemy (6)
 Description      : $@spelldesc91023
 Tooltip          : $w1% of armor is ignored by the attacking Rogue.
 
@@ -2609,7 +2609,7 @@ Attributes       : ........ ........ ........ .......x   .....x.. ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   x......x ........ ........ ........ 
                  : Cannot cancel aura (31), Does not break stealth (37)
 Effects          :
 #1 (id=128893)   : Apply Aura (6) | Dummy (4)
@@ -2815,6 +2815,9 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179718)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=774479)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Global Cooldown (21)
+                   Base Value: -33 | Scaled Value: -33 | PvP Coefficient: 1.00000 | Misc Value: 21 | Misc Value 2: 640 (Label) | Target: Self (1)
+                   Affected Spells (Label): Azeroth's Undying Gift (294951), Anima of Life and Death (297365), Nullification Dynamo (297384), Blood of the Enemy (297969), Blood of the Enemy (297970), Blood of the Enemy (297971), Vision of Perfection (298084), Azeroth's Undying Gift (298278), Azeroth's Undying Gift (298279), Azeroth's Undying Gift (298280), Nullification Dynamo (298281), Nullification Dynamo (298282), Nullification Dynamo (298284), Anima of Life and Death (298286), Anima of Life and Death (298287), Anima of Life and Death (298288), Sphere of Suppression (298292), Touch of the Everlasting (298412), Touch of the Everlasting (298414), Touch of the Everlasting (298415), Touch of the Everlasting (298416), Sphere of Suppression (298418), Sphere of Suppression (298419), Sphere of Suppression (298420), The Crucible of Flame (298601), The Crucible of Flame (298603), The Crucible of Flame (298604), The Crucible of Flame (298605), Worldvein Boon (298606), Worldvein Boon (298607), Worldvein Boon (298609), Worldvein Boon (298611), Essence of the Focusing Iris (298618), Essence of the Focusing Iris (298620), Essence of the Focusing Iris (298621), Essence of the Focusing Iris (298623), Blood of the Enemy (299039), Aegis of the Deep (299237), Aegis of the Deep (299238), Aegis of the Deep (299239), Aegis of the Deep (299240), Vision of Perfection (299296), Vision of Perfection (299297), Vision of Perfection (299298), Vision of Perfection (299299), Memory of Lucid Dreams (299300), Memory of Lucid Dreams (299302), Memory of Lucid Dreams (299304), Memory of Lucid Dreams (299305), Reality Shift (299306), Reality Shift (299307), Reality Shift (299309), Reality Shift (299310), Condensed Life-Force (299312), Condensed Life-Force (299313), Condensed Life-Force (299314), Condensed Life-Force (299315), Purification Protocol (299316), Purification Protocol (299317), Purification Protocol (299318), Purification Protocol (299320), The Unbound Force (299321), The Unbound Force (299322), The Unbound Force (299323), The Unbound Force (299324), Artifice of Time (299506), Artifice of Time (299507), Artifice of Time (299508), Artifice of Time (299509), Life-Binder's Invocation (299510), Life-Binder's Invocation (299511), Life-Binder's Invocation (299512), Life-Binder's Invocation (299513), The Ever-Rising Tide (299514), The Ever-Rising Tide (299515), The Ever-Rising Tide (299516), The Ever-Rising Tide (299517), The Well of Existence (299524), The Well of Existence (299526), The Well of Existence (299527), The Well of Existence (299528), Vitality Conduit (299550), Vitality Conduit (299551), Vitality Conduit (299552), Vitality Conduit (299554)
 
 Name             : Subtlety Rogue (id=137035) [Spell Family (8), Passive, Hidden] 
 Class            : Subtlety Rogue
@@ -3363,7 +3366,7 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... .....
                  : Cannot dodge/parry/block (21), Requires main-hand weapon (106)
 Effects          :
 #1 (id=269259)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.69880 | PvP Coefficient: 0.90000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.69880 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=269260)   : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
 Description      : Strike the target, dealing $s1 Physical damage.$?a231718[
@@ -4051,7 +4054,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105), Requires main-hand weapon (106)
 Effects          :
 #1 (id=288959)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.17600 | PvP Coefficient: 0.85000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.17600 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Finishing move that disembowels the target, causing damage per combo point.
    1 point  : ${$m1*1} damage
    2 points: ${$m1*2} damage
@@ -7068,7 +7071,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Cannot crit (93), Disable player multipliers (221)
 Effects          :
 #1 (id=735178)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.10000 | PvP Coefficient: 0.50000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.10000 | PvP Coefficient: 0.80000 | Target: Enemy (6)
 Description      : $@spelldesc121471
 
 Name             : Sinister Strike (rank=Rank 2) (id=279876) [Spell Family (8), Passive] 
@@ -7921,7 +7924,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=748343)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 2787.075 (coefficient=35.84663) | PvP Coefficient: 0.50000 | Trigger Spell: 286130 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 3623.245 (coefficient=46.60123) | PvP Coefficient: 0.50000 | Trigger Spell: 286130 | Target: Self (1)
 #2 (id=748344)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Each combo point spent has a $s2% chance to cause your Nightblade to deal $s1 Shadow damage and replicate to a nearby enemy.
@@ -8149,7 +8152,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=751471)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 688.8893 (coefficient=2.215078) | PvP Coefficient: 0.50000 | Trigger Spell: 288202 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 688.8893 (coefficient=2.215078) | PvP Coefficient: 0.50000 | Trigger Spell: 302331 | Target: Self (1)
 #2 (id=751472)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 173.2705 (coefficient=0.55714) | PvP Coefficient: 0.50000 | Target: Self (1)
 #3 (id=751473)   : Dummy (3)
@@ -8237,10 +8240,48 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=753023)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Trigger Spell: 288985 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 288985 | Target: Self (1)
 #2 (id=753032)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 879.5767 (coefficient=11.31288) | PvP Coefficient: 0.50000 | Target: Self (1)
                    Family Flags: 23
-Description      : Each time an attack Blade Flurries, increase the chance for Sinister Strike to strike again by $s1%. Additional strikes of Sinister Strike deal $s2 more damage.
+Description      : When an attack Blade Flurries, increase the chance for Sinister Strike to strike again by $s1%. Additional strikes of Sinister Strike deal $s2 more damage.
+
+Name             : Person-Computer Interface (id=300168) [Scaling Spell (-1), Passive, Hidden] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 568
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ......x. 
+                 : Passive (6), Hidden (7), Scales with item level (354)
+Effects          :
+#1 (id=773466)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value 2: 725 (Label) | Target: Self (1)
+                   Affected Spells (Label): 
+Description      : Increases the effectiveness of Red Punchcards and Yellow Punchcards in your equipped Pocket-Sized Computation Device by $s1%.
+
+Name             : Clockwork Heart (id=300170) [Scaling Spell (-7), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 569
+Triggered by     : Clockwork Heart (300174)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=773468)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.83571) | PvP Coefficient: 1.00000 | Trigger Spell: 300173 | Target: Self (1)
+Description      : Once per minute while in combat, gain $s1 Haste, Critical Strike, Mastery, and Versatility for $300174d.
 
 

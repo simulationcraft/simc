@@ -1,4 +1,4 @@
-SimulationCraft 810-02 for World of Warcraft 8.1.0 Live (wow build 29482)
+SimulationCraft 815-02 for World of Warcraft 8.1.5 Live (wow build 29981)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Arcane Fire Frost Paladin, Mage
@@ -2048,7 +2048,7 @@ Family Flags     : 42
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ...x.... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ......x. ...x....   ........ ........ ........ ........ 
+                 : ........ ........ ......x. ...x....   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
@@ -2146,7 +2146,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=90295)    : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=1.8) | SP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Hurls a fiery ball that causes $s1 Fire damage.
 
 Name             : Arcane Blast (id=88084) [Spell Family (3)] 
@@ -2747,6 +2747,8 @@ Effects          :
 #2 (id=172453)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1500 | Target: Self (1)
                    Affected Spells (Category): Fire Blast (108853)
+#3 (id=777105)   : Apply Aura (6) | Modify Ranged Attack Speed% (320)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 640 | Target: Self (1)
 
 Name             : Fire Mage (id=137019) [Spell Family (3), Passive, Hidden] 
 Class            : Fire Mage
@@ -2776,7 +2778,7 @@ Effects          :
 #5 (id=191128)   : Apply Aura (6) | Dummy (4)
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Target: Self (1)
 #6 (id=260857)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 640 | Target: Self (1)
 #7 (id=260858)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #8 (id=260859)   : Apply Aura (6) | Dummy (4)
@@ -2828,7 +2830,7 @@ Effects          :
                    Affected Spells: Waterbolt (31707), Freeze (33395)
                    Family Flags: 73, 91, 111
 #5 (id=191124)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 640 | Target: Self (1)
 #6 (id=260847)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #7 (id=260848)   : Apply Aura (6) | Dummy (4)
@@ -4318,7 +4320,7 @@ Affecting spells : Norgannon's Foresight (236380 effect#1)
 Family Flags     : 106
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5010,7 +5012,7 @@ Effects          :
 Description      : $@spelldesc44457
 Tooltip          : Causes $w1 Fire damage every $t1 sec. After $d, the target explodes, causing $w2 Fire damage to the target and all other enemies within $44461A2 yards, and spreading Living Bomb.
 
-Name             : Fireball (id=222305) [Scaling Spell (-8)] 
+Name             : Fireball (id=222305) 
 Class            : Mage
 School           : Fire
 Spell Type       : None
@@ -5028,13 +5030,13 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : Scales with item level (354)
 Effects          :
 #1 (id=331819)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 7775 (coefficient=100) | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=100) | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=342491)   : Apply Aura (6) | Periodic Damage (3): fire every 1 seconds
-                   Base Value: 0 | Scaled Value: 1166.25 (coefficient=15) | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=15) | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Deal $sw1 Fire damage and an additional $sw2 Fire damage over $d.
 Tooltip          : Taking $sw2 Fire damage every $t2 sec.
 
-Name             : Frostbolt (id=222320) [Scaling Spell (-8)] 
+Name             : Frostbolt (id=222320) 
 Class            : Mage
 School           : Frost
 Spell Type       : None
@@ -5052,13 +5054,13 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : Scales with item level (354)
 Effects          :
 #1 (id=331848)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 12828.75 (coefficient=165) | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=165) | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=342164)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Deal $s1 Frost damage and reduces the target's movement speed by $s2% for $d.
 Tooltip          : Movement speed reduced by $s2% for $d.
 
-Name             : Arcane Blast (id=222321) [Scaling Spell (-8)] 
+Name             : Arcane Blast (id=222321) 
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -5074,7 +5076,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : Scales with item level (354)
 Effects          :
 #1 (id=331849)   : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 13606.25 (coefficient=175) | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=175) | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Deal $s1 Arcane damage.
 
 Name             : Phoenix's Flames (rank=Artifact) (id=224637) [Spell Family (3)] 
@@ -7288,7 +7290,6 @@ Effects          :
 Description      : Frostbolt increases the damage of Frostbolt by $s1, stacking up to $277904u times. This effect is reset if you cast Frostbolt at a different enemy.
 
 Name             : Clearcasting (id=277726) [Spell Family (3), Hidden] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -8369,7 +8370,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=748188)   : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 71.54905 (coefficient=0.920245) | PvP Coefficient: 0.50000 | Trigger Spell: 264351 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 214.6472 (coefficient=2.760736) | PvP Coefficient: 0.50000 | Trigger Spell: 264351 | Target: Self (1)
 Description      : While you are above $264351s1% mana, Arcane Blast deals $s1 additional damage.
 
 While you are below $264351s1% mana, Arcane Blast's cost is reduced by $264353s1.
@@ -8664,5 +8665,43 @@ Effects          :
 #1 (id=760134)   : Unknown(74)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1410
 Description      : $@spelldesc292848
+
+Name             : Person-Computer Interface (id=300168) [Scaling Spell (-1), Passive, Hidden] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 568
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ......x. 
+                 : Passive (6), Hidden (7), Scales with item level (354)
+Effects          :
+#1 (id=773466)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value 2: 725 (Label) | Target: Self (1)
+                   Affected Spells (Label): 
+Description      : Increases the effectiveness of Red Punchcards and Yellow Punchcards in your equipped Pocket-Sized Computation Device by $s1%.
+
+Name             : Clockwork Heart (id=300170) [Scaling Spell (-7), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 569
+Triggered by     : Clockwork Heart (300174)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=773468)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.83571) | PvP Coefficient: 1.00000 | Trigger Spell: 300173 | Target: Self (1)
+Description      : Once per minute while in combat, gain $s1 Haste, Critical Strike, Mastery, and Versatility for $300174d.
 
 

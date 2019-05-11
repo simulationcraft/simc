@@ -1,4 +1,4 @@
-SimulationCraft 810-02 for World of Warcraft 8.1.0 Live (wow build 29482)
+SimulationCraft 815-02 for World of Warcraft 8.1.5 Live (wow build 29981)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
@@ -92,7 +92,7 @@ Name             : Dispel Magic (id=528) [Spell Family (6)]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
-Resource         : 4% Base Mana (0) (id=57)
+Resource         : 1.6% Base Mana (0) (id=57)
 Spell Level      : 56
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -222,7 +222,7 @@ Name             : Mind Control (id=605) [Spell Family (6)]
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
-Resource         : 0.5% Base Mana (0) (id=69)
+Resource         : 2% Base Mana (0) (id=69)
 Spell Level      : 42
 Range            : 30 yards
 Cast Time        : 1.8 seconds
@@ -458,7 +458,7 @@ Name             : Psychic Scream (id=8122) [Spell Family (6)]
 Class            : Discipline Holy Shadow Priest
 School           : Shadow
 Spell Type       : Magic
-Resource         : 3% Base Mana (0) (id=328)
+Resource         : 1.2% Base Mana (0) (id=328)
 Spell Level      : 18
 GCD              : 1.5 seconds
 Duration         : 8 seconds
@@ -491,7 +491,7 @@ Name             : Shackle Undead (id=9484) [Spell Family (6)]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
-Resource         : 4% Base Mana (0) (id=380)
+Resource         : 1.2% Base Mana (0) (id=380)
 Spell Level      : 34
 Range            : 30 yards
 Cast Time        : 1.5 seconds
@@ -690,7 +690,7 @@ Family Flags     : 73
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ......x. ........   ........ ........ ........ ......x. 
+                 : ........ ........ ......x. ........   ........ ........ ........ ....x.x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
@@ -1406,7 +1406,7 @@ Family Flags     : 75
 Attributes       : ........ ........ x.x..... ........   ........ ........ .x...... ........ 
                  : ...x.... x....... ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ......x. ..x.....   ........ ........ ........ ........ 
+                 : ........ ........ ......x. ..x.....   ........ ........ ........ ....x... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ....x...   ........ ........ ..xx.... ..x.x... 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
@@ -2856,6 +2856,8 @@ Effects          :
                    Affected Spells (Category): Mind Blast (8092)
 #3 (id=191081)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: -36 | Scaled Value: -36 | PvP Coefficient: 1.00000 | Target: Self (1)
+#4 (id=777113)   : Apply Aura (6) | Modify Ranged Attack Speed% (320)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 640 | Target: Self (1)
 
 Name             : Holy Priest (id=137031) [Spell Family (6), Passive, Hidden] 
 Class            : Holy Priest
@@ -3091,7 +3093,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=215755)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 70 | Scaled Value: 70 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Shadowy Apparition (148859)
                    Family Flags: 90
 #2 (id=315218)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
@@ -8032,5 +8034,43 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc263165
 Tooltip          : |cFFFFFFFFGenerates ${$s1*$s2/100} Insanity over $d.|r
+
+Name             : Person-Computer Interface (id=300168) [Scaling Spell (-1), Passive, Hidden] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 568
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ......x. 
+                 : Passive (6), Hidden (7), Scales with item level (354)
+Effects          :
+#1 (id=773466)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value 2: 725 (Label) | Target: Self (1)
+                   Affected Spells (Label): 
+Description      : Increases the effectiveness of Red Punchcards and Yellow Punchcards in your equipped Pocket-Sized Computation Device by $s1%.
+
+Name             : Clockwork Heart (id=300170) [Scaling Spell (-7), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Spell Type       : None
+Azerite Power Id : 569
+Triggered by     : Clockwork Heart (300174)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=773468)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0.83571) | PvP Coefficient: 1.00000 | Trigger Spell: 300173 | Target: Self (1)
+Description      : Once per minute while in combat, gain $s1 Haste, Critical Strike, Mastery, and Versatility for $300174d.
 
 
