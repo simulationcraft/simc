@@ -769,7 +769,7 @@ class CASCEncodingFile(CASCObject):
 		handle = self.cached_open(encoding_file_path, self.build.encoding_blte_url())
 		#handle = self.get_url(self.build.encoding_blte_url())
 
-		blte = BLTEFile(handle.content)
+		blte = BLTEFile(handle)
 		if not blte.extract():
 			self.options.parser.error('Unable to uncompress BLTE data for encoding file')
 
