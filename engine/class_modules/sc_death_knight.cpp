@@ -7415,7 +7415,7 @@ void death_knight_t::default_apl_blood()
   standard -> add_action( this, "Blood Boil", "if=charges_fractional>=1.8&(buff.hemostasis.stack<=(5-spell_targets.blood_boil)|spell_targets.blood_boil>2)" );
   standard -> add_action( this, "Marrowrend", "if=buff.bone_shield.stack<5&talent.ossuary.enabled&runic_power.deficit>=15" );
   standard -> add_talent( this, "Bonestorm", "if=runic_power>=100&!buff.dancing_rune_weapon.up" );
-  standard -> add_action( this, "Death Strike", "if=runic_power.deficit<=(15+buff.dancing_rune_weapon.up*5+spell_targets.heart_strike*talent.heartbreaker.enabled*2)|target.time_to_die<10" );
+  standard -> add_action( this, "Death Strike", "if=runic_power.deficit<=(15+buff.dancing_rune_weapon.up*5+spell_targets.heart_strike*talent.heartbreaker.enabled*2)|target.1.time_to_die<10" );
   standard -> add_action( this, "Death and Decay", "if=spell_targets.death_and_decay>=3" );
   standard -> add_talent( this, "Rune Strike", "if=(charges_fractional>=1.8|buff.dancing_rune_weapon.up)&rune.time_to_3>=gcd" );
   standard -> add_action( this, "Heart Strike", "if=buff.dancing_rune_weapon.up|rune.time_to_4<gcd" );
@@ -7446,7 +7446,7 @@ void death_knight_t::default_apl_frost()
   // Setup precombat APL for DPS spec
   default_apl_dps_precombat();
   
-  precombat -> add_action( "variable,name=other_on_use_equipped,value=(equipped.dread_gladiators_badge|equipped.sinister_gladiators_badge|equipped.sinister_gladiators_medallion|equipped.vial_of_animated_blood|equipped.first_mates_spyglass|equipped.jes_howler|equipped.dread_aspirants_medallion)&talent.breath_of_sindragosa.enabled" );
+  precombat -> add_action( "variable,name=other_on_use_equipped,value=(equipped.dread_gladiators_badge|equipped.sinister_gladiators_badge|equipped.sinister_gladiators_medallion|equipped.vial_of_animated_blood|equipped.first_mates_spyglass|equipped.jes_howler|equipped.dread_aspirants_medallion)" );
 
   def -> add_action( "auto_attack" );
 
@@ -7460,16 +7460,16 @@ void death_knight_t::default_apl_frost()
   
   // Choose APL
   def -> add_action( "call_action_list,name=cooldowns" );
-  def -> add_action( "run_action_list,name=bos_pooling,if=talent.breath_of_sindragosa.enabled&(cooldown.breath_of_sindragosa.remains<5|(cooldown.breath_of_sindragosa.remains<20&target.time_to_die<35))" );
+  def -> add_action( "run_action_list,name=bos_pooling,if=talent.breath_of_sindragosa.enabled&(cooldown.breath_of_sindragosa.remains<5|(cooldown.breath_of_sindragosa.remains<20&target.1.time_to_die<35))" );
   def -> add_action( "run_action_list,name=bos_ticking,if=buff.breath_of_sindragosa.up" );
   def -> add_action( "run_action_list,name=obliteration,if=buff.pillar_of_frost.up&talent.obliteration.enabled" );
   def -> add_action( "run_action_list,name=aoe,if=active_enemies>=2" );
   def -> add_action( "call_action_list,name=standard" );
 
   // On-use items
-  cooldowns -> add_action( "use_item,name=lurkers_insidious_gift,if=((cooldown.pillar_of_frost.remains<=10|cooldown.pillar_of_frost.ready)&variable.other_on_use_equipped&talent.breath_of_sindragosa.enabled)|(buff.pillar_of_frost.remains&buff.pillar_of_frost.up&!variable.other_on_use_equipped&talent.breath_of_sindragosa.enabled)|(buff.pillar_of_frost.remains&!talent.breath_of_sindragosa.enabled)" );
+  cooldowns -> add_action( "use_item,name=lurkers_insidious_gift,if=talent.breath_of_sindragosa.enabled&((cooldown.pillar_of_frost.remains<=10&variable.other_on_use_equipped)|(buff.pillar_of_frost.up&!variable.other_on_use_equipped))|(buff.pillar_of_frost.up&!talent.breath_of_sindragosa.enabled)" );
   cooldowns -> add_action( "use_items,if=(cooldown.pillar_of_frost.ready|cooldown.pillar_of_frost.remains>20)&(!talent.breath_of_sindragosa.enabled|cooldown.empower_rune_weapon.remains>95)" );
-  cooldowns -> add_action( "use_item,name=jes_howler,if=(equipped.lurkers_insidious_gift&buff.pillar_of_frost.remains&talent.breath_of_sindragosa.enabled)|(!equipped.lurkers_insidious_gift&buff.pillar_of_frost.remains<12&buff.pillar_of_frost.up&talent.breath_of_sindragosa.enabled)|(buff.pillar_of_frost.remains&!talent.breath_of_sindragosa.enabled)" );
+  cooldowns -> add_action( "use_item,name=jes_howler,if=(equipped.lurkers_insidious_gift&buff.pillar_of_frost.remains)|(!equipped.lurkers_insidious_gift&buff.pillar_of_frost.remains<12&buff.pillar_of_frost.up)" );
   cooldowns -> add_action( "use_item,name=knot_of_ancient_fury,if=cooldown.empower_rune_weapon.remains>40");
   cooldowns -> add_action( "use_item,name=grongs_primal_rage,if=rune<=3&!buff.pillar_of_frost.up&(!buff.breath_of_sindragosa.up|!talent.breath_of_sindragosa.enabled)" );
   cooldowns -> add_action( "use_item,name=razdunks_big_red_button" );
@@ -7486,13 +7486,13 @@ void death_knight_t::default_apl_frost()
   cooldowns -> add_action( this, "Pillar of Frost", "if=cooldown.empower_rune_weapon.remains", "Frost cooldowns" );
   cooldowns -> add_talent( this, "Breath of Sindragosa", "use_off_gcd=1,if=cooldown.empower_rune_weapon.remains&cooldown.pillar_of_frost.remains" );
   cooldowns -> add_action( this, "Empower Rune Weapon", "if=cooldown.pillar_of_frost.ready&!talent.breath_of_sindragosa.enabled&rune.time_to_5>gcd&runic_power.deficit>=10|target.1.time_to_die<20" );
-  cooldowns -> add_action( this, "Empower Rune Weapon", "if=(cooldown.pillar_of_frost.ready|target.time_to_die<20)&talent.breath_of_sindragosa.enabled&rune>=3&runic_power>60" );
+  cooldowns -> add_action( this, "Empower Rune Weapon", "if=(cooldown.pillar_of_frost.ready|target.1.time_to_die<20)&talent.breath_of_sindragosa.enabled&rune>=3&runic_power>60" );
 
   // Cold Heart and Frostwyrm's Fury
-  cooldowns -> add_action( "call_action_list,name=cold_heart,if=talent.cold_heart.enabled&((buff.cold_heart.stack>=10&debuff.razorice.stack=5)|target.time_to_die<=gcd)" );
+  cooldowns -> add_action( "call_action_list,name=cold_heart,if=talent.cold_heart.enabled&((buff.cold_heart.stack>=10&debuff.razorice.stack=5)|target.1.time_to_die<=gcd)" );
   cooldowns -> add_talent( this, "Frostwyrm's Fury", "if=(buff.pillar_of_frost.remains<=gcd|(buff.pillar_of_frost.remains<8&buff.unholy_strength.remains<=gcd&buff.unholy_strength.up))&buff.pillar_of_frost.up&azerite.icy_citadel.rank<=2" );
   cooldowns -> add_talent( this, "Frostwyrm's Fury", "if=(buff.icy_citadel.remains<=gcd|(buff.icy_citadel.remains<8&buff.unholy_strength.remains<=gcd&buff.unholy_strength.up))&buff.icy_citadel.up&azerite.icy_citadel.rank>2" );
-  cooldowns -> add_talent( this, "Frostwyrm's Fury", "if=target.time_to_die<gcd|(target.time_to_die<cooldown.pillar_of_frost.remains&buff.unholy_strength.up)" );
+  cooldowns -> add_talent( this, "Frostwyrm's Fury", "if=target.1.time_to_die<gcd|(target.1.time_to_die<cooldown.pillar_of_frost.remains&buff.unholy_strength.up)" );
 
   // Cold Heart conditionals
   cold_heart -> add_action( this, "Chains of Ice", "if=buff.cold_heart.stack>5&target.1.time_to_die<gcd", "Cold heart conditions" );
