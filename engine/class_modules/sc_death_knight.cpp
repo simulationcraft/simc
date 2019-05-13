@@ -7433,6 +7433,7 @@ void death_knight_t::default_apl_blood()
 
 void death_knight_t::default_apl_frost()
 {
+  action_priority_list_t* precombat    = get_action_priority_list( "precombat" );
   action_priority_list_t* def          = get_action_priority_list( "default" );
   action_priority_list_t* cooldowns    = get_action_priority_list( "cooldowns" );
   action_priority_list_t* cold_heart   = get_action_priority_list( "cold_heart" );
@@ -7444,6 +7445,8 @@ void death_knight_t::default_apl_frost()
 
   // Setup precombat APL for DPS spec
   default_apl_dps_precombat();
+  
+  precombat -> add_action( "variable,name=other_on_use_equipped,value=(equipped.dread_gladiators_badge|equipped.sinister_gladiators_badge|equipped.sinister_gladiators_medallion|equipped.vial_of_animated_blood|equipped.first_mates_spyglass|equipped.jes_howler|equipped.dread_aspirants_medallion)&talent.breath_of_sindragosa.enabled" );
 
   def -> add_action( "auto_attack" );
 
@@ -7463,8 +7466,10 @@ void death_knight_t::default_apl_frost()
   def -> add_action( "run_action_list,name=aoe,if=active_enemies>=2" );
   def -> add_action( "call_action_list,name=standard" );
 
-  // On-use itemos
+  // On-use items
+  cooldowns -> add_action( "use_item,name=lurkers_insidious_gift,if=((cooldown.pillar_of_frost.remains<=10|cooldown.pillar_of_frost.ready)&variable.other_on_use_equipped&talent.breath_of_sindragosa.enabled)|(buff.pillar_of_frost.remains&buff.pillar_of_frost.up&!variable.other_on_use_equipped&talent.breath_of_sindragosa.enabled)|(buff.pillar_of_frost.remains&!talent.breath_of_sindragosa.enabled)" );
   cooldowns -> add_action( "use_items,if=(cooldown.pillar_of_frost.ready|cooldown.pillar_of_frost.remains>20)&(!talent.breath_of_sindragosa.enabled|cooldown.empower_rune_weapon.remains>95)" );
+  cooldowns -> add_action( "use_item,name=jes_howler,if=(equipped.lurkers_insidious_gift&buff.pillar_of_frost.remains&talent.breath_of_sindragosa.enabled)|(!equipped.lurkers_insidious_gift&buff.pillar_of_frost.remains<12&buff.pillar_of_frost.up&talent.breath_of_sindragosa.enabled)|(buff.pillar_of_frost.remains&!talent.breath_of_sindragosa.enabled)" );
   cooldowns -> add_action( "use_item,name=knot_of_ancient_fury,if=cooldown.empower_rune_weapon.remains>40");
   cooldowns -> add_action( "use_item,name=grongs_primal_rage,if=rune<=3&!buff.pillar_of_frost.up&(!buff.breath_of_sindragosa.up|!talent.breath_of_sindragosa.enabled)" );
   cooldowns -> add_action( "use_item,name=razdunks_big_red_button" );
@@ -7480,7 +7485,7 @@ void death_knight_t::default_apl_frost()
   // Pillar of Frost
   cooldowns -> add_action( this, "Pillar of Frost", "if=cooldown.empower_rune_weapon.remains", "Frost cooldowns" );
   cooldowns -> add_talent( this, "Breath of Sindragosa", "use_off_gcd=1,if=cooldown.empower_rune_weapon.remains&cooldown.pillar_of_frost.remains" );
-  cooldowns -> add_action( this, "Empower Rune Weapon", "if=cooldown.pillar_of_frost.ready&!talent.breath_of_sindragosa.enabled&rune.time_to_5>gcd&runic_power.deficit>=10|target.time_to_die<20" );
+  cooldowns -> add_action( this, "Empower Rune Weapon", "if=cooldown.pillar_of_frost.ready&!talent.breath_of_sindragosa.enabled&rune.time_to_5>gcd&runic_power.deficit>=10|target.1.time_to_die<20" );
   cooldowns -> add_action( this, "Empower Rune Weapon", "if=(cooldown.pillar_of_frost.ready|target.time_to_die<20)&talent.breath_of_sindragosa.enabled&rune>=3&runic_power>60" );
 
   // Cold Heart and Frostwyrm's Fury
@@ -7490,7 +7495,7 @@ void death_knight_t::default_apl_frost()
   cooldowns -> add_talent( this, "Frostwyrm's Fury", "if=target.time_to_die<gcd|(target.time_to_die<cooldown.pillar_of_frost.remains&buff.unholy_strength.up)" );
 
   // Cold Heart conditionals
-  cold_heart -> add_action( this, "Chains of Ice", "if=buff.cold_heart.stack>5&target.time_to_die<gcd", "Cold heart conditions" );
+  cold_heart -> add_action( this, "Chains of Ice", "if=buff.cold_heart.stack>5&target.1.time_to_die<gcd", "Cold heart conditions" );
   cold_heart -> add_action( this, "Chains of Ice", "if=(buff.pillar_of_frost.remains<=gcd*(1+cooldown.frostwyrms_fury.ready)|buff.pillar_of_frost.remains<rune.time_to_3)&buff.pillar_of_frost.up&azerite.icy_citadel.rank<=2" );
   cold_heart -> add_action( this, "Chains of Ice", "if=buff.pillar_of_frost.remains<8&buff.unholy_strength.remains<gcd*(1+cooldown.frostwyrms_fury.ready)&buff.unholy_strength.remains&buff.pillar_of_frost.up&azerite.icy_citadel.rank<=2" );
   cold_heart -> add_action( this, "Chains of Ice", "if=(buff.icy_citadel.remains<4|buff.icy_citadel.remains<rune.time_to_3)&buff.icy_citadel.up&azerite.icy_citadel.rank>2" );
