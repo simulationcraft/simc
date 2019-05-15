@@ -806,7 +806,6 @@ public:
   // Death Knight Options
   struct options_t
   {
-    bool bos_increases_re_chance;
   } options;
 
   // Runes
@@ -4909,8 +4908,13 @@ struct frost_fever_t : public death_knight_spell_t
   {
     death_knight_spell_t::tick( d );
 
-    if ( p() -> cooldown.frost_fever_icd -> up() &&
-         rng().roll( p() -> spec.frost_fever -> proc_chance() ) )
+    // TODO: Melekus, 2019-05-15: Frost fever proc chance has been removed from spelldata on PTR
+    // I whitelisted several new "Frost Fever" spells that may have that data
+    // TODO 2: Figure out what is up with the "30% proc chance, diminishing beyond the first target" from blue post.
+    // https://us.forums.blizzard.com/en/wow/t/upcoming-ptr-class-changes-4-23/158332
+    double chance = p() -> dbc.ptr ? 0.3 : p() -> spec.frost_fever -> proc_chance();
+
+    if ( p() -> cooldown.frost_fever_icd -> up() && rng().roll( chance ) )
     {
       p() -> resource_gain( RESOURCE_RUNIC_POWER,
                             p() -> spec.frost_fever -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
@@ -6334,8 +6338,6 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
 void death_knight_t::create_options()
 {
   player_t::create_options();
-
-  add_option( opt_bool( "bos_increases_re_chance", options.bos_increases_re_chance ) );
 }
 
 void death_knight_t::copy_from( player_t* source )
@@ -6552,8 +6554,10 @@ void death_knight_t::trigger_runic_empowerment( double rpcost, action_t* action 
 
   double base_chance = spec.runic_empowerment -> effectN( 1 ).percent() / 10.0;
 
-  // TODO: change to use spelldata if available once ptr data is pulled
-  if ( options.bos_increases_re_chance && action -> name_str == "breath_of_sindragosa_tick" )
+  // TODO: Melekus, 2019-05-15: couldn't find anything about it in spelldata except a vague tooltip in Breath of Sindragosa
+  // Going by the numbers given by Blizzard
+  // https://us.forums.blizzard.com/en/wow/t/upcoming-ptr-class-changes-4-23/158332
+  if ( dbc.ptr && action -> name_str == "breath_of_sindragosa_tick" )
   {
     base_chance *= 1.5;
   }
@@ -7041,6 +7045,13 @@ void death_knight_t::init_rng()
   rppm.bloodworms = get_rppm( "bloodworms", talent.bloodworms );
   rppm.runic_attenuation = get_rppm( "runic_attenuation", talent.runic_attenuation );
   rppm.killing_machine = get_rppm( "killing_machine", spec.killing_machine );
+
+  // 2019-05-15: Killing Machine's RPPM data was removed on PTR
+  // The 4.5 rppm is re-added via a manual hotfix and the scale flags are set here
+  if ( dbc.ptr )
+  {
+    rppm.killing_machine -> set_scaling( RPPM_CRIT | RPPM_HASTE );
+  }
 }
 
 // death_knight_t::init_base ================================================
@@ -8490,6 +8501,11 @@ struct death_knight_module_t : public module_t {
       .modifier( 3000 )
       .verification_value( 0 );
 
+    hotfix::register_spell( "Death Knight", "2019-05-15", "Real Procs Per Minute data removed from Killing Machine.", 51128, hotfix::HOTFIX_FLAG_PTR )
+      .field( "rppm" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 4.5 )
+      .verification_value( 0 );
   }
 
   void init( player_t* ) const override {}
