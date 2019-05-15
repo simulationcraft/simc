@@ -371,7 +371,6 @@ struct death_knight_td_t : public actor_target_data_t {
     // Blood
     dot_t* blood_plague;
     // Frost
-    dot_t* breath_of_sindragosa;
     dot_t* frost_fever;
     // Unholy
     dot_t* outbreak;
@@ -526,6 +525,7 @@ public:
     gain_t* bloody_runeblade;
 
     // Frost
+    gain_t* breath_of_sindragosa;
     gain_t* empower_rune_weapon;
     gain_t* frost_fever;
     gain_t* horn_of_winter;
@@ -958,7 +958,6 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
   actor_target_data_t( target, p )
 {
   dot.blood_plague         = target -> get_dot( "blood_plague",         p );
-  dot.breath_of_sindragosa = target -> get_dot( "breath_of_sindragosa", p );
   dot.frost_fever          = target -> get_dot( "frost_fever",          p );
   dot.outbreak             = target -> get_dot( "outbreak",             p );
   dot.virulent_plague      = target -> get_dot( "virulent_plague",      p );
@@ -3504,6 +3503,20 @@ struct breath_of_sindragosa_buff_t : public buff_t
   {
     return tick_period;
   }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    // BoS generates 2 runes when it expires on 8.2 PTR
+    // TODO: wait for spelldata regenerate and see if the "2" value can be found somewhere
+    if ( player -> dbc.ptr )
+    {
+      death_knight_t* p = debug_cast< death_knight_t* >( player );
+
+      p -> replenish_rune( 2, p -> gains.breath_of_sindragosa );
+    }
+  }
 };
 
 struct breath_of_sindragosa_t : public death_knight_spell_t
@@ -3518,6 +3531,14 @@ struct breath_of_sindragosa_t : public death_knight_spell_t
   void execute() override
   {
     death_knight_spell_t::execute();
+
+    // BoS generates 2 runes when it expires on 8.2 PTR
+    // TODO: wait for spelldata regenerate and see if the "2" value can be found somewhere
+    if ( p() -> dbc.ptr )
+    {
+      p() -> replenish_rune( 2, p() -> gains.breath_of_sindragosa );
+    }
+
     p() -> buffs.breath_of_sindragosa -> trigger();
   }
 
@@ -6554,14 +6575,6 @@ void death_knight_t::trigger_runic_empowerment( double rpcost, action_t* action 
 
   double base_chance = spec.runic_empowerment -> effectN( 1 ).percent() / 10.0;
 
-  // TODO: Melekus, 2019-05-15: couldn't find anything about it in spelldata except a vague tooltip in Breath of Sindragosa
-  // Going by the numbers given by Blizzard
-  // https://us.forums.blizzard.com/en/wow/t/upcoming-ptr-class-changes-4-23/158332
-  if ( dbc.ptr && action -> name_str == "breath_of_sindragosa_tick" )
-  {
-    base_chance *= 1.5;
-  }
-
   if ( ! rng().roll( base_chance * rpcost ) )
     return;
 
@@ -7900,6 +7913,7 @@ void death_knight_t::init_gains()
   gains.bloody_runeblade                 = get_gain( "Bloody Runeblade" );
 
   // Frost
+  gains.breath_of_sindragosa             = get_gain( "Breath of Sindragosa" );
   gains.empower_rune_weapon              = get_gain( "Empower Rune Weapon" );
   gains.frost_fever                      = get_gain( "Frost Fever" );
   gains.horn_of_winter                   = get_gain( "Horn of Winter" );
