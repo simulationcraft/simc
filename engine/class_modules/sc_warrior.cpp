@@ -1701,8 +1701,9 @@ struct bloodthirst_t : public warrior_attack_t
   {
     warrior_attack_t::impact( s );
 
-    if ( gushing_wound && execute_state->result == RESULT_CRIT )
+    if ( gushing_wound && s->result == RESULT_CRIT )
     {
+      gushing_wound->set_target( s->target );
       gushing_wound->execute();
     }
 
