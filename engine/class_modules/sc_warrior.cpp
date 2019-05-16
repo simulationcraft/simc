@@ -2782,21 +2782,39 @@ struct raging_blow_t : public warrior_attack_t
 
 struct siegebreaker_t : public warrior_attack_t
 {
+  int aoe_targets;
+
   siegebreaker_t( warrior_t* p, const std::string& options_str )
-    : warrior_attack_t( "siegebreaker", p, p->talents.siegebreaker )
+    : warrior_attack_t( "siegebreaker", p, p->talents.siegebreaker ),
+      aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) )
   {
     parse_options( options_str );
     weapon = &( player->main_hand_weapon );
+    base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
+  }
+
+  int n_targets() const override
+  {
+    if ( p()->buff.meat_cleaver->check() )
+      return 1 + aoe_targets;
+
+    return warrior_attack_t::n_targets();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warrior_attack_t::impact( s );
+
+    if ( result_is_hit( s->result ) )
+    {
+      td( s->target )->debuffs_siegebreaker->trigger();
+    }
   }
 
   void execute() override
   {
     warrior_attack_t::execute();
-
-    if ( result_is_hit( execute_state->result ) )
-    {
-      td( execute_state->target )->debuffs_siegebreaker->trigger();
-    }
+    p()->buff.meat_cleaver->decrement();
   }
 };
 
