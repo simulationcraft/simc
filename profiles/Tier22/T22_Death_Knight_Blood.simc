@@ -10,7 +10,7 @@ talents=2221022
 # Default consumables
 potion=battle_potion_of_strength
 flask=flask_of_the_undertow
-food=swamp_fish_n_chips
+food=bountiful_captains_feast
 augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
