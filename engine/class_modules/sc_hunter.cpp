@@ -3650,8 +3650,6 @@ struct kill_command_t: public hunter_spell_t
   struct {
     real_ppm_t* rppm = nullptr;
     proc_t* proc;
-    gain_t* gain;
-    double gain_amount;
   } dire_consequences;
 
   kill_command_t( hunter_t* p, const std::string& options_str ):
@@ -3668,9 +3666,6 @@ struct kill_command_t: public hunter_spell_t
       if ( p -> specialization() == HUNTER_BEAST_MASTERY )
         dire_consequences.rppm -> set_modifier( .65 );
       dire_consequences.proc = p -> get_proc( "Dire Consequences" );
-      dire_consequences.gain = p -> get_gain( "dire_beast_(dc)" );
-      dire_consequences.gain_amount = p -> find_spell( 120694 ) -> effectN( 1 ).base_value() +
-                                      p -> talents.scent_of_blood -> effectN( 1 ).base_value();
     }
   }
 
@@ -3712,7 +3707,6 @@ struct kill_command_t: public hunter_spell_t
     if ( dire_consequences.rppm && dire_consequences.rppm -> trigger() )
     {
       p() -> pets.dc_dire_beast.spawn( pets::dire_beast_duration( p() ).first );
-      p() -> resource_gain( RESOURCE_FOCUS, dire_consequences.gain_amount, dire_consequences.gain );
       dire_consequences.proc -> occur();
     }
   }
