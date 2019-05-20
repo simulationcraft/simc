@@ -3762,9 +3762,6 @@ struct dire_beast_t: public hunter_spell_t
     parse_options( options_str );
 
     harmful = may_hit = false;
-
-    parse_effect_data( p -> find_spell( 120694 ) -> effectN( 1 ) );
-    energize_amount += p -> talents.scent_of_blood -> effectN( 1 ).base_value();
   }
 
   void init_finished() override
