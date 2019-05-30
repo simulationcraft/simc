@@ -1046,6 +1046,7 @@ struct combustion_buff_t : public buff_t
     set_cooldown( 0_ms );
     set_default_value( data().effectN( 1 ).percent() );
     set_tick_zero( true );
+    set_refresh_behavior( buff_refresh_behavior::DURATION );
 
     set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
     {
