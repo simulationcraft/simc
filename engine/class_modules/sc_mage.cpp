@@ -1111,6 +1111,8 @@ struct icy_veins_buff_t : public buff_t
     auto mage = debug_cast<mage_t*>( player );
     if ( mage->talents.thermal_void->ok() && duration == 0_ms )
       mage->sample_data.icy_veins_duration->add( elapsed( sim->current_time() ).total_seconds() );
+
+    mage->buffs.frigid_grasp->expire();
   }
 };
 
@@ -3668,7 +3670,12 @@ struct icy_veins_t : public frost_mage_spell_t
   void init_finished() override
   {
     if ( p()->azerite.frigid_grasp.enabled() )
-      proc_fof = p()->get_proc( "Fingers of Frost from Frigid Grasp" );
+    {
+      proc_t* frigid_grasp_fof = p()->get_proc( "Fingers of Frost from Frigid Grasp" );
+      p()->buffs.frigid_grasp
+         ->set_stack_change_callback( [ this, frigid_grasp_fof ] ( buff_t*, int, int cur )
+           { if ( cur == 1 ) trigger_fof( 1.0, 1, frigid_grasp_fof ); } );
+    }
 
     frost_mage_spell_t::init_finished();
 
@@ -3697,7 +3704,8 @@ struct icy_veins_t : public frost_mage_spell_t
 
     if ( p()->azerite.frigid_grasp.enabled() )
     {
-      trigger_fof( 1.0 );
+      // Frigid Grasp buff doesn't refresh.
+      p()->buffs.frigid_grasp->expire();
       p()->buffs.frigid_grasp->trigger();
     }
   }
