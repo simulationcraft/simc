@@ -745,6 +745,7 @@ public:
   void      update_rune_distance( double distance );
   action_t* get_icicle();
   void      trigger_icicle( player_t* icicle_target, bool chain = false );
+  void      trigger_icicle_gain( player_t* icicle_target, action_t* icicle_action );
   void      trigger_evocation( timespan_t duration_override = timespan_t::min(), bool hasted = true );
   void      trigger_arcane_charge( int stacks = 1 );
   void      trigger_leyshock( unsigned id, const action_state_t* state, leyshock_trigger_e trigger_type );
@@ -1883,27 +1884,6 @@ struct frost_mage_spell_t : public mage_spell_t
   double icicle_sp_coefficient() const
   {
     return p()->cache.mastery() * p()->spec.icicles->effectN( 3 ).sp_coeff();
-  }
-
-  void trigger_icicle_gain( player_t* icicle_target, action_t* icicle_action )
-  {
-    if ( !p()->spec.icicles->ok() )
-      return;
-
-    unsigned max_icicles = as<unsigned>( p()->spec.icicles->effectN( 2 ).base_value() );
-
-    // Shoot one if capped
-    if ( p()->icicles.size() == max_icicles )
-      p()->trigger_icicle( icicle_target );
-
-    p()->buffs.icicles->trigger();
-    p()->icicles.push_back( { icicle_action, make_event( sim, p()->buffs.icicles->buff_duration, [ this ]
-    {
-      p()->buffs.icicles->decrement();
-      p()->icicles.erase( p()->icicles.begin() );
-    } ) } );
-
-    assert( p()->icicles.size() <= max_icicles );
   }
 
   virtual void snapshot_impact_state( action_state_t* s, dmg_e rt )
@@ -3131,7 +3111,7 @@ struct flurry_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
 
-    trigger_icicle_gain( target, p()->icicle.flurry );
+    p()->trigger_icicle_gain( target, p()->icicle.flurry );
 
     bool brain_freeze = p()->buffs.brain_freeze->up();
     p()->state.brain_freeze_active = brain_freeze;
@@ -3181,7 +3161,7 @@ struct frostbolt_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
 
-    trigger_icicle_gain( target, p()->icicle.frostbolt );
+    p()->trigger_icicle_gain( target, p()->icicle.frostbolt );
 
     double fof_proc_chance = p()->spec.fingers_of_frost->effectN( 1 ).percent();
     fof_proc_chance *= 1.0 + p()->talents.frozen_touch->effectN( 1 ).percent();
@@ -6352,6 +6332,27 @@ void mage_t::trigger_icicle( player_t* icicle_target, bool chain )
     icicle_action->execute();
     sim->print_debug( "{} icicle use on {}, total={}", name(), icicle_target->name(), icicles.size() );
   }
+}
+
+void mage_t::trigger_icicle_gain( player_t* icicle_target, action_t* icicle_action )
+{
+  if ( !spec.icicles->ok() )
+    return;
+
+  unsigned max_icicles = as<unsigned>( spec.icicles->effectN( 2 ).base_value() );
+
+  // Shoot one if capped
+  if ( icicles.size() == max_icicles )
+    trigger_icicle( icicle_target );
+
+  buffs.icicles->trigger();
+  icicles.push_back( { icicle_action, make_event( sim, buffs.icicles->buff_duration, [ this ]
+  {
+    buffs.icicles->decrement();
+    icicles.erase( icicles.begin() );
+  } ) } );
+
+  assert( icicles.size() <= max_icicles );
 }
 
 void mage_t::trigger_evocation( timespan_t duration_override, bool hasted )
