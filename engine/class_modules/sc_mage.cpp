@@ -3654,8 +3654,8 @@ struct icy_veins_t : public frost_mage_spell_t
     {
       proc_t* frigid_grasp_fof = p()->get_proc( "Fingers of Frost from Frigid Grasp" );
       p()->buffs.frigid_grasp
-         ->set_stack_change_callback( [ this, frigid_grasp_fof ] ( buff_t*, int, int cur )
-           { if ( cur == 1 ) trigger_fof( 1.0, 1, frigid_grasp_fof ); } );
+         ->set_stack_change_callback( [ this, frigid_grasp_fof ] ( buff_t*, int old, int )
+           { if ( old == 0 ) trigger_fof( 1.0, 1, frigid_grasp_fof ); } );
     }
 
     frost_mage_spell_t::init_finished();
@@ -5264,12 +5264,12 @@ void mage_t::create_buffs()
   buffs.enhanced_pyrotechnics = make_buff( this, "enhanced_pyrotechnics", find_spell( 157644 ) )
                                   ->set_chance( spec.enhanced_pyrotechnics->ok() )
                                   ->set_default_value( find_spell( 157644 )->effectN( 1 ).percent() )
-                                  ->set_stack_change_callback( [ this ] ( buff_t*, int prev, int cur )
+                                  ->set_stack_change_callback( [ this ] ( buff_t*, int old, int cur )
                                     {
-                                      if ( cur > prev )
-                                        buffs.flames_of_alacrity->trigger( cur - prev );
+                                      if ( cur > old )
+                                        buffs.flames_of_alacrity->trigger( cur - old );
                                       else
-                                        buffs.flames_of_alacrity->decrement( prev - cur );
+                                        buffs.flames_of_alacrity->decrement( old - cur );
                                     } );
   buffs.heating_up            = make_buff( this, "heating_up", find_spell( 48107 ) );
   buffs.hot_streak            = make_buff( this, "hot_streak", find_spell( 48108 ) );
