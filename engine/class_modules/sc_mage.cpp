@@ -485,7 +485,8 @@ public:
     proc_t* ignite_new_spread; // Spread to new target
     proc_t* ignite_overwrite;  // Spread to target with existing ignite
 
-    proc_t* brain_freeze_flurry;
+    proc_t* brain_freeze;
+    proc_t* brain_freeze_used;
     proc_t* fingers_of_frost;
     proc_t* fingers_of_frost_wasted;
   } procs;
@@ -746,6 +747,8 @@ public:
 
   void      update_rune_distance( double distance );
   action_t* get_icicle();
+  bool      trigger_delayed_buff( buff_t* buff, double chance, timespan_t delay = 0.15_s );
+  void      trigger_brain_freeze( double chance, proc_t* source );
   void      trigger_fof( double chance, int stacks, proc_t* source );
   void      trigger_icicle( player_t* icicle_target, bool chain = false );
   void      trigger_icicle_gain( player_t* icicle_target, action_t* icicle_action );
@@ -1429,20 +1432,6 @@ public:
     return spell_t::usable_moving();
   }
 
-  bool trigger_delayed_buff( buff_t* buff, double chance, timespan_t delay = 0.15_s )
-  {
-    bool success = rng().roll( chance );
-    if ( success )
-    {
-      if ( buff->check() )
-        make_event( sim, delay, [ buff ] { buff->trigger(); } );
-      else
-        buff->trigger();
-    }
-
-    return success;
-  }
-
   virtual void consume_cost_reductions()
   { }
 
@@ -1463,7 +1452,7 @@ public:
 
       double proc_chance = 0.01 * last_resource_cost / mana_step;
       proc_chance *= 1.0 + p()->azerite.arcane_pummeling.spell_ref().effectN( 2 ).percent();
-      trigger_delayed_buff( p()->buffs.clearcasting, proc_chance );
+      p()->trigger_delayed_buff( p()->buffs.clearcasting, proc_chance );
     }
 
     if ( !background && affected_by.ice_floes && time_to_execute > 0_ms )
@@ -1825,6 +1814,7 @@ struct frost_mage_spell_t : public mage_spell_t
   bool chills;
   bool calculate_on_impact;
 
+  proc_t* proc_brain_freeze;
   proc_t* proc_fof;
 
   bool track_shatter;
@@ -1836,6 +1826,7 @@ struct frost_mage_spell_t : public mage_spell_t
     mage_spell_t( n, p, s ),
     chills(),
     calculate_on_impact(),
+    proc_brain_freeze(),
     proc_fof(),
     track_shatter(),
     shatter_source(),
@@ -1862,9 +1853,6 @@ struct frost_mage_spell_t : public mage_spell_t
     if ( track_shatter && sim->report_details != 0 )
       shatter_source = p()->get_shatter_source( name_str );
   }
-
-  void trigger_brain_freeze( double chance )
-  { trigger_delayed_buff( p()->buffs.brain_freeze, chance ); }
 
   double icicle_sp_coefficient() const
   {
@@ -2869,10 +2857,16 @@ struct ebonbolt_t : public frost_mage_spell_t
     }
   }
 
+  void init_finished() override
+  {
+    proc_brain_freeze = p()->get_proc( std::string( "Brain Freeze from " ) + data().name_cstr() );
+    frost_mage_spell_t::init_finished();
+  }
+
   void execute() override
   {
     frost_mage_spell_t::execute();
-    trigger_brain_freeze( 1.0 );
+    p()->trigger_brain_freeze( 1.0, proc_brain_freeze );
   }
 };
 
@@ -3103,7 +3097,7 @@ struct flurry_t : public frost_mage_spell_t
     p()->buffs.brain_freeze->decrement();
 
     if ( brain_freeze )
-      p()->procs.brain_freeze_flurry->occur();
+      p()->procs.brain_freeze_used->occur();
   }
 
   void impact( action_state_t* s ) override
@@ -3138,6 +3132,7 @@ struct frostbolt_t : public frost_mage_spell_t
 
   void init_finished() override
   {
+    proc_brain_freeze = p()->get_proc( std::string( "Brain Freeze from " ) + data().name_cstr() );
     proc_fof = p()->get_proc( std::string( "Fingers of Frost from " ) + data().name_cstr() );
     frost_mage_spell_t::init_finished();
   }
@@ -3154,7 +3149,7 @@ struct frostbolt_t : public frost_mage_spell_t
 
     double bf_proc_chance = p()->spec.brain_freeze->effectN( 1 ).percent();
     bf_proc_chance *= 1.0 + p()->talents.frozen_touch->effectN( 1 ).percent();
-    trigger_brain_freeze( bf_proc_chance );
+    p()->trigger_brain_freeze( bf_proc_chance, proc_brain_freeze );
 
     if ( target != p()->last_frostbolt_target )
       p()->buffs.tunnel_of_ice->expire();
@@ -5356,7 +5351,8 @@ void mage_t::init_procs()
       procs.ignite_overwrite  = get_proc( "Ignites spread to targets with existing Ignite" );
       break;
     case MAGE_FROST:
-      procs.brain_freeze_flurry     = get_proc( "Brain Freeze Flurries cast" );
+      procs.brain_freeze            = get_proc( "Brain Freeze" );
+      procs.brain_freeze_used       = get_proc( "Brain Freeze used" );
       procs.fingers_of_frost        = get_proc( "Fingers of Frost" );
       procs.fingers_of_frost_wasted = get_proc( "Fingers of Frost wasted due to Winter's Chill" );
       break;
@@ -6301,6 +6297,32 @@ action_t* mage_t::get_icicle()
   return a;
 }
 
+bool mage_t::trigger_delayed_buff( buff_t* buff, double chance, timespan_t delay )
+{
+  bool success = rng().roll( chance );
+  if ( success )
+  {
+    if ( buff->check() )
+      make_event( sim, delay, [ buff ] { buff->trigger(); } );
+    else
+      buff->trigger();
+  }
+
+  return success;
+}
+
+void mage_t::trigger_brain_freeze( double chance, proc_t* source )
+{
+  assert( source );
+
+  bool success = trigger_delayed_buff( buffs.brain_freeze, chance );
+  if ( success )
+  {
+    source->occur();
+    procs.brain_freeze->occur();
+  }
+}
+
 void mage_t::trigger_fof( double chance, int stacks, proc_t* source )
 {
   assert( source );
@@ -6683,7 +6705,7 @@ public:
           "<th>Count</th>\n"
           "<th>Percent</th>\n";
 
-    double bff = p.procs.brain_freeze_flurry->count.pretty_mean();
+    double bff = p.procs.brain_freeze_used->count.pretty_mean();
 
     size_t row = 0;
     for ( const shatter_source_t* data : p.shatter_source_list )
