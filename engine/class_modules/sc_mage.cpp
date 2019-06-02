@@ -486,6 +486,7 @@ public:
     proc_t* ignite_overwrite;  // Spread to target with existing ignite
 
     proc_t* brain_freeze_flurry;
+    proc_t* fingers_of_frost;
     proc_t* fingers_of_frost_wasted;
   } procs;
 
@@ -664,6 +665,7 @@ public:
   void        init_benefits() override;
   void        init_uptimes() override;
   void        init_rng() override;
+  void        init_finished() override;
   void        invalidate_cache( cache_e ) override;
   void        init_resources( bool ) override;
   void        recalculate_resource_max( resource_e ) override;
@@ -744,6 +746,7 @@ public:
 
   void      update_rune_distance( double distance );
   action_t* get_icicle();
+  void      trigger_fof( double chance, int stacks, proc_t* source );
   void      trigger_icicle( player_t* icicle_target, bool chain = false );
   void      trigger_icicle_gain( player_t* icicle_target, action_t* icicle_action );
   void      trigger_evocation( timespan_t duration_override = timespan_t::min(), bool hasted = true );
@@ -1860,24 +1863,6 @@ struct frost_mage_spell_t : public mage_spell_t
       shatter_source = p()->get_shatter_source( name_str );
   }
 
-  void trigger_fof( double chance, int stacks = 1, proc_t* source = nullptr )
-  {
-    if ( !source )
-      source = proc_fof;
-
-    assert( source );
-
-    bool success = p()->buffs.fingers_of_frost->trigger( stacks, buff_t::DEFAULT_VALUE(), chance );
-    if ( success )
-    {
-      if ( chance >= 1.0 )
-        p()->buffs.fingers_of_frost->predict();
-
-      for ( int i = 0; i < stacks; i++ )
-        source->occur();
-    }
-  }
-
   void trigger_brain_freeze( double chance )
   { trigger_delayed_buff( p()->buffs.brain_freeze, chance ); }
 
@@ -1991,7 +1976,7 @@ struct icicle_t : public frost_mage_spell_t
     frost_mage_spell_t::impact( s );
 
     if ( result_is_hit( s->result ) )
-      trigger_fof( p()->azerite.flash_freeze.spell_ref().effectN( 1 ).percent() );
+      p()->trigger_fof( p()->azerite.flash_freeze.spell_ref().effectN( 1 ).percent(), 1, proc_fof );
   }
 
   double spell_direct_power_coefficient( const action_state_t* s ) const override
@@ -3165,7 +3150,7 @@ struct frostbolt_t : public frost_mage_spell_t
 
     double fof_proc_chance = p()->spec.fingers_of_frost->effectN( 1 ).percent();
     fof_proc_chance *= 1.0 + p()->talents.frozen_touch->effectN( 1 ).percent();
-    trigger_fof( fof_proc_chance );
+    p()->trigger_fof( fof_proc_chance, 1, proc_fof );
 
     double bf_proc_chance = p()->spec.brain_freeze->effectN( 1 ).percent();
     bf_proc_chance *= 1.0 + p()->talents.frozen_touch->effectN( 1 ).percent();
@@ -3236,7 +3221,7 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
     frost_mage_spell_t::execute();
 
     if ( hit_any_target )
-      trigger_fof( p()->spec.fingers_of_frost->effectN( 2 ).percent() );
+      p()->trigger_fof( p()->spec.fingers_of_frost->effectN( 2 ).percent(), 1, proc_fof );
   }
 
   double action_multiplier() const override
@@ -3295,7 +3280,7 @@ struct frozen_orb_t : public frost_mage_spell_t
   void impact( action_state_t* s ) override
   {
     frost_mage_spell_t::impact( s );
-    trigger_fof( 1.0 );
+    p()->trigger_fof( 1.0, 1, proc_fof );
 
     int pulse_count = 20;
     timespan_t pulse_time = 0.5_s;
@@ -3370,7 +3355,7 @@ struct glacial_spike_t : public frost_mage_spell_t
 
     double fof_proc_chance = p()->azerite.flash_freeze.spell_ref().effectN( 1 ).percent();
     for ( int i = 0; i < as<int>( p()->spec.icicles->effectN( 2 ).base_value() ); i++ )
-      trigger_fof( fof_proc_chance );
+      p()->trigger_fof( fof_proc_chance, 1, proc_fof );
   }
 
   void impact( action_state_t* s ) override
@@ -3650,14 +3635,6 @@ struct icy_veins_t : public frost_mage_spell_t
 
   void init_finished() override
   {
-    if ( p()->azerite.frigid_grasp.enabled() )
-    {
-      proc_t* frigid_grasp_fof = p()->get_proc( "Fingers of Frost from Frigid Grasp" );
-      p()->buffs.frigid_grasp
-         ->set_stack_change_callback( [ this, frigid_grasp_fof ] ( buff_t*, int old, int )
-           { if ( old == 0 ) trigger_fof( 1.0, 1, frigid_grasp_fof ); } );
-    }
-
     frost_mage_spell_t::init_finished();
 
     if ( action_list->name_str == "precombat" )
@@ -4152,7 +4129,7 @@ struct ray_of_frost_t : public frost_mage_spell_t
 
     // TODO: Now happens at 2.5 and 5.
     if ( d->current_tick == 3 || d->current_tick == 5 )
-      trigger_fof( 1.0 );
+      p()->trigger_fof( 1.0, 1, proc_fof );
   }
 
   void last_tick( dot_t* d ) override
@@ -5328,9 +5305,13 @@ void mage_t::create_buffs()
   buffs.wildfire           = make_buff<stat_buff_t>( this, "wildfire", find_spell( 288800 ) )
                                ->set_chance( azerite.wildfire.enabled() );
 
+  proc_t* proc_fof = get_proc( "Fingers of Frost from Frigid Grasp" );
   buffs.frigid_grasp       = make_buff<stat_buff_t>( this, "frigid_grasp", find_spell( 279684 ) )
                                ->add_stat( STAT_INTELLECT, azerite.frigid_grasp.value() )
+                               ->set_stack_change_callback( [ this, proc_fof ] ( buff_t*, int old, int )
+                                 { if ( old == 0 ) trigger_fof( 1.0, 1, proc_fof ); } )
                                ->set_chance( azerite.frigid_grasp.enabled() );
+
   buffs.tunnel_of_ice      = make_buff( this, "tunnel_of_ice", find_spell( 277904 ) )
                                ->set_default_value( azerite.tunnel_of_ice.value() )
                                ->set_chance( azerite.tunnel_of_ice.enabled() );
@@ -5376,6 +5357,7 @@ void mage_t::init_procs()
       break;
     case MAGE_FROST:
       procs.brain_freeze_flurry     = get_proc( "Brain Freeze Flurries cast" );
+      procs.fingers_of_frost        = get_proc( "Fingers of Frost" );
       procs.fingers_of_frost_wasted = get_proc( "Fingers of Frost wasted due to Winter's Chill" );
       break;
     default:
@@ -5463,6 +5445,15 @@ void mage_t::init_assessors()
     for ( auto pet : pet_list )
       pet->assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_fn );
   }
+}
+
+void mage_t::init_finished()
+{
+  player_t::init_finished();
+
+  // Sort the procs to put the proc sources next to each other.
+  if ( specialization() == MAGE_FROST )
+    range::sort( proc_list, [] ( proc_t* a, proc_t* b ) { return a->name_str < b->name_str; } );
 }
 
 void mage_t::init_action_list()
@@ -6308,6 +6299,24 @@ action_t* mage_t::get_icicle()
   }
 
   return a;
+}
+
+void mage_t::trigger_fof( double chance, int stacks, proc_t* source )
+{
+  assert( source );
+
+  bool success = buffs.fingers_of_frost->trigger( stacks, buff_t::DEFAULT_VALUE(), chance );
+  if ( success )
+  {
+    if ( chance >= 1.0 )
+      buffs.fingers_of_frost->predict();
+
+    for ( int i = 0; i < stacks; i++ )
+    {
+      source->occur();
+      procs.fingers_of_frost->occur();
+    }
+  }
 }
 
 void mage_t::trigger_icicle( player_t* icicle_target, bool chain )
