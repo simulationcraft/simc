@@ -1386,6 +1386,14 @@ block_result_e action_t::calculate_block_result( action_state_t* s ) const
 {
   block_result_e block_result = BLOCK_RESULT_UNBLOCKED;
 
+  // 2019-06-02: Looking at logs from Uldir, Battle of Dazar'alor and Crucible of Storms,
+  // It appears that non players can't block attacks or abilities anymore
+  // Non-player Parry and Miss seem unchanged
+  if ( s -> target -> is_enemy() )
+  {
+    return BLOCK_RESULT_UNBLOCKED;
+  }
+
   // Blocks also get a their own roll, and glances/crits can be blocked.
   if ( result_is_hit( s->result ) && may_block && ( player->position() == POSITION_FRONT ) &&
        !( s->result == RESULT_NONE ) )
@@ -1409,19 +1417,6 @@ block_result_e action_t::calculate_block_result( action_state_t* s ) const
 
   sim->print_debug("{} result for {} is {}",
       player->name(), name(), util::block_result_type_string( block_result ) );
-
-  // 1/27/2018 -- Logs indicate that yellow weapon damage-based attacks cannot crit + block at the same time.
-  //              As white damage and yellow AP abilities may crit + block at the same time, this is likely a bug.
-  if ( player->bugs )
-  {
-    if ( block_result != BLOCK_RESULT_UNBLOCKED && s->result == RESULT_CRIT && special && weapon &&
-         weapon_multiplier > 0 )
-    {
-      s->result = RESULT_HIT;
-      sim->print_debug("{} result for {} is changed from {} to {}",
-          player->name(), name(), util::result_type_string( RESULT_CRIT ), util::result_type_string( RESULT_HIT ) );
-    }
-  }
 
   return block_result;
 }
