@@ -754,8 +754,8 @@ public:
   void      trigger_icicle_gain( player_t* icicle_target, action_t* icicle_action );
   void      trigger_evocation( timespan_t duration_override = timespan_t::min(), bool hasted = true );
   void      trigger_arcane_charge( int stacks = 1 );
-  void      trigger_leyshock( unsigned id, const action_state_t* state, leyshock_trigger_e trigger_type );
-  bool      apply_crowd_control( const action_state_t* state, spell_mechanic type );
+  void      trigger_leyshock( unsigned id, const action_state_t* s, leyshock_trigger_e trigger_type );
+  bool      trigger_crowd_control( const action_state_t* s, spell_mechanic type );
 
   void apl_precombat();
   void apl_arcane();
@@ -847,7 +847,7 @@ struct freeze_t : public mage_pet_spell_t
   void impact( action_state_t* s ) override
   {
     mage_pet_spell_t::impact( s );
-    o()->apply_crowd_control( s, MECHANIC_ROOT );
+    o()->trigger_crowd_control( s, MECHANIC_ROOT );
   }
 };
 
@@ -1677,25 +1677,25 @@ struct fire_mage_spell_t : public mage_spell_t
   virtual double composite_ignite_multiplier( const action_state_t* ) const
   { return 1.0; }
 
-  void trigger_ignite( action_state_t* state )
+  void trigger_ignite( action_state_t* s )
   {
     if ( !p()->spec.ignite->ok() )
       return;
 
-    double m = state->target_da_multiplier;
+    double m = s->target_da_multiplier;
     if ( m <= 0.0 )
       return;
 
-    double amount = state->result_total / m * p()->cache.mastery_value();
+    double amount = s->result_total / m * p()->cache.mastery_value();
     if ( amount <= 0.0 )
       return;
 
-    amount *= composite_ignite_multiplier( state );
+    amount *= composite_ignite_multiplier( s );
 
-    if ( !p()->ignite->get_dot( state->target )->is_ticking() )
+    if ( !p()->ignite->get_dot( s->target )->is_ticking() )
       p()->procs.ignite_applied->occur();
 
-    residual_action::trigger( p()->ignite, state->target, amount );
+    residual_action::trigger( p()->ignite, s->target, amount );
   }
 
   bool firestarter_active( player_t* target ) const
@@ -2374,12 +2374,12 @@ struct arcane_missiles_t : public arcane_mage_spell_t
 
   // We need to snapshot any tick time reduction effect here so that it correctly affects the whole
   // channel.
-  void snapshot_state( action_state_t* state, dmg_e rt ) override
+  void snapshot_state( action_state_t* s, dmg_e rt ) override
   {
-    arcane_mage_spell_t::snapshot_state( state, rt );
+    arcane_mage_spell_t::snapshot_state( s, rt );
 
     if ( p()->buffs.clearcasting_channel->check() )
-      debug_cast<am_state_t*>( state )->tick_time_multiplier = 1.0 + cc_tick_time_reduction;
+      debug_cast<am_state_t*>( s )->tick_time_multiplier = 1.0 + cc_tick_time_reduction;
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -2751,7 +2751,7 @@ struct counterspell_t : public mage_spell_t
   void impact( action_state_t* s ) override
   {
     mage_spell_t::impact( s );
-    p()->apply_crowd_control( s, MECHANIC_INTERRUPT );
+    p()->trigger_crowd_control( s, MECHANIC_INTERRUPT );
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -2784,7 +2784,7 @@ struct dragons_breath_t : public fire_mage_spell_t
     if ( result_is_hit( s->result ) && p()->talents.alexstraszas_fury->ok() && s->chain_target == 0 )
       handle_hot_streak( s );
 
-    p()->apply_crowd_control( s, MECHANIC_DISORIENT );
+    p()->trigger_crowd_control( s, MECHANIC_DISORIENT );
   }
 };
 
@@ -3190,7 +3190,7 @@ struct frost_nova_t : public mage_spell_t
   void impact( action_state_t* s ) override
   {
     mage_spell_t::impact( s );
-    p()->apply_crowd_control( s, MECHANIC_ROOT );
+    p()->trigger_crowd_control( s, MECHANIC_ROOT );
   }
 };
 
@@ -3356,10 +3356,9 @@ struct glacial_spike_t : public frost_mage_spell_t
   void impact( action_state_t* s ) override
   {
     frost_mage_spell_t::impact( s );
-    p()->apply_crowd_control( s, MECHANIC_ROOT );
+    p()->trigger_crowd_control( s, MECHANIC_ROOT );
   }
 };
-
 
 // Ice Floes Spell ==========================================================
 
@@ -3610,7 +3609,7 @@ struct ice_nova_t : public frost_mage_spell_t
   void impact( action_state_t* s ) override
   {
     frost_mage_spell_t::impact( s );
-    p()->apply_crowd_control( s, MECHANIC_ROOT );
+    p()->trigger_crowd_control( s, MECHANIC_ROOT );
   }
 };
 
@@ -4770,16 +4769,16 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   regen_type = REGEN_DYNAMIC;
 }
 
-bool mage_t::apply_crowd_control( const action_state_t* state, spell_mechanic type )
+bool mage_t::trigger_crowd_control( const action_state_t* s, spell_mechanic type )
 {
   if ( type == MECHANIC_INTERRUPT )
     return true;
 
-  if ( action_t::result_is_hit( state->result )
-    && ( state->target->is_add() || state->target->level() < sim->max_player_level + 3 ) )
+  if ( action_t::result_is_hit( s->result )
+    && ( s->target->is_add() || s->target->level() < sim->max_player_level + 3 ) )
   {
     if ( type == MECHANIC_ROOT )
-      get_target_data( state->target )->debuffs.frozen->trigger();
+      get_target_data( s->target )->debuffs.frozen->trigger();
 
     return true;
   }
