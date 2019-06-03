@@ -2859,7 +2859,7 @@ struct ebonbolt_t : public frost_mage_spell_t
 
   void init_finished() override
   {
-    proc_brain_freeze = p()->get_proc( std::string( "Brain Freeze from " ) + data().name_cstr() );
+    proc_brain_freeze = p()->get_proc( "Brain Freeze from Ebonbolt" );
     frost_mage_spell_t::init_finished();
   }
 
@@ -3132,8 +3132,8 @@ struct frostbolt_t : public frost_mage_spell_t
 
   void init_finished() override
   {
-    proc_brain_freeze = p()->get_proc( std::string( "Brain Freeze from " ) + data().name_cstr() );
-    proc_fof = p()->get_proc( std::string( "Fingers of Frost from " ) + data().name_cstr() );
+    proc_brain_freeze = p()->get_proc( "Brain Freeze from Frostbolt" );
+    proc_fof = p()->get_proc( "Fingers of Frost from Frostbolt" );
     frost_mage_spell_t::init_finished();
   }
 
@@ -4110,7 +4110,7 @@ struct ray_of_frost_t : public frost_mage_spell_t
 
   void init_finished() override
   {
-    proc_fof = p()->get_proc( std::string( "Fingers of Frost from " ) + data().name_cstr() );
+    proc_fof = p()->get_proc( "Fingers of Frost from Ray of Frost" );
     frost_mage_spell_t::init_finished();
   }
 
