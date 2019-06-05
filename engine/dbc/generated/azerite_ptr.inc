@@ -1,5 +1,5 @@
-// Azerite powers, wow build 8.2.0.30329
-static constexpr std::array<azerite_power_entry_t, 368> __ptr_azerite_power_data { {
+// Azerite powers, wow build 8.2.0.30669
+static constexpr std::array<azerite_power_entry_t, 371> __ptr_azerite_power_data { {
   {  13, 263978,  4775, "Azerite Empowered"                 , 0 },
   {  14, 268594,     0, "Longstrider"                       , 1 },
   {  15, 263962,     0, "Resounding Protection"             , 1 },
@@ -368,4 +368,7 @@ static constexpr std::array<azerite_power_entry_t, 368> __ptr_azerite_power_data
   { 566, 289322,     0, "Exit Strategy"                     , 1 },
   { 568, 300168,     0, "Person-Computer Interface"         , 3 },
   { 569, 300170,     0, "Clockwork Heart"                   , 3 },
+  { 575, 303008,     0, "Undulating Tides"                  , 3 },
+  { 576, 303007,     0, "Loyal to the End"                  , 3 },
+  { 577, 303006,     0, "Arcane Heart"                      , 3 },
 } };
