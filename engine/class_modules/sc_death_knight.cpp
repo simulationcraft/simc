@@ -3427,14 +3427,15 @@ struct breath_of_sindragosa_tick_t: public death_knight_spell_t
 struct breath_of_sindragosa_buff_t : public buff_t
 {
   breath_of_sindragosa_tick_t* damage;
-  double ticking_cost, rune_gen;
+  double ticking_cost;
   const timespan_t tick_period;
+  int rune_gen;
 
   breath_of_sindragosa_buff_t( death_knight_t* player ) :
     buff_t( player, "breath_of_sindragosa", player -> talent.breath_of_sindragosa ),
     damage( new breath_of_sindragosa_tick_t( player ) ),
     tick_period( player -> talent.breath_of_sindragosa -> effectN( 1 ).period() ),
-    rune_gen( p -> find_spell( 303753 ) -> effectN( 1 ).base_value() )
+    rune_gen( as<int>( player -> find_spell( 303753 ) -> effectN( 1 ).base_value() ) )
   {
     tick_zero = true;
 
