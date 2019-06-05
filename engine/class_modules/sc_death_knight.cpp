@@ -3427,13 +3427,14 @@ struct breath_of_sindragosa_tick_t: public death_knight_spell_t
 struct breath_of_sindragosa_buff_t : public buff_t
 {
   breath_of_sindragosa_tick_t* damage;
-  double ticking_cost;
+  double ticking_cost, rune_gen;
   const timespan_t tick_period;
 
   breath_of_sindragosa_buff_t( death_knight_t* player ) :
     buff_t( player, "breath_of_sindragosa", player -> talent.breath_of_sindragosa ),
     damage( new breath_of_sindragosa_tick_t( player ) ),
-    tick_period( player -> talent.breath_of_sindragosa -> effectN( 1 ).period() )
+    tick_period( player -> talent.breath_of_sindragosa -> effectN( 1 ).period() ),
+    rune_gen( p -> find_spell( 303753 ) -> effectN( 1 ).base_value() )
   {
     tick_zero = true;
 
@@ -3458,6 +3459,12 @@ struct breath_of_sindragosa_buff_t : public buff_t
       // Damage is executed on cast for no cost
       if ( this -> current_tick == 0 )
       {
+        // BoS also generates 2 runes when you cast it on 8.2 PTR
+        if ( player -> dbc.ptr )
+        {
+          player -> replenish_rune( rune_gen, player -> gains.breath_of_sindragosa );
+        }
+
         this -> damage -> set_target( bos_target );
         this -> damage -> execute();
         return;
@@ -3509,12 +3516,11 @@ struct breath_of_sindragosa_buff_t : public buff_t
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
     // BoS generates 2 runes when it expires on 8.2 PTR
-    // TODO: wait for spelldata regenerate and see if the "2" value can be found somewhere
     if ( player -> dbc.ptr )
     {
       death_knight_t* p = debug_cast< death_knight_t* >( player );
 
-      p -> replenish_rune( 2, p -> gains.breath_of_sindragosa );
+      p -> replenish_rune( rune_gen, p -> gains.breath_of_sindragosa );
     }
   }
 };
@@ -3531,13 +3537,6 @@ struct breath_of_sindragosa_t : public death_knight_spell_t
   void execute() override
   {
     death_knight_spell_t::execute();
-
-    // BoS generates 2 runes when it expires on 8.2 PTR
-    // TODO: wait for spelldata regenerate and see if the "2" value can be found somewhere
-    if ( p() -> dbc.ptr )
-    {
-      p() -> replenish_rune( 2, p() -> gains.breath_of_sindragosa );
-    }
 
     p() -> buffs.breath_of_sindragosa -> trigger();
   }
@@ -4929,9 +4928,8 @@ struct frost_fever_t : public death_knight_spell_t
   {
     death_knight_spell_t::tick( d );
 
-    // TODO: Melekus, 2019-05-15: Frost fever proc chance has been removed from spelldata on PTR
-    // I whitelisted several new "Frost Fever" spells that may have that data
-    // TODO 2: Figure out what is up with the "30% proc chance, diminishing beyond the first target" from blue post.
+    // TODO: Melekus, 2019-05-15: Frost fever proc chance and ICD have been removed from spelldata on PTR
+    // Figure out what is up with the "30% proc chance, diminishing beyond the first target" from blue post.
     // https://us.forums.blizzard.com/en/wow/t/upcoming-ptr-class-changes-4-23/158332
     double chance = p() -> dbc.ptr ? 0.3 : p() -> spec.frost_fever -> proc_chance();
 
