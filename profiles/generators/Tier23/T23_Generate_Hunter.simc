@@ -6,21 +6,21 @@ role=attack
 position=ranged_back
 talents=1303011
 
-head=targettracking_headgear,id=165543,bonus_id=4824/1537,azerite_powers=366/562/459/14/13
+head=soulscarred_headgear,id=159398,bonus_id=1587/5440/4775,azerite_powers=211/193/459/15/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1566,azerite_level=48
-shoulder=pauldrons_of_ancestral_vengeance,id=165921,bonus_id=4824/1537,azerite_powers=367/562/30/203/13
+shoulders=cannoneers_mantle,id=159393,bonus_id=1587/5440/4775,azerite_powers=211/366/31/87/13
 back=loa_exultants_shroud,id=165512,bonus_id=4800/1537
-chest=corrupted_hexxers_vestments,id=159370,bonus_id=1587/5440/4775,azerite_powers=161/366/30/14/13
+chest=mistfire_raiment,id=165540,bonus_id=4824/1537/4786/5419/4775,azerite_powers=211/562/459/469/13
 wrists=icebinders_bracers,id=165542,bonus_id=4800/1537
-hands=slimy_kelpweavers,id=165546,bonus_id=4800/1537
-waist=goldenscale_girdle,id=165538,bonus_id=4800/1537
+hands=thornshaper_mitts,id=159399,bonus_id=1572/4780
+waist=waistguard_of_elemental_resistance,id=165545,bonus_id=4800/1537
 legs=deathhunters_legguards,id=165536,bonus_id=4800/1537
 feet=lightgrace_sabatons,id=165533,bonus_id=4800/1537
 finger1=seal_of_the_zandalari_empire,id=165567,bonus_id=4800/1537,enchant=pact_of_critical_strike
-finger2=band_of_multisided_strikes,id=165565,bonus_id=4800/1537,enchant=pact_of_critical_strike
+finger2=murky_cerulean_signet,id=158318,bonus_id=1572/4780,enchant=pact_of_critical_strike
 trinket1=galecallers_boon,id=159614,bonus_id=1572/4780
 trinket2=variable_intensity_gigavolt_oscillating_reactor,id=165572,bonus_id=4800/1537
-main_hand=twinpipe_buster_cannon,id=165600,bonus_id=4800/1537,enchant=crows_nest_scope
+main_hand=pterrorwing_longbow,id=165599,bonus_id=4800/1537,enchant=crows_nest_scope
 
 save=T23_Hunter_Beast_Mastery.simc
 
