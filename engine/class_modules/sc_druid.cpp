@@ -8527,6 +8527,7 @@ void druid_t::init_gains()
   gain.sunfire               = get_gain( "sunfire" );
   gain.celestial_alignment   = get_gain( "celestial_alignment" );
   gain.incarnation           = get_gain( "incarnation" );
+  gain.arcanic_pulsar        = get_gain( "arcanic_pulsar" );
 
 
   // Feral 
