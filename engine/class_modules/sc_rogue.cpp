@@ -1277,7 +1277,8 @@ struct blade_flurry_attack_t : public rogue_attack_t
     rogue_attack_t::impact( state );
 
     // As of 2018-12-08: Keep Your Wits stacks per BF hit per target.
-    if ( p() -> azerite.keep_your_wits_about_you.ok() )
+    // Changes in 8.2 to once per instance.
+    if ( p() -> azerite.keep_your_wits_about_you.ok() && !maybe_ptr( p() -> dbc.ptr ) )
       p() -> buffs.keep_your_wits_about_you -> trigger();
   }
 };
@@ -5024,6 +5025,10 @@ void rogue_t::trigger_blade_flurry( const action_state_t* state )
   active_blade_flurry -> base_dd_max = damage;
   active_blade_flurry -> set_target( state->target );
   active_blade_flurry -> execute();
+
+  // Keep triggers once per instance with 8.2
+  if ( azerite.keep_your_wits_about_you.ok() && maybe_ptr( dbc.ptr ) )
+      buffs.keep_your_wits_about_you -> trigger();
 }
 
 void rogue_t::trigger_combo_point_gain( int     cp,
