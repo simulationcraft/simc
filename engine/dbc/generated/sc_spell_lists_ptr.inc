@@ -4,7 +4,7 @@
 #ifndef ptr_MAX_CLASS
 #define ptr_MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 8.2.0.30669
+// Class based active abilities, wow build 8.2.0.30774
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -1264,7 +1264,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 };
 #define PTR_TREE_SPECIALIZATION_SIZE (35)
 
-// Talent tree specialization abilities, wow build 8.2.0.30669
+// Talent tree specialization abilities, wow build 8.2.0.30774
 static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -2386,7 +2386,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
 };
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 8.2.0.30669
+// Class mastery abilities, wow build 8.2.0.30774
 static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2625,7 +2625,7 @@ static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS]
 #define ptr_MAX_RACE (33)
 #endif
 
-// Racial abilities, wow build 8.2.0.30669
+// Racial abilities, wow build 8.2.0.30774
 static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3599,7 +3599,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
 };
 #define PTR_SET_BONUS_DATA_SIZE (724)
 
-// Set bonus data, wow build 8.2.0.30669
+// Set bonus data, wow build 8.2.0.30774
 static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -4357,7 +4357,7 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
 };
 #define PTR_RPPMMOD_SIZE (989)
 
-// 989 RPPM Modifiers, wow build level 8.2.0.30669
+// 989 RPPM Modifiers, wow build level 8.2.0.30774
 static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   {  17495,    4,  1,  1.0000 },
   {  27656,    4,  1,  1.0000 },
@@ -5309,7 +5309,7 @@ static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   { 295834,    4,  1,  1.0000 },
   { 296223,    4,  1,  1.0000 },
   { 296963,    4,  1,  1.0000 },
-  { 298407,    4,  1,  1.0000 },
+  { 298407,    0,  4,  0.0000 },
   { 299343,    4,  1,  1.0000 },
   { 299346,    4,  1,  1.0000 },
   { 299354,    4,  1,  1.0000 },
@@ -5323,10 +5323,9 @@ static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   { 300813,    4,  1,  1.0000 },
   { 300830,    4,  1,  1.0000 },
   { 300913,    4,  1,  1.0000 },
-  { 301576,    4,  1,  1.0000 },
   { 301753,    4,  1,  1.0000 },
   { 302258,    4,  1,  1.0000 },
-  { 302773,    4,  1,  1.0000 },
+  { 302773,    0,  4,  0.0000 },
   { 302776,    4,  1,  1.0000 },
   { 302918,    4,  1,  1.0000 },
   { 302986,    4,  1,  1.0000 },
@@ -5342,6 +5341,7 @@ static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   { 303893,    4,  1,  1.0000 },
   { 304063,    4,  1,  1.0000 },
   { 304110,    4,  1,  1.0000 },
+  { 304117,    4,  1,  1.0000 },
   { 304471,    4,  1,  1.0000 },
   { 304640,    4,  1,  1.0000 },
   { 304697,    4,  1,  1.0000 },
