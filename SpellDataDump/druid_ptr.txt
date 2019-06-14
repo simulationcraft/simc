@@ -1241,7 +1241,6 @@ Class            : Guardian Druid
 School           : Physical
 Spell Type       : None
 Resource         : 10 Rage (1) (id=10734)
-Resource         : 10 - 30 Rage (1) (id=192253) w/ Frenzied Regeneration (id=301768)
 Spell Level      : 40
 GCD              : 1.5 seconds
 Duration         : 3 seconds

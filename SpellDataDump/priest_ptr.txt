@@ -2930,7 +2930,7 @@ Effects          :
 #7 (id=743448)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: -23 | Scaled Value: -23 | PvP Coefficient: 1.00000 | Target: Self (1)
 #8 (id=744373)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
-                   Base Value: -60 | Scaled Value: -60 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 580 (Label) | Target: Self (1)
+                   Base Value: -67 | Scaled Value: -67 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 580 (Label) | Target: Self (1)
                    Affected Spells (Label): Death Throes (278659)
 Description      : Discipline Priest core passive
 
