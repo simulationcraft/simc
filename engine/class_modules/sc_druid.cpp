@@ -6753,12 +6753,18 @@ struct starsurge_t : public druid_spell_t
         buff_t* proc_buff = p()->talent.incarnation_moonkin->ok() ? p()->buff.incarnation_moonkin : p()->buff.celestial_alignment;
 
         if (proc_buff->check())
+        {
           proc_buff->extend_duration(p(), pulsar_dur);
+          if (maybe_ptr(p()->dbc.ptr))
+          {
+            p()->resource_gain(RESOURCE_ASTRAL_POWER, 12, p()->gain.arcanic_pulsar); // hardcoded 12AP because 6s / 20s * 40AP = 12AP
+          }
+        }
         else
         {
           proc_buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, pulsar_dur );
           //this number is nowhere to be found in the spell data
-          p()->resource_gain( RESOURCE_ASTRAL_POWER, 12, p()->gain.arcanic_pulsar );
+          p()->resource_gain(RESOURCE_ASTRAL_POWER, 12, p()->gain.arcanic_pulsar); // hardcoded 12AP because 6s / 20s * 40AP = 12AP
         }
 
         p()->buff.arcanic_pulsar->expire();
