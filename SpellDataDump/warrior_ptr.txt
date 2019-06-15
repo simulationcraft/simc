@@ -322,6 +322,7 @@ Spell Level      : 50
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 90 seconds
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Affecting spells : Warrior (137047 effect#2), Reckless Abandon (202751 effect#1), 
 Family Flags     : 4, 8
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -764,7 +765,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
 Cooldown         : 6 seconds
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Overpower (7384 effect#2), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Item - Warrior T17 Arms 4P Bonus (165336 effect#1), Vicious Strike (165638 effect#1), Archavon's Heavy Hand (205144 effect#1), Colossus Smash (208086 effect#1), Precise Strikes (209493 effect#1), Frothing Berserker (215572 effect#1), Sweeping Strikes (260708 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Overpower (7384 effect#2), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Item - Warrior T17 Arms 4P Bonus (165336 effect#1), Vicious Strike (165638 effect#1), Sharpen Blade (198817 effect#1), Archavon's Heavy Hand (205144 effect#1), Colossus Smash (208086 effect#1), Precise Strikes (209493 effect#1), Frothing Berserker (215572 effect#1), Sweeping Strikes (260708 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1)
 Family Flags     : 8, 9, 18, 25, 52
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
@@ -2129,6 +2130,8 @@ Spell Level      : 40
 GCD              : 1.5 seconds
 Duration         : 20 seconds
 Cooldown         : 90 seconds
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+                 : 771: Strive for Perfection (296320 effect#9)
 Affecting spells : Recklessness (1719 effect#9), Warrior (137047 effect#2), Unstoppable Force (275336 effect#1), 
 Family Flags     : 8, 32
 Attributes       : ....x... ........ ..x..... ...x....   ........ ..x....x x....... ........ 
@@ -3005,6 +3008,7 @@ Velocity         : 30 yards/sec
 Duration         : 7 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 60 seconds
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Affecting spells : Warrior (137047 effect#2), Protection Warrior (137048 effect#8)
 Family Flags     : 8, 107
 Attributes       : ....x... ........ ........ .......x   ........ ........ ........ ....x... 
@@ -5140,6 +5144,7 @@ Velocity         : 10 yards/sec
 Duration         : 6 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
 Cooldown         : 90 seconds
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Affecting spells : Recklessness (1719 effect#8), Warrior (137047 effect#2), Arms Warrior (137049 effect#4)
 Family Flags     : 8, 46
 Attributes       : ....x... ........ x.x..... .....x..   ....x... .xx....x ........ ........ 

@@ -222,7 +222,7 @@ Duration         : 8 seconds
 Cooldown         : 1.5 seconds
 Charges          : 1 (25 seconds cooldown)
 Category         : 1390
-Affecting spells : Unbound Freedom (199325 effect#1), Uther's Guard (207558 effect#2)
+Affecting spells : Unbound Freedom (199325 effect#1), Uther's Guard (207558 effect#2), Unbound Freedom (305394 effect#1)
 Family Flags     : 4
 Attributes       : ........ ........ x.x..... ........   ........ .......x .x...... ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -313,7 +313,7 @@ Spell Level      : 5
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Avenging Wrath (31884 effect#1), Increased Flash of Light Crit Chance (38522 effect#1), Beacon of Light (53563 effect#3), Infusion of Light (54149 effect#2), Sanctuary (105805 effect#5), Selfless Healer (114250 effect#1), Retribution Paladin (137027 effect#8), Protection Paladin (137028 effect#10), Holy Paladin (137029 effect#1), Beacon of Faith (156910 effect#3), Magnifying Light (185100 effect#1), Tyr's Deliverance (200654 effect#2), Rule of Law (214202 effect#1), Purity of Light (254332 effect#1)
+Affecting spells : Avenging Wrath (31884 effect#1), Increased Flash of Light Crit Chance (38522 effect#1), Beacon of Light (53563 effect#3), Infusion of Light (54149 effect#2), Sanctuary (105805 effect#5), Selfless Healer (114250 effect#1), Retribution Paladin (137027 effect#8), Protection Paladin (137028 effect#10), Holy Paladin (137029 effect#1), Beacon of Faith (156910 effect#3), Magnifying Light (185100 effect#1), Tyr's Deliverance (200654 effect#2), Divine Favor (210294 effect#2), Rule of Law (214202 effect#1), Purity of Light (254332 effect#1)
 Family Flags     : 30, 46
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -712,6 +712,7 @@ Spell Level      : 80
 GCD              : 1.5 seconds
 Duration         : 20 seconds
 Cooldown         : 120 seconds
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Affecting spells : Sanctified Wrath (53376 effect#1), Holy Paladin (137029 effect#13), Light's Decree (286231 effect#2)
 Family Flags     : 40, 45
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -1445,7 +1446,7 @@ Spell Level      : 25
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Avenging Wrath (31884 effect#1), Beacon of Light (53563 effect#3), Infusion of Light (54149 effect#1), Holy Paladin (137029 effect#1), Beacon of Faith (156910 effect#3), Magnifying Light (185100 effect#1), Tyr's Deliverance (200654 effect#2), Rule of Law (214202 effect#1), Purity of Light (254332 effect#1)
+Affecting spells : Avenging Wrath (31884 effect#1), Beacon of Light (53563 effect#3), Infusion of Light (54149 effect#1), Holy Paladin (137029 effect#1), Beacon of Faith (156910 effect#3), Magnifying Light (185100 effect#1), Tyr's Deliverance (200654 effect#2), Divine Favor (210294 effect#2), Rule of Law (214202 effect#1), Purity of Light (254332 effect#1)
 Family Flags     : 46, 74
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3333,6 +3334,7 @@ Spell Level      : 28
 GCD              : 1.5 seconds
 Charges          : 1 (45 seconds cooldown)
 Category         : 1662
+Affecting spells : Steed of Glory (199542 effect#1)
 Family Flags     : 36, 60
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4659,6 +4661,7 @@ Spell Level      : 72
 GCD              : 1.5 seconds
 Duration         : 20 seconds
 Cooldown         : 120 seconds
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x... ........ ........ 
                  : Yellow Melee, Generic Hostile Spell
@@ -4763,6 +4766,7 @@ Spell Type       : None
 Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 3 seconds
+Affecting spells : Steed of Glory (199542 effect#1)
 Family Flags     : 36, 60
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5126,6 +5130,7 @@ Duration         : 25 seconds
 Cooldown         : 20 seconds
 Charges          : 1 (120 seconds cooldown)
 Category         : 1550
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Stacks           : 10 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x.x. x.x..... ........ 

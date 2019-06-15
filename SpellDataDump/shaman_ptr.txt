@@ -1081,6 +1081,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Cooldown         : 120 seconds
 Category         : 1653
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Category Cooldown: 120 seconds
 Affecting spells : Shaman (137038 effect#3), Elemental Spirits (262624 effect#1)
 Family Flags     : 48
@@ -1486,7 +1487,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=53887)    : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Damage (15)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
-                   Affected Spells: Lightning Bolt (403), Chain Lightning (421), Earth Shock (8042), Fire Nova (8349), Flametongue Attack (10444), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Earthquake (61882), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Item - Shaman T18 Enhancement 4P Bonus (185872), Lightning Bolt (187837), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Flame Shock (188838), Lightning Shield (192106), Lightning Shield (192109), Liquid Magma (192231), Flametongue (194084), Frostbrand (196834), Frost Shock (196840), Lightning Rod (197568), Icefury (210714), Lightning Bolt Overload (214816), Icefury Overload (219271), Lightning Shield Overcharge (273323), Lightning Shield (273324), Lava Burst (285452), Lava Burst (285466)
+                   Affected Spells: Lightning Bolt (403), Chain Lightning (421), Earth Shock (8042), Fire Nova (8349), Flametongue Attack (10444), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Earthquake (61882), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Item - Shaman T18 Enhancement 4P Bonus (185872), Lightning Bolt (187837), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Flame Shock (188838), Lightning Shield (192106), Lightning Shield (192109), Liquid Magma (192231), Flametongue (194084), Frostbrand (196834), Frost Shock (196840), Lightning Rod (197568), Icefury (210714), Lightning Bolt Overload (214816), Icefury Overload (219271), Lightning Shield Overcharge (273323), Lightning Shield (273324), Lava Burst (285452), Lava Burst (285466), Lightning Lasso (305483), Lightning Lasso (305485)
                    Family Flags: 0, 1, 2, 3, 10, 20, 21, 24, 28, 30, 31, 34, 44, 45, 50, 79, 83, 98, 119, 121, 123
 Description      : Your damaging critical strikes deal ${$m1+200}% damage instead of the usual 200%.
 
@@ -2278,6 +2279,7 @@ Spell Level      : 80
 GCD              : 1 seconds
 Duration         : 10 seconds
 Cooldown         : 180 seconds
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Affecting spells : Praetorian's Tidecallers (210604 effect#1)
 Family Flags     : 29, 113
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ....x... 
@@ -4609,6 +4611,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (150 seconds cooldown)
 Category         : 1572
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Family Flags     : 29, 124
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5151,6 +5154,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (150 seconds cooldown)
 Category         : 1572
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Family Flags     : 55
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ .x...... ......x. 

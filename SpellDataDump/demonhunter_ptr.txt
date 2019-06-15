@@ -188,7 +188,7 @@ Spell Type       : None
 Duration         : 30 seconds
 Proc Flags       : ..x.x... x...x... x....... ........ 
                  : White Melee, Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
-Affecting spells : Soul Rending (204909 effect#2)
+Affecting spells : Soul Rending (204909 effect#2), Demonic Origins (235893 effect#2)
 Triggered by     : Metamorphosis (191427)
 Family Flags     : 15
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
@@ -632,6 +632,7 @@ Spell Level      : 1
 Duration         : 15 seconds
 Cooldown         : 180 seconds
 Category         : 1251
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Category Cooldown: 20 seconds
 Affecting spells : Soul Rending (217996 effect#2)
 Family Flags     : 28
@@ -818,8 +819,9 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 240 seconds
 Category         : 1577
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Category Cooldown: 240 seconds
-Affecting spells : Soul Rending (204909 effect#2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#4)
+Affecting spells : Soul Rending (204909 effect#2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#4), Demonic Origins (235893 effect#2)
 Family Flags     : 15, 32
 Attributes       : ....x... x....... ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1725,6 +1727,7 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
+Labels           : 719: Memory of Lucid Dreams (298357 effect#17), Memory of Lucid Dreams (299372 effect#17), Memory of Lucid Dreams (299374 effect#17)
 Affecting spells : Item - Demon Hunter T19 Havoc 2P Bonus (211054 effect#2)
 Triggered by     : Prepared (203551)
 Family Flags     : 40

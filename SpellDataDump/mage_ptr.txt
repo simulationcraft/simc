@@ -39,7 +39,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
-Affecting spells : Icy Veins (12472 effect#2), Shatter (12982 effect#1), Frosty Zap (24392 effect#1), Improved Counterspell (24429 effect#1), Ice Floes (108839 effect#1), Ice Shard (166869 effect#1), Lonely Winter (205024 effect#1), Norgannon's Foresight (236380 effect#1), Tunnel of Ice (277904 effect#1)
+Affecting spells : Icy Veins (12472 effect#2), Shatter (12982 effect#1), Frosty Zap (24392 effect#1), Improved Counterspell (24429 effect#1), Ice Floes (108839 effect#1), Ice Shard (166869 effect#1), Ice Form (198144 effect#1), Lonely Winter (205024 effect#1), Norgannon's Foresight (236380 effect#1), Tunnel of Ice (277904 effect#1)
 Family Flags     : 5, 57
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
@@ -531,6 +531,7 @@ Spell Level      : 40
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 90 seconds
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Affecting spells : Icy Veins (12472 effect#2), Overpowered (155147 effect#1), Wild Arcanist (184903 effect#1), Norgannon's Foresight (236380 effect#1)
 Family Flags     : 51, 67
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -588,6 +589,7 @@ Spell Level      : 40
 GCD              : 1.5 seconds
 Duration         : 20 seconds
 Cooldown         : 180 seconds
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Affecting spells : Thermal Void (155149 effect#2), Norgannon's Foresight (236380 effect#1)
 Family Flags     : 46, 67, 105
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -3221,7 +3223,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=371930)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 10000 | Scaled Value: 10000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Icy Veins (12472)
+                   Affected Spells: Icy Veins (12472), Ice Form (198144)
                    Family Flags: 46
 Description      : Icy Veins' duration is increased by ${$s2/1000} sec.
 
@@ -3698,6 +3700,7 @@ Resource         : 10% Base Mana (0) (id=10319)
 Spell Level      : 40
 Duration         : 10 seconds
 Cooldown         : 120 seconds
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Affecting spells : Norgannon's Foresight (236380 effect#1), Item - Mage T21 Fire 2P Bonus (251857 effect#1)
 Family Flags     : 58, 67
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -5220,7 +5223,7 @@ School           : Frost
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Arcane Power (12042 effect#1), Icy Veins (12472 effect#2), Shatter (12982 effect#1), Frosty Zap (24392 effect#1), Improved Counterspell (24429 effect#1), Ice Floes (108839 effect#1), Rune of Power (116014 effect#1), Incanter's Flow (116267 effect#1), Fire Mage (137019 effect#1), Frost Mage (137020 effect#1), Arcane Mage (137021 effect#1), Ice Shard (166869 effect#1), Combustion (190319 effect#1), Lonely Winter (205024 effect#1), Bone Chilling (205766 effect#1), Norgannon's Foresight (236380 effect#1), Crackling Energy (246224 effect#1), Tunnel of Ice (277904 effect#1)
+Affecting spells : Arcane Power (12042 effect#1), Icy Veins (12472 effect#2), Shatter (12982 effect#1), Frosty Zap (24392 effect#1), Improved Counterspell (24429 effect#1), Ice Floes (108839 effect#1), Rune of Power (116014 effect#1), Incanter's Flow (116267 effect#1), Fire Mage (137019 effect#1), Frost Mage (137020 effect#1), Arcane Mage (137021 effect#1), Ice Shard (166869 effect#1), Combustion (190319 effect#1), Ice Form (198144 effect#1), Lonely Winter (205024 effect#1), Bone Chilling (205766 effect#1), Norgannon's Foresight (236380 effect#1), Crackling Energy (246224 effect#1), Tunnel of Ice (277904 effect#1)
 Triggered by     : Frostbolt (116)
 Family Flags     : 3, 5
 Attributes       : ........ ........ x......x x..x....   .....x.. ........ ........ ........ 
