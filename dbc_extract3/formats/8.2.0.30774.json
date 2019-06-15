@@ -44,26 +44,30 @@
     { "data_type": "I", "field": "id_power_set" }
   ],
   "AzeriteEssence": [
-    { "data_type": "S", "field": "name"    },
-    { "data_type": "S", "field": "desc"    },
-    { "data_type": "i", "field": "id"      },
-    { "data_type": "i", "field": "category"}
+    { "data_type": "S", "field": "name",     "formats": { "cpp": "%-30s" }},
+    { "data_type": "S", "field": "desc"                                   },
+    { "data_type": "i", "field": "id",       "formats": { "cpp": "%3u" }  },
+    { "data_type": "i", "field": "category", "formats": { "cpp": "%3u" }  }
   ],
   "AzeriteEssencePower": [
-    { "data_type": "S", "field": "desc_alliance"          },
-    { "data_type": "S", "field": "desc_horde"             },
-    { "data_type": "i", "field": "id_power"               },
-    { "data_type": "B", "field": "rank"                   },
-    { "data_type": "i", "field": "id_spell_major_alliance"},
-    { "data_type": "i", "field": "id_spell_minor_alliance"},
-    { "data_type": "i", "field": "id_spell_major_horde"   },
-    { "data_type": "i", "field": "id_spell_minor_horde"   }
+    { "data_type": "S", "field": "desc_alliance"                                      },
+    { "data_type": "S", "field": "desc_horde"                                         },
+    { "data_type": "i", "field": "id_essence",             "formats": { "cpp": "%3u" }},
+    { "data_type": "B", "field": "rank",                   "formats": { "cpp": "%3u" }},
+    { "data_type": "i", "field": "id_spell_major_base",    "formats": { "cpp": "%6u" }},
+    { "data_type": "i", "field": "id_spell_minor_base",    "formats": { "cpp": "%6u" }},
+    { "data_type": "i", "field": "id_spell_major_upgrade", "formats": { "cpp": "%6u" }},
+    { "data_type": "i", "field": "id_spell_minor_upgrade", "formats": { "cpp": "%6u" }}
   ],
   "AzeriteItem": [
     { "data_type": "i", "field": "id_item", "formats": { "cpp": "%6u" } }
   ],
   "AzeriteItemMilestonePower": [
-    { "data_type": "b", "field": "req_level" },
+    { "data_type": "i", "field": "id" },
+    { "data_type": "i", "field": "req_level" },
+    { "data_type": "i", "field": "id_power" },
+    { "data_type": "i", "field": "power_type" },
+    { "data_type": "i", "field": "essence_type" }
     { "data_type": "H", "field": "id_power" }
   ],
   "AzeritePower": [

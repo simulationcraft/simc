@@ -874,17 +874,19 @@ public:
   unsigned    _stance_mask;        // 38 Stance mask (used only for druid form restrictions?)
   // SpellMechanic.db2
   unsigned    _mechanic;           // 39
+  // Azerite stuff
   unsigned    _power_id;           // 40 Azerite power id
+  unsigned    _essence_id;         // 41 Azerite essence id
   // Textual data
-  const char* _desc;               // 41 Spell.dbc description stringblock
-  const char* _tooltip;            // 42 Spell.dbc tooltip stringblock
+  const char* _desc;               // 42 Spell.dbc description stringblock
+  const char* _tooltip;            // 43 Spell.dbc tooltip stringblock
   // SpellDescriptionVariables.dbc
-  const char* _desc_vars;          // 43 Spell description variable stringblock, if present
+  const char* _desc_vars;          // 44 Spell description variable stringblock, if present
   // SpellIcon.dbc
-  const char* _rank_str;           // 44
+  const char* _rank_str;           // 45
 
-  unsigned    _req_max_level;      // 45
-  unsigned    _dmg_class;          // 46 SpellCategories.db2 classification for the spell
+  unsigned    _req_max_level;      // 46
+  unsigned    _dmg_class;          // 47 SpellCategories.db2 classification for the spell
 
   // Pointers for runtime linking
   std::vector<const spelleffect_data_t*>* _effects;
@@ -1010,6 +1012,9 @@ public:
 
   unsigned power_id() const
   { return _power_id; }
+
+  unsigned essence_id() const
+  { return _essence_id; }
 
   // Helper functions
   size_t effect_count() const

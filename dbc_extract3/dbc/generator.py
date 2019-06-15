@@ -1064,8 +1064,6 @@ class ItemDataGenerator(DataGenerator):
 class SpellDataGenerator(DataGenerator):
     _spell_ref_rx = r'(?:\??\(?[Saps]|@spell(?:name|desc|icon|tooltip)|\$|&)([0-9]{2,})(?:\[|(?<=[0-9a-zA-Z])|\&|\))'
 
-
-
     # Pattern based whitelist, these will always be added
     _spell_name_whitelist = [
         #re.compile(r'^Item\s+-\s+(.+)\s+T([0-9]+)\s+([A-z\s]*)\s*([0-9]+)P')
@@ -1252,6 +1250,8 @@ class SpellDataGenerator(DataGenerator):
          295428,
          # Darkmoon Faire food buff
          185786,
+         # The Unbound Force Azerite Essence damage spell
+         298453,
         ),
 
         # Warrior:
@@ -1953,6 +1953,11 @@ class SpellDataGenerator(DataGenerator):
         if self._options.build >= 25600:
             self._dbc.append('SpellXDescriptionVariables')
 
+        if self._options.build >= dbc.WowVersion(8, 2, 0, 30080):
+            self._dbc.append('AzeriteItemMilestonePower')
+            self._dbc.append('AzeriteEssencePower')
+            self._dbc.append('AzeriteEssence')
+
     def initialize(self):
         if not super().initialize():
             return False
@@ -1978,6 +1983,13 @@ class SpellDataGenerator(DataGenerator):
 
         if self._options.build < 25600:
             self._data_store.link('SpellEffectScaling', 'id_effect', 'SpellEffect', 'scaling')
+
+        if self._options.build >= dbc.WowVersion(8, 2, 0, 30080):
+            self._data_store.link('AzeriteEssencePower', 'id_power', 'AzeriteEssence', 'powers')
+            self._data_store.link('AzeriteEssencePower', 'id_spell_major_base', 'SpellName', 'azerite_essence')
+            self._data_store.link('AzeriteEssencePower', 'id_spell_minor_base', 'SpellName', 'azerite_essence')
+            self._data_store.link('AzeriteEssencePower', 'id_spell_major_upgrade', 'SpellName', 'azerite_essence')
+            self._data_store.link('AzeriteEssencePower', 'id_spell_minor_upgrade', 'SpellName', 'azerite_essence')
 
         self._data_store.link('ItemSetSpell', 'id_item_set', 'ItemSet', 'bonus')
 
@@ -2453,6 +2465,26 @@ class SpellDataGenerator(DataGenerator):
                 mask_class = self._class_masks[data.class_id] or 0
                 ids[spell_id]['mask_class'] |= mask_class
 
+        # Azerite esssence spells
+        if self._options.build >= dbc.WowVersion(8, 2, 0, 30080):
+            for _, data in self._azeriteitemmilestonepower_db.items():
+                power = self._azeritepower_db[data.id_power]
+                if power.id != data.id_power:
+                    continue
+
+                spell_id = power.id_spell
+                spell = self._spellname_db[spell_id]
+                if spell.id != spell_id:
+                    continue
+
+                self.process_spell(spell_id, ids, 0, 0, False)
+
+            for _, data in self._azeriteessencepower_db.items():
+                self.process_spell(data.id_spell_major_base, ids, 0, 0, False)
+                self.process_spell(data.id_spell_major_upgrade, ids, 0, 0, False)
+                self.process_spell(data.id_spell_minor_base, ids, 0, 0, False)
+                self.process_spell(data.id_spell_minor_upgrade, ids, 0, 0, False)
+
         # Last, get the explicitly defined spells in _spell_id_list on a class basis and the
         # generic spells from SpellDataGenerator._spell_id_list[0]
         for generic_spell_id in SpellDataGenerator._spell_id_list[0]:
@@ -2717,13 +2749,30 @@ class SpellDataGenerator(DataGenerator):
             power = spell.get_link('azerite_power')
             fields += power.field('id')
 
-            # 41, 42
+            # 8.2.0 Azerite essence stuff
+            if self._options.build >= dbc.WowVersion(8, 2, 0, 30080):
+                essences = [x.field('id_essence')[0] for x in spell.get_links('azerite_essence')]
+                if len(essences) == 0:
+                    # 41
+                    fields += self._azeriteessence_db[0].field('id')
+                else:
+                    essences = list(set(essences))
+                    if len(essences) > 1:
+                        logging.warn('Spell %s (id=%d) associated with more than one Azerite Essence (%s)',
+                            spell.name, spell.id, ', '.join(essences))
+
+                    # 41
+                    fields.append(essences[0])
+            else:
+                fields.append('0')
+
+            # 42, 43
             spell_text = spell.get_link('text')
             fields += spell_text.field('desc', 'tt')
-            f, hfd = spell_text.get_hotfix_info(('desc', 41), ('tt', 42))
+            f, hfd = spell_text.get_hotfix_info(('desc', 42), ('tt', 43))
             hotfix_flags |= f
             hotfix_data += hfd
-            # 43
+            # 44
             if self._options.build < 25600:
                 desc_var = self._spelldescriptionvariables_db[spell.id_desc_var]
             else:
@@ -2732,34 +2781,34 @@ class SpellDataGenerator(DataGenerator):
 
             if desc_var.id:
                 fields += desc_var.field('desc')
-                f, hfd = desc_var.get_hotfix_info(('desc', 43))
+                f, hfd = desc_var.get_hotfix_info(('desc', 44))
                 hotfix_flags |= f
                 hotfix_data += hfd
             else:
                 if self._options.build < 25600:
-                    f, hfd = spell.get_hotfix_info(('id_desc_var', 43))
+                    f, hfd = spell.get_hotfix_info(('id_desc_var', 44))
                 else:
                     link = spell.get_link('desc_var_link')
-                    f, hfd = link.get_hotfix_info(('id_desc_var', 43))
+                    f, hfd = link.get_hotfix_info(('id_desc_var', 44))
                 hotfix_flags |= f
                 hotfix_data += hfd
                 fields += [ u'0' ]
-            # 44
+            # 45
             fields += spell_text.field('rank')
-            f, hfd = spell_text.get_hotfix_info(('rank', 44))
+            f, hfd = spell_text.get_hotfix_info(('rank', 45))
             hotfix_flags |= f
             hotfix_data += hfd
 
-            # 45
-            fields += spell.get_link('level').field('req_max_level')
-            f, hfd = spell.get_link('level').get_hotfix_info(('req_max_level', 45))
-
             # 46
+            fields += spell.get_link('level').field('req_max_level')
+            f, hfd = spell.get_link('level').get_hotfix_info(('req_max_level', 46))
+
+            # 47
             fields += category.field('dmg_class')
-            f, hfd = category.get_hotfix_info(('dmg_class', 46))
+            f, hfd = category.get_hotfix_info(('dmg_class', 47))
 
             # Pad struct with empty pointers for direct access to spell effect data
-            # 46, 47, 48, 49, 50
+            # 47, 48, 49, 50, 51
             fields += [ u'0', u'0', u'0', u'0', u'0', ]
 
             # Finally, update hotfix flags, they are located in the array of fields at position 2
@@ -4328,7 +4377,8 @@ class AzeriteDataGenerator(DataGenerator):
     def __init__(self, options, data_store = None):
         super().__init__(options, data_store)
 
-        self._dbc = [ 'AzeriteEmpoweredItem', 'AzeritePower', 'AzeritePowerSetMember', 'SpellName', 'ItemSparse' ]
+        self._dbc = [ 'AzeriteEmpoweredItem', 'AzeritePower', 'AzeritePowerSetMember', 'SpellName',
+            'ItemSparse', 'AzeriteItemMilestonePower' ]
 
     def filter(self):
         ids = set()
@@ -4359,6 +4409,21 @@ class AzeriteDataGenerator(DataGenerator):
 
             ids.add(power.id)
 
+        if self._options.build >= dbc.WowVersion(8, 2, 0, 30080):
+            for id, data in self._azeriteitemmilestonepower_db.items():
+                power = self._azeritepower_db[data.id_power]
+                if power.id != data.id_power:
+                    continue
+
+                if power.id_spell == 0:
+                    continue
+
+                spell = self._spellname_db[power.id_spell]
+                if spell.id != power.id_spell:
+                    continue
+
+                ids.add(power.id)
+
         return list(ids)
 
     def generate(self, ids = None):
@@ -4376,17 +4441,69 @@ class AzeriteDataGenerator(DataGenerator):
             entry = self._azeritepower_db[id]
             fields = entry.field('id', 'id_spell', 'id_bonus')
             fields += self._spellname_db[entry.id_spell].field('name')
-            for id, data in self._azeritepowersetmember_db.items():
-                # Skip power set 1, it seems some sort of a debug set and contains no proper data
-                if data.id_parent == 1:
-                    continue
+            # Azerite essence stuff needs special handling, fake a tier 0 for
+            # them since they are not "real" azerite powers
+            if id >= 570 and id <= 574:
+                fields += self._azeritepowersetmember_db[0].field('tier')
+            else:
+                for id, data in self._azeritepowersetmember_db.items():
+                    if data.id_parent == 1:
+                        continue
 
-                if entry.id != data.id_power:
-                    continue
-                fields += data.field('tier')
-                break
+                    if entry.id != data.id_power:
+                        continue
+                    fields += data.field('tier')
+                    break
 
             self._out.write('  { %s },\n' % ', '.join(fields))
+
+        self._out.write('} };\n')
+
+class AzeriteEssenceDataGenerator(DataGenerator):
+    def __init__(self, options, data_store = None):
+        super().__init__(options, data_store)
+
+        self._dbc = ['AzeriteEssence', 'AzeriteEssencePower']
+
+    def generate(self, ids = None):
+        ids = sorted(self._azeriteessence_db.keys())
+        data_str = "%sazerite_essence%s" % (
+            self._options.prefix and ('%s_' % self._options.prefix) or '',
+            self._options.suffix and ('_%s' % self._options.suffix) or '',
+        )
+
+        self._out.write('// Azerite Essences, wow build %s\n' % ( self._options.build ))
+
+        self._out.write('static constexpr std::array<azerite_essence_entry_t, %d> __%s_data { {\n' % (
+            len(ids), data_str))
+
+        for id in ids:
+            entry = self._azeriteessence_db[id]
+            fields = entry.field('id', 'category', 'name')
+
+            self._out.write('  { %s },\n' % ', '.join(fields))
+
+        self._out.write('} };\n\n')
+
+        ids = sorted(self._azeriteessencepower_db.values(), key = lambda x: (x.id_essence, x.rank))
+
+        data_str = "%sazerite_essence_power%s" % (
+            self._options.prefix and ('%s_' % self._options.prefix) or '',
+            self._options.suffix and ('_%s' % self._options.suffix) or '',
+        )
+
+        self._out.write('// Azerite Essence Powers, wow build %s\n' % ( self._options.build ))
+
+        self._out.write('static constexpr std::array<azerite_essence_power_entry_t, %d> __%s_data { {\n' % (
+            len(ids), data_str))
+
+        for entry in ids:
+            fields = entry.field('id', 'id_essence', 'rank')
+
+            fields.append('{ %s }' % ', '.join(entry.field('id_spell_major_base', 'id_spell_minor_base')))
+            fields.append('{ %s }' % ', '.join(entry.field('id_spell_major_upgrade', 'id_spell_minor_upgrade')))
+
+            self._out.write('  { %s }, // %s\n' % (', '.join(fields), self._azeriteessence_db[entry.id_essence].name))
 
         self._out.write('} };\n')
 

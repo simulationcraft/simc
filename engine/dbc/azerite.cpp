@@ -54,3 +54,171 @@ arv::array_view<azerite_power_entry_t> azerite_power_entry_t::data( bool ptr )
   return data;
 }
 
+const azerite_essence_entry_t& azerite_essence_entry_t::nil()
+{
+  static azerite_essence_entry_t __default {};
+
+  return __default;
+}
+
+arv::array_view<azerite_essence_entry_t> azerite_essence_entry_t::data( bool ptr )
+{
+  ( void ) ptr;
+  // TODO: Not needeed when 8.2.0 lands
+  static azerite_essence_entry_t __default[1] { {} };
+
+#if SC_USE_PTR == 1
+  const auto data = ptr ? arv::array_view<azerite_essence_entry_t>( __ptr_azerite_essence_data )
+                        : arv::array_view<azerite_essence_entry_t>( __default );
+#else
+  const auto data = arv::array_view<azerite_essence_entry_t>( __default );
+#endif
+
+  return data;
+}
+
+const azerite_essence_entry_t& azerite_essence_entry_t::find( unsigned id, bool ptr )
+{
+  ( void ) ptr;
+  // TODO: Not needeed when 8.2.0 lands
+  static azerite_essence_entry_t __default[1] { {} };
+
+#if SC_USE_PTR == 1
+  const auto data = ptr ? arv::array_view<azerite_essence_entry_t>( __ptr_azerite_essence_data )
+                        : arv::array_view<azerite_essence_entry_t>( __default );
+#else
+  const auto data = arv::array_view<azerite_essence_entry_t>( __default );
+#endif
+
+
+  auto it = std::lower_bound( data.cbegin(), data.cend(), id,
+                              []( const azerite_essence_entry_t& a, const unsigned& id ) {
+                                return a.id < id;
+                              } );
+
+  if ( it != data.cend() && it -> id == id )
+  {
+    return *it;
+  }
+  else
+  {
+    return nil();
+  }
+}
+
+const azerite_essence_entry_t&
+azerite_essence_entry_t::find( const std::string& name, bool tokenized, bool ptr )
+{
+  ( void ) ptr;
+  // TODO: Not needeed when 8.2.0 lands
+  static azerite_essence_entry_t __default[1] { {} };
+
+#if SC_USE_PTR == 1
+  const auto data = ptr ? arv::array_view<azerite_essence_entry_t>( __ptr_azerite_essence_data )
+                        : arv::array_view<azerite_essence_entry_t>( __default );
+#else
+  const auto data = arv::array_view<azerite_essence_entry_t>( __default );
+#endif
+
+  for ( auto it = data.cbegin(); it != data.cend(); ++it )
+  {
+    if ( tokenized )
+    {
+      std::string s = it->name;
+      util::tokenize( s );
+
+      if ( util::str_compare_ci( name, s ) )
+      {
+        return *it;
+      }
+    }
+    else
+    {
+      if ( util::str_compare_ci( name, it->name ) )
+      {
+        return *it;
+      }
+    }
+  }
+
+  return nil();
+}
+
+const azerite_essence_power_entry_t& azerite_essence_power_entry_t::nil()
+{
+  static azerite_essence_power_entry_t __default {};
+
+  return __default;
+}
+
+arv::array_view<azerite_essence_power_entry_t> azerite_essence_power_entry_t::data( bool ptr )
+{
+  ( void ) ptr;
+  // TODO: Not needeed when 8.2.0 lands
+  static azerite_essence_power_entry_t __default[1] { {} };
+
+#if SC_USE_PTR == 1
+  const auto data = ptr ? arv::array_view<azerite_essence_power_entry_t>( __ptr_azerite_essence_power_data )
+                        : arv::array_view<azerite_essence_power_entry_t>( __default );
+#else
+  const auto data = arv::array_view<azerite_essence_power_entry_t>( __default );
+#endif
+
+  return data;
+}
+
+arv::array_view<azerite_essence_power_entry_t> azerite_essence_power_entry_t::data( unsigned essence_id, bool ptr )
+{
+  ( void ) ptr;
+  // TODO: Not needeed when 8.2.0 lands
+  static azerite_essence_power_entry_t __default[1] { {} };
+
+#if SC_USE_PTR == 1
+  const auto data = ptr ? arv::array_view<azerite_essence_power_entry_t>( __ptr_azerite_essence_power_data )
+                        : arv::array_view<azerite_essence_power_entry_t>( __default );
+#else
+  const auto data = arv::array_view<azerite_essence_power_entry_t>( __default );
+#endif
+
+  auto begin = std::lower_bound( data.cbegin(), data.cend(), essence_id,
+                              []( const azerite_essence_power_entry_t& a, const unsigned& id ) {
+                                return a.essence_id < id;
+                              } );
+
+  auto end = std::upper_bound( data.cbegin(), data.cend(), essence_id,
+                              []( const unsigned& id, const azerite_essence_power_entry_t& a ) {
+                                return id < a.essence_id;
+                              } );
+
+  return arv::array_view<azerite_essence_power_entry_t>( begin, end );
+}
+
+const azerite_essence_power_entry_t& azerite_essence_power_entry_t::find( unsigned id, bool ptr )
+{
+  ( void ) ptr;
+  // TODO: Not needeed when 8.2.0 lands
+  static azerite_essence_power_entry_t __default[1] { {} };
+
+#if SC_USE_PTR == 1
+  const auto data = ptr ? arv::array_view<azerite_essence_power_entry_t>( __ptr_azerite_essence_power_data )
+                        : arv::array_view<azerite_essence_power_entry_t>( __default );
+#else
+  const auto data = arv::array_view<azerite_essence_power_entry_t>( __default );
+#endif
+
+
+  auto it = std::lower_bound( data.cbegin(), data.cend(), id,
+                              []( const azerite_essence_power_entry_t& a, const unsigned& id ) {
+                                return a.id < id;
+                              } );
+
+  if ( it != data.cend() && it -> id == id )
+  {
+    return *it;
+  }
+  else
+  {
+    return nil();
+  }
+}
+

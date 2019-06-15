@@ -95,7 +95,8 @@ std::vector<std::string> _hotfix_spell_map = {
   "Spell Family",
   "Stance Mask",
   "Mechanic",
-  "Power Id",
+  "Azerite Power Id",
+  "Azerite Essence Id",
   "Description",
   "Tooltip",
   "Variables",
@@ -1584,6 +1585,11 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
   if ( spell -> power_id() > 0 )
   {
     s << "Azerite Power Id : " << spell -> power_id() << std::endl;
+  }
+
+  if ( spell->essence_id() > 0 )
+  {
+    s << "Azerite EssenceId: " << spell->essence_id() << std::endl;
   }
 
   if ( spell -> proc_flags() > 0 )

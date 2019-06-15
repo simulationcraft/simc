@@ -538,6 +538,9 @@ def initialize_data_model(options):
         if options.build >= 25600:
             SpellName.link('desc_var_link', SpellXDescriptionVariables)
 
+        if options.build >= dbc.WowVersion(8, 2, 0, 30080):
+            SpellName.link('azerite_essence', AzeriteEssencePower)
+
     if 'SpellEffect' in dir(this_module) and options.build < 25600:
         SpellEffect.link('scaling', SpellEffectScaling)
 
@@ -561,4 +564,7 @@ def initialize_data_model(options):
             GemProperties.link('item', Item_sparse)
         elif 'ItemSparse' in dir(this_module):
             GemProperties.link('item', ItemSparse)
+
+    if 'AzeriteEssence' in dir(this_module) and 'AzeriteEssencePower' in dir(this_module):
+        AzeriteEssence.link('powers', AzeriteEssencePower)
 

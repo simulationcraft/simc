@@ -106,6 +106,7 @@ const sdata_field_t _spell_data_fields[] =
   { SD_TYPE_UNSIGNED, "stance_mask",       O_SD( _stance_mask )            },
   { SD_TYPE_UNSIGNED, "mechanic",          O_SD( _mechanic )               },
   { SD_TYPE_UNSIGNED, "power_id",          O_SD( _power_id )               }, // Azereite power id
+  { SD_TYPE_UNSIGNED, "essence_id",        O_SD( _essence_id )             }, // Azereite essence id
   { SD_TYPE_STR,      "desc",              O_SD( _desc )                   },
   { SD_TYPE_STR,      "tooltip",           O_SD( _tooltip )                },
   { SD_TYPE_STR,      "desc_vars",         O_SD( _desc_vars )              },
