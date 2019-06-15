@@ -1056,7 +1056,7 @@ class CASCRootFile(CASCObject):
 
 			# Skip 8 * n_entries amount of bytes if the PTR root file contains
 			# the "contains name hashes" flag
-			if not self.options.ptr or (self.options.ptr and (unk_1 & 0x10000000) == 0):
+			if self.options.ptr and (unk_1 & 0x10000000) == 0:
 				offset += 8 * n_entries
 
 		sys.stdout.write('%u entries\n' % n_md5s)
