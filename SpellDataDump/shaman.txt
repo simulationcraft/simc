@@ -1,4 +1,4 @@
-SimulationCraft 815-02 for World of Warcraft 8.1.5 Live (wow build 29683)
+SimulationCraft 815-02 for World of Warcraft 8.1.5 Live (wow build 29981)
 
 Name             : Block (rank=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -10344,6 +10344,7 @@ Effects          :
 Description      : Your spells and abilities have a chance to grant you $s1 Mastery for $281843d. When this effect expires it jumps once to a nearby ally, granting them $s2 Mastery for $281844d.
 
 Name             : Lava Burst (id=285452) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Fire
 Spell Type       : Magic
@@ -10353,7 +10354,7 @@ Affecting spells : Elemental Fury (60188 effect#1), Lava Surge (77762 effect#1),
 Triggered by     : Lava Burst (51505)
 Family Flags     : 39, 44
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10365,6 +10366,7 @@ Effects          :
 Description      : $@spelldesc51505
 
 Name             : Lava Burst (id=285466) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Fire
 Spell Type       : Magic
@@ -10374,7 +10376,7 @@ Affecting spells : Elemental Fury (60188 effect#1), Lava Surge (77762 effect#1),
 Triggered by     : Lava Burst Overload (77451)
 Family Flags     : 39, 44
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

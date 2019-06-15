@@ -1,4 +1,4 @@
-SimulationCraft 815-02 for World of Warcraft 8.1.5 Live (wow build 29683)
+SimulationCraft 815-02 for World of Warcraft 8.1.5 Live (wow build 29981)
 
 Name             : Dual Wield (rank=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -8005,6 +8005,30 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0.501426) | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Your spells and abilities have a chance to grant you $s1 Mastery for $281843d. When this effect expires it jumps once to a nearby ally, granting them $s2 Mastery for $281844d.
 
+Name             : Frost Fever (id=283499) 
+Class            : Death Knight
+School           : Frost
+Spell Type       : Melee
+Range            : 50000 yards
+Duration         : 24 seconds
+Proc Chance      : 101%
+Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
+                 : ........ .......x ....x..x ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
+                 : x....... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x......x ........ ....x... ........ 
+                 : Always hits (114), Disable weapon procs (151), Periodic effect can crit (265)
+Effects          :
+#1 (id=744071)   : Apply Aura (6) | Periodic Damage (3): frost every 3 seconds
+                   Base Value: 1.3 | Scaled Value: 1.3 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Unknown(25)
+#2 (id=759417)   : Dummy (3)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : A disease that deals $o1 Frost damage over $d and has a chance to grant the Death Knight ${$195617m1/10} Runic Power each time it deals damage.
+Tooltip          : Suffering $w1 Frost damage every $t1 sec.
+Variables        : $CAP=${($AP+$OAP)*2/3}
+
 Name             : Helchains (id=286832) [Scaling Spell (-8), Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
@@ -8585,5 +8609,25 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 286832
 Description      : $@spelldesc286832
 Tooltip          : Deals $s1 Fire damage.
+
+Name             : Frost Fever (id=292493) 
+Class            : Death Knight
+School           : Frost
+Spell Type       : Melee
+Spell Level      : 55
+Range            : 50000 yards
+Proc Chance      : 101%
+Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
+                 : ........ .......x ....x..x ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : x....... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : Always hits (114), Disable weapon procs (151)
+Effects          :
+#1 (id=759412)   : Energize Power (30)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: energy | Target: Self (1)
+Description      : Grants the Death Knight $s1 runic power.
 
 
