@@ -68,7 +68,6 @@
     { "data_type": "i", "field": "id_power" },
     { "data_type": "i", "field": "power_type" },
     { "data_type": "i", "field": "essence_type" }
-    { "data_type": "H", "field": "id_power" }
   ],
   "AzeritePower": [
     { "data_type": "i", "field": "id_spell", "formats": { "cpp": "%6u" } },
