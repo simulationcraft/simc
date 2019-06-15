@@ -629,6 +629,8 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 288749, special_effects::seductive_power       );
   unique_gear::register_special_effect( 288802, special_effects::bonded_souls          );
   unique_gear::register_special_effect( 287818, special_effects::fight_or_flight       );
+  unique_gear::register_special_effect( 303008, special_effects::undulating_tides      );
+  unique_gear::register_special_effect( 303007, special_effects::loyal_to_the_end      );
 }
 
 void register_azerite_target_data_initializers( sim_t* sim )
@@ -2695,6 +2697,40 @@ void fight_or_flight( special_effect_t& effect )
   effect.spell_id = power.spell() -> effectN( 1 ).trigger() -> id();
 
   new fof_cb_t( effect, fof_buff, power );
+}
+
+void undulating_tides( special_effect_t& effect )
+{
+  struct undulating_tides_t : public unique_gear::proc_spell_t
+  {
+    undulating_tides_t( const special_effect_t& e, const azerite_power_t& power ):
+      proc_spell_t( "undulating_tides", e.player, e.player -> find_spell( 303389 ) )
+    {
+      base_dd_min = base_dd_max = power.value( 1 );
+    }
+  };
+
+  azerite_power_t power = effect.player -> find_azerite_spell( effect.driver() -> name_cstr() );
+  if ( !power.enabled() )
+    return;
+
+  effect.execute_action = unique_gear::create_proc_action<undulating_tides_t>( "undulating_tides", effect, power );
+  effect.spell_id = 303388;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+void loyal_to_the_end( special_effect_t& effect )
+{
+  azerite_power_t power = effect.player->find_azerite_spell( effect.driver()->name_cstr() );
+  if ( !power.enabled() )
+    return;
+
+  // total rating capped at value(3), which is currently equal to value(1) + 4 * value(2)
+  // may need to reference value(3) if for whatever reason it becomes capped at non-integer multiple of value(2)
+  effect.player->passive.mastery_rating += power.value( 1 ) + power.value( 2 ) * effect.player->sim->bfa_opts.loyal_to_the_end_allies;
+
+  // TODO?: implement ally death bonus if a suitable mechanism can be developed to utilize it in .simc scripts
 }
 
 } // Namespace special effects ends

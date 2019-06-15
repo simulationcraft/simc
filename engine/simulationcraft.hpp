@@ -1165,6 +1165,8 @@ struct sim_t : private sc_thread_t
     timespan_t          trident_of_deep_ocean_duration = 0_ms;
     /// Chance that the player has a higher health percentage than the target for Legplates of Unbound Anguish proc
     double              legplates_of_unbound_anguish_chance = 1.0;
+    /// Number of allies with the Loyal to the End azerite trait, default = 4 (max)
+    int                 loyal_to_the_end_allies = 4;
   } bfa_opts;
 
   // Expansion specific data

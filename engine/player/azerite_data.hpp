@@ -212,6 +212,8 @@ void treacherous_covenant( special_effect_t& effect );
 void seductive_power( special_effect_t& effect );
 void bonded_souls( special_effect_t& effect );
 void fight_or_flight( special_effect_t& effect );
+void undulating_tides( special_effect_t& effect );
+void loyal_to_the_end( special_effect_t& effect );
 } // Namespace special_effects ends
 
 } // Namespace azerite ends
