@@ -4,7 +4,7 @@
 #ifndef ptr_MAX_CLASS
 #define ptr_MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 8.2.0.30329
+// Class based active abilities, wow build 8.2.0.30827
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -1264,7 +1264,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 };
 #define PTR_TREE_SPECIALIZATION_SIZE (35)
 
-// Talent tree specialization abilities, wow build 8.2.0.30329
+// Talent tree specialization abilities, wow build 8.2.0.30827
 static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -2386,7 +2386,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
 };
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 8.2.0.30329
+// Class mastery abilities, wow build 8.2.0.30827
 static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2625,7 +2625,7 @@ static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS]
 #define ptr_MAX_RACE (33)
 #endif
 
-// Racial abilities, wow build 8.2.0.30329
+// Racial abilities, wow build 8.2.0.30827
 static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3599,7 +3599,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
 };
 #define PTR_SET_BONUS_DATA_SIZE (724)
 
-// Set bonus data, wow build 8.2.0.30329
+// Set bonus data, wow build 8.2.0.30827
 static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -4355,9 +4355,9 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   { "Keepsakes of the Resolute Commandant"       ,  "keepsakes",     17,  1443,   23,   2,  11,   -1, 290362, { 165604, 165566,  0 } },
   { "Keepsakes of the Resolute Commandant"       ,  "keepsakes",     17,  1443,   23,   2,  12,   -1, 290362, { 165604, 165566,  0 } },
 };
-#define PTR_RPPMMOD_SIZE (981)
+#define PTR_RPPMMOD_SIZE (989)
 
-// 981 RPPM Modifiers, wow build level 8.2.0.30329
+// 989 RPPM Modifiers, wow build level 8.2.0.30827
 static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   {  17495,    4,  1,  1.0000 },
   {  27656,    4,  1,  1.0000 },
@@ -5298,27 +5298,18 @@ static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   { 292824,    4,  1,  1.0000 },
   { 292975,    4,  1,  1.0000 },
   { 292991,    4,  1,  1.0000 },
-  { 293136,    0,  7, -1.0000 },
-  { 293136,   62,  4, -0.2390 },
-  { 293136,   63,  4, -0.2950 },
-  { 293136,   64,  4,  0.3870 },
-  { 293136,  265,  4, -0.3750 },
-  { 293136,  266,  4, -0.4020 },
-  { 293136,  267,  4, -0.4910 },
-  { 293136,  262,  4,  0.8910 },
-  { 293136,  102,  4,  0.8720 },
-  { 293136,  258,  4, -0.0670 },
   { 295157,    4,  1,  1.0000 },
-  { 295252,    4,  1,  1.0000 },
   { 295254,    4,  1,  1.0000 },
   { 295280,    4,  1,  1.0000 },
   { 295293,    4,  1,  1.0000 },
+  { 295365,    4,  1,  1.0000 },
   { 295391,    4,  1,  1.0000 },
   { 295427,    4,  1,  1.0000 },
   { 295812,    4,  1,  1.0000 },
   { 295834,    4,  1,  1.0000 },
   { 296223,    4,  1,  1.0000 },
   { 296963,    4,  1,  1.0000 },
+  { 298407,    0,  4,  0.0000 },
   { 299343,    4,  1,  1.0000 },
   { 299346,    4,  1,  1.0000 },
   { 299354,    4,  1,  1.0000 },
@@ -5332,13 +5323,30 @@ static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   { 300813,    4,  1,  1.0000 },
   { 300830,    4,  1,  1.0000 },
   { 300913,    4,  1,  1.0000 },
-  { 301576,    4,  1,  1.0000 },
   { 301753,    4,  1,  1.0000 },
   { 302258,    4,  1,  1.0000 },
-  { 302773,    4,  1,  1.0000 },
+  { 302773,    0,  4,  0.0000 },
   { 302776,    4,  1,  1.0000 },
   { 302918,    4,  1,  1.0000 },
   { 302986,    4,  1,  1.0000 },
   { 303003,    4,  1,  1.0000 },
+  { 303133,    4,  1,  1.0000 },
+  { 303358,    4,  1,  1.0000 },
+  { 303361,    4,  1,  1.0000 },
+  { 303388,    4,  1,  1.0000 },
+  { 303448,    4,  1,  1.0000 },
+  { 303474,    4,  1,  1.0000 },
+  { 303476,    4,  1,  1.0000 },
+  { 303696,    4,  1,  1.0000 },
+  { 303893,    4,  1,  1.0000 },
+  { 304063,    4,  1,  1.0000 },
+  { 304110,    4,  1,  1.0000 },
+  { 304117,    4,  1,  1.0000 },
+  { 304471,    4,  1,  1.0000 },
+  { 304640,    4,  1,  1.0000 },
+  { 304697,    4,  1,  1.0000 },
+  { 304711,    4,  1,  1.0000 },
+  { 304715,    4,  1,  1.0000 },
+  { 305271,    4,  1,  1.0000 },
   {      0,    0,  0,  0.0000 },
 };

@@ -1,5 +1,5 @@
-// Azerite powers, wow build 8.2.0.30329
-static constexpr std::array<azerite_power_entry_t, 373> __ptr_azerite_power_data { {
+// Azerite powers, wow build 8.2.0.30827
+static constexpr std::array<azerite_power_entry_t, 376> __ptr_azerite_power_data { {
   {  13, 263978,  4775, "Azerite Empowered"                 , 0 },
   {  14, 268594,     0, "Longstrider"                       , 1 },
   {  15, 263962,     0, "Resounding Protection"             , 1 },
@@ -373,20 +373,22 @@ static constexpr std::array<azerite_power_entry_t, 373> __ptr_azerite_power_data
   { 572, 300576,     0, "Perseverance"                      , 0 },
   { 573, 300577,     0, "Perseverance"                      , 0 },
   { 574, 300949,     0, "Heart of Azeroth Slot Unlock"      , 0 },
+  { 575, 303008,     0, "Undulating Tides"                  , 3 },
+  { 576, 303007,     0, "Loyal to the End"                  , 3 },
+  { 577, 303006,     0, "Arcane Heart"                      , 3 },
 } };
-// Azerite Essences, wow build 8.2.0.30329
+// Azerite Essences, wow build 8.2.0.30827
 static constexpr std::array<azerite_essence_entry_t, 21> __ptr_azerite_essence_data { {
   {  2,   1, "Azeroth's Undying Gift"       },
   {  3,   1, "Sphere of Suppression"        },
-  {  4,   2, "Worldvein Boon"               },
+  {  4,   2, "Worldvein Resonance"          },
   {  5, 160, "Essence of the Focusing Iris" },
   {  6, 160, "Purification Protocol"        },
-  {  7,   2, "Anima of Life and Death"      },
-  {  8,   1, "Touch of the Everlasting"     },
+  {  7,   1, "Anima of Life and Death"      },
   { 12,   2, "The Crucible of Flame"        },
   { 13,   1, "Nullification Dynamo"         },
   { 14, 160, "Condensed Life-Force"         },
-  { 15,   2, "Reality Shift"                },
+  { 15,   2, "Ripple in Space"              },
   { 17,  49, "The Ever-Rising Tide"         },
   { 18,  49, "Artifice of Time"             },
   { 19,  49, "The Well of Existence"        },
@@ -397,9 +399,10 @@ static constexpr std::array<azerite_essence_entry_t, 21> __ptr_azerite_essence_d
   { 25,   1, "Aegis of the Deep"            },
   { 27,   2, "Memory of Lucid Dreams"       },
   { 28, 160, "The Unbound Force"            },
+  { 32,   2, "Conflict and Strife"          },
 } };
 
-// Azerite Essence Powers, wow build 8.2.0.30329
+// Azerite Essence Powers, wow build 8.2.0.30827
 static constexpr std::array<azerite_essence_power_entry_t, 84> __ptr_azerite_essence_power_data { {
   {   5,   2,   1, { 293019, 294668 }, { 293019, 294668 } }, // Azeroth's Undying Gift
   {   6,   2,   2, { 294653, 294687 }, { 298080, 298082 } }, // Azeroth's Undying Gift
@@ -409,10 +412,10 @@ static constexpr std::array<azerite_essence_power_entry_t, 84> __ptr_azerite_ess
   {  10,   3,   2, { 294906, 294919 }, { 300009, 300012 } }, // Sphere of Suppression
   {  11,   3,   3, { 294907, 294920 }, { 300010, 300013 } }, // Sphere of Suppression
   {  12,   3,   4, { 294908, 294922 }, { 300010, 300013 } }, // Sphere of Suppression
-  {  13,   4,   1, { 295186, 295078 }, { 295186, 295078 } }, // Worldvein Boon
-  {  14,   4,   2, { 295209, 295208 }, { 298628, 298627 } }, // Worldvein Boon
-  {  15,   4,   3, { 295160, 295165 }, { 299334, 299333 } }, // Worldvein Boon
-  {  16,   4,   4, { 295210, 295166 }, { 299334, 299333 } }, // Worldvein Boon
+  {  13,   4,   1, { 295186, 295078 }, { 295186, 295078 } }, // Worldvein Resonance
+  {  14,   4,   2, { 295209, 295208 }, { 298628, 298627 } }, // Worldvein Resonance
+  {  15,   4,   3, { 295160, 295165 }, { 299334, 299333 } }, // Worldvein Resonance
+  {  16,   4,   4, { 295210, 295166 }, { 299334, 299333 } }, // Worldvein Resonance
   {  17,   5,   1, { 295258, 295246 }, { 295258, 295246 } }, // Essence of the Focusing Iris
   {  18,   5,   2, { 295262, 295251 }, { 299336, 299335 } }, // Essence of the Focusing Iris
   {  19,   5,   3, { 295263, 295252 }, { 299338, 299337 } }, // Essence of the Focusing Iris
@@ -425,10 +428,6 @@ static constexpr std::array<azerite_essence_power_entry_t, 84> __ptr_azerite_ess
   {  22,   7,   2, { 295307, 294970 }, { 300002, 300004 } }, // Anima of Life and Death
   {  24,   7,   3, { 294945, 294969 }, { 300003, 300005 } }, // Anima of Life and Death
   {  23,   7,   4, { 295306, 294972 }, { 300003, 300005 } }, // Anima of Life and Death
-  {  25,   8,   1, { 295046, 295164 }, { 295046, 295164 } }, // Touch of the Everlasting
-  {  26,   8,   2, { 295098, 295349 }, { 299984, 299989 } }, // Touch of the Everlasting
-  {  27,   8,   3, { 295119, 295353 }, { 299988, 299991 } }, // Touch of the Everlasting
-  {  28,   8,   4, { 295308, 295309 }, { 299988, 299991 } }, // Touch of the Everlasting
   {  45,  12,   1, { 295373, 295365 }, { 295373, 295365 } }, // The Crucible of Flame
   {  46,  12,   2, { 295377, 295372 }, { 299349, 299348 } }, // The Crucible of Flame
   {  47,  12,   3, { 295379, 295369 }, { 299353, 299350 } }, // The Crucible of Flame
@@ -441,10 +440,10 @@ static constexpr std::array<azerite_essence_power_entry_t, 84> __ptr_azerite_ess
   {  54,  14,   2, { 295841, 295836 }, { 299355, 299354 } }, // Condensed Life-Force
   {  55,  14,   3, { 295843, 295837 }, { 299358, 299357 } }, // Condensed Life-Force
   {  56,  14,   4, { 295892, 295839 }, { 299358, 299357 } }, // Condensed Life-Force
-  {  57,  15,   1, { 302731, 302916 }, { 302731, 302916 } }, // Reality Shift
-  {  58,  15,   2, { 302778, 302957 }, { 302982, 302984 } }, // Reality Shift
-  {  59,  15,   3, { 302780, 302961 }, { 302983, 302985 } }, // Reality Shift
-  {  60,  15,   4, { 302910, 302962 }, { 302983, 302985 } }, // Reality Shift
+  {  57,  15,   1, { 302731, 302916 }, { 302731, 302916 } }, // Ripple in Space
+  {  58,  15,   2, { 302778, 302957 }, { 302982, 302984 } }, // Ripple in Space
+  {  59,  15,   3, { 302780, 302961 }, { 302983, 302985 } }, // Ripple in Space
+  {  60,  15,   4, { 302910, 302962 }, { 302983, 302985 } }, // Ripple in Space
   {  64,  17,   1, { 296072, 296050 }, { 296072, 296050 } }, // The Ever-Rising Tide
   {  65,  17,   2, { 296074, 296067 }, { 299875, 299878 } }, // The Ever-Rising Tide
   {  66,  17,   3, { 296075, 296062 }, { 299876, 299879 } }, // The Ever-Rising Tide
@@ -461,13 +460,13 @@ static constexpr std::array<azerite_essence_power_entry_t, 84> __ptr_azerite_ess
   {  74,  20,   2, { 296220, 296213 }, { 299943, 299939 } }, // Life-Binder's Invocation
   {  75,  20,   3, { 296221, 296214 }, { 299944, 299940 } }, // Life-Binder's Invocation
   { 111,  20,   4, { 299520, 299521 }, { 299944, 299940 } }, // Life-Binder's Invocation
-  {  76,  21,   1, { 296230, 296223 }, { 296230, 296223 } }, // Vitality Conduit
-  {  77,  21,   2, { 296233, 296229 }, { 299958, 299951 } }, // Vitality Conduit
-  {  78,  21,   3, { 296232, 296228 }, { 299959, 299954 } }, // Vitality Conduit
-  { 115,  21,   4, { 299559, 299560 }, { 299959, 299954 } }, // Vitality Conduit
+  {  76,  21,   1, { 296230, 303448 }, { 296230, 303448 } }, // Vitality Conduit
+  {  77,  21,   2, { 303472, 303463 }, { 299958, 303474 } }, // Vitality Conduit
+  {  78,  21,   3, { 296232, 303460 }, { 299959, 303476 } }, // Vitality Conduit
+  { 115,  21,   4, { 299559, 299560 }, { 299959, 303476 } }, // Vitality Conduit
   {  79,  22,   1, { 296325, 296320 }, { 296325, 296320 } }, // Vision of Perfection
   {  80,  22,   2, { 296326, 296321 }, { 299368, 299367 } }, // Vision of Perfection
-  {  81,  22,   3, { 296327, 296322 }, { 299370, 299369 } }, // Vision of Perfection
+  {  81,  22,   3, { 303342, 296322 }, { 299370, 299369 } }, // Vision of Perfection
   {  82,  22,   4, { 296328, 296324 }, { 299370, 299369 } }, // Vision of Perfection
   {  83,  23,   1, { 297108, 297147 }, { 297108, 297147 } }, // Blood of the Enemy
   {  84,  23,   2, { 297120, 297177 }, { 298273, 298274 } }, // Blood of the Enemy
@@ -485,4 +484,8 @@ static constexpr std::array<azerite_essence_power_entry_t, 84> __ptr_azerite_ess
   { 107,  28,   2, { 298455, 298448 }, { 299376, 299375 } }, // The Unbound Force
   { 108,  28,   3, { 298456, 298449 }, { 299378, 299377 } }, // The Unbound Force
   { 109,  28,   4, { 298457, 298450 }, { 299378, 299377 } }, // The Unbound Force
+  { 121,  32,   1, { 303823, 304081 }, { 303823, 304081 } }, // Conflict and Strife
+  { 122,  32,   2, { 304086, 304055 }, { 304088, 304089 } }, // Conflict and Strife
+  { 123,  32,   3, { 303892, 304125 }, { 304121, 304123 } }, // Conflict and Strife
+  { 124,  32,   4, { 303894, 304533 }, { 304121, 304123 } }, // Conflict and Strife
 } };
