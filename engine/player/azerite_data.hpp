@@ -130,6 +130,8 @@ class azerite_essence_t
 
 public:
   azerite_essence_t();
+  /// Invalid constructor, contains actor pointer
+  azerite_essence_t( const player_t* player );
   /// Major/Minor constructor
   azerite_essence_t( const player_t* player, essence_type t, unsigned rank,
       const azerite_essence_entry_t* essence );

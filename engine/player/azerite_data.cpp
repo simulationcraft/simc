@@ -192,6 +192,10 @@ azerite_essence_t::azerite_essence_t() :
   m_player( nullptr ), m_essence( nullptr ), m_rank( 0 ), m_type( essence_type::INVALID )
 { }
 
+azerite_essence_t::azerite_essence_t( const player_t* p ) :
+  m_player( p ), m_essence( nullptr ), m_rank( 0 ), m_type( essence_type::INVALID )
+{ }
+
 azerite_essence_t::azerite_essence_t( const player_t* player, essence_type type, unsigned rank,
     const azerite_essence_entry_t* essence ) :
   m_player( player ), m_essence( essence ), m_rank( rank ), m_type( type )
@@ -771,7 +775,7 @@ azerite_essence_t azerite_essence_state_t::get_essence( const std::string& name,
   // No essence found with the name, and no passive essence either, bail out
   if ( essence.id == 0 )
   {
-    return {};
+    return { m_player };
   }
 
   return get_essence( essence.id );
@@ -797,7 +801,7 @@ azerite_essence_t azerite_essence_state_t::get_essence( unsigned id ) const
   // No essence found with the name, and no passive essence either, bail out
   if ( essence.id == 0 )
   {
-    return {};
+    return { m_player };
   }
 
   // Find state slot based on id now
@@ -808,7 +812,7 @@ azerite_essence_t azerite_essence_state_t::get_essence( unsigned id ) const
   // Actor does not have the minor or major essence, bail out
   if ( it == m_state.end() )
   {
-    return {};
+    return { m_player };
   }
 
   // Return the essence based on the slot state
@@ -3462,6 +3466,36 @@ struct essence_of_the_focusing_iris_t : public azerite_essence_major_t
   }
 };
 
+struct memory_of_lucid_dreams_t : public azerite_essence_major_t
+{
+  memory_of_lucid_dreams_t( player_t* p, const std::string& options_str ) :
+    azerite_essence_major_t( p, "memory_of_lucid_dreams", p->find_spell( 298357 ) )
+  {
+    parse_options( options_str );
+
+    harmful = false;
+
+    // Adjust the buff based on essence data
+    player->buffs.memory_of_lucid_dreams->set_cooldown( timespan_t::zero() );
+    player->buffs.memory_of_lucid_dreams->set_duration(
+      essence.spell_ref( 1u ).duration() + essence.spell_ref( 2u, essence_spell::UPGRADE ).effectN( 1 ).time_value()
+    );
+
+    if ( essence.rank() >= 3 )
+    {
+      player->buffs.memory_of_lucid_dreams->add_stat( STAT_LEECH_RATING,
+        essence.spell_ref( 1u ).effectN( 6 ).average( essence.item() ) );
+    }
+  }
+
+  void execute() override
+  {
+    azerite_essence_major_t::execute();
+
+    player->buffs.memory_of_lucid_dreams->trigger();
+  }
+};
+
 } // Namespace azerite essences ends
 
 action_t* create_action( player_t* player, const std::string& name, const std::string& options )
@@ -3469,6 +3503,10 @@ action_t* create_action( player_t* player, const std::string& name, const std::s
   if ( util::str_compare_ci( name, "essence_of_the_focusing_iris" ) )
   {
     return new azerite_essences::essence_of_the_focusing_iris_t( player, options );
+  }
+  else if ( util::str_compare_ci( name, "memory_of_lucid_dreams" ) )
+  {
+    return new azerite_essences::memory_of_lucid_dreams_t( player, options );
   }
 
   return nullptr;

@@ -3859,6 +3859,9 @@ struct player_t : public actor_t
 
     // Uldir
     buff_t* reorigination_array;
+
+    /// 8.2 Azerite Essences
+    stat_buff_t* memory_of_lucid_dreams;
   } buffs;
 
   struct debuffs_t

@@ -3106,6 +3106,8 @@ void player_t::create_buffs()
                                 ->set_duration( timespan_t::from_seconds( 6.0 ) );
 
     buffs.movement = new movement_buff_t( this );
+
+    buffs.memory_of_lucid_dreams = make_buff<stat_buff_t>( this, "memory_of_lucid_dreams", find_spell( 298357 ) );
   }
   // .. for enemies
   else
@@ -9552,7 +9554,7 @@ azerite_essence_t player_t::find_azerite_essence( unsigned id ) const
 {
   if ( !azerite_essence )
   {
-    return {};
+    return { this };
   }
 
   return azerite_essence->get_essence( id );
@@ -9562,7 +9564,7 @@ azerite_essence_t player_t::find_azerite_essence( const std::string& name, bool 
 {
   if ( !azerite_essence )
   {
-    return {};
+    return { this };
   }
 
   return azerite_essence->get_essence( name, tokenized );
