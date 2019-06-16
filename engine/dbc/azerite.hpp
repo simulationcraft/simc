@@ -41,9 +41,10 @@ struct azerite_essence_power_entry_t
   unsigned spell_id_upgrade[2];
 
   static const azerite_essence_power_entry_t& find( unsigned id, bool ptr = false );
+  static const azerite_essence_power_entry_t& find_by_spell_id( unsigned spell_id, bool ptr = false );
   static const azerite_essence_power_entry_t& nil();
   static arv::array_view<azerite_essence_power_entry_t> data( bool ptr = false );
-  static arv::array_view<azerite_essence_power_entry_t> data( unsigned essence_id, bool ptr = false );
+  static arv::array_view<azerite_essence_power_entry_t> data_by_essence_id( unsigned essence_id, bool ptr = false );
 };
 
 #endif /* AZERITE_HPP */

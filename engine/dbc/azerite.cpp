@@ -167,7 +167,7 @@ arv::array_view<azerite_essence_power_entry_t> azerite_essence_power_entry_t::da
   return data;
 }
 
-arv::array_view<azerite_essence_power_entry_t> azerite_essence_power_entry_t::data( unsigned essence_id, bool ptr )
+arv::array_view<azerite_essence_power_entry_t> azerite_essence_power_entry_t::data_by_essence_id( unsigned essence_id, bool ptr )
 {
   ( void ) ptr;
   // TODO: Not needeed when 8.2.0 lands
@@ -213,6 +213,34 @@ const azerite_essence_power_entry_t& azerite_essence_power_entry_t::find( unsign
                               } );
 
   if ( it != data.cend() && it -> id == id )
+  {
+    return *it;
+  }
+  else
+  {
+    return nil();
+  }
+}
+
+const azerite_essence_power_entry_t& azerite_essence_power_entry_t::find_by_spell_id( unsigned spell_id, bool ptr )
+{
+  ( void ) ptr;
+  // TODO: Not needeed when 8.2.0 lands
+  static azerite_essence_power_entry_t __default[1] { {} };
+
+#if SC_USE_PTR == 1
+  const auto data = ptr ? arv::array_view<azerite_essence_power_entry_t>( __ptr_azerite_essence_power_data )
+                        : arv::array_view<azerite_essence_power_entry_t>( __default );
+#else
+  const auto data = arv::array_view<azerite_essence_power_entry_t>( __default );
+#endif
+
+  auto it = range::find_if( data, [ spell_id ]( const azerite_essence_power_entry_t& e ) {
+    return e.spell_id_base[ 0 ] == spell_id || e.spell_id_base[ 1 ] == spell_id ||
+           e.spell_id_upgrade[ 0 ] == spell_id || e.spell_id_upgrade[ 1 ] == spell_id;
+  } );
+
+  if ( it != data.cend() && it -> id != 0 )
   {
     return *it;
   }

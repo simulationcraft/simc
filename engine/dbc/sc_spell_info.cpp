@@ -1642,7 +1642,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
   {
     s << "Azerite EssenceId: " << spell->essence_id() << " ";
 
-    const auto data = azerite_essence_power_entry_t::data( spell->essence_id(), dbc.ptr );
+    const auto data = azerite_essence_power_entry_t::data_by_essence_id( spell->essence_id(), dbc.ptr );
 
     s << azerite_essence_str( spell, data );
     s << std::endl;
