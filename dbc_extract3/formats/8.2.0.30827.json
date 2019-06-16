@@ -54,10 +54,10 @@
     { "data_type": "S", "field": "desc_horde"                                         },
     { "data_type": "i", "field": "id_essence",             "formats": { "cpp": "%3u" }},
     { "data_type": "B", "field": "rank",                   "formats": { "cpp": "%3u" }},
-    { "data_type": "i", "field": "id_spell_major_base",    "formats": { "cpp": "%6u" }},
-    { "data_type": "i", "field": "id_spell_minor_base",    "formats": { "cpp": "%6u" }},
     { "data_type": "i", "field": "id_spell_major_upgrade", "formats": { "cpp": "%6u" }},
-    { "data_type": "i", "field": "id_spell_minor_upgrade", "formats": { "cpp": "%6u" }}
+    { "data_type": "i", "field": "id_spell_minor_upgrade", "formats": { "cpp": "%6u" }},
+    { "data_type": "i", "field": "id_spell_major_base",    "formats": { "cpp": "%6u" }},
+    { "data_type": "i", "field": "id_spell_minor_base",    "formats": { "cpp": "%6u" }}
   ],
   "AzeriteItem": [
     { "data_type": "i", "field": "id_item", "formats": { "cpp": "%6u" } }
