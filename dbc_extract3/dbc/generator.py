@@ -1252,6 +1252,8 @@ class SpellDataGenerator(DataGenerator):
          185786,
          # The Unbound Force Azerite Essence damage spell
          298453,
+         # Essence of the Focusing Iris major damage spell
+         295374,
         ),
 
         # Warrior:
