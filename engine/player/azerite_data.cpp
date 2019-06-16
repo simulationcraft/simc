@@ -631,6 +631,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 287818, special_effects::fight_or_flight       );
   unique_gear::register_special_effect( 303008, special_effects::undulating_tides      );
   unique_gear::register_special_effect( 303007, special_effects::loyal_to_the_end      );
+  unique_gear::register_special_effect( 303006, special_effects::arcane_heart          );
 }
 
 void register_azerite_target_data_initializers( sim_t* sim )
@@ -2733,5 +2734,132 @@ void loyal_to_the_end( special_effect_t& effect )
   // TODO?: implement ally death bonus if a suitable mechanism can be developed to utilize it in .simc scripts
 }
 
+void arcane_heart( special_effect_t& effect )
+{
+  struct omnipotence_t : public stat_buff_t
+  {
+    stat_e current_stat = STAT_NONE;
+
+    stat_e rating_to_stat( rating_e r ) const
+    {
+      switch ( r )
+      {
+        case RATING_MELEE_CRIT:         return STAT_CRIT_RATING;
+        case RATING_MELEE_HASTE:        return STAT_HASTE_RATING;
+        case RATING_MASTERY:            return STAT_MASTERY_RATING;
+        case RATING_DAMAGE_VERSATILITY: return STAT_VERSATILITY_RATING;
+        default:                        return STAT_NONE;
+      }
+    }
+
+    omnipotence_t( player_t* p, const std::string& name, const spell_data_t* b ) :
+      stat_buff_t( p, name, b )
+    { }
+
+    void execute( int stacks, double value, timespan_t duration ) override
+    {
+      buff_t::execute( stacks, value, duration );
+
+      static const std::vector<rating_e> ratings {
+        RATING_MELEE_CRIT, RATING_MELEE_HASTE, RATING_MASTERY, RATING_DAMAGE_VERSATILITY
+      };
+
+      double high = std::numeric_limits<double>::lowest();
+      rating_e rating = RATING_MAX;
+
+      for ( auto r : ratings )
+      {
+        auto composite = source->composite_rating( r );
+        
+        sim->print_debug( "arcane_heart_omnipotence check_stat stat={} value={}",
+          util::stat_type_string( rating_to_stat( r ) ), composite );
+
+        if ( composite > high )
+        {
+          high = composite;
+          rating = r;
+        }
+      }
+
+      current_stat = rating_to_stat( rating );
+
+      if ( current_stat == STAT_NONE )
+        return;
+
+      source->stat_gain( current_stat, this->default_value );
+    }
+
+    void expire_override( int stacks, timespan_t duration ) override
+    {
+      buff_t::expire_override( stacks, duration );
+
+      if ( current_stat == STAT_NONE )
+        return;
+      
+      source->stat_loss( current_stat, this->default_value );
+
+      current_stat = STAT_NONE;
+    }
+  };
+
+  azerite_power_t power = effect.player->find_azerite_spell( effect.driver()->name_cstr() );
+  if ( !power.enabled() )
+    return;
+  
+  const spell_data_t* counter = effect.driver()->effectN( 1 ).trigger();
+  const spell_data_t* buff_data = counter->effectN( 1 ).trigger();
+
+  buff_t* buff = buff_t::find( effect.player, "arcane_heart" );
+  if ( !buff )
+  {
+    
+    buff = make_buff( effect.player, "arcane_heart", counter )
+      // Damage/heal threshold (currently at 1.5million) stored in default_value of the "arcane_heart" buff
+      ->set_default_value( power.spell_ref().effectN( 1 ).base_value() ); 
+  }
+
+  buff_t* omni = buff_t::find( effect.player, "omnipotence" );
+  if ( !omni )
+  {
+    omni = make_buff<omnipotence_t>( effect.player, "omnipotence", buff_data )
+      ->set_default_value( power.value( 2 ) )
+      // Unknown what refresh behavior Omnipotence has. Adjust if situation arises where 100k+ dps is possible
+      ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
+  }
+
+  // TODO?: Implement healing contribution to Arcane Heart threshold. Not all healing counts:
+  // * All direct-cast healing seems to count
+  // * Proc heals from trait/essences/etc. seem to count for the most part. Some exceptions may
+  //    exist, one being Seeds of Eonar per-stack healing from Lifebinder's Invocation Esssence
+  // * Some passive healing may not count, such as Ysera's Gift from Druid Restoration Affinity
+  // * Passive absorb effects & 'absorb-like' effects such has the Guardian Druid talent Earthwarden
+  //    do not seem to count. Unknown if active shields do.
+  // * Leech does not seem to count.
+  effect.player->assessor_out_damage.add( assessor::TARGET_DAMAGE + 1, [ buff, omni ]( dmg_e, action_state_t* state )
+  {
+    if ( state->result_amount <= 0 )
+    {
+      return assessor::CONTINUE;
+    }
+
+    buff->current_value -= state->result_amount;
+
+    buff->sim->print_debug( "arcane_heart_counter ability:{} damage:{} counter now at:{}",
+      state->action->name(), state->result_amount, buff->current_value);
+
+    if ( buff->current_value <= 0 )
+    {
+      omni->trigger();
+      buff->current_value += buff->default_value;
+    }
+
+    return assessor::CONTINUE;
+  } );
+  
+  effect.player->register_combat_begin( [ buff ] ( player_t* )
+  {
+    buff->trigger();
+  } );
+}
 } // Namespace special effects ends
 } // Namespace azerite ends
