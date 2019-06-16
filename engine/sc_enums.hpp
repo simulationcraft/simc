@@ -63,6 +63,8 @@ enum
   WEAPON_POWER_COEFFICIENT = 6, // WDPS -> Attack Power Coefficient used for BfA Attack Power calculations
 
   MAX_AZERITE_LEVEL = 300, // Maximum Azerite level (for Heart of Azeroth) at the start of Battle for Azeroth
+
+  MAX_AZERITE_ESSENCE_RANK = 4u, // Maximum Azerite Essence power rank for patch BfA 8.2.0
 };
 
 // Azerite control
@@ -511,6 +513,7 @@ enum special_effect_source_e
   SPECIAL_EFFECT_SOURCE_SOCKET_BONUS,
   SPECIAL_EFFECT_SOURCE_RACE,
   SPECIAL_EFFECT_SOURCE_AZERITE,
+  SPECIAL_EFFECT_SOURCE_AZERITE_ESSENCE,
   SPECIAL_EFFECT_SOURCE_FALLBACK
 };
 

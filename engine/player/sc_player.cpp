@@ -1109,6 +1109,7 @@ player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r ):
   if ( ! is_enemy() && ! is_pet() )
   {
     azerite = azerite::create_state( this );
+    azerite_essence = azerite::create_essence_state( this );
   }
 
   // Set the gear object to a special default value, so we can support gear_x=0 properly.
@@ -8786,6 +8787,9 @@ action_t* player_t::create_action( const std::string& name, const std::string& o
   if ( name == "variable" )
     return new variable_t( this, options_str );
 
+  if ( auto action = azerite::create_action( this, name, options_str ) )
+    return action;
+
   return consumable::create_action( this, name, options_str );
 }
 
@@ -9542,6 +9546,26 @@ azerite_power_t player_t::find_azerite_spell( const std::string& name, bool toke
 
   // Note, no const propagation here, so this works
   return azerite -> get_power( name, tokenized );
+}
+
+azerite_essence_t player_t::find_azerite_essence( unsigned id ) const
+{
+  if ( !azerite_essence )
+  {
+    return {};
+  }
+
+  return azerite_essence->get_essence( id );
+}
+
+azerite_essence_t player_t::find_azerite_essence( const std::string& name, bool tokenized ) const
+{
+  if ( !azerite_essence )
+  {
+    return {};
+  }
+
+  return azerite_essence->get_essence( name, tokenized );
 }
 
 /**
@@ -10960,6 +10984,8 @@ void player_t::create_options()
   {
     add_option( opt_func( "azerite_override", std::bind( &azerite::azerite_state_t::parse_override,
           azerite.get(), std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 ) ) );
+    add_option( opt_func( "azerite_essences", std::bind( &azerite::azerite_essence_state_t::parse_azerite_essence,
+          azerite_essence.get(), std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 ) ) );
   }
 
   // Obsolete options

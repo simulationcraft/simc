@@ -377,7 +377,6 @@ static constexpr std::array<azerite_power_entry_t, 376> __ptr_azerite_power_data
   { 576, 303007,     0, "Loyal to the End"                  , 3 },
   { 577, 303006,     0, "Arcane Heart"                      , 3 },
 } };
-
 // Azerite Essences, wow build 8.2.0.30827
 static constexpr std::array<azerite_essence_entry_t, 21> __ptr_azerite_essence_data { {
   {  2,   1, "Azeroth's Undying Gift"       },

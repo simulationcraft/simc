@@ -2,6 +2,21 @@
 
 #include "simulationcraft.hpp"
 
+namespace
+{
+struct azerite_essence_major_t : public spell_t
+{
+  azerite_essence_t essence;
+
+  azerite_essence_major_t( player_t* p, const std::string& name, const spell_data_t* spell ) :
+    spell_t( name, p, spell ), essence( p->find_azerite_essence( spell->essence_id() ) )
+  {
+    background = !essence.enabled() || !essence.is_major();
+    item = &( player->items[ SLOT_NECK ] );
+  }
+};
+} // Namespace anonymous ends
+
 azerite_power_t::azerite_power_t() :
   m_player( nullptr ), m_spell( spell_data_t::not_found() ), m_data( nullptr )
 { }
@@ -173,6 +188,128 @@ bool azerite_power_t::check_combat_rating_penalty( size_t index ) const
          m_spell->effectN( index ).m_coefficient() != 0;
 }
 
+azerite_essence_t::azerite_essence_t() :
+  m_player( nullptr ), m_essence( nullptr ), m_rank( 0 ), m_type( essence_type::INVALID )
+{ }
+
+azerite_essence_t::azerite_essence_t( const player_t* player, essence_type type, unsigned rank,
+    const azerite_essence_entry_t* essence ) :
+  m_player( player ), m_essence( essence ), m_rank( rank ), m_type( type )
+{
+  auto entries = azerite_essence_power_entry_t::data_by_essence_id( essence->id, player->dbc.ptr );
+  range::for_each( entries, [ this ]( const azerite_essence_power_entry_t& entry ) {
+    m_base_major.push_back( m_player->find_spell( entry.spell_id_base[ 0 ] ) );
+    m_base_minor.push_back( m_player->find_spell( entry.spell_id_base[ 1 ] ) );
+    m_upgrade_major.push_back( m_player->find_spell( entry.spell_id_upgrade[ 0 ] ) );
+    m_upgrade_minor.push_back( m_player->find_spell( entry.spell_id_upgrade[ 1 ] ) );
+  } );
+}
+
+azerite_essence_t::azerite_essence_t( const player_t* player, const spell_data_t* passive ) :
+  m_player( player ), m_essence( nullptr ), m_rank( 1u ), m_type( essence_type::PASSIVE )
+{
+  // Store the passive into first slot of major spells
+  m_base_major.push_back( passive );
+}
+
+const item_t* azerite_essence_t::item() const
+{ return &( m_player->items[ SLOT_NECK ] ); }
+
+const spell_data_t* azerite_essence_t::spell( unsigned rank, essence_type type ) const
+{
+  return spell( rank, essence_spell::BASE, type );
+}
+
+const spell_data_t* azerite_essence_t::spell( unsigned rank, essence_spell spell, essence_type type ) const
+{
+  // Passive essence. Note, returns nullptr if someone explicitly asks for a passive spell on a
+  // minor/major essence
+  if ( ( type == essence_type::INVALID && m_type == essence_type::PASSIVE ) ||
+       type == essence_type::PASSIVE )
+  {
+    return m_base_major.size() ? m_base_major.front(): spell_data_t::not_found();
+  }
+  // Major or Minor essence
+  else
+  {
+    if ( m_type == essence_type::INVALID )
+    {
+      return spell_data_t::not_found();
+    }
+
+    if ( rank == 0 )
+    {
+      return spell_data_t::not_found();
+    }
+
+    if ( rank - 1 >= m_base_major.size() )
+    {
+      return spell_data_t::not_found();
+    }
+
+    if ( rank > m_rank )
+    {
+      return spell_data_t::not_found();
+    }
+
+    // Figure out spell type requested
+    auto t = type == essence_type::INVALID ? m_type : type;
+
+    if ( t == essence_type::MAJOR )
+    {
+      return spell == essence_spell::BASE ? m_base_major[ rank - 1 ] : m_upgrade_major[ rank - 1 ];
+    }
+    else
+    {
+      return spell == essence_spell::BASE ? m_base_minor[ rank - 1 ] : m_upgrade_minor[ rank - 1 ];
+    }
+  }
+}
+
+const spell_data_t& azerite_essence_t::spell_ref( unsigned rank, essence_type type ) const
+{
+  return spell_ref( rank, essence_spell::BASE, type );
+}
+
+const spell_data_t& azerite_essence_t::spell_ref( unsigned rank, essence_spell spell_, essence_type type ) const
+{
+  if ( const auto ptr = spell( rank, spell_, type ) )
+  {
+    return *ptr;
+  }
+
+  return *spell_data_t::nil();
+}
+
+std::vector<const spell_data_t*> azerite_essence_t::spells( essence_spell spell, essence_type type ) const
+{
+  std::vector<const spell_data_t*> spells;
+
+  // Passive essence. Note, returns an empty vector if someone explicitly requests a passive essence
+  // type on a non-passive essence.
+  if ( ( type == essence_type::INVALID && m_type == essence_type::PASSIVE ) ||
+       type == essence_type::PASSIVE )
+  {
+    return m_base_major;
+  }
+  else
+  {
+    // Figure out spell type requested
+    auto t = type == essence_type::INVALID ? m_type : type;
+
+    if ( t == essence_type::MAJOR )
+    {
+      return spell == essence_spell::BASE ? m_base_major : m_upgrade_major;
+    }
+    else
+    {
+      return spell == essence_spell::BASE ? m_base_minor : m_upgrade_minor;
+    }
+  }
+
+  return spells;
+}
+
 namespace azerite
 {
 std::unique_ptr<azerite_state_t> create_state( player_t* p )
@@ -206,6 +343,27 @@ void initialize_azerite_powers( player_t* actor )
     }
 
     actor -> special_effects.push_back( new special_effect_t( effect ) );
+  }
+
+  for ( auto azerite_essence : actor->azerite_essence->enabled_essences() )
+  {
+    const auto spell = actor->find_spell( azerite_essence );
+    if ( !spell->ok() )
+    {
+      continue;
+    }
+
+    special_effect_t effect { actor };
+    effect.source = SPECIAL_EFFECT_SOURCE_AZERITE_ESSENCE;
+
+    unique_gear::initialize_special_effect( effect, azerite_essence );
+    // Note, only apply custom special effects for azerite essences for an abundance of safety
+    if ( !effect.is_custom() )
+    {
+      continue;
+    }
+
+    actor->special_effects.push_back( new special_effect_t( effect ) );
   }
 }
 
@@ -575,6 +733,265 @@ std::vector<unsigned> azerite_state_t::enabled_spells() const
   return spells;
 }
 
+std::unique_ptr<azerite_essence_state_t> create_essence_state( player_t* p )
+{
+  return std::unique_ptr<azerite_essence_state_t>( new azerite_essence_state_t( p ) );
+}
+
+azerite_essence_state_t::azerite_essence_state_t( const player_t* player ) : m_player( player )
+{ }
+
+// Get an azerite essence object by name
+azerite_essence_t azerite_essence_state_t::get_essence( const std::string& name, bool tokenized ) const
+{
+  const auto& essence = azerite_essence_entry_t::find( name, tokenized, m_player->dbc.ptr );
+  // Could also be a passive spell, so check if the passives logged for the player match this
+  for ( size_t i = 0; essence.id == 0 && i < m_state.size(); ++i )
+  {
+    if ( m_state[ i ].type() != essence_type::PASSIVE )
+    {
+      continue;
+    }
+    const auto spell = m_player->find_spell( m_state[ i ].id() );
+    if ( tokenized )
+    {
+      std::string name_str = spell->name_cstr();
+      util::tokenize( name_str );
+      if ( util::str_compare_ci( name, name_str ) )
+      {
+        return { m_player, spell };
+      }
+    }
+    else if ( util::str_compare_ci( name, spell->name_cstr() ) )
+    {
+      return { m_player, spell };
+    }
+  }
+
+  // No essence found with the name, and no passive essence either, bail out
+  if ( essence.id == 0 )
+  {
+    return {};
+  }
+
+  return get_essence( essence.id );
+}
+
+azerite_essence_t azerite_essence_state_t::get_essence( unsigned id ) const
+{
+  const auto& essence = azerite_essence_entry_t::find( id, m_player->dbc.ptr );
+  // Could also be a passive spell, so check if the passives for the actor match the id
+  for ( size_t i = 0; essence.id == 0 && i < m_state.size(); ++i )
+  {
+    if ( m_state[ i ].type() != essence_type::PASSIVE )
+    {
+      continue;
+    }
+
+    if ( id == m_state[ i ].id() )
+    {
+      return { m_player, m_player->find_spell( id ) };
+    }
+  }
+
+  // No essence found with the name, and no passive essence either, bail out
+  if ( essence.id == 0 )
+  {
+    return {};
+  }
+
+  // Find state slot based on id now
+  auto it = range::find_if( m_state, [ &essence ]( const slot_state_t& slot ) {
+      return slot.id() == essence.id;
+  } );
+
+  // Actor does not have the minor or major essence, bail out
+  if ( it == m_state.end() )
+  {
+    return {};
+  }
+
+  // Return the essence based on the slot state
+  return { m_player, it->type(), it->rank(), &essence };
+}
+
+// Formats:
+// token/token/token/...
+// Where token:
+// essence_id:rank OR essence_id:rank:type OR spell_id
+// Where essence_id: AzeriteEssence.db2 id OR tokenized form of the essence name
+//       rank: 1..N
+//       type: 0 (Minor) OR 1 (Major)
+//       spell_id: Passive milestone spell id
+//
+// Only 2 or 3 element tokens for major/minor powers allowed. If 2 element tokens are used, the
+// first element is the major essence, and the two subsequent tokens are the minor essences. In 3
+// element tokens, ordering does not matter. Placement of passive milestone spells is irrelevant.
+bool azerite_essence_state_t::parse_azerite_essence( sim_t* sim,
+                                                     const std::string& /* name */,
+                                                     const std::string& value )
+{
+  // Three or two digit options used?
+  bool explicit_type = false;
+  int n_parsed_powers = 0;
+  bool major_parsed = false;
+
+  auto splits = util::string_split( value, "/" );
+
+  for ( size_t i = 0u; i < splits.size(); ++i )
+  {
+    // Split by :
+    auto token_split = util::string_split( splits[ i ], ":" );
+
+    unsigned id = util::to_unsigned( token_split[ 0 ] );
+    unsigned rank = 0;
+    essence_type type = essence_type::INVALID;
+
+    // Check if the id is "0", and insert a placeholder into the slot state
+    if ( token_split[ 0 ].front() == '0' )
+    {
+      m_state.push_back( {} );
+      n_parsed_powers++;
+      continue;
+    }
+
+    // Parse/Sanitize rank
+    if ( token_split.size() > 1 )
+    {
+      rank = util::to_unsigned( token_split[ 1 ] );
+      if ( rank > MAX_AZERITE_ESSENCE_RANK )
+      {
+        sim->error( "Invalid Azerite Essence rank, expected max of %u, got %s",
+          MAX_AZERITE_ESSENCE_RANK, token_split[ 1 ].c_str() );
+        return false;
+      }
+    }
+
+    // Parse/Sanitize essence type in 3-element tokens
+    if ( token_split.size() > 2 )
+    {
+      essence_type type = token_split[ 2 ].front() == '0'
+                          ? essence_type::MINOR
+                          : token_split[ 2 ].front() == '1'
+                            ? essence_type::MAJOR
+                            : essence_type::INVALID;
+
+      if ( type == essence_type::INVALID )
+      {
+        sim->errorf( "Invalid Azerite Essence type, expected '0' or '1', got '%s'",
+            token_split[ 2 ].c_str() );
+        return false;
+      }
+    }
+
+    // For 2 and 3 element tokens, try to find the essence with a tokenized name
+    if ( id == 0 && token_split.size() > 1 )
+    {
+      const auto& essence = azerite_essence_entry_t::find( token_split[ 1 ], true, m_player->dbc.ptr );
+      if ( essence.id == 0 )
+      {
+        sim->errorf( "Unable to find Azerite Essence with name '%s'", splits[ 0 ].c_str() );
+        return false;
+      }
+
+      id = essence.id;
+    }
+    // Verify the essence exists for 2 and 3 element tokens
+    else if ( id > 0 && token_split.size() > 1 )
+    {
+      const auto& essence = azerite_essence_entry_t::find( id, m_player->dbc.ptr );
+      if ( essence.id != id )
+      {
+        sim->errorf( "Unable to find Azerite Essence with id %s", splits[ 0 ].c_str() );
+        return false;
+      }
+    }
+
+    switch ( token_split.size() )
+    {
+      // Passive essence power, spell id
+      case 1u:
+      {
+        if ( id == 0 )
+        {
+          sim->errorf( "Unable to parse passive Azerite Essence '%s' into a spell id",
+            token_split[ 0 ].c_str() );
+          return false;
+        }
+
+        auto spell = m_player->find_spell( id );
+        if ( !spell->ok() )
+        {
+          sim->errorf( "Unable to find passive Azerite Essence '%s'",
+            token_split[ 0 ].c_str() );
+          return false;
+        }
+
+        m_state.push_back( { essence_type::PASSIVE, id, 1u } );
+        break;
+      }
+      // Essence id, rank
+      case 2u:
+      {
+        if ( explicit_type && n_parsed_powers > 0 )
+        {
+          sim->errorf( "Unable to mix two- and three-element Azerite Essence options together" );
+          return false;
+        }
+
+        m_state.push_back( { major_parsed ? essence_type::MINOR : essence_type::MAJOR,
+            id, rank } );
+
+        if ( !major_parsed )
+        {
+          major_parsed = true;
+        }
+
+        break;
+      }
+      // Essence id, rank, type
+      case 3u:
+      {
+        if ( major_parsed )
+        {
+          sim->errorf( "Unable to mix two- and three-element Azerite Essence options together" );
+          return false;
+        }
+
+        explicit_type = true;
+
+        m_state.push_back( { type, id, rank } );
+        break;
+      }
+      default:
+        sim->errorf( "Invalid token format for '%s'", splits[ i ].c_str() );
+        return false;
+    }
+
+    n_parsed_powers++;
+  }
+
+  return true;
+}
+
+std::vector<unsigned> azerite_essence_state_t::enabled_essences() const
+{
+  std::vector<unsigned> spells;
+
+  // Iterate over slot state, collecting spell information
+  range::for_each( m_state, [this, &spells]( const slot_state_t& slot ) {
+    auto essence = get_essence( slot.id() );
+    // Note, enabled essences will always report the "base" (rank 1) spell
+    spells.push_back( essence.spell_ref( 1u, slot.type() ).id() );
+    if ( slot.type() == essence_type::MAJOR )
+    {
+      spells.push_back( essence.spell_ref( 1u, essence_type::MINOR ).id() );
+    }
+  } );
+
+  return spells;
+}
+
 void register_azerite_powers()
 {
   unique_gear::register_special_effect( 263962, special_effects::resounding_protection );
@@ -632,6 +1049,17 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 303008, special_effects::undulating_tides      );
   unique_gear::register_special_effect( 303007, special_effects::loyal_to_the_end      );
   unique_gear::register_special_effect( 303006, special_effects::arcane_heart          );
+
+  // Generic Azerite Essences
+  //
+  // NOTE: The On-Use effects are built as separate actions to allow maximum flexibility
+  unique_gear::register_special_effect( 300573, azerite_essences::stamina_milestone );
+  unique_gear::register_special_effect( 300575, azerite_essences::stamina_milestone );
+  unique_gear::register_special_effect( 300576, azerite_essences::stamina_milestone );
+  unique_gear::register_special_effect( 300577, azerite_essences::stamina_milestone );
+
+  // Generic minor Azerite Essences
+  unique_gear::register_special_effect( 295365, azerite_essences::essence_of_the_focusing_iris );
 }
 
 void register_azerite_target_data_initializers( sim_t* sim )
@@ -2862,4 +3290,188 @@ void arcane_heart( special_effect_t& effect )
   } );
 }
 } // Namespace special effects ends
+
+namespace azerite_essences
+{
+void stamina_milestone( special_effect_t& effect )
+{
+  const auto spell = effect.driver();
+
+  if ( effect.player->sim->debug )
+  {
+    effect.player->sim->out_debug.print( "{} increasing stamina by {}% ({})",
+        effect.player->name(), spell->effectN( 1 ).base_value(), spell->name_cstr() );
+  }
+
+  effect.player->base.attribute_multiplier[ ATTR_STAMINA ] *= 1.0 + spell->effectN( 1 ).percent();
+}
+
+// TODO: Open questions:
+// 1) Rank 2 tooltip refers to base * y% damage, but the effect data has an actual base value to
+//    scale off of. Which is used in game?
+// 2) Refresh behavior of both dots
+// 3) Is rank 3 proc allowed to stack if you have rank 3 essence?
+void essence_of_the_focusing_iris( special_effect_t& effect )
+{
+  auto essence = effect.player->find_azerite_essence( effect.driver()->essence_id() );
+  if ( !essence.enabled() )
+  {
+    return;
+  }
+
+  struct ancient_flame_t : public unique_gear::proc_spell_t
+  {
+    ancient_flame_t( const special_effect_t& effect, const std::string& name, const azerite_essence_t& essence ) :
+      proc_spell_t( name, effect.player, effect.player->find_spell( 295367 ), essence.item() )
+    {
+      base_td = essence.spell_ref( 1u, essence_type::MINOR ).effectN( 3 ).average( essence.item() );
+    }
+
+    // Refresh to 10 seconds
+    timespan_t calculate_dot_refresh_duration( const dot_t* /* dot */, timespan_t triggered_duration ) const override
+    { return triggered_duration; }
+  };
+
+  auto action = unique_gear::create_proc_action<ancient_flame_t>( "ancient_flame", effect,
+      "ancient_flame", essence );
+  // Add rank 3 upgrade that increases stack count of the dot by some value
+  action->dot_max_stack +=
+    essence.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).base_value();
+
+  effect.type = SPECIAL_EFFECT_EQUIP;
+  effect.execute_action = action;
+
+  new dbc_proc_callback_t( effect.player, effect );
+
+  // Implement rank 2 as a separate effect.
+  if ( essence.rank() >= 2u )
+  {
+    auto rank_2_proc = new special_effect_t( effect.player );
+    effect.player->special_effects.push_back( rank_2_proc );
+
+    rank_2_proc->type = SPECIAL_EFFECT_EQUIP;
+    rank_2_proc->source = SPECIAL_EFFECT_SOURCE_AZERITE_ESSENCE;
+    rank_2_proc->name_str = "ancient_flame_cauterize";
+    rank_2_proc->spell_id = essence.spell_ref( 2u, essence_type::MINOR ).id();
+
+    auto action = unique_gear::create_proc_action<ancient_flame_t>( "ancient_flame_cauterize", *rank_2_proc,
+        "ancient_flame_cauterize", essence );
+    action->base_multiplier *= essence.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).percent();
+
+    rank_2_proc->execute_action = action;
+
+    auto cb = new dbc_proc_callback_t( effect.player, *rank_2_proc );
+    cb->initialize();
+  }
+}
+
+struct essence_of_the_focusing_iris_t : public azerite_essence_major_t
+{
+  struct missile_t : public unique_gear::proc_spell_t
+  {
+    unsigned cast_number;
+    double multiplier;
+
+    missile_t( player_t* p, const azerite_essence_t& essence ) :
+      proc_spell_t( "concentrated_flame", p, p->find_spell( 295374 ), essence.item() ),
+      cast_number( 1u ), multiplier( essence.spell_ref( 1u ).effectN( 3 ).percent() )
+    {
+      // Base damage is defined in the minor spell for some reason
+      base_dd_min = base_dd_max =
+        essence.spell_ref( 1u, essence_spell::BASE, essence_type::MINOR ).effectN( 2 ).average( essence.item() );
+    }
+
+    double action_multiplier() const override
+    { return proc_spell_t::action_multiplier() * cast_number * multiplier; }
+  };
+
+  struct burn_t : public unique_gear::proc_spell_t
+  {
+    double multiplier;
+
+    burn_t( player_t* p, const azerite_essence_t& essence ) :
+      proc_spell_t( "concentrated_flame_burn", p, p->find_spell( 295368 ), essence.item() ),
+      multiplier( essence.spell_ref( 2u ).effectN( 3 ).percent() )
+    {
+      callbacks = false;
+    }
+
+    void init() override
+    {
+      proc_spell_t::init();
+
+      snapshot_flags = update_flags = STATE_TARGET;
+    }
+
+    void set_damage( double value )
+    { base_td = value * multiplier / ( dot_duration / base_tick_time ); }
+
+    // Max duration + ongoing tick
+    timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
+    { return triggered_duration + dot->tick_event->remains(); }
+  };
+
+  unsigned stack;
+  missile_t* missile;
+  burn_t* burn;
+
+  essence_of_the_focusing_iris_t( player_t* p, const std::string& options_str ) :
+    azerite_essence_major_t( p, "essence_of_the_focusing_iris", p->find_spell( 295373 ) ),
+    stack( 1u ), burn( nullptr )
+  {
+    parse_options( options_str );
+
+    missile = new missile_t( p, essence );
+    add_child( missile );
+
+    cooldown->charges += essence.spell_ref( 3u, essence_spell::UPGRADE ).effectN( 1 ).base_value();
+
+    if ( essence.rank() >= 2 )
+    {
+      burn = new burn_t( p, essence );
+      add_child( burn );
+    }
+  }
+
+  void execute() override
+  {
+    azerite_essence_major_t::execute();
+
+    missile->set_target( target );
+    missile->cast_number = stack;
+    missile->execute();
+
+    if ( burn )
+    {
+      burn->set_target( target );
+      burn->set_damage( missile->execute_state->result_amount );
+      burn->execute();
+    }
+
+    if ( ++stack == 4u )
+    {
+      stack = 1u;
+    }
+  }
+
+  void reset() override
+  {
+    azerite_essence_major_t::reset();
+
+    stack = 1u;
+  }
+};
+
+} // Namespace azerite essences ends
+
+action_t* create_action( player_t* player, const std::string& name, const std::string& options )
+{
+  if ( util::str_compare_ci( name, "essence_of_the_focusing_iris" ) )
+  {
+    return new azerite_essences::essence_of_the_focusing_iris_t( player, options );
+  }
+
+  return nullptr;
+}
+
 } // Namespace azerite ends

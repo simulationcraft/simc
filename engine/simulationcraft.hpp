@@ -3563,6 +3563,9 @@ struct player_t : public actor_t
   /// Azerite state object
   std::unique_ptr<azerite::azerite_state_t> azerite;
 
+  /// Azerite essence state object
+  std::unique_ptr<azerite::azerite_essence_state_t> azerite_essence;
+
   // TODO: FIXME, these stats should not be increased by scale factor deltas
   struct base_initial_current_t
   {
@@ -4082,6 +4085,8 @@ public:
   { return {}; }
   azerite_power_t find_azerite_spell( const std::string& name, bool tokenized = false ) const;
   azerite_power_t find_azerite_spell( unsigned power_id ) const;
+  azerite_essence_t find_azerite_essence( const std::string& name, bool tokenized = false ) const;
+  azerite_essence_t find_azerite_essence( unsigned power_id ) const;
   const spell_data_t* find_racial_spell( const std::string& name, race_e s = RACE_NONE ) const;
   const spell_data_t* find_class_spell( const std::string& name, specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_pet_spell( const std::string& name ) const;
