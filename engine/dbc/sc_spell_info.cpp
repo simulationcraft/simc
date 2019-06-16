@@ -819,6 +819,57 @@ void spell_flags_xml( const spell_data_t* spell, xml_node_t* parent )
     parent -> add_parm( "passive", "true" );
 }
 
+std::string azerite_essence_str( const spell_data_t* spell,
+                             const arv::array_view<azerite_essence_power_entry_t>& data )
+{
+  // Locate spell in the array
+  auto it = range::find_if( data, [ spell ]( const azerite_essence_power_entry_t& e ) {
+    return e.spell_id_base[ 0 ] == spell->id() || e.spell_id_base[ 1 ] == spell->id() ||
+           e.spell_id_upgrade[ 0 ] == spell->id() || e.spell_id_upgrade[ 1 ] == spell->id();
+  } );
+
+  if ( it == data.end() )
+  {
+    return "";
+  }
+
+  std::ostringstream s;
+
+  s << "(";
+
+  s << "Type: ";
+
+  if ( it->spell_id_base[ 0 ] == spell->id() )
+  {
+    s << "Major/Base";
+  }
+  else if ( it->spell_id_base[ 1 ] == spell->id() )
+  {
+    s << "Minor/Base";
+  }
+  else if ( it->spell_id_upgrade[ 0 ] == spell->id() )
+  {
+    s << "Major/Upgrade";
+  }
+  else if ( it->spell_id_upgrade[ 1 ] == spell->id() )
+  {
+    s << "Minor/Upgrade";
+  }
+  else
+  {
+    s << "Unknown";
+  }
+  s << ", ";
+
+
+  s << "Rank: " << it->rank;
+
+
+  s << ")";
+
+  return s.str();
+}
+
 } // unnamed namespace
 
 std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
@@ -1589,7 +1640,12 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
   if ( spell->essence_id() > 0 )
   {
-    s << "Azerite EssenceId: " << spell->essence_id() << std::endl;
+    s << "Azerite EssenceId: " << spell->essence_id() << " ";
+
+    const auto data = azerite_essence_power_entry_t::data( spell->essence_id(), dbc.ptr );
+
+    s << azerite_essence_str( spell, data );
+    s << std::endl;
   }
 
   if ( spell -> proc_flags() > 0 )
