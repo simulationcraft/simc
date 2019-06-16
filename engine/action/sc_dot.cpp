@@ -248,7 +248,7 @@ void dot_t::increment(int stacks = 1)
     stack += stacks;
 
     if (sim.debug)
-      sim.out_debug.printf("dot %s decremented by %d to %d stacks",
+      sim.out_debug.printf("dot %s incremented by %d to %d stacks",
         name_str.c_str(), stacks, stack);
   }
 }
