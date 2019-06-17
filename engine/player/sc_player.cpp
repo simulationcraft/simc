@@ -3107,7 +3107,17 @@ void player_t::create_buffs()
 
     buffs.movement = new movement_buff_t( this );
 
-    buffs.memory_of_lucid_dreams = make_buff<stat_buff_t>( this, "memory_of_lucid_dreams", find_spell( 298357 ) );
+    if ( !is_pet() )
+    {
+      buffs.memory_of_lucid_dreams = make_buff<stat_buff_t>( this, "memory_of_lucid_dreams",
+        find_spell( 298357 ) );
+
+      auto memory_of_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );
+      buffs.lucid_dreams = make_buff<stat_buff_t>( this, "lucid_dreams", find_spell( 298343 ) );
+      buffs.lucid_dreams->add_stat( STAT_VERSATILITY_RATING,
+        memory_of_lucid_dreams.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).average(
+          memory_of_lucid_dreams.item() ) );
+    }
   }
   // .. for enemies
   else
