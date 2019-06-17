@@ -1256,6 +1256,8 @@ class SpellDataGenerator(DataGenerator):
          295374,
          # Spell cast by summon from Condensed Life-Force major power
          295856,
+         # 8.2 Famine Evaluator And Snack Table buffs
+         297116, 297117, 297118, 297119,
         ),
 
         # Warrior:
