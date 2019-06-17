@@ -80,6 +80,7 @@ namespace consumables
   void boralus_blood_sausage( special_effect_t& );
   void potion_of_rising_death( special_effect_t& );
   void potion_of_bursting_blood( special_effect_t& );
+  void potion_of_unbridled_fury( special_effect_t& );
 }
 
 namespace enchants
@@ -274,6 +275,34 @@ void consumables::potion_of_bursting_blood( special_effect_t& effect )
   secondary->cooldown_ = timespan_t::zero();
   secondary->execute_action = create_proc_action<aoe_proc_t>( "potion_bursting_blood",
       effect, "potion_of_bursting_blood", effect.trigger() );
+  effect.player->special_effects.push_back( secondary );
+
+  auto proc = new dbc_proc_callback_t( effect.player, *secondary );
+  proc->deactivate();
+  proc->initialize();
+
+  effect.custom_buff = make_buff( effect.player, effect.name(), effect.driver() )
+    ->set_stack_change_callback( [ proc ]( buff_t*, int, int new_ ) {
+      if ( new_ == 1 ) proc->activate();
+      else             proc->deactivate();
+    } )
+    ->set_cooldown( timespan_t::zero() ) // Handled by the action
+    ->set_chance( 1.0 ); // Override chance so the buff actually triggers
+}
+
+// Potion of Unbridled Fury =================================================
+
+void consumables::potion_of_unbridled_fury( special_effect_t& effect )
+{
+  effect.disable_action();
+
+  // Make a bog standard damage proc for the buff
+  auto secondary = new special_effect_t( effect.player );
+  secondary->type = SPECIAL_EFFECT_EQUIP;
+  secondary->spell_id = effect.spell_id;
+  secondary->cooldown_ = timespan_t::zero();
+  secondary->execute_action = create_proc_action<proc_spell_t>( "potion_of_unbridled_fury",
+      effect );
   effect.player->special_effects.push_back( secondary );
 
   auto proc = new dbc_proc_callback_t( effect.player, *secondary );
@@ -2862,6 +2891,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 290464, consumables::boralus_blood_sausage );
   register_special_effect( 269853, consumables::potion_of_rising_death );
   register_special_effect( 251316, consumables::potion_of_bursting_blood );
+  register_special_effect( 300714, consumables::potion_of_unbridled_fury );
 
   // Enchants
   register_special_effect( 255151, enchants::galeforce_striking );
