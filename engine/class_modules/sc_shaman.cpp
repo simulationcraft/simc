@@ -273,6 +273,8 @@ public:
   // Options
   unsigned stormlash_targets;
   bool raptor_glyph;
+  double proc_chance_enh_memory_of_lucid_dreams;
+  double proc_chance_ele_memory_of_lucid_dreams;
 
   // Data collection for cooldown waste
   auto_dispose<std::vector<data_t*> > cd_waste_exec, cd_waste_cumulative;
@@ -415,6 +417,7 @@ public:
     gain_t* forceful_winds;
     gain_t* lightning_shield_overcharge;
 
+    gain_t* memory_of_lucid_dreams;
   } gain;
 
   // Tracked Procs
@@ -564,11 +567,17 @@ public:
 
   } azerite;
 
+  struct
+  {
+    azerite_essence_t memory_of_lucid_dreams; // Mewmory of lucid dreams minor
+  } azerite_essence;
+
   // Misc Spells
   struct
   {
     const spell_data_t* resurgence;
     const spell_data_t* maelstrom_melee_gain;
+    const spell_data_t* memory_of_lucid_dreams_base;
   } spell;
 
   struct legendary_t
@@ -599,6 +608,8 @@ public:
       lava_surge_during_lvb( false ),
       stormlash_targets( 17 ),  // Default to 2 tanks + 15 dps
       raptor_glyph( false ),
+      proc_chance_enh_memory_of_lucid_dreams( 0.1 ),
+      proc_chance_ele_memory_of_lucid_dreams( 0.1 ),
       action(),
       pet(),
       constant(),
@@ -655,6 +666,8 @@ public:
   bool active_elemental_pet() const;
 
   // triggers
+  void trigger_maelstrom_gain( double base, gain_t* gain = nullptr );
+  void trigger_memory_of_lucid_dreams( double gain );
   void trigger_windfury_weapon( const action_state_t* );
   void trigger_searing_assault( const action_state_t* state );
   void trigger_flametongue_weapon( const action_state_t* );
@@ -711,6 +724,7 @@ public:
   double composite_player_multiplier( school_e school ) const override;
   double composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double composite_player_pet_damage_multiplier( const action_state_t* state ) const override;
+  double composite_maelstrom_gain_coefficient( const action_state_t* state = nullptr ) const;
   double matching_gear_multiplier( attribute_e attr ) const override;
   action_t* create_action( const std::string& name, const std::string& options ) override;
   pet_t* create_pet( const std::string& name, const std::string& type = std::string() ) override;
@@ -798,7 +812,7 @@ struct resonance_totem_buff_t : public buff_t
 
     set_tick_callback( [p]( buff_t* b, int, const timespan_t& ) {
       double g = b->data().effectN( 1 ).base_value();
-      p->resource_gain( RESOURCE_MAELSTROM, g, p->gain.resonance_totem );
+      p->trigger_maelstrom_gain( g, p->gain.resonance_totem );
     } );
   }
 };
@@ -972,7 +986,7 @@ struct ascendance_buff_t : public buff_t
     set_trigger_spell( p->talent.ascendance );
     set_tick_callback( [p]( buff_t* b, int, const timespan_t& ) {
       double g = b->data().effectN( 4 ).base_value();
-      p->resource_gain( RESOURCE_MAELSTROM, g, p->gain.ascendance );
+      p->trigger_maelstrom_gain( g, p->gain.ascendance );
     } );
     set_cooldown( timespan_t::zero() );  // Cooldown is handled by the action
   }
@@ -1202,9 +1216,11 @@ public:
     return p()->get_target_data( t );
   }
 
-  virtual double composite_maelstrom_gain_coefficient( const action_state_t* ) const
+  virtual double composite_maelstrom_gain_coefficient( const action_state_t* state = nullptr ) const
   {
     double m = maelstrom_gain_coefficient;
+
+    m *= p()->composite_maelstrom_gain_coefficient( state );
 
     return m;
   }
@@ -1267,6 +1283,11 @@ public:
   void consume_resource() override
   {
     ab::consume_resource();
+
+    if ( ab::current_resource() == RESOURCE_MAELSTROM )
+    {
+      p()->trigger_memory_of_lucid_dreams( ab::last_resource_cost );
+    }
   }
 
   bool consume_cost_per_tick( const dot_t& dot ) override
@@ -1348,6 +1369,7 @@ public:
     // TODO: Some sort of selector whether it's per cast or per target. Per target is the "default".
     g *= state->n_targets;
     ab::player->resource_gain( RESOURCE_MAELSTROM, g, gain, this );
+
   }
 };
 
@@ -1542,6 +1564,8 @@ public:
       amount = this->maelstrom_weapon_energize_amount( source_state );
     }
 
+    amount *= composite_maelstrom_gain_coefficient( source_state );
+
     p()->resource_gain( RESOURCE_MAELSTROM, amount, gain, this );
     proc_mw->occur();
   }
@@ -1583,7 +1607,7 @@ public:
     if ( ab::p()->talent.aftershock->ok() && ab::current_resource() == RESOURCE_MAELSTROM &&
          ab::last_resource_cost > 0 && ab::rng().roll( ab::p()->talent.aftershock->effectN( 1 ).percent() ) )
     {
-      ab::p()->resource_gain( RESOURCE_MAELSTROM, ab::last_resource_cost, ab::p()->gain.aftershock, nullptr );
+      ab::p()->trigger_maelstrom_gain( ab::last_resource_cost, ab::p()->gain.aftershock );
       expansion::bfa::trigger_leyshocks_grand_compilation( STAT_CRIT_RATING, ab::player );
     }
   }
@@ -2174,8 +2198,8 @@ struct spirit_wolf_t : public base_wolf_t
       shaman_t* o = p()->o();
       if ( o->spec.feral_spirit_2->ok() )
       {
-        o->resource_gain( RESOURCE_MAELSTROM, maelstrom->effectN( 1 ).resource( RESOURCE_MAELSTROM ),
-                          o->gain.feral_spirit, state->action );
+        o->trigger_maelstrom_gain( maelstrom->effectN( 1 ).resource( RESOURCE_MAELSTROM ),
+                          o->gain.feral_spirit );
       }
     }
   };
@@ -2208,8 +2232,8 @@ struct elemental_wolf_base_t : public base_wolf_t
     {
       super::impact( state );
 
-      p()->o()->resource_gain( RESOURCE_MAELSTROM, maelstrom->effectN( 1 ).resource( RESOURCE_MAELSTROM ),
-                               p()->o()->gain.feral_spirit, state->action );
+      p()->o()->trigger_maelstrom_gain( maelstrom->effectN( 1 ).resource( RESOURCE_MAELSTROM ),
+                               p()->o()->gain.feral_spirit );
     }
   };
 
@@ -2771,7 +2795,7 @@ struct windfury_attack_t : public shaman_attack_t
       stats_.at_fw[ p()->buff.forceful_winds->check() ]->occur();
       double bonus_resource =
           p()->buff.forceful_winds->s_data->effectN( 2 ).base_value() * p()->buff.forceful_winds->check();
-      p()->resource_gain( RESOURCE_MAELSTROM, bonus_resource, p()->gain.forceful_winds );
+      p()->trigger_maelstrom_gain( bonus_resource, p()->gain.forceful_winds );
     }
 
     shaman_attack_t::impact( state );
@@ -5701,7 +5725,7 @@ struct flame_shock_t : public shaman_spell_t
       if ( p()->talent.primal_elementalist->ok() && p()->pet.pet_fire_elemental &&
            !p()->pet.pet_fire_elemental->is_sleeping() )
       {
-        p()->resource_gain( RESOURCE_MAELSTROM, p()->find_spell( 263819 )->effectN( 1 ).base_value(),
+        p()->trigger_maelstrom_gain( p()->find_spell( 263819 )->effectN( 1 ).base_value(),
                             p()->gain.fire_elemental );
       }
       else if ( !p()->talent.primal_elementalist->ok() )
@@ -5711,7 +5735,7 @@ struct flame_shock_t : public shaman_spell_t
 
         if ( it != p()->pet.guardian_fire_elemental.end() )
         {
-          p()->resource_gain( RESOURCE_MAELSTROM, p()->find_spell( 263819 )->effectN( 1 ).base_value(),
+          p()->trigger_maelstrom_gain( p()->find_spell( 263819 )->effectN( 1 ).base_value(),
                               p()->gain.fire_elemental );
         }
       }
@@ -6868,6 +6892,8 @@ void shaman_t::create_options()
 
   add_option( opt_uint( "stormlash_targets", stormlash_targets ) );
   add_option( opt_bool( "raptor_glyph", raptor_glyph ) );
+  add_option( opt_float( "proc_chance_ele_memory_of_lucid_dreams", proc_chance_ele_memory_of_lucid_dreams, 0.0, 1.0 ) );
+  add_option( opt_float( "proc_chance_enh_memory_of_lucid_dreams", proc_chance_enh_memory_of_lucid_dreams, 0.0, 1.0 ) );
 }
 
 // shaman_t::copy_from =====================================================
@@ -7007,6 +7033,11 @@ void shaman_t::init_spells()
   //
   spell.resurgence           = find_spell( 101033 );
   spell.maelstrom_melee_gain = find_spell( 187890 );
+
+
+  // Azerite essences
+  azerite_essence.memory_of_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );
+  spell.memory_of_lucid_dreams_base = azerite_essence.memory_of_lucid_dreams.spell( 1u, essence_type::MINOR );
 
   player_t::init_spells();
 }
@@ -7318,6 +7349,65 @@ void shaman_t::trigger_primal_primer( const action_state_t* state )
 
   get_target_data( state->target )->debuff.primal_primer->trigger();
   attack->proc_pp->occur();
+}
+
+double shaman_t::composite_maelstrom_gain_coefficient( const action_state_t* /* state */ ) const
+{
+  double m = 1.0;
+
+  if ( player_t::buffs.memory_of_lucid_dreams->up() )
+  {
+    m *= 1.0 + player_t::buffs.memory_of_lucid_dreams->data().effectN( 1 ).percent();
+  }
+
+  return m;
+}
+
+void shaman_t::trigger_maelstrom_gain( double maelstrom_gain, gain_t* gain )
+{
+  if ( maelstrom_gain <= 0 )
+  {
+    return;
+  }
+
+  double g = maelstrom_gain;
+  g *= composite_maelstrom_gain_coefficient();
+  resource_gain( RESOURCE_MAELSTROM, g, gain );
+
+}
+
+void shaman_t::trigger_memory_of_lucid_dreams( double cost )
+{
+  if ( !azerite_essence.memory_of_lucid_dreams.enabled() )
+  {
+    return;
+  }
+
+  if ( cost <= 0 )
+  {
+    return;
+  }
+
+  if ( specialization() == SHAMAN_RESTORATION || specialization() == SPEC_NONE )
+  {
+    return;
+  }
+
+  if ( ! rng().roll( specialization() == SHAMAN_ELEMENTAL
+                     ? proc_chance_ele_memory_of_lucid_dreams
+                     : proc_chance_enh_memory_of_lucid_dreams ) )
+  {
+    return;
+  }
+
+  double total_gain = cost * spell.memory_of_lucid_dreams_base->effectN( 1 ).percent();
+
+  trigger_maelstrom_gain( total_gain, gain.memory_of_lucid_dreams );
+
+  if ( azerite_essence.memory_of_lucid_dreams.rank() >= 3 )
+  {
+    buffs.lucid_dreams->trigger();
+  }
 }
 
 void shaman_t::trigger_windfury_weapon( const action_state_t* state )
@@ -7678,6 +7768,7 @@ void shaman_t::init_gains()
   gain.lightning_shield_overcharge = get_gain( "Lightning Shield Overcharge" );
   gain.forceful_winds              = get_gain( "Forceful Winds" );
   // Note, Fury of Air gain pointer is initialized in the base action
+  gain.memory_of_lucid_dreams       = get_gain( "Lucid Dreams" );
 }
 
 // shaman_t::init_procs =====================================================
