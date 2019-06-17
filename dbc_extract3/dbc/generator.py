@@ -1254,6 +1254,8 @@ class SpellDataGenerator(DataGenerator):
          298453,
          # Essence of the Focusing Iris major damage spell
          295374,
+         # Spell cast by summon from Condensed Life-Force major power
+         295856,
         ),
 
         # Warrior:
