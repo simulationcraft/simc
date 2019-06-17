@@ -3107,7 +3107,7 @@ void player_t::create_buffs()
 
     buffs.movement = new movement_buff_t( this );
 
-    if ( !is_pet() )
+    if ( maybe_ptr(sim->dbc.ptr) && !is_pet() )
     {
       buffs.memory_of_lucid_dreams = make_buff<stat_buff_t>( this, "memory_of_lucid_dreams",
         find_spell( 298357 ) );
