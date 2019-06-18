@@ -9417,7 +9417,7 @@ role_e druid_t::primary_role() const
   if ( specialization() == DRUID_BALANCE )
   {
     if ( player_t::primary_role() == ROLE_HEAL )
-      return ROLE_HEAL;
+      return ROLE_HYBRID;
 
     return ROLE_SPELL;
   }
@@ -9443,7 +9443,10 @@ role_e druid_t::primary_role() const
     if ( player_t::primary_role() == ROLE_DPS || player_t::primary_role() == ROLE_SPELL )
       return ROLE_SPELL;
 
-    return ROLE_HEAL;
+    if ( player_t::primary_role() == ROLE_ATTACK )
+      return ROLE_ATTACK;
+
+    return ROLE_HYBRID;
   }
 
   return player_t::primary_role();
