@@ -1258,6 +1258,12 @@ class SpellDataGenerator(DataGenerator):
          295856,
          # 8.2 Famine Evaluator And Snack Table buffs
          297116, 297117, 297118, 297119,
+         # 8.2 Force Multiplier enchant buffs (str, crit, haste, mastery, agi)
+         300691, 300801, 300802, 300809, 300893,
+         # 8.2 Machinist's Brilliance enchant buffs (crit, int, haste, mastery)
+         298431, 300693, 300761, 300762,
+         # 8.2 Naga Hide enchant buffs (agi, str)
+         298466, 300800,
         ),
 
         # Warrior:
