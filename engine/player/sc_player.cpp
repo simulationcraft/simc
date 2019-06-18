@@ -3107,7 +3107,7 @@ void player_t::create_buffs()
 
     buffs.movement = new movement_buff_t( this );
 
-    if ( maybe_ptr(sim->dbc.ptr) && !is_pet() )
+    if ( !is_pet() )
     {
       buffs.memory_of_lucid_dreams = make_buff<stat_buff_t>( this, "memory_of_lucid_dreams",
         find_spell( 298357 ) );
@@ -9562,7 +9562,7 @@ azerite_power_t player_t::find_azerite_spell( const std::string& name, bool toke
 
 azerite_essence_t player_t::find_azerite_essence( unsigned id ) const
 {
-  if ( !azerite_essence )
+  if ( !azerite_essence || !maybe_ptr( dbc.ptr ) )
   {
     return { this };
   }
@@ -9572,7 +9572,7 @@ azerite_essence_t player_t::find_azerite_essence( unsigned id ) const
 
 azerite_essence_t player_t::find_azerite_essence( const std::string& name, bool tokenized ) const
 {
-  if ( !azerite_essence )
+  if ( !azerite_essence || !maybe_ptr( dbc.ptr ) )
   {
     return { this };
   }
