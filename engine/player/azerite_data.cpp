@@ -3550,11 +3550,11 @@ void essence_of_the_focusing_iris( special_effect_t& effect )
 
   int is = 1;
   if (essence.rank() >=3)
-    is = essence.spell_ref(3u, essence_type::MINOR).effectN(1).base_value;
+    is = essence.spell_ref(3u, essence_type::MINOR).effectN(1).base_value();
 
   double haste = essence.spell_ref(1u, essence_type::MINOR).effectN(2).average(essence.item());
   if (essence.rank() >=2)
-    haste *= 1 + effect.player->find_spell(295251)->effectN(1).percent;
+    haste *= 1 + effect.player->find_spell(295251)->effectN(1).percent();
 
   auto haste_buff = unique_gear::create_buff<stat_buff_t>( effect.player, "focused_energy",
       effect.player->find_spell( 295248 ) )
@@ -3583,10 +3583,6 @@ struct essence_of_the_focusing_iris_t : public azerite_essence_major_t
 
     return false;
   }
-  
-  //Minor power:
-  //Applies 3 second stacking haste buff on ability uses against the same target. 3 stacks added if no stacks had.
-  //Max stacks is 10. Driver for minor power seems to be 295246
 };
 
 struct condensed_life_force_t : public azerite_essence_major_t
