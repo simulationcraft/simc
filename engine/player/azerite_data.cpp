@@ -3621,7 +3621,7 @@ struct worldvein_resonance_t : public azerite_essence_major_t
 
 action_t* create_action( player_t* player, const std::string& name, const std::string& options )
 {
-  if ( util::str_compare_ci( name, "essence_of_the_focusing_iris" ) )
+  if ( util::str_compare_ci( name, "focused_azerite_beam" ) )
   {
     return new azerite_essences::essence_of_the_focusing_iris_t( player, options );
   }
@@ -3633,11 +3633,11 @@ action_t* create_action( player_t* player, const std::string& name, const std::s
   {
     return new azerite_essences::blood_of_the_enemy_t( player, options );
   }
-  else if ( util::str_compare_ci( name, "condensed_life_force" ) )
+  else if ( util::str_compare_ci( name, "guardian_of_azeroth" ) )
   {
     return new azerite_essences::condensed_life_force_t( player, options );
   }
-  else if ( util::str_compare_ci( name, "purification_protocol" ) )
+  else if ( util::str_compare_ci( name, "purifying_blast" ) )
   {
     return new azerite_essences::purification_protocol_t( player, options );
   }
@@ -3645,7 +3645,7 @@ action_t* create_action( player_t* player, const std::string& name, const std::s
   {
     return new azerite_essences::ripple_in_space_t( player, options );
   }
-  else if ( util::str_compare_ci( name, "the_crucible_of_flame"))
+  else if ( util::str_compare_ci( name, "concentrated_flame"))
   {
     return new azerite_essences::the_crucible_of_flame_t( player, options );
   }
