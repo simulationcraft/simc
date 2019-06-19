@@ -344,6 +344,7 @@ void arcane_heart( special_effect_t& effect );
 namespace azerite_essences
 {
 void stamina_milestone( special_effect_t& effect );
+void the_crucible_of_flame( special_effect_t& effect );
 void essence_of_the_focusing_iris( special_effect_t& effect );
 
 } // Namepsace azerite_essences ends

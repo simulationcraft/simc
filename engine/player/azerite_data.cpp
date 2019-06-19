@@ -1063,7 +1063,8 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 300577, azerite_essences::stamina_milestone );
 
   // Generic minor Azerite Essences
-  unique_gear::register_special_effect( 295365, azerite_essences::essence_of_the_focusing_iris );
+  unique_gear::register_special_effect( 295365, azerite_essences::the_crucible_of_flame );
+  unique_gear::register_special_effect( 295246, azerite_essences::essence_of_the_focusing_iris );
 }
 
 void register_azerite_target_data_initializers( sim_t* sim )
@@ -3510,12 +3511,77 @@ struct blood_of_the_enemy_t : public azerite_essence_major_t
   //At max stacks, buff consumed and grants haste. Chance to not consume all stacks, depending on rank
 };
 
+void essence_of_the_focusing_iris( special_effect_t& effect )
+{
+  auto essence = effect.player->find_azerite_essence( effect.driver()->essence_id() );
+  if ( !essence.enabled() )
+  {
+    return;
+  }
+
+  struct focused_energy_driver_t : dbc_proc_callback_t
+  {
+    player_t* primary;
+    buff_t* focus_buff;
+    int init_stacks;
+
+    focused_energy_driver_t(const special_effect_t& effect, buff_t* b, int is) :
+      dbc_proc_callback_t(effect.player, effect), primary(nullptr), focus_buff(b), init_stacks(is)
+    {}
+
+    void execute(action_t* a, action_state_t*) override
+    {
+      //Focused energy appears to not immediately disappear if another target is hit with a spell
+      //Instead, it will simply not increment/refresh stacks unless the original target is hit again
+      if (!primary)
+        primary = a->target;
+
+      if (primary && a->target == primary && focus_buff->up())
+      {
+        focus_buff->trigger();
+      }
+      else if (!focus_buff->up())
+      {
+        primary = a->target;
+        focus_buff->trigger(init_stacks);
+      }
+    }
+  };
+
+  int is = 1;
+  if (essence.rank() >=3)
+    is = essence.spell_ref(3u, essence_type::MINOR).effectN(1).base_value;
+
+  double haste = essence.spell_ref(1u, essence_type::MINOR).effectN(2).average(essence.item());
+  if (essence.rank() >=2)
+    haste *= 1 + effect.player->find_spell(295251)->effectN(1).percent;
+
+  auto haste_buff = unique_gear::create_buff<stat_buff_t>( effect.player, "focused_energy",
+      effect.player->find_spell( 295248 ) )
+    ->add_stat( STAT_HASTE_RATING, haste );
+
+  new focused_energy_driver_t(effect, haste_buff, is);
+}
+
 struct essence_of_the_focusing_iris_t : public azerite_essence_major_t
 {
   essence_of_the_focusing_iris_t( player_t* p, const std::string& options_str ) :
     azerite_essence_major_t( p, "essence_of_the_focusing_iris", p->find_spell(295298) )
   {
+    parse_options(options_str);
 
+    harmful = true;
+
+    if(essence.rank() >= 2)
+      base_execute_time *= (1.0 - essence.spell_ref(2u).effectN(1).percent());
+  }
+
+  bool usable_moving() const override
+  {
+    if(essence.rank() >=3)
+      return true;
+
+    return false;
   }
   
   //Minor power:
