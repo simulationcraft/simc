@@ -3315,7 +3315,7 @@ void stamina_milestone( special_effect_t& effect )
 //    scale off of. Which is used in game?
 // 2) Refresh behavior of both dots
 // 3) Is rank 3 proc allowed to stack if you have rank 3 essence?
-void essence_of_the_focusing_iris( special_effect_t& effect )
+void the_crucible_of_flame( special_effect_t& effect )
 {
   auto essence = effect.player->find_azerite_essence( effect.driver()->essence_id() );
   if ( !essence.enabled() )
@@ -3369,7 +3369,7 @@ void essence_of_the_focusing_iris( special_effect_t& effect )
   }
 }
 
-struct essence_of_the_focusing_iris_t : public azerite_essence_major_t
+struct the_crucible_of_flame_t : public azerite_essence_major_t
 {
   struct missile_t : public unique_gear::proc_spell_t
   {
@@ -3419,8 +3419,8 @@ struct essence_of_the_focusing_iris_t : public azerite_essence_major_t
   missile_t* missile;
   burn_t* burn;
 
-  essence_of_the_focusing_iris_t( player_t* p, const std::string& options_str ) :
-    azerite_essence_major_t( p, "essence_of_the_focusing_iris", p->find_spell( 295373 ) ),
+  the_crucible_of_flame_t( player_t* p, const std::string& options_str ) :
+    azerite_essence_major_t( p, "the_crucible_of_flame", p->find_spell( 295373 ) ),
     stack( 1u ), burn( nullptr )
   {
     parse_options( options_str );
@@ -3496,6 +3496,51 @@ struct memory_of_lucid_dreams_t : public azerite_essence_major_t
   }
 };
 
+struct blood_of_the_enemy_t : public azerite_essence_major_t
+{
+
+};
+
+struct essence_of_the_focusing_iris_t : public azerite_essence_major_t
+{
+
+};
+
+struct condensed_life_force_t : public azerite_essence_major_t
+{
+
+};
+
+struct conflict_and_strife_t : public azerite_essence_major_t
+{
+
+};
+
+struct purification_protocol_t : public azerite_essence_major_t
+{
+
+};
+
+struct ripple_in_space_t : public azerite_essence_major_t
+{
+
+};
+
+struct the_unbound_force_t : public azerite_essence_major_t
+{
+
+};
+
+struct vision_of_perfection_t : public azerite_essence_major_t
+{
+
+};
+
+struct worldvein_resonance_t : public azerite_essence_major_t
+{
+
+};
+
 } // Namespace azerite essences ends
 
 action_t* create_action( player_t* player, const std::string& name, const std::string& options )
@@ -3507,6 +3552,34 @@ action_t* create_action( player_t* player, const std::string& name, const std::s
   else if ( util::str_compare_ci( name, "memory_of_lucid_dreams" ) )
   {
     return new azerite_essences::memory_of_lucid_dreams_t( player, options );
+  }
+  else if ( util::str_compare_ci( name, "blood_of_the_enemy" ) )
+  {
+    return new azerite_essences::blood_of_the_enemy_t( player, options );
+  }
+  else if ( util::str_compare_ci( name, "condensed_life_force" ) )
+  {
+    return new azerite_essences::condensed_life_force_t( player, options );
+  }
+  else if ( util::str_compare_ci( name, "purification_protocol" ) )
+  {
+    return new azerite_essences::purification_protocol_t( player, options );
+  }
+  else if ( util::str_compare_ci( name, "ripple_in_space" ) )
+  {
+    return new azerite_essences::ripple_in_space_t( player, options );
+  }
+  else if ( util::str_compare_ci( name, "the_crucible_of_flame"))
+  {
+    return new azerite_essences::the_crucible_of_flame_t( player, options );
+  }
+  else if ( util::str_compare_ci( name, "the_unbound_force"))
+  {
+    return new azerite_essences::the_unbound_force_t( player, options );
+  }
+  else if (util::str_compare_ci(name, "worldvein_resonance"))
+  {
+    return new azerite_essences::worldvein_resonance_t( player, options );
   }
 
   return nullptr;
