@@ -3498,47 +3498,123 @@ struct memory_of_lucid_dreams_t : public azerite_essence_major_t
 
 struct blood_of_the_enemy_t : public azerite_essence_major_t
 {
+  blood_of_the_enemy_t(player_t* p, const std::string& options_str) :
+    azerite_essence_major_t(p, "blood_of_the_enemy", p->find_spell(297108))
+  {
 
+  }
+
+  //Major power does aoe around player, applying debuff to target (same spellid as the major) that
+  //increases crit chance against the target, and applies buff to player (spellid 297126)
+  //Minor power stacks gained on crits. Spellid for the buff driver is 297147
+  //At max stacks, buff consumed and grants haste. Chance to not consume all stacks, depending on rank
 };
 
 struct essence_of_the_focusing_iris_t : public azerite_essence_major_t
 {
+  essence_of_the_focusing_iris_t( player_t* p, const std::string& options_str ) :
+    azerite_essence_major_t( p, "essence_of_the_focusing_iris", p->find_spell(295298) )
+  {
 
+  }
+  
+  //Minor power:
+  //Applies 3 second stacking haste buff on ability uses against the same target. 3 stacks added if no stacks had.
+  //Max stacks is 10. Driver for minor power seems to be 295246
 };
 
 struct condensed_life_force_t : public azerite_essence_major_t
 {
+  condensed_life_force_t(player_t* p, const std::string& options_str) :
+    azerite_essence_major_t(p, "condensed_life_force", p->find_spell(295840))
+  {
 
+  }
+
+  //The active major has different spell ids per rank possibly. The one above is from rank 3 testing 
+  //and seems to include conditional checks for ranks but not sure if that will work automatically
+  //Summons a guardian pet that will cast a copy of the minor effect (spellid 295834).
+  //Higher ranks grant a haste buff while guardian is active (spellid 295855)
 };
 
 struct conflict_and_strife_t : public azerite_essence_major_t
 {
+  conflict_and_strife_t(player_t* p, const std::string& options_str) :
+    azerite_essence_major_t(p, "conflict_and_strife", p->find_spell(303823))
+  {
+    
+  }
 
+  //Spell id used above is possible driver but this is going to be overridden for every spec probably
+  //Minor grants stacking vers proc, driver spell seems to be spellid 304081
+  //Minor has an ICD listed, but this is probably for the feature where it procs on loss of control. RPPM is not listed
 };
 
 struct purification_protocol_t : public azerite_essence_major_t
 {
+  purification_protocol_t(player_t* p, const std::string& options_str) :
+    azerite_essence_major_t(p, "purification_protocol", p->find_spell(295337))
+  {
 
+  }
+
+  //Higher rank of major power has an on-death effect to increase damage by player (spellid 295354)
+  //Minor is a damage aoe proc, spellid 295293
+  //Does more damage to aberrations
 };
 
 struct ripple_in_space_t : public azerite_essence_major_t
 {
+  ripple_in_space_t(player_t* p, const std::string& options_str) :
+    azerite_essence_major_t(p, "ripple_in_space", p->find_spell(302731))
+  {
 
+  }
+
+  //Does aoe damage after 2 second delay at the target location
+  //Minor power grants primary stat after moving a certain distance
+  //Minor driver is either 302916 or 302961
 };
 
 struct the_unbound_force_t : public azerite_essence_major_t
 {
+  the_unbound_force_t(player_t* p, const std::string& options_str) :
+    azerite_essence_major_t(p, "the_unbound_force", p->find_spell(298452))
+  {
 
+  }
+
+  //Major spell does another immediate proc of the same damage if it crits (max 5 procs)
+  //Major spell damage is increased by 300% if it crits
+  //Minor spell has high chance to proc on non-crits
+  //Minor driver is 298407
+  //Stacks reset at cap and short crit buff happens. Stacks can start accumulating again during the crit buff
 };
 
 struct vision_of_perfection_t : public azerite_essence_major_t
 {
+  vision_of_perfection_t(player_t* p, const std::string& options_str) :
+    azerite_essence_major_t(p, "vision_of_perfection", p->find_spell(292365))
+  {
 
+  }
+
+  //Major driver is probably 292365 used above but this will be spec-specific
+  //Major effect also has haste buff when cd is used, spellid 303342
 };
 
 struct worldvein_resonance_t : public azerite_essence_major_t
 {
+  worldvein_resonance_t(player_t* p, const std::string& options_str) :
+    azerite_essence_major_t(p, "worldvein_resonance", p->find_spell(295186))
+  {
 
+  }
+
+  //Minor and major power both summon Lifeblood shards that grant primary stat (max benefit of 4 shards)
+  //Lifeblood shards are governed by spellid 295078
+  //Major power summons a number of shards based on rank. 295186 is the spell id for the in-game ability regardless of 
+  //rank, however rank 2 has spell data from 298628 and rank 3 has spell data from 299334
 };
 
 } // Namespace azerite essences ends
