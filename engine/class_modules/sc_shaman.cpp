@@ -569,7 +569,7 @@ public:
 
   struct
   {
-    azerite_essence_t memory_of_lucid_dreams; // Mewmory of lucid dreams minor
+    azerite_essence_t memory_of_lucid_dreams;  // Mewmory of lucid dreams minor
   } azerite_essence;
 
   // Misc Spells
@@ -608,8 +608,8 @@ public:
       lava_surge_during_lvb( false ),
       stormlash_targets( 17 ),  // Default to 2 tanks + 15 dps
       raptor_glyph( false ),
-      proc_chance_enh_memory_of_lucid_dreams( 0.1 ),
-      proc_chance_ele_memory_of_lucid_dreams( 0.1 ),
+      proc_chance_enh_memory_of_lucid_dreams( 0.15 ),
+      proc_chance_ele_memory_of_lucid_dreams( 0.15 ),
       action(),
       pet(),
       constant(),
@@ -870,7 +870,7 @@ struct roiling_storm_buff_driver_t : public buff_t
     {
       set_tick_callback( [p]( buff_t*, int, const timespan_t& ) {
         p->buff.stormbringer->trigger( p->buff.stormbringer->max_stack() );
-        p->cooldown.strike->reset(true);
+        p->cooldown.strike->reset( true );
       } );
     }
   }
@@ -1369,7 +1369,6 @@ public:
     // TODO: Some sort of selector whether it's per cast or per target. Per target is the "default".
     g *= state->n_targets;
     ab::player->resource_gain( RESOURCE_MAELSTROM, g, gain, this );
-
   }
 };
 
@@ -2198,8 +2197,7 @@ struct spirit_wolf_t : public base_wolf_t
       shaman_t* o = p()->o();
       if ( o->spec.feral_spirit_2->ok() )
       {
-        o->trigger_maelstrom_gain( maelstrom->effectN( 1 ).resource( RESOURCE_MAELSTROM ),
-                          o->gain.feral_spirit );
+        o->trigger_maelstrom_gain( maelstrom->effectN( 1 ).resource( RESOURCE_MAELSTROM ), o->gain.feral_spirit );
       }
     }
   };
@@ -2233,7 +2231,7 @@ struct elemental_wolf_base_t : public base_wolf_t
       super::impact( state );
 
       p()->o()->trigger_maelstrom_gain( maelstrom->effectN( 1 ).resource( RESOURCE_MAELSTROM ),
-                               p()->o()->gain.feral_spirit );
+                                        p()->o()->gain.feral_spirit );
     }
   };
 
@@ -3073,10 +3071,10 @@ struct windlash_t : public shaman_attack_t
   {
     background = repeating = may_miss = may_dodge = may_parry = true;
     may_proc_ability_procs = may_glance = special = false;
-    weapon                 = w;
-    weapon_multiplier      = 1.0;
-    base_execute_time      = w->swing_time;
-    trigger_gcd            = timespan_t::zero();
+    weapon                                        = w;
+    weapon_multiplier                             = 1.0;
+    base_execute_time                             = w->swing_time;
+    trigger_gcd                                   = timespan_t::zero();
 
     may_proc_maelstrom_weapon = true;  // Presumption, but should be safe
   }
@@ -5725,8 +5723,7 @@ struct flame_shock_t : public shaman_spell_t
       if ( p()->talent.primal_elementalist->ok() && p()->pet.pet_fire_elemental &&
            !p()->pet.pet_fire_elemental->is_sleeping() )
       {
-        p()->trigger_maelstrom_gain( p()->find_spell( 263819 )->effectN( 1 ).base_value(),
-                            p()->gain.fire_elemental );
+        p()->trigger_maelstrom_gain( p()->find_spell( 263819 )->effectN( 1 ).base_value(), p()->gain.fire_elemental );
       }
       else if ( !p()->talent.primal_elementalist->ok() )
       {
@@ -5735,8 +5732,7 @@ struct flame_shock_t : public shaman_spell_t
 
         if ( it != p()->pet.guardian_fire_elemental.end() )
         {
-          p()->trigger_maelstrom_gain( p()->find_spell( 263819 )->effectN( 1 ).base_value(),
-                              p()->gain.fire_elemental );
+          p()->trigger_maelstrom_gain( p()->find_spell( 263819 )->effectN( 1 ).base_value(), p()->gain.fire_elemental );
         }
       }
     }
@@ -7034,10 +7030,9 @@ void shaman_t::init_spells()
   spell.resurgence           = find_spell( 101033 );
   spell.maelstrom_melee_gain = find_spell( 187890 );
 
-
   // Azerite essences
   azerite_essence.memory_of_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );
-  spell.memory_of_lucid_dreams_base = azerite_essence.memory_of_lucid_dreams.spell( 1u, essence_type::MINOR );
+  spell.memory_of_lucid_dreams_base      = azerite_essence.memory_of_lucid_dreams.spell( 1u, essence_type::MINOR );
 
   player_t::init_spells();
 }
@@ -7373,7 +7368,6 @@ void shaman_t::trigger_maelstrom_gain( double maelstrom_gain, gain_t* gain )
   double g = maelstrom_gain;
   g *= composite_maelstrom_gain_coefficient();
   resource_gain( RESOURCE_MAELSTROM, g, gain );
-
 }
 
 void shaman_t::trigger_memory_of_lucid_dreams( double cost )
@@ -7393,9 +7387,8 @@ void shaman_t::trigger_memory_of_lucid_dreams( double cost )
     return;
   }
 
-  if ( ! rng().roll( specialization() == SHAMAN_ELEMENTAL
-                     ? proc_chance_ele_memory_of_lucid_dreams
-                     : proc_chance_enh_memory_of_lucid_dreams ) )
+  if ( !rng().roll( specialization() == SHAMAN_ELEMENTAL ? proc_chance_ele_memory_of_lucid_dreams
+                                                         : proc_chance_enh_memory_of_lucid_dreams ) )
   {
     return;
   }
@@ -7768,7 +7761,7 @@ void shaman_t::init_gains()
   gain.lightning_shield_overcharge = get_gain( "Lightning Shield Overcharge" );
   gain.forceful_winds              = get_gain( "Forceful Winds" );
   // Note, Fury of Air gain pointer is initialized in the base action
-  gain.memory_of_lucid_dreams       = get_gain( "Lucid Dreams" );
+  gain.memory_of_lucid_dreams = get_gain( "Lucid Dreams" );
 }
 
 // shaman_t::init_procs =====================================================
@@ -8796,9 +8789,9 @@ void shaman_t::combat_begin()
     buff.stormbringer->trigger( buff.stormbringer->max_stack() );
   }
 
-  if (talent.lightning_shield->ok())
+  if ( talent.lightning_shield->ok() )
   {
-    for (size_t i = 0, end = rng().range(0, 10); i < end; i++) 
+    for ( size_t i = 0, end = rng().range( 0, 10 ); i < end; i++ )
     {
       buff.lightning_shield->trigger();
       buff.lightning_shield->trigger();
