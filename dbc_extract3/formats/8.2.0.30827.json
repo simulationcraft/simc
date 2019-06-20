@@ -802,7 +802,7 @@
     { "data_type": "f", "field": "unk_1" },
     { "data_type": "i", "field": "id_icon" },
     { "data_type": "I", "field": "id_active_icon" },
-    { "data_type": "H", "field": "unk_4" },
+    { "data_type": "i", "field": "unk_4" },
     { "data_type": "I", "field": "flags", "elements": 14 }
   ],
   "SpellPower": [
