@@ -394,7 +394,6 @@ public:
   } azerite_essence;
 
   player_t* beacon_target;
-  bool lucid_dream_proc_flag;
 
   bool fake_sov;
   int indomitable_justice_pct;
