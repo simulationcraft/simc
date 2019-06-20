@@ -27,7 +27,8 @@ paladin_t::paladin_t( sim_t* sim, const std::string& name, race_e r ) :
   talents( talents_t() ),
   beacon_target( nullptr ),
   fake_sov( true ),
-  indomitable_justice_pct( 0 )
+  indomitable_justice_pct( 0 ),
+  proc_chance_ret_memory_of_lucid_dreams( 0.15 )
 {
   active_consecration = nullptr;
 
@@ -193,7 +194,7 @@ struct consecration_t : public paladin_spell_t
 
     dot_duration = 0_ms; // the periodic event is handled by ground_aoe_event_t
     may_miss = harmful = false;
-    
+
     add_child( damage_tick );
   }
 
@@ -256,13 +257,13 @@ struct consecration_t : public paladin_spell_t
       p() -> cooldowns.consecration -> adjust( -2_s );
 
       // Create an event that starts consecration's aoe one second after combat starts
-      make_event( *sim, 1_s, [ this ]( ) 
+      make_event( *sim, 1_s, [ this ]( )
       {
         make_event<ground_aoe_event_t>( *sim, p(), cons_params, true /* Immediate pulse */ );
       });
     }
 
-    else 
+    else
     {
       make_event<ground_aoe_event_t>( *sim, p(), cons_params, true /* Immediate pulse */ );
     }
@@ -403,7 +404,7 @@ struct judgment_of_light_proc_t : public paladin_heal_t
   {
     background = proc = may_crit = true;
     may_miss = false;
- 
+
     // NOTE: this is implemented in SimC as a self-heal only. It does NOT proc for other players attacking the boss.
     // This is mostly done because it's much simpler to code, and for the most part Prot doesn't care about raid healing efficiency.
     // If Holy wants this to work like the in-game implementation, they'll have to go through the pain of moving things to player_t
@@ -517,7 +518,7 @@ struct melee_t : public paladin_melee_attack_t
         if ( p() -> art_of_war_rppm -> trigger() )
         {
           p() -> procs.art_of_war -> occur();
-         
+
           if ( p() -> talents.blade_of_wrath -> ok() )
             p() -> buffs.blade_of_wrath -> trigger();
 
@@ -589,7 +590,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
   {
     paladin_melee_attack_t::impact( s );
 
-    if ( p() -> talents.crusaders_might -> ok() ) 
+    if ( p() -> talents.crusaders_might -> ok() )
     {
       timespan_t cm_cdr = p() -> talents.crusaders_might -> effectN( 1 ).time_value();
       p() -> cooldowns.holy_shock -> adjust( cm_cdr );
@@ -891,7 +892,7 @@ void paladin_t::create_actions()
   {
     paladin_t::create_ret_actions();
   }
-  
+
   if ( talents.judgment_of_light -> ok() )
   {
     active.judgment_of_light = new judgment_of_light_proc_t( this );
@@ -941,6 +942,32 @@ void paladin_t::trigger_forbearance( player_t* target )
 
   buff -> paladin = this;
   buff -> trigger();
+}
+
+void paladin_t::trigger_memory_of_lucid_dreams( double cost )
+{
+  if ( !azerite_essence.memory_of_lucid_dreams.enabled() )
+    return;
+
+  if ( cost <= 0 )
+    return;
+
+  if ( specialization() == PALADIN_RETRIBUTION ) {
+    // TODO(mserrano): make this into an option
+    if ( ! rng().roll( proc_chance_ret_memory_of_lucid_dreams ) )
+      return;
+
+    double total_gain = cost * spells.memory_of_lucid_dreams_base -> effectN( 1 ).percent();
+
+    resource_gain( RESOURCE_HOLY_POWER, total_gain, gains.hp_memory_of_lucid_dreams );
+
+  } else {
+    // TODO: implement holy/prot
+    return;
+  }
+
+  if ( azerite_essence.memory_of_lucid_dreams.rank() >= 3 )
+    player_t::buffs.lucid_dreams -> trigger();
 }
 
 int paladin_t::get_local_enemies( double distance ) const
@@ -1022,6 +1049,7 @@ void paladin_t::init_gains()
   gains.hp_templars_verdict_refund  = get_gain( "templars_verdict_refund" );
   gains.judgment                    = get_gain( "judgment" );
   gains.hp_cs                       = get_gain( "crusader_strike" );
+  gains.hp_memory_of_lucid_dreams   = get_gain( "memory_of_lucid_dreams" );
 }
 
 // paladin_t::init_procs ====================================================
@@ -1054,7 +1082,7 @@ void paladin_t::init_scaling()
     default:
       break;
   }
-  
+
   scaling -> disable( STAT_AGILITY );
 }
 
@@ -1079,7 +1107,7 @@ void paladin_t::create_buffs()
   buffs.divine_purpose          = make_buff( this, "divine_purpose", spells.divine_purpose_buff );
   buffs.divine_shield           = make_buff( this, "divine_shield", find_class_spell( "Divine Shield" ) )
                                 -> set_cooldown( 0_ms ); // Let the ability handle the CD
-  
+
   buffs.avengers_might = make_buff<stat_buff_t>( this, "avengers_might", find_spell( 272903 ) )
                        -> add_stat( STAT_MASTERY_RATING, azerite.avengers_might.value() );
 }
@@ -1310,6 +1338,10 @@ void paladin_t::init_spells()
   azerite.avengers_might        = find_azerite_spell( "Avenger's Might" );
   azerite.grace_of_the_justicar = find_azerite_spell( "Grace of the Justicar" );
   azerite.indomitable_justice   = find_azerite_spell( "Indomitable Justice" );
+
+  // Essences
+  azerite_essence.memory_of_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );
+  spells.memory_of_lucid_dreams_base = azerite_essence.memory_of_lucid_dreams.spell( 1u, essence_type::MINOR );
 }
 
 // paladin_t::primary_role ==================================================
@@ -1366,7 +1398,7 @@ stat_e paladin_t::convert_hybrid_stat( stat_e s ) const
     }
   }
   // Protection and Retribution use strength
-  else 
+  else
   {
     switch ( s )
     {
@@ -1671,6 +1703,21 @@ double paladin_t::matching_gear_multiplier( attribute_e attr ) const
   return 0.0;
 }
 
+// paladin_t::resource_gain =================================================
+
+double paladin_t::resource_gain( resource_e resource_type, double amount, gain_t* source, action_t* action )
+{
+  if ( resource_type == RESOURCE_HOLY_POWER && specialization() == PALADIN_RETRIBUTION )
+  {
+    if ( player_t::buffs.memory_of_lucid_dreams -> up() )
+    {
+      amount *= 1.0 + player_t::buffs.memory_of_lucid_dreams -> data().effectN( 1 ).percent();
+    }
+  }
+
+  return player_t::resource_gain( resource_type, amount, source, action );
+}
+
 // paladin_t::assess_damage =================================================
 
 void paladin_t::assess_damage( school_e school,
@@ -1756,6 +1803,7 @@ void paladin_t::create_options()
   // TODO: figure out a better solution for this.
   add_option( opt_bool( "paladin_fake_sov", fake_sov ) );
   add_option( opt_int( "indomitable_justice_pct", indomitable_justice_pct ) );
+  add_option( opt_float( "proc_chance_ret_memory_of_lucid_dreams", proc_chance_ret_memory_of_lucid_dreams, 0.0, 1.0 ) );
 
   player_t::create_options();
 }

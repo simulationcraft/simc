@@ -19,7 +19,7 @@ namespace buffs {
     paladin_t* paladin = static_cast<paladin_t*>( p );
     if ( paladin -> azerite.lights_decree.ok() )
       buff_duration += paladin -> spells.lights_decree -> effectN( 2 ).time_value();
-    
+
     // let the ability handle the cooldown
     cooldown -> duration = 0_ms;
 
@@ -56,7 +56,7 @@ struct lights_decree_t : public paladin_spell_t
 {
   int last_holy_power_cost;
 
-  lights_decree_t( paladin_t* p ) : 
+  lights_decree_t( paladin_t* p ) :
     paladin_spell_t( "lights_decree", p, p -> find_spell( 286232 ) ),
     last_holy_power_cost( 0 )
   {
@@ -81,7 +81,7 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
 
   double cost() const override
   {
-    if ( ( is_divine_storm && p() -> buffs.empyrean_power -> check() ) || 
+    if ( ( is_divine_storm && p() -> buffs.empyrean_power -> check() ) ||
          p() -> buffs.divine_purpose -> check() )
     {
       return 0.0;
@@ -157,6 +157,16 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
     if ( p() -> talents.divine_judgment -> ok() && harmful )
       p() -> buffs.divine_judgment -> trigger();
   }
+
+  void consume_resource() override
+  {
+    paladin_melee_attack_t::consume_resource();
+
+    if ( current_resource() == RESOURCE_HOLY_POWER)
+    {
+      p() -> trigger_memory_of_lucid_dreams( last_resource_cost );
+    }
+  }
 };
 
 // Crusade
@@ -224,9 +234,9 @@ struct execution_sentence_t : public holy_power_consumer_t
 
 struct blade_of_justice_t : public paladin_melee_attack_t
 {
-  struct expurgation_t : public paladin_spell_t 
+  struct expurgation_t : public paladin_spell_t
   {
-    expurgation_t( paladin_t* p ) : 
+    expurgation_t( paladin_t* p ) :
       paladin_spell_t( "expurgation", p, p -> find_spell( 273481 ) )
     {
       base_td = p -> azerite.expurgation.value();
@@ -593,7 +603,7 @@ void paladin_t::create_ret_actions()
     active.lights_decree = new lights_decree_t( this );
   }
 
-  if ( talents.zeal ) 
+  if ( talents.zeal )
   {
     active.zeal = new zeal_t( this );
   }
@@ -636,9 +646,9 @@ void paladin_t::create_buffs_retribution()
   buffs.righteous_verdict = make_buff( this, "righteous_verdict", find_spell( 267611 ) );
 
   buffs.shield_of_vengeance = new buffs::shield_of_vengeance_buff_t( this );
-  buffs.zeal = make_buff( this, "zeal", find_spell( 269571 ) ) 
+  buffs.zeal = make_buff( this, "zeal", find_spell( 269571 ) )
              -> add_invalidate( CACHE_ATTACK_SPEED );
-  
+
   // Azerite
   buffs.empyrean_power = make_buff( this, "empyrean_power", find_spell( 286393 ) )
                        -> set_default_value( azerite.empyrean_power.value() );

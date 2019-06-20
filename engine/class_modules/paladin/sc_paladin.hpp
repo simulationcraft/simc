@@ -129,7 +129,7 @@ public:
 
     // Required for seraphim
     action_t* sotr;
-    
+
     blessing_of_sacrifice_redirect_t* blessing_of_sacrifice_redirect;
   } active;
 
@@ -192,6 +192,7 @@ public:
     gain_t* hp_templars_verdict_refund;
     gain_t* judgment;
     gain_t* hp_cs;
+    gain_t* hp_memory_of_lucid_dreams;
   } gains;
 
   // Spec Passives
@@ -203,7 +204,7 @@ public:
     const spell_data_t* protection_paladin;
     const spell_data_t* retribution_paladin;
   } spec;
-  
+
   // Cooldowns
   struct cooldowns_t
   {
@@ -242,7 +243,7 @@ public:
     const spell_data_t* boundless_conviction;
   } passives;
 
-  struct mastery_t 
+  struct mastery_t
   {
     const spell_data_t* divine_bulwark; // Prot
     const spell_data_t* hand_of_light; // Ret
@@ -251,7 +252,7 @@ public:
 
   // Procs and RNG
   real_ppm_t* art_of_war_rppm;
-  
+
   struct procs_t
   {
     proc_t* art_of_war;
@@ -272,6 +273,8 @@ public:
 
     const spell_data_t* execution_sentence_debuff;
     const spell_data_t* lights_decree;
+
+    const spell_data_t* memory_of_lucid_dreams_base;
   } spells;
 
   // Talents
@@ -331,7 +334,7 @@ public:
     // const spell_data_t* judgment_of_light;
     const spell_data_t* consecrated_ground;
     const spell_data_t* aegis_of_light;
-    // T100    
+    // T100
     const spell_data_t* last_defender;
     const spell_data_t* righteous_protector;
     const spell_data_t* seraphim;
@@ -386,10 +389,16 @@ public:
     azerite_power_t relentless_inquisitor;
   } azerite;
 
+  struct {
+    azerite_essence_t memory_of_lucid_dreams; // Memory of lucid dreams minor
+  } azerite_essence;
+
   player_t* beacon_target;
+  bool lucid_dream_proc_flag;
 
   bool fake_sov;
   int indomitable_justice_pct;
+  double proc_chance_ret_memory_of_lucid_dreams;
 
   paladin_t( sim_t* sim, const std::string& name, race_e r = RACE_TAUREN );
 
@@ -422,6 +431,8 @@ public:
   virtual double    composite_block_reduction( action_state_t* s ) const override;
   virtual double    temporary_movement_modifier() const override;
 
+  virtual double    resource_gain( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr ) override;
+
   // combat outcome functions
   virtual void      assess_damage( school_e, dmg_e, action_state_t* ) override;
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* ) override;
@@ -440,12 +451,12 @@ public:
   void    trigger_grand_crusader();
   void    trigger_holy_shield( action_state_t* s );
   void    trigger_forbearance( player_t* target );
+  void    trigger_memory_of_lucid_dreams( double cost );
   int     get_local_enemies( double distance ) const;
   bool    standing_in_consecration() const;
   double  last_defender_damage() const;
   double  last_defender_mitigation() const;
-  
-  // Returns true if AW/Crusade is up, or if the target is below 20% HP. 
+  // Returns true if AW/Crusade is up, or if the target is below 20% HP.
   // This isn't in HoW's target_ready() so it can be used in the time_to_hpg expression
   bool    get_how_availability( player_t* t ) const;
 
@@ -618,8 +629,8 @@ public:
 
       this -> affected_by.last_defender = this -> data().affected_by( p -> talents.last_defender -> effectN( 5 ) );
     }
-    
-    else if ( p -> specialization() == PALADIN_HOLY ) 
+
+    else if ( p -> specialization() == PALADIN_HOLY )
     {
       this -> affected_by.judgment = this -> data().affected_by( p -> spells.judgment_debuff -> effectN( 1 ) );
     }
@@ -771,7 +782,7 @@ public:
   virtual double action_multiplier() const override
   {
     double am = ab::action_multiplier();
-  
+
     if ( p() -> specialization() == PALADIN_RETRIBUTION )
     {
       if ( affected_by.hand_of_light )
@@ -830,7 +841,7 @@ public:
   virtual double composite_target_multiplier( player_t* t ) const override
   {
     double ctm = ab::composite_target_multiplier( t );
-    
+
     paladin_td_t* td = this -> td( t );
 
     // Handles both holy and ret judgment
@@ -839,7 +850,7 @@ public:
       ctm *= 1.0 + p() -> spells.judgment_debuff -> effectN( 1 ).percent();
     }
 
-    if ( affected_by.execution_sentence && td -> debuff.execution_sentence -> up() ) 
+    if ( affected_by.execution_sentence && td -> debuff.execution_sentence -> up() )
     {
       ctm *= 1.0 + p() -> spells.execution_sentence_debuff -> effectN( 1 ).percent();
     }
