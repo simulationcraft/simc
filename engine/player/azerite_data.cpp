@@ -3554,7 +3554,7 @@ void essence_of_the_focusing_iris( special_effect_t& effect )
 
   double haste = essence.spell_ref(1u, essence_type::MINOR).effectN(2).average(essence.item());
   if (essence.rank() >=2)
-    haste *= 1 + effect.player->find_spell(295251)->effectN(1).percent();
+    haste *= 1 + essence.spell_ref(2u, essence_type::MINOR).effectN(1).percent();
 
   auto haste_buff = unique_gear::create_buff<stat_buff_t>( effect.player, "focused_energy",
       effect.player->find_spell( 295248 ) )
@@ -3578,7 +3578,7 @@ struct essence_of_the_focusing_iris_t : public azerite_essence_major_t
 
   bool usable_moving() const override
   {
-    if(essence.rank() >=3)
+    if(essence.rank() >= 3)
       return true;
 
     return false;
