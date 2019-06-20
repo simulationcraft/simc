@@ -991,6 +991,10 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
     {
       item_budget = ilevel_data.damage_replace_stat;
     }
+    else if ( dbc.ptr && spell->flags( spell_attribute::SX_SCALE_ILEVEL ) )
+    {
+      item_budget = ilevel_data.damage_secondary;
+    }
 
     s << item_budget * e -> m_coefficient() * coefficient;
 
