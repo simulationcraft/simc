@@ -320,6 +320,7 @@ public:
   {
     action_t* frostbolt;
     action_t* flurry;
+    action_t* lucid_dreams;
   } icicle;
 
   // Ignite
@@ -341,6 +342,7 @@ public:
 
   // Miscellaneous
   double distance_from_rune;
+  const spell_data_t* lucid_dreams;
 
   // Data collection
   auto_dispose<std::vector<cooldown_waste_data_t*> > cooldown_waste_data_list;
@@ -438,6 +440,7 @@ public:
   {
     cooldown_t* combustion;
     cooldown_t* cone_of_cold;
+    cooldown_t* fire_blast;
     cooldown_t* frost_nova;
     cooldown_t* frozen_orb;
     cooldown_t* presence_of_mind;
@@ -448,6 +451,7 @@ public:
   {
     gain_t* gbow;
     gain_t* evocation;
+    gain_t* lucid_dreams;
   } gains;
 
   // Options
@@ -459,6 +463,9 @@ public:
     int gbow_count = 0;
     bool allow_shimmer_lance = false;
     rotation_type_e rotation = ROTATION_STANDARD;
+    double lucid_dreams_proc_chance_arcane = 0.15;
+    double lucid_dreams_proc_chance_fire = 0.15;
+    double lucid_dreams_proc_chance_frost = 0.075;
   } options;
 
   // Pets
@@ -1477,6 +1484,50 @@ public:
   {
     spell_t::impact( s );
     p()->trigger_leyshock( id, s, mage_t::LEYSHOCK_IMPACT );
+  }
+
+  void trigger_lucid_dreams()
+  {
+    if ( !p()->lucid_dreams )
+      return;
+
+    if ( current_resource() != RESOURCE_MANA )
+      return;
+
+    if ( last_resource_cost <= 0.0 )
+      return;
+
+    double multiplier = p()->lucid_dreams->effectN( 1 ).percent();
+    double proc_chance =
+      ( p()->specialization() == MAGE_ARCANE ) ? p()->options.lucid_dreams_proc_chance_arcane :
+      ( p()->specialization() == MAGE_FIRE   ) ? p()->options.lucid_dreams_proc_chance_fire :
+                                                 p()->options.lucid_dreams_proc_chance_frost;
+
+    if ( rng().roll( proc_chance ) )
+    {
+      switch ( p()->specialization() )
+      {
+        case MAGE_ARCANE:
+          p()->resource_gain( RESOURCE_MANA, multiplier * last_resource_cost, p()->gains.lucid_dreams );
+          break;
+        case MAGE_FIRE:
+          p()->cooldowns.fire_blast->adjust( -multiplier * cooldown_t::cooldown_duration( p()->cooldowns.fire_blast ) );
+          break;
+        case MAGE_FROST:
+          p()->trigger_icicle_gain( target, p()->icicle.lucid_dreams );
+          break;
+        default:
+          break;
+      }
+
+      p()->player_t::buffs.lucid_dreams->trigger();
+    }
+  }
+
+  void consume_resource() override
+  {
+    spell_t::consume_resource();
+    trigger_lucid_dreams();
   }
 };
 
@@ -3091,6 +3142,8 @@ struct flurry_t : public frost_mage_spell_t
     frost_mage_spell_t::execute();
 
     p()->trigger_icicle_gain( target, p()->icicle.flurry );
+    if ( p()->player_t::buffs.memory_of_lucid_dreams->check() )
+      p()->trigger_icicle( target, p()->icicle.flurry );
 
     bool brain_freeze = p()->buffs.brain_freeze->up();
     p()->state.brain_freeze_active = brain_freeze;
@@ -3142,6 +3195,8 @@ struct frostbolt_t : public frost_mage_spell_t
     frost_mage_spell_t::execute();
 
     p()->trigger_icicle_gain( target, p()->icicle.frostbolt );
+    if ( p()->player_t::buffs.memory_of_lucid_dreams->check() )
+      p()->trigger_icicle_gain( target, p()->icicle.frostbolt );
 
     double fof_proc_chance = p()->spec.fingers_of_frost->effectN( 1 ).percent();
     fof_proc_chance *= 1.0 + p()->talents.frozen_touch->effectN( 1 ).percent();
@@ -3691,6 +3746,16 @@ struct fire_blast_t : public fire_mage_spell_t
     internal_cooldown->start();
 
     p()->buffs.blaster_master->trigger();
+  }
+
+  double recharge_multiplier() const override
+  {
+    double m = fire_mage_spell_t::recharge_multiplier();
+
+    if ( p()->player_t::buffs.memory_of_lucid_dreams->check() )
+      m /= 1.0 + p()->player_t::buffs.memory_of_lucid_dreams->data().effectN( 1 ).percent();
+
+    return m;
   }
 };
 
@@ -4742,6 +4807,7 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   last_bomb_target(),
   last_frostbolt_target(),
   distance_from_rune(),
+  lucid_dreams(),
   action(),
   benefits(),
   buffs(),
@@ -4761,6 +4827,7 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   // Cooldowns
   cooldowns.combustion       = get_cooldown( "combustion"       );
   cooldowns.cone_of_cold     = get_cooldown( "cone_of_cold"     );
+  cooldowns.fire_blast       = get_cooldown( "fire_blast"       );
   cooldowns.frost_nova       = get_cooldown( "frost_nova"       );
   cooldowns.frozen_orb       = get_cooldown( "frozen_orb"       );
   cooldowns.presence_of_mind = get_cooldown( "presence_of_mind" );
@@ -4868,8 +4935,9 @@ void mage_t::create_actions()
 
   if ( spec.icicles->ok() )
   {
-    icicle.frostbolt = get_action<icicle_t>( "frostbolt_icicle", this );
-    icicle.flurry    = get_action<icicle_t>( "flurry_icicle", this );
+    icicle.frostbolt    = get_action<icicle_t>( "frostbolt_icicle", this );
+    icicle.flurry       = get_action<icicle_t>( "flurry_icicle", this );
+    icicle.lucid_dreams = get_action<icicle_t>( "lucid_dreams_icicle", this );
   }
 
   if ( talents.arcane_familiar->ok() )
@@ -4919,6 +4987,9 @@ void mage_t::create_options()
       return false;
     return true;
   } ) );
+  add_option( opt_float( "lucid_dreams_proc_chance_arcane", options.lucid_dreams_proc_chance_arcane ) );
+  add_option( opt_float( "lucid_dreams_proc_chance_fire", options.lucid_dreams_proc_chance_fire ) );
+  add_option( opt_float( "lucid_dreams_proc_chance_frost", options.lucid_dreams_proc_chance_frost ) );
   player_t::create_options();
 }
 
@@ -5169,6 +5240,10 @@ void mage_t::init_spells()
   azerite.packed_ice               = find_azerite_spell( "Packed Ice"               );
   azerite.tunnel_of_ice            = find_azerite_spell( "Tunnel of Ice"            );
   azerite.whiteout                 = find_azerite_spell( "Whiteout"                 );
+
+  auto essence = find_azerite_essence( "Memory of Lucid Dreams" );
+  if ( essence.enabled() )
+    lucid_dreams = essence.spell( 1u, essence_type::MINOR );
 }
 
 void mage_t::init_base_stats()
@@ -5318,14 +5393,28 @@ void mage_t::create_buffs()
     ->set_period( 2.0_s )
     ->set_chance( options.gbow_count > 0 );
   buffs.shimmer = make_buff( this, "shimmer", find_spell( 212653 ) );
+
+  switch ( specialization() )
+  {
+    case MAGE_ARCANE:
+      player_t::buffs.memory_of_lucid_dreams->set_affects_regen( true );
+      break;
+    case MAGE_FIRE:
+      player_t::buffs.memory_of_lucid_dreams->set_stack_change_callback( [ this ] ( buff_t*, int, int )
+      { cooldowns.fire_blast->adjust_recharge_multiplier(); } );
+      break;
+    default:
+      break;
+  }
 }
 
 void mage_t::init_gains()
 {
   player_t::init_gains();
 
-  gains.evocation = get_gain( "Evocation"                  );
-  gains.gbow      = get_gain( "Greater Blessing of Wisdom" );
+  gains.evocation    = get_gain( "Evocation"                  );
+  gains.gbow         = get_gain( "Greater Blessing of Wisdom" );
+  gains.lucid_dreams = get_gain( "Lucid Dreams"               );
 }
 
 void mage_t::init_procs()
@@ -5916,6 +6005,9 @@ double mage_t::resource_regen_per_second( resource_e rt ) const
 
   if ( specialization() == MAGE_ARCANE && rt == RESOURCE_MANA )
     reg *= 1.0 + cache.mastery() * spec.savant->effectN( 1 ).mastery_value();
+
+  if ( player_t::buffs.memory_of_lucid_dreams->check() )
+    reg *= 1.0 + player_t::buffs.memory_of_lucid_dreams->data().effectN( 1 ).percent();
 
   return reg;
 }
