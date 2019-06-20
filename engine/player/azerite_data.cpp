@@ -3311,6 +3311,8 @@ void stamina_milestone( special_effect_t& effect )
   effect.player->base.attribute_multiplier[ ATTR_STAMINA ] *= 1.0 + spell->effectN( 1 ).percent();
 }
 
+//The Crucible of Flame
+//Major Power: Concentrated Flame
 // TODO: Open questions:
 // 1) Rank 2 tooltip refers to base * y% damage, but the effect data has an actual base value to
 //    scale off of. Which is used in game?
@@ -3370,7 +3372,7 @@ void the_crucible_of_flame( special_effect_t& effect )
   }
 }
 
-struct the_crucible_of_flame_t : public azerite_essence_major_t
+struct concentrated_flame_t : public azerite_essence_major_t
 {
   struct missile_t : public unique_gear::proc_spell_t
   {
@@ -3420,8 +3422,8 @@ struct the_crucible_of_flame_t : public azerite_essence_major_t
   missile_t* missile;
   burn_t* burn;
 
-  the_crucible_of_flame_t( player_t* p, const std::string& options_str ) :
-    azerite_essence_major_t( p, "the_crucible_of_flame", p->find_spell( 295373 ) ),
+  concentrated_flame_t( player_t* p, const std::string& options_str ) :
+    azerite_essence_major_t( p, "concentrated_flame", p->find_spell( 295373 ) ),
     stack( 1u ), burn( nullptr )
   {
     parse_options( options_str );
@@ -3467,6 +3469,8 @@ struct the_crucible_of_flame_t : public azerite_essence_major_t
   }
 };
 
+//Memory of Lucid Dreams
+//Major Power: Memory of Lucid Dreams
 struct memory_of_lucid_dreams_t : public azerite_essence_major_t
 {
   memory_of_lucid_dreams_t( player_t* p, const std::string& options_str ) :
@@ -3511,6 +3515,8 @@ struct blood_of_the_enemy_t : public azerite_essence_major_t
   //At max stacks, buff consumed and grants haste. Chance to not consume all stacks, depending on rank
 };
 
+//Essence of the Focusing Iris
+//Major Power: Focused Azerite Beam
 void essence_of_the_focusing_iris( special_effect_t& effect )
 {
   auto essence = effect.player->find_azerite_essence( effect.driver()->essence_id() );
@@ -3533,6 +3539,7 @@ void essence_of_the_focusing_iris( special_effect_t& effect )
     {
       //Focused energy appears to not immediately disappear if another target is hit with a spell
       //Instead, it will simply not increment/refresh stacks unless the original target is hit again
+      //TODO: Some aoe effects may not proc this and should be checked more rigorously. Proc flags include ticks etc
       if (!primary)
         primary = a->target;
 
@@ -3554,7 +3561,7 @@ void essence_of_the_focusing_iris( special_effect_t& effect )
 
   double haste = essence.spell_ref(1u, essence_type::MINOR).effectN(2).average(essence.item());
   if (essence.rank() >=2)
-    haste *= 1 + essence.spell_ref(2u, essence_type::MINOR).effectN(1).percent();
+    haste *= 1 + effect.player->find_spell(295251)->effectN(1).percent();
 
   auto haste_buff = unique_gear::create_buff<stat_buff_t>( effect.player, "focused_energy",
       effect.player->find_spell( 295248 ) )
@@ -3563,17 +3570,21 @@ void essence_of_the_focusing_iris( special_effect_t& effect )
   new focused_energy_driver_t(effect, haste_buff, is);
 }
 
-struct essence_of_the_focusing_iris_t : public azerite_essence_major_t
+struct focused_azerite_beam_t : public azerite_essence_major_t
 {
-  essence_of_the_focusing_iris_t( player_t* p, const std::string& options_str ) :
-    azerite_essence_major_t( p, "essence_of_the_focusing_iris", p->find_spell(295298) )
+  focused_azerite_beam_t( player_t* p, const std::string& options_str ) :
+    azerite_essence_major_t( p, "focused_azerite_beam", p->find_spell(295258) )
   {
     parse_options(options_str);
 
     harmful = true;
+    channeled = true;
+    aoe = -1;
+
+    base_td = essence.spell_ref(1u, essence_type::MAJOR).effectN(1).average(essence.item());
 
     if(essence.rank() >= 2)
-      base_execute_time *= (1.0 - essence.spell_ref(2u).effectN(1).percent());
+      base_execute_time *= (1.0 + p->find_spell(295262)->effectN(1).percent());
   }
 
   bool usable_moving() const override
@@ -3581,7 +3592,7 @@ struct essence_of_the_focusing_iris_t : public azerite_essence_major_t
     if(essence.rank() >= 3)
       return true;
 
-    return false;
+    return azerite_essence_major_t::usable_moving();
   }
 };
 
@@ -3685,7 +3696,7 @@ action_t* create_action( player_t* player, const std::string& name, const std::s
 {
   if ( util::str_compare_ci( name, "focused_azerite_beam" ) )
   {
-    return new azerite_essences::essence_of_the_focusing_iris_t( player, options );
+    return new azerite_essences::focused_azerite_beam_t( player, options );
   }
   else if ( util::str_compare_ci( name, "memory_of_lucid_dreams" ) )
   {
@@ -3709,7 +3720,7 @@ action_t* create_action( player_t* player, const std::string& name, const std::s
   }
   else if ( util::str_compare_ci( name, "concentrated_flame"))
   {
-    return new azerite_essences::the_crucible_of_flame_t( player, options );
+    return new azerite_essences::concentrated_flame_t( player, options );
   }
   else if ( util::str_compare_ci( name, "the_unbound_force"))
   {
