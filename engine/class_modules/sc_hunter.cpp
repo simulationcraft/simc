@@ -3995,6 +3995,7 @@ struct trueshot_t: public hunter_spell_t
     hunter_spell_t::execute();
 
     trigger_buff( p() -> buffs.trueshot, precast_time );
+    p() -> buffs.unerring_vision_driver -> expire();
     trigger_buff( p() -> buffs.unerring_vision_driver, precast_time );
 
     adjust_precast_cooldown( precast_time );
@@ -4880,9 +4881,11 @@ void hunter_t::create_buffs()
       -> set_cooldown( 0_ms )
       -> set_activated( true );
   buffs.trueshot -> set_default_value( specs.trueshot -> effectN( 4 ).percent() );
-  buffs.trueshot -> set_stack_change_callback( [this]( buff_t*, int, int ) {
+  buffs.trueshot -> set_stack_change_callback( [this]( buff_t*, int, int cur ) {
       cooldowns.aimed_shot -> adjust_recharge_multiplier();
       cooldowns.rapid_fire -> adjust_recharge_multiplier();
+      if ( cur == 0 )
+        buffs.unerring_vision_driver -> expire();
     } );
 
   buffs.lock_and_load =
@@ -4978,7 +4981,11 @@ void hunter_t::create_buffs()
     make_buff( this, "unerring_vision_driver", find_spell( 274446 ) )
       -> set_quiet( true )
       -> set_tick_callback( [ this ]( buff_t*, int, const timespan_t& ) { buffs.unerring_vision -> trigger(); } )
-      -> set_trigger_spell( azerite.unerring_vision );
+      -> set_trigger_spell( azerite.unerring_vision )
+      -> set_stack_change_callback( [this]( buff_t*, int, int cur ) {
+            if ( cur == 0 )
+              buffs.unerring_vision -> expire();
+          } );
 
   buffs.unerring_vision =
     make_buff<stat_buff_t>( this, "unerring_vision", find_spell( 274447 ) )
