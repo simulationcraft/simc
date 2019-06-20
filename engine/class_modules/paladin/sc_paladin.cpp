@@ -959,8 +959,14 @@ void paladin_t::trigger_memory_of_lucid_dreams( double cost )
 
     double total_gain = cost * spells.memory_of_lucid_dreams_base -> effectN( 1 ).percent();
 
-    resource_gain( RESOURCE_HOLY_POWER, total_gain, gains.hp_memory_of_lucid_dreams );
+    // mserrano note: apparently when you get a proc on a 1-holy-power spender, if it did proc,
+    // you always get 1 holy power instead of alternating between 0 and 1. This is based on
+    // Skeletor's PTR testing; should revisit this periodically.
+    if ( cost == 1 && total_gain < 1 ) {
+      total_gain = 1;
+    }
 
+    resource_gain( RESOURCE_HOLY_POWER, total_gain, gains.hp_memory_of_lucid_dreams );
   } else {
     // TODO: implement holy/prot
     return;
