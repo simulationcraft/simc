@@ -4355,9 +4355,9 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   { "Keepsakes of the Resolute Commandant"       ,  "keepsakes",     17,  1443,   23,   2,  11,   -1, 290362, { 165604, 165566,  0 } },
   { "Keepsakes of the Resolute Commandant"       ,  "keepsakes",     17,  1443,   23,   2,  12,   -1, 290362, { 165604, 165566,  0 } },
 };
-#define PTR_RPPMMOD_SIZE (989)
+#define PTR_RPPMMOD_SIZE (990)
 
-// 989 RPPM Modifiers, wow build level 8.2.0.30827
+// 990 RPPM Modifiers, wow build level 8.2.0.30827
 static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   {  17495,    4,  1,  1.0000 },
   {  27656,    4,  1,  1.0000 },
@@ -5314,6 +5314,7 @@ static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   { 299346,    4,  1,  1.0000 },
   { 299354,    4,  1,  1.0000 },
   { 299357,    4,  1,  1.0000 },
+  { 299453,    4,  1,  1.0000 },
   { 299906,    4,  1,  1.0000 },
   { 299951,    4,  1,  1.0000 },
   { 299954,    4,  1,  1.0000 },
