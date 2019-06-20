@@ -1063,7 +1063,15 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 300577, azerite_essences::stamina_milestone );
 
   // Generic minor Azerite Essences
-  unique_gear::register_special_effect( 295365, azerite_essences::essence_of_the_focusing_iris );
+  unique_gear::register_special_effect( 295365, azerite_essences::the_crucible_of_flame );
+  unique_gear::register_special_effect( 295246, azerite_essences::essence_of_the_focusing_iris );
+  unique_gear::register_special_effect( 297147, azerite_essences::blood_of_the_enemy );
+  unique_gear::register_special_effect( 295834, azerite_essences::condensed_life_force );
+  unique_gear::register_special_effect( 304081, azerite_essences::conflict_and_strife );
+  unique_gear::register_special_effect( 295293, azerite_essences::purification_protocol );
+  unique_gear::register_special_effect( 302916, azerite_essences::ripple_in_space );
+  unique_gear::register_special_effect( 298407, azerite_essences::the_unbound_force );
+  unique_gear::register_special_effect( 295078, azerite_essences::worldvein_resonance );
 }
 
 void register_azerite_target_data_initializers( sim_t* sim )
@@ -3310,12 +3318,14 @@ void stamina_milestone( special_effect_t& effect )
   effect.player->base.attribute_multiplier[ ATTR_STAMINA ] *= 1.0 + spell->effectN( 1 ).percent();
 }
 
+//The Crucible of Flame
+//Major Power: Concentrated Flame
 // TODO: Open questions:
 // 1) Rank 2 tooltip refers to base * y% damage, but the effect data has an actual base value to
 //    scale off of. Which is used in game?
 // 2) Refresh behavior of both dots
 // 3) Is rank 3 proc allowed to stack if you have rank 3 essence?
-void essence_of_the_focusing_iris( special_effect_t& effect )
+void the_crucible_of_flame( special_effect_t& effect )
 {
   auto essence = effect.player->find_azerite_essence( effect.driver()->essence_id() );
   if ( !essence.enabled() )
@@ -3369,7 +3379,7 @@ void essence_of_the_focusing_iris( special_effect_t& effect )
   }
 }
 
-struct essence_of_the_focusing_iris_t : public azerite_essence_major_t
+struct concentrated_flame_t : public azerite_essence_major_t
 {
   struct missile_t : public unique_gear::proc_spell_t
   {
@@ -3419,8 +3429,8 @@ struct essence_of_the_focusing_iris_t : public azerite_essence_major_t
   missile_t* missile;
   burn_t* burn;
 
-  essence_of_the_focusing_iris_t( player_t* p, const std::string& options_str ) :
-    azerite_essence_major_t( p, "essence_of_the_focusing_iris", p->find_spell( 295373 ) ),
+  concentrated_flame_t( player_t* p, const std::string& options_str ) :
+    azerite_essence_major_t( p, "concentrated_flame", p->find_spell( 295373 ) ),
     stack( 1u ), burn( nullptr )
   {
     parse_options( options_str );
@@ -3464,8 +3474,10 @@ struct essence_of_the_focusing_iris_t : public azerite_essence_major_t
 
     stack = 1u;
   }
-};
+}; //End of The Crucible of Flame
 
+//Memory of Lucid Dreams
+//Major Power: Memory of Lucid Dreams
 struct memory_of_lucid_dreams_t : public azerite_essence_major_t
 {
   memory_of_lucid_dreams_t( player_t* p, const std::string& options_str ) :
@@ -3494,19 +3506,286 @@ struct memory_of_lucid_dreams_t : public azerite_essence_major_t
 
     player->buffs.memory_of_lucid_dreams->trigger();
   }
-};
+}; //End of Memory of Lucid Dreams
+
+//Blood of the Enemy
+//Major Power: Blood of the Enemy
+void blood_of_the_enemy(special_effect_t& effect)
+{
+
+}
+
+struct blood_of_the_enemy_t : public azerite_essence_major_t
+{
+  blood_of_the_enemy_t(player_t* p, const std::string& options_str) :
+    azerite_essence_major_t(p, "blood_of_the_enemy", p->find_spell(297108))
+  {
+
+  }
+
+  //Major power does aoe around player, applying debuff to target (same spellid as the major) that
+  //increases crit chance against the target, and applies buff to player (spellid 297126)
+  //Minor power stacks gained on crits. Spellid for the buff driver is 297147
+  //At max stacks, buff consumed and grants haste. Chance to not consume all stacks, depending on rank
+}; //End of Blood of the Enemy
+
+//Essence of the Focusing Iris
+//Major Power: Focused Azerite Beam
+void essence_of_the_focusing_iris( special_effect_t& effect )
+{
+  auto essence = effect.player->find_azerite_essence( effect.driver()->essence_id() );
+  if ( !essence.enabled() )
+  {
+    return;
+  }
+
+  struct focused_energy_driver_t : dbc_proc_callback_t
+  {
+    player_t* primary;
+    buff_t* focus_buff;
+    int init_stacks;
+
+    focused_energy_driver_t(const special_effect_t& effect, buff_t* b, int is) :
+      dbc_proc_callback_t(effect.player, effect), primary(nullptr), focus_buff(b), init_stacks(is)
+    {}
+
+    void execute(action_t* a, action_state_t*) override
+    {
+      //Focused energy appears to not immediately disappear if another target is hit with a spell
+      //Instead, it will simply not increment/refresh stacks unless the original target is hit again
+      //TODO: Some aoe effects may not proc this and should be checked more rigorously. Proc flags include ticks etc
+      if (!primary)
+        primary = a->target;
+
+      if (primary && a->target == primary && focus_buff->up())
+      {
+        focus_buff->trigger();
+      }
+      else if (!focus_buff->up())
+      {
+        primary = a->target;
+        focus_buff->trigger(init_stacks);
+      }
+    }
+  };
+
+  int is = 1;
+  if (essence.rank() >=3)
+    is = essence.spell_ref(3u, essence_type::MINOR).effectN(1).base_value();
+
+  double haste = essence.spell_ref(1u, essence_type::MINOR).effectN(2).average(essence.item());
+  if (essence.rank() >=2)
+    haste *= 1 + effect.player->find_spell(295251)->effectN(1).percent();
+
+  auto haste_buff = unique_gear::create_buff<stat_buff_t>( effect.player, "focused_energy",
+      effect.player->find_spell( 295248 ) )
+    ->add_stat( STAT_HASTE_RATING, haste );
+
+  new focused_energy_driver_t(effect, haste_buff, is);
+}
+
+struct focused_azerite_beam_t : public azerite_essence_major_t
+{
+  focused_azerite_beam_t( player_t* p, const std::string& options_str ) :
+    azerite_essence_major_t( p, "focused_azerite_beam", p->find_spell(295258) )
+  {
+    parse_options(options_str);
+
+    harmful = true;
+    channeled = true;
+    aoe = -1;
+
+    base_td = essence.spell_ref(1u, essence_type::MAJOR).effectN(1).average(essence.item());
+
+    if(essence.rank() >= 2)
+      base_execute_time *= (1.0 + p->find_spell(295262)->effectN(1).percent());
+  }
+
+  bool usable_moving() const override
+  {
+    if(essence.rank() >= 3)
+      return true;
+
+    return azerite_essence_major_t::usable_moving();
+  }
+}; //End of Essence of the Focusing Iris
+
+//Condensed Life-Force
+//Major Power: Guardian of Azeroth
+void condensed_life_force(special_effect_t& effect)
+{
+
+}
+
+struct guardian_of_azeroth_t : public azerite_essence_major_t
+{
+  guardian_of_azeroth_t(player_t* p, const std::string& options_str) :
+    azerite_essence_major_t(p, "guardian_of_azeroth", p->find_spell(295840))
+  {
+
+  }
+
+  //Summons a guardian pet that will cast a copy of the minor effect (spellid 295834).
+  //Higher ranks grant a haste buff while guardian is active (spellid 295855)
+}; //End of Condensed Life-Force
+
+//Conflict and Strife
+//Major Power: Conflict
+void conflict_and_strife(special_effect_t& effect)
+{
+
+}
+
+struct conflict_t : public azerite_essence_major_t
+{
+  conflict_t(player_t* p, const std::string& options_str) :
+    azerite_essence_major_t(p, "conflict", p->find_spell(303823))
+  {
+    
+  }
+
+  //Spell id used above is possible driver but this is going to be overridden for every spec probably
+  //Minor grants stacking vers proc, driver spell seems to be spellid 304081
+  //Minor has an ICD listed, but this is probably for the feature where it procs on loss of control. RPPM is not listed
+}; //End of Conflict and Strife
+
+//Purification Protocol
+//Major Power: Purifying Blast
+void purification_protocol(special_effect_t& effect)
+{
+
+}
+
+struct purifying_blast_t : public azerite_essence_major_t
+{
+  purifying_blast_t(player_t* p, const std::string& options_str) :
+    azerite_essence_major_t(p, "purifying_blast", p->find_spell(295337))
+  {
+
+  }
+
+  //Higher rank of major power has an on-death effect to increase damage by player (spellid 295354)
+  //Minor is a damage aoe proc, spellid 295293
+  //Does more damage to aberrations
+}; //End of Purification Protocol
+
+//Ripple in Space
+//Major Power: Ripple in Space
+void ripple_in_space(special_effect_t& effect)
+{
+
+}
+
+struct ripple_in_space_t : public azerite_essence_major_t
+{
+  ripple_in_space_t(player_t* p, const std::string& options_str) :
+    azerite_essence_major_t(p, "ripple_in_space", p->find_spell(302731))
+  {
+
+  }
+
+  //Does aoe damage after 2 second delay at the target location
+  //Minor power grants primary stat after moving a certain distance
+  //Minor driver is 302916
+}; //End of Ripple in Space
+
+//The Unbound Force
+//Major Power: The Unbound Force
+void the_unbound_force(special_effect_t& effect)
+{
+
+}
+
+struct the_unbound_force_t : public azerite_essence_major_t
+{
+  the_unbound_force_t(player_t* p, const std::string& options_str) :
+    azerite_essence_major_t(p, "the_unbound_force", p->find_spell(298452))
+  {
+
+  }
+
+  //Major spell does another immediate proc of the same damage if it crits (max 5 procs)
+  //Major spell damage is increased by 300% if it crits
+  //Minor spell has high chance to proc on non-crits
+  //Minor driver is 298407
+  //Stacks reset at cap and short crit buff happens. Stacks can start accumulating again during the crit buff
+}; //End of The Unbound Force
+
+//Vision of Perfection
+//Major Power: Vision of Perfection (Passive)
+struct vision_of_perfection_t : public azerite_essence_major_t
+{
+  vision_of_perfection_t(player_t* p, const std::string& options_str) :
+    azerite_essence_major_t(p, "vision_of_perfection", p->find_spell(296325))
+  {
+
+  }
+
+  //Both major and minor effects are passive and spec-specific
+  //Major driver is 296325
+  //Major effect also has haste buff when cd is used, spellid 303342
+  //The minor is not registered atm, pending decision on how to handle this essence
+}; //End of Vision of Perfection
+
+//Worldvein Resonance
+//Major Power: Worldvein Resonance
+void worldvein_resonance(special_effect_t& effect)
+{
+
+}
+
+struct worldvein_resonance_t : public azerite_essence_major_t
+{
+  worldvein_resonance_t(player_t* p, const std::string& options_str) :
+    azerite_essence_major_t(p, "worldvein_resonance", p->find_spell(295186))
+  {
+
+  }
+
+  //Minor and major power both summon Lifeblood shards that grant primary stat (max benefit of 4 shards)
+  //Lifeblood shards are governed by spellid 295078
+  //Major power summons a number of shards based on rank.
+}; //End of Worldvein Resonance
 
 } // Namespace azerite essences ends
 
 action_t* create_action( player_t* player, const std::string& name, const std::string& options )
 {
-  if ( util::str_compare_ci( name, "essence_of_the_focusing_iris" ) )
+  if ( util::str_compare_ci( name, "focused_azerite_beam" ) )
   {
-    return new azerite_essences::essence_of_the_focusing_iris_t( player, options );
+    return new azerite_essences::focused_azerite_beam_t( player, options );
   }
   else if ( util::str_compare_ci( name, "memory_of_lucid_dreams" ) )
   {
     return new azerite_essences::memory_of_lucid_dreams_t( player, options );
+  }
+  else if ( util::str_compare_ci( name, "blood_of_the_enemy" ) )
+  {
+    return new azerite_essences::blood_of_the_enemy_t( player, options );
+  }
+  else if ( util::str_compare_ci( name, "guardian_of_azeroth" ) )
+  {
+    return new azerite_essences::guardian_of_azeroth_t( player, options );
+  }
+  else if ( util::str_compare_ci( name, "purifying_blast" ) )
+  {
+    return new azerite_essences::purifying_blast_t( player, options );
+  }
+  else if ( util::str_compare_ci( name, "ripple_in_space" ) )
+  {
+    return new azerite_essences::ripple_in_space_t( player, options );
+  }
+  else if ( util::str_compare_ci( name, "concentrated_flame"))
+  {
+    return new azerite_essences::concentrated_flame_t( player, options );
+  }
+  else if ( util::str_compare_ci( name, "the_unbound_force"))
+  {
+    return new azerite_essences::the_unbound_force_t( player, options );
+  }
+  else if (util::str_compare_ci(name, "worldvein_resonance"))
+  {
+    return new azerite_essences::worldvein_resonance_t( player, options );
   }
 
   return nullptr;

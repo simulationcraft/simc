@@ -344,7 +344,15 @@ void arcane_heart( special_effect_t& effect );
 namespace azerite_essences
 {
 void stamina_milestone( special_effect_t& effect );
+void the_crucible_of_flame( special_effect_t& effect );
 void essence_of_the_focusing_iris( special_effect_t& effect );
+void blood_of_the_enemy( special_effect_t& effect );
+void condensed_life_force( special_effect_t& effect );
+void conflict_and_strife( special_effect_t& effect );
+void purification_protocol( special_effect_t& effect );
+void ripple_in_space( special_effect_t& effect );
+void the_unbound_force( special_effect_t& effect );
+void worldvein_resonance( special_effect_t& effect );
 
 } // Namepsace azerite_essences ends
 
