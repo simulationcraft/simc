@@ -3690,25 +3690,107 @@ struct ripple_in_space_t : public azerite_essence_major_t
 }; //End of Ripple in Space
 
 //The Unbound Force
-//Major Power: The Unbound Force
+//Minor driver is 298407
 void the_unbound_force(special_effect_t& effect)
 {
-
-}
-
-struct the_unbound_force_t : public azerite_essence_major_t
-{
-  the_unbound_force_t(player_t* p, const std::string& options_str) :
-    azerite_essence_major_t(p, "the_unbound_force", p->find_spell(298452))
+  auto essence = effect.player->find_azerite_essence(effect.driver()->essence_id());
+  if (!essence.enabled())
   {
-
+    return;
   }
 
-  //Major spell does another immediate proc of the same damage if it crits (max 5 procs)
-  //Major spell damage is increased by 300% if it crits
-  //Minor spell has high chance to proc on non-crits
-  //Minor driver is 298407
-  //Stacks reset at cap and short crit buff happens. Stacks can start accumulating again during the crit buff
+  struct reckless_force_callback_t : public dbc_proc_callback_t
+  {
+    buff_t* crit_buff;
+
+    reckless_force_callback_t(player_t *p, special_effect_t& e, buff_t* b) :
+      dbc_proc_callback_t(p, e), crit_buff(b)
+    {}
+
+    void execute(action_t*, action_state_t* s) override
+    {
+      // TODO?: Possible that non-damaging/fully absorbs crits may not proc?
+      if (s->result == RESULT_CRIT)
+        return;
+
+      if (proc_buff && proc_buff->trigger() && proc_buff->check() == proc_buff->max_stack())
+      {
+        crit_buff->trigger();
+        proc_buff->expire();
+      }
+    }
+  };
+
+  // buff id=302917, not referenced in spell data
+  effect.custom_buff = buff_t::find(effect.player, "reckless_force");
+  if (!effect.custom_buff)
+  {
+    effect.custom_buff = make_buff(effect.player, "reckless_force", effect.player->find_spell(302917));
+  }
+
+  buff_t* crit_buff = effect.player->buffs.reckless_force_crit; // id=302932
+
+  if (essence.rank() >= 3)
+    crit_buff->buff_duration += timespan_t::from_millis(essence.spell_ref(3u, essence_spell::UPGRADE, essence_type::MINOR).effectN(1).base_value());
+
+  if (essence.rank() >= 2)
+    crit_buff->default_value += essence.spell_ref(2u, essence_spell::UPGRADE, essence_type::MINOR).effectN(1).percent();
+
+  new reckless_force_callback_t(effect.player, effect, crit_buff);
+}
+
+// Major Power: The Unbound Force
+// Launches 8 shards on-use over 2 seconds.
+// 1 shard on 0 tic, 1 shard every 0.33s, 1 shard at end for the partial tic
+// Each shard that crits causes an extra shard to be launched, up to a maximum of 5
+struct the_unbound_force_t : public azerite_essence_major_t
+{
+  struct the_unbound_force_tick_t : public unique_gear::proc_spell_t
+  {
+    unsigned* max_shard;
+
+    the_unbound_force_tick_t(player_t* p, const azerite_essence_t& essence, unsigned *max) :
+      proc_spell_t("the_unbound_force_tick", p, p->find_spell(298453), essence.item()), max_shard(max) // missile spell
+    {
+      background = dual = true;
+      // damage stored in effect#3 of MINOR BASE spell
+      base_dd_min = base_dd_max = essence.spell_ref(1u, essence_type::MINOR).effectN(3).average(essence.item());
+      crit_bonus_multiplier *= 1.0 + essence.spell_ref(1u, essence_type::MAJOR).effectN(2).percent();
+    }
+
+    void impact(action_state_t* s) override
+    {
+      proc_spell_t::impact(s);
+
+      if (*max_shard > 0 && s->result == RESULT_CRIT)
+      {
+        (*max_shard)--;
+        this->execute();
+      }
+    }
+  };
+
+  unsigned max_shard;
+
+  the_unbound_force_t(player_t* p, const std::string& options_str) :
+    azerite_essence_major_t(p, "the_unbound_force", p->find_spell(298452)), max_shard(0u)
+  {
+    parse_options(options_str);
+
+    hasted_ticks = false;
+    tick_zero = true;
+    tick_action = new the_unbound_force_tick_t(p, essence, &max_shard);
+
+    if (essence.rank() >= 2)
+      cooldown->duration *= 1.0 + essence.spell_ref(2u, essence_spell::UPGRADE).effectN(1).percent();
+  }
+
+  void execute() override
+  {
+    azerite_essence_major_t::execute();
+    if (essence.rank() >= 3)
+      max_shard = 5;
+  }
 }; //End of The Unbound Force
 
 //Vision of Perfection

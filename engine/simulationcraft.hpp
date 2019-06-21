@@ -3863,6 +3863,9 @@ struct player_t : public actor_t
     /// 8.2 Azerite Essences
     stat_buff_t* memory_of_lucid_dreams;
     stat_buff_t* lucid_dreams; // Versatility Buff from Rank 3
+    //buff_t* reckless_force; // stacking counter for The Unbound Force minor
+    buff_t* reckless_force_crit; // crit proc when counter hits 20
+    
   } buffs;
 
   struct debuffs_t

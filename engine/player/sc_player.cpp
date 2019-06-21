@@ -3117,6 +3117,10 @@ void player_t::create_buffs()
       buffs.lucid_dreams->add_stat( STAT_VERSATILITY_RATING,
         memory_of_lucid_dreams.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).average(
           memory_of_lucid_dreams.item() ) );
+
+      buffs.reckless_force_crit = make_buff( this, "reckless_force_crit", find_spell( 302932 ) )
+        ->add_invalidate(CACHE_CRIT_CHANCE)
+        ->set_default_value( find_spell( 302932 )->effectN( 1 ).percent() );
     }
   }
   // .. for enemies
@@ -3340,6 +3344,10 @@ double player_t::composite_melee_crit_chance() const
 
   if ( current.attack_crit_per_agility )
     ac += ( cache.agility() / current.attack_crit_per_agility / 100.0 );
+
+  // reckless force (The Unbound Force) crit bonus from 20 stack proc
+  if (buffs.reckless_force_crit)
+    ac += buffs.reckless_force_crit->check_value();
 
   ac += racials.viciousness->effectN( 1 ).percent();
   ac += racials.arcane_acuity->effectN( 1 ).percent();
@@ -3607,6 +3615,10 @@ double player_t::composite_spell_crit_chance() const
   {
     sc += ( cache.intellect() / current.spell_crit_per_intellect / 100.0 );
   }
+
+  // reckless force (The Unbound Force) crit bonus from 20 stack proc
+  if (buffs.reckless_force_crit)
+    sc += buffs.reckless_force_crit->check_value();
 
   sc += racials.viciousness->effectN( 1 ).percent();
   sc += racials.arcane_acuity->effectN( 1 ).percent();
