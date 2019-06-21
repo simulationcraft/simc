@@ -267,6 +267,8 @@ public:
   bool catweave_bear;
   bool t21_2pc;
   bool t21_4pc;
+  double lucid_dreams_proc_chance_balance;
+  double lucid_dreams_proc_chance_feral;
 
   struct active_actions_t
   {
@@ -302,6 +304,7 @@ public:
 
   //other
   spells::solar_empowerment_t* solar_empowerment;
+  const spell_data_t* lucid_dreams;
 
   // Druid Events
   std::vector<event_t*> persistent_buff_delay;
@@ -344,6 +347,11 @@ public:
     azerite_power_t burst_of_savagery;
 
   } azerite;
+
+  struct
+  {
+    azerite_essence_t memory_of_lucid_dreams;  // Memory of lucid dreams minor
+  } azerite_essences;
 
   // Buffs
   struct buffs_t
@@ -459,6 +467,7 @@ public:
     // Multiple Specs / Forms
     gain_t* clearcasting;       // Feral & Restoration
     gain_t* soul_of_the_forest; // Feral & Guardian
+    gain_t* lucid_dreams;
 
     // Balance
     gain_t* natures_balance; //talent
@@ -725,6 +734,8 @@ public:
   druid_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, DRUID, name, r ),
     form( NO_FORM ),
+    lucid_dreams_proc_chance_balance( 0.15 ),
+    lucid_dreams_proc_chance_feral( 0.15 ),
     starshards( 0.0 ),
     previous_streaking_stars(SS_NONE),
     predator_rppm_rate( 0.0 ),
@@ -1547,6 +1558,43 @@ public:
     return ab::ready();
   }
 
+  void trigger_lucid_dreams()
+  {
+    if ( !p()->lucid_dreams )
+      return;
+
+    if ( ab::last_resource_cost <= 0.0 )
+      return;
+
+    double multiplier  = p()->lucid_dreams->effectN( 1 ).percent();
+    double proc_chance = ( p()->specialization() == DRUID_BALANCE )
+                             ? p()->lucid_dreams_proc_chance_balance
+                             : ( p()->specialization() == DRUID_FERAL ) ? p()->lucid_dreams_proc_chance_feral : 0.0;
+
+    if ( ab::rng().roll( proc_chance ) )
+    {
+      switch ( p()->specialization() )
+      {
+        case DRUID_BALANCE:
+          p()->resource_gain( RESOURCE_ASTRAL_POWER, multiplier * ab::last_resource_cost, p()->gain.lucid_dreams );
+          break;
+        case DRUID_FERAL:
+          p()->resource_gain( RESOURCE_ENERGY, multiplier * ab::last_resource_cost, p()->gain.lucid_dreams );
+          break;
+        default:
+          break;
+      }
+
+      p()->player_t::buffs.lucid_dreams->trigger();
+    }
+  }
+
+  virtual void consume_resource() override
+  {
+    ab::consume_resource();
+    trigger_lucid_dreams();
+  }
+
   void trigger_gushing_wound( player_t* t, double dmg )
   {
     if ( ! ( ab::special && ab::harmful && dmg > 0 ) )
@@ -2116,6 +2164,11 @@ public:
     {
       if (warrior_of_elune && p()->buff.warrior_of_elune->check())
         e *= 1.0 + p()->talent.warrior_of_elune->effectN(2).percent();
+
+      if ( p()->buffs.memory_of_lucid_dreams->up() )
+      {
+        e *= 1.0 + p()->buffs.memory_of_lucid_dreams->data().effectN( 1 ).percent();
+      }
     }
 
     return e;
@@ -2124,7 +2177,6 @@ public:
   virtual void consume_resource() override
   {
     ab::consume_resource();
-
     trigger_impeccable_fel_essence();
   }
 
@@ -7425,6 +7477,11 @@ void druid_t::init_spells()
   azerite.twisted_claws = find_azerite_spell("Twisted Claws");
   azerite.burst_of_savagery = find_azerite_spell("Burst of Savagery");
 
+  //Azerite essences
+  auto essence = find_azerite_essence( "Memory of Lucid Dreams" );
+  if ( essence.enabled() )
+    lucid_dreams = essence.spell( 1u, essence_type::MINOR );
+
   // Affinities =============================================================
 
   spec.feline_swiftness = specialization() == DRUID_FERAL || talent.feral_affinity -> ok() ?
@@ -7588,6 +7645,9 @@ void druid_t::create_buffs()
     ->add_stat(STAT_INTELLECT, azerite.lively_spirit.value());
 
   buff.arcanic_pulsar = make_buff(this, "arcanic_pulsar", azerite.arcanic_pulsar.spell()->effectN(1).trigger()->effectN(1).trigger());
+
+  if ( specialization() == DRUID_FERAL )
+    player_t::buffs.memory_of_lucid_dreams->set_affects_regen( true );
 
   // Talent buffs
   buff.tiger_dash = new tiger_dash_buff_t(*this);
@@ -8514,6 +8574,7 @@ void druid_t::init_gains()
   // Multiple Specs / Forms
   gain.clearcasting          = get_gain( "clearcasting" );       // Feral & Restoration
   gain.soul_of_the_forest    = get_gain( "soul_of_the_forest" ); // Feral & Guardian
+  gain.lucid_dreams			 = get_gain( " Lucid Dreams " );
 
   // Balance
   gain.natures_balance       = get_gain("natures_balance");
@@ -8707,6 +8768,9 @@ double druid_t::resource_regen_per_second( resource_e r ) const
   {
     if (buff.savage_roar->check() && buff.savage_roar->data().effectN(3).subtype() == A_MOD_POWER_REGEN_PERCENT)
       reg *= 1.0 + buff.savage_roar->data().effectN(3).percent();
+
+	if ( player_t::buffs.memory_of_lucid_dreams->check() )
+      reg *= 1.0 + player_t::buffs.memory_of_lucid_dreams->data().effectN( 1 ).percent();
   }
 
   return reg;
@@ -9065,7 +9129,6 @@ double druid_t::composite_spell_power_multiplier() const
 
   return player_t::composite_spell_power_multiplier();
 }
-
 
 // druid_t::composite_attribute =============================================
 
