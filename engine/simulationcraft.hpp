@@ -5691,8 +5691,12 @@ public:
   virtual double composite_target_crit_chance( player_t* target ) const
   {
     // Essence: Blood of the Enemy Major debuff
-    return target -> debuffs.blood_of_the_enemy -> check_value();
-    // return 0.0;
+    if ( target -> debuffs.blood_of_the_enemy )
+    {
+      return target -> debuffs.blood_of_the_enemy -> check_value();
+    }
+
+    return 0.0;
   }
 
   virtual double composite_target_multiplier( player_t* target ) const
