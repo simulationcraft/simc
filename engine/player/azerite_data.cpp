@@ -3889,15 +3889,65 @@ struct vision_of_perfection_t : public azerite_essence_major_t
 
 //Worldvein Resonance
 //Major Power: Worldvein Resonance
-void worldvein_resonance(special_effect_t& effect)
+void worldvein_resonance( special_effect_t& effect )
 {
+  auto essence = effect.player->find_azerite_essence( effect.driver()->essence_id() );
+  if ( !essence.enabled() )
+    return;
 
+  auto base_spell = essence.spell( 1, essence_type::MINOR );
+
+  auto lifeblood = make_buff<stat_buff_t>( effect.player, "lifeblood", effect.player->find_spell( 295137 ) );
+  lifeblood->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+  lifeblood->set_duration(
+    effect.player->find_spell( 295114 )->duration() *
+    ( 1.0 + essence.spell( 2, essence_spell::UPGRADE, essence_type::MINOR )->effectN( 1 ).percent() ) );
+  lifeblood->add_stat(
+    effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ),
+    base_spell->effectN( 5 ).average( essence.item() ) );
+
+  int period_min = as<int>( base_spell->effectN( 4 ).base_value() +
+    essence.spell( 3, essence_spell::UPGRADE, essence_type::MINOR )->effectN( 1 ).base_value() );
+  int period_max = as<int>( base_spell->effectN( 1 ).base_value() );
+
+  struct lifeblood_event_t : public event_t
+  {
+    int period_min;
+    int period_max;
+    buff_t* buff;
+
+    timespan_t next_event()
+    {
+      // For some reason, Lifeblood triggers every K - 0.5 seconds (for integer K). For the last rank, the
+      // lowest observed interval is 1.5 seconds, which occurs with double the frequency. Highest observed
+      // interval was 24.5 seconds.
+      return std::max( 1.5_s, timespan_t::from_seconds( buff->sim->rng().range( period_min, period_max + 1 ) ) - 0.5_s );
+    }
+
+    lifeblood_event_t( int period_min_, int period_max_, buff_t* buff_ )
+      : event_t( *buff_->source ), period_min( period_min_ ), period_max( period_max_ ), buff( buff_ )
+    {
+      auto next = next_event();
+      buff->sim->print_debug( "Scheduling Lifeblood event, next occurence in: {}", next.total_seconds() );
+      schedule( next );
+    }
+
+    void execute() override
+    {
+      buff->trigger();
+      make_event<lifeblood_event_t>( *buff->sim, period_min, period_max, buff );
+    }
+  };
+
+  effect.player->register_combat_begin( [ period_min, period_max, lifeblood ] ( player_t* p ) {
+    make_event<lifeblood_event_t>( *lifeblood->sim, period_min, period_max, lifeblood );
+  } );
 }
 
 struct worldvein_resonance_t : public azerite_essence_major_t
 {
-  worldvein_resonance_t(player_t* p, const std::string& options_str) :
-    azerite_essence_major_t(p, "worldvein_resonance", p->find_spell(295186))
+  worldvein_resonance_t( player_t* p, const std::string& options_str ) :
+    azerite_essence_major_t( p, "worldvein_resonance", p->find_spell( 295186 ) )
   {
 
   }
