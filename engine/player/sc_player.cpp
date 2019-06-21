@@ -3024,27 +3024,6 @@ void player_t::create_buffs()
     }
   };
 
-  struct blood_of_the_enemy_debuff_t : public buff_t
-  {
-    blood_of_the_enemy_debuff_t(player_t* p, const spell_data_t* spell) :
-      buff_t(p, "blood_of_the_enemy", spell)
-    {
-      set_default_value(spell->effectN(2).percent());
-    }
-
-    bool trigger(int s, double v, double c, timespan_t d) override
-    {
-      sim->active_player->invalidate_cache(CACHE_CRIT_CHANCE);
-      return buff_t::trigger(s, v, c, d);
-    }
-
-    void expire_override( int s, timespan_t d ) override
-    {
-      buff_t::expire_override(s, d);
-      sim->active_player->invalidate_cache(CACHE_CRIT_CHANCE);
-    }
-  };
-
   // Infinite-Stacking Buffs and De-Buffs for everyone
   buffs.stunned   = make_buff( this, "stunned" )->set_max_stack( 1 );
   debuffs.casting = make_buff( this, "casting" )->set_max_stack( 1 )->set_quiet( 1 );
@@ -3165,7 +3144,8 @@ void player_t::create_buffs()
         ->set_cooldown( timespan_t::from_seconds( 5.0 ) );
 
     // 8.2 Essence Debuffs
-    debuffs.blood_of_the_enemy = new blood_of_the_enemy_debuff_t(this, find_spell(297108));
+    debuffs.blood_of_the_enemy = make_buff( this, "blood_of_the_enemy", find_spell( 297108 ) )
+        ->set_default_value( find_spell( 297108 )->effectN( 2 ).percent() );
   }
 
   // set up always since this can be applied by enemy actions and raid events.
@@ -3374,10 +3354,6 @@ double player_t::composite_melee_crit_chance() const
   // The Unbound Force crit bonus from 20 stack proc
   if (buffs.reckless_force)
     ac += buffs.reckless_force->check_value();
-
-  // Blood of the Enemy crit bonus from major on-use
-  if (target && target->debuffs.blood_of_the_enemy)
-    ac += target->debuffs.blood_of_the_enemy->check_value();
 
   ac += racials.viciousness->effectN( 1 ).percent();
   ac += racials.arcane_acuity->effectN( 1 ).percent();
@@ -3649,10 +3625,6 @@ double player_t::composite_spell_crit_chance() const
   // reckless force (The Unbound Force) crit bonus from 20 stack proc
   if (buffs.reckless_force)
     sc += buffs.reckless_force->check_value();
-
-  // Blood of the Enemy crit bonus from major on-use
-  if (target && target->debuffs.blood_of_the_enemy)
-    sc += target->debuffs.blood_of_the_enemy->check_value();
 
   sc += racials.viciousness->effectN( 1 ).percent();
   sc += racials.arcane_acuity->effectN( 1 ).percent();
