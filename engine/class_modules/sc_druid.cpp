@@ -8768,8 +8768,7 @@ double druid_t::resource_regen_per_second( resource_e r ) const
   {
     if (buff.savage_roar->check() && buff.savage_roar->data().effectN(3).subtype() == A_MOD_POWER_REGEN_PERCENT)
       reg *= 1.0 + buff.savage_roar->data().effectN(3).percent();
-
-	if ( player_t::buffs.memory_of_lucid_dreams->check() )
+    if ( player_t::buffs.memory_of_lucid_dreams->check() )
       reg *= 1.0 + player_t::buffs.memory_of_lucid_dreams->data().effectN( 1 ).percent();
   }
 
