@@ -511,6 +511,7 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     buff_t* wasting_infection;
     buff_t* everchill;
     buff_t* choking_brine;
+//    buff_t* blood_of_the_enemy; // debuff from blood of the enemy major essence
   } debuff;
 
   struct atd_dot_t
@@ -3863,9 +3864,8 @@ struct player_t : public actor_t
     /// 8.2 Azerite Essences
     stat_buff_t* memory_of_lucid_dreams;
     stat_buff_t* lucid_dreams; // Versatility Buff from Rank 3
-    //buff_t* reckless_force; // stacking counter for The Unbound Force minor
-    buff_t* reckless_force_crit; // crit proc when counter hits 20
-    
+    buff_t* reckless_force; // The Unbound Force minor - crit proc when counter hits 20
+    buff_t* seething_rage; // Blood of the Enemy major - 25% crit dam
   } buffs;
 
   struct debuffs_t
@@ -3884,6 +3884,9 @@ struct player_t : public actor_t
     // BfA Raid Damage Modifier Debuffs
     buff_t* chaos_brand;  // Demon Hunter
     buff_t* mystic_touch; // Monk
+
+    // 8.2 Essence Debuffs
+    buff_t* blood_of_the_enemy; // from Blood of the Enemy Major
   } debuffs;
 
   struct gains_t
