@@ -3738,10 +3738,51 @@ void purification_protocol(special_effect_t& effect)
 
 struct purifying_blast_t : public azerite_essence_major_t
 {
+  action_t* blast_tick;
+
+  struct purifying_blast_tick_t : public spell_t
+  {
+    purifying_blast_tick_t( const std::string& n, player_t* p, double ta = 0 ) :
+      spell_t( n, p, p->find_spell( 295293 ) )
+    {
+      aoe = -1;
+      background = ground_aoe = true;
+      may_crit = true;
+      base_dd_min = base_dd_max = ta;
+      school = SCHOOL_FIRE;
+    }
+
+    dmg_e amount_type( const action_state_t* s, bool ) const override
+    {
+      return DMG_OVER_TIME;
+    }
+  };
+
   purifying_blast_t(player_t* p, const std::string& options_str) :
     azerite_essence_major_t(p, "purifying_blast", p->find_spell(295337))
   {
+    parse_options(options_str);
 
+    harmful = true;
+
+    double tick_damage = essence.spell_ref( 1u, essence_type::MINOR ).effectN( 3 ).average( essence.item() );
+
+    blast_tick = new purifying_blast_tick_t( "purifying_tick", p, tick_damage );
+    add_child( blast_tick );
+  }
+
+  void execute() override
+  {
+    azerite_essence_major_t::execute();
+
+    int pulse_count = essence.spell_ref( 1u, essence_type::MAJOR ).effectN( 2 ).base_value();
+    timespan_t pulse_interval = essence.spell_ref( 1u, essence_type::MAJOR ).duration() / (pulse_count - 1);
+
+    make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
+      .target( target )
+      .action( blast_tick )
+      .n_pulses( pulse_count )
+      .pulse_time( pulse_interval ), true );
   }
 
   //Higher rank of major power has an on-death effect to increase damage by player (spellid 295354)
