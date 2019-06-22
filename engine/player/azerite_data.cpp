@@ -1069,6 +1069,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 295834, azerite_essences::condensed_life_force );
   unique_gear::register_special_effect( 304081, azerite_essences::conflict_and_strife );
   unique_gear::register_special_effect( 295293, azerite_essences::purification_protocol );
+  unique_gear::register_special_effect( 302916, azerite_essences::ripple_in_space );
   unique_gear::register_special_effect( 298407, azerite_essences::the_unbound_force );
   unique_gear::register_special_effect( 295078, azerite_essences::worldvein_resonance );
 }
@@ -3816,6 +3817,21 @@ struct purifying_blast_t : public azerite_essence_major_t
 //Ripple in Space
 //Major Power: Ripple in Space
 //Not implemented: rank 3 power reduces damage taken after activating
+void ripple_in_space(special_effect_t& effect)
+{
+  timespan_t period = 1_s;
+  buff_t* rs = buff_t::find( effect.player, "reality_shift" );
+
+  effect.player->register_combat_begin( [ rs, period ] ( player_t* )
+  {
+    make_repeating_event( rs->sim, period, [ rs ]
+    {
+      if ( rs->rng().roll( rs->sim->bfa_opts.ripple_in_space_proc_chance ) )
+        rs->trigger();
+    } );
+  } );
+}
+
 struct ripple_in_space_t : public azerite_essence_major_t
 {
   timespan_t delay;
@@ -3841,10 +3857,6 @@ struct ripple_in_space_t : public azerite_essence_major_t
   {
     azerite_essence_major_t::impact( s );
 
-    //TODO: Reality Shift triggers when players move a certain distance within a certain time,
-    //with an internal cooldown of 30 seconds. Activating the major is a fairly safe way of 
-    //guaranteeing this buff activates, but more options are probably needed to simulate maximum
-    //uptime on the buff
     s->action->player->buffs.reality_shift->trigger();
   }
 }; //End of Ripple in Space

@@ -3132,6 +3132,7 @@ void player_t::create_buffs()
           ripple_in_space.item() ) );
       buffs.reality_shift->set_duration( find_spell( 302952 )->duration() 
         + timespan_t::from_seconds( ripple_in_space.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).base_value() / 1000 ) );
+      buffs.reality_shift->set_cooldown( find_spell( 302953 )->duration() );
     }
   }
   // .. for enemies
