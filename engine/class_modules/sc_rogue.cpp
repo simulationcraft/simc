@@ -117,6 +117,7 @@ struct rogue_td_t : public actor_target_data_t
     dot_t* nightblade;
     dot_t* rupture;
     dot_t* crimson_tempest;
+    dot_t* nothing_personal;
   } dots;
 
   struct debuffs_t
@@ -312,6 +313,7 @@ struct rogue_t : public player_t
     gain_t* combat_potency;
     gain_t* energy_refund;
     gain_t* master_of_shadows;
+    gain_t* memory_of_lucid_dreams;
     gain_t* nothing_personal;
     gain_t* vendetta;
     gain_t* venom_rush;
@@ -383,6 +385,7 @@ struct rogue_t : public player_t
     const spell_data_t* fan_of_knives;
     const spell_data_t* fleet_footed;
     const spell_data_t* master_of_shadows;
+    const spell_data_t* memory_of_lucid_dreams;
     const spell_data_t* sprint;
     const spell_data_t* sprint_2;
     const spell_data_t* relentless_strikes_energize;
@@ -466,7 +469,7 @@ struct rogue_t : public player_t
   } mastery;
 
   // Azerite powers
-  struct azerite_powers_t
+  struct azerite_t
   {
     azerite_power_t ace_up_your_sleeve;
     azerite_power_t blade_in_the_shadows;
@@ -486,6 +489,8 @@ struct rogue_t : public player_t
     azerite_power_t snake_eyes;
     azerite_power_t the_first_dance;
     azerite_power_t twist_the_knife;
+
+    azerite_essence_t memory_of_lucid_dreams;
   } azerite;
 
   // Procs
@@ -509,11 +514,15 @@ struct rogue_t : public player_t
   } procs;
 
   // Options
-  int initial_combo_points;
-  bool rogue_optimize_expressions;
-  bool rogue_ready_trigger;
-  bool priority_rotation;
-
+  struct rogue_options_t
+  {
+    int initial_combo_points = 0;
+    bool rogue_optimize_expressions = true;
+    bool rogue_ready_trigger = true;
+    bool priority_rotation = false;
+    double memory_of_lucid_dreams_proc_chance = -1.0;
+  } options;
+  
   rogue_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, ROGUE, name, r ),
     shadow_techniques( 0 ),
@@ -536,10 +545,7 @@ struct rogue_t : public player_t
     talent( talents_t() ),
     mastery( masteries_t() ),
     procs( procs_t() ),
-    initial_combo_points( 0 ),
-    rogue_optimize_expressions( true ),
-    rogue_ready_trigger( true ),
-    priority_rotation( false )
+    options( rogue_options_t() )
   {
     // Cooldowns
     cooldowns.adrenaline_rush          = get_cooldown( "adrenaline_rush"          );
@@ -570,31 +576,32 @@ struct rogue_t : public player_t
   }
 
   // Character Definition
-  void      init_spells() override;
-  void      init_base_stats() override;
-  void      init_gains() override;
-  void      init_procs() override;
-  void      init_scaling() override;
-  void      init_resources( bool force ) override;
-  void      init_items() override;
-  void      init_special_effects() override;
-  void      init_finished() override;
-  void      create_buffs() override;
-  void      create_options() override;
-  void      copy_from( player_t* source ) override;
-  std::string      create_profile( save_e stype ) override;
-  void      init_action_list() override;
-  void      reset() override;
-  void      activate() override;
-  void      arise() override;
-  void      combat_begin() override;
-  void      regen( timespan_t periodicity ) override;
-  timespan_t available() const override;
-  action_t* create_action( const std::string& name, const std::string& options ) override;
-  expr_t*   create_expression( const std::string& name_str ) override;
-  resource_e primary_resource() const override { return RESOURCE_ENERGY; }
-  role_e    primary_role() const override  { return ROLE_ATTACK; }
-  stat_e    convert_hybrid_stat( stat_e s ) const override;
+  void        init_spells() override;
+  void        init_base_stats() override;
+  void        init_gains() override;
+  void        init_procs() override;
+  void        init_scaling() override;
+  void        init_resources( bool force ) override;
+  void        init_items() override;
+  void        init_special_effects() override;
+  void        init_finished() override;
+  void        create_buffs() override;
+  void        create_options() override;
+  void        copy_from( player_t* source ) override;
+  std::string create_profile( save_e stype ) override;
+  void        init_action_list() override;
+  void        reset() override;
+  void        activate() override;
+  void        arise() override;
+  void        combat_begin() override;
+  timespan_t  available() const override;
+  action_t*   create_action( const std::string& name, const std::string& options ) override;
+  expr_t*     create_expression( const std::string& name_str ) override;
+  void        regen( timespan_t periodicity ) override;
+  double      resource_gain( resource_e, double, gain_t* g = nullptr, action_t* a = nullptr );
+  resource_e  primary_resource() const override { return RESOURCE_ENERGY; }
+  role_e      primary_role() const override  { return ROLE_ATTACK; }
+  stat_e      convert_hybrid_stat( stat_e s ) const override;
 
   // Default consumables
   std::string default_potion() const override;
@@ -1753,8 +1760,31 @@ void rogue_attack_t::consume_resource()
 
   p() -> spend_combo_points( execute_state );
 
-  if ( result_is_miss( execute_state -> result ) && last_resource_cost > 0 )
-    p() -> trigger_energy_refund( execute_state );
+  if ( result_is_miss( execute_state->result ) && last_resource_cost > 0 )
+  {
+    p()->trigger_energy_refund( execute_state );
+  }
+  else
+  {
+    // Memory of Lucid Dreams
+    if ( p()->azerite.memory_of_lucid_dreams.enabled() && last_resource_cost > 0 )
+    {
+      if ( rogue_attack_t::current_resource() == RESOURCE_ENERGY )
+      {
+        if ( p()->rng().roll( p()->options.memory_of_lucid_dreams_proc_chance ) )
+        {
+          // Gains are rounded up to the nearest whole value, which can be seen with the Lucid Dreams active up
+          const double amount = ceil( last_resource_cost * p()->spell.memory_of_lucid_dreams->effectN( 1 ).percent() );
+          p()->resource_gain( RESOURCE_ENERGY, amount, p()->gains.memory_of_lucid_dreams );
+        }
+
+        if ( p()->azerite.memory_of_lucid_dreams.rank() >= 3 )
+        {
+          p()->player_t::buffs.lucid_dreams->trigger();
+        }
+      }
+    }
+  }
 }
 
 // rogue_attack_t::execute ==================================================
@@ -2028,9 +2058,6 @@ struct adrenaline_rush_t : public rogue_attack_t
     rogue_attack_t::execute();
 
     p() -> buffs.adrenaline_rush -> trigger();
-    if ( p() -> talent.loaded_dice -> ok() )
-      p() -> buffs.loaded_dice -> trigger();
-    p() -> buffs.brigands_blitz_driver -> trigger();
 
     if ( precombat_seconds && ! p() -> in_combat ) {
       timespan_t precombat_lost_seconds = - timespan_t::from_seconds( precombat_seconds );
@@ -3615,11 +3642,14 @@ struct sinister_strike_t : public rogue_attack_t
 
   double composite_energize_amount( const action_state_t* state ) const override
   {
+    double ea = rogue_attack_t::composite_energize_amount( state );
+
     // Do not grant CP on extra proc event
     // This was changed back as of 2018-07-09, commenting it out in case the revert is reverted.
     /*if ( secondary_trigger == TRIGGER_SINISTER_STRIKE )
       return 0;*/
-    return rogue_attack_t::composite_energize_amount( state );
+
+    return ea;
   }
 
   double sinister_strike_proc_chance() const
@@ -3850,15 +3880,6 @@ struct vendetta_t : public rogue_attack_t
   void execute() override
   {
     rogue_attack_t::execute();
-
-    p() -> buffs.vendetta -> trigger();
-    p() -> buffs.nothing_personal -> trigger();
-
-    if ( nothing_personal_dot )
-    {
-      nothing_personal_dot -> set_target( execute_state -> target );
-      nothing_personal_dot -> execute();
-    }
 
     rogue_td_t* td = this -> td( execute_state -> target );
     td -> debuffs.vendetta -> trigger();
@@ -4416,6 +4437,12 @@ struct adrenaline_rush_t : public buff_t
     rogue_t* rogue = debug_cast<rogue_t*>( source );
     rogue -> resources.temporary[ RESOURCE_ENERGY ] += data().effectN( 4 ).base_value();
     rogue -> recalculate_resource_max( RESOURCE_ENERGY );
+
+    // 6/22/2019 - Vision of Perfection procs trigger both Loaded Dice and Brigand's Blitz
+    if ( rogue->talent.loaded_dice->ok() )
+      rogue->buffs.loaded_dice->trigger();
+
+    rogue->buffs.brigands_blitz_driver->trigger();
   }
 
   void expire_override(int expiration_stacks, timespan_t remaining_duration ) override
@@ -4425,6 +4452,11 @@ struct adrenaline_rush_t : public buff_t
     rogue_t* rogue = debug_cast<rogue_t*>( source );
     rogue -> resources.temporary[ RESOURCE_ENERGY ] -= data().effectN( 4 ).base_value();
     rogue -> recalculate_resource_max( RESOURCE_ENERGY );
+
+    // 6/22/2019 - Brigand's Blitz expires when the Adrenaline Rush buff expires, regardless of duration
+    //             This is mostly relevant due to Vision of Perfection procs
+    rogue->buffs.brigands_blitz_driver->expire();
+    rogue->buffs.brigands_blitz->expire();
   }
 };
 
@@ -4669,6 +4701,36 @@ struct marked_for_death_debuff_t : public buff_t
     }
 
     buff_t::expire_override( expiration_stacks, remaining_duration );
+  }
+};
+
+struct vendetta_debuff_t : public buff_t
+{
+  action_t* nothing_personal;
+
+  vendetta_debuff_t( rogue_td_t& r ) :
+    buff_t( r, "vendetta", r.source->find_specialization_spell( "Vendetta" ) ),
+    nothing_personal( r.source->find_action( "nothing_personal" ) )
+  {
+    set_cooldown( timespan_t::zero() );
+    set_default_value( data().effectN( 1 ).percent() );
+  }
+
+  void start( int stacks, double value, timespan_t duration ) override
+  {
+    buff_t::start( stacks, value, duration );
+
+    rogue_t* p = static_cast<rogue_t*>( source );
+    p->buffs.vendetta->trigger();
+
+    // 6/22/2019 - Vision of Perfection procs trigger Nothing Personal for the same duration
+    if ( p->azerite.nothing_personal.ok() && nothing_personal )
+    {
+      p->buffs.nothing_personal->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, remains() );
+      nothing_personal->set_target( player );
+      nothing_personal->dot_duration = remains();
+      nothing_personal->execute();
+    }
   }
 };
 
@@ -5365,15 +5427,14 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   dots.rupture            = target -> get_dot( "rupture", source );
   dots.crimson_tempest    = target -> get_dot( "crimson_tempest", source );
   dots.nightblade         = target -> get_dot( "nightblade", source );
+  dots.nothing_personal   = target -> get_dot( "nothing_personal", source );
 
   debuffs.marked_for_death = new buffs::marked_for_death_debuff_t( *this );
   debuffs.wound_poison = new buffs::wound_poison_t( *this );
   debuffs.crippling_poison = new buffs::crippling_poison_t( *this );
   debuffs.leeching_poison = new buffs::leeching_poison_t( *this );
   debuffs.rupture = new buffs::proxy_rupture_t( *this );
-  debuffs.vendetta = make_buff( *this, "vendetta", source->spec.vendetta )
-    -> set_cooldown( timespan_t::zero() )
-    -> set_default_value( source->spec.vendetta->effectN( 1 ).percent() );
+  debuffs.vendetta = new buffs::vendetta_debuff_t( *this );
   debuffs.toxic_blade = make_buff( *this, "toxic_blade", source -> talent.toxic_blade -> effectN( 4 ).trigger() )
     -> set_default_value( source -> talent.toxic_blade -> effectN( 4 ).trigger() -> effectN( 1 ).percent() );
   debuffs.ghostly_strike = make_buff( *this, "ghostly_strike", source -> talent.ghostly_strike )
@@ -5648,6 +5709,8 @@ void rogue_t::init_action_list()
     cds -> add_action( "shadowmeld,if=!stealthed.all&azerite.shrouded_suffocation.enabled&dot.garrote.refreshable&dot.garrote.pmultiplier<=1&combo_points.deficit>=1", "Shadowmeld for Shrouded Suffocation" );
     cds -> add_talent( this, "Exsanguinate", "if=dot.rupture.remains>4+4*cp_max_spend&!dot.garrote.refreshable", "Exsanguinate when both Rupture and Garrote are up for long enough" );
     cds -> add_talent( this, "Toxic Blade", "if=dot.rupture.ticking" );
+    if ( maybe_ptr( dbc.ptr ) )
+      cds -> add_action( "memory_of_lucid_dreams,if=energy<50" );
 
     // Stealth
     action_priority_list_t* stealthed = get_action_priority_list( "stealthed", "Stealthed Actions" );
@@ -5729,6 +5792,8 @@ void rogue_t::init_action_list()
     cds -> add_talent( this, "Blade Rush", "if=variable.blade_flurry_sync&energy.time_to_max>1" );
     cds -> add_action( this, "Vanish", "if=!stealthed.all&variable.ambush_condition", "Using Vanish/Ambush is only a very tiny increase, so in reality, you're absolutely fine to use it as a utility spell." );
     cds -> add_action( "shadowmeld,if=!stealthed.all&variable.ambush_condition" );
+    if ( maybe_ptr( dbc.ptr ) )
+      cds -> add_action( "memory_of_lucid_dreams,if=energy<45" );
 
     // Stealth
     action_priority_list_t* stealth = get_action_priority_list( "stealth", "Stealth" );
@@ -5801,6 +5866,8 @@ void rogue_t::init_action_list()
     cds -> add_talent( this, "Shuriken Tornado", "if=spell_targets>=3&!talent.shadow_focus.enabled&dot.nightblade.ticking&!stealthed.all&cooldown.symbols_of_death.up&cooldown.shadow_dance.charges>=1", "At 3+ without Shadow Focus use Tornado with SoD and Dance ready. We will pop those before the first storm comes in." );
     cds -> add_talent( this, "Shuriken Tornado", "if=spell_targets>=3&talent.shadow_focus.enabled&dot.nightblade.ticking&buff.symbols_of_death.up", "At 3+ with Shadow Focus use Tornado with SoD already up." );
     cds -> add_action( this, "Shadow Dance", "if=!buff.shadow_dance.up&target.time_to_die<=5+talent.subterfuge.enabled&!raid_event.adds.up" );
+    if ( maybe_ptr( dbc.ptr ) )
+      cds->add_action( "memory_of_lucid_dreams,if=energy<40" );
 
     // Stealth Cooldowns
     action_priority_list_t* stealth_cds = get_action_priority_list( "stealth_cds", "Stealth Cooldowns" );
@@ -6023,7 +6090,7 @@ expr_t* rogue_t::create_expression( const std::string& name_str )
   }
   else if ( util::str_compare_ci(name_str, "priority_rotation") )
   {
-    return make_ref_expr(name_str, priority_rotation);
+    return make_ref_expr(name_str, options.priority_rotation);
   }
 
   // Split expressions
@@ -6243,18 +6310,18 @@ void rogue_t::init_base_stats()
   min_gcd  = timespan_t::from_seconds( 1.0 );
 
   // Force ready trigger if there is a rogue player
-  if ( rogue_ready_trigger )
+  if ( options.rogue_ready_trigger )
   {
     for ( size_t i = 0; i < sim -> player_list.size(); ++i )
     {
       player_t* p = sim -> player_list[i];
       if ( p -> specialization() != ROGUE_ASSASSINATION && p -> specialization() != ROGUE_OUTLAW && p -> specialization() != ROGUE_SUBTLETY )
       {
-        rogue_ready_trigger = false;
+        options.rogue_ready_trigger = false;
         break;
       }
     }
-    if ( rogue_ready_trigger )
+    if ( options.rogue_ready_trigger )
     {
       ready_type = READY_TRIGGER;
       // Disabled for now
@@ -6405,6 +6472,10 @@ void rogue_t::init_spells()
   azerite.the_first_dance      = find_azerite_spell( "The First Dance" );
   azerite.twist_the_knife      = find_azerite_spell( "Twist the Knife" );
 
+  // Azerite Essences
+  azerite.memory_of_lucid_dreams  = find_azerite_essence( "Memory of Lucid Dreams" );
+  spell.memory_of_lucid_dreams    = azerite.memory_of_lucid_dreams.spell( 1u, essence_type::MINOR );
+
   auto_attack = new actions::auto_melee_attack_t( this, "" );
 
   shadow_blades_attack = new actions::shadow_blades_attack_t( this );
@@ -6441,7 +6512,7 @@ void rogue_t::init_gains()
   gains.vendetta                 = get_gain( "Vendetta"                 );
   gains.venom_rush               = get_gain( "Venom Rush"               );
   gains.venomous_wounds          = get_gain( "Venomous Vim"             );
-  gains.venomous_wounds_death    = get_gain( "Venomous Vim (death)"     );
+  gains.venomous_wounds_death    = get_gain( "Venomous Vim (Death)"     );
   gains.quick_draw               = get_gain( "Quick Draw"               );
   gains.broadside                = get_gain( "Broadside"                );
   gains.ruthlessness             = get_gain( "Ruthlessness"             );
@@ -6454,6 +6525,7 @@ void rogue_t::init_gains()
   gains.shrouded_suffocation     = get_gain( "Shrouded Suffocation"     );
   gains.the_first_dance          = get_gain( "The First Dance"          );
   gains.nothing_personal         = get_gain( "Nothing Personal"         );
+  gains.memory_of_lucid_dreams   = get_gain( "Memory of Lucid Dreams"   );
 }
 
 // rogue_t::init_procs ======================================================
@@ -6536,7 +6608,7 @@ void rogue_t::init_resources( bool force )
 {
   player_t::init_resources( force );
 
-  resources.current[ RESOURCE_COMBO_POINT ] = initial_combo_points;
+  resources.current[ RESOURCE_COMBO_POINT ] = options.initial_combo_points;
 }
 
 // rogue_t::init_buffs ======================================================
@@ -6804,12 +6876,13 @@ void rogue_t::create_options()
 {
   add_option( opt_func( "off_hand_secondary", parse_offhand_secondary ) );
   add_option( opt_func( "main_hand_secondary", parse_mainhand_secondary ) );
-  add_option( opt_int( "initial_combo_points", initial_combo_points ) );
+  add_option( opt_int( "initial_combo_points", options.initial_combo_points ) );
   add_option( opt_func( "fixed_rtb", parse_fixed_rtb ) );
   add_option( opt_func( "fixed_rtb_odds", parse_fixed_rtb_odds ) );
-  add_option( opt_bool( "rogue_optimize_expressions", rogue_optimize_expressions ) );
-  add_option( opt_bool( "rogue_ready_trigger", rogue_ready_trigger ) );
-  add_option( opt_bool( "priority_rotation", priority_rotation ) );
+  add_option( opt_bool( "rogue_optimize_expressions", options.rogue_optimize_expressions ) );
+  add_option( opt_bool( "rogue_ready_trigger", options.rogue_ready_trigger ) );
+  add_option( opt_bool( "priority_rotation", options.priority_rotation ) );
+  add_option( opt_float( "memory_of_lucid_dreams_proc_chance", options.memory_of_lucid_dreams_proc_chance, 0.0, 1.0 ) );
 
   player_t::create_options();
 }
@@ -6832,14 +6905,14 @@ void rogue_t::copy_from( player_t* source )
       rogue -> weapon_data[ WEAPON_OFF_HAND ].secondary_weapon_data.options_str;
   }
 
-  if ( rogue -> initial_combo_points != 0 )
+  if ( rogue -> options.initial_combo_points != 0 )
   {
-    initial_combo_points = rogue -> initial_combo_points;
+    options.initial_combo_points = rogue -> options.initial_combo_points;
   }
 
   fixed_rtb = rogue -> fixed_rtb;
   fixed_rtb_odds = rogue -> fixed_rtb_odds;
-  priority_rotation = rogue -> priority_rotation;
+  options.priority_rotation = rogue -> options.priority_rotation;
 }
 
 // rogue_t::create_profile  =================================================
@@ -6949,6 +7022,24 @@ void rogue_t::init_special_effects()
     {
       special_effect_t* effect = weapon_data[ WEAPON_OFF_HAND ].item_data[ WEAPON_SECONDARY ] -> parsed.special_effects[ i ];
       unique_gear::initialize_special_effect_2( effect );
+    }
+  }
+
+  // Memory of Lucid Dreams
+  if ( options.memory_of_lucid_dreams_proc_chance < 0 )
+  {
+    switch ( specialization() )
+    {
+      case ROGUE_ASSASSINATION:
+        // 6/22/2019 - PTR testing seems to indicate Assassination has a reduced proc chance
+        options.memory_of_lucid_dreams_proc_chance = 0.135;
+        break;
+      case ROGUE_OUTLAW:
+        options.memory_of_lucid_dreams_proc_chance = 0.15;
+        break;
+      case ROGUE_SUBTLETY:
+        options.memory_of_lucid_dreams_proc_chance = 0.15;
+        break;
     }
   }
 }
@@ -7107,18 +7198,18 @@ void rogue_t::combat_begin()
 {
   if ( !sim -> optimize_expressions )
   {
-    if ( rogue_optimize_expressions )
+    if ( options.rogue_optimize_expressions )
     {
       for ( size_t i = 0; i < sim -> player_list.size(); ++i )
       {
         player_t* p = sim -> player_list[i];
         if ( p -> specialization() != ROGUE_ASSASSINATION && p -> specialization() != ROGUE_OUTLAW && p -> specialization() != ROGUE_SUBTLETY )
         {
-          rogue_optimize_expressions = false;
+          options.rogue_optimize_expressions = false;
           break;
         }
       }
-      if ( rogue_optimize_expressions )
+      if ( options.rogue_optimize_expressions )
       {
         sim -> optimize_expressions = true;
         // Disabled for now
@@ -7144,8 +7235,10 @@ double rogue_t::resource_regen_per_second( resource_e r ) const
 
   if ( r == RESOURCE_ENERGY )
   {
-    if ( buffs.slice_and_dice -> up() )
-      reg *= 1.0 + talent.slice_and_dice -> effectN( 3 ).percent() * buffs.slice_and_dice -> check_value();
+    if ( buffs.slice_and_dice->up() )
+    {
+      reg *= 1.0 + talent.slice_and_dice->effectN( 3 ).percent() * buffs.slice_and_dice->check_value();
+    }
   }
 
   return reg;
@@ -7206,6 +7299,19 @@ void rogue_t::regen( timespan_t periodicity )
     if ( buffs.vendetta -> up() )
       resource_gain( RESOURCE_ENERGY, buffs.vendetta -> check_value() * periodicity.total_seconds(), gains.vendetta );
   }
+}
+
+// rogue_t::resource_gain ===================================================
+
+double rogue_t::resource_gain( resource_e resource_type, double amount, gain_t* source, action_t* action )
+{
+  // Memory of Lucid Dreams
+  if ( resource_type == RESOURCE_ENERGY && player_t::buffs.memory_of_lucid_dreams->up() )
+  {
+    amount *= 1.0 + player_t::buffs.memory_of_lucid_dreams->data().effectN( 1 ).percent();
+  }
+
+  return player_t::resource_gain( resource_type, amount, source, action );
 }
 
 // rogue_t::available =======================================================
