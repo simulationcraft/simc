@@ -3121,8 +3121,17 @@ void player_t::create_buffs()
       buffs.reckless_force = make_buff( this, "reckless_force", find_spell( 302932 ) )
         ->add_invalidate(CACHE_CRIT_CHANCE)
         ->set_default_value( find_spell( 302932 )->effectN( 1 ).percent() );
+
       buffs.seething_rage = make_buff( this, "seething_rage", find_spell( 297126 ) )
         ->set_default_value( find_spell( 297126 )->effectN( 1 ).percent() );
+
+      auto ripple_in_space = find_azerite_essence( "Ripple in Space" );
+      buffs.reality_shift = make_buff<stat_buff_t>( this, "reality_shift", find_spell( 302916 ) );
+      buffs.reality_shift->add_stat( STAT_STR_AGI_INT, 
+        ripple_in_space.spell_ref(1u, essence_type::MINOR).effectN( 2 ).average(
+          ripple_in_space.item() ) );
+      buffs.reality_shift->set_duration( find_spell( 302952 )->duration() 
+        + timespan_t::from_seconds( ripple_in_space.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).base_value() / 1000 ) );
     }
   }
   // .. for enemies
