@@ -3733,9 +3733,36 @@ struct conflict_t : public azerite_essence_major_t
 //Major Power: Purifying Blast
 void purification_protocol(special_effect_t& effect)
 {
+  auto essence = effect.player->find_azerite_essence( effect.driver()->essence_id() );
+  if ( !essence.enabled() )
+  {
+    return;
+  }
 
+  //Not currently implemented: rank 3 also triggers a healing buff on the player
+  //Also, minor proc does 50% more damage to aberrations
+  struct purification_protocol_t : public unique_gear::proc_spell_t
+  {
+    purification_protocol_t(const special_effect_t& effect, const std::string& name, const azerite_essence_t& essence) :
+      proc_spell_t(name, effect.player, effect.player->find_spell(295293), essence.item())
+    {
+      base_dd_min = base_dd_max = essence.spell_ref( 1u, essence_type::MINOR ).effectN( 1 ).average( essence.item() )
+        * ( 1 + essence.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).percent() );
+
+      school = SCHOOL_FIRE;
+    }
+  };
+
+  auto action = unique_gear::create_proc_action<purification_protocol_t>( "purification_protocol", effect,
+    "purification_protocol", essence );
+
+  effect.type = SPECIAL_EFFECT_EQUIP;
+  effect.execute_action = action;
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
+//Not implemented: Enemies dying in the ground effect trigger a damage buff for the player
 struct purifying_blast_t : public azerite_essence_major_t
 {
   action_t* blast_tick;
@@ -3785,9 +3812,6 @@ struct purifying_blast_t : public azerite_essence_major_t
       .pulse_time( pulse_interval ), true );
   }
 
-  //Higher rank of major power has an on-death effect to increase damage by player (spellid 295354)
-  //Minor is a damage aoe proc, spellid 295293
-  //Does more damage to aberrations
 }; //End of Purification Protocol
 
 //Ripple in Space
