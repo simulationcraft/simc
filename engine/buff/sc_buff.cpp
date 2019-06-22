@@ -1525,7 +1525,8 @@ void buff_t::bump( int stacks, double value )
     current_stack += stacks;
     haste_to_be_adjusted = true;
   }
-  else if ( current_stack < max_stack() )
+  // Asynchronous buffs need to adjust their expiration even when bumped at max stacks.
+  else if ( current_stack < max_stack() || stack_behavior == buff_stack_behavior::ASYNCHRONOUS )
   {
     haste_to_be_adjusted = true;
     int before_stack = current_stack;
