@@ -269,6 +269,7 @@ public:
   bool t21_4pc;
   double lucid_dreams_proc_chance_balance;
   double lucid_dreams_proc_chance_feral;
+  bool vop_ap_bug; // BUGGGED
 
   struct active_actions_t
   {
@@ -747,6 +748,7 @@ public:
     initial_moon_stage( NEW_MOON ),
     lively_spirit_stacks(9),  //set a usually fitting default value
     ahhhhh_the_great_outdoors( false ),
+    vop_ap_bug(true),
     catweave_bear( false ),
     t21_2pc(false),
     t21_4pc(false),
@@ -9472,6 +9474,7 @@ void druid_t::create_options()
   add_option( opt_int   ( "initial_moon_stage", initial_moon_stage ) );
   add_option( opt_int   ( "lively_spirit_stacks", lively_spirit_stacks));
   add_option( opt_bool  ( "outside", ahhhhh_the_great_outdoors ) );
+  add_option( opt_bool  ( "vop_ap_bug", vop_ap_bug ) );
   add_option( opt_bool  ( "catweave_bear", catweave_bear ) );
 }
 
@@ -9948,7 +9951,8 @@ void druid_t::vision_of_perfection_proc()
     {
       vp_buff->trigger(1, buff_t::DEFAULT_VALUE(), 1.0, vp_dur);
       // BUGGGED...?
-      resource_gain(RESOURCE_ASTRAL_POWER, 40, gain.vision_of_perfection);
+      if (vop_ap_bug)
+        resource_gain(RESOURCE_ASTRAL_POWER, 40, gain.vision_of_perfection);
     }
     resource_gain(RESOURCE_ASTRAL_POWER, 40 * duration_mul, gain.vision_of_perfection);
   }
@@ -10005,6 +10009,7 @@ void druid_t::copy_from( player_t* source )
   t21_2pc = p -> t21_2pc;
   t21_4pc = p -> t21_4pc;
   ahhhhh_the_great_outdoors = p -> ahhhhh_the_great_outdoors;
+  vop_ap_bug = p->vop_ap_bug;
 }
 void druid_t::output_json_report(js::JsonOutput& /*root*/) const
 {
