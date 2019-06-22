@@ -3617,6 +3617,7 @@ void sim_t::create_options()
         bfa_opts.legplates_of_unbound_anguish_chance, 0.0, 1.0 ) );
   add_option( opt_int( "bfa.loyal_to_the_end_allies",
         bfa_opts.loyal_to_the_end_allies, 0, 4 ) );
+  add_option( opt_int( "bfa.worldvein_allies", bfa_opts.worldvein_allies, 0, 10 ) );
 
   // applies to: "lavish_suramar_feast", battle for azeroth feasts
   add_option( opt_bool( "feast_as_dps", feast_as_dps ) );

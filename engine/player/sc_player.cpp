@@ -3118,9 +3118,11 @@ void player_t::create_buffs()
         memory_of_lucid_dreams.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).average(
           memory_of_lucid_dreams.item() ) );
 
-      buffs.reckless_force_crit = make_buff( this, "reckless_force_crit", find_spell( 302932 ) )
+      buffs.reckless_force = make_buff( this, "reckless_force", find_spell( 302932 ) )
         ->add_invalidate(CACHE_CRIT_CHANCE)
         ->set_default_value( find_spell( 302932 )->effectN( 1 ).percent() );
+      buffs.seething_rage = make_buff( this, "seething_rage", find_spell( 297126 ) )
+        ->set_default_value( find_spell( 297126 )->effectN( 1 ).percent() );
     }
   }
   // .. for enemies
@@ -3140,6 +3142,10 @@ void player_t::create_buffs()
     debuffs.mystic_touch = make_buff( this, "mystic_touch", find_spell( 113746 ) )
         ->set_default_value( find_spell( 113746 )->effectN( 1 ).percent() )
         ->set_cooldown( timespan_t::from_seconds( 5.0 ) );
+
+    // 8.2 Essence Debuffs
+    debuffs.blood_of_the_enemy = make_buff( this, "blood_of_the_enemy", find_spell( 297108 ) )
+        ->set_default_value( find_spell( 297108 )->effectN( 2 ).percent() );
   }
 
   // set up always since this can be applied by enemy actions and raid events.
@@ -3345,9 +3351,9 @@ double player_t::composite_melee_crit_chance() const
   if ( current.attack_crit_per_agility )
     ac += ( cache.agility() / current.attack_crit_per_agility / 100.0 );
 
-  // reckless force (The Unbound Force) crit bonus from 20 stack proc
-  if (buffs.reckless_force_crit)
-    ac += buffs.reckless_force_crit->check_value();
+  // The Unbound Force crit bonus from 20 stack proc
+  if (buffs.reckless_force)
+    ac += buffs.reckless_force->check_value();
 
   ac += racials.viciousness->effectN( 1 ).percent();
   ac += racials.arcane_acuity->effectN( 1 ).percent();
@@ -3617,8 +3623,8 @@ double player_t::composite_spell_crit_chance() const
   }
 
   // reckless force (The Unbound Force) crit bonus from 20 stack proc
-  if (buffs.reckless_force_crit)
-    sc += buffs.reckless_force_crit->check_value();
+  if (buffs.reckless_force)
+    sc += buffs.reckless_force->check_value();
 
   sc += racials.viciousness->effectN( 1 ).percent();
   sc += racials.arcane_acuity->effectN( 1 ).percent();
@@ -3826,6 +3832,10 @@ double player_t::composite_player_critical_damage_multiplier( const action_state
   {
     m *= 1.0 + buffs.incensed->check_value();
   }
+
+  // Critical hit damage buff from R3 Blood of the Enemy major on-use
+  if (buffs.seething_rage)
+    m *= 1.0 + buffs.seething_rage->check_value();
 
   return m;
 }

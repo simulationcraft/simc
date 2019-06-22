@@ -3509,24 +3509,104 @@ struct memory_of_lucid_dreams_t : public azerite_essence_major_t
 }; //End of Memory of Lucid Dreams
 
 //Blood of the Enemy
-//Major Power: Blood of the Enemy
 void blood_of_the_enemy(special_effect_t& effect)
 {
+  auto essence = effect.player->find_azerite_essence(effect.driver()->essence_id());
+  if (!essence.enabled())
+    return;
 
+  struct bloodsoaked_callback_t : public dbc_proc_callback_t
+  {
+    double chance;
+    int dec;
+    buff_t* haste_buff;
+
+    bloodsoaked_callback_t(player_t *p, special_effect_t& e, buff_t* b, double c, int d) :
+      dbc_proc_callback_t(p, e), haste_buff(b), chance(c), dec(d)
+    {}
+
+    void execute(action_t*, action_state_t* s) override
+    {
+      // TODO?: Are there any caps, icds, or other restrictions?
+      if (s->result != RESULT_CRIT)
+        return;
+
+      // Does not proc when haste buff is up
+      if (haste_buff->check())
+        return;
+
+      if (proc_buff && proc_buff->trigger() && proc_buff->check() == proc_buff->max_stack())
+      {
+        haste_buff->trigger();
+        if (rng().roll(chance))
+          proc_buff->decrement(dec);
+        else
+          proc_buff->expire();
+      }
+    }
+  };
+
+  // buff id=297162, not referenced in spell data
+  effect.custom_buff = buff_t::find(effect.player, "bloodsoaked_counter");
+  if (!effect.custom_buff)
+    effect.custom_buff = make_buff<stat_buff_t>(effect.player, "bloodsoaked_counter", effect.player->find_spell(297162));
+
+  // Crit per stack from R2 upgrade stored in R1 MINOR BASE effect#3
+  if (essence.rank() >= 2)
+    static_cast<stat_buff_t*>(effect.custom_buff)->add_stat(STAT_CRIT_RATING, essence.spell_ref(1u, essence_type::MINOR).effectN(3).average(essence.item()));
+
+  // buff id=297168, not referenced in spell data
+  // Haste from end proc stored in R1 MINOR BASE effect#2
+  buff_t* haste_buff = buff_t::find(effect.player, "bloodsoaked");
+  if (!haste_buff)
+  {
+    haste_buff = make_buff<stat_buff_t>(effect.player, "bloodsoaked", effect.player->find_spell(297168))
+      ->add_stat(STAT_HASTE_RATING, essence.spell_ref(1u, essence_type::MINOR).effectN(2).average(essence.item()));
+  }
+
+  double chance = 0;
+  int dec = 0;
+  if (essence.rank() >= 3)
+  {
+    // 25% chance to...
+    chance = essence.spell_ref(3u, essence_spell::UPGRADE, essence_type::MINOR).effectN(1).percent();
+    // only lose 30 stacks
+    dec = essence.spell_ref(3u, essence_spell::UPGRADE, essence_type::MINOR).effectN(2).base_value();
+  }
+
+  new bloodsoaked_callback_t(effect.player, effect, haste_buff, chance, dec);
 }
 
+//Major Power: Blood of the Enemy
 struct blood_of_the_enemy_t : public azerite_essence_major_t
 {
   blood_of_the_enemy_t(player_t* p, const std::string& options_str) :
     azerite_essence_major_t(p, "blood_of_the_enemy", p->find_spell(297108))
   {
+    parse_options(options_str);
+    aoe = -1;
+    base_dd_min = base_dd_max = essence.spell_ref(1u).effectN(1).average(essence.item());
 
+    if (essence.rank() >= 2)
+      cooldown->duration *= 1.0 + essence.spell_ref(2u, essence_spell::UPGRADE, essence_type::MAJOR).effectN(1).percent();
   }
 
-  //Major power does aoe around player, applying debuff to target (same spellid as the major) that
-  //increases crit chance against the target, and applies buff to player (spellid 297126)
-  //Minor power stacks gained on crits. Spellid for the buff driver is 297147
-  //At max stacks, buff consumed and grants haste. Chance to not consume all stacks, depending on rank
+  void impact(action_state_t* s)
+  {
+    azerite_essence_major_t::impact(s);
+
+    // 25% increased chance to be hit debuff
+    s->target->debuffs.blood_of_the_enemy->trigger();
+  }
+
+  void execute() override
+  {
+    azerite_essence_major_t::execute();
+
+    // R3 25% critical hit damage buff
+    if (essence.rank() >= 3)
+      player->buffs.seething_rage->trigger();
+  }
 }; //End of Blood of the Enemy
 
 //Essence of the Focusing Iris
@@ -3722,13 +3802,11 @@ void the_unbound_force(special_effect_t& effect)
   };
 
   // buff id=302917, not referenced in spell data
-  effect.custom_buff = buff_t::find(effect.player, "reckless_force");
+  effect.custom_buff = buff_t::find(effect.player, "reckless_force_counter");
   if (!effect.custom_buff)
-  {
-    effect.custom_buff = make_buff(effect.player, "reckless_force", effect.player->find_spell(302917));
-  }
+    effect.custom_buff = make_buff(effect.player, "reckless_force_counter", effect.player->find_spell(302917));
 
-  buff_t* crit_buff = effect.player->buffs.reckless_force_crit; // id=302932
+  buff_t* crit_buff = effect.player->buffs.reckless_force; // id=302932
 
   if (essence.rank() >= 3)
     crit_buff->buff_duration += timespan_t::from_millis(essence.spell_ref(3u, essence_spell::UPGRADE, essence_type::MINOR).effectN(1).base_value());
@@ -3782,7 +3860,7 @@ struct the_unbound_force_t : public azerite_essence_major_t
     tick_action = new the_unbound_force_tick_t(p, essence, &max_shard);
 
     if (essence.rank() >= 2)
-      cooldown->duration *= 1.0 + essence.spell_ref(2u, essence_spell::UPGRADE).effectN(1).percent();
+      cooldown->duration *= 1.0 + essence.spell_ref(2u, essence_spell::UPGRADE, essence_type::MAJOR).effectN(1).percent();
   }
 
   void execute() override
@@ -3811,17 +3889,90 @@ struct vision_of_perfection_t : public azerite_essence_major_t
 
 //Worldvein Resonance
 //Major Power: Worldvein Resonance
-void worldvein_resonance(special_effect_t& effect)
+void worldvein_resonance( special_effect_t& effect )
 {
+  auto essence = effect.player->find_azerite_essence( effect.driver()->essence_id() );
+  if ( !essence.enabled() )
+    return;
 
+  auto base_spell = essence.spell( 1, essence_type::MINOR );
+
+  auto lifeblood = make_buff<stat_buff_t>( effect.player, "lifeblood", effect.player->find_spell( 295137 ) );
+  lifeblood->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+  lifeblood->set_duration(
+    effect.player->find_spell( 295114 )->duration() *
+    ( 1.0 + essence.spell( 2, essence_spell::UPGRADE, essence_type::MINOR )->effectN( 1 ).percent() ) );
+  lifeblood->add_stat(
+    effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ),
+    base_spell->effectN( 5 ).average( essence.item() ) );
+
+  int period_min = as<int>( base_spell->effectN( 4 ).base_value() +
+    essence.spell( 3, essence_spell::UPGRADE, essence_type::MINOR )->effectN( 1 ).base_value() );
+  int period_max = as<int>( base_spell->effectN( 1 ).base_value() );
+
+  struct lifeblood_event_t : public event_t
+  {
+    int period_min;
+    int period_max;
+    buff_t* buff;
+
+    timespan_t next_event()
+    {
+      // For some reason, Lifeblood triggers every K - 0.5 seconds (for integer K). For the last rank, the
+      // lowest observed interval is 1.5 seconds, which occurs with double the frequency. Highest observed
+      // interval was 24.5 seconds.
+      return std::max( 1.5_s, timespan_t::from_seconds( buff->sim->rng().range( period_min, period_max + 1 ) ) - 0.5_s );
+    }
+
+    lifeblood_event_t( int period_min_, int period_max_, buff_t* buff_ )
+      : event_t( *buff_->source ), period_min( period_min_ ), period_max( period_max_ ), buff( buff_ )
+    {
+      auto next = next_event();
+      buff->sim->print_debug( "Scheduling Lifeblood event, next occurence in: {}", next.total_seconds() );
+      schedule( next );
+    }
+
+    void execute() override
+    {
+      buff->trigger();
+      make_event<lifeblood_event_t>( *buff->sim, period_min, period_max, buff );
+    }
+  };
+
+  for ( int i = 0; i < effect.player->sim->bfa_opts.worldvein_allies+1; i++ )
+  {
+    effect.player->register_combat_begin( [period_min, period_max, lifeblood]( player_t* p ) {
+      make_event<lifeblood_event_t>( *lifeblood->sim, period_min, period_max, lifeblood );
+    } );
+  }
 }
 
 struct worldvein_resonance_t : public azerite_essence_major_t
 {
-  worldvein_resonance_t(player_t* p, const std::string& options_str) :
-    azerite_essence_major_t(p, "worldvein_resonance", p->find_spell(295186))
-  {
+  int stacks;
+  buff_t* lifeblood;
 
+  worldvein_resonance_t( player_t* p, const std::string& options_str ) :
+    azerite_essence_major_t( p, "worldvein_resonance", p->find_spell( 295186 ) ),
+    stacks(),
+    lifeblood()
+  {
+    parse_options( options_str );
+    stacks = as<int>( data().effectN( 1 ).base_value() +
+      essence.spell( 2, essence_spell::UPGRADE, essence_type::MAJOR )->effectN( 1 ).base_value() );
+  }
+
+  void init_finished() override
+  {
+    azerite_essence_major_t::init_finished();
+    lifeblood = buff_t::find( player, "lifeblood" );
+  }
+
+  void execute() override
+  {
+    azerite_essence_major_t::execute();
+    if ( lifeblood )
+      lifeblood->trigger( stacks );
   }
 
   //Minor and major power both summon Lifeblood shards that grant primary stat (max benefit of 4 shards)
