@@ -3946,10 +3946,30 @@ void worldvein_resonance( special_effect_t& effect )
 
 struct worldvein_resonance_t : public azerite_essence_major_t
 {
-  worldvein_resonance_t( player_t* p, const std::string& options_str ) :
-    azerite_essence_major_t( p, "worldvein_resonance", p->find_spell( 295186 ) )
-  {
+  int stacks;
+  buff_t* lifeblood;
 
+  worldvein_resonance_t( player_t* p, const std::string& options_str ) :
+    azerite_essence_major_t( p, "worldvein_resonance", p->find_spell( 295186 ) ),
+    stacks(),
+    lifeblood()
+  {
+    parse_options( options_str );
+    stacks = as<int>( data().effectN( 1 ).base_value() +
+      essence.spell( 2, essence_spell::UPGRADE, essence_type::MAJOR )->effectN( 1 ).base_value() );
+  }
+
+  void init_finished() override
+  {
+    azerite_essence_major_t::init_finished();
+    lifeblood = buff_t::find( player, "lifeblood" );
+  }
+
+  void execute() override
+  {
+    azerite_essence_major_t::execute();
+    if ( lifeblood )
+      lifeblood->trigger( stacks );
   }
 
   //Minor and major power both summon Lifeblood shards that grant primary stat (max benefit of 4 shards)
