@@ -1168,6 +1168,8 @@ struct sim_t : private sc_thread_t
     double              legplates_of_unbound_anguish_chance = 1.0;
     /// Number of allies with the Loyal to the End azerite trait, default = 4 (max)
     int                 loyal_to_the_end_allies = 4;
+    /// Number of allies also using the Worldvein Resonance minor
+    int                 worldvein_allies = 0;
   } bfa_opts;
 
   // Expansion specific data

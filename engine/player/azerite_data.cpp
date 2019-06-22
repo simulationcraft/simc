@@ -3939,9 +3939,12 @@ void worldvein_resonance( special_effect_t& effect )
     }
   };
 
-  effect.player->register_combat_begin( [ period_min, period_max, lifeblood ] ( player_t* p ) {
-    make_event<lifeblood_event_t>( *lifeblood->sim, period_min, period_max, lifeblood );
-  } );
+  for ( int i = 0; i < effect.player->sim->bfa_opts.worldvein_allies+1; i++ )
+  {
+    effect.player->register_combat_begin( [period_min, period_max, lifeblood]( player_t* p ) {
+      make_event<lifeblood_event_t>( *lifeblood->sim, period_min, period_max, lifeblood );
+    } );
+  }
 }
 
 struct worldvein_resonance_t : public azerite_essence_major_t
