@@ -3816,11 +3816,6 @@ struct purifying_blast_t : public azerite_essence_major_t
 
 //Ripple in Space
 //Major Power: Ripple in Space
-void ripple_in_space(special_effect_t& effect)
-{
-
-}
-
 //Not implemented: rank 3 power reduces damage taken after activating
 struct ripple_in_space_t : public azerite_essence_major_t
 {
