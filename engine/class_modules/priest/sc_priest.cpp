@@ -593,7 +593,9 @@ priest_t::priest_t( sim_t* sim, const std::string& name, race_e r )
     active_items(),
     pets(),
     options(),
-    insanity( *this )
+    insanity( *this ),    
+    azerite(),
+    azerite_essence()
 {
   create_cooldowns();
   create_gains();
@@ -975,7 +977,7 @@ void priest_t::create_pets()
 
   void priest_t::trigger_lucid_dreams( double cost )
 {
-    if ( !azerite_essence.lucid_dreams )
+  if ( !azerite_essence.lucid_dreams )
     return;
 
   double multiplier  = azerite_essence.lucid_dreams->effectN( 1 ).percent();
@@ -1063,6 +1065,7 @@ void priest_t::init_spells()
     azerite_essence.lucid_dreams           = memory_lucid_dreams.spell( 1u, essence_type::MINOR );
     azerite_essence.memory_of_lucid_dreams = memory_lucid_dreams.spell( 1u, essence_type::MAJOR );
   }
+
 }
 
 void priest_t::create_buffs()
