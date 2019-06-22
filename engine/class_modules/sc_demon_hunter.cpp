@@ -359,7 +359,16 @@ public:
     azerite_power_t revolving_blades;
     azerite_power_t seething_power;
     azerite_power_t thirsting_blades;
+
+    // General
+    azerite_essence_t memory_of_lucid_dreams;
   } azerite;
+
+  struct azerite_spells_t
+  {
+    // General
+    const spell_data_t* memory_of_lucid_dreams;
+  } azerite_spells;
 
   // Mastery Spells
   struct mastery_t
@@ -420,6 +429,7 @@ public:
     // Azerite
     gain_t* thirsting_blades;
     gain_t* revolving_blades;
+    gain_t* memory_of_lucid_dreams;
   } gain;
 
   // Benefits
@@ -493,6 +503,7 @@ public:
   // Options
   struct demon_hunter_options_t
   {
+    double memory_of_lucid_dreams_proc_chance = 0.15;
   } options;
 
   demon_hunter_t( sim_t* sim, const std::string& name, race_e r );
@@ -565,6 +576,7 @@ public:
   void combat_begin() override;
   demon_hunter_td_t* get_target_data( player_t* target ) const override;
   void interrupt() override;
+  double resource_gain( resource_e, double, gain_t* g = nullptr, action_t* a = nullptr );
   void recalculate_resource_max( resource_e ) override;
   void reset() override;
   void merge( player_t& other ) override;
@@ -914,6 +926,14 @@ struct soul_fragment_t
     if ( dh->azerite.eyes_of_rage.ok() )
     {
       timespan_t duration = dh->azerite.eyes_of_rage.spell_ref().effectN( 1 ).time_value();
+      // 3/8/2019 -- Testing has shown that despite the tooltip, 2 ranks of this doubles the CD reduction
+      //             Additionally, this seems to also apply with 1 rank and Demonic Appetite
+      if ( dh->bugs )
+      {
+        if ( dh->talent.demonic_appetite->ok() || dh->azerite.eyes_of_rage.n_items() > 1 )
+          duration *= 2;
+      }
+
       dh->cooldown.eye_beam->adjust( -duration );
     }
 
@@ -1316,6 +1336,31 @@ public:
     if ( !ab::hit_any_target && ab::last_resource_cost > 0 )
     {
       trigger_refund();
+    }
+  }
+
+  virtual void consume_resource() override
+  {
+    ab::consume_resource();
+
+    // Memory of Lucid Dreams
+    if ( p()->azerite.memory_of_lucid_dreams.enabled() && ab::last_resource_cost > 0 )
+    {
+      resource_e cr = ab::current_resource();
+      if ( cr == RESOURCE_FURY || cr == RESOURCE_PAIN )
+      {
+        if ( p()->rng().roll( p()->options.memory_of_lucid_dreams_proc_chance ) )
+        {
+          // Gains are rounded up to the nearest whole value, which can be seen with the Lucid Dreams active up
+          const double amount = ceil( ab::last_resource_cost * p()->azerite_spells.memory_of_lucid_dreams->effectN( 1 ).percent() );
+          p()->resource_gain( cr, amount, p()->gain.memory_of_lucid_dreams );
+        }
+
+        if ( p()->azerite.memory_of_lucid_dreams.rank() >= 3 )
+        {
+          p()->buffs.lucid_dreams->trigger();
+        }
+      }
     }
   }
 
@@ -4475,6 +4520,7 @@ void demon_hunter_t::create_options()
 
   add_option( opt_float( "target_reach", target_reach ) );
   add_option( opt_float( "initial_fury", initial_fury ) );
+  add_option( opt_float( "memory_of_lucid_dreams_proc_chance", options.memory_of_lucid_dreams_proc_chance, 0.0, 1.0 ) );
 }
 
 // demon_hunter_t::create_pet ===============================================
@@ -4796,6 +4842,10 @@ void demon_hunter_t::init_spells()
 
   // Azerite ================================================================
 
+  // General
+  azerite.memory_of_lucid_dreams        = find_azerite_essence( "Memory of Lucid Dreams" );
+  azerite_spells.memory_of_lucid_dreams = azerite.memory_of_lucid_dreams.spell( 1u, essence_type::MINOR );
+  
   // Havoc
   azerite.chaotic_transformation  = find_azerite_spell( "Chaotic Transformation" );
   azerite.eyes_of_rage            = find_azerite_spell( "Eyes of Rage" );
@@ -5014,6 +5064,8 @@ void demon_hunter_t::apl_havoc()
   apl_cooldown->add_talent( this, "Nemesis", "target_if=min:target.time_to_die,if=raid_event.adds.exists&debuff.nemesis.down&(active_enemies>desired_targets|raid_event.adds.in>60)" );
   apl_cooldown->add_talent( this, "Nemesis", "if=!raid_event.adds.exists" );
   apl_cooldown->add_action( "potion,if=buff.metamorphosis.remains>25|target.time_to_die<60" );
+  if ( maybe_ptr( dbc.ptr ) )
+    apl_cooldown->add_action( "memory_of_lucid_dreams,if=fury<40&buff.metamorphosis.up" );
   add_havoc_use_items(this, apl_cooldown);
 
   action_priority_list_t* apl_normal = get_action_priority_list( "normal" );
@@ -5164,6 +5216,7 @@ void demon_hunter_t::create_gains()
   // Azerite
   gain.thirsting_blades         = get_gain( "thirsting_blades" );
   gain.revolving_blades         = get_gain( "revolving_blades" );
+  gain.memory_of_lucid_dreams   = get_gain( "memory_of_lucid_dreams_proc" );
 }
 
 // demon_hunter_t::create_benefits ==========================================
@@ -5571,6 +5624,20 @@ void demon_hunter_t::interrupt()
 {
   event_t::cancel( soul_fragment_pick_up );
   base_t::interrupt();
+}
+
+// demon_hunter_t::resource_gain ============================================
+
+double demon_hunter_t::resource_gain( resource_e resource_type, double amount, gain_t* source, action_t* action )
+{
+  // Memory of Lucid Dreams
+  if ( ( resource_type == RESOURCE_FURY || resource_type == RESOURCE_PAIN ) &&
+       buffs.memory_of_lucid_dreams->up() )
+  {
+    amount *= 1.0 + buffs.memory_of_lucid_dreams->data().effectN( 1 ).percent();
+  }
+
+  return player_t::resource_gain( resource_type, amount, source, action );
 }
 
 // demon_hunter_t::recalculate_resource_max =================================
