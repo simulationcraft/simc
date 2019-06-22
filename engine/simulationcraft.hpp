@@ -511,6 +511,7 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     buff_t* wasting_infection;
     buff_t* everchill;
     buff_t* choking_brine;
+    buff_t* blood_of_the_enemy;
   } debuff;
 
   struct atd_dot_t
@@ -3888,9 +3889,6 @@ struct player_t : public actor_t
     // BfA Raid Damage Modifier Debuffs
     buff_t* chaos_brand;  // Demon Hunter
     buff_t* mystic_touch; // Monk
-
-    // 8.2 Essence Debuffs
-    buff_t* blood_of_the_enemy; // from Blood of the Enemy Major
   } debuffs;
 
   struct gains_t
@@ -5698,9 +5696,11 @@ public:
   virtual double composite_target_crit_chance( player_t* target ) const
   {
     // Essence: Blood of the Enemy Major debuff
-    if ( target -> debuffs.blood_of_the_enemy )
+    actor_target_data_t* td = player -> get_target_data( target );
+
+    if ( td )
     {
-      return target -> debuffs.blood_of_the_enemy -> check_value();
+      return td -> debuff.blood_of_the_enemy -> check_value();
     }
 
     return 0.0;

@@ -1122,6 +1122,22 @@ void register_azerite_target_data_initializers( sim_t* sim )
       td -> debuff.battlefield_debuff->set_quiet( true );
     }
   } );
+
+  // Blood of the Enemy
+  sim->register_target_data_initializer( [] ( actor_target_data_t* td ) {
+    auto essence = td->source->find_azerite_essence( "Blood of the Enemy" );
+    if ( essence.enabled() )
+    {
+      td->debuff.blood_of_the_enemy = make_buff( *td, "blood_of_the_enemy", td->source->find_spell( 297108 ) )
+        ->set_default_value( td->source->find_spell( 297108 )->effectN( 2 ).percent() );
+      td->debuff.blood_of_the_enemy->reset();
+    }
+    else
+    {
+      td->debuff.blood_of_the_enemy = make_buff( *td, "blood_of_the_enemy" )
+        ->set_quiet(true);
+    }
+  } );
 }
 
 std::tuple<int, int, int > compute_value( const azerite_power_t& power, const spelleffect_data_t& effect )
@@ -3600,7 +3616,8 @@ struct blood_of_the_enemy_t : public azerite_essence_major_t
     azerite_essence_major_t::impact(s);
 
     // 25% increased chance to be hit debuff
-    s->target->debuffs.blood_of_the_enemy->trigger();
+    auto td = s->action->player->get_target_data(s->target);
+    td->debuff.blood_of_the_enemy->trigger();
   }
 
   void execute() override

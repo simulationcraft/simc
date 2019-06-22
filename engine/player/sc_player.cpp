@@ -3152,10 +3152,6 @@ void player_t::create_buffs()
     debuffs.mystic_touch = make_buff( this, "mystic_touch", find_spell( 113746 ) )
         ->set_default_value( find_spell( 113746 )->effectN( 1 ).percent() )
         ->set_cooldown( timespan_t::from_seconds( 5.0 ) );
-
-    // 8.2 Essence Debuffs
-    debuffs.blood_of_the_enemy = make_buff( this, "blood_of_the_enemy", find_spell( 297108 ) )
-        ->set_default_value( find_spell( 297108 )->effectN( 2 ).percent() );
   }
 
   // set up always since this can be applied by enemy actions and raid events.
