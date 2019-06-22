@@ -3585,6 +3585,7 @@ struct blood_of_the_enemy_t : public azerite_essence_major_t
   {
     parse_options(options_str);
     aoe = -1;
+    may_crit = 1;
     base_dd_min = base_dd_max = essence.spell_ref(1u).effectN(1).average(essence.item());
 
     if (essence.rank() >= 2)
@@ -3601,11 +3602,11 @@ struct blood_of_the_enemy_t : public azerite_essence_major_t
 
   void execute() override
   {
-    azerite_essence_major_t::execute();
-
     // R3 25% critical hit damage buff
     if (essence.rank() >= 3)
       player->buffs.seething_rage->trigger();
+
+    azerite_essence_major_t::execute();
   }
 }; //End of Blood of the Enemy
 
