@@ -3752,7 +3752,7 @@ void purification_protocol(special_effect_t& effect)
     {
       base_dd_min = base_dd_max = essence.spell_ref( 1u, essence_type::MINOR ).effectN( 1 ).average( essence.item() )
         * ( 1 + essence.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).percent() );
-
+      aoe=-1;
       school = SCHOOL_FIRE;
     }
   };
