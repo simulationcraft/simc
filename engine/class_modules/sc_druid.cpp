@@ -7481,9 +7481,7 @@ void druid_t::init_spells()
   azerite.burst_of_savagery = find_azerite_spell("Burst of Savagery");
 
   //Azerite essences
-  auto essence = find_azerite_essence( "Memory of Lucid Dreams" );
-  if ( essence.enabled() )
-	  lucid_dreams = essence.spell( 1u, essence_type::MINOR );
+  lucid_dreams = find_azerite_essence("Memory of Lucid Dreams").spell(1u, essence_type::MINOR);
 
   // Affinities =============================================================
 
