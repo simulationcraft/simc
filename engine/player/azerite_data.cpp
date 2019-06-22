@@ -3989,7 +3989,7 @@ void vision_of_perfection(special_effect_t& effect)
   // PLACEHOLDER: until rppm spells get whitelisted in
   effect.proc_flags_ = PF_MELEE_ABILITY | PF_RANGED_ABILITY | PF_NONE_HEAL | PF_NONE_SPELL
                      | PF_MAGIC_HEAL | PF_MAGIC_SPELL | PF_PERIODIC | PF_TRAP_TRIGGERED;
-  effect.ppm_ = -0.85 * (1.0 + effect.player->vision_of_perfection_rppm_mod());
+  effect.ppm_ = -0.85;
 
   if (essence.rank() >= 3)
   {

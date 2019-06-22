@@ -880,8 +880,7 @@ public:
                                                const spell_data_t* affected_spell = spell_data_t::nil() );
 
   virtual void vision_of_perfection_proc() override;
-  //virtual double vision_of_perfection_rppm_mod() override;
-
+  
 private:
   void              apl_precombat();
   void              apl_default();
@@ -9954,11 +9953,6 @@ void druid_t::vision_of_perfection_proc()
     resource_gain(RESOURCE_ASTRAL_POWER, 40 * duration_mul, gain.vision_of_perfection);
   }
 }
-
-//double druid_t::vision_of_perfection_rppm_mod()
-//{
-//  return 0.0;
-//}
 
 druid_td_t::druid_td_t( player_t& target, druid_t& source )
   : actor_target_data_t( &target, &source ),
