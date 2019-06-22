@@ -1502,6 +1502,7 @@ void priest_t::generate_insanity( double num_amount, gain_t* g, action_t* action
     double amount                               = num_amount;
     double amount_from_surrender_to_madness     = 0.0;
     double amount_wasted_surrendered_to_madness = 0.0;
+    double amount_from_memory_of_lucid_dreams   = 0.0;
 
     if ( buffs.surrendered_to_madness->check() )
     {
@@ -1511,16 +1512,36 @@ void priest_t::generate_insanity( double num_amount, gain_t* g, action_t* action
     else if ( buffs.surrender_to_madness->check() )
     {
       double total_amount = amount * ( 1.0 + talents.surrender_to_madness->effectN( 1 ).percent() );
+      
 
       amount_from_surrender_to_madness = amount * talents.surrender_to_madness->effectN( 1 ).percent();
 
-      // Make sure the maths line up.
-      assert( total_amount == amount + amount_from_surrender_to_madness );
+      if ( player_t::buffs.memory_of_lucid_dreams->check() )
+      {
+        // If both are up, give the benefit to Memory of Lucid Dreams because it is shorter
+        amount_from_memory_of_lucid_dreams +=
+            ( amount + amount_from_surrender_to_madness )
+          * ( azerite_essence.memory_of_lucid_dreams->effectN( 1 ).percent() );
+
+        total_amount = amount 
+                       * ( 1.0 + talents.surrender_to_madness->effectN( 1 ).percent() )
+                       * ( 1.0 + azerite_essence.memory_of_lucid_dreams->effectN( 1 ).percent() );
+      }
+
+      // Make sure the maths line up. 
+      assert( total_amount == amount + amount_from_surrender_to_madness + amount_from_memory_of_lucid_dreams );
     }
-    else if ( buffs.surrender_to_madness->check() )
+    else if ( player_t::buffs.memory_of_lucid_dreams->check() )
     {
-      amount_from_surrender_to_madness =
-          ( amount * ( 1.0 + talents.surrender_to_madness->effectN( 1 ).percent() ) ) - amount;
+      double total_amount;
+       
+      amount_from_memory_of_lucid_dreams +=   ( amount ) 
+                                            * ( azerite_essence.memory_of_lucid_dreams->effectN( 1 ).percent() );
+
+      total_amount = amount * ( 1.0 + azerite_essence.memory_of_lucid_dreams->effectN( 1 ).percent() );
+
+      // Make sure the maths line up.
+      assert( total_amount == amount + amount_from_memory_of_lucid_dreams );
     }
 
     insanity.gain( amount, g, action );
@@ -1532,6 +1553,10 @@ void priest_t::generate_insanity( double num_amount, gain_t* g, action_t* action
     if ( amount_wasted_surrendered_to_madness )
     {
       insanity.gain( amount_wasted_surrendered_to_madness, gains.insanity_wasted_surrendered_to_madness, action );
+    }
+    if ( amount_from_memory_of_lucid_dreams > 0.0 )
+    {
+      insanity.gain( amount_from_memory_of_lucid_dreams, gains.insanity_memory_of_lucid_dreams, action );
     }
   }
 }

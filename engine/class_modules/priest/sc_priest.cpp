@@ -658,6 +658,7 @@ void priest_t::create_gains()
   gains.vampiric_touch_health                  = get_gain( "Health from Vampiric Touch Ticks" );
   gains.insanity_dark_void                     = get_gain( "Insanity Gained from Dark Void" );
   gains.insanity_lucid_dreams                  = get_gain( "Insanity Gained from Lucid Dreams" );
+  gains.insanity_memory_of_lucid_dreams        = get_gain( "Insanity Gained from Memory of Lucid Dreams" );
 }
 
 /** Construct priest procs */
@@ -974,10 +975,10 @@ void priest_t::create_pets()
 
   void priest_t::trigger_lucid_dreams( double cost )
 {
-  if ( !specs.lucid_dreams )
+    if ( !azerite_essence.lucid_dreams )
     return;
 
-  double multiplier  = specs.lucid_dreams->effectN( 1 ).percent();
+  double multiplier  = azerite_essence.lucid_dreams->effectN( 1 ).percent();
   double proc_chance = ( specialization() == PRIEST_SHADOW )
                            ? options.priest_lucid_dreams_proc_chance_shadow
                            : ( specialization() == PRIEST_HOLY ) ? options.priest_lucid_dreams_proc_chance_holy
@@ -1055,10 +1056,13 @@ void priest_t::init_spells()
   mastery_spells.echo_of_light  = find_mastery_spell( PRIEST_HOLY );
   mastery_spells.madness        = find_mastery_spell( PRIEST_SHADOW );
 
-  auto essence = find_azerite_essence( "Memory of Lucid Dreams" );
+  auto memory_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );
 
-  if ( essence.enabled() )
-    specs.lucid_dreams = essence.spell( 1u, essence_type::MINOR );
+  if ( memory_lucid_dreams.enabled() )
+  {
+    azerite_essence.lucid_dreams           = memory_lucid_dreams.spell( 1u, essence_type::MINOR );
+    azerite_essence.memory_of_lucid_dreams = memory_lucid_dreams.spell( 1u, essence_type::MAJOR );
+  }
 }
 
 void priest_t::create_buffs()

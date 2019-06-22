@@ -259,8 +259,7 @@ public:
     const spell_data_t* voidform;
     const spell_data_t* void_eruption;
     const spell_data_t* shadow_priest;
-
-    const spell_data_t* lucid_dreams;
+        
   } specs;
 
   // Mastery Spells
@@ -327,6 +326,7 @@ public:
     propagate_const<gain_t*> insanity_death_throes;
     propagate_const<gain_t*> power_of_the_dark_side;
     propagate_const<gain_t*> insanity_lucid_dreams;
+    propagate_const<gain_t*> insanity_memory_of_lucid_dreams;
   } gains;
 
   // Benefits
@@ -403,6 +403,12 @@ public:
     azerite_power_t torment_of_torments;
     azerite_power_t whispers_of_the_damned;
   } azerite;
+
+  struct azerite_essence_t
+  {
+    const spell_data_t* lucid_dreams;
+    const spell_data_t* memory_of_lucid_dreams;
+  } azerite_essence;
 
   struct insanity_end_event_t;
 
