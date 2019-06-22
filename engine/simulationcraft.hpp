@@ -1170,6 +1170,8 @@ struct sim_t : private sc_thread_t
     int                 loyal_to_the_end_allies = 4;
     /// Number of allies also using the Worldvein Resonance minor
     int                 worldvein_allies = 0;
+    /// Chance to proc Reality Shift (normally triggers on moving specific distance)
+    double              ripple_in_space_proc_chance = 0.0;
   } bfa_opts;
 
   // Expansion specific data
