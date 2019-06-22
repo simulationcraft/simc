@@ -773,7 +773,7 @@ class ItemDataGenerator(DataGenerator):
                             filter_ilevel = False
                             break
             # Gems
-            elif classdata.classs == 3:
+            elif classdata.classs == 3 or (classdata.classs == 7 and classdata.subclass == 4):
                 if data.gem_props == 0:
                     continue
                 else:
