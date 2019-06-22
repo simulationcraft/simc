@@ -3127,7 +3127,7 @@ void player_t::create_buffs()
 
       auto ripple_in_space = find_azerite_essence( "Ripple in Space" );
       buffs.reality_shift = make_buff<stat_buff_t>( this, "reality_shift", find_spell( 302916 ) );
-      buffs.reality_shift->add_stat( STAT_STR_AGI_INT, 
+      buffs.reality_shift->add_stat( convert_hybrid_stat( STAT_STR_AGI_INT ), 
         ripple_in_space.spell_ref(1u, essence_type::MINOR).effectN( 2 ).average(
           ripple_in_space.item() ) );
       buffs.reality_shift->set_duration( find_spell( 302952 )->duration() 
