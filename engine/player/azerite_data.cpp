@@ -874,7 +874,7 @@ bool azerite_essence_state_t::parse_azerite_essence( sim_t* sim,
     // Parse/Sanitize essence type in 3-element tokens
     if ( token_split.size() > 2 )
     {
-      essence_type type = token_split[ 2 ].front() == '0'
+      type = token_split[ 2 ].front() == '0'
                           ? essence_type::MINOR
                           : token_split[ 2 ].front() == '1'
                             ? essence_type::MAJOR
