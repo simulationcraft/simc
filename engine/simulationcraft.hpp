@@ -3868,6 +3868,7 @@ struct player_t : public actor_t
     stat_buff_t* lucid_dreams; // Versatility Buff from Rank 3
     buff_t* reckless_force; // The Unbound Force minor - crit proc when counter hits 20
     buff_t* seething_rage; // Blood of the Enemy major - 25% crit dam
+    stat_buff_t* reality_shift; // Ripple in Space minor - primary stat on moving 25yds
   } buffs;
 
   struct debuffs_t

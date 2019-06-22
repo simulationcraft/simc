@@ -1069,7 +1069,6 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 295834, azerite_essences::condensed_life_force );
   unique_gear::register_special_effect( 304081, azerite_essences::conflict_and_strife );
   unique_gear::register_special_effect( 295293, azerite_essences::purification_protocol );
-  unique_gear::register_special_effect( 302916, azerite_essences::ripple_in_space );
   unique_gear::register_special_effect( 298407, azerite_essences::the_unbound_force );
   unique_gear::register_special_effect( 295078, azerite_essences::worldvein_resonance );
 }
@@ -3816,22 +3815,38 @@ struct purifying_blast_t : public azerite_essence_major_t
 
 //Ripple in Space
 //Major Power: Ripple in Space
-void ripple_in_space(special_effect_t& effect)
-{
-
-}
-
+//Not implemented: rank 3 power reduces damage taken after activating
 struct ripple_in_space_t : public azerite_essence_major_t
 {
+  timespan_t delay;
+
   ripple_in_space_t(player_t* p, const std::string& options_str) :
     azerite_essence_major_t(p, "ripple_in_space", p->find_spell(302731))
   {
+    aoe = -1;
 
+    base_dd_min = base_dd_max = essence.spell_ref( 1u, essence_type::MAJOR ).effectN( 2 ).average( essence.item() );
+    school = SCHOOL_FIRE;
+
+    delay = essence.spell_ref( 1u, essence_type::MAJOR ).duration() 
+      + timespan_t::from_seconds( essence.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 1 ).base_value() / 1000 );
   }
 
-  //Does aoe damage after 2 second delay at the target location
-  //Minor power grants primary stat after moving a certain distance
-  //Minor driver is 302916
+  timespan_t travel_time() const override
+  {
+    return delay;
+  }
+
+  void impact(action_state_t* s) override
+  {
+    azerite_essence_major_t::impact( s );
+
+    //TODO: Reality Shift triggers when players move a certain distance within a certain time,
+    //with an internal cooldown of 30 seconds. Activating the major is a fairly safe way of 
+    //guaranteeing this buff activates, but more options are probably needed to simulate maximum
+    //uptime on the buff
+    s->action->player->buffs.reality_shift->trigger();
+  }
 }; //End of Ripple in Space
 
 //The Unbound Force
