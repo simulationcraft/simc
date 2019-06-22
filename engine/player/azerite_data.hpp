@@ -353,8 +353,12 @@ void purification_protocol( special_effect_t& effect );
 void ripple_in_space( special_effect_t& effect );
 void the_unbound_force( special_effect_t& effect );
 void worldvein_resonance( special_effect_t& effect );
-
+void strive_for_perfection( special_effect_t& effect );
+void vision_of_perfection( special_effect_t& effect );
 } // Namepsace azerite_essences ends
+
+// Vision of Perfection CDR helper
+double vision_of_perfection_cdr( azerite_essence_t essence );
 
 } // Namespace azerite ends
 

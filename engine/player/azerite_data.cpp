@@ -1072,6 +1072,9 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 302916, azerite_essences::ripple_in_space );
   unique_gear::register_special_effect( 298407, azerite_essences::the_unbound_force );
   unique_gear::register_special_effect( 295078, azerite_essences::worldvein_resonance );
+  unique_gear::register_special_effect( 296320, azerite_essences::strive_for_perfection );
+  // Vision of Perfection major Azerite Essence
+  unique_gear::register_special_effect( 296325, azerite_essences::vision_of_perfection );
 }
 
 void register_azerite_target_data_initializers( sim_t* sim )
@@ -3964,21 +3967,57 @@ struct the_unbound_force_t : public azerite_essence_major_t
   }
 }; //End of The Unbound Force
 
-//Vision of Perfection
-//Major Power: Vision of Perfection (Passive)
-struct vision_of_perfection_t : public azerite_essence_major_t
+// Vision of Perfection
+// Minor Power: Strive for Perfection (Passive)
+void strive_for_perfection(special_effect_t& effect)
 {
-  vision_of_perfection_t(player_t* p, const std::string& options_str) :
-    azerite_essence_major_t(p, "vision_of_perfection", p->find_spell(296325))
-  {
+  auto essence = effect.player->find_azerite_essence(effect.driver()->essence_id());
+  if (!essence.enabled())
+    return;
 
+  if (essence.rank() >= 3)
+    effect.player->passive.versatility_rating += essence.spell_ref(3u, essence_spell::UPGRADE, essence_type::MINOR).effectN(1).average(essence.item());
+}
+
+// Major Power: Vision of Perfect (Passive)
+void vision_of_perfection(special_effect_t& effect)
+{
+  auto essence = effect.player->find_azerite_essence(effect.driver()->essence_id());
+  if (!essence.enabled())
+    return;
+
+  struct vision_of_perfection_callback_t : public dbc_proc_callback_t
+  {
+    vision_of_perfection_callback_t(player_t* p, special_effect_t& e) :
+      dbc_proc_callback_t(p, e)
+    {}
+
+    void execute(action_t* a, action_state_t* s) override
+    {
+      dbc_proc_callback_t::execute(a, s);
+      listener->vision_of_perfection_proc();
+    }
+  };
+
+  // PLACEHOLDER: until rppm spells get whitelisted in
+  effect.proc_flags_ = PF_MELEE_ABILITY | PF_RANGED_ABILITY | PF_NONE_HEAL | PF_NONE_SPELL
+                     | PF_MAGIC_HEAL | PF_MAGIC_SPELL | PF_PERIODIC | PF_TRAP_TRIGGERED;
+  effect.ppm_ = -0.85;
+
+  if (essence.rank() >= 3)
+  {
+    // buff id=303344, not referenced in spell data
+    // amount from R3 major/upgrade
+    effect.custom_buff = buff_t::find(effect.player, "vision_of_perfection");
+    if (!effect.custom_buff)
+    {
+      effect.custom_buff = make_buff<stat_buff_t>(effect.player, "vision_of_perfection", effect.player->find_spell(303344))
+        ->add_stat(STAT_HASTE_RATING, essence.spell_ref(3u, essence_spell::UPGRADE, essence_type::MAJOR).effectN(2).average(essence.item()));
+    }
   }
 
-  //Both major and minor effects are passive and spec-specific
-  //Major driver is 296325
-  //Major effect also has haste buff when cd is used, spellid 303342
-  //The minor is not registered atm, pending decision on how to handle this essence
-}; //End of Vision of Perfection
+  new vision_of_perfection_callback_t(effect.player, effect);
+}
 
 //Worldvein Resonance
 //Major Power: Worldvein Resonance
@@ -4115,6 +4154,27 @@ action_t* create_action( player_t* player, const std::string& name, const std::s
   }
 
   return nullptr;
+}
+
+/**
+ * 8.2 Vision of Perfection minor essence CDR function
+ *
+ * Tooltip formula reads ((<effect#1> + 2896) / 100)% reduction, minimum 10%, maximum 25%,
+ * where <effect#1> is a large negative value.
+ */
+double vision_of_perfection_cdr( azerite_essence_t essence )
+{
+  if ( essence.enabled() )
+  {
+    // Formula from tooltip
+    double cdr = ( essence.spell( 1u, essence_type::MINOR )->effectN( 1 ).average( essence.item() ) + 2896 ) / -100;
+    // Clamped to 10 .. 25
+    cdr = fmax( 10, fmin( 25, cdr ) );
+    // return the negative percent
+    return cdr / -100;
+  }
+
+  return 0.0;
 }
 
 } // Namespace azerite ends

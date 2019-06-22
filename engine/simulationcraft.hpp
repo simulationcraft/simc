@@ -511,7 +511,6 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     buff_t* wasting_infection;
     buff_t* everchill;
     buff_t* choking_brine;
-//    buff_t* blood_of_the_enemy; // debuff from blood of the enemy major essence
   } debuff;
 
   struct atd_dot_t
@@ -4477,6 +4476,9 @@ public:
   { range::for_each( dynamic_cooldown_list, []( cooldown_t* cd ) { cd -> adjust_recharge_multiplier(); } ); }
   virtual void adjust_global_cooldown( haste_type_e haste_type );
   virtual void adjust_auto_attack( haste_type_e haste_type );
+
+  // 8.2 Vision of Perfection essence
+  virtual void vision_of_perfection_proc();
 
 private:
   void do_update_movement( double yards );

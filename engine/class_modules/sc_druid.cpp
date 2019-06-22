@@ -304,7 +304,6 @@ public:
 
   //other
   spells::solar_empowerment_t* solar_empowerment;
-  const spell_data_t* lucid_dreams;
 
   // Druid Events
   std::vector<event_t*> persistent_buff_delay;
@@ -351,7 +350,11 @@ public:
   struct
   {
     azerite_essence_t memory_of_lucid_dreams;  // Memory of lucid dreams minor
-  } azerite_essences;
+    azerite_essence_t vision_of_perfection;
+  } essences;
+
+  // azerite essence spells
+  const spell_data_t* lucid_dreams; // Memory of Lucid Dreams R1 MINOR BASE
 
   // Buffs
   struct buffs_t
@@ -483,6 +486,7 @@ public:
     gain_t* celestial_alignment;
     gain_t* incarnation;
     gain_t* arcanic_pulsar;
+    gain_t* vision_of_perfection;
 
     // Feral (Cat)
     gain_t* brutal_slash;
@@ -875,6 +879,8 @@ public:
   const spelleffect_data_t* query_aura_effect( const spell_data_t* aura_spell, effect_type_t type = E_APPLY_AURA,
                                                effect_subtype_t subtype = A_ADD_PCT_MODIFIER, double misc_value = 0,
                                                const spell_data_t* affected_spell = spell_data_t::nil() );
+
+  virtual void vision_of_perfection_proc() override;
 
 private:
   void              apl_precombat();
@@ -5367,6 +5373,7 @@ struct celestial_alignment_t : public druid_spell_t
     precombat()
   {
     harmful = false;
+    base_recharge_multiplier *= 1.0 + azerite::vision_of_perfection_cdr(player->essences.vision_of_perfection);
   }
 
   void init_finished() override
@@ -5792,6 +5799,7 @@ struct incarnation_t : public druid_spell_t
     {
     case DRUID_BALANCE:
       spec_buff = p -> buff.incarnation_moonkin;
+      base_recharge_multiplier *= 1.0 + azerite::vision_of_perfection_cdr(p->essences.vision_of_perfection);
       break;
     case DRUID_FERAL:
       spec_buff = p -> buff.incarnation_cat;
@@ -7481,6 +7489,7 @@ void druid_t::init_spells()
   azerite.burst_of_savagery = find_azerite_spell("Burst of Savagery");
 
   //Azerite essences
+  essences.vision_of_perfection = find_azerite_essence("Vision of Perfection");
   lucid_dreams = find_azerite_essence("Memory of Lucid Dreams").spell(1u, essence_type::MINOR);
 
   // Affinities =============================================================
@@ -8573,24 +8582,24 @@ void druid_t::init_gains()
   player_t::init_gains();
 
   // Multiple Specs / Forms
-  gain.clearcasting          = get_gain( "clearcasting" );       // Feral & Restoration
-  gain.soul_of_the_forest    = get_gain( "soul_of_the_forest" ); // Feral & Guardian
-  gain.lucid_dreams			 = get_gain( " Lucid Dreams " );
+  gain.clearcasting          = get_gain( "clearcasting"          ); // Feral & Restoration
+  gain.soul_of_the_forest    = get_gain( "soul_of_the_forest"    ); // Feral & Guardian
+  gain.lucid_dreams			     = get_gain( "lucid_dreams"          );
 
   // Balance
-  gain.natures_balance       = get_gain("natures_balance");
-  gain.force_of_nature       = get_gain("force_of_nature");
-  gain.fury_of_elune         = get_gain("fury_of_elune");
-  gain.stellar_flare         = get_gain("stellar_flare");
+  gain.natures_balance       = get_gain( "natures_balance"       );
+  gain.force_of_nature       = get_gain( "force_of_nature"       );
+  gain.fury_of_elune         = get_gain( "fury_of_elune"         );
+  gain.stellar_flare         = get_gain( "stellar_flare"         );
   gain.lunar_strike          = get_gain( "lunar_strike"          );
   gain.moonfire              = get_gain( "moonfire"              );
   gain.shooting_stars        = get_gain( "shooting_stars"        );
   gain.solar_wrath           = get_gain( "solar_wrath"           );
-  gain.sunfire               = get_gain( "sunfire" );
-  gain.celestial_alignment   = get_gain( "celestial_alignment" );
-  gain.incarnation           = get_gain( "incarnation" );
-  gain.arcanic_pulsar        = get_gain( "arcanic_pulsar" );
-
+  gain.sunfire               = get_gain( "sunfire"               );
+  gain.celestial_alignment   = get_gain( "celestial_alignment"   );
+  gain.incarnation           = get_gain( "incarnation"           );
+  gain.arcanic_pulsar        = get_gain( "arcanic_pulsar"        );
+  gain.vision_of_perfection  = get_gain( "vision_of_perfection"  );
 
   // Feral 
   gain.brutal_slash          = get_gain( "brutal_slash"          );
@@ -9911,6 +9920,38 @@ const spelleffect_data_t* druid_t::query_aura_effect( const spell_data_t* aura_s
   }
 
   return spelleffect_data_t::nil();
+}
+
+void druid_t::vision_of_perfection_proc()
+{
+  double duration_mul = essences.vision_of_perfection.spell( 1u, essence_type::MAJOR )->effectN( 1 ).percent();
+  if ( essences.vision_of_perfection.rank() >= 2)
+    duration_mul += essences.vision_of_perfection.spell( 2u, essence_spell::UPGRADE, essence_type::MAJOR )->effectN( 1 ).percent();
+
+  if (specialization() == DRUID_BALANCE)
+  {
+    buff_t* vp_buff;
+    timespan_t vp_dur;
+
+    if (talent.incarnation_moonkin->ok())
+      vp_buff = buff.incarnation_moonkin;
+    else
+      vp_buff = buff.celestial_alignment;
+
+    vp_dur = vp_buff->s_data->duration() * duration_mul;
+
+    if (vp_buff->check())
+    {
+      vp_buff->extend_duration(this, vp_dur);
+    }
+    else
+    {
+      vp_buff->trigger(1, buff_t::DEFAULT_VALUE(), 1.0, vp_dur);
+      // BUGGGED...?
+      resource_gain(RESOURCE_ASTRAL_POWER, 40, gain.vision_of_perfection);
+    }
+    resource_gain(RESOURCE_ASTRAL_POWER, 40 * duration_mul, gain.vision_of_perfection);
+  }
 }
 
 druid_td_t::druid_td_t( player_t& target, druid_t& source )
