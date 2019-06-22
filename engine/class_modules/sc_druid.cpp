@@ -880,7 +880,7 @@ public:
                                                const spell_data_t* affected_spell = spell_data_t::nil() );
 
   virtual void vision_of_perfection_proc() override;
-  
+
 private:
   void              apl_precombat();
   void              apl_default();

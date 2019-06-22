@@ -4477,7 +4477,7 @@ public:
 
   // 8.2 Vision of Perfection essence
   virtual void vision_of_perfection_proc();
-  
+
 private:
   void do_update_movement( double yards );
   void check_resource_callback_deactivation();
