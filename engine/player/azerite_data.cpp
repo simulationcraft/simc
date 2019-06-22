@@ -1069,7 +1069,6 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 295834, azerite_essences::condensed_life_force );
   unique_gear::register_special_effect( 304081, azerite_essences::conflict_and_strife );
   unique_gear::register_special_effect( 295293, azerite_essences::purification_protocol );
-  unique_gear::register_special_effect( 302916, azerite_essences::ripple_in_space );
   unique_gear::register_special_effect( 298407, azerite_essences::the_unbound_force );
   unique_gear::register_special_effect( 295078, azerite_essences::worldvein_resonance );
 }
